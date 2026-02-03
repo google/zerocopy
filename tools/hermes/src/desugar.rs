@@ -34,7 +34,7 @@ pub fn desugar_spec(
             // Check if this file looks like signature args.
             // It might be `(x y : Usize)` or `add_mod (x y : Usize)`.
             // We also support instance arguments like `[Layout T]`.
-            if let Some(start_idx) = line.find(|c| c == '(' || c == '[') {
+            if let Some(start_idx) = line.find(['(', '[']) {
                 // Assume everything from start_idx onwards is args.
                 // And ignore what's before it (likely function name).
                 signature_args = Some(line[start_idx..].to_string());
@@ -86,17 +86,17 @@ pub fn desugar_spec(
 
 fn parse_binders(ensures_content: &str) -> Result<(Vec<String>, String)> {
     // |ret, x_final| logic
-    if let Some(start) = ensures_content.find('|') {
-        if let Some(end) = ensures_content[start + 1..].find('|') {
-            let binders_str = &ensures_content[start + 1..start + 1 + end];
-            let logic = &ensures_content[start + 1 + end + 1..];
-            let binders = binders_str
-                .split(',')
-                .map(|s| s.trim().to_string())
-                .filter(|s| !s.is_empty())
-                .collect();
-            return Ok((binders, logic.trim().to_string()));
-        }
+    if let Some(start) = ensures_content.find('|')
+        && let Some(end) = ensures_content[start + 1..].find('|')
+    {
+        let binders_str = &ensures_content[start + 1..start + 1 + end];
+        let logic = &ensures_content[start + 1 + end + 1..];
+        let binders = binders_str
+            .split(',')
+            .map(|s| s.trim().to_string())
+            .filter(|s| !s.is_empty())
+            .collect();
+        return Ok((binders, logic.trim().to_string()));
     }
     bail!("Malformed ensures clause: missing |...| binders");
 }
@@ -116,7 +116,7 @@ fn generate_body(
         out.push_str("exists");
         for b in binders {
             if b != "_" {
-                out.push_str(" ");
+                out.push(' ');
                 out.push_str(b);
             } else {
                 // If it's "_", we usually need a name for the exists,

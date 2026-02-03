@@ -5,9 +5,11 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1.0.100"
-clap = { version = "4.5.56", features = ["derive"] }
-regex = "1.12.2"
-walkdir = "2.5.0"
 cargo_metadata = "0.18"
-syn = { version = "2.0.114", features = ["full", "visit", "visit-mut", "extra-traits"] }
+clap = { version = "4.5.56", features = ["derive"] }
+env_logger = "0.11"
+log = "0.4"
 quote = "1.0.43"
+regex = "1.12.2"
+syn = { version = "2.0.114", features = ["full", "visit", "visit-mut", "extra-traits"] }
+walkdir = "2.5.0"

@@ -112,16 +112,6 @@ pub fn create_shadow_crate(
     Ok((shadow_root, shadow_source_file))
 }
 
-// Helper to process single source file BEFORE prelude injection
-fn ensure_single_source(root: &Path, source: Option<&Path>) -> Result<()> {
-    if let Some(src) = source {
-        let file_name = src.file_name().context("Invalid source file name")?;
-        let dest = root.join(file_name);
-        process_file_content(src, &dest)?;
-    }
-    Ok(())
-}
-
 const SHIM_CONTENT: &str = include_str!("include/__hermes_std.rs");
 
 fn inject_prelude(path: &Path) -> Result<()> {
@@ -192,7 +182,7 @@ fn sanitize_crate(root: &Path) -> Result<()> {
 
     for entry in WalkDir::new(&src_dir) {
         let entry = entry?;
-        if entry.file_type().is_file() && entry.path().extension().map_or(false, |e| e == "rs") {
+        if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "rs") {
             process_file(entry.path())?;
         }
     }
@@ -231,7 +221,7 @@ impl VisitMut for ShadowVisitor {
                     quote!(true)
                 } else {
                     let combined = model_requires.join(") && (");
-                    let combined_str = format!("({})", combined);
+                    let combined_str = format!("{}", combined);
                     // Parse as Expr to ensure validity and proper token nesting
                     let expr = syn::parse_str::<syn::Expr>(&combined_str)
                         .unwrap_or_else(|_| parse_quote!(true));
@@ -241,6 +231,13 @@ impl VisitMut for ShadowVisitor {
                 let body_content = quote! {
                     {
                         if #preconditions {
+                            // TODO: If the preconditions are met, we still
+                            // panic. That means that any model we provide will
+                            // be wrong (ie, it will claim that the function
+                            // returns successfully, when in fact it panics).
+                            // This will allow Lean to infer a contradiction,
+                            // allowing any user's proof to be accepted
+                            // regardless of its correctness.
                             ::std::unimplemented!("Safe Shim")
                         } else {
                             ::std::panic!("Contract Violated")
@@ -252,6 +249,12 @@ impl VisitMut for ShadowVisitor {
                 if let Ok(block) = syn::parse2(body_content) {
                     node.block = block;
                 }
+
+                // Append #[allow(unused_variables)] to suppress warnings/errors
+                // since the new body doesn't use any of its arguments. It's
+                // important that we add it at the end to override any
+                // preceding `#[warn(unused_variables)]` (or `deny`).
+                node.attrs.push(parse_quote!(#[allow(unused_variables)]));
             } else {
                 // Case B: Unwrap Strategy
                 // 1. Remove unsafe
@@ -285,48 +288,21 @@ impl VisitMut for ShadowVisitor {
     }
 }
 
-fn parse_doc_attr(attr: &Attribute) -> Option<String> {
-    if !attr.path().is_ident("doc") {
-        return None;
-    }
-    match &attr.meta {
-        syn::Meta::NameValue(nv) => match &nv.value {
-            syn::Expr::Lit(syn::ExprLit { lit: syn::Lit::Str(s), .. }) => Some(s.value()),
-            _ => None,
-        },
-        _ => None,
-    }
-}
-
 fn parse_model_specs(attrs: &[Attribute]) -> (bool, Vec<String>) {
     let mut is_model = false;
     let mut requires = Vec::new();
 
-    for attr in attrs {
-        if let Some(doc) = parse_doc_attr(attr) {
-            println!("DEBUG: Doc attr: {:?}", doc);
-            for line in doc.lines() {
-                let trimmed = line.trim();
-                println!("DEBUG: Trimmed line: '{}'", trimmed);
-                // Check found marker e.g. "@ lean model"
-                if trimmed.starts_with('@') {
-                    if trimmed.contains("lean model") {
-                        is_model = true;
-                        println!("DEBUG: Found model marker!");
-                    }
+    for trimmed in crate::docs::iter_hermes_lines(attrs) {
+        if let Some(_content) = crate::docs::parse_hermes_tag(&trimmed, "lean model") {
+            is_model = true;
+            log::debug!("Found model marker!");
+        }
 
-                    if let Some(rest) = trimmed.strip_prefix("@ requires") {
-                        let content = rest.trim();
-                        // Strip binder name if present (e.g. "h : x > 0" -> "x > 0")
-                        let condition = if let Some((_, expr)) = content.split_once(':') {
-                            expr.trim()
-                        } else {
-                            content
-                        };
-                        requires.push(condition.to_string());
-                    }
-                }
-            }
+        if let Some(content) = crate::docs::parse_hermes_tag(&trimmed, "requires") {
+            // Strip binder name if present (e.g. "h : x > 0" -> "x > 0")
+            let condition =
+                if let Some((_, expr)) = content.split_once(':') { expr.trim() } else { content };
+            requires.push(condition.to_string());
         }
     }
     (is_model, requires)
@@ -365,6 +341,7 @@ mod tests {
         "#;
         let expected = r#"
             #[doc = "@ lean model foo ensures |ret| ret = 42"]
+            #[allow(unused_variables)]
             fn foo() -> i32 {
                 if true { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
@@ -382,8 +359,9 @@ mod tests {
         let expected = r#"
             #[doc = "@ lean model safe_div(a b : u32)"]
             #[doc = "@ requires b > 0"]
+            #[allow(unused_variables)]
             fn safe_div(a: u32, b: u32) -> u32 {
-                if (b > 0) { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
+                if b > 0 { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -398,6 +376,7 @@ mod tests {
         // Signature should keep *const u32
         let expected = r#"
             #[doc = "@ lean model read(ptr : Type) ..."]
+            #[allow(unused_variables)]
             fn read(ptr: *const u32) -> u32 {
                 if true { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
@@ -479,6 +458,7 @@ mod tests {
         "#;
         let expected = r#"
             #[doc = "@ lean model ..."]
+            #[allow(unused_variables)]
             fn cast <T: Copy> (x: *const T) -> T {
                 if true { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
@@ -533,8 +513,9 @@ mod tests {
         let expected = r#"
             #[doc = "@ lean model foo"]
             #[doc = "@ requires x > 0"]
+            #[allow(unused_variables)]
             fn foo(x: i32) {
-                if (x > 0) { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
+                if x > 0 { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -551,7 +532,7 @@ mod tests {
         let diff = transform(input);
         // Normalize for check
         let diff_norm: String = diff.chars().filter(|c| !c.is_whitespace()).collect();
-        assert!(diff_norm.contains("if(x>0)"));
+        assert!(diff_norm.contains("ifx>0"));
         assert!(diff_norm.contains("panic!(\"ContractViolated\")"));
     }
 
@@ -566,8 +547,9 @@ mod tests {
         let expected = r#"
             #[doc = "@ lean model foo"]
             #[doc = "@ requires x == 10"]
+            #[allow(unused_variables)]
             fn foo(x: i32) {
-                if (x == 10) { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
+                if x == 10 { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
         "#;
         assert_normalized_eq(&transform(input), expected);

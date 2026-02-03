@@ -32,7 +32,7 @@ fn get_crate_name(
 
     let mut cmd = cargo_metadata::MetadataCommand::new();
     if let Some(path) = manifest_path {
-        if path.extension().map_or(false, |e| e == "rs") {
+        if path.extension().is_some_and(|e| e == "rs") {
             return Ok(path.file_stem().unwrap().to_string_lossy().to_string());
         }
         cmd.manifest_path(path);
@@ -103,12 +103,12 @@ pub fn run_pipeline(
 
     // Only pass manifest_path as source_file if it is an .rs file (script)
     let source_file = if let Some(path) = &manifest_path {
-        if path.extension().map_or(false, |e| e == "rs") { Some(path.as_path()) } else { None }
+        if path.extension().is_some_and(|e| e == "rs") { Some(path.as_path()) } else { None }
     } else {
         None
     };
 
-    println!("Step 1: Creating Shadow Crate...");
+    log::info!("Step 1: Creating Shadow Crate...");
     let (shadow_crate_root, shadow_source_file) =
         crate::shadow::create_shadow_crate(crate_root, source_file)?;
 
@@ -131,10 +131,10 @@ pub fn run_pipeline(
         return Err(anyhow!("Charon did not produce expected LLBC file: {:?}", llbc_path));
     }
 
-    println!("Step 2: Running Aeneas...");
+    log::info!("Step 2: Running Aeneas...");
     run_aeneas(&llbc_path, dest)?;
 
-    println!("Step 3: Stitching...");
+    log::info!("Step 3: Stitching...");
 
     let camel_name: String = crate_name_snake
         .split('_')
@@ -154,11 +154,11 @@ pub fn run_pipeline(
 
     stitch_user_proofs(&shadow_crate_root, &crate_name_snake, &camel_name, dest, sorry_mode)?;
 
-    println!("Step 4: Verifying...");
+    log::info!("Step 4: Verifying...");
     write_lakefile(dest, &crate_name_snake, &camel_name, aeneas_path, sorry_mode)?;
     run_lake_build(dest)?;
 
-    println!("Verification Successful!");
+    log::info!("Verification Successful!");
     Ok(())
 }
 
@@ -176,7 +176,7 @@ fn stitch_user_proofs(
     if src_dir.exists() {
         for entry in WalkDir::new(src_dir) {
             let entry = entry?;
-            if entry.path().extension().map_or(false, |ext| ext == "rs") {
+            if entry.path().extension().is_some_and(|ext| ext == "rs") {
                 let content = fs::read_to_string(entry.path())?;
                 let extracted = extract_blocks(&content)?;
                 all_functions.extend(extracted.functions);
@@ -299,7 +299,7 @@ namespace {}
         let desugared = match desugar_spec(spec_content, &fn_name, &inputs, is_stateful) {
             Ok(d) => d,
             Err(e) => {
-                eprintln!("Skipping function '{}' due to spec error: {}", fn_name, e);
+                log::warn!("Skipping function '{}' due to spec error: {}", fn_name, e);
                 continue;
             }
         };
@@ -317,16 +317,15 @@ namespace {}
         // For each arg `x : T`, inject `(h_x : Verifiable.is_valid x)`
         // We need to parse inputs to get names.
         for arg in &inputs {
-            if let syn::FnArg::Typed(pat_type) = arg {
-                if let syn::Pat::Ident(pat_ident) = &*pat_type.pat {
-                    let name = &pat_ident.ident;
-                    // We assume the type is verifiable.
-                    // The signature args in `desugared.signature_args` already listed them as `(x : T)`.
-                    // We just append validity hypotheses.
-                    // Note: This relies on `x` being available in scope, which it is in the signature.
-                    signature_parts
-                        .push(format!("(h_{}_valid : Verifiable.is_valid {})", name, name));
-                }
+            if let syn::FnArg::Typed(pat_type) = arg
+                && let syn::Pat::Ident(pat_ident) = &*pat_type.pat
+            {
+                let name = &pat_ident.ident;
+                // We assume the type is verifiable.
+                // The signature args in `desugared.signature_args` already listed them as `(x : T)`.
+                // We just append validity hypotheses.
+                // Note: This relies on `x` being available in scope, which it is in the signature.
+                signature_parts.push(format!("(h_{}_valid : Verifiable.is_valid {})", name, name));
             }
         }
 
