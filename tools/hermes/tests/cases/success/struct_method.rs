@@ -4,7 +4,7 @@
 //! name = "struct_method"
 //! version = "0.1.0"
 //! edition = "2021"
-//! 
+//!
 //! [dependencies]
 //! ```
 
@@ -25,4 +25,5 @@ impl Point {
         self.y += dy;
     }
 }
+
 fn main() {}

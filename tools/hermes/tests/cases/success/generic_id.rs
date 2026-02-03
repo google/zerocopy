@@ -4,7 +4,7 @@
 //! name = "generic_id"
 //! version = "0.1.0"
 //! edition = "2021"
-//! 
+//!
 //! [dependencies]
 //! ```
 
@@ -15,4 +15,5 @@
 pub fn id<T>(x: T) -> T {
     x
 }
+
 fn main() {}
