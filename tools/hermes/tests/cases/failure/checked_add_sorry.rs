@@ -2,7 +2,7 @@
 //! ```cargo
 //! [package]
 //! edition = "2021"
-//! 
+//!
 //! [dependencies]
 //! ```
 
@@ -14,4 +14,5 @@
 pub fn checked_add(a: u32, b: u32) -> Option<u32> {
     a.checked_add(b)
 }
+
 fn main() {}

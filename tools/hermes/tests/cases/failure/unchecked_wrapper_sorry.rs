@@ -4,7 +4,7 @@
 //! name = "unchecked_wrapper"
 //! version = "0.1.0"
 //! edition = "2021"
-//! 
+//!
 //! [dependencies]
 //! ```
 
@@ -28,10 +28,7 @@ unsafe fn raw_inc(x: u32) -> u32 {
 ///@     case isFalse h =>
 ///@         simp
 pub fn safe_inc(x: u32) -> u32 {
-    if x < u32::MAX {
-        unsafe { raw_inc(x) }
-    } else {
-        0
-    }
+    if x < u32::MAX { unsafe { raw_inc(x) } } else { 0 }
 }
+
 fn main() {}
