@@ -171,12 +171,14 @@ fn stitch_user_proofs(
     sorry_mode: Sorry,
 ) -> Result<()> {
     let mut all_functions = Vec::new();
+    let mut all_structs = Vec::new();
 
     if let Some(path) = source_file {
         if path.exists() {
             let content = fs::read_to_string(path)?;
             let extracted = extract_blocks(&content)?;
             all_functions.extend(extracted.functions);
+            all_structs.extend(extracted.structs);
         }
     } else {
         let src_dir = crate_root.join("src");
@@ -187,12 +189,13 @@ fn stitch_user_proofs(
                     let content = fs::read_to_string(entry.path())?;
                     let extracted = extract_blocks(&content)?;
                     all_functions.extend(extracted.functions);
+                    all_structs.extend(extracted.structs);
                 }
             }
         }
     }
 
-    generate_lean_file(dest, crate_name_snake, crate_name_camel, &all_functions, sorry_mode)
+    generate_lean_file(dest, crate_name_snake, crate_name_camel, &all_functions, &all_structs, sorry_mode)
 }
 
 fn generate_lean_file(
@@ -200,16 +203,43 @@ fn generate_lean_file(
     namespace_name: &str,
     import_name: &str,
     functions: &[ParsedFunction],
+    structs: &[crate::parser::ParsedStruct],
     sorry_mode: Sorry,
 ) -> Result<()> {
     let mut content = String::new();
     content.push_str(&format!("import {}\n", import_name));
     content.push_str("import Aeneas\n");
-    content.push_str("open Aeneas Aeneas.Std Result Error\n\n");
+    content.push_str("open Aeneas Aeneas.Std Result Error\n");
+    content.push_str("set_option linter.unusedVariables false\n\n");
     content.push_str(&format!("namespace {}\n\n", namespace_name));
 
-    // Inject OfNat instances to support numeric literals in specs (e.g. `x > 0`)
-    // We use wrapping construction (BitVec.ofNat) to avoid needing in-bounds proofs.
+    // Inject Prelude: Verifiable Class and Primitives
+    content.push_str(
+        "
+class Verifiable (α : Type) where
+  is_valid : α -> Prop
+
+attribute [simp] Verifiable.is_valid
+
+instance : Verifiable U8 where is_valid _ := True
+instance : Verifiable U16 where is_valid _ := True
+instance : Verifiable U32 where is_valid _ := True
+instance : Verifiable U64 where is_valid _ := True
+instance : Verifiable U128 where is_valid _ := True
+instance : Verifiable I8 where is_valid _ := True
+instance : Verifiable I16 where is_valid _ := True
+instance : Verifiable I32 where is_valid _ := True
+instance : Verifiable I64 where is_valid _ := True
+instance : Verifiable I128 where is_valid _ := True
+instance : Verifiable Usize where is_valid _ := True
+instance : Verifiable Isize where is_valid _ := True
+instance : Verifiable Bool where is_valid _ := True
+instance : Verifiable Unit where is_valid _ := True
+
+"
+    );
+
+    // Inject OfNat instances
     content.push_str(
         "
 instance : OfNat U32 n where ofNat := UScalar.mk (BitVec.ofNat 32 n)
@@ -217,8 +247,50 @@ instance : OfNat I32 n where ofNat := IScalar.mk (BitVec.ofNat 32 n)
 instance : OfNat Usize n where ofNat := UScalar.mk (BitVec.ofNat System.Platform.numBits n)
 instance : OfNat Isize n where ofNat := IScalar.mk (BitVec.ofNat System.Platform.numBits n)
 
-",
+"
     );
+
+    // Struct Instances
+    // Dedup structs just in case
+    let mut unique_structs = Vec::new();
+    let mut seen_structs = std::collections::HashSet::new();
+    for st in structs {
+        if seen_structs.insert(st.ident.to_string()) {
+            unique_structs.push(st);
+        }
+    }
+
+    for st in unique_structs {
+        let name = &st.ident;
+        let mut invariant = st.invariant.as_deref().unwrap_or("True");
+        if invariant.is_empty() {
+            invariant = "True";
+        }
+        
+        // Handle Generics: [Verifiable T] for each T
+        let mut generic_params = String::new();
+        let mut generic_constraints = String::new();
+        let mut type_args = String::new();
+
+        for param in &st.generics.params {
+            if let syn::GenericParam::Type(t) = param {
+                generic_params.push_str(&format!("{{{}}} ", t.ident));
+                generic_constraints.push_str(&format!("[Verifiable {}] ", t.ident));
+                type_args.push_str(&format!("{} ", t.ident));
+            }
+        }
+        
+        // Format: instance {T} [Verifiable T] : Verifiable (Wrapper T) where
+        let type_str = if type_args.is_empty() {
+            name.to_string()
+        } else {
+            format!("({} {})", name, type_args.trim())
+        };
+
+        let header = format!("instance {}{} : Verifiable {} where", generic_params, generic_constraints, type_str);
+        content.push_str(&header);
+        content.push_str(&format!("\n  is_valid self := {}\n\n", invariant));
+    }
 
     for func in functions {
         let spec_content = match &func.spec {
@@ -258,6 +330,22 @@ instance : OfNat Isize n where ofNat := IScalar.mk (BitVec.ofNat System.Platform
 
         if let Some(args) = desugared.signature_args {
             signature_parts.push(args);
+        }
+        
+        // INJECT ARGUMENT VALIDITY CHECKS
+        // For each arg `x : T`, inject `(h_x : Verifiable.is_valid x)`
+        // We need to parse inputs to get names.
+        for arg in &inputs {
+            if let syn::FnArg::Typed(pat_type) = arg {
+                if let syn::Pat::Ident(pat_ident) = &*pat_type.pat {
+                    let name = &pat_ident.ident;
+                    // We assume the type is verifiable.
+                    // The signature args in `desugared.signature_args` already listed them as `(x : T)`.
+                    // We just append validity hypotheses.
+                    // Note: This relies on `x` being available in scope, which it is in the signature.
+                    signature_parts.push(format!("(h_{}_valid : Verifiable.is_valid {})", name, name));
+                }
+            }
         }
 
         for req in desugared.extra_args {
