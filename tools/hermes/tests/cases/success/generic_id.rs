@@ -11,7 +11,7 @@
 ///@ lean spec id (x : T)
 ///@ ensures |ret| ret = x
 ///@ proof
-///@   simp [id]
+///@   simp_all [id]
 pub fn id<T>(x: T) -> T {
     x
 }

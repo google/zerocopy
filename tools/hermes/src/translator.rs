@@ -10,6 +10,8 @@ impl SignatureTranslator {
             if let GenericParam::Type(type_param) = param {
                 let name = &type_param.ident;
                 context.push_str(&format!("{{{name} : Type}} "));
+                // Inject Verifiable constraint
+                context.push_str(&format!("[inst{name}Verifiable : Verifiable {name}] "));
             }
         }
 
