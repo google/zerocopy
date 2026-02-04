@@ -1,0 +1,364 @@
+error[E0463]: can't find crate for `zerocopy_derive` which `zerocopy` depends on
+  --> $DIR/union.rs:10:1
+   |
+10 | extern crate zerocopy_renamed;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ can't find crate
+
+error[E0433]: failed to resolve: could not find `pointer` in `imp`
+   --> $DIR/../include.rs:138:13
+    |
+138 |             pointer::{cast::CastSized, BecauseImmutable},
+    |             ^^^^^^^ could not find `pointer` in `imp`
+
+error[E0432]: unresolved imports `super::imp::Ptr`, `super::imp::ReadOnly`
+   --> $DIR/../include.rs:111:39
+    |
+111 |         use super::imp::{MaybeUninit, Ptr, ReadOnly};
+    |                                       ^^^  ^^^^^^^^ no `ReadOnly` in `util::imp`
+    |                                       |
+    |                                       no `Ptr` in `util::imp`
+    |                                       help: a similar name exists in the module: `str`
+
+error[E0432]: unresolved imports `super::imp::pointer`, `super::imp::ReadOnly`
+   --> $DIR/../include.rs:138:13
+    |
+138 |             pointer::{cast::CastSized, BecauseImmutable},
+    |             ^^^^^^^ could not find `pointer` in `imp`
+139 |             ReadOnly,
+    |             ^^^^^^^^ no `ReadOnly` in `util::imp`
+
+error[E0433]: failed to resolve: could not find `KnownLayout` in `imp`
+  --> $DIR/../include.rs:55:21
+   |
+55 |         super::imp::KnownLayout,
+   |                     ^^^^^^^^^^^ could not find `KnownLayout` in `imp`
+
+error[E0433]: failed to resolve: could not find `Immutable` in `imp`
+  --> $DIR/../include.rs:56:21
+   |
+56 |         super::imp::Immutable,
+   |                     ^^^^^^^^^ could not find `Immutable` in `imp`
+
+error[E0433]: failed to resolve: could not find `FromBytes` in `imp`
+  --> $DIR/../include.rs:57:21
+   |
+57 |         super::imp::FromBytes,
+   |                     ^^^^^^^^^ could not find `FromBytes` in `imp`
+
+error[E0433]: failed to resolve: could not find `IntoBytes` in `imp`
+  --> $DIR/../include.rs:58:21
+   |
+58 |         super::imp::IntoBytes,
+   |                     ^^^^^^^^^ could not find `IntoBytes` in `imp`
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/../include.rs:62:7
+   |
+62 |     #[zerocopy(crate = "zerocopy_renamed")]
+   |       ^^^^^^^^
+   |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+   |
+64 +     #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+65 |     pub struct AU16(pub u16);
+   |
+
+error: cannot find derive macro `Immutable` in this scope
+  --> $DIR/union.rs:25:10
+   |
+25 | #[derive(Immutable)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+15 + use zerocopy_derive::Immutable;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/union.rs:26:3
+   |
+26 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+   |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+   |
+27 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+28 | union Immutable1 {
+   |
+
+error: cannot find derive macro `IntoBytes` in this scope
+  --> $DIR/union.rs:35:10
+   |
+35 | #[derive(IntoBytes)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+15 + use zerocopy_derive::IntoBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/union.rs:36:3
+   |
+36 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+   |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+   |
+38 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+39 | union IntoBytes1<T> {
+   |
+
+error: cannot find derive macro `IntoBytes` in this scope
+  --> $DIR/union.rs:42:10
+   |
+42 | #[derive(IntoBytes)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+15 + use zerocopy_derive::IntoBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/union.rs:43:3
+   |
+43 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+   |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+   |
+45 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+46 | union IntoBytes2 {
+   |
+
+error: cannot find derive macro `IntoBytes` in this scope
+  --> $DIR/union.rs:51:10
+   |
+51 | #[derive(IntoBytes)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+15 + use zerocopy_derive::IntoBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/union.rs:52:3
+   |
+52 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+   |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+   |
+53 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+54 | union IntoBytes3 {
+   |
+
+error: cannot find derive macro `IntoBytes` in this scope
+  --> $DIR/union.rs:58:10
+   |
+58 | #[derive(IntoBytes)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+15 + use zerocopy_derive::IntoBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/union.rs:59:3
+   |
+59 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+   |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+   |
+61 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+62 | union IntoBytes4 {
+   |
+
+error: cannot find derive macro `Unaligned` in this scope
+  --> $DIR/union.rs:69:10
+   |
+69 | #[derive(Unaligned)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+15 + use zerocopy_derive::Unaligned;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/union.rs:70:3
+   |
+70 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+   |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+   |
+72 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+73 | union Unaligned1 {
+   |
+
+error: cannot find derive macro `Unaligned` in this scope
+  --> $DIR/union.rs:86:10
+   |
+86 | #[derive(Unaligned)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+15 + use zerocopy_derive::Unaligned;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/union.rs:87:3
+   |
+87 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+   |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+   |
+89 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+90 | union Unaligned3 {
+   |
+
+error: cannot find derive macro `Unaligned` in this scope
+  --> $DIR/union.rs:93:10
+   |
+93 | #[derive(Unaligned)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+15 + use zerocopy_derive::Unaligned;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/union.rs:94:3
+   |
+94 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+   |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+   |
+96 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+97 | struct Unaligned4 {
+   |
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/union.rs:100:10
+    |
+100 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+ 15 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/union.rs:101:3
+    |
+101 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+    |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+    |
+103 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+104 | struct Unaligned5 {
+    |
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/union.rs:107:10
+    |
+107 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+ 15 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/union.rs:108:3
+    |
+108 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+    |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+    |
+109 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+110 | union Unaligned6 {
+    |
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/union.rs:114:10
+    |
+114 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+ 15 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/union.rs:115:3
+    |
+115 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+    |
+help: `zerocopy` is an attribute that can be used by the derive macros `ByteEq`, `ByteHash`, `FromBytes`, `FromZeros`, `Immutable`, `IntoBytes`, `KnownLayout`, `SplitAt`, `TryFromBytes` and `Unaligned`, you might be missing a `derive` attribute
+    |
+117 + #[derive(ByteEq, ByteHash, FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, SplitAt, TryFromBytes, Unaligned)]
+118 | union Unaligned7 {
+    |
+
+error[E0405]: cannot find trait `TryFromBytes` in module `super::imp`
+   --> $DIR/../include.rs:110:53
+    |
+110 |     pub fn test_trivial_is_bit_valid<T: super::imp::TryFromBytes>() {
+    |                                                     ^^^^^^^^^^^^ not found in `super::imp`
+
+error[E0405]: cannot find trait `TryFromBytes` in module `super::imp`
+   --> $DIR/../include.rs:130:35
+    |
+130 |         assert!(<T as super::imp::TryFromBytes>::is_bit_valid(ptr));
+    |                                   ^^^^^^^^^^^^ not found in `super::imp`
+
+error[E0405]: cannot find trait `TryFromBytes` in module `super::imp`
+   --> $DIR/../include.rs:133:45
+    |
+133 |     pub fn test_is_bit_valid<T: super::imp::TryFromBytes, V: super::imp::IntoBytes>(
+    |                                             ^^^^^^^^^^^^ not found in `super::imp`
+
+error[E0405]: cannot find trait `IntoBytes` in module `super::imp`
+   --> $DIR/../include.rs:133:74
+    |
+133 |     pub fn test_is_bit_valid<T: super::imp::TryFromBytes, V: super::imp::IntoBytes>(
+    |                                                                          ^^^^^^^^^ not found in `super::imp`
+
+error[E0587]: type has conflicting packed and align representation hints
+  --> $DIR/union.rs:89:1
+   |
+89 | union Unaligned3 {
+   | ^^^^^^^^^^^^^^^^
+
+error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
+   --> $DIR/union.rs:117:1
+    |
+117 | union Unaligned7 {
+    | ^^^^^^^^^^^^^^^^
+    |
+note: `AU16` has a `#[repr(align)]` attribute
+   --> $DIR/../include.rs:64:5
+    |
+ 64 |     pub struct AU16(pub u16);
+    |     ^^^^^^^^^^^^^^^
+
+error: aborting due to 37 previous errors
+
+Some errors have detailed explanations: E0405, E0432, E0433, E0463, E0587, E0588.
+For more information about an error, try `rustc --explain E0405`.
