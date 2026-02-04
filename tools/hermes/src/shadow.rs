@@ -63,14 +63,24 @@ pub fn create_shadow_crate(
         }
     }
 
-    // 3. Sanitization
+    // 3. Inject Shadow Std
+    let shim_path = shadow_root.join("src").join("hermes_std.rs");
+    if let Some(parent) = shim_path.parent() {
+        fs::create_dir_all(parent)?;
+    }
+    fs::write(&shim_path, SHIM_CONTENT).context("Failed to write shadow std shim")?;
+
+    // 4. Sanitization
     sanitize_crate(&shadow_root)?;
 
-    // 4. Handle Single Source File
+    // 5. Handle Single Source File (Write it now so we can inject prelude)
     let shadow_source_file = if let Some(source) = source_file {
         let file_name = source.file_name().context("Invalid source file name")?;
-        let dest_path = shadow_root.join(file_name);
-
+        // Move to src/ so it can see __hermes_std.rs as a sibling module
+        let dest_path = shadow_root.join("src").join(file_name);
+        if let Some(parent) = dest_path.parent() {
+            fs::create_dir_all(parent)?;
+        }
         // Sanitize and write
         process_file_content(source, &dest_path)?;
         Some(dest_path)
@@ -78,7 +88,88 @@ pub fn create_shadow_crate(
         None
     };
 
+    // 6. Inject Prelude into Crate Roots
+    let mut roots = Vec::new();
+    if let Some(dest_path) = &shadow_source_file {
+        roots.push(dest_path.clone());
+    } else {
+        // Standard crate structure
+        let lib_rs = shadow_root.join("src").join("lib.rs");
+        if lib_rs.exists() {
+            roots.push(lib_rs);
+        }
+        let main_rs = shadow_root.join("src").join("main.rs");
+        if main_rs.exists() {
+            roots.push(main_rs);
+        }
+    }
+
+    for root in roots {
+        inject_prelude(&root)?;
+    }
+
+    // Return
     Ok((shadow_root, shadow_source_file))
+}
+
+// Helper to process single source file BEFORE prelude injection
+fn ensure_single_source(root: &Path, source: Option<&Path>) -> Result<()> {
+    if let Some(src) = source {
+        let file_name = src.file_name().context("Invalid source file name")?;
+        let dest = root.join(file_name);
+        process_file_content(src, &dest)?;
+    }
+    Ok(())
+}
+
+const SHIM_CONTENT: &str = include_str!("include/__hermes_std.rs");
+
+fn inject_prelude(path: &Path) -> Result<()> {
+    if !path.exists() {
+        return Ok(());
+    }
+    let content = fs::read_to_string(path)?;
+
+    if content.contains("#![no_implicit_prelude]") {
+        return Ok(());
+    }
+
+    let mut ast = syn::parse_file(&content)?;
+
+    // 1. Disable the built-in Rust prelude (Inner Attribute)
+    // We append to existing attributes or prepend? Order matters if there are other attributes that depend on prelude?
+    // Usually no_implicit_prelude is fine anywhere in headers.
+    ast.attrs.push(parse_quote!(#![no_implicit_prelude]));
+
+    // 2. Prepare Injection Items
+    let prelude_items: Vec<syn::Item> = vec![
+        // mod hermes_std;
+        parse_quote!(
+            mod hermes_std;
+        ),
+        // use crate::hermes_std as std;
+        parse_quote!(
+            #[allow(unused_imports)]
+            use crate::hermes_std as std;
+        ),
+        // use crate::hermes_std as core;
+        parse_quote!(
+            #[allow(unused_imports)]
+            use crate::hermes_std as core;
+        ),
+        // use std::prelude::rust_2021::*;
+        parse_quote!(
+            #[allow(unused_imports)]
+            use std::prelude::rust_2021::*;
+        ),
+    ];
+
+    // 3. Insert at the beginning of items (AFTER inner attributes)
+    ast.items.splice(0..0, prelude_items);
+
+    let new_content = quote!(#ast).to_string();
+    fs::write(path, new_content)?;
+    Ok(())
 }
 
 fn process_file_content(src: &Path, dest: &Path) -> Result<()> {
@@ -150,9 +241,9 @@ impl VisitMut for ShadowVisitor {
                 let body_content = quote! {
                     {
                         if #preconditions {
-                            unimplemented!("Safe Shim")
+                            ::std::unimplemented!("Safe Shim")
                         } else {
-                            panic!("Contract Violated")
+                            ::std::panic!("Contract Violated")
                         }
                     }
                 };
@@ -275,7 +366,7 @@ mod tests {
         let expected = r#"
             #[doc = "@ lean model foo ensures |ret| ret = 42"]
             fn foo() -> i32 {
-                if true { unimplemented!("Safe Shim") } else { panic!("Contract Violated") }
+                if true { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -292,7 +383,7 @@ mod tests {
             #[doc = "@ lean model safe_div(a b : u32)"]
             #[doc = "@ requires b > 0"]
             fn safe_div(a: u32, b: u32) -> u32 {
-                if (b > 0) { unimplemented!("Safe Shim") } else { panic!("Contract Violated") }
+                if (b > 0) { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -308,7 +399,7 @@ mod tests {
         let expected = r#"
             #[doc = "@ lean model read(ptr : Type) ..."]
             fn read(ptr: *const u32) -> u32 {
-                if true { unimplemented!("Safe Shim") } else { panic!("Contract Violated") }
+                if true { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -389,7 +480,7 @@ mod tests {
         let expected = r#"
             #[doc = "@ lean model ..."]
             fn cast <T: Copy> (x: *const T) -> T {
-                if true { unimplemented!("Safe Shim") } else { panic!("Contract Violated") }
+                if true { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -443,7 +534,7 @@ mod tests {
             #[doc = "@ lean model foo"]
             #[doc = "@ requires x > 0"]
             fn foo(x: i32) {
-                if (x > 0) { unimplemented!("Safe Shim") } else { panic!("Contract Violated") }
+                if (x > 0) { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -476,7 +567,7 @@ mod tests {
             #[doc = "@ lean model foo"]
             #[doc = "@ requires x == 10"]
             fn foo(x: i32) {
-                if (x == 10) { unimplemented!("Safe Shim") } else { panic!("Contract Violated") }
+                if (x == 10) { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
