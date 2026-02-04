@@ -1,0 +1,44 @@
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+Option<extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+Option<extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+Option<extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+Option<extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+Option<extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+Option<extern "C" fn(F, G, H, I, J, K, L) -> M>
+Option<extern "C" fn(G, H, I, J, K, L) -> M>
+Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>
+Option<unsafe extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+Option<unsafe extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+Option<unsafe extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+Option<unsafe extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+Option<unsafe extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+Option<unsafe extern "C" fn(F, G, H, I, J, K, L) -> M>
+Option<unsafe extern "C" fn(G, H, I, J, K, L) -> M>
+Option<unsafe extern "C" fn(H, I, J, K, L) -> M>
+Option<unsafe extern "C" fn(I, J, K, L) -> M>
+Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>
+Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>
+Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>
+_::_::<impl IntoBytes for IntoBytes1>::{constant#0}::___ZerocopyTag
+_::_::<impl IntoBytes for IntoBytes2>::{constant#0}::___ZerocopyTag
+_::_::<impl IntoBytes for IntoBytes3>::{constant#0}::___ZerocopyTag
+_::_::<impl IntoBytes for IntoBytes6<T>>::{constant#0}::___ZerocopyTag
+_::_::<impl TryFromBytes for FromZeros6>::is_bit_valid::___ZerocopyTag
+_::_::<impl TryFromBytes for TryFromBytes3>::is_bit_valid::___ZerocopyTag
+_::_::<impl TryFromBytes for FromZeros6>::is_bit_valid::___ZerocopyVariantStruct_A
+_::_::<impl TryFromBytes for TryFromBytes3>::is_bit_valid::___ZerocopyVariantStruct_A

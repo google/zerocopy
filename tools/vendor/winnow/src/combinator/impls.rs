@@ -7,14 +7,14 @@ use crate::combinator::DisplayDebug;
 #[cfg(feature = "std")]
 use crate::error::FromRecoverableError;
 use crate::error::{AddContext, FromExternalError, ParserError};
+use crate::lib::std::borrow::Borrow;
+use crate::lib::std::ops::Range;
 #[cfg(feature = "unstable-recover")]
 #[cfg(feature = "std")]
 use crate::stream::Recover;
 use crate::stream::StreamIsPartial;
 use crate::stream::{Location, Stream};
 use crate::*;
-use core::borrow::Borrow;
-use core::ops::Range;
 
 /// [`Parser`] implementation for [`Parser::by_ref`]
 pub struct ByRef<'p, P, I, O, E> {
@@ -548,7 +548,7 @@ where
     I: Stream,
     E: AddContext<I, C>,
     E: ParserError<I>,
-    C: Clone + core::fmt::Debug,
+    C: Clone + crate::lib::std::fmt::Debug,
 {
     pub(crate) parser: F,
     pub(crate) context: C,
@@ -563,7 +563,7 @@ where
     I: Stream,
     E: AddContext<I, C>,
     E: ParserError<I>,
-    C: Clone + core::fmt::Debug,
+    C: Clone + crate::lib::std::fmt::Debug,
 {
     #[inline]
     fn parse_next(&mut self, i: &mut I) -> Result<O, E> {
@@ -586,7 +586,7 @@ where
     E: AddContext<I, C>,
     E: ParserError<I>,
     F: Fn() -> FI + Clone,
-    C: core::fmt::Debug,
+    C: crate::lib::std::fmt::Debug,
     FI: Iterator<Item = C>,
 {
     pub(crate) parser: P,
@@ -605,7 +605,7 @@ where
     E: AddContext<I, C>,
     E: ParserError<I>,
     F: Fn() -> FI + Clone,
-    C: core::fmt::Debug,
+    C: crate::lib::std::fmt::Debug,
     FI: Iterator<Item = C>,
 {
     #[inline]

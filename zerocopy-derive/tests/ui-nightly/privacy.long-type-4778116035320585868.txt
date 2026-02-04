@@ -1,0 +1,1 @@
+zerocopy_renamed::HasField<zerocopy_renamed::impls::_::value, zerocopy::::impls::_#20::{impl#1}::{constant#0}, zerocopy::::impls::_#20::{impl#1}::{constant#1}>
