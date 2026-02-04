@@ -1,0 +1,124 @@
+error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_mut-dst-not-tryfrombytes.rs:18:63
+    |
+ 18 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/../include.rs:15:5
+    |
+ 15 |     pub struct NotZerocopy<T = ()>(pub T);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
+    = help: the following other types implement trait `TryFromBytes`:
+              ()
+              (A, B)
+              (A, B, C)
+              (A, B, C, D)
+              (A, B, C, D, E)
+              (A, B, C, D, E, F)
+              (A, B, C, D, E, F, G)
+              (A, B, C, D, E, F, G, H)
+            and 153 others
+note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/src/util/macro_util.rs:816:14
+    |
+813 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+    |            ----------------- required by a bound in this associated function
+...
+816 |         Dst: TryFromBytes + IntoBytes,
+    |              ^^^^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
+    = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_mut-dst-not-tryfrombytes.rs:18:63
+    |
+ 18 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `IntoBytes` is not implemented for `NotZerocopy`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/../include.rs:15:5
+    |
+ 15 |     pub struct NotZerocopy<T = ()>(pub T);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
+    = help: the following other types implement trait `IntoBytes`:
+              ()
+              AU16
+              AtomicBool
+              AtomicI16
+              AtomicI32
+              AtomicI64
+              AtomicI8
+              AtomicIsize
+            and 68 others
+note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/src/util/macro_util.rs:816:29
+    |
+813 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+    |            ----------------- required by a bound in this associated function
+...
+816 |         Dst: TryFromBytes + IntoBytes,
+    |                             ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
+    = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_mut-dst-not-tryfrombytes.rs:18:33
+    |
+ 18 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/../include.rs:15:5
+    |
+ 15 |     pub struct NotZerocopy<T = ()>(pub T);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
+    = help: the following other types implement trait `TryFromBytes`:
+              ()
+              (A, B)
+              (A, B, C)
+              (A, B, C, D)
+              (A, B, C, D, E)
+              (A, B, C, D, E, F)
+              (A, B, C, D, E, F, G)
+              (A, B, C, D, E, F, G, H)
+            and 153 others
+note: required by a bound in `ValidityError`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/src/error.rs:588:45
+    |
+588 | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
+    |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
+
+error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_mut-dst-not-tryfrombytes.rs:18:63
+    |
+ 18 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/../include.rs:15:5
+    |
+ 15 |     pub struct NotZerocopy<T = ()>(pub T);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
+    = help: the following other types implement trait `TryFromBytes`:
+              ()
+              (A, B)
+              (A, B, C)
+              (A, B, C, D)
+              (A, B, C, D, E)
+              (A, B, C, D, E, F)
+              (A, B, C, D, E, F, G)
+              (A, B, C, D, E, F, G, H)
+            and 153 others
+note: required by a bound in `ValidityError`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/src/error.rs:588:45
+    |
+588 | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
+    |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
+    = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

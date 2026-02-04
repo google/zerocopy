@@ -1,0 +1,31 @@
+[package]
+name = "colored"
+description = "The most simple way to add colors in your terminal"
+version = "2.2.0"
+edition = "2021"
+authors = ["Thomas Wickham <mackwic@gmail.com>"]
+license = "MPL-2.0"
+homepage = "https://github.com/mackwic/colored"
+repository = "https://github.com/mackwic/colored"
+readme = "README.md"
+keywords = ["color", "string", "term", "ansi_term", "term-painter"]
+rust-version = "1.70"
+
+[features]
+# with this feature, no color will ever be written
+no-color = []
+
+[dependencies]
+lazy_static = "1"
+
+[target.'cfg(windows)'.dependencies.windows-sys]
+version = ">=0.48,<=0.59"
+features = [
+    "Win32_Foundation",
+    "Win32_System_Console",
+]
+
+[dev-dependencies]
+ansi_term = "0.12"
+insta = "1"
+rspec = "1"

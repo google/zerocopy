@@ -1,0 +1,23 @@
+error[E0308]: mismatched types
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/transmute-mut-dst-not-a-reference.rs:15:36
+   |
+15 | const DST_NOT_A_REFERENCE: usize = transmute_mut!(&mut 0u8);
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&mut _`
+   |
+   = note:           expected type `usize`
+           found mutable reference `&mut _`
+   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/transmute-mut-dst-not-a-reference.rs:15:36
+   |
+15 | const DST_NOT_A_REFERENCE: usize = transmute_mut!(&mut 0u8);
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&mut _`
+   |
+   = note:           expected type `usize`
+           found mutable reference `&mut _`
+   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0308`.

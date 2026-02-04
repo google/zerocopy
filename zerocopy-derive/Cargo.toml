@@ -15,6 +15,11 @@ description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
 
+[[test]]
+name = "ui"
+path = "../tests/ui.rs"
+harness = false
+
 # We prefer to include tests when publishing to crates.io so that Crater [1] can
 # detect regressions in our test suite. These two tests are excessively large,
 # so we exclude them to keep the published crate file small.
@@ -47,7 +52,7 @@ testutil = { path = "../testutil" }
 # and the version used in CI are guaranteed to be the same. Future versions
 # sometimes change the output format slightly, so a version mismatch can cause
 # CI test failures.
-trybuild = { version = "=1.0.89", features = ["diff"] }
+# trybuild = { version = "=1.0.89", features = ["diff"] }
 # We import as `zerocopy-renamed` so that we can refer to the crate as
 # `zerocopy-renamed` in the generated code, which allows us to test that the
 # `crate` attribute works correctly, and ensures that we never accidentally

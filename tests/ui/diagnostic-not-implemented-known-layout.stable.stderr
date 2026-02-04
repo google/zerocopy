@@ -1,0 +1,31 @@
+error[E0277]: the trait bound `NotZerocopy: KnownLayout` is not satisfied
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/diagnostic-not-implemented-known-layout.rs:16:26
+   |
+16 |     takes_known_layout::<NotZerocopy>();
+   |                          ^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `KnownLayout` is not implemented for `NotZerocopy`
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/../include.rs:15:5
+   |
+15 |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(KnownLayout)]` to `NotZerocopy`
+   = help: the following other types implement trait `KnownLayout`:
+             &T
+             &mut T
+             ()
+             *const T
+             *mut T
+             AU16
+             AtomicBool
+             AtomicI16
+           and 65 others
+note: required by a bound in `takes_known_layout`
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/diagnostic-not-implemented-known-layout.rs:19:26
+   |
+19 | fn takes_known_layout<T: KnownLayout>() {}
+   |                          ^^^^^^^^^^^ required by this bound in `takes_known_layout`
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0277`.

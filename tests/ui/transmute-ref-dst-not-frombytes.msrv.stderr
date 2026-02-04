@@ -1,0 +1,16 @@
+error[E0277]: the trait bound `Dst: FromBytes` is not satisfied
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/transmute-ref-dst-not-frombytes.rs:21:34
+   |
+21 | const DST_NOT_FROM_BYTES: &Dst = transmute_ref!(&AU16(0));
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `Dst`
+   |
+note: required by `AssertDstIsFromBytes`
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/transmute-ref-dst-not-frombytes.rs:21:34
+   |
+21 | const DST_NOT_FROM_BYTES: &Dst = transmute_ref!(&AU16(0));
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0277`.

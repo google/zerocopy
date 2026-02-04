@@ -1,0 +1,67 @@
+error[E0277]: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_ref-src-not-immutable-intobytes.rs:17:48
+    |
+ 17 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/../include.rs:15:5
+    |
+ 15 |     pub struct NotZerocopy<T = ()>(pub T);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy<AU16>`
+    = help: the following other types implement trait `IntoBytes`:
+              ()
+              AU16
+              AtomicBool
+              AtomicI16
+              AtomicI32
+              AtomicI64
+              AtomicI8
+              AtomicIsize
+            and 68 others
+note: required by a bound in `Wrap::<&'a Src, &'a Dst>::try_transmute_ref`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/src/util/macro_util.rs:741:14
+    |
+739 |     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
+    |            ----------------- required by a bound in this associated function
+740 |     where
+741 |         Src: IntoBytes + Immutable,
+    |              ^^^^^^^^^ required by this bound in `Wrap::<&Src, &Dst>::try_transmute_ref`
+    = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy<AU16>: Immutable` is not satisfied
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_ref-src-not-immutable-intobytes.rs:17:48
+    |
+ 17 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Immutable` is not implemented for `NotZerocopy<AU16>`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/../include.rs:15:5
+    |
+ 15 |     pub struct NotZerocopy<T = ()>(pub T);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: Consider adding `#[derive(Immutable)]` to `NotZerocopy<AU16>`
+    = help: the following other types implement trait `Immutable`:
+              &T
+              &mut T
+              ()
+              (A, B)
+              (A, B, C)
+              (A, B, C, D)
+              (A, B, C, D, E)
+              (A, B, C, D, E, F)
+            and 128 others
+note: required by a bound in `Wrap::<&'a Src, &'a Dst>::try_transmute_ref`
+   --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/src/util/macro_util.rs:741:26
+    |
+739 |     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
+    |            ----------------- required by a bound in this associated function
+740 |     where
+741 |         Src: IntoBytes + Immutable,
+    |                          ^^^^^^^^^ required by this bound in `Wrap::<&Src, &Dst>::try_transmute_ref`
+    = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

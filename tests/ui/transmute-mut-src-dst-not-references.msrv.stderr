@@ -1,0 +1,16 @@
+error[E0308]: mismatched types
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/transmute-mut-src-dst-not-references.rs:15:59
+   |
+15 | const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(0usize);
+   |                                            ---------------^^^^^^-
+   |                                            |              |
+   |                                            |              expected `&mut _`, found `usize`
+   |                                            |              help: consider mutably borrowing here: `&mut 0usize`
+   |                                            expected due to this
+   |
+   = note: expected mutable reference `&mut _`
+                           found type `usize`
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0308`.
