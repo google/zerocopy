@@ -99,7 +99,7 @@ impl AsRef<usize> for Depth {
     }
 }
 
-impl core::ops::Deref for Depth {
+impl crate::lib::std::ops::Deref for Depth {
     type Target = usize;
 
     #[inline(always)]
@@ -130,7 +130,7 @@ impl Severity {
 
 pub(crate) fn start<I: Stream>(
     depth: usize,
-    name: &dyn core::fmt::Display,
+    name: &dyn crate::lib::std::fmt::Display,
     count: usize,
     input: &I,
 ) {
@@ -183,7 +183,7 @@ pub(crate) fn start<I: Stream>(
 
 pub(crate) fn end(
     depth: usize,
-    name: &dyn core::fmt::Display,
+    name: &dyn crate::lib::std::fmt::Display,
     count: usize,
     consumed: usize,
     severity: Severity,
@@ -231,7 +231,7 @@ pub(crate) fn end(
     );
 }
 
-pub(crate) fn result(depth: usize, name: &dyn core::fmt::Display, severity: Severity) {
+pub(crate) fn result(depth: usize, name: &dyn crate::lib::std::fmt::Display, severity: Severity) {
     let gutter_style = anstyle::Style::new().bold();
 
     let (call_width, _) = column_widths();

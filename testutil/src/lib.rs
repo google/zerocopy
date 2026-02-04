@@ -13,10 +13,10 @@ use std::{env, error::Error, fs};
 
 use rustc_version::{Channel, Version};
 
-struct PinnedVersions {
-    msrv: String,
-    stable: String,
-    nightly: String,
+pub struct PinnedVersions {
+    pub msrv: String,
+    pub stable: String,
+    pub nightly: String,
 }
 
 impl PinnedVersions {
@@ -26,15 +26,22 @@ impl PinnedVersions {
     /// `extract_from_pwd` expects to be called from a directory which is a
     /// child of a Cargo workspace. It extracts the pinned versions from the
     /// metadata of the root package.
-    fn extract_from_pwd() -> Result<PinnedVersions, Box<dyn Error>> {
+    pub fn extract_from_pwd() -> Result<PinnedVersions, Box<dyn Error>> {
         let manifest_dir = env::var_os("CARGO_MANIFEST_DIR")
-            .ok_or("CARGO_MANIFEST_DIR environment variable not set")?
-            .into_string()
-            .map_err(|_| "could not parse $CARGO_MANIFEST_DIR as UTF-8")?;
+            .ok_or("CARGO_MANIFEST_DIR environment variable not set")?;
+        let manifest_dir = std::path::Path::new(&manifest_dir);
+        Self::extract_from_path(manifest_dir)
+    }
+
+    pub fn extract_from_path(
+        manifest_dir: &std::path::Path,
+    ) -> Result<PinnedVersions, Box<dyn Error>> {
         let manifest_path = if manifest_dir.ends_with("zerocopy-derive") {
-            manifest_dir + "/../Cargo.toml"
+            manifest_dir.parent().unwrap().join("Cargo.toml")
+        } else if manifest_dir.ends_with("ui-runner") {
+            manifest_dir.parent().unwrap().parent().unwrap().join("Cargo.toml")
         } else {
-            manifest_dir + "/Cargo.toml"
+            manifest_dir.join("Cargo.toml")
         };
         let manifest = fs::read_to_string(manifest_path)?;
         let manifest: toml::map::Map<String, toml::Value> = toml::from_str(&manifest)?;
@@ -60,7 +67,7 @@ impl PinnedVersions {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum ToolchainVersion {
     /// The version listed as our MSRV (ie, the `package.rust-version` key in
     /// `Cargo.toml`).
@@ -185,4 +192,80 @@ pub fn set_rustflags_w_warnings() {
     env::set_var("RUSTFLAGS", rustflags);
 
     std::mem::drop(guard);
+}
+
+/// Runs the UI tests using `ui-runner`.
+pub fn run_ui_tests(toolchain: ToolchainVersion, tests_dir: &std::path::Path, extra_args: &[&str]) {
+    let toolchain_arg = match toolchain {
+        ToolchainVersion::PinnedMsrv => "msrv",
+        ToolchainVersion::PinnedStable => "stable",
+        ToolchainVersion::PinnedNightly => "nightly",
+        ToolchainVersion::OtherStable => "stable",
+        ToolchainVersion::OtherNightly => "nightly",
+    };
+
+    // Find dependencies.
+    // We are running in `target/debug/deps` (or similar).
+    // The executables and rlibs are in `target/debug/deps`.
+    let current_exe = env::current_exe().unwrap();
+    let deps_dir = current_exe.parent().unwrap();
+
+    let cargo_bin = std::env::var("CARGO").unwrap_or_else(|_| "cargo".into());
+    let mut cmd = std::process::Command::new(cargo_bin);
+
+    if matches!(toolchain, ToolchainVersion::PinnedMsrv) {
+        cmd.arg("+stable");
+    }
+
+    // Invoke ui-runner
+    let current_dir = env::current_dir().unwrap();
+    let runner_work_dir = if current_dir.join("tools/ui-runner").exists() {
+        // We are at root (zerocopy package)
+        current_dir.join("tools/ui-runner")
+    } else if current_dir.join("../tools/ui-runner").exists() {
+        // We are in zerocopy-derive package
+        current_dir.join("../tools/ui-runner")
+    } else {
+        panic!("Could not locate tools/ui-runner from {}", current_dir.display());
+    };
+
+    let mut cmd = std::process::Command::new("cargo");
+    cmd.current_dir(&runner_work_dir); // Run from ui-runner dir to pick up its .cargo/config.toml
+    cmd.arg("+stable");
+    cmd.arg("run");
+    // Use manifest-path relative to CWD
+    cmd.arg("--manifest-path")
+        .arg("Cargo.toml")
+        .arg("--quiet") // Reduce noise
+        .arg("--")
+        .arg("--target-toolchain")
+        .arg(toolchain_arg)
+        .arg("--deps-dir")
+        .arg(deps_dir)
+        .arg("--tests-dir")
+        .arg(tests_dir);
+
+    // Forward RUSTFLAGS if present, but clear them for the runner process itself
+    // to avoid polluting the runner's build with nightly flags when running on stable.
+    if let Ok(rustflags) = env::var("RUSTFLAGS") {
+        cmd.env_remove("RUSTFLAGS");
+        cmd.arg(format!("--rustflags={}", rustflags));
+    }
+
+    // Forward arguments
+    if let Some(arg_idx) = env::args().position(|a| a == "--") {
+        let args: Vec<_> = env::args().skip(arg_idx + 1).collect();
+        cmd.args(args);
+    } else {
+        cmd.args(env::args().skip(1));
+    }
+
+    cmd.args(extra_args);
+
+    eprintln!("Running ui-runner with toolchain: {}", toolchain_arg);
+    let status = cmd.status().expect("failed to spawn ui-runner");
+
+    if !status.success() {
+        panic!("ui-runner failed");
+    }
 }

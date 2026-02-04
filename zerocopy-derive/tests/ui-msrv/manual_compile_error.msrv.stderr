@@ -1,0 +1,8 @@
+error: Sanity check error
+ --> $DIR/manual_compile_error.rs:3:9
+  |
+3 |         ::core::compile_error!("Sanity check error");
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+

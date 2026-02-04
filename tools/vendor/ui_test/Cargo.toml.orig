@@ -1,0 +1,53 @@
+[package]
+name = "ui_test"
+version = "0.25.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "A test framework for testing rustc diagnostics output"
+repository = "https://github.com/oli-obk/ui_test"
+rust-version = "1.70"
+
+[lib]
+test = true     # we have unit tests
+doctest = false # but no doc tests
+
+[dependencies]
+rustc_version = "0.4"
+colored = "2"
+lazy_static = "1.4.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+cargo_metadata = "0.18"
+crossbeam-channel = "0.5.6"
+bstr = "1.0.1"
+rustfix = "0.8.1"
+cargo-platform = "0.1.2"
+comma = "1.0.0"
+anyhow = "1.0.6"
+indicatif = "0.17.6"
+prettydiff = { version = "0.7", default-features = false }
+annotate-snippets = { version = "0.11.2" }
+levenshtein = "1.0.5"
+spanned = "0.3.0"
+
+[dependencies.regex]
+version = "1.5.5"
+default-features = false
+features = ["unicode-gencat"]
+
+[dependencies.color-eyre]
+version = "0.6.1"
+default-features = false
+features = ["capture-spantrace"]
+
+[[test]]
+name = "integration"
+harness = false
+
+[[test]]
+name = "build_std"
+test = false
+
+[features]
+default = ["rustc"]
+rustc = []

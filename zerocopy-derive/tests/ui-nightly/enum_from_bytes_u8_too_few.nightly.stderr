@@ -1,0 +1,26 @@
+error[E0463]: can't find crate for `zerocopy_derive` which `zerocopy` depends on
+  --> $DIR/enum_from_bytes_u8_too_few.rs:10:1
+   |
+10 | extern crate zerocopy_renamed;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ can't find crate
+
+error: cannot find derive macro `FromBytes` in this scope
+  --> $DIR/enum_from_bytes_u8_too_few.rs:14:10
+   |
+14 | #[derive(FromBytes)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::FromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum_from_bytes_u8_too_few.rs:15:3
+   |
+15 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: aborting due to 3 previous errors
+
+For more information about this error, try `rustc --explain E0463`.

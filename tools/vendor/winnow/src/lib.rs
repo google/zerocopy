@@ -7,7 +7,7 @@
 //! - [Tutorial][_tutorial::chapter_0]
 //! - [Special Topics][_topic]
 //! - [Discussions](https://github.com/winnow-rs/winnow/discussions)
-//! - [CHANGELOG](https://github.com/winnow-rs/winnow/blob/v0.7.14/CHANGELOG.md) (includes major version migration
+//! - [CHANGELOG](https://github.com/winnow-rs/winnow/blob/v0.7.13/CHANGELOG.md) (includes major version migration
 //!   guides)
 //!
 //! ## Aspirations
@@ -46,6 +46,7 @@
 //!
 //! See also the [Tutorial][_tutorial::chapter_0] and [Special Topics][_topic]
 
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![cfg_attr(docsrs, feature(extended_key_value_attributes))]
 #![cfg_attr(all(not(feature = "std"), not(test)), no_std)]
@@ -63,6 +64,44 @@ extern crate alloc;
 #[doc = include_str!("../README.md")]
 #[cfg(doctest)]
 pub struct ReadmeDoctests;
+
+/// Lib module to re-export everything needed from `std` or `core`/`alloc`. This is how `serde` does
+/// it, albeit there it is not public.
+#[doc(hidden)]
+pub(crate) mod lib {
+    #![allow(unused_imports)]
+
+    /// `std` facade allowing `std`/`core` to be interchangeable. Reexports `alloc` crate optionally,
+    /// as well as `core` or `std`
+    #[cfg(not(feature = "std"))]
+    /// internal std exports for no_std compatibility
+    pub(crate) mod std {
+        #[doc(hidden)]
+        #[cfg(not(feature = "alloc"))]
+        pub(crate) use core::borrow;
+
+        #[cfg(feature = "alloc")]
+        #[doc(hidden)]
+        pub(crate) use alloc::{borrow, boxed, collections, string, vec};
+
+        #[doc(hidden)]
+        pub(crate) use core::{
+            cmp, convert, fmt, hash, iter, mem, ops, option, result, slice, str,
+        };
+    }
+
+    #[cfg(feature = "std")]
+    /// internal std exports for `no_std` compatibility
+    pub(crate) mod std {
+        #![allow(clippy::std_instead_of_core)]
+        #![allow(clippy::std_instead_of_alloc)]
+        #[doc(hidden)]
+        pub(crate) use std::{
+            borrow, boxed, cmp, collections, convert, fmt, hash, iter, mem, ops, result, slice,
+            str, string, vec,
+        };
+    }
+}
 
 pub(crate) mod util {
     #[allow(dead_code)]

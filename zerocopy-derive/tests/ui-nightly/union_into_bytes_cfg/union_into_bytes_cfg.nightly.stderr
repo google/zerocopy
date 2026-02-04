@@ -1,0 +1,14 @@
+error: extern location for zerocopy_derive does not exist: target/ui-test-derive-build/debug/deps/libzerocopy_derive-7ad9d882ad449fb9.so
+  --> $DIR/union_into_bytes_cfg/union_into_bytes_cfg.rs:16:1
+   |
+16 | extern crate zerocopy_derive;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/union_into_bytes_cfg/union_into_bytes_cfg.rs:20:3
+   |
+20 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: aborting due to 2 previous errors
+
