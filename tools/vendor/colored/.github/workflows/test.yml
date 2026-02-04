@@ -1,0 +1,62 @@
+name: Run tests
+on: pull_request
+env:
+  CLICOLOR_FORCE: 1
+  COLORTERM: "truecolor"
+
+jobs:
+  cargo-fmt:
+    name: cargo-fmt@stable
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          components: rustfmt
+      - name: Run formatting checks
+        run: cargo fmt --check
+  cargo-clippy:
+    name: "${{ matrix.os }}:cargo-clippy@stable"
+    runs-on: "${{ matrix.os }}-latest"
+    strategy:
+      matrix:
+        os: ["ubuntu", "windows", "macos"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          components: clippy
+      - name: Run clippy checks
+        run: cargo clippy --all-features -- -D warnings
+  cargo-test:
+    name: "${{ matrix.os }}:cargo-test@${{ matrix.version }}"
+    runs-on: "${{ matrix.os }}-latest"
+    strategy:
+      matrix:
+        os: ["ubuntu", "windows", "macos"]
+        version: ["stable", "beta", "1.70"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install Rust ${{ matrix.version }}
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.version }}
+      - name: Run tests
+        run: cargo test
+  check-semver:
+    name: Check semver compatibility
+    if: github.base_ref == 'master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Check semver
+        uses: obi1kenobi/cargo-semver-checks-action@v2
+

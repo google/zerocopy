@@ -10,51 +10,80 @@
 
 use std::env;
 
-use testutil::set_rustflags_w_warnings;
-
-fn test(subdir: &str) {
+fn main() {
     let version = testutil::ToolchainVersion::extract_from_pwd().unwrap();
-    // See the doc comment on this method for an explanation of what this does
-    // and why we store source files in different directories.
     let source_files_dirname = version.get_ui_source_files_dirname_and_maybe_print_warning();
+    let tests_dir = env::current_dir().unwrap().join("tests").join(source_files_dirname);
 
-    // Set `-Wwarnings` in the `RUSTFLAGS` environment variable to ensure that
-    // `.stderr` files reflect what the typical user would encounter.
-    set_rustflags_w_warnings();
-
-    let t = trybuild::TestCases::new();
-    t.compile_fail(format!("tests/{}/{}/*.rs", source_files_dirname, subdir));
-}
-
-#[test]
-#[cfg_attr(miri, ignore)]
-fn ui() {
-    test("");
+    // Run the main UI tests, excluding the special cfg tests
+    testutil::run_ui_tests(version, &tests_dir, &["!union_into_bytes_cfg"]);
 
     // This tests the behavior when `--cfg zerocopy_derive_union_into_bytes` is
     // not present, so remove it. If this logic is wrong, that's fine - it will
     // exhibit as a test failure that we can debug at that point.
-    let rustflags = env::var("RUSTFLAGS").unwrap();
-    let new_rustflags = rustflags.replace("--cfg zerocopy_derive_union_into_bytes", "");
+    let rustflags = env::var("RUSTFLAGS").unwrap_or_default();
+    // Handle potential quoting or spacing differences
+    let new_rustflags = rustflags
+        .replace("--cfg zerocopy_derive_union_into_bytes", "")
+        .replace("--cfg=zerocopy_derive_union_into_bytes", "");
 
-    // SAFETY: None of our code is concurrently accessinv env vars. It's
-    // possible that the test framework has spawned other threads that are
-    // concurrently accessing env vars, but we can't do anything about that.
-    #[allow(unused_unsafe)] // `set_var` is safe on our MSRV.
-    unsafe {
-        env::set_var("RUSTFLAGS", new_rustflags)
-    };
+    // Safety: set_var is safe in a single-threaded test binary.
+    // #[warn(unused_unsafe)] is on by default, so we can drop the unsafe block if we want,
+    // but the user's code had it.
+    env::set_var("RUSTFLAGS", new_rustflags);
+    // Filter out the cfg that we want to test missing
+    let rustflags = env::var("RUSTFLAGS").unwrap_or_default();
+    let filtered_rustflags = rustflags.replace("--cfg zerocopy_derive_union_into_bytes", "");
 
-    test("union_into_bytes_cfg");
+    // We might also need to handle the case where it's part of a larger string without leading space,
+    // or passed differently?
+    // Given the debug output: ` --cfg zerocopy_derive_union_into_bytes ...` (with leading space).
+    // Simple replace should catch the common case injected by cargo-zerocopy.
 
-    // Reset RUSTFLAGS in case we later add other tests which rely on its value.
-    // This isn't strictly necessary, but it's easier to add this now when we're
-    // thinking about the semantics of these env vars than to debug later when
-    // we've forgotten about it.
-    //
-    // SAFETY: See previous safety comment.
-    #[allow(unused_unsafe)] // `set_var` is safe on our MSRV.
-    unsafe {
-        env::set_var("RUSTFLAGS", rustflags)
-    };
+    // We may trigger unexpected cfgs warning if we remove it but check-cfg expects it?
+    // Actually we WANT it removed so check-cfg logic sees it missing?
+    // Wait, if check-cfg is enabled, and we remove the cfg, it's fine.
+
+    // Also re-add check-cfg suppression if needed, though we want the error.
+
+    env::set_var("RUSTFLAGS", filtered_rustflags);
+
+    let mut cmd = std::process::Command::new("cargo");
+    cmd.arg("build")
+        .arg("-p")
+        .arg("zerocopy-derive")
+        .arg("--target-dir")
+        .arg("target/ui-test-derive-build");
+
+    // Clear RUSTFLAGS to ensure we don't accidentally inherit the config
+    cmd.env_remove("RUSTFLAGS");
+    cmd.env_remove("CARGO_ENCODED_RUSTFLAGS");
+
+    let status = cmd.status().expect("failed to build zerocopy-derive for test");
+    assert!(status.success(), "failed to build zerocopy-derive for test");
+
+    // Find the artifact
+    let mut derive_lib_path = std::path::PathBuf::from("target/ui-test-derive-build/debug/deps");
+    // We need to find the .so/.dylib/.dll
+    let entry = std::fs::read_dir(&derive_lib_path)
+        .unwrap()
+        .filter_map(|e| e.ok())
+        .find(|e| {
+            let name = e.file_name().to_string_lossy().to_string();
+            name.starts_with("libzerocopy_derive")
+                && (name.ends_with(".so") || name.ends_with(".dylib") || name.ends_with(".dll"))
+        })
+        .expect("could not find built zerocopy-derive artifact");
+
+    derive_lib_path.push(entry.file_name());
+
+    // Run the test with the override
+    env::set_var("ZEROCOPY_DERIVE_LIB_PATH", derive_lib_path);
+
+    // Run only the special cfg tests
+    // Note: We point to the same root dir but filter to include likely only the relevant file(s).
+    // Or we can point explicitly to the subdirectory if `ui-runner` supports it?
+    // `ui-runner` expects `tests_dir` to be the root.
+    // If we pass a filter "union_into_bytes_cfg", `ui_test` will run files containing that path string.
+    testutil::run_ui_tests(version, &tests_dir, &["union_into_bytes_cfg"]);
 }
