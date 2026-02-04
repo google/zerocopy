@@ -1,0 +1,33 @@
+error[E0463]: can't find crate for `zerocopy_derive` which `zerocopy` depends on
+ --> $DIR/mid_compile_pass.rs:9:1
+  |
+9 | extern crate zerocopy_renamed;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ can't find crate
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/mid_compile_pass.rs:59:3
+   |
+59 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/mid_compile_pass.rs:48:3
+   |
+48 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/mid_compile_pass.rs:38:3
+   |
+38 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/mid_compile_pass.rs:28:3
+   |
+28 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: aborting due to 5 previous errors
+
+For more information about this error, try `rustc --explain E0463`.

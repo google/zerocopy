@@ -1,10 +1,10 @@
-// Copyright 2019 The Fuchsia Authors
+//  Copyright 2019 The Fuchsia Authors
 //
-// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
-// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
-// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
-// This file may not be copied, modified, or distributed except according to
-// those terms.
+//  Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+//  <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+//  license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+//  This file may not be copied, modified, or distributed except according to
+//  those terms.
 
 #[macro_use]
 extern crate zerocopy_renamed;
@@ -19,41 +19,41 @@ use self::util::util::AU16;
 fn main() {}
 
 //
-// KnownLayout errors
+//  KnownLayout errors
 //
 
 struct NotKnownLayout;
 
 struct NotKnownLayoutDst([u8]);
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          N |        N |              N |        N |      KL00 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          N |        N |              N |        N |      KL00 |
 #[derive(KnownLayout)]
 #[zerocopy(crate = "zerocopy_renamed")]
 struct KL00(u8, NotKnownLayoutDst);
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          N |        N |              Y |        N |      KL02 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          N |        N |              Y |        N |      KL02 |
 #[derive(KnownLayout)]
 #[zerocopy(crate = "zerocopy_renamed")]
 struct KL02(u8, [u8]);
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          Y |        N |              N |        N |      KL08 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          Y |        N |              N |        N |      KL08 |
 #[derive(KnownLayout)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct KL08(u8, NotKnownLayoutDst);
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          Y |        N |              N |        Y |      KL09 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          Y |        N |              N |        Y |      KL09 |
 #[derive(KnownLayout)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct KL09(NotKnownLayout, NotKnownLayout);
 
 //
-// Immutable errors
+//  Immutable errors
 //
 
 #[derive(Immutable)]
@@ -69,7 +69,7 @@ struct Immutable2 {
 }
 
 //
-// TryFromBytes errors
+//  TryFromBytes errors
 //
 
 #[derive(TryFromBytes)]
@@ -101,12 +101,12 @@ struct TryFromBytesCPackedN {
 }
 
 //
-// IntoBytes errors
+//  IntoBytes errors
 //
 
-// Since `IntoBytes1` has at least one generic parameter, an `IntoBytes` impl is
-// emitted in which each field type is given an `Unaligned` bound. Since `foo`'s
-// type doesn't implement `Unaligned`, this should fail.
+//  Since `IntoBytes1` has at least one generic parameter, an `IntoBytes` impl is
+//  emitted in which each field type is given an `Unaligned` bound. Since `foo`'s
+//  type doesn't implement `Unaligned`, this should fail.
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
@@ -128,18 +128,18 @@ struct IntoBytes2 {
 #[repr(C, packed(2))]
 struct IntoBytes3 {
     foo: u8,
-    // We'd prefer to use AU64 here, but you can't use aligned types in
-    // packed structs.
+    //  We'd prefer to use AU64 here, but you can't use aligned types in
+    //  packed structs.
     bar: u64,
 }
 
 type SliceU8 = [u8];
 
-// Padding between `u8` and `SliceU8`. `SliceU8` doesn't syntactically look like
-// a slice, so this case is handled by our `Sized` support.
+//  Padding between `u8` and `SliceU8`. `SliceU8` doesn't syntactically look like
+//  a slice, so this case is handled by our `Sized` support.
 //
-// NOTE(#1708): This exists to ensure that our error messages are good when a
-// field is unsized.
+//  NOTE(#1708): This exists to ensure that our error messages are good when a
+//  field is unsized.
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
@@ -148,8 +148,8 @@ struct IntoBytes4 {
     b: SliceU8,
 }
 
-// Padding between `u8` and `[u16]`. `[u16]` is syntactically identifiable as a
-// slice, so this case is handled by our `repr(C)` slice DST support.
+//  Padding between `u8` and `[u16]`. `[u16]` is syntactically identifiable as a
+//  slice, so this case is handled by our `repr(C)` slice DST support.
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
@@ -158,8 +158,8 @@ struct IntoBytes5 {
     b: [u16],
 }
 
-// Trailing padding after `[u8]`. `[u8]` is syntactically identifiable as a
-// slice, so this case is handled by our `repr(C)` slice DST support.
+//  Trailing padding after `[u8]`. `[u8]` is syntactically identifiable as a
+//  slice, so this case is handled by our `repr(C)` slice DST support.
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
@@ -168,9 +168,9 @@ struct IntoBytes6 {
     b: [u8],
 }
 
-// Padding between `u8` and `u16` and also trailing padding after `[u8]`. `[u8]`
-// is syntactically identifiable as a slice, so this case is handled by our
-// `repr(C)` slice DST support.
+//  Padding between `u8` and `u16` and also trailing padding after `[u8]`. `[u8]`
+//  is syntactically identifiable as a slice, so this case is handled by our
+//  `repr(C)` slice DST support.
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
@@ -182,7 +182,7 @@ struct IntoBytes7 {
 
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
-#[repr(C, C)] // zerocopy-derive conservatively treats these as conflicting reprs
+#[repr(C, C)] //  zerocopy-derive conservatively treats these as conflicting reprs
 struct IntoBytes8 {
     a: u8,
 }
@@ -200,14 +200,14 @@ struct IntoBytes10<T> {
     t: T,
 }
 
-// `repr(C, packed(2))` is not equivalent to `repr(C, packed)`.
+//  `repr(C, packed(2))` is not equivalent to `repr(C, packed)`.
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, packed(2))]
 struct IntoBytes11<T> {
     t0: T,
-    // Add a second field to avoid triggering the "repr(C) struct with one
-    // field" special case.
+    //  Add a second field to avoid triggering the "repr(C) struct with one
+    //  field" special case.
     t1: T,
 }
 
@@ -217,7 +217,7 @@ fn is_into_bytes_11<T: IntoBytes>() {
     }
 }
 
-// `repr(C, align(2))` is not sufficient to guarantee the layout of this type.
+//  `repr(C, align(2))` is not sufficient to guarantee the layout of this type.
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, align(2))]
@@ -226,7 +226,7 @@ struct IntoBytes12<T> {
 }
 
 //
-// Unaligned errors
+//  Unaligned errors
 //
 
 #[derive(Unaligned)]
@@ -265,9 +265,9 @@ struct Unaligned6;
 #[repr(packed(2))]
 struct Unaligned7;
 
-// Test the error message emitted when conflicting reprs appear on different
-// lines. On the nightly compiler, this emits a "joint span" that spans both
-// problematic repr token trees and everything in between.
+//  Test the error message emitted when conflicting reprs appear on different
+//  lines. On the nightly compiler, this emits a "joint span" that spans both
+//  problematic repr token trees and everything in between.
 #[derive(Copy, Clone)]
 #[repr(packed(2), C)]
 #[derive(Unaligned)]

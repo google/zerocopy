@@ -87,7 +87,7 @@ impl<I: core::fmt::Debug> core::fmt::Debug for LocatingSlice<I> {
     }
 }
 
-impl<I> core::ops::Deref for LocatingSlice<I> {
+impl<I> crate::lib::std::ops::Deref for LocatingSlice<I> {
     type Target = I;
 
     #[inline(always)]
@@ -96,8 +96,8 @@ impl<I> core::ops::Deref for LocatingSlice<I> {
     }
 }
 
-impl<I: core::fmt::Display> core::fmt::Display for LocatingSlice<I> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+impl<I: crate::lib::std::fmt::Display> crate::lib::std::fmt::Display for LocatingSlice<I> {
+    fn fmt(&self, f: &mut crate::lib::std::fmt::Formatter<'_>) -> crate::lib::std::fmt::Result {
         self.input.fmt(f)
     }
 }
@@ -179,7 +179,7 @@ impl<I: Stream> Stream for LocatingSlice<I> {
     }
 
     #[inline(always)]
-    fn raw(&self) -> &dyn core::fmt::Debug {
+    fn raw(&self) -> &dyn crate::lib::std::fmt::Debug {
         #![allow(deprecated)]
         self.input.raw()
     }
@@ -309,7 +309,7 @@ where
     I: FindSlice<T>,
 {
     #[inline(always)]
-    fn find_slice(&self, substr: T) -> Option<core::ops::Range<usize>> {
+    fn find_slice(&self, substr: T) -> Option<crate::lib::std::ops::Range<usize>> {
         self.input.find_slice(substr)
     }
 }
