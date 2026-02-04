@@ -1247,6 +1247,11 @@ pub mod project_clients {
 #[doc(hidden)]
 pub use zerocopy_derive::Project;
 
+/// A field visibility token for public tuple fields.
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+#[doc(hidden)]
+pub struct Idx<const INDEX: u16>;
+
 /// # Safety
 ///
 /// `<Self as HasTag<Client>>::ProjectToTag` must satisfy its safety invariant.

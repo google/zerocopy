@@ -957,6 +957,38 @@ mod _casts {
             unsafe { ptr.assume_alignment() }
         }
 
+        #[inline(always)]
+        pub fn project_map<Client, F, V, const VARIANT_ID: i128, const FIELD_ID: i128>(
+            mut self,
+            map: impl for<'b> FnOnce(
+                Ptr<'b, T::Type, T::Invariants>,
+            ) -> Ptr<
+                'b,
+                T::Type,
+                (
+                    <T::Invariants as Invariants>::Aliasing,
+                    <T::Invariants as Invariants>::Alignment,
+                    V,
+                ),
+            >,
+        ) -> Result<
+            Ptr<'a, T, (I::Aliasing, I::Alignment, <I::Validity as Map<V, F>>::Result)>,
+            T::Error,
+        >
+        where
+            T: ProjectField<Client, F, I, VARIANT_ID, FIELD_ID>,
+            I::Aliasing: Reference,
+            I::Validity: Map<V, F>,
+            V: Validity,
+        {
+            let _mapped = match self.reborrow().project::<Client, F, VARIANT_ID, FIELD_ID>() {
+                Ok(field) => map(field),
+                Err(err) => return Err(err),
+            };
+            // SAFETY: TODO
+            Ok(unsafe { self.assume_validity() })
+        }
+
         /// Attempts to transform the pointer, restoring the original on
         /// failure.
         ///
