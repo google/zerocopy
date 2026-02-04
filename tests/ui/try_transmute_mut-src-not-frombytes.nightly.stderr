@@ -1,0 +1,85 @@
+error[E0277]: the trait bound `Src: FromBytes` is not satisfied
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_mut-src-not-frombytes.rs:21:40
+   |
+21 | ...t = transmute_mut!(&mut Src);
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `FromBytes` is not implemented for `Src`
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_mut-src-not-frombytes.rs:13:1
+   |
+13 | struct Src;
+   | ^^^^^^^^^^
+   = note: Consider adding `#[derive(FromBytes)]` to `Src`
+   = help: the following other types implement trait `FromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and 78 others
+note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
+  --> src/util/macro_util.rs:790:4
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Dst: FromBytes` is not satisfied
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_mut-src-not-frombytes.rs:21:40
+   |
+21 | ...t = transmute_mut!(&mut Src);
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `FromBytes` is not implemented for `Dst`
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_mut-src-not-frombytes.rs:17:1
+   |
+17 | struct Dst;
+   | ^^^^^^^^^^
+   = note: Consider adding `#[derive(FromBytes)]` to `Dst`
+   = help: the following other types implement trait `FromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and 78 others
+note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
+  --> src/util/macro_util.rs:790:4
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Dst: IntoBytes` is not satisfied
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_mut-src-not-frombytes.rs:21:40
+   |
+21 | ...t = transmute_mut!(&mut Src);
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `IntoBytes` is not implemented for `Dst`
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/try_transmute_mut-src-not-frombytes.rs:17:1
+   |
+17 | struct Dst;
+   | ^^^^^^^^^^
+   = note: Consider adding `#[derive(IntoBytes)]` to `Dst`
+   = help: the following other types implement trait `IntoBytes`:
+             ()
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI64
+             AtomicI8
+             AtomicIsize
+             AtomicU16
+           and 68 others
+note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
+  --> src/util/macro_util.rs:790:4
+   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 3 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

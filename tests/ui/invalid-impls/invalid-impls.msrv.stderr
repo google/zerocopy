@@ -1,0 +1,9 @@
+error[E0463]: can't find crate for `zerocopy_derive`
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/invalid-impls/invalid-impls.rs:12:1
+   |
+12 | extern crate zerocopy_derive;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ can't find crate
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0463`.

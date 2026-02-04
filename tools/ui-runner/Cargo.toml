@@ -1,0 +1,15 @@
+[package]
+name = "ui-runner"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+ui_test = "0.25.0"
+clap = { version = "4.4.11", features = ["derive"] }
+anyhow = "1.0.75"
+spanned = "0.3.0"
+testutil = { path = "../../testutil" }
+zerocopy = { path = "../..", features = ["derive"] }

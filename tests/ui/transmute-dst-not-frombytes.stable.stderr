@@ -1,0 +1,37 @@
+error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
+  --> tests/ui/transmute-dst-not-frombytes.rs:17:41
+   |
+17 | const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
+   |                                         ^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `FromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui/../include.rs:15:5
+   |
+15 |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `FromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and 79 others
+note: required by a bound in `DST_NOT_FROM_BYTES::transmute`
+  --> tests/ui/transmute-dst-not-frombytes.rs:17:41
+   |
+17 | const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
+   |                                         ^^^^^^^^^^^^^^^^^^^
+   |                                         |
+   |                                         required by a bound in this function
+   |                                         required by this bound in `transmute`
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0277`.

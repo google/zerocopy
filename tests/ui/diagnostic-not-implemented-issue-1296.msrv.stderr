@@ -1,0 +1,15 @@
+error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/diagnostic-not-implemented-issue-1296.rs:50:19
+   |
+50 |     Foo.write_obj(NotZerocopy(()));
+   |                   ^^^^^^^^^^^^^^^ the trait `Immutable` is not implemented for `NotZerocopy`
+
+error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/diagnostic-not-implemented-issue-1296.rs:50:19
+   |
+50 |     Foo.write_obj(NotZerocopy(()));
+   |                   ^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `NotZerocopy`
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

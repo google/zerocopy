@@ -1,0 +1,5 @@
+[source.crates-io]
+replace-with = "ui-runner-vendor"
+
+[source.ui-runner-vendor]
+directory = "vendor"

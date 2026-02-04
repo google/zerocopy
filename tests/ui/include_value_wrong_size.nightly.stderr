@@ -1,0 +1,22 @@
+error[E0080]: transmuting from 4-byte type to 8-byte type: `[u8; 4]` -> `u64`
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/include_value_wrong_size.rs:12:25
+   |
+12 | ... = zerocopy::include_value!("../../testdata/include_value/data");
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `WRONG_SIZE` failed here
+   |
+   = note: this error originates in the macro `$crate::transmute` which comes from the expansion of the macro `zerocopy::include_value` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
+  --> /usr/local/google/home/joshlf/workspace/zerocopy/ui-test/tests/ui/include_value_wrong_size.rs:12:25
+   |
+12 | ... = zerocopy::include_value!("../../testdata/include_value/data");
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: source type: `[u8; 4]` (32 bits)
+   = note: target type: `u64` (64 bits)
+   = note: this error originates in the macro `$crate::transmute` which comes from the expansion of the macro `zerocopy::include_value` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 2 previous errors
+
+Some errors have detailed explanations: E0080, E0512.
+For more information about an error, try `rustc --explain E0080`.
