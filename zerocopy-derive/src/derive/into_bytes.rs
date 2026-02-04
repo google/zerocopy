@@ -79,7 +79,7 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
         // structs without requiring `Unaligned`.
         (None, true)
     } else {
-        return Err(Error::new(
+        return ctx.error_or_fail_silently(Error::new(
             Span::call_site(),
             "must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout",
         ));
@@ -99,7 +99,7 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
 fn derive_into_bytes_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Error> {
     let repr = EnumRepr::from_attrs(&ctx.ast.attrs)?;
     if !repr.is_c() && !repr.is_primitive() {
-        return Err(Error::new(
+        return ctx.error_or_fail_silently(Error::new(
             Span::call_site(),
             "must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout",
         ));
@@ -136,7 +136,10 @@ please let us know you use this feature: https://github.com/google/zerocopy/disc
 
     // FIXME(#10): Support type parameters.
     if !ctx.ast.generics.params.is_empty() {
-        return Err(Error::new(Span::call_site(), "unsupported on types with type parameters"));
+        return ctx.error_or_fail_silently(Error::new(
+            Span::call_site(),
+            "unsupported on types with type parameters",
+        ));
     }
 
     // Because we don't support generics, we don't need to worry about
@@ -145,9 +148,9 @@ please let us know you use this feature: https://github.com/google/zerocopy/disc
     // no padding.
     let repr = StructUnionRepr::from_attrs(&ctx.ast.attrs)?;
     if !repr.is_c() && !repr.is_transparent() && !repr.is_packed_1() {
-        return Err(Error::new(
+        return ctx.error_or_fail_silently(Error::new(
             Span::call_site(),
-            "must be #[repr(C)], #[repr(packed)], or #[repr(transparent)]",
+            "must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's memory layout",
         ));
     }
 
