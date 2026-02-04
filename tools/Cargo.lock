@@ -83,7 +83,9 @@ dependencies = [
  "anyhow",
  "cargo_metadata",
  "clap",
+ "quote",
  "regex",
+ "syn",
  "walkdir",
 ]
 

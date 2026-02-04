@@ -8,10 +8,8 @@
 //! [dependencies]
 //! ```
 
-/*@ lean
-spec syntax_error (x : U32)
-: ∃ ret, syntax_error x = ok ret ∧ ((((
-@*/
+///@ lean spec syntax_error (x : U32)
+///@ : ∃ ret, syntax_error x = ok ret ∧ ((((
 pub fn syntax_error(x: u32) -> u32 {
     x
 }

@@ -8,21 +8,10 @@
 //! [dependencies]
 //! ```
 
-/*@ lean
-<<<<<<< Updated upstream
-spec id (T : Type) (x : T)
-: id T x = ok x
-@*/
-/*@ proof
-=======
-spec id {T : Type} (x : T)
-ensures |ret| ret = x
-@*/
-/*@ proof
-:= by
->>>>>>> Stashed changes
-  simp [id]
-@*/
+///@ lean spec id (x : T)
+///@ : generic_id.id x = ok x
+///@ proof
+///@   simp [generic_id.id]
 pub fn id<T>(x: T) -> T {
     x
 }

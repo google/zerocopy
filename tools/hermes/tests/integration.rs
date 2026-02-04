@@ -12,7 +12,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use cargo_hermes::pipeline::run_pipeline;
+use cargo_hermes::pipeline::{Sorry, run_pipeline};
 
 struct TestTempDir {
     path: PathBuf,
@@ -90,8 +90,19 @@ fn run_suite(suite_name: &str, expect_success: bool) {
             let path = entry.path();
             if path.extension().map_or(false, |e| e == "rs") {
                 let file_name = path.file_stem().unwrap().to_string_lossy().to_string();
+                if let Ok(filter) = env::var("HERMES_FILTER") {
+                    if !file_name.contains(&filter) {
+                        continue;
+                    }
+                }
                 println!("Running {} test case: {:?}", suite_name, path.file_name().unwrap());
-                run_case(&path, &aeneas_lean_path, Some(file_name), expect_success);
+                run_case(
+                    &path,
+                    &aeneas_lean_path,
+                    Some(file_name),
+                    expect_success,
+                    Sorry::RejectSorry,
+                );
             }
         }
     }
@@ -101,6 +112,12 @@ fn run_suite(suite_name: &str, expect_success: bool) {
 fn test_integration_suite() {
     run_suite("success", true);
     run_suite("failure", false);
+
+    // Should succeed with allow_sorry=true
+    let (cases_dir, aeneas_lean_path) = setup_env();
+    let path = cases_dir.join("failure/missing_proof.rs");
+    println!("Running allow_sorry test case: {:?}", path.file_name().unwrap());
+    run_case(&path, &aeneas_lean_path, Some("missing_proof".to_string()), true, Sorry::AllowSorry);
 }
 
 fn run_case(
@@ -108,18 +125,59 @@ fn run_case(
     aeneas_path: &Path,
     crate_name: Option<String>,
     expect_success: bool,
+    sorry_mode: Sorry,
 ) {
     let temp_dir = TestTempDir::new();
     let crate_root = temp_dir.path();
 
+    let shared_packages = crate_root.join("shared_lake_packages");
+    fs::create_dir_all(&shared_packages).expect("Failed to create shared packages dir");
+    let shared_build = crate_root.join("shared_lake_build");
+    fs::create_dir_all(&shared_build).expect("Failed to create shared build dir");
+
     // Run pipeline directly on the script source path
-    let dest = crate_root.join("verification");
+    let dest = crate_root
+        .join("verification")
+        .join(crate_name.clone().unwrap_or_else(|| "unknown".to_string()));
+
+    // Pre-create .lake structure
+    let dest_lake = dest.join(".lake");
+    fs::create_dir_all(&dest_lake).expect("Failed to create .lake dir");
+
+    let dest_packages = dest_lake.join("packages");
+    // Force symlink packages
+    if dest_packages.exists() {
+        if !dest_packages.is_symlink() {
+            fs::remove_dir_all(&dest_packages).expect("Failed to remove existing packages dir");
+        }
+    }
+    if !dest_packages.exists() {
+        std::os::unix::fs::symlink(&shared_packages, &dest_packages)
+            .expect("Failed to symlink packages");
+    }
+
+    let dest_build = dest_lake.join("build");
+    // Force symlink build
+    if dest_build.exists() {
+        if !dest_build.is_symlink() {
+            if dest_build.is_dir() {
+                fs::remove_dir_all(&dest_build).expect("Failed to remove existing build dir");
+            } else {
+                fs::remove_file(&dest_build).expect("Failed to remove existing build file");
+            }
+        }
+    }
+    if !dest_build.exists() {
+        std::os::unix::fs::symlink(&shared_build, &dest_build).expect("Failed to symlink build");
+    }
+
     let result = run_pipeline(
         crate_name.clone(),
         crate_root,
         &dest,
         Some(aeneas_path.to_path_buf()),
         Some(source_path.to_path_buf()),
+        sorry_mode,
     );
 
     if expect_success {
