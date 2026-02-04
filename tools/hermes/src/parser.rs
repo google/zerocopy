@@ -12,6 +12,8 @@ use syn::{
     visit::{self, Visit},
 };
 
+// ... (imports remain)
+
 /// Represents a function parsed from the source code, including its signature and attached specs.
 #[derive(Debug, Clone)]
 pub struct ParsedFunction {
@@ -21,18 +23,28 @@ pub struct ParsedFunction {
     pub is_model: bool,
 }
 
+/// Represents a struct parsed from the source code, including its invariant.
+#[derive(Debug, Clone)]
+pub struct ParsedStruct {
+    pub ident: syn::Ident,
+    pub generics: syn::Generics,
+    pub invariant: Option<String>,
+}
+
 pub struct ExtractedBlocks {
     pub functions: Vec<ParsedFunction>,
+    pub structs: Vec<ParsedStruct>,
 }
 
 struct SpecVisitor {
     functions: Vec<ParsedFunction>,
+    structs: Vec<ParsedStruct>,
     errors: Vec<anyhow::Error>,
 }
 
 impl SpecVisitor {
     fn new() -> Self {
-        Self { functions: Vec::new(), errors: Vec::new() }
+        Self { functions: Vec::new(), structs: Vec::new(), errors: Vec::new() }
     }
 
     fn check_attrs_for_misplaced_spec(&mut self, attrs: &[Attribute], item_kind: &str) {
@@ -40,7 +52,7 @@ impl SpecVisitor {
             if let Some(doc_str) = parse_doc_attr(attr) {
                 if doc_str.trim_start().starts_with("@") {
                     self.errors.push(anyhow::anyhow!(
-                        "Found `///@` spec usage on a {}, but it is only allowed on functions.",
+                        "Found `///@` spec usage on a {}, but it is only allowed on functions or structs.",
                         item_kind
                     ));
                 }
@@ -110,7 +122,89 @@ impl<'ast> Visit<'ast> for SpecVisitor {
     }
 
     fn visit_item_struct(&mut self, node: &'ast syn::ItemStruct) {
-        self.check_attrs_for_misplaced_spec(&node.attrs, "struct");
+        let mut invariant_lines = Vec::new();
+        let mut current_mode = None; // None, Some("invariant")
+
+        for attr in &node.attrs {
+            if let Some(doc_str) = parse_doc_attr(attr) {
+                let trimmed = doc_str.trim();
+                if trimmed.starts_with('@') {
+                    if let Some(content) = trimmed.strip_prefix("@ lean invariant") {
+                        current_mode = Some("invariant");
+                        let mut content = content.trim();
+                        // Ignore if it's just the struct name or empty
+                        // referencing node.ident
+                        if content == node.ident.to_string() {
+                            content = "";
+                        }
+                        
+                        // Strip "is_valid self :=" or "is_valid :="
+                        if let Some(rest) = content.strip_prefix("is_valid") {
+                            let rest = rest.trim();
+                            if let Some(rest) = rest.strip_prefix("self") {
+                                let rest = rest.trim();
+                                if let Some(rest) = rest.strip_prefix(":=") {
+                                    content = rest.trim();
+                                }
+                            } else if let Some(rest) = rest.strip_prefix(":=") {
+                                content = rest.trim();
+                            }
+                        }
+
+                        if !content.is_empty() {
+                             invariant_lines.push(content.to_string());
+                        }
+                    } else {
+                         match current_mode {
+                            Some("invariant") => {
+                                let content = &trimmed[1..];
+                                invariant_lines.push(content.to_string());
+                            }
+                            None => {
+                                // Only error if it looks like a spec attempt?
+                                // For now, we update check_attrs_for_misplaced_spec to strictly call out non-struct/fn
+                                // But here we just ignore or could error.
+                                // Let's rely on the fact that if we didn't handle it here, it might be misplaced if we didn't check.
+                                // Actually, we should probably support it.
+                                self.errors.push(anyhow::anyhow!("Found `///@` line without preceding `lean invariant` on struct '{}'", node.ident));
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+            }
+        }
+
+        let invariant = if !invariant_lines.is_empty() {
+             let mut full_inv = invariant_lines.join("\n").trim().to_string();
+             // Strip "is_valid self :=" or "is_valid :="
+             if let Some(rest) = full_inv.strip_prefix("is_valid") {
+                 let rest = rest.trim();
+                 if let Some(rest) = rest.strip_prefix("self") {
+                     let rest = rest.trim();
+                     if let Some(rest) = rest.strip_prefix(":=") {
+                         full_inv = rest.trim().to_string();
+                     }
+                 } else if let Some(rest) = rest.strip_prefix(":=") {
+                     full_inv = rest.trim().to_string();
+                 }
+             }
+             Some(full_inv)
+        } else {
+            None
+        };
+        
+        // We always collect structs now because we need to generate Verifiable instances for ALL structs
+        // Ensure we don't add duplicate structs if for some reason we visit twice (unlikely but safe)
+        // Checking by ident is enough for this context
+        if !self.structs.iter().any(|s| s.ident == node.ident) {
+            self.structs.push(ParsedStruct {
+                ident: node.ident.clone(),
+                generics: node.generics.clone(),
+                invariant,
+            });
+        }
+
         visit::visit_item_struct(self, node);
     }
 
@@ -164,7 +258,7 @@ pub fn extract_blocks(content: &str) -> Result<ExtractedBlocks> {
         bail!("Spec extraction failed:\n{}", msg);
     }
 
-    Ok(ExtractedBlocks { functions: visitor.functions })
+    Ok(ExtractedBlocks { functions: visitor.functions, structs: visitor.structs })
 }
 
 #[cfg(test)]

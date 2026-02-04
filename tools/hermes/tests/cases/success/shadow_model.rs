@@ -9,7 +9,7 @@ pub unsafe fn safe_div(a: u32, b: u32) -> u32 {
 ///@ ensures |ret| ret.val = a.val
 ///@ proof
 ///@   rw [wrapper]
-///@   have ⟨ ret, h ⟩ := safe_div_spec a 1#u32 (by native_decide)
+///@   have ⟨ ret, h ⟩ := safe_div_spec a 1#u32 (by simp) (by simp) (by native_decide)
 ///@   simp [h.1]
 ///@   simp_all [Nat.div_one, h.2]
 pub fn wrapper(a: u32) -> u32 {

@@ -211,6 +211,16 @@ fn generate_body(
     // 4. User Logic
     out.push_str(&format!("({})", logic));
 
+    // 5. Automatic Validity Invariants
+    // For every binder we exposed (ret, x_final, etc.), we enforce logical validity.
+    // "Component 4 ... Return Value Injection ... Mutable Borrow Injection"
+    // "Action: Append the validity check ... Result: ... /\ Verifiable.is_valid ret"
+    for binder in binders {
+        if binder != "_" {
+            out.push_str(&format!(" /\\ Verifiable.is_valid {}", binder));
+        }
+    }
+
     Ok(out)
 }
 
