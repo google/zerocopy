@@ -39,7 +39,15 @@ pub trait Aliasing: Sealed {
 }
 
 /// The alignment invariant of a [`Ptr`][super::Ptr].
-pub trait Alignment: Sealed {}
+pub trait Alignment: Sealed {
+    #[doc(hidden)]
+    #[must_use]
+    fn read<T, I, R>(ptr: crate::Ptr<'_, T, I>) -> T
+    where
+        T: Copy + Read<I::Aliasing, R>,
+        I: Invariants<Alignment = Self, Validity = Valid>,
+        I::Aliasing: Reference;
+}
 
 /// The validity invariant of a [`Ptr`][super::Ptr].
 ///
@@ -132,12 +140,32 @@ impl Reference for Exclusive {}
 /// It is unknown whether the pointer is aligned.
 pub enum Unaligned {}
 
-impl Alignment for Unaligned {}
+impl Alignment for Unaligned {
+    #[inline(always)]
+    fn read<T, I, R>(ptr: crate::Ptr<'_, T, I>) -> T
+    where
+        T: Copy + Read<I::Aliasing, R>,
+        I: Invariants<Alignment = Self, Validity = Valid>,
+        I::Aliasing: Reference,
+    {
+        (*ptr.into_unalign().as_ref()).into_inner()
+    }
+}
 
 /// The referent is aligned: for `Ptr<T>`, the referent's address is a multiple
 /// of the `T`'s alignment.
 pub enum Aligned {}
-impl Alignment for Aligned {}
+impl Alignment for Aligned {
+    #[inline(always)]
+    fn read<T, I, R>(ptr: crate::Ptr<'_, T, I>) -> T
+    where
+        T: Copy + Read<I::Aliasing, R>,
+        I: Invariants<Alignment = Self, Validity = Valid>,
+        I::Aliasing: Reference,
+    {
+        *ptr.as_ref()
+    }
+}
 
 /// Any bit pattern is allowed in the `Ptr`'s referent, including uninitialized
 /// bytes.
