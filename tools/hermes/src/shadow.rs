@@ -19,13 +19,13 @@ use walkdir::WalkDir;
 pub fn create_shadow_crate(
     original_root: &Path,
     source_file: Option<&Path>,
-) -> Result<(PathBuf, Option<PathBuf>)> {
+) -> Result<(PathBuf, Option<PathBuf>, Vec<String>)> {
     // 1. Destination: target/hermes_shadow
     let shadow_root = original_root.join("target").join("hermes_shadow");
     if shadow_root.exists() {
-        fs::remove_dir_all(&shadow_root).context("Failed to clean shadow directory")?;
+        fs::remove_dir_all(&shadow_root)?;
     }
-    fs::create_dir_all(&shadow_root).context("Failed to create shadow directory")?;
+    fs::create_dir_all(&shadow_root)?;
 
     // 2. Recursive Copy (only if not a single-file script, OR generally?)
     // If it's a script, original_root might be unrelated.
@@ -71,7 +71,7 @@ pub fn create_shadow_crate(
     fs::write(&shim_path, SHIM_CONTENT).context("Failed to write shadow std shim")?;
 
     // 4. Sanitization
-    sanitize_crate(&shadow_root)?;
+    let mut models = sanitize_crate(&shadow_root)?;
 
     // 5. Handle Single Source File (Write it now so we can inject prelude)
     let shadow_source_file = if let Some(source) = source_file {
@@ -82,7 +82,8 @@ pub fn create_shadow_crate(
             fs::create_dir_all(parent)?;
         }
         // Sanitize and write
-        process_file_content(source, &dest_path)?;
+        let file_models = process_file_content(source, &dest_path)?;
+        models.extend(file_models);
         Some(dest_path)
     } else {
         None
@@ -109,7 +110,7 @@ pub fn create_shadow_crate(
     }
 
     // Return
-    Ok((shadow_root, shadow_source_file))
+    Ok((shadow_root, shadow_source_file, models))
 }
 
 const SHIM_CONTENT: &str = include_str!("include/__hermes_std.rs");
@@ -127,8 +128,6 @@ fn inject_prelude(path: &Path) -> Result<()> {
     let mut ast = syn::parse_file(&content)?;
 
     // 1. Disable the built-in Rust prelude (Inner Attribute)
-    // We append to existing attributes or prepend? Order matters if there are other attributes that depend on prelude?
-    // Usually no_implicit_prelude is fine anywhere in headers.
     ast.attrs.push(parse_quote!(#![no_implicit_prelude]));
 
     // 2. Prepare Injection Items
@@ -152,8 +151,17 @@ fn inject_prelude(path: &Path) -> Result<()> {
             #[allow(unused_imports)]
             use std::prelude::rust_2021::*;
         ),
+        // mod charon { pub use charon_macros::opaque; }
+        // We need `charon_macros` to exist or be faked.
+        // Actually, since we rewrite the crate, we can just define a dummy `opaque` attribute logic?
+        // Rustc allows custom attributes if they are mapped to a tool or via `register_tool` (nightly).
+        // For stable, we might need a dummy macro or just `allow` it?
+        // But `#[charon::opaque]` looks like a path attribute.
+        // Let's define: `pub mod charon { pub use crate::hermes_std::opaque; }`
+        // and in `hermes_std` define `pub use ...`?
+        // Simpler: define `mod charon` right here which exports a dummy `opaque` attribute macro?
+        // Attributes must be macros.
     ];
-
     // 3. Insert at the beginning of items (AFTER inner attributes)
     ast.items.splice(0..0, prelude_items);
 
@@ -162,110 +170,145 @@ fn inject_prelude(path: &Path) -> Result<()> {
     Ok(())
 }
 
-fn process_file_content(src: &Path, dest: &Path) -> Result<()> {
+fn process_file_content(src: &Path, dest: &Path) -> Result<Vec<String>> {
     let content = fs::read_to_string(src)?;
     let mut ast = syn::parse_file(&content)?;
 
-    let mut visitor = ShadowVisitor;
+    let mut visitor = ShadowVisitor::new();
     visitor.visit_file_mut(&mut ast);
 
     let new_content = quote!(#ast).to_string();
     fs::write(dest, new_content)?;
-    Ok(())
+    Ok(visitor.models)
 }
 
-fn sanitize_crate(root: &Path) -> Result<()> {
+fn sanitize_crate(root: &Path) -> Result<Vec<String>> {
     let src_dir = root.join("src");
+    let mut all_models = Vec::new();
     if !src_dir.exists() {
-        return Ok(());
+        return Ok(all_models);
     }
 
     for entry in WalkDir::new(&src_dir) {
         let entry = entry?;
         if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "rs") {
-            process_file(entry.path())?;
+            let relative = entry.path().strip_prefix(&src_dir)?;
+            // Map file path to module path (simplistic: foo/bar.rs -> foo::bar)
+            // Note: ShadowVisitor tracks `current_path` relative to the file.
+            // We need to prepend the module path derived from file structure?
+            // Wait, ShadowVisitor `current_path` is empty at file root.
+            // But if we are processing `src/foo/bar.rs`, the functions in it are in `foo::bar`.
+            // `ShadowVisitor` doesn't know this external context unless we tell it.
+            // OR we fix up the returned models.
+            // `visitor.models` will contain e.g. `my_func` or `inner::my_func`.
+            // We need to prepend `foo::bar`.
+
+            // Logic for module path:
+            let components: Vec<_> = relative
+                .with_extension("")
+                .iter()
+                .map(|s| s.to_string_lossy().into_owned())
+                .collect();
+            // If filename is `mod.rs` or `lib.rs` or `main.rs`, handle accordingly.
+            let mut mod_path = Vec::new();
+            for (i, comp) in components.iter().enumerate() {
+                if i == components.len() - 1 && (comp == "mod" || comp == "lib" || comp == "main") {
+                    continue;
+                }
+                mod_path.push(comp.clone());
+            }
+
+            let file_models = process_file(entry.path())?;
+            for m in file_models {
+                let full =
+                    if mod_path.is_empty() { m } else { format!("{}::{}", mod_path.join("::"), m) };
+                all_models.push(full);
+            }
         }
     }
-    Ok(())
+    Ok(all_models)
 }
 
-fn process_file(path: &Path) -> Result<()> {
+fn process_file(path: &Path) -> Result<Vec<String>> {
     let content = fs::read_to_string(path)?;
-    // If parse fails, we can't extract/sanitize. Fail loudly so user knows.
-    // Or we could warn and skip? For verification, we want strictness.
     let mut ast = syn::parse_file(&content)?;
 
-    let mut visitor = ShadowVisitor;
+    let mut visitor = ShadowVisitor::new();
     visitor.visit_file_mut(&mut ast);
 
     let new_content = quote!(#ast).to_string();
     fs::write(path, new_content)?;
-    Ok(())
+    Ok(visitor.models)
 }
 
-struct ShadowVisitor;
+struct ShadowVisitor {
+    current_path: Vec<String>,
+    models: Vec<String>,
+}
+
+impl ShadowVisitor {
+    fn new() -> Self {
+        Self { current_path: Vec::new(), models: Vec::new() }
+    }
+}
 
 impl VisitMut for ShadowVisitor {
+    fn visit_item_mod_mut(&mut self, i: &mut syn::ItemMod) {
+        self.current_path.push(i.ident.to_string());
+        syn::visit_mut::visit_item_mod_mut(self, i);
+        self.current_path.pop();
+    }
+
     fn visit_item_fn_mut(&mut self, node: &mut ItemFn) {
-        let (is_model, model_requires) = parse_model_specs(&node.attrs);
+        let (is_model, _model_requires) = parse_model_specs(&node.attrs);
 
-        // We only care about `unsafe fn`
+        if is_model {
+             // Collect model name
+             let mut full_path = self.current_path.clone();
+             full_path.push(node.sig.ident.to_string());
+             self.models.push(full_path.join("::"));
+
+             // Case A: Model Strategy
+             // 1. Remove unsafe (if present)
+             node.sig.unsafety = None;
+
+             // 2. Replace body with loop {} (Diverge)
+             let body_content = quote! {
+                 {
+                     loop {}
+                 }
+             };
+
+             let block: syn::Block = syn::parse2(body_content).expect("Failed to parse loop body");
+             *node.block = block;
+
+             // Append #[allow(unused_variables)] if not present
+             let has_allow_unused = node.attrs.iter().any(|attr| {
+                 if attr.path().is_ident("allow") {
+                     if let syn::Meta::List(list) = &attr.meta {
+                         return list.tokens.to_string().contains("unused_variables");
+                     }
+                 }
+                 false
+             });
+
+             if !has_allow_unused {
+                 node.attrs.push(parse_quote!(#[allow(unused_variables)]));
+             }
+             return; 
+        }
+
+        // Pre-existing logic for unwrapping unsafe functions that are NOT models
         if node.sig.unsafety.is_some() {
-            if is_model {
-                // Case A: Model Strategy
-                // 1. Remove unsafe
-                node.sig.unsafety = None;
+             // Case B: Unwrap Strategy
+             // 1. Remove unsafe
+             node.sig.unsafety = None;
 
-                // 2. Inject Shim
-                let preconditions = if model_requires.is_empty() {
-                    quote!(true)
-                } else {
-                    let combined = model_requires.join(") && (");
-                    let combined_str = format!("{}", combined);
-                    // Parse as Expr to ensure validity and proper token nesting
-                    let expr = syn::parse_str::<syn::Expr>(&combined_str)
-                        .unwrap_or_else(|_| parse_quote!(true));
-                    quote!(#expr)
-                };
-
-                let body_content = quote! {
-                    {
-                        if #preconditions {
-                            // TODO: If the preconditions are met, we still
-                            // panic. That means that any model we provide will
-                            // be wrong (ie, it will claim that the function
-                            // returns successfully, when in fact it panics).
-                            // This will allow Lean to infer a contradiction,
-                            // allowing any user's proof to be accepted
-                            // regardless of its correctness.
-                            ::std::unimplemented!("Safe Shim")
-                        } else {
-                            ::std::panic!("Contract Violated")
-                        }
-                    }
-                };
-
-                // Replace body
-                if let Ok(block) = syn::parse2(body_content) {
-                    node.block = block;
-                }
-
-                // Append #[allow(unused_variables)] to suppress warnings/errors
-                // since the new body doesn't use any of its arguments. It's
-                // important that we add it at the end to override any
-                // preceding `#[warn(unused_variables)]` (or `deny`).
-                node.attrs.push(parse_quote!(#[allow(unused_variables)]));
-            } else {
-                // Case B: Unwrap Strategy
-                // 1. Remove unsafe
-                node.sig.unsafety = None;
-
-                // 2. Recurse into body to unwrap internal unsafe blocks
-                syn::visit_mut::visit_item_fn_mut(self, node);
-            }
+             // 2. Recurse into body to unwrap internal unsafe blocks
+             syn::visit_mut::visit_item_fn_mut(self, node);
         } else {
-            // Safe function: just recurse
-            syn::visit_mut::visit_item_fn_mut(self, node);
+             // Safe function not model: just recurse
+             syn::visit_mut::visit_item_fn_mut(self, node);
         }
     }
 
@@ -292,10 +335,18 @@ fn parse_model_specs(attrs: &[Attribute]) -> (bool, Vec<String>) {
     let mut is_model = false;
     let mut requires = Vec::new();
 
+    // Debugging loop
+    /*
+    for attr in attrs {
+         if attr.path().is_ident("doc") {
+             println!("Found doc attr: {:?}", attr);
+         }
+    }
+    */
+
     for trimmed in crate::docs::iter_hermes_lines(attrs) {
         if let Some(_content) = crate::docs::parse_hermes_tag(&trimmed, "lean model") {
             is_model = true;
-            log::debug!("Found model marker!");
         }
 
         if let Some(content) = crate::docs::parse_hermes_tag(&trimmed, "requires") {
@@ -316,7 +367,7 @@ mod tests {
 
     fn transform(code: &str) -> String {
         let mut ast = syn::parse_file(code).expect("Failed to parse input");
-        let mut visitor = ShadowVisitor;
+        let mut visitor = ShadowVisitor::new();
         visitor.visit_file_mut(&mut ast);
         quote!(#ast).to_string()
     }
@@ -336,14 +387,19 @@ mod tests {
     #[test]
     fn test_leaf_node_basic() {
         let input = r#"
-            ///@ lean model foo ensures |ret| ret = 42
-            unsafe fn foo() -> i32 { unsafe { *ptr } }
-        "#;
-        let expected = r#"
-            #[doc = "@ lean model foo ensures |ret| ret = 42"]
+            ///@ lean model foo
+            ///@ ensures |ret| ret = 42
             #[allow(unused_variables)]
             fn foo() -> i32 {
-                if true { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
+                unsafe { 0 }
+            }
+        "#;
+        let expected = r#"
+            #[doc = "@ lean model foo"]
+            #[doc = "@ ensures |ret| ret = 42"]
+            #[allow(unused_variables)]
+            fn foo() -> i32 {
+                loop {}
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -354,14 +410,17 @@ mod tests {
         let input = r#"
             ///@ lean model safe_div(a b : u32)
             ///@ requires b > 0
-            unsafe fn safe_div(a: u32, b: u32) -> u32 { 0 }
+            #[allow(unused_variables)]
+            fn safe_div(a: u32, b: u32) -> u32 {
+                unsafe { a / b }
+            }
         "#;
         let expected = r#"
             #[doc = "@ lean model safe_div(a b : u32)"]
             #[doc = "@ requires b > 0"]
             #[allow(unused_variables)]
             fn safe_div(a: u32, b: u32) -> u32 {
-                if b > 0 { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
+                loop {}
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -371,14 +430,17 @@ mod tests {
     fn test_raw_pointer_signatures() {
         let input = r#"
             ///@ lean model read(ptr : Type) ...
-            unsafe fn read(ptr: *const u32) -> u32 { *ptr }
+            #[allow(unused_variables)]
+            fn read(ptr: *const u32) -> u32 {
+                unsafe { *ptr }
+            }
         "#;
         // Signature should keep *const u32
         let expected = r#"
             #[doc = "@ lean model read(ptr : Type) ..."]
             #[allow(unused_variables)]
             fn read(ptr: *const u32) -> u32 {
-                if true { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
+                loop {}
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -454,13 +516,16 @@ mod tests {
     fn test_generics_preserved() {
         let input = r#"
             ///@ lean model ...
-            unsafe fn cast<T: Copy>(x: *const T) -> T { *x }
+            #[allow(unused_variables)]
+            fn cast<T: Copy>(x: *const T) -> T {
+                unsafe { *x }
+            }
         "#;
         let expected = r#"
             #[doc = "@ lean model ..."]
             #[allow(unused_variables)]
             fn cast <T: Copy> (x: *const T) -> T {
-                if true { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
+                loop {}
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -504,18 +569,20 @@ mod tests {
 
     #[test]
     fn test_verification_logic_positive() {
-        // Wrapper for "Contract Met"
         let input = r#"
             ///@ lean model foo
             ///@ requires x > 0
-            unsafe fn foo(x: i32) { }
+            #[allow(unused_variables)]
+            fn foo(x: i32) {
+                unsafe {}
+            }
         "#;
         let expected = r#"
             #[doc = "@ lean model foo"]
             #[doc = "@ requires x > 0"]
             #[allow(unused_variables)]
             fn foo(x: i32) {
-                if x > 0 { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
+                loop {}
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
@@ -523,33 +590,43 @@ mod tests {
 
     #[test]
     fn test_verification_logic_negative() {
-        // Same structure
+        // Obsolete test for Panic Shim logic.
+        // We just ensure we generate the loop.
         let input = r#"
             ///@ lean model foo
             ///@ requires x > 0
-            unsafe fn foo(x: i32) { }
+            #[allow(unused_variables)]
+            fn foo(x: i32) {
+                unsafe {}
+            }
         "#;
-        let diff = transform(input);
-        // Normalize for check
-        let diff_norm: String = diff.chars().filter(|c| !c.is_whitespace()).collect();
-        assert!(diff_norm.contains("ifx>0"));
-        assert!(diff_norm.contains("panic!(\"ContractViolated\")"));
+        let expected = r#"
+            #[doc = "@ lean model foo"]
+            #[doc = "@ requires x > 0"]
+            #[allow(unused_variables)]
+            fn foo(x: i32) {
+                loop {}
+            }
+        "#;
+        assert_normalized_eq(&transform(input), expected);
     }
 
     #[test]
     fn test_wrong_precondition_trap() {
-        // Model requires x == 10
         let input = r#"
             ///@ lean model foo
             ///@ requires x == 10
-            unsafe fn foo(x: i32) { }
+            #[allow(unused_variables)]
+            fn foo(x: i32) {
+               unsafe {}
+            }
         "#;
         let expected = r#"
             #[doc = "@ lean model foo"]
             #[doc = "@ requires x == 10"]
             #[allow(unused_variables)]
             fn foo(x: i32) {
-                if x == 10 { ::std::unimplemented!("Safe Shim") } else { ::std::panic!("Contract Violated") }
+                loop {}
             }
         "#;
         assert_normalized_eq(&transform(input), expected);
