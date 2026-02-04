@@ -50,6 +50,7 @@ pub enum Commands {
 }
 
 fn main() -> Result<()> {
+    env_logger::init();
     let CargoCli::Hermes(args) = CargoCli::parse();
     let Commands::Verify { crate_name, dest, aeneas_path, manifest_path, allow_sorry } =
         args.command;

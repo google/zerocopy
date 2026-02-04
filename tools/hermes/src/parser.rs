@@ -48,15 +48,15 @@ impl SpecVisitor {
     }
 
     fn check_attrs_for_misplaced_spec(&mut self, attrs: &[Attribute], item_kind: &str) {
-        for attr in attrs {
-            if let Some(doc_str) = parse_doc_attr(attr) {
-                if doc_str.trim_start().starts_with("@") {
-                    self.errors.push(anyhow::anyhow!(
-                        "Found `///@` spec usage on a {}, but it is only allowed on functions or structs.",
-                        item_kind
-                    ));
-                }
-            }
+        for _line in crate::docs::iter_hermes_lines(attrs) {
+            // We already filtered for is_hermes_directive
+            // But we specifically check if it *starts* with @ and we error if it's misplaced
+            // iter_hermes_lines ensures it filters for lines starting with @.
+            // So every line here is a spec usage.
+            self.errors.push(anyhow::anyhow!(
+                "Found `///@` spec usage on a {}, but it is only allowed on functions or structs.",
+                item_kind
+            ));
         }
     }
 }
@@ -68,39 +68,38 @@ impl<'ast> Visit<'ast> for SpecVisitor {
         let mut current_mode = None; // None, Some("spec"), Some("proof")
         let mut is_model = false;
 
-        for attr in &node.attrs {
-            if let Some(doc_str) = parse_doc_attr(attr) {
-                let trimmed = doc_str.trim();
-                // Check for ///@ marker (doc comment starting with @)
-                if trimmed.starts_with('@') {
-                    // Check if it's a new block start
-                    if let Some(content) = trimmed.strip_prefix("@ lean spec") {
-                        current_mode = Some("spec");
-                        spec_lines.push(content.to_string());
-                    } else if let Some(content) = trimmed.strip_prefix("@ lean model") {
-                        current_mode = Some("spec");
-                        is_model = true;
-                        spec_lines.push(content.to_string());
-                    } else if let Some(content) = trimmed.strip_prefix("@ proof") {
-                        current_mode = Some("proof");
-                        proof_lines.push(content.to_string());
-                    } else {
-                        // Continuation line
-                        match current_mode {
-                            Some("spec") => {
-                                let content = &trimmed[1..];
-                                spec_lines.push(content.to_string());
-                            }
-                            Some("proof") => {
-                                let content = &trimmed[1..];
-                                proof_lines.push(content.to_string());
-                            }
-                            None => {
-                                self.errors.push(anyhow::anyhow!("Found `///@` line without preceding `lean spec` or `proof` on function '{}'", node.sig.ident));
-                            }
-                            _ => {}
+        for trimmed in crate::docs::iter_hermes_lines(&node.attrs) {
+            // Check if it's a new block start
+            if let Some(content) = crate::docs::parse_hermes_tag(&trimmed, "lean spec") {
+                current_mode = Some("spec");
+                spec_lines.push(content.to_string());
+            } else if let Some(content) = crate::docs::parse_hermes_tag(&trimmed, "lean model") {
+                current_mode = Some("spec");
+                is_model = true;
+                spec_lines.push(content.to_string());
+            } else if let Some(content) = crate::docs::parse_hermes_tag(&trimmed, "proof") {
+                current_mode = Some("proof");
+                proof_lines.push(content.to_string());
+            } else {
+                // Continuation line
+                match current_mode {
+                    Some("spec") | Some("proof") => {
+                        // For continuation, we might want to just take the whole line after `@`?
+                        // Or does the current logic assume `@` is just a marker?
+                        // Original: `let content = &trimmed[1..];`
+                        // We can use `parse_hermes_tag(trimmed, "")` maybe? No, that expects space.
+                        // Let's simplify:
+                        let content = trimmed[1..].trim();
+                        if current_mode == Some("spec") {
+                            spec_lines.push(content.to_string());
+                        } else {
+                            proof_lines.push(content.to_string());
                         }
                     }
+                    None => {
+                        self.errors.push(anyhow::anyhow!("Found `///@` line without preceding `lean spec` or `proof` on function '{}'", node.sig.ident));
+                    }
+                    _ => {}
                 }
             }
         }
@@ -125,52 +124,45 @@ impl<'ast> Visit<'ast> for SpecVisitor {
         let mut invariant_lines = Vec::new();
         let mut current_mode = None; // None, Some("invariant")
 
-        for attr in &node.attrs {
-            if let Some(doc_str) = parse_doc_attr(attr) {
-                let trimmed = doc_str.trim();
-                if trimmed.starts_with('@') {
-                    if let Some(content) = trimmed.strip_prefix("@ lean invariant") {
-                        current_mode = Some("invariant");
-                        let mut content = content.trim();
-                        // Ignore if it's just the struct name or empty
-                        // referencing node.ident
-                        if content == node.ident.to_string() {
-                            content = "";
-                        }
+        for trimmed in crate::docs::iter_hermes_lines(&node.attrs) {
+            if let Some(content) = crate::docs::parse_hermes_tag(&trimmed, "lean invariant") {
+                current_mode = Some("invariant");
+                let mut content = content;
+                // Ignore if it's just the struct name or empty
+                // referencing node.ident
+                if node.ident == content {
+                    content = "";
+                }
 
-                        // Strip "is_valid self :=" or "is_valid :="
-                        if let Some(rest) = content.strip_prefix("is_valid") {
-                            let rest = rest.trim();
-                            if let Some(rest) = rest.strip_prefix("self") {
-                                let rest = rest.trim();
-                                if let Some(rest) = rest.strip_prefix(":=") {
-                                    content = rest.trim();
-                                }
-                            } else if let Some(rest) = rest.strip_prefix(":=") {
-                                content = rest.trim();
-                            }
+                // Strip "is_valid self :=" or "is_valid :="
+                if let Some(rest) = content.strip_prefix("is_valid") {
+                    let rest = rest.trim();
+                    if let Some(rest) = rest.strip_prefix("self") {
+                        let rest = rest.trim();
+                        if let Some(rest) = rest.strip_prefix(":=") {
+                            content = rest.trim();
                         }
-
-                        if !content.is_empty() {
-                            invariant_lines.push(content.to_string());
-                        }
-                    } else {
-                        match current_mode {
-                            Some("invariant") => {
-                                let content = &trimmed[1..];
-                                invariant_lines.push(content.to_string());
-                            }
-                            None => {
-                                // Only error if it looks like a spec attempt?
-                                // For now, we update check_attrs_for_misplaced_spec to strictly call out non-struct/fn
-                                // But here we just ignore or could error.
-                                // Let's rely on the fact that if we didn't handle it here, it might be misplaced if we didn't check.
-                                // Actually, we should probably support it.
-                                self.errors.push(anyhow::anyhow!("Found `///@` line without preceding `lean invariant` on struct '{}'", node.ident));
-                            }
-                            _ => {}
-                        }
+                    } else if let Some(rest) = rest.strip_prefix(":=") {
+                        content = rest.trim();
                     }
+                }
+
+                if !content.is_empty() {
+                    invariant_lines.push(content.to_string());
+                }
+            } else {
+                match current_mode {
+                    Some("invariant") => {
+                        let content = trimmed[1..].trim();
+                        invariant_lines.push(content.to_string());
+                    }
+                    None => {
+                        self.errors.push(anyhow::anyhow!(
+                            "Found `///@` line without preceding `lean invariant` on struct '{}'",
+                            node.ident
+                        ));
+                    }
+                    _ => {}
                 }
             }
         }
@@ -231,20 +223,6 @@ impl<'ast> Visit<'ast> for SpecVisitor {
     fn visit_item_trait(&mut self, node: &'ast syn::ItemTrait) {
         self.check_attrs_for_misplaced_spec(&node.attrs, "trait");
         visit::visit_item_trait(self, node);
-    }
-}
-
-fn parse_doc_attr(attr: &Attribute) -> Option<String> {
-    if !attr.path().is_ident("doc") {
-        return None;
-    }
-
-    match &attr.meta {
-        syn::Meta::NameValue(nv) => match &nv.value {
-            syn::Expr::Lit(syn::ExprLit { lit: syn::Lit::Str(s), .. }) => Some(s.value()),
-            _ => None,
-        },
-        _ => None,
     }
 }
 

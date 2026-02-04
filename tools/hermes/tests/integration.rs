@@ -8,8 +8,8 @@
 
 use std::{
     env, fs,
-    io::Write as _,
     path::{Path, PathBuf},
+    sync::Once,
 };
 
 use cargo_hermes::pipeline::{Sorry, run_pipeline};
@@ -43,9 +43,13 @@ impl Drop for TestTempDir {
     }
 }
 
+static INIT: Once = Once::new();
+
 fn setup_env() -> (PathBuf, PathBuf) {
-    println!("DEBUG: Starting setup_env");
-    std::io::stdout().flush().unwrap();
+    INIT.call_once(|| {
+        env_logger::builder().is_test(true).try_init().ok();
+    });
+    log::debug!("Starting setup_env");
     let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
     let cases_dir = manifest_dir.join("tests/cases");
 
@@ -56,8 +60,7 @@ fn setup_env() -> (PathBuf, PathBuf) {
     let charon_bin = aeneas_path.join("charon/bin");
     let aeneas_bin = aeneas_path.join("bin");
     if charon_bin.exists() {
-        println!("DEBUG: Found charon bin at {:?}", charon_bin);
-        std::io::stdout().flush().unwrap();
+        log::debug!("Found charon bin at {:?}", charon_bin);
         let home_dir = env::var("HOME").map(PathBuf::from).unwrap_or_else(|_| PathBuf::from("."));
         let elan_bin = home_dir.join(".elan/bin");
         let current_path = env::var("PATH").unwrap_or_default();
@@ -72,14 +75,12 @@ fn setup_env() -> (PathBuf, PathBuf) {
             env::set_var("PATH", new_path);
         }
     }
-    println!("DEBUG: setup_env complete");
-    std::io::stdout().flush().unwrap();
+    log::debug!("setup_env complete");
     (cases_dir, aeneas_lean_path)
 }
 
 fn run_suite(suite_name: &str, expect_success: bool) {
-    println!("DEBUG: Starting run_{}_cases", suite_name);
-    std::io::stdout().flush().unwrap();
+    log::debug!("Starting run_{}_cases", suite_name);
     let (cases_dir, aeneas_lean_path) = setup_env();
     let suite_dir = cases_dir.join(suite_name);
     if suite_dir.exists() {
@@ -88,14 +89,14 @@ fn run_suite(suite_name: &str, expect_success: bool) {
         {
             let entry = entry.expect("Failed to read entry");
             let path = entry.path();
-            if path.extension().map_or(false, |e| e == "rs") {
+            if path.extension().is_some_and(|e| e == "rs") {
                 let file_name = path.file_stem().unwrap().to_string_lossy().to_string();
-                if let Ok(filter) = env::var("HERMES_FILTER") {
-                    if !file_name.contains(&filter) {
-                        continue;
-                    }
+                if let Ok(filter) = env::var("HERMES_FILTER")
+                    && !file_name.contains(&filter)
+                {
+                    continue;
                 }
-                println!("Running {} test case: {:?}", suite_name, path.file_name().unwrap());
+                log::info!("Running {} test case: {:?}", suite_name, path.file_name().unwrap());
                 run_case(
                     &path,
                     &aeneas_lean_path,
@@ -116,7 +117,7 @@ fn test_integration_suite() {
     // Should succeed with allow_sorry=true
     let (cases_dir, aeneas_lean_path) = setup_env();
     let path = cases_dir.join("failure/missing_proof.rs");
-    println!("Running allow_sorry test case: {:?}", path.file_name().unwrap());
+    log::info!("Running allow_sorry test case: {:?}", path.file_name().unwrap());
     run_case(&path, &aeneas_lean_path, Some("missing_proof".to_string()), true, Sorry::AllowSorry);
 }
 
@@ -146,10 +147,8 @@ fn run_case(
 
     let dest_packages = dest_lake.join("packages");
     // Force symlink packages
-    if dest_packages.exists() {
-        if !dest_packages.is_symlink() {
-            fs::remove_dir_all(&dest_packages).expect("Failed to remove existing packages dir");
-        }
+    if dest_packages.exists() && !dest_packages.is_symlink() {
+        fs::remove_dir_all(&dest_packages).expect("Failed to remove existing packages dir");
     }
     if !dest_packages.exists() {
         std::os::unix::fs::symlink(&shared_packages, &dest_packages)
@@ -158,13 +157,11 @@ fn run_case(
 
     let dest_build = dest_lake.join("build");
     // Force symlink build
-    if dest_build.exists() {
-        if !dest_build.is_symlink() {
-            if dest_build.is_dir() {
-                fs::remove_dir_all(&dest_build).expect("Failed to remove existing build dir");
-            } else {
-                fs::remove_file(&dest_build).expect("Failed to remove existing build file");
-            }
+    if dest_build.exists() && !dest_build.is_symlink() {
+        if dest_build.is_dir() {
+            fs::remove_dir_all(&dest_build).expect("Failed to remove existing build dir");
+        } else {
+            fs::remove_file(&dest_build).expect("Failed to remove existing build file");
         }
     }
     if !dest_build.exists() {

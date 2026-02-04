@@ -4,7 +4,7 @@
 ///@ level 10
 ///@ proof
 ///@   simp_all
-unsafe fn test_read_success(p: *const u32) -> u32 {
+pub unsafe fn test_read_success(p: *const u32) -> u32 {
     unsafe { std::ptr::read(p) }
 }
 

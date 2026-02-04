@@ -20,18 +20,23 @@ pub fn run_charon(crate_root: &Path, dest_file: &Path, manifest_path: Option<&Pa
     let crate_root = crate_root.to_str().unwrap();
     let dest_file = dest_file.to_str().unwrap();
 
-    println!("Running charon in {:?}", crate_root);
+    log::debug!("Running charon in {:?}", crate_root);
     let mut cmd = Command::new("charon");
-    cmd.env_remove("CARGO_TARGET_DIR"); // Avoid deadlock with outer cargo
+
+    // Avoid deadlock with outer cargo
+    cmd.env_remove("CARGO_TARGET_DIR");
+
+    // Triggered when we convert `unsafe { ... }` into `{ ... }`.
+    cmd.env("RUSTFLAGS", "-Aunused_braces");
     cmd.current_dir(crate_root);
     cmd.arg("cargo");
 
     // Charon args first
-    args(&mut cmd, &["--dest-file", dest_file, "--preset", "aeneas"]);
+    args(&mut cmd, &["--dest-file", dest_file, "--preset", "aeneas", "--error-on-warnings"]);
 
     if let Some(path) = manifest_path {
         cmd.arg("--");
-        if path.extension().map_or(false, |e| e == "rs") {
+        if path.extension().is_some_and(|e| e == "rs") {
             cmd.arg("-Zscript");
         }
         cmd.arg("--manifest-path");
@@ -45,6 +50,8 @@ pub fn run_charon(crate_root: &Path, dest_file: &Path, manifest_path: Option<&Pa
     Ok(())
 }
 
+const ALL_AENEAS_BACKENDS: &str = "BorrowCheck,Builtin,Contexts,Deps,Errors,Extract,FunsAnalysis,Interp,InterpAbs,InterpBorrows,InterpExpansion,InterpExpressions,InterpJoin,InterpLoops,InterpLoopsFixedPoint,InterpMatchCtxs,InterpPaths,InterpProjectors,InterpReduceCollapse,InterpStatements,Invariants,MainLogger,PrePasses,PureMicroPasses,PureMicroPasses.simplify_aggregates_unchanged_fields,PureTypeCheck,PureUtils,RegionsHierarchy,ReorderDecls,SCC,SymbolicToPure,SymbolicToPureAbs,SymbolicToPureExpressions,SymbolicToPureTypes,SymbolicToPureValues,Translate,TypesAnalysis";
+
 /// Runs the Aeneas tool to translate LLBC files into Lean code.
 ///
 /// # Arguments
@@ -55,7 +62,23 @@ pub fn run_aeneas(llbc_path: &Path, dest: &Path) -> Result<()> {
     let dest = dest.to_str().unwrap();
 
     let mut cmd = Command::new("aeneas");
-    args(&mut cmd, &["-backend", "lean", llbc_path, "-dest", dest]);
+    args(
+        &mut cmd,
+        &[
+            "-backend",
+            "lean",
+            // TODO: Uncomment these once we've suppressed all warnings or
+            // built a mechanism to conditionally disable passing this flag.
+            //
+            // "-log-error",
+            // ALL_AENEAS_BACKENDS,
+            "-warnings-as-errors",
+            "-no-progress-bar",
+            llbc_path,
+            "-dest",
+            dest,
+        ],
+    );
     let status = cmd.status().context("Failed to execute aeneas. Ensure it is in your PATH.")?;
 
     if !status.success() {
@@ -72,6 +95,7 @@ pub fn run_lake_build(dir: &Path) -> Result<()> {
     let status = Command::new("lake")
         .current_dir(dir)
         .arg("build")
+        .arg("--quiet")
         .status()
         .context("Failed to execute lake. Ensure Lean 4 is installed.")?;
 

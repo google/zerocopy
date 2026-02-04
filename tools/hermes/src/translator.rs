@@ -43,12 +43,11 @@ impl SignatureTranslator {
 
     pub fn detect_statefulness(args: &[FnArg]) -> bool {
         for arg in args {
-            if let FnArg::Typed(pat_type) = arg {
-                if let Type::Reference(type_ref) = &*pat_type.ty {
-                    if type_ref.mutability.is_some() {
-                        return true;
-                    }
-                }
+            if let FnArg::Typed(pat_type) = arg
+                && let Type::Reference(type_ref) = &*pat_type.ty
+                && type_ref.mutability.is_some()
+            {
+                return true;
             }
         }
         false
