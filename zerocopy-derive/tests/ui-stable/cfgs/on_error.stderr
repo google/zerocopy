@@ -1,0 +1,42 @@
+error: `on_error` is experimental; pass '--cfg zerocopy_unstable_derive_on_error' to enable
+  --> tests/ui-stable/cfgs/on_error.rs:13:10
+   |
+13 | #[derive(FromBytes)]
+   |          ^^^^^^^^^
+   |
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition name: `zerocopy_unstable_derive_on_error`
+  --> tests/ui-stable/cfgs/on_error.rs:15:12
+   |
+15 | #[zerocopy(on_error = "skip")]
+   |            ^^^^^^^^
+   |
+   = help: expected names are: `docsrs`, `feature`, and `test` and 31 more
+   = help: consider using a Cargo feature instead
+   = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+            [lints.rust]
+            unexpected_cfgs = { level = "warn", check-cfg = ['cfg(zerocopy_unstable_derive_on_error)'] }
+   = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(zerocopy_unstable_derive_on_error)");` to the top of the `build.rs`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+   = note: `#[warn(unexpected_cfgs)]` on by default
+
+error[E0277]: the trait bound `bool: FromBytes` is not satisfied
+  --> tests/ui-stable/cfgs/on_error.rs:13:10
+   |
+13 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`
+   |
+   = note: Consider adding `#[derive(FromBytes)]` to `bool`
+   = help: the following other types implement trait `FromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

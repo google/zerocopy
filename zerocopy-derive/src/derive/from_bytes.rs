@@ -117,10 +117,12 @@ fn derive_from_zeros_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Erro
         Repr::Compound(Spanned { t: CompoundRepr::C | CompoundRepr::Primitive(_), span: _ }, _) => {
         }
         Repr::Transparent(_) | Repr::Compound(Spanned { t: CompoundRepr::Rust, span: _ }, _) => {
-            return Err(Error::new(
-                Span::call_site(),
-                "must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout",
-            ));
+            return ctx.error_or_skip(
+                Error::new(
+                    Span::call_site(),
+                    "must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout",
+                ),
+            );
         }
     }
 
@@ -128,7 +130,7 @@ fn derive_from_zeros_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Erro
         Ok(index) => enm.variants.iter().nth(index).unwrap(),
         // Has unknown variants
         Err(true) => {
-            return Err(Error::new_spanned(
+            return ctx.error_or_skip(Error::new_spanned(
                 &ctx.ast,
                 "FromZeros only supported on enums with a variant that has a discriminant of `0`\n\
                 help: This enum has discriminants which are not literal integers. One of those may \
@@ -138,7 +140,7 @@ fn derive_from_zeros_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Erro
         }
         // Does not have unknown variants
         Err(false) => {
-            return Err(Error::new_spanned(
+            return ctx.error_or_skip(Error::new_spanned(
                 &ctx.ast,
                 "FromZeros only supported on enums with a variant that has a discriminant of `0`",
             ));
@@ -170,7 +172,7 @@ fn derive_from_bytes_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Erro
 
     let variants_required = 1usize << enum_size_from_repr(&repr)?;
     if enm.variants.len() != variants_required {
-        return Err(Error::new_spanned(
+        return ctx.error_or_skip(Error::new_spanned(
             &ctx.ast,
             format!(
                 "FromBytes only supported on {} enum with {} variants",
