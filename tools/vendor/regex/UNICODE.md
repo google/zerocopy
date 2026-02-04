@@ -8,8 +8,7 @@ Full support for Level 1 ("Basic Unicode Support") is provided with two
 exceptions:
 
 1. Line boundaries are not Unicode aware. Namely, only the `\n`
-   (`END OF LINE`) character is recognized as a line boundary by default.
-   One can opt into `\r\n|\r|\n` being a line boundary via CRLF mode.
+   (`END OF LINE`) character is recognized as a line boundary.
 2. The compatibility properties specified by
    [RL1.2a](https://unicode.org/reports/tr18/#RL1.2a)
    are ASCII-only definitions.
@@ -207,21 +206,21 @@ Finally, Unicode word boundaries can be disabled, which will cause ASCII word
 boundaries to be used instead. That is, `\b` is a Unicode word boundary while
 `(?-u)\b` is an ASCII-only word boundary. This can occasionally be beneficial
 if performance is important, since the implementation of Unicode word
-boundaries is currently suboptimal on non-ASCII text.
+boundaries is currently sub-optimal on non-ASCII text.
 
 
 ## RL1.5 Simple Loose Matches
 
 [UTS#18 RL1.5](https://unicode.org/reports/tr18/#Simple_Loose_Matches)
 
-The regex crate provides full support for case-insensitive matching in
+The regex crate provides full support for case insensitive matching in
 accordance with RL1.5. That is, it uses the "simple" case folding mapping. The
 "simple" mapping was chosen because of a key convenient property: every
 "simple" mapping is a mapping from exactly one code point to exactly one other
-code point. This makes case-insensitive matching of character classes, for
+code point. This makes case insensitive matching of character classes, for
 example, straight-forward to implement.
 
-When case-insensitive mode is enabled (e.g., `(?i)[a]` is equivalent to `a|A`),
+When case insensitive mode is enabled (e.g., `(?i)[a]` is equivalent to `a|A`),
 then all characters classes are case folded as well.
 
 
@@ -230,10 +229,12 @@ then all characters classes are case folded as well.
 [UTS#18 RL1.6](https://unicode.org/reports/tr18/#Line_Boundaries)
 
 The regex crate only provides support for recognizing the `\n` (`END OF LINE`)
-character as a line boundary by default. One can also opt into treating
-`\r\n|\r|\n` as a line boundary via CRLF mode. This choice was made mostly for
-implementation convenience, and to avoid performance cliffs that Unicode word
-boundaries are subject to.
+character as a line boundary. This choice was made mostly for implementation
+convenience, and to avoid performance cliffs that Unicode word boundaries are
+subject to.
+
+Ideally, it would be nice to at least support `\r\n` as a line boundary as
+well, and in theory, this could be done efficiently.
 
 
 ## RL1.7 Code Points
@@ -248,7 +249,7 @@ Given Rust's strong ties to UTF-8, the following guarantees are also provided:
 * All matches are reported on valid UTF-8 code unit boundaries. That is, any
   match range returned by the public regex API is guaranteed to successfully
   slice the string that was searched.
-* By consequence of the above, it is impossible to match surrogate code points.
+* By consequence of the above, it is impossible to match surrogode code points.
   No support for UTF-16 is provided, so this is never necessary.
 
 Note that when Unicode mode is disabled, the fundamental atom of matching is

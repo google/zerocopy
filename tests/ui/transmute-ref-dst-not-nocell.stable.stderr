@@ -1,0 +1,173 @@
+error[E0277]: the trait bound `Dst: Immutable` is not satisfied
+  --> $DIR/transmute-ref-dst-not-nocell.rs:21:33
+   |
+21 | const DST_NOT_IMMUTABLE: &Dst = transmute_ref!(&AU16(0));
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                 |
+   |                                 unsatisfied trait bound
+   |                                 required by a bound introduced by this call
+   |
+help: the trait `Immutable` is not implemented for `Dst`
+  --> $DIR/transmute-ref-dst-not-nocell.rs:18:1
+   |
+18 | struct Dst(AU16);
+   | ^^^^^^^^^^
+   = note: Consider adding `#[derive(Immutable)]` to `Dst`
+   = help: the following other types implement trait `Immutable`:
+             &T
+             &mut T
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+             (A, B, C, D, E, F, G, H, I)
+             (A, B, C, D, E, F, G, H, I, J)
+             (A, B, C, D, E, F, G, H, I, J, K)
+             (A, B, C, D, E, F, G, H, I, J, K, L)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+             (A,)
+             *const T
+             *mut T
+             AU16
+             Box<T>
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Isize<O>
+             ManuallyDrop<T>
+             NonNull<T>
+             NonZero<i128>
+             NonZero<i16>
+             NonZero<i32>
+             NonZero<i64>
+             NonZero<i8>
+             NonZero<isize>
+             NonZero<u128>
+             NonZero<u16>
+             NonZero<u32>
+             NonZero<u64>
+             NonZero<u8>
+             NonZero<usize>
+             Option<T>
+             Option<extern "C" fn() -> M>
+             Option<extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(H, I, J, K, L) -> M>
+             Option<extern "C" fn(I, J, K, L) -> M>
+             Option<extern "C" fn(J, K, L) -> M>
+             Option<extern "C" fn(K, L) -> M>
+             Option<extern "C" fn(L) -> M>
+             Option<fn() -> M>
+             Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(E, F, G, H, I, J, K, L) -> M>
+             Option<fn(F, G, H, I, J, K, L) -> M>
+             Option<fn(G, H, I, J, K, L) -> M>
+             Option<fn(H, I, J, K, L) -> M>
+             Option<fn(I, J, K, L) -> M>
+             Option<fn(J, K, L) -> M>
+             Option<fn(K, L) -> M>
+             Option<fn(L) -> M>
+             Option<unsafe extern "C" fn() -> M>
+             Option<unsafe extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(J, K, L) -> M>
+             Option<unsafe extern "C" fn(K, L) -> M>
+             Option<unsafe extern "C" fn(L) -> M>
+             Option<unsafe fn() -> M>
+             Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(G, H, I, J, K, L) -> M>
+             Option<unsafe fn(H, I, J, K, L) -> M>
+             Option<unsafe fn(I, J, K, L) -> M>
+             Option<unsafe fn(J, K, L) -> M>
+             Option<unsafe fn(K, L) -> M>
+             Option<unsafe fn(L) -> M>
+             PhantomData<T>
+             ReadOnly<T>
+             SliceDst<T, U>
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             __m128
+             __m128d
+             __m128i
+             __m256
+             __m256d
+             __m256i
+             __m512
+             __m512bh
+             __m512d
+             __m512i
+             bool
+             char
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             std::mem::MaybeUninit<T>
+             str
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
+note: required by a bound in `AssertDstIsImmutable`
+  --> $DIR/transmute-ref-dst-not-nocell.rs:21:33
+   |
+21 | const DST_NOT_IMMUTABLE: &Dst = transmute_ref!(&AU16(0));
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertDstIsImmutable`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0277`.

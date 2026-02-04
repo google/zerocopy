@@ -13,10 +13,10 @@ use std::{env, error::Error, fs};
 
 use rustc_version::{Channel, Version};
 
-struct PinnedVersions {
-    msrv: String,
-    stable: String,
-    nightly: String,
+pub struct PinnedVersions {
+    pub msrv: String,
+    pub stable: String,
+    pub nightly: String,
 }
 
 impl PinnedVersions {
@@ -26,15 +26,22 @@ impl PinnedVersions {
     /// `extract_from_pwd` expects to be called from a directory which is a
     /// child of a Cargo workspace. It extracts the pinned versions from the
     /// metadata of the root package.
-    fn extract_from_pwd() -> Result<PinnedVersions, Box<dyn Error>> {
+    pub fn extract_from_pwd() -> Result<PinnedVersions, Box<dyn Error>> {
         let manifest_dir = env::var_os("CARGO_MANIFEST_DIR")
-            .ok_or("CARGO_MANIFEST_DIR environment variable not set")?
-            .into_string()
-            .map_err(|_| "could not parse $CARGO_MANIFEST_DIR as UTF-8")?;
+            .ok_or("CARGO_MANIFEST_DIR environment variable not set")?;
+        let manifest_dir = std::path::Path::new(&manifest_dir);
+        Self::extract_from_path(manifest_dir)
+    }
+
+    pub fn extract_from_path(
+        manifest_dir: &std::path::Path,
+    ) -> Result<PinnedVersions, Box<dyn Error>> {
         let manifest_path = if manifest_dir.ends_with("zerocopy-derive") {
-            manifest_dir + "/../Cargo.toml"
+            manifest_dir.parent().unwrap().join("Cargo.toml")
+        } else if manifest_dir.ends_with("ui-runner") {
+            manifest_dir.parent().unwrap().parent().unwrap().join("Cargo.toml")
         } else {
-            manifest_dir + "/Cargo.toml"
+            manifest_dir.join("Cargo.toml")
         };
         let manifest = fs::read_to_string(manifest_path)?;
         let manifest: toml::map::Map<String, toml::Value> = toml::from_str(&manifest)?;
