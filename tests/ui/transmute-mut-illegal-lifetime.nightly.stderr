@@ -1,0 +1,9 @@
+error[E0463]: can't find crate for `zerocopy`
+  --> $DIR/transmute-mut-illegal-lifetime.rs:14:31
+   |
+14 |     let _: &'static mut u64 = zerocopy::transmute_mut!(&mut x);
+   |                               ^^^^^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.

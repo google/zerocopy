@@ -10,8 +10,13 @@
 # paths that are stable regardless of the path to the repository root. This
 # avoids issues like:
 # https://github.com/dtolnay/trybuild/issues/207#issuecomment-131227.594
-[workspace]
+[[test]]
+name = "ui"
+path = "tests/ui.rs"
+harness = false
 
+[workspace]
+members = []
 [package]
 edition = "2021"
 name = "zerocopy"
@@ -132,6 +137,6 @@ testutil = { path = "testutil" }
 # and the version used in CI are guaranteed to be the same. Future versions
 # sometimes change the output format slightly, so a version mismatch can cause
 # CI test failures.
-trybuild = { version = "=1.0.89", features = ["diff"] }
+# trybuild = { version = "=1.0.89", features = ["diff"] }
 # In tests, unlike in production, zerocopy-derive is not optional
 zerocopy-derive = { version = "=0.8.38", path = "zerocopy-derive" }
