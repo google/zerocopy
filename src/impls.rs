@@ -139,7 +139,7 @@ const _: () = unsafe { unsafe_impl!(char: Immutable, FromZeros, IntoBytes) };
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for char; |c| {
         let c = c.transmute_with::<Unalign<u32>, invariant::Valid, CastSizedExact, BecauseImmutable>();
-        let c = c.read_unaligned().into_inner();
+        let c = c.read().into_inner();
         char::from_u32(c).is_some()
     });
 };
@@ -182,7 +182,7 @@ macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
         $(
             unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
                 let n = n.transmute_with::<Unalign<$prim>, invariant::Valid, CastSizedExact, BecauseImmutable>();
-                $nonzero::new(n.read_unaligned().into_inner()).is_some()
+                $nonzero::new(n.read().into_inner()).is_some()
             });
         )*
     }
@@ -856,8 +856,11 @@ unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
     {
     }
 
-    #[inline]
-    fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool {
+    #[inline(always)]
+    fn is_bit_valid<A>(candidate: Maybe<'_, Self, A>) -> bool
+    where
+        A: invariant::Alignment,
+    {
         T::is_bit_valid(candidate.transmute::<_, _, BecauseImmutable>())
     }
 }
