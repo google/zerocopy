@@ -115,8 +115,6 @@
 //! - [`take_escaped`][crate::ascii::take_escaped]: Recognize the input slice with escaped characters
 //! - [`escaped_transform`][crate::ascii::escaped_transform]: Parse escaped characters, unescaping them
 //!
-//! - [`expression()`]: Parse an operator precedence expression with Pratt parsing
-//!
 //! ### Character test functions
 //!
 //! Use these functions with a combinator like `take_while`:
@@ -164,7 +162,6 @@
 mod branch;
 mod core;
 mod debug;
-mod expression;
 mod multi;
 mod sequence;
 
@@ -176,7 +173,6 @@ pub mod impls;
 pub use self::branch::*;
 pub use self::core::*;
 pub use self::debug::*;
-pub use self::expression::*;
 pub use self::multi::*;
 pub use self::sequence::*;
 

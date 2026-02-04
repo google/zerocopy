@@ -13,10 +13,10 @@ use std::{env, error::Error, fs};
 
 use rustc_version::{Channel, Version};
 
-struct PinnedVersions {
-    msrv: String,
-    stable: String,
-    nightly: String,
+pub struct PinnedVersions {
+    pub msrv: String,
+    pub stable: String,
+    pub nightly: String,
 }
 
 impl PinnedVersions {
@@ -26,15 +26,22 @@ impl PinnedVersions {
     /// `extract_from_pwd` expects to be called from a directory which is a
     /// child of a Cargo workspace. It extracts the pinned versions from the
     /// metadata of the root package.
-    fn extract_from_pwd() -> Result<PinnedVersions, Box<dyn Error>> {
+    pub fn extract_from_pwd() -> Result<PinnedVersions, Box<dyn Error>> {
         let manifest_dir = env::var_os("CARGO_MANIFEST_DIR")
-            .ok_or("CARGO_MANIFEST_DIR environment variable not set")?
-            .into_string()
-            .map_err(|_| "could not parse $CARGO_MANIFEST_DIR as UTF-8")?;
+            .ok_or("CARGO_MANIFEST_DIR environment variable not set")?;
+        let manifest_dir = std::path::Path::new(&manifest_dir);
+        Self::extract_from_path(manifest_dir)
+    }
+
+    pub fn extract_from_path(
+        manifest_dir: &std::path::Path,
+    ) -> Result<PinnedVersions, Box<dyn Error>> {
         let manifest_path = if manifest_dir.ends_with("zerocopy-derive") {
-            manifest_dir + "/../Cargo.toml"
+            manifest_dir.parent().unwrap().join("Cargo.toml")
+        } else if manifest_dir.ends_with("ui-runner") {
+            manifest_dir.parent().unwrap().parent().unwrap().join("Cargo.toml")
         } else {
-            manifest_dir + "/Cargo.toml"
+            manifest_dir.join("Cargo.toml")
         };
         let manifest = fs::read_to_string(manifest_path)?;
         let manifest: toml::map::Map<String, toml::Value> = toml::from_str(&manifest)?;
@@ -60,7 +67,7 @@ impl PinnedVersions {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum ToolchainVersion {
     /// The version listed as our MSRV (ie, the `package.rust-version` key in
     /// `Cargo.toml`).
@@ -185,4 +192,128 @@ pub fn set_rustflags_w_warnings() {
     env::set_var("RUSTFLAGS", rustflags);
 
     std::mem::drop(guard);
+}
+
+/// Runs the UI tests using `ui-runner`.
+pub fn run_ui_tests(toolchain: ToolchainVersion, tests_dir: &std::path::Path, extra_args: &[&str]) {
+    use ToolchainVersion::*;
+    let toolchain_arg = match toolchain {
+        PinnedMsrv => "msrv",
+        PinnedStable | OtherStable => "stable",
+        PinnedNightly | OtherNightly => "nightly",
+    };
+
+    // Find dependencies.
+    // We are running in `target/debug/deps` (or similar).
+    // The executables and rlibs are in `target/debug/deps`.
+    let current_exe = env::current_exe().unwrap();
+    let deps_dir = current_exe.parent().unwrap();
+
+    let cargo_bin = std::env::var("CARGO").unwrap_or_else(|_| "cargo".into());
+    let mut cmd = std::process::Command::new(cargo_bin);
+
+    if matches!(toolchain, ToolchainVersion::PinnedMsrv) {
+        cmd.arg("+stable");
+    }
+
+    // Invoke ui-runner
+    let current_dir = env::current_dir().unwrap();
+    let runner_work_dir = if current_dir.join("tools/ui-runner").exists() {
+        // We are at root (zerocopy package)
+        current_dir.join("tools/ui-runner")
+    } else if current_dir.join("../tools/ui-runner").exists() {
+        // We are in zerocopy-derive package
+        current_dir.join("../tools/ui-runner")
+    } else {
+        panic!("Could not locate tools/ui-runner from {}", current_dir.display());
+    };
+
+    let mut cmd = std::process::Command::new("cargo");
+    cmd.current_dir(&runner_work_dir); // Run from ui-runner dir to pick up its .cargo/config.toml
+    cmd.arg("+stable");
+    cmd.arg("run");
+    // Use manifest-path relative to CWD
+    cmd.arg("--manifest-path")
+        .arg("Cargo.toml")
+        .arg("--quiet") // Reduce noise
+        .arg("--")
+        .arg("--target-toolchain")
+        .arg(toolchain_arg)
+        .arg("--deps-dir")
+        .arg(deps_dir)
+        .arg("--tests-dir")
+        .arg(tests_dir);
+
+    // Forward RUSTFLAGS if present, but clear them for the runner process itself
+    // to avoid polluting the runner's build with nightly flags when running on stable.
+    if let Ok(rustflags) = env::var("RUSTFLAGS") {
+        cmd.env_remove("RUSTFLAGS");
+        cmd.arg(format!("--rustflags={}", rustflags));
+    }
+
+    // If we are cross-compiling, the proc-macro `zerocopy-derive` (host dependency)
+    // will NOT be in `deps_dir` (which contains target artifacts).
+    // The host deps dir is likely at `target/by-toolchain/<toolchain>/debug/deps`.
+    //
+    // Layout:
+    // Host:   .../target/by-toolchain/<toolchain>/debug/deps
+    // Target: .../target/by-toolchain/<toolchain>/<triple>/debug/deps
+    //
+    // If we are in Target, we can find Host by going up 3 levels and down into `debug/deps`.
+    let has_derive_in_deps = find_any_derive_lib(deps_dir).is_some();
+
+    if !has_derive_in_deps {
+        // Not found in current deps (likely cross-compiling). Try to find host deps.
+        if let Some(parent) = deps_dir.parent() {
+            if let Some(grandparent) = parent.parent() {
+                if let Some(great_grandparent) = grandparent.parent() {
+                    let host_deps = great_grandparent.join("debug").join("deps");
+                    if host_deps.exists() && find_any_derive_lib(&host_deps).is_some() {
+                        cmd.arg("--host-deps-dir").arg(host_deps);
+                    } else {
+                        // Fallback: Check if CARGO_ZEROCOPY_TEST_TARGET is set, mostly for debugging or strict override.
+                        if let Ok(target) = env::var("CARGO_ZEROCOPY_TEST_TARGET") {
+                            eprintln!("testutil: CARGO_ZEROCOPY_TEST_TARGET={} but could not find host deps at {:?}", target, host_deps);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Forward arguments
+    if let Some(arg_idx) = env::args().position(|a| a == "--") {
+        let args: Vec<_> = env::args().skip(arg_idx + 1).collect();
+        cmd.args(args);
+    } else {
+        cmd.args(env::args().skip(1));
+    }
+
+    cmd.args(extra_args);
+
+    eprintln!("Running ui-runner with toolchain: {}", toolchain_arg);
+    let status = cmd.status().expect("failed to spawn ui-runner");
+
+    if !status.success() {
+        panic!("ui-runner failed");
+    }
+}
+
+fn find_any_derive_lib(dir: &std::path::Path) -> Option<std::path::PathBuf> {
+    if let Ok(entries) = std::fs::read_dir(dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
+                if name.starts_with("libzerocopy_derive")
+                    && (name.ends_with(".so")
+                        || name.ends_with(".dylib")
+                        || name.ends_with(".dll")
+                        || name.ends_with(".rlib"))
+                {
+                    return Some(path);
+                }
+            }
+        }
+    }
+    None
 }

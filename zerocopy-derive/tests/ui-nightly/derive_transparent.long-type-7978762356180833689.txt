@@ -1,0 +1,1 @@
+TransparentStruct<NotZerocopy>: zerocopy_renamed::IntoBytes

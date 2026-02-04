@@ -13,9 +13,8 @@
 //! test will fail because more than one compile error will be generated.
 #![deny(deprecated)]
 
-extern crate zerocopy_renamed;
-
-use zerocopy_renamed::IntoBytes;
+extern crate zerocopy_derive;
+use zerocopy_derive::IntoBytes;
 
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]

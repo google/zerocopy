@@ -1,1 +1,0 @@
-../ui-nightly/transmute-ref-dst-not-nocell.rs

@@ -1,0 +1,80 @@
+error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+  --> $DIR/try_transmute-dst-not-tryfrombytes.rs:15:33
+   |
+15 |     let dst_not_try_from_bytes: Result<NotZerocopy, _> = try_transmute!(AU16(0));
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
+  --> $DIR/../include.rs:15:5
+   |
+15 |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `TryFromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and 153 others
+note: required by a bound in `ValidityError`
+  --> src/error.rs:588:0
+
+error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+  --> $DIR/try_transmute-dst-not-tryfrombytes.rs:15:58
+   |
+15 |     let dst_not_try_from_bytes: Result<NotZerocopy, _> = try_transmute!(AU16(0));
+   |                                                          ^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
+  --> $DIR/../include.rs:15:5
+   |
+15 |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `TryFromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and 153 others
+note: required by a bound in `zerocopy::util::macro_util::try_transmute`
+  --> src/util/macro_util.rs:510:0
+   = note: this error originates in the macro `try_transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+  --> $DIR/try_transmute-dst-not-tryfrombytes.rs:15:58
+   |
+15 |     let dst_not_try_from_bytes: Result<NotZerocopy, _> = try_transmute!(AU16(0));
+   |                                                          ^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
+  --> $DIR/../include.rs:15:5
+   |
+15 |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `TryFromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and 153 others
+note: required by a bound in `ValidityError`
+  --> src/error.rs:588:0
+   = note: this error originates in the macro `try_transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 3 previous errors
+
+For more information about this error, try `rustc --explain E0277`.
