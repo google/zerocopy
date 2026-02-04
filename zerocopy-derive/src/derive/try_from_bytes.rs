@@ -669,7 +669,11 @@ fn derive_try_from_bytes_enum(
         // SAFETY: It would be sound for the enum to implement `FromBytes`, as
         // required by `gen_trivial_is_bit_valid_unchecked`.
         (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(ctx) },
-        (None, false) => derive_is_bit_valid(ctx, enm, &repr)?,
+        (None, false) => match derive_is_bit_valid(ctx, enm, &repr) {
+            Ok(extra) => extra,
+            Err(_) if ctx.skip_on_error => return Ok(TokenStream::new()),
+            Err(e) => return Err(e),
+        },
     };
 
     Ok(ImplBlockBuilder::new(ctx, enm, Trait::TryFromBytes, FieldBounds::ALL_SELF)
@@ -685,7 +689,13 @@ fn try_gen_trivial_is_bit_valid(ctx: &Ctx, top_level: Trait) -> Option<proc_macr
     // make this no longer true. To hedge against these, we include an explicit
     // `Self: FromBytes` check in the generated `is_bit_valid`, which is
     // bulletproof.
-    if matches!(top_level, Trait::FromBytes) && ctx.ast.generics.params.is_empty() {
+    //
+    // If `ctx.skip_on_error` is true, we can't rely on the `FromBytes` derive
+    // to fail compilation if `Self` is not actually soundly `FromBytes`.
+    if matches!(top_level, Trait::FromBytes)
+        && ctx.ast.generics.params.is_empty()
+        && !ctx.skip_on_error
+    {
         let zerocopy_crate = &ctx.zerocopy_crate;
         let core = ctx.core_path();
         Some(quote!(
@@ -714,6 +724,10 @@ fn try_gen_trivial_is_bit_valid(ctx: &Ctx, top_level: Trait) -> Option<proc_macr
         None
     }
 }
+
+/// # Safety
+///
+/// All initialized bit patterns must be valid for `Self`.
 unsafe fn gen_trivial_is_bit_valid_unchecked(ctx: &Ctx) -> proc_macro2::TokenStream {
     let zerocopy_crate = &ctx.zerocopy_crate;
     let core = ctx.core_path();
