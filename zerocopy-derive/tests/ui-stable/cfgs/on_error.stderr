@@ -1,0 +1,5 @@
+error: `on_error` is experimental; pass '--cfg zerocopy_derive_on_error' to enable
+  --> tests/ui-stable/cfgs/on_error.rs:15:12
+   |
+15 | #[zerocopy(on_error = "skip")]
+   |            ^^^^^^^^

@@ -31,11 +31,12 @@ fn test(subdir: &str) {
 fn ui() {
     test("");
 
-    // This tests the behavior when `--cfg zerocopy_derive_union_into_bytes` is
-    // not present, so remove it. If this logic is wrong, that's fine - it will
-    // exhibit as a test failure that we can debug at that point.
+    // This tests the behavior when `--cfg`s are not present, so remove them. If
+    // this logic is wrong, that's fine - it will exhibit as a test failure that
+    // we can debug at that point.
     let rustflags = env::var("RUSTFLAGS").unwrap();
     let new_rustflags = rustflags.replace("--cfg zerocopy_derive_union_into_bytes", "");
+    let new_rustflags = new_rustflags.replace("--cfg zerocopy_derive_on_error", "");
 
     // SAFETY: None of our code is concurrently accessinv env vars. It's
     // possible that the test framework has spawned other threads that are
@@ -45,7 +46,7 @@ fn ui() {
         env::set_var("RUSTFLAGS", new_rustflags)
     };
 
-    test("union_into_bytes_cfg");
+    test("cfgs");
 
     // Reset RUSTFLAGS in case we later add other tests which rely on its value.
     // This isn't strictly necessary, but it's easier to add this now when we're
