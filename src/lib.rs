@@ -1713,7 +1713,9 @@ pub unsafe trait TryFromBytes {
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     /// [`Shared`]: invariant::Shared
     #[doc(hidden)]
-    fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool;
+    fn is_bit_valid<A>(candidate: Maybe<'_, Self, A>) -> bool
+    where
+        A: invariant::Alignment;
 
     /// Attempts to interpret the given `source` as a `&Self`.
     ///
@@ -2882,12 +2884,22 @@ pub unsafe trait TryFromBytes {
     /// let bytes = &mut [0x10, 0xC0, 240, 77][..];
     /// assert!(Packet::try_read_from_bytes(bytes).is_err());
     /// ```
+    ///
+    /// # Performance Considerations
+    ///
+    /// In this version of zerocopy, this method reads the `source` into a
+    /// well-aligned stack allocation and *then* validates that the allocation
+    /// is a valid `Self`. This ensures that validation can be performed using
+    /// aligned reads, which carries a performance advantage over unaligned
+    /// reads on many platforms, at the cost of an unconditional copy.
     #[must_use = "has no side effects"]
     #[inline]
     fn try_read_from_bytes(source: &[u8]) -> Result<Self, TryReadError<&[u8], Self>>
     where
         Self: Sized,
     {
+        // FIXME(#2981): If `align_of::<Self>() == 1`, validate `source` in-place.
+
         let candidate = match CoreMaybeUninit::<Self>::read_from_bytes(source) {
             Ok(candidate) => candidate,
             Err(e) => {
@@ -2943,12 +2955,22 @@ pub unsafe trait TryFromBytes {
     /// let bytes = &[0x10, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
     /// assert!(Packet::try_read_from_prefix(bytes).is_err());
     /// ```
+    ///
+    /// # Performance Considerations
+    ///
+    /// In this version of zerocopy, this method reads the `source` into a
+    /// well-aligned stack allocation and *then* validates that the allocation
+    /// is a valid `Self`. This ensures that validation can be performed using
+    /// aligned reads, which carries a performance advantage over unaligned
+    /// reads on many platforms, at the cost of an unconditional copy.
     #[must_use = "has no side effects"]
     #[inline]
     fn try_read_from_prefix(source: &[u8]) -> Result<(Self, &[u8]), TryReadError<&[u8], Self>>
     where
         Self: Sized,
     {
+        // FIXME(#2981): If `align_of::<Self>() == 1`, validate `source` in-place.
+
         let (candidate, suffix) = match CoreMaybeUninit::<Self>::read_from_prefix(source) {
             Ok(candidate) => candidate,
             Err(e) => {
@@ -3005,12 +3027,22 @@ pub unsafe trait TryFromBytes {
     /// let bytes = &[0, 1, 2, 3, 4, 5, 0x10, 0xC0, 240, 77][..];
     /// assert!(Packet::try_read_from_suffix(bytes).is_err());
     /// ```
+    ///
+    /// # Performance Considerations
+    ///
+    /// In this version of zerocopy, this method reads the `source` into a
+    /// well-aligned stack allocation and *then* validates that the allocation
+    /// is a valid `Self`. This ensures that validation can be performed using
+    /// aligned reads, which carries a performance advantage over unaligned
+    /// reads on many platforms, at the cost of an unconditional copy.
     #[must_use = "has no side effects"]
     #[inline]
     fn try_read_from_suffix(source: &[u8]) -> Result<(&[u8], Self), TryReadError<&[u8], Self>>
     where
         Self: Sized,
     {
+        // FIXME(#2981): If `align_of::<Self>() == 1`, validate `source` in-place.
+
         let (prefix, candidate) = match CoreMaybeUninit::<Self>::read_from_suffix(source) {
             Ok(candidate) => candidate,
             Err(e) => {

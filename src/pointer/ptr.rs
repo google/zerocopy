@@ -584,13 +584,13 @@ mod _conversions {
     {
         /// Reads the referent.
         #[must_use]
-        #[inline]
-        pub fn read_unaligned<R>(self) -> T
+        #[inline(always)]
+        pub fn read<R>(self) -> T
         where
             T: Copy,
             T: Read<I::Aliasing, R>,
         {
-            (*self.into_unalign().as_ref()).into_inner()
+            <I::Alignment as Alignment>::read(self)
         }
 
         /// Views the value as an aligned reference.

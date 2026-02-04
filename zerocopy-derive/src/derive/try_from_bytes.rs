@@ -369,9 +369,13 @@ pub(crate) fn derive_is_bit_valid(
         // enum's tag corresponds to one of the enum's discriminants. Then, we
         // check the bit validity of each field of the corresponding variant.
         // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid(
-            mut candidate: #zerocopy_crate::Maybe<'_, Self>,
-        ) -> #core::primitive::bool {
+        #[inline]
+        fn is_bit_valid<_ZcAlignment>(
+            mut candidate: #zerocopy_crate::Maybe<'_, Self, _ZcAlignment>,
+        ) -> #core::primitive::bool
+        where
+            _ZcAlignment: #zerocopy_crate::invariant::Alignment,
+        {
             #tag_enum
 
             type ___ZerocopyTagPrimitive = #zerocopy_crate::util::macro_util::SizeToTag<
@@ -415,7 +419,7 @@ pub(crate) fn derive_is_bit_valid(
                         #zerocopy_crate::pointer::cast::CastSized
                     >()
                 };
-                tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<#zerocopy_crate::BecauseImmutable>()
+                tag_ptr.recall_validity::<_, (_, (_, _))>().read::<#zerocopy_crate::BecauseImmutable>()
             };
 
             let mut raw_enum = candidate.cast::<
@@ -570,9 +574,13 @@ fn derive_try_from_bytes_struct(
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation
             // of `is_bit_valid`.
-            fn is_bit_valid(
-                mut candidate: #zerocopy_crate::Maybe<Self>,
-            ) -> #core::primitive::bool {
+            #[inline]
+            fn is_bit_valid<_ZcAlignment>(
+                mut candidate: #zerocopy_crate::Maybe<'_, Self, _ZcAlignment>,
+            ) -> #core::primitive::bool
+            where
+                _ZcAlignment: #zerocopy_crate::invariant::Alignment,
+            {
                 true #(&& {
                     let field_candidate =   #zerocopy_crate::into_inner!(candidate.reborrow().project::<
                         _,
@@ -614,9 +622,13 @@ fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> 
             // The bit validity of a union is not yet well defined in Rust,
             // but it is guaranteed to be no more strict than this
             // definition. See #696 for a more in-depth discussion.
-            fn is_bit_valid(
-                mut candidate: #zerocopy_crate::Maybe<'_, Self>,
-            ) -> #core::primitive::bool {
+            #[inline]
+            fn is_bit_valid<_ZcAlignment>(
+                mut candidate: #zerocopy_crate::Maybe<'_, Self, _ZcAlignment>,
+            ) -> #core::primitive::bool
+            where
+                _ZcAlignment: #zerocopy_crate::invariant::Alignment,
+            {
                 false #(|| {
                     // SAFETY:
                     // - Since `ReadOnly<Self>: Immutable` unconditionally,
@@ -690,9 +702,13 @@ fn try_gen_trivial_is_bit_valid(ctx: &Ctx, top_level: Trait) -> Option<proc_macr
         let core = ctx.core_path();
         Some(quote!(
             // SAFETY: See inline.
-            fn is_bit_valid(
-                _candidate: #zerocopy_crate::Maybe<Self>,
-            ) -> #core::primitive::bool {
+            #[inline(always)]
+            fn is_bit_valid<_ZcAlignment>(
+                _candidate: #zerocopy_crate::Maybe<'_, Self, _ZcAlignment>,
+            ) -> #core::primitive::bool
+            where
+                _ZcAlignment: #zerocopy_crate::invariant::Alignment,
+            {
                 if false {
                     fn assert_is_from_bytes<T>()
                     where
@@ -720,9 +736,13 @@ unsafe fn gen_trivial_is_bit_valid_unchecked(ctx: &Ctx) -> proc_macro2::TokenStr
     quote!(
         // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
         // promised that all initialized bit patterns are valid for `Self`.
-        fn is_bit_valid(
-            _candidate: #zerocopy_crate::Maybe<Self>,
-        ) -> #core::primitive::bool {
+        #[inline(always)]
+        fn is_bit_valid<_ZcAlignment>(
+            _candidate: #zerocopy_crate::Maybe<'_, Self, _ZcAlignment>,
+        ) -> #core::primitive::bool
+        where
+            _ZcAlignment: #zerocopy_crate::invariant::Alignment,
+        {
             true
         }
     )
