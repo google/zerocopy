@@ -12,6 +12,10 @@ use anyhow::Result;
 use cargo_hermes::pipeline::{Sorry, run_pipeline};
 use clap::{Parser, Subcommand};
 
+/// The primary CLI entry point for `cargo-hermes`.
+///
+/// This enum defines the command-line interface, which is invoked as `cargo hermes ...`.
+/// The `bin_name = "cargo"` attribute ensures that it parses correctly when called via Cargo.
 #[derive(Parser, Debug)]
 #[command(name = "cargo-hermes")]
 #[command(bin_name = "cargo")]
@@ -28,22 +32,34 @@ pub struct HermesArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
-    /// Verify the current crate
-    /// Verify a crate or script
     Verify {
-        /// Optional crate name
+        /// The name of the crate to verify.
+        ///
+        /// If not provided, it is inferred from `Cargo.toml`.
         #[arg(long)]
         crate_name: Option<String>,
-        /// Path to generated files directory
+
+        /// Destination directory where generated artifacts (Lean code, LLBC) will be output.
+        ///
+        /// Defaults to `verification`.
         #[arg(long, default_value = "verification")]
         dest: PathBuf,
-        /// Path to local Aeneas repository (specifically backends/lean)
+
+        /// Path to the local Aeneas repository (specifically `backends/lean`).
+        ///
+        /// If not provided, Hermes will attempt to fetch Aeneas from git (in `lakefile.lean`).
         #[arg(long)]
         aeneas_path: Option<PathBuf>,
-        /// Path to Cargo.toml or Cargo script
+
+        /// Path to the `Cargo.toml` manifest or a standalone Rust script.
+        ///
+        /// If pointing to a script (`.rs`), Hermes treats it as a single-file crate.
         #[arg(long)]
         manifest_path: Option<PathBuf>,
-        /// Allow missing proofs (substitutes 'sorry') and instruct Lean to accept 'sorry'
+
+        /// If set, instructs Lean to accept `sorry` (missing proofs) without failing verification.
+        ///
+        /// This is useful for incremental development.
         #[arg(long)]
         allow_sorry: bool,
     },

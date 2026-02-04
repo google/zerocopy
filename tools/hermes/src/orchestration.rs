@@ -12,16 +12,21 @@ use anyhow::{Context, Result, anyhow};
 
 /// Runs the Charon tool to extract LLBC (Low-Level Borrow Calculus) from the crate.
 ///
+/// Charon is the frontend for Aeneas. It analyzes the Rust code and produces a serialized
+/// representation of the borrow-checked IR.
+///
 /// # Arguments
 /// * `crate_root` - Path to the root of the crate to analyze.
 /// * `dest_file` - Destination path for the LLBC file (e.g. `.../crate.llbc`).
 /// * `manifest_path` - Optional path to a specific Cargo.toml or script file.
-/// * `opaque_funcs` - List of fully qualified function names to mark as opaque.
+/// * `opaque_funcs` - List of fully qualified function names to mark as opaque (Charon won't analyze their bodies).
+/// * `start_from` - List of modules to start analysis from (selective extraction).
 pub fn run_charon(
     crate_root: &Path,
     dest_file: &Path,
     manifest_path: Option<&Path>,
     opaque_funcs: &[String],
+    start_from: &[String],
 ) -> Result<()> {
     let crate_root = crate_root.to_str().unwrap();
     let dest_file = dest_file.to_str().unwrap();
@@ -29,7 +34,7 @@ pub fn run_charon(
     log::debug!("Running charon in {:?}", crate_root);
     let mut cmd = Command::new("charon");
 
-    // Avoid deadlock with outer cargo
+    // Avoid deadlock with outer cargo.
     cmd.env_remove("CARGO_TARGET_DIR");
 
     // Triggered when we convert `unsafe { ... }` into `{ ... }`.
@@ -43,6 +48,11 @@ pub fn run_charon(
     for func in opaque_funcs {
         cmd.arg("--opaque");
         cmd.arg(func);
+    }
+
+    if !start_from.is_empty() {
+        cmd.arg("--start-from");
+        cmd.arg(start_from.join(","));
     }
 
     if let Some(path) = manifest_path {

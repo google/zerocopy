@@ -12,7 +12,9 @@ use std::{
     sync::Once,
 };
 
+use anyhow::{Context, Result};
 use cargo_hermes::pipeline::{Sorry, run_pipeline};
+use walkdir::WalkDir;
 
 struct TestTempDir {
     path: PathBuf,
@@ -53,8 +55,9 @@ fn setup_env() -> (PathBuf, PathBuf) {
     let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
     let cases_dir = manifest_dir.join("tests/cases");
 
-    let aeneas_path =
-        PathBuf::from("/usr/local/google/home/joshlf/workspace/zerocopy/hermes2/aeneas");
+    let aeneas_path = env::var("AENEAS_PATH").map(PathBuf::from).unwrap_or_else(|_| {
+        PathBuf::from("/usr/local/google/home/joshlf/workspace/zerocopy/hermes2/aeneas")
+    });
     let aeneas_lean_path = aeneas_path.join("backends/lean");
 
     let charon_bin = aeneas_path.join("charon/bin");
@@ -79,46 +82,64 @@ fn setup_env() -> (PathBuf, PathBuf) {
     (cases_dir, aeneas_lean_path)
 }
 
-fn run_suite(suite_name: &str, expect_success: bool) {
-    log::debug!("Starting run_{}_cases", suite_name);
+/// Runs the full integration test suite.
+///
+/// This test harness:
+/// 1.  Locates test cases in `tests/cases/`.
+/// 2.  Sets up a cache directory for Lean builds (`target/hermes_integration_cache`) to speed up tests.
+/// 3.  Iterates over each test case, running the Hermes pipeline.
+/// 4.  Validates that successful tests pass verification and failing tests fail as expected.
+#[test]
+fn integration_tests() -> Result<()> {
+    // Enable logging for diagnostics during test failure
+    let _ = env_logger::builder().is_test(true).try_init();
+
+    let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+    // Note: setup_env actually returns cases_dir as constructed inside,
+    // but we can also just reuse the one we might have constructed.
+    // The setup_env construction is authoritative for valid paths.
     let (cases_dir, aeneas_lean_path) = setup_env();
-    let suite_dir = cases_dir.join(suite_name);
-    if suite_dir.exists() {
-        for entry in fs::read_dir(suite_dir)
-            .unwrap_or_else(|_| panic!("Failed to read {} cases dir", suite_name))
-        {
-            let entry = entry.expect("Failed to read entry");
-            let path = entry.path();
-            if path.extension().is_some_and(|e| e == "rs") {
-                let file_name = path.file_stem().unwrap().to_string_lossy().to_string();
-                if let Ok(filter) = env::var("HERMES_FILTER")
-                    && !file_name.contains(&filter)
-                {
+
+    // Collect tests
+    for entry in WalkDir::new(&cases_dir) {
+        let entry = entry?;
+        let path = entry.path();
+        if path.extension().is_some_and(|e| e == "rs") {
+            let file_name = path.file_stem().unwrap().to_string_lossy().to_string();
+
+            // HERMES_FILTER support
+            // Can be "pattern" or "!pattern"
+            if let Ok(filter) = env::var("HERMES_FILTER") {
+                if let Some(negated) = filter.strip_prefix('!') {
+                    if file_name.contains(negated) {
+                        continue;
+                    }
+                } else if !file_name.contains(&filter) {
                     continue;
                 }
-                log::info!("Running {} test case: {:?}", suite_name, path.file_name().unwrap());
-                run_case(
-                    &path,
-                    &aeneas_lean_path,
-                    Some(file_name),
-                    expect_success,
-                    Sorry::RejectSorry,
-                );
             }
+
+            let expect_fail = file_name.starts_with("fail_") || file_name.starts_with("repro_");
+
+            log::info!("Running test case: {:?}", file_name);
+            run_case(path, &aeneas_lean_path, Some(file_name), !expect_fail, Sorry::RejectSorry);
         }
     }
-}
 
-#[test]
-fn test_integration_suite() {
-    run_suite("success", true);
-    run_suite("failure", false);
-
-    // Should succeed with allow_sorry=true
-    let (cases_dir, aeneas_lean_path) = setup_env();
+    // Explicit manual test for allow_sorry
     let path = cases_dir.join("failure/missing_proof.rs");
-    log::info!("Running allow_sorry test case: {:?}", path.file_name().unwrap());
-    run_case(&path, &aeneas_lean_path, Some("missing_proof".to_string()), true, Sorry::AllowSorry);
+    if path.exists() {
+        log::info!("Running allow_sorry test case: {:?}", path.file_name().unwrap());
+        run_case(
+            &path,
+            &aeneas_lean_path,
+            Some("missing_proof".to_string()),
+            true,
+            Sorry::AllowSorry,
+        );
+    }
+
+    Ok(())
 }
 
 fn run_case(
@@ -178,7 +199,10 @@ fn run_case(
     );
 
     if expect_success {
-        result.expect("Pipeline failed for success case");
+        result.expect(&format!(
+            "Pipeline failed for success case {:?}",
+            source_path.file_name().unwrap()
+        ));
         // Assert Output
         assert!(dest.join("UserProofs.lean").exists(), "UserProofs.lean not generated");
         assert!(dest.join("lakefile.lean").exists(), "lakefile.lean not generated");
