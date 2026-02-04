@@ -277,6 +277,16 @@ pub enum BecauseExclusive {}
 #[doc(hidden)]
 pub enum BecauseImmutable {}
 
+/// Replaces a validity component.
+///
+/// The [`Self::Result`] is a validity identical `Self` except that the
+/// component corresponding to `Field` component has been replaced with
+/// `Replacement`.
+#[doc(hidden)]
+pub trait Map<Replacement: Validity, Field> {
+    type Result: Validity;
+}
+
 use sealed::Sealed;
 pub(crate) mod sealed {
     use super::*;

@@ -1123,6 +1123,11 @@ pub const UNION_VARIANT_ID: i128 = -2;
 #[doc(hidden)]
 pub const REPR_C_UNION_VARIANT_ID: i128 = -3;
 
+/// A field visibility token for public tuple fields.
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+#[doc(hidden)]
+pub struct Idx<const INDEX: u16>;
+
 /// # Safety
 ///
 /// `Self::ProjectToTag` must satisfy its safety invariant.
