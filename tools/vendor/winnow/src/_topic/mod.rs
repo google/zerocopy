@@ -25,7 +25,6 @@
 //! - [`toml_edit`](https://crates.io/crates/toml_edit)
 //! - [`hcl-edit`](https://crates.io/crates/hcl-edit)
 #![allow(clippy::std_instead_of_core)]
-#![allow(clippy::test_attr_in_doctest)]
 
 pub mod arithmetic;
 pub mod error;

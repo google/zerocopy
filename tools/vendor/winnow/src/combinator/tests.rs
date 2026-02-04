@@ -9,16 +9,16 @@ use crate::binary::u8;
 use crate::binary::Endianness;
 use crate::error::ErrMode;
 use crate::error::ParserError;
+#[cfg(feature = "alloc")]
+use crate::lib::std::borrow::ToOwned;
 use crate::prelude::*;
 use crate::stream::Stream;
 use crate::token::take;
 use crate::ModalResult;
 use crate::Partial;
-#[cfg(feature = "alloc")]
-use alloc::borrow::ToOwned;
 
 #[cfg(feature = "alloc")]
-use alloc::vec::Vec;
+use crate::lib::std::vec::Vec;
 
 #[test]
 fn eof_on_slices() {
@@ -108,7 +108,7 @@ Ok(
     );
 }
 
-use ::core::convert::From;
+use crate::lib::std::convert::From;
 impl From<u32> for CustomError {
     fn from(_: u32) -> Self {
         CustomError
@@ -1255,8 +1255,8 @@ Err(
 fn alt_test() {
     #[cfg(feature = "alloc")]
     use crate::{
-        alloc::{fmt::Debug, string::String},
         error::ParserError,
+        lib::std::{fmt::Debug, string::String},
     };
 
     #[cfg(feature = "alloc")]
@@ -3396,6 +3396,21 @@ Ok(
 "#]]
         .raw()
     );
+}
+
+#[derive(Debug, Clone, Eq, PartialEq)]
+struct NilError;
+
+impl<I: Stream> ParserError<I> for NilError {
+    type Inner = Self;
+
+    fn from_input(_: &I) -> NilError {
+        NilError
+    }
+
+    fn into_inner(self) -> Result<Self::Inner, Self> {
+        Ok(self)
+    }
 }
 
 #[test]
