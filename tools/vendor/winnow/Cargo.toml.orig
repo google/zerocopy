@@ -97,7 +97,7 @@ lto = true
 
 [package]
 name = "winnow"
-version = "0.7.14"
+version = "0.7.13"
 description = "A byte-oriented, zero-copy, parser combinators library"
 categories = ["parsing"]
 keywords = ["parser", "parser-combinators", "parsing", "streaming", "bit"]
@@ -110,7 +110,7 @@ include.workspace = true
 
 [package.metadata.docs.rs]
 features = ["unstable-doc"]
-rustdoc-args = ["--generate-link-to-definition"]
+rustdoc-args = ["--cfg", "docsrs", "--generate-link-to-definition"]
 
 [package.metadata.release]
 pre-release-replacements = [
@@ -133,23 +133,23 @@ unstable-recover = []
 unstable-doc = ["alloc", "std", "simd", "unstable-recover"]
 
 [dependencies]
-anstream = { version = "0.6.15", optional = true }
-anstyle = { version = "1.0.8", optional = true }
-is_terminal_polyfill = { version = "1.48.1", optional = true }
-memchr = { version = "2.7", optional = true, default-features = false }
-terminal_size = { version = "0.4.3", optional = true }
+anstream = { version = "0.3.2", optional = true }
+anstyle = { version = "1.0.1", optional = true }
+is_terminal_polyfill = { version = "1.48.0", optional = true }
+memchr = { version = "2.5", optional = true, default-features = false }
+terminal_size = { version = "0.4.0", optional = true }
 
 [dev-dependencies]
-proptest = "1.6.0"
+proptest = "1.2.0"
 criterion = "0.5.1"
-lexopt = "0.3.1"
+lexopt = "0.3.0"
 term-transcript = "0.2.0"
 snapbox = { version = "0.6.21", features = ["examples"] }
 circular = "0.3.0"
-rustc-hash = "2.1.1"
-automod = "1.0.15"
-annotate-snippets = "0.11.4"
-anyhow = "1.0.100"
+rustc-hash = "1.1.0"
+automod = "1.0.14"
+annotate-snippets = "0.11.3"
+anyhow = "1.0.86"
 
 [profile.bench]
 debug = true
@@ -160,10 +160,6 @@ codegen-units = 1
 name = "arithmetic"
 test = true
 required-features = ["alloc"]
-
-[[example]]
-name = "c_expression"
-required-features = ["std"]
 
 [[example]]
 name = "css"
@@ -214,12 +210,6 @@ name = "arithmetic"
 path = "examples/arithmetic/bench.rs"
 harness = false
 required-features = ["alloc"]
-
-[[bench]]
-name = "c_expression"
-path = "examples/c_expression/bench.rs"
-harness = false
-required-features = ["std"]
 
 [[bench]]
 name = "contains_token"

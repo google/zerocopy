@@ -1,0 +1,190 @@
+#!/bin/sh
+
+set -e
+D="$(dirname "$0")"
+
+# Convenience function for checking that a command exists.
+requires() {
+    cmd="$1"
+    if ! command -v "$cmd" > /dev/null 2>&1; then
+        echo "DEPENDENCY MISSING: $cmd must be installed" >&2
+        exit 1
+    fi
+}
+
+# Test if an array ($2) contains a particular element ($1).
+array_exists() {
+    needle="$1"
+    shift
+
+    for el in "$@"; do
+        if [ "$el" = "$needle" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+graphemes() {
+    regex="$(sh "$D/regex/grapheme.sh")"
+
+    echo "generating forward grapheme DFA"
+    regex-cli generate serialize sparse dfa \
+      --minimize \
+      --start-kind anchored \
+      --shrink \
+      --rustfmt \
+      --safe \
+      GRAPHEME_BREAK_FWD \
+      src/unicode/fsm/ \
+      "$regex"
+
+    echo "generating reverse grapheme DFA"
+    regex-cli generate serialize sparse dfa \
+      --minimize \
+      --start-kind anchored \
+      --reverse \
+      --match-kind all \
+      --no-captures \
+      --shrink \
+      --rustfmt \
+      --safe \
+      GRAPHEME_BREAK_REV \
+      src/unicode/fsm/ \
+      "$regex"
+}
+
+words() {
+    regex="$(sh "$D/regex/word.sh")"
+
+    echo "generating forward word DFA (this can take a while)"
+    regex-cli generate serialize sparse dfa \
+      --minimize \
+      --start-kind anchored \
+      --shrink \
+      --rustfmt \
+      --safe \
+      WORD_BREAK_FWD \
+      src/unicode/fsm/ \
+      "$regex"
+}
+
+sentences() {
+    regex="$(sh "$D/regex/sentence.sh")"
+
+    echo "generating forward sentence DFA (this can take a while)"
+    regex-cli generate serialize sparse dfa \
+      --minimize \
+      --start-kind anchored \
+      --shrink \
+      --rustfmt \
+      --safe \
+      SENTENCE_BREAK_FWD \
+      src/unicode/fsm/ \
+      "$regex"
+}
+
+regional_indicator() {
+    # For finding all occurrences of region indicators. This is used to handle
+    # regional indicators as a special case for the reverse grapheme iterator
+    # and the reverse word iterator.
+    echo "generating regional indicator DFA"
+    regex-cli generate serialize dense dfa \
+      --minimize \
+      --start-kind anchored \
+      --reverse \
+      --no-captures \
+      --shrink \
+      --rustfmt \
+      --safe \
+      REGIONAL_INDICATOR_REV \
+      src/unicode/fsm/ \
+      "\p{gcb=Regional_Indicator}"
+}
+
+simple_word() {
+    echo "generating forward simple word DFA"
+    regex-cli generate serialize sparse dfa \
+      --minimize \
+      --start-kind anchored \
+      --shrink \
+      --rustfmt \
+      --safe \
+      SIMPLE_WORD_FWD \
+      src/unicode/fsm/ \
+      "\w"
+}
+
+whitespace() {
+    echo "generating forward whitespace DFA"
+    regex-cli generate serialize dense dfa \
+      --minimize \
+      --start-kind anchored \
+      --shrink \
+      --rustfmt \
+      --safe \
+      WHITESPACE_ANCHORED_FWD \
+      src/unicode/fsm/ \
+      "\s+"
+
+    echo "generating reverse whitespace DFA"
+    regex-cli generate serialize dense dfa \
+      --minimize \
+      --start-kind anchored \
+      --reverse \
+      --no-captures \
+      --shrink \
+      --rustfmt \
+      --safe \
+      WHITESPACE_ANCHORED_REV \
+      src/unicode/fsm/ \
+      "\s+"
+}
+
+main() {
+    if array_exists "-h" "$@" || array_exists "--help" "$@"; then
+        echo "Usage: $(basename "$0") [--list-commands] [<command>] ..." >&2
+        exit
+    fi
+
+    commands="
+        graphemes
+        sentences
+        words
+        regional-indicator
+        simple-word
+        whitespace
+    "
+    if array_exists "--list-commands" "$@"; then
+        for cmd in $commands; do
+            echo "$cmd"
+        done
+        exit
+    fi
+
+    # regex-cli is used to compile regexes into DFAs.
+    # To get regex-cli, run:
+    #
+    #     cargo install --git https://github.com/rust-lang/regex regex-cli
+    #
+    # regex-cli will build DFAs, serialize them to big endian and little endian
+    # files, and then generate the Rust code to deserialize them.
+    requires regex-cli
+
+    mkdir -p src/unicode/fsm/
+
+    cmds=$*
+    if [ $# -eq 0 ] || array_exists "all" "$@"; then
+        cmds=$commands
+    fi
+    for cmd in $cmds; do
+        if array_exists "$cmd" $commands; then
+            fun="$(echo "$cmd" | sed 's/-/_/g')"
+            eval "$fun"
+        else
+            echo "unrecognized command: $cmd" >&2
+        fi
+    done
+}
+
+main "$@"

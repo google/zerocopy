@@ -5,7 +5,7 @@
 #[cfg(test)]
 mod tests;
 
-use core::ops::{Add, Shl};
+use crate::lib::std::ops::{Add, Shl};
 
 use crate::combinator::alt;
 use crate::combinator::dispatch;
@@ -1118,7 +1118,7 @@ where
             .verify_map(|s: <Input as Stream>::Slice| {
                 let s = s.as_bstr();
                 // SAFETY: Only 7-bit ASCII characters are parsed
-                let s = unsafe { core::str::from_utf8_unchecked(s) };
+                let s = unsafe { crate::lib::std::str::from_utf8_unchecked(s) };
                 Output::try_from_dec_uint(s)
             })
             .parse_next(input)
@@ -1208,7 +1208,7 @@ where
             .verify_map(|s: <Input as Stream>::Slice| {
                 let s = s.as_bstr();
                 // SAFETY: Only 7-bit ASCII characters are parsed
-                let s = unsafe { core::str::from_utf8_unchecked(s) };
+                let s = unsafe { crate::lib::std::str::from_utf8_unchecked(s) };
                 Output::try_from_dec_int(s)
             })
             .parse_next(input)
