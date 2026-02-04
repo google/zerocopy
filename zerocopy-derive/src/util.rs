@@ -9,8 +9,9 @@
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};
 use syn::{
-    parse_quote, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error, Expr, ExprLit, Field,
-    GenericParam, Ident, Index, Lit, Meta, Path, Type, Variant, Visibility, WherePredicate,
+    parse_quote, spanned::Spanned as _, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error,
+    Expr, ExprLit, Field, GenericParam, Ident, Index, Lit, Meta, Path, Type, Variant, Visibility,
+    WherePredicate,
 };
 
 use crate::repr::{CompoundRepr, EnumRepr, PrimitiveRepr, Repr, Spanned};
@@ -18,6 +19,7 @@ use crate::repr::{CompoundRepr, EnumRepr, PrimitiveRepr, Repr, Spanned};
 pub(crate) struct Ctx {
     pub(crate) ast: DeriveInput,
     pub(crate) zerocopy_crate: Path,
+    pub(crate) skip_on_error: bool,
 }
 
 impl Ctx {
@@ -25,6 +27,7 @@ impl Ctx {
     /// `::zerocopy` if not found.
     pub(crate) fn try_from_derive_input(ast: DeriveInput) -> Result<Self, Error> {
         let mut path = parse_quote!(::zerocopy);
+        let mut skip_on_error = false;
 
         for attr in &ast.attrs {
             if let Meta::List(ref meta_list) = attr.meta {
@@ -45,6 +48,27 @@ impl Ctx {
                             ));
                         }
 
+                        if meta.path.is_ident("on_error") {
+                            if cfg!(zerocopy_unstable_derive_on_error) {
+                                let value = meta.value()?;
+                                let s: Ident = value.parse()?;
+                                match s.to_string().as_str() {
+                                    "skip" => skip_on_error = true,
+                                    "fail" => skip_on_error = false,
+                                    _ => return Err(Error::new(
+                                        s.span(),
+                                        "unrecognized value for `on_error` attribute from `zerocopy`; expected `skip` or `fail`",
+                                    )),
+                                }
+                                return Ok(());
+                            }
+
+                            return Err(Error::new(
+                                meta.path.span(),
+                                "`on_error` is experimental; pass '--cfg zerocopy_unstable_derive_on_error' to enable",
+                            ));
+                        }
+
                         Err(Error::new(
                             Span::call_site(),
                             format!(
@@ -57,16 +81,28 @@ impl Ctx {
             }
         }
 
-        Ok(Self { ast, zerocopy_crate: path })
+        Ok(Self { ast, zerocopy_crate: path, skip_on_error })
     }
 
     pub(crate) fn with_input(&self, input: &DeriveInput) -> Self {
-        Self { ast: input.clone(), zerocopy_crate: self.zerocopy_crate.clone() }
+        Self {
+            ast: input.clone(),
+            zerocopy_crate: self.zerocopy_crate.clone(),
+            skip_on_error: self.skip_on_error,
+        }
     }
 
     pub(crate) fn core_path(&self) -> TokenStream {
         let zerocopy_crate = &self.zerocopy_crate;
         quote!(#zerocopy_crate::util::macro_util::core_reexport)
+    }
+
+    pub(crate) fn error_or_skip<E>(&self, error: E) -> Result<TokenStream, E> {
+        if self.skip_on_error {
+            Ok(TokenStream::new())
+        } else {
+            Err(error)
+        }
     }
 }
 
@@ -586,7 +622,10 @@ impl<'a> ImplBlockBuilder<'a> {
         });
 
         let inner_extras = self.inner_extras;
+        let allow_trivial_bounds =
+            if self.ctx.skip_on_error { quote!(#[allow(trivial_bounds)]) } else { quote!() };
         let impl_tokens = quote! {
+            #allow_trivial_bounds
             unsafe impl < #(#params),* > #trait_path for #type_ident < #(#param_idents),* >
             where
                 #(#bounds,)*

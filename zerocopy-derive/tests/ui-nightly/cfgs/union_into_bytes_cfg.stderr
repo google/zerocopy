@@ -1,6 +1,6 @@
 error: requires --cfg zerocopy_derive_union_into_bytes;
        please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802
-  --> tests/ui-nightly/union_into_bytes_cfg/union_into_bytes_cfg.rs:20:10
+  --> tests/ui-nightly/cfgs/union_into_bytes_cfg.rs:20:10
    |
 20 | #[derive(IntoBytes)]
    |          ^^^^^^^^^
@@ -8,7 +8,7 @@ error: requires --cfg zerocopy_derive_union_into_bytes;
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition name: `zerocopy_derive_union_into_bytes`
-  --> tests/ui-nightly/union_into_bytes_cfg/union_into_bytes_cfg.rs:20:10
+  --> tests/ui-nightly/cfgs/union_into_bytes_cfg.rs:20:10
    |
 20 | #[derive(IntoBytes)]
    |          ^^^^^^^^^
