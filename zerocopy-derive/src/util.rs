@@ -18,6 +18,7 @@ use crate::repr::{CompoundRepr, EnumRepr, PrimitiveRepr, Repr, Spanned};
 pub(crate) struct Ctx {
     pub(crate) ast: DeriveInput,
     pub(crate) zerocopy_crate: Path,
+    pub(crate) fail_silently: bool,
 }
 
 impl Ctx {
@@ -25,6 +26,7 @@ impl Ctx {
     /// `::zerocopy` if not found.
     pub(crate) fn try_from_derive_input(ast: DeriveInput) -> Result<Self, Error> {
         let mut path = parse_quote!(::zerocopy);
+        let mut fail_silently = false;
 
         for attr in &ast.attrs {
             if let Meta::List(ref meta_list) = attr.meta {
@@ -45,6 +47,11 @@ impl Ctx {
                             ));
                         }
 
+                        if meta.path.is_ident("derive_fail_silently") {
+                            fail_silently = true;
+                            return Ok(());
+                        }
+
                         Err(Error::new(
                             Span::call_site(),
                             format!(
@@ -57,16 +64,28 @@ impl Ctx {
             }
         }
 
-        Ok(Self { ast, zerocopy_crate: path })
+        Ok(Self { ast, zerocopy_crate: path, fail_silently })
     }
 
     pub(crate) fn with_input(&self, input: &DeriveInput) -> Self {
-        Self { ast: input.clone(), zerocopy_crate: self.zerocopy_crate.clone() }
+        Self {
+            ast: input.clone(),
+            zerocopy_crate: self.zerocopy_crate.clone(),
+            fail_silently: self.fail_silently,
+        }
     }
 
     pub(crate) fn core_path(&self) -> TokenStream {
         let zerocopy_crate = &self.zerocopy_crate;
         quote!(#zerocopy_crate::util::macro_util::core_reexport)
+    }
+
+    pub(crate) fn error_or_fail_silently<E>(&self, error: E) -> Result<TokenStream, E> {
+        if self.fail_silently {
+            Ok(TokenStream::new())
+        } else {
+            Err(error)
+        }
     }
 }
 
@@ -586,7 +605,10 @@ impl<'a> ImplBlockBuilder<'a> {
         });
 
         let inner_extras = self.inner_extras;
+        let allow_trivial_bounds =
+            if self.ctx.fail_silently { quote!(#[allow(trivial_bounds)]) } else { quote!() };
         let impl_tokens = quote! {
+            #allow_trivial_bounds
             unsafe impl < #(#params),* > #trait_path for #type_ident < #(#param_idents),* >
             where
                 #(#bounds,)*

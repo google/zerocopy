@@ -28,7 +28,7 @@ fn derive_unaligned_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream,
     } else if repr.is_c() || repr.is_transparent() {
         FieldBounds::ALL_SELF
     } else {
-        return Err(Error::new(
+        return ctx.error_or_fail_silently(Error::new(
             Span::call_site(),
             "must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment",
         ));
@@ -45,7 +45,7 @@ fn derive_unaligned_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Error
     repr.unaligned_validate_no_align_gt_1()?;
 
     if !repr.is_u8() && !repr.is_i8() {
-        return Err(Error::new(
+        return ctx.error_or_fail_silently(Error::new(
             Span::call_site(),
             "must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment",
         ));
@@ -68,7 +68,7 @@ fn derive_unaligned_union(ctx: &Ctx, unn: &DataUnion) -> Result<TokenStream, Err
     } else if repr.is_c() || repr.is_transparent() {
         FieldBounds::ALL_SELF
     } else {
-        return Err(Error::new(
+        return ctx.error_or_fail_silently(Error::new(
             Span::call_site(),
             "must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment",
         ));
