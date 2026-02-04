@@ -24,7 +24,10 @@ exclude = [".*", "tests/enum_from_bytes.rs", "tests/ui-nightly/enum_from_bytes_u
 
 [lints.rust]
 # See #1792 for more context.
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(zerocopy_derive_union_into_bytes)'] }
+unexpected_cfgs = { level = "warn", check-cfg = [
+  'cfg(zerocopy_derive_union_into_bytes)',
+  'cfg(zerocopy_unstable_derive_on_error)',
+] }
 
 [lib]
 proc-macro = true
