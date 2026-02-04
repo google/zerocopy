@@ -1,6 +1,9 @@
 use core::num::NonZeroUsize;
 
 use crate::error::Needed;
+use crate::lib::std::iter::{Cloned, Enumerate};
+use crate::lib::std::slice::Iter;
+use crate::lib::std::{cmp::Ordering, fmt, ops};
 use crate::stream::AsBStr;
 use crate::stream::Checkpoint;
 use crate::stream::Compare;
@@ -14,9 +17,6 @@ use crate::stream::SliceLen;
 use crate::stream::Stream;
 use crate::stream::StreamIsPartial;
 use crate::stream::UpdateSlice;
-use core::iter::{Cloned, Enumerate};
-use core::slice::Iter;
-use core::{cmp::Ordering, fmt, ops};
 
 /// Improved `Debug` experience for `&[u8]` UTF-8-ish streams
 #[allow(clippy::derived_hash_with_manual_eq)]
@@ -33,7 +33,7 @@ impl BStr {
 
     #[inline]
     fn from_bytes(slice: &[u8]) -> &Self {
-        unsafe { core::mem::transmute(slice) }
+        unsafe { crate::lib::std::mem::transmute(slice) }
     }
 
     #[inline]
@@ -143,7 +143,7 @@ impl<'i> Stream for &'i BStr {
     }
 
     #[inline(always)]
-    fn raw(&self) -> &dyn core::fmt::Debug {
+    fn raw(&self) -> &dyn crate::lib::std::fmt::Debug {
         self
     }
 }
@@ -222,7 +222,7 @@ where
     &'i [u8]: FindSlice<S>,
 {
     #[inline(always)]
-    fn find_slice(&self, substr: S) -> Option<core::ops::Range<usize>> {
+    fn find_slice(&self, substr: S) -> Option<crate::lib::std::ops::Range<usize>> {
         let bytes = (*self).as_bytes();
         let offset = bytes.find_slice(substr);
         offset
@@ -240,7 +240,7 @@ impl UpdateSlice for &BStr {
 impl fmt::Display for BStr {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        alloc::string::String::from_utf8_lossy(self.as_bytes()).fmt(f)
+        crate::lib::std::string::String::from_utf8_lossy(self.as_bytes()).fmt(f)
     }
 }
 
@@ -355,17 +355,17 @@ impl AsRef<BStr> for str {
 }
 
 #[cfg(feature = "alloc")]
-impl alloc::borrow::ToOwned for BStr {
-    type Owned = alloc::vec::Vec<u8>;
+impl crate::lib::std::borrow::ToOwned for BStr {
+    type Owned = crate::lib::std::vec::Vec<u8>;
 
     #[inline]
     fn to_owned(&self) -> Self::Owned {
-        alloc::vec::Vec::from(self.as_bytes())
+        crate::lib::std::vec::Vec::from(self.as_bytes())
     }
 }
 
 #[cfg(feature = "alloc")]
-impl core::borrow::Borrow<BStr> for alloc::vec::Vec<u8> {
+impl crate::lib::std::borrow::Borrow<BStr> for crate::lib::std::vec::Vec<u8> {
     #[inline]
     fn borrow(&self) -> &BStr {
         BStr::from_bytes(self.as_slice())

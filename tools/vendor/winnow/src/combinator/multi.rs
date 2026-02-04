@@ -1469,7 +1469,7 @@ where
 {
     trace("separated_foldr1", move |i: &mut Input| {
         let ol = parser.parse_next(i)?;
-        let all: alloc::vec::Vec<(Sep, Output)> =
+        let all: crate::lib::std::vec::Vec<(Sep, Output)> =
             repeat(0.., (sep.by_ref(), parser.by_ref())).parse_next(i)?;
         if let Some((s, or)) = all
             .into_iter()

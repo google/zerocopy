@@ -69,6 +69,9 @@ pub(crate) fn dfa_try_search_half_rev(
             } else if dfa.is_dead_state(sid) {
                 return Ok(mat);
             } else if dfa.is_quit_state(sid) {
+                if mat.is_some() {
+                    return Ok(mat);
+                }
                 return Err(MatchError::quit(input.haystack()[at], at).into());
             }
         }
@@ -78,8 +81,9 @@ pub(crate) fn dfa_try_search_half_rev(
         at -= 1;
         if at < min_start {
             trace!(
-                "reached position {at} which is before the previous literal \
+                "reached position {} which is before the previous literal \
 				 match, quitting to avoid quadratic behavior",
+                at,
             );
             return Err(RetryError::Quadratic(RetryQuadraticError::new()));
         }
@@ -113,8 +117,9 @@ pub(crate) fn dfa_try_search_half_rev(
         && !was_dead
     {
         trace!(
-            "reached beginning of search at offset {at} without hitting \
+            "reached beginning of search at offset {} without hitting \
              a dead state, quitting to avoid potential false positive match",
+            at,
         );
         return Err(RetryError::Quadratic(RetryQuadraticError::new()));
     }
@@ -150,6 +155,9 @@ pub(crate) fn hybrid_try_search_half_rev(
             } else if sid.is_dead() {
                 return Ok(mat);
             } else if sid.is_quit() {
+                if mat.is_some() {
+                    return Ok(mat);
+                }
                 return Err(MatchError::quit(input.haystack()[at], at).into());
             }
         }
@@ -159,8 +167,9 @@ pub(crate) fn hybrid_try_search_half_rev(
         at -= 1;
         if at < min_start {
             trace!(
-                "reached position {at} which is before the previous literal \
+                "reached position {} which is before the previous literal \
 				 match, quitting to avoid quadratic behavior",
+                at,
             );
             return Err(RetryError::Quadratic(RetryQuadraticError::new()));
         }
@@ -173,8 +182,9 @@ pub(crate) fn hybrid_try_search_half_rev(
         && !was_dead
     {
         trace!(
-            "reached beginning of search at offset {at} without hitting \
+            "reached beginning of search at offset {} without hitting \
              a dead state, quitting to avoid potential false positive match",
+            at,
         );
         return Err(RetryError::Quadratic(RetryQuadraticError::new()));
     }
@@ -199,6 +209,9 @@ fn dfa_eoi_rev(
             let pattern = dfa.match_pattern(*sid, 0);
             *mat = Some(HalfMatch::new(pattern, sp.start));
         } else if dfa.is_quit_state(*sid) {
+            if mat.is_some() {
+                return Ok(());
+            }
             return Err(MatchError::quit(byte, sp.start - 1));
         }
     } else {
@@ -233,6 +246,9 @@ fn hybrid_eoi_rev(
             let pattern = dfa.match_pattern(cache, *sid, 0);
             *mat = Some(HalfMatch::new(pattern, sp.start));
         } else if sid.is_quit() {
+            if mat.is_some() {
+                return Ok(());
+            }
             return Err(MatchError::quit(byte, sp.start - 1));
         }
     } else {

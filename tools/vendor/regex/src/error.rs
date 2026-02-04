@@ -1,9 +1,7 @@
-use alloc::string::{String, ToString};
-
-use regex_automata::meta;
+use std::fmt;
+use std::iter::repeat;
 
 /// An error that occurred during parsing or compiling a regular expression.
-#[non_exhaustive]
 #[derive(Clone, PartialEq)]
 pub enum Error {
     /// A syntax error.
@@ -29,50 +27,37 @@ pub enum Error {
     /// approaches may be appropriate. Instead, you'll have to determine just
     /// how big of a regex you want to allow.
     CompiledTooBig(usize),
+    /// Hints that destructuring should not be exhaustive.
+    ///
+    /// This enum may grow additional variants, so this makes sure clients
+    /// don't count on exhaustive matching. (Otherwise, adding a new variant
+    /// could break existing code.)
+    #[doc(hidden)]
+    __Nonexhaustive,
 }
 
-impl Error {
-    pub(crate) fn from_meta_build_error(err: meta::BuildError) -> Error {
-        if let Some(size_limit) = err.size_limit() {
-            Error::CompiledTooBig(size_limit)
-        } else if let Some(ref err) = err.syntax_error() {
-            Error::Syntax(err.to_string())
-        } else {
-            // This is a little suspect. Technically there are more ways for
-            // a meta regex to fail to build other than "exceeded size limit"
-            // and "syntax error." For example, if there are too many states
-            // or even too many patterns. But in practice this is probably
-            // good enough. The worst thing that happens is that Error::Syntax
-            // represents an error that isn't technically a syntax error, but
-            // the actual message will still be shown. So... it's not too bad.
-            //
-            // We really should have made the Error type in the regex crate
-            // completely opaque. Rookie mistake.
-            Error::Syntax(err.to_string())
-        }
-    }
-}
-
-#[cfg(feature = "std")]
-impl std::error::Error for Error {
+impl ::std::error::Error for Error {
     // TODO: Remove this method entirely on the next breaking semver release.
     #[allow(deprecated)]
     fn description(&self) -> &str {
         match *self {
             Error::Syntax(ref err) => err,
             Error::CompiledTooBig(_) => "compiled program too big",
+            Error::__Nonexhaustive => unreachable!(),
         }
     }
 }
 
-impl core::fmt::Display for Error {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             Error::Syntax(ref err) => err.fmt(f),
             Error::CompiledTooBig(limit) => write!(
                 f,
-                "Compiled regex exceeds size limit of {limit} bytes.",
+                "Compiled regex exceeds size limit of {} bytes.",
+                limit
             ),
+            Error::__Nonexhaustive => unreachable!(),
         }
     }
 }
@@ -81,20 +66,23 @@ impl core::fmt::Display for Error {
 // errors when people use `Regex::new(...).unwrap()`. It's a little weird,
 // but the `Syntax` variant is already storing a `String` anyway, so we might
 // as well format it nicely.
-impl core::fmt::Debug for Error {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+impl fmt::Debug for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             Error::Syntax(ref err) => {
-                let hr: String = core::iter::repeat('~').take(79).collect();
+                let hr: String = repeat('~').take(79).collect();
                 writeln!(f, "Syntax(")?;
-                writeln!(f, "{hr}")?;
-                writeln!(f, "{err}")?;
-                writeln!(f, "{hr}")?;
+                writeln!(f, "{}", hr)?;
+                writeln!(f, "{}", err)?;
+                writeln!(f, "{}", hr)?;
                 write!(f, ")")?;
                 Ok(())
             }
             Error::CompiledTooBig(limit) => {
                 f.debug_tuple("CompiledTooBig").field(&limit).finish()
+            }
+            Error::__Nonexhaustive => {
+                f.debug_tuple("__Nonexhaustive").finish()
             }
         }
     }

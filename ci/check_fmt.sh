@@ -15,4 +15,11 @@ if [[ -z $files ]]
 then
 	exit 1
 fi
-./cargo.sh +nightly fmt --check -- $files >&2
+
+if [[ "$1" == "--fix" ]]; then
+    FMT_FLAGS=""
+else
+    FMT_FLAGS="--check"
+fi
+
+./cargo.sh +nightly fmt $FMT_FLAGS -- $files >&2

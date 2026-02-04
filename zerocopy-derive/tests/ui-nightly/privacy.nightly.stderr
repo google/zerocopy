@@ -1,0 +1,77 @@
+error[E0463]: can't find crate for `zerocopy_derive` which `zerocopy` depends on
+  --> $DIR/privacy.rs:12:1
+   |
+12 | extern crate zerocopy_renamed;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ can't find crate
+
+error: cannot find derive macro `TryFromBytes` in this scope
+  --> $DIR/privacy.rs:21:14
+   |
+21 |     #[derive(TryFromBytes)]
+   |              ^^^^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+21 +     use zerocopy_derive::TryFromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/privacy.rs:22:7
+   |
+22 |     #[zerocopy(crate = "zerocopy_renamed")]
+   |       ^^^^^^^^
+
+error: cannot find derive macro `TryFromBytes` in this scope
+  --> $DIR/privacy.rs:41:14
+   |
+41 |     #[derive(TryFromBytes)]
+   |              ^^^^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+21 +     use zerocopy_derive::TryFromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/privacy.rs:42:7
+   |
+42 |     #[zerocopy(crate = "zerocopy_renamed")]
+   |       ^^^^^^^^
+
+error: cannot find derive macro `TryFromBytes` in this scope
+  --> $DIR/privacy.rs:58:14
+   |
+58 |     #[derive(TryFromBytes)]
+   |              ^^^^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+21 +     use zerocopy_derive::TryFromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/privacy.rs:59:7
+   |
+59 |     #[zerocopy(crate = "zerocopy_renamed")]
+   |       ^^^^^^^^
+
+error: cannot find derive macro `TryFromBytes` in this scope
+  --> $DIR/privacy.rs:70:14
+   |
+70 |     #[derive(TryFromBytes)]
+   |              ^^^^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+21 +     use zerocopy_derive::TryFromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/privacy.rs:71:7
+   |
+71 |     #[zerocopy(crate = "zerocopy_renamed")]
+   |       ^^^^^^^^
+
+error: aborting due to 9 previous errors
+
+For more information about this error, try `rustc --explain E0463`.
