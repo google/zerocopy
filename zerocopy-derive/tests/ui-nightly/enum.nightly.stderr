@@ -1,0 +1,834 @@
+error[E0463]: can't find crate for `zerocopy_derive` which `zerocopy` depends on
+  --> $DIR/enum.rs:10:1
+   |
+10 | extern crate zerocopy_renamed;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ can't find crate
+
+error: cannot find derive macro `IntoBytes` in this scope
+   --> $DIR/enum.rs:619:10
+    |
+619 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::IntoBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:620:3
+    |
+620 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `IntoBytes` in this scope
+   --> $DIR/enum.rs:613:10
+    |
+613 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::IntoBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:614:3
+    |
+614 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `IntoBytes` in this scope
+   --> $DIR/enum.rs:606:10
+    |
+606 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::IntoBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:607:3
+    |
+607 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `IntoBytes` in this scope
+   --> $DIR/enum.rs:598:10
+    |
+598 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::IntoBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:599:3
+    |
+599 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `IntoBytes` in this scope
+   --> $DIR/enum.rs:591:10
+    |
+591 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::IntoBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:592:3
+    |
+592 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `IntoBytes` in this scope
+   --> $DIR/enum.rs:586:10
+    |
+586 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::IntoBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:587:3
+    |
+587 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `IntoBytes` in this scope
+   --> $DIR/enum.rs:578:10
+    |
+578 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::IntoBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:579:3
+    |
+579 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:567:10
+    |
+567 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:568:3
+    |
+568 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:560:10
+    |
+560 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:561:3
+    |
+561 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:553:10
+    |
+553 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:554:3
+    |
+554 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:546:10
+    |
+546 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:547:3
+    |
+547 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:539:10
+    |
+539 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:540:3
+    |
+540 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:532:10
+    |
+532 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:533:3
+    |
+533 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:525:10
+    |
+525 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:526:3
+    |
+526 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:518:10
+    |
+518 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:519:3
+    |
+519 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:511:10
+    |
+511 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:512:3
+    |
+512 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:504:10
+    |
+504 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:505:3
+    |
+505 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:497:10
+    |
+497 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:498:3
+    |
+498 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:490:10
+    |
+490 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:491:3
+    |
+491 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `Unaligned` in this scope
+   --> $DIR/enum.rs:483:10
+    |
+483 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::Unaligned;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:484:3
+    |
+484 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+   --> $DIR/enum.rs:217:10
+    |
+217 | #[derive(FromBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:218:3
+    |
+218 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+   --> $DIR/enum.rs:210:10
+    |
+210 | #[derive(FromBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:211:3
+    |
+211 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+   --> $DIR/enum.rs:203:10
+    |
+203 | #[derive(FromBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:204:3
+    |
+204 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+   --> $DIR/enum.rs:196:10
+    |
+196 | #[derive(FromBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:197:3
+    |
+197 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+   --> $DIR/enum.rs:189:10
+    |
+189 | #[derive(FromBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:190:3
+    |
+190 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+   --> $DIR/enum.rs:182:10
+    |
+182 | #[derive(FromBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:183:3
+    |
+183 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+   --> $DIR/enum.rs:175:10
+    |
+175 | #[derive(FromBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:176:3
+    |
+176 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+   --> $DIR/enum.rs:168:10
+    |
+168 | #[derive(FromBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:169:3
+    |
+169 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+   --> $DIR/enum.rs:162:10
+    |
+162 | #[derive(FromBytes)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromBytes;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:163:3
+    |
+163 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromZeros` in this scope
+   --> $DIR/enum.rs:150:10
+    |
+150 | #[derive(FromZeros)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromZeros;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:151:3
+    |
+151 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromZeros` in this scope
+   --> $DIR/enum.rs:143:10
+    |
+143 | #[derive(FromZeros)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromZeros;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:144:3
+    |
+144 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromZeros` in this scope
+   --> $DIR/enum.rs:133:10
+    |
+133 | #[derive(FromZeros)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromZeros;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:134:3
+    |
+134 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromZeros` in this scope
+   --> $DIR/enum.rs:123:10
+    |
+123 | #[derive(FromZeros)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromZeros;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:124:3
+    |
+124 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromZeros` in this scope
+   --> $DIR/enum.rs:116:10
+    |
+116 | #[derive(FromZeros)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromZeros;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:117:3
+    |
+117 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromZeros` in this scope
+   --> $DIR/enum.rs:109:10
+    |
+109 | #[derive(FromZeros)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromZeros;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:110:3
+    |
+110 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `FromZeros` in this scope
+   --> $DIR/enum.rs:103:10
+    |
+103 | #[derive(FromZeros)]
+    |          ^^^^^^^^^
+    |
+help: consider importing this derive macro
+    |
+  9 + use zerocopy_derive::FromZeros;
+    |
+
+error: cannot find attribute `zerocopy` in this scope
+   --> $DIR/enum.rs:104:3
+    |
+104 | #[zerocopy(crate = "zerocopy_renamed")]
+    |   ^^^^^^^^
+
+error: cannot find derive macro `TryFromBytes` in this scope
+  --> $DIR/enum.rs:92:10
+   |
+92 | #[derive(TryFromBytes)]
+   |          ^^^^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::TryFromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:93:3
+   |
+93 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find derive macro `TryFromBytes` in this scope
+  --> $DIR/enum.rs:83:10
+   |
+83 | #[derive(TryFromBytes)]
+   |          ^^^^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::TryFromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:84:3
+   |
+84 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find derive macro `TryFromBytes` in this scope
+  --> $DIR/enum.rs:77:10
+   |
+77 | #[derive(TryFromBytes)]
+   |          ^^^^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::TryFromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:78:3
+   |
+78 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find derive macro `Immutable` in this scope
+  --> $DIR/enum.rs:66:10
+   |
+66 | #[derive(Immutable)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::Immutable;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:67:3
+   |
+67 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find derive macro `Immutable` in this scope
+  --> $DIR/enum.rs:62:10
+   |
+62 | #[derive(Immutable)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::Immutable;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:63:3
+   |
+63 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find derive macro `Immutable` in this scope
+  --> $DIR/enum.rs:56:10
+   |
+56 | #[derive(Immutable)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::Immutable;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:57:3
+   |
+57 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+  --> $DIR/enum.rs:46:10
+   |
+46 | #[derive(FromBytes)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::FromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:47:3
+   |
+47 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+  --> $DIR/enum.rs:39:10
+   |
+39 | #[derive(FromBytes)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::FromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:40:3
+   |
+40 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+  --> $DIR/enum.rs:32:10
+   |
+32 | #[derive(FromBytes)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::FromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:33:3
+   |
+33 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+  --> $DIR/enum.rs:25:10
+   |
+25 | #[derive(FromBytes)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::FromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:26:3
+   |
+26 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error: cannot find derive macro `FromBytes` in this scope
+  --> $DIR/enum.rs:18:10
+   |
+18 | #[derive(FromBytes)]
+   |          ^^^^^^^^^
+   |
+help: consider importing this derive macro
+   |
+ 9 + use zerocopy_derive::FromBytes;
+   |
+
+error: cannot find attribute `zerocopy` in this scope
+  --> $DIR/enum.rs:19:3
+   |
+19 | #[zerocopy(crate = "zerocopy_renamed")]
+   |   ^^^^^^^^
+
+error[E0552]: unrecognized representation hint
+  --> $DIR/enum.rs:27:8
+   |
+27 | #[repr(foo)]
+   |        ^^^
+   |
+   = help: valid reprs are `Rust` (default), `C`, `align`, `packed`, `transparent`, `simd`, `i8`, `u8`, `i16`, `u16`, `i32`, `u32`, `i64`, `u64`, `i128`, `u128`, `isize`, `usize`
+   = note: for more information, visit <https://doc.rust-lang.org/reference/type-layout.html?highlight=repr#representations>
+
+error[E0565]: meta item in `repr` must be an identifier
+  --> $DIR/enum.rs:20:1
+   |
+20 | #[repr("foo")]
+   | ^^^^^^^^^^^^^^
+
+error[E0566]: conflicting representation hints
+  --> $DIR/enum.rs:41:8
+   |
+41 | #[repr(u8, u16)]
+   |        ^^  ^^^
+   |
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+   = note: for more information, see issue #68585 <https://github.com/rust-lang/rust/issues/68585>
+   = note: `#[deny(conflicting_repr_hints)]` (part of `#[deny(future_incompatible)]`) on by default
+
+error: aborting due to 98 previous errors
+
+Some errors have detailed explanations: E0463, E0552, E0565, E0566.
+For more information about an error, try `rustc --explain E0463`.

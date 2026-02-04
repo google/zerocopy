@@ -1,15 +1,15 @@
-#[macro_use]
-pub(crate) mod memchr;
-pub(crate) mod packedpair;
-#[macro_use]
-pub(crate) mod substring;
+mod memchr;
 
 // For debugging, particularly in CI, print out the byte order of the current
 // target.
+#[cfg(all(feature = "std", target_endian = "little"))]
 #[test]
 fn byte_order() {
-    #[cfg(target_endian = "little")]
-    std::eprintln!("LITTLE ENDIAN");
-    #[cfg(target_endian = "big")]
-    std::eprintln!("BIG ENDIAN");
+    eprintln!("LITTLE ENDIAN");
+}
+
+#[cfg(all(feature = "std", target_endian = "big"))]
+#[test]
+fn byte_order() {
+    eprintln!("BIG ENDIAN");
 }

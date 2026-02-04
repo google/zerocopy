@@ -14,7 +14,7 @@ use crate::util::{escape::DebugByte, primitives::PatternID, utf8};
 ///
 /// It turns out that regex searches have a few parameters, and in most cases,
 /// those parameters have defaults that work in the vast majority of cases.
-/// This `Input` type exists to make that common case seamless while also
+/// This `Input` type exists to make that common case seamnless while also
 /// providing an avenue for changing the parameters of a search. In particular,
 /// this type enables doing so without a combinatorial explosion of different
 /// methods and/or superfluous parameters in the common cases.
@@ -110,14 +110,9 @@ impl<'h> Input<'h> {
     /// Create a new search configuration for the given haystack.
     #[inline]
     pub fn new<H: ?Sized + AsRef<[u8]>>(haystack: &'h H) -> Input<'h> {
-        // Perform only one call to `haystack.as_ref()` to protect from incorrect
-        // implementations that return different values from multiple calls.
-        // This is important because there's code that relies on `span` not being
-        // out of bounds with respect to the stored `haystack`.
-        let haystack = haystack.as_ref();
         Input {
-            haystack,
-            span: Span { start: 0, end: haystack.len() },
+            haystack: haystack.as_ref(),
+            span: Span { start: 0, end: haystack.as_ref().len() },
             anchored: Anchored::No,
             earliest: false,
         }
@@ -590,7 +585,7 @@ impl<'h> Input<'h> {
     /// assert_eq!(b"foobar", input.haystack());
     /// ```
     #[inline]
-    pub fn haystack(&self) -> &'h [u8] {
+    pub fn haystack(&self) -> &[u8] {
         self.haystack
     }
 
@@ -1346,7 +1341,7 @@ impl core::fmt::Display for PatternSetInsertError {
         write!(
             f,
             "failed to insert pattern ID {} into pattern set \
-             with insufficient capacity of {}",
+             with insufficiet capacity of {}",
             self.attempted.as_usize(),
             self.capacity,
         )
@@ -1694,14 +1689,13 @@ impl Anchored {
 /// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
 #[non_exhaustive]
-#[derive(Clone, Copy, Default, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum MatchKind {
     /// Report all possible matches.
     All,
     /// Report only the leftmost matches. When multiple leftmost matches exist,
     /// report the match corresponding to the part of the regex that appears
     /// first in the syntax.
-    #[default]
     LeftmostFirst,
     // There is prior art in RE2 that shows that we should be able to add
     // LeftmostLongest too. The tricky part of it is supporting ungreedy
@@ -1724,6 +1718,12 @@ impl MatchKind {
     #[cfg(feature = "alloc")]
     pub(crate) fn continue_past_first_match(&self) -> bool {
         *self == MatchKind::All
+    }
+}
+
+impl Default for MatchKind {
+    fn default() -> MatchKind {
+        MatchKind::LeftmostFirst
     }
 }
 
@@ -1902,10 +1902,10 @@ impl core::fmt::Display for MatchError {
                 offset,
             ),
             MatchErrorKind::GaveUp { offset } => {
-                write!(f, "gave up searching at offset {offset}")
+                write!(f, "gave up searching at offset {}", offset)
             }
             MatchErrorKind::HaystackTooLong { len } => {
-                write!(f, "haystack of length {len} is too long")
+                write!(f, "haystack of length {} is too long", len)
             }
             MatchErrorKind::UnsupportedAnchored { mode: Anchored::Yes } => {
                 write!(f, "anchored searches are not supported or enabled")
@@ -1965,24 +1965,5 @@ mod tests {
     fn match_error_kind_size() {
         let expected_size = 3 * core::mem::size_of::<usize>();
         assert_eq!(expected_size, core::mem::size_of::<MatchErrorKind>());
-    }
-
-    #[test]
-    fn incorrect_asref_guard() {
-        struct Bad(std::cell::Cell<bool>);
-
-        impl AsRef<[u8]> for Bad {
-            fn as_ref(&self) -> &[u8] {
-                if self.0.replace(false) {
-                    &[]
-                } else {
-                    &[0; 1000]
-                }
-            }
-        }
-
-        let bad = Bad(std::cell::Cell::new(true));
-        let input = Input::new(&bad);
-        assert!(input.end() <= input.haystack().len());
     }
 }

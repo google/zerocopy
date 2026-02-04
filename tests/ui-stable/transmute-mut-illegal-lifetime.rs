@@ -1,1 +1,0 @@
-../ui-nightly/transmute-mut-illegal-lifetime.rs

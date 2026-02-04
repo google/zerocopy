@@ -54,7 +54,7 @@ pub trait Parser<I, O, E> {
     /// [incremental parsing][StreamIsPartial], see instead [`Parser::parse_next`].
     ///
     /// This assumes the [`Parser`] intends to read all of `input` and will return an
-    /// [`eof`][crate::combinator::eof] error if it does not.
+    /// [`eof`][crate::combinator::eof] error if it does not
     /// To ignore trailing `input`, combine your parser with a [`rest`][crate::token::rest]
     /// (e.g. `(parser, rest).parse(input)`).
     ///
@@ -741,7 +741,7 @@ pub trait Parser<I, O, E> {
         Self: core::marker::Sized,
         G: FnMut(&O2) -> bool,
         I: Stream,
-        O: core::borrow::Borrow<O2>,
+        O: crate::lib::std::borrow::Borrow<O2>,
         O2: ?Sized,
         E: ParserError<I>,
     {
@@ -790,7 +790,7 @@ pub trait Parser<I, O, E> {
         I: Stream,
         E: AddContext<I, C>,
         E: ParserError<I>,
-        C: Clone + core::fmt::Debug,
+        C: Clone + crate::lib::std::fmt::Debug,
     {
         impls::Context {
             parser: self,
@@ -839,7 +839,7 @@ pub trait Parser<I, O, E> {
         E: AddContext<I, C>,
         E: ParserError<I>,
         F: Fn() -> FI + Clone,
-        C: core::fmt::Debug,
+        C: crate::lib::std::fmt::Debug,
         FI: Iterator<Item = C>,
     {
         impls::ContextWith {
@@ -1307,7 +1307,7 @@ impl_parser_for_tuples!(
 );
 
 #[cfg(feature = "alloc")]
-use alloc::boxed::Box;
+use crate::lib::std::boxed::Box;
 
 #[cfg(feature = "alloc")]
 impl<I, O, E> Parser<I, O, E> for Box<dyn Parser<I, O, E> + '_> {
@@ -1346,10 +1346,10 @@ where
     I: Stream,
     I: StreamIsPartial,
     R: FromRecoverableError<Recoverable<I, R>, E>,
-    R: core::fmt::Debug,
+    R: crate::lib::std::fmt::Debug,
     E: FromRecoverableError<Recoverable<I, R>, E>,
     E: ParserError<Recoverable<I, R>>,
-    E: core::fmt::Debug,
+    E: crate::lib::std::fmt::Debug,
 {
     fn recoverable_parse(&mut self, input: I) -> (I, Option<O>, Vec<R>) {
         debug_assert!(
@@ -1403,7 +1403,7 @@ mod tests {
     #[macro_export]
     macro_rules! assert_size (
     ($t:ty, $sz:expr) => (
-      assert!(core::mem::size_of::<$t>() <= $sz, "{} <= {} failed", core::mem::size_of::<$t>(), $sz);
+      assert!($crate::lib::std::mem::size_of::<$t>() <= $sz, "{} <= {} failed", $crate::lib::std::mem::size_of::<$t>(), $sz);
     );
   );
 

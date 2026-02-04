@@ -1,0 +1,11 @@
+{
+    "name": "Rust",
+    "image": "mcr.microsoft.com/vscode/devcontainers/rust:1",
+    "customizations": {
+        "vscode": {
+            "extensions": ["rust-lang.rust-analyzer"]
+        }
+    },
+    "postCreateCommand": "cargo install cargo-insta",
+    "remoteUser": "vscode"
+}

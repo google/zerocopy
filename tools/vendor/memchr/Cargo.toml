@@ -10,80 +10,69 @@
 # See Cargo.toml.orig for the original contents.
 
 [package]
-edition = "2021"
-rust-version = "1.61"
+edition = "2018"
 name = "memchr"
-version = "2.7.6"
+version = "2.5.0"
 authors = [
     "Andrew Gallant <jamslam@gmail.com>",
     "bluss",
 ]
-build = false
 exclude = [
+    "/bench",
     "/.github",
-    "/benchmarks",
     "/fuzz",
-    "/scripts",
-    "/tmp",
 ]
-autolib = false
-autobins = false
-autoexamples = false
-autotests = false
-autobenches = false
-description = """
-Provides extremely fast (uses SIMD on x86_64, aarch64 and wasm32) routines for
-1, 2 or 3 byte search and single substring search.
-"""
+description = "Safe interface to memchr."
 homepage = "https://github.com/BurntSushi/memchr"
 documentation = "https://docs.rs/memchr/"
 readme = "README.md"
 keywords = [
     "memchr",
-    "memmem",
-    "substring",
-    "find",
-    "search",
+    "char",
+    "scan",
+    "strchr",
+    "string",
 ]
-license = "Unlicense OR MIT"
+license = "Unlicense/MIT"
 repository = "https://github.com/BurntSushi/memchr"
 
-[package.metadata.docs.rs]
-rustdoc-args = ["--generate-link-to-definition"]
+[profile.bench]
+debug = true
 
-[features]
-alloc = []
-default = ["std"]
-libc = []
-logging = ["dep:log"]
-rustc-dep-of-std = ["core"]
-std = ["alloc"]
-use_std = ["std"]
+[profile.release]
+debug = true
+
+[profile.test]
+opt-level = 3
+debug = true
 
 [lib]
 name = "memchr"
-path = "src/lib.rs"
 bench = false
+
+[dependencies.compiler_builtins]
+version = "0.1.2"
+optional = true
 
 [dependencies.core]
 version = "1.0.0"
 optional = true
 package = "rustc-std-workspace-core"
 
-[dependencies.log]
-version = "0.4.20"
+[dependencies.libc]
+version = "0.2.18"
 optional = true
+default-features = false
 
 [dev-dependencies.quickcheck]
 version = "1.0.3"
 default-features = false
 
-[profile.bench]
-debug = 2
-
-[profile.release]
-debug = 2
-
-[profile.test]
-opt-level = 3
-debug = 2
+[features]
+default = ["std"]
+rustc-dep-of-std = [
+    "core",
+    "compiler_builtins",
+]
+std = []
+use_std = ["std"]

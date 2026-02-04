@@ -1,18 +1,16 @@
 [package]
 name = "regex-automata"
-version = "0.4.13"  #:version
+version = "0.3.9"  #:version
 authors = ["The Rust Project Developers", "Andrew Gallant <jamslam@gmail.com>"]
 description = "Automata construction and matching using regular expressions."
 documentation = "https://docs.rs/regex-automata"
-homepage = "https://github.com/rust-lang/regex/tree/master/regex-automata"
-repository = "https://github.com/rust-lang/regex"
+repository = "https://github.com/rust-lang/regex/tree/master/regex-automata"
 readme = "README.md"
 keywords = ["regex", "dfa", "automata", "automaton", "nfa"]
 license = "MIT OR Apache-2.0"
 categories = ["text-processing"]
 edition = "2021"
 autoexamples = false
-rust-version = "1.65"
 
 [lib]
 bench = false
@@ -45,7 +43,7 @@ perf = ["perf-inline", "perf-literal"]
 perf-inline = []
 perf-literal = ["perf-literal-substring", "perf-literal-multisubstring"]
 perf-literal-substring = ["aho-corasick?/perf-literal", "dep:memchr"]
-perf-literal-multisubstring = ["dep:aho-corasick"]
+perf-literal-multisubstring = ["std", "dep:aho-corasick"]
 
 # Enables all Unicode features. This expands if new Unicode features are added.
 unicode = [
@@ -87,7 +85,7 @@ internal-instrument-pikevm = ["logging", "std"]
 aho-corasick = { version = "1.0.0", optional = true, default-features = false }
 log = { version = "0.4.14", optional = true }
 memchr = { version = "2.6.0", optional = true, default-features = false }
-regex-syntax = { path = "../regex-syntax", version = "0.8.5", optional = true, default-features = false }
+regex-syntax = { path = "../regex-syntax", version = "0.7.4", optional = true, default-features = false }
 
 [dev-dependencies]
 anyhow = "1.0.69"
@@ -109,26 +107,3 @@ features = ["atty", "humantime", "termcolor"]
 [[test]]
 path = "tests/lib.rs"
 name = "integration"
-
-[package.metadata.docs.rs]
-# We want to document all features.
-all-features = true
-# Since this crate's feature setup is pretty complicated, it is worth opting
-# into a nightly unstable option to show the features that need to be enabled
-# for public API items. To do that, we set 'docsrs_regex', and when that's
-# enabled, we enable the 'doc_cfg' feature.
-#
-# To test this locally, run:
-#
-#     RUSTDOCFLAGS="--cfg docsrs_regex" cargo +nightly doc --all-features
-#
-# Note that we use `docsrs_regex` instead of the more standard `docsrs` because
-# other crates use that same `cfg` knob. And since we are enabling a nightly
-# feature, they sometimes break. By using our "own" `cfg` knob, we are closer
-# to being masters of our own destiny.
-rustdoc-args = ["--cfg", "docsrs_regex"]
-
-# This squashes the (AFAIK) erroneous warning that `docsrs_regex` is not a
-# valid `cfg` knob.
-[lints.rust]
-unexpected_cfgs = { level = "allow", check-cfg = ['cfg(docsrs_regex)'] }
