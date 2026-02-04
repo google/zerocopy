@@ -28,8 +28,8 @@ use crate::wrappers::ReadOnly;
 /// to [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
-pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unaligned> =
-    Ptr<'a, ReadOnly<T>, (Aliasing, Alignment, invariant::Initialized)>;
+pub type Maybe<'a, T, Alignment = invariant::Unaligned> =
+    Ptr<'a, ReadOnly<T>, (invariant::Shared, Alignment, invariant::Initialized)>;
 
 /// Checks if the referent is zeroed.
 pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool

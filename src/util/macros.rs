@@ -135,7 +135,10 @@ macro_rules! unsafe_impl {
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        fn is_bit_valid($candidate: Maybe<'_, Self>) -> bool {
+        fn is_bit_valid<Alignment>($candidate: Maybe<'_, Self, Alignment>) -> bool
+        where
+            Alignment: crate::invariant::Alignment,
+        {
             $is_bit_valid
         }
     };
@@ -143,7 +146,13 @@ macro_rules! unsafe_impl {
         #[allow(clippy::missing_inline_in_public_items)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        #[inline(always)] fn is_bit_valid(_candidate: Maybe<'_, Self>) -> bool { true }
+        #[inline(always)]
+        fn is_bit_valid<Alignment>(_candidate: Maybe<'_, Self, Alignment>) -> bool
+        where
+            Alignment: crate::invariant::Alignment,
+        {
+            true
+        }
     };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items, dead_code)]
@@ -217,8 +226,11 @@ macro_rules! impl_for_transmute_from {
         $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
         TryFromBytes for $ty:ty [$repr:ty]
     ) => {
-        #[inline]
-        fn is_bit_valid(candidate: $crate::Maybe<'_, Self>) -> bool {
+        #[inline(always)]
+        fn is_bit_valid<Alignment>(candidate: $crate::Maybe<'_, Self, Alignment>) -> bool
+        where
+            Alignment: $crate::invariant::Alignment,
+        {
             // SAFETY: This macro ensures that `$repr` and `Self` have the same
             // size and bit validity. Thus, a bit-valid instance of `$repr` is
             // also a bit-valid instance of `Self`.
