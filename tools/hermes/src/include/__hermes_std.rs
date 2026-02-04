@@ -27,7 +27,7 @@ pub mod ptr {
     ///@ requires h_init  : Memory.is_initialized src
     ///@ ensures |ret| Verifiable.is_valid ret
     pub unsafe fn read<T>(src: *const T) -> T {
-        unsafe { ::std::ptr::read(src) }
+        loop {}
     }
 }
 

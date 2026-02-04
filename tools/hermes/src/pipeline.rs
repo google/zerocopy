@@ -109,7 +109,7 @@ pub fn run_pipeline(
     };
 
     log::info!("Step 1: Creating Shadow Crate...");
-    let (shadow_crate_root, shadow_source_file) =
+    let (shadow_crate_root, shadow_source_file, models) =
         crate::shadow::create_shadow_crate(crate_root, source_file)?;
 
     // Remap manifest path to use shadow crate
@@ -125,7 +125,11 @@ pub fn run_pipeline(
         None
     };
 
-    run_charon(&shadow_crate_root, &llbc_path, shadow_manifest_path.as_deref())?;
+    // Prepend crate name to models
+    let opaque_funcs: Vec<String> =
+        models.iter().map(|m| format!("{}::{}", crate_name_snake, m)).collect();
+
+    run_charon(&shadow_crate_root, &llbc_path, shadow_manifest_path.as_deref(), &opaque_funcs)?;
 
     if !llbc_path.exists() {
         return Err(anyhow!("Charon did not produce expected LLBC file: {:?}", llbc_path));
@@ -203,24 +207,46 @@ fn generate_lean_file(
     structs: &[crate::parser::ParsedStruct],
     sorry_mode: Sorry,
 ) -> Result<()> {
-    let mut content = String::new();
-    content.push_str(&format!(
+    let mut user_proofs_content = String::new();
+    let mut funs_external_content = String::new();
+
+    let common_imports = format!(
         "import {}
 import Aeneas
 import Hermes.Std
 open Aeneas Aeneas.Std Result Error
 open Hermes.Std
 open Hermes.Std.Memory
-open Hermes.Std.Memory
 open Hermes.Std.Platform
 open {}.hermes_std.ptr
 set_option linter.unusedVariables false
 
-namespace {}
-
 ",
-        import_name, namespace_name, namespace_name
-    ));
+        import_name, namespace_name
+    );
+
+    // FunsExternal needs to import Types? Yes, usually via `import_name` (e.g. ShadowModel or GenericId).
+    // Actually, `import_name` usually imports `Funs` which imports `Types`.
+    // But `Funs` imports `FunsExternal`. Cycle!
+    // `FunsExternal` should only import `Types`.
+    // We assume `import {import_name}` imports the top-level generic_id.lean which imports Funs/Types?
+    // No, Aeneas structure:
+    // {Crate}.lean imports Funs, Types.
+    // Funs imports Types, FunsExternal.
+    // So FunsExternal should import Types explicitly if needed.
+    // `import_name` usually refers to the crate which might not verify yet if we are circular.
+    // Aeneas typically generates module structure: `namespace.Types`, `namespace.Funs`.
+    // We should import `{namespace_name}.Types`.
+
+    funs_external_content.push_str(&format!("import {}.Types\n", namespace_name));
+    funs_external_content.push_str("import Aeneas\n");
+    funs_external_content.push_str("import Hermes.Std\n");
+    funs_external_content.push_str("open Aeneas Aeneas.Std Result Error\n");
+    funs_external_content.push_str("open Hermes.Std\n");
+    funs_external_content.push_str(&format!("\nnamespace {}\n\n", namespace_name));
+
+    user_proofs_content.push_str(&common_imports);
+    user_proofs_content.push_str(&format!("namespace {}\n\n", namespace_name));
 
     // Write Hermes/Std.lean
     let hermes_std_path = dest.join("Hermes");
@@ -228,7 +254,8 @@ namespace {}
     fs::write(hermes_std_path.join("Std.lean"), include_str!("include/Std.lean"))?;
     fs::write(dest.join("Hermes.lean"), include_str!("Hermes.lean"))?;
 
-    // Struct Instances
+    // Struct Instances (UserProofs)
+    // ... (keep struct logic)
     // Dedup structs just in case
     let mut unique_structs = Vec::new();
     let mut seen_structs = std::collections::HashSet::new();
@@ -258,7 +285,6 @@ namespace {}
             }
         }
 
-        // Format: instance {T} [Verifiable T] : Verifiable (Wrapper T) where
         let type_str = if type_args.is_empty() {
             name.to_string()
         } else {
@@ -269,10 +295,11 @@ namespace {}
             "instance {}{} : Verifiable {} where",
             generic_params, generic_constraints, type_str
         );
-        content.push_str(&header);
-        content.push_str(&format!("\n  is_valid self := {}\n\n", invariant));
+        user_proofs_content.push_str(&header);
+        user_proofs_content.push_str(&format!("\n  is_valid self := {}\n\n", invariant));
     }
 
+    // Process Functions
     for func in functions {
         let spec_content = match &func.spec {
             Some(s) => s,
@@ -280,22 +307,17 @@ namespace {}
         };
 
         let fn_name = func.sig.ident.to_string();
-
-        let proof_body = match (&func.proof, sorry_mode, func.is_model) {
-            (Some(proof), _, _) => proof.as_str(),
-            (None, _, true) => "sorry", // Models are implicitly trusted/admitted
-            (None, Sorry::AllowSorry, _) => "sorry",
-            (None, Sorry::RejectSorry, _) => anyhow::bail!(
-                "Missing proof for function '{}'. Use --allow-sorry to fallback to sorry.",
-                fn_name
-            ),
-        };
-
-        let generics_context = SignatureTranslator::translate_generics(&func.sig.generics);
-
         let inputs: Vec<syn::FnArg> = func.sig.inputs.iter().cloned().collect();
         let is_stateful = SignatureTranslator::detect_statefulness(&inputs);
 
+        if func.is_model && is_stateful {
+            anyhow::bail!(
+                "Function '{}' is marked as a model but has mutable references. This is not supported.",
+                fn_name
+            );
+        }
+
+        let generics_context = SignatureTranslator::translate_generics(&func.sig.generics);
         let desugared = match desugar_spec(spec_content, &fn_name, &inputs, is_stateful) {
             Ok(d) => d,
             Err(e) => {
@@ -304,53 +326,177 @@ namespace {}
             }
         };
 
-        let mut signature_parts = Vec::new();
+        let mut signature_args_full = Vec::new();
         if !generics_context.is_empty() {
-            signature_parts.push(generics_context);
+            signature_args_full.push(generics_context.clone());
+        }
+        if let Some(args) = &desugared.signature_args {
+            signature_args_full.push(args.clone());
         }
 
-        if let Some(args) = desugared.signature_args {
-            signature_parts.push(args);
+        if func.is_model {
+            // Generate External Definition
+            // 1. Spec Predicate
+            // def foo_spec (args...) (ret...) : Prop := ...
+            // The desugared.predicate contains the logic.
+            // We need to construct the arguments for the spec.
+            // desugared.signature_args has (x : T). destuared.binders has names of rets.
+            // We need types for rets?
+            // desugar doesn't infer types.
+            // But usually spec is written like: `ensures |ret| ...`
+            // In Lean, we can rely on inference if we use `exists ret, ...`
+            // But for `def foo_spec args ret : Prop`, we need ret's Type.
+            // Either we parse it from the signature (RetType) or we trust user provided it?
+            // User provided `ensures |ret| ...`. No type info.
+            // So `foo_spec` signature is hard to generate fully typed without more info.
+            // However, we can define `foo_spec` as:
+            // `def foo_spec args ret := logic`
+            // relying on Lean to infer types from the logic body?
+            // Or we just inline it in the `exists`.
+            //
+            // Let's rely on the `desugar.body` which is `exists ret, ...`.
+            // Wait, `desugar.body` is designed for theorem statement: `foo_fwd ... = ...`.
+            // It is NOT the predicate `P /\ Q`.
+            // `desugared.predicate` IS the logic `P /\ Q`.
+            //
+            // Let's generate:
+            // `noncomputable def foo (args...) : Result RetType :=`
+            // `  if h : exists ret, (predicate_substituted) then`
+            //
+            // Problem: `predicate` uses binder names.
+            // We need to say `exists ret, (logic with ret)`.
+            //
+            // `desugared.predicate` is `Some("logic")`.
+            // `desugared.binders` is `["ret"]`.
+            //
+            // Content:
+            // noncomputable def {fn_name} {signature_args} : Result {RetType} :=
+            //   if h : exists {binders}, {predicate} then
+            //     let v := Classical.choose h
+            //     Result.ok v
+            //   else
+            //     Result.fail Error.panic
+            //
+            // We need `RetType`. `ParsedFunction` has `sig` which has `output`.
+            // We can translate `output` to Lean type?
+            // `translator.rs` doesn't have type translator yet.
+            // BUT `desugar` might have extracted signature args? No.
+            // `parsed_function` has `sig`.
+            //
+            // Use Aeneas naming?
+            // Aeneas usually generates `def foo ... : Result T`.
+            // If we redeclare it, we must match exactly.
+            //
+            // Alternative:
+            // Reuse the `desugared.body` which was: `exists ret, foo_fwd ... = Result.ok ret /\ logic`.
+            // This body asserts that the function matches the logic.
+            // It doesn't help us DEFINE the function.
+            //
+            // We genuinely need the return type to write the signature of `noncomputable def`.
+            //
+            // Hack: Can we avoid explicit type?
+            // `noncomputable def foo ... := ...` (infer return type?)
+            // `Result.ok (Classical.choose h)` -> implies Result T.
+            // Lean might infer it?
+            //
+            // Let's try omitting return type if possible?
+            // `noncomputable def foo {signature_args} :=`
+            //
+            // Need to ensure `signature_args` covers all args.
+            //
+            // AND `desugared.binders`: if multiple (tuple), `Classical.choose h` returns a tuple.
+            //
+            // Let's construct it.
+
+            let sig_str = signature_args_full.join(" ");
+            // Note: `signature_args` usually is `(x : U32) ...`.
+
+            let pred = desugared.predicate.as_deref().unwrap_or("True");
+            let binders_str = desugared.binders.join(" "); // "ret" or "ret1 ret2"
+
+            // "exists ret, P"
+            let exists_clause = if desugared.binders.is_empty() {
+                pred.to_string() // Just logic?
+            } else {
+                format!("exists {}, {}", binders_str, pred)
+            };
+
+            funs_external_content
+                .push_str(&format!("noncomputable def {} {} :=\n", fn_name, sig_str));
+            funs_external_content.push_str(&format!("  if h : {} then\n", exists_clause));
+            if desugared.binders.is_empty() {
+                funs_external_content.push_str("    Result.ok ()\n");
+            } else {
+                funs_external_content.push_str("    Result.ok (Classical.choose h)\n");
+            }
+            funs_external_content.push_str("  else\n    Result.fail Error.panic\n\n");
         }
 
-        // INJECT ARGUMENT VALIDITY CHECKS
-        // For each arg `x : T`, inject `(h_x : Verifiable.is_valid x)`
-        // We need to parse inputs to get names.
+        // Spec Generation (Common for Model and Verified)
+        // Standard Verified Function or Model Spec
+        let proof_body = match &func.proof {
+            Some(p) => p.as_str(),
+            None => match sorry_mode {
+                Sorry::AllowSorry => "sorry",
+                Sorry::RejectSorry => {
+                    if func.is_model {
+                        "axiom"
+                    } else {
+                        anyhow::bail!("Missing proof for '{}'.", fn_name)
+                    }
+                }
+            },
+        };
+
+        // Signature parts for UserProofs
+        let mut sig_parts = signature_args_full.clone();
+
+        // Inject Argument Validity Checks
         for arg in &inputs {
             if let syn::FnArg::Typed(pat_type) = arg
                 && let syn::Pat::Ident(pat_ident) = &*pat_type.pat
             {
                 let name = &pat_ident.ident;
-                // We assume the type is verifiable.
-                // The signature args in `desugared.signature_args` already listed them as `(x : T)`.
-                // We just append validity hypotheses.
-                // Note: This relies on `x` being available in scope, which it is in the signature.
-                signature_parts.push(format!("(h_{}_valid : Verifiable.is_valid {})", name, name));
+                sig_parts.push(format!("(h_{}_valid : Verifiable.is_valid {})", name, name));
             }
         }
 
-        for req in desugared.extra_args {
-            signature_parts.push(req);
+        for req in &desugared.extra_args {
+            sig_parts.push(req.clone());
         }
 
-        let signature = signature_parts.join(" ");
+        let signature = sig_parts.join(" ");
 
         let decl_type = if func.is_model && func.proof.is_none() { "axiom" } else { "theorem" };
+        // If proof_body is "axiom", decl_type is axiom.
+        // Actually logic above:
+        // if model and no proof -> "axiom" body? No, body is empty for axiom.
 
-        content.push_str(&format!("{} {}_spec {}\n", decl_type, fn_name, signature));
-        content.push_str(&format!("  : {}\n", desugared.body));
+        user_proofs_content.push_str(&format!("{} {}_spec {}\n", decl_type, fn_name, signature));
+        user_proofs_content.push_str(&format!("  : {}\n", desugared.body));
 
         if decl_type == "theorem" {
-            content.push_str("  :=\n");
-            content.push_str("  by\n");
-            content.push_str(proof_body);
+            user_proofs_content.push_str("  :=\n");
+            user_proofs_content.push_str("  by\n");
+            user_proofs_content.push_str(proof_body);
         }
-        content.push_str("\n\n");
+        user_proofs_content.push_str("\n\n");
     }
 
-    content.push_str(&format!("end {}\n", namespace_name));
+    user_proofs_content.push_str(&format!("end {}\n", namespace_name));
+    funs_external_content.push_str(&format!("end {}\n", namespace_name));
 
-    fs::write(dest.join("UserProofs.lean"), content).map_err(Into::into)
+    fs::write(dest.join("UserProofs.lean"), user_proofs_content)?;
+
+    // Only write FunsExternal if we have content?
+    // Aeneas generates Template if it misses it.
+    // If we write it, Aeneas should be happy.
+    // Even if empty?
+    if !funs_external_content.is_empty() {
+        fs::write(dest.join("FunsExternal.lean"), funs_external_content)?;
+    }
+
+    Ok(())
 }
 
 fn write_lakefile(

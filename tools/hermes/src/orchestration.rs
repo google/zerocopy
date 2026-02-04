@@ -16,7 +16,13 @@ use anyhow::{Context, Result, anyhow};
 /// * `crate_root` - Path to the root of the crate to analyze.
 /// * `dest_file` - Destination path for the LLBC file (e.g. `.../crate.llbc`).
 /// * `manifest_path` - Optional path to a specific Cargo.toml or script file.
-pub fn run_charon(crate_root: &Path, dest_file: &Path, manifest_path: Option<&Path>) -> Result<()> {
+/// * `opaque_funcs` - List of fully qualified function names to mark as opaque.
+pub fn run_charon(
+    crate_root: &Path,
+    dest_file: &Path,
+    manifest_path: Option<&Path>,
+    opaque_funcs: &[String],
+) -> Result<()> {
     let crate_root = crate_root.to_str().unwrap();
     let dest_file = dest_file.to_str().unwrap();
 
@@ -34,6 +40,11 @@ pub fn run_charon(crate_root: &Path, dest_file: &Path, manifest_path: Option<&Pa
     // Charon args first
     args(&mut cmd, &["--dest-file", dest_file, "--preset", "aeneas", "--error-on-warnings"]);
 
+    for func in opaque_funcs {
+        cmd.arg("--opaque");
+        cmd.arg(func);
+    }
+
     if let Some(path) = manifest_path {
         cmd.arg("--");
         if path.extension().is_some_and(|e| e == "rs") {
@@ -50,7 +61,7 @@ pub fn run_charon(crate_root: &Path, dest_file: &Path, manifest_path: Option<&Pa
     Ok(())
 }
 
-const ALL_AENEAS_BACKENDS: &str = "BorrowCheck,Builtin,Contexts,Deps,Errors,Extract,FunsAnalysis,Interp,InterpAbs,InterpBorrows,InterpExpansion,InterpExpressions,InterpJoin,InterpLoops,InterpLoopsFixedPoint,InterpMatchCtxs,InterpPaths,InterpProjectors,InterpReduceCollapse,InterpStatements,Invariants,MainLogger,PrePasses,PureMicroPasses,PureMicroPasses.simplify_aggregates_unchanged_fields,PureTypeCheck,PureUtils,RegionsHierarchy,ReorderDecls,SCC,SymbolicToPure,SymbolicToPureAbs,SymbolicToPureExpressions,SymbolicToPureTypes,SymbolicToPureValues,Translate,TypesAnalysis";
+const _ALL_AENEAS_BACKENDS: &str = "BorrowCheck,Builtin,Contexts,Deps,Errors,Extract,FunsAnalysis,Interp,InterpAbs,InterpBorrows,InterpExpansion,InterpExpressions,InterpJoin,InterpLoops,InterpLoopsFixedPoint,InterpMatchCtxs,InterpPaths,InterpProjectors,InterpReduceCollapse,InterpStatements,Invariants,MainLogger,PrePasses,PureMicroPasses,PureMicroPasses.simplify_aggregates_unchanged_fields,PureTypeCheck,PureUtils,RegionsHierarchy,ReorderDecls,SCC,SymbolicToPure,SymbolicToPureAbs,SymbolicToPureExpressions,SymbolicToPureTypes,SymbolicToPureValues,Translate,TypesAnalysis";
 
 /// Runs the Aeneas tool to translate LLBC files into Lean code.
 ///
@@ -77,6 +88,7 @@ pub fn run_aeneas(llbc_path: &Path, dest: &Path) -> Result<()> {
             llbc_path,
             "-dest",
             dest,
+            "-split-files",
         ],
     );
     let status = cmd.status().context("Failed to execute aeneas. Ensure it is in your PATH.")?;

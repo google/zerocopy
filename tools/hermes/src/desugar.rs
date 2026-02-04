@@ -6,6 +6,8 @@ pub struct DesugaredSpec {
     pub signature_args: Option<String>,
     pub extra_args: Vec<String>, // e.g., (h_safe : ...)
     pub body: String,
+    pub predicate: Option<String>,
+    pub binders: Vec<String>,
 }
 
 pub fn desugar_spec(
@@ -49,16 +51,16 @@ pub fn desugar_spec(
 
     // Construct body
     // If ensures |ret, x_final| ...
-    let body = if let Some(ens) = ensures_clause {
+    let body = if let Some(ens) = &ensures_clause {
         // Parse binders |...|
-        let (binders, logic) = parse_binders(&ens)?;
+        let (binders, logic) = parse_binders(ens)?;
         let user_logic = if !logic_lines.is_empty() {
             // Maybe prepend logic lines?
             // Actually currently valid syntax is usually `ensures |...| logic`.
             // `logic_lines` might be empty or continuations.
             // Let's assume `logic` from ensures line + `logic_lines` joined.
             let mut full = logic;
-            for l in logic_lines {
+            for l in &logic_lines {
                 full.push_str("\n  ");
                 full.push_str(l);
             }
@@ -81,10 +83,24 @@ pub fn desugar_spec(
         }
     };
 
-    Ok(DesugaredSpec { signature_args, extra_args, body })
+    let (predicate, binders) = if let Some(ens) = &ensures_clause {
+        let (binders, logic) = parse_binders(ens)?;
+        let mut full = logic;
+        if !logic_lines.is_empty() {
+            for l in &logic_lines {
+                full.push_str("\n  ");
+                full.push_str(l);
+            }
+        }
+        (Some(full), binders)
+    } else {
+        (None, Vec::new())
+    };
+
+    Ok(DesugaredSpec { signature_args, extra_args, body, predicate, binders })
 }
 
-fn parse_binders(ensures_content: &str) -> Result<(Vec<String>, String)> {
+pub fn parse_binders(ensures_content: &str) -> Result<(Vec<String>, String)> {
     // |ret, x_final| logic
     if let Some(start) = ensures_content.find('|')
         && let Some(end) = ensures_content[start + 1..].find('|')
