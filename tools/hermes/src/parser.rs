@@ -18,6 +18,7 @@ pub struct ParsedFunction {
     pub sig: syn::Signature,
     pub spec: Option<String>,
     pub proof: Option<String>,
+    pub is_model: bool,
 }
 
 pub struct ExtractedBlocks {
@@ -53,6 +54,7 @@ impl<'ast> Visit<'ast> for SpecVisitor {
         let mut spec_lines = Vec::new();
         let mut proof_lines = Vec::new();
         let mut current_mode = None; // None, Some("spec"), Some("proof")
+        let mut is_model = false;
 
         for attr in &node.attrs {
             if let Some(doc_str) = parse_doc_attr(attr) {
@@ -64,11 +66,8 @@ impl<'ast> Visit<'ast> for SpecVisitor {
                         current_mode = Some("spec");
                         spec_lines.push(content.to_string());
                     } else if let Some(content) = trimmed.strip_prefix("@ lean model") {
-                        current_mode = Some("spec"); // Treat model as spec for now? Or maybe distinct?
-                        // The design doc says "model" is for unsafe functions, "spec" for safe.
-                        // For now we treat them somewhat similarly but we might want to distinguish later.
-                        // The user prompt said: "Translate ... functions into rigorous Lean 4 theorems".
-                        // Let's just capture it as spec for now, desugarer can parse the content if needed.
+                        current_mode = Some("spec");
+                        is_model = true;
                         spec_lines.push(content.to_string());
                     } else if let Some(content) = trimmed.strip_prefix("@ proof") {
                         current_mode = Some("proof");
@@ -95,15 +94,7 @@ impl<'ast> Visit<'ast> for SpecVisitor {
         }
 
         let spec = if !spec_lines.is_empty() {
-            let full_spec = spec_lines.join("\n");
-            let trimmed_spec = full_spec.trim();
-            // Strip function name from the beginning of the spec if present?
-            // Actually, typically `lean spec foo ...` -> logic strips `foo`.
-            // But here we just capture the raw lines after `@ lean spec`.
-            // `strip_prefix("@ lean spec")` above leaves the rest of the line.
-            // e.g. `///@ lean spec foo (x : ...)` -> ` foo (x : ...)`
-            // We should trim it.
-            Some(trimmed_spec.to_string())
+            Some(spec_lines.join("\n").trim().to_string())
         } else {
             None
         };
@@ -111,7 +102,7 @@ impl<'ast> Visit<'ast> for SpecVisitor {
         let proof = if !proof_lines.is_empty() { Some(proof_lines.join("\n")) } else { None };
 
         if spec.is_some() || proof.is_some() {
-            self.functions.push(ParsedFunction { sig: node.sig.clone(), spec, proof });
+            self.functions.push(ParsedFunction { sig: node.sig.clone(), spec, proof, is_model });
         }
 
         // Continue visiting children (though heavily nested functions are rare/unsupported for specs usually)

@@ -17,4 +17,5 @@ pub mod desugar;
 pub mod orchestration;
 pub mod parser;
 pub mod pipeline;
+pub mod shadow;
 pub mod translator;

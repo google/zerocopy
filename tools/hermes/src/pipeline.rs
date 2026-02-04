@@ -101,7 +101,31 @@ pub fn run_pipeline(
         fs::remove_file(&llbc_path)?;
     }
 
-    run_charon(crate_root, &llbc_path, manifest_path.as_deref())?;
+    // Only pass manifest_path as source_file if it is an .rs file (script)
+    let source_file = if let Some(path) = &manifest_path {
+        if path.extension().map_or(false, |e| e == "rs") { Some(path.as_path()) } else { None }
+    } else {
+        None
+    };
+
+    println!("Step 1: Creating Shadow Crate...");
+    let (shadow_crate_root, shadow_source_file) =
+        crate::shadow::create_shadow_crate(crate_root, source_file)?;
+
+    // Remap manifest path to use shadow crate
+    let shadow_manifest_path = if let Some(shadow_file) = shadow_source_file {
+        Some(shadow_file)
+    } else if let Some(path) = &manifest_path {
+        if let Ok(rel) = path.strip_prefix(crate_root) {
+            Some(shadow_crate_root.join(rel))
+        } else {
+            Some(path.clone())
+        }
+    } else {
+        None
+    };
+
+    run_charon(&shadow_crate_root, &llbc_path, shadow_manifest_path.as_deref())?;
 
     if !llbc_path.exists() {
         return Err(anyhow!("Charon did not produce expected LLBC file: {:?}", llbc_path));
@@ -128,25 +152,7 @@ pub fn run_pipeline(
         return Err(anyhow!("Aeneas did not produce expected output file: {:?}", generated_camel));
     }
 
-    // Only pass manifest_path as source_file if it is an .rs file (script)
-    let source_file = if let Some(path) = &manifest_path {
-        if path.extension().map_or(false, |e| e == "rs") {
-            Some(path.as_path())
-        } else {
-            None
-        }
-    } else {
-        None
-    };
-
-    stitch_user_proofs(
-        &crate_root,
-        &crate_name_snake,
-        &camel_name,
-        dest,
-        source_file,
-        sorry_mode,
-    )?;
+    stitch_user_proofs(&crate_root, &crate_name_snake, &camel_name, dest, source_file, sorry_mode)?;
 
     println!("Step 4: Verifying...");
     write_lakefile(dest, &crate_name_snake, &camel_name, aeneas_path, sorry_mode)?;
@@ -202,6 +208,18 @@ fn generate_lean_file(
     content.push_str("open Aeneas Aeneas.Std Result Error\n\n");
     content.push_str(&format!("namespace {}\n\n", namespace_name));
 
+    // Inject OfNat instances to support numeric literals in specs (e.g. `x > 0`)
+    // We use wrapping construction (BitVec.ofNat) to avoid needing in-bounds proofs.
+    content.push_str(
+        "
+instance : OfNat U32 n where ofNat := UScalar.mk (BitVec.ofNat 32 n)
+instance : OfNat I32 n where ofNat := IScalar.mk (BitVec.ofNat 32 n)
+instance : OfNat Usize n where ofNat := UScalar.mk (BitVec.ofNat System.Platform.numBits n)
+instance : OfNat Isize n where ofNat := IScalar.mk (BitVec.ofNat System.Platform.numBits n)
+
+",
+    );
+
     for func in functions {
         let spec_content = match &func.spec {
             Some(s) => s,
@@ -210,10 +228,11 @@ fn generate_lean_file(
 
         let fn_name = func.sig.ident.to_string();
 
-        let proof_body = match (&func.proof, sorry_mode) {
-            (Some(proof), _) => proof.as_str(),
-            (None, Sorry::AllowSorry) => "sorry",
-            (None, Sorry::RejectSorry) => anyhow::bail!(
+        let proof_body = match (&func.proof, sorry_mode, func.is_model) {
+            (Some(proof), _, _) => proof.as_str(),
+            (None, _, true) => "sorry", // Models are implicitly trusted/admitted
+            (None, Sorry::AllowSorry, _) => "sorry",
+            (None, Sorry::RejectSorry, _) => anyhow::bail!(
                 "Missing proof for function '{}'. Use --allow-sorry to fallback to sorry.",
                 fn_name
             ),
@@ -247,12 +266,16 @@ fn generate_lean_file(
 
         let signature = signature_parts.join(" ");
 
-        content.push_str(&format!("theorem {}_spec {}\n", fn_name, signature));
+        let decl_type = if func.is_model && func.proof.is_none() { "axiom" } else { "theorem" };
+
+        content.push_str(&format!("{} {}_spec {}\n", decl_type, fn_name, signature));
         content.push_str(&format!("  : {}\n", desugared.body));
 
-        content.push_str("  :=\n");
-        content.push_str("  by\n");
-        content.push_str(proof_body);
+        if decl_type == "theorem" {
+            content.push_str("  :=\n");
+            content.push_str("  by\n");
+            content.push_str(proof_body);
+        }
         content.push_str("\n\n");
     }
 
