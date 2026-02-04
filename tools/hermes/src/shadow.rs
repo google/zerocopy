@@ -16,10 +16,27 @@ use quote::quote;
 use syn::{Attribute, Expr, ExprBlock, ItemFn, parse_quote, visit_mut::VisitMut};
 use walkdir::WalkDir;
 
+/// Creates a "Shadow Crate" which is a sanitized version of the original crate.
+///
+/// The Shadow Crate is where the verification actually happens. The transformation includes:
+/// 1.  **Isolating** the crate in `target/hermes_shadow` to avoid polluting the workspace.
+/// 2.  **Sanitizing** the source code by removing `unsafe` blocks and mocking functions marked as models.
+/// 3.  **Injecting** a custom prelude (`hermes_std`) to replace standard library primitives with verifiable equivalents.
+///
+/// # Arguments
+/// * `original_root` - The path to the original crate.
+/// * `source_file` - Optional path to a single source file (if running in script mode).
+///
+/// # Returns
+/// A tuple containing:
+/// 1.  Path to the shadow crate root.
+/// 2.  Optional path to the shadow source file (if script mode).
+/// 3.  List of model functions found.
+/// 4.  List of verification root functions found.
 pub fn create_shadow_crate(
     original_root: &Path,
     source_file: Option<&Path>,
-) -> Result<(PathBuf, Option<PathBuf>, Vec<String>)> {
+) -> Result<(PathBuf, Option<PathBuf>, Vec<String>, Vec<String>)> {
     // 1. Destination: target/hermes_shadow
     let shadow_root = original_root.join("target").join("hermes_shadow");
     if shadow_root.exists() {
@@ -27,9 +44,9 @@ pub fn create_shadow_crate(
     }
     fs::create_dir_all(&shadow_root)?;
 
-    // 2. Recursive Copy (only if not a single-file script, OR generally?)
-    // If it's a script, original_root might be unrelated.
-    // However, if we preserve behaviour, we might want to copy cargo lock etc?
+    // 2. Recursive Copy
+    //
+    // We copy the entire crate to ensure all dependencies and structure are preserved.
 
     // Copy Cargo.toml
     let cargo_toml = original_root.join("Cargo.toml");
@@ -64,6 +81,8 @@ pub fn create_shadow_crate(
     }
 
     // 3. Inject Shadow Std
+    //
+    // We write `hermes_std.rs` (the shim) into the shadow crate.
     let shim_path = shadow_root.join("src").join("hermes_std.rs");
     if let Some(parent) = shim_path.parent() {
         fs::create_dir_all(parent)?;
@@ -71,9 +90,14 @@ pub fn create_shadow_crate(
     fs::write(&shim_path, SHIM_CONTENT).context("Failed to write shadow std shim")?;
 
     // 4. Sanitization
-    let mut models = sanitize_crate(&shadow_root)?;
+    //
+    // Walk the entire shadow crate and apply transformations (unsafe removal, model mocking).
+    let (mut models, mut roots) = sanitize_crate(&shadow_root)?;
 
-    // 5. Handle Single Source File (Write it now so we can inject prelude)
+    // 5. Handle Single Source File (Script Mode)
+    //
+    // If we are verifying a single file script, we need to copy it into the shadow `src/`
+    // so it can see `hermes_std` as a sibling.
     let shadow_source_file = if let Some(source) = source_file {
         let file_name = source.file_name().context("Invalid source file name")?;
         // Move to src/ so it can see __hermes_std.rs as a sibling module
@@ -82,45 +106,61 @@ pub fn create_shadow_crate(
             fs::create_dir_all(parent)?;
         }
         // Sanitize and write
-        let file_models = process_file_content(source, &dest_path)?;
+        let (file_models, file_roots) = process_file_content(source, &dest_path)?;
         models.extend(file_models);
+        roots.extend(file_roots);
         Some(dest_path)
     } else {
         None
     };
 
     // 6. Inject Prelude into Crate Roots
-    let mut roots = Vec::new();
+    //
+    // We force `lib.rs`, `main.rs`, or the script file to include `mod hermes_std;`
+    // and `use hermes_std as std;`.
+    let mut crate_roots = Vec::new();
     if let Some(dest_path) = &shadow_source_file {
-        roots.push(dest_path.clone());
+        crate_roots.push(dest_path.clone());
     } else {
         // Standard crate structure
         let lib_rs = shadow_root.join("src").join("lib.rs");
         if lib_rs.exists() {
-            roots.push(lib_rs);
+            crate_roots.push(lib_rs);
         }
         let main_rs = shadow_root.join("src").join("main.rs");
         if main_rs.exists() {
-            roots.push(main_rs);
+            crate_roots.push(main_rs);
         }
     }
 
-    for root in roots {
+    for root in crate_roots {
         inject_prelude(&root)?;
     }
 
     // Return
-    Ok((shadow_root, shadow_source_file, models))
+    Ok((shadow_root, shadow_source_file, models, roots))
 }
 
 const SHIM_CONTENT: &str = include_str!("include/__hermes_std.rs");
 
+/// Injects a custom prelude into the crate root (`lib.rs`, `main.rs`, etc.).
+///
+/// This does two key things:
+/// 1.  Adds `#![no_implicit_prelude]` to disable the normal Rust standard library.
+/// 2.  Injects `mod hermes_std;` and re-exports it as `std` and `core`.
+///
+/// This effectively mocks the standard library, allowing us to control the definitions
+/// of primitives like pointers and memory operations during verification.
 fn inject_prelude(path: &Path) -> Result<()> {
     if !path.exists() {
         return Ok(());
     }
     let content = fs::read_to_string(path)?;
 
+    // Avoid double injection
+    //
+    // TODO: This is brittle. We should instead do this with `syn` during
+    // parsing.
     if content.contains("#![no_implicit_prelude]") {
         return Ok(());
     }
@@ -131,6 +171,8 @@ fn inject_prelude(path: &Path) -> Result<()> {
     ast.attrs.push(parse_quote!(#![no_implicit_prelude]));
 
     // 2. Prepare Injection Items
+    //
+    // We shadow `std` and `core` with our shim.
     let prelude_items: Vec<syn::Item> = vec![
         // mod hermes_std;
         parse_quote!(
@@ -147,20 +189,12 @@ fn inject_prelude(path: &Path) -> Result<()> {
             use crate::hermes_std as core;
         ),
         // use std::prelude::rust_2021::*;
+        //
+        // This brings back the *convenience* items (Option, Result, etc.) but from OUR std.
         parse_quote!(
             #[allow(unused_imports)]
             use std::prelude::rust_2021::*;
         ),
-        // mod charon { pub use charon_macros::opaque; }
-        // We need `charon_macros` to exist or be faked.
-        // Actually, since we rewrite the crate, we can just define a dummy `opaque` attribute logic?
-        // Rustc allows custom attributes if they are mapped to a tool or via `register_tool` (nightly).
-        // For stable, we might need a dummy macro or just `allow` it?
-        // But `#[charon::opaque]` looks like a path attribute.
-        // Let's define: `pub mod charon { pub use crate::hermes_std::opaque; }`
-        // and in `hermes_std` define `pub use ...`?
-        // Simpler: define `mod charon` right here which exports a dummy `opaque` attribute macro?
-        // Attributes must be macros.
     ];
     // 3. Insert at the beginning of items (AFTER inner attributes)
     ast.items.splice(0..0, prelude_items);
@@ -170,7 +204,7 @@ fn inject_prelude(path: &Path) -> Result<()> {
     Ok(())
 }
 
-fn process_file_content(src: &Path, dest: &Path) -> Result<Vec<String>> {
+fn process_file_content(src: &Path, dest: &Path) -> Result<(Vec<String>, Vec<String>)> {
     let content = fs::read_to_string(src)?;
     let mut ast = syn::parse_file(&content)?;
 
@@ -179,31 +213,28 @@ fn process_file_content(src: &Path, dest: &Path) -> Result<Vec<String>> {
 
     let new_content = quote!(#ast).to_string();
     fs::write(dest, new_content)?;
-    Ok(visitor.models)
+    Ok((visitor.models, visitor.roots))
 }
 
-fn sanitize_crate(root: &Path) -> Result<Vec<String>> {
+/// Walks the crate's `src` directory and sanitizes every `.rs` file.
+///
+/// Use `ShadowVisitor` to transform the code in-place.
+fn sanitize_crate(root: &Path) -> Result<(Vec<String>, Vec<String>)> {
     let src_dir = root.join("src");
     let mut all_models = Vec::new();
+    let mut all_roots = Vec::new();
     if !src_dir.exists() {
-        return Ok(all_models);
+        return Ok((all_models, all_roots));
     }
 
     for entry in WalkDir::new(&src_dir) {
         let entry = entry?;
         if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "rs") {
             let relative = entry.path().strip_prefix(&src_dir)?;
-            // Map file path to module path (simplistic: foo/bar.rs -> foo::bar)
-            // Note: ShadowVisitor tracks `current_path` relative to the file.
-            // We need to prepend the module path derived from file structure?
-            // Wait, ShadowVisitor `current_path` is empty at file root.
-            // But if we are processing `src/foo/bar.rs`, the functions in it are in `foo::bar`.
-            // `ShadowVisitor` doesn't know this external context unless we tell it.
-            // OR we fix up the returned models.
-            // `visitor.models` will contain e.g. `my_func` or `inner::my_func`.
-            // We need to prepend `foo::bar`.
 
             // Logic for module path:
+            // This is needed to reconstruct the fully qualified name of models/roots
+            // so we can tell Charon/Aeneas exactly what to extract.
             let components: Vec<_> = relative
                 .with_extension("")
                 .iter()
@@ -218,18 +249,24 @@ fn sanitize_crate(root: &Path) -> Result<Vec<String>> {
                 mod_path.push(comp.clone());
             }
 
-            let file_models = process_file(entry.path())?;
+            let (file_models, file_roots) = process_file(entry.path())?;
+            let make_full = |m: String| {
+                if mod_path.is_empty() { m } else { format!("{}::{}", mod_path.join("::"), m) }
+            };
+
             for m in file_models {
-                let full =
-                    if mod_path.is_empty() { m } else { format!("{}::{}", mod_path.join("::"), m) };
-                all_models.push(full);
+                all_models.push(make_full(m));
+            }
+            for r in file_roots {
+                all_roots.push(make_full(r));
             }
         }
     }
-    Ok(all_models)
+    Ok((all_models, all_roots))
 }
 
-fn process_file(path: &Path) -> Result<Vec<String>> {
+/// Reads a single file, sanitizes it using `ShadowVisitor`, and writes it back.
+fn process_file(path: &Path) -> Result<(Vec<String>, Vec<String>)> {
     let content = fs::read_to_string(path)?;
     let mut ast = syn::parse_file(&content)?;
 
@@ -238,17 +275,29 @@ fn process_file(path: &Path) -> Result<Vec<String>> {
 
     let new_content = quote!(#ast).to_string();
     fs::write(path, new_content)?;
-    Ok(visitor.models)
+    Ok((visitor.models, visitor.roots))
 }
 
+/// A `syn::VisitMut` visitor that transforms the AST for the Shadow Crate.
+///
+/// Key transformations:
+/// 1.  **Unwrap Unsafe**: Converts `unsafe { ... }` blocks into normal `{ ... }` blocks (retaining attributes).
+///     This exposes the inner code to the safe Rust parser/verification tools.
+/// 2.  **Model Substitution**: For functions marked `///@ lean model`:
+///     *   Replaces the body with `loop {}` (diverging).
+///     *   Removes `unsafe` from the signature.
+///     *   Adds `#[allow(unused_variables)]`.
+///     This allows us to verify code that calls these functions by assuming their behavior (defined in Lean)
+///     without having to verify their Rust implementation (which might use intrinsics or complex unsafe code).
 struct ShadowVisitor {
     current_path: Vec<String>,
     models: Vec<String>,
+    roots: Vec<String>,
 }
 
 impl ShadowVisitor {
     fn new() -> Self {
-        Self { current_path: Vec::new(), models: Vec::new() }
+        Self { current_path: Vec::new(), models: Vec::new(), roots: Vec::new() }
     }
 }
 
@@ -260,55 +309,65 @@ impl VisitMut for ShadowVisitor {
     }
 
     fn visit_item_fn_mut(&mut self, node: &mut ItemFn) {
-        let (is_model, _model_requires) = parse_model_specs(&node.attrs);
+        let (is_model, is_root, _model_requires) = parse_model_specs(&node.attrs);
+
+        if is_root {
+            let mut full_path = self.current_path.clone();
+            full_path.push(node.sig.ident.to_string());
+            self.roots.push(full_path.join("::"));
+        }
 
         if is_model {
-             // Collect model name
-             let mut full_path = self.current_path.clone();
-             full_path.push(node.sig.ident.to_string());
-             self.models.push(full_path.join("::"));
+            // Collect model name
+            let mut full_path = self.current_path.clone();
+            full_path.push(node.sig.ident.to_string());
+            self.models.push(full_path.join("::"));
 
-             // Case A: Model Strategy
-             // 1. Remove unsafe (if present)
-             node.sig.unsafety = None;
+            // Case A: Model Strategy
+            // 1. Remove unsafe (if present)
+            node.sig.unsafety = None;
 
-             // 2. Replace body with loop {} (Diverge)
-             let body_content = quote! {
-                 {
-                     loop {}
-                 }
-             };
+            // 2. Replace body with loop {} (Diverge)
+            //
+            // This is the key trick: Charon sees a function that ostensibly matches the signature
+            // but loops forever. Since we mark it "opaque" in Charon, it doesn't try to analyze the loop.
+            // In Lean, we provide a `noncomputable def` for it.
+            let body_content = quote! {
+                {
+                    loop {}
+                }
+            };
 
-             let block: syn::Block = syn::parse2(body_content).expect("Failed to parse loop body");
-             *node.block = block;
+            let block: syn::Block = syn::parse2(body_content).expect("Failed to parse loop body");
+            *node.block = block;
 
-             // Append #[allow(unused_variables)] if not present
-             let has_allow_unused = node.attrs.iter().any(|attr| {
-                 if attr.path().is_ident("allow") {
-                     if let syn::Meta::List(list) = &attr.meta {
-                         return list.tokens.to_string().contains("unused_variables");
-                     }
-                 }
-                 false
-             });
+            // Append #[allow(unused_variables)] if not present
+            let has_allow_unused = node.attrs.iter().any(|attr| {
+                if attr.path().is_ident("allow") {
+                    if let syn::Meta::List(list) = &attr.meta {
+                        return list.tokens.to_string().contains("unused_variables");
+                    }
+                }
+                false
+            });
 
-             if !has_allow_unused {
-                 node.attrs.push(parse_quote!(#[allow(unused_variables)]));
-             }
-             return; 
+            if !has_allow_unused {
+                node.attrs.push(parse_quote!(#[allow(unused_variables)]));
+            }
+            return;
         }
 
         // Pre-existing logic for unwrapping unsafe functions that are NOT models
         if node.sig.unsafety.is_some() {
-             // Case B: Unwrap Strategy
-             // 1. Remove unsafe
-             node.sig.unsafety = None;
+            // Case B: Unwrap Strategy
+            // 1. Remove unsafe
+            node.sig.unsafety = None;
 
-             // 2. Recurse into body to unwrap internal unsafe blocks
-             syn::visit_mut::visit_item_fn_mut(self, node);
+            // 2. Recurse into body to unwrap internal unsafe blocks
+            syn::visit_mut::visit_item_fn_mut(self, node);
         } else {
-             // Safe function not model: just recurse
-             syn::visit_mut::visit_item_fn_mut(self, node);
+            // Safe function not model: just recurse
+            syn::visit_mut::visit_item_fn_mut(self, node);
         }
     }
 
@@ -331,20 +390,13 @@ impl VisitMut for ShadowVisitor {
     }
 }
 
-fn parse_model_specs(attrs: &[Attribute]) -> (bool, Vec<String>) {
+fn parse_model_specs(attrs: &[Attribute]) -> (bool, bool, Vec<String>) {
     let mut is_model = false;
+    let mut is_root = false;
     let mut requires = Vec::new();
 
-    // Debugging loop
-    /*
-    for attr in attrs {
-         if attr.path().is_ident("doc") {
-             println!("Found doc attr: {:?}", attr);
-         }
-    }
-    */
-
     for trimmed in crate::docs::iter_hermes_lines(attrs) {
+        is_root = true; // Any Hermes attribute implies this is a verification root
         if let Some(_content) = crate::docs::parse_hermes_tag(&trimmed, "lean model") {
             is_model = true;
         }
@@ -356,7 +408,7 @@ fn parse_model_specs(attrs: &[Attribute]) -> (bool, Vec<String>) {
             requires.push(condition.to_string());
         }
     }
-    (is_model, requires)
+    (is_model, is_root, requires)
 }
 
 #[cfg(test)]

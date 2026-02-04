@@ -48,7 +48,7 @@ namespace Hermes.Std.Memory
 
 variable {T : Type}
 
-def ConstPtr (T : Type) := ConstRawPtr T
+abbrev ConstPtr (T : Type) := ConstRawPtr T
 
 -- Maps a pointer to its address
 opaque addr (ptr : ConstPtr T) : Nat

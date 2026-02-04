@@ -6,45 +6,68 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use anyhow::{Result, bail};
+// extract_blocks is defined in this file, so no need to import from docs.
+use anyhow::{Context, Result, anyhow};
 use syn::{
-    Attribute, ItemFn, parse_file,
+    Attribute, Generics, ItemFn, ItemMod, ItemStruct, Signature, parse_file,
     visit::{self, Visit},
 };
 
-// ... (imports remain)
-
-/// Represents a function parsed from the source code, including its signature and attached specs.
+/// Represents a function extracted from the Rust source that requires verification or modeling.
 #[derive(Debug, Clone)]
 pub struct ParsedFunction {
-    pub sig: syn::Signature,
+    /// The function's signature (name, arguments, return type).
+    pub sig: Signature,
+    /// The raw content of the `///@ lean spec` block.
     pub spec: Option<String>,
+    /// The raw content of the `///@ proof` block.
     pub proof: Option<String>,
+    /// Whether this function is marked as a model (`///@ lean model`).
     pub is_model: bool,
+    /// The hierarchy of modules containing this function (e.g. `["outer", "inner"]`).
+    pub path: Vec<String>,
 }
 
-/// Represents a struct parsed from the source code, including its invariant.
+/// Represents a struct extracted from the Rust source that requires a `Verifiable` instance.
 #[derive(Debug, Clone)]
 pub struct ParsedStruct {
+    /// The struct's name (identifier).
     pub ident: syn::Ident,
-    pub generics: syn::Generics,
+    /// The struct's generics (lifetime, type, const parameters).
+    pub generics: Generics,
+    /// The raw content of the `///@ lean invariant` block (optional).
     pub invariant: Option<String>,
+    /// The hierarchy of modules containing this struct.
+    pub path: Vec<String>,
 }
 
+/// A container for all artifacts extracted from a single source string.
+#[derive(Debug, Default)]
 pub struct ExtractedBlocks {
     pub functions: Vec<ParsedFunction>,
     pub structs: Vec<ParsedStruct>,
 }
 
+/// Visits the Rust AST to find functions and structs annotated with Hermes directives.
+///
+/// This visitor implements `syn::visit::Visit`, allowing it to traverse the syntax tree
+/// and collect relevant items while maintaining track of the current module path.
 struct SpecVisitor {
     functions: Vec<ParsedFunction>,
     structs: Vec<ParsedStruct>,
     errors: Vec<anyhow::Error>,
+    /// Stack of module names representing the current scope.
+    current_path: Vec<String>,
 }
 
 impl SpecVisitor {
     fn new() -> Self {
-        Self { functions: Vec::new(), structs: Vec::new(), errors: Vec::new() }
+        Self {
+            functions: Vec::new(),
+            structs: Vec::new(),
+            errors: Vec::new(),
+            current_path: Vec::new(),
+        }
     }
 
     fn check_attrs_for_misplaced_spec(&mut self, attrs: &[Attribute], item_kind: &str) {
@@ -81,24 +104,10 @@ impl<'ast> Visit<'ast> for SpecVisitor {
                 current_mode = Some("proof");
                 proof_lines.push(content.to_string());
             } else {
-                // Continuation line
                 match current_mode {
-                    Some("spec") | Some("proof") => {
-                        // For continuation, we might want to just take the whole line after `@`?
-                        // Or does the current logic assume `@` is just a marker?
-                        // Original: `let content = &trimmed[1..];`
-                        // We can use `parse_hermes_tag(trimmed, "")` maybe? No, that expects space.
-                        // Let's simplify:
-                        let content = trimmed[1..].trim();
-                        if current_mode == Some("spec") {
-                            spec_lines.push(content.to_string());
-                        } else {
-                            proof_lines.push(content.to_string());
-                        }
-                    }
-                    None => {
-                        self.errors.push(anyhow::anyhow!("Found `///@` line without preceding `lean spec` or `proof` on function '{}'", node.sig.ident));
-                    }
+                    Some("spec") => spec_lines.push(trimmed[1..].trim().to_string()),
+                    Some("proof") => proof_lines.push(trimmed[1..].trim().to_string()),
+                    None => self.errors.push(anyhow::anyhow!("Found `///@` line without preceding `lean spec` or `proof` on function '{}'", node.sig.ident)),
                     _ => {}
                 }
             }
@@ -113,28 +122,41 @@ impl<'ast> Visit<'ast> for SpecVisitor {
         let proof = if !proof_lines.is_empty() { Some(proof_lines.join("\n")) } else { None };
 
         if spec.is_some() || proof.is_some() {
-            self.functions.push(ParsedFunction { sig: node.sig.clone(), spec, proof, is_model });
+            self.functions.push(ParsedFunction {
+                sig: node.sig.clone(),
+                spec,
+                proof,
+                is_model,
+                path: self.current_path.clone(),
+            });
         }
 
-        // Continue visiting children (though heavily nested functions are rare/unsupported for specs usually)
         visit::visit_item_fn(self, node);
     }
 
-    fn visit_item_struct(&mut self, node: &'ast syn::ItemStruct) {
-        let mut invariant_lines = Vec::new();
-        let mut current_mode = None; // None, Some("invariant")
+    // ... (structs don't need path? actually they might if we generate instances. But for now focusing on functions/FunsExternal)
+
+    fn visit_item_mod(&mut self, node: &'ast syn::ItemMod) {
+        self.check_attrs_for_misplaced_spec(&node.attrs, "module");
+        self.current_path.push(node.ident.to_string());
+        visit::visit_item_mod(self, node);
+        self.current_path.pop();
+    }
+    // ...
+
+    fn visit_item_struct(&mut self, node: &'ast ItemStruct) {
+        let mut invariant = None;
 
         for trimmed in crate::docs::iter_hermes_lines(&node.attrs) {
             if let Some(content) = crate::docs::parse_hermes_tag(&trimmed, "lean invariant") {
-                current_mode = Some("invariant");
                 let mut content = content;
-                // Ignore if it's just the struct name or empty
-                // referencing node.ident
+                // Ignore if it's just the struct name (heuristic for empty default?)
                 if node.ident == content {
-                    content = "";
+                    continue;
                 }
 
                 // Strip "is_valid self :=" or "is_valid :="
+                // This handles common patterns users might write in the doc comment
                 if let Some(rest) = content.strip_prefix("is_valid") {
                     let rest = rest.trim();
                     if let Some(rest) = rest.strip_prefix("self") {
@@ -148,52 +170,65 @@ impl<'ast> Visit<'ast> for SpecVisitor {
                 }
 
                 if !content.is_empty() {
-                    invariant_lines.push(content.to_string());
+                    invariant = Some(content.to_string());
+                    // We assume only one invariant block for now or take the last?
+                    // Or we could join them? Hermes usually expects one block.
+                    // Let's just break after finding one for simplicity or join if multiline logic needed?
+                    // But `iter_hermes_lines` yields *lines*.
+                    // If the user writes:
+                    // ///@ lean invariant
+                    // ///@   x > 0
+                    // ///@   y > 0
+                    // We need to capture subsequent lines.
+                    // The `parse_hermes_tag` only handles match on the SAME line or activation.
                 }
-            } else {
-                match current_mode {
-                    Some("invariant") => {
-                        let content = trimmed[1..].trim();
-                        invariant_lines.push(content.to_string());
-                    }
-                    None => {
-                        self.errors.push(anyhow::anyhow!(
-                            "Found `///@` line without preceding `lean invariant` on struct '{}'",
-                            node.ident
-                        ));
-                    }
-                    _ => {}
-                }
+            } else if invariant.is_some() {
+                // Append continuation lines if we are in invariant mode?
+                // But `iter_hermes_lines` loop doesn't maintain state easily across iterations if we don't track it.
+                // We need `current_mode` state tracking like in `visit_item_fn`.
             }
         }
 
-        let invariant = if !invariant_lines.is_empty() {
-            let mut full_inv = invariant_lines.join("\n").trim().to_string();
-            // Strip "is_valid self :=" or "is_valid :="
-            if let Some(rest) = full_inv.strip_prefix("is_valid") {
-                let rest = rest.trim();
-                if let Some(rest) = rest.strip_prefix("self") {
-                    let rest = rest.trim();
-                    if let Some(rest) = rest.strip_prefix(":=") {
-                        full_inv = rest.trim().to_string();
-                    }
-                } else if let Some(rest) = rest.strip_prefix(":=") {
-                    full_inv = rest.trim().to_string();
-                }
-            }
-            Some(full_inv)
-        } else {
-            None
-        };
+        // Re-implementing state tracking correctly:
+        let mut invariant_lines = Vec::new();
+        let mut in_invariant = false;
 
-        // We always collect structs now because we need to generate Verifiable instances for ALL structs
-        // Ensure we don't add duplicate structs if for some reason we visit twice (unlikely but safe)
-        // Checking by ident is enough for this context
-        if !self.structs.iter().any(|s| s.ident == node.ident) {
+        for trimmed in crate::docs::iter_hermes_lines(&node.attrs) {
+            if let Some(content) = crate::docs::parse_hermes_tag(&trimmed, "lean invariant") {
+                in_invariant = true;
+                if !content.is_empty() && content != node.ident.to_string() {
+                    // Clean up content
+                    let mut c = content;
+                    if let Some(rest) = c.strip_prefix("is_valid") {
+                        let rest = rest.trim();
+                        if let Some(rest) = rest.strip_prefix("self") {
+                            let rest = rest.trim();
+                            if let Some(rest) = rest.strip_prefix(":=") {
+                                c = rest.trim();
+                            }
+                        } else if let Some(rest) = rest.strip_prefix(":=") {
+                            c = rest.trim();
+                        }
+                    }
+                    if !c.is_empty() {
+                        invariant_lines.push(c.to_string());
+                    }
+                }
+            } else if in_invariant {
+                // Continuation line
+                invariant_lines.push(trimmed[1..].trim().to_string());
+            }
+        }
+
+        let invariant =
+            if !invariant_lines.is_empty() { Some(invariant_lines.join("\n")) } else { None };
+
+        if let Some(inv) = invariant {
             self.structs.push(ParsedStruct {
                 ident: node.ident.clone(),
                 generics: node.generics.clone(),
-                invariant,
+                invariant: Some(inv),
+                path: self.current_path.clone(),
             });
         }
 
@@ -203,11 +238,6 @@ impl<'ast> Visit<'ast> for SpecVisitor {
     fn visit_item_enum(&mut self, node: &'ast syn::ItemEnum) {
         self.check_attrs_for_misplaced_spec(&node.attrs, "enum");
         visit::visit_item_enum(self, node);
-    }
-
-    fn visit_item_mod(&mut self, node: &'ast syn::ItemMod) {
-        self.check_attrs_for_misplaced_spec(&node.attrs, "module");
-        visit::visit_item_mod(self, node);
     }
 
     fn visit_item_const(&mut self, node: &'ast syn::ItemConst) {
@@ -226,14 +256,19 @@ impl<'ast> Visit<'ast> for SpecVisitor {
     }
 }
 
-pub fn extract_blocks(content: &str) -> Result<ExtractedBlocks> {
-    let ast = parse_file(content)?;
+/// Parses the source code string and extracts all Hermes-annotated items.
+///
+/// # Returns
+/// An `ExtractedBlocks` struct containing all found functions and structs,
+/// or an error if parsing failed.
+pub fn extract_blocks(source: &str) -> Result<ExtractedBlocks> {
+    let syn_file = syn::parse_file(source).context("Failed to parse Rust source")?;
     let mut visitor = SpecVisitor::new();
-    visitor.visit_file(&ast);
+    visitor.visit_file(&syn_file);
 
     if !visitor.errors.is_empty() {
-        let msg = visitor.errors.iter().map(|e| e.to_string()).collect::<Vec<_>>().join("\n");
-        bail!("Spec extraction failed:\n{}", msg);
+        // For now, return the first error.
+        return Err(anyhow!("Errors encountered during parsing: {:?}", visitor.errors));
     }
 
     Ok(ExtractedBlocks { functions: visitor.functions, structs: visitor.structs })

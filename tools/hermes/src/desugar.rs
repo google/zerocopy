@@ -1,273 +1,199 @@
-use anyhow::{Result, bail};
+// Copyright 2026 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
+
+use anyhow::{Context, Result, anyhow};
 use syn::FnArg;
 
-#[derive(Debug)]
+/// Represents the output of desugaring a spec string.
+#[derive(Debug, Clone)]
 pub struct DesugaredSpec {
-    pub signature_args: Option<String>,
-    pub extra_args: Vec<String>, // e.g., (h_safe : ...)
+    /// The full body of the Lean theorem/def.
     pub body: String,
+    /// Arguments for the function signature that enforce preconditions (e.g. `(h_valid : ...)`).
+    pub signature_args: Option<String>,
+    /// The precondition predicate extracted from `requires`.
     pub predicate: Option<String>,
+    /// Binders extracted from `forall`.
     pub binders: Vec<String>,
+    /// Additional arguments required by the spec (e.g. ghosts).
+    pub extra_args: Vec<String>,
 }
 
+/// Transforms a raw spec (from `///@ lean spec`) into a structured Lean definition.
+///
+/// Supported clauses:
+/// - `requires: ...` -> Precondition.
+/// - `ensures: ...` -> Postcondition (standard Return variant).
+/// - `ensures match: ...` -> Postcondition with pattern matching on result.
+/// - `forall: ...` -> Universal quantification over variables.
+///
+/// # Arguments
+/// * `spec_content` - The raw string content of the spec.
+/// * `fn_name` - The name of the function being specified.
+/// * `args` - The arguments of the function (used to generate validity checks).
+/// * `is_stateful` - Whether the function is stateful (takes `&mut`).
 pub fn desugar_spec(
     spec_content: &str,
     fn_name: &str,
     args: &[FnArg],
-    is_stateful: bool,
+    _is_stateful: bool,
 ) -> Result<DesugaredSpec> {
-    let mut extra_args = Vec::new();
+    let mut requires = None;
+    let mut ensures = None;
+    let mut binders = Vec::new();
     let mut signature_args = None;
-    let lines = spec_content.lines().map(|l| l.trim()).filter(|l| !l.is_empty());
+    // extra_args currently not fully implemented in parsing, but struct supports it.
+    let extra_args = Vec::new();
 
-    let mut ensures_clause = None;
-    let mut logic_lines = Vec::new();
-
-    // Naive line-by-line parsing
-    for line in lines {
-        if let Some(req) = line.strip_prefix("requires") {
-            extra_args.push(format!("({})", req.trim()));
-        } else if let Some(ens) = line.strip_prefix("ensures") {
-            if ensures_clause.is_some() {
-                bail!("Multiple ensures clauses not supported yet");
-            }
-            ensures_clause = Some(ens.trim().to_string());
-        } else if signature_args.is_none() && extra_args.is_empty() && ensures_clause.is_none() {
-            // Check if this file looks like signature args.
-            // It might be `(x y : Usize)` or `add_mod (x y : Usize)`.
-            // We also support instance arguments like `[Layout T]`.
-            if let Some(start_idx) = line.find(['(', '[']) {
-                // Assume everything from start_idx onwards is args.
-                // And ignore what's before it (likely function name).
-                signature_args = Some(line[start_idx..].to_string());
-            } else {
-                // No parenthesis? treat as logic?
-                logic_lines.push(line);
-            }
-        } else {
-            logic_lines.push(line);
+    for line in spec_content.lines() {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
         }
-    }
 
-    // Construct body
-    // If ensures |ret, x_final| ...
-    let body = if let Some(ens) = &ensures_clause {
-        // Parse binders |...|
-        let (binders, logic) = parse_binders(ens)?;
-        let user_logic = if !logic_lines.is_empty() {
-            // Maybe prepend logic lines?
-            // Actually currently valid syntax is usually `ensures |...| logic`.
-            // `logic_lines` might be empty or continuations.
-            // Let's assume `logic` from ensures line + `logic_lines` joined.
-            let mut full = logic;
-            for l in &logic_lines {
-                full.push_str("\n  ");
-                full.push_str(l);
-            }
-            full
-        } else {
-            logic
-        };
-
-        generate_body(fn_name, args, is_stateful, &binders, &user_logic)?
-    } else {
-        // No ensures clause.
-        // check if we have logic lines
-        if !logic_lines.is_empty() {
-            bail!(
-                "Raw spec lines not supported. Use 'ensures |...| ...'.\nFound: {:?}",
-                logic_lines
-            );
-        } else {
-            "True".to_string()
-        }
-    };
-
-    let (predicate, binders) = if let Some(ens) = &ensures_clause {
-        let (binders, logic) = parse_binders(ens)?;
-        let mut full = logic;
-        if !logic_lines.is_empty() {
-            for l in &logic_lines {
-                full.push_str("\n  ");
-                full.push_str(l);
-            }
-        }
-        (Some(full), binders)
-    } else {
-        (None, Vec::new())
-    };
-
-    Ok(DesugaredSpec { signature_args, extra_args, body, predicate, binders })
-}
-
-pub fn parse_binders(ensures_content: &str) -> Result<(Vec<String>, String)> {
-    // |ret, x_final| logic
-    if let Some(start) = ensures_content.find('|')
-        && let Some(end) = ensures_content[start + 1..].find('|')
-    {
-        let binders_str = &ensures_content[start + 1..start + 1 + end];
-        let logic = &ensures_content[start + 1 + end + 1..];
-        let binders = binders_str
-            .split(',')
-            .map(|s| s.trim().to_string())
-            .filter(|s| !s.is_empty())
-            .collect();
-        return Ok((binders, logic.trim().to_string()));
-    }
-    bail!("Malformed ensures clause: missing |...| binders");
-}
-
-fn generate_body(
-    fn_name: &str,
-    input_args: &[FnArg],
-    is_stateful: bool,
-    binders: &[String],
-    logic: &str,
-) -> Result<String> {
-    let mut out = String::new();
-
-    // 1. Quantifiers
-    // "exists ret x_final,"
-    if !binders.is_empty() {
-        out.push_str("exists");
-        for b in binders {
-            if b != "_" {
-                out.push(' ');
-                out.push_str(b);
-            } else {
-                // If it's "_", we usually need a name for the exists,
-                // but if the user didn't name it, maybe we auto-name it?
-                // Or Aeneas requires a name.
-                // Let's generate a temp name if needed or just skip?
-                // Lean `exists _, ...` is valid but we need to bind it in the equality check.
-                // Wait, `exists ret` -> `fwd ... = Result.ok ret`.
-                // If user put `_`, we can't name it in the equality check easily.
-                // Let's assume user gives names for now.
-                out.push_str(" _");
-            }
-        }
-        out.push_str(",\n  ");
-    }
-
-    // Capture argument names for function calls
-    let arg_names = input_args
-        .iter()
-        .map(|arg| match arg {
-            FnArg::Typed(pat) => {
-                if let syn::Pat::Ident(pat_ident) = &*pat.pat {
-                    pat_ident.ident.to_string()
-                } else {
-                    "_".to_string()
+        // Helper to strip prefix with logical flexibility
+        let strip_keyword = |s: &str, keyword: &str| -> Option<String> {
+            if let Some(rest) = s.strip_prefix(keyword) {
+                if let Some(rest) = rest.strip_prefix(':') {
+                    return Some(rest.trim().to_string());
+                }
+                if rest.starts_with(char::is_whitespace) {
+                    return Some(rest.trim().to_string());
                 }
             }
-            FnArg::Receiver(_) => "self".to_string(),
-        })
-        .collect::<Vec<_>>()
-        .join(" ");
+            None
+        };
 
-    // 2. Fwd Check
-    // "fn_fwd args = Result.ok ret /\"
-    // The first binder is usually the return value.
-    if let Some(ret_binder) = binders.first() {
-        let fn_call_name =
-            if is_stateful { format!("{}_fwd", fn_name) } else { fn_name.to_string() };
-
-        if ret_binder != "_" {
-            out.push_str(&format!(
-                "{} {} = Result.ok {} /\\\n  ",
-                fn_call_name, arg_names, ret_binder
-            ));
-        } else {
-            // exists _, ... = Result.ok _
-            out.push_str(&format!(
-                "exists v, {} {} = Result.ok v /\\\n  ",
-                fn_call_name, arg_names
-            ));
-        }
-    }
-
-    // 3. Back Check (if stateful)
-    if is_stateful {
-        // We assume remaining binders are for mutable args in order?
-        // User prompt: `|ret, x_final|`.
-        // Need to know WHICH arg corresponds to `x_final`.
-        // "If the function is "Stateful" ... append `/\ func_back args = Result.ok x_final`."
-        // "Autonomy Rule: If ... ambiguous ... default to generating a conjunction of *all* backward functions found"
-        // This suggests we might need to know the *names* of the back functions.
-        // Aeneas generates `fn_back` or `fn_back0`, `fn_back1` etc.
-        // If there is only one mutable arg, it is `fn_back`.
-        // If detection of back function names is hard without reading Aeneas output,
-        // we might guess `fn_back`.
-        //
-        // Let's assume simple case (one mutable arg) -> `fn_back`.
-        // If multiple binders, we might need `fn_back` returning a tuple?
-        // Aeneas: "def choose_back ... : Result (T x T)"
-        // So `fn_back` returns a tuple if multiple.
-
-        if binders.len() > 1 {
-            let back_binders = &binders[1..]; // ret is 0
-
-            // If just one back binder, easy.
-            if back_binders.len() == 1 {
-                out.push_str(&format!(
-                    "{}_back {} = Result.ok {} /\\\n  ",
-                    fn_name, arg_names, back_binders[0]
-                ));
-            } else {
-                // Tuple return
-                // {}_back {} = Result.ok (b1, b2, ...)
-                let tuple_inner = back_binders.join(", ");
-                out.push_str(&format!(
-                    "{}_back {} = Result.ok ({}) /\\\n  ",
-                    fn_name, arg_names, tuple_inner
-                ));
+        if let Some(req) = strip_keyword(line, "requires") {
+            requires = Some(req);
+        } else if let Some(ens) = strip_keyword(line, "ensures") {
+            ensures = Some(ens);
+        } else if let Some(forall) = strip_keyword(line, "forall") {
+            // "i j k" -> ["i", "j", "k"]
+            let vars: Vec<String> = forall.split_whitespace().map(|s| s.to_string()).collect();
+            binders.extend(vars);
+        } else if signature_args.is_none()
+            && let Some(start) = line.find('(')
+        {
+            // Heuristic for function signature found in `lean model`
+            // Only capture if we haven't found one yet and it looks like a model def.
+            // e.g. "read(src : ConstPtr T)" -> "(src : ConstPtr T)"
+            if let Some(end) = line.rfind(')') {
+                if end > start {
+                    signature_args = Some(line[start..=end].to_string());
+                }
             }
         }
     }
 
-    // 4. User Logic
-    out.push_str(&format!("({})", logic));
+    let predicate = requires.clone();
 
-    // 5. Automatic Validity Invariants
-    // For every binder we exposed (ret, x_final, etc.), we enforce logical validity.
-    // "Component 4 ... Return Value Injection ... Mutable Borrow Injection"
-    // "Action: Append the validity check ... Result: ... /\ Verifiable.is_valid ret"
-    for binder in binders {
-        if binder != "_" {
-            out.push_str(&format!(" /\\ Verifiable.is_valid {}", binder));
+    // Argument processing for the lambda
+    let mut arg_names = Vec::new();
+    for arg in args {
+        if let FnArg::Typed(pat) = arg {
+            if let syn::Pat::Ident(i) = &*pat.pat {
+                arg_names.push(i.ident.to_string());
+            }
         }
     }
 
-    Ok(out)
+    let mut sb = String::new();
+
+    if !binders.is_empty() {
+        sb.push_str("forall ");
+        for b in &binders {
+            sb.push_str(b);
+            sb.push(' ');
+        }
+        sb.push_str(",\n");
+    }
+
+    // Precondition
+    if let Some(req) = &requires {
+        // If the requirement has a binder (contains ':'), wrap it in parens for Lean dependent arrow.
+        // e.g. "h : x > 0" -> "(h : x > 0) ->"
+        if req.contains(':') {
+            sb.push_str(&format!("  ({}) ->\n", req));
+        } else {
+            sb.push_str(&format!("  {} ->\n", req));
+        }
+    }
+
+    // Postcondition
+    let call_expr = if arg_names.is_empty() {
+        fn_name.to_string()
+    } else {
+        format!("{} {}", fn_name, arg_names.join(" "))
+    };
+
+    if let Some(ens) = &ensures {
+        // Check if `ens` starts with `match` keyword for custom matching
+        if ens.starts_with("match") {
+            sb.push_str(&format!("  match {} with \n  {}\n", call_expr, ens));
+        } else {
+            // Check for Binder Syntax: `|ret| ...`
+            // If present, use that binder name. Otherwise default to `ret`.
+            let (binder, body) = if let Some(rest) = ens.strip_prefix('|') {
+                if let Some((name, rest)) = rest.split_once('|') {
+                    (name.trim(), rest.trim())
+                } else {
+                    ("ret", ens.as_str())
+                }
+            } else {
+                ("ret", ens.as_str())
+            };
+
+            // "Result.ok" wrapper
+            sb.push_str(&format!("  match {} with\n", call_expr));
+            sb.push_str(&format!("  | .ok {} => {}\n", binder, body));
+            sb.push_str("  | .fail _ => False\n");
+            sb.push_str("  | .div => False\n");
+        }
+    } else {
+        // Default: just succeed?
+        sb.push_str(&format!(
+            "  match {} with | .ok _ => True | .fail _ => False | .div => False\n",
+            call_expr
+        ));
+    }
+
+    Ok(DesugaredSpec {
+        body: sb,
+        signature_args, // Validity args are handled by `generate_lean_file` via `h_valid` arguments.
+        predicate,
+        binders,
+        extra_args,
+    })
 }
 
 #[cfg(test)]
 mod tests {
+    use syn::parse_quote;
+
     use super::*;
 
     #[test]
-    fn test_reject_raw_spec() {
-        let spec = "some raw logic line\n another line";
-        let args = Vec::new();
-        let res = desugar_spec(spec, "test_fn", &args, false);
-        assert!(res.is_err());
-        assert!(res.unwrap_err().to_string().contains("Raw spec lines not supported"));
+    fn test_desugar_simple() {
+        let spec = "requires: x > 0\nensures: ret = x + 1";
+        let args: Vec<FnArg> = vec![parse_quote!(x: u32)];
+        let d = desugar_spec(spec, "add_one", &args, false).unwrap();
+
+        assert!(d.body.contains("x > 0 ->"));
+        assert!(d.body.contains("| .ok ret => ret = x + 1"));
     }
 
     #[test]
-    fn test_accept_ensures() {
-        let spec = "ensures |ret| ret = x";
-        let args = Vec::new();
-        let res = desugar_spec(spec, "test_fn", &args, false);
-        assert!(res.is_ok());
-    }
+    fn test_desugar_forall() {
+        let spec = "forall: n\nensures: ret = n";
+        let args: Vec<FnArg> = vec![];
+        let d = desugar_spec(spec, "get_n", &args, false).unwrap();
 
-    #[test]
-    fn test_accept_requires_only() {
-        let spec = "requires h : x > 0";
-        let args = Vec::new();
-        let res = desugar_spec(spec, "test_fn", &args, false);
-        assert!(res.is_ok());
-        assert_eq!(res.unwrap().body, "True");
+        assert!(d.body.contains("forall n ,"));
     }
 }
