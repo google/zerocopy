@@ -1077,16 +1077,24 @@ mod tuples {
             // The types and indices at and after the current index.
             [$CurrT:ident $CurrV:ident $CurrI:tt $($AfterT:ident $AfterV:ident $AfterI:tt)*]
         ) => {
+            impl<Replacement, $($AllT),+> crate::invariant::Map<Replacement, crate::Idx<{ $CurrI }>> for ($($AllT,)+)
+            where
+                Replacement: crate::invariant::Validity,
+                $($AllT: crate::invariant::Validity,)*
+            {
+                type Result = ($($BeforeT,)* Replacement, $($AfterT,)*);
+            }
+
             // SAFETY:
             // - `Self` is a struct (albeit anonymous), so `VARIANT_ID` is
             //   `STRUCT_VARIANT_ID`.
             // - `$CurrI` is the field at index `$CurrI`, so `FIELD_ID` is
             //   `zerocopy::ident_id!($CurrI)`
-            // - `()` has the same visibility as the `.$CurrI` field (ie, `.0`,
-            //   `.1`, etc)
+            // - `crate::Idx` has the same visibility as the `.$CurrI` field
+            //   (ie, `.0`, `.1`, etc)
             // - `Type` has the same type as `$CurrI`; i.e., `$CurrT`.
             unsafe impl<$($AllT),+> crate::HasField<
-                (),
+                crate::Idx<{ $CurrI }>,
                 { crate::STRUCT_VARIANT_ID },
                 { crate::ident_id!($CurrI)}
             > for ($($AllT,)+) {
@@ -1112,7 +1120,7 @@ mod tuples {
 
             // SAFETY: See comments on items.
             unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
-                (),
+                crate::Idx<{ $CurrI }>,
                 (Aliasing, Alignment, crate::invariant::Uninit),
                 { crate::STRUCT_VARIANT_ID },
                 { crate::ident_id!($CurrI)}
@@ -1138,7 +1146,7 @@ mod tuples {
 
             // SAFETY: See comments on items.
             unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
-                (),
+                crate::Idx<{ $CurrI }>,
                 (Aliasing, Alignment, crate::invariant::Initialized),
                 { crate::STRUCT_VARIANT_ID },
                 { crate::ident_id!($CurrI)}
@@ -1164,7 +1172,7 @@ mod tuples {
 
             // SAFETY: See comments on items.
             unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
-                (),
+                crate::Idx<{ $CurrI }>,
                 (Aliasing, Alignment, crate::invariant::Valid),
                 { crate::STRUCT_VARIANT_ID },
                 { crate::ident_id!($CurrI)}
@@ -1190,7 +1198,7 @@ mod tuples {
 
             // SAFETY: See comments on items.
             unsafe impl<Aliasing, Alignment, $($AllT,)+ $($AllV),+> crate::ProjectField<
-                (),
+                crate::Idx<{ $CurrI }>,
                 (Aliasing, Alignment, ($($AllV,)+)),
                 { crate::STRUCT_VARIANT_ID },
                 { crate::ident_id!($CurrI)}
