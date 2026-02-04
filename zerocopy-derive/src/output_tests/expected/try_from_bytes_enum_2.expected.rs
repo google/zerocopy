@@ -25,9 +25,13 @@ const _: () = {
         PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
     {
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        fn is_bit_valid(
-            mut candidate: ::zerocopy::Maybe<'_, Self>,
-        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool {
+        #[inline]
+        fn is_bit_valid<___ZcAlignment>(
+            mut candidate: ::zerocopy::Maybe<'_, Self, ___ZcAlignment>,
+        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+        where
+            ___ZcAlignment: ::zerocopy::invariant::Alignment,
+        {
             #[repr(u32)]
             #[allow(dead_code)]
             pub enum ___ZerocopyTag {
@@ -109,9 +113,13 @@ const _: () = {
                     >: ::zerocopy::TryFromBytes,
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
-                    fn is_bit_valid(
-                        mut candidate: ::zerocopy::Maybe<Self>,
-                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool {
+                    #[inline]
+                    fn is_bit_valid<___ZcAlignment>(
+                        mut candidate: ::zerocopy::Maybe<'_, Self, ___ZcAlignment>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                    where
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    {
                         true
                             && {
                                 let field_candidate = ::zerocopy::into_inner!(
@@ -879,9 +887,13 @@ const _: () = {
                     >: ::zerocopy::TryFromBytes,
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
-                    fn is_bit_valid(
-                        mut candidate: ::zerocopy::Maybe<Self>,
-                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool {
+                    #[inline]
+                    fn is_bit_valid<___ZcAlignment>(
+                        mut candidate: ::zerocopy::Maybe<'_, Self, ___ZcAlignment>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                    where
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    {
                         true
                             && {
                                 let field_candidate = ::zerocopy::into_inner!(
@@ -2729,7 +2741,7 @@ const _: () = {
                 };
                 tag_ptr
                     .recall_validity::<_, (_, (_, _))>()
-                    .read_unaligned::<::zerocopy::BecauseImmutable>()
+                    .read::<::zerocopy::BecauseImmutable>()
             };
             let mut raw_enum = candidate
                 .cast::<
