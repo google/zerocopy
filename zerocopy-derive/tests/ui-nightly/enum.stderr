@@ -381,6 +381,8 @@ help: the trait `TryFromBytes` is not implemented for `NotTryFromBytes`
              (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-1ea62e7340588fc3.long-type-8580388639612348620.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
@@ -410,6 +412,8 @@ help: the trait `TryFromBytes` is not implemented for `NotFromZeros`
               (A, B, C, D, E, F, G, H)
             and $N others
     = help: see issue #48214
+    = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-1ea62e7340588fc3.long-type-8580388639612348620.txt'
+    = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
