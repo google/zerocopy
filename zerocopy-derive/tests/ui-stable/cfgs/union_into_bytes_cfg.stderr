@@ -1,6 +1,6 @@
 error: requires --cfg zerocopy_derive_union_into_bytes;
-please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802
-  --> tests/ui-msrv/union_into_bytes_cfg/union_into_bytes_cfg.rs:20:10
+       please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802
+  --> tests/ui-stable/cfgs/union_into_bytes_cfg.rs:20:10
    |
 20 | #[derive(IntoBytes)]
    |          ^^^^^^^^^
