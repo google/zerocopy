@@ -1,11 +1,11 @@
 error[E0277]: the trait bound `*const usize: IntoBytes` is not satisfied
-  --> tests/ui-msrv/transmute-ptr-to-usize.rs:18:30
+  --> $DIR/transmute-ptr-to-usize.rs:18:30
    |
 18 | const POINTER_VALUE: usize = transmute!(&0usize as *const usize);
    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `*const usize`
    |
 note: required by a bound in `POINTER_VALUE::transmute`
-  --> tests/ui-msrv/transmute-ptr-to-usize.rs:18:30
+  --> $DIR/transmute-ptr-to-usize.rs:18:30
    |
 18 | const POINTER_VALUE: usize = transmute!(&0usize as *const usize);
    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -13,3 +13,7 @@ note: required by a bound in `POINTER_VALUE::transmute`
    |                              required by a bound in this
    |                              required by this bound in `POINTER_VALUE::transmute`
    = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0277`.

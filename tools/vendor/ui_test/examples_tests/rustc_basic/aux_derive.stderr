@@ -1,0 +1,32 @@
+warning: variable `x` is assigned to, but never used
+ --> examples_tests/rustc_basic/aux_derive.rs:7:9
+  |
+7 |     let x = Foo;
+  |         ^
+  |
+  = note: consider using `_x` instead
+  = note: `#[warn(unused_variables)]` on by default
+
+warning: value assigned to `x` is never read
+ --> examples_tests/rustc_basic/aux_derive.rs:8:5
+  |
+8 |     x = Foo;
+  |     ^
+  |
+  = help: maybe it is overwritten before being read?
+  = note: `#[warn(unused_assignments)]` on by default
+
+error[E0384]: cannot assign twice to immutable variable `x`
+ --> examples_tests/rustc_basic/aux_derive.rs:8:5
+  |
+7 |     let x = Foo;
+  |         -
+  |         |
+  |         first assignment to `x`
+  |         help: consider making this binding mutable: `mut x`
+8 |     x = Foo;
+  |     ^^^^^^^ cannot assign twice to immutable variable
+
+error: aborting due to 1 previous error; 2 warnings emitted
+
+For more information about this error, try `rustc --explain E0384`.

@@ -1,0 +1,75 @@
+error[E0308]: mismatched types
+ --> examples_tests/rustc_basic/windows_paths.rs:2:9
+  |
+2 |     let () = "escapes stay as backslashes: \t\r\n";
+  |         ^^   ------------------------------------- this expression has type `&str`
+  |         |
+  |         expected `str`, found `()`
+
+error[E0308]: mismatched types
+ --> examples_tests/rustc_basic/windows_paths.rs:5:9
+  |
+5 |     let () = r"absolute: C:/foo/file.rs";
+  |         ^^   --------------------------- this expression has type `&str`
+  |         |
+  |         expected `str`, found `()`
+
+error[E0308]: mismatched types
+ --> examples_tests/rustc_basic/windows_paths.rs:7:9
+  |
+7 |     let () = r"absolute, spaces: C:/foo bar/file.rs";
+  |         ^^   --------------------------------------- this expression has type `&str`
+  |         |
+  |         expected `str`, found `()`
+
+error[E0308]: mismatched types
+ --> examples_tests/rustc_basic/windows_paths.rs:9:9
+  |
+9 |     let () = r"absolute, spaces, dir: C:/foo bar/some dir/";
+  |         ^^   ---------------------------------------------- this expression has type `&str`
+  |         |
+  |         expected `str`, found `()`
+
+error[E0308]: mismatched types
+  --> examples_tests/rustc_basic/windows_paths.rs:11:9
+   |
+11 |     let () = r"absolute, spaces, no extension: C:/foo bar/some file";
+   |         ^^   ------------------------------------------------------- this expression has type `&str`
+   |         |
+   |         expected `str`, found `()`
+
+error[E0308]: mismatched types
+  --> examples_tests/rustc_basic/windows_paths.rs:14:9
+   |
+14 |     let () = r"relative: foo/file.rs";
+   |         ^^   ------------------------ this expression has type `&str`
+   |         |
+   |         expected `str`, found `()`
+
+error[E0308]: mismatched types
+  --> examples_tests/rustc_basic/windows_paths.rs:17:9
+   |
+17 |     let () = r"unicode: Ryū/file.rs";
+   |         ^^   ----------------------- this expression has type `&str`
+   |         |
+   |         expected `str`, found `()`
+
+error[E0308]: mismatched types
+  --> examples_tests/rustc_basic/windows_paths.rs:20:9
+   |
+20 |     let () = r"mixed seperators: C:/foo/../bar/";
+   |         ^^   ----------------------------------- this expression has type `&str`
+   |         |
+   |         expected `str`, found `()`
+
+error[E0308]: mismatched types
+  --> examples_tests/rustc_basic/windows_paths.rs:23:9
+   |
+23 |     let () = r"unsupported: foo\bar";
+   |         ^^   ----------------------- this expression has type `&str`
+   |         |
+   |         expected `str`, found `()`
+
+error: aborting due to 9 previous errors
+
+For more information about this error, try `rustc --explain E0308`.

@@ -10,14 +10,15 @@
 # See Cargo.toml.orig for the original contents.
 
 [package]
-edition = "2021"
+edition = "2018"
 name = "cargo-platform"
-version = "0.1.5"
+version = "0.1.2"
+authors = ["The Cargo Project Developers"]
 description = "Cargo's representation of a target platform."
 homepage = "https://github.com/rust-lang/cargo"
 documentation = "https://docs.rs/cargo-platform"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-lang/cargo"
-
 [dependencies.serde]
-version = "1.0.188"
+version = "1.0.82"
+features = ["derive"]
