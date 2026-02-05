@@ -149,3 +149,20 @@ enum TransmuteRefMutDstOffsetNotMultiple {}
 /// let _: &mut SliceDst<(), [u8; 2]> = zerocopy::transmute_mut!(src);
 /// ```
 enum TransmuteRefMutDstElemSizeNotMultiple {}
+
+/// ```compile_fail,E0277
+/// use zerocopy::*;
+///
+/// #[derive(FromBytes, IntoBytes, Unaligned)]
+/// #[repr(transparent)]
+/// struct Foo<T>(T);
+///
+/// const _: () = unsafe {
+///     impl_or_verify!(T => TryFromBytes for Foo<T>);
+///     impl_or_verify!(T => FromZeros for Foo<T>);
+///     impl_or_verify!(T => FromBytes for Foo<T>);
+///     impl_or_verify!(T => IntoBytes for Foo<T>);
+///     impl_or_verify!(T => Unaligned for Foo<T>);
+/// };
+/// ```
+enum InvalidImplOrVerify {}
