@@ -273,7 +273,7 @@ fn delegate_cargo() -> Result<(), Error> {
                         break;
                     };
                     if arg == "-p" || arg == "--package" {
-                        cmd.arg(arg);
+                        cmd.arg(&arg);
                         let Some(arg) = args.next() else {
                             break;
                         };
@@ -281,8 +281,23 @@ fn delegate_cargo() -> Result<(), Error> {
                     } else if arg.starts_with("-p") {
                         cmd.arg("-p");
                         cmd.arg(fqpn(arg[2..].to_string()));
+                    } else if arg == "--" {
+                        cmd.arg("--");
+                        cmd.args(args);
+                        break;
                     } else {
-                        cmd.arg(arg);
+                        if arg == "--target" {
+                            cmd.arg(&arg);
+                            if let Some(target) = args.next() {
+                                cmd.arg(&target);
+                                cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
+                            }
+                        } else if let Some(target) = arg.strip_prefix("--target=") {
+                            cmd.arg(&arg);
+                            cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
+                        } else {
+                            cmd.arg(arg);
+                        }
                     }
                 }
 
