@@ -12,10 +12,6 @@ version = "0.0.0"
 edition = "2018"
 
 [dependencies]
-cargo_metadata = "0.18.0"
-# Pin to 0.1.5 because more recent versions require a Rust version more recent
-# than our MSRV.
-cargo-platform = "=0.1.5"
 # Pin to 0.4.11 because more recent versions require a Rust version more recent
 # than our MSRV.
 lock_api = "=0.4.11"
@@ -26,12 +22,13 @@ parking_lot = "=0.12.1"
 # Pin to 0.9.10 because more recent versions require a Rust version more recent
 # than our MSRV.
 parking_lot_core = "=0.9.10"
-rustc_version = "0.4.0"
-# Pin to 0.3.0 because more recent versions require a Rust version more recent
-# than our MSRV.
-time = { version = "=0.3.0", default-features = false, features = ["formatting", "macros", "parsing"] }
-toml = "0.5.11"
 # Pin to 0.1.8 because 0.1.9 takes a dependency on windows-sys 0.59.0, which
 # in turn requires a Rust version more recent than our MSRV. By contrast,
 # 0.1.8 depends on windows-sys 0.52.0, which works with our MSRV.
 winapi-util = "=0.1.8"
+
+[lints.rust]
+unexpected_cfgs = { level = "deny", check-cfg = [
+    'cfg(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE)',
+    'cfg(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN, values("msrv", "stable", "nightly"))',
+] }
