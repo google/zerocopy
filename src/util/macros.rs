@@ -342,8 +342,7 @@ macro_rules! opt_unsafe_fn {
 /// `const _: () = unsafe` macro). The reason for this restriction is that,
 /// while `impl_or_verify!` can guarantee that the provided impl is sound when
 /// it is compiled with the appropriate cfgs, there is no way to guarantee that
-/// it is
-/// ever compiled with those cfgs. In particular, it would be possible to
+/// it is ever compiled with those cfgs. In particular, it would be possible to
 /// accidentally place an `impl_or_verify!` call in a context that is only ever
 /// compiled when the `derive` feature is disabled. If that were to happen,
 /// there would be nothing to prevent an unsound trait impl from being emitted.
@@ -372,6 +371,7 @@ macro_rules! opt_unsafe_fn {
 ///     impl_or_verify!(T: Unaligned => Unaligned for Wrapper<T>);
 /// }
 /// ```
+#[cfg_attr(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE, macro_export)] // Used in `doctests.rs`
 macro_rules! impl_or_verify {
     // The following two match arms follow the same pattern as their
     // counterparts in `unsafe_impl!`; see the documentation on those arms for
