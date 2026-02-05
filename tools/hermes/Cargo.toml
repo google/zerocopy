@@ -1,0 +1,11 @@
+[package]
+name = "cargo-hermes"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.100"
+clap = { version = "4.5.56", features = ["derive"] }
+regex = "1.12.2"
+walkdir = "2.5.0"
+cargo_metadata = "0.18"
