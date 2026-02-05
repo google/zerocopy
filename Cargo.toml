@@ -15,7 +15,7 @@
 [package]
 edition = "2021"
 name = "zerocopy"
-version = "0.8.38"
+version = "0.8.39"
 authors = [
     "Joshua Liebow-Feeser <joshlf@google.com>",
     "Jack Wrenn <jswrenn@amazon.com>",
@@ -112,13 +112,13 @@ __internal_use_only_features_that_work_on_stable = [
 ]
 
 [dependencies]
-zerocopy-derive = { version = "=0.8.38", path = "zerocopy-derive", optional = true }
+zerocopy-derive = { version = "=0.8.39", path = "zerocopy-derive", optional = true }
 
 # The "associated proc macro pattern" ensures that the versions of zerocopy and
 # zerocopy-derive remain equal, even if the 'derive' feature isn't used.
 # See: https://github.com/matklad/macro-dep-test
 [target.'cfg(any())'.dependencies]
-zerocopy-derive = { version = "=0.8.38", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.8.39", path = "zerocopy-derive" }
 
 [dev-dependencies]
 # FIXME(#381) Remove this dependency once we have our own layout gadgets.
@@ -134,4 +134,4 @@ testutil = { path = "testutil" }
 # CI test failures.
 trybuild = { version = "=1.0.89", features = ["diff"] }
 # In tests, unlike in production, zerocopy-derive is not optional
-zerocopy-derive = { version = "=0.8.38", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.8.39", path = "zerocopy-derive" }
