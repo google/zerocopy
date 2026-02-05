@@ -1,0 +1,14 @@
+[package]
+name = "comma"
+version = "1.0.0"
+authors = ["Ethan McTague <ethan@tague.me>"]
+edition = "2018"
+description = "Shell-style command parser with support for escaping and quotations."
+license = "MIT"
+repository = "https://github.com/emctague/comma"
+categories = [ "command-line-interface", "parsing", "parser-implementations" ]
+keywords = [ "string", "parse", "parsing", "command", "shell" ]
+readme = "README.md"
+exclude = ["target", ".idea/*", ".gitignore"]
+
+[dependencies]
