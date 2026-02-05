@@ -1,0 +1,41 @@
+---
+source: src/lib.rs
+expression: buf
+---
+toto
+toto
+toto
+blue style ****
+toto
+yeah ! Red bold !
+yeah ! Yellow bold !
+toto
+toto
+toto
+toto
+******
+test clearing
+red cleared
+bold cyan cleared
+******
+Bg tests
+toto
+toto
+toto
+toto
+toto
+toto
+******
+toto
+toto
+toto
+toto
+toto
+toto
+toto
+toto
+toto
+toto
+toto
+toto
+
