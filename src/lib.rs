@@ -412,13 +412,13 @@ pub use crate::pointer::{invariant::BecauseImmutable, Maybe, Ptr};
 #[allow(unused_imports)]
 use crate::util::polyfills::{self, NonNullExt as _, NumExt as _};
 
-#[rustversion::nightly]
-#[cfg(all(test, not(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)))]
+#[cfg(all(test, not(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE)))]
 const _: () = {
-    #[deprecated = "some tests may be skipped due to missing RUSTFLAGS=\"--cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS\""]
-    const _WARNING: () = ();
+    #[deprecated = "Development of zerocopy using cargo is not supported. Please use `cargo.sh` or `win-cargo.bat` instead."]
+    #[allow(unused)]
+    const WARNING: () = ();
     #[warn(deprecated)]
-    _WARNING
+    WARNING
 };
 
 /// Implements [`KnownLayout`].
