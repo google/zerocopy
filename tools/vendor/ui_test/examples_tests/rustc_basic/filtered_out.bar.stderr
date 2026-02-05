@@ -1,0 +1,8 @@
+error: expected identifier, found `<eof>`
+ --> examples_tests/rustc_basic/filtered_out.rs:5:1
+  |
+5 | fn
+  | ^^ expected identifier
+
+error: aborting due to 1 previous error
+

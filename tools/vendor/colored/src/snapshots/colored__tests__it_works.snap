@@ -1,0 +1,41 @@
+---
+source: src/lib.rs
+expression: buf
+---
+[31mtoto[0m
+[31mtoto[0m
+[34mtoto[0m
+blue style ****
+[1mtoto[0m
+[1;31myeah ! Red bold ![0m
+[1;33myeah ! Yellow bold ![0m
+[1;34mtoto[0m
+[1;34mtoto[0m
+[1;4;34mtoto[0m
+[3;34mtoto[0m
+******
+test clearing
+red cleared
+bold cyan cleared
+******
+Bg tests
+[44;32mtoto[0m
+[45;33mtoto[0m
+[43;35mtoto[0m
+[47;35mtoto[0m
+[42;36mtoto[0m
+[47;30mtoto[0m
+******
+[32mtoto[0m
+[33mtoto[0m
+[35mtoto[0m
+[35mtoto[0m
+[36mtoto[0m
+[37mtoto[0m
+[32mtoto[0m
+[38;2;255;0;0mtoto[0m
+[38;2;255;255;0mtoto[0m
+[48;2;0;80;80mtoto[0m
+[38;2;255;255;0mtoto[0m
+[48;2;0;80;80mtoto[0m
+

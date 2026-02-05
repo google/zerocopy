@@ -1,0 +1,57 @@
+[package]
+name = "ui_test"
+version = "0.30.4"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "A test framework for testing rustc diagnostics output"
+repository = "https://github.com/oli-obk/ui_test"
+rust-version = "1.80"
+
+[lib]
+test = true     # we have unit tests
+doctest = false # but no doc tests
+
+[dependencies]
+rustc_version = "0.4"
+colored = "3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+cargo_metadata = { version = "0.18", optional = true }
+crossbeam-channel = "0.5.6"
+bstr = "1.0.1"
+rustfix = "0.8.1"
+cargo-platform = { version = "0.1.2", optional = true }
+comma = "1.0.0"
+anyhow = "1.0.6"
+indicatif = { version = "0.18.3", optional = true }
+prettydiff = { version = "0.9", default-features = false }
+annotate-snippets = { version = "0.11.2" }
+levenshtein = "1.0.5"
+spanned = "0.4.0"
+
+[dev-dependencies]
+ctrlc = "3.4.5"
+
+[dependencies.regex]
+version = "1.5.5"
+default-features = false
+features = ["unicode-gencat"]
+
+[dependencies.color-eyre]
+version = "0.6.1"
+default-features = false
+features = ["capture-spantrace"]
+
+[[test]]
+name = "integration"
+harness = false
+required-features = ["rustc"]
+
+[[test]]
+name = "build_std"
+test = false
+
+[features]
+default = ["rustc", "indicatif", "gha"]
+gha = []
+rustc = ["dep:cargo-platform", "dep:cargo_metadata"]
