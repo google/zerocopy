@@ -1,5 +1,5 @@
 error[E0308]: mismatched types
-  --> tests/ui-stable/transmute-ref-src-dst-not-references.rs:15:54
+  --> $DIR/transmute-ref-src-dst-not-references.rs:15:54
    |
 15 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
    |                                       ---------------^^^^^^-
@@ -15,7 +15,7 @@ help: consider borrowing here
    |                                                      +
 
 error[E0308]: mismatched types
-  --> tests/ui-stable/transmute-ref-src-dst-not-references.rs:15:39
+  --> $DIR/transmute-ref-src-dst-not-references.rs:15:39
    |
 15 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
    |                                       ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
@@ -25,7 +25,7 @@ error[E0308]: mismatched types
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0308]: mismatched types
-  --> tests/ui-stable/transmute-ref-src-dst-not-references.rs:15:39
+  --> $DIR/transmute-ref-src-dst-not-references.rs:15:39
    |
 15 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
    |                                       ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
@@ -35,7 +35,7 @@ error[E0308]: mismatched types
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0308]: mismatched types
-  --> tests/ui-stable/transmute-ref-src-dst-not-references.rs:15:39
+  --> $DIR/transmute-ref-src-dst-not-references.rs:15:39
    |
 15 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
    |                                       ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
@@ -45,7 +45,7 @@ error[E0308]: mismatched types
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0308]: mismatched types
-  --> tests/ui-stable/transmute-ref-src-dst-not-references.rs:15:39
+  --> $DIR/transmute-ref-src-dst-not-references.rs:15:39
    |
 15 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
    |                                       ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
@@ -53,3 +53,7 @@ error[E0308]: mismatched types
    = note:   expected type `usize`
            found reference `&_`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 5 previous errors
+
+For more information about this error, try `rustc --explain E0308`.

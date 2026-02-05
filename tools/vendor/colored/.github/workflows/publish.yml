@@ -1,0 +1,41 @@
+name: Publish
+on:
+  push:
+    branches: [master]
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Get local crate version
+        id: local-version
+        run: cargo metadata --no-deps --format-version=1 | jq -r '.packages[0].version' | echo "VERSION=$(cat)" >> "${GITHUB_OUTPUT}"
+      - name: Get crates.io crate version
+        id: remote-version
+        run: curl 'https://index.crates.io/co/lo/colored' | jq -r '.vers' | tail -n 1 | echo "VERSION=$(cat)" >> "${GITHUB_OUTPUT}"
+      - name: Check if crates.io version is older than local version
+        id: needs-update
+        run: |
+          if ! printf '%s\n' "${{ steps.local-version.outputs.VERSION }}" "${{ steps.remote-version.outputs.VERSION }}" | sort -V | tail -n 1 | grep -Fw "${{ steps.remote-version.outputs.VERSION }}"; then
+            echo "UPDATE=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "UPDATE=false" >> "${GITHUB_OUTPUT}"
+          fi
+      - name: Install parse-changelog
+        if: steps.needs-update.outputs.UPDATE == 'true'
+        uses: taiki-e/install-action@parse-changelog
+      - name: Create GitHub release
+        if: steps.needs-update.outputs.UPDATE == 'true'
+        run: gh release create "v${{ steps.local-version.outputs.VERSION }}" -t "v${{ steps.local-version.outputs.VERSION }}" -n "$(parse-changelog CHANGELOG.md "${{ steps.local-version.outputs.VERSION }}")"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Publish to crates.io
+        if: steps.needs-update.outputs.UPDATE == 'true'
+        run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: "${{ secrets.CARGO_REGISTRY_TOKEN }}"

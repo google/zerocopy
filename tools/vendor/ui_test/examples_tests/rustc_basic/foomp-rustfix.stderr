@@ -1,0 +1,17 @@
+error: variable does not need to be mutable
+ --> examples_tests/rustc_basic/foomp-rustfix.rs:4:9
+  |
+4 |     let mut x = 42;
+  |         ----^
+  |         |
+  |         help: remove this `mut`
+  |
+note: the lint level is defined here
+ --> examples_tests/rustc_basic/foomp-rustfix.rs:1:9
+  |
+1 | #![deny(warnings)]
+  |         ^^^^^^^^
+  = note: `#[deny(unused_mut)]` implied by `#[deny(warnings)]`
+
+error: aborting due to 1 previous error
+

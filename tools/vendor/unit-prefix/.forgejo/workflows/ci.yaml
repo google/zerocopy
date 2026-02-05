@@ -1,0 +1,58 @@
+on: [push, pull_request]
+
+jobs:
+
+  test:
+    runs-on: codeberg-tiny
+    container:
+      image: quay.io/fedora/nodejs-24:latest
+    strategy:
+      matrix:
+        toolchain: ["stable", "nightly", "1.31"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: dtolnay/rust-toolchain@master
+        uses: https://github.com/dtolnay/rust-toolchain@master
+        with:
+          toolchain: "${{ matrix.toolchain }}"
+      - name: cargo test
+        run: cargo test --verbose
+      - name: cargo test (no_std)
+        run: cargo test --verbose --no-default-features
+
+  clippy:
+    runs-on: codeberg-tiny
+    container:
+      image: quay.io/fedora/nodejs-24:latest
+    strategy:
+      matrix:
+        toolchain: ["nightly"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: dtolnay/rust-toolchain@master
+        uses: https://github.com/dtolnay/rust-toolchain@master
+        with:
+          toolchain: "${{ matrix.toolchain }}"
+          components: clippy
+      - name: cargo clippy
+        run: cargo clippy --verbose
+      - name: cargo clippy (no_std)
+        run: cargo clippy --verbose --no-default-features
+
+  rustfmt:
+    runs-on: codeberg-tiny
+    container:
+      image: quay.io/fedora/nodejs-24:latest
+    strategy:
+      matrix:
+        toolchain: ["nightly"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: dtolnay/rust-toolchain@master
+        uses: https://github.com/dtolnay/rust-toolchain@master
+        with:
+          toolchain: "${{ matrix.toolchain }}"
+          components: rustfmt
+      - name: rustfmt
+        run: cargo fmt --check
+
