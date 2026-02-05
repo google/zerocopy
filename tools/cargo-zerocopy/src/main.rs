@@ -239,7 +239,10 @@ fn delegate_cargo() -> Result<(), Error> {
                     env_rustflags,
                 );
 
+                // Pass RUSTFLAGS to both Rust (via `RUSTFLAGS`) and Rustdoc
+                // (via `RUSTDOCFLAGS`).
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
+                cmd.env("RUSTDOCFLAGS", &rustflags);
 
                 if env::var("CARGO_TARGET_DIR").is_ok() {
                     eprintln!("[cargo-zerocopy] WARNING: `CARGO_TARGET_DIR` is set - this may cause `cargo-zerocopy` to behave unexpectedly");
