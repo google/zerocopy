@@ -1,5 +1,5 @@
 warning: taking a mutable reference to a `const` item
-  --> tests/ui-msrv/transmute-mut-const.rs:18:52
+  --> $DIR/transmute-mut-const.rs:18:52
    |
 18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
    |                                                    ^^^^^^^^^^^^^^^^^
@@ -8,13 +8,13 @@ warning: taking a mutable reference to a `const` item
    = note: each usage of a `const` item creates a new temporary
    = note: the mutable reference will refer to this temporary, not the original `const` item
 note: `const` item defined here
-  --> tests/ui-msrv/transmute-mut-const.rs:15:1
+  --> $DIR/transmute-mut-const.rs:15:1
    |
 15 | const ARRAY_OF_U8S: [u8; 2] = [0u8; 2];
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error[E0658]: mutable references are not allowed in constants
-  --> tests/ui-msrv/transmute-mut-const.rs:18:52
+  --> $DIR/transmute-mut-const.rs:18:52
    |
 18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
    |                                                    ^^^^^^^^^^^^^^^^^
@@ -22,7 +22,7 @@ error[E0658]: mutable references are not allowed in constants
    = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
 
 error[E0015]: calls in constants are limited to constant functions, tuple structs and tuple variants
-  --> tests/ui-msrv/transmute-mut-const.rs:18:37
+  --> $DIR/transmute-mut-const.rs:18:37
    |
 18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -30,7 +30,7 @@ error[E0015]: calls in constants are limited to constant functions, tuple struct
    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0015]: calls in constants are limited to constant functions, tuple structs and tuple variants
-  --> tests/ui-msrv/transmute-mut-const.rs:18:37
+  --> $DIR/transmute-mut-const.rs:18:37
    |
 18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -38,7 +38,7 @@ error[E0015]: calls in constants are limited to constant functions, tuple struct
    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0716]: temporary value dropped while borrowed
-  --> tests/ui-msrv/transmute-mut-const.rs:18:57
+  --> $DIR/transmute-mut-const.rs:18:57
    |
 18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
    |                                     --------------------^^^^^^^^^^^^-
@@ -46,3 +46,8 @@ error[E0716]: temporary value dropped while borrowed
    |                                     |                   creates a temporary which is freed while still in use
    |                                     temporary value is freed at the end of this statement
    |                                     using this value as a constant requires that borrow lasts for `'static`
+
+error: aborting due to 4 previous errors; 1 warning emitted
+
+Some errors have detailed explanations: E0015, E0658, E0716.
+For more information about an error, try `rustc --explain E0015`.

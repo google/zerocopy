@@ -1,0 +1,13 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./Cargo.toml",
+        "./tests/integrations/basic/Cargo.toml",
+        "./tests/integrations/basic-bin/Cargo.toml",
+        "./tests/integrations/basic-fail/Cargo.toml",
+        "./tests/integrations/basic-fail-mode/Cargo.toml",
+        "./tests/integrations/cargo-run/Cargo.toml",
+        "./tests/integrations/dep-fail/Cargo.toml",
+        "./tests/integrations/ui_test_dep_bug/Cargo.toml"
+    ],
+    "nixEnvSelector.nixFile": "${workspaceRoot}/shell.nix"
+}

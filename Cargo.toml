@@ -121,6 +121,9 @@ zerocopy-derive = { version = "=0.8.39", path = "zerocopy-derive", optional = tr
 zerocopy-derive = { version = "=0.8.39", path = "zerocopy-derive" }
 
 [dev-dependencies]
+cargo_metadata = "=0.18.1"
+cargo-platform = "=0.1.2"
+
 # FIXME(#381) Remove this dependency once we have our own layout gadgets.
 elain = "0.3.0"
 itertools = "0.11"
