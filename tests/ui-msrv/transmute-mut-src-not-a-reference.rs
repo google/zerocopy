@@ -1,1 +1,0 @@
-../ui-nightly/transmute-mut-src-not-a-reference.rs
