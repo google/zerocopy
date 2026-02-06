@@ -1,0 +1,39 @@
+// Copyright 2022 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
+
+include!("../include.rs");
+
+use util::*;
+use zerocopy::try_transmute_mut;
+
+fn main() {}
+
+fn dst_not_tryfrombytes() {
+    // `try_transmute_mut` requires that the destination type implements
+    // `IntoBytes`
+    let src = &mut AU16(0);
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: IntoBytes` is not satisfied
+    let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+}
+
+fn src_not_frombytes() {
+    // `try_transmute_mut` requires that the source type implements `FromBytes`
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `Src: FromBytes` is not satisfied
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `Dst: FromBytes` is not satisfied
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `Dst: IntoBytes` is not satisfied
+    let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
+}
+
+fn src_not_intobytes() {
+    // `try_transmute_mut` requires that the source type implements `IntoBytes`
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `Src: IntoBytes` is not satisfied
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `Dst: FromBytes` is not satisfied
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `Dst: IntoBytes` is not satisfied
+    let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
+}

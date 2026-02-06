@@ -1,0 +1,155 @@
+error[E0277]: the trait bound `util::NotZerocopy: FromBytes` is not satisfied
+  --> $DIR/transmute.rs:19:45
+   |
+19 |     const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
+   |                                             ^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `FromBytes` is not implemented for `util::NotZerocopy`
+  --> $DIR/../include.rs:15:5
+   |
+15 |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(FromBytes)]` to `util::NotZerocopy`
+   = help: the following other types implement trait `FromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and 79 others
+note: required by a bound in `DST_NOT_FROM_BYTES::transmute`
+  --> $DIR/transmute.rs:19:45
+   |
+19 |     const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
+   |                                             ^^^^^^^^^^^^^^^^^^^
+   |                                             |
+   |                                             required by a bound in this function
+   |                                             required by this bound in `transmute`
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0080]: transmuting from 2-byte type to 1-byte type: `util::AU16` -> `u8`
+  --> $DIR/transmute.rs:27:31
+   |
+27 |     const DECREASE_SIZE: u8 = transmute!(AU16(0));
+   |                               ^^^^^^^^^^^^^^^^^^^ evaluation of `size_decrease::DECREASE_SIZE` failed here
+   |
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0080]: transmuting from 1-byte type to 2-byte type: `u8` -> `Transmute<u8, util::AU16>`
+  --> $DIR/transmute.rs:35:33
+   |
+35 |     const INCREASE_SIZE: AU16 = transmute!(#![allow(shrink)] 0u8);
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `size_increase_allow_shrink::INCREASE_SIZE` failed here
+   |
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0080]: transmuting from 1-byte type to 2-byte type: `u8` -> `util::AU16`
+  --> $DIR/transmute.rs:43:33
+   |
+43 |     const INCREASE_SIZE: AU16 = transmute!(0u8);
+   |                                 ^^^^^^^^^^^^^^^ evaluation of `size_increase::INCREASE_SIZE` failed here
+   |
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `util::NotZerocopy<util::AU16>: IntoBytes` is not satisfied
+  --> $DIR/transmute.rs:49:36
+   |
+49 |     const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                    |
+   |                                    unsatisfied trait bound
+   |                                    required by a bound introduced by this call
+   |
+help: the trait `IntoBytes` is not implemented for `util::NotZerocopy<util::AU16>`
+  --> $DIR/../include.rs:15:5
+   |
+15 |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(IntoBytes)]` to `util::NotZerocopy<util::AU16>`
+   = help: the following other types implement trait `IntoBytes`:
+             ()
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI64
+             AtomicI8
+             AtomicIsize
+             AtomicU16
+           and 68 others
+note: required by a bound in `SRC_NOT_AS_BYTES::transmute`
+  --> $DIR/transmute.rs:49:36
+   |
+49 |     const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                    |
+   |                                    required by a bound in this function
+   |                                    required by this bound in `transmute`
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `*const usize: IntoBytes` is not satisfied
+  --> $DIR/transmute.rs:59:34
+   |
+59 |     const POINTER_VALUE: usize = transmute!(&0usize as *const usize);
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                  |
+   |                                  the trait `IntoBytes` is not implemented for `*const usize`
+   |                                  required by a bound introduced by this call
+   |
+   = note: Consider adding `#[derive(IntoBytes)]` to `*const usize`
+help: the trait `IntoBytes` is implemented for `usize`
+  --> src/util/macros.rs:29:9
+   |
+29 |         unsafe impl $trait for $ty {
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: src/impls.rs:77:5
+   |
+77 |     unsafe_impl!(usize: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+   |     ----------------------------------------------------------------------------- in this macro invocation
+note: required by a bound in `POINTER_VALUE::transmute`
+  --> $DIR/transmute.rs:59:34
+   |
+59 |     const POINTER_VALUE: usize = transmute!(&0usize as *const usize);
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                  |
+   |                                  required by a bound in this function
+   |                                  required by this bound in `transmute`
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
+  --> $DIR/transmute.rs:27:31
+   |
+27 |     const DECREASE_SIZE: u8 = transmute!(AU16(0));
+   |                               ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: source type: `util::AU16` (16 bits)
+   = note: target type: `u8` (8 bits)
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
+  --> $DIR/transmute.rs:35:33
+   |
+35 |     const INCREASE_SIZE: AU16 = transmute!(#![allow(shrink)] 0u8);
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: source type: `u8` (8 bits)
+   = note: target type: `Transmute<u8, util::AU16>` (16 bits)
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
+  --> $DIR/transmute.rs:43:33
+   |
+43 |     const INCREASE_SIZE: AU16 = transmute!(0u8);
+   |                                 ^^^^^^^^^^^^^^^
+   |
+   = note: source type: `u8` (8 bits)
+   = note: target type: `util::AU16` (16 bits)
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 9 previous errors
+
+Some errors have detailed explanations: E0080, E0277, E0512.
+For more information about an error, try `rustc --explain E0080`.

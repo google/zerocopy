@@ -1,0 +1,119 @@
+warning: unused import: `util::*`
+  --> $DIR/transmute_mut.rs:11:5
+   |
+11 | use util::*;
+   |     ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` on by default
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_mut.rs:34:40
+   |
+34 |     const DST_NOT_A_REFERENCE: usize = transmute_mut!(&mut 0u8);
+   |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&mut _`
+   |
+   = note:           expected type `usize`
+           found mutable reference `&mut _`
+   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_mut.rs:34:40
+   |
+34 |     const DST_NOT_A_REFERENCE: usize = transmute_mut!(&mut 0u8);
+   |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&mut _`
+   |
+   = note:           expected type `usize`
+           found mutable reference `&mut _`
+   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `dst_not_frombytes::Dst: FromBytes` is not satisfied
+  --> $DIR/transmute_mut.rs:48:42
+   |
+48 |     const DST_NOT_FROM_BYTES: &mut Dst = transmute_mut!(&mut Src);
+   |                                          ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `dst_not_frombytes::Dst`
+   |
+   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `dst_not_intobytes::Dst: IntoBytes` is not satisfied
+  --> $DIR/transmute_mut.rs:62:40
+   |
+62 |     const DST_NOT_AS_BYTES: &mut Dst = transmute_mut!(&mut Src);
+   |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `dst_not_intobytes::Dst`
+   |
+   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_mut.rs:78:63
+   |
+78 |     const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(0usize);
+   |                                                ---------------^^^^^^-
+   |                                                |              |
+   |                                                |              expected `&mut _`, found `usize`
+   |                                                |              help: consider mutably borrowing here: `&mut 0usize`
+   |                                                expected due to this
+   |
+   = note: expected mutable reference `&mut _`
+                           found type `usize`
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_mut.rs:93:57
+   |
+93 |     const SRC_NOT_A_REFERENCE: &mut u8 = transmute_mut!(0usize);
+   |                                          ---------------^^^^^^-
+   |                                          |              |
+   |                                          |              expected `&mut _`, found `usize`
+   |                                          |              help: consider mutably borrowing here: `&mut 0usize`
+   |                                          expected due to this
+   |
+   = note: expected mutable reference `&mut _`
+                           found type `usize`
+
+error[E0277]: the trait bound `src_not_frombytes::Src: FromBytes` is not satisfied
+   --> $DIR/transmute_mut.rs:107:42
+    |
+107 |     const SRC_NOT_FROM_BYTES: &mut Dst = transmute_mut!(&mut Src);
+    |                                          ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `src_not_frombytes::Src`
+    |
+    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `src_not_intobytes::Src: IntoBytes` is not satisfied
+   --> $DIR/transmute_mut.rs:121:40
+    |
+121 |     const SRC_NOT_AS_BYTES: &mut Dst = transmute_mut!(&mut Src);
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `src_not_intobytes::Src`
+    |
+    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: the method `transmute_mut` exists for struct `Wrap<&mut [u8], &mut [u8; 1]>`, but its trait bounds were not satisfied
+   --> $DIR/transmute_mut.rs:129:39
+    |
+129 |     const SRC_UNSIZED: &mut [u8; 1] = transmute_mut!(&mut [0u8][..]);
+    |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method cannot be called on `Wrap<&mut [u8], &mut [u8; 1]>` due to unsatisfied trait bounds
+    |
+   ::: $WORKSPACE/src/util/macro_util.rs:679:1
+    |
+679 | pub struct Wrap<Src, Dst>(pub Src, pub PhantomData<Dst>);
+    | --------------------------------------------------------- doesn't satisfy `Wrap<&mut [u8], &mut [u8; 1]>: TransmuteMutDst`
+    |
+    = note: the following trait bounds were not satisfied:
+            `[u8]: Sized`
+            `<[u8; 1] as KnownLayout>::PointerMetadata = usize`
+            which is required by `Wrap<&mut [u8], &mut [u8; 1]>: TransmuteMutDst`
+    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_mut.rs:86:37
+   |
+86 |     let _: &mut u8 = transmute_mut!(&0u8);
+   |                      ---------------^^^^-
+   |                      |              |
+   |                      |              types differ in mutability
+   |                      expected due to this
+   |
+   = note: expected mutable reference `&mut _`
+                      found reference `&u8`
+
+error: aborting due to 10 previous errors; 1 warning emitted
+
+Some errors have detailed explanations: E0277, E0308, E0599.
+For more information about an error, try `rustc --explain E0277`.
