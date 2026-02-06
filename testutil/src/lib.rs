@@ -305,6 +305,8 @@ impl UiTestRunner {
         }
         command.env("ZEROCOPY_UI_TEST_DIR", test_src_dir);
 
+        command.env("ZEROCOPY_UI_TEST_TOOLCHAIN_CATEGORY", self.toolchain.name());
+
         let toolchain_name =
             env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| self.toolchain.name().to_string());
         command.env("ZEROCOPY_UI_TEST_TOOLCHAIN", &toolchain_name);

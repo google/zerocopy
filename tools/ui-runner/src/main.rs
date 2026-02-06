@@ -34,6 +34,10 @@ fn main() {
     config.out_dir = root.join("target").join("ui-test-artifacts");
     config.program.envs.push(("RUSTUP_TOOLCHAIN".into(), Some(toolchain.into())));
 
+    if let Ok(toolchain_category) = env::var("ZEROCOPY_UI_TEST_TOOLCHAIN_CATEGORY") {
+        config.host = Some(toolchain_category);
+    }
+
     let workspace_root =
         env::var("ZEROCOPY_WORKSPACE_ROOT").map(PathBuf::from).unwrap_or_else(|_| root.clone());
 
