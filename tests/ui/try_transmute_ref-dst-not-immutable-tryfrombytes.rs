@@ -14,5 +14,10 @@ use zerocopy::try_transmute_ref;
 fn main() {
     // `try_transmute_ref` requires that the source type implements `Immutable`
     // and `IntoBytes`
+
     let dst_not_try_from_bytes: Result<&NotZerocopy, _> = try_transmute_ref!(&AU16(0));
+    //~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+    //~[msrv, stable, nightly]^^ ERROR: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+    //~[msrv, stable, nightly]^^^ ERROR: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+    //~[msrv, stable, nightly]^^^^ ERROR: the trait bound `NotZerocopy: Immutable` is not satisfied
 }

@@ -19,4 +19,6 @@ struct Src;
 struct Dst;
 
 // `transmute_mut` requires that the source type implements `IntoBytes`
+
 const SRC_NOT_AS_BYTES: &mut Dst = transmute_mut!(&mut Src);
+//~[msrv, stable, nightly]^ ERROR: the trait bound `Src: IntoBytes` is not satisfied

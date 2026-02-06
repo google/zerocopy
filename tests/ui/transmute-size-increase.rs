@@ -15,4 +15,7 @@ fn main() {}
 
 // `transmute!` does not support transmuting from a smaller type to a larger
 // one.
+
 const INCREASE_SIZE: AU16 = transmute!(0u8);
+//~[msrv, stable, nightly]^ ERROR: cannot transmute between types of different sizes, or dependently-sized types
+//~[stable, nightly]^^ ERROR: transmuting from 1-byte type to 2-byte type: `u8` -> `AU16`

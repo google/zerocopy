@@ -1,7 +1,7 @@
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
-   --> $DIR/try_transmute_ref-dst-not-immutable-tryfrombytes.rs:17:59
+   --> $DIR/try_transmute_ref-dst-not-immutable-tryfrombytes.rs:18:59
     |
- 17 |     let dst_not_try_from_bytes: Result<&NotZerocopy, _> = try_transmute_ref!(&AU16(0));
+ 18 |     let dst_not_try_from_bytes: Result<&NotZerocopy, _> = try_transmute_ref!(&AU16(0));
     |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
@@ -31,9 +31,9 @@ note: required by a bound in `Wrap::<&'a Src, &'a Dst>::try_transmute_ref`
     = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
-   --> $DIR/try_transmute_ref-dst-not-immutable-tryfrombytes.rs:17:59
+   --> $DIR/try_transmute_ref-dst-not-immutable-tryfrombytes.rs:18:59
     |
- 17 |     let dst_not_try_from_bytes: Result<&NotZerocopy, _> = try_transmute_ref!(&AU16(0));
+ 18 |     let dst_not_try_from_bytes: Result<&NotZerocopy, _> = try_transmute_ref!(&AU16(0));
     |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `Immutable` is not implemented for `NotZerocopy`
@@ -63,9 +63,9 @@ note: required by a bound in `Wrap::<&'a Src, &'a Dst>::try_transmute_ref`
     = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
-   --> $DIR/try_transmute_ref-dst-not-immutable-tryfrombytes.rs:17:33
+   --> $DIR/try_transmute_ref-dst-not-immutable-tryfrombytes.rs:18:33
     |
- 17 |     let dst_not_try_from_bytes: Result<&NotZerocopy, _> = try_transmute_ref!(&AU16(0));
+ 18 |     let dst_not_try_from_bytes: Result<&NotZerocopy, _> = try_transmute_ref!(&AU16(0));
     |                                 ^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
@@ -91,9 +91,9 @@ note: required by a bound in `ValidityError`
     |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
 
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
-   --> $DIR/try_transmute_ref-dst-not-immutable-tryfrombytes.rs:17:59
+   --> $DIR/try_transmute_ref-dst-not-immutable-tryfrombytes.rs:18:59
     |
- 17 |     let dst_not_try_from_bytes: Result<&NotZerocopy, _> = try_transmute_ref!(&AU16(0));
+ 18 |     let dst_not_try_from_bytes: Result<&NotZerocopy, _> = try_transmute_ref!(&AU16(0));
     |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `TryFromBytes` is not implemented for `NotZerocopy`

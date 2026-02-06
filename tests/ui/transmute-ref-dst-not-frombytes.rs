@@ -18,4 +18,6 @@ fn main() {}
 struct Dst(AU16);
 
 // `transmute_ref` requires that the destination type implements `FromBytes`
+
 const DST_NOT_FROM_BYTES: &Dst = transmute_ref!(&AU16(0));
+//~[msrv, stable, nightly]^ ERROR: the trait bound `Dst: FromBytes` is not satisfied

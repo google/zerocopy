@@ -11,5 +11,7 @@ fn main() {}
 fn increase_lifetime() {
     let x = 0u64;
     // It is illegal to increase the lifetime scope.
+
     let _: &'static u64 = zerocopy::transmute_ref!(&x);
+    //~[msrv, stable, nightly]^ ERROR: `x` does not live long enough
 }

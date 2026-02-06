@@ -1,13 +1,13 @@
 error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
-  --> $DIR/transmute-dst-not-frombytes.rs:17:41
+  --> $DIR/transmute-dst-not-frombytes.rs:18:41
    |
-17 | const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
+18 | const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
    |                                         ^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy`
    |
 note: required by a bound in `DST_NOT_FROM_BYTES::transmute`
-  --> $DIR/transmute-dst-not-frombytes.rs:17:41
+  --> $DIR/transmute-dst-not-frombytes.rs:18:41
    |
-17 | const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
+18 | const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
    |                                         ^^^^^^^^^^^^^^^^^^^
    |                                         |
    |                                         required by a bound in this

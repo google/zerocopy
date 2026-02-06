@@ -1,13 +1,13 @@
 error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
-  --> $DIR/diagnostic-not-implemented-immutable.rs:16:23
+  --> $DIR/diagnostic-not-implemented-immutable.rs:17:23
    |
-16 |     takes_immutable::<NotZerocopy>();
+17 |     takes_immutable::<NotZerocopy>();
    |                       ^^^^^^^^^^^ the trait `Immutable` is not implemented for `NotZerocopy`
    |
 note: required by a bound in `takes_immutable`
-  --> $DIR/diagnostic-not-implemented-immutable.rs:19:23
+  --> $DIR/diagnostic-not-implemented-immutable.rs:21:23
    |
-19 | fn takes_immutable<T: Immutable>() {}
+21 | fn takes_immutable<T: Immutable>() {}
    |                       ^^^^^^^^^ required by this bound in `takes_immutable`
 
 error: aborting due to previous error

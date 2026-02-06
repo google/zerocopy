@@ -1,15 +1,15 @@
 error[E0080]: transmuting from 4-byte type to 8-byte type: `[u8; 4]` -> `u64`
-  --> $DIR/include_value_wrong_size.rs:12:25
+  --> $DIR/include_value_wrong_size.rs:13:25
    |
-12 | const WRONG_SIZE: u64 = zerocopy::include_value!("../../testdata/include_value/data");
+13 | const WRONG_SIZE: u64 = zerocopy::include_value!("../../testdata/include_value/data");
    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `WRONG_SIZE` failed here
    |
    = note: this error originates in the macro `$crate::transmute` which comes from the expansion of the macro `zerocopy::include_value` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
-  --> $DIR/include_value_wrong_size.rs:12:25
+  --> $DIR/include_value_wrong_size.rs:13:25
    |
-12 | const WRONG_SIZE: u64 = zerocopy::include_value!("../../testdata/include_value/data");
+13 | const WRONG_SIZE: u64 = zerocopy::include_value!("../../testdata/include_value/data");
    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: source type: `[u8; 4]` (32 bits)

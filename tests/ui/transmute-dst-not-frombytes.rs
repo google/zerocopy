@@ -14,4 +14,6 @@ use zerocopy::transmute;
 fn main() {}
 
 // `transmute` requires that the destination type implements `FromBytes`
+
 const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
+//~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy: FromBytes` is not satisfied

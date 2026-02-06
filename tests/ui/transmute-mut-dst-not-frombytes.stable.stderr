@@ -1,7 +1,7 @@
 error[E0277]: the trait bound `Dst: FromBytes` is not satisfied
-   --> $DIR/transmute-mut-dst-not-frombytes.rs:22:38
+   --> $DIR/transmute-mut-dst-not-frombytes.rs:23:38
     |
- 22 | const DST_NOT_FROM_BYTES: &mut Dst = transmute_mut!(&mut Src);
+ 23 | const DST_NOT_FROM_BYTES: &mut Dst = transmute_mut!(&mut Src);
     |                                      ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `FromBytes` is not implemented for `Dst`

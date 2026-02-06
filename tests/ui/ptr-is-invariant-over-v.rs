@@ -17,6 +17,8 @@ fn _when_exclusive<'big: 'small, 'small>(
     mut _small: Ptr<'small, &'small u32, (Exclusive, Aligned, Valid)>,
 ) {
     _small = big;
+    //~[msrv]^ ERROR: lifetime mismatch
+    //~[stable, nightly]^^ ERROR: lifetime may not live long enough
 }
 
 fn _when_shared<'big: 'small, 'small>(
@@ -24,6 +26,8 @@ fn _when_shared<'big: 'small, 'small>(
     mut _small: Ptr<'small, &'small u32, (Shared, Aligned, Valid)>,
 ) {
     _small = big;
+    //~[msrv]^ ERROR: lifetime mismatch
+    //~[stable, nightly]^^ ERROR: lifetime may not live long enough
 }
 
 fn main() {}

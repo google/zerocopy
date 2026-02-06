@@ -15,3 +15,4 @@ fn main() {}
 // Should fail because `NotZerocopy<u32>: !FromBytes`.
 const NOT_FROM_BYTES: NotZerocopy<u32> =
     zerocopy::include_value!("../../testdata/include_value/data");
+//~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy<u32>: FromBytes` is not satisfied

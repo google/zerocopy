@@ -68,8 +68,40 @@ fn main() {
     }
 
     use ui_test::spanned::Spanned;
-    config.comment_start = "//@ui_test";
-    config.comment_defaults.base().require_annotations = Spanned::dummy(false).into();
+
+    // let require_annotations = env::var("ZEROCOPY_REQUIRE_UI_TEST_ANNOTATIONS").is_ok();
+    config.comment_defaults.base().require_annotations = Spanned::dummy(true).into();
+    config.comment_defaults.revisions =
+        Some(vec!["msrv".to_string(), "stable".to_string(), "nightly".to_string()]);
+
+    #[derive(Debug, Clone)]
+    struct IgnoreRevision;
+
+    impl ui_test::custom_flags::Flag for IgnoreRevision {
+        fn clone_inner(&self) -> Box<dyn ui_test::custom_flags::Flag> {
+            Box::new(self.clone())
+        }
+        fn test_condition(
+            &self,
+            _config: &ui_test::Config,
+            _comments: &ui_test::Comments,
+            _revision: &str,
+        ) -> bool {
+            true
+        }
+        fn must_be_unique(&self) -> bool {
+            false
+        }
+    }
+
+    for rev in &["msrv", "stable", "nightly"] {
+        if rev != &toolchain_meta_name {
+            let revisioned =
+                config.comment_defaults.revisioned.entry(vec![rev.to_string()]).or_default();
+            revisioned.add_custom("ignore-revision", IgnoreRevision);
+        }
+    }
+
     config.comment_defaults.base().exit_status = Spanned::dummy(1).into();
     config.comment_defaults.base().custom.remove("rustfix");
 
