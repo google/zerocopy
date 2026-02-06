@@ -1,0 +1,320 @@
+error[E0428]: the name `Src` is defined multiple times
+  --> $DIR/transmute_mut.rs:46:5
+   |
+34 |     struct Src;
+   |     ----------- previous definition of the type `Src` here
+...
+46 |     struct Src;
+   |     ^^^^^^^^^^^ `Src` redefined here
+   |
+   = note: `Src` must be defined only once in the type namespace of this block
+
+error[E0428]: the name `Dst` is defined multiple times
+  --> $DIR/transmute_mut.rs:50:5
+   |
+38 |     struct Dst;
+   |     ----------- previous definition of the type `Dst` here
+...
+50 |     struct Dst;
+   |     ^^^^^^^^^^^ `Dst` redefined here
+   |
+   = note: `Dst` must be defined only once in the type namespace of this block
+
+error[E0428]: the name `Src` is defined multiple times
+  --> $DIR/transmute_mut.rs:77:5
+   |
+34 |     struct Src;
+   |     ----------- previous definition of the type `Src` here
+...
+77 |     struct Src;
+   |     ^^^^^^^^^^^ `Src` redefined here
+   |
+   = note: `Src` must be defined only once in the type namespace of this block
+
+error[E0428]: the name `Dst` is defined multiple times
+  --> $DIR/transmute_mut.rs:81:5
+   |
+38 |     struct Dst;
+   |     ----------- previous definition of the type `Dst` here
+...
+81 |     struct Dst;
+   |     ^^^^^^^^^^^ `Dst` redefined here
+   |
+   = note: `Dst` must be defined only once in the type namespace of this block
+
+error[E0428]: the name `Src` is defined multiple times
+  --> $DIR/transmute_mut.rs:89:5
+   |
+34 |     struct Src;
+   |     ----------- previous definition of the type `Src` here
+...
+89 |     struct Src;
+   |     ^^^^^^^^^^^ `Src` redefined here
+   |
+   = note: `Src` must be defined only once in the type namespace of this block
+
+error[E0428]: the name `Dst` is defined multiple times
+  --> $DIR/transmute_mut.rs:93:5
+   |
+38 |     struct Dst;
+   |     ----------- previous definition of the type `Dst` here
+...
+93 |     struct Dst;
+   |     ^^^^^^^^^^^ `Dst` redefined here
+   |
+   = note: `Dst` must be defined only once in the type namespace of this block
+
+warning: unused import: `util::*`
+  --> $DIR/transmute_mut.rs:11:5
+   |
+11 | use util::*;
+   |     ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` on by default
+
+error[E0119]: conflicting implementations of trait `zerocopy::Immutable` for type `main::Src`
+  --> $DIR/transmute_mut.rs:44:56
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                                        ------------------- first implementation here
+...
+44 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                                        ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::Immutable` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:48:35
+   |
+36 |     #[derive(zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                   ------------------- first implementation here
+...
+48 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |                                   ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::Immutable` for type `main::Src`
+  --> $DIR/transmute_mut.rs:75:35
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                                        ------------------- first implementation here
+...
+75 |     #[derive(zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                   ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::Immutable` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:79:56
+   |
+36 |     #[derive(zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                   ------------------- first implementation here
+...
+79 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                                        ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::Immutable` for type `main::Src`
+  --> $DIR/transmute_mut.rs:87:35
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                                        ------------------- first implementation here
+...
+87 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |                                   ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::Immutable` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:91:56
+   |
+36 |     #[derive(zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                   ------------------- first implementation here
+...
+91 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                                        ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::TryFromBytes` for type `main::Src`
+  --> $DIR/transmute_mut.rs:44:14
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+44 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::TryFromBytes` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:79:14
+   |
+48 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+79 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::TryFromBytes` for type `main::Src`
+  --> $DIR/transmute_mut.rs:87:14
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+87 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::TryFromBytes` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:91:14
+   |
+48 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+91 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::FromZeros` for type `main::Src`
+  --> $DIR/transmute_mut.rs:44:14
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+44 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::FromZeros` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:79:14
+   |
+48 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+79 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::FromZeros` for type `main::Src`
+  --> $DIR/transmute_mut.rs:87:14
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+87 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::FromZeros` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:91:14
+   |
+48 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+91 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::FromBytes` for type `main::Src`
+  --> $DIR/transmute_mut.rs:44:14
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+44 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::FromBytes` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:79:14
+   |
+48 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+79 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::FromBytes` for type `main::Src`
+  --> $DIR/transmute_mut.rs:87:14
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+87 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::FromBytes` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:91:14
+   |
+48 |     #[derive(zerocopy::FromBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+91 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::IntoBytes` for type `main::Src`
+  --> $DIR/transmute_mut.rs:44:35
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                   ------------------- first implementation here
+...
+44 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                   ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::IntoBytes` for type `main::Src`
+  --> $DIR/transmute_mut.rs:75:14
+   |
+32 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                   ------------------- first implementation here
+...
+75 |     #[derive(zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Src`
+   |
+   = note: this error originates in the derive macro `zerocopy::IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::IntoBytes` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:79:35
+   |
+36 |     #[derive(zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+79 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                   ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0119]: conflicting implementations of trait `zerocopy::IntoBytes` for type `main::Dst`
+  --> $DIR/transmute_mut.rs:91:35
+   |
+36 |     #[derive(zerocopy::IntoBytes, zerocopy::Immutable)]
+   |              ------------------- first implementation here
+...
+91 |     #[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
+   |                                   ^^^^^^^^^^^^^^^^^^^ conflicting implementation for `main::Dst`
+   |
+   = note: this error originates in the derive macro `zerocopy::IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 28 previous errors; 1 warning emitted
+
+Some errors have detailed explanations: E0119, E0428.
+For more information about an error, try `rustc --explain E0119`.

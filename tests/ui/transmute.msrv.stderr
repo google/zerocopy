@@ -1,0 +1,63 @@
+error[E0428]: the name `INCREASE_SIZE` is defined multiple times
+  --> $DIR/transmute.rs:35:5
+   |
+29 |     const INCREASE_SIZE: AU16 = transmute!(#![allow(shrink)] 0u8);
+   |     -------------------------------------------------------------- previous definition of the value `INCREASE_SIZE` here
+...
+35 |     const INCREASE_SIZE: AU16 = transmute!(0u8);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `INCREASE_SIZE` redefined here
+   |
+   = note: `INCREASE_SIZE` must be defined only once in the value namespace of this block
+
+error[E0277]: the trait bound `util::NotZerocopy: FromBytes` is not satisfied
+  --> $DIR/transmute.rs:17:45
+   |
+17 |     const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
+   |                                             ^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `util::NotZerocopy`
+   |
+note: required by a bound in `DST_NOT_FROM_BYTES::transmute`
+  --> $DIR/transmute.rs:17:45
+   |
+17 |     const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
+   |                                             ^^^^^^^^^^^^^^^^^^^
+   |                                             |
+   |                                             required by a bound in this
+   |                                             required by this bound in `DST_NOT_FROM_BYTES::transmute`
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `util::NotZerocopy<util::AU16>: IntoBytes` is not satisfied
+  --> $DIR/transmute.rs:39:36
+   |
+39 |     const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `util::NotZerocopy<util::AU16>`
+   |
+note: required by a bound in `SRC_NOT_AS_BYTES::transmute`
+  --> $DIR/transmute.rs:39:36
+   |
+39 |     const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                    |
+   |                                    required by a bound in this
+   |                                    required by this bound in `SRC_NOT_AS_BYTES::transmute`
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `*const usize: IntoBytes` is not satisfied
+  --> $DIR/transmute.rs:47:34
+   |
+47 |     const POINTER_VALUE: usize = transmute!(&0usize as *const usize);
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `*const usize`
+   |
+note: required by a bound in `POINTER_VALUE::transmute`
+  --> $DIR/transmute.rs:47:34
+   |
+47 |     const POINTER_VALUE: usize = transmute!(&0usize as *const usize);
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                  |
+   |                                  required by a bound in this
+   |                                  required by this bound in `POINTER_VALUE::transmute`
+   = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 4 previous errors
+
+Some errors have detailed explanations: E0277, E0428.
+For more information about an error, try `rustc --explain E0277`.

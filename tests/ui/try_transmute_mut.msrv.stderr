@@ -1,0 +1,87 @@
+error: cannot find macro `transmute_mut` in this scope
+   --> $DIR/try_transmute_mut.rs:32:40
+    |
+32  |     let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
+    |                                        ^^^^^^^^^^^^^ help: a macro with a similar name exists: `try_transmute_mut`
+    |
+   ::: $WORKSPACE/src/macros.rs:852:1
+    |
+852 | macro_rules! try_transmute_mut {
+    | ------------------------------ similarly named macro `try_transmute_mut` defined here
+    |
+    = note: consider importing one of these items:
+            zerocopy::transmute_mut
+            zerocopy_renamed::transmute_mut
+
+error: cannot find macro `transmute_mut` in this scope
+   --> $DIR/try_transmute_mut.rs:26:40
+    |
+26  |     let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
+    |                                        ^^^^^^^^^^^^^ help: a macro with a similar name exists: `try_transmute_mut`
+    |
+   ::: $WORKSPACE/src/macros.rs:852:1
+    |
+852 | macro_rules! try_transmute_mut {
+    | ------------------------------ similarly named macro `try_transmute_mut` defined here
+    |
+    = note: consider importing one of these items:
+            zerocopy::transmute_mut
+            zerocopy_renamed::transmute_mut
+
+error[E0412]: cannot find type `Dst` in this scope
+  --> $DIR/try_transmute_mut.rs:26:34
+   |
+26 |     let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
+   |                                  ^^^ not found in this scope
+
+error[E0412]: cannot find type `Dst` in this scope
+  --> $DIR/try_transmute_mut.rs:32:34
+   |
+32 |     let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
+   |                                  ^^^ not found in this scope
+
+error[E0277]: the trait bound `util::NotZerocopy: TryFromBytes` is not satisfied
+  --> $DIR/try_transmute_mut.rs:20:63
+   |
+20 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+   |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `util::NotZerocopy`
+   |
+   = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `util::NotZerocopy: IntoBytes` is not satisfied
+  --> $DIR/try_transmute_mut.rs:20:63
+   |
+20 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+   |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `util::NotZerocopy`
+   |
+   = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `util::NotZerocopy: TryFromBytes` is not satisfied
+   --> $DIR/try_transmute_mut.rs:20:33
+    |
+20  |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `util::NotZerocopy`
+    |
+note: required by a bound in `ValidityError`
+   --> $WORKSPACE/src/error.rs:588:45
+    |
+588 | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
+    |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
+
+error[E0277]: the trait bound `util::NotZerocopy: TryFromBytes` is not satisfied
+   --> $DIR/try_transmute_mut.rs:20:63
+    |
+20  |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `util::NotZerocopy`
+    |
+note: required by a bound in `ValidityError`
+   --> $WORKSPACE/src/error.rs:588:45
+    |
+588 | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
+    |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
+    = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 8 previous errors
+
+Some errors have detailed explanations: E0277, E0412.
+For more information about an error, try `rustc --explain E0277`.

@@ -1,0 +1,195 @@
+error[E0428]: the name `Dst` is defined multiple times
+  --> $DIR/transmute_ref.rs:35:5
+   |
+27 |     struct Dst(AU16);
+   |     ----------------- previous definition of the type `Dst` here
+...
+35 |     struct Dst(AU16);
+   |     ^^^^^^^^^^^^^^^^^ `Dst` redefined here
+   |
+   = note: `Dst` must be defined only once in the type namespace of this block
+
+error[E0428]: the name `Src` is defined multiple times
+  --> $DIR/transmute_ref.rs:66:5
+   |
+58 |     struct Src(AU16);
+   |     ----------------- previous definition of the type `Src` here
+...
+66 |     struct Src(AU16);
+   |     ^^^^^^^^^^^^^^^^^ `Src` redefined here
+   |
+   = note: `Src` must be defined only once in the type namespace of this block
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:18:22
+   |
+18 |     let _: &mut u8 = transmute_ref!(&0u8);
+   |                      ^^^^^^^^^^^^^^^^^^^^ types differ in mutability
+   |
+   = note: expected mutable reference `&mut u8`
+                      found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:18:22
+   |
+18 |     let _: &mut u8 = transmute_ref!(&0u8);
+   |                      ^^^^^^^^^^^^^^^^^^^^ types differ in mutability
+   |
+   = note: expected mutable reference `&mut u8`
+                      found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:18:22
+   |
+18 |     let _: &mut u8 = transmute_ref!(&0u8);
+   |                      ^^^^^^^^^^^^^^^^^^^^ types differ in mutability
+   |
+   = note: expected mutable reference `&mut u8`
+                      found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:18:22
+   |
+18 |     let _: &mut u8 = transmute_ref!(&0u8);
+   |                      ^^^^^^^^^^^^^^^^^^^^ types differ in mutability
+   |
+   = note: expected mutable reference `&mut u8`
+                      found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:23:40
+   |
+23 |     const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
+   |                                        ^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:23:40
+   |
+23 |     const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
+   |                                        ^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:23:40
+   |
+23 |     const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
+   |                                        ^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:23:40
+   |
+23 |     const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
+   |                                        ^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:49:58
+   |
+49 |     const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
+   |                                           ---------------^^^^^^-
+   |                                           |              |
+   |                                           |              expected `&_`, found `usize`
+   |                                           expected due to this
+   |
+   = note: expected reference `&_`
+                   found type `usize`
+help: consider borrowing here
+   |
+49 |     const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(&0usize);
+   |                                                          +
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:49:43
+   |
+49 |     const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
+   |                                           ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:49:43
+   |
+49 |     const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
+   |                                           ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:49:43
+   |
+49 |     const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
+   |                                           ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:49:43
+   |
+49 |     const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
+   |                                           ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `&_`
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> $DIR/transmute_ref.rs:54:53
+   |
+54 |     const SRC_NOT_A_REFERENCE: &u8 = transmute_ref!(0usize);
+   |                                      ---------------^^^^^^-
+   |                                      |              |
+   |                                      |              expected `&_`, found `usize`
+   |                                      expected due to this
+   |
+   = note: expected reference `&_`
+                   found type `usize`
+help: consider borrowing here
+   |
+54 |     const SRC_NOT_A_REFERENCE: &u8 = transmute_ref!(&0usize);
+   |                                                     +
+
+error[E0599]: the method `transmute_ref` exists for struct `Wrap<&[u8], &[u8; 1]>`, but its trait bounds were not satisfied
+   --> $DIR/transmute_ref.rs:75:35
+    |
+ 75 |     const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
+    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: $WORKSPACE/src/util/macro_util.rs:679:1
+    |
+679 | pub struct Wrap<Src, Dst>(pub Src, pub PhantomData<Dst>);
+    | ------------------------- doesn't satisfy `Wrap<&[u8], &[u8; 1]>: TransmuteRefDst<'_>`
+    |
+    = note: the following trait bounds were not satisfied:
+            `[u8]: Sized`
+            `<[u8; 1] as KnownLayout>::PointerMetadata = usize`
+            which is required by `Wrap<&[u8], &[u8; 1]>: TransmuteRefDst<'_>`
+    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 17 previous errors
+
+Some errors have detailed explanations: E0308, E0428, E0599.
+For more information about an error, try `rustc --explain E0308`.
