@@ -13,6 +13,7 @@ fn main() {}
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//~[msrv, stable, nightly]^ ERROR: FromBytes only supported on repr(u8) enum with 256 variants
 #[repr(u8)]
 enum Foo {
     Variant0,

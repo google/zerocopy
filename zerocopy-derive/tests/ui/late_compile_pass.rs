@@ -27,6 +27,8 @@ fn main() {}
 //
 
 #[derive(TryFromBytes)]
+//~[msrv]^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+//~[stable, nightly]^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 struct TryFromBytes1 {
     value: NotZerocopy,
@@ -37,6 +39,9 @@ struct TryFromBytes1 {
 //
 
 #[derive(FromZeros)]
+//~[msrv]^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+//~[msrv, stable, nightly]^^ ERROR: the trait bound `NotZerocopy: FromZeros` is not satisfied
+//~[stable, nightly]^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 struct FromZeros1 {
     value: NotZerocopy,
@@ -47,6 +52,12 @@ struct FromZeros1 {
 //
 
 #[derive(FromBytes)]
+//~[msrv]^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+//~[msrv, stable, nightly]^^ ERROR: the trait bound `NotZerocopy: FromZeros` is not satisfied
+//~[msrv]^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
+//~[stable, nightly]^^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+//~[stable, nightly]^^^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
+//~[stable, nightly]^^^^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 struct FromBytes1 {
     value: NotZerocopy,
@@ -57,6 +68,8 @@ struct FromBytes1 {
 //
 
 #[derive(IntoBytes)]
+//~[msrv]^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied
+//~[stable, nightly]^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct IntoBytes1 {
@@ -68,6 +81,7 @@ struct IntoBytes1 {
 //
 
 #[derive(Unaligned)]
+//~[msrv, stable, nightly]^ ERROR: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct Unaligned1 {
@@ -77,6 +91,7 @@ struct Unaligned1 {
 // This specifically tests a bug we had in an old version of the code in which
 // the trait bound would only be enforced for the first field's type.
 #[derive(Unaligned)]
+//~[msrv, stable, nightly]^ ERROR: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct Unaligned2 {
@@ -85,6 +100,7 @@ struct Unaligned2 {
 }
 
 #[derive(Unaligned)]
+//~[msrv, stable, nightly]^ ERROR: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(transparent)]
 struct Unaligned3 {

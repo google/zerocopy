@@ -10,3 +10,5 @@ fn main() {}
 
 // Should fail because the file is 4 bytes long, not 8.
 const WRONG_SIZE: u64 = zerocopy::include_value!("../../testdata/include_value/data");
+//~[msrv, stable, nightly]^ ERROR: cannot transmute between types of different sizes, or dependently-sized types
+//~[stable, nightly]^^ ERROR: transmuting from 4-byte type to 8-byte type: `[u8; 4]` -> `u64`

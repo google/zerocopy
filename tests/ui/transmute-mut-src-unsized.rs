@@ -13,3 +13,5 @@ fn main() {}
 // `transmute_mut!` does not support transmuting from an unsized source type to
 // a sized destination type.
 const SRC_UNSIZED: &mut [u8; 1] = transmute_mut!(&mut [0u8][..]);
+//~[msrv, stable]^ ERROR: the method `transmute_mut` exists for struct `Wrap<&mut [u8], &mut [u8; 1]>`, but its trait bounds were not satisfied
+//~[nightly]^^ ERROR: transmute_mut` exists for struct `zerocopy::util::macro_util::Wrap<&mut [u8], &mut [u8; 1]>`, but its trait bounds were not satisfied

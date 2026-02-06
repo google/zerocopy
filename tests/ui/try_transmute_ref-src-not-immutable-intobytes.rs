@@ -15,4 +15,6 @@ fn main() {
     // `try_transmute_ref` requires that the source type implements `Immutable`
     // and `IntoBytes`
     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
+    //~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
+    //~[msrv, stable, nightly]^^ ERROR: the trait bound `NotZerocopy<AU16>: Immutable` is not satisfied
 }

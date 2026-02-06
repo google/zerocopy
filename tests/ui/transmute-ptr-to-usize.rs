@@ -15,4 +15,6 @@ fn main() {}
 // becomes valid due to the requisite implementations of `FromBytes` being
 // added, that we re-examine whether it should specifically be valid in a const
 // context.
+
 const POINTER_VALUE: usize = transmute!(&0usize as *const usize);
+//~[msrv, stable, nightly]^ ERROR: the trait bound `*const usize: IntoBytes` is not satisfied

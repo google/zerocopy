@@ -14,6 +14,7 @@ use zerocopy::Immutable;
 fn main() {
     // We expect the proper diagnostic to be emitted on Rust 1.78.0 and later.
     takes_immutable::<NotZerocopy>();
+    //~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy: Immutable` is not satisfied
 }
 
 fn takes_immutable<T: Immutable>() {}

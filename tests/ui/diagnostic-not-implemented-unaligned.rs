@@ -14,6 +14,7 @@ use zerocopy::Unaligned;
 fn main() {
     // We expect the proper diagnostic to be emitted on Rust 1.78.0 and later.
     takes_unaligned::<NotZerocopy>();
+    //~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy: zerocopy::Unaligned` is not satisfied
 }
 
 fn takes_unaligned<T: Unaligned>() {}
