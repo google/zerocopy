@@ -121,9 +121,6 @@ zerocopy-derive = { version = "=0.8.39", path = "zerocopy-derive", optional = tr
 zerocopy-derive = { version = "=0.8.39", path = "zerocopy-derive" }
 
 [dev-dependencies]
-cargo_metadata = "=0.18.1"
-cargo-platform = "=0.1.2"
-
 # FIXME(#381) Remove this dependency once we have our own layout gadgets.
 elain = "0.3.0"
 itertools = "0.11"
@@ -131,10 +128,5 @@ rand = { version = "0.8.5", default-features = false, features = ["small_rng"] }
 rustversion = "1.0"
 static_assertions = "1.1"
 testutil = { path = "testutil" }
-# Pinned to a specific version so that the version used for local development
-# and the version used in CI are guaranteed to be the same. Future versions
-# sometimes change the output format slightly, so a version mismatch can cause
-# CI test failures.
-trybuild = { version = "=1.0.89", features = ["diff"] }
 # In tests, unlike in production, zerocopy-derive is not optional
 zerocopy-derive = { version = "=0.8.39", path = "zerocopy-derive" }
