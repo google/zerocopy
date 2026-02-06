@@ -15,14 +15,14 @@ error: lifetime may not live long enough
    = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
 
 error: lifetime may not live long enough
-  --> $DIR/ptr-is-invariant-over-v.rs:26:5
+  --> $DIR/ptr-is-invariant-over-v.rs:28:5
    |
-22 | fn _when_shared<'big: 'small, 'small>(
+24 | fn _when_shared<'big: 'small, 'small>(
    |                 ----          ------ lifetime `'small` defined here
    |                 |
    |                 lifetime `'big` defined here
 ...
-26 |     _small = big;
+28 |     _small = big;
    |     ^^^^^^^^^^^^ assignment requires that `'small` must outlive `'big`
    |
    = help: consider adding the following bound: `'small: 'big`

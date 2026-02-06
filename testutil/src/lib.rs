@@ -170,8 +170,8 @@ impl UiTestRunner {
 
         let stdout = String::from_utf8(output.stdout).unwrap();
         // DEBUG: print stdout and stderr to see if it rebuilt
-        println!("CARGO BUILD STDERR:\n{}", String::from_utf8_lossy(&output.stderr));
-        println!("CARGO BUILD STDOUT:\n{}", stdout);
+        // println!("CARGO BUILD STDERR:\n{}", String::from_utf8_lossy(&output.stderr));
+        // println!("CARGO BUILD STDOUT:\n{}", stdout);
         for msg in cargo_metadata::Message::parse_stream(stdout.as_bytes()) {
             if let Ok(cargo_metadata::Message::CompilerArtifact(artifact)) = msg {
                 if artifact.profile.test {

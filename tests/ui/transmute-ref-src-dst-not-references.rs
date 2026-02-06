@@ -13,3 +13,8 @@ fn main() {}
 // `transmute_ref!` does not support transmuting between non-reference source
 // and destination types.
 const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
+//~[msrv, stable, nightly]^ ERROR: mismatched types
+//~[msrv, stable, nightly]^^ ERROR: mismatched types
+//~[msrv, stable, nightly]^^^ ERROR: mismatched types
+//~[msrv, stable, nightly]^^^^ ERROR: mismatched types
+//~[msrv, stable, nightly]^^^^^ ERROR: mismatched types

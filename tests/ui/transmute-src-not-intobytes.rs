@@ -15,3 +15,4 @@ fn main() {}
 
 // `transmute` requires that the source type implements `IntoBytes`
 const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
+//~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied

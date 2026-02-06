@@ -13,3 +13,4 @@ fn main() {}
 // `transmute_ref!` does not support transmuting from a non-reference source
 // type.
 const SRC_NOT_A_REFERENCE: &u8 = transmute_ref!(0usize);
+//~[msrv, stable, nightly]^ ERROR: mismatched types

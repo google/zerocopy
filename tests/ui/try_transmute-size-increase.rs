@@ -15,4 +15,5 @@ use zerocopy::try_transmute;
 // one.
 fn main() {
     let _increase_size: Result<AU16, _> = try_transmute!(0u8);
+    //~[msrv, stable, nightly]^ ERROR: cannot transmute between types of different sizes, or dependently-sized types
 }
