@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+#
 # Copyright 2024 The Fuchsia Authors
 #
 # Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0

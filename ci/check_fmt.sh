@@ -9,10 +9,11 @@
 # those terms.
 
 set -eo pipefail
-files=$(find . -iname '*.rs' -type f -not -path './target/*' -not -iname '*.expected.rs' -not -path './vendor/*' -not -path './tools/vendor/*')
-# check that find succeeded
-if [[ -z $files ]]
-then
-	exit 1
+
+if [[ "$1" == "--fix" ]]; then
+    FMT_FLAGS=""
+else
+    FMT_FLAGS="--check"
 fi
-./cargo.sh +nightly fmt --check -- $files >&2
+
+find . -iname '*.rs' -type f -not -path './target/*' -not -iname '*.expected.rs' -not -path './vendor/*' -not -path './tools/vendor/*' -print0 | xargs -0 --no-run-if-empty ./cargo.sh +nightly fmt $FMT_FLAGS -- >&2
