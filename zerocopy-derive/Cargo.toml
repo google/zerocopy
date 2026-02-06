@@ -40,17 +40,10 @@ syn = { version = "2.0.46", features = ["full"] }
 [dev-dependencies]
 dissimilar = "1.0.9"
 prettyplease = "=0.2.17"
-proc-macro2 = "=1.0.80"
-quote = "=1.0.40"
 rustversion = "1.0"
 static_assertions = "1.1"
 syn = { version = "2.0.46", features = ["visit"] }
 testutil = { path = "../testutil" }
-# Pinned to a specific version so that the version used for local development
-# and the version used in CI are guaranteed to be the same. Future versions
-# sometimes change the output format slightly, so a version mismatch can cause
-# CI test failures.
-trybuild = { version = "=1.0.89", features = ["diff"] }
 # We import as `zerocopy-renamed` so that we can refer to the crate as
 # `zerocopy-renamed` in the generated code, which allows us to test that the
 # `crate` attribute works correctly, and ensures that we never accidentally
