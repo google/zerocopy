@@ -16,4 +16,8 @@ fn main() {
     // `IntoBytes`
     let src = &mut AU16(0);
     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+    //~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+    //~[msrv, stable, nightly]^^ ERROR: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+    //~[msrv, stable, nightly]^^^ ERROR: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+    //~[msrv, stable, nightly]^^^^ ERROR: the trait bound `NotZerocopy: IntoBytes` is not satisfied
 }

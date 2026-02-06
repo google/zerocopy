@@ -23,6 +23,7 @@ fn main() {}
 //
 
 #[derive(Immutable)]
+//~[msrv, stable, nightly]^ ERROR: the trait bound `UnsafeCell<()>: zerocopy_renamed::Immutable` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 union Immutable1 {
     a: ManuallyDrop<core::cell::UnsafeCell<()>>,
@@ -33,6 +34,7 @@ union Immutable1 {
 //
 
 #[derive(IntoBytes)]
+//~[msrv, stable, nightly]^ ERROR: unsupported on types with type parameters
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union IntoBytes1<T> {
@@ -40,6 +42,8 @@ union IntoBytes1<T> {
 }
 
 #[derive(IntoBytes)]
+//~[msrv]^ ERROR: the trait bound `(): PaddingFree<IntoBytes2, 1_usize>` is not satisfied
+//~[stable, nightly]^^ ERROR: `IntoBytes2` has 1 total byte(s) of padding
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union IntoBytes2 {
@@ -49,6 +53,7 @@ union IntoBytes2 {
 
 // Need a `repr` attribute
 #[derive(IntoBytes)]
+//~[msrv, stable, nightly]^ ERROR: must be #[repr(C)], #[repr(packed)], or #[repr(transparent)]
 #[zerocopy(crate = "zerocopy_renamed")]
 union IntoBytes3 {
     foo: u8,
@@ -56,6 +61,7 @@ union IntoBytes3 {
 
 // `repr(packed(2))` isn't equivalent to `repr(packed)`
 #[derive(IntoBytes)]
+//~[msrv, stable, nightly]^ ERROR: must be #[repr(C)], #[repr(packed)], or #[repr(transparent)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed(2))]
 union IntoBytes4 {
@@ -69,6 +75,7 @@ union IntoBytes4 {
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, align(2))]
+//~[msrv, stable, nightly]^ ERROR: cannot derive `Unaligned` on type with alignment greater than 1
 union Unaligned1 {
     foo: i16,
     bar: AU16,
@@ -86,13 +93,16 @@ union Unaligned1 {
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed, align(2))]
+//~[msrv, stable, nightly]^ ERROR: this conflicts with another representation hint
 union Unaligned3 {
+    //~[stable, nightly]^ ERROR: type has conflicting packed and align representation hints
     foo: u8,
 }
 
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(align(1), align(2))]
+//~[msrv, stable, nightly]^ ERROR: this conflicts with another representation hint
 struct Unaligned4 {
     foo: u8,
 }
@@ -100,11 +110,13 @@ struct Unaligned4 {
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(align(2), align(4))]
+//~[msrv, stable, nightly]^ ERROR: this conflicts with another representation hint
 struct Unaligned5 {
     foo: u8,
 }
 
 #[derive(Unaligned)]
+//~[msrv, stable, nightly]^ ERROR: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
 #[zerocopy(crate = "zerocopy_renamed")]
 union Unaligned6 {
     foo: i16,
@@ -112,9 +124,11 @@ union Unaligned6 {
 }
 
 #[derive(Unaligned)]
+//~[msrv, stable, nightly]^ ERROR: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed(2))]
 union Unaligned7 {
+    //~[stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
     foo: i16,
     bar: AU16,
 }
