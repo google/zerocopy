@@ -29,6 +29,7 @@ fn assert_kl<T: ?Sized + KnownLayout>(_: &T) {}
 struct KL04<T: ?Sized>(u8, T);
 
 fn test_kl04<T: ?Sized>(kl: &KL04<T>) {
+    //@[msrv, stable, nightly]~ ERROR: the size for values of type `T` cannot be known at compilation time
     assert_kl(kl);
 }
 
@@ -39,6 +40,7 @@ fn test_kl04<T: ?Sized>(kl: &KL04<T>) {
 struct KL06<T: ?Sized + KnownLayout>(u8, T);
 
 fn test_kl06<T: ?Sized + KnownLayout>(kl: &KL06<T>) {
+    //@[msrv, stable, nightly]~ ERROR: the size for values of type `T` cannot be known at compilation time
     assert_kl(kl);
 }
 
@@ -50,6 +52,8 @@ fn test_kl06<T: ?Sized + KnownLayout>(kl: &KL06<T>) {
 struct KL12<T: ?Sized>(u8, T);
 
 fn test_kl12<T: ?Sized>(kl: &KL12<T>) {
+    //@[msrv]~ ERROR: the trait bound `T: KnownLayout` is not satisfied
+    //@[stable, nightly]~ ERROR: the trait bound `KL12<T>: KnownLayout` is not satisfied
     assert_kl(kl)
 }
 
@@ -60,6 +64,7 @@ fn test_kl12<T: ?Sized>(kl: &KL12<T>) {
 #[repr(C)]
 struct KL13<T>(u8, T);
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `T: KnownLayout` is not satisfied
 fn test_kl13<T>(t: T) -> impl KnownLayout {
     KL13(0u8, t)
 }

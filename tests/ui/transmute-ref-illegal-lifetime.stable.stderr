@@ -1,14 +1,14 @@
 error[E0597]: `x` does not live long enough
-  --> $DIR/transmute-ref-illegal-lifetime.rs:14:52
+  --> $DIR/transmute-ref-illegal-lifetime.rs:15:52
    |
 12 |     let x = 0u64;
    |         - binding `x` declared here
-13 |     // It is illegal to increase the lifetime scope.
-14 |     let _: &'static u64 = zerocopy::transmute_ref!(&x);
+...
+15 |     let _: &'static u64 = zerocopy::transmute_ref!(&x);
    |            ------------                            ^^ borrowed value does not live long enough
    |            |
    |            type annotation requires that `x` is borrowed for `'static`
-15 | }
+16 | }
    | - `x` dropped here while still borrowed
 
 error: aborting due to 1 previous error

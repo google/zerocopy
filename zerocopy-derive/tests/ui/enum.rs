@@ -17,6 +17,8 @@ fn main() {}
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: unrecognized representation hint
+//@[msrv, stable, nightly]~ ERROR: meta item in `repr` must be an identifier
 #[repr("foo")]
 enum Generic1 {
     A,
@@ -24,11 +26,13 @@ enum Generic1 {
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: unrecognized representation hint
 #[repr(foo)]
 enum Generic2 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(transparent)]
@@ -38,11 +42,14 @@ enum Generic3 {
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: this conflicts with another representation hint
+//@[msrv, stable, nightly]~ ERROR: conflicting representation hints
 #[repr(u8, u16)]
 enum Generic4 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 enum Generic5 {
@@ -53,6 +60,7 @@ enum Generic5 {
 // Immutable errors
 //
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `UnsafeCell<()>: Immutable` is not satisfied
 #[derive(Immutable)]
 #[zerocopy(crate = "zerocopy_renamed")]
 enum Immutable1 {
@@ -63,6 +71,7 @@ enum Immutable1 {
 #[zerocopy(crate = "zerocopy_renamed")]
 enum Never {}
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `UnsafeCell<u8>: Immutable` is not satisfied
 #[derive(Immutable)]
 #[zerocopy(crate = "zerocopy_renamed")]
 enum Immutable2 {
@@ -75,12 +84,14 @@ enum Immutable2 {
 //
 
 #[derive(TryFromBytes)]
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
 #[zerocopy(crate = "zerocopy_renamed")]
 enum TryFromBytes1 {
     A,
 }
 
 #[derive(TryFromBytes)]
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
 #[zerocopy(crate = "zerocopy_renamed")]
 enum TryFromBytes2 {
     A,
@@ -89,6 +100,7 @@ enum TryFromBytes2 {
 
 struct NotTryFromBytes;
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotTryFromBytes: TryFromBytes` is not satisfied
 #[derive(TryFromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
@@ -101,12 +113,14 @@ enum TryFromBytes3 {
 //
 
 #[derive(FromZeros)]
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
 #[zerocopy(crate = "zerocopy_renamed")]
 enum FromZeros1 {
     A(u8),
 }
 
 #[derive(FromZeros)]
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
 #[zerocopy(crate = "zerocopy_renamed")]
 enum FromZeros2 {
     A,
@@ -114,6 +128,7 @@ enum FromZeros2 {
 }
 
 #[derive(FromZeros)]
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
 #[zerocopy(crate = "zerocopy_renamed")]
 enum FromZeros3 {
     A = 1,
@@ -121,6 +136,7 @@ enum FromZeros3 {
 }
 
 #[derive(FromZeros)]
+//@[msrv, stable, nightly]~ ERROR: FromZeros only supported on enums with a variant that has a discriminant of `0`
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum FromZeros4 {
@@ -131,6 +147,7 @@ enum FromZeros4 {
 const NEGATIVE_ONE: i8 = -1;
 
 #[derive(FromZeros)]
+//@[msrv, stable, nightly]~ ERROR: FromZeros only supported on enums with a variant that has a discriminant of `0`
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i8)]
 enum FromZeros5 {
@@ -140,6 +157,8 @@ enum FromZeros5 {
 
 struct NotFromZeros;
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotFromZeros: FromZeros` is not satisfied
 #[derive(FromZeros)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
@@ -148,9 +167,11 @@ enum FromZeros6 {
 }
 
 #[derive(FromZeros)]
+//@[msrv, stable, nightly]~ ERROR: FromZeros only supported on enums with a variant that has a discriminant of `0`
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum FromZeros7 {
+    //@[msrv]~ ERROR: custom discriminant values are not allowed in enums with tuple or struct variants
     A = 1,
     B(NotFromZeros),
 }
@@ -159,6 +180,7 @@ enum FromZeros7 {
 // FromBytes errors
 //
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 enum FromBytes1 {
@@ -167,6 +189,7 @@ enum FromBytes1 {
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
 #[repr(C)]
 enum FromBytes2 {
     A,
@@ -174,6 +197,7 @@ enum FromBytes2 {
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
 #[repr(usize)]
 enum FromBytes3 {
     A,
@@ -181,6 +205,7 @@ enum FromBytes3 {
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
 #[repr(isize)]
 enum FromBytes4 {
     A,
@@ -188,6 +213,7 @@ enum FromBytes4 {
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
 #[repr(u32)]
 enum FromBytes5 {
     A,
@@ -195,6 +221,7 @@ enum FromBytes5 {
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
 #[repr(i32)]
 enum FromBytes6 {
     A,
@@ -202,6 +229,7 @@ enum FromBytes6 {
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
 #[repr(u64)]
 enum FromBytes7 {
     A,
@@ -209,11 +237,13 @@ enum FromBytes7 {
 
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
 #[repr(i64)]
 enum FromBytes8 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `bool: FromBytes` is not satisfied
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
@@ -480,6 +510,7 @@ enum FooU8 {
 // Unaligned errors
 //
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
@@ -487,6 +518,7 @@ enum Unaligned1 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u16)]
@@ -494,6 +526,7 @@ enum Unaligned2 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i16)]
@@ -501,6 +534,7 @@ enum Unaligned3 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u32)]
@@ -508,6 +542,7 @@ enum Unaligned4 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i32)]
@@ -515,6 +550,7 @@ enum Unaligned5 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u64)]
@@ -522,6 +558,7 @@ enum Unaligned6 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i64)]
@@ -529,6 +566,7 @@ enum Unaligned7 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(usize)]
@@ -536,6 +574,7 @@ enum Unaligned8 {
     A,
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(isize)]
@@ -545,6 +584,7 @@ enum Unaligned9 {
 
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: cannot derive `Unaligned` on type with alignment greater than 1
 #[repr(u8, align(2))]
 enum Unaligned10 {
     A,
@@ -552,6 +592,7 @@ enum Unaligned10 {
 
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: cannot derive `Unaligned` on type with alignment greater than 1
 #[repr(i8, align(2))]
 enum Unaligned11 {
     A,
@@ -559,6 +600,7 @@ enum Unaligned11 {
 
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: this conflicts with another representation hint
 #[repr(align(1), align(2))]
 enum Unaligned12 {
     A,
@@ -566,6 +608,7 @@ enum Unaligned12 {
 
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
+//@[msrv, stable, nightly]~ ERROR: this conflicts with another representation hint
 #[repr(align(2), align(4))]
 enum Unaligned13 {
     A,
@@ -575,6 +618,8 @@ enum Unaligned13 {
 // IntoBytes errors
 //
 
+//@[msrv]~ ERROR: the trait bound `(): PaddingFree<IntoBytes1, 1_usize>` is not satisfied
+//@[stable, nightly]~ ERROR: `IntoBytes1` has 1 total byte(s) of padding
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
@@ -588,6 +633,8 @@ enum IntoBytes1 {
 #[repr(C, align(4))]
 struct Align4IntoBytes(u32);
 
+//@[msrv]~ ERROR: the trait bound `(): PaddingFree<IntoBytes2, 3_usize>` is not satisfied
+//@[stable, nightly]~ ERROR: `IntoBytes2` has 3 total byte(s) of padding
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
@@ -595,6 +642,8 @@ enum IntoBytes2 {
     A(Align4IntoBytes),
 }
 
+//@[msrv]~ ERROR: the trait bound `(): PaddingFree<IntoBytes3, 2_usize>` is not satisfied
+//@[stable, nightly]~ ERROR: `IntoBytes3` has 2 total byte(s) of padding
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u32)]
@@ -603,6 +652,7 @@ enum IntoBytes3 {
     B(u16),
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 enum IntoBytes4 {
@@ -610,15 +660,18 @@ enum IntoBytes4 {
     B(u16),
 }
 
+//@[msrv, stable, nightly]~ ERROR: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 enum IntoBytes5 {
     A(u32),
 }
 
+//@[msrv, stable, nightly]~ ERROR: generic `Self` types are currently not permitted in anonymous constants
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum IntoBytes6<T> {
+    //@[msrv, stable, nightly]~ ERROR: generic parameters may not be used in const operations
     A(T),
 }

@@ -7,9 +7,9 @@ warning: unused `#[macro_use]` import
    = note: `#[warn(unused_imports)]` on by default
 
 error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
-  --> $DIR/msrv_specific.rs:37:9
+  --> $DIR/msrv_specific.rs:38:9
    |
-37 |         is_into_bytes_1::<IntoBytes1<AU16>>();
+38 |         is_into_bytes_1::<IntoBytes1<AU16>>();
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
    |
 note: required because of the requirements on the impl of `zerocopy_renamed::IntoBytes` for `IntoBytes1<AU16>`

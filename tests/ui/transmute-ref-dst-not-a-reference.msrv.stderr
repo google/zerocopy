@@ -1,7 +1,7 @@
 error[E0308]: mismatched types
-  --> $DIR/transmute-ref-dst-not-a-reference.rs:15:36
+  --> $DIR/transmute-ref-dst-not-a-reference.rs:16:36
    |
-15 | const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
+16 | const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
    |                                    ^^^^^^^^^^^^^^^^^^^^ expected `usize`, found reference
    |
    = note:   expected type `usize`
@@ -9,9 +9,9 @@ error[E0308]: mismatched types
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0308]: mismatched types
-  --> $DIR/transmute-ref-dst-not-a-reference.rs:15:36
+  --> $DIR/transmute-ref-dst-not-a-reference.rs:16:36
    |
-15 | const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
+16 | const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
    |                                    ^^^^^^^^^^^^^^^^^^^^ expected `usize`, found reference
    |
    = note:   expected type `usize`
@@ -19,9 +19,9 @@ error[E0308]: mismatched types
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0308]: mismatched types
-  --> $DIR/transmute-ref-dst-not-a-reference.rs:15:36
+  --> $DIR/transmute-ref-dst-not-a-reference.rs:16:36
    |
-15 | const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
+16 | const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
    |                                    ^^^^^^^^^^^^^^^^^^^^ expected `usize`, found reference
    |
    = note:   expected type `usize`
@@ -29,9 +29,9 @@ error[E0308]: mismatched types
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0308]: mismatched types
-  --> $DIR/transmute-ref-dst-not-a-reference.rs:15:36
+  --> $DIR/transmute-ref-dst-not-a-reference.rs:16:36
    |
-15 | const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
+16 | const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
    |                                    ^^^^^^^^^^^^^^^^^^^^ expected `usize`, found reference
    |
    = note:   expected type `usize`

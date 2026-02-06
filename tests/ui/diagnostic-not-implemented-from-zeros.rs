@@ -13,6 +13,7 @@ use zerocopy::FromZeros;
 
 fn main() {
     // We expect the proper diagnostic to be emitted on Rust 1.78.0 and later.
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: FromZeros` is not satisfied
     takes_from_zeros::<NotZerocopy>();
 }
 

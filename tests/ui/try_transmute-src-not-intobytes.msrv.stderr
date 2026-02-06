@@ -1,7 +1,7 @@
 error[E0277]: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
-   --> $DIR/try_transmute-src-not-intobytes.rs:16:47
+   --> $DIR/try_transmute-src-not-intobytes.rs:17:47
     |
-16  |     let src_not_into_bytes: Result<AU16, _> = try_transmute!(NotZerocopy(AU16(0)));
+17  |     let src_not_into_bytes: Result<AU16, _> = try_transmute!(NotZerocopy(AU16(0)));
     |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
     |
 note: required by a bound in `try_transmute`

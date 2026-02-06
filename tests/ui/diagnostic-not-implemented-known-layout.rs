@@ -13,6 +13,7 @@ use zerocopy::KnownLayout;
 
 fn main() {
     // We expect the proper diagnostic to be emitted on Rust 1.78.0 and later.
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: KnownLayout` is not satisfied
     takes_known_layout::<NotZerocopy>();
 }
 

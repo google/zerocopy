@@ -12,5 +12,6 @@ fn main() {}
 
 fn ref_src_immutable() {
     // `transmute_mut!` requires that its source type be a mutable reference.
+    //@[msrv, stable, nightly]~ ERROR: mismatched types
     let _: &mut u8 = transmute_mut!(&0u8);
 }

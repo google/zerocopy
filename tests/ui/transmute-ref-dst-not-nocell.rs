@@ -18,4 +18,5 @@ fn main() {}
 struct Dst(AU16);
 
 // `transmute_ref` requires that the destination type implements `Immutable`
+//@[msrv, stable, nightly]~ ERROR: the trait bound `Dst: Immutable` is not satisfied
 const DST_NOT_IMMUTABLE: &Dst = transmute_ref!(&AU16(0));

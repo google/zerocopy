@@ -1,7 +1,7 @@
 error[E0599]: the method `transmute_mut` exists for struct `zerocopy::util::macro_util::Wrap<&mut [u8], &mut [u8; 1]>`, but its trait bounds were not satisfied
-   --> $DIR/transmute-mut-src-unsized.rs:15:35
+   --> $DIR/transmute-mut-src-unsized.rs:17:35
     |
- 15 | const SRC_UNSIZED: &mut [u8; 1] = transmute_mut!(&mut [0u8][..]);
+ 17 | const SRC_UNSIZED: &mut [u8; 1] = transmute_mut!(&mut [0u8][..]);
     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     |
    ::: src/util/macro_util.rs:679:1

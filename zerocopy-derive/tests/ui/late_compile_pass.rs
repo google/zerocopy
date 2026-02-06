@@ -26,6 +26,7 @@ fn main() {}
 // TryFromBytes errors
 //
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
 #[derive(TryFromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 struct TryFromBytes1 {
@@ -36,6 +37,8 @@ struct TryFromBytes1 {
 // FromZeros errors
 //
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: FromZeros` is not satisfied
 #[derive(FromZeros)]
 #[zerocopy(crate = "zerocopy_renamed")]
 struct FromZeros1 {
@@ -46,6 +49,9 @@ struct FromZeros1 {
 // FromBytes errors
 //
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: FromZeros` is not satisfied
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
 #[derive(FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 struct FromBytes1 {
@@ -56,6 +62,7 @@ struct FromBytes1 {
 // IntoBytes errors
 //
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
@@ -67,6 +74,7 @@ struct IntoBytes1 {
 // Unaligned errors
 //
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
@@ -76,6 +84,7 @@ struct Unaligned1 {
 
 // This specifically tests a bug we had in an old version of the code in which
 // the trait bound would only be enforced for the first field's type.
+//@[msrv, stable, nightly]~ ERROR: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
@@ -84,6 +93,7 @@ struct Unaligned2 {
     aligned: AU16,
 }
 
+//@[msrv, stable, nightly]~ ERROR: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(transparent)]

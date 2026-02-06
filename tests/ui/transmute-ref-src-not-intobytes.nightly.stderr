@@ -1,7 +1,7 @@
 error[E0277]: the trait bound `Src: IntoBytes` is not satisfied
-  --> $DIR/transmute-ref-src-not-intobytes.rs:21:33
+  --> $DIR/transmute-ref-src-not-intobytes.rs:22:33
    |
-21 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&Src(AU16(0)));
+22 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&Src(AU16(0)));
    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |                                 |
    |                                 unsatisfied trait bound
@@ -24,16 +24,16 @@ help: the trait `IntoBytes` is not implemented for `Src`
              AtomicIsize
            and 68 others
 note: required by a bound in `AssertSrcIsIntoBytes`
-  --> $DIR/transmute-ref-src-not-intobytes.rs:21:33
+  --> $DIR/transmute-ref-src-not-intobytes.rs:22:33
    |
-21 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&Src(AU16(0)));
+22 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&Src(AU16(0)));
    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsIntoBytes`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `Src: IntoBytes` is not satisfied
-  --> $DIR/transmute-ref-src-not-intobytes.rs:21:33
+  --> $DIR/transmute-ref-src-not-intobytes.rs:22:33
    |
-21 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&Src(AU16(0)));
+22 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&Src(AU16(0)));
    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `IntoBytes` is not implemented for `Src`
@@ -53,9 +53,9 @@ help: the trait `IntoBytes` is not implemented for `Src`
              AtomicIsize
            and 68 others
 note: required by a bound in `AssertSrcIsIntoBytes`
-  --> $DIR/transmute-ref-src-not-intobytes.rs:21:33
+  --> $DIR/transmute-ref-src-not-intobytes.rs:22:33
    |
-21 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&Src(AU16(0)));
+22 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&Src(AU16(0)));
    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsIntoBytes`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 

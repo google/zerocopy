@@ -18,4 +18,5 @@ fn main() {}
 struct Src(AU16);
 
 // `transmute_ref` requires that the source type implements `Immutable`
+//@[msrv, stable, nightly]~ ERROR: the trait bound `Src: Immutable` is not satisfied
 const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));

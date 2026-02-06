@@ -1,7 +1,7 @@
 warning: taking a mutable reference to a `const` item
-  --> $DIR/transmute-mut-const.rs:18:52
+  --> $DIR/transmute-mut-const.rs:25:52
    |
-18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
+25 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
    |                                                    ^^^^^^^^^^^^^^^^^
    |
    = note: `#[warn(const_item_mutation)]` on by default
@@ -14,33 +14,33 @@ note: `const` item defined here
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error[E0658]: mutable references are not allowed in constants
-  --> $DIR/transmute-mut-const.rs:18:52
+  --> $DIR/transmute-mut-const.rs:25:52
    |
-18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
+25 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
    |                                                    ^^^^^^^^^^^^^^^^^
    |
    = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
 
 error[E0015]: calls in constants are limited to constant functions, tuple structs and tuple variants
-  --> $DIR/transmute-mut-const.rs:18:37
+  --> $DIR/transmute-mut-const.rs:25:37
    |
-18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
+25 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0015]: calls in constants are limited to constant functions, tuple structs and tuple variants
-  --> $DIR/transmute-mut-const.rs:18:37
+  --> $DIR/transmute-mut-const.rs:25:37
    |
-18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
+25 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0716]: temporary value dropped while borrowed
-  --> $DIR/transmute-mut-const.rs:18:57
+  --> $DIR/transmute-mut-const.rs:25:57
    |
-18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
+25 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
    |                                     --------------------^^^^^^^^^^^^-
    |                                     |                   |
    |                                     |                   creates a temporary which is freed while still in use

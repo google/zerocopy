@@ -32,8 +32,13 @@ struct TransparentStruct<T> {
 // It should be legal to derive these traits on a transparent struct, but it
 // must also ensure the traits are only implemented when the inner type
 // implements them.
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
 util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: FromZeros` is not satisfied
 util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
 util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied
 util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
+//@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::Unaligned` is not satisfied
 util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
