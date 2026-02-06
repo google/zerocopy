@@ -23,8 +23,17 @@ for dir in "${DIRS[@]}"; do
 
     # Find all .stderr files
     while IFS= read -r -d '' stderr_file; do
+        # Strip .stderr extension
+        base="${stderr_file%.stderr}"
+
+        # Strip toolchain suffixes
+        base="${base%.msrv}"
+        base="${base%.stable}"
+        base="${base%.nightly}"
+
         # Construct the corresponding .rs file path
         rs_file="${stderr_file%.stderr}.rs"
+        rs_file="${base}.rs"
 
         # Check if the .rs file exists. The `-e` flag checks if file exists:
         # It returns true for regular files and valid symlinks, and false for

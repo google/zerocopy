@@ -37,30 +37,6 @@ impl ToolchainVersion {
         }
     }
 
-    /// Gets the name of the directory in which to store source files and
-    /// expected output for UI tests for this toolchain version.
-    ///
-    /// UI tests depend on the exact error messages emitted by rustc, but those
-    /// error messages are not stable, and sometimes change between Rust
-    /// versions. Thus, we maintain one set of UI tests for each Rust version
-    /// that we test in CI, and we pin to specific versions in CI (a specific
-    /// MSRV, a specific stable version, and a specific date of the nightly
-    /// compiler). Updating those pinned versions may also require updating
-    /// these tests.
-    /// - `tests/ui-nightly` - Contains the source of truth for our UI test
-    ///   source files (`.rs`), and contains `.err` and `.out` files for nightly
-    /// - `tests/ui-stable` - Contains symlinks to the `.rs` files in
-    ///   `tests/ui-nightly`, and contains `.err` and `.out` files for stable
-    /// - `tests/ui-msrv` - Contains symlinks to the `.rs` files in
-    ///   `tests/ui-nightly`, and contains `.err` and `.out` files for MSRV
-    pub fn get_ui_source_files_dirname(&self) -> &'static str {
-        match self {
-            ToolchainVersion::PinnedMsrv => "ui-msrv",
-            ToolchainVersion::PinnedStable => "ui-stable",
-            ToolchainVersion::PinnedNightly => "ui-nightly",
-        }
-    }
-
     pub fn name(&self) -> &'static str {
         match self {
             ToolchainVersion::PinnedMsrv => "msrv",
@@ -298,12 +274,13 @@ impl UiTestRunner {
             command.arg(format!("--rustc-arg=--target={}", t));
         }
 
-        let mut test_src_dir =
-            format!("{}/{v}", &self.tests_dir, v = self.toolchain.get_ui_source_files_dirname());
+        let mut test_src_dir = format!("{}/ui", &self.tests_dir);
         if let Some(subdir) = self.tests_subdir.as_ref() {
             test_src_dir = format!("{}/{}", test_src_dir, subdir);
         }
         command.env("ZEROCOPY_UI_TEST_DIR", test_src_dir);
+
+        command.env("ZEROCOPY_UI_TEST_TOOLCHAIN_META_NAME", self.toolchain.name());
 
         let toolchain_name =
             env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| self.toolchain.name().to_string());
