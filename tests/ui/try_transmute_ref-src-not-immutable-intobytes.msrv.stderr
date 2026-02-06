@@ -1,15 +1,15 @@
 error[E0277]: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
-  --> $DIR/try_transmute_ref-src-not-immutable-intobytes.rs:17:48
+  --> $DIR/try_transmute_ref-src-not-immutable-intobytes.rs:19:48
    |
-17 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
+19 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
    |
    = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy<AU16>: Immutable` is not satisfied
-  --> $DIR/try_transmute_ref-src-not-immutable-intobytes.rs:17:48
+  --> $DIR/try_transmute_ref-src-not-immutable-intobytes.rs:19:48
    |
-17 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
+19 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Immutable` is not implemented for `NotZerocopy<AU16>`
    |
    = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)

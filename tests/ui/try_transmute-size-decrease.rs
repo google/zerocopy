@@ -14,5 +14,6 @@ use zerocopy::try_transmute;
 // Although this is not a soundness requirement, we currently require that the
 // size of the destination type is not smaller than the size of the source type.
 fn main() {
+    //@[msrv, stable, nightly]~ ERROR: cannot transmute between types of different sizes, or dependently-sized types
     let _decrease_size: Result<u8, _> = try_transmute!(AU16(0));
 }

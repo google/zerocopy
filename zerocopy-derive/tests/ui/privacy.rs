@@ -28,11 +28,13 @@ mod private {
     const _: () = {
         let _: <StructWithNamedFields as zerocopy_renamed::HasField<
             _,
+            //@[msrv]~ ERROR: type provided when a constant was expected
             _,
             { zerocopy_renamed::ident_id!(a) },
         >>::Type = 0u8;
         let _: <StructWithNamedFields as zerocopy_renamed::HasField<
             _,
+            //@[msrv]~ ERROR: type provided when a constant was expected
             _,
             { zerocopy_renamed::ident_id!(b) },
         >>::Type = 0u16;
@@ -45,11 +47,13 @@ mod private {
     const _: () = {
         let _: <StructWithAnonFields as zerocopy_renamed::HasField<
             _,
+            //@[msrv]~ ERROR: type provided when a constant was expected
             _,
             { zerocopy_renamed::ident_id!(0) },
         >>::Type = 0u8;
         let _: <StructWithAnonFields as zerocopy_renamed::HasField<
             _,
+            //@[msrv]~ ERROR: type provided when a constant was expected
             _,
             { zerocopy_renamed::ident_id!(1) },
         >>::Type = 0u16;
@@ -63,7 +67,9 @@ mod private {
     }
 
     const _: () = {
+        //@[msrv]~ ERROR: type provided when a constant was expected
         let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
+        //@[msrv]~ ERROR: type provided when a constant was expected
         let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type = 0u16;
     };
 
@@ -76,9 +82,12 @@ mod private {
     }
 
     const _: () = {
+        //@[msrv]~ ERROR: type provided when a constant was expected
         let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(0) }>>::Type = 0u8;
+        //@[msrv]~ ERROR: type provided when a constant was expected
         let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type = 0u16;
 
+        //@[msrv]~ ERROR: type provided when a constant was expected
         let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
         let _: <Enum as zerocopy_renamed::HasField<
             _,
@@ -93,11 +102,14 @@ use private::*;
 const _: () = {
     let _: <StructWithNamedFields as zerocopy_renamed::HasField<
         _,
+        //@[msrv]~ ERROR: type provided when a constant was expected
         _,
         { zerocopy_renamed::ident_id!(a) },
     >>::Type = 0u8;
     let _: <StructWithNamedFields as zerocopy_renamed::HasField<
+        //@[stable, nightly]~ ERROR: type `private::_::_::_::ẕb` is private
         _,
+        //@[msrv]~ ERROR: type provided when a constant was expected
         _,
         { zerocopy_renamed::ident_id!(b) },
     >>::Type = 0u16;
@@ -106,29 +118,38 @@ const _: () = {
 const _: () = {
     let _: <StructWithAnonFields as zerocopy_renamed::HasField<
         _,
+        //@[msrv]~ ERROR: type provided when a constant was expected
         _,
         { zerocopy_renamed::ident_id!(0) },
     >>::Type = 0u8;
     let _: <StructWithAnonFields as zerocopy_renamed::HasField<
+        //@[stable, nightly]~ ERROR: type `private::_::_::_::ẕ1` is private
         _,
+        //@[msrv]~ ERROR: type provided when a constant was expected
         _,
         { zerocopy_renamed::ident_id!(1) },
     >>::Type = 0u16;
 };
 
 const _: () = {
+    //@[msrv]~ ERROR: type provided when a constant was expected
     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
         0u8;
+    //@[msrv]~ ERROR: type provided when a constant was expected
+    //@[stable, nightly]~ ERROR: type `private::_::_::_::ẕb` is private
     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
         0u16;
 };
 
 const _: () = {
+    //@[msrv]~ ERROR: type provided when a constant was expected
     let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(0) }>>::Type =
         0u8;
+    //@[msrv]~ ERROR: type provided when a constant was expected
     let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type =
         0u16;
 
+    //@[msrv]~ ERROR: type provided when a constant was expected
     let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
         0u8;
     let _: <Enum as zerocopy_renamed::HasField<

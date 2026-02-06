@@ -1,31 +1,31 @@
 warning: variants `A` and `B` are never constructed
-  --> $DIR/privacy.rs:74:9
+  --> $DIR/privacy.rs:80:9
    |
-73 |     pub enum Enum {
+79 |     pub enum Enum {
    |              ---- variants in this enum
-74 |         A(u8, u16),
+80 |         A(u8, u16),
    |         ^
-75 |         B { a: u8, b: u16 },
+81 |         B { a: u8, b: u16 },
    |         ^
    |
    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
 
 error: type `private::_::_::_::ẕb` is private
-   --> $DIR/privacy.rs:100:9
+   --> $DIR/privacy.rs:111:9
     |
-100 |         _,
+111 |         _,
     |         ^ private type
 
 error: type `private::_::_::_::ẕ1` is private
-   --> $DIR/privacy.rs:113:9
+   --> $DIR/privacy.rs:127:9
     |
-113 |         _,
+127 |         _,
     |         ^ private type
 
 error: type `private::_::_::_::ẕb` is private
-   --> $DIR/privacy.rs:122:49
+   --> $DIR/privacy.rs:140:49
     |
-122 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
+140 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
     |                                                 ^ private type
 
 error: aborting due to 3 previous errors; 1 warning emitted

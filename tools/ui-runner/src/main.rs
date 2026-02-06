@@ -70,6 +70,7 @@ fn main() {
     use ui_test::spanned::Spanned;
     config.comment_start = "//@ui_test";
     config.comment_defaults.base().require_annotations = Spanned::dummy(false).into();
+    config.comment_defaults.revisions = Some(vec![toolchain_meta_name.clone()]);
     config.comment_defaults.base().exit_status = Spanned::dummy(1).into();
     config.comment_defaults.base().custom.remove("rustfix");
 

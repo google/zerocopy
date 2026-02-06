@@ -1,7 +1,7 @@
 error[E0277]: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
-  --> $DIR/transmute-src-not-intobytes.rs:17:32
+  --> $DIR/transmute-src-not-intobytes.rs:18:32
    |
-17 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
+18 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |                                |
    |                                unsatisfied trait bound
@@ -24,9 +24,9 @@ help: the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
              AtomicIsize
            and 68 others
 note: required by a bound in `SRC_NOT_AS_BYTES::transmute`
-  --> $DIR/transmute-src-not-intobytes.rs:17:32
+  --> $DIR/transmute-src-not-intobytes.rs:18:32
    |
-17 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
+18 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |                                |
    |                                required by a bound in this function

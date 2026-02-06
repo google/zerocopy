@@ -13,6 +13,7 @@ use zerocopy::TryFromBytes;
 
 fn main() {
     // We expect the proper diagnostic to be emitted on Rust 1.78.0 and later.
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
     takes_try_from_bytes::<NotZerocopy>();
 }
 

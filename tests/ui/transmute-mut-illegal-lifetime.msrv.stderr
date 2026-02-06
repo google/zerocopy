@@ -1,11 +1,11 @@
 error[E0597]: `x` does not live long enough
-  --> $DIR/transmute-mut-illegal-lifetime.rs:14:56
+  --> $DIR/transmute-mut-illegal-lifetime.rs:15:56
    |
-14 |     let _: &'static mut u64 = zerocopy::transmute_mut!(&mut x);
+15 |     let _: &'static mut u64 = zerocopy::transmute_mut!(&mut x);
    |            ----------------                            ^^^^^^ borrowed value does not live long enough
    |            |
    |            type annotation requires that `x` is borrowed for `'static`
-15 | }
+16 | }
    | - `x` dropped here while still borrowed
 
 error: aborting due to previous error

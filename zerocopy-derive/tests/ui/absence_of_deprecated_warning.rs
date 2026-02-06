@@ -29,6 +29,7 @@ struct OldHeader {
 trait T {}
 
 // Intentionally trigger a deprecation error
+//@[msrv, stable, nightly]~ ERROR: use of deprecated struct `OldHeader`: Do not use
 impl T for OldHeader {}
 
 fn main() {}

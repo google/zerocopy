@@ -47,6 +47,8 @@ fn main() {
     // https://github.com/rust-lang/rust/issues/130563. We include this test so
     // that we can capture the current behavior, but we will update it once that
     // Rust issue is fixed.
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: Immutable` is not satisfied
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: IntoBytes` is not satisfied
     Foo.write_obj(NotZerocopy(()));
 }
 

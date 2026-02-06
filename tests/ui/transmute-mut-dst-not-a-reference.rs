@@ -12,4 +12,5 @@ fn main() {}
 
 // `transmute_mut!` does not support transmuting into a non-reference
 // destination type.
+//@[msrv, stable, nightly]~ ERROR: mismatched types
 const DST_NOT_A_REFERENCE: usize = transmute_mut!(&mut 0u8);

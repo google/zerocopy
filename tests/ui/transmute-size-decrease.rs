@@ -15,4 +15,6 @@ fn main() {}
 
 // Although this is not a soundness requirement, we currently require that the
 // size of the destination type is not smaller than the size of the source type.
+//@[msrv, stable, nightly]~ ERROR: cannot transmute between types of different sizes, or dependently-sized types
+//@[stable, nightly]~ ERROR: transmuting from 2-byte type to 1-byte type: `AU16` -> `u8`
 const DECREASE_SIZE: u8 = transmute!(AU16(0));

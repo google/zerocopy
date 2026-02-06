@@ -12,6 +12,7 @@ extern crate zerocopy_renamed;
 fn main() {}
 
 #[derive(FromBytes)]
+//@[msrv, stable, nightly]~ ERROR: FromBytes only supported on repr(u8) enum with 256 variants
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum Foo {

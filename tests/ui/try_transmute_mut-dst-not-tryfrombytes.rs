@@ -15,5 +15,7 @@ fn main() {
     // `try_transmute_mut` requires that the destination type implements
     // `IntoBytes`
     let src = &mut AU16(0);
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: IntoBytes` is not satisfied
     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
 }

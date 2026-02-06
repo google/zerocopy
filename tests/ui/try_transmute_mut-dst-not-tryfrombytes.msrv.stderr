@@ -1,23 +1,23 @@
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
-  --> $DIR/try_transmute_mut-dst-not-tryfrombytes.rs:18:63
+  --> $DIR/try_transmute_mut-dst-not-tryfrombytes.rs:20:63
    |
-18 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+20 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
    = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
-  --> $DIR/try_transmute_mut-dst-not-tryfrombytes.rs:18:63
+  --> $DIR/try_transmute_mut-dst-not-tryfrombytes.rs:20:63
    |
-18 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+20 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `NotZerocopy`
    |
    = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
-   --> $DIR/try_transmute_mut-dst-not-tryfrombytes.rs:18:33
+   --> $DIR/try_transmute_mut-dst-not-tryfrombytes.rs:20:33
     |
-18  |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+20  |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
     |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
     |
 note: required by a bound in `ValidityError`
@@ -27,9 +27,9 @@ note: required by a bound in `ValidityError`
     |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
 
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
-   --> $DIR/try_transmute_mut-dst-not-tryfrombytes.rs:18:63
+   --> $DIR/try_transmute_mut-dst-not-tryfrombytes.rs:20:63
     |
-18  |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
+20  |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
     |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
     |
 note: required by a bound in `ValidityError`

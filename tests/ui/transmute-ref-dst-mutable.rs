@@ -13,5 +13,6 @@ fn main() {}
 fn ref_dst_mutable() {
     // `transmute_ref!` requires that its destination type be an immutable
     // reference.
+    //@[msrv, stable, nightly]~ ERROR: mismatched types
     let _: &mut u8 = transmute_ref!(&0u8);
 }

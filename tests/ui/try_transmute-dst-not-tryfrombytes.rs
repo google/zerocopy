@@ -12,5 +12,6 @@ use util::{NotZerocopy, AU16};
 use zerocopy::try_transmute;
 
 fn main() {
+    //@[msrv, stable, nightly]~ ERROR: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
     let dst_not_try_from_bytes: Result<NotZerocopy, _> = try_transmute!(AU16(0));
 }

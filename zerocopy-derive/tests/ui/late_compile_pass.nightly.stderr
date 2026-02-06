@@ -7,9 +7,9 @@ warning: unused import: `zerocopy_renamed::KnownLayout`
    = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
-  --> $DIR/late_compile_pass.rs:29:10
+  --> $DIR/late_compile_pass.rs:30:10
    |
-29 | #[derive(TryFromBytes)]
+30 | #[derive(TryFromBytes)]
    |          ^^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
@@ -36,9 +36,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
-  --> $DIR/late_compile_pass.rs:39:10
+  --> $DIR/late_compile_pass.rs:42:10
    |
-39 | #[derive(FromZeros)]
+42 | #[derive(FromZeros)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
@@ -65,9 +65,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
-  --> $DIR/late_compile_pass.rs:39:10
+  --> $DIR/late_compile_pass.rs:42:10
    |
-39 | #[derive(FromZeros)]
+42 | #[derive(FromZeros)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `FromZeros` is not implemented for `NotZerocopy`
@@ -94,9 +94,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
-  --> $DIR/late_compile_pass.rs:49:10
+  --> $DIR/late_compile_pass.rs:55:10
    |
-49 | #[derive(FromBytes)]
+55 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
@@ -123,9 +123,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
-  --> $DIR/late_compile_pass.rs:49:10
+  --> $DIR/late_compile_pass.rs:55:10
    |
-49 | #[derive(FromBytes)]
+55 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `FromZeros` is not implemented for `NotZerocopy`
@@ -152,9 +152,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
-  --> $DIR/late_compile_pass.rs:49:10
+  --> $DIR/late_compile_pass.rs:55:10
    |
-49 | #[derive(FromBytes)]
+55 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocopy`
@@ -181,9 +181,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied
-  --> $DIR/late_compile_pass.rs:59:10
+  --> $DIR/late_compile_pass.rs:66:10
    |
-59 | #[derive(IntoBytes)]
+66 | #[derive(IntoBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocopy`
@@ -210,9 +210,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
-  --> $DIR/late_compile_pass.rs:70:10
+  --> $DIR/late_compile_pass.rs:78:10
    |
-70 | #[derive(Unaligned)]
+78 | #[derive(Unaligned)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
@@ -239,9 +239,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
-  --> $DIR/late_compile_pass.rs:79:10
+  --> $DIR/late_compile_pass.rs:88:10
    |
-79 | #[derive(Unaligned)]
+88 | #[derive(Unaligned)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
@@ -268,9 +268,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
-  --> $DIR/late_compile_pass.rs:87:10
+  --> $DIR/late_compile_pass.rs:97:10
    |
-87 | #[derive(Unaligned)]
+97 | #[derive(Unaligned)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
@@ -297,9 +297,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
-  --> $DIR/late_compile_pass.rs:49:10
+  --> $DIR/late_compile_pass.rs:55:10
    |
-49 | #[derive(FromBytes)]
+55 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocopy`
@@ -319,14 +319,14 @@ help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocop
              (A, B, C, D, E, F, G, H)
            and 80 others
 note: required for `FromBytes1` to implement `zerocopy_renamed::FromBytes`
-  --> $DIR/late_compile_pass.rs:49:10
+  --> $DIR/late_compile_pass.rs:55:10
    |
-49 | #[derive(FromBytes)]
+55 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::_::<impl zerocopy_renamed::TryFromBytes for FromBytes1>::is_bit_valid::assert_is_from_bytes`
-  --> $DIR/late_compile_pass.rs:49:10
+  --> $DIR/late_compile_pass.rs:55:10
    |
-49 | #[derive(FromBytes)]
+55 | #[derive(FromBytes)]
    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
