@@ -6,9 +6,17 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use std::{env, path::PathBuf};
+use std::{
+    env,
+    fmt::Debug,
+    path::{Path, PathBuf},
+};
 
-use ui_test::Config;
+use ui_test::{
+    status_emitter::{RevisionStyle, StatusEmitter, Summary, TestStatus},
+    test_result::TestResult,
+    Config,
+};
 
 fn main() {
     let rlib_path = PathBuf::from(
@@ -32,7 +40,11 @@ fn main() {
     let root = env::current_dir().unwrap();
     let mut config = Config::rustc(tests_dir.clone());
     config.out_dir = root.join("target").join("ui-test-artifacts");
-    config.program.envs.push(("RUSTUP_TOOLCHAIN".into(), Some(toolchain.into())));
+    config.program.envs.push(("RUSTUP_TOOLCHAIN".into(), Some(toolchain.clone().into())));
+
+    let toolchain_meta_name = env::var("ZEROCOPY_UI_TEST_TOOLCHAIN_META_NAME")
+        .expect("ZEROCOPY_UI_TEST_TOOLCHAIN_META_NAME must be set by tests/ui.rs");
+    config.host = Some(toolchain_meta_name.clone());
 
     let workspace_root =
         env::var("ZEROCOPY_WORKSPACE_ROOT").map(PathBuf::from).unwrap_or_else(|_| root.clone());
@@ -149,7 +161,72 @@ fn main() {
             Some(false)
         },
         |_, _| {},
-        ui_test::status_emitter::Text::verbose(),
+        OverrideEmitter(ui_test::status_emitter::Text::verbose(), toolchain_meta_name),
     )
     .unwrap();
+}
+
+// Used to add the `.msrv`, `.stable`, or `.nightly` suffix to test output files
+// (resulting in `.msrv.stderr`, `.stable.stderr`, or `.nightly.stderr`).
+struct OverrideEmitter<E>(E, String);
+
+impl<E: StatusEmitter> StatusEmitter for OverrideEmitter<E> {
+    fn register_test(&self, path: PathBuf) -> Box<dyn TestStatus> {
+        let inner = self.0.register_test(path);
+        Box::new(RevisionOverrideStatus { inner, override_rev: self.1.clone() })
+    }
+
+    fn finalize(
+        &self,
+        failed: usize,
+        succeeded: usize,
+        ignored: usize,
+        filtered: usize,
+        aborted: bool,
+    ) -> Box<dyn Summary> {
+        self.0.finalize(failed, succeeded, ignored, filtered, aborted)
+    }
+}
+
+struct RevisionOverrideStatus {
+    inner: Box<dyn TestStatus>,
+    override_rev: String,
+}
+
+impl TestStatus for RevisionOverrideStatus {
+    fn for_revision(&self, revision: &str, style: RevisionStyle) -> Box<dyn TestStatus> {
+        let effective_rev = if revision.is_empty() { &self.override_rev } else { revision };
+        Box::new(RevisionOverrideStatus {
+            inner: self.inner.for_revision(revision, style),
+            override_rev: effective_rev.to_string(),
+        })
+    }
+
+    fn for_path(&self, path: &Path) -> Box<dyn TestStatus> {
+        Box::new(RevisionOverrideStatus {
+            inner: self.inner.for_path(path),
+            override_rev: self.override_rev.clone(),
+        })
+    }
+
+    fn failed_test<'a>(
+        &'a self,
+        cmd: &'a str,
+        stderr: &'a [u8],
+        stdout: &'a [u8],
+    ) -> Box<dyn Debug + 'a> {
+        self.inner.failed_test(cmd, stderr, stdout)
+    }
+
+    fn done(&self, result: &TestResult, aborted: bool) {
+        self.inner.done(result, aborted)
+    }
+
+    fn path(&self) -> &Path {
+        self.inner.path()
+    }
+
+    fn revision(&self) -> &str {
+        &self.override_rev
+    }
 }
