@@ -1,1 +1,0 @@
-../ui-nightly/derive_transparent.rs
