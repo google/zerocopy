@@ -35,7 +35,7 @@ fn main() {
     let mut has_errors = false;
     for (package, kind, path) in roots.roots {
         let mut edits = Vec::new();
-        let res = parse::read_file_and_visit_hermes_items(&path, |_src, res| {
+        let res = parse::read_file_and_scan_compilation_unit(&path, |_src, res| {
             if let Err(e) = res {
                 has_errors = true;
                 eprint!("{:?}", miette::Report::new(e));
@@ -44,7 +44,7 @@ fn main() {
             }
         });
 
-        let source = res.unwrap_or_else(|e| {
+        let (source, unloaded_modules) = res.unwrap_or_else(|e| {
             eprintln!("Error parsing file: {}", e);
             exit(1);
         });

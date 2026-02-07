@@ -78,7 +78,7 @@ mod tests {
             }
         ";
         let mut items = Vec::new();
-        crate::parse::visit_hermes_items(source, |_src, res| items.push(res));
+        crate::parse::scan_compilation_unit(source, |_src, res| items.push(res));
 
         let item = items.into_iter().next().unwrap().unwrap();
         let mut edits = Vec::new();

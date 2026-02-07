@@ -36,7 +36,7 @@ pub fn run() {
     // Run logic with JSON emitter
     let mut has_errors = false;
 
-    parse::read_file_and_visit_hermes_items(&file_path, |source, res| {
+    parse::read_file_and_scan_compilation_unit(&file_path, |source, res| {
         if let Err(e) = res {
             has_errors = true;
             emit_rustc_json(&e, source, file_path.to_str().unwrap());
