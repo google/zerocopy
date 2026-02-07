@@ -20,7 +20,7 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
     cmd.env("CARGO_TARGET_DIR", sandbox_root.join("target"))
         .env_remove("RUSTFLAGS")
-        .env("HERMES_TEST_SHADOW_NAME", "hermes_shadow");
+        .env("HERMES_TEST_SHADOW_NAME", "hermes_test_target");
 
     // Tests can specify the cwd to invoke from.
     let cwd_file = test_case_root.join("cwd.txt");
@@ -64,7 +64,7 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     }
 
     // Tests can specify the expected shadow crate content.
-    let actual_shadow = sandbox_root.join("target/hermes_shadow");
+    let actual_shadow = sandbox_root.join("target/hermes/hermes_test_target/shadow");
     let expected_shadow = test_case_root.join("expected");
 
     if expected_shadow.exists() {
