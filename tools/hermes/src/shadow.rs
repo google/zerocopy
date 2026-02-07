@@ -17,6 +17,7 @@ use crate::{parse, resolve::Roots, transform};
 ///    encountered.
 /// 2. Creates symlinks for the remaining skeleton.
 pub fn build_shadow_crate(roots: &Roots) -> Result<()> {
+    log::trace!("build_shadow_crate({:?})", roots);
     if roots.shadow_root.exists() {
         fs::remove_dir_all(&roots.shadow_root).context("Failed to clear shadow root")?;
     }
@@ -85,6 +86,7 @@ fn process_file_recursive<'a>(
     visited: &'a DashSet<PathBuf>,
     err_tx: Sender<anyhow::Error>,
 ) {
+    log::trace!("process_file_recursive(src_path: {:?})", src_path);
     if !visited.insert(src_path.to_path_buf()) {
         return;
     }
@@ -175,6 +177,12 @@ fn resolve_module_path(
     mod_name: &str,
     path_attr: Option<&str>,
 ) -> Option<PathBuf> {
+    log::trace!(
+        "resolve_module_path(base_dir: {:?}, mod_name: {:?}, path_attr: {:?})",
+        base_dir,
+        mod_name,
+        path_attr
+    );
     // 1. Handle explicit #[path = "..."]
     if let Some(custom_path) = path_attr {
         let p = base_dir.join(custom_path);
@@ -205,6 +213,7 @@ fn create_symlink_skeleton(
     target_dir: &Path,
     skip_paths: &HashSet<PathBuf>,
 ) -> Result<()> {
+    log::trace!("create_symlink_skeleton(source_root: {:?}, dest_root: {:?}, target_dir: {:?}, skip_paths_count: {})", source_root, dest_root, target_dir, skip_paths.len());
     let walker = WalkDir::new(source_root)
         .follow_links(false) // Security: don't follow symlinks out of the root.
         .into_iter();
