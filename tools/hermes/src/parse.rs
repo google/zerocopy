@@ -77,7 +77,7 @@ where
 /// Parses the given Rust source code from a file path and invokes the callback `f`
 /// for each item annotated with a `/// ```lean` block. Parsing errors and generated
 /// items will be associated with this file path.
-fn visit_hermes_items_in_file<F>(path: &Path, source: &str, f: F)
+pub fn visit_hermes_items_in_file<F>(path: &Path, source: &str, f: F)
 where
     F: FnMut(Result<ParsedLeanItem, HermesError>),
 {
@@ -94,7 +94,7 @@ where
             .as_ref()
             .map(|p| p.display().to_string())
             .unwrap_or_else(|| "<input>".to_string());
-        dbg!(&f);
+
         f
     };
     let _x = source_file
