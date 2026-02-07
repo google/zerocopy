@@ -292,8 +292,11 @@ dependencies = [
  "log",
  "miette",
  "proc-macro2",
+ "serde",
+ "serde_json",
  "syn",
  "thiserror 2.0.18",
+ "ui_test",
 ]
 
 [[package]]
