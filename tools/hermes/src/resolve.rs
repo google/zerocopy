@@ -11,44 +11,44 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 pub struct Args {
     #[command(flatten)]
-    manifest: clap_cargo::Manifest,
+    pub manifest: clap_cargo::Manifest,
 
     #[command(flatten)]
-    workspace: clap_cargo::Workspace,
+    pub workspace: clap_cargo::Workspace,
 
     #[command(flatten)]
-    features: clap_cargo::Features,
+    pub features: clap_cargo::Features,
 
     /// Verify the library target
     #[arg(long)]
-    lib: bool,
+    pub lib: bool,
 
     /// Verify specific binary targets
     #[arg(long)]
-    bin: Vec<String>,
+    pub bin: Vec<String>,
 
     /// Verify all binary targets
     #[arg(long)]
-    bins: bool,
+    pub bins: bool,
 
     /// Verify specific example targets
     #[arg(long)]
-    example: Vec<String>,
+    pub example: Vec<String>,
 
     /// Verify all example targets
     #[arg(long)]
-    examples: bool,
+    pub examples: bool,
 
     /// Verify specific test targets
     #[arg(long)]
-    test: Vec<String>,
+    pub test: Vec<String>,
 
     /// Verify all test targets
     #[arg(long)]
-    tests: bool,
+    pub tests: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum HermesTargetKind {
     /// A library target (generic).
     Lib,
@@ -98,18 +98,36 @@ impl TryFrom<&TargetKind> for HermesTargetKind {
     }
 }
 
+#[derive(Clone, Debug, Hash, PartialEq, Eq)]
+pub struct HermesTargetName {
+    pub package_name: PackageName,
+    pub target_name: String,
+}
+
+#[derive(Debug)]
+pub struct HermesTarget {
+    pub name: HermesTargetName,
+    pub kind: HermesTargetKind,
+    /// Path to the main source file for this target.
+    pub src_path: PathBuf,
+}
+
 #[derive(Debug)]
 pub struct Roots {
     pub workspace: PathBuf,
     pub cargo_target_dir: PathBuf,
     // E.g., `target/hermes/<hash>`.
     hermes_run_root: PathBuf,
-    pub roots: Vec<(PackageName, HermesTargetKind, PathBuf)>,
+    pub roots: Vec<HermesTarget>,
 }
 
 impl Roots {
     pub fn shadow_root(&self) -> PathBuf {
         self.hermes_run_root.join("shadow")
+    }
+
+    pub fn charon_root(&self) -> PathBuf {
+        self.hermes_run_root.join("charon")
     }
 }
 
@@ -151,11 +169,14 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
         }
 
         for (target, kind) in targets {
-            roots.roots.push((
-                package.name.clone(),
-                kind.clone(),
-                target.src_path.as_std_path().to_owned(),
-            ));
+            roots.roots.push(HermesTarget {
+                name: HermesTargetName {
+                    package_name: package.name.clone(),
+                    target_name: target.name.clone(),
+                },
+                kind,
+                src_path: target.src_path.as_std_path().to_owned(),
+            });
         }
     }
 

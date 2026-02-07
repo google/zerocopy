@@ -45,6 +45,17 @@ pub enum ParsedItem {
 }
 
 impl ParsedItem {
+    pub fn name(&self) -> Option<String> {
+        match self {
+            Self::Fn(item) => Some(item.sig.ident.to_string()),
+            Self::Struct(item) => Some(item.ident.to_string()),
+            Self::Enum(item) => Some(item.ident.to_string()),
+            Self::Union(item) => Some(item.ident.to_string()),
+            Self::Trait(item) => Some(item.ident.to_string()),
+            Self::Impl(_) => None,
+        }
+    }
+
     /// Returns the attributes on this item.
     fn attrs(&self) -> &[Attribute] {
         match self {
@@ -62,7 +73,7 @@ impl ParsedItem {
 #[derive(Debug)]
 pub struct ParsedLeanItem {
     pub item: ParsedItem,
-    module_path: Vec<String>,
+    pub module_path: Vec<String>,
     lean_block: String,
     source_file: Option<PathBuf>,
 }
