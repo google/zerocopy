@@ -1,0 +1,2 @@
+verify --bin selector
+
