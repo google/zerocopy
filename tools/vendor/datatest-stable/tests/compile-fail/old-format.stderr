@@ -1,0 +1,14 @@
+error: this format is no longer supported -- please switch to specifying as:
+
+       datatest_stable::harness! {
+           { test = foo, root = "path1", pattern = r"^.*/*$" },
+           { test = bar::baz, root = "path2", pattern = r"^.*/*$" },
+       }
+
+       note: patterns are now evaluated relative to the provided root, not to the crate root
+ --> tests/compile-fail/old-format.rs:1:1
+  |
+1 | datatest_stable::harness!(foo, "path1", r"^.*/*$", bar::baz, "path2", r"^.*/*$");
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in the macro `datatest_stable::harness` (in Nightly builds, run with -Z macro-backtrace for more info)
