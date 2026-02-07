@@ -58,5 +58,5 @@ fn main() {
     }
 
     // TODO: Create shadow skeleton.
-    // shadow::create_shadow_skeleton(&roots.workspace, todo!(), todo!(), todo!()).unwrap();
+    // shadow::create_shadow_skeleton(&roots.workspace, &roots.shadow_root, &roots.cargo_target_dir, todo!()).unwrap();
 }

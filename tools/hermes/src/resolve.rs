@@ -1,9 +1,11 @@
-use std::{env, path::PathBuf};
+use std::{
+    env,
+    hash::{Hash as _, Hasher as _},
+    path::PathBuf,
+};
 
 use anyhow::{anyhow, Context, Result};
-use cargo_metadata::{
-    Metadata, MetadataCommand, Package, PackageName, Target, TargetKind,
-};
+use cargo_metadata::{Metadata, MetadataCommand, Package, PackageName, Target, TargetKind};
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -98,6 +100,8 @@ impl TryFrom<&TargetKind> for HermesTargetKind {
 
 pub struct Roots {
     pub workspace: PathBuf,
+    pub cargo_target_dir: PathBuf,
+    pub shadow_root: PathBuf,
     pub roots: Vec<(PackageName, HermesTargetKind, PathBuf)>,
 }
 
@@ -120,8 +124,12 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
 
     let selected_packages = resolve_packages(&metadata, &args.workspace)?;
 
-    let mut roots =
-        Roots { workspace: metadata.workspace_root.as_std_path().to_owned(), roots: Vec::new() };
+    let mut roots = Roots {
+        workspace: metadata.workspace_root.as_std_path().to_owned(),
+        cargo_target_dir: metadata.target_directory.as_std_path().to_owned(),
+        shadow_root: resolve_shadow_path(&metadata),
+        roots: Vec::new(),
+    };
 
     for package in selected_packages {
         log::trace!("Scanning package: {}", package.name);
@@ -143,6 +151,22 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
     }
 
     Ok(roots)
+}
+
+fn resolve_shadow_path(metadata: &Metadata) -> PathBuf {
+    // NOTE: Automatically handles `CARGO_TARGET_DIR` env var.
+    let target_dir = metadata.target_directory.as_std_path();
+
+    // Hash the path to the workspace root to avoid collisions between different
+    // workspaces using the same target directory.
+    let workspace_root_hash = {
+        let mut hasher = std::hash::DefaultHasher::new();
+        hasher.write(b"hermes_shadow_salt");
+        metadata.workspace_root.hash(&mut hasher);
+        hasher.finish()
+    };
+
+    target_dir.join(format!("hermes_shadow_{workspace_root_hash}"))
 }
 
 /// Resolves which packages to process based on workspace flags and CWD.
