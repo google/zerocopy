@@ -7,7 +7,6 @@ use std::{
 
 use anyhow::{Context, Result};
 use dashmap::DashSet;
-use rayon::prelude::*;
 use walkdir::WalkDir;
 
 use crate::{parse, resolve::Roots, transform};

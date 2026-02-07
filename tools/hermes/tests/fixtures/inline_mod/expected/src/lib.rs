@@ -1,0 +1,4 @@
+mod foo {
+    fn bar() {}
+}
+
