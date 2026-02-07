@@ -1,0 +1,12 @@
+error: expected `test`, found `root`
+ --> tests/compile-fail/missing-test-comma.rs:1:1
+  |
+1 | / datatest_stable::harness! {
+2 | |     {
+3 | |         root = "tests/files",
+4 | |         pattern = r"^.*(?<!\.skip)\.txt$",
+5 | |     },
+6 | | }
+  | |_^
+  |
+  = note: this error originates in the macro `$crate::harness_collect` which comes from the expansion of the macro `datatest_stable::harness` (in Nightly builds, run with -Z macro-backtrace for more info)

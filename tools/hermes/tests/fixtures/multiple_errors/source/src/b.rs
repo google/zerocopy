@@ -1,0 +1,3 @@
+/// ```lean
+/// unclosed
+fn foo() {}

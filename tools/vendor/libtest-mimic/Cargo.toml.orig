@@ -1,0 +1,29 @@
+[package]
+name = "libtest-mimic"
+version = "0.8.1"
+authors = ["Lukas Kalbertodt <lukas.kalbertodt@gmail.com>"]
+edition = "2021"
+rust-version = "1.65"
+
+description = """
+Write your own test harness that looks and behaves like the built-in test \
+harness used by `rustc --test`
+"""
+documentation = "https://docs.rs/libtest-mimic"
+repository = "https://github.com/LukasKalbertodt/libtest-mimic"
+license = "MIT/Apache-2.0"
+keywords = ["libtest", "test", "built-in", "framework", "harness"]
+categories = ["development-tools::testing", "development-tools::build-utils"]
+readme = "README.md"
+
+exclude = [".github"]
+
+[dependencies]
+clap = { version = "4.0.8", features = ["derive"] }
+escape8259 = "0.5.2"
+anstream = "0.6.14"
+anstyle = "1.0.7"
+
+[dev-dependencies]
+fastrand = "2.0.0"
+pretty_assertions = "1.2.1"

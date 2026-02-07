@@ -1,0 +1,8 @@
+[package]
+name = "custom_layout"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "code/custom.rs"
+
