@@ -17,6 +17,11 @@ pub fn create_shadow_skeleton(
     target_dir: &Path,
     skip_paths: &HashSet<PathBuf>,
 ) -> Result<()> {
+    if dest_root.exists() {
+        std::fs::remove_dir_all(&dest_root)?;
+    }
+    std::fs::create_dir_all(&dest_root)?;
+
     let walker = WalkDir::new(source_root)
         .follow_links(false) // Security: don't follow symlinks out of the root.
         .into_iter();
