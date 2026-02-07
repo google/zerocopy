@@ -2,7 +2,7 @@ use std::{
     collections::HashSet,
     fs,
     path::{Path, PathBuf},
-    sync::mpsc::Sender,
+    sync::mpsc::{self, Sender},
 };
 
 use anyhow::{Context, Result};
@@ -14,9 +14,11 @@ use crate::{parse, resolve::Roots, transform};
 /// The main entry point for creating the shadow crate.
 ///
 /// 1. Scans and transforms all reachable source files, printing any errors
-///    encountered.
+///    encountered. Collects all items with Hermes annotations.
 /// 2. Creates symlinks for the remaining skeleton.
-pub fn build_shadow_crate(roots: &Roots) -> Result<()> {
+///
+/// Returns a list of paths of items with Hermes annotations.
+pub fn build_shadow_crate(roots: &Roots) -> Result<Vec<String>> {
     log::trace!("build_shadow_crate({:?})", roots);
     let shadow_root = roots.shadow_root();
     if shadow_root.exists() {
@@ -25,7 +27,8 @@ pub fn build_shadow_crate(roots: &Roots) -> Result<()> {
     fs::create_dir_all(&shadow_root).context("Failed to create shadow root")?;
 
     let visited_paths = DashSet::new();
-    let (err_tx, err_rx) = std::sync::mpsc::channel();
+    let (err_tx, err_rx) = mpsc::channel();
+    let (path_tx, path_rx) = mpsc::channel();
 
     let monitor_handle = std::thread::spawn(move || {
         let mut error_count = 0;
@@ -41,18 +44,37 @@ pub fn build_shadow_crate(roots: &Roots) -> Result<()> {
     });
 
     rayon::scope(|s| {
-        for (_, _, root_path) in &roots.roots {
+        for (package_name, _, root_path) in &roots.roots {
             let visited = &visited_paths;
-            let tx = err_tx.clone();
+            let (err_tx, path_tx) = (err_tx.clone(), path_tx.clone());
             let roots_ref = roots;
 
-            s.spawn(move |s| process_file_recursive(s, root_path, roots_ref, visited, tx));
+            // TODO: This assumes that the package name matches the crate name.
+            // We should fix this.
+            let initial_prefix = vec![package_name.to_string()];
+
+            s.spawn(move |s| {
+                process_file_recursive(
+                    s,
+                    root_path,
+                    roots_ref,
+                    visited,
+                    err_tx,
+                    path_tx,
+                    initial_prefix,
+                )
+            });
         }
     });
 
     // Inform the monitor thread that no more errors will be sent, causing it to
     // exit.
     drop(err_tx);
+
+    let annotated_paths = {
+        drop(path_tx);
+        path_rx.into_iter().collect()
+    };
 
     // Wait for the monitor to finish flushing the errors.
     let count = monitor_handle.join().expect("Error monitor thread panicked");
@@ -65,7 +87,7 @@ pub fn build_shadow_crate(roots: &Roots) -> Result<()> {
 
     create_symlink_skeleton(&roots.workspace, &shadow_root, &roots.cargo_target_dir, &skip_paths)?;
 
-    Ok(())
+    Ok(annotated_paths)
 }
 
 /// Recursive worker function.
@@ -81,6 +103,8 @@ fn process_file_recursive<'a>(
     config: &'a Roots,
     visited: &'a DashSet<PathBuf>,
     err_tx: Sender<anyhow::Error>,
+    path_tx: Sender<String>,
+    module_prefix: Vec<String>,
 ) {
     log::trace!("process_file_recursive(src_path: {:?})", src_path);
     if !visited.insert(src_path.to_path_buf()) {
@@ -97,7 +121,7 @@ fn process_file_recursive<'a>(
     };
     let dest_path = config.shadow_root().join(relative_path);
 
-    let result = (|| -> Result<Vec<PathBuf>> {
+    let result = (|| -> Result<Vec<(PathBuf, String)>> {
         if let Some(parent) = dest_path.parent() {
             // NOTE: `create_dir_all` is robust against TOCTOU, so it's fine
             // that we're racing with other threads.
@@ -111,6 +135,14 @@ fn process_file_recursive<'a>(
                 match item_result {
                     Ok(parsed_item) => {
                         transform::append_edits(&parsed_item, &mut edits);
+                        if let Some(item_name) = parsed_item.item.name() {
+                            // Calculate the full path to this item.
+                            let mut full_path = module_prefix.clone();
+                            full_path.extend(parsed_item.module_path);
+                            full_path.push(item_name);
+
+                            let _ = path_tx.send(full_path.join("::"));
+                        }
                     }
                     Err(e) => {
                         // A parsing error means we either:
@@ -136,7 +168,7 @@ fn process_file_recursive<'a>(
             if let Some(mod_path) =
                 resolve_module_path(base_dir, &module.name, module.path_attr.as_deref())
             {
-                next_paths.push(mod_path);
+                next_paths.push((mod_path, module.name));
             } else {
                 // This is an expected condition – it shows up when modules are
                 // conditionally compiled. Instead of implementing conditional
@@ -152,9 +184,23 @@ fn process_file_recursive<'a>(
     match result {
         Ok(children) => {
             // Spawn new tasks for discovered modules.
-            for child_path in children {
-                let tx = err_tx.clone();
-                scope.spawn(move |s| process_file_recursive(s, &child_path, config, visited, tx));
+            for (child_path, mod_name) in children {
+                let (err_tx, path_tx) = (err_tx.clone(), path_tx.clone());
+
+                let mut new_prefix = module_prefix.clone();
+                new_prefix.push(mod_name);
+
+                scope.spawn(move |s| {
+                    process_file_recursive(
+                        s,
+                        &child_path,
+                        config,
+                        visited,
+                        err_tx,
+                        path_tx,
+                        new_prefix,
+                    )
+                })
             }
         }
         Err(e) => {

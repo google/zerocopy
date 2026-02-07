@@ -11,41 +11,41 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 pub struct Args {
     #[command(flatten)]
-    manifest: clap_cargo::Manifest,
+    pub manifest: clap_cargo::Manifest,
 
     #[command(flatten)]
-    workspace: clap_cargo::Workspace,
+    pub workspace: clap_cargo::Workspace,
 
     #[command(flatten)]
-    features: clap_cargo::Features,
+    pub features: clap_cargo::Features,
 
     /// Verify the library target
     #[arg(long)]
-    lib: bool,
+    pub lib: bool,
 
     /// Verify specific binary targets
     #[arg(long)]
-    bin: Vec<String>,
+    pub bin: Vec<String>,
 
     /// Verify all binary targets
     #[arg(long)]
-    bins: bool,
+    pub bins: bool,
 
     /// Verify specific example targets
     #[arg(long)]
-    example: Vec<String>,
+    pub example: Vec<String>,
 
     /// Verify all example targets
     #[arg(long)]
-    examples: bool,
+    pub examples: bool,
 
     /// Verify specific test targets
     #[arg(long)]
-    test: Vec<String>,
+    pub test: Vec<String>,
 
     /// Verify all test targets
     #[arg(long)]
-    tests: bool,
+    pub tests: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -110,6 +110,10 @@ pub struct Roots {
 impl Roots {
     pub fn shadow_root(&self) -> PathBuf {
         self.hermes_run_root.join("shadow")
+    }
+
+    pub fn charon_root(&self) -> PathBuf {
+        self.hermes_run_root.join("charon")
     }
 }
 
