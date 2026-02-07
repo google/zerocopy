@@ -1,8 +1,8 @@
-use std::env;
+use std::{env, path::PathBuf};
 
 use anyhow::{anyhow, Context, Result};
 use cargo_metadata::{
-    camino::Utf8PathBuf, Metadata, MetadataCommand, Package, PackageName, Target, TargetKind,
+    Metadata, MetadataCommand, Package, PackageName, Target, TargetKind,
 };
 use clap::Parser;
 
@@ -96,10 +96,15 @@ impl TryFrom<&TargetKind> for HermesTargetKind {
     }
 }
 
+pub struct Roots {
+    pub workspace: PathBuf,
+    pub roots: Vec<(PackageName, HermesTargetKind, PathBuf)>,
+}
+
 /// Resolves all verification roots.
 ///
 /// Each entry represents a distinct compilation artifact to be verified.
-pub fn resolve_roots(args: &Args) -> Result<Vec<(PackageName, HermesTargetKind, Utf8PathBuf)>> {
+pub fn resolve_roots(args: &Args) -> Result<Roots> {
     let mut cmd = MetadataCommand::new();
 
     if let Some(path) = &args.manifest.manifest_path {
@@ -111,10 +116,13 @@ pub fn resolve_roots(args: &Args) -> Result<Vec<(PackageName, HermesTargetKind, 
     args.features.forward_metadata(&mut cmd);
 
     let metadata = cmd.exec().context("Failed to run 'cargo metadata'")?;
+    check_for_external_deps(&metadata)?;
 
     let selected_packages = resolve_packages(&metadata, &args.workspace)?;
 
-    let mut roots = Vec::new();
+    let mut roots =
+        Roots { workspace: metadata.workspace_root.as_std_path().to_owned(), roots: Vec::new() };
+
     for package in selected_packages {
         log::trace!("Scanning package: {}", package.name);
 
@@ -126,7 +134,11 @@ pub fn resolve_roots(args: &Args) -> Result<Vec<(PackageName, HermesTargetKind, 
         }
 
         for (target, kind) in targets {
-            roots.push((package.name.clone(), kind.clone(), target.src_path.clone()));
+            roots.roots.push((
+                package.name.clone(),
+                kind.clone(),
+                target.src_path.as_std_path().to_owned(),
+            ));
         }
     }
 
@@ -253,4 +265,36 @@ fn resolve_targets<'a>(
     }
 
     Ok(selected_artifacts)
+}
+
+// TODO: Eventually, we'll want to support external path dependencies by
+// rewriting the path in the `Cargo.toml` in the shadow copy.
+
+/// Scans the package graph to ensure all local dependencies are contained
+/// within the workspace root. Returns an error if an external path dependency
+/// is found.
+pub fn check_for_external_deps(metadata: &Metadata) -> Result<()> {
+    let workspace_root = metadata.workspace_root.as_std_path();
+
+    for pkg in &metadata.packages {
+        // We only care about packages that are "local" (source is None).
+        // If source is Some(...), it's from crates.io or git, which is fine
+        // (handled by Cargo).
+        if pkg.source.is_none() {
+            let pkg_path = pkg.manifest_path.as_std_path();
+
+            // Check if the package lives outside the workspace tree
+            if !pkg_path.starts_with(workspace_root) {
+                anyhow::bail!(
+                    "Unsupported external dependency: '{}' at {:?}.\n\
+                     Hermes currently only supports verifying workspaces where all local \
+                     dependencies are contained within the workspace root.",
+                    pkg.name,
+                    pkg_path
+                );
+            }
+        }
+    }
+
+    Ok(())
 }

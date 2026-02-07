@@ -18,6 +18,7 @@ serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
 syn = { version = "2.0.114", features = ["full", "visit", "extra-traits", "parsing"] }
 thiserror = "2.0.18"
+walkdir = "2.5.0"
 
 [dev-dependencies]
 syn = { version = "2.0.114", features = ["printing", "full", "visit", "extra-traits", "parsing"] }
