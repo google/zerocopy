@@ -5,8 +5,12 @@ use serde::Serialize;
 
 use crate::{errors::HermesError, parse};
 
-/// The entrypoint for running under the `ui_test` crate, which expects us to be
-/// `rustc`. This is a bit of a hack, but it works.
+/// The entrypoint for running under the `ui_test` crate.
+///
+/// `ui_test` expects us to behave like `rustc`:
+/// - Accept flags (we mostly ignore them).
+/// - Accept a single input file.
+/// - Emit JSON diagnostics to stderr.
 pub fn run() {
     let args: Vec<String> = env::args().collect();
 
@@ -36,13 +40,13 @@ pub fn run() {
     // Run logic with JSON emitter
     let mut has_errors = false;
 
-    parse::read_file_and_scan_compilation_unit(&file_path, |source, res| {
+    // Ignore the returned source and module list; we only care about errors.
+    let _ = parse::read_file_and_scan_compilation_unit(&file_path, |source, res| {
         if let Err(e) = res {
             has_errors = true;
             emit_rustc_json(&e, source, file_path.to_str().unwrap());
         }
-    })
-    .unwrap();
+    });
 
     if has_errors {
         exit(1);
@@ -68,7 +72,7 @@ struct RustcSpan {
     column_start: usize,
     column_end: usize,
     is_primary: bool,
-    text: Vec<RustcSpanLine>, // ui_test sometimes checks the snippet context
+    text: Vec<RustcSpanLine>,
 }
 
 #[derive(Serialize)]
@@ -78,7 +82,7 @@ struct RustcSpanLine {
     highlight_end: usize,
 }
 
-pub fn emit_rustc_json(e: &HermesError, source: &str, file: &str) {
+fn emit_rustc_json(e: &HermesError, source: &str, file: &str) {
     let msg = e.to_string();
     // Use miette's span to get byte offsets.
     let span = e.labels().and_then(|mut l| l.next());
@@ -91,20 +95,23 @@ pub fn emit_rustc_json(e: &HermesError, source: &str, file: &str) {
         // Calculate lines/cols manually (miette makes this hard to extract
         // without a Report). This is isolated here now, so it's fine.
         let prefix = &source[..offset];
-        let line_start = prefix.lines().count().max(1);
-        let last_nl = prefix.rfind('\n').map(|i| i + 1).unwrap_or(0);
-        let column_start = (offset - last_nl) + 1;
+        let line_idx = prefix.lines().count().max(1) - 1; // 0-indexed
+        let line_start = line_idx + 1; // 1-indexed for rustc
 
-        // Grab the line text for the snippet
-        let line_end_idx = source[offset..].find('\n').map(|i| offset + i).unwrap_or(source.len());
-        let line_text = source[last_nl..line_end_idx].to_string();
+        let line_start_offset = prefix.rfind('\n').map(|i| i + 1).unwrap_or(0);
+        let column_start = (offset - line_start_offset) + 1;
+
+        // Extract the full line text for context
+        let line_end_offset =
+            source[offset..].find('\n').map(|i| offset + i).unwrap_or(source.len());
+        let line_text = source[line_start_offset..line_end_offset].to_string();
 
         spans.push(RustcSpan {
             file_name: file.to_string(),
             byte_start: offset,
             byte_end: offset + len,
             line_start,
-            line_end: line_start, // Assuming single line for simplicity
+            line_end: line_start, // Assuming single-line span for simplicity
             column_start,
             column_end: column_start + len,
             is_primary: true,
