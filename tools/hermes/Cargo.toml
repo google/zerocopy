@@ -7,6 +7,10 @@ license.workspace = true
 publish.workspace = true
 
 [dependencies]
+anyhow = "1.0.101"
+cargo_metadata = "0.23.1"
+clap = { version = "4.5.57", features = ["derive"] }
+clap-cargo = { version = "0.18.3", features = ["cargo_metadata"] }
 log = "0.4.29"
 miette = { version = "7.6.0", features = ["derive", "fancy"] }
 proc-macro2 = { version = "1.0.105", features = ["span-locations"] }
