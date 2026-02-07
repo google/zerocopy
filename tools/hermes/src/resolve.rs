@@ -98,6 +98,7 @@ impl TryFrom<&TargetKind> for HermesTargetKind {
     }
 }
 
+#[derive(Debug)]
 pub struct Roots {
     pub workspace: PathBuf,
     pub cargo_target_dir: PathBuf,
@@ -109,6 +110,7 @@ pub struct Roots {
 ///
 /// Each entry represents a distinct compilation artifact to be verified.
 pub fn resolve_roots(args: &Args) -> Result<Roots> {
+    log::trace!("resolve_roots({:?})", args);
     let mut cmd = MetadataCommand::new();
 
     if let Some(path) = &args.manifest.manifest_path {
@@ -154,6 +156,8 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
 }
 
 fn resolve_shadow_path(metadata: &Metadata) -> PathBuf {
+    log::trace!("resolve_shadow_path");
+    log::debug!("workspace_root: {:?}", metadata.workspace_root.as_std_path());
     // NOTE: Automatically handles `CARGO_TARGET_DIR` env var.
     let target_dir = metadata.target_directory.as_std_path();
 
@@ -179,6 +183,7 @@ fn resolve_packages<'a>(
     metadata: &'a Metadata,
     args: &clap_cargo::Workspace,
 ) -> Result<Vec<&'a Package>> {
+    log::trace!("resolve_packages(workspace: {}, all: {})", args.workspace, args.all);
     let mut packages = Vec::new();
 
     if !args.package.is_empty() {
@@ -244,6 +249,7 @@ fn resolve_targets<'a>(
     package: &'a Package,
     args: &Args,
 ) -> Result<Vec<(&'a Target, HermesTargetKind)>> {
+    log::trace!("resolve_targets({})", package.name);
     let mut selected_artifacts = Vec::new();
 
     // If no specific target flags are set, default to libs + bins.
@@ -306,6 +312,7 @@ fn resolve_targets<'a>(
 /// within the workspace root. Returns an error if an external path dependency
 /// is found.
 pub fn check_for_external_deps(metadata: &Metadata) -> Result<()> {
+    log::trace!("check_for_external_deps");
     let workspace_root = metadata.workspace_root.as_std_path();
 
     for pkg in &metadata.packages {
