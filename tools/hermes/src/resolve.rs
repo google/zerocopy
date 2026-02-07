@@ -157,6 +157,11 @@ fn resolve_shadow_path(metadata: &Metadata) -> PathBuf {
     // NOTE: Automatically handles `CARGO_TARGET_DIR` env var.
     let target_dir = metadata.target_directory.as_std_path();
 
+    // Used by integration tests to ensure deterministic shadow dir names.
+    if let Ok(name) = std::env::var("HERMES_TEST_SHADOW_NAME") {
+        return target_dir.join(name);
+    }
+
     // Hash the path to the workspace root to avoid collisions between different
     // workspaces using the same target directory.
     let workspace_root_hash = {
@@ -195,7 +200,10 @@ fn resolve_packages<'a>(
         }
     } else {
         // Resolve default (Current Working Directory)
-        let cwd = env::current_dir().context("Failed to get CWD")?;
+        let cwd = env::current_dir()
+            .context("Failed to get CWD")?
+            .canonicalize()
+            .context("Failed to canonicalize CWD")?;
 
         // Find the package whose manifest directory is an ancestor of CWD
         let current_pkg = metadata.packages.iter().find(|p| {
