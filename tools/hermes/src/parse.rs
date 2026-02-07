@@ -67,33 +67,54 @@ pub struct ParsedLeanItem {
     source_file: Option<PathBuf>,
 }
 
+/// Represents a `mod foo;` declaration found in the source.
+#[derive(Debug, Clone)]
+pub struct UnloadedModule {
+    pub name: String,
+    /// The value of `#[path = "..."]` if present.
+    pub path_attr: Option<String>,
+    pub span: proc_macro2::Span,
+}
+
 /// Parses the given Rust source code and invokes the callback `f` for each item
 /// annotated with a `/// ```lean` block.
 ///
+/// While parsing, collects every `mod foo;` declaration and returns them all.
+///
 /// If parsing fails, or if any item has multiple Lean blocks, the callback is
 /// invoked with an `Err`.
-pub fn visit_hermes_items<F>(source: &str, f: F)
+pub fn scan_compilation_unit<F>(source: &str, f: F) -> Vec<UnloadedModule>
 where
     F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
 {
-    visit_hermes_items_internal(source, None, f)
+    let mut unloaded_modules = Vec::new();
+    scan_compilation_unit_internal(source, None, f, |m| unloaded_modules.push(m));
+    unloaded_modules
 }
 
-/// Parses the given Rust source code from a file path and invokes the callback `f`
-/// for each item annotated with a `/// ```lean` block. Parsing errors and generated
-/// items will be associated with this file path.
-pub fn read_file_and_visit_hermes_items<F>(path: &Path, f: F) -> Result<String, io::Error>
+/// Like [`scan_compilation_unit`], but reads the source code from a file path.
+///
+/// Parsing errors and generated items will be associated with this file path.
+pub fn read_file_and_scan_compilation_unit<F>(
+    path: &Path,
+    f: F,
+) -> Result<(String, Vec<UnloadedModule>), io::Error>
 where
     F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
 {
     let source = fs::read_to_string(path).expect("Failed to read file");
-    visit_hermes_items_internal(&source, Some(path.to_path_buf()), f);
-    Ok(source)
+    let unloaded_modules = scan_compilation_unit(&source, f);
+    Ok((source, unloaded_modules))
 }
 
-fn visit_hermes_items_internal<F>(source: &str, source_file: Option<PathBuf>, mut f: F)
-where
-    F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
+fn scan_compilation_unit_internal<I, M>(
+    source: &str,
+    source_file: Option<PathBuf>,
+    mut item_cb: I,
+    mod_cb: M,
+) where
+    I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
+    M: FnMut(UnloadedModule),
 {
     trace!("Parsing source code into syn::File");
     let file_name = {
@@ -116,7 +137,7 @@ where
         }
         Err(e) => {
             debug!("Failed to parse source code: {}", e);
-            f(
+            item_cb(
                 source,
                 Err(HermesError::SynError {
                     src: named_source.clone(),
@@ -131,7 +152,8 @@ where
     trace!("Initializing HermesVisitor to traverse AST");
     let mut visitor = HermesVisitor {
         current_path: Vec::new(),
-        callback: f,
+        item_cb,
+        mod_cb,
         source_file,
         source_code: source.to_string(),
         named_source,
@@ -141,17 +163,19 @@ where
     trace!("Finished traversing AST");
 }
 
-struct HermesVisitor<F> {
+struct HermesVisitor<I, M> {
     current_path: Vec<String>,
-    callback: F,
+    item_cb: I,
+    mod_cb: M,
     source_file: Option<PathBuf>,
     source_code: String,
     named_source: NamedSource<String>,
 }
 
-impl<F> HermesVisitor<F>
+impl<I, M> HermesVisitor<I, M>
 where
-    F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
+    I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
+    M: FnMut(UnloadedModule),
 {
     fn check_and_add(&mut self, item: ParsedItem, span: Span) {
         let Range { start, end } = span.byte_range();
@@ -162,7 +186,7 @@ where
         match extract_lean_block(attrs) {
             Ok(Some(lean_block)) => {
                 debug!("Found valid ```lean block for item in `{:?}`", self.current_path);
-                (self.callback)(
+                (self.item_cb)(
                     source,
                     Ok(ParsedLeanItem {
                         item,
@@ -177,7 +201,7 @@ where
             } // Skip item
             Err(e) => {
                 debug!("Error extracting ```lean block: {}", e);
-                (self.callback)(
+                (self.item_cb)(
                     source,
                     Err(HermesError::DocBlockError {
                         src: self.named_source.clone(),
@@ -190,12 +214,23 @@ where
     }
 }
 
-impl<'ast, F> Visit<'ast> for HermesVisitor<F>
+impl<'ast, I, M> Visit<'ast> for HermesVisitor<I, M>
 where
-    F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
+    I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
+    M: FnMut(UnloadedModule),
 {
     fn visit_item_mod(&mut self, node: &'ast ItemMod) {
         let mod_name = node.ident.to_string();
+
+        // Check for unloaded modules (mod foo;)
+        if node.content.is_none() {
+            (self.mod_cb)(UnloadedModule {
+                name: mod_name.clone(),
+                path_attr: extract_path_attr(&node.attrs),
+                span: node.span(),
+            });
+        }
+
         trace!("Entering module: {}", mod_name);
         self.current_path.push(mod_name);
         syn::visit::visit_item_mod(self, node);
@@ -327,6 +362,22 @@ fn extract_lean_block(attrs: &[Attribute]) -> Result<Option<String>, Error> {
     }
 }
 
+/// Extracts the `...` from the first `#[path = "..."]` attribute found, if any.
+fn extract_path_attr(attrs: &[Attribute]) -> Option<String> {
+    for attr in attrs {
+        if attr.path().is_ident("path") {
+            if let Meta::NameValue(nv) = &attr.meta {
+                if let Expr::Lit(expr_lit) = &nv.value {
+                    if let Lit::Str(lit_str) = &expr_lit.lit {
+                        return Some(lit_str.value());
+                    }
+                }
+            }
+        }
+    }
+    None
+}
+
 fn span_to_miette(span: proc_macro2::Span) -> SourceSpan {
     let range = span.byte_range();
     SourceSpan::new(range.start.into(), range.end - range.start)
@@ -340,7 +391,7 @@ mod tests {
 
     fn parse_to_vec(code: &str) -> Vec<(String, Result<ParsedLeanItem, HermesError>)> {
         let mut items = Vec::new();
-        visit_hermes_items(code, |src, res| items.push((src.to_string(), res)));
+        scan_compilation_unit(code, |src, res| items.push((src.to_string(), res)));
         items
     }
 
@@ -444,10 +495,11 @@ mod tests {
             fn foo() {}
         "#;
         let mut items = Vec::new();
-        visit_hermes_items_internal(
+        scan_compilation_unit_internal(
             code,
             Some(Path::new("src/foo.rs").to_path_buf()),
             |source: &str, res| items.push((source.to_string(), res)),
+            |_| {},
         );
         let (src, res) = items.into_iter().next().unwrap();
         assert_eq!(
@@ -480,7 +532,7 @@ mod c {
 }
 ";
         let mut items = Vec::new();
-        visit_hermes_items(source, |_src, res| items.push(res));
+        scan_compilation_unit(source, |_src, res| items.push(res));
         let i1 = items[0].as_ref().unwrap();
         let i2 = items[1].as_ref().unwrap();
 
@@ -527,8 +579,18 @@ mod c {
         let path = std::path::Path::new("src/foo.rs");
         let mut items = Vec::new();
 
-        visit_hermes_items_internal(code1, Some(path.to_path_buf()), |_src, res| items.push(res));
-        visit_hermes_items_internal(code2, Some(path.to_path_buf()), |_src, res| items.push(res));
+        scan_compilation_unit_internal(
+            code1,
+            Some(path.to_path_buf()),
+            |_src, res| items.push(res),
+            |_| {},
+        );
+        scan_compilation_unit_internal(
+            code2,
+            Some(path.to_path_buf()),
+            |_src, res| items.push(res),
+            |_| {},
+        );
 
         let mut report_string = String::new();
         for err in items.into_iter().filter_map(|r| r.err()) {
