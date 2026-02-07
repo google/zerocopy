@@ -102,8 +102,15 @@ impl TryFrom<&TargetKind> for HermesTargetKind {
 pub struct Roots {
     pub workspace: PathBuf,
     pub cargo_target_dir: PathBuf,
-    pub shadow_root: PathBuf,
+    // E.g., `target/hermes/<hash>`.
+    hermes_run_root: PathBuf,
     pub roots: Vec<(PackageName, HermesTargetKind, PathBuf)>,
+}
+
+impl Roots {
+    pub fn shadow_root(&self) -> PathBuf {
+        self.hermes_run_root.join("shadow")
+    }
 }
 
 /// Resolves all verification roots.
@@ -129,7 +136,7 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
     let mut roots = Roots {
         workspace: metadata.workspace_root.as_std_path().to_owned(),
         cargo_target_dir: metadata.target_directory.as_std_path().to_owned(),
-        shadow_root: resolve_shadow_path(&metadata),
+        hermes_run_root: resolve_run_root(&metadata),
         roots: Vec::new(),
     };
 
@@ -155,15 +162,16 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
     Ok(roots)
 }
 
-fn resolve_shadow_path(metadata: &Metadata) -> PathBuf {
-    log::trace!("resolve_shadow_path");
+fn resolve_run_root(metadata: &Metadata) -> PathBuf {
+    log::trace!("resolve_run_root");
     log::debug!("workspace_root: {:?}", metadata.workspace_root.as_std_path());
     // NOTE: Automatically handles `CARGO_TARGET_DIR` env var.
     let target_dir = metadata.target_directory.as_std_path();
+    let hermes_global = target_dir.join("hermes");
 
     // Used by integration tests to ensure deterministic shadow dir names.
     if let Ok(name) = std::env::var("HERMES_TEST_SHADOW_NAME") {
-        return target_dir.join(name);
+        return hermes_global.join(name);
     }
 
     // Hash the path to the workspace root to avoid collisions between different
@@ -175,7 +183,7 @@ fn resolve_shadow_path(metadata: &Metadata) -> PathBuf {
         hasher.finish()
     };
 
-    target_dir.join(format!("hermes_shadow_{workspace_root_hash}"))
+    hermes_global.join(format!("{workspace_root_hash:x}"))
 }
 
 /// Resolves which packages to process based on workspace flags and CWD.
