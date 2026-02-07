@@ -17,46 +17,13 @@ struct Cli {
     resolve: resolve::Args,
 }
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     if env::var("HERMES_UI_TEST_MODE").is_ok() {
         ui_test_shim::run();
-        return;
+        return Ok(());
     }
 
     let args = Cli::parse();
-
-    // TODO: Better error handling than `.unwrap()`.
-    let roots = resolve::resolve_roots(&args.resolve).unwrap();
-
-    // TODO: What artifacts need to be updated (not just copied)? E.g., do we
-    // need to update `Cargo.toml` to rewrite relative paths?
-
-    // TODO: From each root, parse and walk referenced modules.
-    let mut has_errors = false;
-    for (package, kind, path) in roots.roots {
-        let mut edits = Vec::new();
-        let res = parse::read_file_and_scan_compilation_unit(&path, |_src, res| {
-            if let Err(e) = res {
-                has_errors = true;
-                eprint!("{:?}", miette::Report::new(e));
-            } else if let Ok(item) = res {
-                transform::append_edits(&item, &mut edits);
-            }
-        });
-
-        let (source, unloaded_modules) = res.unwrap_or_else(|e| {
-            eprintln!("Error parsing file: {}", e);
-            exit(1);
-        });
-
-        if has_errors {
-            exit(1);
-        }
-
-        let mut source = source.into_bytes();
-        transform::apply_edits(&mut source, &edits);
-    }
-
-    // TODO: Create shadow skeleton.
-    // shadow::create_shadow_skeleton(&roots.workspace, &roots.shadow_root, &roots.cargo_target_dir, todo!()).unwrap();
+    let roots = resolve::resolve_roots(&args.resolve)?;
+    shadow::build_shadow_crate(&roots)
 }
