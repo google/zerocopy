@@ -102,6 +102,7 @@ pub fn read_file_and_scan_compilation_unit<F>(
 where
     F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
 {
+    log::trace!("read_file_and_scan_compilation_unit({:?})", path);
     let source = fs::read_to_string(path).expect("Failed to read file");
     let unloaded_modules = scan_compilation_unit(&source, f);
     Ok((source, unloaded_modules))
