@@ -1,10 +1,15 @@
-use std::path::{Path, PathBuf};
+use std::{
+    fs, io,
+    ops::Range,
+    path::{Path, PathBuf},
+};
 
 use log::{debug, trace};
 use miette::{NamedSource, SourceSpan};
+use proc_macro2::Span;
 use syn::{
-    visit::Visit, Attribute, Error, Expr, ItemEnum, ItemFn, ItemImpl, ItemMod, ItemStruct,
-    ItemTrait, ItemUnion, Lit, Meta,
+    spanned::Spanned as _, visit::Visit, Attribute, Error, Expr, ItemEnum, ItemFn, ItemImpl,
+    ItemMod, ItemStruct, ItemTrait, ItemUnion, Lit, Meta,
 };
 
 use crate::errors::HermesError;
@@ -30,7 +35,7 @@ impl std::error::Error for ParseError {}
 
 /// The item from the original source code.
 #[derive(Clone, Debug)]
-enum ParsedItem {
+pub enum ParsedItem {
     Fn(ItemFn),
     Struct(ItemStruct),
     Enum(ItemEnum),
@@ -56,7 +61,7 @@ impl ParsedItem {
 /// A complete parsed item including its module path and the extracted Lean block.
 #[derive(Debug)]
 pub struct ParsedLeanItem {
-    item: ParsedItem,
+    pub item: ParsedItem,
     module_path: Vec<String>,
     lean_block: String,
     source_file: Option<PathBuf>,
@@ -67,9 +72,9 @@ pub struct ParsedLeanItem {
 ///
 /// If parsing fails, or if any item has multiple Lean blocks, the callback is
 /// invoked with an `Err`.
-fn visit_hermes_items<F>(source: &str, f: F)
+pub fn visit_hermes_items<F>(source: &str, f: F)
 where
-    F: FnMut(Result<ParsedLeanItem, HermesError>),
+    F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
 {
     visit_hermes_items_internal(source, None, f)
 }
@@ -77,16 +82,18 @@ where
 /// Parses the given Rust source code from a file path and invokes the callback `f`
 /// for each item annotated with a `/// ```lean` block. Parsing errors and generated
 /// items will be associated with this file path.
-pub fn visit_hermes_items_in_file<F>(path: &Path, source: &str, f: F)
+pub fn read_file_and_visit_hermes_items<F>(path: &Path, f: F) -> Result<String, io::Error>
 where
-    F: FnMut(Result<ParsedLeanItem, HermesError>),
+    F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
 {
-    visit_hermes_items_internal(source, Some(path.to_path_buf()), f)
+    let source = fs::read_to_string(path).expect("Failed to read file");
+    visit_hermes_items_internal(&source, Some(path.to_path_buf()), f);
+    Ok(source)
 }
 
 fn visit_hermes_items_internal<F>(source: &str, source_file: Option<PathBuf>, mut f: F)
 where
-    F: FnMut(Result<ParsedLeanItem, HermesError>),
+    F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
 {
     trace!("Parsing source code into syn::File");
     let file_name = {
@@ -109,11 +116,14 @@ where
         }
         Err(e) => {
             debug!("Failed to parse source code: {}", e);
-            f(Err(HermesError::SynError {
-                src: named_source.clone(),
-                span: span_to_miette(e.span()),
-                msg: e.to_string(),
-            }));
+            f(
+                source,
+                Err(HermesError::SynError {
+                    src: named_source.clone(),
+                    span: span_to_miette(e.span()),
+                    msg: e.to_string(),
+                }),
+            );
             return;
         }
     };
@@ -141,31 +151,40 @@ struct HermesVisitor<F> {
 
 impl<F> HermesVisitor<F>
 where
-    F: FnMut(Result<ParsedLeanItem, HermesError>),
+    F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
 {
-    fn check_and_add(&mut self, item: ParsedItem) {
+    fn check_and_add(&mut self, item: ParsedItem, span: Span) {
+        let Range { start, end } = span.byte_range();
+        let source = &self.source_code.as_str()[start..end];
+
         let attrs = item.attrs();
         trace!("Checking item in module path `{:?}` for ```lean block", self.current_path);
         match extract_lean_block(attrs) {
             Ok(Some(lean_block)) => {
                 debug!("Found valid ```lean block for item in `{:?}`", self.current_path);
-                (self.callback)(Ok(ParsedLeanItem {
-                    item,
-                    module_path: self.current_path.clone(),
-                    lean_block,
-                    source_file: self.source_file.clone(),
-                }));
+                (self.callback)(
+                    source,
+                    Ok(ParsedLeanItem {
+                        item,
+                        module_path: self.current_path.clone(),
+                        lean_block,
+                        source_file: self.source_file.clone(),
+                    }),
+                );
             }
             Ok(None) => {
                 trace!("No ```lean block found for item");
             } // Skip item
             Err(e) => {
                 debug!("Error extracting ```lean block: {}", e);
-                (self.callback)(Err(HermesError::DocBlockError {
-                    src: self.named_source.clone(),
-                    span: span_to_miette(e.span()),
-                    msg: e.to_string(),
-                }));
+                (self.callback)(
+                    source,
+                    Err(HermesError::DocBlockError {
+                        src: self.named_source.clone(),
+                        span: span_to_miette(e.span()),
+                        msg: e.to_string(),
+                    }),
+                );
             }
         }
     }
@@ -173,7 +192,7 @@ where
 
 impl<'ast, F> Visit<'ast> for HermesVisitor<F>
 where
-    F: FnMut(Result<ParsedLeanItem, HermesError>),
+    F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
 {
     fn visit_item_mod(&mut self, node: &'ast ItemMod) {
         let mod_name = node.ident.to_string();
@@ -186,37 +205,37 @@ where
 
     fn visit_item_fn(&mut self, node: &'ast ItemFn) {
         trace!("Visiting Fn {}", node.sig.ident);
-        self.check_and_add(ParsedItem::Fn(node.clone()));
+        self.check_and_add(ParsedItem::Fn(node.clone()), node.span());
         syn::visit::visit_item_fn(self, node);
     }
 
     fn visit_item_struct(&mut self, node: &'ast ItemStruct) {
         trace!("Visiting Struct {}", node.ident);
-        self.check_and_add(ParsedItem::Struct(node.clone()));
+        self.check_and_add(ParsedItem::Struct(node.clone()), node.span());
         syn::visit::visit_item_struct(self, node);
     }
 
     fn visit_item_enum(&mut self, node: &'ast ItemEnum) {
         trace!("Visiting Enum {}", node.ident);
-        self.check_and_add(ParsedItem::Enum(node.clone()));
+        self.check_and_add(ParsedItem::Enum(node.clone()), node.span());
         syn::visit::visit_item_enum(self, node);
     }
 
     fn visit_item_union(&mut self, node: &'ast ItemUnion) {
         trace!("Visiting Union {}", node.ident);
-        self.check_and_add(ParsedItem::Union(node.clone()));
+        self.check_and_add(ParsedItem::Union(node.clone()), node.span());
         syn::visit::visit_item_union(self, node);
     }
 
     fn visit_item_trait(&mut self, node: &'ast ItemTrait) {
         trace!("Visiting Trait {}", node.ident);
-        self.check_and_add(ParsedItem::Trait(node.clone()));
+        self.check_and_add(ParsedItem::Trait(node.clone()), node.span());
         syn::visit::visit_item_trait(self, node);
     }
 
     fn visit_item_impl(&mut self, node: &'ast ItemImpl) {
         trace!("Visiting Impl");
-        self.check_and_add(ParsedItem::Impl(node.clone()));
+        self.check_and_add(ParsedItem::Impl(node.clone()), node.span());
         syn::visit::visit_item_impl(self, node);
     }
 }
@@ -319,9 +338,9 @@ mod tests {
 
     use super::*;
 
-    fn parse_to_vec(code: &str) -> Vec<Result<ParsedLeanItem, HermesError>> {
+    fn parse_to_vec(code: &str) -> Vec<(String, Result<ParsedLeanItem, HermesError>)> {
         let mut items = Vec::new();
-        visit_hermes_items(code, |res| items.push(res));
+        visit_hermes_items(code, |src, res| items.push((src.to_string(), res)));
         items
     }
 
@@ -334,7 +353,15 @@ mod tests {
             fn foo() {}
         "#;
         let items = parse_to_vec(code);
-        let item = items.into_iter().next().unwrap().unwrap();
+        let (src, res) = items.into_iter().next().unwrap();
+        let item = res.unwrap();
+        assert_eq!(
+            src,
+            "/// ```lean
+            /// theorem foo : True := by trivial
+            /// ```
+            fn foo() {}"
+        );
         assert!(matches!(item.item, ParsedItem::Fn(_)));
         assert_eq!(item.lean_block, " ```lean\n theorem foo : True := by trivial\n ```\n");
         assert!(item.source_file.is_none());
@@ -352,7 +379,18 @@ mod tests {
             fn foo() {}
         "#;
         let items = parse_to_vec(code);
-        let err = items.into_iter().next().unwrap().unwrap_err();
+        let (src, res) = items.into_iter().next().unwrap();
+        let err = res.unwrap_err();
+        assert_eq!(
+            src,
+            "/// ```lean
+            /// a
+            /// ```
+            /// ```lean
+            /// b
+            /// ```
+            fn foo() {}"
+        );
         assert!(err.to_string().contains("Multiple lean blocks"));
     }
 
@@ -364,7 +402,14 @@ mod tests {
             fn foo() {}
         "#;
         let items = parse_to_vec(code);
-        let err = items.into_iter().next().unwrap().unwrap_err();
+        let (src, res) = items.into_iter().next().unwrap();
+        let err = res.unwrap_err();
+        assert_eq!(
+            src,
+            "/// ```lean
+            /// a
+            fn foo() {}"
+        );
         assert!(err.to_string().contains("Unclosed"));
     }
 
@@ -380,7 +425,14 @@ mod tests {
             }
         "#;
         let items = parse_to_vec(code);
-        let item = items.into_iter().next().unwrap().unwrap();
+        let (src, res) = items.into_iter().next().unwrap();
+        let item = res.unwrap();
+        assert_eq!(
+            src,
+            "/// ```lean
+                    /// ```
+                    fn foo() {}"
+        );
         assert_eq!(item.module_path, vec!["a", "b"]);
     }
 
@@ -392,9 +444,20 @@ mod tests {
             fn foo() {}
         "#;
         let mut items = Vec::new();
-        visit_hermes_items_in_file(Path::new("src/foo.rs"), code, |res| items.push(res));
-        let err = items.into_iter().next().unwrap().unwrap_err();
-        let rep = format!("{:?}", miette::Report::new(err));
+        visit_hermes_items_internal(
+            code,
+            Some(Path::new("src/foo.rs").to_path_buf()),
+            |source: &str, res| items.push((source.to_string(), res)),
+        );
+        let (src, res) = items.into_iter().next().unwrap();
+        assert_eq!(
+            src,
+            "/// ```lean
+            /// a
+            fn foo() {}"
+        );
+
+        let rep = format!("{:?}", miette::Report::new(res.unwrap_err()));
         assert!(rep.contains("src/foo.rs"));
         assert!(rep.contains("Unclosed"));
     }
@@ -417,7 +480,7 @@ mod c {
 }
 ";
         let mut items = Vec::new();
-        visit_hermes_items(source, |res| items.push(res));
+        visit_hermes_items(source, |_src, res| items.push(res));
         let i1 = items[0].as_ref().unwrap();
         let i2 = items[1].as_ref().unwrap();
 
@@ -464,8 +527,8 @@ mod c {
         let path = std::path::Path::new("src/foo.rs");
         let mut items = Vec::new();
 
-        visit_hermes_items_in_file(path, code1, |res| items.push(res));
-        visit_hermes_items_in_file(path, code2, |res| items.push(res));
+        visit_hermes_items_internal(code1, Some(path.to_path_buf()), |_src, res| items.push(res));
+        visit_hermes_items_internal(code2, Some(path.to_path_buf()), |_src, res| items.push(res));
 
         let mut report_string = String::new();
         for err in items.into_iter().filter_map(|r| r.err()) {
