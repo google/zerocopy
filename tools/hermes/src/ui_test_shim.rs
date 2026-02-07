@@ -39,7 +39,7 @@ pub fn run() {
     parse::read_file_and_visit_hermes_items(&file_path, |source, res| {
         if let Err(e) = res {
             has_errors = true;
-            emit_rustc_json(&e, &source, file_path.to_str().unwrap());
+            emit_rustc_json(&e, source, file_path.to_str().unwrap());
         }
     })
     .unwrap();
