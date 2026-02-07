@@ -18,10 +18,11 @@ use crate::{parse, resolve::Roots, transform};
 /// 2. Creates symlinks for the remaining skeleton.
 pub fn build_shadow_crate(roots: &Roots) -> Result<()> {
     log::trace!("build_shadow_crate({:?})", roots);
-    if roots.shadow_root.exists() {
-        fs::remove_dir_all(&roots.shadow_root).context("Failed to clear shadow root")?;
+    let shadow_root = roots.shadow_root();
+    if shadow_root.exists() {
+        fs::remove_dir_all(&shadow_root).context("Failed to clear shadow root")?;
     }
-    fs::create_dir_all(&roots.shadow_root).context("Failed to create shadow root")?;
+    fs::create_dir_all(&shadow_root).context("Failed to create shadow root")?;
 
     let visited_paths = DashSet::new();
     let (err_tx, err_rx) = std::sync::mpsc::channel();
@@ -62,12 +63,7 @@ pub fn build_shadow_crate(roots: &Roots) -> Result<()> {
 
     let skip_paths: HashSet<PathBuf> = visited_paths.into_iter().collect();
 
-    create_symlink_skeleton(
-        &roots.workspace,
-        &roots.shadow_root,
-        &roots.cargo_target_dir,
-        &skip_paths,
-    )?;
+    create_symlink_skeleton(&roots.workspace, &shadow_root, &roots.cargo_target_dir, &skip_paths)?;
 
     Ok(())
 }
@@ -99,7 +95,7 @@ fn process_file_recursive<'a>(
             return;
         }
     };
-    let dest_path = config.shadow_root.join(relative_path);
+    let dest_path = config.shadow_root().join(relative_path);
 
     let result = (|| -> Result<Vec<PathBuf>> {
         if let Some(parent) = dest_path.parent() {
