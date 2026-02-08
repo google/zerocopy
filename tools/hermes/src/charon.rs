@@ -1,6 +1,7 @@
 use std::process::Command;
 
 use anyhow::{bail, Context as _, Result};
+use cargo_metadata::diagnostic::DiagnosticLevel;
 
 use crate::{
     resolve::{Args, HermesTargetKind, Roots},
@@ -38,6 +39,9 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
 
         // Separator for the underlying cargo command
         cmd.arg("--");
+
+        // Ensure cargo emits json msgs which charon-driver natively generates
+        cmd.arg("--message-format=json");
 
         cmd.arg("--manifest-path").arg(&artifact.shadow_manifest_path);
 
@@ -77,9 +81,57 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
 
         log::debug!("Command: {:?}", cmd);
 
-        let status = cmd.status().context("Failed to execute charon")?;
+        cmd.stdout(std::process::Stdio::piped());
+        let mut child = cmd.spawn().context("Failed to spawn charon")?;
 
-        if !status.success() {
+        let mut output_error = false;
+        if let Some(stdout) = child.stdout.take() {
+            use std::io::{BufRead, BufReader};
+            let reader = BufReader::new(stdout);
+
+            // When resolving mapped diagnostic paths, the original workspace is either test_case_root/source or workspace root.
+            let user_root = if roots.workspace.join("source").exists() {
+                roots.workspace.join("source")
+            } else {
+                roots.workspace.clone()
+            };
+            let mut mapper = crate::diagnostics::DiagnosticMapper::new(
+                artifact.shadow_manifest_path.parent().unwrap().to_path_buf(),
+                user_root,
+            );
+
+            for line in reader.lines() {
+                if let Ok(line) = line {
+                    if let Ok(msg) = serde_json::from_str::<cargo_metadata::Message>(&line) {
+                        use cargo_metadata::Message;
+                        match msg {
+                            Message::CompilerMessage(msg) => {
+                                mapper.render_miette(&msg.message);
+                                if matches!(
+                                    msg.message.level,
+                                    DiagnosticLevel::Error | DiagnosticLevel::Ice
+                                ) {
+                                    output_error = true;
+                                }
+                            }
+                            Message::TextLine(t) => {
+                                eprintln!("{}", t);
+                            }
+                            _ => {}
+                        }
+                    } else {
+                        // Print non-JSON lines to stderr
+                        eprintln!("{}", line);
+                    }
+                }
+            }
+        }
+
+        let status = child.wait().context("Failed to wait for charon")?;
+
+        if output_error {
+            bail!("Diagnostic error in charon");
+        } else if !status.success() {
             bail!("Charon failed with status: {}", status);
         }
     }
