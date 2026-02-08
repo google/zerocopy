@@ -1,0 +1,13 @@
+[package]
+name = "split"
+version = "0.1.0"
+edition = "2021"
+autolib = false # Prevent cargo from inferring the lib target automatically, which crashes charon
+
+[lib]
+name = "split"
+path = "src/lib.rs"
+
+[[bin]]
+name = "run"
+path = "src/main.rs"
