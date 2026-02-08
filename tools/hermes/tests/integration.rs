@@ -1,9 +1,23 @@
 use std::{fs, path::Path};
 
+use serde::Deserialize;
 use tempfile::tempdir;
 use walkdir::WalkDir;
 
 datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
+
+#[derive(Deserialize)]
+struct TestConfig {
+    #[serde(default)]
+    artifact: Vec<ArtifactExpectation>,
+}
+
+#[derive(Deserialize)]
+struct ArtifactExpectation {
+    package: String,
+    target: String,
+    should_exist: bool,
+}
 
 fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     // `path` is `tests/fixtures/<test_case>/hermes.toml`
@@ -20,6 +34,8 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
     cmd.env("CARGO_TARGET_DIR", sandbox_root.join("target"))
         .env_remove("RUSTFLAGS")
+        // Forces deterministic output path: target/hermes/hermes_test_target
+        // (normally, the path includes a hash of the crate's path).
         .env("HERMES_TEST_SHADOW_NAME", "hermes_test_target");
 
     // Tests can specify the cwd to invoke from.
@@ -40,27 +56,34 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
         cmd.arg("verify");
     }
 
-    let assert = cmd.assert();
+    let mut assert = cmd.assert();
 
     // Tests can specify the expected exit status.
     let expected_status_file = test_case_root.join("expected_status.txt");
-    let assert = if expected_status_file.exists() {
+    if expected_status_file.exists() {
         let status = fs::read_to_string(&expected_status_file)?;
         if status.trim() == "failure" {
-            assert.failure()
+            assert = assert.failure();
         } else {
-            assert.success()
+            assert = assert.success();
         }
     } else {
-        // Default to expecting success
-        assert.success()
+        assert = assert.success();
     };
 
     // Tests can specify the expected stderr.
     let expected_stderr_file = test_case_root.join("expected_stderr.txt");
     if expected_stderr_file.exists() {
         let needle = fs::read_to_string(expected_stderr_file)?;
-        assert.stderr(predicates::str::contains(needle.trim()));
+        let output = assert.get_output();
+        let stderr = std::str::from_utf8(&output.stderr).unwrap();
+        if !stderr.contains(needle.trim()) {
+            panic!(
+                "Stderr mismatch.\nExpected substring: {}\nActual stderr:\n{}",
+                needle.trim(),
+                stderr
+            );
+        }
     }
 
     // Tests can specify the expected shadow crate content.
@@ -69,21 +92,65 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
 
     if expected_shadow.exists() {
         assert_directories_match(&expected_shadow, &actual_shadow)?;
-    } else {
-        // If the test expects failure, we may not have a shadow crate to check.
-        // Only warn if we expected success but found no 'expected' dir.
-        if !expected_status_file.exists()
-            || fs::read_to_string(&expected_status_file)?.trim() != "failure"
-        {
-            eprintln!("WARNING: No 'expected' directory found for test case '{}'", test_name);
+    }
+
+    // 2. Verify Artifacts (New Logic)
+    let artifacts_file = test_case_root.join("expected_artifacts.toml");
+    if artifacts_file.exists() {
+        let content = fs::read_to_string(&artifacts_file)?;
+        let config: TestConfig = toml::from_str(&content)?;
+
+        let charon_dir = sandbox_root.join("target/hermes/hermes_test_target/charon");
+        assert_artifacts_match(&charon_dir, &config.artifact)?;
+    }
+
+    Ok(())
+}
+
+fn assert_artifacts_match(
+    charon_dir: &Path,
+    expectations: &[ArtifactExpectation],
+) -> std::io::Result<()> {
+    if !charon_dir.exists() {
+        if expectations.iter().any(|e| e.should_exist) {
+            panic!("Charon output directory does not exist: {:?}", charon_dir);
+        }
+        return Ok(());
+    }
+
+    // Collect all generated .llbc files
+    let mut generated_files = Vec::new();
+    for entry in fs::read_dir(charon_dir)? {
+        let entry = entry?;
+        let name = entry.file_name().to_string_lossy().to_string();
+        if name.ends_with(".llbc") {
+            generated_files.push(name);
+        }
+    }
+
+    for exp in expectations {
+        // We expect filenames format: "{package}-{target}-{hash}.llbc"
+        // Since hash is dynamic, we match on prefix.
+        let prefix = format!("{}-{}-", exp.package, exp.target);
+
+        let found = generated_files.iter().any(|f| f.starts_with(&prefix));
+
+        if exp.should_exist && !found {
+            panic!(
+                "Missing expected artifact for package='{}', target='{}'.\nExpected prefix: '{}'\nFound files: {:?}",
+                exp.package, exp.target, prefix, generated_files
+            );
+        } else if !exp.should_exist && found {
+            panic!(
+                "Found unexpected artifact for package='{}', target='{}'.\nMatched prefix: '{}'\nFound files: {:?}",
+                exp.package, exp.target, prefix, generated_files
+            );
         }
     }
 
     Ok(())
 }
 
-/// Recursively checks that every file in 'expected' exists in 'actual'
-/// and has identical content.
 fn assert_directories_match(expected: &Path, actual: &Path) -> std::io::Result<()> {
     for entry in WalkDir::new(expected) {
         let entry = entry?;
@@ -106,7 +173,7 @@ fn assert_directories_match(expected: &Path, actual: &Path) -> std::io::Result<(
         let expected_content = fs::read_to_string(expected_path)?;
         let actual_content = fs::read_to_string(&actual_path)?;
 
-        // Normalize line endings to prevent Windows/Linux CI failures
+        // Normalize line endings to prevent Windows/Linux CI failures.
         let expected_norm = expected_content.replace("\r\n", "\n");
         let actual_norm = actual_content.replace("\r\n", "\n");
 
@@ -117,11 +184,9 @@ fn assert_directories_match(expected: &Path, actual: &Path) -> std::io::Result<(
             panic!("Mismatch in {:?}", relative_path);
         }
     }
-
     Ok(())
 }
 
-/// Copies the *contents* of src into dst recursively.
 fn copy_dir_contents(src: &Path, dst: &Path) -> std::io::Result<()> {
     fs::create_dir_all(dst)?;
     for entry in fs::read_dir(src)? {
