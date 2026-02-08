@@ -325,17 +325,14 @@ where
 
         // If this is a trait impl, we use UFCS syntax (`<Type as Trait>`). If
         // this is an inherent impl, we use the `Type: Type` syntax.
+        let self_ty = &node.self_ty;
         let segment = if let Some((_, path, _)) = &node.trait_ {
-            let self_ty = &node.self_ty;
-            let tokens = quote! { <#self_ty as #path> };
-            tokens.to_string().replace(" ", "") // Remove spaces for cleaner paths
+            quote! { <#self_ty as #path> }
         } else {
-            let self_ty = &node.self_ty;
-            let tokens = quote! { #self_ty };
-            tokens.to_string().replace(" ", "")
+            quote! { #self_ty }
         };
 
-        self.current_path.push(segment);
+        self.current_path.push(segment.to_string());
         syn::visit::visit_item_impl(self, node);
         self.current_path.pop();
     }
