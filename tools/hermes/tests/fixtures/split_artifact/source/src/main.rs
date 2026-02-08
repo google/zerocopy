@@ -1,3 +1,3 @@
 /// ```lean
 /// ```
-fn main() {}
+pub fn main() {}
