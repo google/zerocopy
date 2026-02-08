@@ -1,0 +1,1 @@
+{"reason": "compiler-message", "message": {"message": "relative error", "level": "error", "code": null, "spans": [{"file_name": "src/lib.rs", "byte_start": 0, "byte_end": 5, "line_start": 1, "line_end": 1, "column_start": 1, "column_end": 6, "is_primary": true, "text": [], "label": "relative label"}], "children": [], "rendered": "relative error"}}

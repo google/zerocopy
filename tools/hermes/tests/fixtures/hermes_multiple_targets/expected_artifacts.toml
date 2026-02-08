@@ -1,0 +1,4 @@
+artifacts = [
+    { package_name = "hermes_multiple_targets", target_name = "hermes_multiple_targets", start_from = ["crate::lib_fn", "crate::dummy"] },
+    { package_name = "hermes_multiple_targets", target_name = "my_bin", start_from = ["crate::main", "crate::dummy"] }
+]
