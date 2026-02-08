@@ -7,9 +7,10 @@ use std::{
 use log::{debug, trace};
 use miette::{NamedSource, SourceSpan};
 use proc_macro2::Span;
+use quote::quote;
 use syn::{
-    spanned::Spanned as _, visit::Visit, Attribute, Error, Expr, ItemEnum, ItemFn, ItemImpl,
-    ItemMod, ItemStruct, ItemTrait, ItemUnion, Lit, Meta,
+    spanned::Spanned as _, visit::Visit, Attribute, Error, Expr, ImplItemFn, ItemEnum, ItemFn,
+    ItemImpl, ItemMod, ItemStruct, ItemTrait, ItemUnion, Lit, Meta,
 };
 
 use crate::errors::HermesError;
@@ -42,6 +43,7 @@ pub enum ParsedItem {
     Union(ItemUnion),
     Trait(ItemTrait),
     Impl(ItemImpl),
+    ImplItemFn(ImplItemFn),
 }
 
 impl ParsedItem {
@@ -52,6 +54,7 @@ impl ParsedItem {
             Self::Enum(item) => Some(item.ident.to_string()),
             Self::Union(item) => Some(item.ident.to_string()),
             Self::Trait(item) => Some(item.ident.to_string()),
+            Self::ImplItemFn(item) => Some(item.sig.ident.to_string()),
             Self::Impl(_) => None,
         }
     }
@@ -65,6 +68,7 @@ impl ParsedItem {
             Self::Union(item) => &item.attrs,
             Self::Trait(item) => &item.attrs,
             Self::Impl(item) => &item.attrs,
+            Self::ImplItemFn(item) => &item.attrs,
         }
     }
 }
@@ -164,6 +168,7 @@ fn scan_compilation_unit_internal<I, M>(
     trace!("Initializing HermesVisitor to traverse AST");
     let mut visitor = HermesVisitor {
         current_path: Vec::new(),
+        inside_block: false,
         item_cb,
         mod_cb,
         source_file,
@@ -177,6 +182,7 @@ fn scan_compilation_unit_internal<I, M>(
 
 struct HermesVisitor<I, M> {
     current_path: Vec<String>,
+    inside_block: bool,
     item_cb: I,
     mod_cb: M,
     source_file: Option<PathBuf>,
@@ -190,6 +196,28 @@ where
     M: FnMut(UnloadedModule),
 {
     fn check_and_add(&mut self, item: ParsedItem, span: Span) {
+        // NEW: Check nesting
+        if self.inside_block {
+            // Only check attributes if we are in a body to see if we need to
+            // error. We want to avoid erroring on un-annotated local items.
+            if let Ok(Some(_)) = extract_lean_block(item.attrs()) {
+                // NOTE: It might be tempting to simply walk "out" until we find
+                // an item that we *can* name and pass that to Charon as a root.
+                // Unfortunately, that's unsound because there's no guarantee
+                // that the inner, annotated item is actually *called* from the
+                // outer function. Thus, it might be skipped by Charon entirely.
+                (self.item_cb)(
+                    &self.source_code.as_str()[span.byte_range()],
+                    Err(HermesError::NestedItemError {
+                        src: self.named_source.clone(),
+                        span: span_to_miette(span),
+                        msg: "Hermes cannot verify items defined inside function bodies or other blocks.".to_string(),
+                    }),
+                );
+            }
+            return;
+        }
+
         let Range { start, end } = span.byte_range();
         let source = &self.source_code.as_str()[start..end];
 
@@ -275,15 +303,47 @@ where
     }
 
     fn visit_item_trait(&mut self, node: &'ast ItemTrait) {
-        trace!("Visiting Trait {}", node.ident);
+        let name = node.ident.to_string();
+        trace!("Visiting Trait {}", name);
         self.check_and_add(ParsedItem::Trait(node.clone()), node.span());
+
+        self.current_path.push(name);
         syn::visit::visit_item_trait(self, node);
+        self.current_path.pop();
+    }
+
+    fn visit_block(&mut self, node: &'ast syn::Block) {
+        let old_inside = self.inside_block;
+        self.inside_block = true;
+        syn::visit::visit_block(self, node);
+        self.inside_block = old_inside;
     }
 
     fn visit_item_impl(&mut self, node: &'ast ItemImpl) {
         trace!("Visiting Impl");
         self.check_and_add(ParsedItem::Impl(node.clone()), node.span());
+
+        // If this is a trait impl, we use UFCS syntax (`<Type as Trait>`). If
+        // this is an inherent impl, we use the `Type: Type` syntax.
+        let segment = if let Some((_, path, _)) = &node.trait_ {
+            let self_ty = &node.self_ty;
+            let tokens = quote! { <#self_ty as #path> };
+            tokens.to_string().replace(" ", "") // Remove spaces for cleaner paths
+        } else {
+            let self_ty = &node.self_ty;
+            let tokens = quote! { #self_ty };
+            tokens.to_string().replace(" ", "")
+        };
+
+        self.current_path.push(segment);
         syn::visit::visit_item_impl(self, node);
+        self.current_path.pop();
+    }
+
+    fn visit_impl_item_fn(&mut self, node: &'ast ImplItemFn) {
+        trace!("Visiting ImplItemFn {}", node.sig.ident);
+        self.check_and_add(ParsedItem::ImplItemFn(node.clone()), node.span());
+        syn::visit::visit_impl_item_fn(self, node);
     }
 }
 

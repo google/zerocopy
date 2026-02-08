@@ -1,0 +1,7 @@
+[[command]]
+args = ["--bin", "app"]
+should_not_exist = false
+
+[[command]]
+args = ["--lib"]
+should_not_exist = true

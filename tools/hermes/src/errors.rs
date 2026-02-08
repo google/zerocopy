@@ -21,4 +21,13 @@ pub enum HermesError {
         span: SourceSpan,
         msg: String,
     },
+    #[error("Nested item error: {msg}")]
+    #[diagnostic(code(hermes::nested_item))]
+    NestedItemError {
+        #[source_code]
+        src: miette::NamedSource<String>,
+        #[label("this item is defined inside a function body")]
+        span: miette::SourceSpan,
+        msg: String,
+    },
 }
