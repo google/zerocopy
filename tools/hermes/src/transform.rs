@@ -1,24 +1,31 @@
-use proc_macro2::Span;
+use std::ops::Range;
+
 use syn::spanned::Spanned;
 
 use crate::parse::{ParsedItem, ParsedLeanItem};
 
-/// Appends the spans of text that should be blanked out in the shadow crate.
+/// Appends the byte ranges that should be blanked out in the shadow crate.
 ///
 /// For `unsafe` functions with Hermes annotations, this targets:
 /// 1. The `unsafe` keyword (to make the function signature "safe" for Aeneas).
-/// 2. The entire function block (to remove the unverified implementation).
-pub fn append_edits(item: &ParsedLeanItem, edits: &mut Vec<Span>) {
+/// 2. The *contents* of the function block (preserving the braces `{}`).
+pub fn append_edits(item: &ParsedLeanItem, edits: &mut Vec<Range<usize>>) {
     if let ParsedItem::Fn(func) = &item.item {
         if let Some(unsafety) = &func.sig.unsafety {
             // 1. Mark the `unsafe` keyword for blanking.
             // Result: `unsafe fn` -> `       fn`
-            edits.push(unsafety.span());
+            edits.push(unsafety.span().byte_range());
 
             // TODO:
             // - Only blank bodies for functions which are modeled.
             // - Figure out what to replace these bodies with.
-            edits.push(func.block.span());
+
+            // 2. Mark the *inside* of the block for blanking.
+            // We use start+1 and end-1 to preserve the curly braces.
+            let block_range = func.block.span().byte_range();
+            if block_range.len() >= 2 {
+                edits.push(block_range.start + 1..block_range.end - 1);
+            }
         }
     }
 }
@@ -34,9 +41,9 @@ pub fn append_edits(item: &ParsedLeanItem, edits: &mut Vec<Span>) {
 /// # Panics
 ///
 /// Panics if any span in `edits` is not in-bounds of `buffer`.
-pub fn apply_edits(buffer: &mut [u8], edits: &[Span]) {
-    for span in edits {
-        for byte in &mut buffer[span.byte_range()] {
+pub fn apply_edits(buffer: &mut [u8], edits: &[Range<usize>]) {
+    for range in edits {
+        for byte in &mut buffer[range.clone()] {
             if !matches!(*byte, b'\n' | b'\r') {
                 *byte = b' ';
             }
@@ -59,7 +66,8 @@ mod tests {
             _ => panic!("Expected function"),
         };
 
-        let edits = vec![func.sig.unsafety.unwrap().span(), func.block.span()];
+        let edits =
+            vec![func.sig.unsafety.unwrap().span().byte_range(), func.block.span().byte_range()];
 
         apply_edits(&mut buffer, &edits);
 
@@ -91,9 +99,9 @@ mod tests {
             /// ```lean
             /// theorem foo : True := by trivial
             /// ```
-                   fn foo()  
+                   fn foo() {
                           
-             
+            }
         ";
         assert_eq!(std::str::from_utf8(&buffer).unwrap(), expected);
     }
