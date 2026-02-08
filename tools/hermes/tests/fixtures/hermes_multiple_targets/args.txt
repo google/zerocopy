@@ -1,0 +1,4 @@
+verify
+--lib
+--bin
+my_bin

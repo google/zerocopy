@@ -1,0 +1,7 @@
+  × fire
+   ╭─[[PROJECT_ROOT]/src/lib.rs:1:8]
+ 1 │ pub fn föö() {}
+   ·        ─┬─
+   ·         ╰── hot
+ 2 │ 
+   ╰────
