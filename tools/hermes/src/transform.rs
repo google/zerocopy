@@ -124,13 +124,17 @@ mod tests {
         crate::parse::scan_compilation_unit(source, |_src, res| items.push(res));
 
         // Find the unsafe function (should be the first item, as safe() is skipped)
-        let item = items.into_iter().find(|i| {
-            if let Ok(ParsedLeanItem { item: ParsedItem::Fn(f), .. }) = i {
-                f.sig.ident == "foo"
-            } else {
-                false
-            }
-        }).unwrap().unwrap();
+        let item = items
+            .into_iter()
+            .find(|i| {
+                if let Ok(ParsedLeanItem { item: ParsedItem::Fn(f), .. }) = i {
+                    f.sig.ident == "foo"
+                } else {
+                    false
+                }
+            })
+            .unwrap()
+            .unwrap();
 
         let mut edits = Vec::new();
         append_edits(&item, &mut edits);
@@ -160,7 +164,7 @@ mod tests {
 
         let line_with_unsafe = "            /*前*/       fn foo() {       ";
         let line_body = " ".repeat(30);
-        let line_end = format!("{}}}", " ".repeat(19)); 
+        let line_end = format!("{}}}", " ".repeat(19));
 
         let expected = format!(
             "\n            fn safe() {{}}\n            /// ```lean\n            /// ```\n{}\n{}\n{}\n        ",

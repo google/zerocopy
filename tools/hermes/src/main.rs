@@ -1,4 +1,5 @@
 mod charon;
+mod diagnostics;
 mod errors;
 mod parse;
 mod resolve;
