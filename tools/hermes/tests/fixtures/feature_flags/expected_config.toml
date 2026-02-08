@@ -1,0 +1,3 @@
+[[command]]
+args = ["--features", "extra"]
+should_not_exist = false
