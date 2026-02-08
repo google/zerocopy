@@ -30,8 +30,11 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         // Fail fast on errors
         cmd.arg("--abort-on-error");
 
-        // Start translation from specific entry points
-        cmd.arg("--start-from").arg(artifact.start_from.join(","));
+        // Start translation from specific entry points. Sort to ensure
+        // deterministic ordering for testing (not important in production).
+        let mut start_from = artifact.start_from.clone();
+        start_from.sort();
+        cmd.arg("--start-from").arg(start_from.join(","));
 
         // Separator for the underlying cargo command
         cmd.arg("--");

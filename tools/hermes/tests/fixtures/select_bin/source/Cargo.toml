@@ -1,0 +1,10 @@
+[package]
+name = "select_bin"
+version = "0.1.0"
+edition = "2021"
+# CRITICAL: Prevent Cargo from inferring a library target from src/lib.rs
+autolib = false
+
+[[bin]]
+name = "app"
+path = "src/main.rs"

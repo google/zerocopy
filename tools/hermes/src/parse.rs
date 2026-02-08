@@ -8,8 +8,8 @@ use log::{debug, trace};
 use miette::{NamedSource, SourceSpan};
 use proc_macro2::Span;
 use syn::{
-    spanned::Spanned as _, visit::Visit, Attribute, Error, Expr, ItemEnum, ItemFn, ItemImpl,
-    ItemMod, ItemStruct, ItemTrait, ItemUnion, Lit, Meta,
+    spanned::Spanned as _, visit::Visit, Attribute, Error, Expr, ImplItemFn, ItemEnum, ItemFn,
+    ItemImpl, ItemMod, ItemStruct, ItemTrait, ItemUnion, Lit, Meta,
 };
 
 use crate::errors::HermesError;
@@ -42,6 +42,7 @@ pub enum ParsedItem {
     Union(ItemUnion),
     Trait(ItemTrait),
     Impl(ItemImpl),
+    ImplItemFn(ImplItemFn),
 }
 
 impl ParsedItem {
@@ -52,6 +53,7 @@ impl ParsedItem {
             Self::Enum(item) => Some(item.ident.to_string()),
             Self::Union(item) => Some(item.ident.to_string()),
             Self::Trait(item) => Some(item.ident.to_string()),
+            Self::ImplItemFn(item) => Some(item.sig.ident.to_string()),
             Self::Impl(_) => None,
         }
     }
@@ -65,6 +67,7 @@ impl ParsedItem {
             Self::Union(item) => &item.attrs,
             Self::Trait(item) => &item.attrs,
             Self::Impl(item) => &item.attrs,
+            Self::ImplItemFn(item) => &item.attrs,
         }
     }
 }
@@ -226,6 +229,14 @@ where
     }
 }
 
+fn get_type_ident(ty: &syn::Type) -> Option<String> {
+    match ty {
+        syn::Type::Path(type_path) => Some(type_path.path.segments.last()?.ident.to_string()),
+        syn::Type::Reference(type_ref) => get_type_ident(&type_ref.elem),
+        _ => None,
+    }
+}
+
 impl<'ast, I, M> Visit<'ast> for HermesVisitor<I, M>
 where
     I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
@@ -275,15 +286,35 @@ where
     }
 
     fn visit_item_trait(&mut self, node: &'ast ItemTrait) {
-        trace!("Visiting Trait {}", node.ident);
+        let name = node.ident.to_string();
+        trace!("Visiting Trait {}", name);
         self.check_and_add(ParsedItem::Trait(node.clone()), node.span());
+
+        self.current_path.push(name);
         syn::visit::visit_item_trait(self, node);
+        self.current_path.pop();
     }
 
     fn visit_item_impl(&mut self, node: &'ast ItemImpl) {
         trace!("Visiting Impl");
         self.check_and_add(ParsedItem::Impl(node.clone()), node.span());
+
+        let type_name = get_type_ident(&node.self_ty);
+        if let Some(ref name) = type_name {
+            self.current_path.push(name.clone());
+        }
+
         syn::visit::visit_item_impl(self, node);
+
+        if type_name.is_some() {
+            self.current_path.pop();
+        }
+    }
+
+    fn visit_impl_item_fn(&mut self, node: &'ast ImplItemFn) {
+        trace!("Visiting ImplItemFn {}", node.sig.ident);
+        self.check_and_add(ParsedItem::ImplItemFn(node.clone()), node.span());
+        syn::visit::visit_impl_item_fn(self, node);
     }
 }
 
