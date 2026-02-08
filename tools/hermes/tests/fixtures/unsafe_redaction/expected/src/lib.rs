@@ -1,6 +1,6 @@
 /// ```lean
 /// model foo 
 /// ```
-       fn foo() -> i32  
+       fn foo() -> i32 {
          
- 
+}
