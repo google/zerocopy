@@ -1,4 +1,3 @@
 [[command]]
-# Expected: crate::<*constFooasT1>::m1, crate::<[Foo;5]asT3>::m3, crate::<[Foo]asT2>::m2
-args = ["--start-from", "crate::<*constFooasT1>::m1,crate::<[Foo;5]asT3>::m3,crate::<[Foo]asT2>::m2"]
+args = ["--start-from", "crate::< * const Foo as T1 >::m1,crate::< [Foo ; 5] as T3 >::m3,crate::< [Foo] as T2 >::m2"]
 should_not_exist = false
