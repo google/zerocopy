@@ -1,0 +1,17 @@
+[package]
+name = "strip-ansi-escapes"
+version = "0.2.1"
+authors = ["Ted Mielczarek <ted@mielczarek.org>"]
+license = "Apache-2.0/MIT"
+description = "Strip ANSI escape sequences from byte streams."
+homepage = "https://github.com/luser/strip-ansi-escapes"
+repository = "https://github.com/luser/strip-ansi-escapes"
+documentation = "https://docs.rs/strip-ansi-escapes"
+readme = "README.md"
+keywords = ["ansi", "escape", "terminal"]
+
+[dependencies]
+vte = { version = "0.14", default-features = false }
+
+[dev-dependencies]
+doc-comment = "0.3"

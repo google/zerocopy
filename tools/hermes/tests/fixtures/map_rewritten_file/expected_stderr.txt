@@ -1,0 +1,7 @@
+  × my test error
+   ╭─[[PROJECT_ROOT]/src/lib.rs:4:1]
+ 3 │ /// ```
+ 4 │ pub fn demo() {}
+   · ────────┬───────
+   ·         ╰── my span label
+   ╰────

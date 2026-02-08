@@ -23,6 +23,8 @@ syn = { version = "2.0.114", features = ["full", "visit", "extra-traits", "parsi
 quote = "1.0"
 thiserror = "2.0.18"
 walkdir = "2.5.0"
+indicatif = { version = "0.18.3", features = ["improved_unicode"] }
+console = "0.16.2"
 
 [dev-dependencies]
 syn = { version = "2.0.114", features = ["printing", "full", "visit", "extra-traits", "parsing"] }
@@ -35,6 +37,8 @@ datatest-stable = "0.3.3"
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
 which = "6.0"
+regex.workspace = true
+strip-ansi-escapes = "0.2.1"
 
 [[test]]
 name = "integration"
