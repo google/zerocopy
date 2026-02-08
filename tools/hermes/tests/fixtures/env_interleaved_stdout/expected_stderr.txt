@@ -1,0 +1,11 @@
+Line 1 from charon
+  × interleaved error
+   ╭─[[PROJECT_ROOT]/src/lib.rs:1:1]
+ 1 │ pub fn foo() {}
+   · ─────┬────
+   ·      ╰── label
+ 2 │ 
+   ╰────
+
+Line 2 from charon
+Error: Diagnostic error in charon
