@@ -48,18 +48,24 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let log_file = sandbox_root.join("charon_args.log");
     let shim_path = shim_dir.join("charon");
     let shim_content = format!(
-        "#!/bin/sh\n\
-# Log each argument on a new line\n\
-for arg in \"$@\"; do\n\
-    echo \"ARG:$arg\" >> \"{}\"\n\
-done\n\
-echo \"---END-INVOCATION---\" >> \"{}\"\n\
-\n\
-# Execute real charon\n\
-exec \"{}\" \"$@\"\n",
+        r#"#!/bin/sh
+# Log each argument on a new line
+for arg in "$@"; do
+    echo "ARG:$arg" >> "{0}"
+done
+echo "---END-INVOCATION---" >> "{0}"
+
+# If mock JSON is set, bypass charon and return mock payload to stdout
+if [ -n "$HERMES_MOCK_CHARON_JSON" ]; then
+    cat "$HERMES_MOCK_CHARON_JSON"
+    exit 101
+fi
+
+# Execute real charon
+exec "{1}" "$@"
+"#,
         log_file.display(),
-        log_file.display(),
-        real_charon.display()
+        real_charon.display(),
     );
 
     fs::write(&shim_path, shim_content)?;
@@ -69,6 +75,8 @@ exec \"{}\" \"$@\"\n",
     fs::set_permissions(&shim_path, perms)?;
 
     let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
+    cmd.env("HERMES_FORCE_TTY", "1");
+    cmd.env("FORCE_COLOR", "1");
 
     // Prepend shim_dir to PATH (make sure our shim comes first).
     let original_path = std::env::var_os("PATH").unwrap_or_default();
@@ -82,6 +90,31 @@ exec \"{}\" \"$@\"\n",
         // Forces deterministic output path: target/hermes/hermes_test_target
         // (normally, the path includes a hash of the crate's path).
         .env("HERMES_TEST_SHADOW_NAME", "hermes_test_target");
+
+    // Mock JSON integration
+    let mock_json_file = test_case_root.join("mock_charon_output.json");
+    if mock_json_file.exists() {
+        // Instead of writing the mock json to the shadow root (which gets cleared by build_shadow_crate), write it to the test workspace root!
+        let shadow_root =
+            sandbox_root.join("target").join("hermes").join("hermes_test_target").join("shadow");
+        // We still need the path for mapping `[SHADOW_ROOT]` correctly!
+        // But we construct it manually since it might not be created yet:
+        let abs_shadow_root = std::env::current_dir().unwrap().join(&shadow_root);
+        let abs_test_case_root =
+            test_case_root.canonicalize().unwrap_or_else(|_| test_case_root.to_path_buf());
+
+        let mock_src = fs::read_to_string(&mock_json_file).unwrap();
+        let processed_mock = mock_src
+            .replace("[PROJECT_ROOT]", sandbox_root.to_str().unwrap())
+            .replace("[SHADOW_ROOT]", abs_shadow_root.to_str().unwrap());
+
+        let processed_mock_file = sandbox_root.join("mock_charon_output.json");
+        fs::write(&processed_mock_file, &processed_mock).unwrap();
+
+        let abs_processed = std::env::current_dir().unwrap().join(&processed_mock_file);
+
+        cmd.env("HERMES_MOCK_CHARON_JSON", abs_processed);
+    }
 
     // Tests can specify the cwd to invoke from.
     let cwd_file = test_case_root.join("cwd.txt");
@@ -118,10 +151,33 @@ exec \"{}\" \"$@\"\n",
 
     // Tests can specify the expected stderr.
     let expected_stderr_file = test_case_root.join("expected_stderr.txt");
-    if expected_stderr_file.exists() {
+    let stderr_regex_path = test_case_root.join("expected_stderr.regex.txt");
+
+    if stderr_regex_path.exists() {
+        let expected_regex = fs::read_to_string(&stderr_regex_path)?;
+        let output = assert.get_output();
+        let actual_stderr = String::from_utf8_lossy(&output.stderr);
+        let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
+        let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
+        let replace_path = sandbox_root.to_str().unwrap();
+        let stderr = actual_str.replace(replace_path, "[PROJECT_ROOT]");
+
+        let rx = regex::Regex::new(expected_regex.trim()).unwrap();
+        if !rx.is_match(&stderr) {
+            panic!(
+                "Stderr regex mismatch.\nExpected regex: {}\nActual stderr:\n{}",
+                expected_regex, stderr
+            );
+        }
+    } else if expected_stderr_file.exists() {
         let needle = fs::read_to_string(expected_stderr_file)?;
         let output = assert.get_output();
-        let stderr = std::str::from_utf8(&output.stderr).unwrap();
+        let actual_stderr = String::from_utf8_lossy(&output.stderr);
+        let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
+        let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
+        let replace_path = sandbox_root.to_str().unwrap();
+        let stderr = actual_str.replace(replace_path, "[PROJECT_ROOT]");
+
         if !stderr.contains(needle.trim()) {
             panic!(
                 "Stderr mismatch.\nExpected substring: {}\nActual stderr:\n{}",
