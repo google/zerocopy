@@ -1,0 +1,11 @@
+# We expect the selected package to be analyzed
+[[artifact]]
+package = "app"
+target = "app"
+should_exist = true
+
+# We expect the dependency to be present in the build but NOT analyzed
+[[artifact]]
+package = "dep"
+target = "dep"
+should_exist = false

@@ -1,0 +1,4 @@
+[[command]]
+# We assert that the path includes the Type Name "Foo"
+args = ["--start-from", "crate::Foo::bar"]
+should_not_exist = false

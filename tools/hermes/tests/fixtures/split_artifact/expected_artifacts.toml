@@ -1,0 +1,9 @@
+[[artifact]]
+package = "split"
+target = "split" # The lib
+should_exist = true
+
+[[artifact]]
+package = "split"
+target = "run" # The bin
+should_exist = true
