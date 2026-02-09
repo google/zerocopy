@@ -75,6 +75,8 @@ exec "{1}" "$@"
     fs::set_permissions(&shim_path, perms)?;
 
     let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
+    cmd.env("HERMES_FORCE_TTY", "1");
+    cmd.env("FORCE_COLOR", "1");
 
     // Prepend shim_dir to PATH (make sure our shim comes first).
     let original_path = std::env::var_os("PATH").unwrap_or_default();
@@ -149,20 +151,36 @@ exec "{1}" "$@"
 
     // Tests can specify the expected stderr.
     let expected_stderr_file = test_case_root.join("expected_stderr.txt");
-    if expected_stderr_file.exists() {
+    let stderr_regex_path = test_case_root.join("expected_stderr.regex.txt");
+
+    if stderr_regex_path.exists() {
+        let expected_regex = fs::read_to_string(&stderr_regex_path)?;
+        let output = assert.get_output();
+        let actual_stderr = String::from_utf8_lossy(&output.stderr);
+        let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
+        let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
+        let replace_path = sandbox_root.to_str().unwrap();
+        let stderr = actual_str.replace(replace_path, "[PROJECT_ROOT]");
+
+        let rx = regex::Regex::new(expected_regex.trim()).unwrap();
+        if !rx.is_match(&stderr) {
+            panic!(
+                "Stderr regex mismatch.\nExpected regex: {}\nActual stderr:\n{}",
+                expected_regex, stderr
+            );
+        }
+    } else if expected_stderr_file.exists() {
         let needle = fs::read_to_string(expected_stderr_file)?;
         let output = assert.get_output();
-        let raw_stderr = std::str::from_utf8(&output.stderr).unwrap();
-        // Replace absolute sandbox path with [PROJECT_ROOT] for deterministic output checking
+        let actual_stderr = String::from_utf8_lossy(&output.stderr);
+        let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
+        let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
         let replace_path = sandbox_root.to_str().unwrap();
-        let stderr = raw_stderr.replace(replace_path, "[PROJECT_ROOT]");
+        let stderr = actual_str.replace(replace_path, "[PROJECT_ROOT]");
 
         if !stderr.contains(needle.trim()) {
             panic!(
-                "Stderr mismatch.
-Expected substring: {}
-Actual stderr:
-{}",
+                "Stderr mismatch.\nExpected substring: {}\nActual stderr:\n{}",
                 needle.trim(),
                 stderr
             );
