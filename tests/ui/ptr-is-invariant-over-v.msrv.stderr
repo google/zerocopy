@@ -1,19 +1,19 @@
 error[E0623]: lifetime mismatch
-  --> $DIR/ptr-is-invariant-over-v.rs:19:14
+  --> $DIR/ptr-is-invariant-over-v.rs:21:14
    |
-16 |     big: Ptr<'small, &'big u32, (Exclusive, Aligned, Valid)>,
+18 |     big: Ptr<'small, &'big u32, (Exclusive, Aligned, Valid)>,
    |          --------------------------------------------------- these two types are declared with different lifetimes...
 ...
-19 |     _small = big;
+21 |     _small = big;
    |              ^^^ ...but data from `big` flows into `big` here
 
 error[E0623]: lifetime mismatch
-  --> $DIR/ptr-is-invariant-over-v.rs:28:14
+  --> $DIR/ptr-is-invariant-over-v.rs:30:14
    |
-25 |     big: Ptr<'small, &'big u32, (Shared, Aligned, Valid)>,
+27 |     big: Ptr<'small, &'big u32, (Shared, Aligned, Valid)>,
    |          ------------------------------------------------ these two types are declared with different lifetimes...
 ...
-28 |     _small = big;
+30 |     _small = big;
    |              ^^^ ...but data from `big` flows into `big` here
 
 error: aborting due to 2 previous errors
