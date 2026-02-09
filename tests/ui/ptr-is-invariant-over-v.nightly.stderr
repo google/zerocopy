@@ -1,12 +1,12 @@
 error: lifetime may not live long enough
-  --> $DIR/ptr-is-invariant-over-v.rs:19:5
+  --> $DIR/ptr-is-invariant-over-v.rs:21:5
    |
-15 | fn _when_exclusive<'big: 'small, 'small>(
+17 | fn _when_exclusive<'big: 'small, 'small>(
    |                    ----          ------ lifetime `'small` defined here
    |                    |
    |                    lifetime `'big` defined here
 ...
-19 |     _small = big;
+21 |     _small = big;
    |     ^^^^^^^^^^^^ assignment requires that `'small` must outlive `'big`
    |
    = help: consider adding the following bound: `'small: 'big`
@@ -15,14 +15,14 @@ error: lifetime may not live long enough
    = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
 
 error: lifetime may not live long enough
-  --> $DIR/ptr-is-invariant-over-v.rs:28:5
+  --> $DIR/ptr-is-invariant-over-v.rs:30:5
    |
-24 | fn _when_shared<'big: 'small, 'small>(
+26 | fn _when_shared<'big: 'small, 'small>(
    |                 ----          ------ lifetime `'small` defined here
    |                 |
    |                 lifetime `'big` defined here
 ...
-28 |     _small = big;
+30 |     _small = big;
    |     ^^^^^^^^^^^^ assignment requires that `'small` must outlive `'big`
    |
    = help: consider adding the following bound: `'small: 'big`

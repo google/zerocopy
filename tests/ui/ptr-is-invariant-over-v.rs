@@ -7,6 +7,8 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+include!("../include.rs");
+
 use zerocopy::pointer::{
     invariant::{Aligned, Exclusive, Shared, Valid},
     Ptr,
