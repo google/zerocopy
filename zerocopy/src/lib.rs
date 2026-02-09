@@ -1913,6 +1913,10 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized;
 
+    /// The validity of `Self` in an uninitialized state.
+    #[doc(hidden)]
+    type Uninit;
+
     /// Does a given memory range contain a valid instance of `Self`?
     ///
     /// # Safety

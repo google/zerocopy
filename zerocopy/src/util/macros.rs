@@ -22,13 +22,13 @@
 ///   return `true` if its argument refers to a valid `$ty`.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
-    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident| $is_safe:expr)?) => {{
+    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; type Uninit = $uninit_state:ty; |$candidate:ident| $is_safe:expr)?) => {{
         crate::util::macros::__unsafe();
 
         $(#[$attr])*
         // SAFETY: The caller promises that this is sound.
         unsafe impl $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate| $is_safe)?);
+            unsafe_impl!(@method $trait $(; type Uninit = $uninit_state; |$candidate| $is_safe)?);
         }
     }};
 
@@ -91,26 +91,26 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         const $constname:ident : $constty:ident $(,)?
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_safe:expr)?
+        => $trait:ident for $ty:ty $(; type Uninit = $uninit_state:ty; |$candidate:ident| $is_safe:expr)?
     ) => {
         unsafe_impl!(
             @inner
             $(#[$attr])*
             @const $constname: $constty,
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty $(; |$candidate| $is_safe)?
+            => $trait for $ty $(; type Uninit = $uninit_state; |$candidate| $is_safe)?
         );
     };
     (
         $(#[$attr:meta])*
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_safe:expr)?
+        => $trait:ident for $ty:ty $(; type Uninit = $uninit_state:ty; |$candidate:ident| $is_safe:expr)?
     ) => {{
         unsafe_impl!(
             @inner
             $(#[$attr])*
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty $(; |$candidate| $is_safe)?
+            => $trait for $ty $(; type Uninit = $uninit_state; |$candidate| $is_safe)?
         );
     }};
     (
@@ -118,7 +118,7 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         $(@const $constname:ident : $constty:ident,)*
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
-        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_safe:expr)?
+        => $trait:ident for $ty:ty $(; type Uninit = $uninit_state:ty; |$candidate:ident| $is_safe:expr)?
     ) => {{
         crate::util::macros::__unsafe();
 
@@ -126,14 +126,16 @@ macro_rules! unsafe_impl {
         #[allow(non_local_definitions)]
         // SAFETY: The caller promises that this is sound.
         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate| $is_safe)?);
+            unsafe_impl!(@method $trait $(; type Uninit = $uninit_state; |$candidate| $is_safe)?);
         }
     }};
 
-    (@method TryFromBytes ; |$candidate:ident| $is_safe:expr) => {
+    (@method TryFromBytes ; type Uninit = $uninit_state:ty; |$candidate:ident| $is_safe:expr) => {
         #[allow(clippy::missing_inline_in_public_items, dead_code)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
+
+        type Uninit = $uninit_state;
 
         #[inline]
         fn is_safe<Alignment>($candidate: Maybe<'_, Self, Alignment>) -> bool
@@ -147,6 +149,10 @@ macro_rules! unsafe_impl {
         #[allow(clippy::missing_inline_in_public_items)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
+
+        // FIXME(#2749): Justify this `Uninit`.
+        type Uninit = crate::invariant::Uninit;
+
         #[inline(always)]
         fn is_safe<Alignment>(_candidate: Maybe<'_, Self, Alignment>) -> bool
         where
@@ -233,6 +239,9 @@ macro_rules! impl_for_transmute_from {
         $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
         TryFromBytes for $ty:ty [$repr:ty]
     ) => {
+        // FIXME(#2749): Justify this `Uninit`.
+        type Uninit = crate::invariant::Uninit;
+
         #[inline(always)]
         fn is_safe<Alignment>(candidate: $crate::Maybe<'_, Self, Alignment>) -> bool
         where
@@ -274,33 +283,33 @@ macro_rules! impl_for_transmute_from {
 macro_rules! unsafe_impl_for_power_set {
     (
         $first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident| $is_safe:expr)?
+        $(; type Uninit = $uninit_state:ty; |$candidate:ident| $is_safe:expr)?
     ) => {
         unsafe_impl_for_power_set!(
             $($rest),* $(-> $ret)? => $trait for $macro!(...)
-            $(; |$candidate| $is_safe)?
+            $(; type Uninit = $uninit_state; |$candidate| $is_safe)?
         );
         unsafe_impl_for_power_set!(
             @impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...)
-            $(; |$candidate| $is_safe)?
+            $(; type Uninit = $uninit_state; |$candidate| $is_safe)?
         );
     };
     (
         $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident| $is_safe:expr)?
+        $(; type Uninit = $uninit_state:ty; |$candidate:ident| $is_safe:expr)?
     ) => {
         unsafe_impl_for_power_set!(
             @impl $(-> $ret)? => $trait for $macro!(...)
-            $(; |$candidate| $is_safe)?
+            $(; type Uninit = $uninit_state; |$candidate| $is_safe)?
         );
     };
     (
         @impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident| $is_safe:expr)?
+        $(; type Uninit = $uninit_state:ty; |$candidate:ident| $is_safe:expr)?
     ) => {
         unsafe_impl!(
             $($vars,)* $($ret)? => $trait for $macro!($($vars),* $(-> $ret)?)
-            $(; |$candidate| $is_safe)?
+            $(; type Uninit = $uninit_state; |$candidate| $is_safe)?
         );
     };
 }
@@ -401,11 +410,11 @@ macro_rules! impl_or_verify {
     };
     (
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_safe:expr)?
+        => $trait:ident for $ty:ty $(; type Uninit = $uninit_state:ty; |$candidate:ident| $is_safe:expr)?
     ) => {
         impl_or_verify!(@impl { unsafe_impl!(
             $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
-            $(; |$candidate| $is_safe)?
+            $(; type Uninit = $uninit_state; |$candidate| $is_safe)?
         ); });
         impl_or_verify!(@verify $trait, {
             impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> Subtrait for $ty {}
