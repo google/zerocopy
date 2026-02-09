@@ -149,6 +149,8 @@ const _: () = unsafe {
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     unsafe_impl!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
+        // FIXME(#2749): Justify this `Uninit`.
+        type Uninit = crate::invariant::Uninit;
         |c| T::is_safe(c.transmute::<_, _, BecauseImmutable>())
     );
     unsafe_impl!(T: FromZeros => FromZeros for Unalign<T>);
@@ -780,6 +782,8 @@ const _: () = unsafe {
     unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ReadOnly<T>);
     unsafe_impl!(
         T: ?Sized + TryFromBytes => TryFromBytes for ReadOnly<T>;
+        // FIXME(#2749): Justify this `Uninit`.
+        type Uninit = crate::invariant::Uninit;
         |c| T::is_safe(c.cast::<_, <ReadOnly<T> as SizeEq<ReadOnly<ReadOnly<T>>>>::CastFrom, _>())
     );
     unsafe_impl!(T: ?Sized + FromZeros => FromZeros for ReadOnly<T>);
