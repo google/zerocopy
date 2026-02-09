@@ -20,3 +20,4 @@ struct Dst;
 
 // `transmute_mut` requires that the source type implements `FromBytes`
 const SRC_NOT_FROM_BYTES: &mut Dst = transmute_mut!(&mut Src);
+//~[msrv, stable, nightly]^ ERROR: the trait bound `Src: FromBytes` is not satisfied

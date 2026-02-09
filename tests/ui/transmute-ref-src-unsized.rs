@@ -12,3 +12,5 @@ fn main() {}
 
 // `transmute_ref!` does not support transmuting from an unsized source type.
 const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
+//~[msrv, stable]^ ERROR: the method `transmute_ref` exists for struct `Wrap<&[u8], &[u8; 1]>`, but its trait bounds were not satisfied
+//~[nightly]^^ ERROR: the method `transmute_ref` exists for struct `zerocopy::util::macro_util::Wrap<&[u8], &[u8; 1]>`, but its trait bounds were not satisfied

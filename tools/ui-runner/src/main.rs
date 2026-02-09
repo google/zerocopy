@@ -13,6 +13,7 @@ use std::{
 };
 
 use ui_test::{
+    spanned::Spanned,
     status_emitter::{RevisionStyle, StatusEmitter, Summary, TestStatus},
     test_result::TestResult,
     Config,
@@ -67,9 +68,45 @@ fn main() {
         config.output_conflict_handling = ui_test::bless_output_files;
     }
 
-    use ui_test::spanned::Spanned;
-    config.comment_start = "//@ui_test";
-    config.comment_defaults.base().require_annotations = Spanned::dummy(false).into();
+    config.comment_defaults.base().require_annotations = Spanned::dummy(true).into();
+    config.comment_defaults.revisions =
+        Some(vec!["msrv".to_string(), "stable".to_string(), "nightly".to_string()]);
+
+    #[derive(Debug, Clone)]
+    struct IgnoreRevision;
+
+    impl ui_test::custom_flags::Flag for IgnoreRevision {
+        fn clone_inner(&self) -> Box<dyn ui_test::custom_flags::Flag> {
+            Box::new(self.clone())
+        }
+        fn test_condition(
+            &self,
+            _config: &ui_test::Config,
+            _comments: &ui_test::Comments,
+            _revision: &str,
+        ) -> bool {
+            true
+        }
+        fn must_be_unique(&self) -> bool {
+            false
+        }
+    }
+
+    // By default, ui_test runs every revision listed in
+    // `Config::comment_defaults.revisions`. We have to set that equal to all
+    // three revisions, or else ui_test will treat the unrecognized revisions
+    // as errors when it encounters them in annotations. But we also only want
+    // it to run the specific revision (ie, toolchain) we've requested. To work
+    // around this, we specifically instruct it to ignore all revisions other
+    // than the one we're actually running.
+    for rev in &["msrv", "stable", "nightly"] {
+        if rev != &toolchain_meta_name {
+            let revisioned =
+                config.comment_defaults.revisioned.entry(vec![rev.to_string()]).or_default();
+            revisioned.add_custom("ignore-revision", IgnoreRevision);
+        }
+    }
+
     config.comment_defaults.base().exit_status = Spanned::dummy(1).into();
     config.comment_defaults.base().custom.remove("rustfix");
 

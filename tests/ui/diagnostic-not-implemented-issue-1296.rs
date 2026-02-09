@@ -48,6 +48,8 @@ fn main() {
     // that we can capture the current behavior, but we will update it once that
     // Rust issue is fixed.
     Foo.write_obj(NotZerocopy(()));
+    //~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy: Immutable` is not satisfied
+    //~[msrv, stable, nightly]^^ ERROR: the trait bound `NotZerocopy: IntoBytes` is not satisfied
 }
 
 struct Foo;

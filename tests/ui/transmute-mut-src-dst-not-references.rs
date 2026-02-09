@@ -13,3 +13,4 @@ fn main() {}
 // `transmute_mut!` does not support transmuting between non-reference source
 // and destination types.
 const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(0usize);
+//~[msrv, stable, nightly]^ ERROR: mismatched types

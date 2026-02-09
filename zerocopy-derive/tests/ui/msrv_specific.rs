@@ -35,5 +35,6 @@ struct IntoBytes1<T> {
 fn is_into_bytes_1<T: IntoBytes>() {
     if false {
         is_into_bytes_1::<IntoBytes1<AU16>>();
+        //~[msrv, stable, nightly]^ ERROR: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
     }
 }

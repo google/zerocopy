@@ -19,4 +19,7 @@ struct Dst;
 fn main() {
     // `try_transmute_mut` requires that the source type implements `IntoBytes`
     let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
+    //~[msrv, stable, nightly]^ ERROR: the trait bound `Src: IntoBytes` is not satisfied
+    //~[msrv, stable, nightly]^^ ERROR: the trait bound `Dst: FromBytes` is not satisfied
+    //~[msrv, stable, nightly]^^^ ERROR: the trait bound `Dst: IntoBytes` is not satisfied
 }
