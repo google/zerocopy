@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+include!("../include.rs");
+
 #[repr(C, align(1))]
 struct Align1;
 
