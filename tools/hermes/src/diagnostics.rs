@@ -90,7 +90,10 @@ impl DiagnosticMapper {
         }
     }
 
-    pub fn render_miette(&mut self, diag: &Diagnostic) {
+    pub fn render_miette<F>(&mut self, diag: &Diagnostic, mut printer: F)
+    where
+        F: FnMut(String),
+    {
         let mut mapped_paths_and_spans: HashMap<PathBuf, Vec<&DiagnosticSpan>> = HashMap::new();
 
         // 1) Group spans by mapped path
@@ -160,7 +163,7 @@ impl DiagnosticMapper {
                 if !all_errors.is_empty() {
                     let mut main_err = all_errors.remove(0);
                     main_err.related = all_errors;
-                    eprintln!("{:?}", Report::new(main_err));
+                    printer(format!("{:?}", Report::new(main_err)));
                     return;
                 }
             }
@@ -172,6 +175,6 @@ impl DiagnosticMapper {
             DiagnosticLevel::Warning => "[External Warning]",
             _ => "[External Info]",
         };
-        eprintln!("{} {}", prefix, diag.message);
+        printer(format!("{} {}", prefix, diag.message));
     }
 }

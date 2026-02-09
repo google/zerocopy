@@ -82,9 +82,34 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         log::debug!("Command: {:?}", cmd);
 
         cmd.stdout(std::process::Stdio::piped());
+        cmd.stderr(std::process::Stdio::piped());
         let mut child = cmd.spawn().context("Failed to spawn charon")?;
 
         let mut output_error = false;
+
+        let safety_buffer = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+        let safety_buffer_clone = std::sync::Arc::clone(&safety_buffer);
+        if let Some(stderr) = child.stderr.take() {
+            std::thread::spawn(move || {
+                use std::io::{BufRead, BufReader};
+                let reader = BufReader::new(stderr);
+                for line in reader.lines() {
+                    if let Ok(line) = line {
+                        if let Ok(mut buf) = safety_buffer_clone.lock() {
+                            buf.push(line);
+                        }
+                    }
+                }
+            });
+        }
+
+        let pb = indicatif::ProgressBar::new_spinner();
+        pb.set_style(
+            indicatif::ProgressStyle::default_spinner().template("{spinner:.green} {msg}").unwrap(),
+        );
+        pb.enable_steady_tick(std::time::Duration::from_millis(100));
+        pb.set_message("Compiling...");
+
         if let Some(stdout) = child.stdout.take() {
             use std::io::{BufRead, BufReader};
             let reader = BufReader::new(stdout);
@@ -105,8 +130,13 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
                     if let Ok(msg) = serde_json::from_str::<cargo_metadata::Message>(&line) {
                         use cargo_metadata::Message;
                         match msg {
+                            Message::CompilerArtifact(a) => {
+                                pb.set_message(format!("Compiling {}", a.target.name));
+                            }
                             Message::CompilerMessage(msg) => {
-                                mapper.render_miette(&msg.message);
+                                pb.suspend(|| {
+                                    mapper.render_miette(&msg.message, |s| eprintln!("{}", s));
+                                });
                                 if matches!(
                                     msg.message.level,
                                     DiagnosticLevel::Error | DiagnosticLevel::Ice
@@ -115,23 +145,34 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
                                 }
                             }
                             Message::TextLine(t) => {
-                                eprintln!("{}", t);
+                                if let Ok(mut buf) = safety_buffer.lock() {
+                                    buf.push(t);
+                                }
                             }
                             _ => {}
                         }
                     } else {
-                        // Print non-JSON lines to stderr
-                        eprintln!("{}", line);
+                        if let Ok(mut buf) = safety_buffer.lock() {
+                            buf.push(line);
+                        }
                     }
                 }
             }
         }
+
+        pb.finish_and_clear();
 
         let status = child.wait().context("Failed to wait for charon")?;
 
         if output_error {
             bail!("Diagnostic error in charon");
         } else if !status.success() {
+            // "Silent Death" dump
+            if let Ok(buf) = safety_buffer.lock() {
+                for line in buf.iter() {
+                    eprintln!("{}", line);
+                }
+            }
             bail!("Charon failed with status: {}", status);
         }
     }
