@@ -237,7 +237,21 @@ fn derive_try_from_bytes_struct(
     strct: &DataStruct,
     top_level: Trait,
 ) -> Result<TokenStream, Error> {
-    let extras = if let Some(extras) = try_gen_trivial_is_safe(ctx, top_level) {
+    let uninit = {
+        let tfb = Trait::TryFromBytes.crate_path(ctx);
+        let fields = strct.fields.iter().map(|field| {
+            let ty = &field.ty;
+            quote!(<#ty as #tfb>::Uninit)
+        });
+        quote! {
+            // SAFETY: TODO
+            // FIXME(#2749): For zero-field structs, could this just be `Safe`?
+            // For single-field structs, could this not be wrapped in a tuple?
+            type Uninit = (#(#fields,)*);
+        }
+    };
+
+    let is_safe = if let Some(extras) = try_gen_trivial_is_safe(ctx, top_level) {
         extras
     } else {
         let zerocopy_crate = &ctx.zerocopy_crate;
@@ -263,7 +277,10 @@ fn derive_try_from_bytes_struct(
         )
     };
     Ok(ImplBlockBuilder::new(ctx, strct, Trait::TryFromBytes, FieldBounds::ALL_SELF)
-        .inner_extras(extras)
+        .inner_extras(quote! {
+            #uninit
+            #is_safe
+        })
         .outer_extras(derive_projection_struct_union(ctx, strct, Client::TryFromBytesDerive))
         .build())
 }
