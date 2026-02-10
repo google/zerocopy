@@ -20,7 +20,6 @@ echo "Running pre-push git hook: $0"
 ./ci/check_job_dependencies.sh      >/dev/null & JOB_DEPS_PID=$!
 ./ci/check_readme.sh                >/dev/null & README_PID=$!
 ./ci/check_stale_stderr.sh          >/dev/null & STALE_STDERR_PID=$!
-./ci/check_todo.sh                  >/dev/null & XODO_PID=$!
 ./ci/check_versions.sh              >/dev/null & VERSIONS_PID=$!
 ./ci/check_msrv_is_minimal.sh       >/dev/null & MSRV_PID=$!
 
@@ -36,7 +35,6 @@ wait $TOOLCHAINS_PID
 wait $JOB_DEPS_PID
 wait $README_PID
 wait $STALE_STDERR_PID
-wait $XODO_PID
 wait $VERSIONS_PID
 wait $MSRV_PID
 
@@ -48,8 +46,10 @@ wait $MSRV_PID
 #
 # This was added because, in #728, we added `ci/check_all_toolchains_tested.sh`
 # without calling it from this script.
-GLOBIGNORE="./*/release_crate_version.sh" # We don't want to run this one
+shopt -s extglob
+GLOBIGNORE="./*/@(release_crate_version|check_todo).sh" # We don't want to run these
 for f in ./ci/*; do
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done
 unset GLOBIGNORE
+shopt -u extglob
