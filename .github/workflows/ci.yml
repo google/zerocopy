@@ -468,16 +468,64 @@ jobs:
 
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
-        for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
-          MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +$TOOLCHAIN \
+
+        # We run these in the background to allow them to run in parallel.
+        #
+        # We need to manually set `CARGO_TARGET_DIR` for each job to avoid
+        # conflicts since they will be running at the same time.
+        BASE_TARGET_DIR="target/by-toolchain/${TOOLCHAIN}/miri"
+
+        (
+          MIRIFLAGS="$MIRIFLAGS" \
+          CARGO_TARGET_DIR="${BASE_TARGET_DIR}-stacked" \
+          ./cargo.sh +$TOOLCHAIN \
             miri nextest run \
             --test-threads "$THREADS" \
             --package $CRATE \
             --target $TARGET \
-            $FEATURES
-        done
+            $FEATURES \
+          > miri-stacked.log 2>&1
+        ) &
+        PID_STACKED=$!
+
+        (
+          MIRIFLAGS="$MIRIFLAGS -Zmiri-tree-borrows" \
+          CARGO_TARGET_DIR="${BASE_TARGET_DIR}-tree" \
+          ./cargo.sh +$TOOLCHAIN \
+            miri nextest run \
+            --test-threads "$THREADS" \
+            --package $CRATE \
+            --target $TARGET \
+            $FEATURES \
+          > miri-tree.log 2>&1
+        ) &
+        PID_TREE=$!
+
+        # Wait for both jobs to finish.
+        # We turn off `set -e` so that `wait` doesn't cause the script to exit
+        # if one of the jobs fails.
+        set +e
+        wait $PID_STACKED
+        CODE_STACKED=$?
+        wait $PID_TREE
+        CODE_TREE=$?
+        set -e
+
+        echo "Output from Stacked Borrows Miri tests:"
+        cat miri-stacked.log
+        echo "Output from Tree Borrows Miri tests:"
+        cat miri-tree.log
 
         mv .cargo/config.toml.bak .cargo/config.toml
+
+        if [ $CODE_STACKED -ne 0 ]; then
+          echo "Stacked Borrows Miri tests failed with exit code $CODE_STACKED"
+          exit $CODE_STACKED
+        fi
+        if [ $CODE_TREE -ne 0 ]; then
+          echo "Tree Borrows Miri tests failed with exit code $CODE_TREE"
+          exit $CODE_TREE
+        fi
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
