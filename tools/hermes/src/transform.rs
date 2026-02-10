@@ -105,4 +105,70 @@ mod tests {
         ";
         assert_eq!(std::str::from_utf8(&buffer).unwrap(), expected);
     }
+
+    #[test]
+    fn test_apply_edits_multibyte_utf8() {
+        // Source contains multi-byte characters:
+        // - Immediately preceding `unsafe`: `/*前*/`
+        // - Immediately following `{`: `/*后*/`
+        // - Immediately before `}`: `/*前*/`
+        let source = "
+            fn safe() {}
+            /// ```lean
+            /// ```
+            /*前*/unsafe fn foo() {/*后*/
+                let x = '中';
+            /*前*/}
+        ";
+        let mut items = Vec::new();
+        crate::parse::scan_compilation_unit(source, |_src, res| items.push(res));
+
+        // Find the unsafe function (should be the first item, as safe() is skipped)
+        let item = items.into_iter().find(|i| {
+            if let Ok(ParsedLeanItem { item: ParsedItem::Fn(f), .. }) = i {
+                f.sig.ident == "foo"
+            } else {
+                false
+            }
+        }).unwrap().unwrap();
+
+        let mut edits = Vec::new();
+        append_edits(&item, &mut edits);
+
+        let mut buffer = source.as_bytes().to_vec();
+        apply_edits(&mut buffer, &edits);
+
+        // Expected whitespace lengths:
+        // Line 1: `            /*前*/unsafe fn foo() {/*后*/`
+        // - Indent: 12 spaces
+        // - `/*前*/`: 7 bytes (preserved)
+        // - `unsafe`: 6 bytes -> 6 spaces
+        // - ` fn foo() {`: 9 bytes (preserved)
+        // - `/*后*/`: 7 bytes -> 7 spaces
+        //
+        // Line 2: `                let x = '中';`
+        // - Indent: 16 spaces -> 16 spaces
+        // - `let x = '中';`: 14 bytes -> 14 spaces
+        //   `let` (3) + ` ` (1) + `x` (1) + ` ` (1) + `=` (1) + ` ` (1) + `'` (1) + `中` (3) + `'` (1) + `;` (1) = 14
+        //   Total: 30 spaces
+        //
+        // Line 3: `            /*前*/}`
+        // - Indent 12 spaces -> 12 spaces
+        // - `/*前*/`: 7 bytes -> 7 spaces
+        // - `}`: 1 byte (preserved)
+        //   Total: 19 spaces + `}`
+
+        let line_with_unsafe = "            /*前*/       fn foo() {       ";
+        let line_body = " ".repeat(30);
+        let line_end = format!("{}}}", " ".repeat(19)); 
+
+        let expected = format!(
+            "\n            fn safe() {{}}\n            /// ```lean\n            /// ```\n{}\n{}\n{}\n        ",
+            line_with_unsafe,
+            line_body,
+            line_end
+        );
+
+        assert_eq!(std::str::from_utf8(&buffer).unwrap(), expected);
+    }
 }
