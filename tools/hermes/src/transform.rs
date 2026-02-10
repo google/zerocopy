@@ -44,7 +44,7 @@ pub fn append_edits(item: &ParsedLeanItem, edits: &mut Vec<Range<usize>>) {
 pub fn apply_edits(buffer: &mut [u8], edits: &[Range<usize>]) {
     for range in edits {
         for byte in &mut buffer[range.clone()] {
-            if *byte != b'\n' && *byte != b'\r' {
+            if !matches!(*byte, b'\n' | b'\r') {
                 *byte = b' ';
             }
         }
