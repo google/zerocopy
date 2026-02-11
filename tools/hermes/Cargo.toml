@@ -1,0 +1,18 @@
+[package]
+name = "hermes"
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+log = "0.4.29"
+miette = { version = "7.6.0", features = ["derive", "fancy"] }
+proc-macro2 = { version = "1.0.105", features = ["span-locations"] }
+syn = { version = "2.0.114", features = ["full", "visit", "extra-traits", "parsing"] }
+thiserror = "2.0.18"
+
+[dev-dependencies]
+syn = { version = "2.0.114", features = ["printing", "full", "visit", "extra-traits", "parsing"] }
+proc-macro2 = { version = "1.0.105", features = ["span-locations"] }
