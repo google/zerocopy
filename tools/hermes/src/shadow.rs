@@ -17,6 +17,7 @@ pub fn create_shadow_skeleton(
     target_dir: &Path,
     skip_paths: &HashSet<PathBuf>,
 ) -> Result<()> {
+    // TODO: Can't do this here – need to do it before we start parsing/transforming/copying.
     if dest_root.exists() {
         std::fs::remove_dir_all(&dest_root)?;
     }
