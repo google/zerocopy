@@ -1,4 +1,4 @@
-use std::{env, fs, path::PathBuf, process::exit};
+use std::{env, path::PathBuf, process::exit};
 
 use miette::Diagnostic as _;
 use serde::Serialize;
@@ -34,15 +34,15 @@ pub fn run() {
         });
 
     // Run logic with JSON emitter
-    let source = fs::read_to_string(&file_path).unwrap_or_default();
     let mut has_errors = false;
 
-    parse::visit_hermes_items_in_file(&file_path, &source, |res| {
+    parse::read_file_and_visit_hermes_items(&file_path, |source, res| {
         if let Err(e) = res {
             has_errors = true;
             emit_rustc_json(&e, &source, file_path.to_str().unwrap());
         }
-    });
+    })
+    .unwrap();
 
     if has_errors {
         exit(1);
