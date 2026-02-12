@@ -188,15 +188,28 @@ fn process_file_recursive<'a>(
                 let mut full_path = current_prefix.clone();
                 full_path.extend(item.module_path);
 
-                use parse::ParsedItem::*;
                 match &item.item {
                     // Unreliable syntaxes: we have no way of reliably naming
                     // these in Charon's `--start-from` argument, so we fall
                     // back to naming the parent module.
-                    Impl(_) | ImplItemFn(_) | TraitItemFn(_) => {
+                    parse::ParsedItem::Impl(_) => {
                         let start_from = full_path.join("::");
                         path_tx.send((name.clone(), start_from)).unwrap();
                     }
+                    parse::ParsedItem::Function(f) => match &f.item {
+                        parse::FunctionItem::Impl(_) | parse::FunctionItem::Trait(_) => {
+                            let start_from = full_path.join("::");
+                            path_tx.send((name.clone(), start_from)).unwrap();
+                        }
+                        parse::FunctionItem::Free(_) => {
+                            if let Some(item_name) = item.item.name() {
+                                full_path.push(item_name);
+                                let start_from = full_path.join("::");
+                                log::debug!("Found entry point: {}", start_from);
+                                path_tx.send((name.clone(), start_from)).unwrap();
+                            }
+                        }
+                    },
                     // Reliable syntaxes: target the specific item.
                     _ => {
                         if let Some(item_name) = item.item.name() {
