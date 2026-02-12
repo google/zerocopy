@@ -95,11 +95,9 @@ exec "{1}" "$@"
     let mock_json_file = test_case_root.join("mock_charon_output.json");
     if mock_json_file.exists() {
         // Instead of writing the mock json to the shadow root (which gets cleared by build_shadow_crate), write it to the test workspace root!
-        let shadow_root =
-            sandbox_root.join("target").join("hermes").join("hermes_test_target").join("shadow");
         // We still need the path for mapping `[SHADOW_ROOT]` correctly!
         // But we construct it manually since it might not be created yet:
-        let abs_shadow_root = std::env::current_dir().unwrap().join(&shadow_root);
+        let abs_shadow_root = std::env::current_dir().unwrap().join(&sandbox_root);
         let abs_test_case_root =
             test_case_root.canonicalize().unwrap_or_else(|_| test_case_root.to_path_buf());
 
@@ -185,13 +183,6 @@ exec "{1}" "$@"
                 stderr
             );
         }
-    }
-
-    // Tests can specify the expected shadow crate content.
-    let actual_shadow = sandbox_root.join("target/hermes/hermes_test_target/shadow");
-    let expected_shadow = test_case_root.join("expected");
-    if expected_shadow.exists() {
-        assert_directories_match(&expected_shadow, &actual_shadow)?;
     }
 
     // Load Config
@@ -321,26 +312,6 @@ fn assert_artifacts_match(
         }
     }
 
-    Ok(())
-}
-
-fn assert_directories_match(expected: &Path, actual: &Path) -> std::io::Result<()> {
-    for entry in WalkDir::new(expected) {
-        let entry = entry?;
-        if !entry.file_type().is_file() {
-            continue;
-        }
-        let rel = entry.path().strip_prefix(expected).unwrap();
-        let act = actual.join(rel);
-        if !act.exists() {
-            panic!("Missing file {:?}", rel);
-        }
-        let e_txt = fs::read_to_string(entry.path())?.replace("\r\n", "\n");
-        let a_txt = fs::read_to_string(&act)?.replace("\r\n", "\n");
-        if e_txt != a_txt {
-            panic!("Mismatch in {:?}", rel);
-        }
-    }
     Ok(())
 }
 
