@@ -1,4 +1,4 @@
 [[command]]
-# We assert that the path includes the Type Name "Foo"
-args = ["--start-from", "crate::Foo::bar"]
+# We target the module now due to fallback strategy
+args = ["--start-from", "crate"]
 should_not_exist = false

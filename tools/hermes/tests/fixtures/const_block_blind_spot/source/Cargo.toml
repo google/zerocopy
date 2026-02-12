@@ -1,4 +1,4 @@
 [package]
-name = "cyclic_paths"
+name = "const_blind_spot"
 version = "0.1.0"
 edition = "2021"

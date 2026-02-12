@@ -41,7 +41,7 @@ pub fn run() {
     let mut has_errors = false;
 
     // Ignore the returned source and module list; we only care about errors.
-    let _ = parse::read_file_and_scan_compilation_unit(&file_path, |source, res| {
+    let _ = parse::read_file_and_scan_compilation_unit(&file_path, false, |source, res| {
         if let Err(e) = res {
             has_errors = true;
             emit_rustc_json(&e, source, file_path.to_str().unwrap());
