@@ -4,7 +4,7 @@ mod errors;
 mod parse;
 mod resolve;
 mod shadow;
-mod transform;
+
 mod ui_test_shim;
 
 use clap::Parser;
