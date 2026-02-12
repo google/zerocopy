@@ -14,7 +14,6 @@ use walkdir::WalkDir;
 use crate::{
     parse,
     resolve::{HermesTargetKind, HermesTargetName, Roots},
-    transform,
 };
 
 pub struct HermesArtifact {
@@ -207,13 +206,11 @@ fn process_file_recursive<'a>(
             fs::create_dir_all(parent)?;
         }
 
-        // Walk the AST, collecting edits and new modules to process.
-        let mut edits = Vec::new();
+        // Walk the AST, collecting new modules to process.
         let (source_code, unloaded_modules) =
             parse::read_file_and_scan_compilation_unit(src_path, |_src, item_result| {
                 match item_result {
                     Ok(parsed_item) => {
-                        transform::append_edits(&parsed_item, &mut edits);
                         if let Some(item_name) = parsed_item.item.name() {
                             // Calculate the full path to this item.
                             let mut full_path = module_prefix.clone();
@@ -234,9 +231,7 @@ fn process_file_recursive<'a>(
             })
             .context(format!("Failed to parse {:?}", src_path))?;
 
-        // Apply edits in-place before writing to disk.
-        let mut buffer = source_code.into_bytes();
-        transform::apply_edits(&mut buffer, &edits);
+        let buffer = source_code.into_bytes();
         fs::write(&dest_path, &buffer)
             .context(format!("Failed to write shadow file {:?}", dest_path))?;
 

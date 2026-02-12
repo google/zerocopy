@@ -1,14 +1,14 @@
 /// ```lean
 /// model async_foo
 /// ```
-async        fn async_foo() -> i32 {   }
+async unsafe fn async_foo() -> i32 { 0 }
 
 /// ```lean
 /// model const_foo
 /// ```
-const        fn const_foo() -> i32 {   }
+const unsafe fn const_foo() -> i32 { 0 }
 
 /// ```lean
 /// model extern_foo
 /// ```
-       extern "C" fn extern_foo() -> i32 {   }
+unsafe extern "C" fn extern_foo() -> i32 { 0 }
