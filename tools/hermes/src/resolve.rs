@@ -102,6 +102,7 @@ impl TryFrom<&TargetKind> for HermesTargetKind {
 pub struct HermesTargetName {
     pub package_name: PackageName,
     pub target_name: String,
+    pub kind: HermesTargetKind,
 }
 
 #[derive(Debug)]
@@ -171,6 +172,7 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
                 name: HermesTargetName {
                     package_name: package.name.clone(),
                     target_name: target.name.clone(),
+                    kind,
                 },
                 kind,
                 src_path: target.src_path.as_std_path().to_owned(),
