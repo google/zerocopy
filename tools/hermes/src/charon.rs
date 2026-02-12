@@ -46,7 +46,7 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         // Ensure cargo emits json msgs which charon-driver natively generates
         cmd.arg("--message-format=json");
 
-        cmd.arg("--manifest-path").arg(&artifact.shadow_manifest_path);
+        cmd.arg("--manifest-path").arg(&artifact.manifest_path);
 
         match artifact.target_kind {
             HermesTargetKind::Lib
@@ -117,7 +117,7 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
             let reader = BufReader::new(stdout);
 
             let mut mapper = crate::diagnostics::DiagnosticMapper::new(
-                artifact.shadow_manifest_path.parent().unwrap().to_path_buf(),
+                roots.workspace.clone(),
                 roots.workspace.clone(),
             );
 
