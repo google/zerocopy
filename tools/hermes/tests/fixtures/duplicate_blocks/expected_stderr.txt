@@ -1,1 +1,1 @@
-Multiple lean blocks found
+Multiple Hermes blocks found on a single item.

@@ -1,3 +1,3 @@
-/// ```lean
+/// ```lean, hermes
 /// unclosed
 fn foo() {}

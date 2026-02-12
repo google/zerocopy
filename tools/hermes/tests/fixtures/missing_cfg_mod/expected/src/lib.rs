@@ -2,6 +2,6 @@
 mod fake;
 
 
-/// ```lean
+/// ```lean, hermes
 /// ```
 fn _hermes_dummy() {}
