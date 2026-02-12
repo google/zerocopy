@@ -1,0 +1,6 @@
+[package]
+name = "missing_cfg_file"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
