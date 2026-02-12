@@ -1,5 +1,6 @@
 use std::{
     collections::HashMap,
+    ffi::OsStr,
     hash::{Hash, Hasher as _},
     path::{Path, PathBuf},
     sync::mpsc::{self, Sender},
@@ -141,14 +142,28 @@ fn process_file_recursive<'a>(
     name: HermesTargetName,
 ) {
     log::trace!("process_file_recursive(src_path: {:?})", src_path);
-    if !visited.insert(src_path.to_path_buf()) {
+
+    // Canonicalize the path to ensure we don't process the same file multiple
+    // times (e.g. via symlinks or different relative paths).
+    let src_path = match std::fs::canonicalize(src_path) {
+        Ok(p) => p,
+        Err(e) => {
+            // It is valid for a module to be declared but not exist (e.g., if
+            // it is cfg-gated for another platform). In strict Rust, we would
+            // check the cfg attributes, but since we are just scanning, it is
+            // safe to warn and return.
+            log::debug!("Skipping unreachable or missing file {:?}: {}", src_path, e);
+            return;
+        }
+    };
+
+    if !visited.insert(src_path.clone()) {
         return;
     }
 
-    // Walking the AST is enough to collect new modules.
     // Walk the AST, collecting new modules to process.
     let (_source_code, unloaded_modules) =
-        match parse::read_file_and_scan_compilation_unit(src_path, |_src, item_result| {
+        match parse::read_file_and_scan_compilation_unit(&src_path, |_src, item_result| {
             match item_result {
                 Ok(parsed_item) => {
                     if let Some(item_name) = parsed_item.item.name() {
@@ -177,11 +192,23 @@ fn process_file_recursive<'a>(
             }
         };
 
+    // Determine the directory to search for child modules in.
+    // - For `mod.rs`, `lib.rs`, `main.rs`, children are in the parent directory.
+    //   e.g. `src/lib.rs` -> `mod foo` -> `src/foo.rs`
+    // - For `my_mod.rs`, children are in a sibling directory of the same name.
+    //   e.g. `src/my_mod.rs` -> `mod sub` -> `src/my_mod/sub.rs`
+    let file_stem = src_path.file_stem().and_then(OsStr::to_str).unwrap_or("");
+    let base_dir = if matches!(file_stem, "mod" | "lib" | "main") {
+        src_path.parent().unwrap_or(&src_path).to_path_buf()
+    } else {
+        // e.g. src/foo.rs -> src/foo/
+        src_path.with_extension("")
+    };
+
     // Resolve and queue child modules for processing.
-    let base_dir = src_path.parent().unwrap();
     for module in unloaded_modules {
         if let Some(mod_path) =
-            resolve_module_path(base_dir, &module.name, module.path_attr.as_deref())
+            resolve_module_path(&base_dir, &module.name, module.path_attr.as_deref())
         {
             // Spawn new tasks for discovered modules.
             let (err_tx, path_tx) = (err_tx.clone(), path_tx.clone());
