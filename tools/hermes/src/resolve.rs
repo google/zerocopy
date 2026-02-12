@@ -1,5 +1,5 @@
 use std::{
-    env,
+    env, fs,
     hash::{Hash as _, Hasher as _},
     path::PathBuf,
 };
@@ -341,7 +341,9 @@ fn resolve_targets<'a>(
 /// is found.
 pub fn check_for_external_deps(metadata: &Metadata) -> Result<()> {
     log::trace!("check_for_external_deps");
-    let workspace_root = metadata.workspace_root.as_std_path();
+    // Canonicalize workspace root to handle symlinks correctly
+    let workspace_root = fs::canonicalize(&metadata.workspace_root)
+        .context("Failed to canonicalize workspace root")?;
 
     for pkg in &metadata.packages {
         // We only care about packages that are "local" (source is None).
@@ -350,8 +352,12 @@ pub fn check_for_external_deps(metadata: &Metadata) -> Result<()> {
         if pkg.source.is_none() {
             let pkg_path = pkg.manifest_path.as_std_path();
 
+            // Canonicalize the package path for comparison
+            let canonical_pkg_path = fs::canonicalize(pkg_path)
+                .with_context(|| format!("Failed to canonicalize path for package {}", pkg.name))?;
+
             // Check if the package lives outside the workspace tree
-            if !pkg_path.starts_with(workspace_root) {
+            if !canonical_pkg_path.starts_with(&workspace_root) {
                 anyhow::bail!(
                     "Unsupported external dependency: '{}' at {:?}.\n\
                      Hermes currently only supports verifying workspaces where all local \
