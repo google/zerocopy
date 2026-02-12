@@ -1,6 +1,6 @@
 /// ```lean
 /// model foo 
 /// ```
-       fn foo() -> i32 {
-         
+unsafe fn foo() -> i32 {
+    1 + 1
 }

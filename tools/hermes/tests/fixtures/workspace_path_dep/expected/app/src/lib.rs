@@ -1,4 +1,4 @@
 /// ```lean
 /// model main
 /// ```
-       fn main()
+unsafe fn main() {}
