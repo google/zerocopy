@@ -379,7 +379,8 @@ jobs:
           $FEATURES \
           --verbose \
           -- \
-          --skip ui
+          --skip ui \
+          --skip codegen
 
       # Only run tests when targetting Linux x86 (32- or 64-bit) - we're
       # executing on Linux x86_64, so we can't run tests for any non-x86 target.
@@ -609,6 +610,28 @@ jobs:
         matrix.target != 'wasm32-unknown-unknown' &&
         env.ZC_SKIP_CARGO_SEMVER_CHECKS != '1'
 
+  codegen:
+    runs-on: ubuntu-latest
+    name: Run codegen tests
+    needs: generate_cache
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+      - name: Populate cache
+        uses: ./.github/actions/cache
+      - name: Run tests
+        run: |
+          set -eo pipefail
+          sudo apt install -qq llvm
+          ./cargo.sh +nightly install --quiet cargo-show-asm
+          ./cargo.sh +nightly test \
+            --package zerocopy \
+            --target x86_64-unknown-linux-gnu \
+            --all-features \
+            --verbose \
+            --test codegen
+
   coverage:
     runs-on: ubuntu-latest
     name: Generate code coverage
@@ -631,7 +654,9 @@ jobs:
             --lcov \
             --output-path lcov.info \
             --verbose \
-            -- --skip ui
+            -- \
+            --skip ui \
+            --skip codegen
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
@@ -885,6 +910,7 @@ jobs:
             cargo install --locked kani-verifier                    &> /dev/null &
             cargo install cargo-nextest                             &> /dev/null &
             cargo kani setup                                        &> /dev/null &
+            sudo apt-get install llvm                               &> /dev/null &
 
             wait
 
