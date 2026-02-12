@@ -1,0 +1,75 @@
+Iterations:        100
+Instructions:      1800
+Total Cycles:      605
+Total uOps:        1900
+
+Dispatch Width:    4
+uOps Per Cycle:    3.14
+IPC:               2.98
+Block RThroughput: 4.8
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      1     0.33                        mov	rcx, rdx
+ 1      1     0.33                        mov	edx, 1
+ 1      1     0.33                        test	rcx, rcx
+ 1      1     1.00                        js	.LBB5_4
+ 1      1     0.33                        mov	rax, rdi
+ 1      1     0.33                        movabs	rdi, 9223372036854775805
+ 1      1     0.33                        cmp	rcx, rdi
+ 2      2     1.00                        seta	dil
+ 1      1     0.50                        lea	r8, [2*rcx + 4]
+ 1      1     0.33                        sub	rsi, r8
+ 1      1     0.50                        setb	r8b
+ 1      1     0.33                        or	r8b, dil
+ 1      1     1.00                        je	.LBB5_3
+ 1      0     0.25                        xor	eax, eax
+ 1      1     1.00                  U     ret
+ 1      1     0.33                        add	rax, rsi
+ 1      1     0.33                        mov	rdx, rcx
+ 1      1     1.00                  U     ret
+
+
+Resources:
+[0]   - SBDivider
+[1]   - SBFPDivider
+[2]   - SBPort0
+[3]   - SBPort1
+[4]   - SBPort4
+[5]   - SBPort5
+[6.0] - SBPort23
+[6.1] - SBPort23
+
+
+Resource pressure per iteration:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
+ -      -     6.00   5.98    -     6.02    -      -     
+
+Resource pressure by instruction:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
+ -      -     0.01   0.04    -     0.95    -      -     mov	rcx, rdx
+ -      -      -     1.00    -      -      -      -     mov	edx, 1
+ -      -     1.00    -      -      -      -      -     test	rcx, rcx
+ -      -      -      -      -     1.00    -      -     js	.LBB5_4
+ -      -     0.94   0.05    -     0.01    -      -     mov	rax, rdi
+ -      -     0.05   0.95    -      -      -      -     movabs	rdi, 9223372036854775805
+ -      -     0.06   0.94    -      -      -      -     cmp	rcx, rdi
+ -      -     2.00    -      -      -      -      -     seta	dil
+ -      -      -     1.00    -      -      -      -     lea	r8, [2*rcx + 4]
+ -      -      -      -      -     1.00    -      -     sub	rsi, r8
+ -      -     0.94    -      -     0.06    -      -     setb	r8b
+ -      -     1.00    -      -      -      -      -     or	r8b, dil
+ -      -      -      -      -     1.00    -      -     je	.LBB5_3
+ -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -      -      -      -     1.00    -      -     ret
+ -      -      -     1.00    -      -      -      -     add	rax, rsi
+ -      -      -     1.00    -      -      -      -     mov	rdx, rcx
+ -      -      -      -      -     1.00    -      -     ret

@@ -1,0 +1,69 @@
+Iterations:        100
+Instructions:      1500
+Total Cycles:      699
+Total uOps:        1700
+
+Dispatch Width:    4
+uOps Per Cycle:    2.43
+IPC:               2.15
+Block RThroughput: 4.3
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      1     0.33                        mov	rdx, rsi
+ 1      1     0.33                        cmp	rsi, 4
+ 1      1     1.00                        jae	.LBB5_2
+ 1      0     0.25                        xor	eax, eax
+ 1      1     1.00                  U     ret
+ 1      1     0.50                        lea	rcx, [rdx - 4]
+ 1      1     0.33                        mov	rsi, rcx
+ 1      1     0.33                        and	rsi, -2
+ 1      1     0.33                        add	rsi, 4
+ 1      1     0.50                        shr	rcx
+ 1      0     0.25                        xor	eax, eax
+ 1      1     0.33                        cmp	rdx, rsi
+ 2      2     0.67                        cmove	rdx, rcx
+ 2      2     0.67                        cmove	rax, rdi
+ 1      1     1.00                  U     ret
+
+
+Resources:
+[0]   - SBDivider
+[1]   - SBFPDivider
+[2]   - SBPort0
+[3]   - SBPort1
+[4]   - SBPort4
+[5]   - SBPort5
+[6.0] - SBPort23
+[6.1] - SBPort23
+
+
+Resource pressure per iteration:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
+ -      -     4.96   4.99    -     5.05    -      -     
+
+Resource pressure by instruction:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
+ -      -     0.94   0.04    -     0.02    -      -     mov	rdx, rsi
+ -      -     0.01   0.02    -     0.97    -      -     cmp	rsi, 4
+ -      -      -      -      -     1.00    -      -     jae	.LBB5_2
+ -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -      -      -      -     1.00    -      -     ret
+ -      -     0.92   0.08    -      -      -      -     lea	rcx, [rdx - 4]
+ -      -     0.06   0.92    -     0.02    -      -     mov	rsi, rcx
+ -      -     0.01   0.12    -     0.87    -      -     and	rsi, -2
+ -      -     0.06   0.91    -     0.03    -      -     add	rsi, 4
+ -      -     0.95    -      -     0.05    -      -     shr	rcx
+ -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -     0.04   0.94    -     0.02    -      -     cmp	rdx, rsi
+ -      -     0.99   0.98    -     0.03    -      -     cmove	rdx, rcx
+ -      -     0.98   0.98    -     0.04    -      -     cmove	rax, rdi
+ -      -      -      -      -     1.00    -      -     ret
