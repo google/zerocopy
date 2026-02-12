@@ -125,8 +125,12 @@ pub struct Roots {
 }
 
 impl Roots {
-    pub fn charon_root(&self) -> PathBuf {
-        self.hermes_run_root.join("charon")
+    pub fn llbc_root(&self) -> PathBuf {
+        self.hermes_run_root.join("llbc")
+    }
+
+    pub fn lean_generated_root(&self) -> PathBuf {
+        self.hermes_run_root.join("lean").join("generated")
     }
 }
 

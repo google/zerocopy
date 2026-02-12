@@ -1,3 +1,4 @@
+mod aeneas;
 mod charon;
 mod diagnostics;
 mod errors;
@@ -37,9 +38,11 @@ fn main() -> anyhow::Result<()> {
             let roots = resolve::resolve_roots(&resolve_args)?;
             let packages = scanner::scan_workspace(&roots)?;
             if packages.is_empty() {
-                anyhow::bail!("No Hermes annotations (/// ```lean ...) found in the selected targets. Nothing to verify.");
+                log::warn!("No Hermes annotations (/// ```lean ...) found in the selected targets. Nothing to verify.");
+                return Ok(());
             }
-            charon::run_charon(&resolve_args, &roots, &packages)
+            charon::run_charon(&resolve_args, &roots, &packages)?;
+            aeneas::run_aeneas(&roots, &packages)
         }
     }
 }

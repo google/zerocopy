@@ -1,5 +1,5 @@
 [package]
-name = "macro_blind_spot"
+name = "external_path_dep"
 version = "0.1.0"
 edition = "2021"
 

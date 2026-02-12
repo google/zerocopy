@@ -1,0 +1,5 @@
+[[artifact]]
+package = "external_path_dep"
+target = "external_path_dep"
+should_exist = true
+kind = "llbc"

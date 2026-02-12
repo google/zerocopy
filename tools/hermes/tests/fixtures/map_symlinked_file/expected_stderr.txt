@@ -1,6 +1,1 @@
-  × something bad
-   ╭─[[PROJECT_ROOT]/src/untransformed.rs:1:1]
- 1 │ pub fn untouched() {}
-   · ─────┬────
-   ·      ╰── oops
-   ╰────
+Diagnostic error in charon
