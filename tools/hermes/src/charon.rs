@@ -8,7 +8,7 @@ use cargo_metadata::{diagnostic::DiagnosticLevel, Message};
 
 use crate::{
     resolve::{Args, HermesTargetKind, Roots},
-    shadow::HermesArtifact,
+    scanner::HermesArtifact,
 };
 
 pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Result<()> {

@@ -122,10 +122,6 @@ pub struct Roots {
 }
 
 impl Roots {
-    pub fn shadow_root(&self) -> PathBuf {
-        self.hermes_run_root.join("shadow")
-    }
-
     pub fn charon_root(&self) -> PathBuf {
         self.hermes_run_root.join("charon")
     }

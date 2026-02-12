@@ -3,7 +3,7 @@ mod diagnostics;
 mod errors;
 mod parse;
 mod resolve;
-mod shadow;
+mod scanner;
 
 mod ui_test_shim;
 
@@ -35,11 +35,11 @@ fn main() -> anyhow::Result<()> {
     match args.command {
         Commands::Verify(resolve_args) => {
             let roots = resolve::resolve_roots(&resolve_args)?;
-            let entry_points = shadow::build_shadow_crate(&roots)?;
-            if entry_points.is_empty() {
+            let packages = scanner::scan_workspace(&roots)?;
+            if packages.is_empty() {
                 anyhow::bail!("No Hermes annotations (/// ```lean ...) found in the selected targets. Nothing to verify.");
             }
-            charon::run_charon(&resolve_args, &roots, &entry_points)
+            charon::run_charon(&resolve_args, &roots, &packages)
         }
     }
 }
