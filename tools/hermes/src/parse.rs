@@ -33,29 +33,87 @@ impl std::fmt::Display for ParseError {
 }
 impl std::error::Error for ParseError {}
 
-/// The item from the original source code.
 #[derive(Clone, Debug)]
-pub enum ParsedItem {
-    Fn(ItemFn),
+pub enum FunctionItem {
+    Free(ItemFn),
+    Impl(ImplItemFn),
+    Trait(TraitItemFn),
+}
+
+impl FunctionItem {
+    pub fn name(&self) -> String {
+        match self {
+            Self::Free(x) => x.sig.ident.to_string(),
+            Self::Impl(x) => x.sig.ident.to_string(),
+            Self::Trait(x) => x.sig.ident.to_string(),
+        }
+    }
+
+    pub fn attrs(&self) -> &[Attribute] {
+        match self {
+            Self::Free(x) => &x.attrs,
+            Self::Impl(x) => &x.attrs,
+            Self::Trait(x) => &x.attrs,
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub enum TypeItem {
     Struct(ItemStruct),
     Enum(ItemEnum),
     Union(ItemUnion),
-    Trait(ItemTrait),
-    Impl(ItemImpl),
-    ImplItemFn(ImplItemFn),
-    TraitItemFn(TraitItemFn),
 }
+
+impl TypeItem {
+    pub fn name(&self) -> String {
+        match self {
+            Self::Struct(x) => x.ident.to_string(),
+            Self::Enum(x) => x.ident.to_string(),
+            Self::Union(x) => x.ident.to_string(),
+        }
+    }
+
+    pub fn attrs(&self) -> &[Attribute] {
+        match self {
+            Self::Struct(x) => &x.attrs,
+            Self::Enum(x) => &x.attrs,
+            Self::Union(x) => &x.attrs,
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub enum ParsedItem {
+    /// Functions support `spec` and `unsafe(axiom)` attributes.
+    Function { item: FunctionItem, hermes: attr::HermesBlock<attr::HermesAttr> },
+    /// Types only support the generic `hermes` marker (invariant models).
+    Type(TypeItem),
+    /// Traits only support the generic `hermes` marker (trait invariants).
+    Trait(ItemTrait),
+    /// Impl blocks are traversed but cannot be annotated directly.
+    Impl(ItemImpl),
+}
+
+// /// The item from the original source code.
+// #[derive(Clone, Debug)]
+// pub enum ParsedItem {
+//     Fn(ItemFn),
+//     Struct(ItemStruct),
+//     Enum(ItemEnum),
+//     Union(ItemUnion),
+//     Trait(ItemTrait),
+//     Impl(ItemImpl),
+//     ImplItemFn(ImplItemFn),
+//     TraitItemFn(TraitItemFn),
+// }
 
 impl ParsedItem {
     pub fn name(&self) -> Option<String> {
         match self {
-            Self::Fn(item) => Some(item.sig.ident.to_string()),
-            Self::Struct(item) => Some(item.ident.to_string()),
-            Self::Enum(item) => Some(item.ident.to_string()),
-            Self::Union(item) => Some(item.ident.to_string()),
+            Self::Function { item, .. } => Some(item.name()),
+            Self::Type(item) => Some(item.name()),
             Self::Trait(item) => Some(item.ident.to_string()),
-            Self::ImplItemFn(item) => Some(item.sig.ident.to_string()),
-            Self::TraitItemFn(item) => Some(item.sig.ident.to_string()),
             Self::Impl(_) => None,
         }
     }
@@ -63,16 +121,23 @@ impl ParsedItem {
     /// Returns the attributes on this item.
     fn attrs(&self) -> &[Attribute] {
         match self {
-            Self::Fn(item) => &item.attrs,
-            Self::Struct(item) => &item.attrs,
-            Self::Enum(item) => &item.attrs,
-            Self::Union(item) => &item.attrs,
+            Self::Function { item, .. } => item.attrs(),
+            Self::Type(item) => item.attrs(),
             Self::Trait(item) => &item.attrs,
             Self::Impl(item) => &item.attrs,
-            Self::ImplItemFn(item) => &item.attrs,
-            Self::TraitItemFn(item) => &item.attrs,
         }
     }
+}
+
+fn try_from_raw_reject_attr<T, F: FnOnce(T) -> ParsedItem>(
+    item: T,
+    attr: Option<attr::HermesAttr>,
+    f: F,
+) -> Result<ParsedItem, HermesError> {
+    if attr.is_some() {
+        return Err(todo!("unsupported attribute on item"));
+    }
+    Ok(f(item))
 }
 
 /// A complete parsed item including its module path and the extracted Lean block.
@@ -201,7 +266,20 @@ where
     I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
     M: FnMut(UnloadedModule),
 {
-    fn process_item(&mut self, item: ParsedItem, span: Span) {
+    //fn try_from_raw_reject_attr<T, F: FnOnce(T) -> ParsedItem + Default>(item: T, attr: Option<attr::HermesAttr>) -> Result<ParsedItem, HermesError> {
+    fn process_item<
+        T,
+        F: FnOnce(T, Option<attr::HermesAttr>) -> Result<ParsedItem, HermesError>,
+    >(
+        &mut self,
+        item: T,
+        attrs: &[Attribute],
+        span: Span,
+        f: F,
+    ) {
+        let attr = attr::parse_hermes_attr(attrs).unwrap();
+        f(item, attr);
+
         if self.inside_block {
             // Only check attributes if we are in a body to see if we need to
             // error. We want to avoid erroring on un-annotated local items.
@@ -296,32 +374,42 @@ where
 
     fn visit_item_fn(&mut self, node: &'ast ItemFn) {
         trace!("Visiting Fn {}", node.sig.ident);
-        self.process_item(ParsedItem::Fn(node.clone()), node.span());
+        self.process_item(node.clone(), node.span(), |item, attr| {
+            Ok(ParsedItem::Function { item: FunctionItem::Free(item), attribute: attr })
+        });
         syn::visit::visit_item_fn(self, node);
     }
 
     fn visit_item_struct(&mut self, node: &'ast ItemStruct) {
         trace!("Visiting Struct {}", node.ident);
-        self.process_item(ParsedItem::Struct(node.clone()), node.span());
+        self.process_item(node.clone(), node.span(), |item, attr| {
+            try_from_raw_reject_attr(item, attr, |item| ParsedItem::Type(TypeItem::Struct(item)))
+        });
         syn::visit::visit_item_struct(self, node);
     }
 
     fn visit_item_enum(&mut self, node: &'ast ItemEnum) {
         trace!("Visiting Enum {}", node.ident);
-        self.process_item(ParsedItem::Enum(node.clone()), node.span());
+        self.process_item(node.clone(), node.span(), |item, attr| {
+            try_from_raw_reject_attr(item, attr, |item| ParsedItem::Type(TypeItem::Enum(item)))
+        });
         syn::visit::visit_item_enum(self, node);
     }
 
     fn visit_item_union(&mut self, node: &'ast ItemUnion) {
         trace!("Visiting Union {}", node.ident);
-        self.process_item(ParsedItem::Union(node.clone()), node.span());
+        self.process_item(node.clone(), node.span(), |item, attr| {
+            try_from_raw_reject_attr(item, attr, |item| ParsedItem::Type(TypeItem::Union(item)))
+        });
         syn::visit::visit_item_union(self, node);
     }
 
     fn visit_item_trait(&mut self, node: &'ast ItemTrait) {
         let name = node.ident.to_string();
         trace!("Visiting Trait {}", name);
-        self.process_item(ParsedItem::Trait(node.clone()), node.span());
+        self.process_item(node.clone(), node.span(), |item, attr| {
+            try_from_raw_reject_attr(item, attr, |item| ParsedItem::Trait(item))
+        });
 
         self.current_path.push(name);
         syn::visit::visit_item_trait(self, node);
@@ -337,19 +425,25 @@ where
 
     fn visit_item_impl(&mut self, node: &'ast ItemImpl) {
         trace!("Visiting Impl");
-        self.process_item(ParsedItem::Impl(node.clone()), node.span());
+        self.process_item(node.clone(), node.span(), |item, attr| {
+            try_from_raw_reject_attr(item, attr, |item| ParsedItem::Impl(item))
+        });
         syn::visit::visit_item_impl(self, node);
     }
 
     fn visit_impl_item_fn(&mut self, node: &'ast ImplItemFn) {
         trace!("Visiting ImplItemFn {}", node.sig.ident);
-        self.process_item(ParsedItem::ImplItemFn(node.clone()), node.span());
+        self.process_item(node.clone(), node.span(), |item, attr| {
+            Ok(ParsedItem::Function { item: FunctionItem::Impl(item), attribute: attr })
+        });
         syn::visit::visit_impl_item_fn(self, node);
     }
 
     fn visit_trait_item_fn(&mut self, node: &'ast TraitItemFn) {
         trace!("Visiting TraitItemFn {}", node.sig.ident);
-        self.process_item(ParsedItem::TraitItemFn(node.clone()), node.span());
+        self.process_item(node.clone(), node.span(), |item, attr| {
+            Ok(ParsedItem::Function { item: FunctionItem::Trait(item), attribute: attr })
+        });
         syn::visit::visit_trait_item_fn(self, node);
     }
 }
@@ -488,6 +582,178 @@ fn extract_cfg_attr_path(attrs: &[Attribute]) -> Option<String> {
 fn span_to_miette(span: proc_macro2::Span) -> SourceSpan {
     let range = span.byte_range();
     SourceSpan::new(range.start.into(), range.end - range.start)
+}
+
+mod attr {
+    use std::convert::Infallible;
+
+    use proc_macro2::Span;
+
+    use super::*;
+
+    /// Represents a parsed attribute from a Hermes info string.
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub enum HermesAttr {
+        /// `spec`: Indicates a function specification and proof.
+        Spec,
+        /// `unsafe(axiom)`: Indicates an axiomatization of an unsafe function.
+        UnsafeAxiom,
+    }
+
+    // TODO: We need to "unfold" this type – we unconditionally need `content`,
+    // `content_span`, and `start_span`, but only function items can have
+    // `attribute`.
+
+    /// A fully parsed Hermes documentation block.
+    #[derive(Debug)]
+    pub struct HermesBlock<A = Infallible> {
+        /// The Hermes attribute parsed from the info string, if any.
+        pub attribute: Option<A>,
+        /// The opaque content of the code block.
+        pub content: String,
+        /// The span covering the entire content (merged from start to end line).
+        pub content_span: Span,
+        /// The span of the opening ` ``` ` line.
+        pub start_span: Span,
+    }
+
+    /// Parses the info string of a code block.
+    ///
+    /// * `info`: The info string text (e.g. "lean, hermes, spec").
+    ///
+    /// Returns:
+    /// * `Ok(Some(Some(attr)))` if `hermes` was found and had valid arguments.
+    /// * `Ok(Some(None))` if `hermes` was found but had no arguments.
+    /// * `Ok(None)` if `hermes` was not found.
+    /// * `Err(msg)` if `hermes` was found but had invalid arguments.
+    fn parse_hermes_info_string(info: &str) -> Result<Option<Option<HermesAttr>>, String> {
+        let mut tokens = info.split(',').map(str::trim).filter(|s| !s.is_empty());
+
+        // Find and consume the `hermes` token.
+        if tokens.find(|&t| t == "hermes").is_none() {
+            return Ok(None);
+        }
+
+        let first_arg = tokens.next();
+        let second_arg = tokens.next();
+        match (first_arg, second_arg) {
+            (Some(first), Some(second)) => return Err(format!(
+                "Multiple attributes specified after 'hermes' ('{first}', '{second}'). Only one attribute is allowed."
+            )),
+            (None, None) => return Ok(Some(None)),
+            (Some("spec"), None) => return Ok(Some(Some(HermesAttr::Spec))),
+            (Some("unsafe(axiom)"), None) => return Ok(Some(Some(HermesAttr::UnsafeAxiom))),
+            (Some(token), None) if token.starts_with("unsafe") => return Err(format!(
+                "Unknown or malformed attribute: '{token}'. Did you mean 'unsafe(axiom)'?"
+            )),
+            (Some(token), None) => return Err(format!(
+                "Unrecognized Hermes attribute: '{token}'. Supported attributes are 'spec', 'unsafe(axiom)'."
+            )),
+            (None, Some(_)) => unreachable!(),
+        }
+    }
+
+    /// Helper to extract the string content and span from a `#[doc = "..."]` attribute.
+    ///
+    /// Returns `Some((content, span))` if the attribute is a doc comment.
+    fn extract_doc_line(attr: &Attribute) -> Option<(String, Span)> {
+        if !attr.path().is_ident("doc") {
+            return None;
+        }
+        match &attr.meta {
+            Meta::NameValue(nv) => {
+                if let Expr::Lit(expr_lit) = &nv.value {
+                    if let Lit::Str(lit_str) = &expr_lit.lit {
+                        return Some((lit_str.value(), lit_str.span()));
+                    }
+                }
+                None
+            }
+            _ => None,
+        }
+    }
+
+    /// Helper to parse and extract a single Hermes block from a slice of attributes.
+    fn extract_hermes_block(attrs: &[Attribute]) -> Result<Option<HermesBlock<HermesAttr>>, Error> {
+        let mut found_block: Option<HermesBlock<HermesAttr>> = None;
+        let mut iter = attrs.iter().peekable();
+
+        while let Some(attr) = iter.next() {
+            // 1. Check if this attribute is a doc comment
+            let (text, span) = match extract_doc_line(attr) {
+                Some(val) => val,
+                None => continue,
+            };
+
+            // 2. Check for the opening of a code block
+            let trimmed = text.trim();
+            if !trimmed.starts_with("```") {
+                continue;
+            }
+
+            // 3. Check if it is a Hermes block
+            let info_string = trimmed[3..].trim();
+            let parsed_attr =
+                match parse_hermes_info_string(info_string).map_err(|m| Error::new(span, m))? {
+                    Some(attr) => attr,
+                    None => continue, // It's a code block, but not for Hermes. Ignore it.
+                };
+
+            // 4. Duplicate Block Check
+            if found_block.is_some() {
+                return Err(Error::new(span, "Multiple Hermes blocks found on a single item."));
+            }
+
+            // 5. Accumulate Body Content
+            let start_span = span;
+            let mut content = String::new();
+            let mut first_content_span: Option<Span> = None;
+            let mut last_content_span: Option<Span> = None;
+            let mut closed = false;
+
+            // Consume subsequent doc attributes until we find the closing fence
+            while let Some(next_attr) = iter.peek() {
+                let (next_text, next_span) = match extract_doc_line(next_attr) {
+                    Some(val) => val,
+                    None => break, // Interrupted by non-doc attribute
+                };
+
+                if next_text.trim().starts_with("```") {
+                    iter.next(); // Consume the closing fence
+                    closed = true;
+                    break;
+                }
+
+                // Append line to content
+                content.push_str(&next_text);
+                content.push('\n');
+
+                // Track spans for error reporting
+                if first_content_span.is_none() {
+                    first_content_span = Some(next_span);
+                }
+                last_content_span = Some(next_span);
+
+                iter.next(); // Advance iterator
+            }
+
+            if !closed {
+                return Err(Error::new(start_span, "Unclosed Hermes block in documentation."));
+            }
+
+            // 6. Calculate Content Span (merging start and end lines)
+            let content_span = match (first_content_span, last_content_span) {
+                (Some(s), Some(e)) => s.join(e).unwrap_or(s),
+                (Some(s), None) => s,
+                _ => start_span,
+            };
+
+            found_block =
+                Some(HermesBlock { attribute: parsed_attr, content, content_span, start_span });
+        }
+
+        Ok(found_block)
+    }
 }
 
 #[cfg(test)]
