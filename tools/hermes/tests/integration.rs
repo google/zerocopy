@@ -90,6 +90,13 @@ exec "{1}" "$@"
         // (normally, the path includes a hash of the crate's path).
         .env("HERMES_TEST_DIR_NAME", "hermes_test_target");
 
+    // Tests can specify the log level.
+    let env_log_file = test_case_root.join("rust_log.txt");
+    if env_log_file.exists() {
+        let log_level = fs::read_to_string(env_log_file)?;
+        cmd.env("RUST_LOG", log_level.trim());
+    }
+
     // Mock JSON integration
     let mock_json_file = test_case_root.join("mock_charon_output.json");
     if mock_json_file.exists() {
