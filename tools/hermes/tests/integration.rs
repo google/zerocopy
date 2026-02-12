@@ -2,7 +2,6 @@ use std::{fs, os::unix::fs::PermissionsExt, path::Path};
 
 use serde::Deserialize;
 use tempfile::tempdir;
-use walkdir::WalkDir;
 
 datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
 
@@ -89,22 +88,13 @@ exec "{1}" "$@"
         .env_remove("RUSTFLAGS")
         // Forces deterministic output path: target/hermes/hermes_test_target
         // (normally, the path includes a hash of the crate's path).
-        .env("HERMES_TEST_SHADOW_NAME", "hermes_test_target");
+        .env("HERMES_TEST_DIR_NAME", "hermes_test_target");
 
     // Mock JSON integration
     let mock_json_file = test_case_root.join("mock_charon_output.json");
     if mock_json_file.exists() {
-        // Instead of writing the mock json to the shadow root (which gets cleared by build_shadow_crate), write it to the test workspace root!
-        // We still need the path for mapping `[SHADOW_ROOT]` correctly!
-        // But we construct it manually since it might not be created yet:
-        let abs_shadow_root = std::env::current_dir().unwrap().join(&sandbox_root);
-        let abs_test_case_root =
-            test_case_root.canonicalize().unwrap_or_else(|_| test_case_root.to_path_buf());
-
         let mock_src = fs::read_to_string(&mock_json_file).unwrap();
-        let processed_mock = mock_src
-            .replace("[PROJECT_ROOT]", sandbox_root.to_str().unwrap())
-            .replace("[SHADOW_ROOT]", abs_shadow_root.to_str().unwrap());
+        let processed_mock = mock_src.replace("[PROJECT_ROOT]", sandbox_root.to_str().unwrap());
 
         let processed_mock_file = sandbox_root.join("mock_charon_output.json");
         fs::write(&processed_mock_file, &processed_mock).unwrap();
