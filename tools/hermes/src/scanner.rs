@@ -5,7 +5,7 @@ use std::{
     sync::mpsc::{self, Sender},
 };
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 use dashmap::DashSet;
 
 use crate::{
@@ -43,8 +43,8 @@ impl HermesArtifact {
     }
 }
 
-/// 1. Scans and rules all reachable source files, printing any errors
-///    encountered. Collects all items with Hermes annotations.
+/// Scans the workspace to identify Hermes entry points (`/// ```lean` blocks)
+/// and collects targets for verification.
 pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
     log::trace!("scan_workspace({:?})", roots);
 
@@ -117,7 +117,7 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
         .roots
         .iter()
         .filter_map(|target| {
-            let manifest_path = find_package_root(&target.src_path).ok()?.join("Cargo.toml");
+            let manifest_path = target.manifest_path.clone();
             let start_from = entry_points.remove(&target.name)?;
 
             Some(HermesArtifact {
@@ -128,20 +128,6 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
             })
         })
         .collect())
-}
-
-/// Walks up the directory tree from the source file to find the directory
-/// containing Cargo.toml.
-fn find_package_root(src_path: &Path) -> Result<PathBuf> {
-    let mut current = src_path;
-    while let Some(parent) = current.parent() {
-        if parent.join("Cargo.toml").exists() {
-            return Ok(parent.to_path_buf());
-        }
-        current = parent;
-    }
-    // This is highly unlikely if the path came from cargo metadata.
-    anyhow::bail!("Could not find Cargo.toml in any parent of {:?}", src_path)
 }
 
 fn process_file_recursive<'a>(
@@ -160,78 +146,61 @@ fn process_file_recursive<'a>(
     }
 
     // Walking the AST is enough to collect new modules.
-    let result = (|| -> Result<Vec<(PathBuf, String)>> {
-        // Walk the AST, collecting new modules to process.
-        let (_source_code, unloaded_modules) =
-            parse::read_file_and_scan_compilation_unit(src_path, |_src, item_result| {
-                match item_result {
-                    Ok(parsed_item) => {
-                        if let Some(item_name) = parsed_item.item.name() {
-                            // Calculate the full path to this item.
-                            let mut full_path = module_prefix.clone();
-                            full_path.extend(parsed_item.module_path);
-                            full_path.push(item_name);
+    // Walk the AST, collecting new modules to process.
+    let (_source_code, unloaded_modules) =
+        match parse::read_file_and_scan_compilation_unit(src_path, |_src, item_result| {
+            match item_result {
+                Ok(parsed_item) => {
+                    if let Some(item_name) = parsed_item.item.name() {
+                        // Calculate the full path to this item.
+                        let mut full_path = module_prefix.clone();
+                        full_path.extend(parsed_item.module_path);
+                        full_path.push(item_name);
 
-                            let _ = path_tx.send((name.clone(), full_path.join("::")));
-                        }
-                    }
-                    Err(e) => {
-                        // A parsing error means we either:
-                        // 1. Lost the module graph, causing missing files later.
-                        // 2. Lost a specification, causing unsound verification.
-                        // We must abort the build.
-                        let _ = err_tx.send(anyhow::anyhow!(e));
+                        let _ = path_tx.send((name.clone(), full_path.join("::")));
                     }
                 }
-            })
-            .context(format!("Failed to parse {:?}", src_path))?;
-
-        // Resolve and queue child modules for processing.
-        let base_dir = src_path.parent().unwrap();
-        let mut next_paths = Vec::new();
-        for module in unloaded_modules {
-            if let Some(mod_path) =
-                resolve_module_path(base_dir, &module.name, module.path_attr.as_deref())
-            {
-                next_paths.push((mod_path, module.name));
-            } else {
-                // This is an expected condition – it shows up when modules are
-                // conditionally compiled. Instead of implementing conditional
-                // compilation ourselves, we can just let rustc error later if
-                // this is actually an error.
-                log::debug!("Could not resolve module '{}' in {:?}", module.name, src_path);
+                Err(e) => {
+                    // A parsing error means we either:
+                    // 1. Lost the module graph, causing missing files later.
+                    // 2. Lost a specification, causing unsound verification.
+                    // We must abort the build.
+                    let _ = err_tx.send(anyhow::anyhow!(e));
+                }
             }
-        }
+        }) {
+            Ok(res) => res,
+            Err(e) => {
+                let _ = err_tx
+                    .send(anyhow::anyhow!(e).context(format!("Failed to parse {:?}", src_path)));
+                return;
+            }
+        };
 
-        Ok(next_paths)
-    })();
-
-    match result {
-        Ok(children) => {
+    // Resolve and queue child modules for processing.
+    let base_dir = src_path.parent().unwrap();
+    for module in unloaded_modules {
+        if let Some(mod_path) =
+            resolve_module_path(base_dir, &module.name, module.path_attr.as_deref())
+        {
             // Spawn new tasks for discovered modules.
-            for (child_path, mod_name) in children {
-                let (err_tx, path_tx) = (err_tx.clone(), path_tx.clone());
+            let (err_tx, path_tx) = (err_tx.clone(), path_tx.clone());
 
-                let mut new_prefix = module_prefix.clone();
-                new_prefix.push(mod_name);
+            let mut new_prefix = module_prefix.clone();
+            new_prefix.push(module.name);
 
-                let name = name.clone();
-                scope.spawn(move |s| {
-                    process_file_recursive(
-                        s,
-                        &child_path,
-                        config,
-                        visited,
-                        err_tx,
-                        path_tx,
-                        new_prefix,
-                        name,
-                    )
-                })
-            }
-        }
-        Err(e) => {
-            let _ = err_tx.send(e);
+            let name = name.clone();
+            scope.spawn(move |s| {
+                process_file_recursive(
+                    s, &mod_path, config, visited, err_tx, path_tx, new_prefix, name,
+                )
+            })
+        } else {
+            // This is an expected condition – it shows up when modules are
+            // conditionally compiled. Instead of implementing conditional
+            // compilation ourselves, we can just let rustc error later if
+            // this is actually an error.
+            log::debug!("Could not resolve module '{}' in {:?}", module.name, src_path);
         }
     }
 }

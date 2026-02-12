@@ -110,6 +110,8 @@ pub struct HermesTarget {
     pub kind: HermesTargetKind,
     /// Path to the main source file for this target.
     pub src_path: PathBuf,
+    /// Path to the `Cargo.toml` for this target.
+    pub manifest_path: PathBuf,
 }
 
 #[derive(Debug)]
@@ -172,6 +174,7 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
                 },
                 kind,
                 src_path: target.src_path.as_std_path().to_owned(),
+                manifest_path: package.manifest_path.as_std_path().to_owned(),
             });
         }
     }
@@ -187,7 +190,7 @@ fn resolve_run_root(metadata: &Metadata) -> PathBuf {
     let hermes_global = target_dir.join("hermes");
 
     // Used by integration tests to ensure deterministic shadow dir names.
-    if let Ok(name) = std::env::var("HERMES_TEST_SHADOW_NAME") {
+    if let Ok(name) = std::env::var("HERMES_TEST_DIR_NAME") {
         return hermes_global.join(name);
     }
 
@@ -195,7 +198,7 @@ fn resolve_run_root(metadata: &Metadata) -> PathBuf {
     // workspaces using the same target directory.
     let workspace_root_hash = {
         let mut hasher = std::hash::DefaultHasher::new();
-        hasher.write(b"hermes_shadow_salt");
+        hasher.write(b"hermes_build_salt");
         metadata.workspace_root.hash(&mut hasher);
         hasher.finish()
     };
@@ -331,7 +334,7 @@ fn resolve_targets<'a>(
 }
 
 // TODO: Eventually, we'll want to support external path dependencies by
-// rewriting the path in the `Cargo.toml` in the shadow copy.
+// analyzing them in-place or ensuring they are accessible to Charon.
 
 /// Scans the package graph to ensure all local dependencies are contained
 /// within the workspace root. Returns an error if an external path dependency
