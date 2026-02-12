@@ -1,6 +1,10 @@
-use std::process::Command;
+use std::{
+    io::{BufRead, BufReader},
+    process::Command,
+};
 
 use anyhow::{bail, Context as _, Result};
+use cargo_metadata::{diagnostic::DiagnosticLevel, Message};
 
 use crate::{
     resolve::{Args, HermesTargetKind, Roots},
@@ -38,6 +42,9 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
 
         // Separator for the underlying cargo command
         cmd.arg("--");
+
+        // Ensure cargo emits json msgs which charon-driver natively generates
+        cmd.arg("--message-format=json");
 
         cmd.arg("--manifest-path").arg(&artifact.shadow_manifest_path);
 
@@ -77,9 +84,95 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
 
         log::debug!("Command: {:?}", cmd);
 
-        let status = cmd.status().context("Failed to execute charon")?;
+        cmd.stdout(std::process::Stdio::piped());
+        cmd.stderr(std::process::Stdio::piped());
+        let mut child = cmd.spawn().context("Failed to spawn charon")?;
 
-        if !status.success() {
+        let mut output_error = false;
+
+        let safety_buffer = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+        let safety_buffer_clone = std::sync::Arc::clone(&safety_buffer);
+        if let Some(stderr) = child.stderr.take() {
+            std::thread::spawn(move || {
+                use std::io::{BufRead, BufReader};
+                let reader = BufReader::new(stderr);
+                for line in reader.lines() {
+                    if let Ok(line) = line {
+                        if let Ok(mut buf) = safety_buffer_clone.lock() {
+                            buf.push(line);
+                        }
+                    }
+                }
+            });
+        }
+
+        let pb = indicatif::ProgressBar::new_spinner();
+        pb.set_style(
+            indicatif::ProgressStyle::default_spinner().template("{spinner:.green} {msg}").unwrap(),
+        );
+        pb.enable_steady_tick(std::time::Duration::from_millis(100));
+        pb.set_message("Compiling...");
+
+        if let Some(stdout) = child.stdout.take() {
+            let reader = BufReader::new(stdout);
+
+            let mut mapper = crate::diagnostics::DiagnosticMapper::new(
+                artifact.shadow_manifest_path.parent().unwrap().to_path_buf(),
+                roots.workspace.clone(),
+            );
+
+            for line in reader.lines() {
+                if let Ok(line) = line {
+                    if let Ok(msg) = serde_json::from_str::<cargo_metadata::Message>(&line) {
+                        match msg {
+                            Message::CompilerArtifact(a) => {
+                                pb.set_message(format!("Compiling {}", a.target.name));
+                            }
+                            Message::CompilerMessage(msg) => {
+                                pb.suspend(|| {
+                                    mapper.render_miette(&msg.message, |s| eprintln!("{}", s));
+                                });
+                                if matches!(
+                                    msg.message.level,
+                                    DiagnosticLevel::Error | DiagnosticLevel::Ice
+                                ) {
+                                    output_error = true;
+                                }
+                            }
+                            Message::TextLine(t) => {
+                                if let Ok(mut buf) = safety_buffer.lock() {
+                                    buf.push(t);
+                                }
+                            }
+                            _ => {}
+                        }
+                    } else {
+                        if let Ok(mut buf) = safety_buffer.lock() {
+                            buf.push(line);
+                        }
+                    }
+                }
+            }
+        }
+
+        pb.finish_and_clear();
+
+        let status = child.wait().context("Failed to wait for charon")?;
+
+        // FIXME: There's a subtle edge case here – if we get error output AND
+        // Rustc ICE's, there's a good chance that the JSON error messages we
+        // print won't include all relevant information – some will be printed
+        // via stderr. In this case, `output_error = true` and so we bail and
+        // discard stderr, which will swallow information from the user.
+        if output_error {
+            bail!("Diagnostic error in charon");
+        } else if !status.success() {
+            // "Silent Death" dump
+            if let Ok(buf) = safety_buffer.lock() {
+                for line in buf.iter() {
+                    eprintln!("{}", line);
+                }
+            }
             bail!("Charon failed with status: {}", status);
         }
     }
