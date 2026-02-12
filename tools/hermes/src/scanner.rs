@@ -1,6 +1,5 @@
 use std::{
-    collections::{HashMap, HashSet},
-    fs,
+    collections::HashMap,
     hash::{Hash, Hasher as _},
     path::{Path, PathBuf},
     sync::mpsc::{self, Sender},
@@ -8,7 +7,6 @@ use std::{
 
 use anyhow::{Context, Result};
 use dashmap::DashSet;
-use walkdir::WalkDir;
 
 use crate::{
     parse,
@@ -45,13 +43,10 @@ impl HermesArtifact {
     }
 }
 
-/// The main entry point for creating the shadow crate.
-///
-/// 1. Scans and transforms all reachable source files, printing any errors
+/// 1. Scans and rules all reachable source files, printing any errors
 ///    encountered. Collects all items with Hermes annotations.
-/// 2. Creates symlinks for the remaining skeleton.
-pub fn build_shadow_crate(roots: &Roots) -> Result<Vec<HermesArtifact>> {
-    log::trace!("build_shadow_crate({:?})", roots);
+pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
+    log::trace!("scan_workspace({:?})", roots);
 
     let visited_paths = DashSet::new();
     let (err_tx, err_rx) = mpsc::channel();
@@ -164,25 +159,10 @@ fn process_file_recursive<'a>(
         return;
     }
 
-    // shadow_root + (src_path - workspace_root)
-    let relative_path = match src_path.strip_prefix(&config.workspace) {
-        Ok(p) => p,
-        Err(e) => {
-            let _ = err_tx.send(anyhow::anyhow!("Source file outside workspace: {:?}", e));
-            return;
-        }
-    };
-    let dest_path = config.shadow_root().join(relative_path);
-
+    // Walking the AST is enough to collect new modules.
     let result = (|| -> Result<Vec<(PathBuf, String)>> {
-        if let Some(parent) = dest_path.parent() {
-            // NOTE: `create_dir_all` is robust against TOCTOU, so it's fine
-            // that we're racing with other threads.
-            fs::create_dir_all(parent)?;
-        }
-
         // Walk the AST, collecting new modules to process.
-        let (source_code, unloaded_modules) =
+        let (_source_code, unloaded_modules) =
             parse::read_file_and_scan_compilation_unit(src_path, |_src, item_result| {
                 match item_result {
                     Ok(parsed_item) => {
@@ -205,10 +185,6 @@ fn process_file_recursive<'a>(
                 }
             })
             .context(format!("Failed to parse {:?}", src_path))?;
-
-        let buffer = source_code.into_bytes();
-        fs::write(&dest_path, &buffer)
-            .context(format!("Failed to write shadow file {:?}", dest_path))?;
 
         // Resolve and queue child modules for processing.
         let base_dir = src_path.parent().unwrap();
