@@ -28,7 +28,7 @@ env:
   ZC_NIGHTLY_RUSTFLAGS: -Zrandomize-layout
   ZC_NIGHTLY_MIRIFLAGS: "-Zmiri-strict-provenance -Zmiri-backtrace=full"
 
-jobs:
+jobs:    
   build_test:
     runs-on: ubuntu-latest
     # Generate and populate the global Cargo registry and cache first. Each
@@ -379,7 +379,8 @@ jobs:
           $FEATURES \
           --verbose \
           -- \
-          --skip ui
+          --skip ui \
+          --skip codegen
 
       # Only run tests when targetting Linux x86 (32- or 64-bit) - we're
       # executing on Linux x86_64, so we can't run tests for any non-x86 target.
@@ -387,6 +388,22 @@ jobs:
       # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
       # Run compile tests when building for other targets.
       if: contains(matrix.target, 'linux') && (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686'))
+
+    - name: Run codegen tests
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: |
+        ./cargo.sh +nightly install cargo-show-asm
+        ./cargo.sh +$TOOLCHAIN test \
+          --package $CRATE \
+          --target $TARGET \
+          $FEATURES \
+          --verbose \
+          codegen
+      if: matrix.toolchain == 'nightly' && matrix.target == 'x86_64-unknown-linux-gnu'
 
     - name: Run UI tests
       env:
