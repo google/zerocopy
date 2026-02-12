@@ -38,7 +38,23 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         // deterministic ordering for testing (not important in production).
         let mut start_from = artifact.start_from.clone();
         start_from.sort();
-        cmd.arg("--start-from").arg(start_from.join(","));
+
+        let start_from_str = start_from.join(",");
+        // OS command-line length limits (Windows is ~32k; Linux `ARG_MAX` is
+        // usually larger, but variable)
+        const ARG_CHAR_LIMIT: usize = 32_768;
+        if start_from_str.len() > ARG_CHAR_LIMIT {
+            // FIXME: Pass the list of entry points to Charon via a file instead
+            // of the command line.
+            bail!(
+                "The list of Hermes entry points for package '{}' is too large ({} bytes). \n\
+                 This exceeds safe OS command-line limits.",
+                artifact.name.package_name,
+                start_from_str.len()
+            );
+        }
+
+        cmd.arg("--start-from").arg(start_from_str);
 
         // Separator for the underlying cargo command
         cmd.arg("--");
