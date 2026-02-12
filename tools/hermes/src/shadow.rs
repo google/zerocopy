@@ -7,7 +7,6 @@ use std::{
 };
 
 use anyhow::{Context, Result};
-use cargo_metadata::PackageName;
 use dashmap::DashSet;
 use walkdir::WalkDir;
 
@@ -19,8 +18,8 @@ use crate::{
 pub struct HermesArtifact {
     pub name: HermesTargetName,
     pub target_kind: HermesTargetKind,
-    /// The path to the shadow crate's `Cargo.toml`.
-    pub shadow_manifest_path: PathBuf,
+    /// The path to the crate's `Cargo.toml`.
+    pub manifest_path: PathBuf,
     pub start_from: Vec<String>,
 }
 
@@ -37,10 +36,9 @@ impl HermesArtifact {
         }
 
         // Double-hash to make sure we can distinguish between e.g.
-        // (shadow_manifest_path, target_name) = ("abc", "def") and ("ab",
-        // "cdef"), which would hash identically if we just hashed their
-        // concatenation.
-        let h0 = hash(&self.shadow_manifest_path);
+        // (manifest_path, target_name) = ("abc", "def") and ("ab", "cdef"),
+        // which would hash identically if we just hashed their concatenation.
+        let h0 = hash(&self.manifest_path);
         let h1 = hash(&self.name.target_name);
         let h = hash(&[h0, h1]);
         format!("{}-{}-{:08x}.llbc", self.name.package_name, self.name.target_name, h)
@@ -54,28 +52,11 @@ impl HermesArtifact {
 /// 2. Creates symlinks for the remaining skeleton.
 pub fn build_shadow_crate(roots: &Roots) -> Result<Vec<HermesArtifact>> {
     log::trace!("build_shadow_crate({:?})", roots);
-    let shadow_root = roots.shadow_root();
-    if shadow_root.exists() {
-        fs::remove_dir_all(&shadow_root).context("Failed to clear shadow root")?;
-    }
-    fs::create_dir_all(&shadow_root).context("Failed to create shadow root")?;
 
     let visited_paths = DashSet::new();
     let (err_tx, err_rx) = mpsc::channel();
     // Items are `((PackageName, TargetName), ItemPath)`.
     let (path_tx, path_rx) = mpsc::channel::<(HermesTargetName, String)>();
-
-    let mut shadow_manifest_paths: HashMap<PackageName, PathBuf> = HashMap::new();
-    for target in &roots.roots {
-        if !shadow_manifest_paths.contains_key(&target.name.package_name) {
-            let relative_manifest_path = find_package_root(&target.src_path)?
-                .strip_prefix(&roots.workspace)
-                .context("Package root outside workspace")?
-                .join("Cargo.toml");
-            let shadow_manifest_path = shadow_root.join(&relative_manifest_path);
-            shadow_manifest_paths.insert(target.name.package_name.clone(), shadow_manifest_path);
-        }
-    }
 
     let monitor_handle = std::thread::spawn(move || {
         let mut error_count = 0;
@@ -137,23 +118,17 @@ pub fn build_shadow_crate(roots: &Roots) -> Result<Vec<HermesArtifact>> {
         return Err(anyhow::anyhow!("Aborting due to {} previous errors.", count));
     }
 
-    let skip_paths: HashSet<PathBuf> = visited_paths.into_iter().collect();
-    create_symlink_skeleton(&roots.workspace, &shadow_root, &roots.cargo_target_dir, &skip_paths)?;
-
     Ok(roots
         .roots
         .iter()
         .filter_map(|target| {
-            // We know that every root has a shadow manifest path, because we
-            // inserted one for each package that has a root.
-            let shadow_manifest_path =
-                shadow_manifest_paths.get(&target.name.package_name).unwrap();
+            let manifest_path = find_package_root(&target.src_path).ok()?.join("Cargo.toml");
             let start_from = entry_points.remove(&target.name)?;
 
             Some(HermesArtifact {
                 name: target.name.clone(),
                 target_kind: target.kind,
-                shadow_manifest_path: shadow_manifest_path.clone(),
+                manifest_path,
                 start_from,
             })
         })
@@ -323,62 +298,4 @@ fn resolve_module_path(
     }
 
     None
-}
-
-fn create_symlink_skeleton(
-    source_root: &Path,
-    dest_root: &Path,
-    target_dir: &Path,
-    skip_paths: &HashSet<PathBuf>,
-) -> Result<()> {
-    log::trace!("create_symlink_skeleton(source_root: {:?}, dest_root: {:?}, target_dir: {:?}, skip_paths_count: {})", source_root, dest_root, target_dir, skip_paths.len());
-    let walker = WalkDir::new(source_root)
-        .follow_links(false) // Security: don't follow symlinks out of the root.
-        .into_iter();
-
-    let filter = |e: &walkdir::DirEntry| {
-        let p = e.path();
-        // Normally, we expect the `dest_root` to be inside of `target_dir`,
-        // so checking both is redundant. However, if we ever add the option
-        // for the user to manually specify a `dest_root` that is outside of
-        // `target_dir`, this check will prevent us from infinitely recursing
-        // into the source root.
-        p != target_dir && p != dest_root && e.file_name() != ".git"
-    };
-
-    for entry in walker.filter_entry(filter) {
-        let entry = entry.context("Failed to read directory entry")?;
-        let src_path = entry.path();
-
-        let relative_path =
-            src_path.strip_prefix(source_root).context("File is not inside source root")?;
-        let dest_path = dest_root.join(relative_path);
-
-        if entry.file_type().is_dir() {
-            fs::create_dir_all(&dest_path)
-                .with_context(|| format!("Failed to create shadow directory: {:?}", dest_path))?;
-            continue;
-        }
-
-        if entry.file_type().is_file() && !skip_paths.contains(src_path) {
-            make_symlink(src_path, &dest_path)?;
-        }
-    }
-
-    Ok(())
-}
-
-#[cfg(unix)]
-fn make_symlink(original: &Path, link: &Path) -> Result<()> {
-    std::os::unix::fs::symlink(original, link)
-        .with_context(|| format!("Failed to symlink {:?} -> {:?}", original, link))
-}
-
-#[cfg(windows)]
-fn make_symlink(original: &Path, link: &Path) -> Result<()> {
-    // Windows treats file and directory symlinks differently.
-    // Since we only call this on files (checking is_file above),
-    // we use symlink_file.
-    std::os::windows::fs::symlink_file(original, link)
-        .with_context(|| format!("Failed to symlink {:?} -> {:?}", original, link))
 }
