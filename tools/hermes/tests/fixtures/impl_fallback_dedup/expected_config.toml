@@ -1,0 +1,6 @@
+[[command]]
+# Assert that the start-from arg contains `crate::my_module` EXACTLY ONCE, 
+# proving that all inner items successfully fell back to the module,
+# and that `dedup()` successfully prevented string explosion.
+args = ["--start-from", "crate::my_module,crate::my_module::Bar"]
+should_not_exist = false

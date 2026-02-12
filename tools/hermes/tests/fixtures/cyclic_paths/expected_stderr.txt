@@ -1,0 +1,11 @@
+
+  × circular modules: src/lib.rs -> src/lib.rs
+   ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
+ 1 │ #[path = "lib.rs"]
+ 2 │ mod self_loop;
+   · ───────┬──────
+   ·        ╰── 
+ 3 │ 
+   ╰────
+
+Error: Diagnostic error in charon
