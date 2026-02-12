@@ -1,3 +1,3 @@
-/// ```lean
+/// ```lean, hermes
 /// ```
 pub fn foo() {}

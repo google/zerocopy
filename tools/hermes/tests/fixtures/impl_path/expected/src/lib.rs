@@ -1,7 +1,7 @@
 pub struct Foo;
 
 impl Foo {
-    /// ```lean
+    /// ```lean, hermes
     /// ```
     pub fn bar() {}
 }

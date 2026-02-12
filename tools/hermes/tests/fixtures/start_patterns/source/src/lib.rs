@@ -1,9 +1,9 @@
-/// ```lean
+/// ```lean, hermes
 /// ```
 fn foo() {}
 
 mod nested {
-    /// ```lean
+    /// ```lean, hermes
     /// ```
     fn bar() {}
 }

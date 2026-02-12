@@ -1,5 +1,5 @@
 pub fn föö() {}
 
-/// ```lean
+/// ```lean, hermes
 /// ```
 pub fn dummy() {}

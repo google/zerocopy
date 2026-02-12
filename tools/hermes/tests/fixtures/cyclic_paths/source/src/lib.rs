@@ -1,7 +1,7 @@
 #[path = "lib.rs"]
 mod self_loop;
 
-/// ```lean
+/// ```lean, hermes
 /// theorem valid : True := trivial
 /// ```
 pub fn valid() {}
