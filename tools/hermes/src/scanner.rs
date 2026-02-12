@@ -22,11 +22,13 @@ pub struct HermesArtifact {
 }
 
 impl HermesArtifact {
-    /// Returns the name of the `.llbc` file to use for this artifact.
+    /// Returns a unique "slug" for this artifact, used for file naming.
     ///
     /// Guarantees uniqueness based on manifest path even if multiple packages
     /// have the same name.
-    pub fn llbc_file_name(&self) -> String {
+    ///
+    /// Format: `{package_name}-{target_name}-{hash:08x}`
+    pub fn artifact_slug(&self) -> String {
         fn hash<T: Hash>(t: &T) -> u64 {
             let mut s = std::collections::hash_map::DefaultHasher::new();
             t.hash(&mut s);
@@ -40,7 +42,13 @@ impl HermesArtifact {
         let h1 = hash(&self.name.target_name);
         let h2 = hash(&self.target_kind);
         let h = hash(&[h0, h1, h2]);
-        format!("{}-{}-{:08x}.llbc", self.name.package_name, self.name.target_name, h)
+
+        format!("{}-{}-{:08x}", self.name.package_name, self.name.target_name, h)
+    }
+
+    /// Returns the name of the `.llbc` file to use for this artifact.
+    pub fn llbc_file_name(&self) -> String {
+        format!("{}.llbc", self.artifact_slug())
     }
 }
 

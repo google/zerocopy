@@ -18,6 +18,8 @@ struct ArtifactExpectation {
     package: String,
     target: String,
     should_exist: bool,
+    #[serde(default)]
+    kind: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -38,6 +40,12 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let temp = tempdir()?;
     let sandbox_root = temp.path().join(test_name);
     copy_dir_contents(&source_dir, &sandbox_root)?;
+
+    // Copy extra.rs if it exists (for external_path_dep test)
+    let extra_rs = test_case_root.join("extra.rs");
+    if extra_rs.exists() {
+        fs::copy(&extra_rs, temp.path().join("extra.rs"))?;
+    }
 
     // --- SETUP CHARON SHIM ---
     let shim_dir = temp.path().join("bin");
@@ -73,6 +81,27 @@ exec "{1}" "$@"
     perms.set_mode(0o755);
     fs::set_permissions(&shim_path, perms)?;
 
+    // SHIM AENEAS
+    let aeneas_shim_path = shim_dir.join("aeneas");
+    // For now, we mock aeneas by doing nothing but logging arguments.
+    // Real aeneas invocation in tests would require aeneas to be installed.
+    // If we want to mock aeneas output (files), we can do that in the test fixture setup,
+    // or improve this shim to copy files from a mock source.
+    let aeneas_shim_content = format!(
+        r#"#!/bin/sh
+echo "AENEAS INVOKED" >> "{0}"
+for arg in "$@"; do
+    echo "AENEAS_ARG:$arg" >> "{0}"
+done
+echo "---END-INVOCATION---" >> "{0}"
+"#,
+        log_file.display(),
+    );
+    fs::write(&aeneas_shim_path, aeneas_shim_content)?;
+    let mut perms = fs::metadata(&aeneas_shim_path)?.permissions();
+    perms.set_mode(0o755);
+    fs::set_permissions(&aeneas_shim_path, perms)?;
+
     let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
     cmd.env("HERMES_FORCE_TTY", "1");
     cmd.env("FORCE_COLOR", "1");
@@ -95,6 +124,8 @@ exec "{1}" "$@"
     if env_log_file.exists() {
         let log_level = fs::read_to_string(env_log_file)?;
         cmd.env("RUST_LOG", log_level.trim());
+    } else {
+        cmd.env("RUST_LOG", "warn");
     }
 
     // Mock JSON integration
@@ -199,8 +230,8 @@ exec "{1}" "$@"
     }
 
     if !config.artifact.is_empty() {
-        let charon_dir = sandbox_root.join("target/hermes/hermes_test_target/charon");
-        assert_artifacts_match(&charon_dir, &config.artifact)?;
+        let hermes_run_root = sandbox_root.join("target/hermes/hermes_test_target");
+        assert_artifacts_match(&hermes_run_root, &config.artifact)?;
     }
 
     if !config.command.is_empty() {
@@ -269,42 +300,53 @@ fn is_subsequence(haystack: &[String], needle: &[String]) -> bool {
 }
 
 fn assert_artifacts_match(
-    charon_dir: &Path,
+    hermes_run_root: &Path,
     expectations: &[ArtifactExpectation],
 ) -> std::io::Result<()> {
-    if !charon_dir.exists() {
-        if expectations.iter().any(|e| e.should_exist) {
-            panic!("Charon output directory does not exist: {:?}", charon_dir);
-        }
-        return Ok(());
-    }
-
-    // Collect all generated .llbc files
-    let mut generated_files = Vec::new();
-    for entry in fs::read_dir(charon_dir)? {
-        let entry = entry?;
-        let name = entry.file_name().to_string_lossy().to_string();
-        if name.ends_with(".llbc") {
-            generated_files.push(name);
-        }
-    }
+    let llbc_root = hermes_run_root.join("llbc");
+    let lean_root = hermes_run_root.join("lean").join("generated");
 
     for exp in expectations {
-        // We expect filenames format: "{package}-{target}-{hash}.llbc"
-        // Since hash is dynamic, we match on prefix.
-        let prefix = format!("{}-{}-", exp.package, exp.target);
+        let kind = exp.kind.as_deref().unwrap_or("llbc");
+        let (scan_dir, is_dir_match, suffix) = match kind {
+            "llbc" => (&llbc_root, false, ".llbc"),
+            "lean" => (&lean_root, true, ""),
+            _ => panic!("Unknown artifact kind: {}", kind),
+        };
 
-        let found = generated_files.iter().any(|f| f.starts_with(&prefix));
+        if !scan_dir.exists() {
+            if exp.should_exist {
+                panic!("Artifact directory does not exist: {:?}", scan_dir);
+            }
+            continue;
+        }
+
+        let mut found_items = Vec::new();
+        for entry in fs::read_dir(scan_dir)? {
+            let entry = entry?;
+            let name = entry.file_name().to_string_lossy().to_string();
+            if is_dir_match {
+                if entry.file_type()?.is_dir() {
+                    found_items.push(name);
+                }
+            } else if name.ends_with(suffix) {
+                found_items.push(name);
+            }
+        }
+
+        // We match strictly on the slug prefix: "{package}-{target}-"
+        let prefix = format!("{}-{}-", exp.package, exp.target);
+        let found = found_items.iter().any(|f| f.starts_with(&prefix));
 
         if exp.should_exist && !found {
             panic!(
-                "Missing expected artifact for package='{}', target='{}'.\nExpected prefix: '{}'\nFound files: {:?}",
-                exp.package, exp.target, prefix, generated_files
+                "Missing expected artifact for package='{}', target='{}', kind='{}'.\nExpected prefix: '{}'\nFound items in {:?}: {:?}",
+                exp.package, exp.target, kind, prefix, scan_dir, found_items
             );
         } else if !exp.should_exist && found {
             panic!(
-                "Found unexpected artifact for package='{}', target='{}'.\nMatched prefix: '{}'\nFound files: {:?}",
-                exp.package, exp.target, prefix, generated_files
+                "Found unexpected artifact for package='{}', target='{}', kind='{}'.\nMatched prefix: '{}'\nFound items in {:?}: {:?}",
+                exp.package, exp.target, kind, prefix, scan_dir, found_items
             );
         }
     }
