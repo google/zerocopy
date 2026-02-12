@@ -1,5 +1,5 @@
 [package]
-name = "macro_blind_spot"
+name = "cfg_blind_spot"
 version = "0.1.0"
 edition = "2021"
 

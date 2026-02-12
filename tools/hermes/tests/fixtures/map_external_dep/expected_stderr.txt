@@ -1,1 +1,1 @@
-[External Error] external error
+Diagnostic error in charon

@@ -1,0 +1,11 @@
+[[artifact]]
+package = "split_personality_mod"
+target = "split_personality_mod" # The lib target name
+should_exist = true
+kind = "llbc"
+
+[[artifact]]
+package = "split_personality_mod"
+target = "split_personality_mod"
+should_exist = true
+kind = "lean"
