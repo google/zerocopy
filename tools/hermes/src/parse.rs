@@ -7,10 +7,9 @@ use std::{
 use log::{debug, trace};
 use miette::{NamedSource, SourceSpan};
 use proc_macro2::Span;
-use quote::quote;
 use syn::{
     spanned::Spanned as _, visit::Visit, Attribute, Error, Expr, ImplItemFn, ItemEnum, ItemFn,
-    ItemImpl, ItemMod, ItemStruct, ItemTrait, ItemUnion, Lit, Meta,
+    ItemImpl, ItemMod, ItemStruct, ItemTrait, ItemUnion, Lit, Meta, TraitItemFn,
 };
 
 use crate::errors::HermesError;
@@ -44,6 +43,7 @@ pub enum ParsedItem {
     Trait(ItemTrait),
     Impl(ItemImpl),
     ImplItemFn(ImplItemFn),
+    TraitItemFn(TraitItemFn),
 }
 
 impl ParsedItem {
@@ -55,6 +55,7 @@ impl ParsedItem {
             Self::Union(item) => Some(item.ident.to_string()),
             Self::Trait(item) => Some(item.ident.to_string()),
             Self::ImplItemFn(item) => Some(item.sig.ident.to_string()),
+            Self::TraitItemFn(item) => Some(item.sig.ident.to_string()),
             Self::Impl(_) => None,
         }
     }
@@ -69,6 +70,7 @@ impl ParsedItem {
             Self::Trait(item) => &item.attrs,
             Self::Impl(item) => &item.attrs,
             Self::ImplItemFn(item) => &item.attrs,
+            Self::TraitItemFn(item) => &item.attrs,
         }
     }
 }
@@ -89,6 +91,8 @@ pub struct UnloadedModule {
     /// The value of `#[path = "..."]` if present.
     pub path_attr: Option<String>,
     pub span: proc_macro2::Span,
+    /// True if this module was declared inside a block.
+    pub inside_block: bool,
 }
 
 /// Parses the given Rust source code and invokes the callback `f` for each item
@@ -103,29 +107,35 @@ where
     F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
 {
     let mut unloaded_modules = Vec::new();
-    scan_compilation_unit_internal(source, None, f, |m| unloaded_modules.push(m));
+    scan_compilation_unit_internal(source, None, false, f, |m| unloaded_modules.push(m));
     unloaded_modules
 }
 
 /// Like [`scan_compilation_unit`], but reads the source code from a file path.
 ///
 /// Parsing errors and generated items will be associated with this file path.
+///
+/// Set `inside_block = true` if this file was discovered via a `mod foo;` item
+/// inside of a block.
 pub fn read_file_and_scan_compilation_unit<F>(
     path: &Path,
+    inside_block: bool,
     f: F,
 ) -> Result<(String, Vec<UnloadedModule>), io::Error>
 where
     F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
 {
-    log::trace!("read_file_and_scan_compilation_unit({:?})", path);
+    log::trace!("read_file_and_scan_compilation_unit({:?}, inside_block={})", path, inside_block);
     let source = fs::read_to_string(path)?;
-    let unloaded_modules = scan_compilation_unit(&source, f);
+    let mut unloaded_modules = Vec::new();
+    scan_compilation_unit_internal(&source, None, inside_block, f, |m| unloaded_modules.push(m));
     Ok((source, unloaded_modules))
 }
 
 fn scan_compilation_unit_internal<I, M>(
     source: &str,
     source_file: Option<PathBuf>,
+    inside_block: bool,
     mut item_cb: I,
     mod_cb: M,
 ) where
@@ -141,10 +151,6 @@ fn scan_compilation_unit_internal<I, M>(
 
         f
     };
-    let _x = source_file
-        .as_ref()
-        .map(|p| p.display().to_string())
-        .unwrap_or_else(|| "<input>".to_string());
     let named_source = miette::NamedSource::new(file_name, source.to_string());
     let file = match syn::parse_file(source) {
         Ok(file) => {
@@ -168,7 +174,7 @@ fn scan_compilation_unit_internal<I, M>(
     trace!("Initializing HermesVisitor to traverse AST");
     let mut visitor = HermesVisitor {
         current_path: Vec::new(),
-        inside_block: false,
+        inside_block,
         item_cb,
         mod_cb,
         source_file,
@@ -195,8 +201,7 @@ where
     I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
     M: FnMut(UnloadedModule),
 {
-    fn check_and_add(&mut self, item: ParsedItem, span: Span) {
-        // NEW: Check nesting
+    fn process_item(&mut self, item: ParsedItem, span: Span) {
         if self.inside_block {
             // Only check attributes if we are in a body to see if we need to
             // error. We want to avoid erroring on un-annotated local items.
@@ -268,6 +273,7 @@ where
                 name: mod_name.clone(),
                 path_attr: extract_path_attr(&node.attrs),
                 span: node.span(),
+                inside_block: self.inside_block,
             });
         }
 
@@ -290,32 +296,32 @@ where
 
     fn visit_item_fn(&mut self, node: &'ast ItemFn) {
         trace!("Visiting Fn {}", node.sig.ident);
-        self.check_and_add(ParsedItem::Fn(node.clone()), node.span());
+        self.process_item(ParsedItem::Fn(node.clone()), node.span());
         syn::visit::visit_item_fn(self, node);
     }
 
     fn visit_item_struct(&mut self, node: &'ast ItemStruct) {
         trace!("Visiting Struct {}", node.ident);
-        self.check_and_add(ParsedItem::Struct(node.clone()), node.span());
+        self.process_item(ParsedItem::Struct(node.clone()), node.span());
         syn::visit::visit_item_struct(self, node);
     }
 
     fn visit_item_enum(&mut self, node: &'ast ItemEnum) {
         trace!("Visiting Enum {}", node.ident);
-        self.check_and_add(ParsedItem::Enum(node.clone()), node.span());
+        self.process_item(ParsedItem::Enum(node.clone()), node.span());
         syn::visit::visit_item_enum(self, node);
     }
 
     fn visit_item_union(&mut self, node: &'ast ItemUnion) {
         trace!("Visiting Union {}", node.ident);
-        self.check_and_add(ParsedItem::Union(node.clone()), node.span());
+        self.process_item(ParsedItem::Union(node.clone()), node.span());
         syn::visit::visit_item_union(self, node);
     }
 
     fn visit_item_trait(&mut self, node: &'ast ItemTrait) {
         let name = node.ident.to_string();
         trace!("Visiting Trait {}", name);
-        self.check_and_add(ParsedItem::Trait(node.clone()), node.span());
+        self.process_item(ParsedItem::Trait(node.clone()), node.span());
 
         self.current_path.push(name);
         syn::visit::visit_item_trait(self, node);
@@ -331,26 +337,20 @@ where
 
     fn visit_item_impl(&mut self, node: &'ast ItemImpl) {
         trace!("Visiting Impl");
-        self.check_and_add(ParsedItem::Impl(node.clone()), node.span());
-
-        // If this is a trait impl, we use UFCS syntax (`<Type as Trait>`). If
-        // this is an inherent impl, we use the `Type: Type` syntax.
-        let self_ty = &node.self_ty;
-        let segment = if let Some((_, path, _)) = &node.trait_ {
-            quote! { <#self_ty as #path> }
-        } else {
-            quote! { #self_ty }
-        };
-
-        self.current_path.push(segment.to_string());
+        self.process_item(ParsedItem::Impl(node.clone()), node.span());
         syn::visit::visit_item_impl(self, node);
-        self.current_path.pop();
     }
 
     fn visit_impl_item_fn(&mut self, node: &'ast ImplItemFn) {
         trace!("Visiting ImplItemFn {}", node.sig.ident);
-        self.check_and_add(ParsedItem::ImplItemFn(node.clone()), node.span());
+        self.process_item(ParsedItem::ImplItemFn(node.clone()), node.span());
         syn::visit::visit_impl_item_fn(self, node);
+    }
+
+    fn visit_trait_item_fn(&mut self, node: &'ast TraitItemFn) {
+        trace!("Visiting TraitItemFn {}", node.sig.ident);
+        self.process_item(ParsedItem::TraitItemFn(node.clone()), node.span());
+        syn::visit::visit_trait_item_fn(self, node);
     }
 }
 
@@ -605,6 +605,7 @@ mod tests {
         scan_compilation_unit_internal(
             code,
             Some(Path::new("src/foo.rs").to_path_buf()),
+            false,
             |source: &str, res| items.push((source.to_string(), res)),
             |_| {},
         );
@@ -689,12 +690,14 @@ mod c {
         scan_compilation_unit_internal(
             code1,
             Some(path.to_path_buf()),
+            false,
             |_src, res| items.push(res),
             |_| {},
         );
         scan_compilation_unit_internal(
             code2,
             Some(path.to_path_buf()),
+            false,
             |_src, res| items.push(res),
             |_| {},
         );

@@ -7,7 +7,6 @@ use std::{
 };
 
 use anyhow::Result;
-use dashmap::DashSet;
 
 use crate::{
     parse,
@@ -39,7 +38,8 @@ impl HermesArtifact {
         // which would hash identically if we just hashed their concatenation.
         let h0 = hash(&self.manifest_path);
         let h1 = hash(&self.name.target_name);
-        let h = hash(&[h0, h1]);
+        let h2 = hash(&self.target_kind);
+        let h = hash(&[h0, h1, h2]);
         format!("{}-{}-{:08x}.llbc", self.name.package_name, self.name.target_name, h)
     }
 }
@@ -49,7 +49,6 @@ impl HermesArtifact {
 pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
     log::trace!("scan_workspace({:?})", roots);
 
-    let visited_paths = DashSet::new();
     let (err_tx, err_rx) = mpsc::channel();
     // Items are `((PackageName, TargetName), ItemPath)`.
     let (path_tx, path_rx) = mpsc::channel::<(HermesTargetName, String)>();
@@ -69,7 +68,6 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
 
     rayon::scope(|s| {
         for target in &roots.roots {
-            let visited = &visited_paths;
             let (err_tx, path_tx) = (err_tx.clone(), path_tx.clone());
             let roots_ref = roots;
 
@@ -84,11 +82,12 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
                     s,
                     &target.src_path,
                     roots_ref,
-                    visited,
                     err_tx,
                     path_tx,
                     initial_prefix,
                     target.name.clone(),
+                    false, // Initial call is top-level, so not inside block
+                    Vec::new(),
                 )
             });
         }
@@ -131,15 +130,21 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
         .collect())
 }
 
+// NOTE: It might be tempting to try to deduplicate files to avoid re-processing
+// a file that is reachable via multiple paths. However, this is incorrect, as
+// this only happens if the file is named in multiple `#[path]` attributes, in
+// which case it logically constitutes a distinct module each time it is
+// referenced.
 fn process_file_recursive<'a>(
     scope: &rayon::Scope<'a>,
     src_path: &Path,
     config: &'a Roots,
-    visited: &'a DashSet<PathBuf>,
     err_tx: Sender<anyhow::Error>,
     path_tx: Sender<(HermesTargetName, String)>,
-    module_prefix: Vec<String>,
+    current_prefix: Vec<String>,
     name: HermesTargetName,
+    inside_block: bool,
+    ancestors: Vec<PathBuf>,
 ) {
     log::trace!("process_file_recursive(src_path: {:?})", src_path);
 
@@ -157,40 +162,57 @@ fn process_file_recursive<'a>(
         }
     };
 
-    if !visited.insert(src_path.clone()) {
+    // Cycle detection: prevent infinite recursion on symlinks or recursive mod
+    // declarations, while still allowing identical files to be mounted in
+    // different branches of the tree. A cycle would represent an invalid crate
+    // anyway (i.e., an invalid set of `#[path]` attributes).
+    if ancestors.contains(&src_path) {
         return;
     }
+    let mut current_ancestors = ancestors.clone();
+    current_ancestors.push(src_path.clone());
 
-    // Walk the AST, collecting new modules to process.
-    let (_source_code, unloaded_modules) =
-        match parse::read_file_and_scan_compilation_unit(&src_path, |_src, item_result| {
-            match item_result {
-                Ok(parsed_item) => {
-                    if let Some(item_name) = parsed_item.item.name() {
-                        // Calculate the full path to this item.
-                        let mut full_path = module_prefix.clone();
-                        full_path.extend(parsed_item.module_path);
-                        full_path.push(item_name);
+    let result = parse::read_file_and_scan_compilation_unit(
+        &src_path,
+        inside_block,
+        |_src, res| match res {
+            Ok(item) => {
+                let mut full_path = current_prefix.clone();
+                full_path.extend(item.module_path);
 
-                        let _ = path_tx.send((name.clone(), full_path.join("::")));
+                use parse::ParsedItem::*;
+                match &item.item {
+                    // Unreliable syntaxes: we have no way of reliably naming
+                    // these in Charon's `--start-from` argument, so we fall
+                    // back to naming the parent module.
+                    Impl(_) | ImplItemFn(_) | TraitItemFn(_) => {
+                        let start_from = full_path.join("::");
+                        path_tx.send((name.clone(), start_from)).unwrap();
+                    }
+                    // Reliable syntaxes: target the specific item.
+                    _ => {
+                        if let Some(item_name) = item.item.name() {
+                            full_path.push(item_name);
+                            let start_from = full_path.join("::");
+                            log::debug!("Found entry point: {}", start_from);
+                            path_tx.send((name.clone(), start_from)).unwrap();
+                        }
                     }
                 }
-                Err(e) => {
-                    // A parsing error means we either:
-                    // 1. Lost the module graph, causing missing files later.
-                    // 2. Lost a specification, causing unsound verification.
-                    // We must abort the build.
-                    let _ = err_tx.send(anyhow::anyhow!(e));
-                }
             }
-        }) {
-            Ok(res) => res,
             Err(e) => {
-                let _ = err_tx
-                    .send(anyhow::anyhow!(e).context(format!("Failed to parse {:?}", src_path)));
-                return;
+                let _ = err_tx.send(e.into());
             }
-        };
+        },
+    );
+
+    let (_, unloaded_modules) = match result {
+        Ok(res) => res,
+        Err(e) => {
+            let _ = err_tx.send(e.into());
+            return;
+        }
+    };
 
     // Determine the directory to search for child modules in.
     // - For `mod.rs`, `lib.rs`, `main.rs`, children are in the parent directory.
@@ -213,13 +235,24 @@ fn process_file_recursive<'a>(
             // Spawn new tasks for discovered modules.
             let (err_tx, path_tx) = (err_tx.clone(), path_tx.clone());
 
-            let mut new_prefix = module_prefix.clone();
+            let mut new_prefix = current_prefix.clone();
             new_prefix.push(module.name);
 
             let name = name.clone();
+            // TODO: Can we do something more efficient than cloning here? Maybe
+            // a linked list?
+            let ancestors = current_ancestors.clone();
             scope.spawn(move |s| {
                 process_file_recursive(
-                    s, &mod_path, config, visited, err_tx, path_tx, new_prefix, name,
+                    s,
+                    &mod_path,
+                    config,
+                    err_tx,
+                    path_tx,
+                    new_prefix,
+                    name,
+                    module.inside_block,
+                    ancestors,
                 )
             })
         } else {
@@ -270,4 +303,50 @@ fn resolve_module_path(
     }
 
     None
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use cargo_metadata::PackageName;
+
+    use super::*;
+    use crate::resolve::{HermesTargetKind, HermesTargetName};
+
+    #[test]
+    fn test_llbc_file_name_collision() {
+        let name_lib = HermesTargetName {
+            package_name: PackageName::new("pkg".to_string()),
+            target_name: "name".to_string(),
+            kind: HermesTargetKind::Lib,
+        };
+
+        let artifact_lib = HermesArtifact {
+            name: name_lib,
+            target_kind: HermesTargetKind::Lib,
+            manifest_path: PathBuf::from("Cargo.toml"),
+            start_from: vec![],
+        };
+
+        let name_bin = HermesTargetName {
+            package_name: PackageName::new("pkg".to_string()),
+            target_name: "name".to_string(),
+            kind: HermesTargetKind::Bin,
+        };
+
+        let artifact_bin = HermesArtifact {
+            name: name_bin,
+            target_kind: HermesTargetKind::Bin,
+            manifest_path: PathBuf::from("Cargo.toml"),
+            start_from: vec![],
+        };
+
+        // Verify that the file names are distinct, and that they're distinct
+        // *because of the trailing hash* (ie, that they have identical
+        // prefixes).
+        assert_ne!(artifact_lib.llbc_file_name(), artifact_bin.llbc_file_name());
+        assert!(artifact_lib.llbc_file_name().starts_with("pkg-name-"));
+        assert!(artifact_bin.llbc_file_name().starts_with("pkg-name-"));
+    }
 }
