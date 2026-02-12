@@ -9,7 +9,6 @@ use miette::{NamedSource, Report, SourceOffset};
 use thiserror::Error;
 
 pub struct DiagnosticMapper {
-    shadow_root: PathBuf,
     user_root: PathBuf,
     user_root_canonical: PathBuf,
     source_cache: HashMap<PathBuf, String>,
@@ -53,21 +52,16 @@ impl miette::Diagnostic for MappedError {
 }
 
 impl DiagnosticMapper {
-    pub fn new(shadow_root: PathBuf, user_root: PathBuf) -> Self {
+    pub fn new(user_root: PathBuf) -> Self {
         let user_root_canonical =
             fs::canonicalize(&user_root).unwrap_or_else(|_| user_root.clone());
-        Self { shadow_root, user_root, user_root_canonical, source_cache: HashMap::new() }
+        Self { user_root, user_root_canonical, source_cache: HashMap::new() }
     }
 
     pub fn map_path(&self, path: &Path) -> Option<PathBuf> {
         let mut p = path.to_path_buf();
         if p.is_relative() {
             p = self.user_root.join(p);
-        }
-
-        // Strategy A: Starts with shadow_root
-        if let Ok(suffix) = p.strip_prefix(&self.shadow_root) {
-            return Some(self.user_root.join(suffix));
         }
 
         // Strategy B: Starts with user_root or user_root_canonical

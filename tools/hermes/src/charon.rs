@@ -116,11 +116,7 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         if let Some(stdout) = child.stdout.take() {
             let reader = BufReader::new(stdout);
 
-            let mut mapper = crate::diagnostics::DiagnosticMapper::new(
-                roots.workspace.clone(),
-                roots.workspace.clone(),
-            );
-
+            let mut mapper = crate::diagnostics::DiagnosticMapper::new(roots.workspace.clone());
             for line in reader.lines() {
                 if let Ok(line) = line {
                     if let Ok(msg) = serde_json::from_str::<cargo_metadata::Message>(&line) {
