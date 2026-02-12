@@ -1,4 +1,4 @@
-/// ```lean
+/// ```lean, hermes
 /// model foo 
 /// ```
 unsafe fn foo() -> i32 {

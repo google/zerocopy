@@ -1,4 +1,4 @@
-/// ```lean
+/// ```lean, hermes
 /// ```
 #[warn(unused_variables)]
 pub fn foo() {

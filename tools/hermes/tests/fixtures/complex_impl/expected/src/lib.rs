@@ -5,21 +5,21 @@ pub trait T3 { fn m3(); }
 
 // Case 1: Raw Pointer (*const Foo)
 impl T1 for *const Foo {
-    /// ```lean
+    /// ```lean, hermes
     /// ```
     fn m1() {}
 }
 
 // Case 2: Slice ([Foo])
 impl T2 for [Foo] {
-    /// ```lean
+    /// ```lean, hermes
     /// ```
     fn m2() {}
 }
 
 // Case 3: Array ([Foo; 5])
 impl T3 for [Foo; 5] {
-    /// ```lean
+    /// ```lean, hermes
     /// ```
     fn m3() {}
 }
