@@ -12,9 +12,9 @@ use crate::{
 };
 
 pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Result<()> {
-    let charon_root = roots.charon_root();
+    let llbc_root = roots.llbc_root();
 
-    std::fs::create_dir_all(&charon_root).context("Failed to create charon output directory")?;
+    std::fs::create_dir_all(&llbc_root).context("Failed to create LLBC output directory")?;
 
     for artifact in packages {
         if artifact.start_from.is_empty() {
@@ -26,8 +26,8 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         let mut cmd = Command::new("charon");
         cmd.arg("cargo");
 
-        // Output artifacts to target/hermes/<hash>/charon
-        let llbc_path = charon_root.join(artifact.llbc_file_name());
+        // Output artifacts to target/hermes/<hash>/llbc
+        let llbc_path = llbc_root.join(artifact.llbc_file_name());
         log::debug!("Writing .llbc file to {}", llbc_path.display());
         cmd.arg("--dest-file").arg(llbc_path);
 

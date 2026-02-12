@@ -1,1 +1,1 @@
-Error: No Hermes annotations (/// ```lean ...) found in the selected targets. Nothing to verify.
+No Hermes annotations (/// ```lean ...) found in the selected targets. Nothing to verify.
