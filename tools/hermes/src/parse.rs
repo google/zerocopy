@@ -271,6 +271,16 @@ where
             });
         }
 
+        if let Some(path_attr) = extract_cfg_attr_path(&node.attrs) {
+            log::warn!(
+                "Module '{}' uses a #[cfg_attr(..., path = \"{}\")] directive. \
+                 Hermes does not currently evaluate conditional paths; \
+                 Hermes annotations in this file may be ignored.",
+                mod_name,
+                path_attr
+            );
+        }
+
         trace!("Entering module: {}", mod_name);
         self.current_path.push(mod_name);
         syn::visit::visit_item_mod(self, node);
@@ -441,6 +451,34 @@ fn extract_path_attr(attrs: &[Attribute]) -> Option<String> {
                         return Some(lit_str.value());
                     }
                 }
+            }
+        }
+    }
+    None
+}
+
+/// Extracts the `...` from `#[cfg_attr(..., path = "...")]` if present.
+fn extract_cfg_attr_path(attrs: &[Attribute]) -> Option<String> {
+    for attr in attrs {
+        if attr.path().is_ident("cfg_attr") {
+            let mut found_path = None;
+            // The syntax is `#[cfg_attr(condition, attr1, attr2, ...)]`; we
+            // parse the nested meta items.
+            let _ = attr.parse_nested_meta(|meta| {
+                if meta.path.is_ident("path") {
+                    if let Ok(value) = meta.value() {
+                        if let Ok(lit) = value.parse::<Lit>() {
+                            if let Lit::Str(lit_str) = lit {
+                                found_path = Some(lit_str.value());
+                            }
+                        }
+                    }
+                }
+                Ok(())
+            });
+
+            if let Some(p) = found_path {
+                return Some(p);
             }
         }
     }
