@@ -1,8 +1,10 @@
 pub fn outer_logic() {
-    // This module declaration is hidden inside a function.
-    // Hermes must NOT load `hidden.rs`.
-    #[path = "hidden.rs"]
-    mod hidden;
+    mod inner {
+        // Despite living in `mod inner`, `inner` itself is hidden inside a
+        // function. Hermes must reject all annotated items inside `mod hidden`.
+        #[path = "hidden.rs"]
+        mod hidden;
+    }
 }
 
 /// ```lean
