@@ -1,11 +1,1 @@
-× mismatched types
-   ╭─[[PROJECT_ROOT]/src/lib.rs:4:11]
- 3 │ /// ```
- 4 │ unsafe fn foo() -> i32 {
-   ·           ─┬─      ─┬─
-   ·            │        ╰── expected `i32`, found `()`
-   ·            ╰── implicitly returns `()` as its body has no tail or `return` expression
- 5 │     1 + 1
-   ╰────
 
-[External Info] For more information about this error, try `rustc --explain E0308`.
