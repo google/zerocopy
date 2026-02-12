@@ -1,5 +1,5 @@
 fn main() {}
 
-/// ```lean
+/// ```lean, hermes
 /// ```
 pub fn dummy() {}
