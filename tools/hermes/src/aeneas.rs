@@ -24,6 +24,10 @@ pub fn run_aeneas(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
 
         std::fs::create_dir_all(&output_dir).context("Failed to create Aeneas output directory")?;
 
+        let spec_code = crate::generate::generate_artifact(artifact);
+        let spec_path = output_dir.join("Hermes.lean");
+        std::fs::write(&spec_path, spec_code).context("Failed to write Hermes.lean")?;
+
         let mut cmd = Command::new("aeneas");
 
         cmd.args(["-backend", "lean"]).arg("-dest").arg(&output_dir).args([
