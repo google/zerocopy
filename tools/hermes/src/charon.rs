@@ -71,25 +71,13 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
 
         cmd.arg("--manifest-path").arg(&artifact.manifest_path);
 
+        use HermesTargetKind::*;
         match artifact.target_kind {
-            HermesTargetKind::Lib
-            | HermesTargetKind::RLib
-            | HermesTargetKind::ProcMacro
-            | HermesTargetKind::CDyLib
-            | HermesTargetKind::DyLib
-            | HermesTargetKind::StaticLib => {
-                cmd.arg("--lib");
-            }
-            HermesTargetKind::Bin => {
-                cmd.arg("--bin").arg(&artifact.name.target_name);
-            }
-            HermesTargetKind::Example => {
-                cmd.arg("--example").arg(&artifact.name.target_name);
-            }
-            HermesTargetKind::Test => {
-                cmd.arg("--test").arg(&artifact.name.target_name);
-            }
-        }
+            Lib | RLib | ProcMacro | CDyLib | DyLib | StaticLib => cmd.arg("--lib"),
+            Bin => cmd.args(["--bin", &artifact.name.target_name]),
+            Example => cmd.args(["--example", &artifact.name.target_name]),
+            Test => cmd.args(["--test", &artifact.name.target_name]),
+        };
 
         // Forward all feature-related flags.
         if args.features.all_features {
@@ -119,12 +107,8 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
             std::thread::spawn(move || {
                 use std::io::{BufRead, BufReader};
                 let reader = BufReader::new(stderr);
-                for line in reader.lines() {
-                    if let Ok(line) = line {
-                        if let Ok(mut buf) = safety_buffer_clone.lock() {
-                            buf.push(line);
-                        }
-                    }
+                for line in reader.lines().map_while(Result::ok) {
+                    safety_buffer_clone.lock().unwrap().push(line);
                 }
             });
         }
@@ -140,36 +124,30 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
             let reader = BufReader::new(stdout);
 
             let mut mapper = crate::diagnostics::DiagnosticMapper::new(roots.workspace.clone());
-            for line in reader.lines() {
-                if let Ok(line) = line {
-                    if let Ok(msg) = serde_json::from_str::<cargo_metadata::Message>(&line) {
-                        match msg {
-                            Message::CompilerArtifact(a) => {
-                                pb.set_message(format!("Compiling {}", a.target.name));
-                            }
-                            Message::CompilerMessage(msg) => {
-                                pb.suspend(|| {
-                                    mapper.render_miette(&msg.message, |s| eprintln!("{}", s));
-                                });
-                                if matches!(
-                                    msg.message.level,
-                                    DiagnosticLevel::Error | DiagnosticLevel::Ice
-                                ) {
-                                    output_error = true;
-                                }
-                            }
-                            Message::TextLine(t) => {
-                                if let Ok(mut buf) = safety_buffer.lock() {
-                                    buf.push(t);
-                                }
-                            }
-                            _ => {}
+            for line in reader.lines().map_while(Result::ok) {
+                if let Ok(msg) = serde_json::from_str::<cargo_metadata::Message>(&line) {
+                    match msg {
+                        Message::CompilerArtifact(a) => {
+                            pb.set_message(format!("Compiling {}", a.target.name));
                         }
-                    } else {
-                        if let Ok(mut buf) = safety_buffer.lock() {
-                            buf.push(line);
+                        Message::CompilerMessage(msg) => {
+                            pb.suspend(|| {
+                                mapper.render_miette(&msg.message, |s| eprintln!("{}", s));
+                            });
+                            if matches!(
+                                msg.message.level,
+                                DiagnosticLevel::Error | DiagnosticLevel::Ice
+                            ) {
+                                output_error = true;
+                            }
                         }
+                        Message::TextLine(t) => {
+                            safety_buffer.lock().unwrap().push(t);
+                        }
+                        _ => {}
                     }
+                } else {
+                    safety_buffer.lock().unwrap().push(line);
                 }
             }
         }
@@ -187,10 +165,8 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
             bail!("Diagnostic error in charon");
         } else if !status.success() {
             // "Silent Death" dump
-            if let Ok(buf) = safety_buffer.lock() {
-                for line in buf.iter() {
-                    eprintln!("{}", line);
-                }
+            for line in safety_buffer.lock().unwrap().iter() {
+                eprintln!("{}", line);
             }
             bail!("Charon failed with status: {}", status);
         }

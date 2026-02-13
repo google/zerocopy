@@ -171,18 +171,16 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
             continue;
         }
 
-        for (target, kind) in targets {
-            roots.roots.push(HermesTarget {
-                name: HermesTargetName {
-                    package_name: package.name.clone(),
-                    target_name: target.name.clone(),
-                    kind,
-                },
+        roots.roots.extend(targets.into_iter().map(|(target, kind)| HermesTarget {
+            name: HermesTargetName {
+                package_name: package.name.clone(),
+                target_name: target.name.clone(),
                 kind,
-                src_path: target.src_path.as_std_path().to_owned(),
-                manifest_path: package.manifest_path.as_std_path().to_owned(),
-            });
-        }
+            },
+            kind,
+            src_path: target.src_path.as_std_path().to_owned(),
+            manifest_path: package.manifest_path.as_std_path().to_owned(),
+        }));
     }
 
     Ok(roots)
@@ -218,25 +216,25 @@ fn resolve_packages<'a>(
     args: &clap_cargo::Workspace,
 ) -> Result<Vec<&'a Package>> {
     log::trace!("resolve_packages(workspace: {}, all: {})", args.workspace, args.all);
-    let mut packages = Vec::new();
-
-    if !args.package.is_empty() {
+    let mut packages = if !args.package.is_empty() {
         // Resolve explicitly selected packages (-p / --package)
-        for name in &args.package {
-            let pkg = metadata
-                .packages
-                .iter()
-                .find(|p| p.name == name)
-                .ok_or_else(|| anyhow!("Package '{}' not found in workspace", name))?;
-            packages.push(pkg);
-        }
+        args.package
+            .iter()
+            .map(|name| {
+                metadata
+                    .packages
+                    .iter()
+                    .find(|p| p.name == *name)
+                    .ok_or_else(|| anyhow!("Package '{}' not found in workspace", name))
+            })
+            .collect::<Result<Vec<_>>>()?
     } else if args.workspace || args.all {
         // Resolve entire workspace (--workspace / --all)
-        for id in &metadata.workspace_members {
-            if let Some(pkg) = metadata.packages.iter().find(|p| &p.id == id) {
-                packages.push(pkg);
-            }
-        }
+        metadata
+            .workspace_members
+            .iter()
+            .filter_map(|id| metadata.packages.iter().find(|p| &p.id == id))
+            .collect()
     } else {
         // Resolve default (Current Working Directory)
         let cwd = env::current_dir()
@@ -251,23 +249,23 @@ fn resolve_packages<'a>(
         });
 
         if let Some(pkg) = current_pkg {
-            packages.push(pkg);
+            vec![pkg]
         } else {
             // Fallback: If we are at the workspace root (virtual manifest),
             // behave like --workspace.
             if cwd == metadata.workspace_root.as_std_path() {
-                for id in &metadata.workspace_members {
-                    if let Some(pkg) = metadata.packages.iter().find(|p| &p.id == id) {
-                        packages.push(pkg);
-                    }
-                }
+                metadata
+                    .workspace_members
+                    .iter()
+                    .filter_map(|id| metadata.packages.iter().find(|p| &p.id == id))
+                    .collect()
             } else {
                 return Err(anyhow!(
                     "Could not determine package from current directory. Please use -p <NAME> or --workspace."
                 ));
             }
         }
-    }
+    };
 
     // Filter out excluded packages (--exclude)
     if !args.exclude.is_empty() {
@@ -286,9 +284,6 @@ fn resolve_targets<'a>(
     args: &Args,
 ) -> Result<Vec<(&'a Target, HermesTargetKind)>> {
     log::trace!("resolve_targets({})", package.name);
-    let mut selected_artifacts = Vec::new();
-
-    // If no specific target flags are set, default to libs + bins.
     let default_mode = !args.lib
         && args.bin.is_empty()
         && !args.bins
@@ -297,46 +292,30 @@ fn resolve_targets<'a>(
         && args.test.is_empty()
         && !args.tests;
 
-    for target in &package.targets {
-        for raw_kind in &target.kind {
-            // 1. Try to convert to our supported internal kind.
-            // If it fails (e.g., Bench, CustomBuild), we skip it immediately.
-            let Ok(kind) = HermesTargetKind::try_from(raw_kind) else {
-                continue;
-            };
+    let selected_artifacts: Vec<_> = package
+        .targets
+        .iter()
+        .flat_map(|target| {
+            target.kind.iter().filter_map(move |raw_kind| {
+                let kind = HermesTargetKind::try_from(raw_kind).ok()?;
 
-            // 2. Check against user flags using the helper and clean matches.
-            let include = if default_mode {
-                kind.is_lib() || kind == HermesTargetKind::Bin
-            } else {
-                let explicitly_lib = args.lib && kind.is_lib();
+                let include = if default_mode {
+                    kind.is_lib() || kind == HermesTargetKind::Bin
+                } else {
+                    (args.lib && kind.is_lib())
+                        || (args.bins && kind == HermesTargetKind::Bin)
+                        || (args.bin.contains(&target.name) && kind == HermesTargetKind::Bin)
+                        || (args.examples && kind == HermesTargetKind::Example)
+                        || (args.example.contains(&target.name)
+                            && kind == HermesTargetKind::Example)
+                        || (args.tests && kind == HermesTargetKind::Test)
+                        || (args.test.contains(&target.name) && kind == HermesTargetKind::Test)
+                };
 
-                let explicitly_all_bins = args.bins && kind == HermesTargetKind::Bin;
-                let explicitly_named_bin =
-                    args.bin.contains(&target.name) && kind == HermesTargetKind::Bin;
-
-                let explicitly_all_examples = args.examples && kind == HermesTargetKind::Example;
-                let explicitly_named_example =
-                    args.example.contains(&target.name) && kind == HermesTargetKind::Example;
-
-                let explicitly_all_tests = args.tests && kind == HermesTargetKind::Test;
-                let explicitly_named_test =
-                    args.test.contains(&target.name) && kind == HermesTargetKind::Test;
-
-                explicitly_lib
-                    || explicitly_all_bins
-                    || explicitly_named_bin
-                    || explicitly_all_examples
-                    || explicitly_named_example
-                    || explicitly_all_tests
-                    || explicitly_named_test
-            };
-
-            if include {
-                selected_artifacts.push((target, kind));
-            }
-        }
-    }
+                include.then_some((target, kind))
+            })
+        })
+        .collect();
 
     Ok(selected_artifacts)
 }

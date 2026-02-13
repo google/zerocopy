@@ -15,7 +15,7 @@ pub fn run() {
     let args: Vec<String> = env::args().collect();
 
     // Spoof version if requested
-    if args.contains(&"-vV".to_string()) || args.contains(&"--version".to_string()) {
+    if args.iter().any(|a| matches!(a.as_str(), "-vV" | "--version")) {
         println!("rustc 1.93.0-nightly (hermes-shim)");
         println!("binary: rustc");
         println!("commit-hash: 0000000000000000000000000000000000000000");
