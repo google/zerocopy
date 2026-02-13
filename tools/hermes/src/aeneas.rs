@@ -26,12 +26,12 @@ pub fn run_aeneas(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
 
         let mut cmd = Command::new("aeneas");
 
-        cmd.arg("-backend").arg("lean");
-        cmd.arg("-dest").arg(&output_dir);
-        cmd.arg("-split-files");
-        cmd.arg("-no-lean-default-lakefile");
-        cmd.arg("-decreases-clauses");
-        cmd.arg("-abort-on-error");
+        cmd.args(["-backend", "lean"]).arg("-dest").arg(&output_dir).args([
+            "-split-files",
+            "-no-lean-default-lakefile",
+            "-decreases-clauses",
+            "-abort-on-error",
+        ]);
 
         // TODO: Handle opaque functions (`unsafe(axiom)`).
         // We need to parse these from the AST and pass them as `-opaque module::params::...`

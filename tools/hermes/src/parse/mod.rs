@@ -15,25 +15,6 @@ use syn::{
 use self::attr::{FunctionHermesBlock, ImplHermesBlock, TraitHermesBlock, TypeHermesBlock};
 use crate::errors::HermesError;
 
-/// A custom error type that associates a `syn::Error` with the file path
-/// it originated from.
-#[derive(Debug)]
-pub struct ParseError {
-    error: Error,
-    source_file: Option<PathBuf>,
-}
-
-impl std::fmt::Display for ParseError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if let Some(path) = &self.source_file {
-            write!(f, "{}: {}", path.display(), self.error)
-        } else {
-            write!(f, "{}", self.error)
-        }
-    }
-}
-impl std::error::Error for ParseError {}
-
 #[derive(Clone, Debug)]
 pub enum FunctionItem {
     Free(ItemFn),
@@ -47,14 +28,6 @@ impl FunctionItem {
             Self::Free(x) => x.sig.ident.to_string(),
             Self::Impl(x) => x.sig.ident.to_string(),
             Self::Trait(x) => x.sig.ident.to_string(),
-        }
-    }
-
-    pub fn attrs(&self) -> &[Attribute] {
-        match self {
-            Self::Free(x) => &x.attrs,
-            Self::Impl(x) => &x.attrs,
-            Self::Trait(x) => &x.attrs,
         }
     }
 }
@@ -74,23 +47,17 @@ impl TypeItem {
             Self::Union(x) => x.ident.to_string(),
         }
     }
-
-    pub fn attrs(&self) -> &[Attribute] {
-        match self {
-            Self::Struct(x) => &x.attrs,
-            Self::Enum(x) => &x.attrs,
-            Self::Union(x) => &x.attrs,
-        }
-    }
 }
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 pub struct HermesDecorated<T, B> {
     pub item: T,
     pub hermes: B,
 }
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 pub enum ParsedItem {
     Function(HermesDecorated<FunctionItem, FunctionHermesBlock>),
     Type(HermesDecorated<TypeItem, TypeHermesBlock>),
@@ -107,16 +74,6 @@ impl ParsedItem {
             Self::Impl(_) => None,
         }
     }
-
-    /// Returns the attributes on this item.
-    fn attrs(&self) -> &[Attribute] {
-        match self {
-            Self::Function(x) => x.item.attrs(),
-            Self::Type(x) => x.item.attrs(),
-            Self::Trait(x) => &x.item.attrs,
-            Self::Impl(x) => &x.item.attrs,
-        }
-    }
 }
 
 /// A complete parsed item including its module path and source file.
@@ -124,7 +81,6 @@ impl ParsedItem {
 pub struct ParsedLeanItem {
     pub item: ParsedItem,
     pub module_path: Vec<String>,
-    source_file: Option<PathBuf>,
 }
 
 /// Represents a `mod foo;` declaration found in the source.
@@ -133,28 +89,17 @@ pub struct UnloadedModule {
     pub name: String,
     /// The value of `#[path = "..."]` if present.
     pub path_attr: Option<String>,
-    pub span: proc_macro2::Span,
     /// True if this module was declared inside a block.
     pub inside_block: bool,
 }
 
-/// Parses the given Rust source code and invokes the callback `f` for each item
+/// Parses the given Rust source file and invokes the callback `f` for each item
 /// annotated with a `/// ```lean` block.
 ///
 /// While parsing, collects every `mod foo;` declaration and returns them all.
 ///
 /// If parsing fails, or if any item has multiple Lean blocks, the callback is
 /// invoked with an `Err`.
-pub fn scan_compilation_unit<F>(source: &str, f: F) -> Vec<UnloadedModule>
-where
-    F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
-{
-    let mut unloaded_modules = Vec::new();
-    scan_compilation_unit_internal(source, None, false, f, |m| unloaded_modules.push(m));
-    unloaded_modules
-}
-
-/// Like [`scan_compilation_unit`], but reads the source code from a file path.
 ///
 /// Parsing errors and generated items will be associated with this file path.
 ///
@@ -186,14 +131,10 @@ fn scan_compilation_unit_internal<I, M>(
     M: FnMut(UnloadedModule),
 {
     trace!("Parsing source code into syn::File");
-    let file_name = {
-        let f = source_file
-            .as_ref()
-            .map(|p| p.display().to_string())
-            .unwrap_or_else(|| "<input>".to_string());
-
-        f
-    };
+    let file_name = source_file
+        .as_ref()
+        .map(|p| p.display().to_string())
+        .unwrap_or_else(|| "<input>".to_string());
     let named_source = miette::NamedSource::new(file_name, source.to_string());
     let file = match syn::parse_file(source) {
         Ok(file) => {
@@ -204,7 +145,7 @@ fn scan_compilation_unit_internal<I, M>(
             debug!("Failed to parse source code: {}", e);
             item_cb(
                 source,
-                Err(HermesError::SynError {
+                Err(HermesError::Syn {
                     src: named_source.clone(),
                     span: span_to_miette(e.span()),
                     msg: e.to_string(),
@@ -220,7 +161,6 @@ fn scan_compilation_unit_internal<I, M>(
         inside_block,
         item_cb,
         mod_cb,
-        source_file,
         source_code: source.to_string(),
         named_source,
     };
@@ -234,7 +174,6 @@ struct HermesVisitor<I, M> {
     inside_block: bool,
     item_cb: I,
     mod_cb: M,
-    source_file: Option<PathBuf>,
     source_code: String,
     named_source: NamedSource<String>,
 }
@@ -250,13 +189,13 @@ where
     /// handed off to `wrap` to wrap it in the corresponding `ParsedItem`
     /// variant.
     fn process_item<
-        T: Spanned + Clone,
+        T: Spanned,
         B,
         P: FnOnce(&[Attribute]) -> Result<Option<B>, Error>,
-        W: FnOnce(T, B) -> ParsedItem,
+        W: FnOnce(&T, B) -> ParsedItem,
     >(
         &mut self,
-        item: T,
+        item: &T,
         attrs: &[Attribute],
         parse: P,
         wrap: W,
@@ -265,23 +204,19 @@ where
         let item_res = match block_res {
             // This item doesn't have a Hermes annotation; skip it.
             Ok(None) => return,
-            Ok(Some(_block)) if self.inside_block => Err(HermesError::NestedItemError {
+            Ok(Some(_block)) if self.inside_block => Err(HermesError::NestedItem {
                 src: self.named_source.clone(),
                 span: span_to_miette(item.span()),
                 msg: "Hermes cannot verify items defined inside function bodies or other blocks."
                     .to_string(),
             }),
             Ok(Some(block)) => {
-                let parsed_item = wrap(item.clone(), block);
-                Ok(ParsedLeanItem {
-                    item: parsed_item,
-                    module_path: self.current_path.clone(),
-                    source_file: self.source_file.clone(),
-                })
+                let parsed_item = wrap(item, block);
+                Ok(ParsedLeanItem { item: parsed_item, module_path: self.current_path.clone() })
             }
             Err(e) => {
                 log::trace!("Error extracting ```lean block: {}", e);
-                Err(HermesError::DocBlockError {
+                Err(HermesError::DocBlock {
                     src: self.named_source.clone(),
                     span: span_to_miette(e.span()),
                     msg: e.to_string(),
@@ -307,7 +242,6 @@ where
             (self.mod_cb)(UnloadedModule {
                 name: mod_name.clone(),
                 path_attr: extract_path_attr(&node.attrs),
-                span: node.span(),
                 inside_block: self.inside_block,
             });
         }
@@ -331,63 +265,42 @@ where
 
     fn visit_item_fn(&mut self, i: &'ast ItemFn) {
         trace!("Visiting Fn {}", i.sig.ident);
-        self.process_item(
-            i.clone(),
-            &i.attrs,
-            FunctionHermesBlock::parse_from_attrs,
-            |item, hermes| {
-                ParsedItem::Function(HermesDecorated { item: FunctionItem::Free(item), hermes })
-            },
-        );
+        self.process_item(i, &i.attrs, FunctionHermesBlock::parse_from_attrs, |item, hermes| {
+            ParsedItem::Function(HermesDecorated { item: FunctionItem::Free(item.clone()), hermes })
+        });
         syn::visit::visit_item_fn(self, i);
     }
 
     fn visit_item_struct(&mut self, i: &'ast ItemStruct) {
         trace!("Visiting Struct {}", i.ident);
-        self.process_item(
-            i.clone(),
-            &i.attrs,
-            TypeHermesBlock::parse_from_attrs,
-            |item, hermes| {
-                ParsedItem::Type(HermesDecorated { item: TypeItem::Struct(item), hermes })
-            },
-        );
+        self.process_item(i, &i.attrs, TypeHermesBlock::parse_from_attrs, |item, hermes| {
+            ParsedItem::Type(HermesDecorated { item: TypeItem::Struct(item.clone()), hermes })
+        });
         syn::visit::visit_item_struct(self, i);
     }
 
     fn visit_item_enum(&mut self, i: &'ast ItemEnum) {
         trace!("Visiting Enum {}", i.ident);
-        self.process_item(
-            i.clone(),
-            &i.attrs,
-            TypeHermesBlock::parse_from_attrs,
-            |item, hermes| ParsedItem::Type(HermesDecorated { item: TypeItem::Enum(item), hermes }),
-        );
+        self.process_item(i, &i.attrs, TypeHermesBlock::parse_from_attrs, |item, hermes| {
+            ParsedItem::Type(HermesDecorated { item: TypeItem::Enum(item.clone()), hermes })
+        });
         syn::visit::visit_item_enum(self, i);
     }
 
     fn visit_item_union(&mut self, i: &'ast ItemUnion) {
         trace!("Visiting Union {}", i.ident);
-        self.process_item(
-            i.clone(),
-            &i.attrs,
-            TypeHermesBlock::parse_from_attrs,
-            |item, hermes| {
-                ParsedItem::Type(HermesDecorated { item: TypeItem::Union(item), hermes })
-            },
-        );
+        self.process_item(i, &i.attrs, TypeHermesBlock::parse_from_attrs, |item, hermes| {
+            ParsedItem::Type(HermesDecorated { item: TypeItem::Union(item.clone()), hermes })
+        });
         syn::visit::visit_item_union(self, i);
     }
 
     fn visit_item_trait(&mut self, i: &'ast ItemTrait) {
         let name = i.ident.to_string();
         trace!("Visiting Trait {}", name);
-        self.process_item(
-            i.clone(),
-            &i.attrs,
-            TraitHermesBlock::parse_from_attrs,
-            |item, hermes| ParsedItem::Trait(HermesDecorated { item, hermes }),
-        );
+        self.process_item(i, &i.attrs, TraitHermesBlock::parse_from_attrs, |item, hermes| {
+            ParsedItem::Trait(HermesDecorated { item: item.clone(), hermes })
+        });
 
         self.current_path.push(name);
         syn::visit::visit_item_trait(self, i);
@@ -403,49 +316,35 @@ where
 
     fn visit_item_impl(&mut self, i: &'ast ItemImpl) {
         trace!("Visiting Impl");
-        self.process_item(
-            i.clone(),
-            &i.attrs,
-            ImplHermesBlock::parse_from_attrs,
-            |item, hermes| ParsedItem::Impl(HermesDecorated { item, hermes }),
-        );
+        self.process_item(i, &i.attrs, ImplHermesBlock::parse_from_attrs, |item, hermes| {
+            ParsedItem::Impl(HermesDecorated { item: item.clone(), hermes })
+        });
         syn::visit::visit_item_impl(self, i);
     }
 
     fn visit_impl_item_fn(&mut self, i: &'ast ImplItemFn) {
         trace!("Visiting ImplItemFn {}", i.sig.ident);
-        self.process_item(
-            i.clone(),
-            &i.attrs,
-            FunctionHermesBlock::parse_from_attrs,
-            |item, hermes| {
-                ParsedItem::Function(HermesDecorated { item: FunctionItem::Impl(item), hermes })
-            },
-        );
+        self.process_item(i, &i.attrs, FunctionHermesBlock::parse_from_attrs, |item, hermes| {
+            ParsedItem::Function(HermesDecorated { item: FunctionItem::Impl(item.clone()), hermes })
+        });
         syn::visit::visit_impl_item_fn(self, i);
     }
 
     fn visit_trait_item_fn(&mut self, i: &'ast TraitItemFn) {
         trace!("Visiting TraitItemFn {}", i.sig.ident);
-        self.process_item(
-            i.clone(),
-            &i.attrs,
-            FunctionHermesBlock::parse_from_attrs,
-            |item, hermes| {
-                ParsedItem::Function(HermesDecorated { item: FunctionItem::Trait(item), hermes })
-            },
-        );
+        self.process_item(i, &i.attrs, FunctionHermesBlock::parse_from_attrs, |item, hermes| {
+            ParsedItem::Function(HermesDecorated {
+                item: FunctionItem::Trait(item.clone()),
+                hermes,
+            })
+        });
         syn::visit::visit_trait_item_fn(self, i);
     }
 }
 
-/// Helper to extract exactly one Lean block from a slice of attributes.
-/// Returns `Ok(None)` if no block is found.
-/// Returns `Err` if the block is malformed or multiple blocks are found.
-
 /// Extracts the `...` from the first `#[path = "..."]` attribute found, if any.
 fn extract_path_attr(attrs: &[Attribute]) -> Option<String> {
-    for attr in attrs {
+    attrs.iter().find_map(|attr| {
         if attr.path().is_ident("path") {
             if let Meta::NameValue(nv) = &attr.meta {
                 if let Expr::Lit(expr_lit) = &nv.value {
@@ -455,13 +354,13 @@ fn extract_path_attr(attrs: &[Attribute]) -> Option<String> {
                 }
             }
         }
-    }
-    None
+        None
+    })
 }
 
 /// Extracts the `...` from `#[cfg_attr(..., path = "...")]` if present.
 fn extract_cfg_attr_path(attrs: &[Attribute]) -> Option<String> {
-    for attr in attrs {
+    attrs.iter().find_map(|attr| {
         if attr.path().is_ident("cfg_attr") {
             let mut found_path = None;
             // The syntax is `#[cfg_attr(condition, attr1, attr2, ...)]`; we
@@ -469,22 +368,18 @@ fn extract_cfg_attr_path(attrs: &[Attribute]) -> Option<String> {
             let _ = attr.parse_nested_meta(|meta| {
                 if meta.path.is_ident("path") {
                     if let Ok(value) = meta.value() {
-                        if let Ok(lit) = value.parse::<Lit>() {
-                            if let Lit::Str(lit_str) = lit {
-                                found_path = Some(lit_str.value());
-                            }
+                        if let Ok(Lit::Str(lit_str)) = value.parse::<Lit>() {
+                            found_path = Some(lit_str.value());
                         }
                     }
                 }
                 Ok(())
             });
-
-            if let Some(p) = found_path {
-                return Some(p);
-            }
+            found_path
+        } else {
+            None
         }
-    }
-    None
+    })
 }
 
 fn span_to_miette(span: proc_macro2::Span) -> SourceSpan {
@@ -498,7 +393,13 @@ mod tests {
 
     fn parse_to_vec(code: &str) -> Vec<(String, Result<ParsedLeanItem, HermesError>)> {
         let mut items = Vec::new();
-        scan_compilation_unit(code, |src, res| items.push((src.to_string(), res)));
+        scan_compilation_unit_internal(
+            code,
+            None,
+            false,
+            |src, res| items.push((src.to_string(), res)),
+            |_| {},
+        );
         items
     }
 
@@ -534,7 +435,6 @@ mod tests {
         );
         assert!(matches!(item.item, ParsedItem::Function(_)));
         assert_eq!(item.item.hermes_header()[0].content.trim(), "theorem foo : True := by trivial");
-        assert!(item.source_file.is_none());
     }
 
     #[test]

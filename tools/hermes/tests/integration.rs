@@ -120,18 +120,13 @@ echo "---END-INVOCATION---" >> "{0}"
         .env("HERMES_TEST_DIR_NAME", "hermes_test_target");
 
     // Tests can specify the log level.
-    let env_log_file = test_case_root.join("rust_log.txt");
-    if env_log_file.exists() {
-        let log_level = fs::read_to_string(env_log_file)?;
-        cmd.env("RUST_LOG", log_level.trim());
-    } else {
-        cmd.env("RUST_LOG", "warn");
-    }
+    let log_level = fs::read_to_string(test_case_root.join("rust_log.txt"))
+        .unwrap_or_else(|_| "warn".to_string());
+    cmd.env("RUST_LOG", log_level.trim());
 
     // Mock JSON integration
     let mock_json_file = test_case_root.join("mock_charon_output.json");
-    if mock_json_file.exists() {
-        let mock_src = fs::read_to_string(&mock_json_file).unwrap();
+    if let Ok(mock_src) = fs::read_to_string(&mock_json_file) {
         let processed_mock = mock_src.replace("[PROJECT_ROOT]", sandbox_root.to_str().unwrap());
 
         let processed_mock_file = sandbox_root.join("mock_charon_output.json");
@@ -143,19 +138,12 @@ echo "---END-INVOCATION---" >> "{0}"
     }
 
     // Tests can specify the cwd to invoke from.
-    let cwd_file = test_case_root.join("cwd.txt");
-    if cwd_file.exists() {
-        let rel_path = fs::read_to_string(cwd_file)?;
-        cmd.current_dir(sandbox_root.join(rel_path.trim()));
-    } else {
-        cmd.current_dir(&sandbox_root);
-    }
+    let rel_path = fs::read_to_string(test_case_root.join("cwd.txt")).unwrap_or_default();
+    cmd.current_dir(sandbox_root.join(rel_path.trim()));
 
     // Tests can specify the arguments to pass to `hermes verify`.
-    let args_file = test_case_root.join("args.txt");
-    if args_file.exists() {
-        let args_str = fs::read_to_string(args_file)?;
-        cmd.args(args_str.trim().split_whitespace());
+    if let Ok(args_str) = fs::read_to_string(test_case_root.join("args.txt")) {
+        cmd.args(args_str.split_whitespace());
     } else {
         cmd.arg("verify");
     }
@@ -163,9 +151,7 @@ echo "---END-INVOCATION---" >> "{0}"
     let mut assert = cmd.assert();
 
     // Tests can specify the expected exit status.
-    let expected_status_file = test_case_root.join("expected_status.txt");
-    if expected_status_file.exists() {
-        let status = fs::read_to_string(&expected_status_file)?;
+    if let Ok(status) = fs::read_to_string(test_case_root.join("expected_status.txt")) {
         if status.trim() == "failure" {
             assert = assert.failure();
         } else {
@@ -215,16 +201,12 @@ echo "---END-INVOCATION---" >> "{0}"
 
     // Load Config
     let mut config = TestConfig { artifact: vec![], command: vec![] };
-    let config_file = test_case_root.join("expected_config.toml");
-    if config_file.exists() {
-        let content = fs::read_to_string(&config_file)?;
+    if let Ok(content) = fs::read_to_string(test_case_root.join("expected_config.toml")) {
         config = toml::from_str(&content)?;
     }
 
     // Backward compatibility for the previous step instructions
-    let artifacts_file = test_case_root.join("expected_artifacts.toml");
-    if artifacts_file.exists() {
-        let content = fs::read_to_string(&artifacts_file)?;
+    if let Ok(content) = fs::read_to_string(test_case_root.join("expected_artifacts.toml")) {
         let partial: TestConfig = toml::from_str(&content)?;
         config.artifact.extend(partial.artifact);
     }
@@ -263,14 +245,7 @@ fn parse_command_log(content: &str) -> Vec<Vec<String>> {
 
 fn assert_commands_match(invocations: &[Vec<String>], expectations: &[CommandExpectation]) {
     for exp in expectations {
-        let mut found = false;
-        for cmd in invocations {
-            // Check if exp.args is a subsequence of cmd
-            if is_subsequence(cmd, &exp.args) {
-                found = true;
-                break;
-            }
-        }
+        let found = invocations.iter().any(|cmd| is_subsequence(cmd, &exp.args));
 
         if !exp.should_not_exist && !found {
             panic!("Expected command invocation with args {:?} was not found.\nCaptured Invocations: {:#?}", exp.args, invocations);
@@ -281,22 +256,15 @@ fn assert_commands_match(invocations: &[Vec<String>], expectations: &[CommandExp
 }
 
 fn is_subsequence(haystack: &[String], needle: &[String]) -> bool {
-    if needle.is_empty() {
-        return true;
-    }
     let mut needle_iter = needle.iter();
-    let mut next_needle = needle_iter.next();
+    let mut n = needle_iter.next();
 
     for item in haystack {
-        if let Some(n) = next_needle {
-            if item == n {
-                next_needle = needle_iter.next();
-            }
-        } else {
-            return true;
+        if Some(item) == n {
+            n = needle_iter.next();
         }
     }
-    next_needle.is_none()
+    n.is_none()
 }
 
 fn assert_artifacts_match(
