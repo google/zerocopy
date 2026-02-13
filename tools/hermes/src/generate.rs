@@ -1,0 +1,809 @@
+use quote::ToTokens;
+use syn::{
+    FnArg, GenericArgument, ItemTrait, Pat, PathArguments, ReturnType, Type, TypePath, TypeTuple,
+};
+
+use crate::parse::{
+    attr::{
+        FunctionBlockInner, FunctionHermesBlock, SpannedLine, TraitHermesBlock, TypeHermesBlock,
+    },
+    FunctionItem, ParsedItem, TypeItem,
+};
+
+/// Generates the full Lean code for a given ParsedItem.
+pub fn generate_item(item: &ParsedItem) -> String {
+    match item {
+        ParsedItem::Function(func) => generate_function(&func.item, &func.hermes),
+        ParsedItem::Type(ty) => generate_type(&ty.item, &ty.hermes),
+        ParsedItem::Trait(tr) => generate_trait(&tr.item, &tr.hermes),
+        ParsedItem::Impl(_) => String::new(),
+    }
+}
+
+struct ArgInfo {
+    name: String,
+    ty: String,
+    is_mut_ref: bool,
+}
+
+fn generate_function(func: &FunctionItem, block: &FunctionHermesBlock) -> String {
+    let fn_name = func.name();
+    let args = extract_args_metadata(func);
+    let ret_is_unit = is_unit_return(func);
+
+    // 1. Generate the header (raw Lean content provided by user)
+    let header_code = join_lines(&block.common.header);
+
+    // 2. Resolve Requires/Ensures
+    let requires_code = join_lines(&block.requires);
+    let ensures_code = join_lines(&block.ensures);
+
+    // 3. Determine if this is a Theorem (spec) or Axiom (unsafe)
+    let (kind_keyword, body_code) = match &block.inner {
+        FunctionBlockInner::Proof(lines) => ("theorem", join_lines(lines)),
+        FunctionBlockInner::Axiom(_) => ("axiom", String::new()),
+    };
+
+    // 4. Build the Call String (e.g., "my_func x y")
+    let call_str = std::iter::once(fn_name.clone())
+        .chain(args.iter().map(|a| a.name.clone()))
+        .collect::<Vec<_>>()
+        .join(" ");
+
+    // 5. Build the Precondition Binder
+    let req_binder = (!requires_code.trim().is_empty())
+        .then(|| format!("\n  (h_req : {})", requires_code.trim()))
+        .unwrap_or_default();
+
+    // 7. Assemble the final string
+    let mut out = String::new();
+
+    // Namespace wrapping to prevent collision of helper definitions
+    out.push_str(&format!("namespace {}\n\n", fn_name));
+
+    if !header_code.trim().is_empty() {
+        out.push_str(header_code.trim());
+        out.push_str("\n\n");
+    }
+
+    // Signature
+    // theorem spec (x : U32) ...
+    let args_suffix = (!args.is_empty())
+        .then(|| {
+            format!(
+                " {}",
+                args.iter()
+                    .map(|a| format!("({} : {})", a.name, a.ty))
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            )
+        })
+        .unwrap_or_default();
+
+    out.push_str(&format!("{kind_keyword} spec{args_suffix}{req_binder} :\n"));
+
+    // Result Spec
+    out.push_str(&format!("  Hermes.SpecificationHolds ({})", call_str));
+
+    let mut_args: Vec<&ArgInfo> = args.iter().filter(|a| a.is_mut_ref).collect();
+    let has_muts = !mut_args.is_empty();
+
+    if !ensures_code.trim().is_empty() || has_muts {
+        out.push_str(" (fun result =>");
+
+        if has_muts {
+            out.push('\n');
+            // 1. Bind old values (inputs)
+            for arg in &mut_args {
+                out.push_str(&format!("    let old_{} := {}\n", arg.name, arg.name));
+            }
+
+            // 2. Destructure the result tuple
+            let destructure_lhs = if ret_is_unit && mut_args.len() == 1 {
+                format!("{}_new", mut_args[0].name)
+            } else {
+                let vars = mut_args
+                    .iter()
+                    .map(|a| format!("{}_new", a.name))
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                if ret_is_unit {
+                    format!("({})", vars)
+                } else {
+                    format!("(result, {})", vars)
+                }
+            };
+
+            out.push_str(&format!("    let {} := result\n", destructure_lhs));
+
+            if ret_is_unit {
+                out.push_str("    let result := ()\n");
+            }
+
+            // 3. Shadow mutable variables with new values
+            for arg in &mut_args {
+                out.push_str(&format!("    let {} := {}_new\n", arg.name, arg.name));
+            }
+
+            out.push_str("    "); // Indent for the user code
+        } else {
+            out.push(' ');
+        }
+
+        if !ensures_code.trim().is_empty() {
+            out.push_str(ensures_code.trim());
+        } else {
+            out.push_str("True");
+        }
+        out.push(')');
+    } else {
+        out.push_str(" (fun _ => True)");
+    }
+
+    // Body
+    if kind_keyword == "theorem" {
+        out.push_str(" := by\n");
+        if body_code.trim().is_empty() {
+            out.push_str("  sorry\n");
+        } else {
+            out.push_str(&body_code.lines().map(|l| format!("  {l}\n")).collect::<String>());
+        }
+    } else {
+        // Axiom ends definition
+        out.push('\n');
+    }
+
+    out.push_str(&format!("\nend {}\n", fn_name));
+    out
+}
+fn generate_type(item: &TypeItem, block: &TypeHermesBlock) -> String {
+    let type_name = item.name();
+
+    // Extract generics to handle "struct MyType<T> ..." -> "instance {T} ... (MyType T)"
+    let generics = match item {
+        crate::parse::TypeItem::Struct(s) => &s.generics,
+        crate::parse::TypeItem::Enum(e) => &e.generics,
+        crate::parse::TypeItem::Union(u) => &u.generics,
+    };
+    let (generic_params, generic_args) = extract_generic_params(generics);
+
+    // 1. Generate the header (raw Lean content provided by user)
+    let header_code = join_lines(&block.common.header);
+
+    // 2. Resolve Invariant Body
+    let valid_code = join_lines(&block.is_valid);
+
+    let mut out = String::new();
+
+    // Namespace wrapping
+    out.push_str(&format!("namespace {}\n\n", type_name));
+
+    if !header_code.trim().is_empty() {
+        out.push_str(header_code.trim());
+        out.push_str("\n\n");
+    }
+
+    // Instance definition
+    // Construct type application: (MyType T N) or just MyType
+    let type_app = (!generic_args.is_empty())
+        .then(|| format!("({type_name} {})", generic_args.join(" ")))
+        .unwrap_or_else(|| type_name.clone());
+
+    let instance_params = (!generic_params.is_empty())
+        .then(|| format!(" {{{}}}", generic_params.join(" ")))
+        .unwrap_or_default();
+
+    out.push_str(&format!("instance{instance_params} : Hermes.IsValid {type_app} where\n"));
+
+    // isValid body
+    out.push_str("  isValid self := \n");
+    if valid_code.trim().is_empty() {
+        out.push_str("    True\n");
+    } else {
+        out.push_str(&valid_code.lines().map(|l| format!("    {l}\n")).collect::<String>());
+    }
+
+    out.push_str(&format!("\nend {}\n", type_name));
+    out
+}
+
+fn generate_trait(item: &ItemTrait, block: &TraitHermesBlock) -> String {
+    let trait_name = item.ident.to_string();
+    let (generic_params, generic_args) = extract_generic_params(&item.generics);
+
+    let header_code = join_lines(&block.common.header);
+    let safe_code = join_lines(&block.is_safe);
+
+    let mut out = String::new();
+    out.push_str(&format!("namespace {}\n\n", trait_name));
+
+    if !header_code.trim().is_empty() {
+        out.push_str(header_code.trim());
+        out.push_str("\n\n");
+    }
+
+    // Class Definition
+    // class Safe (Self : Type) {T} [Trait Self T] : Prop where
+    let params_decl = (!generic_params.is_empty())
+        .then(|| format!(" {{{}}}", generic_params.join(" ")))
+        .unwrap_or_default();
+
+    let trait_app = (!generic_args.is_empty())
+        .then(|| format!("{trait_name} Self {}", generic_args.join(" ")))
+        .unwrap_or_else(|| format!("{trait_name} Self"));
+
+    out.push_str(&format!("class Safe (Self : Type){params_decl} [{trait_app}] : Prop where\n"));
+
+    out.push_str("  isSafe : ∀ (self : Self),");
+
+    if safe_code.trim().is_empty() {
+        out.push_str(" True\n");
+    } else {
+        out.push('\n');
+        out.push_str(&safe_code.lines().map(|l| format!("    {l}\n")).collect::<String>());
+    }
+
+    out.push_str(&format!("\nend {}\n", trait_name));
+    out
+}
+
+/// Extracts generic parameters for Lean.
+/// Returns a tuple: (list of param names for binders, list of args for application).
+///
+/// Example: `<'a, T, const N: usize>`
+/// -> params: `vec!["T", "N"]` (Lifetimes are erased)
+/// -> args: `vec!["T", "N"]`
+fn extract_generic_params(generics: &syn::Generics) -> (Vec<String>, Vec<String>) {
+    generics
+        .params
+        .iter()
+        .filter_map(|param| match param {
+            syn::GenericParam::Type(t) => Some(t.ident.to_string()),
+            syn::GenericParam::Const(c) => Some(c.ident.to_string()),
+            syn::GenericParam::Lifetime(_) => None,
+        })
+        .map(|name| (name.clone(), name))
+        .unzip()
+}
+
+/// Recursively maps Rust types to Lean types.
+/// - Primitives: `u32` -> `U32`
+/// - references: `&T` -> `T`
+/// - Paths: `std::vec::Vec` -> `std.vec.Vec`
+/// - Generics: `Vec<T>` -> `Vec T`
+/// - Tuples: `(A, B)` -> `A × B`
+fn map_type(ty: &Type) -> String {
+    match ty {
+        Type::Path(TypePath { path, .. }) => {
+            // Check if it's a known primitive first (ignoring path segments for primitives)
+            if let Some(ident) = path.get_ident() {
+                let s = ident.to_string();
+                return match s.as_str() {
+                    "u8" => "U8".to_string(),
+                    "u16" => "U16".to_string(),
+                    "u32" => "U32".to_string(),
+                    "u64" => "U64".to_string(),
+                    "u128" => "U128".to_string(),
+                    "usize" => "Usize".to_string(),
+                    "i8" => "I8".to_string(),
+                    "i16" => "I16".to_string(),
+                    "i32" => "I32".to_string(),
+                    "i64" => "I64".to_string(),
+                    "i128" => "I128".to_string(),
+                    "isize" => "Isize".to_string(),
+                    "bool" => "Bool".to_string(),
+                    _ => s,
+                };
+            }
+
+            // It's a path with segments, potentially generics or modules.
+            // std::vec::Vec<T> -> std.vec.Vec T
+            path.segments
+                .iter()
+                .map(|segment| {
+                    let mut s = segment.ident.to_string();
+                    if let PathArguments::AngleBracketed(args) = &segment.arguments {
+                        let gen_args: Vec<_> = args
+                            .args
+                            .iter()
+                            .filter_map(|arg| match arg {
+                                GenericArgument::Type(inner) => Some(map_type(inner)),
+                                _ => None,
+                            })
+                            .collect();
+                        if !gen_args.is_empty() {
+                            s = format!("({s} {})", gen_args.join(" "));
+                        }
+                    }
+                    s
+                })
+                .collect::<Vec<_>>()
+                .join(".")
+        }
+        Type::Reference(tr) => {
+            // Strip reference wrappers
+            map_type(&tr.elem)
+        }
+        Type::Tuple(TypeTuple { elems, .. }) => {
+            // (A, B) -> A × B
+            if elems.is_empty() {
+                "Unit".to_string()
+            } else {
+                elems.iter().map(map_type).collect::<Vec<_>>().join(" × ")
+            }
+        }
+        Type::Ptr(ptr) => {
+            let inner = map_type(&ptr.elem);
+            if ptr.mutability.is_some() {
+                format!("(MutPtr {})", inner)
+            } else {
+                format!("(ConstPtr {})", inner)
+            }
+        }
+        Type::Slice(slice) => format!("(Slice {})", map_type(&slice.elem)),
+        Type::Array(array) => {
+            let elem = map_type(&array.elem);
+            let len = array.len.to_token_stream().to_string();
+            format!("(Array {} {})", elem, len)
+        }
+        _ => "MatchError".to_string(),
+    }
+}
+
+/// Extracts `(arg_name, lean_type)` pairs from a function item.
+fn extract_args_metadata(func: &FunctionItem) -> Vec<ArgInfo> {
+    let sig = match func {
+        FunctionItem::Free(i) => &i.sig,
+        FunctionItem::Impl(i) => &i.sig,
+        FunctionItem::Trait(i) => &i.sig,
+    };
+
+    sig.inputs
+        .iter()
+        .enumerate()
+        .filter_map(|(idx, arg)| match arg {
+            FnArg::Typed(pat_type) => {
+                let name = match &*pat_type.pat {
+                    Pat::Ident(p) => p.ident.to_string(),
+                    // Handle unused vars or wildcards by inventing a name
+                    Pat::Wild(_) => format!("arg{}", idx),
+                    _ => format!("arg{}", idx),
+                };
+                let ty = map_type(&pat_type.ty);
+                let is_mut_ref =
+                    matches!(&*pat_type.ty, Type::Reference(tr) if tr.mutability.is_some());
+                Some(ArgInfo { name, ty, is_mut_ref })
+            }
+            FnArg::Receiver(r) => {
+                let is_mut_ref = r.reference.is_some() && r.mutability.is_some();
+                Some(ArgInfo { name: "self".to_string(), ty: "Self".to_string(), is_mut_ref })
+            }
+        })
+        .collect()
+}
+
+fn is_unit_return(func: &FunctionItem) -> bool {
+    let sig = match func {
+        FunctionItem::Free(i) => &i.sig,
+        FunctionItem::Impl(i) => &i.sig,
+        FunctionItem::Trait(i) => &i.sig,
+    };
+    match &sig.output {
+        ReturnType::Default => true,
+        ReturnType::Type(_, ty) => matches!(map_type(ty).as_str(), "Unit" | "MatchError"),
+    }
+}
+
+fn join_lines(lines: &[SpannedLine]) -> String {
+    lines.iter().map(|l| l.content.as_str()).collect::<Vec<_>>().join("\n")
+}
+
+#[cfg(test)]
+mod tests {
+    use miette::SourceSpan;
+    use proc_macro2::Span;
+    use syn::parse_quote;
+
+    use super::*;
+    use crate::parse::attr::{FunctionBlockInner, HermesBlockCommon};
+
+    // --- Helpers ---
+    fn mk_spanned(s: &str) -> SpannedLine {
+        SpannedLine {
+            content: s.to_string(),
+            span: SourceSpan::new(0.into(), 0),
+            raw_span: Span::call_site(),
+        }
+    }
+
+    fn mk_block(
+        requires: Vec<&str>,
+        ensures: Vec<&str>,
+        proof: Option<Vec<&str>>,
+        axiom: Option<Vec<&str>>,
+        header: Vec<&str>,
+    ) -> FunctionHermesBlock {
+        let inner = if let Some(p) = proof {
+            FunctionBlockInner::Proof(p.into_iter().map(mk_spanned).collect())
+        } else {
+            FunctionBlockInner::Axiom(axiom.unwrap().into_iter().map(mk_spanned).collect())
+        };
+
+        FunctionHermesBlock {
+            common: HermesBlockCommon {
+                header: header.into_iter().map(mk_spanned).collect(),
+                content_span: Span::call_site(),
+                start_span: Span::call_site(),
+            },
+            requires: requires.into_iter().map(mk_spanned).collect(),
+            ensures: ensures.into_iter().map(mk_spanned).collect(),
+            inner,
+        }
+    }
+
+    fn mk_type_block(is_valid: Vec<&str>, header: Vec<&str>) -> TypeHermesBlock {
+        TypeHermesBlock {
+            common: HermesBlockCommon {
+                header: header.into_iter().map(mk_spanned).collect(),
+                content_span: Span::call_site(),
+                start_span: Span::call_site(),
+            },
+            is_valid: is_valid.into_iter().map(mk_spanned).collect(),
+        }
+    }
+
+    fn mk_trait_block(is_safe: Vec<&str>, header: Vec<&str>) -> TraitHermesBlock {
+        TraitHermesBlock {
+            common: HermesBlockCommon {
+                header: header.into_iter().map(mk_spanned).collect(),
+                content_span: Span::call_site(),
+                start_span: Span::call_site(),
+            },
+            is_safe: is_safe.into_iter().map(mk_spanned).collect(),
+        }
+    }
+
+    // --- Type Mapping Tests ---
+
+    #[test]
+    fn test_map_primitives() {
+        assert_eq!(map_type(&parse_quote!(u32)), "U32");
+        assert_eq!(map_type(&parse_quote!(bool)), "Bool");
+        assert_eq!(map_type(&parse_quote!(usize)), "Usize");
+    }
+
+    #[test]
+    fn test_map_complex_paths() {
+        // Simple
+        assert_eq!(map_type(&parse_quote!(MyType)), "MyType");
+        // Qualified
+        assert_eq!(map_type(&parse_quote!(std::vec::Vec)), "std.vec.Vec");
+    }
+
+    #[test]
+    fn test_map_generics() {
+        // Vec<u32> -> (Vec U32)
+        assert_eq!(map_type(&parse_quote!(Vec<u32>)), "(Vec U32)");
+        // Result<T, E> -> (Result T E)
+        assert_eq!(map_type(&parse_quote!(Result<T, E>)), "(Result T E)");
+        // Nested: Vec<Vec<u32>> -> (Vec (Vec U32))
+        assert_eq!(map_type(&parse_quote!(Vec<Vec<u32>>)), "(Vec (Vec U32))");
+    }
+
+    #[test]
+    fn test_map_references() {
+        assert_eq!(map_type(&parse_quote!(&u32)), "U32");
+        assert_eq!(map_type(&parse_quote!(&mut u32)), "U32");
+        assert_eq!(map_type(&parse_quote!(&mut Vec<u32>)), "(Vec U32)");
+    }
+
+    #[test]
+    fn test_map_tuples() {
+        assert_eq!(map_type(&parse_quote!(())), "Unit");
+        assert_eq!(map_type(&parse_quote!((u32, bool))), "U32 × Bool");
+    }
+
+    // --- Generation Tests ---
+
+    #[test]
+    fn test_gen_empty_spec() {
+        // Valid case: user wants to prove trivial properties or just existence
+        let item: syn::ItemFn = parse_quote! { fn foo() {} };
+        let func = FunctionItem::Free(item);
+        let block = mk_block(vec![], vec![], Some(vec![]), None, vec![]);
+
+        let out = generate_function(&func, &block);
+        assert!(out.contains("theorem spec"));
+        assert!(out.contains("Hermes.SpecificationHolds (foo) (fun _ => True)"));
+        assert!(out.contains("sorry")); // Empty proof body defaults to sorry
+    }
+
+    #[test]
+    fn test_gen_multiline_requires() {
+        let item: syn::ItemFn = parse_quote! { fn foo(x: u32) {} };
+        let func = FunctionItem::Free(item);
+        let block = mk_block(
+            vec!["x.val > 0", "&& x.val < 10"], // Multiline requires
+            vec![],
+            Some(vec!["simp"]),
+            None,
+            vec![],
+        );
+
+        let out = generate_function(&func, &block);
+        // Should join with newline
+        assert!(out.contains("(h_req : x.val > 0\n&& x.val < 10)"));
+    }
+
+    #[test]
+    fn test_gen_unsafe_axiom() {
+        let item: syn::ItemFn = parse_quote! { unsafe fn ffi(p: *const u8) {} };
+        let func = FunctionItem::Free(item);
+        let block = mk_block(
+            vec![],
+            vec!["result = .ok ()"],
+            None,
+            Some(vec![]), // Axiom
+            vec![],
+        );
+
+        let out = generate_function(&func, &block);
+        assert!(out.contains("axiom spec (p : (ConstPtr U8))"));
+        assert!(out.contains("Hermes.SpecificationHolds (ffi p)"));
+        // No proof block for axioms
+        assert!(!out.contains(":= by"));
+    }
+
+    #[test]
+    fn test_gen_method_receiver() {
+        let item: syn::ImplItemFn = parse_quote! { fn get(&self) -> bool { true } };
+        let func = FunctionItem::Impl(item);
+        let block = mk_block(vec![], vec![], Some(vec!["rfl"]), None, vec![]);
+
+        let out = generate_function(&func, &block);
+        assert!(out.contains("(self : Self)"));
+        assert!(out.contains("get self"));
+    }
+
+    #[test]
+    fn test_gen_header_injection() {
+        let item: syn::ItemFn = parse_quote! { fn foo() {} };
+        let func = FunctionItem::Free(item);
+        let block = mk_block(vec![], vec![], Some(vec![]), None, vec!["import Foo", "open Bar"]);
+
+        let out = generate_function(&func, &block);
+        assert!(out.contains("namespace foo"));
+        assert!(out.contains("import Foo\nopen Bar"));
+        assert!(out.contains("theorem spec"));
+    }
+
+    #[test]
+    fn test_gen_struct_simple() {
+        let item: syn::ItemStruct = parse_quote! { struct Point { x: u32 } };
+        let ty_item = TypeItem::Struct(item);
+        let block = mk_type_block(vec!["self.x > 0"], vec![]);
+
+        let out = generate_type(&ty_item, &block);
+
+        assert!(out.contains("namespace Point"));
+        assert!(out.contains("instance : Hermes.IsValid Point where"));
+
+        // CHANGED: Expect isValid
+        assert!(out.contains("isValid self :="));
+        assert!(out.contains("self.x > 0"));
+    }
+
+    #[test]
+    fn test_gen_struct_const_generic() {
+        // struct Array<const N: usize> { data: [u8; N] }
+        let item: syn::ItemStruct = parse_quote! {
+            struct Array<const N: usize> { data: [u8; N] }
+        };
+        let ty_item = TypeItem::Struct(item);
+        let block = mk_type_block(vec!["true"], vec![]);
+
+        let out = generate_type(&ty_item, &block);
+
+        // Should use implicit binder {N} and app (Array N)
+        // We do not strictly need {N : Usize} because usage (Array N) infers it.
+        assert!(out.contains("instance {N} : Hermes.IsValid (Array N) where"));
+    }
+
+    #[test]
+    fn test_gen_struct_mixed_generics_ordering() {
+        // struct Mixed<T, const N: usize, U>
+        let item: syn::ItemStruct = parse_quote! {
+            struct Mixed<T, const N: usize, U> { t: T, u: U }
+        };
+        let ty_item = TypeItem::Struct(item);
+        let block = mk_type_block(vec!["true"], vec![]);
+
+        let out = generate_type(&ty_item, &block);
+
+        // Order must be preserved: T, N, U
+        assert!(out.contains("instance {T N U} : Hermes.IsValid (Mixed T N U) where"));
+    }
+
+    #[test]
+    fn test_gen_struct_with_where_clause() {
+        // Where clauses should be ignored in the instance signature
+        let item: syn::ItemStruct = parse_quote! {
+            struct Bound<T> where T: Copy { val: T }
+        };
+        let ty_item = TypeItem::Struct(item);
+        let block = mk_type_block(vec!["true"], vec![]);
+
+        let out = generate_type(&ty_item, &block);
+
+        assert!(out.contains("instance {T} : Hermes.IsValid (Bound T) where"));
+        assert!(!out.contains("Copy"));
+    }
+
+    #[test]
+    fn test_gen_trait_simple() {
+        let item: syn::ItemTrait = parse_quote! { trait Identifiable {} };
+        let block = mk_trait_block(vec!["self.id > 0"], vec![]);
+        let out = generate_trait(&item, &block);
+
+        assert!(out.contains("namespace Identifiable"));
+        // Matches Aeneas style: Self is first arg to trait class
+        assert!(out.contains("class Safe (Self : Type) [Identifiable Self] : Prop where"));
+        assert!(out.contains("isSafe : ∀ (self : Self),"));
+        assert!(out.contains("self.id > 0"));
+    }
+
+    #[test]
+    fn test_gen_trait_generic() {
+        let item: syn::ItemTrait = parse_quote! { trait Converter<T> {} };
+        let block = mk_trait_block(vec!["true"], vec![]);
+        let out = generate_trait(&item, &block);
+
+        // Check implicit binders and app arguments
+        assert!(out.contains("class Safe (Self : Type) {T} [Converter Self T] : Prop where"));
+    }
+
+    #[test]
+    fn test_gen_trait_const_generic() {
+        let item: syn::ItemTrait = parse_quote! { trait Array<const N: usize> {} };
+        let block = mk_trait_block(vec!["true"], vec![]);
+        let out = generate_trait(&item, &block);
+
+        assert!(out.contains("class Safe (Self : Type) {N} [Array Self N] : Prop where"));
+    }
+
+    #[test]
+    fn test_gen_mut_ref_unit_return() {
+        // fn inc(x: &mut u32)
+        let item: syn::ItemFn = parse_quote! { fn inc(x: &mut u32) {} };
+        let func = FunctionItem::Free(item);
+        let block = mk_block(vec![], vec!["x = old_x + 1"], Some(vec!["simp"]), None, vec![]);
+
+        let out = generate_function(&func, &block);
+
+        // Assert bindings logic
+        assert!(out.contains("let old_x := x"));
+        // Unit return with 1 mut: pattern is just the mut val
+        assert!(out.contains("let x_new := result"));
+        assert!(out.contains("let result := ()"));
+        assert!(out.contains("let x := x_new"));
+    }
+
+    #[test]
+    fn test_gen_mut_ref_value_return() {
+        // fn swap_ret(x: &mut u32) -> bool
+        let item: syn::ItemFn = parse_quote! { fn swap_ret(x: &mut u32) -> bool { true } };
+        let func = FunctionItem::Free(item);
+        let block = mk_block(vec![], vec!["result = true"], Some(vec![]), None, vec![]);
+
+        let out = generate_function(&func, &block);
+
+        assert!(out.contains("let old_x := x"));
+        // Value return: (res, x_new)
+        assert!(out.contains("let (result, x_new) := result"));
+        assert!(out.contains("let x := x_new"));
+    }
+
+    #[test]
+    fn test_gen_multiple_mut_refs() {
+        // fn swap(a: &mut u32, b: &mut u32)
+        let item: syn::ItemFn = parse_quote! { fn swap(a: &mut u32, b: &mut u32) {} };
+        let func = FunctionItem::Free(item);
+        let block = mk_block(vec![], vec!["a = old_b"], Some(vec![]), None, vec![]);
+
+        let out = generate_function(&func, &block);
+
+        assert!(out.contains("let old_a := a"));
+        assert!(out.contains("let old_b := b"));
+        // Unit return, 2 muts: tuple of muts
+        assert!(out.contains("let (a_new, b_new) := result"));
+        assert!(out.contains("let result := ()"));
+        assert!(out.contains("let a := a_new"));
+        assert!(out.contains("let b := b_new"));
+    }
+
+    #[test]
+    fn test_gen_mut_self() {
+        // fn update(&mut self)
+        let item: syn::ImplItemFn = parse_quote! { fn update(&mut self) {} };
+        let func = FunctionItem::Impl(item);
+        let block = mk_block(vec![], vec![], Some(vec![]), None, vec![]);
+
+        let out = generate_function(&func, &block);
+
+        assert!(out.contains("let old_self := self"));
+        assert!(out.contains("let self_new := result"));
+        assert!(out.contains("let self := self_new"));
+    }
+
+    #[test]
+    fn test_gen_explicit_unit_return() {
+        let item: syn::ItemFn = parse_quote! { fn explicit(x: &mut u32) -> () {} };
+        let func = FunctionItem::Free(item);
+        let block = mk_block(vec![], vec![], Some(vec![]), None, vec![]);
+
+        let out = generate_function(&func, &block);
+
+        // Should behave like implicit unit
+        assert!(out.contains("let result := ()"));
+    }
+
+    #[test]
+    fn test_gen_slice_and_array_types() {
+        // fn process(data: &[u8], buf: &mut [u8; 16])
+        let item: syn::ItemFn = parse_quote! {
+            fn process(data: &[u8], buf: &mut [u8; 16]) {}
+        };
+        let func = FunctionItem::Free(item);
+        let block = mk_block(vec![], vec!["true"], Some(vec![]), None, vec![]);
+
+        let out = generate_function(&func, &block);
+
+        // Check Slice mapping
+        assert!(out.contains("(data : (Slice U8))"));
+
+        // Check Array mapping
+        assert!(out.contains("(buf : (Array U8 16))"));
+    }
+
+    #[test]
+    fn test_gen_owned_mut_self_is_not_output() {
+        // fn consume(mut self) -> ()
+        // Owned 'mut self' is an input, but NOT a return value in Aeneas.
+        let item: syn::ImplItemFn = parse_quote! {
+            fn consume(mut self) {}
+        };
+        let func = FunctionItem::Impl(item);
+        let block = mk_block(vec![], vec!["true"], Some(vec![]), None, vec![]);
+
+        let out = generate_function(&func, &block);
+
+        // Should NOT generate old_self/self_new logic
+        assert!(!out.contains("let old_self := self"));
+        assert!(!out.contains("let self := self_new"));
+
+        // Should just be a normal argument
+        assert!(out.contains("(self : Self)"));
+    }
+
+    #[test]
+    fn test_gen_mixed_mut_and_owned_args() {
+        // fn mix(a: &mut u32, mut b: u32)
+        // 'a' is a mutable reference (input + output).
+        // 'b' is a mutable binding (input only).
+        let item: syn::ItemFn = parse_quote! {
+            fn mix(a: &mut u32, mut b: u32) {}
+        };
+        let func = FunctionItem::Free(item);
+        let block = mk_block(vec![], vec!["true"], Some(vec![]), None, vec![]);
+
+        let out = generate_function(&func, &block);
+
+        // 'a' handling
+        assert!(out.contains("let old_a := a"));
+        assert!(out.contains("let a := a_new"));
+
+        // 'b' handling (should NOT be treated as mutable output)
+        assert!(!out.contains("let old_b := b"));
+        assert!(!out.contains("let b := b_new"));
+    }
+}

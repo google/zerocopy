@@ -2,6 +2,7 @@ mod aeneas;
 mod charon;
 mod diagnostics;
 mod errors;
+mod generate;
 mod parse;
 mod resolve;
 mod scanner;
