@@ -1,4 +1,5 @@
 use std::{
+    convert::Infallible,
     fs, io,
     ops::Range,
     path::{Path, PathBuf},
@@ -84,7 +85,7 @@ impl TypeItem {
 }
 
 #[derive(Clone, Debug)]
-pub struct HermesDecorated<T, A = std::convert::Infallible> {
+pub struct HermesDecorated<T, A = Infallible> {
     pub item: T,
     pub hermes: attr::HermesBlock<A>,
 }
@@ -92,9 +93,9 @@ pub struct HermesDecorated<T, A = std::convert::Infallible> {
 #[derive(Clone, Debug)]
 pub enum ParsedItem {
     Function(HermesDecorated<FunctionItem, attr::HermesAttr>),
-    Type(HermesDecorated<TypeItem, std::convert::Infallible>),
-    Trait(HermesDecorated<ItemTrait, std::convert::Infallible>),
-    Impl(HermesDecorated<ItemImpl, std::convert::Infallible>),
+    Type(HermesDecorated<TypeItem, Infallible>),
+    Trait(HermesDecorated<ItemTrait, Infallible>),
+    Impl(HermesDecorated<ItemImpl, Infallible>),
 }
 
 impl ParsedItem {
@@ -118,41 +119,41 @@ impl ParsedItem {
     }
 }
 
-fn convert_block_infallible(
-    block: attr::HermesBlock<attr::HermesAttr>,
-) -> Result<attr::HermesBlock<std::convert::Infallible>, HermesError> {
-    if let Some(_attr) = block.attribute {
-        return Err(HermesError::DocBlockError {
-            src: NamedSource::new("TODO", "TODO".to_string()), // We fix this up in process_item
-            span: span_to_miette(block.start_span),
-            msg: "This item does not support Hermes attributes (like `spec` or `unsafe(axiom)`). Only generic `hermes` blocks are allowed.".to_string(),
-        });
-    }
-    Ok(attr::HermesBlock {
-        attribute: None,
-        content: block.content,
-        content_span: block.content_span,
-        start_span: block.start_span,
-    })
-}
-
+/// Convert from a pair of `item` and `block: HermesBlock<HermesAttr>` to a
+/// `HermesDecorated<Infallible>`, erroring if the `block` has an attribute.
+///
+/// On success, pass the `HermesDecorate<Infallible>` to `f`.
 fn try_from_raw_reject_attr<T, F: FnOnce(HermesDecorated<T>) -> ParsedItem>(
     item: T,
     block: attr::HermesBlock<attr::HermesAttr>,
     f: F,
 ) -> Result<ParsedItem, HermesError> {
-    let hermes = convert_block_infallible(block)?;
-    Ok(f(HermesDecorated { item, hermes }))
+    if let Some(_attr) = block.attribute {
+        return Err(HermesError::DocBlockError {
+            // TODO
+            src: NamedSource::new("TODO", "TODO".to_string()),
+            span: span_to_miette(block.start_span),
+            msg: "This item does not support Hermes attributes (like `spec` or `unsafe(axiom)`). Only generic `hermes` blocks are allowed.".to_string(),
+        });
+    }
+    Ok(f(HermesDecorated {
+        item,
+        hermes: attr::HermesBlock {
+            attribute: None,
+            content: block.content,
+            content_span: block.content_span,
+            start_span: block.start_span,
+        },
+    }))
 }
 
-/// A complete parsed item including its module path and the extracted Lean block.
+// TODO: Merge this with `HermesDecorated`?
+
+/// A complete parsed item including its module path and source file.
 #[derive(Debug)]
 pub struct ParsedLeanItem {
     pub item: ParsedItem,
     pub module_path: Vec<String>,
-    #[allow(dead_code)] // TODO: Remove if truly unused
-    lean_block: String,
-    #[allow(dead_code)]
     source_file: Option<PathBuf>,
 }
 
@@ -273,7 +274,6 @@ where
     I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
     M: FnMut(UnloadedModule),
 {
-    //fn try_from_raw_reject_attr<T, F: FnOnce(T) -> ParsedItem + Default>(item: T, attr: Option<attr::HermesAttr>) -> Result<ParsedItem, HermesError> {
     fn process_item<
         T,
         F: FnOnce(T, attr::HermesBlock<attr::HermesAttr>) -> Result<ParsedItem, HermesError>,
@@ -286,9 +286,10 @@ where
     ) {
         let block = match attr::extract_hermes_block(attrs) {
             Ok(Some(b)) => b,
-            Ok(None) => return, // No Hermes block, skip
+            // This item doesn't have a Hermes annotation; skip it.
+            Ok(None) => return,
             Err(e) => {
-                debug!("Error extracting ```lean block: {}", e);
+                log::trace!("Error extracting ```lean block: {}", e);
                 (self.item_cb)(
                     &self.source_code.as_str()[span.byte_range()],
                     Err(HermesError::DocBlockError {
@@ -302,26 +303,27 @@ where
         };
 
         if self.inside_block {
-             (self.item_cb)(
+            (self.item_cb)(
                 &self.source_code.as_str()[span.byte_range()],
                 Err(HermesError::NestedItemError {
                     src: self.named_source.clone(),
                     span: span_to_miette(span),
-                    msg: "Hermes cannot verify items defined inside function bodies or other blocks.".to_string(),
+                    msg:
+                        "Hermes cannot verify items defined inside function bodies or other blocks."
+                            .to_string(),
                 }),
             );
             return;
         }
 
-        let Range { start, end } = span.byte_range();
-        let source = &self.source_code.as_str()[start..end];
+        let source = &self.source_code.as_str()[span.byte_range()];
 
-        // Clone fields needed for ParsedLeanItem construction before moving block
-        let lean_block_content = block.content.clone();
-        
         let parsed_item = match f(item, block) {
             Ok(i) => i,
             Err(mut e) => {
+                // TODO: What is the point of this? Why are we special-casing
+                // `TODO`?
+
                 // If it's a DocBlockError that needs source context, ensure we provide it
                 if let HermesError::DocBlockError { src, .. } = &mut e {
                     if src.name() == "TODO" {
@@ -338,7 +340,6 @@ where
             Ok(ParsedLeanItem {
                 item: parsed_item,
                 module_path: self.current_path.clone(),
-                lean_block: lean_block_content,
                 source_file: self.source_file.clone(),
             }),
         );
@@ -353,7 +354,7 @@ where
     fn visit_item_mod(&mut self, node: &'ast ItemMod) {
         let mod_name = node.ident.to_string();
 
-        // Check for unloaded modules (mod foo;)
+        // Unloaded module (i.e., `mod foo;`).
         if node.content.is_none() {
             (self.mod_cb)(UnloadedModule {
                 name: mod_name.clone(),
@@ -383,7 +384,10 @@ where
     fn visit_item_fn(&mut self, node: &'ast ItemFn) {
         trace!("Visiting Fn {}", node.sig.ident);
         self.process_item(node.clone(), node.attrs.as_slice(), node.span(), |item, block| {
-            Ok(ParsedItem::Function(HermesDecorated { item: FunctionItem::Free(item), hermes: block }))
+            Ok(ParsedItem::Function(HermesDecorated {
+                item: FunctionItem::Free(item),
+                hermes: block,
+            }))
         });
         syn::visit::visit_item_fn(self, node);
     }
@@ -391,7 +395,12 @@ where
     fn visit_item_struct(&mut self, node: &'ast ItemStruct) {
         trace!("Visiting Struct {}", node.ident);
         self.process_item(node.clone(), node.attrs.as_slice(), node.span(), |item, block| {
-            try_from_raw_reject_attr(item, block, |d| ParsedItem::Type(HermesDecorated { item: TypeItem::Struct(d.item), hermes: d.hermes }))
+            try_from_raw_reject_attr(item, block, |d| {
+                ParsedItem::Type(HermesDecorated {
+                    item: TypeItem::Struct(d.item),
+                    hermes: d.hermes,
+                })
+            })
         });
         syn::visit::visit_item_struct(self, node);
     }
@@ -399,7 +408,9 @@ where
     fn visit_item_enum(&mut self, node: &'ast ItemEnum) {
         trace!("Visiting Enum {}", node.ident);
         self.process_item(node.clone(), node.attrs.as_slice(), node.span(), |item, block| {
-            try_from_raw_reject_attr(item, block, |d| ParsedItem::Type(HermesDecorated { item: TypeItem::Enum(d.item), hermes: d.hermes }))
+            try_from_raw_reject_attr(item, block, |d| {
+                ParsedItem::Type(HermesDecorated { item: TypeItem::Enum(d.item), hermes: d.hermes })
+            })
         });
         syn::visit::visit_item_enum(self, node);
     }
@@ -407,7 +418,12 @@ where
     fn visit_item_union(&mut self, node: &'ast ItemUnion) {
         trace!("Visiting Union {}", node.ident);
         self.process_item(node.clone(), node.attrs.as_slice(), node.span(), |item, block| {
-            try_from_raw_reject_attr(item, block, |d| ParsedItem::Type(HermesDecorated { item: TypeItem::Union(d.item), hermes: d.hermes }))
+            try_from_raw_reject_attr(item, block, |d| {
+                ParsedItem::Type(HermesDecorated {
+                    item: TypeItem::Union(d.item),
+                    hermes: d.hermes,
+                })
+            })
         });
         syn::visit::visit_item_union(self, node);
     }
@@ -442,7 +458,10 @@ where
     fn visit_impl_item_fn(&mut self, node: &'ast ImplItemFn) {
         trace!("Visiting ImplItemFn {}", node.sig.ident);
         self.process_item(node.clone(), node.attrs.as_slice(), node.span(), |item, block| {
-            Ok(ParsedItem::Function(HermesDecorated { item: FunctionItem::Impl(item), hermes: block }))
+            Ok(ParsedItem::Function(HermesDecorated {
+                item: FunctionItem::Impl(item),
+                hermes: block,
+            }))
         });
         syn::visit::visit_impl_item_fn(self, node);
     }
@@ -450,7 +469,10 @@ where
     fn visit_trait_item_fn(&mut self, node: &'ast TraitItemFn) {
         trace!("Visiting TraitItemFn {}", node.sig.ident);
         self.process_item(node.clone(), node.attrs.as_slice(), node.span(), |item, block| {
-            Ok(ParsedItem::Function(HermesDecorated { item: FunctionItem::Trait(item), hermes: block }))
+            Ok(ParsedItem::Function(HermesDecorated {
+                item: FunctionItem::Trait(item),
+                hermes: block,
+            }))
         });
         syn::visit::visit_trait_item_fn(self, node);
     }
@@ -459,7 +481,6 @@ where
 /// Helper to extract exactly one Lean block from a slice of attributes.
 /// Returns `Ok(None)` if no block is found.
 /// Returns `Err` if the block is malformed or multiple blocks are found.
-
 
 /// Extracts the `...` from the first `#[path = "..."]` attribute found, if any.
 fn extract_path_attr(attrs: &[Attribute]) -> Option<String> {
@@ -511,8 +532,6 @@ fn span_to_miette(span: proc_macro2::Span) -> SourceSpan {
 }
 
 mod attr {
-    use std::convert::Infallible;
-
     use proc_macro2::Span;
 
     use super::*;
@@ -600,7 +619,9 @@ mod attr {
     }
 
     /// Helper to parse and extract a single Hermes block from a slice of attributes.
-    pub fn extract_hermes_block(attrs: &[Attribute]) -> Result<Option<HermesBlock<HermesAttr>>, Error> {
+    pub fn extract_hermes_block(
+        attrs: &[Attribute],
+    ) -> Result<Option<HermesBlock<HermesAttr>>, Error> {
         let mut found_block: Option<HermesBlock<HermesAttr>> = None;
         let mut iter = attrs.iter().peekable();
 
@@ -812,17 +833,17 @@ mod tests {
         "#;
         let items = parse_to_vec(code);
         assert_eq!(items.len(), 2);
-        
+
         let (src1, item1) = &items[0];
         let (src2, item2) = &items[1];
-        
+
         let i1 = item1.as_ref().unwrap();
         let i2 = item2.as_ref().unwrap();
-        
+
         // Verify we got the right blocks for the right items
         assert!(i1.lean_block.contains("theorem a"));
         assert!(i2.lean_block.contains("theorem b"));
-        
+
         // Verify source snippets match the function definition + doc comment
         assert!(src1.contains("theorem a"));
         assert!(src1.contains("fn foo"));
