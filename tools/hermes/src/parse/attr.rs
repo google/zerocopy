@@ -196,10 +196,10 @@ fn parse_hermes_block_common(
     Ok(block)
 }
 
-/// Returns an error containing `msg` if `lines` is non-empty.
-fn reject_section(lines: &[SpannedLine], msg: &str) -> Result<(), Error> {
-    if let Some(line) = lines.first() {
-        Err(Error::new(line.raw_span, msg))
+/// Returns an error containing `msg` if `section` is non-empty.
+fn reject_section(section: &RawSection, msg: &str) -> Result<(), Error> {
+    if let Some(span) = section.keyword_span {
+        Err(Error::new(span, msg))
     } else {
         Ok(())
     }
@@ -209,32 +209,38 @@ fn parse_item_block_common(
     attrs: &[Attribute],
     context_name: &str,
 ) -> Result<Option<(HermesBlockCommon, RawHermesSpecBody)>, Error> {
-    let Some((item, info)) = parse_hermes_block_common(attrs)? else {
-        return Ok(None);
-    };
-    if !matches!(info, ParsedInfoString::GenericMode) {
-        return Err(Error::new(
-            item.start_span,
-            format!("Functions attributes (like `spec`) are not permitted on {context_name}."),
-        ));
-    }
+    parse_hermes_block_common(attrs)?
+        .map(|(item, info)| {
+            if !matches!(info, ParsedInfoString::GenericMode) {
+                return Err(Error::new(
+                    item.start_span,
+                    format!(
+                        "Function attributes (like `spec`) are not permitted on {context_name}."
+                    ),
+                ));
+            }
 
-    let mut body = item.body;
-    reject_section(&body.requires, "`requires` sections are only permitted on functions.")?;
-    reject_section(&body.ensures, "`ensures` sections are only permitted on functions.")?;
-    reject_section(&body.proof, "`proof` sections are only permitted on `spec` functions.")?;
-    reject_section(
-        &body.axiom,
-        "`axiom` sections are only permitted on `unsafe(axiom)` functions.",
-    )?;
+            let mut body = item.body;
+            reject_section(&body.requires, "`requires` sections are only permitted on functions.")?;
+            reject_section(&body.ensures, "`ensures` sections are only permitted on functions.")?;
+            reject_section(
+                &body.proof,
+                "`proof` sections are only permitted on `spec` functions.",
+            )?;
+            reject_section(
+                &body.axiom,
+                "`axiom` sections are only permitted on `unsafe(axiom)` functions.",
+            )?;
 
-    let common = HermesBlockCommon {
-        header: std::mem::take(&mut body.header),
-        content_span: item.content_span,
-        start_span: item.start_span,
-    };
+            let common = HermesBlockCommon {
+                header: std::mem::take(&mut body.header),
+                content_span: item.content_span,
+                start_span: item.start_span,
+            };
 
-    Ok(Some((common, body)))
+            Ok((common, body))
+        })
+        .transpose()
 }
 
 impl FunctionHermesBlock {
@@ -258,14 +264,14 @@ impl FunctionHermesBlock {
                     &body.axiom,
                     "`axiom` sections are only permitted on `unsafe(axiom)` functions.",
                 )?;
-                FunctionBlockInner::Proof(body.proof)
+                FunctionBlockInner::Proof(body.proof.lines)
             }
             FunctionAttribute::UnsafeAxiom => {
                 reject_section(
                     &body.proof,
                     "`proof` sections are only permitted on `spec` functions.",
                 )?;
-                FunctionBlockInner::Axiom(body.axiom)
+                FunctionBlockInner::Axiom(body.axiom.lines)
             }
         };
 
@@ -275,8 +281,8 @@ impl FunctionHermesBlock {
                 content_span: item.content_span,
                 start_span: item.start_span,
             },
-            requires: body.requires,
-            ensures: body.ensures,
+            requires: body.requires.lines,
+            ensures: body.ensures.lines,
             inner,
         }))
     }
@@ -290,14 +296,14 @@ impl TypeHermesBlock {
 
         reject_section(&body.is_safe, "`isSafe` sections are only permitted on traits.")?;
 
-        if body.is_valid.is_empty() {
+        if !body.is_valid.is_present() {
             return Err(Error::new(
                 common.start_span,
-                "Hermes blocks on types must define an `isValid` type invariant.",
+                "Hermes blocks on types must define an `isValid` type invariant. Did you misspell it?",
             ));
         }
 
-        Ok(Some(Self { common, is_valid: body.is_valid }))
+        Ok(Some(Self { common, is_valid: body.is_valid.lines }))
     }
 }
 
@@ -309,14 +315,14 @@ impl TraitHermesBlock {
 
         reject_section(&body.is_valid, "`isValid` sections are only permitted on types.")?;
 
-        if body.is_safe.is_empty() {
+        if !body.is_safe.is_present() {
             return Err(Error::new(
                 common.start_span,
                 "Hermes blocks on traits must define an `isSafe` trait invariant. Did you misspell it?",
             ));
         }
 
-        Ok(Some(Self { common, is_safe: body.is_safe }))
+        Ok(Some(Self { common, is_safe: body.is_safe.lines }))
     }
 }
 
@@ -341,17 +347,33 @@ pub struct SpannedLine {
     pub raw_span: Span,
 }
 
+#[derive(Debug, Default, Clone)]
+pub(super) struct RawSection {
+    /// The exact span of the line where the keyword (e.g., `requires`)
+    /// appeared.
+    pub(super) keyword_span: Option<Span>,
+    pub(super) lines: Vec<SpannedLine>,
+}
+
+impl RawSection {
+    /// Returns true if the keyword was encountered, even if no arguments were
+    /// provided.
+    pub(super) fn is_present(&self) -> bool {
+        self.keyword_span.is_some()
+    }
+}
+
 /// The structured content of a completely unvalidated Hermes specification block.
 #[derive(Debug, Default, Clone)]
 pub(super) struct RawHermesSpecBody {
     /// Content before any keyword (e.g., Lean imports, let bindings, type invariants)
     pub(super) header: Vec<SpannedLine>,
-    pub(super) requires: Vec<SpannedLine>,
-    pub(super) ensures: Vec<SpannedLine>,
-    pub(super) proof: Vec<SpannedLine>,
-    pub(super) axiom: Vec<SpannedLine>,
-    pub(super) is_valid: Vec<SpannedLine>,
-    pub(super) is_safe: Vec<SpannedLine>,
+    pub(super) requires: RawSection,
+    pub(super) ensures: RawSection,
+    pub(super) proof: RawSection,
+    pub(super) axiom: RawSection,
+    pub(super) is_valid: RawSection,
+    pub(super) is_safe: RawSection,
 }
 
 pub(super) struct ParsedHermesBody {
@@ -366,8 +388,6 @@ impl RawHermesSpecBody {
     where
         I: IntoIterator<Item = &'a SpannedLine>,
     {
-        let mut spec = RawHermesSpecBody::default();
-
         #[derive(Debug, Clone, Copy, PartialEq)]
         enum Section {
             Header,
@@ -378,18 +398,16 @@ impl RawHermesSpecBody {
             IsValid,
             IsSafe,
         }
-        let mut current_section = Section::Header;
-        let mut baseline_indent: Option<usize> = None;
 
-        fn get_vec(section: Section, spec: &mut RawHermesSpecBody) -> &mut Vec<SpannedLine> {
+        fn get_section(section: Section, spec: &mut RawHermesSpecBody) -> &mut RawSection {
             match section {
-                Section::Header => &mut spec.header,
                 Section::Requires => &mut spec.requires,
                 Section::Ensures => &mut spec.ensures,
                 Section::Proof => &mut spec.proof,
                 Section::Axiom => &mut spec.axiom,
                 Section::IsValid => &mut spec.is_valid,
                 Section::IsSafe => &mut spec.is_safe,
+                Section::Header => unreachable!(),
             }
         }
 
@@ -409,52 +427,65 @@ impl RawHermesSpecBody {
             ("isSafe", Section::IsSafe),
         ];
 
-        for line in lines {
-            let trimmed = line.content.trim();
-            let span = line.span;
-            let raw_span = line.raw_span;
+        lines
+            .into_iter()
+            .try_fold(
+                (RawHermesSpecBody::default(), Section::Header, None::<usize>),
+                |(mut spec, current_section, baseline_indent), line| {
+                    let trimmed = line.content.trim();
+                    let span = line.span;
+                    let raw_span = line.raw_span;
 
-            if trimmed.is_empty() {
-                get_vec(current_section, &mut spec).push(SpannedLine {
-                    content: line.content.clone(),
-                    span,
-                    raw_span,
-                });
-                continue;
-            }
+                    let item = SpannedLine { content: line.content.clone(), span, raw_span };
 
-            let indent = line.content.len() - line.content.trim_start().len();
+                    if trimmed.is_empty() {
+                        if current_section == Section::Header {
+                            spec.header.push(item);
+                        } else {
+                            get_section(current_section, &mut spec).lines.push(item);
+                        }
+                        return Ok((spec, current_section, baseline_indent));
+                    }
 
-            if let Some((&section, arg)) =
-                keywords.iter().find_map(|(k, s)| strip_keyword(trimmed, k).map(|arg| (s, arg)))
-            {
-                current_section = section;
-                baseline_indent = Some(indent);
-                if !arg.trim().is_empty() {
-                    get_vec(current_section, &mut spec).push(SpannedLine {
-                        content: arg.to_string(),
-                        span,
-                        raw_span,
-                    });
-                }
-                continue;
-            }
+                    let indent = line.content.len() - line.content.trim_start().len();
 
-            if current_section != Section::Header && indent <= baseline_indent.unwrap() {
-                return Err((
-                    span,
-                    "Invalid indentation: expected an indented continuation or a valid Hermes keyword (requires, ensures, proof, axiom, isValid, isSafe). Did you misspell a keyword?".to_string()
-                ));
-            }
-            // Not a new keyword; continuation of the current section.
-            get_vec(current_section, &mut spec).push(SpannedLine {
-                content: line.content.clone(),
-                span,
-                raw_span,
-            });
-        }
+                    if let Some((&section, arg)) = keywords
+                        .iter()
+                        .find_map(|(k, s)| strip_keyword(trimmed, k).map(|arg| (s, arg)))
+                    {
+                        let sec = get_section(section, &mut spec);
+                        sec.keyword_span.get_or_insert(raw_span);
 
-        Ok(spec)
+                        if !arg.trim().is_empty() {
+                            sec.lines.push(SpannedLine {
+                                content: arg.to_string(),
+                                span,
+                                raw_span,
+                            });
+                        }
+                        return Ok((spec, section, Some(indent)));
+                    }
+
+                    if current_section != Section::Header && indent <= baseline_indent.unwrap() {
+                        return Err((
+                            span,
+                            "Invalid indentation: expected an indented continuation or a valid \
+                             Hermes keyword (requires, ensures, proof, axiom, isValid, isSafe). \
+                             Did you misspell a keyword?"
+                                .to_string(),
+                        ));
+                    }
+                    // Not a new keyword; continuation of the current section.
+                    if current_section == Section::Header {
+                        spec.header.push(item);
+                    } else {
+                        get_section(current_section, &mut spec).lines.push(item);
+                    }
+
+                    Ok((spec, current_section, baseline_indent))
+                },
+            )
+            .map(|(spec, _, _)| spec)
     }
 }
 
@@ -606,10 +637,10 @@ mod tests {
         let lines = mk_lines(&[]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert!(spec.header.is_empty());
-        assert!(spec.requires.is_empty());
-        assert!(spec.ensures.is_empty());
-        assert!(spec.proof.is_empty());
-        assert!(spec.axiom.is_empty());
+        assert!(!spec.requires.is_present());
+        assert!(!spec.ensures.is_present());
+        assert!(!spec.proof.is_present());
+        assert!(!spec.axiom.is_present());
     }
 
     #[test]
@@ -619,7 +650,7 @@ mod tests {
         assert_eq!(spec.header.len(), 2);
         assert_eq!(spec.header[0].content, "import Foo");
         assert_eq!(spec.header[1].content, "def bar := 1");
-        assert!(spec.requires.is_empty());
+        assert!(!spec.requires.is_present());
     }
 
     #[test]
@@ -642,9 +673,9 @@ mod tests {
 
         // "  requires   " switches section but adds no lines because its arg is empty.
         // Following line is added verbatim to requires section.
-        assert_eq!(spec.requires.len(), 1);
-        assert_eq!(spec.requires[0].content, "   genuine requirements ");
-        assert!(spec.ensures.is_empty());
+        assert_eq!(spec.requires.lines.len(), 1);
+        assert_eq!(spec.requires.lines[0].content, "   genuine requirements ");
+        assert!(!spec.ensures.is_present());
     }
 
     #[test]
@@ -659,17 +690,17 @@ mod tests {
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert!(spec.header.is_empty());
 
-        assert_eq!(spec.requires.len(), 2);
+        assert_eq!(spec.requires.lines.len(), 2);
         // Prefix argument keeps its exact text post-"requires" (which is " a > 0").
-        assert_eq!(spec.requires[0].content, " a > 0");
+        assert_eq!(spec.requires.lines[0].content, " a > 0");
         // Continuation line keeps full exact original text.
-        assert_eq!(spec.requires[1].content, "  and b < 0");
+        assert_eq!(spec.requires.lines[1].content, "  and b < 0");
 
-        assert_eq!(spec.ensures.len(), 1);
-        assert_eq!(spec.ensures[0].content, " c == 1");
+        assert_eq!(spec.ensures.lines.len(), 1);
+        assert_eq!(spec.ensures.lines[0].content, " c == 1");
 
-        assert_eq!(spec.proof.len(), 1);
-        assert_eq!(spec.proof[0].content, "  trivial");
+        assert_eq!(spec.proof.lines.len(), 1);
+        assert_eq!(spec.proof.lines[0].content, "  trivial");
     }
 
     #[test]
@@ -677,15 +708,15 @@ mod tests {
         // Check that it can interleave sections or repeat them
         let lines = mk_lines(&["requires a", "ensures b", "requires c", "axiom d"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
-        assert_eq!(spec.requires.len(), 2);
-        assert_eq!(spec.requires[0].content, " a");
-        assert_eq!(spec.requires[1].content, " c");
+        assert_eq!(spec.requires.lines.len(), 2);
+        assert_eq!(spec.requires.lines[0].content, " a");
+        assert_eq!(spec.requires.lines[1].content, " c");
 
-        assert_eq!(spec.ensures.len(), 1);
-        assert_eq!(spec.ensures[0].content, " b");
+        assert_eq!(spec.ensures.lines.len(), 1);
+        assert_eq!(spec.ensures.lines[0].content, " b");
 
-        assert_eq!(spec.axiom.len(), 1);
-        assert_eq!(spec.axiom[0].content, " d");
+        assert_eq!(spec.axiom.lines.len(), 1);
+        assert_eq!(spec.axiom.lines[0].content, " d");
     }
 
     fn dummy_line(content: &str) -> SpannedLine {
@@ -706,8 +737,8 @@ mod tests {
         ];
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.header.len(), 1);
-        assert_eq!(spec.requires.len(), 2);
-        assert_eq!(spec.requires[0].content, "  x > 0");
+        assert_eq!(spec.requires.lines.len(), 2);
+        assert_eq!(spec.requires.lines[0].content, "  x > 0");
     }
 
     #[test]
@@ -717,10 +748,10 @@ mod tests {
             dummy_line("ensures\tb > 0"), // Tests tab whitespace
         ];
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
-        assert_eq!(spec.requires.len(), 1);
-        assert_eq!(spec.requires[0].content, " a > 0");
-        assert_eq!(spec.ensures.len(), 1);
-        assert_eq!(spec.ensures[0].content, "\tb > 0");
+        assert_eq!(spec.requires.lines.len(), 1);
+        assert_eq!(spec.requires.lines[0].content, " a > 0");
+        assert_eq!(spec.ensures.lines.len(), 1);
+        assert_eq!(spec.ensures.lines[0].content, "\tb > 0");
     }
 
     #[test]
@@ -732,7 +763,7 @@ mod tests {
             dummy_line("  b > 0"),
         ];
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
-        assert_eq!(spec.requires.len(), 3); // 2 content lines + 1 blank line
+        assert_eq!(spec.requires.lines.len(), 3); // 2 content lines + 1 blank line
     }
 
     #[test]
@@ -745,7 +776,7 @@ mod tests {
         ];
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.header.len(), 3);
-        assert_eq!(spec.requires.len(), 1);
+        assert_eq!(spec.requires.lines.len(), 1);
     }
 
     #[test]
@@ -817,7 +848,7 @@ mod tests {
         let err = TypeHermesBlock::parse_from_attrs(&attrs).unwrap_err();
         assert_eq!(
             err.to_string(),
-            "Hermes blocks on types must define an `isValid` type invariant."
+            "Hermes blocks on types must define an `isValid` type invariant. Did you misspell it?"
         );
     }
 
@@ -870,5 +901,43 @@ mod tests {
         ];
         let err = TypeHermesBlock::parse_from_attrs(&attrs).unwrap_err();
         assert_eq!(err.to_string(), "`isSafe` sections are only permitted on traits.");
+    }
+    #[test]
+    fn test_empty_section_is_present() {
+        let lines = mk_lines(&["requires", "  x > 0", "ensures"]);
+        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        assert!(spec.requires.is_present());
+        assert!(spec.ensures.is_present());
+        assert!(spec.ensures.lines.is_empty());
+    }
+
+    #[test]
+    fn test_trait_rejects_is_valid() {
+        let attrs: Vec<syn::Attribute> = vec![
+            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " isSafe my_trait"]),
+            parse_quote!(#[doc = " isValid foo"]),
+            parse_quote!(#[doc = " ```"]),
+        ];
+        let err = TraitHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+        assert_eq!(err.to_string(), "`isValid` sections are only permitted on types.");
+    }
+
+    #[test]
+    fn test_reject_section_points_to_keyword() {
+        // Create dummy lines manually so we can distinguish raw_span
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+
+        let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires"]);
+        let cont_attr: syn::Attribute = parse_quote!(#[doc = "  x > 0"]);
+
+        attrs.push(requires_attr.clone());
+        attrs.push(cont_attr);
+        attrs.push(parse_quote!(#[doc = " ```"]));
+
+        let err = TypeHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+
+        let (_, requires_span) = extract_doc_line(&requires_attr).unwrap();
+        assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_span));
     }
 }
