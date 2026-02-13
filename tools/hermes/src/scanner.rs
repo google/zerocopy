@@ -13,6 +13,13 @@ use crate::{
     resolve::{HermesTargetKind, HermesTargetName, Roots},
 };
 
+#[derive(Clone)]
+struct ScannerContext {
+    err_tx: Sender<anyhow::Error>,
+    path_tx: Sender<(HermesTargetName, String)>,
+    name: HermesTargetName,
+}
+
 pub struct HermesArtifact {
     pub name: HermesTargetName,
     pub target_kind: HermesTargetKind,
@@ -76,24 +83,18 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
 
     rayon::scope(|s| {
         for target in &roots.roots {
-            let (err_tx, path_tx) = (err_tx.clone(), path_tx.clone());
-            let roots_ref = roots;
-
-            // These paths are passed to `charon`'s `--start-from` flag, and
-            // are interpreted relative to the crate being compiled.
-            //
-            // TODO: What should we do about items in other crates?
+            let ctx = ScannerContext {
+                err_tx: err_tx.clone(),
+                path_tx: path_tx.clone(),
+                name: target.name.clone(),
+            };
             let initial_prefix = vec!["crate".to_string()];
-
             s.spawn(move |s| {
                 process_file_recursive(
                     s,
                     &target.src_path,
-                    roots_ref,
-                    err_tx,
-                    path_tx,
+                    ctx,
                     initial_prefix,
-                    target.name.clone(),
                     false, // Initial call is top-level, so not inside block
                     Vec::new(),
                 )
@@ -146,13 +147,10 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
 fn process_file_recursive<'a>(
     scope: &rayon::Scope<'a>,
     src_path: &Path,
-    config: &'a Roots,
-    err_tx: Sender<anyhow::Error>,
-    path_tx: Sender<(HermesTargetName, String)>,
+    ctx: ScannerContext,
     current_prefix: Vec<String>,
-    name: HermesTargetName,
     inside_block: bool,
-    ancestors: Vec<PathBuf>,
+    mut ancestors: Vec<PathBuf>,
 ) {
     log::trace!("process_file_recursive(src_path: {:?})", src_path);
 
@@ -177,8 +175,7 @@ fn process_file_recursive<'a>(
     if ancestors.contains(&src_path) {
         return;
     }
-    let mut current_ancestors = ancestors.clone();
-    current_ancestors.push(src_path.clone());
+    ancestors.push(src_path.clone());
 
     let result = parse::read_file_and_scan_compilation_unit(
         &src_path,
@@ -188,41 +185,30 @@ fn process_file_recursive<'a>(
                 let mut full_path = current_prefix.clone();
                 full_path.extend(item.module_path);
 
-                match &item.item {
-                    // Unreliable syntaxes: we have no way of reliably naming
-                    // these in Charon's `--start-from` argument, so we fall
-                    // back to naming the parent module.
-                    parse::ParsedItem::Impl(_) => {
-                        let start_from = full_path.join("::");
-                        path_tx.send((name.clone(), start_from)).unwrap();
-                    }
-                    parse::ParsedItem::Function(f) => match &f.item {
-                        parse::FunctionItem::Impl(_) | parse::FunctionItem::Trait(_) => {
-                            let start_from = full_path.join("::");
-                            path_tx.send((name.clone(), start_from)).unwrap();
-                        }
-                        parse::FunctionItem::Free(_) => {
-                            if let Some(item_name) = item.item.name() {
-                                full_path.push(item_name);
-                                let start_from = full_path.join("::");
-                                log::debug!("Found entry point: {}", start_from);
-                                path_tx.send((name.clone(), start_from)).unwrap();
-                            }
-                        }
-                    },
-                    // Reliable syntaxes: target the specific item.
-                    _ => {
-                        if let Some(item_name) = item.item.name() {
-                            full_path.push(item_name);
-                            let start_from = full_path.join("::");
-                            log::debug!("Found entry point: {}", start_from);
-                            path_tx.send((name.clone(), start_from)).unwrap();
-                        }
-                    }
+                // Is the syntax "unreliable" in the sense that we have no way
+                // of reliably naming it in Charon's `--start-from` argument?
+                // If so, we fall back to naming the parent module.
+                let unreliable = match &item.item {
+                    parse::ParsedItem::Impl(_) => true,
+                    parse::ParsedItem::Function(f) => matches!(
+                        f.item,
+                        parse::FunctionItem::Impl(_) | parse::FunctionItem::Trait(_)
+                    ),
+                    _ => false,
+                };
+
+                if unreliable {
+                    let start_from = full_path.join("::");
+                    ctx.path_tx.send((ctx.name.clone(), start_from)).unwrap();
+                } else if let Some(item_name) = item.item.name() {
+                    full_path.push(item_name);
+                    let start_from = full_path.join("::");
+                    log::debug!("Found entry point: {}", start_from);
+                    ctx.path_tx.send((ctx.name.clone(), start_from)).unwrap();
                 }
             }
             Err(e) => {
-                let _ = err_tx.send(e.into());
+                let _ = ctx.err_tx.send(e.into());
             }
         },
     );
@@ -230,7 +216,7 @@ fn process_file_recursive<'a>(
     let (_, unloaded_modules) = match result {
         Ok(res) => res,
         Err(e) => {
-            let _ = err_tx.send(e.into());
+            let _ = ctx.err_tx.send(e.into());
             return;
         }
     };
@@ -254,24 +240,20 @@ fn process_file_recursive<'a>(
             resolve_module_path(&base_dir, &module.name, module.path_attr.as_deref())
         {
             // Spawn new tasks for discovered modules.
-            let (err_tx, path_tx) = (err_tx.clone(), path_tx.clone());
+            let ctx_clone = ctx.clone();
 
             let mut new_prefix = current_prefix.clone();
             new_prefix.push(module.name);
 
-            let name = name.clone();
             // TODO: Can we do something more efficient than cloning here? Maybe
             // a linked list?
-            let ancestors = current_ancestors.clone();
+            let ancestors = ancestors.clone();
             scope.spawn(move |s| {
                 process_file_recursive(
                     s,
                     &mod_path,
-                    config,
-                    err_tx,
-                    path_tx,
+                    ctx_clone,
                     new_prefix,
-                    name,
                     module.inside_block,
                     ancestors,
                 )

@@ -14,6 +14,7 @@ enum FunctionAttribute {
 
 /// A parsed Hermes documentation block attached to a function.
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct FunctionHermesBlock {
     pub common: HermesBlockCommon,
     pub requires: Vec<SpannedLine>,
@@ -22,6 +23,7 @@ pub struct FunctionHermesBlock {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub enum FunctionBlockInner {
     Proof(Vec<SpannedLine>),
     Axiom(Vec<SpannedLine>),
@@ -29,6 +31,7 @@ pub enum FunctionBlockInner {
 
 /// A parsed Hermes documentation block attached to a struct, enum, or union.
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct TypeHermesBlock {
     pub common: HermesBlockCommon,
     pub is_valid: Vec<SpannedLine>,
@@ -36,6 +39,7 @@ pub struct TypeHermesBlock {
 
 /// A parsed Hermes documentation block attached to a trait.
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct TraitHermesBlock {
     pub common: HermesBlockCommon,
     pub is_safe: Vec<SpannedLine>,
@@ -43,11 +47,13 @@ pub struct TraitHermesBlock {
 
 /// A parsed Hermes documentation block attached to an impl.
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct ImplHermesBlock {
     pub common: HermesBlockCommon,
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct HermesBlockCommon {
     pub header: Vec<SpannedLine>,
     /// The span of the entire block, including the opening and closing ` ``` `
@@ -81,31 +87,25 @@ fn parse_hermes_info_string(info: &str) -> Result<Option<ParsedInfoString>, Stri
     }
 
     let first_arg = tokens.next();
-    let second_arg = tokens.next();
-    match (first_arg, second_arg) {
-        (Some(first), Some(second)) => {
-            return Err(format!(
-                "Multiple attributes specified after 'hermes' ('{first}', '{second}'). Only one attribute is allowed."
-            ));
+    if let Some(second) = tokens.next() {
+        let first = first_arg.unwrap_or("");
+        return Err(format!(
+            "Multiple attributes specified after 'hermes' ('{first}', '{second}'). Only one attribute is allowed."
+        ));
+    }
+
+    use FunctionAttribute::*;
+    use ParsedInfoString::*;
+    match first_arg {
+        None => Ok(Some(GenericMode)),
+        Some("spec") => Ok(Some(FunctionMode(Spec))),
+        Some("unsafe(axiom)") => Ok(Some(FunctionMode(UnsafeAxiom))),
+        Some(token) if token.starts_with("unsafe") => {
+            Err(format!("Unknown or malformed attribute: '{token}'. Did you mean 'unsafe(axiom)'?"))
         }
-        (None, None) => return Ok(Some(ParsedInfoString::GenericMode)),
-        (Some("spec"), None) => {
-            return Ok(Some(ParsedInfoString::FunctionMode(FunctionAttribute::Spec)));
-        }
-        (Some("unsafe(axiom)"), None) => {
-            return Ok(Some(ParsedInfoString::FunctionMode(FunctionAttribute::UnsafeAxiom)));
-        }
-        (Some(token), None) if token.starts_with("unsafe") => {
-            return Err(format!(
-                "Unknown or malformed attribute: '{token}'. Did you mean 'unsafe(axiom)'?"
-            ));
-        }
-        (Some(token), None) => {
-            return Err(format!(
-                "Unrecognized Hermes attribute: '{token}'. Supported attributes are 'spec', 'unsafe(axiom)'."
-            ));
-        }
-        (None, Some(_)) => unreachable!(),
+        Some(token) => Err(format!(
+            "Unrecognized Hermes attribute: '{token}'. Supported attributes are 'spec', 'unsafe(axiom)'."
+        )),
     }
 }
 
@@ -127,14 +127,10 @@ fn extract_doc_line(attr: &Attribute) -> Option<(String, Span)> {
 }
 
 // Common parsing logic extracted
-fn parse_block_lines<'a, I>(
-    iter: &mut I,
-    start: Span,
-) -> Result<(String, Vec<SpannedLine>, Span), Error>
+fn parse_block_lines<'a, I>(iter: &mut I, start: Span) -> Result<(Vec<SpannedLine>, Span), Error>
 where
     I: Iterator<Item = &'a Attribute>,
 {
-    let mut content = String::new();
     let mut lines = Vec::new();
     let mut end = start;
     let mut closed = false;
@@ -147,8 +143,6 @@ where
             break;
         }
 
-        content.push_str(&line);
-        content.push('\n');
         lines.push(SpannedLine { content: line, span: span_to_miette(span), raw_span: span });
         end = span;
     }
@@ -157,12 +151,11 @@ where
         return Err(Error::new(start, "Unclosed Hermes block in documentation."));
     }
 
-    Ok((content, lines, end))
+    Ok((lines, end))
 }
 
 fn parse_hermes_block_common(
     attrs: &[Attribute],
-    check_info: impl Fn(&ParsedInfoString, Span) -> Result<(), Error>,
 ) -> Result<Option<(ParsedHermesBody, ParsedInfoString)>, Error> {
     let mut iter = attrs.iter();
     let mut block = None;
@@ -177,13 +170,11 @@ fn parse_hermes_block_common(
             Err(msg) => return Err(Error::new(start, msg)),
         };
 
-        check_info(&parsed_info, start)?;
-
         if block.is_some() {
             return Err(Error::new(start, "Multiple Hermes blocks found on a single item."));
         }
 
-        let (_, lines, end) = parse_block_lines(&mut iter, start)?;
+        let (lines, end) = parse_block_lines(&mut iter, start)?;
 
         let body = match RawHermesSpecBody::parse(&lines) {
             Ok(body) => body,
@@ -218,7 +209,7 @@ fn parse_item_block_common(
     attrs: &[Attribute],
     context_name: &str,
 ) -> Result<Option<(HermesBlockCommon, RawHermesSpecBody)>, Error> {
-    let Some((item, info)) = parse_hermes_block_common(attrs, |_, _| Ok(()))? else {
+    let Some((item, info)) = parse_hermes_block_common(attrs)? else {
         return Ok(None);
     };
     if !matches!(info, ParsedInfoString::GenericMode) {
@@ -248,7 +239,7 @@ fn parse_item_block_common(
 
 impl FunctionHermesBlock {
     pub fn parse_from_attrs(attrs: &[Attribute]) -> Result<Option<Self>, Error> {
-        let Some((item, parsed_info)) = parse_hermes_block_common(attrs, |_, _| Ok(()))? else {
+        let Some((item, parsed_info)) = parse_hermes_block_common(attrs)? else {
             return Ok(None);
         };
 
@@ -402,13 +393,11 @@ impl RawHermesSpecBody {
             }
         }
 
-        // Matches exact keywords or keywords followed by any whitespace.
-        fn starts_with_keyword(line: &str, keyword: &str) -> bool {
-            if let Some(rest) = line.strip_prefix(keyword) {
-                rest.is_empty() || rest.starts_with(char::is_whitespace)
-            } else {
-                false
-            }
+        // Matches exact keywords or keywords followed by any whitespace,
+        // returning the trimmed remainder.
+        fn strip_keyword<'a>(line: &'a str, keyword: &str) -> Option<&'a str> {
+            line.strip_prefix(keyword)
+                .filter(|rest| rest.is_empty() || rest.starts_with(char::is_whitespace))
         }
 
         let keywords = [
@@ -436,30 +425,26 @@ impl RawHermesSpecBody {
 
             let indent = line.content.len() - line.content.trim_start().len();
 
-            if let Some(&(keyword, section)) =
-                keywords.iter().find(|(k, _)| starts_with_keyword(trimmed, k))
+            if let Some((&section, arg)) =
+                keywords.iter().find_map(|(k, s)| strip_keyword(trimmed, k).map(|arg| (s, arg)))
             {
                 current_section = section;
                 baseline_indent = Some(indent);
-                if let Some(arg) = trimmed.strip_prefix(keyword) {
-                    if !arg.trim().is_empty() {
-                        get_vec(current_section, &mut spec).push(SpannedLine {
-                            content: arg.to_string(),
-                            span,
-                            raw_span,
-                        });
-                    }
+                if !arg.trim().is_empty() {
+                    get_vec(current_section, &mut spec).push(SpannedLine {
+                        content: arg.to_string(),
+                        span,
+                        raw_span,
+                    });
                 }
                 continue;
             }
 
-            if current_section != Section::Header {
-                if indent <= baseline_indent.unwrap() {
-                    return Err((
-                        span,
-                        "Invalid indentation: expected an indented continuation or a valid Hermes keyword (requires, ensures, proof, axiom, isValid, isSafe). Did you misspell a keyword?".to_string()
-                    ));
-                }
+            if current_section != Section::Header && indent <= baseline_indent.unwrap() {
+                return Err((
+                    span,
+                    "Invalid indentation: expected an indented continuation or a valid Hermes keyword (requires, ensures, proof, axiom, isValid, isSafe). Did you misspell a keyword?".to_string()
+                ));
             }
             // Not a new keyword; continuation of the current section.
             get_vec(current_section, &mut spec).push(SpannedLine {

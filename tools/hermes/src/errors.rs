@@ -5,7 +5,7 @@ use thiserror::Error;
 pub enum HermesError {
     #[error("Syntax error in Rust source: {msg}")]
     #[diagnostic(code(hermes::syn_error))]
-    SynError {
+    Syn {
         #[source_code]
         src: NamedSource<String>,
         #[label("here")]
@@ -14,7 +14,7 @@ pub enum HermesError {
     },
     #[error("Documentation block error: {msg}")]
     #[diagnostic(code(hermes::doc_block))]
-    DocBlockError {
+    DocBlock {
         #[source_code]
         src: NamedSource<String>,
         #[label("problematic block")]
@@ -23,11 +23,11 @@ pub enum HermesError {
     },
     #[error("Nested item error: {msg}")]
     #[diagnostic(code(hermes::nested_item))]
-    NestedItemError {
+    NestedItem {
         #[source_code]
-        src: miette::NamedSource<String>,
+        src: NamedSource<String>,
         #[label("this item is defined inside a function body")]
-        span: miette::SourceSpan,
+        span: SourceSpan,
         msg: String,
     },
 }

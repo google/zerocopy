@@ -65,11 +65,7 @@ impl DiagnosticMapper {
         }
 
         // Strategy B: Starts with user_root or user_root_canonical
-        if p.starts_with(&self.user_root) || p.starts_with(&self.user_root_canonical) {
-            return Some(p);
-        }
-
-        None
+        (p.starts_with(&self.user_root) || p.starts_with(&self.user_root_canonical)).then_some(p)
     }
 
     fn get_source(&mut self, path: &Path) -> Option<String> {
@@ -98,13 +94,12 @@ impl DiagnosticMapper {
             }
         }
 
-        // Check children for help messages
-        let mut help_msg = None;
-        for child in &diag.children {
-            if child.level == DiagnosticLevel::Help {
-                help_msg = Some(child.message.clone());
-            }
-        }
+        // TODO: Should we be collecting all of them, not just the first?
+        let help_msg = diag
+            .children
+            .iter()
+            .find(|child| child.level == DiagnosticLevel::Help)
+            .map(|child| child.message.clone());
 
         if !mapped_paths_and_spans.is_empty() {
             // Find the path that contains the primary span, or just take the first one
@@ -124,20 +119,20 @@ impl DiagnosticMapper {
 
                 for p in paths {
                     if let Some(src) = self.get_source(&p) {
-                        let mut labels = Vec::new();
-                        for s in mapped_paths_and_spans.get(&p).unwrap() {
-                            let label_text = s.label.clone().unwrap_or_default();
-                            let start = s.byte_start as usize;
-                            let len = (s.byte_end - s.byte_start) as usize;
-                            if start <= src.len() && start + len <= src.len() {
-                                let offset = SourceOffset::from(start);
-                                labels.push(miette::LabeledSpan::new(
-                                    Some(label_text),
-                                    offset.offset(),
-                                    len,
-                                ));
-                            }
-                        }
+                        let labels: Vec<_> = mapped_paths_and_spans
+                            .get(&p)
+                            .unwrap()
+                            .iter()
+                            .filter_map(|s| {
+                                let label_text = s.label.clone().unwrap_or_default();
+                                let start: usize = s.byte_start.try_into().unwrap();
+                                let len = (s.byte_end - s.byte_start).try_into().unwrap();
+                                (start <= src.len() && start + len <= src.len()).then(|| {
+                                    let offset = SourceOffset::from(start);
+                                    miette::LabeledSpan::new(Some(label_text), offset.offset(), len)
+                                })
+                            })
+                            .collect();
 
                         let err = MappedError {
                             message: if p == main_path {
