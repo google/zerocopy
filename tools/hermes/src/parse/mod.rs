@@ -1,4 +1,5 @@
 pub mod attr;
+pub mod hkd;
 
 use std::{
     fs, io,
@@ -12,39 +13,66 @@ use syn::{
     ItemMod, ItemStruct, ItemTrait, ItemUnion, Lit, Meta, TraitItemFn,
 };
 
-use self::attr::{FunctionHermesBlock, ImplHermesBlock, TraitHermesBlock, TypeHermesBlock};
+use self::{
+    attr::{FunctionHermesBlock, ImplHermesBlock, TraitHermesBlock, TypeHermesBlock},
+    hkd::{AstNode, LiftToSafe, Local, Safe, ThreadSafety},
+};
 use crate::errors::HermesError;
 
 #[derive(Clone, Debug)]
-pub enum FunctionItem {
-    Free(ItemFn),
-    Impl(ImplItemFn),
-    Trait(TraitItemFn),
+pub enum FunctionItem<M: ThreadSafety = Local> {
+    Free(AstNode<ItemFn, M>),
+    Impl(AstNode<ImplItemFn, M>),
+    Trait(AstNode<TraitItemFn, M>),
 }
 
-impl FunctionItem {
+impl FunctionItem<Local> {
     pub fn name(&self) -> String {
         match self {
-            Self::Free(x) => x.sig.ident.to_string(),
-            Self::Impl(x) => x.sig.ident.to_string(),
-            Self::Trait(x) => x.sig.ident.to_string(),
+            Self::Free(x) => x.inner.sig.ident.to_string(),
+            Self::Impl(x) => x.inner.sig.ident.to_string(),
+            Self::Trait(x) => x.inner.sig.ident.to_string(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for FunctionItem<M> {
+    type Target = FunctionItem<Safe>;
+
+    fn lift(self) -> Self::Target {
+        match self {
+            Self::Free(x) => FunctionItem::Free(x.lift()),
+            Self::Impl(x) => FunctionItem::Impl(x.lift()),
+            Self::Trait(x) => FunctionItem::Trait(x.lift()),
         }
     }
 }
 
 #[derive(Clone, Debug)]
-pub enum TypeItem {
-    Struct(ItemStruct),
-    Enum(ItemEnum),
-    Union(ItemUnion),
+pub enum TypeItem<M: ThreadSafety = Local> {
+    Struct(AstNode<ItemStruct, M>),
+    Enum(AstNode<ItemEnum, M>),
+    Union(AstNode<ItemUnion, M>),
 }
 
-impl TypeItem {
+impl TypeItem<Local> {
     pub fn name(&self) -> String {
         match self {
-            Self::Struct(x) => x.ident.to_string(),
-            Self::Enum(x) => x.ident.to_string(),
-            Self::Union(x) => x.ident.to_string(),
+            Self::Struct(x) => x.inner.ident.to_string(),
+            Self::Enum(x) => x.inner.ident.to_string(),
+            Self::Union(x) => x.inner.ident.to_string(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for TypeItem<M> {
+    type Target = TypeItem<Safe>;
+
+    fn lift(self) -> Self::Target {
+        match self {
+            Self::Struct(x) => TypeItem::Struct(x.lift()),
+            Self::Enum(x) => TypeItem::Enum(x.lift()),
+            Self::Union(x) => TypeItem::Union(x.lift()),
         }
     }
 }
@@ -56,31 +84,60 @@ pub struct HermesDecorated<T, B> {
     pub hermes: B,
 }
 
-#[derive(Clone, Debug)]
-#[allow(dead_code)]
-pub enum ParsedItem {
-    Function(HermesDecorated<FunctionItem, FunctionHermesBlock>),
-    Type(HermesDecorated<TypeItem, TypeHermesBlock>),
-    Trait(HermesDecorated<ItemTrait, TraitHermesBlock>),
-    Impl(HermesDecorated<ItemImpl, ImplHermesBlock>),
+impl<T: LiftToSafe, B: LiftToSafe> LiftToSafe for HermesDecorated<T, B> {
+    type Target = HermesDecorated<T::Target, B::Target>;
+
+    fn lift(self) -> Self::Target {
+        HermesDecorated { item: self.item.lift(), hermes: self.hermes.lift() }
+    }
 }
 
-impl ParsedItem {
+#[derive(Clone, Debug)]
+#[allow(dead_code)]
+pub enum ParsedItem<M: ThreadSafety = Local> {
+    Function(HermesDecorated<FunctionItem<M>, FunctionHermesBlock<M>>),
+    Type(HermesDecorated<TypeItem<M>, TypeHermesBlock<M>>),
+    Trait(HermesDecorated<AstNode<ItemTrait, M>, TraitHermesBlock<M>>),
+    Impl(HermesDecorated<AstNode<ItemImpl, M>, ImplHermesBlock<M>>),
+}
+
+impl ParsedItem<Local> {
     pub fn name(&self) -> Option<String> {
         match self {
             Self::Function(x) => Some(x.item.name()),
             Self::Type(x) => Some(x.item.name()),
-            Self::Trait(x) => Some(x.item.ident.to_string()),
+            Self::Trait(x) => Some(x.item.inner.ident.to_string()),
             Self::Impl(_) => None,
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for ParsedItem<M> {
+    type Target = ParsedItem<Safe>;
+
+    fn lift(self) -> Self::Target {
+        match self {
+            Self::Function(x) => ParsedItem::Function(x.lift()),
+            Self::Type(x) => ParsedItem::Type(x.lift()),
+            Self::Trait(x) => ParsedItem::Trait(x.lift()),
+            Self::Impl(x) => ParsedItem::Impl(x.lift()),
         }
     }
 }
 
 /// A complete parsed item including its module path and source file.
 #[derive(Debug)]
-pub struct ParsedLeanItem {
-    pub item: ParsedItem,
+pub struct ParsedLeanItem<M: ThreadSafety = Local> {
+    pub item: ParsedItem<M>,
     pub module_path: Vec<String>,
+}
+
+impl<M: ThreadSafety> LiftToSafe for ParsedLeanItem<M> {
+    type Target = ParsedLeanItem<Safe>;
+
+    fn lift(self) -> Self::Target {
+        ParsedLeanItem { item: self.item.lift(), module_path: self.module_path }
+    }
 }
 
 /// Represents a `mod foo;` declaration found in the source.
@@ -266,7 +323,10 @@ where
     fn visit_item_fn(&mut self, i: &'ast ItemFn) {
         trace!("Visiting Fn {}", i.sig.ident);
         self.process_item(i, &i.attrs, FunctionHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Function(HermesDecorated { item: FunctionItem::Free(item.clone()), hermes })
+            ParsedItem::Function(HermesDecorated {
+                item: FunctionItem::Free(AstNode::new(item.clone())),
+                hermes,
+            })
         });
         syn::visit::visit_item_fn(self, i);
     }
@@ -274,7 +334,10 @@ where
     fn visit_item_struct(&mut self, i: &'ast ItemStruct) {
         trace!("Visiting Struct {}", i.ident);
         self.process_item(i, &i.attrs, TypeHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Type(HermesDecorated { item: TypeItem::Struct(item.clone()), hermes })
+            ParsedItem::Type(HermesDecorated {
+                item: TypeItem::Struct(AstNode::new(item.clone())),
+                hermes,
+            })
         });
         syn::visit::visit_item_struct(self, i);
     }
@@ -282,7 +345,10 @@ where
     fn visit_item_enum(&mut self, i: &'ast ItemEnum) {
         trace!("Visiting Enum {}", i.ident);
         self.process_item(i, &i.attrs, TypeHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Type(HermesDecorated { item: TypeItem::Enum(item.clone()), hermes })
+            ParsedItem::Type(HermesDecorated {
+                item: TypeItem::Enum(AstNode::new(item.clone())),
+                hermes,
+            })
         });
         syn::visit::visit_item_enum(self, i);
     }
@@ -290,7 +356,10 @@ where
     fn visit_item_union(&mut self, i: &'ast ItemUnion) {
         trace!("Visiting Union {}", i.ident);
         self.process_item(i, &i.attrs, TypeHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Type(HermesDecorated { item: TypeItem::Union(item.clone()), hermes })
+            ParsedItem::Type(HermesDecorated {
+                item: TypeItem::Union(AstNode::new(item.clone())),
+                hermes,
+            })
         });
         syn::visit::visit_item_union(self, i);
     }
@@ -299,7 +368,7 @@ where
         let name = i.ident.to_string();
         trace!("Visiting Trait {}", name);
         self.process_item(i, &i.attrs, TraitHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Trait(HermesDecorated { item: item.clone(), hermes })
+            ParsedItem::Trait(HermesDecorated { item: AstNode::new(item.clone()), hermes })
         });
 
         self.current_path.push(name);
@@ -317,7 +386,7 @@ where
     fn visit_item_impl(&mut self, i: &'ast ItemImpl) {
         trace!("Visiting Impl");
         self.process_item(i, &i.attrs, ImplHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Impl(HermesDecorated { item: item.clone(), hermes })
+            ParsedItem::Impl(HermesDecorated { item: AstNode::new(item.clone()), hermes })
         });
         syn::visit::visit_item_impl(self, i);
     }
@@ -325,7 +394,10 @@ where
     fn visit_impl_item_fn(&mut self, i: &'ast ImplItemFn) {
         trace!("Visiting ImplItemFn {}", i.sig.ident);
         self.process_item(i, &i.attrs, FunctionHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Function(HermesDecorated { item: FunctionItem::Impl(item.clone()), hermes })
+            ParsedItem::Function(HermesDecorated {
+                item: FunctionItem::Impl(AstNode::new(item.clone())),
+                hermes,
+            })
         });
         syn::visit::visit_impl_item_fn(self, i);
     }
@@ -334,7 +406,7 @@ where
         trace!("Visiting TraitItemFn {}", i.sig.ident);
         self.process_item(i, &i.attrs, FunctionHermesBlock::parse_from_attrs, |item, hermes| {
             ParsedItem::Function(HermesDecorated {
-                item: FunctionItem::Trait(item.clone()),
+                item: FunctionItem::Trait(AstNode::new(item.clone())),
                 hermes,
             })
         });
