@@ -9,7 +9,7 @@ use std::{
 use anyhow::Result;
 
 use crate::{
-    parse::{self, FunctionItem, ParsedItem, ParsedLeanItem},
+    parse::{self, ParsedLeanItem},
     resolve::{HermesTargetKind, HermesTargetName, Roots},
 };
 
@@ -18,7 +18,7 @@ struct ScannerContext {
     err_tx: Sender<anyhow::Error>,
     // `ParsedLeanItem`s must have their `module_path` field updated to be
     // relative to the crate root.
-    item_tx: Sender<(HermesTargetName, ParsedLeanItem)>,
+    item_tx: Sender<(HermesTargetName, ParsedLeanItem<crate::parse::hkd::Safe>, String)>,
     name: HermesTargetName,
     current_prefix: Vec<String>,
 }
@@ -28,7 +28,7 @@ pub struct HermesArtifact {
     pub target_kind: HermesTargetKind,
     /// The path to the crate's `Cargo.toml`.
     pub manifest_path: PathBuf,
-    pub items: Vec<ParsedLeanItem>,
+    pub items: Vec<ParsedLeanItem<crate::parse::hkd::Safe>>,
     // NOTE: We store `start_from` as a `HashSet` rather than a `Vec` as an
     // optimization: when we encounter items which we can't name (which carry
     // Hermes annotations), we add their parent module to the list of
@@ -75,7 +75,8 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
     log::trace!("scan_workspace({:?})", roots);
 
     let (err_tx, err_rx) = mpsc::channel();
-    let (item_tx, item_rx) = mpsc::channel::<(HermesTargetName, ParsedLeanItem)>();
+    let (item_tx, item_rx) =
+        mpsc::channel::<(HermesTargetName, ParsedLeanItem<crate::parse::hkd::Safe>, String)>();
 
     let monitor_handle = std::thread::spawn(move || {
         let mut error_count = 0;
@@ -114,32 +115,16 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
     // exit.
     drop(err_tx);
 
-    let (mut entry_points, start_from) = {
+    let (mut entry_points, mut start_from_map) = {
         drop(item_tx);
-        let mut entry_points = HashMap::<HermesTargetName, Vec<ParsedLeanItem>>::new();
-        let mut start_from = HashSet::<String>::new();
-        for (target, item) in item_rx {
-            // Is the syntax "unreliable" in the sense that we have no way of
-            // reliably naming it in Charon's `--start-from` argument? If so,
-            // we fall back to naming the parent module.
-            let unreliable = match &item.item {
-                ParsedItem::Impl(_) => true,
-                ParsedItem::Function(f) => {
-                    matches!(f.item, FunctionItem::Impl(_) | FunctionItem::Trait(_))
-                }
-                _ => false,
-            };
-
-            let module_path = item.module_path.join("::");
-            start_from.insert(if unreliable {
-                module_path
-            } else {
-                // TODO: Can this `.unwrap()` panic?
-                format!("{}::{}", module_path, item.item.name().unwrap())
-            });
+        let mut entry_points =
+            HashMap::<HermesTargetName, Vec<ParsedLeanItem<crate::parse::hkd::Safe>>>::new();
+        let mut start_from_map = HashMap::<HermesTargetName, HashSet<String>>::new();
+        for (target, item, sf_str) in item_rx {
+            start_from_map.entry(target.clone()).or_default().insert(sf_str);
             entry_points.entry(target).or_default().push(item);
         }
-        (entry_points, start_from)
+        (entry_points, start_from_map)
     };
 
     // Wait for the monitor to finish flushing the errors.
@@ -158,7 +143,7 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
                 target_kind: target.kind,
                 manifest_path: target.manifest_path.clone(),
                 items: entry_points.remove(&target.name)?,
-                start_from,
+                start_from: start_from_map.remove(&target.name).unwrap_or_default(),
             })
         })
         .collect())
@@ -207,7 +192,27 @@ fn process_file_recursive<'a>(
         |_src, res| match res {
             Ok(mut item) => {
                 item.module_path.splice(0..0, ctx.current_prefix.clone());
-                ctx.item_tx.send((ctx.name.clone(), item)).unwrap();
+
+                let unreliable = match &item.item {
+                    crate::parse::ParsedItem::Impl(_) => true,
+                    crate::parse::ParsedItem::Function(f) => {
+                        matches!(
+                            f.item,
+                            crate::parse::FunctionItem::Impl(_)
+                                | crate::parse::FunctionItem::Trait(_)
+                        )
+                    }
+                    _ => false,
+                };
+                let module_path = item.module_path.join("::");
+                let start_from_str = if unreliable {
+                    module_path
+                } else {
+                    format!("{}::{}", module_path, item.item.name().unwrap())
+                };
+
+                use crate::parse::hkd::LiftToSafe;
+                ctx.item_tx.send((ctx.name.clone(), item.lift(), start_from_str)).unwrap();
                 // let mut full_path = current_prefix.clone();
                 // full_path.extend(item.module_path);
 
@@ -345,7 +350,8 @@ mod tests {
             name: name_lib,
             target_kind: HermesTargetKind::Lib,
             manifest_path: PathBuf::from("Cargo.toml"),
-            start_from: vec![],
+            start_from: std::collections::HashSet::new(),
+            items: vec![],
         };
 
         let name_bin = HermesTargetName {
@@ -358,7 +364,8 @@ mod tests {
             name: name_bin,
             target_kind: HermesTargetKind::Bin,
             manifest_path: PathBuf::from("Cargo.toml"),
-            start_from: vec![],
+            start_from: std::collections::HashSet::new(),
+            items: vec![],
         };
 
         // Verify that the file names are distinct, and that they're distinct

@@ -15,52 +15,52 @@ enum FunctionAttribute {
 /// A parsed Hermes documentation block attached to a function.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub struct FunctionHermesBlock {
-    pub common: HermesBlockCommon,
-    pub requires: Vec<SpannedLine>,
-    pub ensures: Vec<SpannedLine>,
-    pub inner: FunctionBlockInner,
+pub struct FunctionHermesBlock<M: ThreadSafety = Local> {
+    pub common: HermesBlockCommon<M>,
+    pub requires: Vec<SpannedLine<M>>,
+    pub ensures: Vec<SpannedLine<M>>,
+    pub inner: FunctionBlockInner<M>,
 }
 
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub enum FunctionBlockInner {
-    Proof(Vec<SpannedLine>),
-    Axiom(Vec<SpannedLine>),
+pub enum FunctionBlockInner<M: ThreadSafety = Local> {
+    Proof(Vec<SpannedLine<M>>),
+    Axiom(Vec<SpannedLine<M>>),
 }
 
 /// A parsed Hermes documentation block attached to a struct, enum, or union.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub struct TypeHermesBlock {
-    pub common: HermesBlockCommon,
-    pub is_valid: Vec<SpannedLine>,
+pub struct TypeHermesBlock<M: ThreadSafety = Local> {
+    pub common: HermesBlockCommon<M>,
+    pub is_valid: Vec<SpannedLine<M>>,
 }
 
 /// A parsed Hermes documentation block attached to a trait.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub struct TraitHermesBlock {
-    pub common: HermesBlockCommon,
-    pub is_safe: Vec<SpannedLine>,
+pub struct TraitHermesBlock<M: ThreadSafety = Local> {
+    pub common: HermesBlockCommon<M>,
+    pub is_safe: Vec<SpannedLine<M>>,
 }
 
 /// A parsed Hermes documentation block attached to an impl.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub struct ImplHermesBlock {
-    pub common: HermesBlockCommon,
+pub struct ImplHermesBlock<M: ThreadSafety = Local> {
+    pub common: HermesBlockCommon<M>,
 }
 
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub struct HermesBlockCommon {
-    pub header: Vec<SpannedLine>,
+pub struct HermesBlockCommon<M: ThreadSafety = Local> {
+    pub header: Vec<SpannedLine<M>>,
     /// The span of the entire block, including the opening and closing ` ``` `
     /// lines.
-    pub content_span: Span,
+    pub content_span: AstNode<Span, M>,
     /// The span of the opening ` ``` ` line.
-    pub start_span: Span,
+    pub start_span: AstNode<Span, M>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -143,7 +143,11 @@ where
             break;
         }
 
-        lines.push(SpannedLine { content: line, span: span_to_miette(span), raw_span: span });
+        lines.push(SpannedLine {
+            content: line,
+            span: span_to_miette(span),
+            raw_span: AstNode::new(span),
+        });
         end = span;
     }
 
@@ -179,8 +183,11 @@ fn parse_hermes_block_common(
         let body = match RawHermesSpecBody::parse(&lines) {
             Ok(body) => body,
             Err((err_span, msg)) => {
-                let raw_span =
-                    lines.iter().find(|l| l.span == err_span).map(|l| l.raw_span).unwrap_or(start);
+                let raw_span = lines
+                    .iter()
+                    .find(|l| l.span == err_span)
+                    .map(|l| l.raw_span.inner)
+                    .unwrap_or(start);
                 return Err(Error::new(raw_span, msg));
             }
         };
@@ -198,8 +205,8 @@ fn parse_hermes_block_common(
 
 /// Returns an error containing `msg` if `section` is non-empty.
 fn reject_section(section: &RawSection, msg: &str) -> Result<(), Error> {
-    if let Some(span) = section.keyword_span {
-        Err(Error::new(span, msg))
+    if let Some(span) = &section.keyword_span {
+        Err(Error::new(span.inner, msg))
     } else {
         Ok(())
     }
@@ -234,8 +241,8 @@ fn parse_item_block_common(
 
             let common = HermesBlockCommon {
                 header: std::mem::take(&mut body.header),
-                content_span: item.content_span,
-                start_span: item.start_span,
+                content_span: AstNode::new(item.content_span),
+                start_span: AstNode::new(item.start_span),
             };
 
             Ok((common, body))
@@ -243,7 +250,7 @@ fn parse_item_block_common(
         .transpose()
 }
 
-impl FunctionHermesBlock {
+impl FunctionHermesBlock<Local> {
     pub fn parse_from_attrs(attrs: &[Attribute]) -> Result<Option<Self>, Error> {
         let Some((item, parsed_info)) = parse_hermes_block_common(attrs)? else {
             return Ok(None);
@@ -278,8 +285,8 @@ impl FunctionHermesBlock {
         Ok(Some(Self {
             common: HermesBlockCommon {
                 header: body.header,
-                content_span: item.content_span,
-                start_span: item.start_span,
+                content_span: AstNode::new(item.content_span),
+                start_span: AstNode::new(item.start_span),
             },
             requires: body.requires.lines,
             ensures: body.ensures.lines,
@@ -288,7 +295,7 @@ impl FunctionHermesBlock {
     }
 }
 
-impl TypeHermesBlock {
+impl TypeHermesBlock<Local> {
     pub fn parse_from_attrs(attrs: &[Attribute]) -> Result<Option<Self>, Error> {
         let Some((common, body)) = parse_item_block_common(attrs, "types")? else {
             return Ok(None);
@@ -298,7 +305,7 @@ impl TypeHermesBlock {
 
         if !body.is_valid.is_present() {
             return Err(Error::new(
-                common.start_span,
+                common.start_span.inner,
                 "Hermes blocks on types must define an `isValid` type invariant. Did you misspell it?",
             ));
         }
@@ -307,7 +314,7 @@ impl TypeHermesBlock {
     }
 }
 
-impl TraitHermesBlock {
+impl TraitHermesBlock<Local> {
     pub fn parse_from_attrs(attrs: &[Attribute]) -> Result<Option<Self>, Error> {
         let Some((common, body)) = parse_item_block_common(attrs, "traits")? else {
             return Ok(None);
@@ -317,7 +324,7 @@ impl TraitHermesBlock {
 
         if !body.is_safe.is_present() {
             return Err(Error::new(
-                common.start_span,
+                common.start_span.inner,
                 "Hermes blocks on traits must define an `isSafe` trait invariant. Did you misspell it?",
             ));
         }
@@ -326,7 +333,7 @@ impl TraitHermesBlock {
     }
 }
 
-impl ImplHermesBlock {
+impl ImplHermesBlock<Local> {
     pub fn parse_from_attrs(attrs: &[Attribute]) -> Result<Option<Self>, Error> {
         let Some((common, body)) = parse_item_block_common(attrs, "impl items")? else {
             return Ok(None);
@@ -341,18 +348,18 @@ impl ImplHermesBlock {
 
 /// A single parsed line from a documentation block, retaining structural layout info.
 #[derive(Debug, Clone)]
-pub struct SpannedLine {
+pub struct SpannedLine<M: ThreadSafety = Local> {
     pub content: String,
     pub span: SourceSpan,
-    pub raw_span: Span,
+    pub raw_span: AstNode<Span, M>,
 }
 
 #[derive(Debug, Default, Clone)]
 pub(super) struct RawSection {
     /// The exact span of the line where the keyword (e.g., `requires`)
     /// appeared.
-    pub(super) keyword_span: Option<Span>,
-    pub(super) lines: Vec<SpannedLine>,
+    pub(super) keyword_span: Option<AstNode<Span, Local>>,
+    pub(super) lines: Vec<SpannedLine<Local>>,
 }
 
 impl RawSection {
@@ -367,7 +374,7 @@ impl RawSection {
 #[derive(Debug, Default, Clone)]
 pub(super) struct RawHermesSpecBody {
     /// Content before any keyword (e.g., Lean imports, let bindings, type invariants)
-    pub(super) header: Vec<SpannedLine>,
+    pub(super) header: Vec<SpannedLine<Local>>,
     pub(super) requires: RawSection,
     pub(super) ensures: RawSection,
     pub(super) proof: RawSection,
@@ -386,7 +393,7 @@ impl RawHermesSpecBody {
     /// Parses a sequence of raw documentation lines into structured sections.
     fn parse<'a, I>(lines: I) -> Result<Self, (SourceSpan, String)>
     where
-        I: IntoIterator<Item = &'a SpannedLine>,
+        I: IntoIterator<Item = &'a SpannedLine<Local>>,
     {
         #[derive(Debug, Clone, Copy, PartialEq)]
         enum Section {
@@ -434,9 +441,13 @@ impl RawHermesSpecBody {
                 |(mut spec, current_section, baseline_indent), line| {
                     let trimmed = line.content.trim();
                     let span = line.span;
-                    let raw_span = line.raw_span;
+                    let raw_span = line.raw_span.clone();
 
-                    let item = SpannedLine { content: line.content.clone(), span, raw_span };
+                    let item = SpannedLine {
+                        content: line.content.clone(),
+                        span,
+                        raw_span: raw_span.clone(),
+                    };
 
                     if trimmed.is_empty() {
                         if current_section == Section::Header {
@@ -454,7 +465,7 @@ impl RawHermesSpecBody {
                         .find_map(|(k, s)| strip_keyword(trimmed, k).map(|arg| (s, arg)))
                     {
                         let sec = get_section(section, &mut spec);
-                        sec.keyword_span.get_or_insert(raw_span);
+                        sec.keyword_span.get_or_insert_with(|| raw_span.clone());
 
                         if !arg.trim().is_empty() {
                             sec.lines.push(SpannedLine {
@@ -627,7 +638,7 @@ mod tests {
             .map(|l| SpannedLine {
                 content: (*l).to_string(),
                 span: miette::SourceSpan::new(0.into(), 0),
-                raw_span: proc_macro2::Span::call_site(),
+                raw_span: AstNode::new(proc_macro2::Span::call_site()),
             })
             .collect()
     }
@@ -723,7 +734,7 @@ mod tests {
         SpannedLine {
             content: content.to_string(),
             span: (0, 0).into(),
-            raw_span: Span::call_site(),
+            raw_span: AstNode::new(Span::call_site()),
         }
     }
 
@@ -939,5 +950,72 @@ mod tests {
 
         let (_, requires_span) = extract_doc_line(&requires_attr).unwrap();
         assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_span));
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for SpannedLine<M> {
+    type Target = SpannedLine<Safe>;
+    fn lift(self) -> Self::Target {
+        SpannedLine { content: self.content, span: self.span, raw_span: self.raw_span.lift() }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for HermesBlockCommon<M> {
+    type Target = HermesBlockCommon<Safe>;
+    fn lift(self) -> Self::Target {
+        HermesBlockCommon {
+            header: self.header.into_iter().map(|l| l.lift()).collect(),
+            content_span: self.content_span.lift(),
+            start_span: self.start_span.lift(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for FunctionBlockInner<M> {
+    type Target = FunctionBlockInner<Safe>;
+    fn lift(self) -> Self::Target {
+        match self {
+            Self::Proof(v) => FunctionBlockInner::Proof(v.into_iter().map(|l| l.lift()).collect()),
+            Self::Axiom(v) => FunctionBlockInner::Axiom(v.into_iter().map(|l| l.lift()).collect()),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for FunctionHermesBlock<M> {
+    type Target = FunctionHermesBlock<Safe>;
+    fn lift(self) -> Self::Target {
+        FunctionHermesBlock {
+            common: self.common.lift(),
+            requires: self.requires.into_iter().map(|l| l.lift()).collect(),
+            ensures: self.ensures.into_iter().map(|l| l.lift()).collect(),
+            inner: self.inner.lift(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for TypeHermesBlock<M> {
+    type Target = TypeHermesBlock<Safe>;
+    fn lift(self) -> Self::Target {
+        TypeHermesBlock {
+            common: self.common.lift(),
+            is_valid: self.is_valid.into_iter().map(|l| l.lift()).collect(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for TraitHermesBlock<M> {
+    type Target = TraitHermesBlock<Safe>;
+    fn lift(self) -> Self::Target {
+        TraitHermesBlock {
+            common: self.common.lift(),
+            is_safe: self.is_safe.into_iter().map(|l| l.lift()).collect(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for ImplHermesBlock<M> {
+    type Target = ImplHermesBlock<Safe>;
+    fn lift(self) -> Self::Target {
+        ImplHermesBlock { common: self.common.lift() }
     }
 }
