@@ -262,7 +262,9 @@ fn resolve_packages<'a>(
                     }
                 }
             } else {
-                return Err(anyhow!("Could not determine package from current directory. Please use -p <NAME> or --workspace."));
+                return Err(anyhow!(
+                    "Could not determine package from current directory. Please use -p <NAME> or --workspace."
+                ));
             }
         }
     }
