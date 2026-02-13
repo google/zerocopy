@@ -36,15 +36,8 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
 
         // Start translation from specific entry points. Sort to ensure
         // deterministic ordering for testing (not important in production).
-        let mut start_from = artifact.start_from.clone();
-        start_from.sort();
-
-        // NOTE: This is an optimization that is relevant because, when we
-        // encounter items which we can't name (which carry Hermes annotations),
-        // we add their parent module to the list of entrypoints. If there are
-        // multiple items in the same module, this can lead to duplication in
-        // the list of entrypoints.
-        start_from.dedup();
+        let mut start_from = artifact.start_from.iter().map(String::as_ref).collect::<Vec<_>>();
+        start_from.sort_unstable(); // Slightly faster than `sort`, and equivalent for strings.
 
         let start_from_str = start_from.join(",");
         // OS command-line length limits (Windows is ~32k; Linux `ARG_MAX` is
