@@ -136,7 +136,7 @@ where
     let mut closed = false;
 
     for next in iter {
-        let Some((line, span)) = extract_doc_line(next) else { break };
+        let Some((line, span)) = extract_doc_line(next) else { continue };
 
         if line.trim().starts_with("```") {
             closed = true;
@@ -616,8 +616,9 @@ mod tests {
             parse_quote!(#[derive(Clone)]), // Interrupts contiguous doc lines
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs).unwrap_err();
-        assert_eq!(err.to_string(), "Unclosed Hermes block in documentation.");
+        let block = FunctionHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+        assert_eq!(block.common.header.len(), 1);
+        assert_eq!(block.common.header[0].content, " line 1");
     }
 
     #[test]
@@ -950,6 +951,181 @@ mod tests {
 
         let (_, requires_span) = extract_doc_line(&requires_attr).unwrap();
         assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_span));
+    }
+    mod edge_cases {
+        use super::*;
+
+        #[test]
+        fn test_keyword_prefix_safety() {
+            // Verify that 'proof_helper' is parsed as content, not a 'proof' section.
+            let lines = mk_lines(&[
+                "requires",
+                "  proof_helper", // Should be content of requires
+            ]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert!(spec.requires.is_present());
+            assert_eq!(spec.requires.lines.len(), 1);
+            assert_eq!(spec.requires.lines[0].content, "  proof_helper");
+            assert!(!spec.proof.is_present());
+        }
+
+        #[test]
+        fn test_keyword_collision_error() {
+            // Verify that 'proof' inside 'requires' triggers a new section or error if indentation is wrong.
+            // If it's indented, it MIGHT be parsed as content if it doesn't match the strict keyword rule?
+            // "The parser currently greedily matches keywords".
+            // Let's see if it switches section even if indented.
+            let lines = mk_lines(&[
+                "requires",
+                "  proof", // Indented 'proof' - parser might treat as section start if greedy
+            ]);
+            // If it is treated as section start, 'proof' arg is empty.
+            // But 'proof' is valid in Spec.
+            // Fails if 'proof' cannot be inside 'requires' block? No, it just switches section.
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert!(spec.requires.is_present());
+            assert!(spec.requires.lines.is_empty()); // 'proof' switched section
+            assert!(spec.proof.is_present());
+        }
+
+        #[test]
+        fn test_multiple_sections_concatenation() {
+            let lines = mk_lines(&["requires a", "requires b"]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.lines.len(), 2);
+            assert_eq!(spec.requires.lines[0].content, " a");
+            assert_eq!(spec.requires.lines[1].content, " b");
+        }
+
+        #[test]
+        fn test_typo_safety() {
+            let lines = mk_lines(&[
+                "requires",
+                "  is_safe", // Typo for isSafe, should be content
+            ]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.lines[0].content, "  is_safe");
+        }
+
+        #[test]
+        fn test_trait_rejects_function_keywords() {
+            let attrs: Vec<syn::Attribute> = vec![
+                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " isSafe"]),
+                parse_quote!(#[doc = "  val"]),
+                parse_quote!(#[doc = " requires true"]), // Should error
+                parse_quote!(#[doc = " ```"]),
+            ];
+            let err = TraitHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+            assert_eq!(err.to_string(), "`requires` sections are only permitted on functions.");
+        }
+
+        #[test]
+        fn test_nested_fences_failure() {
+            let attrs: Vec<syn::Attribute> = vec![
+                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " isSafe"]),
+                parse_quote!(#[doc = " ```"]), // Nested fence? No this is just premature close.
+                parse_quote!(#[doc = "  nested"]),
+                parse_quote!(#[doc = " ```"]),
+            ];
+            // The parser sees the first ``` and stops.
+            // The "nested" part matches nothing and is ignored by parse_from_attrs loop?
+            // Actually `parse_from_attrs` iterates until it finds the block.
+            // It parses until `is_end_fence`.
+            // So if we have ` ``` ` inside, it closes the block.
+            // Then `nested` is outside.
+            // The result is valid block with just `isSafe`.
+            // But if the INTENTION was nested, it fails silently or just closes early.
+            // Let's verify it closes early.
+            let block = TraitHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+            assert!(block.is_safe.is_empty()); // Empty because `isSafe` line had no content and next line was fence
+        }
+
+        #[test]
+        fn test_mixed_tabs_spaces_indentation() {
+            // Indentation logic uses `len() - trim_start().len()`.
+            // '\t' is 1 char. ' ' is 1 char.
+            let lines = mk_lines(&[
+                "requires",
+                "\t\ta > 0", // 2 chars indent
+                "  b > 0",   // 2 chars indent
+            ]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.lines.len(), 2);
+            assert_eq!(spec.requires.lines[0].content, "\t\ta > 0");
+            assert_eq!(spec.requires.lines[1].content, "  b > 0");
+        }
+
+        #[test]
+        fn test_missing_definition_syntax() {
+            let attrs: Vec<syn::Attribute> = vec![
+                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " isSafe"]), // Missing body
+                parse_quote!(#[doc = " ```"]),
+            ];
+            // Should succeed with empty body or fail?
+            // Currently parser allows empty sections.
+            let block = TraitHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+            assert!(block.is_safe.is_empty());
+        }
+
+        #[test]
+        fn test_complex_lean_expressions() {
+            // Verify parsing of multiline, commented, and unicode Lean content.
+            // The parser doesn't validate Lean lexical rules, just extracts lines.
+            // But we want to ensure it doesn't choke on tokens.
+            let _lines = mk_lines(&[
+                "isSafe Self :=",
+                "  -- This is a comment",
+                "  x ≥ 0 ∧ y ≤ 10",  // Unicode
+                "  let result := 1", // 'result' keyword in Lean
+            ]);
+            // For Trait, we look for isSafe.
+            let attrs: Vec<syn::Attribute> = vec![
+                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " isSafe Self :="]),
+                parse_quote!(#[doc = "  -- This is a comment"]),
+                parse_quote!(#[doc = "  x ≥ 0 ∧ y ≤ 10"]),
+                parse_quote!(#[doc = "  let result := 1"]),
+                parse_quote!(#[doc = " ```"]),
+            ];
+            let block = TraitHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+            // isSafe Self := (1)
+            // -- This is a comment (2)
+            // x ≥ 0 ∧ y ≤ 10 (3)
+            // let result := 1 (4)
+            // Total 4 lines.
+            assert_eq!(block.is_safe.len(), 4);
+            assert_eq!(block.is_safe[2].content, "  x ≥ 0 ∧ y ≤ 10");
+        }
+
+        #[test]
+        fn test_argument_name_collisions() {
+            // Verify that arguments named 'result', 'old_x' are parsed as content and don't trigger keywords.
+            // 'result' is not a keyword in Hermes parser, only a binder in generation.
+            let lines = mk_lines(&["requires", "  result > 0", "  old_x < new_x"]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.lines.len(), 2);
+            assert_eq!(spec.requires.lines[0].content, "  result > 0");
+            assert_eq!(spec.requires.lines[1].content, "  old_x < new_x");
+        }
+
+        #[test]
+        fn test_interleaved_attributes() {
+            // Verify that non-doc attributes are skipped and doc attributes are concatenated.
+            let attrs: Vec<syn::Attribute> = vec![
+                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[allow(dead_code)]), // Interleaved attribute
+                parse_quote!(#[doc = " isSafe"]),
+                parse_quote!(#[cfg(all())]), // Another Interleaved
+                parse_quote!(#[doc = "  val"]),
+                parse_quote!(#[doc = " ```"]),
+            ];
+            let block = TraitHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+            assert_eq!(block.is_safe.len(), 1);
+            assert_eq!(block.is_safe[0].content, "  val");
+        }
     }
 }
 
