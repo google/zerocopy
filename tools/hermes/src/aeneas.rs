@@ -13,7 +13,11 @@ use crate::{generate, resolve::Roots, scanner::HermesArtifact};
 const HERMES_PRELUDE: &str = include_str!("Hermes.lean");
 const HERMES_DIAGNOSTICS_TEMPLATE: &str = include_str!("Diagnostics.lean");
 
-pub fn run_aeneas(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
+pub fn run_aeneas(
+    roots: &Roots,
+    artifacts: &[HermesArtifact],
+    args: &crate::resolve::Args,
+) -> Result<()> {
     let llbc_root = roots.llbc_root();
     let lean_generated_root = roots.lean_generated_root();
 
@@ -22,7 +26,26 @@ pub fn run_aeneas(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
     std::fs::create_dir_all(lean_root.join("hermes"))?;
 
     // 2. Write Standard Library
-    write_if_changed(&lean_root.join("hermes").join("Hermes.lean"), HERMES_PRELUDE)
+    let mut prelude = String::new();
+    if !args.allow_sorry {
+        prelude.push_str("import Lean\n");
+    }
+    prelude.push_str(HERMES_PRELUDE);
+
+    if !args.allow_sorry {
+        prelude.push_str("\n\n");
+        prelude.push_str("open Lean Elab Tactic Term\n\n");
+        prelude.push_str("elab (priority := high) \"sorry\" : tactic =>\n");
+        prelude.push_str(
+            "  throwError \"The 'sorry' tactic is forbidden; use --allow-sorry to allow it.\"\n\n",
+        );
+        prelude.push_str("elab (priority := high) \"sorry\" : term =>\n");
+        prelude.push_str(
+            "  throwError \"The 'sorry' term is forbidden; use --allow-sorry to allow it.\"\n",
+        );
+    }
+
+    write_if_changed(&lean_root.join("hermes").join("Hermes.lean"), &prelude)
         .context("Failed to write Hermes prelude")?;
 
     // 3. Write Toolchain

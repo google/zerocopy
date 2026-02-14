@@ -46,6 +46,10 @@ pub struct Args {
     /// Verify all test targets
     #[arg(long)]
     pub tests: bool,
+
+    /// Allow `sorry` in proofs and inject `sorry` for missing proofs
+    #[arg(long)]
+    pub allow_sorry: bool,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]

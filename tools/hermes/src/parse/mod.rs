@@ -265,7 +265,7 @@ where
     fn process_item<
         T: Spanned,
         B,
-        P: FnOnce(&[Attribute]) -> Result<Option<B>, Error>,
+        P: FnOnce(&[Attribute], &str) -> Result<Option<B>, Error>,
         W: FnOnce(&T, B) -> ParsedItem,
     >(
         &mut self,
@@ -274,7 +274,7 @@ where
         parse: P,
         wrap: W,
     ) {
-        let block_res = parse(attrs);
+        let block_res = parse(attrs, &self.source_code);
         let item_res = match block_res {
             // This item doesn't have a Hermes annotation; skip it.
             Ok(None) => return,
@@ -475,7 +475,7 @@ fn extract_cfg_attr_path(attrs: &[Attribute]) -> Option<String> {
     })
 }
 
-fn span_to_miette(span: proc_macro2::Span) -> SourceSpan {
+pub(crate) fn span_to_miette(span: proc_macro2::Span) -> SourceSpan {
     let range = span.byte_range();
     SourceSpan::new(range.start.into(), range.end - range.start)
 }

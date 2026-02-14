@@ -177,7 +177,6 @@ fn generate_function(
 
     // 5. Build the Precondition Binder
 
-
     // Signature
     let args_suffix = (!args.is_empty())
         .then(|| {
@@ -745,13 +744,7 @@ mod tests {
         // Regression test: Ensure `requires` comes AFTER the theorem signature.
         let item: syn::ItemFn = parse_quote! { fn foo(x: u32) {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let block = mk_block(
-            vec!["x.val > 0"],
-            vec![],
-            Some(vec!["simp"]),
-            None,
-            vec![],
-        );
+        let block = mk_block(vec!["x.val > 0"], vec![], Some(vec!["simp"]), None, vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));

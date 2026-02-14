@@ -6,6 +6,7 @@ mod generate;
 mod parse;
 mod resolve;
 mod scanner;
+mod validate;
 
 mod ui_test_shim;
 
@@ -44,8 +45,9 @@ fn main() -> anyhow::Result<()> {
                 );
                 return Ok(());
             }
+            validate::validate_artifacts(&packages, resolve_args.allow_sorry)?;
             charon::run_charon(&resolve_args, &roots, &packages)?;
-            aeneas::run_aeneas(&roots, &packages)
+            aeneas::run_aeneas(&roots, &packages, &resolve_args)
         }
     }
 }
