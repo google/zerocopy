@@ -28,14 +28,22 @@ pub fn generate_artifact(artifact: &crate::scanner::HermesArtifact) -> String {
 
     let slug = artifact.artifact_slug();
     out.push_str("import Hermes\n");
-    out.push_str(&format!("import «Generated».«{}».Funs\n", slug));
-    out.push_str(&format!("import «Generated».«{}».Types\n\n", slug));
+    out.push_str("import Aeneas\n");
+    out.push_str(&format!("import «{}».Funs\n", slug));
+    out.push_str(&format!("import «{}».Types\n\n", slug));
+    out.push_str("open Aeneas Aeneas.Std Result\n\n");
 
     // Naive namespacing: for each item, wrap in its module namespace.
     // Optimisation: group by namespace? For now, we keep it simple.
 
     for item in &artifact.items {
-        let namespace = item.module_path.join(".");
+        let namespace = item
+            .module_path
+            .iter()
+            .filter(|&p| p != "crate")
+            .cloned()
+            .collect::<Vec<_>>()
+            .join(".");
         if !namespace.is_empty() {
             out.push_str(&format!("namespace {}\n\n", namespace));
         }
@@ -72,8 +80,8 @@ fn generate_function(
     let header_code = join_lines(&block.common.header);
 
     // 2. Resolve Requires/Ensures
-    let requires_code = join_lines(&block.requires);
-    let ensures_code = join_lines(&block.ensures);
+    let requires_code = join_conjunctions(&block.requires);
+    let ensures_code = join_conjunctions(&block.ensures);
 
     // 3. Determine if this is a Theorem (spec) or Axiom (unsafe)
     let (kind_keyword, body_code) = match &block.inner {
@@ -120,7 +128,8 @@ fn generate_function(
     out.push_str(&format!("{kind_keyword} spec{args_suffix}{req_binder} :\n"));
 
     // Result Spec
-    out.push_str(&format!("  Hermes.SpecificationHolds ({})", call_str));
+    let ret_type = get_return_type_string(func);
+    out.push_str(&format!("  Hermes.SpecificationHolds (α := {}) ({})", ret_type, call_str));
 
     let mut_args: Vec<&ArgInfo> = args.iter().filter(|a| a.is_mut_ref).collect();
     let has_muts = !mut_args.is_empty();
@@ -375,11 +384,12 @@ fn map_type(ty: &crate::parse::hkd::SafeType) -> String {
                 let s = &segment.ident;
                 match s.as_str() {
                     "u8" | "u16" | "u32" | "u64" | "u128" | "usize" | "i8" | "i16" | "i32"
-                    | "i64" | "i128" | "isize" | "bool" => {
+                    | "i64" | "i128" | "isize" => {
                         let mut capital = s.clone();
                         capital.replace_range(0..1, &s[0..1].to_uppercase());
-                        return capital;
+                        return format!("Std.{}", capital);
                     }
+                    "bool" => return "Bool".to_string(),
                     _ => {}
                 }
             }
@@ -450,6 +460,19 @@ fn extract_args_metadata(func: &FunctionItem<crate::parse::hkd::Safe>) -> Vec<Ar
         .collect()
 }
 
+fn get_return_type_string(func: &FunctionItem<crate::parse::hkd::Safe>) -> String {
+    use crate::parse::hkd::SafeReturnType;
+    let sig = match func {
+        FunctionItem::Free(AstNode { inner: i }) => &i.sig,
+        FunctionItem::Impl(AstNode { inner: i }) => &i.sig,
+        FunctionItem::Trait(AstNode { inner: i }) => &i.sig,
+    };
+    match &sig.output {
+        SafeReturnType::Default => "Unit".to_string(),
+        SafeReturnType::Type(ty) => map_type(ty),
+    }
+}
+
 fn is_unit_return(func: &FunctionItem<crate::parse::hkd::Safe>) -> bool {
     use crate::parse::hkd::SafeReturnType;
     let sig = match func {
@@ -465,6 +488,16 @@ fn is_unit_return(func: &FunctionItem<crate::parse::hkd::Safe>) -> bool {
 
 fn join_lines(lines: &[SpannedLine<crate::parse::hkd::Safe>]) -> String {
     lines.iter().map(|l| l.content.as_str()).collect::<Vec<_>>().join("\n")
+}
+
+fn join_conjunctions(lines: &[SpannedLine<crate::parse::hkd::Safe>]) -> String {
+    lines
+        .iter()
+        .map(|l| l.content.trim())
+        .filter(|s| !s.is_empty())
+        .map(|s| format!("({})", s))
+        .collect::<Vec<_>>()
+        .join(" ∧ \n")
 }
 
 #[cfg(test)]

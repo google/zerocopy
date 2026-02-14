@@ -164,6 +164,58 @@ impl DiagnosticMapper {
             DiagnosticLevel::Warning => "[External Warning]",
             _ => "[External Info]",
         };
-        printer(format!("{} {}", prefix, diag.message));
+
+        if let Some(span) = diag.spans.first() {
+            printer(format!("{} {}:{}: {}", prefix, span.file_name, span.line_start, diag.message));
+        } else {
+            printer(format!("{} {}", prefix, diag.message));
+        }
+    }
+
+    pub fn render_raw<F>(
+        &mut self,
+        file_name: &str,
+        message: String,
+        level: DiagnosticLevel,
+        byte_start: usize,
+        byte_end: usize,
+        mut printer: F,
+    ) where
+        F: FnMut(String),
+    {
+        let p = PathBuf::from(file_name);
+        if let Some(mapped_path) = self.map_path(&p) {
+            if let Some(src) = self.get_source(&mapped_path) {
+                let start = byte_start;
+                if byte_end >= start {
+                    let len = byte_end - start;
+                    if start <= src.len() && start + len <= src.len() {
+                        let offset = SourceOffset::from(start);
+                        let label = miette::LabeledSpan::new(
+                            Some("here".to_string()),
+                            offset.offset(),
+                            len,
+                        );
+                        let err = MappedError {
+                            message,
+                            src: NamedSource::new(mapped_path.to_string_lossy(), src),
+                            labels: vec![label],
+                            help: None,
+                            related: Vec::new(),
+                        };
+                        printer(format!("{:?}", Report::new(err)));
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Fallback
+        let prefix = match level {
+            DiagnosticLevel::Error | DiagnosticLevel::Ice => "[External Error]",
+            DiagnosticLevel::Warning => "[External Warning]",
+            _ => "[External Info]",
+        };
+        printer(format!("{} {}: {}", prefix, file_name, message));
     }
 }

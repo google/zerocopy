@@ -39,12 +39,11 @@ pub struct HermesArtifact {
 }
 
 impl HermesArtifact {
-    /// Returns a unique "slug" for this artifact, used for file naming.
+    /// Returns a unique, Lean-compatible "slug" for this artifact.
     ///
     /// Guarantees uniqueness based on manifest path even if multiple packages
-    /// have the same name.
-    ///
-    /// Format: `{package_name}-{target_name}-{hash:08x}`
+    /// have the same name. The slug is guaranteed to be a valid Lean
+    /// identifier (no hyphens).
     pub fn artifact_slug(&self) -> String {
         fn hash<T: Hash>(t: &T) -> u64 {
             let mut s = std::collections::hash_map::DefaultHasher::new();
@@ -60,7 +59,24 @@ impl HermesArtifact {
         let h2 = hash(&self.target_kind);
         let h = hash(&[h0, h1, h2]);
 
-        format!("{}-{}-{:08x}", self.name.package_name, self.name.target_name, h)
+        // Converts kebab-case -> PascalCase.
+        let to_pascal = |s: &str| {
+            s.split(|c| matches!(c, '-' | '_'))
+                .map(|segment| {
+                    let mut chars = segment.chars();
+                    match chars.next() {
+                        None => String::new(),
+                        Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
+                    }
+                })
+                .collect::<String>()
+        };
+
+        let pkg = to_pascal(self.name.package_name.as_str());
+        let target = to_pascal(&self.name.target_name);
+
+        // We use the hash to ensure uniqueness.
+        format!("{}_{}_{:08x}", pkg, target, h)
     }
 
     /// Returns the name of the `.llbc` file to use for this artifact.
