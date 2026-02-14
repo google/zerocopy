@@ -39,7 +39,7 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         for item in &artifact.items {
             if let ParsedItem::Function(func) = &item.item {
                 // Check if the function body is an Axiom (unsafe)
-                if let FunctionBlockInner::Axiom(_) = func.hermes.inner {
+                if let FunctionBlockInner::Axiom { .. } = func.hermes.inner {
                     // Construct the fully qualified name: Crate::Mod::Func
                     let mut full_path = vec!["crate"];
                     full_path.extend(item.module_path.iter().map(|s| s.as_str()));

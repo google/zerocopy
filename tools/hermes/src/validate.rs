@@ -15,7 +15,7 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
     for package in packages {
         for item in &package.items {
             if let ParsedItem::Function(func) = &item.item {
-                if let FunctionBlockInner::Proof(lines) = &func.hermes.inner {
+                if let FunctionBlockInner::Proof { lines, .. } = &func.hermes.inner {
                     if lines.is_empty() {
                         // We need a way to report this error with miette.
                         // For now, we'll eprintln and set has_errors.

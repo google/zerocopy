@@ -22,6 +22,7 @@ struct MappedError {
     labels: Vec<miette::LabeledSpan>,
     help: Option<String>,
     related: Vec<MappedError>,
+    severity: Option<miette::Severity>,
 }
 
 impl miette::Diagnostic for MappedError {
@@ -48,6 +49,10 @@ impl miette::Diagnostic for MappedError {
             let iter = self.related.iter().map(|e| e as &dyn miette::Diagnostic);
             Some(Box::new(iter))
         }
+    }
+
+    fn severity(&self) -> Option<miette::Severity> {
+        self.severity
     }
 }
 
@@ -144,6 +149,13 @@ impl DiagnosticMapper {
                             labels,
                             help: if p == main_path { help_msg.clone() } else { None },
                             related: Vec::new(),
+                            severity: match diag.level {
+                                DiagnosticLevel::Error | DiagnosticLevel::Ice => {
+                                    Some(miette::Severity::Error)
+                                }
+                                DiagnosticLevel::Warning => Some(miette::Severity::Warning),
+                                _ => Some(miette::Severity::Advice),
+                            },
                         };
                         all_errors.push(err);
                     }
@@ -202,6 +214,13 @@ impl DiagnosticMapper {
                             labels: vec![label],
                             help: None,
                             related: Vec::new(),
+                            severity: match level {
+                                DiagnosticLevel::Error | DiagnosticLevel::Ice => {
+                                    Some(miette::Severity::Error)
+                                }
+                                DiagnosticLevel::Warning => Some(miette::Severity::Warning),
+                                _ => Some(miette::Severity::Advice),
+                            },
                         };
                         printer(format!("{:?}", Report::new(err)));
                         return;
