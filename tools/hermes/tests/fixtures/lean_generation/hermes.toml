@@ -33,5 +33,8 @@ kind = "lean"
 should_exist = true
 content_contains = [
     "instance : Hermes.IsValid Positive",
-    "class SafeTrait"
+    "class SafeTrait",
+    "instance {T} [Clone T] : Hermes.IsValid (InlineBound T)",
+    "instance {T} [Copy T] : Hermes.IsValid (WhereBound T)"
+]
 ]

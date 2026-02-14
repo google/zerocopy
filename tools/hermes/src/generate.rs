@@ -209,7 +209,7 @@ fn generate_type(
         crate::parse::TypeItem::Enum(AstNode { inner: e }) => &e.generics,
         crate::parse::TypeItem::Union(AstNode { inner: u }) => &u.generics,
     };
-    let (generic_params, generic_args) = extract_generic_params(generics);
+    let (generic_params, generic_args, generic_bounds) = extract_generic_params(generics);
 
     // 1. Generate the header (raw Lean content provided by user)
     let header_code = join_lines(&block.common.header);
@@ -233,9 +233,21 @@ fn generate_type(
         .then(|| format!("({type_name} {})", generic_args.join(" ")))
         .unwrap_or_else(|| type_name.clone());
 
-    let instance_params = (!generic_params.is_empty())
-        .then(|| format!(" {{{}}}", generic_params.join(" ")))
-        .unwrap_or_default();
+    let instance_params = if !generic_params.is_empty() || !generic_bounds.is_empty() {
+        let params = if !generic_params.is_empty() {
+            format!("{{{}}}", generic_params.join(" "))
+        } else {
+            String::new()
+        };
+        let bounds = if !generic_bounds.is_empty() {
+            format!(" {}", generic_bounds.join(" "))
+        } else {
+            String::new()
+        };
+        format!(" {}{}", params, bounds)
+    } else {
+        String::new()
+    };
 
     out.push_str(&format!("instance{instance_params} : Hermes.IsValid {type_app} where\n"));
 
@@ -256,7 +268,7 @@ fn generate_trait(
     block: &TraitHermesBlock<crate::parse::hkd::Safe>,
 ) -> String {
     let trait_name = item.ident.clone();
-    let (generic_params, generic_args) = extract_generic_params(&item.generics);
+    let (generic_params, generic_args, generic_bounds) = extract_generic_params(&item.generics);
 
     let header_code = join_lines(&block.common.header);
     let safe_code = join_lines(&block.is_safe);
@@ -271,9 +283,21 @@ fn generate_trait(
 
     // Class Definition
     // class Safe (Self : Type) {T} [Trait Self T] : Prop where
-    let params_decl = (!generic_params.is_empty())
-        .then(|| format!(" {{{}}}", generic_params.join(" ")))
-        .unwrap_or_default();
+    let params_decl = if !generic_params.is_empty() || !generic_bounds.is_empty() {
+        let params = if !generic_params.is_empty() {
+            format!("{{{}}}", generic_params.join(" "))
+        } else {
+            String::new()
+        };
+        let bounds = if !generic_bounds.is_empty() {
+            format!(" {}", generic_bounds.join(" "))
+        } else {
+            String::new()
+        };
+        format!(" {}{}", params, bounds)
+    } else {
+        String::new()
+    };
 
     let trait_app = (!generic_args.is_empty())
         .then(|| format!("{trait_name} Self {}", generic_args.join(" ")))
@@ -295,25 +319,46 @@ fn generate_trait(
 }
 
 /// Extracts generic parameters for Lean.
-/// Returns a tuple: (list of param names for binders, list of args for application).
-///
-/// Example: `<'a, T, const N: usize>`
-/// -> params: `vec!["T", "N"]` (Lifetimes are erased)
-/// -> args: `vec!["T", "N"]`
+/// Returns a tuple: (list of param names, list of args, list of bounds).
 fn extract_generic_params(
     generics: &crate::parse::hkd::SafeGenerics,
-) -> (Vec<String>, Vec<String>) {
-    use crate::parse::hkd::SafeGenericParam;
-    generics
-        .params
-        .iter()
-        .filter_map(|param| match param {
-            SafeGenericParam::Type(t) => Some(t.clone()),
-            SafeGenericParam::Const(c) => Some(c.clone()),
-            SafeGenericParam::Lifetime => None,
-        })
-        .map(|name| (name.clone(), name))
-        .unzip()
+) -> (Vec<String>, Vec<String>, Vec<String>) {
+    use crate::parse::hkd::{SafeGenericParam, SafeTypeParamBound, SafeWherePredicate};
+    let mut params = Vec::new();
+    let mut args = Vec::new();
+    let mut bounds = Vec::new();
+
+    for param in &generics.params {
+        match param {
+            SafeGenericParam::Type { name, bounds: p_bounds } => {
+                params.push(name.clone());
+                args.push(name.clone());
+                for bound in p_bounds {
+                    if let SafeTypeParamBound::Trait(ty) = bound {
+                        bounds.push(format!("[{} {}]", map_type(ty), name));
+                    }
+                }
+            }
+            SafeGenericParam::Const(c) => {
+                params.push(c.clone());
+                args.push(c.clone());
+            }
+            SafeGenericParam::Lifetime => {}
+        }
+    }
+
+    for pred in &generics.where_clause {
+        if let SafeWherePredicate::Type { bounded_ty, bounds: p_bounds } = pred {
+            let ty_str = map_type(bounded_ty);
+            for bound in p_bounds {
+                if let SafeTypeParamBound::Trait(trait_ty) = bound {
+                    bounds.push(format!("[{} {}]", map_type(trait_ty), ty_str));
+                }
+            }
+        }
+    }
+
+    (params, args, bounds)
 }
 
 /// Recursively maps Rust types to Lean types.
@@ -672,8 +717,24 @@ mod tests {
 
         let out = generate_type(&ty_item, &block);
 
-        assert!(out.contains("instance {T} : Hermes.IsValid (Bound T) where"));
-        assert!(!out.contains("Copy"));
+        assert!(out.contains("instance {T} [Copy T] : Hermes.IsValid (Bound T) where"));
+        // Matches Aeneas style: no bounds in instance headers usually, unless required for the type itself?
+        // Wait, for IsValid, we might need bounds if the invariant depends on them.
+        // But in this test case logic, we ARE generating them now.
+        assert!(out.contains("[Copy T]"));
+    }
+
+    #[test]
+    fn test_gen_struct_with_inline_bounds() {
+        let item: syn::ItemStruct = parse_quote! {
+            struct Inline<T: Clone> { val: T }
+        };
+        let ty_item = TypeItem::Struct(AstNode { inner: item.mirror() });
+        let block = mk_type_block(vec!["true"], vec![]);
+
+        let out = generate_type(&ty_item, &block);
+
+        assert!(out.contains("instance {T} [Clone T] : Hermes.IsValid (Inline T) where"));
     }
 
     #[test]
