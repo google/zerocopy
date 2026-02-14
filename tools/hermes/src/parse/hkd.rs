@@ -118,10 +118,23 @@ impl Mirror for syn::Ident {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SafeQSelf {
+    pub ty: Box<SafeType>,
+    pub position: usize,
+}
+
+impl Mirror for syn::QSelf {
+    type Image = SafeQSelf;
+    fn mirror(&self) -> Self::Image {
+        SafeQSelf { ty: Box::new(self.ty.mirror()), position: self.position }
+    }
+}
+
 // --- Types ---
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SafeType {
-    Path { segments: Vec<SafePathSegment> },
+    Path { qself: Option<Box<SafeQSelf>>, segments: Vec<SafePathSegment> },
     Reference { mutability: bool, elem: Box<SafeType> },
     Tuple { elems: Vec<SafeType> },
     Slice { elem: Box<SafeType> },
@@ -141,6 +154,7 @@ impl Mirror for syn::Type {
     fn mirror(&self) -> Self::Image {
         match self {
             syn::Type::Path(tp) => SafeType::Path {
+                qself: tp.qself.as_ref().map(|q| Box::new(q.mirror())),
                 segments: tp
                     .path
                     .segments
@@ -354,5 +368,40 @@ impl Mirror for syn::ItemImpl {
     type Image = SafeItemImpl;
     fn mirror(&self) -> Self::Image {
         SafeItemImpl
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use syn::parse_quote;
+
+    use super::*;
+
+    #[test]
+    fn test_mirror_array_len() {
+        let ty: syn::Type = parse_quote!([u8; 1 + 2]);
+        let safe = ty.mirror();
+        if let SafeType::Array { len, .. } = safe {
+            assert_eq!(len, "1 + 2");
+        } else {
+            panic!("Expected Array, got {:?}", safe);
+        }
+    }
+
+    #[test]
+    fn test_mirror_qself() {
+        let ty: syn::Type = parse_quote!(<T as Trait>::Assoc);
+        let safe = ty.mirror();
+        if let SafeType::Path { qself, .. } = safe {
+            assert!(qself.is_some());
+            let q = qself.unwrap();
+            // Position logic: <A as B>::C
+            // Path: B::C
+            // Split: <A as B> :: C
+            // position = length of B = 1.
+            assert_eq!(q.position, 1);
+        } else {
+            panic!("Expected Path, got {:?}", safe);
+        }
     }
 }

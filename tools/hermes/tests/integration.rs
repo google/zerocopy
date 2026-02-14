@@ -20,6 +20,8 @@ struct ArtifactExpectation {
     should_exist: bool,
     #[serde(default)]
     kind: Option<String>,
+    #[serde(default)]
+    content_contains: Vec<String>,
 }
 
 #[derive(Deserialize)]
@@ -316,6 +318,28 @@ fn assert_artifacts_match(
                 "Found unexpected artifact for package='{}', target='{}', kind='{}'.\nMatched prefix: '{}'\nFound items in {:?}: {:?}",
                 exp.package, exp.target, kind, prefix, scan_dir, found_items
             );
+        }
+
+        if found && !exp.content_contains.is_empty() {
+            // Find the actual file/dir
+            let file_name = found_items.iter().find(|f| f.starts_with(&prefix)).unwrap();
+            let path = scan_dir.join(file_name);
+
+            let content = if path.is_dir() {
+                // For Lean artifacts, the content is in Specs.lean
+                fs::read_to_string(path.join("Specs.lean"))?
+            } else {
+                fs::read_to_string(&path)?
+            };
+
+            for needle in &exp.content_contains {
+                if !content.contains(needle) {
+                    panic!(
+                         "Artifact '{}' missing expected content.\nMissing: '{}'\nPath: {:?}\n\nFull Content:\n{}",
+                         file_name, needle, path, content
+                     );
+                }
+            }
         }
     }
 
