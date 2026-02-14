@@ -144,6 +144,25 @@ pub enum SafeType {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SafeTypeParamBound {
+    Trait(SafeType),
+    Lifetime,
+}
+
+impl Mirror for syn::TypeParamBound {
+    type Image = SafeTypeParamBound;
+    fn mirror(&self) -> Self::Image {
+        match self {
+            syn::TypeParamBound::Trait(t) => SafeTypeParamBound::Trait(
+                syn::Type::Path(syn::TypePath { qself: None, path: t.path.clone() }).mirror(),
+            ),
+            syn::TypeParamBound::Lifetime(_) => SafeTypeParamBound::Lifetime,
+            _ => SafeTypeParamBound::Lifetime, // Fallback
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SafePathSegment {
     pub ident: String,
     pub args: Vec<SafeType>,
@@ -287,13 +306,33 @@ impl Mirror for syn::TraitItemFn {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SafeGenerics {
     pub params: Vec<SafeGenericParam>,
+    pub where_clause: Vec<SafeWherePredicate>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SafeGenericParam {
-    Type(String),
+    Type { name: String, bounds: Vec<SafeTypeParamBound> },
     Const(String),
     Lifetime,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SafeWherePredicate {
+    Type { bounded_ty: SafeType, bounds: Vec<SafeTypeParamBound> },
+    Lifetime,
+}
+
+impl Mirror for syn::WherePredicate {
+    type Image = SafeWherePredicate;
+    fn mirror(&self) -> Self::Image {
+        match self {
+            syn::WherePredicate::Type(t) => SafeWherePredicate::Type {
+                bounded_ty: t.bounded_ty.mirror(),
+                bounds: t.bounds.iter().map(|b| b.mirror()).collect(),
+            },
+            _ => SafeWherePredicate::Lifetime,
+        }
+    }
 }
 
 impl Mirror for syn::Generics {
@@ -304,11 +343,19 @@ impl Mirror for syn::Generics {
                 .params
                 .iter()
                 .map(|p| match p {
-                    syn::GenericParam::Type(t) => SafeGenericParam::Type(t.ident.to_string()),
+                    syn::GenericParam::Type(t) => SafeGenericParam::Type {
+                        name: t.ident.to_string(),
+                        bounds: t.bounds.iter().map(|b| b.mirror()).collect(),
+                    },
                     syn::GenericParam::Const(c) => SafeGenericParam::Const(c.ident.to_string()),
                     syn::GenericParam::Lifetime(_) => SafeGenericParam::Lifetime,
                 })
                 .collect(),
+            where_clause: self
+                .where_clause
+                .as_ref()
+                .map(|w| w.predicates.iter().map(|p| p.mirror()).collect())
+                .unwrap_or_default(),
         }
     }
 }
