@@ -1,0 +1,12 @@
+
+[[artifact]]
+package = "test_2_7_arrays"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify Array type generation
+content_contains = [
+    "Array",
+    "Slice"
+]

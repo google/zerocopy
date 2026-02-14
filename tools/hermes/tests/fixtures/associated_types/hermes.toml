@@ -1,0 +1,14 @@
+
+[[artifact]]
+package = "transform_lib"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify Associated Types
+content_contains = [
+    # Struct field
+    "(val : Trait.Assoc T)",
+    # Trait method
+    "(x : Trait.Assoc T) : Result (Trait.Assoc T)"
+]

@@ -1,0 +1,12 @@
+
+[[artifact]]
+package = "test_2_6_nested_refs"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify nested references don't crash the generator
+# Content might involve complex back-translation types
+content_contains = [
+    "nested"
+]

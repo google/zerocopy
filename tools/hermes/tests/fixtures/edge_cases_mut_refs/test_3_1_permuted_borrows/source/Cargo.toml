@@ -1,0 +1,7 @@
+
+[package]
+name = "test_3_1_permuted_borrows"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

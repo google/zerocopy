@@ -1,0 +1,13 @@
+
+[[artifact]]
+package = "test_7_3_ghost_spec"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "100"
+]
+content_lacks = [
+    "42"
+]

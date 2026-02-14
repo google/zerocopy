@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_6_1_external_crate"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "HashMap"
+]

@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_11_2_monolith"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "f_only_for_test_0",
+    "f_only_for_test_99"
+]

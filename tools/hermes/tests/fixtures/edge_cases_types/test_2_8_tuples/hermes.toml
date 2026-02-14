@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_2_8_tuples"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    # Verify no crash
+]

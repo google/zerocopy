@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "transform_lib"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify Unions
+content_contains = [
+    "instance : Hermes.IsValid MyUnion"
+]

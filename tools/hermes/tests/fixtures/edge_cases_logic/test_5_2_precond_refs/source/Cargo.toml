@@ -1,0 +1,7 @@
+
+[package]
+name = "test_5_2_precond_refs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

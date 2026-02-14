@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_3_1_permuted_borrows"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify swap function generation
+content_contains = [
+    "swap"
+]

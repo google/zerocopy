@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_5_3_cross_arg"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "a.len = b.len" # or a.length
+]

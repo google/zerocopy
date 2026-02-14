@@ -1,0 +1,12 @@
+
+[[artifact]]
+package = "transform_lib"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify Const Generics
+content_contains = [
+    "instance {N} : Hermes.IsValid (Foo N)",
+    "class Safe {N} [Bar Self N]"
+]

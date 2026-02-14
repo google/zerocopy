@@ -1,0 +1,13 @@
+
+[[artifact]]
+package = "test_2_5_pointers"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify pointer mapping (might be Opaque or specific type)
+# We just want to ensure it generates *something* without crashing.
+content_contains = [
+    # Aeneas might map raw pointers to something specific or fail.
+    # If it fails, we will see `lake build` fail or generation fail.
+]

@@ -1,0 +1,12 @@
+
+[[artifact]]
+package = "test_8_3_explicit_discriminants"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "Color",
+    "Red",
+    "Green"
+]

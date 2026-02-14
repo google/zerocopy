@@ -1,0 +1,12 @@
+
+[[artifact]]
+package = "test_10_3_if_spec"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "if",
+    "then",
+    "else"
+]

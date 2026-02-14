@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_4_2_dependent_type"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "ArrayPair",
+    "(N : Usize)" # Expecting const generic parameter
+]

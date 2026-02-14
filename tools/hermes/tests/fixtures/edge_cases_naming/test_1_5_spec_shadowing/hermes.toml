@@ -1,0 +1,13 @@
+
+[[artifact]]
+package = "test_1_5_spec_shadowing"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify that shadowing doesn't crash Hermes/Aeneas and generates valid Lean
+content_contains = [
+    "result_shadow",
+    "old_shadow",
+    "internal_shadow"
+]

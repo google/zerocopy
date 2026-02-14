@@ -1,0 +1,7 @@
+
+[package]
+name = "test_8_1_void_enum"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

@@ -1,0 +1,7 @@
+
+[package]
+name = "test_6_2_logic_visibility"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

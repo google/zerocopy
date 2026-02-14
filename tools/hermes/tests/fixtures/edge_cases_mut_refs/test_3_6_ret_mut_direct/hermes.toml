@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_3_6_ret_mut_direct"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "mut_passthrough"
+]

@@ -1,0 +1,12 @@
+
+[[artifact]]
+package = "test_4_7_where_clauses"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "Copy T",
+    "Clone T",
+    "Default T"
+]

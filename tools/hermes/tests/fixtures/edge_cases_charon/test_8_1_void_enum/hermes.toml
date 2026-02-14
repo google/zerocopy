@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_8_1_void_enum"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "Void",
+    "invert"
+]

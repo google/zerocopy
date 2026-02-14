@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_4_1_generic_struct"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "IsValid T", # Expecting context bound
+    "ContainerValid"
+]

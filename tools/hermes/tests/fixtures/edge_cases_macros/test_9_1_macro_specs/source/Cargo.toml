@@ -1,0 +1,7 @@
+
+[package]
+name = "test_9_1_macro_specs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

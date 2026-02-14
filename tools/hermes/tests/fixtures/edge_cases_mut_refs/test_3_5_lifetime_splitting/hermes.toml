@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_3_5_lifetime_splitting"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "partial_mut"
+]

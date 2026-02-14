@@ -1,0 +1,13 @@
+
+[[artifact]]
+package = "test_7_2_sig_shifting"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "fd"
+]
+content_lacks = [
+    "handle"
+]

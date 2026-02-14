@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_3_3_ret_mut"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "Result (Option U32 × Vec U32)" # or similar
+]

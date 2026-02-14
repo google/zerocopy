@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_11_4_namespace_bomb"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "A.A.A.A.f"
+]

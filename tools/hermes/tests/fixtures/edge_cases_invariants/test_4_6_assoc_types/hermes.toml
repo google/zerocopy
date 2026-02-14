@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_4_6_assoc_types"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "Item",
+    "default"
+]

@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_8_4_body_shadowing"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "shadow"
+]

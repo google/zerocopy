@@ -1,0 +1,7 @@
+
+[package]
+name = "test_4_5_trait_inheritance"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

@@ -1,0 +1,12 @@
+
+[[artifact]]
+package = "test_2_2_string_types"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify mapping of String/Char
+content_contains = [
+    "String",
+    "Char"
+]

@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_4_4_private_fields"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "S",
+    "private_field"
+]
