@@ -11,6 +11,13 @@ use crate::parse::{
     FunctionItem, ParsedItem, TypeItem,
 };
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub enum MappingKind {
+    Source,
+    Synthetic,
+    Keyword,
+}
+
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct SourceMapping {
     pub lean_start: usize,
@@ -18,6 +25,7 @@ pub struct SourceMapping {
     pub source_file: std::path::PathBuf,
     pub source_start: usize,
     pub source_end: usize,
+    pub kind: MappingKind,
 }
 
 pub struct GeneratedArtifact {
@@ -63,6 +71,28 @@ impl LeanBuilder {
             source_file: source_file.to_path_buf(),
             source_start: span.offset(),
             source_end: span.offset() + span.len(),
+            kind: MappingKind::Source,
+        });
+    }
+
+    fn push_mapped(
+        &mut self,
+        s: &str,
+        span: &miette::SourceSpan,
+        source_file: &std::path::Path,
+        kind: MappingKind,
+    ) {
+        let start = self.buf.len();
+        self.buf.push_str(s);
+        let end = self.buf.len();
+
+        self.mappings.push(SourceMapping {
+            lean_start: start,
+            lean_end: end,
+            source_file: source_file.to_path_buf(),
+            source_start: span.offset(),
+            source_end: span.offset() + span.len(),
+            kind,
         });
     }
 
@@ -137,11 +167,12 @@ fn generate_function(
     builder: &mut LeanBuilder,
     source_file: &std::path::Path,
 ) {
-    let fn_name = match func {
-        FunctionItem::Free(n) => n.inner.sig.ident.clone(),
-        FunctionItem::Impl(n) => n.inner.sig.ident.clone(),
-        FunctionItem::Trait(n) => n.inner.sig.ident.clone(),
+    let (fn_name, fn_span) = match func {
+        FunctionItem::Free(n) => (n.inner.sig.ident.clone(), n.inner.sig.name_span),
+        FunctionItem::Impl(n) => (n.inner.sig.ident.clone(), n.inner.sig.name_span),
+        FunctionItem::Trait(n) => (n.inner.sig.ident.clone(), n.inner.sig.name_span),
     };
+
     let args = extract_args_metadata(func);
     let ret_is_unit = is_unit_return(func);
 
@@ -164,9 +195,9 @@ fn generate_function(
     // If we want to map spans, we should push "(". Then push_spanned content. Then push ")". Then " ∧ \n".
 
     // 3. Determine if this is a Theorem or Axiom
-    let (kind_keyword, body_lines) = match &block.inner {
-        FunctionBlockInner::Proof(lines) => ("theorem", Some(lines)),
-        FunctionBlockInner::Axiom(_) => ("axiom", None),
+    let (kind_keyword, body_lines, keyword_span) = match &block.inner {
+        FunctionBlockInner::Proof { lines, keyword } => ("theorem", Some(lines), keyword),
+        FunctionBlockInner::Axiom { keyword, .. } => ("axiom", None, keyword),
     };
 
     // 4. Build the Call String
@@ -190,7 +221,18 @@ fn generate_function(
         })
         .unwrap_or_default();
 
-    builder.push_str(&format!("{kind_keyword} spec{args_suffix}"));
+    if kind_keyword == "axiom" {
+        if let Some(kw) = keyword_span {
+            builder.push_mapped(kind_keyword, &kw.inner, source_file, MappingKind::Keyword);
+        } else {
+            builder.push_str(kind_keyword);
+        }
+    } else {
+        builder.push_str(kind_keyword);
+    }
+    builder.push(' ');
+    builder.push_mapped("spec", &fn_span, source_file, MappingKind::Synthetic);
+    builder.push_str(args_suffix.as_str());
 
     let has_requires = !block.requires.is_empty();
     if has_requires {
@@ -280,12 +322,21 @@ fn generate_function(
     if kind_keyword == "theorem" {
         if let Some(lines) = body_lines {
             if lines.is_empty() {
-                builder.push_str(" := by\n  sorry\n");
+                builder.push_str(" := ");
+                if let Some(kw) = keyword_span {
+                    builder.push_mapped("by", &kw.inner, source_file, MappingKind::Keyword);
+                } else {
+                    builder.push_str("by");
+                }
+                builder.push_str("\n  sorry\n");
             } else {
                 builder.push_str(" := ");
-                // Map 'by' to the first line of the proof to give a useful error location
-                // for "unsolved goals" or matching errors at the start of the block.
-                builder.push_spanned("by", &lines[0], source_file);
+                // Map 'by' to the proof keyword span if available, otherwise first line
+                if let Some(kw) = keyword_span {
+                    builder.push_mapped("by", &kw.inner, source_file, MappingKind::Keyword);
+                } else {
+                    builder.push_spanned("by", &lines[0], source_file);
+                }
                 builder.push('\n');
                 for line in lines {
                     builder.push_str("  ");
@@ -604,7 +655,7 @@ mod tests {
         SpannedLine {
             content: s.to_string(),
             span: SourceSpan::new(0.into(), 0),
-            raw_span: AstNode { inner: () },
+            raw_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
         }
     }
 
@@ -616,19 +667,27 @@ mod tests {
         header: Vec<&str>,
     ) -> FunctionHermesBlock<crate::parse::hkd::Safe> {
         let inner = if let Some(p) = proof {
-            FunctionBlockInner::Proof(p.into_iter().map(mk_spanned).collect())
+            FunctionBlockInner::Proof {
+                lines: p.into_iter().map(mk_spanned).collect(),
+                keyword: None,
+            }
         } else {
-            FunctionBlockInner::Axiom(axiom.unwrap().into_iter().map(mk_spanned).collect())
+            FunctionBlockInner::Axiom {
+                lines: axiom.unwrap().into_iter().map(mk_spanned).collect(),
+                keyword: None,
+            }
         };
 
         FunctionHermesBlock {
             common: HermesBlockCommon {
                 header: header.into_iter().map(mk_spanned).collect(),
-                content_span: AstNode { inner: () },
-                start_span: AstNode { inner: () },
+                content_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
+                start_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
             },
             requires: requires.into_iter().map(mk_spanned).collect(),
+            requires_keyword: None,
             ensures: ensures.into_iter().map(mk_spanned).collect(),
+            ensures_keyword: None,
             inner,
         }
     }
@@ -640,8 +699,8 @@ mod tests {
         TypeHermesBlock {
             common: HermesBlockCommon {
                 header: header.into_iter().map(mk_spanned).collect(),
-                content_span: AstNode { inner: () },
-                start_span: AstNode { inner: () },
+                content_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
+                start_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
             },
             is_valid: is_valid.into_iter().map(mk_spanned).collect(),
         }
@@ -654,8 +713,8 @@ mod tests {
         TraitHermesBlock {
             common: HermesBlockCommon {
                 header: header.into_iter().map(mk_spanned).collect(),
-                content_span: AstNode { inner: () },
-                start_span: AstNode { inner: () },
+                content_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
+                start_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
             },
             is_safe: is_safe.into_iter().map(mk_spanned).collect(),
         }
@@ -1085,5 +1144,21 @@ mod tests {
         // 'b' handling (should NOT be treated as mutable output)
         assert!(!out.contains("let old_b := b"));
         assert!(!out.contains("let b := b_new"));
+    }
+    #[test]
+    fn test_gen_implicit_proof_no_keyword_mapping() {
+        let item: syn::ItemFn = parse_quote! { fn foo() {} };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        // Implicit proof means empty proof block and NO keyword span
+        let block = mk_block(vec![], vec![], Some(vec![]), None, vec![]);
+        // mk_block helper creates a Proof variant with None keyword by default for proof args
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+
+        // Should NOT contain a Keyword mapping for "by"
+        let has_keyword = builder.mappings.iter().any(|m| matches!(m.kind, MappingKind::Keyword));
+
+        assert!(!has_keyword, "Implicit proof should NOT map 'by' to any keyword");
     }
 }

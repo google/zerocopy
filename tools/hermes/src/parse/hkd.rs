@@ -101,9 +101,9 @@ where
 // --- Span ---
 // We don't need the raw Span for generation, only for error reporting which happens earlier.
 impl Mirror for proc_macro2::Span {
-    type Image = ();
+    type Image = miette::SourceSpan;
     fn mirror(&self) -> Self::Image {
-        ()
+        crate::parse::span_to_miette(*self)
     }
 }
 
@@ -222,6 +222,7 @@ impl Mirror for syn::Type {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SafeSignature {
     pub ident: String,
+    pub name_span: miette::SourceSpan,
     pub inputs: Vec<SafeFnArg>,
     pub output: SafeReturnType,
 }
@@ -243,6 +244,7 @@ impl Mirror for syn::Signature {
     fn mirror(&self) -> Self::Image {
         SafeSignature {
             ident: self.ident.to_string(),
+            name_span: crate::parse::span_to_miette(self.ident.span()),
             inputs: self
                 .inputs
                 .iter()

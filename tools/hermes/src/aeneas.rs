@@ -345,24 +345,7 @@ fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
             // Diagnostic span: [d_start, d_end)
             // Mapping span: [m.lean_start, m.lean_end)
             // Overlap: m.lean_start < d_end && m.lean_end > d_start
-            let mapping = mappings
-                .iter()
-                .filter(|m| m.lean_start < diag.byte_end && m.lean_end > diag.byte_start)
-                .min_by_key(|m| m.lean_start);
-
-            let (file, start, end) = if let Some(m) = mapping {
-                // intersection
-                let i_start = std::cmp::max(m.lean_start, diag.byte_start);
-                let i_end = std::cmp::min(m.lean_end, diag.byte_end);
-                let offset = i_start - m.lean_start;
-                let len = i_end - i_start;
-                let s_start = m.source_start + offset;
-                let s_end = s_start + len;
-                (m.source_file.to_string_lossy().to_string(), s_start, s_end)
-            } else {
-                (diag.file_name.clone(), diag.byte_start, diag.byte_end)
-            };
-
+            let (file, start, end) = resolve_mapping(&diag, &mappings);
             mapper.render_raw(&file, diag.message, level, start, end, |s| eprintln!("{s}"));
         }
     }
@@ -372,6 +355,58 @@ fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
     }
 
     Ok(())
+}
+
+fn resolve_mapping(
+    diag: &LeanDiagnostic,
+    mappings: &[crate::generate::SourceMapping],
+) -> (String, usize, usize) {
+    let mapping =
+        mappings.iter().find(|m| m.lean_start <= diag.byte_start && m.lean_end >= diag.byte_end);
+
+    // Certain diagnostics, such as "declaration uses `sorry`", are reported on
+    // the synthetic theorem name rather than the proof block itself. To improve
+    // the user experience, we attempt to redirect these diagnostics to the
+    // relevant keyword (e.g., `proof` or `axiom`) if a corresponding mapping
+    // exists in the same file.
+    let mapping = match mapping {
+        Some(m)
+            if diag.message.contains("declaration uses `sorry`")
+                && matches!(m.kind, crate::generate::MappingKind::Synthetic) =>
+        {
+            mappings
+                .iter()
+                .find(|m2| {
+                    matches!(m2.kind, crate::generate::MappingKind::Keyword)
+                        && m2.lean_start > m.lean_end
+                        && m2.source_start <= m.source_start
+                        && m2.source_file == m.source_file
+                })
+                .or(Some(m))
+        }
+        _ => mapping,
+    };
+
+    if let Some(m) = mapping {
+        // Calculate the intersection of the mapping span and the diagnostic
+        // span to determine the precise source location.
+        let i_start = std::cmp::max(m.lean_start, diag.byte_start);
+        let i_end = std::cmp::min(m.lean_end, diag.byte_end);
+
+        if i_end > i_start {
+            let offset = i_start - m.lean_start;
+            let len = i_end - i_start;
+            let s_start = m.source_start + offset;
+            let s_end = s_start + len;
+            (m.source_file.to_string_lossy().to_string(), s_start, s_end)
+        } else {
+            // If there is no overlap (e.g., due to redirection), fallback to
+            // the full mapping source span.
+            (m.source_file.to_string_lossy().to_string(), m.source_start, m.source_end)
+        }
+    } else {
+        (diag.file_name.clone(), diag.byte_start, diag.byte_end)
+    }
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -400,4 +435,103 @@ fn write_if_changed(path: &std::path::Path, content: &str) -> Result<()> {
     }
     std::fs::write(path, content).context(format!("Failed to write {:?}", path))?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use super::*;
+    use crate::generate::{MappingKind, SourceMapping};
+
+    fn mk_diag(msg: &str, start: usize, end: usize) -> LeanDiagnostic {
+        LeanDiagnostic {
+            file_name: "test.lean".into(),
+            byte_start: start,
+            byte_end: end,
+            line_start: 0,
+            column_start: 0,
+            line_end: 0,
+            column_end: 0,
+            level: "warning".into(),
+            message: msg.into(),
+        }
+    }
+
+    fn mk_mapping(
+        lean_start: usize,
+        lean_end: usize,
+        source_start: usize,
+        source_end: usize,
+        kind: MappingKind,
+        file: &str,
+    ) -> SourceMapping {
+        SourceMapping {
+            lean_start,
+            lean_end,
+            source_file: PathBuf::from(file),
+            source_start,
+            source_end,
+            kind,
+        }
+    }
+
+    #[test]
+    fn test_resolve_mapping_cross_function_success() {
+        // Function A: Proof Keyword at 100, Spec at 200
+        // Diagnostic at 200 (Spec)
+        // Function A: Spec name at 200 (Diagnostic Here)
+        // Generated Lean: ... theorem spec ... by ...
+        // Spec mapping: [50, 60) -> [200, 210)
+        // Keyword mapping: [70, 80) -> [100, 110)
+
+        let mappings = vec![
+            mk_mapping(50, 60, 200, 210, MappingKind::Synthetic, "file.rs"), // spec name
+            mk_mapping(70, 80, 100, 110, MappingKind::Keyword, "file.rs"),   // proof keyword
+        ];
+        let diag = mk_diag("declaration uses `sorry`", 50, 60);
+
+        let (_, start, _) = resolve_mapping(&diag, &mappings);
+        assert_eq!(start, 100, "Should redirect to keyword");
+    }
+
+    #[test]
+    fn test_resolve_mapping_cross_function_failure_order() {
+        // Function A: Spec at 200 (Diagnostic Here)
+        // Function B: Proof Keyword at 300 (which is > 200, so valid for redirection if we didn't check source order?)
+        // Wait, current logic requires `m2.lean_start > m.lean_end`.
+        // So let's say Function A Spec is at lean 50..60.
+        // Function B Proof Keyword is at lean 70..80.
+        // Logic: finds keyword AFTER spec in Lean.
+        // But source order: Func A Spec at 200. Func B Proof Keyword at 300.
+        // `m2.source_start (300) <= m.source_start (200)` is FALSE.
+        // So it should NOT redirect.
+
+        let mappings = vec![
+            mk_mapping(50, 60, 200, 210, MappingKind::Synthetic, "file.rs"), // Func A Spec
+            mk_mapping(70, 80, 300, 310, MappingKind::Keyword, "file.rs"),   // Func B Proof
+        ];
+        let diag = mk_diag("declaration uses `sorry`", 50, 60);
+
+        let (_, start, _) = resolve_mapping(&diag, &mappings);
+        assert_eq!(start, 200, "Should NOT redirect to subsequent function");
+    }
+
+    #[test]
+    fn test_resolve_mapping_cross_file_failure() {
+        // Function A (File A): Spec at 200.
+        // Function B (File B): Proof Keyword at 100.
+        // `m2.source_start (100) <= m.source_start (200)` is TRUE.
+        // But files differ. Should NOT redirect.
+
+        let mappings = vec![
+            mk_mapping(50, 60, 200, 210, MappingKind::Synthetic, "file_a.rs"), // Func A Spec
+            mk_mapping(70, 80, 100, 110, MappingKind::Keyword, "file_b.rs"),   // Func B Proof
+        ];
+        let diag = mk_diag("declaration uses `sorry`", 50, 60);
+
+        let (file, start, _) = resolve_mapping(&diag, &mappings);
+        assert_eq!(file, "file_a.rs");
+        assert_eq!(start, 200, "Should NOT redirect across files");
+    }
 }

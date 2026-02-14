@@ -18,15 +18,17 @@ enum FunctionAttribute {
 pub struct FunctionHermesBlock<M: ThreadSafety = Local> {
     pub common: HermesBlockCommon<M>,
     pub requires: Vec<SpannedLine<M>>,
+    pub requires_keyword: Option<AstNode<Span, M>>,
     pub ensures: Vec<SpannedLine<M>>,
+    pub ensures_keyword: Option<AstNode<Span, M>>,
     pub inner: FunctionBlockInner<M>,
 }
 
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
 pub enum FunctionBlockInner<M: ThreadSafety = Local> {
-    Proof(Vec<SpannedLine<M>>),
-    Axiom(Vec<SpannedLine<M>>),
+    Proof { lines: Vec<SpannedLine<M>>, keyword: Option<AstNode<Span, M>> },
+    Axiom { lines: Vec<SpannedLine<M>>, keyword: Option<AstNode<Span, M>> },
 }
 
 /// A parsed Hermes documentation block attached to a struct, enum, or union.
@@ -388,14 +390,20 @@ impl FunctionHermesBlock<Local> {
                     &body.axiom,
                     "`axiom` sections are only permitted on `unsafe(axiom)` functions.",
                 )?;
-                FunctionBlockInner::Proof(body.proof.lines)
+                FunctionBlockInner::Proof {
+                    lines: body.proof.lines,
+                    keyword: body.proof.keyword_span,
+                }
             }
             FunctionAttribute::UnsafeAxiom => {
                 reject_section(
                     &body.proof,
                     "`proof` sections are only permitted on `spec` functions.",
                 )?;
-                FunctionBlockInner::Axiom(body.axiom.lines)
+                FunctionBlockInner::Axiom {
+                    lines: body.axiom.lines,
+                    keyword: body.axiom.keyword_span,
+                }
             }
         };
 
@@ -406,7 +414,9 @@ impl FunctionHermesBlock<Local> {
                 start_span: AstNode::new(item.start_span),
             },
             requires: body.requires.lines,
+            requires_keyword: body.requires.keyword_span,
             ensures: body.ensures.lines,
+            ensures_keyword: body.ensures.keyword_span,
             inner,
         }))
     }
@@ -687,7 +697,7 @@ mod tests {
         match block {
             FunctionHermesBlock {
                 common: HermesBlockCommon { header, .. },
-                inner: FunctionBlockInner::Proof(_),
+                inner: FunctionBlockInner::Proof { .. },
                 ..
             } => {
                 assert_eq!(header[0].content, " body 1");
@@ -709,7 +719,7 @@ mod tests {
         match block {
             FunctionHermesBlock {
                 common: HermesBlockCommon { header, .. },
-                inner: FunctionBlockInner::Axiom(_),
+                inner: FunctionBlockInner::Axiom { .. },
                 ..
             } => {
                 assert_eq!(header[0].content, " body 1");
@@ -1400,8 +1410,14 @@ impl<M: ThreadSafety> LiftToSafe for FunctionBlockInner<M> {
     type Target = FunctionBlockInner<Safe>;
     fn lift(self) -> Self::Target {
         match self {
-            Self::Proof(v) => FunctionBlockInner::Proof(v.into_iter().map(|l| l.lift()).collect()),
-            Self::Axiom(v) => FunctionBlockInner::Axiom(v.into_iter().map(|l| l.lift()).collect()),
+            Self::Proof { lines, keyword } => FunctionBlockInner::Proof {
+                lines: lines.into_iter().map(|l| l.lift()).collect(),
+                keyword: keyword.map(|k| k.lift()),
+            },
+            Self::Axiom { lines, keyword } => FunctionBlockInner::Axiom {
+                lines: lines.into_iter().map(|l| l.lift()).collect(),
+                keyword: keyword.map(|k| k.lift()),
+            },
         }
     }
 }
@@ -1412,7 +1428,9 @@ impl<M: ThreadSafety> LiftToSafe for FunctionHermesBlock<M> {
         FunctionHermesBlock {
             common: self.common.lift(),
             requires: self.requires.into_iter().map(|l| l.lift()).collect(),
+            requires_keyword: self.requires_keyword.map(|k| k.lift()),
             ensures: self.ensures.into_iter().map(|l| l.lift()).collect(),
+            ensures_keyword: self.ensures_keyword.map(|k| k.lift()),
             inner: self.inner.lift(),
         }
     }
