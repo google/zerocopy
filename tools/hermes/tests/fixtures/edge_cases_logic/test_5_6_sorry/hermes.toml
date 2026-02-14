@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_5_6_sorry"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "decreases_by sorry"
+]

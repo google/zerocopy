@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_6_2_logic_visibility"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "helper"
+]

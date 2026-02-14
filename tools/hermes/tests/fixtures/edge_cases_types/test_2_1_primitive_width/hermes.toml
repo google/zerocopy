@@ -1,0 +1,12 @@
+
+[[artifact]]
+package = "test_2_1_primitive_width"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify usage of Isize/Usize
+content_contains = [
+    "Isize",
+    "Usize"
+]

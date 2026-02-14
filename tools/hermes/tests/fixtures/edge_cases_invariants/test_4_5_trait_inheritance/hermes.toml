@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_4_5_trait_inheritance"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "class IsSafeD"
+]

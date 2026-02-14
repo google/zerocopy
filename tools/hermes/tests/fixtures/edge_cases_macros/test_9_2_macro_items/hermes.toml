@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_9_2_macro_items"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "GeneratedStruct"
+]

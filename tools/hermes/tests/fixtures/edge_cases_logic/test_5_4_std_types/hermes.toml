@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_5_4_std_types"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "Vec",
+    "String"
+]

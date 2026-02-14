@@ -1,0 +1,7 @@
+
+[package]
+name = "test_11_4_namespace_bomb"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

@@ -1,0 +1,40 @@
+
+[[artifact]]
+package = "test_1_1_lean_keywords_fns"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify escaping
+content_contains = [
+    "def «theorem»",
+    "def «axiom»",
+    "def «variable»",
+    "def «example»",
+    "def «lemma»",
+    "def «def»",
+    "def «class»",
+    "def «instance»",
+    "def «structure»",
+    "def «inductive»",
+    "def «where»",
+    "def «from»",
+    "def «have»",
+    "def «show»",
+    "def «calc»",
+    "def «do»",
+    "def «let»",
+    "def «mut»",
+    "def «if»",
+    "def «then»",
+    "def «else»",
+    "def «match»",
+    "def «with»",
+    "def «section»",
+    "def «namespace»",
+    "def «end»",
+    "def «import»",
+    "def «open»",
+    "def «attribute»",
+    "def «universe»"
+]

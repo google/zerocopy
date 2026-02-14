@@ -1,0 +1,12 @@
+
+[[artifact]]
+package = "test_10_1_match_spec"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "match",
+    "x > 0",
+    "y > 10"
+]

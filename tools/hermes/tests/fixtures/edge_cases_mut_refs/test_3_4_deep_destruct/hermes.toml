@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_3_4_deep_destruct"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "nested_mut"
+]

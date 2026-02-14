@@ -1,0 +1,7 @@
+
+[package]
+name = "test_7_2_sig_shifting"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

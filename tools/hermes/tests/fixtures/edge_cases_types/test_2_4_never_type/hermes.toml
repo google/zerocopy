@@ -1,0 +1,13 @@
+
+[[artifact]]
+package = "test_2_4_never_type"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify usage of Empty or similar for !
+# Ideally it returns Result Empty or similar
+content_contains = [
+    "Result",
+    "Empty"
+]

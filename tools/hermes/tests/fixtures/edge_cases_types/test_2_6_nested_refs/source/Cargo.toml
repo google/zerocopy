@@ -1,0 +1,7 @@
+
+[package]
+name = "test_2_6_nested_refs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

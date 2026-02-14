@@ -1,0 +1,13 @@
+
+[[artifact]]
+package = "test_7_1_phantom_fn"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "linux_only"
+]
+content_lacks = [
+    "windows_only"
+]

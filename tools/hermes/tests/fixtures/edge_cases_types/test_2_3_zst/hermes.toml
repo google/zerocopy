@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_2_3_zst"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify Unit mapping
+content_contains = [
+    "Unit"
+]

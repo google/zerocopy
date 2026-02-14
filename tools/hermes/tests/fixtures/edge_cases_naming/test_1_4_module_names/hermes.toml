@@ -1,0 +1,13 @@
+
+[[artifact]]
+package = "test_1_4_module_names"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify module name escaping/disambiguation
+content_contains = [
+    # Hermes usually capitalizes module names, e.g. Init, Std.
+    # If they conflict with top-level namespaces, Aeneas might rename them.
+    # We just want to ensure it compiles.
+]
