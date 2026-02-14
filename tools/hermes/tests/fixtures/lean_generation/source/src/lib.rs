@@ -39,3 +39,21 @@ fn ref_lowering(x: &mut u32) {
 fn complex_args(slice: &[u8], array: [u8; 16]) {
     // Verify Slice/Array mapping
 }
+
+/// ```lean, hermes
+/// isValid (true)
+/// ```
+struct InlineBound<T: Clone> {
+    val: T,
+}
+
+/// ```lean, hermes
+/// isValid (true)
+/// ```
+struct WhereBound<T>
+where
+    T: Copy,
+{
+    val: T,
+}
+
