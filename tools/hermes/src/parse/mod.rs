@@ -36,6 +36,16 @@ impl FunctionItem<Local> {
     }
 }
 
+impl FunctionItem<Safe> {
+    pub fn name(&self) -> &str {
+        match self {
+            Self::Free(x) => &x.inner.sig.ident,
+            Self::Impl(x) => &x.inner.sig.ident,
+            Self::Trait(x) => &x.inner.sig.ident,
+        }
+    }
+}
+
 impl<M: ThreadSafety> LiftToSafe for FunctionItem<M> {
     type Target = FunctionItem<Safe>;
 

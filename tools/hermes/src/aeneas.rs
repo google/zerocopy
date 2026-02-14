@@ -2,7 +2,11 @@ use std::process::Command;
 
 use anyhow::{bail, Context, Result};
 
-use crate::{resolve::Roots, scanner::HermesArtifact};
+use crate::{
+    parse::{attr::FunctionBlockInner, ParsedItem},
+    resolve::Roots,
+    scanner::HermesArtifact,
+};
 
 const HERMES_PRELUDE: &str = include_str!("Hermes.lean");
 
@@ -84,6 +88,22 @@ lean_lib «User» where
             "-abort-on-error",
         ]);
 
+        for item in &artifact.items {
+            if let ParsedItem::Function(func) = &item.item {
+                // Check if the function body is an Axiom (unsafe)
+                if let FunctionBlockInner::Axiom(_) = func.hermes.inner {
+                    // Construct the fully qualified name: Crate::Mod::Func
+                    let mut full_path = vec!["crate"];
+                    full_path.extend(item.module_path.iter().map(|s| s.as_str()));
+                    full_path.push(func.item.name());
+
+                    let opaque_name = full_path.join("::");
+
+                    cmd.args(["-opaque", &opaque_name]);
+                }
+            }
+        }
+
         // TODO: Handle opaque functions (`unsafe(axiom)`).
         // We need to parse these from the AST and pass them as `-opaque module::params::...`
         cmd.arg(&llbc_path);
@@ -124,10 +144,11 @@ fn run_lake(roots: &Roots) -> Result<()> {
     log::debug!("Running 'lake exe cache get'...");
     if let Ok(output) = cache_cmd.output() {
         if !output.status.success() {
-             log::warn!(
-                 " 'lake exe cache get' failed (status={}). Falling back to full build.\nstderr: {}", 
-                 output.status, String::from_utf8_lossy(&output.stderr)
-             );
+            log::warn!(
+                " 'lake exe cache get' failed (status={}). Falling back to full build.\nstderr: {}",
+                output.status,
+                String::from_utf8_lossy(&output.stderr)
+            );
         }
     } else {
         log::warn!("Failed to spawn 'lake exe cache get'");
