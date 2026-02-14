@@ -1,0 +1,8 @@
+[workspace]
+test_name = "macro_edge_cases"
+
+[extraction]
+start_from = ["crate"]
+
+[output]
+style = "lean"
