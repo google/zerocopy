@@ -1,6 +1,9 @@
 import Aeneas
 import Aeneas.ScalarTac.ScalarTac
 open Aeneas.Std Result
+-- TODO: Maybe turn thse off and propagate warnings?
+set_option linter.unusedTactic false
+set_option linter.unreachableTactic false
 
 abbrev I8    := Aeneas.Std.I8
 abbrev I16   := Aeneas.Std.I16

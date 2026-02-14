@@ -112,7 +112,13 @@ fn parse_hermes_info_string(info: &str) -> Result<Option<ParsedInfoString>, Stri
 /// Helper to extract the string content and span from a `#[doc = "..."]` attribute.
 ///
 /// Returns `Some((content, span))` if the attribute is a doc comment.
-fn extract_doc_line(attr: &Attribute) -> Option<(String, Span)> {
+/// Helper to extract the string content and span from a `#[doc = "..."]` attribute.
+///
+/// Returns `Some((content, adjusted_span, original_span))` if the attribute is a doc comment.
+pub(crate) fn extract_doc_line(
+    attr: &Attribute,
+    source: &str,
+) -> Option<(String, SourceSpan, Span)> {
     if !attr.path().is_ident("doc") {
         return None;
     }
@@ -121,13 +127,76 @@ fn extract_doc_line(attr: &Attribute) -> Option<(String, Span)> {
         Meta::NameValue(MetaNameValue {
             value: Expr::Lit(ExprLit { lit: Lit::Str(s), .. }),
             ..
-        }) => Some((s.value(), s.span())),
+        }) => {
+            let content = s.value();
+            let original_span = s.span();
+            let span = crate::parse::span_to_miette(original_span);
+
+            // Calculate the start of the span in the source code.
+            let start = span.offset();
+            let len = span.len();
+
+            // If we can't read the source (e.g. during testing with dummy sources),
+            // fallback to the original span.
+            let raw_slice = match source.get(start..start + len) {
+                Some(slice) => slice,
+                None => return Some((content, span, original_span)),
+            };
+
+            // Determine the offset of the content within the raw slice.
+            let trimmed = raw_slice.trim_start();
+            let leading_ws = raw_slice.len() - trimmed.len();
+
+            let offset = if trimmed.starts_with("///")
+                || trimmed.starts_with("//!")
+                || trimmed.starts_with("/**")
+                || trimmed.starts_with("/*!")
+            {
+                leading_ws + 3
+            } else if let Some(after_bracket) = trimmed.strip_prefix("#[") {
+                // Handle #[doc = "..."]
+                // We need to find the opening quote of the string literal after `doc` and `=`.
+                // A robust way is to find the first `=` and then the first quote.
+                after_bracket
+                    .find('=')
+                    .and_then(|eq_idx| {
+                        let after_eq = &after_bracket[eq_idx + 1..];
+                        after_eq.find(|c: char| c == '"' || c == 'r').map(|quote_intra_idx| {
+                            let quote_total_idx = eq_idx + 1 + quote_intra_idx;
+                            let literal_part = &after_bracket[quote_total_idx..];
+                            let quote_width = if literal_part.starts_with('r') {
+                                // Raw string: r"...", r#"..."#, etc.
+                                literal_part.find('"').map(|i| i + 1).unwrap_or(1)
+                            } else {
+                                1 // Standard "
+                            };
+                            leading_ws + 2 + quote_total_idx + quote_width // +2 for "#["
+                        })
+                    })
+                    .unwrap_or_else(|| {
+                        // Fallback: search for content if we can't recognize the structure
+                        raw_slice.find(&content).unwrap_or(0)
+                    })
+            } else {
+                // Fallback: search for content if we can't recognize the structure
+                // (This preserves the previous "search" behavior as a safety net)
+                raw_slice.find(&content).unwrap_or(0)
+            };
+
+            let real_start = start + offset;
+            let len = content.len();
+            Some((content, SourceSpan::new(real_start.into(), len), original_span))
+        }
         _ => None,
     }
 }
 
 // Common parsing logic extracted
-fn parse_block_lines<'a, I>(iter: &mut I, start: Span) -> Result<(Vec<SpannedLine>, Span), Error>
+fn parse_block_lines<'a, I>(
+    iter: &mut I,
+    start: Span,
+    source: &str,
+) -> Result<(Vec<SpannedLine>, Span), Error>
 where
     I: Iterator<Item = &'a Attribute>,
 {
@@ -136,7 +205,9 @@ where
     let mut closed = false;
 
     for next in iter {
-        let Some((line, span)) = extract_doc_line(next) else { continue };
+        let Some((line, span, original_span)) = extract_doc_line(next, source) else {
+            continue;
+        };
 
         if line.trim().starts_with("```") {
             closed = true;
@@ -145,10 +216,10 @@ where
 
         lines.push(SpannedLine {
             content: line,
-            span: span_to_miette(span),
-            raw_span: AstNode::new(span),
+            span,
+            raw_span: AstNode::new(original_span), // Use original span for raw_span as it requires Span
         });
-        end = span;
+        end = original_span;
     }
 
     if !closed {
@@ -160,25 +231,31 @@ where
 
 fn parse_hermes_block_common(
     attrs: &[Attribute],
+    source: &str,
 ) -> Result<Option<(ParsedHermesBody, ParsedInfoString)>, Error> {
     let mut iter = attrs.iter();
     let mut block = None;
 
     while let Some(attr) = iter.next() {
-        let Some((text, start)) = extract_doc_line(attr) else { continue };
+        let Some((text, _, start_original)) = extract_doc_line(attr, source) else {
+            continue;
+        };
         let Some(info) = text.trim().strip_prefix("```") else { continue };
 
         let parsed_info = match parse_hermes_info_string(info.trim()) {
             Ok(Some(a)) => a,
             Ok(None) => continue,
-            Err(msg) => return Err(Error::new(start, msg)),
+            Err(msg) => return Err(Error::new(start_original, msg)),
         };
 
         if block.is_some() {
-            return Err(Error::new(start, "Multiple Hermes blocks found on a single item."));
+            return Err(Error::new(
+                start_original,
+                "Multiple Hermes blocks found on a single item.",
+            ));
         }
 
-        let (lines, end) = parse_block_lines(&mut iter, start)?;
+        let (lines, end) = parse_block_lines(&mut iter, attr.span(), source)?;
 
         let body = match RawHermesSpecBody::parse(&lines) {
             Ok(body) => body,
@@ -187,15 +264,15 @@ fn parse_hermes_block_common(
                     .iter()
                     .find(|l| l.span == err_span)
                     .map(|l| l.raw_span.inner)
-                    .unwrap_or(start);
+                    .unwrap_or(start_original);
                 return Err(Error::new(raw_span, msg));
             }
         };
         block = Some((
             ParsedHermesBody {
                 body,
-                content_span: start.join(end).unwrap_or(start),
-                start_span: start,
+                content_span: start_original.join(end).unwrap_or(start_original),
+                start_span: start_original,
             },
             parsed_info,
         ));
@@ -215,8 +292,9 @@ fn reject_section(section: &RawSection, msg: &str) -> Result<(), Error> {
 fn parse_item_block_common(
     attrs: &[Attribute],
     context_name: &str,
+    source: &str,
 ) -> Result<Option<(HermesBlockCommon, RawHermesSpecBody)>, Error> {
-    parse_hermes_block_common(attrs)?
+    parse_hermes_block_common(attrs, source)?
         .map(|(item, info)| {
             if !matches!(info, ParsedInfoString::GenericMode) {
                 return Err(Error::new(
@@ -251,8 +329,8 @@ fn parse_item_block_common(
 }
 
 impl FunctionHermesBlock<Local> {
-    pub fn parse_from_attrs(attrs: &[Attribute]) -> Result<Option<Self>, Error> {
-        let Some((item, parsed_info)) = parse_hermes_block_common(attrs)? else {
+    pub fn parse_from_attrs(attrs: &[Attribute], source: &str) -> Result<Option<Self>, Error> {
+        let Some((item, parsed_info)) = parse_hermes_block_common(attrs, source)? else {
             return Ok(None);
         };
 
@@ -296,8 +374,8 @@ impl FunctionHermesBlock<Local> {
 }
 
 impl TypeHermesBlock<Local> {
-    pub fn parse_from_attrs(attrs: &[Attribute]) -> Result<Option<Self>, Error> {
-        let Some((common, body)) = parse_item_block_common(attrs, "types")? else {
+    pub fn parse_from_attrs(attrs: &[Attribute], source: &str) -> Result<Option<Self>, Error> {
+        let Some((common, body)) = parse_item_block_common(attrs, "types", source)? else {
             return Ok(None);
         };
 
@@ -315,8 +393,8 @@ impl TypeHermesBlock<Local> {
 }
 
 impl TraitHermesBlock<Local> {
-    pub fn parse_from_attrs(attrs: &[Attribute]) -> Result<Option<Self>, Error> {
-        let Some((common, body)) = parse_item_block_common(attrs, "traits")? else {
+    pub fn parse_from_attrs(attrs: &[Attribute], source: &str) -> Result<Option<Self>, Error> {
+        let Some((common, body)) = parse_item_block_common(attrs, "traits", source)? else {
             return Ok(None);
         };
 
@@ -334,8 +412,8 @@ impl TraitHermesBlock<Local> {
 }
 
 impl ImplHermesBlock<Local> {
-    pub fn parse_from_attrs(attrs: &[Attribute]) -> Result<Option<Self>, Error> {
-        let Some((common, body)) = parse_item_block_common(attrs, "impl items")? else {
+    pub fn parse_from_attrs(attrs: &[Attribute], source: &str) -> Result<Option<Self>, Error> {
+        let Some((common, body)) = parse_item_block_common(attrs, "impl items", source)? else {
             return Ok(None);
         };
 
@@ -544,16 +622,16 @@ mod tests {
     fn test_extract_doc_line() {
         // Valid doc attribute
         let attr: syn::Attribute = parse_quote!(#[doc = " test line"]);
-        let result = extract_doc_line(&attr).unwrap();
+        let result = extract_doc_line(&attr, "").unwrap();
         assert_eq!(result.0, " test line");
 
         // Non-doc attribute
         let attr: syn::Attribute = parse_quote!(#[derive(Clone)]);
-        assert!(extract_doc_line(&attr).is_none());
+        assert!(extract_doc_line(&attr, "").is_none());
 
         // Alternate doc syntax (e.g., hidden)
         let attr: syn::Attribute = parse_quote!(#[doc(hidden)]);
-        assert!(extract_doc_line(&attr).is_none());
+        assert!(extract_doc_line(&attr, "").is_none());
     }
 
     #[test]
@@ -564,7 +642,7 @@ mod tests {
             parse_quote!(#[doc = " body 2"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+        let block = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         match block {
             FunctionHermesBlock {
                 common: HermesBlockCommon { header, .. },
@@ -586,7 +664,7 @@ mod tests {
             parse_quote!(#[doc = " body 2"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+        let block = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         match block {
             FunctionHermesBlock {
                 common: HermesBlockCommon { header, .. },
@@ -604,7 +682,7 @@ mod tests {
     fn test_parse_from_attrs_unclosed() {
         let attrs: Vec<syn::Attribute> =
             vec![parse_quote!(#[doc = " ```hermes"]), parse_quote!(#[doc = " no end fence"])];
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+        let err = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(err.to_string(), "Unclosed Hermes block in documentation.");
     }
 
@@ -616,7 +694,7 @@ mod tests {
             parse_quote!(#[derive(Clone)]), // Interrupts contiguous doc lines
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+        let block = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         assert_eq!(block.common.header.len(), 1);
         assert_eq!(block.common.header[0].content, " line 1");
     }
@@ -629,7 +707,7 @@ mod tests {
             parse_quote!(#[doc = " ```hermes"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+        let err = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(err.to_string(), "Multiple Hermes blocks found on a single item.");
     }
 
@@ -817,9 +895,9 @@ mod tests {
     fn test_parse_from_attrs_not_hermes() {
         let attrs: Vec<syn::Attribute> =
             vec![parse_quote!(#[doc = " ```lean"]), parse_quote!(#[doc = " ```"])];
-        let block_func = FunctionHermesBlock::parse_from_attrs(&attrs).unwrap();
+        let block_func = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap();
         assert!(block_func.is_none());
-        let block_item = TypeHermesBlock::parse_from_attrs(&attrs).unwrap();
+        let block_item = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap();
         assert!(block_item.is_none());
     }
 
@@ -831,7 +909,7 @@ mod tests {
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = TypeHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+        let block = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         assert_eq!(block.is_valid.len(), 1);
         assert_eq!(block.is_valid[0].content, "  val == true");
     }
@@ -844,7 +922,7 @@ mod tests {
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = TraitHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+        let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         assert_eq!(block.is_safe.len(), 1);
         assert_eq!(block.is_safe[0].content, "  val == true");
     }
@@ -857,7 +935,7 @@ mod tests {
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = TypeHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+        let err = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(
             err.to_string(),
             "Hermes blocks on types must define an `isValid` type invariant. Did you misspell it?"
@@ -868,7 +946,7 @@ mod tests {
     fn test_trait_block_missing_is_safe() {
         let attrs: Vec<syn::Attribute> =
             vec![parse_quote!(#[doc = " ```hermes"]), parse_quote!(#[doc = " ```"])];
-        let err = TraitHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+        let err = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(
             err.to_string(),
             "Hermes blocks on traits must define an `isSafe` trait invariant. Did you misspell it?"
@@ -883,7 +961,7 @@ mod tests {
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+        let err = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(err.to_string(), "`isValid` sections are only permitted on types.");
     }
 
@@ -897,7 +975,7 @@ mod tests {
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = TypeHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+        let err = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(err.to_string(), "`requires` sections are only permitted on functions.");
     }
 
@@ -911,7 +989,7 @@ mod tests {
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = TypeHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+        let err = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(err.to_string(), "`isSafe` sections are only permitted on traits.");
     }
     #[test]
@@ -931,7 +1009,7 @@ mod tests {
             parse_quote!(#[doc = " isValid foo"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = TraitHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+        let err = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(err.to_string(), "`isValid` sections are only permitted on types.");
     }
 
@@ -947,10 +1025,10 @@ mod tests {
         attrs.push(cont_attr);
         attrs.push(parse_quote!(#[doc = " ```"]));
 
-        let err = TypeHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+        let err = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
 
-        let (_, requires_span) = extract_doc_line(&requires_attr).unwrap();
-        assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_span));
+        let (_, _, requires_raw_span) = extract_doc_line(&requires_attr, "").unwrap();
+        assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_raw_span));
     }
     mod edge_cases {
         use super::*;
@@ -1016,7 +1094,7 @@ mod tests {
                 parse_quote!(#[doc = " requires true"]), // Should error
                 parse_quote!(#[doc = " ```"]),
             ];
-            let err = TraitHermesBlock::parse_from_attrs(&attrs).unwrap_err();
+            let err = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
             assert_eq!(err.to_string(), "`requires` sections are only permitted on functions.");
         }
 
@@ -1038,7 +1116,7 @@ mod tests {
             // The result is valid block with just `isSafe`.
             // But if the INTENTION was nested, it fails silently or just closes early.
             // Let's verify it closes early.
-            let block = TraitHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+            let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
             assert!(block.is_safe.is_empty()); // Empty because `isSafe` line had no content and next line was fence
         }
 
@@ -1066,7 +1144,7 @@ mod tests {
             ];
             // Should succeed with empty body or fail?
             // Currently parser allows empty sections.
-            let block = TraitHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+            let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
             assert!(block.is_safe.is_empty());
         }
 
@@ -1090,7 +1168,7 @@ mod tests {
                 parse_quote!(#[doc = "  let result := 1"]),
                 parse_quote!(#[doc = " ```"]),
             ];
-            let block = TraitHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+            let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
             // isSafe Self := (1)
             // -- This is a comment (2)
             // x ≥ 0 ∧ y ≤ 10 (3)
@@ -1122,10 +1200,29 @@ mod tests {
                 parse_quote!(#[doc = "  val"]),
                 parse_quote!(#[doc = " ```"]),
             ];
-            let block = TraitHermesBlock::parse_from_attrs(&attrs).unwrap().unwrap();
+            let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
             assert_eq!(block.is_safe.len(), 1);
             assert_eq!(block.is_safe[0].content, "  val");
         }
+    }
+    #[test]
+    fn test_extract_doc_line_offsets() {
+        let source = "///     sorry\nfn foo() {}";
+        let file = syn::parse_file(source).unwrap();
+        let item = &file.items[0];
+        let attr = match item {
+            syn::Item::Fn(f) => &f.attrs[0],
+            _ => panic!("Expected function"),
+        };
+
+        let (content, span, _) = extract_doc_line(attr, source).unwrap();
+
+        // Verify content matches what is in the source at that span
+        let start = span.offset();
+        let len = span.len();
+        let source_slice = &source[start..start + len];
+        assert_eq!(content, source_slice, "Content should match source slice at returned span");
+        assert!(start >= 3, "Span should start after '///'");
     }
 }
 
