@@ -4,7 +4,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use cargo_metadata::diagnostic::{Diagnostic, DiagnosticLevel, DiagnosticSpan};
+pub use cargo_metadata::diagnostic::{Diagnostic, DiagnosticLevel, DiagnosticSpan};
 use miette::{NamedSource, Report, SourceOffset};
 use thiserror::Error;
 

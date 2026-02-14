@@ -6,7 +6,6 @@ use std::{
 };
 
 use anyhow::{bail, Context, Result};
-use cargo_metadata::diagnostic::DiagnosticLevel;
 use indicatif::{ProgressBar, ProgressStyle};
 
 use crate::{generate, resolve::Roots, scanner::HermesArtifact};
@@ -51,9 +50,18 @@ pub fn run_aeneas(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
 
         std::fs::create_dir_all(&output_dir).context("Failed to create Aeneas output directory")?;
 
-        let spec_code = generate::generate_artifact(artifact);
-        let spec_path = output_dir.join("Specs.lean");
-        write_if_changed(&spec_path, &spec_code).context("Failed to write Specs.lean")?;
+        let generated = generate::generate_artifact(artifact);
+        let specs_path = output_dir.join(artifact.lean_spec_file_name());
+        let map_path = output_dir.join(format!("{}.lean.map", artifact.artifact_slug()));
+
+        std::fs::write(&specs_path, &generated.code)
+            .with_context(|| format!("Failed to write specs to {}", specs_path.display()))?;
+
+        // Write Source Map
+        let map_json = serde_json::to_string(&generated.mappings)
+            .context("Failed to serialize source mappings")?;
+        std::fs::write(&map_path, map_json)
+            .with_context(|| format!("Failed to write source map to {}", map_path.display()))?;
 
         let mut cmd = Command::new("aeneas");
 
@@ -243,7 +251,7 @@ fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
         let slug = artifact.artifact_slug();
         // The path in generated file is `generated/Slug/Specs.lean`
         // We construct the relative path from the Lake root (which is `target/hermes/<hash>/lean`)
-        let specs_rel_path = format!("generated/{slug}/Specs.lean");
+        let specs_rel_path = format!("generated/{}/{}", slug, artifact.lean_spec_file_name());
 
         let diag_script = HERMES_DIAGNOSTICS_TEMPLATE.replace("__TARGET_FILE__", &specs_rel_path);
         let diag_path = lean_root.join("Diagnostics.lean");
@@ -267,37 +275,72 @@ fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
             continue;
         }
 
-        let stdout = String::from_utf8_lossy(&output.stdout);
-        let diags: Vec<LeanDiagnostic> = match serde_json::from_str(&stdout) {
+        let output = String::from_utf8_lossy(&output.stdout);
+        let diags: Vec<LeanDiagnostic> = match serde_json::from_str(&output) {
             Ok(d) => d,
             Err(e) => {
+                // TODO: Should we be returning a non-zero exit code here?
                 log::warn!("Failed to parse JSON from diagnostic script: {e}");
-                // Only print raw output if debug is enabled or if it looks like an error
-                log::debug!("Raw output:\n{stdout}");
+                log::debug!("Raw output:\n{output}");
                 continue;
             }
         };
 
+        // Load Source Map
+        let map_path = lean_root.join(format!("generated/{}/{}.lean.map", slug, slug));
+        let mappings: Vec<crate::generate::SourceMapping> = if map_path.exists() {
+            let f = std::fs::File::open(&map_path)
+                .with_context(|| format!("Failed to open source map {}", map_path.display()));
+            match f {
+                Ok(f) => serde_json::from_reader(f).unwrap_or_else(|e| {
+                    log::warn!("Failed to parse source map: {}", e);
+                    Vec::new()
+                }),
+                Err(e) => {
+                    log::warn!("Source map error: {}", e);
+                    Vec::new()
+                }
+            }
+        } else {
+            Vec::new()
+        };
+
         for diag in diags {
             let level = match diag.level.as_str() {
-                "error" => DiagnosticLevel::Error,
-                "warning" => DiagnosticLevel::Warning,
-                "info" => DiagnosticLevel::Note,
-                _ => DiagnosticLevel::Note,
+                "error" => crate::diagnostics::DiagnosticLevel::Error,
+                "warning" => crate::diagnostics::DiagnosticLevel::Warning,
+                "info" => crate::diagnostics::DiagnosticLevel::Note,
+                _ => crate::diagnostics::DiagnosticLevel::Note,
             };
 
-            if matches!(level, DiagnosticLevel::Error) {
+            if matches!(level, crate::diagnostics::DiagnosticLevel::Error) {
                 has_errors = true;
             }
 
-            mapper.render_raw(
-                &diag.file_name,
-                diag.message,
-                level,
-                diag.byte_start,
-                diag.byte_end,
-                |s| eprintln!("{s}"),
-            );
+            // Map span
+            // We look for the first mapping that overlaps with the diagnostic span.
+            // Diagnostic span: [d_start, d_end)
+            // Mapping span: [m.lean_start, m.lean_end)
+            // Overlap: m.lean_start < d_end && m.lean_end > d_start
+            let mapping = mappings
+                .iter()
+                .filter(|m| m.lean_start < diag.byte_end && m.lean_end > diag.byte_start)
+                .min_by_key(|m| m.lean_start);
+
+            let (file, start, end) = if let Some(m) = mapping {
+                // intersection
+                let i_start = std::cmp::max(m.lean_start, diag.byte_start);
+                let i_end = std::cmp::min(m.lean_end, diag.byte_end);
+                let offset = i_start - m.lean_start;
+                let len = i_end - i_start;
+                let s_start = m.source_start + offset;
+                let s_end = s_start + len;
+                (m.source_file.to_string_lossy().to_string(), s_start, s_end)
+            } else {
+                (diag.file_name.clone(), diag.byte_start, diag.byte_end)
+            };
+
+            mapper.render_raw(&file, diag.message, level, start, end, |s| eprintln!("{s}"));
         }
     }
 
