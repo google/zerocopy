@@ -39,7 +39,8 @@ pub struct HermesArtifact {
 }
 
 impl HermesArtifact {
-    /// Returns a unique, Lean-compatible "slug" for this artifact.
+    /// Returns a unique, Lean-compatible "slug" for this artifact that matches
+    /// the name that Aeneas will expect for the corresponding Lean module.
     ///
     /// Guarantees uniqueness based on manifest path even if multiple packages
     /// have the same name. The slug is guaranteed to be a valid Lean
@@ -76,7 +77,7 @@ impl HermesArtifact {
         let target = to_pascal(&self.name.target_name);
 
         // We use the hash to ensure uniqueness.
-        format!("{}_{}_{:08x}", pkg, target, h)
+        format!("{}{}{:08x}", pkg, target, h)
     }
 
     /// Returns the name of the `.llbc` file to use for this artifact.
@@ -393,8 +394,8 @@ mod tests {
         // *because of the trailing hash* (ie, that they have identical
         // prefixes).
         assert_ne!(artifact_lib.llbc_file_name(), artifact_bin.llbc_file_name());
-        assert!(artifact_lib.llbc_file_name().starts_with("Pkg_Name_"));
-        assert!(artifact_bin.llbc_file_name().starts_with("Pkg_Name_"));
+        assert!(artifact_lib.llbc_file_name().starts_with("PkgName"));
+        assert!(artifact_bin.llbc_file_name().starts_with("PkgName"));
     }
 
     #[test]
@@ -416,7 +417,7 @@ mod tests {
         // Slug should be PascalCase: PkgFoo_NameBar_<hash>
         // Spec file should be slug + .lean
         let spec_name = artifact.lean_spec_file_name();
-        assert!(spec_name.starts_with("PkgFoo_NameBar_"));
+        assert!(spec_name.starts_with("PkgFooNameBar"));
         assert!(spec_name.ends_with(".lean"));
     }
 }
