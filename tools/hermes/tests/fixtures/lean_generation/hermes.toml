@@ -19,6 +19,9 @@ should_exist = true
 content_contains = ["lake-manifest.json"]
 
 # Verify Function Specs
+[[command]]
+args = ["charon", "--opaque", "crate::unsafe_axiom"]
+
 [[artifact]]
 package = "lean_generation"
 target = "lib"
