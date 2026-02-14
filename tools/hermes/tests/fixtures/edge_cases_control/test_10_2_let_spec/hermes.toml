@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_10_2_let_spec"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "let y :=",
+    "y > 10"
+]

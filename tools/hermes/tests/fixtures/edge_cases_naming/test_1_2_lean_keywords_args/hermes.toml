@@ -1,0 +1,32 @@
+
+[[artifact]]
+package = "test_1_2_lean_keywords_args"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify escaping of arguments
+content_contains = [
+    "(«theorem» : U32)",
+    "(«axiom» : U32)",
+    "(«variable» : U32)",
+    "(«lemma» : U32)",
+    "(«def» : U32)",
+    "(«class» : U32)",
+    "(«instance» : U32)",
+    "(«structure» : U32)",
+    "(«inductive» : U32)",
+    "(«from» : U32)",
+    "(«have» : U32)",
+    "(«show» : U32)",
+    "(«calc» : U32)",
+    "(«then» : U32)",
+    "(«with» : U32)",
+    "(«section» : U32)",
+    "(«namespace» : U32)",
+    "(«end» : U32)",
+    "(«import» : U32)",
+    "(«open» : U32)",
+    "(«attribute» : U32)",
+    "(«universe» : U32)"
+]

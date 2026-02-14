@@ -1,0 +1,14 @@
+
+[[artifact]]
+package = "test_1_3_rust_keywords_idents"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify escaping/handling of raw identifiers
+content_contains = [
+    "def «match»",
+    "def «type»",
+    "structure «where»",
+    "(«let» : U32)"
+]

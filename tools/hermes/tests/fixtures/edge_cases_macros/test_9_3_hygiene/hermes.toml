@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_9_3_hygiene"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "check_hygiene"
+]

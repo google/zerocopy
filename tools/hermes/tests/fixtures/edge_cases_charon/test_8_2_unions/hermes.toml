@@ -1,0 +1,11 @@
+
+[[artifact]]
+package = "test_8_2_unions"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "U",
+    "f1"
+]

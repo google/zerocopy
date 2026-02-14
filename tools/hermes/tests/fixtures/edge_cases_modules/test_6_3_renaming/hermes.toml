@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_6_3_renaming"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "Vec"
+]

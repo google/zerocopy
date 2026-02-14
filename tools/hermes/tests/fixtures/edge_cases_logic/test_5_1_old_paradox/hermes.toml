@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_5_1_old_paradox"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "result = x"
+]

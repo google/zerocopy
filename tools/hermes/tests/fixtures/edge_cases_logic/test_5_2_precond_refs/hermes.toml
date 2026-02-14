@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_5_2_precond_refs"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "x > 10" # This refers to the value of x at function entry
+]

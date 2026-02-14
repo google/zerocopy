@@ -1,0 +1,13 @@
+
+[[artifact]]
+package = "transform_lib"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+# Verify Enums Pattern Matching
+content_contains = [
+    "match self with",
+    "| Enum.A x => x > 10",
+    "| Enum.B b => b"
+]

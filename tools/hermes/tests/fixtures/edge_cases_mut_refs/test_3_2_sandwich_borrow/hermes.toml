@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_3_2_sandwich_borrow"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "mix"
+]

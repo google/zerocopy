@@ -1,0 +1,12 @@
+
+[[artifact]]
+package = "test_4_3_recursive_struct"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "Node",
+    "match",
+    "isValid"
+]

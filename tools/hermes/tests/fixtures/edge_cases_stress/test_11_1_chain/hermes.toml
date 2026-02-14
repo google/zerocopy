@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_11_1_chain"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "D.f"
+]

@@ -1,0 +1,10 @@
+
+[[artifact]]
+package = "test_5_5_call_aeneas"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+content_contains = [
+    "result = x + 1"
+]

@@ -1,0 +1,7 @@
+
+[package]
+name = "test_1_5_spec_shadowing"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

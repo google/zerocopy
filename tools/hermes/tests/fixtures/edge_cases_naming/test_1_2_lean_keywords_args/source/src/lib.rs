@@ -1,0 +1,26 @@
+
+// Lean keywords as argument names
+pub fn test_args(
+    theorem: u32,
+    axiom: u32,
+    variable: u32,
+    lemma: u32,
+    def: u32,
+    class: u32,
+    instance: u32,
+    structure: u32,
+    inductive: u32,
+    from: u32,
+    have: u32,
+    show: u32,
+    calc: u32,
+    then: u32,
+    with: u32,
+    section: u32,
+    namespace: u32,
+    end: u32,
+    import: u32,
+    open: u32,
+    attribute: u32,
+    universe: u32,
+) {}
