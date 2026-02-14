@@ -11,6 +11,13 @@ content_contains = [
     "import «Generated».«lean_generation-lib-main».Types"
 ]
 
+[[artifact]]
+package = "lean_generation"
+target = "lib"
+kind = "lean"
+should_exist = true
+content_contains = ["lake-manifest.json"]
+
 # Verify Function Specs
 [[artifact]]
 package = "lean_generation"
