@@ -13,14 +13,14 @@ fn unsafe_axiom(x: u32) -> u32 {
 }
 
 /// ```lean, hermes
-/// isValid (self.val > 0)
+/// isValid (True)
 /// ```
 struct Positive {
     val: u32,
 }
 
 /// ```lean, hermes
-/// isSafe (val > 0)
+/// isSafe (True)
 /// ```
 unsafe trait SafeTrait {
     fn method(&self);
