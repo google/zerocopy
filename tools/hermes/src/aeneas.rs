@@ -2,11 +2,7 @@ use std::process::Command;
 
 use anyhow::{bail, Context, Result};
 
-use crate::{
-    parse::{attr::FunctionBlockInner, ParsedItem},
-    resolve::Roots,
-    scanner::HermesArtifact,
-};
+use crate::{resolve::Roots, scanner::HermesArtifact};
 
 const HERMES_PRELUDE: &str = include_str!("Hermes.lean");
 
@@ -21,11 +17,12 @@ pub fn run_aeneas(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
     std::fs::create_dir_all(lean_root.join("hermes"))?;
 
     // 2. Write Standard Library
-    std::fs::write(lean_root.join("hermes").join("Hermes.lean"), HERMES_PRELUDE)
+    write_if_changed(&lean_root.join("hermes").join("Hermes.lean"), HERMES_PRELUDE)
         .context("Failed to write Hermes prelude")?;
 
     // 3. Write Toolchain
-    std::fs::write(lean_root.join("lean-toolchain"), "leanprover/lean4:v4.15.0\n")?;
+    write_if_changed(&lean_root.join("lean-toolchain"), "leanprover/lean4:v4.28.0-rc1\n")
+        .context("Failed to write Lean toolchain")?;
 
     // 4. Write Lakefile
     let aeneas_dep = if let Ok(path) = std::env::var("HERMES_AENEAS_DIR") {
@@ -56,7 +53,8 @@ lean_lib «User» where
 "#,
         aeneas_dep
     );
-    std::fs::write(lean_root.join("lakefile.lean"), lakefile)?;
+    write_if_changed(&lean_root.join("lakefile.lean"), &lakefile)
+        .context("Failed to write Lakefile")?;
 
     for artifact in artifacts {
         if artifact.start_from.is_empty() {
@@ -77,32 +75,14 @@ lean_lib «User» where
         let spec_code = crate::generate::generate_artifact(artifact);
         // CHANGED: Output filename to Specs.lean
         let spec_path = output_dir.join("Specs.lean");
-        std::fs::write(&spec_path, spec_code).context("Failed to write Specs.lean")?;
+        write_if_changed(&spec_path, &spec_code).context("Failed to write Specs.lean")?;
 
         let mut cmd = Command::new("aeneas");
 
-        cmd.args(["-backend", "lean"]).arg("-dest").arg(&output_dir).args([
-            "-split-files",
-            "-no-lean-default-lakefile",
-            "-decreases-clauses",
-            "-abort-on-error",
-        ]);
-
-        for item in &artifact.items {
-            if let ParsedItem::Function(func) = &item.item {
-                // Check if the function body is an Axiom (unsafe)
-                if let FunctionBlockInner::Axiom(_) = func.hermes.inner {
-                    // Construct the fully qualified name: Crate::Mod::Func
-                    let mut full_path = vec!["crate"];
-                    full_path.extend(item.module_path.iter().map(|s| s.as_str()));
-                    full_path.push(func.item.name());
-
-                    let opaque_name = full_path.join("::");
-
-                    cmd.args(["-opaque", &opaque_name]);
-                }
-            }
-        }
+        cmd.args(["-backend", "lean"])
+            .arg("-dest")
+            .arg(&output_dir)
+            .args(["-split-files", "-abort-on-error"]);
 
         // TODO: Handle opaque functions (`unsafe(axiom)`).
         // We need to parse these from the AST and pass them as `-opaque module::params::...`
@@ -110,6 +90,7 @@ lean_lib «User» where
 
         log::debug!("Command: {:?}", cmd);
 
+        let start = std::time::Instant::now();
         let output = cmd.output().context("Failed to spawn aeneas")?;
 
         if !output.status.success() {
@@ -121,6 +102,7 @@ lean_lib «User» where
                 stderr
             );
         }
+        log::trace!("Aeneas for '{}' took {:.2?}", artifact.name.target_name, start.elapsed());
     }
 
     run_lake(roots)
@@ -131,27 +113,31 @@ fn run_lake(roots: &Roots) -> Result<()> {
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
 
-    // 1. Run 'lake exe cache get' to fetch pre-built Mathlib artifacts
-    // This prevents compiling Mathlib from source, which is slow and disk-heavy.
-    let mut cache_cmd = Command::new("lake");
-    cache_cmd.args(["exe", "cache", "get"]);
-    cache_cmd.current_dir(&lean_root);
-    // Suppress output unless it fails, or maybe just log it?
-    // Using piped output to avoid spamming the console
-    cache_cmd.stdout(std::process::Stdio::piped());
-    cache_cmd.stderr(std::process::Stdio::piped());
+    if !lean_root.join(".lake/packages/mathlib").exists() {
+        // 1. Run 'lake exe cache get' to fetch pre-built Mathlib artifacts
+        // This prevents compiling Mathlib from source, which is slow and disk-heavy.
+        let mut cache_cmd = Command::new("lake");
+        cache_cmd.args(["exe", "cache", "get"]);
+        cache_cmd.current_dir(&lean_root);
+        // Suppress output unless it fails, or maybe just log it?
+        // Using piped output to avoid spamming the console
+        cache_cmd.stdout(std::process::Stdio::piped());
+        cache_cmd.stderr(std::process::Stdio::piped());
 
-    log::debug!("Running 'lake exe cache get'...");
-    if let Ok(output) = cache_cmd.output() {
-        if !output.status.success() {
-            log::warn!(
-                " 'lake exe cache get' failed (status={}). Falling back to full build.\nstderr: {}",
-                output.status,
-                String::from_utf8_lossy(&output.stderr)
-            );
+        log::debug!("Running 'lake exe cache get'...");
+        let start = std::time::Instant::now();
+        if let Ok(output) = cache_cmd.output() {
+            if !output.status.success() {
+                log::warn!(
+                    " 'lake exe cache get' failed (status={}). Falling back to full build.\nstderr: {}",
+                    output.status,
+                    String::from_utf8_lossy(&output.stderr)
+                );
+            }
+        } else {
+            log::warn!("Failed to spawn 'lake exe cache get'");
         }
-    } else {
-        log::warn!("Failed to spawn 'lake exe cache get'");
+        log::trace!("'lake exe cache get' took {:.2?}", start.elapsed());
     }
 
     let mut cmd = Command::new("lake");
@@ -160,6 +146,7 @@ fn run_lake(roots: &Roots) -> Result<()> {
     cmd.stdout(std::process::Stdio::piped());
     cmd.stderr(std::process::Stdio::piped());
 
+    let start = std::time::Instant::now();
     let mut child = cmd.spawn().context("Failed to spawn lake")?;
 
     // Capture stderr in background
@@ -192,6 +179,7 @@ fn run_lake(roots: &Roots) -> Result<()> {
 
     let status = child.wait().context("Failed to wait for lake")?;
     pb.finish_and_clear();
+    log::trace!("'lake build' took {:.2?}", start.elapsed());
 
     if !status.success() {
         let stderr = stderr_buffer.lock().unwrap().join("\n");
@@ -199,5 +187,16 @@ fn run_lake(roots: &Roots) -> Result<()> {
         bail!("Lean verification failed");
     }
 
+    Ok(())
+}
+
+fn write_if_changed(path: &std::path::Path, content: &str) -> Result<()> {
+    if path.exists() {
+        let current = std::fs::read_to_string(path)?;
+        if current == content {
+            return Ok(()); // Skip write to preserve mtime
+        }
+    }
+    std::fs::write(path, content).context(format!("Failed to write {:?}", path))?;
     Ok(())
 }

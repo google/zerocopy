@@ -118,7 +118,8 @@ pub struct HermesTarget {
 #[derive(Debug)]
 pub struct Roots {
     pub workspace: PathBuf,
-    pub cargo_target_dir: PathBuf,
+    // E.g., `target/hermes`.
+    hermes_global_root: PathBuf,
     // E.g., `target/hermes/<hash>`.
     hermes_run_root: PathBuf,
     pub roots: Vec<HermesTarget>,
@@ -131,6 +132,10 @@ impl Roots {
 
     pub fn lean_generated_root(&self) -> PathBuf {
         self.hermes_run_root.join("lean").join("generated")
+    }
+
+    pub fn cargo_target_dir(&self) -> PathBuf {
+        self.hermes_global_root.join("cargo_target")
     }
 }
 
@@ -154,10 +159,12 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
 
     let selected_packages = resolve_packages(&metadata, &args.workspace)?;
 
+    let (hermes_global_root, hermes_run_root) = resolve_run_roots(&metadata);
     let mut roots = Roots {
         workspace: metadata.workspace_root.as_std_path().to_owned(),
-        cargo_target_dir: metadata.target_directory.as_std_path().to_owned(),
-        hermes_run_root: resolve_run_root(&metadata),
+        // cargo_target_dir: metadata.target_directory.as_std_path().to_owned(),
+        hermes_global_root,
+        hermes_run_root,
         roots: Vec::new(),
     };
 
@@ -186,7 +193,7 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
     Ok(roots)
 }
 
-fn resolve_run_root(metadata: &Metadata) -> PathBuf {
+fn resolve_run_roots(metadata: &Metadata) -> (PathBuf, PathBuf) {
     log::trace!("resolve_run_root");
     log::debug!("workspace_root: {:?}", metadata.workspace_root.as_std_path());
     // NOTE: Automatically handles `CARGO_TARGET_DIR` env var.
@@ -195,7 +202,8 @@ fn resolve_run_root(metadata: &Metadata) -> PathBuf {
 
     // Used by integration tests to ensure deterministic shadow dir names.
     if let Ok(name) = std::env::var("HERMES_TEST_DIR_NAME") {
-        return hermes_global.join(name);
+        let run_root = hermes_global.join(name);
+        return (hermes_global, run_root);
     }
 
     // Hash the path to the workspace root to avoid collisions between different
@@ -207,7 +215,8 @@ fn resolve_run_root(metadata: &Metadata) -> PathBuf {
         hasher.finish()
     };
 
-    hermes_global.join(format!("{workspace_root_hash:x}"))
+    let run_root = hermes_global.join(format!("{workspace_root_hash:x}"));
+    (hermes_global, run_root)
 }
 
 /// Resolves which packages to process based on workspace flags and CWD.
