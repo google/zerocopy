@@ -7,6 +7,7 @@ use anyhow::{bail, Context as _, Result};
 use cargo_metadata::{diagnostic::DiagnosticLevel, Message};
 
 use crate::{
+    parse::{attr::FunctionBlockInner, ParsedItem},
     resolve::{Args, HermesTargetKind, Roots},
     scanner::HermesArtifact,
 };
@@ -25,6 +26,7 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
 
         let mut cmd = Command::new("charon");
         cmd.arg("cargo");
+        cmd.arg("--preset=aeneas");
 
         // Output artifacts to target/hermes/<hash>/llbc
         let llbc_path = llbc_root.join(artifact.llbc_file_name());
@@ -33,6 +35,22 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
 
         // Fail fast on errors
         cmd.arg("--abort-on-error");
+
+        for item in &artifact.items {
+            if let ParsedItem::Function(func) = &item.item {
+                // Check if the function body is an Axiom (unsafe)
+                if let FunctionBlockInner::Axiom(_) = func.hermes.inner {
+                    // Construct the fully qualified name: Crate::Mod::Func
+                    let mut full_path = vec!["crate"];
+                    full_path.extend(item.module_path.iter().map(|s| s.as_str()));
+                    full_path.push(func.item.name());
+
+                    let opaque_name = full_path.join("::");
+
+                    cmd.args(["--opaque", &opaque_name]);
+                }
+            }
+        }
 
         // Start translation from specific entry points. Sort to ensure
         // deterministic ordering for testing (not important in production).
@@ -84,12 +102,13 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         }
 
         // Reuse the main target directory for dependencies to save time.
-        cmd.env("CARGO_TARGET_DIR", &roots.cargo_target_dir);
+        cmd.env("CARGO_TARGET_DIR", &roots.cargo_target_dir());
 
         log::debug!("Command: {:?}", cmd);
 
         cmd.stdout(std::process::Stdio::piped());
         cmd.stderr(std::process::Stdio::piped());
+        let start = std::time::Instant::now();
         let mut child = cmd.spawn().context("Failed to spawn charon")?;
 
         let mut output_error = false;
@@ -148,6 +167,7 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         pb.finish_and_clear();
 
         let status = child.wait().context("Failed to wait for charon")?;
+        log::trace!("Charon for '{}' took {:.2?}", artifact.name.package_name, start.elapsed());
 
         // FIXME: There's a subtle edge case here – if we get error output AND
         // Rustc ICE's, there's a good chance that the JSON error messages we
