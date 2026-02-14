@@ -1,5 +1,12 @@
-use std::{fs, os::unix::fs::PermissionsExt, path::Path};
+use std::{
+    fs,
+    os::unix::fs::PermissionsExt,
+    path::{Path, PathBuf},
+    process::Command,
+    sync::OnceLock,
+};
 
+use fs2::FileExt;
 use serde::Deserialize;
 use tempfile::tempdir;
 
@@ -29,6 +36,61 @@ struct CommandExpectation {
     args: Vec<String>,
     #[serde(default)]
     should_not_exist: bool,
+}
+
+static SHARED_CACHE_PATH: OnceLock<PathBuf> = OnceLock::new();
+
+fn get_or_init_shared_cache() -> PathBuf {
+    if let Some(p) = SHARED_CACHE_PATH.get() {
+        return p.clone();
+    }
+
+    // Resolve target directory relative to this test file or CARGO_MANIFEST_DIR
+    let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+    let target_dir = manifest_dir.join("target");
+    let cache_dir = target_dir.join("hermes_integration_cache");
+    let lean_backend_dir = cache_dir.join("backends/lean");
+    let lock_path = target_dir.join("hermes_integration_cache.lock");
+
+    std::fs::create_dir_all(&target_dir).unwrap();
+
+    let lock_file = fs::File::create(&lock_path).unwrap();
+    // Block until we get exclusive access
+    lock_file.lock_exclusive().unwrap();
+
+    // Check if valid cache exists (simple check: lakefile in backends/lean exists)
+    if !lean_backend_dir.join("lakefile.lean").exists() {
+        // eprintln!("Initializing shared Aeneas cache at {:?}...", cache_dir);
+
+        // 1. Clone Aeneas repo to cache_dir
+        let status = Command::new("git")
+            .args(["clone", "https://github.com/AeneasVerif/aeneas", "--depth", "1"])
+            .arg(&cache_dir)
+            .status()
+            .expect("Failed to execute git clone");
+        assert!(status.success(), "Failed to clone Aeneas");
+
+        // 2. Download Pre-built Mathlib binaries (must run in backends/lean)
+        let status = Command::new("lake")
+            .args(["exe", "cache", "get"])
+            .current_dir(&lean_backend_dir)
+            .status()
+            .expect("Failed to execute lake exe cache get");
+        assert!(status.success(), "Failed to run 'lake exe cache get'");
+
+        // 3. Pre-build Aeneas
+        let status = Command::new("lake")
+            .arg("build")
+            .current_dir(&lean_backend_dir)
+            .status()
+            .expect("Failed to execute lake build");
+        assert!(status.success(), "Failed to pre-build Aeneas");
+    }
+
+    lock_file.unlock().unwrap();
+
+    let _ = SHARED_CACHE_PATH.set(cache_dir.clone());
+    cache_dir
 }
 
 fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
@@ -107,6 +169,10 @@ echo "---END-INVOCATION---" >> "{0}"
     let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
     cmd.env("HERMES_FORCE_TTY", "1");
     cmd.env("FORCE_COLOR", "1");
+
+    // Use shared cache for Aeneas
+    let cache_path = get_or_init_shared_cache();
+    cmd.env("HERMES_AENEAS_DIR", cache_path);
 
     // Prepend shim_dir to PATH (make sure our shim comes first).
     let original_path = std::env::var_os("PATH").unwrap_or_default();

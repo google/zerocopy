@@ -6,6 +6,8 @@ use crate::{resolve::Roots, scanner::HermesArtifact};
 
 const HERMES_PRELUDE: &str = include_str!("Hermes.lean");
 
+use std::io::{BufRead, BufReader};
+
 pub fn run_aeneas(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
     let llbc_root = roots.llbc_root();
     let lean_generated_root = roots.lean_generated_root();
@@ -22,12 +24,20 @@ pub fn run_aeneas(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
     std::fs::write(lean_root.join("lean-toolchain"), "leanprover/lean4:v4.15.0\n")?;
 
     // 4. Write Lakefile
-    let lakefile = r#"
+    let aeneas_dep = if let Ok(path) = std::env::var("HERMES_AENEAS_DIR") {
+        format!(r#"require aeneas from git "file://{}" @ "main" / "backends/lean""#, path)
+    } else {
+        r#"require aeneas from git
+  "https://github.com/AeneasVerif/aeneas" @ "main" / "backends/lean""#
+            .to_string()
+    };
+
+    let lakefile = format!(
+        r#"
 import Lake
 open Lake DSL
 
-require aeneas from git
-  "https://github.com/AeneasVerif/aeneas" @ "main" / "backends/lean"
+{}
 
 package hermes_verification
 
@@ -39,7 +49,9 @@ lean_lib «Hermes» where
 
 lean_lib «User» where
   srcDir := "user"
-"#;
+"#,
+        aeneas_dep
+    );
     std::fs::write(lean_root.join("lakefile.lean"), lakefile)?;
 
     for artifact in artifacts {
@@ -89,6 +101,81 @@ lean_lib «User» where
                 stderr
             );
         }
+    }
+
+    run_lake(roots)
+}
+
+fn run_lake(roots: &Roots) -> Result<()> {
+    let generated = roots.lean_generated_root();
+    let lean_root = generated.parent().unwrap();
+    log::info!("Running 'lake build' in {}", lean_root.display());
+
+    // 1. Run 'lake exe cache get' to fetch pre-built Mathlib artifacts
+    // This prevents compiling Mathlib from source, which is slow and disk-heavy.
+    let mut cache_cmd = Command::new("lake");
+    cache_cmd.args(["exe", "cache", "get"]);
+    cache_cmd.current_dir(&lean_root);
+    // Suppress output unless it fails, or maybe just log it?
+    // Using piped output to avoid spamming the console
+    cache_cmd.stdout(std::process::Stdio::piped());
+    cache_cmd.stderr(std::process::Stdio::piped());
+
+    log::debug!("Running 'lake exe cache get'...");
+    if let Ok(output) = cache_cmd.output() {
+        if !output.status.success() {
+             log::warn!(
+                 " 'lake exe cache get' failed (status={}). Falling back to full build.\nstderr: {}", 
+                 output.status, String::from_utf8_lossy(&output.stderr)
+             );
+        }
+    } else {
+        log::warn!("Failed to spawn 'lake exe cache get'");
+    }
+
+    let mut cmd = Command::new("lake");
+    cmd.arg("build");
+    cmd.current_dir(&lean_root);
+    cmd.stdout(std::process::Stdio::piped());
+    cmd.stderr(std::process::Stdio::piped());
+
+    let mut child = cmd.spawn().context("Failed to spawn lake")?;
+
+    // Capture stderr in background
+    let stderr_buffer = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+    let stderr_clone = stderr_buffer.clone();
+    if let Some(stderr) = child.stderr.take() {
+        std::thread::spawn(move || {
+            let reader = BufReader::new(stderr);
+            for line in reader.lines().map_while(Result::ok) {
+                stderr_clone.lock().unwrap().push(line);
+            }
+        });
+    }
+
+    // UI Spinner
+    let pb = indicatif::ProgressBar::new_spinner();
+    pb.set_style(
+        indicatif::ProgressStyle::default_spinner().template("{spinner:.green} {msg}").unwrap(),
+    );
+    pb.enable_steady_tick(std::time::Duration::from_millis(100));
+    pb.set_message("Verifying Lean proofs...");
+
+    if let Some(stdout) = child.stdout.take() {
+        let reader = BufReader::new(stdout);
+        for _ in reader.lines() {
+            // Just tick the spinner on output
+            pb.tick();
+        }
+    }
+
+    let status = child.wait().context("Failed to wait for lake")?;
+    pb.finish_and_clear();
+
+    if !status.success() {
+        let stderr = stderr_buffer.lock().unwrap().join("\n");
+        eprintln!("{}", stderr); // Print build errors to user
+        bail!("Lean verification failed");
     }
 
     Ok(())
