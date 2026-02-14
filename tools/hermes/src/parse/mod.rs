@@ -140,13 +140,18 @@ impl<M: ThreadSafety> LiftToSafe for ParsedItem<M> {
 pub struct ParsedLeanItem<M: ThreadSafety = Local> {
     pub item: ParsedItem<M>,
     pub module_path: Vec<String>,
+    pub source_file: PathBuf,
 }
 
 impl<M: ThreadSafety> LiftToSafe for ParsedLeanItem<M> {
     type Target = ParsedLeanItem<Safe>;
 
     fn lift(self) -> Self::Target {
-        ParsedLeanItem { item: self.item.lift(), module_path: self.module_path }
+        ParsedLeanItem {
+            item: self.item.lift(),
+            module_path: self.module_path,
+            source_file: self.source_file,
+        }
     }
 }
 
@@ -183,7 +188,9 @@ where
     log::trace!("read_file_and_scan_compilation_unit({:?}, inside_block={})", path, inside_block);
     let source = fs::read_to_string(path)?;
     let mut unloaded_modules = Vec::new();
-    scan_compilation_unit_internal(&source, None, inside_block, f, |m| unloaded_modules.push(m));
+    scan_compilation_unit_internal(&source, Some(path.to_path_buf()), inside_block, f, |m| {
+        unloaded_modules.push(m)
+    });
     Ok((source, unloaded_modules))
 }
 
@@ -279,7 +286,11 @@ where
             }),
             Ok(Some(block)) => {
                 let parsed_item = wrap(item, block);
-                Ok(ParsedLeanItem { item: parsed_item, module_path: self.current_path.clone() })
+                Ok(ParsedLeanItem {
+                    item: parsed_item,
+                    module_path: self.current_path.clone(),
+                    source_file: PathBuf::from(self.named_source.name()),
+                })
             }
             Err(e) => {
                 log::trace!("Error extracting ```lean block: {}", e);

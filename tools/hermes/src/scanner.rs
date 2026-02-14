@@ -83,6 +83,11 @@ impl HermesArtifact {
     pub fn llbc_file_name(&self) -> String {
         format!("{}.llbc", self.artifact_slug())
     }
+
+    /// Returns the name of the `.lean` spec file to use for this artifact.
+    pub fn lean_spec_file_name(&self) -> String {
+        format!("{}.lean", self.artifact_slug())
+    }
 }
 
 /// Scans the workspace to identify Hermes entry points (`/// ```lean` blocks)
@@ -388,7 +393,30 @@ mod tests {
         // *because of the trailing hash* (ie, that they have identical
         // prefixes).
         assert_ne!(artifact_lib.llbc_file_name(), artifact_bin.llbc_file_name());
-        assert!(artifact_lib.llbc_file_name().starts_with("pkg-name-"));
-        assert!(artifact_bin.llbc_file_name().starts_with("pkg-name-"));
+        assert!(artifact_lib.llbc_file_name().starts_with("Pkg_Name_"));
+        assert!(artifact_bin.llbc_file_name().starts_with("Pkg_Name_"));
+    }
+
+    #[test]
+    fn test_lean_spec_file_name_uses_slug() {
+        let name = HermesTargetName {
+            package_name: PackageName::new("pkg-foo".to_string()),
+            target_name: "name-bar".to_string(),
+            kind: HermesTargetKind::Lib,
+        };
+
+        let artifact = HermesArtifact {
+            name,
+            target_kind: HermesTargetKind::Lib,
+            manifest_path: PathBuf::from("Cargo.toml"),
+            start_from: std::collections::HashSet::new(),
+            items: vec![],
+        };
+
+        // Slug should be PascalCase: PkgFoo_NameBar_<hash>
+        // Spec file should be slug + .lean
+        let spec_name = artifact.lean_spec_file_name();
+        assert!(spec_name.starts_with("PkgFoo_NameBar_"));
+        assert!(spec_name.ends_with(".lean"));
     }
 }
