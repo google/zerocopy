@@ -40,12 +40,14 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
             if let ParsedItem::Function(func) = &item.item {
                 // Check if the function body is an Axiom (unsafe)
                 if let FunctionBlockInner::Axiom { .. } = func.hermes.inner {
-                    // Construct the fully qualified name: Crate::Mod::Func
-                    let mut full_path = vec!["crate"];
-                    full_path.extend(item.module_path.iter().map(|s| s.as_str()));
-                    full_path.push(func.item.name());
-
-                    let opaque_name = full_path.join("::");
+                    // Mark `unsafe(axiom)` functions as opaque in Charon. This
+                    // instructs Aeneas to treat the function as external and
+                    // generate a template file (`FunsExternal_Template.lean`)
+                    // containing the type signature as an axiom, rather than
+                    // attempting to translate the body.
+                    let mut opaque_name = item.module_path.join("::");
+                    opaque_name.push_str("::");
+                    opaque_name.push_str(func.item.name());
 
                     cmd.args(["--opaque", &opaque_name]);
                 }
