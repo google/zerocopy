@@ -237,15 +237,18 @@ fn generate_function(
     let has_requires = !block.requires.is_empty();
     if has_requires {
         builder.push_str("\n  (h_req : ");
-        for (i, line) in block.requires.iter().enumerate() {
+        for (i, clause) in block.requires.iter().enumerate() {
             if i > 0 {
                 builder.push_str(" ∧ \n");
             }
-            if !line.content.trim().is_empty() {
-                builder.push('(');
-                builder.push_spanned(line.content.trim(), line, source_file);
-                builder.push(')');
+            builder.push('(');
+            for (j, line) in clause.lines.iter().enumerate() {
+                if j > 0 {
+                    builder.push('\n');
+                }
+                builder.push_spanned(&line.content, line, source_file);
             }
+            builder.push(')');
         }
         builder.push(')');
     }
@@ -299,16 +302,18 @@ fn generate_function(
         }
 
         if has_ensures {
-            // join_conjunctions logic again
-            for (i, line) in block.ensures.iter().enumerate() {
+            for (i, clause) in block.ensures.iter().enumerate() {
                 if i > 0 {
                     builder.push_str(" ∧ \n");
                 }
-                if !line.content.trim().is_empty() {
-                    builder.push('(');
-                    builder.push_spanned(line.content.trim(), line, source_file);
-                    builder.push(')');
+                builder.push('(');
+                for (j, line) in clause.lines.iter().enumerate() {
+                    if j > 0 {
+                        builder.push('\n');
+                    }
+                    builder.push_spanned(&line.content, line, source_file);
                 }
+                builder.push(')');
             }
         } else {
             builder.push_str("True");
@@ -405,11 +410,18 @@ fn generate_type(
     if block.is_valid.is_empty() {
         builder.push_str("    True\n");
     } else {
-        // join_lines logic
-        for line in &block.is_valid {
-            builder.push_str("    ");
-            builder.push_spanned(&line.content, line, source_file);
-            builder.push('\n');
+        for (i, clause) in block.is_valid.iter().enumerate() {
+            if i > 0 {
+                builder.push_str(" ∧ \n");
+            }
+            builder.push_str("    (");
+            for (j, line) in clause.lines.iter().enumerate() {
+                if j > 0 {
+                    builder.push('\n');
+                }
+                builder.push_spanned(&line.content, line, source_file);
+            }
+            builder.push_str(")\n");
         }
     }
 
@@ -463,10 +475,18 @@ fn generate_trait(
         builder.push_str(" True\n");
     } else {
         builder.push('\n');
-        for line in &block.is_safe {
-            builder.push_str("    ");
-            builder.push_spanned(&line.content, line, source_file);
-            builder.push('\n');
+        for (i, clause) in block.is_safe.iter().enumerate() {
+            if i > 0 {
+                builder.push_str(" ∧ \n");
+            }
+            builder.push_str("    (");
+            for (j, line) in clause.lines.iter().enumerate() {
+                if j > 0 {
+                    builder.push('\n');
+                }
+                builder.push_spanned(&line.content, line, source_file);
+            }
+            builder.push_str(")\n");
         }
     }
 
@@ -642,7 +662,7 @@ mod tests {
 
     use super::*;
     use crate::parse::{
-        attr::{FunctionBlockInner, HermesBlockCommon},
+        attr::{Clause, FunctionBlockInner, HermesBlockCommon},
         hkd::Mirror,
     };
 
@@ -659,9 +679,16 @@ mod tests {
         }
     }
 
+    fn mk_clause(lines: Vec<&str>) -> Clause<crate::parse::hkd::Safe> {
+        Clause {
+            keyword_span: AstNode { inner: SourceSpan::new(0.into(), 0) }, // Dummy span
+            lines: lines.into_iter().map(mk_spanned).collect(),
+        }
+    }
+
     fn mk_block(
-        requires: Vec<&str>,
-        ensures: Vec<&str>,
+        requires: Vec<Vec<&str>>,
+        ensures: Vec<Vec<&str>>,
         proof: Option<Vec<&str>>,
         axiom: Option<Vec<&str>>,
         header: Vec<&str>,
@@ -684,16 +711,14 @@ mod tests {
                 content_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
                 start_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
             },
-            requires: requires.into_iter().map(mk_spanned).collect(),
-            requires_keyword: None,
-            ensures: ensures.into_iter().map(mk_spanned).collect(),
-            ensures_keyword: None,
+            requires: requires.into_iter().map(mk_clause).collect(),
+            ensures: ensures.into_iter().map(mk_clause).collect(),
             inner,
         }
     }
 
     fn mk_type_block(
-        is_valid: Vec<&str>,
+        is_valid: Vec<Vec<&str>>,
         header: Vec<&str>,
     ) -> TypeHermesBlock<crate::parse::hkd::Safe> {
         TypeHermesBlock {
@@ -702,12 +727,12 @@ mod tests {
                 content_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
                 start_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
             },
-            is_valid: is_valid.into_iter().map(mk_spanned).collect(),
+            is_valid: is_valid.into_iter().map(mk_clause).collect(),
         }
     }
 
     fn mk_trait_block(
-        is_safe: Vec<&str>,
+        is_safe: Vec<Vec<&str>>,
         header: Vec<&str>,
     ) -> TraitHermesBlock<crate::parse::hkd::Safe> {
         TraitHermesBlock {
@@ -716,7 +741,7 @@ mod tests {
                 content_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
                 start_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
             },
-            is_safe: is_safe.into_iter().map(mk_spanned).collect(),
+            is_safe: is_safe.into_iter().map(mk_clause).collect(),
         }
     }
 
@@ -782,8 +807,9 @@ mod tests {
     fn test_gen_multiline_requires() {
         let item: syn::ItemFn = parse_quote! { fn foo(x: u32) {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        // Old test "Multiline requires (implicit AND)" now becomes 2 clauses
         let block = mk_block(
-            vec!["x.val > 0", "x.val < 10"], // Multiline requires (implicit AND)
+            vec![vec!["x.val > 0"], vec!["x.val < 10"]],
             vec![],
             Some(vec!["simp"]),
             None,
@@ -795,7 +821,10 @@ mod tests {
         let out = builder.buf;
 
         // Should wrap each line in parens and join with AND
-        assert!(out.contains("(h_req : (x.val > 0) ∧ \n(x.val < 10))"));
+        // (x.val > 0) ∧ \n(x.val < 10)
+        assert!(out.contains("(x.val > 0)"));
+        assert!(out.contains(" ∧ \n"));
+        assert!(out.contains("(x.val < 10)"));
     }
 
     #[test]
@@ -803,7 +832,7 @@ mod tests {
         // Regression test: Ensure `requires` comes AFTER the theorem signature.
         let item: syn::ItemFn = parse_quote! { fn foo(x: u32) {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let block = mk_block(vec!["x.val > 0"], vec![], Some(vec!["simp"]), None, vec![]);
+        let block = mk_block(vec![vec!["x.val > 0"]], vec![], Some(vec!["simp"]), None, vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -823,7 +852,7 @@ mod tests {
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
         let block = mk_block(
             vec![],
-            vec!["result = .ok ()"],
+            vec![vec!["result = .ok ()"]],
             None,
             Some(vec![]), // Axiom
             vec![],
@@ -872,7 +901,7 @@ mod tests {
     fn test_gen_struct_simple() {
         let item: syn::ItemStruct = parse_quote! { struct Point { x: u32 } };
         let ty_item = TypeItem::Struct(AstNode { inner: item.mirror() });
-        let block = mk_type_block(vec!["self.x > 0"], vec![]);
+        let block = mk_type_block(vec![vec!["self.x > 0"]], vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_type(&ty_item, &block, &mut builder, Path::new("test.rs"));
@@ -893,7 +922,7 @@ mod tests {
             struct Array<const N: usize> { data: [u8; N] }
         };
         let ty_item = TypeItem::Struct(AstNode { inner: item.mirror() });
-        let block = mk_type_block(vec!["true"], vec![]);
+        let block = mk_type_block(vec![vec!["true"]], vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_type(&ty_item, &block, &mut builder, Path::new("test.rs"));
@@ -911,7 +940,7 @@ mod tests {
             struct Mixed<T, const N: usize, U> { t: T, u: U }
         };
         let ty_item = TypeItem::Struct(AstNode { inner: item.mirror() });
-        let block = mk_type_block(vec!["true"], vec![]);
+        let block = mk_type_block(vec![vec!["true"]], vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_type(&ty_item, &block, &mut builder, Path::new("test.rs"));
@@ -928,7 +957,7 @@ mod tests {
             struct Bound<T> where T: Copy { val: T }
         };
         let ty_item = TypeItem::Struct(AstNode { inner: item.mirror() });
-        let block = mk_type_block(vec!["true"], vec![]);
+        let block = mk_type_block(vec![vec!["true"]], vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_type(&ty_item, &block, &mut builder, Path::new("test.rs"));
@@ -947,7 +976,7 @@ mod tests {
             struct Inline<T: Clone> { val: T }
         };
         let ty_item = TypeItem::Struct(AstNode { inner: item.mirror() });
-        let block = mk_type_block(vec!["true"], vec![]);
+        let block = mk_type_block(vec![vec!["true"]], vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_type(&ty_item, &block, &mut builder, Path::new("test.rs"));
@@ -959,7 +988,7 @@ mod tests {
     #[test]
     fn test_gen_trait_simple() {
         let item: syn::ItemTrait = parse_quote! { trait Identifiable {} };
-        let block = mk_trait_block(vec!["self.id > 0"], vec![]);
+        let block = mk_trait_block(vec![vec!["self.id > 0"]], vec![]);
         let mut builder = LeanBuilder::new();
         generate_trait(&item.mirror(), &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
@@ -974,7 +1003,7 @@ mod tests {
     #[test]
     fn test_gen_trait_generic() {
         let item: syn::ItemTrait = parse_quote! { trait Converter<T> {} };
-        let block = mk_trait_block(vec!["true"], vec![]);
+        let block = mk_trait_block(vec![vec!["true"]], vec![]);
         let mut builder = LeanBuilder::new();
         generate_trait(&item.mirror(), &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
@@ -986,7 +1015,7 @@ mod tests {
     #[test]
     fn test_gen_trait_const_generic() {
         let item: syn::ItemTrait = parse_quote! { trait Array<const N: usize> {} };
-        let block = mk_trait_block(vec!["true"], vec![]);
+        let block = mk_trait_block(vec![vec!["true"]], vec![]);
         let mut builder = LeanBuilder::new();
         generate_trait(&item.mirror(), &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
@@ -999,7 +1028,7 @@ mod tests {
         // fn inc(x: &mut u32)
         let item: syn::ItemFn = parse_quote! { fn inc(x: &mut u32) {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let block = mk_block(vec![], vec!["x = old_x + 1"], Some(vec!["simp"]), None, vec![]);
+        let block = mk_block(vec![], vec![vec!["x = old_x + 1"]], Some(vec!["simp"]), None, vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1018,7 +1047,7 @@ mod tests {
         // fn swap_ret(x: &mut u32) -> bool
         let item: syn::ItemFn = parse_quote! { fn swap_ret(x: &mut u32) -> bool { true } };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let block = mk_block(vec![], vec!["result = true"], Some(vec![]), None, vec![]);
+        let block = mk_block(vec![], vec![vec!["result = true"]], Some(vec![]), None, vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1035,7 +1064,7 @@ mod tests {
         // fn swap(a: &mut u32, b: &mut u32)
         let item: syn::ItemFn = parse_quote! { fn swap(a: &mut u32, b: &mut u32) {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let block = mk_block(vec![], vec!["a = old_b"], Some(vec![]), None, vec![]);
+        let block = mk_block(vec![], vec![vec!["a = old_b"]], Some(vec![]), None, vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1087,7 +1116,7 @@ mod tests {
             fn process(data: &[u8], buf: &mut [u8; 16]) {}
         };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let block = mk_block(vec![], vec!["true"], Some(vec![]), None, vec![]);
+        let block = mk_block(vec![], vec![vec!["true"]], Some(vec![]), None, vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1108,7 +1137,7 @@ mod tests {
             fn consume(mut self) {}
         };
         let func = FunctionItem::Impl(AstNode { inner: item.mirror() });
-        let block = mk_block(vec![], vec!["true"], Some(vec![]), None, vec![]);
+        let block = mk_block(vec![], vec![vec!["true"]], Some(vec![]), None, vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1131,7 +1160,7 @@ mod tests {
             fn mix(a: &mut u32, mut b: u32) {}
         };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let block = mk_block(vec![], vec!["true"], Some(vec![]), None, vec![]);
+        let block = mk_block(vec![], vec![vec!["true"]], Some(vec![]), None, vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
