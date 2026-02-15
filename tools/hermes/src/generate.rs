@@ -248,6 +248,7 @@ fn generate_function(
                 }
                 builder.push_spanned(&line.content, line, source_file);
             }
+            builder.push('\n');
             builder.push(')');
         }
         builder.push(')');
@@ -313,6 +314,7 @@ fn generate_function(
                     }
                     builder.push_spanned(&line.content, line, source_file);
                 }
+                builder.push('\n');
                 builder.push(')');
             }
         } else {
@@ -421,7 +423,7 @@ fn generate_type(
                 }
                 builder.push_spanned(&line.content, line, source_file);
             }
-            builder.push_str(")\n");
+            builder.push_str("\n)\n");
         }
     }
 
@@ -486,7 +488,7 @@ fn generate_trait(
                 }
                 builder.push_spanned(&line.content, line, source_file);
             }
-            builder.push_str(")\n");
+            builder.push_str("\n)\n");
         }
     }
 
@@ -584,9 +586,9 @@ fn map_type(ty: &crate::parse::hkd::SafeType) -> String {
         Ptr { mutability, elem } => {
             let inner = map_type(elem);
             if *mutability {
-                format!("(MutPtr {})", inner)
+                format!("(MutRawPtr {})", inner)
             } else {
-                format!("(ConstPtr {})", inner)
+                format!("(ConstRawPtr {})", inner)
             }
         }
         Slice { elem } => format!("(Slice {})", map_type(elem)),
@@ -821,10 +823,10 @@ mod tests {
         let out = builder.buf;
 
         // Should wrap each line in parens and join with AND
-        // (x.val > 0) ∧ \n(x.val < 10)
-        assert!(out.contains("(x.val > 0)"));
+        // (x.val > 0\n) ∧ \n(x.val < 10\n)
+        assert!(out.contains("(x.val > 0\n)"));
         assert!(out.contains(" ∧ \n"));
-        assert!(out.contains("(x.val < 10)"));
+        assert!(out.contains("(x.val < 10\n)"));
     }
 
     #[test]
@@ -839,7 +841,7 @@ mod tests {
         let out = builder.buf;
 
         let theorem_idx = out.find("theorem spec (x : Std.U32)").expect("Theorem not found");
-        let requires_idx = out.find("(h_req : (x.val > 0))").expect("Requires not found");
+        let requires_idx = out.find("(h_req : (x.val > 0\n))").expect("Requires not found");
         let return_type_idx = out.find("Hermes.SpecificationHolds").expect("Return type not found");
 
         assert!(theorem_idx < requires_idx, "Theorem should come before requires");
@@ -862,7 +864,7 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("axiom spec (p : (ConstPtr Std.U8))"));
+        assert!(out.contains("axiom spec (p : (ConstRawPtr Std.U8))"));
         assert!(out.contains("Hermes.SpecificationHolds (α := Unit) (ffi p)"));
         // No proof block for axioms
         assert!(!out.contains(":= by"));
