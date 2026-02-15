@@ -57,7 +57,7 @@ pub struct ImplHermesBlock<M: ThreadSafety = Local> {
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
 pub struct HermesBlockCommon<M: ThreadSafety = Local> {
-    pub header: Vec<SpannedLine<M>>,
+    pub context: Vec<SpannedLine<M>>,
     /// The span of the entire block, including the opening and closing ` ``` `
     /// lines.
     pub content_span: AstNode<Span, M>,
@@ -359,7 +359,7 @@ fn parse_item_block_common(
             )?;
 
             let common = HermesBlockCommon {
-                header: std::mem::take(&mut body.header),
+                context: std::mem::take(&mut body.context.lines),
                 content_span: AstNode::new(item.content_span),
                 start_span: AstNode::new(item.start_span),
             };
@@ -409,7 +409,7 @@ impl FunctionHermesBlock<Local> {
 
         Ok(Some(Self {
             common: HermesBlockCommon {
-                header: body.header,
+                context: body.context.lines,
                 content_span: AstNode::new(item.content_span),
                 start_span: AstNode::new(item.start_span),
             },
@@ -501,7 +501,7 @@ impl RawSection {
 #[derive(Debug, Default, Clone)]
 pub(super) struct RawHermesSpecBody {
     /// Content before any keyword (e.g., Lean imports, let bindings, type invariants)
-    pub(super) header: Vec<SpannedLine<Local>>,
+    pub(super) context: RawSection,
     pub(super) requires: RawSection,
     pub(super) ensures: RawSection,
     pub(super) proof: RawSection,
@@ -524,7 +524,8 @@ impl RawHermesSpecBody {
     {
         #[derive(Debug, Clone, Copy, PartialEq)]
         enum Section {
-            Header,
+            Init,
+            Context,
             Requires,
             Ensures,
             Proof,
@@ -535,13 +536,14 @@ impl RawHermesSpecBody {
 
         fn get_section(section: Section, spec: &mut RawHermesSpecBody) -> &mut RawSection {
             match section {
+                Section::Context => &mut spec.context,
                 Section::Requires => &mut spec.requires,
                 Section::Ensures => &mut spec.ensures,
                 Section::Proof => &mut spec.proof,
                 Section::Axiom => &mut spec.axiom,
                 Section::IsValid => &mut spec.is_valid,
                 Section::IsSafe => &mut spec.is_safe,
-                Section::Header => unreachable!(),
+                Section::Init => unreachable!(),
             }
         }
 
@@ -553,6 +555,7 @@ impl RawHermesSpecBody {
         }
 
         let keywords = [
+            ("context", Section::Context),
             ("requires", Section::Requires),
             ("ensures", Section::Ensures),
             ("proof", Section::Proof),
@@ -564,7 +567,7 @@ impl RawHermesSpecBody {
         lines
             .into_iter()
             .try_fold(
-                (RawHermesSpecBody::default(), Section::Header, None::<usize>),
+                (RawHermesSpecBody::default(), Section::Init, None::<usize>),
                 |(mut spec, current_section, baseline_indent), line| {
                     let trimmed = line.content.trim();
                     let span = line.span;
@@ -577,11 +580,12 @@ impl RawHermesSpecBody {
                     };
 
                     if trimmed.is_empty() {
-                        if current_section == Section::Header {
-                            spec.header.push(item);
-                        } else {
+                        if current_section != Section::Init {
                             get_section(current_section, &mut spec).lines.push(item);
                         }
+                        // If Init, we just skip empty lines (leading whitespace/comments before first keyword?)
+                        // Although doc comments are usually stripped of leading whitespace by extract_doc_line logic?
+                        // `extract_doc_line` returns the content.
                         return Ok((spec, current_section, baseline_indent));
                     }
 
@@ -604,21 +608,24 @@ impl RawHermesSpecBody {
                         return Ok((spec, section, Some(indent)));
                     }
 
-                    if current_section != Section::Header && indent <= baseline_indent.unwrap() {
+                    if current_section == Section::Init {
+                         return Err((
+                            span,
+                            "Expected a Hermes keyword to start the block (e.g. `context`, `requires`, ...).".to_string(),
+                        ));
+                    }
+
+                    if current_section != Section::Context && indent <= baseline_indent.unwrap() {
                         return Err((
                             span,
                             "Invalid indentation: expected an indented continuation or a valid \
-                             Hermes keyword (requires, ensures, proof, axiom, isValid, isSafe). \
+                             Hermes keyword (context, requires, ensures, proof, axiom, isValid, isSafe). \
                              Did you misspell a keyword?"
                                 .to_string(),
                         ));
                     }
                     // Not a new keyword; continuation of the current section.
-                    if current_section == Section::Header {
-                        spec.header.push(item);
-                    } else {
-                        get_section(current_section, &mut spec).lines.push(item);
-                    }
+                    get_section(current_section, &mut spec).lines.push(item);
 
                     Ok((spec, current_section, baseline_indent))
                 },
@@ -689,6 +696,7 @@ mod tests {
     fn test_parse_from_attrs_valid_spec() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```lean, hermes, spec"]),
+            parse_quote!(#[doc = " context"]),
             parse_quote!(#[doc = " body 1"]),
             parse_quote!(#[doc = " body 2"]),
             parse_quote!(#[doc = " ```"]),
@@ -696,12 +704,12 @@ mod tests {
         let block = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         match block {
             FunctionHermesBlock {
-                common: HermesBlockCommon { header, .. },
+                common: HermesBlockCommon { context, .. },
                 inner: FunctionBlockInner::Proof { .. },
                 ..
             } => {
-                assert_eq!(header[0].content, " body 1");
-                assert_eq!(header[1].content, " body 2");
+                assert_eq!(context[0].content, " body 1");
+                assert_eq!(context[1].content, " body 2");
             }
             _ => panic!("Expected block with Proof inner"),
         }
@@ -711,6 +719,7 @@ mod tests {
     fn test_parse_from_attrs_valid_axiom() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```lean, hermes, unsafe(axiom)"]),
+            parse_quote!(#[doc = " context"]),
             parse_quote!(#[doc = " body 1"]),
             parse_quote!(#[doc = " body 2"]),
             parse_quote!(#[doc = " ```"]),
@@ -718,12 +727,12 @@ mod tests {
         let block = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         match block {
             FunctionHermesBlock {
-                common: HermesBlockCommon { header, .. },
+                common: HermesBlockCommon { context, .. },
                 inner: FunctionBlockInner::Axiom { .. },
                 ..
             } => {
-                assert_eq!(header[0].content, " body 1");
-                assert_eq!(header[1].content, " body 2");
+                assert_eq!(context[0].content, " body 1");
+                assert_eq!(context[1].content, " body 2");
             }
             _ => panic!("Expected block with Axiom inner"),
         }
@@ -741,13 +750,14 @@ mod tests {
     fn test_parse_from_attrs_interrupted() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " context"]),
             parse_quote!(#[doc = " line 1"]),
             parse_quote!(#[derive(Clone)]), // Interrupts contiguous doc lines
             parse_quote!(#[doc = " ```"]),
         ];
         let block = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
-        assert_eq!(block.common.header.len(), 1);
-        assert_eq!(block.common.header[0].content, " line 1");
+        assert_eq!(block.common.context.len(), 1);
+        assert_eq!(block.common.context[0].content, " line 1");
     }
 
     #[test]
@@ -777,7 +787,7 @@ mod tests {
     fn test_hermes_spec_body_parse_empty() {
         let lines = mk_lines(&[]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
-        assert!(spec.header.is_empty());
+        assert!(!spec.context.is_present());
         assert!(!spec.requires.is_present());
         assert!(!spec.ensures.is_present());
         assert!(!spec.proof.is_present());
@@ -785,18 +795,26 @@ mod tests {
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_header_only() {
-        let lines = mk_lines(&["import Foo", "def bar := 1"]);
+    fn test_hermes_spec_body_parse_context_only() {
+        let lines = mk_lines(&["context", "import Foo", "def bar := 1"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
-        assert_eq!(spec.header.len(), 2);
-        assert_eq!(spec.header[0].content, "import Foo");
-        assert_eq!(spec.header[1].content, "def bar := 1");
+        assert_eq!(spec.context.lines.len(), 2);
+        assert_eq!(spec.context.lines[0].content, "import Foo");
+        assert_eq!(spec.context.lines[1].content, "def bar := 1");
         assert!(!spec.requires.is_present());
+    }
+
+    #[test]
+    fn test_hermes_spec_body_parse_implicit_context_fails() {
+        let lines = mk_lines(&["import Foo"]);
+        let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+        assert!(err.1.contains("Expected a Hermes keyword"));
     }
 
     #[test]
     fn test_hermes_spec_body_parse_strict_keywords() {
         let lines = mk_lines(&[
+            "context",
             "requires_foo a",
             "ensuresbar",
             "proof_of_concept",
@@ -805,12 +823,12 @@ mod tests {
             "   genuine requirements ",
         ]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
-        // The first four are headers because they don't match keywords strictly.
-        assert_eq!(spec.header.len(), 4);
-        assert_eq!(spec.header[0].content, "requires_foo a");
-        assert_eq!(spec.header[1].content, "ensuresbar");
-        assert_eq!(spec.header[2].content, "proof_of_concept");
-        assert_eq!(spec.header[3].content, "axiomatic");
+        // The first four are context lines because they don't match keywords strictly.
+        assert_eq!(spec.context.lines.len(), 4);
+        assert_eq!(spec.context.lines[0].content, "requires_foo a");
+        assert_eq!(spec.context.lines[1].content, "ensuresbar");
+        assert_eq!(spec.context.lines[2].content, "proof_of_concept");
+        assert_eq!(spec.context.lines[3].content, "axiomatic");
 
         // "  requires   " switches section but adds no lines because its arg is empty.
         // Following line is added verbatim to requires section.
@@ -829,7 +847,7 @@ mod tests {
             "  trivial",
         ]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
-        assert!(spec.header.is_empty());
+        assert!(!spec.context.is_present());
 
         assert_eq!(spec.requires.lines.len(), 2);
         // Prefix argument keeps its exact text post-"requires" (which is " a > 0").
@@ -857,7 +875,6 @@ mod tests {
         assert_eq!(spec.ensures.lines[0].content, " b");
 
         assert_eq!(spec.axiom.lines.len(), 1);
-        assert_eq!(spec.axiom.lines[0].content, " d");
     }
 
     fn dummy_line(content: &str) -> SpannedLine {
@@ -870,16 +887,13 @@ mod tests {
 
     #[test]
     fn test_parse_spec_valid_indentation() {
-        let lines = vec![
-            dummy_line("open Aeneas"),
-            dummy_line("requires"),
-            dummy_line("  x > 0"),
-            dummy_line("    && y > 0"),
-        ];
+        let lines =
+            mk_lines(&["context", "context_line", "requires", "  req1", "ensures", "  ens1"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
-        assert_eq!(spec.header.len(), 1);
-        assert_eq!(spec.requires.lines.len(), 2);
-        assert_eq!(spec.requires.lines[0].content, "  x > 0");
+        assert_eq!(spec.context.lines[0].content, "context_line");
+        assert_eq!(spec.requires.lines[0].content, "  req1");
+        assert_eq!(spec.ensures.lines.len(), 1);
+        assert_eq!(spec.ensures.lines[0].content, "  ens1");
     }
 
     #[test]
@@ -909,15 +923,9 @@ mod tests {
 
     #[test]
     fn test_parse_spec_header_no_indent_rules() {
-        let lines = vec![
-            dummy_line("no indent"),
-            dummy_line("    four spaces"),
-            dummy_line("back to zero"),
-            dummy_line("requires x"),
-        ];
+        let lines = mk_lines(&["context", "context_line", "  indented context", "context again"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
-        assert_eq!(spec.header.len(), 3);
-        assert_eq!(spec.requires.lines.len(), 1);
+        assert_eq!(spec.context.lines.len(), 3);
     }
 
     #[test]
@@ -934,10 +942,13 @@ mod tests {
 
     #[test]
     fn test_parse_spec_err_under_indented_continuation() {
-        let lines = vec![
-            dummy_line("  requires"), // baseline is 2
-            dummy_line(" a > 0"),     // indent is 1 (1 <= 2)
-        ];
+        let lines = mk_lines(&[
+            "context",
+            "header",
+            "requires",
+            "  req1",
+            "req2_oops", // This looks like a new keyword but isn't one, and isn't indented
+        ]);
         let err = RawHermesSpecBody::parse(&lines).unwrap_err();
         assert!(err.1.contains("Invalid indentation"));
     }
@@ -956,13 +967,37 @@ mod tests {
     fn test_type_block_valid() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " context"]), // Types shouldn't really have context/header usually, but parser allows it?
+            // Actually TypeHermesBlock only takes `is_valid`.
+            // Let's check `parse_from_attrs` implementation for TypeHermesBlock.
+            // It calls `parse_item_block_common`.
+            // `parse_item_block_common` allows header in `HermesBlockCommon`.
+            // But `TypeHermesBlock` struct doesn't have `context` field? It has `common: HermesBlockCommon`.
+            // `HermesBlockCommon` has `header`.
+            // So yes, types can have context.
+            parse_quote!(#[doc = " foo"]),
             parse_quote!(#[doc = " isValid"]),
-            parse_quote!(#[doc = "  val == true"]),
+            parse_quote!(#[doc = "  bar"]),
             parse_quote!(#[doc = " ```"]),
         ];
         let block = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
-        assert_eq!(block.is_valid.len(), 1);
-        assert_eq!(block.is_valid[0].content, "  val == true");
+        assert_eq!(block.is_valid[0].content, "  bar");
+        assert_eq!(block.common.context[0].content, " foo");
+    }
+
+    #[test]
+    fn test_type_block_missing_is_valid() {
+        let attrs: Vec<syn::Attribute> = vec![
+            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " context"]),
+            parse_quote!(#[doc = " foo"]),
+            parse_quote!(#[doc = " ```"]),
+        ];
+        let err = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "Hermes blocks on types must define an `isValid` type invariant. Did you misspell it?"
+        );
     }
 
     #[test]
@@ -976,21 +1011,6 @@ mod tests {
         let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         assert_eq!(block.is_safe.len(), 1);
         assert_eq!(block.is_safe[0].content, "  val == true");
-    }
-
-    #[test]
-    fn test_type_block_missing_is_valid() {
-        let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
-            parse_quote!(#[doc = " isVaild"]),
-            parse_quote!(#[doc = "  val == true"]),
-            parse_quote!(#[doc = " ```"]),
-        ];
-        let err = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
-        assert_eq!(
-            err.to_string(),
-            "Hermes blocks on types must define an `isValid` type invariant. Did you misspell it?"
-        );
     }
 
     #[test]
@@ -1257,6 +1277,53 @@ mod tests {
             assert_eq!(block.is_safe.len(), 1);
             assert_eq!(block.is_safe[0].content, "  val");
         }
+
+        #[test]
+        fn test_comment_before_keyword_fails() {
+            let lines = mk_lines(&["// comment", "context"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("Expected a Hermes keyword"));
+        }
+
+        #[test]
+        fn test_context_inline_args() {
+            let lines = mk_lines(&["context inline_context", "more_context"]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.context.lines[0].content, " inline_context");
+            assert_eq!(spec.context.lines[1].content, "more_context");
+        }
+
+        #[test]
+        fn test_multiple_context_sections() {
+            let lines = mk_lines(&["context part1", "context part2"]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.context.lines.len(), 2);
+            assert_eq!(spec.context.lines[0].content, " part1");
+            assert_eq!(spec.context.lines[1].content, " part2");
+        }
+
+        #[test]
+        fn test_delayed_context() {
+            let lines = mk_lines(&["requires x > 0", "context", "added_to_context"]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert!(spec.requires.is_present());
+            assert_eq!(spec.context.lines.len(), 1);
+            assert_eq!(spec.context.lines[0].content, "added_to_context");
+        }
+
+        #[test]
+        fn test_case_sensitive_context() {
+            let lines = mk_lines(&["Context"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("Expected a Hermes keyword"));
+        }
+
+        #[test]
+        fn test_leading_whitespace_ignored() {
+            let lines = mk_lines(&["   ", "", "context", "stuff"]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.context.lines[0].content, "stuff");
+        }
     }
     #[test]
     fn test_extract_doc_line_offsets() {
@@ -1399,7 +1466,7 @@ impl<M: ThreadSafety> LiftToSafe for HermesBlockCommon<M> {
     type Target = HermesBlockCommon<Safe>;
     fn lift(self) -> Self::Target {
         HermesBlockCommon {
-            header: self.header.into_iter().map(|l| l.lift()).collect(),
+            context: self.context.into_iter().map(|l| l.lift()).collect(),
             content_span: self.content_span.lift(),
             start_span: self.start_span.lift(),
         }

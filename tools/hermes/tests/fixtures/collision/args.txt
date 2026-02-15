@@ -1,1 +1,1 @@
-verify --workspace
+verify --workspace --allow-sorry

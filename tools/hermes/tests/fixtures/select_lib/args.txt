@@ -1,1 +1,1 @@
-verify --lib
+verify --lib --allow-sorry

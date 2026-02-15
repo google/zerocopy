@@ -179,8 +179,8 @@ fn generate_function(
     // Namespace wrapping
     builder.push_str(&format!("namespace {}\n\n", fn_name));
 
-    // 1. Generate the header
-    for line in &block.common.header {
+    // 1. Generate the context
+    for line in &block.common.context {
         builder.push_spanned(&line.content, line, source_file);
         builder.push('\n');
     }
@@ -373,7 +373,7 @@ fn generate_type(
 
     builder.push_str(&format!("namespace {}\n\n", type_name));
 
-    for line in &block.common.header {
+    for line in &block.common.context {
         builder.push_spanned(&line.content, line, source_file);
         builder.push('\n');
     }
@@ -427,7 +427,7 @@ fn generate_trait(
 
     builder.push_str(&format!("namespace {}\n\n", trait_name));
 
-    for line in &block.common.header {
+    for line in &block.common.context {
         builder.push_spanned(&line.content, line, source_file);
         builder.push('\n');
     }
@@ -680,7 +680,7 @@ mod tests {
 
         FunctionHermesBlock {
             common: HermesBlockCommon {
-                header: header.into_iter().map(mk_spanned).collect(),
+                context: header.into_iter().map(mk_spanned).collect(),
                 content_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
                 start_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
             },
@@ -698,7 +698,7 @@ mod tests {
     ) -> TypeHermesBlock<crate::parse::hkd::Safe> {
         TypeHermesBlock {
             common: HermesBlockCommon {
-                header: header.into_iter().map(mk_spanned).collect(),
+                context: header.into_iter().map(mk_spanned).collect(),
                 content_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
                 start_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
             },
@@ -712,7 +712,7 @@ mod tests {
     ) -> TraitHermesBlock<crate::parse::hkd::Safe> {
         TraitHermesBlock {
             common: HermesBlockCommon {
-                header: header.into_iter().map(mk_spanned).collect(),
+                context: header.into_iter().map(mk_spanned).collect(),
                 content_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
                 start_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
             },
@@ -854,7 +854,7 @@ mod tests {
     }
 
     #[test]
-    fn test_gen_header_injection() {
+    fn test_gen_context_injection() {
         let item: syn::ItemFn = parse_quote! { fn foo() {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
         let block = mk_block(vec![], vec![], Some(vec![]), None, vec!["import Foo", "open Bar"]);
@@ -935,7 +935,7 @@ mod tests {
         let out = builder.buf;
 
         assert!(out.contains("instance {T} [Copy T] : Hermes.IsValid (Bound T) where"));
-        // Matches Aeneas style: no bounds in instance headers usually, unless required for the type itself?
+        // Matches Aeneas style: no bounds in instance context usually, unless required for the type itself?
         // Wait, for IsValid, we might need bounds if the invariant depends on them.
         // But in this test case logic, we ARE generating them now.
         assert!(out.contains("[Copy T]"));
