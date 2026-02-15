@@ -2,8 +2,8 @@
 ///
 /// ```lean, hermes, spec
 /// ensures match result with
-///   | .none => x + y > I32.max ∨ x + y < I32.min
-///   | .some v => v = x + y
+///   | .none => (x : Int) + (y : Int) > I32.max ∨ (x : Int) + (y : Int) < I32.min
+///   | .some v => (v : Int) = (x : Int) + (y : Int)
 /// proof
 ///   unfold checked_add
 ///   simp_all
