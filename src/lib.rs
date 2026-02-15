@@ -4454,6 +4454,35 @@ pub unsafe trait FromBytes: FromZeros {
         ref_from_prefix_suffix(source, Some(count), CastType::Suffix).map(swap)
     }
 
+    /// TODO
+    // TODO: Better error type
+    #[inline]
+    fn ref_from_prefix_with_length<E>(
+        source: &[u8],
+        get_length: impl FnOnce(&Self) -> Result<usize, E>,
+    ) -> Option<(&Self, &[u8])>
+    where
+        Self: SplitAt + KnownLayout + Immutable,
+    {
+        let provenance = {
+            let source: *const [u8] = source;
+            source
+        };
+        let (slf, suffix) = Self::ref_from_prefix(source).ok()?;
+        let len = get_length(slf).ok()?;
+        let (slf, middle) = slf.split_at(len)?.via_immutable();
+        let suffix_len = unsafe { middle.len().unchecked_add(suffix.len()) };
+
+        let suffix = provenance.with_addr({
+            let middle: *const [_] = middle;
+            middle.addr()
+        });
+
+        let suffix = core::ptr::slice_from_raw_parts(suffix.cast::<u8>(), suffix_len);
+
+        Some((slf, unsafe { &*suffix }))
+    }
+
     /// Interprets the given `source` as a `&mut Self` with a DST length equal
     /// to `count`.
     ///
