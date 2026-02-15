@@ -629,15 +629,45 @@ fn extract_args_metadata(func: &FunctionItem<crate::parse::hkd::Safe>) -> Vec<Ar
 }
 
 fn get_return_type_string(func: &FunctionItem<crate::parse::hkd::Safe>) -> String {
-    use crate::parse::hkd::SafeReturnType;
+    use crate::parse::hkd::{SafeFnArg, SafeReturnType, SafeType};
+
     let sig = match func {
         FunctionItem::Free(AstNode { inner: i }) => &i.sig,
         FunctionItem::Impl(AstNode { inner: i }) => &i.sig,
         FunctionItem::Trait(AstNode { inner: i }) => &i.sig,
     };
-    match &sig.output {
+
+    let mut ret_types = Vec::new();
+
+    // 1. Original Return Type
+    let orig_ret = match &sig.output {
         SafeReturnType::Default => "Unit".to_string(),
         SafeReturnType::Type(ty) => map_type(ty),
+    };
+
+    if orig_ret != "Unit" && orig_ret != "MatchError" {
+        ret_types.push(orig_ret);
+    }
+
+    // 2. Mutable Arguments
+    for arg in &sig.inputs {
+        match arg {
+            SafeFnArg::Receiver { mutability: true, .. } => {
+                ret_types.push("Self".to_string());
+            }
+            SafeFnArg::Typed { ty: SafeType::Reference { mutability: true, elem }, .. } => {
+                ret_types.push(map_type(elem));
+            }
+            _ => {}
+        }
+    }
+
+    if ret_types.is_empty() {
+        "Unit".to_string()
+    } else if ret_types.len() == 1 {
+        ret_types[0].clone()
+    } else {
+        ret_types.join(" × ")
     }
 }
 

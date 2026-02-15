@@ -5,10 +5,20 @@ pub enum List<T> {
 
 impl<T> List<T> {
     /// ```lean, hermes, spec
-    /// ensures self.len = old(self).len + 1
+    /// context
+    ///   open _root_.linked_list
+    ///   open _root_.linked_list.List
+    ///   variable {T : Type}
+    ///   abbrev Self := _root_.linked_list.List T
+    ///   def _root_.linked_list.List.len (self : _root_.linked_list.List T) : Nat :=
+    ///     match self with
+    ///     | .Nil => 0
+    ///     | .Cons _ tl => 1 + tl.len
+    /// ensures self.len = old_self.len + 1
     /// proof
-    ///   unfold push
-    ///   simp_all
+    ///   unfold linked_list.List.push
+    ///   unfold _root_.linked_list.List.len
+    ///   simp_all [Nat.add_comm]
     /// ```
     pub fn push(&mut self, val: T) {
         let old_self = std::mem::replace(self, List::Nil);
