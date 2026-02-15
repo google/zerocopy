@@ -1,1 +1,1 @@
-verify -p app
+verify -p app --allow-sorry

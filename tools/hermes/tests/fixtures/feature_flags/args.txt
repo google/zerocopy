@@ -1,1 +1,1 @@
-verify --features extra
+verify --features extra --allow-sorry

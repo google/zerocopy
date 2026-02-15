@@ -1,4 +1,5 @@
 /// ```lean, hermes, spec
+/// context
 /// theorem simple_spec_spec : True := trivial
 /// ```
 fn simple_spec(x: u32) -> bool {
@@ -27,6 +28,7 @@ unsafe trait SafeTrait {
 }
 
 /// ```lean, hermes, spec
+/// context
 /// theorem ref_lowering_spec : True := trivial
 /// ```
 fn ref_lowering(x: &mut u32) {
@@ -34,6 +36,7 @@ fn ref_lowering(x: &mut u32) {
 }
 
 /// ```lean, hermes, spec
+/// context
 /// theorem complex_args_spec : True := trivial
 /// ```
 fn complex_args(slice: &[u8], array: [u8; 16]) {
