@@ -8,6 +8,7 @@ pub fn outer_logic() {
 }
 
 /// ```lean, hermes
+/// context
 /// theorem valid_proof : True := trivial
 /// ```
 pub fn valid_proof() {} // Included so the crate has at least one valid proof to succeed.

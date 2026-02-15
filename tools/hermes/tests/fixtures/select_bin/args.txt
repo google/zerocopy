@@ -1,1 +1,1 @@
-verify --bin app
+verify --bin app --allow-sorry

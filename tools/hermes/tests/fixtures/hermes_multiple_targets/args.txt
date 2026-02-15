@@ -1,4 +1,4 @@
 verify
 --lib
 --bin
-my_bin
+my_bin --allow-sorry

@@ -21,6 +21,7 @@ decl_trait!(HiddenTrait);
 
 // Macro invocation with attributes
 /// ```hermes
+/// context
 /// -- Doc comment on macro invocation
 /// ```
 #[allow(dead_code)]

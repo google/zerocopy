@@ -497,13 +497,13 @@ mod tests {
     }
 
     impl ParsedItem {
-        /// Returns the header of the Hermes block.
-        fn hermes_header(&self) -> &[attr::SpannedLine] {
+        /// Returns the context of the Hermes block.
+        fn hermes_context(&self) -> &[attr::SpannedLine] {
             match self {
-                Self::Function(f) => &f.hermes.common.header,
-                Self::Type(t) => &t.hermes.common.header,
-                Self::Trait(t) => &t.hermes.common.header,
-                Self::Impl(i) => &i.hermes.common.header,
+                Self::Function(f) => &f.hermes.common.context,
+                Self::Type(t) => &t.hermes.common.context,
+                Self::Trait(t) => &t.hermes.common.context,
+                Self::Impl(i) => &i.hermes.common.context,
             }
         }
     }
@@ -512,6 +512,7 @@ mod tests {
     fn test_parse_lean_block() {
         let code = r#"
             /// ```lean, hermes
+            /// context
             /// theorem foo : True := by trivial
             /// ```
             fn foo() {}
@@ -522,21 +523,27 @@ mod tests {
         assert_eq!(
             src,
             "/// ```lean, hermes
+            /// context
             /// theorem foo : True := by trivial
             /// ```
             fn foo() {}"
         );
         assert!(matches!(item.item, ParsedItem::Function(_)));
-        assert_eq!(item.item.hermes_header()[0].content.trim(), "theorem foo : True := by trivial");
+        assert_eq!(
+            item.item.hermes_context()[0].content.trim(),
+            "theorem foo : True := by trivial"
+        );
     }
 
     #[test]
     fn test_multiple_lean_blocks_error() {
         let code = r#"
             /// ```lean, hermes
+            /// context
             /// a
             /// ```
             /// ```lean, hermes
+            /// context
             /// b
             /// ```
             fn foo() {}
@@ -551,6 +558,7 @@ mod tests {
     fn test_unclosed_lean_block() {
         let code = r#"
             /// ```lean, hermes
+            /// context
             /// theorem foo : True := by trivial
             fn foo() {}
         "#;
@@ -565,6 +573,7 @@ mod tests {
             mod foo {
                 mod bar {
                     /// ```lean, hermes
+                    /// context
                     /// ```
                     fn baz() {}
                 }
@@ -581,6 +590,7 @@ mod tests {
         let code = r#"
             mod foo {
                 /// ```lean, hermes
+                /// context
                 /// theorem foo : True := by trivial
                 /// ```
                 fn bar() {}
@@ -612,12 +622,14 @@ mod tests {
         let code = r#"
             mod a {
                 /// ```lean, hermes
+                /// context
                 /// theorem a : True := trivial
                 /// ```
                 fn foo() {}
             }
             mod b {
                 /// ```lean, hermes
+                /// context
                 /// theorem b : False := sorry
                 /// ```
                 fn foo() {}
@@ -633,8 +645,8 @@ mod tests {
         let i2 = item2.as_ref().unwrap();
 
         // Verify we got the right blocks for the right items
-        assert!(i1.item.hermes_header()[0].content.contains("theorem a"));
-        assert!(i2.item.hermes_header()[0].content.contains("theorem b"));
+        assert!(i1.item.hermes_context()[0].content.contains("theorem a"));
+        assert!(i2.item.hermes_context()[0].content.contains("theorem b"));
 
         // Verify source snippets match the function definition + doc comment
         assert!(src1.contains("theorem a"));
@@ -647,10 +659,12 @@ mod tests {
     fn test_multiple_parsing_failures_output() {
         let code1 = r#"
             /// ```lean, hermes
+            /// context
             /// unclosed block 1
             fn bad_doc_1() {}
 
             /// ```lean, hermes
+            /// context
             /// unclosed block 2
             fn bad_doc_2() {}
         "#;
@@ -704,18 +718,18 @@ mod tests {
  2 │             /// ```lean, hermes
    ·             ─────────┬─────────
    ·                      ╰── problematic block
- 3 │             /// unclosed block 1
+ 3 │             /// context
    ╰────
 
 hermes::doc_block
 
   × Documentation block error: Unclosed Hermes block in documentation.
-   ╭─[src/foo.rs:6:13]
- 5 │ 
- 6 │             /// ```lean, hermes
+   ╭─[src/foo.rs:7:13]
+ 6 │ 
+ 7 │             /// ```lean, hermes
    ·             ─────────┬─────────
    ·                      ╰── problematic block
- 7 │             /// unclosed block 2
+ 8 │             /// context
    ╰────
 
 hermes::syn_error
