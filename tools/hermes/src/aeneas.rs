@@ -25,6 +25,10 @@ pub fn run_aeneas(
     let lean_root = lean_generated_root.parent().unwrap(); // target/hermes/<hash>/lean
     std::fs::create_dir_all(lean_root.join("hermes"))?;
 
+    // Optimization: If HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR is set, copy the .lake directory
+    // from there using hardlinks. This avoids re-downloading/re-building Mathlib.
+    restore_from_integration_cache(lean_root)?;
+
     // 2. Write Standard Library
     let mut prelude = String::new();
     if !args.allow_sorry {
@@ -111,6 +115,21 @@ pub fn run_aeneas(
         }
         log::trace!("Aeneas for '{}' took {:.2?}", artifact.name.target_name, start.elapsed());
 
+        // Aeneas might not generate Funs.lean or Types.lean if there are no functions/types.
+        // However, `Specs.lean` and `Generated.lean` expect them to exist (as imports).
+        // We create empty files if they are missing to satisfy the compiler.
+        let funs_path = output_dir.join("Funs.lean");
+        if !funs_path.exists() {
+            log::debug!("Funs.lean missing for {}, creating empty file", slug);
+            std::fs::write(&funs_path, "").context("Failed to create empty Funs.lean")?;
+        }
+
+        let types_path = output_dir.join("Types.lean");
+        if !types_path.exists() {
+            log::debug!("Types.lean missing for {}, creating empty file", slug);
+            std::fs::write(&types_path, "").context("Failed to create empty Types.lean")?;
+        }
+
         // Add to Generated.lean imports (no prefix)
 
         writeln!(generated_imports, "import «{}».Funs", slug).unwrap();
@@ -150,7 +169,8 @@ pub fn run_aeneas(
 
     // 4. Write Lakefile
     let aeneas_dep = if let Ok(path) = std::env::var("HERMES_AENEAS_DIR") {
-        format!(r#"require aeneas from git "file://{path}" @ "main" / "backends/lean""#)
+        // Use a path dependency to avoid git cloning
+        format!(r#"require aeneas from "{path}/backends/lean""#)
     } else {
         r#"require aeneas from git
   "https://github.com/AeneasVerif/aeneas" @ "main" / "backends/lean""#
@@ -192,6 +212,55 @@ fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
     let generated = roots.lean_generated_root();
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
+
+    // If lake-manifest.json exists (copied from cache), we manually inject the `aeneas` dependency.
+    // This avoids running `lake update`, which would trigger `mathlib`'s post-update hook (cache download).
+    if lean_root.join("lake-manifest.json").exists() {
+        if let Ok(aeneas_dir) = std::env::var("HERMES_AENEAS_DIR") {
+            let aeneas_url = format!("{}/backends/lean", aeneas_dir);
+            let manifest_path = lean_root.join("lake-manifest.json");
+
+            match std::fs::read_to_string(&manifest_path) {
+                Ok(content) => match serde_json::from_str::<serde_json::Value>(&content) {
+                    Ok(mut json) => {
+                        if let Some(packages) =
+                            json.get_mut("packages").and_then(|v| v.as_array_mut())
+                        {
+                            if !packages
+                                .iter()
+                                .any(|p| p.get("name").and_then(|n| n.as_str()) == Some("aeneas"))
+                            {
+                                log::debug!(
+                                    "Patching lake-manifest.json to add aeneas dependency..."
+                                );
+                                let entry = serde_json::json!({
+                                    "dir": aeneas_url,
+                                    "type": "path",
+                                    "name": "aeneas",
+                                    "subDir": null,
+                                    "scope": "",
+                                    "rev": null,
+                                    "inputRev": null,
+                                    "inherited": false,
+                                    "configFile": "lakefile.lean",
+                                    "manifestFile": "lake-manifest.json"
+                                });
+                                packages.push(entry);
+
+                                if let Ok(new_content) = serde_json::to_string_pretty(&json) {
+                                    if let Err(e) = std::fs::write(&manifest_path, new_content) {
+                                        log::warn!("Failed to write patched manifest: {}", e);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Err(e) => log::warn!("Failed to parse lake-manifest.json: {}", e),
+                },
+                Err(e) => log::warn!("Failed to read lake-manifest.json: {}", e),
+            }
+        }
+    }
 
     if !lean_root.join(".lake/packages/mathlib").exists() {
         // 1. Run 'lake exe cache get' to fetch pre-built Mathlib artifacts
@@ -459,6 +528,138 @@ fn write_if_changed(path: &std::path::Path, content: &str) -> Result<()> {
     Ok(())
 }
 
+mod integration {
+    use super::*;
+
+    /// Restores the `.lake` directory, which contains build artifacts and package
+    /// sources.
+    ///
+    /// We use `cp -rl` to create hardlinks instead of deep copying. This is crucial
+    /// for performance because the `.lake` directory (especially with `mathlib`) can
+    /// be very large and contain thousands of files. Hardlinking is nearly
+    /// instantaneous and consumes negligible additional disk space.
+    pub fn restore_lake_directory(
+        cache_path: &std::path::Path,
+        lean_root: &std::path::Path,
+    ) -> Result<()> {
+        let source_lake = cache_path.join(".lake");
+        let target_lake = lean_root.join(".lake");
+
+        if !source_lake.exists() || target_lake.exists() {
+            return Ok(());
+        }
+
+        log::debug!(
+            "Initializing .lake from {} to {}",
+            source_lake.display(),
+            target_lake.display()
+        );
+
+        // Use `cp -rl` to recursively hardlink the directory structure.
+        let status = Command::new("cp")
+            .args(["-rl", source_lake.to_str().unwrap(), target_lake.to_str().unwrap()])
+            .status()
+            .with_context(|| "Failed to execute cp -rl for .lake cache")?;
+
+        if !status.success() {
+            log::warn!("'cp -rl' failed with status: {}", status);
+            return Ok(());
+        }
+
+        // Fix up Git metadata to ensure each test runs in isolation.
+        let packages_dir = target_lake.join("packages");
+        if !packages_dir.exists() {
+            return Ok(());
+        }
+
+        let entries =
+            std::fs::read_dir(&packages_dir).context("Failed to read .lake/packages directory")?;
+
+        for entry in entries.flatten() {
+            let pkg_name = entry.file_name();
+            let target_pkg = entry.path();
+            let source_pkg = source_lake.join("packages").join(&pkg_name);
+
+            fixup_git_metadata(&target_pkg, &source_pkg, &pkg_name)?;
+        }
+
+        Ok(())
+    }
+
+    /// Fixes up the `.git` directory within a cached package to prevent race
+    /// conditions.
+    ///
+    /// When multiple tests run in parallel, they share the underlying hardlinked
+    /// Git objects, which is safe because Git objects are immutable. However, the
+    /// Git index (`.git/index`), `HEAD`, and refs are mutable. If these were
+    /// hardlinked, one test modifying the index (e.g., via `git status` or an
+    /// internal Lake command) would corrupt the state for other tests.
+    ///
+    /// This function breaks the hardlinks for mutable metadata by replacing them
+    /// with deep copies, ensuring each test has its own independent view of the Git
+    /// repository state.
+    fn fixup_git_metadata(
+        target_pkg: &std::path::Path,
+        source_pkg: &std::path::Path,
+        pkg_name: &std::ffi::OsStr,
+    ) -> Result<()> {
+        let target_git = target_pkg.join(".git");
+        let source_git = source_pkg.join(".git");
+
+        if !target_git.exists() || !source_git.exists() {
+            return Ok(());
+        }
+
+        // Break hardlinks for mutable git metadata.
+        let git_entries =
+            std::fs::read_dir(&target_git).context("Failed to read .git directory in package")?;
+
+        for git_entry in git_entries.flatten() {
+            let name = git_entry.file_name();
+            if name == "objects" {
+                // Keep `.git/objects` hardlinked. These files are
+                // content-addressable and immutable, so sharing them is safe and
+                // saves significant disk space.
+                continue;
+            }
+
+            let target_elem = git_entry.path();
+            let source_elem = source_git.join(&name);
+
+            if target_elem.is_dir() {
+                let _ = std::fs::remove_dir_all(&target_elem);
+                // Recursively copy the directory to break hardlinks.
+                let _ = Command::new("cp")
+                    .args(["-r", source_elem.to_str().unwrap(), target_elem.to_str().unwrap()])
+                    .status();
+            } else {
+                let _ = std::fs::remove_file(&target_elem);
+                let _ = std::fs::copy(&source_elem, &target_elem);
+            }
+        }
+
+        // Update the Git index to match the current working directory.
+        //
+        // Since we hardlinked the working tree files, their inodes and ctime/mtime
+        // metadata may not match what is recorded in the copied `.git/index`. This
+        // discrepancy causes Git to believe that files have been modified locally.
+        // We run `git update-index --refresh` to update the index with the current
+        // file definition, suppressing "local changes" warnings.
+        let status = Command::new("git")
+            .args(["update-index", "-q", "--refresh"])
+            .current_dir(target_pkg)
+            .status();
+
+        if let Ok(s) = status {
+            if !s.success() {
+                log::warn!("git update-index failed for {}", pkg_name.to_string_lossy());
+            }
+        }
+
+        Ok(())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::path::PathBuf;
@@ -556,4 +757,47 @@ mod tests {
         assert_eq!(file, "file_a.rs");
         assert_eq!(start, 200, "Should NOT redirect across files");
     }
+}
+
+/// Restores the Lean build artifacts from a shared integration test cache.
+///
+/// This optimization significantly reduces test execution time by avoiding
+/// redundant downloads and compilations of standard Lean dependencies (like
+/// `mathlib`).
+fn restore_from_integration_cache(lean_root: &std::path::Path) -> Result<()> {
+    let cache_dir = match std::env::var("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR") {
+        Ok(d) => d,
+        Err(_) => return Ok(()),
+    };
+
+    let cache_path = std::path::Path::new(&cache_dir);
+
+    // Copy `lake-manifest.json` to signal that dependencies are resolved.
+    copy_lake_manifest(cache_path, lean_root)?;
+
+    // Restore the `.lake` directory using hardlinks for performance.
+    integration::restore_lake_directory(cache_path, lean_root)?;
+
+    Ok(())
+}
+
+/// Copies `lake-manifest.json` from the cache to the target directory.
+///
+/// Presence of this file informs the Lake build tool that dependencies have
+/// already been resolved, preventing it from attempting to update the manifest
+/// or query the network for package updates.
+fn copy_lake_manifest(cache_path: &std::path::Path, lean_root: &std::path::Path) -> Result<()> {
+    let source_manifest = cache_path.join("lake-manifest.json");
+    let target_manifest = lean_root.join("lake-manifest.json");
+
+    if source_manifest.exists() && !target_manifest.exists() {
+        log::debug!(
+            "Copying lake-manifest.json from {} to {}",
+            source_manifest.display(),
+            target_manifest.display()
+        );
+        std::fs::copy(&source_manifest, &target_manifest)
+            .context("Failed to copy lake-manifest.json from cache")?;
+    }
+    Ok(())
 }

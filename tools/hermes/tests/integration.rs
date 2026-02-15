@@ -8,7 +8,6 @@ use std::{
 
 use fs2::FileExt;
 use serde::Deserialize;
-use tempfile::tempdir;
 
 datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
 
@@ -40,15 +39,15 @@ struct CommandExpectation {
 
 static SHARED_CACHE_PATH: OnceLock<PathBuf> = OnceLock::new();
 
-fn get_or_init_shared_cache() -> PathBuf {
-    if let Some(p) = SHARED_CACHE_PATH.get() {
-        return p.clone();
-    }
-
+fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
     // Resolve target directory relative to this test file or CARGO_MANIFEST_DIR
     let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     let target_dir = manifest_dir.join("target");
     let cache_dir = target_dir.join("hermes_integration_cache");
+
+    if let Some(p) = SHARED_CACHE_PATH.get() {
+        return (p.clone(), target_dir);
+    }
     let lean_backend_dir = cache_dir.join("backends/lean");
     let lock_path = target_dir.join("hermes_integration_cache.lock");
 
@@ -90,7 +89,8 @@ fn get_or_init_shared_cache() -> PathBuf {
     lock_file.unlock().unwrap();
 
     let _ = SHARED_CACHE_PATH.set(cache_dir.clone());
-    cache_dir
+    let _ = SHARED_CACHE_PATH.set(cache_dir.clone());
+    (cache_dir, target_dir)
 }
 
 fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
@@ -99,9 +99,16 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let test_name = test_case_root.file_name().unwrap().to_str().unwrap();
     let source_dir = test_case_root.join("source");
 
+    // We need the cache dir and the target dir (for temp files on same FS)
+    let (cache_dir, target_dir) = get_or_init_shared_cache();
+    let lean_backend_dir = cache_dir.join("backends/lean");
+
     // Perform all work in a sandbox directory. This ensures that we don't
     // get interference from `Cargo.toml` files in any parent directories.
-    let temp = tempdir()?;
+    //
+    // We use `tempdir_in` to ensure we are on the same filesystem as the cache,
+    // which allows `cp -rl` (hardlinks) to work optimization.
+    let temp = tempfile::Builder::new().prefix("hermes-test-").tempdir_in(&target_dir)?;
     let sandbox_root = temp.path().join(test_name);
     copy_dir_contents(&source_dir, &sandbox_root)?;
 
@@ -109,6 +116,18 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let extra_rs = test_case_root.join("extra.rs");
     if extra_rs.exists() {
         fs::copy(&extra_rs, temp.path().join("extra.rs"))?;
+    }
+
+    // Ensure the sandboxed crate is treated as a standalone workspace.
+    // This is necessary because we are creating the sandbox inside `target/`,
+    // which is inside the main workspace. Without this, cargo metadata fails.
+    let cargo_toml_path = sandbox_root.join("Cargo.toml");
+    if cargo_toml_path.exists() {
+        let mut content = fs::read_to_string(&cargo_toml_path)?;
+        if !content.contains("[workspace]") {
+            content.push_str("\n[workspace]\n");
+            fs::write(&cargo_toml_path, content)?;
+        }
     }
 
     // --- SETUP CHARON SHIM ---
@@ -171,8 +190,10 @@ echo "---END-INVOCATION---" >> "{0}"
     cmd.env("FORCE_COLOR", "1");
 
     // Use shared cache for Aeneas
-    let cache_path = get_or_init_shared_cache();
-    cmd.env("HERMES_AENEAS_DIR", cache_path);
+    // Use shared cache for Aeneas
+    // We already resolved this above
+    cmd.env("HERMES_AENEAS_DIR", &cache_dir);
+    cmd.env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
 
     // Prepend shim_dir to PATH (make sure our shim comes first).
     let original_path = std::env::var_os("PATH").unwrap_or_default();
