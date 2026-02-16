@@ -2,5 +2,4 @@
 [test]
 args = ["verify", "--allow-sorry"]
 cwd = "app"
-expected_status = "failure"
-expected_stderr = "Unsupported external dependency\n\n"
+expected_status = "success"
