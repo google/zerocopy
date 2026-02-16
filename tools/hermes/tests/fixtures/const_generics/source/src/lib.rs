@@ -4,6 +4,6 @@ pub struct Foo<const N: usize> {
 }
 
 /// ```lean, hermes
-/// isSafe Self := ...
+/// isSafe : ...
 /// ```
 pub unsafe trait Bar<const N: usize> {}

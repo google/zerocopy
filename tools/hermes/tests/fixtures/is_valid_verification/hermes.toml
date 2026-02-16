@@ -1,0 +1,11 @@
+[workspace]
+test_name = "is_valid_verification"
+
+[extraction]
+start_from = ["crate"]
+
+[output]
+style = "lean"
+
+[verification]
+verify = true # This triggers running `cargo run verify` which runs Lean
