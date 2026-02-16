@@ -125,13 +125,13 @@ pub fn run_aeneas(
         // We create empty files if they are missing to satisfy the compiler.
         let funs_path = output_dir.join("Funs.lean");
         if !funs_path.exists() {
-            log::debug!("Funs.lean missing for {}, creating empty file", slug);
+            log::warn!("Funs.lean missing for {}, creating empty file. This might indicate an issue with Aeneas generation.", slug);
             std::fs::write(&funs_path, "").context("Failed to create empty Funs.lean")?;
         }
 
         let types_path = output_dir.join("Types.lean");
         if !types_path.exists() {
-            log::debug!("Types.lean missing for {}, creating empty file", slug);
+            log::warn!("Types.lean missing for {}, creating empty file. This might indicate an issue with Aeneas generation.", slug);
             std::fs::write(&types_path, "").context("Failed to create empty Types.lean")?;
         }
 
@@ -231,31 +231,32 @@ fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
                         if let Some(packages) =
                             json.get_mut("packages").and_then(|v| v.as_array_mut())
                         {
-                            if !packages
-                                .iter()
-                                .any(|p| p.get("name").and_then(|n| n.as_str()) == Some("aeneas"))
-                            {
-                                log::debug!(
-                                    "Patching lake-manifest.json to add aeneas dependency..."
-                                );
-                                let entry = serde_json::json!({
-                                    "dir": aeneas_url,
-                                    "type": "path",
-                                    "name": "aeneas",
-                                    "subDir": null,
-                                    "scope": "",
-                                    "rev": null,
-                                    "inputRev": null,
-                                    "inherited": false,
-                                    "configFile": "lakefile.lean",
-                                    "manifestFile": "lake-manifest.json"
-                                });
-                                packages.push(entry);
+                            // Remove existing aeneas entry if present
+                            packages.retain(|p| {
+                                p.get("name").and_then(|n| n.as_str()) != Some("aeneas")
+                            });
 
-                                if let Ok(new_content) = serde_json::to_string_pretty(&json) {
-                                    if let Err(e) = std::fs::write(&manifest_path, new_content) {
-                                        log::warn!("Failed to write patched manifest: {}", e);
-                                    }
+                            log::debug!(
+                                "Patching lake-manifest.json to use aeneas at {}",
+                                aeneas_url
+                            );
+                            let entry = serde_json::json!({
+                                "dir": aeneas_url,
+                                "type": "path",
+                                "name": "aeneas",
+                                "subDir": null,
+                                "scope": "",
+                                "rev": null,
+                                "inputRev": null, // We can't easily know the inputRev, but null usually works for path deps
+                                "inherited": false,
+                                "configFile": "lakefile.lean",
+                                "manifestFile": "lake-manifest.json"
+                            });
+                            packages.push(entry);
+
+                            if let Ok(new_content) = serde_json::to_string_pretty(&json) {
+                                if let Err(e) = std::fs::write(&manifest_path, new_content) {
+                                    log::warn!("Failed to write patched manifest: {}", e);
                                 }
                             }
                         }
