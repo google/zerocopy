@@ -113,10 +113,10 @@ pub fn run_aeneas(
                 stderr
             );
         } else {
-             let stdout = String::from_utf8_lossy(&output.stdout);
-             let stderr = String::from_utf8_lossy(&output.stderr);
-             log::trace!("Aeneas stdout:\n{}", stdout);
-             log::trace!("Aeneas stderr:\n{}", stderr);
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            log::trace!("Aeneas stdout:\n{}", stdout);
+            log::trace!("Aeneas stderr:\n{}", stderr);
         }
         log::trace!("Aeneas for '{}' took {:.2?}", artifact.name.target_name, start.elapsed());
 

@@ -111,52 +111,54 @@ fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
     (cache_dir, target_dir)
 }
 
-fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
-    // `path` is `tests/fixtures/<test_case>/hermes.toml`
-    let test_case_root = path.parent().unwrap();
-    let test_name = test_case_root.file_name().unwrap().to_str().unwrap();
-    let source_dir = test_case_root.join("source");
+struct TestContext {
+    test_case_root: PathBuf,
+    _test_name: String,
+    sandbox_root: PathBuf,
+    _temp_dir: tempfile::TempDir, // Kept alive to prevent deletion
+}
 
-    // We need the cache dir and the target dir (for temp files on same FS)
-    let (cache_dir, target_dir) = get_or_init_shared_cache();
-    let lean_backend_dir = cache_dir.join("backends/lean");
+impl TestContext {
+    fn new(path: &Path) -> datatest_stable::Result<Self> {
+        let test_case_root = path.parent().unwrap().to_path_buf();
+        let test_name = test_case_root.file_name().unwrap().to_string_lossy().to_string();
+        let source_dir = test_case_root.join("source");
 
-    // Perform all work in a sandbox directory. This ensures that we don't
-    // get interference from `Cargo.toml` files in any parent directories.
-    //
-    // We use `tempdir_in` to ensure we are on the same filesystem as the cache,
-    // which allows `cp -rl` (hardlinks) to work optimization.
-    let temp = tempfile::Builder::new().prefix("hermes-test-").tempdir_in(&target_dir)?;
-    let sandbox_root = temp.path().join(test_name);
-    copy_dir_contents(&source_dir, &sandbox_root)?;
+        let (_, target_dir) = get_or_init_shared_cache();
 
-    // Copy extra.rs if it exists (for external_path_dep test)
-    let extra_rs = test_case_root.join("extra.rs");
-    if extra_rs.exists() {
-        fs::copy(&extra_rs, temp.path().join("extra.rs"))?;
-    }
+        let temp = tempfile::Builder::new().prefix("hermes-test-").tempdir_in(&target_dir)?;
+        let sandbox_root = temp.path().join(&test_name);
+        copy_dir_contents(&source_dir, &sandbox_root)?;
 
-    // Ensure the sandboxed crate is treated as a standalone workspace.
-    // This is necessary because we are creating the sandbox inside `target/`,
-    // which is inside the main workspace. Without this, cargo metadata fails.
-    let cargo_toml_path = sandbox_root.join("Cargo.toml");
-    if cargo_toml_path.exists() {
-        let mut content = fs::read_to_string(&cargo_toml_path)?;
-        if !content.contains("[workspace]") {
-            content.push_str("\n[workspace]\n");
-            fs::write(&cargo_toml_path, content)?;
+        // Copy extra.rs if it exists
+        let extra_rs = test_case_root.join("extra.rs");
+        if extra_rs.exists() {
+            fs::copy(&extra_rs, temp.path().join("extra.rs"))?;
         }
+
+        // Ensure sandboxed crate is a workspace
+        let cargo_toml_path = sandbox_root.join("Cargo.toml");
+        if cargo_toml_path.exists() {
+            let mut content = fs::read_to_string(&cargo_toml_path)?;
+            if !content.contains("[workspace]") {
+                content.push_str("\n[workspace]\n");
+                fs::write(&cargo_toml_path, content)?;
+            }
+        }
+
+        Ok(Self { test_case_root, _test_name: test_name, sandbox_root, _temp_dir: temp })
     }
 
-    // --- SETUP CHARON SHIM ---
-    let shim_dir = temp.path().join("bin");
-    fs::create_dir_all(&shim_dir)?;
+    fn shim_charon(&self) -> std::io::Result<PathBuf> {
+        let shim_dir = self._temp_dir.path().join("bin");
+        fs::create_dir_all(&shim_dir)?;
 
-    let real_charon = which::which("charon").unwrap();
-    let log_file = sandbox_root.join("charon_args.log");
-    let shim_path = shim_dir.join("charon");
-    let shim_content = format!(
-        r#"#!/bin/sh
+        let real_charon = which::which("charon").unwrap();
+        let log_file = self.sandbox_root.join("charon_args.log");
+        let shim_path = shim_dir.join("charon");
+
+        let shim_content = format!(
+            r#"#!/bin/sh
 # Log each argument on a new line
 for arg in "$@"; do
     echo "ARG:$arg" >> "{0}"
@@ -172,63 +174,105 @@ fi
 # Execute real charon
 exec "{1}" "$@"
 "#,
-        log_file.display(),
-        real_charon.display(),
-    );
+            log_file.display(),
+            real_charon.display(),
+        );
 
-    fs::write(&shim_path, shim_content)?;
+        fs::write(&shim_path, shim_content)?;
+        let mut perms = fs::metadata(&shim_path)?.permissions();
+        perms.set_mode(0o755);
+        fs::set_permissions(&shim_path, perms)?;
 
-    let mut perms = fs::metadata(&shim_path)?.permissions();
-    perms.set_mode(0o755);
-    fs::set_permissions(&shim_path, perms)?;
+        Ok(shim_dir)
+    }
 
-    // SHIM AENEAS
-    let aeneas_shim_path = shim_dir.join("aeneas");
-    // For now, we mock aeneas by doing nothing but logging arguments.
-    // Real aeneas invocation in tests would require aeneas to be installed.
-    // If we want to mock aeneas output (files), we can do that in the test fixture setup,
-    // or improve this shim to copy files from a mock source.
-    let aeneas_shim_content = format!(
-        r#"#!/bin/sh
+    fn shim_aeneas(&self, shim_dir: &Path) -> std::io::Result<()> {
+        let log_file = self.sandbox_root.join("charon_args.log");
+        let aeneas_shim_path = shim_dir.join("aeneas");
+        let aeneas_shim_content = format!(
+            r#"#!/bin/sh
 echo "AENEAS INVOKED" >> "{0}"
 for arg in "$@"; do
     echo "AENEAS_ARG:$arg" >> "{0}"
 done
 echo "---END-INVOCATION---" >> "{0}"
 "#,
-        log_file.display(),
-    );
-    fs::write(&aeneas_shim_path, aeneas_shim_content)?;
-    let mut perms = fs::metadata(&aeneas_shim_path)?.permissions();
-    perms.set_mode(0o755);
-    fs::set_permissions(&aeneas_shim_path, perms)?;
+            log_file.display(),
+        );
+        fs::write(&aeneas_shim_path, aeneas_shim_content)?;
+        let mut perms = fs::metadata(&aeneas_shim_path)?.permissions();
+        perms.set_mode(0o755);
+        fs::set_permissions(&aeneas_shim_path, perms)?;
+        Ok(())
+    }
 
-    let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
-    cmd.env("HERMES_FORCE_TTY", "1");
-    cmd.env("FORCE_COLOR", "1");
+    fn run_hermes(&self, config: &TestConfig) -> assert_cmd::assert::Assert {
+        let (cache_dir, _) = get_or_init_shared_cache();
+        let lean_backend_dir = cache_dir.join("backends/lean");
 
-    // Use shared cache for Aeneas
-    // Use shared cache for Aeneas
-    // We already resolved this above
-    cmd.env("HERMES_AENEAS_DIR", &cache_dir);
-    cmd.env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
+        let shim_dir = self.shim_charon().unwrap();
+        self.shim_aeneas(&shim_dir).unwrap();
 
-    // Prepend shim_dir to PATH (make sure our shim comes first).
-    let original_path = std::env::var_os("PATH").unwrap_or_default();
-    let new_path = std::env::join_paths(
-        std::iter::once(shim_dir).chain(std::env::split_paths(&original_path)),
-    )?;
+        let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
+        cmd.env("HERMES_FORCE_TTY", "1");
+        cmd.env("FORCE_COLOR", "1");
+        cmd.env("HERMES_AENEAS_DIR", &cache_dir);
+        cmd.env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
 
-    cmd.env("CARGO_TARGET_DIR", sandbox_root.join("target"))
-        .env("PATH", new_path)
-        .env_remove("RUSTFLAGS")
-        // Forces deterministic output path: target/hermes/hermes_test_target
-        // (normally, the path includes a hash of the crate's path).
-        .env("HERMES_TEST_DIR_NAME", "hermes_test_target");
+        let original_path = std::env::var_os("PATH").unwrap_or_default();
+        let new_path = std::env::join_paths(
+            std::iter::once(shim_dir).chain(std::env::split_paths(&original_path)),
+        )
+        .unwrap();
+
+        cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"))
+            .env("PATH", new_path)
+            .env_remove("RUSTFLAGS")
+            .env("HERMES_TEST_DIR_NAME", "hermes_test_target");
+
+        // Config-driven env vars
+        if let Some(log) = &config.log {
+            cmd.env("RUST_LOG", log.trim());
+        } else {
+            // Fallback for backward compat if needed, or default
+            let log_level = fs::read_to_string(self.test_case_root.join("rust_log.txt"))
+                .unwrap_or_else(|_| "warn".to_string());
+            cmd.env("RUST_LOG", log_level.trim());
+        }
+
+        // Mock JSON
+        let mock_json_file = self.test_case_root.join("mock_charon_output.json");
+        if let Ok(mock_src) = fs::read_to_string(&mock_json_file) {
+            let processed_mock =
+                mock_src.replace("[PROJECT_ROOT]", self.sandbox_root.to_str().unwrap());
+            let processed_mock_file = self.sandbox_root.join("mock_charon_output.json");
+            fs::write(&processed_mock_file, &processed_mock).unwrap();
+            let abs_processed = std::env::current_dir().unwrap().join(&processed_mock_file);
+            cmd.env("HERMES_MOCK_CHARON_JSON", abs_processed);
+        }
+
+        if let Some(cwd) = &config.cwd {
+            cmd.current_dir(self.sandbox_root.join(cwd));
+        } else {
+            cmd.current_dir(&self.sandbox_root);
+        }
+
+        if let Some(args) = &config.args {
+            cmd.args(args);
+        } else {
+            cmd.arg("verify");
+        }
+
+        cmd.assert()
+    }
+}
+
+fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
+    // `path` is `tests/fixtures/<test_case>/hermes.toml`
+    let ctx = TestContext::new(path)?;
 
     // Load Config from hermes.toml
-    let hermes_toml_path = test_case_root.join("hermes.toml");
-    let hermes_toml_content = fs::read_to_string(&hermes_toml_path)?;
+    let hermes_toml_content = fs::read_to_string(path)?;
     let hermes_toml: HermesToml = toml::from_str(&hermes_toml_content)?;
     let config = hermes_toml.test.unwrap_or_else(|| TestConfig {
         args: None,
@@ -241,63 +285,35 @@ echo "---END-INVOCATION---" >> "{0}"
         command: vec![],
     });
 
-    // Tests can specify the log level.
-    let log_level = config.log.clone().unwrap_or_else(|| "warn".to_string());
-    cmd.env("RUST_LOG", log_level.trim());
+    let assert = ctx.run_hermes(&config);
 
-    // Mock JSON integration
-    let mock_json_file = test_case_root.join("mock_charon_output.json");
-    if let Ok(mock_src) = fs::read_to_string(&mock_json_file) {
-        let processed_mock = mock_src.replace("[PROJECT_ROOT]", sandbox_root.to_str().unwrap());
-
-        let processed_mock_file = sandbox_root.join("mock_charon_output.json");
-        fs::write(&processed_mock_file, &processed_mock).unwrap();
-
-        let abs_processed = std::env::current_dir().unwrap().join(&processed_mock_file);
-
-        cmd.env("HERMES_MOCK_CHARON_JSON", abs_processed);
-    }
-
-    // Tests can specify the cwd to invoke from.
-    if let Some(cwd) = &config.cwd {
-        cmd.current_dir(sandbox_root.join(cwd));
-    } else {
-        cmd.current_dir(&sandbox_root);
-    }
-
-
-    // Tests can specify the arguments to pass to `hermes verify`.
-    if let Some(args) = &config.args {
-        cmd.args(args);
-    } else {
-        cmd.arg("verify");
-    }
-
-    let mut assert = cmd.assert();
-
-    // Tests can specify the expected exit status.
-    if let Some(status) = &config.expected_status {
+    // Verify Exit Status
+    let assert = if let Some(status) = &config.expected_status {
         if status.trim() == "failure" {
-            assert = assert.failure();
+            assert.failure()
         } else {
-            assert = assert.success();
+            assert.success()
         }
     } else {
-        assert = assert.success();
+        assert.success()
     };
 
+    // Verify Stderr
     if let Some(regex) = &config.expected_stderr_regex {
-        check_stderr_regex(&assert, regex, &sandbox_root);
+        check_stderr_regex(&assert, regex, &ctx.sandbox_root);
     } else if let Some(stderr) = &config.expected_stderr {
-        check_stderr_contains(&assert, stderr, &sandbox_root);
+        check_stderr_contains(&assert, stderr, &ctx.sandbox_root);
     }
 
+    // Verify Artifacts
     if !config.artifact.is_empty() {
-        let hermes_run_root = sandbox_root.join("target/hermes/hermes_test_target");
+        let hermes_run_root = ctx.sandbox_root.join("target/hermes/hermes_test_target");
         assert_artifacts_match(&hermes_run_root, &config.artifact)?;
     }
 
+    // Verify Commands
     if !config.command.is_empty() {
+        let log_file = ctx.sandbox_root.join("charon_args.log");
         if !log_file.exists() {
             panic!("Command log file not found! Was the shim called?");
         }
@@ -448,10 +464,7 @@ fn check_stderr_regex(assert: &assert_cmd::assert::Assert, regex_str: &str, sand
 
     let rx = regex::Regex::new(regex_str.trim()).unwrap();
     if !rx.is_match(&stderr) {
-        panic!(
-            "Stderr regex mismatch.\nExpected regex: {}\nActual stderr:\n{}",
-            regex_str, stderr
-        );
+        panic!("Stderr regex mismatch.\nExpected regex: {}\nActual stderr:\n{}", regex_str, stderr);
     }
 }
 
