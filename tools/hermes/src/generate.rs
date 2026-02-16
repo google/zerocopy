@@ -126,9 +126,16 @@ pub fn generate_artifact(artifact: &crate::scanner::HermesArtifact) -> Generated
     let slug = artifact.artifact_slug();
     builder.push_str("import Hermes\n");
     builder.push_str("import Aeneas\n");
+    builder.push_str("import Aeneas.ScalarTac.ScalarTac\n");
     builder.push_str(&format!("import «{}».Funs\n", slug));
     builder.push_str(&format!("import «{}».Types\n\n", slug));
-    builder.push_str("open Aeneas Aeneas.Std Result\n\n");
+    builder.push_str("open Aeneas Aeneas.Std Result\n");
+    // Open the crate namespace so types are visible.
+    //
+    // Note: Aeneas uses the crate name (snake_case) as the top-level namespace.
+    // We replace hyphens with underscores to match.
+    let crate_namespace = artifact.name.package_name.to_string().replace('-', "_");
+    builder.push_str(&format!("open {}\n\n", crate_namespace));
 
     // Naive namespacing: for each item, wrap in its module namespace.
     // Optimisation: group by namespace? For now, we keep it simple.
@@ -407,7 +414,7 @@ fn generate_type(
     };
 
     builder.push_str(&format!("instance{instance_params} : Hermes.IsValid {type_app} where\n"));
-    builder.push_str("  isValid self := \n");
+    builder.push_str("  isValid \n");
 
     if block.is_valid.is_empty() {
         builder.push_str("    True\n");
@@ -416,14 +423,14 @@ fn generate_type(
             if i > 0 {
                 builder.push_str(" ∧ \n");
             }
-            builder.push_str("    (");
+            builder.push_str("    ");
             for (j, line) in clause.lines.iter().enumerate() {
                 if j > 0 {
                     builder.push('\n');
                 }
                 builder.push_spanned(&line.content, line, source_file);
             }
-            builder.push_str("\n)\n");
+            builder.push('\n');
         }
     }
 
@@ -471,7 +478,7 @@ fn generate_trait(
 
     builder
         .push_str(&format!("class Safe (Self : Type){params_decl} [{trait_app}] : Prop where\n"));
-    builder.push_str("  isSafe : ∀ (self : Self),");
+    builder.push_str("  isSafe :");
 
     if block.is_safe.is_empty() {
         builder.push_str(" True\n");
@@ -942,8 +949,10 @@ mod tests {
         assert!(out.contains("namespace Point"));
         assert!(out.contains("instance : Hermes.IsValid Point where"));
 
-        // CHANGED: Expect isValid
-        assert!(out.contains("isValid self :="));
+        // CHANGED: Expect isValid without automatic binder
+        assert!(out.contains("isValid"));
+        assert!(!out.contains("isValid self :=")); // Should NOT be auto-generated
+        assert!(out.contains("self.x > 0"));
         assert!(out.contains("self.x > 0"));
     }
 
@@ -1028,7 +1037,8 @@ mod tests {
         assert!(out.contains("namespace Identifiable"));
         // Matches Aeneas style: Self is first arg to trait class
         assert!(out.contains("class Safe (Self : Type) [Identifiable Self] : Prop where"));
-        assert!(out.contains("isSafe : ∀ (self : Self),"));
+        assert!(out.contains("isSafe :"));
+        assert!(!out.contains("∀ (self : Self),")); // Should NOT be auto-generated
         assert!(out.contains("self.id > 0"));
     }
 

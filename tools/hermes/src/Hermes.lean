@@ -39,11 +39,11 @@ def SpecificationHolds {α : Type} (res : Result α) (post : α → Prop) : Prop
 
 -- 2. Struct Invariants
 class IsValid (α : Type) where
-  is_valid : α → Prop
+  isValid : α → Prop
 
 -- Default: Everything is valid unless said otherwise
 instance (priority := low) defaultIsValid {α : Type} : IsValid α where
-  is_valid _ := True
+  isValid _ := True
 
 -- 3. Trait Safety
 -- (No specific helper needed, just a pattern we follow in generation)
