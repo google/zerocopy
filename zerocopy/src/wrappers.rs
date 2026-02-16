@@ -1000,7 +1000,7 @@ mod tests {
             let uninit = MaybeUninit::new(&input);
             // SAFETY: `uninit` is in an initialized state
             let output = unsafe { uninit.assume_init() };
-            assert_eq!(&input as *const _, output as *const _);
+            assert!(core::ptr::eq(&input, output));
             assert_eq!(input, *output);
         }
 
@@ -1010,7 +1010,7 @@ mod tests {
             let uninit = MaybeUninit::new(&input[..]);
             // SAFETY: `uninit` is in an initialized state
             let output = unsafe { uninit.assume_init() };
-            assert_eq!(&input[..] as *const _, output as *const _);
+            assert!(core::ptr::eq(&input[..], output));
             assert_eq!(input, *output);
         }
     }
