@@ -1,1 +1,0 @@
-Hermes does not currently evaluate conditional paths

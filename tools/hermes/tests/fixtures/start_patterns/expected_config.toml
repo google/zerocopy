@@ -1,4 +1,0 @@
-[[command]]
-# We expect crate::foo and crate::nested::bar to be passed as a combined start pattern
-args = ["--start-from", "crate::foo,crate::nested::bar"]
-should_not_exist = false

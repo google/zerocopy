@@ -1,7 +1,0 @@
-  × macro fail
-   ╭─[[PROJECT_ROOT]/src/lib.rs:1:39]
- 1 │ macro_rules! f { () => {0} } fn m() { f!() }
-   ·                                       ──┬─
-   ·                                         ╰── bang
- 2 │ 
-   ╰────

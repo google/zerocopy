@@ -1,1 +1,0 @@
-failed to synthesize[\s\S]*Decidable

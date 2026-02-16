@@ -1,0 +1,4 @@
+
+[test]
+args = ["verify", "--bin", "selector", "--allow-sorry"]
+expected_status = "failure"

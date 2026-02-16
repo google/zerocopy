@@ -9,3 +9,6 @@ should_exist = true
 content_contains = [
     "nomatch self"
 ]
+
+[test]
+args = ["verify", "--allow-sorry"]

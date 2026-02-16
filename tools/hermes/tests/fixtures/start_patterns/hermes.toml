@@ -1,0 +1,7 @@
+
+[test]
+args = ["verify", "--allow-sorry"]
+
+[[test.command]]
+args = ["--start-from", "crate::foo,crate::nested::bar"]
+should_not_exist = false

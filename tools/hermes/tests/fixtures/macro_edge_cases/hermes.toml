@@ -6,3 +6,6 @@ start_from = ["crate"]
 
 [output]
 style = "lean"
+
+[test]
+args = ["verify", "--allow-sorry"]

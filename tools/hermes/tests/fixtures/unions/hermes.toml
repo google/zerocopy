@@ -9,3 +9,6 @@ should_exist = true
 content_contains = [
     "instance : Hermes.IsValid MyUnion"
 ]
+
+[test]
+args = ["verify", "--allow-sorry"]

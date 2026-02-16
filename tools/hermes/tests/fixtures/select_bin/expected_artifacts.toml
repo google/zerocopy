@@ -1,9 +1,0 @@
-[[artifact]]
-package = "select_bin"
-target = "app"
-should_exist = true
-
-[[artifact]]
-package = "select_bin"
-target = "select_bin" # The library target
-should_exist = false

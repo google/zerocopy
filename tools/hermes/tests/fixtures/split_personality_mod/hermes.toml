@@ -9,3 +9,6 @@ package = "split_personality_mod"
 target = "split_personality_mod"
 should_exist = true
 kind = "lean"
+
+[test]
+args = ["verify", "--allow-sorry"]

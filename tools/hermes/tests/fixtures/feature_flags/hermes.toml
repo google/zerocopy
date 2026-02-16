@@ -1,0 +1,7 @@
+
+[test]
+args = ["verify", "--features", "extra", "--allow-sorry"]
+
+[[test.command]]
+args = ["--features", "extra"]
+should_not_exist = false

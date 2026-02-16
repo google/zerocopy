@@ -11,3 +11,6 @@ opaque = ["unsafe_axiom", "unsafe_axiom_empty"]
 
 [output]
 style = "lean"
+
+[test]
+args = ["verify", "--allow-sorry"]

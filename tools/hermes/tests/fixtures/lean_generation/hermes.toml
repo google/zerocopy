@@ -48,3 +48,6 @@ content_contains = [
     "instance {T} [Copy T] : Hermes.IsValid (WhereBound T)"
 ]
 ]
+
+[test]
+args = ["verify", "--allow-sorry"]

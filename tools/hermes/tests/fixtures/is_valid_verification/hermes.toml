@@ -9,3 +9,8 @@ style = "lean"
 
 [verification]
 verify = true # This triggers running `cargo run verify` which runs Lean
+
+[test]
+log = "hermes=trace"
+expected_status = "failure"
+expected_stderr_regex = "failed to synthesize[\\s\\S]*Decidable\n"

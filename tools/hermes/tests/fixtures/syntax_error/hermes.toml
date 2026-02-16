@@ -1,0 +1,5 @@
+
+[test]
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+expected_stderr = "cannot parse string into token stream\n"

@@ -1,1 +1,6 @@
 [dependencies]
+
+[test]
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+expected_stderr = "  \u00d7 interleaved error\n   \u256d\u2500[[PROJECT_ROOT]/src/lib.rs:1:1]\n 1 \u2502 pub fn foo() {}\n   \u00b7 \u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\n   \u00b7      \u2570\u2500\u2500 label\n 2 \u2502 \n   \u2570\u2500\u2500\u2500\u2500\n\nError: Diagnostic error in charon\n"

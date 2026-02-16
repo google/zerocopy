@@ -11,3 +11,6 @@ content_contains = [
     "| Enum.A x => x > 10",
     "| Enum.B b => b"
 ]
+
+[test]
+args = ["verify", "--allow-sorry"]
