@@ -254,15 +254,16 @@ echo "---END-INVOCATION---" >> "{}"
         // It seems `shim_aeneas` in legacy `integration.rs` was just a dummy.
         // I will keep it as a dummy.
 
-        self.create_shim("aeneas", Path::new("/bin/true"), None).unwrap(); // Aeneas shim doesn't need real path if it's just a dummy logger that shouldn't be called?
-                                                                           // Actually legacy shim_aeneas did NOT have an `exec`. It just logged.
-                                                                           // My `create_shim` logic attempts to `exec` if mock is None.
-                                                                           // I should probably allow `real_path` to be optional?
-                                                                           // Or just point it to `true` or something safe if it falls through.
-                                                                           // But wait, if Hermes calls `aeneas` from PATH, and we give it a shim that logs and exits 0, that might be what we want if we are testing that it calls it?
-                                                                           // But Hermes effectively calls the one in `HERMES_AENEAS_DIR`.
-                                                                           // Let's look at `create_shim` again. definition passed above tries to `exec`.
-                                                                           // I should stick to the legacy behavior: Aeneas shim is a dummy.
+        let real_aeneas = which::which("aeneas").unwrap_or_else(|_| PathBuf::from("/bin/true"));
+        self.create_shim("aeneas", &real_aeneas, None).unwrap();
+        // Actually legacy shim_aeneas did NOT have an `exec`. It just logged.
+        // My `create_shim` logic attempts to `exec` if mock is None.
+        // I should probably allow `real_path` to be optional?
+        // Or just point it to `true` or something safe if it falls through.
+        // But wait, if Hermes calls `aeneas` from PATH, and we give it a shim that logs and exits 0, that might be what we want if we are testing that it calls it?
+        // But Hermes effectively calls the one in `HERMES_AENEAS_DIR`.
+        // Let's look at `create_shim` again. definition passed above tries to `exec`.
+        // I should stick to the legacy behavior: Aeneas shim is a dummy.
 
         let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
         cmd.env("HERMES_FORCE_TTY", "1");
@@ -408,6 +409,18 @@ fn is_subsequence(haystack: &[String], needle: &[String]) -> bool {
     n.is_none()
 }
 
+fn to_pascal(s: &str) -> String {
+    s.split(|c| matches!(c, '-' | '_'))
+        .map(|segment| {
+            let mut chars = segment.chars();
+            match chars.next() {
+                None => String::new(),
+                Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
+            }
+        })
+        .collect::<String>()
+}
+
 fn assert_artifacts_match(
     hermes_run_root: &Path,
     expectations: &[ArtifactExpectation],
@@ -444,7 +457,12 @@ fn assert_artifacts_match(
         }
 
         // We match strictly on the slug prefix: "{package}-{target}-"
-        let prefix = format!("{}-{}-", exp.package, exp.target);
+        // Updated to use PascalCase to match scanner.rs logic
+        // let prefix = format!("{}-{}-", exp.package, exp.target);
+        let pkg_pascal = to_pascal(&exp.package);
+        let target_pascal = to_pascal(&exp.target);
+        let prefix = format!("{}{}", pkg_pascal, target_pascal);
+
         let found = found_items.iter().any(|f| f.starts_with(&prefix));
 
         if exp.should_exist && !found {
