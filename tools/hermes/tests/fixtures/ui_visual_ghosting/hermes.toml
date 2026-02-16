@@ -1,1 +1,6 @@
 [dependencies]
+
+[test]
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+expected_stderr_regex = "(?s).*Dep A.*The Error.*Dep B.*\n"

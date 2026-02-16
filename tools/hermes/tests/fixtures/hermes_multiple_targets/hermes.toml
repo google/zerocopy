@@ -1,1 +1,5 @@
 [dependencies]
+
+[test]
+args = ["verify", "--lib", "--bin", "my_bin", "--allow-sorry"]
+expected_stderr = ""

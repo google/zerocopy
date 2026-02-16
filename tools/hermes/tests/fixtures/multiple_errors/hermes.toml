@@ -1,0 +1,5 @@
+
+[test]
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+expected_stderr = "Aborting due to\n"

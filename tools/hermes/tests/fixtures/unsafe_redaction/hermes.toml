@@ -1,0 +1,5 @@
+
+[test]
+args = ["verify", "--allow-sorry"]
+expected_status = "success"
+expected_stderr = "\n"

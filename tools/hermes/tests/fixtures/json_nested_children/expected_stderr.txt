@@ -1,8 +1,0 @@
-× parent error
-   ╭─[[PROJECT_ROOT]/src/lib.rs:1:1]
- 1 │ pub fn foo() {}
-   · ─────┬────
-   ·      ╰── oops
- 2 │ 
-   ╰────
-  help: help me

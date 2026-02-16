@@ -1,0 +1,13 @@
+
+[test]
+args = ["verify", "--workspace", "--allow-sorry"]
+
+[[test.artifact]]
+package = "pkg_a"
+target = "common_utils"
+should_exist = true
+
+[[test.artifact]]
+package = "pkg_b"
+target = "common_utils"
+should_exist = true

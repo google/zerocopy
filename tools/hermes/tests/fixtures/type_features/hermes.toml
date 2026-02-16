@@ -19,3 +19,6 @@ content_contains = [
     "isSafe := AssocType.Item Self = U32", # Associated Type usage
     "nomatch self", # Uninhabited Type
 ]
+
+[test]
+args = ["verify", "--allow-sorry"]

@@ -3,3 +3,6 @@ package = "orphaned_entry"
 target = "orphaned_entry"
 should_exist = true
 kind = "llbc"
+
+[test]
+args = ["verify", "--allow-sorry"]
