@@ -3,4 +3,4 @@
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "[External Error] missing source"
+expected_stderr = "missing source"
