@@ -14,14 +14,14 @@ fn unsafe_axiom(x: u32) -> u32 {
 }
 
 /// ```lean, hermes
-/// isValid (True)
+/// isValid self := True
 /// ```
 struct Positive {
     val: u32,
 }
 
 /// ```lean, hermes
-/// isSafe (True)
+/// isSafe : True
 /// ```
 unsafe trait SafeTrait {
     fn method(&self);
@@ -44,14 +44,14 @@ fn complex_args(slice: &[u8], array: [u8; 16]) {
 }
 
 /// ```lean, hermes
-/// isValid (true)
+/// isValid self := true
 /// ```
 struct InlineBound<T: Clone> {
     val: T,
 }
 
 /// ```lean, hermes
-/// isValid (true)
+/// isValid self := true
 /// ```
 struct WhereBound<T>
 where

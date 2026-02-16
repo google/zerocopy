@@ -8,7 +8,7 @@ pub struct Wrapper<T: Trait> {
 }
 
 /// ```lean, hermes
-/// isSafe Self := ...
+/// isSafe : ...
 /// ```
 pub unsafe trait SafeTrait<T: Trait> {
     fn get_assoc(x: T::Assoc) -> T::Assoc;
