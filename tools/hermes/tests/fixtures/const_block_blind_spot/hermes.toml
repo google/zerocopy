@@ -1,0 +1,5 @@
+
+[test]
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+expected_stderr = "\n=== Hermes Verification Failed ===\n\n[Hermes Error] Nested item error: Hermes cannot verify items defined inside function bodies or other blocks.\nError: Aborting due to 1 previous errors.\n"

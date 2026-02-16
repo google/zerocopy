@@ -1,4 +1,0 @@
-[[command]]
-# Assert that ONLY crate::a::s::proof is passed, and crate::b::s::proof is omitted
-args = ["--start-from", "crate::s1::proof,crate::s2::proof"]
-should_not_exist = false

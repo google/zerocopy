@@ -1,0 +1,8 @@
+
+[test]
+args = ["verify", "--allow-sorry"]
+expected_status = "success"
+
+[[test.command]]
+args = ["--start-from", "crate::s1::proof,crate::s2::proof"]
+should_not_exist = false

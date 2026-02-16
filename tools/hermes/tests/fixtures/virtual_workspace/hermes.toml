@@ -1,0 +1,3 @@
+
+[test]
+args = ["verify", "--allow-sorry"]

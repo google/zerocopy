@@ -10,3 +10,6 @@ content_contains = [
     "instance {N} : Hermes.IsValid (Foo N)",
     "class Safe {N} [Bar Self N]"
 ]
+
+[test]
+args = ["verify", "--allow-sorry"]

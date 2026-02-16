@@ -1,0 +1,13 @@
+
+[test]
+args = ["verify", "-p", "app", "--allow-sorry"]
+
+[[test.artifact]]
+package = "app"
+target = "app"
+should_exist = true
+
+[[test.artifact]]
+package = "dep"
+target = "dep"
+should_exist = false

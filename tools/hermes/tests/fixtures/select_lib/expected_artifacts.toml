@@ -1,9 +1,0 @@
-[[artifact]]
-package = "select_lib"
-target = "select_lib"
-should_exist = true
-
-[[artifact]]
-package = "select_lib"
-target = "select_lib_bin" # Default bin name if main.rs is present
-should_exist = false

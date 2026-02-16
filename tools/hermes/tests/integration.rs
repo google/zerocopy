@@ -12,14 +12,32 @@ use serde::Deserialize;
 datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
 
 #[derive(Deserialize)]
+struct HermesToml {
+    #[serde(default)]
+    test: Option<TestConfig>,
+}
+
+#[derive(Deserialize)]
 struct TestConfig {
+    #[serde(default)]
+    args: Option<Vec<String>>,
+    #[serde(default)]
+    cwd: Option<String>,
+    #[serde(default)]
+    log: Option<String>,
+    #[serde(default)]
+    expected_status: Option<String>,
+    #[serde(default)]
+    expected_stderr: Option<String>,
+    #[serde(default)]
+    expected_stderr_regex: Option<String>,
     #[serde(default)]
     artifact: Vec<ArtifactExpectation>,
     #[serde(default)]
     command: Vec<CommandExpectation>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 struct ArtifactExpectation {
     package: String,
     target: String,
@@ -30,7 +48,7 @@ struct ArtifactExpectation {
     content_contains: Vec<String>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 struct CommandExpectation {
     args: Vec<String>,
     #[serde(default)]
@@ -208,9 +226,23 @@ echo "---END-INVOCATION---" >> "{0}"
         // (normally, the path includes a hash of the crate's path).
         .env("HERMES_TEST_DIR_NAME", "hermes_test_target");
 
+    // Load Config from hermes.toml
+    let hermes_toml_path = test_case_root.join("hermes.toml");
+    let hermes_toml_content = fs::read_to_string(&hermes_toml_path)?;
+    let hermes_toml: HermesToml = toml::from_str(&hermes_toml_content)?;
+    let config = hermes_toml.test.unwrap_or_else(|| TestConfig {
+        args: None,
+        cwd: None,
+        log: None,
+        expected_status: None,
+        expected_stderr: None,
+        expected_stderr_regex: None,
+        artifact: vec![],
+        command: vec![],
+    });
+
     // Tests can specify the log level.
-    let log_level = fs::read_to_string(test_case_root.join("rust_log.txt"))
-        .unwrap_or_else(|_| "warn".to_string());
+    let log_level = config.log.clone().unwrap_or_else(|| "warn".to_string());
     cmd.env("RUST_LOG", log_level.trim());
 
     // Mock JSON integration
@@ -227,12 +259,16 @@ echo "---END-INVOCATION---" >> "{0}"
     }
 
     // Tests can specify the cwd to invoke from.
-    let rel_path = fs::read_to_string(test_case_root.join("cwd.txt")).unwrap_or_default();
-    cmd.current_dir(sandbox_root.join(rel_path.trim()));
+    if let Some(cwd) = &config.cwd {
+        cmd.current_dir(sandbox_root.join(cwd));
+    } else {
+        cmd.current_dir(&sandbox_root);
+    }
+
 
     // Tests can specify the arguments to pass to `hermes verify`.
-    if let Ok(args_str) = fs::read_to_string(test_case_root.join("args.txt")) {
-        cmd.args(args_str.split_whitespace());
+    if let Some(args) = &config.args {
+        cmd.args(args);
     } else {
         cmd.arg("verify");
     }
@@ -240,7 +276,7 @@ echo "---END-INVOCATION---" >> "{0}"
     let mut assert = cmd.assert();
 
     // Tests can specify the expected exit status.
-    if let Ok(status) = fs::read_to_string(test_case_root.join("expected_status.txt")) {
+    if let Some(status) = &config.expected_status {
         if status.trim() == "failure" {
             assert = assert.failure();
         } else {
@@ -250,54 +286,10 @@ echo "---END-INVOCATION---" >> "{0}"
         assert = assert.success();
     };
 
-    // Tests can specify the expected stderr.
-    let expected_stderr_file = test_case_root.join("expected_stderr.txt");
-    let stderr_regex_path = test_case_root.join("expected_stderr.regex.txt");
-
-    if stderr_regex_path.exists() {
-        let expected_regex = fs::read_to_string(&stderr_regex_path)?;
-        let output = assert.get_output();
-        let actual_stderr = String::from_utf8_lossy(&output.stderr);
-        let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
-        let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
-        let replace_path = sandbox_root.to_str().unwrap();
-        let stderr = actual_str.replace(replace_path, "[PROJECT_ROOT]");
-
-        let rx = regex::Regex::new(expected_regex.trim()).unwrap();
-        if !rx.is_match(&stderr) {
-            panic!(
-                "Stderr regex mismatch.\nExpected regex: {}\nActual stderr:\n{}",
-                expected_regex, stderr
-            );
-        }
-    } else if expected_stderr_file.exists() {
-        let needle = fs::read_to_string(expected_stderr_file)?;
-        let output = assert.get_output();
-        let actual_stderr = String::from_utf8_lossy(&output.stderr);
-        let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
-        let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
-        let replace_path = sandbox_root.to_str().unwrap();
-        let stderr = actual_str.replace(replace_path, "[PROJECT_ROOT]");
-
-        if !stderr.contains(needle.trim()) {
-            panic!(
-                "Stderr mismatch.\nExpected substring: {}\nActual stderr:\n{}",
-                needle.trim(),
-                stderr
-            );
-        }
-    }
-
-    // Load Config
-    let mut config = TestConfig { artifact: vec![], command: vec![] };
-    if let Ok(content) = fs::read_to_string(test_case_root.join("expected_config.toml")) {
-        config = toml::from_str(&content)?;
-    }
-
-    // Backward compatibility for the previous step instructions
-    if let Ok(content) = fs::read_to_string(test_case_root.join("expected_artifacts.toml")) {
-        let partial: TestConfig = toml::from_str(&content)?;
-        config.artifact.extend(partial.artifact);
+    if let Some(regex) = &config.expected_stderr_regex {
+        check_stderr_regex(&assert, regex, &sandbox_root);
+    } else if let Some(stderr) = &config.expected_stderr {
+        check_stderr_contains(&assert, stderr, &sandbox_root);
     }
 
     if !config.artifact.is_empty() {
@@ -444,4 +436,38 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> std::io::Result<()> {
         }
     }
     Ok(())
+}
+
+fn check_stderr_regex(assert: &assert_cmd::assert::Assert, regex_str: &str, sandbox_root: &Path) {
+    let output = assert.get_output();
+    let actual_stderr = String::from_utf8_lossy(&output.stderr);
+    let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
+    let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
+    let replace_path = sandbox_root.to_str().unwrap();
+    let stderr = actual_str.replace(replace_path, "[PROJECT_ROOT]");
+
+    let rx = regex::Regex::new(regex_str.trim()).unwrap();
+    if !rx.is_match(&stderr) {
+        panic!(
+            "Stderr regex mismatch.\nExpected regex: {}\nActual stderr:\n{}",
+            regex_str, stderr
+        );
+    }
+}
+
+fn check_stderr_contains(assert: &assert_cmd::assert::Assert, needle: &str, sandbox_root: &Path) {
+    let output = assert.get_output();
+    let actual_stderr = String::from_utf8_lossy(&output.stderr);
+    let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
+    let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
+    let replace_path = sandbox_root.to_str().unwrap();
+    let stderr = actual_str.replace(replace_path, "[PROJECT_ROOT]");
+
+    if !stderr.contains(needle.trim()) {
+        panic!(
+            "Stderr mismatch.\nExpected substring: {}\nActual stderr:\n{}",
+            needle.trim(),
+            stderr
+        );
+    }
 }

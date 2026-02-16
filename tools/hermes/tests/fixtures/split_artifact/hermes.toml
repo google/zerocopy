@@ -1,0 +1,4 @@
+
+[test]
+args = ["verify", "--lib", "--bin", "run", "--allow-sorry"]
+expected_status = "failure"

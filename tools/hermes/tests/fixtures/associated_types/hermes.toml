@@ -12,3 +12,6 @@ content_contains = [
     # Trait method
     "(x : Trait.Assoc T) : Result (Trait.Assoc T)"
 ]
+
+[test]
+args = ["verify", "--allow-sorry"]

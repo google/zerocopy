@@ -1,4 +1,0 @@
-=== Hermes Verification Failed ===
-
-[Hermes Error] Syntax error in Rust source: cannot parse string into token stream
-Error: Aborting due to 1 previous errors.
