@@ -1,4 +1,4 @@
-[[artifact]]
+[[test.artifact]]
 package = "lean_generation"
 target = "lib"
 kind = "lean"
@@ -11,7 +11,7 @@ content_contains = [
     "import «Generated».«lean_generation-lib-main».Types"
 ]
 
-[[artifact]]
+[[test.artifact]]
 package = "lean_generation"
 target = "lib"
 kind = "lean"
@@ -19,10 +19,10 @@ should_exist = true
 content_contains = ["lake-manifest.json"]
 
 # Verify Function Specs
-[[command]]
+[[test.command]]
 args = ["charon", "--opaque", "crate::unsafe_axiom"]
 
-[[artifact]]
+[[test.artifact]]
 package = "lean_generation"
 target = "lib"
 kind = "lean"
@@ -36,7 +36,7 @@ content_contains = [
 ]
 
 # Verify Type/Trait Invariants
-[[artifact]]
+[[test.artifact]]
 package = "lean_generation"
 target = "lib"
 kind = "lean"
@@ -47,7 +47,7 @@ content_contains = [
     "instance {T} [Clone T] : Hermes.IsValid (InlineBound T)",
     "instance {T} [Copy T] : Hermes.IsValid (WhereBound T)"
 ]
-]
+
 
 [test]
 args = ["verify", "--allow-sorry"]
