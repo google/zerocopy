@@ -130,3 +130,9 @@ static_assertions = "1.1"
 testutil = { path = "testutil" }
 # In tests, unlike in production, zerocopy-derive is not optional
 zerocopy-derive = { version = "=0.8.39", path = "zerocopy-derive" }
+
+[workspace.lints.clippy]
+borrow_as_ptr = "warn"
+
+[lints]
+workspace = true

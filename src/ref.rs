@@ -1234,16 +1234,17 @@ mod tests {
         use crate::util::AsAddress as _;
 
         let mut buf = Align::<[u8; 8], u64>::default();
+        let buf_ptr = buf.t.as_mut_ptr();
+
         let r = Ref::<_, u64>::from_bytes(&buf.t[..]).unwrap();
         let rf = Ref::into_ref(r);
         assert_eq!(rf, &0u64);
-        let buf_addr = (&buf.t as *const [u8; 8]).addr();
-        assert_eq!((rf as *const u64).addr(), buf_addr);
+        assert_eq!((rf as *const u64).cast(), buf_ptr);
 
         let r = Ref::<_, u64>::from_bytes(&mut buf.t[..]).unwrap();
         let rf = Ref::into_mut(r);
         assert_eq!(rf, &mut 0u64);
-        assert_eq!((rf as *mut u64).addr(), buf_addr);
+        assert_eq!((rf as *mut u64).cast(), buf_ptr);
 
         *rf = u64::MAX;
         assert_eq!(buf.t, [0xFF; 8]);
