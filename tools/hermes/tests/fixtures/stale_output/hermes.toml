@@ -1,0 +1,3 @@
+[test]
+# Minimal config. This case is ignored by the standard runner and instead
+# hard-codes test code in `tests/integration.rs`.

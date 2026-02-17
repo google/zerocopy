@@ -75,6 +75,15 @@ pub fn run_aeneas(
         // Output to `generated/<Slug>`
         let output_dir = lean_generated_root.join(&slug);
 
+        // STALE OUTPUT CLEANUP:
+        // We must ensure that the output directory is clean before running Aeneas.
+        // If stale files (e.g., `Funs.lean` from a previous run) persist, they might be used
+        // by Hermes even if Aeneas doesn't regenerate them (e.g. if the function was deleted).
+        if output_dir.exists() {
+            log::debug!("Cleaning stale output directory: {}", output_dir.display());
+            std::fs::remove_dir_all(&output_dir).context("Failed to clean output directory")?;
+        }
+
         std::fs::create_dir_all(&output_dir).context("Failed to create Aeneas output directory")?;
 
         let generated = generate::generate_artifact(artifact);
@@ -551,8 +560,30 @@ mod integration {
         let source_lake = cache_path.join(".lake");
         let target_lake = lean_root.join(".lake");
 
-        if !source_lake.exists() || target_lake.exists() {
-            return Ok(());
+        // Fail fast if the source `.lake` directory is missing. This usually
+        // happens if the integration test cache has not been initialized
+        // correctly (e.g., `HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR` points to
+        // an empty or invalid directory).
+        if !source_lake.exists() {
+            bail!(
+                "Source .lake directory does not exist at {}. The integration test cache is invalid.",
+                source_lake.display()
+            );
+        }
+
+        // Fail fast if the target `.lake` directory already exists. In the
+        // context of integration tests, the sandbox is expected to be clean.
+        // If `.lake` exists, it implies a previous run failed to clean up or
+        // the test environment is dirty. Proceeding with a dirty `.lake` can
+        // lead to nondeterministic behavior (e.g., stale artifacts, mixed
+        // dependencies).
+        if target_lake.exists() {
+            bail!(
+                "Target .lake directory already exists at {}. \
+                 This likely indicates a stale build artifact or a previous failed run. \
+                 Please clean the target directory before running tests.",
+                target_lake.display()
+            );
         }
 
         log::debug!(
@@ -568,8 +599,7 @@ mod integration {
             .with_context(|| "Failed to execute cp -rl for .lake cache")?;
 
         if !status.success() {
-            log::warn!("'cp -rl' failed with status: {}", status);
-            return Ok(());
+            bail!("'cp -rl' failed with status: {}", status);
         }
 
         // Fix up Git metadata to ensure each test runs in isolation.
