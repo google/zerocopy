@@ -74,18 +74,35 @@ fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
     if let Some(p) = SHARED_CACHE_PATH.get() {
         return (p.clone(), target_dir);
     }
-    let lean_backend_dir = cache_dir.join("backends/lean");
     let lock_path = target_dir.join("hermes_integration_cache.lock");
 
     std::fs::create_dir_all(&target_dir).unwrap();
-
     let lock_file = fs::File::create(&lock_path).unwrap();
-    // Block until we get exclusive access
     lock_file.lock_exclusive().unwrap();
 
-    // Check if valid cache exists (simple check: lakefile in backends/lean exists)
-    if !lean_backend_dir.join("lakefile.lean").exists() {
-        // eprintln!("Initializing shared Aeneas cache at {:?}...", cache_dir);
+    // Check if the cache is fully initialized and valid.
+    // We use a `.complete` marker file to ensure atomicity: the marker is only written
+    // after the entire initialization sequence (clone, download, build) succeeds.
+    // This prevents the use of partial or corrupt caches resulting from interrupted builds.
+    ensure_cache_ready(&cache_dir).unwrap();
+
+    lock_file.unlock().unwrap();
+
+    let _ = SHARED_CACHE_PATH.set(cache_dir.clone());
+    (cache_dir, target_dir)
+}
+
+fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
+    let lean_backend_dir = cache_dir.join("backends/lean");
+    // Check if valid cache exists (using a marker file to ensure atomicity)
+    let marker_path = cache_dir.join(".complete");
+
+    if !marker_path.exists() {
+        if cache_dir.exists() {
+            // Partial or corrupt cache, remove it
+            std::fs::remove_dir_all(&cache_dir).expect("Failed to remove partial cache");
+        }
+        std::fs::create_dir_all(&cache_dir).unwrap();
 
         // 1. Clone Aeneas repo to cache_dir
         let status = Command::new("git")
@@ -93,7 +110,9 @@ fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
             .arg(&cache_dir)
             .status()
             .expect("Failed to execute git clone");
-        assert!(status.success(), "Failed to clone Aeneas");
+        if !status.success() {
+            anyhow::bail!("Failed to clone Aeneas");
+        }
 
         // 2. Download Pre-built Mathlib binaries (must run in backends/lean)
         let status = Command::new("lake")
@@ -101,7 +120,9 @@ fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
             .current_dir(&lean_backend_dir)
             .status()
             .expect("Failed to execute lake exe cache get");
-        assert!(status.success(), "Failed to run 'lake exe cache get'");
+        if !status.success() {
+            anyhow::bail!("Failed to run 'lake exe cache get'");
+        }
 
         // 3. Pre-build Aeneas
         let status = Command::new("lake")
@@ -109,14 +130,79 @@ fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
             .current_dir(&lean_backend_dir)
             .status()
             .expect("Failed to execute lake build");
-        assert!(status.success(), "Failed to pre-build Aeneas");
+        if !status.success() {
+            anyhow::bail!("Failed to pre-build Aeneas");
+        }
+
+        // 4. Mark cache as complete
+        std::fs::write(&marker_path, "").expect("Failed to write cache marker");
+    }
+    Ok(())
+}
+
+fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
+    // Recursively scan the source directory for blacklisted files/directories.
+    //
+    // The integration test harness enforces a strict "fresh sandbox" policy.
+    // If the `source` directory in `tests/fixtures` contains any build
+    // artifacts (e.g., `target`, `.lake`, `generated`, or compiled objects),
+    // we fail immediately.
+    //
+    // This prevents accidental contamination of the test environment, where
+    // stale artifacts from a previous manual run might mask errors or cause
+    // non-deterministic behavior in the test runner.
+    if !source_dir.exists() {
+        return Ok(());
     }
 
-    lock_file.unlock().unwrap();
+    let walker = walkdir::WalkDir::new(source_dir).follow_links(false);
+    for entry in walker {
+        let entry = entry.map_err(|e| anyhow::anyhow!("Failed to walk source dir: {}", e))?;
+        let name = entry.file_name().to_string_lossy();
+        let path = entry.path();
 
-    let _ = SHARED_CACHE_PATH.set(cache_dir.clone());
-    let _ = SHARED_CACHE_PATH.set(cache_dir.clone());
-    (cache_dir, target_dir)
+        // Check for blacklisted DIRECTORIES.
+        //
+        // These directories contain build artifacts or generated code that
+        // should never be present in the source fixture.
+        if entry.file_type().is_dir() {
+            if name == "target"
+                || name == ".lake"
+                || name == "generated"
+                || name == "llbc"
+                || name == "cargo_target"
+            {
+                anyhow::bail!(
+                    "Found blacklisted directory in source: {}\n\
+                     This indicates a stale or dirty source. Please clean the source directory.",
+                    path.display()
+                );
+            }
+        }
+
+        // Check for blacklisted FILES.
+        //
+        // These specific files are auto-generated by the build system
+        // (Lake/Cargo) or by Hermes itself. Their presence indicates a dirty
+        // source tree.
+        if entry.file_type().is_file() {
+            if name == "lake-manifest.json"
+                || name == "lakefile.lean"
+                || name == "lean-toolchain"
+                || name.ends_with(".olean")
+                || name.ends_with(".ilean")
+                || name.ends_with(".c")
+                || name.ends_with(".o")
+            {
+                anyhow::bail!(
+                    "Found blacklisted file in source: {}\n\
+                     This indicates a stale or dirty source. Please clean the source directory.",
+                    path.display()
+                );
+            }
+        }
+    }
+    Ok(())
 }
 
 struct TestContext {
@@ -131,6 +217,7 @@ impl TestContext {
         let test_case_root = path.parent().unwrap().to_path_buf();
         let test_name = test_case_root.file_name().unwrap().to_string_lossy().to_string();
         let source_dir = test_case_root.join("source");
+        check_source_freshness(&source_dir).map_err(|e| e.to_string())?;
 
         let (_, target_dir) = get_or_init_shared_cache();
 
@@ -309,6 +396,26 @@ echo "---END-INVOCATION---" >> "{}"
 }
 
 fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
+    // Special handling for the "idempotency" test case. This test is unique
+    // because it doesn't follow the standard "verify output matches
+    // expectation" pattern. Instead, it runs the same verification command
+    // twice to ensure that Hermes refuses to run on a dirty filesystem (a
+    // critical safety check for our integration test sandbox).
+    if path.to_string_lossy().contains("idempotency/hermes.toml") {
+        return run_idempotency_test(path);
+    }
+    if path.to_string_lossy().contains("stale_output/hermes.toml") {
+        return run_stale_output_test(path);
+    }
+    // Special handling for the "atomic_cache" test case.
+    if path.to_string_lossy().contains("atomic_cache/hermes.toml") {
+        return run_atomic_cache_recovery_test();
+    }
+    // Special handling for the "dirty_sandbox" test case.
+    if path.to_string_lossy().contains("dirty_sandbox/hermes.toml") {
+        return run_dirty_sandbox_test(path);
+    }
+
     // `path` is `tests/fixtures/<test_case>/hermes.toml`
     let ctx = TestContext::new(path)?;
 
@@ -545,4 +652,213 @@ fn check_stderr_contains(assert: &assert_cmd::assert::Assert, needle: &str, sand
             stderr
         );
     }
+}
+
+fn run_idempotency_test(path: &Path) -> datatest_stable::Result<()> {
+    // Verifies that Hermes enforces a clean sandbox by failing when the target
+    // `.lake` directory already exists.
+    //
+    // In our integration test environment, we rely on the sandbox being
+    // strictly fresh for each run. If `.lake` exists, it suggests a potential
+    // contamination from a previous run or an incomplete cleanup, which could
+    // compromise test determinism.
+
+    // 1. Setup TestContext
+    let ctx = TestContext::new(path)?;
+
+    // 2. Configure a basic run
+    //
+    // We use arguments that trigger the standard verification flow.
+    // `--allow-sorry` is required if the fixture code (e.g., empty_file/source)
+    // requires proofs that are missing.
+    let config = TestConfig {
+        args: Some(vec!["verify".into(), "--allow-sorry".into()]),
+        cwd: None,
+        log: None,
+        expected_status: None, // We check manually
+        expected_stderr: None,
+        expected_stderr_regex: None,
+        artifact: vec![],
+        command: vec![],
+        mock: None,
+    };
+
+    // 3. First Run: Should Success and create .lake
+    let assert = ctx.run_hermes(&config);
+    assert.success();
+
+    // 4. Second Run: Should Fail because .lake exists
+    let assert = ctx.run_hermes(&config);
+    assert.failure().stderr(predicates::str::contains("Target .lake directory already exists"));
+
+    Ok(())
+}
+
+fn run_stale_output_test(path: &Path) -> datatest_stable::Result<()> {
+    // Verified that Hermes proactively cleans its output directory before
+    // generating new files.
+    //
+    // This test simulates a scenario where a previous run generated a file
+    // (Stale.lean) that is no longer part of the current source. We check that
+    // Hermes removes this stale file, ensuring that the generated output
+    // accurately reflects the current source and does not contain phantom
+    // artifacts.
+
+    // 1. Setup TestContext
+    let ctx = TestContext::new(path)?;
+
+    // 2. Configure a basic run
+    let config = TestConfig {
+        args: Some(vec!["verify".into(), "--allow-sorry".into()]),
+        cwd: None,
+        log: None,
+        expected_status: None, // We check manually
+        expected_stderr: None,
+        expected_stderr_regex: None,
+        artifact: vec![],
+        command: vec![],
+        mock: None,
+    };
+
+    // 3. First Run: Should succeed and create output
+    let assert = ctx.run_hermes(&config);
+    assert.success();
+
+    // 4. Locate the generated output directory
+    let target_dir = ctx.sandbox_root.join("target");
+    let generated_root = find_generated_root(&target_dir)?;
+
+    // 5. Pollute the output directory with a stale file
+    // We need to find the slug directory inside `generated`.
+    // It will be something like `StaleOutputStaleOutput<hash>`.
+    let mut slug_dir = None;
+    for entry in fs::read_dir(&generated_root)? {
+        let entry = entry?;
+        if entry.file_type()?.is_dir() {
+            slug_dir = Some(entry.path());
+            break;
+        }
+    }
+    let slug_dir = slug_dir.ok_or_else(|| {
+        std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "No slug directory found in generated root",
+        )
+    })?;
+
+    let stale_file = slug_dir.join("Stale.lean");
+    std::fs::write(&stale_file, "INVALID LEAN CODE").unwrap();
+    assert!(stale_file.exists());
+
+    // 6. Touch the input file to force a re-run if Hermes relies on mtime
+    // (Hermes currently re-runs Aeneas pretty aggressively, but good to be safe)
+    let lib_rs = ctx.sandbox_root.join("source/src/lib.rs");
+    if lib_rs.exists() {
+        let _ = fs::File::open(&lib_rs).unwrap().set_len(fs::metadata(&lib_rs).unwrap().len());
+    }
+
+    // STALE OUTPUT CLEANUP:
+    // We must manually delete `.lake` because `restore_lake_directory` will fail fast if
+    // it exists. We are simulating a case where the user (or previous run) cleaned up
+    // the build cache but left the generated output files (or where integration tests reuse
+    // directories without cleaning them, which we want to be safe against).
+    let lean_lake = target_dir.join("hermes/hermes_test_target/lean/.lake");
+    if lean_lake.exists() {
+        std::fs::remove_dir_all(&lean_lake).expect("Failed to delete stale .lake");
+    }
+    let lean_manifest = target_dir.join("hermes/hermes_test_target/lean/lake-manifest.json");
+    if lean_manifest.exists() {
+        std::fs::remove_file(&lean_manifest).expect("Failed to delete stale lake-manifest.json");
+    }
+    let lean_lakefile = target_dir.join("hermes/hermes_test_target/lean/lakefile.lean");
+    if lean_lakefile.exists() {
+        std::fs::remove_file(&lean_lakefile).expect("Failed to delete stale lakefile.lean");
+    }
+
+    // 7. Second Run: Should succeed and Clean output
+    let assert = ctx.run_hermes(&config);
+    assert.success();
+
+    // 8. Verify Stale file is GONE
+    if stale_file.exists() {
+        panic!("Stale file {} was not removed by Hermes!", stale_file.display());
+    }
+
+    Ok(())
+}
+
+fn find_generated_root(target_dir: &Path) -> datatest_stable::Result<PathBuf> {
+    // Verify that the Hermes output directory structure exists.
+    // Expected path: target/hermes
+    let hermes_dir = target_dir.join("hermes");
+    if !hermes_dir.exists() {
+        return Err(format!("Hermes output directory not found at {}", hermes_dir.display()).into());
+    }
+
+    for entry in fs::read_dir(hermes_dir)? {
+        let entry = entry?;
+        if entry.file_type()?.is_dir() {
+            let generated = entry.path().join("lean/generated");
+            if generated.exists() {
+                return Ok(generated);
+            }
+        }
+    }
+    Err("Could not find generated directory".into())
+}
+
+#[allow(dead_code)]
+fn run_atomic_cache_recovery_test() -> datatest_stable::Result<()> {
+    // 1. Ensure cache is initialized
+    let (cache_dir, target_dir) = get_or_init_shared_cache();
+
+    // Acquire the lock to avoid racing with other tests
+    let lock_path = target_dir.join("hermes_integration_cache.lock");
+    let lock_file = fs::File::create(&lock_path).unwrap();
+    lock_file.lock_exclusive().unwrap();
+
+    let marker = cache_dir.join(".complete");
+    assert!(marker.exists(), "Cache marker should exist after initialization");
+
+    // 2. Corrupt the cache by removing the marker
+    std::fs::remove_file(&marker).expect("Failed to remove marker");
+
+    // 3. Create a dummy file to verify cleanup
+    let dummy = cache_dir.join("dummy_corruption.txt");
+    std::fs::write(&dummy, "corrupt").unwrap();
+
+    // 4. Force re-initialization
+    // We call the inner function directly while holding the lock
+    ensure_cache_ready(&cache_dir).expect("Failed to recover cache");
+
+    // 5. Verify cleanup and re-initialization
+    assert!(marker.exists(), "Cache marker should be restored");
+    assert!(!dummy.exists(), "Corrupt cache should have been wiped");
+
+    lock_file.unlock().unwrap();
+
+    Ok(())
+}
+
+fn run_dirty_sandbox_test(path: &Path) -> datatest_stable::Result<()> {
+    // Tests that Hermes correctly detects and fails when the source directory
+    // contains stale artifacts or blacklisted files (e.g., target/, .lake/).
+
+    // 1. Attempt to create TestContext (should fail immediately)
+    let result = TestContext::new(path);
+
+    // 2. Verify failure
+    match result {
+        Ok(_) => panic!("TestContext should have failed due to dirty source!"),
+        Err(e) => {
+            let error_msg = e.to_string();
+            if !error_msg.contains("Found blacklisted directory in source")
+                && !error_msg.contains("Found blacklisted file in source")
+            {
+                panic!("Unexpected error message: {}", error_msg);
+            }
+        }
+    }
+
+    Ok(())
 }
