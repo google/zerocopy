@@ -23,6 +23,12 @@ struct ScannerContext {
     current_prefix: Vec<String>,
 }
 
+/// A scanned artifact containing all the necessary information to generate
+/// a Lean specification.
+///
+/// This represents a single Rust target (library, binary, etc.) and includes
+/// the list of discovered Hermes items and the calculated entry points for
+/// Charon.
 pub struct HermesArtifact {
     pub name: HermesTargetName,
     pub target_kind: HermesTargetKind,
@@ -55,6 +61,10 @@ impl HermesArtifact {
         // Double-hash to make sure we can distinguish between e.g.
         // (manifest_path, target_name) = ("abc", "def") and ("ab", "cdef"),
         // which would hash identically if we just hashed their concatenation.
+        //
+        // Note: We use `DefaultHasher` so this slug is not guaranteed to be
+        // stable across Rust versions. This is acceptable for local artifact
+        // management.
         let h0 = hash(&self.manifest_path);
         let h1 = hash(&self.name.target_name);
         let h2 = hash(&self.target_kind);
@@ -194,6 +204,12 @@ fn process_file_recursive<'a>(
             // it is cfg-gated for another platform). In strict Rust, we would
             // check the cfg attributes, but since we are just scanning, it is
             // safe to warn and return.
+            //
+            // Note: The scanner is currently CFG-agnostic. It does not evaluate
+            // `#[cfg(...)]` attributes, so it may attempt to scan files that
+            // are disabled for the current target (e.g., Windows-specific code
+            // on Linux). This is a known limitation that may cause build failures
+            // in Charon if it tries to verify non-existent items.
             log::debug!("Skipping unreachable or missing file {:?}: {}", src_path, e);
             return;
         }
@@ -203,6 +219,9 @@ fn process_file_recursive<'a>(
     // declarations, while still allowing identical files to be mounted in
     // different branches of the tree. A cycle would represent an invalid crate
     // anyway (i.e., an invalid set of `#[path]` attributes).
+    //
+    // Note: This check is purely path-based. It does not inspect the content of
+    // the file.
     if ancestors.contains(&src_path) {
         return;
     }
@@ -228,6 +247,11 @@ fn process_file_recursive<'a>(
                 };
                 let module_path = item.module_path.join("::");
                 let start_from_str = if unreliable {
+                    // For items where we cannot reliably determine the fully qualified
+                    // name (e.g., items inside `impl` blocks or `trait` definitions),
+                    // we must fall back to using the containing module as the
+                    // entry point. This forces Charon to analyze the entire module,
+                    // which is less efficient but ensures we don't miss the item.
                     module_path
                 } else {
                     format!("{}::{}", module_path, item.item.name().unwrap())
@@ -235,29 +259,6 @@ fn process_file_recursive<'a>(
 
                 use crate::parse::hkd::LiftToSafe;
                 ctx.item_tx.send((ctx.name.clone(), item.lift(), start_from_str)).unwrap();
-                // let mut full_path = current_prefix.clone();
-                // full_path.extend(item.module_path);
-
-                // Is the syntax "unreliable" in the sense that we have no way
-                // of reliably naming it in Charon's `--start-from` argument?
-                // If so, we fall back to naming the parent module.
-                // let unreliable = match &item.item {
-                //     ParsedItem::Impl(_) => true,
-                //     ParsedItem::Function(f) => {
-                //         matches!(f.item, FunctionItem::Impl(_) | FunctionItem::Trait(_))
-                //     }
-                //     _ => false,
-                // };
-
-                // if unreliable {
-                //     let start_from = full_path.join("::");
-                //     ctx.item_tx.send((ctx.name.clone(), start_from)).unwrap();
-                // } else if let Some(item_name) = item.item.name() {
-                //     full_path.push(item_name);
-                //     let start_from = full_path.join("::");
-                //     log::debug!("Found entry point: {}", start_from);
-                //     ctx.item_tx.send((ctx.name.clone(), start_from)).unwrap();
-                // }
             }
             Err(e) => {
                 let _ = ctx.err_tx.send(e.into());
@@ -265,6 +266,10 @@ fn process_file_recursive<'a>(
         },
     );
 
+    // After scanning the current file, we look for declared submodules that
+    // were not loaded inline (i.e., `mod foo;` instead of `mod foo { ... }`).
+    // `read_file_and_scan_compilation_unit` returns a list of these "unloaded"
+    // modules so we can resolve their paths and recurse.
     let (_, unloaded_modules) = match result {
         Ok(res) => res,
         Err(e) => {
@@ -280,8 +285,15 @@ fn process_file_recursive<'a>(
     //   e.g. `src/my_mod.rs` -> `mod sub` -> `src/my_mod/sub.rs`
     let file_stem = src_path.file_stem().and_then(OsStr::to_str).unwrap_or("");
     let base_dir = if matches!(file_stem, "mod" | "lib" | "main") {
+        // If we are in `mod.rs`, `lib.rs`, or `main.rs`, then `mod foo;`
+        // looks for `foo.rs` or `foo/mod.rs` in the *same* directory.
+        //
+        // e.g. `src/lib.rs` -> `mod foo` -> `src/foo.rs`
         src_path.parent().unwrap_or(&src_path).to_path_buf()
     } else {
+        // If we are in `src/foo.rs`, then `mod bar;` looks for
+        // `src/foo/bar.rs` or `src/foo/bar/mod.rs`.
+        //
         // e.g. src/foo.rs -> src/foo/
         src_path.with_extension("")
     };
@@ -302,10 +314,14 @@ fn process_file_recursive<'a>(
                 process_file_recursive(s, &mod_path, ctx_clone, module.inside_block, ancestors)
             })
         } else {
-            // This is an expected condition – it shows up when modules are
+            // This is an expected condition – it shows up when modules are
             // conditionally compiled. Instead of implementing conditional
             // compilation ourselves, we can just let rustc error later if
             // this is actually an error.
+            //
+            // Example: `#[cfg(windows)] mod win_only;` on Linux. `win_only.rs`
+            // might not exist at all, or might verify successfully but be
+            // ignored by rustc. We just skip it here.
             log::debug!("Could not resolve module '{}' in {:?}", module.name, src_path);
         }
     }
@@ -327,7 +343,9 @@ fn resolve_module_path(
         mod_name,
         path_attr
     );
-    // Handle explicit #[path = "..."]
+
+    // If `#[path = "..."]` is present, it overrides the standard lookup logic.
+    // The path is always relative to the current module's directory.
     if let Some(custom_path) = path_attr {
         let p = base_dir.join(custom_path);
         if p.exists() {

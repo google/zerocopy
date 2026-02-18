@@ -1,3 +1,13 @@
+// Orchestration of Aeneas translation and Lean project management.
+//
+// This module handles the entire lifecycle of the Lean verification project generation:
+// 1. Setting up the directory structure.
+// 2. Optimizing setup using valid integration test caches (if available).
+// 3. Invoking `aeneas` to translate LLBC to Lean.
+// 4. Generating the `lakefile.lean` and other boilerplate.
+// 5. Building the Lean project using `lake`.
+// 6. Running custom diagnostic scripts to verify proofs and report errors back to Rust.
+
 use std::{
     fmt::Write,
     io::{BufRead, BufReader},
@@ -13,6 +23,10 @@ use crate::{generate, resolve::Roots, scanner::HermesArtifact};
 const HERMES_PRELUDE: &str = include_str!("Hermes.lean");
 const HERMES_DIAGNOSTICS_TEMPLATE: &str = include_str!("Diagnostics.lean");
 
+/// Orchestrates the Aeneas translation and Lean verification process.
+///
+/// This function is the main entry point for the "backend" phase of Hermes.
+/// It assumes that Charon has already run and produced valid LLBC files.
 pub fn run_aeneas(
     roots: &Roots,
     artifacts: &[HermesArtifact],
@@ -171,12 +185,15 @@ pub fn run_aeneas(
             lake_roots.push(format!("{}.FunsExternal", slug));
         }
 
-        // Add to Lake roots
-        // Note: We need to use `«Slug».Funs` syntax if sticking to strict naming,
-        // but Lake roots usually expect identifiers.
-        // If slug has underscores, it is a valid identifier.
-        // But if it had hyphens (it doesn't), we'd need quotes.
-        // We use the slug as is.
+        // Register the generated modules as roots for the Lake library.
+        //
+        // The `slug` is guaranteed to be PascalCase and alphanumeric (see
+        // `HermesArtifact::artifact_slug`), so it is always a valid Lean identifier.
+        // We can safely append `.Funs` and `.Types` without needing complex escaping
+        // or guillemets (`«...»`) in the Lake configuration.
+        //
+        // These roots will simply be prefixed with a backtick (e.g., `Slug.Funs) in
+        // the generated Lakefile, which is the standard syntax for Name literals in Lean.
         lake_roots.push(format!("{}.Funs", slug));
         lake_roots.push(format!("{}.Types", slug));
     }
@@ -222,6 +239,14 @@ lean_lib «User» where
     run_lake(roots, artifacts)
 }
 
+/// Runs the Lean build process and diagnostics.
+///
+/// This function:
+/// 1. Patches `lake-manifest.json` if `HERMES_AENEAS_DIR` is set (for local dev).
+/// 2. Fetches Mathlib cache to avoid rebuilding it.
+/// 3. Builds the project with `lake build`.
+/// 4. Executes the `Diagnostics.lean` script to check proofs.
+/// 5. Parses JSON output from the script and maps it back to Rust source.
 fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
     let generated = roots.lean_generated_root();
     let lean_root = generated.parent().unwrap();
@@ -463,6 +488,14 @@ fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
     Ok(())
 }
 
+/// Resolves a Lean diagnostic to a Rust source location.
+///
+/// This uses the JSON source map generated during `src/generate.rs` to map the byte range
+/// in the generated Lean file back to the original Rust file.
+///
+/// It also implements a heuristic to redirect "declaration uses `sorry`" errors from the
+/// synthetic function spec name to the `proof` or `axiom` keyword, which is more
+/// intuitive for the user.
 fn resolve_mapping(
     diag: &LeanDiagnostic,
     mappings: &[crate::generate::SourceMapping],
@@ -532,6 +565,10 @@ struct LeanDiagnostic {
     message: String,
 }
 
+/// Helper to write file content only if it has changed.
+///
+/// This prevents updating the file's modification time (mtime) if the content is identical,
+/// which helps avoid triggering unnecessary rebuilds in build systems like `lake`.
 fn write_if_changed(path: &std::path::Path, content: &str) -> Result<()> {
     if path.exists() {
         let current = std::fs::read_to_string(path)?;
@@ -543,6 +580,11 @@ fn write_if_changed(path: &std::path::Path, content: &str) -> Result<()> {
     Ok(())
 }
 
+/// Integration test utilities.
+///
+/// This module provides helpers for optimizing integration tests by reusing checking
+/// artifacts from a shared cache. This is critical for keeping CI times reasonable,
+/// as a full `mathlib` build can take 20+ minutes.
 mod integration {
     use super::*;
 
@@ -696,6 +738,49 @@ mod integration {
     }
 }
 
+/// Restores the Lean build artifacts from a shared integration test cache.
+///
+/// This optimization significantly reduces test execution time by avoiding
+/// redundant downloads and compilations of standard Lean dependencies (like
+/// `mathlib`).
+fn restore_from_integration_cache(lean_root: &std::path::Path) -> Result<()> {
+    let cache_dir = match std::env::var("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR") {
+        Ok(d) => d,
+        Err(_) => return Ok(()),
+    };
+
+    let cache_path = std::path::Path::new(&cache_dir);
+
+    // Copy `lake-manifest.json` to signal that dependencies are resolved.
+    copy_lake_manifest(cache_path, lean_root)?;
+
+    // Restore the `.lake` directory using hardlinks for performance.
+    integration::restore_lake_directory(cache_path, lean_root)?;
+
+    Ok(())
+}
+
+/// Copies `lake-manifest.json` from the cache to the target directory.
+///
+/// Presence of this file informs the Lake build tool that dependencies have
+/// already been resolved, preventing it from attempting to update the manifest
+/// or query the network for package updates.
+fn copy_lake_manifest(cache_path: &std::path::Path, lean_root: &std::path::Path) -> Result<()> {
+    let source_manifest = cache_path.join("lake-manifest.json");
+    let target_manifest = lean_root.join("lake-manifest.json");
+
+    if source_manifest.exists() && !target_manifest.exists() {
+        log::debug!(
+            "Copying lake-manifest.json from {} to {}",
+            source_manifest.display(),
+            target_manifest.display()
+        );
+        std::fs::copy(&source_manifest, &target_manifest)
+            .context("Failed to copy lake-manifest.json from cache")?;
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use std::path::PathBuf;
@@ -793,47 +878,4 @@ mod tests {
         assert_eq!(file, "file_a.rs");
         assert_eq!(start, 200, "Should NOT redirect across files");
     }
-}
-
-/// Restores the Lean build artifacts from a shared integration test cache.
-///
-/// This optimization significantly reduces test execution time by avoiding
-/// redundant downloads and compilations of standard Lean dependencies (like
-/// `mathlib`).
-fn restore_from_integration_cache(lean_root: &std::path::Path) -> Result<()> {
-    let cache_dir = match std::env::var("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR") {
-        Ok(d) => d,
-        Err(_) => return Ok(()),
-    };
-
-    let cache_path = std::path::Path::new(&cache_dir);
-
-    // Copy `lake-manifest.json` to signal that dependencies are resolved.
-    copy_lake_manifest(cache_path, lean_root)?;
-
-    // Restore the `.lake` directory using hardlinks for performance.
-    integration::restore_lake_directory(cache_path, lean_root)?;
-
-    Ok(())
-}
-
-/// Copies `lake-manifest.json` from the cache to the target directory.
-///
-/// Presence of this file informs the Lake build tool that dependencies have
-/// already been resolved, preventing it from attempting to update the manifest
-/// or query the network for package updates.
-fn copy_lake_manifest(cache_path: &std::path::Path, lean_root: &std::path::Path) -> Result<()> {
-    let source_manifest = cache_path.join("lake-manifest.json");
-    let target_manifest = lean_root.join("lake-manifest.json");
-
-    if source_manifest.exists() && !target_manifest.exists() {
-        log::debug!(
-            "Copying lake-manifest.json from {} to {}",
-            source_manifest.display(),
-            target_manifest.display()
-        );
-        std::fs::copy(&source_manifest, &target_manifest)
-            .context("Failed to copy lake-manifest.json from cache")?;
-    }
-    Ok(())
 }
