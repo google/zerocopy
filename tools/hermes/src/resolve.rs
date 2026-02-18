@@ -74,6 +74,11 @@ pub enum HermesTargetKind {
     Test,
 }
 
+// We map `cargo_metadata::TargetKind` to our own `HermesTargetKind` to
+// strictly validate supported target types and simplify downstream logic.
+// While `cargo_metadata` is exhaustive, we only care about a subset of
+// targets relevant to verification.
+
 impl HermesTargetKind {
     pub fn is_lib(&self) -> bool {
         use HermesTargetKind::*;
@@ -109,6 +114,12 @@ pub struct HermesTargetName {
     pub kind: HermesTargetKind,
 }
 
+/// A fully resolved target ready for verification.
+///
+/// This struct bridges the gap between `cargo_metadata`'s view of the world
+/// and Hermes's verification pipeline. It contains absolute paths to critical
+/// files, ensuring that downstream tools (Scanner, Charon) don't need to resolve
+/// paths relative to the CWD or workspace root again.
 #[derive(Debug)]
 pub struct HermesTarget {
     pub name: HermesTargetName,
@@ -155,10 +166,19 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
     }
 
     // Forward features to ensure dependency resolution matches the user's
-    // request.
+    // request. This is critical because conditional compilation (`#[cfg(feature = "...")]`)
+    // can completely change the shape of the dependency graph and the source code itself.
+    // If we resolved metadata without these flags, we might miss dependencies
+    // or include dependencies that are not actually used in the build.
     args.features.forward_metadata(&mut cmd);
 
     let metadata = cmd.exec().context("Failed to run 'cargo metadata'")?;
+    // We enforce that all local dependencies are contained within the workspace
+    // root. This is a temporary limitation to simplify the verification model
+    // and ensure a "hermetic-like" boundary for analysis. It prevents issues
+    // where experimental or local forks of dependencies might be picked up
+    // unpredictably, or where Charon might struggle to locate source files
+    // outside the standard project structure.
     check_for_external_deps(&metadata)?;
 
     let selected_packages = resolve_packages(&metadata, &args.workspace)?;
@@ -189,6 +209,9 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
                 kind,
             },
             kind,
+            // We convert to absolute paths here to establish a canonical reference
+            // for the rest of the pipeline. This avoids ambiguity if the CWD changes
+            // or if we're working with complex workspace structures.
             src_path: target.src_path.as_std_path().to_owned(),
             manifest_path: package.manifest_path.as_std_path().to_owned(),
         }));
@@ -211,7 +234,10 @@ fn resolve_run_roots(metadata: &Metadata) -> (PathBuf, PathBuf) {
     }
 
     // Hash the path to the workspace root to avoid collisions between different
-    // workspaces using the same target directory.
+    // workspaces using the same target directory. We use `DefaultHasher` here,
+    // which is not guaranteed to be stable across Rust versions or processes.
+    // This is acceptable because these paths are only used for local artifact
+    // storage and do not need to be reproducible across different environments.
     let workspace_root_hash = {
         let mut hasher = std::hash::DefaultHasher::new();
         hasher.write(b"hermes_build_salt");
@@ -242,14 +268,18 @@ fn resolve_packages<'a>(
             })
             .collect::<Result<Vec<_>>>()?
     } else if args.workspace || args.all {
-        // Resolve entire workspace (--workspace / --all)
+        // Resolve entire workspace (--workspace / --all). This explicitly
+        // selects all workspace members, ignoring any packages that might be
+        // in the graph but are not members (e.g. dependencies).
         metadata
             .workspace_members
             .iter()
             .filter_map(|id| metadata.packages.iter().find(|p| &p.id == id))
             .collect()
     } else {
-        // Resolve default (Current Working Directory)
+        // Resolve default (Current Working Directory). This mimics Cargo's
+        // behavior: if we are inside a package, we build that package. If we
+        // are at the workspace root, we build the whole workspace.
         let cwd = env::current_dir()
             .context("Failed to get CWD")?
             .canonicalize()
@@ -292,6 +322,11 @@ fn resolve_packages<'a>(
 /// Returns a list of (Target, TargetKind) pairs.
 /// If a target is defined as `crate-type = ["rlib", "cdylib"]`, and both are requested,
 /// this returns two entries, allowing them to be verified independently.
+///
+/// This flattening is critical because different crate types may be compiled with
+/// different flags or conditional compilation options (although the current scanner
+/// is CFG-agnostic, future improvements might respect this). Verifying them
+/// independently ensures we cover all intended compilation modes.
 fn resolve_targets<'a>(
     package: &'a Package,
     args: &Args,
@@ -305,6 +340,10 @@ fn resolve_targets<'a>(
         && args.test.is_empty()
         && !args.tests;
 
+    // Filter targets based on the requested verification mode.
+    // Unlike Cargo, which might build everything by default, we try to be
+    // selectively inclusive to avoid overwhelming the user with verification
+    // tasks they didn't ask for.
     let selected_artifacts: Vec<_> = package
         .targets
         .iter()

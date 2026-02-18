@@ -1,3 +1,9 @@
+// Handling of Lean diagnostics and error mapping.
+//
+// This module provides the `DiagnosticMapper` struct, which is responsible for translating
+// diagnostics from external tools (like Lean or Charon) back to the original Rust source code.
+// It maps errors in generated files back to their origin spans in the user's codebase.
+
 use std::{
     collections::HashMap,
     fs,
@@ -8,6 +14,10 @@ pub use cargo_metadata::diagnostic::{Diagnostic, DiagnosticLevel, DiagnosticSpan
 use miette::{NamedSource, Report, SourceOffset};
 use thiserror::Error;
 
+/// Maps diagnostics from generated code back to original source files.
+///
+/// It maintains a cache of source file contents to efficiently create `miette::NamedSource`
+/// instances for error reporting.
 pub struct DiagnosticMapper {
     user_root: PathBuf,
     user_root_canonical: PathBuf,
@@ -57,12 +67,17 @@ impl miette::Diagnostic for MappedError {
 }
 
 impl DiagnosticMapper {
+    /// Creates a new mapper rooted at `user_root`.
     pub fn new(user_root: PathBuf) -> Self {
         let user_root_canonical =
             fs::canonicalize(&user_root).unwrap_or_else(|_| user_root.clone());
         Self { user_root, user_root_canonical, source_cache: HashMap::new() }
     }
 
+    /// Resolves a path relative to the user root, if applicable.
+    ///
+    /// This ensures we only report diagnostics for files within the user's workspace,
+    /// avoiding noise from dependencies or system files.
     pub fn map_path(&self, path: &Path) -> Option<PathBuf> {
         let mut p = path.to_path_buf();
         if p.is_relative() {
@@ -85,6 +100,10 @@ impl DiagnosticMapper {
         }
     }
 
+    /// Renders a `cargo_metadata` diagnostic using `miette`.
+    ///
+    /// This converts the structured diagnostic from Cargo/Charon into a rich, colorized
+    /// error message associated with the relevant source span.
     pub fn render_miette<F>(&mut self, diag: &Diagnostic, mut printer: F)
     where
         F: FnMut(String),
@@ -184,6 +203,10 @@ impl DiagnosticMapper {
         }
     }
 
+    /// Renders a raw diagnostic (e.g. from Lean) at a specific byte range.
+    ///
+    /// This is used when we have a mapped span from `src/generate.rs` (Lean span -> Rust span)
+    /// and want to report an error at that location in the Rust source.
     pub fn render_raw<F>(
         &mut self,
         file_name: &str,
