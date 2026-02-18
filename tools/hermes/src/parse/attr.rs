@@ -3,6 +3,18 @@ use syn::{ExprLit, MetaNameValue};
 
 use super::*;
 
+/// Parsing logic for Hermes attributes and documentation blocks.
+///
+/// This module handles the extraction and parsing of `/// ````hermes` blocks from Rust source code.
+/// It supports various block types (Function, Type, Trait, Impl) and their respective sections
+/// (requires, ensures, proof, etc.).
+///
+/// The parsing process involves:
+/// 1. Extracting raw documentation lines using `extract_doc_line` (handling `///`, `/** ... */`, `#[doc = ...]`).
+/// 2. Identifying Hermes blocks denoted by ` ```lean, hermes...` fences.
+/// 3. Parsing the content within these blocks into structured `RawHermesSpecBody`.
+/// 4. Validating and converting the raw body into specific block types (e.g., `FunctionHermesBlock`).
+
 /// Represents a parsed attribute from a Hermes info string on a function.
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum FunctionAttribute {
@@ -63,6 +75,7 @@ pub struct ImplHermesBlock<M: ThreadSafety = Local> {
     pub common: HermesBlockCommon<M>,
 }
 
+/// Common fields shared by all Hermes documentation blocks.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
 pub struct HermesBlockCommon<M: ThreadSafety = Local> {
@@ -310,6 +323,7 @@ fn parse_hermes_block_common(
         let body = match RawHermesSpecBody::parse(&lines) {
             Ok(body) => body,
             Err((err_span, msg)) => {
+                // Map the error span back to the raw source span if possible.
                 let raw_span = lines
                     .iter()
                     .find(|l| l.span == err_span)
@@ -576,6 +590,9 @@ impl RawHermesSpecBody {
     }
 
     // Helper to start a new clause or section
+    //
+    // This function initializes a new section or pushes a new clause to an existing list
+    // of clauses (e.g. requires/ensures). It handles the parsing of optional inline arguments.
     fn start_section(
         &mut self,
         section: Section,
@@ -622,6 +639,17 @@ impl RawHermesSpecBody {
     }
 
     /// Parses a sequence of raw documentation lines into structured sections.
+    ///
+    /// This function implements the core state machine for parsing Hermes blocks.
+    /// It iterates through lines, recognizing keywords (e.g., `requires`, `ensures`)
+    /// to switch sections, and collecting content lines into the current section.
+    ///
+    /// # Indentation Rules
+    /// - Keywords must be at the same indentation level as the baseline (the first keyword found).
+    /// - Content lines must be indented *more* than the current section's keyword.
+    ///
+    /// # Errors
+    /// Returns a tuple `(SourceSpan, String)` on failure, pointing to the problematic line.
     fn parse<'a, I>(lines: I) -> Result<Self, (SourceSpan, String)>
     where
         I: IntoIterator<Item = &'a SpannedLine<Local>>,

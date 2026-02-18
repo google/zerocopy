@@ -2,8 +2,18 @@ use std::fmt::Debug;
 
 use quote::ToTokens;
 
-/// The generic marker trait for our system.
-/// This uses GATs to define how primitives behave in this mode.
+/// Generic support for thread- vs non-thread-safe ASTs.
+///
+/// This uses GATs (Generic Associated Types) to define how primitives behave
+/// in different modes:
+/// 1. `Local`: Holds raw `syn` AST nodes. Fast, precise, but NOT `Send`
+///    (because `syn` nodes aren't always `Send` or we want to avoid cloning).
+/// 2. `Safe`: Holds specific, owned, `Send` representations (usually Strings or
+///    simplified structs).
+///
+/// This allows us to parse deeply using `syn` on worker threads, then "lift"
+/// the extensive AST into a lightweight, thread-safe representation to send
+/// back to the main thread or other workers.
 
 /// Types that can be mirrored into a thread-safe representation.
 pub trait Mirror {
@@ -11,6 +21,7 @@ pub trait Mirror {
     fn mirror(&self) -> Self::Image;
 }
 
+/// A trait defining a "mode" for AST storage (e.g., `Local` or `Safe`).
 pub trait ThreadSafety: 'static + Sized + Copy + Debug {
     /// How this mode handles underlying non-thread-safe AST node representation.
     type Node<T: Mirror + Clone + Debug>: Debug + Clone;
@@ -26,6 +37,11 @@ pub trait ThreadSafety: 'static + Sized + Copy + Debug {
 }
 
 // --- Mode 1: Non-Thread-Safe (Fast, Local) ---
+
+/// The local parsing mode.
+///
+/// In this mode, AST nodes are typically `syn` types directly. This is used
+/// during the immediate parsing phase.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Local;
 
@@ -42,6 +58,11 @@ impl ThreadSafety for Local {
 }
 
 // --- Mode 2: Thread-Safe (Send + Sync) ---
+
+/// The thread-safe mode.
+///
+/// In this mode, AST nodes are strictly `Send + Sync` (often `String`s or
+/// simplified structs). This is used when passing parsed items between threads.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Safe;
 
@@ -58,17 +79,17 @@ impl ThreadSafety for Safe {
     }
 }
 
-/// Types implement this to describe how they turn into their Send-able version.
+/// Types implement this to describe how they turn into their `Send`-able
+/// version.
 pub trait LiftToSafe {
     /// The thread-safe equivalent of Self.
-    /// Crucially, this type must be Send.
     type Target: Send + Debug;
 
     /// Consumes the current version and produces the thread-safe version.
     fn lift(self) -> Self::Target;
 }
 
-/// A "Leaf" type that adapts its internal storage based on M.
+/// A "Leaf" type that adapts its internal storage based on `M`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AstNode<T: Mirror + Clone + std::fmt::Debug, M: ThreadSafety = Local> {
     pub inner: M::Node<T>,

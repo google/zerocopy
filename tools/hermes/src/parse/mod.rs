@@ -1,3 +1,9 @@
+// Parsing logic for extracting Hermes annotations from Rust source code.
+//
+// This module provides the core infrastructure for traversing Rust source files,
+// identifying items annotated with `/// ````hermes` blocks, and extracting them
+// for verification.
+
 pub mod attr;
 pub mod hkd;
 
@@ -136,10 +142,18 @@ impl<M: ThreadSafety> LiftToSafe for ParsedItem<M> {
 }
 
 /// A complete parsed item including its module path and source file.
+///
+/// This struct pairs the parsed item (e.g., function, struct) with context
+/// about where it was found, including the logical module path (e.g., `["foo",
+/// "bar"]` for `mod foo { mod bar { ... } }`) and the physical source file
+/// path.
 #[derive(Debug)]
 pub struct ParsedLeanItem<M: ThreadSafety = Local> {
     pub item: ParsedItem<M>,
+    /// The module path to the module containing this item, relative to the
+    /// outermost module at `source_file`, which may not be the crate root.
     pub module_path: Vec<String>,
+    /// The absolute path to the source file containing this item.
     pub source_file: PathBuf,
 }
 
@@ -156,12 +170,15 @@ impl<M: ThreadSafety> LiftToSafe for ParsedLeanItem<M> {
 }
 
 /// Represents a `mod foo;` declaration found in the source.
+///
+/// This is used by the scanner to discover additional files that need to be
+/// processed.
 #[derive(Debug, Clone)]
 pub struct UnloadedModule {
     pub name: String,
     /// The value of `#[path = "..."]` if present.
     pub path_attr: Option<String>,
-    /// True if this module was declared inside a block.
+    /// True if this module was declared inside a block (e.g., a function body).
     pub inside_block: bool,
 }
 
@@ -257,11 +274,16 @@ where
     I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
     M: FnMut(UnloadedModule),
 {
-    /// Processes an `item` that may have a Hermes annotation.
+    /// Processes an `item` (function, struct, etc.) that may have a Hermes
+    /// annotation.
     ///
-    /// If the `item` has a Hermes annotation, it is parsed by `parse` and
-    /// handed off to `wrap` to wrap it in the corresponding `ParsedItem`
-    /// variant.
+    /// This generic helper abstracts the common logic for:
+    /// 1. Extracting the Hermes block from the item's attributes using `parse`.
+    /// 2. Validating that the item is not inside a block (where verification is
+    ///    unsupported).
+    /// 3. Wrapping the item and its Hermes block into a `ParsedItem` using
+    ///    `wrap`.
+    /// 4. Invoking the `item_cb` with the result.
     fn process_item<
         T: Spanned,
         B,
@@ -281,7 +303,8 @@ where
             Ok(Some(_block)) if self.inside_block => Err(HermesError::NestedItem {
                 src: self.named_source.clone(),
                 span: span_to_miette(item.span()),
-                msg: "Hermes cannot verify items defined inside function bodies or other blocks."
+                msg: "Hermes cannot verify items defined inside function bodies or other blocks. \
+                      Move this item to the module level if you wish to verify it."
                     .to_string(),
             }),
             Ok(Some(block)) => {

@@ -1,3 +1,12 @@
+// Orchestration of Charon extraction.
+//
+// This module handles the invocation of the `charon` tool to extract Low-Level Borrow Calculus (LLBC)
+// from Rust crates. It manages:
+// - Setting up the Charon command and arguments (including features, targets, and output paths).
+// - Handling `unsafe(axiom)` functions by marking them as opaque to Charon.
+// - Streaming and filtering compiler output to provide user-friendly feedback via `indicatif` and `miette`.
+// - Validating the extraction result.
+
 use std::{
     io::{BufRead, BufReader},
     process::Command,
@@ -12,6 +21,14 @@ use crate::{
     scanner::HermesArtifact,
 };
 
+/// Runs Charon on the specified packages to generate LLBC artifacts.
+///
+/// This function iterates over each `HermesArtifact`, constructs the appropriate `charon` command,
+/// and executes it. It handles:
+/// - **Opaque Functions**: identifying `unsafe(axiom)` functions and passing `--opaque` to Charon.
+/// - **Entry Points**: passing the computed `start_from` roots to Charon to minimize extraction scope.
+/// - **Output Handling**: capturing stdout/stderr, parsing JSON compiler messages, and rendering them
+///   using `DiagnosticMapper`.
 pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Result<()> {
     let llbc_root = roots.llbc_root();
 
@@ -44,7 +61,10 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
                     // instructs Aeneas to treat the function as external and
                     // generate a template file (`FunsExternal_Template.lean`)
                     // containing the type signature as an axiom, rather than
-                    // attempting to translate the body.
+                    // attempting to translate the body. This allows users to
+                    // mechanically verify the composition of safe code while
+                    // manually vouching for the correctness of unsafe leaf
+                    // functions.
                     let mut opaque_name = item.module_path.join("::");
                     opaque_name.push_str("::");
                     opaque_name.push_str(func.item.name());
@@ -55,7 +75,10 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         }
 
         // Start translation from specific entry points. Sort to ensure
-        // deterministic ordering for testing (not important in production).
+        // deterministic ordering for testing. Determinism is important for
+        // production too, because the order of arguments can affect the order
+        // of generated definitions in Lean, which we want to be stable to
+        // minimize churn.
         let mut start_from = artifact.start_from.iter().map(String::as_ref).collect::<Vec<_>>();
         start_from.sort_unstable(); // Slightly faster than `sort`, and equivalent for strings.
 
