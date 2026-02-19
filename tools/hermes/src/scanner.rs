@@ -103,6 +103,23 @@ impl HermesArtifact {
     pub fn lean_spec_file_name(&self) -> String {
         format!("{}.lean", self.artifact_slug())
     }
+
+    /// Returns true if this artifact contains items that should result in a `Funs.lean` file.
+    pub fn has_functions(&self) -> bool {
+        self.items.iter().any(|i| {
+            matches!(
+                i.item,
+                crate::parse::ParsedItem::Function(_) | crate::parse::ParsedItem::Impl(_)
+            )
+        })
+    }
+
+    /// Returns true if this artifact contains items that should result in a `Types.lean` file.
+    pub fn has_types(&self) -> bool {
+        self.items.iter().any(|i| {
+            matches!(i.item, crate::parse::ParsedItem::Type(_) | crate::parse::ParsedItem::Trait(_))
+        })
+    }
 }
 
 /// Scans the workspace to identify Hermes entry points (`/// ```lean` blocks)
