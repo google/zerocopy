@@ -6,4 +6,4 @@ expected_status = "failure"
 expected_stderr = "  \u00d7 my test error\n   \u256d\u2500[[PROJECT_ROOT]/src/lib.rs:3:5]\n 2 \u2502     /// context\n 3 \u2502 \u256d\u2500\u25b6 /// model demo \n 4 \u2502 \u251c\u2500\u25b6 /// ```\n   \u00b7 \u2570\u2500\u2500\u2500\u2500 my span label\n 5 \u2502     pub fn demo() {}\n   \u2570\u2500\u2500\u2500\u2500"
 
 [test.mock]
-charon = "mock_charon.sh"
+charon = "mock_charon_output.json"
