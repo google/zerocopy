@@ -26,12 +26,12 @@ walkdir = "2.5.0"
 indicatif = { version = "0.18.3", features = ["improved_unicode"] }
 console = "0.16.2"
 sha2 = "0.10"
+fs2 = "0.4"
 
 [build-dependencies]
 toml = "0.8"
 
 [dev-dependencies]
-fs2 = "0.4"
 syn = { version = "2.0.114", features = ["printing", "full", "visit", "extra-traits", "parsing"] }
 proc-macro2 = { version = "1.0.105", features = ["span-locations"] }
 ui_test = "0.30.4"

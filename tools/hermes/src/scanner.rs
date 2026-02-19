@@ -10,7 +10,7 @@ use sha2::{Digest as _, Sha256};
 
 use crate::{
     parse::{self, ParsedLeanItem},
-    resolve::{HermesTargetKind, HermesTargetName, Roots},
+    resolve::{HermesTargetKind, HermesTargetName, LockedRoots, Roots},
 };
 
 #[derive(Clone)]
@@ -102,6 +102,22 @@ impl HermesArtifact {
     /// Returns the name of the `.lean` spec file to use for this artifact.
     pub fn lean_spec_file_name(&self) -> String {
         format!("{}.lean", self.artifact_slug())
+    }
+
+    /// Returns the absolute path to the .llbc file.
+    ///
+    /// This method requires `LockedRoots` to ensure that the caller holds the
+    /// build lock before accessing the build artifact path.
+    pub fn llbc_path(&self, roots: &LockedRoots) -> PathBuf {
+        roots.llbc_root().join(self.llbc_file_name())
+    }
+
+    /// Returns the absolute path to the .lean spec file.
+    ///
+    /// This method requires `LockedRoots` to ensure that the caller holds the
+    /// build lock before accessing the build artifact path.
+    pub fn lean_spec_path(&self, roots: &LockedRoots) -> PathBuf {
+        roots.lean_generated_root().join(self.artifact_slug()).join(self.lean_spec_file_name())
     }
 
     /// Returns true if this artifact contains items that should result in a `Funs.lean` file.

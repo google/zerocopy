@@ -19,7 +19,7 @@ use std::{
 use anyhow::{bail, Context, Result};
 use indicatif::{ProgressBar, ProgressStyle};
 
-use crate::{generate, resolve::Roots, scanner::HermesArtifact};
+use crate::{generate, resolve::LockedRoots, scanner::HermesArtifact};
 
 const HERMES_PRELUDE: &str = include_str!("Hermes.lean");
 const HERMES_DIAGNOSTICS_TEMPLATE: &str = include_str!("Diagnostics.lean");
@@ -28,8 +28,11 @@ const HERMES_DIAGNOSTICS_TEMPLATE: &str = include_str!("Diagnostics.lean");
 ///
 /// This function is the main entry point for the "backend" phase of Hermes.
 /// It assumes that Charon has already run and produced valid LLBC files.
+///
+/// It requires `LockedRoots` to ensure safe, exclusive access to the
+/// `lean` and `generated` output directories.
 pub fn run_aeneas(
-    roots: &Roots,
+    roots: &LockedRoots,
     artifacts: &[HermesArtifact],
     args: &crate::resolve::Args,
 ) -> Result<()> {
@@ -111,7 +114,7 @@ pub fn run_aeneas(
         std::fs::create_dir_all(&output_dir).context("Failed to create Aeneas output directory")?;
 
         let generated = generate::generate_artifact(artifact);
-        let specs_path = output_dir.join(artifact.lean_spec_file_name());
+        let specs_path = artifact.lean_spec_path(roots);
         let map_path = output_dir.join(format!("{}.lean.map", artifact.artifact_slug()));
 
         std::fs::write(&specs_path, &generated.code)
@@ -324,7 +327,7 @@ lean_lib «User» where
 /// 3. Builds the project with `lake build`.
 /// 4. Executes the `Diagnostics.lean` script to check proofs.
 /// 5. Parses JSON output from the script and maps it back to Rust source.
-fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
+fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     let generated = roots.lean_generated_root();
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
@@ -477,7 +480,7 @@ fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
     // 3. Run Diagnostics
     log::info!("Running Lean diagnostics...");
     let mut has_errors = false;
-    let mut mapper = crate::diagnostics::DiagnosticMapper::new(roots.workspace.clone());
+    let mut mapper = crate::diagnostics::DiagnosticMapper::new(roots.workspace().clone());
 
     for artifact in artifacts {
         let slug = artifact.artifact_slug();
