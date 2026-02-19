@@ -17,21 +17,23 @@ use cargo_metadata::{diagnostic::DiagnosticLevel, Message};
 
 use crate::{
     parse::{attr::FunctionBlockInner, ParsedItem},
-    resolve::{Args, HermesTargetKind, Roots},
+    resolve::{Args, HermesTargetKind, LockedRoots},
     scanner::HermesArtifact,
 };
 
 /// Runs Charon on the specified packages to generate LLBC artifacts.
 ///
-/// This function iterates over each `HermesArtifact`, constructs the appropriate `charon` command,
-/// and executes it. It handles:
+/// This function requires `LockedRoots` to ensure that it has exclusive access
+/// to the `llbc` output directory. It iterates over each `HermesArtifact`,
+/// constructs the appropriate `charon` command, and executes it.
+///
+/// It handles:
 /// - **Opaque Functions**: identifying `unsafe(axiom)` functions and passing `--opaque` to Charon.
 /// - **Entry Points**: passing the computed `start_from` roots to Charon to minimize extraction scope.
 /// - **Output Handling**: capturing stdout/stderr, parsing JSON compiler messages, and rendering them
 ///   using `DiagnosticMapper`.
-pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Result<()> {
+pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact]) -> Result<()> {
     let llbc_root = roots.llbc_root();
-
     std::fs::create_dir_all(&llbc_root).context("Failed to create LLBC output directory")?;
 
     check_charon_version()?;
@@ -48,7 +50,7 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         cmd.arg("--preset=aeneas");
 
         // Output artifacts to target/hermes/<hash>/llbc
-        let llbc_path = llbc_root.join(artifact.llbc_file_name());
+        let llbc_path = artifact.llbc_path(roots);
         log::debug!("Writing .llbc file to {}", llbc_path.display());
         cmd.arg("--dest-file").arg(llbc_path);
 
@@ -162,7 +164,7 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
         if let Some(stdout) = child.stdout.take() {
             let reader = BufReader::new(stdout);
 
-            let mut mapper = crate::diagnostics::DiagnosticMapper::new(roots.workspace.clone());
+            let mut mapper = crate::diagnostics::DiagnosticMapper::new(roots.workspace().clone());
             for line in reader.lines().map_while(Result::ok) {
                 if let Ok(msg) = serde_json::from_str::<cargo_metadata::Message>(&line) {
                     match msg {

@@ -5,6 +5,8 @@ use cargo_metadata::{Metadata, MetadataCommand, Package, PackageName, Target, Ta
 use clap::Parser;
 use sha2::{Digest, Sha256};
 
+use crate::util::DirLock;
+
 #[derive(Parser, Debug)]
 pub struct Args {
     #[command(flatten)]
@@ -139,20 +141,49 @@ pub struct Roots {
 }
 
 impl Roots {
+    pub fn lock_run_root(&self) -> Result<LockedRoots<'_>> {
+        let lock = DirLock::lock(self.hermes_run_root.clone())?;
+        Ok(LockedRoots { roots: self, hermes_run_root: lock })
+    }
+
+    pub fn cargo_target_dir(&self) -> PathBuf {
+        self.hermes_global_root.join("cargo_target")
+    }
+}
+
+/// A wrapper around `Roots` that proves the build lock is held.
+///
+/// This struct is the *only* way to access paths within the Hermes build
+/// directory (e.g., LLBC output, Lean generation). This enforces that all
+/// filesystem operations are guarded by the `BuildLock`.
+pub struct LockedRoots<'a> {
+    roots: &'a Roots,
+    hermes_run_root: crate::util::DirLock,
+}
+
+impl<'a> LockedRoots<'a> {
     pub fn llbc_root(&self) -> PathBuf {
-        self.hermes_run_root.join("llbc")
+        self.hermes_run_root.path.join("llbc")
     }
 
     pub fn lean_root(&self) -> PathBuf {
-        self.hermes_run_root.join("lean")
+        self.hermes_run_root.path.join("lean")
     }
 
     pub fn lean_generated_root(&self) -> PathBuf {
         self.lean_root().join("generated")
     }
 
+    // Note: cargo_target_dir logic is unchanged as it might be used by things
+    // outside our strict control or shared, but for consistency we can expose it here too
+    // if we wanted. For now, we'll leave it on Roots if it's not critical, but
+    // `charon` uses it. Let's expose it here for convenience.
     pub fn cargo_target_dir(&self) -> PathBuf {
-        self.hermes_global_root.join("cargo_target")
+        self.roots.cargo_target_dir()
+    }
+
+    pub fn workspace(&self) -> &PathBuf {
+        &self.roots.workspace
     }
 }
 
