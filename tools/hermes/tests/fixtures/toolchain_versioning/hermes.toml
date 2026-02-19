@@ -1,0 +1,15 @@
+[[artifact]]
+package = "stable_slug"
+target = "lib"
+kind = "llbc"
+should_exist = true
+
+[[artifact]]
+package = "stable_slug"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+[test]
+args = ["verify", "--allow-sorry"]
+expected_status = "success"
