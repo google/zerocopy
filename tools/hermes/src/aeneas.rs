@@ -33,15 +33,25 @@ pub fn run_aeneas(
     args: &crate::resolve::Args,
 ) -> Result<()> {
     let llbc_root = roots.llbc_root();
-    let lean_generated_root = roots.lean_generated_root();
 
-    // 1. Setup Lean Project Root
-    let lean_root = lean_generated_root.parent().unwrap(); // target/hermes/<hash>/lean
-    std::fs::create_dir_all(lean_root.join("hermes"))?;
+    // 1. Setup Lean Project Root (Temporary)
+    //
+    // We generate into a temporary directory first to ensure atomic updates.
+    // If the process crashes during generation, the existing `lean` directory
+    // will remain untouched (or if it didn't exist, we won't leave a half-baked one).
+    let lean_root = roots.lean_generated_root().parent().unwrap().to_path_buf();
+    let tmp_lean_root = lean_root.with_extension("tmp");
+    let lean_generated_root = tmp_lean_root.join("generated");
+
+    // Start with a clean slate in tmp
+    if tmp_lean_root.exists() {
+        std::fs::remove_dir_all(&tmp_lean_root).context("Failed to cleanup stale tmp directory")?;
+    }
+    std::fs::create_dir_all(tmp_lean_root.join("hermes"))?;
 
     // Optimization: If HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR is set, copy the .lake directory
     // from there using hardlinks. This avoids re-downloading/re-building Mathlib.
-    restore_from_integration_cache(lean_root)?;
+    restore_from_integration_cache(&tmp_lean_root)?;
 
     // 2. Write Standard Library
     let mut prelude = String::new();
@@ -63,11 +73,11 @@ pub fn run_aeneas(
         );
     }
 
-    write_if_changed(&lean_root.join("hermes").join("Hermes.lean"), &prelude)
+    write_if_changed(&tmp_lean_root.join("hermes").join("Hermes.lean"), &prelude)
         .context("Failed to write Hermes prelude")?;
 
     // 3. Write Toolchain
-    write_if_changed(&lean_root.join("lean-toolchain"), "leanprover/lean4:v4.28.0-rc1\n")
+    write_if_changed(&tmp_lean_root.join("lean-toolchain"), "leanprover/lean4:v4.28.0-rc1\n")
         .context("Failed to write Lean toolchain")?;
 
     let mut generated_imports = String::new();
@@ -230,11 +240,29 @@ lean_lib «User» where
   srcDir := "user"
 "#
     );
-    write_if_changed(&lean_root.join("lakefile.lean"), &lakefile)
+    write_if_changed(&tmp_lean_root.join("lakefile.lean"), &lakefile)
         .context("Failed to write Lakefile")?;
 
     write_if_changed(&lean_generated_root.join("Generated.lean"), &generated_imports)
         .context("Failed to write Generated.lean")?;
+
+    // ATOMIC SWAP: If we successfully generated everything, we now swap the
+    // temporary directory with the real one.
+    let lean_root = roots.lean_root();
+    if lean_root.exists() {
+        // Remove the existing directory before renaming the temporary directory.
+        // Note: `fs::rename` on Unix typically requires the target directory to be
+        // empty if it exists. While not strictly atomic (there is a brief window
+        // where the directory is missing), this prevents a half-written state.
+        log::debug!("Removing existing lean directory: {}", lean_root.display());
+        std::fs::remove_dir_all(&lean_root).context("Failed to remove existing lean directory")?;
+    }
+
+    log::debug!("Renaming {} to {}", lean_root.display(), lean_root.display());
+    std::fs::rename(&tmp_lean_root, &lean_root)
+        .context("Failed to rename temporary lean directory to target")?;
+
+    // The generated artifacts are now in the location expected by 'roots', so we can proceed with the build.
 
     run_lake(roots, artifacts)
 }
@@ -252,8 +280,9 @@ fn run_lake(roots: &Roots, artifacts: &[HermesArtifact]) -> Result<()> {
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
 
-    // If lake-manifest.json exists (copied from cache), we manually inject the `aeneas` dependency.
-    // This avoids running `lake update`, which would trigger `mathlib`'s post-update hook (cache download).
+    // If `lake-manifest.json` exists (copied from the cache), manual inject the
+    // `aeneas` dependency. This avoids running `lake update`, which would
+    // trigger the `mathlib` post-update hook (cache download).
     if lean_root.join("lake-manifest.json").exists() {
         if let Ok(aeneas_dir) = std::env::var("HERMES_AENEAS_DIR") {
             let aeneas_url = format!("{}/backends/lean", aeneas_dir);

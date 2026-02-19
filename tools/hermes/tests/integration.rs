@@ -415,6 +415,10 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     if path.to_string_lossy().contains("dirty_sandbox/hermes.toml") {
         return run_dirty_sandbox_test(path);
     }
+    // Special handling for the "atomic_writes" test case.
+    if path.to_string_lossy().contains("atomic_writes/hermes.toml") {
+        return run_atomic_writes_test(path);
+    }
 
     // `path` is `tests/fixtures/<test_case>/hermes.toml`
     let ctx = TestContext::new(path)?;
@@ -787,6 +791,156 @@ fn run_stale_output_test(path: &Path) -> datatest_stable::Result<()> {
     Ok(())
 }
 
+fn run_atomic_writes_test(path: &Path) -> datatest_stable::Result<()> {
+    // 1. Setup TestContext
+    let ctx = TestContext::new(path)?;
+
+    // 2. Run 1: Simulate a crash/failure.
+    {
+        // Overwrite the `aeneas` shim to exit with an error code.
+        // This effectively simulates a crash during the Aeneas execution phase.
+
+        let (cache_dir, _) = get_or_init_shared_cache();
+        let lean_backend_dir = cache_dir.join("backends/lean");
+        let real_charon = which::which("charon").unwrap();
+        let shim_dir = ctx.create_shim("charon", &real_charon, None)?;
+
+        // Create a broken shim script.
+        let broken_shim = shim_dir.join("aeneas");
+        let content = "#!/bin/sh\necho \"AENEAS INVOKED (BROKEN)\"\nexit 1\n";
+        std::fs::write(&broken_shim, content)?;
+        use std::os::unix::fs::PermissionsExt;
+        let mut perms = std::fs::metadata(&broken_shim)?.permissions();
+        perms.set_mode(0o755);
+        std::fs::set_permissions(&broken_shim, perms)?;
+
+        // Run Hermes
+        let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
+        cmd.env("HERMES_FORCE_TTY", "1");
+        cmd.env("FORCE_COLOR", "1");
+        cmd.env("HERMES_AENEAS_DIR", &cache_dir);
+        cmd.env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
+
+        let original_path = std::env::var_os("PATH").unwrap_or_default();
+        let new_path = std::env::join_paths(
+            std::iter::once(shim_dir).chain(std::env::split_paths(&original_path)),
+        )
+        .unwrap();
+
+        cmd.env("CARGO_TARGET_DIR", ctx.sandbox_root.join("target"))
+            .env("PATH", new_path)
+            .env_remove("RUSTFLAGS")
+            .env("HERMES_TEST_DIR_NAME", "hermes_test_target")
+            .current_dir(&ctx.sandbox_root)
+            .arg("verify")
+            .arg("--allow-sorry");
+
+        let assert = cmd.assert();
+        // The verification should fail because Aeneas failed.
+        assert.failure();
+
+        // Assert that the target directory does NOT exist.
+        let target_lean = ctx.sandbox_root.join("target/hermes/hermes_test_target/lean");
+        if target_lean.exists() {
+            panic!("Target directory {} should NOT exist after crash!", target_lean.display());
+        }
+    }
+
+    // 3. Run 2: Success.
+    {
+        let (cache_dir, _) = get_or_init_shared_cache();
+        let lean_backend_dir = cache_dir.join("backends/lean");
+        let real_charon = which::which("charon").unwrap();
+        let real_aeneas = which::which("aeneas").unwrap_or_else(|_| PathBuf::from("/bin/true"));
+
+        let shim_dir = ctx.create_shim("charon", &real_charon, None)?;
+        // Restore the valid shim.
+        ctx.create_shim("aeneas", &real_aeneas, None)?;
+
+        let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
+        cmd.env("HERMES_FORCE_TTY", "1")
+            .env("FORCE_COLOR", "1")
+            .env("HERMES_AENEAS_DIR", &cache_dir)
+            .env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
+
+        let original_path = std::env::var_os("PATH").unwrap_or_default();
+        let new_path = std::env::join_paths(
+            std::iter::once(shim_dir).chain(std::env::split_paths(&original_path)),
+        )
+        .unwrap();
+
+        cmd.env("CARGO_TARGET_DIR", ctx.sandbox_root.join("target"))
+            .env("PATH", new_path)
+            .env_remove("RUSTFLAGS")
+            .env("HERMES_TEST_DIR_NAME", "hermes_test_target")
+            .current_dir(&ctx.sandbox_root)
+            .arg("verify")
+            .arg("--allow-sorry");
+
+        cmd.assert().success();
+
+        let target_lean = ctx.sandbox_root.join("target/hermes/hermes_test_target/lean");
+        if !target_lean.exists() {
+            panic!("Target directory {} SHOULD exist after success!", target_lean.display());
+        }
+
+        // Mark the file with "OLD" to verify that it is not overwritten later.
+        let marker = target_lean.join("MARKER_OLD");
+        std::fs::write(&marker, "OLD").unwrap();
+    }
+
+    // 4. Run 3: Crash during update.
+    {
+        // Ensure that the run crashes and that the `lean` directory still contains `MARKER_OLD`.
+
+        let (cache_dir, _) = get_or_init_shared_cache();
+        let lean_backend_dir = cache_dir.join("backends/lean");
+        let real_charon = which::which("charon").unwrap();
+        let shim_dir = ctx.create_shim("charon", &real_charon, None)?;
+
+        // Broken Shim Again
+        let broken_shim = shim_dir.join("aeneas");
+        let content = "#!/bin/sh\necho \"AENEAS INVOKED (BROKEN AGAIN)\"\nexit 1\n";
+        std::fs::write(&broken_shim, content)?;
+        use std::os::unix::fs::PermissionsExt;
+        let mut perms = std::fs::metadata(&broken_shim)?.permissions();
+        perms.set_mode(0o755);
+        std::fs::set_permissions(&broken_shim, perms)?;
+
+        // Run Hermes
+        let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
+        cmd.env("HERMES_FORCE_TTY", "1")
+            .env("FORCE_COLOR", "1")
+            .env("HERMES_AENEAS_DIR", &cache_dir)
+            .env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
+
+        let original_path = std::env::var_os("PATH").unwrap_or_default();
+        let new_path = std::env::join_paths(
+            std::iter::once(shim_dir).chain(std::env::split_paths(&original_path)),
+        )
+        .unwrap();
+
+        cmd.env("CARGO_TARGET_DIR", ctx.sandbox_root.join("target"))
+            .env("PATH", new_path)
+            .env_remove("RUSTFLAGS")
+            .env("HERMES_TEST_DIR_NAME", "hermes_test_target")
+            .current_dir(&ctx.sandbox_root)
+            .arg("verify")
+            .arg("--allow-sorry");
+
+        cmd.assert().failure();
+
+        // Verify that the marker file still exists.
+        let target_lean = ctx.sandbox_root.join("target/hermes/hermes_test_target/lean");
+        let marker = target_lean.join("MARKER_OLD");
+        if !marker.exists() {
+            panic!("Target directory was overwritten during failed run! Marker is missing.");
+        }
+    }
+
+    Ok(())
+}
+
 fn find_generated_root(target_dir: &Path) -> datatest_stable::Result<PathBuf> {
     // Verify that the Hermes output directory structure exists.
     // Expected path: target/hermes
@@ -807,7 +961,6 @@ fn find_generated_root(target_dir: &Path) -> datatest_stable::Result<PathBuf> {
     Err("Could not find generated directory".into())
 }
 
-#[allow(dead_code)]
 fn run_atomic_cache_recovery_test() -> datatest_stable::Result<()> {
     // 1. Ensure cache is initialized
     let (cache_dir, target_dir) = get_or_init_shared_cache();

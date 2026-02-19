@@ -143,8 +143,12 @@ impl Roots {
         self.hermes_run_root.join("llbc")
     }
 
+    pub fn lean_root(&self) -> PathBuf {
+        self.hermes_run_root.join("lean")
+    }
+
     pub fn lean_generated_root(&self) -> PathBuf {
-        self.hermes_run_root.join("lean").join("generated")
+        self.lean_root().join("generated")
     }
 
     pub fn cargo_target_dir(&self) -> PathBuf {
