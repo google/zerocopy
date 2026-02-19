@@ -6,4 +6,4 @@ expected_status = "failure"
 expected_stderr = "  \u00d7 macro fail\n   \u256d\u2500[[PROJECT_ROOT]/src/lib.rs:1:39]\n 1 \u2502 macro_rules! f { () => {0} } fn m() { f!() }\n   \u00b7                                       \u2500\u2500\u252c\u2500\n   \u00b7                                         \u2570\u2500\u2500 bang\n 2 \u2502 \n   \u2570\u2500\u2500\u2500\u2500"
 
 [test.mock]
-charon = "mock_charon_output.json"
+charon = "mock_charon.sh"

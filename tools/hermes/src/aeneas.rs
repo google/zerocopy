@@ -114,7 +114,7 @@ pub fn run_aeneas(
         std::fs::create_dir_all(&output_dir).context("Failed to create Aeneas output directory")?;
 
         let generated = generate::generate_artifact(artifact);
-        let specs_path = artifact.lean_spec_path(roots);
+        let specs_path = output_dir.join(artifact.lean_spec_file_name());
         let map_path = output_dir.join(format!("{}.lean.map", artifact.artifact_slug()));
 
         std::fs::write(&specs_path, &generated.code)
