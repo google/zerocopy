@@ -1,5 +1,5 @@
 use std::{
-    fs,
+    fs, io,
     os::unix::fs::PermissionsExt,
     path::{Path, PathBuf},
     process::Command,
@@ -8,6 +8,7 @@ use std::{
 
 use fs2::FileExt;
 use serde::Deserialize;
+use walkdir::WalkDir;
 
 datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
 
@@ -142,8 +143,25 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
             anyhow::bail!("Failed to pre-build Aeneas");
         }
 
-        // 4. Mark cache as complete
+        // 4. Make the cache read-only so that if Lean attempts to mutate the
+        // cache, the test will fail instead of silently corrupting the shared
+        // cache.
+        make_readonly(&cache_dir).expect("Failed to make cache read-only");
+
+        // 5. Mark cache as complete
         std::fs::write(&marker_path, "").expect("Failed to write cache marker");
+    }
+    Ok(())
+}
+
+fn make_readonly(path: &Path) -> std::io::Result<()> {
+    for entry in walkdir::WalkDir::new(path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            let mut perms = entry.metadata()?.permissions();
+            perms.set_readonly(true);
+            std::fs::set_permissions(entry.path(), perms)?;
+        }
     }
     Ok(())
 }
@@ -227,11 +245,38 @@ impl TestContext {
         let source_dir = test_case_root.join("source");
         check_source_freshness(&source_dir).map_err(|e| e.to_string())?;
 
-        let (_, target_dir) = get_or_init_shared_cache();
-
+        let (cache_dir, target_dir) = get_or_init_shared_cache();
         let temp = tempfile::Builder::new().prefix("hermes-test-").tempdir_in(&target_dir)?;
         let sandbox_root = temp.path().join(&test_name);
         copy_dir_contents(&source_dir, &sandbox_root)?;
+
+        let aeneas_cache_backend = cache_dir.join("backends/lean");
+
+        // 1. Seed Aeneas Source (recreating the backends/lean structure so path
+        // dependency matches).
+        let test_aeneas_backend = sandbox_root.join("aeneas_backend").join("backends").join("lean");
+        smart_clone_cache(&aeneas_cache_backend, &test_aeneas_backend)
+            .map_err(|e| anyhow::anyhow!("Failed to clone Aeneas cache: {}", e))?;
+
+        // 2. Seed the Lean workspace cache so Lake skips Mathlib downloads.
+        let lean_root = sandbox_root.join("target/hermes/hermes_test_target/lean");
+        fs::create_dir_all(&lean_root)?;
+
+        let source_manifest = aeneas_cache_backend.join("lake-manifest.json");
+        let target_manifest = lean_root.join("lake-manifest.json");
+        if source_manifest.exists() {
+            fs::copy(&source_manifest, &target_manifest)?;
+            let mut perms = fs::metadata(&target_manifest)?.permissions();
+            perms.set_readonly(false);
+            fs::set_permissions(&target_manifest, perms)?;
+        }
+
+        let source_lake = aeneas_cache_backend.join(".lake");
+        let target_lake = lean_root.join(".lake");
+        if source_lake.exists() {
+            smart_clone_cache(&source_lake, &target_lake)
+                .map_err(|e| anyhow::anyhow!("Failed to clone .lake cache: {}", e))?;
+        }
 
         // Copy extra.rs if it exists
         let extra_rs = test_case_root.join("extra.rs");
@@ -257,7 +302,7 @@ impl TestContext {
         binary: &str,
         real_path: &Path,
         mock_mode: Option<MockMode>,
-    ) -> std::io::Result<PathBuf> {
+    ) -> io::Result<PathBuf> {
         let shim_dir = self._temp_dir.path().join("bin");
         fs::create_dir_all(&shim_dir)?;
 
@@ -381,7 +426,7 @@ echo "---END-INVOCATION---" >> "{}"
         let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
         cmd.env("HERMES_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
-        cmd.env("HERMES_AENEAS_DIR", &cache_dir);
+        cmd.env("HERMES_AENEAS_DIR", self.sandbox_root.join("aeneas_backend"));
         cmd.env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
 
         let original_path = std::env::var_os("PATH").unwrap_or_default();
@@ -419,6 +464,47 @@ echo "---END-INVOCATION---" >> "{}"
 
         cmd.assert()
     }
+}
+
+/// Intelligently clones the Aeneas cache into the test sandbox.
+///
+/// - Deep copies mutable state (trace files, locks, git indices) so tests don't
+///   race.
+/// - Hardlinks heavy immutable binaries (.olean, .c) to save disk space and
+///   time. Because these were previously marked as read-only, any attempts at
+///   mutation will fail loudly rather than result in race conditions.
+fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
+    for entry in WalkDir::new(source) {
+        let entry = entry.map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+        let source_path = entry.path();
+        let relative_path = source_path.strip_prefix(source).unwrap();
+        let target_path = target.join(relative_path);
+
+        if entry.file_type().is_dir() {
+            fs::create_dir_all(&target_path)?;
+        } else if entry.file_type().is_file() {
+            let ext = source_path.extension().and_then(|s| s.to_str()).unwrap_or("");
+            let file_name = source_path.file_name().and_then(|s| s.to_str()).unwrap_or("");
+
+            // Mutable metadata that Lake and Git modify MUST be deep-copied.
+            let is_mutable_metadata = ext == "trace"
+                || ext == "json"
+                || ext == "lock"
+                || file_name == "index" // .git/index
+                || file_name == "HEAD";
+
+            if is_mutable_metadata {
+                fs::copy(source_path, &target_path)?;
+                // Restore write permissions for the mutable copy
+                let mut perms = fs::metadata(&target_path)?.permissions();
+                perms.set_readonly(false);
+                fs::set_permissions(&target_path, perms)?;
+            } else {
+                fs::hard_link(source_path, &target_path)?;
+            }
+        }
+    }
+    Ok(())
 }
 
 fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
@@ -636,7 +722,7 @@ fn to_pascal(s: &str) -> String {
 fn assert_artifacts_match(
     hermes_run_root: &Path,
     expectations: &[ArtifactExpectation],
-) -> std::io::Result<()> {
+) -> io::Result<()> {
     let llbc_root = hermes_run_root.join("llbc");
     let lean_root = hermes_run_root.join("lean").join("generated");
 
@@ -715,7 +801,7 @@ fn assert_artifacts_match(
     Ok(())
 }
 
-fn copy_dir_contents(src: &Path, dst: &Path) -> std::io::Result<()> {
+fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
     fs::create_dir_all(dst)?;
     for entry in fs::read_dir(src)? {
         let entry = entry?;
@@ -845,10 +931,7 @@ fn run_stale_output_test(path: &Path) -> datatest_stable::Result<()> {
         }
     }
     let slug_dir = slug_dir.ok_or_else(|| {
-        std::io::Error::new(
-            std::io::ErrorKind::NotFound,
-            "No slug directory found in generated root",
-        )
+        io::Error::new(io::ErrorKind::NotFound, "No slug directory found in generated root")
     })?;
 
     let stale_file = slug_dir.join("Stale.lean");
@@ -902,7 +985,6 @@ fn run_atomic_writes_test(path: &Path) -> datatest_stable::Result<()> {
         // This effectively simulates a crash during the Aeneas execution phase.
 
         let (cache_dir, _) = get_or_init_shared_cache();
-        let lean_backend_dir = cache_dir.join("backends/lean");
         let real_charon = which::which("charon").unwrap();
         let shim_dir = ctx.create_shim("charon", &real_charon, None)?;
 
@@ -920,7 +1002,6 @@ fn run_atomic_writes_test(path: &Path) -> datatest_stable::Result<()> {
         cmd.env("HERMES_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
         cmd.env("HERMES_AENEAS_DIR", &cache_dir);
-        cmd.env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
 
         let original_path = std::env::var_os("PATH").unwrap_or_default();
         let new_path = std::env::join_paths(
@@ -950,7 +1031,6 @@ fn run_atomic_writes_test(path: &Path) -> datatest_stable::Result<()> {
     // 3. Run 2: Success.
     {
         let (cache_dir, _) = get_or_init_shared_cache();
-        let lean_backend_dir = cache_dir.join("backends/lean");
         let real_charon = which::which("charon").unwrap();
         let real_aeneas = which::which("aeneas").unwrap_or_else(|_| PathBuf::from("/bin/true"));
 
@@ -961,8 +1041,7 @@ fn run_atomic_writes_test(path: &Path) -> datatest_stable::Result<()> {
         let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
         cmd.env("HERMES_FORCE_TTY", "1")
             .env("FORCE_COLOR", "1")
-            .env("HERMES_AENEAS_DIR", &cache_dir)
-            .env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
+            .env("HERMES_AENEAS_DIR", &cache_dir);
 
         let original_path = std::env::var_os("PATH").unwrap_or_default();
         let new_path = std::env::join_paths(
@@ -995,7 +1074,6 @@ fn run_atomic_writes_test(path: &Path) -> datatest_stable::Result<()> {
         // Ensure that the run crashes and that the `lean` directory still contains `MARKER_OLD`.
 
         let (cache_dir, _) = get_or_init_shared_cache();
-        let lean_backend_dir = cache_dir.join("backends/lean");
         let real_charon = which::which("charon").unwrap();
         let shim_dir = ctx.create_shim("charon", &real_charon, None)?;
 
@@ -1012,8 +1090,7 @@ fn run_atomic_writes_test(path: &Path) -> datatest_stable::Result<()> {
         let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
         cmd.env("HERMES_FORCE_TTY", "1")
             .env("FORCE_COLOR", "1")
-            .env("HERMES_AENEAS_DIR", &cache_dir)
-            .env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
+            .env("HERMES_AENEAS_DIR", &cache_dir);
 
         let original_path = std::env::var_os("PATH").unwrap_or_default();
         let new_path = std::env::join_paths(
