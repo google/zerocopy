@@ -43,6 +43,14 @@ struct TestConfig {
 struct MockConfig {
     #[serde(default)]
     charon: Option<String>,
+    #[serde(default)]
+    aeneas: Option<String>,
+}
+
+#[derive(Clone)]
+enum MockMode {
+    FailWithOutput(PathBuf),
+    Script(PathBuf),
 }
 
 #[derive(Deserialize, Clone)]
@@ -248,7 +256,7 @@ impl TestContext {
         &self,
         binary: &str,
         real_path: &Path,
-        mock_output: Option<&Path>,
+        mock_mode: Option<MockMode>,
     ) -> std::io::Result<PathBuf> {
         let shim_dir = self._temp_dir.path().join("bin");
         fs::create_dir_all(&shim_dir)?;
@@ -259,10 +267,9 @@ impl TestContext {
         let mut shim_content = String::new();
         shim_content.push_str("#!/bin/sh\n");
 
-        // Log invocation
+        // For backward compatibility with legacy tests, we log "AENEAS INVOKED" for Aeneas.
+        // This allows existing tests to verify that Aeneas was actually called.
         if binary == "aeneas" {
-            // Retain specific logging format for Aeneas if needed for backward compatibility
-            // The old shim_aeneas printed "AENEAS INVOKED"
             use std::fmt::Write;
             writeln!(shim_content, "echo \"AENEAS INVOKED\" >> \"{}\"", log_file.display())
                 .unwrap();
@@ -279,13 +286,21 @@ echo "---END-INVOCATION---" >> "{}"
             log_file.display()
         ));
 
-        // Mocking logic
-        if let Some(mock_file) = mock_output {
-            use std::fmt::Write;
-            writeln!(shim_content, "cat \"{}\"\nexit 101", mock_file.display()).unwrap();
-        } else {
-            use std::fmt::Write;
-            writeln!(shim_content, "exec \"{}\" \"$@\"", real_path.display()).unwrap();
+        // If a mock mode is specified, we configure the shim to either fail with a specific output
+        // or execute a provided script. Otherwise, we exec the real binary.
+        match mock_mode {
+            Some(MockMode::FailWithOutput(mock_file)) => {
+                use std::fmt::Write;
+                writeln!(shim_content, "cat \"{}\"\nexit 101", mock_file.display()).unwrap();
+            }
+            Some(MockMode::Script(script_path)) => {
+                use std::fmt::Write;
+                writeln!(shim_content, "exec \"{}\" \"$@\"", script_path.display()).unwrap();
+            }
+            None => {
+                use std::fmt::Write;
+                writeln!(shim_content, "exec \"{}\" \"$@\"", real_path.display()).unwrap();
+            }
         }
 
         fs::write(&shim_path, &shim_content)?;
@@ -304,7 +319,10 @@ echo "---END-INVOCATION---" >> "{}"
 
         // Re-organizing execution flow:
         // 1. Prepare mocks (if any)
-        let prepared_charon_mock: Option<PathBuf> = if let Some(mock_config) = &config.mock {
+        let mut charon_mock_mode = None;
+        let mut aeneas_mock_mode = None;
+
+        if let Some(mock_config) = &config.mock {
             if let Some(charon_mock) = &mock_config.charon {
                 let mock_src = self.test_case_root.join(charon_mock);
                 let mock_content = fs::read_to_string(&mock_src).expect("Failed to read mock file");
@@ -313,44 +331,37 @@ echo "---END-INVOCATION---" >> "{}"
                     mock_content.replace("[PROJECT_ROOT]", self.sandbox_root.to_str().unwrap());
                 let processed_mock_file = self.sandbox_root.join("mock_charon.json");
                 fs::write(&processed_mock_file, &processed_mock).unwrap();
-                Some(processed_mock_file)
-            } else {
-                None
+                charon_mock_mode = Some(MockMode::FailWithOutput(processed_mock_file));
             }
-        } else {
-            None
-        };
+            if let Some(aeneas_script) = &mock_config.aeneas {
+                let script_src = self.test_case_root.join(aeneas_script);
+                let bin_dir = self.sandbox_root.join("bin");
+                fs::create_dir_all(&bin_dir).unwrap();
+                let script_dest = bin_dir.join("mock_aeneas.sh");
+                fs::copy(&script_src, &script_dest).unwrap();
 
-        // 2. Create Shims
+                let mut perms = fs::metadata(&script_dest).unwrap().permissions();
+                perms.set_mode(0o755);
+                fs::set_permissions(&script_dest, perms).unwrap();
+
+                aeneas_mock_mode = Some(MockMode::Script(script_dest));
+            }
+        }
+
+        // Create shims for Charon and Aeneas.
+        //
+        // Even if we are using the "real" binary, we wrap it in a shim to capture
+        // the arguments passed to it. This allows us to assert that Hermes calls
+        // the tools with the expected arguments.
+
         let real_charon = which::which("charon").unwrap();
-        // Note: We use "CHARON" prefix for arg logging to match legacy "ARG:" if possible?
-        // Legacy used "ARG:". My new create_shim uses "CHARON_ARG:".
-        // To maintain backward compatibility with `assert_commands_match`, I should stick to "ARG:" for Charon?
-        // `assert_commands_match` parses "ARG:".
-        // Let's adjust `create_shim` to allow custom log prefix or just fix `create_shim` to be smart.
-        // Actually, `shim_charon` logged "ARG:". `shim_aeneas` logged "AENEAS_ARG:".
-        // I will hardcode the prefix in `create_shim` based on binary name or pass it in.
+        let shim_dir = self.create_shim("charon", &real_charon, charon_mock_mode).unwrap();
 
-        let shim_dir =
-            self.create_shim("charon", &real_charon, prepared_charon_mock.as_deref()).unwrap();
-
-        // Aeneas shim (always valid, never mocked for now, acts as pass-through/logger? No, legacy shim_aeneas was NOT a pass-through, it just logged and exited?
-        // Wait, legacy `shim_aeneas` did NOT exec anything! It just logged and finished.
-        // Because `HERMES_AENEAS_DIR` forces Hermes to use the cached Aeneas, so the shim in PATH is likely never used OR used only for validation if `HERMES_AENEAS_DIR` wasn't set.
-        // But `integration.rs` sets `HERMES_AENEAS_DIR`, so the shim in PATH is ignored by Hermes for the actual work.
-        // It seems `shim_aeneas` in legacy `integration.rs` was just a dummy.
-        // I will keep it as a dummy.
-
+        // If Aeneas is not found in PATH, we default to `/bin/true`.
+        // This is safe because Hermes primarily uses `HERMES_AENEAS_DIR` to find Aeneas,
+        // effectively ignoring the PATH entry unless specifically configured otherwise.
         let real_aeneas = which::which("aeneas").unwrap_or_else(|_| PathBuf::from("/bin/true"));
-        self.create_shim("aeneas", &real_aeneas, None).unwrap();
-        // Actually legacy shim_aeneas did NOT have an `exec`. It just logged.
-        // My `create_shim` logic attempts to `exec` if mock is None.
-        // I should probably allow `real_path` to be optional?
-        // Or just point it to `true` or something safe if it falls through.
-        // But wait, if Hermes calls `aeneas` from PATH, and we give it a shim that logs and exits 0, that might be what we want if we are testing that it calls it?
-        // But Hermes effectively calls the one in `HERMES_AENEAS_DIR`.
-        // Let's look at `create_shim` again. definition passed above tries to `exec`.
-        // I should stick to the legacy behavior: Aeneas shim is a dummy.
+        self.create_shim("aeneas", &real_aeneas, aeneas_mock_mode).unwrap();
 
         let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
         cmd.env("HERMES_FORCE_TTY", "1");

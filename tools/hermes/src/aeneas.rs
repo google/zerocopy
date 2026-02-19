@@ -156,18 +156,44 @@ pub fn run_aeneas(
         }
         log::trace!("Aeneas for '{}' took {:.2?}", artifact.name.target_name, start.elapsed());
 
-        // Aeneas might not generate Funs.lean or Types.lean if there are no functions/types.
-        // However, `Specs.lean` and `Generated.lean` expect them to exist (as imports).
-        // We create empty files if they are missing to satisfy the compiler.
+        // Aeneas might not generate Funs.lean or Types.lean if there are no
+        // functions/types. However, `Specs.lean` and `Generated.lean` expect
+        // them to exist (as imports).
+        //
+        // If Hermes found items that *should* result in these files being
+        // generated, but they are missing, this indicates an Aeneas failure
+        // (e.g. valid Rust code that Aeneas failed to translate). In this
+        // case, we error out rather than creating an empty file to prevent
+        // silent failures.
         let funs_path = output_dir.join("Funs.lean");
         if !funs_path.exists() {
-            log::warn!("Funs.lean missing for {}, creating empty file. This might indicate an issue with Aeneas generation.", slug);
+            if artifact.has_functions() {
+                bail!(
+                    "Aeneas failed to generate Funs.lean for '{}', but Hermes found function/impl items in the source.\n\
+                     This indicates that Aeneas silently failed to translate some items.",
+                    slug
+                );
+            }
+            log::debug!(
+                "Funs.lean missing for {}, creating empty file. (No functions found by Hermes)",
+                slug
+            );
             std::fs::write(&funs_path, "").context("Failed to create empty Funs.lean")?;
         }
 
         let types_path = output_dir.join("Types.lean");
         if !types_path.exists() {
-            log::warn!("Types.lean missing for {}, creating empty file. This might indicate an issue with Aeneas generation.", slug);
+            if artifact.has_types() {
+                bail!(
+                    "Aeneas failed to generate Types.lean for '{}', but Hermes found type/trait items in the source.\n\
+                     This indicates that Aeneas silently failed to translate some items.",
+                    slug
+                );
+            }
+            log::debug!(
+                "Types.lean missing for {}, creating empty file. (No types found by Hermes)",
+                slug
+            );
             std::fs::write(&types_path, "").context("Failed to create empty Types.lean")?;
         }
 
