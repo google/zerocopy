@@ -112,8 +112,6 @@ impl HermesArtifact {
         roots.llbc_root().join(self.llbc_file_name())
     }
 
-
-
     /// Returns true if this artifact contains items that should result in a `Funs.lean` file.
     pub fn has_functions(&self) -> bool {
         self.items.iter().any(|i| {
