@@ -538,7 +538,6 @@ fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
 const SKIPPED_TESTS: &[&str] = &[
     "lean_edge_cases",
     "atomic_cache",
-    "const_block_blind_spot",
     "const_generics",
     "env_interleaved_stdout",
     "json_code_suggestions",
@@ -557,8 +556,6 @@ const SKIPPED_TESTS: &[&str] = &[
     "macro_edge_cases",
     "idempotency",
     "missing_cfg_file",
-    "nested_item_error",
-    "nested_out_of_line_mod",
     "mixed_workspace",
     "multi_artifact",
     "span_macro_expansion",
