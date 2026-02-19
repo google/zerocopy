@@ -325,13 +325,28 @@ echo "---END-INVOCATION---" >> "{}"
         if let Some(mock_config) = &config.mock {
             if let Some(charon_mock) = &mock_config.charon {
                 let mock_src = self.test_case_root.join(charon_mock);
-                let mock_content = fs::read_to_string(&mock_src).expect("Failed to read mock file");
 
-                let processed_mock =
-                    mock_content.replace("[PROJECT_ROOT]", self.sandbox_root.to_str().unwrap());
-                let processed_mock_file = self.sandbox_root.join("mock_charon.json");
-                fs::write(&processed_mock_file, &processed_mock).unwrap();
-                charon_mock_mode = Some(MockMode::FailWithOutput(processed_mock_file));
+                if charon_mock.ends_with(".sh") {
+                    let bin_dir = self.sandbox_root.join("bin");
+                    fs::create_dir_all(&bin_dir).unwrap();
+                    let script_dest = bin_dir.join(charon_mock);
+                    fs::copy(&mock_src, &script_dest).unwrap();
+
+                    let mut perms = fs::metadata(&script_dest).unwrap().permissions();
+                    perms.set_mode(0o755);
+                    fs::set_permissions(&script_dest, perms).unwrap();
+
+                    charon_mock_mode = Some(MockMode::Script(script_dest));
+                } else {
+                    let mock_content =
+                        fs::read_to_string(&mock_src).expect("Failed to read mock file");
+
+                    let processed_mock =
+                        mock_content.replace("[PROJECT_ROOT]", self.sandbox_root.to_str().unwrap());
+                    let processed_mock_file = self.sandbox_root.join("mock_charon.json");
+                    fs::write(&processed_mock_file, &processed_mock).unwrap();
+                    charon_mock_mode = Some(MockMode::FailWithOutput(processed_mock_file));
+                }
             }
             if let Some(aeneas_script) = &mock_config.aeneas {
                 let script_src = self.test_case_root.join(aeneas_script);

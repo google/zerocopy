@@ -34,6 +34,8 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
 
     std::fs::create_dir_all(&llbc_root).context("Failed to create LLBC output directory")?;
 
+    check_charon_version()?;
+
     for artifact in packages {
         if artifact.start_from.is_empty() {
             continue;
@@ -208,6 +210,42 @@ pub fn run_charon(args: &Args, roots: &Roots, packages: &[HermesArtifact]) -> Re
             }
             bail!("Charon failed with status: {}", status);
         }
+    }
+
+    Ok(())
+}
+
+/// Checks that the available `charon` binary matches the expected version.
+///
+/// This check ensures that the installed `charon` tool is compatible with
+/// Hermes. Mismatched versions can lead to subtle errors during LLBC
+/// generation or parsing due to format changes.
+///
+/// The expected version is defined in `Cargo.toml` and baked into the binary
+/// via `build.rs` and the `HERMES_CHARON_EXPECTED_VERSION` environment
+/// variable.
+fn check_charon_version() -> Result<()> {
+    let output = Command::new("charon")
+        .arg("version")
+        .output()
+        .context("Failed to execute `charon version`")?;
+
+    if !output.status.success() {
+        bail!("`charon version` failed with status: {}", output.status);
+    }
+
+    let version = String::from_utf8_lossy(&output.stdout).trim().to_string();
+    let expected = env!("HERMES_CHARON_EXPECTED_VERSION");
+
+    if version != expected {
+        bail!(
+            "Charon version mismatch.\n\
+             Expected: {}\n\
+             Found:    {}\n\
+             Please ensure you are using the correct version of Charon.",
+            expected,
+            version
+        );
     }
 
     Ok(())
