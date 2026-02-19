@@ -46,14 +46,29 @@ regex.workspace = true
 strip-ansi-escapes = "0.2.1"
 
 [package.metadata.build-rs]
+
 # The commit hash of the Aeneas repository to use.
 #
 # FIXME: Add a CI step to verify that this commit exists and matches the
 # toolchain version.
 aeneas_rev = "8725fcee9d54fbd7d95503e247abb19ccb59f8c0"
+
 # The Lean toolchain version to use. This must match the version of Lean used
 # by Aeneas in the `lean-toolchain` file in the commit above.
 lean_toolchain = "leanprover/lean4:v4.28.0-rc1"
+
+# The expected Charon version.
+#
+# This is used by `src/charon.rs` to enforce that the runtime `charon` binary
+# matches the version expected by Hermes. This ensures compatibility with the
+# generated LLBC format.
+#
+# FIXME(https://github.com/AeneasVerif/charon/issues/1029): Check Charon commit
+# ID once that's supported
+#
+# FIXME(https://github.com/AeneasVerif/aeneas/issues/783): Check Aeneas
+# version/commit ID once that's supported
+charon_version = "0.1.163"
 
 [[test]]
 name = "integration"

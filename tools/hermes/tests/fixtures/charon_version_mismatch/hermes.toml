@@ -1,0 +1,5 @@
+[test]
+mock = { charon = "mock_charon.sh" }
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+expected_stderr = "Charon version mismatch"

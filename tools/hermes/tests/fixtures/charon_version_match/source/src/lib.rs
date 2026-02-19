@@ -1,0 +1,3 @@
+/// ```hermes
+/// ```
+pub fn foo() {}
