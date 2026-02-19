@@ -6,4 +6,4 @@ expected_status = "failure"
 expected_stderr_regex = "(?s).*dep_49.*\n"
 
 [test.mock]
-charon = "mock_charon.sh"
+charon = "mock_charon_output.json"

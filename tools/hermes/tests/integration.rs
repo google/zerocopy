@@ -234,7 +234,7 @@ fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
 
 struct TestContext {
     test_case_root: PathBuf,
-    _test_name: String,
+    test_name: String,
     sandbox_root: PathBuf,
     _temp_dir: tempfile::TempDir, // Kept alive to prevent deletion
 }
@@ -295,7 +295,7 @@ impl TestContext {
             }
         }
 
-        Ok(Self { test_case_root, _test_name: test_name, sandbox_root, _temp_dir: temp })
+        Ok(Self { test_case_root, test_name, sandbox_root, _temp_dir: temp })
     }
 
     fn create_shim(
@@ -319,6 +319,23 @@ impl TestContext {
             use std::fmt::Write;
             writeln!(shim_content, "echo \"AENEAS INVOKED\" >> \"{}\"", log_file.display())
                 .unwrap();
+        }
+
+        let should_inject_version = match mock_mode {
+            Some(MockMode::FailWithOutput(_)) => true,
+            Some(MockMode::Script(_)) => self.test_name != "charon_version_mismatch",
+            None => false,
+        };
+
+        if should_inject_version {
+            shim_content.push_str(&format!(
+                r#"if [ "$1" = "version" ]; then
+    echo "{}"
+    exit 0
+fi
+"#,
+                get_expected_charon_version()
+            ));
         }
 
         shim_content.push_str(&format!(
@@ -558,13 +575,7 @@ const SKIPPED_TESTS: &[&str] = &[
     "missing_cfg_file",
     "mixed_workspace",
     "multi_artifact",
-    "span_macro_expansion",
-    "span_mapping_basic",
-    "span_empty_unsafe_block",
-    "span_multibyte_offsets",
-    "ui_visual_ghosting",
     "type_features",
-    "ui_the_flood",
     "unions",
     "uninhabited_types",
     "nested_file_mod",
@@ -1272,4 +1283,20 @@ fn run_dirty_sandbox_test(path: &Path) -> datatest_stable::Result<()> {
     }
 
     Ok(())
+}
+
+fn get_expected_charon_version() -> String {
+    let cargo_toml_path =
+        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml");
+    let cargo_toml_content =
+        fs::read_to_string(&cargo_toml_path).expect("Failed to read Cargo.toml");
+    let cargo_toml: toml::Value =
+        toml::from_str(&cargo_toml_content).expect("Failed to parse Cargo.toml");
+    let metadata = cargo_toml
+        .get("package")
+        .and_then(|p| p.get("metadata"))
+        .and_then(|m| m.get("build-rs"))
+        .expect("Cargo.toml must have [package.metadata.build-rs]");
+
+    metadata.get("charon_version").and_then(|v| v.as_str()).unwrap().to_string()
 }
