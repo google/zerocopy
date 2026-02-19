@@ -1,0 +1,5 @@
+[test]
+mock = { charon = "mock_charon.sh" }
+args = ["verify", "--allow-sorry"]
+# We expect failure in aeneas because we don't generate valid LLBC, requires accurate mock
+expected_status = "failure"
