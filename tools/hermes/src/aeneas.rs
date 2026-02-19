@@ -77,8 +77,11 @@ pub fn run_aeneas(
         .context("Failed to write Hermes prelude")?;
 
     // 3. Write Toolchain
-    write_if_changed(&tmp_lean_root.join("lean-toolchain"), "leanprover/lean4:v4.28.0-rc1\n")
-        .context("Failed to write Lean toolchain")?;
+    write_if_changed(
+        &tmp_lean_root.join("lean-toolchain"),
+        &format!("{}\n", env!("HERMES_LEAN_TOOLCHAIN")),
+    )
+    .context("Failed to write Lean toolchain")?;
 
     let mut generated_imports = String::new();
     let mut lake_roots = vec!["Generated".to_string()];
@@ -209,13 +212,24 @@ pub fn run_aeneas(
     }
 
     // 4. Write Lakefile
+    //
+    // If `HERMES_AENEAS_DIR` is set (e.g., in CI or local development), we use
+    // a local path dependency. Otherwise, we use a git dependency pinned to the
+    // revision specified in `Cargo.toml`.
     let aeneas_dep = if let Ok(path) = std::env::var("HERMES_AENEAS_DIR") {
-        // Use a path dependency to avoid git cloning
-        format!(r#"require aeneas from "{path}/backends/lean""#)
+        // Use a path dependency to avoid git cloning.
+        //
+        // Note: We append the revision as a comment (`-- <rev>`) so that we can
+        // verify in integration tests that the binary was built with the
+        // correct revision, even when using a local override.
+        format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("HERMES_AENEAS_REV"))
     } else {
-        r#"require aeneas from git
-  "https://github.com/AeneasVerif/aeneas" @ "main" / "backends/lean""#
-            .to_string()
+        format!(
+            r#"require aeneas from git
+  "https://github.com/AeneasVerif/aeneas" @ "{}" / "backends/lean""#,
+            env!("HERMES_AENEAS_REV")
+        )
+        .to_string()
     };
 
     let roots_str = lake_roots.iter().map(|r| format!("`{}", r)).collect::<Vec<_>>().join(", ");

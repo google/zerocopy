@@ -419,6 +419,10 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     if path.to_string_lossy().contains("atomic_writes/hermes.toml") {
         return run_atomic_writes_test(path);
     }
+    // Special handling for the "toolchain_versioning" test case.
+    if path.to_string_lossy().contains("toolchain_versioning/hermes.toml") {
+        return run_toolchain_versioning_test(path);
+    }
 
     // `path` is `tests/fixtures/<test_case>/hermes.toml`
     let ctx = TestContext::new(path)?;
@@ -494,6 +498,77 @@ fn parse_command_log(content: &str) -> Vec<Vec<String>> {
         }
     }
     invocations
+}
+
+/// Verifies that the generating `lakefile.lean` and `lean-toolchain` files
+/// contain the correct Aeneas commit hash and Lean toolchain version,
+/// matching the values specified in `Cargo.toml`.
+fn run_toolchain_versioning_test(path: &Path) -> datatest_stable::Result<()> {
+    // 1. Setup TestContext
+    let ctx = TestContext::new(path)?;
+
+    // 2. Configure a basic run
+    let config = TestConfig {
+        args: Some(vec!["verify".into(), "--allow-sorry".into()]),
+        cwd: None,
+        log: None,
+        expected_status: None,
+        expected_stderr: None,
+        expected_stderr_regex: None,
+        artifact: vec![],
+        command: vec![],
+        mock: None,
+    };
+    // 3. Run
+    let assert = ctx.run_hermes(&config);
+    assert.success();
+
+    // 4. Verify generated lakefile.lean and lean-toolchain
+    let target_dir = ctx.sandbox_root.join("target");
+
+    // Parse `Cargo.toml` to get the expected values. We expect the tests to be
+    // running in the workspace root, so we can find `Cargo.toml` there.
+    let cargo_toml_path =
+        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml");
+    let cargo_toml_content = fs::read_to_string(&cargo_toml_path)?;
+    let cargo_toml: toml::Value = toml::from_str(&cargo_toml_content)?;
+    let metadata = cargo_toml
+        .get("package")
+        .and_then(|p| p.get("metadata"))
+        .and_then(|m| m.get("build-rs"))
+        .expect("Cargo.toml must have [package.metadata.build-rs]");
+
+    let expected_rev = metadata.get("aeneas_rev").and_then(|v| v.as_str()).unwrap();
+    let expected_toolchain = metadata.get("lean_toolchain").and_then(|v| v.as_str()).unwrap();
+
+    // Check `lakefile.lean` for the Aeneas revision. Even if using a local
+    // Aeneas path (which the test likely is), we expect the revision to be
+    // present in a comment.
+    let lean_dir = target_dir.join("hermes/hermes_test_target/lean");
+
+    let lakefile_path = lean_dir.join("lakefile.lean");
+    let lakefile_content = fs::read_to_string(&lakefile_path)?;
+
+    if !lakefile_content.contains(expected_rev) {
+        panic!(
+            "lakefile.lean does not contain expected aeneas_rev '{}'. Content:\n{}",
+            expected_rev, lakefile_content
+        );
+    }
+
+    // Check `lean-toolchain` for the correct Lean version.
+    let toolchain_path = lean_dir.join("lean-toolchain");
+    let toolchain_content = fs::read_to_string(&toolchain_path)?;
+
+    // toolchain content usually has a newline
+    if !toolchain_content.trim().contains(expected_toolchain) {
+        panic!(
+            "lean-toolchain does not contain expected toolchain '{}'. Content:\n{}",
+            expected_toolchain, toolchain_content
+        );
+    }
+
+    Ok(())
 }
 
 fn assert_commands_match(invocations: &[Vec<String>], expectations: &[CommandExpectation]) {
