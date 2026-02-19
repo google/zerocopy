@@ -10,6 +10,7 @@
 
 use std::{
     fmt::Write,
+    fs,
     io::{BufRead, BufReader},
     process::{Command, Stdio},
     sync::{Arc, Mutex},
@@ -48,10 +49,6 @@ pub fn run_aeneas(
         std::fs::remove_dir_all(&tmp_lean_root).context("Failed to cleanup stale tmp directory")?;
     }
     std::fs::create_dir_all(tmp_lean_root.join("hermes"))?;
-
-    // Optimization: If HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR is set, copy the .lake directory
-    // from there using hardlinks. This avoids re-downloading/re-building Mathlib.
-    restore_from_integration_cache(&tmp_lean_root)?;
 
     // 2. Write Standard Library
     let mut prelude = String::new();
@@ -290,19 +287,31 @@ lean_lib «User» where
     // temporary directory with the real one.
     let lean_root = roots.lean_root();
     if lean_root.exists() {
+        // Preserve the `.lake` directory and manifest to prevent re-downloading
+        // dependencies (like Mathlib) on subsequent runs.
+        let old_lake = lean_root.join(".lake");
+        let old_manifest = lean_root.join("lake-manifest.json");
+        if old_lake.exists() {
+            fs::rename(&old_lake, tmp_lean_root.join(".lake"))?;
+        }
+        if old_manifest.exists() {
+            fs::rename(&old_manifest, tmp_lean_root.join("lake-manifest.json"))?;
+        }
+
         // Remove the existing directory before renaming the temporary directory.
         // Note: `fs::rename` on Unix typically requires the target directory to be
         // empty if it exists. While not strictly atomic (there is a brief window
         // where the directory is missing), this prevents a half-written state.
         log::debug!("Removing existing lean directory: {}", lean_root.display());
-        std::fs::remove_dir_all(&lean_root).context("Failed to remove existing lean directory")?;
+        fs::remove_dir_all(&lean_root).context("Failed to remove existing lean directory")?;
     }
 
     log::debug!("Renaming {} to {}", lean_root.display(), lean_root.display());
-    std::fs::rename(&tmp_lean_root, &lean_root)
+    fs::rename(&tmp_lean_root, &lean_root)
         .context("Failed to rename temporary lean directory to target")?;
 
-    // The generated artifacts are now in the location expected by 'roots', so we can proceed with the build.
+    // The generated artifacts are now in the location expected by 'roots', so
+    // we can proceed with the build.
 
     run_lake(roots, artifacts)
 }
@@ -646,207 +655,6 @@ fn write_if_changed(path: &std::path::Path, content: &str) -> Result<()> {
         }
     }
     std::fs::write(path, content).context(format!("Failed to write {:?}", path))?;
-    Ok(())
-}
-
-/// Integration test utilities.
-///
-/// This module provides helpers for optimizing integration tests by reusing checking
-/// artifacts from a shared cache. This is critical for keeping CI times reasonable,
-/// as a full `mathlib` build can take 20+ minutes.
-mod integration {
-    use super::*;
-
-    /// Restores the `.lake` directory, which contains build artifacts and package
-    /// sources.
-    ///
-    /// We use `cp -rl` to create hardlinks instead of deep copying. This is crucial
-    /// for performance because the `.lake` directory (especially with `mathlib`) can
-    /// be very large and contain thousands of files. Hardlinking is nearly
-    /// instantaneous and consumes negligible additional disk space.
-    pub fn restore_lake_directory(
-        cache_path: &std::path::Path,
-        lean_root: &std::path::Path,
-    ) -> Result<()> {
-        let source_lake = cache_path.join(".lake");
-        let target_lake = lean_root.join(".lake");
-
-        // Fail fast if the source `.lake` directory is missing. This usually
-        // happens if the integration test cache has not been initialized
-        // correctly (e.g., `HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR` points to
-        // an empty or invalid directory).
-        if !source_lake.exists() {
-            bail!(
-                "Source .lake directory does not exist at {}. The integration test cache is invalid.",
-                source_lake.display()
-            );
-        }
-
-        // Fail fast if the target `.lake` directory already exists. In the
-        // context of integration tests, the sandbox is expected to be clean.
-        // If `.lake` exists, it implies a previous run failed to clean up or
-        // the test environment is dirty. Proceeding with a dirty `.lake` can
-        // lead to nondeterministic behavior (e.g., stale artifacts, mixed
-        // dependencies).
-        if target_lake.exists() {
-            bail!(
-                "Target .lake directory already exists at {}. \
-                 This likely indicates a stale build artifact or a previous failed run. \
-                 Please clean the target directory before running tests.",
-                target_lake.display()
-            );
-        }
-
-        log::debug!(
-            "Initializing .lake from {} to {}",
-            source_lake.display(),
-            target_lake.display()
-        );
-
-        // Use `cp -rl` to recursively hardlink the directory structure.
-        let status = Command::new("cp")
-            .args(["-rl", source_lake.to_str().unwrap(), target_lake.to_str().unwrap()])
-            .status()
-            .with_context(|| "Failed to execute cp -rl for .lake cache")?;
-
-        if !status.success() {
-            bail!("'cp -rl' failed with status: {}", status);
-        }
-
-        // Fix up Git metadata to ensure each test runs in isolation.
-        let packages_dir = target_lake.join("packages");
-        if !packages_dir.exists() {
-            return Ok(());
-        }
-
-        let entries =
-            std::fs::read_dir(&packages_dir).context("Failed to read .lake/packages directory")?;
-
-        for entry in entries.flatten() {
-            let pkg_name = entry.file_name();
-            let target_pkg = entry.path();
-            let source_pkg = source_lake.join("packages").join(&pkg_name);
-
-            fixup_git_metadata(&target_pkg, &source_pkg, &pkg_name)?;
-        }
-
-        Ok(())
-    }
-
-    /// Fixes up the `.git` directory within a cached package to prevent race
-    /// conditions.
-    ///
-    /// When multiple tests run in parallel, they share the underlying hardlinked
-    /// Git objects, which is safe because Git objects are immutable. However, the
-    /// Git index (`.git/index`), `HEAD`, and refs are mutable. If these were
-    /// hardlinked, one test modifying the index (e.g., via `git status` or an
-    /// internal Lake command) would corrupt the state for other tests.
-    ///
-    /// This function breaks the hardlinks for mutable metadata by replacing them
-    /// with deep copies, ensuring each test has its own independent view of the Git
-    /// repository state.
-    fn fixup_git_metadata(
-        target_pkg: &std::path::Path,
-        source_pkg: &std::path::Path,
-        pkg_name: &std::ffi::OsStr,
-    ) -> Result<()> {
-        let target_git = target_pkg.join(".git");
-        let source_git = source_pkg.join(".git");
-
-        if !target_git.exists() || !source_git.exists() {
-            return Ok(());
-        }
-
-        // Break hardlinks for mutable git metadata.
-        let git_entries =
-            std::fs::read_dir(&target_git).context("Failed to read .git directory in package")?;
-
-        for git_entry in git_entries.flatten() {
-            let name = git_entry.file_name();
-            if name == "objects" {
-                // Keep `.git/objects` hardlinked. These files are
-                // content-addressable and immutable, so sharing them is safe and
-                // saves significant disk space.
-                continue;
-            }
-
-            let target_elem = git_entry.path();
-            let source_elem = source_git.join(&name);
-
-            if target_elem.is_dir() {
-                let _ = std::fs::remove_dir_all(&target_elem);
-                // Recursively copy the directory to break hardlinks.
-                let _ = Command::new("cp")
-                    .args(["-r", source_elem.to_str().unwrap(), target_elem.to_str().unwrap()])
-                    .status();
-            } else {
-                let _ = std::fs::remove_file(&target_elem);
-                let _ = std::fs::copy(&source_elem, &target_elem);
-            }
-        }
-
-        // Update the Git index to match the current working directory.
-        //
-        // Since we hardlinked the working tree files, their inodes and ctime/mtime
-        // metadata may not match what is recorded in the copied `.git/index`. This
-        // discrepancy causes Git to believe that files have been modified locally.
-        // We run `git update-index --refresh` to update the index with the current
-        // file definition, suppressing "local changes" warnings.
-        let status = Command::new("git")
-            .args(["update-index", "-q", "--refresh"])
-            .current_dir(target_pkg)
-            .status();
-
-        if let Ok(s) = status {
-            if !s.success() {
-                log::warn!("git update-index failed for {}", pkg_name.to_string_lossy());
-            }
-        }
-
-        Ok(())
-    }
-}
-
-/// Restores the Lean build artifacts from a shared integration test cache.
-///
-/// This optimization significantly reduces test execution time by avoiding
-/// redundant downloads and compilations of standard Lean dependencies (like
-/// `mathlib`).
-fn restore_from_integration_cache(lean_root: &std::path::Path) -> Result<()> {
-    let cache_dir = match std::env::var("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR") {
-        Ok(d) => d,
-        Err(_) => return Ok(()),
-    };
-
-    let cache_path = std::path::Path::new(&cache_dir);
-
-    // Copy `lake-manifest.json` to signal that dependencies are resolved.
-    copy_lake_manifest(cache_path, lean_root)?;
-
-    // Restore the `.lake` directory using hardlinks for performance.
-    integration::restore_lake_directory(cache_path, lean_root)?;
-
-    Ok(())
-}
-
-/// Copies `lake-manifest.json` from the cache to the target directory.
-///
-/// Presence of this file informs the Lake build tool that dependencies have
-/// already been resolved, preventing it from attempting to update the manifest
-/// or query the network for package updates.
-fn copy_lake_manifest(cache_path: &std::path::Path, lean_root: &std::path::Path) -> Result<()> {
-    let source_manifest = cache_path.join("lake-manifest.json");
-    let target_manifest = lean_root.join("lake-manifest.json");
-
-    if source_manifest.exists() && !target_manifest.exists() {
-        log::debug!(
-            "Copying lake-manifest.json from {} to {}",
-            source_manifest.display(),
-            target_manifest.display()
-        );
-        std::fs::copy(&source_manifest, &target_manifest)
-            .context("Failed to copy lake-manifest.json from cache")?;
-    }
     Ok(())
 }
 
