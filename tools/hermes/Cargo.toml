@@ -25,6 +25,7 @@ thiserror = "2.0.18"
 walkdir = "2.5.0"
 indicatif = { version = "0.18.3", features = ["improved_unicode"] }
 console = "0.16.2"
+sha2 = "0.10"
 
 [dev-dependencies]
 fs2 = "0.4"
