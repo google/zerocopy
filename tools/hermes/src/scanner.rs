@@ -1,12 +1,12 @@
 use std::{
     collections::{HashMap, HashSet},
     ffi::OsStr,
-    hash::{Hash, Hasher as _},
     path::{Path, PathBuf},
     sync::mpsc::{self, Sender},
 };
 
 use anyhow::Result;
+use sha2::{Digest as _, Sha256};
 
 use crate::{
     parse::{self, ParsedLeanItem},
@@ -52,23 +52,27 @@ impl HermesArtifact {
     /// have the same name. The slug is guaranteed to be a valid Lean
     /// identifier (no hyphens).
     pub fn artifact_slug(&self) -> String {
-        fn hash<T: Hash>(t: &T) -> u64 {
-            let mut s = std::collections::hash_map::DefaultHasher::new();
-            t.hash(&mut s);
-            s.finish()
+        fn hash(data: &[u8]) -> u64 {
+            let mut hasher = Sha256::new();
+            hasher.update(data);
+            let result = hasher.finalize();
+            let mut bytes = [0u8; 8];
+            bytes.copy_from_slice(&result[0..8]);
+            u64::from_le_bytes(bytes)
         }
 
         // Double-hash to make sure we can distinguish between e.g.
         // (manifest_path, target_name) = ("abc", "def") and ("ab", "cdef"),
         // which would hash identically if we just hashed their concatenation.
         //
-        // Note: We use `DefaultHasher` so this slug is not guaranteed to be
-        // stable across Rust versions. This is acceptable for local artifact
-        // management.
-        let h0 = hash(&self.manifest_path);
-        let h1 = hash(&self.name.target_name);
-        let h2 = hash(&self.target_kind);
-        let h = hash(&[h0, h1, h2]);
+        // Use SHA-256 not for security but rather stability – Rust's
+        // `DefaultHasher` doesn't guarantee stability even across runs of the
+        // same binary.
+        let h0 = hash(&self.manifest_path.as_os_str().as_encoded_bytes());
+        let h1 = hash(&self.name.target_name.as_bytes());
+        let h2 = hash(&[self.target_kind as u8]);
+        let hashes = [h0, h1, h2];
+        let h = hash(&hashes.map(u64::to_ne_bytes).concat());
 
         // Converts kebab-case -> PascalCase.
         let to_pascal = |s: &str| {

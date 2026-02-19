@@ -1,12 +1,9 @@
-use std::{
-    env, fs,
-    hash::{Hash as _, Hasher as _},
-    path::PathBuf,
-};
+use std::{env, fs, path::PathBuf};
 
 use anyhow::{anyhow, Context, Result};
 use cargo_metadata::{Metadata, MetadataCommand, Package, PackageName, Target, TargetKind};
 use clap::Parser;
+use sha2::{Digest, Sha256};
 
 #[derive(Parser, Debug)]
 pub struct Args {
@@ -53,6 +50,7 @@ pub struct Args {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[repr(u8)]
 pub enum HermesTargetKind {
     /// A library target (generic).
     Lib,
@@ -234,15 +232,18 @@ fn resolve_run_roots(metadata: &Metadata) -> (PathBuf, PathBuf) {
     }
 
     // Hash the path to the workspace root to avoid collisions between different
-    // workspaces using the same target directory. We use `DefaultHasher` here,
-    // which is not guaranteed to be stable across Rust versions or processes.
-    // This is acceptable because these paths are only used for local artifact
-    // storage and do not need to be reproducible across different environments.
+    // workspaces using the same target directory. We use SHA-256 (truncated to
+    // 64 bits) for stable hashing across Rust versions. This ensures that the
+    // build directory name remains consistent for the same workspace root,
+    // avoiding unnecessary cache invalidation.
     let workspace_root_hash = {
-        let mut hasher = std::hash::DefaultHasher::new();
-        hasher.write(b"hermes_build_salt");
-        metadata.workspace_root.hash(&mut hasher);
-        hasher.finish()
+        let mut hasher = Sha256::new();
+        hasher.update(b"hermes_build_salt");
+        hasher.update(metadata.workspace_root.as_str().as_bytes());
+        let result = hasher.finalize();
+        let mut bytes = [0u8; 8];
+        bytes.copy_from_slice(&result[0..8]);
+        u64::from_le_bytes(bytes)
     };
 
     let run_root = hermes_global.join(format!("{workspace_root_hash:x}"));
