@@ -1,0 +1,15 @@
+[[artifact]]
+package = "atomic_writes"
+target = "lib"
+kind = "llbc"
+should_exist = true
+
+[[artifact]]
+package = "atomic_writes"
+target = "lib"
+kind = "lean"
+should_exist = true
+
+[test]
+args = ["verify", "--allow-sorry"]
+expected_status = "success"
