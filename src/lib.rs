@@ -3368,14 +3368,21 @@ pub unsafe trait FromZeros: TryFromBytes {
             return Ok(unsafe { Box::from_raw(NonNull::dangling().as_ptr()) });
         }
 
-        // FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
+        // SAFETY: `alloc::alloc_zeroed` has the same safety requirements as
+        // `GlobalAlloc::alloc_zeroed`, which just requires that the given layout has non-zero size.
+        // Above, we returned early if `layout.size() == 0`, so the size must be non-zero.
         let ptr = unsafe { alloc::alloc::alloc_zeroed(layout).cast::<Self>() };
         if ptr.is_null() {
             return Err(AllocError);
         }
-        // FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
+        // SAFETY:
+        // - Per the documentation on `alloc::alloc_zeroed`, so long as no specific allocator is
+        //   registered with `#[global_allocator]`, `ptr` will be allocated using the `std` crate's
+        //   default `Global` allocator as required for `Box::from_raw`.
+        // - As the layout used to get the allocation was taken from `Layout::new()`,
+        //   it is suitable for holding a `T`, and the resulting `ptr` will be sufficiently
+        //   aligned & non-null.
+        // - Since `T` implements `FromZeros`, all zeros is a valid value of `T`.
         Ok(unsafe { Box::from_raw(ptr) })
     }
 
