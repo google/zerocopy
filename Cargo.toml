@@ -33,7 +33,7 @@ license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
 rust-version = "1.56.0"
 
-exclude = [".*"]
+include = ["README.md", "LICENSE-MIT", "LICENSE-BSD", "LICENSE-APACHE", "Cargo.toml", "CHANGELOG.md", "build.rs", "src/**/*.rs"]
 
 [package.metadata.build-rs]
 # These key/value pairs are parsed by `build.rs`. Each entry names a `--cfg`
