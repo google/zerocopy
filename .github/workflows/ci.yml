@@ -30,7 +30,7 @@ env:
 
 jobs:
   build_test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ contains(matrix.target, 'windows') && 'windows-2019' || 'ubuntu-latest' }}
     # Generate and populate the global Cargo registry and cache first. Each
     # job in the matrix runs in parallel, so without populating the cache
     # first, most jobs would duplicate the work of downloading crates from
@@ -381,12 +381,12 @@ jobs:
           -- \
           --skip ui
 
-      # Only run tests when targetting Linux x86 (32- or 64-bit) - we're
-      # executing on Linux x86_64, so we can't run tests for any non-x86 target.
+      # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
+      # x86_64, so we can't run tests for any non-x86 target.
       #
       # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
       # Run compile tests when building for other targets.
-      if: contains(matrix.target, 'linux') && (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686'))
+      if: contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')
 
     - name: Run UI tests
       env:
@@ -411,8 +411,8 @@ jobs:
           --verbose \
           ui
 
-      # Only run tests when targetting Linux x86 (32- or 64-bit) - we're
-      # executing on Linux x86_64, so we can't run tests for any non-x86 target.
+      # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
+      # x86_64, so we can't run tests for any non-x86 target.
       #
       # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
       # Run compile tests when building for other targets.
@@ -427,7 +427,6 @@ jobs:
       # would need a new set of UI test files per toolchain, which would be a
       # maintenance burden not worth the (at present, zero) benefit.
       if: |
-        (!contains(matrix.target, 'windows')) &&
         (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) &&
           (matrix.crate == 'zerocopy-derive' ||
             (matrix.features != '' && matrix.features != '--no-default-features')) &&
