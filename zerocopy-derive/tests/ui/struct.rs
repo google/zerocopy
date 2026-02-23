@@ -255,6 +255,15 @@ struct IntoBytes12<T> {
     t: T,
 }
 
+// NOTE(#3063): This exists to ensure that our analysis for structs with
+// syntactic DSTs accounts for `align(N)`.
+#[derive(IntoBytes)]
+//~[msrv]^ ERROR: the trait bound `(): DynamicPaddingFree<IntoBytes13, true>` is not satisfied
+//~[stable, nightly]^^ ERROR: `IntoBytes13` has one or more padding bytes
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C, align(2))]
+struct IntoBytes13([u8]);
+
 //
 // Unaligned errors
 //

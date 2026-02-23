@@ -6,8 +6,10 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+use std::num::NonZeroU32;
+
 use proc_macro2::{Span, TokenStream};
-use quote::{quote, ToTokens};
+use quote::{quote, quote_spanned, ToTokens};
 use syn::{
     parse_quote, spanned::Spanned as _, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error,
     Expr, ExprLit, Field, GenericParam, Ident, Index, Lit, LitStr, Meta, Path, Type, Variant,
@@ -560,12 +562,29 @@ impl<'a> ImplBlockBuilder<'a> {
             (FieldBounds::Explicit(bounds), _) => bounds,
         };
 
-        // Don't bother emitting a padding check if there are no fields.
-        #[allow(unstable_name_collisions)] // See `BoolExt` below
         let padding_check_bound = self
             .padding_check
-            .and_then(|check| (!fields.is_empty()).then_some(check))
             .map(|check| {
+                // Parse the repr for `align` and `packed` modifiers. Note that
+                // `Repr::<PrimitiveRepr, NonZeroU32>` is more permissive than
+                // what Rust supports for structs, enums, or unions, and thus
+                // reliably extracts these modifiers for any kind of type.
+                let repr =
+                    Repr::<PrimitiveRepr, NonZeroU32>::from_attrs(&self.ctx.ast.attrs).unwrap();
+                let core = self.ctx.core_path();
+                let option = quote! { #core::option::Option };
+                let nonzero = quote! { #core::num::NonZeroUsize };
+                let none = quote! { #option::None::<#nonzero> };
+                let repr_align =
+                    repr.get_align().map(|spanned| {
+                        let n = spanned.t.get();
+                        quote_spanned! { spanned.span => (#nonzero::new(#n as usize)) }
+                    }).unwrap_or(quote! { (#none) });
+                let repr_packed =
+                    repr.get_packed().map(|packed| {
+                        let n = packed.get();
+                        quote! { (#nonzero::new(#n as usize)) }
+                    }).unwrap_or(quote! { (#none) });
                 let variant_types = variants.iter().map(|(_, fields)| {
                     let types = fields.iter().map(|(_vis, _name, ty)| ty);
                     quote!([#((#types)),*])
@@ -578,7 +597,7 @@ impl<'a> ImplBlockBuilder<'a> {
                         Self,
                         {
                             #validator_context
-                            #zerocopy_crate::#validator_macro!(Self, #(#t,)* #(#variant_types),*)
+                            #zerocopy_crate::#validator_macro!(Self, #repr_align, #repr_packed, #(#t,)* #(#variant_types),*)
                         }
                     >
                 }
