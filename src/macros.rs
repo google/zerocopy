@@ -1097,6 +1097,8 @@ macro_rules! cryptocorrosion_derive_traits {
     ) => {
         $crate::struct_padding!(
             Self,
+            None,
+            None,
             [
                 $($($tuple_field_ty),*)?
                 $($($field_ty),*)?
@@ -1179,6 +1181,8 @@ macro_rules! cryptocorrosion_derive_traits {
                 {
                     $crate::union_padding!(
                         Self,
+                        None,
+                        None,
                         [$($field_ty),*]
                     )
                 },
