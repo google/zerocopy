@@ -37,6 +37,15 @@ union C {
 
 util_assert_impl_all!(C: imp::IntoBytes);
 
+#[derive(imp::IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C, align(2))]
+union Aligned {
+    a: [u8; 2],
+}
+
+util_assert_impl_all!(Aligned: imp::IntoBytes);
+
 // Transparent unions are unstable; see issue #60405
 // <https://github.com/rust-lang/rust/issues/60405> for more information.
 

@@ -145,3 +145,12 @@ util_assert_impl_all!(HasData: imp::IntoBytes);
 enum BadTagWouldHavePadding {
     A(u8, u16),
 }
+
+#[derive(imp::IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8, align(2))]
+enum HasAlign {
+    A(u8),
+}
+
+util_assert_impl_all!(HasAlign: imp::IntoBytes);

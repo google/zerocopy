@@ -310,7 +310,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: Immutable` is not satisfied
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and 136 others
+           and 137 others
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -330,7 +330,7 @@ error[E0277]: the trait bound `UnsafeCell<u8>: Immutable` is not satisfied
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and 136 others
+           and 137 others
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -496,6 +496,24 @@ note: not a concrete type
     |          ^^^^^^^^^
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
+error[E0277]: `IntoBytes7` has 1 total byte(s) of padding
+   --> $DIR/enum.rs:681:10
+    |
+681 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
+    |
+    = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
+    = note: consider adding explicit fields where padding would be
+    = note: consider using `#[repr(packed)]` to remove padding
+help: the trait `PaddingFree<IntoBytes7, 1>` is not implemented for `()`
+      but trait `PaddingFree<IntoBytes7, 0>` is implemented for it
+   --> $WORKSPACE/src/util/macro_util.rs:62:1
+    |
+ 62 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = help: see issue #48214
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
 error[E0277]: the trait bound `bool: FromBytes` is not satisfied
    --> $DIR/enum.rs:247:10
     |
@@ -525,7 +543,7 @@ note: required by a bound in `assert_is_from_bytes`
     |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
     = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 51 previous errors
+error: aborting due to 52 previous errors
 
 Some errors have detailed explanations: E0277, E0552, E0565, E0566.
 For more information about an error, try `rustc --explain E0277`.
