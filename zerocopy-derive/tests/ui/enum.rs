@@ -677,3 +677,12 @@ enum IntoBytes6<T> {
     A(T),
     //~[msrv, stable, nightly]^ ERROR: generic parameters may not be used in const operations
 }
+
+#[derive(IntoBytes)]
+//~[msrv]^ ERROR: the trait bound `(): PaddingFree<IntoBytes7, 1_usize>` is not satisfied
+//~[stable, nightly]^^ ERROR: `IntoBytes7` has 1 total byte(s) of padding
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8, align(2))]
+enum IntoBytes7 {
+    A,
+}
