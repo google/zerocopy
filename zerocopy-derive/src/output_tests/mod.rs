@@ -66,11 +66,11 @@ macro_rules! test {
         }
     };
 
-    ($name:ident { $($i:tt)* } expands to $path:literal) => {
-        test!($name { $($i)* } expands to $path no_build);
+    ($name:ident { $($i:tt)* } expands to $path:expr) => {
+        test!($name { $($i)* } expands to $path; no_build);
     };
 
-    ($name:ident { $($i:tt)* } expands to $path:literal no_build) => {
+    ($name:ident { $($i:tt)* } expands to $path:expr; no_build) => {
         {
             let ts: proc_macro2::TokenStream = quote::quote!( $($i)* );
             let ast = syn::parse2::<syn::DeriveInput>(ts).unwrap();
@@ -255,7 +255,7 @@ fn test_into_bytes_enum() {
                     enum Foo {
                         Bar,
                     }
-                } expands to "expected/into_bytes_enum.expected.rs"
+                } expands to concat!("expected/into_bytes_enum.", stringify!($attr), ".expected.rs")
             })*
         };
     }
