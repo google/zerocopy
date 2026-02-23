@@ -402,7 +402,18 @@ note: not a concrete type
     |          ^^^^^^^^^
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 51 previous errors
+error[E0277]: the trait bound `(): PaddingFree<IntoBytes7, 1_usize>` is not satisfied
+   --> $DIR/enum.rs:681:10
+    |
+681 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes7, 1_usize>` is not implemented for `()`
+    |
+    = help: the following implementations were found:
+              <() as PaddingFree<T, 0_usize>>
+    = help: see issue #48214
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 52 previous errors
 
 Some errors have detailed explanations: E0277, E0552, E0565, E0566, E0658.
 For more information about an error, try `rustc --explain E0277`.
