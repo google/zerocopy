@@ -6,8 +6,10 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+use std::num::NonZeroU32;
+
 use proc_macro2::{Span, TokenStream};
-use quote::{quote, ToTokens};
+use quote::{quote, quote_spanned, ToTokens};
 use syn::{
     parse_quote, spanned::Spanned as _, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error,
     Expr, ExprLit, Field, GenericParam, Ident, Index, Lit, LitStr, Meta, Path, Type, Variant,
@@ -566,6 +568,22 @@ impl<'a> ImplBlockBuilder<'a> {
             .padding_check
             .and_then(|check| (!fields.is_empty()).then_some(check))
             .map(|check| {
+                let repr =
+                    Repr::<PrimitiveRepr, NonZeroU32>::from_attrs(&self.ctx.ast.attrs).unwrap();
+                let core = self.ctx.core_path();
+                let option = quote! { #core::option::Option };
+                let none = quote! { #option::None::<#core::num::NonZeroUsize> };
+                let repr_align =
+                    repr.get_align().map(|spanned| {
+                        let n = spanned.t.get();
+                        quote_spanned! { spanned.span => (#option::Some(#n)) }
+                    }).unwrap_or(quote! { (#none) });
+                let repr_packed =
+                    repr.get_packed().map(|packed| {
+                        let n = packed.get();
+                        quote! { (#option::Some(#n)) }
+                    }).unwrap_or(quote! { (#none) });
+
                 let variant_types = variants.iter().map(|(_, fields)| {
                     let types = fields.iter().map(|(_vis, _name, ty)| ty);
                     quote!([#((#types)),*])
@@ -578,7 +596,7 @@ impl<'a> ImplBlockBuilder<'a> {
                         Self,
                         {
                             #validator_context
-                            #zerocopy_crate::#validator_macro!(Self, #(#t,)* #(#variant_types),*)
+                            #zerocopy_crate::#validator_macro!(Self, #repr_align, #repr_packed, #(#t,)* #(#variant_types),*)
                         }
                     >
                 }
