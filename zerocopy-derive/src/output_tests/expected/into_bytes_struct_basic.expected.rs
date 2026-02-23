@@ -17,7 +17,14 @@ const _: () = {
         u8: ::zerocopy::IntoBytes,
         (): ::zerocopy::util::macro_util::PaddingFree<
             Self,
-            { ::zerocopy::struct_padding!(Self, [(u8), (u8)]) },
+            {
+                ::zerocopy::struct_padding!(
+                    Self,
+                    (::zerocopy::util::macro_util::core_reexport::option::Option::None),
+                    (::zerocopy::util::macro_util::core_reexport::option::Option::None),
+                    [(u8), (u8)]
+                )
+            },
         >,
     {
         fn only_derive_is_allowed_to_implement_this_trait() {}

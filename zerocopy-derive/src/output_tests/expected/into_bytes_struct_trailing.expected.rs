@@ -17,7 +17,14 @@ const _: () = {
         [Trailing]: ::zerocopy::IntoBytes,
         (): ::zerocopy::util::macro_util::DynamicPaddingFree<
             Self,
-            { ::zerocopy::repr_c_struct_has_padding!(Self, [(u8), ([Trailing])]) },
+            {
+                ::zerocopy::repr_c_struct_has_padding!(
+                    Self,
+                    (::zerocopy::util::macro_util::core_reexport::option::Option::None),
+                    (::zerocopy::util::macro_util::core_reexport::option::Option::None),
+                    [(u8), ([Trailing])]
+                )
+            },
         >,
     {
         fn only_derive_is_allowed_to_implement_this_trait() {}

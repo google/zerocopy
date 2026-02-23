@@ -329,7 +329,8 @@ pub use __size_of::size_of;
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! struct_padding {
-    ($t:ty, [$($ts:ty),*]) => {
+    ($t:ty, $align:expr, $packed:expr, [$($ts:ty),*]) => {
+        // TODO: Assert `$align` and `$packed` are `None`.
         $crate::util::macro_util::size_of::<$t>() - (0 $(+ $crate::util::macro_util::size_of::<$ts>())*)
     };
 }
@@ -342,10 +343,10 @@ macro_rules! struct_padding {
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! repr_c_struct_has_padding {
-    ($t:ty, [$($ts:tt),*]) => {{
+    ($t:ty, $align:expr, $packed:expr, [$($ts:tt),*]) => {{
         let layout = $crate::DstLayout::for_repr_c_struct(
-            $crate::util::macro_util::core_reexport::option::Option::None,
-            $crate::util::macro_util::core_reexport::option::Option::None,
+            $align,
+            $packed,
             &[$($crate::repr_c_struct_has_padding!(@field $ts),)*]
         );
         layout.requires_static_padding() || layout.requires_dynamic_padding()
@@ -379,7 +380,8 @@ macro_rules! repr_c_struct_has_padding {
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! union_padding {
-    ($t:ty, [$($ts:ty),*]) => {{
+    ($t:ty, $align:expr, $packed:expr, [$($ts:ty),*]) => {{
+        // TODO: Assert `$align` and `$packed` are `None`.
         let mut max = 0;
         $({
             let padding = $crate::util::macro_util::size_of::<$t>() - $crate::util::macro_util::size_of::<$ts>();
@@ -410,7 +412,8 @@ macro_rules! union_padding {
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! enum_padding {
-    ($t:ty, $disc:ty, $([$($ts:ty),*]),*) => {{
+    ($t:ty, $align:expr, $packed:expr, $disc:ty, $([$($ts:ty),*]),*) => {{
+        // TODO: Assert `$align` and `$packed` are `None`.
         let mut max = 0;
         $({
             let padding = $crate::util::macro_util::size_of::<$t>()
@@ -1125,7 +1128,7 @@ mod tests {
                 #[$cfg]
                 #[allow(dead_code)]
                 struct Test($($ts),*);
-                assert_eq!(struct_padding!(Test, [$($ts),*]), $expect);
+                assert_eq!(struct_padding!(Test, None, None, [$($ts),*]), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),*) => $expect:expr) => {
                 test!(#[$cfg] ($($ts),*) => $expect);
@@ -1156,7 +1159,7 @@ mod tests {
                 #[repr(C)]
                 #[allow(dead_code)]
                 struct Test($($ts),*);
-                assert_eq!(repr_c_struct_has_padding!(Test, [$($ts),*]), $expect);
+                assert_eq!(repr_c_struct_has_padding!(Test, None, None, [$($ts),*]), $expect);
             }};
         }
 
@@ -1192,7 +1195,7 @@ mod tests {
                 #[$cfg]
                 #[allow(unused)] // fields are never read
                 union Test{ $($fs: $ts),* }
-                assert_eq!(union_padding!(Test, [$($ts),*]), $expect);
+                assert_eq!(union_padding!(Test, None, None, [$($ts),*]), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* {$($fs:ident: $ts:ty),*} => $expect:expr) => {
                 test!(#[$cfg] {$($fs: $ts),*} => $expect);
@@ -1231,7 +1234,7 @@ mod tests {
                     $($vs ($($ts),*),)*
                 }
                 assert_eq!(
-                    enum_padding!(Test, $disc, $([$($ts),*]),*),
+                    enum_padding!(Test, None, None, $disc, $([$($ts),*]),*),
                     $expect
                 );
             }};
