@@ -21,17 +21,6 @@ use crate::{
     translator::SignatureTranslator,
 };
 
-/// Determines the name of the crate to verify.
-///
-/// This function attempts to resolve the crate name using the following precedence:
-/// 1. Explicitly provided `crate_name` argument.
-/// 2. `package.name` from the `Cargo.toml` pointed to by `manifest_path`.
-/// 3. `package.name` from `Cargo.toml` in the `crate_root`.
-///
-/// # Arguments
-/// * `manifest_path` - Optional path to a specific manifest or script.
-/// * `crate_name` - Optional explicit override for the crate name.
-/// * `crate_root` - The root directory of the invocation.
 fn get_crate_name(
     manifest_path: Option<&Path>,
     crate_name: Option<String>,
@@ -44,7 +33,6 @@ fn get_crate_name(
     let mut cmd = cargo_metadata::MetadataCommand::new();
     if let Some(path) = manifest_path {
         if path.extension().is_some_and(|e| e == "rs") {
-            // For single-file scripts, default to the filename as the crate name.
             return Ok(path.file_stem().unwrap().to_string_lossy().to_string());
         }
         cmd.manifest_path(path);
@@ -56,7 +44,6 @@ fn get_crate_name(
 
     let metadata = cmd.exec().context("Failed to load cargo metadata")?;
 
-    // If a specific manifest was requested, try to find the package corresponding to it.
     if let Some(path) = manifest_path {
         let canonical_manifest = fs::canonicalize(path).unwrap_or(path.to_path_buf());
         if let Some(pkg) = metadata.packages.iter().find(|p| {
@@ -71,12 +58,10 @@ fn get_crate_name(
         }
     }
 
-    // Default to the root package if available.
     if let Some(root) = metadata.root_package() {
         return Ok(root.name.clone());
     }
 
-    // Fallback: search for a package matching the default manifest path.
     let default_manifest = crate_root.join("Cargo.toml");
     let canonical_default = fs::canonicalize(&default_manifest).unwrap_or(default_manifest);
     if let Some(pkg) = metadata.packages.iter().find(|p| {
@@ -91,26 +76,26 @@ fn get_crate_name(
     Err(anyhow!("Could not determine crate name from Cargo.toml"))
 }
 
-/// Controls the behavior when proofs are missing (`///@ proof` block is absent).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Sorry {
-    /// Substitute missing proofs with `sorry` (Lean's "trust me" keyword).
-    ///
-    /// This allows the verification to proceed and checking other proofs even if some are missing.
     AllowSorry,
-    /// Fail the verification if any proof is missing.
     RejectSorry,
 }
 
-/// Executes the full Hermes verification pipeline.
-///
-/// # Arguments
-/// * `crate_name` - Optional name override.
-/// * `crate_root` - Path to the real crate root.
-/// * `dest` - Destination directory for generated artifacts.
-/// * `aeneas_path` - Path to local Aeneas installation.
-/// * `manifest_path` - Path to specific Cargo.toml or script.
-/// * `sorry_mode` - Whether to allow `sorry` for missing proofs.
+/// Convert snake_case to CamelCase.
+fn to_camel_case(snake: &str) -> String {
+    snake
+        .split('_')
+        .map(|s| {
+            let mut c = s.chars();
+            match c.next() {
+                None => String::new(),
+                Some(f) => f.to_uppercase().to_string() + c.as_str(),
+            }
+        })
+        .collect()
+}
+
 pub fn run_pipeline(
     crate_name: Option<String>,
     crate_root: &Path,
@@ -125,13 +110,12 @@ pub fn run_pipeline(
 
     let crate_name_snake = crate_name.replace('-', "_");
     let llbc_path = dest.join(format!("{}.llbc", crate_name_snake));
+    let camel_name = to_camel_case(&crate_name_snake);
 
-    // Cleanup previous artifacts
     if llbc_path.exists() {
         fs::remove_file(&llbc_path)?;
     }
 
-    // Only pass manifest_path as source_file if it is an .rs file (script)
     let source_file = if let Some(path) = &manifest_path {
         if path.extension().is_some_and(|e| e == "rs") { Some(path.as_path()) } else { None }
     } else {
@@ -139,15 +123,10 @@ pub fn run_pipeline(
     };
 
     // Step 1: Create Shadow Crate
-    //
-    // This sanitizes the code (removing unsafe, mocking models) to prepare it for Charon.
     log::info!("Step 1: Creating Shadow Crate...");
     let (shadow_crate_root, shadow_source_file, models, roots) =
         crate::shadow::create_shadow_crate(crate_root, source_file)?;
 
-    // Remap manifest path to use shadow crate
-    // If it was a script, point to the shadow script.
-    // If it was a Cargo manifest, point to the shadow Cargo manifest.
     let shadow_manifest_path = if let Some(shadow_file) = shadow_source_file {
         Some(shadow_file)
     } else if let Some(path) = &manifest_path {
@@ -160,20 +139,15 @@ pub fn run_pipeline(
         None
     };
 
-    // Prepend crate name to models to match Charon's fully qualified usage
     let opaque_funcs: Vec<String> =
         models.iter().map(|m| format!("{}::{}", crate_name_snake, m)).collect();
 
-    // Prepend crate name to roots (start_from) for selective translation
     let mut start_from: Vec<String> =
         roots.iter().map(|r| format!("{}::{}", crate_name_snake, r)).collect();
-
-    // Always include hermes_std and hermes_std::ptr to ensure they are available for valid imports.
-    // Charon --start-from is recursive, so including the module root should be enough.
     start_from.push(format!("{}::hermes_std", crate_name_snake));
 
     // Step 2: Run Charon
-    // Extracts the shadow crate to LLBC (Low-Level Borrow Calculus).
+    log::info!("Step 2: Running Charon...");
     run_charon(
         &shadow_crate_root,
         &llbc_path,
@@ -187,33 +161,39 @@ pub fn run_pipeline(
     }
 
     // Step 3: Run Aeneas
-    //
-    // Translates LLBC to Lean 4 models.
-    log::info!("Step 2: Running Aeneas...");
+    log::info!("Step 3: Running Aeneas...");
     run_aeneas(&llbc_path, dest)?;
 
-    // Step 4: Stitching
+    // Step 3b: Fix directory structure
     //
-    // Combines the generated Lean models with user-provided proofs extracted from doc comments.
-    log::info!("Step 3: Stitching...");
+    // Aeneas with -split-files -gen-lib-entry outputs flat files (Types.lean, Funs.lean, etc.)
+    // plus a root CamelName.lean that imports CamelName.Funs. But the imports expect a
+    // subdirectory structure: CamelName/Funs.lean, CamelName/Types.lean, etc.
+    //
+    // Move the split files into the subdirectory.
+    let sub_dir = dest.join(&camel_name);
+    fs::create_dir_all(&sub_dir)?;
 
-    // Convert snake_case crate name to CamelCase for Lean module name
-    let camel_name: String = crate_name_snake
-        .split('_')
-        .map(|s| {
-            let mut c = s.chars();
-            match c.next() {
-                None => String::new(),
-                Some(f) => f.to_uppercase().to_string() + c.as_str(),
-            }
-        })
-        .collect();
+    let split_files = ["Types.lean", "Funs.lean", "FunsExternal_Template.lean"];
+    for filename in &split_files {
+        let src = dest.join(filename);
+        let dst = sub_dir.join(filename);
+        if src.exists() {
+            fs::rename(&src, &dst).with_context(|| {
+                format!("Failed to move {} to {}/", filename, camel_name)
+            })?;
+        }
+    }
 
     let generated_camel = dest.join(format!("{}.lean", camel_name));
     if !generated_camel.exists() {
         return Err(anyhow!("Aeneas did not produce expected output file: {:?}", generated_camel));
     }
 
+    // Step 4: Stitching
+    log::info!("Step 4: Stitching...");
+    // Only count user models, not injected hermes_std models
+    let has_user_models = models.iter().any(|m| !m.starts_with("hermes_std"));
     stitch_user_proofs(
         &shadow_crate_root,
         &crate_name_snake,
@@ -221,12 +201,28 @@ pub fn run_pipeline(
         dest,
         sorry_mode,
         source_file.is_some(),
+        has_user_models,
     )?;
 
-    // Step 5: Verification (Lake Build)
+    // Step 4b: Handle FunsExternal.lean
     //
-    // Compiles the generated Lean project.
-    log::info!("Step 4: Verifying...");
+    // Always use the Aeneas-generated template — it provides correct axioms for all
+    // opaque functions (including hermes_std models). The Hermes model generator
+    // can produce malformed Lean for complex model signatures.
+    let funs_ext_dest = sub_dir.join("FunsExternal.lean");
+    let funs_ext_template = sub_dir.join("FunsExternal_Template.lean");
+    let funs_ext_hermes = dest.join("FunsExternal.lean");
+
+    if funs_ext_template.exists() {
+        fs::copy(&funs_ext_template, &funs_ext_dest)?;
+    }
+    // Clean up any Hermes-generated FunsExternal at the top level
+    if funs_ext_hermes.exists() {
+        fs::remove_file(&funs_ext_hermes)?;
+    }
+
+    // Step 5: Verification (Lake Build)
+    log::info!("Step 5: Verifying with Lake...");
     write_lakefile(dest, &crate_name_snake, &camel_name, aeneas_path, sorry_mode)?;
     run_lake_build(dest)?;
 
@@ -234,10 +230,6 @@ pub fn run_pipeline(
     Ok(())
 }
 
-/// Parses the source code to extract user proofs and generates the corresponding Lean files.
-///
-/// This specific function walks the source tree, parses Rust files using `syn`, extracts
-/// functions and structs, and then delegates to `generate_lean_file`.
 fn stitch_user_proofs(
     crate_root: &Path,
     crate_name_snake: &str,
@@ -245,6 +237,7 @@ fn stitch_user_proofs(
     dest: &Path,
     sorry_mode: Sorry,
     is_script_mode: bool,
+    has_user_models: bool,
 ) -> Result<()> {
     let mut all_functions = Vec::new();
     let mut all_structs = Vec::new();
@@ -256,18 +249,12 @@ fn stitch_user_proofs(
             if entry.path().extension().is_some_and(|ext| ext == "rs") {
                 let relative = entry.path().strip_prefix(&src_dir)?;
 
-                // Calculate file-based module path.
-                //
-                // e.g. `src/foo/bar.rs` -> `["foo", "bar"]`
                 let components: Vec<_> = relative
                     .with_extension("")
                     .iter()
                     .map(|s| s.to_string_lossy().into_owned())
                     .collect();
 
-                // Handle mod.rs/lib.rs conventions:
-                // `src/lib.rs` -> `[]` (root)
-                // `src/foo/mod.rs` -> `["foo"]` (not ["foo", "mod"])
                 let mut mod_path = Vec::new();
                 for (i, comp) in components.iter().enumerate() {
                     if i == components.len() - 1
@@ -278,8 +265,6 @@ fn stitch_user_proofs(
                     mod_path.push(comp.clone());
                 }
 
-                // If specialized for a script, and the file name matches the crate name,
-                // we treat it as the root module.
                 if is_script_mode && mod_path.len() == 1 && mod_path[0] == crate_name_snake {
                     mod_path.clear();
                 }
@@ -287,9 +272,6 @@ fn stitch_user_proofs(
                 let content = fs::read_to_string(entry.path())?;
                 let mut extracted = extract_blocks(&content)?;
 
-                // Prepend the file's module path to the internal path associated with each item.
-                // The `parser` extracts internal module paths (e.g. `mod inner { ... }`),
-                // so we prefix the file path to that.
                 for func in &mut extracted.functions {
                     let mut full_path = mod_path.clone();
                     full_path.extend(func.path.drain(..));
@@ -309,18 +291,10 @@ fn stitch_user_proofs(
         &all_functions,
         &all_structs,
         sorry_mode,
+        has_user_models,
     )
 }
 
-/// Generates `UserProofs.lean` and `FunsExternal.lean` from the parsed artifacts.
-///
-/// # Arguments
-/// * `dest` - Destination directory.
-/// * `namespace_name` - The crate name in snake_case (used for Lean namespaces).
-/// * `import_name` - The crate name in CamelCase (used for imports).
-/// * `functions` - List of functions with specs/proofs.
-/// * `structs` - List of structs (used for `Verifiable` instances).
-/// * `sorry_mode` - Strategy for handling missing proofs.
 fn generate_lean_file(
     dest: &Path,
     namespace_name: &str,
@@ -328,48 +302,55 @@ fn generate_lean_file(
     functions: &[ParsedFunction],
     structs: &[crate::parser::ParsedStruct],
     sorry_mode: Sorry,
+    has_user_models: bool,
 ) -> Result<()> {
-    // `UserProofs.lean` will contain theorem statements and proofs.
     let mut user_proofs_content = String::new();
-    // `FunsExternal.lean` will contain definitions for 'model' functions (infinite loops in Rust).
     let mut funs_external_content = String::new();
 
-    // Standard imports needed for verification.
-    let common_imports = format!(
-        "import {}
-import Aeneas
-import Hermes.Std
-open Aeneas Aeneas.Std Result Error
-open Hermes.Std
-open Hermes.Std.Memory
-open Hermes.Std.Platform
-open {}.hermes_std.ptr
-set_option linter.unusedVariables false
+    // --- UserProofs.lean imports ---
+    // Use CamelCase import name, not snake_case
+    user_proofs_content.push_str(&format!("import {}\n", import_name));
+    user_proofs_content.push_str("import Aeneas\n");
 
-",
-        import_name, namespace_name
-    );
+    // Only import Hermes.Std if we have structs with invariants or models
+    let needs_hermes_std = has_user_models || structs.iter().any(|s| s.invariant.is_some());
+    if needs_hermes_std {
+        user_proofs_content.push_str("import Hermes.Std\n");
+    }
 
-    // FunsExternal needs to import the Type definitions generated by Aeneas.
-    // typically `${Namespace}.Types`.
-    funs_external_content.push_str(&format!("import {}.Types\n", namespace_name));
-    funs_external_content.push_str("import Aeneas\n");
-    funs_external_content.push_str("import Hermes.Std\n");
-    funs_external_content.push_str("open Aeneas Aeneas.Std Result Error\n");
-    funs_external_content.push_str("open Hermes.Std\n");
-    funs_external_content.push_str(&format!("\nnamespace {}\n\n", namespace_name));
+    user_proofs_content.push_str("open Aeneas Aeneas.Std Result Error\n");
 
-    user_proofs_content.push_str(&common_imports);
+    if needs_hermes_std {
+        user_proofs_content.push_str("open Hermes.Std\n");
+        user_proofs_content.push_str("open Hermes.Std.Memory\n");
+        user_proofs_content.push_str("open Hermes.Std.Platform\n");
+    }
+
+    user_proofs_content.push_str("set_option linter.unusedVariables false\n\n");
     user_proofs_content.push_str(&format!("namespace {}\n\n", namespace_name));
 
-    // Write Hermes/Std.lean (Static Library)
-    let hermes_std_path = dest.join("Hermes");
-    fs::create_dir_all(&hermes_std_path)?;
-    fs::write(hermes_std_path.join("Std.lean"), include_str!("include/Std.lean"))?;
-    fs::write(dest.join("Hermes.lean"), include_str!("Hermes.lean"))?;
+    // --- FunsExternal.lean imports ---
+    // Use CamelCase import name for Types
+    funs_external_content.push_str(&format!("import {}.Types\n", import_name));
+    funs_external_content.push_str("import Aeneas\n");
+    if needs_hermes_std {
+        funs_external_content.push_str("import Hermes.Std\n");
+    }
+    funs_external_content.push_str("open Aeneas Aeneas.Std Result Error\n");
+    if needs_hermes_std {
+        funs_external_content.push_str("open Hermes.Std\n");
+    }
+    funs_external_content.push_str(&format!("\nnamespace {}\n\n", namespace_name));
 
-    // --- Generate Verifiable Instances for Structs ---
-    // Deduplicate structs just in case validation visited the same struct twice.
+    // Write Hermes/Std.lean (Static Library) — only if needed
+    if needs_hermes_std {
+        let hermes_std_path = dest.join("Hermes");
+        fs::create_dir_all(&hermes_std_path)?;
+        fs::write(hermes_std_path.join("Std.lean"), include_str!("include/Std.lean"))?;
+        fs::write(dest.join("Hermes.lean"), include_str!("Hermes.lean"))?;
+    }
+
+    // --- Struct Verifiable instances ---
     let mut unique_structs = Vec::new();
     let mut seen_structs = std::collections::HashSet::new();
     for st in structs {
@@ -385,7 +366,6 @@ set_option linter.unusedVariables false
             invariant = "True";
         }
 
-        // Handle Generics: [Verifiable T] for each T
         let mut generic_params = String::new();
         let mut generic_constraints = String::new();
         let mut type_args = String::new();
@@ -404,9 +384,6 @@ set_option linter.unusedVariables false
             format!("({} {})", name, type_args.trim())
         };
 
-        // Generate instance definition
-        // instance [Verifiable T] : Verifiable (MyStruct T) where
-        //   is_valid self := ...
         let header = format!(
             "instance {}{} : Verifiable {} where",
             generic_params, generic_constraints, type_str
@@ -417,7 +394,11 @@ set_option linter.unusedVariables false
 
     // --- Process Functions ---
     for func in functions {
-        // Skip functions without Specs
+        // Skip hermes_std internal functions — they are handled by the Aeneas template
+        if func.path.first().is_some_and(|p| p == "hermes_std") {
+            continue;
+        }
+
         let spec_content = match &func.spec {
             Some(s) => s,
             None => continue,
@@ -443,7 +424,7 @@ set_option linter.unusedVariables false
             }
         };
 
-        // Open/Close namespaces for this function (e.g. `namespace Foo`)
+        // Open/Close namespaces
         let mut ns_openers = String::new();
         let mut ns_closers = String::new();
         for ns in &func.path {
@@ -461,14 +442,11 @@ set_option linter.unusedVariables false
             signature_args_full.push(args.clone());
         }
 
-        // --- Handle Models (External Functions) ---
+        // --- Handle Models ---
         if func.is_model {
-            // Models are defined as `noncomputable def` in Lean, as they don't have a body extracted from Rust.
-            // We model them using `Classical.choose` on their specification (if they return a value).
             funs_external_content.push_str(&ns_openers);
 
             let sig_str = signature_args_full.join(" ");
-
             let pred = desugared.predicate.as_deref().unwrap_or("True");
             let binders_str = desugared.binders.join(" ");
 
@@ -480,7 +458,6 @@ set_option linter.unusedVariables false
 
             funs_external_content
                 .push_str(&format!("noncomputable def {} {} :=\n", fn_name, sig_str));
-            // Use `if h : ... then Classical.choose h else panic` pattern to satisfy the return type
             funs_external_content.push_str(&format!("  if h : {} then\n", exists_clause));
             if desugared.binders.is_empty() {
                 funs_external_content.push_str("    Result.ok ()\n");
@@ -502,7 +479,6 @@ set_option linter.unusedVariables false
                 Sorry::AllowSorry => "sorry",
                 Sorry::RejectSorry => {
                     if func.is_model {
-                        // Models without explicit proofs are axioms (we assume they behave as modeled).
                         "axiom"
                     } else {
                         anyhow::bail!("Missing proof for '{}'.", fn_name)
@@ -511,15 +487,17 @@ set_option linter.unusedVariables false
             },
         };
 
-        // Add validity arguments for inputs:
-        // `(x : T) -> (h_x_valid : Verifiable.is_valid x)`
+        // Build signature with validity arguments
         let mut sig_parts = signature_args_full.clone();
-        for arg in &inputs {
-            if let syn::FnArg::Typed(pat_type) = arg
-                && let syn::Pat::Ident(pat_ident) = &*pat_type.pat
-            {
-                let name = &pat_ident.ident;
-                sig_parts.push(format!("(h_{}_valid : Verifiable.is_valid {})", name, name));
+        // Only add validity arguments when Hermes.Std is in use
+        if needs_hermes_std {
+            for arg in &inputs {
+                if let syn::FnArg::Typed(pat_type) = arg
+                    && let syn::Pat::Ident(pat_ident) = &*pat_type.pat
+                {
+                    let name = &pat_ident.ident;
+                    sig_parts.push(format!("(h_{}_valid : Verifiable.is_valid {})", name, name));
+                }
             }
         }
         for req in &desugared.extra_args {
@@ -535,12 +513,21 @@ set_option linter.unusedVariables false
         if decl_type == "theorem" {
             user_proofs_content.push_str("  :=\n");
             user_proofs_content.push_str("  by\n");
-            user_proofs_content.push_str(proof_body);
+            // Preserve indentation: each line from the proof gets 2-space indent
+            for line in proof_body.lines() {
+                if line.trim().is_empty() {
+                    user_proofs_content.push('\n');
+                } else {
+                    user_proofs_content.push_str("  ");
+                    user_proofs_content.push_str(line);
+                    user_proofs_content.push('\n');
+                }
+            }
         }
 
-        user_proofs_content.push_str("\n");
+        user_proofs_content.push('\n');
         user_proofs_content.push_str(&ns_closers);
-        user_proofs_content.push_str("\n");
+        user_proofs_content.push('\n');
     }
 
     user_proofs_content.push_str(&format!("end {}\n", namespace_name));
@@ -548,18 +535,14 @@ set_option linter.unusedVariables false
 
     fs::write(dest.join("UserProofs.lean"), user_proofs_content)?;
 
-    // Only write FunsExternal if we generated content?
-    // Always good to write it to ensure imports work.
-    if !funs_external_content.is_empty() {
+    // Only write FunsExternal if we have model content
+    if has_user_models {
         fs::write(dest.join("FunsExternal.lean"), funs_external_content)?;
     }
 
     Ok(())
 }
 
-/// Writes the `lakefile.lean` which configures the Lean build.
-///
-/// This file tells Lake how to build the project and where to find Aeneas.
 fn write_lakefile(
     dest: &Path,
     crate_name_snake: &str,
@@ -568,8 +551,6 @@ fn write_lakefile(
     sorry_mode: Sorry,
 ) -> Result<()> {
     let lakefile_path = dest.join("lakefile.lean");
-    // If aeneas_path is provided, use it (local development).
-    // Otherwise, fetch from git.
     let require_line = if let Some(path) = aeneas_path {
         format!("require aeneas from \"{}\"", path.display())
     } else {
@@ -579,6 +560,14 @@ fn write_lakefile(
     let more_lean_args = match sorry_mode {
         Sorry::RejectSorry => "\n  moreLeanArgs := #[\"-DwarningAsError=true\"]",
         Sorry::AllowSorry => "",
+    };
+
+    // Only include Hermes in roots if the directory exists
+    let hermes_dir = dest.join("Hermes");
+    let hermes_root = if hermes_dir.exists() {
+        ", `Hermes"
+    } else {
+        ""
     };
 
     let content = format!(
@@ -592,10 +581,10 @@ package {}
 
 @[default_target]
 lean_lib {} {{
-  roots := #[`{}, `UserProofs, `Hermes]{}
+  roots := #[`{}, `UserProofs{}]{}
 }}
 "#,
-        crate_name_snake, require_line, crate_name_snake, crate_name_camel, more_lean_args
+        crate_name_snake, require_line, crate_name_snake, crate_name_camel, hermes_root, more_lean_args
     );
     fs::write(lakefile_path, content).map_err(Into::into)
 }

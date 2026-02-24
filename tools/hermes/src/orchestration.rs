@@ -99,6 +99,7 @@ pub fn run_aeneas(llbc_path: &Path, dest: &Path) -> Result<()> {
             "-dest",
             dest,
             "-split-files",
+            "-gen-lib-entry",
         ],
     );
     let status = cmd.status().context("Failed to execute aeneas. Ensure it is in your PATH.")?;
