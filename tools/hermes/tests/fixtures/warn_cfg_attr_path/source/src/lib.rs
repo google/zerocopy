@@ -3,6 +3,6 @@ mod sys; // This triggers the warning
 
 /// ```lean, hermes
 /// context
-/// theorem demo : True := trivial
+/// theorem my_demo : True := trivial
 /// ```
 pub fn demo() {} // Included so the overall verification command succeeds
