@@ -553,43 +553,43 @@ fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
 // These tests are known to be failing or flaky. Skip them for now so they don't
 // cause confusion when developing new features.
 const SKIPPED_TESTS: &[&str] = &[
-    "lean_edge_cases",
-    "atomic_cache",
-    "const_generics",
-    "env_interleaved_stdout",
-    "json_code_suggestions",
-    "fs_missing_source",
-    "json_linker_error",
     "associated_types",
-    "json_nested_children",
-    "enums_pattern_matching",
-    "lean_generation",
-    "map_external_dep",
-    "map_symlinked_file",
-    "map_std_library",
-    "double_mounted_mod",
+    "atomic_cache",
     "collision",
+    "const_generics",
+    "double_mounted_mod",
+    "enums_pattern_matching",
+    "env_interleaved_stdout",
+    "fs_missing_source",
     "hermes_multiple_targets",
-    "macro_edge_cases",
     "idempotency",
+    "json_code_suggestions",
+    "json_linker_error",
+    "json_nested_children",
+    "lean_edge_cases",
+    "lean_generation",
+    "macro_edge_cases",
+    "map_external_dep",
+    "map_std_library",
+    "map_symlinked_file",
     "missing_cfg_file",
     "mixed_workspace",
     "multi_artifact",
-    "type_features",
-    "unions",
-    "uninhabited_types",
     "nested_file_mod",
     "select_bin",
-    "warn_cfg_attr_path",
+    "type_features",
+    "uninhabited_types",
+    "unions",
     "unsafe_redaction",
+    "warn_cfg_attr_path",
 ];
 
 fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let path_str = path.to_string_lossy();
-    if SKIPPED_TESTS.iter().any(|s| path_str.contains(&format!("/{s}/hermes.toml"))) {
-        println!("Skipping test: {}", path.display());
-        return Ok(());
-    }
+    // if SKIPPED_TESTS.iter().any(|s| path_str.contains(&format!("/{s}/hermes.toml"))) {
+    //     println!("Skipping test: {}", path.display());
+    //     return Ok(());
+    // }
 
     // Special handling for the "idempotency" test case. This test is unique
     // because it doesn't follow the standard "verify output matches
