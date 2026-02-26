@@ -1,5 +1,5 @@
 /// ```lean, hermes
 /// context
-/// theorem proof : True := trivial
+/// theorem my_proof : True := trivial
 /// ```
 pub fn proof() {}

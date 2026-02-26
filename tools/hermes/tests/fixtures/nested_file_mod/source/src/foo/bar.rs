@@ -1,5 +1,5 @@
 /// ```lean, hermes
 /// context
-/// theorem deep_proof : True := trivial
+/// theorem my_deep_proof : True := trivial
 /// ```
 pub fn deep_proof() {}

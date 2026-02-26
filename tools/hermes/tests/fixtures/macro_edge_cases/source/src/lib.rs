@@ -1,5 +1,5 @@
 /// ```hermes
-/// isSafe : ∀ (self : Self), True
+/// isSafe Self := ∀ (self : Self), True
 /// ```
 unsafe trait MyTrait {
     fn foo();
@@ -8,7 +8,7 @@ unsafe trait MyTrait {
 macro_rules! decl_trait {
     ($n:ident) => {
         /// ```hermes
-/// isSafe : x > 0
+/// isSafe Self := x > 0
         /// ```
         unsafe trait $n {
             fn bar();
