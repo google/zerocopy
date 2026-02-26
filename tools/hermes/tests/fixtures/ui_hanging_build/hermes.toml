@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises timeout and progress logic on stalling cargo workflows.
+Behavior: Injects a custom `build.rs` containing a hardcoded 2-second synchronous sleep (`std::thread::sleep(std::time::Duration::from_secs(2))`). Allows the orchestrator UI to render 'verifying' progress smoothly.
+"""
+
 [dependencies]
 
 [test]

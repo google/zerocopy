@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates diagnostics resolution pointing to canonicalized symlinks.
+Behavior: Provides Charon errors mapped to an original `untransformed.rs` target spanning behind a symlink. Ensures Hermes resolves and prints the logical/canonical code appropriately.
+"""
+
 [dependencies]
 
 [test]

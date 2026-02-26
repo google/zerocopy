@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests parsing robustness against Windows-style line endings.
+Behavior: Contains source files formatted with `\r\n` line endings. Validates that Hermes correctly parses and verifies the file without span or syntax errors.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

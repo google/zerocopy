@@ -1,3 +1,8 @@
+description = """
+Purpose: Checks function modifiers handling inside models.
+Behavior: Leverages `async unsafe fn`, `const unsafe fn`, and `unsafe extern "C" fn`. Hermes intentionally fails to analyze complex function modifiers guaranteeing unsupported paradigms don't emit silently broken logic.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

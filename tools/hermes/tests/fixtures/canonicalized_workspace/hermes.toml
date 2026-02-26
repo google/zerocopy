@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests path resolution for messy, non-standard workspace internal dependencies.
+Behavior: Uses a workspace where one crate depends on another using an un-normalized relative path (`../../crates/lib`). Expects success to guarantee successful canonicalization of path dependencies.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

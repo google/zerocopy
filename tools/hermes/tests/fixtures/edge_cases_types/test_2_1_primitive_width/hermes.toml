@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests width-dependent architectures mapping (isize/usize).
+Behavior: Confirms that sizes dependent on architectural pointer dimensions consistently trace down to their respective types in Aeneas (`Isize`, `Usize`).
+"""
+
 
 [[artifact]]
 package = "test_2_1_primitive_width"

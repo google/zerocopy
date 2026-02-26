@@ -1,3 +1,8 @@
+description = """
+Purpose: Confirms static analysis diagnostics targeted at unstable structural layout macros.
+Behavior: Deploys `#[cfg_attr(unix, path = "sys_unix.rs")] mod sys`. Fires a specific diagnostic warning `Hermes does not currently evaluate conditional paths` avoiding an opaque parse crash.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

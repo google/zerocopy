@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises path handling on core system libraries.
+Behavior: Emulates an upstream error emerging from `/rustc/.../library/core/src/option.rs`. Allows Hermes to translate sysroot offsets effectively.
+"""
+
 [dependencies]
 
 [test]

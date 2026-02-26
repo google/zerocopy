@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises verification inside un-modeled `unsafe fn` boundaries.
+Behavior: Models an `unsafe fn foo() -> i32` containing naked math. Validates extracting invariants gracefully avoids strict memory model complaints in simple bounds.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

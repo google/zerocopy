@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies enum discriminants are correctly extracted.
+Behavior: Assigns explicit integer discriminants to enum variants (`Red = 0xff`). Confirms they are successfully parsed and preserved in the generated Lean artifacts.
+"""
+
 
 [[artifact]]
 package = "test_8_3_explicit_discriminants"

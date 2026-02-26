@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests Hermes behavior traversing a project with an uncleared `target/` state.
+Behavior: Executes verification simulating an already populated local build folder. Expects no panic or side-effect contamination.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

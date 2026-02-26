@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises extraction of advanced Rust typing invariants.
+Behavior: Evaluates structural logic involving `const N: usize` generics, associated trait types (`AssocType.Item`), and implicitly uninhabited `nomatch` variants. Tracks accurate translation into Lean typeclasses/instances.
+"""
+
 [workspace]
 test_name = "type_features"
 

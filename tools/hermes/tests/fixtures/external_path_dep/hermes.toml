@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises files explicitly mounted outside the immediate directory tree.
+Behavior: Exerts a `#[path = "../../../extra.rs"]` structural mount leaping outside the package root. Ensures Hermes and Charon track and verify external file content spanning into sibling hierarchies.
+"""
+
 [[artifact]]
 package = "external_path_dep"
 target = "external_path_dep"

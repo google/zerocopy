@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies extraction of private/unreachable annotated functions.
+Behavior: Annotates a private function unused by any public API. Proves Hermes extraction ignores standard reachability analysis and extracts specifically requested proof targets regardless of module visibility.
+"""
+
 [[artifact]]
 package = "orphaned_entry"
 target = "orphaned_entry"

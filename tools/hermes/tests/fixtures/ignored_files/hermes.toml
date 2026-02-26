@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests skipping files not explicitly required by verification constraints.
+Behavior: Incorporates auxiliary code files not directly bound by Hermes specifications. Ensures the analysis doesn't erroneously fail or become bloated addressing unrelated files.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

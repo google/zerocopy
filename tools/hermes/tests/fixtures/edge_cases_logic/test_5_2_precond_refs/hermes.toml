@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises handling of reference preconditions.
+Behavior: Places a `requires x > 10` guard on a function receiving `&mut u32`. Validates that the constraint maps precisely to the forward/backward `_old` context split logic before mutation.
+"""
+
 
 [[artifact]]
 package = "test_5_2_precond_refs"

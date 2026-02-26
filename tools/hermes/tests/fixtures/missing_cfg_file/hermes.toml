@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests robustness evaluating missing conditionally compiled files.
+Behavior: Identifies a module declaration for a non-existent file (`windows_sys.rs`) completely hidden behind a mismatched `#[cfg(target_os = "windows")]`. Validates the orchestrator accurately excludes it from checking instead of crashing on missing paths.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

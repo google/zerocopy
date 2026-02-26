@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests inter-argument relational invariants.
+Behavior: Requires the explicit equality of lengths between two slices (`requires a.len = b.len`). Validates that cross-variable hypotheses map successfully to the verification condition schema.
+"""
+
 
 [[artifact]]
 package = "test_5_3_cross_arg"

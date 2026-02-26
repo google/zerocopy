@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates deeply nested hierarchical module boundaries.
+Behavior: Delcares repeated nested submodules (`mod a { mod a { ... }}`). Ensures translation successfully formats paths structurally into Lean.
+"""
+
 
 [[artifact]]
 package = "test_11_4_namespace_bomb"

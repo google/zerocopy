@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises resilience against heavily masked macro generated inclusions.
+Behavior: Evaluates verification when source files and items are loaded uniquely via obscured macros (`gen_mod!(hidden)`). Verifies that Hermes either handles or cleanly ignores the un-trackable code.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

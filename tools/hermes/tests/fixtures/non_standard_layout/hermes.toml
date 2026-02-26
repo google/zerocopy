@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests workspaces defining non-standard filesystem paths for lib roots.
+Behavior: A `Cargo.toml` overrides `path = "code/custom.rs"`. Proves Hermes and Charon can properly follow explicit source manifest pointers instead of assuming `src/lib.rs`.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

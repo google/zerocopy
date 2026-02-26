@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies extraction of hygienically shadowed macro bindings.
+Behavior: Uses a macro containing multiple `let x = ...` shadowing statements. Tests the reliability of Charon's scope hygiene handling when transforming macro-expanded MIR.
+"""
+
 
 [[artifact]]
 package = "test_9_3_hygiene"

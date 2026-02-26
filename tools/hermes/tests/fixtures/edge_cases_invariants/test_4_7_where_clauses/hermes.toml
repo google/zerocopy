@@ -1,3 +1,8 @@
+description = """
+Purpose: Ensures robust processing of `where` type filtering.
+Behavior: Bounds a generic via an explicit `where T: Copy + Clone + Default` block. Asserts the backend accurately copies all the trait constraints onto the structural Lean parameter.
+"""
+
 
 [[artifact]]
 package = "test_4_7_where_clauses"

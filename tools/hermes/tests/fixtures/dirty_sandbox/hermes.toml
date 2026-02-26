@@ -1,1 +1,6 @@
+description = """
+Purpose: Validates the integration test framework's sandboxing guarantees.
+Behavior: Exercises the `run_dirty_sandbox_test` handler in `integration.rs`, which verifies that the integration suite panics and aborts if it detects residual build artifacts (like `target/` or `.lake/`) inside the fixture's source directory.
+"""
+
 [test]

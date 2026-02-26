@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises diagnostic mappings for strictly external crates.
+Behavior: Mocks an error springing from `serde` in the cargo registry (`.cargo/registry/...`). Validates Hermes properly interprets the absolute external paths within diagnostic logs.
+"""
+
 [dependencies]
 
 [test]

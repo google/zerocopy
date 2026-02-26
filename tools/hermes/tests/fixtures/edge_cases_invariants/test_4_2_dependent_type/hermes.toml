@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests dependent type emulation using const generics.
+Behavior: Defines an `ArrayPair<const N: usize>` linking lengths to `N`. Verifies that Lean properly parameterizes the resulting structured invariant by the integer argument `N`.
+"""
+
 
 [[artifact]]
 package = "test_4_2_dependent_type"

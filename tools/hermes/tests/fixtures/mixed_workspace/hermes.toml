@@ -1,3 +1,8 @@
+description = """
+Purpose: Checks target segregation across workspaces.
+Behavior: Invokes `-p app` on a monorepo holding `app` and `dep`. Verifies extraction strictly constructs `app` without generating artifacts mapping the unrequested independent workspace sibling `dep`.
+"""
+
 
 [test]
 args = ["verify", "-p", "app", "--allow-sorry"]

@@ -1,3 +1,8 @@
+description = """
+Purpose: Checks visibility constraints across logic and implementation boundaries.
+Behavior: References a `pub(crate)` helper function from within the `/// @spec` verification clause of a fully `pub` function. Ensures visibility constraints do not break verification logic resolution.
+"""
+
 
 [[artifact]]
 package = "test_6_2_logic_visibility"

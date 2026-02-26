@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests Hermes' restriction against verifying items nested inside expressions/blocks.
+Behavior: Defines an annotated function inside a `const _: () = { ... }` block. Expects Hermes to explicitly reject it with a "Nested item error".
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

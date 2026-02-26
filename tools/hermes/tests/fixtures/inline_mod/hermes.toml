@@ -1,3 +1,8 @@
+description = """
+Purpose: Confirms hierarchical scope resolution for inlined module blocks.
+Behavior: Checks scoping invariants inside `mod foo { fn bar() {} }`. Ensures module lexical levels process natively without assuming an external file layout mapping.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests property tracking for compound mutable state.
+Behavior: Destructively modifies inner values of a mutable tuple `&mut (u32, u32)`. Verifies depth-unwrapping successfully functions across translation.
+"""
+
 
 [[artifact]]
 package = "test_3_4_deep_destruct"

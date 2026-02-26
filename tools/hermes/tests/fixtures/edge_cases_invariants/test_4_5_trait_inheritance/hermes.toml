@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates trait-inheritance logic bounds.
+Behavior: Constructs a hierarchical web of traits (`B: A`, `C: A`, `D: B + C`) all annotated with `isSafe : True`. Ensures Hermes respects nested generic capabilities and inheritance logic constraints (`IsSafeD`).
+"""
+
 
 [[artifact]]
 package = "test_4_5_trait_inheritance"

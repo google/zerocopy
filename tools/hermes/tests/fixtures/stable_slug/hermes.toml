@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies predictable naming conventions for Lean/LLBC target files.
+Behavior: Instead of mapping arbitrary cargo names, checks that `should_exist = true` captures a fixed identifier layout (now SHA-256 slug) to enforce artifact stability avoiding naming collisions in the output cache.
+"""
+
 [[artifact]]
 package = "stable_slug"
 target = "lib"

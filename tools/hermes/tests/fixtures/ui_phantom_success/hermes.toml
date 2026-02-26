@@ -1,3 +1,8 @@
+description = """
+Purpose: Confirms warnings pass through completely when overall validation succeeds.
+Behavior: Emits `unused variable` warnings but ultimately exits successfully. Prints warnings prominently so they aren't muted by success.
+"""
+
 [dependencies]
 
 [test]

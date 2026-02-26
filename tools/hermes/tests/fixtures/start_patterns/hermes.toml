@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests targeted subset specification extraction.
+Behavior: Uses `--start-from crate::foo,crate::nested::bar` syntax. Ensures only the logic within explicit node patterns is verified while parallel sibling modules remain undisturbed.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests parsing package metadata for standard library sysroots.
+Behavior: Verifies Charon diagnostic outputs identifying `package_id: core 0.0.0` correctly trigger system-provided sysroot path resolving in the diagnostic handler.
+"""
+
 [dependencies]
 
 [test]

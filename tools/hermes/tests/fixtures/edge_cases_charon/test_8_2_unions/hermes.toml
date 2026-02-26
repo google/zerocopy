@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests support for Rust `union` extraction.
+Behavior: Delcares a `pub union U { ... }` and accesses it in an `unsafe` block. Validates it produces a recognizable Lean representation.
+"""
+
 
 [[artifact]]
 package = "test_8_2_unions"

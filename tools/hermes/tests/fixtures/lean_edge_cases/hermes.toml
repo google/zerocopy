@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises translation mapping for opaque specs and comments.
+Behavior: Includes unstructured axioms (`unsafe(axiom)`), argument/parameter naming collisions, and multi-line comments nested deep within Lean specs. Guarantees successful translation into clean, valid Lean theorem files.
+"""
+
 [workspace]
 test_name = "lean_edge_cases"
 

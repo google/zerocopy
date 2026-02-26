@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests uninhabited types and the 'never' type.
+Behavior: Verifies that empty enums (`pub enum Void {}`) and functions terminating in `!` correctly lower and extract through Charon into Lean logic without failing.
+"""
+
 
 [[artifact]]
 package = "test_8_1_void_enum"

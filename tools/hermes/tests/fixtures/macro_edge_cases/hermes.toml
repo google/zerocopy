@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates specification survival through complex macro expansion loops.
+Behavior: Applies Hermes annotations explicitly onto traits structurally emitted by macros (`decl_trait!(HiddenTrait)`). Asserts that Charon lifts the logic bounds correctly across the span hygienically.
+"""
+
 [workspace]
 test_name = "macro_edge_cases"
 

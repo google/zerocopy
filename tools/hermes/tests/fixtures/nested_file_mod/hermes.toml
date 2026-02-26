@@ -1,3 +1,8 @@
+description = """
+Purpose: Ensures `--start-from` traversal deep into file-based modules.
+Behavior: Uses a deeply targeted analysis pointer (`crate::foo::bar::deep_proof`) to seek a proof enclosed in physically separated `src/foo/bar.rs` layout. Ensures nested resolution handles the directory hierarchy transparently.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

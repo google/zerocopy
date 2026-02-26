@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests type aliasing and renaming visibility.
+Behavior: Re-aliases `Vec` using `use ... as MyVec;`. Ensures Charon de-aliases the type during extraction, outputting standard `Vec` representations in Lean.
+"""
+
 
 [[artifact]]
 package = "test_6_3_renaming"

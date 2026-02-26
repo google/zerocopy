@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies artifact emission against diamond-dependency inner modules.
+Behavior: The source maps `mod a;` and `#[path = "a.rs"] mod b;`. Tests Charon handling of the same file loaded twice under different logical module paths.
+"""
+
 [[artifact]]
 package = "split_personality_mod"
 target = "split_personality_mod" # The lib target name

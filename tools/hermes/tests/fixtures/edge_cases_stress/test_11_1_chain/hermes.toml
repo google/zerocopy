@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates module discovery depth limits.
+Behavior: Uses deeply chained function dependencies spanning several modules. Ensures Charon successfully unwinds the invocation chain and generates the appropriate dependencies.
+"""
+
 
 [[artifact]]
 package = "test_11_1_chain"

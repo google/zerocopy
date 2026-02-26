@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests state tracking maps for returned nested values.
+Behavior: Mutates a vector to return an inner value (`v.pop()`). Validates Aeneas models the backward function to return the combined updated state constraint `(Option U32 × Vec U32)`.
+"""
+
 
 [[artifact]]
 package = "test_3_3_ret_mut"

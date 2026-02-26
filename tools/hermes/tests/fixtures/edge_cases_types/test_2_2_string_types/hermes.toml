@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises translation mapping across string implementations.
+Behavior: Passes various variants of textual data models (`String`, `&str`, `Box<str>`, `Cow<str>`, `char`). Ensures Charon successfully finds mappings for textual abstractions safely.
+"""
+
 
 [[artifact]]
 package = "test_2_2_string_types"

@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies detection of annotated items that are hidden from the compiler via `#[cfg]`.
+Behavior: Places a Hermes annotation on a function blocked by `#[cfg(target_os = "haiku")]`. Expects failure since Hermes' surface parser sees the doc comment, but Charon fails because the target item does not exist in the compiled MIR.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

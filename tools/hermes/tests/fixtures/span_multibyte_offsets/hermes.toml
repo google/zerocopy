@@ -1,3 +1,8 @@
+description = """
+Purpose: Checks byte-to-character indexing offset arithmetic.
+Behavior: Tests spans wrapping multibyte Unicode identifiers (`pub fn föö() {}`). Guarantees char offsets do not improperly slice UTF-8 code points leading to panic.
+"""
+
 [dependencies]
 
 [test]

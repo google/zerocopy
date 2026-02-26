@@ -1,3 +1,8 @@
+description = """
+Purpose: The foundational multi-line error span projection test.
+Behavior: Generates a mock `compiler-message` pointing towards a multiline `/// context` model definition. Assures the Hermes UI accurately renders multi-line contextual error blocks visually.
+"""
+
 [dependencies]
 
 [test]

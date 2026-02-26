@@ -1,3 +1,8 @@
+description = """
+Purpose: Confirms immunity to massive binary/non-code contents in the project tree.
+Behavior: Analyzes a repository containing arbitrary assets. Proves Hermes avoids memory or parsing crashes associated with naive bulk directory traversals.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

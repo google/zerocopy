@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests unit-tuples and extensive tuple arities.
+Behavior: Verifies arity handling on structural layout models by compiling a single element tuple `(u32,)` alongside a 16-element monolithic tuple.
+"""
+
 
 [[artifact]]
 package = "test_2_8_tuples"

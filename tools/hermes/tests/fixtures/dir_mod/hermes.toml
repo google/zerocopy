@@ -1,3 +1,8 @@
+description = """
+Purpose: Ensures compatibility with directory-based module paths.
+Behavior: Uses the older module layout pattern (`src/bar/mod.rs` for `mod bar;`). Validates that Hermes resolves this correctly alongside modern layouts.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

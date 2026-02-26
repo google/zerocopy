@@ -1,3 +1,8 @@
+description = """
+Purpose: Checks behavior of Hermes specifications on `#[cfg]`-removed functions.
+Behavior: Provides annotated functions under `#[cfg]`. Verifies only the specification corresponding to the actively compiled function exists in Lean.
+"""
+
 
 [[artifact]]
 package = "test_7_3_ghost_spec"

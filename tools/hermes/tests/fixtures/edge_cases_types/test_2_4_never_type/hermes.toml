@@ -1,3 +1,8 @@
+description = """
+Purpose: Confirms structural modeling of explicitly diverging functions.
+Behavior: Targets functions that explicitly abort (`-> !`). Ensures Aeneas interprets them structurally inside logic frameworks by employing bounded uninhabited logical models in Lean (`Empty`).
+"""
+
 
 [[artifact]]
 package = "test_2_4_never_type"

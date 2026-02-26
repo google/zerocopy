@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates explicit binary artifact targeting via CLI.
+Behavior: A package possesses both a library and a binary. Runs `--bin app` to explicitly verify the `src/main.rs` binary and guarantees the library artifact is entirely ignored.
+"""
+
 
 [test]
 args = ["verify", "--bin", "app", "--allow-sorry"]

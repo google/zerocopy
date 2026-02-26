@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies configuration arguments correctly trickle down to Charon.
+Behavior: Invokes Hermes using `args = ["verify", "--features", "extra"]`. Ensures the harness specifically propagates `--features` properly to the exact Charon subprocess without being pruned.
+"""
+
 
 [test]
 args = ["verify", "--features", "extra", "--allow-sorry"]

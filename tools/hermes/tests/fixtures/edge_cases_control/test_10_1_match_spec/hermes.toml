@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests Lean `match` support in Hermes annotations.
+Behavior: Confirms that developers can write `match` expressions within their `/// @spec` definitions and that these successfully type-check and generate valid Lean code.
+"""
+
 
 [[artifact]]
 package = "test_10_1_match_spec"

@@ -1,3 +1,8 @@
+description = """
+Purpose: Evaluates span mappings on path-canonical mismatched directory trees.
+Behavior: Provides a mock JSON where resolved absolute project paths mismatch strictly loaded files paths (e.g. from symlinks). Assures diagnostic mappings reconcile the offsets effectively avoiding panics.
+"""
+
 [dependencies]
 
 [test]

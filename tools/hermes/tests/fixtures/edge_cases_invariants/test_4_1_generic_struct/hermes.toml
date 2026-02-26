@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates structurally bounded type invariants on generic structs.
+Behavior: Uses a generic struct `Container<T>` with an `isValid` invariant checking its inner type. Ensures the Lean theorem output correctly bounds `T` with `IsValid T`.
+"""
+
 
 [[artifact]]
 package = "test_4_1_generic_struct"

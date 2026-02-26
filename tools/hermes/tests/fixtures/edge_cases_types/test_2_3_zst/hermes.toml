@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests verification maps for Zero Sized Types (ZST).
+Behavior: Utilizes explicit zero-sized structs and the common `()` unit type to verify successful integration with Lean's equivalent constructs (`Unit`).
+"""
+
 
 [[artifact]]
 package = "test_2_3_zst"
