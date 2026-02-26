@@ -65,6 +65,10 @@ jobs:
             # worry about what time of day this job runs.
             echo "ZC_TARGET_TOOLCHAIN=nightly-$(date -d '-1 day' +%Y-%m-%d)" >> $GITHUB_ENV
           fi
+      - name: Install stable Rust for use in 'cargo.sh'
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        with:
+          toolchain: stable
       - name: Install Rust with ${{ env.ZC_TARGET_TOOLCHAIN }} toolchain
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
         with:
@@ -89,11 +93,7 @@ jobs:
           function update-pinned-version {
             VERSION_NAME="$1"
             VERSION="$2"
-            # For nightly, this is the same as `$VERSION`. For stable, it's
-            # `stable` because `rustup` doesn't recognize that `x.y.z` refers to
-            # the same thing as `stable` even if they're the same toolchain.
-            VERSION_FOR_CARGO="$3"
-            ZEROCOPY_FEATURES="$4"
+            ZEROCOPY_FEATURES="$3"
 
             # Confirm that `Cargo.toml` lists the pinned version in the expected
             # format. This is a prerequisite for the subsequent `sed` command.
@@ -104,40 +104,24 @@ jobs:
             # Confirm that the update didn't bork `Cargo.toml`.
             validate-file "$REGEX" Cargo.toml
 
-            export RUSTFLAGS='--cfg zerocopy_derive_union_into_bytes'
-
             # Run `cargo fix` in case there are any warnings or errors
             # introduced on this new toolchain that we can fix automatically.
             # This is best-effort, so we don't let failure cause the whole job
             # to fail.
-            #
-            # We use the full package filepaths here since our dev-dependencies
-            # sometimes depend on zerocopy. When this happens, the names
-            # `zerocopy` and `zerocopy-derive` alone are ambiguous (they refer
-            # both to the local filesystem versions and to the crates.io
-            # versions).
-            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package file:///home/runner/work/zerocopy/zerocopy $ZEROCOPY_FEATURES || true
-            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package file:///home/runner/work/zerocopy/zerocopy/zerocopy-derive    || true
+            ./cargo.sh "+$VERSION_NAME" fix --allow-dirty --tests --package zerocopy $ZEROCOPY_FEATURES || true
+            ./cargo.sh "+$VERSION_NAME" fix --allow-dirty --tests --package zerocopy-derive             || true
 
-            # Update `.stderr` files as needed for the new version.
-            #
-            # We use the full package filepaths here since our dev-dependencies
-            # sometimes depend on zerocopy. When this happens, the names
-            # `zerocopy` and `zerocopy-derive` alone are ambiguous (they refer
-            # both to the local filesystem versions and to the crates.io
-            # versions).
-            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package file:///home/runner/work/zerocopy/zerocopy $ZEROCOPY_FEATURES
-            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package file:///home/runner/work/zerocopy/zerocopy/zerocopy-derive
+            ./tools/update-expected-test-output.sh
           }
 
           if [ "$TOOLCHAIN" == stable ]; then
             STABLE_VERSION="$(cargo +stable version | sed -e 's/^cargo \([0-9\.]*\) .*/\1/')"
-            update-pinned-version stable "$STABLE_VERSION" stable '--features __internal_use_only_features_that_work_on_stable'
+            update-pinned-version stable "$STABLE_VERSION" '--features __internal_use_only_features_that_work_on_stable'
 
             # Used as part of the branch name created by the "Submit PR" step.
             echo "ZC_VERSION_FOR_BRANCH_NAME=$STABLE_VERSION" >> $GITHUB_ENV
           else
-            update-pinned-version nightly "$ZC_TARGET_TOOLCHAIN" "$ZC_TARGET_TOOLCHAIN" --all-features
+            update-pinned-version nightly "$ZC_TARGET_TOOLCHAIN" --all-features
             echo "ZC_VERSION_FOR_BRANCH_NAME=$ZC_TARGET_TOOLCHAIN" >> $GITHUB_ENV
           fi
 
