@@ -11,4 +11,4 @@ expected_status = "failure"
 expected_stderr = "[External Error] linker failed"
 
 [test.mock]
-charon = "mock_charon.sh"
+charon = "mock_charon_output.json"
