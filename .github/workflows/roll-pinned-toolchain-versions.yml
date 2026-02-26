@@ -65,6 +65,10 @@ jobs:
             # worry about what time of day this job runs.
             echo "ZC_TARGET_TOOLCHAIN=nightly-$(date -d '-1 day' +%Y-%m-%d)" >> $GITHUB_ENV
           fi
+      - name: Install stable Rust for use in 'cargo.sh'
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        with:
+          toolchain: stable
       - name: Install Rust with ${{ env.ZC_TARGET_TOOLCHAIN }} toolchain
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
         with:
@@ -104,30 +108,14 @@ jobs:
             # Confirm that the update didn't bork `Cargo.toml`.
             validate-file "$REGEX" Cargo.toml
 
-            export RUSTFLAGS='--cfg zerocopy_derive_union_into_bytes'
-
             # Run `cargo fix` in case there are any warnings or errors
             # introduced on this new toolchain that we can fix automatically.
             # This is best-effort, so we don't let failure cause the whole job
             # to fail.
-            #
-            # We use the full package filepaths here since our dev-dependencies
-            # sometimes depend on zerocopy. When this happens, the names
-            # `zerocopy` and `zerocopy-derive` alone are ambiguous (they refer
-            # both to the local filesystem versions and to the crates.io
-            # versions).
-            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package file:///home/runner/work/zerocopy/zerocopy $ZEROCOPY_FEATURES || true
-            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package file:///home/runner/work/zerocopy/zerocopy/zerocopy-derive    || true
+            ./cargo.sh "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package zerocopy $ZEROCOPY_FEATURES || true
+            ./cargo.sh "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package zerocopy-derive             || true
 
-            # Update `.stderr` files as needed for the new version.
-            #
-            # We use the full package filepaths here since our dev-dependencies
-            # sometimes depend on zerocopy. When this happens, the names
-            # `zerocopy` and `zerocopy-derive` alone are ambiguous (they refer
-            # both to the local filesystem versions and to the crates.io
-            # versions).
-            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package file:///home/runner/work/zerocopy/zerocopy $ZEROCOPY_FEATURES
-            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package file:///home/runner/work/zerocopy/zerocopy/zerocopy-derive
+            ./tools/update-expected-test-output.sh
           }
 
           if [ "$TOOLCHAIN" == stable ]; then
