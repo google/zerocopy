@@ -521,7 +521,8 @@ note: required for `IntoBytes11<AU16>` to implement `zerocopy_renamed::IntoBytes
    --> $DIR/struct.rs:232:10
     |
 232 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+    |          ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::IntoBytes`
+    = help: consider manually implementing `zerocopy_renamed::IntoBytes` to avoid undesired bounds
 note: required by a bound in `is_into_bytes_11`
    --> $DIR/struct.rs:242:24
     |
