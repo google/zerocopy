@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests CLI invocation from subdirectories.
+Behavior: configures the harness to set `cwd` deep inside the project (`src/nested`). Validates that Hermes climbs the directory tree to find the workspace correctly and execute without issue.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

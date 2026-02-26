@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests sanitation of function names colliding with Lean syntax.
+Behavior: Asserts that `fn theorem()`, `fn match()`, etc. are strictly escaped inside French quotes (`«theorem»`, `«match»`) preventing them from creating parsed compilation errors in Lean.
+"""
+
 
 [[artifact]]
 package = "test_1_1_lean_keywords_fns"

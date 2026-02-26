@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises resilience against specification identifier shadowing.
+Behavior: Verifies logic when function arguments (`result`, `old_x`, etc.) intentionally conflict with typical implicit variables produced inside Aeneas' standard extraction mechanics. Ensures accurate parsing without producing malformed translations.
+"""
+
 
 [[artifact]]
 package = "test_1_5_spec_shadowing"

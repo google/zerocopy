@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies baseline relative path mappings.
+Behavior: Confirms purely relative diagnostic paths like `src/lib.rs` remain mapped perfectly onto the project root correctly by the custom Hermes UI driver.
+"""
+
 [dependencies]
 
 [test]

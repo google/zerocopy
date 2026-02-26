@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests artifact isolation for heavily overlapping workspace packages.
+Behavior: Compiles two distinct crates (`crates/a`, `crates/b`) in one workspace, both explicitly named `common_utils` via `[lib] name = "common_utils"`. Verifies both outputs exist and do not overwrite each other.
+"""
+
 
 [test]
 args = ["verify", "--workspace", "--allow-sorry"]

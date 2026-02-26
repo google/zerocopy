@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises dependency modeling of external crates.
+Behavior: Imports and uses `std::collections::HashMap` in a signature. Validates that Charon properly identifies the bounds of the crate graph and safely registers the external types in Lean.
+"""
+
 
 [[artifact]]
 package = "test_6_1_external_crate"

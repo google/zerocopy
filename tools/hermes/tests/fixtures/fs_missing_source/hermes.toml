@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises error reporting for non-existent source paths.
+Behavior: Uses a mock Charon output throwing a "missing source" error. Verifies Hermes accurately interprets the JSON diagnostic and displays the file resolution error rather than crashing.
+"""
+
 [dependencies]
 
 [test]

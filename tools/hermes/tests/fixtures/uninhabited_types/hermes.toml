@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies representations of never-types and empty Enums.
+Behavior: Declares `pub enum Void {}`. Connects an invariant evaluating `nomatch self`. Translates cleanly to Lean uninhabited equivalents.
+"""
+
 
 [[artifact]]
 package = "transform_lib"

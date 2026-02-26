@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises fixed-size array and slice bounds.
+Behavior: Delcares empty arrays (`[u8; 0]`), massively sized arrays (`[u8; 1024]`), and nested slices (`&[&[u8]]`). Confirms proper Lean mapping to structured `Array` and `Slice` logic.
+"""
+
 
 [[artifact]]
 package = "test_2_7_arrays"

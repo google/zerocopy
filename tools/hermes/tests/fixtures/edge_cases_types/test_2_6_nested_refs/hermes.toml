@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies extraction of deeply nested references.
+Behavior: Uses parameters such as `&&u32`, `&mut &u32`, and `&&mut u32`. Validates that nested borrows don't cause infinite expansion chains or panic the generation backend.
+"""
+
 
 [[artifact]]
 package = "test_2_6_nested_refs"

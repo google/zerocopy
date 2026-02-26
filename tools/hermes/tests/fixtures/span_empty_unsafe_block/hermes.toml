@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests span location maps targeting inherently block-oriented syntax.
+Behavior: Mocks an error mapped to an `unsafe {}` block spanning bytes 9 to 18. Verifies proper block highlighting in the terminal UI render.
+"""
+
 [dependencies]
 
 [test]

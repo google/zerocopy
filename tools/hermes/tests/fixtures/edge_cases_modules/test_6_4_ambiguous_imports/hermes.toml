@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises module path disambiguation.
+Behavior: Resolves structurally identical structs that share a name (`a::S` and `b::S`). Validates that the Lean translation correctly namespaces them distinctively.
+"""
+
 
 [[artifact]]
 package = "test_6_4_ambiguous_imports"

@@ -1,3 +1,8 @@
+description = """
+Purpose: Corresponds to `select_bin` but strictly exercises `--lib`.
+Behavior: Filters a split-target project with `--lib`, verifying `src/lib.rs` and neglecting the binary.
+"""
+
 
 [test]
 args = ["verify", "--lib", "--allow-sorry"]

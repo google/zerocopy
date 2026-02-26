@@ -1,3 +1,8 @@
+description = """
+Purpose: Confirms benign behavior on empty operations.
+Behavior: Invokes verification on an essentially blank Rust file with only a dummy annotation. Ensures Hermes gracefully handles the absence of logic without failing.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

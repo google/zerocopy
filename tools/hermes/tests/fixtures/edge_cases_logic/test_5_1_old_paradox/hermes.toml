@@ -1,3 +1,8 @@
+description = """
+Purpose: Ensures foundational identity specifications function properly.
+Behavior: A straightforward test making the simple assertion that the result equals the input (`ensures result = x`).
+"""
+
 
 [[artifact]]
 package = "test_5_1_old_paradox"

@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests Hermes' internal parsing fail-safes.
+Behavior: Introduces a malformed token stream (`pub fn oops((`) and leverages an empty Charon mock. Asserts that Hermes aborts with an internal syntax error diagnostic immediately upon discovering the un-parseable file instead of delegating to Charon.
+"""
+
 [dependencies]
 expected_status = "failure"
 

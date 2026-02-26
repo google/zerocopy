@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies explicit enum matching logic from inside specifications.
+Behavior: Extends a pattern matching proof across all variants of `Enum.A x` and `Enum.B b` from within `/// @spec`. Tests the logic lowering for pattern matching logic schemas into Lean constraints.
+"""
+
 
 [[artifact]]
 package = "transform_lib"

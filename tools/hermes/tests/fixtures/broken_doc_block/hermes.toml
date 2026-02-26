@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests Hermes' error handling of malformed literate documentation.
+Behavior: Provides a source file with an unclosed `/// ```lean, hermes` block. Expects Hermes to fail gracefully with a specific "Unclosed Hermes block" diagnostic.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

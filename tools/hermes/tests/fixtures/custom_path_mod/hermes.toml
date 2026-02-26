@@ -1,3 +1,8 @@
+description = """
+Purpose: Confirms support for non-standard module file paths.
+Behavior: Employs the `#[path = "sys/unix.rs"] mod sys;` attribute to declare a module. Ensures Hermes correctly resolves the source file from the custom path.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

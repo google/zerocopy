@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies Hermes identifies fatal pure Rust parsing malformations.
+Behavior: Introduces `fn broken( {`. Asserts the parser chokes correctly at the Rust syntax boundary immediately printing `cannot parse string into token stream`.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

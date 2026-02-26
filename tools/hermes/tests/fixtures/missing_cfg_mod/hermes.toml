@@ -1,3 +1,8 @@
+description = """
+Purpose: Similar invariant to `missing_cfg_file`, specifically targeted at ensuring gracefully bypassing missing modules defined sequentially.
+Behavior: The dummy targeted OS (`fake_os`) effectively neuters the parsing. Ensures successful verification completes transparently.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

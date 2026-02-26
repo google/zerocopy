@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises handling of const generics in types and traits.
+Behavior: Uses a struct and a trait generic over a constant value (`const N: usize`). Verifies the generated Lean artifacts contain accurate structural translations (e.g., `instance {N} : Hermes.IsValid (Foo N)`).
+"""
+
 
 [[artifact]]
 package = "transform_lib"

@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests the positive branch of the Charon runtime version check.
+Behavior: Uses a script mock of Charon that returns the expected version string. Checks that Hermes successfully validates the version and proceeds to attempt extraction.
+"""
+
 [test]
 mock = { charon = "mock_charon.sh" }
 args = ["verify", "--allow-sorry"]

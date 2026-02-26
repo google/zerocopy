@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises complicated interleaved multi-file diagnostics.
+Behavior: Feeds Hermes a mock diagnostic spanning labels across distinct compilation units (e.g., "called here" in `rewritten.rs`, "defined here" in `symlinked.rs`). Validates the terminal renderer multiplexes multi-file spans visually.
+"""
+
 [dependencies]
 
 [test]

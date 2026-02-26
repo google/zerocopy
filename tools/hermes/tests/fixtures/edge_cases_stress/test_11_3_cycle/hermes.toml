@@ -1,3 +1,8 @@
+description = """
+Purpose: Checks handling of valid structural cyclic type dependencies.
+Behavior: Implements two structs referencing each other recursively across module boundaries via `Option<Box<...>>`. Verifies Charon determines layout paths avoiding infinite recursive parsing.
+"""
+
 
 [[artifact]]
 package = "test_11_3_cycle"

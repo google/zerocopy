@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests mappings directed at secondary local workspace member dependencies.
+Behavior: Invokes errors from `crates/utils/src/lib.rs` while context resides elsewhere. Assures accurate cross-workspace root mappings.
+"""
+
 [dependencies]
 
 [test]

@@ -1,3 +1,8 @@
+description = """
+Purpose: Checks target conflict rejection when building heterogeneous project roots.
+Behavior: Attempts to verify `selector` while invoking `--bin selector`. Assures `src/lib.rs` is skipped and only `src/main.rs` is processed, bypassing cargo target ambiguity.
+"""
+
 
 [test]
 args = ["verify", "--bin", "selector", "--allow-sorry"]

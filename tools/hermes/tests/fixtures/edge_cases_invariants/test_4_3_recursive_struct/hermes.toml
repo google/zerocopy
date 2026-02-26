@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises invariants over recursive data types.
+Behavior: Verifies a structural linked list (`Node { next: Option<Box<Node>> }`) using an invariant that recursively validates its tail element. Ensures extraction handles inductive types.
+"""
+
 
 [[artifact]]
 package = "test_4_3_recursive_struct"

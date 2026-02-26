@@ -1,3 +1,8 @@
+description = """
+Purpose: Checks scalability limits on enormous batches of proofs.
+Behavior: Includes an exceedingly large bulk of generated mock specification points (`f_0` to `f_N...`). Simulates overflowing the OS execution argument list (`E2BIG`) to test safe error degradation instead of an OS-level panic.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

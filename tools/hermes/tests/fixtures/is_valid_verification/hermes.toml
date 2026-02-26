@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises end-to-end Lean verification integration evaluating `isValid` invariants.
+Behavior: Uses `--verify` to trigger Lean analysis on the extracted logic. Confirms that purposefully faulty initialization states correctly drive Lean to trip the `Decidable` invariant logic, reporting "failed to synthesize" through Hermes.
+"""
+
 [workspace]
 test_name = "is_valid_verification"
 

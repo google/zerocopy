@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates robustness to errors inside excluded blocks.
+Behavior: Places a severe syntax error (`fn syntax_error( {`) inside a `#[cfg(all())]` bound block. Asserts that structural syntactical anomalies are reported even if logic is dead or conditionally ignored.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]
