@@ -184,6 +184,15 @@ struct Unsized {
 
 util_assert_impl_all!(Unsized: imp::IntoBytes);
 
+#[derive(imp::IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C, align(2))]
+struct UnsizedAligned {
+    a: [[u8; 2]],
+}
+
+util_assert_impl_all!(UnsizedAligned: imp::IntoBytes);
+
 // Deriving `IntoBytes` should work if the struct has bounded parameters.
 
 #[derive(imp::IntoBytes)]
