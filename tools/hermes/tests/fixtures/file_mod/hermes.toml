@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies multi-file parsing of standard Rust modules.
+Behavior: Distributes the project across `mod foo;` resolving to `src/foo.rs`. Checks that the translation engine correctly aggregates and links definitions scattered across multiple physical files.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

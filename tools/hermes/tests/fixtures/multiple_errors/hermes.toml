@@ -1,3 +1,8 @@
+description = """
+Purpose: Checks aggregation for widespread compilation failures.
+Behavior: Embeds syntax issues in two independent files (`a.rs`, `b.rs`). Exercises the diagnostic collector to aggregate and uniformly render the batch of distinct parsing errors.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

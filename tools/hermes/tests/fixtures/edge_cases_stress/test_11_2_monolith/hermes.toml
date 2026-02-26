@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests robustness on single massive source chunks.
+Behavior: Uses a macro to programmatically generate 100 distinct functions in a file, ensuring performance doesn't degrade and standard tools don't overflow or time out.
+"""
+
 
 [[artifact]]
 package = "test_11_2_monolith"

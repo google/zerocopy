@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests verification extraction for non-nominal trait implementations.
+Behavior: Implements traits for a raw pointer (`*const Foo`), a generic slice (`[Foo]`), and an array (`[Foo; 5]`). Expects Charon/Aeneas extraction to succeed.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

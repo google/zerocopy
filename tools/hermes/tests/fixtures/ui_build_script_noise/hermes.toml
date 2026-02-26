@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests UI robustness handling invalid JSON interlacing from build script noise.
+Behavior: Prints invalid JSON payloads before emitting a valid `compiler-artifact` blob. Ensures Hermes' diagnostic collector discards garbage outputs without panicking.
+"""
+
 [dependencies]
 
 [test]

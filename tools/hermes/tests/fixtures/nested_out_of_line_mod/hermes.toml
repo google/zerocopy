@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises nested item restrictions across out-of-line modules.
+Behavior: Buries a `mod hidden;` within an inline module inside a function block. Verifies that even if the proof is in an external file `hidden.rs`, its lexical encapsulation still correctly triggers the nested item rejection.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

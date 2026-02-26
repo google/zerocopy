@@ -14,11 +14,12 @@ datatest_stable::harness! { { test = run_integration_test, root = "tests/fixture
 
 #[derive(Deserialize)]
 struct HermesToml {
+    description: String,
     #[serde(default)]
     test: Option<TestConfig>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Default)]
 struct TestConfig {
     #[serde(default)]
     args: Option<Vec<String>>,
@@ -586,10 +587,23 @@ const SKIPPED_TESTS: &[&str] = &[
 
 fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let path_str = path.to_string_lossy();
-    // if SKIPPED_TESTS.iter().any(|s| path_str.contains(&format!("/{s}/hermes.toml"))) {
-    //     println!("Skipping test: {}", path.display());
-    //     return Ok(());
-    // }
+
+    let hermes_toml_content = fs::read_to_string(path)
+        .unwrap_or_else(|e| panic!("Failed to read {}: {}", path.display(), e));
+    let hermes_toml: HermesToml = toml::from_str(&hermes_toml_content)
+        .unwrap_or_else(|e| panic!("Failed to parse {}: {}", path.display(), e));
+    let test_case_root = path.parent().unwrap();
+    let test_name = test_case_root.file_name().unwrap().to_string_lossy().to_string();
+    assert!(
+        !hermes_toml.description.trim().is_empty(),
+        "Test {} is missing a non-empty `description` field in hermes.toml",
+        test_name
+    );
+
+    if SKIPPED_TESTS.iter().any(|s| path_str.contains(&format!("/{s}/hermes.toml"))) {
+        println!("Skipping test: {}", path.display());
+        return Ok(());
+    }
 
     // Special handling for the "idempotency" test case. This test is unique
     // because it doesn't follow the standard "verify output matches
@@ -623,19 +637,7 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let ctx = TestContext::new(path)?;
 
     // Load Config from hermes.toml
-    let hermes_toml_content = fs::read_to_string(path)?;
-    let hermes_toml: HermesToml = toml::from_str(&hermes_toml_content)?;
-    let config = hermes_toml.test.unwrap_or_else(|| TestConfig {
-        args: None,
-        cwd: None,
-        log: None,
-        expected_status: None,
-        expected_stderr: None,
-        expected_stderr_regex: None,
-        artifact: vec![],
-        command: vec![],
-        mock: None,
-    });
+    let config = hermes_toml.test.unwrap_or_default();
 
     let assert = ctx.run_hermes(&config);
 
@@ -702,17 +704,9 @@ fn run_toolchain_versioning_test(path: &Path) -> datatest_stable::Result<()> {
     // 1. Setup TestContext
     let ctx = TestContext::new(path)?;
 
-    // 2. Configure a basic run
     let config = TestConfig {
         args: Some(vec!["verify".into(), "--allow-sorry".into()]),
-        cwd: None,
-        log: None,
-        expected_status: None,
-        expected_stderr: None,
-        expected_stderr_regex: None,
-        artifact: vec![],
-        command: vec![],
-        mock: None,
+        ..Default::default()
     };
     // 3. Run
     let assert = ctx.run_hermes(&config);
@@ -984,14 +978,7 @@ fn run_stale_output_test(path: &Path) -> datatest_stable::Result<()> {
     // 2. Configure a basic run
     let config = TestConfig {
         args: Some(vec!["verify".into(), "--allow-sorry".into()]),
-        cwd: None,
-        log: None,
-        expected_status: None, // We check manually
-        expected_stderr: None,
-        expected_stderr_regex: None,
-        artifact: vec![],
-        command: vec![],
-        mock: None,
+        ..Default::default()
     };
 
     // 3. First Run: Should succeed and create output

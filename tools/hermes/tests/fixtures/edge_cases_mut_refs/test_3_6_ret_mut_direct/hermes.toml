@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates returning a mutable reference directly.
+Behavior: Mutates a parameter and returns it as a borrow. Verifies Aeneas establishes accurate region mapping for tracking the identity of the returned borrow back to the passed argument.
+"""
+
 
 [[artifact]]
 package = "test_3_6_ret_mut_direct"

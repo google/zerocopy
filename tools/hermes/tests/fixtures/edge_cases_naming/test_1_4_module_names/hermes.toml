@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies module namespaces conflicting with primary Lean libraries.
+Behavior: Generates modules named identically to core foundation blocks (`init`, `std`, `lean`, `mathlib`). Confirms isolation semantics ensure they do not pollute or fatally shadow Lean's environments.
+"""
+
 
 [[artifact]]
 package = "test_1_4_module_names"

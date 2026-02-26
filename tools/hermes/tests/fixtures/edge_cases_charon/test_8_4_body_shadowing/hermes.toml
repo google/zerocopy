@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests extraction of shadowed bindings within function bodies.
+Behavior: Reuses binding names via shadowing (`let x = ...; let x = ...`). Ensures that the translated Lean properly tracks and isolates the scopes of shadowed variables.
+"""
+
 
 [[artifact]]
 package = "test_8_4_body_shadowing"

@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates extraction behaves correctly for `#[cfg]`-gated items.
+Behavior: Uses conditionally compiled functions (`#[cfg(target_os = ...)]`). Verifies that the targeted function exists in Lean output while the excluded one is strictly absent.
+"""
+
 
 [[artifact]]
 package = "test_7_1_phantom_fn"

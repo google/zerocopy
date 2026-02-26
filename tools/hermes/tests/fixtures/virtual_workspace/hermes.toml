@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests traversal running at the root of a Cargo virtual workspace manifest.
+Behavior: Exerts standard validation upon a plain `[workspace]` mapping children `crates/a`. Guarantees Hermes natively inherits default targets resolving to children bounds without specifying exact packages.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

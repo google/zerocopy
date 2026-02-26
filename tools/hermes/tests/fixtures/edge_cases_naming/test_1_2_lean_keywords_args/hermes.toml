@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests sanitation of argument names colliding with Lean syntax.
+Behavior: Tests translation of function arguments bearing keyword names (e.g. `theorem: u32`). Checks for safe handling via French quote wrapping (`«theorem» : U32`).
+"""
+
 
 [[artifact]]
 package = "test_1_2_lean_keywords_args"

@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies Hermes rejects annotations on nested functions.
+Behavior: Places `/// ```lean, hermes` on a fn inside another fn block. Ensures the parser safely aborts with `Nested item error` because nested items cannot be easily referenced from external Lean scripts.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates terminal UI mappings for macro-derived location spans.
+Behavior: Tests diagnostic labels pointing inside `macros.rs` where the span expands. Ensures Hermes anchors errors pointing directly into the originating macro syntax blocks stably.
+"""
+
 [dependencies]
 
 [test]

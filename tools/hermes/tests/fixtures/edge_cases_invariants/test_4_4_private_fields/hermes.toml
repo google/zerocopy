@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates verification on encapsulated data.
+Behavior: Attaches an invariant to a struct using a private integer field. Checks that verification succeeds and properties translate transparently, indifferent to standard Rust module privacy rules.
+"""
+
 
 [[artifact]]
 package = "test_4_4_private_fields"

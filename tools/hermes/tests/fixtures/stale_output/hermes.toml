@@ -1,3 +1,8 @@
+description = """
+Purpose: Exercises sandbox idempotency specifically around artifact stale cleanup.
+Behavior: Handled directly in `run_stale_output_test`. Validates that old `.lean` or `.llbc` files from previous invocations are correctly wiped before Hermes initiates a fresh verification pass.
+"""
+
 [test]
 # Minimal config. This case is ignored by the standard runner and instead
 # hard-codes test code in `tests/integration.rs`.

@@ -1,3 +1,8 @@
+description = """
+Purpose: Verifies terminal degradation upon catastrophic `cargo` build script aborts.
+Behavior: Triggers a `panic!("Boom")` immediately in `build.rs`. Confirms Hermes cascades the raw panic out correctly to stderr rather than swallowing it.
+"""
+
 [dependencies]
 
 [test]

@@ -1,3 +1,8 @@
+description = """
+Purpose: Special sanity-check test for the integration sandbox.
+Behavior: Uses the `run_idempotency_test` handler to guarantee the test runner catches and rejects un-cleared modifications inside sandboxed test directories. Essential for guaranteeing test consistency.
+"""
+
 [test]
 # Minimal config. This case is ignored by the standard runner and instead
 # hard-codes test code in `tests/integration.rs`.

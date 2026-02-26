@@ -1,3 +1,8 @@
+description = """
+Purpose: Evaluates CLI invocation rejecting conflicting multi-target queries.
+Behavior: Asserts that `hermes verify --lib --bin run` fails gracefully since Charon cannot currently process intersecting mixed mode targets simultaneously natively.
+"""
+
 
 [test]
 args = ["verify", "--lib", "--bin", "run", "--allow-sorry"]

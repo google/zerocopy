@@ -1,3 +1,8 @@
+description = """
+Purpose: Checks correct scoping of multiply-mounted module files.
+Behavior: Mounts the same file `shared.rs` twice (`s1` and `s2`). Expects Hermes to separate their identities and successfully allow Charon to extract starting from both `crate::s1::proof` and `crate::s2::proof`.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

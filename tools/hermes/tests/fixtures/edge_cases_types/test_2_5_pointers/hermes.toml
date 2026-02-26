@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates logic compilation maps correctly parsing raw pointers without panic.
+Behavior: Includes standard Rust raw pointers (`*const u8`, `*mut u8`) and abstractions (`NonNull<u8>`). Tests that their presence correctly traverses Charon safely despite being un-provable natively by functional semantics.
+"""
+
 
 [[artifact]]
 package = "test_2_5_pointers"

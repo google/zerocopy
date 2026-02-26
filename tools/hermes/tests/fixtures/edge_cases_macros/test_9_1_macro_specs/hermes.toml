@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates attribute handling within macro expansions.
+Behavior: Encapsulates a function and a `/// @spec` block entirely within a `macro_rules!` definition. Validates that Hermes correctly attributes the specification to the post-expansion function.
+"""
+
 
 [[artifact]]
 package = "test_9_1_macro_specs"

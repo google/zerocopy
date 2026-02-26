@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests Lean `if/then/else` control flow support in specifications.
+Behavior: Uses `if check then A else B` logic within a structural invariant proof to ensure reliable execution in the lean backend.
+"""
+
 
 [[artifact]]
 package = "test_10_3_if_spec"

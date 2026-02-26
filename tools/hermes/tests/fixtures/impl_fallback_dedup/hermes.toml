@@ -1,3 +1,8 @@
+description = """
+Purpose: Tests logical redundancy filters mapping from `--start-from`.
+Behavior: Selectively targets `--start-from crate::my_module,crate::my_module::Bar`. Validates the orchestrator accurately dedups nested hierarchies and `impl` blocks to avoid generating duplicate logical proofs in Lean.
+"""
+
 
 [test]
 args = ["verify", "--allow-sorry"]

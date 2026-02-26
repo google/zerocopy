@@ -1,3 +1,8 @@
+description = """
+Purpose: Validates version enforcement metadata emission.
+Behavior: Extracts project components and ensures generated Lean files track the active LLBC/Aeneas baseline revisions exactly.
+"""
+
 [[artifact]]
 package = "stable_slug"
 target = "lib"
