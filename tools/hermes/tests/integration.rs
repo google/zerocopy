@@ -4,6 +4,8 @@ use std::{
     path::{Path, PathBuf},
     process::Command,
     sync::OnceLock,
+    thread,
+    time::Duration,
 };
 
 use fs2::FileExt;
@@ -233,10 +235,119 @@ fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
     Ok(())
 }
 
+/// A guard that strictly enforces exclusive test access to a worker's
+/// compilation cache.
+///
+/// This struct holds a file lock corresponding to a specific directory within a
+/// worker pool. Because integration tests frequently compile and manipulate
+/// shared Lean environments, they must execute in complete isolation to prevent
+/// race conditions. Rather than expensively copying the entire environment for
+/// every test, we maintain a pool of persistent worker directories. This guard
+/// ensures that exactly one test process can utilize a given worker directory
+/// at any given time, automatically releasing the filesystem lock when the test
+/// concludes or panics.
+struct WorkerCacheGuard {
+    lock_file: std::fs::File,
+    pub aeneas: PathBuf,
+    pub lean_lake: PathBuf,
+}
+
+impl Drop for WorkerCacheGuard {
+    fn drop(&mut self) {
+        let _ = self.lock_file.unlock();
+    }
+}
+
+/// Acquires exclusive access to a persistent worker cache directory,
+/// initializing it if necessary.
+///
+/// This function implements a file-based spin-lock over a bounded pool of
+/// worker directories. When a test requests a cache, it iterates through the
+/// available worker directories and attempts to acquire a non-blocking
+/// exclusive filesystem lock on a marker file. If all workers are currently
+/// locked by other tests, the thread sleeps and retries.
+///
+/// Once a lock is acquired, this function checks if the worker directory has
+/// been fully populated with the necessary Aeneas and Lean artifacts. If not,
+/// it lazily clones them from the global read-only cache. This lazy
+/// initialization strategy prevents a massive upfront disk I/O spike at the
+/// beginning of the test suite, especially if a small number of tests are being
+/// run, and spreads the initialization cost across the lifetime of the test
+/// run.
+fn acquire_worker_cache(
+    target_dir: &Path,
+    global_aeneas_backend: &Path,
+) -> Result<WorkerCacheGuard, anyhow::Error> {
+    let worker_caches_dir = target_dir.join("worker_caches");
+    fs::create_dir_all(&worker_caches_dir)?;
+
+    let base_cores = std::thread::available_parallelism().map(|n| n.get()).unwrap_or(16);
+
+    // The integration test suite spends a significant portion of its time
+    // waiting for the Lean compiler and Cargo toolchain to perform disk I/O.
+    // As a result, the operating system can efficiently interleave more test
+    // processes than there are physical CPU cores available. We overprovision
+    // the worker pool by a factor of 1.5 to prevent the test runner from being
+    // artificially bottlenecked by cache availability, while avoiding excessive
+    // I/O contention.
+    let num_workers = (base_cores as f64 * 1.5).ceil() as usize;
+
+    loop {
+        for i in 0..num_workers {
+            let worker_dir = worker_caches_dir.join(i.to_string());
+            fs::create_dir_all(&worker_dir)?;
+
+            let lock_path = worker_dir.join(".lock");
+            let lock_file =
+                fs::OpenOptions::new().read(true).write(true).create(true).open(&lock_path)?;
+
+            // We attempt to acquire a non-blocking exclusive lock on the
+            // worker's lock file. This assumes that the underlying filesystem
+            // correctly supports POSIX advisory locks (via `flock` or `fcntl`),
+            // which is true for all filesystems supported by the Hermes
+            // development environment.
+            if lock_file.try_lock_exclusive().is_ok() {
+                let worker_aeneas = worker_dir.join("aeneas");
+                let worker_aeneas_backend_lean = worker_aeneas.join("backends").join("lean");
+                let worker_lean_lake = worker_dir.join("lean_lake");
+
+                if !worker_aeneas_backend_lean.exists() {
+                    fs::create_dir_all(worker_aeneas_backend_lean.parent().unwrap())?;
+                    smart_clone_cache(global_aeneas_backend, &worker_aeneas_backend_lean)?;
+                }
+
+                if !worker_lean_lake.exists() {
+                    let global_lake = global_aeneas_backend.join(".lake");
+                    if global_lake.exists() {
+                        smart_clone_cache(&global_lake, &worker_lean_lake)?;
+                    } else {
+                        fs::create_dir_all(&worker_lean_lake)?;
+                    }
+                }
+
+                return Ok(WorkerCacheGuard {
+                    lock_file,
+                    aeneas: worker_aeneas,
+                    lean_lake: worker_lean_lake,
+                });
+            }
+        }
+
+        // If all worker caches are currently locked, we yield execution and
+        // wait before retrying. This assumes that other test processes are
+        // actively making progress and will eventually release their lock.
+        thread::sleep(Duration::from_millis(100));
+    }
+}
+
 struct TestContext {
     test_case_root: PathBuf,
     test_name: String,
     sandbox_root: PathBuf,
+    // Maintaining ownership of this guard ensures that the worker cache remains
+    // exclusively locked until the `TestContext` is dropped at the end of the
+    // test.
+    worker_cache: WorkerCacheGuard,
     _temp_dir: tempfile::TempDir, // Kept alive to prevent deletion
 }
 
@@ -254,16 +365,16 @@ impl TestContext {
 
         let aeneas_cache_backend = cache_dir.join("backends/lean");
 
-        // 1. Seed Aeneas Source (recreating the backends/lean structure so path
-        // dependency matches).
-        let test_aeneas_backend = sandbox_root.join("aeneas_backend").join("backends").join("lean");
-        smart_clone_cache(&aeneas_cache_backend, &test_aeneas_backend)
-            .map_err(|e| anyhow::anyhow!("Failed to clone Aeneas cache: {}", e))?;
+        let worker_cache = acquire_worker_cache(&target_dir, &aeneas_cache_backend)
+            .map_err(|e| anyhow::anyhow!("Failed to acquire worker cache: {}", e))?;
 
-        // 2. Seed the Lean workspace cache so Lake skips Mathlib downloads.
+        // 1. Seed the Lean workspace cache so Lake skips Mathlib downloads.
         let lean_root = sandbox_root.join("target/hermes/hermes_test_target/lean");
         fs::create_dir_all(&lean_root)?;
 
+        // The Lean manifest dictates which dependencies Lake needs to resolve. We copy this
+        // directly from the global cache to ensure the test sandbox observes exactly the same
+        // dependency tree as the precompiled artifacts.
         let source_manifest = aeneas_cache_backend.join("lake-manifest.json");
         let target_manifest = lean_root.join("lake-manifest.json");
         if source_manifest.exists() {
@@ -273,12 +384,16 @@ impl TestContext {
             fs::set_permissions(&target_manifest, perms)?;
         }
 
-        let source_lake = aeneas_cache_backend.join(".lake");
         let target_lake = lean_root.join(".lake");
-        if source_lake.exists() {
-            smart_clone_cache(&source_lake, &target_lake)
-                .map_err(|e| anyhow::anyhow!("Failed to clone .lake cache: {}", e))?;
-        }
+
+        // Rather than expensively copying the massive `.lake` directory for every test, we simply
+        // symlink the worker's mutable `.lake` directory into the test sandbox. Because the parent
+        // `TestContext` owns a `WorkerCacheGuard`, this test process has exclusive mutation rights
+        // to this target directory. This assumes that the Lean compiler (`lake`) cleanly follows
+        // symlinks for its cache directory without resolving absolute paths in a way that would
+        // accidentally leak modified paths into the final generated artifacts.
+        std::os::unix::fs::symlink(&worker_cache.lean_lake, &target_lake)
+            .map_err(|e| anyhow::anyhow!("Failed to symlink worker .lake cache: {}", e))?;
 
         // Copy extra.rs if it exists
         let extra_rs = test_case_root.join("extra.rs");
@@ -296,7 +411,7 @@ impl TestContext {
             }
         }
 
-        Ok(Self { test_case_root, test_name, sandbox_root, _temp_dir: temp })
+        Ok(Self { test_case_root, test_name, sandbox_root, worker_cache, _temp_dir: temp })
     }
 
     fn create_shim(
@@ -445,7 +560,7 @@ echo "---END-INVOCATION---" >> "{}"
         let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
         cmd.env("HERMES_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
-        cmd.env("HERMES_AENEAS_DIR", self.sandbox_root.join("aeneas_backend"));
+        cmd.env("HERMES_AENEAS_DIR", &self.worker_cache.aeneas);
         cmd.env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
 
         let original_path = std::env::var_os("PATH").unwrap_or_default();
