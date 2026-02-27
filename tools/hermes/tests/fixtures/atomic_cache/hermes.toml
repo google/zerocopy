@@ -1,0 +1,6 @@
+description = """
+See `run_atomic_writes_test` in `tests/integration.rs`.
+"""
+
+[test]
+# Dummy config, the test runner intercepts this

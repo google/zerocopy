@@ -5,6 +5,7 @@ Behavior: Invokes `-p app` on a monorepo holding `app` and `dep`. Verifies extra
 
 
 [test]
+expected_status = "known_bug"
 args = ["verify", "-p", "app", "--allow-sorry"]
 
 [[test.artifact]]

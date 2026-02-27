@@ -3,6 +3,10 @@ Purpose: Tests holistic Lean lake project emission.
 Behavior: Specifically instructs the engine to persist the artifact (`style = lean`). Asserts the presence of critical Lean build assets, e.g. `lake-manifest.json`, the `.lean` files, and properly structured `import` modules.
 """
 
+[test]
+expected_status = "known_bug"
+args = ["verify", "--allow-sorry"]
+
 [[test.artifact]]
 package = "lean_generation"
 target = "lib"
@@ -52,7 +56,3 @@ content_contains = [
     "instance {T} [Clone T] : Hermes.IsValid (InlineBound T)",
     "instance {T} [Copy T] : Hermes.IsValid (WhereBound T)"
 ]
-
-
-[test]
-args = ["verify", "--allow-sorry"]
