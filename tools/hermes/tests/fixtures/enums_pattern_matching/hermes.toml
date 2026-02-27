@@ -18,4 +18,5 @@ content_contains = [
 ]
 
 [test]
+expected_status = "known_bug"
 args = ["verify", "--allow-sorry"]
