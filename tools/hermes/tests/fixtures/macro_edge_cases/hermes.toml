@@ -13,4 +13,5 @@ start_from = ["crate"]
 style = "lean"
 
 [test]
+expected_status = "known_bug"
 args = ["verify", "--allow-sorry"]

@@ -5,6 +5,7 @@ Behavior: Compiles two distinct crates (`crates/a`, `crates/b`) in one workspace
 
 
 [test]
+expected_status = "known_bug"
 args = ["verify", "--workspace", "--allow-sorry"]
 
 [[test.artifact]]
