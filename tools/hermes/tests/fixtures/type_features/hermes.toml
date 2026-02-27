@@ -21,7 +21,7 @@ content_contains = [
     "instance {N} : Hermes.IsValid (ConstGen N)",  # Const Generic implicit binder
     "instance {N} : Hermes.IsSafe (ConstTrait N)", # Const Generic Trait implicit binder
     "match self with | .A _ => True | .B _ => False", # Enum matching
-    "isSafe := AssocType.Item Self = U32", # Associated Type usage
+    "isSafe : AssocType.Item Self = U32", # Associated Type usage
     "nomatch self", # Uninhabited Type
 ]
 
