@@ -144,14 +144,21 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
 
         let safety_buffer = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
         let safety_buffer_clone = std::sync::Arc::clone(&safety_buffer);
+
+        // Charon's standard error stream contains unstructured diagnostic output
+        // (such as panic messages from build scripts or ICEs). We dedicate a
+        // background thread to drain this stream into a thread-safe safety buffer.
+        // This ensures that even if Charon aborts unexpectedly, the user receives
+        // the complete unstructured output instead of a generic "silent death".
+        let mut stderr_thread = None;
         if let Some(stderr) = child.stderr.take() {
-            std::thread::spawn(move || {
+            stderr_thread = Some(std::thread::spawn(move || {
                 use std::io::{BufRead, BufReader};
                 let reader = BufReader::new(stderr);
                 for line in reader.lines().map_while(Result::ok) {
                     safety_buffer_clone.lock().unwrap().push(line);
                 }
-            });
+            }));
         }
 
         let pb = indicatif::ProgressBar::new_spinner();
@@ -196,6 +203,18 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
         pb.finish_and_clear();
 
         let status = child.wait().context("Failed to wait for charon")?;
+
+        // The main thread has finished reading the structured JSON output from
+        // Charon's standard output stream, and the Charon process itself has exited.
+        // However, we must explicitly wait for the background thread to finish
+        // draining the standard error stream. Failing to join this thread introduces
+        // a race condition where the main thread might inspect the `safety_buffer`
+        // before the background thread has finished appending the final error messages
+        // from the dying process.
+        if let Some(thread) = stderr_thread {
+            let _ = thread.join();
+        }
+
         log::trace!("Charon for '{}' took {:.2?}", artifact.name.package_name, start.elapsed());
 
         // FIXME: There's a subtle edge case here – if we get error output AND
