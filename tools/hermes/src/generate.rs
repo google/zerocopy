@@ -473,16 +473,12 @@ fn generate_type(
     };
 
     builder.push_str(&format!("instance{instance_params} : Hermes.IsValid {type_app} where\n"));
-    builder.push_str("  isValid \n");
-
     if block.is_valid.is_empty() {
+        builder.push_str("  isValid \n");
         builder.push_str("    True\n");
     } else {
-        for (i, clause) in block.is_valid.iter().enumerate() {
-            if i > 0 {
-                builder.push_str(" ∧ \n");
-            }
-            builder.push_str("    ");
+        for clause in block.is_valid.iter() {
+            builder.push_str("  ");
             for (j, line) in clause.lines.iter().enumerate() {
                 if j > 0 {
                     builder.push('\n');
@@ -541,24 +537,18 @@ fn generate_trait(
 
     builder
         .push_str(&format!("class Safe (Self : Type){params_decl} [{trait_app}] : Prop where\n"));
-    builder.push_str("  isSafe :");
-
     if block.is_safe.is_empty() {
-        builder.push_str(" True\n");
+        builder.push_str("  isSafe : True\n");
     } else {
-        builder.push('\n');
-        for (i, clause) in block.is_safe.iter().enumerate() {
-            if i > 0 {
-                builder.push_str(" ∧ \n");
-            }
-            builder.push_str("    (");
+        for clause in block.is_safe.iter() {
+            builder.push_str("  ");
             for (j, line) in clause.lines.iter().enumerate() {
                 if j > 0 {
                     builder.push('\n');
                 }
                 builder.push_spanned(&line.content, line, source_file);
             }
-            builder.push_str("\n)\n");
+            builder.push('\n');
         }
     }
 
@@ -1014,7 +1004,7 @@ mod tests {
     fn test_gen_struct_simple() {
         let item: syn::ItemStruct = parse_quote! { struct Point { x: u32 } };
         let ty_item = TypeItem::Struct(AstNode { inner: item.mirror() });
-        let block = mk_type_block(vec![vec!["self.x > 0"]], vec![]);
+        let block = mk_type_block(vec![vec!["isValid self := self.x > 0"]], vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_type(&ty_item, &block, &mut builder, Path::new("test.rs"));
@@ -1023,11 +1013,7 @@ mod tests {
         assert!(out.contains("namespace Point"));
         assert!(out.contains("instance : Hermes.IsValid Point where"));
 
-        // CHANGED: Expect isValid without automatic binder
-        assert!(out.contains("isValid"));
-        assert!(!out.contains("isValid self :=")); // Should NOT be auto-generated
-        assert!(out.contains("self.x > 0"));
-        assert!(out.contains("self.x > 0"));
+        assert!(out.contains("isValid self := self.x > 0"));
     }
 
     #[test]
@@ -1103,7 +1089,7 @@ mod tests {
     #[test]
     fn test_gen_trait_simple() {
         let item: syn::ItemTrait = parse_quote! { trait Identifiable {} };
-        let block = mk_trait_block(vec![vec!["self.id > 0"]], vec![]);
+        let block = mk_trait_block(vec![vec!["isSafe : self.id > 0"]], vec![]);
         let mut builder = LeanBuilder::new();
         generate_trait(&item.mirror(), &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
@@ -1112,7 +1098,6 @@ mod tests {
         // Matches Aeneas style: Self is first arg to trait class
         assert!(out.contains("class Safe (Self : Type) [Identifiable Self] : Prop where"));
         assert!(out.contains("isSafe :"));
-        assert!(!out.contains("∀ (self : Self),")); // Should NOT be auto-generated
         assert!(out.contains("self.id > 0"));
     }
 
