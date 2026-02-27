@@ -61,6 +61,7 @@ jobs:
           "no-zerocopy-generic-bounds-in-const-fn-1-61-0",
           "no-zerocopy-target-has-atomics-1-60-0",
           "no-zerocopy-aarch64-simd-1-59-0",
+          "no-zerocopy-aarch64-simd-be-1-87-0",
           "no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0"
         ]
         target: [
@@ -103,6 +104,8 @@ jobs:
             features: "--all-features"
           - toolchain: "no-zerocopy-aarch64-simd-1-59-0"
             features: "--all-features"
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            features: "--all-features"
           - toolchain: "no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0"
             features: "--all-features"
           # Exclude any combination for the zerocopy-derive crate which
@@ -130,6 +133,8 @@ jobs:
           - crate: "zerocopy-derive"
             toolchain: "no-zerocopy-aarch64-simd-1-59-0"
           - crate: "zerocopy-derive"
+            toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+          - crate: "zerocopy-derive"
             toolchain: "no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0"
           # Exclude stable/wasm since wasm is no longer provided via rustup on
           # stable.
@@ -156,6 +161,28 @@ jobs:
           - toolchain: "no-zerocopy-aarch64-simd-1-59-0"
             target: "thumbv6m-none-eabi"
           - toolchain: "no-zerocopy-aarch64-simd-1-59-0"
+            target: "wasm32-unknown-unknown"
+          # Exclude non-aarch64 targets from the `no-zerocopy-aarch64-simd-be-1-87-0`
+          # toolchain.
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            target: "i686-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            target: "x86_64-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            target: "arm-unknown-linux-gnueabi"
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            target: "powerpc-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            target: "powerpc64-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            target: "riscv64gc-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            target: "s390x-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            target: "x86_64-pc-windows-msvc"
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            target: "thumbv6m-none-eabi"
+          - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
             target: "wasm32-unknown-unknown"
           # Exclude most targets from the `no-zerocopy-core-error-1-81-0`
           # toolchain since the `no-zerocopy-core-error-1-81-0` feature is unrelated to
