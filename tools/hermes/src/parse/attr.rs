@@ -307,7 +307,7 @@ fn parse_hermes_block_common(
 
         let parsed_info = match parse_hermes_info_string(info.trim()) {
             Ok(Some(a)) => a,
-            Ok(None) => continue,
+            Ok(Option::None) => continue,
             Err(msg) => return Err(Error::new(start_original, msg)),
         };
 
@@ -722,7 +722,9 @@ impl RawHermesSpecBody {
                         .iter()
                         .find_map(|(k, s)| strip_keyword(trimmed, k).map(|arg| (s, arg)))
                     {
-                        // Check if we should preserve the keyword (e.g. for `isValid self := ...` or `isSafe : ...`).
+                        // Lean 4 definitions for `isValid` and `isSafe` require the keyword to
+                        // literally appear in the generated syntax. We flag these sections here
+                        // to ensure the keyword itself is preserved as part of the parsed content.
                         let keep_keyword = matches!(section, Section::IsValid | Section::IsSafe);
                         let first_line_content = if keep_keyword {
                             trimmed.to_string()
@@ -740,8 +742,8 @@ impl RawHermesSpecBody {
                             // We can keep using the full line span for the content line, that's fine.
                             // The keyword span however... line.raw_span is the whole line.
                         } else {
-                            // Even if the rest of the string is empty, if keep_keyword is true
-                            // we must keep the keyword itself.
+                            // Even if no additional arguments are provided on the same line,
+                            // matching sections must retain the keyword token to remain valid Lean code.
                             if keep_keyword {
                                 Some(SpannedLine {
                                     content: first_line_content,
@@ -1286,6 +1288,34 @@ mod tests {
         ];
         let err = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(err.to_string(), "`isValid` sections are only permitted on types.");
+    }
+
+    #[test]
+    fn test_is_valid_newline_after_keyword() {
+        // Here, the keyword `isValid` is followed by a newline, but we include `:=` to bypass validation.
+        // It should still preserve the keyword in the generated parsed body.
+        let attrs: Vec<syn::Attribute> = vec![
+            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " isValid :="]),
+            parse_quote!(#[doc = "  self.val > 0"]),
+            parse_quote!(#[doc = " ```"]),
+        ];
+        let block = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+        // Since `isValid` has no inline arguments beyond `:=`, the first line is exactly "isValid :=".
+        assert_eq!(block.is_valid[0].lines[0].content, "isValid :=");
+        assert_eq!(block.is_valid[0].lines[1].content, "  self.val > 0");
+    }
+
+    #[test]
+    fn test_is_safe_extra_whitespace() {
+        let attrs: Vec<syn::Attribute> = vec![
+            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " isSafe     self    :="]),
+            parse_quote!(#[doc = " ```"]),
+        ];
+        let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+        // keep_keyword should preserve the exact string from the comment line
+        assert_eq!(block.is_safe[0].lines[0].content, "isSafe     self    :=");
     }
 
     #[test]

@@ -195,6 +195,20 @@ pub fn run_aeneas(
                 slug
             );
             std::fs::write(&types_path, "").context("Failed to create empty Types.lean")?;
+        } else {
+            // We patch the generated `Types.lean` file because Aeneas's code generator
+            // outputs `@[discriminant]` without the requisite type argument. The Lean
+            // `Aeneas.Discriminant` module expects this attribute to be parameterized
+            // by an integer type (e.g., `@[discriminant isize]`). We textually replace
+            // the bare attribute with the parameterized one so that Lean can successfully
+            // process the file.
+            let content =
+                std::fs::read_to_string(&types_path).context("Failed to read Types.lean")?;
+            let patched = patch_discriminants(&content);
+            if patched != content {
+                std::fs::write(&types_path, patched)
+                    .context("Failed to write patched Types.lean")?;
+            }
         }
 
         // Add to Generated.lean imports (no prefix)
@@ -646,6 +660,13 @@ struct LeanDiagnostic {
     message: String,
 }
 
+/// Patches the generated Types.lean file to fix Aeneas discriminant generation.
+/// Aeneas generates `@[discriminant]` without a type argument, but the Lean
+/// `Aeneas.Discriminant` module expects this attribute to be parameterized.
+fn patch_discriminants(content: &str) -> String {
+    content.replace("@[discriminant]", "@[discriminant isize]")
+}
+
 /// Helper to write file content only if it has changed.
 ///
 /// This prevents updating the file's modification time (mtime) if the content is identical,
@@ -757,5 +778,24 @@ mod tests {
         let (file, start, _) = resolve_mapping(&diag, &mappings);
         assert_eq!(file, "file_a.rs");
         assert_eq!(start, 200, "Should NOT redirect across files");
+    }
+
+    #[test]
+    fn test_patch_discriminants() {
+        // Standard replacement for Aeneas enum generation
+        assert_eq!(
+            patch_discriminants("attribute @[discriminant]\ninductive Foo"),
+            "attribute @[discriminant isize]\ninductive Foo"
+        );
+        // EDGE CASE: If a string or doc block contains the literal it will be replaced maliciously.
+        assert_eq!(
+            patch_discriminants("def doc := \"This uses @[discriminant]\""),
+            "def doc := \"This uses @[discriminant isize]\""
+        );
+        // EDGE CASE: Different `repr` attributes from Rust aren't inspected.
+        assert_eq!(
+            patch_discriminants("attribute @[discriminant]\n-- #[repr(u8)]"),
+            "attribute @[discriminant isize]\n-- #[repr(u8)]"
+        );
     }
 }

@@ -31,6 +31,10 @@ namespace Hermes
 -- 1. Result checking
 -- We use Aeneas.Result
 
+-- We use `@[simp]` directly on the `SpecificationHolds` definition.
+-- This elegantly unrolls the match logic for underlying results without forcing 
+-- users to manually type `unfold Hermes.SpecificationHolds` uniformly across all project proofs.
+@[simp]
 def SpecificationHolds {α : Type} (res : Result α) (post : α → Prop) : Prop :=
   match res with
   | .ok v => post v
