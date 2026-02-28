@@ -1,7 +1,9 @@
 /// Sets `acc` to `val` if `val` is larger.
 ///
 /// ```lean, hermes, spec
-/// ensures acc = max old(acc) val
+/// -- Note: We use the natively supported `acc'` notation instead of `old(acc)`
+/// -- to succinctly refer to the post-state value of the mutable reference.
+/// ensures acc' = max acc val
 /// proof
 ///   unfold update_max
 ///   split <;> simp_all

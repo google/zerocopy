@@ -28,7 +28,7 @@ use crate::errors::HermesError;
 #[derive(Clone, Debug)]
 pub enum FunctionItem<M: ThreadSafety = Local> {
     Free(AstNode<ItemFn, M>),
-    Impl(AstNode<ImplItemFn, M>, Option<String>),
+    Impl(AstNode<ImplItemFn, M>, Option<AstNode<syn::Type, M>>),
     Trait(AstNode<TraitItemFn, M>),
 }
 
@@ -58,7 +58,7 @@ impl<M: ThreadSafety> LiftToSafe for FunctionItem<M> {
     fn lift(self) -> Self::Target {
         match self {
             Self::Free(x) => FunctionItem::Free(x.lift()),
-            Self::Impl(x, p) => FunctionItem::Impl(x.lift(), p),
+            Self::Impl(x, p) => FunctionItem::Impl(x.lift(), p.map(|p| p.lift())),
             Self::Trait(x) => FunctionItem::Trait(x.lift()),
         }
     }
@@ -263,7 +263,14 @@ fn scan_compilation_unit_internal<I, M>(
 
 struct HermesVisitor<I, M> {
     current_path: Vec<String>,
-    current_impl_type: Option<String>,
+    /// The parsed type of the current `impl` block being visited, if any.
+    ///
+    /// This is maintained in the visitor state to be passed down into the parsed
+    /// representation of the methods (`FunctionItem::Impl`). This allows the code
+    /// generator to explicitly resolve receiver bounds using the concrete structure
+    /// type rather than a generic `Self` alias, which is necessary because Lean scope
+    /// resolution for Aeneas-generated theorems requires exact target types.
+    current_impl_type: Option<AstNode<syn::Type, Local>>,
     inside_block: bool,
     item_cb: I,
     mod_cb: M,
@@ -435,15 +442,13 @@ where
             ParsedItem::Impl(HermesDecorated { item: AstNode::new(item.clone()), hermes })
         });
 
-        let mut impl_name = None;
-        if let syn::Type::Path(type_path) = &*i.self_ty {
-            if let Some(segment) = type_path.path.segments.last() {
-                impl_name = Some(segment.ident.to_string());
-            }
+        let mut impl_ty_node = None;
+        if let syn::Type::Path(_) = &*i.self_ty {
+            impl_ty_node = Some(AstNode::new(*i.self_ty.clone()));
         }
 
         let old_impl_type = self.current_impl_type.take();
-        self.current_impl_type = impl_name;
+        self.current_impl_type = impl_ty_node;
 
         syn::visit::visit_item_impl(self, i);
 

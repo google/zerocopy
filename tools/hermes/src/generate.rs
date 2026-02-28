@@ -160,6 +160,9 @@ pub fn generate_artifact(artifact: &crate::scanner::HermesArtifact) -> Generated
     builder.push_str("import Aeneas.ScalarTac.ScalarTac\n");
     builder.push_str(&format!("import «{}».Funs\n", slug));
     builder.push_str(&format!("import «{}».Types\n\n", slug));
+    // We disable the `linter.dupNamespace` option globally in the generated Lean file.
+    // Hermes translation commonly generates nested namespaces that trigger this linter.
+    //
     // FIXME: Maybe set this in the lakefile instead?
     builder.push_str("set_option linter.dupNamespace false\n");
     builder.push_str("open Aeneas Aeneas.Std Result\n");
@@ -199,6 +202,7 @@ pub fn generate_artifact(artifact: &crate::scanner::HermesArtifact) -> Generated
 
 struct ArgInfo {
     name: String,
+    lean_type: String,
     is_mut_ref: bool,
 }
 
@@ -240,15 +244,11 @@ fn generate_function(
         FunctionItem::Trait(n) => (n.inner.sig.ident.clone(), n.inner.sig.name_span, None),
     };
 
-    let args = extract_args_metadata(func);
+    let args = extract_args_metadata(func, &impl_struct_name);
     let ret_is_unit = is_unit_return(func);
 
     // Namespace wrapping
     builder.push_str(&format!("namespace {}\n\n", fn_name));
-
-    if let Some(struct_name) = &impl_struct_name {
-        builder.push_str(&format!("abbrev Self := {}\n\n", struct_name));
-    }
 
     // 1. Generate the context
     for line in &block.common.context {
@@ -272,11 +272,28 @@ fn generate_function(
     };
 
     // 4. Build the Call String
-    let call_name = if let Some(struct_name) = &impl_struct_name {
-        format!("{}.{}", struct_name, fn_name)
+    //
+    // Aeneas generates theorem goals for struct methods using the explicit struct name
+    // as a namespace prefix (e.g., `List.push`) rather than a bare identifier. We extract
+    // the base segment path of the implementing struct here to correctly construct the
+    // method call name in Lean. This guarantees that the proof resolves against the precise
+    // definition output by Aeneas.
+    let mut base_name = "".to_string();
+    if let Some(struct_name_node) = &impl_struct_name {
+        if let crate::parse::hkd::SafeType::Path { segments, .. } = &struct_name_node.inner {
+            if let Some(seg) = segments.last() {
+                base_name = seg.ident.clone();
+            }
+        }
+    }
+    let call_name = if !base_name.is_empty() {
+        format!("{}.{}", base_name, fn_name)
     } else {
         fn_name.to_string()
     };
+
+    let _fallback_theorem_name =
+        if base_name.is_empty() { fn_name.clone() } else { format!("{}_{}", base_name, fn_name) };
 
     let call_str = std::iter::once(call_name)
         .chain(args.iter().map(|a| a.name.clone()))
@@ -290,7 +307,10 @@ fn generate_function(
         .then(|| {
             format!(
                 " {}",
-                args.iter().map(|a| format!("({})", a.name)).collect::<Vec<_>>().join(" ")
+                args.iter()
+                    .map(|a| format!("({} : {})", a.name, a.lean_type))
+                    .collect::<Vec<_>>()
+                    .join(" ")
             )
         })
         .unwrap_or_default();
@@ -331,7 +351,7 @@ fn generate_function(
     builder.push_str(" :\n");
 
     // Result Spec
-    let ret_type = get_return_type_string(func);
+    let ret_type = get_return_type_string(func, &impl_struct_name);
     builder.push_str(&format!("  Hermes.SpecificationHolds (α := {}) ({})", ret_type, call_str));
 
     let mut_args: Vec<&ArgInfo> = args.iter().filter(|a| a.is_mut_ref).collect();
@@ -474,8 +494,6 @@ fn generate_type(
     } else {
         String::new()
     };
-
-    builder.push_str(&format!("abbrev Self{instance_params} := {type_app}\n\n"));
 
     builder.push_str(&format!("instance{instance_params} : Hermes.IsValid {type_app} where\n"));
     if block.is_valid.is_empty() {
@@ -670,8 +688,14 @@ fn map_type(ty: &crate::parse::hkd::SafeType) -> String {
 
 /// Extracts `(arg_name, lean_type, is_mut_ref)` metadata from a function signature.
 ///
-/// This metadata is used to build the Lean function signature and handle mutable reference splitting.
-fn extract_args_metadata(func: &FunctionItem<crate::parse::hkd::Safe>) -> Vec<ArgInfo> {
+/// This metadata is used to build the Lean function signature and efficiently map
+/// receiver parameters into their concrete structure types, bypassing generic
+/// namespace resolution issues within generated Lean files. It also records whether
+/// standard arguments should be handled via mutable reference splitting in the output.
+fn extract_args_metadata(
+    func: &FunctionItem<crate::parse::hkd::Safe>,
+    impl_struct_name: &Option<crate::parse::hkd::AstNode<syn::Type, crate::parse::hkd::Safe>>,
+) -> Vec<ArgInfo> {
     use crate::parse::hkd::{SafeFnArg, SafeType};
     let sig = match func {
         FunctionItem::Free(AstNode { inner: i }) => &i.sig,
@@ -687,21 +711,35 @@ fn extract_args_metadata(func: &FunctionItem<crate::parse::hkd::Safe>) -> Vec<Ar
                 if let SafeType::Reference { mutability, .. } = ty {
                     is_mut_ref = *mutability;
                 }
-                Some(ArgInfo { name: name.clone(), is_mut_ref })
+                Some(ArgInfo { name: name.clone(), lean_type: map_type(ty), is_mut_ref })
             }
             SafeFnArg::Receiver { mutability, reference } => {
-                Some(ArgInfo { name: "self".to_string(), is_mut_ref: *mutability && *reference })
+                let lean_type = if let Some(t) = impl_struct_name {
+                    map_type(&t.inner)
+                } else {
+                    "Self".to_string()
+                };
+                Some(ArgInfo {
+                    name: "self".to_string(),
+                    lean_type,
+                    is_mut_ref: *mutability && *reference,
+                })
             }
         })
         .collect()
 }
 
-/// Computes the return type string for the Lean theorem.
+/// Computes the Lean output type string for a given Rust function signature.
 ///
-/// If the function has mutable reference arguments, the return type becomes a tuple
-/// containing the original return value (if any) and the new values of all mutable arguments.
-/// e.g. `fn foo(x: &mut u32) -> bool` becomes `Bool × Std.U32` in Lean.
-fn get_return_type_string(func: &FunctionItem<crate::parse::hkd::Safe>) -> String {
+/// If the function expects mutable reference arguments, the return type is transformed
+/// into a tuple containing the original return value (if any) and the new values of
+/// all mutable arguments (e.g., `fn foo(x: &mut u32) -> bool` becomes `Bool × Std.U32`).
+/// This function also substitutes concrete struct types in place of generic `Self` receivers
+/// because Aeneas's theorem goals utilize the explicit structure definitions rather than `Self`.
+fn get_return_type_string(
+    func: &FunctionItem<crate::parse::hkd::Safe>,
+    impl_struct_name: &Option<crate::parse::hkd::AstNode<syn::Type, crate::parse::hkd::Safe>>,
+) -> String {
     use crate::parse::hkd::{SafeFnArg, SafeReturnType, SafeType};
 
     let sig = match func {
@@ -726,7 +764,11 @@ fn get_return_type_string(func: &FunctionItem<crate::parse::hkd::Safe>) -> Strin
     for arg in &sig.inputs {
         match arg {
             SafeFnArg::Receiver { mutability: true, .. } => {
-                ret_types.push("Self".to_string());
+                if let Some(t) = impl_struct_name {
+                    ret_types.push(map_type(&t.inner));
+                } else {
+                    ret_types.push("Self".to_string());
+                }
             }
             SafeFnArg::Typed { ty: SafeType::Reference { mutability: true, elem }, .. } => {
                 ret_types.push(map_type(&elem));
@@ -944,7 +986,7 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        let theorem_idx = out.find("theorem spec (x)").expect("Theorem not found");
+        let theorem_idx = out.find("theorem spec (x : Std.U32)").expect("Theorem not found");
         let requires_idx = out.find("(h_req : (x.val > 0\n))").expect("Requires not found");
         let return_type_idx = out.find("Hermes.SpecificationHolds").expect("Return type not found");
 
@@ -968,7 +1010,7 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("axiom spec (p) :"));
+        assert!(out.contains("axiom spec (p : (ConstRawPtr Std.U8)) :"));
         assert!(out.contains("Hermes.SpecificationHolds (α := Unit) (ffi p)"));
         // No proof block for axioms
         assert!(!out.contains(":= by"));
@@ -984,7 +1026,7 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("(self)"));
+        assert!(out.contains("(self : Self)"));
         assert!(out.contains("get self"));
     }
 
@@ -1222,10 +1264,10 @@ mod tests {
         let out = builder.buf;
 
         // Check Slice mapping
-        assert!(out.contains("(data)"));
+        assert!(out.contains("(data : (Slice Std.U8))"));
 
         // Check Array mapping
-        assert!(out.contains("(buf)"));
+        assert!(out.contains("(buf : (Array Std.U8 16))"));
     }
 
     #[test]
@@ -1247,7 +1289,7 @@ mod tests {
         assert!(!out.contains("let self := self_new"));
 
         // Should just be a normal argument
-        assert!(out.contains("(self)"));
+        assert!(out.contains("(self : Self)"));
     }
 
     #[test]
@@ -1314,5 +1356,63 @@ mod tests {
         assert!(generated.code.contains("namespace my_target\n\n"));
         // It shouldn't contain the old package_name logic by mistake
         assert!(!generated.code.contains("open my_package"));
+    }
+
+    #[test]
+    fn test_gen_impl_generic_lifetimes() {
+        let item: syn::ImplItemFn = parse_quote! {
+            fn get(&self) -> bool { true }
+        };
+        // Construct an impl_struct_name with lifetimes: MyStruct<'a, T>
+        let ty: syn::Type = parse_quote! { MyStruct<'a, T> };
+        let func = FunctionItem::Impl(
+            AstNode { inner: item.mirror() },
+            Some(AstNode { inner: ty.mirror() }),
+        );
+        let block = mk_block(vec![], vec![], Some(vec!["rfl"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("(self : (MyStruct T))"));
+    }
+
+    #[test]
+    fn test_gen_impl_type_alias() {
+        let item: syn::ImplItemFn = parse_quote! {
+            fn get(&self) -> bool { true }
+        };
+        let ty: syn::Type = parse_quote! { MyAlias };
+        let func = FunctionItem::Impl(
+            AstNode { inner: item.mirror() },
+            Some(AstNode { inner: ty.mirror() }),
+        );
+        let block = mk_block(vec![], vec![], Some(vec!["rfl"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("(self : MyAlias)"));
+    }
+
+    #[test]
+    fn test_gen_impl_tuple() {
+        let item: syn::ImplItemFn = parse_quote! {
+            fn get(&self) -> bool { true }
+        };
+        let ty: syn::Type = parse_quote! { (u32, u32) };
+        let func = FunctionItem::Impl(
+            AstNode { inner: item.mirror() },
+            Some(AstNode { inner: ty.mirror() }),
+        );
+        let block = mk_block(vec![], vec![], Some(vec!["rfl"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("(self : Std.U32 × Std.U32)"));
     }
 }
