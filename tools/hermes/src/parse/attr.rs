@@ -722,9 +722,17 @@ impl RawHermesSpecBody {
                         .iter()
                         .find_map(|(k, s)| strip_keyword(trimmed, k).map(|arg| (s, arg)))
                     {
+                        // Check if we should preserve the keyword (e.g. for `isValid self := ...` or `isSafe : ...`).
+                        let keep_keyword = matches!(section, Section::IsValid | Section::IsSafe);
+                        let first_line_content = if keep_keyword {
+                            trimmed.to_string()
+                        } else {
+                            arg_str.to_string()
+                        };
+
                         let arg = if !arg_str.trim().is_empty() {
                             Some(SpannedLine {
-                                content: arg_str.to_string(),
+                                content: first_line_content,
                                 span, // Note: This span covers the whole line including keyword
                                 raw_span: raw_span.clone(),
                             })
@@ -732,7 +740,17 @@ impl RawHermesSpecBody {
                             // We can keep using the full line span for the content line, that's fine.
                             // The keyword span however... line.raw_span is the whole line.
                         } else {
-                            None
+                            // Even if the rest of the string is empty, if keep_keyword is true
+                            // we must keep the keyword itself.
+                            if keep_keyword {
+                                Some(SpannedLine {
+                                    content: first_line_content,
+                                    span,
+                                    raw_span: raw_span.clone(),
+                                })
+                            } else {
+                                None
+                            }
                         };
 
                         spec.start_section(section, raw_span, arg);
@@ -1165,7 +1183,7 @@ mod tests {
             parse_quote!(#[doc = " ```"]),
         ];
         let block = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
-        assert_eq!(block.is_valid[0].lines[0].content, " self :=");
+        assert_eq!(block.is_valid[0].lines[0].content, "isValid self :=");
         assert_eq!(block.is_valid[0].lines[1].content, "  bar");
         assert_eq!(block.common.context[0].content, " foo");
     }
@@ -1195,7 +1213,7 @@ mod tests {
         ];
         let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         assert_eq!(block.is_safe.len(), 1);
-        assert_eq!(block.is_safe[0].lines[0].content, " :");
+        assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
         assert_eq!(block.is_safe[0].lines[1].content, "  val == true");
     }
 
@@ -1378,7 +1396,7 @@ mod tests {
             let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
             assert!(block.is_safe.len() == 1);
             assert!(!block.is_safe[0].lines.is_empty());
-            assert_eq!(block.is_safe[0].lines[0].content, " :");
+            assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
         }
 
         #[test]
@@ -1407,7 +1425,7 @@ mod tests {
             // Currently parser allows empty sections.
             let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
             assert!(block.is_safe.len() == 1);
-            assert_eq!(block.is_safe[0].lines[0].content, " :");
+            assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
         }
 
         #[test]
@@ -1465,7 +1483,7 @@ mod tests {
             ];
             let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
             assert_eq!(block.is_safe.len(), 1);
-            assert_eq!(block.is_safe[0].lines[0].content, " :");
+            assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
             assert_eq!(block.is_safe[0].lines[1].content, "  val");
         }
 
