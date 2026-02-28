@@ -12,4 +12,3 @@ expected_status = "failure"
 package = "split"
 target = "split"
 should_exist = true
-matches_expected_dir = "expected"

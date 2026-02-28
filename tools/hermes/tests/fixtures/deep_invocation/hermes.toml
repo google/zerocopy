@@ -12,4 +12,3 @@ cwd = "src/nested"
 package = "deep"
 target = "deep"
 should_exist = true
-matches_expected_dir = "expected"

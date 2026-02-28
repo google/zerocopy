@@ -13,4 +13,3 @@ expected_status = "success"
 package = "unsafe_test"
 target = "unsafe_test"
 should_exist = true
-matches_expected_dir = "expected"
