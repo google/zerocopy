@@ -5,7 +5,6 @@ Behavior: A package possesses both a library and a binary. Runs `--bin app` to e
 
 
 [test]
-expected_status = "known_bug"
 args = ["verify", "--bin", "app", "--allow-sorry"]
 
 [[test.artifact]]
