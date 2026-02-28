@@ -68,15 +68,15 @@ impl HermesArtifact {
         // Use SHA-256 not for security but rather stability – Rust's
         // `DefaultHasher` doesn't guarantee stability even across runs of the
         // same binary.
-        let h0 = hash(&self.manifest_path.as_os_str().as_encoded_bytes());
-        let h1 = hash(&self.name.target_name.as_bytes());
+        let h0 = hash(self.manifest_path.as_os_str().as_encoded_bytes());
+        let h1 = hash(self.name.target_name.as_bytes());
         let h2 = hash(&[self.target_kind as u8]);
         let hashes = [h0, h1, h2];
         let h = hash(&hashes.map(u64::to_ne_bytes).concat());
 
         // Converts kebab-case -> PascalCase.
         let to_pascal = |s: &str| {
-            s.split(|c| matches!(c, '-' | '_'))
+            s.split(['-', '_'])
                 .map(|segment| {
                     let mut chars = segment.chars();
                     match chars.next() {

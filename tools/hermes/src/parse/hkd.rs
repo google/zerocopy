@@ -14,7 +14,7 @@ use quote::ToTokens;
 /// This allows us to parse deeply using `syn` on worker threads, then "lift"
 /// the extensive AST into a lightweight, thread-safe representation to send
 /// back to the main thread or other workers.
-
+///
 /// Types that can be mirrored into a thread-safe representation.
 pub trait Mirror {
     type Image: Debug + Clone + Send + 'static;
@@ -31,9 +31,8 @@ pub trait ThreadSafety: 'static + Sized + Copy + Debug {
     ///
     /// If we are already Safe, this is identity.
     /// If we are Local, this erases the contents into `()`.
-    fn lift_node<T: Mirror + Clone + Debug>(node: Self::Node<T>) -> <Safe as ThreadSafety>::Node<T>
-    where
-        T: Debug;
+    fn lift_node<T: Mirror + Clone + Debug>(node: Self::Node<T>)
+        -> <Safe as ThreadSafety>::Node<T>;
 }
 
 // --- Mode 1: Non-Thread-Safe (Fast, Local) ---
@@ -49,10 +48,9 @@ impl ThreadSafety for Local {
     // Retains full node payload natively
     type Node<T: Mirror + Clone + Debug> = T;
 
-    fn lift_node<T: Mirror + Clone + Debug>(node: Self::Node<T>) -> <Safe as ThreadSafety>::Node<T>
-    where
-        T: Debug,
-    {
+    fn lift_node<T: Mirror + Clone + Debug>(
+        node: Self::Node<T>,
+    ) -> <Safe as ThreadSafety>::Node<T> {
         node.mirror()
     }
 }
@@ -70,10 +68,9 @@ impl ThreadSafety for Safe {
     // Erases nodes completely
     type Node<T: Mirror + Clone + Debug> = T::Image;
 
-    fn lift_node<T: Mirror + Clone + Debug>(node: Self::Node<T>) -> <Safe as ThreadSafety>::Node<T>
-    where
-        T: Debug,
-    {
+    fn lift_node<T: Mirror + Clone + Debug>(
+        node: Self::Node<T>,
+    ) -> <Safe as ThreadSafety>::Node<T> {
         // Already safe; just return ()
         node
     }

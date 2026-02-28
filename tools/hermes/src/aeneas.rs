@@ -402,7 +402,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
         // This prevents compiling Mathlib from source, which is slow and disk-heavy.
         let mut cache_cmd = Command::new("lake");
         cache_cmd.args(["exe", "cache", "get"]);
-        cache_cmd.current_dir(&lean_root);
+        cache_cmd.current_dir(lean_root);
         cache_cmd.stdout(Stdio::piped());
         cache_cmd.stderr(Stdio::piped());
 
@@ -425,7 +425,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     // 2. Build the project (dependencies only)
     let mut cmd = Command::new("lake");
     cmd.args(["build", "Generated", "Hermes"]);
-    cmd.current_dir(&lean_root);
+    cmd.current_dir(lean_root);
     cmd.stdout(Stdio::piped());
     cmd.stderr(Stdio::piped());
 
@@ -435,16 +435,14 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     // Capture stderr in background
     let stderr_buffer = Arc::new(Mutex::new(Vec::new()));
     let stderr_clone = stderr_buffer.clone();
-    let stderr_handle = if let Some(stderr) = child.stderr.take() {
-        Some(std::thread::spawn(move || {
+    let stderr_handle = child.stderr.take().map(|stderr| {
+        std::thread::spawn(move || {
             let reader = BufReader::new(stderr);
             for line in reader.lines().map_while(Result::ok) {
                 stderr_clone.lock().unwrap().push(line);
             }
-        }))
-    } else {
-        None
-    };
+        })
+    });
 
     // UI Spinner
     let pb = ProgressBar::new_spinner();
@@ -457,17 +455,15 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     let stdout_clone = stdout_buffer.clone();
     let pb_clone = pb.clone();
 
-    let stdout_handle = if let Some(stdout) = child.stdout.take() {
-        Some(std::thread::spawn(move || {
+    let stdout_handle = child.stdout.take().map(|stdout| {
+        std::thread::spawn(move || {
             let reader = BufReader::new(stdout);
             for line in reader.lines().map_while(Result::ok) {
                 stdout_clone.lock().unwrap().push(line);
                 pb_clone.tick();
             }
-        }))
-    } else {
-        None
-    };
+        })
+    });
 
     let status = child.wait().context("Failed to wait for lake")?;
     pb.finish_and_clear();
@@ -508,7 +504,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
 
         let mut cmd = Command::new("lake");
         cmd.args(["env", "lean", "--run", "Diagnostics.lean"]);
-        cmd.current_dir(&lean_root);
+        cmd.current_dir(lean_root);
         cmd.stdout(Stdio::piped());
         cmd.stderr(Stdio::piped());
 

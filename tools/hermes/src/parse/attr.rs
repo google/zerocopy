@@ -10,11 +10,12 @@ use super::*;
 /// (requires, ensures, proof, etc.).
 ///
 /// The parsing process involves:
-/// 1. Extracting raw documentation lines using `extract_doc_line` (handling `///`, `/** ... */`, `#[doc = ...]`).
+/// 1. Extracting raw documentation lines using `extract_doc_line` (handling `/// `, `/** ... */`, `#[doc = ...]`).
 /// 2. Identifying Hermes blocks denoted by ` ```lean, hermes...` fences.
 /// 3. Parsing the content within these blocks into structured `RawHermesSpecBody`.
 /// 4. Validating and converting the raw body into specific block types (e.g., `FunctionHermesBlock`).
-
+/// 4. Validating and converting the raw body into specific block types (e.g., `FunctionHermesBlock`).
+///
 /// Represents a parsed attribute from a Hermes info string on a function.
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum FunctionAttribute {
@@ -135,7 +136,7 @@ fn parse_hermes_info_string(info: &str) -> Result<Option<ParsedInfoString>, Stri
 
 /// Extracts the string content and spans for each line from a documentation attribute.
 ///
-/// This handles `///`, `//!`, `/** ... */`, and `#[doc = "..."]` attributes uniformly.
+/// This handles `/// `, `//!`, `/** ... */`, and `#[doc = "..."]` attributes uniformly.
 /// It attempts to calculate the precise source span for each line of content, which
 /// is critical for accurate error reporting.
 ///
@@ -168,13 +169,13 @@ pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, S
 
             // Determine the offset of the content within the raw slice.
             //
-            // We need to skip over the comment markers (`///`, `//!`, `/**`) or
+            // We need to skip over the comment markers (`/// `, `//!`, `/**`) or
             // the attribute syntax (`#[doc = ...]`) to find the actual text
             // content.
             let trimmed = raw_slice.trim_start();
             let leading_ws = raw_slice.len() - trimmed.len();
 
-            let offset = if trimmed.starts_with("///")
+            let offset = if trimmed.starts_with("/// ")
                 || trimmed.starts_with("//!")
                 || trimmed.starts_with("/**")
                 || trimmed.starts_with("/*!")
@@ -188,7 +189,7 @@ pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, S
                     .find('=')
                     .and_then(|eq_idx| {
                         let after_eq = &after_bracket[eq_idx + 1..];
-                        after_eq.find(|c: char| c == '"' || c == 'r').map(|quote_intra_idx| {
+                        after_eq.find(|c: char| ['"', 'r'].contains(&c)).map(|quote_intra_idx| {
                             let quote_total_idx = eq_idx + 1 + quote_intra_idx;
                             let literal_part = &after_bracket[quote_total_idx..];
                             let quote_width = if literal_part.starts_with('r') {
@@ -236,11 +237,11 @@ pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, S
                     current_offset += part_len + 1;
                 }
 
-                let final_content = if part.ends_with('\r') {
+                let final_content = if let Some(stripped) = part.strip_suffix('\r') {
                     if exact_match {
                         part_span = SourceSpan::new(part_span.offset().into(), part_len - 1);
                     }
-                    &part[..part.len() - 1]
+                    stripped
                 } else {
                     part
                 };
@@ -257,7 +258,7 @@ pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, S
 ///
 /// Returns the collected lines and the span of the closing fence (or the last
 /// line).
-fn parse_block_lines<'a, I>(iter: &mut I, start: Span) -> Result<(Vec<SpannedLine>, Span), Error>
+fn parse_block_lines<I>(iter: &mut I, start: Span) -> Result<(Vec<SpannedLine>, Span), Error>
 where
     I: Iterator<Item = (String, SourceSpan, Span)>,
 {
@@ -285,7 +286,7 @@ where
 /// Parses a "Hermes block" from a sequence of attributes.
 ///
 /// This function flat-maps all documentation attributes into a single stream of lines,
-/// allowing it to handle both single-line `///` comments and multi-line `/** ... */`
+/// allowing it to handle both single-line `/// ` comments and multi-line `/** ... */`
 /// blocks transparently. It looks for a start fence ` ```... ` and parses the content
 /// until the end fence.
 fn parse_hermes_block_common(
@@ -782,6 +783,89 @@ impl RawHermesSpecBody {
                 },
             )
             .map(|(spec, _, _)| spec)
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for SpannedLine<M> {
+    type Target = SpannedLine<Safe>;
+    fn lift(self) -> Self::Target {
+        SpannedLine { content: self.content, span: self.span, raw_span: self.raw_span.lift() }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for Clause<M> {
+    type Target = Clause<Safe>;
+    fn lift(self) -> Self::Target {
+        Clause {
+            keyword_span: self.keyword_span.lift(),
+            lines: self.lines.into_iter().map(|l| l.lift()).collect(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for HermesBlockCommon<M> {
+    type Target = HermesBlockCommon<Safe>;
+    fn lift(self) -> Self::Target {
+        HermesBlockCommon {
+            context: self.context.into_iter().map(|l| l.lift()).collect(),
+            content_span: self.content_span.lift(),
+            start_span: self.start_span.lift(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for FunctionBlockInner<M> {
+    type Target = FunctionBlockInner<Safe>;
+    fn lift(self) -> Self::Target {
+        match self {
+            Self::Proof { lines, keyword } => FunctionBlockInner::Proof {
+                lines: lines.into_iter().map(|l| l.lift()).collect(),
+                keyword: keyword.map(|k| k.lift()),
+            },
+            Self::Axiom { lines, keyword } => FunctionBlockInner::Axiom {
+                lines: lines.into_iter().map(|l| l.lift()).collect(),
+                keyword: keyword.map(|k| k.lift()),
+            },
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for FunctionHermesBlock<M> {
+    type Target = FunctionHermesBlock<Safe>;
+    fn lift(self) -> Self::Target {
+        FunctionHermesBlock {
+            common: self.common.lift(),
+            requires: self.requires.into_iter().map(|c| c.lift()).collect(),
+            ensures: self.ensures.into_iter().map(|c| c.lift()).collect(),
+            inner: self.inner.lift(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for TypeHermesBlock<M> {
+    type Target = TypeHermesBlock<Safe>;
+    fn lift(self) -> Self::Target {
+        TypeHermesBlock {
+            common: self.common.lift(),
+            is_valid: self.is_valid.into_iter().map(|c| c.lift()).collect(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for TraitHermesBlock<M> {
+    type Target = TraitHermesBlock<Safe>;
+    fn lift(self) -> Self::Target {
+        TraitHermesBlock {
+            common: self.common.lift(),
+            is_safe: self.is_safe.into_iter().map(|c| c.lift()).collect(),
+        }
+    }
+}
+
+impl<M: ThreadSafety> LiftToSafe for ImplHermesBlock<M> {
+    type Target = ImplHermesBlock<Safe>;
+    fn lift(self) -> Self::Target {
+        ImplHermesBlock { common: self.common.lift() }
     }
 }
 
@@ -1664,7 +1748,7 @@ mod tests {
         let len = span.len();
         let source_slice = &source[start..start + len];
         assert_eq!(content, source_slice, "Content should match source slice at returned span");
-        assert!(start >= 3, "Span should start after '///'");
+        assert!(start >= 3, "Span should start after '/// '");
     }
 
     #[test]
@@ -1673,7 +1757,7 @@ mod tests {
             // 1. Sugared Comments
             ("/// content", " content", 3),
             ("///   content", "   content", 3),
-            ("///content", "content", 3),
+            ("/// content", "content", 3),
             ("//! content", " content", 3),
             // 2. Block Comments
             ("/** content */", " content ", 3),
@@ -1729,15 +1813,11 @@ mod tests {
 
             // Check content matches source slice
             let source_slice = &full_source[start..start + span.len()];
-            if content != source_slice {
-                if !source.contains("escaped") {
-                    if content != source_slice {
-                        failures.push(format!(
-                            "Content-Source mismatch for '{}': content {:?}, source slice {:?}",
-                            source, content, source_slice
-                        ));
-                    }
-                }
+            if content != source_slice && !source.contains("escaped") {
+                failures.push(format!(
+                    "Content-Source mismatch for '{}': content {:?}, source slice {:?}",
+                    source, content, source_slice
+                ));
             }
         }
 
@@ -1772,88 +1852,5 @@ fn foo() {}";
         assert!(lines.len() >= 3, "Expected split lines, got {}", lines.len());
         assert!(lines.iter().any(|l| l.content.contains("line 1")));
         assert!(lines.iter().any(|l| l.content.contains("line 2")));
-    }
-}
-
-impl<M: ThreadSafety> LiftToSafe for SpannedLine<M> {
-    type Target = SpannedLine<Safe>;
-    fn lift(self) -> Self::Target {
-        SpannedLine { content: self.content, span: self.span, raw_span: self.raw_span.lift() }
-    }
-}
-
-impl<M: ThreadSafety> LiftToSafe for Clause<M> {
-    type Target = Clause<Safe>;
-    fn lift(self) -> Self::Target {
-        Clause {
-            keyword_span: self.keyword_span.lift(),
-            lines: self.lines.into_iter().map(|l| l.lift()).collect(),
-        }
-    }
-}
-
-impl<M: ThreadSafety> LiftToSafe for HermesBlockCommon<M> {
-    type Target = HermesBlockCommon<Safe>;
-    fn lift(self) -> Self::Target {
-        HermesBlockCommon {
-            context: self.context.into_iter().map(|l| l.lift()).collect(),
-            content_span: self.content_span.lift(),
-            start_span: self.start_span.lift(),
-        }
-    }
-}
-
-impl<M: ThreadSafety> LiftToSafe for FunctionBlockInner<M> {
-    type Target = FunctionBlockInner<Safe>;
-    fn lift(self) -> Self::Target {
-        match self {
-            Self::Proof { lines, keyword } => FunctionBlockInner::Proof {
-                lines: lines.into_iter().map(|l| l.lift()).collect(),
-                keyword: keyword.map(|k| k.lift()),
-            },
-            Self::Axiom { lines, keyword } => FunctionBlockInner::Axiom {
-                lines: lines.into_iter().map(|l| l.lift()).collect(),
-                keyword: keyword.map(|k| k.lift()),
-            },
-        }
-    }
-}
-
-impl<M: ThreadSafety> LiftToSafe for FunctionHermesBlock<M> {
-    type Target = FunctionHermesBlock<Safe>;
-    fn lift(self) -> Self::Target {
-        FunctionHermesBlock {
-            common: self.common.lift(),
-            requires: self.requires.into_iter().map(|c| c.lift()).collect(),
-            ensures: self.ensures.into_iter().map(|c| c.lift()).collect(),
-            inner: self.inner.lift(),
-        }
-    }
-}
-
-impl<M: ThreadSafety> LiftToSafe for TypeHermesBlock<M> {
-    type Target = TypeHermesBlock<Safe>;
-    fn lift(self) -> Self::Target {
-        TypeHermesBlock {
-            common: self.common.lift(),
-            is_valid: self.is_valid.into_iter().map(|c| c.lift()).collect(),
-        }
-    }
-}
-
-impl<M: ThreadSafety> LiftToSafe for TraitHermesBlock<M> {
-    type Target = TraitHermesBlock<Safe>;
-    fn lift(self) -> Self::Target {
-        TraitHermesBlock {
-            common: self.common.lift(),
-            is_safe: self.is_safe.into_iter().map(|c| c.lift()).collect(),
-        }
-    }
-}
-
-impl<M: ThreadSafety> LiftToSafe for ImplHermesBlock<M> {
-    type Target = ImplHermesBlock<Safe>;
-    fn lift(self) -> Self::Target {
-        ImplHermesBlock { common: self.common.lift() }
     }
 }

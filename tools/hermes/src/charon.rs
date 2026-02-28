@@ -131,7 +131,7 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
         }
 
         // Reuse the main target directory for dependencies to save time.
-        cmd.env("CARGO_TARGET_DIR", &roots.cargo_target_dir());
+        cmd.env("CARGO_TARGET_DIR", roots.cargo_target_dir());
 
         log::debug!("Command: {:?}", cmd);
 
