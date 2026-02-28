@@ -25,6 +25,8 @@ content_contains = [
     "nomatch self", # Uninhabited Type
 ]
 
+
+matches_expected_dir = "expected"
 [test]
 expected_status = "known_bug"
 args = ["verify", "--allow-sorry"]
