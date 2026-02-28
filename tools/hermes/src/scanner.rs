@@ -268,7 +268,7 @@ fn process_file_recursive<'a>(
                     crate::parse::ParsedItem::Function(f) => {
                         matches!(
                             f.item,
-                            crate::parse::FunctionItem::Impl(_)
+                            crate::parse::FunctionItem::Impl(_, _)
                                 | crate::parse::FunctionItem::Trait(_)
                         )
                     }
