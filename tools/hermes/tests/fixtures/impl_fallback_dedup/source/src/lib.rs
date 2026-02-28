@@ -15,11 +15,12 @@ pub mod my_module {
         pub fn method_two() {}
     }
 
-    pub trait Bar {
-        /// ```lean, hermes
-        /// context
-        /// theorem trait_meth : True := trivial
-        /// ```
-        fn trait_method();
+    /// ```lean, hermes
+    /// isValid self := True
+    /// ```
+    pub struct Bar;
+
+    impl Bar {
+        pub fn trait_method(&self) {}
     }
 }

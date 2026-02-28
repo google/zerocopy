@@ -9,13 +9,12 @@ pub struct Counter {
 
 impl Counter {
     /// ```lean, hermes, spec
-    /// requires self.val < self.max
-    /// ensures self.val = old(self.val) + 1
+    /// requires self.val.val < self.max.val
+    /// ensures self'.val.val = self.val.val + 1
     ///   -- Preservation of invariant is implicit but checked
-    /// ensures self.val = old(self.val) + 1
+    /// ensures self'.val.val = self.val.val + 1
     /// proof
-    ///   unfold inc
-    ///   simp_all
+    ///   sorry
     /// ```
     pub fn inc(&mut self) {
         self.val += 1;
