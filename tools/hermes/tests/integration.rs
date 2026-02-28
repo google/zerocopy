@@ -1,5 +1,5 @@
 use std::{
-    fs, io,
+    cmp, fs, io,
     os::unix::fs::PermissionsExt,
     path::{Path, PathBuf},
     process::Command,
@@ -306,6 +306,11 @@ fn acquire_worker_cache(
     // I/O contention.
     let num_workers = (base_cores as f64 * 1.5).ceil() as usize;
 
+    // ...however, each Lean process requires a significant amount of RAM, so we
+    // limit the number of workers to a safe number based on available system
+    // resources.
+    let num_workers = cmp::min(num_workers, calculate_dynamic_lean_concurrency_limit());
+
     loop {
         for i in 0..num_workers {
             let worker_dir = worker_caches_dir.join(i.to_string());
@@ -351,6 +356,35 @@ fn acquire_worker_cache(
         // wait before retrying. This assumes that other test processes are
         // actively making progress and will eventually release their lock.
         thread::sleep(Duration::from_millis(100));
+    }
+}
+
+/// Reads /proc/meminfo to determine available RAM and calculates a safe number
+/// of concurrent Lean processes.
+fn calculate_dynamic_lean_concurrency_limit() -> usize {
+    // Because each Lean process needs to load Mathlib's compiled artifact into
+    // RAM, it seems to consume ~7.5GB of RAM in practice. We double this (16GB)
+    // to provide a healthy safety margin for other system processes.
+    const LEAN_RAM_REQUIRED_BYTES: u64 = 16 * 1024 * 1024 * 1024;
+
+    // Attempt to read MemAvailable from /proc/meminfo
+    let available_ram_bytes = fs::read_to_string("/proc/meminfo").ok().and_then(|meminfo| {
+        meminfo.lines().find_map(|line| {
+            if line.starts_with("MemAvailable:") {
+                // Line format: "MemAvailable:   12345678 kB"
+                let parts: Vec<&str> = line.split_whitespace().collect();
+                parts.get(1).and_then(|kb| kb.parse::<u64>().ok()).map(|kb| kb * 1024)
+            } else {
+                None
+            }
+        })
+    });
+
+    if let Some(bytes) = available_ram_bytes {
+        (bytes / LEAN_RAM_REQUIRED_BYTES) as usize
+    } else {
+        // Fallback if /proc/meminfo is unreadable for some reason
+        4
     }
 }
 
