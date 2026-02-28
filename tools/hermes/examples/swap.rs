@@ -1,8 +1,8 @@
 /// Swaps two values.
 ///
 /// ```lean, hermes, spec
-/// ensures x = old(y)
-/// ensures y = old(x)
+/// ensures x' = y
+/// ensures y' = x
 /// proof
 ///   unfold swap
 ///   simp_all
