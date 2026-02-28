@@ -160,6 +160,8 @@ pub fn generate_artifact(artifact: &crate::scanner::HermesArtifact) -> Generated
     builder.push_str("import Aeneas.ScalarTac.ScalarTac\n");
     builder.push_str(&format!("import «{}».Funs\n", slug));
     builder.push_str(&format!("import «{}».Types\n\n", slug));
+    // FIXME: Maybe set this in the lakefile instead?
+    builder.push_str("set_option linter.dupNamespace false\n");
     builder.push_str("open Aeneas Aeneas.Std Result\n");
     // Open the crate namespace so types are visible.
     //
