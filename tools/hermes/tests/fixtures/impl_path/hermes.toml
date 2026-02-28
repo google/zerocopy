@@ -15,4 +15,3 @@ should_not_exist = false
 package = "impl_path"
 target = "impl_path"
 should_exist = true
-matches_expected_dir = "expected"

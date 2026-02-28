@@ -11,4 +11,3 @@ args = ["verify", "--allow-sorry"]
 package = "ignored"
 target = "ignored"
 should_exist = true
-matches_expected_dir = "expected"

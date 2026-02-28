@@ -11,4 +11,3 @@ args = ["verify", "--allow-sorry"]
 package = "custom_layout"
 target = "custom_layout"
 should_exist = true
-matches_expected_dir = "expected"

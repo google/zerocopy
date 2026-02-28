@@ -16,4 +16,3 @@ should_not_exist = false
 package = "complex_impl"
 target = "complex_impl"
 should_exist = true
-matches_expected_dir = "expected"

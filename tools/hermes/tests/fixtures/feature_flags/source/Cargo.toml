@@ -5,3 +5,5 @@ edition = "2021"
 
 [features]
 extra = []
+
+[workspace]

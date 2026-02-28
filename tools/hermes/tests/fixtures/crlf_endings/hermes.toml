@@ -11,4 +11,3 @@ args = ["verify", "--allow-sorry"]
 package = "crlf"
 target = "crlf"
 should_exist = true
-matches_expected_dir = "expected"

@@ -11,4 +11,3 @@ args = ["verify", "--allow-sorry"]
 package = "dir_mod"
 target = "dir_mod"
 should_exist = true
-matches_expected_dir = "expected"

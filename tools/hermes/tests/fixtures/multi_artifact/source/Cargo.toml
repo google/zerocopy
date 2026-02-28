@@ -6,3 +6,5 @@ edition = "2021"
 [lib]
 crate-type = ["rlib", "cdylib"]
 
+
+[workspace]

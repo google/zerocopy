@@ -1,6 +1,6 @@
 description = """
-Purpose: Special sanity-check test for the integration sandbox.
-Behavior: Uses the `run_idempotency_test` handler to guarantee the test runner catches and rejects un-cleared modifications inside sandboxed test directories. Essential for guaranteeing test consistency.
+Purpose: A special sanity-check test for the integration sandbox.
+Behavior: Proves that the test runner correctly cleans and handles state across multiple invocations in the same sandbox by running Hermes sequentially. This is essential for guaranteeing test consistency and verifying idempotent runs.
 """
 
 [test]
@@ -11,6 +11,5 @@ args = ["verify", "--allow-sorry"]
 
 [[test.phases]]
 name = "second_run"
-expected_status = "failure"
+expected_status = "success"
 args = ["verify", "--allow-sorry"]
-expected_stderr_regex = "Target .lake directory already exists"
