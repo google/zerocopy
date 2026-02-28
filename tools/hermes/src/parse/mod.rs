@@ -28,7 +28,7 @@ use crate::errors::HermesError;
 #[derive(Clone, Debug)]
 pub enum FunctionItem<M: ThreadSafety = Local> {
     Free(AstNode<ItemFn, M>),
-    Impl(AstNode<ImplItemFn, M>),
+    Impl(AstNode<ImplItemFn, M>, Option<String>),
     Trait(AstNode<TraitItemFn, M>),
 }
 
@@ -36,7 +36,7 @@ impl FunctionItem<Local> {
     pub fn name(&self) -> String {
         match self {
             Self::Free(x) => x.inner.sig.ident.to_string(),
-            Self::Impl(x) => x.inner.sig.ident.to_string(),
+            Self::Impl(x, _) => x.inner.sig.ident.to_string(),
             Self::Trait(x) => x.inner.sig.ident.to_string(),
         }
     }
@@ -46,7 +46,7 @@ impl FunctionItem<Safe> {
     pub fn name(&self) -> &str {
         match self {
             Self::Free(x) => &x.inner.sig.ident,
-            Self::Impl(x) => &x.inner.sig.ident,
+            Self::Impl(x, _) => &x.inner.sig.ident,
             Self::Trait(x) => &x.inner.sig.ident,
         }
     }
@@ -58,7 +58,7 @@ impl<M: ThreadSafety> LiftToSafe for FunctionItem<M> {
     fn lift(self) -> Self::Target {
         match self {
             Self::Free(x) => FunctionItem::Free(x.lift()),
-            Self::Impl(x) => FunctionItem::Impl(x.lift()),
+            Self::Impl(x, p) => FunctionItem::Impl(x.lift(), p),
             Self::Trait(x) => FunctionItem::Trait(x.lift()),
         }
     }
@@ -249,6 +249,7 @@ fn scan_compilation_unit_internal<I, M>(
     trace!("Initializing HermesVisitor to traverse AST");
     let mut visitor = HermesVisitor {
         current_path: Vec::new(),
+        current_impl_type: None,
         inside_block,
         item_cb,
         mod_cb,
@@ -262,6 +263,7 @@ fn scan_compilation_unit_internal<I, M>(
 
 struct HermesVisitor<I, M> {
     current_path: Vec<String>,
+    current_impl_type: Option<String>,
     inside_block: bool,
     item_cb: I,
     mod_cb: M,
@@ -432,17 +434,36 @@ where
         self.process_item(i, &i.attrs, ImplHermesBlock::parse_from_attrs, |item, hermes| {
             ParsedItem::Impl(HermesDecorated { item: AstNode::new(item.clone()), hermes })
         });
+
+        let mut impl_name = None;
+        if let syn::Type::Path(type_path) = &*i.self_ty {
+            if let Some(segment) = type_path.path.segments.last() {
+                impl_name = Some(segment.ident.to_string());
+            }
+        }
+
+        let old_impl_type = self.current_impl_type.take();
+        self.current_impl_type = impl_name;
+
         syn::visit::visit_item_impl(self, i);
+
+        self.current_impl_type = old_impl_type;
     }
 
     fn visit_impl_item_fn(&mut self, i: &'ast ImplItemFn) {
         trace!("Visiting ImplItemFn {}", i.sig.ident);
-        self.process_item(i, &i.attrs, FunctionHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Function(HermesDecorated {
-                item: FunctionItem::Impl(AstNode::new(item.clone())),
-                hermes,
-            })
-        });
+        let current_impl_type = self.current_impl_type.clone();
+        self.process_item(
+            i,
+            &i.attrs,
+            FunctionHermesBlock::parse_from_attrs,
+            move |item, hermes| {
+                ParsedItem::Function(HermesDecorated {
+                    item: FunctionItem::Impl(AstNode::new(item.clone()), current_impl_type.clone()),
+                    hermes,
+                })
+            },
+        );
         syn::visit::visit_impl_item_fn(self, i);
     }
 
