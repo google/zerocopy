@@ -6,5 +6,4 @@ Behavior: (Empty config context) Likely executes a project having multiple libra
 [dependencies]
 
 [test]
-expected_status = "known_bug"
 args = ["verify", "--lib", "--bin", "my_bin", "--allow-sorry"]
