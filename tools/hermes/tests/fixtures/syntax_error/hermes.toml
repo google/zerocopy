@@ -5,6 +5,6 @@ Behavior: Introduces `fn broken( {`. Asserts the parser chokes correctly at the 
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "expected.stderr"

@@ -5,6 +5,6 @@ Behavior: Defines a module that mounts itself (`#[path = "lib.rs"] mod self_loop
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "expected.stderr"

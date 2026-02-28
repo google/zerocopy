@@ -7,3 +7,5 @@ Behavior: Leverages `async unsafe fn`, `const unsafe fn`, and `unsafe extern "C"
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
+
+

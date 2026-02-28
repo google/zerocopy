@@ -4,5 +4,13 @@ Behavior: Uses the `run_idempotency_test` handler to guarantee the test runner c
 """
 
 [test]
-# Minimal config. This case is ignored by the standard runner and instead
-# hard-codes test code in `tests/integration.rs`.
+[[test.phases]]
+name = "first_run"
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
+
+[[test.phases]]
+name = "second_run"
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
+expected_stderr_regex = "Target .lake directory already exists"

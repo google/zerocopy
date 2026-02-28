@@ -6,9 +6,9 @@ Behavior: Mocks an error mapped to an `unsafe {}` block spanning bytes 9 to 18. 
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

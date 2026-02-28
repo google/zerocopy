@@ -6,9 +6,9 @@ Behavior: Prints invalid JSON payloads before emitting a valid `compiler-artifac
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

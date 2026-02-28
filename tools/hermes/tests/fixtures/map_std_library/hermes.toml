@@ -6,9 +6,9 @@ Behavior: Verifies Charon diagnostic outputs identifying `package_id: core 0.0.0
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

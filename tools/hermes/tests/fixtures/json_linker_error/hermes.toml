@@ -6,9 +6,9 @@ Behavior: Mocks a generic "linker failed" error with no attached file spans. Che
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

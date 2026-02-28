@@ -6,3 +6,9 @@ Behavior: Contains source files formatted with `\r\n` line endings. Validates th
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "crlf"
+target = "crlf"
+should_exist = true
+matches_expected_dir = "expected"

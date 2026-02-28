@@ -5,6 +5,6 @@ Behavior: Places a Hermes annotation on a function blocked by `#[cfg(target_os =
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "expected.stderr"

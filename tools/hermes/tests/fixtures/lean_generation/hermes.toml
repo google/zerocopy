@@ -9,7 +9,7 @@ args = ["verify", "--allow-sorry"]
 
 [[test.artifact]]
 package = "lean_generation"
-target = "lib"
+target = "lean_generation"
 kind = "lean"
 should_exist = true
 
@@ -24,7 +24,7 @@ content_contains = [
 matches_expected_dir = "expected"
 [[test.artifact]]
 package = "lean_generation"
-target = "lib"
+target = "lean_generation"
 kind = "lean"
 should_exist = true
 content_contains = ["lake-manifest.json"]
@@ -34,7 +34,7 @@ content_contains = ["lake-manifest.json"]
 matches_expected_dir = "expected"
 [[test.artifact]]
 package = "lean_generation"
-target = "lib"
+target = "lean_generation"
 kind = "lean"
 should_exist = true
 content_contains = [
@@ -50,7 +50,7 @@ content_contains = [
 matches_expected_dir = "expected"
 [[test.artifact]]
 package = "lean_generation"
-target = "lib"
+target = "lean_generation"
 kind = "lean"
 should_exist = true
 content_contains = [

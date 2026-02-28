@@ -6,9 +6,9 @@ Behavior: Injects a JSON diagnostic tree with a child `help` note containing its
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

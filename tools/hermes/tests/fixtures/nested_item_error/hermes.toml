@@ -5,6 +5,6 @@ Behavior: Places `/// ```lean, hermes` on a fn inside another fn block. Ensures 
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "expected.stderr"

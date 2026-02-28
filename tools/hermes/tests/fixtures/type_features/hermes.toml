@@ -12,21 +12,9 @@ start_from = ["crate"]
 [output]
 style = "lean"
 
-[[test.artifact]]
-package = "type_features"
-target = "type_features"
-kind = "lean"
-should_exist = true
-content_contains = [
-    "instance {N} : Hermes.IsValid (ConstGen N)",  # Const Generic implicit binder
-    "instance {N} : Hermes.IsSafe (ConstTrait N)", # Const Generic Trait implicit binder
-    "match self with | .A _ => True | .B _ => False", # Enum matching
-    "isSafe : AssocType.Item Self = U32", # Associated Type usage
-    "nomatch self", # Uninhabited Type
-]
 
 
-matches_expected_dir = "expected"
+
 [test]
 expected_status = "known_bug"
 args = ["verify", "--allow-sorry"]

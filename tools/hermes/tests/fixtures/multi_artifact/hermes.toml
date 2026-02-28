@@ -7,3 +7,9 @@ Behavior: Tests `crate-type = ["rlib", "cdylib"]`. Ensures that emitting paralle
 [test]
 expected_status = "known_bug"
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "multi"
+target = "multi"
+should_exist = true
+matches_expected_dir = "expected"
