@@ -6,3 +6,9 @@ Behavior: Checks scoping invariants inside `mod foo { fn bar() {} }`. Ensures mo
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "inline"
+target = "inline"
+should_exist = true
+matches_expected_dir = "expected"

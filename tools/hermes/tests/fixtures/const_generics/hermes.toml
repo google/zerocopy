@@ -6,7 +6,7 @@ Behavior: Uses a struct and a trait generic over a constant value (`const N: usi
 
 [[artifact]]
 package = "transform_lib"
-target = "lib"
+target = "transform_lib"
 kind = "lean"
 should_exist = true
 

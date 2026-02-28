@@ -6,9 +6,9 @@ Behavior: Emulates an upstream error emerging from `/rustc/.../library/core/src/
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

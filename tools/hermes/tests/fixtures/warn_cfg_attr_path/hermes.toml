@@ -5,6 +5,6 @@ Behavior: Deploys `#[cfg_attr(unix, path = "sys_unix.rs")] mod sys`. Fires a spe
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr = "expected.stderr"

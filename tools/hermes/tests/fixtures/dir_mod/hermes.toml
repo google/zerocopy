@@ -6,3 +6,9 @@ Behavior: Uses the older module layout pattern (`src/bar/mod.rs` for `mod bar;`)
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "dir_mod"
+target = "dir_mod"
+should_exist = true
+matches_expected_dir = "expected"

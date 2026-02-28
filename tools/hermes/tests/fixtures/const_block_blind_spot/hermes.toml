@@ -5,6 +5,6 @@ Behavior: Defines an annotated function inside a `const _: () = { ... }` block. 
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "expected.stderr"

@@ -6,9 +6,9 @@ Behavior: Tests diagnostic labels pointing inside `macros.rs` where the span exp
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

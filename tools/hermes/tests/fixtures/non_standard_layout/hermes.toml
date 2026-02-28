@@ -6,3 +6,9 @@ Behavior: A `Cargo.toml` overrides `path = "code/custom.rs"`. Proves Hermes and 
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "custom_layout"
+target = "custom_layout"
+should_exist = true
+matches_expected_dir = "expected"

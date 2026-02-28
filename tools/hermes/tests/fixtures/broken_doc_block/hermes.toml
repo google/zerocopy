@@ -5,6 +5,6 @@ Behavior: Provides a source file with an unclosed `/// ```lean, hermes` block. E
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "expected.stderr"

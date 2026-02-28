@@ -6,3 +6,9 @@ Behavior: The dummy targeted OS (`fake_os`) effectively neuters the parsing. Ens
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "missing"
+target = "missing"
+should_exist = true
+matches_expected_dir = "expected"

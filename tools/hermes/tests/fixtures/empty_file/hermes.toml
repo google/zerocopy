@@ -6,3 +6,9 @@ Behavior: Invokes verification on an essentially blank Rust file with only a dum
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "empty"
+target = "empty"
+should_exist = true
+matches_expected_dir = "expected"

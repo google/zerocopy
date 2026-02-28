@@ -6,3 +6,9 @@ Behavior: Exerts standard validation upon a plain `[workspace]` mapping children
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "a"
+target = "a"
+should_exist = true
+matches_expected_dir = "expected"

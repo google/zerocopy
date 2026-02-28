@@ -5,13 +5,13 @@ Behavior: Runs verification on a very basic project to confirm both LLBC and Lea
 
 [[artifact]]
 package = "atomic_writes"
-target = "lib"
+target = "atomic_writes"
 kind = "llbc"
 should_exist = true
 
 [[artifact]]
 package = "atomic_writes"
-target = "lib"
+target = "atomic_writes"
 kind = "lean"
 should_exist = true
 

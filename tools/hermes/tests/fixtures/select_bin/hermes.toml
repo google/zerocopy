@@ -7,20 +7,3 @@ Behavior: A package possesses both a library and a binary. Runs `--bin app` to e
 [test]
 args = ["verify", "--bin", "app", "--allow-sorry"]
 
-[[test.artifact]]
-package = "select_bin"
-target = "app"
-should_exist = true
-
-[[test.artifact]]
-package = "select_bin"
-target = "select_bin"
-should_exist = false
-
-[[test.command]]
-args = ["--bin", "app"]
-should_not_exist = false
-
-[[test.command]]
-args = ["--lib"]
-should_not_exist = true

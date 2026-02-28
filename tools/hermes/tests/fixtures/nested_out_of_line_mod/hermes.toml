@@ -5,6 +5,6 @@ Behavior: Buries a `mod hidden;` within an inline module inside a function block
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "expected.stderr"

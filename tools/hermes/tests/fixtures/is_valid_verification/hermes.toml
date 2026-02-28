@@ -16,6 +16,6 @@ style = "lean"
 verify = true # This triggers running `cargo run verify` which runs Lean
 
 [test]
+stderr_file = "expected.stderr"
 log = "hermes=trace"
 expected_status = "failure"
-expected_stderr = "expected.stderr"

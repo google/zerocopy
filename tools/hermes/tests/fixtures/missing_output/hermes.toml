@@ -4,10 +4,10 @@ Behavior: Leverages a mock Aeneas script that aborts cleanly (exit 0) but produc
 """
 
 [test]
+stderr_file = "expected.stderr"
 expected_status = "failure"
 args = ["verify", "--allow-sorry"]
 # We expect the error message about missing Funs.lean because the source has functions
 
 [test.mock]
 aeneas = "mock_aeneas.sh"
-expected_stderr = "expected.stderr"

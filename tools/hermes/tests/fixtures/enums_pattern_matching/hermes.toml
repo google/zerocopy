@@ -6,7 +6,7 @@ Behavior: Extends a pattern matching proof across all variants of `Enum.A x` and
 
 [[artifact]]
 package = "transform_lib"
-target = "lib"
+target = "transform_lib"
 kind = "lean"
 should_exist = true
 

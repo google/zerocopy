@@ -10,3 +10,9 @@ args = ["verify", "--allow-sorry"]
 [[test.command]]
 args = ["--start-from", "crate"]
 should_not_exist = false
+
+[[test.artifact]]
+package = "impl_path"
+target = "impl_path"
+should_exist = true
+matches_expected_dir = "expected"

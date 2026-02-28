@@ -7,3 +7,9 @@ Behavior: Asserts that `hermes verify --lib --bin run` fails gracefully since Ch
 [test]
 args = ["verify", "--lib", "--bin", "run", "--allow-sorry"]
 expected_status = "failure"
+
+[[test.artifact]]
+package = "split"
+target = "split"
+should_exist = true
+matches_expected_dir = "expected"

@@ -7,10 +7,12 @@ Behavior: Exercises the 'isSafe', 'isValid' and 'spec' attribute mapping against
 expected_status = "known_bug"
 args = ["verify", "--allow-sorry"]
 
+
+[[test.command]]
+args = ["charon", "--opaque", "design_doc::safe_div,design_doc::pop"]
+
 [[test.artifact]]
 package = "design_doc"
 target = "design_doc"
-kind = "lean"
 should_exist = true
-[[test.command]]
-args = ["charon", "--opaque", "design_doc::safe_div,design_doc::pop"]
+matches_expected_dir = "expected"

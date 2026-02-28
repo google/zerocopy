@@ -5,6 +5,6 @@ Behavior: Embeds syntax issues in two independent files (`a.rs`, `b.rs`). Exerci
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "expected.stderr"

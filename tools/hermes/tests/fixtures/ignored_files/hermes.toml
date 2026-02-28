@@ -6,3 +6,9 @@ Behavior: Incorporates auxiliary code files not directly bound by Hermes specifi
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "ignored"
+target = "ignored"
+should_exist = true
+matches_expected_dir = "expected"

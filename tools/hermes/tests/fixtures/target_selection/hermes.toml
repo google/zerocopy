@@ -7,3 +7,5 @@ Behavior: Attempts to verify `selector` while invoking `--bin selector`. Assures
 [test]
 args = ["verify", "--bin", "selector", "--allow-sorry"]
 expected_status = "failure"
+
+

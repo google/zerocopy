@@ -5,6 +5,6 @@ Behavior: An unannotated Rust file yields a success status but prints the `No He
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr = "expected.stderr"

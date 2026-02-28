@@ -6,7 +6,7 @@ Behavior: Declares `pub enum Void {}`. Connects an invariant evaluating `nomatch
 
 [[artifact]]
 package = "transform_lib"
-target = "lib"
+target = "transform_lib"
 kind = "lean"
 should_exist = true
 

@@ -6,9 +6,9 @@ Behavior: Confirms purely relative diagnostic paths like `src/lib.rs` remain map
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

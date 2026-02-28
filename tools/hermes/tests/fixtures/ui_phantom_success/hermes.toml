@@ -6,6 +6,6 @@ Behavior: Emits `unused variable` warnings but ultimately exits successfully. Pr
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr = "expected.stderr"

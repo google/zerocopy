@@ -5,13 +5,13 @@ Behavior: Instead of mapping arbitrary cargo names, checks that `should_exist = 
 
 [[artifact]]
 package = "stable_slug"
-target = "lib"
+target = "stable_slug"
 kind = "llbc"
 should_exist = true
 
 [[artifact]]
 package = "stable_slug"
-target = "lib"
+target = "stable_slug"
 kind = "lean"
 should_exist = true
 

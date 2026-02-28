@@ -6,3 +6,9 @@ Behavior: Employs the `#[path = "sys/unix.rs"] mod sys;` attribute to declare a 
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "custom"
+target = "custom"
+should_exist = true
+matches_expected_dir = "expected"

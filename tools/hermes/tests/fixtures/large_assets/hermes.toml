@@ -6,3 +6,9 @@ Behavior: Analyzes a repository containing arbitrary assets. Proves Hermes avoid
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "assets"
+target = "assets"
+should_exist = true
+matches_expected_dir = "expected"

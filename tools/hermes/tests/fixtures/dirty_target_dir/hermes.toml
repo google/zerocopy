@@ -6,3 +6,9 @@ Behavior: Executes verification simulating an already populated local build fold
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "cleaner"
+target = "cleaner"
+should_exist = true
+matches_expected_dir = "expected"
