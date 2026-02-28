@@ -7,7 +7,7 @@ Behavior: Leverages a mock Aeneas script that aborts cleanly (exit 0) but produc
 expected_status = "failure"
 args = ["verify", "--allow-sorry"]
 # We expect the error message about missing Funs.lean because the source has functions
-expected_stderr = "Aeneas failed to generate Funs.lean"
 
 [test.mock]
 aeneas = "mock_aeneas.sh"
+expected_stderr = "expected.stderr"

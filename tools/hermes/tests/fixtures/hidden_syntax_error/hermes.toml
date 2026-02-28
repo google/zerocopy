@@ -7,4 +7,4 @@ Behavior: Places a severe syntax error (`fn syntax_error( {`) inside a `#[cfg(al
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "error\n"
+expected_stderr = "expected.stderr"

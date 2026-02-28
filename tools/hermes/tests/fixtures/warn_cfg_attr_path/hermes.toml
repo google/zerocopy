@@ -7,4 +7,4 @@ Behavior: Deploys `#[cfg_attr(unix, path = "sys_unix.rs")] mod sys`. Fires a spe
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr = "Hermes does not currently evaluate conditional paths\n"
+expected_stderr = "expected.stderr"

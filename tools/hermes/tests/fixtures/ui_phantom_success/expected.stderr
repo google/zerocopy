@@ -1,0 +1,19 @@
+  ⚠ unused variable: `unused_var`
+   ╭─[[PROJECT_ROOT]/src/lib.rs:5:9]
+ 4 │ pub fn foo() {
+ 5 │     let unused_var = 5;
+   ·         ─────┬────
+   ·              ╰── 
+ 6 │ }
+   ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ declaration uses `sorry`
+   ╭─[[PROJECT_ROOT]/src/lib.rs:4:8]
+ 3 │ #[warn(unused_variables)]
+ 4 │ pub fn foo() {
+   ·        ──┬─
+   ·          ╰── here
+ 5 │     let unused_var = 5;
+   ╰────
+

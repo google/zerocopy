@@ -8,7 +8,7 @@ Behavior: Emits `Dep A`, followed by `The Error`, followed by `Dep B`. Checks mu
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr_regex = "(?s).*Dep A.*The Error.*Dep B.*\n"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"

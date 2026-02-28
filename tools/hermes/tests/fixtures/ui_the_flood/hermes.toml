@@ -8,7 +8,7 @@ Behavior: Pipes 30+ iterative `compiler-artifact` progress reports rapidly. Assu
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr_regex = "(?s).*dep_49.*\n"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"

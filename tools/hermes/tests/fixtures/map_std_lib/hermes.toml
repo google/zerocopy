@@ -8,7 +8,7 @@ Behavior: Emulates an upstream error emerging from `/rustc/.../library/core/src/
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr = "No Hermes annotations (/// ```lean ...) found in the selected targets. Nothing to verify.\n"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"

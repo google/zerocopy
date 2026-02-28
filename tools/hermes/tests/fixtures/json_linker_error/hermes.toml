@@ -8,7 +8,7 @@ Behavior: Mocks a generic "linker failed" error with no attached file spans. Che
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "[External Error] linker failed"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"

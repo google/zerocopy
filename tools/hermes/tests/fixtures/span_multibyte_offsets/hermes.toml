@@ -8,7 +8,7 @@ Behavior: Tests spans wrapping multibyte Unicode identifiers (`pub fn föö() {}
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "  \u00d7 fire\n   \u256d\u2500[[PROJECT_ROOT]/src/lib.rs:1:8]\n 1 \u2502 pub fn f\u00f6\u00f6() {}\n   \u00b7        \u2500\u252c\u2500\n   \u00b7         \u2570\u2500\u2500 hot\n 2 \u2502 \n   \u2570\u2500\u2500\u2500\u2500"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"

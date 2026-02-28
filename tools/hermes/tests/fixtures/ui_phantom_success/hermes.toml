@@ -8,4 +8,4 @@ Behavior: Emits `unused variable` warnings but ultimately exits successfully. Pr
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr_regex = "(?s).*unused variable.*\n"
+expected_stderr = "expected.stderr"

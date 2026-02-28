@@ -7,4 +7,4 @@ Behavior: Declares a single function with two consecutive `/// ```lean, hermes` 
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "Multiple Hermes blocks found on a single item.\n"
+expected_stderr = "expected.stderr"

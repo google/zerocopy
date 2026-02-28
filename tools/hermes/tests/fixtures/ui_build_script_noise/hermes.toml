@@ -8,7 +8,7 @@ Behavior: Prints invalid JSON payloads before emitting a valid `compiler-artifac
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr_regex = ".*"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"

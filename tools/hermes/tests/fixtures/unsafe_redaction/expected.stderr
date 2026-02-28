@@ -1,0 +1,9 @@
+  ⚠ function `foo` is never used
+   ╭─[[PROJECT_ROOT]/src/lib.rs:4:11]
+ 3 │ /// ```
+ 4 │ unsafe fn foo() -> i32 {
+   ·           ─┬─
+   ·            ╰── 
+ 5 │     1 + 1
+   ╰────
+

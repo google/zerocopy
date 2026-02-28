@@ -8,7 +8,7 @@ Behavior: Verifies Charon diagnostic outputs identifying `package_id: core 0.0.0
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "Diagnostic error in charon\n"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"

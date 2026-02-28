@@ -7,4 +7,4 @@ Behavior: Uses a script mock of Charon returning `0.0.0` as its version. Expects
 mock = { charon = "mock_charon.sh" }
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "Charon version mismatch"
+expected_stderr = "expected.stderr"

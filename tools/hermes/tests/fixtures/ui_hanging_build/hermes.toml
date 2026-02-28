@@ -8,4 +8,4 @@ Behavior: Injects a custom `build.rs` containing a hardcoded 2-second synchronou
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr_regex = "\n"
+expected_stderr = "expected.stderr"

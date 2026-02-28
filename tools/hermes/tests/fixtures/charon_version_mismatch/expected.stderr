@@ -1,0 +1,4 @@
+Error: Charon version mismatch.
+Expected: 0.1.163
+Found:    0.0.0
+Please ensure you are using the correct version of Charon.

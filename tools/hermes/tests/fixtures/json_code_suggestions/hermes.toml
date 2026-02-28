@@ -8,7 +8,7 @@ Behavior: Utilizes a mock Charon output featuring comprehensive line/span locati
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "\u00d7 real error\n   \u256d\u2500[[PROJECT_ROOT]/src/lib.rs:1:1]\n 1 \u2502 pub fn foo() {}\n   \u00b7 \u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\n   \u00b7      \u2570\u2500\u2500 real label\n 2 \u2502 \n   \u2570\u2500\u2500\u2500\u2500\n"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"
