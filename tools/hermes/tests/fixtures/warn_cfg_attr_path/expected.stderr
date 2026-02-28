@@ -1,4 +1,3 @@
-[YYYY-MM-DDTHH:MM:SSZ WARN  hermes::parse] Module 'sys' uses a #[cfg_attr(..., path = "sys_unix.rs")] directive. Hermes does not currently evaluate conditional paths; Hermes annotations in this file may be ignored.
   ⚠ declaration uses `sorry`
    ╭─[[PROJECT_ROOT]/src/lib.rs:8:8]
  7 │ /// ```

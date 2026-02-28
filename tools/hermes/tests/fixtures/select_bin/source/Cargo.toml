@@ -8,3 +8,5 @@ autolib = false
 [[bin]]
 name = "app"
 path = "src/main.rs"
+
+[workspace]

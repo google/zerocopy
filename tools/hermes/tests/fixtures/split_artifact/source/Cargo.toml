@@ -11,3 +11,5 @@ path = "src/lib.rs"
 [[bin]]
 name = "run"
 path = "src/main.rs"
+
+[workspace]
