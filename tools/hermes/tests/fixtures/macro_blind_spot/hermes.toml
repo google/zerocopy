@@ -7,4 +7,4 @@ Behavior: Evaluates verification when source files and items are loaded uniquely
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr = "No Hermes annotations\n"
+expected_stderr = "expected.stderr"

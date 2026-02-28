@@ -8,7 +8,7 @@ Behavior: Transmits one `dep warning` and one `dep error` across mock tool outpu
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr = "No Hermes annotations (/// ```lean ...) found in the selected targets. Nothing to verify.\n"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"

@@ -7,4 +7,4 @@ Behavior: Includes an exceedingly large bulk of generated mock specification poi
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "The list of Hermes entry points for package 'large_pkg' is too large\n"
+expected_stderr = "expected.stderr"

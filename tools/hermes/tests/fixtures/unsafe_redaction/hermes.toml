@@ -7,4 +7,4 @@ Behavior: Models an `unsafe fn foo() -> i32` containing naked math. Validates ex
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr = "\n"
+expected_stderr = "expected.stderr"

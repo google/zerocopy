@@ -11,7 +11,7 @@ pub struct Positive {
 /// requires true
 /// ensures Positive.x result > 0
 /// proof
-///   simp; decide
+///   simp [make_valid]; decide
 /// ```
 pub fn make_valid() -> Positive {
     Positive { x: 1 }
@@ -23,7 +23,7 @@ pub fn make_valid() -> Positive {
 /// requires true
 /// ensures Positive.x result > 0
 /// proof
-///   simp; decide
+///   simp [make_bad]; decide
 /// ```
 pub fn make_bad() -> Positive {
     Positive { x: 0 }

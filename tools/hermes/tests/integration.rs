@@ -793,10 +793,66 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     };
 
     // Verify Stderr
-    if let Some(regex) = &config.expected_stderr_regex {
-        check_stderr_regex(&assert, regex, &ctx.sandbox_root);
-    } else if let Some(stderr) = &config.expected_stderr {
-        check_stderr_contains(&assert, stderr, &ctx.sandbox_root);
+    //
+    // We expect stderr to be defined either in an explicit `expected.stderr` file alongside the
+    // TOML, or via legacy `hermes.toml` inline properties. We gracefully migrate legacy inline
+    // expectations to the new file format if the test is executed with the `BLESS=1` flag.
+    let expected_stderr_path = ctx.test_case_root.join("expected.stderr");
+    let has_legacy_stderr =
+        config.expected_stderr.is_some() || config.expected_stderr_regex.is_some();
+    let bless = std::env::var("BLESS").as_deref() == Ok("1")
+        || std::env::var("HERMES_BLESS").as_deref() == Ok("1");
+
+    if expected_stderr_path.exists() || (bless && has_legacy_stderr) {
+        let output = assert.get_output();
+        let actual_stderr = String::from_utf8_lossy(&output.stderr);
+        // We strip ANSI escape codes and carriage returns to ensure that the golden master
+        // matches identically regardless of the host environment's default terminal coloring
+        // or operating system newline conventions.
+        let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
+        let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
+        let replace_path = ctx.sandbox_root.to_str().unwrap();
+
+        let (cache_dir, _) = get_or_init_shared_cache();
+        let cache_path_str = cache_dir.to_str().unwrap();
+        // External commands like Cargo and Aeneas embed absolute host paths into their output logs.
+        // We must reliably replace the dynamic sandbox path with a static placeholder token
+        // so that the `.stderr` assertions do not spuriously fail on different machines.
+        let actual_clean = sanitize_stderr(
+            &actual_str
+                .replace(replace_path, "[PROJECT_ROOT]")
+                .replace(cache_path_str, "[CACHE_ROOT]"),
+        );
+
+        if bless {
+            fs::write(&expected_stderr_path, &actual_clean).unwrap();
+        } else {
+            let expected_txt =
+                fs::read_to_string(&expected_stderr_path).unwrap().replace("\r\n", "\n");
+            if expected_txt != actual_clean {
+                use similar::{ChangeTag, TextDiff};
+                let diff = TextDiff::from_lines(&expected_txt, &actual_clean);
+                let mut diff_str = String::new();
+                for change in diff.iter_all_changes() {
+                    let sign = match change.tag() {
+                        ChangeTag::Delete => "-",
+                        ChangeTag::Insert => "+",
+                        ChangeTag::Equal => " ",
+                    };
+                    diff_str.push_str(&format!("{sign}{change}"));
+                }
+                panic!(
+                    "Stderr mismatch for {}! Run with BLESS=1 to update.\n{}",
+                    ctx.test_name, diff_str
+                );
+            }
+        }
+    } else {
+        if let Some(regex) = &config.expected_stderr_regex {
+            check_stderr_regex(&assert, regex, &ctx.sandbox_root);
+        } else if let Some(stderr) = &config.expected_stderr {
+            check_stderr_contains(&assert, stderr, &ctx.sandbox_root);
+        }
     }
 
     // Verify Artifacts
@@ -1020,14 +1076,27 @@ fn assert_artifacts_match(
                 let actual_path = scan_dir.join(file_name);
                 let expected_path = test_case_root.join(expected_dir_name);
 
-                if !expected_path.exists() {
-                    panic!(
-                        "`matches_expected_dir` was set to '{}', but path does not exist: {:?}",
-                        expected_dir_name, expected_path
-                    );
-                }
+                let bless = std::env::var("BLESS").as_deref() == Ok("1")
+                    || std::env::var("HERMES_BLESS").as_deref() == Ok("1");
 
-                assert_directories_match(&expected_path, &actual_path)?;
+                if bless {
+                    // We wipe the existing expected directory before copying over the new payload
+                    // to ensure that we do not accidentally retain orphaned files from a previous
+                    // output if the new toolchain invocation generated fewer files.
+                    if expected_path.exists() {
+                        let _ = fs::remove_dir_all(&expected_path);
+                    }
+                    fs::create_dir_all(&expected_path).unwrap();
+                    copy_dir_contents(actual_path.as_path(), expected_path.as_path()).unwrap();
+                } else {
+                    if !expected_path.exists() {
+                        panic!(
+                            "`matches_expected_dir` was set to '{}', but path does not exist: {:?}\nRun with BLESS=1 to automatically create it.",
+                            expected_dir_name, expected_path
+                        );
+                    }
+                    assert_directories_match(&expected_path, &actual_path)?;
+                }
             }
         }
     }
@@ -1093,6 +1162,35 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
         }
     }
     Ok(())
+}
+
+// Sanitizes non-deterministic log output generated by external tools.
+//
+// Tools like Cargo, Aeneas, and the Rust standard library panic handler inject highly
+// dynamic strings into `stderr` (e.g., execution timings, randomized thread IDs, varying
+// length hexadecimal hashes). We scrub these dynamically generated values and replace
+// them with static `<PLACERHOLDER>` tokens so that we can deterministically compare the
+// output across different host machines and executions.
+fn sanitize_stderr(stderr: &str) -> String {
+    let re_timestamp = regex::Regex::new(r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z ").unwrap();
+    let re_thread_id = regex::Regex::new(r"thread '([^']+)' \(\d+\) panicked").unwrap();
+    let re_file_lock =
+        regex::Regex::new(r"(?m)^.*Blocking waiting for file lock on.*$\n?").unwrap();
+    let re_cargo_hash = regex::Regex::new(r"([a-zA-Z_-]+?)([a-f0-9]{12,16})\b").unwrap();
+    let re_timing = regex::Regex::new(r"took \d+(\.\d*)?(m?s)").unwrap();
+    let re_aeneas_time = regex::Regex::new(r"Total execution time: \d+\.\d+ seconds").unwrap();
+    let re_worker_id = regex::Regex::new(r"worker_caches/\d+/").unwrap();
+
+    let mut clean = stderr.to_string();
+    clean = re_timestamp.replace_all(&clean, "[YYYY-MM-DDTHH:MM:SSZ ").into_owned();
+    clean = re_thread_id.replace_all(&clean, "thread '$1' (<ID>) panicked").into_owned();
+    clean = re_file_lock.replace_all(&clean, "").into_owned();
+    clean = re_cargo_hash.replace_all(&clean, "${1}<HASH>").into_owned();
+    clean = re_timing.replace_all(&clean, "took <TIME>").into_owned();
+    clean = re_aeneas_time.replace_all(&clean, "Total execution time: <TIME> seconds").into_owned();
+    clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
+
+    clean
 }
 
 fn check_stderr_regex(assert: &assert_cmd::assert::Assert, regex_str: &str, sandbox_root: &Path) {

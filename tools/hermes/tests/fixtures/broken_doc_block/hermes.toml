@@ -7,4 +7,4 @@ Behavior: Provides a source file with an unclosed `/// ```lean, hermes` block. E
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "Unclosed Hermes block in documentation."
+expected_stderr = "expected.stderr"
