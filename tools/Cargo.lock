@@ -643,6 +643,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+ "similar",
  "strip-ansi-escapes",
  "syn",
  "tempfile",
@@ -1198,6 +1199,12 @@ checksum = "f40ca3c46823713e0d4209592e8d6e826aa57e928f09752619fc696c499637f6"
 dependencies = [
  "lazy_static",
 ]
+
+[[package]]
+name = "similar"
+version = "2.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bbbb5d9659141646ae647b42fe094daf6c6192d1620870b449d9557f748b2daa"
 
 [[package]]
 name = "smallvec"

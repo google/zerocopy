@@ -2,6 +2,7 @@
 /// requires b.val > 0
 /// ensures ret.val = a.val / b.val
 /// ```
+#[allow(unused_unsafe)]
 pub unsafe fn safe_div(a: u32, b: u32) -> u32 {
     unsafe { a / b }
 }
@@ -22,6 +23,7 @@ pub fn wrapper(a: u32) -> u32 {
 /// isValid self := 2 | self.x.val
 /// ```
 pub struct Even {
+    #[allow(dead_code)]
     x: usize,
 }
 
@@ -46,7 +48,7 @@ pub fn read_val(x: &u32) -> u32 {
 ///   sorry
 /// ```
 pub fn add_in_place(x: &mut u32, add: u32) {
-   *x += add;
+    *x += add;
 }
 
 /// ```lean, hermes
@@ -57,7 +59,7 @@ pub fn add_in_place(x: &mut u32, add: u32) {
 ///   sorry
 /// ```
 pub fn pop(stack: &mut Vec<u32>) -> u32 {
-   stack.pop().unwrap()
+    stack.pop().unwrap()
 }
 
 fn main() {}

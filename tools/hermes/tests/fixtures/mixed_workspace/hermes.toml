@@ -12,8 +12,11 @@ args = ["verify", "-p", "app", "--allow-sorry"]
 package = "app"
 target = "app"
 should_exist = true
+matches_expected_dir = "expected"
+kind = "lean"
 
 [[test.artifact]]
 package = "dep"
 target = "dep"
 should_exist = false
+matches_expected_dir = "expected"
