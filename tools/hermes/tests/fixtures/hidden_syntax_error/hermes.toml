@@ -5,6 +5,6 @@ Behavior: Places a severe syntax error (`fn syntax_error( {`) inside a `#[cfg(al
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "expected.stderr"

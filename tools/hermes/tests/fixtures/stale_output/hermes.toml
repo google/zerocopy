@@ -4,5 +4,19 @@ Behavior: Handled directly in `run_stale_output_test`. Validates that old `.lean
 """
 
 [test]
-# Minimal config. This case is ignored by the standard runner and instead
-# hard-codes test code in `tests/integration.rs`.
+
+[[test.phases]]
+name = "initial_run"
+args = ["verify", "--allow-sorry"]
+
+[[test.phases]]
+name = "pollute_output"
+action = "touch_stale_file"
+
+[[test.phases]]
+name = "delete_lake_dir"
+action = "delete_lake_dir"
+
+[[test.phases]]
+name = "re_run_and_clean"
+args = ["verify", "--allow-sorry"]

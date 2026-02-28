@@ -6,9 +6,9 @@ Behavior: Provides a mock JSON where resolved absolute project paths mismatch st
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

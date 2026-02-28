@@ -7,3 +7,9 @@ Behavior: configures the harness to set `cwd` deep inside the project (`src/nest
 [test]
 args = ["verify", "--allow-sorry"]
 cwd = "src/nested"
+
+[[test.artifact]]
+package = "deep"
+target = "deep"
+should_exist = true
+matches_expected_dir = "expected"

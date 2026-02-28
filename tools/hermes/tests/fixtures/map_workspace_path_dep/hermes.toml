@@ -6,9 +6,9 @@ Behavior: Invokes errors from `crates/utils/src/lib.rs` while context resides el
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

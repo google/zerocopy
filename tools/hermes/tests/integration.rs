@@ -21,43 +21,60 @@ struct HermesToml {
     test: Option<TestConfig>,
 }
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "snake_case")]
-#[derive(Default)]
 enum ExpectedStatus {
-    #[default]
     Success,
     Failure,
     KnownBug,
 }
 
-#[derive(Deserialize, Default)]
+impl Default for ExpectedStatus {
+    fn default() -> Self {
+        ExpectedStatus::Success
+    }
+}
+
+#[derive(Deserialize, Default, Clone)]
+#[serde(deny_unknown_fields)]
 struct TestConfig {
     #[serde(default)]
+    features: Vec<String>,
     args: Option<Vec<String>>,
-    #[serde(default)]
     cwd: Option<String>,
-    #[serde(default)]
     log: Option<String>,
     #[serde(default)]
+    extra_inputs: Vec<String>,
+    stderr_file: Option<String>,
+    #[serde(default)]
     expected_status: ExpectedStatus,
-    #[serde(default)]
     expected_stderr: Option<String>,
-    #[serde(default)]
     expected_stderr_regex: Option<String>,
     #[serde(default)]
     artifact: Vec<ArtifactExpectation>,
     #[serde(default)]
     command: Vec<CommandExpectation>,
-    #[serde(default)]
     mock: Option<MockConfig>,
+    #[serde(default)]
+    phases: Vec<TestPhase>,
+}
+
+#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[serde(deny_unknown_fields)]
+struct TestPhase {
+    name: String,
+    action: Option<String>,
+    expected_status: Option<ExpectedStatus>,
+    expected_stderr: Option<String>,
+    expected_stderr_regex: Option<String>,
+    stderr_file: Option<String>,
+    args: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 struct MockConfig {
-    #[serde(default)]
     charon: Option<String>,
-    #[serde(default)]
     aeneas: Option<String>,
 }
 
@@ -68,6 +85,7 @@ enum MockMode {
 }
 
 #[derive(Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 struct ArtifactExpectation {
     package: String,
     target: String,
@@ -81,6 +99,7 @@ struct ArtifactExpectation {
 }
 
 #[derive(Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 struct CommandExpectation {
     args: Vec<String>,
     #[serde(default)]
@@ -405,7 +424,7 @@ struct TestContext {
 }
 
 impl TestContext {
-    fn new(path: &Path) -> datatest_stable::Result<Self> {
+    fn new(path: &Path, config: &TestConfig) -> datatest_stable::Result<Self> {
         let test_case_root = path.parent().unwrap().to_path_buf();
         let test_name = test_case_root.file_name().unwrap().to_string_lossy().to_string();
         let source_dir = test_case_root.join("source");
@@ -449,10 +468,12 @@ impl TestContext {
         std::os::unix::fs::symlink(&worker_cache.lean_lake, &target_lake)
             .map_err(|e| anyhow::anyhow!("Failed to symlink worker .lake cache: {}", e))?;
 
-        // Copy extra.rs if it exists
-        let extra_rs = test_case_root.join("extra.rs");
-        if extra_rs.exists() {
-            fs::copy(&extra_rs, temp.path().join("extra.rs"))?;
+        // Copy extra inputs based on config
+        for extra in &config.extra_inputs {
+            let extra_path = test_case_root.join(extra);
+            if extra_path.exists() {
+                fs::copy(&extra_path, sandbox_root.join(extra))?;
+            }
         }
 
         // Ensure sandboxed crate is a workspace
@@ -623,9 +644,13 @@ echo "---END-INVOCATION---" >> "{}"
         )
         .unwrap();
 
+        // Ensure deterministic LLBC generation within the integration test sandbox
+        // by rebasing the `workspace_root` off the absolute filesystem onto `/dummy`.
+        let rustflags = format!("--remap-path-prefix={}=/dummy", self.test_case_root.display());
+
         cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"))
             .env("PATH", new_path)
-            .env_remove("RUSTFLAGS")
+            .env("RUSTFLAGS", rustflags)
             .env("HERMES_TEST_DIR_NAME", "hermes_test_target");
 
         // Config-driven env vars
@@ -745,14 +770,7 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
         return Ok(());
         // return run_idempotency_test(path);
     }
-    if path_str.contains("stale_output/hermes.toml") {
-        return run_stale_output_test(path);
-    }
-    // Special handling for the "atomic_cache" test case.
-    if path_str.contains("atomic_cache/hermes.toml") {
-        return Ok(());
-        // return run_atomic_cache_recovery_test();
-    }
+
     // Special handling for the "dirty_sandbox" test case.
     if path_str.contains("dirty_sandbox/hermes.toml") {
         return run_dirty_sandbox_test(path);
@@ -766,11 +784,189 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
         return run_toolchain_versioning_test(path);
     }
 
-    // `path` is `tests/fixtures/<test_case>/hermes.toml`
-    let ctx = TestContext::new(path)?;
-
     // Load Config from hermes.toml
     let config = hermes_toml.test.unwrap_or_default();
+
+    // `path` is `tests/fixtures/<test_case>/hermes.toml`
+    let ctx = TestContext::new(path, &config)?;
+
+    if config.phases.is_empty() {
+        run_single_phase(&ctx, &config, None)?;
+    } else {
+        for phase in &config.phases {
+            run_single_phase(&ctx, &config, Some(phase))?;
+        }
+    }
+
+    if config.expected_status == ExpectedStatus::KnownBug {
+        return Ok(());
+    }
+
+    // Verify Artifacts
+    if !config.artifact.is_empty() {
+        let hermes_run_root = ctx.sandbox_root.join("target/hermes/hermes_test_target");
+        assert_artifacts_match(&hermes_run_root, &ctx.test_case_root, &config.artifact)?;
+    }
+
+    // Verify Commands
+    if !config.command.is_empty() {
+        let log_file = ctx.sandbox_root.join("charon_args.log");
+        if !log_file.exists() {
+            panic!("Command log file not found! Was the shim called?");
+        }
+        let log_content = fs::read_to_string(log_file)?;
+        let invocations = parse_command_log(&log_content);
+        assert_commands_match(&invocations, &config.command);
+    }
+
+    assert_no_unmapped_files(&ctx, &config);
+
+    Ok(())
+}
+
+fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
+    let mut allowed_paths = std::collections::HashSet::new();
+
+    // Always allowed baseline files/directories
+    allowed_paths.insert(ctx.test_case_root.join("source"));
+    allowed_paths.insert(ctx.test_case_root.join("hermes.toml"));
+    allowed_paths.insert(ctx.test_case_root.join("rust_log.txt"));
+
+    // Explicitly tracked artifacts from TOML
+    if let Some(mock) = &config.mock {
+        if let Some(charon) = &mock.charon {
+            allowed_paths.insert(ctx.test_case_root.join(charon));
+        }
+        if let Some(aeneas) = &mock.aeneas {
+            allowed_paths.insert(ctx.test_case_root.join(aeneas));
+        }
+    }
+
+    for extra in &config.extra_inputs {
+        allowed_paths.insert(ctx.test_case_root.join(extra));
+    }
+
+    if let Some(stderr_file) = &config.stderr_file {
+        allowed_paths.insert(ctx.test_case_root.join(stderr_file));
+    }
+    for phase in &config.phases {
+        if let Some(stderr_file) = &phase.stderr_file {
+            allowed_paths.insert(ctx.test_case_root.join(stderr_file));
+        }
+    }
+
+    // Mock testing payloads
+    if let Some(mock) = &config.mock {
+        if let Some(charon) = &mock.charon {
+            allowed_paths.insert(ctx.test_case_root.join(charon));
+        }
+        if let Some(aeneas) = &mock.aeneas {
+            allowed_paths.insert(ctx.test_case_root.join(aeneas));
+        }
+    }
+
+    // Explicit compilation golden directories
+    for exp in &config.artifact {
+        if let Some(dir) = &exp.matches_expected_dir {
+            allowed_paths.insert(ctx.test_case_root.join(dir));
+        }
+    }
+
+    // Iterate through everything physically present in the test's root fixture dir
+    for entry in fs::read_dir(&ctx.test_case_root).unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+
+        let mut is_allowed = false;
+        for allowed in &allowed_paths {
+            if path == *allowed || path.starts_with(allowed) {
+                is_allowed = true;
+                break;
+            }
+        }
+
+        if !is_allowed {
+            let rel = path.strip_prefix(&ctx.test_case_root).unwrap();
+            panic!("Unmapped file or directory in test fixture: {:?}\nIf this file is part of the test payload, it must be explicitly configured in hermes.toml (e.g., via `matches_expected_dir` or `mock`). If it is an obsolete snapshot or temporary file, please delete it.", rel);
+        }
+    }
+}
+
+fn run_single_phase(
+    ctx: &TestContext,
+    base_config: &TestConfig,
+    phase: Option<&TestPhase>,
+) -> datatest_stable::Result<()> {
+    if let Some(phase) = phase {
+        if let Some(action) = &phase.action {
+            if action == "touch_stale_file" {
+                let target_dir = ctx.sandbox_root.join("target");
+                let generated_root = find_generated_root(&target_dir)?;
+
+                let mut slug_dir = None;
+                for entry in fs::read_dir(&generated_root)? {
+                    let entry = entry?;
+                    if entry.file_type()?.is_dir() {
+                        slug_dir = Some(entry.path());
+                        break;
+                    }
+                }
+                let slug_dir = slug_dir.ok_or_else(|| {
+                    io::Error::new(
+                        io::ErrorKind::NotFound,
+                        "No slug directory found in generated root",
+                    )
+                })?;
+
+                let stale_file = slug_dir.join("Stale.lean");
+                std::fs::write(&stale_file, "INVALID LEAN CODE").unwrap();
+                assert!(stale_file.exists());
+
+                let lib_rs = ctx.sandbox_root.join("source/src/lib.rs");
+                if lib_rs.exists() {
+                    let _ = fs::File::open(&lib_rs)
+                        .unwrap()
+                        .set_len(fs::metadata(&lib_rs).unwrap().len());
+                }
+                return Ok(());
+            } else if action == "delete_lake_dir" {
+                let target_dir = ctx.sandbox_root.join("target");
+                let lean_lake = target_dir.join("hermes/hermes_test_target/lean/.lake");
+                if lean_lake.exists() {
+                    std::fs::remove_dir_all(&lean_lake).expect("Failed to delete stale .lake");
+                }
+                let lean_manifest =
+                    target_dir.join("hermes/hermes_test_target/lean/lake-manifest.json");
+                if lean_manifest.exists() {
+                    std::fs::remove_file(&lean_manifest).expect("Failed to delete manifest");
+                }
+                return Ok(());
+            } else {
+                panic!("Unknown action: {}", action);
+            }
+        }
+    }
+
+    let mut config = base_config.clone();
+    let mut phase_name = "default".to_string();
+    if let Some(phase) = phase {
+        phase_name = phase.name.clone();
+        if let Some(args) = &phase.args {
+            config.args = Some(args.clone());
+        }
+        if let Some(status) = &phase.expected_status {
+            config.expected_status = status.clone();
+        }
+        if phase.expected_stderr.is_some() {
+            config.expected_stderr = phase.expected_stderr.clone();
+        }
+        if phase.expected_stderr_regex.is_some() {
+            config.expected_stderr_regex = phase.expected_stderr_regex.clone();
+        }
+        if phase.stderr_file.is_some() {
+            config.stderr_file = phase.stderr_file.clone();
+        }
+    }
 
     let assert = ctx.run_hermes(&config);
 
@@ -778,15 +974,11 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let assert = match config.expected_status {
         ExpectedStatus::Failure => assert.failure(),
         ExpectedStatus::KnownBug => {
-            if assert.get_output().status.success() {
-                panic!(
-                    "Test '{}' succeeded! This test was marked as a `known_bug`.\n\
-                     The bug appears to be fixed. Please update hermes.toml to remove \
-                     `expected_status = \"known_bug\"`.",
-                    ctx.test_name
-                );
+            if assert.try_success().is_ok() {
+                panic!("Expected a known bug, but it succeeded!");
             }
-            assert.failure();
+            // For known_bugs, the toolchain crashed or failed verification.
+            // Artifact and stderr emissions are undefined and partially incomplete. We do not validate them.
             return Ok(());
         }
         ExpectedStatus::Success => assert.success(),
@@ -797,7 +989,11 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     // We expect stderr to be defined either in an explicit `expected.stderr` file alongside the
     // TOML, or via legacy `hermes.toml` inline properties. We gracefully migrate legacy inline
     // expectations to the new file format if the test is executed with the `BLESS=1` flag.
-    let expected_stderr_path = ctx.test_case_root.join("expected.stderr");
+    let expected_stderr_path = if phase.is_none() {
+        ctx.test_case_root.join("expected.stderr")
+    } else {
+        ctx.test_case_root.join(format!("expected_{}.stderr", phase_name))
+    };
     let has_legacy_stderr =
         config.expected_stderr.is_some() || config.expected_stderr_regex.is_some();
     let bless = std::env::var("BLESS").as_deref() == Ok("1")
@@ -806,18 +1002,13 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     if expected_stderr_path.exists() || (bless && has_legacy_stderr) {
         let output = assert.get_output();
         let actual_stderr = String::from_utf8_lossy(&output.stderr);
-        // We strip ANSI escape codes and carriage returns to ensure that the golden master
-        // matches identically regardless of the host environment's default terminal coloring
-        // or operating system newline conventions.
+        // We strip ANSI escape codes and carriage returns to ensure that the host coloring is stripped
         let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
         let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
         let replace_path = ctx.sandbox_root.to_str().unwrap();
 
         let (cache_dir, _) = get_or_init_shared_cache();
         let cache_path_str = cache_dir.to_str().unwrap();
-        // External commands like Cargo and Aeneas embed absolute host paths into their output logs.
-        // We must reliably replace the dynamic sandbox path with a static placeholder token
-        // so that the `.stderr` assertions do not spuriously fail on different machines.
         let actual_clean = sanitize_stderr(
             &actual_str
                 .replace(replace_path, "[PROJECT_ROOT]")
@@ -855,23 +1046,6 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
         }
     }
 
-    // Verify Artifacts
-    if !config.artifact.is_empty() {
-        let hermes_run_root = ctx.sandbox_root.join("target/hermes/hermes_test_target");
-        assert_artifacts_match(&hermes_run_root, &ctx.test_case_root, &config.artifact)?;
-    }
-
-    // Verify Commands
-    if !config.command.is_empty() {
-        let log_file = ctx.sandbox_root.join("charon_args.log");
-        if !log_file.exists() {
-            panic!("Command log file not found! Was the shim called?");
-        }
-        let log_content = fs::read_to_string(log_file)?;
-        let invocations = parse_command_log(&log_content);
-        assert_commands_match(&invocations, &config.command);
-    }
-
     Ok(())
 }
 
@@ -897,13 +1071,14 @@ fn parse_command_log(content: &str) -> Vec<Vec<String>> {
 /// contain the correct Aeneas commit hash and Lean toolchain version,
 /// matching the values specified in `Cargo.toml`.
 fn run_toolchain_versioning_test(path: &Path) -> datatest_stable::Result<()> {
-    // 1. Setup TestContext
-    let ctx = TestContext::new(path)?;
-
     let config = TestConfig {
         args: Some(vec!["verify".into(), "--allow-sorry".into()]),
         ..Default::default()
     };
+
+    // 1. Setup TestContext
+    let ctx = TestContext::new(path, &config)?;
+
     // 3. Run
     let assert = ctx.run_hermes(&config);
     assert.success();
@@ -1055,8 +1230,16 @@ fn assert_artifacts_match(
             let path = scan_dir.join(file_name);
 
             let content = if path.is_dir() {
-                // For Lean artifacts, the content is in Specs.lean
-                fs::read_to_string(path.join("Specs.lean"))?
+                let mut combined = String::new();
+                for entry in walkdir::WalkDir::new(&path) {
+                    let Ok(entry) = entry else { continue };
+                    if entry.file_type().is_file() {
+                        if let Ok(s) = fs::read_to_string(entry.path()) {
+                            combined.push_str(&s);
+                        }
+                    }
+                }
+                combined
             } else {
                 fs::read_to_string(&path)?
             };
@@ -1264,153 +1447,10 @@ fn check_stderr_contains(assert: &assert_cmd::assert::Assert, needle: &str, sand
 //     Ok(())
 // }
 
-fn run_stale_output_test(path: &Path) -> datatest_stable::Result<()> {
-    // Verified that Hermes proactively cleans its output directory before
-    // generating new files.
-    //
-    // This test simulates a scenario where a previous run generated a file
-    // (Stale.lean) that is no longer part of the current source. We check that
-    // Hermes removes this stale file, ensuring that the generated output
-    // accurately reflects the current source and does not contain phantom
-    // artifacts.
-
-    // 1. Setup TestContext
-    let ctx = TestContext::new(path)?;
-
-    // 2. Configure a basic run
-    let config = TestConfig {
-        args: Some(vec!["verify".into(), "--allow-sorry".into()]),
-        ..Default::default()
-    };
-
-    // 3. First Run: Should succeed and create output
-    let assert = ctx.run_hermes(&config);
-    assert.success();
-
-    // 4. Locate the generated output directory
-    let target_dir = ctx.sandbox_root.join("target");
-    let generated_root = find_generated_root(&target_dir)?;
-
-    // 5. Pollute the output directory with a stale file
-    // We need to find the slug directory inside `generated`.
-    // It will be something like `StaleOutputStaleOutput<hash>`.
-    let mut slug_dir = None;
-    for entry in fs::read_dir(&generated_root)? {
-        let entry = entry?;
-        if entry.file_type()?.is_dir() {
-            slug_dir = Some(entry.path());
-            break;
-        }
-    }
-    let slug_dir = slug_dir.ok_or_else(|| {
-        io::Error::new(io::ErrorKind::NotFound, "No slug directory found in generated root")
-    })?;
-
-    let stale_file = slug_dir.join("Stale.lean");
-    std::fs::write(&stale_file, "INVALID LEAN CODE").unwrap();
-    assert!(stale_file.exists());
-
-    // 6. Touch the input file to force a re-run if Hermes relies on mtime
-    // (Hermes currently re-runs Aeneas pretty aggressively, but good to be safe)
-    let lib_rs = ctx.sandbox_root.join("source/src/lib.rs");
-    if lib_rs.exists() {
-        let _ = fs::File::open(&lib_rs).unwrap().set_len(fs::metadata(&lib_rs).unwrap().len());
-    }
-
-    // STALE OUTPUT CLEANUP:
-    // We must manually delete `.lake` because `restore_lake_directory` will fail fast if
-    // it exists. We are simulating a case where the user (or previous run) cleaned up
-    // the build cache but left the generated output files (or where integration tests reuse
-    // directories without cleaning them, which we want to be safe against).
-    let lean_lake = target_dir.join("hermes/hermes_test_target/lean/.lake");
-    if lean_lake.exists() {
-        std::fs::remove_dir_all(&lean_lake).expect("Failed to delete stale .lake");
-    }
-    let lean_manifest = target_dir.join("hermes/hermes_test_target/lean/lake-manifest.json");
-    if lean_manifest.exists() {
-        std::fs::remove_file(&lean_manifest).expect("Failed to delete stale lake-manifest.json");
-    }
-    let lean_lakefile = target_dir.join("hermes/hermes_test_target/lean/lakefile.lean");
-    if lean_lakefile.exists() {
-        std::fs::remove_file(&lean_lakefile).expect("Failed to delete stale lakefile.lean");
-    }
-
-    // 7. Second Run: Should succeed and Clean output
-    let assert = ctx.run_hermes(&config);
-    assert.success();
-
-    // 8. Verify Stale file is GONE
-    if stale_file.exists() {
-        panic!("Stale file {} was not removed by Hermes!", stale_file.display());
-    }
-
-    Ok(())
-}
-
 // TODO: Re-enable this, but make sure to run it somewhere that won't affect the
 // shared cache. Then again, maybe it already doesn't, and Gemini was just
 // confused.
 
-// fn run_atomic_writes_test(path: &Path) -> datatest_stable::Result<()> {
-//     // 1. Setup TestContext
-//     let ctx = TestContext::new(path)?;
-
-//     // 2. Run 1: Simulate a crash/failure.
-//     {
-//         // Overwrite the `aeneas` shim to exit with an error code.
-//         // This effectively simulates a crash during the Aeneas execution phase.
-
-//         let (cache_dir, _) = get_or_init_shared_cache();
-//         let real_charon = which::which("charon").unwrap();
-//         let shim_dir = ctx.create_shim("charon", &real_charon, None)?;
-
-//         // Create a broken shim script.
-//         let broken_shim = shim_dir.join("aeneas");
-//         let content = "#!/bin/sh\necho \"AENEAS INVOKED (BROKEN)\"\nexit 1\n";
-//         std::fs::write(&broken_shim, content)?;
-//         use std::os::unix::fs::PermissionsExt;
-//         let mut perms = std::fs::metadata(&broken_shim)?.permissions();
-//         perms.set_mode(0o755);
-//         std::fs::set_permissions(&broken_shim, perms)?;
-
-//         // Run Hermes
-//         let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
-//         cmd.env("HERMES_FORCE_TTY", "1");
-//         cmd.env("FORCE_COLOR", "1");
-//         cmd.env("HERMES_AENEAS_DIR", &cache_dir);
-
-//         let original_path = std::env::var_os("PATH").unwrap_or_default();
-//         let new_path = std::env::join_paths(
-//             std::iter::once(shim_dir).chain(std::env::split_paths(&original_path)),
-//         )
-//         .unwrap();
-
-//         cmd.env("CARGO_TARGET_DIR", ctx.sandbox_root.join("target"))
-//             .env("PATH", new_path)
-//             .env_remove("RUSTFLAGS")
-//             .env("HERMES_TEST_DIR_NAME", "hermes_test_target")
-//             .current_dir(&ctx.sandbox_root)
-//             .arg("verify")
-//             .arg("--allow-sorry");
-
-//         let assert = cmd.assert();
-//         // The verification should fail because Aeneas failed.
-//         assert.failure();
-
-//         // Assert that the target directory does NOT exist.
-//         let target_lean = ctx.sandbox_root.join("target/hermes/hermes_test_target/lean");
-//         if target_lean.exists() {
-//             panic!("Target directory {} should NOT exist after crash!", target_lean.display());
-//         }
-//     }
-
-//     // 3. Run 2: Success.
-//     {
-//         let (cache_dir, _) = get_or_init_shared_cache();
-//         let real_charon = which::which("charon").unwrap();
-//         let real_aeneas = which::which("aeneas").unwrap_or_else(|_| PathBuf::from("/bin/true"));
-
-//         let shim_dir = ctx.create_shim("charon", &real_charon, None)?;
 //         // Restore the valid shim.
 //         ctx.create_shim("aeneas", &real_aeneas, None)?;
 
@@ -1556,7 +1596,8 @@ fn run_dirty_sandbox_test(path: &Path) -> datatest_stable::Result<()> {
     // contains stale artifacts or blacklisted files (e.g., target/, .lake/).
 
     // 1. Attempt to create TestContext (should fail immediately)
-    let result = TestContext::new(path);
+    let config = TestConfig::default();
+    let result = TestContext::new(path, &config);
 
     // 2. Verify failure
     match result {

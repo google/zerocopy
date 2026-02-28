@@ -6,7 +6,7 @@ Behavior: Compiles a Rust source featuring a trait with an associated type (`T::
 
 [[artifact]]
 package = "transform_lib"
-target = "lib"
+target = "transform_lib"
 kind = "lean"
 should_exist = true
 

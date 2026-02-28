@@ -11,3 +11,9 @@ expected_status = "success"
 [[test.command]]
 args = ["--start-from", "crate"]
 should_not_exist = false
+
+[[test.artifact]]
+package = "complex_impl"
+target = "complex_impl"
+should_exist = true
+matches_expected_dir = "expected"

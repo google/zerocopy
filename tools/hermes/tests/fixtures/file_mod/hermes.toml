@@ -6,3 +6,9 @@ Behavior: Distributes the project across `mod foo;` resolving to `src/foo.rs`. C
 
 [test]
 args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "file_mod"
+target = "file_mod"
+should_exist = true
+matches_expected_dir = "expected"

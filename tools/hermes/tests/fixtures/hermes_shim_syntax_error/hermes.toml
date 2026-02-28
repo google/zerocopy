@@ -7,9 +7,9 @@ Behavior: Introduces a malformed token stream (`pub fn oops((`) and leverages an
 expected_status = "failure"
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"

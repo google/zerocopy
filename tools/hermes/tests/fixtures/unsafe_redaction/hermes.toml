@@ -5,6 +5,12 @@ Behavior: Models an `unsafe fn foo() -> i32` containing naked math. Validates ex
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr = "expected.stderr"
+
+[[test.artifact]]
+package = "unsafe_test"
+target = "unsafe_test"
+should_exist = true
+matches_expected_dir = "expected"

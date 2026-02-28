@@ -10,4 +10,5 @@ should_exist = true
 kind = "llbc"
 
 [test]
+extra_inputs = ["extra.rs"]
 args = ["verify", "--allow-sorry"]

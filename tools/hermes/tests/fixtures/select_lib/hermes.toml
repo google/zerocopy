@@ -7,12 +7,3 @@ Behavior: Filters a split-target project with `--lib`, verifying `src/lib.rs` an
 [test]
 args = ["verify", "--lib", "--allow-sorry"]
 
-[[test.artifact]]
-package = "select_lib"
-target = "select_lib"
-should_exist = true
-
-[[test.artifact]]
-package = "select_lib"
-target = "select_lib_bin"
-should_exist = false

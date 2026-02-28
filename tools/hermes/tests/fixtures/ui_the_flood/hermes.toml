@@ -6,9 +6,9 @@ Behavior: Pipes 30+ iterative `compiler-artifact` progress reports rapidly. Assu
 [dependencies]
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
 
 [test.mock]
 charon = "mock_charon_output.json"
-expected_stderr = "expected.stderr"
