@@ -303,17 +303,17 @@ fn generate_function(
     // 5. Build the Precondition Binder
 
     // Signature
-    let args_suffix = (!args.is_empty())
-        .then(|| {
-            format!(
-                " {}",
-                args.iter()
-                    .map(|a| format!("({} : {})", a.name, a.lean_type))
-                    .collect::<Vec<_>>()
-                    .join(" ")
-            )
-        })
-        .unwrap_or_default();
+    let args_suffix = if !args.is_empty() {
+        format!(
+            " {}",
+            args.iter()
+                .map(|a| format!("({} : {})", a.name, a.lean_type))
+                .collect::<Vec<_>>()
+                .join(" ")
+        )
+    } else {
+        String::new()
+    };
 
     if kind_keyword == "axiom" {
         if let Some(kw) = keyword_span {
@@ -475,9 +475,11 @@ fn generate_type(
     }
     builder.push('\n');
 
-    let type_app = (!generic_args.is_empty())
-        .then(|| format!("({type_name} {})", generic_args.join(" ")))
-        .unwrap_or_else(|| type_name.clone());
+    let type_app = if !generic_args.is_empty() {
+        format!("({type_name} {})", generic_args.join(" "))
+    } else {
+        type_name.clone()
+    };
 
     let instance_params = if !generic_params.is_empty() || !generic_bounds.is_empty() {
         let params = if !generic_params.is_empty() {
@@ -554,9 +556,11 @@ fn generate_trait(
         String::new()
     };
 
-    let trait_app = (!generic_args.is_empty())
-        .then(|| format!("{trait_name} Self {}", generic_args.join(" ")))
-        .unwrap_or_else(|| format!("{trait_name} Self"));
+    let trait_app = if !generic_args.is_empty() {
+        format!("{trait_name} Self {}", generic_args.join(" "))
+    } else {
+        format!("{trait_name} Self")
+    };
 
     builder
         .push_str(&format!("class Safe (Self : Type){params_decl} [{trait_app}] : Prop where\n"));
@@ -705,13 +709,13 @@ fn extract_args_metadata(
 
     sig.inputs
         .iter()
-        .filter_map(|arg| match arg {
+        .map(|arg| match arg {
             SafeFnArg::Typed { name, ty } => {
                 let mut is_mut_ref = false;
                 if let SafeType::Reference { mutability, .. } = ty {
                     is_mut_ref = *mutability;
                 }
-                Some(ArgInfo { name: name.clone(), lean_type: map_type(ty), is_mut_ref })
+                ArgInfo { name: name.clone(), lean_type: map_type(ty), is_mut_ref }
             }
             SafeFnArg::Receiver { mutability, reference } => {
                 let lean_type = if let Some(t) = impl_struct_name {
@@ -719,11 +723,11 @@ fn extract_args_metadata(
                 } else {
                     "Self".to_string()
                 };
-                Some(ArgInfo {
+                ArgInfo {
                     name: "self".to_string(),
                     lean_type,
                     is_mut_ref: *mutability && *reference,
-                })
+                }
             }
         })
         .collect()
@@ -753,7 +757,7 @@ fn get_return_type_string(
     // 1. Original Return Type
     let orig_ret = match &sig.output {
         SafeReturnType::Default => "Unit".to_string(),
-        SafeReturnType::Type(ty) => map_type(&ty),
+        SafeReturnType::Type(ty) => map_type(ty),
     };
 
     if orig_ret != "Unit" && orig_ret != "MatchError" {
@@ -771,7 +775,7 @@ fn get_return_type_string(
                 }
             }
             SafeFnArg::Typed { ty: SafeType::Reference { mutability: true, elem }, .. } => {
-                ret_types.push(map_type(&elem));
+                ret_types.push(map_type(elem));
             }
             _ => {}
         }
@@ -796,7 +800,7 @@ fn is_unit_return(func: &FunctionItem<crate::parse::hkd::Safe>) -> bool {
     };
     match &sig.output {
         SafeReturnType::Default => true,
-        SafeReturnType::Type(ty) => matches!(map_type(&ty).as_str(), "Unit" | "MatchError"),
+        SafeReturnType::Type(ty) => matches!(map_type(ty).as_str(), "Unit" | "MatchError"),
     }
 }
 
