@@ -76,6 +76,8 @@ struct ArtifactExpectation {
     kind: Option<String>,
     #[serde(default)]
     content_contains: Vec<String>,
+    #[serde(default)]
+    matches_expected_dir: Option<String>,
 }
 
 #[derive(Deserialize, Clone)]
@@ -800,7 +802,7 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     // Verify Artifacts
     if !config.artifact.is_empty() {
         let hermes_run_root = ctx.sandbox_root.join("target/hermes/hermes_test_target");
-        assert_artifacts_match(&hermes_run_root, &config.artifact)?;
+        assert_artifacts_match(&hermes_run_root, &ctx.test_case_root, &config.artifact)?;
     }
 
     // Verify Commands
@@ -936,6 +938,7 @@ fn to_pascal(s: &str) -> String {
 
 fn assert_artifacts_match(
     hermes_run_root: &Path,
+    test_case_root: &Path,
     expectations: &[ArtifactExpectation],
 ) -> io::Result<()> {
     let llbc_root = hermes_run_root.join("llbc");
@@ -1011,8 +1014,71 @@ fn assert_artifacts_match(
                 }
             }
         }
+        if found {
+            if let Some(expected_dir_name) = &exp.matches_expected_dir {
+                let file_name = found_items.iter().find(|f| f.starts_with(&prefix)).unwrap();
+                let actual_path = scan_dir.join(file_name);
+                let expected_path = test_case_root.join(expected_dir_name);
+
+                if !expected_path.exists() {
+                    panic!(
+                        "`matches_expected_dir` was set to '{}', but path does not exist: {:?}",
+                        expected_dir_name, expected_path
+                    );
+                }
+
+                assert_directories_match(&expected_path, &actual_path)?;
+            }
+        }
     }
 
+    Ok(())
+}
+
+fn assert_directories_match(expected: &Path, actual: &Path) -> io::Result<()> {
+    for entry in walkdir::WalkDir::new(expected) {
+        let entry = entry.map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        let rel = entry.path().strip_prefix(expected).unwrap();
+        let act = actual.join(rel);
+        if !act.exists() {
+            panic!(
+                "Missing file in actual artifact:\nExpected: {:?}\nActual is missing: {:?}",
+                entry.path(),
+                act
+            );
+        }
+        let e_txt = fs::read_to_string(entry.path())?.replace("\r\n", "\n");
+        let a_txt = fs::read_to_string(&act)?.replace("\r\n", "\n");
+        if e_txt != a_txt {
+            use similar::{ChangeTag, TextDiff};
+            let diff = TextDiff::from_lines(&e_txt, &a_txt);
+            let mut diff_str = String::new();
+            for change in diff.iter_all_changes() {
+                let sign = match change.tag() {
+                    ChangeTag::Delete => "-",
+                    ChangeTag::Insert => "+",
+                    ChangeTag::Equal => " ",
+                };
+                diff_str.push_str(&format!("{sign}{change}"));
+            }
+            panic!("Mismatch in {:?}:\n{}", rel, diff_str);
+        }
+    }
+    // Check for extra files in actual
+    for entry in walkdir::WalkDir::new(actual) {
+        let entry = entry.map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        let rel = entry.path().strip_prefix(actual).unwrap();
+        let exp = expected.join(rel);
+        if !exp.exists() {
+            panic!("Extra file found in actual artifact that is not in expected:\n{:?}", rel);
+        }
+    }
     Ok(())
 }
 
