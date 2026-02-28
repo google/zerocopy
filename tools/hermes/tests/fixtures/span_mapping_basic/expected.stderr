@@ -1,0 +1,10 @@
+  × my test error
+   ╭─[[PROJECT_ROOT]/src/lib.rs:3:5]
+ 2 │     /// context
+ 3 │ ╭─▶ /// model demo 
+ 4 │ ├─▶ /// ```
+   · ╰──── my span label
+ 5 │     pub fn demo() {}
+   ╰────
+
+Error: Diagnostic error in charon

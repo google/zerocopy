@@ -7,4 +7,4 @@ Behavior: Embeds syntax issues in two independent files (`a.rs`, `b.rs`). Exerci
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "Aborting due to\n"
+expected_stderr = "expected.stderr"

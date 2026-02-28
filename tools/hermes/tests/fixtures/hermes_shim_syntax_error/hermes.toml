@@ -9,7 +9,7 @@ expected_status = "failure"
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "=== Hermes Verification Failed ===\n\n[Hermes Error] Syntax error in Rust source: cannot parse string into token stream\nError: Aborting due to 1 previous errors.\n"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"

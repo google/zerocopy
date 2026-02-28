@@ -7,4 +7,4 @@ Behavior: Places a Hermes annotation on a function blocked by `#[cfg(target_os =
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "Charon failed with status\n"
+expected_stderr = "expected.stderr"

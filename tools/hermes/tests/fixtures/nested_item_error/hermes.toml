@@ -7,4 +7,4 @@ Behavior: Places `/// ```lean, hermes` on a fn inside another fn block. Ensures 
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "\n=== Hermes Verification Failed ===\n\n[Hermes Error] Nested item error: Hermes cannot verify items defined inside function bodies or other blocks. Move this item to the module level if you wish to verify it.\nError: Aborting due to 1 previous errors.\n"
+expected_stderr = "expected.stderr"

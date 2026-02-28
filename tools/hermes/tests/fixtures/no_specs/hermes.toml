@@ -7,4 +7,4 @@ Behavior: An unannotated Rust file yields a success status but prints the `No He
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "success"
-expected_stderr = "No Hermes annotations\n"
+expected_stderr = "expected.stderr"

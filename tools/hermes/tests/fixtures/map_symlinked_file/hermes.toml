@@ -8,7 +8,7 @@ Behavior: Provides Charon errors mapped to an original `untransformed.rs` target
 [test]
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
-expected_stderr = "Diagnostic error in charon\n"
 
 [test.mock]
 charon = "mock_charon_output.json"
+expected_stderr = "expected.stderr"

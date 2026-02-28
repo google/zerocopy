@@ -1,0 +1,8 @@
+  ⚠ declaration uses `sorry`
+   ╭─[[PROJECT_ROOT]/src/lib.rs:3:8]
+ 2 │ /// ```
+ 3 │ pub fn foo() {}
+   ·        ──┬─
+   ·          ╰── here
+   ╰────
+
