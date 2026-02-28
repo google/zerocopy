@@ -165,7 +165,7 @@ pub fn generate_artifact(artifact: &crate::scanner::HermesArtifact) -> Generated
     //
     // Note: Aeneas uses the crate name (snake_case) as the top-level namespace.
     // We replace hyphens with underscores to match.
-    let crate_namespace = artifact.name.package_name.to_string().replace('-', "_");
+    let crate_namespace = artifact.name.target_name.replace('-', "_");
     builder.push_str(&format!("open {}\n\n", crate_namespace));
 
     // Naive namespacing: for each item, wrap in its module namespace.
@@ -1276,7 +1276,7 @@ mod tests {
         assert!(!out.contains("let b := b_new"));
     }
     #[test]
-    fn test_gen_implicit_proof_no_keyword_mapping() {
+    fn test_implicit_proof_no_keyword_mapping() {
         let item: syn::ItemFn = parse_quote! { fn foo() {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
         // Implicit proof means empty proof block and NO keyword span
@@ -1290,5 +1290,32 @@ mod tests {
         let has_keyword = builder.mappings.iter().any(|m| matches!(m.kind, MappingKind::Keyword));
 
         assert!(!has_keyword, "Implicit proof should NOT map 'by' to any keyword");
+    }
+
+    #[test]
+    fn test_generate_artifact_namespace() {
+        use crate::{
+            resolve::{HermesTargetKind, HermesTargetName},
+            scanner::HermesArtifact,
+        };
+        let name = HermesTargetName {
+            package_name: cargo_metadata::PackageName::new("my-package".to_string()),
+            target_name: "my-target".to_string(),
+            kind: HermesTargetKind::Lib,
+        };
+        let artifact = HermesArtifact {
+            name,
+            target_kind: HermesTargetKind::Lib,
+            manifest_path: std::path::PathBuf::from("Cargo.toml"),
+            start_from: std::collections::HashSet::new(),
+            items: vec![],
+        };
+
+        let generated = generate_artifact(&artifact);
+
+        // It should open the robust target_name with hyphens replaced by underscores
+        assert!(generated.code.contains("open my_target\n\n"));
+        // It shouldn't contain the old package_name logic by mistake
+        assert!(!generated.code.contains("open my_package"));
     }
 }
