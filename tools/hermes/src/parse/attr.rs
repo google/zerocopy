@@ -136,7 +136,7 @@ fn parse_hermes_info_string(info: &str) -> Result<Option<ParsedInfoString>, Stri
 
 /// Extracts the offset of the content within a standard slash comment (`/// `, `//!`, `/**`, etc.).
 fn extract_slash_comment_offset(trimmed: &str, leading_ws: usize) -> Option<usize> {
-    if trimmed.starts_with("/// ")
+    if trimmed.starts_with("///")
         || trimmed.starts_with("//!")
         || trimmed.starts_with("/**")
         || trimmed.starts_with("/*!")
@@ -1781,6 +1781,11 @@ mod tests {
             (r###"#[doc = r##" content"##]"###, " content", 12),
             // 5. UTF-8
             ("/// 🦀 content", " 🦀 content", 3),
+            // 6. No trailing space
+            ("///content", "content", 3),
+            ("//!content", "content", 3),
+            ("/**content*/", "content*/", 3),
+            ("/*!content*/", "content*/", 3),
         ];
 
         let mut failures = Vec::new();
