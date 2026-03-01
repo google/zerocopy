@@ -30,14 +30,14 @@ enum ExpectedStatus {
     KnownBug,
 }
 
-// A note on our "no magic files" philosophy: We prefer explicit configuration
-// over implicit conventions. Every file that forms part of the test payload
-// (such as mock scripts or expected output files) must be explicitly declared
-// in the corresponding `hermes.toml` metadata manifest. The testing harness
-// will not implicitly search for "magic files" (like `expected.stderr`) if they
-// are not bound in the TOML configuration. This guarantees that a single file
-// acts as the absolute source of truth for the entire environmental topology
-// of the test. Note that there are still a few magic files/directories, but
+// A note on our "no implicit files" philosophy: We prefer explicit configuration
+// to implicit conventions. Thus, unless explicitly specified in `hermes.toml`
+// (e.g. via `stderr_file` or `matches_expected_directory`), the test runner
+// will completely ignore all other files in `tests/fixtures/<test_case>`. It
+// will not implicitly search for "implicit files" (like `expected.stderr`) if they
+// are not named in the TOML configuration block. That ensures that when you
+// read `hermes.toml`, you immediately know every single input and constraint
+// of the test. Note that there are still a few implicit files/directories, but
 // most are explicit.
 #[derive(Deserialize, Default, Clone)]
 #[serde(deny_unknown_fields)]
@@ -456,7 +456,7 @@ impl TestContext {
 
         let target_lake = lean_root.join(".lake");
 
-        // Rather than expensively copying the massive `.lake` directory for every test, we simply
+        // Rather than expensively copying the `.lake` directory for every test, we
         // symlink the worker's mutable `.lake` directory into the test sandbox. Because the parent
         // `TestContext` owns a `WorkerCacheGuard`, this test process has exclusive mutation rights
         // to this target directory. This assumes that the Lean compiler (`lake`) cleanly follows
@@ -941,7 +941,7 @@ fn run_single_phase(
     //
     // We require the expected standard error output to be defined via an explicit `stderr_file`
     // configuration, which specifies an output file relative to the test root. We enforce this
-    // strictness to ensure that no legacy fallback configurations or implicit magic files can
+    // strictness to ensure that no legacy fallback configurations or implicit files can
     // accidentally mask the actual stderr output and decouple it from its intended TOML manifest.
     if let Some(stderr_file) = &config.stderr_file {
         let expected_stderr_path = ctx.test_case_root.join(stderr_file);

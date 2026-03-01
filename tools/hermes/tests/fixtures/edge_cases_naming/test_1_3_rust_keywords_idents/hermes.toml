@@ -1,6 +1,6 @@
 description = """
 Purpose: Tests processing of pure Rust raw identifiers.
-Behavior: Uses Rust keywords natively (`r#match`, `r#type`). Confirms Charon safely unwraps these markers and they seamlessly output to safe, usable logic bindings in Lean.
+Behavior: Uses Rust keywords natively (`r#match`, `r#type`). Confirms Charon safely unwraps these markers and they output to safe, usable logic bindings in Lean.
 """
 
 

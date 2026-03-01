@@ -31,8 +31,8 @@ pub enum MappingKind {
 ///
 /// Under the hood, Lean parses and resolves theorems independently. When Lean
 /// emits an error (e.g., a type mismatch or a failing tactic), it reports the
-/// byte range of the generated `.lean` file. We use this struct to seamlessly
-/// project those byte ranges back into the originating `/// ````hermes`
+/// byte range of the generated `.lean` file. We use this struct to project
+/// those byte ranges back into the originating `/// ````hermes`
 /// doc block in the user's `.rs` workspace.
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct SourceMapping {
@@ -111,7 +111,7 @@ impl LeanBuilder {
     /// This is prominently used for injecting "Synthetic" spans. For instance,
     /// we generate a Lean theorem named `spec`, and map that identifier directly
     /// back to the Rust function's `Ident` span. Consequently, if Lean throws
-    /// an error strictly about `spec`, the user will see a squiggle perfectly
+    /// an error strictly about `spec`, the user will see a squiggle
     /// underlining their Rust function name, creating the illusion that `rustc`
     /// itself caught the verification error.
     fn push_mapped(
@@ -294,7 +294,7 @@ fn generate_function(
     // name as a namespace prefix (e.g., `List.push`) rather than a bare
     // identifier or a generalized `Self` namespace.
     //
-    // To ensure our generated theorems resolve flawlessly against Aeneas's output,
+    // To ensure our generated theorems resolve against Aeneas's output,
     // we eagerly extract the base segment path of the `impl_struct_name` from
     // the tracked `current_impl_type` (propagated down by the Parser Visitor).
     // We then dynamically substitute it into the method call string here.
@@ -723,7 +723,7 @@ fn map_type(ty: &crate::parse::hkd::SafeType) -> String {
 ///
 /// This metadata is used to build the Lean function signature and efficiently map
 /// receiver parameters into their concrete structure types, bypassing generic
-/// generic namespace resolution issues within generated Lean files. 
+/// generic namespace resolution issues within generated Lean files.
 ///
 /// **Mutable References (`&mut T`) vs Owned Mutable Variables (`mut x: T`)**
 /// This function identifies whether an argument is a true struct-level mutable

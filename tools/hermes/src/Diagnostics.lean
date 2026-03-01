@@ -15,7 +15,7 @@ open Lean Elab Frontend Json
 -- By running the Lean `Frontend` programmatically, we capture the raw `Message`
 -- objects from Lean's compiler state. We then convert the Lean `Lsp.Position`
 -- back into Utf8 byte indices, and emit a structured JSON array that the Rust
--- `diagnostics.rs` mapper can seamlessly consume.
+-- `diagnostics.rs` mapper can consume.
 unsafe def main : IO Unit := do
   try
     -- 1. Initialize the Lean environment using Lake's search paths
