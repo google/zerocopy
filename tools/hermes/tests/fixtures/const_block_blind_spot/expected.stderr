@@ -1,5 +1,20 @@
 
 === Hermes Verification Failed ===
 
-[Hermes Error] Nested item error: Hermes cannot verify items defined inside function bodies or other blocks. Move this item to the module level if you wish to verify it.
+[Hermes Error] hermes::nested_item
+
+  × Nested item error: Hermes cannot verify items defined inside function
+  │ bodies or other blocks. Move this item to the module level if you wish to
+  │ verify it.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:2:5]
+ 1 │     const _: () = {
+ 2 │ ╭─▶     /// ```lean, hermes
+ 3 │ │       /// context
+ 4 │ │       /// theorem hidden_impl : True := trivial
+ 5 │ │       /// ```
+ 6 │ ├─▶     pub fn hidden_impl() {}
+   · ╰──── this item is defined inside a function body
+ 7 │     };
+   ╰────
+
 Error: Aborting due to 1 previous errors.
