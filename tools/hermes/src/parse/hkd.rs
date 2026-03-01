@@ -6,7 +6,7 @@ use quote::ToTokens;
 ///
 /// Hermes concurrently parses many Rust files using `rayon` worker threads.
 /// Because `syn` AST nodes are not guaranteed to be `Send + Sync` (and are
-/// often heavy to clone), we cannot simply send the raw `syn` types back to
+/// often heavy to clone), we cannot send the raw `syn` types back to
 /// the main thread over a channel.
 ///
 /// To solve this without sacrificing the convenience of standard `syn` types

@@ -17,7 +17,7 @@ use super::*;
 /// - Content lines *must* be indented deeper than their associated structural
 ///   keyword to be treated as children of that block.
 ///
-/// This design enforces an elegant, Python-like semantic meaning without
+/// This design enforces a Python-like semantic meaning without
 /// requiring braces in standard Rust comments.
 ///
 /// The parsing process involves:
@@ -236,7 +236,7 @@ pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, S
             // Verify that the content we found matches exactly what `syn` gave us.
             // This is a safety check: strict span calculation relies on this match.
             // If they don't match (e.g., due to macro expansion or escaped characters
-            // we didn't account for perfectly), we still return the content but
+            // we didn't account for completely), we still return the content but
             // with a less precise span (falling back to the attribute span).
             let expected_source_slice = source.get(real_start..real_start + content.len());
             let exact_match = expected_source_slice == Some(content.as_str());

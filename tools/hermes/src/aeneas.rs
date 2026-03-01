@@ -245,7 +245,7 @@ pub fn run_aeneas(
         // We can safely append `.Funs` and `.Types` without needing complex escaping
         // or guillemets (`«...»`) in the Lake configuration.
         //
-        // These roots will simply be prefixed with a backtick (e.g., `Slug.Funs) in
+        // These roots will be prefixed with a backtick (e.g., `Slug.Funs) in
         // the generated Lakefile, which is the standard syntax for Name literals in Lean.
         lake_roots.push(format!("{}.Funs", slug));
         lake_roots.push(format!("{}.Types", slug));
