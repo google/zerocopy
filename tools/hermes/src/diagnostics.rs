@@ -14,10 +14,16 @@ pub use cargo_metadata::diagnostic::{Diagnostic, DiagnosticLevel, DiagnosticSpan
 use miette::{NamedSource, Report, SourceOffset};
 use thiserror::Error;
 
-/// Maps diagnostics from generated code back to original source files.
+/// Maps diagnostics from generated intermediate code back to pristine, original
+/// source code files.
 ///
-/// It maintains a cache of source file contents to efficiently create `miette::NamedSource`
-/// instances for error reporting.
+/// Lean has no knowledge of the Rust files that orchestrated its execution. It
+/// only reports errors against the generated `.lean` artifact files.
+///
+/// To create a first-class user experience, this mapper actively cross-references
+/// Lean's emitted byte spans against the sidecar `SourceMapping`s built by
+/// `src/generate.rs`, dynamically synthesizing a `miette::NamedSource` that points
+/// directly into the user's actual `.rs` workspace files.
 pub struct DiagnosticMapper {
     user_root: PathBuf,
     user_root_canonical: PathBuf,
@@ -100,10 +106,11 @@ impl DiagnosticMapper {
         }
     }
 
-    /// Renders a `cargo_metadata` diagnostic using `miette`.
+    /// Renders a diagnostic (from Cargo or Charon) using `miette`.
     ///
-    /// This converts the structured diagnostic from Cargo/Charon into a rich, colorized
-    /// error message associated with the relevant source span.
+    /// This is strictly for rendering errors native to Rust processing (where
+    /// the structured error originates from our `syn` parser or Charon's
+    /// processing), bringing them into a unified, colorized `miette` format.
     pub fn render_miette<F>(&mut self, diag: &Diagnostic, mut printer: F)
     where
         F: FnMut(String),
@@ -203,10 +210,15 @@ impl DiagnosticMapper {
         }
     }
 
-    /// Renders a raw diagnostic (e.g. from Lean) at a specific byte range.
+    /// Renders a raw diagnostic (e.g., from Lean) directly at a mapped byte
+    /// range.
     ///
-    /// This is used when we have a mapped span from `src/generate.rs` (Lean span -> Rust span)
-    /// and want to report an error at that location in the Rust source.
+    /// The fundamental workflow for an external error is:
+    /// 1. Lean encounters a verification failure and emits a JSON line containing
+    ///    it's local start/end bytes in the `.lean` artifact.
+    /// 2. Hermes checks the cached `SourceMapping` array for that artifact, and
+    ///    discovers exactly where the Lean bytes translate back to Rust bytes.
+    /// 3. Hermes calls this method to print the error onto the Rust file canvas.
     pub fn render_raw<F>(
         &mut self,
         file_name: &str,
