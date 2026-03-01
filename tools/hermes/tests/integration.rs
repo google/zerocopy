@@ -21,18 +21,13 @@ struct HermesToml {
     test: Option<TestConfig>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, Deserialize, PartialEq, Eq, Default, Clone)]
 #[serde(rename_all = "snake_case")]
 enum ExpectedStatus {
+    #[default]
     Success,
     Failure,
     KnownBug,
-}
-
-impl Default for ExpectedStatus {
-    fn default() -> Self {
-        ExpectedStatus::Success
-    }
 }
 
 // A note on our "no magic files" philosophy: We prefer explicit configuration
@@ -1266,7 +1261,7 @@ fn assert_artifacts_match(
 
 fn assert_directories_match(expected: &Path, actual: &Path) -> io::Result<()> {
     for entry in walkdir::WalkDir::new(expected) {
-        let entry = entry.map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+        let entry = entry.map_err(io::Error::other)?;
         if !entry.file_type().is_file() {
             continue;
         }
@@ -1298,7 +1293,7 @@ fn assert_directories_match(expected: &Path, actual: &Path) -> io::Result<()> {
     }
     // Check for extra files in actual
     for entry in walkdir::WalkDir::new(actual) {
-        let entry = entry.map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+        let entry = entry.map_err(io::Error::other)?;
         if !entry.file_type().is_file() {
             continue;
         }

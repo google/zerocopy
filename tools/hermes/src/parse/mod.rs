@@ -50,6 +50,14 @@ impl FunctionItem<Safe> {
             Self::Trait(x) => &x.inner.sig.ident,
         }
     }
+
+    pub fn sig(&self) -> &crate::parse::hkd::SafeSignature {
+        match self {
+            Self::Free(x) => &x.inner.sig,
+            Self::Impl(x, _) => &x.inner.sig,
+            Self::Trait(x) => &x.inner.sig,
+        }
+    }
 }
 
 impl<M: ThreadSafety> LiftToSafe for FunctionItem<M> {
