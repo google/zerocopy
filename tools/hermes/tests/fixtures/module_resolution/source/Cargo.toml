@@ -1,7 +1,8 @@
 [package]
-name = "custom"
+name = "module_resolution"
 version = "0.1.0"
 edition = "2021"
 
+[dependencies]
 
 [workspace]

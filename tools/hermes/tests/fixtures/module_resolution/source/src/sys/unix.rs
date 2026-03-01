@@ -1,3 +1,3 @@
 /// ```lean, hermes
 /// ```
-pub fn foo() {}
+pub fn syscall() {}
