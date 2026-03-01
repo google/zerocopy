@@ -15,8 +15,8 @@ use crate::parse::{
 /// This distinguishes between:
 /// - `Source`: Direct, 1-to-1 mapping to user-written code (e.g. proof lines).
 /// - `Synthetic`: Generated code that doesn't definitively exist in the source,
-///    but we want to anchor to a relevant Rust span (e.g., mapping an
-///    auto-generated `spec` function signature back to the Rust `fn` ident).
+///   but we want to anchor to a relevant Rust span (e.g., mapping an
+///   auto-generated `spec` function signature back to the Rust `fn` ident).
 /// - `Keyword`: Mapping to a specific structural keyword in the source (e.g.
 ///   mapping the Lean `theorem` keyword to the Rust `proof` block keyword).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]

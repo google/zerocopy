@@ -8,7 +8,6 @@ pub struct Positive {
 /// ```hermes
 /// context
 /// -- No context
-/// requires true
 /// ensures Positive.x result > 0
 /// proof
 ///   simp [make_valid]; decide
@@ -20,7 +19,6 @@ pub fn make_valid() -> Positive {
 /// ```hermes
 /// context
 /// -- No context
-/// requires true
 /// ensures Positive.x result > 0
 /// proof
 ///   simp [make_bad]; decide
