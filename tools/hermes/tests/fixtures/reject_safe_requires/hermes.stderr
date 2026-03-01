@@ -1,9 +1,42 @@
 
 === Hermes Verification Failed ===
 
-[Hermes Error] Documentation block error: `requires` sections are only permitted on `unsafe` functions.
+[Hermes Error] hermes::doc_block
 
-[Hermes Error] Documentation block error: `requires` sections are only permitted on `unsafe` functions.
+  × Documentation block error: `requires` sections are only permitted on
+  │ `unsafe` functions.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
+ 1 │ /// ```hermes
+ 2 │ /// requires true
+   · ────────┬────────
+   ·         ╰── problematic block
+ 3 │ /// ```
+   ╰────
 
-[Hermes Error] Documentation block error: `requires` sections are only permitted on `unsafe` functions.
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: `requires` sections are only permitted on
+  │ `unsafe` functions.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:7:1]
+ 6 │ /// ```hermes
+ 7 │ /// requires x > 0
+   · ─────────┬────────
+   ·          ╰── problematic block
+ 8 │ /// requires y > 0
+   ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: `requires` sections are only permitted on
+  │ `unsafe` functions.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:13:1]
+ 12 │ /// ```hermes
+ 13 │ /// requires
+    · ──────┬─────
+    ·       ╰── problematic block
+ 14 │ /// ```
+    ╰────
+
 Error: Aborting due to 3 previous errors.

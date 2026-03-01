@@ -15,7 +15,7 @@ use crate::{
 
 #[derive(Clone)]
 struct ScannerContext {
-    err_tx: Sender<anyhow::Error>,
+    err_tx: Sender<miette::Report>,
     // `ParsedLeanItem`s must have their `module_path` field updated to be
     // relative to the crate root.
     item_tx: Sender<(HermesTargetName, ParsedLeanItem<crate::parse::hkd::Safe>, String)>,
@@ -135,7 +135,7 @@ impl HermesArtifact {
 pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
     log::trace!("scan_workspace({:?})", roots);
 
-    let (err_tx, err_rx) = mpsc::channel();
+    let (err_tx, err_rx) = mpsc::channel::<miette::Report>();
     let (item_tx, item_rx) =
         mpsc::channel::<(HermesTargetName, ParsedLeanItem<crate::parse::hkd::Safe>, String)>();
 
@@ -147,7 +147,8 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
             }
             error_count += 1;
             // Use eprintln! to print immediately to stderr
-            eprintln!("\n[Hermes Error] {:#}", err);
+            // `miette::Report` natively formats with rich diagnostic spans via `{:?}`.
+            eprintln!("\n[Hermes Error] {:?}", err);
         }
         error_count
     });
@@ -296,7 +297,7 @@ fn process_file_recursive<'a>(
                 ctx.item_tx.send((ctx.name.clone(), item.lift(), start_from_str)).unwrap();
             }
             Err(e) => {
-                let _ = ctx.err_tx.send(e.into());
+                let _ = ctx.err_tx.send(miette::Report::new(e));
             }
         },
     );
@@ -308,7 +309,7 @@ fn process_file_recursive<'a>(
     let (_, unloaded_modules) = match result {
         Ok(res) => res,
         Err(e) => {
-            let _ = ctx.err_tx.send(e.into());
+            let _ = ctx.err_tx.send(miette::miette!("{:#}", e));
             return;
         }
     };
