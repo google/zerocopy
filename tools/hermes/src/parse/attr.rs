@@ -134,6 +134,43 @@ fn parse_hermes_info_string(info: &str) -> Result<Option<ParsedInfoString>, Stri
     }
 }
 
+/// Extracts the offset of the content within a standard slash comment (`/// `, `//!`, `/**`, etc.).
+fn extract_slash_comment_offset(trimmed: &str, leading_ws: usize) -> Option<usize> {
+    if trimmed.starts_with("/// ")
+        || trimmed.starts_with("//!")
+        || trimmed.starts_with("/**")
+        || trimmed.starts_with("/*!")
+    {
+        Some(leading_ws + 3)
+    } else {
+        None
+    }
+}
+
+/// Extracts the offset of the content within a `#[doc = "..."]` attribute.
+fn extract_bracket_doc_offset(trimmed: &str, leading_ws: usize) -> Option<usize> {
+    let after_bracket = trimmed.strip_prefix("#[")?;
+
+    // We need to find the opening quote of the string literal after `doc` and `=`.
+    // A robust way is to find the first `=` and then the first quote.
+    let eq_idx = after_bracket.find('=')?;
+    let after_eq = &after_bracket[eq_idx + 1..];
+
+    let quote_intra_idx = after_eq.find(|c: char| ['"', 'r'].contains(&c))?;
+    let quote_total_idx = eq_idx + 1 + quote_intra_idx;
+    let literal_part = &after_bracket[quote_total_idx..];
+
+    let quote_width = if literal_part.starts_with('r') {
+        // Raw string: r"...", r#"..."#, etc.
+        literal_part.find('"').map(|i| i + 1).unwrap_or(1)
+    } else {
+        1 // Standard "
+    };
+
+    // +2 for "#["
+    Some(leading_ws + 2 + quote_total_idx + quote_width)
+}
+
 /// Extracts the string content and spans for each line from a documentation attribute.
 ///
 /// This handles `/// `, `//!`, `/** ... */`, and `#[doc = "..."]` attributes uniformly.
@@ -175,40 +212,12 @@ pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, S
             let trimmed = raw_slice.trim_start();
             let leading_ws = raw_slice.len() - trimmed.len();
 
-            let offset = if trimmed.starts_with("/// ")
-                || trimmed.starts_with("//!")
-                || trimmed.starts_with("/**")
-                || trimmed.starts_with("/*!")
-            {
-                leading_ws + 3
-            } else if let Some(after_bracket) = trimmed.strip_prefix("#[") {
-                // Handle #[doc = "..."]
-                // We need to find the opening quote of the string literal after `doc` and `=`.
-                // A robust way is to find the first `=` and then the first quote.
-                after_bracket
-                    .find('=')
-                    .and_then(|eq_idx| {
-                        let after_eq = &after_bracket[eq_idx + 1..];
-                        after_eq.find(|c: char| ['"', 'r'].contains(&c)).map(|quote_intra_idx| {
-                            let quote_total_idx = eq_idx + 1 + quote_intra_idx;
-                            let literal_part = &after_bracket[quote_total_idx..];
-                            let quote_width = if literal_part.starts_with('r') {
-                                // Raw string: r"...", r#"..."#, etc.
-                                literal_part.find('"').map(|i| i + 1).unwrap_or(1)
-                            } else {
-                                1 // Standard "
-                            };
-                            leading_ws + 2 + quote_total_idx + quote_width // +2 for "#["
-                        })
-                    })
-                    .unwrap_or_else(|| {
-                        // Fallback: search for content if we can't recognize the structure
-                        raw_slice.find(&content).unwrap_or(0)
-                    })
-            } else {
-                // Fallback: search for content if we can't recognize the structure
-                raw_slice.find(&content).unwrap_or(0)
-            };
+            let offset = extract_slash_comment_offset(trimmed, leading_ws)
+                .or_else(|| extract_bracket_doc_offset(trimmed, leading_ws))
+                .unwrap_or_else(|| {
+                    // Fallback: search for content if we can't recognize the structure
+                    raw_slice.find(&content).unwrap_or(0)
+                });
 
             let real_start = start + offset;
 

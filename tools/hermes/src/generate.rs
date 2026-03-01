@@ -640,15 +640,24 @@ fn map_type(ty: &crate::parse::hkd::SafeType) -> String {
         Path { qself: _, segments } => {
             if let Some(segment) = segments.last() {
                 let s = &segment.ident;
-                match s.as_str() {
-                    "u8" | "u16" | "u32" | "u64" | "u128" | "usize" | "i8" | "i16" | "i32"
-                    | "i64" | "i128" | "isize" => {
-                        let mut capital = s.clone();
-                        capital.replace_range(0..1, &s[0..1].to_uppercase());
-                        return format!("Std.{}", capital);
-                    }
-                    "bool" => return "Bool".to_string(),
-                    _ => {}
+                let mapped = match s.as_str() {
+                    "u8" => Some("Std.U8"),
+                    "u16" => Some("Std.U16"),
+                    "u32" => Some("Std.U32"),
+                    "u64" => Some("Std.U64"),
+                    "u128" => Some("Std.U128"),
+                    "usize" => Some("Std.Usize"),
+                    "i8" => Some("Std.I8"),
+                    "i16" => Some("Std.I16"),
+                    "i32" => Some("Std.I32"),
+                    "i64" => Some("Std.I64"),
+                    "i128" => Some("Std.I128"),
+                    "isize" => Some("Std.Isize"),
+                    "bool" => Some("Bool"),
+                    _ => None,
+                };
+                if let Some(mapped) = mapped {
+                    return mapped.to_string();
                 }
             }
 
@@ -701,11 +710,7 @@ fn extract_args_metadata(
     impl_struct_name: &Option<crate::parse::hkd::AstNode<syn::Type, crate::parse::hkd::Safe>>,
 ) -> Vec<ArgInfo> {
     use crate::parse::hkd::{SafeFnArg, SafeType};
-    let sig = match func {
-        FunctionItem::Free(AstNode { inner: i }) => &i.sig,
-        FunctionItem::Impl(AstNode { inner: i }, _) => &i.sig,
-        FunctionItem::Trait(AstNode { inner: i }) => &i.sig,
-    };
+    let sig = func.sig();
 
     sig.inputs
         .iter()
@@ -746,11 +751,7 @@ fn get_return_type_string(
 ) -> String {
     use crate::parse::hkd::{SafeFnArg, SafeReturnType, SafeType};
 
-    let sig = match func {
-        FunctionItem::Free(AstNode { inner: i }) => &i.sig,
-        FunctionItem::Impl(AstNode { inner: i }, _) => &i.sig,
-        FunctionItem::Trait(AstNode { inner: i }) => &i.sig,
-    };
+    let sig = func.sig();
 
     let mut ret_types = Vec::new();
 
@@ -793,11 +794,7 @@ fn get_return_type_string(
 /// Checks if the function returns `Unit` (or equivalent).
 fn is_unit_return(func: &FunctionItem<crate::parse::hkd::Safe>) -> bool {
     use crate::parse::hkd::SafeReturnType;
-    let sig = match func {
-        FunctionItem::Free(AstNode { inner: i }) => &i.sig,
-        FunctionItem::Impl(AstNode { inner: i }, _) => &i.sig,
-        FunctionItem::Trait(AstNode { inner: i }) => &i.sig,
-    };
+    let sig = func.sig();
     match &sig.output {
         SafeReturnType::Default => true,
         SafeReturnType::Type(ty) => matches!(map_type(ty).as_str(), "Unit" | "MatchError"),
