@@ -1,0 +1,9 @@
+
+=== Hermes Verification Failed ===
+
+[Hermes Error] Documentation block error: `requires` sections are only permitted on `unsafe` functions.
+
+[Hermes Error] Documentation block error: `requires` sections are only permitted on `unsafe` functions.
+
+[Hermes Error] Documentation block error: `requires` sections are only permitted on `unsafe` functions.
+Error: Aborting due to 3 previous errors.

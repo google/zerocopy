@@ -1,15 +1,12 @@
-[External Warning] generated/IsValidVerificationIsValidVerification<HASH>/IsValidVerificationIsValidVerification<HASH>.lean: unused variable `h_req`
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
   × Tactic `decide` proved that the proposition
   │   False
   │ is false
-    ╭─[[PROJECT_ROOT]/src/lib.rs:26:24]
- 25 │ /// proof
- 26 │ ///   simp [make_bad]; decide
+    ╭─[[PROJECT_ROOT]/src/lib.rs:24:24]
+ 23 │ /// proof
+ 24 │ ///   simp [make_bad]; decide
     ·                        ───┬──
     ·                           ╰── here
- 27 │ /// ```
+ 25 │ /// ```
     ╰────
 
 Error: Lean verification failed

@@ -424,7 +424,7 @@ fn parse_item_block_common(
 }
 
 impl FunctionHermesBlock<Local> {
-    pub fn parse_from_attrs(attrs: &[Attribute], source: &str) -> Result<Option<Self>, Error> {
+    pub fn parse_from_attrs(attrs: &[Attribute], is_unsafe: bool, source: &str) -> Result<Option<Self>, Error> {
         let Some((item, parsed_info)) = parse_hermes_block_common(attrs, source)? else {
             return Ok(None);
         };
@@ -437,6 +437,10 @@ impl FunctionHermesBlock<Local> {
         let body = item.body;
         reject_clauses(&body.is_valid, "`isValid` sections are only permitted on types.")?;
         reject_clauses(&body.is_safe, "`isSafe` sections are only permitted on traits.")?;
+
+        if !is_unsafe {
+            reject_clauses(&body.requires, "`requires` sections are only permitted on `unsafe` functions.")?;
+        }
 
         let inner = match attribute {
             FunctionAttribute::Spec => {
@@ -957,7 +961,7 @@ mod tests {
             parse_quote!(#[doc = " body 2"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+        let block = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
         match block {
             FunctionHermesBlock {
                 common: HermesBlockCommon { context, .. },
@@ -980,7 +984,7 @@ mod tests {
             parse_quote!(#[doc = " body 2"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+        let block = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         match block {
             FunctionHermesBlock {
                 common: HermesBlockCommon { context, .. },
@@ -998,7 +1002,7 @@ mod tests {
     fn test_parse_from_attrs_unclosed() {
         let attrs: Vec<syn::Attribute> =
             vec![parse_quote!(#[doc = " ```hermes"]), parse_quote!(#[doc = " no end fence"])];
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
         assert_eq!(err.to_string(), "Unclosed Hermes block in documentation.");
     }
 
@@ -1011,7 +1015,7 @@ mod tests {
             parse_quote!(#[derive(Clone)]), // Interrupts contiguous doc lines
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+        let block = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
         assert_eq!(block.common.context.len(), 1);
         assert_eq!(block.common.context[0].content, " line 1");
     }
@@ -1024,7 +1028,7 @@ mod tests {
             parse_quote!(#[doc = " ```hermes"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
         assert_eq!(err.to_string(), "Multiple Hermes blocks found on a single item.");
     }
 
@@ -1266,7 +1270,7 @@ mod tests {
     fn test_parse_from_attrs_not_hermes() {
         let attrs: Vec<syn::Attribute> =
             vec![parse_quote!(#[doc = " ```lean"]), parse_quote!(#[doc = " ```"])];
-        let block_func = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap();
+        let block_func = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap();
         assert!(block_func.is_none());
         let block_item = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap();
         assert!(block_item.is_none());
@@ -1343,7 +1347,7 @@ mod tests {
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
         assert_eq!(err.to_string(), "`isValid` sections are only permitted on types.");
     }
 
@@ -1442,6 +1446,85 @@ mod tests {
         let (_, _, requires_raw_span) = lines[0];
         assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_raw_span));
     }
+
+    #[test]
+    fn test_parse_requires_on_safe_fn_errors() {
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires true"]);
+        attrs.push(requires_attr.clone());
+        attrs.push(parse_quote!(#[doc = " ```"]));
+
+        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "`requires` sections are only permitted on `unsafe` functions."
+        );
+        let lines = extract_doc_line(&requires_attr, "");
+        let (_, _, requires_raw_span) = lines[0];
+        assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_raw_span));
+    }
+
+    #[test]
+    fn test_parse_requires_on_unsafe_fn_succeeds() {
+        let attrs: Vec<syn::Attribute> = vec![
+            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " requires true"]),
+            parse_quote!(#[doc = " ```"]),
+        ];
+        let block = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+        assert!(!block.requires.is_empty());
+    }
+
+    #[test]
+    fn test_parse_ensures_only_on_safe_fn_succeeds() {
+        let attrs: Vec<syn::Attribute> = vec![
+            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ensures result > 0"]),
+            parse_quote!(#[doc = " ```"]),
+        ];
+        let block = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
+        assert!(block.requires.is_empty());
+        assert!(!block.ensures.is_empty());
+    }
+
+    #[test]
+    fn test_parse_multiple_requires_on_safe_fn_errors() {
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let first_requires: syn::Attribute = parse_quote!(#[doc = " requires x > 0"]);
+        let second_requires: syn::Attribute = parse_quote!(#[doc = " requires y > 0"]);
+        
+        attrs.push(first_requires.clone());
+        attrs.push(second_requires);
+        attrs.push(parse_quote!(#[doc = " ```"]));
+
+        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "`requires` sections are only permitted on `unsafe` functions."
+        );
+        
+        let lines = extract_doc_line(&first_requires, "");
+        let (_, _, requires_raw_span) = lines[0];
+        assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_raw_span));
+    }
+
+    #[test]
+    fn test_parse_empty_requires_on_safe_fn_errors() {
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires"]);
+        attrs.push(requires_attr.clone());
+        attrs.push(parse_quote!(#[doc = " ```"]));
+
+        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "`requires` sections are only permitted on `unsafe` functions."
+        );
+        let lines = extract_doc_line(&requires_attr, "");
+        let (_, _, requires_raw_span) = lines[0];
+        assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_raw_span));
+    }
+
     mod edge_cases {
         use super::*;
 

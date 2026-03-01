@@ -383,12 +383,17 @@ where
 
     fn visit_item_fn(&mut self, i: &'ast ItemFn) {
         trace!("Visiting Fn {}", i.sig.ident);
-        self.process_item(i, &i.attrs, FunctionHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Function(HermesDecorated {
-                item: FunctionItem::Free(AstNode::new(item.clone())),
-                hermes,
-            })
-        });
+        self.process_item(
+            i,
+            &i.attrs,
+            |attrs, source| FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source),
+            |item, hermes| {
+                ParsedItem::Function(HermesDecorated {
+                    item: FunctionItem::Free(AstNode::new(item.clone())),
+                    hermes,
+                })
+            },
+        );
         syn::visit::visit_item_fn(self, i);
     }
 
@@ -469,7 +474,7 @@ where
         self.process_item(
             i,
             &i.attrs,
-            FunctionHermesBlock::parse_from_attrs,
+            |attrs, source| FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source),
             move |item, hermes| {
                 ParsedItem::Function(HermesDecorated {
                     item: FunctionItem::Impl(AstNode::new(item.clone()), current_impl_type.clone()),
@@ -482,12 +487,17 @@ where
 
     fn visit_trait_item_fn(&mut self, i: &'ast TraitItemFn) {
         trace!("Visiting TraitItemFn {}", i.sig.ident);
-        self.process_item(i, &i.attrs, FunctionHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Function(HermesDecorated {
-                item: FunctionItem::Trait(AstNode::new(item.clone())),
-                hermes,
-            })
-        });
+        self.process_item(
+            i,
+            &i.attrs,
+            |attrs, source| FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source),
+            |item, hermes| {
+                ParsedItem::Function(HermesDecorated {
+                    item: FunctionItem::Trait(AstNode::new(item.clone())),
+                    hermes,
+                })
+            },
+        );
         syn::visit::visit_trait_item_fn(self, i);
     }
 }
