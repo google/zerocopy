@@ -6,12 +6,19 @@ use crate::parse::{
     FunctionItem, ParsedItem, TypeItem,
 };
 
-/// The kind of source mapping.
+/// The kind of source mapping connecting generated Lean code to the original
+/// Rust context.
+///
+/// This resolves the misalignment between user-authored documentation syntax
+/// and the structurally-required Lean proof output.
 ///
 /// This distinguishes between:
-/// - `Source`: Direct mapping to user-written code (e.g. proof lines).
-/// - `Synthetic`: Generated code that doesn't exist in source but we want to map to a relevant span (e.g. `spec`).
-/// - `Keyword`: Mapping to a specific keyword in the source (e.g. `proof`, `axiom`).
+/// - `Source`: Direct, 1-to-1 mapping to user-written code (e.g. proof lines).
+/// - `Synthetic`: Generated code that doesn't definitively exist in the source,
+///    but we want to anchor to a relevant Rust span (e.g., mapping an
+///    auto-generated `spec` function signature back to the Rust `fn` ident).
+/// - `Keyword`: Mapping to a specific structural keyword in the source (e.g.
+///   mapping the Lean `theorem` keyword to the Rust `proof` block keyword).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum MappingKind {
     Source,
@@ -19,9 +26,14 @@ pub enum MappingKind {
     Keyword,
 }
 
-/// A mapping between a range in the generated Lean code and the original Rust source.
+/// A mapping between a range in the generated Lean code and the original Rust
+/// source.
 ///
-/// This is used to propagate diagnostics from Lean back to the Rust source file.
+/// Under the hood, Lean parses and resolves theorems independently. When Lean
+/// emits an error (e.g., a type mismatch or a failing tactic), it reports the
+/// byte range of the generated `.lean` file. We use this struct to seamlessly
+/// project those byte ranges back into the originating `/// ````hermes`
+/// doc block in the user's `.rs` workspace.
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct SourceMapping {
     /// Start byte offset in the generated Lean file.
@@ -93,10 +105,15 @@ impl LeanBuilder {
         });
     }
 
-    /// Appends `s` to the buffer and creates a mapping to the `source_file` at `span` with `kind`.
+    /// Appends `s` to the buffer and creates a mapping to the `source_file`
+    /// at `span` with `kind`.
     ///
-    /// This is used for more manual mapping control, e.g. mapping a generated `spec` keyword
-    /// to the function name in Rust, or `by` to a specific token.
+    /// This is prominently used for injecting "Synthetic" spans. For instance,
+    /// we generate a Lean theorem named `spec`, and map that identifier directly
+    /// back to the Rust function's `Ident` span. Consequently, if Lean throws
+    /// an error strictly about `spec`, the user will see a squiggle perfectly
+    /// underlining their Rust function name, creating the illusion that `rustc`
+    /// itself caught the verification error.
     fn push_mapped(
         &mut self,
         s: &str,
@@ -273,11 +290,14 @@ fn generate_function(
 
     // 4. Build the Call String
     //
-    // Aeneas generates theorem goals for struct methods using the explicit struct name
-    // as a namespace prefix (e.g., `List.push`) rather than a bare identifier. We extract
-    // the base segment path of the implementing struct here to correctly construct the
-    // method call name in Lean. This guarantees that the proof resolves against the precise
-    // definition output by Aeneas.
+    // Aeneas generates theorem goals for struct methods using the explicit struct
+    // name as a namespace prefix (e.g., `List.push`) rather than a bare
+    // identifier or a generalized `Self` namespace.
+    //
+    // To ensure our generated theorems resolve flawlessly against Aeneas's output,
+    // we eagerly extract the base segment path of the `impl_struct_name` from
+    // the tracked `current_impl_type` (propagated down by the Parser Visitor).
+    // We then dynamically substitute it into the method call string here.
     let mut base_name = "".to_string();
     if let Some(struct_name_node) = &impl_struct_name {
         if let crate::parse::hkd::SafeType::Path { segments, .. } = &struct_name_node.inner {
@@ -703,8 +723,14 @@ fn map_type(ty: &crate::parse::hkd::SafeType) -> String {
 ///
 /// This metadata is used to build the Lean function signature and efficiently map
 /// receiver parameters into their concrete structure types, bypassing generic
-/// namespace resolution issues within generated Lean files. It also records whether
-/// standard arguments should be handled via mutable reference splitting in the output.
+/// generic namespace resolution issues within generated Lean files. 
+///
+/// **Mutable References (`&mut T`) vs Owned Mutable Variables (`mut x: T`)**
+/// This function identifies whether an argument is a true struct-level mutable
+/// reference `&mut T`. It intentionally distinguishes this from standard
+/// pass-by-value bindings that are merely declared as mutable (`mut x: T`).
+/// Only true `&mut T` references are flagged with `is_mut_ref = true` to inform
+/// `generate_function` that it needs to unpack a tuple output from Aeneas.
 fn extract_args_metadata(
     func: &FunctionItem<crate::parse::hkd::Safe>,
     impl_struct_name: &Option<crate::parse::hkd::AstNode<syn::Type, crate::parse::hkd::Safe>>,

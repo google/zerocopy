@@ -2,26 +2,42 @@ use std::fmt::Debug;
 
 use quote::ToTokens;
 
-/// Generic support for thread- vs non-thread-safe ASTs.
+/// Generic support for bridging non-thread-safe AST nodes across threads.
 ///
-/// This uses GATs (Generic Associated Types) to define how primitives behave
-/// in different modes:
-/// 1. `Local`: Holds raw `syn` AST nodes. Fast, precise, but NOT `Send`
-///    (because `syn` nodes aren't always `Send` or we want to avoid cloning).
-/// 2. `Safe`: Holds specific, owned, `Send` representations (usually Strings or
-///    simplified structs).
+/// Hermes concurrently parses many Rust files using `rayon` worker threads.
+/// Because `syn` AST nodes are not guaranteed to be `Send + Sync` (and are
+/// often heavy to clone), we cannot simply send the raw `syn` types back to
+/// the main thread over a channel.
 ///
-/// This allows us to parse deeply using `syn` on worker threads, then "lift"
-/// the extensive AST into a lightweight, thread-safe representation to send
-/// back to the main thread or other workers.
+/// To solve this without sacrificing the convenience of standard `syn` types
+/// during the initial parse, we use Generic Associated Types (GATs) to define
+/// how primitives behave in two separate operating modes:
 ///
-/// Types that can be mirrored into a thread-safe representation.
+/// 1. `Local`: Holds raw `syn` AST nodes. This is fast and precise, but it is
+///    not consistently `Send` safe. It is used exclusively on the worker
+///    parsing threads.
+/// 2. `Safe`: Holds specific, explicitly-owned `Send` representations (usually
+///    `String`s or simplified structs like `SafeType` or `SafeSignature`).
+///
+/// This architecture allows us to parse deeply using `syn` on worker threads,
+/// then immediately "lift" the extensive AST into a lightweight, thread-safe
+/// representation before sending it back to the main orchestrating thread.
+///
+/// A trait defining how a non-thread-safe type transforms into a thread-safe
+/// representation.
+///
+/// This is primarily implemented on `syn` types, enabling them to construct
+/// their matching `Safe` equivalent (e.g., `syn::Type` -> `SafeType`).
 pub trait Mirror {
     type Image: Debug + Clone + Send + 'static;
     fn mirror(&self) -> Self::Image;
 }
 
-/// A trait defining a "mode" for AST storage (e.g., `Local` or `Safe`).
+/// A trait defining a "mode" for AST storage.
+///
+/// This allows generic structs (like `AstNode`) to transparently switch their
+/// internal storage between non-thread-safe (`Local`) and thread-safe (`Safe`)
+/// configurations without requiring duplicated structs.
 pub trait ThreadSafety: 'static + Sized + Copy + Debug {
     /// How this mode handles underlying non-thread-safe AST node representation.
     type Node<T: Mirror + Clone + Debug>: Debug + Clone;
@@ -76,8 +92,11 @@ impl ThreadSafety for Safe {
     }
 }
 
-/// Types implement this to describe how they turn into their `Send`-able
-/// version.
+/// A trait defining how an `AstNode` (or similar structural container) carrying
+/// local, unsafe data transforms into its thread-safe configuration.
+///
+/// Unlike `Mirror` (which acts on the underlying `syn` types directly), this
+/// trait handles the conversion of the generic AST wrappers.
 pub trait LiftToSafe {
     /// The thread-safe equivalent of Self.
     type Target: Send + Debug;
@@ -86,7 +105,12 @@ pub trait LiftToSafe {
     fn lift(self) -> Self::Target;
 }
 
-/// A "Leaf" type that adapts its internal storage based on `M`.
+/// A container for AST elements that adapts its internal storage based on the
+/// generic mode parameter `M`.
+///
+/// When `M` is `Local`, `inner` holds the fast, native `syn` structural type.
+/// When `M` is `Safe`, `inner` holds the mirrored, stringified, `Send`-safe
+/// equivalent.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AstNode<T: Mirror + Clone + std::fmt::Debug, M: ThreadSafety = Local> {
     pub inner: M::Node<T>,

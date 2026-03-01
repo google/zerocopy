@@ -287,6 +287,12 @@ fn process_file_recursive<'a>(
                 };
 
                 use crate::parse::hkd::LiftToSafe;
+                // Before sending the parsed item across the thread boundary
+                // (from the `rayon` worker back to the main thread), we must
+                // "lift" the AST nodes. This internally drops the rich,
+                // non-`Send` `syn` trees stored in the `Local` mode,
+                // transforming them into the lightweight, `Send`-safe `Safe`
+                // equivalents (e.g., `SafeType` and `SafeSignature`).
                 ctx.item_tx.send((ctx.name.clone(), item.lift(), start_from_str)).unwrap();
             }
             Err(e) => {

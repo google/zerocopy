@@ -5,16 +5,28 @@ use super::*;
 
 /// Parsing logic for Hermes attributes and documentation blocks.
 ///
-/// This module handles the extraction and parsing of `/// ````hermes` blocks from Rust source code.
-/// It supports various block types (Function, Type, Trait, Impl) and their respective sections
-/// (requires, ensures, proof, etc.).
+/// This module handles the extraction and parsing of `/// ````hermes` blocks
+/// from Rust source code. It supports various block types (Function, Type,
+/// Trait, Impl) and their respective sections (requires, ensures, proof, etc.).
+///
+/// ### Indentation-Sensitive Parsing (Off-Side Rule)
+/// Hermes relies strictly on indentation to determine block structure within
+/// the parsed comments.
+/// - Top-level block keywords (`context`, `requires`, `ensures`, `proof`,
+///   `axiom`) establish a baseline indentation.
+/// - Content lines *must* be indented deeper than their associated structural
+///   keyword to be treated as children of that block.
+///
+/// This design enforces an elegant, Python-like semantic meaning without
+/// requiring braces in standard Rust comments.
 ///
 /// The parsing process involves:
-/// 1. Extracting raw documentation lines using `extract_doc_line` (handling `/// `, `/** ... */`, `#[doc = ...]`).
+/// 1. Extracting raw documentation lines using `extract_doc_line` (handling
+///    `/// `, `/** ... */`, `#[doc = ...]`).
 /// 2. Identifying Hermes blocks denoted by ` ```lean, hermes...` fences.
-/// 3. Parsing the content within these blocks into structured `RawHermesSpecBody`.
-/// 4. Validating and converting the raw body into specific block types (e.g., `FunctionHermesBlock`).
-/// 4. Validating and converting the raw body into specific block types (e.g., `FunctionHermesBlock`).
+/// 3. Parsing the indented content into structured `RawHermesSpecBody` blocks.
+/// 4. Validating and converting the raw body into context-specific types
+///    (e.g., `FunctionHermesBlock`).
 ///
 /// Represents a parsed attribute from a Hermes info string on a function.
 #[derive(Debug, Clone, PartialEq, Eq)]

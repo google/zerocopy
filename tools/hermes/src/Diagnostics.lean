@@ -4,6 +4,18 @@ import «Generated»
 
 open Lean Elab Frontend Json
 
+-- This script acts as a headless Lean language server strictly for extracting
+-- diagnostics. 
+--
+-- Why not just parse Lean's standard CLI `stderr` string output?
+-- Lean's CLI formats errors for human consumption (`file:line:col`) and drops
+-- raw byte offsets. However, to correctly map an error back to the originating
+-- inline `.rs` file block, Hermes requires exact byte offsets.
+-- 
+-- By running the Lean `Frontend` programmatically, we capture the raw `Message`
+-- objects from Lean's compiler state. We then convert the Lean `Lsp.Position`
+-- back into Utf8 byte indices, and emit a structured JSON array that the Rust
+-- `diagnostics.rs` mapper can seamlessly consume.
 unsafe def main : IO Unit := do
   try
     -- 1. Initialize the Lean environment using Lake's search paths
