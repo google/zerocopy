@@ -604,13 +604,29 @@ fn resolve_mapping(
             if diag.message.contains("declaration uses `sorry`")
                 && matches!(m.kind, crate::generate::MappingKind::Synthetic) =>
         {
+            // Find a Keyword mapping that is physically located inside this synthetic
+            // theorem's generated Lean code. It must appear after this theorem's
+            // signature in Lean, and before the signature of any SUBSEQUENT synthetic
+            // theorem in Lean. This robustly correlates the synthetic theorem back
+            // to its own `proof` block, completely ignoring Lean emission order which
+            // may be topologically sorted and decoupled from the Rust source order.
+            let next_synthetic_lean_start = mappings
+                .iter()
+                .filter(|m3| {
+                    matches!(m3.kind, crate::generate::MappingKind::Synthetic)
+                        && m3.lean_start > m.lean_end
+                })
+                .map(|m3| m3.lean_start)
+                .min()
+                .unwrap_or(usize::MAX);
+
             mappings
                 .iter()
                 .find(|m2| {
                     matches!(m2.kind, crate::generate::MappingKind::Keyword)
-                        && m2.lean_start > m.lean_end
-                        && m2.source_start <= m.source_start
                         && m2.source_file == m.source_file
+                        && m2.lean_start > m.lean_end
+                        && m2.lean_start < next_synthetic_lean_start
                 })
                 .or(Some(m))
         }
@@ -737,28 +753,6 @@ mod tests {
     }
 
     #[test]
-    fn test_resolve_mapping_cross_function_failure_order() {
-        // Function A: Spec at 200 (Diagnostic Here)
-        // Function B: Proof Keyword at 300 (which is > 200, so valid for redirection if we didn't check source order?)
-        // Wait, current logic requires `m2.lean_start > m.lean_end`.
-        // So let's say Function A Spec is at lean 50..60.
-        // Function B Proof Keyword is at lean 70..80.
-        // Logic: finds keyword AFTER spec in Lean.
-        // But source order: Func A Spec at 200. Func B Proof Keyword at 300.
-        // `m2.source_start (300) <= m.source_start (200)` is FALSE.
-        // So it should NOT redirect.
-
-        let mappings = vec![
-            mk_mapping(50, 60, 200, 210, MappingKind::Synthetic, "file.rs"), // Func A Spec
-            mk_mapping(70, 80, 300, 310, MappingKind::Keyword, "file.rs"),   // Func B Proof
-        ];
-        let diag = mk_diag("declaration uses `sorry`", 50, 60);
-
-        let (_, start, _) = resolve_mapping(&diag, &mappings);
-        assert_eq!(start, 200, "Should NOT redirect to subsequent function");
-    }
-
-    #[test]
     fn test_resolve_mapping_cross_file_failure() {
         // Function A (File A): Spec at 200.
         // Function B (File B): Proof Keyword at 100.
@@ -793,5 +787,22 @@ mod tests {
             patch_discriminants("attribute @[discriminant]\n-- #[repr(u8)]"),
             "attribute @[discriminant isize]\n-- #[repr(u8)]"
         );
+    }
+
+    #[test]
+    fn test_resolve_mapping_cross_function_reordering() {
+        // Suppose Aeneas reorders Function A and Function B such that
+        // A comes before B in Lean, but A was after B in Rust.
+        let mappings = vec![
+            // Func B Spec (Lean 50, Rust 200)
+            mk_mapping(50, 60, 200, 210, MappingKind::Synthetic, "file.rs"),
+            // Func A Spec (Lean 300, Rust 100)
+            mk_mapping(300, 310, 100, 110, MappingKind::Synthetic, "file.rs"),
+            // Func A Proof (Lean 350, Rust 150)
+            mk_mapping(350, 360, 150, 160, MappingKind::Keyword, "file.rs"),
+        ];
+        let diag = mk_diag("declaration uses `sorry`", 50, 60);
+        let (_, start, _) = resolve_mapping(&diag, &mappings);
+        assert_eq!(start, 200, "Diagnostic should not redirect to a different function's proof keyword due to reordering");
     }
 }
