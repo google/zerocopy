@@ -7,7 +7,7 @@
 use std::{
     collections::HashMap,
     fs,
-    path::{Path, PathBuf},
+    path::{Component, Path, PathBuf},
 };
 
 pub use cargo_metadata::diagnostic::{Diagnostic, DiagnosticLevel, DiagnosticSpan};
@@ -89,6 +89,21 @@ impl DiagnosticMapper {
         if p.is_relative() {
             p = self.user_root.join(p);
         }
+
+        p = {
+            let mut normalized = PathBuf::new();
+            for component in p.components() {
+                let most_recent = normalized.components().next_back();
+                match (component, most_recent) {
+                    (Component::ParentDir, Some(Component::Normal(_))) => {
+                        normalized.pop();
+                    }
+                    (Component::CurDir, _) => {}
+                    _ => normalized.push(component),
+                }
+            }
+            normalized
+        };
 
         // Strategy B: Starts with user_root or user_root_canonical
         (p.starts_with(&self.user_root) || p.starts_with(&self.user_root_canonical)).then_some(p)
@@ -271,5 +286,32 @@ impl DiagnosticMapper {
             _ => "[External Info]",
         };
         printer(format!("{} {}: {}", prefix, file_name, message));
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use super::*;
+
+    #[test]
+    fn test_map_path_traversal() {
+        let user_root = PathBuf::from("/home/user/workspace");
+        let mapper = DiagnosticMapper::new(user_root.clone());
+
+        // This path is technically outside the workspace (e.g.,
+        // /home/user/etc/passwd) but it "starts_with" /home/user/workspace as a
+        // string/first component match if starts_with just checks components.
+        // Keep in mind Path::starts_with checks components:
+        // `/home/user/workspace` vs `/home/user/workspace/../etc/passwd`
+        // `Path::starts_with` sees components: ["/", "home", "user",
+        // "workspace"] vs ["/", "home", "user", "workspace", "..", "etc",
+        // "passwd"].
+        let malicious_path = PathBuf::from("/home/user/workspace/../etc/passwd");
+
+        let mapped = mapper.map_path(&malicious_path);
+
+        assert_eq!(mapped, None, "Path traversal should be rejected");
     }
 }
