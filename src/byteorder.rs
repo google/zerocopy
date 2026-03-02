@@ -613,6 +613,36 @@ example of how it can be used for parsing UDP packets.
             }
         }
 
+        #[cfg_attr(doc_cfg, doc(cfg(feature = "serde")))]
+        #[cfg(feature = "serde")]
+        impl<O: ByteOrder> serde::Serialize for $name<O>
+        where
+            $native: serde::Serialize,
+        {
+            #[inline(always)]
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: serde::Serializer,
+            {
+                $native::serialize(&self.get(), serializer)
+            }
+        }
+
+        #[cfg_attr(doc_cfg, doc(cfg(feature = "serde")))]
+        #[cfg(feature = "serde")]
+        impl<'de, O: ByteOrder> serde::Deserialize<'de> for $name<O>
+        where
+            $native: serde::Deserialize<'de>,
+        {
+            #[inline(always)]
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                $native::deserialize(deserializer).map(Self::from)
+            }
+        }
+
         $(
             impl<O: ByteOrder> From<$name<O>> for $larger_native {
                 #[inline(always)]
@@ -1559,5 +1589,106 @@ mod tests {
         assert_eq!(val_be_i16.get(), 1);
         assert_eq!(format!("{:?}", val_be_i16), "I16(1)");
         assert_eq!(val_be_i16.cmp(&val_be_i16), core::cmp::Ordering::Equal);
+    }
+}
+
+#[cfg(all(test, feature = "serde"))]
+mod serialization_tests {
+    use core::fmt::Debug;
+
+    use serde::{Deserialize, Serialize};
+
+    use crate::{
+        byteorder::{Isize, Usize, F32, F64, I128, I16, I32, I64, U128, U16, U32, U64},
+        BigEndian, LittleEndian,
+    };
+
+    fn assert_roundtrip<PrimitiveType, WrapperType>(
+        to_serialize: WrapperType,
+        primitive_value: Option<PrimitiveType>,
+    ) where
+        WrapperType: Serialize + for<'de> Deserialize<'de> + PartialEq + Debug,
+        PrimitiveType: Serialize + for<'de> Deserialize<'de> + PartialEq + Debug,
+    {
+        let serialized_value =
+            serde_json::to_string(&to_serialize).expect("Serialization to json should succeed");
+        let deserialized_wrapper = serde_json::from_str(&serialized_value)
+            .expect("Deserialization from json to wrapper type should succeed");
+        assert_eq!(to_serialize, deserialized_wrapper);
+
+        if let Some(primitive_value) = primitive_value {
+            let deserialized_primitive = serde_json::from_str(&serialized_value)
+                .expect("Deserialization from json to primitive type should succeed");
+            assert_eq!(primitive_value, deserialized_primitive);
+        }
+    }
+
+    macro_rules! assert_serialization_roundtrip {
+        ($prim:ty, $wrapper:ident, $value:expr) => {{
+            let primitive_value: $prim = $value;
+            assert_roundtrip($wrapper::<BigEndian>::new(primitive_value), Some(primitive_value));
+            assert_roundtrip($wrapper::<LittleEndian>::new(primitive_value), Some(primitive_value));
+        }};
+    }
+
+    #[test]
+    fn serialize_native_primitives() {
+        assert_serialization_roundtrip!(u16, U16, 0xABCDu16);
+        assert_serialization_roundtrip!(i16, I16, -123i16);
+        assert_serialization_roundtrip!(u32, U32, 0x89AB_CDEFu32);
+        assert_serialization_roundtrip!(i32, I32, -0x1234_5678i32);
+        assert_serialization_roundtrip!(u64, U64, 0x0123_4567_89AB_CDEFu64);
+        assert_serialization_roundtrip!(i64, I64, -0x0123_4567_89AB_CDEFi64);
+        assert_serialization_roundtrip!(u128, U128, 0x1234u128);
+        assert_serialization_roundtrip!(i128, I128, -0x1234i128);
+        assert_serialization_roundtrip!(usize, Usize, 0xBEEFusize);
+        assert_serialization_roundtrip!(isize, Isize, -12isize);
+        assert_serialization_roundtrip!(f32, F32, 1.25f32);
+        assert_serialization_roundtrip!(f64, F64, -0.75f64);
+    }
+
+    #[derive(Serialize, Deserialize, PartialEq, Debug)]
+    struct SerializableStruct<WrapperTypeA, WrapperTypeB>
+    where
+        WrapperTypeA: PartialEq + Debug,
+        WrapperTypeB: PartialEq + Debug,
+    {
+        value_a: WrapperTypeA,
+        value_b: [WrapperTypeB; 2],
+        value_c: (WrapperTypeA, WrapperTypeB),
+    }
+
+    macro_rules! assert_struct_serialization_roundtrip {
+        ($prim:ty, $wrapper:ident, $value:expr) => {{
+            let primitive_value: $prim = $value;
+            let test_struct = SerializableStruct {
+                value_a: $wrapper::<BigEndian>::new(primitive_value),
+                value_b: [
+                    $wrapper::<LittleEndian>::new(primitive_value),
+                    $wrapper::<LittleEndian>::new(primitive_value),
+                ],
+                value_c: (
+                    $wrapper::<BigEndian>::new(primitive_value),
+                    $wrapper::<LittleEndian>::new(primitive_value),
+                ),
+            };
+            assert_roundtrip(test_struct, None::<$prim>);
+        }};
+    }
+
+    #[test]
+    fn serialize_struct() {
+        assert_struct_serialization_roundtrip!(u16, U16, 0xABCDu16);
+        assert_struct_serialization_roundtrip!(i16, I16, -123i16);
+        assert_struct_serialization_roundtrip!(u32, U32, 0x89AB_CDEFu32);
+        assert_struct_serialization_roundtrip!(i32, I32, -0x1234_5678i32);
+        assert_struct_serialization_roundtrip!(u64, U64, 0x0123_4567_89AB_CDEFu64);
+        assert_struct_serialization_roundtrip!(i64, I64, -0x0123_4567_89AB_CDEFi64);
+        assert_struct_serialization_roundtrip!(u128, U128, 0x1234u128);
+        assert_struct_serialization_roundtrip!(i128, I128, -0x1234i128);
+        assert_struct_serialization_roundtrip!(usize, Usize, 0xBEEFusize);
+        assert_struct_serialization_roundtrip!(isize, Isize, -12isize);
+        assert_struct_serialization_roundtrip!(f32, F32, 1.25f32);
+        assert_struct_serialization_roundtrip!(f64, F64, -0.75f64);
     }
 }
