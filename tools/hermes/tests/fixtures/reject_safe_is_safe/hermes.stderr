@@ -1,0 +1,42 @@
+
+=== Hermes Verification Failed ===
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: `isSafe` sections are only permitted on
+  │ `unsafe` traits.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
+ 1 │ /// ```hermes
+ 2 │ /// isSafe : true
+   · ────────┬────────
+   ·         ╰── problematic block
+ 3 │ /// ```
+   ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: `isSafe` sections are only permitted on
+  │ `unsafe` traits.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:7:1]
+ 6 │ /// ```hermes
+ 7 │ /// isSafe : true
+   · ────────┬────────
+   ·         ╰── problematic block
+ 8 │ /// isSafe : false
+   ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: `isSafe` sections are only permitted on
+  │ `unsafe` traits.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:13:1]
+ 12 │ /// ```hermes
+ 13 │ /// isSafe
+    · ─────┬────
+    ·      ╰── problematic block
+ 14 │ /// ```
+    ╰────
+
+Error: Aborting due to 3 previous errors.

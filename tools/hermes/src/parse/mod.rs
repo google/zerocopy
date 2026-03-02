@@ -386,7 +386,9 @@ where
         self.process_item(
             i,
             &i.attrs,
-            |attrs, source| FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source),
+            |attrs, source| {
+                FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
+            },
             |item, hermes| {
                 ParsedItem::Function(HermesDecorated {
                     item: FunctionItem::Free(AstNode::new(item.clone())),
@@ -433,9 +435,14 @@ where
     fn visit_item_trait(&mut self, i: &'ast ItemTrait) {
         let name = i.ident.to_string();
         trace!("Visiting Trait {}", name);
-        self.process_item(i, &i.attrs, TraitHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Trait(HermesDecorated { item: AstNode::new(item.clone()), hermes })
-        });
+        self.process_item(
+            i,
+            &i.attrs,
+            |attrs, source| TraitHermesBlock::parse_from_attrs(attrs, i.unsafety.is_some(), source),
+            |item, hermes| {
+                ParsedItem::Trait(HermesDecorated { item: AstNode::new(item.clone()), hermes })
+            },
+        );
 
         self.current_path.push(name);
         syn::visit::visit_item_trait(self, i);
@@ -474,7 +481,9 @@ where
         self.process_item(
             i,
             &i.attrs,
-            |attrs, source| FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source),
+            |attrs, source| {
+                FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
+            },
             move |item, hermes| {
                 ParsedItem::Function(HermesDecorated {
                     item: FunctionItem::Impl(AstNode::new(item.clone()), current_impl_type.clone()),
@@ -490,7 +499,9 @@ where
         self.process_item(
             i,
             &i.attrs,
-            |attrs, source| FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source),
+            |attrs, source| {
+                FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
+            },
             |item, hermes| {
                 ParsedItem::Function(HermesDecorated {
                     item: FunctionItem::Trait(AstNode::new(item.clone())),
