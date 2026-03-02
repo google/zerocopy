@@ -424,7 +424,11 @@ fn parse_item_block_common(
 }
 
 impl FunctionHermesBlock<Local> {
-    pub fn parse_from_attrs(attrs: &[Attribute], is_unsafe: bool, source: &str) -> Result<Option<Self>, Error> {
+    pub fn parse_from_attrs(
+        attrs: &[Attribute],
+        is_unsafe: bool,
+        source: &str,
+    ) -> Result<Option<Self>, Error> {
         let Some((item, parsed_info)) = parse_hermes_block_common(attrs, source)? else {
             return Ok(None);
         };
@@ -439,7 +443,10 @@ impl FunctionHermesBlock<Local> {
         reject_clauses(&body.is_safe, "`isSafe` sections are only permitted on traits.")?;
 
         if !is_unsafe {
-            reject_clauses(&body.requires, "`requires` sections are only permitted on `unsafe` functions.")?;
+            reject_clauses(
+                &body.requires,
+                "`requires` sections are only permitted on `unsafe` functions.",
+            )?;
         }
 
         let inner = match attribute {
@@ -508,7 +515,11 @@ impl TypeHermesBlock<Local> {
 }
 
 impl TraitHermesBlock<Local> {
-    pub fn parse_from_attrs(attrs: &[Attribute], source: &str) -> Result<Option<Self>, Error> {
+    pub fn parse_from_attrs(
+        attrs: &[Attribute],
+        is_unsafe: bool,
+        source: &str,
+    ) -> Result<Option<Self>, Error> {
         let Some((common, body)) = parse_item_block_common(attrs, "traits", source)? else {
             return Ok(None);
         };
@@ -520,6 +531,13 @@ impl TraitHermesBlock<Local> {
                 common.start_span.inner,
                 "Hermes blocks on traits must define an `isSafe` trait invariant. Did you misspell it?",
             ));
+        }
+
+        if !is_unsafe {
+            reject_clauses(
+                &body.is_safe,
+                "`isSafe` sections are only permitted on `unsafe` traits.",
+            )?;
         }
 
         for clause in &body.is_safe {
@@ -1322,7 +1340,7 @@ mod tests {
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+        let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         assert_eq!(block.is_safe.len(), 1);
         assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
         assert_eq!(block.is_safe[0].lines[1].content, "  val == true");
@@ -1332,7 +1350,7 @@ mod tests {
     fn test_trait_block_missing_is_safe() {
         let attrs: Vec<syn::Attribute> =
             vec![parse_quote!(#[doc = " ```hermes"]), parse_quote!(#[doc = " ```"])];
-        let err = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+        let err = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
         assert_eq!(
             err.to_string(),
             "Hermes blocks on traits must define an `isSafe` trait invariant. Did you misspell it?"
@@ -1395,7 +1413,7 @@ mod tests {
             parse_quote!(#[doc = " isValid foo :="]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+        let err = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
         assert_eq!(err.to_string(), "`isValid` sections are only permitted on types.");
     }
 
@@ -1422,7 +1440,7 @@ mod tests {
             parse_quote!(#[doc = " isSafe     self    :="]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+        let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         // keep_keyword should preserve the exact string from the comment line
         assert_eq!(block.is_safe[0].lines[0].content, "isSafe     self    :=");
     }
@@ -1492,7 +1510,7 @@ mod tests {
         let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
         let first_requires: syn::Attribute = parse_quote!(#[doc = " requires x > 0"]);
         let second_requires: syn::Attribute = parse_quote!(#[doc = " requires y > 0"]);
-        
+
         attrs.push(first_requires.clone());
         attrs.push(second_requires);
         attrs.push(parse_quote!(#[doc = " ```"]));
@@ -1502,7 +1520,7 @@ mod tests {
             err.to_string(),
             "`requires` sections are only permitted on `unsafe` functions."
         );
-        
+
         let lines = extract_doc_line(&first_requires, "");
         let (_, _, requires_raw_span) = lines[0];
         assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_raw_span));
@@ -1523,6 +1541,65 @@ mod tests {
         let lines = extract_doc_line(&requires_attr, "");
         let (_, _, requires_raw_span) = lines[0];
         assert_eq!(format!("{:?}", err.span()), format!("{:?}", requires_raw_span));
+    }
+
+    #[test]
+    fn test_parse_is_safe_on_safe_trait_errors() {
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let is_safe_attr: syn::Attribute = parse_quote!(#[doc = " isSafe : true"]);
+        attrs.push(is_safe_attr.clone());
+        attrs.push(parse_quote!(#[doc = " ```"]));
+
+        let err = TraitHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        assert_eq!(err.to_string(), "`isSafe` sections are only permitted on `unsafe` traits.");
+        let lines = extract_doc_line(&is_safe_attr, "");
+        let (_, _, is_safe_raw_span) = lines[0];
+        assert_eq!(format!("{:?}", err.span()), format!("{:?}", is_safe_raw_span));
+    }
+
+    #[test]
+    fn test_parse_is_safe_on_unsafe_trait_succeeds() {
+        let attrs: Vec<syn::Attribute> = vec![
+            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " isSafe : true"]),
+            parse_quote!(#[doc = " ```"]),
+        ];
+        let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+        assert!(!block.is_safe.is_empty());
+    }
+
+    #[test]
+    fn test_parse_multiple_is_safe_on_safe_trait_errors() {
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let first_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe : x > 0"]);
+        let second_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe : y > 0"]);
+
+        attrs.push(first_is_safe.clone());
+        attrs.push(second_is_safe);
+        attrs.push(parse_quote!(#[doc = " ```"]));
+
+        let err = TraitHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        assert_eq!(err.to_string(), "`isSafe` sections are only permitted on `unsafe` traits.");
+
+        let lines = extract_doc_line(&first_is_safe, "");
+        let (_, _, is_safe_raw_span) = lines[0];
+        assert_eq!(format!("{:?}", err.span()), format!("{:?}", is_safe_raw_span));
+    }
+
+    #[test]
+    fn test_parse_empty_is_safe_on_safe_trait_errors() {
+        // Here we test just the keyword without content. Notice that `TraitHermesBlock`
+        // also checks for a colon (`:`). However, the `is_unsafe` check comes first!
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let is_safe_attr: syn::Attribute = parse_quote!(#[doc = " isSafe"]);
+        attrs.push(is_safe_attr.clone());
+        attrs.push(parse_quote!(#[doc = " ```"]));
+
+        let err = TraitHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        assert_eq!(err.to_string(), "`isSafe` sections are only permitted on `unsafe` traits.");
+        let lines = extract_doc_line(&is_safe_attr, "");
+        let (_, _, is_safe_raw_span) = lines[0];
+        assert_eq!(format!("{:?}", err.span()), format!("{:?}", is_safe_raw_span));
     }
 
     mod edge_cases {
@@ -1589,7 +1666,7 @@ mod tests {
                 parse_quote!(#[doc = " requires true"]), // Should error
                 parse_quote!(#[doc = " ```"]),
             ];
-            let err = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+            let err = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
             assert_eq!(err.to_string(), "`requires` sections are only permitted on functions.");
         }
 
@@ -1611,7 +1688,7 @@ mod tests {
             // The result is valid block with just `isSafe`.
             // But if the INTENTION was nested, it fails silently or just closes early.
             // Let's verify it closes early.
-            let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+            let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert!(block.is_safe.len() == 1);
             assert!(!block.is_safe[0].lines.is_empty());
             assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
@@ -1641,7 +1718,7 @@ mod tests {
             ];
             // Should succeed with empty body or fail?
             // Currently parser allows empty sections.
-            let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+            let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert!(block.is_safe.len() == 1);
             assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
         }
@@ -1666,7 +1743,7 @@ mod tests {
                 parse_quote!(#[doc = "  let result := 1"]),
                 parse_quote!(#[doc = " ```"]),
             ];
-            let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+            let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             // isSafe Self := (1)
             // -- This is a comment (2)
             // x ≥ 0 ∧ y ≤ 10 (3)
@@ -1699,7 +1776,7 @@ mod tests {
                 parse_quote!(#[doc = "  val"]),
                 parse_quote!(#[doc = " ```"]),
             ];
-            let block = TraitHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+            let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert_eq!(block.is_safe.len(), 1);
             assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
             assert_eq!(block.is_safe[0].lines[1].content, "  val");
