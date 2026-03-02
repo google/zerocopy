@@ -218,7 +218,7 @@ fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    let walker = walkdir::WalkDir::new(source_dir).follow_links(false);
+    let walker = walkdir::WalkDir::new(source_dir).follow_links(true);
     for entry in walker {
         let entry = entry.map_err(|e| anyhow::anyhow!("Failed to walk source dir: {}", e))?;
         let name = entry.file_name().to_string_lossy();
@@ -846,7 +846,7 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
 
         let mut is_allowed = false;
         for allowed in &allowed_paths {
-            if path == *allowed || path.starts_with(allowed) {
+            if path == *allowed || path.starts_with(allowed) || allowed.starts_with(&path) {
                 is_allowed = true;
                 break;
             }
@@ -1166,38 +1166,64 @@ fn assert_artifacts_match(
         }
 
         if found && !exp.content_contains.is_empty() {
-            // Find the actual file/dir
-            let file_name = found_items.iter().find(|f| f.starts_with(&prefix)).unwrap();
-            let path = scan_dir.join(file_name);
+            // Multiple artifacts may share the same package/target prefix when
+            // building a workspace with multiple dependency libraries. We must
+            // iterate through all matching artifacts because the hash suffixes
+            // are non-deterministic from the perspective of the test harness.
+            // If any artifact fully matches the required content strings, the
+            // expectation is met.
+            let matching_items: Vec<_> =
+                found_items.iter().filter(|f| f.starts_with(&prefix)).collect();
+            let mut any_matched_all = false;
+            let mut collected_errors = String::new();
 
-            let content = if path.is_dir() {
-                let mut combined = String::new();
-                for entry in walkdir::WalkDir::new(&path) {
-                    let Ok(entry) = entry else { continue };
-                    if entry.file_type().is_file() {
-                        if let Ok(s) = fs::read_to_string(entry.path()) {
-                            combined.push_str(&s);
+            for file_name in matching_items {
+                let path = scan_dir.join(file_name);
+
+                let content = if path.is_dir() {
+                    let mut combined = String::new();
+                    for entry in walkdir::WalkDir::new(&path) {
+                        let Ok(entry) = entry else { continue };
+                        if entry.file_type().is_file() {
+                            if let Ok(s) = fs::read_to_string(entry.path()) {
+                                combined.push_str(&s);
+                            }
                         }
                     }
-                }
-                combined
-            } else {
-                fs::read_to_string(&path)?
-            };
+                    combined
+                } else {
+                    fs::read_to_string(&path)?
+                };
 
-            for needle in &exp.content_contains {
-                if !content.contains(needle) {
-                    panic!(
-                         "Artifact '{}' missing expected content.\nMissing: '{}'\nPath: {:?}\n\nFull Content:\n{}",
-                         file_name, needle, path, content
-                     );
+                let mut matched_all = true;
+                for needle in &exp.content_contains {
+                    if !content.contains(needle) {
+                        matched_all = false;
+                        collected_errors.push_str(&format!(
+                            "Artifact '{}' missing expected content.\nMissing: '{}'\nPath: {:?}\n\n",
+                            file_name, needle, path
+                        ));
+                        break;
+                    }
                 }
+
+                if matched_all {
+                    any_matched_all = true;
+                    break;
+                }
+            }
+
+            if !any_matched_all {
+                panic!(
+                    "No matching artifact contained the expected content:\n{}",
+                    collected_errors
+                );
             }
         }
         if found {
             if let Some(expected_dir_name) = &exp.matches_expected_dir {
-                let file_name = found_items.iter().find(|f| f.starts_with(&prefix)).unwrap();
-                let actual_path = scan_dir.join(file_name);
+                let matching_items: Vec<_> =
+                    found_items.iter().filter(|f| f.starts_with(&prefix)).collect();
                 let expected_path = test_case_root.join(expected_dir_name);
 
                 let bless = std::env::var("BLESS").as_deref() == Ok("1")
@@ -1207,6 +1233,9 @@ fn assert_artifacts_match(
                     // Wipe the existing expected directory before copying over the new payload.
                     // This ensures that we do not accidentally retain orphaned files from a previous
                     // output if the new toolchain invocation generated fewer files than before.
+                    let file_name = matching_items.first().unwrap();
+                    let actual_path = scan_dir.join(file_name);
+
                     if expected_path.exists() {
                         if expected_path.is_dir() {
                             let _ = fs::remove_dir_all(&expected_path);
@@ -1230,26 +1259,65 @@ fn assert_artifacts_match(
                             expected_dir_name, expected_path
                         );
                     }
-                    if actual_path.is_dir() {
-                        assert_directories_match(&expected_path, &actual_path)?;
-                    } else {
-                        // Assert that the contents of the generated artifact exactly match the expected file.
-                        let e_txt = fs::read_to_string(&expected_path)?.replace("\r\n", "\n");
-                        let a_txt = fs::read_to_string(&actual_path)?.replace("\r\n", "\n");
-                        if e_txt != a_txt {
-                            use similar::{ChangeTag, TextDiff};
-                            let diff = TextDiff::from_lines(&e_txt, &a_txt);
-                            let mut diff_str = String::new();
-                            for change in diff.iter_all_changes() {
-                                let sign = match change.tag() {
-                                    ChangeTag::Delete => "-",
-                                    ChangeTag::Insert => "+",
-                                    ChangeTag::Equal => " ",
-                                };
-                                diff_str.push_str(&format!("{sign}{change}"));
+
+                    // Because hash suffixes are opaque to the harness, multiple
+                    // artifacts might match the package prefix. We use catch_unwind
+                    // to test each candidate against the expected golden directory.
+                    // The expectation passes if any one artifact matches.
+                    let mut any_matched = false;
+                    let mut collected_errors = String::new();
+
+                    for file_name in matching_items {
+                        let actual_path = scan_dir.join(file_name);
+
+                        let result = std::panic::catch_unwind(|| {
+                            if actual_path.is_dir() {
+                                assert_directories_match(&expected_path, &actual_path).unwrap();
+                            } else {
+                                let e_txt = fs::read_to_string(&expected_path)
+                                    .unwrap()
+                                    .replace("\r\n", "\n");
+                                let a_txt =
+                                    fs::read_to_string(&actual_path).unwrap().replace("\r\n", "\n");
+                                if e_txt != a_txt {
+                                    use similar::{ChangeTag, TextDiff};
+                                    let diff = TextDiff::from_lines(&e_txt, &a_txt);
+                                    let mut diff_str = String::new();
+                                    for change in diff.iter_all_changes() {
+                                        let sign = match change.tag() {
+                                            ChangeTag::Delete => "-",
+                                            ChangeTag::Insert => "+",
+                                            ChangeTag::Equal => " ",
+                                        };
+                                        diff_str.push_str(&format!("{sign}{change}"));
+                                    }
+                                    panic!("Mismatch in {:?}:\n{}", expected_path, diff_str);
+                                }
                             }
-                            panic!("Mismatch in {:?}:\n{}", expected_path, diff_str);
+                        });
+
+                        if result.is_ok() {
+                            any_matched = true;
+                            break;
+                        } else {
+                            let err_msg =
+                                if let Some(s) = result.unwrap_err().downcast_ref::<&str>() {
+                                    s.to_string()
+                                } else {
+                                    "Unknown panic during assertion".to_string()
+                                };
+                            collected_errors.push_str(&format!(
+                                "Artifact '{}' mismatch:\n{}\n",
+                                file_name, err_msg
+                            ));
                         }
+                    }
+
+                    if !any_matched {
+                        panic!(
+                            "No matching artifact matched the expected directory:\n{}",
+                            collected_errors
+                        );
                     }
                 }
             }

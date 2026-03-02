@@ -423,7 +423,7 @@ mod tests {
         };
 
         let artifact_lib = HermesArtifact {
-            name: name_lib,
+            name: name_lib.clone(),
             target_kind: HermesTargetKind::Lib,
             manifest_path: PathBuf::from("Cargo.toml"),
             start_from: std::collections::HashSet::new(),
@@ -444,12 +444,24 @@ mod tests {
             items: vec![],
         };
 
-        // Verify that the file names are distinct, and that they're distinct
-        // *because of the trailing hash* (ie, that they have identical
-        // prefixes).
+        let artifact_workspace_collision = HermesArtifact {
+            name: name_lib.clone(),
+            target_kind: HermesTargetKind::Lib,
+            // A different manifest but identical package/target semantics
+            manifest_path: PathBuf::from("crates/other/Cargo.toml"),
+            start_from: std::collections::HashSet::new(),
+            items: vec![],
+        };
+
+        // The file names must be distinct because of the trailing hash.
         assert_ne!(artifact_lib.llbc_file_name(), artifact_bin.llbc_file_name());
         assert!(artifact_lib.llbc_file_name().starts_with("PkgName"));
         assert!(artifact_bin.llbc_file_name().starts_with("PkgName"));
+
+        // Distinct `manifest_path`s must prevent collisions even when the
+        // package name and target semantics are otherwise identical.
+        assert_ne!(artifact_lib.llbc_file_name(), artifact_workspace_collision.llbc_file_name());
+        assert!(artifact_workspace_collision.llbc_file_name().starts_with("PkgName"));
     }
 
     #[test]

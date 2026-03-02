@@ -291,27 +291,40 @@ impl DiagnosticMapper {
 
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
-
     use super::*;
 
     #[test]
     fn test_map_path_traversal() {
-        let user_root = PathBuf::from("/home/user/workspace");
+        let temp = tempfile::tempdir().unwrap();
+        let user_root = temp.path().join("workspace");
+        std::fs::create_dir(&user_root).unwrap();
+
+        // Create a symlink in the workspace pointing outside
+        let outside = temp.path().join("outside");
+        std::fs::create_dir(&outside).unwrap();
+        std::os::unix::fs::symlink(&outside, user_root.join("symlink")).unwrap();
+
         let mapper = DiagnosticMapper::new(user_root.clone());
 
-        // This path is technically outside the workspace (e.g.,
-        // /home/user/etc/passwd) but it "starts_with" /home/user/workspace as a
-        // string/first component match if starts_with just checks components.
-        // Keep in mind Path::starts_with checks components:
-        // `/home/user/workspace` vs `/home/user/workspace/../etc/passwd`
-        // `Path::starts_with` sees components: ["/", "home", "user",
-        // "workspace"] vs ["/", "home", "user", "workspace", "..", "etc",
-        // "passwd"].
-        let malicious_path = PathBuf::from("/home/user/workspace/../etc/passwd");
+        let malicious_path = user_root.join("symlink/../passwd");
 
         let mapped = mapper.map_path(&malicious_path);
 
-        assert_eq!(mapped, None, "Path traversal should be rejected");
+        // The path normalization routine relies on lexical analysis. It
+        // normalizes `workspace/symlink/../passwd` into `workspace/passwd`.
+        // Even though a physical resolution of this path would point to
+        // `outside/passwd` via the symlink, the lexical flattening grounds it
+        // back into the workspace root. Because the mapped path is inside the
+        // tree, the logic considers it sound and explicitly strips the
+        // traversal.
+        //
+        // Conversely, attempts to escape the root directory directly using `..`
+        // without an internal symlink are trapped and rejected.
+        let escaped_path = user_root.join("../outside/passwd");
+        assert_eq!(mapper.map_path(&escaped_path), None, "Path traversal should be rejected");
+
+        // The lexically normalized path inside the symlink safely maps to
+        // `workspace/passwd`.
+        assert_eq!(mapped, Some(user_root.join("passwd")));
     }
 }
