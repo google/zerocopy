@@ -24,7 +24,8 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renam
   --> $DIR/derive_transparent.rs:24:21
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
-   |                     ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |                     ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::TryFromBytes`
+   = help: consider manually implementing `zerocopy_renamed::TryFromBytes` to avoid undesired bounds
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
   --> $DIR/../include.rs:74:17
    |
@@ -63,7 +64,8 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeros`
   --> $DIR/derive_transparent.rs:24:21
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
-   |                     ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |                     ^^^^^^^^^ type parameter would need to implement `FromZeros`
+   = help: consider manually implementing `FromZeros` to avoid undesired bounds
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
   --> $DIR/../include.rs:74:17
    |
@@ -102,7 +104,8 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renam
   --> $DIR/derive_transparent.rs:24:21
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
-   |                     ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |                     ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::FromBytes`
+   = help: consider manually implementing `zerocopy_renamed::FromBytes` to avoid undesired bounds
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
   --> $DIR/../include.rs:74:17
    |
@@ -141,7 +144,8 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renam
   --> $DIR/derive_transparent.rs:24:10
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
-   |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |          ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::IntoBytes`
+   = help: consider manually implementing `zerocopy_renamed::IntoBytes` to avoid undesired bounds
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
   --> $DIR/../include.rs:74:17
    |
@@ -180,7 +184,8 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renam
   --> $DIR/derive_transparent.rs:24:32
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
-   |                                ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |                                ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::Unaligned`
+   = help: consider manually implementing `zerocopy_renamed::Unaligned` to avoid undesired bounds
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
   --> $DIR/../include.rs:74:17
    |
