@@ -776,45 +776,56 @@ impl RawHermesSpecBody {
 
                     let indent = line.content.len() - line.content.trim_start().len();
 
-                    if let Some((&section, arg_str)) = keywords
-                        .iter()
-                        .find_map(|(k, s)| strip_keyword(trimmed, k).map(|arg| (s, arg)))
-                    {
-                        // Lean 4 definitions for `isValid` and `isSafe` require the keyword to
-                        // literally appear in the generated syntax. We flag these sections here
-                        // to ensure the keyword itself is preserved as part of the parsed content.
-                        let keep_keyword = matches!(section, Section::IsValid | Section::IsSafe);
-                        let first_line_content = if keep_keyword {
-                            trimmed.to_string()
-                        } else {
-                            arg_str.to_string()
-                        };
+                    // Enforce the off-side rule for keyword detection.
+                    //
+                    // A keyword is only considered a section header if it is
+                    // indented to the exact baseline of the current spec block.
+                    // Otherwise, it is parsed as continuation text within the
+                    // active section.
+                    let is_keyword_candidate = baseline_indent.map_or(true, |base| indent == base);
 
-                        let arg = if !arg_str.trim().is_empty() {
-                            Some(SpannedLine {
-                                content: first_line_content,
-                                span, // Note: This span covers the whole line including keyword
-                                raw_span: raw_span.clone(),
-                            })
-                            // ideally we'd slice the span for the arg, but `extract_doc_line` gives us line granularity.
-                            // We can keep using the full line span for the content line, that's fine.
-                            // The keyword span however... line.raw_span is the whole line.
-                        } else {
-                            // Even if no additional arguments are provided on the same line,
-                            // matching sections must retain the keyword token to remain valid Lean code.
-                            if keep_keyword {
+                    if is_keyword_candidate {
+                        if let Some((&section, arg_str)) = keywords
+                            .iter()
+                            .find_map(|(k, s)| strip_keyword(trimmed, k).map(|arg| (s, arg)))
+                        {
+                            // Lean 4 definitions for `isValid` and `isSafe` require the keyword to
+                            // literally appear in the generated syntax. We flag these sections here
+                            // to ensure the keyword itself is preserved as part of the parsed content.
+                            let keep_keyword = matches!(section, Section::IsValid | Section::IsSafe);
+                            let first_line_content = if keep_keyword {
+                                trimmed.to_string()
+                            } else {
+                                arg_str.to_string()
+                            };
+
+                            let arg = if !arg_str.trim().is_empty() {
                                 Some(SpannedLine {
                                     content: first_line_content,
-                                    span,
+                                    span, // Note: This span covers the whole line including keyword
                                     raw_span: raw_span.clone(),
                                 })
+                                // ideally we'd slice the span for the arg, but `extract_doc_line` gives us line granularity.
+                                // We can keep using the full line span for the content line, that's fine.
+                                // The keyword span however... line.raw_span is the whole line.
                             } else {
-                                None
-                            }
-                        };
+                                // Even if no additional arguments are provided on the same line,
+                                // matching sections must retain the keyword token to remain valid Lean code.
+                                if keep_keyword {
+                                    Some(SpannedLine {
+                                        content: first_line_content,
+                                        span,
+                                        raw_span: raw_span.clone(),
+                                    })
+                                } else {
+                                    None
+                                }
+                            };
 
-                        spec.start_section(section, raw_span, arg);
-                        return Ok((spec, section, Some(indent)));
+                            spec.start_section(section, raw_span, arg);
+                            let new_baseline = baseline_indent.unwrap_or(indent);
+                            return Ok((spec, section, Some(new_baseline)));
+                        }
                     }
 
                     if current_section == Section::Init {
@@ -1169,16 +1180,18 @@ mod tests {
         ]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         // The first four are context lines because they don't match keywords strictly.
-        assert_eq!(spec.context.lines.len(), 4);
+        assert_eq!(spec.context.lines.len(), 6);
         assert_eq!(spec.context.lines[0].content, "requires_foo a");
         assert_eq!(spec.context.lines[1].content, "ensuresbar");
         assert_eq!(spec.context.lines[2].content, "proof_of_concept");
         assert_eq!(spec.context.lines[3].content, "axiomatic");
 
-        // "  requires   " switches section but adds no lines because its arg is empty.
-        // Following line is added verbatim to requires section.
-        assert_eq!(spec.requires.len(), 1);
-        assert_eq!(spec.requires[0].lines[0].content, "   genuine requirements ");
+        // The line "  requires   " does not match the baseline indent (which is
+        // 0), so it is parsed as continuation text within the context section.
+        assert_eq!(spec.context.lines[4].content, "  requires   ");
+        assert_eq!(spec.context.lines[5].content, "   genuine requirements ");
+
+        assert!(spec.requires.is_empty());
         assert!(spec.ensures.is_empty());
     }
 
@@ -1635,21 +1648,17 @@ mod tests {
 
         #[test]
         fn test_keyword_collision_error() {
-            // Verify that 'proof' inside 'requires' triggers a new section or error if indentation is wrong.
-            // If it's indented, it MIGHT be parsed as content if it doesn't match the strict keyword rule?
-            // "The parser currently greedily matches keywords".
-            // Let's see if it switches section even if indented.
+            // Verify that keywords inside a section are treated as continuation
+            // text if their indentation differs from the baseline.
             let lines = mk_lines(&[
                 "requires",
-                "  proof", // Indented 'proof' - parser might treat as section start if greedy
+                "  proof", // Indented 'proof' - parser must treat as continuation content
             ]);
-            // If it is treated as section start, 'proof' arg is empty.
-            // But 'proof' is valid in Spec.
-            // Fails if 'proof' cannot be inside 'requires' block? No, it just switches section.
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert!(!spec.requires.is_empty());
-            assert!(spec.requires[0].lines.is_empty()); // 'proof' switched section
-            assert!(spec.proof.is_present());
+            assert_eq!(spec.requires[0].lines.len(), 1);
+            assert_eq!(spec.requires[0].lines[0].content, "  proof"); // 'proof' is now a continuation
+            assert!(!spec.proof.is_present());
         }
 
         #[test]
@@ -1883,21 +1892,25 @@ mod tests {
 
         #[test]
         fn test_edge_indentation_drift() {
-            // Keywords at different indentation levels should be accepted
-            // provided content is indented relative to its own keyword.
+            // Verify that keywords at drifting indentation levels compared to
+            // the baseline are treated as continuation lines.
             let lines = mk_lines(&[
                 "requires",
                 "  x > 0",
-                "  ensures", // Indented keyword
-                "    y > 0", // Indented content
-                "axiom",     // Back to 0
+                "  ensures", // Indented keyword -> Continuation line
+                "    y > 0", // Indented content -> Continuation line
+                "axiom",     // Back to 0 -> New Section
                 "  z > 0",
             ]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
+            assert_eq!(spec.requires[0].lines.len(), 3);
             assert_eq!(spec.requires[0].lines[0].content, "  x > 0");
-            assert_eq!(spec.ensures.len(), 1);
-            assert_eq!(spec.ensures[0].lines[0].content, "    y > 0");
+            assert_eq!(spec.requires[0].lines[1].content, "  ensures");
+            assert_eq!(spec.requires[0].lines[2].content, "    y > 0");
+
+            assert!(spec.ensures.is_empty());
+
             assert_eq!(spec.axiom.lines.len(), 1);
             assert_eq!(spec.axiom.lines[0].content, "  z > 0");
         }
