@@ -39,7 +39,8 @@ pub trait Mirror {
 /// internal storage between non-thread-safe (`Local`) and thread-safe (`Safe`)
 /// configurations without requiring duplicated structs.
 pub trait ThreadSafety: 'static + Sized + Copy + Debug {
-    /// How this mode handles underlying non-thread-safe AST node representation.
+    /// How this mode handles underlying non-thread-safe AST node
+    /// representation.
     type Node<T: Mirror + Clone + Debug>: Debug + Clone;
 
     /// A generic transform trait to move data from the current representation
@@ -141,7 +142,8 @@ where
 // =========================================================================
 
 // --- Span ---
-// We don't need the raw Span for generation, only for error reporting which happens earlier.
+// We don't need the raw Span for generation, only for error reporting which
+// happens earlier.
 impl Mirror for proc_macro2::Span {
     type Image = miette::SourceSpan;
     fn mirror(&self) -> Self::Image {

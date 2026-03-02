@@ -279,7 +279,11 @@ pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, S
 ///
 /// Returns the collected lines and the span of the closing fence (or the last
 /// line).
-fn parse_block_lines<I>(iter: &mut I, start: Span) -> Result<(Vec<SpannedLine>, Span), Error>
+fn parse_block_lines<I>(
+    iter: &mut I,
+    start: Span,
+    fence: &str,
+) -> Result<(Vec<SpannedLine>, Span), Error>
 where
     I: Iterator<Item = (String, SourceSpan, Span)>,
 {
@@ -288,7 +292,7 @@ where
     let mut closed = false;
 
     for (line, span, original_span) in iter {
-        if line.trim().starts_with("```") {
+        if line.trim().starts_with(fence) {
             closed = true;
             break;
         }
@@ -320,12 +324,22 @@ fn parse_hermes_block_common(
 
     while let Some((text, _, start_original)) = all_lines.next() {
         // Check for start fence
-        let info_opt = text.trim().strip_prefix("```");
-        if info_opt.is_none() {
+        let trimmed = text.trim();
+        if !trimmed.starts_with("```") {
             // Not a start fence, skip this line logic
             continue;
         }
-        let info = info_opt.unwrap();
+
+        let mut fence_len = 0;
+        for c in trimmed.chars() {
+            if c == '`' {
+                fence_len += 1;
+            } else {
+                break;
+            }
+        }
+        let fence = &trimmed[..fence_len];
+        let info = &trimmed[fence_len..];
 
         let parsed_info = match parse_hermes_info_string(info.trim()) {
             Ok(Some(a)) => a,
@@ -340,7 +354,7 @@ fn parse_hermes_block_common(
             ));
         }
 
-        let (lines, end) = parse_block_lines(&mut all_lines, start_original)?;
+        let (lines, end) = parse_block_lines(&mut all_lines, start_original, fence)?;
 
         let body = match RawHermesSpecBody::parse(&lines) {
             Ok(body) => body,
@@ -1695,6 +1709,44 @@ mod tests {
         }
 
         #[test]
+        fn test_nested_code_blocks() {
+            let attrs: Vec<syn::Attribute> = vec![
+                parse_quote!(#[doc = " ````hermes"]),
+                parse_quote!(#[doc = " requires true"]),
+                parse_quote!(#[doc = "  ```rust"]),
+                parse_quote!(#[doc = "  let x = 1;"]),
+                parse_quote!(#[doc = "  ```"]),
+                parse_quote!(#[doc = " ensures true"]),
+                parse_quote!(#[doc = " ````"]),
+            ];
+            // This test will fail currently because the parser stops at the first ` ``` `
+            // instead of matching the length of the opening fence (````).
+            let block = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+
+            assert_eq!(block.requires.len(), 1);
+            // The parser should ideally skip the inner ```rust block and parse the ensures clause.
+            assert_eq!(block.ensures.len(), 1);
+        }
+
+        #[test]
+        fn test_nested_code_blocks_in_comments() {
+            let attrs: Vec<syn::Attribute> = vec![
+                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " context"]),
+                parse_quote!(#[doc = "   -- ```"]),
+                parse_quote!(#[doc = "   -- Some code"]),
+                parse_quote!(#[doc = "   -- ```"]),
+                parse_quote!(#[doc = " ensures true"]),
+                parse_quote!(#[doc = " ```"]),
+            ];
+
+            let block = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
+
+            assert_eq!(block.common.context.len(), 3);
+            assert_eq!(block.ensures.len(), 1);
+        }
+
+        #[test]
         fn test_mixed_tabs_spaces_indentation() {
             // Indentation logic uses `len() - trim_start().len()`.
             // '\t' is 1 char. ' ' is 1 char.
@@ -2028,7 +2080,8 @@ fn foo() {}";
         };
 
         let mut iter = attrs.iter().flat_map(|a| extract_doc_line(a, source));
-        let (lines, _) = parse_block_lines(&mut iter, proc_macro2::Span::call_site()).unwrap();
+        let (lines, _) =
+            parse_block_lines(&mut iter, proc_macro2::Span::call_site(), "```").unwrap();
 
         println!("Parsed {} lines", lines.len());
         for (i, line) in lines.iter().enumerate() {

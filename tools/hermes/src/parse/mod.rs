@@ -1,6 +1,7 @@
 // Parsing logic for extracting Hermes annotations from Rust source code.
 //
-// This module provides the core infrastructure for traversing Rust source files,
+// This module provides the core infrastructure for traversing Rust source
+// files,
 // identifying items annotated with `/// ````hermes` blocks, and extracting them
 // for verification.
 
@@ -273,11 +274,12 @@ struct HermesVisitor<I, M> {
     current_path: Vec<String>,
     /// The parsed type of the current `impl` block being visited, if any.
     ///
-    /// This is maintained in the visitor state to be passed down into the parsed
-    /// representation of the methods (`FunctionItem::Impl`). This allows the code
-    /// generator to explicitly resolve receiver bounds using the concrete structure
-    /// type rather than a generic `Self` alias, which is necessary because Lean scope
-    /// resolution for Aeneas-generated theorems requires exact target types.
+    /// This is maintained in the visitor state to be passed down into the
+    /// parsed representation of the methods (`FunctionItem::Impl`). This allows
+    /// the code generator to explicitly resolve receiver bounds using the
+    /// concrete structure type rather than a generic `Self` alias, which is
+    /// necessary because Lean scope resolution for Aeneas-generated theorems
+    /// requires exact target types.
     current_impl_type: Option<AstNode<syn::Type, Local>>,
     inside_block: bool,
     item_cb: I,
@@ -677,19 +679,24 @@ mod tests {
         let items = parse_to_vec(code);
         let (_, res) = items.into_iter().next().unwrap();
         // Since we are parsing a string, `inside_block` is false initially,
-        // but `visit_item_mod` doesn't change `inside_block` for inline modules?
+        // but `visit_item_mod` doesn't change `inside_block` for inline
+        // modules?
         // Wait, `visit_item_mod` calls `syn::visit::visit_item_mod`.
         // `syn` traverses the content.
         // `HermesVisitor::visit_item_mod`:
         // checks `node.content.is_none()` for unloaded modules.
         // calls `visit_item_mod`.
         //
-        // NOTE: The `HermesVisitor` does NOT set `inside_block = true` when entering a module.
-        // It sets `inside_block = true` when visiting a `Block` (function body).
-        // Inline modules are not "blocks" in `syn` sense (they have braces but `ItemMod` structure handles it).
+        // NOTE: The `HermesVisitor` does NOT set `inside_block = true` when
+        // entering a module.
+        // It sets `inside_block = true` when visiting a `Block` (function
+        // body).
+        // Inline modules are not "blocks" in `syn` sense (they have braces but
+        // `ItemMod` structure handles it).
         // So this should SUCCEED unless I misunderstood `inside_block`.
 
-        // Actually `test_visit_in_file` was failing with `unwrap` on `None` meaning it didn't find the block.
+        // Actually `test_visit_in_file` was failing with `unwrap` on `None`
+        // meaning it didn't find the block.
         // With `hermes` tag it should find it.
         let item = res.unwrap();
         assert!(matches!(item.item, ParsedItem::Function(_)));
