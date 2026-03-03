@@ -1,0 +1,5 @@
+[External Error] generated/TransformLibTransformLib<HASH>/TransformLibTransformLib<HASH>.lean: invalid binder annotation, type is not a class instance
+  Bar Self N
+
+Note: Use the command `set_option checkBinderAnnotations false` to disable the check
+Error: Lean verification failed

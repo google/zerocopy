@@ -8,3 +8,10 @@ pub mod a {
         }
     }
 }
+
+
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
+pub fn dummy_hermes_padding() {}

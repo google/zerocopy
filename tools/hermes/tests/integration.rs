@@ -15,10 +15,17 @@ use walkdir::WalkDir;
 datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct HermesToml {
     description: String,
     #[serde(default)]
     test: Option<TestConfig>,
+    #[serde(default)]
+    extraction: Option<toml::Value>,
+    #[serde(default)]
+    output: Option<toml::Value>,
+    #[serde(default)]
+    verification: Option<toml::Value>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Default, Clone)]
@@ -91,6 +98,8 @@ struct ArtifactExpectation {
     kind: Option<String>,
     #[serde(default)]
     content_contains: Vec<String>,
+    #[serde(default)]
+    content_lacks: Vec<String>,
     #[serde(default)]
     matches_expected_dir: Option<String>,
 }
@@ -228,6 +237,12 @@ fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
         //
         // These directories contain build artifacts or generated code that
         // should never be present in the source fixture.
+        //
+        // Note: we use `entry.file_type().is_dir()` instead of `path.is_dir()`
+        // so that if a developer symlinks `target` into the directory (e.g.
+        // `ln -s ../../../target target`), we identify the symlink target as a
+        // directory and reject it. `path.is_dir()` would return false for the
+        // symlink itself.
         if entry.file_type().is_dir()
             && (name == "target"
                 || name == ".lake"
@@ -236,9 +251,9 @@ fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
                 || name == "cargo_target")
         {
             anyhow::bail!(
-                "Found blacklisted directory in source: {}\n\
-                     This indicates a stale or dirty source. Please clean the source directory.",
-                path.display()
+                "Stale build artifact directory found in fixture source: {:?}\n\
+                    Please remove it to ensure a clean test environment.",
+                path
             );
         }
 
@@ -840,13 +855,18 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
     }
 
     // Iterate through everything physically present in the test's root fixture dir
-    for entry in fs::read_dir(&ctx.test_case_root).unwrap() {
+    let walker = walkdir::WalkDir::new(&ctx.test_case_root).into_iter();
+    for entry in walker.filter_entry(|e| !e.path().ends_with(".git")) {
         let entry = entry.unwrap();
         let path = entry.path();
 
+        if !entry.file_type().is_file() {
+            continue;
+        }
+
         let mut is_allowed = false;
         for allowed in &allowed_paths {
-            if path == *allowed || path.starts_with(allowed) || allowed.starts_with(&path) {
+            if path == *allowed || path.starts_with(allowed) {
                 is_allowed = true;
                 break;
             }
@@ -854,7 +874,7 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
 
         if !is_allowed {
             let rel = path.strip_prefix(&ctx.test_case_root).unwrap();
-            panic!("Unmapped file or directory in test fixture: {:?}\nIf this file is part of the test payload, it must be explicitly configured in hermes.toml (e.g., via `matches_expected_dir` or `mock`). If it is an obsolete snapshot or temporary file, please delete it.", rel);
+            panic!("Unmapped file or directory in test fixture: {:?}\nIf this file is part of the test payload, it must be explicitly configured in hermes.toml (e.g., via `matches_expected_dir`, `stderr_file`, or `mock`). If it is an obsolete snapshot or temporary file, please delete it.", rel);
         }
     }
 }
@@ -1208,6 +1228,19 @@ fn assert_artifacts_match(
                 }
 
                 if matched_all {
+                    for needle in &exp.content_lacks {
+                        if content.contains(needle) {
+                            matched_all = false;
+                            collected_errors.push_str(&format!(
+                                "Artifact '{}' contains unexpected content.\nUnexpected: '{}'\nPath: {:?}\n\n",
+                                file_name, needle, path
+                            ));
+                            break;
+                        }
+                    }
+                }
+
+                if matched_all {
                     any_matched_all = true;
                     break;
                 }
@@ -1271,6 +1304,11 @@ fn assert_artifacts_match(
                         let actual_path = scan_dir.join(file_name);
 
                         let result = std::panic::catch_unwind(|| {
+                            if actual_path.is_dir() != expected_path.is_dir() {
+                                panic!("Type mismatch: expected {:?} (is_dir: {}), actual {:?} (is_dir: {})",
+                                    expected_path, expected_path.is_dir(), actual_path, actual_path.is_dir());
+                            }
+
                             if actual_path.is_dir() {
                                 assert_directories_match(&expected_path, &actual_path).unwrap();
                             } else {
@@ -1613,7 +1651,7 @@ fn run_dirty_sandbox_test(path: &Path) -> datatest_stable::Result<()> {
         Ok(_) => panic!("TestContext should have failed due to dirty source!"),
         Err(e) => {
             let error_msg = e.to_string();
-            if !error_msg.contains("Found blacklisted directory in source")
+            if !error_msg.contains("Stale build artifact directory found in fixture source")
                 && !error_msg.contains("Found blacklisted file in source")
             {
                 panic!("Unexpected error message: {}", error_msg);

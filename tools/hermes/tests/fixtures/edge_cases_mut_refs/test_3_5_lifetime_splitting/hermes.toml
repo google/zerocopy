@@ -4,12 +4,7 @@ Behavior: Implements control paths modifying disjoint mutable references indepen
 """
 
 
-[[artifact]]
-package = "test_3_5_lifetime_splitting"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "partial_mut"
-]

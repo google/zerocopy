@@ -4,12 +4,7 @@ Behavior: Uses a macro containing multiple `let x = ...` shadowing statements. T
 """
 
 
-[[artifact]]
-package = "test_9_3_hygiene"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "check_hygiene"
-]

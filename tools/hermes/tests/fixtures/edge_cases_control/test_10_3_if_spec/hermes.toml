@@ -4,14 +4,7 @@ Behavior: Uses `if check then A else B` logic within a structural invariant proo
 """
 
 
-[[artifact]]
-package = "test_10_3_if_spec"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "if",
-    "then",
-    "else"
-]

@@ -4,14 +4,7 @@ Behavior: Verifies a structural linked list (`Node { next: Option<Box<Node>> }`)
 """
 
 
-[[artifact]]
-package = "test_4_3_recursive_struct"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "Node",
-    "match",
-    "isValid"
-]

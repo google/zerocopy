@@ -17,3 +17,10 @@ pub struct Container<T> {
 pub struct ContainerValid<T> {
     pub inner: T,
 }
+
+
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
+pub fn dummy_hermes_padding() {}

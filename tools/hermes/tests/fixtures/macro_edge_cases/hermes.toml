@@ -3,8 +3,6 @@ Purpose: Validates specification survival through complex macro expansion loops.
 Behavior: Applies Hermes annotations explicitly onto traits structurally emitted by macros (`decl_trait!(HiddenTrait)`). Asserts that Charon lifts the logic bounds correctly across the span hygienically.
 """
 
-[workspace]
-test_name = "macro_edge_cases"
 
 [extraction]
 start_from = ["crate"]
@@ -13,5 +11,6 @@ start_from = ["crate"]
 style = "lean"
 
 [test]
-expected_status = "known_bug"
+stderr_file = "expected.stderr"
+expected_status = "failure"
 args = ["verify", "--allow-sorry"]

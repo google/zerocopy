@@ -12,3 +12,10 @@ pub mod b {
         pub a: Option<Box<a::A>>,
     }
 }
+
+
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
+pub fn dummy_hermes_padding() {}

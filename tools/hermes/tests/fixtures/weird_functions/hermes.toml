@@ -5,6 +5,7 @@ Behavior: Leverages `async unsafe fn`, `const unsafe fn`, and `unsafe extern "C"
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 expected_status = "failure"
 

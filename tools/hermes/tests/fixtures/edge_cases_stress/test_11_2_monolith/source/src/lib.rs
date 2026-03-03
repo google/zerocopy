@@ -20,3 +20,10 @@ generate_fns!(
     80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
     90, 91, 92, 93, 94, 95, 96, 97, 98, 99
 );
+
+
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
+pub fn dummy_hermes_padding() {}

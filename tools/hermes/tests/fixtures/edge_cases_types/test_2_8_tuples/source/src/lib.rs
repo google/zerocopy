@@ -1,4 +1,8 @@
 
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
 pub fn one_tuple(x: (u32,)) -> (u32,) {
     x
 }

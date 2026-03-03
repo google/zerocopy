@@ -1,0 +1,119 @@
+  ⚠ struct `ConstGen` is never constructed
+   ╭─[[PROJECT_ROOT]/src/lib.rs:4:8]
+ 3 │ /// ```
+ 4 │ struct ConstGen<const N: usize>;
+   ·        ────┬───
+   ·            ╰── 
+ 5 │ 
+   ╰────
+
+  ⚠ trait `ConstTrait` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:9:14]
+  8 │ /// ```
+  9 │ unsafe trait ConstTrait<const N: usize> {}
+    ·              ─────┬────
+    ·                   ╰── 
+ 10 │ 
+    ╰────
+
+  ⚠ trait `AssocType` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:11:14]
+ 10 │ 
+ 11 │ unsafe trait AssocType {
+    ·              ────┬────
+    ·                  ╰── 
+ 12 │     type Item;
+    ╰────
+
+  ⚠ trait `UsesAssoc` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:22:14]
+ 21 │ /// ```
+ 22 │ unsafe trait UsesAssoc: AssocType {}
+    ·              ────┬────
+    ·                  ╰── 
+ 23 │ 
+    ╰────
+
+  ⚠ enum `Void` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:24:6]
+ 23 │ 
+ 24 │ enum Void {}
+    ·      ──┬─
+    ·        ╰── 
+ 25 │ 
+    ╰────
+
+  ⚠ struct `VoidWrapper` is never constructed
+    ╭─[[PROJECT_ROOT]/src/lib.rs:29:8]
+ 28 │ /// ```
+ 29 │ struct VoidWrapper(Void);
+    ·        ─────┬─────
+    ·             ╰── 
+ 30 │ 
+    ╰────
+
+  ⚠ enum `DataEnum` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:31:6]
+ 30 │ 
+ 31 │ enum DataEnum {
+    ·      ────┬───
+    ·          ╰── 
+ 32 │     A(u32),
+    ╰────
+
+  ⚠ struct `EnumWrapper` is never constructed
+    ╭─[[PROJECT_ROOT]/src/lib.rs:39:8]
+ 38 │ /// ```
+ 39 │ struct EnumWrapper(DataEnum);
+    ·        ─────┬─────
+    ·             ╰── 
+ 40 │ 
+    ╰────
+
+  ⚠ enum `ValidatedEnum` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:44:6]
+ 43 │ /// ```
+ 44 │ enum ValidatedEnum {
+    ·      ──────┬──────
+    ·            ╰── 
+ 45 │     A(u32),
+    ╰────
+
+  ⚠ union `MyUnion` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:49:7]
+ 48 │ 
+ 49 │ union MyUnion {
+    ·       ───┬───
+    ·          ╰── 
+ 50 │     f1: u32,
+    ╰────
+
+  ⚠ struct `UnionWrapper` is never constructed
+    ╭─[[PROJECT_ROOT]/src/lib.rs:57:8]
+ 56 │ /// ```
+ 57 │ struct UnionWrapper(MyUnion);
+    ·        ──────┬─────
+    ·              ╰── 
+    ╰────
+
+Error: Aeneas failed for package 'type_features' with status: exit status: 2
+stderr:
+Applied prepasses:  [----------------------------------------------------] 0/1 ⠋Applied prepasses:  [####################################################] 1/1 ⠋Applied prepasses:  [####################################################] 1/1 ✔️
+Uncaught exception:
+  
+  (Failure
+    "unions are not supported\
+   \nSource: 'src/lib.rs', lines 49:0-52:1\
+   \nCompiler source: llbc/TypesAnalysis.ml, line 425")
+
+Raised at Aeneas__Errors.craise_opt_span in file "Errors.ml", line 98, characters 4-23
+Called from Aeneas__TypesAnalysis.analyze_type_decl in file "llbc/TypesAnalysis.ml", line 425, characters 19-74
+Called from Stdlib__List.fold_left in file "list.ml", line 123, characters 24-34
+Called from Aeneas__TypesAnalysis.analyze_type_declaration_group.analyze in file "llbc/TypesAnalysis.ml", lines 468-470, characters 6-23
+Called from Aeneas__Interp.analyze_type_declarations.(fun) in file "interp/Interp.ml", line 32, characters 10-62
+Called from Stdlib__List.fold_left in file "list.ml", line 123, characters 24-34
+Called from Aeneas__Interp.compute_contexts in file "interp/Interp.ml", line 113, characters 19-77
+Called from Aeneas__Translate.translate_crate_to_pure in file "Translate.ml", line 280, characters 18-40
+Called from Aeneas__Translate.translate_crate in file "Translate.ml", line 1896, characters 31-71
+Called from Dune__exe__Main in file "Main.ml", lines 639-640, characters 8-37
+

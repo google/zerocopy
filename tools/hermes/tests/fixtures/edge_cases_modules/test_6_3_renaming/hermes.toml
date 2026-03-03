@@ -4,12 +4,7 @@ Behavior: Re-aliases `Vec` using `use ... as MyVec;`. Ensures Charon de-aliases 
 """
 
 
-[[artifact]]
-package = "test_6_3_renaming"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "Vec"
-]

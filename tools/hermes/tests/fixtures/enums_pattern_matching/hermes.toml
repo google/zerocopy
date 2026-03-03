@@ -4,7 +4,7 @@ Behavior: Extends a pattern matching proof across all variants of `Enum.A x` and
 """
 
 
-[[artifact]]
+[[test.artifact]]
 package = "transform_lib"
 target = "transform_lib"
 kind = "lean"
@@ -18,5 +18,6 @@ content_contains = [
 ]
 
 [test]
-expected_status = "known_bug"
+stderr_file = "expected.stderr"
+expected_status = "failure"
 args = ["verify", "--allow-sorry"]

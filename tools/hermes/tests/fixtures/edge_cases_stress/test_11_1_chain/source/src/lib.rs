@@ -11,3 +11,10 @@ pub mod c {
 pub mod d {
     pub fn f() -> u32 { crate::c::f() + 1 }
 }
+
+
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
+pub fn dummy_hermes_padding() {}

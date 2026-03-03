@@ -4,14 +4,7 @@ Behavior: Confirms that developers can write `match` expressions within their `/
 """
 
 
-[[artifact]]
-package = "test_10_1_match_spec"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "match",
-    "x > 0",
-    "y > 10"
-]

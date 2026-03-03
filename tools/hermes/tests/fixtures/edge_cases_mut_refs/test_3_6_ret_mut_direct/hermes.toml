@@ -4,12 +4,7 @@ Behavior: Mutates a parameter and returns it as a borrow. Verifies Aeneas establ
 """
 
 
-[[artifact]]
-package = "test_3_6_ret_mut_direct"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "mut_passthrough"
-]

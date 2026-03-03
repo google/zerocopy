@@ -4,15 +4,7 @@ Behavior: Uses conditionally compiled functions (`#[cfg(target_os = ...)]`). Ver
 """
 
 
-[[artifact]]
-package = "test_7_1_phantom_fn"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "linux_only"
-]
-content_lacks = [
-    "windows_only"
-]

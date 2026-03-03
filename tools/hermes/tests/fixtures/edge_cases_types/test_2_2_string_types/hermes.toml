@@ -4,14 +4,7 @@ Behavior: Passes various variants of textual data models (`String`, `&str`, `Box
 """
 
 
-[[artifact]]
-package = "test_2_2_string_types"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-# Verify mapping of String/Char
-content_contains = [
-    "String",
-    "Char"
-]

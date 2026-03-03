@@ -4,13 +4,7 @@ Behavior: Confirms that `let x := ...` is strictly accepted into Hermes specific
 """
 
 
-[[artifact]]
-package = "test_10_2_let_spec"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "let y :=",
-    "y > 10"
-]

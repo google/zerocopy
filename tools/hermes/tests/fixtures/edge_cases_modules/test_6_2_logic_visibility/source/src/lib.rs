@@ -8,3 +8,10 @@ pub mod inner {
         helper()
     }
 }
+
+
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
+pub fn dummy_hermes_padding() {}

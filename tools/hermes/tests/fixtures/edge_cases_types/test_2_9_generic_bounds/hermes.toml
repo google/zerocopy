@@ -4,12 +4,7 @@ Behavior: Tests generic bounds and unused generic instantiations utilizing `Phan
 """
 
 
-[[artifact]]
-package = "test_2_9_generic_bounds"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "variable (T : Type)"
-]

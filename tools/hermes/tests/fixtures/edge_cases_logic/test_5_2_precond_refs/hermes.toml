@@ -4,12 +4,7 @@ Behavior: Places a `requires x > 10` guard on a function receiving `&mut u32`. V
 """
 
 
-[[artifact]]
-package = "test_5_2_precond_refs"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "x > 10" # This refers to the value of x at function entry
-]

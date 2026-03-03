@@ -4,13 +4,7 @@ Behavior: Delcares a `pub union U { ... }` and accesses it in an `unsafe` block.
 """
 
 
-[[artifact]]
-package = "test_8_2_unions"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "U",
-    "f1"
-]

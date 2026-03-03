@@ -3,7 +3,6 @@ Purpose: Exercises fallback logic for span-less compilation errors.
 Behavior: Mocks a generic "linker failed" error with no attached file spans. Checks that Hermes correctly intercepts the unstructured fatal failure from standard cargo compilation.
 """
 
-[dependencies]
 
 [test]
 stderr_file = "expected.stderr"

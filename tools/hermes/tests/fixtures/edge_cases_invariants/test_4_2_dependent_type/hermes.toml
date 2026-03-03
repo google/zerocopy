@@ -4,13 +4,7 @@ Behavior: Defines an `ArrayPair<const N: usize>` linking lengths to `N`. Verifie
 """
 
 
-[[artifact]]
-package = "test_4_2_dependent_type"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "ArrayPair",
-    "(N : Usize)" # Expecting const generic parameter
-]

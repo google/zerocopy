@@ -3,6 +3,10 @@ pub trait Iter {
     type Item: Default;
 }
 
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
 pub fn check_item<T: Iter>(x: T::Item) -> T::Item {
     x
 }

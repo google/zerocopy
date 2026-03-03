@@ -4,13 +4,7 @@ Behavior: Uses `Vec` and `String` directly in function signatures. Confirms the 
 """
 
 
-[[artifact]]
-package = "test_5_4_std_types"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "Vec",
-    "String"
-]

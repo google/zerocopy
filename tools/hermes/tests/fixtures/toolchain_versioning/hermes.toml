@@ -3,17 +3,19 @@ Purpose: Validates version enforcement metadata emission.
 Behavior: Extracts project components and ensures generated Lean files track the active LLBC/Aeneas baseline revisions exactly.
 """
 
-[[artifact]]
+[[test.artifact]]
 package = "stable_slug"
 target = "stable_slug"
 kind = "llbc"
 should_exist = true
+    matches_expected_dir = "expected"
 
-[[artifact]]
+[[test.artifact]]
 package = "stable_slug"
 target = "stable_slug"
 kind = "lean"
 should_exist = true
+    matches_expected_dir = "expected"
 
 [test]
 args = ["verify", "--allow-sorry"]

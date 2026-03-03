@@ -1,0 +1,21 @@
+Error: Aeneas failed for package 'transform_lib' with status: exit status: 2
+stderr:
+Applied prepasses:  [----------------------------------------------------] 0/1 ⠋Applied prepasses:  [####################################################] 1/1 ⠋Applied prepasses:  [####################################################] 1/1 ✔️
+Uncaught exception:
+  
+  (Failure
+    "unions are not supported\
+   \nSource: 'src/lib.rs', lines 2:0-5:1\
+   \nCompiler source: llbc/TypesAnalysis.ml, line 425")
+
+Raised at Aeneas__Errors.craise_opt_span in file "Errors.ml", line 98, characters 4-23
+Called from Aeneas__TypesAnalysis.analyze_type_decl in file "llbc/TypesAnalysis.ml", line 425, characters 19-74
+Called from Stdlib__List.fold_left in file "list.ml", line 123, characters 24-34
+Called from Aeneas__TypesAnalysis.analyze_type_declaration_group.analyze in file "llbc/TypesAnalysis.ml", lines 468-470, characters 6-23
+Called from Aeneas__Interp.analyze_type_declarations.(fun) in file "interp/Interp.ml", line 32, characters 10-62
+Called from Stdlib__List.fold_left in file "list.ml", line 123, characters 24-34
+Called from Aeneas__Interp.compute_contexts in file "interp/Interp.ml", line 113, characters 19-77
+Called from Aeneas__Translate.translate_crate_to_pure in file "Translate.ml", line 280, characters 18-40
+Called from Aeneas__Translate.translate_crate in file "Translate.ml", line 1896, characters 31-71
+Called from Dune__exe__Main in file "Main.ml", lines 639-640, characters 8-37
+

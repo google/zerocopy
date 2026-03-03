@@ -4,7 +4,7 @@ Behavior: Declares `pub enum Void {}`. Connects an invariant evaluating `nomatch
 """
 
 
-[[artifact]]
+[[test.artifact]]
 package = "transform_lib"
 target = "transform_lib"
 kind = "lean"

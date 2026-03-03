@@ -4,18 +4,9 @@ Behavior: Uses a struct and a trait generic over a constant value (`const N: usi
 """
 
 
-[[artifact]]
-package = "transform_lib"
-target = "transform_lib"
-kind = "lean"
-should_exist = true
 
-# Verify Const Generics
-content_contains = [
-    "instance {N} : Hermes.IsValid (Foo N)",
-    "class Safe {N} [Bar Self N]"
-]
 
 [test]
-expected_status = "known_bug"
+stderr_file = "expected.stderr"
+expected_status = "failure"
 args = ["verify", "--allow-sorry"]

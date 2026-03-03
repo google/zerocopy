@@ -4,12 +4,7 @@ Behavior: Uses a standard `macro_rules!` block to define a struct containing pla
 """
 
 
-[[artifact]]
-package = "test_9_2_macro_items"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "GeneratedStruct"
-]

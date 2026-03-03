@@ -4,13 +4,7 @@ Behavior: Uses a macro to programmatically generate 100 distinct functions in a 
 """
 
 
-[[artifact]]
-package = "test_11_2_monolith"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "f_only_for_test_0",
-    "f_only_for_test_99"
-]

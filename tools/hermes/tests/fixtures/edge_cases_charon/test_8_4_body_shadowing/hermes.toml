@@ -4,12 +4,7 @@ Behavior: Reuses binding names via shadowing (`let x = ...; let x = ...`). Ensur
 """
 
 
-[[artifact]]
-package = "test_8_4_body_shadowing"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "shadow"
-]

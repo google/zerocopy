@@ -3,7 +3,6 @@ Purpose: Ensures UI limits and scrolling buffering bounds work.
 Behavior: Pipes 30+ iterative `compiler-artifact` progress reports rapidly. Assures the console spinner/progress manager bounds the UI cleanly over terminal stream limits.
 """
 
-[dependencies]
 
 [test]
 stderr_file = "expected.stderr"

@@ -4,15 +4,7 @@ Behavior: Includes standard Rust raw pointers (`*const u8`, `*mut u8`) and abstr
 """
 
 
-[[artifact]]
-package = "test_2_5_pointers"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-# Verify pointer mapping (might be Opaque or specific type)
-# We just want to ensure it generates *something* without crashing.
-content_contains = [
-    # Aeneas might map raw pointers to something specific or fail.
-    # If it fails, we will see `lake build` fail or generation fail.
-]

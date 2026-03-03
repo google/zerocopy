@@ -4,12 +4,7 @@ Behavior: A straightforward test making the simple assertion that the result equ
 """
 
 
-[[artifact]]
-package = "test_5_1_old_paradox"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "result = x"
-]

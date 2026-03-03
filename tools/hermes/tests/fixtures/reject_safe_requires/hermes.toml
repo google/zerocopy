@@ -3,8 +3,6 @@ Purpose: Verify that `requires` blocks are strictly rejected on safe functions.
 Behavior: Hermes parses the file, encounters `requires` on safe functions, and errors out pointing to the specific spans.
 """
 
-[workspace]
-test_name = "reject_safe_requires"
 
 [test]
 args = ["verify"]

@@ -8,3 +8,10 @@ macro_rules! make_struct {
 }
 
 make_struct!(GeneratedStruct);
+
+
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
+pub fn dummy_hermes_padding() {}

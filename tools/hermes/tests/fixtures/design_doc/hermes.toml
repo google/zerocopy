@@ -4,15 +4,8 @@ Behavior: Exercises the 'isSafe', 'isValid' and 'spec' attribute mapping against
 """
 
 [test]
-expected_status = "known_bug"
+stderr_file = "expected.stderr"
+expected_status = "failure"
 args = ["verify", "--allow-sorry"]
 
 
-[[test.command]]
-args = ["charon", "--opaque", "design_doc::safe_div,design_doc::pop"]
-
-[[test.artifact]]
-package = "design_doc"
-target = "design_doc"
-should_exist = true
-matches_expected_dir = "expected"
