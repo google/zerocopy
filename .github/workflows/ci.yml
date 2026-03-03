@@ -379,7 +379,8 @@ jobs:
           $FEATURES \
           --verbose \
           -- \
-          --skip ui
+          --skip ui \
+          --skip codegen
 
       # Only run tests when targetting Linux x86 (32- or 64-bit) - we're
       # executing on Linux x86_64, so we can't run tests for any non-x86 target.
@@ -609,6 +610,28 @@ jobs:
         matrix.target != 'wasm32-unknown-unknown' &&
         env.ZC_SKIP_CARGO_SEMVER_CHECKS != '1'
 
+  codegen:
+    runs-on: ubuntu-latest
+    name: Run codegen tests
+    needs: generate_cache
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+      - name: Populate cache
+        uses: ./.github/actions/cache
+      - name: Run tests
+        run: |
+          set -eo pipefail
+          sudo apt install -qq llvm
+          ./cargo.sh +nightly install --quiet cargo-show-asm
+          RUSTFLAGS="$RUSTFLAGS -Awarnings" ./cargo.sh +nightly test \
+            --package zerocopy \
+            --target x86_64-unknown-linux-gnu \
+            --all-features \
+            --verbose \
+            --test codegen
+
   coverage:
     runs-on: ubuntu-latest
     name: Generate code coverage
@@ -631,7 +654,9 @@ jobs:
             --lcov \
             --output-path lcov.info \
             --verbose \
-            -- --skip ui
+            -- \
+            --skip ui \
+            --skip codegen
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
@@ -988,7 +1013,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor]
+      needs: [build_test, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor]
       steps:
         - name: Mark the job as failed
           run: exit 1
