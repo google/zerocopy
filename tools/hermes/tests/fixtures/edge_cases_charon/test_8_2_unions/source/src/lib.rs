@@ -4,6 +4,10 @@ pub union U {
     pub f2: f32,
 }
 
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
 pub fn access(u: U) -> u32 {
     unsafe { u.f1 }
 }

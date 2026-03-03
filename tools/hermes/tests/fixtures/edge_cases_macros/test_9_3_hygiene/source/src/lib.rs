@@ -6,6 +6,10 @@ macro_rules! hygiene_check {
     };
 }
 
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
 pub fn check_hygiene() {
     hygiene_check!();
 }

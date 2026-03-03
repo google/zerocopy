@@ -5,6 +5,7 @@ Behavior: Asserts that `hermes verify --lib --bin run` fails gracefully since Ch
 
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--lib", "--bin", "run", "--allow-sorry"]
 expected_status = "failure"
 

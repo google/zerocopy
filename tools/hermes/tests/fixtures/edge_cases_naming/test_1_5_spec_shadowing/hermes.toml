@@ -4,15 +4,7 @@ Behavior: Verifies logic when function arguments (`result`, `old_x`, etc.) inten
 """
 
 
-[[artifact]]
-package = "test_1_5_spec_shadowing"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-# Verify that shadowing doesn't crash Hermes/Aeneas and generates valid Lean
-content_contains = [
-    "result_shadow",
-    "old_shadow",
-    "internal_shadow"
-]

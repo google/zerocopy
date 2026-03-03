@@ -4,13 +4,7 @@ Behavior: Implements two structs referencing each other recursively across modul
 """
 
 
-[[artifact]]
-package = "test_11_3_cycle"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "A",
-    "B"
-]

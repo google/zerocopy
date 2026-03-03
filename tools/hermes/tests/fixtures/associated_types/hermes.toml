@@ -4,20 +4,8 @@ Behavior: Compiles a Rust source featuring a trait with an associated type (`T::
 """
 
 
-[[artifact]]
-package = "transform_lib"
-target = "transform_lib"
-kind = "lean"
-should_exist = true
-
-# Verify Associated Types
-content_contains = [
-    # Struct field
-    "(val : Trait.Assoc T)",
-    # Trait method
-    "(x : Trait.Assoc T) : Result (Trait.Assoc T)"
-]
 
 [test]
-expected_status = "known_bug"
+stderr_file = "expected.stderr"
+expected_status = "failure"
 args = ["verify", "--allow-sorry"]

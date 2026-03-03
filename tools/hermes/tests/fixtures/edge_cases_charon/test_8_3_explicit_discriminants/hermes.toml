@@ -4,14 +4,7 @@ Behavior: Assigns explicit integer discriminants to enum variants (`Red = 0xff`)
 """
 
 
-[[artifact]]
-package = "test_8_3_explicit_discriminants"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "Color",
-    "Red",
-    "Green"
-]

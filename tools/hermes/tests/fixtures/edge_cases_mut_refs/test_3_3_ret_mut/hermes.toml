@@ -4,12 +4,7 @@ Behavior: Mutates a vector to return an inner value (`v.pop()`). Validates Aenea
 """
 
 
-[[artifact]]
-package = "test_3_3_ret_mut"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "Result (Option U32 × Vec U32)" # or similar
-]

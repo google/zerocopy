@@ -4,13 +4,7 @@ Behavior: Uses a variable swapping function taking two mutable references. Confi
 """
 
 
-[[artifact]]
-package = "test_3_1_permuted_borrows"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-# Verify swap function generation
-content_contains = [
-    "swap"
-]

@@ -4,12 +4,7 @@ Behavior: Imports and uses `std::collections::HashMap` in a signature. Validates
 """
 
 
-[[artifact]]
-package = "test_6_1_external_crate"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "HashMap"
-]

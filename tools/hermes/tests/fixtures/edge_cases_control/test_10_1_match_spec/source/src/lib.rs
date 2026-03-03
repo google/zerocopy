@@ -1,4 +1,3 @@
-
 pub enum E {
     A(u32),
     B(u32),
@@ -9,3 +8,10 @@ pub enum E {
 pub struct S {
     pub e: E,
 }
+
+
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
+pub fn dummy_hermes_padding() {}

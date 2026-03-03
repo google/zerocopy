@@ -3,7 +3,6 @@ Purpose: Tests multi-level nested diagnostic tracing.
 Behavior: Injects a JSON diagnostic tree with a child `help` note containing its own hierarchy. Assures Hermes digs into child arrays recursively generating properly chained error terminal output.
 """
 
-[dependencies]
 
 [test]
 stderr_file = "expected.stderr"

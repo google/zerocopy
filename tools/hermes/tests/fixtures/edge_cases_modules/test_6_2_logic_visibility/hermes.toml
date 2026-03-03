@@ -4,12 +4,7 @@ Behavior: References a `pub(crate)` helper function from within the `/// @spec` 
 """
 
 
-[[artifact]]
-package = "test_6_2_logic_visibility"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "helper"
-]

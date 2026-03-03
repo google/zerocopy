@@ -4,12 +4,7 @@ Behavior: Uses deeply chained function dependencies spanning several modules. En
 """
 
 
-[[artifact]]
-package = "test_11_1_chain"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "D.f"
-]

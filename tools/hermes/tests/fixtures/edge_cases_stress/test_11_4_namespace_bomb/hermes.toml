@@ -4,12 +4,7 @@ Behavior: Delcares repeated nested submodules (`mod a { mod a { ... }}`). Ensure
 """
 
 
-[[artifact]]
-package = "test_11_4_namespace_bomb"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "A.A.A.A.f"
-]

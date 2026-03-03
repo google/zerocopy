@@ -3,8 +3,6 @@ Purpose: Verify that `isSafe` blocks are strictly rejected on safe traits.
 Behavior: Hermes parses the file, encounters `isSafe` on safe traits, and errors out pointing to the specific spans.
 """
 
-[workspace]
-test_name = "reject_safe_is_safe"
 
 [test]
 args = ["verify"]

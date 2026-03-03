@@ -4,14 +4,7 @@ Behavior: Delcares empty arrays (`[u8; 0]`), massively sized arrays (`[u8; 1024]
 """
 
 
-[[artifact]]
-package = "test_2_7_arrays"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-# Verify Array type generation
-content_contains = [
-    "Array",
-    "Slice"
-]

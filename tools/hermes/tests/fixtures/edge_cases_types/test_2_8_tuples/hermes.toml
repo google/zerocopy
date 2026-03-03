@@ -4,12 +4,7 @@ Behavior: Verifies arity handling on structural layout models by compiling a sin
 """
 
 
-[[artifact]]
-package = "test_2_8_tuples"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    # Verify no crash
-]

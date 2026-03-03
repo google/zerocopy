@@ -27,6 +27,7 @@ indicatif = { version = "0.18.3", features = ["improved_unicode"] }
 console = "0.16.2"
 sha2 = "0.10"
 fs2 = "0.4"
+toml = "0.8"
 
 [build-dependencies]
 toml = "0.8"

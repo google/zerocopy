@@ -3,13 +3,13 @@ Purpose: Verifies that verification artifacts (`llbc` and `lean` files) are writ
 Behavior: Runs verification on a very basic project to confirm both LLBC and Lean artifacts are fully and successfully generated without file corruption.
 """
 
-[[artifact]]
+[[test.artifact]]
 package = "atomic_writes"
 target = "atomic_writes"
 kind = "llbc"
 should_exist = true
 
-[[artifact]]
+[[test.artifact]]
 package = "atomic_writes"
 target = "atomic_writes"
 kind = "lean"

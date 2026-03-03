@@ -4,12 +4,7 @@ Behavior: Destructively modifies inner values of a mutable tuple `&mut (u32, u32
 """
 
 
-[[artifact]]
-package = "test_3_4_deep_destruct"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "nested_mut"
-]

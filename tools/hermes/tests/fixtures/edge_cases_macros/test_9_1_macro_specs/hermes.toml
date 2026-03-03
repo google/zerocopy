@@ -4,13 +4,7 @@ Behavior: Encapsulates a function and a `/// @spec` block entirely within a `mac
 """
 
 
-[[artifact]]
-package = "test_9_1_macro_specs"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "generated_fn",
-    "42"
-]

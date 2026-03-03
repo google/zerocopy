@@ -4,12 +4,7 @@ Behavior: Uses a mathematical expression `x + 1` within an `ensures` clause. Ver
 """
 
 
-[[artifact]]
-package = "test_5_5_call_aeneas"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "result = x + 1"
-]

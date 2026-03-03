@@ -1,0 +1,56 @@
+  ⚠ unused doc comment
+    ╭─[[PROJECT_ROOT]/src/lib.rs:23:1]
+ 22 │     // Macro invocation with attributes
+ 23 │ ╭─▶ /// ```hermes
+ 24 │ │   /// context
+ 25 │ │   /// -- Doc comment on macro invocation
+ 26 │ ├─▶ /// ```
+    · ╰──────┬───
+    · ╰───   ╰── rustdoc does not generate documentation for macro invocations
+    · ╰──── 
+ 27 │     #[allow(dead_code)]
+    ╰────
+  help: to document an item produced by a macro, the macro must produce the
+        documentation as part of its expansion
+
+  ⚠ unused attribute `allow`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:27:1]
+ 26 │ /// ```
+ 27 │ #[allow(dead_code)]
+    · ─────────┬─────────
+    ·          ╰── 
+ 28 │ decl_trait!(VisibleTrait);
+    ╰────
+  help: remove the attribute
+
+  ⚠ trait `MyTrait` is never used
+   ╭─[[PROJECT_ROOT]/src/lib.rs:4:14]
+ 3 │ /// ```
+ 4 │ unsafe trait MyTrait {
+   ·              ───┬───
+   ·                 ╰── 
+ 5 │     fn foo();
+   ╰────
+
+  ⚠ trait `HiddenTrait` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:20:13]
+ 19 │ // Macro invocation usage
+ 20 │ decl_trait!(HiddenTrait);
+    ·             ─────┬─────
+    ·                  ╰── 
+ 21 │ 
+    ╰────
+
+  ⚠ trait `VisibleTrait` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:28:13]
+ 27 │ #[allow(dead_code)]
+ 28 │ decl_trait!(VisibleTrait);
+    ·             ──────┬─────
+    ·                   ╰── 
+    ╰────
+
+[External Error] generated/MacroEdgeCasesMacroEdgeCases<HASH>/MacroEdgeCasesMacroEdgeCases<HASH>.lean: invalid binder annotation, type is not a class instance
+  MyTrait Self
+
+Note: Use the command `set_option checkBinderAnnotations false` to disable the check
+Error: Lean verification failed

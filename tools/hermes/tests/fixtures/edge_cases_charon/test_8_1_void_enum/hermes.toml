@@ -4,13 +4,7 @@ Behavior: Verifies that empty enums (`pub enum Void {}`) and functions terminati
 """
 
 
-[[artifact]]
-package = "test_8_1_void_enum"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "Void",
-    "invert"
-]

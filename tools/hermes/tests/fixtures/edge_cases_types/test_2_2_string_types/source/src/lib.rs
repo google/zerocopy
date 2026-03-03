@@ -9,6 +9,10 @@ pub struct Strings<'a> {
     pub e: char,
 }
 
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
 pub fn check_strings(s: String) -> String {
     s
 }

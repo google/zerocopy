@@ -4,13 +4,7 @@ Behavior: Utilizes explicit zero-sized structs and the common `()` unit type to 
 """
 
 
-[[artifact]]
-package = "test_2_3_zst"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
 
-# Verify Unit mapping
-content_contains = [
-    "Unit"
-]

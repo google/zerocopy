@@ -1,5 +1,9 @@
 
 // Helper for Aeneas/Hermes
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
 pub fn old<T>(x: T) -> T { x }
 
 // 1. Legacy/Result Shadowing

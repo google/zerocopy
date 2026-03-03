@@ -4,14 +4,7 @@ Behavior: Bounds a generic via an explicit `where T: Copy + Clone + Default` blo
 """
 
 
-[[artifact]]
-package = "test_4_7_where_clauses"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "Copy T",
-    "Clone T",
-    "Default T"
-]

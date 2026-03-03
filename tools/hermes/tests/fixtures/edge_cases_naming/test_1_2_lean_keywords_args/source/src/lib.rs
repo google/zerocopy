@@ -1,5 +1,9 @@
 
 // Lean keywords as argument names
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
 pub fn test_args(
     theorem: u32,
     axiom: u32,

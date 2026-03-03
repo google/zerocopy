@@ -1,4 +1,3 @@
-
 use std::ptr::NonNull;
 
 pub struct Pointers {
@@ -7,6 +6,10 @@ pub struct Pointers {
     pub c: NonNull<u8>,
 }
 
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
 pub fn ptr_arg(p: *const u8) -> *const u8 {
     p
 }

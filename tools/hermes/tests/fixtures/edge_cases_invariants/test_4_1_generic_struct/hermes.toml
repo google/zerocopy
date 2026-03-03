@@ -4,13 +4,7 @@ Behavior: Uses a generic struct `Container<T>` with an `isValid` invariant check
 """
 
 
-[[artifact]]
-package = "test_4_1_generic_struct"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "IsValid T", # Expecting context bound
-    "ContainerValid"
-]

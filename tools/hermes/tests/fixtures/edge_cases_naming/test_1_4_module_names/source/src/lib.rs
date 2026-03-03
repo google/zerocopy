@@ -1,4 +1,3 @@
-
 pub mod init {
     pub fn foo() {}
 }
@@ -26,3 +25,10 @@ pub mod lean {
 pub mod mathlib {
     pub fn foo() {}
 }
+
+
+/// ```lean, hermes
+/// proof
+///   sorry
+/// ```
+pub fn dummy_hermes_padding() {}

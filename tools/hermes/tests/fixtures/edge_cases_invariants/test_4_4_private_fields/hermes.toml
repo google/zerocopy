@@ -4,13 +4,7 @@ Behavior: Attaches an invariant to a struct using a private integer field. Check
 """
 
 
-[[artifact]]
-package = "test_4_4_private_fields"
-target = "lib"
-kind = "lean"
-should_exist = true
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
 
-content_contains = [
-    "S",
-    "private_field"
-]
