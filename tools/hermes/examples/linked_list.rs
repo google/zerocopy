@@ -18,8 +18,7 @@ impl<T> List<T> {
     /// ensures self'.len = self.len + 1
     /// proof
     ///   unfold linked_list.List.push
-    ///   unfold Hermes.SpecificationHolds
-    ///   simp [_root_.linked_list.List.len, Nat.add_comm]
+    ///   simp_all
     /// ```
     pub fn push(&mut self, val: T) {
         let old_self = std::mem::replace(self, List::Nil);

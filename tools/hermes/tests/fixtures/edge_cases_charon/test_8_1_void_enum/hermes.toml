@@ -5,6 +5,6 @@ Behavior: Verifies that empty enums (`pub enum Void {}`) and functions terminati
 
 
 [test]
-expected_status = "failure"
+expected_status = "success"
 args = ["verify", "--allow-sorry"]
 

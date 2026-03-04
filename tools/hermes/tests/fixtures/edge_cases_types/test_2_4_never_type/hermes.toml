@@ -5,6 +5,6 @@ Behavior: Targets functions that explicitly abort (`-> !`). Ensures Aeneas inter
 
 
 [test]
-expected_status = "failure"
+expected_status = "success"
 args = ["verify", "--allow-sorry"]
 

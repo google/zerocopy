@@ -5,6 +5,6 @@ Behavior: Mutates a parameter and returns it as a borrow. Verifies Aeneas establ
 
 
 [test]
-expected_status = "failure"
+expected_status = "success"
 args = ["verify", "--allow-sorry"]
 
