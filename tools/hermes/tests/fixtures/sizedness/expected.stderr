@@ -1,0 +1,22 @@
+  × failed to synthesize
+  │   Hermes.core.marker.Sized (Slice Std.U16)
+  │ 
+  │ Hint: Additional diagnostic information may be available using the
+  │ `set_option diagnostics true` command.
+   ╭─[[PROJECT_ROOT]/reject/src/lib.rs:8:5]
+ 7 │ /// context
+ 8 │ /// derive_sized sizedness_reject.NamedDst
+   ·     ───────────────────┬──────────────────
+   ·                        ╰── here
+ 9 │ /// ```
+   ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/reject/src/lib.rs:10:8]
+  9 │ /// ```
+ 10 │ pub fn foo(_f: &NamedDst) {}
+    ·        ──┬─
+    ·          ╰── here
+    ╰────
+
+Error: Lean verification failed
