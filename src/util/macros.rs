@@ -835,3 +835,94 @@ macro_rules! impl_transitive_transmute_from {
 /// must wrap the call in `unsafe { ... }`.
 #[inline(always)]
 pub(crate) const unsafe fn __unsafe() {}
+
+/// Generate a rustdoc-style header with `$name` as the HTML ID for the 'Code
+/// Generation' section of documentation.
+#[allow(unused)]
+macro_rules! codegen_header {
+    ($name:expr) => {
+        concat!(
+            "
+<h5 id='method.",
+            $name,
+            ".codegen'>
+    <a class='doc-anchor' href='#method.",
+            $name,
+            ".codegen'>§</a>
+    Code Generation
+</h5>
+"
+        )
+    };
+}
+
+/// Generate the HTML for the tabulated portion of the 'Code Generation'
+/// documentation. Consumes the name of the format file and benchmark.
+#[allow(unused)]
+macro_rules! codegen_tabs {
+    (format = $format:expr, bench = $name:expr) => {
+        concat!(
+            "
+<div class='codegen-tabs'>
+    <details name='tab-",
+            $name,
+            "' style='--n: 1'>
+        <summary>
+            <h6>Format</h6>
+        </summary>
+        <div>
+
+```ignore
+",
+            include_str!(concat!("../benches/formats/", $format, ".rs")),
+            "```
+\
+        </div>
+    </details>
+    <details name='tab-",
+            $name,
+            "' style='--n: 2'>
+        <summary>
+            <h6>Benchmark</h6>
+        </summary>
+        <div>
+
+```ignore
+",
+            include_str!(concat!("../benches/", $name, ".rs")),
+            "```
+\
+        </div>
+    </details>
+        <details name='tab-",
+            $name,
+            "' style='--n: 3'>
+        <summary>
+            <h6>Machine Code Analysis</h6>
+        </summary>
+        <div>
+
+### Replication
+
+You may replicate this analysis on your own hardware by running:
+
+```bash
+cargo asm --bench ",
+            $name,
+            " codegen_test --mca
+```
+
+### Results
+```plain
+",
+            include_str!(concat!("../benches/", $name, ".x86-64.mca")),
+            "```
+\
+        </div>
+    </details>
+</div>
+
+"
+        )
+    };
+}
