@@ -90,7 +90,7 @@ jobs:
             #
             # TODO(#1228): Use `jq` to parse these from `Cargo.toml` instead of
             # hard-coding them once we've gotten it working again.
-            METADATA_DOCS_RS_RUSTDOC_ARGS='--cfg doc_cfg --generate-link-to-definition'
+            METADATA_DOCS_RS_RUSTDOC_ARGS='--cfg doc_cfg --generate-link-to-definition --extend-css rustdoc/style.css'
             export RUSTDOCFLAGS="-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS"
 
             # TODO: Use `./cargo.sh` instead once we've debugged why it won't work.

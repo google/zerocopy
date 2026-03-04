@@ -1,0 +1,42 @@
+.codegen-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    grid-template-rows: auto 1fr;
+    column-gap: 1rem;
+}
+
+.codegen-tabs:not(:has(details[open]))::after {
+    grid-column: 1/-1;
+    content: 'Click one of the above headers to expand its contents.';
+    font-style: italic;
+}
+
+.codegen-tabs details {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-row: 1 / span 2;
+    grid-template-columns: subgrid;
+    grid-template-rows: subgrid;
+}
+
+.codegen-tabs summary {
+    display: grid;
+    grid-column: var(--n) / span 1;
+    grid-row: 1;
+    z-index: 1;
+    border-bottom: 1px solid var(--headings-border-bottom-color);
+    cursor: pointer;
+}
+
+.codegen-tabs details[open] :is(summary, .summary) {
+    background-color: var(--code-block-background-color);
+}
+
+.codegen-tabs details::details-content {
+    grid-column: 1 / -1;
+    grid-row: 2;
+}
+
+.codegen-tabs details:not([open])::details-content {
+    display: none;
+}
