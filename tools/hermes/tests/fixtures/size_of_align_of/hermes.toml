@@ -1,0 +1,12 @@
+description = """
+Purpose: Verifies the built-in size_of and align_of primitive specification evaluation behaves correctly with the injected simplifier attributes.
+"""
+
+[test]
+args = ["verify"]
+
+[[test.artifact]]
+package = "size_of_align_of"
+target = "size_of_align_of"
+kind = "lean"
+should_exist = true

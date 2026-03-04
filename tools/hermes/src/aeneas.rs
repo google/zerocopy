@@ -179,6 +179,16 @@ pub fn run_aeneas(
                 slug
             );
             std::fs::write(&funs_path, "").context("Failed to create empty Funs.lean")?;
+        } else {
+            // Aeneas generates `def` for all functions. If a function calls an opaque
+            // translated function (which emits as an `axiom`), Lean's bytecode compiler
+            // will reject it unless it's marked `noncomputable`. Since Hermes verification
+            // never executes these functions directly in Lean, we safely wrap the entire
+            // `Funs.lean` file in a `noncomputable section` to suppress these errors.
+            let content =
+                std::fs::read_to_string(&funs_path).context("Failed to read Funs.lean")?;
+            let patched = patch_funs(&content);
+            std::fs::write(&funs_path, patched).context("Failed to write patched Funs.lean")?;
         }
 
         let types_path = output_dir.join("Types.lean");
@@ -677,6 +687,20 @@ struct LeanDiagnostic {
 /// `Aeneas.Discriminant` module expects this attribute to be parameterized.
 fn patch_discriminants(content: &str) -> String {
     content.replace("@[discriminant]", "@[discriminant isize]")
+}
+
+/// Patches the generated Funs.lean file to suppress bytecode compilation errors
+/// for functions that invoke opaque axioms (such as `core::mem::size_of`).
+fn patch_funs(content: &str) -> String {
+    let mut lines: Vec<&str> = content.split('\n').collect();
+    let mut insert_idx = 0;
+    for (i, line) in lines.iter().enumerate() {
+        if line.starts_with("import ") {
+            insert_idx = i + 1;
+        }
+    }
+    lines.insert(insert_idx, "noncomputable section\n");
+    lines.join("\n")
 }
 
 /// Helper to write file content only if it has changed.

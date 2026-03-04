@@ -182,7 +182,10 @@ pub fn generate_artifact(artifact: &crate::scanner::HermesArtifact) -> Generated
     //
     // FIXME: Maybe set this in the lakefile instead?
     builder.push_str("set_option linter.dupNamespace false\n");
-    builder.push_str("open Aeneas Aeneas.Std Result\n");
+    builder.push_str("open Aeneas Aeneas.Std Result\n\n");
+    builder.push_str("noncomputable section\n\n");
+    builder.push_str("-- Specification linking Aeneas's opaque generated built-ins to Hermes.\n");
+    builder.push_str("inject_builtins\n\n");
     // Open the crate namespace so types are visible.
     //
     // Note: Aeneas uses the crate name (snake_case) as the top-level namespace.
