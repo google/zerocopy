@@ -8,11 +8,9 @@
 /// proof
 ///   unfold abs
 ///   split
-///   . unfold Hermes.SpecificationHolds
-///     simp
+///   . simp
 ///     sorry -- arithmetic with primitives is hard for scalar_tac currently
-///   . unfold Hermes.SpecificationHolds
-///     simp
+///   . simp
 ///     sorry -- scalar_tac context issue?
 /// ```
 pub fn abs(x: i32) -> i32 {

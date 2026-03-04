@@ -131,14 +131,21 @@ end marker
 end core
 
 /--
+  The alignment properties of a layout.
+  This contains the alignment value itself, along with a proof that it is
+  a valid Rust alignment.
+-/
+structure AlignInfo where
+  align : Nat
+  validAlignment : Alignment align
+
+/--
   A valid memory layout for a value.
   A Rust layout is defined by a size and an alignment. The alignment must be a
   power of two, and size must be a multiple of alignment.
 -/
-structure LayoutInfo where
+structure LayoutInfo extends AlignInfo where
   size : Nat
-  align : Nat
-  validAlignment : Alignment align
   sizeAligned : align ∣ size
 
 /--
@@ -164,6 +171,90 @@ class TypeLayout (α : Type) [core.marker.Sized α] where
 -- all values, the instance value is ignored.
 instance {α : Type} [core.marker.Sized α] [tl : TypeLayout α] : ValueLayout α where
   layout _ := tl.layout
+
+-- 5. Slice DSTs
+
+/--
+  The layout properties that are statically known for all instances of a
+  slice dynamically-sized type (Slice DST).
+-/
+structure SliceDstLayoutInfo extends AlignInfo where
+  trailingOffset : Nat
+  elementSize : Nat
+
+/--
+  Provides the static slice DST layout properties for a given type.
+  This is analogous to `TypeLayout`, but for types that are `!Sized`
+  and end in a slice.
+-/
+class SliceDstTypeLayout (α : Type) where
+  layout : SliceDstLayoutInfo
+
+/--
+  Extracts the dynamic trailing element count for a value of a Slice DST.
+-/
+class TrailingSlice (α : Type) where
+  len : α → Nat
+
+/-- Rounds `val` up to the nearest multiple of `align`. -/
+def roundUpToAlign (val align : Nat) : Nat :=
+  (val + align - 1) / align * align
+
+/--
+  Computes the exact size of a `repr(C)` Slice DST instance given its
+  static layout info and its dynamic trailing element count.
+-/
+def reprCSliceDstSize (info : SliceDstLayoutInfo) (elemCount : Nat) : Nat :=
+  let unpaddedSize := info.trailingOffset + elemCount * info.elementSize
+  roundUpToAlign unpaddedSize info.align
+
+/-- 
+  A theorem stating that our padding function always returns a value perfectly 
+  divisible by the alignment.
+-/
+axiom reprCSliceDstSize_aligned (info : SliceDstLayoutInfo) (elemCount : Nat) :
+  info.align ∣ reprCSliceDstSize info elemCount
+
+/-- Marker trait for types that are explicitly `#[repr(C)]`. -/
+class ReprC (α : Type)
+
+/--
+  Blanket implementation: if a type is a Slice DST, and we can extract its 
+  length, AND it is `#[repr(C)]`, then we can definitively compute its `ValueLayout`.
+-/
+instance {α : Type} [SliceDstTypeLayout α] [ts : TrailingSlice α] [ReprC α] : ValueLayout α where
+  layout val :=
+    let staticInfo := SliceDstTypeLayout.layout (α := α)
+    let elemCount := ts.len val
+    let dynamicSize := reprCSliceDstSize staticInfo elemCount
+    {
+      size := dynamicSize,
+      align := staticInfo.align,
+      validAlignment := staticInfo.validAlignment,
+      sizeAligned := reprCSliceDstSize_aligned staticInfo elemCount
+    }
+
+/--
+  Raw slices `[T]` are simply Slice DSTs with a trailing offset of 0.
+-/
+instance {T : Type} [core.marker.Sized T] [tl : TypeLayout T] : SliceDstTypeLayout (Aeneas.Std.Slice T) where
+  layout := {
+    trailingOffset := 0,
+    elementSize := tl.layout.size,
+    toAlignInfo := tl.layout.toAlignInfo
+  }
+
+/--
+  Retrieve the dynamic length of a raw slice value.
+-/
+instance {T : Type} : TrailingSlice (Aeneas.Std.Slice T) where
+  len s := s.val.length
+
+/--
+  We consider raw slices to be `#[repr(C)]` so that they can utilize the blanket
+  implementation to compute their value layout.
+-/
+instance {T : Type} : ReprC (Aeneas.Std.Slice T) := ⟨⟩
 
 @[simp]
 instance : TypeLayout Unit where
@@ -257,10 +348,57 @@ instance : TypeLayout Usize where
 @[simp]
 instance : TypeLayout Isize where
   layout := {
+    -- We reuse `size_usize` and `align_usize` because `usize` and `isize` are
+    -- guaranteed to have the same layout.
+    --
+    -- FIXME(https://github.com/rust-lang/reference/pull/2200): Cite this once
+    -- the Reference is updated.
     size := size_usize
     align := align_usize
     validAlignment := align_usize_valid
     sizeAligned := align_usize_divides_size
+  }
+
+-- Raw Pointers
+-- A raw pointer (`*const T` or `*mut T`) has the same layout as `usize`.
+
+-- A raw pointer itself is always `Sized`, regardless of whether `T` is `Sized`.
+instance {T : Type} {M : Aeneas.Std.Mutability} : core.marker.Sized (Aeneas.Std.RawPtr T M) := ⟨⟩
+
+-- For pointers to sized types (`*const T` where `T: Sized`), the layout is
+-- exactly the same as `usize`.
+@[simp]
+instance {T : Type} [core.marker.Sized T] {M : Aeneas.Std.Mutability} : TypeLayout (Aeneas.Std.RawPtr T M) where
+  layout := {
+    size := size_usize
+    align := align_usize
+    validAlignment := align_usize_valid
+    sizeAligned := align_usize_divides_size
+  }
+
+-- For pointers to unsized types (`*const T` where `T` is not `Sized`), the
+-- Rust reference guarantees that the size and alignment are at least those of 
+-- a pointer to a sized type.
+--
+-- FIXME(https://github.com/rust-lang/reference/pull/2201): Cite the Reference
+-- once it is updated.
+
+opaque size_raw_ptr_unsized : Nat
+opaque align_raw_ptr_unsized : Nat
+@[simp] axiom align_raw_ptr_unsized_valid : Alignment align_raw_ptr_unsized
+@[simp] axiom align_raw_ptr_unsized_divides_size : align_raw_ptr_unsized ∣ size_raw_ptr_unsized
+
+@[simp] axiom size_raw_ptr_unsized_ge : size_raw_ptr_unsized ≥ size_usize
+@[simp] axiom align_raw_ptr_unsized_ge : align_raw_ptr_unsized ≥ align_usize
+
+-- Fallback layout for raw pointers (applies when `T` is not known to be `Sized`).
+@[simp]
+instance (priority := low) {T : Type} {M : Aeneas.Std.Mutability} : TypeLayout (Aeneas.Std.RawPtr T M) where
+  layout := {
+    size := size_raw_ptr_unsized
+    align := align_raw_ptr_unsized
+    validAlignment := align_raw_ptr_unsized_valid
+    sizeAligned := align_raw_ptr_unsized_divides_size
   }
 
 /--

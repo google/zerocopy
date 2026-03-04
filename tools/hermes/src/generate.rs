@@ -243,7 +243,7 @@ struct ArgInfo {
 /// # Output Format
 /// ```lean
 /// theorem foo_spec (args...) (h_req : requires) :
-///   Hermes.SpecificationHolds (α := ResultType) (foo args...)
+///   Aeneas.Std.WP.spec (foo args...)
 ///     (fun result =>
 ///       let old_mut_arg := mut_arg
 ///       let (ret_val, new_mut_arg) := result
@@ -351,10 +351,31 @@ fn generate_function(
     builder.push_mapped("spec", &fn_span, source_file, MappingKind::Synthetic);
     builder.push_str(args_suffix.as_str());
 
-    let has_requires = !block.requires.is_empty();
+    let mut prop_requires = Vec::new();
+    let mut instance_requires = Vec::new();
+    for clause in &block.requires {
+        let first_line_trimmed = clause.lines.first().map(|l| l.content.trim_start()).unwrap_or("");
+        if first_line_trimmed.starts_with('[') {
+            instance_requires.push(clause);
+        } else {
+            prop_requires.push(clause);
+        }
+    }
+
+    for clause in instance_requires {
+        builder.push(' ');
+        for (j, line) in clause.lines.iter().enumerate() {
+            if j > 0 {
+                builder.push('\n');
+            }
+            builder.push_spanned(&line.content, line, source_file);
+        }
+    }
+
+    let has_requires = !prop_requires.is_empty();
     if has_requires {
         builder.push_str("\n  (h_req : ");
-        for (i, clause) in block.requires.iter().enumerate() {
+        for (i, clause) in prop_requires.into_iter().enumerate() {
             if i > 0 {
                 builder.push_str(" ∧ \n");
             }
@@ -374,8 +395,7 @@ fn generate_function(
     builder.push_str(" :\n");
 
     // Result Spec
-    let ret_type = get_return_type_string(func, &impl_struct_name);
-    builder.push_str(&format!("  Hermes.SpecificationHolds (α := {}) ({})", ret_type, call_str));
+    builder.push_str(&format!("  Aeneas.Std.WP.spec ({})", call_str));
 
     let mut_args: Vec<&ArgInfo> = args.iter().filter(|a| a.is_mut_ref).collect();
     let has_muts = !mut_args.is_empty();
@@ -767,59 +787,6 @@ fn extract_args_metadata(
         .collect()
 }
 
-/// Computes the Lean output type string for a given Rust function signature.
-///
-/// If the function expects mutable reference arguments, the return type is transformed
-/// into a tuple containing the original return value (if any) and the new values of
-/// all mutable arguments (e.g., `fn foo(x: &mut u32) -> bool` becomes `Bool × Std.U32`).
-/// This function also substitutes concrete struct types in place of generic `Self` receivers
-/// because Aeneas's theorem goals utilize the explicit structure definitions rather than `Self`.
-fn get_return_type_string(
-    func: &FunctionItem<crate::parse::hkd::Safe>,
-    impl_struct_name: &Option<crate::parse::hkd::AstNode<syn::Type, crate::parse::hkd::Safe>>,
-) -> String {
-    use crate::parse::hkd::{SafeFnArg, SafeReturnType, SafeType};
-
-    let sig = func.sig();
-
-    let mut ret_types = Vec::new();
-
-    // 1. Original Return Type
-    let orig_ret = match &sig.output {
-        SafeReturnType::Default => "Unit".to_string(),
-        SafeReturnType::Type(ty) => map_type(ty),
-    };
-
-    if orig_ret != "Unit" && orig_ret != "MatchError" {
-        ret_types.push(orig_ret);
-    }
-
-    // 2. Mutable Arguments
-    for arg in &sig.inputs {
-        match arg {
-            SafeFnArg::Receiver { mutability: true, .. } => {
-                if let Some(t) = impl_struct_name {
-                    ret_types.push(map_type(&t.inner));
-                } else {
-                    ret_types.push("Self".to_string());
-                }
-            }
-            SafeFnArg::Typed { ty: SafeType::Reference { mutability: true, elem }, .. } => {
-                ret_types.push(map_type(elem));
-            }
-            _ => {}
-        }
-    }
-
-    if ret_types.is_empty() {
-        "Unit".to_string()
-    } else if ret_types.len() == 1 {
-        ret_types[0].clone()
-    } else {
-        ret_types.join(" × ")
-    }
-}
-
 /// Checks if the function returns `Unit` (or equivalent).
 fn is_unit_return(func: &FunctionItem<crate::parse::hkd::Safe>) -> bool {
     use crate::parse::hkd::SafeReturnType;
@@ -977,7 +944,7 @@ mod tests {
         let out = builder.buf;
 
         assert!(out.contains("theorem spec"));
-        assert!(out.contains("Hermes.SpecificationHolds (α := Unit) (foo) (fun _ => True)"));
+        assert!(out.contains("Aeneas.Std.WP.spec (foo) (fun _ => True)"));
         assert!(out.contains("sorry")); // Empty proof body defaults to sorry
     }
 
@@ -1018,7 +985,7 @@ mod tests {
 
         let theorem_idx = out.find("theorem spec (x : Std.U32)").expect("Theorem not found");
         let requires_idx = out.find("(h_req : (x.val > 0\n))").expect("Requires not found");
-        let return_type_idx = out.find("Hermes.SpecificationHolds").expect("Return type not found");
+        let return_type_idx = out.find("Aeneas.Std.WP.spec").expect("Return type not found");
 
         assert!(theorem_idx < requires_idx, "Theorem should come before requires");
         assert!(requires_idx < return_type_idx, "Requires should come before return type");
@@ -1041,7 +1008,7 @@ mod tests {
         let out = builder.buf;
 
         assert!(out.contains("axiom spec (p : (ConstRawPtr Std.U8)) :"));
-        assert!(out.contains("Hermes.SpecificationHolds (α := Unit) (ffi p)"));
+        assert!(out.contains("Aeneas.Std.WP.spec (ffi p)"));
         // No proof block for axioms
         assert!(!out.contains(":= by"));
     }
