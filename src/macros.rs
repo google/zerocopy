@@ -312,6 +312,19 @@ macro_rules! transmute {
 ///
 /// This macro can be invoked in `const` contexts only when `Src: Sized` and
 /// `Dst: Sized`.
+///
+/// # Code Generation
+///
+/// The below code generation benchmark exercises this routine on a
+/// destination type whose complex layout places complex requirements on the
+/// source:
+///
+/// - the source must begin an even memory address
+/// - the source has a minimum length of 4 bytes
+/// - the source has a total length divisible by 2
+///
+/// These conditions are all checked at compile time.
+#[doc = codegen_tabs!(format = "coco", bench = "transmute_ref")]
 #[macro_export]
 macro_rules! transmute_ref {
     ($e:expr) => {{
@@ -714,6 +727,20 @@ macro_rules! try_transmute {
 /// assert_eq!(dst.t.as_bytes(), [0, 1]);
 /// assert_eq!(dst.u, [false, true, false, true, false, true]);
 /// ```
+///
+/// # Code Generation
+///
+/// The below code generation benchmark exercises this routine on a
+/// destination type whose complex layout places complex requirements on the
+/// source:
+///
+/// - the source must begin an even memory address
+/// - the source has a minimum length of 4 bytes
+/// - the source has a total length divisible by 2
+/// - the source begins with the bytes `0xC0C0`
+///
+/// All except the final condition are checked at compile time.
+#[doc = codegen_tabs!(format = "coco", bench = "try_transmute_ref")]
 #[macro_export]
 macro_rules! try_transmute_ref {
     ($e:expr) => {{
