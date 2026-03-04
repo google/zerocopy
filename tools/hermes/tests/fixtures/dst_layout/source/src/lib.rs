@@ -33,6 +33,12 @@ pub const fn compute_size(layout: DstLayout, elems: usize) -> usize {
     }
 }
 
+/// ```hermes
+/// isSafe : 
+///   Nonempty (Hermes.ValueLayout Self) ∧
+///   (∀ (vl : Hermes.ValueLayout Self) (val : Self),
+///     (vl.layout val).align = inst.LAYOUT.align.val)
+/// ```
 pub unsafe trait KnownLayout {
     const LAYOUT: DstLayout;
     
@@ -41,6 +47,16 @@ pub unsafe trait KnownLayout {
     fn pointer_to_metadata(val: *const Self) -> usize;
 }
 
+/// ```hermes
+/// context
+///   noncomputable instance {T} [inst: KnownLayout T] [safe: Safe T inst] : Hermes.ValueLayout T :=
+///     Classical.choice safe.isSafe.left
+///
+/// ensures
+///   -- Note: we use `sorry` here because proving actual layout resolution
+///   -- logic is beyond the current scope of `dst_layout` minimal example.
+///   ret = Result.ok (Aeneas.Std.Usize.ofNatCore (Hermes.ValueLayout.layout val).size (by sorry))
+/// ```
 #[allow(unused_variables)]
 pub unsafe fn size_of_val<T: ?Sized + KnownLayout>(val: *const T) -> usize {
     compute_size(T::LAYOUT, T::pointer_to_metadata(val))

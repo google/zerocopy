@@ -189,7 +189,12 @@ pub enum SafeType {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SafeTypeParamBound {
-    Trait(SafeType),
+    Trait {
+        ty: SafeType,
+        /// Represents whether the bound is relaxed with a question mark (e.g.,
+        /// `?Sized`).
+        is_maybe: bool,
+    },
     Lifetime,
 }
 
@@ -197,9 +202,10 @@ impl Mirror for syn::TypeParamBound {
     type Image = SafeTypeParamBound;
     fn mirror(&self) -> Self::Image {
         match self {
-            syn::TypeParamBound::Trait(t) => SafeTypeParamBound::Trait(
-                syn::Type::Path(syn::TypePath { qself: None, path: t.path.clone() }).mirror(),
-            ),
+            syn::TypeParamBound::Trait(t) => SafeTypeParamBound::Trait {
+                ty: syn::Type::Path(syn::TypePath { qself: None, path: t.path.clone() }).mirror(),
+                is_maybe: matches!(t.modifier, syn::TraitBoundModifier::Maybe(_)),
+            },
             syn::TypeParamBound::Lifetime(_) => SafeTypeParamBound::Lifetime,
             _ => SafeTypeParamBound::Lifetime, // Fallback
         }
@@ -318,33 +324,36 @@ impl Mirror for syn::Signature {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SafeItemFn {
     pub sig: SafeSignature,
+    pub generics: SafeGenerics,
 }
 impl Mirror for syn::ItemFn {
     type Image = SafeItemFn;
     fn mirror(&self) -> Self::Image {
-        SafeItemFn { sig: self.sig.mirror() }
+        SafeItemFn { sig: self.sig.mirror(), generics: self.sig.generics.mirror() }
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SafeImplItemFn {
     pub sig: SafeSignature,
+    pub generics: SafeGenerics,
 }
 impl Mirror for syn::ImplItemFn {
     type Image = SafeImplItemFn;
     fn mirror(&self) -> Self::Image {
-        SafeImplItemFn { sig: self.sig.mirror() }
+        SafeImplItemFn { sig: self.sig.mirror(), generics: self.sig.generics.mirror() }
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SafeTraitItemFn {
     pub sig: SafeSignature,
+    pub generics: SafeGenerics,
 }
 impl Mirror for syn::TraitItemFn {
     type Image = SafeTraitItemFn;
     fn mirror(&self) -> Self::Image {
-        SafeTraitItemFn { sig: self.sig.mirror() }
+        SafeTraitItemFn { sig: self.sig.mirror(), generics: self.sig.generics.mirror() }
     }
 }
 
