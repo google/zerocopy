@@ -1,0 +1,10 @@
+description = """
+Minimal reproduction of KnownLayout bounding DstLayout's attributes.
+"""
+
+[test]
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
+
+[verification]
+lean_external_files = [ "source/src/FunsExternal.lean" ]

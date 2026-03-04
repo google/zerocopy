@@ -1,7 +1,7 @@
 
 #[cfg(target_os = "windows")]
 /// @spec
-/// ensures result = 42
+/// ensures ret = 42
 /// ```lean, hermes
 /// proof
 ///   sorry
@@ -10,5 +10,5 @@ pub fn windows_only() -> u32 { 42 }
 
 #[cfg(target_os = "linux")]
 /// @spec
-/// ensures result = 100
+/// ensures ret = 100
 pub fn linux_only() -> u32 { 100 }

@@ -19,10 +19,10 @@ fn collision_args(result: u32, old_result: u32, ret: u32) -> u32 {
 
 /// ```hermes
 /// context
-/// requires result > 0 -- 'result' as argument name vs binder
+/// requires ret > 0 -- 'ret' as argument name vs binder
 /// ensures True
 /// ```
-unsafe fn collision_spec(result: u32) {
+unsafe fn collision_spec(ret: u32) {
 }
 
 /// ```hermes
@@ -30,7 +30,7 @@ unsafe fn collision_spec(result: u32) {
 /// -- Multiline complex spec
 /// requires x > 0
 /// requires x < 100#u32
-/// ensures result = ()
+/// ensures ret = ()
 /// ```
 unsafe fn complex_spec(x: u32) {
 }

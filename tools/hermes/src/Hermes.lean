@@ -77,9 +77,27 @@ theorem one_divides (n : Nat) : 1 ∣ n := ⟨n, by omega⟩
 namespace core
 namespace marker
 /--
-  A stub for the `Sized` trait. In the future, this should either hook into
-  exactly what Aeneas generates for `core::marker::Sized`, or Aeneas should be
-  configured to rely on this definition.
+  A stub for the `Sized` trait.
+  
+  Currently, `Sized` is implemented as a Lean `class` to leverage Lean's
+  automatic typeclass resolution for computing memory layouts. However, this is
+  a temporary workaround. Aeneas translates Rust traits into explicit dictionary
+  `structure`s rather than Lean typeclasses to preserve the deterministic,
+  single-implementation coherence of Rust's trait resolution.
+  
+  Because of this mismatch, Hermes cannot currently generate valid theorem
+  signatures for Rust functions that use trait bounds (the generated Lean
+  functions expect explicit dictionary arguments that Hermes's typeclass-based
+  approach does not supply).
+  
+  Once Aeneas is updated to emit marker traits like `Sized` as explicit
+  dictionaries, this `class` should be removed. Hermes will then accept the
+  Aeneas-generated trait dictionaries in its theorems to guarantee soundness,
+  while keeping internal mathematical layout proofs (like `TypeLayout`) as
+  Lean `class`es to retain automated proof synthesis.
+
+  FIXME(https://github.com/AeneasVerif/aeneas/issues/821): Remove this and
+  replace it with the Aeneas-generated trait dictionary once supported.
 -/
 class Sized (α : Type)
 

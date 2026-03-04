@@ -1,5 +1,5 @@
 /// ```hermes
-/// ensures result.val = 0
+/// ensures ret.val = 0
 /// proof
 ///   unfold get_size_of_empty_tuple
 ///   simp
@@ -9,7 +9,7 @@ pub fn get_size_of_empty_tuple() -> usize {
 }
 
 /// ```hermes
-/// ensures result.val = 1
+/// ensures ret.val = 1
 /// proof
 ///   unfold get_align_of_empty_tuple
 ///   simp
