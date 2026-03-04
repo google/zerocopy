@@ -1194,11 +1194,11 @@ mod tests {
         generate_type(&ty_item, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("instance {T} [Copy T] : Hermes.IsValid (Bound T) where"));
+        assert!(out.contains("instance {T} (CopyInst : Copy T) : Hermes.IsValid (Bound T) where"));
         // Matches Aeneas style: no bounds in instance context usually, unless required for the type itself?
         // Wait, for IsValid, we might need bounds if the invariant depends on them.
         // But in this test case logic, we ARE generating them now.
-        assert!(out.contains("[Copy T]"));
+        assert!(out.contains("(CopyInst : Copy T)"));
     }
 
     #[test]
@@ -1213,7 +1213,7 @@ mod tests {
         generate_type(&ty_item, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("instance {T} [Clone T] : Hermes.IsValid (Inline T) where"));
+        assert!(out.contains("instance {T} (CloneInst : Clone T) : Hermes.IsValid (Inline T) where"));
     }
 
     #[test]
@@ -1226,7 +1226,7 @@ mod tests {
 
         assert!(out.contains("namespace Identifiable"));
         // Matches Aeneas style: Self is first arg to trait class
-        assert!(out.contains("class Safe (Self : Type) [Identifiable Self] : Prop where"));
+        assert!(out.contains("class Safe (Self : Type) (inst : Identifiable Self) : Prop where"));
         assert!(out.contains("isSafe :"));
         assert!(out.contains("self.id > 0"));
     }
@@ -1240,7 +1240,7 @@ mod tests {
         let out = builder.buf;
 
         // Check implicit binders and app arguments
-        assert!(out.contains("class Safe (Self : Type) {T} [Converter Self T] : Prop where"));
+        assert!(out.contains("class Safe (Self : Type) {T} (inst : Converter Self T) : Prop where"));
     }
 
     #[test]
@@ -1251,7 +1251,7 @@ mod tests {
         generate_trait(&item.mirror(), &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("class Safe (Self : Type) {N} [Array Self N] : Prop where"));
+        assert!(out.contains("class Safe (Self : Type) {N} (inst : Array Self N) : Prop where"));
     }
 
     #[test]
