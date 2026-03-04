@@ -256,13 +256,22 @@ fn generate_function(
     builder: &mut LeanBuilder,
     source_file: &std::path::Path,
 ) {
-    let (fn_name, fn_span, impl_struct_name) = match func {
-        FunctionItem::Free(n) => (n.inner.sig.ident.clone(), n.inner.sig.name_span, None),
-        FunctionItem::Impl(n, opt_struct) => {
-            (n.inner.sig.ident.clone(), n.inner.sig.name_span, opt_struct.clone())
+    let (fn_name, fn_span, impl_struct_name, generics) = match func {
+        FunctionItem::Free(n) => {
+            (n.inner.sig.ident.clone(), n.inner.sig.name_span, None, &n.inner.generics)
         }
-        FunctionItem::Trait(n) => (n.inner.sig.ident.clone(), n.inner.sig.name_span, None),
+        FunctionItem::Impl(n, opt_struct) => (
+            n.inner.sig.ident.clone(),
+            n.inner.sig.name_span,
+            opt_struct.clone(),
+            &n.inner.generics,
+        ),
+        FunctionItem::Trait(n) => {
+            (n.inner.sig.ident.clone(), n.inner.sig.name_span, None, &n.inner.generics)
+        }
     };
+
+    let (generic_params, _, generic_bounds, dict_args) = extract_generic_params(generics);
 
     let args = extract_args_metadata(func, &impl_struct_name);
     let has_return_value = !is_unit_return(func);
@@ -319,11 +328,28 @@ fn generate_function(
         if base_name.is_empty() { fn_name.clone() } else { format!("{}_{}", base_name, fn_name) };
 
     let call_str = std::iter::once(call_name)
+        .chain(dict_args.iter().cloned())
         .chain(args.iter().map(|a| a.name.clone()))
         .collect::<Vec<_>>()
         .join(" ");
 
     // 5. Build the Precondition Binder
+
+    let instance_params = if !generic_params.is_empty() || !generic_bounds.is_empty() {
+        let params = if !generic_params.is_empty() {
+            format!("{{{}}}", generic_params.join(" "))
+        } else {
+            String::new()
+        };
+        let bounds = if !generic_bounds.is_empty() {
+            format!(" {}", generic_bounds.join(" "))
+        } else {
+            String::new()
+        };
+        format!(" {}{}", params, bounds)
+    } else {
+        String::new()
+    };
 
     // Signature
     let args_suffix = if !args.is_empty() {
@@ -349,6 +375,7 @@ fn generate_function(
     }
     builder.push(' ');
     builder.push_mapped("spec", &fn_span, source_file, MappingKind::Synthetic);
+    builder.push_str(&instance_params);
     builder.push_str(args_suffix.as_str());
 
     let mut prop_requires = Vec::new();
@@ -532,7 +559,7 @@ fn generate_type(
         crate::parse::TypeItem::Enum(AstNode { inner: e }) => &e.generics,
         crate::parse::TypeItem::Union(AstNode { inner: u }) => &u.generics,
     };
-    let (generic_params, generic_args, generic_bounds) = extract_generic_params(generics);
+    let (generic_params, generic_args, generic_bounds, _) = extract_generic_params(generics);
 
     builder.push_str(&format!("namespace {}\n\n", type_name));
 
@@ -595,7 +622,7 @@ fn generate_trait(
     source_file: &std::path::Path,
 ) {
     let trait_name = item.ident.clone();
-    let (generic_params, generic_args, generic_bounds) = extract_generic_params(&item.generics);
+    let (generic_params, generic_args, generic_bounds, _) = extract_generic_params(&item.generics);
 
     builder.push_str(&format!("namespace {}\n\n", trait_name));
 
@@ -629,8 +656,13 @@ fn generate_trait(
         format!("{trait_name} Self")
     };
 
-    builder
-        .push_str(&format!("class Safe (Self : Type){params_decl} [{trait_app}] : Prop where\n"));
+    // We pass the trait instance as an explicit dictionary argument (`inst`)
+    // rather than relying on typeclass resolution (`[{trait_app}]`). This
+    // mirrors Aeneas's lowering strategy, which also lowers trait bounds to
+    // explicit dictionary arguments.
+    builder.push_str(&format!(
+        "class Safe (Self : Type){params_decl} (inst : {trait_app}) : Prop where\n"
+    ));
     if block.is_safe.is_empty() {
         builder.push_str("  isSafe : True\n");
     } else {
@@ -653,11 +685,47 @@ fn generate_trait(
 /// Returns a tuple: (list of param names, list of args, list of bounds).
 fn extract_generic_params(
     generics: &crate::parse::hkd::SafeGenerics,
-) -> (Vec<String>, Vec<String>, Vec<String>) {
+) -> (Vec<String>, Vec<String>, Vec<String>, Vec<String>) {
     use crate::parse::hkd::{SafeGenericParam, SafeTypeParamBound, SafeWherePredicate};
     let mut params = Vec::new();
     let mut args = Vec::new();
     let mut bounds = Vec::new();
+    let mut dict_args = Vec::new();
+
+    let mut process_bound = |bound: &SafeTypeParamBound, ty_str: &str| {
+        if let SafeTypeParamBound::Trait { ty: trait_ty, is_maybe } = bound {
+            if *is_maybe {
+                // We ignore `?Trait` bounds (such as `?Sized`) because they are
+                // relaxed constraints rather than affirmative requirements.
+                return;
+            }
+
+            let mapped_trait = map_type(trait_ty);
+            // The `Sized` trait requires special handling because Aeneas
+            // currently ignores it entirely. Since Aeneas does not generate an
+            // explicit dictionary argument for `Sized`, we cannot pass one.
+            // Instead, we emit it as a typeclass `[Hermes.core.marker.Sized T]`
+            // which resolves implicitly.
+            if mapped_trait == "core.marker.Sized" || mapped_trait == "Sized" {
+                bounds.push(format!("[Hermes.core.marker.Sized {}]", ty_str));
+            } else {
+                // We generate an explicit dictionary argument for each trait
+                // bound rather than relying on typeclass resolution. This
+                // matches Aeneas's behavior, which expects explicit dictionary
+                // arguments for trait bounds. We construct the identifier by
+                // appending `Inst` to the base trait name, mimicking Aeneas's
+                // `Clause0Inst` and `TraitInst` naming patterns.
+                let dict_name = if mapped_trait.contains('.') {
+                    mapped_trait.split('.').last().unwrap().to_string()
+                } else {
+                    mapped_trait.clone()
+                };
+                let dict_ident = format!("{}Inst", dict_name);
+                bounds.push(format!("({} : {} {})", dict_ident, mapped_trait, ty_str));
+                dict_args.push(dict_ident);
+            }
+        }
+    };
 
     for param in &generics.params {
         match param {
@@ -665,9 +733,7 @@ fn extract_generic_params(
                 params.push(name.clone());
                 args.push(name.clone());
                 for bound in p_bounds {
-                    if let SafeTypeParamBound::Trait(ty) = bound {
-                        bounds.push(format!("[{} {}]", map_type(ty), name));
-                    }
+                    process_bound(bound, name);
                 }
             }
             SafeGenericParam::Const(c) => {
@@ -682,14 +748,12 @@ fn extract_generic_params(
         if let SafeWherePredicate::Type { bounded_ty, bounds: p_bounds } = pred {
             let ty_str = map_type(bounded_ty);
             for bound in p_bounds {
-                if let SafeTypeParamBound::Trait(trait_ty) = bound {
-                    bounds.push(format!("[{} {}]", map_type(trait_ty), ty_str));
-                }
+                process_bound(bound, &ty_str);
             }
         }
     }
 
-    (params, args, bounds)
+    (params, args, bounds, dict_args)
 }
 
 /// Recursively maps Rust types to Lean types.
