@@ -1,6 +1,6 @@
 
 /// @spec
-/// ensures result = 42
+/// ensures ret = 42
 /// decreases by sorry
 /// ```lean, hermes
 /// proof

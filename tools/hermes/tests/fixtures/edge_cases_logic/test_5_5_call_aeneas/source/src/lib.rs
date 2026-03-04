@@ -1,5 +1,5 @@
 /// @spec
-/// ensures result = x + 1
+/// ensures ret = x + 1
 /// ```lean, hermes
 /// proof
 ///   sorry

@@ -7,9 +7,9 @@
 pub fn old<T>(x: T) -> T { x }
 
 // 1. Legacy/Result Shadowing
-// 'result' is often used by Aeneas as the return variable name in specs.
-pub fn result_shadow(result: u32) -> u32 {
-    result
+// 'ret' is often used by Aeneas as the return variable name in specs.
+pub fn result_shadow(ret: u32) -> u32 {
+    ret
 }
 
 // 2. Old/New Shadowing

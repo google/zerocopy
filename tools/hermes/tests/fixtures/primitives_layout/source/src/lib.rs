@@ -1,7 +1,7 @@
 #![crate_type = "lib"]
 
 /// ```hermes
-/// ensures result.1.val = 1 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 1 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_u8
 ///   simp
@@ -11,7 +11,7 @@ pub fn test_u8() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 1 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 1 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_i8
 ///   simp
@@ -21,7 +21,7 @@ pub fn test_i8() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 1 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 1 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_bool
 ///   simp
@@ -31,7 +31,7 @@ pub fn test_bool() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 4 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 4 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_char
 ///   simp
@@ -41,7 +41,7 @@ pub fn test_char() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 2 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 2 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_u16
 ///   simp
@@ -51,7 +51,7 @@ pub fn test_u16() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 2 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 2 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_i16
 ///   simp
@@ -61,7 +61,7 @@ pub fn test_i16() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 4 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 4 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_u32
 ///   simp
@@ -71,7 +71,7 @@ pub fn test_u32() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 4 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 4 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_i32
 ///   simp
@@ -81,7 +81,7 @@ pub fn test_i32() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 8 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 8 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_u64
 ///   simp
@@ -91,7 +91,7 @@ pub fn test_u64() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 8 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 8 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_i64
 ///   simp
@@ -101,7 +101,7 @@ pub fn test_i64() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 16 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 16 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_u128
 ///   simp
@@ -111,7 +111,7 @@ pub fn test_u128() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures result.1.val = 16 /\ Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures ret.1.val = 16 /\ Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_i128
 ///   simp
@@ -121,7 +121,7 @@ pub fn test_i128() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_usize
 ///   simp
@@ -131,7 +131,7 @@ pub fn test_usize() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures Hermes.Alignment result.2.val /\ result.2.val ∣ result.1.val
+/// ensures Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_isize
 ///   simp

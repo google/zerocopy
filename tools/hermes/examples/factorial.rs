@@ -1,7 +1,7 @@
 /// Computes n!
 ///
 /// ```lean, hermes, spec
-/// ensures result > 0
+/// ensures ret > 0
 /// proof
 ///   -- We use `sorry` here because Aeneas's generated standard library functions
 ///   -- currently cause infinite recursion during simplificaton. Testing the Hermes

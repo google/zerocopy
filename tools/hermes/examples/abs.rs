@@ -2,9 +2,9 @@
 ///
 /// ```lean, hermes, spec
 /// requires x.val > -2147483648
-/// ensures result >= 0
-/// ensures x >= 0 -> result = x
-/// ensures x < 0 -> result = -x
+/// ensures ret >= 0
+/// ensures x >= 0 -> ret = x
+/// ensures x < 0 -> ret = -x
 /// proof
 ///   unfold abs
 ///   split

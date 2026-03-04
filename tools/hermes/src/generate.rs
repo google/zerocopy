@@ -244,9 +244,9 @@ struct ArgInfo {
 /// ```lean
 /// theorem foo_spec (args...) (h_req : requires) :
 ///   Aeneas.Std.WP.spec (foo args...)
-///     (fun result =>
-///       let old_mut_arg := mut_arg
-///       let (ret_val, new_mut_arg) := result
+///     (fun ret =>
+///       let (ret, new_mut_arg) := ret
+///       ret = 5 && new_mut_arg = 6
 ///       ensures) :=
 ///   by ...
 /// ```
@@ -265,7 +265,7 @@ fn generate_function(
     };
 
     let args = extract_args_metadata(func, &impl_struct_name);
-    let ret_is_unit = is_unit_return(func);
+    let has_return_value = !is_unit_return(func);
 
     // Namespace wrapping
     builder.push_str(&format!("namespace {}\n\n", fn_name));
@@ -398,33 +398,57 @@ fn generate_function(
     builder.push_str(&format!("  Aeneas.Std.WP.spec ({})", call_str));
 
     let mut_args: Vec<&ArgInfo> = args.iter().filter(|a| a.is_mut_ref).collect();
-    let has_muts = !mut_args.is_empty();
+    let has_mut_args = !mut_args.is_empty();
     let has_ensures = !block.ensures.is_empty();
 
-    if has_ensures || has_muts {
-        builder.push_str(" (fun result =>");
+    if has_ensures || has_mut_args {
+        builder.push_str(" (fun ret =>");
 
-        if has_muts {
+        if has_mut_args {
             builder.push('\n');
 
-            let destructure_lhs = if ret_is_unit && mut_args.len() == 1 {
-                format!("{}'", mut_args[0].name)
-            } else {
-                let vars =
-                    mut_args.iter().map(|a| format!("{}'", a.name)).collect::<Vec<_>>().join(", ");
-                if ret_is_unit {
-                    format!("({})", vars)
+            // Construct the destructuring LHS for `let ... := result`
+            // Example:
+            //   let (ret, stack') := result
+            //   ret = ...
+            //
+            // Note that if the method returns `()` (the unit type), we bind it to `ret`
+            // as well, but Lean requires `let () := ...` to destructure a unit type properly
+            // if it's mixed with other bindings, so we handle `()` specially.
+            // Actually, Hermes currently generates `let ret := ()` for unit returns to keep the namespace consistent.
+            // Wait, looking at the code below, it generates `let ret := ()` on a separate line if there are mutable args but no return value.
+
+            let vars =
+                mut_args.iter().map(|a| format!("{}'", a.name)).collect::<Vec<_>>().join(", ");
+
+            let destructure_lhs = if has_return_value {
+                if has_mut_args {
+                    format!("(ret, {})", vars)
                 } else {
-                    format!("(result, {})", vars)
+                    "ret".to_string()
+                }
+            } else {
+                if mut_args.len() == 1 {
+                    format!("{}'", mut_args[0].name)
+                } else {
+                    format!("({})", vars)
                 }
             };
 
-            builder.push_str(&format!("    let {} := result\n", destructure_lhs));
-
-            if ret_is_unit {
-                builder.push_str("    let result := ()\n");
+            if has_mut_args || destructure_lhs != "ret" {
+                builder.push_str(&format!("    let {} := ret\n", destructure_lhs));
+                if !has_return_value && has_mut_args {
+                    // Explicitly bind the implicit return variable to unit so users can still
+                    // reference `ret` in their `ensures` clause when returning void.
+                    builder.push_str("    let ret := ()\n");
+                }
+            } else if !has_return_value {
+                // No mut args, no return value
+                builder.push_str("    let ret := ()\n");
+            } else {
+                // No mut args, has return value
+                builder.push_str("    let ret := ret\n");
             }
-
             builder.push_str("    ");
         } else {
             builder.push(' ');
@@ -997,7 +1021,7 @@ mod tests {
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
         let block = mk_block(
             vec![],
-            vec![vec!["result = .ok ()"]],
+            vec![vec!["ret = .ok ()"]],
             None,
             Some(vec![]), // Axiom
             vec![],
@@ -1177,9 +1201,11 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        // Assert bindings logic
-        assert!(out.contains("let x' := result"));
-        assert!(out.contains("let result := ()"));
+        // Should generate:
+        // let x' := ret
+        // let ret := ()
+        assert!(out.contains("let x' := ret"));
+        assert!(out.contains("let ret := ()"));
         assert!(!out.contains("let old_x"));
         assert!(!out.contains("let x := x_new"));
     }
@@ -1189,14 +1215,15 @@ mod tests {
         // fn swap_ret(x: &mut u32) -> bool
         let item: syn::ItemFn = parse_quote! { fn swap_ret(x: &mut u32) -> bool { true } };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let block = mk_block(vec![], vec![vec!["result = true"]], Some(vec![]), None, vec![]);
+        let block = mk_block(vec![], vec![vec!["ret = .ok ()"]], Some(vec![]), None, vec![]);
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        // Value return: (res, x')
-        assert!(out.contains("let (result, x') := result"));
+        // Should generate:
+        // let (ret, x') := ret
+        assert!(out.contains("let (ret, x') := ret"));
         assert!(!out.contains("let old_x := x"));
         assert!(!out.contains("let x := x_new"));
     }
@@ -1212,9 +1239,11 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        // Unit return, 2 muts: tuple of muts
-        assert!(out.contains("let (a', b') := result"));
-        assert!(out.contains("let result := ()"));
+        // Should generate:
+        // let (a', b') := ret
+        // let ret := ()
+        assert!(out.contains("let (a', b') := ret"));
+        assert!(out.contains("let ret := ()"));
         assert!(!out.contains("let old_a"));
     }
 
@@ -1229,8 +1258,13 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("let self' := result"));
-        assert!(!out.contains("let old_self := self"));
+        // Should generate:
+        // let self' := ret
+        assert!(out.contains("let self' := ret"));
+        assert!(!out.contains("let self := self_new"));
+
+        // Should just be a normal argument
+        assert!(out.contains("(self : Self)"));
     }
 
     #[test]
@@ -1244,7 +1278,7 @@ mod tests {
         let out = builder.buf;
 
         // Should behave like implicit unit
-        assert!(out.contains("let result := ()"));
+        assert!(out.contains("let ret := ()"));
     }
 
     #[test]
@@ -1305,7 +1339,7 @@ mod tests {
         let out = builder.buf;
 
         // 'a' handling
-        assert!(out.contains("let a' := result"));
+        assert!(out.contains("let a' := ret"));
         assert!(!out.contains("let old_a := a"));
 
         // 'b' handling (should NOT be treated as mutable output)
