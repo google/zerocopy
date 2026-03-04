@@ -68,6 +68,12 @@ instance (priority := low) defaultIsValid {α : Type} : IsValid α where
 def Alignment (n : Nat) : Prop :=
   0 < n ∧ ∃ (k : Nat), n = 2^k
 
+@[simp]
+theorem alignment_one : Alignment 1 := ⟨by decide, 0, by rfl⟩
+
+@[simp]
+theorem one_divides (n : Nat) : 1 ∣ n := ⟨n, by omega⟩
+
 namespace core
 namespace marker
 /--
@@ -166,6 +172,95 @@ instance : TypeLayout Unit where
     align := 1
     validAlignment := ⟨by decide, 0, by rfl⟩
     sizeAligned := by decide
+  }
+
+-- 1-Byte Primitives
+
+@[simp]
+instance : TypeLayout Aeneas.Std.U8 where
+  layout := {
+    size := 1
+    align := 1
+    validAlignment := ⟨by decide, 0, by rfl⟩
+    sizeAligned := by decide
+  }
+
+@[simp]
+instance : TypeLayout Aeneas.Std.I8 where
+  layout := {
+    size := 1
+    align := 1
+    validAlignment := ⟨by decide, 0, by rfl⟩
+    sizeAligned := by decide
+  }
+
+@[simp]
+instance : TypeLayout Bool where
+  layout := {
+    size := 1
+    align := 1
+    validAlignment := ⟨by decide, 0, by rfl⟩
+    sizeAligned := by decide
+  }
+
+-- Multi-Byte Primitives
+-- For multi-byte primitives (and `char`), the alignment is platform-dependent
+-- but guaranteed to be a valid alignment that divides the size.
+
+macro "declare_scalar_layout" tyName:ident ty:term "," size:num : command => do
+  let alignName := mkIdent $ Name.mkSimple s!"align_{tyName.getId.getString!}"
+  let alignValidName := mkIdent $ Name.mkSimple s!"align_{tyName.getId.getString!}_valid"
+  let alignDividesName := mkIdent $ Name.mkSimple s!"align_{tyName.getId.getString!}_divides_size"
+  `(
+    opaque $alignName : Nat
+    @[simp] axiom $alignValidName : Alignment $alignName
+    @[simp] axiom $alignDividesName : $alignName ∣ $size
+
+    @[simp]
+    instance : TypeLayout $ty where
+      layout := {
+        size := $size
+        align := $alignName
+        validAlignment := $alignValidName
+        sizeAligned := $alignDividesName
+      }
+  )
+
+declare_scalar_layout u16 Aeneas.Std.U16, 2
+declare_scalar_layout i16 Aeneas.Std.I16, 2
+declare_scalar_layout u32 Aeneas.Std.U32, 4
+declare_scalar_layout i32 Aeneas.Std.I32, 4
+declare_scalar_layout u64 Aeneas.Std.U64, 8
+declare_scalar_layout i64 Aeneas.Std.I64, 8
+declare_scalar_layout u128 Aeneas.Std.U128, 16
+declare_scalar_layout i128 Aeneas.Std.I128, 16
+declare_scalar_layout char Char, 4
+
+-- Architecture-Dependent Primitives
+-- For `usize` and `isize`, both the size and alignment are platform-dependent.
+-- However, we know they must have a valid alignment that divides their size.
+
+opaque size_usize : Nat
+opaque align_usize : Nat
+@[simp] axiom align_usize_valid : Alignment align_usize
+@[simp] axiom align_usize_divides_size : align_usize ∣ size_usize
+
+@[simp]
+instance : TypeLayout Usize where
+  layout := {
+    size := size_usize
+    align := align_usize
+    validAlignment := align_usize_valid
+    sizeAligned := align_usize_divides_size
+  }
+
+@[simp]
+instance : TypeLayout Isize where
+  layout := {
+    size := size_usize
+    align := align_usize
+    validAlignment := align_usize_valid
+    sizeAligned := align_usize_divides_size
   }
 
 /--
