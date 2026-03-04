@@ -93,7 +93,7 @@ namespace marker
   Once Aeneas is updated to emit marker traits like `Sized` as explicit
   dictionaries, this `class` should be removed. Hermes will then accept the
   Aeneas-generated trait dictionaries in its theorems to guarantee soundness,
-  while keeping internal mathematical layout proofs (like `TypeLayout`) as
+  while keeping internal mathematical layout proofs (like `SizedTypeLayout`) as
   Lean `class`es to retain automated proof synthesis.
 
   FIXME(https://github.com/AeneasVerif/aeneas/issues/821): Remove this and
@@ -181,13 +181,13 @@ class ValueLayout (α : Type) where
   compile time and is identical for all instances of the type. This class
   provides that static layout property.
 -/
-class TypeLayout (α : Type) [core.marker.Sized α] where
+class SizedTypeLayout (α : Type) [core.marker.Sized α] where
   layout : LayoutInfo
 
 -- Provides a blanket implementation of `ValueLayout` for any type that has a
--- static `TypeLayout`. Because statically sized types share the same layout for
+-- static `SizedTypeLayout`. Because statically sized types share the same layout for
 -- all values, the instance value is ignored.
-instance {α : Type} [core.marker.Sized α] [tl : TypeLayout α] : ValueLayout α where
+instance {α : Type} [core.marker.Sized α] [tl : SizedTypeLayout α] : ValueLayout α where
   layout _ := tl.layout
 
 -- 5. Slice DSTs
@@ -202,7 +202,7 @@ structure SliceDstLayoutInfo extends AlignInfo where
 
 /--
   Provides the static slice DST layout properties for a given type.
-  This is analogous to `TypeLayout`, but for types that are `!Sized`
+  This is analogous to `SizedTypeLayout`, but for types that are `!Sized`
   and end in a slice.
 -/
 class SliceDstTypeLayout (α : Type) where
@@ -255,7 +255,7 @@ instance {α : Type} [SliceDstTypeLayout α] [ts : TrailingSlice α] [ReprC α] 
 /--
   Raw slices `[T]` are simply Slice DSTs with a trailing offset of 0.
 -/
-instance {T : Type} [core.marker.Sized T] [tl : TypeLayout T] : SliceDstTypeLayout (Aeneas.Std.Slice T) where
+instance {T : Type} [core.marker.Sized T] [tl : SizedTypeLayout T] : SliceDstTypeLayout (Aeneas.Std.Slice T) where
   layout := {
     trailingOffset := 0,
     elementSize := tl.layout.size,
@@ -275,7 +275,7 @@ instance {T : Type} : TrailingSlice (Aeneas.Std.Slice T) where
 instance {T : Type} : ReprC (Aeneas.Std.Slice T) := ⟨⟩
 
 @[simp]
-instance : TypeLayout Unit where
+instance : SizedTypeLayout Unit where
   layout := {
     size := 0
     align := 1
@@ -286,7 +286,7 @@ instance : TypeLayout Unit where
 -- 1-Byte Primitives
 
 @[simp]
-instance : TypeLayout Aeneas.Std.U8 where
+instance : SizedTypeLayout Aeneas.Std.U8 where
   layout := {
     size := 1
     align := 1
@@ -295,7 +295,7 @@ instance : TypeLayout Aeneas.Std.U8 where
   }
 
 @[simp]
-instance : TypeLayout Aeneas.Std.I8 where
+instance : SizedTypeLayout Aeneas.Std.I8 where
   layout := {
     size := 1
     align := 1
@@ -304,7 +304,7 @@ instance : TypeLayout Aeneas.Std.I8 where
   }
 
 @[simp]
-instance : TypeLayout Bool where
+instance : SizedTypeLayout Bool where
   layout := {
     size := 1
     align := 1
@@ -326,7 +326,7 @@ macro "declare_scalar_layout" tyName:ident ty:term "," size:num : command => do
     @[simp] axiom $alignDividesName : $alignName ∣ $size
 
     @[simp]
-    instance : TypeLayout $ty where
+    instance : SizedTypeLayout $ty where
       layout := {
         size := $size
         align := $alignName
@@ -355,7 +355,7 @@ opaque align_usize : Nat
 @[simp] axiom align_usize_divides_size : align_usize ∣ size_usize
 
 @[simp]
-instance : TypeLayout Usize where
+instance : SizedTypeLayout Usize where
   layout := {
     size := size_usize
     align := align_usize
@@ -364,7 +364,7 @@ instance : TypeLayout Usize where
   }
 
 @[simp]
-instance : TypeLayout Isize where
+instance : SizedTypeLayout Isize where
   layout := {
     -- We reuse `size_usize` and `align_usize` because `usize` and `isize` are
     -- guaranteed to have the same layout.
@@ -386,7 +386,7 @@ instance {T : Type} {M : Aeneas.Std.Mutability} : core.marker.Sized (Aeneas.Std.
 -- For pointers to sized types (`*const T` where `T: Sized`), the layout is
 -- exactly the same as `usize`.
 @[simp]
-instance {T : Type} [core.marker.Sized T] {M : Aeneas.Std.Mutability} : TypeLayout (Aeneas.Std.RawPtr T M) where
+instance {T : Type} [core.marker.Sized T] {M : Aeneas.Std.Mutability} : SizedTypeLayout (Aeneas.Std.RawPtr T M) where
   layout := {
     size := size_usize
     align := align_usize
@@ -411,7 +411,7 @@ opaque align_raw_ptr_unsized : Nat
 
 -- Fallback layout for raw pointers (applies when `T` is not known to be `Sized`).
 @[simp]
-instance (priority := low) {T : Type} {M : Aeneas.Std.Mutability} : TypeLayout (Aeneas.Std.RawPtr T M) where
+instance (priority := low) {T : Type} {M : Aeneas.Std.Mutability} : SizedTypeLayout (Aeneas.Std.RawPtr T M) where
   layout := {
     size := size_raw_ptr_unsized
     align := align_raw_ptr_unsized
@@ -422,19 +422,19 @@ instance (priority := low) {T : Type} {M : Aeneas.Std.Mutability} : TypeLayout (
 /--
   The specification for `core::mem::size_of`.
   This defines the expected behavior of `size_of`: it returns the static size
-  defined by the type's `TypeLayout`.
+  defined by the type's `SizedTypeLayout`.
 -/
 abbrev size_of_spec (size_of_fun : Type → Result Aeneas.Std.Usize) : Prop :=
-  ∀ (T : Type) [core.marker.Sized T] [tl : TypeLayout T],
+  ∀ (T : Type) [core.marker.Sized T] [tl : SizedTypeLayout T],
     size_of_fun T = Result.ok (Aeneas.Std.Usize.ofNatCore tl.layout.size (by sorry))
 
 /--
   The specification for `core::mem::align_of`.
   This defines the expected behavior of `align_of`: it returns the static
-  alignment defined by the type's `TypeLayout`.
+  alignment defined by the type's `SizedTypeLayout`.
 -/
 abbrev align_of_spec (align_of_fun : Type → Result Aeneas.Std.Usize) : Prop :=
-  ∀ (T : Type) [core.marker.Sized T] [tl : TypeLayout T],
+  ∀ (T : Type) [core.marker.Sized T] [tl : SizedTypeLayout T],
     align_of_fun T = Result.ok (Aeneas.Std.Usize.ofNatCore tl.layout.align (by sorry))
 
 /--

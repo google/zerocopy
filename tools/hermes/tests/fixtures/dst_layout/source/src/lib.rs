@@ -49,13 +49,13 @@ pub unsafe trait KnownLayout {
 
 /// ```hermes
 /// context
-///   noncomputable instance {T} [inst: KnownLayout T] [safe: Safe T inst] : Hermes.ValueLayout T :=
+///   noncomputable def value_layout_of_KnownLayout {T} (inst: KnownLayout T) (safe: KnownLayout.Safe T inst) : Hermes.ValueLayout T :=
 ///     Classical.choice safe.isSafe.left
 ///
 /// ensures
 ///   -- Note: we use `sorry` here because proving actual layout resolution
 ///   -- logic is beyond the current scope of `dst_layout` minimal example.
-///   ret = Result.ok (Aeneas.Std.Usize.ofNatCore (Hermes.ValueLayout.layout val).size (by sorry))
+///   ret = Aeneas.Std.Usize.ofNatCore (Hermes.SizedTypeLayout.layout (α := Aeneas.Std.U8)).size (by sorry)
 /// ```
 #[allow(unused_variables)]
 pub unsafe fn size_of_val<T: ?Sized + KnownLayout>(val: *const T) -> usize {

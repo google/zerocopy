@@ -49,8 +49,15 @@
     ·                   ╰── 
     ╰────
 
-[External Error] generated/MacroEdgeCasesMacroEdgeCases<HASH>/MacroEdgeCasesMacroEdgeCases<HASH>.lean: invalid binder annotation, type is not a class instance
-  MyTrait Self
+  ⚠ unused variable `self`
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedVariables
+  │ false`
+   ╭─[[PROJECT_ROOT]/src/lib.rs:2:18]
+ 1 │ /// ```hermes
+ 2 │ /// isSafe : ∀ (self : Self), True
+   ·                ──┬─
+   ·                  ╰── here
+ 3 │ /// ```
+   ╰────
 
-Note: Use the command `set_option checkBinderAnnotations false` to disable the check
-Error: Lean verification failed
