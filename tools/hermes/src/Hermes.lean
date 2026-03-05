@@ -324,6 +324,32 @@ class TrailingSlice (α : Type) where
 def roundUpToAlign (val align : Nat) : Nat :=
   ((val + align - 1) / align) * align
 
+/-- A theorem stating that rounding up always produces a value greater than or equal to the original value. -/
+theorem roundUpToAlign_ge (val align : Nat) (h : 0 < align) :
+  val ≤ roundUpToAlign val align := by
+  dsimp [roundUpToAlign]
+  have h1 : ((val + align - 1) / align) * align + (val + align - 1) % align = val + align - 1 := by
+    rw [Nat.mul_comm]
+    exact Nat.div_add_mod _ _
+  have h2 : (val + align - 1) % align < align := Nat.mod_lt _ h
+  omega
+
+/-- A theorem stating that if the resulting padded value is non-zero, it must be at least the alignment. -/
+theorem align_le_roundUpToAlign (val align : Nat) (h_val : 0 < val) (h_align : 0 < align) :
+  align ≤ roundUpToAlign val align := by
+  dsimp [roundUpToAlign]
+  have h_val_align : align ≤ val + align - 1 := by omega
+  have h_div_pos : 1 ≤ (val + align - 1) / align := Nat.div_pos h_val_align h_align
+  have h_mul : 1 * align ≤ ((val + align - 1) / align) * align := Nat.mul_le_mul_right align h_div_pos
+  omega
+
+
+
+
+
+
+
+
 /--
   Computes the exact mathematical size of a `repr(C)` Slice DST instance.
   
@@ -715,10 +741,21 @@ noncomputable instance {T : Type} [SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mut
   HasMetadata (Aeneas.Std.RawPtr T M) Usize where
   metadata := raw_slice_dst_ptr_metadata
 
+-- Formally equatable raw definition for rewrites
+theorem metadata_eq_raw_slice {T : Type} [SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability} (val : Aeneas.Std.RawPtr T M) :
+  Hermes.HasMetadata.metadata val = Hermes.raw_slice_dst_ptr_metadata val := rfl
+
 -- If a type is Sized, its referent size is fixed
 axiom referent_size_sized {T : Type} [core.marker.Sized T] [lay : HasStaticLayout T] {M : Aeneas.Std.Mutability}
   (p : Aeneas.Std.RawPtr T M) :
   (raw_ptr_referent p).size = lay.layout.size
+
+/--
+  Intrinsic structural boundary representing the Rust guarantee that an allocation bounded by `isize::MAX` 
+  cannot overflow `usize::MAX` during intermediate addition logic for padding calculations.
+-/
+axiom slice_dst_padding_no_overflow {T : Type} [ReprC T] [lay : SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability} (val : Aeneas.Std.RawPtr T M) :
+  lay.layout.trailingOffset + lay.layout.elementSize * (raw_slice_dst_ptr_metadata val).val + lay.layout.align.val ≤ Aeneas.Std.Usize.max
 
 /--
   A theorem stating the physical size of a `repr(C)` slice DST referent.
@@ -730,6 +767,8 @@ axiom referent_size_sized {T : Type} [core.marker.Sized T] [lay : HasStaticLayou
   implicitly guarantees that the computed mathematical size fits within physical
   memory limits.
 -/
+
+
 axiom referent_size_slice_dst {T : Type} [ReprC T] [lay : SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability}
   (alloc : Allocation) [md : HasMetadata (Aeneas.Std.RawPtr T M) Usize] 
   (p : Aeneas.Std.RawPtr T M) (h_fits : FitsInAllocation (raw_ptr_referent p) alloc) :
