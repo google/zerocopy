@@ -79,6 +79,11 @@ no-zerocopy-target-has-atomics-1-60-0 = "1.60.0"
 # versions, these types require the "simd-nightly" feature.
 no-zerocopy-aarch64-simd-1-59-0 = "1.59.0"
 
+# Include SIMD types from `core::arch::aarch64` on big endian targets. Prior to
+# 1.87.0 (#136831) the types were only correct on little endian and backed off
+# from stable in a breaking change.
+no-zerocopy-aarch64-simd-be-1-87-0 = "1.87.0"
+
 # Permit panicking in `const fn`s and calling `Vec::try_reserve`.
 no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = "1.57.0"
 
