@@ -1,5 +1,5 @@
   × failed to synthesize
-  │   Hermes.core.marker.Sized (Slice Std.U16)
+  │   Hermes.core.marker.Sized (Slice U16)
   │ 
   │ Hint: Additional diagnostic information may be available using the
   │ `set_option diagnostics true` command.

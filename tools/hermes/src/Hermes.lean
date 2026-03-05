@@ -8,18 +8,6 @@ open Lean Elab Command Term Meta
 -- TODO: Maybe turn thse off and propagate warnings?
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
-
-abbrev I8    := Aeneas.Std.I8
-abbrev I16   := Aeneas.Std.I16
-abbrev I32   := Aeneas.Std.I32
-abbrev I64   := Aeneas.Std.I64
-abbrev I128  := Aeneas.Std.I128
-abbrev U8    := Aeneas.Std.U8
-abbrev U16   := Aeneas.Std.U16
-abbrev U32   := Aeneas.Std.U32
-abbrev U64   := Aeneas.Std.U64
-abbrev U128  := Aeneas.Std.U128
-
 -- Helper instances for literals and operators
 instance {ty} : Neg (Aeneas.Std.IScalar ty) where
   neg x := ⟨-x.bv⟩
@@ -29,6 +17,9 @@ instance {ty} : OfNat (Aeneas.Std.IScalar ty) 0 where
 
 instance {ty} : OfNat (Aeneas.Std.UScalar ty) 0 where
   ofNat := Aeneas.Std.UScalar.ofNat 0 (by cases ty <;> first | decide | scalar_tac)
+
+/-- A shorthand macro to instantiate a Usize from a Nat literal and automatically prove its bounds. -/
+macro "sz" n:num : term => `(Usize.ofNatCore $n (by scalar_tac))
 
 namespace Hermes
 
@@ -65,11 +56,16 @@ instance (priority := low) defaultIsValid {α : Type} : IsValid α where
   This reflects Rust's requirement that all layout alignments are non-zero powers
   of two.
 -/
-def Alignment (n : Nat) : Prop :=
+def IsAlignment (n : Nat) : Prop :=
   0 < n ∧ ∃ (k : Nat), n = 2^k
 
+/-- A validated Rust alignment, bundling the value and its proof. -/
+structure Alignment where
+  val : Usize
+  isValid : IsAlignment val.val
+
 @[simp]
-theorem alignment_one : Alignment 1 := ⟨by decide, 0, by rfl⟩
+theorem alignment_one : IsAlignment 1 := ⟨by decide, 0, by rfl⟩
 
 @[simp]
 theorem one_divides (n : Nat) : 1 ∣ n := ⟨n, by omega⟩
@@ -93,7 +89,7 @@ namespace marker
   Once Aeneas is updated to emit marker traits like `Sized` as explicit
   dictionaries, this `class` should be removed. Hermes will then accept the
   Aeneas-generated trait dictionaries in its theorems to guarantee soundness,
-  while keeping internal mathematical layout proofs (like `SizedTypeLayout`) as
+  while keeping internal mathematical layout proofs (like `HasStaticLayout`) as
   Lean `class`es to retain automated proof synthesis.
 
   FIXME(https://github.com/AeneasVerif/aeneas/issues/821): Remove this and
@@ -149,64 +145,164 @@ end marker
 end core
 
 /--
-  The alignment properties of a layout.
-  This contains the alignment value itself, along with a proof that it is
-  a valid Rust alignment.
+  A mathematically idealized memory layout for a value.
+  
+  This layout is defined by a size and an alignment. It is unbounded by the
+  physical constraints of the machine, meaning that its size is not constrained
+  to fit within `Usize`. It is used to reason about the layout of values whose
+  sizes may exceed the maximum addressable memory.
 -/
-structure AlignInfo where
-  align : Nat
-  validAlignment : Alignment align
-
-/--
-  A valid memory layout for a value.
-  A Rust layout is defined by a size and an alignment. The alignment must be a
-  power of two, and size must be a multiple of alignment.
--/
-structure LayoutInfo extends AlignInfo where
+structure SpecLayout where
   size : Nat
-  sizeAligned : align ∣ size
+  align : Alignment
+  sizeAligned : align.val.val ∣ size
 
 /--
-  The layout for a dynamically sized value.
+  A valid physical memory layout for a value.
+  
+  This layout is defined by a size and an alignment. It is bounded by the
+  physical constraints of the machine, meaning that its size is guaranteed to
+  fit within the addressable memory bounds of `Usize`. It is used to represent
+  the layout of a value that actually exists in physical memory.
+-/
+structure Layout where
+  size : Usize
+  align : Alignment
+  sizeAligned : align.val.val ∣ size.val
+
+/--
+  A proof that a mathematical layout size is small enough to exist in physical
+  memory.
+  
+  This proof establishes that the size of a mathematical layout fits within
+  `Usize.max`, meaning the layout can describe a physical value.
+-/
+class FitsInUsize (lay : SpecLayout) : Prop where
+  fits : lay.size ≤ Usize.max
+
+/--
+  Converts a mathematical layout into a physical layout.
+  
+  This conversion requires a proof that the mathematical layout fits within
+  physical memory.
+-/
+def SpecLayout.toLayout (lay : SpecLayout) [FitsInUsize lay] : Layout :=
+  {
+    size := Usize.ofNatCore lay.size (by
+      have := FitsInUsize.fits (lay := lay)
+      scalar_tac),
+    align := lay.align,
+    sizeAligned := lay.sizeAligned
+  }
+
+/--
+  Converts a valid physical layout into its corresponding mathematical layout.
+
+  Because physical memory guarantees a layout's size easily fits within the
+  address space, we can inherently prove that the resulting mathematical `SpecLayout`
+  also fits in `Usize`.
+-/
+def Layout.toSpecLayout (lay : Layout) : SpecLayout :=
+  { size := lay.size.val, align := lay.align, sizeAligned := lay.sizeAligned }
+
+instance (lay : Layout) : FitsInUsize lay.toSpecLayout where
+  fits := by
+    dsimp [Layout.toSpecLayout]
+    scalar_tac
+
+/--
+  The ability to compute a mathematically idealized layout for a runtime value.
+  
   Some types in Rust, such as slices and trait objects, do not have a statically
   known size or alignment. Their layout depends on the specific value instance.
-  This class provides the layout for a given value of a dynamically sized type.
+  This class provides the idealized, unbounded layout for a given dynamically
+  sized value. Note that `layout` maps from the Lean lowering of a Rust value to
+  the layout of the Rust value that it represents, not to the layout of the Lean
+  value itself.
 -/
-class ValueLayout (α : Type) where
-  layout : α → LayoutInfo
+class HasSpecLayout (α : Type) where
+  layout : α → SpecLayout
 
 /--
-  The layout for a statically sized type.
+  The ability to compute a valid physical layout for a runtime value.
+  
+  Some types in Rust, such as slices and trait objects, do not have a statically
+  known size or alignment. Their layout depends on the specific value instance.
+  This class provides the bounded, physical layout for a given dynamically sized
+  value. It requires a proof that the corresponding mathematical layout fits
+  within physical memory. Note that `layout` maps from the Lean lowering of a
+  Rust value to the layout of the Rust value that it represents, not to the
+  layout of the Lean value itself.
+-/
+class HasLayout (α : Type) [HasSpecLayout α] where
+  layout : (val : α) → (h : FitsInUsize (HasSpecLayout.layout val)) → Layout
+
+/--
+  A blanket implementation providing a physical layout for any value whose
+  mathematical layout fits in memory.
+-/
+instance {α : Type} [HasSpecLayout α] : HasLayout α where
+  layout val h_fits := 
+    have : FitsInUsize (HasSpecLayout.layout val) := h_fits
+    SpecLayout.toLayout (HasSpecLayout.layout val)
+
+/--
+  The mathematically idealized layout for values of a statically sized type.
+  
   Types that implement `core::marker::Sized` have a layout that is known at
   compile time and is identical for all instances of the type. This class
-  provides that static layout property.
+  provides that static, unbounded layout property.
 -/
-class SizedTypeLayout (α : Type) [core.marker.Sized α] where
-  layout : LayoutInfo
+class HasStaticSpecLayout (α : Type) [core.marker.Sized α] where
+  layout : SpecLayout
 
--- Provides a blanket implementation of `ValueLayout` for any type that has a
--- static `SizedTypeLayout`. Because statically sized types share the same layout for
--- all values, the instance value is ignored.
-instance {α : Type} [core.marker.Sized α] [tl : SizedTypeLayout α] : ValueLayout α where
+/--
+  The valid physical layout for values of a statically sized type.
+  
+  Types that implement `core::marker::Sized` have a layout that is known at
+  compile time and is identical for all instances of the type. This class
+  provides that static, bounded layout property, assuming the corresponding
+  mathematical layout fits within physical memory.
+-/
+class HasStaticLayout (α : Type) [core.marker.Sized α] where
+  layout : Layout
+
+/--
+  A blanket implementation providing a physical static layout for any `Sized`
+  type whose mathematical layout fits in memory.
+-/
+instance {α : Type} [core.marker.Sized α] [HasStaticSpecLayout α] [FitsInUsize (HasStaticSpecLayout.layout (α := α))] : HasStaticLayout α where
+  layout := SpecLayout.toLayout (HasStaticSpecLayout.layout (α := α))
+
+/--
+  A blanket implementation providing a mathematical value layout for any type
+  that has a static mathematical layout.
+  
+  Because statically sized types share the same layout for all values, the
+  instance value is ignored.
+-/
+instance {α : Type} [core.marker.Sized α] [tl : HasStaticSpecLayout α] : HasSpecLayout α where
   layout _ := tl.layout
 
 -- 5. Slice DSTs
 
 /--
-  The layout properties that are statically known for all instances of a
-  slice dynamically-sized type (Slice DST).
+  The mathematical layout properties that are statically known for all instances
+  of a slice-based dynamically-sized type (Slice DST).
 -/
-structure SliceDstLayoutInfo extends AlignInfo where
+structure SpecSliceDstLayout where
   trailingOffset : Nat
   elementSize : Nat
+  align : Alignment
 
 /--
   Provides the static slice DST layout properties for a given type.
-  This is analogous to `SizedTypeLayout`, but for types that are `!Sized`
-  and end in a slice.
+  
+  This is analogous to `SpecHasStaticLayout`, but for types that are `!Sized`
+  and end in a slice. It provides the unbounded, mathematical layout properties.
 -/
-class SliceDstTypeLayout (α : Type) where
-  layout : SliceDstLayoutInfo
+class SpecSliceDstTypeLayout (α : Type) where
+  layout : SpecSliceDstLayout
 
 /--
   Extracts the dynamic trailing element count for a value of a Slice DST.
@@ -216,99 +312,107 @@ class TrailingSlice (α : Type) where
 
 /-- Rounds `val` up to the nearest multiple of `align`. -/
 def roundUpToAlign (val align : Nat) : Nat :=
-  (val + align - 1) / align * align
+  ((val + align - 1) / align) * align
 
 /--
-  Computes the exact size of a `repr(C)` Slice DST instance given its
-  static layout info and its dynamic trailing element count.
+  Computes the exact mathematical size of a `repr(C)` Slice DST instance.
+  
+  This computation uses the static layout information and the dynamic trailing
+  element count. It is not constrained by physical memory limits.
 -/
-def reprCSliceDstSize (info : SliceDstLayoutInfo) (elemCount : Nat) : Nat :=
+def reprCSliceDstSize (info : SpecSliceDstLayout) (elemCount : Nat) : Nat :=
   let unpaddedSize := info.trailingOffset + elemCount * info.elementSize
-  roundUpToAlign unpaddedSize info.align
+  roundUpToAlign unpaddedSize info.align.val.val
 
 /-- 
-  A theorem stating that our padding function always returns a value perfectly 
-  divisible by the alignment.
+  A theorem stating that the unpadded size rounded up to the alignment is always
+  perfectly divisible by the alignment.
 -/
-axiom reprCSliceDstSize_aligned (info : SliceDstLayoutInfo) (elemCount : Nat) :
-  info.align ∣ reprCSliceDstSize info elemCount
+theorem reprCSliceDstSize_aligned (info : SpecSliceDstLayout) (elemCount : Nat) :
+  info.align.val.val ∣ reprCSliceDstSize info elemCount := by
+  dsimp [reprCSliceDstSize, roundUpToAlign]
+  exact ⟨_, Nat.mul_comm _ _⟩
 
 /-- Marker trait for types that are explicitly `#[repr(C)]`. -/
 class ReprC (α : Type)
 
 /--
-  Blanket implementation: if a type is a Slice DST, and we can extract its 
-  length, AND it is `#[repr(C)]`, then we can definitively compute its `ValueLayout`.
+  A blanket implementation providing a mathematical value layout for `#[repr(C)]`
+  Slice DSTs.
+  
+  If a type is a Slice DST, and we can extract its length, and it is `#[repr(C)]`,
+  we can compute its exact mathematical size.
 -/
-instance {α : Type} [SliceDstTypeLayout α] [ts : TrailingSlice α] [ReprC α] : ValueLayout α where
+instance {α : Type} [SpecSliceDstTypeLayout α] [ts : TrailingSlice α] [ReprC α] : HasSpecLayout α where
   layout val :=
-    let staticInfo := SliceDstTypeLayout.layout (α := α)
+    let staticInfo := SpecSliceDstTypeLayout.layout (α := α)
     let elemCount := ts.len val
     let dynamicSize := reprCSliceDstSize staticInfo elemCount
     {
       size := dynamicSize,
       align := staticInfo.align,
-      validAlignment := staticInfo.validAlignment,
       sizeAligned := reprCSliceDstSize_aligned staticInfo elemCount
     }
 
 /--
-  Raw slices `[T]` are simply Slice DSTs with a trailing offset of 0.
+  A blanket implementation providing static slice DST layout properties for
+  slices.
+  
+  Slices `[T]` are modeled as Slice DSTs with a trailing offset of exactly
+  zero.
 -/
-instance {T : Type} [core.marker.Sized T] [tl : SizedTypeLayout T] : SliceDstTypeLayout (Aeneas.Std.Slice T) where
+instance {T : Type} [core.marker.Sized T] [tl : HasStaticSpecLayout T] : SpecSliceDstTypeLayout (Aeneas.Std.Slice T) where
   layout := {
     trailingOffset := 0,
     elementSize := tl.layout.size,
-    toAlignInfo := tl.layout.toAlignInfo
+    align := tl.layout.align
   }
 
 /--
-  Retrieve the dynamic length of a raw slice value.
+  Retrieve the dynamic length of a slice value.
 -/
 instance {T : Type} : TrailingSlice (Aeneas.Std.Slice T) where
-  len s := s.val.length
+  len s := Usize.ofNatCore s.val.length (by
+    have := s.property
+    scalar_tac)
 
 /--
-  We consider raw slices to be `#[repr(C)]` so that they can utilize the blanket
+  We consider slices to be `#[repr(C)]` so that they can utilize the blanket
   implementation to compute their value layout.
 -/
 instance {T : Type} : ReprC (Aeneas.Std.Slice T) := ⟨⟩
 
 @[simp]
-instance : SizedTypeLayout Unit where
+instance : HasStaticLayout Unit where
   layout := {
-    size := 0
-    align := 1
-    validAlignment := ⟨by decide, 0, by rfl⟩
+    size := sz 0
+    align := ⟨sz 1, ⟨by decide, 0, by rfl⟩⟩
     sizeAligned := by decide
   }
 
 -- 1-Byte Primitives
 
 @[simp]
-instance : SizedTypeLayout Aeneas.Std.U8 where
+instance : HasStaticLayout Aeneas.Std.U8 where
   layout := {
-    size := 1
-    align := 1
-    validAlignment := ⟨by decide, 0, by rfl⟩
+    size := sz 1
+    align := ⟨sz 1, ⟨by decide, 0, by rfl⟩⟩
     sizeAligned := by decide
   }
 
 @[simp]
-instance : SizedTypeLayout Aeneas.Std.I8 where
+instance : HasStaticLayout Aeneas.Std.I8 where
   layout := {
-    size := 1
-    align := 1
-    validAlignment := ⟨by decide, 0, by rfl⟩
+    size := sz 1
+    align := ⟨sz 1, ⟨by decide, 0, by rfl⟩⟩
     sizeAligned := by decide
   }
 
 @[simp]
-instance : SizedTypeLayout Bool where
+instance : HasStaticLayout Bool where
   layout := {
-    size := 1
-    align := 1
-    validAlignment := ⟨by decide, 0, by rfl⟩
+    size := sz 1
+    align := ⟨sz 1, ⟨by decide, 0, by rfl⟩⟩
     sizeAligned := by decide
   }
 
@@ -316,55 +420,79 @@ instance : SizedTypeLayout Bool where
 -- For multi-byte primitives (and `char`), the alignment is platform-dependent
 -- but guaranteed to be a valid alignment that divides the size.
 
-macro "declare_scalar_layout" tyName:ident ty:term "," size:num : command => do
-  let alignName := mkIdent $ Name.mkSimple s!"align_{tyName.getId.getString!}"
-  let alignValidName := mkIdent $ Name.mkSimple s!"align_{tyName.getId.getString!}_valid"
-  let alignDividesName := mkIdent $ Name.mkSimple s!"align_{tyName.getId.getString!}_divides_size"
-  `(
-    opaque $alignName : Nat
-    @[simp] axiom $alignValidName : Alignment $alignName
-    @[simp] axiom $alignDividesName : $alignName ∣ $size
+opaque align_u16 : Usize
+@[simp] axiom align_u16_valid : IsAlignment align_u16.val
+@[simp] axiom align_u16_divides_size : align_u16.val ∣ 2
+@[simp] instance : HasStaticLayout U16 where
+  layout := { size := sz 2, align := ⟨align_u16, align_u16_valid⟩, sizeAligned := align_u16_divides_size }
 
-    @[simp]
-    instance : SizedTypeLayout $ty where
-      layout := {
-        size := $size
-        align := $alignName
-        validAlignment := $alignValidName
-        sizeAligned := $alignDividesName
-      }
-  )
+opaque align_i16 : Usize
+@[simp] axiom align_i16_valid : IsAlignment align_i16.val
+@[simp] axiom align_i16_divides_size : align_i16.val ∣ 2
+@[simp] instance : HasStaticLayout I16 where
+  layout := { size := sz 2, align := ⟨align_i16, align_i16_valid⟩, sizeAligned := align_i16_divides_size }
 
-declare_scalar_layout u16 Aeneas.Std.U16, 2
-declare_scalar_layout i16 Aeneas.Std.I16, 2
-declare_scalar_layout u32 Aeneas.Std.U32, 4
-declare_scalar_layout i32 Aeneas.Std.I32, 4
-declare_scalar_layout u64 Aeneas.Std.U64, 8
-declare_scalar_layout i64 Aeneas.Std.I64, 8
-declare_scalar_layout u128 Aeneas.Std.U128, 16
-declare_scalar_layout i128 Aeneas.Std.I128, 16
-declare_scalar_layout char Char, 4
+opaque align_u32 : Usize
+@[simp] axiom align_u32_valid : IsAlignment align_u32.val
+@[simp] axiom align_u32_divides_size : align_u32.val ∣ 4
+@[simp] instance : HasStaticLayout U32 where
+  layout := { size := sz 4, align := ⟨align_u32, align_u32_valid⟩, sizeAligned := align_u32_divides_size }
+
+opaque align_i32 : Usize
+@[simp] axiom align_i32_valid : IsAlignment align_i32.val
+@[simp] axiom align_i32_divides_size : align_i32.val ∣ 4
+@[simp] instance : HasStaticLayout I32 where
+  layout := { size := sz 4, align := ⟨align_i32, align_i32_valid⟩, sizeAligned := align_i32_divides_size }
+
+opaque align_u64 : Usize
+@[simp] axiom align_u64_valid : IsAlignment align_u64.val
+@[simp] axiom align_u64_divides_size : align_u64.val ∣ 8
+@[simp] instance : HasStaticLayout U64 where
+  layout := { size := sz 8, align := ⟨align_u64, align_u64_valid⟩, sizeAligned := align_u64_divides_size }
+
+opaque align_i64 : Usize
+@[simp] axiom align_i64_valid : IsAlignment align_i64.val
+@[simp] axiom align_i64_divides_size : align_i64.val ∣ 8
+@[simp] instance : HasStaticLayout I64 where
+  layout := { size := sz 8, align := ⟨align_i64, align_i64_valid⟩, sizeAligned := align_i64_divides_size }
+
+opaque align_u128 : Usize
+@[simp] axiom align_u128_valid : IsAlignment align_u128.val
+@[simp] axiom align_u128_divides_size : align_u128.val ∣ 16
+@[simp] instance : HasStaticLayout U128 where
+  layout := { size := sz 16, align := ⟨align_u128, align_u128_valid⟩, sizeAligned := align_u128_divides_size }
+
+opaque align_i128 : Usize
+@[simp] axiom align_i128_valid : IsAlignment align_i128.val
+@[simp] axiom align_i128_divides_size : align_i128.val ∣ 16
+@[simp] instance : HasStaticLayout I128 where
+  layout := { size := sz 16, align := ⟨align_i128, align_i128_valid⟩, sizeAligned := align_i128_divides_size }
+
+opaque align_char : Usize
+@[simp] axiom align_char_valid : IsAlignment align_char.val
+@[simp] axiom align_char_divides_size : align_char.val ∣ 4
+@[simp] instance : HasStaticLayout Char where
+  layout := { size := sz 4, align := ⟨align_char, align_char_valid⟩, sizeAligned := align_char_divides_size }
 
 -- Architecture-Dependent Primitives
 -- For `usize` and `isize`, both the size and alignment are platform-dependent.
 -- However, we know they must have a valid alignment that divides their size.
 
-opaque size_usize : Nat
-opaque align_usize : Nat
-@[simp] axiom align_usize_valid : Alignment align_usize
-@[simp] axiom align_usize_divides_size : align_usize ∣ size_usize
+opaque size_usize : Usize
+opaque align_usize : Usize
+@[simp] axiom align_usize_valid : IsAlignment align_usize.val
+@[simp] axiom align_usize_divides_size : align_usize.val ∣ size_usize.val
 
 @[simp]
-instance : SizedTypeLayout Usize where
+instance : HasStaticLayout Usize where
   layout := {
     size := size_usize
-    align := align_usize
-    validAlignment := align_usize_valid
+    align := ⟨align_usize, align_usize_valid⟩
     sizeAligned := align_usize_divides_size
   }
 
 @[simp]
-instance : SizedTypeLayout Isize where
+instance : HasStaticLayout Isize where
   layout := {
     -- We reuse `size_usize` and `align_usize` because `usize` and `isize` are
     -- guaranteed to have the same layout.
@@ -372,8 +500,7 @@ instance : SizedTypeLayout Isize where
     -- FIXME(https://github.com/rust-lang/reference/pull/2200): Cite this once
     -- the Reference is updated.
     size := size_usize
-    align := align_usize
-    validAlignment := align_usize_valid
+    align := ⟨align_usize, align_usize_valid⟩
     sizeAligned := align_usize_divides_size
   }
 
@@ -386,11 +513,10 @@ instance {T : Type} {M : Aeneas.Std.Mutability} : core.marker.Sized (Aeneas.Std.
 -- For pointers to sized types (`*const T` where `T: Sized`), the layout is
 -- exactly the same as `usize`.
 @[simp]
-instance {T : Type} [core.marker.Sized T] {M : Aeneas.Std.Mutability} : SizedTypeLayout (Aeneas.Std.RawPtr T M) where
+instance {T : Type} [core.marker.Sized T] {M : Aeneas.Std.Mutability} : HasStaticLayout (Aeneas.Std.RawPtr T M) where
   layout := {
     size := size_usize
-    align := align_usize
-    validAlignment := align_usize_valid
+    align := ⟨align_usize, align_usize_valid⟩
     sizeAligned := align_usize_divides_size
   }
 
@@ -401,41 +527,40 @@ instance {T : Type} [core.marker.Sized T] {M : Aeneas.Std.Mutability} : SizedTyp
 -- FIXME(https://github.com/rust-lang/reference/pull/2201): Cite the Reference
 -- once it is updated.
 
-opaque size_raw_ptr_unsized : Nat
-opaque align_raw_ptr_unsized : Nat
-@[simp] axiom align_raw_ptr_unsized_valid : Alignment align_raw_ptr_unsized
-@[simp] axiom align_raw_ptr_unsized_divides_size : align_raw_ptr_unsized ∣ size_raw_ptr_unsized
+opaque size_raw_ptr_unsized : Usize
+opaque align_raw_ptr_unsized : Usize
+@[simp] axiom align_raw_ptr_unsized_valid : IsAlignment align_raw_ptr_unsized.val
+@[simp] axiom align_raw_ptr_unsized_divides_size : align_raw_ptr_unsized.val ∣ size_raw_ptr_unsized.val
 
-@[simp] axiom size_raw_ptr_unsized_ge : size_raw_ptr_unsized ≥ size_usize
-@[simp] axiom align_raw_ptr_unsized_ge : align_raw_ptr_unsized ≥ align_usize
+@[simp] axiom size_raw_ptr_unsized_ge : size_raw_ptr_unsized.val ≥ size_usize.val
+@[simp] axiom align_raw_ptr_unsized_ge : align_raw_ptr_unsized.val ≥ align_usize.val
 
 -- Fallback layout for raw pointers (applies when `T` is not known to be `Sized`).
 @[simp]
-instance (priority := low) {T : Type} {M : Aeneas.Std.Mutability} : SizedTypeLayout (Aeneas.Std.RawPtr T M) where
+instance (priority := low) {T : Type} {M : Aeneas.Std.Mutability} : HasStaticLayout (Aeneas.Std.RawPtr T M) where
   layout := {
     size := size_raw_ptr_unsized
-    align := align_raw_ptr_unsized
-    validAlignment := align_raw_ptr_unsized_valid
+    align := ⟨align_raw_ptr_unsized, align_raw_ptr_unsized_valid⟩
     sizeAligned := align_raw_ptr_unsized_divides_size
   }
 
 /--
   The specification for `core::mem::size_of`.
   This defines the expected behavior of `size_of`: it returns the static size
-  defined by the type's `SizedTypeLayout`.
+  defined by the type's `HasStaticLayout`.
 -/
-abbrev size_of_spec (size_of_fun : Type → Result Aeneas.Std.Usize) : Prop :=
-  ∀ (T : Type) [core.marker.Sized T] [tl : SizedTypeLayout T],
-    size_of_fun T = Result.ok (Aeneas.Std.Usize.ofNatCore tl.layout.size (by sorry))
+abbrev size_of_spec (size_of_fun : Type → Result Usize) : Prop :=
+  ∀ (T : Type) [core.marker.Sized T] [tl : HasStaticLayout T],
+    size_of_fun T = Result.ok tl.layout.size
 
 /--
   The specification for `core::mem::align_of`.
   This defines the expected behavior of `align_of`: it returns the static
-  alignment defined by the type's `SizedTypeLayout`.
+  alignment defined by the type's `HasStaticLayout`.
 -/
-abbrev align_of_spec (align_of_fun : Type → Result Aeneas.Std.Usize) : Prop :=
-  ∀ (T : Type) [core.marker.Sized T] [tl : SizedTypeLayout T],
-    align_of_fun T = Result.ok (Aeneas.Std.Usize.ofNatCore tl.layout.align (by sorry))
+abbrev align_of_spec (align_of_fun : Type → Result Usize) : Prop :=
+  ∀ (T : Type) [core.marker.Sized T] [tl : HasStaticLayout T],
+    align_of_fun T = Result.ok tl.layout.align.val
 
 /--
   Dynamically registers specifications for built-in functions (like `size_of`
@@ -461,12 +586,12 @@ elab "inject_builtins" : command => do
 -- and within which pointer arithmetic is possible.
 
 -- We define opaque platform-dependent bounds based on the size of a pointer.
-@[simp] axiom size_usize_ge_2 : size_usize ≥ 2
+@[simp] axiom size_usize_ge_2 : size_usize.val ≥ 2
 
 -- The max values for usize and isize are defined in terms of pointer width.
-@[simp] axiom usize_max_eq : Aeneas.Std.Usize.max = 2^(size_usize * 8) - 1
-@[simp] axiom isize_max_eq : Aeneas.Std.Isize.max = 2^(size_usize * 8 - 1) - 1
-@[simp] axiom isize_min_eq : Aeneas.Std.Isize.min = -(2^(size_usize * 8 - 1))
+@[simp] axiom usize_max_eq : Usize.max = 2^(size_usize.val * 8) - 1
+@[simp] axiom isize_max_eq : Isize.max = 2^(size_usize.val * 8 - 1) - 1
+@[simp] axiom isize_min_eq : Isize.min = -(2^(size_usize.val * 8 - 1))
 
 /--
   Represents a Rust allocation.
@@ -475,47 +600,47 @@ elab "inject_builtins" : command => do
   is modeled as an arbitrary `Set Nat` rather than a contiguous range.
 -/
 structure Allocation where
-  base : Nat
-  size : Nat
+  base : Usize
+  size : Usize
   addresses : Set Nat
   
   -- `base` is not equal to null (address 0)
-  base_not_null : base ≠ 0
+  base_not_null : base.val ≠ 0
   
   -- `size <= isize::MAX`
-  size_le_isize_max : size ≤ Aeneas.Std.Isize.max
+  size_le_isize_max : size.val ≤ Isize.max
   
   -- `base + size <= usize::MAX`
-  base_add_size_le_usize_max : base + size ≤ Aeneas.Std.Usize.max
+  base_add_size_le_usize_max : base.val + size.val ≤ Usize.max
   
   -- For all addresses `a` in `addresses`, `a` is in the range `base .. (base + size)`
-  bounds : ∀ a ∈ addresses, base ≤ a ∧ a < base + size
+  bounds : ∀ a ∈ addresses, base.val ≤ a ∧ a < base.val + size.val
 
 namespace Allocation
 
 -- Consequence 1: `a - base` does not overflow `isize`
 theorem offset_le_isize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
-    a - alloc.base ≤ Aeneas.Std.Isize.max := by
+    a - alloc.base.val ≤ Isize.max := by
   have h_bound := alloc.bounds a ha
-  have h_lt : a < alloc.base + alloc.size := h_bound.right
-  have h_sub : a - alloc.base < alloc.size := by omega
-  have h_size : alloc.size ≤ Aeneas.Std.Isize.max := alloc.size_le_isize_max
+  have h_lt : a < alloc.base.val + alloc.size.val := h_bound.right
+  have h_sub : a - alloc.base.val < alloc.size.val := by omega
+  have h_size : alloc.size.val ≤ Isize.max := alloc.size_le_isize_max
   omega
 
 -- Consequence 2: `a - base` is non-negative
 -- (This is trivially true in Lean for `Nat` subtraction when `alloc.base ≤ a`, 
 -- which we prove here to show the offset is well-defined mathematically).
 theorem offset_non_negative (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
-    alloc.base ≤ a :=
+    alloc.base.val ≤ a :=
   (alloc.bounds a ha).left
 
 -- Consequence 3: `base + o` will not wrap around the address space (overflow `usize`)
 -- `o = a - base`, so `base + o` is just `a` if `base <= a` (which we proved above).
 theorem address_le_usize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
-    a ≤ Aeneas.Std.Usize.max := by
+    a ≤ Usize.max := by
   have h_bound := alloc.bounds a ha
-  have h_lt : a < alloc.base + alloc.size := h_bound.right
-  have h_max : alloc.base + alloc.size ≤ Aeneas.Std.Usize.max := alloc.base_add_size_le_usize_max
+  have h_lt : a < alloc.base.val + alloc.size.val := h_bound.right
+  have h_max : alloc.base.val + alloc.size.val ≤ Usize.max := alloc.base_add_size_le_usize_max
   omega
 
 end Allocation
@@ -529,18 +654,24 @@ end Allocation
 -/
 structure Referent where
   -- The start address of the referent
-  address : Nat
+  address : Usize
   -- The size of the referent in bytes
-  size : Nat
+  size : Usize
   -- The mathematical set of addresses that make up the referent
   addresses : Set Nat
   
-  bounds : ∀ a ∈ addresses, address ≤ a ∧ a < address + size
+  bounds : ∀ a ∈ addresses, address.val ≤ a ∧ a < address.val + size.val
+
+  addresses_are_usizes : ∀ a ∈ addresses, a ≤ Usize.max
 
 instance : Nonempty Referent :=
-  ⟨{ address := 0, size := 0, addresses := ∅, bounds := by
-      intro a h
-      simp at h }⟩
+  ⟨{ address := sz 0, size := sz 0, addresses := ∅,
+     bounds := by
+       intro a h
+       simp at h,
+     addresses_are_usizes := by
+       intro a h
+       simp at h }⟩
 
 /--
   A predicate indicating that a referent fits entirely within a given allocation.
@@ -550,7 +681,7 @@ instance : Nonempty Referent :=
 -/
 def FitsInAllocation (r : Referent) (a : Allocation) : Prop :=
   r.addresses ⊆ a.addresses ∧
-  a.base ≤ r.address ∧ r.address + r.size ≤ a.base + a.size
+  a.base.val ≤ r.address.val ∧ r.address.val + r.size.val ≤ a.base.val + a.size.val
 
 /--
   A class for types that act as pointers with a well-defined referent.
@@ -579,19 +710,29 @@ instance {T : Type} [core.marker.Sized T] {M : Aeneas.Std.Mutability} : HasMetad
   metadata _ := ()
 
 -- A slice DST pointer has `Usize` metadata representing the number of elements
-noncomputable opaque raw_slice_dst_ptr_metadata {T : Type} [SliceDstTypeLayout T] {M : Aeneas.Std.Mutability} :
-  Aeneas.Std.RawPtr T M → Aeneas.Std.Usize
+noncomputable opaque raw_slice_dst_ptr_metadata {T : Type} [SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability} :
+  Aeneas.Std.RawPtr T M → Usize
 
-noncomputable instance {T : Type} [SliceDstTypeLayout T] {M : Aeneas.Std.Mutability} :
-  HasMetadata (Aeneas.Std.RawPtr T M) Aeneas.Std.Usize where
+noncomputable instance {T : Type} [SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability} :
+  HasMetadata (Aeneas.Std.RawPtr T M) Usize where
   metadata := raw_slice_dst_ptr_metadata
 
 -- If a type is Sized, its referent size is fixed
-axiom referent_size_sized {T : Type} [core.marker.Sized T] [lay : SizedTypeLayout T] {M : Aeneas.Std.Mutability}
+axiom referent_size_sized {T : Type} [core.marker.Sized T] [lay : HasStaticLayout T] {M : Aeneas.Std.Mutability}
   (p : Aeneas.Std.RawPtr T M) :
   (raw_ptr_referent p).size = lay.layout.size
 
--- If a type is a repr(C) slice DST, its referent size is its offset + length * elem_size + padding
-axiom referent_size_slice_dst {T : Type} [ReprC T] [lay : SliceDstTypeLayout T] {M : Aeneas.Std.Mutability}
-  [md : HasMetadata (Aeneas.Std.RawPtr T M) Aeneas.Std.Usize] (p : Aeneas.Std.RawPtr T M) :
-  (raw_ptr_referent p).size = reprCSliceDstSize lay.layout (md.metadata p).val
+/--
+  A theorem stating the physical size of a `repr(C)` slice DST referent.
+  
+  This axiom states that the physical size of the referent is exactly equal to
+  the mathematically computed size of the slice DST (its offset plus its length
+  times its element size, padded to its alignment). Because this axiom requires
+  a proof that the referent fits within a valid physical allocation, it
+  implicitly guarantees that the computed mathematical size fits within physical
+  memory limits.
+-/
+axiom referent_size_slice_dst {T : Type} [ReprC T] [lay : SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability}
+  (alloc : Allocation) [md : HasMetadata (Aeneas.Std.RawPtr T M) Usize] 
+  (p : Aeneas.Std.RawPtr T M) (h_fits : FitsInAllocation (raw_ptr_referent p) alloc) :
+  (raw_ptr_referent p).size.val = reprCSliceDstSize lay.layout (md.metadata p).val
