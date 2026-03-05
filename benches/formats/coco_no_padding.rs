@@ -8,13 +8,12 @@ pub enum C0C0 {
 }
 
 #[derive(FromBytes, KnownLayout, Immutable)]
-#[repr(C, align(4))]
+#[repr(C, align(2))]
 pub struct Packet<Magic> {
     magic_number: Magic,
-    milk: u8,
     mug_size: u8,
-    temperature: [u8; 5],
-    marshmallows: [[u8; 3]],
+    temperature: u8,
+    marshmallows: [[u8; 2]],
 }
 
 /// A packet begining with the magic number `0xC0C0`.

@@ -1,23 +1,34 @@
 bench_ref_from_suffix_with_elems:
-	movabs rax, 9223372036854775805
-	cmp rdx, rax
+	mov rcx, rdx
+	mov edx, 3
+	mov rax, rcx
+	mul rdx
+	jo .LBB5_1
+	cmp rax, -10
 	ja .LBB5_1
-	lea r8d, [rsi + rdi]
-	xor ecx, ecx
-	mov eax, 0
-	test r8b, 1
-	jne .LBB5_5
-	lea rax, [2*rdx + 4]
-	sub rsi, rax
+	lea rdx, [rax + 9]
+	not eax
+	and eax, 3
+	add rax, rdx
 	jae .LBB5_4
 .LBB5_1:
-	xor eax, eax
+	xor r8d, r8d
 	mov edx, 1
+	mov rax, r8
 	ret
 .LBB5_4:
-	add rdi, rsi
-	mov rcx, rdx
-	mov rax, rdi
+	lea r9d, [rsi + rdi]
+	xor edx, edx
+	mov r8d, 0
+	test r9b, 3
+	je .LBB5_5
+	mov rax, r8
+	ret
 .LBB5_5:
+	sub rsi, rax
+	jb .LBB5_1
+	add rdi, rsi
 	mov rdx, rcx
+	mov r8, rdi
+	mov rax, r8
 	ret

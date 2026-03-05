@@ -1797,17 +1797,17 @@ pub unsafe trait TryFromBytes {
     /// type is safe and cheap, but does not necessarily have zero runtime cost.
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
-    /// source:
+    /// source; e.g.:
     ///
-    /// - the source must begin an even memory address
-    /// - the source has a minimum length of 4 bytes
-    /// - the source has a total length divisible by 2
+    /// - the source must begin at a memory address divisible by 4
+    /// - the source has a minimum length of 12 bytes
+    /// - the source has a total length divisible by 4
     /// - the source begins with the bytes `0xC0C0`
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_bytes")]
     #[must_use = "has no side effects"]
     #[inline]
@@ -1915,16 +1915,16 @@ pub unsafe trait TryFromBytes {
     /// type is safe and cheap, but does not necessarily have zero runtime cost.
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
-    /// source:
+    /// source; e.g.:
     ///
-    /// - the source must begin an even memory address
-    /// - the source has a minimum length of 4 bytes
+    /// - the source must begin at a memory address divisible by 4
+    /// - the source has a minimum length of 12 bytes
     /// - the source begins with the bytes `0xC0C0`
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_prefix")]
     #[must_use = "has no side effects"]
     #[inline]
@@ -2019,16 +2019,16 @@ pub unsafe trait TryFromBytes {
     /// type is safe and cheap, but does not necessarily have zero runtime cost.
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
-    /// source's largest [valid-size] suffix for `Self`, which must:
+    /// source's largest [valid-size] suffix for `Self`, which must; e.g.:
     ///
-    /// - begin at an even memory address
-    /// - have a minimum length of 4 bytes
+    /// - begin at a memory address divisible by 4
+    /// - have a minimum length of 12 bytes
     /// - begin with the bytes `0xC0C0`
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     ///
     /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_suffix")]
@@ -2425,17 +2425,17 @@ pub unsafe trait TryFromBytes {
     /// type is safe and cheap, but does not necessarily have zero runtime cost.
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
-    /// source:
+    /// source; e.g.:
     ///
-    /// - the source must begin an even memory address
+    /// - the source must begin at a memory address divisible by 4
     /// - the source has a total length that exactly fits a `Self` with a
     ///   trailing slice length of `elems`
     /// - the source begins with the bytes `0xC0C0`
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     ///
     #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_bytes_with_elems")]
     #[must_use = "has no side effects"]
@@ -2547,17 +2547,17 @@ pub unsafe trait TryFromBytes {
     /// type is safe and cheap, but does not necessarily have zero runtime cost.
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
-    /// source:
+    /// source; e.g.:
     ///
-    /// - the source must begin an even memory address
+    /// - the source must begin at a memory address divisible by 4
     /// - the source has a prefix that fits a `Self` with a trailing slice
     ///   length of `count`
     /// - the source begins with the bytes `0xC0C0`
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_prefix_with_elems")]
     #[must_use = "has no side effects"]
     #[inline]
@@ -2656,16 +2656,16 @@ pub unsafe trait TryFromBytes {
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
     /// [valid-size] suffix for a `Self` of trailing slice length `count`, which
-    /// must:
+    /// must; e.g.:
     ///
-    /// - begin at an even memory address
-    /// - have a minimum length of 4 bytes
+    /// - begin at a memory address divisible by 4
+    /// - have a minimum length of 12 bytes
     /// - begin with the bytes `0xC0C0`
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     ///
     /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_suffix_with_elems")]
@@ -3964,16 +3964,16 @@ pub unsafe trait FromBytes: FromZeros {
     /// type is safe and cheap, but does not necessarily have zero runtime cost.
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
-    /// source:
+    /// source; e.g.:
     ///
-    /// - the source must begin an even memory address
-    /// - the source has a minimum length of 4 bytes
-    /// - the source has a total length divisible by 2
+    /// - the source must begin at a memory address divisible by 4
+    /// - the source has a minimum length of 12 bytes
+    /// - the source has a total length divisible by 4
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     #[doc = codegen_tabs!(format = "coco", bench = "ref_from_bytes")]
     #[must_use = "has no side effects"]
     #[inline]
@@ -4070,15 +4070,15 @@ pub unsafe trait FromBytes: FromZeros {
     /// type is safe and cheap, but does not necessarily have zero runtime cost.
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
-    /// source:
+    /// source; e.g.:
     ///
-    /// - the source must begin an even memory address
-    /// - the source has a minimum length of 4 bytes
+    /// - the source must begin at a memory address divisible by 4
+    /// - the source has a minimum length of 12 bytes
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     #[doc = codegen_tabs!(format = "coco", bench = "ref_from_prefix")]
     #[must_use = "has no side effects"]
     #[inline]
@@ -4157,15 +4157,15 @@ pub unsafe trait FromBytes: FromZeros {
     /// type is safe and cheap, but does not necessarily have zero runtime cost.
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
-    /// source's largest [valid-size] suffix for `Self`, which must:
+    /// source's largest [valid-size] suffix for `Self`, which must; e.g.:
     ///
-    /// - begin at an even memory address
-    /// - have a minimum length of 4 bytes
+    /// - begin at a memory address divisible by 4
+    /// - have a minimum length of 12 bytes
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     ///
     /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     #[doc = codegen_tabs!(format = "coco", bench = "ref_from_suffix")]
@@ -4502,16 +4502,16 @@ pub unsafe trait FromBytes: FromZeros {
     /// type is safe and cheap, but does not necessarily have zero runtime cost.
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
-    /// source:
+    /// source; e.g.:
     ///
-    /// - the source must begin an even memory address
+    /// - the source must begin at a memory address divisible by 4
     /// - the source has a total length that exactly fits a `Self` with a
     ///   trailing slice length of `elems`
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     ///
     #[doc = codegen_tabs!(format = "coco", bench = "ref_from_bytes_with_elems")]
     #[must_use = "has no side effects"]
@@ -4601,16 +4601,16 @@ pub unsafe trait FromBytes: FromZeros {
     /// type is safe and cheap, but does not necessarily have zero runtime cost.
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
-    /// source:
+    /// source; e.g.:
     ///
-    /// - the source must begin an even memory address
+    /// - the source must begin at a memory address divisible by 4
     /// - the source has a prefix that fits a `Self` with a trailing slice
     ///   length of `count`
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     #[doc = codegen_tabs!(format = "coco", bench = "ref_from_prefix_with_elems")]
     #[must_use = "has no side effects"]
     #[inline]
@@ -4695,15 +4695,15 @@ pub unsafe trait FromBytes: FromZeros {
     /// The below code generation benchmark exercises this routine on a
     /// destination type whose complex layout places complex requirements on the
     /// [valid-size] suffix for a `Self` of trailing slice length `count`, which
-    /// must:
+    /// must; e.g.:
     ///
-    /// - begin at an even memory address
-    /// - have a minimum length of 4 bytes
+    /// - begin at a memory address divisible by 4
+    /// - have a minimum length of 12 bytes
     ///
-    /// These conditions must all be checked at runtime in this example, but the
-    /// codegen you experience in practice will depend on optimization level,
-    /// the layout of the destination type, and what the compiler can prove
-    /// about the source.
+    /// These conditions must all be checked at runtime in this **worst-case**
+    /// example, but the codegen you experience in practice will depend on
+    /// optimization level, the layout of the destination type, and what the
+    /// compiler can prove about the source.
     ///
     /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     #[doc = codegen_tabs!(format = "coco", bench = "ref_from_suffix_with_elems")]

@@ -1,22 +1,24 @@
 bench_try_ref_from_bytes:
-	mov rdx, rsi
-	mov rax, rdi
-	cmp rsi, 4
-	setb cl
-	or cl, al
-	test cl, 1
+	test dil, 3
 	jne .LBB5_4
-	lea rcx, [rdx - 4]
-	mov rsi, rcx
-	and rsi, -2
-	add rsi, 4
-	cmp rdx, rsi
+	movabs rax, 9223372036854775804
+	and rax, rsi
+	cmp rax, 9
+	jb .LBB5_4
+	add rax, -9
+	movabs rcx, -6148914691236517205
+	mul rcx
+	shr rdx
+	lea rax, [rdx + 2*rdx]
+	or rax, 3
+	add rax, 9
+	cmp rsi, rax
 	jne .LBB5_4
-	cmp word ptr [rax], -16192
-	jne .LBB5_4
-	shr rcx
-	mov rdx, rcx
-	ret
+	cmp word ptr [rdi], -16192
+	je .LBB5_5
 .LBB5_4:
-	xor eax, eax
+	xor edi, edi
+	mov rdx, rsi
+.LBB5_5:
+	mov rax, rdi
 	ret
