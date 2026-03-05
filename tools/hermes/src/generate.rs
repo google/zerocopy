@@ -1213,7 +1213,9 @@ mod tests {
         generate_type(&ty_item, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("instance {T} (CloneInst : Clone T) : Hermes.IsValid (Inline T) where"));
+        assert!(
+            out.contains("instance {T} (CloneInst : Clone T) : Hermes.IsValid (Inline T) where")
+        );
     }
 
     #[test]
