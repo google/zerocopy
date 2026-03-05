@@ -64,8 +64,14 @@ structure Alignment where
   val : Usize
   isValid : IsAlignment val.val
 
+@[simp] theorem Usize_ofNatCore_val {n} {h} : (Usize.ofNatCore n h).val = n := rfl
+@[simp] theorem Alignment_val {val} {h} : (@Alignment.mk val h).val = val := rfl
+@[simp] theorem Alignment_isValid (a : Alignment) : IsAlignment a.val.val := a.isValid
+
 @[simp]
 theorem alignment_one : IsAlignment 1 := ⟨by decide, 0, by rfl⟩
+
+instance : Inhabited Alignment := ⟨⟨sz 1, alignment_one⟩⟩
 
 @[simp]
 theorem one_divides (n : Nat) : 1 ∣ n := ⟨n, by omega⟩
@@ -186,6 +192,7 @@ class FitsInUsize (lay : SpecLayout) : Prop where
   This conversion requires a proof that the mathematical layout fits within
   physical memory.
 -/
+@[simp]
 def SpecLayout.toLayout (lay : SpecLayout) [FitsInUsize lay] : Layout :=
   {
     size := Usize.ofNatCore lay.size (by
@@ -202,6 +209,7 @@ def SpecLayout.toLayout (lay : SpecLayout) [FitsInUsize lay] : Layout :=
   address space, we can inherently prove that the resulting mathematical `SpecLayout`
   also fits in `Usize`.
 -/
+@[simp]
 def Layout.toSpecLayout (lay : Layout) : SpecLayout :=
   { size := lay.size.val, align := lay.align, sizeAligned := lay.sizeAligned }
 
@@ -271,6 +279,7 @@ class HasStaticLayout (α : Type) [core.marker.Sized α] where
   A blanket implementation providing a physical static layout for any `Sized`
   type whose mathematical layout fits in memory.
 -/
+@[simp]
 instance {α : Type} [core.marker.Sized α] [HasStaticSpecLayout α] [FitsInUsize (HasStaticSpecLayout.layout (α := α))] : HasStaticLayout α where
   layout := SpecLayout.toLayout (HasStaticSpecLayout.layout (α := α))
 
@@ -281,6 +290,7 @@ instance {α : Type} [core.marker.Sized α] [HasStaticSpecLayout α] [FitsInUsiz
   Because statically sized types share the same layout for all values, the
   instance value is ignored.
 -/
+@[simp]
 instance {α : Type} [core.marker.Sized α] [tl : HasStaticSpecLayout α] : HasSpecLayout α where
   layout _ := tl.layout
 
@@ -372,9 +382,7 @@ instance {T : Type} [core.marker.Sized T] [tl : HasStaticSpecLayout T] : SpecSli
   Retrieve the dynamic length of a slice value.
 -/
 instance {T : Type} : TrailingSlice (Aeneas.Std.Slice T) where
-  len s := Usize.ofNatCore s.val.length (by
-    have := s.property
-    scalar_tac)
+  len s := s.val.length
 
 /--
   We consider slices to be `#[repr(C)]` so that they can utilize the blanket
@@ -382,97 +390,69 @@ instance {T : Type} : TrailingSlice (Aeneas.Std.Slice T) where
 -/
 instance {T : Type} : ReprC (Aeneas.Std.Slice T) := ⟨⟩
 
-@[simp]
-instance : HasStaticLayout Unit where
-  layout := {
-    size := sz 0
-    align := ⟨sz 1, ⟨by decide, 0, by rfl⟩⟩
-    sizeAligned := by decide
-  }
+macro "primitive_layout " ty:ident size:num align:num align_pow:num : command => `(
+  @[simp] instance : HasStaticSpecLayout $ty where
+    layout := { size := $size, align := ⟨sz $align, ⟨by decide, $align_pow, by rfl⟩⟩, sizeAligned := by decide }
+  instance : FitsInUsize (HasStaticSpecLayout.layout (α := $ty)) where
+    fits := by dsimp [HasStaticSpecLayout.layout]; scalar_tac
+)
+
+primitive_layout Unit 0 1 0
 
 -- 1-Byte Primitives
 
-@[simp]
-instance : HasStaticLayout Aeneas.Std.U8 where
-  layout := {
-    size := sz 1
-    align := ⟨sz 1, ⟨by decide, 0, by rfl⟩⟩
-    sizeAligned := by decide
-  }
-
-@[simp]
-instance : HasStaticLayout Aeneas.Std.I8 where
-  layout := {
-    size := sz 1
-    align := ⟨sz 1, ⟨by decide, 0, by rfl⟩⟩
-    sizeAligned := by decide
-  }
-
-@[simp]
-instance : HasStaticLayout Bool where
-  layout := {
-    size := sz 1
-    align := ⟨sz 1, ⟨by decide, 0, by rfl⟩⟩
-    sizeAligned := by decide
-  }
+primitive_layout Aeneas.Std.U8 1 1 0
+primitive_layout Aeneas.Std.I8 1 1 0
+primitive_layout Bool 1 1 0
 
 -- Multi-Byte Primitives
 -- For multi-byte primitives (and `char`), the alignment is platform-dependent
 -- but guaranteed to be a valid alignment that divides the size.
 
-opaque align_u16 : Usize
-@[simp] axiom align_u16_valid : IsAlignment align_u16.val
-@[simp] axiom align_u16_divides_size : align_u16.val ∣ 2
-@[simp] instance : HasStaticLayout U16 where
-  layout := { size := sz 2, align := ⟨align_u16, align_u16_valid⟩, sizeAligned := align_u16_divides_size }
+macro "primitive_multibyte_layout " ty:ident size:num align:ident divides:ident : command => `(
+  @[simp] instance : HasStaticSpecLayout $ty where
+    layout := { size := $size, align := $align, sizeAligned := $divides }
+  instance : FitsInUsize (HasStaticSpecLayout.layout (α := $ty)) where
+    fits := by dsimp [HasStaticSpecLayout.layout]; scalar_tac
+)
 
-opaque align_i16 : Usize
-@[simp] axiom align_i16_valid : IsAlignment align_i16.val
-@[simp] axiom align_i16_divides_size : align_i16.val ∣ 2
-@[simp] instance : HasStaticLayout I16 where
-  layout := { size := sz 2, align := ⟨align_i16, align_i16_valid⟩, sizeAligned := align_i16_divides_size }
+opaque align_u16 : Alignment
+@[simp] axiom align_u16_divides : align_u16.val.val ∣ 2
+primitive_multibyte_layout U16 2 align_u16 align_u16_divides
 
-opaque align_u32 : Usize
-@[simp] axiom align_u32_valid : IsAlignment align_u32.val
-@[simp] axiom align_u32_divides_size : align_u32.val ∣ 4
-@[simp] instance : HasStaticLayout U32 where
-  layout := { size := sz 4, align := ⟨align_u32, align_u32_valid⟩, sizeAligned := align_u32_divides_size }
+opaque align_i16 : Alignment
+@[simp] axiom align_i16_divides : align_i16.val.val ∣ 2
+primitive_multibyte_layout I16 2 align_i16 align_i16_divides
 
-opaque align_i32 : Usize
-@[simp] axiom align_i32_valid : IsAlignment align_i32.val
-@[simp] axiom align_i32_divides_size : align_i32.val ∣ 4
-@[simp] instance : HasStaticLayout I32 where
-  layout := { size := sz 4, align := ⟨align_i32, align_i32_valid⟩, sizeAligned := align_i32_divides_size }
+opaque align_u32 : Alignment
+@[simp] axiom align_u32_divides : align_u32.val.val ∣ 4
+primitive_multibyte_layout U32 4 align_u32 align_u32_divides
 
-opaque align_u64 : Usize
-@[simp] axiom align_u64_valid : IsAlignment align_u64.val
-@[simp] axiom align_u64_divides_size : align_u64.val ∣ 8
-@[simp] instance : HasStaticLayout U64 where
-  layout := { size := sz 8, align := ⟨align_u64, align_u64_valid⟩, sizeAligned := align_u64_divides_size }
+opaque align_i32 : Alignment
+@[simp] axiom align_i32_divides : align_i32.val.val ∣ 4
+primitive_multibyte_layout I32 4 align_i32 align_i32_divides
 
-opaque align_i64 : Usize
-@[simp] axiom align_i64_valid : IsAlignment align_i64.val
-@[simp] axiom align_i64_divides_size : align_i64.val ∣ 8
-@[simp] instance : HasStaticLayout I64 where
-  layout := { size := sz 8, align := ⟨align_i64, align_i64_valid⟩, sizeAligned := align_i64_divides_size }
+opaque align_u64 : Alignment
+@[simp] axiom align_u64_divides : align_u64.val.val ∣ 8
+primitive_multibyte_layout U64 8 align_u64 align_u64_divides
 
-opaque align_u128 : Usize
-@[simp] axiom align_u128_valid : IsAlignment align_u128.val
-@[simp] axiom align_u128_divides_size : align_u128.val ∣ 16
-@[simp] instance : HasStaticLayout U128 where
-  layout := { size := sz 16, align := ⟨align_u128, align_u128_valid⟩, sizeAligned := align_u128_divides_size }
+opaque align_i64 : Alignment
+@[simp] axiom align_i64_divides : align_i64.val.val ∣ 8
+primitive_multibyte_layout I64 8 align_i64 align_i64_divides
 
-opaque align_i128 : Usize
-@[simp] axiom align_i128_valid : IsAlignment align_i128.val
-@[simp] axiom align_i128_divides_size : align_i128.val ∣ 16
-@[simp] instance : HasStaticLayout I128 where
-  layout := { size := sz 16, align := ⟨align_i128, align_i128_valid⟩, sizeAligned := align_i128_divides_size }
+opaque align_u128 : Alignment
+@[simp] axiom align_u128_divides : align_u128.val.val ∣ 16
+primitive_multibyte_layout U128 16 align_u128 align_u128_divides
 
-opaque align_char : Usize
-@[simp] axiom align_char_valid : IsAlignment align_char.val
-@[simp] axiom align_char_divides_size : align_char.val ∣ 4
-@[simp] instance : HasStaticLayout Char where
-  layout := { size := sz 4, align := ⟨align_char, align_char_valid⟩, sizeAligned := align_char_divides_size }
+opaque align_i128 : Alignment
+@[simp] axiom align_i128_divides : align_i128.val.val ∣ 16
+primitive_multibyte_layout I128 16 align_i128 align_i128_divides
+
+opaque align_char : Alignment
+@[simp] axiom align_char_divides : align_char.val.val ∣ 4
+primitive_multibyte_layout Char 4 align_char align_char_divides
+
+def test_has_layout : HasLayout Aeneas.Std.U16 := inferInstance
 
 -- Architecture-Dependent Primitives
 -- For `usize` and `isize`, both the size and alignment are platform-dependent.
@@ -684,6 +664,16 @@ def FitsInAllocation (r : Referent) (a : Allocation) : Prop :=
   a.base.val ≤ r.address.val ∧ r.address.val + r.size.val ≤ a.base.val + a.size.val
 
 /--
+  A helper theorem proving that any address belonging to a referent that
+  fits in an allocation is strictly less than the allocation's upper bound.
+-/
+theorem FitsInAllocation.address_bounds_alloc (r : Referent) (a : Allocation) (h : FitsInAllocation r a) (addr : Nat) (ha : addr ∈ r.addresses) :
+  addr < a.base.val + a.size.val := by
+  have h_subset := h.left
+  have h_addr_in_alloc := h_subset ha
+  exact (a.bounds _ h_addr_in_alloc).right
+
+/--
   A class for types that act as pointers with a well-defined referent.
 -/
 class HasReferent (P : Type) where
@@ -695,6 +685,14 @@ noncomputable opaque raw_ptr_referent {T : Type} {M : Aeneas.Std.Mutability} : A
 
 noncomputable instance {T : Type} {M : Aeneas.Std.Mutability} : HasReferent (Aeneas.Std.RawPtr T M) where
   referent := raw_ptr_referent
+
+/--
+  Extracts the mathematical SpecLayout from a statically sized referent.
+  This allows users to immediately map from a pointer's raw referent to
+  its type-level mathematical properties.
+-/
+def Referent.toStaticSpecLayout {T : Type} [core.marker.Sized T] [tl : HasStaticSpecLayout T] (_r : Referent) : SpecLayout :=
+  tl.layout
 
 -- 8. Pointer Metadata and Exposing Size
 
