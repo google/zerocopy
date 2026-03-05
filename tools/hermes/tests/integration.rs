@@ -432,7 +432,7 @@ struct TestContext {
     // exclusively locked until the `TestContext` is dropped at the end of the
     // test.
     worker_cache: WorkerCacheGuard,
-    _temp_dir: tempfile::TempDir, // Kept alive to prevent deletion
+    _temp_dir: Option<tempfile::TempDir>, // Kept alive to prevent deletion
 }
 
 impl TestContext {
@@ -446,6 +446,21 @@ impl TestContext {
         let temp = tempfile::Builder::new().prefix("hermes-test-").tempdir_in(&target_dir)?;
         let sandbox_root = temp.path().join(&test_name);
         copy_dir_contents(&source_dir, &sandbox_root)?;
+
+        // Check if we should keep the test directory for debugging
+        let temp_dir_to_store = if std::env::var("HERMES_KEEP_TEST_DIR").as_deref() == Ok("1")
+            || std::env::var("KEEP_TEST_DIR").as_deref() == Ok("1")
+        {
+            #[allow(deprecated)]
+            let path = temp.into_path();
+            eprintln!("========================================================================");
+            eprintln!("KEEP_TEST_DIR enabled! Test directory preserved at:");
+            eprintln!("{}", path.display());
+            eprintln!("========================================================================");
+            None
+        } else {
+            Some(temp)
+        };
 
         let aeneas_cache_backend = cache_dir.join("backends/lean");
 
@@ -488,7 +503,13 @@ impl TestContext {
             }
         }
 
-        Ok(Self { test_case_root, test_name, sandbox_root, worker_cache, _temp_dir: temp })
+        Ok(Self {
+            test_case_root,
+            test_name,
+            sandbox_root,
+            worker_cache,
+            _temp_dir: temp_dir_to_store,
+        })
     }
 
     fn create_shim(
@@ -497,7 +518,7 @@ impl TestContext {
         real_path: &Path,
         mock_mode: Option<MockMode>,
     ) -> io::Result<PathBuf> {
-        let shim_dir = self._temp_dir.path().join("bin");
+        let shim_dir = self.sandbox_root.join("bin_shim");
         fs::create_dir_all(&shim_dir)?;
 
         let log_file = self.sandbox_root.join("charon_args.log");

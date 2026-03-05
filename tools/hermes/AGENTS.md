@@ -32,18 +32,19 @@
 
 1. **Debugging Aeneas vs Hermes Mismatches**
    - If you encounter Lean type mismatches (e.g., `Application type mismatch`), it's often a mismatch between what Aeneas generated for the function and what Hermes assumed Aeneas generated in the theorem signature.
-   - Standard integration tests (`cargo test --test integration`) delete their temporary output directory (`target/hermes-test-XXX`) upon completion. To inspect the generated Lean, run `hermes verify` natively on the test fixture's source directory so the `target/.../lean/generated` files are preserved:
+   - Standard integration tests (`cargo test --test integration`) delete their temporary output directory (`target/hermes-test-XXX`) upon completion.
+   - If a test fails and you want to inspect the generated Lean code, use the `HERMES_KEEP_TEST_DIR=1` environment variable.
+   - The test runner will preserve the directory and print its path to stderr:
      ```bash
-     cd tests/fixtures/my_test/source
-     RUSTFLAGS="--remap-path-prefix=tests/fixtures/my_test=/dummy" cargo run --manifest-path ../../../../../Cargo.toml --bin hermes -- verify --allow-sorry .
+     HERMES_KEEP_TEST_DIR=1 cargo test --test integration macro_edge_cases
      ```
    - Look at `Funs.lean` to see the actual Aeneas parameters, and `[TestName].lean` to see the Hermes theorem signature.
 
 2. **Caches Need Busting**
-   - Sometimes `cargo test` fails with "Stale build artifact directory found in fixture source: `tests/fixtures/.../source/target`" or you encounter bizarre syntax errors that persist despite fixing the code.
-   - Delete the local test `target` dir (`rm -rf tests/fixtures/my_test/source/target`), and if it still persists, clear the integration caches: `rm -rf target/hermes_integration_cache`.
+   - Sometimes `cargo test` fails with bizarre syntax errors that persist despite fixing the code.
+   - If this happens, clear the integration caches: `rm -rf target/hermes_integration_cache`.
 
-3. **Lean Translation of Rust Types**
+4. **Lean Translation of Rust Types**
    - `*const T` reliably maps to `ConstRawPtr T` in Lean, which is often easier to reason about in proofs than `NonNull<T>` (which maps to a wrapped `core.ptr.non_null.NonNull Self` structure).
    - Trait methods that return primitive types (like returning `usize` from `fn my_method() -> usize`) are frequently translated by Aeneas to return `Result Std.Usize`, even if they never fail in Rust.
    - For structural properties without `Result` wrapping, prefer trait Associated Constants (`const FOO: Type`) over Methods, since Aeneas lowers constants cleanly into flat values.
