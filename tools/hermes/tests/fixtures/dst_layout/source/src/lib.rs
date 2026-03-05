@@ -1,63 +1,51 @@
-#[derive(Copy, Clone)]
+/// ```lean, hermes
+/// isValid self := Hermes.Alignment self.align.val
+/// ```
 pub struct DstLayout {
     pub align: usize,
     pub size_info: SizeInfo,
-    pub statically_shallow_unpadded: bool,
 }
 
-#[derive(Copy, Clone)]
-pub enum SizeInfo<E = usize> {
+pub enum SizeInfo {
     Sized { size: usize },
-    SliceDst(TrailingSliceLayout<E>),
+    ReprCSliceDst(TrailingSliceLayout),
 }
 
 #[derive(Copy, Clone)]
-pub struct TrailingSliceLayout<E = usize> {
+pub struct TrailingSliceLayout {
     pub offset: usize,
-    pub elem_size: E,
+    pub elem_size: usize,
 }
 
-// Hermes representation of DstLayout size computation.
-/// ```hermes
-/// ensures ret.val = match layout.size_info with
-///   | .Sized size => size.val
-///   | .SliceDst l => (l.offset.val + l.elem_size.val * elems.val)
-/// proof
-///   sorry
-/// ```
-#[allow(unused)]
-pub const fn compute_size(layout: DstLayout, elems: usize) -> usize {
-    match layout.size_info {
-        SizeInfo::Sized { size } => size,
-        SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => offset + elem_size * elems,
-    }
-}
-
-/// ```hermes
+// TODO: Add `isSafe` that constrains this to be equal to `Self`'s layout.
+// Self is either Sized or a repr(C) slice DST.
+/// ```lean, hermes
 /// isSafe : 
-///   Nonempty (Hermes.ValueLayout Self) ∧
-///   (∀ (vl : Hermes.ValueLayout Self) (val : Self),
-///     (vl.layout val).align = inst.LAYOUT.align.val)
+///   ∀ (val : Aeneas.Std.ConstRawPtr Self) [Hermes.SliceDstTypeLayout Self] (inst : KnownLayout Self), 
+///     inst.pointer_to_metadata val = Result.ok (Hermes.raw_slice_dst_ptr_metadata val)
 /// ```
 pub unsafe trait KnownLayout {
     const LAYOUT: DstLayout;
-    
-    // Using a simplified `*const` passing style for pointer metadata retrieval
-    // like `[T]`'s implementation of pointer_to_metadata.
+
+    // TODO: Add `isSafe` that constrains this so that, if `Self` is a repr(C)
+    // slice DST, this returns `val`'s actual pointer metadata.
     fn pointer_to_metadata(val: *const Self) -> usize;
 }
 
-/// ```hermes
-/// context
-///   noncomputable def value_layout_of_KnownLayout {T} (inst: KnownLayout T) (safe: KnownLayout.Safe T inst) : Hermes.ValueLayout T :=
-///     Classical.choice safe.isSafe.left
-///
-/// ensures
-///   -- Note: we use `sorry` here because proving actual layout resolution
-///   -- logic is beyond the current scope of `dst_layout` minimal example.
-///   ret = Aeneas.Std.Usize.ofNatCore (Hermes.SizedTypeLayout.layout (α := Aeneas.Std.U8)).size (by sorry)
+// TODO: `ensures` that the result is correct and change this from `unsafe(axiom)` to
+// `spec`.
+/// ```lean, hermes, unsafe(axiom)
+/// requires ∃ a : Hermes.Allocation, Hermes.FitsInAllocation (Hermes.raw_ptr_referent val) a
 /// ```
-#[allow(unused_variables)]
 pub unsafe fn size_of_val<T: ?Sized + KnownLayout>(val: *const T) -> usize {
-    compute_size(T::LAYOUT, T::pointer_to_metadata(val))
+    let metadata_val = T::pointer_to_metadata(val);
+
+    let align = T::LAYOUT.align;
+    match T::LAYOUT.size_info {
+        SizeInfo::Sized { size } => size,
+        SizeInfo::ReprCSliceDst(TrailingSliceLayout { offset, elem_size }) => {
+            let unpadded_size = offset + elem_size * metadata_val;
+            ((unpadded_size + align - 1) / align) * align
+        }
+    }
 }
