@@ -1,13 +1,23 @@
 bench_ref_from_suffix:
-	mov rdx, rsi
-	lea ecx, [rsi + rdi]
-	mov eax, edx
-	and eax, 1
-	add rax, rdi
-	xor esi, esi
-	sub rdx, 4
-	cmovb rax, rsi
+	lea eax, [rsi + rdi]
+	test al, 3
+	jne .LBB5_1
+	movabs rax, 9223372036854775804
+	and rax, rsi
+	cmp rax, 9
+	jae .LBB5_3
+.LBB5_1:
+	xor eax, eax
+	ret
+.LBB5_3:
+	add rax, -9
+	movabs rcx, -6148914691236517205
+	mul rcx
 	shr rdx
-	test cl, 1
-	cmovne rax, rsi
+	lea rax, [rdx + 2*rdx]
+	sub rsi, rax
+	or rax, -4
+	add rsi, rdi
+	add rax, rsi
+	add rax, -8
 	ret
