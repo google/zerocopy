@@ -456,7 +456,6 @@ elab "inject_builtins" : command => do
     let cmd ← `(command| @[simp] axiom core_mem_align_of_spec : align_of_spec $ident)
     elabCommand cmd
 
-end Hermes
 -- 6. Allocations
 -- An allocation is a subset of program memory which is addressable from Rust,
 -- and within which pointer arithmetic is possible.
@@ -520,3 +519,69 @@ theorem address_le_usize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.ad
   omega
 
 end Allocation
+
+-- 7. Pointer Referents
+-- We define a generic representation of the memory range a pointer points to.
+
+/--
+  Retrieves the properties of a pointer's referent.
+  The referent is the region of memory that the pointer addresses.
+-/
+structure Referent where
+  -- The start address of the referent
+  address : Nat
+  -- The size of the referent in bytes
+  size : Nat
+  -- The mathematical set of addresses that make up the referent
+  addresses : Set Nat
+  
+  bounds : ∀ a ∈ addresses, address ≤ a ∧ a < address + size
+
+instance : Nonempty Referent :=
+  ⟨{ address := 0, size := 0, addresses := ∅, bounds := by
+      intro a h
+      simp at h }⟩
+
+/--
+  A class for types that act as pointers with a well-defined referent.
+-/
+class HasReferent (P : Type) where
+  referent : P → Referent
+
+-- We model the referent of a raw pointer via an opaque function since
+-- Aeneas's value-semantics model doesn't natively expose physical addresses.
+noncomputable opaque raw_ptr_referent {T : Type} {M : Aeneas.Std.Mutability} : Aeneas.Std.RawPtr T M → Referent
+
+noncomputable instance {T : Type} {M : Aeneas.Std.Mutability} : HasReferent (Aeneas.Std.RawPtr T M) where
+  referent := raw_ptr_referent
+
+-- 8. Pointer Metadata and Exposing Size
+
+/--
+  Extracts the metadata of a pointer.
+  `P` is the pointer type.
+-/
+class HasMetadata (P : Type) (M : outParam Type) where
+  metadata : P → M
+
+-- Sized types have `Unit` metadata
+instance {T : Type} [core.marker.Sized T] {M : Aeneas.Std.Mutability} : HasMetadata (Aeneas.Std.RawPtr T M) Unit where
+  metadata _ := ()
+
+-- A slice DST pointer has `Nat` metadata representing the number of elements
+noncomputable opaque raw_slice_dst_ptr_metadata {T : Type} [SliceDstTypeLayout T] {M : Aeneas.Std.Mutability} :
+  Aeneas.Std.RawPtr T M → Nat
+
+noncomputable instance {T : Type} [SliceDstTypeLayout T] {M : Aeneas.Std.Mutability} :
+  HasMetadata (Aeneas.Std.RawPtr T M) Nat where
+  metadata := raw_slice_dst_ptr_metadata
+
+-- If a type is Sized, its referent size is fixed
+axiom referent_size_sized {T : Type} [core.marker.Sized T] [lay : SizedTypeLayout T] {M : Aeneas.Std.Mutability}
+  (p : Aeneas.Std.RawPtr T M) :
+  (raw_ptr_referent p).size = lay.layout.size
+
+-- If a type is a repr(C) slice DST, its referent size is its offset + length * elem_size + padding
+axiom referent_size_slice_dst {T : Type} [ReprC T] [lay : SliceDstTypeLayout T] {M : Aeneas.Std.Mutability}
+  [md : HasMetadata (Aeneas.Std.RawPtr T M) Nat] (p : Aeneas.Std.RawPtr T M) :
+  (raw_ptr_referent p).size = reprCSliceDstSize lay.layout (md.metadata p)
