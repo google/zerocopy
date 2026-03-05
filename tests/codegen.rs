@@ -51,18 +51,23 @@ fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
                 target_cpu,
                 "--simplify",
                 directive.arg(),
-                "codegen_test",
+                &format!("bench_{bench_name}"),
             ])
             .output()
             .expect("failed to execute process")
     };
 
     let test_directive = |directive: Directive| {
+        println!("{bench_name}");
         let output = cargo_asm(&directive);
         let actual_result = output.stdout;
 
         if !(output.status.success()) {
-            panic!("{}", String::from_utf8_lossy(&output.stderr));
+            panic!(
+                "{}\n{}",
+                String::from_utf8_lossy(&actual_result),
+                String::from_utf8_lossy(&output.stderr)
+            );
         }
 
         let expected_file_path = {

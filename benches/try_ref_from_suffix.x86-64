@@ -1,4 +1,4 @@
-codegen_test:
+bench_try_ref_from_suffix:
 	lea eax, [rsi + rdi]
 	cmp rsi, 4
 	setb cl

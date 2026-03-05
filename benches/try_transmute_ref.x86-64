@@ -1,4 +1,4 @@
-codegen_test:
+bench_try_transmute_ref:
 	mov rdx, rsi
 	xor eax, eax
 	cmp word ptr [rdi], -16192

@@ -2,6 +2,6 @@
 mod format;
 
 #[unsafe(no_mangle)]
-fn codegen_test(source: &[u8]) -> Option<&format::LocoPacket> {
+fn bench_ref_from_bytes(source: &[u8]) -> Option<&format::LocoPacket> {
     zerocopy::FromBytes::ref_from_bytes(source).ok()
 }

@@ -1,4 +1,4 @@
-codegen_test:
+bench_try_ref_from_bytes:
 	mov rdx, rsi
 	mov rax, rdi
 	cmp rsi, 4

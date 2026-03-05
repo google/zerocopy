@@ -11,6 +11,6 @@ struct MinimalViableSource {
 }
 
 #[unsafe(no_mangle)]
-fn codegen_test(source: &MinimalViableSource) -> Option<&format::CocoPacket> {
+fn bench_try_transmute_ref(source: &MinimalViableSource) -> Option<&format::CocoPacket> {
     zerocopy::try_transmute_ref!(source).ok()
 }
