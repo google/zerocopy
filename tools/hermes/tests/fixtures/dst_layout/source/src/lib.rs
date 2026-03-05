@@ -1,5 +1,5 @@
 /// ```lean, hermes
-/// isValid self := Hermes.Alignment self.align.val
+/// isValid self := Hermes.IsAlignment self.align.val
 /// ```
 pub struct DstLayout {
     pub align: usize,
@@ -17,18 +17,23 @@ pub struct TrailingSliceLayout {
     pub elem_size: usize,
 }
 
-// TODO: Add `isSafe` that constrains this to be equal to `Self`'s layout.
 // Self is either Sized or a repr(C) slice DST.
 /// ```lean, hermes
 /// isSafe : 
-///   ∀ (val : Aeneas.Std.ConstRawPtr Self) [Hermes.SliceDstTypeLayout Self] (inst : KnownLayout Self), 
-///     inst.pointer_to_metadata val = Result.ok (Hermes.raw_slice_dst_ptr_metadata val)
+///   (∀ [Hermes.core.marker.Sized Self] [Hermes.HasStaticLayout Self],
+///     inst.LAYOUT.align = (Hermes.HasStaticLayout.layout (α := Self)).align.val ∧
+///     inst.LAYOUT.size_info = dst_layout.SizeInfo.Sized (Hermes.HasStaticLayout.layout (α := Self)).size) ∧
+///   (∀ [Hermes.SpecSliceDstTypeLayout Self],
+///     inst.LAYOUT.align.val = (Hermes.SpecSliceDstTypeLayout.layout (α := Self)).align.val.val ∧
+///     ∃ offset elemSize,
+///       inst.LAYOUT.size_info = dst_layout.SizeInfo.ReprCSliceDst { offset := offset, elem_size := elemSize } ∧
+///       offset.val = (Hermes.SpecSliceDstTypeLayout.layout (α := Self)).trailingOffset ∧
+///       elemSize.val = (Hermes.SpecSliceDstTypeLayout.layout (α := Self)).elementSize ∧
+///       ∀ val, inst.pointer_to_metadata val = Result.ok (Hermes.raw_slice_dst_ptr_metadata val))
 /// ```
 pub unsafe trait KnownLayout {
     const LAYOUT: DstLayout;
 
-    // TODO: Add `isSafe` that constrains this so that, if `Self` is a repr(C)
-    // slice DST, this returns `val`'s actual pointer metadata.
     fn pointer_to_metadata(val: *const Self) -> usize;
 }
 
