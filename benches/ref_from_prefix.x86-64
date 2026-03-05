@@ -1,4 +1,4 @@
-codegen_test:
+bench_ref_from_prefix:
 	xor edx, edx
 	mov eax, 0
 	test dil, 1

@@ -1,4 +1,4 @@
-codegen_test:
+bench_ref_from_suffix:
 	mov rdx, rsi
 	lea ecx, [rsi + rdi]
 	mov eax, edx
