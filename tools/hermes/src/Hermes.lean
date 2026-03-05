@@ -457,3 +457,66 @@ elab "inject_builtins" : command => do
     elabCommand cmd
 
 end Hermes
+-- 6. Allocations
+-- An allocation is a subset of program memory which is addressable from Rust,
+-- and within which pointer arithmetic is possible.
+
+-- We define opaque platform-dependent bounds based on the size of a pointer.
+@[simp] axiom size_usize_ge_2 : size_usize ≥ 2
+
+-- The max values for usize and isize are defined in terms of pointer width.
+@[simp] axiom usize_max_eq : Aeneas.Std.Usize.max = 2^(size_usize * 8) - 1
+@[simp] axiom isize_max_eq : Aeneas.Std.Isize.max = 2^(size_usize * 8 - 1) - 1
+@[simp] axiom isize_min_eq : Aeneas.Std.Isize.min = -(2^(size_usize * 8 - 1))
+
+/--
+  Represents a Rust allocation.
+  An allocation has a base address, a size, and a set of memory addresses.
+  Because there is no guarantee that an allocation is contiguous, `addresses`
+  is modeled as an arbitrary `Set Nat` rather than a contiguous range.
+-/
+structure Allocation where
+  base : Nat
+  size : Nat
+  addresses : Set Nat
+  
+  -- `base` is not equal to null (address 0)
+  base_not_null : base ≠ 0
+  
+  -- `size <= isize::MAX`
+  size_le_isize_max : size ≤ Aeneas.Std.Isize.max
+  
+  -- `base + size <= usize::MAX`
+  base_add_size_le_usize_max : base + size ≤ Aeneas.Std.Usize.max
+  
+  -- For all addresses `a` in `addresses`, `a` is in the range `base .. (base + size)`
+  bounds : ∀ a ∈ addresses, base ≤ a ∧ a < base + size
+
+namespace Allocation
+
+-- Consequence 1: `a - base` does not overflow `isize`
+theorem offset_le_isize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
+    a - alloc.base ≤ Aeneas.Std.Isize.max := by
+  have h_bound := alloc.bounds a ha
+  have h_lt : a < alloc.base + alloc.size := h_bound.right
+  have h_sub : a - alloc.base < alloc.size := by omega
+  have h_size : alloc.size ≤ Aeneas.Std.Isize.max := alloc.size_le_isize_max
+  omega
+
+-- Consequence 2: `a - base` is non-negative
+-- (This is trivially true in Lean for `Nat` subtraction when `alloc.base ≤ a`, 
+-- which we prove here to show the offset is well-defined mathematically).
+theorem offset_non_negative (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
+    alloc.base ≤ a :=
+  (alloc.bounds a ha).left
+
+-- Consequence 3: `base + o` will not wrap around the address space (overflow `usize`)
+-- `o = a - base`, so `base + o` is just `a` if `base <= a` (which we proved above).
+theorem address_le_usize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
+    a ≤ Aeneas.Std.Usize.max := by
+  have h_bound := alloc.bounds a ha
+  have h_lt : a < alloc.base + alloc.size := h_bound.right
+  have h_max : alloc.base + alloc.size ≤ Aeneas.Std.Usize.max := alloc.base_add_size_le_usize_max
+  omega
+
+end Allocation
