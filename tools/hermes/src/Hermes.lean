@@ -543,6 +543,16 @@ instance : Nonempty Referent :=
       simp at h }⟩
 
 /--
+  A predicate indicating that a referent fits entirely within a given allocation.
+  This means that all logical addresses of the referent are addresses allocated
+  in the allocation, and the contiguous address range of the referent is
+  a sub-range of the contiguous address range of the allocation.
+-/
+def FitsInAllocation (r : Referent) (a : Allocation) : Prop :=
+  r.addresses ⊆ a.addresses ∧
+  a.base ≤ r.address ∧ r.address + r.size ≤ a.base + a.size
+
+/--
   A class for types that act as pointers with a well-defined referent.
 -/
 class HasReferent (P : Type) where
@@ -568,12 +578,12 @@ class HasMetadata (P : Type) (M : outParam Type) where
 instance {T : Type} [core.marker.Sized T] {M : Aeneas.Std.Mutability} : HasMetadata (Aeneas.Std.RawPtr T M) Unit where
   metadata _ := ()
 
--- A slice DST pointer has `Nat` metadata representing the number of elements
+-- A slice DST pointer has `Usize` metadata representing the number of elements
 noncomputable opaque raw_slice_dst_ptr_metadata {T : Type} [SliceDstTypeLayout T] {M : Aeneas.Std.Mutability} :
-  Aeneas.Std.RawPtr T M → Nat
+  Aeneas.Std.RawPtr T M → Aeneas.Std.Usize
 
 noncomputable instance {T : Type} [SliceDstTypeLayout T] {M : Aeneas.Std.Mutability} :
-  HasMetadata (Aeneas.Std.RawPtr T M) Nat where
+  HasMetadata (Aeneas.Std.RawPtr T M) Aeneas.Std.Usize where
   metadata := raw_slice_dst_ptr_metadata
 
 -- If a type is Sized, its referent size is fixed
@@ -583,5 +593,5 @@ axiom referent_size_sized {T : Type} [core.marker.Sized T] [lay : SizedTypeLayou
 
 -- If a type is a repr(C) slice DST, its referent size is its offset + length * elem_size + padding
 axiom referent_size_slice_dst {T : Type} [ReprC T] [lay : SliceDstTypeLayout T] {M : Aeneas.Std.Mutability}
-  [md : HasMetadata (Aeneas.Std.RawPtr T M) Nat] (p : Aeneas.Std.RawPtr T M) :
-  (raw_ptr_referent p).size = reprCSliceDstSize lay.layout (md.metadata p)
+  [md : HasMetadata (Aeneas.Std.RawPtr T M) Aeneas.Std.Usize] (p : Aeneas.Std.RawPtr T M) :
+  (raw_ptr_referent p).size = reprCSliceDstSize lay.layout (md.metadata p).val
