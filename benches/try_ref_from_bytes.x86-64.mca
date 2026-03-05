@@ -1,12 +1,12 @@
 Iterations:        100
-Instructions:      2000
-Total Cycles:      639
-Total uOps:        2100
+Instructions:      2100
+Total Cycles:      709
+Total uOps:        2300
 
 Dispatch Width:    4
-uOps Per Cycle:    3.29
-IPC:               3.13
-Block RThroughput: 5.3
+uOps Per Cycle:    3.24
+IPC:               2.96
+Block RThroughput: 5.8
 
 
 Instruction Info:
@@ -18,25 +18,26 @@ Instruction Info:
 [6]: HasSideEffects (U)
 
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      1     0.33                        test	dil, 3
+ 1      1     1.00                        jne	.LBB5_4
+ 1      1     0.33                        movabs	rax, 9223372036854775804
+ 1      1     0.33                        and	rax, rsi
+ 1      1     0.33                        cmp	rax, 9
+ 1      1     1.00                        jb	.LBB5_4
+ 1      1     0.33                        add	rax, -9
+ 1      1     0.33                        movabs	rcx, -6148914691236517205
+ 2      4     1.00                        mul	rcx
+ 1      1     0.50                        shr	rdx
+ 1      1     0.50                        lea	rax, [rdx + 2*rdx]
+ 1      1     0.33                        or	rax, 3
+ 1      1     0.33                        add	rax, 9
+ 1      1     0.33                        cmp	rsi, rax
+ 1      1     1.00                        jne	.LBB5_4
+ 2      6     0.50    *                   cmp	word ptr [rdi], -16192
+ 1      1     1.00                        je	.LBB5_5
+ 1      0     0.25                        xor	edi, edi
  1      1     0.33                        mov	rdx, rsi
  1      1     0.33                        mov	rax, rdi
- 1      1     0.33                        cmp	rsi, 4
- 1      1     0.50                        setb	cl
- 1      1     0.33                        or	cl, al
- 1      1     0.33                        test	cl, 1
- 1      1     1.00                        jne	.LBB5_4
- 1      1     0.50                        lea	rcx, [rdx - 4]
- 1      1     0.33                        mov	rsi, rcx
- 1      1     0.33                        and	rsi, -2
- 1      1     0.33                        add	rsi, 4
- 1      1     0.33                        cmp	rdx, rsi
- 1      1     1.00                        jne	.LBB5_4
- 2      6     0.50    *                   cmp	word ptr [rax], -16192
- 1      1     1.00                        jne	.LBB5_4
- 1      1     0.50                        shr	rcx
- 1      1     0.33                        mov	rdx, rcx
- 1      1     1.00                  U     ret
- 1      0     0.25                        xor	eax, eax
  1      1     1.00                  U     ret
 
 
@@ -53,27 +54,28 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     6.32   6.32    -     6.36   0.50   0.50   
+ -      -     6.98   6.99    -     7.03   0.50   0.50   
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
- -      -     0.33   0.66    -     0.01    -      -     mov	rdx, rsi
- -      -     0.66   0.34    -      -      -      -     mov	rax, rdi
- -      -     0.34   0.66    -      -      -      -     cmp	rsi, 4
- -      -     0.99    -      -     0.01    -      -     setb	cl
- -      -     0.01   0.99    -      -      -      -     or	cl, al
- -      -      -     1.00    -      -      -      -     test	cl, 1
+ -      -     0.48   0.51    -     0.01    -      -     test	dil, 3
  -      -      -      -      -     1.00    -      -     jne	.LBB5_4
- -      -     0.66   0.34    -      -      -      -     lea	rcx, [rdx - 4]
- -      -     0.33   0.66    -     0.01    -      -     mov	rsi, rcx
- -      -     1.00    -      -      -      -      -     and	rsi, -2
- -      -     0.66   0.34    -      -      -      -     add	rsi, 4
- -      -      -     1.00    -      -      -      -     cmp	rdx, rsi
+ -      -     0.51   0.49    -      -      -      -     movabs	rax, 9223372036854775804
+ -      -     0.01   0.99    -      -      -      -     and	rax, rsi
+ -      -     0.51   0.49    -      -      -      -     cmp	rax, 9
+ -      -      -      -      -     1.00    -      -     jb	.LBB5_4
+ -      -     0.98    -      -     0.02    -      -     add	rax, -9
+ -      -     0.98   0.02    -      -      -      -     movabs	rcx, -6148914691236517205
+ -      -     1.00   1.00    -      -      -      -     mul	rcx
+ -      -     0.99    -      -     0.01    -      -     shr	rdx
+ -      -      -     1.00    -      -      -      -     lea	rax, [rdx + 2*rdx]
+ -      -      -     0.51    -     0.49    -      -     or	rax, 3
+ -      -     0.01   0.49    -     0.50    -      -     add	rax, 9
+ -      -      -     0.02    -     0.98    -      -     cmp	rsi, rax
  -      -      -      -      -     1.00    -      -     jne	.LBB5_4
- -      -      -      -      -     1.00   0.50   0.50   cmp	word ptr [rax], -16192
- -      -      -      -      -     1.00    -      -     jne	.LBB5_4
- -      -     0.67    -      -     0.33    -      -     shr	rcx
- -      -     0.67   0.33    -      -      -      -     mov	rdx, rcx
- -      -      -      -      -     1.00    -      -     ret
- -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -     0.51   0.49    -      -     0.50   0.50   cmp	word ptr [rdi], -16192
+ -      -      -      -      -     1.00    -      -     je	.LBB5_5
+ -      -      -      -      -      -      -      -     xor	edi, edi
+ -      -     0.50   0.50    -      -      -      -     mov	rdx, rsi
+ -      -     0.50   0.48    -     0.02    -      -     mov	rax, rdi
  -      -      -      -      -     1.00    -      -     ret

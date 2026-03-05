@@ -1,12 +1,12 @@
 use zerocopy_derive::*;
 
-#[path = "formats/coco.rs"]
+#[path = "formats/coco_no_padding.rs"]
 mod format;
 
 #[derive(IntoBytes, KnownLayout, Immutable)]
 #[repr(C, align(2))]
 struct MinimalViableSource {
-    header: [u8; 4],
+    header: [u8; 6],
     trailer: [[u8; 2]],
 }
 

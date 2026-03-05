@@ -319,11 +319,13 @@ macro_rules! transmute {
 /// destination type whose complex layout places complex requirements on the
 /// source:
 ///
-/// - the source must begin an even memory address
+/// - the source must begin at an even memory address
 /// - the source has a minimum length of 4 bytes
 /// - the source has a total length divisible by 2
 ///
-/// These conditions are all checked at compile time.
+/// These conditions are all checked at compile time. Furthermore, because the
+/// fixed header size of the source type is greater than that of the destination
+/// type, the pointer metadata must be adjusted at runtime.
 #[doc = codegen_tabs!(format = "coco", bench = "transmute_ref")]
 #[macro_export]
 macro_rules! transmute_ref {
@@ -739,7 +741,9 @@ macro_rules! try_transmute {
 /// - the source has a total length divisible by 2
 /// - the source begins with the bytes `0xC0C0`
 ///
-/// All except the final condition are checked at compile time.
+/// All except the final condition are checked at compile time. Furthermore,
+/// because the fixed header size of the source type is greater than that of the
+/// destination type, the pointer metadata must also be adjusted at runtime.
 #[doc = codegen_tabs!(format = "coco", bench = "try_transmute_ref")]
 #[macro_export]
 macro_rules! try_transmute_ref {
