@@ -375,6 +375,7 @@ macro_rules! opt_unsafe_fn {
 /// }
 /// ```
 #[cfg_attr(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE, macro_export)] // Used in `doctests.rs`
+#[doc(hidden)]
 macro_rules! impl_or_verify {
     // The following two match arms follow the same pattern as their
     // counterparts in `unsafe_impl!`; see the documentation on those arms for
@@ -836,6 +837,14 @@ macro_rules! impl_transitive_transmute_from {
 #[inline(always)]
 pub(crate) const unsafe fn __unsafe() {}
 
+/// Extracts the contents of doc comments.
+#[allow(unused)]
+macro_rules! docstring {
+    ($(#[doc = $content:expr])*) => {
+        concat!($($content, "\n",)*)
+    }
+}
+
 /// Generate a rustdoc-style header with `$name` as the HTML ID for the 'Code
 /// Generation' section of documentation.
 #[allow(unused)]
@@ -856,90 +865,167 @@ macro_rules! codegen_header {
     };
 }
 
-/// Generate the HTML for the tabulated portion of the 'Code Generation'
-/// documentation. Consumes the name of the format file and benchmark.
+/// Generates HTML tabs.
+#[rustfmt::skip]
 #[allow(unused)]
-macro_rules! codegen_tabs {
-    (format = $format:expr, bench = $name:expr) => {
+macro_rules! tabs {
+    (
+        name = $name:expr,
+        arity = $arity:literal,
+        $([
+            $($open:ident)?
+            @index $n:literal
+            @title $title:literal
+            $(#[doc = $content:expr])*
+        ]),*
+    ) => {
+        concat!("
+<div class='codegen-tabs' style='--arity: ", $arity ,"'>", $(concat!("
+    <details name='tab-", $name,"' style='--n: ", $n ,"'", $(stringify!($open),)*">
+        <summary><h6>", $title, "</h6></summary>
+        <div>
+
+", $($content, "\n",)* "
+\
+        </div>
+    </details>"),)*
+"</div>")
+    }
+}
+
+/// Generates the HTML for a single benchmark example.
+#[allow(unused)]
+macro_rules! codegen_example {
+    (format = $format:expr, bench = $bench:expr) => {
+        tabs!(
+            name = $bench,
+            arity = 4,
+            [
+                @index 1
+                @title "Format"
+                /// ```ignore
+                #[doc = include_str!(concat!("../benches/formats/", $format, ".rs"))]
+                /// ```
+            ],
+            [
+                @index 2
+                @title "Benchmark"
+                /// ```ignore
+                #[doc = include_str!(concat!("../benches/", $bench, ".rs"))]
+                /// ```
+            ],
+            [
+                open
+                @index 3
+                @title "Assembly"
+                /// ```plain
+                #[doc = include_str!(concat!("../benches/", $bench, ".x86-64"))]
+                /// ```
+            ],
+            [
+                @index 4
+                @title "Machine Code Analysis"
+                /// ```plain
+                #[doc = include_str!(concat!("../benches/", $bench, ".x86-64.mca"))]
+                /// ```
+            ]
+        )
+    }
+}
+
+/// Generate the HTML for a suite of benchmark examples.
+#[allow(unused)]
+macro_rules! codegen_example_suite {
+    (
+        bench = $bench:expr,
+        format = $format:expr,
+        arity = $arity:literal,
+        $([
+            $($open:ident)?
+            @index $index:literal
+            @title $title:literal
+            @variant $variant:literal
+        ]),*
+    ) => {
+        tabs!(
+            name = $bench,
+            arity = $arity,
+            $([
+                $($open)*
+                @index $index
+                @title $title
+                #[doc = codegen_example!(
+                    format = concat!($format, "_", $variant),
+                    bench = concat!($bench, "_", $variant)
+                )]
+            ]),*
+        )
+    }
+}
+
+/// Generates the string for code generation preamble.
+#[allow(unused)]
+macro_rules! codegen_preamble {
+    () => {
+        docstring!(
+            ///
+            /// This abstraction for reinterpreting a buffer of bytes as a
+            /// structured type is safe and cheap, but does not necessarily have
+            /// zero runtime cost. The codegen you experience in practice will
+            /// depend on optimization level, the layout of the destination
+            /// type, and what the compiler can prove about the source.
+            ///
+        )
+    }
+}
+
+/// Generates the HTML for code generation documentation.
+#[allow(unused)]
+macro_rules! codegen_section {
+    (
+        bench = $bench:expr,
+        format = $format:expr,
+        arity = $arity:literal,
+        $([
+            $($open:ident)?
+            @index $index:literal
+            @title $title:literal
+            @variant $variant:literal
+        ]),*
+    ) => {
         concat!(
-            "
-<div class='codegen-tabs'>
-    <details name='tab-",
-            $name,
-            "' style='--n: 1'>
-        <summary>
-            <h6>Format</h6>
-        </summary>
-        <div>
-
-```ignore
-",
-            include_str!(concat!("../benches/formats/", $format, ".rs")),
-            "```
-\
-        </div>
-    </details>
-    <details name='tab-",
-            $name,
-            "' style='--n: 2'>
-        <summary>
-            <h6>Benchmark</h6>
-        </summary>
-        <div>
-
-```ignore
-",
-            include_str!(concat!("../benches/", $name, ".rs")),
-            "```
-\
-        </div>
-    </details>
-    <details name='tab-",
-            $name,
-            "' style='--n: 3'>
-        <summary>
-            <h6>Assembly (x86-64)</h6>
-        </summary>
-        <div>
-
-```ignore
-",
-            include_str!(concat!("../benches/", $name, ".x86-64")),
-            "```
-\
-        </div>
-    </details>
-    <details name='tab-",
-            $name,
-            "' style='--n: 4'>
-        <summary>
-            <h6>Machine Code Analysis</h6>
-        </summary>
-        <div>
-
-### Replication
-
-You may replicate this analysis on your device with [`cargo-show-asm`] by running:
-
-[`cargo-show-asm`]: https://github.com/pacak/cargo-show-asm
-
-```bash
-cargo asm --bench ",
-            $name,
-            " codegen_test --mca
-```
-
-### Results
-```plain
-",
-            include_str!(concat!("../benches/", $name, ".x86-64.mca")),
-            "```
-\
-        </div>
-    </details>
-</div>
-
-"
+            codegen_header!($bench),
+            codegen_preamble!(),
+            docstring!(
+                ///
+                /// The below examples illustrate typical codegen for
+                /// increasingly complex types:
+                /// 
+            ),
+            codegen_example_suite!(
+                bench = $bench,
+                format = $format,
+                arity = $arity,
+                $([
+                    $($open)*
+                    @index $index
+                    @title $title
+                    @variant $variant
+                ]),*
+            )
         )
     };
+    (
+        bench = $bench:expr,
+        format = $format:expr,
+    ) => {
+        concat!(
+            codegen_header!($bench),
+            codegen_preamble!(),
+            codegen_example!(
+                format = $format,
+                bench = $bench
+            )
+        )
+    }
 }
