@@ -1,4 +1,4 @@
-codegen_test:
+bench_transmute_ref:
 	mov rdx, rsi
 	mov rax, rdi
 	ret

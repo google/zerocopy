@@ -2,7 +2,7 @@
 mod format;
 
 #[unsafe(no_mangle)]
-fn codegen_test(source: &[u8]) -> Option<&format::CocoPacket> {
+fn bench_try_ref_from_suffix(source: &[u8]) -> Option<&format::CocoPacket> {
     match zerocopy::TryFromBytes::try_ref_from_suffix(source) {
         Ok((_rest, packet)) => Some(packet),
         _ => None,

@@ -1,4 +1,4 @@
-codegen_test:
+bench_try_ref_from_suffix_with_elems:
 	movabs rax, 9223372036854775805
 	cmp rdx, rax
 	ja .LBB5_1
