@@ -1,0 +1,18 @@
+# Hermes Formal Verification Toolchain
+
+> Hermes is a toolchain for formally verifying Rust code using Aeneas and Lean 4, with a specific focus on memory layout and correctness. This documentation provides the necessary concepts and API definitions for AI agents writing specifications and proofs.
+
+## Core Architecture
+[Overall toolchain architecture and integration mechanics](docs/agent/architecture.md)
+
+## Memory Modeling
+[Lean formalization of Rust memory, allocations, and bounds](docs/agent/memory_model.md)
+
+## Rust Integration
+[How Rust constructs map to Lean traits/axioms](docs/agent/rust_mapping.md)
+
+## Writing Proofs
+[How to write specifications and proofs in Rust comments](docs/agent/verification.md)
+
+## Core Sources
+[Hermes.lean](src/Hermes.lean) - The foundational Lean definitions and axioms.
