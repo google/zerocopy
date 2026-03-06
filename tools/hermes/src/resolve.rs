@@ -214,7 +214,8 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
     // outside the standard project structure.
     check_for_external_deps(&metadata)?;
 
-    let selected_packages = resolve_packages(&metadata, &args.workspace)?;
+    let selected_packages =
+        resolve_packages(&metadata, &args.workspace, args.manifest.manifest_path.as_deref())?;
 
     let (hermes_global_root, hermes_run_root) = resolve_run_roots(&metadata);
     let mut roots = Roots {
@@ -289,6 +290,7 @@ fn resolve_run_roots(metadata: &Metadata) -> (PathBuf, PathBuf) {
 fn resolve_packages<'a>(
     metadata: &'a Metadata,
     args: &clap_cargo::Workspace,
+    manifest_path: Option<&std::path::Path>,
 ) -> Result<Vec<&'a Package>> {
     log::trace!("resolve_packages(workspace: {}, all: {})", args.workspace, args.all);
     let mut packages = if !args.package.is_empty() {
@@ -316,10 +318,21 @@ fn resolve_packages<'a>(
         // Resolve default (Current Working Directory). This mimics Cargo's
         // behavior: if we are inside a package, we build that package. If we
         // are at the workspace root, we build the whole workspace.
-        let cwd = env::current_dir()
-            .context("Failed to get CWD")?
-            .canonicalize()
-            .context("Failed to canonicalize CWD")?;
+        let cwd = {
+            let cwd_candidate = manifest_path
+                .map(|p| p.to_path_buf())
+                .unwrap_or_else(|| env::current_dir().unwrap_or_default())
+                .canonicalize()
+                .context("Failed to canonicalize CWD")?;
+
+            // If the user explicitly provided `--manifest-path`, Cargo treats
+            // its parent directory as the effective CWD.
+            if manifest_path.is_some() {
+                cwd_candidate.parent().unwrap_or(&cwd_candidate).to_path_buf()
+            } else {
+                cwd_candidate
+            }
+        };
 
         // Find the package whose manifest directory is an ancestor of CWD
         let current_pkg = metadata.packages.iter().find(|p| {
