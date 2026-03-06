@@ -275,6 +275,18 @@ class HasStaticSpecLayout (α : Type) [core.marker.Sized α] where
 class HasStaticLayout (α : Type) [core.marker.Sized α] where
   layout : Layout
 
+namespace HasStaticLayout
+
+@[simp] theorem size_div_align_mul_align_nat {T : Type} [core.marker.Sized T] [l : HasStaticLayout T] :
+  l.layout.size.val / l.layout.align.val.val * l.layout.align.val.val = l.layout.size.val := 
+  Nat.div_mul_cancel l.layout.sizeAligned
+
+@[simp] theorem size_div_align_mul_align_int {T : Type} [core.marker.Sized T] [l : HasStaticLayout T] :
+  (l.layout.size.val : Int) / (l.layout.align.val.val : Int) * (l.layout.align.val.val : Int) = (l.layout.size.val : Int) := by
+  exact_mod_cast size_div_align_mul_align_nat
+
+end HasStaticLayout
+
 /--
   A blanket implementation providing a physical static layout for any `Sized`
   type whose mathematical layout fits in memory.
@@ -596,6 +608,17 @@ elab "inject_builtins" : command => do
 
 -- The max values for usize and isize are defined in terms of pointer width.
 @[simp] axiom usize_max_eq : Usize.max = 2^(size_usize.val * 8) - 1
+
+@[simp] theorem Usize.val_le_max_algebraic (u : Aeneas.Std.Usize) :
+  u.val ≤ 2 ^ (size_usize.val * 8) - 1 := by
+  have h_bound : u.val ≤ Aeneas.Std.Usize.max := by scalar_tac
+  have h_max : Aeneas.Std.Usize.max = 2 ^ (size_usize.val * 8) - 1 := usize_max_eq
+  omega
+
+@[simp] theorem HasStaticLayout.size_le_max_algebraic {T : Type} [core.marker.Sized T] [l : HasStaticLayout T] :
+  l.layout.size.val ≤ 2 ^ (size_usize.val * 8) - 1 := 
+  Usize.val_le_max_algebraic l.layout.size
+
 @[simp] axiom isize_max_eq : Isize.max = 2^(size_usize.val * 8 - 1) - 1
 @[simp] axiom isize_min_eq : Isize.min = -(2^(size_usize.val * 8 - 1))
 
