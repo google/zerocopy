@@ -54,6 +54,7 @@ struct TestConfig {
     #[serde(default)]
     extra_inputs: Vec<String>,
     stderr_file: Option<String>,
+    stdout_file: Option<String>,
     #[serde(default)]
     expected_status: ExpectedStatus,
     #[serde(default)]
@@ -72,6 +73,7 @@ struct TestPhase {
     action: Option<String>,
     expected_status: Option<ExpectedStatus>,
     stderr_file: Option<String>,
+    stdout_file: Option<String>,
     args: Option<Vec<String>>,
 }
 
@@ -852,9 +854,15 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
     if let Some(stderr_file) = &config.stderr_file {
         allowed_paths.insert(ctx.test_case_root.join(stderr_file));
     }
+    if let Some(stdout_file) = &config.stdout_file {
+        allowed_paths.insert(ctx.test_case_root.join(stdout_file));
+    }
     for phase in &config.phases {
         if let Some(stderr_file) = &phase.stderr_file {
             allowed_paths.insert(ctx.test_case_root.join(stderr_file));
+        }
+        if let Some(stdout_file) = &phase.stdout_file {
+            allowed_paths.insert(ctx.test_case_root.join(stdout_file));
         }
     }
 
@@ -960,6 +968,9 @@ fn run_single_phase(
         if phase.stderr_file.is_some() {
             config.stderr_file = phase.stderr_file.clone();
         }
+        if phase.stdout_file.is_some() {
+            config.stdout_file = phase.stdout_file.clone();
+        }
     }
 
     let assert = ctx.run_hermes(&config);
@@ -984,51 +995,76 @@ fn run_single_phase(
     // configuration, which specifies an output file relative to the test root. We enforce this
     // strictness to ensure that no legacy fallback configurations or implicit files can
     // accidentally mask the actual stderr output and decouple it from its intended TOML manifest.
+    let output = assert.get_output();
     if let Some(stderr_file) = &config.stderr_file {
-        let expected_stderr_path = ctx.test_case_root.join(stderr_file);
-        let bless = std::env::var("BLESS").as_deref() == Ok("1")
-            || std::env::var("HERMES_BLESS").as_deref() == Ok("1");
-        let output = assert.get_output();
-        let actual_stderr = String::from_utf8_lossy(&output.stderr);
-        // We strip ANSI escape codes and carriage returns to ensure that the host coloring is stripped
-        let actual_stripped = strip_ansi_escapes::strip(&*actual_stderr);
-        let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
-        let replace_path = ctx.sandbox_root.to_str().unwrap();
-
-        let (cache_dir, _) = get_or_init_shared_cache();
-        let cache_path_str = cache_dir.to_str().unwrap();
-        let actual_clean = sanitize_stderr(
-            &actual_str
-                .replace(replace_path, "[PROJECT_ROOT]")
-                .replace(cache_path_str, "[CACHE_ROOT]"),
+        assert_output_file(
+            &ctx.test_case_root,
+            &ctx.sandbox_root,
+            &ctx.test_name,
+            stderr_file,
+            &output.stderr,
+            "Stderr",
         );
+    }
 
-        if bless {
-            fs::write(&expected_stderr_path, &actual_clean).unwrap();
-        } else {
-            let expected_txt =
-                fs::read_to_string(&expected_stderr_path).unwrap().replace("\r\n", "\n");
-            if expected_txt != actual_clean {
-                use similar::{ChangeTag, TextDiff};
-                let diff = TextDiff::from_lines(&expected_txt, &actual_clean);
-                let mut diff_str = String::new();
-                for change in diff.iter_all_changes() {
-                    let sign = match change.tag() {
-                        ChangeTag::Delete => "-",
-                        ChangeTag::Insert => "+",
-                        ChangeTag::Equal => " ",
-                    };
-                    diff_str.push_str(&format!("{sign}{change}"));
-                }
-                panic!(
-                    "Stderr mismatch for {}! Run with BLESS=1 to update.\n{}",
-                    ctx.test_name, diff_str
-                );
-            }
-        }
+    if let Some(stdout_file) = &config.stdout_file {
+        assert_output_file(
+            &ctx.test_case_root,
+            &ctx.sandbox_root,
+            &ctx.test_name,
+            stdout_file,
+            &output.stdout,
+            "Stdout",
+        );
     }
 
     Ok(())
+}
+
+fn assert_output_file(
+    test_case_root: &Path,
+    sandbox_root: &Path,
+    test_name: &str,
+    expected_file: &str,
+    actual_output: &[u8],
+    stream_name: &str,
+) {
+    let expected_path = test_case_root.join(expected_file);
+    let bless = std::env::var("BLESS").as_deref() == Ok("1")
+        || std::env::var("HERMES_BLESS").as_deref() == Ok("1");
+    let actual_str = String::from_utf8_lossy(actual_output);
+    let actual_stripped = strip_ansi_escapes::strip(&*actual_str);
+    let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
+    let replace_path = sandbox_root.to_str().unwrap();
+
+    let (cache_dir, _) = get_or_init_shared_cache();
+    let cache_path_str = cache_dir.to_str().unwrap();
+    let actual_clean = sanitize_output(
+        &actual_str.replace(replace_path, "[PROJECT_ROOT]").replace(cache_path_str, "[CACHE_ROOT]"),
+    );
+
+    if bless {
+        fs::write(&expected_path, &actual_clean).unwrap();
+    } else {
+        let expected_txt = fs::read_to_string(&expected_path).unwrap().replace("\r\n", "\n");
+        if expected_txt != actual_clean {
+            use similar::{ChangeTag, TextDiff};
+            let diff = TextDiff::from_lines(&expected_txt, &actual_clean);
+            let mut diff_str = String::new();
+            for change in diff.iter_all_changes() {
+                let sign = match change.tag() {
+                    ChangeTag::Delete => "-",
+                    ChangeTag::Insert => "+",
+                    ChangeTag::Equal => " ",
+                };
+                diff_str.push_str(&format!("{sign}{change}"));
+            }
+            panic!(
+                "{} mismatch for {}! Run with BLESS=1 to update.\n{}",
+                stream_name, test_name, diff_str
+            );
+        }
+    }
 }
 
 fn parse_command_log(content: &str) -> Vec<Vec<String>> {
@@ -1453,7 +1489,7 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
 // length hexadecimal hashes). We scrub these dynamically generated values and replace
 // them with static `<PLACERHOLDER>` tokens so that we can deterministically compare the
 // output across different host machines and executions.
-fn sanitize_stderr(stderr: &str) -> String {
+fn sanitize_output(output: &str) -> String {
     let re_timestamp = regex::Regex::new(r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z ").unwrap();
     let re_thread_id = regex::Regex::new(r"thread '([^']+)' \(\d+\) panicked").unwrap();
     let re_file_lock =
@@ -1463,7 +1499,7 @@ fn sanitize_stderr(stderr: &str) -> String {
     let re_aeneas_time = regex::Regex::new(r"Total execution time: \d+\.\d+ seconds").unwrap();
     let re_worker_id = regex::Regex::new(r"worker_caches/\d+/").unwrap();
 
-    let mut clean = stderr.to_string();
+    let mut clean = output.to_string();
     clean = re_timestamp.replace_all(&clean, "[YYYY-MM-DDTHH:MM:SSZ ").into_owned();
     clean = re_thread_id.replace_all(&clean, "thread '$1' (<ID>) panicked").into_owned();
     clean = re_file_lock.replace_all(&clean, "").into_owned();

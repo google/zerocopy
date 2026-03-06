@@ -1,3 +1,11 @@
+<!-- Copyright 2026 The Fuchsia Authors
+
+Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+<LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+This file may not be copied, modified, or distributed except according to
+those terms. -->
+
 # Hermes
 
 ## Basic commands
@@ -11,7 +19,11 @@
 
 1. Integration tests are expensive. Prefer `cargo test --bin hermes` for quick verification and iteration,
    and only run `cargo test --test integration` when you need to verify the integration tests.
-2. To see where intermediate artifacts are placed, run with `RUST_LOG=hermes=trace`, e.g.:
+2. To see the generated Lean code for a module, use `cargo run expand`. This will run Aeneas and Hermes but skip verification, outputting the generated `.lean` definitions to the terminal.
+   ```bash
+   cargo run expand --example abs
+   ```
+3. To see where intermediate artifacts are placed on disk, run with `RUST_LOG=hermes=trace` as a fallback:
   ```bash
   RUST_LOG=hermes=trace cargo run verify --example abs
   ```
