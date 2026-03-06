@@ -16,6 +16,5 @@ set -eo pipefail
     -Z unstable-options \
     --document-hidden-items \
     --document-private-items \
-    --generate-macro-expansion \
     --extend-css rustdoc/style.css
 
