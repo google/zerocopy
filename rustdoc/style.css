@@ -10,15 +10,17 @@ those terms.
 
 .codegen-tabs {
     display: grid;
-    grid-template-columns: repeat(4, minmax(200px, 1fr));
+    grid-template-columns: repeat(var(--arity), minmax(200px, 1fr));
     grid-template-rows: auto 1fr;
     column-gap: 1rem;
 }
 
-.codegen-tabs:not(:has(details[open]))::after {
+.codegen-tabs:not(:has(> details[open]))::after {
     grid-column: 1/-1;
     content: 'Click one of the above headers to expand its contents.';
     font-style: italic;
+    font-size: small;
+    text-align: center;
 }
 
 .codegen-tabs details {
@@ -38,7 +40,7 @@ those terms.
     cursor: pointer;
 }
 
-.codegen-tabs details[open] :is(summary) {
+.codegen-tabs details[open] > summary {
     background-color: var(--code-block-background-color);
     border-bottom-color: var(--target-border-color);
 }

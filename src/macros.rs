@@ -60,6 +60,11 @@
 /// # Use in `const` contexts
 ///
 /// This macro can be invoked in `const` contexts.
+/// 
+#[doc = codegen_section!(
+    bench = "transmute",
+    format = "coco_static_size",
+)]
 #[macro_export]
 macro_rules! transmute {
     // NOTE: This must be a macro (rather than a function with trait bounds)
@@ -313,20 +318,22 @@ macro_rules! transmute {
 /// This macro can be invoked in `const` contexts only when `Src: Sized` and
 /// `Dst: Sized`.
 ///
-/// # Code Generation
-///
-/// The below code generation benchmark exercises this routine on a
-/// destination type whose complex layout places complex requirements on the
-/// source:
-///
-/// - the source must begin at an even memory address
-/// - the source has a minimum length of 4 bytes
-/// - the source has a total length divisible by 2
-///
-/// These conditions are all checked at compile time. Furthermore, because the
-/// fixed header size of the source type is greater than that of the destination
-/// type, the pointer metadata must be adjusted at runtime.
-#[doc = codegen_tabs!(format = "coco", bench = "transmute_ref")]
+#[doc = codegen_section!(
+    bench = "transmute_ref",
+    format = "coco",
+    arity = 2,
+    [
+        open
+        @index 1
+        @title "Sized"
+        @variant "static_size"
+    ],
+    [
+        @index 2
+        @title "Unsized"
+        @variant "dynamic_size"
+    ]
+)]
 #[macro_export]
 macro_rules! transmute_ref {
     ($e:expr) => {{
@@ -608,6 +615,11 @@ macro_rules! transmute_mut {
 ///     Result::<bool, _>::Err(ValidityError { .. })
 /// ));
 /// ```
+/// 
+#[doc = codegen_section!(
+    bench = "try_transmute",
+    format = "coco_static_size",
+)]
 #[macro_export]
 macro_rules! try_transmute {
     ($e:expr) => {{
@@ -730,21 +742,22 @@ macro_rules! try_transmute {
 /// assert_eq!(dst.u, [false, true, false, true, false, true]);
 /// ```
 ///
-/// # Code Generation
-///
-/// The below code generation benchmark exercises this routine on a
-/// destination type whose complex layout places complex requirements on the
-/// source:
-///
-/// - the source must begin an even memory address
-/// - the source has a minimum length of 4 bytes
-/// - the source has a total length divisible by 2
-/// - the source begins with the bytes `0xC0C0`
-///
-/// All except the final condition are checked at compile time. Furthermore,
-/// because the fixed header size of the source type is greater than that of the
-/// destination type, the pointer metadata must also be adjusted at runtime.
-#[doc = codegen_tabs!(format = "coco", bench = "try_transmute_ref")]
+#[doc = codegen_section!(
+    bench = "try_transmute_ref",
+    format = "coco",
+    arity = 2,
+    [
+        open
+        @index 1
+        @title "Sized"
+        @variant "static_size"
+    ],
+    [
+        @index 2
+        @title "Unsized"
+        @variant "dynamic_size"
+    ]
+)]
 #[macro_export]
 macro_rules! try_transmute_ref {
     ($e:expr) => {{

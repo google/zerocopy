@@ -14,8 +14,7 @@ set -eo pipefail
 
 ./cargo.sh +nightly rustdoc -- \
     -Z unstable-options \
-    --document-hidden-items \
-    --document-private-items \
-    --generate-macro-expansion \
     --extend-css rustdoc/style.css
+#    --document-hidden-items \
+#    --document-private-items \
 
