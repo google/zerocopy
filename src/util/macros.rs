@@ -894,9 +894,24 @@ macro_rules! codegen_tabs {
 \
         </div>
     </details>
-        <details name='tab-",
+    <details name='tab-",
             $name,
             "' style='--n: 3'>
+        <summary>
+            <h6>Assembly (x86-64)</h6>
+        </summary>
+        <div>
+
+```ignore
+",
+            include_str!(concat!("../benches/", $name, ".x86-64")),
+            "```
+\
+        </div>
+    </details>
+    <details name='tab-",
+            $name,
+            "' style='--n: 4'>
         <summary>
             <h6>Machine Code Analysis</h6>
         </summary>

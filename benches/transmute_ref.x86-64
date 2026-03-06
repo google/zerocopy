@@ -1,0 +1,4 @@
+codegen_test:
+	mov rdx, rsi
+	mov rax, rdi
+	ret
