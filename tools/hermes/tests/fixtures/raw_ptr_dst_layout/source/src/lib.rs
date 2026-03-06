@@ -1,8 +1,8 @@
 /// ```hermes, unsafe(axiom)
 /// requires [Hermes.ReprC T]
-/// requires [Hermes.SliceDstTypeLayout T]
+/// requires [Hermes.SpecSliceDstTypeLayout T]
 /// requires [Hermes.TrailingSlice T]
-/// ensures ret.val = (Hermes.ValueLayout.layout val.v).size
+/// ensures ret.val = (Hermes.HasSpecLayout.layout val.v).size
 /// ```
 #[allow(unused_variables)]
 pub const unsafe fn size_of_val_raw<T: ?Sized>(val: *const T) -> usize {
@@ -10,9 +10,9 @@ pub const unsafe fn size_of_val_raw<T: ?Sized>(val: *const T) -> usize {
 }
 
 /// ```hermes, unsafe(axiom)
-/// requires [Hermes.SliceDstTypeLayout T]
+/// requires [Hermes.SpecSliceDstTypeLayout T]
 /// requires [Hermes.TrailingSlice T]
-/// ensures ret.val = (Hermes.SliceDstTypeLayout.layout (α := T)).align
+/// ensures ret.val = (Hermes.SpecSliceDstTypeLayout.layout T).align.val
 /// ```
 #[allow(unused_variables)]
 pub const unsafe fn align_of_val_raw<T: ?Sized>(val: *const T) -> usize {
@@ -20,13 +20,13 @@ pub const unsafe fn align_of_val_raw<T: ?Sized>(val: *const T) -> usize {
 }
 
 /// ```hermes
-/// ensures Hermes.Alignment ret.2.val /\ ret.2.val ∣ ret.1.val
+/// ensures Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_slice
 ///   progress with raw_ptr_dst_layout.size_of_val_raw.spec as ⟨ i, h_size ⟩
 ///   progress with raw_ptr_dst_layout.align_of_val_raw.spec as ⟨ i1, h_align ⟩
 ///   simp_all
-///   exact ⟨(Hermes.SliceDstTypeLayout.layout (α := Slice Std.U8)).validAlignment, (Hermes.ValueLayout.layout slice.v).sizeAligned⟩
+///   exact (Hermes.HasSpecLayout.layout slice.v).sizeAligned
 /// ```
 pub fn test_slice(slice: *const [u8]) -> (usize, usize) {
     unsafe { (size_of_val_raw(slice), align_of_val_raw(slice)) }

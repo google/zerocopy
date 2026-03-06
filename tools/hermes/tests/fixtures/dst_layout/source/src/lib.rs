@@ -42,15 +42,13 @@ pub unsafe trait KnownLayout {
 /// ```lean, hermes, spec
 /// requires ∃ a : Hermes.Allocation, Hermes.FitsInAllocation (Hermes.raw_ptr_referent val) a
 /// requires KnownLayout.Safe T KnownLayoutInst
-/// ensures ret = Result.ok (Hermes.raw_ptr_referent val).size.val
+/// ensures ret.val = (Hermes.raw_ptr_referent val).size.val
 /// proof
 ///   unfold size_of_val
 ///   have h_safe := h_req.right.isSafe
 ///   rcases h_safe with ⟨_sz, _tl, h_align, h_size⟩ | ⟨_rc, _sl, inst_md, offset, elemSize, h_props⟩
 ///   · have h_ref_eq := @Hermes.referent_size_sized T _sz _tl Aeneas.Std.Mutability.Const val
 ///     simp_all
-///     congr 1
-///     try rfl
 ///   · rcases h_props with ⟨h_align, h_size, h_offset, h_elem, h_md_eq, h_meta⟩
 ///     rw [h_size]
 ///     rw [h_meta val]
@@ -68,8 +66,6 @@ pub unsafe trait KnownLayout {
 ///     repeat (progress <;> try omega)
 ///     have h_ref_eq := @Hermes.referent_size_slice_dst T _rc _sl Aeneas.Std.Mutability.Const alloc inst_md val ⟨h_referent_size, h_a_size⟩
 ///     simp_all [Hermes.roundUpToAlign, Hermes.reprCSliceDstSize, Nat.mul_comm]
-///     congr 1
-///     try rfl
 /// ```
 pub unsafe fn size_of_val<T: ?Sized + KnownLayout>(val: *const T) -> usize {
     let align = T::LAYOUT.align;
