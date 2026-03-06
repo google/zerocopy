@@ -83,7 +83,6 @@ pub fn run_aeneas(
     )
     .context("Failed to write Lean toolchain")?;
 
-    let mut generated_imports = String::new();
     let mut lake_roots = vec!["Generated".to_string()];
 
     for artifact in artifacts {
@@ -112,19 +111,6 @@ pub fn run_aeneas(
         }
 
         std::fs::create_dir_all(&output_dir).context("Failed to create Aeneas output directory")?;
-
-        let generated = generate::generate_artifact(artifact);
-        let specs_path = output_dir.join(artifact.lean_spec_file_name());
-        let map_path = output_dir.join(format!("{}.lean.map", artifact.artifact_slug()));
-
-        std::fs::write(&specs_path, &generated.code)
-            .with_context(|| format!("Failed to write specs to {}", specs_path.display()))?;
-
-        // Write Source Map
-        let map_json = serde_json::to_string(&generated.mappings)
-            .context("Failed to serialize source mappings")?;
-        std::fs::write(&map_path, map_json)
-            .with_context(|| format!("Failed to write source map to {}", map_path.display()))?;
 
         let mut cmd = Command::new("aeneas");
 
@@ -221,10 +207,8 @@ pub fn run_aeneas(
             }
         }
 
-        // Add to Generated.lean imports (no prefix)
-
-        writeln!(generated_imports, "import «{}».Funs", slug).unwrap();
-        writeln!(generated_imports, "import «{}».Types", slug).unwrap();
+        // Note: we let types and funs lack Prefix imports here because `aeneas_only`
+        // doesn't write `Generated.lean` or `Specs.lean`, which expect them as imports.
 
         // Check for `FunsExternal_Template.lean`.
         //
@@ -244,7 +228,6 @@ pub fn run_aeneas(
                     .context("Failed to copy FunsExternal_Template.lean to FunsExternal.lean")?;
             }
 
-            writeln!(generated_imports, "import «{}».FunsExternal", slug).unwrap();
             lake_roots.push(format!("{}.FunsExternal", slug));
         }
 
@@ -260,7 +243,6 @@ pub fn run_aeneas(
                     .context("Failed to copy TypesExternal_Template.lean to TypesExternal.lean")?;
             }
 
-            writeln!(generated_imports, "import «{}».TypesExternal", slug).unwrap();
             lake_roots.push(format!("{}.TypesExternal", slug));
         }
 
@@ -323,9 +305,6 @@ lean_lib «User» where
     write_if_changed(&tmp_lean_root.join("lakefile.lean"), &lakefile)
         .context("Failed to write Lakefile")?;
 
-    write_if_changed(&lean_generated_root.join("Generated.lean"), &generated_imports)
-        .context("Failed to write Generated.lean")?;
-
     // ATOMIC SWAP: If we successfully generated everything, we now swap the
     // temporary directory with the real one.
     let lean_root = roots.lean_root();
@@ -349,12 +328,55 @@ lean_lib «User» where
         fs::remove_dir_all(&lean_root).context("Failed to remove existing lean directory")?;
     }
 
-    log::debug!("Renaming {} to {}", lean_root.display(), lean_root.display());
+    log::debug!("Renaming {} to {}", tmp_lean_root.display(), lean_root.display());
     fs::rename(&tmp_lean_root, &lean_root)
         .context("Failed to rename temporary lean directory to target")?;
 
-    // The generated artifacts are now in the location expected by 'roots', so
-    // we can proceed with the build.
+    Ok(())
+}
+
+/// Completes Lean verification by generating Hermes `Specs.lean`, writing `Generated.lean`,
+/// and running `lake build` + diagnostics.
+pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
+    let lean_generated_root = roots.lean_generated_root();
+    let mut generated_imports = String::new();
+
+    for artifact in artifacts {
+        if artifact.start_from.is_empty() {
+            continue;
+        }
+
+        let slug = artifact.artifact_slug();
+        let output_dir = lean_generated_root.join(&slug);
+
+        // Generate Hermes specs
+        let generated = generate::generate_artifact(artifact);
+        let specs_path = output_dir.join(artifact.lean_spec_file_name());
+        let map_path = output_dir.join(format!("{}.lean.map", artifact.artifact_slug()));
+
+        std::fs::write(&specs_path, &generated.code)
+            .with_context(|| format!("Failed to write specs to {}", specs_path.display()))?;
+
+        // Write Source Map
+        let map_json = serde_json::to_string(&generated.mappings)
+            .context("Failed to serialize source mappings")?;
+        std::fs::write(&map_path, map_json)
+            .with_context(|| format!("Failed to write source map to {}", map_path.display()))?;
+
+        // Build imports for Generated.lean
+        writeln!(generated_imports, "import «{}».Funs", slug).unwrap();
+        writeln!(generated_imports, "import «{}».Types", slug).unwrap();
+
+        if output_dir.join("FunsExternal.lean").exists() {
+            writeln!(generated_imports, "import «{}».FunsExternal", slug).unwrap();
+        }
+        if output_dir.join("TypesExternal.lean").exists() {
+            writeln!(generated_imports, "import «{}».TypesExternal", slug).unwrap();
+        }
+    }
+
+    write_if_changed(&lean_generated_root.join("Generated.lean"), &generated_imports)
+        .context("Failed to write Generated.lean")?;
 
     run_lake(roots, artifacts)
 }
