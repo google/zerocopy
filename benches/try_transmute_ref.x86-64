@@ -1,6 +1,0 @@
-bench_try_transmute_ref:
-	lea rdx, [rsi + 1]
-	xor eax, eax
-	cmp word ptr [rdi], -16192
-	cmove rax, rdi
-	ret
