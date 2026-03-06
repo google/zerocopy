@@ -32,6 +32,8 @@ impl Directive {
 }
 
 fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
+    println!("Testing {bench_name}.{target_cpu}");
+
     let manifest_path = env!("CARGO_MANIFEST_PATH");
     let target_dir = env!("CARGO_TARGET_DIR");
 
@@ -58,7 +60,6 @@ fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
     };
 
     let test_directive = |directive: Directive| {
-        println!("{bench_name}");
         let output = cargo_asm(&directive);
         let actual_result = output.stdout;
 
