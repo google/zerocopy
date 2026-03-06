@@ -1791,24 +1791,27 @@ pub unsafe trait TryFromBytes {
     /// assert!(Packet::try_ref_from_bytes(bytes).is_err());
     /// ```
     ///
-    #[doc = codegen_header!("try_ref_from_bytes")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// source; e.g.:
-    ///
-    /// - the source must begin at a memory address divisible by 4
-    /// - the source has a minimum length of 12 bytes
-    /// - the source has a total length divisible by 4
-    /// - the source begins with the bytes `0xC0C0`
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_bytes")]
+    #[doc = codegen_section!(
+        bench = "try_ref_from_bytes",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn try_ref_from_bytes(source: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>>
@@ -1909,23 +1912,27 @@ pub unsafe trait TryFromBytes {
     /// assert!(Packet::try_ref_from_prefix(bytes).is_err());
     /// ```
     ///
-    #[doc = codegen_header!("try_ref_from_prefix")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// source; e.g.:
-    ///
-    /// - the source must begin at a memory address divisible by 4
-    /// - the source has a minimum length of 12 bytes
-    /// - the source begins with the bytes `0xC0C0`
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_prefix")]
+    #[doc = codegen_section!(
+        bench = "try_ref_from_prefix",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn try_ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), TryCastError<&[u8], Self>>
@@ -2013,25 +2020,27 @@ pub unsafe trait TryFromBytes {
     /// assert!(Packet::try_ref_from_suffix(bytes).is_err());
     /// ```
     ///
-    #[doc = codegen_header!("try_ref_from_suffix")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// source's largest [valid-size] suffix for `Self`, which must; e.g.:
-    ///
-    /// - begin at a memory address divisible by 4
-    /// - have a minimum length of 12 bytes
-    /// - begin with the bytes `0xC0C0`
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    ///
-    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
-    #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_suffix")]
+    #[doc = codegen_section!(
+        bench = "try_ref_from_suffix",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn try_ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), TryCastError<&[u8], Self>>
@@ -2419,25 +2428,22 @@ pub unsafe trait TryFromBytes {
     ///
     /// [`try_ref_from_bytes`]: TryFromBytes::try_ref_from_bytes
     ///
-    #[doc = codegen_header!("try_ref_from_bytes_with_elems")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// source; e.g.:
-    ///
-    /// - the source must begin at a memory address divisible by 4
-    /// - the source has a total length that exactly fits a `Self` with a
-    ///   trailing slice length of `elems`
-    /// - the source begins with the bytes `0xC0C0`
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    ///
-    #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_bytes_with_elems")]
+    #[doc = codegen_section!(
+        bench = "try_ref_from_bytes_with_elems",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn try_ref_from_bytes_with_elems(
@@ -2541,24 +2547,22 @@ pub unsafe trait TryFromBytes {
     ///
     /// [`try_ref_from_prefix`]: TryFromBytes::try_ref_from_prefix
     ///
-    #[doc = codegen_header!("try_ref_from_prefix_with_elems")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// source; e.g.:
-    ///
-    /// - the source must begin at a memory address divisible by 4
-    /// - the source has a prefix that fits a `Self` with a trailing slice
-    ///   length of `count`
-    /// - the source begins with the bytes `0xC0C0`
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_prefix_with_elems")]
+    #[doc = codegen_section!(
+        bench = "try_ref_from_prefix_with_elems",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn try_ref_from_prefix_with_elems(
@@ -2649,26 +2653,22 @@ pub unsafe trait TryFromBytes {
     ///
     /// [`try_ref_from_prefix`]: TryFromBytes::try_ref_from_prefix
     ///
-    #[doc = codegen_header!("try_ref_from_suffix_with_elems")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// [valid-size] suffix for a `Self` of trailing slice length `count`, which
-    /// must; e.g.:
-    ///
-    /// - begin at a memory address divisible by 4
-    /// - have a minimum length of 12 bytes
-    /// - begin with the bytes `0xC0C0`
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    ///
-    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
-    #[doc = codegen_tabs!(format = "coco", bench = "try_ref_from_suffix_with_elems")]
+    #[doc = codegen_section!(
+        bench = "try_ref_from_suffix_with_elems",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn try_ref_from_suffix_with_elems(
@@ -3033,6 +3033,11 @@ pub unsafe trait TryFromBytes {
     /// is a valid `Self`. This ensures that validation can be performed using
     /// aligned reads (which carry a performance advantage over unaligned reads
     /// on many platforms) at the cost of an unconditional copy.
+    ///
+    #[doc = codegen_section!(
+        bench = "try_read_from_bytes",
+        format = "coco_static_size",
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn try_read_from_bytes(source: &[u8]) -> Result<Self, TryReadError<&[u8], Self>>
@@ -3104,6 +3109,11 @@ pub unsafe trait TryFromBytes {
     /// is a valid `Self`. This ensures that validation can be performed using
     /// aligned reads (which carry a performance advantage over unaligned reads
     /// on many platforms) at the cost of an unconditional copy.
+    ///
+    #[doc = codegen_section!(
+        bench = "try_read_from_prefix",
+        format = "coco_static_size",
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn try_read_from_prefix(source: &[u8]) -> Result<(Self, &[u8]), TryReadError<&[u8], Self>>
@@ -3176,6 +3186,11 @@ pub unsafe trait TryFromBytes {
     /// is a valid `Self`. This ensures that validation can be performed using
     /// aligned reads (which carry a performance advantage over unaligned reads
     /// on many platforms) at the cost of an unconditional copy.
+    ///
+    #[doc = codegen_section!(
+        bench = "try_read_from_suffix",
+        format = "coco_static_size",
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn try_read_from_suffix(source: &[u8]) -> Result<(&[u8], Self), TryReadError<&[u8], Self>>
@@ -3958,23 +3973,27 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(packet.body, [8, 9, 10, 11]);
     /// ```
     ///
-    #[doc = codegen_header!("ref_from_bytes")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// source; e.g.:
-    ///
-    /// - the source must begin at a memory address divisible by 4
-    /// - the source has a minimum length of 12 bytes
-    /// - the source has a total length divisible by 4
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    #[doc = codegen_tabs!(format = "coco", bench = "ref_from_bytes")]
+    #[doc = codegen_section!(
+        bench = "ref_from_bytes",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_bytes(source: &[u8]) -> Result<&Self, CastError<&[u8], Self>>
@@ -4064,22 +4083,27 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(suffix, &[14u8][..]);
     /// ```
     ///
-    #[doc = codegen_header!("ref_from_prefix")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// source; e.g.:
-    ///
-    /// - the source must begin at a memory address divisible by 4
-    /// - the source has a minimum length of 12 bytes
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    #[doc = codegen_tabs!(format = "coco", bench = "ref_from_prefix")]
+    #[doc = codegen_section!(
+        bench = "ref_from_prefix",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), CastError<&[u8], Self>>
@@ -4151,24 +4175,27 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(trailer.frame_check_sequence, [6, 7, 8, 9]);
     /// ```
     ///
-    #[doc = codegen_header!("ref_from_suffix")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// source's largest [valid-size] suffix for `Self`, which must; e.g.:
-    ///
-    /// - begin at a memory address divisible by 4
-    /// - have a minimum length of 12 bytes
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    ///
-    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
-    #[doc = codegen_tabs!(format = "coco", bench = "ref_from_suffix")]
+    #[doc = codegen_section!(
+        bench = "ref_from_suffix",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), CastError<&[u8], Self>>
@@ -4496,24 +4523,22 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// [`ref_from_bytes`]: FromBytes::ref_from_bytes
     ///
-    #[doc = codegen_header!("ref_from_bytes_with_elems")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// source; e.g.:
-    ///
-    /// - the source must begin at a memory address divisible by 4
-    /// - the source has a total length that exactly fits a `Self` with a
-    ///   trailing slice length of `elems`
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    ///
-    #[doc = codegen_tabs!(format = "coco", bench = "ref_from_bytes_with_elems")]
+    #[doc = codegen_section!(
+        bench = "ref_from_bytes_with_elems",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_bytes_with_elems(
@@ -4595,23 +4620,22 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// [`ref_from_prefix`]: FromBytes::ref_from_prefix
     ///
-    #[doc = codegen_header!("ref_from_prefix_with_elems")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// source; e.g.:
-    ///
-    /// - the source must begin at a memory address divisible by 4
-    /// - the source has a prefix that fits a `Self` with a trailing slice
-    ///   length of `count`
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    #[doc = codegen_tabs!(format = "coco", bench = "ref_from_prefix_with_elems")]
+    #[doc = codegen_section!(
+        bench = "ref_from_prefix_with_elems",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_prefix_with_elems(
@@ -4688,25 +4712,22 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// [`ref_from_suffix`]: FromBytes::ref_from_suffix
     ///
-    #[doc = codegen_header!("ref_from_suffix_with_elems")]
-    ///
-    /// This abstraction for reinterpreting a buffer of bytes as a structured
-    /// type is safe and cheap, but does not necessarily have zero runtime cost.
-    /// The below code generation benchmark exercises this routine on a
-    /// destination type whose complex layout places complex requirements on the
-    /// [valid-size] suffix for a `Self` of trailing slice length `count`, which
-    /// must; e.g.:
-    ///
-    /// - begin at a memory address divisible by 4
-    /// - have a minimum length of 12 bytes
-    ///
-    /// These conditions must all be checked at runtime in this **worst-case**
-    /// example, but the codegen you experience in practice will depend on
-    /// optimization level, the layout of the destination type, and what the
-    /// compiler can prove about the source.
-    ///
-    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
-    #[doc = codegen_tabs!(format = "coco", bench = "ref_from_suffix_with_elems")]
+    #[doc = codegen_section!(
+        bench = "ref_from_suffix_with_elems",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_suffix_with_elems(
@@ -5001,6 +5022,11 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(header.length, [4, 5]);
     /// assert_eq!(header.checksum, [6, 7]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        bench = "read_from_bytes",
+        format = "coco_static_size",
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn read_from_bytes(source: &[u8]) -> Result<Self, SizeError<&[u8], Self>>
@@ -5052,6 +5078,11 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(header.checksum, [6, 7]);
     /// assert_eq!(body, [8, 9]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        bench = "read_from_prefix",
+        format = "coco_static_size",
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn read_from_prefix(source: &[u8]) -> Result<(Self, &[u8]), SizeError<&[u8], Self>>
@@ -5097,6 +5128,11 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(prefix, [0, 1, 2, 3, 4, 5]);
     /// assert_eq!(trailer.frame_check_sequence, [6, 7, 8, 9]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        bench = "read_from_suffix",
+        format = "coco_static_size",
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     fn read_from_suffix(source: &[u8]) -> Result<(&[u8], Self), SizeError<&[u8], Self>>
