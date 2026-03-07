@@ -1,6 +1,7 @@
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold r
+///   simp_all
 /// ```
 pub fn r#match() {}
 pub fn r#type() {}

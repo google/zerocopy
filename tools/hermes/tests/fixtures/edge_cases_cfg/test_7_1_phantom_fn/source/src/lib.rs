@@ -1,7 +1,8 @@
 #[cfg(target_os = "windows")]
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold windows_only
+///   simp_all
 /// ```
 pub fn windows_only() {
     panic!("This should not exist on Linux");

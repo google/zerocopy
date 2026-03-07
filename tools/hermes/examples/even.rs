@@ -7,8 +7,8 @@ pub struct Even {
 
 impl Even {
     /// ```hermes, spec
-    /// ensures self'.val.val = 2
-    /// proof
+    /// ensures: self'.val.val = 2
+    /// proof:
     ///   simp [Even.inc, Hermes.IsValid.isValid]
     /// ```
     pub fn inc(&mut self) {

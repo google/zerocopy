@@ -5,8 +5,9 @@ pub struct Widths {
 }
 
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold check_widths
+///   simp_all
 /// ```
 pub fn check_widths(x: isize, y: usize) -> (isize, usize) {
     (x, y)

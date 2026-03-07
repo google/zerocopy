@@ -1,8 +1,8 @@
 
 /// @spec
-/// requires x > 10
+/// requires: x > 10
 /// ```lean, hermes
-/// proof
+/// proof context:
 ///   sorry
 /// ```
 pub fn bar(x: &mut u32) {

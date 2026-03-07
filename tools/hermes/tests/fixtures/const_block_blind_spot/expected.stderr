@@ -9,7 +9,7 @@
    ╭─[[PROJECT_ROOT]/src/lib.rs:2:5]
  1 │     const _: () = {
  2 │ ╭─▶     /// ```lean, hermes
- 3 │ │       /// context
+ 3 │ │       /// context:
  4 │ │       /// theorem hidden_impl : True := trivial
  5 │ │       /// ```
  6 │ ├─▶     pub fn hidden_impl() {}

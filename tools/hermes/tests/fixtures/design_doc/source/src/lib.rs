@@ -1,6 +1,7 @@
 /// ```lean, hermes, unsafe(axiom)
-/// requires b.val > 0
-/// ensures ret.val = a.val / b.val
+/// requires: b.val > 0
+/// ensures:
+///   ///   ///   ret.val = a.val / b.val
 /// ```
 #[allow(unused_unsafe)]
 pub unsafe fn safe_div(a: u32, b: u32) -> u32 {
@@ -8,8 +9,10 @@ pub unsafe fn safe_div(a: u32, b: u32) -> u32 {
 }
 
 /// ```lean, hermes, spec
-/// ensures ret.val = a.val
-/// proof
+/// ensures:
+///   ///   ///   ret.val = a.val
+/// proof context:
+/// proof:
 ///   rw [wrapper]
 ///   obtain ⟨ret_val, h_eq⟩ := safe_div_spec a 1#u32 (by decide)
 ///   simp_all [Nat.div_one]
@@ -28,13 +31,16 @@ pub struct Even {
 }
 
 /// ```lean, hermes
-/// isSafe : ...
+/// isSafe :
+///   ...
 /// ```
 pub unsafe trait FromBytes {}
 
 /// ```lean, hermes, spec
-/// ensures ret.val = x.val
-/// proof
+/// ensures:
+///   ///   ///   ret.val = x.val
+/// proof context:
+/// proof:
 ///   -- We will use sorry here for unproven things to allow verification to proceed
 ///   sorry
 /// ```
@@ -43,20 +49,25 @@ pub fn read_val(x: &u32) -> u32 {
 }
 
 /// ```lean, hermes, spec
-/// ensures x'.val = x.val + add.val
-/// proof
-///   sorry
+/// ensures:
+///   ///   ///   x'.val = x.val + add.val
+/// proof context:
+///   unfold add_in_place
+///   simp_all
 /// ```
 pub fn add_in_place(x: &mut u32, add: u32) {
     *x += add;
 }
 
 /// ```lean, hermes
-/// requires stack.len > 0
-/// ensures stack'.len = stack.len - 1
-/// ensures ret = stack[stack.len - 1]
-/// proof
-///   sorry
+/// requires: stack.len > 0
+/// ensures:
+///   ///   ///   stack'.len = stack.len - 1
+/// ensures:
+///   ///   ///   ret = stack[stack.len - 1]
+/// proof context:
+///   unfold pop
+///   simp_all
 /// ```
 pub fn pop(stack: &mut Vec<u32>) -> u32 {
     stack.pop().unwrap()

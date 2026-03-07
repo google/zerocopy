@@ -1,5 +1,5 @@
 /// ```lean, hermes
-/// proof
+/// proof context:
 ///   sorry
 /// ```
 pub fn shadow(x: u32) -> u32 {

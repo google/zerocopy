@@ -53,8 +53,13 @@ pub fn run_aeneas(
     }
     std::fs::create_dir_all(tmp_lean_root.join("hermes"))?;
 
-    // 2. Write Standard Library
+    // 2. Write Standard Library & Configuration
+    let config_content = if args.allow_sorry { "axiom Hermes.allow_sorry : True\n" } else { "" };
+    write_if_changed(&tmp_lean_root.join("hermes").join("Config.lean"), config_content)
+        .context("Failed to write Config.lean")?;
+
     let mut prelude = String::new();
+    prelude.push_str("import Config\n");
     if !args.allow_sorry {
         prelude.push_str("import Lean\n");
     }
@@ -297,6 +302,7 @@ lean_lib «Generated» where
 
 lean_lib «Hermes» where
   srcDir := "hermes"
+  roots := #[`Config, `Hermes]
 
 lean_lib «User» where
   srcDir := "user"

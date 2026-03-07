@@ -6,8 +6,9 @@ pub struct WrapUnit {
 }
 
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold unit_arg
+///   simp_all
 /// ```
 pub fn unit_arg(_: ()) {}
 

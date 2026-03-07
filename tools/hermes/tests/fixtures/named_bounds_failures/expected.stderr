@@ -1,0 +1,146 @@
+
+=== Hermes Verification Failed ===
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: When multiple `requires` clauses are present,
+  │ they must all be named. E.g., `requires (my_name): ...`
+   ╭─[[PROJECT_ROOT]/src/lib.rs:7:1]
+ 6 │ /// ```lean, hermes, spec
+ 7 │ /// requires:
+   · ──────┬──────
+   ·       ╰── problematic block
+ 8 │ ///   ///   ///   x > 0
+   ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: When multiple `ensures` clauses are present,
+  │ they must all be named. E.g., `ensures (my_name): ...`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:18:1]
+ 17 │ /// ```lean, hermes, spec
+ 18 │ /// ensures:
+    · ──────┬─────
+    ·       ╰── problematic block
+ 19 │ ///   ///   ///   ret == x
+    ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Bound name `h_same` conflicts with an existing
+  │ requires bound.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:32:1]
+ 31 │ ///   ///   ///   x > 0
+ 32 │ /// ensures (h_same):
+    · ──────────┬──────────
+    ·           ╰── problematic block
+ 33 │ ///   ///   ///   ret == x
+    ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Cannot mix named and unnamed `ensures` clauses.
+  │ If any are named, they must all be named.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:60:1]
+ 59 │ ///   ///   ///   ret = x
+ 60 │ /// ensures:
+    · ──────┬─────
+    ·       ╰── problematic block
+ 61 │ ///   ///   ///   ret = x
+    ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: `proof context` sections cannot be named.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:75:1]
+ 74 │ /// ```lean, hermes, spec
+ 75 │ /// proof context (foo):
+    · ────────────┬───────────
+    ·             ╰── problematic block
+ 76 │ ///   have h: 1 = 1 := by simp
+    ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Invalid bound name `123invalid`. Names must be
+  │ valid identifiers (alphanumeric and underscores, starting with a letter or
+  │ underscore).
+    ╭─[[PROJECT_ROOT]/src/lib.rs:88:1]
+ 87 │ /// ```lean, hermes, spec
+ 88 │ /// requires (123invalid):
+    · ─────────────┬────────────
+    ·              ╰── problematic block
+ 89 │ ///   ///   ///   x > 0
+    ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Invalid bound name ``. Names must be valid
+  │ identifiers (alphanumeric and underscores, starting with a letter or
+  │ underscore).
+     ╭─[[PROJECT_ROOT]/src/lib.rs:100:1]
+  99 │ /// ```lean, hermes, spec
+ 100 │ /// requires ():
+     · ────────┬───────
+     ·         ╰── problematic block
+ 101 │ ///   x > 0
+     ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Invalid bound name `if`. Names cannot be Lean
+  │ keywords.
+     ╭─[[PROJECT_ROOT]/src/lib.rs:126:1]
+ 125 │ /// ```lean, hermes, spec
+ 126 │ /// requires (if):
+     · ─────────┬────────
+     ·          ╰── problematic block
+ 127 │ ///   ///   ///   x > 0
+     ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Invalid bound name `then`. Names cannot be Lean
+  │ keywords.
+     ╭─[[PROJECT_ROOT]/src/lib.rs:136:1]
+ 135 │ /// ```lean, hermes, spec
+ 136 │ /// ensures (then):
+     · ─────────┬─────────
+     ·          ╰── problematic block
+ 137 │ ///   ///   ///   ret = x
+     ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Duplicate proof case name `e1`.
+     ╭─[[PROJECT_ROOT]/src/lib.rs:150:1]
+ 149 │ ///   simp_all
+ 150 │ /// proof (e1):
+     · ───────┬───────
+     ·        ╰── problematic block
+ 151 │ ///   simp_all
+     ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Cannot mix named and unnamed `requires`
+  │ clauses. If any are named, they must all be named.
+     ╭─[[PROJECT_ROOT]/src/lib.rs:162:1]
+ 161 │ ///   x > 0
+ 162 │ /// requires:
+     · ──────┬──────
+     ·       ╰── problematic block
+ 163 │ ///   x > 0
+     ╰────
+
+Error: Aborting due to 11 previous errors.

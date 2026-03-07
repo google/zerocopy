@@ -1,7 +1,8 @@
 
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold one_tuple
+///   simp_all
 /// ```
 pub fn one_tuple(x: (u32,)) -> (u32,) {
     x

@@ -1,8 +1,9 @@
 
 // Helper for Aeneas/Hermes
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold old
+///   simp_all
 /// ```
 pub fn old<T>(x: T) -> T { x }
 

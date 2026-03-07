@@ -1,11 +1,11 @@
   × type expected, got
   │   (fun x => True : ?m.2 → Prop)
-   ╭─[[PROJECT_ROOT]/src/lib.rs:7:13]
- 6 │ /// ```lean, hermes
- 7 │ /// isSafe : fun _ => True
-   ·             ──────┬──────
-   ·                   ╰── here
- 8 │ /// ```
+   ╭─[[PROJECT_ROOT]/src/lib.rs:8:7]
+ 7 │ /// isSafe :
+ 8 │ ///   fun _ => True
+   ·       ──────┬──────
+   ·             ╰── here
+ 9 │ /// ```
    ╰────
 
 Error: Lean verification failed

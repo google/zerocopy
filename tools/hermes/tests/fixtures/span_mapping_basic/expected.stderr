@@ -1,6 +1,6 @@
   × my test error
-   ╭─[[PROJECT_ROOT]/src/lib.rs:3:5]
- 2 │     /// context
+   ╭─[[PROJECT_ROOT]/src/lib.rs:3:4]
+ 2 │     /// context:
  3 │ ╭─▶ /// model demo 
  4 │ ├─▶ /// ```
    · ╰──── my span label

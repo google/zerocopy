@@ -1,6 +1,6 @@
 
 /// ```lean, hermes
-/// proof
-///     unfold _hermes_dummy; trivial
+/// proof:
+///   sorry
 /// ```
 fn _hermes_dummy() {}

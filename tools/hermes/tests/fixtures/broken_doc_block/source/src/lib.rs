@@ -1,4 +1,4 @@
 /// ```lean, hermes
-/// context
+/// context:
 /// unclosed block
 fn foo() {}

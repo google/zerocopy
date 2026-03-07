@@ -9,7 +9,7 @@
  5 │ /// ```lean, hermes
    · ─────────┬─────────
    ·          ╰── problematic block
- 6 │ /// context
+ 6 │ /// context:
    ╰────
 
 Error: Aborting due to 1 previous errors.

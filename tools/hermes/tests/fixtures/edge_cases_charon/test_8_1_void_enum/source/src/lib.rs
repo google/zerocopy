@@ -2,8 +2,9 @@
 pub enum Void {}
 
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold invert
+///   contradiction
 /// ```
 pub fn invert(v: Void) -> ! {
     match v {}

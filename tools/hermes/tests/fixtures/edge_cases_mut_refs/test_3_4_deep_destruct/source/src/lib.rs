@@ -1,5 +1,5 @@
 /// ```lean, hermes
-/// proof
+/// proof context:
 ///   sorry
 /// ```
 pub fn nested_mut(x: &mut (u32, u32)) {

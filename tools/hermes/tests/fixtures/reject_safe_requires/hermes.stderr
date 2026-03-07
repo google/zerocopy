@@ -7,9 +7,9 @@
   │ `unsafe` functions.
    ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
  1 │ /// ```hermes
- 2 │ /// requires true
-   · ────────┬────────
-   ·         ╰── problematic block
+ 2 │ /// requires: true
+   · ─────────┬────────
+   ·          ╰── problematic block
  3 │ /// ```
    ╰────
 
@@ -20,10 +20,10 @@
   │ `unsafe` functions.
    ╭─[[PROJECT_ROOT]/src/lib.rs:7:1]
  6 │ /// ```hermes
- 7 │ /// requires x > 0
-   · ─────────┬────────
+ 7 │ /// requires: x > 0
+   · ─────────┬─────────
    ·          ╰── problematic block
- 8 │ /// requires y > 0
+ 8 │ /// requires: y > 0
    ╰────
 
 
@@ -33,8 +33,8 @@
   │ `unsafe` functions.
     ╭─[[PROJECT_ROOT]/src/lib.rs:13:1]
  12 │ /// ```hermes
- 13 │ /// requires
-    · ──────┬─────
+ 13 │ /// requires:
+    · ──────┬──────
     ·       ╰── problematic block
  14 │ /// ```
     ╰────

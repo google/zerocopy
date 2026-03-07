@@ -1,5 +1,5 @@
 /// ```lean, hermes
-/// context
+/// context:
 /// model main
 /// ```
 unsafe fn main() {}

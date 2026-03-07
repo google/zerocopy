@@ -220,7 +220,7 @@ where
     Ok((source, unloaded_modules))
 }
 
-fn scan_compilation_unit_internal<I, M>(
+pub(crate) fn scan_compilation_unit_internal<I, M>(
     source: &str,
     source_file: Option<PathBuf>,
     inside_block: bool,
@@ -592,7 +592,7 @@ mod tests {
     fn test_parse_lean_block() {
         let code = r#"
             /// ```lean, hermes
-            /// context
+            /// context:
             /// theorem foo : True := by trivial
             /// ```
             fn foo() {}
@@ -603,7 +603,7 @@ mod tests {
         assert_eq!(
             src,
             "/// ```lean, hermes
-            /// context
+            /// context:
             /// theorem foo : True := by trivial
             /// ```
             fn foo() {}"
@@ -619,11 +619,11 @@ mod tests {
     fn test_multiple_lean_blocks_error() {
         let code = r#"
             /// ```lean, hermes
-            /// context
+            /// context:
             /// a
             /// ```
             /// ```lean, hermes
-            /// context
+            /// context:
             /// b
             /// ```
             fn foo() {}
@@ -638,7 +638,7 @@ mod tests {
     fn test_unclosed_lean_block() {
         let code = r#"
             /// ```lean, hermes
-            /// context
+            /// context:
             /// theorem foo : True := by trivial
             fn foo() {}
         "#;
@@ -653,7 +653,7 @@ mod tests {
             mod foo {
                 mod bar {
                     /// ```lean, hermes
-                    /// context
+                    /// context:
                     /// ```
                     fn baz() {}
                 }
@@ -670,7 +670,7 @@ mod tests {
         let code = r#"
             mod foo {
                 /// ```lean, hermes
-                /// context
+                /// context:
                 /// theorem foo : True := by trivial
                 /// ```
                 fn bar() {}
@@ -707,14 +707,14 @@ mod tests {
         let code = r#"
             mod a {
                 /// ```lean, hermes
-                /// context
+                /// context:
                 /// theorem a : True := trivial
                 /// ```
                 fn foo() {}
             }
             mod b {
                 /// ```lean, hermes
-                /// context
+                /// context:
                 /// theorem b : False := sorry
                 /// ```
                 fn foo() {}
@@ -744,12 +744,12 @@ mod tests {
     fn test_multiple_parsing_failures_output() {
         let code1 = r#"
             /// ```lean, hermes
-            /// context
+            /// context:
             /// unclosed block 1
             fn bad_doc_1() {}
 
             /// ```lean, hermes
-            /// context
+            /// context:
             /// unclosed block 2
             fn bad_doc_2() {}
         "#;
@@ -803,7 +803,7 @@ mod tests {
  2 │             /// ```lean, hermes
    ·             ─────────┬─────────
    ·                      ╰── problematic block
- 3 │             /// context
+ 3 │             /// context:
    ╰────
 
 hermes::doc_block
@@ -814,7 +814,7 @@ hermes::doc_block
  7 │             /// ```lean, hermes
    ·             ─────────┬─────────
    ·                      ╰── problematic block
- 8 │             /// context
+ 8 │             /// context:
    ╰────
 
 hermes::syn_error

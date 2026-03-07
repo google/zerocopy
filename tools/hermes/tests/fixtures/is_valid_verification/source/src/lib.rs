@@ -6,10 +6,12 @@ pub struct Positive {
 }
 
 /// ```hermes
-/// context
+/// context:
 /// -- No context
-/// ensures Positive.x ret > 0
-/// proof
+/// ensures:
+///   Positive.x ret > 0
+/// proof context:
+/// proof:
 ///   simp [make_valid, Hermes.IsValid.isValid]; decide
 /// ```
 pub fn make_valid() -> Positive {
@@ -17,10 +19,12 @@ pub fn make_valid() -> Positive {
 }
 
 /// ```hermes
-/// context
+/// context:
 /// -- No context
-/// ensures Positive.x ret > 0
-/// proof
+/// ensures:
+///   Positive.x ret > 0
+/// proof context:
+/// proof:
 ///   simp [make_bad, Hermes.IsValid.isValid]; decide
 /// ```
 pub fn make_bad() -> Positive {

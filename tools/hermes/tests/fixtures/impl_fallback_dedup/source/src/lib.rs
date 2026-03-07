@@ -3,13 +3,13 @@ pub mod my_module {
 
     impl Foo {
         /// ```lean, hermes
-        /// context
+        /// context:
         /// theorem meth_one : True := trivial
         /// ```
         pub fn method_one() {}
 
         /// ```lean, hermes
-        /// context
+        /// context:
         /// theorem meth_two : True := trivial
         /// ```
         pub fn method_two() {}

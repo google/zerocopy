@@ -1,9 +1,10 @@
 
 /// @spec
-/// ensures ret = 42
-/// decreases by sorry
+/// ensures:
+///   ret = 42
+/// decreases by: sorry
 /// ```lean, hermes
-/// proof
+/// proof context:
 ///   sorry
 /// ```
 pub fn unknown_decrease(n: u32) -> u32 {

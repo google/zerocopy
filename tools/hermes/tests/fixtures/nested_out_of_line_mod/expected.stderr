@@ -8,7 +8,7 @@
   │ verify it.
    ╭─[[PROJECT_ROOT]/src/hidden.rs:1:1]
  1 │ ╭─▶ /// ```lean, hermes
- 2 │ │   /// context
+ 2 │ │   /// context:
  3 │ │   /// theorem secret_proof : False := sorry
  4 │ │   /// ```
  5 │ ├─▶ pub fn secret_proof() {} 

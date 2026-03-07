@@ -1,0 +1,82 @@
+  ⚠ unused variable: `cond`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:67:36]
+ 66 │ /// ```
+ 67 │ pub unsafe fn expects_precondition(cond: bool) {}
+    ·                                    ──┬─
+    ·                                      ╰── 
+ 68 │ 
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:22:8]
+ 21 │ /// ```
+ 22 │ pub fn missing_user_bound() -> bool {
+    ·        ──┬─
+    ·          ╰── here
+ 23 │     true
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:29:8]
+ 28 │ /// ```
+ 29 │ pub fn unprovable_is_valid() -> InvalidStruct {
+    ·        ──┬─
+    ·          ╰── here
+ 30 │     InvalidStruct { x: 1, y: 2 }
+    ╰────
+
+  × Type mismatch
+  │   true
+  │ has type
+  │   Bool
+  │ but is expected to have type
+  │   InvalidStruct
+    ╭─[[PROJECT_ROOT]/src/lib.rs:42:14]
+ 41 │ /// ensures:
+ 42 │ ///   ret == true
+    ·              ──┬─
+    ·                ╰── here
+ 43 │ /// proof:
+    ╰────
+
+[External Error] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>.lean: invalid {...} notation, structure type expected
+  Post { x := 1#u32, y := 2#u32 }
+  × Tactic `rfl` failed: The left-hand side
+  │   true == false
+  │ is not definitionally equal to the right-hand side
+  │   true
+  │ 
+  │ ⊢ (true == false) = true
+    ╭─[[PROJECT_ROOT]/src/lib.rs:58:7]
+ 57 │ /// proof (h):
+ 58 │ ///   rfl
+    ·       ─┬─
+    ·        ╰── here
+ 59 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:67:15]
+ 66 │ /// ```
+ 67 │ pub unsafe fn expects_precondition(cond: bool) {}
+    ·               ──┬─
+    ·                 ╰── here
+ 68 │ 
+    ╰────
+
+  × Tactic `rfl` failed: The left-hand side
+  │   fail_to_prove_precondition
+  │ is not definitionally equal to the right-hand side
+  │   fun x => True
+  │ 
+  │ ⊢ fail_to_prove_precondition ⦃ x✝ => True ⦄
+    ╭─[[PROJECT_ROOT]/src/lib.rs:72:7]
+ 71 │ /// proof:
+ 72 │ ///   rfl
+    ·       ─┬─
+    ·        ╰── here
+ 73 │ /// ```
+    ╰────
+
+Error: Lean verification failed

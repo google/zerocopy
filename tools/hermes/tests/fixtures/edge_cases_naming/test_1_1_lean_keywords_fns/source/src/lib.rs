@@ -1,8 +1,9 @@
 
 // Lean keywords that are valid Rust identifiers
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold theorem
+///   simp_all
 /// ```
 pub fn theorem() {}
 pub fn axiom() {}

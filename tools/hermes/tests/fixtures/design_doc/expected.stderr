@@ -5,12 +5,12 @@
 
   × Documentation block error: `requires` sections are only permitted on
   │ `unsafe` functions.
-    ╭─[[PROJECT_ROOT]/src/lib.rs:55:1]
- 54 │ /// ```lean, hermes
- 55 │ /// requires stack.len > 0
-    · ─────────────┬────────────
+    ╭─[[PROJECT_ROOT]/src/lib.rs:63:1]
+ 62 │ /// ```lean, hermes
+ 63 │ /// requires: stack.len > 0
+    · ─────────────┬─────────────
     ·              ╰── problematic block
- 56 │ /// ensures stack'.len = stack.len - 1
+ 64 │ /// ensures:
     ╰────
 
 Error: Aborting due to 1 previous errors.

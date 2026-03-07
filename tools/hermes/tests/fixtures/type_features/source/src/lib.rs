@@ -4,7 +4,8 @@
 struct ConstGen<const N: usize>;
 
 /// ```hermes
-/// isSafe : {N} > 0
+/// isSafe :
+///   {N} > 0
 /// ```
 unsafe trait ConstTrait<const N: usize> {}
 
@@ -17,7 +18,8 @@ unsafe impl AssocType for ConstGen<10> {
 }
 
 /// ```hermes
-/// isSafe : AssocType.Item Self = U32
+/// isSafe :
+///   AssocType.Item Self = U32
 /// ```
 unsafe trait UsesAssoc: AssocType {}
 

@@ -21,7 +21,6 @@ namespace expand_output
 
 namespace foo
 
-
 theorem spec :
   Aeneas.Std.WP.spec (foo) (fun _ => True) := by
   sorry

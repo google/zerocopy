@@ -44,6 +44,34 @@ class IsValid (α : Type) where
 instance (priority := low) defaultIsValid {α : Type} : IsValid α where
   isValid _ := True
 
+-- A tactic that queries the environment for the `Hermes.allow_sorry` axiom.
+-- If it exists, runs `sorry`. If not, fails with the provided error string.
+elab "eval_allow_sorry_or_fail" err:term : tactic => do
+  let errStr := err.raw.isStrLit?.getD "Fallback verification failed."
+  let env ← getEnv
+  let has_sorry := env.find? `Hermes.allow_sorry |>.isSome
+  if has_sorry then
+    Lean.Elab.Tactic.evalTactic (← `(tactic| sorry))
+  else
+    throwError errStr
+
+-- A macro that Hermes auto-injects for implicit isValid proofs.
+-- It attempts `simp_all [IsValid.isValid]`. If it fails, it emits a friendly error
+-- instructing the user to provide a manual proof via `proof (h_name)`.
+macro "verify_is_valid" field:ident : tactic => do
+  let err := "This error comes from the implicit `simp_all` proof for `" ++ field.getId.toString ++ "`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (" ++ field.getId.toString ++ ")`."
+  `(tactic|
+    first
+    | (simp_all [IsValid.isValid]; done)
+    | eval_allow_sorry_or_fail $(quote err))
+
+-- A macro that Hermes auto-injects for explicit user `ensures` bounds.
+-- It provides no automated proving, but gracefully degrades to `sorry`
+-- if `--allow-sorry` (via `Hermes.allow_sorry` axiom) is enabled.
+macro "verify_user_bound" field:ident : tactic => do
+  let err := "Missing explicit proof for named bound `" ++ field.getId.toString ++ "`."
+  `(tactic| eval_allow_sorry_or_fail $(quote err))
+
 -- 3. Trait Safety
 -- (No specific helper needed, just a pattern we follow in generation)
 
@@ -796,3 +824,7 @@ axiom referent_size_slice_dst {T : Type} [ReprC T] [lay : SpecSliceDstTypeLayout
   (alloc : Allocation) [md : HasMetadata (Aeneas.Std.RawPtr T M) Usize] 
   (p : Aeneas.Std.RawPtr T M) (h_fits : FitsInAllocation (raw_ptr_referent p) alloc) :
   (raw_ptr_referent p).size.val = reprCSliceDstSize lay.layout (md.metadata p).val
+
+-- 9. Infrastructure Tests
+
+

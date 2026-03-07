@@ -1,11 +1,14 @@
 /// ```hermes
-/// isSafe : true
+/// isSafe :
+///   true
 /// ```
 pub trait SafeWithIsSafe {}
 
 /// ```hermes
-/// isSafe : true
-/// isSafe : false
+/// isSafe :
+///   true
+/// isSafe :
+///   false
 /// ```
 pub trait MultipleIsSafeSafe {}
 

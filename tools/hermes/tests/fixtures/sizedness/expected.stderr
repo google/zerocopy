@@ -4,7 +4,7 @@
   │ Hint: Additional diagnostic information may be available using the
   │ `set_option diagnostics true` command.
    ╭─[[PROJECT_ROOT]/reject/src/lib.rs:8:5]
- 7 │ /// context
+ 7 │ /// context:
  8 │ /// derive_sized sizedness_reject.NamedDst
    ·     ───────────────────┬──────────────────
    ·                        ╰── here

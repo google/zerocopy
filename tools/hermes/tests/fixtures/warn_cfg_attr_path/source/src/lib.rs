@@ -2,7 +2,7 @@
 mod sys; // This triggers the warning
 
 /// ```lean, hermes
-/// context
+/// context:
 /// theorem my_demo : True := trivial
 /// ```
 pub fn demo() {} // Included so the overall verification command succeeds

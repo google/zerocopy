@@ -1,5 +1,5 @@
 /// ```lean, hermes
-/// context
+/// context:
 /// theorem secret_proof : False := sorry
 /// ```
 pub fn secret_proof() {} 
