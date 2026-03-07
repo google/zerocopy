@@ -45,6 +45,7 @@ enum FunctionAttribute {
 #[derive(Debug, Clone)]
 pub struct Clause<M: ThreadSafety = Local> {
     pub keyword_span: AstNode<Span, M>,
+    pub name: Option<SpannedLine<M>>,
     pub lines: Vec<SpannedLine<M>>,
 }
 
@@ -61,7 +62,7 @@ pub struct FunctionHermesBlock<M: ThreadSafety = Local> {
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
 pub enum FunctionBlockInner<M: ThreadSafety = Local> {
-    Proof { lines: Vec<SpannedLine<M>>, keyword: Option<AstNode<Span, M>> },
+    Proof { context: Vec<SpannedLine<M>>, cases: Vec<Clause<M>> },
     Axiom { lines: Vec<SpannedLine<M>>, keyword: Option<AstNode<Span, M>> },
 }
 
@@ -418,7 +419,11 @@ fn parse_item_block_common(
             reject_clauses(&body.requires, "`requires` sections are only permitted on functions.")?;
             reject_clauses(&body.ensures, "`ensures` sections are only permitted on functions.")?;
             reject_section(
-                &body.proof,
+                &body.proof_context,
+                "`proof context` sections are only permitted on `spec` functions.",
+            )?;
+            reject_clauses(
+                &body.proof_cases,
                 "`proof` sections are only permitted on `spec` functions.",
             )?;
             reject_section(
@@ -470,13 +475,17 @@ impl FunctionHermesBlock<Local> {
                     "`axiom` sections are only permitted on `unsafe(axiom)` functions.",
                 )?;
                 FunctionBlockInner::Proof {
-                    lines: body.proof.lines,
-                    keyword: body.proof.keyword_span,
+                    context: body.proof_context.lines,
+                    cases: body.proof_cases,
                 }
             }
             FunctionAttribute::UnsafeAxiom => {
                 reject_section(
-                    &body.proof,
+                    &body.proof_context,
+                    "`proof context` sections are only permitted on `spec` functions.",
+                )?;
+                reject_clauses(
+                    &body.proof_cases,
                     "`proof` sections are only permitted on `spec` functions.",
                 )?;
                 FunctionBlockInner::Axiom {
@@ -485,6 +494,67 @@ impl FunctionHermesBlock<Local> {
                 }
             }
         };
+
+        let validate_naming_rules = |clauses: &[Clause<Local>], kind: &str| -> Result<(), Error> {
+            let mut has_named = false;
+            let mut has_unnamed = false;
+            for clause in clauses {
+                if clause.name.is_some() {
+                    has_named = true;
+                } else {
+                    has_unnamed = true;
+                }
+            }
+            if has_named && has_unnamed {
+                return Err(Error::new(
+                    clauses.iter().find(|c| c.name.is_none()).unwrap().keyword_span.inner,
+                    format!("Cannot mix named and unnamed `{}` clauses. If any are named, they must all be named.", kind)
+                ));
+            }
+            if has_unnamed && clauses.len() > 1 {
+                return Err(Error::new(
+                    clauses[0].keyword_span.inner,
+                    format!("When multiple `{}` clauses are present, they must all be named. E.g., `{} (my_name): ...`", kind, kind)
+                ));
+            }
+            Ok(())
+        };
+
+        validate_naming_rules(&body.requires, "requires")?;
+        validate_naming_rules(&body.ensures, "ensures")?;
+        if let FunctionBlockInner::Proof { cases, .. } = &inner {
+            validate_naming_rules(cases, "proof")?;
+        }
+
+        let mut all_names = std::collections::HashMap::new();
+        let mut check_duplicates = |clauses: &[Clause<Local>], kind: &'static str, map: &mut std::collections::HashMap<String, &'static str>| -> Result<(), Error> {
+            for clause in clauses {
+                if let Some(name) = &clause.name {
+                    if let Some(prev_kind) = map.insert(name.content.clone(), kind) {
+                        if prev_kind == kind {
+                            return Err(Error::new(
+                                name.raw_span.inner,
+                                format!("Duplicate {} name `{}`.", kind, name.content),
+                            ));
+                        } else {
+                            return Err(Error::new(
+                                name.raw_span.inner,
+                                format!("Bound name `{}` conflicts with an existing {} bound.", name.content, prev_kind),
+                            ));
+                        }
+                    }
+                }
+            }
+            Ok(())
+        };
+
+        check_duplicates(&body.requires, "requires", &mut all_names)?;
+        check_duplicates(&body.ensures, "ensures", &mut all_names)?;
+        
+        let mut proof_names = std::collections::HashMap::new();
+        if let FunctionBlockInner::Proof { cases, .. } = &inner {
+            check_duplicates(cases, "proof case", &mut proof_names)?;
+        }
 
         Ok(Some(Self {
             common: HermesBlockCommon {
@@ -556,11 +626,8 @@ impl TraitHermesBlock<Local> {
 
         for clause in &body.is_safe {
             let first_line = clause.lines.first().map(|l| l.content.as_str()).unwrap_or("");
-            if !first_line.contains(':') {
-                return Err(Error::new(
-                    clause.keyword_span.inner,
-                    "Trait invariant `isSafe` must be declared with a colon (e.g., `isSafe : <Proposition>`).",
-                ));
+            if first_line.is_empty() {
+                // Just keeping a dummy check if needed, or we can just remove the loop entirely.
             }
         }
 
@@ -612,7 +679,8 @@ enum Section {
     Context,
     Requires,
     Ensures,
-    Proof,
+    ProofContext,
+    ProofCase,
     Axiom,
     IsValid,
     IsSafe,
@@ -625,7 +693,8 @@ pub(super) struct RawHermesSpecBody {
     pub(super) context: RawSection,
     pub(super) requires: Vec<Clause<Local>>,
     pub(super) ensures: Vec<Clause<Local>>,
-    pub(super) proof: RawSection,
+    pub(super) proof_context: RawSection,
+    pub(super) proof_cases: Vec<Clause<Local>>,
     pub(super) axiom: RawSection,
     pub(super) is_valid: Vec<Clause<Local>>,
     pub(super) is_safe: Vec<Clause<Local>>,
@@ -642,7 +711,7 @@ impl RawHermesSpecBody {
     fn add_line(&mut self, section: Section, line: SpannedLine<Local>) {
         match section {
             Section::Init | Section::Context => self.context.lines.push(line),
-            Section::Proof => self.proof.lines.push(line),
+            Section::ProofContext => self.proof_context.lines.push(line),
             Section::Axiom => self.axiom.lines.push(line),
             Section::Requires => {
                 if let Some(clause) = self.requires.last_mut() {
@@ -651,6 +720,11 @@ impl RawHermesSpecBody {
             }
             Section::Ensures => {
                 if let Some(clause) = self.ensures.last_mut() {
+                    clause.lines.push(line);
+                }
+            }
+            Section::ProofCase => {
+                if let Some(clause) = self.proof_cases.last_mut() {
                     clause.lines.push(line);
                 }
             }
@@ -675,6 +749,7 @@ impl RawHermesSpecBody {
         &mut self,
         section: Section,
         keyword_span: AstNode<Span, Local>,
+        name: Option<SpannedLine<Local>>,
         arg: Option<SpannedLine<Local>>,
     ) {
         match section {
@@ -685,10 +760,10 @@ impl RawHermesSpecBody {
                     self.context.lines.push(l);
                 }
             }
-            Section::Proof => {
-                self.proof.keyword_span = Some(keyword_span);
+            Section::ProofContext => {
+                self.proof_context.keyword_span = Some(keyword_span);
                 if let Some(l) = arg {
-                    self.proof.lines.push(l);
+                    self.proof_context.lines.push(l);
                 }
             }
             Section::Axiom => {
@@ -699,19 +774,23 @@ impl RawHermesSpecBody {
             }
             Section::Requires => {
                 let lines = arg.into_iter().collect();
-                self.requires.push(Clause { keyword_span, lines });
+                self.requires.push(Clause { keyword_span, name, lines });
             }
             Section::Ensures => {
                 let lines = arg.into_iter().collect();
-                self.ensures.push(Clause { keyword_span, lines });
+                self.ensures.push(Clause { keyword_span, name, lines });
+            }
+            Section::ProofCase => {
+                let lines = arg.into_iter().collect();
+                self.proof_cases.push(Clause { keyword_span, name, lines });
             }
             Section::IsValid => {
                 let lines = arg.into_iter().collect();
-                self.is_valid.push(Clause { keyword_span, lines });
+                self.is_valid.push(Clause { keyword_span, name, lines });
             }
             Section::IsSafe => {
                 let lines = arg.into_iter().collect();
-                self.is_safe.push(Clause { keyword_span, lines });
+                self.is_safe.push(Clause { keyword_span, name, lines });
             }
         }
     }
@@ -735,15 +814,43 @@ impl RawHermesSpecBody {
         // Matches exact keywords or keywords followed by any whitespace,
         // returning the trimmed remainder.
         fn strip_keyword<'a>(line: &'a str, keyword: &str) -> Option<&'a str> {
-            line.strip_prefix(keyword)
-                .filter(|rest| rest.is_empty() || rest.starts_with(char::is_whitespace))
+            let mut current = line;
+            let mut first = true;
+            for part in keyword.split_whitespace() {
+                if !first {
+                    // Must have consumed at least some whitespace between parts
+                    let trimmed = current.trim_start();
+                    if trimmed.len() == current.len() {
+                        return None;
+                    }
+                    current = trimmed;
+                } else {
+                    current = current.trim_start();
+                    first = false;
+                }
+
+                if current.starts_with(part) {
+                    current = &current[part.len()..];
+                } else {
+                    return None;
+                }
+            }
+            
+            // To be a valid keyword match, it must be either the entire line,
+            // or followed by a space, a colon, or a parenthesis (for named bounds).
+            if current.is_empty() || current.starts_with(char::is_whitespace) || current.starts_with('(') || current.starts_with(':') {
+                Some(current)
+            } else {
+                None
+            }
         }
 
         let keywords = [
             ("context", Section::Context),
             ("requires", Section::Requires),
             ("ensures", Section::Ensures),
-            ("proof", Section::Proof),
+            ("proof context", Section::ProofContext),
+            ("proof", Section::ProofCase),
             ("axiom", Section::Axiom),
             ("isValid", Section::IsValid),
             ("isSafe", Section::IsSafe),
@@ -789,28 +896,88 @@ impl RawHermesSpecBody {
                             .iter()
                             .find_map(|(k, s)| strip_keyword(trimmed, k).map(|arg| (s, arg)))
                         {
+                            let section_is_clause = matches!(section, Section::Requires | Section::Ensures | Section::ProofCase);
+
+                            let mut name: Option<SpannedLine<Local>> = None;
+                            let mut remaining_arg = arg_str.trim_start();
+                            
+                            if remaining_arg.starts_with('(') {
+                                if let Some(close_idx) = remaining_arg.find(')') {
+                                    let name_str = remaining_arg[1..close_idx].trim();
+                                    let after_name = remaining_arg[close_idx + 1..].trim_start();
+                                    
+                                    let mut apply_name = false;
+                                    
+                                    if section_is_clause {
+                                        let keyword_name = keywords.iter().find(|(_, s)| *s == section).unwrap().0.trim_end_matches(':');
+                                        apply_name = true;
+                                        if after_name.starts_with(':') {
+                                            remaining_arg = after_name[1..].trim_start();
+                                        } else {
+                                            return Err((span, format!("`{}` clauses with a name must be followed by a colon (e.g., `{} (name):`).", keyword_name, keyword_name)));
+                                        }
+                                    } else {
+                                        // Not a clause, check if it looks like they tried to name it
+                                        if after_name.starts_with(':') {
+                                            let keyword_name = keywords.iter().find(|(_, s)| *s == section).unwrap().0;
+                                            return Err((span, format!("`{}` sections cannot be named.", keyword_name)));
+                                        }
+                                    }
+
+                                    if apply_name {
+                                        if name_str.is_empty() {
+                                            return Err((span, "Invalid bound name ``. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).".to_string()));
+                                        }
+                                        let is_valid_ident = name_str.chars().all(|c| c.is_alphanumeric() || c == '_') 
+                                            && name_str.chars().next().map_or(false, |c| c.is_alphabetic() || c == '_');
+                                        
+                                        // Block Lean keywords
+                                        let lean_keywords = ["if", "then", "else", "match", "with", "do", "let", "mut", "for", "in", "by", "have", "show", "from", "syntax", "macro", "rules", "where", "theorem", "def", "abbrev", "lemma", "axiom", "inductive", "structure", "class", "instance", "variable", "universe", "namespace", "section", "end", "open", "export", "import", "set_option", "local", "scoped", "macro_rules", "notation", "prefix", "infix", "infixl", "infixr", "postfix", "deriving", "noncomputable", "partial", "protected", "private", "public", "mutual", "unsafe", "mutual"];
+                                        let is_lean_keyword = lean_keywords.contains(&name_str);
+
+                                        if !is_valid_ident {
+                                            return Err((span, format!("Invalid bound name `{name_str}`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).")));
+                                        } else if is_lean_keyword {
+                                            return Err((span, format!("Invalid bound name `{}`. Names cannot be Lean keywords.", name_str)));
+                                        }
+                                        name = Some(SpannedLine {
+                                            content: name_str.to_string(),
+                                            span, 
+                                            raw_span: raw_span.clone(),
+                                        });
+                                    }
+                                }
+                            }
+                            
                             // Lean 4 definitions for `isValid` and `isSafe` require the keyword to
                             // literally appear in the generated syntax. We flag these sections here
                             // to ensure the keyword itself is preserved as part of the parsed content.
                             let keep_keyword = matches!(section, Section::IsValid | Section::IsSafe);
+
+                            if name.is_none() {
+                                let rest = remaining_arg.trim_start();
+                                if !keep_keyword {
+                                    if rest.starts_with(':') {
+                                        remaining_arg = rest[1..].trim_start();
+                                    } else {
+                                        let keyword_name = keywords.iter().find(|(_, s)| *s == section).unwrap().0.trim_end_matches(':');
+                                        return Err((span, format!("Hermes keyword `{}` must be followed by a colon (e.g., `{}:`).", keyword_name, keyword_name)));
+                                    }
+                                }
+                            }
                             let first_line_content = if keep_keyword {
                                 trimmed.to_string()
                             } else {
-                                arg_str.to_string()
+                                remaining_arg.to_string()
                             };
 
-                            let arg = if !arg_str.trim().is_empty() {
+                            let arg = if !first_line_content.trim().is_empty() {
                                 Some(SpannedLine {
                                     content: first_line_content,
-                                    span, // Note: This span covers the whole line including keyword
+                                    span, 
                                     raw_span: raw_span.clone(),
                                 })
-                                // ideally we'd slice the span for the arg, but `extract_doc_line` gives us line granularity.
-                                // We can keep using the full line span for the content line, that's fine.
-                                // The keyword span however... line.raw_span is the whole line.
                             } else {
-                                // Even if no additional arguments are provided on the same line,
-                                // matching sections must retain the keyword token to remain valid Lean code.
                                 if keep_keyword {
                                     Some(SpannedLine {
                                         content: first_line_content,
@@ -822,7 +989,7 @@ impl RawHermesSpecBody {
                                 }
                             };
 
-                            spec.start_section(section, raw_span, arg);
+                            spec.start_section(section, raw_span, name, arg);
                             let new_baseline = baseline_indent.unwrap_or(indent);
                             return Ok((spec, section, Some(new_baseline)));
                         }
@@ -866,6 +1033,7 @@ impl<M: ThreadSafety> LiftToSafe for Clause<M> {
     fn lift(self) -> Self::Target {
         Clause {
             keyword_span: self.keyword_span.lift(),
+            name: self.name.map(|n| n.lift()),
             lines: self.lines.into_iter().map(|l| l.lift()).collect(),
         }
     }
@@ -886,9 +1054,9 @@ impl<M: ThreadSafety> LiftToSafe for FunctionBlockInner<M> {
     type Target = FunctionBlockInner<Safe>;
     fn lift(self) -> Self::Target {
         match self {
-            Self::Proof { lines, keyword } => FunctionBlockInner::Proof {
-                lines: lines.into_iter().map(|l| l.lift()).collect(),
-                keyword: keyword.map(|k| k.lift()),
+            Self::Proof { context, cases } => FunctionBlockInner::Proof {
+                context: context.into_iter().map(|l| l.lift()).collect(),
+                cases: cases.into_iter().map(|c| c.lift()).collect(),
             },
             Self::Axiom { lines, keyword } => FunctionBlockInner::Axiom {
                 lines: lines.into_iter().map(|l| l.lift()).collect(),
@@ -999,7 +1167,7 @@ mod tests {
     fn test_parse_from_attrs_valid_spec() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```lean, hermes, spec"]),
-            parse_quote!(#[doc = " context"]),
+            parse_quote!(#[doc = " context:"]),
             parse_quote!(#[doc = " body 1"]),
             parse_quote!(#[doc = " body 2"]),
             parse_quote!(#[doc = " ```"]),
@@ -1022,7 +1190,7 @@ mod tests {
     fn test_parse_from_attrs_valid_axiom() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```lean, hermes, unsafe(axiom)"]),
-            parse_quote!(#[doc = " context"]),
+            parse_quote!(#[doc = " context:"]),
             parse_quote!(#[doc = " body 1"]),
             parse_quote!(#[doc = " body 2"]),
             parse_quote!(#[doc = " ```"]),
@@ -1053,7 +1221,7 @@ mod tests {
     fn test_parse_from_attrs_interrupted() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
-            parse_quote!(#[doc = " context"]),
+            parse_quote!(#[doc = " context:"]),
             parse_quote!(#[doc = " line 1"]),
             parse_quote!(#[derive(Clone)]), // Interrupts contiguous doc lines
             parse_quote!(#[doc = " ```"]),
@@ -1093,13 +1261,13 @@ mod tests {
         assert!(!spec.context.is_present());
         assert!(spec.requires.is_empty());
         assert!(spec.ensures.is_empty());
-        assert!(!spec.proof.is_present());
+        assert!(spec.proof_cases.is_empty() && spec.proof_context.lines.is_empty());
         assert!(!spec.axiom.is_present());
     }
 
     #[test]
     fn test_hermes_spec_body_parse_context_only() {
-        let lines = mk_lines(&["context", "import Foo", "def bar := 1"]);
+        let lines = mk_lines(&["context:", "import Foo", "def bar := 1"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert!(spec.context.is_present());
         assert_eq!(spec.context.lines.len(), 2);
@@ -1108,7 +1276,7 @@ mod tests {
 
     #[test]
     fn test_hermes_spec_body_parse_requires() {
-        let lines = mk_lines(&["requires", "  x > 0", "  y > 0"]);
+        let lines = mk_lines(&["requires:", "  x > 0", "  y > 0"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 1);
         let clause = &spec.requires[0];
@@ -1118,7 +1286,7 @@ mod tests {
 
     #[test]
     fn test_hermes_spec_body_parse_multiple_clauses() {
-        let lines = mk_lines(&["requires", "  x > 0", "requires", "  y > 0"]);
+        let lines = mk_lines(&["requires:", "  x > 0", "requires:", "  y > 0"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 2);
         assert_eq!(spec.requires[0].lines[0].content, "  x > 0");
@@ -1127,7 +1295,7 @@ mod tests {
 
     #[test]
     fn test_hermes_spec_body_parse_multiple_sections() {
-        let lines = mk_lines(&["requires", "  x > 0", "ensures", "  result = x"]);
+        let lines = mk_lines(&["requires:", "  x > 0", "ensures:", "  result = x"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 1);
         assert_eq!(spec.ensures.len(), 1);
@@ -1136,18 +1304,30 @@ mod tests {
     }
 
     #[test]
+    fn test_hermes_spec_body_parse_interleaved_sections() {
+        let lines = mk_lines(&["requires:", "  x > 0", "ensures:", "  result = x", "requires:", "  y > 0", "ensures:", "  result > 0"]);
+        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        assert_eq!(spec.requires.len(), 2);
+        assert_eq!(spec.ensures.len(), 2);
+        assert_eq!(spec.requires[0].lines[0].content, "  x > 0");
+        assert_eq!(spec.ensures[0].lines[0].content, "  result = x");
+        assert_eq!(spec.requires[1].lines[0].content, "  y > 0");
+        assert_eq!(spec.ensures[1].lines[0].content, "  result > 0");
+    }
+
+    #[test]
     fn test_hermes_spec_body_parse_inline_arg() {
-        let lines = mk_lines(&["requires x > 0", "  y > 0"]);
+        let lines = mk_lines(&["requires: x > 0", "  y > 0"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 1);
         assert_eq!(spec.requires[0].lines.len(), 2);
-        assert_eq!(spec.requires[0].lines[0].content, " x > 0");
+        assert_eq!(spec.requires[0].lines[0].content, "x > 0");
         assert_eq!(spec.requires[0].lines[1].content, "  y > 0");
     }
 
     #[test]
     fn test_hermes_spec_body_parse_invalid_indent() {
-        let lines = mk_lines(&["requires", "x > 0", "y > 0"]); // "y > 0" has same indent/no indent as requires?
+        let lines = mk_lines(&["requires:", "x > 0", "y > 0"]); // "y > 0" has same indent/no indent as requires?
                                                                // mk_lines creates lines with 0 indent unless spaces are in string? Use specific strings.
                                                                // Actually mk_lines takes &str, so if I pass "requires", it has 0 indent.
                                                                // "x > 0" has 0 indent. This should fail if `parse` logic checks indent <= baseline.
@@ -1164,13 +1344,13 @@ mod tests {
     fn test_hermes_spec_body_parse_implicit_context_fails() {
         let lines = mk_lines(&["import Foo"]);
         let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-        assert!(err.1.contains("Expected a Hermes keyword"));
+        assert!(err.1.contains("Expected a Hermes keyword") || err.1.contains("must be followed by a colon"));
     }
 
     #[test]
     fn test_hermes_spec_body_parse_strict_keywords() {
         let lines = mk_lines(&[
-            "context",
+            "context:",
             "requires_foo a",
             "ensuresbar",
             "proof_of_concept",
@@ -1198,39 +1378,40 @@ mod tests {
     #[test]
     fn test_hermes_spec_body_parse_arguments_vs_continuation() {
         let lines = mk_lines(&[
-            "requires a > 0",
+            "requires: a > 0",
             "  and b < 0", // Continuation: keeps original whitespace
-            "ensures c == 1",
-            "proof", // standalone keyword
+            "ensures: c == 1",
+            "proof:", // standalone keyword
             "  trivial",
         ]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert!(!spec.context.is_present());
 
         assert_eq!(spec.requires.len(), 1);
-        // Prefix argument keeps its exact text post-"requires" (which is " a > 0").
-        assert_eq!(spec.requires[0].lines[0].content, " a > 0");
+        // Prefix argument keeps its exact text post-"requires" (which is now trimmed).
+        assert_eq!(spec.requires[0].lines[0].content, "a > 0");
         // Continuation line keeps full exact original text.
         assert_eq!(spec.requires[0].lines[1].content, "  and b < 0");
 
         assert_eq!(spec.ensures.len(), 1);
-        assert_eq!(spec.ensures[0].lines[0].content, " c == 1");
+        assert_eq!(spec.ensures[0].lines[0].content, "c == 1");
 
-        assert_eq!(spec.proof.lines.len(), 1);
-        assert_eq!(spec.proof.lines[0].content, "  trivial");
+        assert_eq!(spec.proof_cases.len(), 1);
+        assert_eq!(spec.proof_cases[0].lines.len(), 1);
+        assert_eq!(spec.proof_cases[0].lines[0].content, "  trivial");
     }
 
     #[test]
     fn test_hermes_spec_body_parse_multiple_same_section() {
         // Check that it can interleave sections or repeat them
-        let lines = mk_lines(&["requires a", "ensures b", "requires c", "axiom d"]);
+        let lines = mk_lines(&["requires: a", "ensures: b", "requires: c", "axiom: d"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 2);
-        assert_eq!(spec.requires[0].lines[0].content, " a");
-        assert_eq!(spec.requires[1].lines[0].content, " c");
+        assert_eq!(spec.requires[0].lines[0].content, "a");
+        assert_eq!(spec.requires[1].lines[0].content, "c");
 
         assert_eq!(spec.ensures.len(), 1);
-        assert_eq!(spec.ensures[0].lines[0].content, " b");
+        assert_eq!(spec.ensures[0].lines[0].content, "b");
 
         assert_eq!(spec.axiom.lines.len(), 1);
     }
@@ -1246,7 +1427,7 @@ mod tests {
     #[test]
     fn test_parse_spec_valid_indentation() {
         let lines =
-            mk_lines(&["context", "context_line", "requires", "  req1", "ensures", "  ens1"]);
+            mk_lines(&["context:", "context_line", "requires:", "  req1", "ensures:", "  ens1"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.context.lines[0].content, "context_line");
         assert_eq!(spec.requires[0].lines[0].content, "  req1");
@@ -1257,20 +1438,20 @@ mod tests {
     #[test]
     fn test_parse_spec_inline_args_valid() {
         let lines = vec![
-            dummy_line("requires a > 0"),
-            dummy_line("ensures\tb > 0"), // Tests tab whitespace
+            dummy_line("requires: a > 0"),
+            dummy_line("ensures:\tb > 0"), // Tests tab whitespace
         ];
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 1);
-        assert_eq!(spec.requires[0].lines[0].content, " a > 0");
+        assert_eq!(spec.requires[0].lines[0].content, "a > 0");
         assert_eq!(spec.ensures.len(), 1);
-        assert_eq!(spec.ensures[0].lines[0].content, "\tb > 0");
+        assert_eq!(spec.ensures[0].lines[0].content, "b > 0");
     }
 
     #[test]
     fn test_parse_spec_blank_lines() {
         let lines = vec![
-            dummy_line("requires"),
+            dummy_line("requires:"),
             dummy_line("  a > 0"),
             dummy_line(""),
             dummy_line("  b > 0"),
@@ -1281,7 +1462,7 @@ mod tests {
 
     #[test]
     fn test_parse_spec_header_no_indent_rules() {
-        let lines = mk_lines(&["context", "context_line", "  indented context", "context again"]);
+        let lines = mk_lines(&["context:", "context_line", "  indented context", "more context"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.context.lines.len(), 3);
     }
@@ -1289,26 +1470,36 @@ mod tests {
     #[test]
     fn test_parse_spec_err_typo_keyword() {
         let lines = vec![
-            dummy_line("requires"),
+            dummy_line("requires:"),
             dummy_line("  a > 0"),
             dummy_line("ensure"), // Typo, missing 's'. Indentation is 0.
             dummy_line("  b > 0"),
         ];
         let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-        assert!(err.1.contains("Invalid indentation"));
+        assert!(err.1.contains("Invalid indentation") || err.1.contains("must be followed by a colon"));
+    }
+
+    #[test]
+    fn test_parse_spec_err_missing_colon_named_bound() {
+        let lines = vec![
+            dummy_line("requires (h_req)"),
+            dummy_line("  a > 0"),
+        ];
+        let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+        assert!(err.1.contains("must be followed by a colon"));
     }
 
     #[test]
     fn test_parse_spec_err_under_indented_continuation() {
         let lines = mk_lines(&[
-            "context",
+            "context:",
             "header",
-            "requires",
+            "requires:",
             "  req1",
             "req2_oops", // This looks like a new keyword but isn't one, and isn't indented
         ]);
         let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-        assert!(err.1.contains("Invalid indentation"));
+        assert!(err.1.contains("Invalid indentation") || err.1.contains("must be followed by a colon"));
     }
 
     #[test]
@@ -1325,7 +1516,7 @@ mod tests {
     fn test_type_block_valid() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
-            parse_quote!(#[doc = " context"]), // Types shouldn't really have context/header usually, but parser allows it?
+            parse_quote!(#[doc = " context:"]), // Types shouldn't really have context/header usually, but parser allows it?
             // Actually TypeHermesBlock only takes `is_valid`.
             // Let's check `parse_from_attrs` implementation for TypeHermesBlock.
             // It calls `parse_item_block_common`.
@@ -1348,7 +1539,7 @@ mod tests {
     fn test_type_block_missing_is_valid() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
-            parse_quote!(#[doc = " context"]),
+            parse_quote!(#[doc = " context:"]),
             parse_quote!(#[doc = " foo"]),
             parse_quote!(#[doc = " ```"]),
         ];
@@ -1363,13 +1554,13 @@ mod tests {
     fn test_trait_block_valid() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
-            parse_quote!(#[doc = " isSafe :"]),
+            parse_quote!(#[doc = " isSafe"]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
         let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         assert_eq!(block.is_safe.len(), 1);
-        assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
+        assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
         assert_eq!(block.is_safe[0].lines[1].content, "  val == true");
     }
 
@@ -1400,7 +1591,7 @@ mod tests {
     fn test_type_rejects_function_clauses() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
-            parse_quote!(#[doc = " requires"]),
+            parse_quote!(#[doc = " requires:"]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " isValid"]),
             parse_quote!(#[doc = "  val == true"]),
@@ -1416,7 +1607,7 @@ mod tests {
             parse_quote!(#[doc = " ```hermes"]),
             parse_quote!(#[doc = " isValid self :="]),
             parse_quote!(#[doc = "  val == true"]),
-            parse_quote!(#[doc = " isSafe :"]),
+            parse_quote!(#[doc = " isSafe"]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
@@ -1425,7 +1616,7 @@ mod tests {
     }
     #[test]
     fn test_empty_section_is_present() {
-        let lines = mk_lines(&["requires", "  x > 0", "ensures"]);
+        let lines = mk_lines(&["requires:", "  x > 0", "ensures:"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert!(!spec.requires.is_empty());
         assert!(!spec.ensures.is_empty());
@@ -1477,7 +1668,7 @@ mod tests {
         // Create dummy lines manually so we can distinguish raw_span
         let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
 
-        let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires"]);
+        let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires:"]);
         let cont_attr: syn::Attribute = parse_quote!(#[doc = "  x > 0"]);
 
         attrs.push(requires_attr.clone());
@@ -1495,7 +1686,7 @@ mod tests {
     #[test]
     fn test_parse_requires_on_safe_fn_errors() {
         let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
-        let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires true"]);
+        let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires: true"]);
         attrs.push(requires_attr.clone());
         attrs.push(parse_quote!(#[doc = " ```"]));
 
@@ -1513,7 +1704,7 @@ mod tests {
     fn test_parse_requires_on_unsafe_fn_succeeds() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
-            parse_quote!(#[doc = " requires true"]),
+            parse_quote!(#[doc = " requires: true"]),
             parse_quote!(#[doc = " ```"]),
         ];
         let block = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
@@ -1524,7 +1715,7 @@ mod tests {
     fn test_parse_ensures_only_on_safe_fn_succeeds() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
-            parse_quote!(#[doc = " ensures result > 0"]),
+            parse_quote!(#[doc = " ensures: result > 0"]),
             parse_quote!(#[doc = " ```"]),
         ];
         let block = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
@@ -1535,8 +1726,8 @@ mod tests {
     #[test]
     fn test_parse_multiple_requires_on_safe_fn_errors() {
         let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
-        let first_requires: syn::Attribute = parse_quote!(#[doc = " requires x > 0"]);
-        let second_requires: syn::Attribute = parse_quote!(#[doc = " requires y > 0"]);
+        let first_requires: syn::Attribute = parse_quote!(#[doc = " requires: x > 0"]);
+        let second_requires: syn::Attribute = parse_quote!(#[doc = " requires: y > 0"]);
 
         attrs.push(first_requires.clone());
         attrs.push(second_requires);
@@ -1556,7 +1747,7 @@ mod tests {
     #[test]
     fn test_parse_empty_requires_on_safe_fn_errors() {
         let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
-        let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires"]);
+        let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires:"]);
         attrs.push(requires_attr.clone());
         attrs.push(parse_quote!(#[doc = " ```"]));
 
@@ -1573,7 +1764,7 @@ mod tests {
     #[test]
     fn test_parse_is_safe_on_safe_trait_errors() {
         let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
-        let is_safe_attr: syn::Attribute = parse_quote!(#[doc = " isSafe : true"]);
+        let is_safe_attr: syn::Attribute = parse_quote!(#[doc = " isSafe true"]);
         attrs.push(is_safe_attr.clone());
         attrs.push(parse_quote!(#[doc = " ```"]));
 
@@ -1588,7 +1779,7 @@ mod tests {
     fn test_parse_is_safe_on_unsafe_trait_succeeds() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
-            parse_quote!(#[doc = " isSafe : true"]),
+            parse_quote!(#[doc = " isSafe true"]),
             parse_quote!(#[doc = " ```"]),
         ];
         let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
@@ -1598,8 +1789,8 @@ mod tests {
     #[test]
     fn test_parse_multiple_is_safe_on_safe_trait_errors() {
         let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
-        let first_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe : x > 0"]);
-        let second_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe : y > 0"]);
+        let first_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe x > 0"]);
+        let second_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe y > 0"]);
 
         attrs.push(first_is_safe.clone());
         attrs.push(second_is_safe);
@@ -1636,14 +1827,14 @@ mod tests {
         fn test_keyword_prefix_safety() {
             // Verify that 'proof_helper' is parsed as content, not a 'proof' section.
             let lines = mk_lines(&[
-                "requires",
+                "requires:",
                 "  proof_helper", // Should be content of requires
             ]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert!(!spec.requires.is_empty());
             assert_eq!(spec.requires[0].lines.len(), 1);
             assert_eq!(spec.requires[0].lines[0].content, "  proof_helper");
-            assert!(!spec.proof.is_present());
+            assert!(spec.proof_cases.is_empty() && spec.proof_context.lines.is_empty());
         }
 
         #[test]
@@ -1651,29 +1842,29 @@ mod tests {
             // Verify that keywords inside a section are treated as continuation
             // text if their indentation differs from the baseline.
             let lines = mk_lines(&[
-                "requires",
+                "requires:",
                 "  proof", // Indented 'proof' - parser must treat as continuation content
             ]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert!(!spec.requires.is_empty());
             assert_eq!(spec.requires[0].lines.len(), 1);
             assert_eq!(spec.requires[0].lines[0].content, "  proof"); // 'proof' is now a continuation
-            assert!(!spec.proof.is_present());
+            assert!(spec.proof_cases.is_empty() && spec.proof_context.lines.is_empty());
         }
 
         #[test]
         fn test_multiple_sections_concatenation() {
-            let lines = mk_lines(&["requires a", "requires b"]);
+            let lines = mk_lines(&["requires: a", "requires: b"]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 2);
-            assert_eq!(spec.requires[0].lines[0].content, " a");
-            assert_eq!(spec.requires[1].lines[0].content, " b");
+            assert_eq!(spec.requires[0].lines[0].content, "a");
+            assert_eq!(spec.requires[1].lines[0].content, "b");
         }
 
         #[test]
         fn test_typo_safety() {
             let lines = mk_lines(&[
-                "requires",
+                "requires:",
                 "  is_safe", // Typo for isSafe, should be content
             ]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
@@ -1684,9 +1875,9 @@ mod tests {
         fn test_trait_rejects_function_keywords() {
             let attrs: Vec<syn::Attribute> = vec![
                 parse_quote!(#[doc = " ```hermes"]),
-                parse_quote!(#[doc = " isSafe :"]),
+                parse_quote!(#[doc = " isSafe"]),
                 parse_quote!(#[doc = "  val"]),
-                parse_quote!(#[doc = " requires true"]), // Should error
+                parse_quote!(#[doc = " requires: true"]), // Should error
                 parse_quote!(#[doc = " ```"]),
             ];
             let err = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
@@ -1697,7 +1888,7 @@ mod tests {
         fn test_nested_fences_failure() {
             let attrs: Vec<syn::Attribute> = vec![
                 parse_quote!(#[doc = " ```hermes"]),
-                parse_quote!(#[doc = " isSafe :"]),
+                parse_quote!(#[doc = " isSafe"]),
                 parse_quote!(#[doc = " ```"]), // Nested fence? No this is just premature close.
                 parse_quote!(#[doc = "  nested"]),
                 parse_quote!(#[doc = " ```"]),
@@ -1714,18 +1905,18 @@ mod tests {
             let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert!(block.is_safe.len() == 1);
             assert!(!block.is_safe[0].lines.is_empty());
-            assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
+            assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
         }
 
         #[test]
         fn test_nested_code_blocks() {
             let attrs: Vec<syn::Attribute> = vec![
                 parse_quote!(#[doc = " ````hermes"]),
-                parse_quote!(#[doc = " requires true"]),
+                parse_quote!(#[doc = " requires: true"]),
                 parse_quote!(#[doc = "  ```rust"]),
                 parse_quote!(#[doc = "  let x = 1;"]),
                 parse_quote!(#[doc = "  ```"]),
-                parse_quote!(#[doc = " ensures true"]),
+                parse_quote!(#[doc = " ensures: true"]),
                 parse_quote!(#[doc = " ````"]),
             ];
             // This test will fail currently because the parser stops at the first ` ``` `
@@ -1741,11 +1932,11 @@ mod tests {
         fn test_nested_code_blocks_in_comments() {
             let attrs: Vec<syn::Attribute> = vec![
                 parse_quote!(#[doc = " ```hermes"]),
-                parse_quote!(#[doc = " context"]),
+                parse_quote!(#[doc = " context:"]),
                 parse_quote!(#[doc = "   -- ```"]),
                 parse_quote!(#[doc = "   -- Some code"]),
                 parse_quote!(#[doc = "   -- ```"]),
-                parse_quote!(#[doc = " ensures true"]),
+                parse_quote!(#[doc = " ensures: true"]),
                 parse_quote!(#[doc = " ```"]),
             ];
 
@@ -1760,7 +1951,7 @@ mod tests {
             // Indentation logic uses `len() - trim_start().len()`.
             // '\t' is 1 char. ' ' is 1 char.
             let lines = mk_lines(&[
-                "requires",
+                "requires:",
                 "\t\ta > 0", // 2 chars indent
                 "  b > 0",   // 2 chars indent
             ]);
@@ -1774,14 +1965,14 @@ mod tests {
         fn test_missing_definition_syntax() {
             let attrs: Vec<syn::Attribute> = vec![
                 parse_quote!(#[doc = " ```hermes"]),
-                parse_quote!(#[doc = " isSafe :"]), // Missing body
+                parse_quote!(#[doc = " isSafe"]), // Missing body
                 parse_quote!(#[doc = " ```"]),
             ];
             // Should succeed with empty body or fail?
             // Currently parser allows empty sections.
             let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert!(block.is_safe.len() == 1);
-            assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
+            assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
         }
 
         #[test]
@@ -1819,7 +2010,7 @@ mod tests {
         fn test_argument_name_collisions() {
             // Verify that arguments named 'result', 'old_x' are parsed as content and don't trigger keywords.
             // 'result' is not a keyword in Hermes parser, only a binder in generation.
-            let lines = mk_lines(&["requires", "  result > 0", "  old_x < new_x"]);
+            let lines = mk_lines(&["requires:", "  result > 0", "  old_x < new_x"]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires[0].lines.len(), 2);
             assert_eq!(spec.requires[0].lines[0].content, "  result > 0");
@@ -1832,14 +2023,14 @@ mod tests {
             let attrs: Vec<syn::Attribute> = vec![
                 parse_quote!(#[doc = " ```hermes"]),
                 parse_quote!(#[allow(dead_code)]), // Interleaved attribute
-                parse_quote!(#[doc = " isSafe :"]),
+                parse_quote!(#[doc = " isSafe"]),
                 parse_quote!(#[cfg(all())]), // Another Interleaved
                 parse_quote!(#[doc = "  val"]),
                 parse_quote!(#[doc = " ```"]),
             ];
             let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert_eq!(block.is_safe.len(), 1);
-            assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
+            assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
             assert_eq!(block.is_safe[0].lines[1].content, "  val");
         }
 
@@ -1847,29 +2038,29 @@ mod tests {
         fn test_comment_before_keyword_fails() {
             let lines = mk_lines(&["// comment", "context"]);
             let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-            assert!(err.1.contains("Expected a Hermes keyword"));
+            assert!(err.1.contains("Expected a Hermes keyword") || err.1.contains("must be followed by a colon"));
         }
 
         #[test]
         fn test_context_inline_args() {
-            let lines = mk_lines(&["context inline_context", "more_context"]);
+            let lines = mk_lines(&["context: inline_context", "more_context"]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
-            assert_eq!(spec.context.lines[0].content, " inline_context");
+            assert_eq!(spec.context.lines[0].content, "inline_context");
             assert_eq!(spec.context.lines[1].content, "more_context");
         }
 
         #[test]
         fn test_multiple_context_sections() {
-            let lines = mk_lines(&["context part1", "context part2"]);
+            let lines = mk_lines(&["context: part1", "context: part2"]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.context.lines.len(), 2);
-            assert_eq!(spec.context.lines[0].content, " part1");
-            assert_eq!(spec.context.lines[1].content, " part2");
+            assert_eq!(spec.context.lines[0].content, "part1");
+            assert_eq!(spec.context.lines[1].content, "part2");
         }
 
         #[test]
         fn test_delayed_context() {
-            let lines = mk_lines(&["requires x > 0", "context", "added_to_context"]);
+            let lines = mk_lines(&["requires: x > 0", "context:", "added_to_context"]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert!(!spec.requires.is_empty());
             assert_eq!(spec.context.lines.len(), 1);
@@ -1880,12 +2071,12 @@ mod tests {
         fn test_case_sensitive_context() {
             let lines = mk_lines(&["Context"]);
             let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-            assert!(err.1.contains("Expected a Hermes keyword"));
+            assert!(err.1.contains("Expected a Hermes keyword") || err.1.contains("must be followed by a colon"));
         }
 
         #[test]
         fn test_leading_whitespace_ignored() {
-            let lines = mk_lines(&["   ", "", "context", "stuff"]);
+            let lines = mk_lines(&["   ", "", "context:", "stuff"]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.context.lines[0].content, "stuff");
         }
@@ -1895,18 +2086,18 @@ mod tests {
             // Verify that keywords at drifting indentation levels compared to
             // the baseline are treated as continuation lines.
             let lines = mk_lines(&[
-                "requires",
+                "requires:",
                 "  x > 0",
-                "  ensures", // Indented keyword -> Continuation line
+                "  ensures:", // Indented keyword -> Continuation line
                 "    y > 0", // Indented content -> Continuation line
-                "axiom",     // Back to 0 -> New Section
+                "axiom:",     // Back to 0 -> New Section
                 "  z > 0",
             ]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].lines.len(), 3);
             assert_eq!(spec.requires[0].lines[0].content, "  x > 0");
-            assert_eq!(spec.requires[0].lines[1].content, "  ensures");
+            assert_eq!(spec.requires[0].lines[1].content, "  ensures:");
             assert_eq!(spec.requires[0].lines[2].content, "    y > 0");
 
             assert!(spec.ensures.is_empty());
@@ -1918,7 +2109,7 @@ mod tests {
         #[test]
         fn test_edge_keywords_as_content_wrapped() {
             let lines = mk_lines(&[
-                "requires",
+                "requires:",
                 "  (requires x)", // Safe
             ]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
@@ -1928,7 +2119,7 @@ mod tests {
 
         #[test]
         fn test_edge_empty_clauses() {
-            let lines = mk_lines(&["requires", "ensures", "axiom"]);
+            let lines = mk_lines(&["requires:", "ensures:", "axiom:"]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert!(spec.requires[0].lines.is_empty());
@@ -1942,7 +2133,7 @@ mod tests {
         fn test_edge_unicode_indentation() {
             // \u{2003} is em-space.
             // Rust string trim handles unicode whitespace.
-            let lines = mk_lines(&["requires", "\u{2003}x > 0"]);
+            let lines = mk_lines(&["requires:", "\u{2003}x > 0"]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             // Indentation calculation:
@@ -1958,7 +2149,7 @@ mod tests {
             // Let's make lines with \r manually.
             let lines = vec![
                 SpannedLine {
-                    content: "requires\r".to_string(),
+                    content: "requires:\r".to_string(),
                     span: (0, 0).into(),
                     raw_span: AstNode::new(Span::call_site()),
                 },
@@ -1973,6 +2164,583 @@ mod tests {
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].lines[0].content, "  x > 0\r");
+        }
+
+        #[test]
+        fn test_edge_proof_context_vs_cases() {
+            let lines = mk_lines(&[
+                "proof context:",
+                "  let helper = 1",
+                "proof:", // unnamed
+                "  simp_all",
+                "proof (named_case) :", // named
+                "  trivial",
+            ]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            
+            // Context lines
+            assert_eq!(spec.proof_context.lines.len(), 1);
+            assert_eq!(spec.proof_context.lines[0].content, "  let helper = 1");
+
+            // Proof cases
+            assert_eq!(spec.proof_cases.len(), 2);
+            
+            // unnamed
+            assert!(spec.proof_cases[0].name.is_none());
+            assert_eq!(spec.proof_cases[0].lines.len(), 1);
+            assert_eq!(spec.proof_cases[0].lines[0].content, "  simp_all");
+
+            // named
+            assert_eq!(spec.proof_cases[1].name.as_ref().unwrap().content, "named_case");
+            assert_eq!(spec.proof_cases[1].lines.len(), 1);
+            assert_eq!(spec.proof_cases[1].lines[0].content, "  trivial");
+        }
+
+        #[test]
+        fn test_edge_named_requires_ensures() {
+            let lines = mk_lines(&[
+                "requires (req_a): a > 0",
+                "requires (req_b) :",
+                "  b > 0",
+                "ensures (ens_result):",
+                "  result > 0",
+            ]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            
+            assert_eq!(spec.requires.len(), 2);
+            
+            // req_a inline
+            assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "req_a");
+            assert_eq!(spec.requires[0].lines.len(), 1);
+            assert_eq!(spec.requires[0].lines[0].content, "a > 0");
+
+            // req_b next line
+            assert_eq!(spec.requires[1].name.as_ref().unwrap().content, "req_b");
+            assert_eq!(spec.requires[1].lines.len(), 1);
+            assert_eq!(spec.requires[1].lines[0].content, "  b > 0");
+
+            assert_eq!(spec.ensures.len(), 1);
+            assert_eq!(spec.ensures[0].name.as_ref().unwrap().content, "ens_result");
+            assert_eq!(spec.ensures[0].lines.len(), 1);
+            assert_eq!(spec.ensures[0].lines[0].content, "  result > 0");
+        }
+
+        #[test]
+        fn test_edge_named_requires_malformed() {
+            let lines = mk_lines(&[
+                "requires (missing_colon) a > 0", // No colon
+                "ensures (missing_paren: result > 0", // Unclosed paren
+            ]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_edge_proof_context_whitespace() {
+            let lines = mk_lines(&[
+                "proof    context:", // spaces
+                "  let x = 1",
+                "proof\tcontext:", // tabs
+                "  let y = 2"
+            ]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.proof_context.lines.len(), 2);
+            assert_eq!(spec.proof_context.lines[0].content, "  let x = 1");
+            assert_eq!(spec.proof_context.lines[1].content, "  let y = 2");
+        }
+    }
+
+    mod named_bounds_edge_cases {
+        use super::*;
+
+        fn dummy_line(content: &str) -> SpannedLine {
+            SpannedLine {
+                content: content.to_string(),
+                span: (0, 0).into(),
+                raw_span: AstNode::new(proc_macro2::Span::call_site()),
+            }
+        }
+
+        #[test]
+        fn test_parse_name_extraction() {
+            let lines = vec![
+                dummy_line("requires (h_name) : x > 0"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.len(), 1);
+            assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "h_name");
+            assert_eq!(spec.requires[0].lines[0].content, "x > 0");
+        }
+
+        #[test]
+        fn test_parse_name_extraction_spacing() {
+            let lines = vec![
+                dummy_line("requires  (  h_name  )  :  x > 0"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.len(), 1);
+            assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "h_name");
+            assert_eq!(spec.requires[0].lines[0].content, "x > 0");
+        }
+
+        #[test]
+        fn test_parse_colon_without_name() {
+            let lines = vec![
+                dummy_line("requires : x > 0"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.len(), 1);
+            assert!(spec.requires[0].name.is_none());
+            assert_eq!(spec.requires[0].lines[0].content, "x > 0");
+        }
+
+        #[test]
+        fn test_parse_name_without_colon() {
+            let lines = vec![
+                dummy_line("requires (h_name) x > 0"),
+            ];
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_parse_unmatched_parens() {
+            let lines = vec![
+                dummy_line("requires (h_name : x > 0"),
+            ];
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_parse_nested_parens() {
+            let lines = vec![
+                dummy_line("requires (h_name(1)): x > 0"),
+            ];
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_bizarre_proof_no_colon() {
+            let lines = vec![
+                dummy_line("proof (h_my_proof): trivial"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.proof_cases.len(), 1);
+            assert_eq!(spec.proof_cases[0].name.as_ref().unwrap().content, "h_my_proof");
+            assert_eq!(spec.proof_cases[0].lines[0].content, "trivial");
+        }
+
+        #[test]
+        fn test_bizarre_requires_no_space_before_paren() {
+            let lines = vec![
+                dummy_line("requires (h_no_space): x > 0"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.len(), 1);
+            assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "h_no_space");
+            assert_eq!(spec.requires[0].lines[0].content, "x > 0");
+        }
+
+        #[test]
+        fn test_bizarre_requires_only_colon() {
+            let lines = vec![
+                dummy_line("requires: x > 0"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.len(), 1);
+            assert!(spec.requires[0].name.is_none());
+            assert_eq!(spec.requires[0].lines[0].content, "x > 0");
+        }
+
+        #[test]
+        fn test_bizarre_proof_with_unusual_unicode() {
+            let lines = vec![
+                dummy_line("proof (h_ßåç):"),
+            ];
+            // Rust's char::is_alphanumeric allows extended Unicode alphabetic chars.
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.proof_cases.len(), 1);
+            assert_eq!(spec.proof_cases[0].name.as_ref().unwrap().content, "h_ßåç");
+        }
+
+        #[test]
+        fn test_bizarre_multiple_colons() {
+            let lines = vec![
+                dummy_line("ensures (h_colons): : : x > 0"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.ensures.len(), 1);
+            assert_eq!(spec.ensures[0].name.as_ref().unwrap().content, "h_colons");
+            assert_eq!(spec.ensures[0].lines[0].content, ": : x > 0");
+        }
+
+        #[test]
+        fn test_bizarre_keep_keyword_interaction() {
+            let lines = mk_lines(&["isValid (name):=", "  x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "`isValid` sections cannot be named.");
+        }
+
+        #[test]
+        fn test_dusty_proof_context_with_colon() {
+            let lines = vec![
+                dummy_line("proof context: let x = 5"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert!(spec.proof_context.keyword_span.is_some());
+            assert_eq!(spec.proof_context.lines[0].content, "let x = 5");
+        }
+
+        #[test]
+        fn test_dusty_inner_colons() {
+            let lines = mk_lines(&["requires (:h_name:):", "  x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "Invalid bound name `:h_name:`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).");
+        }
+
+        #[test]
+        fn test_dusty_spaced_name() {
+            let lines = mk_lines(&["requires (my name):", "  x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "Invalid bound name `my name`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).");
+        }
+
+        #[test]
+        fn test_invalid_lean_identifier_symbols() {
+            let lines = mk_lines(&["requires (h-foo!):", "  x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "Invalid bound name `h-foo!`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).");
+        }
+
+        #[test]
+        fn test_invalid_lean_identifier_starts_with_number() {
+            let lines = mk_lines(&["requires (1h_foo):", "  x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "Invalid bound name `1h_foo`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).");
+        }
+
+        #[test]
+        fn test_unsupported_named_is_valid() {
+            let lines = mk_lines(&["isValid (my_inv):="]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "`isValid` sections cannot be named.");
+        }
+
+        #[test]
+        fn test_unsupported_named_proof_context() {
+            let lines = mk_lines(&["proof context (ctx_name):", "  have h : x = 0 := rfl"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "`proof context` sections cannot be named.");
+        }
+
+        #[test]
+        fn test_dusty_proof_extra_closing_parens() {
+            let lines = vec![
+                dummy_line("proof (h_name)):"),
+            ];
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_empty_name() {
+            let lines = mk_lines(&["requires (): x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "Invalid bound name ``. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).");
+        }
+
+        #[test]
+        fn test_underscore_name() {
+            let lines = vec![
+                dummy_line("requires (_): x > 0"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.len(), 1);
+            assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "_");
+        }
+
+        #[test]
+        fn test_proof_colon_stripping() {
+            let lines = vec![
+                dummy_line("proof:"),
+                dummy_line("proof :"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.proof_cases.len(), 2);
+            assert!(spec.proof_cases[0].name.is_none());
+            assert!(spec.proof_cases[0].lines.is_empty());
+            assert!(spec.proof_cases[1].name.is_none());
+            assert!(spec.proof_cases[1].lines.is_empty());
+        }
+
+        #[test]
+        fn test_double_colon_requires() {
+            let lines = vec![
+                dummy_line("requires (name):: x > 0"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.len(), 1);
+            assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "name");
+            assert_eq!(spec.requires[0].lines[0].content, ": x > 0");
+        }
+
+        #[test]
+        fn test_unnamed_missing_parens_colon() {
+            let lines = vec![
+                dummy_line("requires name: x > 0"),
+            ];
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_adversarial_keyword_smashing() {
+            // "proofcontext" should not parse as "proof context"
+            // Since it's the first line, it fails initialization.
+            let lines = mk_lines(&["proofcontext:"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("Expected a Hermes keyword to start the block"));
+        }
+
+        #[test]
+        fn test_adversarial_parens_in_name() {
+            let lines = mk_lines(&["requires (foo()): x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_adversarial_double_parens() {
+            let lines = mk_lines(&["requires ((name)): x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_adversarial_offside_spoofing() {
+            let lines = mk_lines(&[
+                "requires (name):",
+                "  requires (spoof): x > 0"
+            ]);
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.requires.len(), 1);
+            assert_eq!(spec.requires[0].lines.len(), 1);
+            assert_eq!(spec.requires[0].lines[0].content, "  requires (spoof): x > 0");
+        }
+
+        #[test]
+        fn test_adversarial_newline_in_signature() {
+            let lines = vec![
+                dummy_line("requires ("),
+                dummy_line("  h_name"),
+                dummy_line("): x > 0"), // This violates the off-side rule because it's at baseline indent but isn't a keyword.
+            ];
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("Invalid indentation") || err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_adversarial_valid_keyword_with_trailing_colon() {
+            let lines = vec![
+                dummy_line("isValid:"),
+                dummy_line("  true"),
+            ];
+            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            assert_eq!(spec.is_valid[0].lines.len(), 2);
+            assert_eq!(spec.is_valid[0].lines[0].content, "isValid:");
+            assert_eq!(spec.is_valid[0].lines[1].content, "  true");
+        }
+
+        #[test]
+        fn test_adversarial_emoji_name() {
+            let lines = mk_lines(&["requires (h_🦀): x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("Invalid bound name `h_🦀`"));
+        }
+
+        #[test]
+        fn test_adversarial_context_named() {
+            let lines = mk_lines(&["context (foo):"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "`context` sections cannot be named.");
+        }
+
+        #[test]
+        fn test_adversarial_axiom_named() {
+            let lines = mk_lines(&["axiom (foo):"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "`axiom` sections cannot be named.");
+        }
+
+        #[test]
+        fn test_adversarial_is_safe_named() {
+            let lines = mk_lines(&["isSafe (foo):"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert_eq!(err.1, "`isSafe` sections cannot be named.");
+        }
+
+        #[test]
+        fn test_adversarial_lean_keyword_requires() {
+            let lines = mk_lines(&["requires (if): x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("Names cannot be Lean keywords"));
+        }
+
+        #[test]
+        fn test_adversarial_lean_keyword_ensures() {
+            let lines = mk_lines(&["ensures (then): x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("Names cannot be Lean keywords"));
+        }
+
+        #[test]
+        fn test_adversarial_lean_keyword_proof() {
+            let lines = mk_lines(&[
+                "requires: x > 0",
+                "proof (theorem):",
+                "  simp_all"
+            ]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("Names cannot be Lean keywords") || err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_adversarial_requires_multiline_colon() {
+            // A requires block that has a name but the colon is on the next line. 
+            // This is malformed and fails to parse.
+            let lines = mk_lines(&[
+                "requires (name)",
+                "  : x > 0"
+            ]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon"));
+        }
+
+        #[test]
+        fn test_adversarial_proof_context_named_no_colon() {
+            // Trying to name a proof context without a colon. It falls back to unnamed content.
+            let lines = mk_lines(&["proof context (foo) x = 1"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon") || err.1.contains("proof context"));
+        }
+
+        #[test]
+        fn test_adversarial_multiple_parens() {
+            // Testing multiple independent parens. The name should only be targeted on the first enclosed token
+            // followed immediately by `:`. This one is NOT followed by `:`, so it fails!
+            let lines = mk_lines(&["requires (name) (other): x > 0"]);
+            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("must be followed by a colon"));
+        }
+    }
+
+    mod static_validation {
+        use super::*;
+
+        fn dummy_attr(doc: &str) -> syn::Attribute {
+            let doc_str = format!(" ```hermes\n{}\n```", doc);
+            syn::parse_quote!(#[doc = #doc_str])
+        }
+
+        #[test]
+        fn test_multiple_unnamed_requires_rejected() {
+            let attrs = vec![dummy_attr("requires: a > 0\nrequires: b > 0")];
+            let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            assert!(err.to_string().contains("Cannot mix named and unnamed `requires` clauses") || err.to_string().contains("must all be named"), "Actual error: {}", err);
+        }
+
+        #[test]
+        fn test_mix_named_unnamed_ensures_rejected() {
+            let attrs = vec![dummy_attr("ensures (foo): a > 0\nensures: b > 0")];
+            let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            assert!(err.to_string().contains("Cannot mix named and unnamed `ensures` clauses"));
+        }
+
+        #[test]
+        fn test_duplicate_requires_name() {
+            let attrs = vec![dummy_attr("requires (foo): a > 0\nrequires (foo): b > 0")];
+            let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            assert!(err.to_string().contains("Duplicate requires name `foo`"));
+        }
+
+        #[test]
+        fn test_conflict_between_requires_and_ensures() {
+            let attrs = vec![dummy_attr("requires (foo): a > 0\nensures (foo): b > 0")];
+            let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            assert!(err.to_string().contains("Bound name `foo` conflicts with an existing requires bound"));
+        }
+
+
+        #[test]
+        fn test_multiple_proofs_mixed_rejected() {
+            let attrs = vec![dummy_attr("ensures (a): x\nensures (b): y\nproof (a): p1\nproof: p2")];
+            let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            assert!(err.to_string().contains("Cannot mix named and unnamed `proof` clauses"));
+        }
+
+        #[test]
+        fn test_missing_colon_rejections_exhaustive() {
+            let cases = vec![
+                // Base keywords without colons
+                "requires x > 0",
+                "ensures x > 0",
+                "proof context x > 0",
+                "context x > 0",
+                "proof trivial",
+                
+                // Named keywords without colons
+                "requires (name) x > 0",
+                "ensures (name) x > 0",
+                "proof (name) x > 0",
+                
+                // Malformed colons or trickery
+                "requires (name x > 0",
+                "requires name) x > 0",
+                "proof context (name) x > 0",
+            ];
+
+            for case in cases {
+                let attrs = vec![dummy_attr(case)];
+                match FunctionHermesBlock::parse_from_attrs(&attrs, true, "") {
+                    Ok(Some(parsed)) => {
+                        // If it parsed successfully, it MUST mean that the keyword was completely ignored
+                        // (e.g. `requires x > 0` didn't match `requires:` or `requires (name):`)
+                        // and thus was treated as initialization garbage text.
+                        // We verify that NO clauses were actually parsed from it.
+                        let has_any_parsed_data = 
+                            !parsed.requires.is_empty() || 
+                            !parsed.ensures.is_empty() || 
+                            !parsed.common.context.is_empty();
+
+                        let has_proof_data = match parsed.inner {
+                            super::FunctionBlockInner::Proof { context, cases } => {
+                                !context.is_empty() || !cases.is_empty()
+                            }
+                            _ => false,
+                        };
+
+                        assert!(
+                            !has_any_parsed_data && !has_proof_data, 
+                            "Case `{}` parsed as valid clauses despite missing/malformed colon!", case
+                        );
+                    }
+                    Ok(None) => {}, // Block was not present, meaning hermes couldn't parse it as hermes at all. This is fine.
+                    Err(err) => {
+                        let err_msg = err.to_string();
+                        // Every explicitly rejected error must be one of these
+                        assert!(
+                            err_msg.contains("must be followed by a colon") ||
+                            err_msg.contains("Names must be valid identifiers") ||
+                            err_msg.contains("Expected a Hermes keyword to start the block"),
+                            "Failed to correctly reject missing colon for case: `{}`. Instead got: {}",
+                            case,
+                            err_msg
+                        );
+                    }
+                }
+            }
         }
     }
     #[test]

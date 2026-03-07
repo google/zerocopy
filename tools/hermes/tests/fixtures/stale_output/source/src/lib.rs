@@ -1,6 +1,6 @@
 
 /// ```lean, hermes
-/// context
+/// context:
 /// def dummy : Bool := true
 /// ```
 pub fn _hermes_dummy() {}

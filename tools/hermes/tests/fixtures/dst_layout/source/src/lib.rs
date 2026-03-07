@@ -40,32 +40,36 @@ pub unsafe trait KnownLayout {
 }
 
 /// ```lean, hermes, spec
-/// requires ∃ a : Hermes.Allocation, Hermes.FitsInAllocation (Hermes.raw_ptr_referent val) a
-/// requires KnownLayout.Safe T KnownLayoutInst
-/// ensures ret.val = (Hermes.raw_ptr_referent val).size.val
-/// proof
+/// requires (valid_alloc): ∃ a : Hermes.Allocation, Hermes.FitsInAllocation (Hermes.raw_ptr_referent val) a
+/// requires (is_safe): KnownLayout.Safe T KnownLayoutInst
+/// ensures (h_size): ret.val = (Hermes.raw_ptr_referent val).size.val
+/// proof context:
 ///   unfold size_of_val
-///   have h_safe := h_req.right.right.isSafe
+///   have h_safe := h_req.is_safe.isSafe
 ///   rcases h_safe with ⟨_sz, _tl, h_align, h_size⟩ | ⟨_rc, _sl, inst_md, offset, elemSize, h_props⟩
 ///   · have h_ref_eq := @Hermes.referent_size_sized T _sz _tl Aeneas.Std.Mutability.Const val
-///     simp_all [Hermes.IsValid.isValid]
-///   · rcases h_props with ⟨h_align, h_size, h_offset, h_elem, h_md_eq, h_meta⟩
-///     rw [h_size]
-///     rw [h_meta val]
-///     rcases h_req.right.left with ⟨alloc, h_fits⟩
-///     dsimp [Hermes.FitsInAllocation] at h_fits
-///     rcases h_fits with ⟨h_referent_size, h_a_size⟩
-///     have h_align_pos : 0 < KnownLayoutInst.LAYOUT.align.val := by rw [h_align]; exact _sl.layout.align.isValid.left
-///     have h_ge := Hermes.roundUpToAlign_ge (offset.val + elemSize.val * (Hermes.raw_slice_dst_ptr_metadata val).val) KnownLayoutInst.LAYOUT.align.val h_align_pos
-///     have h_alloc_max := alloc.base_add_size_le_usize_max
-///     have h_overflow := @Hermes.slice_dst_padding_no_overflow T _rc _sl Aeneas.Std.Mutability.Const val
-///     have h_bound : offset.val + elemSize.val * (Hermes.raw_slice_dst_ptr_metadata val).val + KnownLayoutInst.LAYOUT.align.val - 1 ≤ Aeneas.Std.Usize.max := by rw [h_offset, h_elem, h_align]; omega
-///     have h_bound2 : 1 ≤ offset.val + elemSize.val * (Hermes.raw_slice_dst_ptr_metadata val).val + KnownLayoutInst.LAYOUT.align.val := by rw [h_offset, h_elem, h_align]; omega
-///     have h_div := Nat.div_add_mod (offset.val + elemSize.val * (Hermes.raw_slice_dst_ptr_metadata val).val + KnownLayoutInst.LAYOUT.align.val - 1) KnownLayoutInst.LAYOUT.align.val
-///     have h_mul_comm := Nat.mul_comm KnownLayoutInst.LAYOUT.align.val ((offset.val + elemSize.val * (Hermes.raw_slice_dst_ptr_metadata val).val + KnownLayoutInst.LAYOUT.align.val - 1) / KnownLayoutInst.LAYOUT.align.val)
-///     repeat (progress <;> try omega)
-///     have h_ref_eq := @Hermes.referent_size_slice_dst T _rc _sl Aeneas.Std.Mutability.Const alloc inst_md val ⟨h_referent_size, h_a_size⟩
-///     simp_all [Hermes.roundUpToAlign, Hermes.reprCSliceDstSize, Nat.mul_comm, Hermes.IsValid.isValid]
+///     simp_all
+///     constructor
+///     next => verify_is_valid h_ret_is_valid
+///     next => simp_all
+///   rcases h_props with ⟨h_align, h_size, h_offset, h_elem, h_md_eq, h_meta⟩
+///   rw [h_size]
+///   rw [h_meta val]
+///   rcases h_req.valid_alloc with ⟨alloc, h_fits⟩
+///   dsimp [Hermes.FitsInAllocation] at h_fits
+///   rcases h_fits with ⟨h_referent_size, h_a_size⟩
+///   have h_align_pos : 0 < KnownLayoutInst.LAYOUT.align.val := by rw [h_align]; exact _sl.layout.align.isValid.left
+///   have h_ge := Hermes.roundUpToAlign_ge (offset.val + elemSize.val * (Hermes.raw_slice_dst_ptr_metadata val).val) KnownLayoutInst.LAYOUT.align.val h_align_pos
+///   have h_alloc_max := alloc.base_add_size_le_usize_max
+///   have h_overflow := @Hermes.slice_dst_padding_no_overflow T _rc _sl Aeneas.Std.Mutability.Const val
+///   have h_bound : offset.val + elemSize.val * (Hermes.raw_slice_dst_ptr_metadata val).val + KnownLayoutInst.LAYOUT.align.val - 1 ≤ Aeneas.Std.Usize.max := by rw [h_offset, h_elem, h_align]; omega
+///   have h_bound2 : 1 ≤ offset.val + elemSize.val * (Hermes.raw_slice_dst_ptr_metadata val).val + KnownLayoutInst.LAYOUT.align.val := by rw [h_offset, h_elem, h_align]; omega
+///   have h_div := Nat.div_add_mod (offset.val + elemSize.val * (Hermes.raw_slice_dst_ptr_metadata val).val + KnownLayoutInst.LAYOUT.align.val - 1) KnownLayoutInst.LAYOUT.align.val
+///   have h_mul_comm := Nat.mul_comm KnownLayoutInst.LAYOUT.align.val ((offset.val + elemSize.val * (Hermes.raw_slice_dst_ptr_metadata val).val + KnownLayoutInst.LAYOUT.align.val - 1) / KnownLayoutInst.LAYOUT.align.val)
+///   repeat (progress <;> try omega)
+///   have h_ref_eq := @Hermes.referent_size_slice_dst T _rc _sl Aeneas.Std.Mutability.Const alloc inst_md val ⟨h_referent_size, h_a_size⟩
+/// proof (h_size):
+///   simp_all [Hermes.roundUpToAlign, Hermes.reprCSliceDstSize, Nat.mul_comm]
 /// ```
 pub unsafe fn size_of_val<T: ?Sized + KnownLayout>(val: *const T) -> usize {
     let align = T::LAYOUT.align;

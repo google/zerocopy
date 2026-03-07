@@ -44,6 +44,16 @@ class IsValid (α : Type) where
 instance (priority := low) defaultIsValid {α : Type} : IsValid α where
   isValid _ := True
 
+-- A macro that Hermes auto-injects for implicit isValid proofs.
+-- It attempts `simp_all [IsValid.isValid]`. If it fails, it emits a friendly error
+-- instructing the user to provide a manual proof via `proof (h_name)`.
+macro "verify_is_valid" field:ident : tactic => do
+  let err := "This error comes from the implicit `simp_all` proof for `" ++ field.getId.toString ++ "`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (" ++ field.getId.toString ++ ")`."
+  `(tactic|
+    first
+    | (simp_all [IsValid.isValid]; done)
+    | fail $(quote err))
+
 -- 3. Trait Safety
 -- (No specific helper needed, just a pattern we follow in generation)
 
@@ -796,3 +806,7 @@ axiom referent_size_slice_dst {T : Type} [ReprC T] [lay : SpecSliceDstTypeLayout
   (alloc : Allocation) [md : HasMetadata (Aeneas.Std.RawPtr T M) Usize] 
   (p : Aeneas.Std.RawPtr T M) (h_fits : FitsInAllocation (raw_ptr_referent p) alloc) :
   (raw_ptr_referent p).size.val = reprCSliceDstSize lay.layout (md.metadata p).val
+
+-- 9. Infrastructure Tests
+
+

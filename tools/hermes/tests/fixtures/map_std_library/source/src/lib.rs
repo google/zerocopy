@@ -1,5 +1,5 @@
 /// ```lean, hermes
-/// context
+/// context:
 /// model demo 
 /// ```
 pub fn demo() {}

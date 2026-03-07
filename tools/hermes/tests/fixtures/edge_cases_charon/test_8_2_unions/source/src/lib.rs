@@ -5,8 +5,9 @@ pub union U {
 }
 
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold access
+///   simp_all
 /// ```
 pub fn access(u: U) -> u32 {
     unsafe { u.f1 }

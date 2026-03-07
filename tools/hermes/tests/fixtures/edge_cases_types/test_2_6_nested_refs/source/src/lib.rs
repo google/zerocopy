@@ -1,6 +1,7 @@
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold nested
+///   simp_all
 /// ```
 pub fn nested(x: &&u32, y: &mut &u32, z: &&mut u32) {
     let _ = **x;

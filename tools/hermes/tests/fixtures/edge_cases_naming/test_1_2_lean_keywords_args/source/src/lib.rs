@@ -1,8 +1,9 @@
 
 // Lean keywords as argument names
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold test_args
+///   simp_all
 /// ```
 pub fn test_args(
     theorem: u32,

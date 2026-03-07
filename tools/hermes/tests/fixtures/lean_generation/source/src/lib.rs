@@ -1,5 +1,5 @@
 /// ```lean, hermes, spec
-/// context
+/// context:
 /// theorem simple_spec_spec : True := trivial
 /// ```
 fn simple_spec(x: u32) -> bool {
@@ -7,7 +7,7 @@ fn simple_spec(x: u32) -> bool {
 }
 
 /// ```lean, hermes, unsafe(axiom)
-/// axiom unsafe_axiom_spec : True
+/// axiom: unsafe_axiom_spec : True
 /// ```
 fn unsafe_axiom(x: u32) -> u32 {
     x + 1
@@ -21,14 +21,15 @@ struct Positive {
 }
 
 /// ```lean, hermes
-/// isSafe : True
+/// isSafe :
+///   True
 /// ```
 unsafe trait SafeTrait {
     fn method(&self);
 }
 
 /// ```lean, hermes, spec
-/// context
+/// context:
 /// theorem ref_lowering_spec : True := trivial
 /// ```
 fn ref_lowering(x: &mut u32) {
@@ -36,7 +37,7 @@ fn ref_lowering(x: &mut u32) {
 }
 
 /// ```lean, hermes, spec
-/// context
+/// context:
 /// theorem complex_args_spec : True := trivial
 /// ```
 fn complex_args(slice: &[u8], array: [u8; 16]) {

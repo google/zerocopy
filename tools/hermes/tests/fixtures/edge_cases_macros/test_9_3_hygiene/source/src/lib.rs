@@ -7,7 +7,7 @@ macro_rules! hygiene_check {
 }
 
 /// ```lean, hermes
-/// proof
+/// proof context:
 ///   sorry
 /// ```
 pub fn check_hygiene() {

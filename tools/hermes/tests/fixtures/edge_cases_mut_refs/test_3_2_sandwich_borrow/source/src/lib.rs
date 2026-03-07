@@ -1,6 +1,6 @@
 
 /// ```lean, hermes
-/// proof
+/// proof context:
 ///   sorry
 /// ```
 pub fn mix(a: &mut u32, b: &u32, c: &mut u32) {

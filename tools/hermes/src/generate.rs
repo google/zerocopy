@@ -257,18 +257,24 @@ fn generate_function(
     source_file: &std::path::Path,
 ) {
     let (fn_name, fn_span, impl_struct_name, generics) = match func {
-        FunctionItem::Free(n) => {
-            (n.inner.sig.ident.clone(), n.inner.sig.name_span, None, &n.inner.generics)
-        }
+        FunctionItem::Free(n) => (
+            n.inner.sig.ident.clone(),
+            n.inner.sig.name_span,
+            None,
+            &n.inner.generics,
+        ),
         FunctionItem::Impl(n, opt_struct) => (
             n.inner.sig.ident.clone(),
             n.inner.sig.name_span,
             opt_struct.clone(),
             &n.inner.generics,
         ),
-        FunctionItem::Trait(n) => {
-            (n.inner.sig.ident.clone(), n.inner.sig.name_span, None, &n.inner.generics)
-        }
+        FunctionItem::Trait(n) => (
+            n.inner.sig.ident.clone(),
+            n.inner.sig.name_span,
+            None,
+            &n.inner.generics,
+        ),
     };
 
     let (generic_params, _, generic_bounds, dict_args) = extract_generic_params(generics);
@@ -284,58 +290,23 @@ fn generate_function(
         builder.push_spanned(&line.content, line, source_file);
         builder.push('\n');
     }
-    builder.push('\n');
+    if !block.common.context.is_empty() {
+        builder.push('\n');
+    }
 
-    // 2. Resolve Requires/Ensures
-    // Note: ensure we join them with " ∧ \n" but distinct spans
-    // This is tricky for `push_spanned`.
-    // We'll trust the user to have written valid Lean or we'll format it.
-    // Existing logic: `join_conjunctions`.
-    // logic: lines.map(|l| format!("({})", l)).join(" ∧ \n")
-    // If we want to map spans, we should push "(". Then push_spanned content. Then push ")". Then " ∧ \n".
-
-    // 3. Determine if this is a Theorem or Axiom
-    let (kind_keyword, body_lines, keyword_span) = match &block.inner {
-        FunctionBlockInner::Proof { lines, keyword } => ("theorem", Some(lines), keyword),
-        FunctionBlockInner::Axiom { keyword, .. } => ("axiom", None, keyword),
-    };
-
-    // 4. Build the Call String
-    //
-    // Aeneas generates theorem goals for struct methods using the explicit struct
-    // name as a namespace prefix (e.g., `List.push`) rather than a bare
-    // identifier or a generalized `Self` namespace.
-    //
-    // To ensure our generated theorems resolve against Aeneas's output,
-    // we eagerly extract the base segment path of the `impl_struct_name` from
-    // the tracked `current_impl_type` (propagated down by the Parser Visitor).
-    // We then dynamically substitute it into the method call string here.
-    let mut base_name = "".to_string();
-    if let Some(struct_name_node) = &impl_struct_name {
-        if let crate::parse::hkd::SafeType::Path { segments, .. } = &struct_name_node.inner {
-            if let Some(seg) = segments.last() {
-                base_name = seg.ident.clone();
-            }
+    // Split Requires
+    let mut prop_requires = Vec::new();
+    let mut instance_requires = Vec::new();
+    for clause in &block.requires {
+        let first_line_trimmed = clause.lines.first().map(|l| l.content.trim_start()).unwrap_or("");
+        if first_line_trimmed.starts_with('[') {
+            instance_requires.push(clause);
+        } else {
+            prop_requires.push(clause);
         }
     }
-    let call_name = if !base_name.is_empty() {
-        format!("{}.{}", base_name, fn_name)
-    } else {
-        fn_name.to_string()
-    };
 
-    let _fallback_theorem_name =
-        if base_name.is_empty() { fn_name.clone() } else { format!("{}_{}", base_name, fn_name) };
-
-    let call_str = std::iter::once(call_name)
-        .chain(dict_args.iter().cloned())
-        .chain(args.iter().map(|a| a.name.clone()))
-        .collect::<Vec<_>>()
-        .join(" ");
-
-    // 5. Build the Precondition Binder
-
-    let instance_params = if !generic_params.is_empty() || !generic_bounds.is_empty() {
+    let mut instance_params = if !generic_params.is_empty() || !generic_bounds.is_empty() {
         let params = if !generic_params.is_empty() {
             format!("{{{}}}", generic_params.join(" "))
         } else {
@@ -351,7 +322,23 @@ fn generate_function(
         String::new()
     };
 
-    // Signature
+    for clause in &instance_requires {
+        let name = clause.name.as_ref().map(|n| n.content.clone());
+        let mut content = String::new();
+        for (j, line) in clause.lines.iter().enumerate() {
+            if j > 0 { content.push(' '); }
+            let mut l = line.content.trim();
+            if j == 0 && l.starts_with('[') { l = &l[1..]; }
+            if j == clause.lines.len() - 1 && l.ends_with(']') { l = &l[..l.len() - 1]; }
+            content.push_str(l);
+        }
+        if let Some(n) = name {
+            instance_params.push_str(&format!(" [{} : {}]", n, content));
+        } else {
+            instance_params.push_str(&format!(" [{}]", content));
+        }
+    }
+
     let args_suffix = if !args.is_empty() {
         format!(
             " {}",
@@ -362,6 +349,84 @@ fn generate_function(
         )
     } else {
         String::new()
+    };
+
+    // 2. Pre Structure
+    let has_args = !args.is_empty();
+    let generate_pre = has_args || !prop_requires.is_empty();
+    if generate_pre {
+        builder.push_str(&format!("  structure Pre{}{} : Prop where\n", instance_params, args_suffix));
+        
+        for arg in &args {
+            let field = format!("h_{}_is_valid", arg.name);
+            builder.push_str(&format!("    {} : Hermes.IsValid.isValid {} := by verify_is_valid {}\n", field, arg.name, field));
+        }
+
+        for clause in &prop_requires {
+            let name = clause.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "unnamed".to_string());
+            builder.push_str(&format!("    {} : ", name));
+            for (j, line) in clause.lines.iter().enumerate() {
+                if j > 0 {
+                    builder.push_str("\n      ");
+                }
+                builder.push_spanned(&line.content, line, source_file);
+            }
+            builder.push('\n');
+        }
+        builder.push('\n');
+    }
+
+    // 3. Post Structure
+    let mut_args: Vec<&ArgInfo> = args.iter().filter(|a| a.is_mut_ref).collect();
+    let has_mut_args = !mut_args.is_empty();
+    let has_ensures = !block.ensures.is_empty();
+    let needs_validity_ensures = has_return_value || has_mut_args;
+    let generate_post = has_ensures || needs_validity_ensures;
+
+    if generate_post {
+        let mut post_outputs = String::new();
+        if has_return_value {
+            use crate::parse::hkd::SafeReturnType;
+            let ret_lean_type = match &func.sig().output {
+                SafeReturnType::Default => "Unit".to_string(), // Unreachable since has_return_value is true
+                SafeReturnType::Type(ty) => map_type(ty),
+            };
+            post_outputs.push_str(&format!(" (ret : {})", ret_lean_type));
+        }
+        for arg in &mut_args {
+            post_outputs.push_str(&format!(" ({}' : {})", arg.name, arg.lean_type));
+        }
+
+        builder.push_str(&format!("  structure Post{}{} {} : Prop where\n", instance_params, args_suffix, post_outputs));
+        
+        if has_return_value {
+            builder.push_str("    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid\n");
+        }
+        for arg in &mut_args {
+            let field = format!("h_{}_new_is_valid", arg.name);
+            builder.push_str(&format!("    {} : Hermes.IsValid.isValid {}' := by verify_is_valid {}\n", field, arg.name, field));
+        }
+        
+        for clause in &block.ensures {
+            let name = clause.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "unnamed".to_string());
+            builder.push_str(&format!("    {} : ", name));
+            for (j, line) in clause.lines.iter().enumerate() {
+                if j > 0 {
+                    builder.push_str("\n      ");
+                }
+                builder.push_spanned(&line.content, line, source_file);
+            }
+            builder.push('\n');
+        }
+        builder.push('\n');
+    }
+
+    // 4. Determine if this is a Theorem or Axiom
+    let (kind_keyword, proof_cases, proof_context, keyword_span) = match &block.inner {
+        FunctionBlockInner::Proof { context, cases } => {
+            ("theorem", Some(cases), Some(context), None)
+        }
+        FunctionBlockInner::Axiom { keyword, .. } => ("axiom", None, None, keyword.as_ref()),
     };
 
     if kind_keyword == "axiom" {
@@ -376,99 +441,52 @@ fn generate_function(
     builder.push(' ');
     builder.push_mapped("spec", &fn_span, source_file, MappingKind::Synthetic);
     builder.push_str(&instance_params);
-    builder.push_str(args_suffix.as_str());
+    builder.push_str(&args_suffix);
 
-    let mut prop_requires = Vec::new();
-    let mut instance_requires = Vec::new();
-    for clause in &block.requires {
-        let first_line_trimmed = clause.lines.first().map(|l| l.content.trim_start()).unwrap_or("");
-        if first_line_trimmed.starts_with('[') {
-            instance_requires.push(clause);
-        } else {
-            prop_requires.push(clause);
+    if generate_pre {
+        builder.push_str("\n  (h_req : Pre");
+        for name in &dict_args {
+            builder.push_str(&format!(" {}", name));
         }
-    }
-
-    for clause in instance_requires {
-        builder.push(' ');
-        for (j, line) in clause.lines.iter().enumerate() {
-            if j > 0 {
-                builder.push('\n');
-            }
-            builder.push_spanned(&line.content, line, source_file);
-        }
-    }
-
-    let mut has_requires = !prop_requires.is_empty();
-    if !args.is_empty() {
-        has_requires = true;
-    }
-
-    if has_requires {
-        builder.push_str("\n  (h_req : ");
-        let mut first = true;
-        
         for arg in &args {
-            if !first {
-                builder.push_str(" ∧ \n");
-            }
-            first = false;
-            builder.push_str(&format!("(Hermes.IsValid.isValid {})", arg.name));
-        }
-
-        for clause in prop_requires.into_iter() {
-            if !first {
-                builder.push_str(" ∧ \n");
-            }
-            first = false;
-            builder.push('(');
-            for (j, line) in clause.lines.iter().enumerate() {
-                if j > 0 {
-                    builder.push('\n');
-                }
-                builder.push_spanned(&line.content, line, source_file);
-            }
-            builder.push('\n');
-            builder.push(')');
+            builder.push_str(&format!(" {}", arg.name));
         }
         builder.push(')');
     }
 
     builder.push_str(" :\n");
 
-    // Result Spec
+    let mut base_name = "".to_string();
+    if let Some(struct_name_node) = &impl_struct_name {
+        if let crate::parse::hkd::SafeType::Path { segments, .. } = &struct_name_node.inner {
+            if let Some(seg) = segments.last() {
+                base_name = seg.ident.clone();
+            }
+        }
+    }
+    let call_name = if !base_name.is_empty() {
+        format!("{}.{}", base_name, fn_name)
+    } else {
+        fn_name.to_string()
+    };
+
+    let call_str = std::iter::once(call_name)
+        .chain(dict_args.iter().cloned())
+        .chain(args.iter().map(|a| a.name.clone()))
+        .collect::<Vec<_>>()
+        .join(" ");
+
     builder.push_str(&format!("  Aeneas.Std.WP.spec ({})", call_str));
 
-    let mut_args: Vec<&ArgInfo> = args.iter().filter(|a| a.is_mut_ref).collect();
-    let has_mut_args = !mut_args.is_empty();
-    let has_ensures = !block.ensures.is_empty();
-
-    if has_ensures || has_mut_args {
-        builder.push_str(" (fun ret =>");
+    if generate_post {
+        builder.push_str(" (fun ret_ =>");
 
         if has_mut_args {
             builder.push('\n');
-
-            // Construct the destructuring LHS for `let ... := result`
-            // Example:
-            //   let (ret, stack') := result
-            //   ret = ...
-            //
-            // Note that if the method returns `()` (the unit type), we bind it to `ret`
-            // as well, but Lean requires `let () := ...` to destructure a unit type properly
-            // if it's mixed with other bindings, so we handle `()` specially.
-            // Actually, Hermes currently generates `let ret := ()` for unit returns to keep the namespace consistent.
-            // Wait, looking at the code below, it generates `let ret := ()` on a separate line if there are mutable args but no return value.
-
             let vars =
                 mut_args.iter().map(|a| format!("{}'", a.name)).collect::<Vec<_>>().join(", ");
-
             let destructure_lhs = if has_return_value {
-                if has_mut_args {
-                    format!("(ret, {})", vars)
-                } else {
-                    "ret".to_string()
-                }
+                format!("(ret, {})", vars)
             } else {
                 if mut_args.len() == 1 {
                     format!("{}'", mut_args[0].name)
@@ -476,97 +494,133 @@ fn generate_function(
                     format!("({})", vars)
                 }
             };
-
-            if has_mut_args || destructure_lhs != "ret" {
-                builder.push_str(&format!("    let {} := ret\n", destructure_lhs));
-                if !has_return_value && has_mut_args {
-                    // Explicitly bind the implicit return variable to unit so users can still
-                    // reference `ret` in their `ensures` clause when returning void.
-                    builder.push_str("    let ret := ()\n");
-                }
-            } else if !has_return_value {
-                // No mut args, no return value
-                builder.push_str("    let ret := ()\n");
-            } else {
-                // No mut args, has return value
-                builder.push_str("    let ret := ret\n");
-            }
+            builder.push_str(&format!("    let {} := ret_\n", destructure_lhs));
             builder.push_str("    ");
         } else {
             builder.push(' ');
         }
-
-        let has_ensures_clauses = !block.ensures.is_empty();
-        let needs_validity_ensures = has_return_value || has_mut_args;
-
-        if has_ensures_clauses || needs_validity_ensures {
-            let mut first = true;
-
-            if has_return_value {
-                builder.push_str("(Hermes.IsValid.isValid ret)");
-                first = false;
+        
+        builder.push_str("Post");
+        for name in &dict_args {
+            builder.push_str(&format!(" {}", name));
+        }
+        for arg in &args {
+            builder.push_str(&format!(" {}", arg.name));
+        }
+        if has_return_value {
+            if has_mut_args {
+                builder.push_str(" ret");
+            } else {
+                builder.push_str(" ret_");
             }
-
-            for arg in &mut_args {
-                if !first {
-                    builder.push_str(" ∧ \n");
-                }
-                first = false;
-                builder.push_str(&format!("(Hermes.IsValid.isValid {}')", arg.name));
-            }
-
-            for clause in block.ensures.iter() {
-                if !first {
-                    builder.push_str(" ∧ \n");
-                }
-                first = false;
-                builder.push('(');
-                for (j, line) in clause.lines.iter().enumerate() {
-                    if j > 0 {
-                        builder.push('\n');
-                    }
-                    builder.push_spanned(&line.content, line, source_file);
-                }
-                builder.push('\n');
-                builder.push(')');
-            }
-        } else {
-            builder.push_str("True");
+        }
+        for arg in &mut_args {
+            builder.push_str(&format!(" {}'", arg.name));
         }
         builder.push(')');
     } else {
-        if has_return_value {
-            builder.push_str(" (fun ret => Hermes.IsValid.isValid ret)");
-        } else {
-            builder.push_str(" (fun _ => True)");
-        }
+        builder.push_str(" (fun _ => True)");
     }
 
     // Body
     if kind_keyword == "theorem" {
-        if let Some(lines) = body_lines {
-            if lines.is_empty() {
-                builder.push_str(" := ");
-                if let Some(kw) = keyword_span {
-                    builder.push_mapped("by", &kw.inner, source_file, MappingKind::Keyword);
-                } else {
-                    builder.push_str("by");
-                }
-                builder.push_str("\n  sorry\n");
-            } else {
-                builder.push_str(" := ");
-                // Map 'by' to the proof keyword span if available, otherwise first line
-                if let Some(kw) = keyword_span {
-                    builder.push_mapped("by", &kw.inner, source_file, MappingKind::Keyword);
-                } else {
-                    builder.push_spanned("by", &lines[0], source_file);
-                }
+        builder.push_str(" := ");
+        let first_keyword = if let Some(ctx) = proof_context {
+            ctx.first().map(|l| &l.span)
+        } else if let Some(cases) = proof_cases {
+            cases.first().map(|c| &c.keyword_span.inner)
+        } else {
+            None
+        };
+
+        if let Some(kw) = first_keyword {
+            builder.push_mapped("by", kw, source_file, MappingKind::Keyword);
+        } else {
+            builder.push_str("by");
+        }
+        builder.push('\n');
+
+        let mut is_context_sorry_only = false;
+        if let Some(ctx) = proof_context {
+            let non_empty: Vec<_> = ctx.iter().filter(|l| !l.content.trim().is_empty()).collect();
+            if non_empty.len() == 1 && non_empty[0].content.trim() == "sorry" {
+                is_context_sorry_only = true;
+            }
+            for line in ctx {
+                builder.push_str("    ");
+                builder.push_spanned(&line.content, line, source_file);
                 builder.push('\n');
-                for line in lines {
-                    builder.push_str("  ");
-                    builder.push_spanned(&line.content, line, source_file);
-                    builder.push('\n');
+            }
+        }
+
+        let has_user_proof = proof_cases.is_some() || proof_context.is_some();
+
+        if generate_post && has_user_proof {
+            if is_context_sorry_only {
+                // If the entire proof context was just `sorry`, it closes all goals.
+                // Generating `constructor` and `case` branches would fail with "no goals".
+            } else if let Some(cases) = proof_cases {
+                let var_indent = " ".repeat(7);
+                builder.push_str(&format!("{}constructor\n", var_indent));
+
+                let mut post_fields = Vec::new();
+                if has_return_value {
+                    post_fields.push("h_ret_is_valid".to_string());
                 }
+                for arg in &mut_args {
+                    post_fields.push(format!("h_{}_new_is_valid", arg.name));
+                }
+                for clause in &block.ensures {
+                    post_fields.push(clause.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "unnamed".to_string()));
+                }
+
+                let provided_cases: std::collections::HashMap<String, &crate::parse::attr::Clause<_>> = cases
+                    .iter()
+                    .map(|c| {
+                        let name = c.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "unnamed".to_string());
+                        (name, c)
+                    })
+                    .collect();
+
+                for field in &post_fields {
+                    builder.push_str(&format!("{}next =>\n", var_indent));
+                    if let Some(clause) = provided_cases.get(field) {
+                        if clause.lines.is_empty() {
+                            builder.push_str(&format!("{}  sorry\n", var_indent));
+                        } else {
+                            for line in &clause.lines {
+                                builder.push_str(&format!("{}  ", var_indent));
+                                builder.push_spanned(&line.content, line, source_file);
+                                builder.push('\n');
+                            }
+                        }
+                    } else if field.ends_with("_is_valid") {
+                        builder.push_str(&format!("{}  verify_is_valid {}\n", var_indent, field));
+                    } else {
+                        builder.push_str(&format!("{}  sorry\n", var_indent));
+                    }
+                }
+            } else if proof_context.map_or(true, |ctx| ctx.is_empty()) {
+                builder.push_str("  sorry\n");
+            }
+        } else {
+            if let Some(cases) = proof_cases {
+                if !cases.is_empty() {
+                    let clause = cases.first().unwrap();
+                    if clause.lines.is_empty() {
+                        builder.push_str("  sorry\n");
+                    } else {
+                        for line in &clause.lines {
+                            builder.push_str("  ");
+                            builder.push_spanned(&line.content, line, source_file);
+                            builder.push('\n');
+                        }
+                    }
+                } else if proof_context.map_or(true, |ctx| ctx.is_empty()) {
+                    builder.push_str("  sorry\n");
+                }
+            } else if proof_context.map_or(true, |ctx| ctx.is_empty()) {
+                builder.push_str("  sorry\n");
             }
         }
     } else {
@@ -953,6 +1007,7 @@ mod tests {
     fn mk_clause(lines: Vec<&str>) -> Clause<crate::parse::hkd::Safe> {
         Clause {
             keyword_span: AstNode { inner: SourceSpan::new(0.into(), 0) }, // Dummy span
+            name: None,
             lines: lines.into_iter().map(mk_spanned).collect(),
         }
     }
@@ -966,8 +1021,12 @@ mod tests {
     ) -> FunctionHermesBlock<crate::parse::hkd::Safe> {
         let inner = if let Some(p) = proof {
             FunctionBlockInner::Proof {
-                lines: p.into_iter().map(mk_spanned).collect(),
-                keyword: None,
+                context: vec![],
+                cases: vec![Clause {
+                    keyword_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
+                    name: None,
+                    lines: p.into_iter().map(mk_spanned).collect(),
+                }],
             }
         } else {
             FunctionBlockInner::Axiom {
@@ -1091,11 +1150,8 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        // Should wrap each line in parens and join with AND
-        // (x.val > 0\n) ∧ \n(x.val < 10\n)
-        assert!(out.contains("(x.val > 0\n)"));
-        assert!(out.contains(" ∧ \n"));
-        assert!(out.contains("(x.val < 10\n)"));
+        assert!(out.contains("unnamed : x.val > 0"));
+        assert!(out.contains("unnamed : x.val < 10"));
     }
 
     #[test]
@@ -1111,7 +1167,7 @@ mod tests {
         println!("test_gen_requires_ordering output:\n{}", out);
 
         let theorem_idx = out.find("theorem spec (x : Std.U32)").expect("Theorem not found");
-        let requires_idx = out.find("(h_req : (Hermes.IsValid.isValid x) ∧ \n(x.val > 0\n))").expect("Requires not found");
+        let requires_idx = out.find("(h_req : Pre x)").expect("Requires not found");
         let return_type_idx = out.find("Aeneas.Std.WP.spec").expect("Return type not found");
 
         assert!(theorem_idx < requires_idx, "Theorem should come before requires");
@@ -1135,10 +1191,10 @@ mod tests {
         let out = builder.buf;
         println!("test_gen_unsafe_axiom output:\n{}", out);
 
-        assert!(out.contains("axiom spec (p : (ConstRawPtr Std.U8))\n  (h_req : (Hermes.IsValid.isValid p)) :"));
+        assert!(out.contains("axiom spec (p : (ConstRawPtr Std.U8))\n  (h_req : Pre p) :"));
         assert!(out.contains("Aeneas.Std.WP.spec (ffi p)"));
         // No proof block for axioms
-        assert!(!out.contains(":= by"));
+        assert!(!out.contains("proof ("));
     }
 
     #[test]
@@ -1307,11 +1363,9 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
+        println!("MUT_REF_UNIT_RETURN:\n{}", out);
         // Should generate:
-        // let x' := ret
-        // let ret := ()
-        assert!(out.contains("let x' := ret"));
-        assert!(out.contains("let ret := ()"));
+        assert!(out.contains("let x' := ret_"));
         assert!(!out.contains("let old_x"));
         assert!(!out.contains("let x := x_new"));
     }
@@ -1347,9 +1401,7 @@ mod tests {
 
         // Should generate:
         // let (a', b') := ret
-        // let ret := ()
-        assert!(out.contains("let (a', b') := ret"));
-        assert!(out.contains("let ret := ()"));
+        assert!(out.contains("let (a', b') := ret_"));
         assert!(!out.contains("let old_a"));
     }
 
@@ -1383,8 +1435,6 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        // Should behave like implicit unit
-        assert!(out.contains("let ret := ()"));
     }
 
     #[test]
@@ -1577,7 +1627,7 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("(h_req : (Hermes.IsValid.isValid x))"));
+        assert!(out.contains("(h_req : Pre x)"));
         assert!(out.contains("Aeneas.Std.WP.spec (takes_arg x) (fun _ => True)"));
     }
 
@@ -1591,9 +1641,9 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("(h_req : (Hermes.IsValid.isValid x))"));
-        assert!(out.contains("Aeneas.Std.WP.spec (mut_arg x) (fun ret =>"));
-        assert!(out.contains("(Hermes.IsValid.isValid x')"));
+        assert!(out.contains("(h_req : Pre x)"));
+        assert!(out.contains("Aeneas.Std.WP.spec (mut_arg x) (fun ret_ =>"));
+        assert!(out.contains("Post x x'"));
     }
 
     #[test]
@@ -1606,8 +1656,9 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("(h_req : (Hermes.IsValid.isValid x))"));
-        assert!(out.contains("Aeneas.Std.WP.spec (returns_val x) (fun ret => Hermes.IsValid.isValid ret)"));
+        assert!(out.contains("(h_req : Pre x)"));
+        assert!(out.contains("Aeneas.Std.WP.spec (returns_val x) (fun ret_ =>"));
+        assert!(out.contains("Post x ret_)"));
     }
 
     #[test]
@@ -1621,7 +1672,8 @@ mod tests {
         let out = builder.buf;
 
         assert!(!out.contains("h_req"));
-        assert!(out.contains("Aeneas.Std.WP.spec (returns_val) (fun ret => Hermes.IsValid.isValid ret)"));
+        assert!(out.contains("Aeneas.Std.WP.spec (returns_val) (fun ret_ =>"));
+        assert!(out.contains("Post ret_)"));
     }
 
     #[test]
@@ -1634,6 +1686,185 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("(h_req : (Hermes.IsValid.isValid x) ∧ \n(Hermes.IsValid.isValid y))"));
+        assert!(out.contains("(h_req : Pre x y)"));
+    }
+
+    #[test]
+    fn test_gen_edge_case_named_requires() {
+        let item: syn::ItemFn = parse_quote! { fn named_reqs(x: u32) {} };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let mut block = mk_block(vec![vec!["x > 0"]], vec![], Some(vec!["simp"]), None, vec![]);
+        block.requires[0].name = Some(mk_spanned("h_positive"));
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("h_x_is_valid : Hermes.IsValid.isValid x"));
+        assert!(out.contains("h_positive : x > 0"));
+    }
+
+    #[test]
+    fn test_gen_edge_case_named_ensures() {
+        let item: syn::ItemFn = parse_quote! { fn named_ens(x: u32) -> u32 { x } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let mut block = mk_block(vec![], vec![vec!["ret = x"]], Some(vec!["exact h_identity"]), None, vec![]);
+        block.ensures[0].name = Some(mk_spanned("h_identity"));
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("h_ret_is_valid : Hermes.IsValid.isValid ret"));
+        assert!(out.contains("h_identity : ret = x"));
+    }
+
+    #[test]
+    fn test_gen_edge_case_multiple_named_proofs() {
+        let item: syn::ItemFn = parse_quote! { fn multiple_proofs(x: u32) -> u32 { x } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        
+        let mut block = mk_block(vec![], vec![vec!["ret = x"], vec!["ret > 0"]], Some(vec![]), None, vec![]);
+        block.ensures[0].name = Some(mk_spanned("p_one"));
+        block.ensures[1].name = Some(mk_spanned("p_two"));
+
+        let mut proof1 = mk_clause(vec!["exact rfl"]);
+        proof1.name = Some(mk_spanned("p_one"));
+        let mut proof2 = mk_clause(vec!["omega"]);
+        proof2.name = Some(mk_spanned("p_two"));
+
+        block.inner = FunctionBlockInner::Proof { context: vec![], cases: vec![proof1, proof2] };
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("constructor"));
+        assert!(out.contains("next =>"));
+        assert!(out.contains("verify_is_valid"));
+        assert!(out.contains("next =>"));
+        assert!(out.contains("exact rfl"));
+        assert!(out.contains("next =>"));
+        assert!(out.contains("omega"));
+    }
+
+    #[test]
+    fn test_gen_edge_case_missing_proof_fallback() {
+        let item: syn::ItemFn = parse_quote! { fn missing_fallback() -> bool { true } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        
+        let mut block = mk_block(vec![], vec![vec!["ret = true"]], Some(vec![]), None, vec![]);
+        block.ensures[0].name = Some(mk_spanned("h_true"));
+
+        // Provide NO explicit cases for the proof
+        block.inner = FunctionBlockInner::Proof { context: vec![], cases: vec![] };
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+        println!("{}", out);
+
+        assert!(out.contains("constructor"));
+        assert!(out.contains("next =>"));
+        assert!(out.contains("verify_is_valid"));
+        assert!(out.contains("next =>"));
+        assert!(out.contains("sorry"));
+    }
+
+    #[test]
+    fn test_gen_edge_case_empty_pre_struct() {
+        let item: syn::ItemFn = parse_quote! { fn empty_pre() -> bool { true } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        // No inputs, no requires -> no Pre struct should be generated.
+        let mut block = mk_block(vec![], vec![vec!["ret = true"]], Some(vec!["exact h_true"]), None, vec![]);
+        block.ensures[0].name = Some(mk_spanned("h_true"));
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        // Ensure Pre structure is entirely absent
+        assert!(!out.contains("structure Pre"));
+        // Ensure the theorem signature doesn't require a `h_req`
+        assert!(!out.contains("(h_req : "));
+        assert!(out.contains("Aeneas.Std.WP.spec"));
+    }
+
+    #[test]
+    fn test_gen_edge_case_proof_context_injection() {
+        let item: syn::ItemFn = parse_quote! { fn with_context(x: u32) -> u32 { x } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let mut block = mk_block(vec![], vec![vec!["ret = x"]], Some(vec!["exact h_id"]), None, vec![]);
+        block.ensures[0].name = Some(mk_spanned("h_id"));
+
+        let mut proof_case = mk_clause(vec!["exact rfl"]);
+        proof_case.name = Some(mk_spanned("h_id"));
+
+        // Add a context line
+        let ctx_line = mk_spanned("have h_ctx : x = x := by rfl");
+        block.inner = FunctionBlockInner::Proof { context: vec![ctx_line], cases: vec![proof_case] };
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        let ctx_idx = out.find("have h_ctx").expect("Context not found");
+        let constructor_idx = out.find("constructor").expect("Constructor not found");
+        
+        // Context MUST injected before the constructor goal split
+        assert!(ctx_idx < constructor_idx);
+    }
+
+    #[test]
+    fn test_gen_edge_case_unnamed_proof_mapping() {
+        let item: syn::ItemFn = parse_quote! { fn single_unnamed(x: u32) -> u32 { x } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        
+        // Single unnamed ensures
+        let block = mk_block(vec![], vec![vec!["ret = x"]], Some(vec!["exact rfl"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("next =>"));
+        assert!(out.contains("verify_is_valid"));
+        assert!(out.contains("next =>"));
+        assert!(out.contains("exact rfl"));
+    }
+
+    #[test]
+    fn test_gen_edge_case_explicit_is_valid_proof() {
+        let item: syn::ItemFn = parse_quote! { fn explicit_is_valid(x: u32) -> u32 { x } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let mut block = mk_block(vec![], vec![vec!["ret = x"]], Some(vec![]), None, vec![]);
+        block.ensures[0].name = Some(mk_spanned("h_id"));
+
+        // User explicitly overrides the auto-injected h_ret_is_valid proof
+        let mut valid_proof = mk_clause(vec!["my_custom_tactic"]);
+        valid_proof.name = Some(mk_spanned("h_ret_is_valid"));
+
+        block.inner = FunctionBlockInner::Proof { context: vec![], cases: vec![valid_proof] };
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("next =>"));
+        assert!(out.contains("my_custom_tactic"));
+    }
+
+    #[test]
+    fn test_gen_auto_param_is_valid() {
+        let item: syn::ItemFn = parse_quote! { fn implicit_validity(x: u32) -> u32 { x } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![vec!["x > 0"]], vec![vec!["ret = x"]], Some(vec!["exact rfl"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid"));
+        assert!(out.contains("h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid"));
     }
 }

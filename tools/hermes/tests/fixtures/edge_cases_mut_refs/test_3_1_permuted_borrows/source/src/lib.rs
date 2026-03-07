@@ -1,6 +1,7 @@
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold swap
+///   simp_all
 /// ```
 pub fn swap(a: &mut u32, b: &mut u32) {
     let tmp = *a;

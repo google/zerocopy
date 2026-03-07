@@ -2,7 +2,7 @@
 mod self_loop;
 
 /// ```lean, hermes
-/// context
+/// context:
 /// theorem valid : True := trivial
 /// ```
 pub fn valid() {}

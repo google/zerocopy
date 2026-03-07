@@ -735,17 +735,13 @@ fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
             let ext = source_path.extension().and_then(|s| s.to_str()).unwrap_or("");
             let file_name = source_path.file_name().and_then(|s| s.to_str()).unwrap_or("");
 
-            // Safely capture all state files that Lake and Git mutate
-            let is_mutable_metadata = ext == "trace"
+            let is_git_metadata = source_path.components().any(|c| c.as_os_str() == ".git");
+            let is_mutable_metadata = is_git_metadata
+                || ext == "trace"
                 || ext == "json"
                 || ext == "hash"
                 || ext == "log"
-                || file_name == "lake.lock"
-                || file_name == "index"
-                || file_name == "HEAD"
-                || file_name == "config"
-                || file_name == "FETCH_HEAD"
-                || file_name == "ORIG_HEAD";
+                || file_name == "lake.lock";
 
             if is_mutable_metadata {
                 fs::copy(source_path, &target_path)?;

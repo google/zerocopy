@@ -1,5 +1,6 @@
 /// ```hermes
-/// isSafe : ∀ (self : Self), True
+/// isSafe :
+///   ∀ (self : Self), True
 /// ```
 unsafe trait MyTrait {
     fn foo();
@@ -8,7 +9,8 @@ unsafe trait MyTrait {
 macro_rules! decl_trait {
     ($n:ident) => {
         /// ```hermes
-/// isSafe : x > 0
+/// isSafe :
+///   x > 0
         /// ```
         unsafe trait $n {
             fn bar();
@@ -21,7 +23,7 @@ decl_trait!(HiddenTrait);
 
 // Macro invocation with attributes
 /// ```hermes
-/// context
+/// context:
 /// -- Doc comment on macro invocation
 /// ```
 #[allow(dead_code)]

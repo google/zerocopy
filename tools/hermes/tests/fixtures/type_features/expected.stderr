@@ -8,90 +8,90 @@
    ╰────
 
   ⚠ trait `ConstTrait` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:9:14]
-  8 │ /// ```
-  9 │ unsafe trait ConstTrait<const N: usize> {}
+    ╭─[[PROJECT_ROOT]/src/lib.rs:10:14]
+  9 │ /// ```
+ 10 │ unsafe trait ConstTrait<const N: usize> {}
     ·              ─────┬────
     ·                   ╰── 
- 10 │ 
+ 11 │ 
     ╰────
 
   ⚠ trait `AssocType` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:11:14]
- 10 │ 
- 11 │ unsafe trait AssocType {
+    ╭─[[PROJECT_ROOT]/src/lib.rs:12:14]
+ 11 │ 
+ 12 │ unsafe trait AssocType {
     ·              ────┬────
     ·                  ╰── 
- 12 │     type Item;
+ 13 │     type Item;
     ╰────
 
   ⚠ trait `UsesAssoc` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:22:14]
- 21 │ /// ```
- 22 │ unsafe trait UsesAssoc: AssocType {}
+    ╭─[[PROJECT_ROOT]/src/lib.rs:24:14]
+ 23 │ /// ```
+ 24 │ unsafe trait UsesAssoc: AssocType {}
     ·              ────┬────
     ·                  ╰── 
- 23 │ 
-    ╰────
-
-  ⚠ enum `Void` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:24:6]
- 23 │ 
- 24 │ enum Void {}
-    ·      ──┬─
-    ·        ╰── 
  25 │ 
     ╰────
 
+  ⚠ enum `Void` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:26:6]
+ 25 │ 
+ 26 │ enum Void {}
+    ·      ──┬─
+    ·        ╰── 
+ 27 │ 
+    ╰────
+
   ⚠ struct `VoidWrapper` is never constructed
-    ╭─[[PROJECT_ROOT]/src/lib.rs:29:8]
- 28 │ /// ```
- 29 │ struct VoidWrapper(Void);
+    ╭─[[PROJECT_ROOT]/src/lib.rs:31:8]
+ 30 │ /// ```
+ 31 │ struct VoidWrapper(Void);
     ·        ─────┬─────
     ·             ╰── 
- 30 │ 
+ 32 │ 
     ╰────
 
   ⚠ enum `DataEnum` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:31:6]
- 30 │ 
- 31 │ enum DataEnum {
+    ╭─[[PROJECT_ROOT]/src/lib.rs:33:6]
+ 32 │ 
+ 33 │ enum DataEnum {
     ·      ────┬───
     ·          ╰── 
- 32 │     A(u32),
+ 34 │     A(u32),
     ╰────
 
   ⚠ struct `EnumWrapper` is never constructed
-    ╭─[[PROJECT_ROOT]/src/lib.rs:39:8]
- 38 │ /// ```
- 39 │ struct EnumWrapper(DataEnum);
+    ╭─[[PROJECT_ROOT]/src/lib.rs:41:8]
+ 40 │ /// ```
+ 41 │ struct EnumWrapper(DataEnum);
     ·        ─────┬─────
     ·             ╰── 
- 40 │ 
+ 42 │ 
     ╰────
 
   ⚠ enum `ValidatedEnum` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:44:6]
- 43 │ /// ```
- 44 │ enum ValidatedEnum {
+    ╭─[[PROJECT_ROOT]/src/lib.rs:46:6]
+ 45 │ /// ```
+ 46 │ enum ValidatedEnum {
     ·      ──────┬──────
     ·            ╰── 
- 45 │     A(u32),
+ 47 │     A(u32),
     ╰────
 
   ⚠ union `MyUnion` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:49:7]
- 48 │ 
- 49 │ union MyUnion {
+    ╭─[[PROJECT_ROOT]/src/lib.rs:51:7]
+ 50 │ 
+ 51 │ union MyUnion {
     ·       ───┬───
     ·          ╰── 
- 50 │     f1: u32,
+ 52 │     f1: u32,
     ╰────
 
   ⚠ struct `UnionWrapper` is never constructed
-    ╭─[[PROJECT_ROOT]/src/lib.rs:57:8]
- 56 │ /// ```
- 57 │ struct UnionWrapper(MyUnion);
+    ╭─[[PROJECT_ROOT]/src/lib.rs:59:8]
+ 58 │ /// ```
+ 59 │ struct UnionWrapper(MyUnion);
     ·        ──────┬─────
     ·              ╰── 
     ╰────
@@ -103,7 +103,7 @@ Uncaught exception:
   
   (Failure
     "unions are not supported\
-   \nSource: 'src/lib.rs', lines 49:0-52:1\
+   \nSource: 'src/lib.rs', lines 51:0-54:1\
    \nCompiler source: llbc/TypesAnalysis.ml, line 425")
 
 Raised at Aeneas__Errors.craise_opt_span in file "Errors.ml", line 98, characters 4-23

@@ -15,7 +15,8 @@ pub mod b {
 
 
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold dummy_hermes_padding
+///   simp_all
 /// ```
 pub fn dummy_hermes_padding() {}

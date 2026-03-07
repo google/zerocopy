@@ -1,9 +1,17 @@
 #![crate_type = "lib"]
 
 /// ```hermes
-/// ensures ret.1.val = 1 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 1
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_u8
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_u8() -> (usize, usize) {
@@ -11,9 +19,17 @@ pub fn test_u8() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 1 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 1
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_i8
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_i8() -> (usize, usize) {
@@ -21,9 +37,17 @@ pub fn test_i8() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 1 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 1
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_bool
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_bool() -> (usize, usize) {
@@ -31,9 +55,17 @@ pub fn test_bool() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 4 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 4
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_char
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_char() -> (usize, usize) {
@@ -41,9 +73,17 @@ pub fn test_char() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 2 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 2
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_u16
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_u16() -> (usize, usize) {
@@ -51,9 +91,17 @@ pub fn test_u16() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 2 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 2
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_i16
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_i16() -> (usize, usize) {
@@ -61,9 +109,17 @@ pub fn test_i16() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 4 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 4
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_u32
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_u32() -> (usize, usize) {
@@ -71,9 +127,17 @@ pub fn test_u32() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 4 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 4
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_i32
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_i32() -> (usize, usize) {
@@ -81,9 +145,17 @@ pub fn test_i32() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 8 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 8
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_u64
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_u64() -> (usize, usize) {
@@ -91,9 +163,17 @@ pub fn test_u64() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 8 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 8
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_i64
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_i64() -> (usize, usize) {
@@ -101,9 +181,17 @@ pub fn test_i64() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 16 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 16
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_u128
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_u128() -> (usize, usize) {
@@ -111,9 +199,17 @@ pub fn test_u128() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures ret.1.val = 16 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_size): ret.1.val = 16
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_i128
+///   simp_all
+/// proof (h_size):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_i128() -> (usize, usize) {
@@ -121,9 +217,14 @@ pub fn test_i128() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_usize
+///   simp_all
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_usize() -> (usize, usize) {
@@ -131,9 +232,14 @@ pub fn test_usize() -> (usize, usize) {
 }
 
 /// ```hermes
-/// ensures Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
-/// proof
+/// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+/// ensures (h_align_div): ret.2.val ∣ ret.1.val
+/// proof context:
 ///   unfold test_isize
+///   simp_all
+/// proof (h_align_is_align):
+///   simp [Hermes.IsValid.isValid]
+/// proof (h_align_div):
 ///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_isize() -> (usize, usize) {

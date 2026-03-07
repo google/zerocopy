@@ -1,0 +1,16 @@
+
+=== Hermes Verification Failed ===
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Cannot mix named and unnamed `proof` clauses.
+  │ If any are named, they must all be named.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:52:1]
+ 51 │ /// proof context:
+ 52 │ /// proof:
+    · ─────┬────
+    ·      ╰── problematic block
+ 53 │ ///   simp_all
+    ╰────
+
+Error: Aborting due to 1 previous errors.

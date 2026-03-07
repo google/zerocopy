@@ -4,7 +4,7 @@ pub struct NamedDst {
 }
 
 /// ```lean, hermes
-/// context
+/// context:
 /// derive_sized sizedness_reject.NamedDst
 /// ```
 pub fn foo(_f: &NamedDst) {}

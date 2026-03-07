@@ -3,7 +3,8 @@ pub mod inner {
     pub(crate) fn helper() -> u32 { 42 }
     
     /// @spec
-    /// ensures ret = helper()
+    /// ensures:
+///   ///   ///   ret = helper()
     pub fn public_api() -> u32 {
         helper()
     }
@@ -11,7 +12,8 @@ pub mod inner {
 
 
 /// ```lean, hermes
-/// proof
-///   sorry
+/// proof context:
+///   unfold dummy_hermes_padding
+///   simp_all
 /// ```
 pub fn dummy_hermes_padding() {}

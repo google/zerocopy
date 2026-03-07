@@ -1,6 +1,6 @@
 
 /// ```lean, hermes
-/// proof
+/// proof context:
 ///   sorry
 /// ```
 pub fn crash() -> ! {

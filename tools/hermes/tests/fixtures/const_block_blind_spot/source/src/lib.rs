@@ -1,6 +1,6 @@
 const _: () = {
     /// ```lean, hermes
-    /// context
+    /// context:
     /// theorem hidden_impl : True := trivial
     /// ```
     pub fn hidden_impl() {}

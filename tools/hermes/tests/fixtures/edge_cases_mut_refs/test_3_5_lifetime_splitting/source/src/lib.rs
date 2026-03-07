@@ -1,6 +1,6 @@
 
 /// ```lean, hermes
-/// proof
+/// proof context:
 ///   sorry
 /// ```
 pub fn partial_mut<'a, 'b>(x: &'a mut u32, y: &'b mut u32) {

@@ -1,9 +1,9 @@
 /// ```lean, hermes
-/// context
+/// context:
 /// block 1
 /// ```
 /// ```lean, hermes
-/// context
+/// context:
 /// block 2
 /// ```
 fn double_doc() {}

@@ -1,50 +1,50 @@
   ⚠ unused doc comment
-    ╭─[[PROJECT_ROOT]/src/lib.rs:23:1]
- 22 │     // Macro invocation with attributes
- 23 │ ╭─▶ /// ```hermes
- 24 │ │   /// context
- 25 │ │   /// -- Doc comment on macro invocation
- 26 │ ├─▶ /// ```
+    ╭─[[PROJECT_ROOT]/src/lib.rs:25:1]
+ 24 │     // Macro invocation with attributes
+ 25 │ ╭─▶ /// ```hermes
+ 26 │ │   /// context:
+ 27 │ │   /// -- Doc comment on macro invocation
+ 28 │ ├─▶ /// ```
     · ╰──────┬───
     · ╰───   ╰── rustdoc does not generate documentation for macro invocations
     · ╰──── 
- 27 │     #[allow(dead_code)]
+ 29 │     #[allow(dead_code)]
     ╰────
   help: to document an item produced by a macro, the macro must produce the
         documentation as part of its expansion
 
   ⚠ unused attribute `allow`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:27:1]
- 26 │ /// ```
- 27 │ #[allow(dead_code)]
+    ╭─[[PROJECT_ROOT]/src/lib.rs:29:1]
+ 28 │ /// ```
+ 29 │ #[allow(dead_code)]
     · ─────────┬─────────
     ·          ╰── 
- 28 │ decl_trait!(VisibleTrait);
+ 30 │ decl_trait!(VisibleTrait);
     ╰────
   help: remove the attribute
 
   ⚠ trait `MyTrait` is never used
-   ╭─[[PROJECT_ROOT]/src/lib.rs:4:14]
- 3 │ /// ```
- 4 │ unsafe trait MyTrait {
+   ╭─[[PROJECT_ROOT]/src/lib.rs:5:14]
+ 4 │ /// ```
+ 5 │ unsafe trait MyTrait {
    ·              ───┬───
    ·                 ╰── 
- 5 │     fn foo();
+ 6 │     fn foo();
    ╰────
 
   ⚠ trait `HiddenTrait` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:20:13]
- 19 │ // Macro invocation usage
- 20 │ decl_trait!(HiddenTrait);
+    ╭─[[PROJECT_ROOT]/src/lib.rs:22:13]
+ 21 │ // Macro invocation usage
+ 22 │ decl_trait!(HiddenTrait);
     ·             ─────┬─────
     ·                  ╰── 
- 21 │ 
+ 23 │ 
     ╰────
 
   ⚠ trait `VisibleTrait` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:28:13]
- 27 │ #[allow(dead_code)]
- 28 │ decl_trait!(VisibleTrait);
+    ╭─[[PROJECT_ROOT]/src/lib.rs:30:13]
+ 29 │ #[allow(dead_code)]
+ 30 │ decl_trait!(VisibleTrait);
     ·             ──────┬─────
     ·                   ╰── 
     ╰────
@@ -53,11 +53,11 @@
   │ 
   │ Note: This linter can be disabled with `set_option linter.unusedVariables
   │ false`
-   ╭─[[PROJECT_ROOT]/src/lib.rs:2:18]
- 1 │ /// ```hermes
- 2 │ /// isSafe : ∀ (self : Self), True
-   ·                ──┬─
-   ·                  ╰── here
- 3 │ /// ```
+   ╭─[[PROJECT_ROOT]/src/lib.rs:3:12]
+ 2 │ /// isSafe :
+ 3 │ ///   ∀ (self : Self), True
+   ·          ──┬─
+   ·            ╰── here
+ 4 │ /// ```
    ╰────
 
