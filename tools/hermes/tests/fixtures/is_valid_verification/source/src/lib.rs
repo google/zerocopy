@@ -10,7 +10,7 @@ pub struct Positive {
 /// -- No context
 /// ensures Positive.x ret > 0
 /// proof
-///   simp [make_valid]; decide
+///   simp [make_valid, Hermes.IsValid.isValid]; decide
 /// ```
 pub fn make_valid() -> Positive {
     Positive { x: 1 }
@@ -21,7 +21,7 @@ pub fn make_valid() -> Positive {
 /// -- No context
 /// ensures Positive.x ret > 0
 /// proof
-///   simp [make_bad]; decide
+///   simp [make_bad, Hermes.IsValid.isValid]; decide
 /// ```
 pub fn make_bad() -> Positive {
     Positive { x: 0 }

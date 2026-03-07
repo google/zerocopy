@@ -1,0 +1,7 @@
+description = """
+Exhaustively test IsValid precondition and postcondition insertion limits.
+"""
+
+[test]
+expected_status = "success"
+args = ["verify"]

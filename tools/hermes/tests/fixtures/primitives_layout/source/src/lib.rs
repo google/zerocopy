@@ -4,7 +4,7 @@
 /// ensures ret.1.val = 1 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_u8
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_u8() -> (usize, usize) {
     (core::mem::size_of::<u8>(), core::mem::align_of::<u8>())
@@ -14,7 +14,7 @@ pub fn test_u8() -> (usize, usize) {
 /// ensures ret.1.val = 1 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_i8
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_i8() -> (usize, usize) {
     (core::mem::size_of::<i8>(), core::mem::align_of::<i8>())
@@ -24,7 +24,7 @@ pub fn test_i8() -> (usize, usize) {
 /// ensures ret.1.val = 1 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_bool
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_bool() -> (usize, usize) {
     (core::mem::size_of::<bool>(), core::mem::align_of::<bool>())
@@ -34,7 +34,7 @@ pub fn test_bool() -> (usize, usize) {
 /// ensures ret.1.val = 4 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_char
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_char() -> (usize, usize) {
     (core::mem::size_of::<char>(), core::mem::align_of::<char>())
@@ -44,7 +44,7 @@ pub fn test_char() -> (usize, usize) {
 /// ensures ret.1.val = 2 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_u16
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_u16() -> (usize, usize) {
     (core::mem::size_of::<u16>(), core::mem::align_of::<u16>())
@@ -54,7 +54,7 @@ pub fn test_u16() -> (usize, usize) {
 /// ensures ret.1.val = 2 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_i16
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_i16() -> (usize, usize) {
     (core::mem::size_of::<i16>(), core::mem::align_of::<i16>())
@@ -64,7 +64,7 @@ pub fn test_i16() -> (usize, usize) {
 /// ensures ret.1.val = 4 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_u32
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_u32() -> (usize, usize) {
     (core::mem::size_of::<u32>(), core::mem::align_of::<u32>())
@@ -74,7 +74,7 @@ pub fn test_u32() -> (usize, usize) {
 /// ensures ret.1.val = 4 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_i32
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_i32() -> (usize, usize) {
     (core::mem::size_of::<i32>(), core::mem::align_of::<i32>())
@@ -84,7 +84,7 @@ pub fn test_i32() -> (usize, usize) {
 /// ensures ret.1.val = 8 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_u64
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_u64() -> (usize, usize) {
     (core::mem::size_of::<u64>(), core::mem::align_of::<u64>())
@@ -94,7 +94,7 @@ pub fn test_u64() -> (usize, usize) {
 /// ensures ret.1.val = 8 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_i64
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_i64() -> (usize, usize) {
     (core::mem::size_of::<i64>(), core::mem::align_of::<i64>())
@@ -104,7 +104,7 @@ pub fn test_i64() -> (usize, usize) {
 /// ensures ret.1.val = 16 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_u128
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_u128() -> (usize, usize) {
     (core::mem::size_of::<u128>(), core::mem::align_of::<u128>())
@@ -114,7 +114,7 @@ pub fn test_u128() -> (usize, usize) {
 /// ensures ret.1.val = 16 /\ Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_i128
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_i128() -> (usize, usize) {
     (core::mem::size_of::<i128>(), core::mem::align_of::<i128>())
@@ -124,7 +124,7 @@ pub fn test_i128() -> (usize, usize) {
 /// ensures Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_usize
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_usize() -> (usize, usize) {
     (core::mem::size_of::<usize>(), core::mem::align_of::<usize>())
@@ -134,7 +134,7 @@ pub fn test_usize() -> (usize, usize) {
 /// ensures Hermes.IsAlignment ret.2.val /\ ret.2.val ∣ ret.1.val
 /// proof
 ///   unfold test_isize
-///   simp
+///   simp [Hermes.IsValid.isValid]
 /// ```
 pub fn test_isize() -> (usize, usize) {
     (core::mem::size_of::<isize>(), core::mem::align_of::<isize>())
