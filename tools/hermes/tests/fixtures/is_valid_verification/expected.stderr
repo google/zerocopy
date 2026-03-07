@@ -1,11 +1,11 @@
   × Tactic `decide` proved that the proposition
   │   False
   │ is false
-    ╭─[[PROJECT_ROOT]/src/lib.rs:24:24]
+    ╭─[[PROJECT_ROOT]/src/lib.rs:24:48]
  23 │ /// proof
- 24 │ ///   simp [make_bad]; decide
-    ·                        ───┬──
-    ·                           ╰── here
+ 24 │ ///   simp [make_bad, Hermes.IsValid.isValid]; decide
+    ·                                                ───┬──
+    ·                                                   ╰── here
  25 │ /// ```
     ╰────
 

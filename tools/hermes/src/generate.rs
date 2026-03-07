@@ -399,13 +399,28 @@ fn generate_function(
         }
     }
 
-    let has_requires = !prop_requires.is_empty();
+    let mut has_requires = !prop_requires.is_empty();
+    if !args.is_empty() {
+        has_requires = true;
+    }
+
     if has_requires {
         builder.push_str("\n  (h_req : ");
-        for (i, clause) in prop_requires.into_iter().enumerate() {
-            if i > 0 {
+        let mut first = true;
+        
+        for arg in &args {
+            if !first {
                 builder.push_str(" ∧ \n");
             }
+            first = false;
+            builder.push_str(&format!("(Hermes.IsValid.isValid {})", arg.name));
+        }
+
+        for clause in prop_requires.into_iter() {
+            if !first {
+                builder.push_str(" ∧ \n");
+            }
+            first = false;
             builder.push('(');
             for (j, line) in clause.lines.iter().enumerate() {
                 if j > 0 {
@@ -481,11 +496,30 @@ fn generate_function(
             builder.push(' ');
         }
 
-        if has_ensures {
-            for (i, clause) in block.ensures.iter().enumerate() {
-                if i > 0 {
+        let has_ensures_clauses = !block.ensures.is_empty();
+        let needs_validity_ensures = has_return_value || has_mut_args;
+
+        if has_ensures_clauses || needs_validity_ensures {
+            let mut first = true;
+
+            if has_return_value {
+                builder.push_str("(Hermes.IsValid.isValid ret)");
+                first = false;
+            }
+
+            for arg in &mut_args {
+                if !first {
                     builder.push_str(" ∧ \n");
                 }
+                first = false;
+                builder.push_str(&format!("(Hermes.IsValid.isValid {}')", arg.name));
+            }
+
+            for clause in block.ensures.iter() {
+                if !first {
+                    builder.push_str(" ∧ \n");
+                }
+                first = false;
                 builder.push('(');
                 for (j, line) in clause.lines.iter().enumerate() {
                     if j > 0 {
@@ -501,7 +535,11 @@ fn generate_function(
         }
         builder.push(')');
     } else {
-        builder.push_str(" (fun _ => True)");
+        if has_return_value {
+            builder.push_str(" (fun ret => Hermes.IsValid.isValid ret)");
+        } else {
+            builder.push_str(" (fun _ => True)");
+        }
     }
 
     // Body
@@ -1070,9 +1108,10 @@ mod tests {
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
+        println!("test_gen_requires_ordering output:\n{}", out);
 
         let theorem_idx = out.find("theorem spec (x : Std.U32)").expect("Theorem not found");
-        let requires_idx = out.find("(h_req : (x.val > 0\n))").expect("Requires not found");
+        let requires_idx = out.find("(h_req : (Hermes.IsValid.isValid x) ∧ \n(x.val > 0\n))").expect("Requires not found");
         let return_type_idx = out.find("Aeneas.Std.WP.spec").expect("Return type not found");
 
         assert!(theorem_idx < requires_idx, "Theorem should come before requires");
@@ -1094,8 +1133,9 @@ mod tests {
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
+        println!("test_gen_unsafe_axiom output:\n{}", out);
 
-        assert!(out.contains("axiom spec (p : (ConstRawPtr Std.U8)) :"));
+        assert!(out.contains("axiom spec (p : (ConstRawPtr Std.U8))\n  (h_req : (Hermes.IsValid.isValid p)) :"));
         assert!(out.contains("Aeneas.Std.WP.spec (ffi p)"));
         // No proof block for axioms
         assert!(!out.contains(":= by"));
@@ -1511,5 +1551,89 @@ mod tests {
         let out = builder.buf;
 
         assert!(out.contains("(self : Std.U32 × Std.U32)"));
+    }
+
+    #[test]
+    fn test_gen_no_args_no_return() {
+        let item: syn::ItemFn = parse_quote! { fn empty() {} };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("Aeneas.Std.WP.spec (empty) (fun _ => True)"));
+        assert!(!out.contains("h_req"));
+    }
+
+    #[test]
+    fn test_gen_args_no_mut_no_return() {
+        let item: syn::ItemFn = parse_quote! { fn takes_arg(x: u32) {} };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("(h_req : (Hermes.IsValid.isValid x))"));
+        assert!(out.contains("Aeneas.Std.WP.spec (takes_arg x) (fun _ => True)"));
+    }
+
+    #[test]
+    fn test_gen_mut_args_no_return() {
+        let item: syn::ItemFn = parse_quote! { fn mut_arg(x: &mut u32) {} };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("(h_req : (Hermes.IsValid.isValid x))"));
+        assert!(out.contains("Aeneas.Std.WP.spec (mut_arg x) (fun ret =>"));
+        assert!(out.contains("(Hermes.IsValid.isValid x')"));
+    }
+
+    #[test]
+    fn test_gen_args_return_no_mut() {
+        let item: syn::ItemFn = parse_quote! { fn returns_val(x: u32) -> u32 { x } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("(h_req : (Hermes.IsValid.isValid x))"));
+        assert!(out.contains("Aeneas.Std.WP.spec (returns_val x) (fun ret => Hermes.IsValid.isValid ret)"));
+    }
+
+    #[test]
+    fn test_gen_no_args_return() {
+        let item: syn::ItemFn = parse_quote! { fn returns_val() -> u32 { 0 } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(!out.contains("h_req"));
+        assert!(out.contains("Aeneas.Std.WP.spec (returns_val) (fun ret => Hermes.IsValid.isValid ret)"));
+    }
+
+    #[test]
+    fn test_gen_multiple_args() {
+        let item: syn::ItemFn = parse_quote! { fn mult(x: u32, y: u32) {} };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("(h_req : (Hermes.IsValid.isValid x) ∧ \n(Hermes.IsValid.isValid y))"));
     }
 }
