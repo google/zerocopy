@@ -1,6 +1,7 @@
 use crate::parse::{
     attr::{
-        Clause, FunctionBlockInner, FunctionHermesBlock, SpannedLine, TraitHermesBlock, TypeHermesBlock,
+        Clause, FunctionBlockInner, FunctionHermesBlock, SpannedLine, TraitHermesBlock,
+        TypeHermesBlock,
     },
     hkd::AstNode,
     FunctionItem, ParsedItem, TypeItem,
@@ -221,7 +222,7 @@ struct ArgInfo {
     is_mut_ref: bool,
 }
 
-// AST Nodes 
+// AST Nodes
 struct AstField<'a> {
     name: String,
     lean_type: Option<String>,
@@ -240,7 +241,6 @@ struct AstStruct<'a> {
 struct AstTheorem<'a> {
     kind_keyword: &'a str,
     keyword_span: Option<&'a miette::SourceSpan>,
-    fn_name: &'a str,
     fn_span: &'a miette::SourceSpan,
     args_suffix: &'a str,
     generate_pre: bool,
@@ -259,8 +259,12 @@ struct AstTheorem<'a> {
 // Renderers
 impl LeanBuilder {
     fn render_struct(&mut self, ast: &AstStruct<'_>, source_file: &std::path::Path) {
-        let outputs = if ast.outputs.is_empty() { String::new() } else { format!(" {}", ast.outputs) };
-        self.push_str(&format!("  structure {}{}{} {} : Prop where\n", ast.name, ast.params, ast.args, outputs));
+        let outputs =
+            if ast.outputs.is_empty() { String::new() } else { format!(" {}", ast.outputs) };
+        self.push_str(&format!(
+            "  structure {}{}{} {} : Prop where\n",
+            ast.name, ast.params, ast.args, outputs
+        ));
         for field in &ast.fields {
             self.push_str(&format!("    {} : ", field.name));
             if let Some(lean_type) = &field.lean_type {
@@ -340,7 +344,8 @@ impl LeanBuilder {
             let mut context_indent = "  ".to_string();
 
             if let Some(ctx) = ast.proof_context {
-                let non_empty: Vec<_> = ctx.iter().filter(|l| !l.content.trim().is_empty()).collect();
+                let non_empty: Vec<_> =
+                    ctx.iter().filter(|l| !l.content.trim().is_empty()).collect();
                 if non_empty.len() == 1 && non_empty[0].content.trim() == "sorry" {
                     is_context_sorry_only = true;
                 }
@@ -352,7 +357,11 @@ impl LeanBuilder {
             }
 
             if let Some(req_fields) = &ast.destructure_req {
-                self.push_str(&format!("{}rcases h_req with ⟨{}⟩\n", context_indent, req_fields.join(", ")));
+                self.push_str(&format!(
+                    "{}rcases h_req with ⟨{}⟩\n",
+                    context_indent,
+                    req_fields.join(", ")
+                ));
             }
 
             if let Some(ctx) = ast.proof_context {
@@ -363,7 +372,10 @@ impl LeanBuilder {
             }
 
             if !is_context_sorry_only {
-                let var_indent = if is_context_sorry_only || ast.proof_context.is_none() || ast.proof_context.unwrap().is_empty() {
+                let var_indent = if is_context_sorry_only
+                    || ast.proof_context.is_none()
+                    || ast.proof_context.unwrap().is_empty()
+                {
                     "  ".to_string()
                 } else {
                     if let Some(ctx) = ast.proof_context {
@@ -437,9 +449,18 @@ fn generate_function(
     source_file: &std::path::Path,
 ) {
     let (fn_name, fn_span, impl_struct_name, generics) = match func {
-        FunctionItem::Free(n) => (n.inner.sig.ident.clone(), n.inner.sig.name_span, None, &n.inner.generics),
-        FunctionItem::Impl(n, opt_struct) => (n.inner.sig.ident.clone(), n.inner.sig.name_span, opt_struct.clone(), &n.inner.generics),
-        FunctionItem::Trait(n) => (n.inner.sig.ident.clone(), n.inner.sig.name_span, None, &n.inner.generics),
+        FunctionItem::Free(n) => {
+            (n.inner.sig.ident.clone(), n.inner.sig.name_span, None, &n.inner.generics)
+        }
+        FunctionItem::Impl(n, opt_struct) => (
+            n.inner.sig.ident.clone(),
+            n.inner.sig.name_span,
+            opt_struct.clone(),
+            &n.inner.generics,
+        ),
+        FunctionItem::Trait(n) => {
+            (n.inner.sig.ident.clone(), n.inner.sig.name_span, None, &n.inner.generics)
+        }
     };
 
     let (generic_params, _, generic_bounds, dict_args) = extract_generic_params(generics);
@@ -458,7 +479,7 @@ fn generate_function(
 
     let mut prop_requires = Vec::new();
     let mut instance_requires = Vec::new();
-    for clause in &block.requires {
+    for clause in block.requires.iter() {
         let first_line_trimmed = clause.lines.first().map(|l| l.content.trim_start()).unwrap_or("");
         if first_line_trimmed.starts_with('[') {
             instance_requires.push(clause);
@@ -468,8 +489,16 @@ fn generate_function(
     }
 
     let mut instance_params = if !generic_params.is_empty() || !generic_bounds.is_empty() {
-        let params = if !generic_params.is_empty() { format!("{{{}}}", generic_params.join(" ")) } else { String::new() };
-        let bounds = if !generic_bounds.is_empty() { format!(" {}", generic_bounds.join(" ")) } else { String::new() };
+        let params = if !generic_params.is_empty() {
+            format!("{{{}}}", generic_params.join(" "))
+        } else {
+            String::new()
+        };
+        let bounds = if !generic_bounds.is_empty() {
+            format!(" {}", generic_bounds.join(" "))
+        } else {
+            String::new()
+        };
         format!(" {}{}", params, bounds)
     } else {
         String::new()
@@ -479,10 +508,16 @@ fn generate_function(
         let name = clause.name.as_ref().map(|n| n.content.clone());
         let mut content = String::new();
         for (j, line) in clause.lines.iter().enumerate() {
-            if j > 0 { content.push(' '); }
+            if j > 0 {
+                content.push(' ');
+            }
             let mut l = line.content.trim();
-            if j == 0 && l.starts_with('[') { l = &l[1..]; }
-            if j == clause.lines.len() - 1 && l.ends_with(']') { l = &l[..l.len() - 1]; }
+            if j == 0 && l.starts_with('[') {
+                l = &l[1..];
+            }
+            if j == clause.lines.len() - 1 && l.ends_with(']') {
+                l = &l[..l.len() - 1];
+            }
             content.push_str(l);
         }
         if let Some(n) = name {
@@ -493,14 +528,20 @@ fn generate_function(
     }
 
     let args_suffix = if !args.is_empty() {
-        format!(" {}", args.iter().map(|a| format!("({} : {})", a.name, a.lean_type)).collect::<Vec<_>>().join(" "))
+        format!(
+            " {}",
+            args.iter()
+                .map(|a| format!("({} : {})", a.name, a.lean_type))
+                .collect::<Vec<_>>()
+                .join(" ")
+        )
     } else {
         String::new()
     };
 
     let has_args = !args.is_empty();
     let generate_pre = has_args || !prop_requires.is_empty();
-    
+
     if generate_pre {
         let mut pre_fields = Vec::new();
         for arg in &args {
@@ -512,27 +553,34 @@ fn generate_function(
             });
         }
         for clause in &prop_requires {
-            let name = clause.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "unnamed".to_string());
+            let name = clause
+                .name
+                .as_ref()
+                .map(|n| n.content.clone())
+                .unwrap_or_else(|| "h_unnamed".to_string());
             pre_fields.push(AstField {
                 name,
                 lean_type: None,
                 proof_tactic: None,
-                lines: clause.lines.iter().collect()
+                lines: clause.lines.iter().collect(),
             });
         }
-        
-        builder.render_struct(&AstStruct {
-            name: "Pre".to_string(),
-            params: instance_params.clone(),
-            args: args_suffix.clone(),
-            outputs: String::new(),
-            fields: pre_fields,
-        }, source_file);
+
+        builder.render_struct(
+            &AstStruct {
+                name: "Pre".to_string(),
+                params: instance_params.clone(),
+                args: args_suffix.clone(),
+                outputs: String::new(),
+                fields: pre_fields,
+            },
+            source_file,
+        );
     }
 
     let mut_args: Vec<&ArgInfo> = args.iter().filter(|a| a.is_mut_ref).collect();
     let has_mut_args = !mut_args.is_empty();
-    
+
     let mut post_outputs = String::new();
     if has_return_value {
         use crate::parse::hkd::SafeReturnType;
@@ -543,7 +591,9 @@ fn generate_function(
         post_outputs.push_str(&format!("(ret : {})", ret_lean_type));
     }
     for arg in &mut_args {
-        if !post_outputs.is_empty() { post_outputs.push(' '); }
+        if !post_outputs.is_empty() {
+            post_outputs.push(' ');
+        }
         post_outputs.push_str(&format!("({}' : {})", arg.name, arg.lean_type));
     }
 
@@ -565,27 +615,38 @@ fn generate_function(
         });
     }
 
-    for clause in &block.ensures {
-        let name = clause.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "unnamed".to_string());
+    for clause in block.ensures.iter() {
+        let name = clause
+            .name
+            .as_ref()
+            .map(|n| n.content.clone())
+            .unwrap_or_else(|| "h_unnamed".to_string());
         post_fields.push(AstField {
             name: name.clone(),
             lean_type: None,
             proof_tactic: Some(format!("verify_user_bound {}", name)),
-            lines: clause.lines.iter().collect()
+            lines: clause.lines.iter().collect(),
         });
     }
 
-    builder.render_struct(&AstStruct {
-        name: "Post".to_string(),
-        params: instance_params.clone(),
-        args: args_suffix.clone(),
-        outputs: post_outputs,
-        fields: post_fields,
-    }, source_file);
+    builder.render_struct(
+        &AstStruct {
+            name: "Post".to_string(),
+            params: instance_params.clone(),
+            args: args_suffix.clone(),
+            outputs: post_outputs,
+            fields: post_fields,
+        },
+        source_file,
+    );
 
     let (kind_keyword, proof_cases, proof_context, keyword_span) = match &block.inner {
-        FunctionBlockInner::Proof { context, cases } => ("theorem", Some(cases), Some(context), None),
-        FunctionBlockInner::Axiom { keyword, .. } => ("axiom", None, None, keyword.as_ref().map(|k| &k.inner)),
+        FunctionBlockInner::Proof { context, cases } => {
+            ("theorem", Some(cases), Some(context), None)
+        }
+        FunctionBlockInner::Axiom { keyword, .. } => {
+            ("axiom", None, None, keyword.as_ref().map(|k| &k.inner))
+        }
     };
 
     let mut pre_args = Vec::new();
@@ -602,8 +663,9 @@ fn generate_function(
             }
         }
     }
-    let call_name = if !base_name.is_empty() { format!("{}.{}", base_name, fn_name) } else { fn_name.clone() };
-    
+    let call_name =
+        if !base_name.is_empty() { format!("{}.{}", base_name, fn_name) } else { fn_name.clone() };
+
     let call_str = std::iter::once(call_name)
         .chain(dict_args.iter().cloned())
         .chain(args.iter().map(|a| a.name.clone()))
@@ -615,7 +677,11 @@ fn generate_function(
         if has_return_value {
             Some(format!("(ret, {})", vars))
         } else {
-            if mut_args.len() == 1 { Some(format!("{}'", mut_args[0].name)) } else { Some(format!("({})", vars)) }
+            if mut_args.len() == 1 {
+                Some(format!("{}'", mut_args[0].name))
+            } else {
+                Some(format!("({})", vars))
+            }
         }
     } else {
         None
@@ -631,30 +697,64 @@ fn generate_function(
 
     let destructure_req = if generate_pre {
         let mut req_fields = Vec::new();
-        for arg in &args { req_fields.push(format!("h_{}_is_valid", arg.name)); }
-        for clause in &prop_requires {
-            req_fields.push(clause.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "unnamed".to_string()));
+        for arg in &args {
+            req_fields.push(format!("h_{}_is_valid", arg.name));
         }
-        if req_fields.is_empty() { None } else { Some(req_fields) }
+        for clause in &prop_requires {
+            req_fields.push(
+                clause
+                    .name
+                    .as_ref()
+                    .map(|n| n.content.clone())
+                    .unwrap_or_else(|| "h_unnamed".to_string()),
+            );
+        }
+        if req_fields.is_empty() {
+            None
+        } else {
+            Some(req_fields)
+        }
     } else {
         None
     };
 
     let provided_cases: std::collections::HashMap<String, &Clause<_>> = proof_cases
-        .map(|cases| cases.iter().map(|c| (c.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "unnamed".to_string()), c)).collect())
+        .map(|cases| {
+            cases
+                .iter()
+                .map(|c| {
+                    (
+                        c.name
+                            .as_ref()
+                            .map(|n| n.content.clone())
+                            .unwrap_or_else(|| "h_unnamed".to_string()),
+                        c,
+                    )
+                })
+                .collect()
+        })
         .unwrap_or_default();
 
     let mut exact_fields = Vec::new();
-    if has_return_value { exact_fields.push("h_ret_is_valid".to_string()); }
-    for arg in &mut_args { exact_fields.push(format!("h_{}'_is_valid", arg.name)); }
-    for clause in &block.ensures {
-        exact_fields.push(clause.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "unnamed".to_string()));
+    if has_return_value {
+        exact_fields.push("h_ret_is_valid".to_string());
+    }
+    for arg in &mut_args {
+        exact_fields.push(format!("h_{}'_is_valid", arg.name));
+    }
+    for clause in block.ensures.iter() {
+        exact_fields.push(
+            clause
+                .name
+                .as_ref()
+                .map(|n| n.content.clone())
+                .unwrap_or_else(|| "h_unnamed".to_string()),
+        );
     }
 
     builder.render_theorem(&AstTheorem {
         kind_keyword,
         keyword_span,
-        fn_name: &fn_name,
         fn_span: &fn_span,
         instance_params: &instance_params,
         args_suffix: &args_suffix,
@@ -711,8 +811,16 @@ fn generate_type(
     };
 
     let instance_params = if !generic_params.is_empty() || !generic_bounds.is_empty() {
-        let params = if !generic_params.is_empty() { format!("{{{}}}", generic_params.join(" ")) } else { String::new() };
-        let bounds = if !generic_bounds.is_empty() { format!(" {}", generic_bounds.join(" ")) } else { String::new() };
+        let params = if !generic_params.is_empty() {
+            format!("{{{}}}", generic_params.join(" "))
+        } else {
+            String::new()
+        };
+        let bounds = if !generic_bounds.is_empty() {
+            format!(" {}", generic_bounds.join(" "))
+        } else {
+            String::new()
+        };
         format!(" {}{}", params, bounds)
     } else {
         String::new()
@@ -725,7 +833,9 @@ fn generate_type(
         for clause in block.is_valid.iter() {
             builder.push_str("  ");
             for (j, line) in clause.lines.iter().enumerate() {
-                if j > 0 { builder.push('\n'); }
+                if j > 0 {
+                    builder.push('\n');
+                }
                 builder.push_spanned(&line.content, line, source_file);
             }
             builder.push('\n');
@@ -759,8 +869,16 @@ fn generate_trait(
     // Class Definition
     // class Safe (Self : Type) {T} [Trait Self T] : Prop where
     let params_decl = if !generic_params.is_empty() || !generic_bounds.is_empty() {
-        let params = if !generic_params.is_empty() { format!("{{{}}}", generic_params.join(" ")) } else { String::new() };
-        let bounds = if !generic_bounds.is_empty() { format!(" {}", generic_bounds.join(" ")) } else { String::new() };
+        let params = if !generic_params.is_empty() {
+            format!("{{{}}}", generic_params.join(" "))
+        } else {
+            String::new()
+        };
+        let bounds = if !generic_bounds.is_empty() {
+            format!(" {}", generic_bounds.join(" "))
+        } else {
+            String::new()
+        };
         format!(" {}{}", params, bounds)
     } else {
         String::new()
@@ -776,14 +894,18 @@ fn generate_trait(
     // rather than relying on typeclass resolution (`[{trait_app}]`). This
     // mirrors Aeneas's lowering strategy, which also lowers trait bounds to
     // explicit dictionary arguments.
-    builder.push_str(&format!("class Safe (Self : Type){params_decl} (inst : {trait_app}) : Prop where\n"));
+    builder.push_str(&format!(
+        "class Safe (Self : Type){params_decl} (inst : {trait_app}) : Prop where\n"
+    ));
     if block.is_safe.is_empty() {
         builder.push_str("  isSafe : True\n");
     } else {
         for clause in block.is_safe.iter() {
             builder.push_str("  ");
             for (j, line) in clause.lines.iter().enumerate() {
-                if j > 0 { builder.push('\n'); }
+                if j > 0 {
+                    builder.push('\n');
+                }
                 builder.push_spanned(&line.content, line, source_file);
             }
             builder.push('\n');
@@ -828,7 +950,7 @@ fn extract_generic_params(
                 // appending `Inst` to the base trait name, mimicking Aeneas's
                 // `Clause0Inst` and `TraitInst` naming patterns.
                 let dict_name = if mapped_trait.contains('.') {
-                    mapped_trait.split('.').last().unwrap().to_string()
+                    mapped_trait.split('.').next_back().unwrap().to_string()
                 } else {
                     mapped_trait.clone()
                 };
@@ -1007,7 +1129,7 @@ mod tests {
 
     use super::*;
     use crate::parse::{
-        attr::{Clause, FunctionBlockInner, HermesBlockCommon},
+        attr::{Clause, FunctionBlockInner, HermesBlockCommon, Propositions},
         hkd::Mirror,
     };
 
@@ -1042,11 +1164,12 @@ mod tests {
         let inner = if let Some(p) = proof {
             FunctionBlockInner::Proof {
                 context: vec![],
-                cases: vec![Clause {
+                cases: std::iter::once(Clause {
                     keyword_span: AstNode { inner: SourceSpan::new(0.into(), 0) },
                     name: None,
                     lines: p.into_iter().map(mk_spanned).collect(),
-                }],
+                })
+                .collect(),
             }
         } else {
             FunctionBlockInner::Axiom {
@@ -1160,7 +1283,7 @@ mod tests {
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
         // Old test "Multiline requires (implicit AND)" now becomes 2 clauses
         let block = mk_block(
-            vec![vec!["x.val > 0"], vec!["x.val < 10"]],
+            vec![vec!["x.val > 0", "x.val < 10"]],
             vec![],
             Some(vec!["simp"]),
             None,
@@ -1170,9 +1293,10 @@ mod tests {
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
+        println!("OUT:\n{}", out);
 
-        assert!(out.contains("unnamed : x.val > 0"));
-        assert!(out.contains("unnamed : x.val < 10"));
+        assert!(out.contains("h_unnamed : x.val > 0"));
+        assert!(out.contains("x.val < 10"));
     }
 
     #[test]
@@ -1719,7 +1843,11 @@ mod tests {
         let item: syn::ItemFn = parse_quote! { fn named_reqs(x: u32) {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
         let mut block = mk_block(vec![vec!["x > 0"]], vec![], Some(vec!["simp"]), None, vec![]);
-        block.requires[0].name = Some(mk_spanned("h_positive"));
+        let mut props = Propositions::default();
+        let mut clause = mk_clause(vec!["x > 0"]);
+        clause.name = Some(mk_spanned("h_positive"));
+        props.push(clause).unwrap();
+        block.requires = props;
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1735,7 +1863,11 @@ mod tests {
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
         let mut block =
             mk_block(vec![], vec![vec!["ret = x"]], Some(vec!["exact h_identity"]), None, vec![]);
-        block.ensures[0].name = Some(mk_spanned("h_identity"));
+        let mut props = Propositions::default();
+        let mut clause = mk_clause(vec!["ret = x"]);
+        clause.name = Some(mk_spanned("h_identity"));
+        props.push(clause).unwrap();
+        block.ensures = props;
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1750,17 +1882,25 @@ mod tests {
         let item: syn::ItemFn = parse_quote! { fn multiple_proofs(x: u32) -> u32 { x } };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
 
-        let mut block =
-            mk_block(vec![], vec![vec!["ret = x"], vec!["ret > 0"]], Some(vec![]), None, vec![]);
-        block.ensures[0].name = Some(mk_spanned("p_one"));
-        block.ensures[1].name = Some(mk_spanned("p_two"));
+        let mut block = mk_block(vec![], vec![], Some(vec![]), None, vec![]);
+        let mut props = Propositions::default();
+        let mut c1 = mk_clause(vec!["ret = x"]);
+        c1.name = Some(mk_spanned("p_one"));
+        let mut c2 = mk_clause(vec!["ret > 0"]);
+        c2.name = Some(mk_spanned("p_two"));
+        props.push(c1).unwrap();
+        props.push(c2).unwrap();
+        block.ensures = props;
 
         let mut proof1 = mk_clause(vec!["exact rfl"]);
         proof1.name = Some(mk_spanned("p_one"));
         let mut proof2 = mk_clause(vec!["omega"]);
         proof2.name = Some(mk_spanned("p_two"));
 
-        block.inner = FunctionBlockInner::Proof { context: vec![], cases: vec![proof1, proof2] };
+        block.inner = FunctionBlockInner::Proof {
+            context: vec![],
+            cases: vec![proof1, proof2].into_iter().collect(),
+        };
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1780,11 +1920,15 @@ mod tests {
         let item: syn::ItemFn = parse_quote! { fn missing_fallback() -> bool { true } };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
 
-        let mut block = mk_block(vec![], vec![vec!["ret = true"]], Some(vec![]), None, vec![]);
-        block.ensures[0].name = Some(mk_spanned("h_true"));
+        let mut block = mk_block(vec![], vec![], Some(vec![]), None, vec![]);
+        let mut props = Propositions::default();
+        let mut clause = mk_clause(vec!["ret = true"]);
+        clause.name = Some(mk_spanned("h_true"));
+        props.push(clause).unwrap();
+        block.ensures = props;
 
         // Provide NO explicit cases for the proof
-        block.inner = FunctionBlockInner::Proof { context: vec![], cases: vec![] };
+        block.inner = FunctionBlockInner::Proof { context: vec![], cases: Propositions::default() };
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1803,9 +1947,12 @@ mod tests {
         let item: syn::ItemFn = parse_quote! { fn empty_pre() -> bool { true } };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
         // No inputs, no requires -> no Pre struct should be generated.
-        let mut block =
-            mk_block(vec![], vec![vec!["ret = true"]], Some(vec!["exact h_true"]), None, vec![]);
-        block.ensures[0].name = Some(mk_spanned("h_true"));
+        let mut block = mk_block(vec![], vec![], Some(vec!["exact h_true"]), None, vec![]);
+        let mut props = Propositions::default();
+        let mut clause = mk_clause(vec!["ret = true"]);
+        clause.name = Some(mk_spanned("h_true"));
+        props.push(clause).unwrap();
+        block.ensures = props;
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1822,17 +1969,22 @@ mod tests {
     fn test_gen_edge_case_proof_context_injection() {
         let item: syn::ItemFn = parse_quote! { fn with_context(x: u32) -> u32 { x } };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let mut block =
-            mk_block(vec![], vec![vec!["ret = x"]], Some(vec!["exact h_id"]), None, vec![]);
-        block.ensures[0].name = Some(mk_spanned("h_id"));
+        let mut block = mk_block(vec![], vec![], Some(vec!["exact rfl"]), None, vec![]);
+        let mut props = Propositions::default();
+        let mut clause = mk_clause(vec!["ret = x"]);
+        clause.name = Some(mk_spanned("h_id"));
+        props.push(clause).unwrap();
+        block.ensures = props;
 
         let mut proof_case = mk_clause(vec!["exact rfl"]);
         proof_case.name = Some(mk_spanned("h_id"));
 
         // Add a context line
         let ctx_line = mk_spanned("have h_ctx : x = x := by rfl");
-        block.inner =
-            FunctionBlockInner::Proof { context: vec![ctx_line], cases: vec![proof_case] };
+        block.inner = FunctionBlockInner::Proof {
+            context: vec![ctx_line],
+            cases: std::iter::once(proof_case).collect(),
+        };
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1858,7 +2010,7 @@ mod tests {
         let out = builder.buf;
 
         assert!(!out.contains("next =>"));
-        assert!(out.contains("unnamed := by"));
+        assert!(out.contains("h_unnamed := by"));
         assert!(out.contains("exact rfl"));
     }
 
@@ -1866,14 +2018,20 @@ mod tests {
     fn test_gen_edge_case_explicit_is_valid_proof() {
         let item: syn::ItemFn = parse_quote! { fn explicit_is_valid(x: u32) -> u32 { x } };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let mut block = mk_block(vec![], vec![vec!["ret = x"]], Some(vec![]), None, vec![]);
-        block.ensures[0].name = Some(mk_spanned("h_id"));
+        let mut block = mk_block(vec![], vec![], Some(vec![]), None, vec![]);
+        let mut props = Propositions::default();
+        let mut clause = mk_clause(vec!["ret = x"]);
+        clause.name = Some(mk_spanned("h_id"));
+        props.push(clause).unwrap();
+        block.ensures = props;
 
         // User explicitly overrides the auto-injected h_ret_is_valid proof
         let mut valid_proof = mk_clause(vec!["my_custom_tactic"]);
         valid_proof.name = Some(mk_spanned("h_ret_is_valid"));
-
-        block.inner = FunctionBlockInner::Proof { context: vec![], cases: vec![valid_proof] };
+        block.inner = FunctionBlockInner::Proof {
+            context: vec![],
+            cases: std::iter::once(valid_proof).collect(),
+        };
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1912,26 +2070,35 @@ mod tests {
     fn test_gen_edge_case_destructure_multiple_named_preconditions() {
         let item: syn::ItemFn = parse_quote! { fn multiple_reqs(x: u32) {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let mut block =
-            mk_block(vec![vec!["x > 0"], vec!["x < 10"]], vec![], Some(vec!["simp"]), None, vec![]);
-        block.requires[0].name = Some(mk_spanned("h_pos"));
-        block.requires[1].name = Some(mk_spanned("h_lt"));
+        let mut block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+        let mut props = Propositions::default();
+        let mut c1 = mk_clause(vec!["x > 0"]);
+        c1.name = Some(mk_spanned("h_pos"));
+        let mut c2 = mk_clause(vec!["x < 10"]);
+        c2.name = Some(mk_spanned("h_lt"));
+        props.push(c1).unwrap();
+        props.push(c2).unwrap();
+        block.requires = props;
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
         assert!(out.contains("(h_req : Pre x)"));
-        assert!(out.contains("rcases h_req with ⟨h_x_is_valid, h_pos, h_lt⟩"));
+        assert!(out.contains("rcases h_req with ⟨h_x_is_valid, h_lt, h_pos⟩"));
     }
 
     #[test]
     fn test_gen_edge_case_destructure_mixed_named_unnamed_preconditions() {
         let item: syn::ItemFn = parse_quote! { fn mixed_reqs(x: u32) {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let mut block =
-            mk_block(vec![vec!["x > 0"], vec!["x < 10"]], vec![], Some(vec!["simp"]), None, vec![]);
-        block.requires[0].name = Some(mk_spanned("h_pos"));
+        let mut block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+        let mut props = Propositions::default();
+        let mut c1 = mk_clause(vec!["x > 0"]);
+        c1.name = Some(mk_spanned("h_pos"));
+        props.push(c1).unwrap();
+        props.push(mk_clause(vec!["x < 10"])).unwrap();
+        block.requires = props;
         // Second requires is unnamed
 
         let mut builder = LeanBuilder::new();
@@ -1939,15 +2106,19 @@ mod tests {
         let out = builder.buf;
 
         assert!(out.contains("(h_req : Pre x)"));
-        assert!(out.contains("rcases h_req with ⟨h_x_is_valid, h_pos, unnamed⟩"));
+        assert!(out.contains("rcases h_req with ⟨h_x_is_valid, h_unnamed, h_pos⟩"));
     }
 
     #[test]
     fn test_gen_edge_case_destructure_no_args_but_requires() {
         let item: syn::ItemFn = parse_quote! { fn no_args() {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let mut block = mk_block(vec![vec!["True"]], vec![], Some(vec!["simp"]), None, vec![]);
-        block.requires[0].name = Some(mk_spanned("h_true"));
+        let mut block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+        let mut props = Propositions::default();
+        let mut clause = mk_clause(vec!["True"]);
+        clause.name = Some(mk_spanned("h_true"));
+        props.push(clause).unwrap();
+        block.requires = props;
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
@@ -1962,7 +2133,7 @@ mod tests {
         let item: syn::ItemFn = parse_quote! { fn empty_post() {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
         let block = mk_block(vec![], vec![], Some(vec!["trivial"]), None, vec![]);
-        // The user provided an unnamed proof but there are no ensures. 
+        // The user provided an unnamed proof but there are no ensures.
         // This is caught by validate.rs usually, but we should generate `exact ⟨⟩` safely if it reaches here.
 
         let mut builder = LeanBuilder::new();
@@ -1977,14 +2148,21 @@ mod tests {
     fn test_gen_edge_case_mixed_some_proofs_missing() {
         let item: syn::ItemFn = parse_quote! { fn partial_proofs(x: u32) -> u32 { x } };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
-        let mut block = mk_block(vec![], vec![vec!["x > 0"], vec!["x < 10"]], Some(vec![]), None, vec![]);
-        block.ensures[0].name = Some(mk_spanned("h_gt"));
-        block.ensures[1].name = Some(mk_spanned("h_lt"));
+        let mut block = mk_block(vec![], vec![], Some(vec![]), None, vec![]);
+        let mut props = Propositions::default();
+        let mut c1 = mk_clause(vec!["x > 0"]);
+        c1.name = Some(mk_spanned("h_gt"));
+        let mut c2 = mk_clause(vec!["x < 10"]);
+        c2.name = Some(mk_spanned("h_lt"));
+        props.push(c1).unwrap();
+        props.push(c2).unwrap();
+        block.ensures = props;
 
         // User only provided proof for `h_gt`
         let mut proof1 = mk_clause(vec!["exact rfl"]);
         proof1.name = Some(mk_spanned("h_gt"));
-        block.inner = FunctionBlockInner::Proof { context: vec![], cases: vec![proof1] };
+        block.inner =
+            FunctionBlockInner::Proof { context: vec![], cases: std::iter::once(proof1).collect() };
 
         let mut builder = LeanBuilder::new();
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));

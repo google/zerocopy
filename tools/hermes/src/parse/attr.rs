@@ -49,20 +49,59 @@ pub struct Clause<M: ThreadSafety = Local> {
     pub lines: Vec<SpannedLine<M>>,
 }
 
+/// A collection of logical clauses (e.g., `requires`, `ensures`, `proof`),
+/// uniquely segmented into an optional unnamed singleton and a named map.
+#[derive(Debug, Clone)]
+pub struct Propositions<M: ThreadSafety = Local> {
+    pub unnamed: Option<Clause<M>>,
+    pub named: std::collections::BTreeMap<String, Clause<M>>,
+}
+
+impl<M: ThreadSafety> Default for Propositions<M> {
+    fn default() -> Self {
+        Self { unnamed: None, named: std::collections::BTreeMap::new() }
+    }
+}
+
+impl<M: ThreadSafety> Propositions<M> {
+    pub fn is_empty(&self) -> bool {
+        self.unnamed.is_none() && self.named.is_empty()
+    }
+
+    pub fn len(&self) -> usize {
+        self.named.len() + if self.unnamed.is_some() { 1 } else { 0 }
+    }
+
+    pub fn push(&mut self, clause: Clause<M>) -> Result<(), String> {
+        if let Some(name) = &clause.name {
+            if self.named.contains_key(&name.content) {
+                return Err(format!("Duplicate bound name `{}`.", name.content));
+            }
+            self.named.insert(name.content.clone(), clause);
+        } else {
+            if self.unnamed.is_some() {
+                return Err("Multiple unnamed bounds are not allowed. If you have multiple bounds, they must all be named (e.g., `requires (my_name):`).".to_string());
+            }
+            self.unnamed = Some(clause);
+        }
+        Ok(())
+    }
+}
+
 /// A parsed Hermes documentation block attached to a function.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
 pub struct FunctionHermesBlock<M: ThreadSafety = Local> {
     pub common: HermesBlockCommon<M>,
-    pub requires: Vec<Clause<M>>,
-    pub ensures: Vec<Clause<M>>,
+    pub requires: Propositions<M>,
+    pub ensures: Propositions<M>,
     pub inner: FunctionBlockInner<M>,
 }
 
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
 pub enum FunctionBlockInner<M: ThreadSafety = Local> {
-    Proof { context: Vec<SpannedLine<M>>, cases: Vec<Clause<M>> },
+    Proof { context: Vec<SpannedLine<M>>, cases: Propositions<M> },
     Axiom { lines: Vec<SpannedLine<M>>, keyword: Option<AstNode<Span, M>> },
 }
 
@@ -399,6 +438,15 @@ fn reject_clauses(clauses: &[Clause<Local>], msg: &str) -> Result<(), Error> {
     }
 }
 
+/// Returns an error containing `msg` if `clauses` is non-empty.
+fn reject_propositions(clauses: &Propositions<Local>, msg: &str) -> Result<(), Error> {
+    if let Some(clause) = clauses.iter().next() {
+        Err(Error::new(clause.keyword_span.inner, msg))
+    } else {
+        Ok(())
+    }
+}
+
 fn parse_item_block_common(
     attrs: &[Attribute],
     context_name: &str,
@@ -416,13 +464,19 @@ fn parse_item_block_common(
             }
 
             let mut body = item.body;
-            reject_clauses(&body.requires, "`requires` sections are only permitted on functions.")?;
-            reject_clauses(&body.ensures, "`ensures` sections are only permitted on functions.")?;
+            reject_propositions(
+                &body.requires,
+                "`requires` sections are only permitted on functions.",
+            )?;
+            reject_propositions(
+                &body.ensures,
+                "`ensures` sections are only permitted on functions.",
+            )?;
             reject_section(
                 &body.proof_context,
                 "`proof context` sections are only permitted on `spec` functions.",
             )?;
-            reject_clauses(
+            reject_propositions(
                 &body.proof_cases,
                 "`proof` sections are only permitted on `spec` functions.",
             )?;
@@ -462,7 +516,7 @@ impl FunctionHermesBlock<Local> {
         reject_clauses(&body.is_safe, "`isSafe` sections are only permitted on traits.")?;
 
         if !is_unsafe {
-            reject_clauses(
+            reject_propositions(
                 &body.requires,
                 "`requires` sections are only permitted on `unsafe` functions.",
             )?;
@@ -484,7 +538,7 @@ impl FunctionHermesBlock<Local> {
                     &body.proof_context,
                     "`proof context` sections are only permitted on `spec` functions.",
                 )?;
-                reject_clauses(
+                reject_propositions(
                     &body.proof_cases,
                     "`proof` sections are only permitted on `spec` functions.",
                 )?;
@@ -495,43 +549,15 @@ impl FunctionHermesBlock<Local> {
             }
         };
 
-        let validate_naming_rules = |clauses: &[Clause<Local>], kind: &str| -> Result<(), Error> {
-            let mut has_named = false;
-            let mut has_unnamed = false;
-            for clause in clauses {
-                if clause.name.is_some() {
-                    has_named = true;
-                } else {
-                    has_unnamed = true;
-                }
-            }
-            if has_named && has_unnamed {
-                return Err(Error::new(
-                    clauses.iter().find(|c| c.name.is_none()).unwrap().keyword_span.inner,
-                    format!("Cannot mix named and unnamed `{}` clauses. If any are named, they must all be named.", kind)
-                ));
-            }
-            if has_unnamed && clauses.len() > 1 {
-                return Err(Error::new(
-                    clauses[0].keyword_span.inner,
-                    format!("When multiple `{}` clauses are present, they must all be named. E.g., `{} (my_name): ...`", kind, kind)
-                ));
-            }
-            Ok(())
-        };
+        // Naming rules are inherently enforced by the `Propositions` struct itself during parsing.
+        // E.g., it ensures a maximum of one unnamed bound, and handles parsing duplicated names.
 
-        validate_naming_rules(&body.requires, "requires")?;
-        validate_naming_rules(&body.ensures, "ensures")?;
-        if let FunctionBlockInner::Proof { cases, .. } = &inner {
-            validate_naming_rules(cases, "proof")?;
-        }
-
-        let mut all_names = std::collections::HashMap::new();
-        let check_duplicates = |clauses: &[Clause<Local>],
-                                    kind: &'static str,
-                                    map: &mut std::collections::HashMap<String, &'static str>|
+        let mut all_names = std::collections::BTreeMap::new();
+        let check_duplicates = |clauses: &Propositions<Local>,
+                                kind: &'static str,
+                                map: &mut std::collections::BTreeMap<String, &'static str>|
          -> Result<(), Error> {
-            for clause in clauses {
+            for clause in clauses.iter() {
                 if let Some(name) = &clause.name {
                     if let Some(prev_kind) = map.insert(name.content.clone(), kind) {
                         if prev_kind == kind {
@@ -557,7 +583,7 @@ impl FunctionHermesBlock<Local> {
         check_duplicates(&body.requires, "requires", &mut all_names)?;
         check_duplicates(&body.ensures, "ensures", &mut all_names)?;
 
-        let mut proof_names = std::collections::HashMap::new();
+        let mut proof_names = std::collections::BTreeMap::new();
         if let FunctionBlockInner::Proof { cases, .. } = &inner {
             check_duplicates(cases, "proof case", &mut proof_names)?;
         }
@@ -677,9 +703,6 @@ impl RawSection {
     pub(super) fn is_present(&self) -> bool {
         self.keyword_span.is_some()
     }
-    pub fn is_empty(&self) -> bool {
-        self.lines.is_empty()
-    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -700,13 +723,19 @@ enum Section {
 pub(super) struct RawHermesSpecBody {
     /// Content before any keyword (e.g., Lean imports, let bindings, type invariants)
     pub(super) context: RawSection,
-    pub(super) requires: Vec<Clause<Local>>,
-    pub(super) ensures: Vec<Clause<Local>>,
+    pub(super) requires: Propositions<Local>,
+    pub(super) ensures: Propositions<Local>,
     pub(super) proof_context: RawSection,
-    pub(super) proof_cases: Vec<Clause<Local>>,
+    pub(super) proof_cases: Propositions<Local>,
     pub(super) axiom: RawSection,
     pub(super) is_valid: Vec<Clause<Local>>,
     pub(super) is_safe: Vec<Clause<Local>>,
+}
+
+#[derive(Debug, Clone)]
+pub(super) enum ActiveClause {
+    Unnamed,
+    Named(String),
 }
 
 pub(super) struct ParsedHermesBody {
@@ -717,26 +746,55 @@ pub(super) struct ParsedHermesBody {
 
 impl RawHermesSpecBody {
     // Helper to push a line to the current active destination
-    fn add_line(&mut self, section: Section, line: SpannedLine<Local>) {
+    fn add_line(
+        &mut self,
+        section: Section,
+        active_clause: &Option<ActiveClause>,
+        line: SpannedLine<Local>,
+    ) {
         match section {
             Section::Init | Section::Context => self.context.lines.push(line),
             Section::ProofContext => self.proof_context.lines.push(line),
             Section::Axiom => self.axiom.lines.push(line),
-            Section::Requires => {
-                if let Some(clause) = self.requires.last_mut() {
-                    clause.lines.push(line);
+            Section::Requires => match active_clause {
+                Some(ActiveClause::Unnamed) => {
+                    if let Some(clause) = self.requires.unnamed.as_mut() {
+                        clause.lines.push(line);
+                    }
                 }
-            }
-            Section::Ensures => {
-                if let Some(clause) = self.ensures.last_mut() {
-                    clause.lines.push(line);
+                Some(ActiveClause::Named(name)) => {
+                    if let Some(clause) = self.requires.named.get_mut(name) {
+                        clause.lines.push(line);
+                    }
                 }
-            }
-            Section::ProofCase => {
-                if let Some(clause) = self.proof_cases.last_mut() {
-                    clause.lines.push(line);
+                None => {}
+            },
+            Section::Ensures => match active_clause {
+                Some(ActiveClause::Unnamed) => {
+                    if let Some(clause) = self.ensures.unnamed.as_mut() {
+                        clause.lines.push(line);
+                    }
                 }
-            }
+                Some(ActiveClause::Named(name)) => {
+                    if let Some(clause) = self.ensures.named.get_mut(name) {
+                        clause.lines.push(line);
+                    }
+                }
+                None => {}
+            },
+            Section::ProofCase => match active_clause {
+                Some(ActiveClause::Unnamed) => {
+                    if let Some(clause) = self.proof_cases.unnamed.as_mut() {
+                        clause.lines.push(line);
+                    }
+                }
+                Some(ActiveClause::Named(name)) => {
+                    if let Some(clause) = self.proof_cases.named.get_mut(name) {
+                        clause.lines.push(line);
+                    }
+                }
+                None => {}
+            },
             Section::IsValid => {
                 if let Some(clause) = self.is_valid.last_mut() {
                     clause.lines.push(line);
@@ -760,7 +818,7 @@ impl RawHermesSpecBody {
         keyword_span: AstNode<Span, Local>,
         name: Option<SpannedLine<Local>>,
         arg: Option<SpannedLine<Local>>,
-    ) {
+    ) -> Result<Option<ActiveClause>, String> {
         match section {
             Section::Init | Section::Context => {
                 // explicit 'context' keyword?
@@ -768,38 +826,58 @@ impl RawHermesSpecBody {
                 if let Some(l) = arg {
                     self.context.lines.push(l);
                 }
+                Ok(None)
             }
             Section::ProofContext => {
                 self.proof_context.keyword_span = Some(keyword_span);
                 if let Some(l) = arg {
                     self.proof_context.lines.push(l);
                 }
+                Ok(None)
             }
             Section::Axiom => {
                 self.axiom.keyword_span = Some(keyword_span);
                 if let Some(l) = arg {
                     self.axiom.lines.push(l);
                 }
+                Ok(None)
             }
             Section::Requires => {
                 let lines = arg.into_iter().collect();
-                self.requires.push(Clause { keyword_span, name, lines });
+                let clause_name = name.clone();
+                let clause = Clause { keyword_span, name, lines };
+                self.requires.push(clause)?;
+                Ok(Some(
+                    clause_name.map_or(ActiveClause::Unnamed, |n| ActiveClause::Named(n.content)),
+                ))
             }
             Section::Ensures => {
                 let lines = arg.into_iter().collect();
-                self.ensures.push(Clause { keyword_span, name, lines });
+                let clause_name = name.clone();
+                let clause = Clause { keyword_span, name, lines };
+                self.ensures.push(clause)?;
+                Ok(Some(
+                    clause_name.map_or(ActiveClause::Unnamed, |n| ActiveClause::Named(n.content)),
+                ))
             }
             Section::ProofCase => {
                 let lines = arg.into_iter().collect();
-                self.proof_cases.push(Clause { keyword_span, name, lines });
+                let clause_name = name.clone();
+                let clause = Clause { keyword_span, name, lines };
+                self.proof_cases.push(clause)?;
+                Ok(Some(
+                    clause_name.map_or(ActiveClause::Unnamed, |n| ActiveClause::Named(n.content)),
+                ))
             }
             Section::IsValid => {
                 let lines = arg.into_iter().collect();
                 self.is_valid.push(Clause { keyword_span, name, lines });
+                Ok(None)
             }
             Section::IsSafe => {
                 let lines = arg.into_iter().collect();
                 self.is_safe.push(Clause { keyword_span, name, lines });
+                Ok(None)
             }
         }
     }
@@ -872,8 +950,8 @@ impl RawHermesSpecBody {
         lines
             .into_iter()
             .try_fold(
-                (RawHermesSpecBody::default(), Section::Init, None::<usize>),
-                |(mut spec, current_section, baseline_indent), line| {
+                (RawHermesSpecBody::default(), Section::Init, None::<usize>, None::<ActiveClause>),
+                |(mut spec, current_section, baseline_indent, active_clause), line| {
                     let trimmed = line.content.trim();
                     let span = line.span;
                     let raw_span = line.raw_span.clone();
@@ -889,9 +967,9 @@ impl RawHermesSpecBody {
                          // to preserve vertical spacing if needed, or ignore.
                          // For now, let's push them.
                          if current_section != Section::Init {
-                              spec.add_line(current_section, item);
+                              spec.add_line(current_section, &active_clause, item);
                          }
-                        return Ok((spec, current_section, baseline_indent));
+                        return Ok((spec, current_section, baseline_indent, active_clause));
                     }
 
                     let indent = line.content.len() - line.content.trim_start().len();
@@ -902,7 +980,7 @@ impl RawHermesSpecBody {
                     // indented to the exact baseline of the current spec block.
                     // Otherwise, it is parsed as continuation text within the
                     // active section.
-                    let is_keyword_candidate = baseline_indent.map_or(true, |base| indent == base);
+                    let is_keyword_candidate = baseline_indent.is_none_or(|base| indent == base);
 
                     if is_keyword_candidate {
                         if let Some((&section, arg_str)) = keywords
@@ -924,8 +1002,8 @@ impl RawHermesSpecBody {
                                     if section_is_clause {
                                         let keyword_name = keywords.iter().find(|(_, s)| *s == section).unwrap().0.trim_end_matches(':');
                                         apply_name = true;
-                                        if after_name.starts_with(':') {
-                                            remaining_arg = after_name[1..].trim_start();
+                                        if let Some(remaining) = after_name.strip_prefix(':') {
+                                            remaining_arg = remaining.trim_start();
                                         } else {
                                             return Err((span, format!("`{}` clauses with a name must be followed by a colon (e.g., `{} (name):`).", keyword_name, keyword_name)));
                                         }
@@ -942,7 +1020,7 @@ impl RawHermesSpecBody {
                                             return Err((span, "Invalid bound name ``. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).".to_string()));
                                         }
                                         let is_valid_ident = name_str.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '\'')
-                                            && name_str.chars().next().map_or(false, |c| c.is_alphabetic() || c == '_');
+                                            && name_str.chars().next().is_some_and(|c| c.is_alphabetic() || c == '_');
 
                                         // Block Lean keywords
                                         let lean_keywords = ["if", "then", "else", "match", "with", "do", "let", "mut", "for", "in", "by", "have", "show", "from", "syntax", "macro", "rules", "where", "theorem", "def", "abbrev", "lemma", "axiom", "inductive", "structure", "class", "instance", "variable", "universe", "namespace", "section", "end", "open", "export", "import", "set_option", "local", "scoped", "macro_rules", "notation", "prefix", "infix", "infixl", "infixr", "postfix", "deriving", "noncomputable", "partial", "protected", "private", "public", "mutual", "unsafe", "mutual"];
@@ -970,8 +1048,8 @@ impl RawHermesSpecBody {
                             if name.is_none() {
                                 let rest = remaining_arg.trim_start();
                                 if !keep_keyword {
-                                    if rest.starts_with(':') {
-                                        remaining_arg = rest[1..].trim_start();
+                                    if let Some(remaining) = rest.strip_prefix(':') {
+                                        remaining_arg = remaining.trim_start();
                                     } else {
                                         let keyword_name = keywords.iter().find(|(_, s)| *s == section).unwrap().0.trim_end_matches(':');
                                         return Err((span, format!("Hermes keyword `{}` must be followed by a colon (e.g., `{}:`).", keyword_name, keyword_name)));
@@ -1002,9 +1080,10 @@ impl RawHermesSpecBody {
                                 }
                             };
 
-                            spec.start_section(section, raw_span, name, arg);
+                            let next_active = spec.start_section(section, raw_span, name, arg)
+                                .map_err(|msg| (span, msg))?;
                             let new_baseline = baseline_indent.unwrap_or(indent);
-                            return Ok((spec, section, Some(new_baseline)));
+                            return Ok((spec, section, Some(new_baseline), next_active));
                         }
                     }
 
@@ -1025,12 +1104,12 @@ impl RawHermesSpecBody {
                         ));
                     }
                     // Not a new keyword; continuation of the current section.
-                    spec.add_line(current_section, item);
+                    spec.add_line(current_section, &active_clause, item);
 
-                    Ok((spec, current_section, baseline_indent))
+                    Ok((spec, current_section, baseline_indent, active_clause))
                 },
             )
-            .map(|(spec, _, _)| spec)
+            .map(|(spec, _, _, _)| spec)
     }
 }
 
@@ -1052,6 +1131,16 @@ impl<M: ThreadSafety> LiftToSafe for Clause<M> {
     }
 }
 
+impl<M: ThreadSafety> LiftToSafe for Propositions<M> {
+    type Target = Propositions<Safe>;
+    fn lift(self) -> Self::Target {
+        Propositions {
+            unnamed: self.unnamed.map(|c| c.lift()),
+            named: self.named.into_iter().map(|(k, v)| (k, v.lift())).collect(),
+        }
+    }
+}
+
 impl<M: ThreadSafety> LiftToSafe for HermesBlockCommon<M> {
     type Target = HermesBlockCommon<Safe>;
     fn lift(self) -> Self::Target {
@@ -1069,7 +1158,7 @@ impl<M: ThreadSafety> LiftToSafe for FunctionBlockInner<M> {
         match self {
             Self::Proof { context, cases } => FunctionBlockInner::Proof {
                 context: context.into_iter().map(|l| l.lift()).collect(),
-                cases: cases.into_iter().map(|c| c.lift()).collect(),
+                cases: cases.lift(),
             },
             Self::Axiom { lines, keyword } => FunctionBlockInner::Axiom {
                 lines: lines.into_iter().map(|l| l.lift()).collect(),
@@ -1084,8 +1173,8 @@ impl<M: ThreadSafety> LiftToSafe for FunctionHermesBlock<M> {
     fn lift(self) -> Self::Target {
         FunctionHermesBlock {
             common: self.common.lift(),
-            requires: self.requires.into_iter().map(|c| c.lift()).collect(),
-            ensures: self.ensures.into_iter().map(|c| c.lift()).collect(),
+            requires: self.requires.lift(),
+            ensures: self.ensures.lift(),
             inner: self.inner.lift(),
         }
     }
@@ -1117,6 +1206,31 @@ impl<M: ThreadSafety> LiftToSafe for ImplHermesBlock<M> {
         ImplHermesBlock { common: self.common.lift() }
     }
 }
+
+impl<M: ThreadSafety> Propositions<M> {
+    pub fn iter(&self) -> impl Iterator<Item = &Clause<M>> {
+        self.unnamed.iter().chain(self.named.values())
+    }
+}
+
+impl<M: ThreadSafety> std::iter::FromIterator<Clause<M>> for Propositions<M> {
+    fn from_iter<T: IntoIterator<Item = Clause<M>>>(iter: T) -> Self {
+        let mut props = Propositions { unnamed: None, named: std::collections::BTreeMap::new() };
+        for clause in iter {
+            props.push(clause).unwrap();
+        }
+        props
+    }
+}
+
+impl<M: ThreadSafety> std::ops::Index<usize> for Propositions<M> {
+    type Output = Clause<M>;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        self.iter().nth(index).expect("Index out of bounds")
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -1299,7 +1413,7 @@ mod tests {
 
     #[test]
     fn test_hermes_spec_body_parse_multiple_clauses() {
-        let lines = mk_lines(&["requires:", "  x > 0", "requires:", "  y > 0"]);
+        let lines = mk_lines(&["requires:", "  x > 0", "requires (foo):", "  y > 0"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 2);
         assert_eq!(spec.requires[0].lines[0].content, "  x > 0");
@@ -1323,9 +1437,9 @@ mod tests {
             "  x > 0",
             "ensures:",
             "  result = x",
-            "requires:",
+            "requires (req_y):",
             "  y > 0",
-            "ensures:",
+            "ensures (ens_res):",
             "  result > 0",
         ]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
@@ -1429,7 +1543,7 @@ mod tests {
     #[test]
     fn test_hermes_spec_body_parse_multiple_same_section() {
         // Check that it can interleave sections or repeat them
-        let lines = mk_lines(&["requires: a", "ensures: b", "requires: c", "axiom: d"]);
+        let lines = mk_lines(&["requires: a", "ensures: b", "requires (foo): c", "axiom: d"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 2);
         assert_eq!(spec.requires[0].lines[0].content, "a");
@@ -1761,7 +1875,7 @@ mod tests {
     fn test_parse_multiple_requires_on_safe_fn_errors() {
         let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
         let first_requires: syn::Attribute = parse_quote!(#[doc = " requires: x > 0"]);
-        let second_requires: syn::Attribute = parse_quote!(#[doc = " requires: y > 0"]);
+        let second_requires: syn::Attribute = parse_quote!(#[doc = " requires (foo): y > 0"]);
 
         attrs.push(first_requires.clone());
         attrs.push(second_requires);
@@ -1888,7 +2002,7 @@ mod tests {
 
         #[test]
         fn test_multiple_sections_concatenation() {
-            let lines = mk_lines(&["requires: a", "requires: b"]);
+            let lines = mk_lines(&["requires: a", "requires (foo): b"]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 2);
             assert_eq!(spec.requires[0].lines[0].content, "a");
@@ -2475,12 +2589,12 @@ mod tests {
 
         #[test]
         fn test_proof_colon_stripping() {
-            let lines = vec![dummy_line("proof:"), dummy_line("proof :")];
+            let lines = vec![dummy_line("proof:"), dummy_line("proof (foo):")];
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.proof_cases.len(), 2);
             assert!(spec.proof_cases[0].name.is_none());
             assert!(spec.proof_cases[0].lines.is_empty());
-            assert!(spec.proof_cases[1].name.is_none());
+            assert_eq!(spec.proof_cases[1].name.as_ref().unwrap().content, "foo");
             assert!(spec.proof_cases[1].lines.is_empty());
         }
 
@@ -2645,7 +2759,7 @@ mod tests {
         }
 
         #[test]
-        fn test_multiple_unnamed_requires_rejected() {
+        fn test_multiple_unnamed_requires_allowed() {
             let attrs = vec![dummy_attr("requires: a > 0\nrequires: b > 0")];
             let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
             assert!(
@@ -2657,17 +2771,17 @@ mod tests {
         }
 
         #[test]
-        fn test_mix_named_unnamed_ensures_rejected() {
+        fn test_mix_named_unnamed_ensures_allowed() {
             let attrs = vec![dummy_attr("ensures (foo): a > 0\nensures: b > 0")];
-            let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
-            assert!(err.to_string().contains("Cannot mix named and unnamed `ensures` clauses"));
+            let spec = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+            assert_eq!(spec.ensures.len(), 2);
         }
 
         #[test]
         fn test_duplicate_requires_name() {
             let attrs = vec![dummy_attr("requires (foo): a > 0\nrequires (foo): b > 0")];
             let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
-            assert!(err.to_string().contains("Duplicate requires name `foo`"));
+            assert!(err.to_string().contains("Duplicate bound name `foo`"));
         }
 
         #[test]
@@ -2680,11 +2794,15 @@ mod tests {
         }
 
         #[test]
-        fn test_multiple_proofs_mixed_rejected() {
+        fn test_multiple_proofs_mixed_allowed() {
             let attrs =
                 vec![dummy_attr("ensures (a): x\nensures (b): y\nproof (a): p1\nproof: p2")];
-            let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
-            assert!(err.to_string().contains("Cannot mix named and unnamed `proof` clauses"));
+            let spec = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+            if let crate::parse::attr::FunctionBlockInner::Proof { cases, .. } = spec.inner {
+                assert_eq!(cases.len(), 2);
+            } else {
+                panic!();
+            }
         }
 
         #[test]

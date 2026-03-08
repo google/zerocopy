@@ -2,7 +2,7 @@
 pub enum Void {}
 
 /// ```lean, hermes
-/// proof context:
+/// proof:
 ///   unfold invert
 ///   contradiction
 /// ```

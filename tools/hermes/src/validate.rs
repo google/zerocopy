@@ -22,6 +22,7 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                 // 1. Check auto-generated name collisions
                 let mut reserved_names = std::collections::HashSet::new();
                 reserved_names.insert("h_ret_is_valid".to_string());
+                reserved_names.insert("h_unnamed".to_string());
 
                 let mut report_error = |msg: &str| {
                     eprintln!(
@@ -58,7 +59,7 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
 
                 let check_reserved = |name: &str| -> bool { reserved_names.contains(name) };
 
-                for clause in &func.hermes.requires {
+                for clause in func.hermes.requires.iter() {
                     if clause.lines.iter().all(|l| l.content.trim().is_empty()) {
                         report_error("Requires bounds cannot be completely empty.");
                     }
@@ -68,7 +69,7 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                         }
                     }
                 }
-                for clause in &func.hermes.ensures {
+                for clause in func.hermes.ensures.iter() {
                     if clause.lines.iter().all(|l| l.content.trim().is_empty()) {
                         report_error("Ensures bounds cannot be completely empty.");
                     }
@@ -82,14 +83,15 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                 if let FunctionBlockInner::Proof { cases, .. } = &func.hermes.inner {
                     // 2. Check proof: coverage (only if not allow_sorry)
                     if !allow_sorry {
+                        let _has_ensures = !func.hermes.ensures.is_empty();
                         if !cases.is_empty() {
                             // Check that every ensures is covered exactly once
                             let mut provided_cases = std::collections::HashSet::new();
-                            for case in cases {
+                            for case in cases.iter() {
                                 if let Some(n) = &case.name {
                                     provided_cases.insert(n.content.clone());
                                 } else {
-                                    provided_cases.insert("unnamed".to_string());
+                                    provided_cases.insert("h_unnamed".to_string());
                                 }
                             }
 
@@ -100,29 +102,29 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                             // create an unnamed case for the user to prove (that's handled by `h_ret_is_valid`
                             // or the tuple structure). Thus we do NOT insert "unnamed" into valid_names here.
 
-                            for ensure in &func.hermes.ensures {
+                            for ensure in func.hermes.ensures.iter() {
                                 if let Some(name) = &ensure.name {
                                     valid_names.insert(name.content.clone());
                                 } else {
-                                    valid_names.insert("unnamed".to_string());
+                                    valid_names.insert("h_unnamed".to_string());
                                     has_unnamed_ensure = true;
                                 }
                             }
                             valid_names.extend(reserved_names.iter().cloned());
 
-                            for case in cases {
+                            for case in cases.iter() {
                                 if let Some(n) = &case.name {
                                     if !valid_names.contains(&n.content) {
                                         report_error(&format!("Validation Error: You provided a proof: for `{}` but no such constraint exists.", n.content));
                                     }
                                 } else {
-                                    if !has_unnamed_ensure {
+                                    if !has_unnamed_ensure && !func.hermes.ensures.is_empty() {
                                         report_error("Validation Error: You provided an unnamed `proof` block, but there are no unnamed `ensures` clauses to prove.");
                                     }
                                 }
                             }
 
-                            for ensure in &func.hermes.ensures {
+                            for ensure in func.hermes.ensures.iter() {
                                 if let Some(name) = &ensure.name {
                                     if !provided_cases.contains(&name.content) {
                                         report_error(&format!(
@@ -131,9 +133,9 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                                         ));
                                     }
                                 } else {
-                                    if !provided_cases.contains("unnamed") {
+                                    if !provided_cases.contains("h_unnamed") {
                                         let mut has_explicit_unnamed = false;
-                                        for e in &func.hermes.ensures {
+                                        for e in func.hermes.ensures.iter() {
                                             if e.name.is_none() {
                                                 has_explicit_unnamed = true;
                                             }
@@ -246,6 +248,24 @@ mod tests {
             unsafe fn collide(x: u32) {}
         "#;
         assert!(parse_and_validate(code).is_err());
+
+        let code = r#"
+            /// ```hermes
+            /// proof (h_unnamed):
+            ///   trivial
+            /// ```
+            unsafe fn foo() {}
+        "#;
+        println!("{:#?}", parse_and_validate(code));
+
+        println!(
+            "{:#?}",
+            crate::parse::attr::FunctionHermesBlock::parse_from_attrs(
+                &[syn::parse_quote!(#[doc = " ```hermes\n proof (h_unnamed): true\n ```"])],
+                false,
+                ""
+            )
+        );
     }
 
     #[test]
@@ -452,7 +472,7 @@ mod tests {
     }
 
     #[test]
-    fn test_zero_ensures_with_unnamed_proof_fails() {
+    fn test_zero_ensures_with_unnamed_proof_allowed() {
         let code = r#"
             /// ```hermes
             /// proof:
@@ -460,7 +480,7 @@ mod tests {
             /// ```
             fn zero_ensures_unnamed_proof() {}
         "#;
-        assert!(parse_and_validate(code).is_err());
+        assert!(parse_and_validate(code).is_ok());
     }
 
     #[test]
@@ -473,5 +493,54 @@ mod tests {
             fn zero_ensures_named_proof() {}
         "#;
         assert!(parse_and_validate(code).is_err());
+    }
+
+    #[test]
+    fn test_all_exhaustive_unnamed_singelton_edge_cases() {
+        // Naming `h_unnamed` explicitly should fail
+        let code = r#"
+            /// ```hermes
+            /// requires (h_unnamed):
+            ///   true
+            /// ```
+            unsafe fn foo() {}
+        "#;
+        assert!(parse_and_validate(code).is_err());
+
+        // Naming `h_unnamed` as proof target succeeds since it perfectly aliases the unnamed proposition logic
+        let code = r#"
+            /// ```hermes
+            /// proof (h_unnamed):
+            ///   true
+            /// ```
+            unsafe fn foo() {}
+        "#;
+        assert!(parse_and_validate(code).is_ok());
+
+        // Order independence: parsing 1 unnamed and multiple named mixed
+        let code = r#"
+            /// ```hermes
+            /// requires (a):
+            ///   true
+            /// requires:
+            ///   true
+            /// requires (b):
+            ///   true
+            /// ensures (ens_b):
+            ///   true
+            /// ensures:
+            ///   true
+            /// ensures (ens_a):
+            ///   true
+            /// proof (ens_b):
+            ///   trivial
+            /// proof (ens_a):
+            ///   trivial
+            /// proof:
+            ///   trivial
+            /// ```
+            unsafe fn complex_mix() {}
+        "#;
+        assert!(parse_and_validate(code).is_ok());
     }
 }

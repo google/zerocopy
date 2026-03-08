@@ -63,7 +63,7 @@ pub fn add_in_place(x: &mut u32, add: u32) {
 /// requires: stack.len > 0
 /// ensures:
 ///   ///   ///   stack'.len = stack.len - 1
-/// ensures:
+/// ensures (h_second):
 ///   ///   ///   ret = stack[stack.len - 1]
 /// proof context:
 ///   unfold pop

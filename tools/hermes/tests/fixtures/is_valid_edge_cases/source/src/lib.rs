@@ -27,7 +27,7 @@ pub fn no_args_no_return() {}
 ///   simp_all
 ///   all_goals try scalar_tac
 ///   all_goals try rfl
-/// proof (unnamed):
+/// proof:
 ///   trivial
 /// ```
 pub fn immutable_args_no_return(_x: u32, _p: Positive) {}

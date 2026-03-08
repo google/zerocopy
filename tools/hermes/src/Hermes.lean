@@ -72,6 +72,16 @@ macro "verify_user_bound" field:ident : tactic => do
   let err := "Missing explicit proof for named bound `" ++ field.getId.toString ++ "`."
   `(tactic| eval_allow_sorry_or_fail $(quote err))
 
+-- A macro that Hermes auto-injects for empty postconditions.
+-- It attempts `exact ⟨⟩`. If it fails (e.g., due to a stuck weakest precondition), it emits a friendly error
+-- instructing the user to provide a manual proof via `proof:`.
+macro "verify_empty_post" : tactic => do
+  let err := "Missing explicit proof for empty postcondition. The weakest precondition could not be trivially solved by `exact ⟨⟩`. Consider providing a manual proof via `proof:`."
+  `(tactic|
+    first
+    | exact ⟨⟩
+    | eval_allow_sorry_or_fail $(quote err))
+
 -- 3. Trait Safety
 -- (No specific helper needed, just a pattern we follow in generation)
 
