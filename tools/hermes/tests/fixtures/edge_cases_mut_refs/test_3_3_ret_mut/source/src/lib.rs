@@ -3,8 +3,7 @@
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold pop at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn pop(v: &mut Vec<u32>) -> Option<u32> {
     v.pop()

@@ -8,8 +8,7 @@ pub struct Arrays {
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold slice_of_slices at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn slice_of_slices(x: &[&[u8]]) -> usize {
     x.len()

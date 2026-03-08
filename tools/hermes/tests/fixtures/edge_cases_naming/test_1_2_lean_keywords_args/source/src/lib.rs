@@ -4,8 +4,7 @@
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold test_args at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn test_args(
     theorem: u32,

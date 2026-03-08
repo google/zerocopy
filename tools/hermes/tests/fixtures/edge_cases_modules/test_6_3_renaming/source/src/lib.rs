@@ -4,8 +4,7 @@ use std::vec::Vec as MyVec;
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold use_alias at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn use_alias(v: MyVec<u32>) -> usize {
     v.len()

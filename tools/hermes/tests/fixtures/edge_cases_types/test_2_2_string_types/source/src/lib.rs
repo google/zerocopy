@@ -13,8 +13,7 @@ pub struct Strings<'a> {
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold check_strings at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn check_strings(s: String) -> String {
     s

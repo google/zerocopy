@@ -4,8 +4,7 @@
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold theorem at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn theorem() {}
 pub fn axiom() {}

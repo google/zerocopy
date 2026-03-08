@@ -10,8 +10,7 @@ pub struct Pointers {
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold ptr_arg at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn ptr_arg(p: *const u8) -> *const u8 {
     p

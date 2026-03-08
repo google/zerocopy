@@ -10,7 +10,6 @@ pub mod b {
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold func at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn func(x: a::S, y: b::S) {}

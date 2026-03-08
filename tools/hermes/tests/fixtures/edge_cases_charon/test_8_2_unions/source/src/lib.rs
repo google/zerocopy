@@ -8,8 +8,7 @@ pub union U {
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold access at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn access(u: U) -> u32 {
     unsafe { u.f1 }

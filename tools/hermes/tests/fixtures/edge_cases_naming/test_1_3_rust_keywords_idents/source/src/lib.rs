@@ -2,8 +2,7 @@
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold r at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn r#match() {}
 pub fn r#type() {}

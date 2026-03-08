@@ -118,7 +118,7 @@ impl<T: LiftToSafe, B: LiftToSafe> LiftToSafe for HermesDecorated<T, B> {
 }
 
 #[derive(Clone, Debug)]
-#[allow(dead_code)]
+#[allow(clippy::large_enum_variant)]
 pub enum ParsedItem<M: ThreadSafety = Local> {
     Function(HermesDecorated<FunctionItem<M>, FunctionHermesBlock<M>>),
     Type(HermesDecorated<TypeItem<M>, TypeHermesBlock<M>>),

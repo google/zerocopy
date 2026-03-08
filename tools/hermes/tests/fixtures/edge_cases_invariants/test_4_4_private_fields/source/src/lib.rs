@@ -12,7 +12,6 @@ pub mod inner {
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold dummy_hermes_padding at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_hermes_padding() {}

@@ -7,12 +7,16 @@
 ///   unfold get_size_of_empty_tuple at *
 ///   simp_all
 /// proof context:
+///   have h_foo : True := True.intro
+/// proof (h_size):
 ///   unfold get_size_of_empty_tuple at h_ret_
 ///   simp_all
 ///   subst h_ret_
-/// proof (h_size):
 ///   simp_all
 /// proof (h_valid):
+///   unfold get_size_of_empty_tuple at h_ret_
+///   simp_all
+///   subst h_ret_
 ///   simp_all [Hermes.IsValid.isValid]
 /// ```
 pub fn get_size_of_empty_tuple() -> usize {
@@ -28,12 +32,16 @@ pub fn get_size_of_empty_tuple() -> usize {
 ///   unfold get_align_of_empty_tuple at *
 ///   simp_all
 /// proof context:
+///   have h_foo : True := True.intro
+/// proof (h_align):
 ///   unfold get_align_of_empty_tuple at h_ret_
 ///   simp_all
 ///   subst h_ret_
-/// proof (h_align):
 ///   simp_all
 /// proof (h_valid):
+///   unfold get_align_of_empty_tuple at h_ret_
+///   simp_all
+///   subst h_ret_
 ///   simp_all [Hermes.IsValid.isValid]
 /// ```
 pub fn get_align_of_empty_tuple() -> usize {

@@ -1231,7 +1231,6 @@ impl<M: ThreadSafety> std::ops::Index<usize> for Propositions<M> {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use syn::parse_quote;

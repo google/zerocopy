@@ -1387,20 +1387,22 @@ fn assert_artifacts_match(
                             }
                         });
 
-                        if result.is_ok() {
-                            any_matched = true;
-                            break;
-                        } else {
-                            let err_msg =
-                                if let Some(s) = result.unwrap_err().downcast_ref::<&str>() {
+                        match result {
+                            Ok(_) => {
+                                any_matched = true;
+                                break;
+                            }
+                            Err(e) => {
+                                let err_msg = if let Some(s) = e.downcast_ref::<&str>() {
                                     s.to_string()
                                 } else {
                                     "Unknown panic during assertion".to_string()
                                 };
-                            collected_errors.push_str(&format!(
-                                "Artifact '{}' mismatch:\n{}\n",
-                                file_name, err_msg
-                            ));
+                                collected_errors.push_str(&format!(
+                                    "Artifact '{}' mismatch:\n{}\n",
+                                    file_name, err_msg
+                                ));
+                            }
                         }
                     }
 

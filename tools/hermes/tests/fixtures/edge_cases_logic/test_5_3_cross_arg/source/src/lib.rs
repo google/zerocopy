@@ -5,7 +5,6 @@
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold zip at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn zip(a: &[u8], b: &[u8]) {}

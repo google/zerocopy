@@ -3,8 +3,7 @@
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold windows_only at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn windows_only() {
     panic!("This should not exist on Linux");

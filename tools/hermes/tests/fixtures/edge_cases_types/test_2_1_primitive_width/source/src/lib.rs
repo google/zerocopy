@@ -8,8 +8,7 @@ pub struct Widths {
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold check_widths at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn check_widths(x: isize, y: usize) -> (isize, usize) {
     (x, y)

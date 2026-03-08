@@ -9,8 +9,7 @@ pub struct WrapUnit {
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold unit_arg at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn unit_arg(_: ()) {}
 

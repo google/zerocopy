@@ -7,8 +7,7 @@ pub trait Iter {
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold check_item at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn check_item<T: Iter>(x: T::Item) -> T::Item {
     x

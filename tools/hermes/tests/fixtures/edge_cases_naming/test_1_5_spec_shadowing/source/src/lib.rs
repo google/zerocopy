@@ -4,8 +4,7 @@
 /// proof (h_progress):
 ///   sorry
 /// proof context:
-///   unfold old at *
-///   simp_all
+///   have h_foo : True := True.intro
 /// ```
 pub fn old<T>(x: T) -> T { x }
 

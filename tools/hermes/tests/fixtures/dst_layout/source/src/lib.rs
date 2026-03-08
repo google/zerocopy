@@ -44,8 +44,6 @@ pub unsafe trait KnownLayout {
 /// requires (is_safe): KnownLayout.Safe T KnownLayoutInst
 /// ensures (h_size): ret.val = (Hermes.raw_ptr_referent val).size.val
 /// proof (h_progress):
-///   sorry
-/// proof context:
 ///   unfold size_of_val at *
 ///   have h_safe := is_safe.isSafe
 ///   rcases h_safe with ⟨_sz, _tl, h_align, h_size⟩ | ⟨_rc, _sl, inst_md, offset, elemSize, h_props⟩

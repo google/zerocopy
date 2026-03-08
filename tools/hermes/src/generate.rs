@@ -392,43 +392,59 @@ impl LeanBuilder {
                 ));
             }
 
-            if let Some(ctx) = ast.proof_context {
-                for line in ctx {
-                    // Prepend 4 spaces to force indentation deeper than the bullet,
-                    // but strip the initial user indentation to align with rcases and exact.
-                    let trimmed = if line.content.starts_with(&context_indent) {
-                        &line.content[context_indent.len()..]
-                    } else {
-                        line.content.trim_start()
-                    };
-                    self.push_str(block_padding);
-                    self.push_spanned(trimmed, line, ast.source_file);
-                    self.push('\n');
-                }
-            }
-
             if !is_context_sorry_only {
                 let var_indent = block_padding;
 
+                self.push_str(&format!("{}exact\n", var_indent));
+
+                if let Some(ctx) = ast.proof_context {
+                    for line in ctx {
+                        // Prepend 6 spaces to force indentation deeper than exact,
+                        // but strip the initial user indentation to align with exact scope.
+                        let trimmed = if line.content.starts_with(&context_indent) {
+                            &line.content[context_indent.len()..]
+                        } else {
+                            line.content.trim_start()
+                        };
+                        self.push_str(&format!("{}  ", block_padding));
+                        self.push_spanned(trimmed, line, ast.source_file);
+                        self.push('\n');
+                    }
+                }
+
                 if ast.exact_fields.is_empty() {
-                    self.push_str(&format!("{}exact ⟨⟩\n", var_indent));
+                    self.push_str(&format!("{}  ⟨⟩\n", var_indent));
                 } else {
-                    self.push_str(&format!("{}exact {{\n", var_indent));
+                    self.push_str(&format!("{}  {{\n", var_indent));
                     for field in &ast.exact_fields {
                         if let Some(clause) = ast.provided_cases.get(field) {
-                            self.push_str(&format!("{}  {} := by\n", var_indent, field));
+                            self.push_str(&format!("{}    {} := by\n", var_indent, field));
                             if clause.lines.is_empty() {
-                                self.push_str(&format!("{}    sorry\n", var_indent));
+                                self.push_str(&format!("{}      sorry\n", var_indent));
                             } else {
                                 for line in &clause.lines {
-                                    self.push_str(&format!("{}    ", var_indent));
+                                    self.push_str(&format!("{}      ", var_indent));
                                     self.push_spanned(&line.content, line, ast.source_file);
                                     self.push('\n');
                                 }
                             }
                         }
                     }
-                    self.push_str(&format!("{}}}\n", var_indent));
+                    self.push_str(&format!("{}  }}\n", var_indent));
+                }
+            } else {
+                // If it's literally just `sorry`, we just emit it natively to sink the goal
+                if let Some(ctx) = ast.proof_context {
+                    for line in ctx {
+                        let trimmed = if line.content.starts_with(&context_indent) {
+                            &line.content[context_indent.len()..]
+                        } else {
+                            line.content.trim_start()
+                        };
+                        self.push_str(block_padding);
+                        self.push_spanned(trimmed, line, ast.source_file);
+                        self.push('\n');
+                    }
                 }
             }
         } else {
@@ -1293,7 +1309,8 @@ mod tests {
         assert!(out.contains("theorem spec"));
         assert!(out.contains("Aeneas.Std.WP.spec (foo) (fun ret_ =>"));
         assert!(out.contains("Post)"));
-        assert!(out.contains("exact ⟨⟩")); // Empty proof body defaults to instantiating Post
+        assert!(out.contains("exact"));
+        assert!(out.contains("  ⟨⟩")); // Empty proof body defaults to instantiating Post
     }
 
     #[test]
@@ -1925,7 +1942,8 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("exact {"));
+        assert!(out.contains("exact"));
+        assert!(out.contains("  {"));
         assert!(!out.contains("next =>"));
         assert!(out.contains("p_one := by"));
         assert!(out.contains("exact rfl"));
@@ -1954,7 +1972,8 @@ mod tests {
         let out = builder.buf;
         println!("{}", out);
 
-        assert!(out.contains("exact {"));
+        assert!(out.contains("exact"));
+        assert!(out.contains("  {"));
         assert!(!out.contains("next =>"));
         assert!(out.contains("h_true : ret = true := by verify_user_bound h_true"));
         assert!(!out.contains("sorry")); // We no longer inject sorry; macro handles it natively
@@ -2010,10 +2029,10 @@ mod tests {
         let out = builder.buf;
 
         let ctx_idx = out.find("have h_ctx").expect("Context not found");
-        let exact_idx = out.find("exact {").expect("exact { not found");
+        let exact_idx = out.find("exact\n      have").expect("exact\\n have context not found");
 
-        // Context MUST injected before the exact { struct instantiation
-        assert!(ctx_idx < exact_idx);
+        // Context MUST injected after exact
+        assert!(ctx_idx > exact_idx);
     }
 
     #[test]
@@ -2159,7 +2178,8 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("exact ⟨⟩"));
+        assert!(out.contains("exact"));
+        assert!(out.contains("  ⟨⟩"));
         assert!(!out.contains("trivial")); // The orphan proof is dropped safely
     }
 
@@ -2188,8 +2208,9 @@ mod tests {
         let out = builder.buf;
 
         println!("DEBUG_OUT:\n{}", out);
-        assert!(out.contains("exact {"));
-        assert!(out.contains("h_gt := by\n        exact rfl"));
+        assert!(out.contains("exact"));
+        assert!(out.contains("  {"));
+        assert!(out.contains("h_gt := by\n          exact rfl"));
         // `h_lt` is missing, so it should NOT be emitted explicitly (relies on autoParam)
         assert!(!out.contains("h_lt :="));
         assert!(out.contains("}"));
