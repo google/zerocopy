@@ -58,8 +58,7 @@ namespace foo
 
 theorem spec :
   Aeneas.Std.WP.spec (foo) (fun ret_ => Post) := by
-  exact {
-  }
+  exact ⟨⟩
 
 end foo
 

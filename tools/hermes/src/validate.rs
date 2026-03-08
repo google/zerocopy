@@ -82,7 +82,6 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                 if let FunctionBlockInner::Proof { cases, .. } = &func.hermes.inner {
                     // 2. Check proof: coverage (only if not allow_sorry)
                     if !allow_sorry {
-                        let has_ensures = !func.hermes.ensures.is_empty();
                         if !cases.is_empty() {
                             // Check that every ensures is covered exactly once
                             let mut provided_cases = std::collections::HashSet::new();

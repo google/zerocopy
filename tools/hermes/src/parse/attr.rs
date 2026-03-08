@@ -527,7 +527,7 @@ impl FunctionHermesBlock<Local> {
         }
 
         let mut all_names = std::collections::HashMap::new();
-        let mut check_duplicates = |clauses: &[Clause<Local>],
+        let check_duplicates = |clauses: &[Clause<Local>],
                                     kind: &'static str,
                                     map: &mut std::collections::HashMap<String, &'static str>|
          -> Result<(), Error> {
@@ -676,6 +676,9 @@ impl RawSection {
     #[allow(dead_code)]
     pub(super) fn is_present(&self) -> bool {
         self.keyword_span.is_some()
+    }
+    pub fn is_empty(&self) -> bool {
+        self.lines.is_empty()
     }
 }
 
