@@ -17,7 +17,7 @@ pub struct ValidStruct {
 ///
 /// ```lean, hermes, spec
 /// ensures:
-///   ret == true
+///   ret == !ret
 /// ```
 pub fn missing_user_bound() -> bool {
     true

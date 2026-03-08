@@ -126,24 +126,17 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                             }
 
                             for ensure in func.hermes.ensures.iter() {
-                                if let Some(name) = &ensure.name {
-                                    if !provided_cases.contains(&name.content) {
-                                        report_error(&format!(
-                                            "Missing proof: for ensures bound `{}`.",
-                                            name.content
-                                        ));
+                                // Missing proofs are allowed to fall through to Lean's `autoParam`
+                                // fallback logic (`verify_user_bound`) to attempt `simp_all` directly.
+                                if ensure.name.is_none() && !provided_cases.contains("h_unnamed") {
+                                    let mut has_explicit_unnamed = false;
+                                    for e in func.hermes.ensures.iter() {
+                                        if e.name.is_none() {
+                                            has_explicit_unnamed = true;
+                                        }
                                     }
-                                } else {
-                                    if !provided_cases.contains("h_unnamed") {
-                                        let mut has_explicit_unnamed = false;
-                                        for e in func.hermes.ensures.iter() {
-                                            if e.name.is_none() {
-                                                has_explicit_unnamed = true;
-                                            }
-                                        }
-                                        if has_explicit_unnamed {
-                                            report_error("Missing unnamed proof: block for the unnamed ensures bound.");
-                                        }
+                                    if has_explicit_unnamed {
+                                        report_error("Missing unnamed proof: block for the unnamed ensures bound.");
                                     }
                                 }
                             }
@@ -234,7 +227,59 @@ mod tests {
             /// ```
             fn missing_b() {}
         "#;
-        assert!(parse_and_validate(code_missing).is_err());
+        // Hermes now natively allows missing proof blocks to fall through
+        // to `autoParam` evaluation in Lean, meaning this is structurally valid.
+        assert!(parse_and_validate(code_missing).is_ok());
+    }
+
+    #[test]
+    fn test_missing_proof_edge_cases() {
+        // Edge Case 1: Multiple named bounds, none have proofs provided
+        let code_all_missing = r#"
+            /// ```hermes
+            /// ensures (h_pos): ret > 0
+            /// ensures (h_even): ret % 2 == 0
+            /// ```
+            fn auto_all() {}
+        "#;
+        assert!(parse_and_validate(code_all_missing).is_ok());
+
+        // Edge Case 2: One bound explicitly proved, one omitted
+        let code_mixed = r#"
+            /// ```hermes
+            /// ensures (h_pos): ret > 0
+            /// ensures (h_even): ret % 2 == 0
+            /// proof (h_pos):
+            ///   scalar_tac
+            /// ```
+            fn mixed() {}
+        "#;
+        assert!(parse_and_validate(code_mixed).is_ok());
+
+        // Edge Case 3: Omitted named proofs alongside an unnamed proof
+        // (The unnamed proof satisfies `h_unnamed`)
+        let code_unnamed_mixed = r#"
+            /// ```hermes
+            /// ensures: ret < 100
+            /// ensures (h_pos): ret > 0
+            /// proof:
+            ///   simp_all
+            /// ```
+            fn mixed_unnamed() {}
+        "#;
+        assert!(parse_and_validate(code_unnamed_mixed).is_ok());
+
+        // Edge Case 4: Cannot provide a proof for a non-existent bound
+        // (Even with auto-proving relaxed, we still enforce that provided proofs map to bounds)
+        let code_invalid_proof = r#"
+            /// ```hermes
+            /// ensures (h_pos): ret > 0
+            /// proof (h_fake):
+            ///   scalar_tac
+            /// ```
+            fn invalid_proof() {}
+        "#;
+        assert!(parse_and_validate(code_invalid_proof).is_err());
     }
 
     #[test]

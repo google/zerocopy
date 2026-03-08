@@ -69,8 +69,18 @@ macro "eval_progress" msg:str : tactic =>
   `(tactic| first | exact ⟨_, rfl⟩ | eval_allow_sorry_or_fail $msg)
 
 -- A macro that Hermes auto-injects for implicit isValid proofs.
--- It attempts `simp_all [IsValid.isValid]`. If it fails, it emits a friendly error
--- instructing the user to provide a manual proof via `proof (h_name)`.
+-- 
+-- Tactic Ordering Rationale:
+-- We explicitly run `simp_all` *before* attempting `scalar_tac`. 
+-- `simp_all` is significantly faster and aggressively clears out logical noise,
+-- which solves the vast majority of trivial bounds instantly. However, `simp_all` 
+-- can sometimes normalize or destroy specific arithmetic structures that `scalar_tac` 
+-- expects. If a user finds that an implicit arithmetic bound fails here but succeeds 
+-- when they manually prove it using just `scalar_tac`, it is likely because the 
+-- preceding `simp_all` phase destroyed the arithmetic shape.
+--
+-- If this fallback chain completely fails, the macro intercepts the error and surfaces
+-- a friendly diagnostic instructing the user to provide a manual proof via `proof (h_name):`.
 macro "verify_is_valid" field:ident : tactic => do
   let err := "This error comes from the implicit `simp_all` proof for `" ++ field.getId.toString ++ "`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (" ++ field.getId.toString ++ ")`."
   `(tactic|
@@ -79,11 +89,22 @@ macro "verify_is_valid" field:ident : tactic => do
     | eval_allow_sorry_or_fail $(quote err))
 
 -- A macro that Hermes auto-injects for explicit user `ensures` bounds.
--- It provides no automated proving, but gracefully degrades to `sorry`
--- if `--allow-sorry` (via `Hermes.allow_sorry` axiom) is enabled.
+-- It attempts to solve the bound automatically using `simp_all` or `scalar_tac`.
+-- If compilation fails, it degrades to `sorry` (if `--allow-sorry` is enabled).
 macro "verify_user_bound" field:ident : tactic => do
   let err := "Missing explicit proof for named bound `" ++ field.getId.toString ++ "`."
-  `(tactic| eval_allow_sorry_or_fail $(quote err))
+  `(tactic|
+    first
+    | (simp_all; done)
+    | (simp_all; scalar_tac; done)
+    | (simp_all; omega; done)
+    | (simp_all; decide; done)
+    | (simp_all; subst_eqs; simp_all; done)
+    | (simp_all; subst_eqs; simp_all; scalar_tac; done)
+    | (simp_all; subst_eqs; simp_all; omega; done)
+    | (simp_all; subst_eqs; simp_all; decide; done)
+    | (simp_all; subst_eqs; simp_all; scalar_tac_preprocess; omega; done)
+    | eval_allow_sorry_or_fail $(quote err))
 
 -- A macro that Hermes auto-injects for empty postconditions.
 -- It attempts `exact ⟨⟩`. If it fails (e.g., due to a stuck weakest precondition), it emits a friendly error

@@ -76,19 +76,19 @@ pub fn post1_impl_opaque_named() -> u32 { dep::opaque_u32() }
 
 // C1. Transparent
 /// ```hermes
-/// ensures: ret == ()
+/// ensures: ret == () ∧ False
 /// ```
 pub fn post1_expl_trans_noproof() {}
 
 /// ```hermes
-/// ensures: ret == ()
+/// ensures: ret == () ∧ False
 /// proof context:
 ///   sorry
 /// ```
 pub fn post1_expl_trans_ctx_sorry() {}
 
 /// ```hermes
-/// ensures: ret == ()
+/// ensures: ret == () ∧ False
 /// proof:
 ///   sorry
 /// ```
@@ -96,14 +96,14 @@ pub fn post1_expl_trans_unnamed() {}
 
 // C2. Opaque
 /// ```hermes
-/// ensures: ret == ()
+/// ensures: ret == () ∧ False
 /// proof (h_progress):
 ///   sorry
 /// ```
 pub fn post1_expl_opaque_noproof() { dep::opaque(); }
 
 /// ```hermes
-/// ensures: ret == ()
+/// ensures: ret == () ∧ False
 /// proof (h_progress):
 ///   sorry
 /// proof context:
@@ -112,7 +112,7 @@ pub fn post1_expl_opaque_noproof() { dep::opaque(); }
 pub fn post1_expl_opaque_ctx_sorry() { dep::opaque(); }
 
 /// ```hermes
-/// ensures: ret == ()
+/// ensures: ret == () ∧ False
 /// proof (h_progress):
 ///   sorry
 /// proof:
@@ -124,22 +124,22 @@ pub fn post1_expl_opaque_unnamed() { dep::opaque(); }
 
 // D1. Transparent
 /// ```hermes
-/// ensures (h1): ret == ()
-/// ensures (h2): ret == ()
+/// ensures (h1): ret == () ∧ False
+/// ensures (h2): ret == () ∧ False
 /// ```
 pub fn post2_expl_trans_noproof() {}
 
 /// ```hermes
-/// ensures (h1): ret == ()
-/// ensures (h2): ret == ()
+/// ensures (h1): ret == () ∧ False
+/// ensures (h2): ret == () ∧ False
 /// proof context:
 ///   sorry
 /// ```
 pub fn post2_expl_trans_ctx_sorry() {}
 
 /// ```hermes
-/// ensures (h1): ret == ()
-/// ensures (h2): ret == ()
+/// ensures (h1): ret == () ∧ False
+/// ensures (h2): ret == () ∧ False
 /// proof (h1):
 ///   sorry
 /// proof (h2):
@@ -149,16 +149,16 @@ pub fn post2_expl_trans_named() {}
 
 // D2. Opaque
 /// ```hermes
-/// ensures (h1): ret == ()
-/// ensures (h2): ret == ()
+/// ensures (h1): ret == () ∧ False
+/// ensures (h2): ret == () ∧ False
 /// proof (h_progress):
 ///   sorry
 /// ```
 pub fn post2_expl_opaque_noproof() { dep::opaque(); }
 
 /// ```hermes
-/// ensures (h1): ret == ()
-/// ensures (h2): ret == ()
+/// ensures (h1): ret == () ∧ False
+/// ensures (h2): ret == () ∧ False
 /// proof (h_progress):
 ///   sorry
 /// proof context:
@@ -167,8 +167,8 @@ pub fn post2_expl_opaque_noproof() { dep::opaque(); }
 pub fn post2_expl_opaque_ctx_sorry() { dep::opaque(); }
 
 /// ```hermes
-/// ensures (h1): ret == ()
-/// ensures (h2): ret == ()
+/// ensures (h1): ret == () ∧ False
+/// ensures (h2): ret == () ∧ False
 /// proof (h_progress):
 ///   sorry
 /// proof (h1):
