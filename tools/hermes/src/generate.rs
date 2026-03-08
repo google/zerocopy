@@ -90,16 +90,32 @@ impl LeanBuilder {
     ) {
         let start = self.buf.len();
         self.buf.push_str(s);
-        // Map [start, end) in Lean to [source_start, source_end) in Rust
-        // We assume `s` corresponds to `line.content` (or at least `line.span`).
-        // `line.span` is a `miette::SourceSpan`.
+
+        let trimmed_s = s.trim_start();
+        let leading_ws = s.len() - trimmed_s.len();
+
+        let trimmed_end_s = trimmed_s.trim_end();
+        let trailing_ws = trimmed_s.len() - trimmed_end_s.len();
+
         let span = &line.span;
+        // If `s` is shorter than `line.content` (e.g. stripped indentation),
+        // we assume it is a suffix of `line.content`. We shift the source
+        // start offset forward so the mapping aligns accurately.
+        let bytes_stripped = line.content.len().saturating_sub(s.len());
+        let source_start = span.offset() + bytes_stripped + leading_ws;
+
+        if trimmed_end_s.is_empty() {
+            // Do not create a mapping for a purely whitespace line. If Lean
+            // highlights it, it will be safely absorbed by multi-line mappings.
+            return;
+        }
+
         self.mappings.push(SourceMapping {
-            lean_start: start,
-            lean_end: self.buf.len(),
+            lean_start: start + leading_ws,
+            lean_end: self.buf.len() - trailing_ws,
             source_file: source_file.to_path_buf(),
-            source_start: span.offset(),
-            source_end: span.offset() + span.len(),
+            source_start,
+            source_end: source_start + trimmed_end_s.len(),
             kind: MappingKind::Source,
         });
     }

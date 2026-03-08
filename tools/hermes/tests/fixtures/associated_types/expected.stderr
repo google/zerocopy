@@ -1,2 +1,10 @@
-[External Error] generated/TransformLibTransformLib<HASH>/TransformLibTransformLib<HASH>.lean: unexpected token '...'; expected term
+  × unexpected token '...'; expected term
+    ╭─[[PROJECT_ROOT]/src/lib.rs:12:7]
+ 11 │ /// isSafe :
+ 12 │ ///   ...
+    ·       ─┬─
+    ·        ╰── here
+ 13 │ /// ```
+    ╰────
+
 Error: Lean verification failed

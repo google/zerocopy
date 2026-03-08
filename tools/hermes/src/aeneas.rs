@@ -645,25 +645,29 @@ fn resolve_mapping(
     diag: &LeanDiagnostic,
     mappings: &[crate::generate::SourceMapping],
 ) -> (String, usize, usize) {
-    let mapping =
-        mappings.iter().find(|m| m.lean_start <= diag.byte_start && m.lean_end >= diag.byte_end);
+    let overlapping: Vec<_> = mappings
+        .iter()
+        .filter(|m| {
+            let i_start = std::cmp::max(m.lean_start, diag.byte_start);
+            let i_end = std::cmp::min(m.lean_end, diag.byte_end);
+            i_start < i_end
+        })
+        .collect();
+
+    let mapping = overlapping.first().copied();
 
     // Certain diagnostics, such as "declaration uses `sorry`", are reported on
     // the synthetic theorem name rather than the proof block itself. To improve
     // the user experience, we attempt to redirect these diagnostics to the
     // relevant keyword (e.g., `proof` or `axiom`) if a corresponding mapping
     // exists in the same file.
-    let mapping = match mapping {
+    let (is_redirected, mapping) = match mapping {
         Some(m)
             if diag.message.contains("declaration uses `sorry`")
                 && matches!(m.kind, crate::generate::MappingKind::Synthetic) =>
         {
             // Find a Keyword mapping that is physically located inside this synthetic
-            // theorem's generated Lean code. It must appear after this theorem's
-            // signature in Lean, and before the signature of any SUBSEQUENT synthetic
-            // theorem in Lean. This robustly correlates the synthetic theorem back
-            // to its own `proof` block, completely ignoring Lean emission order which
-            // may be topologically sorted and decoupled from the Rust source order.
+            // theorem's generated Lean code.
             let next_synthetic_lean_start = mappings
                 .iter()
                 .filter(|m3| {
@@ -674,7 +678,7 @@ fn resolve_mapping(
                 .min()
                 .unwrap_or(usize::MAX);
 
-            mappings
+            let redirected = mappings
                 .iter()
                 .find(|m2| {
                     matches!(m2.kind, crate::generate::MappingKind::Keyword)
@@ -682,27 +686,47 @@ fn resolve_mapping(
                         && m2.lean_start > m.lean_end
                         && m2.lean_start < next_synthetic_lean_start
                 })
-                .or(Some(m))
+                .or(Some(m));
+            (true, redirected)
         }
-        _ => mapping,
+        _ => (false, mapping),
     };
 
     if let Some(m) = mapping {
-        // Calculate the intersection of the mapping span and the diagnostic
-        // span to determine the precise source location.
-        let i_start = std::cmp::max(m.lean_start, diag.byte_start);
-        let i_end = std::cmp::min(m.lean_end, diag.byte_end);
+        if !is_redirected && overlapping.len() > 1 {
+            let first = m;
+            let last = overlapping
+                .iter()
+                .rev()
+                .find(|m2| m2.source_file == first.source_file)
+                .unwrap_or(&first);
 
-        if i_end > i_start {
-            let offset = i_start - m.lean_start;
-            let len = i_end - i_start;
-            let s_start = m.source_start + offset;
-            let s_end = s_start + len;
-            (m.source_file.to_string_lossy().to_string(), s_start, s_end)
+            let i_start = std::cmp::max(first.lean_start, diag.byte_start);
+            let offset_start = i_start - first.lean_start;
+            let s_start = first.source_start + offset_start;
+
+            let i_end = std::cmp::min(last.lean_end, diag.byte_end);
+            let offset_end = i_end - last.lean_start;
+            let s_end = last.source_start + offset_end;
+
+            (first.source_file.to_string_lossy().to_string(), s_start, s_end)
         } else {
-            // If there is no overlap (e.g., due to redirection), fallback to
-            // the full mapping source span.
-            (m.source_file.to_string_lossy().to_string(), m.source_start, m.source_end)
+            // Calculate the intersection of the mapping span and the diagnostic
+            // span to determine the precise source location.
+            let i_start = std::cmp::max(m.lean_start, diag.byte_start);
+            let i_end = std::cmp::min(m.lean_end, diag.byte_end);
+
+            if i_end > i_start {
+                let offset = i_start - m.lean_start;
+                let len = i_end - i_start;
+                let s_start = m.source_start + offset;
+                let s_end = s_start + len;
+                (m.source_file.to_string_lossy().to_string(), s_start, s_end)
+            } else {
+                // If there is no overlap (e.g., due to redirection), fallback to
+                // the full mapping source span.
+                (m.source_file.to_string_lossy().to_string(), m.source_start, m.source_end)
+            }
         }
     } else {
         (diag.file_name.clone(), diag.byte_start, diag.byte_end)
@@ -836,6 +860,51 @@ mod tests {
         let (file, start, _) = resolve_mapping(&diag, &mappings);
         assert_eq!(file, "file_a.rs");
         assert_eq!(start, 200, "Should NOT redirect across files");
+    }
+
+    #[test]
+    fn test_resolve_mapping_partial_overlap() {
+        // We simulate a mapping for `have h : x = 0 := by decide` from `[10, 30)` in Lean and `[100, 120)` in Rust.
+        // The Lean diagnostic highlights `[5, 25)`, starting 5 bytes before the mapped code (e.g. whitespace).
+        // The overlap intersection is `[10, 25)`, which has a length of 15.
+        // It should map to `[100, 115)` in the Rust file.
+        let mappings = vec![
+            mk_mapping(10, 30, 100, 120, MappingKind::Source, "file.rs")
+        ];
+        
+        // 1. Overlapping from the left: Lean `[5, 25)` overlaps `[10, 30)`.
+        let diag1 = mk_diag("error", 5, 25);
+        let (_, start1, end1) = resolve_mapping(&diag1, &mappings);
+        assert_eq!((start1, end1), (100, 115), "Should trim left non-overlapping part");
+
+        // 2. Overlapping from the right: Lean `[20, 35)` overlaps `[10, 30)`.
+        // The overlap is `[20, 30)`, length 10. Offset into Source = 10.
+        // Should map to `[110, 120)`
+        let diag2 = mk_diag("error", 20, 35);
+        let (_, start2, end2) = resolve_mapping(&diag2, &mappings);
+        assert_eq!((start2, end2), (110, 120), "Should trim right non-overlapping part");
+        
+        // 3. Complete subsumption (Lean error larger than mapping): Lean `[5, 35)` completely covers `[10, 30)`.
+        // The overlap is `[10, 30)`.
+        // Should map to the entire Rust bounds `[100, 120)`.
+        let diag3 = mk_diag("error", 5, 35);
+        let (_, start3, end3) = resolve_mapping(&diag3, &mappings);
+        assert_eq!((start3, end3), (100, 120), "Should clamp completely subsuming errors");
+        
+        // 4. Exact subset: Lean `[15, 20)` is inside `[10, 30)`.
+        // Overlap `[15, 20)`. length 5. Offset 5.
+        // Should map to `[105, 110)`.
+        let diag4 = mk_diag("error", 15, 20);
+        let (_, start4, end4) = resolve_mapping(&diag4, &mappings);
+        assert_eq!((start4, end4), (105, 110), "Should map exact subsets perfectly");
+        
+        // 5. Zero overlap but adjacent: Lean `[0, 10)` adjacent to `[10, 30)`.
+        // i_start (10) < i_end (10) is FALSE. Should not match.
+        // Fallback to "test.lean"
+        let diag5 = mk_diag("error", 0, 10);
+        let (file5, start5, end5) = resolve_mapping(&diag5, &mappings);
+        assert_eq!(file5, "test.lean", "Should not match 0-length adjacent overlap");
+        assert_eq!((start5, end5), (0, 10));
     }
 
     #[test]

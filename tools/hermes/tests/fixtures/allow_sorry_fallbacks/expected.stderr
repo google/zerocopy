@@ -40,8 +40,19 @@
  43 │ /// proof:
     ╰────
 
-[External Error] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>.lean: invalid {...} notation, structure type expected
-  Post ret_
+  × invalid {...} notation, structure type expected
+  │   Post ret_
+    ╭─[[PROJECT_ROOT]/src/lib.rs:44:7]
+ 43 │     /// proof:
+ 44 │ ╭─▶ ///   -- A deliberately broken explicit proof should NOT emit "declaration uses sorry"
+ 45 │ │   ///   -- but instead natively fail on the syntax error "unknown tactic".
+ 46 │ │   ///   exact {
+ 47 │ │   ///       invalid_tactic
+ 48 │ ├─▶ ///   }
+    · ╰──── here
+ 49 │     /// ```
+    ╰────
+
   × Tactic `rfl` failed: The left-hand side
   │   true == false
   │ is not definitionally equal to the right-hand side

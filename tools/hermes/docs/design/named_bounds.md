@@ -153,11 +153,9 @@ Instead, the AST formally models anonymous user clauses as a **singleton proposi
 
 If a user writes a lone `proof:` block, Hermes routes it directly to the `h_unnamed` field behind the scenes. Lean's diagnostic strippers then intercept any failures tagged with `h_unnamed` and present them back to the user plainly as "Your anonymous ensures clause failed to verify." Callers never guess names; they just map the single anonymous constraint natively.
 
-## Future Work: Unimplemented Diagnostics & Hygiene
+## Future Work
 
-1. **Hygenic Macro Variable Encapsulation:** Right now, Hermes macro definitions leak their generated hypotheses (like `h_auto`) into the caller's context. If a user defines a Rust parameter identically named to the internal macro variables, it results in shadowed type collisions. All `macro_rules` handling autoParams must be migrated to fully hygienic closures or isolated syntax scopes.
-2. **`h_unnamed` Diagnostic Stripping:** When a user provides exactly one unnamed constraint, Hermes encapsulates it as `h_unnamed`. If the user's unnamed `proof` fails to solve it, Lean outputs: `Unsolved goal for h_unnamed`. Seeing this internal implementation detail in an error confuses users. Future iterations of Hermes should intercept goals tagged with `h_unnamed` and strip the name from the diagnostic: *"Your anonymous ensures clause failed to verify"*.
-3. **Line Number Attribution in `proof context`:** Because the generated Lean file abstracts the structure heavily, if a user writes a faulty `have h : x = 0 := by omega` inside a `proof context` block, Lean points to a line in the generated `.lean` file. While Hermes parses and tracks `SpannedLine` locations for all block contents, it does not currently intercept Lean compiler errors to mathematically map the generated line numbers back to the original `.rs` file. This mapping is highly desirable for IDE integration.
+1. **`h_unnamed` Diagnostic Stripping:** When a user provides exactly one unnamed constraint, Hermes encapsulates it as `h_unnamed`. If the user's unnamed `proof` fails to solve it, Lean outputs: `Unsolved goal for h_unnamed`. Seeing this internal implementation detail in an error confuses users. Future iterations of Hermes should intercept goals tagged with `h_unnamed` and strip the name from the diagnostic: *"Your anonymous ensures clause failed to verify"*.
 
 ## Appendix: Technical Implementation & Edge Cases
 

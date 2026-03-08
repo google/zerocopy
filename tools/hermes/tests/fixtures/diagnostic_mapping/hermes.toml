@@ -1,0 +1,48 @@
+description = "Tests diagnostic mapping edge cases."
+
+[test]
+expected_status = "failure"
+stderr_file = "expected.stderr"
+
+[verification]
+
+[[verification.messages]]
+level = "error"
+message = 'Unknown identifier `decide`'
+file = "diagnostic_mapping/src/lib.rs"
+line = 9
+column = 28
+
+[[verification.messages]]
+level = "error"
+message = 'Unknown identifier `invalid_tactic_xyz`'
+file = "diagnostic_mapping/src/lib.rs"
+line = 20
+column = 2
+
+[[verification.messages]]
+level = "error"
+message = 'Unknown identifier `exact`'
+file = "diagnostic_mapping/src/lib.rs"
+line = 30
+column = 3
+
+[[verification.messages]]
+level = "error"
+message = "The 'sorry' tactic is forbidden; use --allow-sorry to allow it."
+file = "diagnostic_mapping/src/lib.rs"
+line = 41
+column = 7
+
+[[verification.messages]]
+level = "error"
+message = "The 'sorry' tactic is forbidden; use --allow-sorry to allow it."
+file = "diagnostic_mapping/src/lib.rs"
+line = 47
+column = 1
+
+[[verification.messages]]
+level = "warning"
+message = "unused variable `ret_`"
+file_regex = "generated/DiagnosticMappingDiagnosticMapping.*/DiagnosticMappingDiagnosticMapping.*\\.lean"
+is_external = true
