@@ -389,57 +389,53 @@ fn generate_function(
     let has_mut_args = !mut_args.is_empty();
     let has_ensures = !block.ensures.is_empty();
     let needs_validity_ensures = has_return_value || has_mut_args;
-    let generate_post = has_ensures || needs_validity_ensures;
+    let mut post_outputs = String::new();
+    if has_return_value {
+        use crate::parse::hkd::SafeReturnType;
+        let ret_lean_type = match &func.sig().output {
+            SafeReturnType::Default => "Unit".to_string(), // Unreachable since has_return_value is true
+            SafeReturnType::Type(ty) => map_type(ty),
+        };
+        post_outputs.push_str(&format!(" (ret : {})", ret_lean_type));
+    }
+    for arg in &mut_args {
+        post_outputs.push_str(&format!(" ({}' : {})", arg.name, arg.lean_type));
+    }
 
-    if generate_post {
-        let mut post_outputs = String::new();
-        if has_return_value {
-            use crate::parse::hkd::SafeReturnType;
-            let ret_lean_type = match &func.sig().output {
-                SafeReturnType::Default => "Unit".to_string(), // Unreachable since has_return_value is true
-                SafeReturnType::Type(ty) => map_type(ty),
-            };
-            post_outputs.push_str(&format!(" (ret : {})", ret_lean_type));
-        }
-        for arg in &mut_args {
-            post_outputs.push_str(&format!(" ({}' : {})", arg.name, arg.lean_type));
-        }
+    builder.push_str(&format!(
+        "  structure Post{}{} {} : Prop where\n",
+        instance_params, args_suffix, post_outputs
+    ));
 
+    if has_return_value {
+        builder.push_str("    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid\n");
+    }
+    for arg in &mut_args {
+        let field = format!("h_{}'_is_valid", arg.name);
         builder.push_str(&format!(
-            "  structure Post{}{} {} : Prop where\n",
-            instance_params, args_suffix, post_outputs
+            "    {} : Hermes.IsValid.isValid {}' := by verify_is_valid {}\n",
+            field, arg.name, field
         ));
+    }
 
-        if has_return_value {
-            builder.push_str("    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid\n");
-        }
-        for arg in &mut_args {
-            let field = format!("h_{}'_is_valid", arg.name);
-            builder.push_str(&format!(
-                "    {} : Hermes.IsValid.isValid {}' := by verify_is_valid {}\n",
-                field, arg.name, field
-            ));
-        }
-
-        for clause in &block.ensures {
-            let name = clause
-                .name
-                .as_ref()
-                .map(|n| n.content.clone())
-                .unwrap_or_else(|| "unnamed".to_string());
-            builder.push_str(&format!("    {} : ", name));
-            for (j, line) in clause.lines.iter().enumerate() {
-                if j > 0 {
-                    builder.push_str("\n      ");
-                }
-                builder.push_spanned(&line.content, line, source_file);
+    for clause in &block.ensures {
+        let name = clause
+            .name
+            .as_ref()
+            .map(|n| n.content.clone())
+            .unwrap_or_else(|| "unnamed".to_string());
+        builder.push_str(&format!("    {} : ", name));
+        for (j, line) in clause.lines.iter().enumerate() {
+            if j > 0 {
+                builder.push_str("\n      ");
             }
-            builder.push_str(" := by verify_user_bound ");
-            builder.push_str(&name);
-            builder.push('\n');
+            builder.push_spanned(&line.content, line, source_file);
         }
+        builder.push_str(" := by verify_user_bound ");
+        builder.push_str(&name);
         builder.push('\n');
     }
+    builder.push('\n');
 
     // 4. Determine if this is a Theorem or Axiom
     let (kind_keyword, proof_cases, proof_context, keyword_span) = match &block.inner {
@@ -498,49 +494,45 @@ fn generate_function(
 
     builder.push_str(&format!("  Aeneas.Std.WP.spec ({})", call_str));
 
-    if generate_post {
-        builder.push_str(" (fun ret_ =>");
+    builder.push_str(" (fun ret_ =>");
 
-        if has_mut_args {
-            builder.push('\n');
-            let vars =
-                mut_args.iter().map(|a| format!("{}'", a.name)).collect::<Vec<_>>().join(", ");
-            let destructure_lhs = if has_return_value {
-                format!("(ret, {})", vars)
-            } else {
-                if mut_args.len() == 1 {
-                    format!("{}'", mut_args[0].name)
-                } else {
-                    format!("({})", vars)
-                }
-            };
-            builder.push_str(&format!("    let {} := ret_\n", destructure_lhs));
-            builder.push_str("    ");
+    if has_mut_args {
+        builder.push('\n');
+        let vars =
+            mut_args.iter().map(|a| format!("{}'", a.name)).collect::<Vec<_>>().join(", ");
+        let destructure_lhs = if has_return_value {
+            format!("(ret, {})", vars)
         } else {
-            builder.push(' ');
-        }
-
-        builder.push_str("Post");
-        for name in &dict_args {
-            builder.push_str(&format!(" {}", name));
-        }
-        for arg in &args {
-            builder.push_str(&format!(" {}", arg.name));
-        }
-        if has_return_value {
-            if has_mut_args {
-                builder.push_str(" ret");
+            if mut_args.len() == 1 {
+                format!("{}'", mut_args[0].name)
             } else {
-                builder.push_str(" ret_");
+                format!("({})", vars)
             }
-        }
-        for arg in &mut_args {
-            builder.push_str(&format!(" {}'", arg.name));
-        }
-        builder.push(')');
+        };
+        builder.push_str(&format!("    let {} := ret_\n", destructure_lhs));
+        builder.push_str("    ");
     } else {
-        builder.push_str(" (fun _ => True)");
+        builder.push(' ');
     }
+
+    builder.push_str("Post");
+    for name in &dict_args {
+        builder.push_str(&format!(" {}", name));
+    }
+    for arg in &args {
+        builder.push_str(&format!(" {}", arg.name));
+    }
+    if has_return_value {
+        if has_mut_args {
+            builder.push_str(" ret");
+        } else {
+            builder.push_str(" ret_");
+        }
+    }
+    for arg in &mut_args {
+        builder.push_str(&format!(" {}'", arg.name));
+    }
+    builder.push_str(")");
 
     // Body
     if kind_keyword == "theorem" {
@@ -634,57 +626,59 @@ fn generate_function(
             }
         }
 
-        if generate_post {
-            if is_context_sorry_only {
-                // If the entire proof context was just `sorry`, it closes all goals.
-                // Generating `constructor` and `case` branches would fail with "no goals".
+        if is_context_sorry_only {
+            // If the entire proof context was just `sorry`, it closes all goals.
+            // Generating `constructor` and `case` branches would fail with "no goals".
+        } else {
+            let var_indent = if is_context_sorry_only
+                || proof_context.is_none()
+                || proof_context.unwrap().is_empty()
+            {
+                "  ".to_string()
             } else {
-                let var_indent = if is_context_sorry_only
-                    || proof_context.is_none()
-                    || proof_context.unwrap().is_empty()
-                {
-                    "  ".to_string()
-                } else {
-                    context_indent
-                };
+                context_indent
+            };
+
+            let mut post_fields = Vec::new();
+            if has_return_value {
+                post_fields.push("h_ret_is_valid".to_string());
+            }
+            for arg in &mut_args {
+                post_fields.push(format!("h_{}'_is_valid", arg.name));
+            }
+            for clause in &block.ensures {
+                post_fields.push(
+                    clause
+                        .name
+                        .as_ref()
+                        .map(|n| n.content.clone())
+                        .unwrap_or_else(|| "unnamed".to_string()),
+                );
+            }
+
+            let provided_cases: std::collections::HashMap<
+                String,
+                &crate::parse::attr::Clause<_>,
+            > = proof_cases
+                .map(|cases| {
+                    cases
+                        .iter()
+                        .map(|c| {
+                            let name = c
+                                .name
+                                .as_ref()
+                                .map(|n| n.content.clone())
+                                .unwrap_or_else(|| "unnamed".to_string());
+                            (name, c)
+                        })
+                        .collect()
+                })
+                .unwrap_or_default();
+
+            if post_fields.is_empty() {
+                builder.push_str(&format!("{}exact ⟨⟩\n", var_indent));
+            } else {
                 builder.push_str(&format!("{}exact {{\n", var_indent));
-
-                let mut post_fields = Vec::new();
-                if has_return_value {
-                    post_fields.push("h_ret_is_valid".to_string());
-                }
-                for arg in &mut_args {
-                    post_fields.push(format!("h_{}'_is_valid", arg.name));
-                }
-                for clause in &block.ensures {
-                    post_fields.push(
-                        clause
-                            .name
-                            .as_ref()
-                            .map(|n| n.content.clone())
-                            .unwrap_or_else(|| "unnamed".to_string()),
-                    );
-                }
-
-                let provided_cases: std::collections::HashMap<
-                    String,
-                    &crate::parse::attr::Clause<_>,
-                > = proof_cases
-                    .map(|cases| {
-                        cases
-                            .iter()
-                            .map(|c| {
-                                let name = c
-                                    .name
-                                    .as_ref()
-                                    .map(|n| n.content.clone())
-                                    .unwrap_or_else(|| "unnamed".to_string());
-                                (name, c)
-                            })
-                            .collect()
-                    })
-                    .unwrap_or_default();
-
                 for field in &post_fields {
                     if let Some(clause) = provided_cases.get(field) {
                         builder.push_str(&format!("{}  {} := by\n", var_indent, field));
@@ -702,25 +696,6 @@ fn generate_function(
                     }
                 }
                 builder.push_str(&format!("{}}}\n", var_indent));
-            }
-        } else {
-            if let Some(cases) = proof_cases {
-                if !cases.is_empty() {
-                    let clause = cases.first().unwrap();
-                    if clause.lines.is_empty() {
-                        builder.push_str("  sorry\n");
-                    } else {
-                        for line in &clause.lines {
-                            builder.push_str("  ");
-                            builder.push_spanned(&line.content, line, source_file);
-                            builder.push('\n');
-                        }
-                    }
-                } else if proof_context.map_or(true, |ctx| ctx.is_empty()) {
-                    builder.push_str("  sorry\n");
-                }
-            } else if proof_context.map_or(true, |ctx| ctx.is_empty()) {
-                builder.push_str("  sorry\n");
             }
         }
     } else {
@@ -1229,8 +1204,9 @@ mod tests {
         let out = builder.buf;
 
         assert!(out.contains("theorem spec"));
-        assert!(out.contains("Aeneas.Std.WP.spec (foo) (fun _ => True)"));
-        assert!(out.contains("sorry")); // Empty proof body defaults to sorry
+        assert!(out.contains("Aeneas.Std.WP.spec (foo) (fun ret_ =>"));
+        assert!(out.contains("Post)"));
+        assert!(out.contains("exact ⟨⟩")); // Empty proof body defaults to instantiating Post
     }
 
     #[test]
@@ -1712,7 +1688,8 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("Aeneas.Std.WP.spec (empty) (fun _ => True)"));
+        assert!(out.contains("Aeneas.Std.WP.spec (empty) (fun ret_ =>"));
+        assert!(out.contains("Post)"));
         assert!(!out.contains("h_req"));
     }
 
@@ -1728,7 +1705,8 @@ mod tests {
 
         assert!(out.contains("(h_req : Pre x)"));
         assert!(out.contains("rcases h_req with ⟨h_x_is_valid⟩"));
-        assert!(out.contains("Aeneas.Std.WP.spec (takes_arg x) (fun _ => True)"));
+        assert!(out.contains("Aeneas.Std.WP.spec (takes_arg x) (fun ret_ =>"));
+        assert!(out.contains("Post x)"));
     }
 
     #[test]

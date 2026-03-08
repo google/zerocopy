@@ -8,12 +8,6 @@
    ╰────
   help: if this is intentional, prefix it with an underscore
 
-  ⚠ declaration uses `sorry`
-   ╭─[[PROJECT_ROOT]/src/lib.rs:4:8]
- 3 │ #[warn(unused_variables)]
- 4 │ pub fn foo() {
-   ·        ──┬─
-   ·          ╰── here
- 5 │     let unused_var = 5;
-   ╰────
+[External Warning] generated/TestPkgTestPkg<HASH>/TestPkgTestPkg<HASH>.lean: unused variable `ret_`
 
+Note: This linter can be disabled with `set_option linter.unusedVariables false`

@@ -56,27 +56,10 @@
  59 │ /// ```
     ╰────
 
-  ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:67:15]
- 66 │ /// ```
- 67 │ pub unsafe fn expects_precondition(cond: bool) {}
-    ·               ──┬─
-    ·                 ╰── here
- 68 │ 
-    ╰────
+[External Warning] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>.lean: unused variable `ret_`
 
-  × Tactic `rfl` failed: The left-hand side
-  │   fail_to_prove_precondition
-  │ is not definitionally equal to the right-hand side
-  │   fun x => True
-  │ 
-  │ ⊢ fail_to_prove_precondition ⦃ x✝ => True ⦄
-    ╭─[[PROJECT_ROOT]/src/lib.rs:72:7]
- 71 │ /// proof:
- 72 │ ///   rfl
-    ·       ─┬─
-    ·        ╰── here
- 73 │ /// ```
-    ╰────
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+[External Warning] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>.lean: unused variable `ret_`
 
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
 Error: Lean verification failed

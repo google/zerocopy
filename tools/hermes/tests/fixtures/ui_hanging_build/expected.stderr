@@ -1,8 +1,3 @@
-  ⚠ declaration uses `sorry`
-   ╭─[[PROJECT_ROOT]/src/lib.rs:3:8]
- 2 │ /// ```
- 3 │ pub fn foo() {}
-   ·        ──┬─
-   ·          ╰── here
-   ╰────
+[External Warning] generated/TestPkgTestPkg<HASH>/TestPkgTestPkg<HASH>.lean: unused variable `ret_`
 
+Note: This linter can be disabled with `set_option linter.unusedVariables false`

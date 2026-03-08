@@ -1,8 +1,3 @@
-  ⚠ declaration uses `sorry`
-   ╭─[[PROJECT_ROOT]/src/lib.rs:8:8]
- 7 │ /// ```
- 8 │ pub fn demo() {} // Included so the overall verification command succeeds
-   ·        ──┬─
-   ·          ╰── here
-   ╰────
+[External Warning] generated/WarnCfgAttrPathWarnCfgAttrPath<HASH>/WarnCfgAttrPathWarnCfgAttrPath<HASH>.lean: unused variable `ret_`
 
+Note: This linter can be disabled with `set_option linter.unusedVariables false`

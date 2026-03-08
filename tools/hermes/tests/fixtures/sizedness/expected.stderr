@@ -11,12 +11,7 @@
  9 │ /// ```
    ╰────
 
-  ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/reject/src/lib.rs:10:8]
-  9 │ /// ```
- 10 │ pub fn foo(_f: &NamedDst) {}
-    ·        ──┬─
-    ·          ╰── here
-    ╰────
+[External Warning] generated/SizednessRejectSizednessReject<HASH>/SizednessRejectSizednessReject<HASH>.lean: unused variable `ret_`
 
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
 Error: Lean verification failed

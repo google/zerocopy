@@ -21,9 +21,12 @@ namespace expand_output
 
 namespace foo
 
+  structure Post  : Prop where
+
 theorem spec :
-  Aeneas.Std.WP.spec (foo) (fun _ => True) := by
-  sorry
+  Aeneas.Std.WP.spec (foo) (fun ret_ => Post) := by
+  exact {
+  }
 
 end foo
 

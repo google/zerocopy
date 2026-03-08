@@ -451,4 +451,28 @@ mod tests {
         "#;
         assert!(parse_and_validate(code).is_err());
     }
+
+    #[test]
+    fn test_zero_ensures_with_unnamed_proof_fails() {
+        let code = r#"
+            /// ```hermes
+            /// proof:
+            ///   trivial
+            /// ```
+            fn zero_ensures_unnamed_proof() {}
+        "#;
+        assert!(parse_and_validate(code).is_err());
+    }
+
+    #[test]
+    fn test_zero_ensures_with_named_proof_fails() {
+        let code = r#"
+            /// ```hermes
+            /// proof (foo):
+            ///   trivial
+            /// ```
+            fn zero_ensures_named_proof() {}
+        "#;
+        assert!(parse_and_validate(code).is_err());
+    }
 }
