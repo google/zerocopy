@@ -8,7 +8,7 @@
 /// proof context:
 /// proof (ens):
 ///   have h : x > 0 := req
-///   scalar_tac
+///   simp_all [test_named_bounds]
 /// ```
 unsafe fn test_named_bounds(x: u32) -> u32 {
     x
@@ -21,7 +21,7 @@ unsafe fn test_named_bounds(x: u32) -> u32 {
 ///   ret = x
 /// proof context:
 /// proof:
-///   simp_all
+///   simp_all [test_single_unnamed_ensures]
 /// ```
 fn test_single_unnamed_ensures(x: u32) -> u32 {
     x
@@ -40,7 +40,7 @@ fn test_single_unnamed_ensures(x: u32) -> u32 {
 /// proof (ens):
 ///   have h1 : x > 0 := r1
 ///   have h2 : y > 0 := r2
-///   scalar_tac
+///   simp_all [test_multiple_named_requires]
 /// ```
 unsafe fn test_multiple_named_requires(x: u32, y: u32) -> u32 {
     x
@@ -52,12 +52,12 @@ unsafe fn test_multiple_named_requires(x: u32, y: u32) -> u32 {
 /// requires (req):
 ///   x > 0
 /// ensures (ens):
-///   ret > 0
+///   x > 0
 /// proof context:
 /// proof (ens):
 ///   have h0 : x > 0 := req
-///   have h_call := test_multiple_named_requires.spec x x { h_x_is_valid := by trivial, h_y_is_valid := by trivial, r1 := h0, r2 := h0 }
-///   scalar_tac
+///   have h_call := test_multiple_named_requires.spec x x { r1 := h0, r2 := h0 }
+///   exact h0
 /// ```
 unsafe fn test_caller_multiple_named_requires(x: u32) -> u32 {
     test_multiple_named_requires(x, x)
@@ -73,9 +73,9 @@ unsafe fn test_caller_multiple_named_requires(x: u32) -> u32 {
 /// proof context:
 /// proof context:
 /// proof (e1):
-///   simp_all
+///   simp_all [test_multiple_named_ensures]
 /// proof (e2):
-///   simp_all
+///   simp_all [test_multiple_named_ensures]
 /// ```
 fn test_multiple_named_ensures(x: u32, y: u32) -> u32 {
     x
@@ -92,9 +92,9 @@ fn test_multiple_named_ensures(x: u32, y: u32) -> u32 {
 ///   have h_shared : x = x := by rfl
 /// proof context:
 /// proof (e1):
-///   simp_all
+///   simp_all [test_proof_context]
 /// proof (e2):
-///   simp_all
+///   simp_all [test_proof_context]
 /// ```
 fn test_proof_context(x: u32, y: u32) -> u32 {
     x
@@ -110,7 +110,7 @@ fn test_proof_context(x: u32, y: u32) -> u32 {
 ///   ret = x
 /// proof context:
 /// proof (e1):
-///   simp_all
+///   simp_all [test_missing_proof_injected_isvalid]
 /// ```
 fn test_missing_proof_injected_isvalid(x: u32) -> u32 {
     x
@@ -125,7 +125,7 @@ fn test_missing_proof_injected_isvalid(x: u32) -> u32 {
 ///   ret = x
 /// proof context:
 /// proof (ens):
-///   simp_all
+///   simp_all [test_single_unnamed_requires]
 /// ```
 unsafe fn test_single_unnamed_requires(x: u32) -> u32 {
     x
@@ -137,12 +137,12 @@ unsafe fn test_single_unnamed_requires(x: u32) -> u32 {
 /// requires:
 ///   x > 0
 /// ensures (ens):
-///   ret = x
+///   x > 0
 /// proof context:
 /// proof (ens):
-///   have h0 : x > 0 := unnamed
-///   have h_call := test_single_unnamed_requires.spec x { h_x_is_valid := by trivial, unnamed := h0 }
-///   simp_all
+///   have h0 : x > 0 := h_unnamed
+///   have _h_call := test_single_unnamed_requires.spec x { h_unnamed := h0 }
+///   exact h0
 /// ```
 unsafe fn test_caller_single_unnamed_requires(x: u32) -> u32 {
     test_single_unnamed_requires(x)
@@ -180,7 +180,7 @@ fn test_manual_proof_for_is_valid(x: u32) -> u32 {
 ///   have h2: x = x := by simp
 /// proof context:
 /// proof (h_same):
-///   simp_all
+///   simp_all [test_multiple_proof_context_blocks]
 /// ```
 fn test_multiple_proof_context_blocks(x: u32) -> u32 {
     x
@@ -196,7 +196,7 @@ fn test_multiple_proof_context_blocks(x: u32) -> u32 {
 ///   ret = x
 /// proof context:
 /// proof (h_same):
-///   simp_all
+///   simp_all [test_proof_context_at_end]
 /// proof context:
 ///   have h1: x = x := by simp
 /// ```
@@ -212,7 +212,7 @@ fn test_proof_context_at_end(x: u32) -> u32 {
 ///   ret = x
 /// proof context:
 /// proof (_h_ens):
-///   simp_all
+///   simp_all [test_leading_underscore_name]
 /// ```
 unsafe fn test_leading_underscore_name(x: u32) -> u32 {
     x
@@ -227,7 +227,7 @@ unsafe fn test_leading_underscore_name(x: u32) -> u32 {
 /// proof context:
 /// proof context:
 /// proof (h_same):
-///   simp_all
+///   simp_all [test_empty_proof_context]
 /// ```
 fn test_empty_proof_context(x: u32) -> u32 {
     x
@@ -242,7 +242,7 @@ fn test_empty_proof_context(x: u32) -> u32 {
 ///   ret = x
 /// proof context:
 /// proof (ens):
-///   simp_all
+///   simp_all [test_explicit_unnamed_requires]
 /// ```
 unsafe fn test_explicit_unnamed_requires(x: u32) -> u32 {
     x
@@ -256,7 +256,7 @@ unsafe fn test_explicit_unnamed_requires(x: u32) -> u32 {
 /// proof context:
 ///   have h: x = x := by simp
 /// proof (ens):
-///   sorry
+///   simp_all [test_proof_context_without_cases]
 /// ```
 fn test_proof_context_without_cases(x: u32) -> u32 {
     x
@@ -280,7 +280,7 @@ unsafe fn test_axiom_pseudo_name() {}
 /// proof context:
 /// proof (ens):
 ///   have h1 : x > 0 := r1
-///   scalar_tac
+///   simp_all [test_explicit_requires]
 /// ```
 unsafe fn test_explicit_requires(x: u32) -> u32 {
     x
@@ -292,13 +292,13 @@ unsafe fn test_explicit_requires(x: u32) -> u32 {
 /// requires (r1):
 ///   x > 0
 /// ensures (ens):
-///   ret > 0
+///   x > 0
 /// proof context:
 /// proof (ens):
 ///   have h1 : x > 0 := r1
 ///   -- We instantiate `Pre x` but omit the `h_x_is_valid` field!
 ///   have _h_call := test_explicit_requires.spec x { r1 := h1 }
-///   scalar_tac
+///   exact h1
 /// ```
 unsafe fn test_implicit_is_valid_instantiation(x: u32) -> u32 {
     test_explicit_requires(x)
@@ -337,7 +337,7 @@ fn test_zero_args_no_bounds() {}
 /// ensures (ens):
 ///   ret = x
 /// proof (ens):
-///   simp_all
+///   simp_all [test_explicit_unnamed_name]
 /// ```
 unsafe fn test_explicit_unnamed_name(x: u32) -> u32 { x }
 
@@ -357,7 +357,7 @@ fn test_empty_proof_block_named(x: u32) -> u32 { x }
 /// ensures (ens):
 ///   ret = x
 /// proof (ens):
-///   simp_all
+///   simp_all [test_proof_context_after_proof]
 /// proof context:
 ///   have _h : 1 = 1 := by rfl
 /// ```
@@ -372,7 +372,7 @@ fn test_proof_context_after_proof(x: u32) -> u32 { x }
 /// ensures (h_ens):
 ///   ret = x
 /// proof (h_ens):
-///   simp_all
+///   simp_all [test_single_unnamed_requires_with_named_ensures]
 /// ```
 unsafe fn test_single_unnamed_requires_with_named_ensures(x: u32) -> u32 { x }
 
@@ -387,14 +387,14 @@ unsafe fn test_single_unnamed_requires_with_named_ensures(x: u32) -> u32 { x }
 /// proof context:
 ///   have _h2 : 2 = 2 := by rfl
 /// proof (ens):
-///   simp_all
+///   simp_all [test_multiple_proof_context_blocks_named]
 /// ```
 fn test_multiple_proof_context_blocks_named(x: u32) -> u32 { x }
 
 /// Target a mutable reference implicit bound.
 /// 
 /// ```lean, hermes, spec
-/// proof (h_x_new_is_valid):
+/// proof (h_x'_is_valid):
 ///   simp_all [Hermes.IsValid.isValid]
 /// ```
 fn test_proof_targets_mut_ref_is_valid(x: &mut u32) {}
@@ -412,10 +412,10 @@ fn test_proof_targets_mut_ref_is_valid(x: &mut u32) {}
 /// ensures (e2):
 ///   ret > 0
 /// proof (e1):
-///   simp_all
+///   simp_all [test_interleaved_clauses]
 /// proof (e2):
 ///   have h2 : x > 0 := r2
-///   scalar_tac
+///   simp_all [test_interleaved_clauses]
 /// ```
 unsafe fn test_interleaved_clauses(x: u32) -> u32 { x }
 
@@ -426,12 +426,12 @@ unsafe fn test_interleaved_clauses(x: u32) -> u32 { x }
 /// requires (r1):
 ///   x > 0
 /// proof (e1):
-///   simp_all
+///   simp_all [test_out_of_order_clauses]
 /// ensures (e2):
 ///   ret > 0
 /// proof (e2):
 ///   have h1 : x > 0 := r1
-///   scalar_tac
+///   simp_all [test_out_of_order_clauses]
 /// ```
 unsafe fn test_out_of_order_clauses(x: u32) -> u32 { x }
 
@@ -441,7 +441,7 @@ unsafe fn test_out_of_order_clauses(x: u32) -> u32 { x }
 ///   ret = x
 /// proof (e1):
 /// 
-///   simp_all
+///   simp_all [test_blank_lines_in_proof]
 /// 
 /// ```
 fn test_blank_lines_in_proof(x: u32) -> u32 { x }
@@ -453,7 +453,7 @@ fn test_blank_lines_in_proof(x: u32) -> u32 { x }
 /// ensures (ens):
 ///   ret = x
 /// proof (ens):
-///   simp_all
+///   simp_all [test_very_long_bound_name]
 /// ```
 unsafe fn test_very_long_bound_name(x: u32) -> u32 { x }
 
@@ -469,7 +469,7 @@ fn test_zero_guarantees_zero_params() {}
 /// ensures:
 ///   ret = 0#u32
 /// proof:
-///   scalar_tac
+///   simp_all [test_single_anonymous_dummy_ensures]
 /// ```
 fn test_single_anonymous_dummy_ensures() -> u32 { 0 }
 

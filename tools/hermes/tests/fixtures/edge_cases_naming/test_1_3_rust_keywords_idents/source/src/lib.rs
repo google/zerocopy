@@ -1,6 +1,8 @@
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold r
+///   unfold r at *
 ///   simp_all
 /// ```
 pub fn r#match() {}

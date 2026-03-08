@@ -341,7 +341,7 @@ impl LeanBuilder {
             self.push('\n');
 
             let mut is_context_sorry_only = false;
-            let mut context_indent = "  ".to_string();
+            let mut context_indent = String::new();
 
             if let Some(ctx) = ast.proof_context {
                 let non_empty: Vec<_> =
@@ -356,40 +356,59 @@ impl LeanBuilder {
                 }
             }
 
+            let block_padding = "    ";
+
+            self.push_str("  apply Hermes.wp_prove_orthogonal\n");
+            self.push_str("  · ");
+            if let Some(progress_clause) = ast.provided_cases.get("h_progress") {
+                if progress_clause.lines.is_empty() {
+                    self.push_str("sorry\n");
+                } else {
+                    for (i, line) in progress_clause.lines.iter().enumerate() {
+                        if i > 0 {
+                            self.push_str("\n    ");
+                        }
+                        self.push_spanned(&line.content, line, ast.source_file);
+                    }
+                    self.push('\n');
+                }
+            } else {
+                self.push_str("eval_progress \"Missing orthogonal progress proof. The function progress verification was not automatically solvable.\"\n");
+            }
+
+            self.push_str("  · intro ");
+            if let Some(lhs) = &ast.destructure_lhs {
+                self.push_str(lhs);
+                self.push_str(" h_ret_\n");
+            } else {
+                self.push_str("ret_ h_ret_\n");
+            }
+
             if let Some(req_fields) = &ast.destructure_req {
                 self.push_str(&format!(
                     "{}rcases h_req with ⟨{}⟩\n",
-                    context_indent,
+                    block_padding,
                     req_fields.join(", ")
                 ));
             }
 
             if let Some(ctx) = ast.proof_context {
                 for line in ctx {
-                    self.push_spanned(&line.content, line, ast.source_file);
+                    // Prepend 4 spaces to force indentation deeper than the bullet,
+                    // but strip the initial user indentation to align with rcases and exact.
+                    let trimmed = if line.content.starts_with(&context_indent) {
+                        &line.content[context_indent.len()..]
+                    } else {
+                        line.content.trim_start()
+                    };
+                    self.push_str(block_padding);
+                    self.push_spanned(trimmed, line, ast.source_file);
                     self.push('\n');
                 }
             }
 
             if !is_context_sorry_only {
-                let var_indent = if is_context_sorry_only
-                    || ast.proof_context.is_none()
-                    || ast.proof_context.unwrap().is_empty()
-                {
-                    "  ".to_string()
-                } else {
-                    if let Some(ctx) = ast.proof_context {
-                        if let Some(last) = ctx.last() {
-                            let trimmed = last.content.trim_start();
-                            let indent_len = last.content.len() - trimmed.len();
-                            " ".repeat(indent_len)
-                        } else {
-                            "  ".to_string()
-                        }
-                    } else {
-                        "  ".to_string()
-                    }
-                };
+                let var_indent = block_padding;
 
                 if ast.exact_fields.is_empty() {
                     self.push_str(&format!("{}exact ⟨⟩\n", var_indent));
@@ -2170,7 +2189,7 @@ mod tests {
 
         println!("DEBUG_OUT:\n{}", out);
         assert!(out.contains("exact {"));
-        assert!(out.contains("h_gt := by\n      exact rfl"));
+        assert!(out.contains("h_gt := by\n        exact rfl"));
         // `h_lt` is missing, so it should NOT be emitted explicitly (relies on autoParam)
         assert!(!out.contains("h_lt :="));
         assert!(out.contains("}"));

@@ -1,8 +1,10 @@
 
 // Lean keywords as argument names
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold test_args
+///   unfold test_args at *
 ///   simp_all
 /// ```
 pub fn test_args(

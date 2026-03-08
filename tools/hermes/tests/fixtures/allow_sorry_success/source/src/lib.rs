@@ -34,6 +34,7 @@ pub fn trivial_is_valid() -> ValidStruct {
 /// ensures:
 ///   ret = _y
 /// proof:
+///   unfold named_precondition_visibility at *
 ///   have h := h_eq
 ///   simp_all
 /// ```

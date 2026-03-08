@@ -4,8 +4,10 @@
 /// ensures:
 ///   ///   ///   ret = 42
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold windows_only
+///   unfold windows_only at *
 ///   simp_all
 /// ```
 pub fn windows_only() -> u32 { 42 }

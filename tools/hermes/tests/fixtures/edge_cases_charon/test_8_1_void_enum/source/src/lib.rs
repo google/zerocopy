@@ -3,7 +3,7 @@ pub enum Void {}
 
 /// ```lean, hermes
 /// proof:
-///   unfold invert
+///   unfold invert at *
 ///   contradiction
 /// ```
 pub fn invert(v: Void) -> ! {

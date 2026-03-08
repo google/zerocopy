@@ -5,8 +5,10 @@ pub union U {
 }
 
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold access
+///   unfold access at *
 ///   simp_all
 /// ```
 pub fn access(u: U) -> u32 {

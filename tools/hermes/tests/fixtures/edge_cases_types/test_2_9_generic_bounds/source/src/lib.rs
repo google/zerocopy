@@ -3,8 +3,10 @@ pub struct Phantom<T> {
 }
 
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold unused
+///   unfold unused at *
 ///   simp_all
 /// ```
 pub fn unused<T>(x: u32) -> u32 {

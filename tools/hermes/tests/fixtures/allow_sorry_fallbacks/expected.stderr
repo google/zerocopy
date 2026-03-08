@@ -41,12 +41,14 @@
     ╰────
 
 [External Error] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>.lean: invalid {...} notation, structure type expected
-  Post { x := 1#u32, y := 2#u32 }
+  Post ret_
   × Tactic `rfl` failed: The left-hand side
   │   true == false
   │ is not definitionally equal to the right-hand side
   │   true
   │ 
+  │ ret_ : Unit
+  │ h_ret_ : explicit_semantic_failure = ok ret_
   │ ⊢ (true == false) = true
     ╭─[[PROJECT_ROOT]/src/lib.rs:58:7]
  57 │ /// proof (h):

@@ -1,5 +1,18 @@
 [External Error] generated/IsValidVerificationIsValidVerification<HASH>/IsValidVerificationIsValidVerification<HASH>.lean: could not synthesize default value for field 'h_ret_is_valid' of 'is_valid_verification.make_valid.Post' using tactics
 [External Error] generated/IsValidVerificationIsValidVerification<HASH>/IsValidVerificationIsValidVerification<HASH>.lean: This error comes from the implicit `simp_all` proof for `h_ret_is_valid`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (h_ret_is_valid)`.
+  × Expected type must not contain free variables
+  │   ↑0 < ↑ret_.x
+  │ 
+  │ Hint: Use the `+revert` option to automatically clean up and revert free
+  │ variables
+    ╭─[[PROJECT_ROOT]/src/lib.rs:15:50]
+ 14 │ /// proof:
+ 15 │ ///   simp [make_valid, Hermes.IsValid.isValid]; decide
+    ·                                                  ───┬──
+    ·                                                     ╰── here
+ 16 │ /// ```
+    ╰────
+
   ⚠ This simp argument is unused:
   │   make_valid
   │ 
@@ -34,9 +47,11 @@
 
 [External Error] generated/IsValidVerificationIsValidVerification<HASH>/IsValidVerificationIsValidVerification<HASH>.lean: could not synthesize default value for field 'h_ret_is_valid' of 'is_valid_verification.make_bad.Post' using tactics
 [External Error] generated/IsValidVerificationIsValidVerification<HASH>/IsValidVerificationIsValidVerification<HASH>.lean: This error comes from the implicit `simp_all` proof for `h_ret_is_valid`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (h_ret_is_valid)`.
-  × Tactic `decide` proved that the proposition
-  │   False
-  │ is false
+  × Expected type must not contain free variables
+  │   ↑0 < ↑ret_.x
+  │ 
+  │ Hint: Use the `+revert` option to automatically clean up and revert free
+  │ variables
     ╭─[[PROJECT_ROOT]/src/lib.rs:28:48]
  27 │ /// proof:
  28 │ ///   simp [make_bad, Hermes.IsValid.isValid]; decide

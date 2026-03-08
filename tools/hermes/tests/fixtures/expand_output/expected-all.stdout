@@ -58,7 +58,10 @@ namespace foo
 
 theorem spec :
   Aeneas.Std.WP.spec (foo) (fun ret_ => Post) := by
-  exact ⟨⟩
+  apply Hermes.wp_prove_orthogonal
+  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable."
+  · intro ret_ h_ret_
+    exact ⟨⟩
 
 end foo
 

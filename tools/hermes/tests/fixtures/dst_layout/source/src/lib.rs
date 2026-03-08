@@ -43,8 +43,10 @@ pub unsafe trait KnownLayout {
 /// requires (valid_alloc): ∃ a : Hermes.Allocation, Hermes.FitsInAllocation (Hermes.raw_ptr_referent val) a
 /// requires (is_safe): KnownLayout.Safe T KnownLayoutInst
 /// ensures (h_size): ret.val = (Hermes.raw_ptr_referent val).size.val
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold size_of_val
+///   unfold size_of_val at *
 ///   have h_safe := is_safe.isSafe
 ///   rcases h_safe with ⟨_sz, _tl, h_align, h_size⟩ | ⟨_rc, _sl, inst_md, offset, elemSize, h_props⟩
 ///   · have h_ref_eq := @Hermes.referent_size_sized T _sz _tl Aeneas.Std.Mutability.Const val
@@ -53,8 +55,8 @@ pub unsafe trait KnownLayout {
 ///     next => verify_is_valid h_ret_is_valid
 ///     next => simp_all
 ///   rcases h_props with ⟨h_align, h_size, h_offset, h_elem, h_md_eq, h_meta⟩
-///   rw [h_size]
-///   rw [h_meta val]
+///   rw [h_size] at h_ret_
+///   rw [h_meta val] at h_ret_
 ///   rcases valid_alloc with ⟨alloc, h_fits⟩
 ///   dsimp [Hermes.FitsInAllocation] at h_fits
 ///   rcases h_fits with ⟨h_referent_size, h_a_size⟩

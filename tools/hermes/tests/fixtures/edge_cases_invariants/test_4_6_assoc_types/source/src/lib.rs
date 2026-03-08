@@ -4,8 +4,10 @@ pub trait Iter {
 }
 
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold check_item
+///   unfold check_item at *
 ///   simp_all
 /// ```
 pub fn check_item<T: Iter>(x: T::Item) -> T::Item {

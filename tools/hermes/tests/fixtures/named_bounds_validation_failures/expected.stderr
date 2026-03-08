@@ -1,16 +1,17 @@
+Error in function `fail_reserved_name_collision_requires`:
+  --> [PROJECT_ROOT]/src/lib.rs
+  Requires bound name `h_x_is_valid` is reserved for auto-generated invariants.
 
-=== Hermes Verification Failed ===
+Error in function `fail_reserved_name_collision_ensures`:
+  --> [PROJECT_ROOT]/src/lib.rs
+  Ensures bound name `h_ret_is_valid` is reserved for auto-generated invariants.
 
-[Hermes Error] hermes::doc_block
+Error in function `fail_empty_requires_clause`:
+  --> [PROJECT_ROOT]/src/lib.rs
+  Requires bounds cannot be completely empty.
 
-  × Documentation block error: Cannot mix named and unnamed `proof` clauses.
-  │ If any are named, they must all be named.
-     ╭─[[PROJECT_ROOT]/src/lib.rs:103:1]
- 102 │ /// proof context:
- 103 │ /// proof:
-     · ─────┬────
-     ·      ╰── problematic block
- 104 │ ///   simp_all
-     ╰────
+Error in function `fail_empty_ensures_clause`:
+  --> [PROJECT_ROOT]/src/lib.rs
+  Ensures bounds cannot be completely empty.
 
-Error: Aborting due to 1 previous errors.
+Error: Validation failed: Naming collisions or missing proofs detected.

@@ -7,8 +7,10 @@ pub struct Pointers {
 }
 
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold ptr_arg
+///   unfold ptr_arg at *
 ///   simp_all
 /// ```
 pub fn ptr_arg(p: *const u8) -> *const u8 {

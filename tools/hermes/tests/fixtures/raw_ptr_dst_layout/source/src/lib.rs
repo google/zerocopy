@@ -24,7 +24,7 @@ pub const unsafe fn align_of_val_raw<T: ?Sized>(val: *const T) -> usize {
 /// ```hermes
 /// ensures (h_align_div): ret.2.val ∣ ret.1.val
 /// proof context:
-///   unfold test_slice
+///   unfold test_slice at *
 ///   progress with raw_ptr_dst_layout.size_of_val_raw.spec as ⟨ i, i_post ⟩
 ///   · exact {}
 ///   progress with raw_ptr_dst_layout.align_of_val_raw.spec as ⟨ i1, i1_post ⟩

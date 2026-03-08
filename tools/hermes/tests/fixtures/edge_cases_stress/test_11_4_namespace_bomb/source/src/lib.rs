@@ -11,8 +11,10 @@ pub mod a {
 
 
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold dummy_hermes_padding
+///   unfold dummy_hermes_padding at *
 ///   simp_all
 /// ```
 pub fn dummy_hermes_padding() {}

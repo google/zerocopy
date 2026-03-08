@@ -36,6 +36,7 @@ def SpecificationHolds {α : Type} (res : Result α) (post : α → Prop) : Prop
   | .fail _ => False  -- A function satisfying spec should not fail
   | .div => False     -- A function satisfying spec should not diverge
 
+
 -- 2. Struct Invariants
 class IsValid (α : Type) where
   isValid : α → Prop
@@ -55,6 +56,18 @@ elab "eval_allow_sorry_or_fail" err:term : tactic => do
   else
     throwError errStr
 
+/-- The core theorem that mathematically decouples the WP 
+    into strictly orthogonal Progress and Correctness subgoals. -/
+theorem wp_prove_orthogonal {α} {m : Result α} {P : α → Prop} :
+  (∃ y, m = .ok y) → (∀ y, m = .ok y → P y) → WP.spec m P := by
+  intro ⟨y, hy⟩ hP
+  rw [hy]
+  exact hP y hy
+
+/-- A macro that evaluates progress automatically, or falls back to sorry/fail if stuck. -/
+macro "eval_progress" msg:str : tactic => 
+  `(tactic| first | exact ⟨_, rfl⟩ | eval_allow_sorry_or_fail $msg)
+
 -- A macro that Hermes auto-injects for implicit isValid proofs.
 -- It attempts `simp_all [IsValid.isValid]`. If it fails, it emits a friendly error
 -- instructing the user to provide a manual proof via `proof (h_name)`.
@@ -62,7 +75,7 @@ macro "verify_is_valid" field:ident : tactic => do
   let err := "This error comes from the implicit `simp_all` proof for `" ++ field.getId.toString ++ "`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (" ++ field.getId.toString ++ ")`."
   `(tactic|
     first
-    | (simp_all [IsValid.isValid]; done)
+    | (simp_all [Hermes.IsValid.isValid]; (try scalar_tac); done)
     | eval_allow_sorry_or_fail $(quote err))
 
 -- A macro that Hermes auto-injects for explicit user `ensures` bounds.
@@ -629,12 +642,12 @@ elab "inject_builtins" : command => do
   
   if env.contains `core.mem.size_of then
     let ident := mkIdent `core.mem.size_of
-    let cmd ← `(command| @[simp] axiom core_mem_size_of_spec : size_of_spec $ident)
+    let cmd ← `(command| @[simp] axiom core_mem_size_of_spec : ∀ (T : Type) [core.marker.Sized T] [tl : HasStaticLayout T], $ident T = Result.ok tl.layout.size)
     elabCommand cmd
     
   if env.contains `core.mem.align_of then
     let ident := mkIdent `core.mem.align_of
-    let cmd ← `(command| @[simp] axiom core_mem_align_of_spec : align_of_spec $ident)
+    let cmd ← `(command| @[simp] axiom core_mem_align_of_spec : ∀ (T : Type) [core.marker.Sized T] [tl : HasStaticLayout T], $ident T = Result.ok tl.layout.align.val)
     elabCommand cmd
 
 -- 6. Allocations

@@ -7,6 +7,8 @@ macro_rules! hygiene_check {
 }
 
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
 ///   sorry
 /// ```

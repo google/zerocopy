@@ -7,8 +7,10 @@ pub mod b {
 }
 
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold func
+///   unfold func at *
 ///   simp_all
 /// ```
 pub fn func(x: a::S, y: b::S) {}

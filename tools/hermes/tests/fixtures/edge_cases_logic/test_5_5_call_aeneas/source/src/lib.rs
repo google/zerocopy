@@ -2,6 +2,8 @@
 /// ensures:
 ///   ///   ///   ret = x + 1
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
 ///   sorry
 /// ```

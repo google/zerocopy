@@ -23,6 +23,7 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                 let mut reserved_names = std::collections::HashSet::new();
                 reserved_names.insert("h_ret_is_valid".to_string());
                 reserved_names.insert("h_unnamed".to_string());
+                reserved_names.insert("h_progress".to_string());
 
                 let mut report_error = |msg: &str| {
                     eprintln!(
@@ -542,5 +543,36 @@ mod tests {
             unsafe fn complex_mix() {}
         "#;
         assert!(parse_and_validate(code).is_ok());
+    }
+    #[test]
+    fn test_h_progress_reserved() {
+        // h_progress is reserved and cannot be required/ensured
+        let code_req = r#"
+            /// ```hermes
+            /// requires (h_progress):
+            ///   true
+            /// ```
+            unsafe fn foo() {}
+        "#;
+        assert!(parse_and_validate(code_req).is_err());
+
+        let code_ens = r#"
+            /// ```hermes
+            /// ensures (h_progress):
+            ///   true
+            /// ```
+            fn foo() {}
+        "#;
+        assert!(parse_and_validate(code_ens).is_err());
+
+        // h_progress CAN be used in proof blocks
+        let code_proof = r#"
+            /// ```hermes
+            /// proof (h_progress):
+            ///   trivial
+            /// ```
+            fn foo() {}
+        "#;
+        assert!(parse_and_validate(code_proof).is_ok());
     }
 }

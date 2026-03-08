@@ -4,6 +4,8 @@
 ///   ret = 42
 /// decreases by: sorry
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
 ///   sorry
 /// ```

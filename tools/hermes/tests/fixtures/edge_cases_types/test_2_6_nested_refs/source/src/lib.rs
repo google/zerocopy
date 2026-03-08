@@ -1,6 +1,8 @@
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold nested
+///   unfold nested at *
 ///   simp_all
 /// ```
 pub fn nested(x: &&u32, y: &mut &u32, z: &&mut u32) {

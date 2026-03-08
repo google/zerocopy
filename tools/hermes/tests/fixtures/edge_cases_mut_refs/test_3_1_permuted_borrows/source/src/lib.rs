@@ -1,6 +1,8 @@
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold swap
+///   unfold swap at *
 ///   simp_all
 /// ```
 pub fn swap(a: &mut u32, b: &mut u32) {

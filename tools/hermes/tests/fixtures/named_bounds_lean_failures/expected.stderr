@@ -127,14 +127,15 @@
     ╰────
 
   × unsolved goals
-  │ x : U32
+  │ x ret_ : U32
+  │ h_ret_ : fail_proof_context_tactic_failure x = ok ret_
   │ h_x_is_valid : Hermes.IsValid.isValid x
   │ ⊢ False
-    ╭─[[PROJECT_ROOT]/src/lib.rs:46:24]
+    ╭─[[PROJECT_ROOT]/src/lib.rs:46:21]
  45 │ /// proof context:
  46 │ ///   have h: false := by simp
-    ·                        ───┬───
-    ·                           ╰── here
+    ·                     ───┬───
+    ·                        ╰── here
  47 │ /// proof context:
     ╰────
 

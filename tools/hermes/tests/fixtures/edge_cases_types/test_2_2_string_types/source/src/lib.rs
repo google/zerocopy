@@ -10,8 +10,10 @@ pub struct Strings<'a> {
 }
 
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold check_strings
+///   unfold check_strings at *
 ///   simp_all
 /// ```
 pub fn check_strings(s: String) -> String {

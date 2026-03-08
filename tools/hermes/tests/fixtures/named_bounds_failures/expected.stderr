@@ -3,27 +3,29 @@
 
 [Hermes Error] hermes::doc_block
 
-  × Documentation block error: When multiple `requires` clauses are present,
-  │ they must all be named. E.g., `requires (my_name): ...`
-   ╭─[[PROJECT_ROOT]/src/lib.rs:7:1]
- 6 │ /// ```lean, hermes, spec
- 7 │ /// requires:
-   · ──────┬──────
-   ·       ╰── problematic block
- 8 │ ///   ///   ///   x > 0
-   ╰────
+  × Documentation block error: Multiple unnamed bounds are not allowed. If you
+  │ have multiple bounds, they must all be named (e.g., `requires
+  │ (my_name):`).
+    ╭─[[PROJECT_ROOT]/src/lib.rs:9:1]
+  8 │ ///   ///   ///   x > 0
+  9 │ /// requires:
+    · ──────┬──────
+    ·       ╰── problematic block
+ 10 │ ///   ///   ///   y > 0
+    ╰────
 
 
 [Hermes Error] hermes::doc_block
 
-  × Documentation block error: When multiple `ensures` clauses are present,
-  │ they must all be named. E.g., `ensures (my_name): ...`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:18:1]
- 17 │ /// ```lean, hermes, spec
- 18 │ /// ensures:
+  × Documentation block error: Multiple unnamed bounds are not allowed. If you
+  │ have multiple bounds, they must all be named (e.g., `requires
+  │ (my_name):`).
+    ╭─[[PROJECT_ROOT]/src/lib.rs:20:1]
+ 19 │ ///   ///   ///   ret == x
+ 20 │ /// ensures:
     · ──────┬─────
     ·       ╰── problematic block
- 19 │ ///   ///   ///   ret == x
+ 21 │ ///   ///   ///   ret == y
     ╰────
 
 
@@ -37,19 +39,6 @@
     · ──────────┬──────────
     ·           ╰── problematic block
  33 │ ///   ///   ///   ret == x
-    ╰────
-
-
-[Hermes Error] hermes::doc_block
-
-  × Documentation block error: Cannot mix named and unnamed `ensures` clauses.
-  │ If any are named, they must all be named.
-    ╭─[[PROJECT_ROOT]/src/lib.rs:60:1]
- 59 │ ///   ///   ///   ret = x
- 60 │ /// ensures:
-    · ──────┬─────
-    ·       ╰── problematic block
- 61 │ ///   ///   ///   ret = x
     ╰────
 
 
@@ -121,7 +110,7 @@
 
 [Hermes Error] hermes::doc_block
 
-  × Documentation block error: Duplicate proof case name `e1`.
+  × Documentation block error: Duplicate bound name `e1`.
      ╭─[[PROJECT_ROOT]/src/lib.rs:150:1]
  149 │ ///   simp_all
  150 │ /// proof (e1):
@@ -130,17 +119,4 @@
  151 │ ///   simp_all
      ╰────
 
-
-[Hermes Error] hermes::doc_block
-
-  × Documentation block error: Cannot mix named and unnamed `requires`
-  │ clauses. If any are named, they must all be named.
-     ╭─[[PROJECT_ROOT]/src/lib.rs:162:1]
- 161 │ ///   x > 0
- 162 │ /// requires:
-     · ──────┬──────
-     ·       ╰── problematic block
- 163 │ ///   x > 0
-     ╰────
-
-Error: Aborting due to 11 previous errors.
+Error: Aborting due to 9 previous errors.

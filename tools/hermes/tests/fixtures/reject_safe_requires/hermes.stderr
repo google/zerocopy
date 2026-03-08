@@ -16,14 +16,15 @@
 
 [Hermes Error] hermes::doc_block
 
-  × Documentation block error: `requires` sections are only permitted on
-  │ `unsafe` functions.
-   ╭─[[PROJECT_ROOT]/src/lib.rs:7:1]
- 6 │ /// ```hermes
+  × Documentation block error: Multiple unnamed bounds are not allowed. If you
+  │ have multiple bounds, they must all be named (e.g., `requires
+  │ (my_name):`).
+   ╭─[[PROJECT_ROOT]/src/lib.rs:8:1]
  7 │ /// requires: x > 0
+ 8 │ /// requires: y > 0
    · ─────────┬─────────
    ·          ╰── problematic block
- 8 │ /// requires: y > 0
+ 9 │ /// ```
    ╰────
 
 

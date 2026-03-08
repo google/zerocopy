@@ -52,7 +52,7 @@ pub fn read_val(x: &u32) -> u32 {
 /// ensures:
 ///   ///   ///   x'.val = x.val + add.val
 /// proof context:
-///   unfold add_in_place
+///   unfold add_in_place at *
 ///   simp_all
 /// ```
 pub fn add_in_place(x: &mut u32, add: u32) {
@@ -66,7 +66,7 @@ pub fn add_in_place(x: &mut u32, add: u32) {
 /// ensures (h_second):
 ///   ///   ///   ret = stack[stack.len - 1]
 /// proof context:
-///   unfold pop
+///   unfold pop at *
 ///   simp_all
 /// ```
 pub fn pop(stack: &mut Vec<u32>) -> u32 {

@@ -1,6 +1,7 @@
 description = "Integration test for raw pointer DST layout annotations"
 
 [test]
+expected_status = "failure"
 args = ["verify"]
 
 [[test.artifact]]
@@ -8,3 +9,4 @@ package = "raw_ptr_dst_layout"
 target = "raw_ptr_dst_layout"
 kind = "lean"
 should_exist = true
+

@@ -5,8 +5,10 @@ pub struct Arrays {
 }
 
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold slice_of_slices
+///   unfold slice_of_slices at *
 ///   simp_all
 /// ```
 pub fn slice_of_slices(x: &[&[u8]]) -> usize {

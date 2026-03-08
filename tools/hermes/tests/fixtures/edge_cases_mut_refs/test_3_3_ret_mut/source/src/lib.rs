@@ -1,7 +1,9 @@
 
 /// ```lean, hermes
+/// proof (h_progress):
+///   sorry
 /// proof context:
-///   unfold pop
+///   unfold pop at *
 ///   simp_all
 /// ```
 pub fn pop(v: &mut Vec<u32>) -> Option<u32> {

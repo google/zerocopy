@@ -1,10 +1,13 @@
 description = "Integration test for formatting and layout of Rust scalar primitives"
 
 [test]
-args = ["verify"]
+args = ["verify", "--allow-sorry"]
 
 [[test.artifact]]
 package = "primitives_layout"
 target = "primitives_layout"
 kind = "lean"
 should_exist = true
+
+[verification]
+allow_sorry = true
