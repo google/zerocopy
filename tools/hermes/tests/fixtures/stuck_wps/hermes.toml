@@ -1,0 +1,6 @@
+description = "Exhaustive testing for stuck weakest preconditions (WPs) and structural instantiation edges."
+
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
+stderr_file = "expected.stderr"

@@ -1,0 +1,176 @@
+[External Warning] generated/AppApp<HASH>/AppApp<HASH>.lean: unused variable `ret_`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:10:4]
+  9 │ /// proof context:
+ 10 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 11 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:19:8]
+ 18 │ /// ```
+ 19 │ pub fn post0_opaque_noproof() { dep::opaque(); }
+    ·        ──┬─
+    ·          ╰── here
+ 20 │ 
+    ╰────
+
+[External Warning] generated/AppApp<HASH>/AppApp<HASH>.lean: unused variable `ret_`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:23:4]
+ 22 │ /// proof context:
+ 23 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 24 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:38:4]
+ 37 │ /// proof context:
+ 38 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 39 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:46:8]
+ 45 │ /// ```
+ 46 │ pub fn post1_impl_trans_named() -> u32 { 0 }
+    ·        ──┬─
+    ·          ╰── here
+ 47 │ 
+    ╰────
+
+[External Error] generated/AppApp<HASH>/AppApp<HASH>.lean: Type mismatch
+  ∅
+has type
+  ?m.4
+of sort `Type ?u.1092` but is expected to have type
+  post1_impl_opaque_noproof ⦃ ret_ => Post ret_ ⦄
+of sort `WP.Pre`
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:55:4]
+ 54 │ /// proof context:
+ 55 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 56 │ /// ```
+    ╰────
+
+[External Error] generated/AppApp<HASH>/AppApp<HASH>.lean: invalid {...} notation, structure type expected
+  (match post1_impl_opaque_named with
+    | ok x => WP.wp_return x
+    | fail e => fun x => False
+    | div => fun x => False)
+    fun ret_ => Post ret_
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:71:8]
+ 70 │ /// ```
+ 71 │ pub fn post1_expl_trans_noproof() {}
+    ·        ──┬─
+    ·          ╰── here
+ 72 │ 
+    ╰────
+
+[External Warning] generated/AppApp<HASH>/AppApp<HASH>.lean: unused variable `ret_`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:76:4]
+ 75 │ /// proof context:
+ 76 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 77 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:85:8]
+ 84 │ /// ```
+ 85 │ pub fn post1_expl_trans_unnamed() {}
+    ·        ──┬─
+    ·          ╰── here
+ 86 │ 
+    ╰────
+
+[External Error] generated/AppApp<HASH>/AppApp<HASH>.lean: invalid {...} notation, structure type expected
+  (match post1_expl_opaque_noproof with
+    | ok x => WP.wp_return x
+    | fail e => fun x => False
+    | div => fun x => False)
+    fun ret_ => Post
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:96:4]
+ 95 │ /// proof context:
+ 96 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 97 │ /// ```
+    ╰────
+
+[External Error] generated/AppApp<HASH>/AppApp<HASH>.lean: invalid {...} notation, structure type expected
+  (match post1_expl_opaque_unnamed with
+    | ok x => WP.wp_return x
+    | fail e => fun x => False
+    | div => fun x => False)
+    fun ret_ => Post
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:114:8]
+ 113 │ /// ```
+ 114 │ pub fn post2_expl_trans_noproof() {}
+     ·        ──┬─
+     ·          ╰── here
+ 115 │ 
+     ╰────
+
+[External Warning] generated/AppApp<HASH>/AppApp<HASH>.lean: unused variable `ret_`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:120:4]
+ 119 │ /// proof context:
+ 120 │ ///   sorry
+     ·    ────┬───
+     ·        ╰── here
+ 121 │ /// ```
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:132:8]
+ 131 │ /// ```
+ 132 │ pub fn post2_expl_trans_named() {}
+     ·        ──┬─
+     ·          ╰── here
+ 133 │ 
+     ╰────
+
+[External Error] generated/AppApp<HASH>/AppApp<HASH>.lean: invalid {...} notation, structure type expected
+  (match post2_expl_opaque_noproof with
+    | ok x => WP.wp_return x
+    | fail e => fun x => False
+    | div => fun x => False)
+    fun ret_ => Post
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:145:4]
+ 144 │ /// proof context:
+ 145 │ ///   sorry
+     ·    ────┬───
+     ·        ╰── here
+ 146 │ /// ```
+     ╰────
+
+[External Error] generated/AppApp<HASH>/AppApp<HASH>.lean: invalid {...} notation, structure type expected
+  (match post2_expl_opaque_named with
+    | ok x => WP.wp_return x
+    | fail e => fun x => False
+    | div => fun x => False)
+    fun ret_ => Post
+Error: Lean verification failed
