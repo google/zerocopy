@@ -62,6 +62,7 @@ jobs:
           echo "AUTHOR=$AUTHOR" >> $GITHUB_ENV
 
       - name: Submit PR
+        # zizmor: ignore[superfluous-actions]
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0
         with:
           author: "${{ env.AUTHOR }}"
