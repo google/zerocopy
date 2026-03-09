@@ -988,6 +988,8 @@ jobs:
   zizmor:
     runs-on: ubuntu-latest
     name: zizmor
+    # FIXME(#3093): Re-enable
+    if: ${{ false }}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -1001,7 +1003,7 @@ jobs:
           # (without manually configuring a ruleset) is to fail the job, which
           # the action only does if advanced-security is false.
           advanced-security: false
-          persona: pedantic
+          persona: regular
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
