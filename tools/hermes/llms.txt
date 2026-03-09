@@ -11,8 +11,11 @@
 ## Rust Integration
 [How Rust constructs map to Lean traits/axioms](docs/agent/rust_mapping.md)
 
-## Writing Proofs
-[How to write specifications and proofs in Rust comments](docs/agent/verification.md)
+## Syntax
+[How to write specifications and proofs in Rust comments](docs/agent/syntax.md)
+
+## Writing a Proof
+[How to write specifications and proofs](docs/agent/writing_a_proof.md). You **MUST** read this before writing a proof.
 
 ## Core Sources
 [Hermes.lean](src/Hermes.lean) - The foundational Lean definitions and axioms.

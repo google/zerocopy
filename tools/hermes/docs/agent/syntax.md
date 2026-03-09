@@ -1,4 +1,4 @@
-# Hermes Annotation Syntax and Verification
+# Hermes Annotation Syntax
 
 Hermes specifications are written in standard Rust docile comments using a fenced code block annotated with `hermes` (e.g. ````rust /// ```hermes ````). The parser uses a **line-oriented, indentation-sensitive grammar**. 
 
@@ -15,9 +15,21 @@ Hermes specifications are written in standard Rust docile comments using a fence
    - **Example**:
      ````rust
      /// ```hermes, spec
-     /// requires x > 0
-     /// ensures ret = x + 1
-     /// proof
+     /// requires: x > 0
+     /// ensures: ret = x + 1
+     /// proof:
+     ///   simp [add_one]
+     /// ```
+     pub fn add_one(x: u32) -> u32 { x + 1 }
+     ````
+
+     The `requires` and `ensures` clauses can also be named:
+
+     ````rust
+     /// ```hermes, spec
+     /// requires (h_x_positive): x > 0
+     /// ensures (h_ret_inc): ret = x + 1
+     /// proof (h_ret_inc):
      ///   simp [add_one]
      /// ```
      pub fn add_one(x: u32) -> u32 { x + 1 }
@@ -30,8 +42,8 @@ Hermes specifications are written in standard Rust docile comments using a fence
    - **Example**:
      ````rust
      /// ```hermes, unsafe(axiom)
-     /// requires b.val > 0
-     /// ensures ret.val = a.val / b.val
+     /// requires: b.val > 0
+     /// ensures: ret.val = a.val / b.val
      /// ```
      pub unsafe fn safe_div(a: u32, b: u32) -> u32 {
          unsafe { a / b }
