@@ -1001,7 +1001,7 @@ jobs:
           # (without manually configuring a ruleset) is to fail the job, which
           # the action only does if advanced-security is false.
           advanced-security: false
-          persona: pedantic
+          persona: regular
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
