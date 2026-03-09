@@ -1,16 +1,49 @@
 # Rust to Lean Mapping
 
-## Lean Translation of Rust Types
-- `*const T` reliably maps to `ConstRawPtr T` in Lean, which is often easier to reason about in proofs than `NonNull<T>` (which maps to a wrapped `core.ptr.non_null.NonNull Self` structure).
-- Functions and methods returning `T` may be translated by Aeneas to return `Result T` (ie, accounting for panicking), even if they never fail in Rust.
-- In Hermes `ensures` blocks, you can simply pattern match Results directly instead of worrying about implicit unwrapping:
-  ```lean
-  ensures match KnownLayoutInst.my_method val with
-          | Result.ok m => ...
-          | _ => False
-  ```
-- **Standard types:** Aeneas maps Rust primitive types to its own standard library wrappers in Lean. If you are writing Lean specs, you will often need to reference these explicitly instead of primitive Lean types (e.g., `usize` -> `Std.Usize`, `u32` -> `Std.U32`).
+## Type Translation
 
-## Implicit Variables in Specs (`ret` and `x'`)
-- `ret` is an implicit variable injected by Hermes representing the successful return value of a function.
-- For any mutable reference parameter `x: &mut T`, `x` refers to the variable's state **before** the function executes, while `x'` refers to its state **after** execution.
+Aeneas maps Rust types to its own standard library wrappers in Lean. When writing Lean specs, reference these explicitly:
+
+### Primitives
+*   `u8`..`u128` → `Std.U8` .. `Std.U128`
+*   `i8`..`i128` → `Std.I8` .. `Std.I128`
+*   `usize` → `Std.Usize`
+*   `isize` → `Std.Isize`
+*   `bool` → `Bool`
+
+### Strings and Text
+*   `String` → `String`
+*   `&str` → `str`
+*   `char` → `char`
+
+### Compound Types
+*   `[T; N]` → `Array T N` (e.g., `[u32; 4]` → `Array Std.U32 4`)
+*   `&[T]` → `Slice T` 
+*   `(A, B)` → `A × B`
+
+### Custom Types
+*   `struct` → Lean `structure`
+*   `enum` → Lean `inductive`  (e.g., variants map to constructors like `MyEnum.VariantA x`)
+*   *Note: `union` is currently unsupported by Aeneas.*
+
+## Pointers and References
+
+### References
+Aeneas models references via pure pass-by-value and return-by-value semantics:
+*   `&T` and nested references (e.g., `&&T`) flatten to the underlying type `T` (passed by value).
+*   `&mut T` splits into two implicit variables: an input `T` (before execution) and a returned `T` (the post-state after execution).
+
+### Raw Pointers
+*   `*const T` → `ConstRawPtr T`
+*   `*mut T` → `MutRawPtr T`
+
+## Result Types and Control Flow
+
+All functions are translated to return a monadic `Result T` to mathematically model potential panics or divergence—even if they cannot fail in Rust.
+*   Functions returning `!` (the never type) map structurally to a `Result` that diverges (never resolves to `Result.ok`).
+
+## Mutable State and Tuples
+
+Functions mutating state (`&mut T`) return structured tuples in Lean tracking both the return value and the post-state of all mutated references.
+
+Hermes handles this transparently by destructuring the tuple into `ret` and `arg'` variables via the `h_returns` hypothesis. `h_returns` automatically bounds the execution to these destructured variables, eliminating the need for manual tuple traversal.

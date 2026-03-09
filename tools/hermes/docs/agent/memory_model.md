@@ -1,30 +1,21 @@
-# Hermes Memory Modeling
+# Hermes Memory Modeling Principles
 
-This document provides a conceptual overview of how Hermes represents Rust memory limits, layouts, and pointers within Lean 4. While the `llms-full.txt` file contains the exact Lean definitions and axioms from `Hermes.lean`, this document explains *why* those abstractions exist and how they fit together to model programs correctly.
+This document prescribes the core principles that agents (and humans) must understand when writing proofs that interact with the Hermes memory model. 
 
-## 1. Mathematical vs. Physical Layouts
+For technical definitions, exact theorems, and the physical implementation of these principles, **you must consult `Hermes.lean` directly.**
 
-A core concept in Hermes is the distinction between unbounded mathematical sizes and physically constrained memory layouts.
+## 1. The Mathematical vs. Physical Principle
+*   **The Principle:** Never conflate mathematical sizing (`Nat`) with physical addressing (`Usize`).
+*   **Guidance:** When writing purely logical bounds (like the abstract capacity of a sequence), use unbounded `Nat`s (`SpecLayout`). When writing bounds for pointer arithmetic, allocations, or validating the physical size of a generic type, you must use `Usize` (`Layout`). Crossing between them requires verifying a `FitsInUsize` property.
 
-*   **`SpecLayout` (Mathematical):** Represents the idealized layout of a type. Its size is represented as an unbounded Lean `Nat`. This allows for reasoning about the structure of a type without worrying about physical memory limits (e.g., calculating the theoretical size of a slice with a massive number of elements).
-*   **`Layout` (Physical):** Represents a layout that has been proven to fit within physical memory space. Its size is constrained by `Usize` (which fundamentally maps back to the limits of physical addressing).
+## 2. The Typeclass Automation Principle
+*   **The Principle:** Lean’s typeclass resolution mechanically synthesizes memory layouts and constraints.
+*   **Guidance:** Do not manually construct `Layout` or `SpecLayout` objects. Instead, rely on the `[HasStaticLayout T]` or `[HasSpecLayout T]` typeclasses provided in your theorem context. If Lean complains about missing derivations, the underlying Rust type is likely missing a bound (like `Sized`) or requires a mathematically bounded layout proof.
 
-Hermes uses the "Has*" trait convention to provide these layouts to types:
-*   `HasSpecLayout`: Indicates a type has a mathematical layout.
-*   `HasStaticLayout`: Indicates a fixed-size type has a physical layout (usually bounded by Rust's `Sized` bounds).
+## 3. The Spatial Inclusion Principle
+*   **The Principle:** Pointers point to mathematical *views* (`Referent`), which must be physically contained within allocated blocks (`Allocation`).
+*   **Guidance:** You cannot guarantee pointer safety simply by proving `addr + size < MAX`. True safety strictly requires proving `FitsInAllocation r a`—meaning the requested `Referent` is a guaranteed sub-region bounds-checked within a parent `Allocation`. When dealing with raw pointers, your primary goal is manipulating and proving these inclusion relationships.
 
-## 2. Allocations and Referents
-
-To reason about pointer safety and bounds, Hermes models physical memory regions and the views into them.
-
-*   **`Allocation`**: The foundational unit of memory. It represents a contiguous block of physical bytes starting at a specific `base` address and extending for a specific `size` (both constrained by `Usize`). Crucially, Allocations are constrained by target limits (often `isize::MAX` in Rust) to prevent pointer arithmetic overflow.
-*   **`Referent`**: A conceptual "view" or a slice of an `Allocation`. Pointers in Hermes point to Referents.
-*   **`FitsInAllocation`**: A core predicate linking the two. It asserts that a specific `Referent` is bound entirely within the confines of a specific `Allocation`.
-
-When writing proofs about pointer safety, you are often tasked with proving that the layout of the type you are casting to or accessing `FitsInAllocation` for the pointer's original allocation.
-
-## 3. Validity (`IsValid`)
-
-While layouts define the shape of memory, `IsValid` defines the constraints on the *values* inhabiting that memory. 
-
-`IsValid` is a typeclass that asserts internal invariants for a custom type. For example, a struct definition might have a physical `Layout` of 8 bytes, but its `IsValid` predicate might stipulate that the first 4 bytes must always be non-zero. When Hermes verifies specifications, it uses `IsValid` to add assumptions about function inputs and enforce guarantees about function outputs.
+## 4. The Logical Reflection Principle
+*   **The Principle:** Hermes applies layout specifications to Lean values, but the statements made *actually* apply to the source Rust program, not the Lean representation itself.
+*   **Guidance:** When `HasLayout` returns a size of 8 bytes for an `x : Aeneas.Std.Usize`, it is mathematically claiming that the original Rust `usize` occupies 8 bytes in physical memory. It is *not* claiming that the Lean `x` (which is a structural inductive wrapper around a `Fin`) occupies 8 bytes in the Lean runtime. Always interpret Hermes memory theorems as logically reflecting the Rust application's physical reality, irrespective of Lean's internal memory management.
