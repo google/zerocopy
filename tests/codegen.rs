@@ -8,7 +8,7 @@
 
 #![cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 
-use std::{path::PathBuf, process::Command};
+use std::{panic, path::PathBuf, process::Command, thread};
 
 enum Directive {
     Asm,
@@ -41,6 +41,7 @@ fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
         Command::new("cargo")
             .args([
                 "asm",
+                "--quiet",
                 "-p",
                 "zerocopy",
                 "--manifest-path",
@@ -99,13 +100,23 @@ fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
 #[cfg_attr(miri, ignore)]
 fn codegen() {
     let bless = std::env::var("BLESS").is_ok();
-    let paths = std::fs::read_dir("benches").unwrap();
-    for path in paths {
-        let path = path.unwrap().path();
-        if !path.extension().map(|s| s == "rs").unwrap_or(false) {
-            continue;
-        }
-        let path = path.file_stem().unwrap().to_str().unwrap();
-        run_codegen_test(path, "x86-64", bless);
+    let handles: Vec<_> = std::fs::read_dir("benches")
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.extension().is_some_and(|ext| ext == "rs"))
+        .map(|path| {
+            let bench_name = path.file_stem().unwrap().to_str().unwrap().to_owned();
+            thread::spawn(move || {
+                panic::catch_unwind(panic::AssertUnwindSafe(|| {
+                    run_codegen_test(&bench_name, "x86-64", bless);
+                }))
+            })
+        })
+        .collect();
+
+    let failed = handles.into_iter().any(|handle| handle.join().unwrap().is_err());
+
+    if failed {
+        panic!("One or more codegen tests failed. See thread panics above for details.");
     }
 }
