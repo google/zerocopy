@@ -45,3 +45,10 @@ When writing a proof, follow these tips:
 6. Specifications can have bugs too. Always consider whether a specification needs to be adjusted to match your understanding of the problem.
 7. Proofs are more tractable when the proofs themselves and the code they model are broken down into small bits. If you are having trouble with a proof, consider breaking it further down into lemmas, or breaking the *code* that it models into smaller functions, types, etc.
 8. Write extensive notes in code comments. Write notes to record your plans, what you've tried, what you've learned, what you still don't understand, etc.
+
+## Specifics
+
+You will use these two commands to interact with Hermes. Both accept `--help`.
+
+1. Run `cargo run verify` to verify a target.
+2. Use `cargo run expand` to see the generated Lean code.

@@ -1,21 +1,19 @@
 # Hermes Formal Verification Toolchain
 
-> Hermes is a toolchain for formally verifying Rust code using Aeneas and Lean 4, with a specific focus on memory layout and correctness. This documentation provides the necessary concepts and API definitions for AI agents writing specifications and proofs.
+> Hermes is a toolchain for formally verifying `unsafe` Rust code using Charon, Aeneas, and Lean 4, with a specific focus on memory layout and correctness boundaries.
 
-## Core Architecture
-[Overall toolchain architecture and integration mechanics](docs/agent/architecture.md)
+**CRITICAL INSTRUCTION FOR AGENTS:** 
+If you are new to Hermes, you **MUST** read the following documentation modules in strict, sequential order. Hermes proofs execute in a highly constrained environment (Orthogonal Weakest Precondition in Term Mode). If you attempt to guess tactics or skip these modules, you will fail.
 
-## Memory Modeling
-[Lean formalization of Rust memory, allocations, and bounds](docs/agent/memory_model.md)
+## The Curriculum
 
-## Rust Integration
-[How Rust constructs map to Lean traits/axioms](docs/agent/rust_mapping.md)
-
-## Syntax
-[How to write specifications and proofs in Rust comments](docs/agent/syntax.md)
-
-## Writing a Proof
-[How to write specifications and proofs](docs/agent/writing_a_proof.md). You **MUST** read this before writing a proof.
+1. **[Philosophy and Pipeline](docs/agent/01_philosophy_and_pipeline.md)**: Why Hermes exists, the Charon/Aeneas translation gap, and output directories (`target/hermes/<hash>`).
+2. **[Rust to Lean Mapping](docs/agent/02_rust_to_lean_mapping.md)**: How Aeneas translates variables, the monadic `Result` environment, and the tuple destructuring of mutable borrows (`&mut T`).
+3. **[Memory Model](docs/agent/03_memory_model.md)**: The "lower bound" axioms of physical memory, `Layout`, `Allocation`, `Referent`, and spatial inclusion (`FitsInAllocation`).
+4. **[Specifications and Syntax](docs/agent/04_specifications_and_syntax.md)**: Annotation chains, the strict Python-style off-side indentation rules, strict implicit binders (`{{}}`), and bounds scoping.
+5. **[Proof Architecture](docs/agent/05_proof_architecture.md)**: The most critical module. Explains Orthogonal WPs, `Pre`/`Post` struct derivation, Term Mode hygiene rules (why `simp_all` is illegal), and the `--allow-sorry` validation matrix.
+6. **[Tactics and Tooling](docs/agent/06_tactics_and_tooling.md)**: A dictionary for `scalar_tac`, `<;>`, `Fin`, Aeneas APIs, and how to tell solver exhaustion from syntax errors.
+7. **[Workflow](docs/agent/07_workflow.md)**: The recursive methodology for proving theorems, avoiding blind guessing, and using the `expand` command to evaluate the generated Lean models.
 
 ## Core Sources
-[Hermes.lean](src/Hermes.lean) - The foundational Lean definitions and axioms.
+[Hermes.lean](src/Hermes.lean) - The foundational Lean definitions and axioms that Hermes uses to verify memory.
