@@ -868,10 +868,8 @@ mod tests {
         // The Lean diagnostic highlights `[5, 25)`, starting 5 bytes before the mapped code (e.g. whitespace).
         // The overlap intersection is `[10, 25)`, which has a length of 15.
         // It should map to `[100, 115)` in the Rust file.
-        let mappings = vec![
-            mk_mapping(10, 30, 100, 120, MappingKind::Source, "file.rs")
-        ];
-        
+        let mappings = vec![mk_mapping(10, 30, 100, 120, MappingKind::Source, "file.rs")];
+
         // 1. Overlapping from the left: Lean `[5, 25)` overlaps `[10, 30)`.
         let diag1 = mk_diag("error", 5, 25);
         let (_, start1, end1) = resolve_mapping(&diag1, &mappings);
@@ -883,21 +881,21 @@ mod tests {
         let diag2 = mk_diag("error", 20, 35);
         let (_, start2, end2) = resolve_mapping(&diag2, &mappings);
         assert_eq!((start2, end2), (110, 120), "Should trim right non-overlapping part");
-        
+
         // 3. Complete subsumption (Lean error larger than mapping): Lean `[5, 35)` completely covers `[10, 30)`.
         // The overlap is `[10, 30)`.
         // Should map to the entire Rust bounds `[100, 120)`.
         let diag3 = mk_diag("error", 5, 35);
         let (_, start3, end3) = resolve_mapping(&diag3, &mappings);
         assert_eq!((start3, end3), (100, 120), "Should clamp completely subsuming errors");
-        
+
         // 4. Exact subset: Lean `[15, 20)` is inside `[10, 30)`.
         // Overlap `[15, 20)`. length 5. Offset 5.
         // Should map to `[105, 110)`.
         let diag4 = mk_diag("error", 15, 20);
         let (_, start4, end4) = resolve_mapping(&diag4, &mappings);
         assert_eq!((start4, end4), (105, 110), "Should map exact subsets perfectly");
-        
+
         // 5. Zero overlap but adjacent: Lean `[0, 10)` adjacent to `[10, 30)`.
         // i_start (10) < i_end (10) is FALSE. Should not match.
         // Fallback to "test.lean"

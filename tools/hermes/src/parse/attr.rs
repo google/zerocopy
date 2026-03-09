@@ -68,10 +68,6 @@ impl<M: ThreadSafety> Propositions<M> {
         self.unnamed.is_none() && self.named.is_empty()
     }
 
-    pub fn len(&self) -> usize {
-        self.named.len() + if self.unnamed.is_some() { 1 } else { 0 }
-    }
-
     pub fn push(&mut self, clause: Clause<M>) -> Result<(), String> {
         if let Some(name) = &clause.name {
             if self.named.contains_key(&name.content) {
@@ -1236,6 +1232,12 @@ mod tests {
     use syn::parse_quote;
 
     use super::*;
+
+    impl<M: ThreadSafety> Propositions<M> {
+        pub fn len(&self) -> usize {
+            self.named.len() + if self.unnamed.is_some() { 1 } else { 0 }
+        }
+    }
 
     #[test]
     fn test_parse_hermes_info_string() {

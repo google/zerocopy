@@ -661,14 +661,23 @@ abbrev align_of_spec (align_of_fun : Type → Result Usize) : Prop :=
 elab "inject_builtins" : command => do
   let env ← getEnv
   
-  if env.contains `core.mem.size_of then
-    let ident := mkIdent `core.mem.size_of
-    let cmd ← `(command| @[simp] axiom core_mem_size_of_spec : ∀ (T : Type) [core.marker.Sized T] [tl : HasStaticLayout T], $ident T = Result.ok tl.layout.size)
+  let (size_of_name, align_of_name) := env.constants.fold (fun acc n _ =>
+    let s := Name.toString n
+    let sz' := if s.startsWith "core.mem.size_of" then some n else acc.1
+    let al' := if s.startsWith "core.mem.align_of" then some n else acc.2
+    (sz', al')
+  ) (none, none)
+  
+  if let some n := size_of_name then
+    let ident := mkIdent n
+    let specIdent := mkIdent `core_mem_size_of_spec
+    let cmd ← `(command| @[simp] axiom $specIdent : ∀ (T : Type) [core.marker.Sized T] [tl : HasStaticLayout T], $ident T = Result.ok tl.layout.size)
     elabCommand cmd
     
-  if env.contains `core.mem.align_of then
-    let ident := mkIdent `core.mem.align_of
-    let cmd ← `(command| @[simp] axiom core_mem_align_of_spec : ∀ (T : Type) [core.marker.Sized T] [tl : HasStaticLayout T], $ident T = Result.ok tl.layout.align.val)
+  if let some n := align_of_name then
+    let ident := mkIdent n
+    let specIdent := mkIdent `core_mem_align_of_spec
+    let cmd ← `(command| @[simp] axiom $specIdent : ∀ (T : Type) [core.marker.Sized T] [tl : HasStaticLayout T], $ident T = Result.ok tl.layout.align.val)
     elabCommand cmd
 
 -- 6. Allocations

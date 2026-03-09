@@ -607,9 +607,9 @@ fn generate_function(
                 .map(|n| n.content.clone())
                 .unwrap_or_else(|| "h_unnamed".to_string());
             pre_fields.push(AstField {
-                name,
+                name: name.clone(),
                 lean_type: None,
-                proof_tactic: None,
+                proof_tactic: Some(format!("verify_user_bound {}", name)),
                 lines: clause.lines.iter().collect(),
             });
         }
@@ -2136,6 +2136,28 @@ mod tests {
         assert!(out.contains(
             "h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid"
         ));
+    }
+
+    #[test]
+    fn test_gen_auto_param_requires_user_bound() {
+        let item: syn::ItemFn = parse_quote! { fn implicit_requires(x: u32) -> u32 { x } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let mut block = mk_block(vec![], vec![], Some(vec!["exact rfl"]), None, vec![]);
+
+        // Add one unnamed and one named requires clause
+        let mut props = Propositions::default();
+        props.push(mk_clause(vec!["x > 0"])).unwrap();
+        let mut named_clause = mk_clause(vec!["x < 10"]);
+        named_clause.name = Some(mk_spanned("h_less_than"));
+        props.push(named_clause).unwrap();
+        block.requires = props;
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("h_unnamed : x > 0 := by verify_user_bound h_unnamed"));
+        assert!(out.contains("h_less_than : x < 10 := by verify_user_bound h_less_than"));
     }
 
     #[test]
