@@ -11,24 +11,24 @@ Writing a Lean proof is not like other forms of software engineering. A Lean pro
 The following is a workflow for solving [problem]. It is recursive – you will use this workflow to solve sub-problems as well.
 
 1. Make sure you understand your goal, context, and constraints for [problem] *completely* and *precisely*.
-  a. Spend as much time as you need *thinking* in order to come to this understanding.
-  b. If there is any ambiguity whatsoever, ask for clarification.
-  c. Repeat the process of clarification-asking and thinking until you have a *complete* and *precise* understanding of your goal, context, and constraints.
-  d. Record this in as much details as you can in comments the file you are editing.
+    1. Spend as much time as you need *thinking* in order to come to this understanding.
+    2. If there is any ambiguity whatsoever, ask for clarification.
+    3. Repeat the process of clarification-asking and thinking until you have a *complete* and *precise* understanding of your goal, context, and constraints.
+    4. Record this in as much details as you can in comments the file you are editing.
 2. Once you understand the goal, context, and constraints for [problem], brainstorm a *complete* solution. Your solution must be *complete*, as the act of thinking through details may make you realize that you need to adjust your high-level plan.
-  a. Spend as much time as it takes to think through your solution *completely* until you are confident that *every detail* is correct.
-  b. Record this in as much details as you can in comments the file you are editing.
+    1. Spend as much time as it takes to think through your solution *completely* until you are confident that *every detail* is correct.
+    2. Record this in as much details as you can in comments the file you are editing.
 3. You are now ready to start writing code.
-  a. Start with the specification (`requires` and `ensures` clauses).
-  b. Get these working with the `verify` subcommand and the `--allow-sorry` flag, omitting any proofs.
-  c. Iterate until everything verifies, implying that your specification is internally consistent. This does not necessarily mean that it's the *right* specification, only that Hermes understands it.
-  d. Run the `expand` subcommand to see what Lean is generated, and make sure it looks like what you expect. This will help you when you start writing proofs.
+    1. Start with the specification (`requires` and `ensures` clauses).
+    2. Get these working with the `verify` subcommand and the `--allow-sorry` flag, omitting any proofs.
+    3. Iterate until everything verifies, implying that your specification is internally consistent. This does not necessarily mean that it's the *right* specification, only that Hermes understands it.
+    4. Run the `expand` subcommand to see what Lean is generated, and make sure it looks like what you expect. This will help you when you start writing proofs.
 4. Move on to the proof.
-  a. First, break the proof down into lemmas. Spend as much time as you need thinking through the lemmas and how they fit together to prove the main proof.
-  b. Write the *definitions* of each lemma, but do *not* prove them – leave their proofs as `sorry` for now.
+    1. First, break the proof down into lemmas. Spend as much time as you need thinking through the lemmas and how they fit together to prove the main proof.
+    2. Write the *definitions* of each lemma, but do *not* prove them – leave their proofs as `sorry` for now.
 5. Write the top-level proof, using the lemmas you defined in the previous step.
-  a. Iterate until this proof verifies, using the `--allow-sorry` flag.
-  b. If you get stuck *at all*, consider whether you need to re-visit a previous step or "pop up" one level of abstraction to reconsider your broader plan.
+    1. Iterate until this proof verifies, using the `--allow-sorry` flag.
+    2. If you get stuck *at all*, consider whether you need to re-visit a previous step or "pop up" one level of abstraction to reconsider your broader plan.
 6. Once the top-level proof verifies, you can start proving the lemmas one by one. For each lemma, you will use *this entire workflow*, but applied to [sub-problem] instead of the top-level [problem].
 
 Overall, your workflow will look like a recursive application of this entire workflow. Always be prepared to "pop up" one level of abstraction to reconsider your broader plan.
