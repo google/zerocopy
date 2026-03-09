@@ -775,6 +775,14 @@ instance : Nonempty Referent :=
        simp at h }⟩
 
 /--
+  A predicate indicating that a referent's set of addresses fills the contiguous
+  range `[address, address + size)`. This means every address in that range
+  belongs to the referent's addresses.
+-/
+def Referent.IsContiguous (r : Referent) : Prop :=
+  ∀ a, r.address.val ≤ a ∧ a < r.address.val + r.size.val → a ∈ r.addresses
+
+/--
   A predicate indicating that a referent fits entirely within a given allocation.
   This means that all logical addresses of the referent are addresses allocated
   in the allocation, and the contiguous address range of the referent is
@@ -869,6 +877,9 @@ axiom referent_size_slice_dst {T : Type} [ReprC T] [lay : SpecSliceDstTypeLayout
   (p : Aeneas.Std.RawPtr T M) (h_fits : FitsInAllocation (raw_ptr_referent p) alloc) :
   (raw_ptr_referent p).size.val = reprCSliceDstSize lay.layout (md.metadata p).val
 
--- 9. Infrastructure Tests
-
-
+/--
+  The referent of a `*const [u8]` is always contiguous in memory.
+-/
+@[simp]
+axiom referent_is_contiguous_slice_dst_u8
+  (p : Aeneas.Std.RawPtr (Aeneas.Std.Slice Aeneas.Std.U8) Aeneas.Std.Mutability.Const) : (raw_ptr_referent p).IsContiguous
