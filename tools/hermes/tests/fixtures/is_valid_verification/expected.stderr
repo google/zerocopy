@@ -1,7 +1,7 @@
 [External Error] generated/IsValidVerificationIsValidVerification<HASH>/IsValidVerificationIsValidVerification<HASH>.lean: could not synthesize default value for field 'h_ret_is_valid' of 'is_valid_verification.make_valid.Post' using tactics
 [External Error] generated/IsValidVerificationIsValidVerification<HASH>/IsValidVerificationIsValidVerification<HASH>.lean: This error comes from the implicit `simp_all` proof for `h_ret_is_valid`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (h_ret_is_valid)`.
   × Expected type must not contain free variables
-  │   ↑0 < ↑ret_.x
+  │   ↑0 < ↑ret.x
   │ 
   │ Hint: Use the `+revert` option to automatically clean up and revert free
   │ variables
@@ -48,7 +48,7 @@
 [External Error] generated/IsValidVerificationIsValidVerification<HASH>/IsValidVerificationIsValidVerification<HASH>.lean: could not synthesize default value for field 'h_ret_is_valid' of 'is_valid_verification.make_bad.Post' using tactics
 [External Error] generated/IsValidVerificationIsValidVerification<HASH>/IsValidVerificationIsValidVerification<HASH>.lean: This error comes from the implicit `simp_all` proof for `h_ret_is_valid`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (h_ret_is_valid)`.
   × Expected type must not contain free variables
-  │   ↑0 < ↑ret_.x
+  │   ↑0 < ↑ret.x
   │ 
   │ Hint: Use the `+revert` option to automatically clean up and revert free
   │ variables

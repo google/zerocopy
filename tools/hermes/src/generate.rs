@@ -264,6 +264,7 @@ struct AstTheorem<'a> {
     pre_args: Vec<String>,
     call_str: String,
     destructure_lhs: Option<String>,
+    intro_pattern: String,
     post_args: Vec<String>,
     proof_context: Option<&'a Vec<SpannedLine<crate::parse::hkd::Safe>>>,
     destructure_req: Option<Vec<String>>,
@@ -392,13 +393,9 @@ impl LeanBuilder {
                 self.push_str("eval_progress \"Missing orthogonal progress proof. The function progress verification was not automatically solvable.\"\n");
             }
 
-            self.push_str("  · intro ");
-            if let Some(lhs) = &ast.destructure_lhs {
-                self.push_str(lhs);
-                self.push_str(" h_ret_\n");
-            } else {
-                self.push_str("ret_ h_ret_\n");
-            }
+            self.push_str("  · rintro ");
+            self.push_str(&ast.intro_pattern);
+            self.push_str(" h_returns\n");
 
             if let Some(req_fields) = &ast.destructure_req {
                 self.push_str(&format!(
@@ -738,6 +735,26 @@ fn generate_function(
         None
     };
 
+    let intro_pattern = if has_mut_args {
+        let vars = mut_args.iter().map(|a| format!("{}'", a.name)).collect::<Vec<_>>().join(", ");
+        if has_return_value {
+            format!("⟨ret, {}⟩", vars)
+        } else {
+            if mut_args.len() == 1 {
+                format!("{}'", mut_args[0].name)
+            } else {
+                format!("⟨{}⟩", vars)
+            }
+        }
+    } else {
+        if has_return_value {
+            "ret".to_string()
+        } else {
+            // Technically `Unit`, but `ret` is a valid name.
+            "ret".to_string()
+        }
+    };
+
     let mut post_call_args = Vec::new();
     post_call_args.extend(dict_args.iter().cloned());
     post_call_args.extend(args.iter().map(|a| a.name.clone()));
@@ -813,6 +830,7 @@ fn generate_function(
         pre_args,
         call_str,
         destructure_lhs,
+        intro_pattern,
         post_args: post_call_args,
         proof_context,
         destructure_req,
@@ -2230,5 +2248,83 @@ mod tests {
         // `h_lt` is missing, so it should NOT be emitted explicitly (relies on autoParam)
         assert!(!out.contains("h_lt :="));
         assert!(out.contains("}"));
+    }
+
+    #[test]
+    fn test_gen_rintro_unit_return_no_mut_args() {
+        let item: syn::ItemFn = parse_quote! { fn f() {} };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("rintro ret h_returns"));
+    }
+
+    #[test]
+    fn test_gen_rintro_value_return_no_mut_args() {
+        let item: syn::ItemFn = parse_quote! { fn f() -> u32 { 0 } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("rintro ret h_returns"));
+    }
+
+    #[test]
+    fn test_gen_rintro_unit_return_one_mut_arg() {
+        let item: syn::ItemFn = parse_quote! { fn f(x: &mut u32) {} };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("rintro x' h_returns"));
+    }
+
+    #[test]
+    fn test_gen_rintro_unit_return_two_mut_args() {
+        let item: syn::ItemFn = parse_quote! { fn f(x: &mut u32, y: &mut u32) {} };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("rintro ⟨x', y'⟩ h_returns"));
+    }
+
+    #[test]
+    fn test_gen_rintro_value_return_one_mut_arg() {
+        let item: syn::ItemFn = parse_quote! { fn f(x: &mut u32) -> u32 { 0 } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("rintro ⟨ret, x'⟩ h_returns"));
+    }
+
+    #[test]
+    fn test_gen_rintro_value_return_two_mut_args() {
+        let item: syn::ItemFn = parse_quote! { fn f(x: &mut u32, y: &mut u32) -> u32 { 0 } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![], vec![], Some(vec!["simp"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        generate_function(&func, &block, &mut builder, Path::new("test.rs"));
+        let out = builder.buf;
+
+        assert!(out.contains("rintro ⟨ret, x', y'⟩ h_returns"));
     }
 }

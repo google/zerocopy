@@ -41,7 +41,7 @@
     ╰────
 
   × invalid {...} notation, structure type expected
-  │   Post ret_
+  │   Post ret
     ╭─[[PROJECT_ROOT]/src/lib.rs:44:7]
  43 │     /// proof:
  44 │ ╭─▶ ///   -- A deliberately broken explicit proof should NOT emit "declaration uses sorry"
@@ -58,8 +58,8 @@
   │ is not definitionally equal to the right-hand side
   │   true
   │ 
-  │ ret_ : Unit
-  │ h_ret_ : explicit_semantic_failure = ok ret_
+  │ ret : Unit
+  │ h_returns : explicit_semantic_failure = ok ret
   │ ⊢ (true == false) = true
     ╭─[[PROJECT_ROOT]/src/lib.rs:58:7]
  57 │ /// proof (h):

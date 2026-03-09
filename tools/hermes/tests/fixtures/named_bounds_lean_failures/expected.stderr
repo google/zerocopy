@@ -127,8 +127,8 @@
     ╰────
 
   × unsolved goals
-  │ x ret_ : U32
-  │ h_ret_ : fail_proof_context_tactic_failure x = ok ret_
+  │ x ret : U32
+  │ h_returns : fail_proof_context_tactic_failure x = ok ret
   │ h_x_is_valid : Hermes.IsValid.isValid x
   │ ⊢ False
     ╭─[[PROJECT_ROOT]/src/lib.rs:46:24]
