@@ -59,7 +59,7 @@ jobs:
       # (more recent) stable toolchain to be installed. As of this writing, this
       # toolchain is not used for anything else.
       - name: Install stable Rust for use in 'cargo.sh'
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1 # zizmor: ignore[superfluous-actions]
         with:
           toolchain: stable
           # This isn't actually required to build docs, but `cargo.sh` checks
@@ -68,7 +68,7 @@ jobs:
           components: rust-src
   
       - name: Install Rust with nightly toolchain (${{ env.ZC_NIGHTLY_TOOLCHAIN }})
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1 # zizmor: ignore[superfluous-actions]
         with:
             toolchain: ${{ env.ZC_NIGHTLY_TOOLCHAIN }}
             targets: "x86_64-unknown-linux-gnu"

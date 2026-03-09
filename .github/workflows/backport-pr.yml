@@ -69,4 +69,4 @@ jobs:
           title: "${{ env.PR_TITLE }}"
           branch: backport-${{ github.event.inputs.commit }}
           push-to-fork: google-pr-creation-bot/zerocopy
-          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]

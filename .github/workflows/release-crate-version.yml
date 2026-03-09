@@ -52,7 +52,7 @@ jobs:
           title: "Release ${{ github.event.inputs.version }}"
           branch: release-${{ github.event.inputs.version }}
           push-to-fork: google-pr-creation-bot/zerocopy
-          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
 
       - name: Add labels
         if: steps.submit-pr.outputs.pull-request-operation == 'created'

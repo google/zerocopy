@@ -301,12 +301,12 @@ jobs:
     # (more recent) stable toolchain to be installed. As of this writing, this
     # toolchain is not used for anything else.
     - name: Install stable Rust for use in 'cargo.sh'
-      uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+      uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1 # zizmor: ignore[superfluous-actions]
       with:
         toolchain: stable
 
     - name: Install Rust with ${{ matrix.toolchain }} toolchain (${{ env.ZC_TOOLCHAIN }}) and target ${{ matrix.target }}
-      uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+      uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1 # zizmor: ignore[superfluous-actions]
       with:
           toolchain: ${{ env.ZC_TOOLCHAIN }}
           targets: ${{ matrix.target }}
@@ -660,7 +660,7 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }} # zizmor: ignore[secrets-outside-env]
           files: lcov.info
 
   kani:
@@ -711,11 +711,11 @@ jobs:
           echo "RUSTFLAGS=$RUSTFLAGS" >> $GITHUB_ENV
           echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
       - name: Install stable Rust for use in 'cargo.sh'
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1 # zizmor: ignore[superfluous-actions]
         with:
           toolchain: stable
       - name: Install Rust with nightly toolchain (${{ env.ZC_TOOLCHAIN }}) and target aarch64_be-unknown-linux-gnu
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1 # zizmor: ignore[superfluous-actions]
         with:
             toolchain: ${{ env.ZC_TOOLCHAIN }}
             components: clippy, rust-src
@@ -754,11 +754,11 @@ jobs:
           echo "RUSTFLAGS=$RUSTFLAGS" >> $GITHUB_ENV
           echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
       - name: Install stable Rust for use in 'cargo.sh'
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1 # zizmor: ignore[superfluous-actions]
         with:
           toolchain: stable
       - name: Install Rust with nightly toolchain (${{ env.ZC_TOOLCHAIN }})
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1 # zizmor: ignore[superfluous-actions]
         with:
             toolchain: ${{ env.ZC_TOOLCHAIN }}
             components: clippy, rust-src

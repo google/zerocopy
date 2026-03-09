@@ -66,11 +66,11 @@ jobs:
             echo "ZC_TARGET_TOOLCHAIN=nightly-$(date -d '-1 day' +%Y-%m-%d)" >> $GITHUB_ENV
           fi
       - name: Install stable Rust for use in 'cargo.sh'
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1 # zizmor: ignore[superfluous-actions]
         with:
           toolchain: stable
       - name: Install Rust with ${{ env.ZC_TARGET_TOOLCHAIN }} toolchain
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1 # zizmor: ignore[superfluous-actions]
         with:
             toolchain: ${{ env.ZC_TARGET_TOOLCHAIN }}
             # We require the `rust-src` component to ensure that the compiler
@@ -136,7 +136,7 @@ jobs:
           body: "${{ matrix.toolchain == 'nightly' && 'On failure, consider [manually creating roll PRs](https://github.com/google/zerocopy/actions/workflows/roll-pinned-toolchain-versions.yml) for previous nightlies to bisect the failure.' || '' }}"
           branch: roll-pinned-${{ matrix.toolchain }}-toolchain-to-${{ env.ZC_VERSION_FOR_BRANCH_NAME }}-for-${{ matrix.branch }}
           push-to-fork: google-pr-creation-bot/zerocopy
-          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
 
       - name: Add labels
         if: steps.submit-pr.outputs.pull-request-operation == 'created'
@@ -181,7 +181,7 @@ jobs:
           title: "[ci] Roll pinned Kani version"
           branch: roll-pinned-kani-to-${{ env.ZC_KANI_LATEST }}-for-${{ matrix.branch }}
           push-to-fork: google-pr-creation-bot/zerocopy
-          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
 
       - name: Add labels
         if: steps.submit-pr.outputs.pull-request-operation == 'created'
