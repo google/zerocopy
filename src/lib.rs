@@ -1791,8 +1791,6 @@ pub unsafe trait TryFromBytes {
     /// assert!(Packet::try_ref_from_bytes(bytes).is_err());
     /// ```
     ///
-    /// # <a id="asdf">Foo</a>
-    ///
     #[doc = codegen_section!(
         header = "h5",
         bench = "try_ref_from_bytes",
