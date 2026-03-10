@@ -624,6 +624,11 @@ jobs:
         run: |
           set -eo pipefail
           sudo apt install -qq llvm
+          # The codegen tests evaluate assembly for multiple target architectures.
+          # These tests assume that `rustup` is installed on the host. We must
+          # explicitly add the targets before compilation, because `rustc` aborts
+          # when commanded to emit assembly for a target that has not been added.
+          rustup target add --toolchain $(./cargo.sh --version nightly) thumbv7m-none-eabi riscv32imc-unknown-none-elf
           ./cargo.sh +nightly install --quiet cargo-show-asm
           RUSTFLAGS="$RUSTFLAGS -Awarnings" ./cargo.sh +nightly test \
             --package zerocopy \

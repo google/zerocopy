@@ -1,15 +1,15 @@
 bench_ref_from_suffix_dynamic_padding:
 	lea eax, [rsi + rdi]
 	test al, 3
-	jne .LBB5_1
+	jne .LBB13_1
 	movabs rax, 9223372036854775804
 	and rax, rsi
 	cmp rax, 9
-	jae .LBB5_3
-.LBB5_1:
+	jae .LBB13_3
+.LBB13_1:
 	xor eax, eax
 	ret
-.LBB5_3:
+.LBB13_3:
 	add rax, -9
 	movabs rcx, -6148914691236517205
 	mul rcx

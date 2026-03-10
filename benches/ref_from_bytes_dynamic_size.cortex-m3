@@ -1,0 +1,19 @@
+bench_ref_from_bytes_dynamic_size:
+	push {r7, lr}
+	mov r7, sp
+	lsls r2, r0, #31
+	mov.w r2, #0
+	bne .LBB4_3
+	cmp r1, #4
+	blo .LBB4_3
+	subs r2, r1, #4
+	bic r3, r2, #1
+	adds r3, #4
+	cmp r1, r3
+	ite ne
+	movne r0, #0
+	lsreq r1, r2, #1
+	mov r2, r0
+.LBB4_3:
+	mov r0, r2
+	pop {r7, pc}

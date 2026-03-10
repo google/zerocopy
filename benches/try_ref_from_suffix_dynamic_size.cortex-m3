@@ -1,0 +1,25 @@
+bench_try_ref_from_suffix_dynamic_size:
+	push {r7, lr}
+	mov r7, sp
+	mov r3, r1
+	add r1, r0
+	lsls r1, r1, #31
+	mov.w r2, #0
+	bne .LBB35_4
+	cmp r3, #4
+	blo .LBB35_3
+	subs r1, r3, #4
+	and r3, r3, #1
+	ldrh.w r12, [r0, r3]
+	movw r2, #49344
+	lsrs r1, r1, #1
+	cmp r12, r2
+	mov.w r2, #0
+	it eq
+	addeq r2, r0, r3
+.LBB35_3:
+	mov r0, r2
+	pop {r7, pc}
+.LBB35_4:
+	mov r0, r2
+	pop {r7, pc}

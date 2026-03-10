@@ -1,5 +1,4 @@
-use zerocopy::Unalign;
-use zerocopy_derive::*;
+use zerocopy::{Unalign, *};
 
 #[path = "formats/coco_static_size.rs"]
 mod format;

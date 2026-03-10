@@ -1,0 +1,20 @@
+bench_try_ref_from_suffix_static_size:
+	add a2, a1, a0
+	andi a3, a2, 1
+	li a0, 0
+	bnez a3, .LBB36_3
+	li a3, 6
+	bltu a1, a3, .LBB36_3
+	lbu a0, -5(a2)
+	lbu a1, -6(a2)
+	addi a2, a2, -6
+	slli a0, a0, 8
+	or a0, a0, a1
+	lui a1, 12
+	addi a1, a1, 192
+	xor a0, a0, a1
+	snez a0, a0
+	addi a0, a0, -1
+	and a0, a0, a2
+.LBB36_3:
+	ret

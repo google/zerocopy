@@ -1,0 +1,21 @@
+bench_try_ref_from_bytes_dynamic_size:
+	andi a2, a0, 1
+	bnez a2, .LBB25_5
+	li a2, 4
+	bltu a1, a2, .LBB25_5
+	addi a2, a1, -4
+	andi a3, a2, -2
+	addi a3, a3, 4
+	bne a1, a3, .LBB25_5
+	lbu a3, 1(a0)
+	lbu a4, 0(a0)
+	slli a3, a3, 8
+	or a3, a3, a4
+	lui a4, 12
+	addi a4, a4, 192
+	bne a3, a4, .LBB25_5
+	srli a1, a2, 1
+	ret
+.LBB25_5:
+	li a0, 0
+	ret

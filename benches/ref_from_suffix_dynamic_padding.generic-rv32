@@ -1,0 +1,26 @@
+bench_ref_from_suffix_dynamic_padding:
+	add a2, a1, a0
+	andi a2, a2, 3
+	bnez a2, .LBB13_2
+	lui a2, 524288
+	addi a2, a2, -4
+	and a2, a2, a1
+	li a3, 9
+	bgeu a2, a3, .LBB13_3
+.LBB13_2:
+	li a0, 0
+	ret
+.LBB13_3:
+	addi a2, a2, -9
+	lui a3, 699051
+	add a0, a0, a1
+	addi a1, a3, -1365
+	mulhu a2, a2, a1
+	srli a1, a2, 1
+	andi a2, a2, -2
+	add a2, a2, a1
+	ori a3, a2, -4
+	sub a0, a0, a2
+	add a0, a0, a3
+	addi a0, a0, -8
+	ret

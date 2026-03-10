@@ -4,26 +4,26 @@ bench_ref_from_prefix_with_elems_dynamic_padding:
 	mov rax, rcx
 	mul rdx
 	mov edx, 1
-	jo .LBB5_5
+	jo .LBB11_5
 	cmp rax, -10
-	ja .LBB5_5
+	ja .LBB11_5
 	lea r8, [rax + 9]
 	not eax
 	and eax, 3
 	add rax, r8
-	jae .LBB5_3
-.LBB5_5:
+	jae .LBB11_3
+.LBB11_5:
 	xor r8d, r8d
 	mov rax, r8
 	ret
-.LBB5_3:
+.LBB11_3:
 	xor edx, edx
 	mov r8d, 0
 	test dil, 3
-	je .LBB5_4
+	je .LBB11_4
 	mov rax, r8
 	ret
-.LBB5_4:
+.LBB11_4:
 	xor edx, edx
 	cmp rax, rsi
 	mov eax, 1

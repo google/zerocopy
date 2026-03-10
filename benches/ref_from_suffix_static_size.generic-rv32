@@ -1,0 +1,10 @@
+bench_ref_from_suffix_static_size:
+	add a2, a1, a0
+	andi a3, a2, 1
+	li a0, 0
+	bnez a3, .LBB15_3
+	li a3, 6
+	bltu a1, a3, .LBB15_3
+	addi a0, a2, -6
+.LBB15_3:
+	ret

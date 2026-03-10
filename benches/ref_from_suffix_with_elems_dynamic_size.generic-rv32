@@ -1,0 +1,24 @@
+bench_ref_from_suffix_with_elems_dynamic_size:
+	mv a3, a1
+	lui a1, 524288
+	addi a4, a1, -3
+	li a1, 1
+	bltu a4, a2, .LBB17_3
+	add a4, a3, a0
+	andi a4, a4, 1
+	bnez a4, .LBB17_4
+	slli a4, a2, 1
+	addi a4, a4, 4
+	bgeu a3, a4, .LBB17_5
+.LBB17_3:
+	li a0, 0
+	ret
+.LBB17_4:
+	li a1, 0
+	li a0, 0
+	ret
+.LBB17_5:
+	sub a3, a3, a4
+	add a0, a0, a3
+	mv a1, a2
+	ret

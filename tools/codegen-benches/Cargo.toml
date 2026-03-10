@@ -1,0 +1,18 @@
+[package]
+name = "codegen-benches"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+zerocopy = { path = "../../", features = ["derive"] }
+
+[lib]
+name = "codegen_benches"
+path = "src/lib.rs"
+
+[workspace]
+[profile.dev]
+panic = "abort"
+[profile.release]
+panic = "abort"

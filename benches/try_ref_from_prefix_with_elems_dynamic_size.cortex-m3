@@ -1,0 +1,33 @@
+bench_try_ref_from_prefix_with_elems_dynamic_size:
+	push {r7, lr}
+	mov r7, sp
+	movw r3, #65533
+	movt r3, #32767
+	cmp r2, r3
+	bhi .LBB33_5
+	lsls r3, r0, #31
+	bne .LBB33_4
+	mov r3, r0
+	adds r0, r2, #2
+	lsls r0, r0, #1
+	cmp r0, r1
+	mov.w r0, #0
+	itt hi
+	movhi r1, #1
+	pophi {r7, pc}
+	ldrh.w r12, [r3]
+	movw r1, #49344
+	cmp r12, r1
+	ite ne
+	movne r2, #2
+	moveq r0, r3
+	mov r1, r2
+	pop {r7, pc}
+.LBB33_4:
+	movs r1, #0
+	movs r0, #0
+	pop {r7, pc}
+.LBB33_5:
+	movs r0, #0
+	movs r1, #1
+	pop {r7, pc}

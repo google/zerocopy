@@ -1,0 +1,16 @@
+bench_ref_from_prefix_dynamic_size:
+	push {r7, lr}
+	mov r7, sp
+	lsls r2, r0, #31
+	bne .LBB9_2
+	cmp r1, #4
+	ittee lo
+	movlo r0, #0
+	movlo r1, #1
+	subhs r1, #4
+	lsrhs r1, r1, #1
+	pop {r7, pc}
+.LBB9_2:
+	movs r1, #0
+	movs r0, #0
+	pop {r7, pc}

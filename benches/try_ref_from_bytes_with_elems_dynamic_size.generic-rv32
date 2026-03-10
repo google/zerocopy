@@ -1,0 +1,22 @@
+bench_try_ref_from_bytes_with_elems_dynamic_size:
+	lui a3, 524288
+	addi a3, a3, -3
+	bltu a3, a2, .LBB28_4
+	andi a3, a0, 1
+	bnez a3, .LBB28_4
+	slli a3, a2, 1
+	addi a3, a3, 4
+	bne a1, a3, .LBB28_4
+	lbu a3, 1(a0)
+	lbu a4, 0(a0)
+	slli a3, a3, 8
+	or a3, a3, a4
+	lui a4, 12
+	addi a4, a4, 192
+	beq a3, a4, .LBB28_5
+.LBB28_4:
+	li a0, 0
+	mv a2, a1
+.LBB28_5:
+	mv a1, a2
+	ret

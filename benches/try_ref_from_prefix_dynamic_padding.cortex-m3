@@ -1,0 +1,30 @@
+bench_try_ref_from_prefix_dynamic_padding:
+	push {r7, lr}
+	mov r7, sp
+	lsls r2, r0, #30
+	beq .LBB29_2
+	movs r1, #0
+	movs r0, #0
+	pop {r7, pc}
+.LBB29_2:
+	mov r2, r0
+	movw r0, #65532
+	movt r0, #32767
+	ands r1, r0
+	cmp r1, #9
+	mov.w r0, #0
+	itt lo
+	movlo r1, #1
+	poplo {r7, pc}
+	movw r3, #43691
+	subs r1, #9
+	movt r3, #43690
+	umull r1, r12, r1, r3
+	ldrh r1, [r2]
+	movw r3, #49344
+	cmp r1, r3
+	mov.w r1, #2
+	itt eq
+	lsreq.w r1, r12, #1
+	moveq r0, r2
+	pop {r7, pc}
