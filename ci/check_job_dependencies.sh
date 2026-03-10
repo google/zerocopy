@@ -18,7 +18,7 @@ jobs=$(for i in $(find .github -iname '*.yaml' -or -iname '*.yml')
       # This gets the list of jobs that all-jobs-succeed does not depend on.
       comm -23 \
         <(yq -r '.jobs | keys | .[]' "$i" | sort | uniq) \
-        <(yq -r '.jobs.all-jobs-succeed.needs[]' "$i" | sort | uniq)
+        <(yq -r '.jobs["all-jobs-succeed"].needs[]' "$i" | sort | uniq)
     fi
 
   # The grep call here excludes all-jobs-succeed from the list of jobs that
