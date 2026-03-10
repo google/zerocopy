@@ -1,0 +1,21 @@
+bench_try_ref_from_bytes_dynamic_size:
+	push {r7, lr}
+	mov r7, sp
+	lsls r2, r0, #31
+	bne .LBB25_4
+	cmp r1, #4
+	blo .LBB25_4
+	subs r2, r1, #4
+	bic r3, r2, #1
+	adds r3, #4
+	cmp r1, r3
+	bne .LBB25_4
+	ldrh.w r12, [r0]
+	movw r3, #49344
+	cmp r12, r3
+	itt eq
+	lsreq r1, r2, #1
+	popeq {r7, pc}
+.LBB25_4:
+	movs r0, #0
+	pop {r7, pc}

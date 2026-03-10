@@ -1,0 +1,26 @@
+bench_try_transmute:
+	lbu a2, 1(a1)
+	lbu a4, 0(a1)
+	lui a3, 12
+	slli a2, a2, 8
+	or a4, a4, a2
+	addi a2, a3, 192
+	bne a4, a2, .LBB39_2
+	lbu a3, 2(a1)
+	lbu a4, 3(a1)
+	lbu a5, 4(a1)
+	lbu a1, 5(a1)
+	sb a3, 2(a0)
+	sb a4, 3(a0)
+	sb a5, 4(a0)
+	sb a1, 5(a0)
+	srli a1, a2, 8
+	sb a2, 0(a0)
+	sb a1, 1(a0)
+	ret
+.LBB39_2:
+	addi a2, a3, 193
+	srli a1, a2, 8
+	sb a2, 0(a0)
+	sb a1, 1(a0)
+	ret

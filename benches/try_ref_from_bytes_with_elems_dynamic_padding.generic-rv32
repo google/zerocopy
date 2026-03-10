@@ -1,0 +1,37 @@
+bench_try_ref_from_bytes_with_elems_dynamic_padding:
+	li a3, 3
+	mulhu a3, a2, a3
+	bnez a3, .LBB27_9
+	slli a3, a2, 1
+	add a3, a3, a2
+	li a4, -10
+	bltu a4, a3, .LBB27_9
+	addi a4, a3, 9
+	not a3, a3
+	andi a3, a3, 3
+	add a5, a3, a4
+	li a6, 0
+	bne a1, a5, .LBB27_8
+	andi a3, a0, 3
+	bnez a3, .LBB27_8
+	bltu a5, a4, .LBB27_8
+	lbu a3, 1(a0)
+	lbu a4, 0(a0)
+	lui a5, 12
+	slli a3, a3, 8
+	or a4, a4, a3
+	addi a5, a5, 192
+	xor a3, a4, a5
+	snez a3, a3
+	beq a4, a5, .LBB27_7
+	mv a2, a1
+.LBB27_7:
+	addi a3, a3, -1
+	and a6, a3, a0
+	mv a1, a2
+.LBB27_8:
+	mv a0, a6
+	ret
+.LBB27_9:
+	li a0, 0
+	ret

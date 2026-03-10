@@ -4,10 +4,10 @@ bench_try_ref_from_suffix_dynamic_size:
 	setb cl
 	or cl, al
 	test cl, 1
-	je .LBB5_2
+	je .LBB35_2
 	xor eax, eax
 	ret
-.LBB5_2:
+.LBB35_2:
 	lea rdx, [rsi - 4]
 	shr rdx
 	and esi, 1

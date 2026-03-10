@@ -1,0 +1,17 @@
+bench_read_from_suffix_static_size:
+	push {r7, lr}
+	mov r7, sp
+	cmp r2, #6
+	bhs .LBB2_2
+	movs r1, #0
+	strh r1, [r0]
+	pop {r7, pc}
+.LBB2_2:
+	add r1, r2
+	ldr r2, [r1, #-6]
+	ldrh r1, [r1, #-2]
+	str.w r2, [r0, #2]
+	strh r1, [r0, #6]
+	movs r1, #1
+	strh r1, [r0]
+	pop {r7, pc}

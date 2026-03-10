@@ -1,0 +1,36 @@
+bench_try_ref_from_suffix_dynamic_padding:
+	adds r2, r1, r0
+	lsls r2, r2, #30
+	beq .LBB34_2
+	movs r0, #0
+	bx lr
+.LBB34_2:
+	mov r12, r0
+	movw r0, #65532
+	movt r0, #32767
+	and.w r3, r1, r0
+	cmp r3, #9
+	mov.w r0, #0
+	bhs .LBB34_4
+	bx lr
+.LBB34_4:
+	push {r7, lr}
+	mov r7, sp
+	movw r2, #43691
+	subs r3, #9
+	movt r2, #43690
+	umull r2, r3, r3, r2
+	bic r2, r3, #1
+	mov lr, r1
+	add.w r2, r2, r3, lsr #1
+	lsrs r1, r3, #1
+	orn r3, r2, #3
+	sub.w r2, lr, r2
+	add r2, r12
+	add r2, r3
+	ldrh r12, [r2, #-8]!
+	movw r3, #49344
+	cmp r12, r3
+	it eq
+	moveq r0, r2
+	pop {r7, pc}

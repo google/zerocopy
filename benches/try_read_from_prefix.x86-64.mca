@@ -20,7 +20,7 @@ Instruction Info:
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
  1      1     0.33                        mov	eax, 49345
  1      1     0.33                        cmp	rsi, 6
- 1      1     1.00                        jb	.LBB5_2
+ 1      1     1.00                        jb	.LBB22_2
  1      5     0.50    *                   mov	eax, dword ptr [rdi]
  1      5     0.50    *                   movzx	ecx, word ptr [rdi + 4]
  1      1     0.50                        shl	rcx, 32
@@ -53,7 +53,7 @@ Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
  -      -     0.65   0.01    -     0.34    -      -     mov	eax, 49345
  -      -     0.01   0.33    -     0.66    -      -     cmp	rsi, 6
- -      -      -      -      -     1.00    -      -     jb	.LBB5_2
+ -      -      -      -      -     1.00    -      -     jb	.LBB22_2
  -      -      -      -      -      -      -     1.00   mov	eax, dword ptr [rdi]
  -      -      -      -      -      -     1.00    -     movzx	ecx, word ptr [rdi + 4]
  -      -     0.65    -      -     0.35    -      -     shl	rcx, 32

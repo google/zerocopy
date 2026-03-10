@@ -1,0 +1,8 @@
+bench_ref_from_bytes_static_size:
+	andi a2, a0, 1
+	xori a1, a1, 6
+	or a1, a1, a2
+	snez a1, a1
+	addi a1, a1, -1
+	and a0, a0, a1
+	ret

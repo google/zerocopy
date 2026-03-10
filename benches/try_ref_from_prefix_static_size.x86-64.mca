@@ -22,12 +22,12 @@ Instruction Info:
  1      1     0.50                        setb	al
  1      1     0.33                        or	al, dil
  1      1     0.33                        test	al, 1
- 1      1     1.00                        jne	.LBB5_2
+ 1      1     1.00                        jne	.LBB31_2
  1      5     0.50    *                   movzx	eax, word ptr [rdi]
  1      1     0.33                        cmp	eax, 49344
  1      1     0.33                        mov	eax, 2
  2      2     0.67                        cmove	rax, rdi
- 1      1     1.00                        je	.LBB5_3
+ 1      1     1.00                        je	.LBB31_3
  1      0     0.25                        xor	eax, eax
  1      1     1.00                  U     ret
 
@@ -53,11 +53,11 @@ Resource pressure by instruction:
  -      -     1.00    -      -      -      -      -     setb	al
  -      -     0.02   0.66    -     0.32    -      -     or	al, dil
  -      -     0.03   0.65    -     0.32    -      -     test	al, 1
- -      -      -      -      -     1.00    -      -     jne	.LBB5_2
+ -      -      -      -      -     1.00    -      -     jne	.LBB31_2
  -      -      -      -      -      -     0.50   0.50   movzx	eax, word ptr [rdi]
  -      -     0.92   0.07    -     0.01    -      -     cmp	eax, 49344
  -      -     0.37   0.63    -      -      -      -     mov	eax, 2
  -      -     0.97   1.00    -     0.03    -      -     cmove	rax, rdi
- -      -      -      -      -     1.00    -      -     je	.LBB5_3
+ -      -      -      -      -     1.00    -      -     je	.LBB31_3
  -      -      -      -      -      -      -      -     xor	eax, eax
  -      -      -      -      -     1.00    -      -     ret

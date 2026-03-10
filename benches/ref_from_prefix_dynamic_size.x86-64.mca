@@ -21,9 +21,9 @@ Instruction Info:
  1      0     0.25                        xor	edx, edx
  1      1     0.33                        mov	eax, 0
  1      1     0.33                        test	dil, 1
- 1      1     1.00                        jne	.LBB5_4
+ 1      1     1.00                        jne	.LBB9_4
  1      1     0.33                        cmp	rsi, 4
- 1      1     1.00                        jae	.LBB5_3
+ 1      1     1.00                        jae	.LBB9_3
  1      1     0.33                        mov	edx, 1
  1      0     0.25                        xor	eax, eax
  1      1     1.00                  U     ret
@@ -54,9 +54,9 @@ Resource pressure by instruction:
  -      -      -      -      -      -      -      -     xor	edx, edx
  -      -     0.01   0.98    -     0.01    -      -     mov	eax, 0
  -      -     0.98   0.02    -      -      -      -     test	dil, 1
- -      -      -      -      -     1.00    -      -     jne	.LBB5_4
+ -      -      -      -      -     1.00    -      -     jne	.LBB9_4
  -      -     0.02   0.98    -      -      -      -     cmp	rsi, 4
- -      -      -      -      -     1.00    -      -     jae	.LBB5_3
+ -      -      -      -      -     1.00    -      -     jae	.LBB9_3
  -      -     0.98   0.01    -     0.01    -      -     mov	edx, 1
  -      -      -      -      -      -      -      -     xor	eax, eax
  -      -      -      -      -     1.00    -      -     ret

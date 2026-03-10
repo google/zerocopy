@@ -2,13 +2,13 @@ bench_try_ref_from_prefix_dynamic_size:
 	xor edx, edx
 	mov eax, 0
 	test dil, 1
-	jne .LBB5_4
+	jne .LBB30_4
 	cmp rsi, 4
-	jae .LBB5_3
+	jae .LBB30_3
 	mov edx, 1
 	xor eax, eax
 	ret
-.LBB5_3:
+.LBB30_3:
 	add rsi, -4
 	shr rsi
 	movzx ecx, word ptr [rdi]
@@ -18,5 +18,5 @@ bench_try_ref_from_prefix_dynamic_size:
 	xor eax, eax
 	cmp cx, -16192
 	cmove rax, rdi
-.LBB5_4:
+.LBB30_4:
 	ret

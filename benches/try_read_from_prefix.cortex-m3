@@ -1,0 +1,18 @@
+bench_try_read_from_prefix_static_size:
+	push {r7, lr}
+	mov r7, sp
+	cmp r2, #6
+	movw r12, #49344
+	blo .LBB22_3
+	ldr r3, [r1]
+	uxth r2, r3
+	cmp r2, r12
+	bne .LBB22_3
+	ldrh r1, [r1, #4]
+	str r3, [r0]
+	strh r1, [r0, #4]
+	pop {r7, pc}
+.LBB22_3:
+	add.w r1, r12, #1
+	strh r1, [r0]
+	pop {r7, pc}

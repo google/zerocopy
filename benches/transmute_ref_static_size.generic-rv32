@@ -1,0 +1,2 @@
+bench_transmute_ref_static_size:
+	ret

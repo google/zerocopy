@@ -1,0 +1,20 @@
+bench_ref_from_bytes_with_elems_dynamic_size:
+	push {r7, lr}
+	mov r7, sp
+	movw r3, #65534
+	movt r3, #32767
+	cmp r2, r3
+	add.w r3, r2, #2
+	and r12, r0, #1
+	eor.w r3, r1, r3, lsl #1
+	orr.w r3, r3, r12
+	clz r3, r3
+	mov.w lr, #0
+	lsr.w r3, r3, #5
+	it lo
+	movlo.w lr, #1
+	ands.w r3, r3, lr
+	ite ne
+	movne r1, r2
+	moveq r0, r3
+	pop {r7, pc}

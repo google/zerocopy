@@ -1,0 +1,38 @@
+bench_try_ref_from_prefix_dynamic_padding:
+	andi a2, a0, 3
+	beqz a2, .LBB29_2
+	li a1, 0
+	li a0, 0
+	ret
+.LBB29_2:
+	lui a2, 524288
+	addi a2, a2, -4
+	and a1, a1, a2
+	li a2, 9
+	bgeu a1, a2, .LBB29_4
+	li a0, 0
+	li a1, 1
+	ret
+.LBB29_4:
+	lbu a2, 1(a0)
+	lbu a3, 0(a0)
+	lui a4, 12
+	slli a2, a2, 8
+	or a3, a3, a2
+	addi a4, a4, 192
+	xor a2, a3, a4
+	snez a2, a2
+	beq a3, a4, .LBB29_6
+	li a1, 2
+	addi a2, a2, -1
+	and a0, a0, a2
+	ret
+.LBB29_6:
+	addi a1, a1, -9
+	lui a3, 699051
+	addi a3, a3, -1365
+	mulhu a1, a1, a3
+	srli a1, a1, 1
+	addi a2, a2, -1
+	and a0, a0, a2
+	ret

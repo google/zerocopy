@@ -1,0 +1,23 @@
+bench_try_ref_from_prefix_static_size:
+	andi a2, a0, 1
+	bnez a2, .LBB31_6
+	li a2, 6
+	bltu a1, a2, .LBB31_6
+	lbu a1, 1(a0)
+	lbu a2, 0(a0)
+	slli a1, a1, 8
+	or a1, a1, a2
+	lui a2, 12
+	slli a1, a1, 16
+	srli a1, a1, 16
+	addi a2, a2, 192
+	bne a1, a2, .LBB31_5
+	bne a1, a2, .LBB31_6
+.LBB31_4:
+	ret
+.LBB31_5:
+	li a0, 2
+	beq a1, a2, .LBB31_4
+.LBB31_6:
+	li a0, 0
+	ret

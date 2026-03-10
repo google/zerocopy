@@ -1,0 +1,16 @@
+bench_try_ref_from_bytes_static_size:
+	li a2, 6
+	bne a1, a2, .LBB26_3
+	andi a1, a0, 1
+	bnez a1, .LBB26_3
+	lbu a1, 1(a0)
+	lbu a2, 0(a0)
+	slli a1, a1, 8
+	or a1, a1, a2
+	lui a2, 12
+	addi a2, a2, 192
+	beq a1, a2, .LBB26_4
+.LBB26_3:
+	li a0, 0
+.LBB26_4:
+	ret

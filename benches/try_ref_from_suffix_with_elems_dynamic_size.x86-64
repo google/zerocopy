@@ -1,20 +1,20 @@
 bench_try_ref_from_suffix_with_elems_dynamic_size:
 	movabs rax, 9223372036854775805
 	cmp rdx, rax
-	ja .LBB5_1
+	ja .LBB38_1
 	lea r8d, [rsi + rdi]
 	xor ecx, ecx
 	mov eax, 0
 	test r8b, 1
-	jne .LBB5_5
+	jne .LBB38_5
 	lea rax, [2*rdx + 4]
 	sub rsi, rax
-	jae .LBB5_4
-.LBB5_1:
+	jae .LBB38_4
+.LBB38_1:
 	xor eax, eax
 	mov edx, 1
 	ret
-.LBB5_4:
+.LBB38_4:
 	lea r8, [rdi + rsi]
 	movzx esi, word ptr [rdi + rsi]
 	cmp si, -16192
@@ -23,6 +23,6 @@ bench_try_ref_from_suffix_with_elems_dynamic_size:
 	xor eax, eax
 	cmp esi, 49344
 	cmove rax, r8
-.LBB5_5:
+.LBB38_5:
 	mov rdx, rcx
 	ret

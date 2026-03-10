@@ -1,0 +1,24 @@
+bench_ref_from_bytes_dynamic_padding:
+	andi a2, a0, 3
+	bnez a2, .LBB3_3
+	lui a2, 524288
+	addi a2, a2, -4
+	and a2, a2, a1
+	li a3, 9
+	bltu a2, a3, .LBB3_3
+	addi a2, a2, -9
+	lui a3, 699051
+	addi a3, a3, -1365
+	mulhu a3, a2, a3
+	srli a2, a3, 1
+	andi a3, a3, -2
+	add a3, a3, a2
+	ori a3, a3, 3
+	addi a3, a3, 9
+	beq a1, a3, .LBB3_4
+.LBB3_3:
+	li a0, 0
+	mv a2, a1
+.LBB3_4:
+	mv a1, a2
+	ret

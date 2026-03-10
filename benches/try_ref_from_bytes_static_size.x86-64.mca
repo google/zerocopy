@@ -23,9 +23,9 @@ Instruction Info:
  1      1     0.50                        setne	cl
  1      1     0.33                        or	cl, al
  1      1     0.33                        test	cl, 1
- 1      1     1.00                        jne	.LBB5_2
+ 1      1     1.00                        jne	.LBB26_2
  2      6     0.50    *                   cmp	word ptr [rax], -16192
- 1      1     1.00                        je	.LBB5_3
+ 1      1     1.00                        je	.LBB26_3
  1      0     0.25                        xor	eax, eax
  1      1     1.00                  U     ret
 
@@ -52,8 +52,8 @@ Resource pressure by instruction:
  -      -     1.00    -      -      -      -      -     setne	cl
  -      -     0.97   0.02    -     0.01    -      -     or	cl, al
  -      -     0.96   0.03    -     0.01    -      -     test	cl, 1
- -      -      -      -      -     1.00    -      -     jne	.LBB5_2
+ -      -      -      -      -     1.00    -      -     jne	.LBB26_2
  -      -     0.01   0.98    -     0.01   0.50   0.50   cmp	word ptr [rax], -16192
- -      -      -      -      -     1.00    -      -     je	.LBB5_3
+ -      -      -      -      -     1.00    -      -     je	.LBB26_3
  -      -      -      -      -      -      -      -     xor	eax, eax
  -      -      -      -      -     1.00    -      -     ret

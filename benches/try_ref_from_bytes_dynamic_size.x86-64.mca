@@ -24,15 +24,15 @@ Instruction Info:
  1      1     0.50                        setb	cl
  1      1     0.33                        or	cl, al
  1      1     0.33                        test	cl, 1
- 1      1     1.00                        jne	.LBB5_4
+ 1      1     1.00                        jne	.LBB25_4
  1      1     0.50                        lea	rcx, [rdx - 4]
  1      1     0.33                        mov	rsi, rcx
  1      1     0.33                        and	rsi, -2
  1      1     0.33                        add	rsi, 4
  1      1     0.33                        cmp	rdx, rsi
- 1      1     1.00                        jne	.LBB5_4
+ 1      1     1.00                        jne	.LBB25_4
  2      6     0.50    *                   cmp	word ptr [rax], -16192
- 1      1     1.00                        jne	.LBB5_4
+ 1      1     1.00                        jne	.LBB25_4
  1      1     0.50                        shr	rcx
  1      1     0.33                        mov	rdx, rcx
  1      1     1.00                  U     ret
@@ -63,15 +63,15 @@ Resource pressure by instruction:
  -      -     0.99    -      -     0.01    -      -     setb	cl
  -      -     0.01   0.99    -      -      -      -     or	cl, al
  -      -      -     1.00    -      -      -      -     test	cl, 1
- -      -      -      -      -     1.00    -      -     jne	.LBB5_4
+ -      -      -      -      -     1.00    -      -     jne	.LBB25_4
  -      -     0.66   0.34    -      -      -      -     lea	rcx, [rdx - 4]
  -      -     0.33   0.66    -     0.01    -      -     mov	rsi, rcx
  -      -     1.00    -      -      -      -      -     and	rsi, -2
  -      -     0.66   0.34    -      -      -      -     add	rsi, 4
  -      -      -     1.00    -      -      -      -     cmp	rdx, rsi
- -      -      -      -      -     1.00    -      -     jne	.LBB5_4
+ -      -      -      -      -     1.00    -      -     jne	.LBB25_4
  -      -      -      -      -     1.00   0.50   0.50   cmp	word ptr [rax], -16192
- -      -      -      -      -     1.00    -      -     jne	.LBB5_4
+ -      -      -      -      -     1.00    -      -     jne	.LBB25_4
  -      -     0.67    -      -     0.33    -      -     shr	rcx
  -      -     0.67   0.33    -      -      -      -     mov	rdx, rcx
  -      -      -      -      -     1.00    -      -     ret
