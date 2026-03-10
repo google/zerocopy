@@ -23,7 +23,7 @@ Instruction Info:
  1      1     0.50                        setb	al
  1      1     0.33                        or	al, dil
  1      1     0.33                        test	al, 1
- 1      1     1.00                        je	.LBB5_2
+ 1      1     1.00                        je	.LBB4_2
  1      0     0.25                        xor	eax, eax
  1      1     1.00                  U     ret
  1      1     0.50                        lea	rcx, [rdx - 4]
@@ -60,7 +60,7 @@ Resource pressure by instruction:
  -      -     0.03    -      -     0.97    -      -     setb	al
  -      -     0.01   0.02    -     0.97    -      -     or	al, dil
  -      -      -     0.98    -     0.02    -      -     test	al, 1
- -      -      -      -      -     1.00    -      -     je	.LBB5_2
+ -      -      -      -      -     1.00    -      -     je	.LBB4_2
  -      -      -      -      -      -      -      -     xor	eax, eax
  -      -      -      -      -     1.00    -      -     ret
  -      -     0.98   0.02    -      -      -      -     lea	rcx, [rdx - 4]

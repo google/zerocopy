@@ -1,0 +1,28 @@
+bench_try_ref_from_suffix_dynamic_size:
+	mv a3, a0
+	add a0, a0, a1
+	andi a2, a0, 1
+	li a0, 0
+	bnez a2, .LBB35_4
+	li a4, 4
+	bltu a1, a4, .LBB35_3
+	andi a0, a1, 1
+	add a0, a0, a3
+	lbu a2, 1(a0)
+	lbu a3, 0(a0)
+	addi a1, a1, -4
+	slli a2, a2, 8
+	or a3, a3, a2
+	lui a4, 12
+	srli a2, a1, 1
+	addi a1, a4, 192
+	xor a1, a1, a3
+	snez a1, a1
+	addi a1, a1, -1
+	and a0, a0, a1
+.LBB35_3:
+	mv a1, a2
+	ret
+.LBB35_4:
+	mv a1, a2
+	ret

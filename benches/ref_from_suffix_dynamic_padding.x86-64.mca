@@ -20,11 +20,11 @@ Instruction Info:
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
  1      1     0.50                        lea	eax, [rsi + rdi]
  1      1     0.33                        test	al, 3
- 1      1     1.00                        jne	.LBB5_1
+ 1      1     1.00                        jne	.LBB13_1
  1      1     0.33                        movabs	rax, 9223372036854775804
  1      1     0.33                        and	rax, rsi
  1      1     0.33                        cmp	rax, 9
- 1      1     1.00                        jae	.LBB5_3
+ 1      1     1.00                        jae	.LBB13_3
  1      0     0.25                        xor	eax, eax
  1      1     1.00                  U     ret
  1      1     0.33                        add	rax, -9
@@ -59,11 +59,11 @@ Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
  -      -     0.90   0.10    -      -      -      -     lea	eax, [rsi + rdi]
  -      -     0.93    -      -     0.07    -      -     test	al, 3
- -      -      -      -      -     1.00    -      -     jne	.LBB5_1
+ -      -      -      -      -     1.00    -      -     jne	.LBB13_1
  -      -     0.51   0.47    -     0.02    -      -     movabs	rax, 9223372036854775804
  -      -      -      -      -     1.00    -      -     and	rax, rsi
  -      -      -     0.09    -     0.91    -      -     cmp	rax, 9
- -      -      -      -      -     1.00    -      -     jae	.LBB5_3
+ -      -      -      -      -     1.00    -      -     jae	.LBB13_3
  -      -      -      -      -      -      -      -     xor	eax, eax
  -      -      -      -      -     1.00    -      -     ret
  -      -     0.43   0.47    -     0.10    -      -     add	rax, -9

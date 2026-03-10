@@ -1,0 +1,27 @@
+bench_ref_from_suffix_with_elems_dynamic_size:
+	push {r7, lr}
+	mov r7, sp
+	movw r3, #65533
+	movt r3, #32767
+	cmp r2, r3
+	bhi .LBB17_3
+	adds r3, r1, r0
+	lsls r3, r3, #31
+	bne .LBB17_4
+	movs r3, #4
+	add.w r3, r3, r2, lsl #1
+	cmp r1, r3
+	bhs .LBB17_5
+.LBB17_3:
+	movs r0, #0
+	movs r1, #1
+	pop {r7, pc}
+.LBB17_4:
+	movs r1, #0
+	movs r0, #0
+	pop {r7, pc}
+.LBB17_5:
+	subs r1, r1, r3
+	add r0, r1
+	mov r1, r2
+	pop {r7, pc}

@@ -1,4 +1,4 @@
-use zerocopy_derive::*;
+use zerocopy::*;
 
 #[path = "formats/coco_static_size.rs"]
 mod format;

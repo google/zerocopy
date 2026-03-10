@@ -1,0 +1,41 @@
+bench_try_ref_from_prefix_with_elems_dynamic_padding:
+	mv a3, a1
+	li a1, 3
+	mulhu a4, a2, a1
+	li a1, 1
+	bnez a4, .LBB32_3
+	slli a4, a2, 1
+	add a4, a4, a2
+	li a5, -10
+	bltu a5, a4, .LBB32_3
+	ori a5, a4, 3
+	not a4, a4
+	andi a4, a4, 3
+	addi a5, a5, 9
+	bgeu a5, a4, .LBB32_4
+.LBB32_3:
+	li a0, 0
+	ret
+.LBB32_4:
+	andi a4, a0, 3
+	beqz a4, .LBB32_6
+	li a1, 0
+	li a0, 0
+	ret
+.LBB32_6:
+	bltu a3, a5, .LBB32_3
+	lbu a1, 1(a0)
+	lbu a3, 0(a0)
+	lui a4, 12
+	slli a1, a1, 8
+	or a3, a3, a1
+	addi a4, a4, 192
+	xor a1, a3, a4
+	snez a1, a1
+	beq a3, a4, .LBB32_9
+	li a2, 2
+.LBB32_9:
+	addi a1, a1, -1
+	and a0, a0, a1
+	mv a1, a2
+	ret

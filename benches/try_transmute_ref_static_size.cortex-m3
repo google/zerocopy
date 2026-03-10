@@ -1,0 +1,9 @@
+bench_try_transmute_ref_static_size:
+	push {r7, lr}
+	mov r7, sp
+	ldrh r1, [r0]
+	movw r2, #49344
+	cmp r1, r2
+	it ne
+	movne r0, #0
+	pop {r7, pc}

@@ -1,0 +1,10 @@
+bench_try_transmute_ref_dynamic_size:
+	lhu a2, 0(a0)
+	lui a3, 12
+	addi a3, a3, 192
+	xor a2, a2, a3
+	snez a2, a2
+	addi a1, a1, 1
+	addi a2, a2, -1
+	and a0, a0, a2
+	ret

@@ -1,0 +1,10 @@
+bench_try_transmute_ref_dynamic_size:
+	push {r7, lr}
+	mov r7, sp
+	ldrh r2, [r0]
+	adds r1, #1
+	movw r3, #49344
+	cmp r2, r3
+	it ne
+	movne r0, #0
+	pop {r7, pc}

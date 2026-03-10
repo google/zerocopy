@@ -1,0 +1,18 @@
+bench_try_ref_from_prefix_static_size:
+	push {r7, lr}
+	mov r7, sp
+	lsls r2, r0, #31
+	bne .LBB31_3
+	cmp r1, #6
+	blo .LBB31_3
+	ldrh r1, [r0]
+	movw r2, #49344
+	uxth r1, r1
+	cmp r1, r2
+	itt ne
+	movne r0, #2
+	movne r0, #0
+	pop {r7, pc}
+.LBB31_3:
+	movs r0, #0
+	pop {r7, pc}

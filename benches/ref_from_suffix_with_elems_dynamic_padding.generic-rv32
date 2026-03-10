@@ -1,0 +1,31 @@
+bench_ref_from_suffix_with_elems_dynamic_padding:
+	mv a3, a1
+	li a1, 3
+	mulhu a4, a2, a1
+	li a1, 1
+	bnez a4, .LBB16_3
+	slli a4, a2, 1
+	add a4, a4, a2
+	li a5, -10
+	bltu a5, a4, .LBB16_3
+	ori a5, a4, 3
+	not a4, a4
+	andi a4, a4, 3
+	addi a5, a5, 9
+	bgeu a5, a4, .LBB16_4
+.LBB16_3:
+	li a0, 0
+	ret
+.LBB16_4:
+	add a4, a3, a0
+	andi a4, a4, 3
+	beqz a4, .LBB16_6
+	li a1, 0
+	li a0, 0
+	ret
+.LBB16_6:
+	bltu a3, a5, .LBB16_3
+	sub a3, a3, a5
+	add a0, a0, a3
+	mv a1, a2
+	ret

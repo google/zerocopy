@@ -19,11 +19,11 @@ Instruction Info:
 
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
  1      1     0.33                        test	dil, 3
- 1      1     1.00                        jne	.LBB5_4
+ 1      1     1.00                        jne	.LBB24_4
  1      1     0.33                        movabs	rax, 9223372036854775804
  1      1     0.33                        and	rax, rsi
  1      1     0.33                        cmp	rax, 9
- 1      1     1.00                        jb	.LBB5_4
+ 1      1     1.00                        jb	.LBB24_4
  1      1     0.33                        add	rax, -9
  1      1     0.33                        movabs	rcx, -6148914691236517205
  2      4     1.00                        mul	rcx
@@ -32,9 +32,9 @@ Instruction Info:
  1      1     0.33                        or	rax, 3
  1      1     0.33                        add	rax, 9
  1      1     0.33                        cmp	rsi, rax
- 1      1     1.00                        jne	.LBB5_4
+ 1      1     1.00                        jne	.LBB24_4
  2      6     0.50    *                   cmp	word ptr [rdi], -16192
- 1      1     1.00                        je	.LBB5_5
+ 1      1     1.00                        je	.LBB24_5
  1      0     0.25                        xor	edi, edi
  1      1     0.33                        mov	rdx, rsi
  1      1     0.33                        mov	rax, rdi
@@ -59,11 +59,11 @@ Resource pressure per iteration:
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
  -      -     0.48   0.51    -     0.01    -      -     test	dil, 3
- -      -      -      -      -     1.00    -      -     jne	.LBB5_4
+ -      -      -      -      -     1.00    -      -     jne	.LBB24_4
  -      -     0.51   0.49    -      -      -      -     movabs	rax, 9223372036854775804
  -      -     0.01   0.99    -      -      -      -     and	rax, rsi
  -      -     0.51   0.49    -      -      -      -     cmp	rax, 9
- -      -      -      -      -     1.00    -      -     jb	.LBB5_4
+ -      -      -      -      -     1.00    -      -     jb	.LBB24_4
  -      -     0.98    -      -     0.02    -      -     add	rax, -9
  -      -     0.98   0.02    -      -      -      -     movabs	rcx, -6148914691236517205
  -      -     1.00   1.00    -      -      -      -     mul	rcx
@@ -72,9 +72,9 @@ Resource pressure by instruction:
  -      -      -     0.51    -     0.49    -      -     or	rax, 3
  -      -     0.01   0.49    -     0.50    -      -     add	rax, 9
  -      -      -     0.02    -     0.98    -      -     cmp	rsi, rax
- -      -      -      -      -     1.00    -      -     jne	.LBB5_4
+ -      -      -      -      -     1.00    -      -     jne	.LBB24_4
  -      -     0.51   0.49    -      -     0.50   0.50   cmp	word ptr [rdi], -16192
- -      -      -      -      -     1.00    -      -     je	.LBB5_5
+ -      -      -      -      -     1.00    -      -     je	.LBB24_5
  -      -      -      -      -      -      -      -     xor	edi, edi
  -      -     0.50   0.50    -      -      -      -     mov	rdx, rsi
  -      -     0.50   0.48    -     0.02    -      -     mov	rax, rdi

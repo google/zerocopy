@@ -1,0 +1,39 @@
+bench_try_ref_from_prefix_with_elems_dynamic_padding:
+	push {r7, lr}
+	mov r7, sp
+	movs r3, #3
+	mov lr, r2
+	umull r3, r2, r2, r3
+	cbnz r2, .LBB32_2
+	cmn.w r3, #10
+	itttt ls
+	addls.w r12, r3, #9
+	movls r2, #3
+	bicls r2, r3
+	addsls.w r3, r2, r12
+	blo .LBB32_3
+.LBB32_2:
+	movs r0, #0
+	movs r1, #1
+	pop {r7, pc}
+.LBB32_3:
+	lsls r2, r0, #30
+	beq .LBB32_5
+	movs r1, #0
+	movs r0, #0
+	pop {r7, pc}
+.LBB32_5:
+	mov r12, r0
+	cmp r3, r1
+	mov.w r0, #0
+	itt hi
+	movhi r1, #1
+	pophi {r7, pc}
+	ldrh.w r1, [r12]
+	movw r2, #49344
+	cmp r1, r2
+	ite ne
+	movne.w lr, #2
+	moveq r0, r12
+	mov r1, lr
+	pop {r7, pc}

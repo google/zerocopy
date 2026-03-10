@@ -1,0 +1,17 @@
+bench_try_transmute:
+	push {r7, lr}
+	mov r7, sp
+	ldrh r3, [r1]
+	movw r2, #49344
+	cmp r3, r2
+	bne .LBB39_2
+	ldr.w r1, [r1, #2]
+	strh r2, [r0]
+	str.w r1, [r0, #2]
+	pop {r7, pc}
+.LBB39_2:
+	movw r1, #49344
+	movt r1, #65535
+	adds r2, r1, #1
+	strh r2, [r0]
+	pop {r7, pc}

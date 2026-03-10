@@ -1,0 +1,3 @@
+bench_transmute_ref_dynamic_size:
+	addi a1, a1, 1
+	ret

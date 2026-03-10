@@ -1,0 +1,16 @@
+bench_read_from_bytes_static_size:
+	push {r7, lr}
+	mov r7, sp
+	cmp r2, #6
+	bne .LBB0_2
+	ldrh r2, [r1]
+	ldr.w r1, [r1, #2]
+	strh r2, [r0, #2]
+	str r1, [r0, #4]
+	movs r1, #1
+	strh r1, [r0]
+	pop {r7, pc}
+.LBB0_2:
+	movs r1, #0
+	strh r1, [r0]
+	pop {r7, pc}

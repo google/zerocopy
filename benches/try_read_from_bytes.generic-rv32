@@ -1,0 +1,35 @@
+bench_try_read_from_bytes_static_size:
+	lui a4, 12
+	li a5, 6
+	addi a3, a4, 193
+	bne a2, a5, .LBB21_3
+	lbu a2, 1(a1)
+	lbu a5, 0(a1)
+	slli a2, a2, 8
+	or a2, a2, a5
+	addi a4, a4, 192
+	bne a2, a4, .LBB21_3
+	addi sp, sp, -16
+	lbu a2, 3(a1)
+	lbu a4, 2(a1)
+	lbu a5, 4(a1)
+	lbu a1, 5(a1)
+	slli a2, a2, 8
+	or a2, a2, a4
+	addi a3, a3, -1
+	slli a5, a5, 16
+	sh a3, 8(sp)
+	sh a2, 10(sp)
+	lw a2, 8(sp)
+	slli a1, a1, 24
+	or a1, a1, a5
+	srli a1, a1, 16
+	srli a3, a2, 16
+	sh a2, 0(a0)
+	sh a3, 2(a0)
+	sh a1, 4(a0)
+	addi sp, sp, 16
+	ret
+.LBB21_3:
+	sh a3, 0(a0)
+	ret

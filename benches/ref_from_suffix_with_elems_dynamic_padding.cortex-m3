@@ -1,0 +1,32 @@
+bench_ref_from_suffix_with_elems_dynamic_padding:
+	movs r3, #3
+	mov r12, r2
+	umull r3, r2, r2, r3
+	cbnz r2, .LBB16_5
+	cmn.w r3, #10
+	bhi .LBB16_5
+	push {r7, lr}
+	mov r7, sp
+	movs r2, #3
+	add.w lr, r3, #9
+	bics r2, r3
+	adds.w r3, r2, lr
+	pop.w {r7, lr}
+	bhs .LBB16_5
+	adds r2, r1, r0
+	lsls r2, r2, #30
+	ittt ne
+	movne r1, #0
+	movne r0, #0
+	bxne lr
+	cmp r1, r3
+	bhs .LBB16_6
+.LBB16_5:
+	movs r0, #0
+	movs r1, #1
+	bx lr
+.LBB16_6:
+	subs r1, r1, r3
+	add r0, r1
+	mov r1, r12
+	bx lr

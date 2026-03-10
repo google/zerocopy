@@ -1,0 +1,16 @@
+bench_try_ref_from_bytes_static_size:
+	push {r7, lr}
+	mov r7, sp
+	cmp r1, #6
+	it eq
+	andseq r1, r0, #1
+	beq .LBB26_2
+	movs r0, #0
+	pop {r7, pc}
+.LBB26_2:
+	ldrh r1, [r0]
+	movw r2, #49344
+	cmp r1, r2
+	it ne
+	movne r0, #0
+	pop {r7, pc}
