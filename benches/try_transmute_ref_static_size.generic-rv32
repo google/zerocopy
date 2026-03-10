@@ -1,0 +1,9 @@
+bench_try_transmute_ref_static_size:
+	lhu a1, 0(a0)
+	lui a2, 12
+	addi a2, a2, 192
+	xor a1, a1, a2
+	snez a1, a1
+	addi a1, a1, -1
+	and a0, a0, a1
+	ret

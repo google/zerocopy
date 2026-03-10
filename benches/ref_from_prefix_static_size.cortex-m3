@@ -1,0 +1,12 @@
+bench_ref_from_prefix_static_size:
+	push {r7, lr}
+	mov r7, sp
+	cmp r1, #6
+	mov r1, r0
+	it lo
+	movlo r1, #0
+	lsls r0, r0, #31
+	it ne
+	movne r1, #0
+	mov r0, r1
+	pop {r7, pc}

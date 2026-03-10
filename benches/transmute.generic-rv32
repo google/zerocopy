@@ -1,0 +1,14 @@
+bench_transmute:
+	lbu a2, 4(a1)
+	lbu a3, 5(a1)
+	sb a2, 4(a0)
+	sb a3, 5(a0)
+	lbu a2, 0(a1)
+	lbu a3, 1(a1)
+	lbu a4, 2(a1)
+	lbu a1, 3(a1)
+	sb a2, 0(a0)
+	sb a3, 1(a0)
+	sb a4, 2(a0)
+	sb a1, 3(a0)
+	ret

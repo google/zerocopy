@@ -1,0 +1,9 @@
+bench_ref_from_bytes_static_size:
+	push {r7, lr}
+	mov r7, sp
+	and r2, r0, #1
+	eor r1, r1, #6
+	orrs r1, r2
+	it ne
+	movne r0, #0
+	pop {r7, pc}

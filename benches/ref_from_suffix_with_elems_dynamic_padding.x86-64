@@ -3,30 +3,30 @@ bench_ref_from_suffix_with_elems_dynamic_padding:
 	mov edx, 3
 	mov rax, rcx
 	mul rdx
-	jo .LBB5_1
+	jo .LBB16_1
 	cmp rax, -10
-	ja .LBB5_1
+	ja .LBB16_1
 	lea rdx, [rax + 9]
 	not eax
 	and eax, 3
 	add rax, rdx
-	jae .LBB5_4
-.LBB5_1:
+	jae .LBB16_4
+.LBB16_1:
 	xor r8d, r8d
 	mov edx, 1
 	mov rax, r8
 	ret
-.LBB5_4:
+.LBB16_4:
 	lea r9d, [rsi + rdi]
 	xor edx, edx
 	mov r8d, 0
 	test r9b, 3
-	je .LBB5_5
+	je .LBB16_5
 	mov rax, r8
 	ret
-.LBB5_5:
+.LBB16_5:
 	sub rsi, rax
-	jb .LBB5_1
+	jb .LBB16_1
 	add rdi, rsi
 	mov rdx, rcx
 	mov r8, rdi

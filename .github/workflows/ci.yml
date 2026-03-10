@@ -624,6 +624,7 @@ jobs:
         run: |
           set -eo pipefail
           sudo apt install -qq llvm
+          rustup target add --toolchain $(./cargo.sh --version nightly) thumbv7m-none-eabi riscv32imc-unknown-none-elf
           ./cargo.sh +nightly install --quiet cargo-show-asm
           RUSTFLAGS="$RUSTFLAGS -Awarnings" ./cargo.sh +nightly test \
             --package zerocopy \

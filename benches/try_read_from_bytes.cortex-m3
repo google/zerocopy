@@ -1,0 +1,23 @@
+bench_try_read_from_bytes_static_size:
+	cmp r2, #6
+	movw r2, #49344
+	bne .LBB21_3
+	ldrh r3, [r1]
+	cmp r3, r2
+	bne .LBB21_3
+	push {r7, lr}
+	mov r7, sp
+	sub sp, #8
+	ldr.w r1, [r1, #2]
+	strh.w r2, [sp]
+	str.w r1, [sp, #2]
+	ldr r2, [sp]
+	lsrs r1, r1, #16
+	str r2, [r0]
+	strh r1, [r0, #4]
+	add sp, #8
+	pop {r7, pc}
+.LBB21_3:
+	adds r1, r2, #1
+	strh r1, [r0]
+	bx lr

@@ -1,0 +1,27 @@
+bench_ref_from_bytes_with_elems_dynamic_padding:
+	push {r7, lr}
+	mov r7, sp
+	mov r12, r2
+	movs r2, #3
+	umull r3, r2, r12, r2
+	cbnz r2, .LBB6_3
+	cmn.w r3, #10
+	bhi .LBB6_3
+	movs r2, #3
+	add.w lr, r3, #9
+	bics r2, r3
+	add.w r3, r2, lr
+	cmp r1, r3
+	it eq
+	andseq r2, r0, #3
+	beq .LBB6_4
+.LBB6_3:
+	movs r0, #0
+	mov r12, r1
+	mov r1, r12
+	pop {r7, pc}
+.LBB6_4:
+	cmp r3, lr
+	blo .LBB6_3
+	mov r1, r12
+	pop {r7, pc}

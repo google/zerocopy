@@ -1,0 +1,16 @@
+bench_ref_from_prefix_dynamic_size:
+	andi a2, a0, 1
+	bnez a2, .LBB9_3
+	li a2, 4
+	bgeu a1, a2, .LBB9_4
+	li a0, 0
+	li a1, 1
+	ret
+.LBB9_3:
+	li a1, 0
+	li a0, 0
+	ret
+.LBB9_4:
+	addi a1, a1, -4
+	srli a1, a1, 1
+	ret

@@ -3,26 +3,26 @@ bench_ref_from_bytes_with_elems_dynamic_padding:
 	mov edx, 3
 	mov rax, rcx
 	mul rdx
-	jo .LBB5_5
+	jo .LBB6_5
 	cmp rax, -10
-	ja .LBB5_5
+	ja .LBB6_5
 	mov edx, eax
 	not edx
 	and edx, 3
 	add rdx, rax
 	add rdx, 9
 	cmp rsi, rdx
-	jne .LBB5_5
+	jne .LBB6_5
 	mov r8d, edi
 	and r8d, 3
-	jne .LBB5_5
+	jne .LBB6_5
 	add rax, 9
 	cmp rdx, rax
-	jb .LBB5_5
+	jb .LBB6_5
 	mov rax, rdi
 	mov rdx, rcx
 	ret
-.LBB5_5:
+.LBB6_5:
 	xor edi, edi
 	mov rcx, rsi
 	mov rax, rdi

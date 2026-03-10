@@ -31,31 +31,48 @@ impl Directive {
     }
 }
 
-fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
+#[derive(Clone)]
+struct IsaConfig {
+    target_triple: Option<&'static str>,
+    target_cpu: &'static str,
+    supports_mca: bool,
+}
+
+fn run_codegen_test(bench_name: &str, config: &IsaConfig, bless: bool) {
+    let target_cpu = config.target_cpu;
     println!("Testing {bench_name}.{target_cpu}");
 
-    let manifest_path = env!("CARGO_MANIFEST_PATH");
-    let target_dir = env!("CARGO_TARGET_DIR");
+    let mut inner_target_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    inner_target_dir.push(option_env!("CARGO_TARGET_DIR").unwrap_or("target"));
+    inner_target_dir.push("codegen-benches-target");
 
     let cargo_asm = |directive: &Directive| {
+        let mut args = vec![
+            "asm",
+            "--quiet",
+            "-p",
+            "codegen-benches",
+            "--manifest-path",
+            "tools/codegen-benches/Cargo.toml",
+            "--lib",
+        ];
+        if let Some(triple) = config.target_triple {
+            args.extend(["--target", triple]);
+        }
+        args.extend([
+            "--target-cpu",
+            config.target_cpu,
+            "--simplify",
+            directive.arg(),
+        ]);
+        let bench_name_arg = format!("bench_{bench_name}");
+        args.push(&bench_name_arg);
+        args.push("0");
+
         Command::new("cargo")
-            .args([
-                "asm",
-                "--quiet",
-                "-p",
-                "zerocopy",
-                "--manifest-path",
-                manifest_path,
-                "--target-dir",
-                target_dir,
-                "--bench",
-                bench_name,
-                "--target-cpu",
-                target_cpu,
-                "--simplify",
-                directive.arg(),
-                &format!("bench_{bench_name}"),
-            ])
+            .env("CARGO_PROFILE_RELEASE_PANIC", "abort")
+            .env("CARGO_TARGET_DIR", &inner_target_dir)
+            .args(&args)
             .output()
             .expect("failed to execute process")
     };
@@ -93,29 +110,39 @@ fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
     };
 
     test_directive(Directive::Asm);
-    test_directive(Directive::Mca);
+    if config.supports_mca {
+        test_directive(Directive::Mca);
+    }
 }
 
 #[test]
 #[cfg_attr(miri, ignore)]
 fn codegen() {
     let bless = std::env::var("BLESS").is_ok();
-    let handles: Vec<_> = std::fs::read_dir("benches")
-        .unwrap()
-        .map(|entry| entry.unwrap().path())
-        .filter(|path| path.extension().is_some_and(|ext| ext == "rs"))
-        .map(|path| {
+    let isas = vec![
+        IsaConfig { target_triple: None, target_cpu: "x86-64", supports_mca: true },
+        IsaConfig { target_triple: Some("thumbv7m-none-eabi"), target_cpu: "cortex-m3", supports_mca: false },
+        IsaConfig { target_triple: Some("riscv32imc-unknown-none-elf"), target_cpu: "generic-rv32", supports_mca: false },
+    ];
+
+    let mut handles = Vec::new();
+    for entry in std::fs::read_dir("benches").unwrap() {
+        let path = entry.unwrap().path();
+        if path.extension().is_some_and(|ext| ext == "rs") {
             let bench_name = path.file_stem().unwrap().to_str().unwrap().to_owned();
-            thread::spawn(move || {
-                panic::catch_unwind(panic::AssertUnwindSafe(|| {
-                    run_codegen_test(&bench_name, "x86-64", bless);
-                }))
-            })
-        })
-        .collect();
+            for config in &isas {
+                let bench_name = bench_name.clone();
+                let config = config.clone();
+                handles.push(thread::spawn(move || {
+                    panic::catch_unwind(panic::AssertUnwindSafe(|| {
+                        run_codegen_test(&bench_name, &config, bless);
+                    }))
+                }));
+            }
+        }
+    }
 
     let failed = handles.into_iter().any(|handle| handle.join().unwrap().is_err());
-
     if failed {
         panic!("One or more codegen tests failed. See thread panics above for details.");
     }

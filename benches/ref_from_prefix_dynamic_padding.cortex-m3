@@ -1,0 +1,24 @@
+bench_ref_from_prefix_dynamic_padding:
+	push {r7, lr}
+	mov r7, sp
+	lsls r2, r0, #30
+	beq .LBB8_2
+	movs r1, #0
+	movs r0, #0
+	pop {r7, pc}
+.LBB8_2:
+	movw r2, #65532
+	movt r2, #32767
+	ands r1, r2
+	cmp r1, #9
+	bhs .LBB8_4
+	movs r0, #0
+	movs r1, #1
+	pop {r7, pc}
+.LBB8_4:
+	movw r2, #43691
+	subs r1, #9
+	movt r2, #43690
+	umull r1, r2, r1, r2
+	lsrs r1, r2, #1
+	pop {r7, pc}

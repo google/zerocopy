@@ -1,0 +1,26 @@
+bench_ref_from_bytes_dynamic_padding:
+	push {r7, lr}
+	mov r7, sp
+	lsls r2, r0, #30
+	bne .LBB3_3
+	movw r2, #65532
+	movt r2, #32767
+	ands r2, r1
+	cmp r2, #9
+	blo .LBB3_3
+	movw r3, #43691
+	subs r2, #9
+	movt r3, #43690
+	umull r2, r3, r2, r3
+	lsrs r2, r3, #1
+	add.w r3, r2, r2, lsl #1
+	orr r3, r3, #3
+	adds r3, #9
+	cmp r1, r3
+	beq .LBB3_4
+.LBB3_3:
+	movs r0, #0
+	mov r2, r1
+.LBB3_4:
+	mov r1, r2
+	pop {r7, pc}

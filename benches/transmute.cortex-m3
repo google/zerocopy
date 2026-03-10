@@ -1,0 +1,8 @@
+bench_transmute:
+	push {r7, lr}
+	mov r7, sp
+	ldrh r2, [r1, #4]
+	ldr r1, [r1]
+	strh r2, [r0, #4]
+	str r1, [r0]
+	pop {r7, pc}

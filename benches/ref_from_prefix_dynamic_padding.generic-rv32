@@ -1,0 +1,22 @@
+bench_ref_from_prefix_dynamic_padding:
+	andi a2, a0, 3
+	beqz a2, .LBB8_2
+	li a1, 0
+	li a0, 0
+	ret
+.LBB8_2:
+	lui a2, 524288
+	addi a2, a2, -4
+	and a1, a1, a2
+	li a2, 9
+	bgeu a1, a2, .LBB8_4
+	li a0, 0
+	li a1, 1
+	ret
+.LBB8_4:
+	addi a1, a1, -9
+	lui a2, 699051
+	addi a2, a2, -1365
+	mulhu a1, a1, a2
+	srli a1, a1, 1
+	ret

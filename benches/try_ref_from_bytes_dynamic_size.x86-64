@@ -5,18 +5,18 @@ bench_try_ref_from_bytes_dynamic_size:
 	setb cl
 	or cl, al
 	test cl, 1
-	jne .LBB5_4
+	jne .LBB25_4
 	lea rcx, [rdx - 4]
 	mov rsi, rcx
 	and rsi, -2
 	add rsi, 4
 	cmp rdx, rsi
-	jne .LBB5_4
+	jne .LBB25_4
 	cmp word ptr [rax], -16192
-	jne .LBB5_4
+	jne .LBB25_4
 	shr rcx
 	mov rdx, rcx
 	ret
-.LBB5_4:
+.LBB25_4:
 	xor eax, eax
 	ret

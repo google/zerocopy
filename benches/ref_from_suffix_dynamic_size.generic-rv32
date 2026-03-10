@@ -1,0 +1,12 @@
+bench_ref_from_suffix_dynamic_size:
+	add a2, a1, a0
+	sltiu a3, a1, 4
+	or a2, a2, a3
+	addi a3, a1, -4
+	andi a4, a1, 1
+	srli a1, a3, 1
+	andi a2, a2, 1
+	add a0, a0, a4
+	addi a2, a2, -1
+	and a0, a0, a2
+	ret

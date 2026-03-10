@@ -1,0 +1,15 @@
+bench_ref_from_suffix_dynamic_size:
+	push {r7, lr}
+	mov r7, sp
+	adds r3, r1, r0
+	subs r2, r1, #4
+	and r1, r1, #1
+	add r0, r1
+	lsr.w r2, r2, #1
+	it lo
+	movlo r0, #0
+	lsls r1, r3, #31
+	mov r1, r2
+	it ne
+	movne r0, #0
+	pop {r7, pc}

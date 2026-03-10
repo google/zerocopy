@@ -22,10 +22,10 @@ Instruction Info:
  1      1     0.33                        mov	edx, 3
  1      1     0.33                        mov	rax, rcx
  2      4     1.00                        mul	rdx
- 1      1     1.00                        jo	.LBB5_8
+ 1      1     1.00                        jo	.LBB27_8
  1      1     0.33                        mov	rdx, rax
  1      1     0.33                        cmp	rax, -10
- 1      1     1.00                        ja	.LBB5_8
+ 1      1     1.00                        ja	.LBB27_8
  1      1     0.33                        mov	eax, edx
  1      1     0.33                        not	eax
  1      1     0.33                        and	eax, 3
@@ -33,13 +33,13 @@ Instruction Info:
  1      1     0.33                        add	r8, 9
  1      0     0.25                        xor	eax, eax
  1      1     0.33                        cmp	rsi, r8
- 1      1     1.00                        jne	.LBB5_6
+ 1      1     1.00                        jne	.LBB27_6
  1      1     0.33                        mov	r9d, edi
  1      1     0.33                        and	r9d, 3
- 1      1     1.00                        jne	.LBB5_6
+ 1      1     1.00                        jne	.LBB27_6
  1      1     0.33                        add	rdx, 9
  1      1     0.33                        cmp	r8, rdx
- 1      1     1.00                        jb	.LBB5_6
+ 1      1     1.00                        jb	.LBB27_6
  1      5     0.50    *                   movzx	edx, word ptr [rdi]
  1      1     0.33                        cmp	dx, -16192
  2      2     0.67                        cmove	rsi, rcx
@@ -74,10 +74,10 @@ Resource pressure by instruction:
  -      -     0.74   0.03    -     0.23    -      -     mov	edx, 3
  -      -     0.60   0.40    -      -      -      -     mov	rax, rcx
  -      -     1.00   1.00    -      -      -      -     mul	rdx
- -      -      -      -      -     1.00    -      -     jo	.LBB5_8
+ -      -      -      -      -     1.00    -      -     jo	.LBB27_8
  -      -     0.11   0.89    -      -      -      -     mov	rdx, rax
  -      -     0.99   0.01    -      -      -      -     cmp	rax, -10
- -      -      -      -      -     1.00    -      -     ja	.LBB5_8
+ -      -      -      -      -     1.00    -      -     ja	.LBB27_8
  -      -     0.01   0.89    -     0.10    -      -     mov	eax, edx
  -      -     0.11   0.89    -      -      -      -     not	eax
  -      -     0.01   0.88    -     0.11    -      -     and	eax, 3
@@ -85,13 +85,13 @@ Resource pressure by instruction:
  -      -     0.01   0.99    -      -      -      -     add	r8, 9
  -      -      -      -      -      -      -      -     xor	eax, eax
  -      -      -     0.99    -     0.01    -      -     cmp	rsi, r8
- -      -      -      -      -     1.00    -      -     jne	.LBB5_6
+ -      -      -      -      -     1.00    -      -     jne	.LBB27_6
  -      -     0.42    -      -     0.58    -      -     mov	r9d, edi
  -      -     0.53   0.01    -     0.46    -      -     and	r9d, 3
- -      -      -      -      -     1.00    -      -     jne	.LBB5_6
+ -      -      -      -      -     1.00    -      -     jne	.LBB27_6
  -      -     0.99   0.01    -      -      -      -     add	rdx, 9
  -      -     0.99   0.01    -      -      -      -     cmp	r8, rdx
- -      -      -      -      -     1.00    -      -     jb	.LBB5_6
+ -      -      -      -      -     1.00    -      -     jb	.LBB27_6
  -      -      -      -      -      -     0.50   0.50   movzx	edx, word ptr [rdi]
  -      -     0.45   0.01    -     0.54    -      -     cmp	dx, -16192
  -      -     1.00   0.35    -     0.65    -      -     cmove	rsi, rcx

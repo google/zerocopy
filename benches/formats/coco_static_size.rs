@@ -1,4 +1,4 @@
-use zerocopy_derive::*;
+use zerocopy::*;
 
 // The only valid value of this type are the bytes `0xC0C0`.
 #[derive(TryFromBytes, KnownLayout, Immutable)]

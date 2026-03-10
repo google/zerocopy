@@ -24,10 +24,10 @@ Instruction Info:
  1      1     0.33                        mov	rax, rdi
  1      1     0.33                        or	dil, cl
  1      1     0.33                        test	dil, 1
- 1      1     1.00                        jne	.LBB5_2
+ 1      1     1.00                        jne	.LBB7_2
  1      1     0.50                        lea	rcx, [2*rdx + 4]
  1      1     0.33                        cmp	rsi, rcx
- 1      1     1.00                        je	.LBB5_3
+ 1      1     1.00                        je	.LBB7_3
  1      0     0.25                        xor	eax, eax
  1      1     0.33                        mov	rdx, rsi
  1      1     1.00                  U     ret
@@ -56,10 +56,10 @@ Resource pressure by instruction:
  -      -     0.01   0.99    -      -      -      -     mov	rax, rdi
  -      -     1.00    -      -      -      -      -     or	dil, cl
  -      -     0.99   0.01    -      -      -      -     test	dil, 1
- -      -      -      -      -     1.00    -      -     jne	.LBB5_2
+ -      -      -      -      -     1.00    -      -     jne	.LBB7_2
  -      -      -     1.00    -      -      -      -     lea	rcx, [2*rdx + 4]
  -      -     0.01    -      -     0.99    -      -     cmp	rsi, rcx
- -      -      -      -      -     1.00    -      -     je	.LBB5_3
+ -      -      -      -      -     1.00    -      -     je	.LBB7_3
  -      -      -      -      -      -      -      -     xor	eax, eax
  -      -      -     0.67    -     0.33    -      -     mov	rdx, rsi
  -      -      -      -      -     1.00    -      -     ret

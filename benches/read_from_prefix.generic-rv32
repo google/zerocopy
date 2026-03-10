@@ -1,0 +1,26 @@
+bench_read_from_prefix_static_size:
+	li a3, 6
+	bgeu a2, a3, .LBB1_2
+	sh zero, 0(a0)
+	ret
+.LBB1_2:
+	lbu a6, 4(a1)
+	lbu a3, 5(a1)
+	lbu a4, 0(a1)
+	lbu a5, 1(a1)
+	lbu a2, 2(a1)
+	lbu a1, 3(a1)
+	slli a3, a3, 8
+	or a3, a3, a6
+	slli a2, a2, 16
+	slli a1, a1, 24
+	or a1, a1, a2
+	slli a5, a5, 8
+	or a4, a4, a5
+	srli a1, a1, 16
+	sh a4, 2(a0)
+	sh a1, 4(a0)
+	sh a3, 6(a0)
+	li a1, 1
+	sh a1, 0(a0)
+	ret
