@@ -1,37 +1,59 @@
 # Hermes: A Literate Verification Toolchain for (`unsafe`) Rust
 
+Joshua Liebow-Feeser ([joshlf@google.com](mailto:joshlf@google.com))
+
 ## 1\. Summary
 
 Hermes is a formal verification orchestrator designed to sit on top of the Aeneas toolchain. Its primary goal is to enable “literate verification” of `unsafe` Rust code: allowing engineers to write formal specifications of function behavior and proofs of correctness (in Lean 4\) directly within Rust source files via standard documentation comments. Where `unsafe` code authors would normally document safety invariants, they write Hermes specifications; where they would normally write safety comments, they write Hermes proofs. Hermes aims to meet developers where they are, asking little of them in the way of new process, while giving them formal assurances about the correctness and security of their code.
 
-## 2\. Background: Charon and Aeneas
+## 2\. Motivation
+
+Rust’s expressive type system heavily rewards rigorous architectural design. For safe Rust, the compiler natively enforces these boundaries, allowing developers to quickly and confidently compose complex systems, leading to significant, measurable improvements in development velocity for systems software.[^1] [^2]
+
+However, the design and implementation of the `unsafe` code powering these abstractions remains completely manual. Unlike safe Rust, the correctness of `unsafe` code is currently guaranteed entirely through cultural norms and human review rather than machine-enforceable rules. Developers must painstakingly define safety preconditions and invariants in prose (e.g., `# Safety` comments), and human reviewers must manually verify that those textual invariants are upheld at every call site. Because no tooling exists to confirm that the prose is correct, both authorship and review of `unsafe` code are extremely slow.[^3]
+
+Just as concerning, while `unsafe` code is quite rare,[^4] it accounts for a significant majority of vulnerabilities in the Rust ecosystem – [two thirds, by one estimate](https://arxiv.org/pdf/2308.15046). Combined with its relative scarcity, this suggests that `unsafe` Rust code is *extremely* dangerous compared to safe Rust code.
+
+This manual verification requirement means that `unsafe` code has become perhaps the single largest impediment to *both* the development velocity *and* the security of systems software written in Rust, a problem significantly exacerbated by the rise of agentic coding tools.
+
+While LLM-based coding and review agents significantly accelerate general software development, they struggle to tame the complexity of loosely-defined, prose-based invariants. Agents cannot currently be trusted to correctly author or review `unsafe` Rust because they lack the capacity to reliably interpret and enforce informal cultural norms, and are highly unreliable at the sorts of precise reasoning required to ensure the correctness of safety proofs. Consequently, introducing AI generation into memory-unsafe contexts typically creates massive "verification overhead". The human time saved during code generation is immediately lost during the review phase, as engineers are forced into a highly taxing cognitive state to audit "deceptively correct" machine-generated `unsafe` logic. Worse, as LLMs excel at producing code which *appears* correct, agent-authored `unsafe` code is *more* likely than human-authored `unsafe` code to contain bugs which slip past review.
+
+To accelerate systems engineering with the same velocity seen in non-systems domains and improve the state of security, **the authorship and review of `unsafe` code must become just as rigorous and machine-enforced as that of safe code.**
+
+Formal verification bridges this gap. By replacing prose-based safety comments with mathematically rigorous specifications, formal verification extends the "if it compiles, it's correct" guarantee to `unsafe` code. If `unsafe` code can be proven correct by tooling, human reviewers are relieved of the cognitive burden of manually auditing complex memory invariants, and agents can be allowed to write code quickly without concerns about correctness and safety.
+
+Hermes is motivated by the need to make this machine-enforced rigor ergonomic and scalable. While authoring manual proofs has historically been too labor-intensive for everyday development, modern AI models are becoming highly capable of generating formal proofs (such as in Lean 4). Hermes provides the necessary orchestration layer to harness this. By allowing developers to write behavioral specifications directly within standard Rust documentation comments, Hermes creates a unified workflow where humans or agents can author both the `unsafe` implementation and the machine-checked proof that guarantees its soundness.
+
+Ultimately, Hermes aims to eliminate the human authorship and review bottleneck for `unsafe` Rust, allowing the development of highly optimized, secure systems components to be accelerated by AI-based automation just as safely and reliably as safe code.
+
+## 3\. Background: Charon and Aeneas
 
 To understand Hermes, it is necessary to understand the underlying tools it orchestrates. The base verification pipeline consists of two primary components:
 
-* **Charon:[^1]** A compiler frontend that plugs into `rustc` to extract Rust code (via MIR, Rust’s mid-level intermediate representation) into a simplified, formal intermediate representation known as LLBC (Low-Level Borrow Calculus).  
-* **Aeneas:[^2]** A translation tool that takes LLBC and lowers it into pure, functional logic definitions in interactive theorem provers like Lean 4.[^3]
+* **Charon:[^5]** A compiler frontend that plugs into `rustc` to extract Rust code (via MIR, Rust’s mid-level intermediate representation) into a simplified, formal intermediate representation known as LLBC (Low-Level Borrow Calculus).  
+* **Aeneas:[^6]** A translation tool that takes LLBC and lowers it into pure, functional logic definitions in interactive theorem provers like Lean 4.[^7]
 
 Aeneas achieves ergonomic verification by relying on a crucial simplification: it performs a purely functional translation based on Rust's strict borrow checker rules. It models shared references (`&T`) as pure, immutable values and mutable references (`&mut T`) as state-updating transformations using a "forward/backward" function splitting mechanism.
 
 While this approach is incredibly powerful for Safe Rust, relying on Charon and Aeneas alone presents several significant limitations for verifying real-world systems code:
 
-### 2.1 Inability to Handle Unsafe Operations
+### 3.1 Inability to Handle Unsafe Operations
 
 Because Aeneas relies on a functional translation rather than a spatial one, it does not model Rust's full memory model (e.g., raw pointers, memory layout, addresses, and aliased mutation). Its abstraction fundamentally assumes that the strict non-aliasing and immutability guarantees of Safe Rust hold, meaning it inherently doesn't capture interior mutation or arbitrary pointer arithmetic. Charon and Aeneas alone are therefore not sufficient to verify the behavior of programs containing unsafe operations.
 
-### 2.2 The Operational Semantics Gap
+### 3.2 The Operational Semantics Gap
 
 Formalizing unsafe Rust requires precise reasoning about memory semantics. However, Rust's precise operational semantics are not yet fully specified. Tooling builders are therefore theoretically limited to either guessing what Rust's memory model might eventually be, or waiting until the specification is officially completed—which is realistically many years away.
 
-### 2.3 Ergonomics and Toolchain Friction
+### 3.3 Ergonomics and Toolchain Friction
 
 Using Aeneas directly requires developers to adopt an entirely new toolchain (Lean), author manual verification definitions at-a-distance from their source Rust code, and ensure that they remain up-to-date as the Rust code changes. These ergonomic speedbumps significantly increase the barrier to entry for practical verification.
 
-## 3\. Hermes' Core Contributions
+## 4\. Hermes' Core Contributions
 
 Hermes is designed to orchestrate Charon and Aeneas while systematically resolving the limitations outlined above.
 
-### 3.1 Axiomatizing Leaf Functions
+### 4.1 Axiomatizing Leaf Functions
 
 Much real-world unsafe code does not directly invoke the specific unsafe “leaf” operations that Aeneas cannot support (such as raw pointer dereferences). Instead, it either indirectly invokes these operations via function indirection, or it creates values that will later flow into leaf operations during subsequent method calls (for example, manipulating the length field in `Vec::set_len`).
 
@@ -39,15 +61,15 @@ Since Aeneas successfully translates all of these intermediate operations and st
 
 *Note that many leaf operations are supported behind standard library APIs (e.g. `std::ptr::read`). This allows Hermes to ship with its own axiomatizations of these APIs. Our hope is that, in practice, it will be rare that Hermes users need to axiomatize their own functions.*
 
-### 3.2 Lower-Bound Memory Axioms
+### 4.2 Lower-Bound Memory Axioms
 
-Hermes avoids needing to wait for Rust's operational semantics to be fully specified by instead encoding a set of lower-bound memory axioms. These axioms represent fundamental properties (such as size and alignment constraints) that are guaranteed by the Rust Reference, and are thus guaranteed to hold in *any* future memory model.[^4] This approach allows users to prove the soundness of unsafe code without requiring the toolchain to guess the exact future shape of Rust's abstract machine.
+Hermes avoids needing to wait for Rust's operational semantics to be fully specified by instead encoding a set of lower-bound memory axioms. These axioms represent fundamental properties (such as size and alignment constraints) that are guaranteed by the Rust Reference, and are thus guaranteed to hold in *any* future memory model.[^8] This approach allows users to prove the soundness of unsafe code without requiring the toolchain to guess the exact future shape of Rust's abstract machine.
 
-### 3.3 Meeting Rust Programmers Where They Are
+### 4.3 Meeting Rust Programmers Where They Are
 
 Hermes abstracts away the need to manually author Lean specifications in separate files. It meets Rust programmers where they are by adopting the existing syntax of safety doc comments (i.e., a description of an API's safety invariants written in a doc comment). While proofs are currently authored in doc comments, a slight departure from the existing practice of writing safety comments inline (e.g. inside of a function’s body), Hermes plans to add support for inline safety comments. This literate programming approach keeps code, formal specifications, and proofs tightly synchronized.
 
-## 4\. Architecture
+## 5\. Architecture
 
 Once a programmer has annotated their Rust code with Hermes annotations (whose syntax is described in Section 5), interacting with Hermes is just a matter of running `cargo hermes verify`. Like the familiar `cargo check`, `cargo hermes verify` will exit cleanly on successful verification, or will print error messages describing verification failures.
 
@@ -71,13 +93,13 @@ Hermes primarily operates by orchestrating the Charon, Aeneas, and Lean verifica
 * **Verification & Transparent Feedback**  
   Finally, Hermes invokes the Lean compiler. To preserve the literate programming experience, Lean compilation errors are captured and transparently line-mapped back to the exact doc comment in the Rust source file. The developer never needs to leave their Rust editor to understand why a proof failed.
 
-## 5\. Syntax Specification
+## 6\. Syntax Specification
 
 Hermes uses standard Rust documentation comments with a specific info string to identify Hermes annotations.
 
 Where possible, Hermes syntax omits introducing variable bindings, keeping these implicit, as they are usually obvious and match the Rust surface syntax. For example, when defining the specification of `wrapper` in 5.1 below, the Lean signature `wrapper (a: U32) -> U32` is omitted.
 
-### 5.1 The `spec` and `proof` Blocks (Safe Verification)
+### 6.1 The `spec` and `proof` Blocks (Safe Verification)
 
 Used to specify the behavior of standard Rust functions that Aeneas can translate, and prove that specification correct.
 
@@ -106,7 +128,7 @@ pub fn wrapper(a: u32) -> u32 {
 
 **Generated Lean:**
 
-```lean4
+```
 -- Generated by Aeneas:
 def wrapper (a : Std.U32) : Result Std.U32 := do
   safe_div a 1#u32
@@ -114,10 +136,10 @@ def wrapper (a : Std.U32) : Result Std.U32 := do
 -- Generated by Hermes:
 namespace wrapper
 
-  structure Pre (a : Std.U32)  : Prop where
+  structure Pre (a : Std.U32) : Prop where
     h_a_is_valid : Hermes.IsValid.isValid a := by verify_is_valid h_a_is_valid
 
-  structure Post (a : Std.U32)  (ret : Std.U32) : Prop where
+  structure Post (a : Std.U32) (ret : Std.U32) : Prop where
     h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
     h_unnamed : ret.val = a.val := by verify_user_bound h_unnamed
 
@@ -128,7 +150,7 @@ theorem spec (a : Std.U32)
 end wrapper
 ```
 
-### 5.2 The `unsafe(axiom)` Block (Unsafe/Opaque)
+### 6.2 The `unsafe(axiom)` Block (Unsafe/Opaque)
 
 Used for functions containing unsafe code that Aeneas cannot translate – i.e., those which perform “leaf” unsafe operations. Just as with normal `unsafe` Rust code, Hermes treats `unsafe(axiom)` annotations as given, and does not attempt to verify their correctness. **Buggy `unsafe(axiom)` annotations can lead to unsound programs.**
 
@@ -157,7 +179,7 @@ pub unsafe fn safe_div(a: u32, b: u32) -&gt; u32 {
 
 **Generated Lean:**
 
-```lean4
+```
 -- Generated by Aeneas:
 opaque safe_div (a : Std.U32) (b : Std.U32) : Result Std.U32
 
@@ -171,24 +193,29 @@ namespace safe_div
   -- The Post structure encapsulates all postconditions
   structure Post (a b ret : Std.U32) : Prop where
     h_result : ret.val = a.val / b.val
-  
+
   axiom spec (a : Std.U32) (b : Std.U32) (h_req : safe_div.Pre a b) :
     Hermes.SpecificationHolds
       (α := Std.U32)
       (safe_div a b)
-      (fun ret =&gt; safe_div.Post a b ret)
+      (fun ret => safe_div.Post a b ret)
 
 end safe_div
 ```
 
-### 5.3 Type Invariants
+### 6.3 Type Invariants
 
 Used to specify that a type has internal field invariants.
 
 **Syntax:**
 
 ````rust
-/// ```lean, hermes/// isValid self := 2 | self.x.val/// ```pub struct Even {    x: usize,}
+/// ```lean, hermes
+/// isValid self := 2 | self.x.val
+/// ```
+pub struct Even {
+    x: usize,
+}
 ````
 
 **Semantics:**
@@ -199,7 +226,7 @@ Used to specify that a type has internal field invariants.
 
 **Generated Lean:**
 
-```lean4
+```
 -- Generated by Aeneas:
 structure Even where
   x : Std.Usize
@@ -213,14 +240,17 @@ instance : Hermes.IsValid Even where
 end Even
 ```
 
-### 5.4 Trait Invariants
+### 6.4 Trait Invariants
 
 Used to specify that an unsafe trait denotes that a type satisfies an invariant.
 
 **Syntax:**
 
 ````rust
-/// ```lean, hermes/// isSafe : .../// ```pub unsafe trait FromBytes {}
+/// ```lean, hermes
+/// isSafe : ...
+/// ```
+pub unsafe trait FromBytes {}
 ````
 
 **Semantics:**
@@ -230,7 +260,7 @@ Used to specify that an unsafe trait denotes that a type satisfies an invariant.
 
 **Generated Lean:**
 
-```lean4
+```
 -- Generated by Aeneas:
 structure FromBytes (Self : Type) where
 
@@ -243,13 +273,13 @@ class Safe (Self : Type) [FromBytes Self] : Prop where
 end FromBytes
 ```
 
-## 6\. Desugaring to Aeneas
+## 7\. Desugaring to Aeneas
 
 To understand how Hermes’ surface syntax works, we must understand how Aeneas handles references. Aeneas achieves its verification ergonomics by performing a purely functional translation based on Rust’s strict borrow checker rules. It completely abstracts away raw memory, pointers, and spatial reasoning.
 
 Hermes allows developers to write specifications that look like standard, stateful Rust, and desugars them into theorems that apply to Aeneas’s generated pure functions.
 
-### 6.1 Immutable References (`&T`)
+### 7.1 Immutable References (`&T`)
 
 Because the Rust compiler guarantees that immutable references cannot be modified while they are borrowed (for types without interior mutability), Aeneas models shared references (`&T`) as pure, immutable values. There is no memory to dereference; a `&u32` in Rust simply lowers to a `U32` value in Lean.
 
@@ -272,7 +302,7 @@ pub fn read_val(x: &u32) -> u32 {
 
 Aeneas generates a single function, and Hermes generates a straightforward theorem tying the input to the result:
 
-```lean4
+```
 -- Generated by Aeneas:
 def read_val (x : Std.U32) : Result Std.U32 := do
   ok x
@@ -280,10 +310,10 @@ def read_val (x : Std.U32) : Result Std.U32 := do
 -- Generated by Hermes:
 namespace read_val
 
-  structure Pre (x : Std.U32)  : Prop where
+  structure Pre (x : Std.U32) : Prop where
     h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid
 
-  structure Post (x : Std.U32)  (ret : Std.U32) : Prop where
+  structure Post (x : Std.U32) (ret : Std.U32) : Prop where
     h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
     h_unnamed : ret.val = x.val := by verify_user_bound h_unnamed
 
@@ -296,7 +326,7 @@ end read_val
 
 ### 
 
-### 6.2 Mutable References (`&mut T`)
+### 7.2 Mutable References (`&mut T`)
 
 Mutable references require more complex handling. Aeneas models mutable references (`&mut T`) as state-updating transformations by having the lowered function return a tuple containing both the standard return value and the updated state of the mutably borrowed values
 
@@ -323,7 +353,7 @@ pub fn add_in_place(x: &mut u32, add: u32) {
 
 Hermes automatically matches the return type generated by Aeneas, generating local let-bindings that destructure the result tuple into the return value and the post-state variables (like `x'`).
 
-```lean4
+```
 -- Generated by Aeneas:
 def add_in_place (x : Std.U32) (add : Std.U32) : Result Std.U32 := do
   x + add
@@ -331,24 +361,22 @@ def add_in_place (x : Std.U32) (add : Std.U32) : Result Std.U32 := do
 -- Generated by Hermes:
 namespace add_in_place
 
-  structure Pre (x : Std.U32) (add : Std.U32)  : Prop where
+  structure Pre (x : Std.U32) (add : Std.U32) : Prop where
     h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid
     h_add_is_valid : Hermes.IsValid.isValid add := by verify_is_valid h_add_is_valid
 
-  structure Post (x : Std.U32) (add : Std.U32)  (x' : Std.U32) : Prop where
+  structure Post (x : Std.U32) (add : Std.U32) (x' : Std.U32) : Prop where
     h_x'_is_valid : Hermes.IsValid.isValid x' := by verify_is_valid h_x'_is_valid
     h_unnamed : x'.val = x.val + add.val := by verify_user_bound h_unnamed
 
 theorem spec (x : Std.U32) (add : Std.U32)
   (h_req : Pre x add) :
-  Aeneas.Std.WP.spec (add_in_place x add) (fun ret_ =>
-    let x' := ret_
-    Post x add x') := by ...
+  Aeneas.Std.WP.spec (add_in_place x add) (fun ret_ => let x' := ret_ in Post x add x') := by ...
 
 end add_in_place
 ```
 
-### 6.3 Complex Combinations
+### 7.3 Complex Combinations
 
 When a function both mutates state *and* returns a meaningful value, Hermes automatically destructures the tuple to bind the correct components to `ret`  and the updated variables (e.g. `stack'`).
 
@@ -359,17 +387,18 @@ When a function both mutates state *and* returns a meaningful value, Hermes auto
 /// requires (h_req): stack.len > 0
 /// ensures (h_len): stack'.len = stack.len - 1
 /// ensures (h_ret): ret = stack[stack.len - 1]
-/// proof:
+/// proof
 ///   ...
 /// ```
 pub unsafe fn pop(stack: &mut Vec<u32>) -> u32 {
    stack.pop().unwrap()
 }
+
 ````
 
 **Generated Lean:**
 
-```lean4
+```
 -- Generated by Aeneas:
 def pop
   (stack : alloc.vec.Vec Std.U32) :
@@ -382,32 +411,25 @@ def pop
 -- Generated by Hermes:
 namespace pop
 
-  structure Pre (stack : (Vec Std.U32))  : Prop where
-    h_stack_is_valid : Hermes.IsValid.isValid stack := by verify_is_valid h_stack_is_valid
-    h_req : stack.len > 0
-
-  structure Post (stack : (Vec Std.U32))  (ret : Std.U32) (stack' : (Vec Std.U32)) : Prop where
-    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
-    h_stack'_is_valid : Hermes.IsValid.isValid stack' := by verify_is_valid h_stack'_is_valid
-    h_len : stack'.len = stack.len - 1 := by verify_user_bound h_len
-    h_ret : ret = stack[stack.len - 1] := by verify_user_bound h_ret
-
-theorem spec (stack : (Vec Std.U32))
-  (h_req : Pre stack) :
-  Aeneas.Std.WP.spec (pop stack) (fun ret_ =>
-    let (ret, stack') := ret_
-    Post stack ret stack') := by ...
+theorem spec (stack : (Vec Std.U32)) (h_req : (stack.len > 0)) :
+  Hermes.SpecificationHolds
+    (α := Std.U32 × (Vec Std.U32))
+    (pop stack)
+    (fun result =>
+      let (result, stack') := result
+      (stack'.len = stack.len - 1) ∧ (ret = stack[stack.len - 1])
+    ) := by ...
 
 end pop
 ```
 
 By handling this desugaring under the hood, Hermes ensures the proof engineer only has to reason about a single, unified local context that maps directly to the original Rust source.
 
-## 7\. Theoretical Foundation: Memory Modeling
+## 8\. Theoretical Foundation: Memory Modeling
 
 Rust's operational semantics are not yet fully formally specified. However, the Rust Reference and standard library make certain "lower bound" guarantees regarding memory layout and behavior. Hermes utilizes these guarantees to justify authoring Lean axioms about Rust's memory model, particularly for `unsafe` code.
 
-### 7.1 Lower Bound Guarantees
+### 8.1 Lower Bound Guarantees
 
 While a precise memory model is absent, Hermes assumes that any future formalization of Rust will satisfy key properties guaranteed by the current Rust [Reference](https://doc.rust-lang.org/stable/reference/) and [standard library documentation](https://doc.rust-lang.org/stable/std/). For example, Rust guarantees [the following](https://doc.rust-lang.org/1.92.0/reference/type-layout.html#size-and-alignment) about sized types:
 
@@ -425,13 +447,13 @@ struct Foo {
 
 Rust [guarantees](https://doc.rust-lang.org/1.92.0/reference/type-layout.html#the-rust-representation) that the `a` and `b` fields are properly aligned, don’t overlap, and that the alignment of `Foo` is at least as large as the alignments of `a` and `b`. Other than that, it makes no guarantees about the layout of `Foo`. Regardless, we can still infer useful properties about this type: For example, we can infer that `size_of::<Foo>() >= size_of::<u32>() + size_of::<u8>()`, that `size_of::<Foo>() % align_of::<u32>() == 0`, etc.
 
-### 7.2 The Memory Axioms
+### 8.2 The Memory Axioms
 
 Hermes encapsulates these guarantees into a set of Lean definitions, type classes, and axioms included in its standard library. This allows users to prove the soundness of `unsafe` code – such as raw pointer manipulation or manual memory layout calculation – without requiring Aeneas to model the entire Rust abstract machine.
 
 For example, this model of type layout is included in the Hermes standard library:
 
-```lean4
+```
 class Layout (ɑ : Type) where
   size : Nat
   align : Nat
@@ -439,32 +461,42 @@ class Layout (ɑ : Type) where
   sizeAligned : size | align
 ```
 
-## 8\. Tooling
+## 9\. Tooling
 
 Hermes wraps the underlying tools (Charon, Aeneas, and Lean) to provide a seamless “Cargo-like” experience.
 
-### 8.1 CLI Interface
+### 9.1 CLI Interface
 
 Hermes accepts standard Cargo flags to identify packages and targets. It also accepts an `--allow-sorry` flag, useful for incremental development, that allows incomplete or missing proofs to verify (in reference to Lean’s `sorry` proof step, which is also used for this purpose).
 
 ```
-$ cargo hermes verify --helpVerify a crateUsage: cargo hermes verify [OPTIONS]Options:      --allow-sorry            Allow `sorry` in proofs and inject `sorry` for missing proofs      --manifest-path <PATH>   Path to Cargo.toml  -p, --package <SPEC>         Package to process      --workspace              Process all packages in the workspace      ... (standard cargo targeting flags) ...
+$ cargo hermes verify --help
+Verify a crate
+
+Usage: cargo hermes verify [OPTIONS]
+
+Options:
+      --allow-sorry            Allow `sorry` in proofs and inject `sorry` for missing proofs
+      --manifest-path <PATH>   Path to Cargo.toml
+  -p, --package <SPEC>         Package to process
+      --workspace              Process all packages in the workspace
+      ... (standard cargo targeting flags) ...
 ```
 
-## 9\. Limitations & Future Work
+## 10\. Limitations & Future Work
 
-### 9.1 Known Limitations
+### 10.1 Known Limitations
 
 * **Complex Lifetimes:** Functions that return mutable borrows derived from inputs (e.g., `fn choose<'a> (x: &'a mut i32, y: &'a mut i32) -> &'a mut i32)` have highly complex backward functions in Aeneas involving "future" return values.  
-* **Interior Mutability: **Code using interior mutation (such as `RefCell` or `Mutex`) must be marked `opaque` and manually modeled, as Aeneas does not support interior mutation.
+* **Interior Mutability:** Code using interior mutation (such as `RefCell` or `Mutex`) must be marked `opaque` and manually modeled, as Aeneas does not support interior mutation.
 
-### 9.2 Open Questions
+### 10.2 Open Questions
 
-* **Symbolic Address Modeling: **How to expose the "address" of a reference in Lean without breaking the clean value semantics, specifically regarding type indistinguishability between `T` , `&T` , and `&&T`. Because Aeneas’ functional translation recursively unwraps references to expose their values for functional reasoning, the specific layer of indirection—and thus the identity of the memory location holding the value—is obscured in the generated type system.  
-* **Interior Mutability: **Finding a way to extend functional translation to support limited forms of interior mutability (e.g., `Cell`) without a full global heap model.  
+* **Symbolic Address Modeling:** How to expose the "address" of a reference in Lean without breaking the clean value semantics, specifically regarding type indistinguishability between `T` , `&T` , and `&&T`. Because Aeneas’ functional translation recursively unwraps references to expose their values for functional reasoning, the specific layer of indirection—and thus the identity of the memory location holding the value—is obscured in the generated type system.  
+* **Interior Mutability:** Finding a way to extend functional translation to support limited forms of interior mutability (e.g., `Cell`) without a full global heap model.  
 * **Recursive Reference Containment:** A related challenge to symbolic address modeling is handling types that recursively contain references. In Rust, a `struct S<'a>` can contain a `&'a T` . In the functional translation, `S` might be lowered to a type containing `T` directly (value semantics). When verifying memory layout or unsafe casts, the physical representation of `S` (containing a pointer) differs from its logical representation (containing a value). If `T` itself contains further references, the divergence between the physical layout (a tree of pointers) and the logical model (a tree of values) grows. Reconciling these views to prove that a specific offset in `S` corresponds to a valid memory address for a sub-field requires a robust mapping between the "Logical Value" and the "Physical Backing Store," which is currently not fully defined.
 
-### 9.3 Future Work
+### 10.3 Future Work
 
 * **Interactive IDE Support:** Enabling interactive theorem proving directly within the Rust IDE (e.g., VS Code). A Hermes IDE extension would spin up a Lean server in the background and synchronize the cursor position within Rust doc comments (proof blocks) to the generated Lean files. This would allow users to see the goal state and receive tactic suggestions in real-time, bringing the full power of Lean's interactive editing to the Rust environment.  
 * **Separation Logic Support:** Implementing a Separation Logic framework within Lean to allow natural reasoning about heap states inside spec/proof/axiom blocks.  
@@ -474,13 +506,13 @@ $ cargo hermes verify --helpVerify a crateUsage: cargo hermes verify [OPTIONS
 * **User-authored proofs:** We may want to eventually permit users to write more complex Lean code that is checked into source control in stand-alone `.lean` files. Hermes should support including these in the build.  
 * **Axiom \+ Lean body:** It may be useful to allow users to provide a Lean model for an axiomatized function and provide a proof that the Lean model satisfies their axiom. While this doesn’t guarantee that their axiom reflects the behavior of the Rust function, it may nonetheless be useful to help catch mistakes in model definition.
 
-## 10\. Appendix A: Syntax Specification
+## 11\. Appendix A: Syntax Specification
 
 Hermes specifications are written within standard Rust documentation comments (`///`) using a fenced code block annotated with `hermes` (note that preceding annotations are ignored, as in `lean, hermes` – this allows support for annotations used for other purposes such as syntax highlighting).
 
 To reliably extract these specifications without requiring a full Lean 4 parser inside the Rust toolchain, Hermes employs a **line-oriented, indentation-sensitive** grammar.
 
-### 10.1 Grammar Rules
+### 11.1 Grammar Rules
 
 The parser reads the specification block line by line as a state machine. The content is divided into clauses based on recognized keywords.
 
@@ -489,7 +521,7 @@ The parser reads the specification block line by line as a state machine. The co
 2. **The Off-side Rule (Continuations):** When a keyword is encountered, its exact indentation level (the number of leading spaces) becomes the **baseline**. Any subsequent line that belongs to this clause *must* be indented strictly more than the baseline.   
 3. **Blank Lines:** Lines containing only whitespace are ignored for the purpose of indentation checking.
 
-### 10.2 Examples
+### 11.2 Examples
 
 **Valid syntax:**
 
@@ -522,7 +554,7 @@ The parser reads the specification block line by line as a state machine. The co
 /// ```
 ````
 
-### 10.3 Motivation
+### 11.3 Motivation
 
 This design was chosen over both unstructured text parsing and fully structured AST parsing for three key reasons:
 
@@ -530,9 +562,9 @@ This design was chosen over both unstructured text parsing and fully structured 
 2. **Treating Lean as a black box:** Writing a complete, robust Lean 4 parser in Rust is a monumental and fragile task. By relying strictly on leading keywords and indentation levels, Hermes can safely route multi-line blocks of complex Lean syntax (including macros, custom notations, and comments) to the correct location in the generated `.lean` file without ever needing to understand the syntax itself.  
 3. **Ergonomic alignment:** Lean 4 is already a whitespace-sensitive language. Requiring users to use indentation to demarcate scope—where Hermes directives sit at an outer scope and Lean expressions sit at an inner scope—feels completely natural and enforces highly readable documentation.
 
-## 11\. Appendix B: Under the Hood
+## 12\. Appendix B: Under the Hood
 
-### 11.1 Target Directory Layout
+### 12.1 Target Directory Layout
 
 Hermes isolates its build artifacts to avoid conflicting with standard Cargo builds or other Hermes instances. It places its artifacts in \`target\` (or wherever the user has configured their Cargo target directory), specifically in `target/hermes/<hash>`, where `<hash>` is a hash of the absolute path to the workspace root to ensure freedom from conflicts.
 
@@ -555,11 +587,11 @@ target/hermes/<hash>/
 
 ### 
 
-### 11.2 Lakefile
+### 12.2 Lakefile
 
 Hermes generates a \`lakefile.lean\` to configure the build. If `--allow-sorry` is passed, Hermes relaxes compiler settings (removing `-DwarningAsError=true`).
 
-```lean4
+```
 import Lake
 open Lake DSL
 
@@ -581,10 +613,18 @@ lean_lib «User» where
   srcDir := "user"
 ```
 
-[^1]:  [https://github.com/AeneasVerif/charon](https://github.com/AeneasVerif/charon)
+[^1]:  “In every case, we've seen a decrease by more than 2x in the amount of effort required to both build the services in Rust as well as maintain and update those services” – Lars Bergstrom, Director of Engineering for Android, [speaking at Rust Nation UK](https://www.youtube.com/live/6mZRWFQRvmw?t=27094s)
 
-[^2]:  [https://github.com/aeneasVerif/aeneas](https://github.com/aeneasVerif/aeneas)
+[^2]:  [According to](https://security.googleblog.com/2025/11/rust-in-android-move-fast-fix-things.html) Jeff Vander Stoep, Senior Staff Engineer on Android Security, compared to C/C++, Rust changes have a 4x lower rollback rate, take 25% less time to review, and take 20% fewer revisions to develop before approval
 
-[^3]:  Aeneas also supports lowering to F\*, Coq, and HOL4.
+[^3]:  For example, the [Asterinas kernel](https://asterinas.github.io/2025/06/04/kernel-memory-safety-mission-accomplished.html) contains \~15,000 lines of `unsafe` code which took multiple years to develop (alongside \~100,000 lines of safe code)
 
-[^4]:  We can think of Rust’s current normative reference documents – the [Reference](https://doc.rust-lang.org/reference/introduction.html) and [standard library documentation](https://doc.rust-lang.org/stable/std/) – as defining an informal axiomatic semantics for Rust. While an operational semantics defines a step function between precisely-defined program states, an axiomatic semantics defines a (possibly multi-) step function between *sets* of program states (specifically, each is the set of program states which satisfy a particular logical predicate). Since Rust’s current normative documentation under-specifies this step function, it effectively defines an axiomatic semantics which will *approach* a full operational semantics over time as more axioms are added.
+[^4]:  For example, `unsafe` lines of code constitute \~1% of the total lines of Rust code in Fuchsia’s first-party codebase.
+
+[^5]:  [https://github.com/AeneasVerif/charon](https://github.com/AeneasVerif/charon)
+
+[^6]:  [https://github.com/aeneasVerif/aeneas](https://github.com/aeneasVerif/aeneas)
+
+[^7]:  Aeneas also supports lowering to F\*, Coq, and HOL4.
+
+[^8]:  We can think of Rust’s current normative reference documents – the [Reference](https://doc.rust-lang.org/reference/introduction.html) and [standard library documentation](https://doc.rust-lang.org/stable/std/) – as defining an informal axiomatic semantics for Rust. While an operational semantics defines a step function between precisely-defined program states, an axiomatic semantics defines a (possibly multi-) step function between *sets* of program states (specifically, each is the set of program states which satisfy a particular logical predicate). Since Rust’s current normative documentation under-specifies this step function, it effectively defines an axiomatic semantics which will *approach* a full operational semantics over time as more axioms are added.
