@@ -175,6 +175,7 @@ macro_rules! impl_fmt_trait {
 
 macro_rules! impl_fmt_traits {
     ($name:ident, $native:ident, "floating point number") => {
+        #[cfg(not(no_fp_fmt_parse))]
         impl_fmt_trait!($name, $native, Display);
     };
     ($name:ident, $native:ident, "unsigned integer") => {

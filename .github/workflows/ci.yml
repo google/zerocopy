@@ -351,6 +351,15 @@ jobs:
       run: ./cargo.sh +$TOOLCHAIN build --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
 
+    # Ensure that, when the standard library is built with `--cfg
+    # no_fp_fmt_parse`, building zerocopy with the same `--cfg` succeeds (note
+    # that `RUSTFLAGS='--cfg no_fp_fmt_parse'` is doing double-duty here - it's
+    # setting the environment variable for both the standard library build and
+    # for the zerocopy build).
+    - name: Build without floating point support
+      run: RUSTFLAGS='--cfg no_fp_fmt_parse' ./cargo.sh +${{ matrix.toolchain }} build -Zbuild-std --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      if: matrix.target != 'thumbv6m-none-eabi'
+
     # When building tests for the i686 target, we need certain libraries which
     # are not installed by default; `gcc-multilib` includes these libraries.
     - name: Install gcc-multilib
