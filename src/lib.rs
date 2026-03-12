@@ -5563,6 +5563,24 @@ pub unsafe trait IntoBytes {
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 6, 7]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "as_bytes",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline(always)]
     fn as_bytes(&self) -> &[u8]
@@ -5635,6 +5653,10 @@ pub unsafe trait IntoBytes {
     ///     checksum: [1, 0],
     /// });
     /// ```
+    ///
+    #[doc = codegen_header!("h5", "as_mut_bytes")]
+    ///
+    /// See [`IntoBytes::as_bytes`](#method.as_bytes.codegen).
     #[must_use = "has no side effects"]
     #[inline(always)]
     fn as_mut_bytes(&mut self) -> &mut [u8]
@@ -5715,6 +5737,24 @@ pub unsafe trait IntoBytes {
     /// assert!(write_result.is_err());
     /// assert_eq!(excessive_bytes, [0u8; 128]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "write_to",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ]
+    )]
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
     #[allow(clippy::mut_from_ref)] // False positive: `&self -> &mut [u8]`
@@ -5782,6 +5822,24 @@ pub unsafe trait IntoBytes {
     /// assert!(write_result.is_err());
     /// assert_eq!(insufficient_bytes, [0, 0]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "write_to_prefix",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ]
+    )]
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
     #[allow(clippy::mut_from_ref)] // False positive: `&self -> &mut [u8]`
@@ -5858,6 +5916,24 @@ pub unsafe trait IntoBytes {
     /// assert!(write_result.is_err());
     /// assert_eq!(insufficient_bytes, [0, 0]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "write_to_suffix",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ]
+    )]
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
     #[allow(clippy::mut_from_ref)] // False positive: `&self -> &mut [u8]`
