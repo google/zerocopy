@@ -3,8 +3,6 @@ Purpose: Exercises resilience against specification identifier shadowing.
 Behavior: Verifies logic when function arguments (`ret`, `old_x`, etc.) intentionally conflict with typical implicit variables produced inside Aeneas' standard extraction mechanics. Ensures accurate parsing without producing malformed translations.
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry"]
-

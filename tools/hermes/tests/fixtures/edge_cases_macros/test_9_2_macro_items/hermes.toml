@@ -3,8 +3,6 @@ Purpose: Tests integration with item-generating macros.
 Behavior: Uses a standard `macro_rules!` block to define a struct containing plain data fields. Ensures Charon successfully discovers and lowers the generated item.
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry"]
-

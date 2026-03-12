@@ -3,7 +3,6 @@ Purpose: Checks cycle detection in module resolution.
 Behavior: Defines a module that mounts itself (`#[path = "lib.rs"] mod self_loop;`). Expects a toolchain diagnostic error regarding "circular modules" rather than an infinite loop.
 """
 
-
 [test]
 stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

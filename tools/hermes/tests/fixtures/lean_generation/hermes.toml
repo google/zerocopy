@@ -20,7 +20,6 @@ content_contains = [
     ".Types"
 ]
 
-
 [[test.artifact]]
 package = "lean_generation"
 target = "lean_generation"
@@ -48,4 +47,3 @@ target = "lean_generation"
 kind = "lean"
 should_exist = true
 content_contains = []
-

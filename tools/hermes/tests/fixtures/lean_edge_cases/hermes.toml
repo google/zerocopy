@@ -3,17 +3,8 @@ Purpose: Exercises translation mapping for opaque specs and comments.
 Behavior: Includes unstructured axioms (`unsafe(axiom)`), argument/parameter naming collisions, and multi-line comments nested deep within Lean specs. Guarantees successful translation into clean, valid Lean theorem files.
 """
 
-
 #[tracing]
 #level = "trace"
-
-[extraction]
-start_from = ["crate"]
-# Use opaque for unsafe axioms to allow them to pass even if checking fails
-opaque = ["unsafe_axiom", "unsafe_axiom_empty"]
-
-[output]
-style = "lean"
 
 [test]
 args = ["verify", "--allow-sorry"]

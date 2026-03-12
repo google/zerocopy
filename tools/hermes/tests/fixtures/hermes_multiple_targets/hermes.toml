@@ -3,6 +3,5 @@ Purpose: Evaluates CLI invocation in multi-target workspaces.
 Behavior: (Empty config context) Likely executes a project having multiple library/binary targets, guaranteeing Hermes avoids target ambiguity crashes by enforcing proper target selection.
 """
 
-
 [test]
 args = ["verify", "--lib", "--bin", "my_bin", "--allow-sorry"]

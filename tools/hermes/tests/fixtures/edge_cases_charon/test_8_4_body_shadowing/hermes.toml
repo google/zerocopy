@@ -3,8 +3,6 @@ Purpose: Tests extraction of shadowed bindings within function bodies.
 Behavior: Reuses binding names via shadowing (`let x = ...; let x = ...`). Ensures that the translated Lean properly tracks and isolates the scopes of shadowed variables.
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry"]
-

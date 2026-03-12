@@ -3,7 +3,6 @@ Purpose: Tests diagnostic reporting for redundant Hermes annotations.
 Behavior: Declares a single function with two consecutive `/// ```lean, hermes` comments. Expects Hermes to cleanly fail with: "Multiple Hermes blocks found".
 """
 
-
 [test]
 stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

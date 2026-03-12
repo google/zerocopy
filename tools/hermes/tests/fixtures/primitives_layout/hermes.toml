@@ -8,6 +8,3 @@ package = "primitives_layout"
 target = "primitives_layout"
 kind = "lean"
 should_exist = true
-
-[verification]
-allow_sorry = true

@@ -3,7 +3,6 @@ Purpose: Verify that `isSafe` blocks are strictly rejected on safe traits.
 Behavior: Hermes parses the file, encounters `isSafe` on safe traits, and errors out pointing to the specific spans.
 """
 
-
 [test]
 args = ["verify"]
 expected_status = "failure"

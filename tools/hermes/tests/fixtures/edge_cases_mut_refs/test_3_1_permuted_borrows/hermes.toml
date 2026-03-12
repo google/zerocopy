@@ -3,8 +3,6 @@ Purpose: Verifies extraction of out-of-order mutable assignments.
 Behavior: Uses a variable swapping function taking two mutable references. Confirms resulting forward/backward function splits correctly decompose and sequence the lifetime constraints of swapped borrows.
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry"]
-

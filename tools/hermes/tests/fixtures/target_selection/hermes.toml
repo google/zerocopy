@@ -3,10 +3,7 @@ Purpose: Checks target conflict rejection when building heterogeneous project ro
 Behavior: Attempts to verify `selector` while invoking `--bin selector`. Assures `src/lib.rs` is skipped and only `src/main.rs` is processed, bypassing cargo target ambiguity.
 """
 
-
 [test]
 stderr_file = "expected.stderr"
 args = ["verify", "--bin", "selector", "--allow-sorry"]
 expected_status = "failure"
-
-

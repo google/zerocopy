@@ -3,8 +3,6 @@ Purpose: Validates deeply nested hierarchical module boundaries.
 Behavior: Delcares repeated nested submodules (`mod a { mod a { ... }}`). Ensures translation successfully formats paths structurally into Lean.
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry"]
-

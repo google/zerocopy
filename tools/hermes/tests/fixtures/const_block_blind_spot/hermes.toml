@@ -3,7 +3,6 @@ Purpose: Tests Hermes' restriction against verifying items nested inside express
 Behavior: Defines an annotated function inside a `const _: () = { ... }` block. Expects Hermes to explicitly reject it with a "Nested item error".
 """
 
-
 [test]
 stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

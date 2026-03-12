@@ -3,16 +3,6 @@ Purpose: Exercises extraction of advanced Rust typing invariants.
 Behavior: Evaluates structural logic involving `const N: usize` generics, associated trait types (`AssocType.Item`), and implicitly uninhabited `nomatch` variants. Tracks accurate translation into Lean typeclasses/instances.
 """
 
-
-[extraction]
-start_from = ["crate"]
-
-[output]
-style = "lean"
-
-
-
-
 [test]
 stderr_file = "expected.stderr"
 expected_status = "failure"

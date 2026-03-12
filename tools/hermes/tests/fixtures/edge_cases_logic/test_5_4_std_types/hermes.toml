@@ -3,8 +3,6 @@ Purpose: Verifies extraction and translation of standard library types.
 Behavior: Uses `Vec` and `String` directly in function signatures. Confirms the Lean outputs correctly rely upon corresponding foundational models for these standard types.
 """
 
-
 [test]
 expected_status = "failure"
 args = ["verify", "--allow-sorry"]
-

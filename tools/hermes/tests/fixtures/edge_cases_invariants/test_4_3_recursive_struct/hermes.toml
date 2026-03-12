@@ -3,8 +3,6 @@ Purpose: Exercises invariants over recursive data types.
 Behavior: Verifies a structural linked list (`Node { next: Option<Box<Node>> }`) using an invariant that recursively validates its tail element. Ensures extraction handles inductive types.
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
-

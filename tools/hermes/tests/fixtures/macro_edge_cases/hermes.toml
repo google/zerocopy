@@ -3,13 +3,6 @@ Purpose: Validates specification survival through complex macro expansion loops.
 Behavior: Applies Hermes annotations explicitly onto traits structurally emitted by macros (`decl_trait!(HiddenTrait)`). Asserts that Charon lifts the logic bounds correctly across the span hygienically.
 """
 
-
-[extraction]
-start_from = ["crate"]
-
-[output]
-style = "lean"
-
 [test]
 stderr_file = "expected.stderr"
 expected_status = "success"

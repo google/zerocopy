@@ -3,8 +3,6 @@ Purpose: Confirms structural modeling of explicitly diverging functions.
 Behavior: Targets functions that explicitly abort (`-> !`). Ensures Aeneas interprets them structurally inside logic frameworks by employing bounded uninhabited logical models in Lean (`Empty`).
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry"]
-

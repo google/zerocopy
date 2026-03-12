@@ -7,5 +7,3 @@ Behavior: Exercises the 'isSafe', 'isValid' and 'spec' attribute mapping against
 stderr_file = "expected.stderr"
 expected_status = "failure"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
-
-

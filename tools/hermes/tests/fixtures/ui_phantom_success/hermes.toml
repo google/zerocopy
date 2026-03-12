@@ -3,7 +3,6 @@ Purpose: Confirms warnings pass through completely when overall validation succe
 Behavior: Emits `unused variable` warnings but ultimately exits successfully. Prints warnings prominently so they aren't muted by success.
 """
 
-
 [test]
 stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

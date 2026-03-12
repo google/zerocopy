@@ -3,8 +3,6 @@ Purpose: Tests Lean `if/then/else` control flow support in specifications.
 Behavior: Uses `if check then A else B` logic within a structural invariant proof to ensure reliable execution in the lean backend.
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
-

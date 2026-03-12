@@ -3,8 +3,6 @@ Purpose: Tests Lean `match` support in Hermes annotations.
 Behavior: Confirms that developers can write `match` expressions within their `/// @spec` definitions and that these successfully type-check and generate valid Lean code.
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
-

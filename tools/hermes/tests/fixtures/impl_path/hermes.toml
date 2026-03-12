@@ -3,7 +3,6 @@ Purpose: Tests analysis scope descending through implementation blocks.
 Behavior: Uses `--start-from crate` across a crate containing `impl Foo { ... }`. Verifies that Hermes successfully sweeps inside lexical bounds of struct implementations looking for specifications.
 """
 
-
 [test]
 args = ["verify", "--allow-sorry"]
 

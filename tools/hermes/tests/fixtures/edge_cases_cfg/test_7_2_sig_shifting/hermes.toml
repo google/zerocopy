@@ -3,8 +3,6 @@ Purpose: Verifies field-level `#[cfg]` attributes in structs.
 Behavior: Uses a struct with different fields depending on the OS. Confirms the Lean struct only defines the expected field for the target compilation.
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry"]
-

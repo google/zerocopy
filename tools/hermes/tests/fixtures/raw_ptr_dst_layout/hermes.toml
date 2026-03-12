@@ -9,4 +9,3 @@ package = "raw_ptr_dst_layout"
 target = "raw_ptr_dst_layout"
 kind = "lean"
 should_exist = true
-

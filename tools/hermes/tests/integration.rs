@@ -20,12 +20,6 @@ struct HermesToml {
     description: String,
     #[serde(default)]
     test: Option<TestConfig>,
-    #[serde(default)]
-    extraction: Option<toml::Value>,
-    #[serde(default)]
-    output: Option<toml::Value>,
-    #[serde(default)]
-    verification: Option<toml::Value>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Default, Clone)]

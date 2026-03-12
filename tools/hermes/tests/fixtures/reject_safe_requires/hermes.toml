@@ -3,7 +3,6 @@ Purpose: Verify that `requires` blocks are strictly rejected on safe functions.
 Behavior: Hermes parses the file, encounters `requires` on safe functions, and errors out pointing to the specific spans.
 """
 
-
 [test]
 args = ["verify"]
 expected_status = "failure"

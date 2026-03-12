@@ -3,8 +3,6 @@ Purpose: Ensures robust processing of `where` type filtering.
 Behavior: Bounds a generic via an explicit `where T: Copy + Clone + Default` block. Asserts the backend accurately copies all the trait constraints onto the structural Lean parameter.
 """
 
-
 [test]
 expected_status = "success"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
-

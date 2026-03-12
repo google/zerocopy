@@ -3,7 +3,6 @@ Purpose: Similar invariant to `missing_cfg_file`, specifically targeted at ensur
 Behavior: The dummy targeted OS (`fake_os`) effectively neuters the parsing. Ensures successful verification completes transparently.
 """
 
-
 [test]
 args = ["verify", "--allow-sorry"]
 
