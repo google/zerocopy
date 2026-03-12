@@ -403,10 +403,11 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     // If `lake-manifest.json` exists (copied from the cache), manual inject the
     // `aeneas` dependency. This avoids running `lake update`, which would
     // trigger the `mathlib` post-update hook (cache download).
-    if lean_root.join("lake-manifest.json").exists() {
-        if let Ok(aeneas_dir) = std::env::var("HERMES_AENEAS_DIR") {
-            let aeneas_url = format!("{}/backends/lean", aeneas_dir);
-            let manifest_path = lean_root.join("lake-manifest.json");
+    if lean_root.join("lake-manifest.json").exists()
+        && let Ok(aeneas_dir) = std::env::var("HERMES_AENEAS_DIR")
+    {
+        let aeneas_url = format!("{}/backends/lean", aeneas_dir);
+        let manifest_path = lean_root.join("lake-manifest.json");
 
             match std::fs::read_to_string(&manifest_path) {
                 Ok(content) => match serde_json::from_str::<serde_json::Value>(&content) {
@@ -437,10 +438,10 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
                             });
                             packages.push(entry);
 
-                            if let Ok(new_content) = serde_json::to_string_pretty(&json) {
-                                if let Err(e) = std::fs::write(&manifest_path, new_content) {
-                                    log::warn!("Failed to write patched manifest: {}", e);
-                                }
+                            if let Ok(new_content) = serde_json::to_string_pretty(&json)
+                                && let Err(e) = std::fs::write(&manifest_path, new_content)
+                            {
+                                log::warn!("Failed to write patched manifest: {}", e);
                             }
                         }
                     }
@@ -449,7 +450,6 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
                 Err(e) => log::warn!("Failed to read lake-manifest.json: {}", e),
             }
         }
-    }
 
     if !lean_root.join(".lake/packages/mathlib").exists() {
         // 1. Run 'lake exe cache get' to fetch pre-built Mathlib artifacts
@@ -524,15 +524,15 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     log::trace!("'lake build' took {:.2?}", start.elapsed());
 
     // Join the threads to ensure we have all logs
-    if let Some(handle) = stderr_handle {
-        if let Err(e) = handle.join() {
-            log::error!("Stderr reading thread panicked: {:?}", e);
-        }
+    if let Some(handle) = stderr_handle
+        && let Err(e) = handle.join()
+    {
+        log::error!("Stderr reading thread panicked: {:?}", e);
     }
-    if let Some(handle) = stdout_handle {
-        if let Err(e) = handle.join() {
-            log::error!("Stdout reading thread panicked: {:?}", e);
-        }
+    if let Some(handle) = stdout_handle
+        && let Err(e) = handle.join()
+    {
+        log::error!("Stdout reading thread panicked: {:?}", e);
     }
 
     if !status.success() {

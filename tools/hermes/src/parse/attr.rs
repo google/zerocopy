@@ -550,9 +550,10 @@ impl FunctionHermesBlock<Local> {
                                 map: &mut std::collections::BTreeMap<String, &'static str>|
          -> Result<(), Error> {
             for clause in clauses.iter() {
-                if let Some(name) = &clause.name {
-                    if let Some(prev_kind) = map.insert(name.content.clone(), kind) {
-                        if prev_kind == kind {
+                if let Some(name) = &clause.name
+                    && let Some(prev_kind) = map.insert(name.content.clone(), kind)
+                {
+                    if prev_kind == kind {
                             return Err(Error::new(
                                 name.raw_span.inner,
                                 format!("Duplicate {} name `{}`.", kind, name.content),
@@ -567,7 +568,6 @@ impl FunctionHermesBlock<Local> {
                             ));
                         }
                     }
-                }
             }
             Ok(())
         };
@@ -974,19 +974,20 @@ impl RawHermesSpecBody {
                     // active section.
                     let is_keyword_candidate = baseline_indent.is_none_or(|base| indent == base);
 
-                    if is_keyword_candidate {
-                        if let Some((&section, arg_str)) = keywords
+                    if is_keyword_candidate
+                        && let Some((&section, arg_str)) = keywords
                             .iter()
                             .find_map(|(k, s)| strip_keyword(trimmed, k).map(|arg| (s, arg)))
-                        {
-                            let section_is_clause = matches!(section, Section::Requires | Section::Ensures | Section::ProofCase);
+                    {
+                        let section_is_clause = matches!(section, Section::Requires | Section::Ensures | Section::ProofCase);
 
                             let mut name: Option<SpannedLine<Local>> = None;
                             let mut remaining_arg = arg_str.trim_start();
 
-                            if remaining_arg.starts_with('(') {
-                                if let Some(close_idx) = remaining_arg.find(')') {
-                                    let name_str = remaining_arg[1..close_idx].trim();
+                            if remaining_arg.starts_with('(')
+                                && let Some(close_idx) = remaining_arg.find(')')
+                            {
+                                let name_str = remaining_arg[1..close_idx].trim();
                                     let after_name = remaining_arg[close_idx + 1..].trim_start();
 
                                     let mut apply_name = false;
@@ -1030,7 +1031,6 @@ impl RawHermesSpecBody {
                                         });
                                     }
                                 }
-                            }
 
                             // Lean 4 definitions for `isValid` and `isSafe` require the keyword to
                             // literally appear in the generated syntax. We flag these sections here
@@ -1077,7 +1077,6 @@ impl RawHermesSpecBody {
                             let new_baseline = baseline_indent.unwrap_or(indent);
                             return Ok((spec, section, Some(new_baseline), next_active));
                         }
-                    }
 
                     if current_section == Section::Init {
                          return Err((
@@ -2879,6 +2878,7 @@ mod tests {
             }
         }
     }
+
     #[test]
     fn test_extract_doc_line_offsets() {
         let source = "///     sorry\nfn foo() {}";

@@ -242,9 +242,10 @@ impl DiagnosticMapper {
         F: FnMut(String),
     {
         let p = PathBuf::from(file_name);
-        if let Some(mapped_path) = self.map_path(&p) {
-            if let Some(src) = self.get_source(&mapped_path) {
-                let start = byte_start;
+        if let Some(mapped_path) = self.map_path(&p)
+            && let Some(src) = self.get_source(&mapped_path)
+        {
+            let start = byte_start;
                 if byte_end >= start {
                     let len = byte_end - start;
                     if start <= src.len() && start + len <= src.len() {
@@ -273,7 +274,6 @@ impl DiagnosticMapper {
                     }
                 }
             }
-        }
 
         // Fallback
         let prefix = match level {

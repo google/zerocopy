@@ -701,12 +701,11 @@ fn generate_function(
     }
 
     let mut base_name = "".to_string();
-    if let Some(struct_name_node) = &impl_struct_name {
-        if let crate::parse::hkd::SafeType::Path { segments, .. } = &struct_name_node.inner {
-            if let Some(seg) = segments.last() {
-                base_name = seg.ident.clone();
-            }
-        }
+    if let Some(struct_name_node) = &impl_struct_name
+        && let crate::parse::hkd::SafeType::Path { segments, .. } = &struct_name_node.inner
+        && let Some(seg) = segments.last()
+    {
+        base_name = seg.ident.clone();
     }
     let call_name =
         if !base_name.is_empty() { format!("{}.{}", base_name, fn_name) } else { fn_name.clone() };

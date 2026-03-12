@@ -705,12 +705,11 @@ fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
     let walker = WalkDir::new(source).into_iter().filter_entry(|e| {
         // Instantly bypass traversing inside ANY `.git/objects` directory!
         // This prevents ~230,000 file copies per Mathlib clone.
-        if e.file_name() == "objects" {
-            if let Some(parent) = e.path().parent() {
-                if parent.file_name().and_then(|s| s.to_str()) == Some(".git") {
-                    return false;
-                }
-            }
+        if e.file_name() == "objects"
+            && let Some(parent) = e.path().parent()
+            && parent.file_name().and_then(|s| s.to_str()) == Some(".git")
+        {
+            return false;
         }
         true
     });
@@ -912,47 +911,46 @@ fn run_single_phase(
     base_config: &TestConfig,
     phase: Option<&TestPhase>,
 ) -> datatest_stable::Result<()> {
-    if let Some(phase) = phase {
-        if let Some(action) = &phase.action {
-            if action == "touch_stale_file" {
-                let target_dir = ctx.sandbox_root.join("target");
-                let generated_root = find_generated_root(&target_dir)?;
+    if let Some(phase) = phase
+        && let Some(action) = &phase.action
+    {
+        if action == "touch_stale_file" {
+            let target_dir = ctx.sandbox_root.join("target");
+            let generated_root = find_generated_root(&target_dir)?;
 
-                let mut slug_dir = None;
-                for entry in fs::read_dir(&generated_root)? {
-                    let entry = entry?;
-                    if entry.file_type()?.is_dir() {
-                        slug_dir = Some(entry.path());
-                        break;
-                    }
+            let mut slug_dir = None;
+            for entry in fs::read_dir(&generated_root)? {
+                let entry = entry?;
+                if entry.file_type()?.is_dir() {
+                    slug_dir = Some(entry.path());
+                    break;
                 }
-                let slug_dir = slug_dir.ok_or_else(|| {
-                    io::Error::new(
-                        io::ErrorKind::NotFound,
-                        "No slug directory found in generated root",
-                    )
-                })?;
-
-                let stale_file = slug_dir.join("Stale.lean");
-                std::fs::write(&stale_file, "INVALID LEAN CODE").unwrap();
-                assert!(stale_file.exists());
-
-                return Ok(());
-            } else if action == "delete_lake_dir" {
-                let target_dir = ctx.sandbox_root.join("target");
-                let lean_lake = target_dir.join("hermes/hermes_test_target/lean/.lake");
-                if lean_lake.exists() {
-                    std::fs::remove_dir_all(&lean_lake).expect("Failed to delete stale .lake");
-                }
-                let lean_manifest =
-                    target_dir.join("hermes/hermes_test_target/lean/lake-manifest.json");
-                if lean_manifest.exists() {
-                    std::fs::remove_file(&lean_manifest).expect("Failed to delete manifest");
-                }
-                return Ok(());
-            } else {
-                panic!("Unknown action: {}", action);
             }
+            let slug_dir = slug_dir.ok_or_else(|| {
+                io::Error::new(
+                    io::ErrorKind::NotFound,
+                    "No slug directory found in generated root",
+                )
+            })?;
+
+            let stale_file = slug_dir.join("Stale.lean");
+            std::fs::write(&stale_file, "INVALID LEAN CODE").unwrap();
+            assert!(stale_file.exists());
+
+            return Ok(());
+        } else if action == "delete_lake_dir" {
+            let target_dir = ctx.sandbox_root.join("target");
+            let lean_lake = target_dir.join("hermes/hermes_test_target/lean/.lake");
+            if lean_lake.exists() {
+                std::fs::remove_dir_all(&lean_lake).expect("Failed to delete stale .lake");
+            }
+            let lean_manifest = target_dir.join("hermes/hermes_test_target/lean/lake-manifest.json");
+            if lean_manifest.exists() {
+                std::fs::remove_file(&lean_manifest).expect("Failed to delete manifest");
+            }
+            return Ok(());
+        } else {
+            panic!("Unknown action: {}", action);
         }
     }
 
@@ -1263,10 +1261,10 @@ fn assert_artifacts_match(
                     let mut combined = String::new();
                     for entry in walkdir::WalkDir::new(&path) {
                         let Ok(entry) = entry else { continue };
-                        if entry.file_type().is_file() {
-                            if let Ok(s) = fs::read_to_string(entry.path()) {
-                                combined.push_str(&s);
-                            }
+                        if entry.file_type().is_file()
+                            && let Ok(s) = fs::read_to_string(entry.path())
+                        {
+                            combined.push_str(&s);
                         }
                     }
                     combined
@@ -1312,8 +1310,9 @@ fn assert_artifacts_match(
                 );
             }
         }
-        if found {
-            if let Some(expected_dir_name) = &exp.matches_expected_dir {
+        if found
+            && let Some(expected_dir_name) = &exp.matches_expected_dir
+        {
                 let matching_items: Vec<_> =
                     found_items.iter().filter(|f| f.starts_with(&prefix)).collect();
                 let expected_path = test_case_root.join(expected_dir_name);
@@ -1426,7 +1425,6 @@ fn assert_artifacts_match(
                 }
             }
         }
-    }
 
     Ok(())
 }

@@ -26,10 +26,11 @@ pub fn validate_artifacts(
     if !unsound_allow_is_valid {
         for package in packages {
             for item in &package.items {
-                if let ParsedItem::Type(decorated) = &item.item {
-                    if !decorated.hermes.is_valid.is_empty() {
-                        let src = source_cache
-                            .entry(item.source_file.clone())
+                if let ParsedItem::Type(decorated) = &item.item
+                    && !decorated.hermes.is_valid.is_empty()
+                {
+                    let src = source_cache
+                        .entry(item.source_file.clone())
                             .or_insert_with(|| {
                                 std::fs::read_to_string(&item.source_file).unwrap_or_default()
                             })
@@ -50,7 +51,6 @@ pub fn validate_artifacts(
                 }
             }
         }
-    }
 
     for package in packages {
         for item in &package.items {
@@ -100,26 +100,26 @@ pub fn validate_artifacts(
                     if clause.lines.iter().all(|l| l.content.trim().is_empty()) {
                         report_error("Requires bounds cannot be completely empty.");
                     }
-                    if let Some(name) = &clause.name {
-                        if check_reserved(&name.content) {
-                            report_error(&format!(
-                                "Requires bound name `{}` is reserved for auto-generated invariants.",
-                                name.content
-                            ));
-                        }
+                    if let Some(name) = &clause.name
+                        && check_reserved(&name.content)
+                    {
+                        report_error(&format!(
+                            "Requires bound name `{}` is reserved for auto-generated invariants.",
+                            name.content
+                        ));
                     }
                 }
                 for clause in func.hermes.ensures.iter() {
                     if clause.lines.iter().all(|l| l.content.trim().is_empty()) {
                         report_error("Ensures bounds cannot be completely empty.");
                     }
-                    if let Some(name) = &clause.name {
-                        if check_reserved(&name.content) {
-                            report_error(&format!(
-                                "Ensures bound name `{}` is reserved for auto-generated invariants.",
-                                name.content
-                            ));
-                        }
+                    if let Some(name) = &clause.name
+                        && check_reserved(&name.content)
+                    {
+                        report_error(&format!(
+                            "Ensures bound name `{}` is reserved for auto-generated invariants.",
+                            name.content
+                        ));
                     }
                 }
 

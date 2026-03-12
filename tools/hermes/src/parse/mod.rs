@@ -90,15 +90,7 @@ impl TypeItem<Local> {
     }
 }
 
-impl TypeItem<Safe> {
-    pub fn name(&self) -> &str {
-        match self {
-            Self::Struct(x) => &x.inner.ident,
-            Self::Enum(x) => &x.inner.ident,
-            Self::Union(x) => &x.inner.ident,
-        }
-    }
-}
+
 
 impl<M: ThreadSafety> LiftToSafe for TypeItem<M> {
     type Target = TypeItem<Safe>;
@@ -142,17 +134,6 @@ impl ParsedItem<Local> {
             Self::Function(x) => Some(x.item.name()),
             Self::Type(x) => Some(x.item.name()),
             Self::Trait(x) => Some(x.item.inner.ident.to_string()),
-            Self::Impl(_) => None,
-        }
-    }
-}
-
-impl ParsedItem<Safe> {
-    pub fn name(&self) -> Option<&str> {
-        match self {
-            Self::Function(x) => Some(x.item.name()),
-            Self::Type(x) => Some(x.item.name()),
-            Self::Trait(x) => Some(&x.item.inner.ident),
             Self::Impl(_) => None,
         }
     }
@@ -539,14 +520,12 @@ where
 /// Extracts the `...` from the first `#[path = "..."]` attribute found, if any.
 fn extract_path_attr(attrs: &[Attribute]) -> Option<String> {
     attrs.iter().find_map(|attr| {
-        if attr.path().is_ident("path") {
-            if let Meta::NameValue(nv) = &attr.meta {
-                if let Expr::Lit(expr_lit) = &nv.value {
-                    if let Lit::Str(lit_str) = &expr_lit.lit {
-                        return Some(lit_str.value());
-                    }
-                }
-            }
+        if attr.path().is_ident("path")
+            && let Meta::NameValue(nv) = &attr.meta
+            && let Expr::Lit(expr_lit) = &nv.value
+            && let Lit::Str(lit_str) = &expr_lit.lit
+        {
+            return Some(lit_str.value());
         }
         None
     })
@@ -560,12 +539,11 @@ fn extract_cfg_attr_path(attrs: &[Attribute]) -> Option<String> {
             // The syntax is `#[cfg_attr(condition, attr1, attr2, ...)]`; we
             // parse the nested meta items.
             let _ = attr.parse_nested_meta(|meta| {
-                if meta.path.is_ident("path") {
-                    if let Ok(value) = meta.value() {
-                        if let Ok(Lit::Str(lit_str)) = value.parse::<Lit>() {
-                            found_path = Some(lit_str.value());
-                        }
-                    }
+                if meta.path.is_ident("path")
+                    && let Ok(value) = meta.value()
+                    && let Ok(Lit::Str(lit_str)) = value.parse::<Lit>()
+                {
+                    found_path = Some(lit_str.value());
                 }
                 Ok(())
             });
