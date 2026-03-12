@@ -47,11 +47,7 @@ impl miette::Diagnostic for MappedError {
     }
 
     fn labels(&self) -> Option<Box<dyn Iterator<Item = miette::LabeledSpan> + '_>> {
-        if self.labels.is_empty() {
-            None
-        } else {
-            Some(Box::new(self.labels.iter().cloned()))
-        }
+        if self.labels.is_empty() { None } else { Some(Box::new(self.labels.iter().cloned())) }
     }
 
     fn help(&self) -> Option<Box<dyn std::fmt::Display + '_>> {

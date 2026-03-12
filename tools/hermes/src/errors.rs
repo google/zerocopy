@@ -30,4 +30,14 @@ pub enum HermesError {
         span: SourceSpan,
         msg: String,
     },
+    #[error("Unsoundness error: {msg}")]
+    #[diagnostic(code(hermes::unsoundness))]
+    Unsoundness {
+        #[source_code]
+        src: NamedSource<String>,
+        #[label("{label}")]
+        span: SourceSpan,
+        msg: String,
+        label: String,
+    },
 }

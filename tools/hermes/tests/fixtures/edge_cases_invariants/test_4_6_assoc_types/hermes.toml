@@ -6,5 +6,5 @@ Behavior: In an `isValid` boundary condition, queries the default instantiation 
 
 [test]
 expected_status = "failure"
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
 

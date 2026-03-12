@@ -16,7 +16,7 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use indicatif::{ProgressBar, ProgressStyle};
 
 use crate::{generate, resolve::LockedRoots, scanner::HermesArtifact};
@@ -938,6 +938,9 @@ mod tests {
         ];
         let diag = mk_diag("declaration uses `sorry`", 50, 60);
         let (_, start, _) = resolve_mapping(&diag, &mappings);
-        assert_eq!(start, 200, "Diagnostic should not redirect to a different function's proof keyword due to reordering");
+        assert_eq!(
+            start, 200,
+            "Diagnostic should not redirect to a different function's proof keyword due to reordering"
+        );
     }
 }

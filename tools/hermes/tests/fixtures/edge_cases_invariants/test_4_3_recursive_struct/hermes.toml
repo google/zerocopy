@@ -6,5 +6,5 @@ Behavior: Verifies a structural linked list (`Node { next: Option<Box<Node>> }`)
 
 [test]
 expected_status = "success"
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
 

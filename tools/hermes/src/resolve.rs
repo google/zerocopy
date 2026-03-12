@@ -1,6 +1,6 @@
 use std::{env, fs, path::PathBuf};
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use cargo_metadata::{Metadata, MetadataCommand, Package, PackageName, Target, TargetKind};
 use clap::Parser;
 use sha2::{Digest, Sha256};
@@ -49,6 +49,22 @@ pub struct Args {
     /// Allow `sorry` in proofs and inject `sorry` for missing proofs
     #[arg(long)]
     pub allow_sorry: bool,
+
+    /// Allow use of `isValid` annotations
+    ///
+    /// `isValid` annotations are currently unsound. In particular, Rust does
+    /// not yet support annotating a field with `unsafe`, denoting that it
+    /// carries an invariant. Thus, `isValid` annotations are effectively
+    /// advisory – any code which does not have a Hermes annotation can modify
+    /// invariant-carrying fields without needing to use an `unsafe` block.
+    /// Without an `unsafe` block, Hermes has no way of knowing that an
+    /// operation needs to be analyzed for soundness.
+    ///
+    /// Once the `syn` parser supports parsing `unsafe` fields (which are
+    /// already supported in a nightly Rust feature), Hermes will require that
+    /// `isValid` is only used on `unsafe` fields.
+    #[arg(long)]
+    pub unsound_allow_is_valid: bool,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]

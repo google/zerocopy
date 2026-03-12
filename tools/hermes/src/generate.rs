@@ -1,10 +1,10 @@
 use crate::parse::{
+    FunctionItem, ParsedItem, TypeItem,
     attr::{
         Clause, FunctionBlockInner, FunctionHermesBlock, SpannedLine, TraitHermesBlock,
         TypeHermesBlock,
     },
     hkd::AstNode,
-    FunctionItem, ParsedItem, TypeItem,
 };
 
 /// The kind of source mapping connecting generated Lean code to the original
@@ -664,11 +664,8 @@ fn generate_function(
     }
 
     for clause in block.ensures.iter() {
-        let name = clause
-            .name
-            .as_ref()
-            .map(|n| n.content.clone())
-            .unwrap_or_else(|| "h_anon".to_string());
+        let name =
+            clause.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "h_anon".to_string());
         post_fields.push(AstField {
             name: name.clone(),
             lean_type: None,
@@ -777,11 +774,7 @@ fn generate_function(
                     .unwrap_or_else(|| "h_anon".to_string()),
             );
         }
-        if req_fields.is_empty() {
-            None
-        } else {
-            Some(req_fields)
-        }
+        if req_fields.is_empty() { None } else { Some(req_fields) }
     } else {
         None
     };
@@ -812,11 +805,7 @@ fn generate_function(
     }
     for clause in block.ensures.iter() {
         exact_fields.push(
-            clause
-                .name
-                .as_ref()
-                .map(|n| n.content.clone())
-                .unwrap_or_else(|| "h_anon".to_string()),
+            clause.name.as_ref().map(|n| n.content.clone()).unwrap_or_else(|| "h_anon".to_string()),
         );
     }
 
@@ -1553,7 +1542,9 @@ mod tests {
         let out = builder.buf;
 
         // Check implicit binders and app arguments
-        assert!(out.contains("class Safe (Self : Type) {T} (inst : Converter Self T) : Prop where"));
+        assert!(
+            out.contains("class Safe (Self : Type) {T} (inst : Converter Self T) : Prop where")
+        );
     }
 
     #[test]

@@ -133,6 +133,9 @@ In addition to function-level pre- and post-conditions, Hermes allows you to def
 
 ### `isValid`
 
+> [!WARNING]
+> `isValid` annotations are currently unsound. To use them, you must provide the `--unsound-allow-is-valid` flag to Hermes.
+
 `isValid` defines a structural invariant for a type.
 
 ```rust

@@ -5,4 +5,4 @@ Minimal reproduction of KnownLayout bounding DstLayout's attributes.
 [test]
 # Temporarily allowing this to fail while we debug other things.
 expected_status = "known_bug"
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]

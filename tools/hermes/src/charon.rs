@@ -12,11 +12,11 @@ use std::{
     process::Command,
 };
 
-use anyhow::{bail, Context as _, Result};
-use cargo_metadata::{diagnostic::DiagnosticLevel, Message};
+use anyhow::{Context as _, Result, bail};
+use cargo_metadata::{Message, diagnostic::DiagnosticLevel};
 
 use crate::{
-    parse::{attr::FunctionBlockInner, ParsedItem},
+    parse::{ParsedItem, attr::FunctionBlockInner},
     resolve::{Args, HermesTargetKind, LockedRoots},
     scanner::HermesArtifact,
 };

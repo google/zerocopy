@@ -6,5 +6,5 @@ Behavior: Bounds a generic via an explicit `where T: Copy + Clone + Default` blo
 
 [test]
 expected_status = "success"
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
 

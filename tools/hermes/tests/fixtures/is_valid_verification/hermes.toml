@@ -14,5 +14,6 @@ style = "lean"
 verify = true # This triggers running `cargo run verify` which runs Lean
 
 [test]
+args = ["verify", "--unsound-allow-is-valid"]
 stderr_file = "expected.stderr"
 expected_status = "failure"

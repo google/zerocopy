@@ -4,5 +4,5 @@ Behavior: Tests valid syntax that was previously failing due to bugs in name col
 """
 
 [test]
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
 expected_status = "success"

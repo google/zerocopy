@@ -49,7 +49,7 @@ pub trait ThreadSafety: 'static + Sized + Copy + Debug {
     /// If we are already Safe, this is identity.
     /// If we are Local, this erases the contents into `()`.
     fn lift_node<T: Mirror + Clone + Debug>(node: Self::Node<T>)
-        -> <Safe as ThreadSafety>::Node<T>;
+    -> <Safe as ThreadSafety>::Node<T>;
 }
 
 // --- Mode 1: Non-Thread-Safe (Fast, Local) ---

@@ -3,7 +3,7 @@ Purpose: Verifies the built-in size_of and align_of primitive specification eval
 """
 
 [test]
-args = ["verify"]
+args = ["verify", "--unsound-allow-is-valid"]
 
 [[test.artifact]]
 package = "size_of_align_of"

@@ -16,8 +16,8 @@ use std::{
 use log::{debug, trace};
 use miette::{NamedSource, SourceSpan};
 use syn::{
-    spanned::Spanned, visit::Visit, Attribute, Error, Expr, ImplItemFn, ItemEnum, ItemFn, ItemImpl,
-    ItemMod, ItemStruct, ItemTrait, ItemUnion, Lit, Meta, TraitItemFn,
+    Attribute, Error, Expr, ImplItemFn, ItemEnum, ItemFn, ItemImpl, ItemMod, ItemStruct, ItemTrait,
+    ItemUnion, Lit, Meta, TraitItemFn, spanned::Spanned, visit::Visit,
 };
 
 use self::{
@@ -90,6 +90,16 @@ impl TypeItem<Local> {
     }
 }
 
+impl TypeItem<Safe> {
+    pub fn name(&self) -> &str {
+        match self {
+            Self::Struct(x) => &x.inner.ident,
+            Self::Enum(x) => &x.inner.ident,
+            Self::Union(x) => &x.inner.ident,
+        }
+    }
+}
+
 impl<M: ThreadSafety> LiftToSafe for TypeItem<M> {
     type Target = TypeItem<Safe>;
 
@@ -132,6 +142,17 @@ impl ParsedItem<Local> {
             Self::Function(x) => Some(x.item.name()),
             Self::Type(x) => Some(x.item.name()),
             Self::Trait(x) => Some(x.item.inner.ident.to_string()),
+            Self::Impl(_) => None,
+        }
+    }
+}
+
+impl ParsedItem<Safe> {
+    pub fn name(&self) -> Option<&str> {
+        match self {
+            Self::Function(x) => Some(x.item.name()),
+            Self::Type(x) => Some(x.item.name()),
+            Self::Trait(x) => Some(&x.item.inner.ident),
             Self::Impl(_) => None,
         }
     }

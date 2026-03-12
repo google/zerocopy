@@ -5,5 +5,5 @@ Behavior: Introduces missing colons, invalid names, and Lean keywords as named b
 
 [test]
 stderr_file = "expected.stderr"
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
 expected_status = "failure"

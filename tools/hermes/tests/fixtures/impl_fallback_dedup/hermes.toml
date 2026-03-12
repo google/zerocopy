@@ -5,7 +5,7 @@ Behavior: Selectively targets `--start-from crate::my_module,crate::my_module::B
 
 
 [test]
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
 expected_status = "success"
 
 [[test.command]]

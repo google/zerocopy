@@ -20,4 +20,4 @@ content_contains = [
 [test]
 stderr_file = "expected.stderr"
 expected_status = "failure"
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]

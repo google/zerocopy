@@ -16,4 +16,4 @@ content_contains = [
 ]
 
 [test]
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]

@@ -6,5 +6,5 @@ Behavior: Uses `if check then A else B` logic within a structural invariant proo
 
 [test]
 expected_status = "success"
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
 

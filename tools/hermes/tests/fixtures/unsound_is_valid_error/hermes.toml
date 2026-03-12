@@ -1,0 +1,11 @@
+description = "Ensures that using `isValid` without `--unsound-allow-is-valid` fails at validation."
+
+[extraction]
+start_from = ["crate"]
+
+[output]
+style = "lean"
+
+[test]
+stderr_file = "expected.stderr"
+expected_status = "failure"

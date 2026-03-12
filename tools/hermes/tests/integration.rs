@@ -899,7 +899,10 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
 
         if !is_allowed {
             let rel = path.strip_prefix(&ctx.test_case_root).unwrap();
-            panic!("Unmapped file or directory in test fixture: {:?}\nIf this file is part of the test payload, it must be explicitly configured in hermes.toml (e.g., via `matches_expected_dir`, `stderr_file`, or `mock`). If it is an obsolete snapshot or temporary file, please delete it.", rel);
+            panic!(
+                "Unmapped file or directory in test fixture: {:?}\nIf this file is part of the test payload, it must be explicitly configured in hermes.toml (e.g., via `matches_expected_dir`, `stderr_file`, or `mock`). If it is an obsolete snapshot or temporary file, please delete it.",
+                rel
+            );
         }
     }
 }
@@ -1150,7 +1153,10 @@ fn assert_commands_match(invocations: &[Vec<String>], expectations: &[CommandExp
         let found = invocations.iter().any(|cmd| is_subsequence(cmd, &exp.args));
 
         if !exp.should_not_exist && !found {
-            panic!("Expected command invocation with args {:?} was not found.\nCaptured Invocations: {:#?}", exp.args, invocations);
+            panic!(
+                "Expected command invocation with args {:?} was not found.\nCaptured Invocations: {:#?}",
+                exp.args, invocations
+            );
         } else if exp.should_not_exist && found {
             panic!("Unexpected command invocation with args {:?} WAS found.", exp.args);
         }
@@ -1358,8 +1364,13 @@ fn assert_artifacts_match(
 
                         let result = std::panic::catch_unwind(|| {
                             if actual_path.is_dir() != expected_path.is_dir() {
-                                panic!("Type mismatch: expected {:?} (is_dir: {}), actual {:?} (is_dir: {})",
-                                    expected_path, expected_path.is_dir(), actual_path, actual_path.is_dir());
+                                panic!(
+                                    "Type mismatch: expected {:?} (is_dir: {}), actual {:?} (is_dir: {})",
+                                    expected_path,
+                                    expected_path.is_dir(),
+                                    actual_path,
+                                    actual_path.is_dir()
+                                );
                             }
 
                             if actual_path.is_dir() {

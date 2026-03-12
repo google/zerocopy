@@ -1,7 +1,9 @@
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
+use miette::NamedSource;
 
 use crate::{
-    parse::{attr::FunctionBlockInner, ParsedItem},
+    errors::HermesError,
+    parse::{ParsedItem, attr::FunctionBlockInner},
     scanner::HermesArtifact,
 };
 
@@ -13,8 +15,42 @@ use crate::{
 ///
 /// If `allow_sorry` is true, this check is skipped, allowing incomplete proofs
 /// (which will typically be generated as `sorry` in Lean).
-pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Result<()> {
+pub fn validate_artifacts(
+    packages: &[HermesArtifact],
+    allow_sorry: bool,
+    unsound_allow_is_valid: bool,
+) -> Result<()> {
     let mut has_errors = false;
+    let mut source_cache = std::collections::HashMap::new();
+
+    if !unsound_allow_is_valid {
+        for package in packages {
+            for item in &package.items {
+                if let ParsedItem::Type(decorated) = &item.item {
+                    if !decorated.hermes.is_valid.is_empty() {
+                        let src = source_cache
+                            .entry(item.source_file.clone())
+                            .or_insert_with(|| {
+                                std::fs::read_to_string(&item.source_file).unwrap_or_default()
+                            })
+                            .clone();
+
+                        let named_source =
+                            NamedSource::new(item.source_file.display().to_string(), src);
+                        let span = decorated.hermes.is_valid[0].keyword_span.inner;
+                        let err = HermesError::Unsoundness {
+                            src: named_source,
+                            span,
+                            msg: "`isValid` annotations are unsound and require the --unsound-allow-is-valid flag.".to_string(),
+                            label: "problematic block".to_string(),
+                        };
+                        eprintln!("{:?}", miette::Report::new(err));
+                        has_errors = true;
+                    }
+                }
+            }
+        }
+    }
 
     for package in packages {
         for item in &package.items {
@@ -66,7 +102,10 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                     }
                     if let Some(name) = &clause.name {
                         if check_reserved(&name.content) {
-                            report_error(&format!("Requires bound name `{}` is reserved for auto-generated invariants.", name.content));
+                            report_error(&format!(
+                                "Requires bound name `{}` is reserved for auto-generated invariants.",
+                                name.content
+                            ));
                         }
                     }
                 }
@@ -76,7 +115,10 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                     }
                     if let Some(name) = &clause.name {
                         if check_reserved(&name.content) {
-                            report_error(&format!("Ensures bound name `{}` is reserved for auto-generated invariants.", name.content));
+                            report_error(&format!(
+                                "Ensures bound name `{}` is reserved for auto-generated invariants.",
+                                name.content
+                            ));
                         }
                     }
                 }
@@ -116,11 +158,16 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                             for case in cases.iter() {
                                 if let Some(n) = &case.name {
                                     if !valid_names.contains(&n.content) {
-                                        report_error(&format!("Validation Error: You provided a proof: for `{}` but no such constraint exists.", n.content));
+                                        report_error(&format!(
+                                            "Validation Error: You provided a proof: for `{}` but no such constraint exists.",
+                                            n.content
+                                        ));
                                     }
                                 } else {
                                     if !has_unnamed_ensure && !func.hermes.ensures.is_empty() {
-                                        report_error("Validation Error: You provided an unnamed `proof` block, but there are no unnamed `ensures` clauses to prove.");
+                                        report_error(
+                                            "Validation Error: You provided an unnamed `proof` block, but there are no unnamed `ensures` clauses to prove.",
+                                        );
                                     }
                                 }
                             }
@@ -136,7 +183,9 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                                         }
                                     }
                                     if has_explicit_unnamed {
-                                        report_error("Missing unnamed proof: block for the unnamed ensures bound.");
+                                        report_error(
+                                            "Missing unnamed proof: block for the unnamed ensures bound.",
+                                        );
                                     }
                                 }
                             }
@@ -186,7 +235,7 @@ mod tests {
             start_from: std::collections::HashSet::new(),
             items,
         });
-        validate_artifacts(&packages, false)
+        validate_artifacts(&packages, false, true)
     }
 
     #[test]

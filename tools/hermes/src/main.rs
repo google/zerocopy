@@ -124,12 +124,18 @@ where
 
     let packages = scanner::scan_workspace(&roots)?;
     if packages.is_empty() {
-        log::warn!("No Hermes annotations (/// ```lean ...) found in the selected targets. Nothing to verify.");
+        log::warn!(
+            "No Hermes annotations (/// ```lean ...) found in the selected targets. Nothing to verify."
+        );
         return Ok(None);
     }
 
     let locked_roots = roots.lock_run_root()?;
-    validate::validate_artifacts(&packages, resolve_args.allow_sorry)?;
+    validate::validate_artifacts(
+        &packages,
+        resolve_args.allow_sorry,
+        resolve_args.unsound_allow_is_valid,
+    )?;
     charon::run_charon(resolve_args, &locked_roots, &packages)?;
     aeneas::run_aeneas(&locked_roots, &packages, resolve_args)?;
 

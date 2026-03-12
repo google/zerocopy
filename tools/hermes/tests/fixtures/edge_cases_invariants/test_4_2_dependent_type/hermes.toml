@@ -6,5 +6,5 @@ Behavior: Defines an `ArrayPair<const N: usize>` linking lengths to `N`. Verifie
 
 [test]
 expected_status = "success"
-args = ["verify", "--allow-sorry"]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
 

@@ -418,11 +418,7 @@ fn parse_hermes_block_common(
 
 /// Returns an error containing `msg` if `section` is non-empty.
 fn reject_section(section: &RawSection, msg: &str) -> Result<(), Error> {
-    if let Some(span) = &section.keyword_span {
-        Err(Error::new(span.inner, msg))
-    } else {
-        Ok(())
-    }
+    if let Some(span) = &section.keyword_span { Err(Error::new(span.inner, msg)) } else { Ok(()) }
 }
 
 /// Returns an error containing `msg` if `clauses` is non-empty.
@@ -1465,14 +1461,14 @@ mod tests {
     #[test]
     fn test_hermes_spec_body_parse_invalid_indent() {
         let lines = mk_lines(&["requires:", "x > 0", "y > 0"]); // "y > 0" has same indent/no indent as requires?
-                                                                // mk_lines creates lines with 0 indent unless spaces are in string? Use specific strings.
-                                                                // Actually mk_lines takes &str, so if I pass "requires", it has 0 indent.
-                                                                // "x > 0" has 0 indent. This should fail if `parse` logic checks indent <= baseline.
-                                                                // Baseline is 0. 0 <= 0 is true.
-                                                                // "Invalid indentation: expected an indented continuation..."
-                                                                // Because for continuation, we usually expect INDENT > BASELINE.
-                                                                // The code says: `indent <= baseline_indent.unwrap()` error.
-                                                                // So yes, 0 <= 0 error.
+        // mk_lines creates lines with 0 indent unless spaces are in string? Use specific strings.
+        // Actually mk_lines takes &str, so if I pass "requires", it has 0 indent.
+        // "x > 0" has 0 indent. This should fail if `parse` logic checks indent <= baseline.
+        // Baseline is 0. 0 <= 0 is true.
+        // "Invalid indentation: expected an indented continuation..."
+        // Because for continuation, we usually expect INDENT > BASELINE.
+        // The code says: `indent <= baseline_indent.unwrap()` error.
+        // So yes, 0 <= 0 error.
         let spec = RawHermesSpecBody::parse(&lines);
         assert!(spec.is_err());
     }
@@ -2528,28 +2524,40 @@ mod tests {
         fn test_dusty_inner_colons() {
             let lines = mk_lines(&["requires (:h_name:):", "  x > 0"]);
             let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-            assert_eq!(err.1, "Invalid bound name `:h_name:`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).");
+            assert_eq!(
+                err.1,
+                "Invalid bound name `:h_name:`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore)."
+            );
         }
 
         #[test]
         fn test_dusty_spaced_name() {
             let lines = mk_lines(&["requires (my name):", "  x > 0"]);
             let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-            assert_eq!(err.1, "Invalid bound name `my name`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).");
+            assert_eq!(
+                err.1,
+                "Invalid bound name `my name`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore)."
+            );
         }
 
         #[test]
         fn test_invalid_lean_identifier_symbols() {
             let lines = mk_lines(&["requires (h-foo!):", "  x > 0"]);
             let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-            assert_eq!(err.1, "Invalid bound name `h-foo!`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).");
+            assert_eq!(
+                err.1,
+                "Invalid bound name `h-foo!`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore)."
+            );
         }
 
         #[test]
         fn test_invalid_lean_identifier_starts_with_number() {
             let lines = mk_lines(&["requires (1h_foo):", "  x > 0"]);
             let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-            assert_eq!(err.1, "Invalid bound name `1h_foo`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).");
+            assert_eq!(
+                err.1,
+                "Invalid bound name `1h_foo`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore)."
+            );
         }
 
         #[test]
@@ -2577,7 +2585,10 @@ mod tests {
         fn test_empty_name() {
             let lines = mk_lines(&["requires (): x > 0"]);
             let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-            assert_eq!(err.1, "Invalid bound name ``. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore).");
+            assert_eq!(
+                err.1,
+                "Invalid bound name ``. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore)."
+            );
         }
 
         #[test]
@@ -2789,9 +2800,10 @@ mod tests {
         fn test_conflict_between_requires_and_ensures() {
             let attrs = vec![dummy_attr("requires (foo): a > 0\nensures (foo): b > 0")];
             let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
-            assert!(err
-                .to_string()
-                .contains("Bound name `foo` conflicts with an existing requires bound"));
+            assert!(
+                err.to_string()
+                    .contains("Bound name `foo` conflicts with an existing requires bound")
+            );
         }
 
         #[test]
@@ -2855,9 +2867,9 @@ mod tests {
                         let err_msg = err.to_string();
                         // Every explicitly rejected error must be one of these
                         assert!(
-                            err_msg.contains("must be followed by a colon") ||
-                            err_msg.contains("Names must be valid identifiers") ||
-                            err_msg.contains("Expected a Hermes keyword to start the block"),
+                            err_msg.contains("must be followed by a colon")
+                                || err_msg.contains("Names must be valid identifiers")
+                                || err_msg.contains("Expected a Hermes keyword to start the block"),
                             "Failed to correctly reject missing colon for case: `{}`. Instead got: {}",
                             case,
                             err_msg
