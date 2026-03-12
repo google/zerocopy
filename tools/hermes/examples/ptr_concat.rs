@@ -33,8 +33,10 @@ pub const unsafe fn slice_from_slice_parts(data: *const u8, len: usize) -> *cons
 ///
 /// ```lean, hermes, spec
 /// ```
+#[allow(unused)]
 pub unsafe fn concat_slices(a: *const [u8], b: *const [u8]) -> *const [u8] {
     // TODO: Fill me in.
+    todo!()
 }
 
 fn main() {}

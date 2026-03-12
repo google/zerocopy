@@ -14,7 +14,7 @@ use clap::Parser;
 
 /// Hermes: A Literate Verification Toolchain
 #[derive(Parser, Debug)]
-#[command(name = "hermes", version, about, long_about = None)]
+#[command(name = "cargo-hermes", version, about, long_about = None)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,

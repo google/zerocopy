@@ -181,7 +181,7 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 /// ```
 pub unsafe fn get_unaligned_fast_pad<T: Unaligned>() -> PositiveUsize {
     let align = core::mem::align_of::<T>();
-    let padded = fast_add(align, 0);
+    let padded = unsafe { fast_add(align, 0) };
     PositiveUsize { val: padded }
 }
 

@@ -5,7 +5,7 @@
 /// axiom ret = s[i]
 /// ```
 pub unsafe fn get_unchecked(s: &[u32], i: usize) -> u32 {
-    *s.get_unchecked(i)
+    unsafe { *s.get_unchecked(i) }
 }
 
 fn main() {}

@@ -7,7 +7,7 @@
 /// axiom *ptr = val
 /// ```
 pub unsafe fn raw_write(ptr: *mut u32, val: u32) {
-    *ptr = val;
+    unsafe { *ptr = val };
 }
 
 fn main() {}

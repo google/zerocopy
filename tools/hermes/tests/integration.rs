@@ -657,7 +657,7 @@ echo "---END-INVOCATION---" >> "{}"
         let real_aeneas = which::which("aeneas").unwrap_or_else(|_| PathBuf::from("/bin/true"));
         self.create_shim("aeneas", &real_aeneas, aeneas_mock_mode).unwrap();
 
-        let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
+        let mut cmd = assert_cmd::cargo_bin_cmd!("cargo-hermes");
         cmd.env("HERMES_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
         cmd.env("HERMES_AENEAS_DIR", &self.worker_cache.aeneas);
