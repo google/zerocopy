@@ -1,9 +1,9 @@
   ⚠ unused variable: `x`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:14:38]
+    ╭─[[PROJECT_ROOT]/src/lib.rs:14:35]
  13 │ /// ```
- 14 │ fn fail_unnamed_ensures_verification(x: u32) -> u32 {
-    ·                                      ┬
-    ·                                      ╰── 
+ 14 │ fn fail_anon_ensures_verification(x: u32) -> u32 {
+    ·                                   ┬
+    ·                                   ╰── 
  15 │     1
     ╰────
   help: if this is intentional, prefix it with an underscore
@@ -28,12 +28,12 @@
     ╰────
   help: if this is intentional, prefix it with an underscore
 
-  ⚠ function `fail_unnamed_ensures_verification` is never used
+  ⚠ function `fail_anon_ensures_verification` is never used
     ╭─[[PROJECT_ROOT]/src/lib.rs:14:4]
  13 │ /// ```
- 14 │ fn fail_unnamed_ensures_verification(x: u32) -> u32 {
-    ·    ────────────────┬────────────────
-    ·                    ╰── 
+ 14 │ fn fail_anon_ensures_verification(x: u32) -> u32 {
+    ·    ───────────────┬──────────────
+    ·                   ╰── 
  15 │     1
     ╰────
 

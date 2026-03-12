@@ -4,7 +4,7 @@ Hermes specifications are written directly in your Rust source code using specia
 
 ## 1. Annotation Chains
 
-To attach a specification to a function, struct, or trait, write a `///` doc-comment block immediately preceding the definition. 
+To attach a specification to a function, struct, or trait, write a `///` doc-comment block immediately preceding the definition.
 
 The block must begin with the `hermes` language string.
 ```rust
@@ -35,7 +35,7 @@ In addition to attaching specs directly to items, you can define a standalone bl
 
 Hermes uses a strict, indentation-sensitive parser (similar to Python or YAML). **Whitespace is semantically significant.**
 
-The rule is simple: **Any line that is indented further than the leading clause belongs to that clause.** 
+The rule is simple: **Any line that is indented further than the leading clause belongs to that clause.**
 If you break an expression across multiple lines, every continuation line *must* be indented deeper than the line that started it.
 
 **Valid:**
@@ -43,7 +43,7 @@ If you break an expression across multiple lines, every continuation line *must*
 /// ```hermes
 /// requires:
 ///   let x = 5
-///   let y = 
+///   let y =
 ///     x + 2
 /// ```
 ```
@@ -53,7 +53,7 @@ If you break an expression across multiple lines, every continuation line *must*
 /// ```hermes
 /// requires:
 ///   let x = 5
-///   let y = 
+///   let y =
 ///   x + 2    <-- ERROR: Not indented deeper than `let y =`
 /// ```
 ```
@@ -76,7 +76,7 @@ However, Hermes explicitly disables standard implicits in favor of **Strict Impl
 
 **Why is this required?**
 Standard implicits (`{}`) instruct Lean to eagerly guess and synthesize the typeclass immediately when the function is evaluated. For complex spatial traits (like `HasStaticLayout`), this eager synthesis often panics the solver before the proof even begins.
-Strict implicits (`{{ }}`) politely instruct Lean to *delay* synthesis until the exact moment the trait is actively applied to a concrete value. 
+Strict implicits (`{{ }}`) politely instruct Lean to *delay* synthesis until the exact moment the trait is actively applied to a concrete value.
 
 If you are refactoring a Hermes spec, do not replace `{{_sz: Sized Self}}` with `{_sz: Sized Self}`. You will likely break downstream proofs invisibly.
 
@@ -95,9 +95,9 @@ If you simply write an expression, you are defining an anonymous bound.
 ///   x > 0
 /// ```
 ```
-This requires that `x > 0`. Internally, Hermes names this bound `h_unnamed`.
+This requires that `x > 0`. Internally, Hermes names this bound `h_anon`.
 
-**The Singleton Limit:** Because Hermes collapses anonymous bounds into `h_unnamed`, **you may only have one anonymous bound per clause.** If you have multiple requirements, you must name them.
+**The Singleton Limit:** Because Hermes collapses anonymous bounds into `h_anon`, **you may only have one anonymous bound per clause.** If you have multiple requirements, you must name them.
 
 ### Named Bounds
 If multiple `requires` or `ensures` bounds are required, they must be named:
@@ -110,7 +110,7 @@ If multiple `requires` or `ensures` bounds are required, they must be named:
 ```
 
 Naming your bounds is critical for two reasons:
-1. It bypasses the `h_unnamed` singleton limit.
+1. It bypasses the `h_anon` singleton limit.
 2. It allows you to explicitly reference the proven hypothesis (like `h_x_positive`) in downstream proofs or custom lemmas. Any name you provide here becomes an active variable in the local Lean context during verification.
 
 ## 5. Axioms and FFI
@@ -133,7 +133,7 @@ In addition to function-level pre- and post-conditions, Hermes allows you to def
 
 ### `isValid`
 
-`isValid` defines a structural invariant for a type. 
+`isValid` defines a structural invariant for a type.
 
 ```rust
 /// ```hermes
@@ -158,7 +158,7 @@ Under the hood, this implements the `Hermes.IsValid` typeclass for that struct. 
 pub unsafe trait Unaligned: Sized {}
 ```
 
-Implementers of the `unsafe trait` must provide a proof of `isSafe`. 
+Implementers of the `unsafe trait` must provide a proof of `isSafe`.
 
 **Crucially**, generic functions bounding on the trait (e.g., `fn foo<T: Unaligned>()`) **do not** automatically receive this mathematical assumption in their preconditions, because the trait bound alone does not prove the invariant holds in a generic context. You must explicitly request the `isSafe` property in your `requires` block (see Module 6 for how to consume and apply trait bounds).
 
@@ -220,7 +220,7 @@ Bounds are namespaced to either pre-conditions or post-conditions. An anonymous 
 
 ````rust
 /// ```hermes
-/// isSafe : 
+/// isSafe :
 ///   ∀ (self : Self), True
 /// ```
 ````
@@ -247,13 +247,13 @@ pub unsafe fn safe_div(a: u32, b: u32) -> u32 { unsafe { a / b } }
 
 Hermes automatically defines or injects the following structural names.
 
-**`h_unnamed`**: The singleton name assigned to an anonymous `requires` or `ensures` block. These are namespaced to either pre-conditions or post-conditions, so they don't conflict.
+**`h_anon`**: The singleton name assigned to an anonymous `requires` or `ensures` block. These are namespaced to either pre-conditions or post-conditions, so they don't conflict.
 
 ````rust
 /// ```hermes
-/// requires: x > 0        -- Named `h_unnamed`
-/// ensures: ret = x + 1   -- Named `h_unnamed`
-/// proof:                 -- Proves `h_unnamed`
+/// requires: x > 0        -- Named `h_anon`
+/// ensures: ret = x + 1   -- Named `h_anon`
+/// proof:                 -- Proves `h_anon`
 ///   ...
 /// ```
 ````
@@ -295,7 +295,7 @@ fn foo() -> MyType {}
 /// proof (h_progress):    -- Prove execution doesn't fail (e.g. divide by zero) or loop forever
 ///   ...
 /// ```
-fn safe_div(x: u32, y: u32) -> u32 {} 
+fn safe_div(x: u32, y: u32) -> u32 {}
 ````
 
 **`h_returns`**: The hypothesis binding the successful evaluation of the function to the implicitly-available values `ret`, `arg'`, etc.

@@ -605,7 +605,7 @@ fn generate_function(
                 .name
                 .as_ref()
                 .map(|n| n.content.clone())
-                .unwrap_or_else(|| "h_unnamed".to_string());
+                .unwrap_or_else(|| "h_anon".to_string());
             pre_fields.push(AstField {
                 name: name.clone(),
                 lean_type: None,
@@ -668,7 +668,7 @@ fn generate_function(
             .name
             .as_ref()
             .map(|n| n.content.clone())
-            .unwrap_or_else(|| "h_unnamed".to_string());
+            .unwrap_or_else(|| "h_anon".to_string());
         post_fields.push(AstField {
             name: name.clone(),
             lean_type: None,
@@ -774,7 +774,7 @@ fn generate_function(
                     .name
                     .as_ref()
                     .map(|n| n.content.clone())
-                    .unwrap_or_else(|| "h_unnamed".to_string()),
+                    .unwrap_or_else(|| "h_anon".to_string()),
             );
         }
         if req_fields.is_empty() {
@@ -795,7 +795,7 @@ fn generate_function(
                         c.name
                             .as_ref()
                             .map(|n| n.content.clone())
-                            .unwrap_or_else(|| "h_unnamed".to_string()),
+                            .unwrap_or_else(|| "h_anon".to_string()),
                         c,
                     )
                 })
@@ -816,7 +816,7 @@ fn generate_function(
                 .name
                 .as_ref()
                 .map(|n| n.content.clone())
-                .unwrap_or_else(|| "h_unnamed".to_string()),
+                .unwrap_or_else(|| "h_anon".to_string()),
         );
     }
 
@@ -1365,7 +1365,7 @@ mod tests {
         let out = builder.buf;
         println!("OUT:\n{}", out);
 
-        assert!(out.contains("h_unnamed : x.val > 0"));
+        assert!(out.contains("h_anon : x.val > 0"));
         assert!(out.contains("x.val < 10"));
     }
 
@@ -2082,7 +2082,7 @@ mod tests {
         let out = builder.buf;
 
         assert!(!out.contains("next =>"));
-        assert!(out.contains("h_unnamed := by"));
+        assert!(out.contains("h_anon := by"));
         assert!(out.contains("exact rfl"));
     }
 
@@ -2156,7 +2156,7 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"));
         let out = builder.buf;
 
-        assert!(out.contains("h_unnamed : x > 0 := by verify_user_bound h_unnamed"));
+        assert!(out.contains("h_anon : x > 0 := by verify_user_bound h_anon"));
         assert!(out.contains("h_less_than : x < 10 := by verify_user_bound h_less_than"));
     }
 
@@ -2200,7 +2200,7 @@ mod tests {
         let out = builder.buf;
 
         assert!(out.contains("(h_req : Pre x)"));
-        assert!(out.contains("rcases h_req with ⟨h_x_is_valid, h_unnamed, h_pos⟩"));
+        assert!(out.contains("rcases h_req with ⟨h_x_is_valid, h_anon, h_pos⟩"));
     }
 
     #[test]
@@ -2223,7 +2223,7 @@ mod tests {
     }
 
     #[test]
-    fn test_gen_edge_case_empty_post_with_unnamed_ignored() {
+    fn test_gen_edge_case_empty_post_with_anon_ignored() {
         let item: syn::ItemFn = parse_quote! { fn empty_post() {} };
         let func = FunctionItem::Free(AstNode { inner: item.mirror() });
         let block = mk_block(vec![], vec![], Some(vec!["trivial"]), None, vec![]);

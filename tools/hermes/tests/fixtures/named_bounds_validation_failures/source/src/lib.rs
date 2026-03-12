@@ -62,14 +62,14 @@ unsafe fn fail_proof_targets_requires(x: u32) -> u32 {
 /// proof (h_foo):
 ///   simp_all
 /// ```
-unsafe fn fail_missing_ensures_for_named_proof_with_unnamed_ensures_present(x: u32) -> u32 {
+unsafe fn fail_missing_ensures_for_named_proof_with_anon_ensures_present(x: u32) -> u32 {
     x
 }
 
 /// 30. Empty requires clause
 /// ```lean, hermes, spec
 /// requires (r1):
-/// 
+///
 /// ensures (e1):
 ///   ret = x
 /// proof (e1):
@@ -82,19 +82,19 @@ unsafe fn fail_empty_requires_clause(x: u32) -> u32 {
 /// 31. Empty ensures clause
 /// ```lean, hermes, spec
 /// ensures (e1):
-/// 
+///
 /// ```
 unsafe fn fail_empty_ensures_clause(x: u32) -> u32 {
     x
 }
 
-/// 12. Bypassing validation with extra `proof (unnamed)`
+/// 12. Bypassing validation with extra `proof (anon)`
 ///
-/// If a function returns a value (generating an `isValid` boundary), 
-/// `validate.rs` natively adds `"unnamed"` into `valid_names`. 
-/// By providing all necessary named proofs AND an extra `proof (unnamed)`,
-/// validation succeeds natively. However, `generate.rs` does not emit 
-/// the `unnamed` field in the structure because no unnamed ensures exist.
+/// If a function returns a value (generating an `isValid` boundary),
+/// `validate.rs` natively adds `"anon"` into `valid_names`.
+/// By providing all necessary named proofs AND an extra `proof (anon)`,
+/// validation succeeds natively. However, `generate.rs` does not emit
+/// the `anon` field in the structure because no unnamed ensures exist.
 /// This will correctly generate a Lean failure!
 /// ```lean, hermes, spec
 /// ensures (h_foo):
@@ -105,15 +105,15 @@ unsafe fn fail_empty_ensures_clause(x: u32) -> u32 {
 /// proof (h_foo):
 ///   simp_all
 /// ```
-fn fail_extra_unnamed_proof_bypasses_validation(x: u32) -> u32 {
+fn fail_extra_anon_proof_bypasses_validation(x: u32) -> u32 {
     x
 }
 
-/// 20. Dropped unnamed proof bypass
+/// 20. Dropped anon proof bypass
 ///
-/// Because returning a value generates a post-condition, `validate.rs` used to accept `proof (unnamed)`.
+/// Because returning a value generates a post-condition, `validate.rs` used to accept `proof (anon)`.
 /// However `generate.rs` never maps it, natively dropping the `have h` proof completely!
-/// This now correctly fails validation because `unnamed` is only reserved if explicitly specified in `ensures`.
+/// This now correctly fails validation because `anon` is only reserved if explicitly specified in `ensures`.
 /// ```lean, hermes, spec
 /// proof context:
 /// proof:

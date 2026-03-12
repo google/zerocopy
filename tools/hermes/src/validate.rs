@@ -22,7 +22,7 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                 // 1. Check auto-generated name collisions
                 let mut reserved_names = std::collections::HashSet::new();
                 reserved_names.insert("h_ret_is_valid".to_string());
-                reserved_names.insert("h_unnamed".to_string());
+                reserved_names.insert("h_anon".to_string());
                 reserved_names.insert("h_progress".to_string());
 
                 let mut report_error = |msg: &str| {
@@ -92,7 +92,7 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                                 if let Some(n) = &case.name {
                                     provided_cases.insert(n.content.clone());
                                 } else {
-                                    provided_cases.insert("h_unnamed".to_string());
+                                    provided_cases.insert("h_anon".to_string());
                                 }
                             }
 
@@ -107,7 +107,7 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                                 if let Some(name) = &ensure.name {
                                     valid_names.insert(name.content.clone());
                                 } else {
-                                    valid_names.insert("h_unnamed".to_string());
+                                    valid_names.insert("h_anon".to_string());
                                     has_unnamed_ensure = true;
                                 }
                             }
@@ -128,7 +128,7 @@ pub fn validate_artifacts(packages: &[HermesArtifact], allow_sorry: bool) -> Res
                             for ensure in func.hermes.ensures.iter() {
                                 // Missing proofs are allowed to fall through to Lean's `autoParam`
                                 // fallback logic (`verify_user_bound`) to attempt `simp_all` directly.
-                                if ensure.name.is_none() && !provided_cases.contains("h_unnamed") {
+                                if ensure.name.is_none() && !provided_cases.contains("h_anon") {
                                     let mut has_explicit_unnamed = false;
                                     for e in func.hermes.ensures.iter() {
                                         if e.name.is_none() {
@@ -257,7 +257,7 @@ mod tests {
         assert!(parse_and_validate(code_mixed).is_ok());
 
         // Edge Case 3: Omitted named proofs alongside an unnamed proof
-        // (The unnamed proof satisfies `h_unnamed`)
+        // (The unnamed proof satisfies `h_anon`)
         let code_unnamed_mixed = r#"
             /// ```hermes
             /// ensures: ret < 100
@@ -297,7 +297,7 @@ mod tests {
 
         let code = r#"
             /// ```hermes
-            /// proof (h_unnamed):
+            /// proof (h_anon):
             ///   trivial
             /// ```
             unsafe fn foo() {}
@@ -307,7 +307,7 @@ mod tests {
         println!(
             "{:#?}",
             crate::parse::attr::FunctionHermesBlock::parse_from_attrs(
-                &[syn::parse_quote!(#[doc = " ```hermes\n proof (h_unnamed): true\n ```"])],
+                &[syn::parse_quote!(#[doc = " ```hermes\n proof (h_anon): true\n ```"])],
                 false,
                 ""
             )
@@ -385,7 +385,7 @@ mod tests {
     }
 
     #[test]
-    fn test_unnamed_ensures_with_unnamed_proof() {
+    fn test_anon_ensures_with_anon_proof() {
         let code = r#"
             /// ```hermes
             /// ensures:
@@ -419,7 +419,7 @@ mod tests {
             /// proof (foo):
             ///   trivial
             /// ```
-            fn mismatch_unnamed() {}
+            fn mismatch_anon() {}
         "#;
         assert!(parse_and_validate(code).is_err());
     }
@@ -518,7 +518,7 @@ mod tests {
     }
 
     #[test]
-    fn test_zero_ensures_with_unnamed_proof_allowed() {
+    fn test_zero_ensures_with_anon_proof_allowed() {
         let code = r#"
             /// ```hermes
             /// proof:
@@ -543,20 +543,20 @@ mod tests {
 
     #[test]
     fn test_all_exhaustive_unnamed_singelton_edge_cases() {
-        // Naming `h_unnamed` explicitly should fail
+        // Naming `h_anon` explicitly should fail
         let code = r#"
             /// ```hermes
-            /// requires (h_unnamed):
+            /// requires (h_anon):
             ///   true
             /// ```
             unsafe fn foo() {}
         "#;
         assert!(parse_and_validate(code).is_err());
 
-        // Naming `h_unnamed` as proof target succeeds since it perfectly aliases the unnamed proposition logic
+        // Naming `h_anon` as proof target succeeds since it perfectly aliases the unnamed proposition logic
         let code = r#"
             /// ```hermes
-            /// proof (h_unnamed):
+            /// proof (h_anon):
             ///   true
             /// ```
             unsafe fn foo() {}

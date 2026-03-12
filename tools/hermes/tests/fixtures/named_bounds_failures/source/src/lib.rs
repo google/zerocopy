@@ -2,25 +2,25 @@
 /// We test both validation errors (rust-level parsing and validation)
 /// and verification errors (Lean-level theorem failures).
 
-/// 1. Multiple unnamed requires clauses
+/// 1. Multiple anon requires clauses
 /// ```lean, hermes, spec
 /// requires:
 ///   ///   ///   x > 0
 /// requires:
 ///   ///   ///   y > 0
 /// ```
-unsafe fn fail_multiple_unnamed_requires(x: u32, y: u32) {
+unsafe fn fail_multiple_anon_requires(x: u32, y: u32) {
 }
 
 
-/// 2. Multiple unnamed ensures clauses
+/// 2. Multiple anon ensures clauses
 /// ```lean, hermes, spec
 /// ensures:
 ///   ///   ///   ret == x
 /// ensures:
 ///   ///   ///   ret == y
 /// ```
-fn fail_multiple_unnamed_ensures(x: u32, y: u32) -> u32 {
+fn fail_multiple_anon_ensures(x: u32, y: u32) -> u32 {
     x
 }
 
@@ -40,7 +40,7 @@ unsafe fn fail_duplicate_clause_name(x: u32) -> u32 {
 }
 
 
-/// 5. Mixing named and unnamed proofs
+/// 5. Mixing named and anon proofs
 /// ```lean, hermes, spec
 /// ensures (h_ensures):
 ///   ///   ///   ret = x
@@ -48,19 +48,19 @@ unsafe fn fail_duplicate_clause_name(x: u32) -> u32 {
 /// proof:
 ///   simp_all
 /// ```
-fn fail_mixing_named_and_unnamed_proofs(x: u32) -> u32 {
+fn fail_mixing_named_and_anon_proofs(x: u32) -> u32 {
     x
 }
 
 
-/// 8. Mixing named and unnamed ensures
+/// 8. Mixing named and anon ensures
 /// ```lean, hermes, spec
 /// ensures (h_err):
 ///   ///   ///   ret = x
 /// ensures:
 ///   ///   ///   ret = x
 /// ```
-fn fail_mix_named_unnamed_ensures(x: u32) -> u32 {
+fn fail_mix_named_anon_ensures(x: u32) -> u32 {
     x
 }
 
@@ -155,14 +155,14 @@ fn fail_duplicate_proof_names(x: u32) -> u32 {
 }
 
 
-/// 25. Mixing named and unnamed requires
+/// 25. Mixing named and anon requires
 /// ```lean, hermes, spec
 /// requires (h_err):
 ///   x > 0
 /// requires:
 ///   x > 0
 /// ```
-unsafe fn fail_mix_named_unnamed_requires(x: u32) -> u32 {
+unsafe fn fail_mix_named_anon_requires(x: u32) -> u32 {
     x
 }
 

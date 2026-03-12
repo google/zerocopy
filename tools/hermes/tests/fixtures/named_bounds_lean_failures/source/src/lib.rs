@@ -11,7 +11,7 @@
 /// proof:
 ///   simp_all
 /// ```
-fn fail_unnamed_ensures_verification(x: u32) -> u32 {
+fn fail_anon_ensures_verification(x: u32) -> u32 {
     1
 }
 

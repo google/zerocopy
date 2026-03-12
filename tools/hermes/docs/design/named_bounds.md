@@ -9,7 +9,7 @@ A naive approach to this requirement – and the one taken by earlier versions 
 While mathematically sound, this anonymous tuple design created unacceptable friction for developers:
 
 1. **Opaque Invariants:** When an auto-injected constraint (like `isValid`) failed, the Lean compiler would emit a generic "unsolved goals" error pointing at a giant logical AND chain. Users were left guessing which invisible constraint actually broke the build.
-2. **"Tuple" Combinatorics:** When a user needed to manually prove a specific clause, they had to mentally and syntactically destructure `A ∧ (B ∧ C)`. 
+2. **"Tuple" Combinatorics:** When a user needed to manually prove a specific clause, they had to mentally and syntactically destructure `A ∧ (B ∧ C)`.
 3. **Clunky & Brittle Tactics:** To leverage a specific precondition in a proof, a user had to traverse a positional tree (e.g., `h_req.right.left`). If a new constraint was added (perhaps due to a struct gaining a new field), the entire tree shifted, breaking unrelated proof paths globally.
 
 Named Bounds is the architectural redesign that solves this. By elevating every constraint — whether authored by the user or dynamically injected by Hermes — into explicitly named, structurally addressable propositions, we achieve a system that is transparent upon failure, resilient to change, and robust enough to support isolated subset evaluation.
@@ -86,7 +86,7 @@ exact {
 }
 ```
 
-**The Magic of `autoParam`:** 
+**The Magic of `autoParam`:**
 If the user provides a `proof (h_incremented):` block, Hermes drops it directly into the `h_incremented` field of the `exact` instantiation. If the user *omits* a proof for an injected bound (like `h_ret_is_valid`) or a user-defined bound, Hermes simply omits that field from the instantiation entirely.
 
 Because the Lean `Post` structure defines these fields with a default `autoParam` macro (`verify_is_valid` for injected bounds, and `verify_user_bound` for user bounds), Lean will automatically attempt to execute a chain of tactics (`simp_all`, `subst_eqs`, `scalar_tac`, `omega`, etc.) behind the scenes to close the omitted field. If it succeeds, the user is completely shielded from trivial proofs. If it fails, Lean throws a custom error precisely at the missing field, prompting the user for an explicit `proof:` block.
@@ -117,12 +117,12 @@ exact
 Because this evaluates in Term Mode (rather than as an open tactic block), unhygienic commands like `unfold` or `simp_all` are illegal. Users can only define localized bindings (`have`, `let`), guaranteeing that shared setup cannot accidentally manipulate or corrupt the global goal state of sibling branches.
 
 ### 6. The Orthogonal WP Architecture
-The final major leap in the Named Bounds design solves the stuck WP problem. 
+The final major leap in the Named Bounds design solves the stuck WP problem.
 
 Standard Aeneas Weakest Preconditions (`WP.spec m P`) evaluate two things simultaneously:
 $$(\exists y, m = .ok\ y) \land (\forall y, m = .ok\ y \implies P\ y)$$
 
-Previously, if "Progress" (the existential proof `∃ y, m = .ok y`) stalled due to an opaque execution step, it killed the entire WP compilation, completely destroying the granular evaluations of the `Post` struct fields. 
+Previously, if "Progress" (the existential proof `∃ y, m = .ok y`) stalled due to an opaque execution step, it killed the entire WP compilation, completely destroying the granular evaluations of the `Post` struct fields.
 
 To satisfy the **Orthogonality of Progress and Correctness**, Hermes completely divorces these two branches natively using the `wp_prove_orthogonal` theorem:
 
@@ -131,7 +131,7 @@ To satisfy the **Orthogonality of Progress and Correctness**, Hermes completely 
 apply wp_prove_orthogonal
 · -- Goal 1: Progress
   eval_progress "Execution stalled..."
-· -- Goal 2: Correctness 
+· -- Goal 2: Correctness
   intro y hy
   exact { ... } -- The Post struct evaluates safely here!
 ```
@@ -147,15 +147,15 @@ When running with the `--allow-sorry` flag, the `autoParam` macros (`verify_is_v
 If it exists, omitted bounds gracefully fallback to `sorry`, emitting localized warnings. However, because Hermes natively respects the **Independent Evaluation** constraint through struct fields, if a user *does* provide an explicit proof script for a field, that script completely overrides the default `autoParam`. As a result, genuine Lean syntax or semantic errors in the user's explicit proofs are *never* squashed or bypassed by the `--allow-sorry` safety net, and still cause verification to fail.
 
 ### 8. The Singleton Unnamed Proposition
-To honor the **Anonymity Principle**, Hermes does not rely on auto-generated names (like `unnamed_1`) if a user writes an anonymous bounds clause. 
+To honor the **Anonymity Principle**, Hermes does not rely on auto-generated names (like `unnamed_1`) if a user writes an anonymous bounds clause.
 
-Instead, the AST formally models anonymous user clauses as a **singleton proposition** via the reserved name `h_unnamed`. There can only ever be exactly one anonymous `requires` and one anonymous `ensures` per function. 
+Instead, the AST formally models anonymous user clauses as a **singleton proposition** via the reserved name `h_anon`. There can only ever be exactly one anonymous `requires` and one anonymous `ensures` per function.
 
-If a user writes a lone `proof:` block, Hermes routes it directly to the `h_unnamed` field behind the scenes. Lean's diagnostic strippers then intercept any failures tagged with `h_unnamed` and present them back to the user plainly as "Your anonymous ensures clause failed to verify." Callers never guess names; they just map the single anonymous constraint natively.
+If a user writes a lone `proof:` block, Hermes routes it directly to the `h_anon` field behind the scenes. Lean's diagnostic strippers then intercept any failures tagged with `h_anon` and present them back to the user plainly as "Your anonymous ensures clause failed to verify." Callers never guess names; they just map the single anonymous constraint natively.
 
 ## Future Work
 
-1. **`h_unnamed` Diagnostic Stripping:** When a user provides exactly one unnamed constraint, Hermes encapsulates it as `h_unnamed`. If the user's unnamed `proof` fails to solve it, Lean outputs: `Unsolved goal for h_unnamed`. Seeing this internal implementation detail in an error confuses users. Future iterations of Hermes should intercept goals tagged with `h_unnamed` and strip the name from the diagnostic: *"Your anonymous ensures clause failed to verify"*.
+1. **`h_anon` Diagnostic Stripping:** When a user provides exactly one unnamed constraint, Hermes encapsulates it as `h_anon`. If the user's unnamed `proof` fails to solve it, Lean outputs: `Unsolved goal for h_anon`. Seeing this internal implementation detail in an error confuses users. Future iterations of Hermes should intercept goals tagged with `h_anon` and strip the name from the diagnostic: *"Your anonymous ensures clause failed to verify"*.
 
 ## Appendix: Technical Implementation & Edge Cases
 
@@ -170,15 +170,15 @@ To ensure users are never left deciphering cryptic Lean compiler errors resultin
 *   **Mismatched Proof Names:** If a user writes `ensures (h_foo)` but later writes `proof (h_bar)`, Hermes catches this at the Rust AST stage before generating Lean, panicking statically: *"Validation Error: You provided a proof: for `h_bar` but no such constraint exists."*
 *   **Duplicate Clause Naming:** Hermes statically asserts that all names provided across `requires` and `ensures` for a single function are strictly globally unique, panicking at the Rust level on collisions.
 
-### 2. Dummy Field Leakage (The `h_unnamed` Singleton)
+### 2. Dummy Field Leakage (The `h_anon` Singleton)
 
-When a user provides exactly one unnamed constraint alongside an injected `isValid`, Hermes encapsulates it cleanly in the structures via the dummy field `h_unnamed`.
+When a user provides exactly one unnamed constraint alongside an injected `isValid`, Hermes encapsulates it cleanly in the structures via the dummy field `h_anon`.
 
 ```lean
 namespace func
   structure Post (x ret x' : Std.U32) : Prop where
     h_x'_is_valid  : Hermes.IsValid.isValid x'   -- Auto-injected &mut param
-    h_unnamed      : ret > 0                     -- User's single anonymous clause
+    h_anon      : ret > 0                        -- User's single anonymous clause
 end func
 ```
 
@@ -209,7 +209,7 @@ Users must relocate `progress` and other tactic operations to the strictly ortho
 
 ### 4. Evaluation Order of `proof context` vs Preconditions
 
-Because `proof context:` is evaluated directly within the structural instantiation (`exact`), it evaluates *after* the WPs are split, which critically means it evaluates *after* the preconditions (`Pre` struct) have been destructured (`rcases h_req with ⟨...⟩`) by the global theorem signature. 
+Because `proof context:` is evaluated directly within the structural instantiation (`exact`), it evaluates *after* the WPs are split, which critically means it evaluates *after* the preconditions (`Pre` struct) have been destructured (`rcases h_req with ⟨...⟩`) by the global theorem signature.
 
 This means that `proof context:` logic has full access to the user-defined preconditions (like `h_positive`). Users can safely and ergonomically use their `requires` hypotheses to build shared setup logic for their `ensures` proofs.
 

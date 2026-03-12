@@ -1,5 +1,5 @@
 /// A simple test for the named bounds feature.
-/// 
+///
 /// ```lean, hermes, spec
 /// requires (req):
 ///   x > 0
@@ -15,7 +15,7 @@ unsafe fn test_named_bounds(x: u32) -> u32 {
 }
 
 /// A test for a single unnamed ensures with an unnamed proof block.
-/// 
+///
 /// ```lean, hermes, spec
 /// ensures:
 ///   ret = x
@@ -28,7 +28,7 @@ fn test_single_unnamed_ensures(x: u32) -> u32 {
 }
 
 /// A test for multiple named requires clauses.
-/// 
+///
 /// ```lean, hermes, spec
 /// requires (r1):
 ///   x > 0
@@ -102,7 +102,7 @@ fn test_proof_context(x: u32, y: u32) -> u32 {
 
 /// A test for auto-injecting `isValid` when a user proof is omitted, but other named proofs are provided.
 /// The return type `u32` has an implicit `isValid` bound.
-/// 
+///
 /// A test for missing implicitly injected `isValid` proofs.
 ///
 /// ```lean, hermes, spec
@@ -117,7 +117,7 @@ fn test_missing_proof_injected_isvalid(x: u32) -> u32 {
 }
 
 /// A test for a single unnamed requires clause.
-/// 
+///
 /// ```lean, hermes, spec
 /// requires:
 ///   x > 0
@@ -140,8 +140,8 @@ unsafe fn test_single_unnamed_requires(x: u32) -> u32 {
 ///   x > 0
 /// proof context:
 /// proof (ens):
-///   have h0 : x > 0 := h_unnamed
-///   have _h_call := test_single_unnamed_requires.spec x { h_unnamed := h0 }
+///   have h0 : x > 0 := h_anon
+///   have _h_call := test_single_unnamed_requires.spec x { h_anon := h0 }
 ///   exact h0
 /// ```
 unsafe fn test_caller_single_unnamed_requires(x: u32) -> u32 {
@@ -150,7 +150,7 @@ unsafe fn test_caller_single_unnamed_requires(x: u32) -> u32 {
 
 /// A test for zero ensures blocks and zero proofs.
 /// Hermes should auto-inject proofs for implicit bounds (like isValid).
-/// 
+///
 /// ```lean, hermes, spec
 /// ```
 fn test_zero_ensures_no_proof(x: u32) -> u32 {
@@ -158,7 +158,7 @@ fn test_zero_ensures_no_proof(x: u32) -> u32 {
 }
 
 /// A test for manually proving an auto-injected bound.
-/// 
+///
 /// ```lean, hermes, spec
 /// proof context:
 /// proof:
@@ -169,7 +169,7 @@ fn test_manual_proof_for_is_valid(x: u32) -> u32 {
 }
 
 /// A function testing multiple disjoint `proof context` blocks.
-/// 
+///
 /// The parser should loop and concatenate them transparently.
 /// ```lean, hermes, spec
 /// ensures (h_same):
@@ -188,8 +188,8 @@ fn test_multiple_proof_context_blocks(x: u32) -> u32 {
 
 /// A function testing `proof context` declared *after* proof cases.
 ///
-/// The parser pushes the blocks into disjoint `cases` and `context` vectors, 
-/// so they should render correctly with `context` first in Lean regardless of 
+/// The parser pushes the blocks into disjoint `cases` and `context` vectors,
+/// so they should render correctly with `context` first in Lean regardless of
 /// declaration order in Rust.
 /// ```lean, hermes, spec
 /// ensures (h_same):
@@ -233,10 +233,10 @@ fn test_empty_proof_context(x: u32) -> u32 {
     x
 }
 
-/// A test showing that explicitly naming a requirement `unnamed` passes validation
-/// and does not natively collide with the implicitly reserved `unnamed` token.
+/// A test showing that explicitly naming a requirement `anon` passes validation
+/// and does not natively collide with the implicitly reserved `anon` token.
 /// ```lean, hermes, spec
-/// requires (unnamed):
+/// requires (anon):
 ///   x > 0
 /// ensures (ens):
 ///   ret = x
@@ -248,7 +248,7 @@ unsafe fn test_explicit_unnamed_requires(x: u32) -> u32 {
     x
 }
 
-/// A test showing that a `proof context` fulfills the requirement for an `inner: Proof`, 
+/// A test showing that a `proof context` fulfills the requirement for an `inner: Proof`,
 /// even when `cases` is empty. The `simp_all` or `sorry` fallback generates the missing cases as designed.
 /// ```lean, hermes, spec
 /// ensures (ens):
@@ -271,7 +271,7 @@ unsafe fn test_axiom_pseudo_name() {}
 
 /// A test confirming that `isValid` fields on `Pre` struct instantiations
 /// can be completely omitted due to the `verify_is_valid` autoParam tactic.
-/// 
+///
 /// ```lean, hermes, spec
 /// requires (r1):
 ///   x > 0
@@ -287,7 +287,7 @@ unsafe fn test_explicit_requires(x: u32) -> u32 {
 }
 
 /// A calling function that asserts Lean allows omitting `h_x_is_valid`.
-/// 
+///
 /// ```lean, hermes, spec
 /// requires (r1):
 ///   x > 0
@@ -324,25 +324,25 @@ unsafe fn test_zero_args_with_bounds() {}
 
 /// A function with zero arguments and no specifications.
 /// The Pre structure should be completely omitted.
-/// 
+///
 /// ```lean, hermes, spec
 /// ```
 fn test_zero_args_no_bounds() {}
 
-/// Explicitly naming a bound "unnamed", which is the fallback name.
-/// 
+/// Explicitly naming a bound "anon", which is the fallback name.
+///
 /// ```lean, hermes, spec
-/// requires (unnamed):
+/// requires (anon):
 ///   x > 0
 /// ensures (ens):
 ///   ret = x
 /// proof (ens):
-///   simp_all [test_explicit_unnamed_name]
+///   simp_all [test_explicit_anon_name]
 /// ```
-unsafe fn test_explicit_unnamed_name(x: u32) -> u32 { x }
+unsafe fn test_explicit_anon_name(x: u32) -> u32 { x }
 
 /// Missing proof body. It should just fall back to standard sorry/simp_all.
-/// 
+///
 /// ```lean, hermes, spec
 /// ensures (ens):
 ///   ret = x
@@ -352,7 +352,7 @@ fn test_empty_proof_block_named(x: u32) -> u32 { x }
 
 /// Proof context after a proof block.
 /// They should all be aggregated correctly.
-/// 
+///
 /// ```lean, hermes, spec
 /// ensures (ens):
 ///   ret = x
@@ -365,7 +365,7 @@ fn test_proof_context_after_proof(x: u32) -> u32 { x }
 
 /// Single unnamed requires with named ensures.
 /// This is valid because the multiple-rule applies per-category.
-/// 
+///
 /// ```lean, hermes, spec
 /// requires:
 ///   x > 0
@@ -378,7 +378,7 @@ unsafe fn test_single_unnamed_requires_with_named_ensures(x: u32) -> u32 { x }
 
 /// Multiple proof context blocks.
 /// They should be aggregated sequentially in the Lean output.
-/// 
+///
 /// ```lean, hermes, spec
 /// ensures (ens):
 ///   ret = x
@@ -392,7 +392,7 @@ unsafe fn test_single_unnamed_requires_with_named_ensures(x: u32) -> u32 { x }
 fn test_multiple_proof_context_blocks_named(x: u32) -> u32 { x }
 
 /// Target a mutable reference implicit bound.
-/// 
+///
 /// ```lean, hermes, spec
 /// proof (h_x'_is_valid):
 ///   simp_all [Hermes.IsValid.isValid]
@@ -440,9 +440,9 @@ unsafe fn test_out_of_order_clauses(x: u32) -> u32 { x }
 /// ensures (e1):
 ///   ret = x
 /// proof (e1):
-/// 
+///
 ///   simp_all [test_blank_lines_in_proof]
-/// 
+///
 /// ```
 fn test_blank_lines_in_proof(x: u32) -> u32 { x }
 
@@ -463,8 +463,8 @@ unsafe fn test_very_long_bound_name(x: u32) -> u32 { x }
 fn test_zero_guarantees_zero_params() {}
 
 /// A function with a single anonymous ensures clause and an anonymous proof.
-/// The parser should map the ensures clause to the `unnamed` dummy field,
-/// and the generator should inject the anonymous proof into the `case unnamed` branch.
+/// The parser should map the ensures clause to the `h_anon` dummy field,
+/// and the generator should inject the anonymous proof into the `case anon` branch.
 /// ```lean, hermes, spec
 /// ensures:
 ///   ret = 0#u32

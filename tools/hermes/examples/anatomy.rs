@@ -31,7 +31,7 @@ pub unsafe trait Unaligned: Sized {}
 /// ```hermes, unsafe(axiom)
 /// requires: a.val + b.val <= Usize.max
 ///   -- In Hermes, anonymous `requires` and `ensures` bounds are compiled into
-///   -- a struct field named `h_unnamed`.
+///   -- a struct field named `h_anon`.
 /// ensures: ret.val = a.val + b.val
 /// ```
 #[allow(unused)]
@@ -64,21 +64,21 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///   have fast_add_zero : ∀ (x : Aeneas.Std.Usize), Hermes.IsValid.isValid x →
 ///     fast_add x 0#usize = Result.ok x := by
 ///     intro x h_valid
-///     -- Here we supply `{ h_unnamed := ... }` explicitly for the anonymous `requires` bound!
+///     -- Here we supply `{ h_anon := ... }` explicitly for the anonymous `requires` bound!
 ///     -- Notice `h_a_is_valid`: Hermes injects implicit `h_<arg>_is_valid` preconditions
 ///     -- for ALL function arguments. We must fulfill them when invoking `.spec`.
-///     have ho := fast_add.spec x 0#usize { h_a_is_valid := h_valid, h_unnamed := by scalar_tac }
+///     have ho := fast_add.spec x 0#usize { h_a_is_valid := h_valid, h_anon := by scalar_tac }
 ///     -- CRACKING MONADIC EXECUTIONS:
 ///     -- To prove that `fast_add x 0` strictly returns `Result.ok x` and never `fail`/`div`,
 ///     -- we use `cases ... <;> simp_all`. Because the constraint `ho` requires it to succeed,
 ///     -- `simp_all` instantly prunes the impossible error states!
 ///     cases h_eq : fast_add x 0#usize <;> simp_all
-///     rename_i r; have _ := ho.h_unnamed; scalar_tac
+///     rename_i r; have _ := ho.h_anon; scalar_tac
 ///
 ///   -- Some marker traits (like `Sized`) translates to empty typeclasses.
 ///   -- We can legally instantiate them with the anonymous constructor `⟨⟩`.
 ///   have h_sized : Hermes.core.marker.Sized T := ⟨⟩
-///   
+///
 ///   -- However, for complex typeclasses like `HasStaticLayout`, Lean's inference
 ///   -- struggles with fully anonymous instantiations (e.g., `⟨_, _⟩`).
 ///   -- You must alias complex layouts to a named `have` binding first!
@@ -109,7 +109,7 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///   -- to our `h_is_safe` precondition to unlock the theorems stored inside `isSafe`!
 ///   have h_s := h_is_safe (Inst := UnalignedInst)
 ///   have h_safe_eq := h_s.isSafe (_sz := h_sized) (tl := h_layout)
-///   
+///
 ///   --
 ///   -- IMPLICIT IDENTIFIERS:
 ///   -- Notice our use of `ret` and `h_returns`. Where did they come from?
@@ -160,7 +160,7 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///   have h_align : ∃ align, core.mem.align_of T = Result.ok align :=
 ///     ⟨_, @core_mem_align_of_spec T h_sized h_layout⟩
 ///   rcases h_align with ⟨align, h_align_eq⟩
-///   
+///
 ///   -- 2. Scaffolding for fast_add
 ///   -- We bridge the gap between our generated WP `spec` constraints and the
 ///   -- existential progress constraint (`∃ y, ...`) using `spec_imp_exists`.
@@ -168,12 +168,12 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///     have ho := fast_add.spec align 0#usize {
 ///       h_a_is_valid := by simp_all [Hermes.IsValid.isValid]
 ///       h_b_is_valid := by simp_all [Hermes.IsValid.isValid]
-///       h_unnamed := by scalar_tac
+///       h_anon := by scalar_tac
 ///     }
 ///     rcases Aeneas.Std.WP.spec_imp_exists ho with ⟨padded, h_eq, _⟩
 ///     exact ⟨padded, h_eq⟩
 ///   rcases h_add with ⟨padded, h_add_eq⟩
-///   
+///
 ///   -- 3. Conclude progress
 ///   -- Chain evaluated states seamlessly using `bind_tc_ok`.
 ///   rw [h_align_eq, Aeneas.Std.bind_tc_ok, h_add_eq, Aeneas.Std.bind_tc_ok]
