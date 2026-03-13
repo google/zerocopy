@@ -3434,6 +3434,29 @@ pub unsafe trait FromZeros: TryFromBytes {
     /// assert_eq!(header.length, [0, 0]);
     /// assert_eq!(header.checksum, [0, 0]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "zero",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[inline(always)]
     fn zero(&mut self) {
         let slf: *mut Self = self;
@@ -3474,6 +3497,12 @@ pub unsafe trait FromZeros: TryFromBytes {
     /// assert_eq!(header.length, [0, 0]);
     /// assert_eq!(header.checksum, [0, 0]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "new_zeroed",
+        format = "coco_static_size",
+    )]
     #[must_use = "has no side effects"]
     #[inline(always)]
     fn new_zeroed() -> Self
@@ -3500,6 +3529,12 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// Returns an error on allocation failure. Allocation failure is guaranteed
     /// never to cause a panic or an abort.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "new_box_zeroed",
+        format = "coco_static_size",
+    )]
     #[must_use = "has no side effects (other than allocation)"]
     #[cfg(any(feature = "alloc", test))]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
@@ -3565,6 +3600,24 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// Returns an error on allocation failure. Allocation failure is
     /// guaranteed never to cause a panic or an abort.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "new_box_zeroed_with_elems",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects (other than allocation)"]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
@@ -3613,6 +3666,12 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// Returns an error on allocation failure. Allocation failure is
     /// guaranteed never to cause a panic or an abort.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "new_vec_zeroed",
+        format = "coco_static_size",
+    )]
     #[must_use = "has no side effects (other than allocation)"]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
@@ -3626,6 +3685,12 @@ pub unsafe trait FromZeros: TryFromBytes {
 
     /// Extends a `Vec<Self>` by pushing `additional` new items onto the end of
     /// the vector. The new items are initialized with zeros.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "extend_vec_zeroed",
+        format = "coco_static_size",
+    )]
     #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(all(rust = "1.57.0", feature = "alloc"))))]
@@ -3645,6 +3710,12 @@ pub unsafe trait FromZeros: TryFromBytes {
     /// # Panics
     ///
     /// Panics if `position > v.len()`.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "insert_vec_zeroed",
+        format = "coco_static_size",
+    )]
     #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(all(rust = "1.57.0", feature = "alloc"))))]

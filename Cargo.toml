@@ -125,6 +125,7 @@ zerocopy-derive = { version = "=0.8.47", path = "zerocopy-derive" }
 elain = "0.3.0"
 itertools = "0.11"
 rand = { version = "0.8.5", default-features = false, features = ["small_rng"] }
+regex = "1.0"
 rustversion = "1.0"
 static_assertions = "1.1"
 testutil = { path = "testutil" }
