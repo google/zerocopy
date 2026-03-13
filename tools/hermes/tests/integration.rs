@@ -10,6 +10,7 @@ use std::{
 
 use fs2::FileExt;
 use serde::Deserialize;
+use sha2::Digest;
 use walkdir::WalkDir;
 
 datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
@@ -31,15 +32,15 @@ enum ExpectedStatus {
     KnownBug,
 }
 
-// A note on our "no implicit files" philosophy: We prefer explicit configuration
-// to implicit conventions. Thus, unless explicitly specified in `hermes.toml`
-// (e.g. via `stderr_file` or `matches_expected_directory`), the test runner
-// will completely ignore all other files in `tests/fixtures/<test_case>`. It
-// will not implicitly search for "implicit files" (like `expected.stderr`) if they
-// are not named in the TOML configuration block. That ensures that when you
-// read `hermes.toml`, you immediately know every single input and constraint
-// of the test. Note that there are still a few implicit files/directories, but
-// most are explicit.
+// A note on our "no implicit files" philosophy: We prefer explicit
+// configuration to implicit conventions. Thus, unless explicitly specified in
+// `hermes.toml` (e.g., via `stderr_file` or `matches_expected_directory`), the
+// test runner will completely ignore all other files in
+// `tests/fixtures/<test_case>`. It will not implicitly search for "implicit
+// files" (like `expected.stderr`) if they are not named in the TOML
+// configuration block. That ensures that when you read `hermes.toml`, you
+// immediately know every single input and constraint of the test. Note that
+// there are still a few implicit files/directories, but most are explicit.
 #[derive(Deserialize, Default, Clone)]
 #[serde(deny_unknown_fields)]
 struct TestConfig {
@@ -57,7 +58,15 @@ struct TestConfig {
     command: Vec<CommandExpectation>,
     mock: Option<MockConfig>,
     #[serde(default)]
+    setup_mock: bool, // New field
+    #[serde(default)]
     phases: Vec<TestPhase>,
+    #[serde(default = "default_true")]
+    inject_charon_version: bool,
+}
+
+fn default_true() -> bool {
+    true
 }
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
@@ -132,9 +141,10 @@ fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
     lock_file.lock_exclusive().unwrap();
 
     // Check if the cache is fully initialized and valid.
-    // We use a `.complete` marker file to ensure atomicity: the marker is only written
-    // after the entire initialization sequence (clone, download, build) succeeds.
-    // This prevents the use of partial or corrupt caches resulting from interrupted builds.
+    // We use a `.complete` marker file to ensure atomicity: the marker is only
+    // written after the entire initialization sequence (clone, download,
+    // build) succeeds. This prevents the use of partial or corrupt caches
+    // resulting from interrupted builds.
     ensure_cache_ready(&cache_dir).unwrap();
 
     lock_file.unlock().unwrap();
@@ -429,6 +439,8 @@ struct TestContext {
     // test.
     worker_cache: WorkerCacheGuard,
     _temp_dir: Option<tempfile::TempDir>, // Kept alive to prevent deletion
+    test_config: TestConfig,
+    home_dir: PathBuf,
 }
 
 impl TestContext {
@@ -440,7 +452,10 @@ impl TestContext {
 
         let (cache_dir, target_dir) = get_or_init_shared_cache();
         let temp = tempfile::Builder::new().prefix("hermes-test-").tempdir_in(&target_dir)?;
+
         let sandbox_root = temp.path().join(&test_name);
+        let home_dir = temp.path().join("home");
+        fs::create_dir_all(&home_dir)?;
         copy_dir_contents(&source_dir, &sandbox_root)?;
 
         // Check if we should keep the test directory for debugging
@@ -467,9 +482,10 @@ impl TestContext {
         let lean_root = sandbox_root.join("target/hermes/hermes_test_target/lean");
         fs::create_dir_all(&lean_root)?;
 
-        // The Lean manifest dictates which dependencies Lake needs to resolve. We copy this
-        // directly from the global cache to ensure the test sandbox observes exactly the same
-        // dependency tree as the precompiled artifacts.
+        // The Lean manifest dictates which dependencies Lake needs to resolve.
+        // We copy this directly from the global cache to ensure the test
+        // sandbox observes exactly the same dependency tree as the
+        // precompiled artifacts.
         let source_manifest = aeneas_cache_backend.join("lake-manifest.json");
         let target_manifest = lean_root.join("lake-manifest.json");
         if source_manifest.exists() {
@@ -482,20 +498,29 @@ impl TestContext {
 
         let target_lake = lean_root.join(".lake");
 
-        // Rather than expensively copying the `.lake` directory for every test, we
-        // symlink the worker's mutable `.lake` directory into the test sandbox. Because the parent
-        // `TestContext` owns a `WorkerCacheGuard`, this test process has exclusive mutation rights
-        // to this target directory. This assumes that the Lean compiler (`lake`) cleanly follows
-        // symlinks for its cache directory without resolving absolute paths in a way that would
-        // accidentally leak modified paths into the final generated artifacts.
+        // Rather than expensively copying the `.lake` directory for every test,
+        // we symlink the worker's mutable `.lake` directory into the test
+        // sandbox. Because the parent `TestContext` owns a
+        // `WorkerCacheGuard`, this test process has exclusive mutation rights
+        // to this target directory. This assumes that the Lean compiler
+        // (`lake`) cleanly follows symlinks for its cache directory without
+        // resolving absolute paths in a way that would accidentally leak
+        // modified paths into the final generated artifacts.
         std::os::unix::fs::symlink(&worker_cache.lean_lake, &target_lake)
             .map_err(|e| anyhow::anyhow!("Failed to symlink worker .lake cache: {}", e))?;
 
-        // Copy extra inputs based on config
+        // Copy extra inputs based on config.
         for extra in &config.extra_inputs {
             let extra_path = test_case_root.join(extra);
             if extra_path.exists() {
-                fs::copy(&extra_path, sandbox_root.join(extra))?;
+                let dest = sandbox_root.join(extra);
+                if let Some(parent) = dest.parent() {
+                    // Create parent directories for the destination to support
+                    // copying extra inputs into nested paths within the
+                    // sandbox.
+                    fs::create_dir_all(parent)?;
+                }
+                fs::copy(&extra_path, dest)?;
             }
         }
 
@@ -505,6 +530,8 @@ impl TestContext {
             sandbox_root,
             worker_cache,
             _temp_dir: temp_dir_to_store,
+            test_config: config.clone(),
+            home_dir,
         })
     }
 
@@ -523,8 +550,9 @@ impl TestContext {
         let mut shim_content = String::new();
         shim_content.push_str("#!/bin/sh\n");
 
-        // For backward compatibility with legacy tests, we log "AENEAS INVOKED" for Aeneas.
-        // This allows existing tests to verify that Aeneas was actually called.
+        // For backward compatibility with legacy tests, we log "AENEAS INVOKED"
+        // for Aeneas. This allows existing tests to verify that Aeneas was
+        // actually called.
         if binary == "aeneas" {
             use std::fmt::Write;
             writeln!(shim_content, "echo \"AENEAS INVOKED\" >> \"{}\"", log_file.display())
@@ -533,8 +561,8 @@ impl TestContext {
 
         let should_inject_version = match mock_mode {
             Some(MockMode::FailWithOutput(_)) => true,
-            Some(MockMode::Script(_)) => self.test_name != "charon_version_mismatch",
-            Option::None => false,
+            Some(MockMode::Script(_)) => self.test_config.inject_charon_version,
+            Option::None => binary == "charon" && self.test_config.inject_charon_version,
         };
 
         if should_inject_version {
@@ -559,8 +587,9 @@ echo "---END-INVOCATION---" >> "{}"
             log_file.display()
         ));
 
-        // If a mock mode is specified, we configure the shim to either fail with a specific output
-        // or execute a provided script. Otherwise, we exec the real binary.
+        // If a mock mode is specified, we configure the shim to either fail with
+        // a specific output or execute a provided script. Otherwise, we exec
+        // the real binary.
         match mock_mode {
             Some(MockMode::FailWithOutput(mock_file)) => {
                 use std::fmt::Write;
@@ -585,6 +614,9 @@ echo "---END-INVOCATION---" >> "{}"
     }
 
     fn run_hermes(&self, config: &TestConfig) -> assert_cmd::assert::Assert {
+        let mut cmd = assert_cmd::cargo_bin_cmd!("cargo-hermes");
+        cmd.env("HOME", &self.home_dir);
+
         let (cache_dir, _) = get_or_init_shared_cache();
         let lean_backend_dir = cache_dir.join("backends/lean");
 
@@ -638,20 +670,53 @@ echo "---END-INVOCATION---" >> "{}"
 
         // Create shims for Charon and Aeneas.
         //
-        // Even if we are using the "real" binary, we wrap it in a shim to capture
-        // the arguments passed to it. This allows us to assert that Hermes calls
-        // the tools with the expected arguments.
+        // Even if we are using the "real" binary, we wrap it in a shim to
+        // capture the arguments passed to it. This allows us to assert that
+        // Hermes calls the tools with the expected arguments.
 
         let real_charon = which::which("charon").unwrap();
         let shim_dir = self.create_shim("charon", &real_charon, charon_mock_mode).unwrap();
 
         // If Aeneas is not found in PATH, we default to `/bin/true`.
-        // This is safe because Hermes primarily uses `HERMES_AENEAS_DIR` to find Aeneas,
-        // effectively ignoring the PATH entry unless specifically configured otherwise.
+        // This is safe because Hermes primarily uses `HERMES_AENEAS_DIR` to find
+        // Aeneas, effectively ignoring the PATH entry unless specifically
+        // configured otherwise.
         let real_aeneas = which::which("aeneas").unwrap_or_else(|_| PathBuf::from("/bin/true"));
         self.create_shim("aeneas", &real_aeneas, aeneas_mock_mode).unwrap();
 
-        let mut cmd = assert_cmd::cargo_bin_cmd!("cargo-hermes");
+        if config.setup_mock {
+            let server =
+                tiny_http::Server::http("127.0.0.1:0").expect("Failed to start mock server");
+            let port = server.server_addr().to_ip().unwrap().port();
+            let base_url = format!("http://127.0.0.1:{}", port);
+            cmd.env("HERMES_SETUP_BASE_URL", base_url);
+
+            let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+            let testdata_setup = manifest_dir.join("testdata/setup");
+
+            thread::spawn(move || {
+                for request in server.incoming_requests() {
+                    let url = request.url();
+                    // URL is e.g. /build-HASH/charon-linux-x86_64.tar.gz
+                    let parts: Vec<&str> = url.split('/').collect();
+                    if let Some(filename) = parts.last() {
+                        let file_path = testdata_setup.join(filename);
+                        if file_path.exists() {
+                            let file = std::fs::File::open(file_path).unwrap();
+                            let response = tiny_http::Response::from_file(file);
+                            request.respond(response).unwrap();
+                            continue;
+                        }
+                    }
+                    request
+                        .respond(
+                            tiny_http::Response::from_string("Not Found").with_status_code(404),
+                        )
+                        .unwrap();
+                }
+            });
+        }
+
         cmd.env("HERMES_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
         cmd.env("HERMES_AENEAS_DIR", &self.worker_cache.aeneas);
@@ -663,15 +728,25 @@ echo "---END-INVOCATION---" >> "{}"
         )
         .unwrap();
 
-        // Ensure deterministic LLBC generation within the integration test sandbox
-        // by rebasing the `workspace_root` off the absolute filesystem onto `/dummy`.
+        // Ensure deterministic LLBC generation within the integration test
+        // sandbox by rebasing the `workspace_root` off the absolute filesystem
+        // onto `/dummy`.
         let rustflags = format!("--remap-path-prefix={}=/dummy", self.test_case_root.display());
 
         cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"))
             .env("PATH", new_path)
             .env("RUSTFLAGS", rustflags)
+            // Redirect HOME to the persistent home directory within the sandbox.
+            // This ensures that the toolchain is looked up and potentially
+            // repaired/reinstalled in a location that is isolated from the
+            // user's actual home directory but remains persistent across
+            // multiple `hermes` invocations within this single test context.
+            .env("HOME", &self.home_dir)
             .env("HERMES_TEST_DIR_NAME", "hermes_test_target");
 
+        if !self.sandbox_root.exists() {
+            panic!("sandbox_root does NOT exist! {:?}", self.sandbox_root);
+        }
         if let Some(cwd) = &config.cwd {
             cmd.current_dir(self.sandbox_root.join(cwd));
         } else {
@@ -796,7 +871,8 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
         return Ok(());
     }
 
-    // Verify that the artifacts generated by the toolchain match the expected outputs.
+    // Verify that the artifacts generated by the toolchain match the expected
+    // outputs.
     if !config.artifact.is_empty() {
         let hermes_run_root = ctx.sandbox_root.join("target/hermes/hermes_test_target");
         assert_artifacts_match(&hermes_run_root, &ctx.test_case_root, &config.artifact)?;
@@ -825,8 +901,8 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
     allowed_paths.insert(ctx.test_case_root.join("source"));
     allowed_paths.insert(ctx.test_case_root.join("hermes.toml"));
 
-    // Track artifacts that are explicitly defined in the test configuration TOML.
-    // This allows them to bypass the unmapped file directory check.
+    // Track artifacts that are explicitly defined in the test configuration
+    // TOML. This allows them to bypass the unmapped file directory check.
     if let Some(mock) = &config.mock {
         if let Some(charon) = &mock.charon {
             allowed_paths.insert(ctx.test_case_root.join(charon));
@@ -872,7 +948,8 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
         }
     }
 
-    // Iterate through everything physically present in the test's root fixture dir
+    // Iterate through everything physically present in the test's root fixture
+    // directory.
     let walker = walkdir::WalkDir::new(&ctx.test_case_root).into_iter();
     for entry in walker.filter_entry(|e| !e.path().ends_with(".git")) {
         let entry = entry.unwrap();
@@ -921,10 +998,7 @@ fn run_single_phase(
                 }
             }
             let slug_dir = slug_dir.ok_or_else(|| {
-                io::Error::new(
-                    io::ErrorKind::NotFound,
-                    "No slug directory found in generated root",
-                )
+                io::Error::new(io::ErrorKind::NotFound, "No slug directory found in generated root")
             })?;
 
             let stale_file = slug_dir.join("Stale.lean");
@@ -933,14 +1007,157 @@ fn run_single_phase(
 
             return Ok(());
         } else if action == "delete_lake_dir" {
-            let target_dir = ctx.sandbox_root.join("target");
-            let lean_lake = target_dir.join("hermes/hermes_test_target/lean/.lake");
-            if lean_lake.exists() {
-                std::fs::remove_dir_all(&lean_lake).expect("Failed to delete stale .lake");
+            // Delete the `.lake` build artifacts directory. This is used in
+            // `stale_output` tests to force Lake to regenerate its build
+            // artifacts from scratch, ensuring that stale cached data doesn't
+            // mask bugs in artifact generation or synchronization.
+            let lean_root = ctx.sandbox_root.join("target/hermes/hermes_test_target/lean");
+            let lake_dir = lean_root.join(".lake");
+            if lake_dir.exists() {
+                fs::remove_dir_all(&lake_dir).expect("Failed to delete .lake directory");
             }
-            let lean_manifest = target_dir.join("hermes/hermes_test_target/lean/lake-manifest.json");
-            if lean_manifest.exists() {
-                std::fs::remove_file(&lean_manifest).expect("Failed to delete manifest");
+            return Ok(());
+        } else if action.starts_with("delete_toolchain_file ") {
+            let file_name = action.strip_prefix("delete_toolchain_file ").unwrap();
+            let toolchain_root = ctx.home_dir.join(".hermes/toolchain");
+
+            // The toolchain directory name includes a short hash of the version,
+            // which changes whenever the managed dependencies are updated. To
+            // remain robust across version changes, we scan for any directory
+            // existing within the toolchain root.
+            let build_dir = fs::read_dir(&toolchain_root)?
+                .filter_map(|e| e.ok())
+                .find(|e| e.file_type().map(|t| t.is_dir()).unwrap_or(false))
+                .ok_or_else(|| {
+                    io::Error::new(io::ErrorKind::NotFound, "Toolchain build directory not found")
+                })?
+                .path();
+            let target_file = build_dir.join(file_name);
+            if target_file.exists() {
+                fs::remove_file(&target_file).expect("Failed to delete toolchain file");
+            }
+            return Ok(());
+        } else if action.starts_with("corrupt_toolchain_file ") {
+            let file_name = action.strip_prefix("corrupt_toolchain_file ").unwrap();
+            let toolchain_root = ctx.home_dir.join(".hermes/toolchain");
+
+            // Scan for the hash-prefixed toolchain directory.
+            let build_dir = fs::read_dir(&toolchain_root)?
+                .filter_map(|e| e.ok())
+                .find(|e| e.file_type().map(|t| t.is_dir()).unwrap_or(false))
+                .ok_or_else(|| {
+                    io::Error::new(io::ErrorKind::NotFound, "Toolchain build directory not found")
+                })?
+                .path();
+            let target_file = build_dir.join(file_name);
+            if target_file.exists() {
+                // We corrupt the file with a known string that our assertions can
+                // identify later.
+                fs::write(&target_file, "CORRUPTED CONTENT")
+                    .expect("Failed to corrupt toolchain file");
+            }
+            return Ok(());
+        } else if action.starts_with("assert_toolchain_binary ") {
+            let rest = action.strip_prefix("assert_toolchain_binary ").unwrap();
+            let mut parts = rest.split_whitespace();
+            let file_name = parts
+                .next()
+                .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "Missing file name"))?;
+            let expected_hash = parts.next();
+
+            let toolchain_root = ctx.home_dir.join(".hermes/toolchain");
+            if !toolchain_root.exists() {
+                let home_exists = ctx.home_dir.exists();
+                let mut entries = Vec::new();
+                if home_exists && let Ok(rd) = fs::read_dir(&ctx.home_dir) {
+                    for e in rd.filter_map(|e| e.ok()) {
+                        entries.push(e.file_name().to_string_lossy().to_string());
+                    }
+                }
+                panic!(
+                    "Toolchain root missing at {:?}! home exists: {}, home contents: {:?}",
+                    toolchain_root, home_exists, entries
+                );
+            }
+            // Scan for the hash-prefixed toolchain directory.
+            let build_dir = fs::read_dir(&toolchain_root)?
+                .filter_map(|e| e.ok())
+                .find(|e| e.file_type().map(|t| t.is_dir()).unwrap_or(false))
+                .ok_or_else(|| {
+                    io::Error::new(io::ErrorKind::NotFound, "Toolchain build directory not found")
+                })?
+                .path();
+            let target_file = build_dir.join(file_name);
+
+            match expected_hash {
+                Some("missing") => {
+                    // Assert that the file has been successfully deleted/removed.
+                    if target_file.exists() {
+                        panic!(
+                            "Expected toolchain file '{}' to be missing, but it exists",
+                            file_name
+                        );
+                    }
+                }
+                Some("corrupted") => {
+                    // Assert that the file exists and contains the "CORRUPTED
+                    // CONTENT" string written by a previous
+                    // `corrupt_toolchain_file` action.
+                    if !target_file.exists() {
+                        panic!(
+                            "Expected toolchain file '{}' to exist (corrupted), but it doesn't",
+                            file_name
+                        );
+                    }
+                    let content =
+                        fs::read_to_string(&target_file).expect("Failed to read toolchain file");
+                    if content != "CORRUPTED CONTENT" {
+                        panic!(
+                            "Expected toolchain file '{}' to be corrupted with 'CORRUPTED CONTENT', but it has different content",
+                            file_name
+                        );
+                    }
+                }
+                Some(expected_hash) => {
+                    // Normal hash verification mode.
+                    if !target_file.exists() {
+                        panic!("Expected toolchain file '{}' to exist, but it doesn't", file_name);
+                    }
+                    let mut file = fs::File::open(&target_file)?;
+                    let mut hasher = sha2::Sha256::new();
+                    std::io::copy(&mut file, &mut hasher)?;
+                    let actual_hash = format!("{:x}", hasher.finalize());
+
+                    if actual_hash != expected_hash {
+                        panic!(
+                            "Hash mismatch for toolchain file '{}'.\nExpected: {}\nActual:   {}",
+                            file_name, expected_hash, actual_hash
+                        );
+                    }
+                }
+                None => {
+                    // If no hash is specified, just assert existence.
+                    if !target_file.exists() {
+                        panic!("Expected toolchain file '{}' to exist, but it doesn't", file_name);
+                    }
+                }
+            }
+            return Ok(());
+        } else if action.starts_with("assert_toolchain_file_missing ") {
+            let file_name = action.strip_prefix("assert_toolchain_file_missing ").unwrap();
+            let toolchain_root = ctx.home_dir.join(".hermes/toolchain");
+            if let Ok(entries) = fs::read_dir(&toolchain_root) {
+                for entry in entries.filter_map(|e| e.ok()) {
+                    if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
+                        let target_file = entry.path().join(file_name);
+                        if target_file.exists() {
+                            panic!(
+                                "Expected toolchain file '{}' to be missing, but it exists",
+                                file_name
+                            );
+                        }
+                    }
+                }
             }
             return Ok(());
         } else {
@@ -974,7 +1191,8 @@ fn run_single_phase(
                 panic!("Expected a known bug, but it succeeded!");
             }
             // For known_bugs, the toolchain crashed or failed verification.
-            // Artifact and stderr emissions are undefined and partially incomplete. We do not validate them.
+            // Artifact and stderr emissions are undefined and partially
+            // incomplete. We do not validate them.
             return Ok(());
         }
         ExpectedStatus::Success => assert.success(),
@@ -982,16 +1200,19 @@ fn run_single_phase(
 
     // Verify the standard error output of the simulated command.
     //
-    // We require the expected standard error output to be defined via an explicit `stderr_file`
-    // configuration, which specifies an output file relative to the test root. We enforce this
-    // strictness to ensure that no legacy fallback configurations or implicit files can
-    // accidentally mask the actual stderr output and decouple it from its intended TOML manifest.
+    // We require the expected standard error output to be defined via an
+    // explicit `stderr_file` configuration, which specifies an output file
+    // relative to the test root. We enforce this strictness to ensure that no
+    // legacy fallback configurations or implicit files can accidentally mask
+    // the actual stderr output and decouple it from its intended TOML
+    // manifest.
     let output = assert.get_output();
     if let Some(stderr_file) = &config.stderr_file {
         assert_output_file(
             &ctx.test_case_root,
             &ctx.sandbox_root,
             &ctx.test_name,
+            &ctx.home_dir,
             stderr_file,
             &output.stderr,
             "Stderr",
@@ -1003,6 +1224,7 @@ fn run_single_phase(
             &ctx.test_case_root,
             &ctx.sandbox_root,
             &ctx.test_name,
+            &ctx.home_dir,
             stdout_file,
             &output.stdout,
             "Stdout",
@@ -1016,6 +1238,7 @@ fn assert_output_file(
     test_case_root: &Path,
     sandbox_root: &Path,
     test_name: &str,
+    home_dir: &Path,
     expected_file: &str,
     actual_output: &[u8],
     stream_name: &str,
@@ -1030,8 +1253,19 @@ fn assert_output_file(
 
     let (cache_dir, _) = get_or_init_shared_cache();
     let cache_path_str = cache_dir.to_str().unwrap();
+    let home_path_str = home_dir.to_str().unwrap();
+    // Replace volatile environment-specific paths with static placeholders.
+    //
+    // - `replace_path` corresponds to the sandbox root, which varies per
+    //   test run.
+    // - `cache_path_str` corresponds to the shared toolchain cache.
+    // - `home_path_str` corresponds to the user's home directory (redirected in
+    //   tests).
     let actual_clean = sanitize_output(
-        &actual_str.replace(replace_path, "[PROJECT_ROOT]").replace(cache_path_str, "[CACHE_ROOT]"),
+        &actual_str
+            .replace(replace_path, "[PROJECT_ROOT]")
+            .replace(cache_path_str, "[CACHE_ROOT]")
+            .replace(home_path_str, "[HOME]"),
     );
 
     if bless {
@@ -1082,6 +1316,7 @@ fn parse_command_log(content: &str) -> Vec<Vec<String>> {
 fn run_toolchain_versioning_test(path: &Path) -> datatest_stable::Result<()> {
     let config = TestConfig {
         args: Some(vec!["verify".into(), "--allow-sorry".into()]),
+        inject_charon_version: true,
         ..Default::default()
     };
 
@@ -1304,121 +1539,120 @@ fn assert_artifacts_match(
                 );
             }
         }
-        if found
-            && let Some(expected_dir_name) = &exp.matches_expected_dir
-        {
-                let matching_items: Vec<_> =
-                    found_items.iter().filter(|f| f.starts_with(&prefix)).collect();
-                let expected_path = test_case_root.join(expected_dir_name);
+        if found && let Some(expected_dir_name) = &exp.matches_expected_dir {
+            let matching_items: Vec<_> =
+                found_items.iter().filter(|f| f.starts_with(&prefix)).collect();
+            let expected_path = test_case_root.join(expected_dir_name);
 
-                let bless = std::env::var("BLESS").as_deref() == Ok("1")
-                    || std::env::var("HERMES_BLESS").as_deref() == Ok("1");
+            let bless = std::env::var("BLESS").as_deref() == Ok("1")
+                || std::env::var("HERMES_BLESS").as_deref() == Ok("1");
 
-                if bless {
-                    // Wipe the existing expected directory before copying over the new payload.
-                    // This ensures that we do not accidentally retain orphaned files from a previous
-                    // output if the new toolchain invocation generated fewer files than before.
-                    let file_name = matching_items.first().unwrap();
+            if bless {
+                // Wipe the existing expected directory before copying over the new
+                // payload. This ensures that we do not accidentally retain
+                // orphaned files from a previous output if the new toolchain
+                // invocation generated fewer files than before.
+                let file_name = matching_items.first().unwrap();
+                let actual_path = scan_dir.join(file_name);
+
+                if expected_path.exists() {
+                    if expected_path.is_dir() {
+                        let _ = fs::remove_dir_all(&expected_path);
+                    } else {
+                        let _ = fs::remove_file(&expected_path);
+                    }
+                }
+                if actual_path.is_dir() {
+                    fs::create_dir_all(&expected_path).unwrap();
+                    copy_dir_contents(actual_path.as_path(), expected_path.as_path()).unwrap();
+                } else {
+                    if let Some(parent) = expected_path.parent() {
+                        fs::create_dir_all(parent).unwrap();
+                    }
+                    fs::copy(actual_path.as_path(), expected_path.as_path()).unwrap();
+                }
+            } else {
+                if !expected_path.exists() {
+                    panic!(
+                        "`matches_expected_dir` was set to '{}', but path does not exist: {:?}\nRun with BLESS=1 to automatically create it.",
+                        expected_dir_name, expected_path
+                    );
+                }
+
+                // Because hash suffixes are opaque to the harness, multiple
+                // artifacts might match the package prefix. We use catch_unwind
+                // to test each candidate against the expected golden directory. The
+                // expectation passes if any one artifact matches.
+                // The expectation passes if any one artifact matches.
+                let mut any_matched = false;
+                let mut collected_errors = String::new();
+
+                for file_name in matching_items {
                     let actual_path = scan_dir.join(file_name);
 
-                    if expected_path.exists() {
-                        if expected_path.is_dir() {
-                            let _ = fs::remove_dir_all(&expected_path);
+                    let result = std::panic::catch_unwind(|| {
+                        if actual_path.is_dir() != expected_path.is_dir() {
+                            panic!(
+                                "Type mismatch: expected {:?} (is_dir: {}), actual {:?} (is_dir: {})",
+                                expected_path,
+                                expected_path.is_dir(),
+                                actual_path,
+                                actual_path.is_dir()
+                            );
+                        }
+
+                        if actual_path.is_dir() {
+                            assert_directories_match(&expected_path, &actual_path).unwrap();
                         } else {
-                            let _ = fs::remove_file(&expected_path);
-                        }
-                    }
-                    if actual_path.is_dir() {
-                        fs::create_dir_all(&expected_path).unwrap();
-                        copy_dir_contents(actual_path.as_path(), expected_path.as_path()).unwrap();
-                    } else {
-                        if let Some(parent) = expected_path.parent() {
-                            fs::create_dir_all(parent).unwrap();
-                        }
-                        fs::copy(actual_path.as_path(), expected_path.as_path()).unwrap();
-                    }
-                } else {
-                    if !expected_path.exists() {
-                        panic!(
-                            "`matches_expected_dir` was set to '{}', but path does not exist: {:?}\nRun with BLESS=1 to automatically create it.",
-                            expected_dir_name, expected_path
-                        );
-                    }
-
-                    // Because hash suffixes are opaque to the harness, multiple
-                    // artifacts might match the package prefix. We use catch_unwind
-                    // to test each candidate against the expected golden directory.
-                    // The expectation passes if any one artifact matches.
-                    let mut any_matched = false;
-                    let mut collected_errors = String::new();
-
-                    for file_name in matching_items {
-                        let actual_path = scan_dir.join(file_name);
-
-                        let result = std::panic::catch_unwind(|| {
-                            if actual_path.is_dir() != expected_path.is_dir() {
-                                panic!(
-                                    "Type mismatch: expected {:?} (is_dir: {}), actual {:?} (is_dir: {})",
-                                    expected_path,
-                                    expected_path.is_dir(),
-                                    actual_path,
-                                    actual_path.is_dir()
-                                );
-                            }
-
-                            if actual_path.is_dir() {
-                                assert_directories_match(&expected_path, &actual_path).unwrap();
-                            } else {
-                                let e_txt = fs::read_to_string(&expected_path)
-                                    .unwrap()
-                                    .replace("\r\n", "\n");
-                                let a_txt =
-                                    fs::read_to_string(&actual_path).unwrap().replace("\r\n", "\n");
-                                if e_txt != a_txt {
-                                    use similar::{ChangeTag, TextDiff};
-                                    let diff = TextDiff::from_lines(&e_txt, &a_txt);
-                                    let mut diff_str = String::new();
-                                    for change in diff.iter_all_changes() {
-                                        let sign = match change.tag() {
-                                            ChangeTag::Delete => "-",
-                                            ChangeTag::Insert => "+",
-                                            ChangeTag::Equal => " ",
-                                        };
-                                        diff_str.push_str(&format!("{sign}{change}"));
-                                    }
-                                    panic!("Mismatch in {:?}:\n{}", expected_path, diff_str);
+                            let e_txt =
+                                fs::read_to_string(&expected_path).unwrap().replace("\r\n", "\n");
+                            let a_txt =
+                                fs::read_to_string(&actual_path).unwrap().replace("\r\n", "\n");
+                            if e_txt != a_txt {
+                                use similar::{ChangeTag, TextDiff};
+                                let diff = TextDiff::from_lines(&e_txt, &a_txt);
+                                let mut diff_str = String::new();
+                                for change in diff.iter_all_changes() {
+                                    let sign = match change.tag() {
+                                        ChangeTag::Delete => "-",
+                                        ChangeTag::Insert => "+",
+                                        ChangeTag::Equal => " ",
+                                    };
+                                    diff_str.push_str(&format!("{sign}{change}"));
                                 }
-                            }
-                        });
-
-                        match result {
-                            Ok(_) => {
-                                any_matched = true;
-                                break;
-                            }
-                            Err(e) => {
-                                let err_msg = if let Some(s) = e.downcast_ref::<&str>() {
-                                    s.to_string()
-                                } else {
-                                    "Unknown panic during assertion".to_string()
-                                };
-                                collected_errors.push_str(&format!(
-                                    "Artifact '{}' mismatch:\n{}\n",
-                                    file_name, err_msg
-                                ));
+                                panic!("Mismatch in {:?}:\n{}", expected_path, diff_str);
                             }
                         }
-                    }
+                    });
 
-                    if !any_matched {
-                        panic!(
-                            "No matching artifact matched the expected directory:\n{}",
-                            collected_errors
-                        );
+                    match result {
+                        Ok(_) => {
+                            any_matched = true;
+                            break;
+                        }
+                        Err(e) => {
+                            let err_msg = if let Some(s) = e.downcast_ref::<&str>() {
+                                s.to_string()
+                            } else {
+                                "Unknown panic during assertion".to_string()
+                            };
+                            collected_errors.push_str(&format!(
+                                "Artifact '{}' mismatch:\n{}\n",
+                                file_name, err_msg
+                            ));
+                        }
                     }
+                }
+
+                if !any_matched {
+                    panic!(
+                        "No matching artifact matched the expected directory:\n{}",
+                        collected_errors
+                    );
                 }
             }
         }
+    }
 
     Ok(())
 }
@@ -1485,11 +1719,22 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
 
 // Sanitizes non-deterministic log output generated by external tools.
 //
-// Tools like Cargo, Aeneas, and the Rust standard library panic handler inject highly
-// dynamic strings into `stderr` (e.g., execution timings, randomized thread IDs, varying
-// length hexadecimal hashes). We scrub these dynamically generated values and replace
-// them with static `<PLACERHOLDER>` tokens so that we can deterministically compare the
-// output across different host machines and executions.
+// Tools like Cargo, Aeneas, and the Rust standard library panic handler inject
+// highly dynamic strings into `stderr` (e.g., execution timings, randomized
+// thread IDs, varying length hexadecimal hashes). We scrub these dynamically
+// generated values and replace them with static `<PLACERHOLDER>` tokens so
+// that we can deterministically compare the output across different host
+// machines and executions.
+//
+// Specifically, we handle:
+// - RFC 3339 timestamps (replaced with `[YYYY-MM-DDTHH:MM:SSZ `)
+// - Thread IDs in panic messages (replaced with `<ID>`)
+// - Lock-waiting messages from Cargo or other tools (removed)
+// - Hexadecimal hashes in file paths or versions (replaced with `<HASH>`)
+// - Execution timings (replaced with `<TIME>`)
+// - Randomized worker directory IDs (replaced with `<ID>`)
+// - Local IP/port combinations used in mock servers (replaced with
+//   `127.0.0.1:<PORT>`)
 fn sanitize_output(output: &str) -> String {
     let re_timestamp = regex::Regex::new(r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z ").unwrap();
     let re_thread_id = regex::Regex::new(r"thread '([^']+)' \(\d+\) panicked").unwrap();
@@ -1499,6 +1744,7 @@ fn sanitize_output(output: &str) -> String {
     let re_timing = regex::Regex::new(r"took \d+(\.\d*)?(m?s)").unwrap();
     let re_aeneas_time = regex::Regex::new(r"Total execution time: \d+\.\d+ seconds").unwrap();
     let re_worker_id = regex::Regex::new(r"worker_caches/\d+/").unwrap();
+    let re_ip_port = regex::Regex::new(r"127\.0\.0\.1:\d+").unwrap();
 
     let mut clean = output.to_string();
     clean = re_timestamp.replace_all(&clean, "[YYYY-MM-DDTHH:MM:SSZ ").into_owned();
@@ -1508,6 +1754,7 @@ fn sanitize_output(output: &str) -> String {
     clean = re_timing.replace_all(&clean, "took <TIME>").into_owned();
     clean = re_aeneas_time.replace_all(&clean, "Total execution time: <TIME> seconds").into_owned();
     clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
+    clean = re_ip_port.replace_all(&clean, "127.0.0.1:<PORT>").into_owned();
 
     clean
 }
@@ -1552,8 +1799,8 @@ fn sanitize_output(output: &str) -> String {
 //     Ok(())
 // }
 
-// TODO: Re-enable this, but make sure to run it somewhere that won't affect the
-// shared cache. Then again, maybe it already doesn't, and Gemini was just
+// FIXME: Re-enable this, but make sure to run it somewhere that won't affect
+// the shared cache. Then again, maybe it already doesn't, and Gemini was just
 // confused.
 
 //         // Restore the valid shim.
@@ -1660,8 +1907,8 @@ fn find_generated_root(target_dir: &Path) -> datatest_stable::Result<PathBuf> {
     Err("Could not find generated directory".into())
 }
 
-// TODO: Re-enable this, but make sure to run it somewhere that won't affect the
-// shared cache. Then again, maybe it already doesn't, and Gemini was just
+// FIXME: Re-enable this, but make sure to run it somewhere that won't affect
+// the shared cache. Then again, maybe it already doesn't, and Gemini was just
 // confused.
 
 // fn run_atomic_cache_recovery_test() -> datatest_stable::Result<()> {

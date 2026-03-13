@@ -1,25 +1,27 @@
 // Orchestration of Aeneas translation and Lean project management.
 //
-// This module handles the entire lifecycle of the Lean verification project generation:
+// This module handles the entire lifecycle of the Lean verification
+// project generation:
 // 1. Setting up the directory structure.
 // 2. Optimizing setup using valid integration test caches (if available).
 // 3. Invoking `aeneas` to translate LLBC to Lean.
 // 4. Generating the `lakefile.lean` and other boilerplate.
 // 5. Building the Lean project using `lake`.
-// 6. Running custom diagnostic scripts to verify proofs and report errors back to Rust.
+// 6. Running custom diagnostic scripts to verify proofs and report errors
+//    back to Rust.
 
 use std::{
     fmt::Write,
     fs,
     io::{BufRead, BufReader},
-    process::{Command, Stdio},
+    process::Stdio,
     sync::{Arc, Mutex},
 };
 
 use anyhow::{Context, Result, bail};
 use indicatif::{ProgressBar, ProgressStyle};
 
-use crate::{generate, resolve::LockedRoots, scanner::HermesArtifact};
+use crate::{generate, resolve::LockedRoots, scanner::HermesArtifact, setup::Tool};
 
 const HERMES_PRELUDE: &str = include_str!("Hermes.lean");
 const HERMES_DIAGNOSTICS_TEMPLATE: &str = include_str!("Diagnostics.lean");
@@ -117,7 +119,8 @@ pub fn run_aeneas(
 
         std::fs::create_dir_all(&output_dir).context("Failed to create Aeneas output directory")?;
 
-        let mut cmd = Command::new("aeneas");
+        let toolchain = crate::setup::Toolchain::resolve()?;
+        let mut cmd = toolchain.command(Tool::Aeneas);
 
         cmd.args(["-backend", "lean"])
             .arg("-dest")
@@ -400,61 +403,57 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
 
-    // If `lake-manifest.json` exists (copied from the cache), manual inject the
-    // `aeneas` dependency. This avoids running `lake update`, which would
-    // trigger the `mathlib` post-update hook (cache download).
+    // If `lake-manifest.json` exists (copied from the cache), manually inject
+    // the `aeneas` dependency. This avoids running `lake update`, which
+    // would trigger the `mathlib` post-update hook (cache download).
     if lean_root.join("lake-manifest.json").exists()
         && let Ok(aeneas_dir) = std::env::var("HERMES_AENEAS_DIR")
     {
         let aeneas_url = format!("{}/backends/lean", aeneas_dir);
         let manifest_path = lean_root.join("lake-manifest.json");
 
-            match std::fs::read_to_string(&manifest_path) {
-                Ok(content) => match serde_json::from_str::<serde_json::Value>(&content) {
-                    Ok(mut json) => {
-                        if let Some(packages) =
-                            json.get_mut("packages").and_then(|v| v.as_array_mut())
+        match std::fs::read_to_string(&manifest_path) {
+            Ok(content) => match serde_json::from_str::<serde_json::Value>(&content) {
+                Ok(mut json) => {
+                    if let Some(packages) = json.get_mut("packages").and_then(|v| v.as_array_mut())
+                    {
+                        // Remove existing aeneas entry if present
+                        packages
+                            .retain(|p| p.get("name").and_then(|n| n.as_str()) != Some("aeneas"));
+
+                        log::debug!("Patching lake-manifest.json to use aeneas at {}", aeneas_url);
+                        let entry = serde_json::json!({
+                            "dir": aeneas_url,
+                            "type": "path",
+                            "name": "aeneas",
+                            "subDir": null,
+                            "scope": "",
+                            "rev": null,
+                            "inputRev": null, // We can't easily know the inputRev, but null usually works for path deps
+                            "inherited": false,
+                            "configFile": "lakefile.lean",
+                            "manifestFile": "lake-manifest.json"
+                        });
+                        packages.push(entry);
+
+                        if let Ok(new_content) = serde_json::to_string_pretty(&json)
+                            && let Err(e) = std::fs::write(&manifest_path, new_content)
                         {
-                            // Remove existing aeneas entry if present
-                            packages.retain(|p| {
-                                p.get("name").and_then(|n| n.as_str()) != Some("aeneas")
-                            });
-
-                            log::debug!(
-                                "Patching lake-manifest.json to use aeneas at {}",
-                                aeneas_url
-                            );
-                            let entry = serde_json::json!({
-                                "dir": aeneas_url,
-                                "type": "path",
-                                "name": "aeneas",
-                                "subDir": null,
-                                "scope": "",
-                                "rev": null,
-                                "inputRev": null, // We can't easily know the inputRev, but null usually works for path deps
-                                "inherited": false,
-                                "configFile": "lakefile.lean",
-                                "manifestFile": "lake-manifest.json"
-                            });
-                            packages.push(entry);
-
-                            if let Ok(new_content) = serde_json::to_string_pretty(&json)
-                                && let Err(e) = std::fs::write(&manifest_path, new_content)
-                            {
-                                log::warn!("Failed to write patched manifest: {}", e);
-                            }
+                            log::warn!("Failed to write patched manifest: {}", e);
                         }
                     }
-                    Err(e) => log::warn!("Failed to parse lake-manifest.json: {}", e),
-                },
-                Err(e) => log::warn!("Failed to read lake-manifest.json: {}", e),
-            }
+                }
+                Err(e) => log::warn!("Failed to parse lake-manifest.json: {}", e),
+            },
+            Err(e) => log::warn!("Failed to read lake-manifest.json: {}", e),
         }
+    }
 
     if !lean_root.join(".lake/packages/mathlib").exists() {
+        let toolchain = crate::setup::Toolchain::resolve()?;
         // 1. Run 'lake exe cache get' to fetch pre-built Mathlib artifacts
         // This prevents compiling Mathlib from source, which is slow and disk-heavy.
-        let mut cache_cmd = Command::new("lake");
+        let mut cache_cmd = toolchain.command(Tool::Lake);
         cache_cmd.args(["exe", "cache", "get"]);
         cache_cmd.current_dir(lean_root);
         cache_cmd.stdout(Stdio::piped());
@@ -477,7 +476,8 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     }
 
     // 2. Build the project (dependencies only)
-    let mut cmd = Command::new("lake");
+    let toolchain = crate::setup::Toolchain::resolve()?;
+    let mut cmd = toolchain.command(Tool::Lake);
     cmd.args(["build", "Generated", "Hermes"]);
     cmd.current_dir(lean_root);
     cmd.stdout(Stdio::piped());
@@ -556,7 +556,8 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
         let diag_path = lean_root.join("Diagnostics.lean");
         write_if_changed(&diag_path, &diag_script).context("Failed to write Diagnostics.lean")?;
 
-        let mut cmd = Command::new("lake");
+        let toolchain = crate::setup::Toolchain::resolve()?;
+        let mut cmd = toolchain.command(Tool::Lake);
         cmd.args(["env", "lean", "--run", "Diagnostics.lean"]);
         cmd.current_dir(lean_root);
         cmd.stdout(Stdio::piped());
@@ -635,8 +636,8 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
 
 /// Resolves a Lean diagnostic to a Rust source location.
 ///
-/// This uses the JSON source map generated during `src/generate.rs` to map the byte range
-/// in the generated Lean file back to the original Rust file.
+/// This uses the JSON source map generated during `src/generate.rs` to map
+/// the byte range in the generated Lean file back to the original Rust file.
 ///
 /// It also implements a heuristic to redirect "declaration uses `sorry`" errors from the
 /// synthetic function spec name to the `proof` or `axiom` keyword, which is more

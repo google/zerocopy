@@ -1,0 +1,26 @@
+[package]
+name = "libredox"
+authors = ["4lDO2 <4lDO2@protonmail.com>"]
+version = "0.1.14"
+edition = "2021"
+license = "MIT"
+description = "Redox stable ABI"
+repository = "https://gitlab.redox-os.org/redox-os/libredox.git"
+exclude = ["target"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = ["base", "call", "std", "redox_syscall", "protocol"]
+base = ["libc"]
+call = ["base"]
+std = ["base"]
+protocol = ["plain", "bitflags", "redox_syscall"]
+mkns = ["ioslice"]
+
+[dependencies]
+bitflags = { version = "2", optional = true }
+libc = { version = "0.2", optional = true }
+redox_syscall = { version = "0.7", optional = true }
+ioslice = { version = "0.6", optional = true }
+plain = { version = "0.2", optional = true }

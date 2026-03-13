@@ -10,9 +10,9 @@ pub const KERNEL_METADATA_SIZE: usize = 4 * PAGE_SIZE;
 
 #[cfg(feature = "userspace")]
 macro_rules! syscall {
-    ($($name:ident($a:ident, $($b:ident, $($c:ident, $($d:ident, $($e:ident, $($f:ident, )?)?)?)?)?);)+) => {
+    ($($name:ident($a:ident, $($b:ident, $($c:ident, $($d:ident, $($e:ident, $($f:ident, $($g:ident, )?)?)?)?)?)?);)+) => {
         $(
-            pub unsafe fn $name(mut $a: usize, $($b: usize, $($c: usize, $($d: usize, $($e: usize, $($f: usize)?)?)?)?)?) -> crate::error::Result<usize> {
+            pub unsafe fn $name(mut $a: usize, $($b: usize, $($c: usize, $($d: usize, $($e: usize, $($f: usize, $($g: usize)?)?)?)?)?)?) -> crate::error::Result<usize> {
                 core::arch::asm!(
                     "syscall",
                     inout("rax") $a,
@@ -26,6 +26,9 @@ macro_rules! syscall {
                                     in("r10") $e,
                                     $(
                                         in("r8") $f,
+                                        $(
+                                            in("r9") $g,
+                                        )?
                                     )?
                                 )?
                             )?
@@ -50,6 +53,7 @@ syscall! {
     syscall3(a, b, c, d,);
     syscall4(a, b, c, d, e,);
     syscall5(a, b, c, d, e, f,);
+    syscall6(a, b, c, d, e, f, g,);
 }
 
 #[derive(Copy, Clone, Debug, Default)]

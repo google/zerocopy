@@ -1,11 +1,11 @@
 /// Computes the absolute value.
 ///
 /// ```lean, hermes, spec
-/// requires x.val > -2147483648
-/// ensures ret >= 0
-/// ensures x >= 0 -> ret = x
-/// ensures x < 0 -> ret = -x
-/// proof
+/// requires: x.val > -2147483648
+/// ensures (h0): ret >= 0
+/// ensures (h1): x >= 0 -> ret = x
+/// ensures (h2): x < 0 -> ret = -x
+/// proof:
 ///   unfold abs
 ///   split
 ///   . simp

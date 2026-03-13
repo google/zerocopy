@@ -18,7 +18,7 @@ fn main() {
         toml::from_str(&cargo_toml_content).expect("failed to parse Cargo.toml");
 
     // We expect the metadata to be under `[package.metadata.build-rs]`.
-    let metadata = cargo_toml
+    let build_rs_metadata = cargo_toml
         .get("package")
         .and_then(|p| p.get("metadata"))
         .and_then(|m| m.get("build-rs"))
@@ -32,11 +32,40 @@ fn main() {
     ];
 
     for (key, env_var) in vars {
-        let value = metadata
+        let value = build_rs_metadata
             .get(key)
             .and_then(|v| v.as_str())
             .unwrap_or_else(|| panic!("{} must be a string", key));
 
         println!("cargo:rustc-env={}={}", env_var, value);
+    }
+
+    // Parse [package.metadata.hermes.dependencies]
+    if let Some(hermes_metadata) = cargo_toml
+        .get("package")
+        .and_then(|p| p.get("metadata"))
+        .and_then(|m| m.get("hermes"))
+        .and_then(|h| h.get("dependencies"))
+        .and_then(|d| d.as_table())
+    {
+        for (dep_name, dep_meta) in hermes_metadata {
+            let dep_upper = dep_name.to_uppercase();
+            if let Some(tag) = dep_meta.get("tag").and_then(|t| t.as_str()) {
+                println!("cargo:rustc-env=HERMES_{}_TAG={}", dep_upper, tag);
+            }
+
+            if let Some(checksums) = dep_meta.get("checksums").and_then(|c| c.as_table()) {
+                for (platform, checksum) in checksums {
+                    if let Some(hash) = checksum.as_str() {
+                        // Standardize platform name for env var (dashes -> underscores, upper case)
+                        let env_platform = platform.replace('-', "_").to_uppercase();
+                        println!(
+                            "cargo:rustc-env=HERMES_{}_CHECKSUM_{}={}",
+                            dep_upper, env_platform, hash
+                        );
+                    }
+                }
+            }
+        }
     }
 }

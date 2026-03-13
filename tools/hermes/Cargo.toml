@@ -44,6 +44,10 @@ console = "0.16.2"
 sha2 = "0.10"
 fs2 = "0.4"
 toml = "0.8"
+reqwest = { version = "0.12", features = ["blocking", "rustls-tls"] }
+dirs = "6.0"
+tar = "0.4"
+flate2 = "1.0"
 
 [build-dependencies]
 toml = "0.8"
@@ -55,6 +59,7 @@ ui_test = "0.30.4"
 assert_cmd = "2.1.2"
 tempfile = "3.24.0"
 predicates = "3.1.3"
+tiny_http = "0.12"
 datatest-stable = "0.3.3"
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
@@ -69,7 +74,7 @@ similar = "2.7.0"
 #
 # FIXME: Add a CI step to verify that this commit exists and matches the
 # toolchain version.
-aeneas_rev = "8725fcee9d54fbd7d95503e247abb19ccb59f8c0"
+aeneas_rev = "bd6a7eec470597b7947c611aad3b63cf066a8b8f"
 
 # The Lean toolchain version to use. This must match the version of Lean used
 # by Aeneas in the `lean-toolchain` file in the commit above.
@@ -86,7 +91,32 @@ lean_toolchain = "leanprover/lean4:v4.28.0-rc1"
 #
 # FIXME(https://github.com/AeneasVerif/aeneas/issues/783): Check Aeneas
 # version/commit ID once that's supported
-charon_version = "0.1.163"
+charon_version = "0.1.174"
+
+[package.metadata.hermes.dependencies.charon]
+# The per-commit release tag from AeneasVerif/charon
+tag = "build-2026.03.13.163309-923e13bfe090916ec9384508e1c1b73bb3b7f4ed"
+
+[package.metadata.hermes.dependencies.charon.checksums]
+linux-x86_64 = "6c8790a41d9736c2ccf0b46430db0602c171526d989f32b4ae268888d6e86a48"
+linux-x86_64-charon = "4e0f68df5e2a5a7f8cf1d5feeb994b6bb86012a58ca21dd282830f979a5373fc"
+linux-x86_64-charon-driver = "73bce4991d104573400f8995ca825019360ec9daf7ed5b262d6e31dabd385e64"
+macos-aarch64 = "63f1db8e28f2472c4c79603cc06307b7a9f299b84458ba45410913c8c89e3ced"
+macos-aarch64-charon = "20c9b7ecec13110287e1a4d78c4c71ca5b11e614f714a80ce95d6a5fefb42fd3"
+macos-aarch64-charon-driver = "9ea3bb8327b8ad910f5eaeaeaac1f5fbf8851ab0fb51448a55f96c9db63c4b21"
+macos-x86_64 = "3bf8260ee40abcc664ad891fbecc0094af5a85930f62322bd05ab25a0e8b0fb2"
+macos-x86_64-charon = "ac31e12bfa117f81a716cc545ae4750ec99c122171258779a3ecd4fbf983430d"
+macos-x86_64-charon-driver = "b1557cc6a462186231de28cc73968500894509da85c931d71bc874a8a14d9b06"
+
+[package.metadata.hermes.dependencies.aeneas]
+tag = "build-2026.03.13.164108-bd6a7eec470597b7947c611aad3b63cf066a8b8f"
+[package.metadata.hermes.dependencies.aeneas.checksums]
+linux-x86_64 = "6d5616cd0c51667d31f68ec1f02d2dd04dbf3e6a3bee187789fb2079f167a05b"
+linux-x86_64-aeneas = "67c8f637ad0eb2a4450cea979e90867811cf90ca3449b5e4e7f2bf79f0834da1"
+macos-aarch64 = "7762a4a79df8997a44a6de136d80482939612c62c26f6346be7536d5caec3646"
+macos-aarch64-aeneas = "cadadf5c2e9a64269489755a15c392357cf01e81863615986f6d259afbd2057e"
+macos-x86_64 = "2983c5000965d214197e44a6ce136d80482939612c62c26f6346be7536d5caec"
+macos-x86_64-aeneas = "e5f90c482f50040a6c3baa3d029e678dc52b8d2729cc8168716b6bd350c3bdaf"
 
 [[test]]
 name = "integration"

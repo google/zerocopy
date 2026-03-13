@@ -8,6 +8,7 @@ mod resolve;
 mod scanner;
 mod validate;
 
+mod setup;
 mod ui_test_shim;
 
 use clap::Parser;
@@ -24,6 +25,8 @@ struct Cli {
 enum Commands {
     /// Verify a crate
     Verify(resolve::Args),
+    /// Setup Hermes dependencies
+    Setup(resolve::SetupArgs),
     /// Expand a crate's Lean output
     Expand(ExpandArgs),
 }
@@ -60,6 +63,9 @@ fn main() -> anyhow::Result<()> {
             prepare_and_run(&resolve_args, |locked_roots, packages| {
                 aeneas::verify_lean_workspace(locked_roots, packages)
             })?;
+        }
+        Commands::Setup(resolve::SetupArgs {}) => {
+            setup::run_setup()?;
         }
         Commands::Expand(expand_args) => {
             prepare_and_run(&expand_args.resolve_args, |locked_roots, packages| {
@@ -163,11 +169,29 @@ mod util {
         /// Acquires an exclusive lock on the specified directory.
         ///
         /// This function blocks until the lock can be acquired. We use a
-        /// separate `.lock` file (e.g., `path.lock`) rather than locking the
-        /// directory itself to avoid platform-specific issues with directory
-        /// locking and to ensure the lock file persists even if the directory
-        /// is cleaned.
-        pub fn lock(path: PathBuf) -> Result<Self> {
+        /// separate `.lock` file within the directory rather than locking
+        /// the directory itself to avoid platform-specific issues with
+        /// directory locking and to ensure the lock file persists even if
+        /// the directory is cleaned.
+        pub fn lock_exclusive(path: PathBuf) -> Result<Self> {
+            let file = Self::open_lock_file(&path)?;
+            file.lock_exclusive()
+                .with_context(|| format!("Failed to acquire exclusive lock on {:?}", path))?;
+            Ok(Self { path, _file: file })
+        }
+
+        /// Acquires a shared lock on the specified directory.
+        ///
+        /// Multiple processes can hold shared locks simultaneously, but an
+        /// exclusive lock will block until all shared locks are released.
+        pub fn lock_shared(path: PathBuf) -> Result<Self> {
+            let file = Self::open_lock_file(&path)?;
+            file.lock_shared()
+                .with_context(|| format!("Failed to acquire shared lock on {:?}", path))?;
+            Ok(Self { path, _file: file })
+        }
+
+        fn open_lock_file(path: &std::path::Path) -> Result<std::fs::File> {
             let lock_path = path.join(".lock");
 
             // Ensure the directory exists
@@ -176,19 +200,8 @@ mod util {
                     format!("Failed to create directory for lock file: {:?}", parent)
                 })?;
             }
-
-            let file = std::fs::File::create(&lock_path)
-                .with_context(|| format!("Failed to create lock file at {:?}", lock_path))?;
-
-            // We use an exclusive lock to ensure only one process operates
-            // on this directory at a time.
-            //
-            // FIXME: We might want to print a message if this blocks for a long
-            // time.
-            file.lock_exclusive()
-                .with_context(|| format!("Failed to acquire exclusive lock on {:?}", lock_path))?;
-
-            Ok(Self { path, _file: file })
+            std::fs::File::create(&lock_path)
+                .with_context(|| format!("Failed to create lock file at {:?}", lock_path))
         }
     }
 }

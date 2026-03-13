@@ -1,6 +1,6 @@
 use super::{
     arch::*,
-    data::{Map, Stat, StatVfs, TimeSpec},
+    data::{Map, Stat, StatVfs, StdFsCallMeta, TimeSpec},
     error::Result,
     flag::*,
     number::*,
@@ -174,12 +174,6 @@ pub fn nanosleep(req: &TimeSpec, rem: &mut TimeSpec) -> Result<usize> {
     }
 }
 
-/// Open a file
-pub fn open<T: AsRef<str>>(path: T, flags: usize) -> Result<usize> {
-    let path = path.as_ref();
-    unsafe { syscall3(SYS_OPEN, path.as_ptr() as usize, path.len(), flags) }
-}
-
 /// Open a file at a specific path
 pub fn openat<T: AsRef<str>>(
     fd: usize,
@@ -199,22 +193,65 @@ pub fn openat<T: AsRef<str>>(
         )
     }
 }
+/// Open a file at a specific path with filter
+pub fn openat_with_filter<T: AsRef<str>>(
+    fd: usize,
+    path: T,
+    flags: usize,
+    fcntl_flags: usize,
+    euid: u32,
+    egid: u32,
+) -> Result<usize> {
+    let path = path.as_ref();
+    unsafe {
+        syscall6(
+            SYS_OPENAT_WITH_FILTER,
+            fd,
+            path.as_ptr() as usize,
+            path.len(),
+            flags | fcntl_flags,
+            // NOTE: Short-term solution to allow namespace management.
+            // In the long term, we need to figure out how we should best handle
+            // Unix permissions using capabilities.
+            euid as usize,
+            egid as usize,
+        )
+    }
+}
+
+/// Remove a file at at specific path
+pub fn unlinkat<T: AsRef<str>>(fd: usize, path: T, flags: usize) -> Result<usize> {
+    let path = path.as_ref();
+    unsafe { syscall4(SYS_UNLINKAT, fd, path.as_ptr() as usize, path.len(), flags) }
+}
+/// Remove a file at at specific path with filter
+pub fn unlinkat_with_filter<T: AsRef<str>>(
+    fd: usize,
+    path: T,
+    flags: usize,
+    euid: u32,
+    egid: u32,
+) -> Result<usize> {
+    let path = path.as_ref();
+    unsafe {
+        syscall6(
+            SYS_UNLINKAT_WITH_FILTER,
+            fd,
+            path.as_ptr() as usize,
+            path.len(),
+            flags,
+            // NOTE: Short-term solution to allow namespace management.
+            // In the long term, we need to figure out how we should best handle
+            // Unix permissions using capabilities.
+            euid as usize,
+            egid as usize,
+        )
+    }
+}
 
 /// Read from a file descriptor into a buffer
 pub fn read(fd: usize, buf: &mut [u8]) -> Result<usize> {
     unsafe { syscall3(SYS_READ, fd, buf.as_mut_ptr() as usize, buf.len()) }
-}
-
-/// Remove a directory
-pub fn rmdir<T: AsRef<str>>(path: T) -> Result<usize> {
-    let path = path.as_ref();
-    unsafe { syscall2(SYS_RMDIR, path.as_ptr() as usize, path.len()) }
-}
-
-/// Remove a file
-pub fn unlink<T: AsRef<str>>(path: T) -> Result<usize> {
-    let path = path.as_ref();
-    unsafe { syscall2(SYS_UNLINK, path.as_ptr() as usize, path.len()) }
 }
 
 /// Write a buffer to a file descriptor
@@ -306,4 +343,8 @@ pub fn call_rw(fd: usize, payload: &mut [u8], flags: CallFlags, metadata: &[u64]
             metadata.as_ptr() as usize,
         )
     }
+}
+
+pub fn std_fs_call(fd: usize, payload: &mut [u8], metadata: &StdFsCallMeta) -> Result<usize> {
+    call_rw(fd, payload, CallFlags::STD_FS, metadata)
 }

@@ -1,10 +1,12 @@
 // Orchestration of Charon extraction.
 //
-// This module handles the invocation of the `charon` tool to extract Low-Level Borrow Calculus (LLBC)
-// from Rust crates. It manages:
-// - Setting up the Charon command and arguments (including features, targets, and output paths).
+// This module handles the invocation of the `charon` tool to extract
+// Low-Level Borrow Calculus (LLBC) from Rust crates. It manages:
+// - Setting up the Charon command and arguments (including features,
+//   targets, and output paths).
 // - Handling `unsafe(axiom)` functions by marking them as opaque to Charon.
-// - Streaming and filtering compiler output to provide user-friendly feedback via `indicatif` and `miette`.
+// - Streaming and filtering compiler output to provide user-friendly
+//   feedback via `indicatif` and `miette`.
 // - Validating the extraction result.
 
 use std::{
@@ -19,6 +21,7 @@ use crate::{
     parse::{ParsedItem, attr::FunctionBlockInner},
     resolve::{Args, HermesTargetKind, LockedRoots},
     scanner::HermesArtifact,
+    setup::Tool,
 };
 
 /// Runs Charon on the specified packages to generate LLBC artifacts.
@@ -28,15 +31,19 @@ use crate::{
 /// constructs the appropriate `charon` command, and executes it.
 ///
 /// It handles:
-/// - **Opaque Functions**: identifying `unsafe(axiom)` functions and passing `--opaque` to Charon.
-/// - **Entry Points**: passing the computed `start_from` roots to Charon to minimize extraction scope.
-/// - **Output Handling**: capturing stdout/stderr, parsing JSON compiler messages, and rendering them
-///   using `DiagnosticMapper`.
+/// - **Opaque Functions**: identifying `unsafe(axiom)` functions and passing
+///   `--opaque` to Charon.
+/// - **Entry Points**: passing the computed `start_from` roots to Charon to
+///   minimize extraction scope.
+/// - **Output Handling**: capturing stdout/stderr, parsing JSON compiler
+///   messages, and rendering them using `DiagnosticMapper`.
 pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact]) -> Result<()> {
     let llbc_root = roots.llbc_root();
     std::fs::create_dir_all(&llbc_root).context("Failed to create LLBC output directory")?;
 
-    check_charon_version()?;
+    let toolchain = crate::setup::Toolchain::resolve()?;
+    check_charon_version(&toolchain)?;
+    check_rustup_toolchain()?;
 
     for artifact in packages {
         if artifact.start_from.is_empty() {
@@ -45,7 +52,7 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
 
         log::info!("Invoking Charon on package '{}'...", artifact.name.package_name);
 
-        let mut cmd = Command::new("charon");
+        let mut cmd = toolchain.command(Tool::Charon);
         cmd.arg("cargo");
         cmd.arg("--preset=aeneas");
 
@@ -145,11 +152,12 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
         let safety_buffer = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
         let safety_buffer_clone = std::sync::Arc::clone(&safety_buffer);
 
-        // Charon's standard error stream contains unstructured diagnostic output
-        // (such as panic messages from build scripts or ICEs). We dedicate a
-        // background thread to drain this stream into a thread-safe safety buffer.
-        // This ensures that even if Charon aborts unexpectedly, the user receives
-        // the complete unstructured output instead of a generic "silent death".
+        // Charon's standard error stream contains unstructured diagnostic
+        // output (such as panic messages from build scripts or ICEs). We
+        // dedicate a background thread to drain this stream into a
+        // thread-safe safety buffer. This ensures that even if Charon aborts
+        // unexpectedly, the user receives the complete unstructured output
+        // instead of a generic "silent death".
         let mut stderr_thread = None;
         if let Some(stderr) = child.stderr.take() {
             stderr_thread = Some(std::thread::spawn(move || {
@@ -205,12 +213,12 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
         let status = child.wait().context("Failed to wait for charon")?;
 
         // The main thread has finished reading the structured JSON output from
-        // Charon's standard output stream, and the Charon process itself has exited.
-        // However, we must explicitly wait for the background thread to finish
-        // draining the standard error stream. Failing to join this thread introduces
-        // a race condition where the main thread might inspect the `safety_buffer`
-        // before the background thread has finished appending the final error messages
-        // from the dying process.
+        // Charon's standard output stream, and the Charon process itself has
+        // exited. However, we must explicitly wait for the background thread
+        // to finish draining the standard error stream. Failing to join this
+        // thread introduces a race condition where the main thread might
+        // inspect the `safety_buffer` before the background thread has
+        // finished appending the final error messages from the dying process.
         if let Some(thread) = stderr_thread {
             let _ = thread.join();
         }
@@ -245,14 +253,16 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
 /// The expected version is defined in `Cargo.toml` and baked into the binary
 /// via `build.rs` and the `HERMES_CHARON_EXPECTED_VERSION` environment
 /// variable.
-fn check_charon_version() -> Result<()> {
-    let output = Command::new("charon")
-        .arg("version")
-        .output()
-        .context("Failed to execute `charon version`")?;
+fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
+    let output = toolchain.command(Tool::Charon).arg("version").output().context(
+        "Failed to execute `charon version`. Is charon installed? Try running `hermes setup`.",
+    )?;
 
     if !output.status.success() {
-        bail!("`charon version` failed with status: {}", output.status);
+        bail!(
+            "`charon version` failed with status: {}. Try running `hermes setup`.",
+            output.status
+        );
     }
 
     let version = String::from_utf8_lossy(&output.stdout).trim().to_string();
@@ -263,9 +273,39 @@ fn check_charon_version() -> Result<()> {
             "Charon version mismatch.\n\
              Expected: {}\n\
              Found:    {}\n\
-             Please ensure you are using the correct version of Charon.",
+             Please run `hermes setup` to install the correct version.",
             expected,
             version
+        );
+    }
+
+    Ok(())
+}
+
+/// Checks that the required rustup toolchain is installed.
+///
+/// `charon-driver` requires a specific nightly version of Rust to be
+/// installed via rustup. If it is missing, we provide a helpful error message
+/// with the installation command.
+fn check_rustup_toolchain() -> Result<()> {
+    // FIXME: We should probably parse this from Charon's metadata or a central
+    // place. For now, it's pinned to a specific nightly in Charon's build.
+    // In the future, Hermes could also manage the rustup toolchain.
+    let nightly_version = "nightly-2025-01-26";
+
+    let output = Command::new("rustup")
+        .args(["toolchain", "list"])
+        .output()
+        .context("Failed to execute `rustup toolchain list`. Is rustup installed?")?;
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    if !stdout.contains(nightly_version) {
+        bail!(
+            "Missing required rustup toolchain: {nightly_version}\n\
+             Charon requires this specific nightly version to run.\n\
+             Please install it by running:\n\
+             \n\
+             rustup toolchain install {nightly_version}\n",
         );
     }
 

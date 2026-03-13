@@ -1,8 +1,9 @@
 // Handling of Lean diagnostics and error mapping.
 //
-// This module provides the `DiagnosticMapper` struct, which is responsible for translating
-// diagnostics from external tools (like Lean or Charon) back to the original Rust source code.
-// It maps errors in generated files back to their origin spans in the user's codebase.
+// This module provides the `DiagnosticMapper` struct, which is responsible
+// for translating diagnostics from external tools (like Lean or Charon) back
+// to the original Rust source code. It maps errors in generated files back to
+// their origin spans in the user's codebase.
 
 use std::{
     collections::HashMap,
@@ -14,16 +15,17 @@ pub use cargo_metadata::diagnostic::{Diagnostic, DiagnosticLevel, DiagnosticSpan
 use miette::{NamedSource, Report, SourceOffset};
 use thiserror::Error;
 
-/// Maps diagnostics from generated intermediate code back to pristine, original
-/// source code files.
+/// Maps diagnostics from generated intermediate code back to pristine,
+/// original source code files.
 ///
-/// Lean has no knowledge of the Rust files that orchestrated its execution. It
-/// only reports errors against the generated `.lean` artifact files.
+/// Lean has no knowledge of the Rust files that orchestrated its execution.
+/// It only reports errors against the generated `.lean` artifact files.
 ///
-/// To create a first-class user experience, this mapper actively cross-references
-/// Lean's emitted byte spans against the sidecar `SourceMapping`s built by
-/// `src/generate.rs`, dynamically synthesizing a `miette::NamedSource` that points
-/// directly into the user's actual `.rs` workspace files.
+/// To create a first-class user experience, this mapper actively
+/// cross-references Lean's emitted byte spans against the sidecar
+/// `SourceMapping`s built by `src/generate.rs`, dynamically synthesizing a
+/// `miette::NamedSource` that points directly into the user's actual `.rs`
+/// workspace files.
 pub struct DiagnosticMapper {
     user_root: PathBuf,
     user_root_canonical: PathBuf,
@@ -78,8 +80,8 @@ impl DiagnosticMapper {
 
     /// Resolves a path relative to the user root, if applicable.
     ///
-    /// This ensures we only report diagnostics for files within the user's workspace,
-    /// avoiding noise from dependencies or system files.
+    /// This ensures we only report diagnostics for files within the user's
+    /// workspace, avoiding noise from dependencies or system files.
     pub fn map_path(&self, path: &Path) -> Option<PathBuf> {
         let mut p = path.to_path_buf();
         if p.is_relative() {
@@ -144,7 +146,8 @@ impl DiagnosticMapper {
             .map(|child| child.message.clone());
 
         if !mapped_paths_and_spans.is_empty() {
-            // Find the path that contains the primary span, or just take the first one
+            // Find the path that contains the primary span, or just take the
+            // first one.
             let primary_path = diag
                 .spans
                 .iter()
@@ -225,11 +228,13 @@ impl DiagnosticMapper {
     /// range.
     ///
     /// The fundamental workflow for an external error is:
-    /// 1. Lean encounters a verification failure and emits a JSON line containing
-    ///    it's local start/end bytes in the `.lean` artifact.
-    /// 2. Hermes checks the cached `SourceMapping` array for that artifact, and
-    ///    discovers exactly where the Lean bytes translate back to Rust bytes.
-    /// 3. Hermes calls this method to print the error onto the Rust file canvas.
+    /// 1. Lean encounters a verification failure and emits a JSON line
+    ///    containing its local start/end bytes in the `.lean` artifact.
+    /// 2. Hermes checks the cached `SourceMapping` array for that artifact,
+    ///    and discovers exactly where the Lean bytes translate back to Rust
+    ///    bytes.
+    /// 3. Hermes calls this method to print the error onto the Rust file
+    ///    canvas.
     pub fn render_raw<F>(
         &mut self,
         file_name: &str,
@@ -246,34 +251,31 @@ impl DiagnosticMapper {
             && let Some(src) = self.get_source(&mapped_path)
         {
             let start = byte_start;
-                if byte_end >= start {
-                    let len = byte_end - start;
-                    if start <= src.len() && start + len <= src.len() {
-                        let offset = SourceOffset::from(start);
-                        let label = miette::LabeledSpan::new(
-                            Some("here".to_string()),
-                            offset.offset(),
-                            len,
-                        );
-                        let err = MappedError {
-                            message,
-                            src: NamedSource::new(mapped_path.to_string_lossy(), src),
-                            labels: vec![label],
-                            help: None,
-                            related: Vec::new(),
-                            severity: match level {
-                                DiagnosticLevel::Error | DiagnosticLevel::Ice => {
-                                    Some(miette::Severity::Error)
-                                }
-                                DiagnosticLevel::Warning => Some(miette::Severity::Warning),
-                                _ => Some(miette::Severity::Advice),
-                            },
-                        };
-                        printer(format!("{:?}", Report::new(err)));
-                        return;
-                    }
+            if byte_end >= start {
+                let len = byte_end - start;
+                if start <= src.len() && start + len <= src.len() {
+                    let offset = SourceOffset::from(start);
+                    let label =
+                        miette::LabeledSpan::new(Some("here".to_string()), offset.offset(), len);
+                    let err = MappedError {
+                        message,
+                        src: NamedSource::new(mapped_path.to_string_lossy(), src),
+                        labels: vec![label],
+                        help: None,
+                        related: Vec::new(),
+                        severity: match level {
+                            DiagnosticLevel::Error | DiagnosticLevel::Ice => {
+                                Some(miette::Severity::Error)
+                            }
+                            DiagnosticLevel::Warning => Some(miette::Severity::Warning),
+                            _ => Some(miette::Severity::Advice),
+                        },
+                    };
+                    printer(format!("{:?}", Report::new(err)));
+                    return;
                 }
             }
+        }
 
         // Fallback
         let prefix = match level {

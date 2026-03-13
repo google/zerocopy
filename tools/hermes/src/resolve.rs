@@ -67,6 +67,9 @@ pub struct Args {
     pub unsound_allow_is_valid: bool,
 }
 
+#[derive(Parser, Debug)]
+pub struct SetupArgs {}
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 #[repr(u8)]
 pub enum HermesTargetKind {
@@ -158,7 +161,7 @@ pub struct Roots {
 
 impl Roots {
     pub fn lock_run_root(&self) -> Result<LockedRoots<'_>> {
-        let lock = DirLock::lock(self.hermes_run_root.clone())?;
+        let lock = DirLock::lock_exclusive(self.hermes_run_root.clone())?;
         Ok(LockedRoots { roots: self, hermes_run_root: lock })
     }
 
@@ -190,10 +193,8 @@ impl<'a> LockedRoots<'a> {
         self.lean_root().join("generated")
     }
 
-    // Note: cargo_target_dir logic is unchanged as it might be used by things
-    // outside our strict control or shared, but for consistency we can expose it here too
-    // if we wanted. For now, we'll leave it on Roots if it's not critical, but
-    // `charon` uses it. Let's expose it here for convenience.
+    // We expose the Cargo target directory for convenience, as it is used
+    // by downstream tools like Charon to coordinate dependency artifacts.
     pub fn cargo_target_dir(&self) -> PathBuf {
         self.roots.cargo_target_dir()
     }
@@ -215,10 +216,11 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
     }
 
     // Forward features to ensure dependency resolution matches the user's
-    // request. This is critical because conditional compilation (`#[cfg(feature = "...")]`)
-    // can completely change the shape of the dependency graph and the source code itself.
-    // If we resolved metadata without these flags, we might miss dependencies
-    // or include dependencies that are not actually used in the build.
+    // request. This is critical because conditional compilation
+    // (via `#[cfg(feature = "...")]`) can completely change the shape of
+    // the dependency graph and the source code itself. If we resolved
+    // metadata without these flags, we might miss dependencies or include
+    // dependencies that are not actually used in the build.
     args.features.forward_metadata(&mut cmd);
 
     let metadata = cmd.exec().context("Failed to run 'cargo metadata'")?;
@@ -259,9 +261,10 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
                 kind,
             },
             kind,
-            // We convert to absolute paths here to establish a canonical reference
-            // for the rest of the pipeline. This avoids ambiguity if the CWD changes
-            // or if we're working with complex workspace structures.
+            // We convert to absolute paths here to establish a canonical
+            // reference for the rest of the pipeline. This avoids ambiguity
+            // if the CWD changes or if we're working with complex workspace
+            // structures.
             src_path: target.src_path.as_std_path().to_owned(),
             manifest_path: package.manifest_path.as_std_path().to_owned(),
         }));
@@ -385,13 +388,15 @@ fn resolve_packages<'a>(
 
 /// Flattening Resolver:
 /// Returns a list of (Target, TargetKind) pairs.
-/// If a target is defined as `crate-type = ["rlib", "cdylib"]`, and both are requested,
-/// this returns two entries, allowing them to be verified independently.
+/// If a target is defined as `crate-type = ["rlib", "cdylib"]`, and both are
+/// requested, this returns two entries, allowing them to be verified
+/// independently.
 ///
-/// This flattening is critical because different crate types may be compiled with
-/// different flags or conditional compilation options (although the current scanner
-/// is CFG-agnostic, future improvements might respect this). Verifying them
-/// independently ensures we cover all intended compilation modes.
+/// This flattening is critical because different crate types may be compiled
+/// with different flags or conditional compilation options (although the
+/// current scanner is CFG-agnostic, future improvements might respect this).
+/// Verifying them independently ensures we cover all intended compilation
+/// modes.
 fn resolve_targets<'a>(
     package: &'a Package,
     args: &Args,

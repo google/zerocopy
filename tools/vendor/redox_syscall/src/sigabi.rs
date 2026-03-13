@@ -133,14 +133,23 @@ impl NonatomicUsize {
 pub fn sig_bit(sig: usize) -> u64 {
     1 << (sig - 1)
 }
+
+// TODO: Move to redox_rt?
 impl SigProcControl {
-    // TODO: Move to redox_rt?
-    pub fn signal_will_ign(&self, sig: usize, is_parent_sigchld: bool) -> bool {
+    /// Checks if `sig` should be ignored based on the current action flags.
+    ///
+    /// * `sig` - The signal to check (e.g. `SIGCHLD`).
+    ///
+    /// * `stop_or_continue` - Whether the signal is generated because a child
+    /// process stopped (`SIGSTOP`, `SIGTSTP`) or continued (`SIGCONT`). If
+    /// `true` and `sig` is `SIGCHLD`, the signal shall not be delivered if the
+    /// `SA_NOCLDSTOP` flag is set for `SIGCHLD`.
+    pub fn signal_will_ign(&self, sig: usize, stop_or_continue: bool) -> bool {
         let flags = self.actions[sig - 1].first.load(Ordering::Relaxed);
         let will_ign = flags & (1 << 63) != 0;
         let sig_specific = flags & (1 << 62) != 0; // SA_NOCLDSTOP if sig == SIGCHLD
 
-        will_ign || (sig == SIGCHLD && is_parent_sigchld && sig_specific)
+        will_ign || (sig == SIGCHLD && stop_or_continue && sig_specific)
     }
     // TODO: Move to redox_rt?
     pub fn signal_will_stop(&self, sig: usize) -> bool {

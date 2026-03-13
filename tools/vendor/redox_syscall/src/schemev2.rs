@@ -6,6 +6,17 @@ use core::{
 
 use bitflags::bitflags;
 
+pub struct CallerCtx {
+    pub pid: usize,
+    pub uid: u32,
+    pub gid: u32,
+}
+
+pub enum OpenResult {
+    ThisScheme { number: usize },
+    OtherScheme { fd: usize },
+}
+
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Sqe {
@@ -80,28 +91,35 @@ pub enum CqeOpcode {
     SendFevent, // no tag
     ObtainFd,
     RespondWithMultipleFds,
+    /// [`SchemeAsync::on_close`] and [`SchemeSync::on_close`] are only called when the last file
+    /// descriptor referring to the file description is closed. To implement traditional POSIX
+    /// advisory file locking, [`CqeOpcode::RespondAndNotifyOnDetach`] is used to notify the scheme
+    /// by sending a [`RequestKind::OnDetach`] request the next time the file description is
+    /// "detached" from a file descriptor. Not done by default to avoid unnecessary IPC.
+    RespondAndNotifyOnDetach,
     // TODO: ProvideMmap
 }
+
 impl CqeOpcode {
     pub fn try_from_raw(raw: u8) -> Option<Self> {
+        // TODO: Use a library where this match can be automated.
         Some(match raw {
             0 => Self::RespondRegular,
             1 => Self::RespondWithFd,
             2 => Self::SendFevent,
             3 => Self::ObtainFd,
             4 => Self::RespondWithMultipleFds,
+            5 => Self::RespondAndNotifyOnDetach,
             _ => return None,
         })
     }
 }
 
+/// SqeOpcode
 #[repr(u8)]
 #[non_exhaustive]
 #[derive(Clone, Copy, Debug)]
 pub enum Opcode {
-    Open = 0,    // path_ptr, path_len (utf8), flags
-    Rmdir = 1,   // path_ptr, path_len (utf8)
-    Unlink = 2,  // path_ptr, path_len (utf8)
     Close = 3,   // fd
     Dup = 4,     // old fd, buf_ptr, buf_len
     Read = 5,    // fd, buf_ptr, buf_len, TODO offset, TODO flags, _
@@ -134,8 +152,12 @@ pub enum Opcode {
 
     OpenAt = 29, // fd, buf_ptr, buf_len, flags
     Flink = 30,
-
     Recvfd = 31,
+
+    UnlinkAt = 32, // fd, path_ptr, path_len (utf8), flags
+    StdFsCall = 33,
+
+    Detach = 34,
 }
 
 impl Opcode {
@@ -144,9 +166,6 @@ impl Opcode {
 
         // TODO: Use a library where this match can be automated.
         Some(match raw {
-            0 => Open,
-            1 => Rmdir,
-            2 => Unlink,
             3 => Close,
             4 => Dup,
             5 => Read,
@@ -178,8 +197,11 @@ impl Opcode {
 
             29 => OpenAt,
             30 => Flink,
-
             31 => Recvfd,
+
+            32 => UnlinkAt,
+            33 => StdFsCall,
+            34 => Detach,
 
             _ => return None,
         })

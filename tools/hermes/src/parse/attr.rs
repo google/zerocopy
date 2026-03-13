@@ -7,15 +7,16 @@ use super::*;
 ///
 /// This module handles the extraction and parsing of `/// ````hermes` blocks
 /// from Rust source code. It supports various block types (Function, Type,
-/// Trait, Impl) and their respective sections (requires, ensures, proof, etc.).
+/// Trait, Impl) and their respective sections (requires, ensures, proof,
+/// etc.).
 ///
 /// ### Indentation-Sensitive Parsing (Off-Side Rule)
 /// Hermes relies strictly on indentation to determine block structure within
 /// the parsed comments.
 /// - Top-level block keywords (`context`, `requires`, `ensures`, `proof`,
 ///   `axiom`) establish a baseline indentation.
-/// - Content lines *must* be indented deeper than their associated structural
-///   keyword to be treated as children of that block.
+/// - Content lines *must* be indented deeper than their associated
+///   structural keyword to be treated as children of that block.
 ///
 /// This design enforces a Python-like semantic meaning without
 /// requiring braces in standard Rust comments.
@@ -24,7 +25,8 @@ use super::*;
 /// 1. Extracting raw documentation lines using `extract_doc_line` (handling
 ///    `/// `, `/** ... */`, `#[doc = ...]`).
 /// 2. Identifying Hermes blocks denoted by ` ```lean, hermes...` fences.
-/// 3. Parsing the indented content into structured `RawHermesSpecBody` blocks.
+/// 3. Parsing the indented content into structured `RawHermesSpecBody`
+///    blocks.
 /// 4. Validating and converting the raw body into context-specific types
 ///    (e.g., `FunctionHermesBlock`).
 ///
@@ -182,7 +184,8 @@ fn parse_hermes_info_string(info: &str) -> Result<Option<ParsedInfoString>, Stri
     }
 }
 
-/// Extracts the offset of the content within a standard slash comment (`/// `, `//!`, `/**`, etc.).
+/// Extracts the offset of the content within a standard slash comment
+/// (e.g., `/// `, `//!`, `/**`, etc.).
 fn extract_slash_comment_offset(trimmed: &str, leading_ws: usize) -> Option<usize> {
     if trimmed.starts_with("///")
         || trimmed.starts_with("//!")
@@ -199,7 +202,8 @@ fn extract_slash_comment_offset(trimmed: &str, leading_ws: usize) -> Option<usiz
 fn extract_bracket_doc_offset(trimmed: &str, leading_ws: usize) -> Option<usize> {
     let after_bracket = trimmed.strip_prefix("#[")?;
 
-    // We need to find the opening quote of the string literal after `doc` and `=`.
+    // We need to find the opening quote of the string literal after `doc`
+    // and `=`.
     // A robust way is to find the first `=` and then the first quote.
     let eq_idx = after_bracket.find('=')?;
     let after_eq = &after_bracket[eq_idx + 1..];
@@ -219,14 +223,15 @@ fn extract_bracket_doc_offset(trimmed: &str, leading_ws: usize) -> Option<usize>
     Some(leading_ws + 2 + quote_total_idx + quote_width)
 }
 
-/// Extracts the string content and spans for each line from a documentation attribute.
+/// Extracts the string content and spans for each line from a documentation
+/// attribute.
 ///
-/// This handles `/// `, `//!`, `/** ... */`, and `#[doc = "..."]` attributes uniformly.
-/// It attempts to calculate the precise source span for each line of content, which
-/// is critical for accurate error reporting.
+/// This handles `/// `, `//!`, `/** ... */`, and `#[doc = "..."]` attributes
+/// uniformly. It attempts to calculate the precise source span for each line
+/// of content, which is critical for accurate error reporting.
 ///
-/// If the source code cannot be read or the content doesn't match the expected
-/// locations, it falls back to using the attribute's full span.
+/// If the source code cannot be read or the content doesn't match the
+/// expected locations, it falls back to using the attribute's full span.
 pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, SourceSpan, Span)> {
     if !attr.path().is_ident("doc") {
         return Vec::new();
@@ -245,8 +250,8 @@ pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, S
             let start = span.offset();
             let len = span.len();
 
-            // If we can't read the source (e.g. during testing with dummy sources),
-            // fallback to the original span.
+            // If we can't read the source (e.g., during testing with dummy
+            // sources), fallback to the original span.
             let raw_slice = match source.get(start..start + len) {
                 Some(slice) => slice,
                 None => return vec![(content, span, original_span)],
@@ -254,9 +259,9 @@ pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, S
 
             // Determine the offset of the content within the raw slice.
             //
-            // We need to skip over the comment markers (`/// `, `//!`, `/**`) or
-            // the attribute syntax (`#[doc = ...]`) to find the actual text
-            // content.
+            // We need to skip over the comment markers (`/// `, `//!`,
+            // `/**`) or the attribute syntax (`#[doc = ...]`) to find the
+            // actual text content.
             let trimmed = raw_slice.trim_start();
             let leading_ws = raw_slice.len() - trimmed.len();
 
@@ -269,19 +274,20 @@ pub(crate) fn extract_doc_line(attr: &Attribute, source: &str) -> Vec<(String, S
 
             let real_start = start + offset;
 
-            // Verify that the content we found matches exactly what `syn` gave us.
-            // This is a safety check: strict span calculation relies on this match.
-            // If they don't match (e.g., due to macro expansion or escaped characters
-            // we didn't account for completely), we still return the content but
-            // with a less precise span (falling back to the attribute span).
+            // Verify that the content we found matches exactly what `syn` gave
+            // us. This is a safety check: strict span calculation relies on
+            // this match. If they don't match (e.g., due to macro expansion or
+            // escaped characters we didn't account for completely), we still
+            // return the content but with a less precise span (falling back to
+            // the attribute span).
             let expected_source_slice = source.get(real_start..real_start + content.len());
             let exact_match = expected_source_slice == Some(content.as_str());
 
             let mut results = Vec::new();
             let mut current_offset = real_start;
 
-            // Split multiline content (common in `/** ... */` blocks) into individual lines.
-            // Each line gets its own calculated span.
+            // Split multiline content (common in `/** ... */` blocks) into
+            // individual lines. Each line gets its own calculated span.
             for part in content.split('\n') {
                 let part_len = part.len();
                 let mut part_span = if exact_match {
@@ -346,10 +352,10 @@ where
 
 /// Parses a "Hermes block" from a sequence of attributes.
 ///
-/// This function flat-maps all documentation attributes into a single stream of lines,
-/// allowing it to handle both single-line `/// ` comments and multi-line `/** ... */`
-/// blocks transparently. It looks for a start fence ` ```... ` and parses the content
-/// until the end fence.
+/// This function flat-maps all documentation attributes into a single stream
+/// of lines, allowing it to handle both single-line `/// ` comments and
+/// multi-line `/** ... */` blocks transparently. It looks for a start fence
+/// ` ```... ` and parses the content until the end fence.
 fn parse_hermes_block_common(
     attrs: &[Attribute],
     source: &str,
@@ -541,8 +547,9 @@ impl FunctionHermesBlock<Local> {
             }
         };
 
-        // Naming rules are inherently enforced by the `Propositions` struct itself during parsing.
-        // E.g., it ensures a maximum of one unnamed bound, and handles parsing duplicated names.
+        // Naming rules are inherently enforced by the `Propositions` struct
+        // itself during parsing. E.g., it ensures a maximum of one unnamed
+        // bound, and handles parsing duplicated names.
 
         let mut all_names = std::collections::BTreeMap::new();
         let check_duplicates = |clauses: &Propositions<Local>,
@@ -554,20 +561,20 @@ impl FunctionHermesBlock<Local> {
                     && let Some(prev_kind) = map.insert(name.content.clone(), kind)
                 {
                     if prev_kind == kind {
-                            return Err(Error::new(
-                                name.raw_span.inner,
-                                format!("Duplicate {} name `{}`.", kind, name.content),
-                            ));
-                        } else {
-                            return Err(Error::new(
-                                name.raw_span.inner,
-                                format!(
-                                    "Bound name `{}` conflicts with an existing {} bound.",
-                                    name.content, prev_kind
-                                ),
-                            ));
-                        }
+                        return Err(Error::new(
+                            name.raw_span.inner,
+                            format!("Duplicate {} name `{}`.", kind, name.content),
+                        ));
+                    } else {
+                        return Err(Error::new(
+                            name.raw_span.inner,
+                            format!(
+                                "Bound name `{}` conflicts with an existing {} bound.",
+                                name.content, prev_kind
+                            ),
+                        ));
                     }
+                }
             }
             Ok(())
         };
@@ -800,10 +807,11 @@ impl RawHermesSpecBody {
         }
     }
 
-    // Helper to start a new clause or section
+    // Helper to start a new clause or section.
     //
-    // This function initializes a new section or pushes a new clause to an existing list
-    // of clauses (e.g. requires/ensures). It handles the parsing of optional inline arguments.
+    // This function initializes a new section or pushes a new clause to an
+    // existing list of clauses (e.g., requires/ensures). It handles the
+    // parsing of optional inline arguments.
     fn start_section(
         &mut self,
         section: Section,
@@ -876,16 +884,20 @@ impl RawHermesSpecBody {
 
     /// Parses a sequence of raw documentation lines into structured sections.
     ///
-    /// This function implements the core state machine for parsing Hermes blocks.
-    /// It iterates through lines, recognizing keywords (e.g., `requires`, `ensures`)
-    /// to switch sections, and collecting content lines into the current section.
+    /// This function implements the core state machine for parsing Hermes
+    /// blocks. It iterates through lines, recognizing keywords (e.g.,
+    /// `requires`, `ensures`) to switch sections, and collecting content lines
+    /// into the current section.
     ///
     /// # Indentation Rules
-    /// - Keywords must be at the same indentation level as the baseline (the first keyword found).
-    /// - Content lines must be indented *more* than the current section's keyword.
+    /// - Keywords must be at the same indentation level as the baseline
+    ///   (the first keyword found).
+    /// - Content lines must be indented *more* than the current section's
+    ///   keyword.
     ///
     /// # Errors
-    /// Returns a tuple `(SourceSpan, String)` on failure, pointing to the problematic line.
+    /// Returns a tuple `(SourceSpan, String)` on failure, pointing to the
+    /// problematic line.
     fn parse<'a, I>(lines: I) -> Result<Self, (SourceSpan, String)>
     where
         I: IntoIterator<Item = &'a SpannedLine<Local>>,
@@ -916,7 +928,8 @@ impl RawHermesSpecBody {
             }
 
             // To be a valid keyword match, it must be either the entire line,
-            // or followed by a space, a colon, or a parenthesis (for named bounds).
+            // or followed by a space, a colon, or a parenthesis (for named
+            // bounds).
             if current.is_empty()
                 || current.starts_with(char::is_whitespace)
                 || current.starts_with('(')
@@ -955,9 +968,9 @@ impl RawHermesSpecBody {
                     };
 
                     if trimmed.is_empty() {
-                         // Pass empty lines to the current section/clause handler
-                         // to preserve vertical spacing if needed, or ignore.
-                         // For now, let's push them.
+                         // Pass empty lines to the current section/clause
+                         // handler to preserve vertical spacing if needed, or
+                         // ignore. For now, let's push them.
                          if current_section != Section::Init {
                               spec.add_line(current_section, &active_clause, item);
                          }
@@ -969,9 +982,9 @@ impl RawHermesSpecBody {
                     // Enforce the off-side rule for keyword detection.
                     //
                     // A keyword is only considered a section header if it is
-                    // indented to the exact baseline of the current spec block.
-                    // Otherwise, it is parsed as continuation text within the
-                    // active section.
+                    // indented to the exact baseline of the current spec
+                    // block. Otherwise, it is parsed as continuation text
+                    // within the active section.
                     let is_keyword_candidate = baseline_indent.is_none_or(|base| indent == base);
 
                     if is_keyword_candidate
@@ -1032,9 +1045,11 @@ impl RawHermesSpecBody {
                                     }
                                 }
 
-                            // Lean 4 definitions for `isValid` and `isSafe` require the keyword to
-                            // literally appear in the generated syntax. We flag these sections here
-                            // to ensure the keyword itself is preserved as part of the parsed content.
+                            // Lean 4 definitions for `isValid` and `isSafe`
+                            // require the keyword to literally appear in the
+                            // generated syntax. We flag these sections here
+                            // to ensure the keyword itself is preserved as
+                            // part of the parsed content.
                             let keep_keyword = matches!(section, Section::IsValid | Section::IsSafe);
 
                             if name.is_none() {
@@ -1781,8 +1796,9 @@ mod tests {
 
     #[test]
     fn test_is_valid_newline_after_keyword() {
-        // Here, the keyword `isValid` is followed by a newline, but we include `:=` to bypass validation.
-        // It should still preserve the keyword in the generated parsed body.
+        // Here, the keyword `isValid` is followed by a newline, but we include
+        // `:=` to bypass validation. It should still preserve the keyword in
+        // the generated parsed body.
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```hermes"]),
             parse_quote!(#[doc = " isValid :="]),
@@ -2662,7 +2678,9 @@ mod tests {
             let lines = vec![
                 dummy_line("requires ("),
                 dummy_line("  h_name"),
-                dummy_line("): x > 0"), // This violates the off-side rule because it's at baseline indent but isn't a keyword.
+                dummy_line("): x > 0"), // This violates the off-side rule
+                                        // because it is at baseline indent but
+                                        // is not a keyword.
             ];
             let err = RawHermesSpecBody::parse(&lines).unwrap_err();
             assert!(
@@ -2840,10 +2858,12 @@ mod tests {
                 let attrs = vec![dummy_attr(case)];
                 match FunctionHermesBlock::parse_from_attrs(&attrs, true, "") {
                     Ok(Some(parsed)) => {
-                        // If it parsed successfully, it MUST mean that the keyword was completely ignored
-                        // (e.g. `requires x > 0` didn't match `requires:` or `requires (name):`)
+                        // If it parsed successfully, it MUST mean that the
+                        // keyword was completely ignored (e.g., `requires x >
+                        // 0` didn't match `requires:` or `requires (name):`)
                         // and thus was treated as initialization garbage text.
-                        // We verify that NO clauses were actually parsed from it.
+                        // We verify that NO clauses were actually parsed from
+                        // it.
                         let has_any_parsed_data = !parsed.requires.is_empty()
                             || !parsed.ensures.is_empty()
                             || !parsed.common.context.is_empty();
@@ -2861,7 +2881,8 @@ mod tests {
                             case
                         );
                     }
-                    Ok(None) => {} // Block was not present, meaning hermes couldn't parse it as hermes at all. This is fine.
+                    Ok(None) => {} // Block was not present, meaning hermes couldn't
+                    // parse it as hermes at all. This is fine.
                     Err(err) => {
                         let err_msg = err.to_string();
                         // Every explicitly rejected error must be one of these
@@ -2935,7 +2956,8 @@ mod tests {
             let full_source = format!("{}\nfn foo() {{}}", source);
             let file = syn::parse_file(&full_source).expect("Failed to parse dummy source");
 
-            // Try to find the attribute on the function first, then on the file (for inner attrs)
+            // Try to find the attribute on the function first, then on the
+            // file (for inner attrs).
             let item = &file.items[0];
             let attr = match item {
                 syn::Item::Fn(f) => {

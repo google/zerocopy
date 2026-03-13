@@ -10,11 +10,11 @@ use crate::{
 /// Validates the collected Hermes artifacts.
 ///
 /// Checks:
-/// 1. All `spec` functions (functions with a `/// ````hermes` block but not `unsafe(axiom)`)
-///    must have a non-empty `proof` section.
+/// 1. All `spec` functions (functions with a `/// ````hermes` block but not
+///    `unsafe(axiom)`) must have a non-empty `proof` section.
 ///
-/// If `allow_sorry` is true, this check is skipped, allowing incomplete proofs
-/// (which will typically be generated as `sorry` in Lean).
+/// If `allow_sorry` is true, this check is skipped, allowing incomplete
+/// proofs (which will typically be generated as `sorry` in Lean).
 pub fn validate_artifacts(
     packages: &[HermesArtifact],
     allow_sorry: bool,
@@ -31,26 +31,26 @@ pub fn validate_artifacts(
                 {
                     let src = source_cache
                         .entry(item.source_file.clone())
-                            .or_insert_with(|| {
-                                std::fs::read_to_string(&item.source_file).unwrap_or_default()
-                            })
-                            .clone();
+                        .or_insert_with(|| {
+                            std::fs::read_to_string(&item.source_file).unwrap_or_default()
+                        })
+                        .clone();
 
-                        let named_source =
-                            NamedSource::new(item.source_file.display().to_string(), src);
-                        let span = decorated.hermes.is_valid[0].keyword_span.inner;
-                        let err = HermesError::Unsoundness {
+                    let named_source =
+                        NamedSource::new(item.source_file.display().to_string(), src);
+                    let span = decorated.hermes.is_valid[0].keyword_span.inner;
+                    let err = HermesError::Unsoundness {
                             src: named_source,
                             span,
                             msg: "`isValid` annotations are unsound and require the --unsound-allow-is-valid flag.".to_string(),
                             label: "problematic block".to_string(),
                         };
-                        eprintln!("{:?}", miette::Report::new(err));
-                        has_errors = true;
-                    }
+                    eprintln!("{:?}", miette::Report::new(err));
+                    has_errors = true;
                 }
             }
         }
+    }
 
     for package in packages {
         for item in &package.items {
@@ -141,9 +141,12 @@ pub fn validate_artifacts(
                             let mut valid_names = std::collections::HashSet::new();
                             let mut has_unnamed_ensure = false;
 
-                            // Implicit unnamed returns generate an `isValid` boundary, but do NOT
-                            // create an unnamed case for the user to prove (that's handled by `h_ret_is_valid`
-                            // or the tuple structure). Thus we do NOT insert "unnamed" into valid_names here.
+                            // Implicit unnamed returns generate an `isValid`
+                            // boundary, but do NOT create an unnamed case for
+                            // the user to prove (that's handled by
+                            // `h_ret_is_valid` or the tuple structure). Thus
+                            // we do NOT insert "unnamed" into valid_names
+                            // here.
 
                             for ensure in func.hermes.ensures.iter() {
                                 if let Some(name) = &ensure.name {
@@ -173,8 +176,10 @@ pub fn validate_artifacts(
                             }
 
                             for ensure in func.hermes.ensures.iter() {
-                                // Missing proofs are allowed to fall through to Lean's `autoParam`
-                                // fallback logic (`verify_user_bound`) to attempt `simp_all` directly.
+                                // Missing proofs are allowed to fall through to
+                                // Lean's `autoParam` fallback logic
+                                // (`verify_user_bound`) to attempt `simp_all`
+                                // directly.
                                 if ensure.name.is_none() && !provided_cases.contains("h_anon") {
                                     let mut has_explicit_unnamed = false;
                                     for e in func.hermes.ensures.iter() {
@@ -277,7 +282,8 @@ mod tests {
             fn missing_b() {}
         "#;
         // Hermes now natively allows missing proof blocks to fall through
-        // to `autoParam` evaluation in Lean, meaning this is structurally valid.
+        // to `autoParam` evaluation in Lean, meaning this is structurally
+        // valid.
         assert!(parse_and_validate(code_missing).is_ok());
     }
 
@@ -319,7 +325,9 @@ mod tests {
         assert!(parse_and_validate(code_unnamed_mixed).is_ok());
 
         // Edge Case 4: Cannot provide a proof for a non-existent bound
-        // (Even with auto-proving relaxed, we still enforce that provided proofs map to bounds)
+        //
+        // (Even with auto-proving relaxed, we still enforce that provided
+        // proofs map to bounds)
         let code_invalid_proof = r#"
             /// ```hermes
             /// ensures (h_pos): ret > 0
@@ -498,7 +506,8 @@ mod tests {
             /// ```
             fn proof_context_no_cases(x: u32) -> u32 { x }
         "#;
-        // This should pass validation, because missing proofs are allowed (handled by simp_all or sorry)
+        // This should pass validation, because missing proofs are allowed
+        // (handled by simp_all or sorry)
         assert!(parse_and_validate(code).is_ok());
     }
 
@@ -532,8 +541,8 @@ mod tests {
             /// ```
             unsafe fn explicit_unnamed(x: u32) -> u32 { x }
         "#;
-        // This should pass because 'unnamed' is not reserved from the user's perspective,
-        // it just maps to the unnamed placeholder.
+        // This should pass because 'unnamed' is not reserved from the user's
+        // perspective, it just maps to the unnamed placeholder.
         assert!(parse_and_validate(code).is_ok());
     }
     #[test]
@@ -602,7 +611,8 @@ mod tests {
         "#;
         assert!(parse_and_validate(code).is_err());
 
-        // Naming `h_anon` as proof target succeeds since it perfectly aliases the unnamed proposition logic
+        // Naming `h_anon` as proof target succeeds since it perfectly aliases
+        // the unnamed proposition logic
         let code = r#"
             /// ```hermes
             /// proof (h_anon):

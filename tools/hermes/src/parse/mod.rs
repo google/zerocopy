@@ -1,9 +1,8 @@
 // Parsing logic for extracting Hermes annotations from Rust source code.
 //
 // This module provides the core infrastructure for traversing Rust source
-// files,
-// identifying items annotated with `/// ````hermes` blocks, and extracting them
-// for verification.
+// files, identifying items annotated with `/// ````hermes` blocks, and
+// extracting them for verification.
 
 pub mod attr;
 pub mod hkd;
@@ -89,8 +88,6 @@ impl TypeItem<Local> {
         }
     }
 }
-
-
 
 impl<M: ThreadSafety> LiftToSafe for TypeItem<M> {
     type Target = TypeItem<Safe>;
@@ -677,26 +674,15 @@ mod tests {
         "#;
         let items = parse_to_vec(code);
         let (_, res) = items.into_iter().next().unwrap();
-        // Since we are parsing a string, `inside_block` is false initially,
-        // but `visit_item_mod` doesn't change `inside_block` for inline
-        // modules?
-        // Wait, `visit_item_mod` calls `syn::visit::visit_item_mod`.
-        // `syn` traverses the content.
-        // `HermesVisitor::visit_item_mod`:
-        // checks `node.content.is_none()` for unloaded modules.
-        // calls `visit_item_mod`.
-        //
-        // NOTE: The `HermesVisitor` does NOT set `inside_block = true` when
-        // entering a module.
-        // It sets `inside_block = true` when visiting a `Block` (function
-        // body).
-        // Inline modules are not "blocks" in `syn` sense (they have braces but
-        // `ItemMod` structure handles it).
-        // So this should SUCCEED unless I misunderstood `inside_block`.
+        // Since we are parsing a string, `inside_block` is false initially.
+        // `visit_item_mod` does not change `inside_block` for inline modules.
+        // `HermesVisitor` only sets `inside_block = true` when visiting a
+        // `Block` (function body). Inline modules are not "blocks" in the `syn`
+        // sense (they have braces, but the `ItemMod` structure handles them).
+        // Thus, this should succeed.
 
-        // Actually `test_visit_in_file` was failing with `unwrap` on `None`
-        // meaning it didn't find the block.
-        // With `hermes` tag it should find it.
+        // The `hermes` tag ensures the block is correctly identified and
+        // processed.
         let item = res.unwrap();
         assert!(matches!(item.item, ParsedItem::Function(_)));
     }

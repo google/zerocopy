@@ -55,20 +55,12 @@ pub const F_GETFD: usize = 1;
 pub const F_SETFD: usize = 2;
 pub const F_GETFL: usize = 3;
 pub const F_SETFL: usize = 4;
+pub const F_DUPFD_CLOEXEC: usize = 1030;
 
 pub const FUTEX_WAIT: usize = 0;
 pub const FUTEX_WAKE: usize = 1;
 pub const FUTEX_REQUEUE: usize = 2;
 pub const FUTEX_WAIT64: usize = 3;
-
-// packet.c = fd
-pub const SKMSG_FRETURNFD: usize = 0;
-
-// packet.uid:packet.gid = offset, packet.c = base address, packet.d = page count
-pub const SKMSG_PROVIDE_MMAP: usize = 1;
-
-// packet.id provides state, packet.c = dest fd or pointer to dest fd, packet.d = flags
-pub const SKMSG_FOBTAINFD: usize = 2;
 
 // TODO: Split SendFdFlags into caller flags and flags that the scheme receives?
 bitflags::bitflags! {
@@ -101,6 +93,9 @@ bitflags::bitflags! {
         /// If set, the file descriptors received will be placed into the *upper* file table.
         const UPPER_TBL = 4;
 
+        /// If set, the received file descriptors are marked as close-on-exec.
+        const CLOEXEC = 8;
+
         // No, cloexec won't be stored in the kernel in the future, when the stable ABI is moved to
         // relibc, so no flag for that!
     }
@@ -115,6 +110,9 @@ bitflags::bitflags! {
 
         /// If set, the file descriptors received will be placed into the *upper* file table.
         const UPPER_TBL = 2;
+
+        /// If set, the received file descriptors are marked as close-on-exec.
+        const CLOEXEC = 4;
     }
 }
 bitflags::bitflags! {
@@ -203,6 +201,10 @@ pub const O_STAT: usize = 0x2000_0000;
 pub const O_SYMLINK: usize = 0x4000_0000;
 pub const O_NOFOLLOW: usize = 0x8000_0000;
 pub const O_ACCMODE: usize = O_RDONLY | O_WRONLY | O_RDWR;
+pub const O_FCNTL_MASK: usize = O_NONBLOCK | O_APPEND | O_ASYNC | O_FSYNC;
+
+/// Remove directory instead of unlinking file.
+pub const AT_REMOVEDIR: usize = 0x200;
 
 // The top 48 bits of PTRACE_* are reserved, for now
 
@@ -399,6 +401,55 @@ bitflags! {
         const FD_EXCLUSIVE = 1 << 12;
         const FD_CLONE = 1 << 13;
         const FD_UPPER = 1 << 14;
+        const FD_CLOEXEC = 1 << 15;
+
+        /// Call is a standard fs call, with metadata defined in `StdFsCallMeta`
+        const STD_FS = 1 << 16;
+    }
+}
+
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub enum StdFsCallKind {
+    // TODO: remove old syscalls
+    Fchmod = 1,
+    Fchown = 2,
+    Getdents = 3,
+    Fstat = 4,
+    Fstatvfs = 5,
+    Fsync = 6,
+    Ftruncate = 7,
+    Futimens = 8,
+    // 9 reserved in fscall RFC
+    // Unlinkat = 10,
+    Realpathat = 11,
+    Lock = 12,
+    Unlock = 13,
+    GetLock = 14,
+}
+
+impl StdFsCallKind {
+    pub fn try_from_raw(raw: u8) -> Option<Self> {
+        use StdFsCallKind::*;
+
+        // TODO: Use a library where this match can be automated.
+        Some(match raw {
+            1 => Fchmod,
+            2 => Fchown,
+            3 => Getdents,
+            4 => Fstat,
+            5 => Fstatvfs,
+            6 => Fsync,
+            7 => Ftruncate,
+            8 => Futimens,
+            // 9 reserved in fscall RFC
+            // 10 => Unlinkat,
+            11 => Realpathat,
+            12 => Lock,
+            13 => Unlock,
+            14 => GetLock,
+            _ => return None,
+        })
     }
 }
 

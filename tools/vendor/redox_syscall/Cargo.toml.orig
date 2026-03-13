@@ -1,6 +1,6 @@
 [package]
 name = "redox_syscall"
-version = "0.5.18"
+version = "0.7.3"
 description = "A Rust library to access raw Redox system calls"
 license = "MIT"
 authors = ["Jeremy Soller <jackpot51@gmail.com>"]
