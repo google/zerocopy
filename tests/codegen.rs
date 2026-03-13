@@ -48,6 +48,7 @@ fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
                 manifest_path,
                 "--target-dir",
                 target_dir,
+                "--all-features",
                 "--bench",
                 bench_name,
                 "--target-cpu",
