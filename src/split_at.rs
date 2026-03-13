@@ -73,6 +73,24 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     ///
     /// The caller promises that `l_len` is not greater than the length of
     /// `self`'s trailing slice.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "split_at_unchecked",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[inline]
     #[must_use]
     unsafe fn split_at_unchecked(&self, l_len: usize) -> Split<&Self> {
@@ -117,6 +135,24 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     /// assert_eq!(packet.body, [1, 2, 3, 4]);
     /// assert_eq!(rest, [5, 6, 7, 8, 9]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "split_at",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[inline]
     #[must_use = "has no side effects"]
     fn split_at(&self, l_len: usize) -> Option<Split<&Self>> {
@@ -136,6 +172,10 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     ///
     /// The caller promises that `l_len` is not greater than the length of
     /// `self`'s trailing slice.
+    ///
+    #[doc = codegen_header!("h5", "split_at_mut_unchecked")]
+    ///
+    /// See [`SplitAt::split_at_unchecked`](#method.split_at_unchecked.codegen).
     #[inline]
     #[must_use]
     unsafe fn split_at_mut_unchecked(&mut self, l_len: usize) -> Split<&mut Self> {
@@ -190,6 +230,10 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     /// assert_eq!(packet.length, 4);
     /// assert_eq!(packet.body, [1, 2, 3, 4, 0, 0, 0, 0, 0]);
     /// ```
+    ///
+    #[doc = codegen_header!("h5", "split_at_mut")]
+    ///
+    /// See [`SplitAt::split_at`](#method.split_at.codegen).
     #[inline]
     fn split_at_mut(&mut self, l_len: usize) -> Option<Split<&mut Self>> {
         MetadataOf::new_in_bounds(self, l_len).map(
@@ -300,6 +344,24 @@ where
     /// assert_eq!(packet.body, [1, 2, 3, 4]);
     /// assert_eq!(rest, [5, 6, 7, 8, 9]);
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "split_via_immutable",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn via_immutable(self) -> (&'a T, &'a [T::Elem])
@@ -345,6 +407,10 @@ where
     /// assert_eq!(packet.body, [1, 2, 3, 4]);
     /// assert_eq!(rest, [5, 6, 7, 8, 9]);
     /// ```
+    ///
+    #[doc = codegen_header!("h5", "split_via_into_bytes")]
+    ///
+    /// See [`Split::via_immutable`](#method.split_via_immutable.codegen).
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn via_into_bytes(self) -> (&'a T, &'a [T::Elem])
@@ -390,6 +456,10 @@ where
     /// assert_eq!(packet.body, [1, 2, 3, 4]);
     /// assert_eq!(rest, [5, 6, 7, 8, 9]);
     /// ```
+    ///
+    #[doc = codegen_header!("h5", "split_via_unaligned")]
+    ///
+    /// See [`Split::via_immutable`](#method.split_via_immutable.codegen).
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn via_unaligned(self) -> (&'a T, &'a [T::Elem])
@@ -459,6 +529,24 @@ where
     /// // parts is sound.
     /// assert!(split.via_runtime_check().is_err());
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "split_via_runtime_check",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn via_runtime_check(self) -> Result<(&'a T, &'a [T::Elem]), Self> {
@@ -478,6 +566,24 @@ where
     /// dynamic function of the trailing slice
     /// length](KnownLayout#slice-dst-layout). Thus, for some types, this
     /// condition is dependent on the length of the left portion.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "split_via_unchecked",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub unsafe fn via_unchecked(self) -> (&'a T, &'a [T::Elem]) {
@@ -543,6 +649,10 @@ where
     /// assert_eq!(packet.length, 4);
     /// assert_eq!(packet.body, [1, 2, 3, 4, 0, 0, 0, 0, 0]);
     /// ```
+    ///
+    /// # Code Generation
+    ///
+    /// See [`Split::via_immutable`](#method.split_via_immutable.codegen).
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn via_into_bytes(self) -> (&'a mut T, &'a mut [T::Elem])
@@ -595,6 +705,10 @@ where
     /// assert_eq!(packet.length, 4);
     /// assert_eq!(packet.body, [1, 2, 3, 4, 0, 0, 0, 0, 0]);
     /// ```
+    ///
+    /// # Code Generation
+    ///
+    /// See [`Split::via_immutable`](#method.split_via_immutable.codegen).
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn via_unaligned(self) -> (&'a mut T, &'a mut [T::Elem])
@@ -649,6 +763,10 @@ where
     /// assert_eq!(packet.length, 4);
     /// assert_eq!(packet.body, [1, 2, 3, 4, 0, 0, 0, 0, 0]);
     /// ```
+    ///
+    /// # Code Generation
+    ///
+    /// See [`Split::via_runtime_check`](#method.split_via_runtime_check.codegen).
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn via_runtime_check(self) -> Result<(&'a mut T, &'a mut [T::Elem]), Self> {
@@ -667,6 +785,11 @@ where
     /// appears after the trailing slice field [is a dynamic function of the
     /// trailing slice length](KnownLayout#slice-dst-layout). Thus, for some
     /// types, this condition is dependent on the length of the left portion.
+    ///
+    ///
+    /// # Code Generation
+    ///
+    /// See [`Split::via_unchecked`](#method.split_via_unchecked.codegen).
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub unsafe fn via_unchecked(self) -> (&'a mut T, &'a mut [T::Elem]) {
