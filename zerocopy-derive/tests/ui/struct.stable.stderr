@@ -475,9 +475,9 @@ help: the following other types implement trait `SplitAt`
 334 | #[derive(SplitAt, KnownLayout)]
     |          ^^^^^^^ `SplitAtSized`
     |
-   ::: $WORKSPACE/src/split_at.rs:207:1
+   ::: $WORKSPACE/src/split_at.rs:251:1
     |
-207 | unsafe impl<T> SplitAt for [T] {
+251 | unsafe impl<T> SplitAt for [T] {
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `[T]`
     = help: see issue #48214
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
