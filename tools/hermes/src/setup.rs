@@ -229,7 +229,44 @@ impl Toolchain {
     pub fn command(&self, tool: Tool) -> std::process::Command {
         let bin_name = tool.name();
         let managed_path = self.bin_dir().join(bin_name);
+
         if managed_path.exists() {
+            // WORKAROUND: The Aeneas binaries released on GitHub are sometimes
+            // built on Nix and have hardcoded interpreter paths (e.g.,
+            // `/nix/store/.../ld-linux-x86-64.so.2`) that don't exist on
+            // standard Linux systems. If we're on Linux and the tool is Aeneas,
+            // we check if it's a Nix-linked binary and, if so, we invoke it via
+            // the system's dynamic loader directly.
+            #[cfg(target_os = "linux")]
+            if tool == Tool::Aeneas {
+                #[allow(clippy::collapsible_if)]
+                if let Ok(mut file) = std::fs::File::open(&managed_path) {
+                    use std::io::Read;
+                    let mut head = [0u8; 1024];
+                    if file.read_exact(&mut head).is_ok() {
+                        // Check for "/nix/store/" in the first 1KB of the ELF
+                        // header/program headers, which is where the
+                        // interpreter path lives.
+                        let mut found_nix = false;
+                        for i in 0..head.len().saturating_sub(11) {
+                            if &head[i..i + 11] == b"/nix/store/" {
+                                found_nix = true;
+                                break;
+                            }
+                        }
+
+                        if found_nix {
+                            let loader = "/lib64/ld-linux-x86-64.so.2";
+                            if std::path::Path::new(loader).exists() {
+                                let mut cmd = std::process::Command::new(loader);
+                                cmd.arg(managed_path);
+                                return cmd;
+                            }
+                        }
+                    }
+                }
+            }
+
             std::process::Command::new(managed_path)
         } else {
             std::process::Command::new(bin_name)
