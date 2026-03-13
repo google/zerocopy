@@ -9,7 +9,7 @@ pub enum C0C0 {
 
 macro_rules! define_packet {
     ($name: ident, $trait: ident, $leading_field: ty) => {
-        #[derive($trait, KnownLayout, Immutable, IntoBytes)]
+        #[derive($trait, KnownLayout, Immutable, IntoBytes, SplitAt)]
         #[repr(C, align(2))]
         pub struct $name {
             magic_number: $leading_field,
