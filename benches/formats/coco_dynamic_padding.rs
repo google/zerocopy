@@ -7,7 +7,7 @@ pub enum C0C0 {
     _XC0C0 = 0xC0C0,
 }
 
-#[derive(FromBytes, KnownLayout, Immutable)]
+#[derive(FromBytes, KnownLayout, Immutable, SplitAt)]
 #[repr(C, align(4))]
 pub struct Packet<Magic> {
     magic_number: Magic,
