@@ -132,7 +132,8 @@ pub fn run_aeneas(
         // We patch the .llbc file in-place if we find the 0.1.174 version.
         // This is a temporary measure until Aeneas is updated.
         if let Ok(content) = std::fs::read_to_string(&llbc_path) {
-            let patched = content.replace("\"charon_version\":\"0.1.174\"", "\"charon_version\":\"0.1.173\"");
+            let patched =
+                content.replace("\"charon_version\":\"0.1.174\"", "\"charon_version\":\"0.1.173\"");
             if patched != content {
                 log::debug!("Patching LLBC version from 0.1.174 to 0.1.173 for Aeneas");
                 std::fs::write(&llbc_path, patched).context("Failed to patch LLBC file")?;

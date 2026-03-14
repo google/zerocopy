@@ -15,8 +15,8 @@ use std::{
 use log::{debug, trace};
 use miette::{NamedSource, SourceSpan};
 use syn::{
-    Attribute, Error, Expr, ImplItemFn, ItemEnum, ItemFn, ItemImpl, ItemMod, ItemStruct, ItemTrait,
-    ItemUnion, Lit, Meta, TraitItemFn, spanned::Spanned, visit::Visit,
+    Attribute, Error, Expr, ForeignItemFn, ImplItemFn, ItemEnum, ItemFn, ItemImpl, ItemMod,
+    ItemStruct, ItemTrait, ItemUnion, Lit, Meta, TraitItemFn, spanned::Spanned, visit::Visit,
 };
 
 use self::{
@@ -27,17 +27,30 @@ use crate::errors::HermesError;
 
 #[derive(Clone, Debug)]
 pub enum FunctionItem<M: ThreadSafety = Local> {
+    /// A standard free-standing function.
     Free(AstNode<ItemFn, M>),
-    Impl(AstNode<ImplItemFn, M>, Option<AstNode<syn::Type, M>>),
+    /// A function defined within an `impl` block.
+    Impl(
+        AstNode<ImplItemFn, M>,
+        /// The type that the `impl` block is for (the `Self` type).
+        Option<AstNode<syn::Type, M>>,
+        /// The generics of the `impl` block itself.
+        Option<AstNode<syn::Generics, M>>,
+    ),
+    /// A function defined within a trait.
     Trait(AstNode<TraitItemFn, M>),
+    /// A function defined within an `extern` block.
+    Foreign(AstNode<ForeignItemFn, M>),
 }
 
 impl FunctionItem<Local> {
+    /// Returns the name of the function.
     pub fn name(&self) -> String {
         match self {
             Self::Free(x) => x.inner.sig.ident.to_string(),
-            Self::Impl(x, _) => x.inner.sig.ident.to_string(),
+            Self::Impl(x, _, _) => x.inner.sig.ident.to_string(),
             Self::Trait(x) => x.inner.sig.ident.to_string(),
+            Self::Foreign(x) => x.inner.sig.ident.to_string(),
         }
     }
 }
@@ -46,16 +59,18 @@ impl FunctionItem<Safe> {
     pub fn name(&self) -> &str {
         match self {
             Self::Free(x) => &x.inner.sig.ident,
-            Self::Impl(x, _) => &x.inner.sig.ident,
+            Self::Impl(x, _, _) => &x.inner.sig.ident,
             Self::Trait(x) => &x.inner.sig.ident,
+            Self::Foreign(x) => &x.inner.sig.ident,
         }
     }
 
     pub fn sig(&self) -> &crate::parse::hkd::SafeSignature {
         match self {
             Self::Free(x) => &x.inner.sig,
-            Self::Impl(x, _) => &x.inner.sig,
+            Self::Impl(x, _, _) => &x.inner.sig,
             Self::Trait(x) => &x.inner.sig,
+            Self::Foreign(x) => &x.inner.sig,
         }
     }
 }
@@ -66,8 +81,11 @@ impl<M: ThreadSafety> LiftToSafe for FunctionItem<M> {
     fn lift(self) -> Self::Target {
         match self {
             Self::Free(x) => FunctionItem::Free(x.lift()),
-            Self::Impl(x, p) => FunctionItem::Impl(x.lift(), p.map(|p| p.lift())),
+            Self::Impl(x, p, g) => {
+                FunctionItem::Impl(x.lift(), p.map(|p| p.lift()), g.map(|g| g.lift()))
+            }
             Self::Trait(x) => FunctionItem::Trait(x.lift()),
+            Self::Foreign(x) => FunctionItem::Foreign(x.lift()),
         }
     }
 }
@@ -85,6 +103,16 @@ impl TypeItem<Local> {
             Self::Struct(x) => x.inner.ident.to_string(),
             Self::Enum(x) => x.inner.ident.to_string(),
             Self::Union(x) => x.inner.ident.to_string(),
+        }
+    }
+}
+
+impl TypeItem<Safe> {
+    pub fn name(&self) -> &str {
+        match self {
+            Self::Struct(x) => &x.inner.ident,
+            Self::Enum(x) => &x.inner.ident,
+            Self::Union(x) => &x.inner.ident,
         }
     }
 }
@@ -258,6 +286,7 @@ pub(crate) fn scan_compilation_unit_internal<I, M>(
     let mut visitor = HermesVisitor {
         current_path: Vec::new(),
         current_impl_type: None,
+        current_impl_generics: None,
         inside_block,
         item_cb,
         mod_cb,
@@ -280,6 +309,8 @@ struct HermesVisitor<I, M> {
     /// necessary because Lean scope resolution for Aeneas-generated theorems
     /// requires exact target types.
     current_impl_type: Option<AstNode<syn::Type, Local>>,
+    /// The generics of the current `impl` block being visited, if any.
+    current_impl_generics: Option<AstNode<syn::Generics, Local>>,
     inside_block: bool,
     item_cb: I,
     mod_cb: M,
@@ -469,16 +500,43 @@ where
         }
 
         let old_impl_type = self.current_impl_type.take();
+        let old_impl_generics = self.current_impl_generics.take();
         self.current_impl_type = impl_ty_node;
+        self.current_impl_generics = Some(AstNode::new(i.generics.clone()));
 
         syn::visit::visit_item_impl(self, i);
 
         self.current_impl_type = old_impl_type;
+        self.current_impl_generics = old_impl_generics;
+    }
+
+    /// Visits a foreign function (one defined in an `extern` block).
+    ///
+    /// This allows Hermes to extract specifications for functions written
+    /// in other languages (or other Rust crates) that are declared in
+    /// the current crate.
+    fn visit_foreign_item_fn(&mut self, i: &'ast ForeignItemFn) {
+        trace!("Visiting Foreign Fn {}", i.sig.ident);
+        self.process_item(
+            i,
+            &i.attrs,
+            |attrs, source| {
+                FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
+            },
+            |item, hermes| {
+                ParsedItem::Function(HermesDecorated {
+                    item: FunctionItem::Foreign(AstNode::new(item.clone())),
+                    hermes,
+                })
+            },
+        );
+        syn::visit::visit_foreign_item_fn(self, i);
     }
 
     fn visit_impl_item_fn(&mut self, i: &'ast ImplItemFn) {
         trace!("Visiting ImplItemFn {}", i.sig.ident);
         let current_impl_type = self.current_impl_type.clone();
+        let current_impl_generics = self.current_impl_generics.clone();
         self.process_item(
             i,
             &i.attrs,
@@ -487,7 +545,11 @@ where
             },
             move |item, hermes| {
                 ParsedItem::Function(HermesDecorated {
-                    item: FunctionItem::Impl(AstNode::new(item.clone()), current_impl_type.clone()),
+                    item: FunctionItem::Impl(
+                        AstNode::new(item.clone()),
+                        current_impl_type.clone(),
+                        current_impl_generics.clone(),
+                    ),
                     hermes,
                 })
             },
@@ -815,5 +877,28 @@ hermes::syn_error
    ╰────
 "#;
         assert_eq!(report_string.trim(), expected.trim());
+    }
+
+    #[test]
+    fn test_foreign_function_scanning() {
+        let code = r#"
+            extern "C" {
+                /// ```lean, hermes
+                /// context:
+                /// theorem ext_foo_ok : True := trivial
+                /// ```
+                fn ext_foo();
+            }
+        "#;
+        let items = parse_to_vec(code);
+        assert_eq!(items.len(), 1);
+        let (src, res) = items.into_iter().next().unwrap();
+        let item = res.unwrap();
+        assert!(src.contains("fn ext_foo"));
+        assert!(matches!(
+            item.item,
+            ParsedItem::Function(HermesDecorated { item: FunctionItem::Foreign(_), .. })
+        ));
+        assert!(item.item.hermes_context()[0].content.contains("ext_foo_ok"));
     }
 }

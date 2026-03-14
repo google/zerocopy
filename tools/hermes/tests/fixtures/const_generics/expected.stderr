@@ -1,5 +1,5 @@
   × type expected, got
-  │   (fun x => True : ?m.2 → Prop)
+  │   (fun x => True : ?m.1 → Prop)
    ╭─[[PROJECT_ROOT]/src/lib.rs:8:7]
  7 │ /// isSafe :
  8 │ ///   fun _ => True

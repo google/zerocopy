@@ -178,13 +178,34 @@ impl Mirror for syn::QSelf {
 // --- Types ---
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SafeType {
-    Path { qself: Option<Box<SafeQSelf>>, segments: Vec<SafePathSegment> },
-    Reference { mutability: bool, elem: Box<SafeType> },
-    Tuple { elems: Vec<SafeType> },
-    Slice { elem: Box<SafeType> },
-    Array { elem: Box<SafeType>, len: String },
-    Ptr { mutability: bool, elem: Box<SafeType> },
-    Other, // For types we don't strictly support/need (mapped to MatchError)
+    Path {
+        qself: Option<Box<SafeQSelf>>,
+        segments: Vec<SafePathSegment>,
+    },
+    Reference {
+        mutability: bool,
+        elem: Box<SafeType>,
+    },
+    Tuple {
+        elems: Vec<SafeType>,
+    },
+    Slice {
+        elem: Box<SafeType>,
+    },
+    Array {
+        elem: Box<SafeType>,
+        len: String,
+    },
+    Ptr {
+        mutability: bool,
+        elem: Box<SafeType>,
+    },
+    /// The `!` type in Rust, which represents a value that can never be
+    /// constructed.
+    Never,
+    /// A catch-all for types that are not explicitly supported or needed by
+    /// the functional model. These are typically mapped to `MatchError` in Lean.
+    Other,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -263,6 +284,7 @@ impl Mirror for syn::Type {
                 mutability: tp.mutability.is_some(),
                 elem: Box::new(tp.elem.mirror()),
             },
+            syn::Type::Never(_) => SafeType::Never,
             _ => SafeType::Other,
         }
     }
@@ -357,6 +379,19 @@ impl Mirror for syn::TraitItemFn {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SafeForeignItemFn {
+    pub sig: SafeSignature,
+    pub generics: SafeGenerics,
+}
+
+impl Mirror for syn::ForeignItemFn {
+    type Image = SafeForeignItemFn;
+    fn mirror(&self) -> Self::Image {
+        SafeForeignItemFn { sig: self.sig.mirror(), generics: self.sig.generics.mirror() }
+    }
+}
+
 // --- Generics (Structs/Enums/Traits) ---
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SafeGenerics {
@@ -366,8 +401,15 @@ pub struct SafeGenerics {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SafeGenericParam {
+    /// A type parameter (e.g., `T: Trait`).
     Type { name: String, bounds: Vec<SafeTypeParamBound> },
-    Const(String),
+    /// A const parameter (e.g., `const N: usize`).
+    ///
+    /// We capture the type of the const parameter (`ty`) to ensure that
+    /// the generated Lean code correctly types the corresponding
+    /// constant in the functional model.
+    Const { name: String, ty: SafeType },
+    /// A lifetime parameter (e.g., `'a`).
     Lifetime,
 }
 
@@ -402,7 +444,9 @@ impl Mirror for syn::Generics {
                         name: t.ident.to_string(),
                         bounds: t.bounds.iter().map(|b| b.mirror()).collect(),
                     },
-                    syn::GenericParam::Const(c) => SafeGenericParam::Const(c.ident.to_string()),
+                    syn::GenericParam::Const(c) => {
+                        SafeGenericParam::Const { name: c.ident.to_string(), ty: c.ty.mirror() }
+                    }
                     syn::GenericParam::Lifetime(_) => SafeGenericParam::Lifetime,
                 })
                 .collect(),
@@ -504,6 +548,62 @@ mod tests {
             assert_eq!(q.position, 1);
         } else {
             panic!("Expected Path, got {:?}", safe);
+        }
+    }
+
+    #[test]
+    fn test_mirror_never() {
+        let ty: syn::Type = parse_quote!(!);
+        let safe = ty.mirror();
+        assert_eq!(safe, SafeType::Never);
+    }
+
+    #[test]
+    fn test_mirror_complex_never() {
+        // Result<!, u32>
+        let ty: syn::Type = parse_quote!(Result<!, u32>);
+        let safe = ty.mirror();
+        if let SafeType::Path { segments, .. } = safe {
+            let res = segments.last().unwrap();
+            assert_eq!(res.ident, "Result");
+            assert_eq!(res.args[0], SafeType::Never);
+        } else {
+            panic!("Expected Path, got {:?}", safe);
+        }
+
+        // (u32, !)
+        let ty: syn::Type = parse_quote!((u32, !));
+        let safe = ty.mirror();
+        if let SafeType::Tuple { elems } = safe {
+            assert_eq!(elems[1], SafeType::Never);
+        } else {
+            panic!("Expected Tuple, got {:?}", safe);
+        }
+    }
+
+    #[test]
+    fn test_mirror_const_generics() {
+        let generics: syn::Generics = parse_quote!(<const N: usize, const M: u32>);
+        let safe = generics.mirror();
+
+        let mk_path = |ident: &str| SafeType::Path {
+            qself: None,
+            segments: vec![SafePathSegment { ident: ident.to_string(), args: Vec::new() }],
+        };
+
+        match &safe.params[0] {
+            SafeGenericParam::Const { name, ty } => {
+                assert_eq!(name, "N");
+                assert_eq!(*ty, mk_path("usize"));
+            }
+            _ => panic!("Expected Const, got {:?}", safe.params[0]),
+        }
+        match &safe.params[1] {
+            SafeGenericParam::Const { name, ty } => {
+                assert_eq!(name, "M");
+                assert_eq!(*ty, mk_path("u32"));
+            }
+            _ => panic!("Expected Const, got {:?}", safe.params[1]),
         }
     }
 }

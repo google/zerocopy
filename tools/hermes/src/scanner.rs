@@ -75,6 +75,9 @@ impl HermesArtifact {
         let h = hash(&hashes.map(u64::to_ne_bytes).concat());
 
         // Converts kebab-case -> PascalCase.
+        // We convert both package and target names to PascalCase to ensure
+        // the generated Lean module name is a valid and idiomatic Lean
+        // identifier, matching Aeneas's output format.
         let to_pascal = |s: &str| {
             s.split(['-', '_'])
                 .map(|segment| {
@@ -269,8 +272,9 @@ fn process_file_recursive<'a>(
                     crate::parse::ParsedItem::Function(f) => {
                         matches!(
                             f.item,
-                            crate::parse::FunctionItem::Impl(_, _)
+                            crate::parse::FunctionItem::Impl(..)
                                 | crate::parse::FunctionItem::Trait(_)
+                                | crate::parse::FunctionItem::Foreign(_)
                         )
                     }
                     _ => false,

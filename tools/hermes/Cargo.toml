@@ -91,7 +91,7 @@ lean_toolchain = "leanprover/lean4:v4.28.0-rc1"
 #
 # FIXME(https://github.com/AeneasVerif/aeneas/issues/783): Check Aeneas
 # version/commit ID once that's supported
-charon_version = "0.1.174"
+charon_version = "0.1.163"
 
 [package.metadata.hermes.dependencies.charon]
 # The per-commit release tag from AeneasVerif/charon
