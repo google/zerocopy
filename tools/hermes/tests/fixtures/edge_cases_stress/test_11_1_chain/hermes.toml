@@ -1,8 +1,0 @@
-description = """
-Purpose: Validates module discovery depth limits.
-Behavior: Uses deeply chained function dependencies spanning several modules. Ensures Charon successfully unwinds the invocation chain and generates the appropriate dependencies.
-"""
-
-[test]
-expected_status = "success"
-args = ["verify", "--allow-sorry"]

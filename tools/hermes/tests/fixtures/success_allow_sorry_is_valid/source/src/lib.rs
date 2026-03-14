@@ -14,3 +14,5 @@ pub mod traits_and_impls;
 pub mod types_and_data;
 
 fn main() {}
+pub mod edge_cases_invariants_test_4_4_private_fields;
+pub mod impl_fallback_dedup;

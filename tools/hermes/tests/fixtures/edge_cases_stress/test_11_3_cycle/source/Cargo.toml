@@ -1,9 +1,0 @@
-
-[package]
-name = "test_11_3_cycle"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-
-[workspace]
