@@ -382,29 +382,24 @@ pub(crate) unsafe fn new_box<T>(
 where
     T: ?Sized + crate::KnownLayout,
 {
+    let align = T::LAYOUT.align.get();
     let size = match T::size_for_metadata(meta) {
         Some(size) => size,
-        None => return Err(AllocError),
+        _ => return Err(AllocError),
     };
-
-    let align = T::LAYOUT.align.get();
-    // On stable Rust versions <= 1.64.0, `Layout::from_size_align` has a bug in
-    // which sufficiently-large allocations (those which, when rounded up to the
-    // alignment, overflow `isize`) are not rejected, which can cause undefined
-    // behavior. See #64 for details.
-    //
-    // FIXME(#67): Once our MSRV is > 1.64.0, remove this assertion.
-    #[allow(clippy::as_conversions)]
-    let max_alloc = (isize::MAX as usize).saturating_sub(align);
-    if size > max_alloc {
-        return Err(AllocError);
-    }
-
-    // FIXME(https://github.com/rust-lang/rust/issues/55724): Use
-    // `Layout::repeat` once it's stabilized.
-    let layout = Layout::from_size_align(size, align).or(Err(AllocError))?;
-
-    let ptr = if layout.size() != 0 {
+    let ptr = if size != 0 {
+        #[allow(clippy::as_conversions)]
+        if size > isize::MAX as usize {
+            return Err(AllocError);
+        }
+        // SAFETY:
+        // - `align` is derived from a `NonZeroUsize` and is thus non-zero.
+        // - `align` is a power of two because, by invariant on
+        //   `KnownLayout::LAYOUT` `<T as KnownLayout>::LAYOUT` accurately
+        //   reflects the layout of `T`.
+        // - `size`, by invariant on `size_for_metadata` is well-aligned for
+        //   `align` and, by the above conditional, is less than `isize::MAX`.
+        let layout: Layout = unsafe { Layout::from_size_align_unchecked(size, align) };
         // SAFETY: By contract on the caller, `allocate` is either
         // `alloc::alloc::alloc` or `alloc::alloc::alloc_zeroed`. The above
         // check ensures their shared safety precondition: that the supplied
@@ -420,8 +415,6 @@ where
             None => return Err(AllocError),
         }
     } else {
-        let align = T::LAYOUT.align.get();
-
         // We use `transmute` instead of an `as` cast since Miri (with strict
         // provenance enabled) notices and complains that an `as` cast creates a
         // pointer with no provenance. Miri isn't smart enough to realize that
@@ -435,8 +428,8 @@ where
         #[allow(unknown_lints)]
         #[allow(clippy::useless_transmute, integer_to_ptr_transmutes)]
         let dangling = unsafe { mem::transmute::<usize, *mut u8>(align) };
-        // SAFETY: `dangling` is constructed from `T::LAYOUT.align`, which is a
-        // `NonZeroUsize`, which is guaranteed to be non-zero.
+        // SAFETY: `dangling` is constructed from `align`, which is derived from
+        // a `NonZeroUsize`, which is guaranteed to be non-zero.
         //
         // `Box<[T]>` does not allocate when `T` is zero-sized or when `len` is
         // zero, but it does require a non-null dangling pointer for its
