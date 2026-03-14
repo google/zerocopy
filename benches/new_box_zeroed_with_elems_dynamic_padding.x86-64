@@ -15,9 +15,7 @@ bench_new_box_zeroed_with_elems_dynamic_padding:
 	and r14d, 3
 	add r14, rax
 	setb al
-	movabs rcx, 9223372036854775803
-	cmp r14, rcx
-	seta cl
+	sets cl
 	or cl, al
 	je .LBB5_4
 .LBB5_6:
