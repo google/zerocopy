@@ -1,0 +1,163 @@
+name: Auto-Approve Lifecycle
+
+# We support auto-approving PRs as configured by `.github/auto-approvers.json`.
+# A naive implementation would approve PRs based on their content before they've
+# been added to the merge queue, but this is subject to TOCTOU issues that are
+# difficult to mitigate:
+# - A user can always update a PR after it's been approved (can be mitigated
+#   by having updates dismiss existing reviews)
+# - A PR can be updated twice, with the first update triggering the Action run
+#   and the second update taking place before the Action's approval has taken
+#   place (harder to mitigate)
+#
+# To avoid these issues, we split the approval into two phases. The PR itself is
+# approved using a simple, optimistic approach that is good enough in the vast
+# majority of cases and provides good UX. However, this phase is not trusted.
+# A second phase which performs the *real* security enforcement occurs once the
+# PR is in the merge queue and thus cannot be modified.
+
+on:
+  # Trigger 1: A best-effort optimistic pass which auto-approves PRs.
+  pull_request_target: # zizmor: ignore[dangerous-triggers] (Best-effort; not used for security)
+    types: [opened, synchronize, reopened]
+  
+  # Trigger 2: The real security enforcement, which runs in the merge queue and
+  # thus avoids TOCTOU issues.
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  # Goal: Quickly evaluate the PR and submit an approval to satisfy branch
+  # protection rules so the user can click "Add to Merge Queue".
+  optimistic-approve:
+    # NOTE: Configured via GitHub repo settings to only be required for PRs.
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # Required to submit the review
+      contents: read
+    steps:
+      - name: Checkout trusted base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          persist-credentials: false
+
+      - name: Fetch Changed Files
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          API_ENDPOINT: repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files
+        run: gh api "$API_ENDPOINT" --paginate --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > changed_files.json
+
+      - name: Optimistic Evaluation
+        env:
+          ACTOR: ${{ github.actor }}
+          TOTAL_PR_FILES: ${{ github.event.pull_request.changed_files }}
+        run: |
+          python3 .github/scripts/validate_pr.py \
+            --expected-count "$TOTAL_PR_FILES" \
+            --contributors "$ACTOR"
+
+      - name: Approve PR Atomically
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh api --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews \
+            -f commit_id="$HEAD_SHA" \
+            -f event="APPROVE" \
+            -f body="🤖 **Optimistically Approved:** Changes appear scoped. Final strict verification will occur in the Merge Queue."
+
+  # Goal: Act as the final, immutable security boundary. Validates  the lowest
+  # common denominator of all contributors in the queue. Runs in a context in
+  # which the contents cannot be modified, and so there's no risk of TOCTOU
+  # issues, which there are when approving the PR before it's in the merge
+  # queue.
+  strict-queue-gatekeeper:
+    # NOTE: Configured via GitHub repo settings to only be required in the merge
+    # queue.
+    if: github.event_name == 'merge_group'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read # Required to query the PR endpoints via `gh api`
+      contents: read # Explicitly drop write access for maximum security
+    steps:
+      - name: Checkout trusted base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.merge_group.base_ref }}
+          persist-credentials: false
+
+      - name: Extract PR Context
+        id: context
+        run: |
+          set -eo pipefail
+
+          PR_NUMBER=$(echo "${GITHUB_REF}" | sed -n 's/.*\/pr-\([0-9]*\)-.*/\1/p')
+          if [ -z "$PR_NUMBER" ]; then
+            echo "::error::❌ Could not extract PR number from branch name: ${GITHUB_REF}"
+            exit 1
+          fi
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+
+      - name: Fetch PR Metadata
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eo pipefail
+
+          TOTAL_FILES=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER --jq '.changed_files')
+          echo "TOTAL_PR_FILES=$TOTAL_FILES" >> $GITHUB_ENV
+
+          # This is obviously a ridiculously low limit but:
+          # - Any higher and it's *theoretically possible* that we could
+          #   introduce a vulnerability if GitHub truncates its output, leading
+          #   to us skipping commits and thus permitting PRs through the merge
+          #   queue which should have been rejected
+          # - In practice, we always produce single-commit PRs, so this will
+          #   rarely get in our way
+          TOTAL_COMMITS=$(gh api repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER --jq '.commits')
+          if [ "$TOTAL_COMMITS" -gt 1 ]; then
+            echo "::error::❌ PR contains $TOTAL_COMMITS commits. The GitHub API may truncate results at >1 commits, preventing safe identity validation. Manual review required."
+            exit 1
+          fi
+
+      - name: Fetch PR Commits
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/commits \
+            --paginate \
+            --jq '[.[] | {author: .author.login, committer: .committer.login}]' > commits.json
+
+      - name: Fetch Changed Files
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/files \
+            --paginate \
+            --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > changed_files.json
+
+      - name: Strict Identity & File Validation
+        run: |
+          set -eo pipefail
+
+          # Ensure no commits are unlinked to a GitHub account
+          NULL_COUNT=$(jq '[.[] | select(.author == null or .committer == null)] | length' commits.json)
+          if [ "$NULL_COUNT" -gt 0 ]; then
+            echo "::error::❌ A commit belongs to an email not linked to a GitHub account."
+            exit 1
+          fi
+
+          # Extract unique authors and committers into a space-separated string
+          CONTRIBUTORS=$(jq -r '.[] | .author, .committer' commits.json | sort -u)
+          
+          # Pass the unquoted $CONTRIBUTORS variable to python so argparse
+          # correctly receives each name as a separate item in the list.
+          python3 .github/scripts/validate_pr.py \
+            --expected-count "$TOTAL_PR_FILES" \
+            --contributors $CONTRIBUTORS
