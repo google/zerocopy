@@ -47,7 +47,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           API_ENDPOINT: repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files
-        run: gh api "$API_ENDPOINT" --paginate --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > changed_files.json
+        run: gh api "$API_ENDPOINT" --paginate --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > /tmp/changed_files.json
 
       - name: Optimistic Evaluation
         env:
@@ -57,6 +57,7 @@ jobs:
           python3 ci/validate_auto_approvers.py \
             --expected-count "$TOTAL_PR_FILES" \
             --contributors "$ACTOR"
+            --changed-files /tmp/changed_files.json
 
       - name: Approve PR Atomically
         if: success()
@@ -132,7 +133,7 @@ jobs:
         run: |
           gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/commits \
             --paginate \
-            --jq '[.[] | {author: .author.login, committer: .committer.login}]' > commits.json
+            --jq '[.[] | {author: .author.login, committer: .committer.login}]' > /tmp/commits.json
 
       - name: Fetch Changed Files
         env:
@@ -140,24 +141,25 @@ jobs:
         run: |
           gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/files \
             --paginate \
-            --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > changed_files.json
+            --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > /tmp/changed_files.json
 
       - name: Strict Identity & File Validation
         run: |
           set -eo pipefail
 
           # Ensure no commits are unlinked to a GitHub account
-          NULL_COUNT=$(jq '[.[] | select(.author == null or .committer == null)] | length' commits.json)
+          NULL_COUNT=$(jq '[.[] | select(.author == null or .committer == null)] | length' /tmp/commits.json)
           if [ "$NULL_COUNT" -gt 0 ]; then
             echo "::error::❌ A commit belongs to an email not linked to a GitHub account."
             exit 1
           fi
 
           # Extract unique authors and committers into a space-separated string
-          CONTRIBUTORS=$(jq -r '.[] | .author, .committer' commits.json | sort -u)
-          
+          CONTRIBUTORS=$(jq -r '.[] | .author, .committer' /tmp/commits.json | sort -u)
+
           # Pass the unquoted $CONTRIBUTORS variable to python so argparse
           # correctly receives each name as a separate item in the list.
           python3 ci/validate_auto_approvers.py \
             --expected-count "$TOTAL_PR_FILES" \
             --contributors $CONTRIBUTORS
+            --changed-files /tmp/changed_files.json
