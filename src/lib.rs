@@ -852,7 +852,16 @@ pub unsafe trait KnownLayout {
     /// ```
     #[inline(always)]
     fn size_for_metadata(meta: Self::PointerMetadata) -> Option<usize> {
+        if !Self::is_valid_metadata(meta) {
+            return None;
+        }
         meta.size_for_metadata(Self::LAYOUT)
+    }
+
+    #[doc(hidden)]
+    #[inline(always)]
+    fn is_valid_metadata(meta: Self::PointerMetadata) -> bool {
+        meta <= Self::PointerMetadata::max_metadata(Self::LAYOUT)
     }
 }
 
@@ -881,7 +890,7 @@ where
 
 /// The metadata associated with a [`KnownLayout`] type.
 #[doc(hidden)]
-pub trait PointerMetadata: Copy + Eq + Debug {
+pub trait PointerMetadata: Copy + Eq + Debug + Ord {
     /// Constructs a `Self` from an element count.
     ///
     /// If `Self = ()`, this returns `()`. If `Self = usize`, this returns
@@ -908,6 +917,8 @@ pub trait PointerMetadata: Copy + Eq + Debug {
     /// `size_for_metadata` promises to only return `None` if the resulting size
     /// would not fit in a `usize`.
     fn size_for_metadata(self, layout: DstLayout) -> Option<usize>;
+
+    fn max_metadata(layout: DstLayout) -> Self;
 }
 
 impl PointerMetadata for () {
@@ -928,6 +939,11 @@ impl PointerMetadata for () {
             // than `unreachable!()` to avoid generating panic paths.
             SizeInfo::SliceDst(_) => None,
         }
+    }
+
+    #[inline(always)]
+    fn max_metadata(_layout: DstLayout) -> Self {
+        ()
     }
 }
 
@@ -953,6 +969,37 @@ impl PointerMetadata for usize {
             // NOTE: This branch is unreachable, but we return `None` rather
             // than `unreachable!()` to avoid generating panic paths.
             SizeInfo::Sized { .. } => None,
+        }
+    }
+
+    #[inline(always)]
+    fn max_metadata(layout: DstLayout) -> Self {
+        match layout.size_info {
+            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+                const MAX_ALLOC: usize = isize::MAX as usize;
+            
+                // The maximum size of an object aligned to `layout.align`.
+                let max_aligned_size = MAX_ALLOC - (MAX_ALLOC % layout.align.get());
+
+                // NOTE: This branch is unreachable, but we return `0` rather
+                // than generating panic paths.
+                if offset > max_aligned_size {
+                    return 0;
+                }
+
+                // The maximum available space for the trailing dynamically
+                // sized field.
+                let available_trailing_space = max_aligned_size - offset;
+
+                if elem_size == 0 {
+                    usize::MAX
+                } else {
+                    available_trailing_space / elem_size
+                }
+            }
+            // NOTE: This branch is unreachable, but we return `0` rather than
+            // `unreachable!()` to avoid generating panic paths.
+            SizeInfo::Sized { .. } => 0,
         }
     }
 }

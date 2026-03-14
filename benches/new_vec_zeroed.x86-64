@@ -1,37 +1,40 @@
 bench_new_vec_zeroed:
+	mov rax, rdi
+	movabs rcx, 1537228672809129301
+	cmp rsi, rcx
+	ja .LBB5_5
+	test rsi, rsi
+	je .LBB5_2
 	push r15
 	push r14
 	push rbx
-	mov rbx, rdi
-	mov ecx, 6
-	mov rax, rsi
-	mul rcx
-	jo .LBB5_6
-	mov r14, rsi
-	mov r15, rax
-	test rax, rax
-	je .LBB5_2
-	test r15, r15
-	js .LBB5_6
+	lea rcx, [rsi + rsi]
+	lea rbx, [rcx + 2*rcx]
+	mov r14, rax
+	mov r15, rsi
 	call qword ptr [rip + __rustc::__rust_no_alloc_shim_is_unstable_v2@GOTPCREL]
 	mov esi, 2
-	mov rdi, r15
+	mov rdi, rbx
 	call qword ptr [rip + __rustc::__rust_alloc_zeroed@GOTPCREL]
-	test rax, rax
-	jne .LBB5_5
-.LBB5_6:
-	movabs rax, -9223372036854775808
-	mov qword ptr [rbx], rax
-	jmp .LBB5_7
-.LBB5_2:
-	mov eax, 2
-.LBB5_5:
-	mov qword ptr [rbx], r14
-	mov qword ptr [rbx + 8], rax
-	mov qword ptr [rbx + 16], r14
-.LBB5_7:
-	mov rax, rbx
+	mov rsi, r15
+	mov rcx, rax
+	mov rax, r14
+	test rcx, rcx
 	pop rbx
 	pop r14
 	pop r15
+	je .LBB5_5
+	mov qword ptr [rax], rsi
+	mov qword ptr [rax + 8], rcx
+	mov qword ptr [rax + 16], rsi
+	ret
+.LBB5_5:
+	movabs rcx, -9223372036854775808
+	mov qword ptr [rax], rcx
+	ret
+.LBB5_2:
+	mov ecx, 2
+	mov qword ptr [rax], rsi
+	mov qword ptr [rax + 8], rcx
+	mov qword ptr [rax + 16], rsi
 	ret
