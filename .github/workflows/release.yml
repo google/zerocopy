@@ -1,0 +1,142 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Cargo.toml'
+      - 'zerocopy-derive/Cargo.toml'
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    # Don't run this on forks.
+    if: github.repository == 'google/zerocopy'
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+      version: ${{ steps.check.outputs.version }}
+      prerelease: ${{ steps.check.outputs.prerelease }}
+    env:
+      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0 # Fetch all history for version comparison and tags
+
+      # Checks whether zerocopy's version (in `Cargo.toml`) or zerocopy-derive's
+      # version (in `zerocopy-derive/Cargo.toml`) were updated in this commit.
+      # We check below to make sure they're the same; the point of checking both
+      # (which is unnecessary if the commit correctly updates both) is to catch
+      # situations where one is updated – we want to catch it regardless of
+      # *which* one is updated.
+      - name: Determine if version was updated
+        id: check
+        run: |
+          set -eo pipefail
+
+          # Get current versions
+          CUR_VER_ZC=$(./cargo.sh +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy").version')
+          CUR_VER_DERIVE=$(./cargo.sh +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy-derive").version')
+
+          # Get previous versions using cargo metadata by temporarily checking it out
+          git checkout -q HEAD^
+          PREV_VER_ZC=$(./cargo.sh +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy").version')
+          PREV_VER_DERIVE=$(./cargo.sh +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy-derive").version')
+          git checkout -q -
+
+          if [ "$CUR_VER_ZC" != "$PREV_VER_ZC" ] || [ "$CUR_VER_DERIVE" != "$PREV_VER_DERIVE" ]; then
+            echo "Version change detected."
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "version=$CUR_VER_ZC" >> $GITHUB_OUTPUT
+
+            if [[ "${CUR_VER_ZC%+*}" == *-* ]]; then
+              echo "prerelease=true" >> $GITHUB_OUTPUT
+            else
+              echo "prerelease=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Version unchanged."
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+  release:
+    needs: check-version
+    if: needs.check-version.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Sanity check versions
+        run: ./ci/check_versions.sh
+
+      - name: Dry-run publish
+        run: |
+          set -eo pipefail
+
+          ./cargo.sh +stable publish --dry-run --package zerocopy-derive --registry crates-io
+          ./cargo.sh +stable publish --dry-run --package zerocopy --registry crates-io
+
+      - name: Check if tag already exists
+        run: |
+          set -eo pipefail
+
+          TAG="v${{ needs.check-version.outputs.version }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Error: Tag $TAG already exists." >&2
+            exit 1
+          fi
+
+      - name: Create git tag
+        run: |
+          set -eo pipefail
+
+          TAG="v${{ needs.check-version.outputs.version }}"
+          git config user.name "Google PR Creation Bot"
+          git config user.email "github-pull-request-creation-bot@google.com"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+        
+      # NOTE: Relies on OIDC to be configured for this GHA workflow.
+      - name: Publish zerocopy-derive
+        run: ./cargo.sh +stable publish --package zerocopy-derive --registry crates-io
+
+      - name: Wait for crates.io index propagation
+        run: sleep 30
+
+      # NOTE: Relies on OIDC to be configured for this GHA workflow.
+      - name: Publish zerocopy
+        run: ./cargo.sh +stable publish --package zerocopy --registry crates-io
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@c062e08bd5704bfa3b69f0c2a9c440319b85f3cf # v2.0.8
+        with:
+          tag_name: v${{ needs.check-version.outputs.version }}
+          generate_release_notes: true
+          prerelease: ${{ needs.check-version.outputs.prerelease == 'true' }}
+          latest: ${{ needs.check-version.outputs.prerelease != 'true' }}
