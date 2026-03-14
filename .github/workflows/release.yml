@@ -103,11 +103,17 @@ jobs:
       - name: Dry-run publish
         run: |
           set -eo pipefail
+          # Temporarily disable vendoring so that `cargo publish` can see the
+          # live registry and resolve workspace dependencies correctly.
+          mv .cargo/config.toml .cargo/config.toml.bak
 
           ./cargo.sh +stable publish --dry-run --package zerocopy-derive --registry crates-io
           # Pass `--no-verify` since `zerocopy-derive` (at this new version)
-          # isn't available on crates.io yet, and so otherwise this will fail.
+          # isn't on crates.io yet, and thus resolution would fail during
+          # verification.
           ./cargo.sh +stable publish --dry-run --no-verify --package zerocopy --registry crates-io
+
+          mv .cargo/config.toml.bak .cargo/config.toml
 
       - name: Check if tag already exists
         run: |
@@ -131,7 +137,11 @@ jobs:
         
       # NOTE: Relies on OIDC to be configured for this GHA workflow.
       - name: Publish zerocopy-derive
-        run: ./cargo.sh +stable publish --package zerocopy-derive --registry crates-io
+        run: |
+          set -eo pipefail
+          mv .cargo/config.toml .cargo/config.toml.bak
+          ./cargo.sh +stable publish --package zerocopy-derive --registry crates-io
+          mv .cargo/config.toml.bak .cargo/config.toml
 
       # This should *technically* be unnecessary since `cargo publish` blocks
       # until the published crate is available in the API, but we have observed
@@ -142,7 +152,11 @@ jobs:
 
       # NOTE: Relies on OIDC to be configured for this GHA workflow.
       - name: Publish zerocopy
-        run: ./cargo.sh +stable publish --package zerocopy --registry crates-io
+        run: |
+          set -eo pipefail
+          mv .cargo/config.toml .cargo/config.toml.bak
+          ./cargo.sh +stable publish --package zerocopy --registry crates-io
+          mv .cargo/config.toml.bak .cargo/config.toml
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
