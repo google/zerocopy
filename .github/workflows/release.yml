@@ -139,7 +139,7 @@ jobs:
         run: ./cargo.sh +stable publish --package zerocopy --registry crates-io
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@c062e08bd5704bfa3b69f0c2a9c440319b85f3cf # v2.0.8
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
         with:
           tag_name: v${{ needs.check-version.outputs.version }}
           generate_release_notes: true
