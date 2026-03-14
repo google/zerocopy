@@ -27,6 +27,7 @@ env:
   # toolchain.
   ZC_NIGHTLY_RUSTFLAGS: -Zrandomize-layout
   ZC_NIGHTLY_MIRIFLAGS: "-Zmiri-strict-provenance -Zmiri-backtrace=full"
+  CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
 
 jobs:
   build_test:
@@ -300,27 +301,6 @@ jobs:
     # in `cargo.sh`, we explicitly do `cargo +stable metadata`. This requires a
     # (more recent) stable toolchain to be installed. As of this writing, this
     # toolchain is not used for anything else.
-    - name: Install stable Rust for use in 'cargo.sh'
-      uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
-      with:
-        toolchain: stable
-
-    - name: Install Rust with ${{ matrix.toolchain }} toolchain (${{ env.ZC_TOOLCHAIN }}) and target ${{ matrix.target }}
-      uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
-      with:
-          toolchain: ${{ env.ZC_TOOLCHAIN }}
-          targets: ${{ matrix.target }}
-          # We require the `rust-src` component to ensure that the compiler
-          # error output generated during UI tests matches that generated on
-          # local developer machines; see
-          # https://github.com/rust-lang/rust/issues/116433.
-          #
-          # Only nightly has a working Miri, so we skip installing on all other
-          # toolchains. This expression is effectively a ternary expression -
-          # see [1] for details.
-          #
-          # [1] https://github.com/actions/runner/issues/409#issuecomment-752775072
-          components: clippy, rust-src ${{ matrix.toolchain == 'nightly' && ', miri' || '' }}
 
     # On the `thumbv6m-none-eabi` target, we can't run `cargo check --tests` due
     # to the `memchr` crate, so we just do `cargo check` instead.
@@ -537,7 +517,7 @@ jobs:
         # Include arguments passed during docs.rs deployments to make sure those
         # work properly.
         set -eo pipefail
-        METADATA_DOCS_RS_RUSTDOC_ARGS="$(cargo metadata --format-version 1 | \
+        METADATA_DOCS_RS_RUSTDOC_ARGS="$(env -u RUSTFLAGS -u RUSTDOCFLAGS ./cargo.sh +stable metadata --format-version 1 | \
           jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\"[]" | tr '\n' ' ')"
         if [[ "$TOOLCHAIN" == "nightly" ]]; then
           export RUSTDOCFLAGS="-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS $RUSTDOCFLAGS"
@@ -660,7 +640,7 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }} # zizmor: ignore[secrets-outside-env]
           files: lcov.info
 
   kani:
@@ -706,19 +686,8 @@ jobs:
       - name: Configure environment variables
         run: |
           set -eo pipefail
-          ZC_TOOLCHAIN="$(./cargo.sh --version nightly)"
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
           echo "RUSTFLAGS=$RUSTFLAGS" >> $GITHUB_ENV
-          echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
-      - name: Install stable Rust for use in 'cargo.sh'
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
-        with:
-          toolchain: stable
-      - name: Install Rust with nightly toolchain (${{ env.ZC_TOOLCHAIN }}) and target aarch64_be-unknown-linux-gnu
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
-        with:
-            toolchain: ${{ env.ZC_TOOLCHAIN }}
-            components: clippy, rust-src
       - name: Check big endian for aarch64_be-unknown-linux-gnu target
         run: |
           set -eo pipefail
@@ -749,19 +718,8 @@ jobs:
       - name: Configure environment variables
         run: |
           set -eo pipefail
-          ZC_TOOLCHAIN="$(./cargo.sh --version nightly)"
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
           echo "RUSTFLAGS=$RUSTFLAGS" >> $GITHUB_ENV
-          echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
-      - name: Install stable Rust for use in 'cargo.sh'
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
-        with:
-          toolchain: stable
-      - name: Install Rust with nightly toolchain (${{ env.ZC_TOOLCHAIN }})
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
-        with:
-            toolchain: ${{ env.ZC_TOOLCHAIN }}
-            components: clippy, rust-src
       # FIXME(#2906): We do this because `cargo vendor` doesn't currently
       # support vendoring std's dependencies (required in order to build std
       # from source, as we do here). As a workaround, we simply nuke the cargo
@@ -794,13 +752,7 @@ jobs:
       - name: Populate cache
         uses: ./.github/actions/cache
       - name: Check Rust formatting
-        run: |
-          set -eo pipefail
-
-          # Required by `ci/check_fmt.sh` as of this writing.
-          rustup install $(./cargo.sh --version nightly) -c rust-src,rustfmt
-
-          ./ci/check_fmt.sh
+        run: ./ci/check_fmt.sh
 
   check_stale_stderr:
     runs-on: ubuntu-latest
@@ -968,16 +920,19 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          CHANGED_FILES_COUNT: ${{ github.event.pull_request.changed_files }}
         run: |
           set -eo pipefail
 
           # Fetch changed files (including renames for move-tracking)
-          gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files \
+          gh api "repos/$REPOSITORY/pulls/$PR_NUMBER/files" \
             --paginate \
             --jq 'map([.filename, .previous_filename] | map(select(.)))' > changed_files.json
 
           # Fetch unique contributors (logins)
-          CONTRIBUTORS=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits \
+          CONTRIBUTORS=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER/commits" \
             --paginate \
             --jq '[.[] | .author?.login, .committer?.login] | unique | map(select(.)) | .[]' | tr '\n' ' ')
 
@@ -985,7 +940,7 @@ jobs:
           set +e
           python3 ci/validate_auto_approvers.py \
             --changed-files changed_files.json \
-            --expected-count "${{ github.event.pull_request.changed_files }}" \
+            --expected-count "$CHANGED_FILES_COUNT" \
             --contributors $CONTRIBUTORS
           EXIT_CODE=$?
           set -e
@@ -1020,17 +975,11 @@ jobs:
         # notice and it will remind us to update this test.
         run: |
           set -eo pipefail
-
-          # Required by `ci/check_fmt.sh` as of this writing.
-          rustup install $(./cargo.sh --version nightly) -c rust-src,rustfmt
-
           for hook in ./githooks/*; do $hook; done
 
   zizmor:
     runs-on: ubuntu-latest
     name: zizmor
-    # FIXME(#3093): Re-enable
-    if: ${{ false }}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -1039,12 +988,12 @@ jobs:
         with:
           # Only scan the .github directory to avoid scanning vendored dependencies
           inputs: .github
+          persona: pedantic
           # We don't want to use GitHub Advanced Security because we want to
           # block the merge on zizmor failure, and the only way to do that
           # (without manually configuring a ruleset) is to fail the job, which
           # the action only does if advanced-security is false.
           advanced-security: false
-          persona: regular
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
