@@ -107,11 +107,11 @@ jobs:
           # live registry and resolve workspace dependencies correctly.
           mv .cargo/config.toml .cargo/config.toml.bak
 
-          ./cargo.sh +stable publish --dry-run --package zerocopy-derive --registry crates-io
+          ./cargo.sh +stable publish --dry-run --allow-dirty --package zerocopy-derive --registry crates-io
           # Pass `--no-verify` since `zerocopy-derive` (at this new version)
           # isn't on crates.io yet, and thus resolution would fail during
           # verification.
-          ./cargo.sh +stable publish --dry-run --no-verify --package zerocopy --registry crates-io
+          ./cargo.sh +stable publish --dry-run --no-verify --allow-dirty --package zerocopy --registry crates-io
 
           mv .cargo/config.toml.bak .cargo/config.toml
 
@@ -140,7 +140,7 @@ jobs:
         run: |
           set -eo pipefail
           mv .cargo/config.toml .cargo/config.toml.bak
-          ./cargo.sh +stable publish --package zerocopy-derive --registry crates-io
+          ./cargo.sh +stable publish --allow-dirty --package zerocopy-derive --registry crates-io
           mv .cargo/config.toml.bak .cargo/config.toml
 
       # This should *technically* be unnecessary since `cargo publish` blocks
@@ -155,7 +155,7 @@ jobs:
         run: |
           set -eo pipefail
           mv .cargo/config.toml .cargo/config.toml.bak
-          ./cargo.sh +stable publish --package zerocopy --registry crates-io
+          ./cargo.sh +stable publish --allow-dirty --package zerocopy --registry crates-io
           mv .cargo/config.toml.bak .cargo/config.toml
 
       - name: Create GitHub Release
