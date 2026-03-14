@@ -20,16 +20,24 @@ on:
   # Trigger 1: A best-effort optimistic pass which auto-approves PRs.
   pull_request_target: # zizmor: ignore[dangerous-triggers] (Best-effort; not used for security)
     types: [opened, synchronize, reopened]
-  
+
   # Trigger 2: The real security enforcement, which runs in the merge queue and
   # thus avoids TOCTOU issues.
   merge_group:
     types: [checks_requested]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   # Goal: Quickly evaluate the PR and submit an approval to satisfy branch
   # protection rules so the user can click "Add to Merge Queue".
   optimistic-approve:
+    name: Optimistic Approve
     # NOTE: Configured via GitHub repo settings to only be required for PRs.
     if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
@@ -38,7 +46,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout trusted base branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           ref: ${{ github.base_ref }}
           persist-credentials: false
@@ -46,10 +54,16 @@ jobs:
       - name: Fetch Changed Files
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          API_ENDPOINT: repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files
-        run: gh api "$API_ENDPOINT" --paginate --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > /tmp/changed_files.json
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -eo pipefail
+
+          API_ENDPOINT="repos/$REPOSITORY/pulls/$PR_NUMBER/files"
+          gh api "$API_ENDPOINT" --paginate --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > /tmp/changed_files.json
 
       - name: Optimistic Evaluation
+        id: evaluation
         env:
           ACTOR: ${{ github.actor }}
           TOTAL_PR_FILES: ${{ github.event.pull_request.changed_files }}
@@ -64,12 +78,12 @@ jobs:
 
           # Exit code 0 means auto-approval is granted.
           if [ $EXIT_CODE -eq 0 ]; then
-            echo "IS_AUTO_APPROVABLE=true" >> $GITHUB_ENV
+            echo "is_auto_approvable=true" >> "$GITHUB_OUTPUT"
             echo "✅ PR is auto-approvable."
           # Exit code 1 means the PR content is valid but does not fall under
           # any auto-approval rules.
           elif [ $EXIT_CODE -eq 1 ]; then
-            echo "IS_AUTO_APPROVABLE=false" >> $GITHUB_ENV
+            echo "is_auto_approvable=false" >> "$GITHUB_OUTPUT"
             echo "ℹ️ PR is not auto-approvable; skipping bot approval."
           # Any other exit code indicates a technical error (e.g., config 
           # corruption, API failure). These must fail the job to ensure we 
@@ -80,15 +94,16 @@ jobs:
           fi
 
       - name: Approve PR Atomically
-        if: env.IS_AUTO_APPROVABLE == 'true'
+        if: steps.evaluation.outputs.is_auto_approvable == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
         run: |
           gh api --method POST \
             -H "Accept: application/vnd.github+json" \
-            /repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews \
+            "/repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" \
             -f commit_id="$HEAD_SHA" \
             -f event="APPROVE" \
             -f body="🤖 **Optimistically Approved:** Changes appear scoped. Final strict verification will occur in the Merge Queue."
@@ -99,6 +114,7 @@ jobs:
   # issues, which there are when approving the PR before it's in the merge
   # queue.
   strict-queue-gatekeeper:
+    name: Strict Queue Gatekeeper
     # NOTE: Configured via GitHub repo settings to only be required in the merge
     # queue.
     if: github.event_name == 'merge_group'
@@ -108,7 +124,7 @@ jobs:
       contents: read # Explicitly drop write access for maximum security
     steps:
       - name: Checkout trusted base branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           ref: ${{ github.event.merge_group.base_ref }}
           persist-credentials: false
@@ -143,39 +159,43 @@ jobs:
           # If no bot approval is found, we assume the PR was manually
           # reviewed by a human. In that case, the human reviewer is the
           # security boundary, and we can safely skip the bot's validation.
-
+          
           PR_NUMBER=$(echo "${GITHUB_REF}" | sed -n 's/.*\/pr-\([0-9]*\)-.*/\1/p')
-          IS_AUTO_PR=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews \
+          IS_AUTO_PR=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/reviews" \
             --jq 'any(.[]; .user.login == "github-actions[bot]" and .state == "APPROVED")')
 
           # Use `!= "false"` instead of `= "true"` so that we fail closed if
           # truth is ever encoded as any string other than `"true"`.
           if [ "$IS_AUTO_PR" != "false" ]; then
-            echo "IS_AUTO_PR=true" >> $GITHUB_ENV
-            echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+            echo "is_auto_pr=true" >> "$GITHUB_OUTPUT"
+            echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
             echo "🤖 Detected historical bot approval; enforcing strict validation."
           else
-            echo "IS_AUTO_PR=false" >> $GITHUB_ENV
+            echo "is_auto_pr=false" >> "$GITHUB_OUTPUT"
             echo "👤 No bot approval detected; assuming manual review path."
           fi
 
       - name: Extract PR Context
-        if: env.IS_AUTO_PR != 'false'
+        if: steps.gate.outputs.is_auto_pr != 'false'
         id: context
+        env:
+          PR_NUMBER: ${{ steps.gate.outputs.pr_number }}
         run: |
           set -eo pipefail
-          # PR_NUMBER is already in GITHUB_ENV from the previous step.
+          # PR_NUMBER is retrieved from step env.
           echo "Processing PR #$PR_NUMBER"
 
       - name: Fetch PR Metadata
-        if: env.IS_AUTO_PR != 'false'
+        if: steps.gate.outputs.is_auto_pr != 'false'
+        id: metadata
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.gate.outputs.pr_number }}
         run: |
           set -eo pipefail
 
-          TOTAL_FILES=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER --jq '.changed_files')
-          echo "TOTAL_PR_FILES=$TOTAL_FILES" >> $GITHUB_ENV
+          TOTAL_FILES=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq '.changed_files')
+          echo "total_pr_files=$TOTAL_FILES" >> "$GITHUB_OUTPUT"
 
           # This is obviously a ridiculously low limit but:
           # - Any higher and it's *theoretically possible* that we could
@@ -184,32 +204,36 @@ jobs:
           #   queue which should have been rejected
           # - In practice, we always produce single-commit PRs, so this will
           #   rarely get in our way
-          TOTAL_COMMITS=$(gh api repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER --jq '.commits')
+          TOTAL_COMMITS=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq '.commits')
           if [ "$TOTAL_COMMITS" -gt 1 ]; then
             echo "::error::❌ PR contains $TOTAL_COMMITS commits. The GitHub API may truncate results at >1 commits, preventing safe identity validation. Manual review required."
             exit 1
           fi
 
       - name: Fetch PR Commits
-        if: env.IS_AUTO_PR != 'false'
+        if: steps.gate.outputs.is_auto_pr != 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.gate.outputs.pr_number }}
         run: |
-          gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/commits \
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/commits" \
             --paginate \
             --jq '[.[] | {author: .author.login, committer: .committer.login}]' > /tmp/commits.json
 
       - name: Fetch Changed Files
-        if: env.IS_AUTO_PR != 'false'
+        if: steps.gate.outputs.is_auto_pr != 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.gate.outputs.pr_number }}
         run: |
-          gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/files \
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" \
             --paginate \
             --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > /tmp/changed_files.json
 
       - name: Strict Identity & File Validation
-        if: env.IS_AUTO_PR != 'false'
+        if: steps.gate.outputs.is_auto_pr != 'false'
+        env:
+          EXPECTED_COUNT: ${{ steps.metadata.outputs.total_pr_files }}
         run: |
           set -eo pipefail
 
@@ -226,6 +250,6 @@ jobs:
           # Pass the unquoted $CONTRIBUTORS variable to python so argparse
           # correctly receives each name as a separate item in the list.
           python3 ci/validate_auto_approvers.py     \
-            --expected-count "$TOTAL_PR_FILES"      \
+            --expected-count "$EXPECTED_COUNT"      \
             --contributors $CONTRIBUTORS            \
             --changed-files /tmp/changed_files.json
