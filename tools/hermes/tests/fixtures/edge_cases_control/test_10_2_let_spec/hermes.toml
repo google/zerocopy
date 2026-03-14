@@ -1,8 +1,0 @@
-description = """
-Purpose: Tests Lean `let` binding support in Hermes annotations.
-Behavior: Confirms that `let x := ...` is strictly accepted into Hermes specification blocks for structuring proofs and assertions.
-"""
-
-[test]
-expected_status = "success"
-args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]

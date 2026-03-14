@@ -43,6 +43,7 @@ import «ExpandOutputExpandOutput<HASH>».Funs
 import «ExpandOutputExpandOutput<HASH>».Types
 
 set_option linter.dupNamespace false
+set_option linter.unusedVariables false
 open Aeneas Aeneas.Std Result
 
 noncomputable section

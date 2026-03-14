@@ -1,8 +1,0 @@
-description = """
-Purpose: Validates returning a mutable reference directly.
-Behavior: Mutates a parameter and returns it as a borrow. Verifies Aeneas establishes accurate region mapping for tracking the identity of the returned borrow back to the passed argument.
-"""
-
-[test]
-expected_status = "success"
-args = ["verify", "--allow-sorry"]

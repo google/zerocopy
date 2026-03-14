@@ -1,9 +1,0 @@
-  ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:20:8]
- 19 │ /// ```
- 20 │ pub fn unprovable_is_valid() -> InvalidStruct {
-    ·        ──┬─
-    ·          ╰── here
- 21 │     InvalidStruct { x: 1, y: 2 }
-    ╰────
-

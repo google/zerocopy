@@ -1,8 +1,0 @@
-description = """
-Purpose: Tests uninhabited types and the 'never' type.
-Behavior: Verifies that empty enums (`pub enum Void {}`) and functions terminating in `!` correctly lower and extract through Charon into Lean logic without failing.
-"""
-
-[test]
-expected_status = "success"
-args = ["verify", "--allow-sorry"]

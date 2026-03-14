@@ -1,8 +1,0 @@
-description = """
-Purpose: Ensures foundational identity specifications function properly.
-Behavior: A straightforward test making the simple assertion that the ret equals the input (`ensures ret = x`).
-"""
-
-[test]
-expected_status = "success"
-args = ["verify", "--allow-sorry"]

@@ -1,3 +1,0 @@
-[External Warning] generated/WarnCfgAttrPathWarnCfgAttrPath<HASH>/WarnCfgAttrPathWarnCfgAttrPath<HASH>.lean: unused variable `ret_`
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`

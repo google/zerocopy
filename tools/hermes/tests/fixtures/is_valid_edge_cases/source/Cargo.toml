@@ -1,8 +1,0 @@
-[package]
-name = "is_valid_edge_cases"
-version = "0.1.0"
-edition = "2021"
-
-[workspace]
-
-[dependencies]

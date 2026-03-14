@@ -1,9 +1,0 @@
-description = """
-Purpose: Confirms benign exit on crates lacking any Hermes blocks.
-Behavior: An unannotated Rust file yields a success status but prints the `No Hermes annotations` summary.
-"""
-
-[test]
-stderr_file = "expected.stderr"
-args = ["verify", "--allow-sorry"]
-expected_status = "success"

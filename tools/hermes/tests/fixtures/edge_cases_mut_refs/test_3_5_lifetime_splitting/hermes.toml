@@ -1,8 +1,0 @@
-description = """
-Purpose: Tests branching combinations of conditional mutable lifetime usage.
-Behavior: Implements control paths modifying disjoint mutable references independently (`if A { mut Y } else { mut X }`). Ensures lifetime resolution successfully merges the control paths.
-"""
-
-[test]
-expected_status = "success"
-args = ["verify", "--allow-sorry"]

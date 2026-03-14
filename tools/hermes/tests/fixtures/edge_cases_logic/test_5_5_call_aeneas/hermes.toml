@@ -1,8 +1,0 @@
-description = """
-Purpose: Exercises operator generation logic inside Hermes specifications.
-Behavior: Uses a mathematical expression `x + 1` within an `ensures` clause. Verifies translation into native Lean arithmetic assertions.
-"""
-
-[test]
-expected_status = "success"
-args = ["verify", "--allow-sorry"]

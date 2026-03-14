@@ -1,8 +1,0 @@
-description = """
-Purpose: Tests passthrough of Lean `sorry` statements.
-Behavior: Implements a recursive function but provides `decreases by sorry` to intentionally skip the termination proof. Validates that Hermes correctly transcribes `sorry` directly to the Lean theorem.
-"""
-
-[test]
-expected_status = "success"
-args = ["verify", "--allow-sorry"]

@@ -1,6 +1,3 @@
-[External Warning] generated/AppApp<HASH>/AppApp<HASH>.lean: unused variable `ret_`
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
   ⚠ declaration uses `sorry`
     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:10:4]
   9 │ /// proof context:
@@ -82,9 +79,6 @@ Note: This linter can be disabled with `set_option linter.unusedVariables false`
  82 │ 
     ╰────
 
-[External Warning] generated/AppApp<HASH>/AppApp<HASH>.lean: unused variable `ret_`
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
   ⚠ declaration uses `sorry`
     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:86:4]
  85 │ /// proof context:
@@ -139,9 +133,6 @@ Note: This linter can be disabled with `set_option linter.unusedVariables false`
  131 │ 
      ╰────
 
-[External Warning] generated/AppApp<HASH>/AppApp<HASH>.lean: unused variable `ret_`
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
   ⚠ declaration uses `sorry`
      ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:136:4]
  135 │ /// proof context:

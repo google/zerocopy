@@ -69,10 +69,4 @@
  59 │ /// ```
     ╰────
 
-[External Warning] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>.lean: unused variable `ret_`
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-[External Warning] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>/NamedBoundsValidationFailuresNamedBoundsValidationFailures<HASH>.lean: unused variable `ret_`
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
 Error: Lean verification failed

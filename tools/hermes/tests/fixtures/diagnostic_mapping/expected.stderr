@@ -36,7 +36,4 @@
  42 │ /// ```
     ╰────
 
-[External Warning] generated/DiagnosticMappingDiagnosticMapping<HASH>/DiagnosticMappingDiagnosticMapping<HASH>.lean: unused variable `ret_`
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
 Error: Lean verification failed

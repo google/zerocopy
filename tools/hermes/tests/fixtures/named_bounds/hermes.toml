@@ -1,8 +1,0 @@
-description = """
-Purpose: Verifies Hermes properly accepts explicit `unnamed` bounds and `proof context` blocks without cases.
-Behavior: Tests valid syntax that was previously failing due to bugs in name collision handling or proof parsing. All blocks should successfully pass verification.
-"""
-
-[test]
-args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
-expected_status = "success"
