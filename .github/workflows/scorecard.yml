@@ -53,7 +53,7 @@ jobs:
           results_file: results.sarif
           results_format: sarif
           # To enable the Branch-Protection check on a *public* repository
-          repo_token: ${{ secrets.SCORECARD_TOKEN }}
+          repo_token: ${{ secrets.SCORECARD_TOKEN }} # zizmor: ignore[secrets-outside-env]
 
           # Public repositories:
           #   - Publish results to OpenSSF REST API for easy access by consumers

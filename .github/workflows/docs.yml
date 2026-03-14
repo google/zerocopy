@@ -16,6 +16,9 @@ on:
 
 permissions: {}
 
+env:
+  CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
+
 concurrency:
   group: deploy
   cancel-in-progress: false
@@ -51,27 +54,6 @@ jobs:
           ZC_NIGHTLY_TOOLCHAIN="$(./cargo.sh --version nightly)"
           echo "Found that the 'nightly' toolchain is $ZC_NIGHTLY_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
           echo "ZC_NIGHTLY_TOOLCHAIN=$ZC_NIGHTLY_TOOLCHAIN" >> $GITHUB_ENV
-  
-      # On our MSRV, `cargo` does not know about the `rust-version` field. As a
-      # result, in `cargo.sh`, if we use our MSRV toolchain in order to run `cargo
-      # metadata`, we will not be able to extract the `rust-version` field. Thus,
-      # in `cargo.sh`, we explicitly do `cargo +stable metadata`. This requires a
-      # (more recent) stable toolchain to be installed. As of this writing, this
-      # toolchain is not used for anything else.
-      - name: Install stable Rust for use in 'cargo.sh'
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
-        with:
-          toolchain: stable
-          # This isn't actually required to build docs, but `cargo.sh` checks
-          # for it in order to help avoid the subtle UI test bugs that happen
-          # when UI tests are run without it installed.
-          components: rust-src
-  
-      - name: Install Rust with nightly toolchain (${{ env.ZC_NIGHTLY_TOOLCHAIN }})
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
-        with:
-            toolchain: ${{ env.ZC_NIGHTLY_TOOLCHAIN }}
-            targets: "x86_64-unknown-linux-gnu"
 
       - name: Configure GitHub pages
         id: pages
