@@ -105,7 +105,9 @@ jobs:
           set -eo pipefail
 
           ./cargo.sh +stable publish --dry-run --package zerocopy-derive --registry crates-io
-          ./cargo.sh +stable publish --dry-run --package zerocopy --registry crates-io
+          # Pass `--no-verify` since `zerocopy-derive` (at this new version)
+          # isn't available on crates.io yet, and so otherwise this will fail.
+          ./cargo.sh +stable publish --dry-run --no-verify --package zerocopy --registry crates-io
 
       - name: Check if tag already exists
         run: |
@@ -131,8 +133,12 @@ jobs:
       - name: Publish zerocopy-derive
         run: ./cargo.sh +stable publish --package zerocopy-derive --registry crates-io
 
+      # This should *technically* be unnecessary since `cargo publish` blocks
+      # until the published crate is available in the API, but we have observed
+      # this failing occasionally, presumably due to eventual consistency. 60
+      # seconds is likely overkill, but better safe than sorry.
       - name: Wait for crates.io index propagation
-        run: sleep 30
+        run: sleep 60
 
       # NOTE: Relies on OIDC to be configured for this GHA workflow.
       - name: Publish zerocopy
