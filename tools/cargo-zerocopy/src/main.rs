@@ -23,7 +23,7 @@ use std::{
     collections::HashSet,
     env, fmt, fs,
     io::{self, BufRead as _, Write as _},
-    process::{self, Command, Output},
+    process::{self, Command, Output, Stdio},
 };
 
 use toml::{map::Map, Value};
@@ -209,7 +209,7 @@ fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Erro
                 args.push("-c");
                 args.push("miri");
             }
-            rustup(args, None).execute();
+            rustup(args, None).stdout(Stdio::null()).execute();
             Ok(())
         },
         &format!(
@@ -256,7 +256,7 @@ fn install_targets_or_exit(version: &str, targets: &[String]) -> Result<(), Erro
         || {
             let mut args = vec!["target", "add", "--toolchain", version];
             args.extend(to_install.iter().map(|s| s.as_str()));
-            rustup(args, None).execute();
+            rustup(args, None).stdout(Stdio::null()).execute();
             Ok(())
         },
         &format!("missing target(s): {to_install_str}"),
