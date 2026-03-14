@@ -53,11 +53,16 @@ jobs:
           set -eo pipefail
 
           # Get current versions
+          #
+          # Pre-install toolchains so `rustup` output isn't piped to `jq`.
+          ./cargo.sh +stable help > /dev/null
           CUR_VER_ZC=$(./cargo.sh +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy").version')
           CUR_VER_DERIVE=$(./cargo.sh +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy-derive").version')
 
           # Get previous versions using cargo metadata by temporarily checking it out
           git checkout -q HEAD^
+          # Pre-install toolchains so `rustup` output isn't piped to `jq`.
+          ./cargo.sh +stable help > /dev/null
           PREV_VER_ZC=$(./cargo.sh +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy").version')
           PREV_VER_DERIVE=$(./cargo.sh +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy-derive").version')
           git checkout -q -
