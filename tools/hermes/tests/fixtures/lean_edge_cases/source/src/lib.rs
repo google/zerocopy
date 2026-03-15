@@ -1,5 +1,4 @@
 /// ```hermes, unsafe(axiom)
-/// axiom: unsafe_axiom_spec : True
 /// ```
 unsafe fn unsafe_axiom(x: u32) -> u32 {
     x

@@ -1,7 +1,6 @@
 fn main() {}
 
 /// ```lean, hermes, unsafe(axiom)
-/// axiom (foo)
 /// ```
 pub unsafe fn test_axiom_pseudo_name() {}
 

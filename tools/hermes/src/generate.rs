@@ -776,9 +776,7 @@ fn generate_function(
         FunctionBlockInner::Proof { context, cases } => {
             ("theorem", Some(cases), Some(context), None)
         }
-        FunctionBlockInner::Axiom { keyword, .. } => {
-            ("axiom", None, None, keyword.as_ref().map(|k| &k.inner))
-        }
+        FunctionBlockInner::Axiom => ("axiom", None, None, None),
     };
 
     let mut pre_args = Vec::new();
@@ -1319,7 +1317,7 @@ mod tests {
         requires: Vec<Vec<&str>>,
         ensures: Vec<Vec<&str>>,
         proof: Option<Vec<&str>>,
-        axiom: Option<Vec<&str>>,
+        _axiom: Option<Vec<&str>>,
         header: Vec<&str>,
     ) -> FunctionHermesBlock<crate::parse::hkd::Safe> {
         let inner = if let Some(p) = proof {
@@ -1333,10 +1331,7 @@ mod tests {
                 .collect(),
             }
         } else {
-            FunctionBlockInner::Axiom {
-                lines: axiom.unwrap().into_iter().map(mk_spanned).collect(),
-                keyword: None,
-            }
+            FunctionBlockInner::Axiom
         };
 
         FunctionHermesBlock {
@@ -2603,8 +2598,8 @@ mod tests {
                 },
             }),
         );
-        assert_eq!(naming_context.item_namespace(&impl_fn), "m");
-        assert_eq!(naming_context.aeneas_call_name(&impl_fn), "S.method");
+        assert_eq!(naming_context.item_namespace(&impl_fn), "m.S");
+        assert_eq!(naming_context.aeneas_call_name(&impl_fn), "method");
 
         // Impl function (fully qualified type)
         let q_impl_fn = mk_item(
@@ -2657,7 +2652,8 @@ mod tests {
                 },
             }),
         );
-        assert_eq!(naming_context.aeneas_call_name(&q_impl_fn), "outer.inner.T.f");
+        assert_eq!(naming_context.item_namespace(&q_impl_fn), "outer.inner.T");
+        assert_eq!(naming_context.aeneas_call_name(&q_impl_fn), "f");
 
         // Foreign function
         let foreign_fn = mk_item(
@@ -2681,7 +2677,7 @@ mod tests {
                     common: mk_common(),
                     requires: Propositions::default(),
                     ensures: Propositions::default(),
-                    inner: FunctionBlockInner::Axiom { lines: Vec::new(), keyword: None },
+                    inner: FunctionBlockInner::Axiom,
                 },
             }),
         );

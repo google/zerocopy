@@ -69,8 +69,6 @@ pub mod is_valid {
 pub mod axioms {
     /// A function verifying that `unsafe(axiom)` blocks correctly parse and redact.
     /// ```lean, hermes, unsafe(axiom)
-    /// axiom:
-    ///   some_axiom_content
     /// ```
     pub unsafe fn test_axiom_pseudo_name() {}
 
@@ -81,7 +79,6 @@ pub mod axioms {
 
     /// Using `unsafe(axiom)` to redact a return value property.
     /// ```lean, hermes, unsafe(axiom)
-    /// axiom: ret = 2
     /// ```
     pub unsafe fn redact_return() -> i32 {
         1 + 1

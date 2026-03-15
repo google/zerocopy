@@ -7,7 +7,6 @@ fn simple_spec(x: u32) -> bool {
 }
 
 /// ```lean, hermes, unsafe(axiom)
-/// axiom: unsafe_axiom_spec : True
 /// ```
 fn unsafe_axiom(x: u32) -> u32 {
     x + 1

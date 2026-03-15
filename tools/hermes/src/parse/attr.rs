@@ -100,7 +100,8 @@ pub struct FunctionHermesBlock<M: ThreadSafety = Local> {
 #[allow(dead_code)]
 pub enum FunctionBlockInner<M: ThreadSafety = Local> {
     Proof { context: Vec<SpannedLine<M>>, cases: Propositions<M> },
-    Axiom { lines: Vec<SpannedLine<M>>, keyword: Option<AstNode<Span, M>> },
+    /// An axiom block (using `unsafe(axiom)`).
+    Axiom,
 }
 
 /// A parsed Hermes documentation block attached to a struct, enum, or union.
@@ -478,10 +479,6 @@ fn parse_item_block_common(
                 &body.proof_cases,
                 "`proof` sections are only permitted on `spec` functions.",
             )?;
-            reject_section(
-                &body.axiom,
-                "`axiom` sections are only permitted on `unsafe(axiom)` functions.",
-            )?;
 
             let common = HermesBlockCommon {
                 context: std::mem::take(&mut body.context.lines),
@@ -522,10 +519,6 @@ impl FunctionHermesBlock<Local> {
 
         let inner = match attribute {
             FunctionAttribute::Spec => {
-                reject_section(
-                    &body.axiom,
-                    "`axiom` sections are only permitted on `unsafe(axiom)` functions.",
-                )?;
                 FunctionBlockInner::Proof {
                     context: body.proof_context.lines,
                     cases: body.proof_cases,
@@ -540,10 +533,7 @@ impl FunctionHermesBlock<Local> {
                     &body.proof_cases,
                     "`proof` sections are only permitted on `spec` functions.",
                 )?;
-                FunctionBlockInner::Axiom {
-                    lines: body.axiom.lines,
-                    keyword: body.axiom.keyword_span,
-                }
+                FunctionBlockInner::Axiom
             }
         };
 
@@ -712,7 +702,6 @@ enum Section {
     Ensures,
     ProofContext,
     ProofCase,
-    Axiom,
     IsValid,
     IsSafe,
 }
@@ -726,7 +715,6 @@ pub(super) struct RawHermesSpecBody {
     pub(super) ensures: Propositions<Local>,
     pub(super) proof_context: RawSection,
     pub(super) proof_cases: Propositions<Local>,
-    pub(super) axiom: RawSection,
     pub(super) is_valid: Vec<Clause<Local>>,
     pub(super) is_safe: Vec<Clause<Local>>,
 }
@@ -754,7 +742,6 @@ impl RawHermesSpecBody {
         match section {
             Section::Init | Section::Context => self.context.lines.push(line),
             Section::ProofContext => self.proof_context.lines.push(line),
-            Section::Axiom => self.axiom.lines.push(line),
             Section::Requires => match active_clause {
                 Some(ActiveClause::Unnamed) => {
                     if let Some(clause) = self.requires.unnamed.as_mut() {
@@ -832,13 +819,6 @@ impl RawHermesSpecBody {
                 self.proof_context.keyword_span = Some(keyword_span);
                 if let Some(l) = arg {
                     self.proof_context.lines.push(l);
-                }
-                Ok(None)
-            }
-            Section::Axiom => {
-                self.axiom.keyword_span = Some(keyword_span);
-                if let Some(l) = arg {
-                    self.axiom.lines.push(l);
                 }
                 Ok(None)
             }
@@ -947,7 +927,6 @@ impl RawHermesSpecBody {
             ("ensures", Section::Ensures),
             ("proof context", Section::ProofContext),
             ("proof", Section::ProofCase),
-            ("axiom", Section::Axiom),
             ("isValid", Section::IsValid),
             ("isSafe", Section::IsSafe),
         ];
@@ -1104,7 +1083,7 @@ impl RawHermesSpecBody {
                         return Err((
                             span,
                             "Invalid indentation: expected an indented continuation or a valid \
-                             Hermes keyword (context, requires, ensures, proof, axiom, isValid, isSafe). \
+                             Hermes keyword (context, requires, ensures, proof, isValid, isSafe). \
                              Did you misspell a keyword?"
                                 .to_string(),
                         ));
@@ -1166,10 +1145,7 @@ impl<M: ThreadSafety> LiftToSafe for FunctionBlockInner<M> {
                 context: context.into_iter().map(|l| l.lift()).collect(),
                 cases: cases.lift(),
             },
-            Self::Axiom { lines, keyword } => FunctionBlockInner::Axiom {
-                lines: lines.into_iter().map(|l| l.lift()).collect(),
-                keyword: keyword.map(|k| k.lift()),
-            },
+            Self::Axiom => FunctionBlockInner::Axiom,
         }
     }
 }
@@ -1337,7 +1313,7 @@ mod tests {
         match block {
             FunctionHermesBlock {
                 common: HermesBlockCommon { context, .. },
-                inner: FunctionBlockInner::Axiom { .. },
+                inner: FunctionBlockInner::Axiom,
                 ..
             } => {
                 assert_eq!(context[0].content, " body 1");
@@ -1400,7 +1376,6 @@ mod tests {
         assert!(spec.requires.is_empty());
         assert!(spec.ensures.is_empty());
         assert!(spec.proof_cases.is_empty() && spec.proof_context.lines.is_empty());
-        assert!(!spec.axiom.is_present());
     }
 
     #[test]
@@ -1554,7 +1529,7 @@ mod tests {
     #[test]
     fn test_hermes_spec_body_parse_multiple_same_section() {
         // Check that it can interleave sections or repeat them
-        let lines = mk_lines(&["requires: a", "ensures: b", "requires (foo): c", "axiom: d"]);
+        let lines = mk_lines(&["requires: a", "ensures: b", "requires (foo): c"]);
         let spec = RawHermesSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 2);
         assert_eq!(spec.requires[0].lines[0].content, "a");
@@ -1562,8 +1537,6 @@ mod tests {
 
         assert_eq!(spec.ensures.len(), 1);
         assert_eq!(spec.ensures[0].lines[0].content, "b");
-
-        assert_eq!(spec.axiom.lines.len(), 1);
     }
 
     fn dummy_line(content: &str) -> SpannedLine {
@@ -2256,8 +2229,6 @@ mod tests {
                 "  x > 0",
                 "  ensures:", // Indented keyword -> Continuation line
                 "    y > 0",  // Indented content -> Continuation line
-                "axiom:",     // Back to 0 -> New Section
-                "  z > 0",
             ]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
@@ -2267,9 +2238,6 @@ mod tests {
             assert_eq!(spec.requires[0].lines[2].content, "    y > 0");
 
             assert!(spec.ensures.is_empty());
-
-            assert_eq!(spec.axiom.lines.len(), 1);
-            assert_eq!(spec.axiom.lines[0].content, "  z > 0");
         }
 
         #[test]
@@ -2285,14 +2253,12 @@ mod tests {
 
         #[test]
         fn test_edge_empty_clauses() {
-            let lines = mk_lines(&["requires:", "ensures:", "axiom:"]);
+            let lines = mk_lines(&["requires:", "ensures:"]);
             let spec = RawHermesSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert!(spec.requires[0].lines.is_empty());
             assert_eq!(spec.ensures.len(), 1);
             assert!(spec.ensures[0].lines.is_empty());
-            assert_eq!(spec.axiom.lines.len(), 0); // Axiom is RawSection, has lines.
-            assert!(spec.axiom.keyword_span.is_some());
         }
 
         #[test]
@@ -2712,12 +2678,6 @@ mod tests {
             assert_eq!(err.1, "`context` sections cannot be named.");
         }
 
-        #[test]
-        fn test_adversarial_axiom_named() {
-            let lines = mk_lines(&["axiom (foo):"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-            assert_eq!(err.1, "`axiom` sections cannot be named.");
-        }
 
         #[test]
         fn test_adversarial_is_safe_named() {
