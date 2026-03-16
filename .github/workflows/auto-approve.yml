@@ -54,13 +54,33 @@ jobs:
           ACTOR: ${{ github.actor }}
           TOTAL_PR_FILES: ${{ github.event.pull_request.changed_files }}
         run: |
+          set +e
           python3 ci/validate_auto_approvers.py     \
             --expected-count "$TOTAL_PR_FILES"      \
             --contributors "$ACTOR"                 \
             --changed-files /tmp/changed_files.json
+          EXIT_CODE=$?
+          set -eo pipefail
+
+          # Exit code 0 means auto-approval is granted.
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "IS_AUTO_APPROVABLE=true" >> $GITHUB_ENV
+            echo "✅ PR is auto-approvable."
+          # Exit code 1 means the PR content is valid but does not fall under
+          # any auto-approval rules.
+          elif [ $EXIT_CODE -eq 1 ]; then
+            echo "IS_AUTO_APPROVABLE=false" >> $GITHUB_ENV
+            echo "ℹ️ PR is not auto-approvable; skipping bot approval."
+          # Any other exit code indicates a technical error (e.g., config 
+          # corruption, API failure). These must fail the job to ensure we 
+          # notice when the system is broken.
+          else
+            echo "::error::❌ Validation encountered a technical error: $EXIT_CODE"
+            exit $EXIT_CODE
+          fi
 
       - name: Approve PR Atomically
-        if: success()
+        if: env.IS_AUTO_APPROVABLE == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -93,19 +113,62 @@ jobs:
           ref: ${{ github.event.merge_group.base_ref }}
           persist-credentials: false
 
-      - name: Extract PR Context
-        id: context
+      - name: Check if auto-approval is intended
+        id: gate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -eo pipefail
 
+          # Extract PR number from the merge group branch name.
+          # Example: refs/heads/gh-readonly-queue/main/pr-123-SHA
           PR_NUMBER=$(echo "${GITHUB_REF}" | sed -n 's/.*\/pr-\([0-9]*\)-.*/\1/p')
           if [ -z "$PR_NUMBER" ]; then
             echo "::error::❌ Could not extract PR number from branch name: ${GITHUB_REF}"
             exit 1
           fi
-          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+
+          # We distinguish between 'Auto-Approved' PRs and 'Manual' PRs by
+          # checking the PR's review history. If the `github-actions[bot]` has
+          # EVER approved this PR, we consider it an 'Auto-Approved' PR and
+          # enforce the strict validation boundary.
+          #
+          # Why check the entire history instead of just the current state?
+          # This prevents an attacker from 'hiding' the fact that a PR was
+          # auto-approved by dismissing the bot's review before it enters the
+          # merge queue. By checking the history, we ensure that if a PR ever
+          # took the 'Auto-Approved' path, it remains subject to the strictest
+          # levels of scrutiny.
+          #
+          # If no bot approval is found, we assume the PR was manually
+          # reviewed by a human. In that case, the human reviewer is the
+          # security boundary, and we can safely skip the bot's validation.
+
+          PR_NUMBER=$(echo "${GITHUB_REF}" | sed -n 's/.*\/pr-\([0-9]*\)-.*/\1/p')
+          IS_AUTO_PR=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews \
+            --jq 'any(.[]; .user.login == "github-actions[bot]" and .state == "APPROVED")')
+
+          # Use `!= "false"` instead of `= "true"` so that we fail closed if
+          # truth is ever encoded as any string other than `"true"`.
+          if [ "$IS_AUTO_PR" != "false" ]; then
+            echo "IS_AUTO_PR=true" >> $GITHUB_ENV
+            echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+            echo "🤖 Detected historical bot approval; enforcing strict validation."
+          else
+            echo "IS_AUTO_PR=false" >> $GITHUB_ENV
+            echo "👤 No bot approval detected; assuming manual review path."
+          fi
+
+      - name: Extract PR Context
+        if: env.IS_AUTO_PR != 'false'
+        id: context
+        run: |
+          set -eo pipefail
+          # PR_NUMBER is already in GITHUB_ENV from the previous step.
+          echo "Processing PR #$PR_NUMBER"
 
       - name: Fetch PR Metadata
+        if: env.IS_AUTO_PR != 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -128,6 +191,7 @@ jobs:
           fi
 
       - name: Fetch PR Commits
+        if: env.IS_AUTO_PR != 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -136,6 +200,7 @@ jobs:
             --jq '[.[] | {author: .author.login, committer: .committer.login}]' > /tmp/commits.json
 
       - name: Fetch Changed Files
+        if: env.IS_AUTO_PR != 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -144,6 +209,7 @@ jobs:
             --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > /tmp/changed_files.json
 
       - name: Strict Identity & File Validation
+        if: env.IS_AUTO_PR != 'false'
         run: |
           set -eo pipefail
 
