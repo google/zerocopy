@@ -1,7 +1,7 @@
 [package]
 name = "cargo-hermes"
 edition = "2024"
-version = "0.1.0-alpha"
+version = "0.1.0-alpha.1"
 description = "Formally verify that your safety comments are correct."
 categories = [
   "development-tools::cargo-plugins",
@@ -21,6 +21,8 @@ authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy/tree/hermes/tools/hermes"
 publish = true
+
+exclude = [".*", "testdata"]
 
 [dependencies]
 anyhow = "1.0.101"
