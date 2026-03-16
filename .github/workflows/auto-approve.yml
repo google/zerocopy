@@ -54,9 +54,9 @@ jobs:
           ACTOR: ${{ github.actor }}
           TOTAL_PR_FILES: ${{ github.event.pull_request.changed_files }}
         run: |
-          python3 ci/validate_auto_approvers.py \
-            --expected-count "$TOTAL_PR_FILES" \
-            --contributors "$ACTOR"
+          python3 ci/validate_auto_approvers.py     \
+            --expected-count "$TOTAL_PR_FILES"      \
+            --contributors "$ACTOR"                 \
             --changed-files /tmp/changed_files.json
 
       - name: Approve PR Atomically
@@ -159,7 +159,7 @@ jobs:
 
           # Pass the unquoted $CONTRIBUTORS variable to python so argparse
           # correctly receives each name as a separate item in the list.
-          python3 ci/validate_auto_approvers.py \
-            --expected-count "$TOTAL_PR_FILES" \
-            --contributors $CONTRIBUTORS
+          python3 ci/validate_auto_approvers.py     \
+            --expected-count "$TOTAL_PR_FILES"      \
+            --contributors $CONTRIBUTORS            \
             --changed-files /tmp/changed_files.json
