@@ -38,8 +38,9 @@ fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
     let target_dir = env!("CARGO_TARGET_DIR");
 
     let cargo_asm = |directive: &Directive| {
-        Command::new("cargo")
+        Command::new("./cargo.sh")
             .args([
+                "+nightly",
                 "asm",
                 "--quiet",
                 "-p",
