@@ -9,6 +9,7 @@
 
 use core::{
     cell::{Cell, UnsafeCell},
+    convert::Infallible,
     mem::MaybeUninit as CoreMaybeUninit,
     ptr::NonNull,
 };
@@ -636,6 +637,22 @@ mod atomics {
         const _: () = unsafe { unsafe_impl_transmute_from_for_atomic!(T => AtomicPtr<T> [*mut T]) };
     }
 }
+
+impl_known_layout!(Infallible);
+
+// SAFETY: `Infallible` is an uninhabited enum, which has size 0 and alignment 1
+// (checked by the `static_assertions` assertions below).
+// - `Immutable`: It is uninhabited and has size 0, so it cannot contain
+//   `UnsafeCell`s.
+// - `IntoBytes`: It is uninhabited and has size 0, so it has no padding.
+// - `Unaligned`: It has alignment 1.
+#[allow(clippy::multiple_unsafe_ops_per_block)]
+const _: () = unsafe {
+    unsafe_impl!(Infallible: Immutable, IntoBytes, Unaligned);
+    assert_unaligned!(Infallible);
+    #[cfg(test)]
+    static_assertions::const_assert_eq!(core::mem::size_of::<Infallible>(), 0);
+};
 
 // SAFETY: Per reference [1]: "For all T, the following are guaranteed:
 // size_of::<PhantomData<T>>() == 0 align_of::<PhantomData<T>>() == 1". This
@@ -2218,6 +2235,16 @@ mod tests {
         assert_impls!(PhantomData<NotZerocopy>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         assert_impls!(PhantomData<[u8]>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+
+        assert_impls!(
+            Infallible: KnownLayout,
+            Immutable,
+            IntoBytes,
+            Unaligned,
+            !TryFromBytes,
+            !FromZeros,
+            !FromBytes
+        );
 
         assert_impls!(ManuallyDrop<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         // This test is important because it allows us to test our hand-rolled
