@@ -184,7 +184,7 @@ def get_asset_checksums(release, repo_name):
                     # Verify that we found the expected binaries for this repo.
                     expected = (
                         ["aeneas"]
-                        if "aeneas" in repo_name.lower()
+                        if repo_name.lower().endswith("/aeneas")
                         else ["charon", "charon-driver"]
                     )
                     missing = [b for b in expected if b not in found_binaries]

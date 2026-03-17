@@ -76,7 +76,7 @@ similar = "2.7.0"
 #
 # FIXME: Add a CI step to verify that this commit exists and matches the
 # toolchain version.
-aeneas_rev = "bd6a7eec470597b7947c611aad3b63cf066a8b8f"
+aeneas_rev = "e99c02e27fa0ea0e5d7daec9bcd5874b630fcff3"
 
 # The Lean toolchain version to use. This must match the version of Lean used
 # by Aeneas in the `lean-toolchain` file in the commit above.
@@ -93,7 +93,7 @@ lean_toolchain = "leanprover/lean4:v4.28.0-rc1"
 #
 # FIXME(https://github.com/AeneasVerif/aeneas/issues/783): Check Aeneas
 # version/commit ID once that's supported
-charon_version = "0.1.163"
+charon_version = "0.1.174"
 
 [package.metadata.hermes.dependencies.charon]
 # The per-commit release tag from AeneasVerif/charon
@@ -111,7 +111,7 @@ macos-x86_64-charon = "ac31e12bfa117f81a716cc545ae4750ec99c122171258779a3ecd4fbf
 macos-x86_64-charon-driver = "b1557cc6a462186231de28cc73968500894509da85c931d71bc874a8a14d9b06"
 
 [package.metadata.hermes.dependencies.aeneas]
-tag = "build-2026.03.13.164108-bd6a7eec470597b7947c611aad3b63cf066a8b8f"
+tag = "build-2026.03.17.155205-e99c02e27fa0ea0e5d7daec9bcd5874b630fcff3"
 [package.metadata.hermes.dependencies.aeneas.checksums]
 linux-x86_64 = "6d5616cd0c51667d31f68ec1f02d2dd04dbf3e6a3bee187789fb2079f167a05b"
 linux-x86_64-aeneas = "67c8f637ad0eb2a4450cea979e90867811cf90ca3449b5e4e7f2bf79f0834da1"
