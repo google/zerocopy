@@ -57,7 +57,14 @@ fn main() -> anyhow::Result<()> {
         return Ok(());
     }
 
-    let args = Cli::parse();
+    let mut args_iter = std::env::args_os().peekable();
+    let bin_name = args_iter.next().unwrap_or_else(|| "cargo-hermes".into());
+    // If we're being run as a cargo plugin, the second argument will be "hermes".
+    if args_iter.peek().is_some_and(|arg| arg == "hermes") {
+        args_iter.next();
+    }
+    let args = Cli::parse_from(std::iter::once(bin_name).chain(args_iter));
+
     match args.command {
         Commands::Verify(resolve_args) => {
             prepare_and_run(&resolve_args, |locked_roots, packages| {
