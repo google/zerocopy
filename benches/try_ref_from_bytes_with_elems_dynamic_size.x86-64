@@ -1,13 +1,13 @@
 bench_try_ref_from_bytes_with_elems_dynamic_size:
-	movabs rax, 4611686018427387901
-	cmp rdx, rax
-	seta cl
+	movabs rcx, 4611686018427387901
+	cmp rdx, rcx
+	ja .LBB5_3
 	mov rax, rdi
-	or dil, cl
-	test dil, 1
-	jne .LBB5_3
 	lea rcx, [2*rdx + 4]
 	cmp rsi, rcx
+	setne cl
+	or cl, al
+	test cl, 1
 	jne .LBB5_3
 	cmp word ptr [rax], -16192
 	je .LBB5_4
