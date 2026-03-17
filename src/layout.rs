@@ -638,37 +638,7 @@ impl DstLayout {
             addr.checked_add(bytes_len).is_some(),
             "`addr` + `bytes_len` > usize::MAX"
         );
-
-        // Alignment checks go in their own block to avoid introducing variables
-        // into the top-level scope.
-        {
-            // We check alignment for `addr` (for prefix casts) or `addr +
-            // bytes_len` (for suffix casts). For a prefix cast, the correctness
-            // of this check is trivial - `addr` is the address the object will
-            // live at.
-            //
-            // For a suffix cast, we know that all valid sizes for the type are
-            // a multiple of the alignment (and by safety precondition, we know
-            // `DstLayout` may only describe valid Rust types). Thus, a
-            // validly-sized instance which lives at a validly-aligned address
-            // must also end at a validly-aligned address. Thus, if the end
-            // address for a suffix cast (`addr + bytes_len`) is not aligned,
-            // then no valid start address will be aligned either.
-            let offset = match cast_type {
-                CastType::Prefix => 0,
-                CastType::Suffix => bytes_len,
-            };
-
-            // Addition is guaranteed not to overflow because `offset <=
-            // bytes_len`, and `addr + bytes_len <= usize::MAX` is a
-            // precondition of this method. Modulus is guaranteed not to divide
-            // by 0 because `align` is non-zero.
-            #[allow(clippy::arithmetic_side_effects)]
-            if (addr + offset) % self.align.get() != 0 {
-                return Err(MetadataCastError::Alignment);
-            }
-        }
-
+        
         let (elems, self_bytes) = match size_info {
             SizeInfo::Sized { size } => {
                 if size > bytes_len {
@@ -682,7 +652,7 @@ impl DstLayout {
                 // multiple of the alignment, or will be larger than
                 // `bytes_len`.
                 let max_total_bytes =
-                    util::round_down_to_next_multiple_of_alignment(bytes_len, self.align);
+                util::round_down_to_next_multiple_of_alignment(bytes_len, self.align);
                 // Calculate the maximum number of bytes that could be consumed
                 // by the trailing slice.
                 //
@@ -693,7 +663,7 @@ impl DstLayout {
                     // `bytes_len` too small even for 0 trailing slice elements.
                     None => return Err(MetadataCastError::Size),
                 };
-
+                
                 // Calculate the number of elements that fit in
                 // `max_slice_and_padding_bytes`; any remaining bytes will be
                 // considered padding.
@@ -728,10 +698,40 @@ impl DstLayout {
                 //   `self_bytes` up to `max_total_bytes`.
                 #[allow(clippy::arithmetic_side_effects)]
                 let self_bytes =
-                    without_padding + util::padding_needed_for(without_padding, self.align);
+                without_padding + util::padding_needed_for(without_padding, self.align);
                 (elems, self_bytes)
             }
         };
+        
+        // Alignment checks go in their own block to avoid introducing variables
+        // into the top-level scope.
+        {
+            // We check alignment for `addr` (for prefix casts) or `addr +
+            // bytes_len` (for suffix casts). For a prefix cast, the correctness
+            // of this check is trivial - `addr` is the address the object will
+            // live at.
+            //
+            // For a suffix cast, we know that all valid sizes for the type are
+            // a multiple of the alignment (and by safety precondition, we know
+            // `DstLayout` may only describe valid Rust types). Thus, a
+            // validly-sized instance which lives at a validly-aligned address
+            // must also end at a validly-aligned address. Thus, if the end
+            // address for a suffix cast (`addr + bytes_len`) is not aligned,
+            // then no valid start address will be aligned either.
+            let offset = match cast_type {
+                CastType::Prefix => 0,
+                CastType::Suffix => bytes_len,
+            };
+
+            // Addition is guaranteed not to overflow because `offset <=
+            // bytes_len`, and `addr + bytes_len <= usize::MAX` is a
+            // precondition of this method. Modulus is guaranteed not to divide
+            // by 0 because `align` is non-zero.
+            #[allow(clippy::arithmetic_side_effects)]
+            if (addr + offset) % self.align.get() != 0 {
+                return Err(MetadataCastError::Alignment);
+            }
+        }
 
         __const_debug_assert!(self_bytes <= bytes_len);
 
