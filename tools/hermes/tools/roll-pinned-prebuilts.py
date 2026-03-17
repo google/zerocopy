@@ -74,6 +74,17 @@ def get_release_by_tag(repo, tag):
     return response.json()
 
 
+def release_has_assets(release, repo_name):
+    """Returns True if the release contains all expected assets for our platforms."""
+    repo_slug = repo_name.split("/")[-1]
+    asset_names = {a["name"] for a in release.get("assets", [])}
+    for platform in PLATFORMS:
+        expected_asset = f"{repo_slug}-{platform}.tar.gz"
+        if expected_asset not in asset_names:
+            return False
+    return True
+
+
 def get_commit_from_tag(tag):
     """Extracts the git commit hash from a build tag.
 
@@ -300,6 +311,10 @@ def main():
             if args.aeneas_tag and a_tag != args.aeneas_tag:
                 continue
 
+            if not release_has_assets(a_rel, AENEAS_REPO):
+                print(f"Skipping {a_tag}: missing prebuilt assets.")
+                continue
+
             a_commit = get_commit_from_tag(a_tag)
             c_commit = get_charon_pin(a_commit)
 
@@ -312,7 +327,12 @@ def main():
             # build yet; in this case, we search back through history for the
             # last stable pair.
             c_rel = next(
-                (r for r in charon_releases if r["tag_name"].endswith(f"-{c_commit}")),
+                (
+                    r
+                    for r in charon_releases
+                    if r["tag_name"].endswith(f"-{c_commit}")
+                    and release_has_assets(r, CHARON_REPO)
+                ),
                 None,
             )
             if c_rel:

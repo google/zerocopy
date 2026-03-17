@@ -76,7 +76,7 @@ similar = "2.7.0"
 #
 # FIXME: Add a CI step to verify that this commit exists and matches the
 # toolchain version.
-aeneas_rev = "e99c02e27fa0ea0e5d7daec9bcd5874b630fcff3"
+aeneas_rev = "516dcacfe7196dccd6257e63010ff3de19b6452f"
 
 # The Lean toolchain version to use. This must match the version of Lean used
 # by Aeneas in the `lean-toolchain` file in the commit above.
@@ -111,14 +111,14 @@ macos-x86_64-charon = "ac31e12bfa117f81a716cc545ae4750ec99c122171258779a3ecd4fbf
 macos-x86_64-charon-driver = "b1557cc6a462186231de28cc73968500894509da85c931d71bc874a8a14d9b06"
 
 [package.metadata.hermes.dependencies.aeneas]
-tag = "build-2026.03.17.155205-e99c02e27fa0ea0e5d7daec9bcd5874b630fcff3"
+tag = "build-2026.03.17.143030-516dcacfe7196dccd6257e63010ff3de19b6452f"
 [package.metadata.hermes.dependencies.aeneas.checksums]
-linux-x86_64 = "6d5616cd0c51667d31f68ec1f02d2dd04dbf3e6a3bee187789fb2079f167a05b"
-linux-x86_64-aeneas = "67c8f637ad0eb2a4450cea979e90867811cf90ca3449b5e4e7f2bf79f0834da1"
-macos-aarch64 = "7762a4a79df8997a44a6de136d80482939612c62c26f6346be7536d5caec3646"
-macos-aarch64-aeneas = "cadadf5c2e9a64269489755a15c392357cf01e81863615986f6d259afbd2057e"
-macos-x86_64 = "2983c5000965d214197e44a6ce136d80482939612c62c26f6346be7536d5caec"
-macos-x86_64-aeneas = "e5f90c482f50040a6c3baa3d029e678dc52b8d2729cc8168716b6bd350c3bdaf"
+linux-x86_64 = "55690e6841f0e6c36c96496548f63a04e3c462be3f2a6487e279490de6fcdb6f"
+linux-x86_64-aeneas = "9461876a8d3b4c931d7d005b8a2c088e7321fc5010a2c312acf3b0bad05f32ce"
+macos-aarch64 = "1398e1064606d934668fcecdf8d0d4c4975db5dd4a037b698f04c6c3de243e05"
+macos-aarch64-aeneas = "273be81e1a3b0d140828c466a98ddbda6233bb2049fcc8fe190b55debf8485f7"
+macos-x86_64 = "050f5f5010ff9fb793abddf44942de24603c2eb36537d9a977d120d2f9dcaa64"
+macos-x86_64-aeneas = "e1b382cbb82c45b499367cb57857610ccf89146b20fecc71449b4a3d4f341e79"
 
 [[test]]
 name = "integration"
