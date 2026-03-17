@@ -64,6 +64,8 @@ pub trait Alignment: Sealed {
 /// other property of `T`. As a consequence, given `V: Validity`, `T`, and `U`
 /// where `T` and `U` have the same bit validity, `S(V, T) = S(V, U)`.
 ///
+/// TODO: Document compound validity.
+///
 /// It is guaranteed that the referent of any `ptr: Ptr<T, V>` is a member of
 /// `S(T, V)`. Unsafe code must ensure that this guarantee will be upheld for
 /// any existing `Ptr`s or any `Ptr`s that that code creates.
@@ -100,6 +102,7 @@ pub enum ValidityKind {
     AsInitialized,
     Initialized,
     Valid,
+    Compound(&'static [ValidityKind]),
 }
 
 /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
@@ -275,7 +278,7 @@ pub enum BecauseExclusive {}
 pub enum BecauseImmutable {}
 
 use sealed::Sealed;
-mod sealed {
+pub(crate) mod sealed {
     use super::*;
 
     pub trait Sealed {}
@@ -290,8 +293,6 @@ mod sealed {
     impl Sealed for AsInitialized {}
     impl Sealed for Initialized {}
     impl Sealed for Valid {}
-
-    impl<A: Sealed, AA: Sealed, V: Sealed> Sealed for (A, AA, V) {}
 
     impl Sealed for BecauseImmutable {}
     impl Sealed for BecauseExclusive {}
