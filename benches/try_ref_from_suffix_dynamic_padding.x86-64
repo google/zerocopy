@@ -1,11 +1,11 @@
 bench_try_ref_from_suffix_dynamic_padding:
-	lea eax, [rsi + rdi]
-	test al, 3
-	jne .LBB5_1
 	movabs rax, 9223372036854775804
 	and rax, rsi
 	cmp rax, 9
-	jae .LBB5_3
+	jb .LBB5_1
+	lea ecx, [rsi + rdi]
+	test cl, 3
+	je .LBB5_3
 .LBB5_1:
 	xor eax, eax
 	ret
