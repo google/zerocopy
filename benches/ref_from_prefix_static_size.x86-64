@@ -1,8 +1,7 @@
 bench_ref_from_prefix_static_size:
 	xor eax, eax
-	cmp rsi, 6
-	mov rcx, rdi
-	cmovb rcx, rax
 	test dil, 1
-	cmove rax, rcx
+	cmovne rdi, rax
+	cmp rsi, 6
+	cmovae rax, rdi
 	ret
