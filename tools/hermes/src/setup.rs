@@ -26,13 +26,6 @@ pub enum Platform {
     MacosX86_64,
 }
 
-/// A Hermes toolchain dependency.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Dependency {
-    Charon,
-    Aeneas,
-}
-
 /// A specific tool within a Hermes dependency.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Tool {
@@ -54,29 +47,6 @@ impl Tool {
     }
 }
 
-impl Dependency {
-    /// Returns the canonical name of the dependency.
-    pub fn name(&self) -> &'static str {
-        match self {
-            Self::Charon => "charon",
-            Self::Aeneas => "aeneas",
-        }
-    }
-
-    /// Returns the expected version tag for this dependency.
-    pub fn tag(&self) -> &'static str {
-        match self {
-            Self::Charon => env!("HERMES_CHARON_TAG"),
-            Self::Aeneas => env!("HERMES_AENEAS_TAG"),
-        }
-    }
-}
-
-impl std::fmt::Display for Dependency {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.name())
-    }
-}
 
 impl Platform {
     /// Returns the target triple for this platform.
@@ -108,16 +78,12 @@ impl Platform {
     /// provided by `build.rs` from the project's `Cargo.toml`. This ensures
     /// that we always download and verify the exact versions of dependencies
     /// that this version of Hermes was built to work with.
-    pub fn expected_archive_hash(&self, dep: Dependency) -> [u8; 32] {
-        use Dependency::*;
+    pub fn expected_archive_hash(&self) -> [u8; 32] {
         use Platform::*;
-        match (dep, self) {
-            (Charon, LinuxX86_64) => decode_hex_env!("HERMES_CHARON_CHECKSUM_LINUX_X86_64"),
-            (Charon, MacosAArch64) => decode_hex_env!("HERMES_CHARON_CHECKSUM_MACOS_AARCH64"),
-            (Charon, MacosX86_64) => decode_hex_env!("HERMES_CHARON_CHECKSUM_MACOS_X86_64"),
-            (Aeneas, LinuxX86_64) => decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64"),
-            (Aeneas, MacosAArch64) => decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64"),
-            (Aeneas, MacosX86_64) => decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_X86_64"),
+        match self {
+            LinuxX86_64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64"),
+            MacosAArch64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64"),
+            MacosX86_64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_X86_64"),
         }
     }
 
@@ -127,39 +93,38 @@ impl Platform {
     /// This is used for verifying individual binaries within a toolchain,
     /// allowing the `setup` command to detect and repair corruption of any
     /// of the toolchain components.
-    pub fn expected_bin_hash(&self, dep: Dependency, tool: Tool) -> [u8; 32] {
-        use Dependency::*;
+    pub fn expected_bin_hash(&self, tool: Tool) -> [u8; 32] {
         use Platform::*;
-        match (dep, self, tool) {
-            (Charon, LinuxX86_64, Tool::Charon) => {
-                decode_hex_env!("HERMES_CHARON_CHECKSUM_LINUX_X86_64_CHARON")
+        match (self, tool) {
+            (LinuxX86_64, Tool::Charon) => {
+                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64_CHARON")
             }
-            (Charon, LinuxX86_64, Tool::CharonDriver) => {
-                decode_hex_env!("HERMES_CHARON_CHECKSUM_LINUX_X86_64_CHARON_DRIVER")
+            (LinuxX86_64, Tool::CharonDriver) => {
+                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64_CHARON_DRIVER")
             }
-            (Charon, MacosAArch64, Tool::Charon) => {
-                decode_hex_env!("HERMES_CHARON_CHECKSUM_MACOS_AARCH64_CHARON")
+            (MacosAArch64, Tool::Charon) => {
+                decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON")
             }
-            (Charon, MacosAArch64, Tool::CharonDriver) => {
-                decode_hex_env!("HERMES_CHARON_CHECKSUM_MACOS_AARCH64_CHARON_DRIVER")
+            (MacosAArch64, Tool::CharonDriver) => {
+                decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON_DRIVER")
             }
-            (Charon, MacosX86_64, Tool::Charon) => {
-                decode_hex_env!("HERMES_CHARON_CHECKSUM_MACOS_X86_64_CHARON")
+            (MacosX86_64, Tool::Charon) => {
+                decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_X86_64_CHARON")
             }
-            (Charon, MacosX86_64, Tool::CharonDriver) => {
-                decode_hex_env!("HERMES_CHARON_CHECKSUM_MACOS_X86_64_CHARON_DRIVER")
+            (MacosX86_64, Tool::CharonDriver) => {
+                decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_X86_64_CHARON_DRIVER")
             }
-            (Aeneas, LinuxX86_64, Tool::Aeneas) => {
+            (LinuxX86_64, Tool::Aeneas) => {
                 decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64_AENEAS")
             }
-            (Aeneas, MacosAArch64, Tool::Aeneas) => {
+            (MacosAArch64, Tool::Aeneas) => {
                 decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64_AENEAS")
             }
-            (Aeneas, MacosX86_64, Tool::Aeneas) => {
+            (MacosX86_64, Tool::Aeneas) => {
                 decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_X86_64_AENEAS")
             }
             _ => {
-                unreachable!("unsupported tool/dependency combination for individual verification")
+                unreachable!("unsupported tool combination for individual verification")
             }
         }
     }
@@ -177,21 +142,19 @@ impl Toolchain {
         let home =
             dirs::home_dir().ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?;
         let platform = Platform::detect()?;
-        let charon_hash = platform.expected_archive_hash(Dependency::Charon);
-        let aeneas_hash = platform.expected_archive_hash(Dependency::Aeneas);
+        let aeneas_hash = platform.expected_archive_hash();
 
-        // We produce a unique hash of all toolchain component versions to
+        // We produce a unique hash of the toolchain component versions to
         // ensure that each combination of versions is installed into its own
         // isolated directory. This allows multiple versions of Hermes to
         // coexist on the same machine without colliding, and ensures that
         // switching branches or updating Hermes will automatically point to
         // the correct toolchain version.
         //
-        // We hash the expected archive checksums rather than version tags.
+        // We hash the expected archive checksum rather than version tags.
         // Checksums provide a stable, data-anchored identity for the toolchain
         // components that cannot drift from the underlying binaries.
         let mut hasher = Sha256::new();
-        hasher.update(charon_hash);
         hasher.update(aeneas_hash);
         let hash = format!("{:x}", hasher.finalize());
         let short_hash = &hash[..12];
@@ -332,16 +295,10 @@ const fn decode_nibble(c: u8) -> Option<u8> {
     }
 }
 
-/// Returns the expected tools for a given dependency.
-fn dependency_tools(dep: Dependency) -> &'static [Tool] {
-    match dep {
-        Dependency::Charon => &[Tool::Charon, Tool::CharonDriver],
-        Dependency::Aeneas => &[Tool::Aeneas],
-    }
-}
+const TOOLS: &[Tool] = &[Tool::Aeneas, Tool::Charon, Tool::CharonDriver];
 
 /// Extracts a tar.gz archive to the target directory.
-fn extract_artifact(data: &[u8], target_dir: &Path, dep: Dependency) -> Result<()> {
+fn extract_artifact(data: &[u8], target_dir: &Path) -> Result<()> {
     log::info!("Extracting to {:?}...", target_dir);
     let tar = GzDecoder::new(data);
     let mut archive = Archive::new(tar);
@@ -352,21 +309,8 @@ fn extract_artifact(data: &[u8], target_dir: &Path, dep: Dependency) -> Result<(
         let mut entry = entry.context("Failed to get archive entry")?;
         let path = entry.path().context("Failed to get entry path")?.to_path_buf();
 
-        // If this is the aeneas dependency, only extract the aeneas binary
-        // (which may be nested in a 'bin/' directory). We skip all other files,
-        // including the 'backends' directory, to keep the toolchain minimal.
-        let unpacked_path = if dep == Dependency::Aeneas {
-            if path.file_name().is_some_and(|n| n == "aeneas") {
-                let dest = target_dir.join("aeneas");
-                entry.unpack(dest).context("Failed to unpack aeneas binary")?;
-                target_dir.join("aeneas")
-            } else {
-                continue;
-            }
-        } else {
-            entry.unpack_in(target_dir).context("Failed to unpack archive entry")?;
-            target_dir.join(&path)
-        };
+        entry.unpack_in(target_dir).context("Failed to unpack archive entry")?;
+        let unpacked_path = target_dir.join(&path);
 
         // Ensure that the extracted file/directory has write permissions.
         // Some archives (like Nix-built ones) may contain read-only files,
@@ -398,68 +342,52 @@ pub fn run_setup() -> Result<()> {
     let _lock = toolchain.lock_exclusive()?;
     let platform = Platform::detect()?;
 
-    let dependencies = [Dependency::Charon, Dependency::Aeneas];
+    let tag = env!("HERMES_AENEAS_TAG");
+    let mut needs_install = false;
 
-    for dep in dependencies {
-        let tag = dep.tag();
-
-        let tools = dependency_tools(dep);
-        let mut needs_install = false;
-
-        if tools.is_empty() {
+    for tool in TOOLS {
+        let bin_path = toolchain.bin_dir().join(tool.name());
+        if !bin_path.exists() {
+            log::info!("{} is missing, re-installing toolchain", tool.name());
             needs_install = true;
-        } else {
-            for tool in tools {
-                let bin_path = toolchain.bin_dir().join(tool.name());
-                if !bin_path.exists() {
-                    log::info!("{} is missing, re-installing {dep}", tool.name());
-                    needs_install = true;
-                    break;
-                }
-
-                // Check if an expected SHA-256 checksum is available for this
-                // binary. If so, verify that the existing binary matches the
-                // expected hash. If the hash does not match, we re-install the
-                // entire toolchain component to ensure we have a consistent
-                // and verified set of binaries. This protects against
-                // accidental corruption of toolchain components and ensures
-                // that all binaries match the versions expected by this build
-                // of Hermes.
-                let expected_bin_hash = platform.expected_bin_hash(dep, *tool);
-                let actual_hash = calculate_file_hash(&bin_path)?;
-                if actual_hash != expected_bin_hash {
-                    log::info!(
-                        "{} hash mismatch (expected {}, got {}), re-installing {dep}",
-                        tool.name(),
-                        format_hex(&expected_bin_hash),
-                        format_hex(&actual_hash)
-                    );
-                    needs_install = true;
-                    break;
-                }
-            }
+            break;
         }
 
-        if !needs_install {
-            log::info!("{dep} is already installed and verified");
-            continue;
+        // Check if an expected SHA-256 checksum is available for this
+        // binary. If so, verify that the existing binary matches the
+        // expected hash. If the hash does not match, we re-install the
+        // entire toolchain component to ensure we have a consistent
+        // and verified set of binaries. This protects against
+        // accidental corruption of toolchain components and ensures
+        // that all binaries match the versions expected by this build
+        // of Hermes.
+        let expected_bin_hash = platform.expected_bin_hash(*tool);
+        let actual_hash = calculate_file_hash(&bin_path)?;
+        if actual_hash != expected_bin_hash {
+            log::info!(
+                "{} hash mismatch (expected {}, got {}), re-installing toolchain",
+                tool.name(),
+                format_hex(&expected_bin_hash),
+                format_hex(&actual_hash)
+            );
+            needs_install = true;
+            break;
         }
+    }
 
+    if needs_install {
         // Perform installation. Note that, because we validate SHA-256
         // checksums against values baked into the binary, allowing the user to
         // override the download URL does not represent a security risk.
-        let env_key = format!("HERMES_{}_SETUP_BASE_URL", dep.name().to_uppercase());
-        let base_url = std::env::var(env_key)
-            .or_else(|_| std::env::var("HERMES_SETUP_BASE_URL"))
-            .unwrap_or_else(|_| {
-                format!("https://github.com/AeneasVerif/{}/releases/download", dep.name())
-            });
+        let env_key = "HERMES_SETUP_BASE_URL";
+        let base_url = std::env::var(env_key).unwrap_or_else(|_| {
+            "https://github.com/AeneasVerif/aeneas/releases/download".to_string()
+        });
 
         let url = format!(
-            "{}/{}/{}-{}.tar.gz",
+            "{}/{}/aeneas-{}.tar.gz",
             base_url,
             tag,
-            dep.name(),
             match platform {
                 Platform::LinuxX86_64 => "linux-x86_64",
                 Platform::MacosAArch64 => "macos-aarch64",
@@ -467,13 +395,15 @@ pub fn run_setup() -> Result<()> {
             }
         );
 
-        let expected_archive_hash = platform.expected_archive_hash(dep);
+        let expected_archive_hash = platform.expected_archive_hash();
 
         let data = download_artifact(&url, &expected_archive_hash)?;
 
-        extract_artifact(&data, &toolchain.root, dep)?;
+        extract_artifact(&data, &toolchain.root)?;
 
-        println!("Successfully installed {dep} v{tag}");
+        println!("Successfully installed toolchain v{tag}");
+    } else {
+        log::info!("toolchain is already installed and verified");
     }
 
     Ok(())
@@ -576,14 +506,14 @@ mod tests {
         }
         let data = enc.finish().unwrap();
 
-        // Test normal extraction (non-aeneas)
-        extract_artifact(&data, &target, Dependency::Charon).expect("Extraction should succeed");
+        // Test normal extraction
+        extract_artifact(&data, &target).expect("Extraction should succeed");
 
         let hello_path = target.join("hello.txt");
         assert!(hello_path.exists());
         assert_eq!(fs::read_to_string(&hello_path).unwrap(), "world");
 
-        // Test aeneas extraction (should ONLY extract 'aeneas' binary)
+        // Test aeneas extraction (should extract everything)
         let aeneas_target = temp.path().join("aeneas_extracted");
         let mut enc = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
         {
@@ -591,12 +521,12 @@ mod tests {
 
             // Add aeneas binary
             let mut header = tar::Header::new_gnu();
-            header.set_path("bin/aeneas").unwrap();
+            header.set_path("aeneas").unwrap();
             header.set_size(6);
             header.set_cksum();
             tar.append(&header, b"binary" as &[u8]).unwrap();
 
-            // Add backends directory (should be skipped)
+            // Add backends directory
             let mut header = tar::Header::new_gnu();
             header.set_path("backends/lean/test.lean").unwrap();
             header.set_size(4);
@@ -606,12 +536,11 @@ mod tests {
             tar.finish().unwrap();
         }
         let aeneas_data = enc.finish().unwrap();
-        extract_artifact(&aeneas_data, &aeneas_target, Dependency::Aeneas)
+        extract_artifact(&aeneas_data, &aeneas_target)
             .expect("Aeneas extraction should succeed");
 
         assert!(aeneas_target.join("aeneas").exists());
-        assert!(!aeneas_target.join("backends").exists());
-        assert!(!aeneas_target.join("bin").exists());
+        assert!(aeneas_target.join("backends/lean/test.lean").exists());
 
         #[cfg(unix)]
         {
@@ -623,25 +552,13 @@ mod tests {
 
     #[test]
     fn test_metadata_injection() {
-        // Verify that build.rs correctly parsed Cargo.toml and injected the Charon tag.
-        let charon_tag = env!("HERMES_CHARON_TAG");
-        assert!(!charon_tag.is_empty(), "HERMES_CHARON_TAG should not be empty");
-        assert!(charon_tag.starts_with("build-"), "Tag should follow build-* pattern");
-
         let aeneas_tag = env!("HERMES_AENEAS_TAG");
         assert!(!aeneas_tag.is_empty(), "HERMES_AENEAS_TAG should not be empty");
-
-        // Verify that the Linux x86_64 checksum was injected for both.
-        let charon_checksum = env!("HERMES_CHARON_CHECKSUM_LINUX_X86_64");
-        assert_eq!(
-            charon_checksum,
-            "6c8790a41d9736c2ccf0b46430db0602c171526d989f32b4ae268888d6e86a48"
-        );
 
         let aeneas_checksum = env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64");
         assert_eq!(
             aeneas_checksum,
-            "6d5616cd0c51667d31f68ec1f02d2dd04dbf3e6a3bee187789fb2079f167a05b"
+            "1ab3b4975f23f04534ddabc3110af2d1757587081715b2da7bb21757bf0167a1"
         );
     }
 

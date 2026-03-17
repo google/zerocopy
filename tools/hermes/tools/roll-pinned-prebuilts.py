@@ -12,6 +12,11 @@ from pathlib import Path
 import tomlkit
 from requests.exceptions import RequestException
 
+
+class CompatibilityError(Exception):
+    """Raised when a release is found but is not compatible with our requirements."""
+    pass
+
 # Default timeout for all network requests in seconds.
 DEFAULT_TIMEOUT = 30
 
@@ -162,9 +167,7 @@ def get_asset_checksums(release, repo_name):
                 resp.raise_for_status()
                 data = resp.content
             except RequestException as e:
-                print(f"ERROR: Failed to download asset {asset_name}")
-                print(f"       {e}")
-                sys.exit(1)
+                raise CompatibilityError(f"Failed to download asset {asset_name}: {e}")
 
             checksums[platform] = calculate_sha256(data)
 
@@ -193,20 +196,14 @@ def get_asset_checksums(release, repo_name):
                             found_binaries.add(name)
 
                     # Verify that we found the expected binaries for this repo.
-                    expected = (
-                        ["aeneas"]
-                        if repo_name.lower().endswith("/aeneas")
-                        else ["charon", "charon-driver"]
-                    )
+                    expected = ["aeneas", "charon", "charon-driver"]
                     missing = [b for b in expected if b not in found_binaries]
                     if missing:
-                        print(
-                            f"ERROR: Release {release['tag_name']} for {platform} is missing expected binaries: {', '.join(missing)}"
+                        raise CompatibilityError(
+                            f"Release {release['tag_name']} for {platform} is missing expected binaries: {', '.join(missing)}"
                         )
-                        sys.exit(1)
             except tarfile.TarError as e:
-                print(f"ERROR: Failed to extract archive {asset_name}: {e}")
-                sys.exit(1)
+                raise CompatibilityError(f"Failed to extract archive {asset_name}: {e}")
 
     return checksums
 
@@ -225,7 +222,6 @@ def update_cargo_toml(aeneas_meta, charon_meta, dry_run=False):
     if dry_run:
         print("\n[DRY RUN] Would update Cargo.toml with:")
         print(f"  Aeneas Tag: {aeneas_meta['tag']}")
-        print(f"  Charon Tag: {charon_meta['tag']}")
         print(f"  Lean Toolchain: {aeneas_meta['lean_toolchain']}")
         print(f"  Charon Version: {charon_meta['version']}")
         return
@@ -243,29 +239,25 @@ def update_cargo_toml(aeneas_meta, charon_meta, dry_run=False):
 
         # Update the build-rs section, which defines the environment variables
         # injected into the Hermes build process.
-        build_rs = metadata["build-rs"]
-        build_rs["aeneas_rev"] = aeneas_meta["commit"]
-        build_rs["lean_toolchain"] = aeneas_meta["lean_toolchain"]
-        build_rs["charon_version"] = charon_meta["version"]
+        metadata["build-rs"]["aeneas_rev"] = aeneas_meta["commit"]
+        metadata["build-rs"]["lean_toolchain"] = aeneas_meta["lean_toolchain"]
+        metadata["build-rs"]["charon_version"] = charon_meta["version"]
 
         # Update the hermes.dependencies section, which defines the download URLs
         # and checksums used by the 'cargo hermes setup' command.
         deps = metadata["hermes"]["dependencies"]
 
-        # Update Charon metadata.
-        deps["charon"]["tag"] = charon_meta["tag"]
-        for k, v in charon_meta["checksums"].items():
-            deps["charon"]["checksums"][k] = v
+        # Remove separate Charon metadata if it exists.
+        if "charon" in deps:
+            del deps["charon"]
 
         # Update Aeneas metadata.
         deps["aeneas"]["tag"] = aeneas_meta["tag"]
-        for k, v in aeneas_meta["checksums"].items():
+        deps["aeneas"]["checksums"] = tomlkit.table()
+        for k, v in sorted(aeneas_meta["checksums"].items()):
             deps["aeneas"]["checksums"][k] = v
     except KeyError as e:
         print(f"ERROR: Cargo.toml missing expected metadata section: {e}")
-        print(
-            "Expected structure: [package.metadata.build-rs] and [package.metadata.hermes.dependencies]"
-        )
         sys.exit(1)
 
     try:
@@ -291,121 +283,79 @@ def main():
     args = parser.parse_args()
 
     target_aeneas_release = None
-    target_charon_release = None
 
     if args.aeneas_tag and args.charon_tag:
         print(f"Using forced tags: Aeneas={args.aeneas_tag}, Charon={args.charon_tag}")
         target_aeneas_release = get_release_by_tag(AENEAS_REPO, args.aeneas_tag)
-        target_charon_release = get_release_by_tag(CHARON_REPO, args.charon_tag)
     else:
         print("Fetching releases from GitHub...")
         aeneas_releases = get_automated_releases(AENEAS_REPO)
-        charon_releases = get_automated_releases(CHARON_REPO)
 
-        print("Searching for a compatible pair of Aeneas and Charon releases...")
+        print("Searching for the latest stable Aeneas release...")
+        target_aeneas_release = None
+        target_aeneas_meta = None
+
         for a_rel in aeneas_releases:
             a_tag = a_rel["tag_name"]
+            if a_tag.startswith("build-"):
+                if args.aeneas_tag and a_tag != args.aeneas_tag:
+                    continue
 
-            # If the user specified an Aeneas tag, skip all others until we find
-            # the exact match.
-            if args.aeneas_tag and a_tag != args.aeneas_tag:
-                continue
+                if not release_has_assets(a_rel, AENEAS_REPO):
+                    print(f"Skipping {a_tag}: missing prebuilt assets.")
+                    continue
 
-            if not release_has_assets(a_rel, AENEAS_REPO):
-                print(f"Skipping {a_tag}: missing prebuilt assets.")
-                continue
+                a_commit = get_commit_from_tag(a_tag)
+                c_commit = get_charon_pin(a_commit)
 
-            a_commit = get_commit_from_tag(a_tag)
-            c_commit = get_charon_pin(a_commit)
+                if not c_commit:
+                    print(f"Skipping {a_tag}: could not find charon-pin file.")
+                    continue
 
-            if not c_commit:
-                print(f"Skipping {a_tag}: could not find charon-pin file.")
-                continue
+                # We still need to fetch the Charon version pinned by Aeneas to update
+                # Cargo.toml accurately. This ensures Hermes knows which LLBC format it
+                # expects.
+                print(f"Checking {a_tag}...")
+                charon_cargo = fetch_file_content(CHARON_REPO, c_commit, "charon/Cargo.toml")
+                charon_version = tomlkit.parse(charon_cargo)["package"]["version"]
 
-            # Find a Charon release that matches the pin in Aeneas. Sometimes
-            # Aeneas pins a Charon commit that hasn't finished its automated
-            # build yet; in this case, we search back through history for the
-            # last stable pair.
-            c_rel = next(
-                (
-                    r
-                    for r in charon_releases
-                    if r["tag_name"].endswith(f"-{c_commit}")
-                    and release_has_assets(r, CHARON_REPO)
-                ),
-                None,
-            )
-            if c_rel:
-                # If the user specified a Charon tag override, verify that it
-                # actually matches the pin in the Aeneas version we found.
-                if args.charon_tag and c_rel["tag_name"] != args.charon_tag:
-                    print(
-                        f"Skipping {a_tag}: pins Charon {c_commit[:8]} but user requested {args.charon_tag}"
-                    )
+                # Fetch additional metadata required for the Hermes build process and the
+                # 'setup' command.
+                lean_toolchain = fetch_file_content(
+                    AENEAS_REPO, a_commit, "backends/lean/lean-toolchain"
+                )
+                if not lean_toolchain:
+                    print(f"Skipping {a_tag}: missing lean-toolchain.")
+                    continue
+                lean_toolchain = lean_toolchain.strip()
+
+                print(f"  Fetching checksums from Aeneas artifact...")
+                try:
+                    a_checksums = get_asset_checksums(a_rel, AENEAS_REPO)
+                except CompatibilityError as e:
+                    print(f"  Skipping {a_tag}: {e}")
                     continue
 
                 target_aeneas_release = a_rel
-                target_charon_release = c_rel
-                print(f"Found compatible pair!")
+                target_aeneas_meta = {
+                    "tag": a_tag,
+                    "commit": a_commit,
+                    "lean_toolchain": lean_toolchain,
+                    "checksums": a_checksums,
+                    "version": charon_version,
+                }
                 break
-            else:
-                print(
-                    f"Skipping {a_tag}: pins Charon {c_commit[:8]} which has no release."
-                )
 
-    if not target_aeneas_release or not target_charon_release:
-        print(
-            "\nERROR: Could not find a compatible pair of Aeneas and Charon releases."
-        )
+    if not target_aeneas_release:
+        print("\nERROR: Could not find a suitable Aeneas release.")
         sys.exit(1)
-
-    a_tag = target_aeneas_release["tag_name"]
-    a_commit = get_commit_from_tag(a_tag)
-    c_tag = target_charon_release["tag_name"]
-    c_commit = get_commit_from_tag(c_tag)
 
     print(f"\nTargeting:")
-    print(f"  Aeneas: {a_tag}")
-    print(f"  Charon: {c_tag}")
+    print(f"  Aeneas Tag: {target_aeneas_meta['tag']}")
+    print(f"  Charon Version: {target_aeneas_meta['version']}")
 
-    # Fetch additional metadata required for the Hermes build process and the
-    # 'setup' command.
-    print("Fetching toolchain versions...")
-    lean_toolchain = fetch_file_content(
-        AENEAS_REPO, a_commit, "backends/lean/lean-toolchain"
-    )
-    if not lean_toolchain:
-        print(
-            f"ERROR: Could not find backends/lean/lean-toolchain in Aeneas at {a_commit}"
-        )
-        sys.exit(1)
-    lean_toolchain = lean_toolchain.strip()
-
-    charon_cargo = fetch_file_content(CHARON_REPO, c_commit, "charon/Cargo.toml")
-    charon_version = tomlkit.parse(charon_cargo)["package"]["version"]
-
-    print(f"Fetching checksums for Aeneas...")
-    a_checksums = get_asset_checksums(target_aeneas_release, AENEAS_REPO)
-
-    print(f"Fetching checksums for Charon...")
-    c_checksums = get_asset_checksums(target_charon_release, CHARON_REPO)
-
-    # Bundle all discovered metadata into structured objects for the update logic.
-    aeneas_meta = {
-        "tag": a_tag,
-        "commit": a_commit,
-        "lean_toolchain": lean_toolchain,
-        "checksums": a_checksums,
-    }
-
-    charon_meta = {
-        "tag": c_tag,
-        "commit": c_commit,
-        "version": charon_version,
-        "checksums": c_checksums,
-    }
-
-    update_cargo_toml(aeneas_meta, charon_meta, dry_run=args.dry_run)
+    charon_meta = {"version": target_aeneas_meta["version"]}
+    update_cargo_toml(target_aeneas_meta, charon_meta, dry_run=args.dry_run)
     if not args.dry_run:
         print("\nSuccessfully rolled toolchain updates!")
 

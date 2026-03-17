@@ -76,7 +76,7 @@ similar = "2.7.0"
 #
 # FIXME: Add a CI step to verify that this commit exists and matches the
 # toolchain version.
-aeneas_rev = "516dcacfe7196dccd6257e63010ff3de19b6452f"
+aeneas_rev = "e99c02e27fa0ea0e5d7daec9bcd5874b630fcff3"
 
 # The Lean toolchain version to use. This must match the version of Lean used
 # by Aeneas in the `lean-toolchain` file in the commit above.
@@ -95,30 +95,23 @@ lean_toolchain = "leanprover/lean4:v4.28.0-rc1"
 # version/commit ID once that's supported
 charon_version = "0.1.174"
 
-[package.metadata.hermes.dependencies.charon]
-# The per-commit release tag from AeneasVerif/charon
-tag = "build-2026.03.13.163309-923e13bfe090916ec9384508e1c1b73bb3b7f4ed"
-
-[package.metadata.hermes.dependencies.charon.checksums]
-linux-x86_64 = "6c8790a41d9736c2ccf0b46430db0602c171526d989f32b4ae268888d6e86a48"
-linux-x86_64-charon = "4e0f68df5e2a5a7f8cf1d5feeb994b6bb86012a58ca21dd282830f979a5373fc"
-linux-x86_64-charon-driver = "73bce4991d104573400f8995ca825019360ec9daf7ed5b262d6e31dabd385e64"
-macos-aarch64 = "63f1db8e28f2472c4c79603cc06307b7a9f299b84458ba45410913c8c89e3ced"
-macos-aarch64-charon = "20c9b7ecec13110287e1a4d78c4c71ca5b11e614f714a80ce95d6a5fefb42fd3"
-macos-aarch64-charon-driver = "9ea3bb8327b8ad910f5eaeaeaac1f5fbf8851ab0fb51448a55f96c9db63c4b21"
-macos-x86_64 = "3bf8260ee40abcc664ad891fbecc0094af5a85930f62322bd05ab25a0e8b0fb2"
-macos-x86_64-charon = "ac31e12bfa117f81a716cc545ae4750ec99c122171258779a3ecd4fbf983430d"
-macos-x86_64-charon-driver = "b1557cc6a462186231de28cc73968500894509da85c931d71bc874a8a14d9b06"
-
 [package.metadata.hermes.dependencies.aeneas]
-tag = "build-2026.03.17.143030-516dcacfe7196dccd6257e63010ff3de19b6452f"
+# The per-commit release tag from AeneasVerif/charon
+tag = "build-2026.03.17.155205-e99c02e27fa0ea0e5d7daec9bcd5874b630fcff3"
+
 [package.metadata.hermes.dependencies.aeneas.checksums]
-linux-x86_64 = "55690e6841f0e6c36c96496548f63a04e3c462be3f2a6487e279490de6fcdb6f"
+linux-x86_64 = "1ab3b4975f23f04534ddabc3110af2d1757587081715b2da7bb21757bf0167a1"
 linux-x86_64-aeneas = "9461876a8d3b4c931d7d005b8a2c088e7321fc5010a2c312acf3b0bad05f32ce"
-macos-aarch64 = "1398e1064606d934668fcecdf8d0d4c4975db5dd4a037b698f04c6c3de243e05"
+linux-x86_64-charon = "91eb829559dc8b66ba0bcab9680be89f3fea9f7ac8d292cb3621a78ad8ceda06"
+linux-x86_64-charon-driver = "9058c413966b2b0dd6d3535ad70c421b2879b516014947be753a022277cd89a0"
+macos-aarch64 = "d2cd6e72bca395a4c8adb9964c8f7cd05692059492c62313c1a2fb8fec08e88d"
 macos-aarch64-aeneas = "273be81e1a3b0d140828c466a98ddbda6233bb2049fcc8fe190b55debf8485f7"
-macos-x86_64 = "050f5f5010ff9fb793abddf44942de24603c2eb36537d9a977d120d2f9dcaa64"
+macos-aarch64-charon = "debeef127b0bf6dc3fbe8873522963b3057513b1c3242332d0783a88e3c7f0e4"
+macos-aarch64-charon-driver = "31f12c168f06bc1693d818135fdd5a5795197326c39e493e7caeb081422e2756"
+macos-x86_64 = "09fd68996d801db183ed620aefe4c4c1cc63e42c3a3b07de3ed7e5fcc7a1e6c8"
 macos-x86_64-aeneas = "e1b382cbb82c45b499367cb57857610ccf89146b20fecc71449b4a3d4f341e79"
+macos-x86_64-charon = "c33a62d9dc83588073b4a90dc088873c3de27f7ed25f1d369544a0c7b7c374f1"
+macos-x86_64-charon-driver = "aa2e2d642110c7e2fa17f4625c0af72fcd525e34cd7b792467bf2342cb7d6dc2"
 
 [[test]]
 name = "integration"
