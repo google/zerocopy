@@ -1,13 +1,15 @@
 bench_ref_from_suffix_dynamic_size:
-	mov rdx, rsi
+	cmp rsi, 4
+	jb .LBB5_1
+	mov rax, rdi
 	lea ecx, [rsi + rdi]
-	mov eax, edx
-	and eax, 1
-	add rax, rdi
-	xor esi, esi
-	sub rdx, 4
-	cmovb rax, rsi
-	shr rdx
 	test cl, 1
-	cmovne rax, rsi
+	jne .LBB5_1
+	lea rdx, [rsi - 4]
+	shr rdx
+	and esi, 1
+	add rax, rsi
+	ret
+.LBB5_1:
+	xor eax, eax
 	ret
