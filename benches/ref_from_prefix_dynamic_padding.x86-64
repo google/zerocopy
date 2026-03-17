@@ -1,22 +1,24 @@
 bench_ref_from_prefix_dynamic_padding:
-	xor edx, edx
-	mov eax, 0
-	test dil, 3
-	je .LBB5_1
-	ret
-.LBB5_1:
 	movabs rax, 9223372036854775804
-	and rsi, rax
-	cmp rsi, 9
-	jae .LBB5_3
+	and rax, rsi
+	cmp rax, 9
+	jae .LBB5_2
 	mov edx, 1
-	xor eax, eax
+	xor ecx, ecx
+	mov rax, rcx
+	ret
+.LBB5_2:
+	xor edx, edx
+	mov ecx, 0
+	test dil, 3
+	je .LBB5_3
+	mov rax, rcx
 	ret
 .LBB5_3:
-	add rsi, -9
+	add rax, -9
 	movabs rcx, -6148914691236517205
-	mov rax, rsi
 	mul rcx
 	shr rdx
-	mov rax, rdi
+	mov rcx, rdi
+	mov rax, rcx
 	ret

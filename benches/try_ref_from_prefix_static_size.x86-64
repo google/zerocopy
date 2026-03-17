@@ -1,8 +1,9 @@
 bench_try_ref_from_prefix_static_size:
 	cmp rsi, 6
 	setb al
-	or al, dil
-	test al, 1
+	mov ecx, edi
+	or cl, al
+	test cl, 1
 	jne .LBB5_2
 	movzx eax, word ptr [rdi]
 	cmp eax, 49344

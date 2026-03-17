@@ -2,19 +2,20 @@ bench_ref_from_bytes_dynamic_size:
 	mov rdx, rsi
 	cmp rsi, 4
 	setb al
-	or al, dil
-	test al, 1
-	je .LBB5_2
-	xor eax, eax
-	ret
-.LBB5_2:
+	mov ecx, edi
+	or cl, al
+	test cl, 1
+	jne .LBB5_1
 	lea rcx, [rdx - 4]
 	mov rsi, rcx
-	shr rsi
-	and rcx, -2
-	add rcx, 4
+	and rsi, -2
+	add rsi, 4
+	shr rcx
 	xor eax, eax
-	cmp rdx, rcx
-	cmove rdx, rsi
+	cmp rdx, rsi
+	cmove rdx, rcx
 	cmove rax, rdi
+	ret
+.LBB5_1:
+	xor eax, eax
 	ret
