@@ -19,10 +19,9 @@ fn ui() {
         .rustc_arg("-Wwarnings") // To ensure .stderr files reflect typical user encounter
         .run();
 
-    // This tests the behavior when `--cfg zerocopy_derive_union_into_bytes` is
-    // not present.
+    // This tests the behavior when various `--cfg` flags are not present.
     UiTestRunner::new()
-        .subdir("union_into_bytes_cfg")
+        .subdir("cfgs")
         .rustc_arg("-Wwarnings") // To ensure .stderr files reflect typical user encounter
         .run();
 }
