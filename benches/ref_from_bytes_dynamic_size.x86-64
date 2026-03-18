@@ -10,11 +10,11 @@ bench_ref_from_bytes_dynamic_size:
 .LBB5_2:
 	lea rcx, [rdx - 4]
 	mov rsi, rcx
-	and rsi, -2
-	add rsi, 4
-	shr rcx
+	shr rsi
+	and rcx, -2
+	add rcx, 4
 	xor eax, eax
-	cmp rdx, rsi
-	cmove rdx, rcx
+	cmp rdx, rcx
+	cmove rdx, rsi
 	cmove rax, rdi
 	ret
