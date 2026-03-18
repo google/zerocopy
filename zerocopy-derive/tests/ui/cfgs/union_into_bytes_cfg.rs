@@ -18,6 +18,7 @@ extern crate zerocopy_renamed;
 use zerocopy_renamed::IntoBytes;
 
 #[derive(IntoBytes)]
+//~^ ERROR: requires --cfg zerocopy_derive_union_into_bytes
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union Foo {

@@ -1,13 +1,5 @@
-error: `on_error` is experimental; pass '--cfg zerocopy_unstable_derive_on_error' to enable
-  --> tests/ui-nightly/cfgs/on_error.rs:13:10
-   |
-13 | #[derive(FromBytes)]
-   |          ^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
 error[E0277]: the trait bound `bool: FromBytes` is not satisfied
-  --> tests/ui-nightly/cfgs/on_error.rs:13:10
+  --> $DIR/on_error.rs:13:10
    |
 13 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`
@@ -22,10 +14,14 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
              (A, B, C, D, E, F)
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
-           and $N others
+           and 79 others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
  9 + #![feature(trivial_bounds)]
    |
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0277`.
