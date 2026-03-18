@@ -125,16 +125,23 @@ impl UiTestRunner {
 
         let mut command = Command::new("cargo");
         command.current_dir(workspace_root.clone());
-        // We strip `--cfg zerocopy_derive_union_into_bytes` from `RUSTFLAGS` so
-        // that the `zerocopy-derive` proc macro is built without it. This ensures
-        // it generates the `#[cfg(not(zerocopy_derive_union_into_bytes))]` checks
-        // into the UI tests, which we can then explicitly enable or disable via
-        // `rustc_args`.
+        // We strip `--cfg zerocopy_derive_union_into_bytes` and `--cfg
+        // zerocopy_unstable_derive_on_error` from `RUSTFLAGS` so that the
+        // `zerocopy-derive` proc macro is built without them. This ensures it
+        // generates the feature-gate checks into the UI tests, which we can
+        // then explicitly enable or disable via `rustc_args`.
         let mut rustflags = env::var("RUSTFLAGS").unwrap_or_default();
-        rustflags = rustflags.replace("--cfg zerocopy_derive_union_into_bytes", "");
+        let cfgs_to_strip =
+            ["--cfg zerocopy_derive_union_into_bytes", "--cfg zerocopy_unstable_derive_on_error"];
+        for &cfg in &cfgs_to_strip {
+            rustflags = rustflags.replace(cfg, "");
+        }
         if let Ok(flags) = env::var("RUSTDOCFLAGS") {
-            command
-                .env("RUSTDOCFLAGS", flags.replace("--cfg zerocopy_derive_union_into_bytes", ""));
+            let mut new_flags = flags;
+            for &cfg in &cfgs_to_strip {
+                new_flags = new_flags.replace(cfg, "");
+            }
+            command.env("RUSTDOCFLAGS", new_flags);
         }
         command.env("RUSTFLAGS", rustflags);
         command.env_remove("CARGO_ENCODED_RUSTFLAGS");
