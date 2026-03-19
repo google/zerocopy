@@ -4005,7 +4005,7 @@ pub unsafe trait FromBytes: FromZeros {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[inline(always)]
     fn ref_from_bytes(source: &[u8]) -> Result<&Self, CastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
