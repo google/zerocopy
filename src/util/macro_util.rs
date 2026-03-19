@@ -767,14 +767,20 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
         )
         // SAFETY: By the preceding assert, `Dst` and `Wrapping<Dst>` have the
         // same alignment.
-        .map(|dst| unsafe { crate::util::transmute_ref::<_, _, BecauseImmutable>(dst) })
-        .map_err(|err| {
-            // SAFETY: By the preceding assert, `Src` and `Wrapping<Src>` have the
-            // same alignment.
-            ValidityError::new(unsafe {
-                crate::util::transmute_ref::<_, _, BecauseImmutable>(err.into_src())
-            })
-        })
+        .map(
+            #[inline(always)]
+            |dst| unsafe { crate::util::transmute_ref::<_, _, BecauseImmutable>(dst) },
+        )
+        .map_err(
+            #[inline(always)]
+            |err| {
+                // SAFETY: By the preceding assert, `Src` and `Wrapping<Src>` have the
+                // same alignment.
+                ValidityError::new(unsafe {
+                    crate::util::transmute_ref::<_, _, BecauseImmutable>(err.into_src())
+                })
+            },
+        )
     }
 }
 
