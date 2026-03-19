@@ -141,6 +141,15 @@
 //! [duplicate-import-errors]: https://github.com/google/zerocopy/issues/1587
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 //!
+//! # Build Tuning
+//! 
+//! ## `--cfg zerocopy_inline_always`
+//! 
+//! Upgrades `#[inline]` to `#[inline(always)]` on many of zerocopy's public
+//! functions and methods. This provides a narrowly-scoped alternative that
+//! *may* improve the optimization of hot paths using zerocopy without the broad
+//! compile-time penalties of configuring `codegen-units=1`.
+//! 
 //! # Security Ethos
 //!
 //! Zerocopy is expressly designed for use in security-critical contexts. We
@@ -1814,7 +1823,8 @@ pub unsafe trait TryFromBytes {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_bytes(source: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
@@ -1936,7 +1946,8 @@ pub unsafe trait TryFromBytes {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), TryCastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
@@ -2045,7 +2056,8 @@ pub unsafe trait TryFromBytes {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), TryCastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
@@ -2138,7 +2150,8 @@ pub unsafe trait TryFromBytes {
     ///
     /// See [`TryFromBytes::try_ref_from_bytes`](#method.try_ref_from_bytes.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_bytes(bytes: &mut [u8]) -> Result<&mut Self, TryCastError<&mut [u8], Self>>
     where
         Self: KnownLayout + IntoBytes,
@@ -2246,7 +2259,8 @@ pub unsafe trait TryFromBytes {
     ///
     /// See [`TryFromBytes::try_ref_from_prefix`](#method.try_ref_from_prefix.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_prefix(
         source: &mut [u8],
     ) -> Result<(&mut Self, &mut [u8]), TryCastError<&mut [u8], Self>>
@@ -2345,7 +2359,8 @@ pub unsafe trait TryFromBytes {
     ///
     /// See [`TryFromBytes::try_ref_from_suffix`](#method.try_ref_from_suffix.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_suffix(
         source: &mut [u8],
     ) -> Result<(&mut [u8], &mut Self), TryCastError<&mut [u8], Self>>
@@ -2449,7 +2464,8 @@ pub unsafe trait TryFromBytes {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_bytes_with_elems(
         source: &[u8],
         count: usize,
@@ -2569,7 +2585,8 @@ pub unsafe trait TryFromBytes {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_prefix_with_elems(
         source: &[u8],
         count: usize,
@@ -2676,7 +2693,8 @@ pub unsafe trait TryFromBytes {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_suffix_with_elems(
         source: &[u8],
         count: usize,
@@ -2771,7 +2789,8 @@ pub unsafe trait TryFromBytes {
     ///
     /// See [`TryFromBytes::try_ref_from_bytes_with_elems`](#method.try_ref_from_bytes_with_elems.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_bytes_with_elems(
         source: &mut [u8],
         count: usize,
@@ -2881,7 +2900,8 @@ pub unsafe trait TryFromBytes {
     ///
     /// See [`TryFromBytes::try_ref_from_prefix_with_elems`](#method.try_ref_from_prefix_with_elems.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_prefix_with_elems(
         source: &mut [u8],
         count: usize,
@@ -2980,7 +3000,8 @@ pub unsafe trait TryFromBytes {
     ///
     /// See [`TryFromBytes::try_ref_from_suffix_with_elems`](#method.try_ref_from_suffix_with_elems.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_suffix_with_elems(
         source: &mut [u8],
         count: usize,
@@ -3046,7 +3067,8 @@ pub unsafe trait TryFromBytes {
         format = "coco_static_size",
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_read_from_bytes(source: &[u8]) -> Result<Self, TryReadError<&[u8], Self>>
     where
         Self: Sized,
@@ -3123,7 +3145,8 @@ pub unsafe trait TryFromBytes {
         format = "coco_static_size",
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_read_from_prefix(source: &[u8]) -> Result<(Self, &[u8]), TryReadError<&[u8], Self>>
     where
         Self: Sized,
@@ -3201,7 +3224,8 @@ pub unsafe trait TryFromBytes {
         format = "coco_static_size",
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_read_from_suffix(source: &[u8]) -> Result<(&[u8], Self), TryReadError<&[u8], Self>>
     where
         Self: Sized,
@@ -4005,7 +4029,8 @@ pub unsafe trait FromBytes: FromZeros {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline(always)]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn ref_from_bytes(source: &[u8]) -> Result<&Self, CastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
@@ -4116,7 +4141,8 @@ pub unsafe trait FromBytes: FromZeros {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), CastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
@@ -4209,7 +4235,8 @@ pub unsafe trait FromBytes: FromZeros {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), CastError<&[u8], Self>>
     where
         Self: Immutable + KnownLayout,
@@ -4292,7 +4319,8 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// See [`FromBytes::ref_from_bytes`](#method.ref_from_bytes.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn mut_from_bytes(source: &mut [u8]) -> Result<&mut Self, CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout,
@@ -4382,7 +4410,8 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// See [`FromBytes::ref_from_prefix`](#method.ref_from_prefix.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn mut_from_prefix(
         source: &mut [u8],
     ) -> Result<(&mut Self, &mut [u8]), CastError<&mut [u8], Self>>
@@ -4462,7 +4491,8 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// See [`FromBytes::ref_from_suffix`](#method.ref_from_suffix.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn mut_from_suffix(
         source: &mut [u8],
     ) -> Result<(&mut [u8], &mut Self), CastError<&mut [u8], Self>>
@@ -4553,7 +4583,8 @@ pub unsafe trait FromBytes: FromZeros {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn ref_from_bytes_with_elems(
         source: &[u8],
         count: usize,
@@ -4651,7 +4682,8 @@ pub unsafe trait FromBytes: FromZeros {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn ref_from_prefix_with_elems(
         source: &[u8],
         count: usize,
@@ -4744,7 +4776,8 @@ pub unsafe trait FromBytes: FromZeros {
         ]
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn ref_from_suffix_with_elems(
         source: &[u8],
         count: usize,
@@ -4824,7 +4857,8 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// See [`TryFromBytes::ref_from_bytes_with_elems`](#method.ref_from_bytes_with_elems.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn mut_from_bytes_with_elems(
         source: &mut [u8],
         count: usize,
@@ -4913,7 +4947,8 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// See [`TryFromBytes::ref_from_prefix_with_elems`](#method.ref_from_prefix_with_elems.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn mut_from_prefix_with_elems(
         source: &mut [u8],
         count: usize,
@@ -4997,7 +5032,8 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// See [`TryFromBytes::ref_from_suffix_with_elems`](#method.ref_from_suffix_with_elems.codegen).
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn mut_from_suffix_with_elems(
         source: &mut [u8],
         count: usize,
@@ -5044,7 +5080,8 @@ pub unsafe trait FromBytes: FromZeros {
         format = "coco_static_size",
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn read_from_bytes(source: &[u8]) -> Result<Self, SizeError<&[u8], Self>>
     where
         Self: Sized,
@@ -5101,7 +5138,8 @@ pub unsafe trait FromBytes: FromZeros {
         format = "coco_static_size",
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn read_from_prefix(source: &[u8]) -> Result<(Self, &[u8]), SizeError<&[u8], Self>>
     where
         Self: Sized,
@@ -5152,7 +5190,8 @@ pub unsafe trait FromBytes: FromZeros {
         format = "coco_static_size",
     )]
     #[must_use = "has no side effects"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn read_from_suffix(source: &[u8]) -> Result<(&[u8], Self), SizeError<&[u8], Self>>
     where
         Self: Sized,
@@ -5756,7 +5795,8 @@ pub unsafe trait IntoBytes {
         ]
     )]
     #[must_use = "callers should check the return value to see if the operation succeeded"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     #[allow(clippy::mut_from_ref)] // False positive: `&self -> &mut [u8]`
     fn write_to(&self, dst: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
@@ -5841,7 +5881,8 @@ pub unsafe trait IntoBytes {
         ]
     )]
     #[must_use = "callers should check the return value to see if the operation succeeded"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     #[allow(clippy::mut_from_ref)] // False positive: `&self -> &mut [u8]`
     fn write_to_prefix(&self, dst: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
@@ -5935,7 +5976,8 @@ pub unsafe trait IntoBytes {
         ]
     )]
     #[must_use = "callers should check the return value to see if the operation succeeded"]
-    #[inline]
+    #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(not(zerocopy_inline_always), inline)]
     #[allow(clippy::mut_from_ref)] // False positive: `&self -> &mut [u8]`
     fn write_to_suffix(&self, dst: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
