@@ -1,12 +1,12 @@
 Iterations:        100
-Instructions:      700
-Total Cycles:      240
-Total uOps:        800
+Instructions:      800
+Total Cycles:      341
+Total uOps:        1100
 
 Dispatch Width:    4
-uOps Per Cycle:    3.33
-IPC:               2.92
-Block RThroughput: 2.0
+uOps Per Cycle:    3.23
+IPC:               2.35
+Block RThroughput: 2.8
 
 
 Instruction Info:
@@ -18,12 +18,13 @@ Instruction Info:
 [6]: HasSideEffects (U)
 
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
- 1      1     0.33                        mov	ecx, edi
- 1      1     0.33                        and	ecx, 1
- 1      1     0.33                        xor	rsi, 6
  1      0     0.25                        xor	eax, eax
- 1      1     0.33                        or	rsi, rcx
- 2      2     0.67                        cmove	rax, rdi
+ 1      1     0.33                        cmp	rsi, 6
+ 1      1     0.33                        mov	rcx, rdi
+ 2      2     0.67                        cmovne	rcx, rax
+ 2      2     0.67                        cmovb	rcx, rax
+ 1      1     0.33                        test	dil, 1
+ 2      2     0.67                        cmove	rax, rcx
  1      1     1.00                  U     ret
 
 
@@ -40,14 +41,15 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     2.33   2.33    -     2.34    -      -     
+ -      -     3.32   3.34    -     3.34    -      -     
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
- -      -     0.01   0.98    -     0.01    -      -     mov	ecx, edi
- -      -     0.02   0.66    -     0.32    -      -     and	ecx, 1
- -      -     0.33   0.66    -     0.01    -      -     xor	rsi, 6
  -      -      -      -      -      -      -      -     xor	eax, eax
- -      -     0.98   0.02    -      -      -      -     or	rsi, rcx
- -      -     0.99   0.01    -     1.00    -      -     cmove	rax, rdi
+ -      -      -     0.17    -     0.83    -      -     cmp	rsi, 6
+ -      -     0.17   0.18    -     0.65    -      -     mov	rcx, rdi
+ -      -     1.00   0.98    -     0.02    -      -     cmovne	rcx, rax
+ -      -     1.00   1.00    -      -      -      -     cmovb	rcx, rax
+ -      -     0.16   0.02    -     0.82    -      -     test	dil, 1
+ -      -     0.99   0.99    -     0.02    -      -     cmove	rax, rcx
  -      -      -      -      -     1.00    -      -     ret
