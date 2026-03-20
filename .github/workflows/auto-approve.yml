@@ -60,7 +60,7 @@ jobs:
           set -eo pipefail
 
           API_ENDPOINT="repos/$REPOSITORY/pulls/$PR_NUMBER/files"
-          gh api "$API_ENDPOINT" --paginate --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > /tmp/changed_files.json
+          gh api "$API_ENDPOINT" --paginate --jq 'map([.filename, .previous_filename] | map(select(. != null)))' | jq -s 'add' > /tmp/changed_files.json
 
       - name: Optimistic Evaluation
         id: evaluation
@@ -228,7 +228,7 @@ jobs:
         run: |
           gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" \
             --paginate \
-            --jq 'map([.filename, .previous_filename] | map(select(. != null)))' > /tmp/changed_files.json
+            --jq 'map([.filename, .previous_filename] | map(select(. != null)))' | jq -s 'add' > /tmp/changed_files.json
 
       - name: Strict Identity & File Validation
         if: steps.gate.outputs.is_auto_pr != 'false'
