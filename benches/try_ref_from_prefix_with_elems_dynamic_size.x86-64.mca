@@ -18,20 +18,20 @@ Instruction Info:
 [6]: HasSideEffects (U)
 
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
- 1      1     0.33                        movabs	rax, 4611686018427387901
- 1      1     0.33                        cmp	rdx, rax
- 1      1     1.00                        ja	.LBB5_1
  1      1     0.33                        mov	rcx, rdx
- 1      0     0.25                        xor	edx, edx
- 1      1     0.33                        mov	eax, 0
- 1      1     0.33                        test	dil, 1
- 1      1     1.00                        jne	.LBB5_5
+ 1      1     0.33                        mov	edx, 1
+ 1      1     0.33                        movabs	rax, 4611686018427387901
+ 1      1     0.33                        cmp	rcx, rax
+ 1      1     1.00                        ja	.LBB5_3
  1      1     0.50                        lea	rax, [2*rcx + 4]
  1      1     0.33                        cmp	rax, rsi
  1      1     1.00                        jbe	.LBB5_4
  1      0     0.25                        xor	eax, eax
- 1      1     0.33                        mov	edx, 1
  1      1     1.00                  U     ret
+ 1      0     0.25                        xor	edx, edx
+ 1      1     0.33                        mov	eax, 0
+ 1      1     0.33                        test	dil, 1
+ 1      1     1.00                        jne	.LBB5_6
  1      5     0.50    *                   movzx	esi, word ptr [rdi]
  1      1     0.33                        cmp	si, -16192
  1      1     0.33                        mov	edx, 2
@@ -55,29 +55,29 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     6.65   6.66    -     6.69   0.50   0.50   
+ -      -     6.66   6.66    -     6.68   0.50   0.50   
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
- -      -     0.66   0.33    -     0.01    -      -     movabs	rax, 4611686018427387901
- -      -     0.02   0.66    -     0.32    -      -     cmp	rdx, rax
- -      -      -      -      -     1.00    -      -     ja	.LBB5_1
- -      -     0.66   0.33    -     0.01    -      -     mov	rcx, rdx
- -      -      -      -      -      -      -      -     xor	edx, edx
- -      -     0.33   0.01    -     0.66    -      -     mov	eax, 0
- -      -     0.34   0.65    -     0.01    -      -     test	dil, 1
- -      -      -      -      -     1.00    -      -     jne	.LBB5_5
- -      -     0.65   0.35    -      -      -      -     lea	rax, [2*rcx + 4]
- -      -      -     1.00    -      -      -      -     cmp	rax, rsi
+ -      -     0.01   0.98    -     0.01    -      -     mov	rcx, rdx
+ -      -     0.67   0.01    -     0.32    -      -     mov	edx, 1
+ -      -     0.33   0.33    -     0.34    -      -     movabs	rax, 4611686018427387901
+ -      -      -     0.99    -     0.01    -      -     cmp	rcx, rax
+ -      -      -      -      -     1.00    -      -     ja	.LBB5_3
+ -      -     0.99   0.01    -      -      -      -     lea	rax, [2*rcx + 4]
+ -      -     0.33   0.67    -      -      -      -     cmp	rax, rsi
  -      -      -      -      -     1.00    -      -     jbe	.LBB5_4
  -      -      -      -      -      -      -      -     xor	eax, eax
- -      -     0.34   0.01    -     0.65    -      -     mov	edx, 1
  -      -      -      -      -     1.00    -      -     ret
+ -      -      -      -      -      -      -      -     xor	edx, edx
+ -      -     0.34   0.02    -     0.64    -      -     mov	eax, 0
+ -      -     0.33   0.66    -     0.01    -      -     test	dil, 1
+ -      -      -      -      -     1.00    -      -     jne	.LBB5_6
  -      -      -      -      -      -     0.50   0.50   movzx	esi, word ptr [rdi]
- -      -     0.65   0.34    -     0.01    -      -     cmp	si, -16192
- -      -     0.66   0.34    -      -      -      -     mov	edx, 2
+ -      -     0.66   0.34    -      -      -      -     cmp	si, -16192
+ -      -     0.33   0.67    -      -      -      -     mov	edx, 2
  -      -     1.00   0.99    -     0.01    -      -     cmove	rdx, rcx
  -      -      -      -      -      -      -      -     xor	eax, eax
- -      -     0.34   0.66    -      -      -      -     cmp	esi, 49344
- -      -     1.00   0.99    -     0.01    -      -     cmove	rax, rdi
+ -      -     0.67   0.32    -     0.01    -      -     cmp	esi, 49344
+ -      -     1.00   0.67    -     0.33    -      -     cmove	rax, rdi
  -      -      -      -      -     1.00    -      -     ret
