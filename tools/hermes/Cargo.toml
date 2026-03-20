@@ -1,7 +1,7 @@
 [package]
 name = "cargo-hermes"
 edition = "2024"
-version = "0.1.0-alpha.4"
+version = "0.1.0-alpha.5"
 description = "Formally verify that your safety comments are correct."
 categories = [
   "development-tools::cargo-plugins",
