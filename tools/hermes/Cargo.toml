@@ -1,7 +1,7 @@
 [package]
 name = "cargo-hermes"
 edition = "2024"
-version = "0.1.0-alpha.5"
+version = "0.1.0-alpha.6"
 description = "Formally verify that your safety comments are correct."
 categories = [
   "development-tools::cargo-plugins",
@@ -76,7 +76,7 @@ similar = "2.7.0"
 #
 # FIXME: Add a CI step to verify that this commit exists and matches the
 # toolchain version.
-aeneas_rev = "6b88581f6fb40a9c6a40cb09ded0b55b1775284b"
+aeneas_rev = "794da87ac9d98f2a4729ce1de2472142ca0d5cf2"
 
 # The Lean toolchain version to use. This must match the version of Lean used
 # by Aeneas in the `lean-toolchain` file in the commit above.
@@ -97,19 +97,19 @@ charon_version = "0.1.174"
 
 [package.metadata.hermes.dependencies.aeneas]
 # The per-commit release tag from AeneasVerif/charon
-tag = "build-2026.03.20.194505-6b88581f6fb40a9c6a40cb09ded0b55b1775284b"
+tag = "build-2026.03.22.091021-794da87ac9d98f2a4729ce1de2472142ca0d5cf2"
 
 [package.metadata.hermes.dependencies.aeneas.checksums]
-linux-x86_64 = "c8ce5cf902ebf0358f3ee7c518e062f4992127d357bf838fa1a3d0f261da66fa"
+linux-x86_64 = "b6c30d40a355b4d4a832ec6335db65d91b887b0edf3e5108627865858f16fed0"
 linux-x86_64-aeneas = "1ed68728e18299ba961bc76c0c4897e582fdcfe30ec9b01919e250dc3cb6e65d"
 linux-x86_64-charon = "bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836"
 linux-x86_64-charon-driver = "20379b2051dd51dbea8d720e4041d55afe9241b95ab911e3b06492110450ecd0"
-macos-aarch64 = "aa9f71adb71f7c0a86a25b5f2c05fd46f64ff576468243917452b831c9763681"
-macos-aarch64-aeneas = "5743db0c6d5b3b72ebc672be2e358ab034c320cf277d045a71cf445eac771fd4"
+macos-aarch64 = "bb96b8f2a751c8f4378d0b2a391c0defc68bdc873621f5bb93a03712ba6fd45d"
+macos-aarch64-aeneas = "85f9bbda808c764095fae086e35214e485f40e4c9666f6b84916481e5c7263f8"
 macos-aarch64-charon = "6510ace82180cd78875b0631638a200d8e55bc9090c9372ea1dc8eb08511b6fb"
 macos-aarch64-charon-driver = "3c11fcb6c5cd65cd14d9747c7f8ddd1522b608a1e79041c907cb79d3118054b2"
-macos-x86_64 = "7d135616abb8933fe87f5a80c8a68945f34263b5c94925850a986ebe21f29266"
-macos-x86_64-aeneas = "0228df207609fab73959f9d1ed90cf8ac00e5f19f8dbf1ca46d7573885baa617"
+macos-x86_64 = "efececcf8500c2a64d7420c9c68f6bb9271177982868e316753c4e271abb41b0"
+macos-x86_64-aeneas = "72a9078abeb9c989f07da25a7f541f01e0ad62214a9475e27d24cf58ebd8a740"
 macos-x86_64-charon = "926c5ff8495c19b7a6f3aff1a3861970bae11bd374cf114ac3924a27bcae9ee7"
 macos-x86_64-charon-driver = "03e6617fe122f29111bf16538a5ba8f0beac6698ce473d99069439d30fa552e8"
 
