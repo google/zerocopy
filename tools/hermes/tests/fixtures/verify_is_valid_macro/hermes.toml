@@ -1,0 +1,4 @@
+description = "Verify that the Lean `verify_is_valid` macro compiles and handles explicit and implicit proofs correctly"
+
+[test]
+expected_status = "success"

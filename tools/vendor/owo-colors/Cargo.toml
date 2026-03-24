@@ -11,11 +11,19 @@
 
 [package]
 edition = "2021"
-rust-version = "1.70"
+rust-version = "1.81"
 name = "owo-colors"
-version = "4.2.3"
+version = "4.3.0"
 authors = ["jam1garner <8260240+jam1garner@users.noreply.github.com>"]
 build = "build.rs"
+include = [
+    "Cargo.toml",
+    "build.rs",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "src/**/*.rs",
+]
 autolib = false
 autobins = false
 autoexamples = false
@@ -55,44 +63,6 @@ supports-colors = [
 [lib]
 name = "owo_colors"
 path = "src/lib.rs"
-
-[[example]]
-name = "all_xterm_colors"
-path = "examples/all_xterm_colors.rs"
-
-[[example]]
-name = "banner"
-path = "examples/banner.rs"
-
-[[example]]
-name = "colors"
-path = "examples/colors.rs"
-
-[[example]]
-name = "const_colors"
-path = "examples/const_colors.rs"
-
-[[example]]
-name = "custom_colors"
-path = "examples/custom_colors.rs"
-
-[[example]]
-name = "dyn_colors"
-path = "examples/dyn_colors.rs"
-
-[[example]]
-name = "extra_colors"
-path = "examples/extra_colors.rs"
-
-[[example]]
-name = "override"
-path = "examples/override.rs"
-required-features = ["supports-colors"]
-
-[[example]]
-name = "supports_color"
-path = "examples/supports_color.rs"
-required-features = ["supports-colors"]
 
 [dependencies.supports-color]
 version = "3.0.0"

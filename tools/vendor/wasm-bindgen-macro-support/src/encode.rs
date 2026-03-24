@@ -234,6 +234,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
                     },
                 ),
                 ty_override: arg.js_type.as_deref(),
+                optional: arg.optional,
                 desc: arg.desc.as_deref(),
             })
             .collect::<Vec<_>>();
@@ -409,6 +410,7 @@ fn shared_import_enum<'a>(i: &'a ast::StringEnum, _intern: &'a Interner) -> Stri
 fn shared_struct<'a>(s: &'a ast::Struct, intern: &'a Interner) -> Struct<'a> {
     Struct {
         name: &s.js_name,
+        rust_name: intern.intern(&s.rust_name),
         fields: s
             .fields
             .iter()

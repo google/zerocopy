@@ -1,0 +1,179 @@
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:10:4]
+  9 │ /// proof context:
+ 10 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 11 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:21:8]
+ 20 │ /// ```
+ 21 │ pub fn post0_opaque_noproof() { dep::opaque(); }
+    ·        ──┬─
+    ·          ╰── here
+ 22 │ 
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:27:4]
+ 26 │ /// proof context:
+ 27 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 28 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:42:4]
+ 41 │ /// proof context:
+ 42 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 43 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:50:8]
+ 49 │ /// ```
+ 50 │ pub fn post1_impl_trans_named() -> u32 { 0 }
+    ·        ──┬─
+    ·          ╰── here
+ 51 │ 
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:57:8]
+ 56 │ /// ```
+ 57 │ pub fn post1_impl_opaque_noproof() -> u32 { dep::opaque_u32() }
+    ·        ──┬─
+    ·          ╰── here
+ 58 │ 
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:63:4]
+ 62 │ /// proof context:
+ 63 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 64 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:73:8]
+ 72 │ /// ```
+ 73 │ pub fn post1_impl_opaque_named() -> u32 { dep::opaque_u32() }
+    ·        ──┬─
+    ·          ╰── here
+ 74 │ 
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:81:8]
+ 80 │ /// ```
+ 81 │ pub fn post1_expl_trans_noproof() {}
+    ·        ──┬─
+    ·          ╰── here
+ 82 │ 
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:86:4]
+ 85 │ /// proof context:
+ 86 │ ///   sorry
+    ·    ────┬───
+    ·        ╰── here
+ 87 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:95:8]
+ 94 │ /// ```
+ 95 │ pub fn post1_expl_trans_unnamed() {}
+    ·        ──┬─
+    ·          ╰── here
+ 96 │ 
+    ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:103:8]
+ 102 │ /// ```
+ 103 │ pub fn post1_expl_opaque_noproof() { dep::opaque(); }
+     ·        ──┬─
+     ·          ╰── here
+ 104 │ 
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:110:4]
+ 109 │ /// proof context:
+ 110 │ ///   sorry
+     ·    ────┬───
+     ·        ╰── here
+ 111 │ /// ```
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:121:8]
+ 120 │ /// ```
+ 121 │ pub fn post1_expl_opaque_unnamed() { dep::opaque(); }
+     ·        ──┬─
+     ·          ╰── here
+ 122 │ 
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:130:8]
+ 129 │ /// ```
+ 130 │ pub fn post2_expl_trans_noproof() {}
+     ·        ──┬─
+     ·          ╰── here
+ 131 │ 
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:136:4]
+ 135 │ /// proof context:
+ 136 │ ///   sorry
+     ·    ────┬───
+     ·        ╰── here
+ 137 │ /// ```
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:148:8]
+ 147 │ /// ```
+ 148 │ pub fn post2_expl_trans_named() {}
+     ·        ──┬─
+     ·          ╰── here
+ 149 │ 
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:157:8]
+ 156 │ /// ```
+ 157 │ pub fn post2_expl_opaque_noproof() { dep::opaque(); }
+     ·        ──┬─
+     ·          ╰── here
+ 158 │ 
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:165:4]
+ 164 │ /// proof context:
+ 165 │ ///   sorry
+     ·    ────┬───
+     ·        ╰── here
+ 166 │ /// ```
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:179:8]
+ 178 │ /// ```
+ 179 │ pub fn post2_expl_opaque_named() { dep::opaque(); }
+     ·        ──┬─
+     ·          ╰── here
+     ╰────
+

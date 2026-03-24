@@ -1,0 +1,8 @@
+description = """
+Purpose: Tests sanitation of argument names colliding with Lean syntax.
+Behavior: Tests translation of function arguments bearing keyword names (e.g. `theorem: u32`). Checks for safe handling via French quote wrapping (`«theorem» : U32`).
+"""
+
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]

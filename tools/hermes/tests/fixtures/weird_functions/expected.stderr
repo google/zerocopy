@@ -1,0 +1,26 @@
+   Compiling weird v0.1.0 ([PROJECT_ROOT])
+warning: Coroutine types are not supported yet
+ --> src/lib.rs:5:1
+  |
+5 | async unsafe fn async_foo() -> i32 { 0 }
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+thread 'rustc' (<ID>) panicked at src/errors.rs:278:13:
+Coroutine types are not supported yet
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+warning: Thread panicked when extracting item `weird::async_foo`.
+ --> src/lib.rs:5:1
+  |
+5 | async unsafe fn async_foo() -> i32 { 0 }
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+thread 'rustc' (<ID>) panicked at src/errors.rs:278:13:
+Thread panicked when extracting item `weird::async_foo`.
+ERROR Compilation panicked
+error: could not compile `weird` (lib)
+
+Caused by:
+  process didn't exit successfully: `[CACHE_ROOT]/charon-driver /usr/local/google/home/joshlf/.rustup/toolchains/nightly-2026-02-07-x86_64-unknown-linux-gnu/bin/rustc --crate-name weird --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=28a<HASH> -C extra-filename=-<HASH> --out-dir [PROJECT_ROOT]/target/hermes/cargo_target/x86_64-unknown-linux-gnu/debug/deps --target x86_64-unknown-linux-gnu -C incremental=[PROJECT_ROOT]/target/hermes/cargo_target/x86_64-unknown-linux-gnu/debug/incremental -L dependency=[PROJECT_ROOT]/target/hermes/cargo_target/x86_64-unknown-linux-gnu/debug/deps -L dependency=[PROJECT_ROOT]/target/hermes/cargo_target/debug/deps --remap-path-prefix=tests/fixtures/weird_functions=/dummy` (exit status: 101)
+Error: Charon failed with status: exit status: 101

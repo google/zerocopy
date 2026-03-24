@@ -13,7 +13,7 @@
 edition = "2021"
 rust-version = "1.71"
 name = "console"
-version = "0.16.2"
+version = "0.16.3"
 build = false
 include = [
     "CHANGELOG.md",
@@ -51,7 +51,6 @@ default = [
 ]
 std = [
     "dep:libc",
-    "dep:once_cell",
     "alloc",
 ]
 windows-console-colors = ["ansi-parsing"]
@@ -62,10 +61,6 @@ path = "src/lib.rs"
 
 [dependencies.libc]
 version = "0.2.99"
-optional = true
-
-[dependencies.once_cell]
-version = "1.8"
 optional = true
 
 [dependencies.unicode-width]
