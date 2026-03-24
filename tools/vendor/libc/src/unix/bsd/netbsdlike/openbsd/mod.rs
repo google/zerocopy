@@ -84,6 +84,20 @@ s! {
         __unused7: Padding<*mut c_void>,
     }
 
+    pub struct tm {
+        pub tm_sec: c_int,
+        pub tm_min: c_int,
+        pub tm_hour: c_int,
+        pub tm_mday: c_int,
+        pub tm_mon: c_int,
+        pub tm_year: c_int,
+        pub tm_wday: c_int,
+        pub tm_yday: c_int,
+        pub tm_isdst: c_int,
+        pub tm_gmtoff: c_long,
+        pub tm_zone: *const c_char,
+    }
+
     pub struct lconv {
         pub decimal_point: *mut c_char,
         pub thousands_sep: *mut c_char,
@@ -511,6 +525,77 @@ s! {
         pub p_name: [c_char; KI_MAXCOMLEN as usize],
     }
 
+    pub struct kinfo_file {
+        pub f_fileaddr: u64,
+        pub f_flag: u32,
+        pub f_iflags: u32,
+        pub f_type: u32,
+        pub f_count: u32,
+        pub f_msgcount: u32,
+        pub f_usecount: u32,
+        pub f_ucred: u64,
+        pub f_uid: u32,
+        pub f_gid: u32,
+        pub f_ops: u64,
+        pub f_offset: u64,
+        pub f_data: u64,
+        pub f_rxfer: u64,
+        pub f_rwfer: u64,
+        pub f_seek: u64,
+        pub f_rbytes: u64,
+        pub f_wbytes: u64,
+        pub v_un: u64,
+        pub v_type: u32,
+        pub v_tag: u32,
+        pub v_flag: u32,
+        pub va_rdev: u32,
+        pub v_data: u64,
+        pub v_mount: u64,
+        pub va_fileid: u64,
+        pub va_size: u64,
+        pub va_mode: u32,
+        pub va_fsid: u32,
+        pub f_mntonname: [c_char; KI_MNAMELEN as usize],
+        pub so_type: u32,
+        pub so_state: u32,
+        pub so_pcb: u64,
+        pub so_protocol: u32,
+        pub so_family: u32,
+        pub inp_ppcb: u64,
+        pub inp_lport: u32,
+        pub inp_laddru: [u32; 4],
+        pub inp_fport: u32,
+        pub inp_faddru: [u32; 4],
+        pub unp_conn: u64,
+        pub pipe_peer: u64,
+        pub pipe_state: u32,
+        pub kq_count: u32,
+        pub kq_state: u32,
+        __unused1: Padding<u32>,
+        pub p_pid: u32,
+        pub fd_fd: i32,
+        pub fd_ofileflags: u32,
+        pub p_uid: u32,
+        pub p_gid: u32,
+        pub p_tid: u32,
+        pub p_comm: [c_char; KI_MAXCOMLEN as usize],
+        pub inp_rtableid: u32,
+        pub so_splice: u64,
+        pub so_splicelen: i64,
+        pub so_rcv_cc: u64,
+        pub so_snd_cc: u64,
+        pub unp_refs: u64,
+        pub unp_nextref: u64,
+        pub unp_addr: u64,
+        pub unp_path: [c_char; KI_UNPPATHLEN as usize],
+        pub inp_proto: u32,
+        pub t_state: u32,
+        pub t_rcv_wnd: u64,
+        pub t_snd_wnd: u64,
+        pub t_snd_cwnd: u64,
+        pub va_nlink: u32,
+    }
+
     pub struct kinfo_vmentry {
         pub kve_start: c_ulong,
         pub kve_end: c_ulong,
@@ -535,6 +620,7 @@ s! {
 
     pub struct ptrace_thread_state {
         pub pts_tid: crate::pid_t,
+        pub pts_name: [c_char; PT_PTS_NAMELEN as usize],
     }
 
     // search.h
@@ -764,6 +850,22 @@ impl siginfo_t {
             value: crate::sigval,
         }
         (*(self as *const siginfo_t).cast::<siginfo_timer>()).value
+    }
+
+    pub unsafe fn si_status(&self) -> c_int {
+        #[repr(C)]
+        struct siginfo_proc {
+            _si_signo: c_int,
+            _si_code: c_int,
+            _si_errno: c_int,
+            _pad: Padding<[c_int; SI_PAD]>,
+            _pid: crate::pid_t,
+            _uid: crate::uid_t,
+            _utime: crate::clock_t,
+            _stime: crate::clock_t,
+            _status: crate::c_int,
+        }
+        (*(self as *const siginfo_t as *const siginfo_proc))._status
     }
 }
 
@@ -1170,7 +1272,7 @@ pub const EVFILT_SIGNAL: i16 = -6;
 pub const EVFILT_TIMER: i16 = -7;
 pub const EVFILT_DEVICE: i16 = -8;
 pub const EVFILT_EXCEPT: i16 = -9;
-
+pub const EVFILT_USER: i16 = -10;
 pub const EV_ADD: u16 = 0x1;
 pub const EV_DELETE: u16 = 0x2;
 pub const EV_ENABLE: u16 = 0x4;
@@ -1186,6 +1288,13 @@ pub const EV_EOF: u16 = 0x8000;
 #[deprecated(since = "0.2.113", note = "Not stable across OS versions")]
 pub const EV_SYSFLAGS: u16 = 0xf800;
 
+pub const NOTE_TRIGGER: u32 = 0x01000000;
+pub const NOTE_FFNOP: u32 = 0x00000000;
+pub const NOTE_FFAND: u32 = 0x40000000;
+pub const NOTE_FFOR: u32 = 0x80000000;
+pub const NOTE_FFCOPY: u32 = 0xc0000000;
+pub const NOTE_FFCTRLMASK: u32 = 0xc0000000;
+pub const NOTE_FFLAGSMASK: u32 = 0x00ffffff;
 pub const NOTE_LOWAT: u32 = 0x00000001;
 pub const NOTE_EOF: u32 = 0x00000002;
 pub const NOTE_OOB: u32 = 0x00000004;
@@ -1389,6 +1498,19 @@ pub const KVE_INH_ZERO: c_int = 0x00000030;
 pub const KVE_F_STATIC: c_int = 0x1;
 pub const KVE_F_KMEM: c_int = 0x2;
 
+pub const KERN_FILE_BYFILE: c_int = 1;
+pub const KERN_FILE_BYPID: c_int = 2;
+pub const KERN_FILE_BYUID: c_int = 3;
+pub const KERN_FILESLOP: c_int = 10;
+
+pub const KERN_FILE_TEXT: c_int = -1;
+pub const KERN_FILE_CDIR: c_int = -2;
+pub const KERN_FILE_RDIR: c_int = -3;
+pub const KERN_FILE_TRACE: c_int = -4;
+
+pub const KI_MNAMELEN: c_int = 96;
+pub const KI_UNPPATHLEN: c_int = 104;
+
 pub const CHWFLOW: crate::tcflag_t = crate::MDMBUF | crate::CRTSCTS;
 pub const OLCUC: crate::tcflag_t = 0x20;
 pub const ONOCR: crate::tcflag_t = 0x40;
@@ -1499,6 +1621,8 @@ pub const PT_GET_THREAD_FIRST: c_int = 15;
 pub const PT_GET_THREAD_NEXT: c_int = 16;
 pub const PT_FIRSTMACH: c_int = 32;
 
+pub const PT_PTS_NAMELEN: c_int = 32;
+
 pub const SOCK_CLOEXEC: c_int = 0x8000;
 pub const SOCK_NONBLOCK: c_int = 0x4000;
 pub const SOCK_DNS: c_int = 0x1000;
@@ -1528,6 +1652,14 @@ pub const FUTEX_WAIT: c_int = 1;
 pub const FUTEX_WAKE: c_int = 2;
 pub const FUTEX_REQUEUE: c_int = 3;
 pub const FUTEX_PRIVATE_FLAG: c_int = 128;
+
+// sys/file.h
+pub const DTYPE_VNODE: c_int = 1;
+pub const DTYPE_SOCKET: c_int = 2;
+pub const DTYPE_PIPE: c_int = 3;
+pub const DTYPE_KQUEUE: c_int = 4;
+pub const DTYPE_DMABUF: c_int = 5;
+pub const DTYPE_SYNC: c_int = 6;
 
 // sysctl.h, kinfo_proc p_eflag constants
 pub const EPROC_CTTY: i32 = 0x01; // controlling tty vnode active

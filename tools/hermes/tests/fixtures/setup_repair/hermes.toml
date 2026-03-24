@@ -1,0 +1,47 @@
+description = "Verify that hermes setup repairs missing or corrupted binaries."
+
+[test]
+setup_mock = true
+
+# Phase 1: Initial setup
+[[test.phases]]
+name = "Initial setup"
+args = ["setup"]
+
+[[test.phases]]
+name = "Verify initial setup"
+action = "assert_toolchain_binary charon 4e0f68df5e2a5a7f8cf1d5feeb994b6bb86012a58ca21dd282830f979a5373fc"
+
+# Phase 2: Delete charon and verify repair
+[[test.phases]]
+name = "Delete charon"
+action = "delete_toolchain_file charon"
+
+[[test.phases]]
+name = "Verify charon is missing"
+action = "assert_toolchain_binary charon missing"
+
+[[test.phases]]
+name = "Repair deleted charon"
+args = ["setup"]
+
+[[test.phases]]
+name = "Verify charon is restored"
+action = "assert_toolchain_binary charon 4e0f68df5e2a5a7f8cf1d5feeb994b6bb86012a58ca21dd282830f979a5373fc"
+
+# Phase 3: Corrupt aeneas and verify repair
+[[test.phases]]
+name = "Corrupt aeneas"
+action = "corrupt_toolchain_file aeneas"
+
+[[test.phases]]
+name = "Verify aeneas is corrupted"
+action = "assert_toolchain_binary aeneas corrupted"
+
+[[test.phases]]
+name = "Repair corrupted aeneas"
+args = ["setup"]
+
+[[test.phases]]
+name = "Verify aeneas is repaired"
+action = "assert_toolchain_binary aeneas 67c8f637ad0eb2a4450cea979e90867811cf90ca3449b5e4e7f2bf79f0834da1"

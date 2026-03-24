@@ -5,6 +5,8 @@ use crate::*;
 
 #[doc(inline)]
 pub use crate::seq;
+#[doc(inline)]
+pub use crate::unordered_seq;
 
 /// Sequence two parsers, only returning the output from the second.
 ///

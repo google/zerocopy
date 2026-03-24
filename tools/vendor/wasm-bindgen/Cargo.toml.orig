@@ -13,7 +13,7 @@ name = "wasm-bindgen"
 readme = "README.md"
 repository = "https://github.com/wasm-bindgen/wasm-bindgen"
 rust-version = "1.71"
-version = "0.2.108"
+version = "0.2.114"
 
 [package.metadata.docs.rs]
 features = ["serde-serialize"]
@@ -46,8 +46,8 @@ cfg-if = "1.0.0"
 once_cell = { version = "1.12", default-features = false }
 serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.108" }
-wasm-bindgen-shared = { path = "crates/shared", version = "=0.2.108" }
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.114" }
+wasm-bindgen-shared = { path = "crates/shared", version = "=0.2.114" }
 
 [build-dependencies]
 # In older MSRVs, dependencies and crate features can't have the same name.
@@ -58,7 +58,7 @@ once_cell = "1"
 wasm-bindgen-test = { path = 'crates/test' }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-js-sys = { path = 'crates/js-sys' }
+js-sys = { path = 'crates/js-sys', features = ["unsafe-eval"] }
 paste = "1"
 serde_derive = "1.0"
 wasm-bindgen-futures = { path = 'crates/futures' }
@@ -73,6 +73,7 @@ unexpected_cfgs = { level = "warn", check-cfg = [
   'cfg(wasm_bindgen_unstable_test_coverage)',
   'cfg(xxx_debug_only_print_generated_code)',
 ] }
+unused_lifetimes = "warn"
 
 [workspace.lints.clippy]
 large_enum_variant = "allow"
@@ -101,6 +102,7 @@ members = [
   "examples/closures",
   "examples/console_log",
   "examples/nodejs_and_deno",
+  "examples/nodejs-threads",
   "examples/dom",
   "examples/duck-typed-interfaces",
   "examples/explicit-resource-management",

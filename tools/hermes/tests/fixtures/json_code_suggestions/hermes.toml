@@ -1,0 +1,12 @@
+description = """
+Purpose: Validates precise JSON diagnostic label formatting.
+Behavior: Utilizes a mock Charon output featuring comprehensive line/span locations and primary labels. Verifies the Hermes console renderer successfully paints the labeled output exactly to the terminal.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+
+[test.mock]
+charon = "mock_charon_output.json"

@@ -1,0 +1,11 @@
+error: expected `root`, but ran out of arguments (collected: test = my_test,)
+ --> tests/compile-fail/missing-root-no-args.rs:1:1
+  |
+1 | / datatest_stable::harness! {
+2 | |     {
+3 | |         test = my_test,
+4 | |     },
+5 | | }
+  | |_^
+  |
+  = note: this error originates in the macro `$crate::harness_collect` which comes from the expansion of the macro `datatest_stable::harness` (in Nightly builds, run with -Z macro-backtrace for more info)
