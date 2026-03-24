@@ -2,6 +2,12 @@
   "tools/hermes/": [
     "joshlf"
   ],
+  "tools/Cargo.lock": [
+    "joshlf"
+  ],
+  "tools/vendor/": [
+    "joshlf"
+  ],
   ".github/workflows/hermes.yml": [
     "joshlf"
   ]
