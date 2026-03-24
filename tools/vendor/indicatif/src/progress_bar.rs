@@ -9,13 +9,13 @@ use std::{fmt, io, thread};
 
 #[cfg(test)]
 use once_cell::sync::Lazy;
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", feature = "wasmbind"))]
 use web_time::Instant;
 
 use crate::draw_target::ProgressDrawTarget;
 use crate::state::{AtomicPosition, BarState, ProgressFinish, Reset, TabExpandedString};
 use crate::style::ProgressStyle;
-use crate::{ProgressBarIter, ProgressIterator, ProgressState};
+use crate::{iter, ProgressBarIter, ProgressIterator, ProgressState};
 
 /// A progress bar or spinner
 ///
@@ -498,6 +498,7 @@ impl ProgressBar {
         ProgressBarIter {
             progress: self.clone(),
             it: read,
+            seek_max: iter::SeekMax::default(),
         }
     }
 
@@ -519,6 +520,7 @@ impl ProgressBar {
         ProgressBarIter {
             progress: self.clone(),
             it: write,
+            seek_max: iter::SeekMax::default(),
         }
     }
 
@@ -545,6 +547,7 @@ impl ProgressBar {
         ProgressBarIter {
             progress: self.clone(),
             it: write,
+            seek_max: iter::SeekMax::default(),
         }
     }
 
@@ -568,6 +571,7 @@ impl ProgressBar {
         ProgressBarIter {
             progress: self.clone(),
             it: read,
+            seek_max: iter::SeekMax::default(),
         }
     }
 
@@ -590,6 +594,7 @@ impl ProgressBar {
         ProgressBarIter {
             progress: self.clone(),
             it: stream,
+            seek_max: iter::SeekMax::default(),
         }
     }
 
@@ -621,6 +626,11 @@ impl ProgressBar {
     /// Returns the current elapsed time
     pub fn elapsed(&self) -> Duration {
         self.state().state.elapsed()
+    }
+
+    /// Returns the current tab width
+    pub fn tab_width(&self) -> usize {
+        self.state().tab_width
     }
 
     /// Index in the `MultiState`

@@ -1,0 +1,11 @@
+[package]
+name = "stable-slug"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+
+# We need a workspace to satisfy Hermes scanner
+[workspace]
+members = ["."]

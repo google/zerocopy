@@ -1,0 +1,5 @@
+description = "Consolidated verification of FFI, namespacing, never type, and const generics"
+
+[test]
+args = ["expand", "--lib", "--allow-sorry"]
+stdout_file = "out.txt"

@@ -1,0 +1,18 @@
+[package]
+name = "escape8259"
+description = "RFC8259-compliant string escaping and un-escaping"
+keywords = ["json", "rfc8259", "cddl"]
+categories = ["encoding"]
+version = "0.5.3"
+repository = "https://github.com/ericseppanen/escape8259"
+license = "MIT"
+authors = ["Eric Seppanen <eds@reric.net>"]
+readme = "README.md"
+edition = "2018"
+exclude = ["Cranky.toml"]
+
+[dev-dependencies]
+rustversion = "1.0"
+
+[package.metadata.release]
+pre-release-commit-message = "release {{version}}"

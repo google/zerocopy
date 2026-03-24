@@ -1,0 +1,2 @@
+Error: The list of Hermes entry points for package 'large_pkg' is too large (33903 bytes). 
+This exceeds safe OS command-line limits.

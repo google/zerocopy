@@ -1,0 +1,12 @@
+description = """
+Purpose: Ensures UI limits and scrolling buffering bounds work.
+Behavior: Pipes 30+ iterative `compiler-artifact` progress reports rapidly. Assures the console spinner/progress manager bounds the UI cleanly over terminal stream limits.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+
+[test.mock]
+charon = "mock_charon_output.json"

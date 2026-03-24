@@ -1,0 +1,11 @@
+   Compiling test_pkg v0.1.0 ([PROJECT_ROOT])
+error: failed to run custom build command for `test_pkg v0.1.0 ([PROJECT_ROOT])`
+
+Caused by:
+  process didn't exit successfully: `[PROJECT_ROOT]/target/hermes/cargo_target/debug/build/test_pkg-<HASH>/build-script-build` (exit status: 101)
+  --- stderr
+
+  thread 'main' (<ID>) panicked at build.rs:1:13:
+  Boom
+  note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Error: Charon failed with status: exit status: 101

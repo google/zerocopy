@@ -1,0 +1,120 @@
+[package]
+name = "cargo-hermes"
+edition = "2024"
+version = "0.1.0-alpha.6"
+description = "Formally verify that your safety comments are correct."
+categories = [
+  "development-tools::cargo-plugins",
+  "development-tools::testing",
+  "compilers",
+  "mathematics",
+  "security",
+]
+keywords = [
+  "verification",
+  "cargo",
+  "plugin",
+  "unsafe",
+  "lean",
+]
+authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
+license = "BSD-2-Clause OR Apache-2.0 OR MIT"
+repository = "https://github.com/google/zerocopy/tree/hermes/tools/hermes"
+publish = true
+
+exclude = [".*", "testdata"]
+
+[dependencies]
+anyhow = "1.0.102"
+cargo_metadata = "0.23.1"
+clap = { version = "4.6.0", features = ["derive"] }
+clap-cargo = { version = "0.18.3", features = ["cargo_metadata"] }
+dashmap = "6.1.0"
+env_logger = "0.11.10"
+log = "0.4.29"
+miette = { version = "7.6.0", features = ["derive", "fancy"] }
+proc-macro2 = { version = "1.0.106", features = ["span-locations"] }
+rayon = "1.11.0"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+syn = { version = "2.0.117", features = ["full", "visit", "extra-traits", "parsing", "printing"] }
+quote = "1.0"
+thiserror = "2.0.18"
+walkdir = "2.5.0"
+indicatif = { version = "0.18.4", features = ["improved_unicode"] }
+console = "0.16.3"
+sha2 = "0.10"
+fs2 = "0.4"
+toml = "0.8"
+reqwest = { version = "0.12", features = ["blocking", "rustls-tls"] }
+dirs = "6.0"
+tar = "0.4"
+flate2 = "1.1"
+
+[build-dependencies]
+toml = "0.8"
+
+[dev-dependencies]
+syn = { version = "2.0.117", features = ["printing", "full", "visit", "extra-traits", "parsing"] }
+proc-macro2 = { version = "1.0.106", features = ["span-locations"] }
+ui_test = "0.30.4"
+assert_cmd = "2.2.0"
+tempfile = "3.27.0"
+predicates = "3.1.4"
+tiny_http = "0.12"
+datatest-stable = "0.3.3"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+regex.workspace = true
+strip-ansi-escapes = "0.2.1"
+similar = "2.7.0"
+
+[package.metadata.build-rs]
+
+# The commit hash of the Aeneas repository to use.
+#
+# FIXME: Add a CI step to verify that this commit exists and matches the
+# toolchain version.
+aeneas_rev = "5918d4719139b5e5ae6e7b63f584b036620b41b7"
+
+# The Lean toolchain version to use. This must match the version of Lean used
+# by Aeneas in the `lean-toolchain` file in the commit above.
+lean_toolchain = "leanprover/lean4:v4.28.0-rc1"
+
+# The expected Charon version.
+#
+# This is used by `src/charon.rs` to enforce that the runtime `charon` binary
+# matches the version expected by Hermes. This ensures compatibility with the
+# generated LLBC format.
+#
+# FIXME(https://github.com/AeneasVerif/charon/issues/1029): Check Charon commit
+# ID once that's supported
+#
+# FIXME(https://github.com/AeneasVerif/aeneas/issues/783): Check Aeneas
+# version/commit ID once that's supported
+charon_version = "0.1.174"
+
+[package.metadata.hermes.dependencies.aeneas]
+# The per-commit release tag from AeneasVerif/charon
+tag = "build-2026.03.24.085418-5918d4719139b5e5ae6e7b63f584b036620b41b7"
+
+[package.metadata.hermes.dependencies.aeneas.checksums]
+linux-x86_64 = "fd706bf0f39701953d9d8734e9b0a9b8a6c9e71111006d093516748974a0d09a"
+linux-x86_64-aeneas = "1ed68728e18299ba961bc76c0c4897e582fdcfe30ec9b01919e250dc3cb6e65d"
+linux-x86_64-charon = "bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836"
+linux-x86_64-charon-driver = "20379b2051dd51dbea8d720e4041d55afe9241b95ab911e3b06492110450ecd0"
+macos-aarch64 = "d8284bf025cb768aa24cf49bdb66d6723f3c266d9ac95870bd5099d7db677e64"
+macos-aarch64-aeneas = "85f9bbda808c764095fae086e35214e485f40e4c9666f6b84916481e5c7263f8"
+macos-aarch64-charon = "6510ace82180cd78875b0631638a200d8e55bc9090c9372ea1dc8eb08511b6fb"
+macos-aarch64-charon-driver = "3c11fcb6c5cd65cd14d9747c7f8ddd1522b608a1e79041c907cb79d3118054b2"
+macos-x86_64 = "72ab5f3a22f7e666acd4c954600f4d963e34e22b900f222ce26b267939a0b4d2"
+macos-x86_64-aeneas = "72a9078abeb9c989f07da25a7f541f01e0ad62214a9475e27d24cf58ebd8a740"
+macos-x86_64-charon = "926c5ff8495c19b7a6f3aff1a3861970bae11bd374cf114ac3924a27bcae9ee7"
+macos-x86_64-charon-driver = "03e6617fe122f29111bf16538a5ba8f0beac6698ce473d99069439d30fa552e8"
+
+[package.metadata.hermes.dependencies.charon]
+rust_toolchain = "nightly-2025-11-23"
+
+[[test]]
+name = "integration"
+harness = false

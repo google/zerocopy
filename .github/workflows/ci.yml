@@ -552,12 +552,14 @@ jobs:
     # in our vendor directory, and we don't vendor zerocopy. Removing this file
     # has the effect of causing the subsequent build to use crates.io rather
     # than vendored dependencies, which is fine since we only run this on the
-    # stable toolchain. Eventually, we should update this job to use the
-    # `--baseline-rev` option to use a previous git commit as the baseline for
-    # checking compatibility (rather than the most recent published version),
-    # which will make this unnecessary.
-    - name: Remove Cargo config
-      run: rm .cargo/config.toml
+    # stable toolchain. We also remove `tools/vendor` because it contains a
+    # vendored copy of zerocopy, which causes `cargo-semver-checks` to error
+    # with an ambiguous package error. Eventually, we should update this job to
+    # use the `--baseline-rev` option to use a previous git commit as the baseline
+    # for checking compatibility (rather than the most recent published version),
+    # which will make it unnecessary to remove `.cargo/config.toml`.
+    - name: Remove Cargo config and vendored dependencies
+      run: rm -rf .cargo/config.toml tools/vendor
 
     # Check semver compatibility with the most recently-published version on
     # crates.io. We do this in the matrix rather than in its own job so that it

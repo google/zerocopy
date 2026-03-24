@@ -1,0 +1,4 @@
+description = "Coalesced successful integration tests"
+
+[test]
+args = ["verify", "--allow-sorry"]
