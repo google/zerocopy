@@ -253,3 +253,20 @@ jobs:
             --expected-count "$EXPECTED_COUNT"      \
             --contributors $CONTRIBUTORS            \
             --changed-files /tmp/changed_files.json
+
+  # Used to signal to branch protections that all other jobs have succeeded.
+  all-jobs-succeed:
+      # WARNING: This name is load-bearing! It's how GitHub's settings UI configures which jobs
+      # to block on. DO NOT change this name without updating the settings UI to match.
+      name: All checks succeeded (auto-approve.yml)
+      # On failure, we run and unconditionally exit with a failing status code.
+      # On success, this job is skipped. Jobs skipped using `if:` are considered
+      # to have succeeded:
+      #
+      # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
+      if: failure()
+      runs-on: ubuntu-latest
+      needs: [optimistic-approve, strict-queue-gatekeeper]
+      steps:
+        - name: Mark the job as failed
+          run: exit 1
