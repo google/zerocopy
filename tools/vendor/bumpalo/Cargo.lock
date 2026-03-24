@@ -75,7 +75,7 @@ checksum = "c1ad822118d20d2c234f427000d5acc36eabe1e29a348c89b63dd60b13f28e5d"
 
 [[package]]
 name = "bumpalo"
-version = "3.19.1"
+version = "3.20.2"
 dependencies = [
  "allocator-api2 0.2.14",
  "blink-alloc",

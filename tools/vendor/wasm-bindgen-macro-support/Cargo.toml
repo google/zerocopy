@@ -13,7 +13,7 @@
 edition = "2021"
 rust-version = "1.71"
 name = "wasm-bindgen-macro-support"
-version = "0.2.108"
+version = "0.2.114"
 authors = ["The wasm-bindgen Developers"]
 build = false
 include = [
@@ -55,10 +55,11 @@ features = [
     "visit",
     "visit-mut",
     "full",
+    "extra-traits",
 ]
 
 [dependencies.wasm-bindgen-shared]
-version = "=0.2.108"
+version = "=0.2.114"
 
 [lints.clippy]
 large_enum_variant = "allow"
@@ -67,6 +68,9 @@ overly_complex_bool_expr = "allow"
 too_many_arguments = "allow"
 type_complexity = "allow"
 uninlined_format_args = "warn"
+
+[lints.rust]
+unused_lifetimes = "warn"
 
 [lints.rust.unexpected_cfgs]
 level = "warn"

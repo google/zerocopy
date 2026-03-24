@@ -2,7 +2,7 @@
 
 [![Current Crates.io Version](https://img.shields.io/crates/v/owo-colors.svg)](https://crates.io/crates/owo-colors)
 [![docs-rs](https://docs.rs/owo-colors/badge.svg)](https://docs.rs/owo-colors)
-![MSRV 1.70+](https://img.shields.io/badge/rustc-1.70+-blue.svg)
+![MSRV 1.81+](https://img.shields.io/badge/rustc-1.81+-blue.svg)
 ![Downloads](https://img.shields.io/crates/d/owo-colors)
 
 A zero-allocation no_std-compatible zero-cost way to add color to your Rust
@@ -99,6 +99,6 @@ terminal is being used. (Note: requires `supports-colors` feature)
 
 ## Minimum supported Rust version (MSRV)
 
-The MSRV of owo-colors is **Rust 1.70**.
+The MSRV of owo-colors is **Rust 1.81**.
 
 This library has a conservative MSRV policy — Rust versions from the last 12 months will be supported (features available in newer versions will be gated by `build.rs`), the MSRV will only be bumped if required, and if the MSRV is bumped it will always occur with a new minor version.

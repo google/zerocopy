@@ -1,0 +1,9 @@
+error: expected `root`, found `pattern`
+ --> tests/compile-fail/root-out-of-order.rs:1:1
+  |
+1 | / datatest_stable::harness! {
+2 | |     { test = my_test, pattern = r"^.*(?<!\.skip)\.txt$", root = "tests/files" }
+3 | | }
+  | |_^
+  |
+  = note: this error originates in the macro `$crate::harness_collect` which comes from the expansion of the macro `datatest_stable::harness` (in Nightly builds, run with -Z macro-backtrace for more info)

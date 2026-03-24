@@ -1,0 +1,98 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+name: CI
+env:
+  RUSTFLAGS: -D warnings
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@720f7e45ccee46c12a7b1d7bed2ab733be9be5a1 # v2
+      - name: Lint (clippy)
+        run: cargo clippy --all-features --all-targets
+      - name: Lint (rustfmt)
+        run: cargo xfmt --check
+      - name: Install cargo-sync-rdme and just
+        uses: taiki-e/install-action@5ab30948b991e8d6aa5a6c1e33c6aea130c6de65 # v2
+        with:
+          tool: cargo-sync-rdme,just
+      - name: Install nightly toolchain for cargo-sync-rdme
+        uses: dtolnay/rust-toolchain@nightly
+      - name: Generate readmes
+        run: just generate-readmes
+      - name: Check for differences
+        run: git diff --exit-code
+
+  build-rustdoc:
+    name: Build documentation
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@720f7e45ccee46c12a7b1d7bed2ab733be9be5a1 # v2
+      - name: Build rustdoc
+        run: cargo doc --all-features
+
+  build:
+    name: Build and test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+        rust-version: ["1.72", stable]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust-version }}
+      - uses: Swatinem/rust-cache@720f7e45ccee46c12a7b1d7bed2ab733be9be5a1 # v2
+        with:
+          key: ${{ matrix.rust-version }}
+      - name: Install tools
+        uses: taiki-e/install-action@5ab30948b991e8d6aa5a6c1e33c6aea130c6de65 # v2
+        with:
+          tool: cargo-hack,just,nextest
+      - name: Build
+        run: just powerset build
+      - name: Build with all targets
+        run: just powerset build --all-targets
+      - name: Run tests
+        run: just powerset nextest run
+      - name: Run tests with cargo test
+        run: just powerset test
+
+      # Remove Cargo.lock to ensure that building with the latest versions works on stable.
+      - name: Remove Cargo.lock and rebuild on stable
+        if: matrix.rust-version == 'stable'
+        run: rm Cargo.lock && cargo build
+      - name: Build with all targets
+        if: matrix.rust-version == 'stable'
+        run: just powerset build --all-targets
+      - name: Run tests on stable
+        if: matrix.rust-version == 'stable'
+        run: just powerset nextest run
+      - name: Run tests with cargo test on stable
+        if: matrix.rust-version == 'stable'
+        run: just powerset test

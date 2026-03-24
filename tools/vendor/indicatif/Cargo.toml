@@ -13,7 +13,7 @@
 edition = "2021"
 rust-version = "1.71"
 name = "indicatif"
-version = "0.18.3"
+version = "0.18.4"
 build = false
 exclude = ["screenshots/*"]
 autolib = false
@@ -45,15 +45,19 @@ rustdoc-args = [
 [features]
 default = [
     "unicode-width",
-    "console/unicode-width",
+    "wasmbind",
 ]
 futures = ["dep:futures-core"]
 improved_unicode = [
     "unicode-segmentation",
     "unicode-width",
-    "console/unicode-width",
 ]
 in_memory = ["vt100"]
+unicode-width = [
+    "dep:unicode-width",
+    "console/unicode-width",
+]
+wasmbind = ["dep:web-time"]
 
 [lib]
 name = "indicatif"
@@ -100,6 +104,10 @@ name = "long-spinner"
 path = "examples/long-spinner.rs"
 
 [[example]]
+name = "message"
+path = "examples/message.rs"
+
+[[example]]
 name = "morebars"
 path = "examples/morebars.rs"
 
@@ -118,6 +126,18 @@ path = "examples/multi-tree-ext.rs"
 [[example]]
 name = "single"
 path = "examples/single.rs"
+
+[[example]]
+name = "slow"
+path = "examples/slow.rs"
+
+[[example]]
+name = "spinner-loop"
+path = "examples/spinner-loop.rs"
+
+[[example]]
+name = "steady"
+path = "examples/steady.rs"
 
 [[example]]
 name = "tokio"
@@ -149,7 +169,7 @@ optional = true
 default-features = false
 
 [dependencies.portable-atomic]
-version = "1.0.0"
+version = "1.12.0"
 
 [dependencies.rayon]
 version = "1.1"
@@ -204,3 +224,4 @@ features = [
 
 [target.'cfg(target_arch = "wasm32")'.dependencies.web-time]
 version = "1.1.0"
+optional = true

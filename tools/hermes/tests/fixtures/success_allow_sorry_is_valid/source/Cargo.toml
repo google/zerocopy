@@ -1,0 +1,13 @@
+
+[package]
+name = "coalesced_test"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "specs"
+path = "src/lib.rs"
+
+[dependencies]
+
+[workspace]

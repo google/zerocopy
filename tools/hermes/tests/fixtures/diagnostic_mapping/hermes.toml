@@ -1,0 +1,5 @@
+description = "Tests diagnostic mapping edge cases."
+
+[test]
+expected_status = "failure"
+stderr_file = "expected.stderr"
