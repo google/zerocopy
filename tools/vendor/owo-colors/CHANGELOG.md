@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.3.0] - 2026-02-22
+
+### Fixed
+
+- Scripts in the `scripts/` directory are no longer published in the crate package. Thanks [weiznich](https://github.com/owo-colors/owo-colors/pull/152) for your first contribution!
+
+### Changed
+
+- Mark methods with `#[rust_analyzer::completions(ignore_flyimport)]` and the `OwoColorize` trait with `#[rust_analyzer::completions(ignore_flyimport_methods)]`. This prevents owo-colors methods from being completed with rust-analyzer unless the `OwoColorize` trait is included.
+
+  Unfortunately, this also breaks explicit autocomplete commands such as Ctrl-Space in many editors. (The language server protocol doesn't appear to have a way to differentiate between implicit and explicit autocomplete commands.) On balance we believe this is the right approach, but please do provide feedback on [PR #141](https://github.com/owo-colors/owo-colors/pull/141) if it negatively affects you.
+- Updated MSRV to Rust 1.81.
+
 ## [4.2.3] - 2025-09-29
 
 ### Fixed
@@ -51,6 +64,7 @@ Fixed applying a background color and a text effect (like underline or italic) a
 
 - owo-colors now lives under its own organization, https://github.com/owo-colors.
 
+[4.3.0]: https://github.com/owo-colors/owo-colors/releases/tag/v4.3.0
 [4.2.3]: https://github.com/owo-colors/owo-colors/releases/tag/v4.2.3
 [4.2.2]: https://github.com/owo-colors/owo-colors/releases/tag/v4.2.2
 [4.2.1]: https://github.com/owo-colors/owo-colors/releases/tag/v4.2.1

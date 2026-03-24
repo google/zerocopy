@@ -13,7 +13,7 @@
 edition = "2021"
 rust-version = "1.71"
 name = "wasm-bindgen"
-version = "0.2.108"
+version = "0.2.114"
 authors = ["The wasm-bindgen Developers"]
 build = "build.rs"
 include = [
@@ -76,10 +76,10 @@ version = "1.0"
 optional = true
 
 [dependencies.wasm-bindgen-macro]
-version = "=0.2.108"
+version = "=0.2.114"
 
 [dependencies.wasm-bindgen-shared]
-version = "=0.2.108"
+version = "=0.2.114"
 
 [dev-dependencies.once_cell]
 version = "1"
@@ -101,6 +101,9 @@ overly_complex_bool_expr = "allow"
 too_many_arguments = "allow"
 type_complexity = "allow"
 uninlined_format_args = "warn"
+
+[lints.rust]
+unused_lifetimes = "warn"
 
 [lints.rust.unexpected_cfgs]
 level = "warn"

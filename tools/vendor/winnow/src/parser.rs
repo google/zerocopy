@@ -1252,20 +1252,20 @@ impl<I: Stream, E: ParserError<I>> Parser<I, (), E> for () {
 }
 
 macro_rules! impl_parser_for_tuple {
-  ($($index:tt $parser:ident $output:ident),+) => (
-    #[allow(non_snake_case)]
-    impl<I: Stream, $($output),+, E: ParserError<I>, $($parser),+> Parser<I, ($($output),+,), E> for ($($parser),+,)
-    where
-      $($parser: Parser<I, $output, E>),+
-    {
-      #[inline(always)]
-      fn parse_next(&mut self, i: &mut I) -> Result<($($output),+,), E> {
-        $(let $output = self.$index.parse_next(i)?;)+
+    ($($index:tt $parser:ident $output:ident),+) => (
+        #[allow(non_snake_case)]
+        impl<I: Stream, $($output),+, E: ParserError<I>, $($parser),+> Parser<I, ($($output),+,), E> for ($($parser),+,)
+        where
+            $($parser: Parser<I, $output, E>),+
+        {
+            #[inline(always)]
+            fn parse_next(&mut self, i: &mut I) -> Result<($($output),+,), E> {
+                $(let $output = self.$index.parse_next(i)?;)+
 
-        Ok(($($output),+,))
-      }
-    }
-  )
+                Ok(($($output),+,))
+            }
+        }
+    )
 }
 
 macro_rules! impl_parser_for_tuples {
@@ -1402,10 +1402,10 @@ mod tests {
     #[doc(hidden)]
     #[macro_export]
     macro_rules! assert_size (
-    ($t:ty, $sz:expr) => (
-      assert!(core::mem::size_of::<$t>() <= $sz, "{} <= {} failed", core::mem::size_of::<$t>(), $sz);
+        ($t:ty, $sz:expr) => (
+            assert!(core::mem::size_of::<$t>() <= $sz, "{} <= {} failed", core::mem::size_of::<$t>(), $sz);
+        );
     );
-  );
 
     #[test]
     #[cfg(target_pointer_width = "64")]

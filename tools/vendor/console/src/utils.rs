@@ -5,7 +5,7 @@ use core::{
 };
 use std::env;
 
-use once_cell::sync::Lazy;
+use std::sync::OnceLock;
 
 use crate::term::{wants_emoji, Term};
 
@@ -22,14 +22,22 @@ fn default_true_colors_enabled(out: &Term) -> bool {
     out.features().true_colors_supported()
 }
 
-static STDOUT_COLORS: Lazy<AtomicBool> =
-    Lazy::new(|| AtomicBool::new(default_colors_enabled(&Term::stdout())));
-static STDOUT_TRUE_COLORS: Lazy<AtomicBool> =
-    Lazy::new(|| AtomicBool::new(default_true_colors_enabled(&Term::stdout())));
-static STDERR_COLORS: Lazy<AtomicBool> =
-    Lazy::new(|| AtomicBool::new(default_colors_enabled(&Term::stderr())));
-static STDERR_TRUE_COLORS: Lazy<AtomicBool> =
-    Lazy::new(|| AtomicBool::new(default_true_colors_enabled(&Term::stderr())));
+fn stdout_colors() -> &'static AtomicBool {
+    static ENABLED: OnceLock<AtomicBool> = OnceLock::new();
+    ENABLED.get_or_init(|| AtomicBool::new(default_colors_enabled(&Term::stdout())))
+}
+fn stdout_true_colors() -> &'static AtomicBool {
+    static ENABLED: OnceLock<AtomicBool> = OnceLock::new();
+    ENABLED.get_or_init(|| AtomicBool::new(default_true_colors_enabled(&Term::stdout())))
+}
+fn stderr_colors() -> &'static AtomicBool {
+    static ENABLED: OnceLock<AtomicBool> = OnceLock::new();
+    ENABLED.get_or_init(|| AtomicBool::new(default_colors_enabled(&Term::stderr())))
+}
+fn stderr_true_colors() -> &'static AtomicBool {
+    static ENABLED: OnceLock<AtomicBool> = OnceLock::new();
+    ENABLED.get_or_init(|| AtomicBool::new(default_true_colors_enabled(&Term::stderr())))
+}
 
 /// Returns `true` if colors should be enabled for stdout.
 ///
@@ -40,13 +48,13 @@ static STDERR_TRUE_COLORS: Lazy<AtomicBool> =
 /// * `CLICOLOR_FORCE != 0`: ANSI colors should be enabled no matter what.
 #[inline]
 pub fn colors_enabled() -> bool {
-    STDOUT_COLORS.load(Ordering::Relaxed)
+    stdout_colors().load(Ordering::Relaxed)
 }
 
 /// Returns `true` if true colors should be enabled for stdout.
 #[inline]
 pub fn true_colors_enabled() -> bool {
-    STDOUT_TRUE_COLORS.load(Ordering::Relaxed)
+    stdout_true_colors().load(Ordering::Relaxed)
 }
 
 /// Forces colorization on or off for stdout.
@@ -55,7 +63,7 @@ pub fn true_colors_enabled() -> bool {
 /// `colors_enabled` function.
 #[inline]
 pub fn set_colors_enabled(val: bool) {
-    STDOUT_COLORS.store(val, Ordering::Relaxed)
+    stdout_colors().store(val, Ordering::Relaxed)
 }
 
 /// Forces true colorization on or off for stdout.
@@ -64,7 +72,7 @@ pub fn set_colors_enabled(val: bool) {
 /// `true_colors_enabled` function.
 #[inline]
 pub fn set_true_colors_enabled(val: bool) {
-    STDOUT_TRUE_COLORS.store(val, Ordering::Relaxed)
+    stdout_true_colors().store(val, Ordering::Relaxed)
 }
 
 /// Returns `true` if colors should be enabled for stderr.
@@ -76,13 +84,13 @@ pub fn set_true_colors_enabled(val: bool) {
 /// * `CLICOLOR_FORCE != 0`: ANSI colors should be enabled no matter what.
 #[inline]
 pub fn colors_enabled_stderr() -> bool {
-    STDERR_COLORS.load(Ordering::Relaxed)
+    stderr_colors().load(Ordering::Relaxed)
 }
 
 /// Returns `true` if true colors should be enabled for stderr.
 #[inline]
 pub fn true_colors_enabled_stderr() -> bool {
-    STDERR_TRUE_COLORS.load(Ordering::Relaxed)
+    stderr_true_colors().load(Ordering::Relaxed)
 }
 
 /// Forces colorization on or off for stderr.
@@ -91,7 +99,7 @@ pub fn true_colors_enabled_stderr() -> bool {
 /// `colors_enabled_stderr` function.
 #[inline]
 pub fn set_colors_enabled_stderr(val: bool) {
-    STDERR_COLORS.store(val, Ordering::Relaxed)
+    stderr_colors().store(val, Ordering::Relaxed)
 }
 
 /// Forces true colorization on or off for stderr.
@@ -100,7 +108,7 @@ pub fn set_colors_enabled_stderr(val: bool) {
 /// `true_colors_enabled_stderr` function.
 #[inline]
 pub fn set_true_colors_enabled_stderr(val: bool) {
-    STDERR_TRUE_COLORS.store(val, Ordering::Relaxed)
+    stderr_true_colors().store(val, Ordering::Relaxed)
 }
 
 /// Measure the width of a string in terminal characters.

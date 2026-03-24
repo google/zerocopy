@@ -1,0 +1,9 @@
+error: unexpected extra arguments: extra = "xyz",
+ --> tests/compile-fail/extra-args.rs:1:1
+  |
+1 | / datatest_stable::harness! {
+2 | |     { test = my_test, root = "abc", pattern = ".*", extra = "xyz" }
+3 | | }
+  | |_^
+  |
+  = note: this error originates in the macro `$crate::harness_collect` which comes from the expansion of the macro `datatest_stable::harness` (in Nightly builds, run with -Z macro-backtrace for more info)

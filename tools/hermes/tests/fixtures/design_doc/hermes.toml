@@ -1,0 +1,9 @@
+description = """
+Purpose: Tests the Hermes code generation using the exact examples from the design doc.
+Behavior: Exercises the 'isSafe', 'isValid' and 'spec' attribute mapping against functions and structs.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+expected_status = "failure"
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
