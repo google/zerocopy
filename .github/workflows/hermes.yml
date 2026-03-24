@@ -30,8 +30,33 @@ jobs:
     name: Hermes Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Dummy step
-        run: exit 0
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Populate cache
+        uses: ./.github/actions/cache
+
+      - name: Install stable toolchain
+        run: |
+          set -eo pipefail
+          ZC_TOOLCHAIN="$(./cargo.sh --version stable)"
+          rustup toolchain install $ZC_TOOLCHAIN
+          rustup default $ZC_TOOLCHAIN
+
+      - name: Install elan (Lean toolchain manager)
+        run: |
+          set -eo pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Setup Hermes (Install Charon and Aeneas)
+        working-directory: tools/hermes
+        run: cargo run --bin cargo-hermes -- setup
+
+      - name: Run tests
+        working-directory: tools/hermes
+        run: cargo test --verbose
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:

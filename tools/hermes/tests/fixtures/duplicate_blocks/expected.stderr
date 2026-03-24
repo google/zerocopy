@@ -1,0 +1,15 @@
+
+=== Hermes Verification Failed ===
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Multiple Hermes blocks found on a single item.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:5:1]
+ 4 │ /// ```
+ 5 │ /// ```lean, hermes
+   · ─────────┬─────────
+   ·          ╰── problematic block
+ 6 │ /// context:
+   ╰────
+
+Error: Aborting due to 1 previous errors.

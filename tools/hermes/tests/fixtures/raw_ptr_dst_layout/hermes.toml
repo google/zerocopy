@@ -1,0 +1,11 @@
+description = "Integration test for raw pointer DST layout annotations"
+
+[test]
+expected_status = "failure"
+args = ["verify", "--unsound-allow-is-valid"]
+
+[[test.artifact]]
+package = "raw_ptr_dst_layout"
+target = "raw_ptr_dst_layout"
+kind = "lean"
+should_exist = true

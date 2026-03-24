@@ -1,0 +1,43 @@
+
+=== Hermes Verification Failed ===
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: `requires` sections are only permitted on
+  │ `unsafe` functions.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
+ 1 │ /// ```hermes
+ 2 │ /// requires: true
+   · ─────────┬────────
+   ·          ╰── problematic block
+ 3 │ /// ```
+   ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Multiple unnamed bounds are not allowed. If you
+  │ have multiple bounds, they must all be named (e.g., `requires
+  │ (my_name):`).
+   ╭─[[PROJECT_ROOT]/src/lib.rs:8:1]
+ 7 │ /// requires: x > 0
+ 8 │ /// requires: y > 0
+   · ─────────┬─────────
+   ·          ╰── problematic block
+ 9 │ /// ```
+   ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: `requires` sections are only permitted on
+  │ `unsafe` functions.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:13:1]
+ 12 │ /// ```hermes
+ 13 │ /// requires:
+    · ──────┬──────
+    ·       ╰── problematic block
+ 14 │ /// ```
+    ╰────
+
+Error: Aborting due to 3 previous errors.
