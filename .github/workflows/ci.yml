@@ -997,7 +997,9 @@ jobs:
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
-      name: All checks succeeded
+      # WARNING: This name is load-bearing! It's how GitHub's settings UI configures which jobs
+      # to block on. DO NOT change this name without updating the settings UI to match.
+      name: All checks succeeded (ci.yml)
       # On failure, we run and unconditionally exit with a failing status code.
       # On success, this job is skipped. Jobs skipped using `if:` are considered
       # to have succeeded:
