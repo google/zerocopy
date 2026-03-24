@@ -4,7 +4,9 @@ use crate::JsValue;
 #[cfg(all(target_arch = "wasm32", feature = "std", panic = "unwind"))]
 use core::any::Any;
 use core::borrow::{Borrow, BorrowMut};
-use core::cell::{Cell, UnsafeCell};
+#[cfg(target_feature = "atomics")]
+use core::cell::UnsafeCell;
+use core::cell::{Cell, RefCell};
 use core::convert::Infallible;
 use core::ops::{Deref, DerefMut};
 use core::panic::{RefUnwindSafe, UnwindSafe};
@@ -24,6 +26,14 @@ pub extern crate std;
 pub mod marker;
 
 pub use wasm_bindgen_macro::BindgenedStruct;
+
+/// Wrapper implementation for JsValue errors, with atomics and std handling
+pub fn js_panic(err: JsValue) {
+    #[cfg(all(feature = "std", not(target_feature = "atomics")))]
+    ::std::panic::panic_any(err);
+    #[cfg(not(all(feature = "std", not(target_feature = "atomics"))))]
+    ::core::panic!("{:?}", err);
+}
 
 // Cast between arbitrary types supported by wasm-bindgen by going via JS.
 //
@@ -96,7 +106,7 @@ pub fn wbg_cast<From: IntoWasmAbi, To: FromWasmAbi>(value: From) -> To {
     unsafe { To::from_abi(breaks_if_inlined::<From, To>(prim1, prim2, prim3, prim4).join()) }
 }
 
-pub(crate) const JSIDX_OFFSET: u32 = 128; // keep in sync with js/mod.rs
+pub(crate) const JSIDX_OFFSET: u32 = 1024; // keep in sync with js/mod.rs
 pub(crate) const JSIDX_UNDEFINED: u32 = JSIDX_OFFSET;
 pub(crate) const JSIDX_NULL: u32 = JSIDX_OFFSET + 1;
 pub(crate) const JSIDX_TRUE: u32 = JSIDX_OFFSET + 2;
@@ -273,7 +283,7 @@ fn throw_null() -> ! {
     super::throw_str("null pointer passed to rust");
 }
 
-/// A vendored version of `RefCell` from the standard library.
+/// A wrapper around the `RefCell` from the standard library.
 ///
 /// Now why, you may ask, would we do that? Surely `RefCell` in libstd is
 /// quite good. And you're right, it is indeed quite good! Functionally
@@ -291,8 +301,7 @@ fn throw_null() -> ! {
 /// to not panic in libstd. Instead when it "panics" it calls our `throw`
 /// function in this crate which raises an error in JS.
 pub struct WasmRefCell<T: ?Sized> {
-    borrow: Cell<usize>,
-    value: UnsafeCell<T>,
+    inner: RefCell<T>,
 }
 
 impl<T: ?Sized> UnwindSafe for WasmRefCell<T> {}
@@ -304,38 +313,25 @@ impl<T: ?Sized> WasmRefCell<T> {
         T: Sized,
     {
         WasmRefCell {
-            value: UnsafeCell::new(value),
-            borrow: Cell::new(0),
+            inner: RefCell::new(value),
         }
     }
 
     pub fn get_mut(&mut self) -> &mut T {
-        unsafe { &mut *self.value.get() }
+        self.inner.get_mut()
     }
 
     pub fn borrow(&self) -> Ref<'_, T> {
-        unsafe {
-            if self.borrow.get() == usize::MAX {
-                borrow_fail();
-            }
-            self.borrow.set(self.borrow.get() + 1);
-            Ref {
-                value: &*self.value.get(),
-                borrow: &self.borrow,
-            }
+        match self.inner.try_borrow() {
+            Ok(inner) => Ref { inner },
+            Err(_) => borrow_fail(),
         }
     }
 
     pub fn borrow_mut(&self) -> RefMut<'_, T> {
-        unsafe {
-            if self.borrow.get() != 0 {
-                borrow_fail();
-            }
-            self.borrow.set(usize::MAX);
-            RefMut {
-                value: &mut *self.value.get(),
-                borrow: &self.borrow,
-            }
+        match self.inner.try_borrow_mut() {
+            Ok(inner) => RefMut { inner },
+            Err(_) => borrow_fail(),
         }
     }
 
@@ -343,13 +339,12 @@ impl<T: ?Sized> WasmRefCell<T> {
     where
         T: Sized,
     {
-        self.value.into_inner()
+        self.inner.into_inner()
     }
 }
 
 pub struct Ref<'b, T: ?Sized + 'b> {
-    value: &'b T,
-    borrow: &'b Cell<usize>,
+    inner: core::cell::Ref<'b, T>,
 }
 
 impl<T: ?Sized> Deref for Ref<'_, T> {
@@ -357,26 +352,19 @@ impl<T: ?Sized> Deref for Ref<'_, T> {
 
     #[inline]
     fn deref(&self) -> &T {
-        self.value
+        &self.inner
     }
 }
 
 impl<T: ?Sized> Borrow<T> for Ref<'_, T> {
     #[inline]
     fn borrow(&self) -> &T {
-        self.value
-    }
-}
-
-impl<T: ?Sized> Drop for Ref<'_, T> {
-    fn drop(&mut self) {
-        self.borrow.set(self.borrow.get() - 1);
+        self
     }
 }
 
 pub struct RefMut<'b, T: ?Sized + 'b> {
-    value: &'b mut T,
-    borrow: &'b Cell<usize>,
+    inner: core::cell::RefMut<'b, T>,
 }
 
 impl<T: ?Sized> Deref for RefMut<'_, T> {
@@ -384,37 +372,40 @@ impl<T: ?Sized> Deref for RefMut<'_, T> {
 
     #[inline]
     fn deref(&self) -> &T {
-        self.value
+        &self.inner
     }
 }
 
 impl<T: ?Sized> DerefMut for RefMut<'_, T> {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
-        self.value
+        &mut self.inner
     }
 }
 
 impl<T: ?Sized> Borrow<T> for RefMut<'_, T> {
     #[inline]
     fn borrow(&self) -> &T {
-        self.value
+        self
     }
 }
 
 impl<T: ?Sized> BorrowMut<T> for RefMut<'_, T> {
     #[inline]
     fn borrow_mut(&mut self) -> &mut T {
-        self.value
+        self
     }
 }
 
-impl<T: ?Sized> Drop for RefMut<'_, T> {
-    fn drop(&mut self) {
-        self.borrow.set(0);
-    }
+#[cfg(panic = "unwind")]
+fn borrow_fail() -> ! {
+    panic!(
+        "recursive use of an object detected which would lead to \
+		 unsafe aliasing in rust",
+    )
 }
 
+#[cfg(not(panic = "unwind"))]
 fn borrow_fail() -> ! {
     super::throw_str(
         "recursive use of an object detected which would lead to \
@@ -618,6 +609,10 @@ pub fn link_mem_intrinsics() {
 #[cfg_attr(target_feature = "atomics", thread_local)]
 static GLOBAL_EXNDATA: ThreadLocalWrapper<Cell<[u32; 2]>> = ThreadLocalWrapper(Cell::new([0; 2]));
 
+#[cfg(panic = "unwind")]
+#[no_mangle]
+pub static mut __instance_terminated: u32 = 0;
+
 #[no_mangle]
 pub unsafe extern "C" fn __wbindgen_exn_store(idx: u32) {
     debug_assert_eq!(GLOBAL_EXNDATA.0.get()[0], 0);
@@ -782,6 +777,12 @@ extern "C" {
 
 #[cfg(all(target_arch = "wasm32", feature = "std", panic = "unwind"))]
 pub fn panic_to_panic_error(val: std::boxed::Box<dyn Any + Send>) -> JsValue {
+    #[cfg(not(target_feature = "atomics"))]
+    {
+        if let Some(s) = val.downcast_ref::<JsValue>() {
+            return __wbindgen_panic_error(&s);
+        }
+    }
     let maybe_panic_msg: Option<&str> = if let Some(s) = val.downcast_ref::<&str>() {
         Some(s)
     } else if let Some(s) = val.downcast_ref::<std::string::String>() {

@@ -9,7 +9,7 @@ use unicode_width::UnicodeWidthChar;
 use console::{measure_text_width, AnsiCodeIterator, Style};
 #[cfg(feature = "unicode-segmentation")]
 use unicode_segmentation::UnicodeSegmentation;
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", feature = "wasmbind"))]
 use web_time::Instant;
 
 use crate::draw_target::LineType;
@@ -1020,8 +1020,9 @@ mod tests {
         assert_eq!(&buf[0], "fghijklmno");
     }
 
+    #[cfg(feature = "unicode-width")]
     #[test]
-    fn combinining_diacritical_truncation() {
+    fn combining_diacritical_truncation() {
         const WIDTH: u16 = 10;
         let pos = Arc::new(AtomicPosition::new());
         let mut state = ProgressState::new(Some(10), pos);

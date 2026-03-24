@@ -38,7 +38,7 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
    |
    |                     $(: $generics_bound>)?
    |                                        +
@@ -56,31 +56,9 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    | |_expected one of `+`, `,`, `=`, or `>`
    |   unexpected token
    |
-   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
-   |
-   |                     $(: $generics_bound>)?
-   |                                        +
-
-error: expected one of `+`, `,`, `=`, or `>`, found `:`
-  --> tests/ui/pin_project/invalid-bounds.rs:17:1
-   |
-17 | / pin_project! {
-18 | |     struct Generics3<T: Sized : 'static> { //~ ERROR expected one of `+`, `,`, `=`, or `>`, found `:`
-19 | |         field: T,
-20 | |     }
-21 | | }
-   | | ^
-   | | |
-   | | expected one of `+`, `,`, `=`, or `>`
-   | |_unexpected token
-   |   in this macro invocation
-   |
-   = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
    |
    |                     $(: $generics_bound>)?
    |                                        +
@@ -101,7 +79,28 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
+   |
+   |                     $(: $generics_bound>)?
+   |                                        +
+
+error: expected one of `+`, `,`, `=`, or `>`, found `:`
+  --> tests/ui/pin_project/invalid-bounds.rs:17:1
+   |
+17 | / pin_project! {
+18 | |     struct Generics3<T: Sized : 'static> { //~ ERROR expected one of `+`, `,`, `=`, or `>`, found `:`
+19 | |         field: T,
+20 | |     }
+21 | | }
+   | | ^
+   | | |
+   | | expected one of `+`, `,`, `=`, or `>`
+   | |_unexpected token
+   |   in this macro invocation
+   |
+   = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  -->  $DIR/src/lib.rs
    |
    |                     $(: $generics_bound>)?
    |                                        +
@@ -122,7 +121,7 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
    |
    |                     $(: ?$generics_unsized_bound>)?
    |                                                 +
@@ -140,10 +139,9 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    | |_expected one of `+`, `,`, `=`, or `>`
    |   unexpected token
    |
-   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
    |
    |                     $(: ?$generics_unsized_bound>)?
    |                                                 +
@@ -164,7 +162,7 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
    |
    |                     $(: ?$generics_unsized_bound>)?
    |                                                 +
@@ -185,7 +183,7 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
    |
    |                     $(: ?$generics_unsized_bound>)?
    |                                                 +
@@ -206,7 +204,7 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
    |
    |                     $(: $generics_bound>)?
    |                                        +
@@ -224,10 +222,9 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    | |_expected one of `+`, `,`, `=`, or `>`
    |   unexpected token
    |
-   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
    |
    |                     $(: $generics_bound>)?
    |                                        +
@@ -248,7 +245,7 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
    |
    |                     $(: $generics_bound>)?
    |                                        +
@@ -269,7 +266,7 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might have meant to end the type parameters here
-  --> src/lib.rs
+  -->  $DIR/src/lib.rs
    |
    |                     $(: $generics_bound>)?
    |                                        +
@@ -340,7 +337,6 @@ error: expected one of `+`, `,`, or `{`, found `:`
    | |_expected one of `+`, `,`, or `{`
    |   unexpected token
    |
-   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected `{` after struct name, found `:`
@@ -405,7 +401,6 @@ error: expected one of `+`, `,`, or `{`, found `:`
    | |_expected one of `+`, `,`, or `{`
    |   unexpected token
    |
-   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected `{` after struct name, found `:`
@@ -470,7 +465,6 @@ error: expected one of `+`, `,`, or `{`, found `:`
    | |_expected one of `+`, `,`, or `{`
    |   unexpected token
    |
-   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected `{` after struct name, found `:`

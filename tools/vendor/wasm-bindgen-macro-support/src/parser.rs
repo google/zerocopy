@@ -97,6 +97,8 @@ macro_rules! attrgen {
             (is_type_of, false, IsTypeOf(Span, syn::Expr)),
             (extends, false, Extends(Span, syn::Path)),
             (no_deref, false, NoDeref(Span)),
+            (no_upcast, false, NoUpcast(Span)),
+            (no_promising, false, NoPromising(Span)),
             (vendor_prefix, false, VendorPrefix(Span, Ident)),
             (variadic, false, Variadic(Span)),
             (typescript_custom_section, false, TypescriptCustomSection(Span)),
@@ -117,6 +119,7 @@ macro_rules! attrgen {
             (unchecked_return_type, true, ReturnType(Span, String, Span)),
             (return_description, true, ReturnDesc(Span, String, Span)),
             (unchecked_param_type, true, ParamType(Span, String, Span)),
+            (unchecked_optional_param_type, true, OptionalParamType(Span, String, Span)),
             (param_description, true, ParamDesc(Span, String, Span)),
 
             // For testing purposes only.
@@ -492,6 +495,8 @@ impl ConvertToAst<&ast::Program> for &mut syn::ItemStruct {
 
         let is_inspectable = attrs.inspectable().is_some();
         let getter_with_clone = attrs.getter_with_clone();
+        let js_namespace = attrs.js_namespace().map(|(ns, _)| ns.0);
+        let qualified_name = wasm_bindgen_shared::qualified_name(js_namespace.as_deref(), &js_name);
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
                 syn::Visibility::Public(..) => {}
@@ -514,8 +519,8 @@ impl ConvertToAst<&ast::Program> for &mut syn::ItemStruct {
             };
 
             let comments = extract_doc_comments(&field.attrs);
-            let getter = wasm_bindgen_shared::struct_field_get(&js_name, &js_field_name);
-            let setter = wasm_bindgen_shared::struct_field_set(&js_name, &js_field_name);
+            let getter = wasm_bindgen_shared::struct_field_get(&qualified_name, &js_field_name);
+            let setter = wasm_bindgen_shared::struct_field_set(&qualified_name, &js_field_name);
 
             fields.push(ast::StructField {
                 rust_name: member,
@@ -536,11 +541,11 @@ impl ConvertToAst<&ast::Program> for &mut syn::ItemStruct {
         let generate_typescript = attrs.skip_typescript().is_none();
         let private = attrs.private().is_some();
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
-        let js_namespace = attrs.js_namespace().map(|(ns, _)| ns.0);
         attrs.check_used();
         Ok(ast::Struct {
             rust_name: self.ident.clone(),
             js_name,
+            qualified_name,
             fields,
             comments,
             is_inspectable,
@@ -618,27 +623,28 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
                     "first argument of method must be a shared reference"
                 ),
             };
-            let class_name = match get_ty(class) {
-                syn::Type::Path(syn::TypePath {
-                    qself: None,
-                    ref path,
-                }) => path,
-                _ => bail_span!(class, "first argument of method must be a path"),
-            };
-            let class_name = extract_path_ident(class_name)?;
-            let class_name = opts
-                .js_class()
-                .map(|p| p.0.into())
-                .unwrap_or_else(|| class_name.to_string());
-
+            let class_ty = get_ty(class);
+            let js_class = opts.js_class().map(|p| p.0.to_string());
             let kind = ast::MethodKind::Operation(ast::Operation {
                 is_static: false,
                 kind: operation_kind,
             });
 
+            let class_name = match class_ty {
+                syn::Type::Path(syn::TypePath {
+                    qself: None,
+                    ref path,
+                }) => path,
+                _ => bail_span!(class_ty, "first argument of method must be a path"),
+            };
+
+            let class_name_str = js_class
+                .map(Ok)
+                .unwrap_or_else(|| extract_path_ident(class_name, true).map(|i| i.to_string()))?;
+
             ast::ImportFunctionKind::Method {
-                class: class_name,
-                ty: class.clone(),
+                class: class_name_str,
+                ty: class_ty.clone(),
                 kind,
             }
         } else if let Some(cls) = opts.static_method_of() {
@@ -677,7 +683,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
                 }) => path,
                 _ => bail_span!(self, "return value of constructor must be a bare path"),
             };
-            let class_name = extract_path_ident(class_name)?;
+            let class_name = extract_path_ident(class_name, true)?;
             let class_name = opts
                 .js_class()
                 .map(|p| p.0.into())
@@ -706,7 +712,20 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
                 ast::ImportFunctionKind::Normal => (0, "n"),
                 ast::ImportFunctionKind::Method { ref class, .. } => (1, &class[..]),
             };
-            let data = (ns, self.sig.to_token_stream().to_string(), module);
+            // Include cfg attributes in the hash so that functions with different
+            // cfg gates get different shim names, even if their signatures are identical.
+            let cfg_attrs: String = self
+                .attrs
+                .iter()
+                .filter(|attr| attr.path().is_ident("cfg"))
+                .map(|attr| attr.to_token_stream().to_string())
+                .collect();
+            let data = (
+                ns,
+                self.sig.to_token_stream().to_string(),
+                module,
+                cfg_attrs,
+            );
             format!(
                 "__wbg_{}_{}",
                 wasm.name
@@ -763,6 +782,8 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             }
         });
 
+        validate_generics(&self.sig.generics)?;
+
         let ret = ast::ImportKind::Function(ast::ImportFunction {
             function: wasm,
             assert_no_shim,
@@ -776,6 +797,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             doc_comment,
             wasm_bindgen: program.wasm_bindgen.clone(),
             wasm_bindgen_futures: program.wasm_bindgen_futures.clone(),
+            generics: self.sig.generics,
         });
         opts.check_used();
 
@@ -804,6 +826,8 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for syn::ForeignItemType {
         let mut extends = Vec::new();
         let mut vendor_prefixes = Vec::new();
         let no_deref = attrs.no_deref().is_some();
+        let no_upcast = attrs.no_upcast().is_some();
+        let no_promising = attrs.no_promising().is_some();
         for (used, attr) in attrs.attrs.iter() {
             match attr {
                 BindgenAttr::Extends(_, e) => {
@@ -817,7 +841,21 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for syn::ForeignItemType {
                 _ => {}
             }
         }
+
         attrs.check_used();
+        validate_generics(&self.generics)?;
+
+        // Ensure defaults are set for all generic type params on imported class definitions.
+        // JsValue as the default default.
+        let mut generics = None;
+        for (n, param) in self.generics.type_params().enumerate() {
+            if param.default.is_none() {
+                let generics = generics.get_or_insert_with(|| self.generics.clone());
+                let type_param_mut = generics.type_params_mut().nth(n).unwrap();
+                type_param_mut.default = Some(syn::parse_quote! { JsValue });
+            }
+        }
+
         Ok(ast::ImportKind::Type(ast::ImportType {
             vis: self.vis,
             attrs: self.attrs,
@@ -830,7 +868,10 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for syn::ForeignItemType {
             extends,
             vendor_prefixes,
             no_deref,
+            no_upcast,
+            no_promising,
             wasm_bindgen: program.wasm_bindgen.clone(),
+            generics: generics.unwrap_or(self.generics),
         }))
     }
 }
@@ -1023,14 +1064,14 @@ fn function_from_decl(
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
     }
-    if !sig.generics.params.is_empty() {
+
+    // For imported functions (Extern position), generics are supported and validated.
+    if !matches!(position, FunctionPosition::Extern) && !sig.generics.params.is_empty() {
         bail_span!(
             sig.generics,
-            "can't #[wasm_bindgen] functions with lifetime or type parameters",
+            "can't #[wasm_bindgen] functions with lifetime or type parameters"
         );
     }
-
-    assert_no_lifetimes(&sig)?;
 
     let syn::Signature { inputs, output, .. } = sig;
 
@@ -1188,6 +1229,7 @@ fn function_from_decl(
                     pat_type,
                     js_name: attrs.js_name,
                     js_type: attrs.js_type,
+                    optional: attrs.optional,
                     desc: attrs.desc,
                 })
                 .collect(),
@@ -1201,15 +1243,83 @@ fn function_from_decl(
 struct FnArgAttrs {
     js_name: Option<String>,
     js_type: Option<String>,
+    optional: bool,
     desc: Option<String>,
 }
 
 /// Extracts function arguments attributes
 fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagnostic> {
     let mut args_attrs = vec![];
+    let mut seen_optional: Option<Span> = None;
     for input in sig.inputs.iter_mut() {
         if let syn::FnArg::Typed(pat_type) = input {
             let attrs = BindgenAttrs::find(&mut pat_type.attrs)?;
+
+            // Check for mutually exclusive param type attributes
+            let param_type = attrs.unchecked_param_type();
+            let optional_param_type = attrs.unchecked_optional_param_type();
+
+            if param_type.is_some() && optional_param_type.is_some() {
+                // Find the positions and spans of both attributes in the attrs list
+                let mut param_pos_and_span: Option<(usize, Span)> = None;
+                let mut optional_pos_and_span: Option<(usize, Span)> = None;
+                for (pos, (_, attr)) in attrs.attrs.iter().enumerate() {
+                    match attr {
+                        BindgenAttr::ParamType(span, _, _) => {
+                            param_pos_and_span = Some((pos, *span));
+                        }
+                        BindgenAttr::OptionalParamType(span, _, _) => {
+                            optional_pos_and_span = Some((pos, *span));
+                        }
+                        _ => {}
+                    }
+                }
+                // Report error at the position of the attribute that appears later
+                let error_span = match (param_pos_and_span, optional_pos_and_span) {
+                    (Some((p_pos, p_span)), Some((o_pos, o_span))) => {
+                        if p_pos > o_pos {
+                            p_span
+                        } else {
+                            o_span
+                        }
+                    }
+                    (Some((_, p_span)), None) => p_span,
+                    (None, Some((_, o_span))) => o_span,
+                    (None, None) => unreachable!(
+                        "both param_type and optional_param_type are Some, but attrs not found"
+                    ),
+                };
+                return Err(Diagnostic::span_error(
+                    error_span,
+                    "cannot use both `unchecked_param_type` and `unchecked_optional_param_type` on the same parameter",
+                ));
+            }
+
+            // Determine the type and whether it's optional
+            let js_type = param_type
+                .or(optional_param_type)
+                .map_or::<Result<_, Diagnostic>, _>(Ok(None), |(ty, span)| {
+                    check_invalid_type(ty, span)?;
+                    Ok(Some(ty.to_string()))
+                })?;
+
+            let is_optional = optional_param_type.is_some();
+
+            // Check that a non-optional param doesn't follow an optional one
+            if let Some(optional_span) = seen_optional {
+                if !is_optional {
+                    return Err(Diagnostic::span_error(
+                        optional_span,
+                        "a required parameter cannot follow an optional parameter",
+                    ));
+                }
+            }
+            if is_optional {
+                if let Some((_, span)) = optional_param_type {
+                    seen_optional = Some(span);
+                }
+            }
+
             let arg_attrs = FnArgAttrs {
                 js_name: attrs
                     .js_name()
@@ -1219,12 +1329,8 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                         }
                         Ok(Some(js_name_override.to_string()))
                     })?,
-                js_type: attrs
-                    .unchecked_param_type()
-                    .map_or::<Result<_, Diagnostic>, _>(Ok(None), |(ty, span)| {
-                        check_invalid_type(ty, span)?;
-                        Ok(Some(ty.to_string()))
-                    })?,
+                js_type,
+                optional: is_optional,
                 desc: attrs
                     .param_description()
                     .map_or::<Result<_, Diagnostic>, _>(Ok(None), |(description, span)| {
@@ -1446,7 +1552,7 @@ fn prepare_for_impl_recursion(
         other => bail_span!(other, "failed to parse this item as a known item"),
     };
 
-    let ident = extract_path_ident(class)?;
+    let ident = extract_path_ident(class, false)?;
 
     let js_class = impl_opts
         .js_class()
@@ -2145,34 +2251,23 @@ fn unescape_unicode(chars: &mut Chars) -> Option<(char, char)> {
     None
 }
 
-/// Check there are no lifetimes on the function.
-fn assert_no_lifetimes(sig: &syn::Signature) -> Result<(), Diagnostic> {
-    struct Walk {
-        diagnostics: Vec<Diagnostic>,
-    }
-
-    impl<'ast> syn::visit::Visit<'ast> for Walk {
-        fn visit_lifetime(&mut self, i: &'ast syn::Lifetime) {
-            self.diagnostics.push(err_span!(
-                i,
-                "it is currently not sound to use lifetimes in function \
-                 signatures"
-            ));
-        }
-    }
-    let mut walk = Walk {
-        diagnostics: Vec::new(),
-    };
-    syn::visit::Visit::visit_signature(&mut walk, sig);
-    Diagnostic::from_vec(walk.diagnostics)
-}
-
 /// Extracts the last ident from the path
-fn extract_path_ident(path: &syn::Path) -> Result<Ident, Diagnostic> {
+/// If generics is enabled, generics are validated
+fn extract_path_ident(path: &syn::Path, allow_generics: bool) -> Result<Ident, Diagnostic> {
     for segment in path.segments.iter() {
-        match segment.arguments {
+        match &segment.arguments {
             syn::PathArguments::None => {}
-            _ => bail_span!(path, "paths with type parameters are not supported yet"),
+            syn::PathArguments::AngleBracketed(_) => {
+                if !allow_generics {
+                    bail_span!(
+                        path,
+                        "paths with type parameters are not supported in this position"
+                    )
+                }
+            }
+            syn::PathArguments::Parenthesized(_) => {
+                bail_span!(path, "parenthesized paths are not supported yet")
+            }
         }
     }
 
@@ -2182,6 +2277,66 @@ fn extract_path_ident(path: &syn::Path) -> Result<Ident, Diagnostic> {
             bail_span!(path, "empty idents are not supported");
         }
     }
+}
+
+fn bail_generic_unsupported(span: impl Spanned + ToTokens) -> Result<(), Diagnostic> {
+    bail_span!(span, "unsupported in wasm-bindgen generics");
+}
+
+fn validate_generic_type_param_bound(bound: &syn::TypeParamBound) -> Result<(), Diagnostic> {
+    match bound {
+        syn::TypeParamBound::Trait(trait_bound) => {
+            // Higher-ranked trait bounds (for<'a>) are now supported
+            if let syn::TraitBoundModifier::Maybe(question) = trait_bound.modifier {
+                bail_generic_unsupported(question)?;
+            }
+        }
+        syn::TypeParamBound::Lifetime(_) => {
+            // Lifetime bounds (e.g., T: 'a) are now supported
+        }
+        syn::TypeParamBound::Verbatim(_) => {}
+        _ => {}
+    }
+    Ok(())
+}
+
+/// Validates generic type parameters and their bounds both for inline parameters and where clauses.
+/// Bails for const params. Lifetimes are supported via hoisting.
+fn validate_generics(generics: &syn::Generics) -> Result<(), Diagnostic> {
+    if let Some(where_clause) = &generics.where_clause {
+        for predicate in &where_clause.predicates {
+            match predicate {
+                syn::WherePredicate::Type(predicate_type) => {
+                    // Lifetime bounds on types (for<'a>) are now supported
+                    predicate_type
+                        .bounds
+                        .iter()
+                        .try_for_each(validate_generic_type_param_bound)?;
+                }
+                syn::WherePredicate::Lifetime(_) => {
+                    // Lifetime bounds (e.g., 'a: 'b) are now supported
+                }
+                _ => bail_generic_unsupported(predicate)?,
+            }
+        }
+    }
+
+    for param in &generics.params {
+        match param {
+            syn::GenericParam::Lifetime(_) => {
+                // Lifetimes are now supported via hoisting
+            }
+            syn::GenericParam::Type(type_param) => {
+                type_param
+                    .bounds
+                    .iter()
+                    .try_for_each(validate_generic_type_param_bound)?;
+            }
+            syn::GenericParam::Const(const_param) => bail_generic_unsupported(const_param)?,
+        }
+    }
+
+    Ok(())
 }
 
 pub fn reset_attrs_used() {

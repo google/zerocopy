@@ -113,9 +113,6 @@ use winnow::error::{ContextError, ErrMode};
 use winnow::prelude::*;
 use winnow::token::{any, one_of, take, take_while};
 
-#[cfg(test)]
-mod test;
-
 #[test]
 fn parse_example() {
     // Check out the [`crate::parser::test`] in this example for more samples.
