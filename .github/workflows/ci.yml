@@ -997,7 +997,7 @@ jobs:
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
-      name: All checks succeeded
+      name: All checks succeeded (ci.yml)
       # On failure, we run and unconditionally exit with a failing status code.
       # On success, this job is skipped. Jobs skipped using `if:` are considered
       # to have succeeded:
