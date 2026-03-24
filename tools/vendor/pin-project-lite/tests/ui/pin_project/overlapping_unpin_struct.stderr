@@ -9,9 +9,9 @@ error[E0277]: `PhantomPinned` cannot be unpinned
 note: required because it appears within the type `_::__Origin<'_, PhantomPinned>`
   --> tests/ui/pin_project/overlapping_unpin_struct.rs:7:1
    |
-7  | / pin_project! {
-8  | |     struct Foo<T> {
-9  | |         #[pin]
+ 7 | / pin_project! {
+ 8 | |     struct Foo<T> {
+ 9 | |         #[pin]
 10 | |         inner: T,
 11 | |     }
 12 | | }
@@ -19,9 +19,9 @@ note: required because it appears within the type `_::__Origin<'_, PhantomPinned
 note: required for `Foo<PhantomPinned>` to implement `Unpin`
   --> tests/ui/pin_project/overlapping_unpin_struct.rs:7:1
    |
-7  | / pin_project! {
-8  | |     struct Foo<T> {
-9  | |         #[pin]
+ 7 | / pin_project! {
+ 8 | |     struct Foo<T> {
+ 9 | |         #[pin]
 10 | |         inner: T,
 11 | |     }
 12 | | }

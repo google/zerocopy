@@ -1,0 +1,8 @@
+description = """
+Purpose: Checks behavior of Hermes specifications on `#[cfg]`-removed functions.
+Behavior: Provides annotated functions under `#[cfg]`. Verifies only the specification corresponding to the actively compiled function exists in Lean.
+"""
+
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
