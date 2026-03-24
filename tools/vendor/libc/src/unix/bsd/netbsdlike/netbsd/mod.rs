@@ -162,6 +162,20 @@ s! {
         __unused8: Padding<*mut c_void>,
     }
 
+    pub struct tm {
+        pub tm_sec: c_int,
+        pub tm_min: c_int,
+        pub tm_hour: c_int,
+        pub tm_mday: c_int,
+        pub tm_mon: c_int,
+        pub tm_year: c_int,
+        pub tm_wday: c_int,
+        pub tm_yday: c_int,
+        pub tm_isdst: c_int,
+        pub tm_gmtoff: c_long,
+        pub tm_zone: *mut c_char,
+    }
+
     pub struct mq_attr {
         pub mq_flags: c_long,
         pub mq_maxmsg: c_long,
@@ -359,7 +373,7 @@ s! {
     }
 
     pub struct uucred {
-        pub cr_unused: c_ushort,
+        cr_unused: Padding<c_ushort>,
         pub cr_uid: crate::uid_t,
         pub cr_gid: crate::gid_t,
         pub cr_ngroups: c_short,
@@ -427,6 +441,33 @@ s! {
     pub struct Aux64Info {
         pub a_type: Elf64_Word,
         pub a_v: Elf64_Xword,
+    }
+
+    // sys/sysctl.h
+
+    pub struct kinfo_file {
+        pub ki_fileaddr: u64,
+        pub ki_flag: u32,
+        pub ki_iflags: u32,
+        pub ki_ftype: u32,
+        pub ki_count: u32,
+        pub ki_msgcount: u32,
+        pub ki_usecount: u32,
+        pub ki_fucred: u64,
+        pub ki_fuid: u32,
+        pub ki_fgid: u32,
+        pub ki_fops: u64,
+        pub ki_foffset: u64,
+        pub ki_fdata: u64,
+        pub ki_vun: u64,
+        pub ki_vsize: u64,
+        pub ki_vtype: u32,
+        pub ki_vtag: u32,
+        pub ki_vdata: u64,
+        pub ki_pid: u32,
+        pub ki_fd: i32,
+        pub ki_ofileflags: u32,
+        _ki_padto64bits: Padding<u32>,
     }
 
     // link.h
@@ -1684,6 +1725,10 @@ pub const KI_MAXLOGNAME: c_int = 24;
 pub const KI_MAXEMULLEN: c_int = 16;
 pub const KI_LNAMELEN: c_int = 20;
 
+pub const KERN_FILE_BYFILE: c_int = 1;
+pub const KERN_FILE_BYPID: c_int = 2;
+pub const KERN_FILESLOP: c_int = 10;
+
 // sys/lwp.h
 pub const LSIDL: c_int = 1;
 pub const LSRUN: c_int = 2;
@@ -2176,12 +2221,6 @@ extern "C" {
 
     #[link_name = "__pollts50"]
     pub fn pollts(
-        fds: *mut crate::pollfd,
-        nfds: crate::nfds_t,
-        ts: *const crate::timespec,
-        sigmask: *const crate::sigset_t,
-    ) -> c_int;
-    pub fn ppoll(
         fds: *mut crate::pollfd,
         nfds: crate::nfds_t,
         ts: *const crate::timespec,

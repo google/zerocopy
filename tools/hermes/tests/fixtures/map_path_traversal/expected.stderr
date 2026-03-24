@@ -1,0 +1,2 @@
+[External Error] [PROJECT_ROOT]/../../../etc/passwd:1: path traversal attempt
+Error: Diagnostic error in charon

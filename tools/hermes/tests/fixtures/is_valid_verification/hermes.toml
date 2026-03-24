@@ -1,0 +1,9 @@
+description = """
+Purpose: Exercises end-to-end Lean verification integration evaluating `isValid` invariants.
+Behavior: Uses `--verify` to trigger Lean analysis on the extracted logic. Confirms that purposefully faulty initialization states correctly drive Lean to trip the `Decidable` invariant logic, reporting "failed to synthesize" through Hermes.
+"""
+
+[test]
+args = ["verify", "--unsound-allow-is-valid"]
+stderr_file = "expected.stderr"
+expected_status = "failure"

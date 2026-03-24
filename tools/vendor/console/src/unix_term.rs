@@ -7,7 +7,7 @@ use std::io::{self, BufRead, BufReader};
 use std::os::fd::{AsRawFd, RawFd};
 
 #[cfg(not(target_os = "macos"))]
-use once_cell::sync::Lazy;
+use std::sync::OnceLock;
 
 use crate::kb::Key;
 use crate::term::Term;
@@ -380,12 +380,6 @@ fn key_from_utf8(buf: &[u8]) -> Key {
     Key::Unknown
 }
 
-#[cfg(not(target_os = "macos"))]
-static IS_LANG_UTF8: Lazy<bool> = Lazy::new(|| match std::env::var("LANG") {
-    Ok(lang) => lang.to_uppercase().ends_with("UTF-8"),
-    _ => false,
-});
-
 #[cfg(target_os = "macos")]
 pub(crate) fn wants_emoji() -> bool {
     true
@@ -393,7 +387,12 @@ pub(crate) fn wants_emoji() -> bool {
 
 #[cfg(not(target_os = "macos"))]
 pub(crate) fn wants_emoji() -> bool {
-    *IS_LANG_UTF8
+    static IS_LANG_UTF8: OnceLock<bool> = OnceLock::new();
+
+    *IS_LANG_UTF8.get_or_init(|| match std::env::var("LANG") {
+        Ok(lang) => lang.to_uppercase().ends_with("UTF-8"),
+        _ => false,
+    })
 }
 
 pub(crate) fn set_title<T: Display>(title: T) {

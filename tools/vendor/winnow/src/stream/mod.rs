@@ -1386,7 +1386,8 @@ impl<T: core::fmt::Debug, S> core::fmt::Debug for Checkpoint<T, S> {
 }
 
 /// Abstracts something which can extend an `Extend`.
-/// Used to build modified input slices in `escaped_transform`
+///
+/// Used to build modified input slices in [`escaped`][crate::ascii::escaped].
 pub trait Accumulate<T>: Sized {
     /// Create a new `Extend` of the correct type
     fn initial(capacity: Option<usize>) -> Self;
@@ -2030,20 +2031,20 @@ impl<T> ContainsToken<T> for () {
 }
 
 macro_rules! impl_contains_token_for_tuple {
-  ($($haystack:ident),+) => (
-    #[allow(non_snake_case)]
-    impl<T, $($haystack),+> ContainsToken<T> for ($($haystack),+,)
-    where
-    T: Clone,
-      $($haystack: ContainsToken<T>),+
-    {
-    #[inline]
-      fn contains_token(&self, token: T) -> bool {
-        let ($(ref $haystack),+,) = *self;
-        $($haystack.contains_token(token.clone()) || )+ false
-      }
-    }
-  )
+    ($($haystack:ident),+) => (
+        #[allow(non_snake_case)]
+        impl<T, $($haystack),+> ContainsToken<T> for ($($haystack),+,)
+        where
+            T: Clone,
+            $($haystack: ContainsToken<T>),+
+        {
+            #[inline]
+            fn contains_token(&self, token: T) -> bool {
+                let ($(ref $haystack),+,) = *self;
+                $($haystack.contains_token(token.clone()) || )+ false
+            }
+        }
+    )
 }
 
 macro_rules! impl_contains_token_for_tuples {

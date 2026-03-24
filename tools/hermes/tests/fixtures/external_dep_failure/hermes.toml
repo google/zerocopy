@@ -1,0 +1,9 @@
+description = """
+Purpose: Confirms operation inside isolated path-dependent workspace components.
+Behavior: Uses a multi-package workspace (`app` resolving `utils = { path = "../utils" }`), executing inside `cwd = "app"`. Ensures correct internal discovery of path variables.
+"""
+
+[test]
+args = ["verify", "--allow-sorry"]
+cwd = "app"
+expected_status = "success"
