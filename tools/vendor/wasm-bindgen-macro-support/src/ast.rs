@@ -196,6 +196,8 @@ pub struct ImportFunction {
     pub wasm_bindgen: Path,
     /// Path to wasm_bindgen_futures
     pub wasm_bindgen_futures: Path,
+    /// Generic parameters as validated simple type parameters for this function
+    pub generics: syn::Generics,
 }
 
 /// The type of a function being imported
@@ -332,8 +334,14 @@ pub struct ImportType {
     pub vendor_prefixes: Vec<Ident>,
     /// If present, don't generate a `Deref` impl
     pub no_deref: bool,
+    /// If present, don't generate `Upcast` impls
+    pub no_upcast: bool,
+    /// If present, don't generate a `Promising` impl
+    pub no_promising: bool,
     /// Path to wasm_bindgen
     pub wasm_bindgen: Path,
+    /// Validated generics
+    pub generics: syn::Generics,
 }
 
 /// The metadata for a String Enum
@@ -412,6 +420,8 @@ pub struct FunctionArgumentData {
     pub js_name: Option<String>,
     /// Specifies the JS function argument type override
     pub js_type: Option<String>,
+    /// Specifies whether the parameter is optional
+    pub optional: bool,
     /// Specifies the argument description
     pub desc: Option<String>,
 }
@@ -424,6 +434,9 @@ pub struct Struct {
     pub rust_name: Ident,
     /// The export name of the struct in JS code
     pub js_name: String,
+    /// The namespace-qualified internal name used for wasm symbol generation.
+    /// When a namespace is present, this is `ns1_ns2_JsName`; otherwise it equals `js_name`.
+    pub qualified_name: String,
     /// All the fields of this struct to export
     pub fields: Vec<StructField>,
     /// The doc comments on this struct, if provided
@@ -548,7 +561,7 @@ impl Export {
         };
 
         if let Some(ns) = &self.js_namespace {
-            format!("{}_{base_name}", ns.join("_"))
+            format!("{}__{base_name}", ns.join("__"))
         } else {
             base_name
         }

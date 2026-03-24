@@ -1,0 +1,10 @@
+[package]
+name = "app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Intentionally messy relative path that traverses up and down
+# ../../crates/lib is inside the workspace, but we structure it to ensure
+# canonicalization is required to match it correctly.
+my_lib = { path = "../../crates/lib" }

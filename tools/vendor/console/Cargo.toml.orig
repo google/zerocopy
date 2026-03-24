@@ -1,7 +1,7 @@
 [package]
 name = "console"
 description = "A terminal and console abstraction for Rust"
-version = "0.16.2"
+version = "0.16.3"
 keywords = ["cli", "terminal", "colors", "console", "ansi"]
 license = "MIT"
 edition = "2021"
@@ -14,14 +14,13 @@ include = ["CHANGELOG.md", "Cargo.toml", "LICENSE", "README.md", "src/**/*.rs"]
 
 [features]
 default = ["unicode-width", "ansi-parsing", "std"]
-std = ["dep:libc", "dep:once_cell", "alloc"]
+std = ["dep:libc", "alloc"]
 alloc = []
 windows-console-colors = ["ansi-parsing"]
 ansi-parsing = []
 
 [dependencies]
 libc = { version = "0.2.99", optional = true }
-once_cell = { version = "1.8", optional = true }
 unicode-width = { version = "0.2", optional = true }
 
 [target.'cfg(windows)'.dependencies]
