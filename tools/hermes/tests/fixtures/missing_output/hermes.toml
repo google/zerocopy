@@ -1,0 +1,13 @@
+description = """
+Purpose: Validates internal resilience to silent backend crashes.
+Behavior: Leverages a mock Aeneas script that aborts cleanly (exit 0) but produces absolutely no `.lean` target logic. Expects Hermes to explicitly check constraints and panic stating "Aeneas failed to generate".
+"""
+
+[test]
+stderr_file = "expected.stderr"
+expected_status = "failure"
+args = ["verify", "--allow-sorry"]
+# We expect the error message about missing Funs.lean because the source has functions
+
+[test.mock]
+aeneas = "mock_aeneas.sh"

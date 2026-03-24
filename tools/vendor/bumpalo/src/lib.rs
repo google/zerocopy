@@ -2478,6 +2478,17 @@ unsafe impl<'a, const MIN_ALIGN: usize> alloc::Alloc for &'a Bump<MIN_ALIGN> {
     }
 }
 
+/// This function tests that Bump isn't Sync.
+/// ```compile_fail
+/// use bumpalo::Bump;
+/// fn _requires_sync<T: Sync>(_value: T) {}
+/// fn _bump_not_sync(b: Bump) {
+///    _requires_sync(b);
+/// }
+/// ```
+#[cfg(doctest)]
+fn _doctest_only() {}
+
 #[cfg(any(feature = "allocator_api", feature = "allocator-api2"))]
 unsafe impl<'a, const MIN_ALIGN: usize> Allocator for &'a Bump<MIN_ALIGN> {
     #[inline]

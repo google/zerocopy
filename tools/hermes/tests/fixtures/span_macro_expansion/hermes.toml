@@ -1,0 +1,12 @@
+description = """
+Purpose: Tests highly granular label rendering on macro invocations.
+Behavior: Maps an error directly trailing an inline macro token `f!()`. Checks accurate span mapping translation handling primary labels correctly.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+
+[test.mock]
+charon = "mock_charon_output.json"

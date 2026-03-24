@@ -1,0 +1,12 @@
+description = """
+Purpose: Validates precise segregation of stderr log categories.
+Behavior: Transmits one `dep warning` and one `dep error` across mock tool outputs. Hermes multiplexes and categorizes these independently on UI displays without blurring them.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "success"
+
+[test.mock]
+charon = "mock_charon_output.json"

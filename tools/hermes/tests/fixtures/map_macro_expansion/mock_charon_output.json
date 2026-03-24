@@ -1,0 +1,1 @@
+{"reason": "compiler-message", "message": {"message": "macro error", "level": "error", "code": null, "spans": [{"file_name": "[PROJECT_ROOT]/src/macros.rs", "byte_start": 0, "byte_end": 5, "line_start": 1, "line_end": 1, "column_start": 1, "column_end": 6, "is_primary": true, "text": [], "label": "in macro"}], "children": [], "rendered": "macro error"}}

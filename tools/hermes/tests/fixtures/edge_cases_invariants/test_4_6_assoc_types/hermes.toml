@@ -1,0 +1,8 @@
+description = """
+Purpose: Verifies specifications mapping to trait associated types.
+Behavior: In an `isValid` boundary condition, queries the default instantiation of an associated type (`T::Item::default()`). Ensures translation accurately calls the associated default trait definitions in Lean.
+"""
+
+[test]
+expected_status = "failure"
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]

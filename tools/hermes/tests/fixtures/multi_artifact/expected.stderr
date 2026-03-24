@@ -1,0 +1,39 @@
+Error: Lean build failed
+STDOUT:
+⚠ [1491/1577] Replayed Aeneas.Std.Slice
+warning: Aeneas/Std/Slice.lean:243:4: declaration uses `sorry`
+warning: Aeneas/Std/Slice.lean:464:8: declaration uses `sorry`
+⚠ [1499/1577] Replayed Aeneas.Std.String
+warning: Aeneas/Std/String.lean:9:4: declaration uses `sorry`
+⚠ [1501/1577] Replayed Aeneas.Std.Core.Iter
+warning: Aeneas/Std/Core/Iter.lean:67:4: declaration uses `sorry`
+warning: Aeneas/Std/Core/Iter.lean:76:4: declaration uses `sorry`
+warning: Aeneas/Std/Core/Iter.lean:85:4: declaration uses `sorry`
+warning: Aeneas/Std/Core/Iter.lean:94:4: declaration uses `sorry`
+warning: Aeneas/Std/Core/Iter.lean:134:4: declaration uses `sorry`
+⚠ [1507/1577] Replayed Aeneas.Std.SliceIter
+warning: Aeneas/Std/SliceIter.lean:76:4: declaration uses `sorry`
+warning: Aeneas/Std/SliceIter.lean:118:4: declaration uses `sorry`
+warning: Aeneas/Std/SliceIter.lean:140:4: declaration uses `sorry`
+⚠ [1510/1577] Replayed Aeneas.Std.StringIter
+warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`
+warning: Aeneas/Std/StringIter.lean:19:4: declaration uses `sorry`
+⚠ [1512/1577] Replayed Aeneas.Std.VecIter
+warning: Aeneas/Std/VecIter.lean:30:4: declaration uses `sorry`
+warning: Aeneas/Std/VecIter.lean:37:4: declaration uses `sorry`
+warning: Aeneas/Std/VecIter.lean:69:4: declaration uses `sorry`
+warning: Aeneas/Std/VecIter.lean:85:4: declaration uses `sorry`
+✔ [1572/1577] Built MultiMulti<HASH>.Types (1.7s)
+✔ [1573/1577] Built MultiMulti<HASH>.Types (1.7s)
+✔ [1574/1577] Built MultiMulti<HASH>.Funs (1.7s)
+✔ [1575/1577] Built MultiMulti<HASH>.Funs (1.8s)
+✖ [1576/1577] Building Generated (945ms)
+trace: .> LEAN_PATH=/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/target/worker_caches/<ID>/lean_lake/packages/Cli/.lake/build/lib/lean:/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/target/worker_caches/<ID>/lean_lake/packages/batteries/.lake/build/lib/lean:/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/target/worker_caches/<ID>/lean_lake/packages/Qq/.lake/build/lib/lean:/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/target/worker_caches/<ID>/lean_lake/packages/aesop/.lake/build/lib/lean:/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/target/worker_caches/<ID>/lean_lake/packages/proofwidgets/.lake/build/lib/lean:/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/target/worker_caches/<ID>/lean_lake/packages/importGraph/.lake/build/lib/lean:/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/target/worker_caches/<ID>/lean_lake/packages/LeanSearchClient/.lake/build/lib/lean:/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/target/worker_caches/<ID>/lean_lake/packages/plausible/.lake/build/lib/lean:/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/target/worker_caches/<ID>/lean_lake/packages/mathlib/.lake/build/lib/lean:/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/target/worker_caches/<ID>/aeneas/backends/lean/.lake/build/lib/lean:[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean /usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.28.0-rc1/bin/lean [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/generated/Generated.lean -o [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Generated.olean -i [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Generated.ilean -c [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Generated.c --setup [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Generated.setup.json --json
+error: generated/Generated.lean:1:0: import MultiMulti<HASH>.Funs failed, environment already contains 'multi._hermes_dummy' from MultiMulti<HASH>.Funs
+error: Lean exited with code 1
+Some required targets logged failures:
+- Generated
+STDERR:
+warning: mathlib: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/mathlib' has local changes
+warning: batteries: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/batteries' has local changes
+error: build failed
