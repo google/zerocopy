@@ -1,0 +1,49 @@
+description = """
+Purpose: Tests holistic Lean lake project emission.
+Behavior: Specifically instructs the engine to persist the artifact (`style = lean`). Asserts the presence of critical Lean build assets, e.g. `lake-manifest.json`, the `.lean` files, and properly structured `import` modules.
+"""
+
+[test]
+expected_status = "known_bug"
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
+
+[[test.artifact]]
+package = "lean_generation"
+target = "lean_generation"
+kind = "lean"
+should_exist = true
+
+# Verify Build Infrastructure
+content_contains = [
+    "import Hermes",
+    ".Funs",
+    ".Types"
+]
+
+[[test.artifact]]
+package = "lean_generation"
+target = "lean_generation"
+kind = "lean"
+should_exist = true
+content_contains = []
+
+# Verify Function Specs
+
+[[test.artifact]]
+package = "lean_generation"
+target = "lean_generation"
+kind = "lean"
+should_exist = true
+content_contains = [
+    "theorem simple_spec_spec",
+    "theorem ref_lowering_spec"
+]
+
+# Verify Type/Trait Invariants
+
+[[test.artifact]]
+package = "lean_generation"
+target = "lean_generation"
+kind = "lean"
+should_exist = true
+content_contains = []

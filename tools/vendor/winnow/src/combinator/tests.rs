@@ -1631,6 +1631,7 @@ Ok(
 }
 
 #[test]
+#[allow(deprecated)]
 fn permutation_test() {
     #[allow(clippy::type_complexity)]
     fn perm<'i>(

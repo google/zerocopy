@@ -1,6 +1,8 @@
 use winnow::prelude::*;
 
 mod parser;
+#[cfg(test)]
+mod test;
 
 fn main() -> Result<(), lexopt::Error> {
     let args = Args::parse()?;

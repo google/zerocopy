@@ -10,7 +10,7 @@ name = "bumpalo"
 readme = "README.md"
 repository = "https://github.com/fitzgen/bumpalo"
 rust-version = "1.71.1"
-version = "3.19.1"
+version = "3.20.2"
 
 [package.metadata.docs.rs]
 all-features = true
@@ -46,7 +46,7 @@ allocator-api2 = { version = "0.2.8", default-features = false, optional = true 
 serde = { version = "1.0.171", optional = true }
 
 [dev-dependencies]
-quickcheck = "1.0.3"
+quickcheck = "=1.0.3"
 criterion = "0.3.6"
 rand = "0.8.5"
 serde = { version = "1.0.197", features = ["derive"] }
