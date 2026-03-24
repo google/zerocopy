@@ -1,0 +1,169 @@
+  ⚠ unused variable: `x`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:14:35]
+ 13 │ /// ```
+ 14 │ fn fail_anon_ensures_verification(x: u32) -> u32 {
+    ·                                   ┬
+    ·                                   ╰── 
+ 15 │     1
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `x`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:35:31]
+ 34 │ /// ```
+ 35 │ fn fail_is_valid_verification(x: Positive) -> Positive {
+    ·                               ┬
+    ·                               ╰── 
+ 36 │     Positive { val: 0 }
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `ret`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:90:28]
+ 89 │ /// ```
+ 90 │ fn fail_argument_named_ret(ret: u32) -> u32 {
+    ·                            ─┬─
+    ·                             ╰── 
+ 91 │     0
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ function `fail_anon_ensures_verification` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:14:4]
+ 13 │ /// ```
+ 14 │ fn fail_anon_ensures_verification(x: u32) -> u32 {
+    ·    ───────────────┬──────────────
+    ·                   ╰── 
+ 15 │     1
+    ╰────
+
+  ⚠ function `fail_is_valid_verification` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:35:4]
+ 34 │ /// ```
+ 35 │ fn fail_is_valid_verification(x: Positive) -> Positive {
+    ·    ─────────────┬────────────
+    ·                 ╰── 
+ 36 │     Positive { val: 0 }
+    ╰────
+
+  ⚠ function `fail_proof_context_tactic_failure` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:51:4]
+ 50 │ /// ```
+ 51 │ fn fail_proof_context_tactic_failure(x: u32) -> u32 {
+    ·    ────────────────┬────────────────
+    ·                    ╰── 
+ 52 │     x
+    ╰────
+
+  ⚠ function `fail_lean_keyword_proof` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:65:4]
+ 64 │ /// ```
+ 65 │ fn fail_lean_keyword_proof(x: u32) -> u32 {
+    ·    ───────────┬───────────
+    ·               ╰── 
+ 66 │     x
+    ╰────
+
+  ⚠ function `fail_ret_in_requires` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:76:11]
+ 75 │ /// ```
+ 76 │ unsafe fn fail_ret_in_requires(x: u32) -> u32 {
+    ·           ──────────┬─────────
+    ·                     ╰── 
+ 77 │     x
+    ╰────
+
+  ⚠ function `fail_argument_named_ret` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:90:4]
+ 89 │ /// ```
+ 90 │ fn fail_argument_named_ret(ret: u32) -> u32 {
+    ·    ───────────┬───────────
+    ·               ╰── 
+ 91 │     0
+    ╰────
+
+  ⚠ function `fail_unknown_variable_in_requires` is never used
+     ╭─[[PROJECT_ROOT]/src/lib.rs:99:11]
+  98 │ /// ```
+  99 │ unsafe fn fail_unknown_variable_in_requires(x: u32) -> u32 {
+     ·           ────────────────┬────────────────
+     ·                           ╰── 
+ 100 │     x
+     ╰────
+
+  ⚠ function `fail_missing_named_proof` is never used
+     ╭─[[PROJECT_ROOT]/src/lib.rs:112:4]
+ 111 │ /// ```
+ 112 │ fn fail_missing_named_proof(x: u32) -> u32 {
+     ·    ────────────┬───────────
+     ·                ╰── 
+ 113 │     x
+     ╰────
+
+  ⚠ function `main` is never used
+     ╭─[[PROJECT_ROOT]/src/lib.rs:116:4]
+ 115 │ 
+ 116 │ fn main() {}
+     ·    ──┬─
+     ·      ╰── 
+     ╰────
+
+  × simp_all made no progress
+    ╭─[[PROJECT_ROOT]/src/lib.rs:12:7]
+ 11 │ /// proof:
+ 12 │ ///   simp_all
+    ·       ────┬───
+    ·           ╰── here
+ 13 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:35:4]
+ 34 │ /// ```
+ 35 │ fn fail_is_valid_verification(x: Positive) -> Positive {
+    ·    ──┬─
+    ·      ╰── here
+ 36 │     Positive { val: 0 }
+    ╰────
+
+  × unsolved goals
+  │ x ret : U32
+  │ h_returns : fail_proof_context_tactic_failure x = ok ret
+  │ h_x_is_valid : Hermes.IsValid.isValid x
+  │ ⊢ False
+    ╭─[[PROJECT_ROOT]/src/lib.rs:46:24]
+ 45 │ /// proof context:
+ 46 │ ///   have h: false := by simp
+    ·                        ───┬───
+    ·                           ╰── here
+ 47 │ /// proof context:
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:65:4]
+ 64 │ /// ```
+ 65 │ fn fail_lean_keyword_proof(x: u32) -> u32 {
+    ·    ──┬─
+    ·      ╰── here
+ 66 │     x
+    ╰────
+
+  × simp_all made no progress
+    ╭─[[PROJECT_ROOT]/src/lib.rs:88:7]
+ 87 │ /// proof (ens):
+ 88 │ ///   simp_all
+    ·       ────┬───
+    ·           ╰── here
+ 89 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/lib.rs:112:4]
+ 111 │ /// ```
+ 112 │ fn fail_missing_named_proof(x: u32) -> u32 {
+     ·    ──┬─
+     ·      ╰── here
+ 113 │     x
+     ╰────
+
+Error: Lean verification failed
