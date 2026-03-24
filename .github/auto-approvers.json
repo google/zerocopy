@@ -1,5 +1,8 @@
 {
   "tools/hermes/": [
     "joshlf"
+  ],
+  ".github/workflows/hermes.yml": [
+    "joshlf"
   ]
 }
