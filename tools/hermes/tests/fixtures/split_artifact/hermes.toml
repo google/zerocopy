@@ -1,0 +1,14 @@
+description = """
+Purpose: Evaluates CLI invocation rejecting conflicting multi-target queries.
+Behavior: Asserts that `hermes verify --lib --bin run` fails gracefully since Charon cannot currently process intersecting mixed mode targets simultaneously natively.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--lib", "--bin", "run", "--allow-sorry"]
+expected_status = "failure"
+
+[[test.artifact]]
+package = "split"
+target = "split"
+should_exist = true

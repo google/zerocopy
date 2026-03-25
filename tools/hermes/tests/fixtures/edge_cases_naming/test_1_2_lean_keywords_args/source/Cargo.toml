@@ -1,0 +1,9 @@
+
+[package]
+name = "test_1_2_lean_keywords_args"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[workspace]

@@ -175,6 +175,7 @@ macro_rules! style_methods {
             #[$meta]
             #[must_use]
             #[inline(always)]
+            #[rust_analyzer::completions(ignore_flyimport)]
             fn $name(&self) -> styles::$ty<'_, Self> {
                 styles::$ty(self)
             }
@@ -192,6 +193,7 @@ macro_rules! color_methods {
             #[$fg_meta]
             #[must_use]
             #[inline(always)]
+            #[rust_analyzer::completions(ignore_flyimport)]
             fn $fg_method(&self) -> FgColorDisplay<'_, colors::$color, Self> {
                 FgColorDisplay(self, PhantomData)
             }
@@ -199,6 +201,7 @@ macro_rules! color_methods {
             #[$bg_meta]
             #[must_use]
             #[inline(always)]
+            #[rust_analyzer::completions(ignore_flyimport)]
             fn $bg_method(&self) -> BgColorDisplay<'_, colors::$color, Self> {
                 BgColorDisplay(self, PhantomData)
             }
@@ -258,8 +261,8 @@ const _: () = (); // workaround for syntax highlighting bug
 ///
 /// **Do you need to store a set of colors/effects to apply to multiple things?**
 ///
-/// Use [`style`](OwoColorize::style) to apply a [`Style`]
-///
+/// Use [`style`](OwoColorize::style) to apply a [`Style`].
+#[rust_analyzer::completions(ignore_flyimport_methods)]
 pub trait OwoColorize: Sized {
     // Implementation note: even though the "OwoColorize: Sized" condition _can_ be dropped, we
     // currently don't do that for API compatibility reasons.
@@ -279,6 +282,7 @@ pub trait OwoColorize: Sized {
     /// ```
     #[must_use]
     #[inline(always)]
+    #[rust_analyzer::completions(ignore_flyimport)]
     fn fg<C: Color>(&self) -> FgColorDisplay<'_, C, Self> {
         FgColorDisplay(self, PhantomData)
     }
@@ -292,6 +296,7 @@ pub trait OwoColorize: Sized {
     /// ```
     #[must_use]
     #[inline(always)]
+    #[rust_analyzer::completions(ignore_flyimport)]
     fn bg<C: Color>(&self) -> BgColorDisplay<'_, C, Self> {
         BgColorDisplay(self, PhantomData)
     }
@@ -390,6 +395,7 @@ pub trait OwoColorize: Sized {
     /// ```
     #[must_use]
     #[inline(always)]
+    #[rust_analyzer::completions(ignore_flyimport)]
     fn color<Color: DynColor>(&self, color: Color) -> FgDynColorDisplay<'_, Color, Self> {
         FgDynColorDisplay(self, color)
     }
@@ -405,12 +411,14 @@ pub trait OwoColorize: Sized {
     /// ```
     #[must_use]
     #[inline(always)]
+    #[rust_analyzer::completions(ignore_flyimport)]
     fn on_color<Color: DynColor>(&self, color: Color) -> BgDynColorDisplay<'_, Color, Self> {
         BgDynColorDisplay(self, color)
     }
 
     /// Set the foreground color to a specific RGB value.
     #[must_use]
+    #[rust_analyzer::completions(ignore_flyimport)]
     fn fg_rgb<const R: u8, const G: u8, const B: u8>(
         &self,
     ) -> FgColorDisplay<'_, colors::CustomColor<R, G, B>, Self> {
@@ -419,6 +427,7 @@ pub trait OwoColorize: Sized {
 
     /// Set the background color to a specific RGB value.
     #[must_use]
+    #[rust_analyzer::completions(ignore_flyimport)]
     fn bg_rgb<const R: u8, const G: u8, const B: u8>(
         &self,
     ) -> BgColorDisplay<'_, colors::CustomColor<R, G, B>, Self> {
@@ -428,6 +437,7 @@ pub trait OwoColorize: Sized {
     /// Sets the foreground color to an RGB value.
     #[must_use]
     #[inline(always)]
+    #[rust_analyzer::completions(ignore_flyimport)]
     fn truecolor(&self, r: u8, g: u8, b: u8) -> FgDynColorDisplay<'_, Rgb, Self> {
         FgDynColorDisplay(self, Rgb(r, g, b))
     }
@@ -435,12 +445,14 @@ pub trait OwoColorize: Sized {
     /// Sets the background color to an RGB value.
     #[must_use]
     #[inline(always)]
+    #[rust_analyzer::completions(ignore_flyimport)]
     fn on_truecolor(&self, r: u8, g: u8, b: u8) -> BgDynColorDisplay<'_, Rgb, Self> {
         BgDynColorDisplay(self, Rgb(r, g, b))
     }
 
     /// Apply a runtime-determined style
     #[must_use]
+    #[rust_analyzer::completions(ignore_flyimport)]
     fn style(&self, style: Style) -> Styled<&Self> {
         style.style(self)
     }
@@ -476,6 +488,7 @@ pub trait OwoColorize: Sized {
     /// );
     #[must_use]
     #[cfg(feature = "supports-colors")]
+    #[rust_analyzer::completions(ignore_flyimport)]
     fn if_supports_color<'a, Out, ApplyFn>(
         &'a self,
         stream: impl Into<Stream>,

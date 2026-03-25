@@ -156,7 +156,7 @@ where
         }
     }
 
-    /// Sets the prefix operator parser.
+    /// Sets the postfix operator parser.
     ///
     /// The parser should parse the input to a [`Postfix`],
     /// which contains the operator's binding power and
@@ -182,7 +182,7 @@ where
         }
     }
 
-    /// Sets the prefix operator parser.
+    /// Sets the infix operator parser.
     ///
     /// The parser should parse the input to a [`Infix`],
     /// which contains the operator's binding power and

@@ -1543,11 +1543,11 @@ where
 /// - `escape`: parse and transform the escaped character
 ///
 /// Parsing ends when:
-/// - `alt(normal, control._char)` [`Backtrack`s][crate::error::ErrMode::Backtrack]
+/// - `alt(normal, control_char)` [`Backtrack`s][crate::error::ErrMode::Backtrack]
 /// - `normal` doesn't advance the input stream
 /// - *(complete)* input stream is exhausted
 ///
-/// See also [`escaped_transform`]
+/// See also [`escaped`]
 ///
 /// <div class="warning">
 ///
@@ -1671,7 +1671,7 @@ where
     }
 }
 
-/// Deprecated, replaed with [`escaped`]
+/// Deprecated, replaced with [`escaped`]
 #[inline(always)]
 #[deprecated(since = "7.0.0", note = "replaced with `escaped`")]
 pub fn escaped_transform<Input, Error, Normal, NormalOutput, Escape, EscapeOutput, Output>(
@@ -1699,14 +1699,14 @@ where
 /// - `escape`: parse and transform the escaped character
 ///
 /// Parsing ends when:
-/// - `alt(normal, control._char)` [`Backtrack`s][crate::error::ErrMode::Backtrack]
+/// - `alt(normal, control_char)` [`Backtrack`s][crate::error::ErrMode::Backtrack]
 /// - `normal` doesn't advance the input stream
 /// - *(complete)* input stream is exhausted
 ///
 /// <div class="warning">
 ///
-/// **Warning:** If the `normal` parser passed to `escaped_transform` accepts empty inputs
-/// (like `alpha0` or `digit0`), `escaped_transform` will return an error,
+/// **Warning:** If the `normal` parser passed to `escaped` accepts empty inputs
+/// (like `alpha0` or `digit0`), `escaped` will return an error,
 /// to prevent going into an infinite loop.
 ///
 /// </div>
@@ -1718,12 +1718,12 @@ where
 /// # use winnow::prelude::*;
 /// # use std::str::from_utf8;
 /// use winnow::token::literal;
-/// use winnow::ascii::escaped_transform;
+/// use winnow::ascii::escaped;
 /// use winnow::ascii::alpha1;
 /// use winnow::combinator::alt;
 ///
 /// fn parser<'s>(input: &mut &'s str) -> ModalResult<String> {
-///   escaped_transform(
+///   escaped(
 ///     alpha1,
 ///     '\\',
 ///     alt((
@@ -1746,12 +1746,12 @@ where
 /// # use std::str::from_utf8;
 /// # use winnow::Partial;
 /// use winnow::token::literal;
-/// use winnow::ascii::escaped_transform;
+/// use winnow::ascii::escaped;
 /// use winnow::ascii::alpha1;
 /// use winnow::combinator::alt;
 ///
 /// fn parser<'s>(input: &mut Partial<&'s str>) -> ModalResult<String> {
-///   escaped_transform(
+///   escaped(
 ///     alpha1,
 ///     '\\',
 ///     alt((
@@ -1836,7 +1836,7 @@ where
                 if input.eof_offset() == current_len {
                     return Err(ParserError::assert(
                         input,
-                        "`escaped_transform` parsers must always consume",
+                        "`escaped` parsers must always consume",
                     ));
                 }
             }

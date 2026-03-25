@@ -1,0 +1,14 @@
+description = """
+Purpose: Exercises verification routines traversing libraries compiling multiple artifacts.
+Behavior: Tests `crate-type = ["rlib", "cdylib"]`. Ensures that emitting parallel binaries natively out of cargo does not duplicate or fracture Charon's analysis passes.
+"""
+
+[test]
+expected_status = "known_bug"
+args = ["verify", "--allow-sorry"]
+
+[[test.artifact]]
+package = "multi"
+target = "multi"
+should_exist = true
+matches_expected_dir = "expected"

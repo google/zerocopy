@@ -1,0 +1,21 @@
+  ⚠ function `my_lib` is never used
+   ╭─[[PROJECT_ROOT]/src/lib.rs:3:4]
+ 2 │ /// ```
+ 3 │ fn my_lib() {}
+   ·    ───┬──
+   ·       ╰── 
+   ╰────
+
+   Compiling split v0.1.0 ([PROJECT_ROOT])
+warning: when processing starting pattern `crate::main`: path `crate::main` does not correspond to any item
+
+
+thread 'rustc' (<ID>) panicked at src/errors.rs:278:13:
+when processing starting pattern `crate::main`: path `crate::main` does not correspond to any item
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ERROR Compilation panicked
+error: could not compile `split` (lib)
+
+Caused by:
+  process didn't exit successfully: `[CACHE_ROOT]/charon-driver [RUSTUP_TOOLCHAIN]/bin/rustc --crate-name split --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=811a<HASH> -C extra-filename=-<HASH> --out-dir [PROJECT_ROOT]/target/hermes/cargo_target/x86_64-unknown-linux-gnu/debug/deps --target x86_64-unknown-linux-gnu -C incremental=[PROJECT_ROOT]/target/hermes/cargo_target/x86_64-unknown-linux-gnu/debug/incremental -L dependency=[PROJECT_ROOT]/target/hermes/cargo_target/x86_64-unknown-linux-gnu/debug/deps -L dependency=[PROJECT_ROOT]/target/hermes/cargo_target/debug/deps --remap-path-prefix=tests/fixtures/split_artifact=/dummy` (exit status: 101)
+Error: Charon failed with status: exit status: 101
