@@ -227,3 +227,30 @@ pub struct IndexEntry<const SIZE_BLOCK_ID: usize> {
 
 util_assert_impl_all!(IndexEntry<0>: imp::IntoBytes);
 util_assert_impl_all!(IndexEntry<1>: imp::IntoBytes);
+
+// Regression test for #2445: Fuchsia has `repr(C)` packet types with a large
+// computed array field, and they should still be serializable with zerocopy.
+const FX_LOG_MAX_DATAGRAM_LEN: usize = 2032;
+const FX_LOG_METADATA_SIZE: usize = 32;
+
+#[derive(imp::IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct FxLogMetadata {
+    pid: u64,
+    tid: u64,
+    time: i64,
+    severity: i32,
+    dropped_logs: u32,
+}
+
+#[derive(imp::IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct FxLogPacket {
+    metadata: FxLogMetadata,
+    data: [u8; FX_LOG_MAX_DATAGRAM_LEN - FX_LOG_METADATA_SIZE],
+}
+
+util_assert_impl_all!(FxLogMetadata: imp::IntoBytes);
+util_assert_impl_all!(FxLogPacket: imp::IntoBytes);
