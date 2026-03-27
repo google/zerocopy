@@ -5,6 +5,7 @@
 // extracting them for verification.
 
 pub mod attr;
+pub mod attr2;
 pub mod hkd;
 
 use std::{
