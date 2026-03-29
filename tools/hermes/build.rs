@@ -29,6 +29,7 @@ fn main() {
         ("aeneas_rev", "HERMES_AENEAS_REV"),
         ("lean_toolchain", "HERMES_LEAN_TOOLCHAIN"),
         ("charon_version", "HERMES_CHARON_EXPECTED_VERSION"),
+        ("charon_rust_toolchain", "HERMES_CHARON_RUST_TOOLCHAIN"),
     ];
 
     for (key, env_var) in vars {
