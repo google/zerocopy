@@ -4,6 +4,6 @@ Behavior: Introduces missing colons, invalid names, and Lean keywords as named b
 """
 
 [test]
+expected_status = "failure"
 stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
-expected_status = "failure"
