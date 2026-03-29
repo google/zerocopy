@@ -1,7 +1,4 @@
-description = """
-Purpose: Verify that `requires` blocks are strictly rejected on safe functions.
-Behavior: Hermes parses the file, encounters `requires` on safe functions, and errors out pointing to the specific spans.
-"""
+description = "Verify that `requires` blocks are rejected on safe functions."
 
 [test]
 args = ["verify"]

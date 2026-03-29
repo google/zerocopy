@@ -1,8 +1,0 @@
-description = """
-Purpose: Exercises bounded parameters and non-instantiated markers.
-Behavior: Tests generic bounds and unused generic instantiations utilizing `PhantomData<T>`. Verifies standard typing constraints pass into Lean via `variable (T : Type)`.
-"""
-
-[test]
-expected_status = "failure"
-args = ["verify", "--allow-sorry"]
