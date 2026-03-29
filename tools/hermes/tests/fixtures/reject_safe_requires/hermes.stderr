@@ -7,7 +7,7 @@
   │ `unsafe` functions.
    ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
  1 │ /// ```hermes
- 2 │ /// requires: true
+ 2 │ /// requires: True
    · ─────────┬────────
    ·          ╰── problematic block
  3 │ /// ```
@@ -40,4 +40,17 @@
  14 │ /// ```
     ╰────
 
-Error: Aborting due to 3 previous errors.
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: `requires` sections are only permitted on
+  │ `unsafe` functions.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:18:1]
+ 17 │ /// ```hermes
+ 18 │ /// requires(h_true): True
+    · ─────────────┬────────────
+    ·              ╰── problematic block
+ 19 │ /// ```
+    ╰────
+
+Error: Aborting due to 4 previous errors.
