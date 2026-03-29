@@ -246,11 +246,11 @@ def update_cargo_toml(aeneas_meta, charon_meta, dry_run=False):
     try:
         metadata = doc["package"]["metadata"]
 
-        # Update the build-rs section, which defines the environment variables
+        # Update the build_rs section, which defines the environment variables
         # injected into the Hermes build process.
-        metadata["build-rs"]["aeneas_rev"] = aeneas_meta["commit"]
-        metadata["build-rs"]["lean_toolchain"] = aeneas_meta["lean_toolchain"]
-        metadata["build-rs"]["charon_version"] = charon_meta["version"]
+        metadata["build_rs"]["aeneas_rev"] = aeneas_meta["commit"]
+        metadata["build_rs"]["lean_toolchain"] = aeneas_meta["lean_toolchain"]
+        metadata["build_rs"]["charon_version"] = charon_meta["version"]
 
         # Update the hermes.dependencies section, which defines the download URLs
         # and checksums used by the 'cargo hermes setup' command.

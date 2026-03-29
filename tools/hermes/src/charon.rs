@@ -288,10 +288,7 @@ fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
 /// installed via rustup. If it is missing, we provide a helpful error message
 /// with the installation command.
 fn check_rustup_toolchain() -> Result<()> {
-    // FIXME: We should probably parse this from Charon's metadata or a central
-    // place. For now, it's pinned to a specific nightly in Charon's build.
-    // In the future, Hermes could also manage the rustup toolchain.
-    let nightly_version = "nightly-2025-01-26";
+    let nightly_version = env!("HERMES_CHARON_RUST_TOOLCHAIN");
 
     let output = Command::new("rustup")
         .args(["toolchain", "list"])

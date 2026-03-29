@@ -17,18 +17,19 @@ fn main() {
     let cargo_toml: toml::Value =
         toml::from_str(&cargo_toml_content).expect("failed to parse Cargo.toml");
 
-    // We expect the metadata to be under `[package.metadata.build-rs]`.
+    // We expect the metadata to be under `[package.metadata.build_rs]`.
     let build_rs_metadata = cargo_toml
         .get("package")
         .and_then(|p| p.get("metadata"))
-        .and_then(|m| m.get("build-rs"))
-        .expect("Cargo.toml must have [package.metadata.build-rs] section");
+        .and_then(|m| m.get("build_rs"))
+        .expect("Cargo.toml must have [package.metadata.build_rs] section");
 
     // Key in `Cargo.toml` -> Environment variable name
     let vars = [
         ("aeneas_rev", "HERMES_AENEAS_REV"),
         ("lean_toolchain", "HERMES_LEAN_TOOLCHAIN"),
         ("charon_version", "HERMES_CHARON_EXPECTED_VERSION"),
+        ("charon_rust_toolchain", "HERMES_CHARON_RUST_TOOLCHAIN"),
     ];
 
     for (key, env_var) in vars {
