@@ -4,6 +4,8 @@ Behavior: Compiles a Rust source featuring a trait with an associated type (`T::
 """
 
 [test]
+# FIXME(#3089): Update to use valid syntax in `lib.rs`; coalesce with
+# `test_4_6_assoc_types`.
+expected_status = "known_bug"
 stderr_file = "expected.stderr"
-expected_status = "failure"
 args = ["verify", "--allow-sorry"]

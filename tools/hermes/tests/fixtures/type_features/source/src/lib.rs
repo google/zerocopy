@@ -1,11 +1,11 @@
 /// ```hermes
-/// isValid self := {N} > 0
+/// isValid self := N > 0
 /// ```
 struct ConstGen<const N: usize>;
 
 /// ```hermes
 /// isSafe :
-///   {N} > 0
+///   N > 0
 /// ```
 unsafe trait ConstTrait<const N: usize> {}
 
@@ -47,13 +47,3 @@ enum ValidatedEnum {
     A(u32),
     B { x: u32 },
 }
-
-union MyUnion {
-    f1: u32,
-    f2: f32,
-}
-
-/// ```hermes
-/// isValid self := True
-/// ```
-struct UnionWrapper(MyUnion);
