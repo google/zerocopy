@@ -2,7 +2,6 @@
 /// We test both validation errors (rust-level parsing and validation)
 /// and verification errors (Lean-level theorem failures).
 
-
 /// 3. Mismatched proof name
 /// ```lean, hermes, spec
 /// ensures (h_ensures):
@@ -14,7 +13,6 @@
 fn fail_mismatched_proof_name(x: u32) -> u32 {
     x
 }
-
 
 /// 9. Reserved name collision (requires)
 /// ```lean, hermes, spec
@@ -30,7 +28,6 @@ unsafe fn fail_reserved_name_collision_requires(x: u32) -> u32 {
     x
 }
 
-
 /// 10. Reserved name collision (ensures)
 /// ```lean, hermes, spec
 /// ensures (h_ret_is_valid):
@@ -42,7 +39,6 @@ unsafe fn fail_reserved_name_collision_requires(x: u32) -> u32 {
 fn fail_reserved_name_collision_ensures(x: u32) -> u32 {
     x
 }
-
 
 /// 26. Proof targets a requires clause instead of an ensures clause
 /// ```lean, hermes, spec
