@@ -4,5 +4,6 @@ Behavior: Asserts that `fn theorem()`, `fn match()`, etc. are strictly escaped i
 """
 
 [test]
-expected_status = "failure"
+# FIXME(#3089): This should succeed
+expected_status = "known_bug"
 args = ["verify", "--allow-sorry"]

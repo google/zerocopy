@@ -4,5 +4,6 @@ Behavior: Utilizes explicit zero-sized structs and the common `()` unit type to 
 """
 
 [test]
-expected_status = "failure"
-args = ["verify", "--allow-sorry"]
+# FIXME(#3089): This should succeed.
+expected_status = "known_bug"
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
