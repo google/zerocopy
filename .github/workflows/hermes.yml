@@ -49,7 +49,7 @@ jobs:
         run: |
           set -eo pipefail
           CHARON_TOOLCHAIN="$(cargo metadata --no-deps --format-version 1 \
-            | jq -r '.packages[] | select(.name == "cargo-hermes") | .metadata.hermes.dependencies.charon.rust_toolchain')"
+            | jq -r '.packages[] | select(.name == "cargo-hermes") | .metadata.build_rs.charon_rust_toolchain')"
           rustup toolchain install "$CHARON_TOOLCHAIN"
 
       - name: Install elan (Lean toolchain manager)
