@@ -44,4 +44,4 @@ args = ["setup"]
 
 [[test.phases]]
 name = "Verify aeneas is repaired"
-action = "assert_toolchain_binary aeneas 1ed68728e18299ba961bc76c0c4897e582fdcfe30ec9b01919e250dc3cb6e65d"
+action = "assert_toolchain_binary aeneas 0efc2c1c2f695e8e8fc268e6d3aaa20b7bf0a52790250f6ac45dd5f261d52a82"

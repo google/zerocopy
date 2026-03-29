@@ -14,12 +14,14 @@ set_option maxHeartbeats 1000000
 namespace extern_never_verified
 
 /-- [extern_never_verified::S]
-    Source: 'src/lib.rs', lines 12:0-12:13 -/
+    Source: 'src/lib.rs', lines 12:0-12:13
+    Visibility: public -/
 @[reducible]
 def S := Unit
 
 /-- [extern_never_verified::SafeArray]
-    Source: 'src/lib.rs', lines 50:0-52:1 -/
+    Source: 'src/lib.rs', lines 50:0-52:1
+    Visibility: public -/
 structure SafeArray (N : Std.Usize) where
   data : Array Std.U8 N
 
@@ -46,27 +48,32 @@ noncomputable section
 namespace extern_never_verified
 
 /-- [extern_never_verified::{extern_never_verified::S}::bar]:
-    Source: 'src/lib.rs', lines 17:4-19:5 -/
+    Source: 'src/lib.rs', lines 17:4-19:5
+    Visibility: public -/
 def S.bar (x : Std.U32) : Result Std.U32 := do
   ok x
 
 /-- [extern_never_verified::inner::{extern_never_verified::S}::baz]:
-    Source: 'src/lib.rs', lines 28:8-30:9 -/
+    Source: 'src/lib.rs', lines 28:8-30:9
+    Visibility: public -/
 def inner.S.baz (x : Std.U32) : Result Std.U32 := do
   ok x
 
 /-- [extern_never_verified::{extern_never_verified::SafeArray<N>}::len]:
-    Source: 'src/lib.rs', lines 61:4-63:5 -/
+    Source: 'src/lib.rs', lines 61:4-63:5
+    Visibility: public -/
 def SafeArray.len {N : Std.Usize} (self : SafeArray N) : Result Std.Usize := do
   ok N
 
 /-- [extern_never_verified::diverge]:
-    Source: 'src/lib.rs', lines 72:0-74:1 -/
+    Source: 'src/lib.rs', lines 72:0-74:1
+    Visibility: public -/
 def diverge : Result Never := do
   fail panic
 
 /-- [extern_never_verified::die]:
-    Source: 'src/lib.rs', lines 82:0-84:1 -/
+    Source: 'src/lib.rs', lines 82:0-84:1
+    Visibility: public -/
 def die (x : Std.U32) : Result (Never × Std.U32) := do
   fail panic
 
@@ -87,15 +94,18 @@ set_option maxHeartbeats 1000000
 open extern_never_verified
 
 /-- [extern_never_verified::a::b::foo]:
-    Source: 'src/lib.rs', lines 6:8-8:9 -/
+    Source: 'src/lib.rs', lines 6:8-8:9
+    Visibility: public -/
 axiom a.b.foo : Std.U32 → Result Std.U32
 
 /-- [extern_never_verified::ffi::ext_fn]:
-    Source: 'src/lib.rs', lines 40:8-40:37 -/
+    Source: 'src/lib.rs', lines 40:8-40:37
+    Visibility: public -/
 axiom ffi.ext_fn : Std.U32 → Result Std.U32
 
 /-- [extern_never_verified::ffi::diverge]:
-    Source: 'src/lib.rs', lines 46:8-46:30 -/
+    Source: 'src/lib.rs', lines 46:8-46:30
+    Visibility: public -/
 axiom ffi.diverge : Result Never
 
 

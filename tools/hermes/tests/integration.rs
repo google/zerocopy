@@ -1371,8 +1371,8 @@ fn run_toolchain_versioning_test(path: &Path) -> datatest_stable::Result<()> {
     let metadata = cargo_toml
         .get("package")
         .and_then(|p| p.get("metadata"))
-        .and_then(|m| m.get("build-rs"))
-        .expect("Cargo.toml must have [package.metadata.build-rs]");
+        .and_then(|m| m.get("build_rs"))
+        .expect("Cargo.toml must have [package.metadata.build_rs]");
 
     let expected_rev = metadata.get("aeneas_rev").and_then(|v| v.as_str()).unwrap();
     let expected_toolchain = metadata.get("lean_toolchain").and_then(|v| v.as_str()).unwrap();
@@ -2012,8 +2012,8 @@ fn get_expected_charon_version() -> String {
     let metadata = cargo_toml
         .get("package")
         .and_then(|p| p.get("metadata"))
-        .and_then(|m| m.get("build-rs"))
-        .expect("Cargo.toml must have [package.metadata.build-rs]");
+        .and_then(|m| m.get("build_rs"))
+        .expect("Cargo.toml must have [package.metadata.build_rs]");
 
     metadata.get("charon_version").and_then(|v| v.as_str()).unwrap().to_string()
 }
