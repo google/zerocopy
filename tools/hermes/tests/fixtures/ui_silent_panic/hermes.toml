@@ -4,6 +4,6 @@ Behavior: Triggers a `panic!("Boom")` immediately in `build.rs`. Confirms Hermes
 """
 
 [test]
+expected_status = "failure"
 stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
-expected_status = "failure"
