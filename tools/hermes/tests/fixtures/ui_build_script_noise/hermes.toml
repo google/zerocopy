@@ -3,6 +3,9 @@ Purpose: Tests UI robustness handling invalid JSON interlacing from build script
 Behavior: Prints invalid JSON payloads before emitting a valid `compiler-artifact` blob. Ensures Hermes' diagnostic collector discards garbage outputs without panicking.
 """
 
+# FIXME(#3089): Hermes doesn't panic, but it also doesn't seem to interpret the
+# JSON payload, instead passing it to stderr verbatim.
+
 [test]
 stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

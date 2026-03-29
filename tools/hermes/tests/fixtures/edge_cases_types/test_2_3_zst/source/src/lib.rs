@@ -1,16 +1,21 @@
-
+/// ```hermes
+/// isValid self := True
+/// ```
 pub struct Empty {}
 
+/// ```hermes
+/// isValid self := True
+/// ```
 pub struct WrapUnit {
     pub f: (),
 }
 
-/// ```lean, hermes
-/// proof (h_progress):
-///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
+/// ```hermes
+/// ensures: True
 /// ```
 pub fn unit_arg(_: ()) {}
 
+/// ```hermes
+/// ensures: True
+/// ```
 pub fn unit_ret() -> () {}
