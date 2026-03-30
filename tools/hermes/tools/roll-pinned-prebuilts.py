@@ -8,6 +8,11 @@ import tarfile
 import tempfile
 import sys
 import argparse
+import subprocess
+import platform
+import re
+import stat
+from datetime import datetime, timedelta
 from pathlib import Path
 import tomlkit
 from requests.exceptions import RequestException
@@ -133,6 +138,21 @@ def calculate_sha256(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def get_host_platform():
+    """Detects the current host platform in the format used by Hermes."""
+    system = platform.system().lower()
+    machine = platform.machine().lower()
+
+    if system == "linux" and machine == "x86_64":
+        return "linux-x86_64"
+    elif system == "darwin":
+        if machine in ["arm64", "aarch64"]:
+            return "macos-aarch64"
+        elif machine == "x86_64":
+            return "macos-x86_64"
+    return None
+
+
 def get_asset_checksums(release, repo_name):
     """Downloads all platform archives and calculates required checksums.
 
@@ -143,8 +163,17 @@ def get_asset_checksums(release, repo_name):
 
     The latter allows Hermes to detect and repair corruption of individual
     binaries in a local toolchain installation.
+
+    Also extracts the `charon` binary for the host platform to query the
+    Rust toolchain version it was built against.
     """
     checksums = {}
+    host_platform = get_host_platform()
+    if host_platform is None:
+        print(f"ERROR: Unsupported host platform: {platform.system()} {platform.machine()}")
+        sys.exit(1)
+
+    charon_rust_toolchain = None
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)
@@ -195,6 +224,49 @@ def get_asset_checksums(release, repo_name):
                             )
                             found_binaries.add(name)
 
+                            # If this is charon on the host platform, extract it to disk to query its rustc version.
+                            if platform == host_platform and name in ["charon", "charon-driver"]:
+                                bin_path = tmp_path / name
+                                bin_path.write_bytes(binary_data)
+                                bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
+
+                    # Now that all binaries are extracted for the host platform, run charon.
+                    if platform == host_platform:
+                        charon_bin_path = tmp_path / "charon"
+                        if charon_bin_path.exists():
+                            try:
+                                print("  Querying charon rustc version...")
+                                # charon internally calls charon-driver, so they must both be extracted.
+                                # Add the temp directory to PATH so charon can find charon-driver
+                                env = os.environ.copy()
+                                env["PATH"] = f"{tmp_path}:{env.get('PATH', '')}"
+                                result = subprocess.run(
+                                    [str(charon_bin_path), "rustc", "--", "--version"],
+                                    capture_output=True,
+                                    text=True,
+                                    env=env
+                                )
+                                if result.returncode != 0:
+                                    # It might fail because rustc is not actually installed correctly,
+                                    # or because of some missing library, but charon might still print
+                                    # its version to stderr or stdout before failing.
+                                    pass
+                                version_output = result.stdout.strip() or result.stderr.strip()
+                                match = re.search(r'rustc .* \(.* (\d{4}-\d{2}-\d{2})\)', version_output)
+                                if not match:
+                                    raise CompatibilityError(
+                                        f"Could not parse rustc version from charon output: '{version_output}'"
+                                    )
+                                date_str = match.group(1)
+                                date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                                toolchain_date = date_obj + timedelta(days=1)
+                                charon_rust_toolchain = f"nightly-{toolchain_date.strftime('%Y-%m-%d')}"
+                                print(f"  Found Charon Rust toolchain: {charon_rust_toolchain}")
+                            except subprocess.CalledProcessError as e:
+                                raise CompatibilityError(f"Failed to execute charon to get rustc version: {e}")
+                            except FileNotFoundError as e:
+                                raise CompatibilityError(f"Failed to execute charon to get rustc version: {e}")
+
                     # Verify that we found the expected binaries for this repo.
                     expected = ["aeneas", "charon", "charon-driver"]
                     missing = [b for b in expected if b not in found_binaries]
@@ -214,7 +286,12 @@ def get_asset_checksums(release, repo_name):
             except tarfile.TarError as e:
                 raise CompatibilityError(f"Failed to extract archive {asset_name}: {e}")
 
-    return checksums
+    if charon_rust_toolchain is None:
+        raise CompatibilityError(
+            f"Could not find charon binary for host platform {host_platform} in releases."
+        )
+
+    return checksums, charon_rust_toolchain
 
 
 def update_cargo_toml(aeneas_meta, charon_meta, dry_run=False):
@@ -233,6 +310,7 @@ def update_cargo_toml(aeneas_meta, charon_meta, dry_run=False):
         print(f"  Aeneas Tag: {aeneas_meta['tag']}")
         print(f"  Lean Toolchain: {aeneas_meta['lean_toolchain']}")
         print(f"  Charon Version: {charon_meta['version']}")
+        print(f"  Charon Rust Toolchain: {charon_meta['rust_toolchain']}")
         return
 
     print(f"Updating {CARGO_TOML_PATH}...")
@@ -251,6 +329,7 @@ def update_cargo_toml(aeneas_meta, charon_meta, dry_run=False):
         metadata["build_rs"]["aeneas_rev"] = aeneas_meta["commit"]
         metadata["build_rs"]["lean_toolchain"] = aeneas_meta["lean_toolchain"]
         metadata["build_rs"]["charon_version"] = charon_meta["version"]
+        metadata["build_rs"]["charon_rust_toolchain"] = charon_meta["rust_toolchain"]
 
         # Update the hermes.dependencies section, which defines the download URLs
         # and checksums used by the 'cargo hermes setup' command.
@@ -296,6 +375,20 @@ def main():
     if args.aeneas_tag and args.charon_tag:
         print(f"Using forced tags: Aeneas={args.aeneas_tag}, Charon={args.charon_tag}")
         target_aeneas_release = get_release_by_tag(AENEAS_REPO, args.aeneas_tag)
+        a_commit = get_commit_from_tag(args.aeneas_tag)
+        lean_toolchain = fetch_file_content(AENEAS_REPO, a_commit, "backends/lean/lean-toolchain")
+        if lean_toolchain:
+            lean_toolchain = lean_toolchain.strip()
+        print(f"  Fetching checksums from Aeneas artifact...")
+        a_checksums, charon_rust_toolchain = get_asset_checksums(target_aeneas_release, AENEAS_REPO)
+        target_aeneas_meta = {
+            "tag": args.aeneas_tag,
+            "commit": a_commit,
+            "lean_toolchain": lean_toolchain,
+            "checksums": a_checksums,
+            "version": args.charon_tag,
+            "charon_rust_toolchain": charon_rust_toolchain,
+        }
     else:
         print("Fetching releases from GitHub...")
         aeneas_releases = get_automated_releases(AENEAS_REPO)
@@ -340,7 +433,7 @@ def main():
 
                 print(f"  Fetching checksums from Aeneas artifact...")
                 try:
-                    a_checksums = get_asset_checksums(a_rel, AENEAS_REPO)
+                    a_checksums, charon_rust_toolchain = get_asset_checksums(a_rel, AENEAS_REPO)
                 except CompatibilityError as e:
                     print(f"  Skipping {a_tag}: {e}")
                     continue
@@ -352,6 +445,7 @@ def main():
                     "lean_toolchain": lean_toolchain,
                     "checksums": a_checksums,
                     "version": charon_version,
+                    "charon_rust_toolchain": charon_rust_toolchain,
                 }
                 break
 
@@ -362,8 +456,12 @@ def main():
     print(f"\nTargeting:")
     print(f"  Aeneas Tag: {target_aeneas_meta['tag']}")
     print(f"  Charon Version: {target_aeneas_meta['version']}")
+    print(f"  Charon Rust Toolchain: {target_aeneas_meta['charon_rust_toolchain']}")
 
-    charon_meta = {"version": target_aeneas_meta["version"]}
+    charon_meta = {
+        "version": target_aeneas_meta["version"],
+        "rust_toolchain": target_aeneas_meta["charon_rust_toolchain"],
+    }
     update_cargo_toml(target_aeneas_meta, charon_meta, dry_run=args.dry_run)
     if not args.dry_run:
         print("\nSuccessfully rolled toolchain updates!")
