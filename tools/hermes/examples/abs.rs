@@ -13,7 +13,7 @@
 ///   . simp
 ///     sorry -- scalar_tac context issue?
 /// ```
-pub fn abs(x: i32) -> i32 {
+pub unsafe fn abs(x: i32) -> i32 {
     if x < 0 { -x } else { x }
 }
 
