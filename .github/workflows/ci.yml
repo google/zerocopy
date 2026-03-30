@@ -32,12 +32,14 @@ env:
 jobs:
   build_test:
     runs-on: ubuntu-latest
-    # Generate and populate the global Cargo registry and cache first. Each
-    # job in the matrix runs in parallel, so without populating the cache
-    # first, most jobs would duplicate the work of downloading crates from
-    # the internet. Populating the cache first ensures that this work only
-    # happens once.
-    needs: generate_cache
+    # We pre-compute a Docker image containing most dependencies. Each job in
+    # the matrix runs in parallel, so without this pre-computation, most jobs
+    # would duplicate the work of downloading crates from the internet.
+    # Pre-computing ensures that this work only happens once.
+    needs: build_docker_env
+    defaults:
+      run:
+        shell: /tmp/docker-shell.sh {0}
 
     strategy:
       # By default, this is set to `true`, which means that a single CI job
@@ -286,8 +288,45 @@ jobs:
         fetch-depth: 2
         persist-credentials: false
 
-    - name: Populate cache
-      uses: ./.github/actions/cache
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+    - name: Load image from cache
+      uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
+      with:
+        context: .
+        file: .github/workflows/Dockerfile
+        load: true # This loads the resulting image into the local 'docker' daemon
+        tags: zerocopy-ci:local
+        cache-from: type=gha
+        # Notice we omit `cache-to` here. We don't want many parallel jobs
+        # fighting to write the exact same layers back to the cache API.
+
+    - name: Create Docker Shell Wrapper
+      shell: bash
+      run: |
+        set -eo pipefail
+
+        # Ensure the directories exist on the host so Docker doesn't create them as root
+        mkdir -p /home/runner/.cargo/registry /home/runner/.cargo/git
+
+        cat << 'EOF' > /tmp/docker-shell.sh
+        #!/bin/bash
+        # Boot an ephemeral container for the step, mounting the workspace and
+        # temp dirs. Explicitly forward GitHub Actions internal state and matrix
+        # environment variables.
+        docker run --rm -i \
+          --workdir "$PWD" \
+          -v /home/runner/work:/home/runner/work \
+          -v /home/runner/.cargo/registry:/root/.cargo/registry \
+          -v /home/runner/.cargo/git:/root/.cargo/git \
+          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
+          -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
+          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURES -e RUSTFLAGS -e MIRIFLAGS -e ZC_TOOLCHAIN \
+          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
+          zerocopy-ci:local bash -c "git config --global --add safe.directory '*' && exec bash \"\$1\"" -- "$1"
+        EOF
+        chmod +x /tmp/docker-shell.sh
 
     - name: Configure environment variables
       env:
@@ -357,21 +396,6 @@ jobs:
         FEATURES: ${{ matrix.features }}
       run: ./cargo.sh +$TOOLCHAIN build --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
-
-    # When building tests for the i686 target, we need certain libraries which
-    # are not installed by default; `gcc-multilib` includes these libraries.
-    - name: Install gcc-multilib
-      # Per [1]:
-      #
-      #   Note: Always run `sudo apt-get update` before installing a package. In
-      #   case the `apt` index is stale, this command fetches and re-indexes any
-      #   available packages, which helps prevent package installation failures.
-      #
-      # [1] https://docs.github.com/en/actions/using-github-hosted-runners/customizing-github-hosted-runners
-      run: |
-        sudo apt-get update
-        sudo apt-get install gcc-multilib
-      if: contains(matrix.target, 'i686')
 
     - name: Run tests
       env:
@@ -465,14 +489,6 @@ jobs:
         # Spawn twice the number of workers as there are CPU cores.
         THREADS=$(echo "$(nproc) * 2" | bc)
         echo "Running Miri tests with $THREADS threads" | tee -a $GITHUB_STEP_SUMMARY
-
-        # FIXME(https://github.com/nextest-rs/nextest/issues/2990): Once the fix
-        # [1] for this `cargo miri nextest` bug is published, either go back to
-        # installing the latest version of `cargo-nextest` or pin and set up a
-        # roller.
-        #
-        # [1] https://github.com/nextest-rs/nextest/pull/2991
-        ./cargo.sh +$TOOLCHAIN install --locked --version 0.9.122 cargo-nextest
 
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
@@ -622,13 +638,10 @@ jobs:
   codegen:
     runs-on: ubuntu-latest
     name: Run codegen tests
-    needs: generate_cache
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
       - name: Run tests
         run: |
           set -eo pipefail
@@ -644,13 +657,10 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     name: Generate code coverage
-    needs: generate_cache
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
       - name: Generate code coverage
         run: |
           set -eo pipefail
@@ -705,13 +715,10 @@ jobs:
   check_be_aarch64:
     runs-on: ubuntu-latest
     name: Build (zerocopy / nightly / --simd / aarch64_be-unknown-linux-gnu)
-    needs: generate_cache
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
       - name: Configure environment variables
         run: |
           set -eo pipefail
@@ -737,13 +744,10 @@ jobs:
   check_avr_atmega:
     runs-on: ubuntu-latest
     name: Build (zerocopy / nightly / --simd / avr-none)
-    needs: generate_cache
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
       - name: Configure environment variables
         run: |
           set -eo pipefail
@@ -773,65 +777,50 @@ jobs:
   check_fmt:
     runs-on: ubuntu-latest
     name: Check Rust formatting
-    needs: generate_cache
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
       - name: Check Rust formatting
         run: ./ci/check_fmt.sh
 
   check_stale_stderr:
     runs-on: ubuntu-latest
     name: Check stale stderr files
-    needs: generate_cache
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
       - name: Check stale stderr
         run: ./ci/check_stale_stderr.sh
 
   check_actions:
-    needs: generate_cache
     runs-on: ubuntu-latest
     name: Check GitHub Actions
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
       - name: Check Actions
         run: ./ci/check_actions.sh
 
   check_readme:
-    needs: generate_cache
     runs-on: ubuntu-latest
     name: Check README.md
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
       - name: Check README.md
         run: ./ci/check_readme.sh
 
   check_versions:
-    needs: generate_cache
     runs-on: ubuntu-latest
     name: Check crate versions match
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
       # Make sure that both crates are at the same version, and that zerocopy
       # depends exactly upon the current version of zerocopy-derive. See
       # `INTERNAL.md` for an explanation of why we do this.
@@ -839,60 +828,14 @@ jobs:
         run: ./ci/check_versions.sh
 
   check_msrv_is_minimal:
-    needs: generate_cache
     runs-on: ubuntu-latest
     name: Check MSRV is minimal
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
       - name: Check MSRV is minimal
         run: ./ci/check_msrv_is_minimal.sh
-
-  generate_cache:
-    runs-on: ubuntu-latest
-    name: Generate cache
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-      - name: Populate cache
-        uses: ./.github/actions/cache
-        with:
-          mode: generate
-          run: |
-            # Ensure all dependencies are downloaded - both for our crates and for
-            # tools we use in CI. We don't care about these tools succeeding for
-            # two reasons: First, this entire job is best-effort since it's just a
-            # performance optimization. Second, there may be failures due to
-            # issues other than failing to download dependencies (e.g., `cargo
-            # metadata` called with a malformed `Cargo.toml`, build failure in our
-            # own crate or in dependencies, etc). For those reasons, we discard
-            # stderr and ignore status codes.
-            #
-            # For downloading our crates' dependencies in particular, note that
-            # there is no support for doing this directly [1], so we just check
-            # all crates using --tests.
-            #
-            # We background all jobs and then wait for them so that they can run
-            # in parallel.
-            #
-            # [1]  https://stackoverflow.com/a/42139535/836390
-
-            cargo check --workspace --tests                         &> /dev/null &
-            # On our MSRV toolchain, updating the Cargo index takes a long time, so
-            # it is worth specifically caching the MSRV index.
-            ./cargo.sh +msrv check --workspace --tests              &> /dev/null &
-            cargo metadata                                          &> /dev/null &
-            cargo install cargo-readme --version 3.2.0              &> /dev/null &
-            cargo install --locked action-validator --version 0.8.0 &> /dev/null &
-            cargo install --locked kani-verifier                    &> /dev/null &
-            cargo install cargo-nextest                             &> /dev/null &
-            cargo kani setup                                        &> /dev/null &
-
-            wait
 
   check-all-toolchains-tested:
     runs-on: ubuntu-latest
@@ -1024,6 +967,26 @@ jobs:
           # the action only does if advanced-security is false.
           advanced-security: false
 
+  build_docker_env:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Build and cache layers
+        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
+        with:
+          context: .
+          file: .github/workflows/Dockerfile
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
       # WARNING: This name is load-bearing! It's how GitHub's settings UI configures which jobs
@@ -1036,7 +999,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, check-auto-approvers, zizmor]
+      needs: [build_test, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, check-auto-approvers, zizmor, build_docker_env]
       steps:
         - name: Mark the job as failed
           run: exit 1
