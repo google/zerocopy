@@ -254,15 +254,19 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
 /// via `build.rs` and the `HERMES_CHARON_EXPECTED_VERSION` environment
 /// variable.
 fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
+    // Set in `.cargo/config.toml` in the repository root.
+    let setup_cmd = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
+        "cargo run setup"
+    } else {
+        "cargo hermes setup"
+    };
+
     let output = toolchain.command(Tool::Charon).arg("version").output().context(
-        "Failed to execute `charon version`. Is charon installed? Try running `hermes setup`.",
+        "Failed to execute `charon version`. Is charon installed? Try running `{setup_cmd}`.",
     )?;
 
     if !output.status.success() {
-        bail!(
-            "`charon version` failed with status: {}. Try running `hermes setup`.",
-            output.status
-        );
+        bail!("`charon version` failed with status: {}. Try running `{setup_cmd}`.", output.status);
     }
 
     let version = String::from_utf8_lossy(&output.stdout).trim().to_string();
@@ -273,7 +277,7 @@ fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
             "Charon version mismatch.\n\
              Expected: {}\n\
              Found:    {}\n\
-             Please run `hermes setup` to install the correct version.",
+             Please run `{setup_cmd}` to install the correct version.",
             expected,
             version
         );
