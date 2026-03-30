@@ -4,5 +4,5 @@ Behavior: Imports and uses `std::collections::HashMap` in a signature. Validates
 """
 
 [test]
-expected_status = "failure"
+expected_status = "known_bug"
 args = ["verify", "--allow-sorry"]

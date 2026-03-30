@@ -4,5 +4,5 @@ Behavior: Re-aliases `Vec` using `use ... as MyVec;`. Ensures Charon de-aliases 
 """
 
 [test]
-expected_status = "failure"
+expected_status = "known_bug"
 args = ["verify", "--allow-sorry"]
