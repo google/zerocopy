@@ -1024,6 +1024,41 @@ jobs:
           # the action only does if advanced-security is false.
           advanced-security: false
 
+  build_docker_env:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}/ci-env
+          tags: |
+            type=sha,format=long # Tags the image with the exact git commit SHA
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: .github/workflows/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
       # WARNING: This name is load-bearing! It's how GitHub's settings UI configures which jobs
