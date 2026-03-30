@@ -37,7 +37,10 @@ jobs:
     # first, most jobs would duplicate the work of downloading crates from
     # the internet. Populating the cache first ensures that this work only
     # happens once.
-    needs: generate_cache
+    needs: build_docker_env
+    defaults:
+      run:
+        shell: /tmp/docker-shell.sh {0}
 
     strategy:
       # By default, this is set to `true`, which means that a single CI job
@@ -286,8 +289,48 @@ jobs:
         fetch-depth: 2
         persist-credentials: false
 
-    - name: Populate cache
-      uses: ./.github/actions/cache
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Load image from cache
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: .github/workflows/Dockerfile
+        load: true # This loads the resulting image into the local 'docker' daemon
+        tags: zerocopy-ci:local
+        cache-from: type=gha
+        # Notice we omit 'cache-to' here. We don't want 30 parallel jobs
+        # fighting to write the exact same layers back to the cache API.
+
+    - name: Create Docker Shell Wrapper
+      shell: bash
+      run: |
+        set -eo pipefail
+
+        # Ensure the directories exist on the host so Docker doesn't create them as root
+        mkdir -p /home/runner/.cargo/registry /home/runner/.cargo/git
+
+        cat << 'EOF' > /tmp/docker-shell.sh
+        #!/bin/bash
+        # Boot an ephemeral container for the step, mounting the workspace and
+        # temp dirs. Explicitly forward GitHub Actions internal state and matrix
+        # environment variables.
+        docker run --rm -i \
+          --workdir "$PWD" \
+          -v /home/runner/work:/home/runner/work \
+          -v /home/runner/.cargo/registry:/root/.cargo/registry \
+          -v /home/runner/.cargo/git:/root/.cargo/git \
+          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
+          -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
+          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURES -e RUSTFLAGS -e MIRIFLAGS -e ZC_TOOLCHAIN \
+          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
+          zerocopy-ci:local bash -c "git config --global --add safe.directory '*' && exec bash \"\$1\"" -- "$1"
+        EOF
+        chmod +x /tmp/docker-shell.sh
+
+    # - name: Populate cache
+    #   uses: ./.github/actions/cache
 
     - name: Configure environment variables
       env:
@@ -357,21 +400,6 @@ jobs:
         FEATURES: ${{ matrix.features }}
       run: ./cargo.sh +$TOOLCHAIN build --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
-
-    # When building tests for the i686 target, we need certain libraries which
-    # are not installed by default; `gcc-multilib` includes these libraries.
-    - name: Install gcc-multilib
-      # Per [1]:
-      #
-      #   Note: Always run `sudo apt-get update` before installing a package. In
-      #   case the `apt` index is stale, this command fetches and re-indexes any
-      #   available packages, which helps prevent package installation failures.
-      #
-      # [1] https://docs.github.com/en/actions/using-github-hosted-runners/customizing-github-hosted-runners
-      run: |
-        sudo apt-get update
-        sudo apt-get install gcc-multilib
-      if: contains(matrix.target, 'i686')
 
     - name: Run tests
       env:
@@ -465,14 +493,6 @@ jobs:
         # Spawn twice the number of workers as there are CPU cores.
         THREADS=$(echo "$(nproc) * 2" | bc)
         echo "Running Miri tests with $THREADS threads" | tee -a $GITHUB_STEP_SUMMARY
-
-        # FIXME(https://github.com/nextest-rs/nextest/issues/2990): Once the fix
-        # [1] for this `cargo miri nextest` bug is published, either go back to
-        # installing the latest version of `cargo-nextest` or pin and set up a
-        # roller.
-        #
-        # [1] https://github.com/nextest-rs/nextest/pull/2991
-        ./cargo.sh +$TOOLCHAIN install --locked --version 0.9.122 cargo-nextest
 
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
@@ -1023,6 +1043,23 @@ jobs:
           # (without manually configuring a ruleset) is to fail the job, which
           # the action only does if advanced-security is false.
           advanced-security: false
+
+  build_docker_env:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and cache layers
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: .github/workflows/Dockerfile
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
