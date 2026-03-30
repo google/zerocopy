@@ -1,11 +1,8 @@
 /// Swaps two values.
 ///
 /// ```lean, hermes, spec
-/// ensures x' = y
-/// ensures y' = x
-/// proof
-///   unfold swap
-///   simp_all
+/// ensures(h_x'_eq_y): x' = y
+/// ensures(h_y'_eq_x): y' = x
 /// ```
 #[allow(clippy::manual_swap)]
 pub fn swap(x: &mut u32, y: &mut u32) {
