@@ -37,7 +37,7 @@ jobs:
     # first, most jobs would duplicate the work of downloading crates from
     # the internet. Populating the cache first ensures that this work only
     # happens once.
-    needs: generate_cache
+    needs: [generate_cache, build_docker_env]
 
     strategy:
       # By default, this is set to `true`, which means that a single CI job
@@ -285,6 +285,19 @@ jobs:
       with:
         fetch-depth: 2
         persist-credentials: false
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Load image from cache
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        load: true # This loads the resulting image into the local 'docker' daemon
+        tags: zerocopy-ci:local
+        cache-from: type=gha
+        # Notice we omit 'cache-to' here. We don't want 30 parallel jobs
+        # fighting to write the exact same layers back to the cache API.
 
     - name: Populate cache
       uses: ./.github/actions/cache
@@ -1023,6 +1036,23 @@ jobs:
           # (without manually configuring a ruleset) is to fail the job, which
           # the action only does if advanced-security is false.
           advanced-security: false
+
+  build_docker_env:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and cache layers
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: .github/workflows/Dockerfile
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
