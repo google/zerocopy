@@ -123,7 +123,9 @@ fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
     // Resolve target directory relative to this test file or CARGO_MANIFEST_DIR
     let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     let target_dir = manifest_dir.join("target");
-    let cache_dir = target_dir.join("hermes_integration_cache");
+    let cache_dir = std::env::var("HERMES_INTEGRATION_CACHE_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| target_dir.join("hermes_integration_cache"));
 
     if let Some(p) = SHARED_CACHE_PATH.get() {
         return (p.clone(), target_dir);
@@ -440,6 +442,13 @@ fn acquire_worker_cache(
 /// Reads /proc/meminfo to determine available RAM and calculates a safe number
 /// of concurrent Lean processes.
 fn calculate_dynamic_lean_concurrency_limit() -> usize {
+    if let Ok(limit_str) = std::env::var("HERMES_MAX_WORKERS") {
+        if let Ok(limit) = limit_str.parse::<usize>() {
+            return limit;
+        }
+    }
+
+
     // Because each Lean process needs to load Mathlib's compiled artifact into
     // RAM, it seems to consume ~7.5GB of RAM in practice. We double this (16GB)
     // to provide a healthy safety margin for other system processes.
