@@ -4,5 +4,6 @@ Behavior: An invalid `(Positive, u32)` return value should fail verification.
 """
 
 [test]
+stderr_file = "expected.stderr"
 args = ["verify", "--unsound-allow-is-valid"]
 expected_status = "failure"
