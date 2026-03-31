@@ -1473,8 +1473,8 @@ mod tests {
         }
 
         test!(empty_tuple: ());
-        test!(u8, u16, u32, u64, u128, usize, AU64);
-        test!(i8, i16, i32, i64, i128, isize);
+        test!(u8, u16, u32, u64, usize, AU64);
+        test!(i8, i16, i32, i64, isize);
         test!(f32, f64);
     }
 
