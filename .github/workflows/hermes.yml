@@ -29,35 +29,73 @@ jobs:
   hermes_tests:
     name: Hermes Tests
     runs-on: ubuntu-24.04-64core
+    defaults:
+      run:
+        shell: /tmp/docker-shell.sh {0}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
-      - name: Install stable toolchain
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Load base image from cache
+        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
+        with:
+          context: .
+          file: .github/workflows/Dockerfile
+          target: base
+          load: true # This loads the resulting image into the local 'docker' daemon
+          tags: zerocopy-ci:local
+          cache-from: type=gha
+
+      - name: Build Hermes image
+        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
+        with:
+          context: .
+          file: .github/workflows/Dockerfile
+          target: hermes
+          load: true # This loads the resulting image into the local 'docker' daemon
+          tags: zerocopy-hermes:local
+          cache-from: type=gha,scope=hermes
+          cache-to: type=gha,mode=max,scope=hermes
+
+      - name: Create Docker Shell Wrapper
+        shell: bash
         run: |
           set -eo pipefail
-          ZC_TOOLCHAIN="$(./cargo.sh --version stable)"
-          rustup toolchain install $ZC_TOOLCHAIN
-          rustup default $ZC_TOOLCHAIN
 
-      - name: Install Charon nightly toolchain
-        working-directory: tools/hermes
-        run: |
-          set -eo pipefail
-          CHARON_TOOLCHAIN="$(cargo metadata --no-deps --format-version 1 \
-            | jq -r '.packages[] | select(.name == "cargo-hermes") | .metadata.build_rs.charon_rust_toolchain')"
-          rustup toolchain install "$CHARON_TOOLCHAIN"
+          # Ensure the directories exist on the host so Docker doesn't create them as root
+          mkdir -p /home/runner/.cargo/registry /home/runner/.cargo/git
 
-      - name: Install elan (Lean toolchain manager)
-        run: |
-          set -eo pipefail
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+          # Extract the pre-built Hermes toolchain to the runner's workspace.
+          #
+          # The `hermes` integration tests hard-link toolchain files into the test's
+          # target directory. To avoid cross-device link errors (EXDEV) caused by
+          # hard-linking across different Docker mounts, we extract the toolchain
+          # to the host workspace and symlink it into place inside the container.
+          # This ensures both the toolchain and the test sandbox reside on the
+          # same underlying Docker volume.
+          docker create --name hermes-extractor zerocopy-hermes:local
+          docker cp hermes-extractor:/root/.hermes /home/runner/work/_temp_hermes
+          docker rm hermes-extractor
 
-      - name: Setup Hermes (Install Charon and Aeneas)
-        working-directory: tools/hermes
-        run: cargo run --bin cargo-hermes -- setup
+          cat << 'EOF' > /tmp/docker-shell.sh
+          #!/bin/bash
+          # Boot an ephemeral container for the step, mounting the workspace and
+          # temp dirs. Explicitly forward GitHub Actions internal state and matrix
+          # environment variables.
+          docker run --rm -i \
+            --workdir "$PWD" \
+            -v /home/runner/work:/home/runner/work \
+            -v /home/runner/.cargo/registry:/root/.cargo/registry \
+            -v /home/runner/.cargo/git:/root/.cargo/git \
+            -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
+            -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
+            zerocopy-hermes:local bash -c "rm -rf /root/.hermes && ln -s /home/runner/work/_temp_hermes /root/.hermes && git config --global --add safe.directory '*' && exec bash \"\$1\"" -- "$1"
+          EOF
+          chmod +x /tmp/docker-shell.sh
 
       # Run unit tests separately, as they're much less likely to have bugs
       # during local development, and this makes the GitHub Actions output
