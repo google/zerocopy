@@ -11,6 +11,12 @@ name: Build & Tests
 on:
   pull_request:
   merge_group:
+  # Useful for manually testing changes to this workflow. Because we check for
+  # the merge queue by doing `github.event_name != 'pull_request'` rather than
+  # `github.event_name == 'merge_group'`, triggering via workflow dispatch has
+  # the effect of running all jobs, including those which would normally only be
+  # run in the merge queue.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -31,7 +37,10 @@ env:
 
 jobs:
   build_test:
-    runs-on: ubuntu-latest
+    # Default to `ubuntu-latest`, but when running Miri tests, use the beefier
+    # `ubuntu-24.04-64core`. Miri tests are very expensive and parallelizable.
+    # Note that Miri tests are only run in the merge queue.
+    runs-on: ${{ (matrix.crate == 'zerocopy' && matrix.toolchain == 'nightly' && github.event_name != 'pull_request') && 'ubuntu-24.04-64core' || 'ubuntu-latest' }}
     # We pre-compute a Docker image containing most dependencies. Each job in
     # the matrix runs in parallel, so without this pre-computation, most jobs
     # would duplicate the work of downloading crates from the internet.
