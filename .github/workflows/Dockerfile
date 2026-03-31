@@ -6,7 +6,7 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-FROM ubuntu:24.04
+FROM ubuntu:24.04 AS base
 
 # Use `DEBIAN_FRONTEND=noninteractive` to prevent timezone prompts.
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -47,6 +47,38 @@ ENV CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN=1
 RUN ./cargo.sh +stable --version  && \
     ./cargo.sh +nightly --version && \
     ./cargo.sh +msrv --version    && \
+    # Remove large intermediate artifacts to ensure that this step doesn't bloat
+    # the Docker image cache.
+    rm -rf /root/.cargo/registry /root/.cargo/git /root/.rustup/toolchains/*/share/doc
+
+WORKDIR /workspace
+
+FROM base AS hermes
+
+WORKDIR /setup
+
+# Install elan (Lean toolchain manager).
+RUN curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+ENV PATH="/root/.elan/bin:${PATH}"
+
+RUN cd tools/hermes && \
+    CHARON_TOOLCHAIN="$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "cargo-hermes") | .metadata.build_rs.charon_rust_toolchain')" && \
+    rustup toolchain install "$CHARON_TOOLCHAIN" && \
+    # Remove large intermediate artifacts to ensure that this step doesn't bloat
+    # the Docker image cache.
+    rm -rf /root/.cargo/registry /root/.cargo/git /root/.rustup/toolchains/*/share/doc
+
+# Setup Hermes (Installs Charon and Aeneas binaries).
+RUN cd tools/hermes && cargo run --bin cargo-hermes -- setup
+
+# Pre-build Lean dependencies and integration toolchain caches.
+#
+# We limit to 1 concurrent worker and store the integration caches inside
+# `~/.hermes` so it survives artifact extraction and volume-mount shadows.
+ENV HERMES_INTEGRATION_CACHE_DIR=/root/.hermes/hermes_integration_cache
+ENV HERMES_MAX_WORKERS=1
+
+RUN cd tools/hermes && (cargo test --test integration || true) && \
     # Remove large intermediate artifacts to ensure that this step doesn't bloat
     # the Docker image cache.
     rm -rf /root/.cargo/registry /root/.cargo/git /root/.rustup/toolchains/*/share/doc
