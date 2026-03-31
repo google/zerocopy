@@ -34,9 +34,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Populate cache
-        uses: ./.github/actions/cache
-
       - name: Install stable toolchain
         run: |
           set -eo pipefail
