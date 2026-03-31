@@ -1,0 +1,8 @@
+description = """
+Purpose: Verifies that `isValid` recurses through Lean product types.
+Behavior: An invalid `(Positive, u32)` return value should fail verification.
+"""
+
+[test]
+args = ["verify", "--unsound-allow-is-valid"]
+expected_status = "failure"
