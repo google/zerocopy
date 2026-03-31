@@ -11,6 +11,8 @@ name: Build & Tests
 on:
   pull_request:
   merge_group:
+  # Useful for manually testing changes to this workflow.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -31,7 +33,7 @@ env:
 
 jobs:
   build_test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ (matrix.crate == 'zerocopy' && matrix.toolchain == 'nightly' && matrix.target != 'riscv64gc-unknown-linux-gnu' && matrix.target != 'thumbv6m-none-eabi' && matrix.target != 'wasm32-unknown-unknown' && github.event_name != 'pull_request') && 'ubuntu-24.04-64core' || 'ubuntu-latest' }}
     # We pre-compute a Docker image containing most dependencies. Each job in
     # the matrix runs in parallel, so without this pre-computation, most jobs
     # would duplicate the work of downloading crates from the internet.
