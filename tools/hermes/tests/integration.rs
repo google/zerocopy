@@ -120,9 +120,15 @@ struct CommandExpectation {
 static SHARED_CACHE_PATH: OnceLock<PathBuf> = OnceLock::new();
 
 fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
-    // Resolve target directory relative to this test file or CARGO_MANIFEST_DIR
-    let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-    let target_dir = manifest_dir.join("target");
+    // Resolve the foundational target directory, allowing Docker/CI environments
+    // to override this directory into the native overlay filesystem (avoiding
+    // EXDEV panics across workspace bind-mount boundaries).
+    let target_dir = if let Ok(override_dir) = std::env::var("HERMES_INTEGRATION_TARGET_DIR") {
+        PathBuf::from(override_dir)
+    } else {
+        let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+        manifest_dir.join("target")
+    };
     let cache_dir = target_dir.join("hermes_integration_cache");
 
     if let Some(p) = SHARED_CACHE_PATH.get() {
@@ -580,7 +586,7 @@ impl TestContext {
         let shim_dir = self.sandbox_root.join("bin_shim");
         fs::create_dir_all(&shim_dir)?;
 
-        let log_file = self.sandbox_root.join("charon_args.log");
+        let log_file = self.sandbox_root.join("tool_args.log");
         let shim_path = shim_dir.join(binary);
 
         let mut shim_content = String::new();
@@ -912,7 +918,7 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
 
     // Verify Commands
     if !config.command.is_empty() {
-        let log_file = ctx.sandbox_root.join("charon_args.log");
+        let log_file = ctx.sandbox_root.join("tool_args.log");
         if !log_file.exists() {
             panic!("Command log file not found! Was the shim called?");
         }

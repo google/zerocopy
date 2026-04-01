@@ -1,3 +1,5 @@
+[workspace]
+
 [package]
 name = "cargo-hermes"
 edition = "2024"
@@ -65,7 +67,7 @@ tiny_http = "0.12"
 datatest-stable = "0.3.3"
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
-regex.workspace = true
+regex = "1.0"
 strip-ansi-escapes = "0.2.1"
 similar = "2.7.0"
 

@@ -30,7 +30,6 @@ fn compile_and_find_binary(name: &str) -> PathBuf {
     assert!(status.success(), "Failed to build binary '{}'", name);
 
     let mut path = PathBuf::from(manifest_dir);
-    path.push("..");
     path.push("target");
     path.push("debug");
     path.push(name);
