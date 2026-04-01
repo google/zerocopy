@@ -3,11 +3,12 @@
 # Usage:
 #   cd tools
 #   sudo docker build -f hermes/Dockerfile -t hermes-prototype .
-FROM ubuntu:24.04
+FROM ubuntu:24.04 AS base
 
 # Install build dependencies, Rust, and Lean
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git curl build-essential pkg-config libssl-dev && \
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+    rm -rf /var/lib/apt/lists/*
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install elan (Lean toolchain manager)
@@ -15,7 +16,7 @@ RUN curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -
 ENV PATH="/root/.elan/bin:${PATH}"
 
 # Direct Hermes tests to write ephemeral integration targets here to leverage overlayfs
-ENV HERMES_INTEGRATION_TARGET_DIR=/root/hermes_target
+ENV HERMES_INTEGRATION_TARGET_DIR=/root/.hermes/hermes_target
 WORKDIR /workspace
 
 # Copy vendored requirements
@@ -35,16 +36,17 @@ COPY hermes/tests/integration.rs hermes/tests/integration.rs
 WORKDIR /workspace/hermes
 
 # Download and verify the required versions of Charon and Aeneas.
-RUN cargo run --bin cargo-hermes setup
+RUN cargo run --bin cargo-hermes setup && \
+    rm -rf /workspace/target /workspace/hermes/target /root/.cargo/registry /root/.cargo/git
 
 # Charon strictly requires a specific nightly compiler version to execute.
 # FIXME: Extract this version string dynamically from `src/setup.rs` in the future.
 RUN rustup toolchain install nightly-2026-02-07 --profile minimal
 
-# To pre-build Mathlib, we only copy the specific `syntax_error` fixture to run a fast dummy test.
+# To pre-build Mathlib for local development, we run a fast dummy test. We don't
+# use this in CI because copying the multiple GB produced in this image is
+# slower in CI than just re-building from scratch.
+FROM base AS dev
 COPY hermes/tests/fixtures/syntax_error tests/fixtures/syntax_error
-RUN cargo test --test integration -- syntax_error
-
-# We do NOT copy the rest of `hermes` here! The container is strictly a
-# pristine, globally-cached execution environment. At runtime, developers
-# will bind-mount their live workspace in and run `cargo test` natively.
+RUN cargo test --test integration -- syntax_error && \
+    rm -rf /workspace/target /workspace/hermes/target /root/.cargo/registry /root/.cargo/git

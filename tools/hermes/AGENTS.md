@@ -44,6 +44,34 @@ those terms. -->
    args = ["verify", "--allow-sorry"]
    ```
 
+## Running Tests in Docker
+
+Due to the complex toolchains required by Hermes (Rust, Lean 4, Aeneas, and Charon), it is recommended to run integration tests within the provided Docker container. The container handles all system dependencies and provides an isolated environment for the test runner.
+
+1. **Build the container:**
+   Because Hermes relies on dependencies in the overarching `tools/vendor` directory, you must build the image with the build context set to the parent directory:
+   ```bash
+   cd tools/hermes
+   docker build -t hermes -f Dockerfile ..
+   ```
+
+2. **Run the integration suite:**
+   To run the tests on a fresh container instance:
+   ```bash
+   cd tools/hermes
+   docker run --rm -v $(pwd)/..:/workspace hermes cargo test --test integration
+   ```
+
+3. **Speed up tests with a named volume:**
+   Because a fresh `docker run` throws away its isolated filesystem when it exits, incremental compilation artifacts will be lost between invocations. To fix this cleanly, you can create a persistent Docker named volume and mount it over the `/root/.hermes` cache directory inside the container:
+   ```bash
+   # Create a volume to hold compilation caches
+   docker volume create hermes-cache
+
+   # Iteratively run tests using the persistent volume mount
+   docker run --rm -v $(pwd)/..:/workspace -v hermes-cache:/root/.hermes hermes cargo test --test integration
+   ```
+
 ## Debugging Tips
 
 1. **Debugging Aeneas vs Hermes Mismatches**
