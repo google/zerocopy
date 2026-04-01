@@ -15,7 +15,7 @@ RUN curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -
 ENV PATH="/root/.elan/bin:${PATH}"
 
 # Direct Hermes tests to write ephemeral integration targets here to leverage overlayfs
-ENV HERMES_INTEGRATION_TARGET_DIR=/root/hermes_target
+ENV HERMES_INTEGRATION_TARGET_DIR=/root/.hermes/hermes_target
 WORKDIR /workspace
 
 # Copy vendored requirements
