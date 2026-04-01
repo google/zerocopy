@@ -978,7 +978,10 @@ jobs:
 
   build_docker_env:
     name: Build Docker image
-    runs-on: ubuntu-latest
+    # Run on a beefier runner since this step is only performed once per CI run,
+    # and when the Docker image needs to be rebuilt (ie, isn't fully cached), it
+    # becomes a bottleneck because it blocks the entire test matrix.
+    runs-on: ubuntu-24.04-64core
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
