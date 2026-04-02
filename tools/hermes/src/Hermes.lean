@@ -45,6 +45,15 @@ class IsValid (α : Type) where
 instance (priority := low) defaultIsValid {α : Type} : IsValid α where
   isValid _ := True
 
+instance [IsValid α] [IsValid β] : IsValid (α × β) where
+  isValid
+    | (a, b) => IsValid.isValid a ∧ IsValid.isValid b
+
+instance [IsValid α] : IsValid (Option α) where
+  isValid
+    | none => True
+    | some a => IsValid.isValid a
+
 -- A tactic that queries the environment for the `Hermes.allow_sorry` axiom.
 -- If it exists, runs `sorry`. If not, fails with the provided error string.
 elab "eval_allow_sorry_or_fail" err:term : tactic => do
