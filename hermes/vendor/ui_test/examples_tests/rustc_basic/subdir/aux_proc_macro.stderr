@@ -1,0 +1,9 @@
+error[E0425]: cannot find value `cake` in this scope
+ --> examples_tests/rustc_basic/subdir/aux_proc_macro.rs:6:12
+  |
+6 |     thing!(cake);
+  |            ^^^^ not found in this scope
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0425`.
