@@ -1,0 +1,49 @@
+[package]
+name = "colored"
+description = "The most simple way to add colors in your terminal"
+version = "3.1.1"
+edition = "2021"
+authors = ["Thomas Wickham <mackwic@gmail.com>"]
+license = "MPL-2.0"
+homepage = "https://github.com/mackwic/colored"
+repository = "https://github.com/mackwic/colored"
+readme = "README.md"
+keywords = ["color", "string", "term", "ansi_term", "term-painter"]
+rust-version = "1.80"
+
+[features]
+# with this feature, no color will ever be written
+no-color = []
+
+
+[target.'cfg(windows)'.dependencies.windows-sys]
+version = ">=0.48,<=0.61"
+features = ["Win32_Foundation", "Win32_System_Console"]
+
+[dev-dependencies]
+ansiterm = "0.12"
+insta = "1"
+rspec = "1"
+
+[lints.rust]
+unsafe_code = "warn"
+deprecated = "warn"
+
+[lints.clippy]
+complexity = "warn"
+correctness = "warn"
+nursery = "warn"
+pedantic = "warn"
+perf = "warn"
+style = "warn"
+suspicious = "warn"
+
+# Could be enabled in the future
+too_many_lines = { level = "allow", priority = 10 }
+unwrap_used = { level = "allow", priority = 10 }
+expect_used = { level = "allow", priority = 10 }
+wildcard_imports = { level = "allow", priority = 10 }
+
+# not necessary
+module_name_repetitions = { level = "allow", priority = 10 }
+missing_const_for_fn = { level = "allow", priority = 10 }
