@@ -66,6 +66,43 @@ jobs:
       - name: Run all tests
         run: docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo test --verbose
 
+      - name: Verify examples
+        run: |
+          KNOWN_FAILING=("design_doc" "never_type" "ptr_concat")
+          FAILED=0
+
+          for file in hermes/examples/*.rs; do
+            example=$(basename "$file" .rs)
+
+            expect_failure=0
+            for kf in "${KNOWN_FAILING[@]}"; do
+              if [ "$kf" = "$example" ]; then
+                expect_failure=1
+                break
+              fi
+            done
+
+            echo "Verifying $example (expect failure: $expect_failure)"
+
+            if docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo run verify --unsound-allow-is-valid --example "$example"; then
+              if [ "$expect_failure" -eq 1 ]; then
+                echo "::error::Example $example succeeded but was expected to fail."
+                FAILED=1
+              else
+                echo "Example $example succeeded."
+              fi
+            else
+              if [ "$expect_failure" -eq 1 ]; then
+                echo "Example $example failed as expected."
+              else
+                echo "::error::Example $example failed."
+                FAILED=1
+              fi
+            fi
+          done
+
+          exit $FAILED
+
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
       # WARNING: This name is load-bearing! It's how GitHub's settings UI configures which jobs

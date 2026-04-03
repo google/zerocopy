@@ -1,4 +1,5 @@
 /// ```lean, hermes, spec
+/// ensures: False
 /// ```
 pub fn crashes(x: u32) -> ! {
     if x > 0 {
