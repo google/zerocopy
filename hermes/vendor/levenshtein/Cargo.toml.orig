@@ -1,0 +1,16 @@
+[package]
+
+name = "levenshtein"
+version = "1.0.5"
+authors = ["Titus Wormer <tituswormer@gmail.com>"]
+description = "Levenshtein algorithm"
+repository = "https://github.com/wooorm/levenshtein-rs"
+readme = "readme.md"
+keywords = ["Vladimir", "Levenshtein", "algorithm", "edit", "distance"]
+license = "MIT"
+include = ["src/lib.rs", "Cargo.toml"]
+
+[lib]
+
+name = "levenshtein"
+path = "src/lib.rs"
