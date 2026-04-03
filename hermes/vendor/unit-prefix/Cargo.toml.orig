@@ -1,0 +1,28 @@
+[package]
+name = "unit-prefix"
+description = "Format numbers with metric and binary unit prefixes"
+license = "MIT"
+
+version = "0.5.2"
+edition = "2018"
+rust-version = "1.31.0"
+
+authors = [
+    "Fabio Valentini <decathorpe@gmail.com>",
+    "Benjamin Sago <ogham@bsago.me>",
+]
+readme = "README.md"
+exclude = [
+    "/Cargo.lock",
+    "/rustfmt.toml",
+]
+categories = ["algorithms", "no-std"]
+keywords = ["mathematics", "numerics"]
+repository = "https://codeberg.org/commons-rs/unit-prefix"
+
+[[example]]
+name = "conversions"
+
+[features]
+default = ["std"]
+std = []
