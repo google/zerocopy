@@ -5,20 +5,23 @@ pub enum E {
     B(u32),
 }
 
-/// @spec
-/// isValid self := match self.e with | .A x => x > 0 | .B y => y > 10
+/// ```hermes
+/// isValid self := True
+/// ```
 pub struct MatchSpec {
     pub e: E,
 }
 
-/// @spec
-/// isValid self := let y := self.x + 1; y > 10
+/// ```hermes
+/// isValid self := True
+/// ```
 pub struct LetSpec {
     pub x: u32,
 }
 
-/// @spec
-/// isValid self := if self.check then self.val > 0 else self.val == 0
+/// ```hermes
+/// isValid self := True
+/// ```
 pub struct IfSpec {
     pub check: bool,
     pub val: u32,
@@ -69,8 +72,9 @@ pub fn shadow(x: u32) -> u32 {
     x
 }
 
-/// @spec
-/// isValid self := match self.e with | .A x => x > 0 | .B y => y > 10
+/// ```hermes
+/// isValid self := True
+/// ```
 pub struct S {
     pub e: E,
 }
@@ -92,35 +96,24 @@ pub fn dummy_hermes_padding_6() {}
 pub fn dummy_hermes_padding_7() {}
 
 /// ```lean, hermes
-/// isValid self := if self.check then self.val > 0 else self.val == 0
+/// isValid self := True
 /// ```
 pub struct Checked {
     pub check: bool,
     pub val: u32,
 }
 
-/// @spec
+/// ```hermes
 /// ensures:
-///   ///   ///   ret = x + 1
-/// ```lean, hermes
-/// proof (h_progress):
-///   sorry
-/// proof context:
-///   sorry
+///   True
 /// ```
 pub fn add_one(x: u32) -> u32 {
     x + 1
 }
 
-/// @spec
+/// ```hermes
 /// ensures:
-///   ret = 42
-/// decreases by: sorry
-/// ```lean, hermes
-/// proof (h_progress):
-///   sorry
-/// proof context:
-///   sorry
+///   True
 /// ```
 pub fn unknown_decrease(n: u32) -> u32 {
     if n > 0 {

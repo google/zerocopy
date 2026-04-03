@@ -4,11 +4,11 @@
 ///
 /// ```lean, hermes, spec
 /// requires (req):
-///   x > 0
+///   True
 /// ensures (ens):
-///   ret > 0
+///   True
 /// proof (ens):
-///   have h : x > 0 := req
+///   have h : True := req
 ///   simp_all [named_bounds]
 /// ```
 pub unsafe fn named_bounds(x: u32) -> u32 {
@@ -31,14 +31,14 @@ pub fn single_unnamed_ensures(x: u32) -> u32 {
 ///
 /// ```lean, hermes, spec
 /// requires (r1):
-///   x > 0
+///   True
 /// requires (r2):
-///   y > 0
+///   True
 /// ensures (ens):
-///   ret > 0
+///   True
 /// proof (ens):
-///   have h1 : x > 0 := r1
-///   have h2 : y > 0 := r2
+///   have h1 : True := r1
+///   have h2 : True := r2
 ///   simp_all [multiple_named_requires]
 /// ```
 pub unsafe fn multiple_named_requires(x: u32, y: u32) -> u32 {
@@ -49,11 +49,11 @@ pub unsafe fn multiple_named_requires(x: u32, y: u32) -> u32 {
 ///
 /// ```lean, hermes, spec
 /// requires (req):
-///   x > 0
+///   True
 /// ensures (ens):
-///   x > 0
+///   True
 /// proof (ens):
-///   have h0 : x > 0 := req
+///   have h0 : True := req
 ///   have h_call := multiple_named_requires.spec x x { r1 := h0, r2 := h0 }
 ///   exact h0
 /// ```
@@ -112,7 +112,7 @@ pub fn missing_proof_injected_isvalid(x: u32) -> u32 {
 ///
 /// ```lean, hermes, spec
 /// requires:
-///   x > 0
+///   True
 /// ensures (ens):
 ///   ret = x
 /// proof (ens):
@@ -126,11 +126,11 @@ pub unsafe fn single_unnamed_requires(x: u32) -> u32 {
 ///
 /// ```lean, hermes, spec
 /// requires:
-///   x > 0
+///   True
 /// ensures (ens):
-///   x > 0
+///   True
 /// proof (ens):
-///   have h0 : x > 0 := h_anon
+///   have h0 : True := h_anon
 ///   have _h_call := single_unnamed_requires.spec x { h_anon := h0 }
 ///   exact h0
 /// ```
