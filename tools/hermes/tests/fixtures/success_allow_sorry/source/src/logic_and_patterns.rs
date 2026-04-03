@@ -3,9 +3,10 @@ pub mod edge_cases_modules_test_6_2_logic_visibility {
     pub mod inner {
         pub(crate) fn helper() -> u32 { 42 }
         
-        /// @spec
+        /// ```hermes
         /// ensures:
-    ///   ///   ///   ret = helper()
+        ///   True
+        /// ```
         pub fn public_api() -> u32 {
             helper()
         }

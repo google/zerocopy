@@ -67,15 +67,14 @@ pub fn mut_passthrough(x: &mut u32) {
 /// ```
 pub fn target_mut_ref_is_valid(x: &mut u32) {}
 
-/// @spec
-/// requires: a.len = b.len
 /// ```lean, hermes
+/// requires: a.len = b.len
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn zip(a: &[u8], b: &[u8]) {}
+pub unsafe fn zip(a: &[u8], b: &[u8]) {}
 
 /// ```lean, hermes
 /// proof (h_progress):

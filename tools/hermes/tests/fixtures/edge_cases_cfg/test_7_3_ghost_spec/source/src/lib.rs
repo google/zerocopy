@@ -1,9 +1,8 @@
 
 #[cfg(target_os = "windows")]
-/// @spec
-/// ensures:
-///   ///   ///   ret = 42
 /// ```lean, hermes
+/// ensures:
+///   ret = 42
 /// proof (h_progress):
 ///   sorry
 /// proof context:
@@ -12,7 +11,8 @@
 pub fn windows_only() -> u32 { 42 }
 
 #[cfg(target_os = "linux")]
-/// @spec
+/// ```hermes
 /// ensures:
-///   ///   ///   ret = 100
+///   ret = 100
+/// ```
 pub fn linux_only() -> u32 { 100 }
