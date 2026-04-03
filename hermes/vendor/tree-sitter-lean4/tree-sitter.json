@@ -1,0 +1,33 @@
+{
+  "grammars": [
+    {
+      "name": "lean",
+      "camelcase": "Lean",
+      "scope": "source.lean",
+      "path": ".",
+      "file-types": [
+        "lean"
+      ]
+    }
+  ],
+  "metadata": {
+    "version": "0.2.2",
+    "license": "MIT",
+    "description": "tree-sitter parser for the Lean interactive theorem prover",
+    "authors": [
+      {
+        "name": "Julian Berman"
+      },
+      {
+        "name": "Willem Vanhulle"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/wvhulle/tree-sitter-lean"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "rust": true
+  }
+}
