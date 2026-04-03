@@ -7,7 +7,13 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-**/target/
+/target/
+/hermes/target/
 **/.git/
 tools/vendor
 tools/.cargo/
+
+# FIXME: This is just a symlink to `../hermes`, intended to ensure that old
+# links to `tools/hermes` are less confusing since we've moved that directory to
+# `hermes` in the repo root. We should get rid of that symlink at some point.
+tools/hermes/
