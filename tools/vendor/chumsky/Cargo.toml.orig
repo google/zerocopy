@@ -1,0 +1,159 @@
+[package]
+name = "chumsky"
+version = "0.12.0"
+description = "A parser library for humans with powerful error recovery"
+authors = ["Joshua Barretto <joshua.s.barretto@gmail.com>", "Elijah Hartvigsen <elijah.reed@hartvigsen.xyz", "Jakob Wiesmore <runetynan@gmail.com>"]
+repository = "https://github.com/zesterer/chumsky"
+license = "MIT"
+keywords = ["parser", "combinator", "token", "language", "syntax"]
+categories = ["parsing", "text-processing"]
+edition = "2021"
+exclude = [
+    "/misc/*",
+    "/benches/samples/*",
+]
+rust-version = "1.65"
+
+[features]
+default = ["std", "stacker"]
+
+# Integrate with the standard library.
+std = [
+    "regex-automata?/std",
+    "serde?/std"
+]
+
+# Enable nightly-only features like better compiler diagnostics and a Parser impl for ! (the never type).
+nightly = []
+
+# Allows deeper recursion by dynamically spilling stack state on to the heap.
+stacker = ["dep:stacker", "std"]
+
+# Allows parser memoization, speeding up heavily back-tracking parsers and allowing left recursion.
+memoization = []
+
+# Allows extending chumsky by writing your own parser implementations.
+extension = []
+
+# Make builtin parsers such as `Boxed` use atomic instead of non-atomic internals.
+# TODO: Remove or rework this
+sync = ["spin"]
+
+# Enable Pratt parsing combinator
+pratt = ["unstable"]
+
+# Utilities for debugging parsers
+debug = ["unstable", "nightly", "dep:railroad"]
+
+# Allow the use of unstable features (aka features where the API is not settled)
+unstable = []
+
+# Allows use of the `Number` parser, which is backed by the `lexical` crate
+lexical-numbers = ["lexical", "unstable"]
+
+# Adds impl of Parser for either::Either
+either = ["dep:either"]
+
+# Enables regex combinators
+regex = ["dep:regex-automata"]
+
+# Enable serde serialization support
+serde = ["dep:serde"]
+
+# Enable support for using Tokio's byte slices as inputs
+bytes = ["dep:bytes"]
+
+# Enable dependencies only needed for generation of documentation on docs.rs
+docsrs = []
+
+# An alias of all features that work with the stable compiler.
+# Do not use this feature, its removal is not considered a breaking change and its behaviour may change.
+# If you're working on chumsky and you're adding a feature that does not require nightly support, please add it to this list.
+_test_stable = ["std", "stacker", "memoization", "extension", "sync"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[dependencies]
+hashbrown = "0.15"
+stacker = { version = "0.1", optional = true }
+regex-automata = { version = "0.3", default-features = false, optional = true, features = ["alloc", "meta", "perf", "unicode", "nfa", "dfa", "hybrid"] }
+spin = { version = "0.9", features = ["once"], default-features = false, optional = true }
+lexical = { version = "6.1.1", default-features = false, features = ["parse-integers", "parse-floats", "format"], optional = true }
+either = { version = "1.8.1", optional = true }
+serde = { version = "1.0", default-features = false, optional = true, features = ["derive"] }
+unicode-ident =  "1.0.10"
+unicode-segmentation = "1"
+bytes = { version = "1", default-features = false, optional = true }
+railroad = { version = "0.3.3", optional = true }
+
+[dev-dependencies]
+ariadne = "0.5"
+pom = "3.2"
+nom = "7.1"
+nom8 = { package = "nom", version = "8"}
+winnow = "0.7.0"
+serde_json = { version = "1.0", features = ["preserve_order"] }
+ciborium = { version = "0.2" }
+criterion = "0.4.0"
+pest = "2.5"
+pest_derive = "2.5"
+sn = "0.1"
+logos = "0.13"
+lasso = "0.7"
+slotmap = "1.0"
+
+[target.'cfg(unix)'.dev-dependencies]
+pprof = { version = "0.11", features = ["flamegraph", "criterion"] }
+
+[profile.bench]
+debug = true
+
+[[bench]]
+name = "json"
+harness = false
+required-features = ["std"]
+
+[[bench]]
+name = "lex"
+harness = false
+
+[[bench]]
+name = "parser"
+harness = false
+
+[[bench]]
+name = "backtrack"
+harness = false
+
+[[bench]]
+name = "cbor"
+harness = false
+
+[[example]]
+name = "nano_rust"
+
+[[example]]
+name = "json"
+required-features = ["std"]
+
+[[example]]
+name = "json_fast"
+required-features = ["std"]
+
+[[example]]
+name = "io"
+required-features = ["std"]
+
+[[example]]
+name = "foo"
+required-features = ["std"]
+
+[[example]]
+name = "mini_ml"
+required-features = ["pratt"]
+
+[[example]]
+name = "debug"
+required-features = ["debug"]
