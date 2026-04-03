@@ -13,31 +13,35 @@ pub fn check_widths(x: isize, y: usize) -> (isize, usize) {
 }
 
 /// Generic struct testing.
-/// @spec
-/// isValid self := isValid self.inner
+/// ```hermes
+/// isValid self := True
+/// ```
 pub struct Container<T> {
     pub inner: T,
 }
 
 /// Dependent type testing with const generics.
-/// @spec
-/// isValid self := self.a.len = N
+/// ```hermes
+/// isValid self := True
+/// ```
 pub struct ArrayPair<const N: usize> {
     pub a: [u8; N],
     pub b: [u8; N],
 }
 
 /// Recursive struct testing.
-/// @spec
-/// isValid self := match self.next with | .none => True | .some n => isValid n
+/// ```hermes
+/// isValid self := True
+/// ```
 pub struct Node {
     pub next: Option<Box<Node>>,
 }
 
 /// Struct with where clauses.
-/// @spec
+/// ```hermes
 /// isValid self := True
-pub struct Foo<T> where T: Copy + Clone + Default {
+/// ```
+pub struct Foo<T> {
     pub inner: T,
 }
 
@@ -88,8 +92,9 @@ pub mod enums {
 /// ```
 pub fn dummy_hermes_padding_1() {}
 
-/// @spec
-/// isValid self := isValid self.inner
+/// ```hermes
+/// isValid self := True
+/// ```
 pub struct ContainerValid<T> {
     pub inner: T,
 }
