@@ -1,0 +1,38 @@
+[package]
+authors = ["The wasm-bindgen Developers"]
+description = "Bridging the gap between Rust Futures and JavaScript Promises"
+documentation = "https://docs.rs/wasm-bindgen-futures"
+edition = "2021"
+homepage = "https://wasm-bindgen.github.io/wasm-bindgen/"
+include = ["/LICENSE-*", "/src"]
+license = "MIT OR Apache-2.0"
+name = "wasm-bindgen-futures"
+readme = "./README.md"
+repository = "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/futures"
+rust-version = "1.71"
+version = "0.4.67"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[dependencies]
+# Depending on js-sys with the "futures" feature activates IntoFuture for Promise
+# and makes promise.await work automatically.
+js-sys = { path = "../js-sys", version = "=0.3.94", default-features = false, features = [
+  "futures",
+] }
+wasm-bindgen = { path = "../..", version = "=0.2.117", default-features = false }
+
+[features]
+default = ["std"]
+futures-core-03-stream = ["js-sys/futures-core-03-stream"]
+std = ["wasm-bindgen/std", "js-sys/std"]
+
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+futures-channel = "0.3"
+futures-lite = { version = "2", default-features = false }
+wasm-bindgen-test = { path = '../test' }
+
+[lints]
+workspace = true

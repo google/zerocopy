@@ -1,0 +1,32 @@
+warning: constant evaluation is taking a long time
+  --> examples_tests/rustc_basic/rustfix-multiple.rs:8:5
+   |
+8  | /     while i < 5_000_000 {
+9  | |         i += 1;
+10 | |     }
+   | |_____^ the const evaluator is currently interpreting this expression
+   |
+help: the constant being evaluated
+  --> examples_tests/rustc_basic/rustfix-multiple.rs:6:1
+   |
+6  | const SLOW: () = {
+   | ^^^^^^^^^^^^^^
+
+error[E0308]: mismatched types
+  --> examples_tests/rustc_basic/rustfix-multiple.rs:14:5
+   |
+14 |     f()
+   |     ^^^ expected `()`, found `usize`
+   |
+help: consider using a semicolon here
+   |
+14 |     f();
+   |        +
+help: try adding a return type
+   |
+13 | pub fn g() -> usize {
+   |            ++++++++
+
+error: aborting due to 1 previous error; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0308`.
