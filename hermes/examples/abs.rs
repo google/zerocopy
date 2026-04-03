@@ -5,7 +5,7 @@
 /// ensures (h0): ret >= 0
 /// ensures (h1): x >= 0 -> ret = x
 /// ensures (h2): x < 0 -> ret = -x
-/// proof:
+/// proof (h0):
 ///   unfold abs
 ///   split
 ///   . simp

@@ -5,7 +5,7 @@ pub enum List<T> {
 
 impl<T> List<T> {
     /// ```lean, hermes, spec
-    /// context
+    /// context:
     ///   open _root_.linked_list
     ///   open _root_.linked_list.List
     ///   variable {T : Type}
@@ -15,8 +15,8 @@ impl<T> List<T> {
     ///     | .Cons _ tl => 1 + tl.len
     /// -- We use absolute namespaces globally to reference items (e.g., `_root_.linked_list.List.len`).
     /// -- This definitively stabilizes method field projection inference in Lean.
-    /// ensures self'.len = self.len + 1
-    /// proof
+    /// ensures: self'.len = self.len + 1
+    /// proof:
     ///   unfold linked_list.List.push
     ///   simp_all
     /// ```
