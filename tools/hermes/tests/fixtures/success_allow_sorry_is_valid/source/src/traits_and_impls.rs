@@ -1,21 +1,25 @@
 //! Tests for traits, trait inheritance, and implementation blocks on various types.
 
 pub mod inheritance {
-    /// @spec
+    /// ```hermes
     /// isSafe : True
-    pub trait A {}
+    /// ```
+    pub unsafe trait A {}
 
-    /// @spec
+    /// ```hermes
     /// isSafe : True
-    pub trait B: A {}
+    /// ```
+    pub unsafe trait B: A {}
 
-    /// @spec
+    /// ```hermes
     /// isSafe : True
-    pub trait C: A {}
+    /// ```
+    pub unsafe trait C: A {}
 
-    /// @spec
+    /// ```hermes
     /// isSafe : True
-    pub trait D: B + C {}
+    /// ```
+    pub unsafe trait D: B + C {}
 }
 
 pub mod advanced_impls {
