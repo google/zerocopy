@@ -1784,7 +1784,8 @@ fn sanitize_output(output: &str) -> String {
     let re_aeneas_time = regex::Regex::new(r"Total execution time: \d+\.\d+ seconds").unwrap();
     let re_worker_id = regex::Regex::new(r"worker_caches/\d+/").unwrap();
     let re_ip_port = regex::Regex::new(r"127\.0\.0\.1:\d+").unwrap();
-    let re_rustup = regex::Regex::new(r"[^\s]*/\.rustup/toolchains/[^/\s]+").unwrap();
+    let re_rustup =
+        regex::Regex::new(r"[^\s]*/(?:\.rustup|opt/rustup)/toolchains/[^/\s]+").unwrap();
 
     let mut clean = output.to_string();
     clean = re_timestamp.replace_all(&clean, "[YYYY-MM-DDTHH:MM:SSZ ").into_owned();
