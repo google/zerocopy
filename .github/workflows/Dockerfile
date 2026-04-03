@@ -37,8 +37,6 @@ RUN cargo install cargo-nextest --locked                    && \
 
 WORKDIR /setup
 
-# FIXME: Don't copy `tools/hermes` so that changes there don't invalidate the
-# Docker cache.
 COPY Cargo.toml ./
 COPY cargo.sh   ./
 COPY tools      ./tools

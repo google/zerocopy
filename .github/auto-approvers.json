@@ -1,11 +1,5 @@
 {
-  "tools/hermes/": [
-    "joshlf"
-  ],
-  "tools/Cargo.lock": [
-    "joshlf"
-  ],
-  "tools/vendor/": [
+  "hermes/": [
     "joshlf"
   ],
   ".github/workflows/hermes.yml": [
