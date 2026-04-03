@@ -48,6 +48,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # Ensure `llms-full.txt` file is up-to-date.
+      - name: Check doc generation
+        run: docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo run -p doc_gen -- --check
+
       # Run unit tests separately, as they're much less likely to have bugs
       # during local development, and this makes the GitHub Actions output
       # easier to skim (in particular, it's clear at a glance whether a failure
