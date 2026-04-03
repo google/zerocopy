@@ -2,8 +2,9 @@
 
 macro_rules! make_fn_with_spec {
     ($name:ident, $val:expr) => {
-        /// @spec
-        /// ensures: ret = $val
+        /// ```hermes
+        /// ensures: True
+        /// ```
         pub fn $name() -> u32 {
             $val
         }
