@@ -1304,6 +1304,7 @@ fn assert_output_file(
             .replace(replace_path, "[PROJECT_ROOT]")
             .replace(cache_path_str, "[CACHE_ROOT]")
             .replace(home_path_str, "[HOME]"),
+        test_name,
     );
 
     if bless {
@@ -1774,12 +1775,17 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
 // - Local IP/port combinations used in mock servers (replaced with
 //   `127.0.0.1:<PORT>`)
 // - Rustup toolchain paths (replaced with `[RUSTUP_TOOLCHAIN]`)
-fn sanitize_output(output: &str) -> String {
+fn sanitize_output(output: &str, test_name: &str) -> String {
     let re_timestamp = regex::Regex::new(r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z ").unwrap();
     let re_thread_id = regex::Regex::new(r"thread '([^']+)' \(\d+\) panicked").unwrap();
     let re_file_lock =
         regex::Regex::new(r"(?m)^.*Blocking waiting for file lock on.*$\n?").unwrap();
-    let re_cargo_hash = regex::Regex::new(r"([a-zA-Z_-]+?)([a-f0-9]{12,16})\b").unwrap();
+    let re_cargo_hash = regex::Regex::new(r"([-=_])([a-f0-9]{5,16})\b").unwrap();
+
+    let lean_namespace = to_pascal_case(test_name).repeat(2);
+    let re_lean_hash =
+        regex::Regex::new(&format!(r"({lean_namespace})([a-f0-9]{{1,16}})\b")).unwrap();
+
     let re_timing = regex::Regex::new(r"took \d+(\.\d*)?(m?s)").unwrap();
     let re_aeneas_time = regex::Regex::new(r"Total execution time: \d+\.\d+ seconds").unwrap();
     let re_worker_id = regex::Regex::new(r"worker_caches/\d+/").unwrap();
@@ -1792,6 +1798,7 @@ fn sanitize_output(output: &str) -> String {
     clean = re_thread_id.replace_all(&clean, "thread '$1' (<ID>) panicked").into_owned();
     clean = re_file_lock.replace_all(&clean, "").into_owned();
     clean = re_cargo_hash.replace_all(&clean, "${1}<HASH>").into_owned();
+    clean = re_lean_hash.replace_all(&clean, "${1}<HASH>").into_owned();
     clean = re_timing.replace_all(&clean, "took <TIME>").into_owned();
     clean = re_aeneas_time.replace_all(&clean, "Total execution time: <TIME> seconds").into_owned();
     clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
@@ -1799,6 +1806,18 @@ fn sanitize_output(output: &str) -> String {
     clean = re_rustup.replace_all(&clean, "[RUSTUP_TOOLCHAIN]").into_owned();
 
     clean
+}
+
+fn to_pascal_case(s: &str) -> String {
+    s.split('_')
+        .map(|part| {
+            let mut chars = part.chars();
+            match chars.next() {
+                None => String::new(),
+                Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
+            }
+        })
+        .collect()
 }
 
 // fn run_idempotency_test(path: &Path) -> datatest_stable::Result<()> {
