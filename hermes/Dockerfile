@@ -37,6 +37,8 @@ COPY build.rs build.rs
 COPY src src
 # Since Cargo.toml explicitly declares [[test]] "integration", this file must exist for Cargo to parse it.
 COPY tests/integration.rs tests/integration.rs
+# Copy tools because they are part of the workspace members
+COPY tools tools
 
 # Download and verify the required versions of Charon and Aeneas.
 RUN cargo run --bin cargo-hermes setup && \
