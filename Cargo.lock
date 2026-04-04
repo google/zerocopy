@@ -80,6 +80,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ba39bdf557eef05f2c1c2e986cbab6b85329b922e7606e5b63ee4c5037ba77a"
 
 [[package]]
+name = "embedded-io"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "658bbadc628dc286b9ae02f0cb0f5411c056eb7487b72f0083203f115de94060"
+
+[[package]]
 name = "itertools"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -415,6 +421,7 @@ name = "zerocopy"
 version = "0.8.48"
 dependencies = [
  "elain",
+ "embedded-io",
  "itertools",
  "rand",
  "regex",
