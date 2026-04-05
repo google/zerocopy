@@ -29,6 +29,8 @@ enum Commands {
     Setup(resolve::SetupArgs),
     /// Expand a crate's Lean output
     Expand(ExpandArgs),
+    /// Generate Lean workspace and print paths without building
+    Generate(resolve::Args),
     #[command(hide = true)]
     ToolchainPath,
 }
@@ -71,6 +73,18 @@ fn main() -> anyhow::Result<()> {
         Commands::Verify(resolve_args) => {
             prepare_and_run(&resolve_args, |locked_roots, packages| {
                 aeneas::verify_lean_workspace(locked_roots, packages)
+            })?;
+        }
+        Commands::Generate(resolve_args) => {
+            prepare_and_run(&resolve_args, |locked_roots, packages| {
+                aeneas::generate_lean_workspace(locked_roots, packages)?;
+                let lean_root = locked_roots.lean_root();
+                println!("Lean workspace generated at: {}", lean_root.display());
+                println!();
+                println!("To manually build and experiment:");
+                println!("  1. cd {}", lean_root.display());
+                println!("  2. lake build");
+                Ok(())
             })?;
         }
         Commands::Setup(resolve::SetupArgs {}) => {
