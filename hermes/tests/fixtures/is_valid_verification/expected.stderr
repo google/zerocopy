@@ -92,4 +92,4 @@
  29 │ /// ```
     ╰────
 
-Error: Lean verification failed
+Error: Lean verification failed. Consider running `cargo run generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.
