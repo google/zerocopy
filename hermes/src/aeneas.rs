@@ -298,10 +298,12 @@ open Lake DSL
 
 package hermes_verification
 
+@[default_target]
 lean_lib «Generated» where
   srcDir := "generated"
   roots := #[{roots_str}]
 
+@[default_target]
 lean_lib «Hermes» where
   srcDir := "hermes"
   roots := #[`Config, `Hermes]
@@ -343,9 +345,8 @@ lean_lib «User» where
     Ok(())
 }
 
-/// Completes Lean verification by generating Hermes `Specs.lean`, writing `Generated.lean`,
-/// and running `lake build` + diagnostics.
-pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
+/// Generates Hermes `Specs.lean` and writes `Generated.lean`, but does not run the `lake build`.
+pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     let lean_generated_root = roots.lean_generated_root();
     let mut generated_imports = String::new();
 
@@ -386,6 +387,13 @@ pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[HermesArtifact]) 
     write_if_changed(&lean_generated_root.join("Generated.lean"), &generated_imports)
         .context("Failed to write Generated.lean")?;
 
+    Ok(())
+}
+
+/// Completes Lean verification by generating Hermes `Specs.lean`, writing `Generated.lean`,
+/// and running `lake build` + diagnostics.
+pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
+    generate_lean_workspace(roots, artifacts)?;
     run_lake(roots, artifacts)
 }
 
