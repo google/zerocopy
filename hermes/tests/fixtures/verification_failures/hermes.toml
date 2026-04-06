@@ -1,0 +1,5 @@
+description = "Coalesced verification_failures"
+[test]
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+stderr_file = "expected.stderr"
