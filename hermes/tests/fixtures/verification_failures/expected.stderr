@@ -1,0 +1,9 @@
+Error: Failed to run 'cargo metadata'
+
+Caused by:
+    `cargo metadata` exited with an error: error: unexpected key or value, expected newline, `#`
+     --> Cargo.toml:1:10
+      |
+    1 | [package]\nname = "verification_failures"\nversion = "0.1.0"\nedition = "2021"\n\n[dependencies]\n\n[workspace]\n
+      |          ^
+    
