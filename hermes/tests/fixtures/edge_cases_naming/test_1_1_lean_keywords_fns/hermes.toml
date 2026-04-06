@@ -1,9 +1,0 @@
-description = """
-Purpose: Tests sanitation of function names colliding with Lean syntax.
-Behavior: Asserts that `fn theorem()`, `fn match()`, etc. are strictly escaped inside French quotes (`«theorem»`, `«match»`) preventing them from creating parsed compilation errors in Lean.
-"""
-
-[test]
-# FIXME(#3089): This should succeed
-expected_status = "known_bug"
-args = ["verify", "--allow-sorry"]
