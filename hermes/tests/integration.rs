@@ -13,6 +13,10 @@ use serde::Deserialize;
 use sha2::Digest;
 use walkdir::WalkDir;
 
+fn new_sorted_walkdir(path: impl AsRef<Path>) -> WalkDir {
+    WalkDir::new(path).sort_by_file_name()
+}
+
 datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
 
 #[derive(Deserialize)]
@@ -208,7 +212,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
         // Restore write permissions temporarily since `smart_clone_cache` might have copied
         // read-only attributes from the global toolchain if set, which would prevent `lake build`.
         #[allow(clippy::permissions_set_readonly_false)]
-        for entry in walkdir::WalkDir::new(cache_dir) {
+        for entry in new_sorted_walkdir(cache_dir) {
             let entry = entry.unwrap();
             let mut perms = std::fs::metadata(entry.path()).unwrap().permissions();
             if perms.readonly() {
@@ -249,7 +253,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
 }
 
 fn make_readonly(path: &Path) -> std::io::Result<()> {
-    for entry in walkdir::WalkDir::new(path) {
+    for entry in new_sorted_walkdir(path) {
         let entry = entry?;
         if entry.file_type().is_file() {
             let mut perms = entry.metadata()?.permissions();
@@ -275,7 +279,7 @@ fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    let walker = walkdir::WalkDir::new(source_dir).follow_links(true);
+    let walker = new_sorted_walkdir(source_dir).follow_links(true);
     for entry in walker {
         let entry = entry.map_err(|e| anyhow::anyhow!("Failed to walk source dir: {}", e))?;
         let name = entry.file_name().to_string_lossy();
@@ -809,7 +813,7 @@ echo "---END-INVOCATION---" >> "{}"
 ///   time. Because these were previously marked as read-only, any attempts at
 ///   mutation will fail loudly rather than result in race conditions.
 fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
-    let walker = WalkDir::new(source).into_iter().filter_entry(|e| {
+    let walker = new_sorted_walkdir(source).into_iter().filter_entry(|e| {
         // Instantly bypass traversing inside ANY `.git/objects` directory!
         // This prevents ~230,000 file copies per Mathlib clone.
         if e.file_name() == "objects"
@@ -988,7 +992,7 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
 
     // Iterate through everything physically present in the test's root fixture
     // directory.
-    let walker = walkdir::WalkDir::new(&ctx.test_case_root).into_iter();
+    let walker = new_sorted_walkdir(&ctx.test_case_root).into_iter();
     for entry in walker.filter_entry(|e| !e.path().ends_with(".git")) {
         let entry = entry.unwrap();
         let path = entry.path();
@@ -1527,7 +1531,7 @@ fn assert_artifacts_match(
 
                 let content = if path.is_dir() {
                     let mut combined = String::new();
-                    for entry in walkdir::WalkDir::new(&path) {
+                    for entry in new_sorted_walkdir(&path) {
                         let Ok(entry) = entry else { continue };
                         if entry.file_type().is_file()
                             && let Ok(s) = fs::read_to_string(entry.path())
@@ -1697,7 +1701,7 @@ fn assert_artifacts_match(
 }
 
 fn assert_directories_match(expected: &Path, actual: &Path) -> io::Result<()> {
-    for entry in walkdir::WalkDir::new(expected) {
+    for entry in new_sorted_walkdir(expected) {
         let entry = entry.map_err(io::Error::other)?;
         if !entry.file_type().is_file() {
             continue;
@@ -1729,7 +1733,7 @@ fn assert_directories_match(expected: &Path, actual: &Path) -> io::Result<()> {
         }
     }
     // Check for extra files in actual
-    for entry in walkdir::WalkDir::new(actual) {
+    for entry in new_sorted_walkdir(actual) {
         let entry = entry.map_err(io::Error::other)?;
         if !entry.file_type().is_file() {
             continue;

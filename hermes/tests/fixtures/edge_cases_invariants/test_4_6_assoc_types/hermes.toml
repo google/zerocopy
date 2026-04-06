@@ -7,4 +7,5 @@ Behavior: In an `isValid` boundary condition, queries the default instantiation 
 # FIXME(#3089): Update the syntax in `lib.rs` to be valid Lean, and get this
 # passing.
 expected_status = "known_bug"
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
