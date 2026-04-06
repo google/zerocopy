@@ -40,8 +40,8 @@ pub fn get_align_of_empty_tuple() -> usize {
 ///     have h_align_pos : 0 < (Hermes.HasStaticLayout.layout T).align.val.val := (Hermes.HasStaticLayout.layout T).align.isValid.left
 ///     have h_align_nz : (Hermes.HasStaticLayout.layout T).align.val.val ≠ 0 := by omega
 ///     simp_all
-///     progress
-///     progress
+///     step
+///     step
 ///     · rw [i_post]
 ///       simp
 ///     · rw [i_post] at r_post
@@ -56,8 +56,8 @@ pub fn get_align_of_empty_tuple() -> usize {
 ///     have h_align_pos : 0 < (Hermes.HasStaticLayout.layout T).align.val.val := (Hermes.HasStaticLayout.layout T).align.isValid.left
 ///     have h_align_nz : (Hermes.HasStaticLayout.layout T).align.val.val ≠ 0 := by omega
 ///     simp_all
-///     progress
-///     progress
+///     step
+///     step
 ///     · rw [i_post]
 ///       simp
 ///   have ⟨y, hy1, _⟩ := Aeneas.Std.WP.spec_imp_exists h_wp
