@@ -1,0 +1,20 @@
+  × missing parameters for function definition
+   ╭─[[PROJECT_ROOT]/src/lib.rs:6:36]
+ 5 │         $(
+ 6 │             pub fn f_only_for_test_$i() {}
+   ·                                    ▲
+   ·                                    ╰── 
+ 7 │         )*
+   ╰────
+  help: add a parameter list
+
+  × expected one of `->`, `<`, `where`, or `{`, found `expr` metavariable
+   ╭─[[PROJECT_ROOT]/src/lib.rs:6:36]
+ 5 │         $(
+ 6 │             pub fn f_only_for_test_$i() {}
+   ·                                    ─┬
+   ·                                     ╰── expected one of `->`, `<`, `where`, or `{`
+ 7 │         )*
+   ╰────
+
+Error: Diagnostic error in charon

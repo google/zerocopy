@@ -5,4 +5,5 @@ Behavior: Re-aliases `Vec` using `use ... as MyVec;`. Ensures Charon de-aliases 
 
 [test]
 expected_status = "known_bug"
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
