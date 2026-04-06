@@ -5,4 +5,5 @@ Behavior: Uses conditionally compiled functions (`#[cfg(target_os = ...)]`). Ver
 
 [test]
 expected_status = "failure"
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

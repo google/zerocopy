@@ -6,4 +6,5 @@ Behavior: Asserts that `fn theorem()`, `fn match()`, etc. are strictly escaped i
 [test]
 # FIXME(#3089): This should succeed
 expected_status = "known_bug"
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

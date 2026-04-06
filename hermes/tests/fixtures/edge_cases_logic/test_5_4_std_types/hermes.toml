@@ -5,4 +5,5 @@ Behavior: Uses `Vec` and `String` directly in function signatures. Confirms the 
 
 [test]
 expected_status = "failure"
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

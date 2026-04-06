@@ -6,4 +6,5 @@ Behavior: Utilizes explicit zero-sized structs and the common `()` unit type to 
 [test]
 # FIXME(#3089): This should succeed.
 expected_status = "known_bug"
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
