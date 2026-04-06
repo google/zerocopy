@@ -786,6 +786,10 @@ You will use these two commands to interact with Hermes. Both accept `--help`.
 
 1. Run `cargo run verify` to verify a target.
 2. Use `cargo run expand` to see the generated Lean code.
+3. Use `cargo run generate` to generate `.lean` files on the filesystem. You can use these to iterate on specifications and proofs using normal Lean tooling (`lake`, `lean`, etc) and copy results back to `.rs` files when you are done.
+
+You will likely want to start with `cargo run generate`, then iterate on `.lean` files directly, and only use `cargo run verify` for final verification once you have copied your work from temporary `.lean` files back to the source of truth `.rs` files.
+
 
 <!-- File: src/Hermes.lean -->
 
