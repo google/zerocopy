@@ -53,8 +53,8 @@ RUN rustup toolchain install nightly-2026-02-07 --profile minimal && \
 # use this in CI because copying the multiple GB produced in this image is
 # slower in CI than just re-building from scratch.
 FROM base AS dev
-COPY tests/fixtures/syntax_error tests/fixtures/syntax_error
-RUN cargo test --test integration -- syntax_error && \
+COPY tests/fixtures/syntax_failures tests/fixtures/syntax_failures
+RUN cargo test --test integration -- syntax_failures && \
     chmod -R a+rwX /cache
 
 # Any `/workspace/target` generated here will be shadowed by the host's bind

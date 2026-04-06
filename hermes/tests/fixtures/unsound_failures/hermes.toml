@@ -1,0 +1,5 @@
+description = "Coalesced unsound_failures"
+[test]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
+expected_status = "failure"
+stderr_file = "expected.stderr"

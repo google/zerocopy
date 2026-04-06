@@ -1,0 +1,17 @@
+Error in function `fail_reserved_name_collision_requires`:
+  --> [PROJECT_ROOT]/src/named_bounds_validation_failures/mod.rs
+  Requires bound name `h_x_is_valid` is reserved for auto-generated invariants.
+
+Error in function `fail_reserved_name_collision_ensures`:
+  --> [PROJECT_ROOT]/src/named_bounds_validation_failures/mod.rs
+  Ensures bound name `h_ret_is_valid` is reserved for auto-generated invariants.
+
+Error in function `fail_empty_requires_clause`:
+  --> [PROJECT_ROOT]/src/named_bounds_validation_failures/mod.rs
+  Requires bounds cannot be completely empty.
+
+Error in function `fail_empty_ensures_clause`:
+  --> [PROJECT_ROOT]/src/named_bounds_validation_failures/mod.rs
+  Ensures bounds cannot be completely empty.
+
+Error: Validation failed: Naming collisions or missing proofs detected.

@@ -1,0 +1,90 @@
+
+=== Hermes Verification Failed ===
+
+[Hermes Error] hermes::syn_error
+
+  × Syntax error in Rust source: cannot parse string into token stream
+   ╭─[[PROJECT_ROOT]/src/syntax_error/mod.rs:1:12]
+ 1 │ fn broken( {
+   ·            ▲
+   ·            ╰── here
+ 2 │ 
+   ╰────
+
+
+[Hermes Error] hermes::syn_error
+
+  × Syntax error in Rust source: cannot parse string into token stream
+   ╭─[[PROJECT_ROOT]/src/hidden_syntax_error/mod.rs:3:21]
+ 2 │ mod broken {
+ 3 │      fn syntax_error( {  // Missing closing parenthesis
+   ·                     ▲
+   ·                     ╰── here
+ 4 │ }
+   ╰────
+
+
+[Hermes Error] hermes::syn_error
+
+  × Syntax error in Rust source: cannot parse string into token stream
+   ╭─[[PROJECT_ROOT]/src/multiple_errors/a.rs:1:12]
+ 1 │ fn broken( {
+   ·            ▲
+   ·            ╰── here
+ 2 │ 
+   ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Multiple Hermes blocks found on a single item.
+   ╭─[[PROJECT_ROOT]/src/duplicate_blocks/mod.rs:5:1]
+ 4 │ /// ```
+ 5 │ /// ```lean, hermes
+   · ─────────┬─────────
+   ·          ╰── problematic block
+ 6 │ /// context:
+   ╰────
+
+
+[Hermes Error] hermes::nested_item
+
+  × Nested item error: Hermes cannot verify items defined inside function
+  │ bodies or other blocks. Move this item to the module level if you wish to
+  │ verify it.
+   ╭─[[PROJECT_ROOT]/src/nested_item_error/mod.rs:2:5]
+ 1 │     fn outer() {
+ 2 │ ╭─▶     /// ```lean, hermes
+ 3 │ │       /// ```
+ 4 │ ├─▶     fn inner() {}
+   · ╰──── this item is defined inside a function body
+ 5 │     }
+   ╰────
+
+
+[Hermes Error] hermes::doc_block
+
+  × Documentation block error: Unclosed Hermes block in documentation.
+   ╭─[[PROJECT_ROOT]/src/multiple_errors/b.rs:1:1]
+ 1 │ /// ```lean, hermes
+   · ─────────┬─────────
+   ·          ╰── problematic block
+ 2 │ /// context:
+   ╰────
+
+
+[Hermes Error] hermes::nested_item
+
+  × Nested item error: Hermes cannot verify items defined inside function
+  │ bodies or other blocks. Move this item to the module level if you wish to
+  │ verify it.
+   ╭─[[PROJECT_ROOT]/src/nested_out_of_line_mod/hidden.rs:1:1]
+ 1 │ ╭─▶ /// ```lean, hermes
+ 2 │ │   /// context:
+ 3 │ │   /// theorem secret_proof : False := sorry
+ 4 │ │   /// ```
+ 5 │ ├─▶ pub fn secret_proof() {} 
+   · ╰──── this item is defined inside a function body
+   ╰────
+
+Error: Aborting due to 7 previous errors.

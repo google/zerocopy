@@ -1,0 +1,8 @@
+description = """
+Purpose: Coalesced known bugs that trigger Lean/toolchain failures but are structurally sound.
+"""
+
+[test]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
+expected_status = "known_bug"
+stderr_file = "expected.stderr"
