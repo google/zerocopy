@@ -138,8 +138,15 @@ pub struct Toolchain {
 impl Toolchain {
     /// Resolves the toolchain manager and acquires a shared lock.
     pub fn resolve() -> Result<Self> {
-        let home =
-            dirs::home_dir().ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?;
+        let home = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
+            std::path::PathBuf::from(
+                std::env::var("CARGO_MANIFEST_DIR").unwrap_or_else(|_| ".".to_string()),
+            )
+            .join("target")
+            .join("hermes-home")
+        } else {
+            dirs::home_dir().ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?
+        };
         let platform = Platform::detect()?;
         let aeneas_hash = platform.expected_archive_hash();
 
