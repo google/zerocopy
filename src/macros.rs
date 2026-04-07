@@ -1348,37 +1348,22 @@ mod tests {
         let x: &[[u8; 2]] = transmute_ref!(&array_of_u8s);
         assert_eq!(x, slice_of_arrays);
 
-        // Before 1.61.0, we can't define the `const fn transmute_ref` function
-        // that we do on and after 1.61.0.
-        #[cfg(no_zerocopy_generic_bounds_in_const_fn_1_61_0)]
+        // Call through a generic function to make sure our autoref
+        // specialization trick works even when types are generic.
+        const fn transmute_ref<T, U>(t: &T) -> &U
+        where
+            T: IntoBytes + Immutable,
+            U: FromBytes + Immutable,
         {
-            // Test that `transmute_ref!` supports non-`KnownLayout` `Sized`
-            // types.
-            const ARRAY_OF_NKL_U8S: Nkl<[u8; 8]> = Nkl([0u8, 1, 2, 3, 4, 5, 6, 7]);
-            const ARRAY_OF_NKL_ARRAYS: Nkl<[[u8; 2]; 4]> = Nkl([[0, 1], [2, 3], [4, 5], [6, 7]]);
-            const X_NKL: &Nkl<[[u8; 2]; 4]> = transmute_ref!(&ARRAY_OF_NKL_U8S);
-            assert_eq!(*X_NKL, ARRAY_OF_NKL_ARRAYS);
+            transmute_ref!(t)
         }
 
-        #[cfg(not(no_zerocopy_generic_bounds_in_const_fn_1_61_0))]
-        {
-            // Call through a generic function to make sure our autoref
-            // specialization trick works even when types are generic.
-            const fn transmute_ref<T, U>(t: &T) -> &U
-            where
-                T: IntoBytes + Immutable,
-                U: FromBytes + Immutable,
-            {
-                transmute_ref!(t)
-            }
-
-            // Test that `transmute_ref!` supports non-`KnownLayout` `Sized`
-            // types.
-            const ARRAY_OF_NKL_U8S: Nkl<[u8; 8]> = Nkl([0u8, 1, 2, 3, 4, 5, 6, 7]);
-            const ARRAY_OF_NKL_ARRAYS: Nkl<[[u8; 2]; 4]> = Nkl([[0, 1], [2, 3], [4, 5], [6, 7]]);
-            const X_NKL: &Nkl<[[u8; 2]; 4]> = transmute_ref(&ARRAY_OF_NKL_U8S);
-            assert_eq!(*X_NKL, ARRAY_OF_NKL_ARRAYS);
-        }
+        // Test that `transmute_ref!` supports non-`KnownLayout` `Sized`
+        // types.
+        const ARRAY_OF_NKL_U8S: Nkl<[u8; 8]> = Nkl([0u8, 1, 2, 3, 4, 5, 6, 7]);
+        const ARRAY_OF_NKL_ARRAYS: Nkl<[[u8; 2]; 4]> = Nkl([[0, 1], [2, 3], [4, 5], [6, 7]]);
+        const X_NKL: &Nkl<[[u8; 2]; 4]> = transmute_ref(&ARRAY_OF_NKL_U8S);
+        assert_eq!(*X_NKL, ARRAY_OF_NKL_ARRAYS);
 
         // Test that `transmute_ref!` works on slice DSTs in and that memory is
         // transmuted as expected.
