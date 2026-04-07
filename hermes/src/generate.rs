@@ -346,6 +346,7 @@ struct AstTheorem<'a> {
     exact_fields: Vec<String>,
     source_file: &'a std::path::Path,
     spec_name: String,
+    aeneas_fn_name: String,
 }
 
 // Renderers
@@ -465,7 +466,7 @@ impl LeanBuilder {
                     self.push('\n');
                 }
             } else {
-                self.push_str("eval_progress \"Missing orthogonal progress proof. The function progress verification was not automatically solvable.\"\n");
+                self.push_str(&format!("eval_progress \"Missing orthogonal progress proof. The function progress verification was not automatically solvable.\" {}\n", ast.aeneas_fn_name));
             }
 
             self.push_str("  · rintro ");
@@ -677,13 +678,39 @@ fn generate_function(
     let has_args = !args.is_empty();
     let generate_pre = has_args || !prop_requires.is_empty();
 
+    let aeneas_fn_name = naming_context.aeneas_call_name(&crate::parse::ParsedLeanItem {
+        item: ParsedItem::Function(crate::parse::HermesDecorated {
+            item: func.clone(),
+            hermes: block.clone(),
+        }),
+        module_path: Vec::new(),
+        source_file: source_file.to_path_buf(),
+    });
+
+    let aeneas_namespace = naming_context.item_namespace(&crate::parse::ParsedLeanItem {
+        item: ParsedItem::Function(crate::parse::HermesDecorated {
+            item: func.clone(),
+            hermes: block.clone(),
+        }),
+        module_path: Vec::new(),
+        source_file: source_file.to_path_buf(),
+    });
+    let fully_qualified_fnc = if aeneas_namespace.is_empty() {
+        format!("_root_.{}.{}", naming_context.crate_name, aeneas_fn_name)
+    } else {
+        format!("_root_.{}.{}.{}", naming_context.crate_name, aeneas_namespace, aeneas_fn_name)
+    };
+
     if generate_pre {
         let mut pre_fields = Vec::new();
         for arg in &args {
             pre_fields.push(AstField {
                 name: format!("h_{}_is_valid", arg.name),
                 lean_type: Some(format!("Hermes.IsValid.isValid {}", arg.name)),
-                proof_tactic: Some(format!("verify_is_valid h_{}_is_valid", arg.name)),
+                proof_tactic: Some(format!(
+                    "verify_is_valid h_{}_is_valid {}",
+                    arg.name, fully_qualified_fnc
+                )),
                 lines: Vec::new(),
             });
         }
@@ -696,7 +723,7 @@ fn generate_function(
             pre_fields.push(AstField {
                 name: name.clone(),
                 lean_type: None,
-                proof_tactic: Some(format!("verify_user_bound {}", name)),
+                proof_tactic: Some(format!("verify_user_bound {} {}", name, fully_qualified_fnc)),
                 lines: clause.lines.iter().collect(),
             });
         }
@@ -737,7 +764,7 @@ fn generate_function(
         post_fields.push(AstField {
             name: "h_ret_is_valid".to_string(),
             lean_type: Some("Hermes.IsValid.isValid ret".to_string()),
-            proof_tactic: Some("verify_is_valid h_ret_is_valid".to_string()),
+            proof_tactic: Some(format!("verify_is_valid h_ret_is_valid {}", fully_qualified_fnc)),
             lines: Vec::new(),
         });
     }
@@ -745,7 +772,10 @@ fn generate_function(
         post_fields.push(AstField {
             name: format!("h_{}'_is_valid", arg.name),
             lean_type: Some(format!("Hermes.IsValid.isValid {}'", arg.name)),
-            proof_tactic: Some(format!("verify_is_valid h_{}'_is_valid", arg.name)),
+            proof_tactic: Some(format!(
+                "verify_is_valid h_{}'_is_valid {}",
+                arg.name, fully_qualified_fnc
+            )),
             lines: Vec::new(),
         });
     }
@@ -756,7 +786,7 @@ fn generate_function(
         post_fields.push(AstField {
             name: name.clone(),
             lean_type: None,
-            proof_tactic: Some(format!("verify_user_bound {}", name)),
+            proof_tactic: Some(format!("verify_user_bound {} {}", name, fully_qualified_fnc)),
             lines: clause.lines.iter().collect(),
         });
     }
@@ -785,17 +815,7 @@ fn generate_function(
         pre_args.extend(args.iter().map(|a| a.name.clone()));
     }
 
-    let call_str =
-        std::iter::once(naming_context.aeneas_call_name(&crate::parse::ParsedLeanItem {
-            item: ParsedItem::Function(crate::parse::HermesDecorated {
-                item: func.clone(),
-                // PathingService doesn't actually use these fields for aeneas_call_name
-                // but we need them to satisfy the type.
-                hermes: block.clone(),
-            }),
-            module_path: Vec::new(),
-            source_file: source_file.to_path_buf(),
-        }))
+    let call_str = std::iter::once(aeneas_fn_name.clone())
         .chain(dict_args.iter().cloned())
         .chain(args.iter().map(|a| a.name.clone()))
         .collect::<Vec<_>>()
@@ -918,6 +938,7 @@ fn generate_function(
             module_path: Vec::new(),
             source_file: source_file.to_path_buf(),
         }),
+        aeneas_fn_name: fully_qualified_fnc,
     });
 
     builder.push_str(&format!("\nend {}\n", fn_name));

@@ -27,7 +27,7 @@ namespace Hermes
 -- We use Aeneas.Result
 
 -- We use `@[simp]` directly on the `SpecificationHolds` definition.
--- This unrolls the match logic for underlying results without forcing 
+-- This unrolls the match logic for underlying results without forcing
 -- users to manually type `unfold Hermes.SpecificationHolds` uniformly across all project proofs.
 @[simp]
 def SpecificationHolds {α : Type} (res : Result α) (post : α → Prop) : Prop :=
@@ -56,7 +56,7 @@ elab "eval_allow_sorry_or_fail" err:term : tactic => do
   else
     throwError errStr
 
-/-- The core theorem that mathematically decouples the WP 
+/-- The core theorem that mathematically decouples the WP
     into strictly orthogonal Progress and Correctness subgoals. -/
 theorem wp_prove_orthogonal {α} {m : Result α} {P : α → Prop} :
   (∃ y, m = .ok y) → (∀ y, m = .ok y → P y) → WP.spec m P := by
@@ -65,38 +65,54 @@ theorem wp_prove_orthogonal {α} {m : Result α} {P : α → Prop} :
   exact hP y hy
 
 /-- A macro that evaluates progress automatically, or falls back to sorry/fail if stuck. -/
-macro "eval_progress" msg:str : tactic => 
-  `(tactic| first | exact ⟨_, rfl⟩ | eval_allow_sorry_or_fail $msg)
+macro "eval_progress" msg:str fnc:ident : tactic =>
+  `(tactic| first | exact ⟨_, rfl⟩ | (simp_all; try unfold $fnc; try split; exact ⟨_, rfl⟩) | eval_allow_sorry_or_fail $msg)
 
 -- A macro that Hermes auto-injects for implicit isValid proofs.
--- 
+--
 -- Tactic Ordering Rationale:
--- We explicitly run `simp_all` *before* attempting `scalar_tac`. 
+-- We explicitly run `simp_all` *before* attempting `scalar_tac`.
+open Lean Elab Tactic in
+elab "unfold_h_returns" fnc:ident : tactic => do
+  let id := mkIdent `h_returns
+  evalTactic (← `(tactic| try unfold $fnc at $id:ident))
+
+open Lean Elab Tactic in
+elab "split_h_returns" : tactic => do
+  let id := mkIdent `h_returns
+  evalTactic (← `(tactic| try split at $id:ident))
+
 -- `simp_all` is significantly faster and aggressively clears out logical noise,
--- which solves the vast majority of trivial bounds instantly. However, `simp_all` 
--- can sometimes normalize or destroy specific arithmetic structures that `scalar_tac` 
--- expects. If a user finds that an implicit arithmetic bound fails here but succeeds 
--- when they manually prove it using just `scalar_tac`, it is likely because the 
+-- which solves the vast majority of trivial bounds instantly. However, `simp_all`
+-- can sometimes normalize or destroy specific arithmetic structures that `scalar_tac`
+-- expects. If a user finds that an implicit arithmetic bound fails here but succeeds
+-- when they manually prove it using just `scalar_tac`, it is likely because the
 -- preceding `simp_all` phase destroyed the arithmetic shape.
 --
 -- If this fallback chain completely fails, the macro intercepts the error and surfaces
 -- a friendly diagnostic instructing the user to provide a manual proof via `proof (h_name):`.
-macro "verify_is_valid" field:ident : tactic => do
+macro "verify_is_valid" field:ident fnc:ident : tactic => do
   let err := "This error comes from the implicit `simp_all` proof for `" ++ field.getId.toString ++ "`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (" ++ field.getId.toString ++ ")`."
   `(tactic|
+    unfold_h_returns $fnc <;>
+    split_h_returns <;>
     first
     | (simp_all [Hermes.IsValid.isValid]; (try scalar_tac); done)
+    | (simp_all [Hermes.IsValid.isValid]; scalar_tac_preprocess; grind; done)
     | eval_allow_sorry_or_fail $(quote err))
 
 -- A macro that Hermes auto-injects for explicit user `ensures` bounds.
 -- It attempts to solve the bound automatically using `simp_all` or `scalar_tac`.
 -- If compilation fails, it degrades to `sorry` (if `--allow-sorry` is enabled).
-macro "verify_user_bound" field:ident : tactic => do
+macro "verify_user_bound" field:ident fnc:ident : tactic => do
   let err := "Missing explicit proof for named bound `" ++ field.getId.toString ++ "`."
   `(tactic|
+    unfold_h_returns $fnc <;>
+    split_h_returns <;>
     first
     | (simp_all; done)
     | (simp_all; scalar_tac; done)
+    | (simp_all; scalar_tac_preprocess; grind; done)
     | (simp_all; omega; done)
     | (simp_all; decide; done)
     | (simp_all; subst_eqs; simp_all; done)
@@ -104,16 +120,20 @@ macro "verify_user_bound" field:ident : tactic => do
     | (simp_all; subst_eqs; simp_all; omega; done)
     | (simp_all; subst_eqs; simp_all; decide; done)
     | (simp_all; subst_eqs; simp_all; scalar_tac_preprocess; omega; done)
+    | (simp_all; subst_eqs; simp_all; scalar_tac_preprocess; grind; done)
     | eval_allow_sorry_or_fail $(quote err))
 
 -- A macro that Hermes auto-injects for empty postconditions.
 -- It attempts `exact ⟨⟩`. If it fails (e.g., due to a stuck weakest precondition), it emits a friendly error
 -- instructing the user to provide a manual proof via `proof:`.
-macro "verify_empty_post" : tactic => do
+macro "verify_empty_post" fnc:ident : tactic => do
   let err := "Missing explicit proof for empty postcondition. The weakest precondition could not be trivially solved by `exact ⟨⟩`. Consider providing a manual proof via `proof:`."
   `(tactic|
+    unfold_h_returns $fnc <;>
+    split_h_returns <;>
     first
     | exact ⟨⟩
+    | (simp_all; scalar_tac_preprocess; grind; done)
     | eval_allow_sorry_or_fail $(quote err))
 
 -- 3. Trait Safety
@@ -140,30 +160,30 @@ structure Alignment where
 @[simp] theorem Alignment_val {val} {h} : (@Alignment.mk val h).val = val := rfl
 @[simp] theorem Alignment_isValid (a : Alignment) : IsAlignment a.val.val := a.isValid
 
-@[simp]
+@[simp, grind]
 theorem alignment_one : IsAlignment 1 := ⟨by decide, 0, by rfl⟩
 
 instance : Inhabited Alignment := ⟨⟨sz 1, alignment_one⟩⟩
 
-@[simp]
+@[simp, grind]
 theorem one_divides (n : Nat) : 1 ∣ n := ⟨n, by omega⟩
 
 namespace core
 namespace marker
 /--
   A stub for the `Sized` trait.
-  
+
   Currently, `Sized` is implemented as a Lean `class` to leverage Lean's
   automatic typeclass resolution for computing memory layouts. However, this is
   a temporary workaround. Aeneas translates Rust traits into explicit dictionary
   `structure`s rather than Lean typeclasses to preserve the deterministic,
   single-implementation coherence of Rust's trait resolution.
-  
+
   Because of this mismatch, Hermes cannot currently generate valid theorem
   signatures for Rust functions that use trait bounds (the generated Lean
   functions expect explicit dictionary arguments that Hermes's typeclass-based
   approach does not supply).
-  
+
   Once Aeneas is updated to emit marker traits like `Sized` as explicit
   dictionaries, this `class` should be removed. Hermes will then accept the
   Aeneas-generated trait dictionaries in its theorems to guarantee soundness,
@@ -198,12 +218,12 @@ instance [Sized α] [Sized β] : Sized (α × β) := ⟨⟩
 def deriveSizedCmd (declName : Name) : CommandElabM Unit := do
   let env ← getEnv
   let some info := env.find? declName | throwError "unknown declaration"
-  
+
   match info with
   | ConstantInfo.inductInfo val =>
     let ctorName := val.ctors.head!
     let some (ConstantInfo.ctorInfo ctor) := env.find? ctorName | throwError "unknown constructor"
-    
+
     liftTermElabM do
       forallTelescope ctor.type fun fvars _ => do
         for fvar in fvars do
@@ -224,7 +244,7 @@ end core
 
 /--
   A mathematically idealized memory layout for a value.
-  
+
   This layout is defined by a size and an alignment. It is unbounded by the
   physical constraints of the machine, meaning that its size is not constrained
   to fit within `Usize`. It is used to reason about the layout of values whose
@@ -237,7 +257,7 @@ structure SpecLayout where
 
 /--
   A valid physical memory layout for a value.
-  
+
   This layout is defined by a size and an alignment. It is bounded by the
   physical constraints of the machine, meaning that its size is guaranteed to
   fit within the addressable memory bounds of `Usize`. It is used to represent
@@ -251,7 +271,7 @@ structure Layout where
 /--
   A proof that a mathematical layout size is small enough to exist in physical
   memory.
-  
+
   This proof establishes that the size of a mathematical layout fits within
   `Usize.max`, meaning the layout can describe a physical value.
 -/
@@ -260,7 +280,7 @@ class FitsInUsize (lay : SpecLayout) : Prop where
 
 /--
   Converts a mathematical layout into a physical layout.
-  
+
   This conversion requires a proof that the mathematical layout fits within
   physical memory.
 -/
@@ -292,7 +312,7 @@ instance (lay : Layout) : FitsInUsize lay.toSpecLayout where
 
 /--
   The ability to compute a mathematically idealized layout for a runtime value.
-  
+
   Some types in Rust, such as slices and trait objects, do not have a statically
   known size or alignment. Their layout depends on the specific value instance.
   This class provides the idealized, unbounded layout for a given dynamically
@@ -305,7 +325,7 @@ class HasSpecLayout (α : Type) where
 
 /--
   The ability to compute a valid physical layout for a runtime value.
-  
+
   Some types in Rust, such as slices and trait objects, do not have a statically
   known size or alignment. Their layout depends on the specific value instance.
   This class provides the bounded, physical layout for a given dynamically sized
@@ -322,13 +342,13 @@ class HasLayout (α : Type) [HasSpecLayout α] where
   mathematical layout fits in memory.
 -/
 instance {α : Type} [HasSpecLayout α] : HasLayout α where
-  layout val h_fits := 
+  layout val h_fits :=
     have : FitsInUsize (HasSpecLayout.layout val) := h_fits
     SpecLayout.toLayout (HasSpecLayout.layout val)
 
 /--
   The mathematically idealized layout for values of a statically sized type.
-  
+
   Types that implement `core::marker::Sized` have a layout that is known at
   compile time and is identical for all instances of the type. This class
   provides that static, unbounded layout property.
@@ -338,7 +358,7 @@ class HasStaticSpecLayout (α : Type) [core.marker.Sized α] where
 
 /--
   The valid physical layout for values of a statically sized type.
-  
+
   Types that implement `core::marker::Sized` have a layout that is known at
   compile time and is identical for all instances of the type. This class
   provides that static, bounded layout property, assuming the corresponding
@@ -350,7 +370,7 @@ class HasStaticLayout (α : Type) [core.marker.Sized α] where
 namespace HasStaticLayout
 
 @[simp] theorem size_div_align_mul_align_nat {T : Type} [core.marker.Sized T] [l : HasStaticLayout T] :
-  l.layout.size.val / l.layout.align.val.val * l.layout.align.val.val = l.layout.size.val := 
+  l.layout.size.val / l.layout.align.val.val * l.layout.align.val.val = l.layout.size.val :=
   Nat.div_mul_cancel l.layout.sizeAligned
 
 @[simp] theorem size_div_align_mul_align_int {T : Type} [core.marker.Sized T] [l : HasStaticLayout T] :
@@ -370,7 +390,7 @@ instance {α : Type} [core.marker.Sized α] [HasStaticSpecLayout α] [FitsInUsiz
 /--
   A blanket implementation providing a mathematical value layout for any type
   that has a static mathematical layout.
-  
+
   Because statically sized types share the same layout for all values, the
   instance value is ignored.
 -/
@@ -391,7 +411,7 @@ structure SpecSliceDstLayout where
 
 /--
   Provides the static slice DST layout properties for a given type.
-  
+
   This is analogous to `SpecHasStaticLayout`, but for types that are `!Sized`
   and end in a slice. It provides the unbounded, mathematical layout properties.
 -/
@@ -436,7 +456,7 @@ theorem align_le_roundUpToAlign (val align : Nat) (h_val : 0 < val) (h_align : 0
 
 /--
   Computes the exact mathematical size of a `repr(C)` Slice DST instance.
-  
+
   This computation uses the static layout information and the dynamic trailing
   element count. It is not constrained by physical memory limits.
 -/
@@ -444,7 +464,7 @@ def reprCSliceDstSize (info : SpecSliceDstLayout) (elemCount : Nat) : Nat :=
   let unpaddedSize := info.trailingOffset + elemCount * info.elementSize
   roundUpToAlign unpaddedSize info.align.val.val
 
-/-- 
+/--
   A theorem stating that the unpadded size rounded up to the alignment is always
   perfectly divisible by the alignment.
 -/
@@ -459,7 +479,7 @@ class ReprC (α : Type)
 /--
   A blanket implementation providing a mathematical value layout for `#[repr(C)]`
   Slice DSTs.
-  
+
   If a type is a Slice DST, and we can extract its length, and it is `#[repr(C)]`,
   we can compute its exact mathematical size.
 -/
@@ -477,7 +497,7 @@ instance {α : Type} [SpecSliceDstTypeLayout α] [ts : TrailingSlice α] [ReprC 
 /--
   A blanket implementation providing static slice DST layout properties for
   slices.
-  
+
   Slices `[T]` are modeled as Slice DSTs with a trailing offset of exactly
   zero.
 -/
@@ -611,7 +631,7 @@ instance {T : Type} [core.marker.Sized T] {M : Aeneas.Std.Mutability} : HasStati
   }
 
 -- For pointers to unsized types (`*const T` where `T` is not `Sized`), the
--- Rust reference guarantees that the size and alignment are at least those of 
+-- Rust reference guarantees that the size and alignment are at least those of
 -- a pointer to a sized type.
 --
 -- FIXME(https://github.com/rust-lang/reference/pull/2201): Cite the Reference
@@ -660,20 +680,20 @@ abbrev align_of_spec (align_of_fun : Type → Result Usize) : Prop :=
 -/
 elab "inject_builtins" : command => do
   let env ← getEnv
-  
+
   let (size_of_name, align_of_name) := env.constants.fold (fun acc n _ =>
     let s := Name.toString n
     let sz' := if s.startsWith "core.mem.size_of" then some n else acc.1
     let al' := if s.startsWith "core.mem.align_of" then some n else acc.2
     (sz', al')
   ) (none, none)
-  
+
   if let some n := size_of_name then
     let ident := mkIdent n
     let specIdent := mkIdent `core_mem_size_of_spec
     let cmd ← `(command| @[simp] axiom $specIdent : ∀ (T : Type) [core.marker.Sized T] [tl : HasStaticLayout T], $ident T = Result.ok tl.layout.size)
     elabCommand cmd
-    
+
   if let some n := align_of_name then
     let ident := mkIdent n
     let specIdent := mkIdent `core_mem_align_of_spec
@@ -685,23 +705,23 @@ elab "inject_builtins" : command => do
 -- and within which pointer arithmetic is possible.
 
 -- We define opaque platform-dependent bounds based on the size of a pointer.
-@[simp] axiom size_usize_ge_2 : size_usize.val ≥ 2
+@[simp, grind] axiom size_usize_ge_2 : size_usize.val ≥ 2
 
 -- The max values for usize and isize are defined in terms of pointer width.
-@[simp] axiom usize_max_eq : Usize.max = 2^(size_usize.val * 8) - 1
+@[simp, grind] axiom usize_max_eq : Usize.max = 2^(size_usize.val * 8) - 1
 
-@[simp] theorem Usize.val_le_max_algebraic (u : Aeneas.Std.Usize) :
+@[simp, grind] theorem Usize.val_le_max_algebraic (u : Aeneas.Std.Usize) :
   u.val ≤ 2 ^ (size_usize.val * 8) - 1 := by
   have h_bound : u.val ≤ Aeneas.Std.Usize.max := by scalar_tac
   have h_max : Aeneas.Std.Usize.max = 2 ^ (size_usize.val * 8) - 1 := usize_max_eq
   omega
 
 @[simp] theorem HasStaticLayout.size_le_max_algebraic {T : Type} [core.marker.Sized T] [l : HasStaticLayout T] :
-  l.layout.size.val ≤ 2 ^ (size_usize.val * 8) - 1 := 
+  l.layout.size.val ≤ 2 ^ (size_usize.val * 8) - 1 :=
   Usize.val_le_max_algebraic l.layout.size
 
-@[simp] axiom isize_max_eq : Isize.max = 2^(size_usize.val * 8 - 1) - 1
-@[simp] axiom isize_min_eq : Isize.min = -(2^(size_usize.val * 8 - 1))
+@[simp, grind] axiom isize_max_eq : Isize.max = 2^(size_usize.val * 8 - 1) - 1
+@[simp, grind] axiom isize_min_eq : Isize.min = -(2^(size_usize.val * 8 - 1))
 
 /--
   Represents a Rust allocation.
@@ -713,16 +733,16 @@ structure Allocation where
   base : Usize
   size : Usize
   addresses : Set Nat
-  
+
   -- `base` is not equal to null (address 0)
   base_not_null : base.val ≠ 0
-  
+
   -- `size <= isize::MAX`
   size_le_isize_max : size.val ≤ Isize.max
-  
+
   -- `base + size <= usize::MAX`
   base_add_size_le_usize_max : base.val + size.val ≤ Usize.max
-  
+
   -- For all addresses `a` in `addresses`, `a` is in the range `base .. (base + size)`
   bounds : ∀ a ∈ addresses, base.val ≤ a ∧ a < base.val + size.val
 
@@ -738,7 +758,7 @@ theorem offset_le_isize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.add
   omega
 
 -- Consequence 2: `a - base` is non-negative
--- (This is trivially true in Lean for `Nat` subtraction when `alloc.base ≤ a`, 
+-- (This is trivially true in Lean for `Nat` subtraction when `alloc.base ≤ a`,
 -- which we prove here to show the offset is well-defined mathematically).
 theorem offset_non_negative (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
     alloc.base.val ≤ a :=
@@ -769,7 +789,7 @@ structure Referent where
   size : Usize
   -- The mathematical set of addresses that make up the referent
   addresses : Set Nat
-  
+
   bounds : ∀ a ∈ addresses, address.val ≤ a ∧ a < address.val + size.val
 
   addresses_are_usizes : ∀ a ∈ addresses, a ≤ Usize.max
@@ -863,7 +883,7 @@ axiom referent_size_sized {T : Type} [core.marker.Sized T] [lay : HasStaticLayou
   (raw_ptr_referent p).size = lay.layout.size
 
 /--
-  Intrinsic structural boundary representing the Rust guarantee that an allocation bounded by `isize::MAX` 
+  Intrinsic structural boundary representing the Rust guarantee that an allocation bounded by `isize::MAX`
   cannot overflow `usize::MAX` during intermediate addition logic for padding calculations.
 -/
 axiom slice_dst_padding_no_overflow {T : Type} [ReprC T] [lay : SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability} (val : Aeneas.Std.RawPtr T M) :
@@ -871,7 +891,7 @@ axiom slice_dst_padding_no_overflow {T : Type} [ReprC T] [lay : SpecSliceDstType
 
 /--
   A theorem stating the physical size of a `repr(C)` slice DST referent.
-  
+
   This axiom states that the physical size of the referent is exactly equal to
   the mathematically computed size of the slice DST (its offset plus its length
   times its element size, padded to its alignment). Because this axiom requires
@@ -882,7 +902,7 @@ axiom slice_dst_padding_no_overflow {T : Type} [ReprC T] [lay : SpecSliceDstType
 
 
 axiom referent_size_slice_dst {T : Type} [ReprC T] [lay : SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability}
-  (alloc : Allocation) [md : HasMetadata (Aeneas.Std.RawPtr T M) Usize] 
+  (alloc : Allocation) [md : HasMetadata (Aeneas.Std.RawPtr T M) Usize]
   (p : Aeneas.Std.RawPtr T M) (h_fits : FitsInAllocation (raw_ptr_referent p) alloc) :
   (raw_ptr_referent p).size.val = reprCSliceDstSize lay.layout (md.metadata p).val
 
