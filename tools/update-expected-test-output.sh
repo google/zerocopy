@@ -12,7 +12,7 @@ set -eo pipefail
 
 # Update the `.stderr` reference files used to validate our UI tests and the
 # `.x86-64.mca` files used to validate our codegen tests.
-BLESS=1 ./cargo.sh +nightly test --test codegen -p zerocopy --all-features
+# BLESS=1 ./cargo.sh +nightly test --test codegen -p zerocopy --all-features
 BLESS=1 ./cargo.sh +nightly test --test ui -p zerocopy --all-features
 BLESS=1 ./cargo.sh +stable  test --test ui -p zerocopy --features=__internal_use_only_features_that_work_on_stable
 BLESS=1 ./cargo.sh +msrv test --test ui -p zerocopy --features=__internal_use_only_features_that_work_on_stable

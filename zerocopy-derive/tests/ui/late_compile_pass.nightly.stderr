@@ -181,9 +181,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied
-  --> $DIR/late_compile_pass.rs:70:10
+  --> $DIR/late_compile_pass.rs:71:10
    |
-70 | #[derive(IntoBytes)]
+71 | #[derive(IntoBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocopy`
@@ -210,9 +210,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
-  --> $DIR/late_compile_pass.rs:83:10
+  --> $DIR/late_compile_pass.rs:84:10
    |
-83 | #[derive(Unaligned)]
+84 | #[derive(Unaligned)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
@@ -239,9 +239,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
-  --> $DIR/late_compile_pass.rs:93:10
+  --> $DIR/late_compile_pass.rs:94:10
    |
-93 | #[derive(Unaligned)]
+94 | #[derive(Unaligned)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
@@ -268,9 +268,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
-   --> $DIR/late_compile_pass.rs:102:10
+   --> $DIR/late_compile_pass.rs:103:10
     |
-102 | #[derive(Unaligned)]
+103 | #[derive(Unaligned)]
     |          ^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
