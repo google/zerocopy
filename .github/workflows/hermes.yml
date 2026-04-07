@@ -42,7 +42,6 @@ jobs:
         with:
           context: hermes
           file: hermes/Dockerfile
-          target: base
           load: true
           tags: hermes-ci:local
           cache-from: type=gha
@@ -71,6 +70,9 @@ jobs:
           KNOWN_FAILING=("design_doc" "never_type" "ptr_concat")
           FAILED=0
 
+          echo "Setting up Hermes toolchain for Verify Examples"
+          docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 hermes-ci:local cargo run setup
+
           for file in hermes/examples/*.rs; do
             example=$(basename "$file" .rs)
 
@@ -84,7 +86,7 @@ jobs:
 
             echo "Verifying $example (expect failure: $expect_failure)"
 
-            if docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo run verify --unsound-allow-is-valid --example "$example"; then
+            if docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 hermes-ci:local cargo run verify --unsound-allow-is-valid --example "$example"; then
               if [ "$expect_failure" -eq 1 ]; then
                 echo "::error::Example $example succeeded but was expected to fail."
                 FAILED=1
