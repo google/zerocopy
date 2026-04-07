@@ -179,6 +179,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
         let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
         let setup_status = Command::new(cargo_bin)
             .arg("setup")
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             .status()
             .expect("Failed to execute cargo-hermes setup");
         if !setup_status.success() {
@@ -187,6 +188,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
 
         let output = Command::new(cargo_bin)
             .arg("toolchain-path")
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             .output()
             .expect("Failed to execute cargo-hermes toolchain-path");
         if !output.status.success() {
@@ -778,6 +780,7 @@ echo "---END-INVOCATION---" >> "{}"
         cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"))
             .env("PATH", new_path)
             .env("RUSTFLAGS", rustflags)
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             // Redirect HOME to the persistent home directory within the sandbox.
             // This ensures that the toolchain is looked up and potentially
             // repaired/reinstalled in a location that is isolated from the

@@ -6,7 +6,7 @@ set -ex
 # Mathlib and Aeneas in Docker strictly before the `src/` and `tests/` directories 
 # are ever copied in, preventing source code changes from busting the heavy Mathlib compilation layer.
 
-CACHE_ROOT="/cache/hermes_target/shared_cache"
+CACHE_ROOT="/cache/hermes_target/hermes_integration_cache"
 AENEAS_DIR="$CACHE_ROOT/aeneas"
 
 mkdir -p "$AENEAS_DIR"
