@@ -32,7 +32,7 @@ CHARON_REPO = "AeneasVerif/charon"
 
 # The set of platforms that Hermes supports for pre-built binaries. The script
 # will download and checksum artifacts for each of these triples.
-PLATFORMS = ["linux-x86_64", "macos-aarch64", "macos-x86_64"]
+PLATFORMS = ["linux-x86_64", "linux-aarch64", "macos-aarch64", "macos-x86_64"]
 
 # Path to the Cargo.toml file where toolchain metadata is stored. This is
 # resolved relative to the script's location to allow invocation from anywhere in
@@ -143,8 +143,11 @@ def get_host_platform():
     system = platform.system().lower()
     machine = platform.machine().lower()
 
-    if system == "linux" and machine == "x86_64":
-        return "linux-x86_64"
+    if system == "linux":
+        if machine == "x86_64":
+            return "linux-x86_64"
+        elif machine in ["aarch64", "arm64"]:
+            return "linux-aarch64"
     elif system == "darwin":
         if machine in ["arm64", "aarch64"]:
             return "macos-aarch64"
