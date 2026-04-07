@@ -1,1 +1,9 @@
-\n
+  ⚠ declaration uses `sorry`
+   ╭─[[PROJECT_ROOT]/src/lib.rs:5:4]
+ 4 │ /// proof context:
+ 5 │ ///   have h_foo : True := True.intro
+   ·    ─────────────────┬────────────────
+   ·                     ╰── here
+ 6 │ /// ```
+   ╰────
+
