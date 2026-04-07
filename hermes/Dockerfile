@@ -29,6 +29,7 @@ WORKDIR /workspace
 COPY .cargo .cargo
 COPY vendor vendor
 
+# TODO: Remove this since it's redundant (it's set in `.cargo`, which is copied).
 ENV __ZEROCOPY_LOCAL_DEV="1"
 
 # Copy only the hermes crate logic
@@ -46,7 +47,7 @@ RUN cargo run --bin cargo-hermes setup && \
 
 # Charon strictly requires a specific nightly compiler version to execute.
 # FIXME: Extract this version string dynamically from `src/setup.rs` in the future.
-RUN rustup toolchain install nightly-2026-02-07 --profile minimal && \
+RUN rustup toolchain install --no-self-update nightly-2026-02-07 --profile minimal && \
     chmod -R a+rwX /opt/rustup /opt/cargo /opt/elan
 
 # To pre-build Mathlib for local development, we run a fast dummy test. We don't
