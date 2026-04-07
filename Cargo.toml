@@ -15,7 +15,7 @@
 [package]
 edition = "2021"
 name = "zerocopy"
-version = "0.8.48"
+version = "0.9.0-alpha.1"
 authors = [
     "Joshua Liebow-Feeser <joshlf@google.com>",
     "Jack Wrenn <jswrenn@amazon.com>",
@@ -31,7 +31,8 @@ categories = [
 keywords = ["cast", "convert", "transmute", "transmutation", "type-punning"]
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
-rust-version = "1.56.0"
+# WARNING: Consult with the Rust for Linux project before increasing.
+rust-version = "1.78.0"
 
 exclude = [".*"]
 
@@ -64,28 +65,10 @@ no-zerocopy-simd-x86-avx12-1-89-0 = "1.89.0"
 # From 1.81.0, Rust supports the `core::error::Error` trait.
 no-zerocopy-core-error-1-81-0 = "1.81.0"
 
-# From 1.78.0, Rust supports the `#[diagnostic::on_unimplemented]` attribute.
-no-zerocopy-diagnostic-on-unimplemented-1-78-0 = "1.78.0"
-
-# From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
-no-zerocopy-generic-bounds-in-const-fn-1-61-0 = "1.61.0"
-
-# From 1.60.0, Rust supports `cfg(target_has_atomics)`, which allows us to
-# detect whether a target supports particular sets of atomics.
-no-zerocopy-target-has-atomics-1-60-0 = "1.60.0"
-
-# When the "simd" feature is enabled, include SIMD types from the
-# `core::arch::aarch64` module, which was stabilized in 1.59.0. On earlier Rust
-# versions, these types require the "simd-nightly" feature.
-no-zerocopy-aarch64-simd-1-59-0 = "1.59.0"
-
 # Include SIMD types from `core::arch::aarch64` on big endian targets. Prior to
 # 1.87.0 (https://github.com/rust-lang/rust/pull/136831) the types were only
 # correct on little endian and backed off from stable in a breaking change.
 no-zerocopy-aarch64-simd-be-1-87-0 = "1.87.0"
-
-# Permit panicking in `const fn`s and calling `Vec::try_reserve`.
-no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = "1.57.0"
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
@@ -94,13 +77,19 @@ pinned-nightly = "nightly-2026-01-25"
 
 [package.metadata.docs.rs]
 all-features = true
-rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition", "--extend-css", "rustdoc/style.css"]
+rustdoc-args = [
+    "--cfg",
+    "doc_cfg",
+    "--generate-link-to-definition",
+    "--extend-css",
+    "rustdoc/style.css",
+]
 targets = [
     "x86_64-unknown-linux-gnu",
     "x86_64-apple-darwin",
     "x86_64-pc-windows-msvc",
     "i686-unknown-linux-gnu",
-    "i686-pc-windows-msvc"
+    "i686-pc-windows-msvc",
 ]
 
 [package.metadata.playground]
@@ -124,13 +113,13 @@ __internal_use_only_features_that_work_on_stable = [
 ]
 
 [dependencies]
-zerocopy-derive = { version = "=0.8.48", path = "zerocopy-derive", optional = true }
+zerocopy-derive = { version = "=0.9.0-alpha.1", path = "zerocopy-derive", optional = true }
 
 # The "associated proc macro pattern" ensures that the versions of zerocopy and
 # zerocopy-derive remain equal, even if the 'derive' feature isn't used.
 # See: https://github.com/matklad/macro-dep-test
 [target.'cfg(any())'.dependencies]
-zerocopy-derive = { version = "=0.8.48", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.9.0-alpha.1", path = "zerocopy-derive" }
 
 [dev-dependencies]
 # FIXME(#381) Remove this dependency once we have our own layout gadgets.
@@ -142,4 +131,4 @@ rustversion = "1.0"
 static_assertions = "1.1"
 testutil = { path = "testutil" }
 # In tests, unlike in production, zerocopy-derive is not optional
-zerocopy-derive = { version = "=0.8.48", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.9.0-alpha.1", path = "zerocopy-derive" }
