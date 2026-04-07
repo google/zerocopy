@@ -179,6 +179,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
         let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
         let setup_status = Command::new(cargo_bin)
             .arg("setup")
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             .status()
             .expect("Failed to execute cargo-hermes setup");
         if !setup_status.success() {
@@ -187,6 +188,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
 
         let output = Command::new(cargo_bin)
             .arg("toolchain-path")
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             .output()
             .expect("Failed to execute cargo-hermes toolchain-path");
         if !output.status.success() {
@@ -778,6 +780,7 @@ echo "---END-INVOCATION---" >> "{}"
         cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"))
             .env("PATH", new_path)
             .env("RUSTFLAGS", rustflags)
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             // Redirect HOME to the persistent home directory within the sandbox.
             // This ensures that the toolchain is looked up and potentially
             // repaired/reinstalled in a location that is isolated from the
@@ -1797,6 +1800,7 @@ fn sanitize_output(output: &str, test_name: &str) -> String {
     let re_ip_port = regex::Regex::new(r"127\.0\.0\.1:\d+").unwrap();
     let re_rustup =
         regex::Regex::new(r"[^\s]*/(?:\.rustup|opt/rustup)/toolchains/[^/\s]+").unwrap();
+    let re_lake_progress = regex::Regex::new(r"\[\d+/\d+\]").unwrap();
 
     let mut clean = output.to_string();
     clean = re_timestamp.replace_all(&clean, "[YYYY-MM-DDTHH:MM:SSZ ").into_owned();
@@ -1810,6 +1814,7 @@ fn sanitize_output(output: &str, test_name: &str) -> String {
     clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
     clean = re_ip_port.replace_all(&clean, "127.0.0.1:<PORT>").into_owned();
     clean = re_rustup.replace_all(&clean, "[RUSTUP_TOOLCHAIN]").into_owned();
+    clean = re_lake_progress.replace_all(&clean, "[<INDEX>/<TOTAL>]").into_owned();
 
     clean
 }
