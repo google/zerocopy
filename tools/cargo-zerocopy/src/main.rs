@@ -355,6 +355,15 @@ fn delegate_cargo() -> Result<(), Error> {
 
                 install_targets_or_exit(version, &targets)?;
 
+                // We determine if the subcommand is `asm` so we can later skip
+                // the fully-qualified package name (FQPN) substitution. The
+                // `cargo-show-asm` crate's internal package parsing fails when
+                // an FQPN includes a pre-release tag (e.g., `-alpha.1`),
+                // incorrectly reporting that the package cannot be found.
+                // Passing a short package name directly to `cargo asm` does
+                // not suffer from ambiguity involving dev-dependencies, so
+                // bypassing the substitution remains safe.
+                let is_asm = args_vec.first().map(|s| s.as_str()) == Some("asm");
                 let mut args = args_vec.into_iter();
 
                 let env_rustflags = env::vars()
@@ -394,21 +403,23 @@ fn delegate_cargo() -> Result<(), Error> {
                 };
 
                 // Replace `-p<package>`, `-p <package>` and `--package <package`
-                // with the equivalent of `-p $(cargo pkgid -p <package>)`. We do
-                // this because unqualified package names are sometimes ambiguous
-                // if a dev-dependency has taken a dependency on an earlier
-                // version of zerocopy or zerocopy-derive.
+                // with the equivalent of `-p $(cargo pkgid -p <package>)`. We
+                // do this because unqualified package names are sometimes
+                // ambiguous if a dev-dependency has taken a dependency on an
+                // earlier version of zerocopy or zerocopy-derive. We skip this
+                // substitution if the subcommand is `asm` for reasons
+                // documented above.
                 loop {
                     let Some(arg) = args.next() else {
                         break;
                     };
-                    if arg == "-p" || arg == "--package" {
+                    if !is_asm && (arg == "-p" || arg == "--package") {
                         cmd.arg(&arg);
                         let Some(arg) = args.next() else {
                             break;
                         };
                         cmd.arg(fqpn(arg));
-                    } else if arg.starts_with("-p") {
+                    } else if !is_asm && arg.starts_with("-p") {
                         cmd.arg("-p");
                         cmd.arg(fqpn(arg[2..].to_string()));
                     } else if arg == "--" {

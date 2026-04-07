@@ -9,8 +9,11 @@
 [package]
 edition = "2021"
 name = "zerocopy-derive"
-version = "0.8.48"
-authors = ["Joshua Liebow-Feeser <joshlf@google.com>", "Jack Wrenn <jswrenn@amazon.com>"]
+version = "0.9.0-alpha.1"
+authors = [
+  "Joshua Liebow-Feeser <joshlf@google.com>",
+  "Jack Wrenn <jswrenn@amazon.com>",
+]
 description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
@@ -20,7 +23,11 @@ repository = "https://github.com/google/zerocopy"
 # so we exclude them to keep the published crate file small.
 #
 # [1] https://github.com/rust-lang/crater
-exclude = [".*", "tests/enum_from_bytes.rs", "tests/ui-nightly/enum_from_bytes_u16_too_few.rs.disabled"]
+exclude = [
+  ".*",
+  "tests/enum_from_bytes.rs",
+  "tests/ui-nightly/enum_from_bytes_u16_too_few.rs.disabled",
+]
 
 [lints.rust]
 # See #1792 for more context.
