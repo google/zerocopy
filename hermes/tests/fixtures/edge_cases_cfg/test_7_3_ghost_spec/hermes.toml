@@ -5,4 +5,5 @@ Behavior: Provides annotated functions under `#[cfg]`. Verifies only the specifi
 
 [test]
 expected_status = "failure"
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

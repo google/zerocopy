@@ -2,6 +2,7 @@ description = "Integration test for raw pointer DST layout annotations"
 
 [test]
 expected_status = "failure"
+stderr_file = "expected.stderr"
 args = ["verify", "--unsound-allow-is-valid"]
 
 [[test.artifact]]
