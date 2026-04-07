@@ -54,7 +54,9 @@ pub struct ExpandArgs {
 }
 
 fn main() -> anyhow::Result<()> {
-    env_logger::init();
+    // Suppressing timestamps removes a source of nondeterminism that is
+    // difficult to work around in integration tests.
+    env_logger::builder().format_timestamp(None).init();
 
     if std::env::var("HERMES_UI_TEST_MODE").is_ok() {
         ui_test_shim::run();
