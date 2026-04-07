@@ -179,6 +179,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
         let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
         let setup_status = Command::new(cargo_bin)
             .arg("setup")
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             .status()
             .expect("Failed to execute cargo-hermes setup");
         if !setup_status.success() {
@@ -187,6 +188,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
 
         let output = Command::new(cargo_bin)
             .arg("toolchain-path")
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             .output()
             .expect("Failed to execute cargo-hermes toolchain-path");
         if !output.status.success() {
@@ -778,6 +780,7 @@ echo "---END-INVOCATION---" >> "{}"
         cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"))
             .env("PATH", new_path)
             .env("RUSTFLAGS", rustflags)
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             // Redirect HOME to the persistent home directory within the sandbox.
             // This ensures that the toolchain is looked up and potentially
             // repaired/reinstalled in a location that is isolated from the
@@ -1293,21 +1296,24 @@ fn assert_output_file(
     let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
     let replace_path = sandbox_root.to_str().unwrap();
 
-    let (cache_dir, _) = get_or_init_shared_cache();
+    let (cache_dir, target_dir) = get_or_init_shared_cache();
     let cache_path_str = cache_dir.to_str().unwrap();
+    let target_path_str = target_dir.to_str().unwrap();
     let home_path_str = home_dir.to_str().unwrap();
     // Replace volatile environment-specific paths with static placeholders.
     //
     // - `replace_path` corresponds to the sandbox root, which varies per
     //   test run.
     // - `cache_path_str` corresponds to the shared toolchain cache.
+    // - `target_path_str` corresponds to the cargo target directory or override.
     // - `home_path_str` corresponds to the user's home directory (redirected in
     //   tests).
     let actual_clean = sanitize_output(
         &actual_str
             .replace(replace_path, "[PROJECT_ROOT]")
             .replace(cache_path_str, "[CACHE_ROOT]")
-            .replace(home_path_str, "[HOME]"),
+            .replace(home_path_str, "[HOME]")
+            .replace(target_path_str, "[TARGET_DIR]"),
         test_name,
     );
 
@@ -1797,6 +1803,8 @@ fn sanitize_output(output: &str, test_name: &str) -> String {
     let re_ip_port = regex::Regex::new(r"127\.0\.0\.1:\d+").unwrap();
     let re_rustup =
         regex::Regex::new(r"[^\s]*/(?:\.rustup|opt/rustup)/toolchains/[^/\s]+").unwrap();
+    let re_elan = regex::Regex::new(r"[^\s]*/(?:\.elan|opt/elan)/toolchains/[^/\s]+").unwrap();
+    let re_lake_progress = regex::Regex::new(r"\[\d+/\d+\]").unwrap();
 
     let mut clean = output.to_string();
     clean = re_timestamp.replace_all(&clean, "[YYYY-MM-DDTHH:MM:SSZ ").into_owned();
@@ -1810,6 +1818,8 @@ fn sanitize_output(output: &str, test_name: &str) -> String {
     clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
     clean = re_ip_port.replace_all(&clean, "127.0.0.1:<PORT>").into_owned();
     clean = re_rustup.replace_all(&clean, "[RUSTUP_TOOLCHAIN]").into_owned();
+    clean = re_elan.replace_all(&clean, "[ELAN_TOOLCHAIN]").into_owned();
+    clean = re_lake_progress.replace_all(&clean, "[<INDEX>/<TOTAL>]").into_owned();
 
     clean
 }
