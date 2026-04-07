@@ -139,15 +139,6 @@
  47 │ /// proof context:
     ╰────
 
-  ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:65:4]
- 64 │ /// ```
- 65 │ fn fail_lean_keyword_proof(x: u32) -> u32 {
-    ·    ──┬─
-    ·      ╰── here
- 66 │     x
-    ╰────
-
   × simp_all made no progress
     ╭─[[PROJECT_ROOT]/src/lib.rs:88:7]
  87 │ /// proof (ens):
@@ -156,14 +147,5 @@
     ·           ╰── here
  89 │ /// ```
     ╰────
-
-  ⚠ declaration uses `sorry`
-     ╭─[[PROJECT_ROOT]/src/lib.rs:112:4]
- 111 │ /// ```
- 112 │ fn fail_missing_named_proof(x: u32) -> u32 {
-     ·    ──┬─
-     ·      ╰── here
- 113 │     x
-     ╰────
 
 Error: Lean verification failed. Consider running `cargo hermes generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.
