@@ -135,11 +135,11 @@ namespace a.b
 namespace foo
 
   structure Pre (x : Std.U32)  : Prop where
-    h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid
+    h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid _root_.extern_never_verified.foo
 
   structure Post (x : Std.U32)  (ret : Std.U32) : Prop where
-    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
-    h_anon : True := by verify_user_bound h_anon
+    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid _root_.extern_never_verified.foo
+    h_anon : True := by verify_user_bound h_anon _root_.extern_never_verified.foo
 
 axiom spec (x : Std.U32)
   (h_req : Pre x) :
@@ -154,11 +154,11 @@ namespace S
 namespace bar
 
   structure Pre (x : Std.U32)  : Prop where
-    h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid
+    h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid _root_.extern_never_verified.S.bar
 
   structure Post (x : Std.U32)  (ret : Std.U32) : Prop where
-    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
-    h_anon : True := by verify_user_bound h_anon
+    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid _root_.extern_never_verified.S.bar
+    h_anon : True := by verify_user_bound h_anon _root_.extern_never_verified.S.bar
 
 axiom spec (x : Std.U32)
   (h_req : Pre x) :
@@ -173,11 +173,11 @@ namespace inner.S
 namespace baz
 
   structure Pre (x : Std.U32)  : Prop where
-    h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid
+    h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid _root_.extern_never_verified.S.baz
 
   structure Post (x : Std.U32)  (ret : Std.U32) : Prop where
-    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
-    h_anon : True := by verify_user_bound h_anon
+    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid _root_.extern_never_verified.S.baz
+    h_anon : True := by verify_user_bound h_anon _root_.extern_never_verified.S.baz
 
 axiom spec (x : Std.U32)
   (h_req : Pre x) :
@@ -194,16 +194,16 @@ namespace ext_fn
  theorem ext_fn_ok : True := trivial
 
   structure Pre (x : Std.U32)  : Prop where
-    h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid
+    h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid _root_.extern_never_verified.ext_fn
 
   structure Post (x : Std.U32)  (ret : Std.U32) : Prop where
-    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
+    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid _root_.extern_never_verified.ext_fn
 
 theorem spec (x : Std.U32)
   (h_req : Pre x) :
   Aeneas.Std.WP.spec (ext_fn x) (fun ret_ => Post x ret_) := by
   apply Hermes.wp_prove_orthogonal
-  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable."
+  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable." _root_.extern_never_verified.ext_fn
   · rintro ret h_returns
     rcases h_req with ⟨h_x_is_valid⟩
     exact
@@ -219,8 +219,8 @@ namespace ffi
 namespace diverge
 
   structure Post  (ret : Never) : Prop where
-    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
-    h_anon :    False := by verify_user_bound h_anon
+    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid _root_.extern_never_verified.diverge
+    h_anon :    False := by verify_user_bound h_anon _root_.extern_never_verified.diverge
 
 axiom spec :
   Aeneas.Std.WP.spec (diverge) (fun ret_ => Post ret_)
@@ -234,17 +234,17 @@ namespace SafeArray
 namespace len
 
   structure Pre {N : Std.Usize} (self : (SafeArray N))  : Prop where
-    h_self_is_valid : Hermes.IsValid.isValid self := by verify_is_valid h_self_is_valid
+    h_self_is_valid : Hermes.IsValid.isValid self := by verify_is_valid h_self_is_valid _root_.extern_never_verified.SafeArray.len
 
   structure Post {N : Std.Usize} (self : (SafeArray N))  (ret : Std.Usize) : Prop where
-    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
-    h_anon :    ret = 0 := by verify_user_bound h_anon
+    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid _root_.extern_never_verified.SafeArray.len
+    h_anon :    ret = 0 := by verify_user_bound h_anon _root_.extern_never_verified.SafeArray.len
 
 theorem spec {N : Std.Usize} (self : (SafeArray N))
   (h_req : Pre self) :
   Aeneas.Std.WP.spec (len self) (fun ret_ => Post self ret_) := by
   apply Hermes.wp_prove_orthogonal
-  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable."
+  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable." _root_.extern_never_verified.SafeArray.len
   · rintro ret h_returns
     rcases h_req with ⟨h_self_is_valid⟩
     exact
@@ -260,13 +260,13 @@ end SafeArray
 namespace diverge
 
   structure Post  (ret : Never) : Prop where
-    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
-    h_anon :    False := by verify_user_bound h_anon
+    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid _root_.extern_never_verified.diverge
+    h_anon :    False := by verify_user_bound h_anon _root_.extern_never_verified.diverge
 
 theorem spec :
   Aeneas.Std.WP.spec (diverge) (fun ret_ => Post ret_) := by
   apply Hermes.wp_prove_orthogonal
-  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable."
+  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable." _root_.extern_never_verified.diverge
   · rintro ret h_returns
     exact
       {
@@ -279,12 +279,12 @@ end diverge
 namespace die
 
   structure Pre (x : Std.U32)  : Prop where
-    h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid
+    h_x_is_valid : Hermes.IsValid.isValid x := by verify_is_valid h_x_is_valid _root_.extern_never_verified.die
 
   structure Post (x : Std.U32)  (ret : Never) (x' : Std.U32) : Prop where
-    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid
-    h_x'_is_valid : Hermes.IsValid.isValid x' := by verify_is_valid h_x'_is_valid
-    h_anon :    False && x = 42 := by verify_user_bound h_anon
+    h_ret_is_valid : Hermes.IsValid.isValid ret := by verify_is_valid h_ret_is_valid _root_.extern_never_verified.die
+    h_x'_is_valid : Hermes.IsValid.isValid x' := by verify_is_valid h_x'_is_valid _root_.extern_never_verified.die
+    h_anon :    False && x = 42 := by verify_user_bound h_anon _root_.extern_never_verified.die
 
 theorem spec (x : Std.U32)
   (h_req : Pre x) :
@@ -292,7 +292,7 @@ theorem spec (x : Std.U32)
     let (ret, x') := ret_
     Post x ret x') := by
   apply Hermes.wp_prove_orthogonal
-  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable."
+  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable." _root_.extern_never_verified.die
   · rintro ⟨ret, x'⟩ h_returns
     rcases h_req with ⟨h_x_is_valid⟩
     exact
