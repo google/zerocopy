@@ -12,6 +12,17 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
 13 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`
    |
+   = note: Consider adding `#[derive(FromBytes)]` to `bool`
+   = help: the following other types implement trait `FromBytes`:
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+             usize
+             u8
+           and 79 others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 

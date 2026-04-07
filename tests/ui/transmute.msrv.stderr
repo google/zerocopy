@@ -4,30 +4,55 @@ error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
 17 | const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
    |                                         ^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `FromBytes`:
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+             usize
+             u8
+           and 79 others
 note: required by a bound in `DST_NOT_FROM_BYTES::transmute`
   --> $DIR/transmute.rs:17:41
    |
 17 | const DST_NOT_FROM_BYTES: NotZerocopy = transmute!(AU16(0));
    |                                         ^^^^^^^^^^^^^^^^^^^
    |                                         |
-   |                                         required by a bound in this
-   |                                         required by this bound in `DST_NOT_FROM_BYTES::transmute`
+   |                                         required by a bound in this function
+   |                                         required by this bound in `transmute`
    = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
   --> $DIR/transmute.rs:21:32
    |
 21 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
-   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
+   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                |
+   |                                the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
+   |                                required by a bound introduced by this call
    |
+   = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy<AU16>`
+   = help: the following other types implement trait `IntoBytes`:
+             bool
+             char
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+           and 68 others
 note: required by a bound in `SRC_NOT_AS_BYTES::transmute`
   --> $DIR/transmute.rs:21:32
    |
 21 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |                                |
-   |                                required by a bound in this
-   |                                required by this bound in `SRC_NOT_AS_BYTES::transmute`
+   |                                required by a bound in this function
+   |                                required by this bound in `transmute`
    = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 2 previous errors
