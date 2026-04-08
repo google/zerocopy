@@ -33,12 +33,12 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
               i128
             and 153 others
 note: required by a bound in `Wrap::<&'a Src, &'a Dst>::try_transmute_ref`
-   --> $WORKSPACE/src/util/macro_util.rs:744:14
+   --> $WORKSPACE/src/util/macro_util.rs:735:14
     |
-741 |     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
+732 |     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
     |            ----------------- required by a bound in this associated function
 ...
-744 |         Dst: TryFromBytes + Immutable,
+735 |         Dst: TryFromBytes + Immutable,
     |              ^^^^^^^^^^^^ required by this bound in `Wrap::<&Src, &Dst>::try_transmute_ref`
     = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -60,12 +60,12 @@ error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
               i128
             and 128 others
 note: required by a bound in `Wrap::<&'a Src, &'a Dst>::try_transmute_ref`
-   --> $WORKSPACE/src/util/macro_util.rs:744:29
+   --> $WORKSPACE/src/util/macro_util.rs:735:29
     |
-741 |     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
+732 |     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
     |            ----------------- required by a bound in this associated function
 ...
-744 |         Dst: TryFromBytes + Immutable,
+735 |         Dst: TryFromBytes + Immutable,
     |                             ^^^^^^^^^ required by this bound in `Wrap::<&Src, &Dst>::try_transmute_ref`
     = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -134,12 +134,12 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
               i128
             and 68 others
 note: required by a bound in `Wrap::<&'a Src, &'a Dst>::try_transmute_ref`
-   --> $WORKSPACE/src/util/macro_util.rs:743:14
+   --> $WORKSPACE/src/util/macro_util.rs:734:14
     |
-741 |     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
+732 |     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
     |            ----------------- required by a bound in this associated function
-742 |     where
-743 |         Src: IntoBytes + Immutable,
+733 |     where
+734 |         Src: IntoBytes + Immutable,
     |              ^^^^^^^^^ required by this bound in `Wrap::<&Src, &Dst>::try_transmute_ref`
     = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -161,12 +161,12 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: Immutable` is not satisfied
               i128
             and 128 others
 note: required by a bound in `Wrap::<&'a Src, &'a Dst>::try_transmute_ref`
-   --> $WORKSPACE/src/util/macro_util.rs:743:26
+   --> $WORKSPACE/src/util/macro_util.rs:734:26
     |
-741 |     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
+732 |     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
     |            ----------------- required by a bound in this associated function
-742 |     where
-743 |         Src: IntoBytes + Immutable,
+733 |     where
+734 |         Src: IntoBytes + Immutable,
     |                          ^^^^^^^^^ required by this bound in `Wrap::<&Src, &Dst>::try_transmute_ref`
     = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 

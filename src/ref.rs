@@ -192,7 +192,6 @@ mod def {
     impl<B: CopyableByteSlice + Copy, T: ?Sized> Copy for Ref<B, T> {}
 }
 
-#[allow(unreachable_pub)] // This is a false positive on our MSRV toolchain.
 pub use def::Ref;
 
 use crate::pointer::{

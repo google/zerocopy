@@ -22,7 +22,7 @@ use core::{
 //
 // See the documentation on `util::polyfills` for more information.
 #[allow(unused_imports)]
-use crate::util::polyfills::{self, NonNullExt as _, NumExt as _};
+use crate::util::polyfills::{self, NumExt as _};
 #[cfg(doc)]
 use crate::Ref;
 
