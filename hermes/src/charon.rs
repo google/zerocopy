@@ -262,7 +262,9 @@ fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
     };
 
     let output = toolchain.command(Tool::Charon).arg("version").output().with_context(|| {
-        format!("Failed to execute `charon version`. Is charon installed? Try running `{setup_cmd}`.")
+        format!(
+            "Failed to execute `charon version`. Is charon installed? Try running `{setup_cmd}`."
+        )
     })?;
 
     if !output.status.success() {
