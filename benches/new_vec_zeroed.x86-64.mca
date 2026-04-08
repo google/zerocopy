@@ -24,14 +24,14 @@ Instruction Info:
  2      5     1.00           *            push	rbx
  2      5     1.00           *            push	rax
  1      1     0.33                        mov	rbx, rdi
- 1      1     0.33                        movabs	r12, 9223372036854775805
+ 1      1     0.33                        movabs	r12, 9223372036854775806
  1      1     0.33                        mov	ecx, 6
  1      1     0.33                        mov	rax, rsi
  2      4     1.00                        mul	rcx
  1      1     1.00                        jo	.LBB5_6
  1      1     0.33                        cmp	rax, r12
  1      1     1.00                        jbe	.LBB5_2
- 1      1     0.33                        add	r12, 3
+ 1      1     0.33                        add	r12, 2
  1      1     1.00           *            mov	qword ptr [rbx], r12
  1      1     1.00                        jmp	.LBB5_7
  1      1     0.33                        mov	r14, rsi
@@ -81,14 +81,14 @@ Resource pressure by instruction:
  -      -      -      -     1.00    -     0.50   0.50   push	rbx
  -      -      -      -     1.00    -     0.50   0.50   push	rax
  -      -     0.98   0.01    -     0.01    -      -     mov	rbx, rdi
- -      -     0.01   0.99    -      -      -      -     movabs	r12, 9223372036854775805
+ -      -     0.01   0.99    -      -      -      -     movabs	r12, 9223372036854775806
  -      -     0.02    -      -     0.98    -      -     mov	ecx, 6
  -      -      -     0.98    -     0.02    -      -     mov	rax, rsi
  -      -     1.00   1.00    -      -      -      -     mul	rcx
  -      -      -      -      -     1.00    -      -     jo	.LBB5_6
  -      -     0.99   0.01    -      -      -      -     cmp	rax, r12
  -      -      -      -      -     1.00    -      -     jbe	.LBB5_2
- -      -      -      -      -     1.00    -      -     add	r12, 3
+ -      -      -      -      -     1.00    -      -     add	r12, 2
  -      -      -      -     1.00    -     0.50   0.50   mov	qword ptr [rbx], r12
  -      -      -      -      -     1.00    -      -     jmp	.LBB5_7
  -      -     0.98   0.02    -      -      -      -     mov	r14, rsi

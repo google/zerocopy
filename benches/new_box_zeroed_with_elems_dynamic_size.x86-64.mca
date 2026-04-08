@@ -22,7 +22,7 @@ Instruction Info:
  2      5     1.00           *            push	rbx
  2      5     1.00           *            push	rax
  1      1     0.33                        mov	rbx, rdi
- 1      1     0.33                        movabs	rax, 4611686018427387900
+ 1      1     0.33                        movabs	rax, 4611686018427387901
  1      1     0.33                        cmp	rdi, rax
  1      1     1.00                        jbe	.LBB5_2
  1      0     0.25                        xor	eax, eax
@@ -60,7 +60,7 @@ Resource pressure by instruction:
  -      -      -      -     1.00    -     0.50   0.50   push	rbx
  -      -      -      -     1.00    -     0.50   0.50   push	rax
  -      -     0.94   0.05    -     0.01    -      -     mov	rbx, rdi
- -      -     0.05   0.95    -      -      -      -     movabs	rax, 4611686018427387900
+ -      -     0.05   0.95    -      -      -      -     movabs	rax, 4611686018427387901
  -      -     0.95    -      -     0.05    -      -     cmp	rdi, rax
  -      -      -      -      -     1.00    -      -     jbe	.LBB5_2
  -      -      -      -      -      -      -      -     xor	eax, eax

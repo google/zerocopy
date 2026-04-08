@@ -34,7 +34,7 @@ Instruction Info:
  1      1     0.33                        and	r14d, 3
  1      1     0.33                        add	r14, rax
  1      1     0.50                        setb	al
- 1      1     0.33                        movabs	rcx, 9223372036854775803
+ 1      1     0.33                        movabs	rcx, 9223372036854775804
  1      1     0.33                        cmp	r14, rcx
  2      2     1.00                        seta	cl
  1      1     0.33                        or	cl, al
@@ -85,7 +85,7 @@ Resource pressure by instruction:
  -      -     0.97   0.03    -      -      -      -     and	r14d, 3
  -      -     0.01   0.98    -     0.01    -      -     add	r14, rax
  -      -     1.00    -      -      -      -      -     setb	al
- -      -     0.02    -      -     0.98    -      -     movabs	rcx, 9223372036854775803
+ -      -     0.02    -      -     0.98    -      -     movabs	rcx, 9223372036854775804
  -      -      -     0.97    -     0.03    -      -     cmp	r14, rcx
  -      -     2.00    -      -      -      -      -     seta	cl
  -      -     0.03   0.03    -     0.94    -      -     or	cl, al

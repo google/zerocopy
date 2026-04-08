@@ -5,7 +5,7 @@ bench_new_vec_zeroed:
 	push rbx
 	push rax
 	mov rbx, rdi
-	movabs r12, 9223372036854775805
+	movabs r12, 9223372036854775806
 	mov ecx, 6
 	mov rax, rsi
 	mul rcx
@@ -13,7 +13,7 @@ bench_new_vec_zeroed:
 	cmp rax, r12
 	jbe .LBB5_2
 .LBB5_6:
-	add r12, 3
+	add r12, 2
 	mov qword ptr [rbx], r12
 	jmp .LBB5_7
 .LBB5_2:

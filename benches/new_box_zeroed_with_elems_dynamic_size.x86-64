@@ -3,7 +3,7 @@ bench_new_box_zeroed_with_elems_dynamic_size:
 	push rbx
 	push rax
 	mov rbx, rdi
-	movabs rax, 4611686018427387900
+	movabs rax, 4611686018427387901
 	cmp rdi, rax
 	jbe .LBB5_2
 	xor eax, eax

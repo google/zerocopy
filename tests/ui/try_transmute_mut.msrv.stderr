@@ -16,12 +16,12 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
               i128
             and 156 others
 note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:824:14
+   --> $WORKSPACE/src/util/macro_util.rs:815:14
     |
-821 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+812 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
     |            ----------------- required by a bound in this associated function
 ...
-824 |         Dst: TryFromBytes + IntoBytes,
+815 |         Dst: TryFromBytes + IntoBytes,
     |              ^^^^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -43,12 +43,12 @@ error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
               i128
             and 69 others
 note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:824:29
+   --> $WORKSPACE/src/util/macro_util.rs:815:29
     |
-821 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+812 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
     |            ----------------- required by a bound in this associated function
 ...
-824 |         Dst: TryFromBytes + IntoBytes,
+815 |         Dst: TryFromBytes + IntoBytes,
     |                             ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -117,12 +117,12 @@ error[E0277]: the trait bound `SrcA: FromBytes` is not satisfied
               u8
             and 80 others
 note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:823:14
+   --> $WORKSPACE/src/util/macro_util.rs:814:14
     |
-821 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+812 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
     |            ----------------- required by a bound in this associated function
-822 |     where
-823 |         Src: FromBytes + IntoBytes,
+813 |     where
+814 |         Src: FromBytes + IntoBytes,
     |              ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -144,12 +144,12 @@ error[E0277]: the trait bound `DstA: IntoBytes` is not satisfied
               i128
             and 69 others
 note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:824:29
+   --> $WORKSPACE/src/util/macro_util.rs:815:29
     |
-821 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+812 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
     |            ----------------- required by a bound in this associated function
 ...
-824 |         Dst: TryFromBytes + IntoBytes,
+815 |         Dst: TryFromBytes + IntoBytes,
     |                             ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -171,12 +171,12 @@ error[E0277]: the trait bound `SrcB: IntoBytes` is not satisfied
               i128
             and 69 others
 note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:823:26
+   --> $WORKSPACE/src/util/macro_util.rs:814:26
     |
-821 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+812 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
     |            ----------------- required by a bound in this associated function
-822 |     where
-823 |         Src: FromBytes + IntoBytes,
+813 |     where
+814 |         Src: FromBytes + IntoBytes,
     |                          ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -198,12 +198,12 @@ error[E0277]: the trait bound `DstB: IntoBytes` is not satisfied
               i128
             and 69 others
 note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:824:29
+   --> $WORKSPACE/src/util/macro_util.rs:815:29
     |
-821 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+812 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
     |            ----------------- required by a bound in this associated function
 ...
-824 |         Dst: TryFromBytes + IntoBytes,
+815 |         Dst: TryFromBytes + IntoBytes,
     |                             ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
