@@ -64,6 +64,8 @@ struct TestConfig {
     #[serde(default)]
     setup_mock: bool, // New field
     #[serde(default)]
+    env: std::collections::HashMap<String, String>,
+    #[serde(default)]
     phases: Vec<TestPhase>,
     #[serde(default = "default_true")]
     inject_charon_version: bool,
@@ -179,6 +181,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
         let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
         let setup_status = Command::new(cargo_bin)
             .arg("setup")
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             .status()
             .expect("Failed to execute cargo-hermes setup");
         if !setup_status.success() {
@@ -187,6 +190,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
 
         let output = Command::new(cargo_bin)
             .arg("toolchain-path")
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             .output()
             .expect("Failed to execute cargo-hermes toolchain-path");
         if !output.status.success() {
@@ -661,6 +665,27 @@ echo "---END-INVOCATION---" >> "{}"
 
     fn run_hermes(&self, config: &TestConfig) -> assert_cmd::assert::Assert {
         let mut cmd = assert_cmd::cargo_bin_cmd!("cargo-hermes");
+        cmd.env_clear();
+
+        // After clearing the environment to prevent scope leakage, we must
+        // manually forward essential host variables required for toolchains.
+        for var in [
+            "RUSTUP_HOME",
+            "CARGO_HOME",
+            "RUSTUP_TOOLCHAIN",
+            "ELAN_HOME",
+            "LD_LIBRARY_PATH",
+            "TMPDIR",
+            "TMP",
+            "TEMP",
+            "USER",
+            "USERNAME",
+        ] {
+            if let Some(val) = std::env::var_os(var) {
+                cmd.env(var, val);
+            }
+        }
+
         cmd.env("HOME", &self.home_dir);
 
         let (cache_dir, _) = get_or_init_shared_cache();
@@ -784,7 +809,12 @@ echo "---END-INVOCATION---" >> "{}"
             // user's actual home directory but remains persistent across
             // multiple `hermes` invocations within this single test context.
             .env("HOME", &self.home_dir)
-            .env("HERMES_TEST_DIR_NAME", "hermes_test_target");
+            .env("HERMES_TEST_DIR_NAME", "hermes_test_target")
+            .env("HERMES_HASH_WITH_REMOVED_PREFIX", &self.sandbox_root);
+
+        for (k, v) in &config.env {
+            cmd.env(k, v);
+        }
 
         if !self.sandbox_root.exists() {
             panic!("sandbox_root does NOT exist! {:?}", self.sandbox_root);
@@ -1293,22 +1323,24 @@ fn assert_output_file(
     let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
     let replace_path = sandbox_root.to_str().unwrap();
 
-    let (cache_dir, _) = get_or_init_shared_cache();
+    let (cache_dir, target_dir) = get_or_init_shared_cache();
     let cache_path_str = cache_dir.to_str().unwrap();
+    let target_path_str = target_dir.to_str().unwrap();
     let home_path_str = home_dir.to_str().unwrap();
     // Replace volatile environment-specific paths with static placeholders.
     //
     // - `replace_path` corresponds to the sandbox root, which varies per
     //   test run.
     // - `cache_path_str` corresponds to the shared toolchain cache.
+    // - `target_path_str` corresponds to the cargo target directory or override.
     // - `home_path_str` corresponds to the user's home directory (redirected in
     //   tests).
     let actual_clean = sanitize_output(
         &actual_str
             .replace(replace_path, "[PROJECT_ROOT]")
             .replace(cache_path_str, "[CACHE_ROOT]")
-            .replace(home_path_str, "[HOME]"),
-        test_name,
+            .replace(home_path_str, "[HOME]")
+            .replace(target_path_str, "[TARGET_DIR]"),
     );
 
     if bless {
@@ -1779,16 +1811,11 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
 // - Local IP/port combinations used in mock servers (replaced with
 //   `127.0.0.1:<PORT>`)
 // - Rustup toolchain paths (replaced with `[RUSTUP_TOOLCHAIN]`)
-fn sanitize_output(output: &str, test_name: &str) -> String {
-    let re_timestamp = regex::Regex::new(r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z ").unwrap();
+fn sanitize_output(output: &str) -> String {
     let re_thread_id = regex::Regex::new(r"thread '([^']+)' \(\d+\) panicked").unwrap();
     let re_file_lock =
         regex::Regex::new(r"(?m)^.*Blocking waiting for file lock on.*$\n?").unwrap();
     let re_cargo_hash = regex::Regex::new(r"([-=_])([a-f0-9]{5,16})\b").unwrap();
-
-    let lean_namespace = to_pascal_case(test_name).repeat(2);
-    let re_lean_hash =
-        regex::Regex::new(&format!(r"({lean_namespace})([a-f0-9]{{1,16}})\b")).unwrap();
 
     let re_timing = regex::Regex::new(r"took \d+(\.\d*)?(m?s)").unwrap();
     let re_lake_timing = regex::Regex::new(r"\(\d+(\.\d*)?m?s\)").unwrap();
@@ -1797,33 +1824,27 @@ fn sanitize_output(output: &str, test_name: &str) -> String {
     let re_ip_port = regex::Regex::new(r"127\.0\.0\.1:\d+").unwrap();
     let re_rustup =
         regex::Regex::new(r"[^\s]*/(?:\.rustup|opt/rustup)/toolchains/[^/\s]+").unwrap();
+    let re_elan = regex::Regex::new(r"[^\s]*/(?:\.elan|opt/elan)/toolchains/[^/\s]+").unwrap();
+    // Lake's build progress indicators are volatile as they depend on the hit/miss
+    // state of the persistent `worker_caches/<ID>/` directory. We strip the entire line.
+    let re_lake_progress = regex::Regex::new(r"(?m)^.*\[\d+/\d+\].*$\n?").unwrap();
 
     let mut clean = output.to_string();
-    clean = re_timestamp.replace_all(&clean, "[YYYY-MM-DDTHH:MM:SSZ ").into_owned();
+
     clean = re_thread_id.replace_all(&clean, "thread '$1' (<ID>) panicked").into_owned();
     clean = re_file_lock.replace_all(&clean, "").into_owned();
     clean = re_cargo_hash.replace_all(&clean, "${1}<HASH>").into_owned();
-    clean = re_lean_hash.replace_all(&clean, "${1}<HASH>").into_owned();
+
     clean = re_timing.replace_all(&clean, "took <TIME>").into_owned();
     clean = re_lake_timing.replace_all(&clean, "(<TIME>)").into_owned();
     clean = re_aeneas_time.replace_all(&clean, "Total execution time: <TIME> seconds").into_owned();
     clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
     clean = re_ip_port.replace_all(&clean, "127.0.0.1:<PORT>").into_owned();
     clean = re_rustup.replace_all(&clean, "[RUSTUP_TOOLCHAIN]").into_owned();
+    clean = re_elan.replace_all(&clean, "[ELAN_TOOLCHAIN]").into_owned();
+    clean = re_lake_progress.replace_all(&clean, "").into_owned();
 
     clean
-}
-
-fn to_pascal_case(s: &str) -> String {
-    s.split('_')
-        .map(|part| {
-            let mut chars = part.chars();
-            match chars.next() {
-                None => String::new(),
-                Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
-            }
-        })
-        .collect()
 }
 
 // fn run_idempotency_test(path: &Path) -> datatest_stable::Result<()> {

@@ -220,22 +220,16 @@
 
 Error: Lean build failed
 STDOUT:
-⚠ [1516/1629] Replayed Aeneas.Std.Slice
 warning: Aeneas/Std/Slice.lean:297:4: declaration uses `sorry`
 warning: Aeneas/Std/Slice.lean:520:8: declaration uses `sorry`
-⚠ [1552/1629] Replayed Aeneas.Std.String
 warning: Aeneas/Std/String.lean:9:4: declaration uses `sorry`
-⚠ [1565/1629] Replayed Aeneas.Std.SliceIter
 warning: Aeneas/Std/SliceIter.lean:142:4: declaration uses `sorry`
-⚠ [1568/1629] Replayed Aeneas.Std.StringIter
 warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`
-✔ [1626/1629] Built Test12LeanKeywordsArgsTest12LeanKeywordsArgs<HASH>.Types (<TIME>)
-✖ [1627/1629] Building Test12LeanKeywordsArgsTest12LeanKeywordsArgs<HASH>.Funs (<TIME>)
-trace: .> LEAN_PATH=/cache/hermes_target/worker_caches/<ID>/lean_lake/packages/Cli/.lake/build/lib/lean:/cache/hermes_target/worker_caches/<ID>/lean_lake/packages/batteries/.lake/build/lib/lean:/cache/hermes_target/worker_caches/<ID>/lean_lake/packages/Qq/.lake/build/lib/lean:/cache/hermes_target/worker_caches/<ID>/lean_lake/packages/aesop/.lake/build/lib/lean:/cache/hermes_target/worker_caches/<ID>/lean_lake/packages/proofwidgets/.lake/build/lib/lean:/cache/hermes_target/worker_caches/<ID>/lean_lake/packages/importGraph/.lake/build/lib/lean:/cache/hermes_target/worker_caches/<ID>/lean_lake/packages/LeanSearchClient/.lake/build/lib/lean:/cache/hermes_target/worker_caches/<ID>/lean_lake/packages/plausible/.lake/build/lib/lean:/cache/hermes_target/worker_caches/<ID>/lean_lake/packages/mathlib/.lake/build/lib/lean:/cache/hermes_target/worker_caches/<ID>/aeneas/backends/lean/.lake/build/lib/lean:[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean /opt/elan/toolchains/leanprover--lean4---v4.28.0-rc1/bin/lean [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/generated/Test12LeanKeywordsArgsTest12LeanKeywordsArgs<HASH>/Funs.lean -o [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Test12LeanKeywordsArgsTest12LeanKeywordsArgs<HASH>/Funs.olean -i [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Test12LeanKeywordsArgsTest12LeanKeywordsArgs<HASH>/Funs.ilean -c [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Test12LeanKeywordsArgsTest12LeanKeywordsArgs<HASH>/Funs.c --setup [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Test12LeanKeywordsArgsTest12LeanKeywordsArgs<HASH>/Funs.setup.json --json
-error: generated/Test12LeanKeywordsArgsTest12LeanKeywordsArgs<HASH>/Funs.lean:24:21: unexpected token 'show'; expected '_' or identifier
+trace: .> LEAN_PATH=[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/Cli/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/batteries/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/Qq/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/aesop/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/proofwidgets/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/importGraph/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/LeanSearchClient/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/plausible/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/mathlib/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/aeneas/backends/lean/.lake/build/lib/lean:[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean [ELAN_TOOLCHAIN]/bin/lean [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/generated/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.lean -o [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.olean -i [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.ilean -c [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.c --setup [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.setup.json --json
+error: generated/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.lean:24:21: unexpected token 'show'; expected '_' or identifier
 error: Lean exited with code 1
 Some required targets logged failures:
-- Test12LeanKeywordsArgsTest12LeanKeywordsArgs<HASH>.Funs
+- Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891.Funs
 STDERR:
 warning: mathlib: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/mathlib' has local changes
 warning: batteries: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/batteries' has local changes
