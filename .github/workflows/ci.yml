@@ -9,6 +9,9 @@
 name: Build & Tests
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
   merge_group:
   # Useful for manually testing changes to this workflow. Because we check for
@@ -46,6 +49,9 @@ jobs:
     # would duplicate the work of downloading crates from the internet.
     # Pre-computing ensures that this work only happens once.
     needs: build_docker_env
+    permissions:
+      contents: read
+      packages: read # required to pull docker caches from ghcr.io
     defaults:
       run:
         shell: /tmp/docker-shell.sh {0}
@@ -300,6 +306,20 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
+    - name: Log in to the Container registry
+      uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Generate sanitized Docker tag
+      id: docker_tag
+      env:
+        REF_NAME: ${{ github.ref_name }}
+      run: |
+        echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
+
     - name: Load image from cache
       uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
       with:
@@ -307,7 +327,10 @@ jobs:
         file: .github/workflows/Dockerfile
         load: true # This loads the resulting image into the local 'docker' daemon
         tags: zerocopy-ci:local
-        cache-from: type=gha
+        provenance: false
+        cache-from: |
+          type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }}
+          type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
         # Notice we omit `cache-to` here. We don't want many parallel jobs
         # fighting to write the exact same layers back to the cache API.
 
@@ -979,6 +1002,9 @@ jobs:
   build_docker_env:
     name: Build Docker image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # required to push docker caches to ghcr.io
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -987,14 +1013,31 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
+      - name: Log in to the Container registry
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate sanitized Docker tag
+        id: docker_tag
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
+
       - name: Build and cache layers
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: .
           file: .github/workflows/Dockerfile
           push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          provenance: false
+          cache-from: |
+            type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }}
+            type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
+          cache-to: type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }},mode=max
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
