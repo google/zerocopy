@@ -891,6 +891,16 @@ fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
                 perms.set_readonly(false);
                 fs::set_permissions(&target_path, perms)?;
             } else {
+                // NOTE: It is crucial that we *don't* provide a deep-copy
+                // fallback path here. Hard-linked files consume a huge amount
+                // of disk space. Deep copying instead would consume many times
+                // more disk space. Instead, we intentionally allow hard linking
+                // to fail and bubble up those errors. If these errors happen in
+                // practice, it indicates a bug in the test environment (often a
+                // bug in configuring Docker or related tools). It's important
+                // that these errors are surfaced (rather than being worked
+                // around – e.g. via deep linking) so that we know to fix the
+                // bugs.
                 fs::hard_link(source_path, &target_path)?;
             }
         }
