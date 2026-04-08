@@ -1,12 +1,12 @@
 Iterations:        100
-Instructions:      1200
-Total Cycles:      439
-Total uOps:        1400
+Instructions:      1300
+Total Cycles:      405
+Total uOps:        1300
 
 Dispatch Width:    4
-uOps Per Cycle:    3.19
-IPC:               2.73
-Block RThroughput: 3.5
+uOps Per Cycle:    3.21
+IPC:               3.21
+Block RThroughput: 4.0
 
 
 Instruction Info:
@@ -18,17 +18,18 @@ Instruction Info:
 [6]: HasSideEffects (U)
 
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
- 1      1     0.33                        mov	rdx, rsi
+ 1      1     0.33                        cmp	rsi, 4
+ 1      1     1.00                        jb	.LBB5_1
+ 1      1     0.33                        mov	rax, rdi
  1      1     0.50                        lea	ecx, [rsi + rdi]
- 1      1     0.33                        mov	eax, edx
- 1      1     0.33                        and	eax, 1
- 1      1     0.33                        add	rax, rdi
- 1      0     0.25                        xor	esi, esi
- 1      1     0.33                        sub	rdx, 4
- 2      2     0.67                        cmovb	rax, rsi
- 1      1     0.50                        shr	rdx
  1      1     0.33                        test	cl, 1
- 2      2     0.67                        cmovne	rax, rsi
+ 1      1     1.00                        jne	.LBB5_1
+ 1      1     0.50                        lea	rdx, [rsi - 4]
+ 1      1     0.50                        shr	rdx
+ 1      1     0.33                        and	esi, 1
+ 1      1     0.33                        add	rax, rsi
+ 1      1     1.00                  U     ret
+ 1      0     0.25                        xor	eax, eax
  1      1     1.00                  U     ret
 
 
@@ -45,19 +46,20 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     4.33   4.33    -     4.34    -      -     
+ -      -     3.99   3.99    -     4.02    -      -     
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
- -      -     0.02   0.32    -     0.66    -      -     mov	rdx, rsi
- -      -     0.32   0.68    -      -      -      -     lea	ecx, [rsi + rdi]
- -      -     0.66    -      -     0.34    -      -     mov	eax, edx
- -      -     0.02   0.33    -     0.65    -      -     and	eax, 1
- -      -      -     0.99    -     0.01    -      -     add	rax, rdi
- -      -      -      -      -      -      -      -     xor	esi, esi
- -      -     0.65    -      -     0.35    -      -     sub	rdx, 4
- -      -     1.00   1.00    -      -      -      -     cmovb	rax, rsi
- -      -     0.66    -      -     0.34    -      -     shr	rdx
- -      -      -     0.01    -     0.99    -      -     test	cl, 1
- -      -     1.00   1.00    -      -      -      -     cmovne	rax, rsi
+ -      -     0.02   0.97    -     0.01    -      -     cmp	rsi, 4
+ -      -      -      -      -     1.00    -      -     jb	.LBB5_1
+ -      -     0.97   0.03    -      -      -      -     mov	rax, rdi
+ -      -     0.01   0.99    -      -      -      -     lea	ecx, [rsi + rdi]
+ -      -     0.98   0.02    -      -      -      -     test	cl, 1
+ -      -      -      -      -     1.00    -      -     jne	.LBB5_1
+ -      -     0.97   0.03    -      -      -      -     lea	rdx, [rsi - 4]
+ -      -     1.00    -      -      -      -      -     shr	rdx
+ -      -     0.02   0.98    -      -      -      -     and	esi, 1
+ -      -     0.02   0.97    -     0.01    -      -     add	rax, rsi
+ -      -      -      -      -     1.00    -      -     ret
+ -      -      -      -      -      -      -      -     xor	eax, eax
  -      -      -      -      -     1.00    -      -     ret

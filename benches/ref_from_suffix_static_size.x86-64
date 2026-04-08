@@ -1,13 +1,12 @@
 bench_ref_from_suffix_static_size:
-	lea eax, [rsi + rdi]
 	cmp rsi, 6
-	setb cl
-	or cl, al
-	test cl, 1
-	je .LBB5_2
-	xor eax, eax
-	ret
-.LBB5_2:
+	jb .LBB5_1
+	lea eax, [rsi + rdi]
+	test al, 1
+	jne .LBB5_1
 	lea rax, [rdi + rsi]
 	add rax, -6
+	ret
+.LBB5_1:
+	xor eax, eax
 	ret

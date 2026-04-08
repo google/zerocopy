@@ -1,12 +1,12 @@
 Iterations:        100
-Instructions:      700
-Total Cycles:      274
-Total uOps:        900
+Instructions:      600
+Total Cycles:      305
+Total uOps:        800
 
 Dispatch Width:    4
-uOps Per Cycle:    3.28
-IPC:               2.55
-Block RThroughput: 2.3
+uOps Per Cycle:    2.62
+IPC:               1.97
+Block RThroughput: 2.0
 
 
 Instruction Info:
@@ -19,11 +19,10 @@ Instruction Info:
 
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
  1      0     0.25                        xor	eax, eax
- 1      1     0.33                        cmp	rsi, 6
- 1      1     0.33                        mov	rcx, rdi
- 2      2     0.67                        cmovb	rcx, rax
  1      1     0.33                        test	dil, 1
- 2      2     0.67                        cmove	rax, rcx
+ 2      2     0.67                        cmovne	rdi, rax
+ 1      1     0.33                        cmp	rsi, 6
+ 2      2     0.67                        cmovae	rax, rdi
  1      1     1.00                  U     ret
 
 
@@ -40,14 +39,13 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     2.66   2.67    -     2.67    -      -     
+ -      -     1.95   2.28    -     2.77    -      -     
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
  -      -      -      -      -      -      -      -     xor	eax, eax
- -      -      -     0.01    -     0.99    -      -     cmp	rsi, 6
- -      -     0.01   0.67    -     0.32    -      -     mov	rcx, rdi
- -      -     1.00   0.99    -     0.01    -      -     cmovb	rcx, rax
- -      -     0.66   0.01    -     0.33    -      -     test	dil, 1
- -      -     0.99   0.99    -     0.02    -      -     cmove	rax, rcx
+ -      -     0.05   0.06    -     0.89    -      -     test	dil, 1
+ -      -     0.95   0.94    -     0.11    -      -     cmovne	rdi, rax
+ -      -      -     0.34    -     0.66    -      -     cmp	rsi, 6
+ -      -     0.95   0.94    -     0.11    -      -     cmovae	rax, rdi
  -      -      -      -      -     1.00    -      -     ret
