@@ -268,9 +268,8 @@ pub fn run_aeneas(
 
     // 4. Write Lakefile
     //
-    // If `HERMES_AENEAS_DIR` is set (e.g., in CI or local development), we use
-    // a local path dependency. Otherwise, we use a git dependency pinned to the
-    // revision specified in `Cargo.toml`.
+    // If `HERMES_AENEAS_DIR` is set (e.g., in CI or local development via Docker),
+    // we use it. Otherwise, we default to the managed toolchain directory.
     let aeneas_dep = if let Ok(path) = std::env::var("HERMES_AENEAS_DIR") {
         // Use a path dependency to avoid git cloning.
         //
@@ -279,12 +278,9 @@ pub fn run_aeneas(
         // correct revision, even when using a local override.
         format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("HERMES_AENEAS_REV"))
     } else {
-        format!(
-            r#"require aeneas from git
-  "https://github.com/AeneasVerif/aeneas" @ "{}" / "backends/lean""#,
-            env!("HERMES_AENEAS_REV")
-        )
-        .to_string()
+        let toolchain = crate::setup::Toolchain::resolve()?;
+        let path = toolchain.root.display();
+        format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("HERMES_AENEAS_REV"))
     };
 
     let roots_str = lake_roots.iter().map(|r| format!("`{}", r)).collect::<Vec<_>>().join(", ");
@@ -409,52 +405,6 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     let generated = roots.lean_generated_root();
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
-
-    // If `lake-manifest.json` exists (copied from the cache), manually inject
-    // the `aeneas` dependency. This avoids running `lake update`, which
-    // would trigger the `mathlib` post-update hook (cache download).
-    if lean_root.join("lake-manifest.json").exists()
-        && let Ok(aeneas_dir) = std::env::var("HERMES_AENEAS_DIR")
-    {
-        let aeneas_url = format!("{}/backends/lean", aeneas_dir);
-        let manifest_path = lean_root.join("lake-manifest.json");
-
-        match std::fs::read_to_string(&manifest_path) {
-            Ok(content) => match serde_json::from_str::<serde_json::Value>(&content) {
-                Ok(mut json) => {
-                    if let Some(packages) = json.get_mut("packages").and_then(|v| v.as_array_mut())
-                    {
-                        // Remove existing aeneas entry if present
-                        packages
-                            .retain(|p| p.get("name").and_then(|n| n.as_str()) != Some("aeneas"));
-
-                        log::debug!("Patching lake-manifest.json to use aeneas at {}", aeneas_url);
-                        let entry = serde_json::json!({
-                            "dir": aeneas_url,
-                            "type": "path",
-                            "name": "aeneas",
-                            "subDir": null,
-                            "scope": "",
-                            "rev": null,
-                            "inputRev": null, // We can't easily know the inputRev, but null usually works for path deps
-                            "inherited": false,
-                            "configFile": "lakefile.lean",
-                            "manifestFile": "lake-manifest.json"
-                        });
-                        packages.push(entry);
-
-                        if let Ok(new_content) = serde_json::to_string_pretty(&json)
-                            && let Err(e) = std::fs::write(&manifest_path, new_content)
-                        {
-                            log::warn!("Failed to write patched manifest: {}", e);
-                        }
-                    }
-                }
-                Err(e) => log::warn!("Failed to parse lake-manifest.json: {}", e),
-            },
-            Err(e) => log::warn!("Failed to read lake-manifest.json: {}", e),
-        }
-    }
 
     if !lean_root.join(".lake/packages/mathlib").exists() {
         let toolchain = crate::setup::Toolchain::resolve()?;

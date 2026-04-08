@@ -27,7 +27,8 @@ RUN mkdir -p /cache && chmod 777 /cache && \
 
 # Direct Hermes tests to write ephemeral integration targets here to leverage
 # overlayfs.
-ENV HERMES_INTEGRATION_TARGET_DIR=/cache/hermes_target
+ENV HERMES_INTEGRATION_TARGET_DIR=/cache/hermes_target \
+    HERMES_AENEAS_DIR=/cache/hermes_target/hermes_integration_cache
 WORKDIR /workspace
 
 COPY testdata testdata
