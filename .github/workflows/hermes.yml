@@ -26,8 +26,8 @@ env:
   CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
 
 jobs:
-  hermes_tests:
-    name: Hermes Tests
+  build_docker_env:
+    name: Build Docker image
     runs-on: ubuntu-24.04-64core
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -37,15 +37,35 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
-      - name: Build and cache Docker image
+      - name: Build and cache layers
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        with:
+          context: hermes
+          file: hermes/Dockerfile
+          push: false
+          cache-from: type=gha,scope=hermes-ci
+          cache-to: type=gha,mode=max,scope=hermes-ci
+
+  hermes_tests:
+    name: Hermes Tests
+    runs-on: ubuntu-24.04-64core
+    needs: build_docker_env
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Load image from cache
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: hermes
           file: hermes/Dockerfile
           load: true
           tags: hermes-ci:local
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=hermes-ci
 
       # Ensure `llms-full.txt` file is up-to-date.
       - name: Check doc generation
@@ -65,45 +85,78 @@ jobs:
       - name: Run all tests
         run: docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo test --verbose
 
-      - name: Verify examples
+  verify_examples:
+    name: Verify example (${{ matrix.example }})
+    runs-on: ubuntu-latest
+    needs: build_docker_env
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - abs
+          - anatomy
+          - checked_add
+          - const_generics
+          - design_doc
+          - linked_list
+          - namespaces
+          - never_type
+          - ptr_concat
+          - size_of_align_of
+          - swap
+          - unchecked_get
+          - update_max
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Load image from cache
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        with:
+          context: hermes
+          file: hermes/Dockerfile
+          load: true
+          tags: hermes-ci:local
+          cache-from: type=gha,scope=hermes-ci
+
+      - name: Verify example
         run: |
           KNOWN_FAILING=("design_doc" "never_type" "ptr_concat")
-          FAILED=0
 
           echo "Setting up Hermes toolchain for Verify Examples"
           docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 hermes-ci:local cargo run setup
 
-          for file in hermes/examples/*.rs; do
-            example=$(basename "$file" .rs)
+          example="${{ matrix.example }}"
 
-            expect_failure=0
-            for kf in "${KNOWN_FAILING[@]}"; do
-              if [ "$kf" = "$example" ]; then
-                expect_failure=1
-                break
-              fi
-            done
-
-            echo "Verifying $example (expect failure: $expect_failure)"
-
-            if docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 hermes-ci:local cargo run verify --unsound-allow-is-valid --example "$example"; then
-              if [ "$expect_failure" -eq 1 ]; then
-                echo "::error::Example $example succeeded but was expected to fail."
-                FAILED=1
-              else
-                echo "Example $example succeeded."
-              fi
-            else
-              if [ "$expect_failure" -eq 1 ]; then
-                echo "Example $example failed as expected."
-              else
-                echo "::error::Example $example failed."
-                FAILED=1
-              fi
+          expect_failure=0
+          for kf in "${KNOWN_FAILING[@]}"; do
+            if [ "$kf" = "$example" ]; then
+              expect_failure=1
+              break
             fi
           done
 
-          exit $FAILED
+          echo "Verifying $example (expect failure: $expect_failure)"
+
+          if docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 hermes-ci:local cargo run verify --unsound-allow-is-valid --example "$example"; then
+            if [ "$expect_failure" -eq 1 ]; then
+              echo "::error::Example $example succeeded but was expected to fail."
+              exit 1
+            else
+              echo "Example $example succeeded."
+            fi
+          else
+            if [ "$expect_failure" -eq 1 ]; then
+              echo "Example $example failed as expected."
+            else
+              echo "::error::Example $example failed."
+              exit 1
+            fi
+          fi
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
@@ -117,7 +170,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [hermes_tests]
+      needs: [build_docker_env, hermes_tests, verify_examples]
       steps:
         - name: Mark the job as failed
           run: exit 1
