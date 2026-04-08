@@ -307,6 +307,7 @@ jobs:
         file: .github/workflows/Dockerfile
         load: true # This loads the resulting image into the local 'docker' daemon
         tags: zerocopy-ci:local
+        provenance: false
         cache-from: type=gha
         # Notice we omit `cache-to` here. We don't want many parallel jobs
         # fighting to write the exact same layers back to the cache API.
@@ -993,6 +994,7 @@ jobs:
           context: .
           file: .github/workflows/Dockerfile
           push: false
+          provenance: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
