@@ -24,7 +24,6 @@ use indicatif::{ProgressBar, ProgressStyle};
 use crate::{generate, resolve::LockedRoots, scanner::HermesArtifact, setup::Tool};
 
 const HERMES_PRELUDE: &str = include_str!("Hermes.lean");
-const HERMES_DIAGNOSTICS_TEMPLATE: &str = include_str!("Diagnostics.lean");
 
 /// Orchestrates the Aeneas translation and Lean verification process.
 ///
@@ -559,39 +558,42 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
         // We construct the relative path from the Lake root (which is `target/hermes/<hash>/lean`)
         let specs_rel_path = format!("generated/{}/{}", slug, artifact.lean_spec_file_name());
 
-        let diag_script = HERMES_DIAGNOSTICS_TEMPLATE.replace("__TARGET_FILE__", &specs_rel_path);
-        let diag_path = lean_root.join("Diagnostics.lean");
-        write_if_changed(&diag_path, &diag_script).context("Failed to write Diagnostics.lean")?;
-
         let toolchain = crate::setup::Toolchain::resolve()?;
         let mut cmd = toolchain.command(Tool::Lake);
-        cmd.args(["env", "lean", "--run", "Diagnostics.lean"]);
+        cmd.args(["env", "lean", "--json", &specs_rel_path]);
         cmd.current_dir(lean_root);
         cmd.stdout(Stdio::piped());
         cmd.stderr(Stdio::piped());
 
-        let output = cmd.output().context("Failed to run diagnostic script")?;
+        let output = cmd.output().context("Failed to run lean compiler")?;
 
-        if !output.status.success() {
-            let stderr = String::from_utf8_lossy(&output.stderr);
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            eprintln!("Diagnostic script failed for {slug}.");
-            eprintln!("STDERR:\n{stderr}");
-            eprintln!("STDOUT:\n{stdout}");
-            has_errors = true;
-            continue;
-        }
+        let output_str = String::from_utf8_lossy(&output.stdout);
+        let specs_abs_path = lean_root.join(&specs_rel_path);
+        let specs_source = std::fs::read_to_string(&specs_abs_path).unwrap_or_default();
 
-        let output = String::from_utf8_lossy(&output.stdout);
-        let diags: Vec<LeanDiagnostic> = match serde_json::from_str(&output) {
-            Ok(d) => d,
-            Err(e) => {
-                // TODO: Should we be returning a non-zero exit code here?
-                log::warn!("Failed to parse JSON from diagnostic script: {e}");
-                log::debug!("Raw output:\n{output}");
+        let mut diags = Vec::new();
+        for line in output_str.lines() {
+            let line = line.trim();
+            if line.is_empty() {
                 continue;
             }
-        };
+            match serde_json::from_str::<NativeLeanDiagnostic>(line) {
+                Ok(diag) => diags.push(diag),
+                Err(e) => {
+                    log::warn!("Failed to parse JSON from lean diagnostic: {e}");
+                    log::debug!("Raw line:\n{line}");
+                }
+            }
+        }
+
+        if !output.status.success() && diags.is_empty() {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            if !stderr.trim().is_empty() {
+                eprintln!("Lean compiler failed or produced stderr for {slug}.");
+                eprintln!("STDERR:\n{stderr}");
+            }
+            has_errors = true;
+        }
 
         // Load Source Map
         let map_path = lean_root.join(format!("generated/{}/{}.lean.map", slug, slug));
@@ -612,17 +614,37 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
             Vec::new()
         };
 
-        for diag in diags {
-            let level = match diag.level.as_str() {
+        for nat_diag in diags {
+            let level = match nat_diag.severity.as_str() {
                 "error" => crate::diagnostics::DiagnosticLevel::Error,
                 "warning" => crate::diagnostics::DiagnosticLevel::Warning,
-                "info" => crate::diagnostics::DiagnosticLevel::Note,
+                "information" => crate::diagnostics::DiagnosticLevel::Note,
                 _ => crate::diagnostics::DiagnosticLevel::Note,
             };
 
             if matches!(level, crate::diagnostics::DiagnosticLevel::Error) {
                 has_errors = true;
             }
+
+            let byte_start =
+                resolve_byte_offset(&specs_source, nat_diag.pos.line, nat_diag.pos.column);
+            let byte_end = if let Some(end_pos) = &nat_diag.end_pos {
+                resolve_byte_offset(&specs_source, end_pos.line, end_pos.column)
+            } else {
+                byte_start
+            };
+
+            let diag = LeanDiagnostic {
+                file_name: nat_diag.file_name.clone(),
+                byte_start,
+                byte_end,
+                line_start: nat_diag.pos.line,
+                column_start: nat_diag.pos.column,
+                line_end: nat_diag.end_pos.as_ref().map_or(nat_diag.pos.line, |p| p.line),
+                column_end: nat_diag.end_pos.as_ref().map_or(nat_diag.pos.column, |p| p.column),
+                level: nat_diag.severity.clone(),
+                message: nat_diag.data.clone(),
+            };
 
             // Map span
             // We look for the first mapping that overlaps with the diagnostic span.
@@ -748,7 +770,7 @@ fn resolve_mapping(
     }
 }
 
-#[derive(serde::Deserialize, Debug)]
+#[derive(Debug)]
 struct LeanDiagnostic {
     file_name: String,
     byte_start: usize,
@@ -763,6 +785,50 @@ struct LeanDiagnostic {
     column_end: usize,
     level: String,
     message: String,
+}
+
+#[derive(serde::Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+struct NativeLeanDiagnostic {
+    file_name: String,
+    data: String,
+    severity: String,
+    pos: LeanPos,
+    end_pos: Option<LeanPos>,
+}
+
+#[derive(serde::Deserialize, Debug)]
+struct LeanPos {
+    line: usize,
+    column: usize,
+}
+
+fn resolve_byte_offset(source: &str, lean_line: usize, lean_column: usize) -> usize {
+    if lean_line == 0 {
+        return 0;
+    }
+    let mut current_line = 1;
+
+    let mut iter = source.char_indices();
+    while current_line < lean_line {
+        if let Some((_, c)) = iter.next() {
+            if c == '\n' {
+                current_line += 1;
+            }
+        } else {
+            return source.len();
+        }
+    }
+
+    let mut current_col = 0;
+    for (idx, c) in iter {
+        if c == '\n' || current_col == lean_column {
+            return idx;
+        }
+        current_col += 1;
+    }
+
+    source.len()
 }
 
 /// Patches the generated Types.lean file to fix Aeneas discriminant generation.

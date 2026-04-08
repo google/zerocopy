@@ -455,10 +455,9 @@ fn acquire_worker_cache(
 /// Reads /proc/meminfo to determine available RAM and calculates a safe number
 /// of concurrent Lean processes.
 fn calculate_dynamic_lean_concurrency_limit() -> usize {
-    // Because each Lean process needs to load Mathlib's compiled artifact into
-    // RAM, it seems to consume ~7.5GB of RAM in practice. We double this (16GB)
-    // to provide a healthy safety margin for other system processes.
-    const LEAN_RAM_REQUIRED_BYTES: u64 = 16 * 1024 * 1024 * 1024;
+    // The Lean compiler seems to consume ~1GB of RAM per invocation. We double
+    // this (2GB) to provide a healthy safety margin for other system processes.
+    const LEAN_RAM_REQUIRED_BYTES: u64 = 2 * 1024 * 1024 * 1024;
 
     // Attempt to read MemAvailable from /proc/meminfo
     let available_ram_bytes = fs::read_to_string("/proc/meminfo").ok().and_then(|meminfo| {
