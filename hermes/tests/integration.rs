@@ -533,10 +533,18 @@ impl TestContext {
         let lean_root = sandbox_root.join("target/hermes/hermes_test_target/lean");
         fs::create_dir_all(&lean_root)?;
 
-        // The Lean manifest dictates which dependencies Lake needs to resolve.
-        // We copy this directly from the global cache to ensure the test
-        // sandbox observes exactly the same dependency tree as the
-        // precompiled artifacts.
+        // The Lean manifest dictates which dependencies Lake needs to
+        // resolve. We copy this directly from the global cache to ensure
+        // the test sandbox observes exactly the same dependency tree as
+        // the precompiled artifacts. If we did not copy this lockfile,
+        // Lake would attempt to resolve dependencies from scratch. Since
+        // our dependencies specify floating branches rather than explicit
+        // git hashes in their configuration files, a fresh resolution
+        // could map to newer commits. A mismatch in a single commit hash
+        // invalidates the shared compilation cache, causing Lean to
+        // redundantly recompile the entire dependency tree (e.g.,
+        // Mathlib) from source. Copying the manifest guarantees a
+        // cache hit.
         let source_manifest = aeneas_cache_backend.join("lake-manifest.json");
         let target_manifest = lean_root.join("lake-manifest.json");
         if source_manifest.exists() {
@@ -545,6 +553,51 @@ impl TestContext {
             #[allow(clippy::permissions_set_readonly_false)]
             perms.set_readonly(false);
             fs::set_permissions(&target_manifest, perms)?;
+
+            // We must manually inject the `aeneas` package into the
+            // copied manifest. The source manifest comes from the Aeneas
+            // project itself, where Aeneas is the root project rather
+            // than a dependency. As a result, the source manifest does
+            // not contain an entry for the `aeneas` package.
+            //
+            // However, the generated project treats Aeneas as a path
+            // dependency. Lake evaluates the generated project and
+            // expects `aeneas` to exist in the manifest. When Lake finds
+            // it missing, it triggers an automatic dependency update,
+            // which in turn runs global post-update hooks. These hooks
+            // trigger operations such as large cloud cache downloads for
+            // Mathlib, resulting in severe performance regressions (e.g.,
+            // tens of minutes per test run).
+            //
+            // By manually constructing the `aeneas` path dependency entry
+            // and injecting it into the manifest, we trick Lake into
+            // accepting the workspace configuration as fully resolved,
+            // preventing the execution of these expensive hooks.
+            if let Ok(content) = fs::read_to_string(&target_manifest) {
+                if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
+                    if let Some(packages) = json.get_mut("packages").and_then(|v| v.as_array_mut())
+                    {
+                        let aeneas_url = format!("{}/backends/lean", worker_cache.aeneas.display());
+                        let entry = serde_json::json!({
+                            "dir": aeneas_url,
+                            "type": "path",
+                            "name": "aeneas",
+                            "subDir": null,
+                            "scope": "",
+                            "rev": null,
+                            "inputRev": null,
+                            "inherited": false,
+                            "configFile": "lakefile.lean",
+                            "manifestFile": "lake-manifest.json"
+                        });
+                        packages.push(entry);
+
+                        if let Ok(new_content) = serde_json::to_string_pretty(&json) {
+                            let _ = fs::write(&target_manifest, new_content);
+                        }
+                    }
+                }
+            }
         }
 
         let target_lake = lean_root.join(".lake");
