@@ -34,6 +34,7 @@ enum ExpectedStatus {
     Success,
     Failure,
     KnownBug,
+    KnownFlaky,
 }
 
 // A note on our "no implicit files" philosophy: We prefer explicit
@@ -939,7 +940,9 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
         }
     }
 
-    if config.expected_status == ExpectedStatus::KnownBug {
+    if config.expected_status == ExpectedStatus::KnownBug
+        || config.expected_status == ExpectedStatus::KnownFlaky
+    {
         return Ok(());
     }
 
@@ -1265,6 +1268,9 @@ fn run_single_phase(
             // For known_bugs, the toolchain crashed or failed verification.
             // Artifact and stderr emissions are undefined and partially
             // incomplete. We do not validate them.
+            return Ok(());
+        }
+        ExpectedStatus::KnownFlaky => {
             return Ok(());
         }
         ExpectedStatus::Success => assert.success(),
