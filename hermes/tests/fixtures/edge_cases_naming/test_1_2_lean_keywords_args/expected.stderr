@@ -220,11 +220,6 @@
 
 Error: Lean build failed
 STDOUT:
-warning: Aeneas/Std/Slice.lean:297:4: declaration uses `sorry`
-warning: Aeneas/Std/Slice.lean:520:8: declaration uses `sorry`
-warning: Aeneas/Std/String.lean:9:4: declaration uses `sorry`
-warning: Aeneas/Std/SliceIter.lean:142:4: declaration uses `sorry`
-warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`
 trace: .> LEAN_PATH=[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/Cli/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/batteries/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/Qq/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/aesop/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/proofwidgets/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/importGraph/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/LeanSearchClient/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/plausible/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/mathlib/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/aeneas/backends/lean/.lake/build/lib/lean:[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean [ELAN_TOOLCHAIN]/bin/lean [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/generated/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.lean -o [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.olean -i [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.ilean -c [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.c --setup [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.setup.json --json
 error: generated/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.lean:24:21: unexpected token 'show'; expected '_' or identifier
 error: Lean exited with code 1

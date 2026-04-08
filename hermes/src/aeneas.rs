@@ -500,7 +500,9 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
         std::thread::spawn(move || {
             let reader = BufReader::new(stderr);
             for line in reader.lines().map_while(Result::ok) {
-                stderr_clone.lock().unwrap().push(line);
+                if !line.contains("declaration uses `sorry`") {
+                    stderr_clone.lock().unwrap().push(line);
+                }
             }
         })
     });
@@ -520,7 +522,9 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
         std::thread::spawn(move || {
             let reader = BufReader::new(stdout);
             for line in reader.lines().map_while(Result::ok) {
-                stdout_clone.lock().unwrap().push(line);
+                if !line.contains("declaration uses `sorry`") {
+                    stdout_clone.lock().unwrap().push(line);
+                }
                 pb_clone.tick();
             }
         })
