@@ -667,37 +667,6 @@ pub(crate) use len_of::MetadataOf;
 /// Each trait is imported as `_` at the crate root; each polyfill should "just
 /// work" at usage sites.
 pub(crate) mod polyfills {
-    use core::ptr::{self, NonNull};
-
-    // A polyfill for `NonNull::slice_from_raw_parts` that we can use before our
-    // MSRV is 1.70, when that function was stabilized.
-    //
-    // The `#[allow(unused)]` is necessary because, on sufficiently recent
-    // toolchain versions, `ptr.slice_from_raw_parts()` resolves to the inherent
-    // method rather than to this trait, and so this trait is considered unused.
-    //
-    // FIXME(#67): Once our MSRV is 1.70, remove this.
-    #[allow(unused)]
-    pub(crate) trait NonNullExt<T> {
-        fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]>;
-    }
-
-    impl<T> NonNullExt<T> for NonNull<T> {
-        // NOTE on coverage: this will never be tested in nightly since it's a
-        // polyfill for a feature which has been stabilized on our nightly
-        // toolchain.
-        #[cfg_attr(
-            all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
-            coverage(off)
-        )]
-        #[inline(always)]
-        fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]> {
-            let ptr = ptr::slice_from_raw_parts_mut(data.as_ptr(), len);
-            // SAFETY: `ptr` is converted from `data`, which is non-null.
-            unsafe { NonNull::new_unchecked(ptr) }
-        }
-    }
-
     // A polyfill for `Self::unchecked_sub` that we can use until methods like
     // `usize::unchecked_sub` is stabilized.
     //
@@ -890,7 +859,6 @@ mod tests {
         }
     }
 
-    #[rustversion::since(1.57.0)]
     #[test]
     #[should_panic]
     fn test_round_down_to_next_multiple_of_alignment_zerocopy_panic_in_const_and_vec_try_reserve() {

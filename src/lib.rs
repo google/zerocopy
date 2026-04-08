@@ -419,7 +419,7 @@ pub use crate::pointer::{invariant::BecauseImmutable, Maybe, Ptr};
 //
 // See the documentation on `util::polyfills` for more information.
 #[allow(unused_imports)]
-use crate::util::polyfills::{self, NonNullExt as _, NumExt as _};
+use crate::util::polyfills::{self, NumExt as _};
 
 #[cfg(all(test, not(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE)))]
 const _: () = {
@@ -890,7 +890,7 @@ where
         T: KnownLayout<PointerMetadata = usize>,
     {
         const SIZE_INFO: TrailingSliceLayout = match T::LAYOUT.size_info {
-            crate::SizeInfo::Sized { .. } => const_panic!("unreachable"),
+            crate::SizeInfo::Sized { .. } => panic!("unreachable"),
             crate::SizeInfo::SliceDst(info) => info,
         };
     }
@@ -920,7 +920,7 @@ where
                 CastType::Prefix,
             ) {
                 Ok((elems, _)) => elems,
-                Err(_) => const_panic!("unreachable"),
+                Err(_) => panic!("unreachable"),
             },
         };
     }
@@ -1056,8 +1056,6 @@ unsafe impl<T> KnownLayout for [T] {
     // refers to an object with `elems` elements by construction.
     #[inline(always)]
     fn raw_from_ptr_len(data: NonNull<u8>, elems: usize) -> NonNull<Self> {
-        // FIXME(#67): Remove this allow. See NonNullExt for more details.
-        #[allow(unstable_name_collisions)]
         NonNull::slice_from_raw_parts(data.cast::<T>(), elems)
     }
 
@@ -1332,14 +1330,12 @@ where
                         }
                     }
                 };
-                const_assert!(is_infallible);
+                assert!(is_infallible);
                 is_infallible
             };
         }
 
-        const_assert!(
-            <Projection<Self, Field, I, VARIANT_ID, FIELD_ID> as IsInfallible>::IS_INFALLIBLE
-        );
+        assert!(<Projection<Self, Field, I, VARIANT_ID, FIELD_ID> as IsInfallible>::IS_INFALLIBLE);
 
         Ok(())
     }

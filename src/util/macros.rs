@@ -532,11 +532,7 @@ macro_rules! unsafe_impl_known_layout {
 macro_rules! assert_unaligned {
     ($($tys:ty),*) => {
         $(
-            // We only compile this assertion under `cfg(test)` to avoid taking
-            // an extra non-dev dependency (and making this crate more expensive
-            // to compile for our dependents).
-            #[cfg(test)]
-            static_assertions::const_assert_eq!(core::mem::align_of::<$tys>(), 1);
+            const _: () = assert!(core::mem::align_of::<$tys>() == 1);
         )*
     };
 }
@@ -553,54 +549,6 @@ macro_rules! maybe_const_trait_bounded_fn {
     };
 }
 
-/// Either panic (if the current Rust toolchain supports panicking in `const
-/// fn`) or evaluate a constant that will cause an array indexing error whose
-/// error message will include the format string.
-///
-/// The type that this expression evaluates to must be `Copy`, or else the
-/// non-panicking desugaring will fail to compile.
-macro_rules! const_panic {
-    (@non_panic $($_arg:tt)+) => {{
-        // This will type check to whatever type is expected based on the call
-        // site.
-        let panic: [_; 0] = [];
-        // This will always fail (since we're indexing into an array of size 0.
-        #[allow(unconditional_panic)]
-        panic[0]
-    }};
-    ($($arg:tt)+) => {{
-        panic!($($arg)+);
-    }};
-}
-
-/// Either assert (if the current Rust toolchain supports panicking in `const
-/// fn`) or evaluate the expression and, if it evaluates to `false`, call
-/// `const_panic!`. This is used in place of `assert!` in const contexts to
-/// accommodate old toolchains.
-macro_rules! const_assert {
-    ($e:expr) => {{
-        assert!($e);
-    }};
-    ($e:expr, $($args:tt)+) => {{
-        assert!($e, $($args)+);
-    }};
-}
-
-/// Like `const_assert!`, but relative to `debug_assert!`.
-macro_rules! const_debug_assert {
-    ($e:expr $(, $msg:expr)?) => {{
-        debug_assert!($e $(, $msg)?);
-    }}
-}
-
-/// Either invoke `unreachable!()` or `loop {}` depending on whether the Rust
-/// toolchain supports panicking in `const fn`.
-macro_rules! const_unreachable {
-    () => {{
-        unreachable!();
-    }};
-}
-
 /// Asserts at compile time that `$condition` is true for `Self` or the given
 /// `$tyvar`s. Unlike `const_assert`, this is *strictly* a compile-time check;
 /// it cannot be evaluated in a runtime context. The condition is checked after
@@ -613,12 +561,12 @@ macro_rules! static_assert {
 
         impl<T $(: $(? $optbound +)* $($bound +)*)?> StaticAssert for T {
             const ASSERT: bool = {
-                const_assert!($condition $(, $args)*);
+                assert!($condition $(, $args)*);
                 $condition
             };
         }
 
-        const_assert!(<Self as StaticAssert>::ASSERT);
+        assert!(<Self as StaticAssert>::ASSERT);
     }};
     ($($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),* => $condition:expr $(, $args:tt)*) => {{
         trait StaticAssert {
@@ -628,12 +576,12 @@ macro_rules! static_assert {
         // NOTE: We use `PhantomData` so we can support unsized types.
         impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?,)*> StaticAssert for ($(core::marker::PhantomData<$tyvar>,)*) {
             const ASSERT: bool = {
-                const_assert!($condition $(, $args)*);
+                assert!($condition $(, $args)*);
                 $condition
             };
         }
 
-        const_assert!(<($(core::marker::PhantomData<$tyvar>,)*) as StaticAssert>::ASSERT);
+        assert!(<($(core::marker::PhantomData<$tyvar>,)*) as StaticAssert>::ASSERT);
     }};
 }
 

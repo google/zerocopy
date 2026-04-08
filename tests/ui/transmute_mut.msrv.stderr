@@ -36,12 +36,12 @@ error[E0277]: the trait bound `DstA: FromBytes` is not satisfied
               u8
             and 85 others
 note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:801:14
+   --> $WORKSPACE/src/util/macro_util.rs:792:14
     |
-798 |     pub fn transmute_mut(self) -> &'a mut Dst
+789 |     pub fn transmute_mut(self) -> &'a mut Dst
     |            ------------- required by a bound in this associated function
 ...
-801 |         Dst: FromBytes + IntoBytes,
+792 |         Dst: FromBytes + IntoBytes,
     |              ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::transmute_mut`
     = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -63,12 +63,12 @@ error[E0277]: the trait bound `DstB: IntoBytes` is not satisfied
               i128
             and 74 others
 note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:801:26
+   --> $WORKSPACE/src/util/macro_util.rs:792:26
     |
-798 |     pub fn transmute_mut(self) -> &'a mut Dst
+789 |     pub fn transmute_mut(self) -> &'a mut Dst
     |            ------------- required by a bound in this associated function
 ...
-801 |         Dst: FromBytes + IntoBytes,
+792 |         Dst: FromBytes + IntoBytes,
     |                          ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::transmute_mut`
     = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -122,12 +122,12 @@ error[E0277]: the trait bound `SrcC: FromBytes` is not satisfied
               u8
             and 85 others
 note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:800:14
+   --> $WORKSPACE/src/util/macro_util.rs:791:14
     |
-798 |     pub fn transmute_mut(self) -> &'a mut Dst
+789 |     pub fn transmute_mut(self) -> &'a mut Dst
     |            ------------- required by a bound in this associated function
-799 |     where
-800 |         Src: FromBytes + IntoBytes,
+790 |     where
+791 |         Src: FromBytes + IntoBytes,
     |              ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::transmute_mut`
     = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -149,12 +149,12 @@ error[E0277]: the trait bound `SrcD: IntoBytes` is not satisfied
               i128
             and 74 others
 note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:800:26
+   --> $WORKSPACE/src/util/macro_util.rs:791:26
     |
-798 |     pub fn transmute_mut(self) -> &'a mut Dst
+789 |     pub fn transmute_mut(self) -> &'a mut Dst
     |            ------------- required by a bound in this associated function
-799 |     where
-800 |         Src: FromBytes + IntoBytes,
+790 |     where
+791 |         Src: FromBytes + IntoBytes,
     |                          ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::transmute_mut`
     = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -164,9 +164,9 @@ error[E0599]: the method `transmute_mut` exists for struct `Wrap<&mut [u8], &mut
 87  | const SRC_UNSIZED: &mut [u8; 1] = transmute_mut!(&mut [0u8][..]);
     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     |
-   ::: $WORKSPACE/src/util/macro_util.rs:681:1
+   ::: $WORKSPACE/src/util/macro_util.rs:677:1
     |
-681 | pub struct Wrap<Src, Dst>(pub Src, pub PhantomData<Dst>);
+677 | pub struct Wrap<Src, Dst>(pub Src, pub PhantomData<Dst>);
     | ------------------------- doesn't satisfy `Wrap<&mut [u8], &mut [u8; 1]>: TransmuteMutDst<'_>`
     |
     = note: the following trait bounds were not satisfied:
