@@ -9,11 +9,15 @@
 name: Hermes Tests
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
   merge_group:
 
 permissions:
   contents: read
+  packages: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -37,6 +41,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and cache layers
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
@@ -44,8 +55,10 @@ jobs:
           file: hermes/Dockerfile
           push: false
           provenance: false
-          cache-from: type=gha,scope=hermes-ci
-          cache-to: type=gha,mode=max,scope=hermes-ci
+          cache-from: |
+            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ github.ref_name }}
+            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:main
+          cache-to: type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ github.ref_name }},mode=max
 
   hermes_tests:
     name: Hermes Tests
@@ -59,6 +72,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Load image from cache
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
@@ -67,7 +87,9 @@ jobs:
           load: true
           tags: hermes-ci:local
           provenance: false
-          cache-from: type=gha,scope=hermes-ci
+          cache-from: |
+            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ github.ref_name }}
+            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:main
 
       # Ensure `llms-full.txt` file is up-to-date.
       - name: Check doc generation
@@ -116,6 +138,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Load image from cache
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
@@ -124,7 +153,9 @@ jobs:
           load: true
           tags: hermes-ci:local
           provenance: false
-          cache-from: type=gha,scope=hermes-ci
+          cache-from: |
+            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ github.ref_name }}
+            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:main
 
       - name: Verify example
         env:
