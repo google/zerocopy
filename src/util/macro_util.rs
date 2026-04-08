@@ -109,11 +109,7 @@ pub const ALIGNED_64K_ALLOCATION: NonNull<[u8]> = {
     //
     // FIXME(#429): Once `NonNull::new_unchecked` docs document that it
     // preserves provenance, cite those docs.
-    // FIXME: Replace this `as` with `ptr.cast_mut()` once our MSRV >= 1.65
-    #[allow(clippy::as_conversions)]
-    unsafe {
-        NonNull::new_unchecked(ptr as *mut _)
-    }
+    unsafe { NonNull::new_unchecked(ptr.cast_mut()) }
 };
 
 /// Computes the offset of the base of the field `$trailing_field_name` within
@@ -729,12 +725,7 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
         // - We know that the returned lifetime will not outlive the input
         //   lifetime thanks to the lifetime bounds on this function.
         //
-        // FIXME(#67): Once our MSRV is 1.58, replace this `transmute` with
-        // `&*dst`.
-        #[allow(clippy::transmute_ptr_to_ref)]
-        unsafe {
-            mem::transmute(dst)
-        }
+        unsafe { &*dst }
     }
 
     #[inline(always)]
