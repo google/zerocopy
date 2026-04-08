@@ -261,9 +261,11 @@ fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
         "cargo hermes setup"
     };
 
-    let output = toolchain.command(Tool::Charon).arg("version").output().context(
-        "Failed to execute `charon version`. Is charon installed? Try running `{setup_cmd}`.",
-    )?;
+    let output = toolchain.command(Tool::Charon).arg("version").output().with_context(|| {
+        format!(
+            "Failed to execute `charon version`. Is charon installed? Try running `{setup_cmd}`."
+        )
+    })?;
 
     if !output.status.success() {
         bail!("`charon version` failed with status: {}. Try running `{setup_cmd}`.", output.status);
