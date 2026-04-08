@@ -330,9 +330,9 @@ note: required because it appears within the type `IntoBytes4`
     |        ^^^^^^^^^^
     = note: required for `IntoBytes4` to implement `macro_util::__size_of::Sized`
 note: required by a bound in `macro_util::__size_of::size_of`
-   --> $WORKSPACE/src/util/macro_util.rs:299:29
+   --> $WORKSPACE/src/util/macro_util.rs:295:29
     |
-299 |     pub const fn size_of<T: Sized + ?core::marker::Sized>() -> usize {
+295 |     pub const fn size_of<T: Sized + ?core::marker::Sized>() -> usize {
     |                             ^^^^^ required by this bound in `size_of`
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -347,9 +347,9 @@ error[E0277]: `[u8]` is unsized
     = note: `IntoBytes` does not require the fields of `#[repr(packed)]` types to be `Sized`
     = note: required for `[u8]` to implement `macro_util::__size_of::Sized`
 note: required by a bound in `macro_util::__size_of::size_of`
-   --> $WORKSPACE/src/util/macro_util.rs:299:29
+   --> $WORKSPACE/src/util/macro_util.rs:295:29
     |
-299 |     pub const fn size_of<T: Sized + ?core::marker::Sized>() -> usize {
+295 |     pub const fn size_of<T: Sized + ?core::marker::Sized>() -> usize {
     |                             ^^^^^ required by this bound in `size_of`
 
 error[E0277]: `IntoBytes5` has one or more padding bytes

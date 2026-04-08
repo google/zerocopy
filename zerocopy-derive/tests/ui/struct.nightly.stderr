@@ -365,7 +365,7 @@ note: required because it appears within the type `IntoBytes4`
     |        ^^^^^^^^^^
     = note: required for `IntoBytes4` to implement `zerocopy_renamed::util::macro_util::__size_of::Sized`
 note: required by a bound in `zerocopy_renamed::util::macro_util::__size_of::size_of`
-   --> src/util/macro_util.rs:299:4
+   --> src/util/macro_util.rs:295:4
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: `[u8]` is unsized
@@ -379,7 +379,7 @@ error[E0277]: `[u8]` is unsized
     = note: `IntoBytes` does not require the fields of `#[repr(packed)]` types to be `Sized`
     = note: required for `[u8]` to implement `zerocopy_renamed::util::macro_util::__size_of::Sized`
 note: required by a bound in `zerocopy_renamed::util::macro_util::__size_of::size_of`
-   --> src/util/macro_util.rs:299:4
+   --> src/util/macro_util.rs:295:4
 
 error[E0277]: `IntoBytes5` has one or more padding bytes
    --> $DIR/struct.rs:169:10
