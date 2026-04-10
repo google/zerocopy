@@ -36,7 +36,7 @@ BUILD_CACHE=$(mktemp)
 # and capture its output to prevent terminal spam during cached runs. If the
 # build takes longer than 5 seconds, we assume a rebuild is occurring and
 # stream the output to the terminal so the developer knows why it is pausing.
-DOCKER_BUILDKIT=1 "${DOCKER_CMD[@]}" build --progress=plain --target dev -t $IMAGE_NAME -f "$DIR/Dockerfile" "$DIR" > "$BUILD_CACHE" 2>&1 &
+DOCKER_BUILDKIT=1 "${DOCKER_CMD[@]}" build --progress=plain -t $IMAGE_NAME -f "$DIR/Dockerfile" "$DIR" > "$BUILD_CACHE" 2>&1 &
 BUILD_PID=$!
 
 # Wait up to 5 seconds for the build to finish silently.

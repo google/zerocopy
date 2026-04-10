@@ -786,6 +786,10 @@ You will use these two commands to interact with Hermes. Both accept `--help`.
 
 1. Run `cargo run verify` to verify a target.
 2. Use `cargo run expand` to see the generated Lean code.
+3. Use `cargo run generate` to generate `.lean` files on the filesystem. You can use these to iterate on specifications and proofs using normal Lean tooling (`lake`, `lean`, etc) and copy results back to `.rs` files when you are done.
+
+You will likely want to start with `cargo run generate`, then iterate on `.lean` files directly, and only use `cargo run verify` for final verification once you have copied your work from temporary `.lean` files back to the source of truth `.rs` files.
+
 
 <!-- File: src/Hermes.lean -->
 
@@ -801,7 +805,7 @@ class IsValid (α : Type) where
 
 instance (priority
 
-/-- The core theorem that mathematically decouples the WP 
+/-- The core theorem that mathematically decouples the WP
     into strictly orthogonal Progress and Correctness subgoals. -/
 theorem wp_prove_orthogonal {α} {m : Result α} {P : α → Prop} :
   (∃ y, m = .ok y) → (∀ y, m = .ok y → P y) → WP.spec m P
@@ -822,18 +826,18 @@ instance : Inhabited Alignment
 
 /--
   A stub for the `Sized` trait.
-  
+
   Currently, `Sized` is implemented as a Lean `class` to leverage Lean's
   automatic typeclass resolution for computing memory layouts. However, this is
   a temporary workaround. Aeneas translates Rust traits into explicit dictionary
   `structure`s rather than Lean typeclasses to preserve the deterministic,
   single-implementation coherence of Rust's trait resolution.
-  
+
   Because of this mismatch, Hermes cannot currently generate valid theorem
   signatures for Rust functions that use trait bounds (the generated Lean
   functions expect explicit dictionary arguments that Hermes's typeclass-based
   approach does not supply).
-  
+
   Once Aeneas is updated to emit marker traits like `Sized` as explicit
   dictionaries, this `class` should be removed. Hermes will then accept the
   Aeneas-generated trait dictionaries in its theorems to guarantee soundness,
@@ -881,7 +885,7 @@ def deriveSizedCmd (declName : Name) : CommandElabM Unit
 
 /--
   A mathematically idealized memory layout for a value.
-  
+
   This layout is defined by a size and an alignment. It is unbounded by the
   physical constraints of the machine, meaning that its size is not constrained
   to fit within `Usize`. It is used to reason about the layout of values whose
@@ -894,7 +898,7 @@ structure SpecLayout where
 
 /--
   A valid physical memory layout for a value.
-  
+
   This layout is defined by a size and an alignment. It is bounded by the
   physical constraints of the machine, meaning that its size is guaranteed to
   fit within the addressable memory bounds of `Usize`. It is used to represent
@@ -908,7 +912,7 @@ structure Layout where
 /--
   A proof that a mathematical layout size is small enough to exist in physical
   memory.
-  
+
   This proof establishes that the size of a mathematical layout fits within
   `Usize.max`, meaning the layout can describe a physical value.
 -/
@@ -919,7 +923,7 @@ instance (lay : Layout) : FitsInUsize lay.toSpecLayout
 
 /--
   The ability to compute a mathematically idealized layout for a runtime value.
-  
+
   Some types in Rust, such as slices and trait objects, do not have a statically
   known size or alignment. Their layout depends on the specific value instance.
   This class provides the idealized, unbounded layout for a given dynamically
@@ -932,7 +936,7 @@ class HasSpecLayout (α : Type) where
 
 /--
   The ability to compute a valid physical layout for a runtime value.
-  
+
   Some types in Rust, such as slices and trait objects, do not have a statically
   known size or alignment. Their layout depends on the specific value instance.
   This class provides the bounded, physical layout for a given dynamically sized
@@ -952,7 +956,7 @@ instance {α : Type} [HasSpecLayout α] : HasLayout α
 
 /--
   The mathematically idealized layout for values of a statically sized type.
-  
+
   Types that implement `core::marker::Sized` have a layout that is known at
   compile time and is identical for all instances of the type. This class
   provides that static, unbounded layout property.
@@ -962,7 +966,7 @@ class HasStaticSpecLayout (α : Type) [core.marker.Sized α] where
 
 /--
   The valid physical layout for values of a statically sized type.
-  
+
   Types that implement `core::marker::Sized` have a layout that is known at
   compile time and is identical for all instances of the type. This class
   provides that static, bounded layout property, assuming the corresponding
@@ -982,7 +986,7 @@ structure SpecSliceDstLayout where
 
 /--
   Provides the static slice DST layout properties for a given type.
-  
+
   This is analogous to `SpecHasStaticLayout`, but for types that are `!Sized`
   and end in a slice. It provides the unbounded, mathematical layout properties.
 -/
@@ -1008,13 +1012,13 @@ theorem align_le_roundUpToAlign (val align : Nat) (h_val : 0 < val) (h_align : 0
 
 /--
   Computes the exact mathematical size of a `repr(C)` Slice DST instance.
-  
+
   This computation uses the static layout information and the dynamic trailing
   element count. It is not constrained by physical memory limits.
 -/
 def reprCSliceDstSize (info : SpecSliceDstLayout) (elemCount : Nat) : Nat
 
-/-- 
+/--
   A theorem stating that the unpadded size rounded up to the alignment is always
   perfectly divisible by the alignment.
 -/
@@ -1027,7 +1031,7 @@ class ReprC (α : Type)
 /--
   A blanket implementation providing a mathematical value layout for `#[repr(C)]`
   Slice DSTs.
-  
+
   If a type is a Slice DST, and we can extract its length, and it is `#[repr(C)]`,
   we can compute its exact mathematical size.
 -/
@@ -1036,7 +1040,7 @@ instance {α : Type} [SpecSliceDstTypeLayout α] [ts : TrailingSlice α] [ReprC 
 /--
   A blanket implementation providing static slice DST layout properties for
   slices.
-  
+
   Slices `[T]` are modeled as Slice DSTs with a trailing offset of exactly
   zero.
 -/
@@ -1081,16 +1085,16 @@ structure Allocation where
   base : Usize
   size : Usize
   addresses : Set Nat
-  
+
   -- `base` is not equal to null (address 0)
   base_not_null : base.val ≠ 0
-  
+
   -- `size <= isize::MAX`
   size_le_isize_max : size.val ≤ Isize.max
-  
+
   -- `base + size <= usize::MAX`
   base_add_size_le_usize_max : base.val + size.val ≤ Usize.max
-  
+
   -- For all addresses `a` in `addresses`, `a` is in the range `base .. (base + size)`
   bounds : ∀ a ∈ addresses, base.val ≤ a ∧ a < base.val + size.val
 
@@ -1114,7 +1118,7 @@ structure Referent where
   size : Usize
   -- The mathematical set of addresses that make up the referent
   addresses : Set Nat
-  
+
   bounds : ∀ a ∈ addresses, address.val ≤ a ∧ a < address.val + size.val
 
   addresses_are_usizes : ∀ a ∈ addresses, a ≤ Usize.max
@@ -1178,7 +1182,7 @@ axiom referent_size_sized {T : Type} [core.marker.Sized T] [lay : HasStaticLayou
   (raw_ptr_referent p).size = lay.layout.size
 
 /--
-  Intrinsic structural boundary representing the Rust guarantee that an allocation bounded by `isize::MAX` 
+  Intrinsic structural boundary representing the Rust guarantee that an allocation bounded by `isize::MAX`
   cannot overflow `usize::MAX` during intermediate addition logic for padding calculations.
 -/
 axiom slice_dst_padding_no_overflow {T : Type} [ReprC T] [lay : SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability} (val : Aeneas.Std.RawPtr T M) :
@@ -1186,7 +1190,7 @@ axiom slice_dst_padding_no_overflow {T : Type} [ReprC T] [lay : SpecSliceDstType
 
 /--
   A theorem stating the physical size of a `repr(C)` slice DST referent.
-  
+
   This axiom states that the physical size of the referent is exactly equal to
   the mathematically computed size of the slice DST (its offset plus its length
   times its element size, padded to its alignment). Because this axiom requires
@@ -1195,7 +1199,7 @@ axiom slice_dst_padding_no_overflow {T : Type} [ReprC T] [lay : SpecSliceDstType
   memory limits.
 -/
 axiom referent_size_slice_dst {T : Type} [ReprC T] [lay : SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability}
-  (alloc : Allocation) [md : HasMetadata (Aeneas.Std.RawPtr T M) Usize] 
+  (alloc : Allocation) [md : HasMetadata (Aeneas.Std.RawPtr T M) Usize]
   (p : Aeneas.Std.RawPtr T M) (h_fits : FitsInAllocation (raw_ptr_referent p) alloc) :
   (raw_ptr_referent p).size.val = reprCSliceDstSize lay.layout (md.metadata p).val
 ```

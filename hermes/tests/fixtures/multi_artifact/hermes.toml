@@ -5,6 +5,7 @@ Behavior: Tests `crate-type = ["rlib", "cdylib"]`. Ensures that emitting paralle
 
 [test]
 expected_status = "known_bug"
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]
 
 [[test.artifact]]

@@ -5,4 +5,5 @@ Behavior: Uses a macro to programmatically generate 100 distinct functions in a 
 
 [test]
 expected_status = "failure"
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

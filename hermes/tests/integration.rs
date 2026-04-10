@@ -13,6 +13,10 @@ use serde::Deserialize;
 use sha2::Digest;
 use walkdir::WalkDir;
 
+fn new_sorted_walkdir(path: impl AsRef<Path>) -> WalkDir {
+    WalkDir::new(path).sort_by_file_name()
+}
+
 datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
 
 #[derive(Deserialize)]
@@ -30,6 +34,7 @@ enum ExpectedStatus {
     Success,
     Failure,
     KnownBug,
+    KnownFlaky,
 }
 
 // A note on our "no implicit files" philosophy: We prefer explicit
@@ -59,6 +64,8 @@ struct TestConfig {
     mock: Option<MockConfig>,
     #[serde(default)]
     setup_mock: bool, // New field
+    #[serde(default)]
+    env: std::collections::HashMap<String, String>,
     #[serde(default)]
     phases: Vec<TestPhase>,
     #[serde(default = "default_true")]
@@ -175,6 +182,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
         let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
         let setup_status = Command::new(cargo_bin)
             .arg("setup")
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             .status()
             .expect("Failed to execute cargo-hermes setup");
         if !setup_status.success() {
@@ -183,6 +191,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
 
         let output = Command::new(cargo_bin)
             .arg("toolchain-path")
+            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
             .output()
             .expect("Failed to execute cargo-hermes toolchain-path");
         if !output.status.success() {
@@ -208,7 +217,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
         // Restore write permissions temporarily since `smart_clone_cache` might have copied
         // read-only attributes from the global toolchain if set, which would prevent `lake build`.
         #[allow(clippy::permissions_set_readonly_false)]
-        for entry in walkdir::WalkDir::new(cache_dir) {
+        for entry in new_sorted_walkdir(cache_dir) {
             let entry = entry.unwrap();
             let mut perms = std::fs::metadata(entry.path()).unwrap().permissions();
             if perms.readonly() {
@@ -249,7 +258,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
 }
 
 fn make_readonly(path: &Path) -> std::io::Result<()> {
-    for entry in walkdir::WalkDir::new(path) {
+    for entry in new_sorted_walkdir(path) {
         let entry = entry?;
         if entry.file_type().is_file() {
             let mut perms = entry.metadata()?.permissions();
@@ -275,7 +284,7 @@ fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    let walker = walkdir::WalkDir::new(source_dir).follow_links(true);
+    let walker = new_sorted_walkdir(source_dir).follow_links(true);
     for entry in walker {
         let entry = entry.map_err(|e| anyhow::anyhow!("Failed to walk source dir: {}", e))?;
         let name = entry.file_name().to_string_lossy();
@@ -446,10 +455,9 @@ fn acquire_worker_cache(
 /// Reads /proc/meminfo to determine available RAM and calculates a safe number
 /// of concurrent Lean processes.
 fn calculate_dynamic_lean_concurrency_limit() -> usize {
-    // Because each Lean process needs to load Mathlib's compiled artifact into
-    // RAM, it seems to consume ~7.5GB of RAM in practice. We double this (16GB)
-    // to provide a healthy safety margin for other system processes.
-    const LEAN_RAM_REQUIRED_BYTES: u64 = 16 * 1024 * 1024 * 1024;
+    // The Lean compiler seems to consume ~1GB of RAM per invocation. We double
+    // this (2GB) to provide a healthy safety margin for other system processes.
+    const LEAN_RAM_REQUIRED_BYTES: u64 = 2 * 1024 * 1024 * 1024;
 
     // Attempt to read MemAvailable from /proc/meminfo
     let available_ram_bytes = fs::read_to_string("/proc/meminfo").ok().and_then(|meminfo| {
@@ -524,10 +532,18 @@ impl TestContext {
         let lean_root = sandbox_root.join("target/hermes/hermes_test_target/lean");
         fs::create_dir_all(&lean_root)?;
 
-        // The Lean manifest dictates which dependencies Lake needs to resolve.
-        // We copy this directly from the global cache to ensure the test
-        // sandbox observes exactly the same dependency tree as the
-        // precompiled artifacts.
+        // The Lean manifest dictates which dependencies Lake needs to
+        // resolve. We copy this directly from the global cache to ensure
+        // the test sandbox observes exactly the same dependency tree as
+        // the precompiled artifacts. If we did not copy this lockfile,
+        // Lake would attempt to resolve dependencies from scratch. Since
+        // our dependencies specify floating branches rather than explicit
+        // git hashes in their configuration files, a fresh resolution
+        // could map to newer commits. A mismatch in a single commit hash
+        // invalidates the shared compilation cache, causing Lean to
+        // redundantly recompile the entire dependency tree (e.g.,
+        // Mathlib) from source. Copying the manifest guarantees a
+        // cache hit.
         let source_manifest = aeneas_cache_backend.join("lake-manifest.json");
         let target_manifest = lean_root.join("lake-manifest.json");
         if source_manifest.exists() {
@@ -536,6 +552,51 @@ impl TestContext {
             #[allow(clippy::permissions_set_readonly_false)]
             perms.set_readonly(false);
             fs::set_permissions(&target_manifest, perms)?;
+
+            // We must manually inject the `aeneas` package into the
+            // copied manifest. The source manifest comes from the Aeneas
+            // project itself, where Aeneas is the root project rather
+            // than a dependency. As a result, the source manifest does
+            // not contain an entry for the `aeneas` package.
+            //
+            // However, the generated project treats Aeneas as a path
+            // dependency. Lake evaluates the generated project and
+            // expects `aeneas` to exist in the manifest. When Lake finds
+            // it missing, it triggers an automatic dependency update,
+            // which in turn runs global post-update hooks. These hooks
+            // trigger operations such as large cloud cache downloads for
+            // Mathlib, resulting in severe performance regressions (e.g.,
+            // tens of minutes per test run).
+            //
+            // By manually constructing the `aeneas` path dependency entry
+            // and injecting it into the manifest, we trick Lake into
+            // accepting the workspace configuration as fully resolved,
+            // preventing the execution of these expensive hooks.
+            if let Ok(content) = fs::read_to_string(&target_manifest) {
+                if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
+                    if let Some(packages) = json.get_mut("packages").and_then(|v| v.as_array_mut())
+                    {
+                        let aeneas_url = format!("{}/backends/lean", worker_cache.aeneas.display());
+                        let entry = serde_json::json!({
+                            "dir": aeneas_url,
+                            "type": "path",
+                            "name": "aeneas",
+                            "subDir": null,
+                            "scope": "",
+                            "rev": null,
+                            "inputRev": null,
+                            "inherited": false,
+                            "configFile": "lakefile.lean",
+                            "manifestFile": "lake-manifest.json"
+                        });
+                        packages.push(entry);
+
+                        if let Ok(new_content) = serde_json::to_string_pretty(&json) {
+                            let _ = fs::write(&target_manifest, new_content);
+                        }
+                    }
+                }
+            }
         }
 
         let target_lake = lean_root.join(".lake");
@@ -657,6 +718,27 @@ echo "---END-INVOCATION---" >> "{}"
 
     fn run_hermes(&self, config: &TestConfig) -> assert_cmd::assert::Assert {
         let mut cmd = assert_cmd::cargo_bin_cmd!("cargo-hermes");
+        cmd.env_clear();
+
+        // After clearing the environment to prevent scope leakage, we must
+        // manually forward essential host variables required for toolchains.
+        for var in [
+            "RUSTUP_HOME",
+            "CARGO_HOME",
+            "RUSTUP_TOOLCHAIN",
+            "ELAN_HOME",
+            "LD_LIBRARY_PATH",
+            "TMPDIR",
+            "TMP",
+            "TEMP",
+            "USER",
+            "USERNAME",
+        ] {
+            if let Some(val) = std::env::var_os(var) {
+                cmd.env(var, val);
+            }
+        }
+
         cmd.env("HOME", &self.home_dir);
 
         let (cache_dir, _) = get_or_init_shared_cache();
@@ -780,7 +862,12 @@ echo "---END-INVOCATION---" >> "{}"
             // user's actual home directory but remains persistent across
             // multiple `hermes` invocations within this single test context.
             .env("HOME", &self.home_dir)
-            .env("HERMES_TEST_DIR_NAME", "hermes_test_target");
+            .env("HERMES_TEST_DIR_NAME", "hermes_test_target")
+            .env("HERMES_HASH_WITH_REMOVED_PREFIX", &self.sandbox_root);
+
+        for (k, v) in &config.env {
+            cmd.env(k, v);
+        }
 
         if !self.sandbox_root.exists() {
             panic!("sandbox_root does NOT exist! {:?}", self.sandbox_root);
@@ -809,7 +896,7 @@ echo "---END-INVOCATION---" >> "{}"
 ///   time. Because these were previously marked as read-only, any attempts at
 ///   mutation will fail loudly rather than result in race conditions.
 fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
-    let walker = WalkDir::new(source).into_iter().filter_entry(|e| {
+    let walker = new_sorted_walkdir(source).into_iter().filter_entry(|e| {
         // Instantly bypass traversing inside ANY `.git/objects` directory!
         // This prevents ~230,000 file copies per Mathlib clone.
         if e.file_name() == "objects"
@@ -856,6 +943,16 @@ fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
                 perms.set_readonly(false);
                 fs::set_permissions(&target_path, perms)?;
             } else {
+                // NOTE: It is crucial that we *don't* provide a deep-copy
+                // fallback path here. Hard-linked files consume a huge amount
+                // of disk space. Deep copying instead would consume many times
+                // more disk space. Instead, we intentionally allow hard linking
+                // to fail and bubble up those errors. If these errors happen in
+                // practice, it indicates a bug in the test environment (often a
+                // bug in configuring Docker or related tools). It's important
+                // that these errors are surfaced (rather than being worked
+                // around – e.g. via deep linking) so that we know to fix the
+                // bugs.
                 fs::hard_link(source_path, &target_path)?;
             }
         }
@@ -905,7 +1002,9 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
         }
     }
 
-    if config.expected_status == ExpectedStatus::KnownBug {
+    if config.expected_status == ExpectedStatus::KnownBug
+        || config.expected_status == ExpectedStatus::KnownFlaky
+    {
         return Ok(());
     }
 
@@ -988,7 +1087,7 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
 
     // Iterate through everything physically present in the test's root fixture
     // directory.
-    let walker = walkdir::WalkDir::new(&ctx.test_case_root).into_iter();
+    let walker = new_sorted_walkdir(&ctx.test_case_root).into_iter();
     for entry in walker.filter_entry(|e| !e.path().ends_with(".git")) {
         let entry = entry.unwrap();
         let path = entry.path();
@@ -1233,6 +1332,9 @@ fn run_single_phase(
             // incomplete. We do not validate them.
             return Ok(());
         }
+        ExpectedStatus::KnownFlaky => {
+            return Ok(());
+        }
         ExpectedStatus::Success => assert.success(),
     };
 
@@ -1289,22 +1391,24 @@ fn assert_output_file(
     let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
     let replace_path = sandbox_root.to_str().unwrap();
 
-    let (cache_dir, _) = get_or_init_shared_cache();
+    let (cache_dir, target_dir) = get_or_init_shared_cache();
     let cache_path_str = cache_dir.to_str().unwrap();
+    let target_path_str = target_dir.to_str().unwrap();
     let home_path_str = home_dir.to_str().unwrap();
     // Replace volatile environment-specific paths with static placeholders.
     //
     // - `replace_path` corresponds to the sandbox root, which varies per
     //   test run.
     // - `cache_path_str` corresponds to the shared toolchain cache.
+    // - `target_path_str` corresponds to the cargo target directory or override.
     // - `home_path_str` corresponds to the user's home directory (redirected in
     //   tests).
     let actual_clean = sanitize_output(
         &actual_str
             .replace(replace_path, "[PROJECT_ROOT]")
             .replace(cache_path_str, "[CACHE_ROOT]")
-            .replace(home_path_str, "[HOME]"),
-        test_name,
+            .replace(home_path_str, "[HOME]")
+            .replace(target_path_str, "[TARGET_DIR]"),
     );
 
     if bless {
@@ -1527,7 +1631,7 @@ fn assert_artifacts_match(
 
                 let content = if path.is_dir() {
                     let mut combined = String::new();
-                    for entry in walkdir::WalkDir::new(&path) {
+                    for entry in new_sorted_walkdir(&path) {
                         let Ok(entry) = entry else { continue };
                         if entry.file_type().is_file()
                             && let Ok(s) = fs::read_to_string(entry.path())
@@ -1697,7 +1801,7 @@ fn assert_artifacts_match(
 }
 
 fn assert_directories_match(expected: &Path, actual: &Path) -> io::Result<()> {
-    for entry in walkdir::WalkDir::new(expected) {
+    for entry in new_sorted_walkdir(expected) {
         let entry = entry.map_err(io::Error::other)?;
         if !entry.file_type().is_file() {
             continue;
@@ -1729,7 +1833,7 @@ fn assert_directories_match(expected: &Path, actual: &Path) -> io::Result<()> {
         }
     }
     // Check for extra files in actual
-    for entry in walkdir::WalkDir::new(actual) {
+    for entry in new_sorted_walkdir(actual) {
         let entry = entry.map_err(io::Error::other)?;
         if !entry.file_type().is_file() {
             continue;
@@ -1775,49 +1879,40 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
 // - Local IP/port combinations used in mock servers (replaced with
 //   `127.0.0.1:<PORT>`)
 // - Rustup toolchain paths (replaced with `[RUSTUP_TOOLCHAIN]`)
-fn sanitize_output(output: &str, test_name: &str) -> String {
-    let re_timestamp = regex::Regex::new(r"\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z ").unwrap();
+fn sanitize_output(output: &str) -> String {
     let re_thread_id = regex::Regex::new(r"thread '([^']+)' \(\d+\) panicked").unwrap();
     let re_file_lock =
         regex::Regex::new(r"(?m)^.*Blocking waiting for file lock on.*$\n?").unwrap();
     let re_cargo_hash = regex::Regex::new(r"([-=_])([a-f0-9]{5,16})\b").unwrap();
 
-    let lean_namespace = to_pascal_case(test_name).repeat(2);
-    let re_lean_hash =
-        regex::Regex::new(&format!(r"({lean_namespace})([a-f0-9]{{1,16}})\b")).unwrap();
-
     let re_timing = regex::Regex::new(r"took \d+(\.\d*)?(m?s)").unwrap();
+    let re_lake_timing = regex::Regex::new(r"\(\d+(\.\d*)?m?s\)").unwrap();
     let re_aeneas_time = regex::Regex::new(r"Total execution time: \d+\.\d+ seconds").unwrap();
     let re_worker_id = regex::Regex::new(r"worker_caches/\d+/").unwrap();
     let re_ip_port = regex::Regex::new(r"127\.0\.0\.1:\d+").unwrap();
     let re_rustup =
         regex::Regex::new(r"[^\s]*/(?:\.rustup|opt/rustup)/toolchains/[^/\s]+").unwrap();
+    let re_elan = regex::Regex::new(r"[^\s]*/(?:\.elan|opt/elan)/toolchains/[^/\s]+").unwrap();
+    // Lake's build progress indicators are volatile as they depend on the hit/miss
+    // state of the persistent `worker_caches/<ID>/` directory. We strip the entire line.
+    let re_lake_progress = regex::Regex::new(r"(?m)^.*\[\d+/\d+\].*$\n?").unwrap();
 
     let mut clean = output.to_string();
-    clean = re_timestamp.replace_all(&clean, "[YYYY-MM-DDTHH:MM:SSZ ").into_owned();
+
     clean = re_thread_id.replace_all(&clean, "thread '$1' (<ID>) panicked").into_owned();
     clean = re_file_lock.replace_all(&clean, "").into_owned();
     clean = re_cargo_hash.replace_all(&clean, "${1}<HASH>").into_owned();
-    clean = re_lean_hash.replace_all(&clean, "${1}<HASH>").into_owned();
+
     clean = re_timing.replace_all(&clean, "took <TIME>").into_owned();
+    clean = re_lake_timing.replace_all(&clean, "(<TIME>)").into_owned();
     clean = re_aeneas_time.replace_all(&clean, "Total execution time: <TIME> seconds").into_owned();
     clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
     clean = re_ip_port.replace_all(&clean, "127.0.0.1:<PORT>").into_owned();
     clean = re_rustup.replace_all(&clean, "[RUSTUP_TOOLCHAIN]").into_owned();
+    clean = re_elan.replace_all(&clean, "[ELAN_TOOLCHAIN]").into_owned();
+    clean = re_lake_progress.replace_all(&clean, "").into_owned();
 
     clean
-}
-
-fn to_pascal_case(s: &str) -> String {
-    s.split('_')
-        .map(|part| {
-            let mut chars = part.chars();
-            match chars.next() {
-                None => String::new(),
-                Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
-            }
-        })
-        .collect()
 }
 
 // fn run_idempotency_test(path: &Path) -> datatest_stable::Result<()> {

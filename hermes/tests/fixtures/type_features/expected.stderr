@@ -79,6 +79,6 @@
  47 │     A(u32),
     ╰────
 
-[External Error] generated/TypeFeaturesTypeFeatures<HASH>/TypeFeaturesTypeFeatures<HASH>.lean: type expected, got
+[External Error] generated/TypeFeaturesTypeFeatures14bf621e28a09fa7/TypeFeaturesTypeFeatures14bf621e28a09fa7.lean: type expected, got
   (UsesAssoc Self : Type → Type)
-Error: Lean verification failed
+Error: Lean verification failed. Consider running `cargo hermes generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

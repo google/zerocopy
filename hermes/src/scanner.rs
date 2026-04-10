@@ -68,7 +68,18 @@ impl HermesArtifact {
         // Use SHA-256 not for security but rather stability – Rust's
         // `DefaultHasher` doesn't guarantee stability even across runs of the
         // same binary.
-        let h0 = hash(self.manifest_path.as_os_str().as_encoded_bytes());
+        //
+        // `HERMES_HASH_WITH_REMOVED_PREFIX` allows our integration test
+        // framework to strip the randomized sandbox prefix from the manifest
+        // path before hashing, ensuring deterministic hashes even when running
+        // in a sandboxed environment.
+        let mut manifest_path_to_hash = self.manifest_path.as_path();
+        if let Ok(prefix) = std::env::var("HERMES_HASH_WITH_REMOVED_PREFIX") {
+            if let Ok(stripped) = self.manifest_path.strip_prefix(&prefix) {
+                manifest_path_to_hash = stripped;
+            }
+        }
+        let h0 = hash(manifest_path_to_hash.as_os_str().as_encoded_bytes());
         let h1 = hash(self.name.target_name.as_bytes());
         let h2 = hash(&[self.target_kind as u8]);
         let hashes = [h0, h1, h2];

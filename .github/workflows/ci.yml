@@ -9,6 +9,9 @@
 name: Build & Tests
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
   merge_group:
   # Useful for manually testing changes to this workflow. Because we check for
@@ -46,6 +49,9 @@ jobs:
     # would duplicate the work of downloading crates from the internet.
     # Pre-computing ensures that this work only happens once.
     needs: build_docker_env
+    permissions:
+      contents: read
+      packages: read # required to pull docker caches from ghcr.io
     defaults:
       run:
         shell: /tmp/docker-shell.sh {0}
@@ -298,16 +304,34 @@ jobs:
         persist-credentials: false
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+    - name: Log in to the Container registry
+      uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Generate sanitized Docker tag
+      id: docker_tag
+      env:
+        REF_NAME: ${{ github.ref_name }}
+      shell: bash
+      run: |
+        echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
 
     - name: Load image from cache
-      uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
+      uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
       with:
         context: .
         file: .github/workflows/Dockerfile
         load: true # This loads the resulting image into the local 'docker' daemon
         tags: zerocopy-ci:local
-        cache-from: type=gha
+        provenance: false
+        cache-from: |
+          type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }}
+          type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
         # Notice we omit `cache-to` here. We don't want many parallel jobs
         # fighting to write the exact same layers back to the cache API.
 
@@ -618,7 +642,7 @@ jobs:
     # gets run on different targets. Some of our API is target-specific (e.g.,
     # SIMD type impls), and so we need to run on each target.
     - name: Check semver compatibility
-      uses: obi1kenobi/cargo-semver-checks-action@5b298c9520f7096a4683c0bd981a7ac5a7e249ae # v2.8
+      uses: obi1kenobi/cargo-semver-checks-action@6b69fcf40e9b5fb17adeb57e4b6ecd020649a239 # v2.9
       with:
         # Don't semver check zerocopy-derive; as a proc macro, it doesn't have
         # an API that cargo-semver-checks can understand.
@@ -979,22 +1003,43 @@ jobs:
   build_docker_env:
     name: Build Docker image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # required to push docker caches to ghcr.io
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate sanitized Docker tag
+        id: docker_tag
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
 
       - name: Build and cache layers
-        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: .
           file: .github/workflows/Dockerfile
           push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          provenance: false
+          cache-from: |
+            type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }}
+            type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
+          cache-to: type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }},mode=max
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:

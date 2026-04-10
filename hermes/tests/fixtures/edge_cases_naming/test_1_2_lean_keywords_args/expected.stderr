@@ -1,0 +1,231 @@
+  ⚠ unused variable: `theorem`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:10:5]
+  9 │ pub fn test_args(
+ 10 │     theorem: u32,
+    ·     ───┬───
+    ·        ╰── 
+ 11 │     axiom: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `axiom`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:11:5]
+ 10 │     theorem: u32,
+ 11 │     axiom: u32,
+    ·     ──┬──
+    ·       ╰── 
+ 12 │     variable: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `variable`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:12:5]
+ 11 │     axiom: u32,
+ 12 │     variable: u32,
+    ·     ────┬───
+    ·         ╰── 
+ 13 │     lemma: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `lemma`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:13:5]
+ 12 │     variable: u32,
+ 13 │     lemma: u32,
+    ·     ──┬──
+    ·       ╰── 
+ 14 │     def: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `def`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:14:5]
+ 13 │     lemma: u32,
+ 14 │     def: u32,
+    ·     ─┬─
+    ·      ╰── 
+ 15 │     class: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `class`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:15:5]
+ 14 │     def: u32,
+ 15 │     class: u32,
+    ·     ──┬──
+    ·       ╰── 
+ 16 │     instance: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `instance`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:16:5]
+ 15 │     class: u32,
+ 16 │     instance: u32,
+    ·     ────┬───
+    ·         ╰── 
+ 17 │     structure: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `structure`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:17:5]
+ 16 │     instance: u32,
+ 17 │     structure: u32,
+    ·     ────┬────
+    ·         ╰── 
+ 18 │     inductive: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `inductive`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:18:5]
+ 17 │     structure: u32,
+ 18 │     inductive: u32,
+    ·     ────┬────
+    ·         ╰── 
+ 19 │     from: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `from`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:19:5]
+ 18 │     inductive: u32,
+ 19 │     from: u32,
+    ·     ──┬─
+    ·       ╰── 
+ 20 │     have: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `have`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:20:5]
+ 19 │     from: u32,
+ 20 │     have: u32,
+    ·     ──┬─
+    ·       ╰── 
+ 21 │     show: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `show`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:21:5]
+ 20 │     have: u32,
+ 21 │     show: u32,
+    ·     ──┬─
+    ·       ╰── 
+ 22 │     calc: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `calc`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:22:5]
+ 21 │     show: u32,
+ 22 │     calc: u32,
+    ·     ──┬─
+    ·       ╰── 
+ 23 │     then: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `then`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:23:5]
+ 22 │     calc: u32,
+ 23 │     then: u32,
+    ·     ──┬─
+    ·       ╰── 
+ 24 │     with: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `with`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:24:5]
+ 23 │     then: u32,
+ 24 │     with: u32,
+    ·     ──┬─
+    ·       ╰── 
+ 25 │     section: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `section`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:25:5]
+ 24 │     with: u32,
+ 25 │     section: u32,
+    ·     ───┬───
+    ·        ╰── 
+ 26 │     namespace: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `namespace`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:26:5]
+ 25 │     section: u32,
+ 26 │     namespace: u32,
+    ·     ────┬────
+    ·         ╰── 
+ 27 │     end: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `end`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:27:5]
+ 26 │     namespace: u32,
+ 27 │     end: u32,
+    ·     ─┬─
+    ·      ╰── 
+ 28 │     import: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `import`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:28:5]
+ 27 │     end: u32,
+ 28 │     import: u32,
+    ·     ───┬──
+    ·        ╰── 
+ 29 │     open: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `open`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:29:5]
+ 28 │     import: u32,
+ 29 │     open: u32,
+    ·     ──┬─
+    ·       ╰── 
+ 30 │     attribute: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `attribute`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:30:5]
+ 29 │     open: u32,
+ 30 │     attribute: u32,
+    ·     ────┬────
+    ·         ╰── 
+ 31 │     universe: u32,
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `universe`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:31:5]
+ 30 │     attribute: u32,
+ 31 │     universe: u32,
+    ·     ────┬───
+    ·         ╰── 
+ 32 │ ) {}
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+Error: Lean build failed
+STDOUT:
+trace: .> LEAN_PATH=[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/Cli/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/batteries/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/Qq/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/aesop/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/proofwidgets/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/importGraph/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/LeanSearchClient/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/plausible/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/mathlib/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/aeneas/backends/lean/.lake/build/lib/lean:[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean [ELAN_TOOLCHAIN]/bin/lean [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/generated/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.lean -o [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.olean -i [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.ilean -c [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.c --setup [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.setup.json --json
+error: generated/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.lean:24:21: unexpected token 'show'; expected '_' or identifier
+error: Lean exited with code 1
+Some required targets logged failures:
+- Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891.Funs
+STDERR:
+warning: mathlib: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/mathlib' has local changes
+warning: batteries: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/batteries' has local changes
+error: build failed

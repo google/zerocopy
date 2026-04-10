@@ -4,5 +4,6 @@ Behavior: Uses parameters such as `&&u32`, `&mut &u32`, and `&&mut u32`. Validat
 """
 
 [test]
-expected_status = "known_bug"
+expected_status = "known_flaky"
+stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

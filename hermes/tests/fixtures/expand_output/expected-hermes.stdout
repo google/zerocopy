@@ -6,8 +6,8 @@
 import Hermes
 import Aeneas
 import Aeneas.Tactic.Solver.ScalarTac.ScalarTac
-import «ExpandOutputExpandOutput<HASH>».Funs
-import «ExpandOutputExpandOutput<HASH>».Types
+import «ExpandOutputExpandOutput1d49e11e5683007f».Funs
+import «ExpandOutputExpandOutput1d49e11e5683007f».Types
 
 set_option linter.dupNamespace false
 set_option linter.unusedVariables false
@@ -27,7 +27,7 @@ namespace foo
 theorem spec :
   Aeneas.Std.WP.spec (foo) (fun ret_ => Post) := by
   apply Hermes.wp_prove_orthogonal
-  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable."
+  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable." _root_.expand_output.foo
   · rintro ret h_returns
     exact
       ⟨⟩

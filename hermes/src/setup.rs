@@ -22,6 +22,7 @@ macro_rules! decode_hex_env {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Platform {
     LinuxX86_64,
+    LinuxAArch64,
     MacosAArch64,
     MacosX86_64,
 }
@@ -52,6 +53,7 @@ impl Platform {
     pub fn triple(&self) -> &'static str {
         match self {
             Self::LinuxX86_64 => "x86_64-unknown-linux-gnu",
+            Self::LinuxAArch64 => "aarch64-unknown-linux-gnu",
             Self::MacosAArch64 => "aarch64-apple-darwin",
             Self::MacosX86_64 => "x86_64-apple-darwin",
         }
@@ -64,6 +66,7 @@ impl Platform {
 
         match (os, arch) {
             ("linux", "x86_64") => Ok(Self::LinuxX86_64),
+            ("linux", "aarch64") => Ok(Self::LinuxAArch64),
             ("macos", "aarch64") => Ok(Self::MacosAArch64),
             ("macos", "x86_64") => Ok(Self::MacosX86_64),
             _ => bail!("Unsupported platform: {}-{}", os, arch),
@@ -81,6 +84,7 @@ impl Platform {
         use Platform::*;
         match self {
             LinuxX86_64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64"),
+            LinuxAArch64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_AARCH64"),
             MacosAArch64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64"),
             MacosX86_64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_X86_64"),
         }
@@ -101,6 +105,12 @@ impl Platform {
             (LinuxX86_64, Tool::CharonDriver) => {
                 decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64_CHARON_DRIVER")
             }
+            (LinuxAArch64, Tool::Charon) => {
+                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_AARCH64_CHARON")
+            }
+            (LinuxAArch64, Tool::CharonDriver) => {
+                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_AARCH64_CHARON_DRIVER")
+            }
             (MacosAArch64, Tool::Charon) => {
                 decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON")
             }
@@ -115,6 +125,9 @@ impl Platform {
             }
             (LinuxX86_64, Tool::Aeneas) => {
                 decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64_AENEAS")
+            }
+            (LinuxAArch64, Tool::Aeneas) => {
+                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_AARCH64_AENEAS")
             }
             (MacosAArch64, Tool::Aeneas) => {
                 decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64_AENEAS")
@@ -138,8 +151,15 @@ pub struct Toolchain {
 impl Toolchain {
     /// Resolves the toolchain manager and acquires a shared lock.
     pub fn resolve() -> Result<Self> {
-        let home =
-            dirs::home_dir().ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?;
+        let home = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
+            std::path::PathBuf::from(
+                std::env::var("CARGO_MANIFEST_DIR").unwrap_or_else(|_| ".".to_string()),
+            )
+            .join("target")
+            .join("hermes-home")
+        } else {
+            dirs::home_dir().ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?
+        };
         let platform = Platform::detect()?;
         let aeneas_hash = platform.expected_archive_hash();
 
@@ -353,6 +373,7 @@ pub fn run_setup() -> Result<()> {
             tag,
             match platform {
                 Platform::LinuxX86_64 => "linux-x86_64",
+                Platform::LinuxAArch64 => "linux-aarch64",
                 Platform::MacosAArch64 => "macos-aarch64",
                 Platform::MacosX86_64 => "macos-x86_64",
             }
