@@ -449,9 +449,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
         std::thread::spawn(move || {
             let reader = BufReader::new(stderr);
             for line in reader.lines().map_while(Result::ok) {
-                if !line.contains("declaration uses `sorry`") {
-                    stderr_clone.lock().unwrap().push(line);
-                }
+                stderr_clone.lock().unwrap().push(line);
             }
         })
     });
@@ -471,9 +469,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
         std::thread::spawn(move || {
             let reader = BufReader::new(stdout);
             for line in reader.lines().map_while(Result::ok) {
-                if !line.contains("declaration uses `sorry`") {
-                    stdout_clone.lock().unwrap().push(line);
-                }
+                stdout_clone.lock().unwrap().push(line);
                 pb_clone.tick();
             }
         })
@@ -795,6 +791,10 @@ fn patch_discriminants(content: &str) -> String {
 /// Patches the generated Funs.lean file to suppress bytecode compilation errors
 /// for functions that invoke opaque axioms (such as `core::mem::size_of`).
 fn patch_funs(content: &str) -> String {
+    // Aeneas misses `show` keyword when renaming arguments in Lean.
+    // We manually rename it to `show1` to match Aeneas's convention for other keywords.
+    let content = content.replace("(show :", "(show1 :");
+
     let mut lines: Vec<&str> = content.split('\n').collect();
     let mut insert_idx = 0;
     for (i, line) in lines.iter().enumerate() {
