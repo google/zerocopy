@@ -124,156 +124,51 @@ struct CommandExpectation {
     should_not_exist: bool,
 }
 
-static SHARED_CACHE_PATH: OnceLock<PathBuf> = OnceLock::new();
+static TARGET_DIR: OnceLock<PathBuf> = OnceLock::new();
+static TOOLCHAIN_PATH: OnceLock<PathBuf> = OnceLock::new();
 
-fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
-    // Resolve the foundational target directory, allowing Docker/CI environments
-    // to override this directory into the native overlay filesystem (avoiding
-    // EXDEV panics across workspace bind-mount boundaries).
-    let target_dir = if let Ok(override_dir) = std::env::var("HERMES_INTEGRATION_TARGET_DIR") {
-        PathBuf::from(override_dir)
-    } else {
-        let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-        manifest_dir.join("target")
-    };
-    let cache_dir = target_dir.join("hermes_integration_cache");
-
-    if let Some(p) = SHARED_CACHE_PATH.get() {
-        return (p.clone(), target_dir);
-    }
-    let lock_path = target_dir.join("hermes_integration_cache.lock");
-
-    fs::create_dir_all(&target_dir).unwrap();
-    let lock_file = fs::OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .open(&lock_path)
-        .unwrap();
-    lock_file.lock_exclusive().unwrap();
-
-    // Check if the cache is fully initialized and valid.
-    // We use a `.complete` marker file to ensure atomicity: the marker is only
-    // written after the entire initialization sequence (clone, download,
-    // build) succeeds. This prevents the use of partial or corrupt caches
-    // resulting from interrupted builds.
-    ensure_cache_ready(&cache_dir).unwrap();
-
-    lock_file.unlock().unwrap();
-
-    let _ = SHARED_CACHE_PATH.set(cache_dir.clone());
-    (cache_dir, target_dir)
-}
-
-fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
-    let lean_backend_dir = cache_dir.join("backends/lean");
-    // Check if valid cache exists (using a marker file to ensure atomicity)
-    let marker_path = cache_dir.join(".complete");
-
-    if !marker_path.exists() {
-        if cache_dir.exists() {
-            // Partial or corrupt cache, remove it
-            std::fs::remove_dir_all(cache_dir).expect("Failed to remove partial cache");
-        }
-        std::fs::create_dir_all(cache_dir).unwrap();
-
-        // 1. Resolve global pinned toolchain path
-        let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
-        // We use a separate home directory for tests to avoid polluting the
-        // user's `~/.hermes` directory and to ensure a clean environment.
-        let test_home = cache_dir.parent().unwrap().join("hermes-test-home");
-        fs::create_dir_all(&test_home).unwrap();
-
-        let setup_status = Command::new(cargo_bin)
-            .arg("setup")
-            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
-            .env("HOME", &test_home)
-            .status()
-            .expect("Failed to execute cargo-hermes setup");
-        if !setup_status.success() {
-            anyhow::bail!("cargo-hermes setup failed");
-        }
-
-        let output = Command::new(cargo_bin)
-            .arg("toolchain-path")
-            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
-            .env("HOME", &test_home)
-            .output()
-            .expect("Failed to execute cargo-hermes toolchain-path");
-        if !output.status.success() {
-            anyhow::bail!(
-                "cargo-hermes toolchain-path failed: {:?}",
-                String::from_utf8_lossy(&output.stderr)
-            );
-        }
-
-        let path_str = String::from_utf8(output.stdout).unwrap();
-        let toolchain_path = PathBuf::from(path_str.trim());
-        if !toolchain_path.exists() {
-            anyhow::bail!("Resolved toolchain path does not exist: {:?}", toolchain_path);
-        }
-
-        // 2. Clone the pinned Aeneas toolchain into cache_dir instead of doing `git clone`.
-        // We copy the contents of `toolchain_path` into `cache_dir`. Because the worker
-        // caching expects `cache_dir` to act like `HERMES_AENEAS_DIR`, `cache_dir` should
-        // look exactly like `toolchain_path` (containing `aeneas` executable and `backends/`).
-        smart_clone_cache(&toolchain_path, cache_dir)
-            .expect("Failed to clone toolchain into integration cache");
-
-        // Restore write permissions temporarily since `smart_clone_cache` might have copied
-        // read-only attributes from the global toolchain if set, which would prevent `lake build`.
-        #[allow(clippy::permissions_set_readonly_false)]
-        for entry in new_sorted_walkdir(cache_dir) {
-            let entry = entry.unwrap();
-            let mut perms = std::fs::metadata(entry.path()).unwrap().permissions();
-            if perms.readonly() {
-                perms.set_readonly(false);
-                std::fs::set_permissions(entry.path(), perms).unwrap();
+fn get_target_dir() -> PathBuf {
+    TARGET_DIR
+        .get_or_init(|| {
+            if let Ok(override_dir) = std::env::var("HERMES_INTEGRATION_TARGET_DIR") {
+                PathBuf::from(override_dir)
+            } else {
+                let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+                manifest_dir.join("target")
             }
-        }
-
-        // 3. Download Pre-built Mathlib binaries (must run in backends/lean)
-        let status = Command::new("lake")
-            .args(["exe", "cache", "get"])
-            .current_dir(&lean_backend_dir)
-            .status()
-            .expect("Failed to execute lake exe cache get");
-        if !status.success() {
-            anyhow::bail!("Failed to run 'lake exe cache get'");
-        }
-
-        // 4. Pre-build Aeneas
-        let status = Command::new("lake")
-            .arg("build")
-            .current_dir(&lean_backend_dir)
-            .status()
-            .expect("Failed to execute lake build");
-        if !status.success() {
-            anyhow::bail!("Failed to pre-build Aeneas");
-        }
-
-        // 5. Make the cache read-only so that if Lean attempts to mutate the
-        // cache, the test will fail instead of silently corrupting the shared
-        // cache.
-        make_readonly(cache_dir).expect("Failed to make cache read-only");
-
-        // 6. Mark cache as complete
-        std::fs::write(&marker_path, "").expect("Failed to write cache marker");
-    }
-    Ok(())
+        })
+        .clone()
 }
 
-fn make_readonly(path: &Path) -> std::io::Result<()> {
-    for entry in new_sorted_walkdir(path) {
-        let entry = entry?;
-        if entry.file_type().is_file() {
-            let mut perms = entry.metadata()?.permissions();
-            perms.set_readonly(true);
-            std::fs::set_permissions(entry.path(), perms)?;
-        }
-    }
-    Ok(())
+fn get_toolchain_path() -> PathBuf {
+    TOOLCHAIN_PATH
+        .get_or_init(|| {
+            let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
+            let output = Command::new(cargo_bin)
+                .arg("toolchain-path")
+                .output()
+                .expect("Failed to execute cargo-hermes toolchain-path");
+
+            if !output.status.success() {
+                panic!(
+                    "cargo-hermes toolchain-path failed: {:?}",
+                    String::from_utf8_lossy(&output.stderr)
+                );
+            }
+
+            let path_str = String::from_utf8(output.stdout).unwrap();
+            let toolchain_path = PathBuf::from(path_str.trim());
+
+            if !toolchain_path.exists() {
+                panic!(
+                    "Resolved toolchain path does not exist: {:?}. Please run `cargo run setup` first.",
+                    toolchain_path
+                );
+            }
+
+            toolchain_path
+        })
+        .clone()
 }
 
 fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
@@ -507,7 +402,8 @@ impl TestContext {
         let source_dir = test_case_root.join("source");
         check_source_freshness(&source_dir).map_err(|e| e.to_string())?;
 
-        let (cache_dir, target_dir) = get_or_init_shared_cache();
+        let target_dir = get_target_dir();
+        let toolchain_path = get_toolchain_path();
         let temp = tempfile::Builder::new().prefix("hermes-test-").tempdir_in(&target_dir)?;
 
         let sandbox_root = temp.path().join(&test_name);
@@ -530,7 +426,7 @@ impl TestContext {
             Some(temp)
         };
 
-        let aeneas_cache_backend = cache_dir.join("backends/lean");
+        let aeneas_cache_backend = toolchain_path.join("backends/lean");
 
         let worker_cache = acquire_worker_cache(&target_dir, &aeneas_cache_backend)
             .map_err(|e| anyhow::anyhow!("Failed to acquire worker cache: {}", e))?;
@@ -748,8 +644,19 @@ echo "---END-INVOCATION---" >> "{}"
 
         cmd.env("HOME", &self.home_dir);
 
-        let (cache_dir, _) = get_or_init_shared_cache();
-        let lean_backend_dir = cache_dir.join("backends/lean");
+        if let Ok(elan_home) = std::env::var("ELAN_HOME") {
+            cmd.env("ELAN_HOME", elan_home);
+        } else {
+            let elan_home = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
+                get_target_dir().join("hermes-home/.elan")
+            } else {
+                PathBuf::from(std::env::var("HOME").unwrap()).join(".elan")
+            };
+            cmd.env("ELAN_HOME", elan_home);
+        }
+
+        let toolchain_path = get_toolchain_path();
+        let lean_backend_dir = toolchain_path.join("backends/lean");
 
         // Resolve Mocks
 
@@ -805,10 +712,11 @@ echo "---END-INVOCATION---" >> "{}"
         // capture the arguments passed to it. This allows us to assert that
         // Hermes calls the tools with the expected arguments.
 
-        let real_charon = cache_dir.join("charon");
+        let toolchain_path = get_toolchain_path();
+        let real_charon = toolchain_path.join("charon");
         let shim_dir = self.create_shim("charon", &real_charon, charon_mock_mode).unwrap();
 
-        let real_aeneas = cache_dir.join("aeneas");
+        let real_aeneas = toolchain_path.join("aeneas");
         self.create_shim("aeneas", &real_aeneas, aeneas_mock_mode).unwrap();
 
         if config.setup_mock {
@@ -1398,22 +1306,23 @@ fn assert_output_file(
     let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
     let replace_path = sandbox_root.to_str().unwrap();
 
-    let (cache_dir, target_dir) = get_or_init_shared_cache();
-    let cache_path_str = cache_dir.to_str().unwrap();
+    let target_dir = get_target_dir();
+    let toolchain_path = get_toolchain_path();
     let target_path_str = target_dir.to_str().unwrap();
+    let toolchain_path_str = toolchain_path.to_str().unwrap();
     let home_path_str = home_dir.to_str().unwrap();
     // Replace volatile environment-specific paths with static placeholders.
     //
     // - `replace_path` corresponds to the sandbox root, which varies per
     //   test run.
-    // - `cache_path_str` corresponds to the shared toolchain cache.
+    // - `toolchain_path_str` corresponds to the global toolchain.
     // - `target_path_str` corresponds to the cargo target directory or override.
     // - `home_path_str` corresponds to the user's home directory (redirected in
     //   tests).
     let actual_clean = sanitize_output(
         &actual_str
             .replace(replace_path, "[PROJECT_ROOT]")
-            .replace(cache_path_str, "[CACHE_ROOT]")
+            .replace(toolchain_path_str, "[CACHE_ROOT]")
             .replace(home_path_str, "[HOME]")
             .replace(target_path_str, "[TARGET_DIR]"),
         test_name == "setup_e2e",
@@ -1896,6 +1805,11 @@ fn sanitize_output(output: &str, sanitize_sorry: bool) -> String {
     let re_timing = regex::Regex::new(r"took \d+(\.\d*)?(m?s)").unwrap();
     let re_lake_timing = regex::Regex::new(r"\(\d+(\.\d*)?m?s\)").unwrap();
     let re_aeneas_time = regex::Regex::new(r"Total execution time: \d+\.\d+ seconds").unwrap();
+    let re_unpacked_time = regex::Regex::new(r"Unpacked in \d+ ms").unwrap();
+    let re_lean_full_install = regex::Regex::new(
+        r"(?m)^leanprover/lean4:[^\n]*\n\nLean toolchain [^\n]* installed successfully\.\n",
+    )
+    .unwrap();
     let re_worker_id = regex::Regex::new(r"worker_caches/\d+/").unwrap();
     let re_ip_port = regex::Regex::new(r"127\.0\.0\.1:\d+").unwrap();
     let re_rustup =
@@ -1923,6 +1837,10 @@ fn sanitize_output(output: &str, sanitize_sorry: bool) -> String {
     clean = re_timing.replace_all(&clean, "took <TIME>").into_owned();
     clean = re_lake_timing.replace_all(&clean, "(<TIME>)").into_owned();
     clean = re_aeneas_time.replace_all(&clean, "Total execution time: <TIME> seconds").into_owned();
+    clean = re_unpacked_time.replace_all(&clean, "Unpacked in <TIME> ms").into_owned();
+    clean = re_lean_full_install
+        .replace_all(&clean, "Lean toolchain leanprover/lean4:v4.28.0-rc1 is already installed.\n")
+        .into_owned();
     clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
     clean = re_ip_port.replace_all(&clean, "127.0.0.1:<PORT>").into_owned();
     clean = re_rustup.replace_all(&clean, "[RUSTUP_TOOLCHAIN]").into_owned();

@@ -151,7 +151,9 @@ pub struct Toolchain {
 impl Toolchain {
     /// Resolves the toolchain manager and acquires a shared lock.
     pub fn resolve() -> Result<Self> {
-        let home = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
+        let home = if let Ok(dir) = std::env::var("HERMES_TOOLCHAIN_DIR") {
+            std::path::PathBuf::from(dir)
+        } else if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
             let base = std::env::var("CARGO_MANIFEST_DIR")
                 .map(std::path::PathBuf::from)
                 // Fall back to current directory if CARGO_MANIFEST_DIR is not set,

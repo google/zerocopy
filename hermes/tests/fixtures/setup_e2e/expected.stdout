@@ -1,9 +1,24 @@
 Checking for elan...
 elan is already installed.
 Installing Lean toolchain leanprover/lean4:v4.28.0-rc1...
-
-leanprover/lean4:v4.28.0-rc1 installed - Lean (version 4.28.0-rc1, x86_64-unknown-linux-gnu, commit 3b0f2862196c6a8af9eb0025ee650252694013dd, Release)
-
-Lean toolchain leanprover/lean4:v4.28.0-rc1 installed successfully.
+Lean toolchain leanprover/lean4:v4.28.0-rc1 is already installed.
 Downloading: http://127.0.0.1:<PORT>/build-2026.04.07.112215-42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4/aeneas-linux-x86_64.tar.gz
+Pre-building Aeneas Lean library at "[HOME]/.hermes/toolchain/x86_64-unknown-linux-gnu-<HASH>/backends/lean"...
+Fetching Mathlib cache...
+installing leantar 0.1.16
+Fetching ProofWidgets cloud release... done!
+Current branch: HEAD
+Using cache (Azure) from origin: leanprover-community/mathlib4
+Attempting to download 7873 file(s) from leanprover-community/mathlib4 cache
+Decompressing 7873 file(s)
+Unpacked in <TIME> ms
+Completed successfully!
+Building Aeneas Lean library...
+warning: Aeneas/Std/Slice.lean:297:4: declaration uses `sorry`
+warning: Aeneas/Std/Slice.lean:520:8: declaration uses `sorry`
+warning: Aeneas/Std/SliceIter.lean:142:4: declaration uses `sorry`
+warning: Aeneas/Std/String.lean:9:4: declaration uses `sorry`
+warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`
+Build completed successfully (1626 jobs).
+Successfully pre-built Aeneas Lean library.
 Successfully installed toolchain vbuild-2026.04.07.112215-42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4

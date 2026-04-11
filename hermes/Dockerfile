@@ -31,10 +31,23 @@ ENV HERMES_INTEGRATION_TARGET_DIR=/cache/hermes_target \
     HERMES_AENEAS_DIR=/cache/hermes_target/hermes_integration_cache
 WORKDIR /workspace
 
-COPY testdata testdata
-COPY tools tools
+# Copy doc_gen Cargo.toml and create dummy source
+COPY tools/doc_gen/Cargo.toml tools/doc_gen/
+RUN mkdir -p tools/doc_gen/src && echo 'fn main() {}' > tools/doc_gen/src/main.rs
 
-# Download Lean/Elan and pre-build the Mathlib cache and Aeneas standard library.
-RUN ./tools/prebuild_lean_libs.sh
+# Copy workspace config and minimal source needed for setup
+COPY Cargo.toml Cargo.lock ./
+COPY src/setup.rs src/util.rs ./src/
+
+# Create a minimal main.rs to build a standalone setup binary
+RUN mkdir -p src && \
+    echo 'mod setup; mod util; fn main() -> anyhow::Result<()> { setup::run_setup() }' > src/main.rs
+
+# Build the minimal binary (and cache dependencies)
+RUN cargo build
+
+# Pre-build Lean libraries using the minimal binary
+ENV HERMES_TOOLCHAIN_DIR=/cache/hermes_toolchain
+RUN cargo run setup
 
 RUN chmod -R a+rwX /cache /opt/rustup /opt/cargo /opt/elan
