@@ -1,3 +1,8 @@
+FROM python:3.11-slim AS extractor
+WORKDIR /app
+COPY Cargo.toml tools/extract_minimal_toml.py ./
+RUN python3 extract_minimal_toml.py > Cargo.toml.minimal
+
 FROM ubuntu:24.04
 
 # Relocate toolchains so non-root developers can access and write to them when
@@ -31,10 +36,23 @@ ENV HERMES_INTEGRATION_TARGET_DIR=/cache/hermes_target \
     HERMES_AENEAS_DIR=/cache/hermes_target/hermes_integration_cache
 WORKDIR /workspace
 
-COPY testdata testdata
-COPY tools tools
+# Copy minimal workspace config and minimal source needed for setup
+COPY --from=extractor /app/Cargo.toml.minimal ./Cargo.toml
+COPY Cargo.lock ./
+COPY src/setup.rs src/util.rs ./src/
+COPY build.rs ./
 
-# Download Lean/Elan and pre-build the Mathlib cache and Aeneas standard library.
-RUN ./tools/prebuild_lean_libs.sh
+# Create a minimal main.rs to build a standalone setup binary
+RUN echo 'mod setup; mod util; fn main() -> anyhow::Result<()> { setup::run_setup() }' > src/main.rs
 
-RUN chmod -R a+rwX /cache /opt/rustup /opt/cargo /opt/elan
+# Build the minimal binary (and cache dependencies)
+RUN cargo build
+
+# Pre-build Lean libraries using the minimal binary
+ENV HERMES_TOOLCHAIN_DIR=/cache/hermes_toolchain
+RUN cargo run setup
+
+RUN chmod -R a+rwX /cache
+
+# Ensure the integration target directory exists and is writable
+RUN mkdir -p /cache/hermes_target && chmod 777 /cache/hermes_target
