@@ -17,9 +17,21 @@ set -eo pipefail
 # Determine if the Docker daemon requires root privileges for access. This
 # allows the script to operate correctly on systems where the user is not
 # a member of the 'docker' group.
-DOCKER_CMD=(docker)
-if ! docker info >/dev/null 2>&1; then
-    DOCKER_CMD=(sudo docker)
+if command -v podman >/dev/null 2>&1; then
+    DOCKER_CMD=(podman)
+else
+    DOCKER_CMD=(docker)
+    if ! docker info >/dev/null 2>&1; then
+        DOCKER_CMD=(sudo docker)
+    fi
+fi
+
+ARG_UID=$(id -u)
+ARG_GID=$(id -g)
+if [ "${DOCKER_CMD[0]}" = "podman" ]; then
+    # For Podman, use standard small UIDs to avoid exceeding subuid range.
+    ARG_UID=1001
+    ARG_GID=1001
 fi
 
 # Resolve the directory paths required to mount the workspace volume into the
@@ -36,7 +48,7 @@ BUILD_CACHE=$(mktemp)
 # and capture its output to prevent terminal spam during cached runs. If the
 # build takes longer than 5 seconds, we assume a rebuild is occurring and
 # stream the output to the terminal so the developer knows why it is pausing.
-DOCKER_BUILDKIT=1 "${DOCKER_CMD[@]}" build --progress=plain -t $IMAGE_NAME -f "$DIR/Dockerfile" "$DIR" > "$BUILD_CACHE" 2>&1 &
+DOCKER_BUILDKIT=1 "${DOCKER_CMD[@]}" build --progress=plain --build-arg UID=$ARG_UID --build-arg GID=$ARG_GID -t $IMAGE_NAME -f "$DIR/Dockerfile" "$DIR" > "$BUILD_CACHE" 2>&1 &
 BUILD_PID=$!
 
 # Wait up to 5 seconds for the build to finish silently.
@@ -95,7 +107,20 @@ DOCKER_FLAGS+=("-i")
 # as root. This flag ensures that any files created within the bind-mounted
 # workspace directory are owned by the host user rather than the root user,
 # preventing permission errors on the host filesystem.
-DOCKER_FLAGS+=("-u" "$(id -u):$(id -g)")
+#
+# For Podman, we run as root inside the container. Because Podman is rootless,
+# container root maps to the host user, giving us access to the workspace.
+# And it allows us to override permissions on files in the image (like /cache).
+if [ "${DOCKER_CMD[0]}" = "podman" ]; then
+    DOCKER_FLAGS+=("-u" "0")
+else
+    DOCKER_FLAGS+=("-u" "$ARG_UID:$ARG_GID")
+fi
+
+# Disable the PIDs limit to prevent Lean from failing with "failed to create
+# thread". Podman has a default PIDs limit (often 2048) that is easily exceeded
+# by Lean when it spawns many threads during compilation and verification.
+DOCKER_FLAGS+=("--pids-limit=-1")
 
 # Forward all environment variables prefixed with 'HERMES_' to the container.
 # This allows developers to interactively override Hermes runtime parameters.

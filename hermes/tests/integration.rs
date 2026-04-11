@@ -124,149 +124,51 @@ struct CommandExpectation {
     should_not_exist: bool,
 }
 
-static SHARED_CACHE_PATH: OnceLock<PathBuf> = OnceLock::new();
+static TARGET_DIR: OnceLock<PathBuf> = OnceLock::new();
+static TOOLCHAIN_PATH: OnceLock<PathBuf> = OnceLock::new();
 
-fn get_or_init_shared_cache() -> (PathBuf, PathBuf) {
-    // Resolve the foundational target directory, allowing Docker/CI environments
-    // to override this directory into the native overlay filesystem (avoiding
-    // EXDEV panics across workspace bind-mount boundaries).
-    let target_dir = if let Ok(override_dir) = std::env::var("HERMES_INTEGRATION_TARGET_DIR") {
-        PathBuf::from(override_dir)
-    } else {
-        let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-        manifest_dir.join("target")
-    };
-    let cache_dir = target_dir.join("hermes_integration_cache");
-
-    if let Some(p) = SHARED_CACHE_PATH.get() {
-        return (p.clone(), target_dir);
-    }
-    let lock_path = target_dir.join("hermes_integration_cache.lock");
-
-    fs::create_dir_all(&target_dir).unwrap();
-    let lock_file = fs::OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .open(&lock_path)
-        .unwrap();
-    lock_file.lock_exclusive().unwrap();
-
-    // Check if the cache is fully initialized and valid.
-    // We use a `.complete` marker file to ensure atomicity: the marker is only
-    // written after the entire initialization sequence (clone, download,
-    // build) succeeds. This prevents the use of partial or corrupt caches
-    // resulting from interrupted builds.
-    ensure_cache_ready(&cache_dir).unwrap();
-
-    lock_file.unlock().unwrap();
-
-    let _ = SHARED_CACHE_PATH.set(cache_dir.clone());
-    (cache_dir, target_dir)
-}
-
-fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
-    let lean_backend_dir = cache_dir.join("backends/lean");
-    // Check if valid cache exists (using a marker file to ensure atomicity)
-    let marker_path = cache_dir.join(".complete");
-
-    if !marker_path.exists() {
-        if cache_dir.exists() {
-            // Partial or corrupt cache, remove it
-            std::fs::remove_dir_all(cache_dir).expect("Failed to remove partial cache");
-        }
-        std::fs::create_dir_all(cache_dir).unwrap();
-
-        // 1. Resolve global pinned toolchain path
-        let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
-        let setup_status = Command::new(cargo_bin)
-            .arg("setup")
-            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
-            .status()
-            .expect("Failed to execute cargo-hermes setup");
-        if !setup_status.success() {
-            anyhow::bail!("cargo-hermes setup failed");
-        }
-
-        let output = Command::new(cargo_bin)
-            .arg("toolchain-path")
-            .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
-            .output()
-            .expect("Failed to execute cargo-hermes toolchain-path");
-        if !output.status.success() {
-            anyhow::bail!(
-                "cargo-hermes toolchain-path failed: {:?}",
-                String::from_utf8_lossy(&output.stderr)
-            );
-        }
-
-        let path_str = String::from_utf8(output.stdout).unwrap();
-        let toolchain_path = PathBuf::from(path_str.trim());
-        if !toolchain_path.exists() {
-            anyhow::bail!("Resolved toolchain path does not exist: {:?}", toolchain_path);
-        }
-
-        // 2. Clone the pinned Aeneas toolchain into cache_dir instead of doing `git clone`.
-        // We copy the contents of `toolchain_path` into `cache_dir`. Because the worker
-        // caching expects `cache_dir` to act like `HERMES_AENEAS_DIR`, `cache_dir` should
-        // look exactly like `toolchain_path` (containing `aeneas` executable and `backends/`).
-        smart_clone_cache(&toolchain_path, cache_dir)
-            .expect("Failed to clone toolchain into integration cache");
-
-        // Restore write permissions temporarily since `smart_clone_cache` might have copied
-        // read-only attributes from the global toolchain if set, which would prevent `lake build`.
-        #[allow(clippy::permissions_set_readonly_false)]
-        for entry in new_sorted_walkdir(cache_dir) {
-            let entry = entry.unwrap();
-            let mut perms = std::fs::metadata(entry.path()).unwrap().permissions();
-            if perms.readonly() {
-                perms.set_readonly(false);
-                std::fs::set_permissions(entry.path(), perms).unwrap();
+fn get_target_dir() -> PathBuf {
+    TARGET_DIR
+        .get_or_init(|| {
+            if let Ok(override_dir) = std::env::var("HERMES_INTEGRATION_TARGET_DIR") {
+                PathBuf::from(override_dir)
+            } else {
+                let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+                manifest_dir.join("target")
             }
-        }
-
-        // 3. Download Pre-built Mathlib binaries (must run in backends/lean)
-        let status = Command::new("lake")
-            .args(["exe", "cache", "get"])
-            .current_dir(&lean_backend_dir)
-            .status()
-            .expect("Failed to execute lake exe cache get");
-        if !status.success() {
-            anyhow::bail!("Failed to run 'lake exe cache get'");
-        }
-
-        // 4. Pre-build Aeneas
-        let status = Command::new("lake")
-            .arg("build")
-            .current_dir(&lean_backend_dir)
-            .status()
-            .expect("Failed to execute lake build");
-        if !status.success() {
-            anyhow::bail!("Failed to pre-build Aeneas");
-        }
-
-        // 5. Make the cache read-only so that if Lean attempts to mutate the
-        // cache, the test will fail instead of silently corrupting the shared
-        // cache.
-        make_readonly(cache_dir).expect("Failed to make cache read-only");
-
-        // 6. Mark cache as complete
-        std::fs::write(&marker_path, "").expect("Failed to write cache marker");
-    }
-    Ok(())
+        })
+        .clone()
 }
 
-fn make_readonly(path: &Path) -> std::io::Result<()> {
-    for entry in new_sorted_walkdir(path) {
-        let entry = entry?;
-        if entry.file_type().is_file() {
-            let mut perms = entry.metadata()?.permissions();
-            perms.set_readonly(true);
-            std::fs::set_permissions(entry.path(), perms)?;
-        }
-    }
-    Ok(())
+fn get_toolchain_path() -> PathBuf {
+    TOOLCHAIN_PATH
+        .get_or_init(|| {
+            let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
+            let output = Command::new(cargo_bin)
+                .arg("toolchain-path")
+                .output()
+                .expect("Failed to execute cargo-hermes toolchain-path");
+
+            if !output.status.success() {
+                panic!(
+                    "cargo-hermes toolchain-path failed: {:?}",
+                    String::from_utf8_lossy(&output.stderr)
+                );
+            }
+
+            let path_str = String::from_utf8(output.stdout).unwrap();
+            let toolchain_path = PathBuf::from(path_str.trim());
+
+            if !toolchain_path.exists() {
+                panic!(
+                    "Resolved toolchain path does not exist: {:?}. Please run `cargo run setup` first.",
+                    toolchain_path
+                );
+            }
+
+            toolchain_path
+        })
+        .clone()
 }
 
 fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
@@ -500,7 +402,9 @@ impl TestContext {
         let source_dir = test_case_root.join("source");
         check_source_freshness(&source_dir).map_err(|e| e.to_string())?;
 
-        let (cache_dir, target_dir) = get_or_init_shared_cache();
+        let target_dir = get_target_dir();
+        fs::create_dir_all(&target_dir)?;
+        let toolchain_path = get_toolchain_path();
         let temp = tempfile::Builder::new().prefix("hermes-test-").tempdir_in(&target_dir)?;
 
         let sandbox_root = temp.path().join(&test_name);
@@ -523,7 +427,7 @@ impl TestContext {
             Some(temp)
         };
 
-        let aeneas_cache_backend = cache_dir.join("backends/lean");
+        let aeneas_cache_backend = toolchain_path.join("backends/lean");
 
         let worker_cache = acquire_worker_cache(&target_dir, &aeneas_cache_backend)
             .map_err(|e| anyhow::anyhow!("Failed to acquire worker cache: {}", e))?;
@@ -733,7 +637,13 @@ echo "---END-INVOCATION---" >> "{}"
             "TEMP",
             "USER",
             "USERNAME",
+            "HERMES_TOOLCHAIN_DIR",
         ] {
+            if var == "HERMES_TOOLCHAIN_DIR"
+                && (self.test_name == "setup_e2e" || self.test_name == "setup_repair")
+            {
+                continue;
+            }
             if let Some(val) = std::env::var_os(var) {
                 cmd.env(var, val);
             }
@@ -741,8 +651,19 @@ echo "---END-INVOCATION---" >> "{}"
 
         cmd.env("HOME", &self.home_dir);
 
-        let (cache_dir, _) = get_or_init_shared_cache();
-        let lean_backend_dir = cache_dir.join("backends/lean");
+        if let Ok(elan_home) = std::env::var("ELAN_HOME") {
+            cmd.env("ELAN_HOME", elan_home);
+        } else {
+            let elan_home = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
+                get_target_dir().join("hermes-home/.elan")
+            } else {
+                PathBuf::from(std::env::var("HOME").unwrap()).join(".elan")
+            };
+            cmd.env("ELAN_HOME", elan_home);
+        }
+
+        let toolchain_path = get_toolchain_path();
+        let lean_backend_dir = toolchain_path.join("backends/lean");
 
         // Resolve Mocks
 
@@ -798,10 +719,11 @@ echo "---END-INVOCATION---" >> "{}"
         // capture the arguments passed to it. This allows us to assert that
         // Hermes calls the tools with the expected arguments.
 
-        let real_charon = cache_dir.join("charon");
+        let toolchain_path = get_toolchain_path();
+        let real_charon = toolchain_path.join("charon");
         let shim_dir = self.create_shim("charon", &real_charon, charon_mock_mode).unwrap();
 
-        let real_aeneas = cache_dir.join("aeneas");
+        let real_aeneas = toolchain_path.join("aeneas");
         self.create_shim("aeneas", &real_aeneas, aeneas_mock_mode).unwrap();
 
         if config.setup_mock {
@@ -839,8 +761,12 @@ echo "---END-INVOCATION---" >> "{}"
 
         cmd.env("HERMES_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
-        cmd.env("HERMES_AENEAS_DIR", &self.worker_cache.aeneas);
+        let isolated_aeneas_dir = self.sandbox_root.join("aeneas_cache");
+        fs::create_dir_all(&isolated_aeneas_dir).unwrap();
+        cmd.env("HERMES_AENEAS_DIR", isolated_aeneas_dir);
         cmd.env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
+        cmd.env("HERMES_USE_PATH_FOR_TOOLS", "1");
+        cmd.env("RAYON_NUM_THREADS", "1");
 
         let original_path = std::env::var_os("PATH").unwrap_or_default();
         let new_path = std::env::join_paths(
@@ -1391,24 +1317,26 @@ fn assert_output_file(
     let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
     let replace_path = sandbox_root.to_str().unwrap();
 
-    let (cache_dir, target_dir) = get_or_init_shared_cache();
-    let cache_path_str = cache_dir.to_str().unwrap();
+    let target_dir = get_target_dir();
+    let toolchain_path = get_toolchain_path();
     let target_path_str = target_dir.to_str().unwrap();
+    let toolchain_path_str = toolchain_path.to_str().unwrap();
     let home_path_str = home_dir.to_str().unwrap();
     // Replace volatile environment-specific paths with static placeholders.
     //
     // - `replace_path` corresponds to the sandbox root, which varies per
     //   test run.
-    // - `cache_path_str` corresponds to the shared toolchain cache.
+    // - `toolchain_path_str` corresponds to the global toolchain.
     // - `target_path_str` corresponds to the cargo target directory or override.
     // - `home_path_str` corresponds to the user's home directory (redirected in
     //   tests).
     let actual_clean = sanitize_output(
         &actual_str
             .replace(replace_path, "[PROJECT_ROOT]")
-            .replace(cache_path_str, "[CACHE_ROOT]")
+            .replace(toolchain_path_str, "[CACHE_ROOT]")
             .replace(home_path_str, "[HOME]")
             .replace(target_path_str, "[TARGET_DIR]"),
+        test_name == "setup_e2e",
     );
 
     if bless {
@@ -1879,7 +1807,7 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
 // - Local IP/port combinations used in mock servers (replaced with
 //   `127.0.0.1:<PORT>`)
 // - Rustup toolchain paths (replaced with `[RUSTUP_TOOLCHAIN]`)
-fn sanitize_output(output: &str) -> String {
+fn sanitize_output(output: &str, sanitize_sorry: bool) -> String {
     let re_thread_id = regex::Regex::new(r"thread '([^']+)' \(\d+\) panicked").unwrap();
     let re_file_lock =
         regex::Regex::new(r"(?m)^.*Blocking waiting for file lock on.*$\n?").unwrap();
@@ -1888,6 +1816,11 @@ fn sanitize_output(output: &str) -> String {
     let re_timing = regex::Regex::new(r"took \d+(\.\d*)?(m?s)").unwrap();
     let re_lake_timing = regex::Regex::new(r"\(\d+(\.\d*)?m?s\)").unwrap();
     let re_aeneas_time = regex::Regex::new(r"Total execution time: \d+\.\d+ seconds").unwrap();
+    let re_unpacked_time = regex::Regex::new(r"Unpacked in \d+ ms").unwrap();
+    let re_lean_full_install = regex::Regex::new(
+        r"(?m)^leanprover/lean4:[^\n]*\n\nLean toolchain [^\n]* installed successfully\.\n",
+    )
+    .unwrap();
     let re_worker_id = regex::Regex::new(r"worker_caches/\d+/").unwrap();
     let re_ip_port = regex::Regex::new(r"127\.0\.0\.1:\d+").unwrap();
     let re_rustup =
@@ -1896,6 +1829,15 @@ fn sanitize_output(output: &str) -> String {
     // Lake's build progress indicators are volatile as they depend on the hit/miss
     // state of the persistent `worker_caches/<ID>/` directory. We strip the entire line.
     let re_lake_progress = regex::Regex::new(r"(?m)^.*\[\d+/\d+\].*$\n?").unwrap();
+    // Aeneas pre-built library might produce warnings about `sorry` usage.
+    // We strip them to make test output deterministic.
+    let re_sorry_warning = regex::Regex::new(r"(?m)^.*declaration uses `sorry`.*$\n?").unwrap();
+    // Aeneas progress bars contain volatile spinner characters. We strip them.
+    let re_applied_prepasses = regex::Regex::new(r"(?m)^.*Applied prepasses:.*$\n?").unwrap();
+    // Pre-building Aeneas Lean library produces volatile output depending on cache state.
+    let re_prebuild_output = regex::Regex::new(r"(?m)^(Pre-building Aeneas Lean library|Fetching Mathlib cache|installing leantar|Fetching ProofWidgets|Current branch:|Using cache|Attempting to download|Decompressing|Unpacked in|Completed successfully!|Building Aeneas Lean library|Build completed successfully|Successfully pre-built).*$\n?").unwrap();
+    // Strip ANSI escape codes.
+    let re_ansi_escape = regex::Regex::new(r"\x1B\[[0-9;]*[a-zA-Z]").unwrap();
 
     let mut clean = output.to_string();
 
@@ -1906,142 +1848,24 @@ fn sanitize_output(output: &str) -> String {
     clean = re_timing.replace_all(&clean, "took <TIME>").into_owned();
     clean = re_lake_timing.replace_all(&clean, "(<TIME>)").into_owned();
     clean = re_aeneas_time.replace_all(&clean, "Total execution time: <TIME> seconds").into_owned();
+    clean = re_unpacked_time.replace_all(&clean, "Unpacked in <TIME> ms").into_owned();
+    clean = re_lean_full_install
+        .replace_all(&clean, "Lean toolchain leanprover/lean4:v4.28.0-rc1 is already installed.\n")
+        .into_owned();
     clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
     clean = re_ip_port.replace_all(&clean, "127.0.0.1:<PORT>").into_owned();
     clean = re_rustup.replace_all(&clean, "[RUSTUP_TOOLCHAIN]").into_owned();
     clean = re_elan.replace_all(&clean, "[ELAN_TOOLCHAIN]").into_owned();
     clean = re_lake_progress.replace_all(&clean, "").into_owned();
+    clean = re_applied_prepasses.replace_all(&clean, "").into_owned();
+    clean = re_prebuild_output.replace_all(&clean, "").into_owned();
+    clean = re_ansi_escape.replace_all(&clean, "").into_owned();
+    if sanitize_sorry {
+        clean = re_sorry_warning.replace_all(&clean, "").into_owned();
+    }
 
     clean
 }
-
-// fn run_idempotency_test(path: &Path) -> datatest_stable::Result<()> {
-//     // Verifies that Hermes enforces a clean sandbox by failing when the target
-//     // `.lake` directory already exists.
-//     //
-//     // In our integration test environment, we rely on the sandbox being
-//     // strictly fresh for each run. If `.lake` exists, it suggests a potential
-//     // contamination from a previous run or an incomplete cleanup, which could
-//     // compromise test determinism.
-
-//     // 1. Setup TestContext
-//     let ctx = TestContext::new(path)?;
-
-//     // 2. Configure a basic run
-//     //
-//     // We use arguments that trigger the standard verification flow.
-//     // `--allow-sorry` is required if the fixture code (e.g., empty_file/source)
-//     // requires proofs that are missing.
-//     let config = TestConfig {
-//         args: Some(vec!["verify".into(), "--allow-sorry".into()]),
-//         cwd: None,
-//         log: None,
-//         expected_status: ExpectedStatus::Success, // We check manually
-//         expected_stderr: None,
-//         expected_stderr_regex: None,
-//         artifact: vec![],
-//         command: vec![],
-//         mock: None,
-//     };
-
-//     // 3. First Run: Should Success and create .lake
-//     let assert = ctx.run_hermes(&config);
-//     assert.success();
-
-//     // 4. Second Run: Should Fail because .lake exists
-//     let assert = ctx.run_hermes(&config);
-//     assert.failure().stderr(predicates::str::contains("Target .lake directory already exists"));
-
-//     Ok(())
-// }
-
-// FIXME: Re-enable this, but make sure to run it somewhere that won't affect
-// the shared cache. Then again, maybe it already doesn't, and Gemini was just
-// confused.
-
-//         // Restore the valid shim.
-//         ctx.create_shim("aeneas", &real_aeneas, None)?;
-
-//         let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
-//         cmd.env("HERMES_FORCE_TTY", "1")
-//             .env("FORCE_COLOR", "1")
-//             .env("HERMES_AENEAS_DIR", &cache_dir);
-
-//         let original_path = std::env::var_os("PATH").unwrap_or_default();
-//         let new_path = std::env::join_paths(
-//             std::iter::once(shim_dir).chain(std::env::split_paths(&original_path)),
-//         )
-//         .unwrap();
-
-//         cmd.env("CARGO_TARGET_DIR", ctx.sandbox_root.join("target"))
-//             .env("PATH", new_path)
-//             .env_remove("RUSTFLAGS")
-//             .env("HERMES_TEST_DIR_NAME", "hermes_test_target")
-//             .current_dir(&ctx.sandbox_root)
-//             .arg("verify")
-//             .arg("--allow-sorry");
-
-//         cmd.assert().success();
-
-//         let target_lean = ctx.sandbox_root.join("target/hermes/hermes_test_target/lean");
-//         if !target_lean.exists() {
-//             panic!("Target directory {} SHOULD exist after success!", target_lean.display());
-//         }
-
-//         // Mark the file with "OLD" to verify that it is not overwritten later.
-//         let marker = target_lean.join("MARKER_OLD");
-//         std::fs::write(&marker, "OLD").unwrap();
-//     }
-
-//     // 4. Run 3: Crash during update.
-//     {
-//         // Ensure that the run crashes and that the `lean` directory still contains `MARKER_OLD`.
-
-//         let (cache_dir, _) = get_or_init_shared_cache();
-//         let real_charon = cache_dir.join("charon");
-//         let shim_dir = ctx.create_shim("charon", &real_charon, None)?;
-
-//         // Broken Shim Again
-//         let broken_shim = shim_dir.join("aeneas");
-//         let content = "#!/bin/sh\necho \"AENEAS INVOKED (BROKEN AGAIN)\"\nexit 1\n";
-//         std::fs::write(&broken_shim, content)?;
-//         use std::os::unix::fs::PermissionsExt;
-//         let mut perms = std::fs::metadata(&broken_shim)?.permissions();
-//         perms.set_mode(0o755);
-//         std::fs::set_permissions(&broken_shim, perms)?;
-
-//         // Run Hermes
-//         let mut cmd = assert_cmd::cargo_bin_cmd!("hermes");
-//         cmd.env("HERMES_FORCE_TTY", "1")
-//             .env("FORCE_COLOR", "1")
-//             .env("HERMES_AENEAS_DIR", &cache_dir);
-
-//         let original_path = std::env::var_os("PATH").unwrap_or_default();
-//         let new_path = std::env::join_paths(
-//             std::iter::once(shim_dir).chain(std::env::split_paths(&original_path)),
-//         )
-//         .unwrap();
-
-//         cmd.env("CARGO_TARGET_DIR", ctx.sandbox_root.join("target"))
-//             .env("PATH", new_path)
-//             .env_remove("RUSTFLAGS")
-//             .env("HERMES_TEST_DIR_NAME", "hermes_test_target")
-//             .current_dir(&ctx.sandbox_root)
-//             .arg("verify")
-//             .arg("--allow-sorry");
-
-//         cmd.assert().failure();
-
-//         // Verify that the marker file still exists.
-//         let target_lean = ctx.sandbox_root.join("target/hermes/hermes_test_target/lean");
-//         let marker = target_lean.join("MARKER_OLD");
-//         if !marker.exists() {
-//             panic!("Target directory was overwritten during failed run! Marker is missing.");
-//         }
-//     }
-
-//     Ok(())
-// }
 
 fn find_generated_root(target_dir: &Path) -> datatest_stable::Result<PathBuf> {
     // Verify that the Hermes output directory structure exists.
@@ -2062,42 +1886,6 @@ fn find_generated_root(target_dir: &Path) -> datatest_stable::Result<PathBuf> {
     }
     Err("Could not find generated directory".into())
 }
-
-// FIXME: Re-enable this, but make sure to run it somewhere that won't affect
-// the shared cache. Then again, maybe it already doesn't, and Gemini was just
-// confused.
-
-// fn run_atomic_cache_recovery_test() -> datatest_stable::Result<()> {
-//     // 1. Ensure cache is initialized
-//     let (cache_dir, target_dir) = get_or_init_shared_cache();
-
-//     // Acquire the lock to avoid racing with other tests
-//     let lock_path = target_dir.join("hermes_integration_cache.lock");
-//     let lock_file = fs::File::create(&lock_path).unwrap();
-//     lock_file.lock_exclusive().unwrap();
-
-//     let marker = cache_dir.join(".complete");
-//     assert!(marker.exists(), "Cache marker should exist after initialization");
-
-//     // 2. Corrupt the cache by removing the marker
-//     std::fs::remove_file(&marker).expect("Failed to remove marker");
-
-//     // 3. Create a dummy file to verify cleanup
-//     let dummy = cache_dir.join("dummy_corruption.txt");
-//     std::fs::write(&dummy, "corrupt").unwrap();
-
-//     // 4. Force re-initialization
-//     // We call the inner function directly while holding the lock
-//     ensure_cache_ready(&cache_dir).expect("Failed to recover cache");
-
-//     // 5. Verify cleanup and re-initialization
-//     assert!(marker.exists(), "Cache marker should be restored");
-//     assert!(!dummy.exists(), "Corrupt cache should have been wiped");
-
-//     lock_file.unlock().unwrap();
-
-//     Ok(())
-// }
 
 fn run_dirty_sandbox_test(path: &Path) -> datatest_stable::Result<()> {
     // Tests that Hermes correctly detects and fails when the source directory

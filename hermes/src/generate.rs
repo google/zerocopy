@@ -1256,6 +1256,17 @@ fn map_type(ty: &crate::parse::hkd::SafeType) -> String {
 /// pass-by-value bindings that are merely declared as mutable (`mut x: T`).
 /// Only true `&mut T` references are flagged with `is_mut_ref = true` to inform
 /// `generate_function` that it needs to unpack a tuple output from Aeneas.
+fn escape_lean_keyword(name: &str) -> String {
+    match name {
+        "theorem" | "axiom" | "variable" | "lemma" | "def" | "class" | "instance" | "structure"
+        | "inductive" | "from" | "have" | "show" | "calc" | "then" | "with" | "section"
+        | "namespace" | "end" | "import" | "open" | "attribute" | "universe" => {
+            format!("{}1", name)
+        }
+        _ => name.to_string(),
+    }
+}
+
 fn extract_args_metadata(
     func: &FunctionItem<crate::parse::hkd::Safe>,
     impl_struct_name: &Option<crate::parse::hkd::AstNode<syn::Type, crate::parse::hkd::Safe>>,
@@ -1271,7 +1282,7 @@ fn extract_args_metadata(
                 if let SafeType::Reference { mutability, .. } = ty {
                     is_mut_ref = *mutability;
                 }
-                ArgInfo { name: name.clone(), lean_type: map_type(ty), is_mut_ref }
+                ArgInfo { name: escape_lean_keyword(name), lean_type: map_type(ty), is_mut_ref }
             }
             SafeFnArg::Receiver { mutability, reference } => {
                 let lean_type = if let Some(t) = impl_struct_name {

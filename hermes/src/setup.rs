@@ -151,12 +151,16 @@ pub struct Toolchain {
 impl Toolchain {
     /// Resolves the toolchain manager and acquires a shared lock.
     pub fn resolve() -> Result<Self> {
-        let home = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
-            std::path::PathBuf::from(
-                std::env::var("CARGO_MANIFEST_DIR").unwrap_or_else(|_| ".".to_string()),
-            )
-            .join("target")
-            .join("hermes-home")
+        let home = if let Ok(dir) = std::env::var("HERMES_TOOLCHAIN_DIR") {
+            std::path::PathBuf::from(dir)
+        } else if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
+            let base = std::env::var("CARGO_MANIFEST_DIR")
+                .map(std::path::PathBuf::from)
+                // Fall back to current directory if CARGO_MANIFEST_DIR is not set,
+                // which can happen if the binary is executed directly rather than
+                // via `cargo run`.
+                .unwrap_or_else(|_| std::env::current_dir().unwrap());
+            base.join("target").join("hermes-home")
         } else {
             dirs::home_dir().ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?
         };
@@ -212,7 +216,13 @@ impl Toolchain {
         let bin_name = tool.name();
         let managed_path = self.bin_dir().join(bin_name);
 
-        if managed_path.exists() {
+        // If HERMES_USE_PATH_FOR_TOOLS is set, we ignore the managed toolchain
+        // and look for the tool in the system PATH. This is useful in tests
+        // to allow mocking tools via PATH shims, which would otherwise be
+        // bypassed by the managed toolchain's absolute paths.
+        if std::env::var("HERMES_USE_PATH_FOR_TOOLS").is_ok() {
+            std::process::Command::new(bin_name)
+        } else if managed_path.exists() {
             std::process::Command::new(managed_path)
         } else {
             std::process::Command::new(bin_name)
@@ -312,8 +322,158 @@ fn extract_artifact(data: &[u8], target_dir: &Path) -> Result<()> {
     Ok(())
 }
 
+/// Ensures that `elan` (the Lean toolchain manager) is installed on the
+/// system. If it is not found in the system `PATH`, it downloads the latest
+/// release from GitHub and runs `elan-init` to install it for the current
+/// user. It also attempts to add the `elan` bin directory to the current
+/// process's `PATH` to ensure subsequent commands can find it immediately.
+fn ensure_elan_installed() -> Result<()> {
+    println!("Checking for elan...");
+    let status = std::process::Command::new("elan")
+        .arg("--version")
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status();
+
+    if status.is_ok() && status.unwrap().success() {
+        println!("elan is already installed.");
+        return Ok(());
+    }
+
+    println!("elan not found. Installing elan...");
+    let platform = Platform::detect()?;
+    let arch = match platform {
+        Platform::LinuxX86_64 => "x86_64-unknown-linux-gnu",
+        Platform::LinuxAArch64 => "aarch64-unknown-linux-gnu",
+        Platform::MacosAArch64 => "aarch64-apple-darwin",
+        Platform::MacosX86_64 => "x86_64-apple-darwin",
+    };
+
+    let url =
+        format!("https://github.com/leanprover/elan/releases/latest/download/elan-{}.tar.gz", arch);
+
+    println!("Downloading elan from {}...", url);
+    let response = reqwest::blocking::get(&url).context("Failed to download elan")?;
+    if !response.status().is_success() {
+        bail!("Failed to download elan: HTTP {}", response.status());
+    }
+    let data = response.bytes().context("Failed to read elan response")?;
+
+    let temp_dir = std::env::temp_dir();
+    let elan_extract_dir = temp_dir.join("elan-extract-hermes");
+    fs::create_dir_all(&elan_extract_dir).context("Failed to create elan extract dir")?;
+
+    extract_artifact(&data, &elan_extract_dir)?;
+
+    let elan_init_path = elan_extract_dir.join("elan-init");
+
+    let status = std::process::Command::new(&elan_init_path)
+        .args(["-y", "--default-toolchain", "none"])
+        .status()
+        .context("Failed to run elan-init")?;
+
+    let _ = fs::remove_dir_all(&elan_extract_dir);
+
+    if !status.success() {
+        bail!("elan-init failed");
+    }
+
+    // Add elan to PATH for current process
+    let home = dirs::home_dir().ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?;
+    let elan_bin = home.join(".elan").join("bin");
+    if elan_bin.exists() {
+        let path = std::env::var_os("PATH").unwrap_or_default();
+        let mut paths = std::env::split_paths(&path).collect::<Vec<_>>();
+        if !paths.contains(&elan_bin) {
+            paths.insert(0, elan_bin);
+            let new_path = std::env::join_paths(paths)?;
+            // SAFETY: This is a single-threaded setup context.
+            unsafe {
+                std::env::set_var("PATH", new_path);
+            }
+        }
+    }
+
+    println!("elan installed successfully.");
+    Ok(())
+}
+
+/// Installs the pinned Lean toolchain required by Hermes using `elan`.
+/// It checks the environment variable `HERMES_LEAN_TOOLCHAIN` to determine
+/// which version to install. If the version is already listed in `elan
+/// toolchain list`, it skips installation to save time.
+fn install_lean_toolchain() -> Result<()> {
+    let version = env!("HERMES_LEAN_TOOLCHAIN");
+    println!("Installing Lean toolchain {}...", version);
+
+    // Check if already installed
+    let output = std::process::Command::new("elan")
+        .args(["toolchain", "list"])
+        .output()
+        .context("Failed to run elan toolchain list")?;
+
+    if output.status.success() {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        if stdout.lines().any(|line| line.contains(version)) {
+            println!("Lean toolchain {} is already installed.", version);
+            return Ok(());
+        }
+    }
+
+    let status = std::process::Command::new("elan")
+        .args(["toolchain", "install", version])
+        .status()
+        .context("Failed to run elan toolchain install")?;
+
+    if !status.success() {
+        bail!("Failed to install Lean toolchain");
+    }
+
+    println!("Lean toolchain {} installed successfully.", version);
+    Ok(())
+}
+
+/// Pre-builds the Aeneas Lean library in the extracted toolchain directory.
+/// This prevents compiling the library from source when users verify their
+/// projects, which is slow and disk-heavy. It first attempts to fetch
+/// pre-compiled Mathlib artifacts using `lake exe cache get` to avoid
+/// compiling Mathlib from source, and then runs `lake build`.
+fn prebuild_lean_library(lean_dir: &Path) -> Result<()> {
+    println!("Pre-building Aeneas Lean library at {:?}...", lean_dir);
+
+    // Fetch Mathlib cache
+    println!("Fetching Mathlib cache...");
+    let status = std::process::Command::new("lake")
+        .args(["exe", "cache", "get"])
+        .current_dir(lean_dir)
+        .status()
+        .context("Failed to run `lake exe cache get`")?;
+
+    if !status.success() {
+        bail!("Failed to fetch Mathlib cache; refusing to build from scratch");
+    }
+
+    // Build the library
+    println!("Building Aeneas Lean library...");
+    let status = std::process::Command::new("lake")
+        .arg("build")
+        .current_dir(lean_dir)
+        .status()
+        .context("Failed to run `lake build`")?;
+
+    if !status.success() {
+        bail!("Failed to build Aeneas Lean library");
+    }
+
+    println!("Successfully pre-built Aeneas Lean library.");
+    Ok(())
+}
+
 /// Sets up the Hermes toolchain by downloading and extracting dependencies.
 pub fn run_setup() -> Result<()> {
+    ensure_elan_installed()?;
+    install_lean_toolchain()?;
+
     let mut toolchain = Toolchain::resolve()?;
     // Drop the shared lock acquired by resolve() so we can acquire an
     // exclusive one.
@@ -384,6 +544,13 @@ pub fn run_setup() -> Result<()> {
         let data = download_artifact(&url, &expected_archive_hash)?;
 
         extract_artifact(&data, &toolchain.root)?;
+
+        let lean_dir = toolchain.root.join("backends").join("lean");
+        if lean_dir.exists() {
+            prebuild_lean_library(&lean_dir)?;
+        } else {
+            log::warn!("Lean directory not found at {:?}", lean_dir);
+        }
 
         println!("Successfully installed toolchain v{tag}");
     } else {
