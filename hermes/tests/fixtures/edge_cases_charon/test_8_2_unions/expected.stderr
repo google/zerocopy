@@ -1,6 +1,6 @@
 Error: Aeneas failed for package 'test_8_2_unions' with status: exit status: 2
 stderr:
-Applied prepasses:  [----------------------------------------------------] 0/2 ⠋Applied prepasses:  [##########################--------------------------] 1/2 ⠋Applied prepasses:  [####################################################] 2/2 ✔️
+Applied prepasses:  [----------------------------------------------------] 0/2 ⠋Applied prepasses:  [##########################--------------------------] 1/2 ⠙Applied prepasses:  [####################################################] 2/2 ✔️
 Uncaught exception:
   
   (Failure

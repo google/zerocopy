@@ -11,7 +11,7 @@ The [main design document](docs/design/design.md) motivates Hermes and describes
 Install Hermes:
 
 ```
-cargo install cargo-hermes@0.1.0-alpha.7
+cargo install cargo-hermes@0.1.0-alpha.8
 ```
 
 Optionally, install the Charon and Aeneas toolchains from pre-built binaries:
