@@ -227,5 +227,12 @@ Some required targets logged failures:
 - Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891.Funs
 STDERR:
 warning: mathlib: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/mathlib' has local changes
+warning: plausible: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/plausible' has local changes
+warning: LeanSearchClient: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/LeanSearchClient' has local changes
+warning: importGraph: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/importGraph' has local changes
+warning: proofwidgets: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/proofwidgets' has local changes
+warning: aesop: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/aesop' has local changes
+warning: Qq: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/Qq' has local changes
 warning: batteries: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/batteries' has local changes
+warning: Cli: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/Cli' has local changes
 error: build failed
