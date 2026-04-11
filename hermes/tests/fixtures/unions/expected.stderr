@@ -1,6 +1,5 @@
 Error: Aeneas failed for package 'transform_lib' with status: exit status: 2
 stderr:
-Applied prepasses:  [----------------------------------------------------] 0/1 ⠋Applied prepasses:  [####################################################] 1/1 ⠋Applied prepasses:  [####################################################] 1/1 ✔️
 Uncaught exception:
   
   (Failure
