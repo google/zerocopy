@@ -229,8 +229,23 @@ mod util {
                     format!("Failed to create directory for lock file: {:?}", parent)
                 })?;
             }
-            std::fs::File::create(&lock_path)
-                .with_context(|| format!("Failed to create lock file at {:?}", lock_path))
+            // If the lock file already exists, we open it in read-only mode.
+            // This prevents failures if the file is read-only (e.g., after
+            // making the toolchain directory read-only), while still allowing
+            // us to acquire shared and exclusive locks on the file descriptor.
+            if lock_path.exists() {
+                std::fs::OpenOptions::new()
+                    .read(true)
+                    .open(&lock_path)
+                    .with_context(|| format!("Failed to open lock file at {:?}", lock_path))
+            } else {
+                std::fs::OpenOptions::new()
+                    .read(true)
+                    .write(true)
+                    .create(true)
+                    .open(&lock_path)
+                    .with_context(|| format!("Failed to create lock file at {:?}", lock_path))
+            }
         }
     }
 }

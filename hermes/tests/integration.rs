@@ -180,9 +180,15 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
 
         // 1. Resolve global pinned toolchain path
         let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
+        // We use a separate home directory for tests to avoid polluting the
+        // user's `~/.hermes` directory and to ensure a clean environment.
+        let test_home = cache_dir.parent().unwrap().join("hermes-test-home");
+        fs::create_dir_all(&test_home).unwrap();
+
         let setup_status = Command::new(cargo_bin)
             .arg("setup")
             .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
+            .env("HOME", &test_home)
             .status()
             .expect("Failed to execute cargo-hermes setup");
         if !setup_status.success() {
@@ -192,6 +198,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
         let output = Command::new(cargo_bin)
             .arg("toolchain-path")
             .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
+            .env("HOME", &test_home)
             .output()
             .expect("Failed to execute cargo-hermes toolchain-path");
         if !output.status.success() {
