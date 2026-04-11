@@ -180,9 +180,15 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
 
         // 1. Resolve global pinned toolchain path
         let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
+        // We use a separate home directory for tests to avoid polluting the
+        // user's `~/.hermes` directory and to ensure a clean environment.
+        let test_home = cache_dir.parent().unwrap().join("hermes-test-home");
+        fs::create_dir_all(&test_home).unwrap();
+
         let setup_status = Command::new(cargo_bin)
             .arg("setup")
             .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
+            .env("HOME", &test_home)
             .status()
             .expect("Failed to execute cargo-hermes setup");
         if !setup_status.success() {
@@ -192,6 +198,7 @@ fn ensure_cache_ready(cache_dir: &Path) -> Result<(), anyhow::Error> {
         let output = Command::new(cargo_bin)
             .arg("toolchain-path")
             .env_remove("__ZEROCOPY_LOCAL_DEV") // So that Hermes looks in `$HOME` for toolchains, not `target`
+            .env("HOME", &test_home)
             .output()
             .expect("Failed to execute cargo-hermes toolchain-path");
         if !output.status.success() {
@@ -1409,6 +1416,7 @@ fn assert_output_file(
             .replace(cache_path_str, "[CACHE_ROOT]")
             .replace(home_path_str, "[HOME]")
             .replace(target_path_str, "[TARGET_DIR]"),
+        test_name == "setup_e2e",
     );
 
     if bless {
@@ -1879,7 +1887,7 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
 // - Local IP/port combinations used in mock servers (replaced with
 //   `127.0.0.1:<PORT>`)
 // - Rustup toolchain paths (replaced with `[RUSTUP_TOOLCHAIN]`)
-fn sanitize_output(output: &str) -> String {
+fn sanitize_output(output: &str, sanitize_sorry: bool) -> String {
     let re_thread_id = regex::Regex::new(r"thread '([^']+)' \(\d+\) panicked").unwrap();
     let re_file_lock =
         regex::Regex::new(r"(?m)^.*Blocking waiting for file lock on.*$\n?").unwrap();
@@ -1896,6 +1904,15 @@ fn sanitize_output(output: &str) -> String {
     // Lake's build progress indicators are volatile as they depend on the hit/miss
     // state of the persistent `worker_caches/<ID>/` directory. We strip the entire line.
     let re_lake_progress = regex::Regex::new(r"(?m)^.*\[\d+/\d+\].*$\n?").unwrap();
+    // Aeneas pre-built library might produce warnings about `sorry` usage.
+    // We strip them to make test output deterministic.
+    let re_sorry_warning = regex::Regex::new(r"(?m)^.*declaration uses `sorry`.*$\n?").unwrap();
+    // Aeneas progress bars contain volatile spinner characters. We strip them.
+    let re_applied_prepasses = regex::Regex::new(r"(?m)^.*Applied prepasses:.*$\n?").unwrap();
+    // Pre-building Aeneas Lean library produces volatile output depending on cache state.
+    let re_prebuild_output = regex::Regex::new(r"(?m)^(Pre-building Aeneas Lean library|Fetching Mathlib cache|installing leantar|Fetching ProofWidgets|Current branch:|Using cache|Attempting to download|Decompressing|Unpacked in|Completed successfully!|Building Aeneas Lean library|Build completed successfully|Successfully pre-built).*$\n?").unwrap();
+    // Strip ANSI escape codes.
+    let re_ansi_escape = regex::Regex::new(r"\x1B\[[0-9;]*[a-zA-Z]").unwrap();
 
     let mut clean = output.to_string();
 
@@ -1911,6 +1928,12 @@ fn sanitize_output(output: &str) -> String {
     clean = re_rustup.replace_all(&clean, "[RUSTUP_TOOLCHAIN]").into_owned();
     clean = re_elan.replace_all(&clean, "[ELAN_TOOLCHAIN]").into_owned();
     clean = re_lake_progress.replace_all(&clean, "").into_owned();
+    clean = re_applied_prepasses.replace_all(&clean, "").into_owned();
+    clean = re_prebuild_output.replace_all(&clean, "").into_owned();
+    clean = re_ansi_escape.replace_all(&clean, "").into_owned();
+    if sanitize_sorry {
+        clean = re_sorry_warning.replace_all(&clean, "").into_owned();
+    }
 
     clean
 }
