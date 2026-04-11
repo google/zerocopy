@@ -4,6 +4,6 @@ Behavior: Tests translation of function arguments bearing keyword names (e.g. `t
 """
 
 [test]
-expected_status = "failure"
+expected_status = "success"
 stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

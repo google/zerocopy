@@ -1,2 +1,6 @@
+Checking for elan...
+elan is already installed.
+Installing Lean toolchain leanprover/lean4:v4.28.0-rc1...
+Lean toolchain leanprover/lean4:v4.28.0-rc1 is already installed.
 Downloading: http://127.0.0.1:<PORT>/build-2026.04.07.112215-42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4/aeneas-linux-x86_64.tar.gz
 Successfully installed toolchain vbuild-2026.04.07.112215-42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4
