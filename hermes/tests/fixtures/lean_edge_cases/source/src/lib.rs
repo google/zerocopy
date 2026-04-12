@@ -1,10 +1,10 @@
-/// ```hermes, unsafe(axiom)
+/// ```anneal, unsafe(axiom)
 /// ```
 unsafe fn unsafe_axiom(x: u32) -> u32 {
     x
 }
 
-/// ```hermes, unsafe(axiom)
+/// ```anneal, unsafe(axiom)
 /// context:
 /// -- Empty axiom section should default to something safe or be ignored
 /// ```
@@ -16,7 +16,7 @@ fn collision_args(result: u32, old_result: u32, ret: u32) -> u32 {
     result + old_result + ret
 }
 
-/// ```hermes
+/// ```anneal
 /// context:
 /// requires: ret > 0 -- 'ret' as argument name vs binder
 /// ensures:
@@ -26,7 +26,7 @@ fn collision_args(result: u32, old_result: u32, ret: u32) -> u32 {
 unsafe fn collision_spec(ret: u32) {
 }
 
-/// ```hermes
+/// ```anneal
 /// context:
 /// -- Multiline complex spec
 /// requires (h_req0):

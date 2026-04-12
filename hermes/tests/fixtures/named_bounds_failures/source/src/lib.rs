@@ -1,9 +1,9 @@
-/// This file contains failure cases for the Hermes named bounds feature.
+/// This file contains failure cases for the Anneal named bounds feature.
 /// We test both validation errors (rust-level parsing and validation)
 /// and verification errors (Lean-level theorem failures).
 
 /// 1. Multiple anon requires clauses
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires:
 ///   ///   ///   x > 0
 /// requires:
@@ -14,7 +14,7 @@ unsafe fn fail_multiple_anon_requires(x: u32, y: u32) {
 
 
 /// 2. Multiple anon ensures clauses
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures:
 ///   ///   ///   ret == x
 /// ensures:
@@ -26,7 +26,7 @@ fn fail_multiple_anon_ensures(x: u32, y: u32) -> u32 {
 
 
 /// 4. Duplicate clause name
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires (h_same):
 ///   ///   ///   x > 0
 /// ensures (h_same):
@@ -41,7 +41,7 @@ unsafe fn fail_duplicate_clause_name(x: u32) -> u32 {
 
 
 /// 5. Mixing named and anon proofs
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures (h_ensures):
 ///   ///   ///   ret = x
 /// proof context:
@@ -54,7 +54,7 @@ fn fail_mixing_named_and_anon_proofs(x: u32) -> u32 {
 
 
 /// 8. Mixing named and anon ensures
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures (h_err):
 ///   ///   ///   ret = x
 /// ensures:
@@ -71,7 +71,7 @@ fn fail_mix_named_anon_ensures(x: u32) -> u32 {
 ///
 /// Trying to name a `proof context` with a trailing colon natively aborts the parser!
 /// `Error: "proof context" sections cannot be named.`
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// proof context (foo):
 ///   have h: 1 = 1 := by simp
 /// ```
@@ -84,7 +84,7 @@ fn fail_name_unnamable_section(x: u32) -> u32 {
 ///
 /// Ensures identifiers strictly follow `[a-zA-Z_][a-zA-Z0-9_]*`.
 /// `Error: Invalid bound name 123invalid.`
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires (123invalid):
 ///   ///   ///   x > 0
 /// ```
@@ -96,7 +96,7 @@ unsafe fn fail_invalid_bound_name(x: u32) -> u32 {
 /// 18. Empty bound name
 ///
 /// Submitting an empty name cleanly aborts the parser.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires ():
 ///   x > 0
 /// ```
@@ -108,7 +108,7 @@ unsafe fn fail_empty_bound_name(x: u32) -> u32 {
 /// 19. Missing colon after name
 ///
 /// Omitting the colon after a named bound creates a parser error.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires (True):
 /// ensures (h_same):
 ///   ///   ///   ret = x
@@ -122,7 +122,7 @@ unsafe fn fail_missing_colon_creates_error(x: u32) -> u32 {
 
 
 /// 21. Naming a bound a Lean keyword (requires)
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires (if):
 ///   ///   ///   x > 0
 /// ```
@@ -132,7 +132,7 @@ unsafe fn fail_lean_keyword_requires(x: u32) -> u32 {
 
 
 /// 22. Naming a bound a Lean keyword (ensures)
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures (then):
 ///   ///   ///   ret = x
 /// ```
@@ -142,7 +142,7 @@ fn fail_lean_keyword_ensures(x: u32) -> u32 {
 
 
 /// 24. Duplicate proof names
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures (e1):
 ///   ret = x
 /// proof (e1):
@@ -156,7 +156,7 @@ fn fail_duplicate_proof_names(x: u32) -> u32 {
 
 
 /// 25. Mixing named and anon requires
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires (h_err):
 ///   x > 0
 /// requires:

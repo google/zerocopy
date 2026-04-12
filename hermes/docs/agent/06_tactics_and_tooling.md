@@ -1,13 +1,13 @@
 # Module 6: Tactics and Tooling
 
-While Hermes completely abstracts the boilerplate of theorem generation, you still need to write the mathematical proofs for your `requires` and `ensures` bounds. 
+While Anneal completely abstracts the boilerplate of theorem generation, you still need to write the mathematical proofs for your `requires` and `ensures` bounds. 
 
 This module serves as a survival dictionary for the most common Lean 4 tactics and Aeneas APIs you will encounter.
 
 ## 1. The Core Tactics
 
 ### `scalar_tac`
-This is Aeneas's custom arithmetic solver, and arguably the most important tactic in Hermes. 
+This is Aeneas's custom arithmetic solver, and arguably the most important tactic in Anneal. 
 *   **What it does:** It automatically proves linear arithmetic inequalities and equalities involving bounded integers (e.g., `Usize.val ≤ Usize.max`). It natively understands the `.val` unwrapping of Aeneas primitives.
 *   **When to use it:** Almost constantly. If a bound is purely arithmetic (e.g., proving an index is within a slice length, or an offset doesn't overflow `isize`), `scalar_tac` solves it.
 *   **Limitations:** It only handles linear arithmetic (addition, subtraction, multiplication by constants). If your proof involves non-linear arithmetic (like `x * y > z` or modulo operations), `scalar_tac` will fail and you must manually apply algebraic theorems before calling it.
@@ -19,11 +19,11 @@ The "simplify all" tactic.
 
 ### `intro`
 *   **What it does:** When your goal is a function or an implication (e.g., `A → B`), `intro x` takes `A` from the goal, assumes it is true, and adds it to your local context as hypothesis `x`, leaving `B` as the new goal.
-*   **When to use it:** Primarily when writing custom lemmas or manual WP progress proofs that involve implications, or when unpacking the `Option`/`Result` matching logic. (Note: You do not need `intro` for your preconditions; Hermes natively destructured them into your context using `rcases`).
+*   **When to use it:** Primarily when writing custom lemmas or manual WP progress proofs that involve implications, or when unpacking the `Option`/`Result` matching logic. (Note: You do not need `intro` for your preconditions; Anneal natively destructured them into your context using `rcases`).
 
 ### `eval_progress` / `progress`
 *   **What they do:** These tactics "step" through the Aeneas Weakest Precondition (WP) evaluator. If you have a sequence of statements in a function, `progress` handles the WP extraction to move execution to the next line of code.
-*   **WARNING IN HERMES:** Due to Orthogonal WP (see Module 5), the progress goal evaluates entirely independently from your correctness `proof:` blocks, using the generated `eval_progress` tactic. You cannot use `progress` inside a Correctness proof because the WP state is already destructured. If `eval_progress` fails to automatically discharge the Progress goal, you must manually use `progress` inside an explicit `proof (h_progress):` block.
+*   **WARNING IN ANNEAL:** Due to Orthogonal WP (see Module 5), the progress goal evaluates entirely independently from your correctness `proof:` blocks, using the generated `eval_progress` tactic. You cannot use `progress` inside a Correctness proof because the WP state is already destructured. If `eval_progress` fails to automatically discharge the Progress goal, you must manually use `progress` inside an explicit `proof (h_progress):` block.
 
 ## 2. Tactic Combinators
 
@@ -54,7 +54,7 @@ If a proof compilation fails, you must immediately diagnose whether it is a **so
 
 **Solver Exhaustion (`autoParam` failure):**
 *   **Symptom:** The error output complains about `autoParam` failing, or says something like *"Missing explicit proof for named bound... Lean cannot automatically prove that this value satisfies the `isValid` type invariant."*
-*   **Cause:** The Hermes auto-solver (`verify_user_bound` or `verify_is_valid`) attempted to use `scalar_tac` and `simp_all`, but got stuck. 
+*   **Cause:** The Anneal auto-solver (`verify_user_bound` or `verify_is_valid`) attempted to use `scalar_tac` and `simp_all`, but got stuck. 
 *   **Fix:** You must provide a manual `proof (bound_name):` block to hold Lean's hand through the logic.
 
 **Syntax / Tactic Errors:**

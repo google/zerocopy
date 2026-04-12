@@ -1,0 +1,47 @@
+description = "Verify that anneal setup repairs missing or corrupted binaries."
+
+[test]
+setup_mock = true
+
+# Phase 1: Initial setup
+[[test.phases]]
+name = "Initial setup"
+args = ["setup"]
+
+[[test.phases]]
+name = "Verify initial setup"
+action = "assert_toolchain_binary charon bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836"
+
+# Phase 2: Delete charon and verify repair
+[[test.phases]]
+name = "Delete charon"
+action = "delete_toolchain_file charon"
+
+[[test.phases]]
+name = "Verify charon is missing"
+action = "assert_toolchain_binary charon missing"
+
+[[test.phases]]
+name = "Repair deleted charon"
+args = ["setup"]
+
+[[test.phases]]
+name = "Verify charon is restored"
+action = "assert_toolchain_binary charon bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836"
+
+# Phase 3: Corrupt aeneas and verify repair
+[[test.phases]]
+name = "Corrupt aeneas"
+action = "corrupt_toolchain_file aeneas"
+
+[[test.phases]]
+name = "Verify aeneas is corrupted"
+action = "assert_toolchain_binary aeneas corrupted"
+
+[[test.phases]]
+name = "Repair corrupted aeneas"
+args = ["setup"]
+
+[[test.phases]]
+name = "Verify aeneas is repaired"
+action = "assert_toolchain_binary aeneas 306d908964df4e54bfc57b2fc3d88809eace9e77ac639adf5c0f0d5a8574397e"

@@ -11,13 +11,13 @@ pub mod edge_cases_stress_test_11_4_namespace_bomb {
     }
     
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// proof (h_progress):
     ///   sorry
     /// proof context:
     ///   have h_foo : True := True.intro
     /// ```
-    pub fn dummy_hermes_padding() {}
+    pub fn dummy_anneal_padding() {}
 }
 
 pub mod edge_cases_stress_test_11_1_chain {
@@ -36,13 +36,13 @@ pub mod edge_cases_stress_test_11_1_chain {
     }
     
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// proof (h_progress):
     ///   sorry
     /// proof context:
     ///   have h_foo : True := True.intro
     /// ```
-    pub fn dummy_hermes_padding() {}
+    pub fn dummy_anneal_padding() {}
 }
 
 pub mod edge_cases_stress_test_11_3_cycle {
@@ -62,21 +62,21 @@ pub mod edge_cases_stress_test_11_3_cycle {
     }
     
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// proof (h_progress):
     ///   sorry
     /// proof context:
     ///   have h_foo : True := True.intro
     /// ```
-    pub fn dummy_hermes_padding() {}
+    pub fn dummy_anneal_padding() {}
 }
 
 pub mod deep_invocation {
     pub mod nested;
     
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// ```
-    fn _hermes_dummy() {}
+    fn _anneal_dummy() {}
 }
 

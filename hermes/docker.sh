@@ -10,7 +10,7 @@
 
 # This script executes commands inside a Docker container which has been
 # configured to support running integration tests. The container encapsulates
-# the toolchain dependencies (Rust, Lean 4, Aeneas, Charon) required by Hermes,
+# the toolchain dependencies (Rust, Lean 4, Aeneas, Charon) required by Anneal,
 # ensuring consistent execution across setups.
 set -eo pipefail
 
@@ -36,9 +36,9 @@ fi
 
 # Resolve the directory paths required to mount the workspace volume into the
 # container. This assumes that the script is located in the root of the
-# `hermes` workspace.
+# `anneal` workspace.
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-IMAGE_NAME="hermes-dev"
+IMAGE_NAME="anneal-dev"
 # To avoid pollution between different git worktrees, we generate a unique
 # volume ID for each worktree and store it in a file. This ensures that
 # each worktree gets its own isolated named volume for caching.
@@ -54,7 +54,7 @@ if [ ! -f "$VOLUME_ID_FILE" ]; then
     fi
 fi
 VOLUME_ID=$(cat "$VOLUME_ID_FILE" | tr -d '[:space:]')
-VOLUME_NAME="hermes-cache-$VOLUME_ID"
+VOLUME_NAME="anneal-cache-$VOLUME_ID"
 
 BUILD_CACHE=$(mktemp)
 
@@ -128,11 +128,11 @@ if ! "${DOCKER_CMD[@]}" volume inspect $VOLUME_NAME >/dev/null 2>&1; then
 fi
 
 # Use the volume for Cargo cache and target in local development.
-# This will obscure the image cache in /opt/cargo and /opt/hermes_target,
+# This will obscure the image cache in /opt/cargo and /opt/anneal_target,
 # causing a double-build on the first run, but it allows for persistent
 # caching across runs in local dev.
 DOCKER_FLAGS+=("-e" "CARGO_HOME=/cache/cargo_home")
-DOCKER_FLAGS+=("-e" "CARGO_TARGET_DIR=/cache/hermes_target")
+DOCKER_FLAGS+=("-e" "CARGO_TARGET_DIR=/cache/anneal_target")
 
 # Mount the volume to /cache.
 DOCKER_FLAGS+=("-v" "$VOLUME_NAME:/cache")
@@ -163,18 +163,18 @@ fi
 # by Lean when it spawns many threads during compilation and verification.
 DOCKER_FLAGS+=("--pids-limit=-1")
 
-# Forward all environment variables prefixed with 'HERMES_' to the container.
-# This allows developers to interactively override Hermes runtime parameters.
+# Forward all environment variables prefixed with 'ANNEAL_' to the container.
+# This allows developers to interactively override Anneal runtime parameters.
 while IFS='=' read -r name value; do
-    if [[ $name == HERMES_* ]]; then
+    if [[ $name == ANNEAL_* ]]; then
         DOCKER_FLAGS+=("-e" "$name")
     fi
 done < <(env)
 
-# Forward standard Rust and Hermes tooling environment variables to the
+# Forward standard Rust and Anneal tooling environment variables to the
 # container if they are defined in the host environment.
 #
-# FIXME: Maybe prefix `BLESS` as `HERMES_BLESS` so it's automatically forwarded
+# FIXME: Maybe prefix `BLESS` as `ANNEAL_BLESS` so it's automatically forwarded
 # by the logic above?
 for var in BLESS RUST_LOG RUST_BACKTRACE RUSTFLAGS; do
     if [ "${!var+x}" ]; then

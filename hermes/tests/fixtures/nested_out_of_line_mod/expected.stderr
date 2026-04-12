@@ -1,13 +1,13 @@
 
-=== Hermes Verification Failed ===
+=== Anneal Verification Failed ===
 
-[Hermes Error] hermes::nested_item
+[Anneal Error] anneal::nested_item
 
-  × Nested item error: Hermes cannot verify items defined inside function
+  × Nested item error: Anneal cannot verify items defined inside function
   │ bodies or other blocks. Move this item to the module level if you wish to
   │ verify it.
    ╭─[[PROJECT_ROOT]/src/hidden.rs:1:1]
- 1 │ ╭─▶ /// ```lean, hermes
+ 1 │ ╭─▶ /// ```lean, anneal
  2 │ │   /// context:
  3 │ │   /// theorem secret_proof : False := sorry
  4 │ │   /// ```

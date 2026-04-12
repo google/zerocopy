@@ -1,5 +1,5 @@
 pub fn foo() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
 pub fn dummy() {}

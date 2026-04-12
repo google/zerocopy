@@ -1,5 +1,5 @@
 fn outer() {
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// ```
     fn inner() {}
 }

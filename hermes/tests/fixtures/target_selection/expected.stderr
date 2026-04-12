@@ -1,13 +1,13 @@
    Compiling selector v0.1.0 ([PROJECT_ROOT])
-warning: when processing starting pattern `crate::_hermes_dummy`: path `crate::_hermes_dummy` does not correspond to any item
+warning: when processing starting pattern `crate::_anneal_dummy`: path `crate::_anneal_dummy` does not correspond to any item
 
 
 thread 'rustc' (<ID>) panicked at src/errors.rs:278:13:
-when processing starting pattern `crate::_hermes_dummy`: path `crate::_hermes_dummy` does not correspond to any item
+when processing starting pattern `crate::_anneal_dummy`: path `crate::_anneal_dummy` does not correspond to any item
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ERROR Compilation panicked
 error: could not compile `selector` (lib)
 
 Caused by:
-  process didn't exit successfully: `[CACHE_ROOT]/charon-driver [RUSTUP_TOOLCHAIN]/bin/rustc --crate-name selector --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=<HASH> -C extra-filename=-<HASH> --out-dir [PROJECT_ROOT]/target/hermes/cargo_target/x86_64-unknown-linux-gnu/debug/deps --target x86_64-unknown-linux-gnu -C incremental=[PROJECT_ROOT]/target/hermes/cargo_target/x86_64-unknown-linux-gnu/debug/incremental -L dependency=[PROJECT_ROOT]/target/hermes/cargo_target/x86_64-unknown-linux-gnu/debug/deps -L dependency=[PROJECT_ROOT]/target/hermes/cargo_target/debug/deps --remap-path-prefix=tests/fixtures/target_selection=/dummy` (exit status: 101)
+  process didn't exit successfully: `[CACHE_ROOT]/charon-driver [RUSTUP_TOOLCHAIN]/bin/rustc --crate-name selector --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=<HASH> -C extra-filename=-<HASH> --out-dir [PROJECT_ROOT]/target/anneal/cargo_target/x86_64-unknown-linux-gnu/debug/deps --target x86_64-unknown-linux-gnu -C incremental=[PROJECT_ROOT]/target/anneal/cargo_target/x86_64-unknown-linux-gnu/debug/incremental -L dependency=[PROJECT_ROOT]/target/anneal/cargo_target/x86_64-unknown-linux-gnu/debug/deps -L dependency=[PROJECT_ROOT]/target/anneal/cargo_target/debug/deps --remap-path-prefix=tests/fixtures/target_selection=/dummy` (exit status: 101)
 Error: Charon failed with status: exit status: 101

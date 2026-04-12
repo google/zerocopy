@@ -1,6 +1,6 @@
 /// Performs checked addition.
 ///
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures: match ret with
 ///   | .none => (x : Int) + (y : Int) > I32.max ∨ (x : Int) + (y : Int) < I32.min
 ///   | .some v => (v : Int) = (x : Int) + (y : Int)

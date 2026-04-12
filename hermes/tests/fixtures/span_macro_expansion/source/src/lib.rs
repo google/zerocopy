@@ -1,5 +1,5 @@
 macro_rules! f { () => {0} } fn m() { f!() }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
 pub fn dummy() {}

@@ -19,15 +19,15 @@ use cargo_metadata::{Message, diagnostic::DiagnosticLevel};
 
 use crate::{
     parse::{ParsedItem, attr::FunctionBlockInner},
-    resolve::{Args, HermesTargetKind, LockedRoots},
-    scanner::HermesArtifact,
+    resolve::{Args, AnnealTargetKind, LockedRoots},
+    scanner::AnnealArtifact,
     setup::Tool,
 };
 
 /// Runs Charon on the specified packages to generate LLBC artifacts.
 ///
 /// This function requires `LockedRoots` to ensure that it has exclusive access
-/// to the `llbc` output directory. It iterates over each `HermesArtifact`,
+/// to the `llbc` output directory. It iterates over each `AnnealArtifact`,
 /// constructs the appropriate `charon` command, and executes it.
 ///
 /// It handles:
@@ -37,7 +37,7 @@ use crate::{
 ///   minimize extraction scope.
 /// - **Output Handling**: capturing stdout/stderr, parsing JSON compiler
 ///   messages, and rendering them using `DiagnosticMapper`.
-pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact]) -> Result<()> {
+pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[AnnealArtifact]) -> Result<()> {
     let llbc_root = roots.llbc_root();
     std::fs::create_dir_all(&llbc_root).context("Failed to create LLBC output directory")?;
 
@@ -56,7 +56,7 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
         cmd.arg("cargo");
         cmd.arg("--preset=aeneas");
 
-        // Output artifacts to target/hermes/<hash>/llbc
+        // Output artifacts to target/anneal/<hash>/llbc
         let llbc_path = artifact.llbc_path(roots);
         log::debug!("Writing .llbc file to {}", llbc_path.display());
         cmd.arg("--dest-file").arg(llbc_path);
@@ -67,7 +67,7 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
         for item in &artifact.items {
             if let ParsedItem::Function(func) = &item.item {
                 // Check if the function body is an Axiom (unsafe)
-                if let FunctionBlockInner::Axiom { .. } = func.hermes.inner {
+                if let FunctionBlockInner::Axiom { .. } = func.anneal.inner {
                     // Mark `unsafe(axiom)` functions as opaque in Charon. This
                     // instructs Aeneas to treat the function as external and
                     // generate a template file (`FunsExternal_Template.lean`)
@@ -101,7 +101,7 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
             // FIXME: Pass the list of entry points to Charon via a file instead
             // of the command line.
             bail!(
-                "The list of Hermes entry points for package '{}' is too large ({} bytes). \n\
+                "The list of Anneal entry points for package '{}' is too large ({} bytes). \n\
                  This exceeds safe OS command-line limits.",
                 artifact.name.package_name,
                 start_from_str.len()
@@ -118,7 +118,7 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
 
         cmd.arg("--manifest-path").arg(&artifact.manifest_path);
 
-        use HermesTargetKind::*;
+        use AnnealTargetKind::*;
         match artifact.target_kind {
             Lib | RLib | ProcMacro | CDyLib | DyLib | StaticLib => cmd.arg("--lib"),
             Bin => cmd.args(["--bin", &artifact.name.target_name]),
@@ -247,18 +247,18 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[HermesArtifact])
 /// Checks that the available `charon` binary matches the expected version.
 ///
 /// This check ensures that the installed `charon` tool is compatible with
-/// Hermes. Mismatched versions can lead to subtle errors during LLBC
+/// Anneal. Mismatched versions can lead to subtle errors during LLBC
 /// generation or parsing due to format changes.
 ///
 /// The expected version is defined in `Cargo.toml` and baked into the binary
-/// via `build.rs` and the `HERMES_CHARON_EXPECTED_VERSION` environment
+/// via `build.rs` and the `ANNEAL_CHARON_EXPECTED_VERSION` environment
 /// variable.
 fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
     // Set in `.cargo/config.toml` in the repository root.
     let setup_cmd = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
         "cargo run setup"
     } else {
-        "cargo hermes setup"
+        "cargo anneal setup"
     };
 
     let output = toolchain.command(Tool::Charon).arg("version").output().with_context(|| {
@@ -272,7 +272,7 @@ fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
     }
 
     let version = String::from_utf8_lossy(&output.stdout).trim().to_string();
-    let expected = env!("HERMES_CHARON_EXPECTED_VERSION");
+    let expected = env!("ANNEAL_CHARON_EXPECTED_VERSION");
 
     if version != expected {
         bail!(
@@ -294,7 +294,7 @@ fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
 /// installed via rustup. If it is missing, we provide a helpful error message
 /// with the installation command.
 fn check_rustup_toolchain() -> Result<()> {
-    let nightly_version = env!("HERMES_CHARON_RUST_TOOLCHAIN");
+    let nightly_version = env!("ANNEAL_CHARON_RUST_TOOLCHAIN");
 
     let output = Command::new("rustup")
         .args(["toolchain", "list"])

@@ -4,7 +4,7 @@ pub union U {
     pub f2: f32,
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:

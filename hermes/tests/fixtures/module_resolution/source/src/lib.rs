@@ -1,5 +1,5 @@
 // This file serves as the core test case for various module resolution
-// strategies supported by Rust and the Hermes parser.
+// strategies supported by Rust and the Anneal parser.
 //
 // We include a variety of module structures to ensure that Charon correctly
 // spans the file tree during extraction.
@@ -14,7 +14,7 @@ pub mod bar;
 // tree rather than reading from an external file, to verify that lexical
 // scope boundaries are correctly processed natively.
 pub mod baz {
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// ```
     pub fn inline() {}
 }
@@ -52,6 +52,6 @@ pub mod d;
 #[path = "../extra.rs"]
 pub mod extra;
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
 pub fn root_dummy() {}

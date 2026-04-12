@@ -1,6 +1,6 @@
 pub fn shared() {}
 
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
-fn _hermes_dummy() {}
+fn _anneal_dummy() {}

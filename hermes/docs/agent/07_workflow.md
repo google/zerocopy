@@ -1,6 +1,6 @@
-# How to write a Hermes proof
+# How to write an Anneal proof
 
-This document contains advice on how to structure your thinking and workflow when writing Hermes proofs.
+This document contains advice on how to structure your thinking and workflow when writing Anneal proofs.
 
 ## Philosophy
 
@@ -21,7 +21,7 @@ The following is a workflow for solving [problem]. It is recursive – you will
 3. You are now ready to start writing code.
     1. Start with the specification (`requires` and `ensures` clauses).
     2. Get these working with the `verify` subcommand and the `--allow-sorry` flag, omitting any proofs.
-    3. Iterate until everything verifies, implying that your specification is internally consistent. This does not necessarily mean that it's the *right* specification, only that Hermes understands it.
+    3. Iterate until everything verifies, implying that your specification is internally consistent. This does not necessarily mean that it's the *right* specification, only that Anneal understands it.
     4. Run the `expand` subcommand to see what Lean is generated, and make sure it looks like what you expect. This will help you when you start writing proofs.
 4. Move on to the proof.
     1. First, break the proof down into lemmas. Spend as much time as you need thinking through the lemmas and how they fit together to prove the main proof.
@@ -48,7 +48,7 @@ When writing a proof, follow these tips:
 
 ## Specifics
 
-You will use these two commands to interact with Hermes. Both accept `--help`.
+You will use these two commands to interact with Anneal. Both accept `--help`.
 
 1. Run `cargo run verify` to verify a target.
 2. Use `cargo run expand` to see the generated Lean code.

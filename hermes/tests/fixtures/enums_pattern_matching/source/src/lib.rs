@@ -4,7 +4,7 @@ pub enum Enum {
     B(bool),
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// isValid self := match self with
 ///   | Enum.A x => x > 10
 ///   | Enum.B b => b

@@ -7,7 +7,7 @@
   │ variables
     ╭─[[PROJECT_ROOT]/src/lib.rs:15:50]
  14 │ /// proof:
- 15 │ ///   simp [make_valid, Hermes.IsValid.isValid]; decide
+ 15 │ ///   simp [make_valid, Anneal.IsValid.isValid]; decide
     ·                                                  ───┬──
     ·                                                     ╰── here
  16 │ /// ```
@@ -17,29 +17,29 @@
   │   make_valid
   │ 
   │ Hint: Omit it from the simp argument list.
-  │   simp [m̵a̵k̵e̵_̵v̵a̵l̵i̵d̵,̵ ̵Hermes.IsValid.isValid]
+  │   simp [m̵a̵k̵e̵_̵v̵a̵l̵i̵d̵,̵ ̵Anneal.IsValid.isValid]
   │ 
   │ Note: This linter can be disabled with `set_option linter.unusedSimpArgs
   │ false`
     ╭─[[PROJECT_ROOT]/src/lib.rs:15:13]
  14 │ /// proof:
- 15 │ ///   simp [make_valid, Hermes.IsValid.isValid]; decide
+ 15 │ ///   simp [make_valid, Anneal.IsValid.isValid]; decide
     ·             ─────┬────
     ·                  ╰── here
  16 │ /// ```
     ╰────
 
   ⚠ This simp argument is unused:
-  │   Hermes.IsValid.isValid
+  │   Anneal.IsValid.isValid
   │ 
   │ Hint: Omit it from the simp argument list.
-  │   simp [make_valid,̵ ̵H̵e̵r̵m̵e̵s̵.̵I̵s̵V̵a̵l̵i̵d̵.̵i̵s̵V̵a̵l̵i̵d̵]
+  │   simp [make_valid,̵ ̵A̵n̵n̵e̵a̵l̵.̵I̵s̵V̵a̵l̵i̵d̵.̵i̵s̵V̵a̵l̵i̵d̵]
   │ 
   │ Note: This linter can be disabled with `set_option linter.unusedSimpArgs
   │ false`
     ╭─[[PROJECT_ROOT]/src/lib.rs:15:25]
  14 │ /// proof:
- 15 │ ///   simp [make_valid, Hermes.IsValid.isValid]; decide
+ 15 │ ///   simp [make_valid, Anneal.IsValid.isValid]; decide
     ·                         ───────────┬──────────
     ·                                    ╰── here
  16 │ /// ```
@@ -54,7 +54,7 @@
   │ variables
     ╭─[[PROJECT_ROOT]/src/lib.rs:28:48]
  27 │ /// proof:
- 28 │ ///   simp [make_bad, Hermes.IsValid.isValid]; decide
+ 28 │ ///   simp [make_bad, Anneal.IsValid.isValid]; decide
     ·                                                ───┬──
     ·                                                   ╰── here
  29 │ /// ```
@@ -64,32 +64,32 @@
   │   make_bad
   │ 
   │ Hint: Omit it from the simp argument list.
-  │   simp [m̵a̵k̵e̵_̵b̵a̵d̵,̵ ̵Hermes.IsValid.isValid]
+  │   simp [m̵a̵k̵e̵_̵b̵a̵d̵,̵ ̵Anneal.IsValid.isValid]
   │ 
   │ Note: This linter can be disabled with `set_option linter.unusedSimpArgs
   │ false`
     ╭─[[PROJECT_ROOT]/src/lib.rs:28:13]
  27 │ /// proof:
- 28 │ ///   simp [make_bad, Hermes.IsValid.isValid]; decide
+ 28 │ ///   simp [make_bad, Anneal.IsValid.isValid]; decide
     ·             ────┬───
     ·                 ╰── here
  29 │ /// ```
     ╰────
 
   ⚠ This simp argument is unused:
-  │   Hermes.IsValid.isValid
+  │   Anneal.IsValid.isValid
   │ 
   │ Hint: Omit it from the simp argument list.
-  │   simp [make_bad,̵ ̵H̵e̵r̵m̵e̵s̵.̵I̵s̵V̵a̵l̵i̵d̵.̵i̵s̵V̵a̵l̵i̵d̵]
+  │   simp [make_bad,̵ ̵A̵n̵n̵e̵a̵l̵.̵I̵s̵V̵a̵l̵i̵d̵.̵i̵s̵V̵a̵l̵i̵d̵]
   │ 
   │ Note: This linter can be disabled with `set_option linter.unusedSimpArgs
   │ false`
     ╭─[[PROJECT_ROOT]/src/lib.rs:28:23]
  27 │ /// proof:
- 28 │ ///   simp [make_bad, Hermes.IsValid.isValid]; decide
+ 28 │ ///   simp [make_bad, Anneal.IsValid.isValid]; decide
     ·                       ───────────┬──────────
     ·                                  ╰── here
  29 │ /// ```
     ╰────
 
-Error: Lean verification failed. Consider running `cargo hermes generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.
+Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

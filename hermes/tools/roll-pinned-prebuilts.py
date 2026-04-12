@@ -30,7 +30,7 @@ DEFAULT_TIMEOUT = 30
 AENEAS_REPO = "AeneasVerif/aeneas"
 CHARON_REPO = "AeneasVerif/charon"
 
-# The set of platforms that Hermes supports for pre-built binaries. The script
+# The set of platforms that Anneal supports for pre-built binaries. The script
 # will download and checksum artifacts for each of these triples.
 PLATFORMS = ["linux-x86_64", "linux-aarch64", "macos-aarch64", "macos-x86_64"]
 
@@ -139,7 +139,7 @@ def calculate_sha256(data):
 
 
 def get_host_platform():
-    """Detects the current host platform in the format used by Hermes."""
+    """Detects the current host platform in the format used by Anneal."""
     system = platform.system().lower()
     machine = platform.machine().lower()
 
@@ -159,12 +159,12 @@ def get_host_platform():
 def get_asset_checksums(release, repo_name):
     """Downloads all platform archives and calculates required checksums.
 
-    Hermes requires two levels of verification:
+    Anneal requires two levels of verification:
     1. The checksum of the downloaded '.tar.gz' archive itself.
     2. The checksum of the primary binaries contained within the archive (e.g.,
        'aeneas', 'charon').
 
-    The latter allows Hermes to detect and repair corruption of individual
+    The latter allows Anneal to detect and repair corruption of individual
     binaries in a local toolchain installation.
 
     Also extracts the `charon` binary for the host platform to query the
@@ -212,7 +212,7 @@ def get_asset_checksums(release, repo_name):
                     found_binaries = set()
                     for member in tar.getmembers():
                         # We extract and checksum only the primary binaries that
-                        # Hermes needs to verify individually.
+                        # Anneal needs to verify individually.
                         name = Path(member.name).name
                         if name in ["charon", "charon-driver", "aeneas"]:
                             f = tar.extractfile(member)
@@ -298,7 +298,7 @@ def get_asset_checksums(release, repo_name):
 
 
 def update_cargo_toml(aeneas_meta, charon_meta, dry_run=False):
-    """Writes the updated toolchain metadata to Hermes's Cargo.toml.
+    """Writes the updated toolchain metadata to Anneal's Cargo.toml.
 
     This function uses tomlkit to parse and modify the document, which ensures
     that all existing comments and formatting in the original file are
@@ -328,15 +328,15 @@ def update_cargo_toml(aeneas_meta, charon_meta, dry_run=False):
         metadata = doc["package"]["metadata"]
 
         # Update the build_rs section, which defines the environment variables
-        # injected into the Hermes build process.
+        # injected into the Anneal build process.
         metadata["build_rs"]["aeneas_rev"] = aeneas_meta["commit"]
         metadata["build_rs"]["lean_toolchain"] = aeneas_meta["lean_toolchain"]
         metadata["build_rs"]["charon_version"] = charon_meta["version"]
         metadata["build_rs"]["charon_rust_toolchain"] = charon_meta["rust_toolchain"]
 
-        # Update the hermes.dependencies section, which defines the download URLs
-        # and checksums used by the 'cargo hermes setup' command.
-        deps = metadata["hermes"]["dependencies"]
+        # Update the anneal.dependencies section, which defines the download URLs
+        # and checksums used by the 'cargo anneal setup' command.
+        deps = metadata["anneal"]["dependencies"]
 
         # Remove separate Charon metadata if it exists.
         if "charon" in deps:
@@ -418,13 +418,13 @@ def main():
                     continue
 
                 # We still need to fetch the Charon version pinned by Aeneas to update
-                # Cargo.toml accurately. This ensures Hermes knows which LLBC format it
+                # Cargo.toml accurately. This ensures Anneal knows which LLBC format it
                 # expects.
                 print(f"Checking {a_tag}...")
                 charon_cargo = fetch_file_content(CHARON_REPO, c_commit, "charon/Cargo.toml")
                 charon_version = tomlkit.parse(charon_cargo)["package"]["version"]
 
-                # Fetch additional metadata required for the Hermes build process and the
+                # Fetch additional metadata required for the Anneal build process and the
                 # 'setup' command.
                 lean_toolchain = fetch_file_content(
                     AENEAS_REPO, a_commit, "backends/lean/lean-toolchain"

@@ -1,4 +1,4 @@
-/// ```lean, hermes
+/// ```lean, anneal
 /// context:
 /// theorem main_proof_thm : True := trivial
 /// ```

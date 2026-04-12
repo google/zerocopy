@@ -1,7 +1,7 @@
-// Parsing logic for extracting Hermes annotations from Rust source code.
+// Parsing logic for extracting Anneal annotations from Rust source code.
 //
 // This module provides the core infrastructure for traversing Rust source
-// files, identifying items annotated with `/// ````hermes` blocks, and
+// files, identifying items annotated with `/// ````anneal` blocks, and
 // extracting them for verification.
 
 pub mod attr;
@@ -20,10 +20,10 @@ use syn::{
 };
 
 use self::{
-    attr::{FunctionHermesBlock, ImplHermesBlock, TraitHermesBlock, TypeHermesBlock},
+    attr::{FunctionAnnealBlock, ImplAnnealBlock, TraitAnnealBlock, TypeAnnealBlock},
     hkd::{AstNode, LiftToSafe, Local, Safe, ThreadSafety},
 };
-use crate::errors::HermesError;
+use crate::errors::AnnealError;
 
 #[derive(Clone, Debug)]
 pub enum FunctionItem<M: ThreadSafety = Local> {
@@ -131,26 +131,26 @@ impl<M: ThreadSafety> LiftToSafe for TypeItem<M> {
 
 #[derive(Clone, Debug)]
 #[allow(dead_code)]
-pub struct HermesDecorated<T, B> {
+pub struct AnnealDecorated<T, B> {
     pub item: T,
-    pub hermes: B,
+    pub anneal: B,
 }
 
-impl<T: LiftToSafe, B: LiftToSafe> LiftToSafe for HermesDecorated<T, B> {
-    type Target = HermesDecorated<T::Target, B::Target>;
+impl<T: LiftToSafe, B: LiftToSafe> LiftToSafe for AnnealDecorated<T, B> {
+    type Target = AnnealDecorated<T::Target, B::Target>;
 
     fn lift(self) -> Self::Target {
-        HermesDecorated { item: self.item.lift(), hermes: self.hermes.lift() }
+        AnnealDecorated { item: self.item.lift(), anneal: self.anneal.lift() }
     }
 }
 
 #[derive(Clone, Debug)]
 #[allow(clippy::large_enum_variant)]
 pub enum ParsedItem<M: ThreadSafety = Local> {
-    Function(HermesDecorated<FunctionItem<M>, FunctionHermesBlock<M>>),
-    Type(HermesDecorated<TypeItem<M>, TypeHermesBlock<M>>),
-    Trait(HermesDecorated<AstNode<ItemTrait, M>, TraitHermesBlock<M>>),
-    Impl(HermesDecorated<AstNode<ItemImpl, M>, ImplHermesBlock<M>>),
+    Function(AnnealDecorated<FunctionItem<M>, FunctionAnnealBlock<M>>),
+    Type(AnnealDecorated<TypeItem<M>, TypeAnnealBlock<M>>),
+    Trait(AnnealDecorated<AstNode<ItemTrait, M>, TraitAnnealBlock<M>>),
+    Impl(AnnealDecorated<AstNode<ItemImpl, M>, ImplAnnealBlock<M>>),
 }
 
 impl ParsedItem<Local> {
@@ -236,7 +236,7 @@ pub fn read_file_and_scan_compilation_unit<F>(
     f: F,
 ) -> Result<(String, Vec<UnloadedModule>), io::Error>
 where
-    F: FnMut(&str, Result<ParsedLeanItem, HermesError>),
+    F: FnMut(&str, Result<ParsedLeanItem, AnnealError>),
 {
     log::trace!("read_file_and_scan_compilation_unit({:?}, inside_block={})", path, inside_block);
     let source = fs::read_to_string(path)?;
@@ -254,7 +254,7 @@ pub(crate) fn scan_compilation_unit_internal<I, M>(
     mut item_cb: I,
     mod_cb: M,
 ) where
-    I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
+    I: FnMut(&str, Result<ParsedLeanItem, AnnealError>),
     M: FnMut(UnloadedModule),
 {
     trace!("Parsing source code into syn::File");
@@ -272,7 +272,7 @@ pub(crate) fn scan_compilation_unit_internal<I, M>(
             debug!("Failed to parse source code: {}", e);
             item_cb(
                 source,
-                Err(HermesError::Syn {
+                Err(AnnealError::Syn {
                     src: named_source.clone(),
                     span: span_to_miette(e.span()),
                     msg: e.to_string(),
@@ -282,8 +282,8 @@ pub(crate) fn scan_compilation_unit_internal<I, M>(
         }
     };
 
-    trace!("Initializing HermesVisitor to traverse AST");
-    let mut visitor = HermesVisitor {
+    trace!("Initializing AnnealVisitor to traverse AST");
+    let mut visitor = AnnealVisitor {
         current_path: Vec::new(),
         current_impl_type: None,
         current_impl_generics: None,
@@ -298,7 +298,7 @@ pub(crate) fn scan_compilation_unit_internal<I, M>(
     trace!("Finished traversing AST");
 }
 
-struct HermesVisitor<I, M> {
+struct AnnealVisitor<I, M> {
     current_path: Vec<String>,
     /// The parsed type of the current `impl` block being visited, if any.
     ///
@@ -318,19 +318,19 @@ struct HermesVisitor<I, M> {
     named_source: NamedSource<String>,
 }
 
-impl<I, M> HermesVisitor<I, M>
+impl<I, M> AnnealVisitor<I, M>
 where
-    I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
+    I: FnMut(&str, Result<ParsedLeanItem, AnnealError>),
     M: FnMut(UnloadedModule),
 {
-    /// Processes an `item` (function, struct, etc.) that may have a Hermes
+    /// Processes an `item` (function, struct, etc.) that may have a Anneal
     /// annotation.
     ///
     /// This generic helper abstracts the common logic for:
-    /// 1. Extracting the Hermes block from the item's attributes using `parse`.
+    /// 1. Extracting the Anneal block from the item's attributes using `parse`.
     /// 2. Validating that the item is not inside a block (where verification is
     ///    unsupported).
-    /// 3. Wrapping the item and its Hermes block into a `ParsedItem` using
+    /// 3. Wrapping the item and its Anneal block into a `ParsedItem` using
     ///    `wrap`.
     /// 4. Invoking the `item_cb` with the result.
     fn process_item<
@@ -347,12 +347,12 @@ where
     ) {
         let block_res = parse(attrs, &self.source_code);
         let item_res = match block_res {
-            // This item doesn't have a Hermes annotation; skip it.
+            // This item doesn't have a Anneal annotation; skip it.
             Ok(None) => return,
-            Ok(Some(_block)) if self.inside_block => Err(HermesError::NestedItem {
+            Ok(Some(_block)) if self.inside_block => Err(AnnealError::NestedItem {
                 src: self.named_source.clone(),
                 span: span_to_miette(item.span()),
-                msg: "Hermes cannot verify items defined inside function bodies or other blocks. \
+                msg: "Anneal cannot verify items defined inside function bodies or other blocks. \
                       Move this item to the module level if you wish to verify it."
                     .to_string(),
             }),
@@ -366,7 +366,7 @@ where
             }
             Err(e) => {
                 log::trace!("Error extracting ```lean block: {}", e);
-                Err(HermesError::DocBlock {
+                Err(AnnealError::DocBlock {
                     src: self.named_source.clone(),
                     span: span_to_miette(e.span()),
                     msg: e.to_string(),
@@ -379,9 +379,9 @@ where
     }
 }
 
-impl<'ast, I, M> Visit<'ast> for HermesVisitor<I, M>
+impl<'ast, I, M> Visit<'ast> for AnnealVisitor<I, M>
 where
-    I: FnMut(&str, Result<ParsedLeanItem, HermesError>),
+    I: FnMut(&str, Result<ParsedLeanItem, AnnealError>),
     M: FnMut(UnloadedModule),
 {
     fn visit_item_mod(&mut self, node: &'ast ItemMod) {
@@ -399,8 +399,8 @@ where
         if let Some(path_attr) = extract_cfg_attr_path(&node.attrs) {
             log::warn!(
                 "Module '{}' uses a #[cfg_attr(..., path = \"{}\")] directive. \
-                 Hermes does not currently evaluate conditional paths; \
-                 Hermes annotations in this file may be ignored.",
+                 Anneal does not currently evaluate conditional paths; \
+                 Anneal annotations in this file may be ignored.",
                 mod_name,
                 path_attr
             );
@@ -419,12 +419,12 @@ where
             i,
             &i.attrs,
             |attrs, source| {
-                FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
+                FunctionAnnealBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
             },
-            |item, hermes| {
-                ParsedItem::Function(HermesDecorated {
+            |item, anneal| {
+                ParsedItem::Function(AnnealDecorated {
                     item: FunctionItem::Free(AstNode::new(item.clone())),
-                    hermes,
+                    anneal,
                 })
             },
         );
@@ -433,10 +433,10 @@ where
 
     fn visit_item_struct(&mut self, i: &'ast ItemStruct) {
         trace!("Visiting Struct {}", i.ident);
-        self.process_item(i, &i.attrs, TypeHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Type(HermesDecorated {
+        self.process_item(i, &i.attrs, TypeAnnealBlock::parse_from_attrs, |item, anneal| {
+            ParsedItem::Type(AnnealDecorated {
                 item: TypeItem::Struct(AstNode::new(item.clone())),
-                hermes,
+                anneal,
             })
         });
         syn::visit::visit_item_struct(self, i);
@@ -444,10 +444,10 @@ where
 
     fn visit_item_enum(&mut self, i: &'ast ItemEnum) {
         trace!("Visiting Enum {}", i.ident);
-        self.process_item(i, &i.attrs, TypeHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Type(HermesDecorated {
+        self.process_item(i, &i.attrs, TypeAnnealBlock::parse_from_attrs, |item, anneal| {
+            ParsedItem::Type(AnnealDecorated {
                 item: TypeItem::Enum(AstNode::new(item.clone())),
-                hermes,
+                anneal,
             })
         });
         syn::visit::visit_item_enum(self, i);
@@ -455,10 +455,10 @@ where
 
     fn visit_item_union(&mut self, i: &'ast ItemUnion) {
         trace!("Visiting Union {}", i.ident);
-        self.process_item(i, &i.attrs, TypeHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Type(HermesDecorated {
+        self.process_item(i, &i.attrs, TypeAnnealBlock::parse_from_attrs, |item, anneal| {
+            ParsedItem::Type(AnnealDecorated {
                 item: TypeItem::Union(AstNode::new(item.clone())),
-                hermes,
+                anneal,
             })
         });
         syn::visit::visit_item_union(self, i);
@@ -470,9 +470,9 @@ where
         self.process_item(
             i,
             &i.attrs,
-            |attrs, source| TraitHermesBlock::parse_from_attrs(attrs, i.unsafety.is_some(), source),
-            |item, hermes| {
-                ParsedItem::Trait(HermesDecorated { item: AstNode::new(item.clone()), hermes })
+            |attrs, source| TraitAnnealBlock::parse_from_attrs(attrs, i.unsafety.is_some(), source),
+            |item, anneal| {
+                ParsedItem::Trait(AnnealDecorated { item: AstNode::new(item.clone()), anneal })
             },
         );
 
@@ -490,8 +490,8 @@ where
 
     fn visit_item_impl(&mut self, i: &'ast ItemImpl) {
         trace!("Visiting Impl");
-        self.process_item(i, &i.attrs, ImplHermesBlock::parse_from_attrs, |item, hermes| {
-            ParsedItem::Impl(HermesDecorated { item: AstNode::new(item.clone()), hermes })
+        self.process_item(i, &i.attrs, ImplAnnealBlock::parse_from_attrs, |item, anneal| {
+            ParsedItem::Impl(AnnealDecorated { item: AstNode::new(item.clone()), anneal })
         });
 
         let mut impl_ty_node = None;
@@ -512,7 +512,7 @@ where
 
     /// Visits a foreign function (one defined in an `extern` block).
     ///
-    /// This allows Hermes to extract specifications for functions written
+    /// This allows Anneal to extract specifications for functions written
     /// in other languages (or other Rust crates) that are declared in
     /// the current crate.
     fn visit_foreign_item_fn(&mut self, i: &'ast ForeignItemFn) {
@@ -521,12 +521,12 @@ where
             i,
             &i.attrs,
             |attrs, source| {
-                FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
+                FunctionAnnealBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
             },
-            |item, hermes| {
-                ParsedItem::Function(HermesDecorated {
+            |item, anneal| {
+                ParsedItem::Function(AnnealDecorated {
                     item: FunctionItem::Foreign(AstNode::new(item.clone())),
-                    hermes,
+                    anneal,
                 })
             },
         );
@@ -541,16 +541,16 @@ where
             i,
             &i.attrs,
             |attrs, source| {
-                FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
+                FunctionAnnealBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
             },
-            move |item, hermes| {
-                ParsedItem::Function(HermesDecorated {
+            move |item, anneal| {
+                ParsedItem::Function(AnnealDecorated {
                     item: FunctionItem::Impl(
                         AstNode::new(item.clone()),
                         current_impl_type.clone(),
                         current_impl_generics.clone(),
                     ),
-                    hermes,
+                    anneal,
                 })
             },
         );
@@ -563,12 +563,12 @@ where
             i,
             &i.attrs,
             |attrs, source| {
-                FunctionHermesBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
+                FunctionAnnealBlock::parse_from_attrs(attrs, i.sig.unsafety.is_some(), source)
             },
-            |item, hermes| {
-                ParsedItem::Function(HermesDecorated {
+            |item, anneal| {
+                ParsedItem::Function(AnnealDecorated {
                     item: FunctionItem::Trait(AstNode::new(item.clone())),
-                    hermes,
+                    anneal,
                 })
             },
         );
@@ -622,7 +622,7 @@ pub(crate) fn span_to_miette(span: proc_macro2::Span) -> SourceSpan {
 mod tests {
     use super::*;
 
-    fn parse_to_vec(code: &str) -> Vec<(String, Result<ParsedLeanItem, HermesError>)> {
+    fn parse_to_vec(code: &str) -> Vec<(String, Result<ParsedLeanItem, AnnealError>)> {
         let mut items = Vec::new();
         scan_compilation_unit_internal(
             code,
@@ -635,13 +635,13 @@ mod tests {
     }
 
     impl ParsedItem {
-        /// Returns the context of the Hermes block.
-        fn hermes_context(&self) -> &[attr::SpannedLine] {
+        /// Returns the context of the Anneal block.
+        fn anneal_context(&self) -> &[attr::SpannedLine] {
             match self {
-                Self::Function(f) => &f.hermes.common.context,
-                Self::Type(t) => &t.hermes.common.context,
-                Self::Trait(t) => &t.hermes.common.context,
-                Self::Impl(i) => &i.hermes.common.context,
+                Self::Function(f) => &f.anneal.common.context,
+                Self::Type(t) => &t.anneal.common.context,
+                Self::Trait(t) => &t.anneal.common.context,
+                Self::Impl(i) => &i.anneal.common.context,
             }
         }
     }
@@ -649,7 +649,7 @@ mod tests {
     #[test]
     fn test_parse_lean_block() {
         let code = r#"
-            /// ```lean, hermes
+            /// ```lean, anneal
             /// context:
             /// theorem foo : True := by trivial
             /// ```
@@ -660,7 +660,7 @@ mod tests {
         let item = res.unwrap();
         assert_eq!(
             src,
-            "/// ```lean, hermes
+            "/// ```lean, anneal
             /// context:
             /// theorem foo : True := by trivial
             /// ```
@@ -668,7 +668,7 @@ mod tests {
         );
         assert!(matches!(item.item, ParsedItem::Function(_)));
         assert_eq!(
-            item.item.hermes_context()[0].content.trim(),
+            item.item.anneal_context()[0].content.trim(),
             "theorem foo : True := by trivial"
         );
     }
@@ -676,11 +676,11 @@ mod tests {
     #[test]
     fn test_multiple_lean_blocks_error() {
         let code = r#"
-            /// ```lean, hermes
+            /// ```lean, anneal
             /// context:
             /// a
             /// ```
-            /// ```lean, hermes
+            /// ```lean, anneal
             /// context:
             /// b
             /// ```
@@ -695,7 +695,7 @@ mod tests {
     #[test]
     fn test_unclosed_lean_block() {
         let code = r#"
-            /// ```lean, hermes
+            /// ```lean, anneal
             /// context:
             /// theorem foo : True := by trivial
             fn foo() {}
@@ -710,7 +710,7 @@ mod tests {
         let code = r#"
             mod foo {
                 mod bar {
-                    /// ```lean, hermes
+                    /// ```lean, anneal
                     /// context:
                     /// ```
                     fn baz() {}
@@ -727,7 +727,7 @@ mod tests {
     fn test_visit_in_file() {
         let code = r#"
             mod foo {
-                /// ```lean, hermes
+                /// ```lean, anneal
                 /// context:
                 /// theorem foo : True := by trivial
                 /// ```
@@ -738,12 +738,12 @@ mod tests {
         let (_, res) = items.into_iter().next().unwrap();
         // Since we are parsing a string, `inside_block` is false initially.
         // `visit_item_mod` does not change `inside_block` for inline modules.
-        // `HermesVisitor` only sets `inside_block = true` when visiting a
+        // `AnnealVisitor` only sets `inside_block = true` when visiting a
         // `Block` (function body). Inline modules are not "blocks" in the `syn`
         // sense (they have braces, but the `ItemMod` structure handles them).
         // Thus, this should succeed.
 
-        // The `hermes` tag ensures the block is correctly identified and
+        // The `anneal` tag ensures the block is correctly identified and
         // processed.
         let item = res.unwrap();
         assert!(matches!(item.item, ParsedItem::Function(_)));
@@ -753,14 +753,14 @@ mod tests {
     fn test_span_multiple_modules_precision() {
         let code = r#"
             mod a {
-                /// ```lean, hermes
+                /// ```lean, anneal
                 /// context:
                 /// theorem a : True := trivial
                 /// ```
                 fn foo() {}
             }
             mod b {
-                /// ```lean, hermes
+                /// ```lean, anneal
                 /// context:
                 /// theorem b : False := sorry
                 /// ```
@@ -777,8 +777,8 @@ mod tests {
         let i2 = item2.as_ref().unwrap();
 
         // Verify we got the right blocks for the right items
-        assert!(i1.item.hermes_context()[0].content.contains("theorem a"));
-        assert!(i2.item.hermes_context()[0].content.contains("theorem b"));
+        assert!(i1.item.anneal_context()[0].content.contains("theorem a"));
+        assert!(i2.item.anneal_context()[0].content.contains("theorem b"));
 
         // Verify source snippets match the function definition + doc comment
         assert!(src1.contains("theorem a"));
@@ -790,12 +790,12 @@ mod tests {
     #[test]
     fn test_multiple_parsing_failures_output() {
         let code1 = r#"
-            /// ```lean, hermes
+            /// ```lean, anneal
             /// context:
             /// unclosed block 1
             fn bad_doc_1() {}
 
-            /// ```lean, hermes
+            /// ```lean, anneal
             /// context:
             /// unclosed block 2
             fn bad_doc_2() {}
@@ -842,29 +842,29 @@ mod tests {
             report_string.push('\n');
         }
 
-        let expected = r#"hermes::doc_block
+        let expected = r#"anneal::doc_block
 
-  × Documentation block error: Unclosed Hermes block in documentation.
+  × Documentation block error: Unclosed Anneal block in documentation.
    ╭─[src/foo.rs:2:13]
  1 │ 
- 2 │             /// ```lean, hermes
+ 2 │             /// ```lean, anneal
    ·             ─────────┬─────────
    ·                      ╰── problematic block
  3 │             /// context:
    ╰────
 
-hermes::doc_block
+anneal::doc_block
 
-  × Documentation block error: Unclosed Hermes block in documentation.
+  × Documentation block error: Unclosed Anneal block in documentation.
    ╭─[src/foo.rs:7:13]
  6 │ 
- 7 │             /// ```lean, hermes
+ 7 │             /// ```lean, anneal
    ·             ─────────┬─────────
    ·                      ╰── problematic block
  8 │             /// context:
    ╰────
 
-hermes::syn_error
+anneal::syn_error
 
   × Syntax error in Rust source: unexpected end of input, expected an
   │ expression
@@ -883,7 +883,7 @@ hermes::syn_error
     fn test_foreign_function_scanning() {
         let code = r#"
             extern "C" {
-                /// ```lean, hermes
+                /// ```lean, anneal
                 /// context:
                 /// theorem ext_foo_ok : True := trivial
                 /// ```
@@ -897,8 +897,8 @@ hermes::syn_error
         assert!(src.contains("fn ext_foo"));
         assert!(matches!(
             item.item,
-            ParsedItem::Function(HermesDecorated { item: FunctionItem::Foreign(_), .. })
+            ParsedItem::Function(AnnealDecorated { item: FunctionItem::Foreign(_), .. })
         ));
-        assert!(item.item.hermes_context()[0].content.contains("ext_foo_ok"));
+        assert!(item.item.anneal_context()[0].content.contains("ext_foo_ok"));
     }
 }

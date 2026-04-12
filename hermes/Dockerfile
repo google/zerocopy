@@ -28,13 +28,13 @@ ARG GID
 RUN if [ -z "$UID" ]; then echo "UID build arg is required" && exit 1; fi && \
     if [ -z "$GID" ]; then echo "GID build arg is required" && exit 1; fi && \
     sed -i "s/^UID_MAX.*/UID_MAX $UID/" /etc/login.defs && \
-    groupadd -g $GID hermes && \
-    useradd -l -u $UID -g $GID -m hermes && \
-    mkdir /cache /opt/rustup /opt/cargo /opt/elan /workspace /opt/hermes_target /opt/hermes_toolchain && \
-    chown hermes:hermes /cache /opt/rustup /opt/cargo /opt/elan /workspace /opt/hermes_target /opt/hermes_toolchain
+    groupadd -g $GID anneal && \
+    useradd -l -u $UID -g $GID -m anneal && \
+    mkdir /cache /opt/rustup /opt/cargo /opt/elan /workspace /opt/anneal_target /opt/anneal_toolchain && \
+    chown anneal:anneal /cache /opt/rustup /opt/cargo /opt/elan /workspace /opt/anneal_target /opt/anneal_toolchain
 
 # Switch to non-root user for the rest of the build.
-USER hermes
+USER anneal
 
 # Install Rust and the specific nightly toolchain required by Charon.
 # This version string is hardcoded here and must be kept in sync with
@@ -42,25 +42,25 @@ USER hermes
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path \
  && rustup toolchain install --no-self-update nightly-2026-02-07 --profile minimal
 
-# Direct Hermes tests to write ephemeral integration targets here to leverage
+# Direct Anneal tests to write ephemeral integration targets here to leverage
 # overlayfs.
-ENV HERMES_INTEGRATION_TARGET_DIR=/cache/hermes_target
+ENV ANNEAL_INTEGRATION_TARGET_DIR=/cache/anneal_target
 
-# In the image, we build dependencies into /opt/hermes_target. This ensures
+# In the image, we build dependencies into /opt/anneal_target. This ensures
 # they are part of the image and available in CI matrix jobs.
-# In local development, docker.sh overrides this to /cache/hermes_target
+# In local development, docker.sh overrides this to /cache/anneal_target
 # via a volume mount, causing dependencies to be rebuilt once in the volume.
 # This double-build is intentional to support both environments efficiently.
-ENV CARGO_TARGET_DIR=/opt/hermes_target
+ENV CARGO_TARGET_DIR=/opt/anneal_target
 WORKDIR /workspace
 
 # Copy the workspace configuration (without workspace section) and lockfile.
-COPY --from=extractor --chown=hermes:hermes /app/Cargo.toml.no_workspace ./Cargo.toml
-COPY --chown=hermes:hermes Cargo.lock ./
+COPY --from=extractor --chown=anneal:anneal /app/Cargo.toml.no_workspace ./Cargo.toml
+COPY --chown=anneal:anneal Cargo.lock ./
 
 # Copy source files needed for setup.
-COPY --chown=hermes:hermes src/setup.rs src/util.rs ./src/
-COPY --chown=hermes:hermes build.rs ./
+COPY --chown=anneal:anneal src/setup.rs src/util.rs ./src/
+COPY --chown=anneal:anneal build.rs ./
 
 # Create a minimal `main.rs` that runs setup, and a dummy test file.
 # This allows us to build all dependencies (including dev-dependencies)
@@ -79,8 +79,8 @@ RUN cargo build && \
     cargo build --tests
 
 # Pre-build Lean libraries using the minimal binary.
-ENV HERMES_TOOLCHAIN_DIR=/opt/hermes_toolchain
+ENV ANNEAL_TOOLCHAIN_DIR=/opt/anneal_toolchain
 RUN cargo run
 
 # Ensure the integration target directory exists.
-RUN mkdir -p /cache/hermes_target
+RUN mkdir -p /cache/anneal_target

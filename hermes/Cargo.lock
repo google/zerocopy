@@ -218,7 +218,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "cargo-hermes"
+name = "cargo-anneal"
 version = "0.1.0-alpha.9"
 dependencies = [
  "anyhow",

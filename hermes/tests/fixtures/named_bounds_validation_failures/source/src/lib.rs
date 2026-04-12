@@ -1,9 +1,9 @@
-/// This file contains failure cases for the Hermes named bounds feature.
+/// This file contains failure cases for the Anneal named bounds feature.
 /// We test both validation errors (rust-level parsing and validation)
 /// and verification errors (Lean-level theorem failures).
 
 /// 3. Mismatched proof name
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures (h_ensures):
 ///   ret == x
 /// proof context:
@@ -15,7 +15,7 @@ fn fail_mismatched_proof_name(x: u32) -> u32 {
 }
 
 /// 9. Reserved name collision (requires)
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires (h_x_is_valid):
 ///   x > 0
 /// ensures (ens):
@@ -29,7 +29,7 @@ unsafe fn fail_reserved_name_collision_requires(x: u32) -> u32 {
 }
 
 /// 10. Reserved name collision (ensures)
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures (h_ret_is_valid):
 ///   ret = x
 /// proof context:
@@ -41,7 +41,7 @@ fn fail_reserved_name_collision_ensures(x: u32) -> u32 {
 }
 
 /// 26. Proof targets a requires clause instead of an ensures clause
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires (h_req):
 ///   x > 0
 /// proof (h_req):
@@ -52,7 +52,7 @@ unsafe fn fail_proof_targets_requires(x: u32) -> u32 {
 }
 
 /// 28. Missing named ensures but providing a named proof when an unnamed ensures is present
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures:
 ///   x > 0
 /// proof (h_foo):
@@ -63,7 +63,7 @@ unsafe fn fail_missing_ensures_for_named_proof_with_anon_ensures_present(x: u32)
 }
 
 /// 30. Empty requires clause
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires (r1):
 ///
 /// ensures (e1):
@@ -76,7 +76,7 @@ unsafe fn fail_empty_requires_clause(x: u32) -> u32 {
 }
 
 /// 31. Empty ensures clause
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures (e1):
 ///
 /// ```
@@ -92,7 +92,7 @@ unsafe fn fail_empty_ensures_clause(x: u32) -> u32 {
 /// validation succeeds natively. However, `generate.rs` does not emit
 /// the `anon` field in the structure because no unnamed ensures exist.
 /// This will correctly generate a Lean failure!
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures (h_foo):
 ///   ret = x
 /// proof context:
@@ -110,7 +110,7 @@ fn fail_extra_anon_proof_bypasses_validation(x: u32) -> u32 {
 /// Because returning a value generates a post-condition, `validate.rs` used to accept `proof (anon)`.
 /// However `generate.rs` never maps it, natively dropping the `have h` proof completely!
 /// This now correctly fails validation because `anon` is only reserved if explicitly specified in `ensures`.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// proof context:
 /// proof:
 ///   have h: 1 = 1 := by simp

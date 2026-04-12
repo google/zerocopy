@@ -2,7 +2,7 @@ pub mod missing_cfg_file {
     #[cfg(target_os = "windows")]
     mod windows_sys; // This file will intentionally not exist
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// context:
     /// theorem my_demo : True := trivial
     /// ```
@@ -14,16 +14,16 @@ pub mod missing_cfg_mod {
     mod fake;
     
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// ```
-    fn _hermes_dummy() {}
+    fn _anneal_dummy() {}
 }
 
 pub mod warn_cfg_attr_path {
     #[cfg_attr(unix, path = "sys_unix.rs")]
     mod sys; // This triggers the warning
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// context:
     /// theorem my_demo : True := trivial
     /// ```

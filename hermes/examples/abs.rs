@@ -1,6 +1,6 @@
 /// Computes the absolute value.
 ///
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires: x.val > -2147483648
 /// ensures (h0): ret >= 0
 /// ensures (h1): (x : Int) >= 0 -> (ret : Int) = x

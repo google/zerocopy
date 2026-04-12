@@ -1,6 +1,6 @@
 
 #[cfg(target_os = "windows")]
-/// ```lean, hermes
+/// ```lean, anneal
 /// ensures:
 ///   ret = 42
 /// proof (h_progress):
@@ -11,7 +11,7 @@
 pub fn windows_only() -> u32 { 42 }
 
 #[cfg(target_os = "linux")]
-/// ```hermes
+/// ```anneal
 /// ensures:
 ///   ret = 100
 /// ```

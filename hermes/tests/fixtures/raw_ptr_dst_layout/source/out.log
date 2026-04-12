@@ -4,7 +4,7 @@ slice : ConstRawPtr (Slice Std.U8)
     let i ← size_of_val_raw slice
     let i1 ← align_of_val_raw slice
     ok (i, i1) with
-  | ok v => Hermes.Alignment ↑v.2 ∧ ↑v.2 ∣ ↑v.1
+  | ok v => Anneal.Alignment ↑v.2 ∧ ↑v.2 ∣ ↑v.1
   | fail e => False
   | div => False
   ⚠ This simp argument is unused:
@@ -43,7 +43,7 @@ slice : ConstRawPtr (Slice Std.U8)
 [External Error] generated/RawPtrDstLayoutRawPtrDstLayoutd9818cb8368391d4/RawPtrDstLayoutRawPtrDstLayoutd9818cb8368391d4.lean: unsolved goals
 ptr : ConstRawPtr NonReprC
 ⊢ match align_of_val_raw ptr with
-  | ok v => Hermes.Alignment ↑v
+  | ok v => Anneal.Alignment ↑v
   | fail e => False
   | div => False
   ⚠ This simp argument is unused:

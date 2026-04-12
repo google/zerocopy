@@ -5,21 +5,21 @@ pub enum E {
     B(u32),
 }
 
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct MatchSpec {
     pub e: E,
 }
 
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct LetSpec {
     pub x: u32,
 }
 
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct IfSpec {
@@ -29,7 +29,7 @@ pub struct IfSpec {
 
 pub mod shadowing {
     /// Test for shadowing in function bodies.
-    /// ```lean, hermes, spec
+    /// ```lean, anneal, spec
     /// ```
     pub fn body_shadow(x: u32) -> u32 {
         let x = x + 1;
@@ -54,13 +54,13 @@ pub mod shadowing {
 }
 
 /// Tests for the never type and panics.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ```
 pub fn crash() -> ! {
     panic!("crash")
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
@@ -72,30 +72,30 @@ pub fn shadow(x: u32) -> u32 {
     x
 }
 
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct S {
     pub e: E,
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding_6() {}
+pub fn dummy_anneal_padding_6() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding_7() {}
+pub fn dummy_anneal_padding_7() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// isValid self := True
 /// ```
 pub struct Checked {
@@ -103,7 +103,7 @@ pub struct Checked {
     pub val: u32,
 }
 
-/// ```hermes
+/// ```anneal
 /// ensures:
 ///   True
 /// ```
@@ -111,7 +111,7 @@ pub fn add_one(x: u32) -> u32 {
     x + 1
 }
 
-/// ```hermes
+/// ```anneal
 /// ensures:
 ///   True
 /// ```
@@ -123,7 +123,7 @@ pub fn unknown_decrease(n: u32) -> u32 {
     }
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:

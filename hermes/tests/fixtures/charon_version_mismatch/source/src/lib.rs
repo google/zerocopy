@@ -1,3 +1,3 @@
-/// ```hermes
+/// ```anneal
 /// ```
 pub fn foo() {}
