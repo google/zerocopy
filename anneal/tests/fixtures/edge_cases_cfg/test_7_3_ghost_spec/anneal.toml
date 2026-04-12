@@ -1,0 +1,9 @@
+description = """
+Purpose: Checks behavior of Anneal specifications on `#[cfg]`-removed functions.
+Behavior: Provides annotated functions under `#[cfg]`. Verifies only the specification corresponding to the actively compiled function exists in Lean.
+"""
+
+[test]
+expected_status = "failure"
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
