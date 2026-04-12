@@ -117,15 +117,8 @@
  13 │ /// ```
     ╰────
 
-  ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:35:4]
- 34 │ /// ```
- 35 │ fn fail_is_valid_verification(x: Positive) -> Positive {
-    ·    ──┬─
-    ·      ╰── here
- 36 │     Positive { val: 0 }
-    ╰────
-
+[External Error] generated/NamedBoundsLeanFailuresNamedBoundsLeanFailures5b7e950274fe22c9/NamedBoundsLeanFailuresNamedBoundsLeanFailures5b7e950274fe22c9.lean: could not synthesize default value for field 'h_ret_is_valid' of 'named_bounds_lean_failures.fail_is_valid_verification.Post' using tactics
+[External Error] generated/NamedBoundsLeanFailuresNamedBoundsLeanFailures5b7e950274fe22c9/NamedBoundsLeanFailuresNamedBoundsLeanFailures5b7e950274fe22c9.lean: This error comes from the implicit `simp_all` proof for `h_ret_is_valid`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (h_ret_is_valid)`.
   × unsolved goals
   │ x ret : U32
   │ h_returns : fail_proof_context_tactic_failure x = ok ret

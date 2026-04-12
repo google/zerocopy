@@ -18,7 +18,7 @@ If you are new to Hermes, you **MUST** read the following documentation modules 
 7. **[Workflow](docs/agent/07_workflow.md)**: The recursive methodology for proving theorems, avoiding blind guessing, and using the `expand` command to evaluate the generated Lean models.
 
 ## Core Sources
-[Hermes.lean](src/Hermes.lean) - The foundational Lean definitions and axioms that Hermes uses to verify memory.
+[Anneal.lean](src/Anneal.lean) - The foundational Lean definitions and axioms that Hermes uses to verify memory.
 
 
 <!-- File: docs/agent/01_philosophy_and_pipeline.md -->
@@ -174,7 +174,7 @@ Instead, Hermes relies strictly on **minimal, universally guaranteed physical tr
 
 ## 2. Core Abstractions Revealed
 
-To reason about memory, you interact with several core Lean abstractions defined in `Hermes.lean`. While you don't always instantiate these directly, they form the basis of all spatial invariants.
+To reason about memory, you interact with several core Lean abstractions defined in `Anneal.lean`. While you don't always instantiate these directly, they form the basis of all spatial invariants.
 
 ### Layouts
 Every type has a layout: a size and an alignment constraint. Hermes distinguishes between mathematical layouts (unbounded) and physical layouts (bounded by the address space).
@@ -791,7 +791,7 @@ You will use these two commands to interact with Hermes. Both accept `--help`.
 You will likely want to start with `cargo run generate`, then iterate on `.lean` files directly, and only use `cargo run verify` for final verification once you have copied your work from temporary `.lean` files back to the source of truth `.rs` files.
 
 
-<!-- File: src/Hermes.lean -->
+<!-- File: src/Anneal.lean -->
 
 ```lean
 instance {ty} : Neg (Aeneas.Std.IScalar ty)

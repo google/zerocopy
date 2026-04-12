@@ -23,7 +23,7 @@ use indicatif::{ProgressBar, ProgressStyle};
 
 use crate::{generate, resolve::LockedRoots, scanner::HermesArtifact, setup::Tool};
 
-const HERMES_PRELUDE: &str = include_str!("Hermes.lean");
+const HERMES_PRELUDE: &str = include_str!("Anneal.lean");
 
 /// Orchestrates the Aeneas translation and Lean verification process.
 ///
@@ -55,7 +55,7 @@ pub fn run_aeneas(
     std::fs::create_dir_all(tmp_lean_root.join("hermes"))?;
 
     // 2. Write Standard Library & Configuration
-    let config_content = if args.allow_sorry { "axiom Hermes.allow_sorry : True\n" } else { "" };
+    let config_content = if args.allow_sorry { "axiom Anneal.allow_sorry : True\n" } else { "" };
     write_if_changed(&tmp_lean_root.join("hermes").join("Config.lean"), config_content)
         .context("Failed to write Config.lean")?;
 
@@ -79,7 +79,7 @@ pub fn run_aeneas(
         );
     }
 
-    write_if_changed(&tmp_lean_root.join("hermes").join("Hermes.lean"), &prelude)
+    write_if_changed(&tmp_lean_root.join("hermes").join("Anneal.lean"), &prelude)
         .context("Failed to write Hermes prelude")?;
 
     // 3. Write Toolchain
@@ -299,9 +299,9 @@ lean_lib «Generated» where
   roots := #[{roots_str}]
 
 @[default_target]
-lean_lib «Hermes» where
+lean_lib «Anneal» where
   srcDir := "hermes"
-  roots := #[`Config, `Hermes]
+  roots := #[`Config, `Anneal]
 
 lean_lib «User» where
   srcDir := "user"
@@ -434,7 +434,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     // 2. Build the project (dependencies only)
     let toolchain = crate::setup::Toolchain::resolve()?;
     let mut cmd = toolchain.command(Tool::Lake);
-    cmd.args(["build", "Generated", "Hermes"]);
+    cmd.args(["build", "Generated", "Anneal"]);
     cmd.current_dir(lean_root);
     cmd.stdout(Stdio::piped());
     cmd.stderr(Stdio::piped());

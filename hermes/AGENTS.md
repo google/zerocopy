@@ -39,7 +39,7 @@ those terms. -->
    BLESS=1 ./docker.sh cargo test --test integration fixture_name
    ```
 
-2. **Allowing `sorry`:** While developing and ensuring Aeneas translates Rust correctly, you don't have to write the full Lean proof immediately. You can write `sorry` inside the `proof` block. However, you must pass `--allow-sorry` to Hermes so the verifier doesn't fail immediately on the unimplemented proof. For integration tests, this is done by adding `--allow-sorry` to the `args` array in the fixture's `hermes.toml`:
+2. **Allowing `sorry`:** While developing and ensuring Aeneas translates Rust correctly, you don't have to write the full Lean proof immediately. You can write `sorry` inside the `proof` block. However, you must pass `--allow-sorry` to Hermes so the verifier doesn't fail immediately on the unimplemented proof. For integration tests, this is done by adding `--allow-sorry` to the `args` array in the fixture's `anneal.toml`:
    ```toml
    args = ["verify", "--allow-sorry"]
    ```

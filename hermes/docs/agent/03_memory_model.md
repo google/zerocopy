@@ -14,7 +14,7 @@ Instead, Hermes relies strictly on **minimal, universally guaranteed physical tr
 
 ## 2. Core Abstractions Revealed
 
-To reason about memory, you interact with several core Lean abstractions defined in `Hermes.lean`. While you don't always instantiate these directly, they form the basis of all spatial invariants.
+To reason about memory, you interact with several core Lean abstractions defined in `Anneal.lean`. While you don't always instantiate these directly, they form the basis of all spatial invariants.
 
 ### Layouts
 Every type has a layout: a size and an alignment constraint. Hermes distinguishes between mathematical layouts (unbounded) and physical layouts (bounded by the address space).

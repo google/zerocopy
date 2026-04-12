@@ -17,7 +17,7 @@ fn new_sorted_walkdir(path: impl AsRef<Path>) -> WalkDir {
     WalkDir::new(path).sort_by_file_name()
 }
 
-datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
+datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "anneal.toml$" } }
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -39,11 +39,11 @@ enum ExpectedStatus {
 
 // A note on our "no implicit files" philosophy: We prefer explicit
 // configuration to implicit conventions. Thus, unless explicitly specified in
-// `hermes.toml` (e.g., via `stderr_file` or `matches_expected_directory`), the
+// `anneal.toml` (e.g., via `stderr_file` or `matches_expected_directory`), the
 // test runner will completely ignore all other files in
 // `tests/fixtures/<test_case>`. It will not implicitly search for "implicit
 // files" (like `expected.stderr`) if they are not named in the TOML
-// configuration block. That ensures that when you read `hermes.toml`, you
+// configuration block. That ensures that when you read `anneal.toml`, you
 // immediately know every single input and constraint of the test. Note that
 // there are still a few implicit files/directories, but most are explicit.
 #[derive(Deserialize, Default, Clone)]
@@ -897,27 +897,27 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let test_name = test_case_root.file_name().unwrap().to_string_lossy().to_string();
     assert!(
         !hermes_toml.description.trim().is_empty(),
-        "Test {} is missing a non-empty `description` field in hermes.toml",
+        "Test {} is missing a non-empty `description` field in anneal.toml",
         test_name
     );
 
     // Special handling for the "dirty_sandbox" test case.
-    if path_str.contains("dirty_sandbox/hermes.toml") {
+    if path_str.contains("dirty_sandbox/anneal.toml") {
         return run_dirty_sandbox_test(path);
     }
     // // Special handling for the "atomic_writes" test case.
-    // if path_str.contains("atomic_writes/hermes.toml") {
+    // if path_str.contains("atomic_writes/anneal.toml") {
     //     return run_atomic_writes_test(path);
     // }
     // Special handling for the "toolchain_versioning" test case.
-    if path_str.contains("toolchain_versioning/hermes.toml") {
+    if path_str.contains("toolchain_versioning/anneal.toml") {
         return run_toolchain_versioning_test(path);
     }
 
-    // Load the test configuration from the associated 'hermes.toml' manifest.
+    // Load the test configuration from the associated 'anneal.toml' manifest.
     let config = hermes_toml.test.unwrap_or_default();
 
-    // `path` is `tests/fixtures/<test_case>/hermes.toml`
+    // `path` is `tests/fixtures/<test_case>/anneal.toml`
     let ctx = TestContext::new(path, &config)?;
 
     if config.phases.is_empty() {
@@ -962,7 +962,7 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
 
     // Always allowed baseline files/directories
     allowed_paths.insert(ctx.test_case_root.join("source"));
-    allowed_paths.insert(ctx.test_case_root.join("hermes.toml"));
+    allowed_paths.insert(ctx.test_case_root.join("anneal.toml"));
 
     // Track artifacts that are explicitly defined in the test configuration
     // TOML. This allows them to bypass the unmapped file directory check.
@@ -1033,7 +1033,7 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
         if !is_allowed {
             let rel = path.strip_prefix(&ctx.test_case_root).unwrap();
             panic!(
-                "Unmapped file or directory in test fixture: {:?}\nIf this file is part of the test payload, it must be explicitly configured in hermes.toml (e.g., via `matches_expected_dir`, `stderr_file`, or `mock`). If it is an obsolete snapshot or temporary file, please delete it.",
+                "Unmapped file or directory in test fixture: {:?}\nIf this file is part of the test payload, it must be explicitly configured in anneal.toml (e.g., via `matches_expected_dir`, `stderr_file`, or `mock`). If it is an obsolete snapshot or temporary file, please delete it.",
                 rel
             );
         }

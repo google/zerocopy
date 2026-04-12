@@ -16,4 +16,4 @@ If you are new to Hermes, you **MUST** read the following documentation modules 
 7. **[Workflow](docs/agent/07_workflow.md)**: The recursive methodology for proving theorems, avoiding blind guessing, and using the `expand` command to evaluate the generated Lean models.
 
 ## Core Sources
-[Hermes.lean](src/Hermes.lean) - The foundational Lean definitions and axioms that Hermes uses to verify memory.
+[Anneal.lean](src/Anneal.lean) - The foundational Lean definitions and axioms that Hermes uses to verify memory.

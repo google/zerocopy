@@ -8,24 +8,10 @@
     ╰────
   help: if this is intentional, prefix it with an underscore
 
-  ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:22:8]
- 21 │ /// ```
- 22 │ pub fn missing_user_bound() -> bool {
-    ·        ──┬─
-    ·          ╰── here
- 23 │     true
-    ╰────
-
-  ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:29:8]
- 28 │ /// ```
- 29 │ pub fn unprovable_is_valid() -> InvalidStruct {
-    ·        ──┬─
-    ·          ╰── here
- 30 │     InvalidStruct { x: 1, y: 2 }
-    ╰────
-
+[External Error] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures22b4e0ecfe54227c/NamedBoundsValidationFailuresNamedBoundsValidationFailures22b4e0ecfe54227c.lean: could not synthesize default value for field 'h_anon' of 'named_bounds_validation_failures.missing_user_bound.Post' using tactics
+[External Error] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures22b4e0ecfe54227c/NamedBoundsValidationFailuresNamedBoundsValidationFailures22b4e0ecfe54227c.lean: Missing explicit proof for named bound `h_anon`.
+[External Error] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures22b4e0ecfe54227c/NamedBoundsValidationFailuresNamedBoundsValidationFailures22b4e0ecfe54227c.lean: could not synthesize default value for field 'h_ret_is_valid' of 'named_bounds_validation_failures.unprovable_is_valid.Post' using tactics
+[External Error] generated/NamedBoundsValidationFailuresNamedBoundsValidationFailures22b4e0ecfe54227c/NamedBoundsValidationFailuresNamedBoundsValidationFailures22b4e0ecfe54227c.lean: This error comes from the implicit `simp_all` proof for `h_ret_is_valid`. Lean cannot automatically prove that this value satisfies the `isValid` type invariant. Consider providing a manual proof via `proof (h_ret_is_valid)`.
   × Type mismatch
   │   true
   │ has type

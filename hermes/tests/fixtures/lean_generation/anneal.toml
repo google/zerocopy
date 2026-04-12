@@ -16,7 +16,7 @@ should_exist = true
 
 # Verify Build Infrastructure
 content_contains = [
-    "import Hermes",
+    "import Anneal",
     ".Funs",
     ".Types"
 ]
