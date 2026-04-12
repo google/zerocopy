@@ -61,18 +61,31 @@ done
 
 # If the build is still running, it is likely doing actual work. Stream its
 # output to the terminal so the user is not left waiting in silence.
-if kill -0 $BUILD_PID 2>/dev/null; then
-    echo "[docker.sh] Building Docker image; this may take a while..."
-    tail -n +1 -f --pid=$BUILD_PID "$BUILD_CACHE"
-fi
-
 # Wait for the background build process to cleanly exit and capture its status.
 # The `||` between `wait $BUILD_PID` and `BUILD_EXIT_CODE=$?` is required
 # because, without it, `wait` exits with the same exit code as the PID it's
 # waiting for. Combined with `set -e` above, this would cause the script to
 # exit `$BUILD_PID` failure, not giving us a chance to print output below.
 BUILD_EXIT_CODE=0
-wait $BUILD_PID || BUILD_EXIT_CODE=$?
+
+if kill -0 $BUILD_PID 2>/dev/null; then
+    echo "[docker.sh] Building Docker image; this may take a while..."
+
+    # Start tail in the background to stream output. We avoid `tail --pid` here
+    # to ensure cross-platform compatibility with non-GNU systems like macOS.
+    tail -n +1 -f "$BUILD_CACHE" &
+    TAIL_PID=$!
+
+    wait $BUILD_PID || BUILD_EXIT_CODE=$?
+
+    # Give tail a moment to flush any remaining output before killing it. This
+    # mitigates the race condition where tail might be terminated before
+    # processing the final lines of the file.
+    sleep 0.5
+    kill $TAIL_PID 2>/dev/null || true
+else
+    wait $BUILD_PID || BUILD_EXIT_CODE=$?
+fi
 
 if [ $BUILD_EXIT_CODE -ne 0 ]; then
     # If the build failed quickly, the error might not have been streamed.
