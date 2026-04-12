@@ -1,0 +1,15 @@
+description = """
+Purpose: A special sanity-check test for the integration sandbox.
+Behavior: Proves that the test runner correctly cleans and handles state across multiple invocations in the same sandbox by running Anneal sequentially. This is essential for guaranteeing test consistency and verifying idempotent runs.
+"""
+
+[test]
+[[test.phases]]
+name = "first_run"
+expected_status = "success"
+args = ["verify", "--allow-sorry"]
+
+[[test.phases]]
+name = "second_run"
+expected_status = "success"
+args = ["verify", "--allow-sorry"]

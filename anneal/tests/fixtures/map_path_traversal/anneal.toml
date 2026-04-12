@@ -1,0 +1,12 @@
+description = """
+Purpose: Validates that map_path mitigates path traversal out of the workspace.
+Behavior: Provides a Charon mock error natively located at `../../../etc/passwd`. Ensures Anneal refuses to map this out-of-bounds path instead of printing `/etc/passwd`.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+
+[test.mock]
+charon = "mock_charon_output.json"

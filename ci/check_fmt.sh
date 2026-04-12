@@ -17,7 +17,7 @@ else
 fi
 
 find . -iname '*.rs' -type f       \
-    -not -path './hermes/*'        \
+    -not -path './anneal/*'        \
     -not -path './target/*'        \
     -not -path './tools/target/*'  \
     -not -iname '*.expected.rs'    \
@@ -25,9 +25,9 @@ find . -iname '*.rs' -type f       \
     -not -path './tools/vendor/*'  \
     -print0 | xargs -0 --no-run-if-empty ./cargo.sh +nightly fmt $FMT_FLAGS -- >&2
 
-find ./hermes -iname '*.rs' -type f        \
-    -not -path './hermes/target/*'         \
-    -not -path './hermes/vendor/*'         \
-    -not -path './hermes/tests/fixtures/*' \
-    -not -path './hermes/tests/ui/*'       \
-    -print0 | xargs -0 --no-run-if-empty ./cargo.sh +nightly fmt $FMT_FLAGS --manifest-path hermes/Cargo.toml -- >&2
+find ./anneal -iname '*.rs' -type f        \
+    -not -path './anneal/target/*'         \
+    -not -path './anneal/vendor/*'         \
+    -not -path './anneal/tests/fixtures/*' \
+    -not -path './anneal/tests/ui/*'       \
+    -print0 | xargs -0 --no-run-if-empty ./cargo.sh +nightly fmt $FMT_FLAGS --manifest-path anneal/Cargo.toml -- >&2
