@@ -635,7 +635,7 @@ jobs:
     # for checking compatibility (rather than the most recent published version),
     # which will make it unnecessary to remove `.cargo/config.toml`.
     - name: Remove Cargo config and vendored dependencies
-      run: rm -rf .cargo/config.toml tools/vendor hermes/vendor
+      run: rm -rf .cargo/config.toml tools/vendor anneal/vendor
 
     # Check semver compatibility with the most recently-published version on
     # crates.io. We do this in the matrix rather than in its own job so that it

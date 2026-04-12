@@ -1,0 +1,42 @@
+
+=== Anneal Verification Failed ===
+
+[Anneal Error] anneal::doc_block
+
+  × Documentation block error: `isSafe` sections are only permitted on
+  │ `unsafe` traits.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
+ 1 │ /// ```anneal
+ 2 │ /// isSafe :
+   · ──────┬─────
+   ·       ╰── problematic block
+ 3 │ ///   true
+   ╰────
+
+
+[Anneal Error] anneal::doc_block
+
+  × Documentation block error: `isSafe` sections are only permitted on
+  │ `unsafe` traits.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:8:1]
+ 7 │ /// ```anneal
+ 8 │ /// isSafe :
+   · ──────┬─────
+   ·       ╰── problematic block
+ 9 │ ///   true
+   ╰────
+
+
+[Anneal Error] anneal::doc_block
+
+  × Documentation block error: `isSafe` sections are only permitted on
+  │ `unsafe` traits.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:16:1]
+ 15 │ /// ```anneal
+ 16 │ /// isSafe
+    · ─────┬────
+    ·      ╰── problematic block
+ 17 │ /// ```
+    ╰────
+
+Error: Aborting due to 3 previous errors.

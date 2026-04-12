@@ -1,3 +1,0 @@
-/// ```hermes
-/// ```
-pub fn example() {}

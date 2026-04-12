@@ -1,0 +1,151 @@
+  ⚠ unused variable: `slice`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:42:17]
+ 41 │ /// ```
+ 42 │ fn complex_args(slice: &[u8], array: [u8; 16]) {
+    ·                 ──┬──
+    ·                   ╰── 
+ 43 │     // Verify Slice/Array mapping
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ unused variable: `array`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:42:31]
+ 41 │ /// ```
+ 42 │ fn complex_args(slice: &[u8], array: [u8; 16]) {
+    ·                               ──┬──
+    ·                                 ╰── 
+ 43 │     // Verify Slice/Array mapping
+    ╰────
+  help: if this is intentional, prefix it with an underscore
+
+  ⚠ function `simple_spec` is never used
+   ╭─[[PROJECT_ROOT]/src/lib.rs:5:4]
+ 4 │ /// ```
+ 5 │ fn simple_spec(x: u32) -> bool {
+   ·    ─────┬─────
+   ·         ╰── 
+ 6 │     x > 10
+   ╰────
+
+  ⚠ function `unsafe_axiom` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:12:4]
+ 11 │ /// ```
+ 12 │ fn unsafe_axiom(x: u32) -> u32 {
+    ·    ──────┬─────
+    ·          ╰── 
+ 13 │     x + 1
+    ╰────
+
+  ⚠ struct `Positive` is never constructed
+    ╭─[[PROJECT_ROOT]/src/lib.rs:19:8]
+ 18 │ /// ```
+ 19 │ struct Positive {
+    ·        ────┬───
+    ·            ╰── 
+ 20 │     val: u32,
+    ╰────
+
+  ⚠ trait `SafeTrait` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:26:14]
+ 25 │ /// ```
+ 26 │ unsafe trait SafeTrait {
+    ·              ────┬────
+    ·                  ╰── 
+ 27 │     fn method(&self);
+    ╰────
+
+  ⚠ function `ref_lowering` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:34:4]
+ 33 │ /// ```
+ 34 │ fn ref_lowering(x: &mut u32) {
+    ·    ──────┬─────
+    ·          ╰── 
+ 35 │     *x += 1;
+    ╰────
+
+  ⚠ function `complex_args` is never used
+    ╭─[[PROJECT_ROOT]/src/lib.rs:42:4]
+ 41 │ /// ```
+ 42 │ fn complex_args(slice: &[u8], array: [u8; 16]) {
+    ·    ──────┬─────
+    ·          ╰── 
+ 43 │     // Verify Slice/Array mapping
+    ╰────
+
+  ⚠ struct `InlineBound` is never constructed
+    ╭─[[PROJECT_ROOT]/src/lib.rs:49:8]
+ 48 │ /// ```
+ 49 │ struct InlineBound<T: Clone> {
+    ·        ─────┬─────
+    ·             ╰── 
+ 50 │     val: T,
+    ╰────
+
+  ⚠ struct `WhereBound` is never constructed
+    ╭─[[PROJECT_ROOT]/src/lib.rs:56:8]
+ 55 │ /// ```
+ 56 │ struct WhereBound<T>
+    ·        ─────┬────
+    ·             ╰── 
+ 57 │ where
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:10:1]
+  9 │ /// ```lean, anneal, unsafe(axiom)
+ 10 │ /// axiom unsafe_axiom_spec : True
+    · ─────────────────┬────────────────
+    ·                  ╰── here
+ 11 │ /// ```
+    ╰────
+
+  ⚠ unused variable `self`
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedVariables
+  │ false`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:17:12]
+ 16 │ /// ```lean, anneal
+ 17 │ /// isValid self := True
+    ·            ──┬─
+    ·              ╰── here
+ 18 │ /// ```
+    ╰────
+
+[External Error] generated/LeanGenerationLeanGeneration<HASH>/LeanGenerationLeanGeneration<HASH>.lean: invalid binder annotation, type is not a class instance
+  SafeTrait Self
+
+Note: Use the command `set_option checkBinderAnnotations false` to disable the check
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:34:4]
+ 33 │ /// ```
+ 34 │ fn ref_lowering(x: &mut u32) {
+    ·    ──┬─
+    ·      ╰── here
+ 35 │     *x += 1;
+    ╰────
+
+[External Error] generated/LeanGenerationLeanGeneration<HASH>/LeanGenerationLeanGeneration<HASH>.lean: overloaded, errors 
+  Function expected at
+    _root_.Array Std.U8
+  but this term has type
+    Type
+  
+  Note: Expected a function because this term is being applied to the argument
+    16
+  
+  65:61 failed to synthesize instance of type class
+    OfNat Usize 16
+  numerals are polymorphic in Lean, but the numeral `16` cannot be used in a context where the expected type is
+    Usize
+  due to the absence of the instance above
+  
+  Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+[External Error] generated/LeanGenerationLeanGeneration<HASH>/LeanGenerationLeanGeneration<HASH>.lean: invalid binder annotation, type is not a class instance
+  ?m.3
+
+Note: Use the command `set_option checkBinderAnnotations false` to disable the check
+[External Error] generated/LeanGenerationLeanGeneration<HASH>/LeanGenerationLeanGeneration<HASH>.lean: invalid binder annotation, type is not a class instance
+  ?m.3
+
+Note: Use the command `set_option checkBinderAnnotations false` to disable the check
+Error: Lean verification failed
