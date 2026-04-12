@@ -28,13 +28,13 @@ pub mod edge_cases_naming_test_1_4_module_names {
     }
     
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// proof (h_progress):
     ///   sorry
     /// proof context:
     ///   have h_foo : True := True.intro
     /// ```
-    pub fn dummy_hermes_padding() {}
+    pub fn dummy_anneal_padding() {}
 }
 
 pub mod edge_cases_modules_test_6_4_ambiguous_imports {
@@ -46,7 +46,7 @@ pub mod edge_cases_modules_test_6_4_ambiguous_imports {
         pub struct S;
     }
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// proof (h_progress):
     ///   sorry
     /// proof context:

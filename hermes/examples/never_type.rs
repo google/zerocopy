@@ -1,4 +1,4 @@
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures: False
 /// ```
 pub fn crashes(x: u32) -> ! {

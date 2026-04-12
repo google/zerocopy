@@ -1,5 +1,5 @@
 fn main() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
 pub fn dummy() {}

@@ -65,10 +65,10 @@ BLESS=1 ./docker.sh cargo test --test integration
 1. **Debugging Aeneas vs Hermes Mismatches**
    - If you encounter Lean type mismatches (e.g., `Application type mismatch`), it's often a mismatch between what Aeneas generated for the function and what Hermes assumed Aeneas generated in the theorem signature.
    - Standard integration tests (`./docker.sh cargo test --test integration`) delete their temporary output directory (`/cache/hermes_target/hermes-test-XXX` inside Docker) upon completion.
-   - If a test fails and you want to inspect the generated Lean code, use the `HERMES_KEEP_TEST_DIR=1` environment variable.
+   - If a test fails and you want to inspect the generated Lean code, use the `ANNEAL_KEEP_TEST_DIR=1` environment variable.
    - The test runner will preserve the directory and print its path to stderr:
      ```bash
-     HERMES_KEEP_TEST_DIR=1 ./docker.sh cargo test --test integration macro_edge_cases
+     ANNEAL_KEEP_TEST_DIR=1 ./docker.sh cargo test --test integration macro_edge_cases
      ```
    - **Note:** Because the test runner operates inside Docker, the printed path will reside within the container's isolated `/cache` volume. To explore it, you must open a shell inside the container:
      ```bash

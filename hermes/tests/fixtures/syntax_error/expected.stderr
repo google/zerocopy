@@ -1,7 +1,7 @@
 
-=== Hermes Verification Failed ===
+=== Anneal Verification Failed ===
 
-[Hermes Error] hermes::syn_error
+[Anneal Error] anneal::syn_error
 
   × Syntax error in Rust source: cannot parse string into token stream
    ╭─[[PROJECT_ROOT]/src/lib.rs:1:12]

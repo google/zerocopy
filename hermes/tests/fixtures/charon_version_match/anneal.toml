@@ -1,6 +1,6 @@
 description = """
 Purpose: Tests the positive branch of the Charon runtime version check.
-Behavior: Uses a script mock of Charon that returns the expected version string. Checks that Hermes successfully validates the version and proceeds to attempt extraction.
+Behavior: Uses a script mock of Charon that returns the expected version string. Checks that Anneal successfully validates the version and proceeds to attempt extraction.
 """
 
 [test]

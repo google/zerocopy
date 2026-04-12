@@ -1,10 +1,10 @@
-/// ```hermes
+/// ```anneal
 /// isSafe :
 ///   true
 /// ```
 pub trait SafeWithIsSafe {}
 
-/// ```hermes
+/// ```anneal
 /// isSafe :
 ///   true
 /// isSafe :
@@ -12,7 +12,7 @@ pub trait SafeWithIsSafe {}
 /// ```
 pub trait MultipleIsSafeSafe {}
 
-/// ```hermes
+/// ```anneal
 /// isSafe
 /// ```
 pub trait EmptyIsSafeSafe {}

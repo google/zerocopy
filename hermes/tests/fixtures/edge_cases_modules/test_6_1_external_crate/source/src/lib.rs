@@ -1,7 +1,7 @@
 
 use std::collections::HashMap;
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:

@@ -92,7 +92,7 @@
 
   ⚠ declaration uses `sorry`
     ╭─[[PROJECT_ROOT]/src/lib.rs:10:1]
-  9 │ /// ```lean, hermes, unsafe(axiom)
+  9 │ /// ```lean, anneal, unsafe(axiom)
  10 │ /// axiom unsafe_axiom_spec : True
     · ─────────────────┬────────────────
     ·                  ╰── here
@@ -104,7 +104,7 @@
   │ Note: This linter can be disabled with `set_option linter.unusedVariables
   │ false`
     ╭─[[PROJECT_ROOT]/src/lib.rs:17:12]
- 16 │ /// ```lean, hermes
+ 16 │ /// ```lean, anneal
  17 │ /// isValid self := True
     ·            ──┬─
     ·              ╰── here

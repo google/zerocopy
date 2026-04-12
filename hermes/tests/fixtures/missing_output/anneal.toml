@@ -1,6 +1,6 @@
 description = """
 Purpose: Validates internal resilience to silent backend crashes.
-Behavior: Leverages a mock Aeneas script that aborts cleanly (exit 0) but produces absolutely no `.lean` target logic. Expects Hermes to explicitly check constraints and panic stating "Aeneas failed to generate".
+Behavior: Leverages a mock Aeneas script that aborts cleanly (exit 0) but produces absolutely no `.lean` target logic. Expects Anneal to explicitly check constraints and panic stating "Aeneas failed to generate".
 """
 
 [test]

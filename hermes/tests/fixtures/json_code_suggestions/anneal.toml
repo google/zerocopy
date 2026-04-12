@@ -1,6 +1,6 @@
 description = """
 Purpose: Validates precise JSON diagnostic label formatting.
-Behavior: Utilizes a mock Charon output featuring comprehensive line/span locations and primary labels. Verifies the Hermes console renderer successfully paints the labeled output exactly to the terminal.
+Behavior: Utilizes a mock Charon output featuring comprehensive line/span locations and primary labels. Verifies the Anneal console renderer successfully paints the labeled output exactly to the terminal.
 """
 
 [test]

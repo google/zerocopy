@@ -1,13 +1,13 @@
-# Hermes Formal Verification Toolchain
+# Anneal Formal Verification Toolchain
 
-> Hermes is a toolchain for formally verifying `unsafe` Rust code using Charon, Aeneas, and Lean 4, with a specific focus on memory layout and correctness boundaries.
+> Anneal is a toolchain for formally verifying `unsafe` Rust code using Charon, Aeneas, and Lean 4, with a specific focus on memory layout and correctness boundaries.
 
 **CRITICAL INSTRUCTION FOR AGENTS:** 
-If you are new to Hermes, you **MUST** read the following documentation modules in strict, sequential order. Hermes proofs execute in a highly constrained environment (Orthogonal Weakest Precondition in Term Mode). If you attempt to guess tactics or skip these modules, you will fail.
+If you are new to Anneal, you **MUST** read the following documentation modules in strict, sequential order. Anneal proofs execute in a highly constrained environment (Orthogonal Weakest Precondition in Term Mode). If you attempt to guess tactics or skip these modules, you will fail.
 
 ## The Curriculum
 
-1. **[Philosophy and Pipeline](docs/agent/01_philosophy_and_pipeline.md)**: Why Hermes exists, the Charon/Aeneas translation gap, and output directories (`target/hermes/<hash>`).
+1. **[Philosophy and Pipeline](docs/agent/01_philosophy_and_pipeline.md)**: Why Anneal exists, the Charon/Aeneas translation gap, and output directories (`target/anneal/<hash>`).
 2. **[Rust to Lean Mapping](docs/agent/02_rust_to_lean_mapping.md)**: How Aeneas translates variables, the monadic `Result` environment, and the tuple destructuring of mutable borrows (`&mut T`).
 3. **[Memory Model](docs/agent/03_memory_model.md)**: The "lower bound" axioms of physical memory, `Layout`, `Allocation`, `Referent`, and spatial inclusion (`FitsInAllocation`).
 4. **[Specifications and Syntax](docs/agent/04_specifications_and_syntax.md)**: Annotation chains, the strict Python-style off-side indentation rules, strict implicit binders (`{{}}`), and bounds scoping.
@@ -16,4 +16,5 @@ If you are new to Hermes, you **MUST** read the following documentation modules 
 7. **[Workflow](docs/agent/07_workflow.md)**: The recursive methodology for proving theorems, avoiding blind guessing, and using the `expand` command to evaluate the generated Lean models.
 
 ## Core Sources
-[Anneal.lean](src/Anneal.lean) - The foundational Lean definitions and axioms that Hermes uses to verify memory.
+[Anneal.lean](src/Anneal.lean) - The foundational Lean definitions and axioms that Anneal uses to verify memory.
+

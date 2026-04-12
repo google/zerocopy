@@ -1,5 +1,5 @@
 // Struct for testing IsValid with explicit definition
-/// ```lean, hermes
+/// ```lean, anneal
 /// isValid self := self.x > self.y
 /// ```
 pub struct InvalidStruct {
@@ -15,7 +15,7 @@ pub struct ValidStruct {
 
 /// No proof provided, triggers allow_sorry on user bound
 ///
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures:
 ///   ret == !ret
 /// ```
@@ -24,20 +24,20 @@ pub fn missing_user_bound() -> bool {
 }
 
 /// Triggers allow_sorry on the complex isValid autoParam
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ```
 pub fn unprovable_is_valid() -> InvalidStruct {
     InvalidStruct { x: 1, y: 2 }
 }
 
 /// Should NOT trigger any "declaration uses sorry" because simp_all cleanly solves `True`
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ```
 pub fn trivial_is_valid() -> ValidStruct {
     ValidStruct { z: 5 }
 }
 
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures:
 ///   ret == true
 /// proof:
@@ -51,7 +51,7 @@ pub fn explicit_broken_proof() -> InvalidStruct {
     InvalidStruct { x: 1, y: 2 }
 }
 
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures (h):
 ///   true == false
 /// proof (h):
@@ -60,14 +60,14 @@ pub fn explicit_broken_proof() -> InvalidStruct {
 pub fn explicit_semantic_failure() {
 }
 
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires:
 ///   cond
 /// ```
 pub unsafe fn expects_precondition(cond: bool) {}
 
 /// Should fail with "unsolved goals" or tactic failure, not "uses sorry"
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// proof:
 ///   rfl
 /// ```

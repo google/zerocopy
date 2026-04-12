@@ -1,6 +1,6 @@
 description = """
 Purpose: Tests all forms of Rust module resolution and scoping natively
-supported by Hermes.
+supported by Anneal.
 
 Behavior: Verifies module resolution across a variety of layouts:
 - `mod foo;` mapping to `foo.rs`.
@@ -20,8 +20,8 @@ args = ["verify", "--allow-sorry"]
 extra_inputs = ["extra.rs"]
 
 # The `args` field specifies a list of substrings that must be present in a
-# single command invocation logged by Hermes (in this case, Charon). We use
-# this to verify that Hermes discovers all deeply nested and multiply-mounted
+# single command invocation logged by Anneal (in this case, Charon). We use
+# this to verify that Anneal discovers all deeply nested and multiply-mounted
 # functions, dynamically constructing the correct `--start-from` argument
 # string to pass to Charon.
 [[test.command]]

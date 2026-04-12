@@ -1,6 +1,6 @@
 description = """
 Purpose: Verifies baseline relative path mappings.
-Behavior: Confirms purely relative diagnostic paths like `src/lib.rs` remain mapped onto the project root correctly by the custom Hermes UI driver.
+Behavior: Confirms purely relative diagnostic paths like `src/lib.rs` remain mapped onto the project root correctly by the custom Anneal UI driver.
 """
 
 [test]

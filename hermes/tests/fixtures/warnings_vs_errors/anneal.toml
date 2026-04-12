@@ -1,6 +1,6 @@
 description = """
 Purpose: Validates precise segregation of stderr log categories.
-Behavior: Transmits one `dep warning` and one `dep error` across mock tool outputs. Hermes multiplexes and categorizes these independently on UI displays without blurring them.
+Behavior: Transmits one `dep warning` and one `dep error` across mock tool outputs. Anneal multiplexes and categorizes these independently on UI displays without blurring them.
 """
 
 [test]

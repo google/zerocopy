@@ -1,9 +1,9 @@
-hermes::unsoundness
+anneal::unsoundness
 
   × Unsoundness error: `isValid` annotations are unsound and require the
   │ --unsound-allow-is-valid flag.
    ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
- 1 │ /// ```hermes
+ 1 │ /// ```anneal
  2 │ /// isValid self := true
    · ────────────┬───────────
    ·             ╰── problematic block

@@ -10,7 +10,7 @@ use sha2::{Digest as _, Sha256};
 
 use crate::{
     parse::{self, ParsedLeanItem},
-    resolve::{HermesTargetKind, HermesTargetName, LockedRoots, Roots},
+    resolve::{AnnealTargetKind, AnnealTargetName, LockedRoots, Roots},
 };
 
 #[derive(Clone)]
@@ -18,8 +18,8 @@ struct ScannerContext {
     err_tx: Sender<miette::Report>,
     // `ParsedLeanItem`s must have their `module_path` field updated to be
     // relative to the crate root.
-    item_tx: Sender<(HermesTargetName, ParsedLeanItem<crate::parse::hkd::Safe>, String)>,
-    name: HermesTargetName,
+    item_tx: Sender<(AnnealTargetName, ParsedLeanItem<crate::parse::hkd::Safe>, String)>,
+    name: AnnealTargetName,
     current_prefix: Vec<String>,
 }
 
@@ -27,24 +27,24 @@ struct ScannerContext {
 /// a Lean specification.
 ///
 /// This represents a single Rust target (library, binary, etc.) and includes
-/// the list of discovered Hermes items and the calculated entry points for
+/// the list of discovered Anneal items and the calculated entry points for
 /// Charon.
-pub struct HermesArtifact {
-    pub name: HermesTargetName,
-    pub target_kind: HermesTargetKind,
+pub struct AnnealArtifact {
+    pub name: AnnealTargetName,
+    pub target_kind: AnnealTargetKind,
     /// The path to the crate's `Cargo.toml`.
     pub manifest_path: PathBuf,
     pub items: Vec<ParsedLeanItem<crate::parse::hkd::Safe>>,
     // NOTE: We store `start_from` as a `HashSet` rather than a `Vec` as an
     // optimization: when we encounter items which we can't name (which carry
-    // Hermes annotations), we add their parent module to the list of
+    // Anneal annotations), we add their parent module to the list of
     // entrypoints. If there are multiple items in the same module, this can
     // lead to duplication in the list of entrypoints. Storing them in a
     // `HashSet` avoids us having to de-dup later.
     pub start_from: HashSet<String>,
 }
 
-impl HermesArtifact {
+impl AnnealArtifact {
     /// Returns a unique, Lean-compatible "slug" for this artifact that matches
     /// the name that Aeneas will expect for the corresponding Lean module.
     ///
@@ -69,12 +69,12 @@ impl HermesArtifact {
         // `DefaultHasher` doesn't guarantee stability even across runs of the
         // same binary.
         //
-        // `HERMES_HASH_WITH_REMOVED_PREFIX` allows our integration test
+        // `ANNEAL_HASH_WITH_REMOVED_PREFIX` allows our integration test
         // framework to strip the randomized sandbox prefix from the manifest
         // path before hashing, ensuring deterministic hashes even when running
         // in a sandboxed environment.
         let mut manifest_path_to_hash = self.manifest_path.as_path();
-        if let Ok(prefix) = std::env::var("HERMES_HASH_WITH_REMOVED_PREFIX") {
+        if let Ok(prefix) = std::env::var("ANNEAL_HASH_WITH_REMOVED_PREFIX") {
             if let Ok(stripped) = self.manifest_path.strip_prefix(&prefix) {
                 manifest_path_to_hash = stripped;
             }
@@ -144,25 +144,25 @@ impl HermesArtifact {
     }
 }
 
-/// Scans the workspace to identify Hermes entry points (`/// ```lean` blocks)
+/// Scans the workspace to identify Anneal entry points (`/// ```lean` blocks)
 /// and collects targets for verification.
-pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
+pub fn scan_workspace(roots: &Roots) -> Result<Vec<AnnealArtifact>> {
     log::trace!("scan_workspace({:?})", roots);
 
     let (err_tx, err_rx) = mpsc::channel::<miette::Report>();
     let (item_tx, item_rx) =
-        mpsc::channel::<(HermesTargetName, ParsedLeanItem<crate::parse::hkd::Safe>, String)>();
+        mpsc::channel::<(AnnealTargetName, ParsedLeanItem<crate::parse::hkd::Safe>, String)>();
 
     let monitor_handle = std::thread::spawn(move || {
         let mut error_count = 0;
         for err in err_rx {
             if error_count == 0 {
-                eprintln!("\n=== Hermes Verification Failed ===");
+                eprintln!("\n=== Anneal Verification Failed ===");
             }
             error_count += 1;
             // Use eprintln! to print immediately to stderr
             // `miette::Report` natively formats with rich diagnostic spans via `{:?}`.
-            eprintln!("\n[Hermes Error] {:?}", err);
+            eprintln!("\n[Anneal Error] {:?}", err);
         }
         error_count
     });
@@ -194,8 +194,8 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
     let (mut entry_points, mut start_from_map) = {
         drop(item_tx);
         let mut entry_points =
-            HashMap::<HermesTargetName, Vec<ParsedLeanItem<crate::parse::hkd::Safe>>>::new();
-        let mut start_from_map = HashMap::<HermesTargetName, HashSet<String>>::new();
+            HashMap::<AnnealTargetName, Vec<ParsedLeanItem<crate::parse::hkd::Safe>>>::new();
+        let mut start_from_map = HashMap::<AnnealTargetName, HashSet<String>>::new();
         for (target, item, sf_str) in item_rx {
             start_from_map.entry(target.clone()).or_default().insert(sf_str);
             entry_points.entry(target).or_default().push(item);
@@ -214,7 +214,7 @@ pub fn scan_workspace(roots: &Roots) -> Result<Vec<HermesArtifact>> {
         .roots
         .iter()
         .filter_map(|target| {
-            Some(HermesArtifact {
+            Some(AnnealArtifact {
                 name: target.name.clone(),
                 target_kind: target.kind,
                 manifest_path: target.manifest_path.clone(),
@@ -427,41 +427,41 @@ mod tests {
     use cargo_metadata::PackageName;
 
     use super::*;
-    use crate::resolve::{HermesTargetKind, HermesTargetName};
+    use crate::resolve::{AnnealTargetKind, AnnealTargetName};
 
     #[test]
     fn test_llbc_file_name_collision() {
-        let name_lib = HermesTargetName {
+        let name_lib = AnnealTargetName {
             package_name: PackageName::new("pkg".to_string()),
             target_name: "name".to_string(),
-            kind: HermesTargetKind::Lib,
+            kind: AnnealTargetKind::Lib,
         };
 
-        let artifact_lib = HermesArtifact {
+        let artifact_lib = AnnealArtifact {
             name: name_lib.clone(),
-            target_kind: HermesTargetKind::Lib,
+            target_kind: AnnealTargetKind::Lib,
             manifest_path: PathBuf::from("Cargo.toml"),
             start_from: std::collections::HashSet::new(),
             items: vec![],
         };
 
-        let name_bin = HermesTargetName {
+        let name_bin = AnnealTargetName {
             package_name: PackageName::new("pkg".to_string()),
             target_name: "name".to_string(),
-            kind: HermesTargetKind::Bin,
+            kind: AnnealTargetKind::Bin,
         };
 
-        let artifact_bin = HermesArtifact {
+        let artifact_bin = AnnealArtifact {
             name: name_bin,
-            target_kind: HermesTargetKind::Bin,
+            target_kind: AnnealTargetKind::Bin,
             manifest_path: PathBuf::from("Cargo.toml"),
             start_from: std::collections::HashSet::new(),
             items: vec![],
         };
 
-        let artifact_workspace_collision = HermesArtifact {
+        let artifact_workspace_collision = AnnealArtifact {
             name: name_lib.clone(),
-            target_kind: HermesTargetKind::Lib,
+            target_kind: AnnealTargetKind::Lib,
             // A different manifest but identical package/target semantics
             manifest_path: PathBuf::from("crates/other/Cargo.toml"),
             start_from: std::collections::HashSet::new(),
@@ -481,15 +481,15 @@ mod tests {
 
     #[test]
     fn test_lean_spec_file_name_uses_slug() {
-        let name = HermesTargetName {
+        let name = AnnealTargetName {
             package_name: PackageName::new("pkg-foo".to_string()),
             target_name: "name-bar".to_string(),
-            kind: HermesTargetKind::Lib,
+            kind: AnnealTargetKind::Lib,
         };
 
-        let artifact = HermesArtifact {
+        let artifact = AnnealArtifact {
             name,
-            target_kind: HermesTargetKind::Lib,
+            target_kind: AnnealTargetKind::Lib,
             manifest_path: PathBuf::from("Cargo.toml"),
             start_from: std::collections::HashSet::new(),
             items: vec![],

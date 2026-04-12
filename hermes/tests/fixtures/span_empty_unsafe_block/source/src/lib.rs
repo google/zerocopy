@@ -1,5 +1,5 @@
 fn m() { unsafe {} }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
 pub fn dummy() {}

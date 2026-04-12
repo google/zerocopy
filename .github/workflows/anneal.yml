@@ -6,7 +6,7 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-name: Hermes Tests
+name: Anneal Tests
 
 on:
   push:
@@ -71,7 +71,7 @@ jobs:
           context: hermes
           file: hermes/Dockerfile
           push: false
-          tags: ghcr.io/google/zerocopy/hermes:${{ steps.docker_tag.outputs.tag }}
+          tags: ghcr.io/google/zerocopy/anneal:${{ steps.docker_tag.outputs.tag }}
           provenance: false
           # Use zstd compression at level 19 to minimize image size and maximize
           # decompression speed on matrix runners. This shifts the heavy compression
@@ -83,9 +83,9 @@ jobs:
             UID=${{ steps.get_uid.outputs.uid }}
             GID=${{ steps.get_uid.outputs.gid }}
           cache-from: |
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ steps.docker_tag.outputs.tag }}
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:main
-          cache-to: type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ steps.docker_tag.outputs.tag }},mode=max
+            type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }}
+            type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:main
+          cache-to: type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }},mode=max
 
       - name: Check if remote image matches
         id: check_remote
@@ -95,7 +95,7 @@ jobs:
           LOCAL_DIGEST: ${{ steps.build_dry.outputs.digest }}
         run: |
           # Fetch the digest of the remote image
-          REMOTE_DIGEST=$(docker manifest inspect ghcr.io/google/zerocopy/hermes:$DOCKER_TAG | jq -r '.manifests[0].digest')
+          REMOTE_DIGEST=$(docker manifest inspect ghcr.io/google/zerocopy/anneal:$DOCKER_TAG | jq -r '.manifests[0].digest')
 
           echo "Remote digest: $REMOTE_DIGEST"
           echo "Local digest: $LOCAL_DIGEST"
@@ -118,19 +118,19 @@ jobs:
           context: hermes
           file: hermes/Dockerfile
           push: true
-          tags: ghcr.io/google/zerocopy/hermes:${{ steps.docker_tag.outputs.tag }}
+          tags: ghcr.io/google/zerocopy/anneal:${{ steps.docker_tag.outputs.tag }}
           provenance: false
           outputs: type=image,compression=zstd,compression-level=19,force-compression=true
           build-args: |
             UID=${{ steps.get_uid.outputs.uid }}
             GID=${{ steps.get_uid.outputs.gid }}
           cache-from: |
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ steps.docker_tag.outputs.tag }}
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:main
-          cache-to: type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ steps.docker_tag.outputs.tag }},mode=max
+            type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }}
+            type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:main
+          cache-to: type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }},mode=max
 
-  hermes_tests:
-    name: Hermes Tests
+  anneal_tests:
+    name: Anneal Tests
     runs-on: ubuntu-24.04-64core
     needs: build_docker_env
     permissions:
@@ -167,8 +167,8 @@ jobs:
 
       - name: Pull and tag image
         run: |
-          docker pull ghcr.io/google/zerocopy/hermes:${STEPS_DOCKER_TAG_OUTPUTS_TAG}
-          docker tag ghcr.io/google/zerocopy/hermes:${STEPS_DOCKER_TAG_OUTPUTS_TAG} hermes-ci:local
+          docker pull ghcr.io/google/zerocopy/anneal:${STEPS_DOCKER_TAG_OUTPUTS_TAG}
+          docker tag ghcr.io/google/zerocopy/anneal:${STEPS_DOCKER_TAG_OUTPUTS_TAG} anneal-ci:local
         env:
           STEPS_DOCKER_TAG_OUTPUTS_TAG: ${{ steps.docker_tag.outputs.tag }}
 
@@ -180,7 +180,7 @@ jobs:
           # minutes to complete after the tests finish. Since the runner VM is
           # destroyed at the end of the job, leaving the container is safe and
           # saves time.
-          docker run -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo run -p doc_gen -- --check
+          docker run -v $GITHUB_WORKSPACE/hermes:/workspace anneal-ci:local cargo run -p doc_gen -- --check
 
       # Run unit tests separately, as they're much less likely to have bugs
       # during local development, and this makes the GitHub Actions output
@@ -193,7 +193,7 @@ jobs:
           # minutes to complete after the tests finish. Since the runner VM is
           # destroyed at the end of the job, leaving the container is safe and
           # saves time.
-          docker run -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo test --verbose --bin cargo-hermes
+          docker run -v $GITHUB_WORKSPACE/hermes:/workspace anneal-ci:local cargo test --verbose --bin cargo-anneal
 
       # We duplicate running unit tests since they're very cheap compared to
       # integration tests, and this way it's easier to be sure that we run all
@@ -206,7 +206,7 @@ jobs:
           # minutes to complete after the tests finish. Since the runner VM is
           # destroyed at the end of the job, leaving the container is safe and
           # saves time.
-          docker run -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo test --verbose
+          docker run -v $GITHUB_WORKSPACE/hermes:/workspace anneal-ci:local cargo test --verbose
 
   verify_examples:
     name: Verify example (${{ matrix.example }})
@@ -263,8 +263,8 @@ jobs:
 
       - name: Pull and tag image
         run: |
-          docker pull ghcr.io/google/zerocopy/hermes:${STEPS_DOCKER_TAG_OUTPUTS_TAG}
-          docker tag ghcr.io/google/zerocopy/hermes:${STEPS_DOCKER_TAG_OUTPUTS_TAG} hermes-ci:local
+          docker pull ghcr.io/google/zerocopy/anneal:${STEPS_DOCKER_TAG_OUTPUTS_TAG}
+          docker tag ghcr.io/google/zerocopy/anneal:${STEPS_DOCKER_TAG_OUTPUTS_TAG} anneal-ci:local
         env:
           STEPS_DOCKER_TAG_OUTPUTS_TAG: ${{ steps.docker_tag.outputs.tag }}
 
@@ -290,7 +290,7 @@ jobs:
           # minutes to complete after the tests finish. Since the runner VM is
           # destroyed at the end of the job, leaving the container is safe and
           # saves time.
-          if docker run -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 hermes-ci:local cargo run verify --unsound-allow-is-valid --example "$example"; then
+          if docker run -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 anneal-ci:local cargo run verify --unsound-allow-is-valid --example "$example"; then
             if [ "$expect_failure" -eq 1 ]; then
               echo "::error::Example $example succeeded but was expected to fail."
               exit 1
@@ -310,7 +310,7 @@ jobs:
   all-jobs-succeed:
       # WARNING: This name is load-bearing! It's how GitHub's settings UI configures which jobs
       # to block on. DO NOT change this name without updating the settings UI to match.
-      name: All checks succeeded (hermes.yml)
+      name: All checks succeeded (anneal.yml)
       # On failure, we run and unconditionally exit with a failing status code.
       # On success, this job is skipped. Jobs skipped using `if:` are considered
       # to have succeeded:
@@ -318,7 +318,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_docker_env, hermes_tests, verify_examples]
+      needs: [build_docker_env, anneal_tests, verify_examples]
       steps:
         - name: Mark the job as failed
           run: exit 1

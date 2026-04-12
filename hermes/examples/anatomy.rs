@@ -1,10 +1,10 @@
 /// `isValid` defines a structural invariant for a type.
 ///
-/// Under the hood, Hermes will automatically generate a `Hermes.IsValid` instance
+/// Under the hood, Hermes will automatically generate a `Anneal.IsValid` instance
 /// for this type mapping to the expression below. You can apply it in proofs
-/// using `simp_all [Hermes.IsValid.isValid]`.
+/// using `simp_all [Anneal.IsValid.isValid]`.
 ///
-/// ```hermes
+/// ```anneal
 /// isValid self := self.val.val > 0
 /// ```
 pub struct PositiveUsize {
@@ -16,8 +16,8 @@ pub struct PositiveUsize {
 ///
 /// In this trait, we enforce that `Self` has an alignment of exactly 1.
 ///
-/// ```hermes
-/// isSafe : ∀ {{_sz : Hermes.core.marker.Sized Self}} {{tl : Hermes.HasStaticLayout Self}},
+/// ```anneal
+/// isSafe : ∀ {{_sz : Anneal.core.marker.Sized Self}} {{tl : Anneal.HasStaticLayout Self}},
 ///   tl.layout.align.val.val = 1
 /// ```
 pub unsafe trait Unaligned: Sized {}
@@ -28,7 +28,7 @@ pub unsafe trait Unaligned: Sized {}
 /// analyzing the body of this function, and Hermes will accept the spec
 /// without proof.
 ///
-/// ```hermes, unsafe(axiom)
+/// ```anneal, unsafe(axiom)
 /// requires: a.val + b.val <= Usize.max
 ///   -- In Hermes, anonymous `requires` and `ensures` bounds are compiled into
 ///   -- a struct field named `h_anon`.
@@ -45,12 +45,12 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 /// on a trait, Hermes generates a `.Safe` predicate parameterized by the type `T`
 /// and the specific trait implementation `Inst`.
 ///
-/// ```hermes
+/// ```anneal
 /// requires (h_is_safe): Unaligned.Safe T Inst
 ///   -- Defines a post-condition named `h_align_eq`
 /// ensures (h_align_eq): ret.val.val = 1
 ///
-///   -- `proof context` is a special block in Hermes. Any `have` bindings
+///   -- `proof context` is a special block in Anneal. Any `have` bindings
 ///   -- defined here are made available to ALL subsequent `proof (...)` blocks
 ///   -- for this function. It prevents duplicating common setup.
 /// proof context:
@@ -61,7 +61,7 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///   -- * Note the `#usize` suffixes: Because memory modeling differentiates
 ///   --   physical sizes (`Usize`) from mathematical sizes (`Nat`), you must
 ///   --   suffix numerical literals to bypass typeclass resolution ambiguity.
-///   have fast_add_zero : ∀ (x : Aeneas.Std.Usize), Hermes.IsValid.isValid x →
+///   have fast_add_zero : ∀ (x : Aeneas.Std.Usize), Anneal.IsValid.isValid x →
 ///     fast_add x 0#usize = Result.ok x := by
 ///     intro x h_valid
 ///     -- Here we supply `{ h_anon := ... }` explicitly for the anonymous `requires` bound!
@@ -77,7 +77,7 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///
 ///   -- Some marker traits (like `Sized`) translates to empty typeclasses.
 ///   -- We can legally instantiate them with the anonymous constructor `⟨⟩`.
-///   have h_sized : Hermes.core.marker.Sized T := ⟨⟩
+///   have h_sized : Anneal.core.marker.Sized T := ⟨⟩
 ///
 ///   -- However, for complex typeclasses like `HasStaticLayout`, Lean's inference
 ///   -- struggles with fully anonymous instantiations (e.g., `⟨_, _⟩`).
@@ -88,7 +88,7 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///   -- Standard practice dictates you should NEVER build layout traits manually.
 ///   -- You should rely on implicit variables (e.g. `[tl : HasStaticLayout T]`)
 ///   -- provided gracefully by Hermes to your theorems.
-///   have h_layout : Hermes.HasStaticLayout T := {
+///   have h_layout : Anneal.HasStaticLayout T := {
 ///     layout := {
 ///       size := 1#usize
 ///       align := ⟨1#usize, by decide, 0, by rfl⟩
@@ -121,15 +121,15 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///     -- When unwrapping monadic execution chains (e.g. evaluating `x = Result.ok y`),
 ///     -- standard rewrites fail. Always apply `rw [..., Aeneas.Std.bind_tc_ok]`!
 ///     rw [h_aspec, Aeneas.Std.bind_tc_ok] at h_returns
-///     have h_valid : Hermes.IsValid.isValid h_layout.layout.align.val := by
-///       simp_all [Hermes.IsValid.isValid]
+///     have h_valid : Anneal.IsValid.isValid h_layout.layout.align.val := by
+///       simp_all [Anneal.IsValid.isValid]
 ///     rw [fast_add_zero _ h_valid, Aeneas.Std.bind_tc_ok] at h_returns
 ///     cases ret; simp_all
 ///
 ///   -- `h_ret_is_valid` is implicitly demanded by Hermes for all generated structures.
 ///   -- We can usually dispatch it trivially using `simp_all`.
 /// proof (h_ret_is_valid):
-///   simp_all [Hermes.IsValid.isValid]
+///   simp_all [Anneal.IsValid.isValid]
 ///
 ///   -- A proof of `h_align_eq`
 /// proof (h_align_eq):
@@ -149,8 +149,8 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///   unfold get_unaligned_fast_pad
 ///
 ///   -- 1. Scaffolding for core.mem.align_of
-///   have h_sized : Hermes.core.marker.Sized T := ⟨⟩
-///   have h_layout : Hermes.HasStaticLayout T := {
+///   have h_sized : Anneal.core.marker.Sized T := ⟨⟩
+///   have h_layout : Anneal.HasStaticLayout T := {
 ///     layout := {
 ///       size := 1#usize
 ///       align := ⟨1#usize, by decide, 0, by rfl⟩
@@ -166,8 +166,8 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///   -- existential progress constraint (`∃ y, ...`) using `spec_imp_exists`.
 ///   have h_add : ∃ padded, fast_add align 0#usize = Result.ok padded := by
 ///     have ho := fast_add.spec align 0#usize {
-///       h_a_is_valid := by simp_all [Hermes.IsValid.isValid]
-///       h_b_is_valid := by simp_all [Hermes.IsValid.isValid]
+///       h_a_is_valid := by simp_all [Anneal.IsValid.isValid]
+///       h_b_is_valid := by simp_all [Anneal.IsValid.isValid]
 ///       h_anon := by scalar_tac
 ///     }
 ///     rcases Aeneas.Std.WP.spec_imp_exists ho with ⟨padded, h_eq, _⟩

@@ -21,14 +21,14 @@ instance {ty} : OfNat (Aeneas.Std.UScalar ty) 0 where
 /-- A shorthand macro to instantiate a Usize from a Nat literal and automatically prove its bounds. -/
 macro "sz" n:num : term => `(Usize.ofNatCore $n (by scalar_tac))
 
-namespace Hermes
+namespace Anneal
 
 -- 1. Result checking
 -- We use Aeneas.Result
 
 -- We use `@[simp]` directly on the `SpecificationHolds` definition.
 -- This unrolls the match logic for underlying results without forcing
--- users to manually type `unfold Hermes.SpecificationHolds` uniformly across all project proofs.
+-- users to manually type `unfold Anneal.SpecificationHolds` uniformly across all project proofs.
 @[simp]
 def SpecificationHolds {α : Type} (res : Result α) (post : α → Prop) : Prop :=
   match res with
@@ -45,12 +45,12 @@ class IsValid (α : Type) where
 instance (priority := low) defaultIsValid {α : Type} : IsValid α where
   isValid _ := True
 
--- A tactic that queries the environment for the `Hermes.allow_sorry` axiom.
+-- A tactic that queries the environment for the `Anneal.allow_sorry` axiom.
 -- If it exists, runs `sorry`. If not, fails with the provided error string.
 elab "eval_allow_sorry_or_fail" err:term : tactic => do
   let errStr := err.raw.isStrLit?.getD "Fallback verification failed."
   let env ← getEnv
-  let has_sorry := env.find? `Hermes.allow_sorry |>.isSome
+  let has_sorry := env.find? `Anneal.allow_sorry |>.isSome
   if has_sorry then
     Lean.Elab.Tactic.evalTactic (← `(tactic| sorry))
   else
@@ -74,7 +74,7 @@ macro "eval_progress" msg:str fnc:ident : tactic =>
     | (simp_all; exact ⟨_, rfl⟩; done)
     | eval_allow_sorry_or_fail $msg)
 
--- A macro that Hermes auto-injects for implicit isValid proofs.
+-- A macro that Anneal auto-injects for implicit isValid proofs.
 --
 -- Tactic Ordering Rationale:
 -- We explicitly run `simp_all` *before* attempting `scalar_tac`.
@@ -103,11 +103,11 @@ macro "verify_is_valid" field:ident fnc:ident : tactic => do
     unfold_h_returns $fnc <;>
     split_h_returns <;>
     first
-    | (simp_all [Hermes.IsValid.isValid]; (try scalar_tac); done)
-    | (simp_all [Hermes.IsValid.isValid]; scalar_tac_preprocess; grind; done)
+    | (simp_all [Anneal.IsValid.isValid]; (try scalar_tac); done)
+    | (simp_all [Anneal.IsValid.isValid]; scalar_tac_preprocess; grind; done)
     | eval_allow_sorry_or_fail $(quote err))
 
--- A macro that Hermes auto-injects for explicit user `ensures` bounds.
+-- A macro that Anneal auto-injects for explicit user `ensures` bounds.
 -- It attempts to solve the bound automatically using `simp_all` or `scalar_tac`.
 -- If compilation fails, it degrades to `sorry` (if `--allow-sorry` is enabled).
 macro "verify_user_bound" field:ident fnc:ident : tactic => do
@@ -129,7 +129,7 @@ macro "verify_user_bound" field:ident fnc:ident : tactic => do
     | (simp_all; subst_eqs; simp_all; scalar_tac_preprocess; grind; done)
     | eval_allow_sorry_or_fail $(quote err))
 
--- A macro that Hermes auto-injects for empty postconditions.
+-- A macro that Anneal auto-injects for empty postconditions.
 -- It attempts `exact ⟨⟩`. If it fails (e.g., due to a stuck weakest precondition), it emits a friendly error
 -- instructing the user to provide a manual proof via `proof:`.
 macro "verify_empty_post" fnc:ident : tactic => do
@@ -185,13 +185,13 @@ namespace marker
   `structure`s rather than Lean typeclasses to preserve the deterministic,
   single-implementation coherence of Rust's trait resolution.
 
-  Because of this mismatch, Hermes cannot currently generate valid theorem
+  Because of this mismatch, Anneal cannot currently generate valid theorem
   signatures for Rust functions that use trait bounds (the generated Lean
-  functions expect explicit dictionary arguments that Hermes's typeclass-based
+  functions expect explicit dictionary arguments that Anneal's typeclass-based
   approach does not supply).
 
   Once Aeneas is updated to emit marker traits like `Sized` as explicit
-  dictionaries, this `class` should be removed. Hermes will then accept the
+  dictionaries, this `class` should be removed. Anneal will then accept the
   Aeneas-generated trait dictionaries in its theorems to guarantee soundness,
   while keeping internal mathematical layout proofs (like `HasStaticLayout`) as
   Lean `class`es to retain automated proof synthesis.
@@ -881,7 +881,7 @@ noncomputable instance {T : Type} [SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mut
 
 -- Formally equatable raw definition for rewrites
 theorem metadata_eq_raw_slice {T : Type} [SpecSliceDstTypeLayout T] {M : Aeneas.Std.Mutability} (val : Aeneas.Std.RawPtr T M) :
-  Hermes.HasMetadata.metadata val = Hermes.raw_slice_dst_ptr_metadata val := rfl
+  Anneal.HasMetadata.metadata val = Anneal.raw_slice_dst_ptr_metadata val := rfl
 
 -- If a type is Sized, its referent size is fixed
 axiom referent_size_sized {T : Type} [core.marker.Sized T] [lay : HasStaticLayout T] {M : Aeneas.Std.Mutability}

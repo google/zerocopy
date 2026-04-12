@@ -1,8 +1,8 @@
 #![allow(unused)]
 
-//! Hermes Coalesced Integration Test Suite
+//! Anneal Coalesced Integration Test Suite
 //!
-//! This crate consolidates multiple Hermes integration tests into a single,
+//! This crate consolidates multiple Anneal integration tests into a single,
 //! structured suite for improved performance and maintainability.
 
 pub mod framework;

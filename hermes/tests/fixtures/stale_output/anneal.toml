@@ -1,6 +1,6 @@
 description = """
 Purpose: Exercises sandbox idempotency specifically around artifact stale cleanup.
-Behavior: Handled directly in `run_stale_output_test`. Validates that old `.lean` or `.llbc` files from previous invocations are correctly wiped before Hermes initiates a fresh verification pass.
+Behavior: Handled directly in `run_stale_output_test`. Validates that old `.lean` or `.llbc` files from previous invocations are correctly wiped before Anneal initiates a fresh verification pass.
 """
 
 [test]

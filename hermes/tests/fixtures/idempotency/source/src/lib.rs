@@ -1,6 +1,6 @@
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof:
 ///   sorry
 /// ```
-fn _hermes_dummy() {}
+fn _anneal_dummy() {}

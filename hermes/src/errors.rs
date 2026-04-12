@@ -4,9 +4,9 @@ use miette::{Diagnostic, NamedSource, SourceSpan};
 use thiserror::Error;
 
 #[derive(Clone, Debug, Error, Diagnostic)]
-pub enum HermesError {
+pub enum AnnealError {
     #[error("Syntax error in Rust source: {msg}")]
-    #[diagnostic(code(hermes::syn_error))]
+    #[diagnostic(code(anneal::syn_error))]
     Syn {
         #[source_code]
         src: NamedSource<String>,
@@ -15,7 +15,7 @@ pub enum HermesError {
         msg: String,
     },
     #[error("Documentation block error: {msg}")]
-    #[diagnostic(code(hermes::doc_block))]
+    #[diagnostic(code(anneal::doc_block))]
     DocBlock {
         #[source_code]
         src: NamedSource<String>,
@@ -24,7 +24,7 @@ pub enum HermesError {
         msg: String,
     },
     #[error("Nested item error: {msg}")]
-    #[diagnostic(code(hermes::nested_item))]
+    #[diagnostic(code(anneal::nested_item))]
     NestedItem {
         #[source_code]
         src: NamedSource<String>,
@@ -33,7 +33,7 @@ pub enum HermesError {
         msg: String,
     },
     #[error("Unsoundness error: {msg}")]
-    #[diagnostic(code(hermes::unsoundness))]
+    #[diagnostic(code(anneal::unsoundness))]
     Unsoundness {
         #[source_code]
         src: NamedSource<String>,

@@ -1,4 +1,4 @@
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures: ret.val = 0
 /// proof:
 ///   unfold get_size_of_empty_tuple at h_returns
@@ -13,7 +13,7 @@ pub fn get_size_of_empty_tuple() -> usize {
     core::mem::size_of::<()>()
 }
 
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures: ret.val = 1
 /// proof:
 ///   unfold get_align_of_empty_tuple at h_returns
@@ -28,17 +28,17 @@ pub fn get_align_of_empty_tuple() -> usize {
     core::mem::align_of::<()>()
 }
 
-/// ```hermes
-/// requires: ∃ (_sz : Hermes.core.marker.Sized T) (tl : Hermes.HasStaticLayout T), True
+/// ```anneal
+/// requires: ∃ (_sz : Anneal.core.marker.Sized T) (tl : Anneal.HasStaticLayout T), True
 /// ensures: match core.mem.size_of T with
 ///   | Result.ok size => ret.val = size.val
 ///   | _ => False
 /// proof:
 ///   rcases h_anon with ⟨_sz, tl, _⟩
-///   have h_wp : Aeneas.Std.WP.spec (silly_size_of _val) (fun r => r.val = (Hermes.HasStaticLayout.layout T).size.val) := by
+///   have h_wp : Aeneas.Std.WP.spec (silly_size_of _val) (fun r => r.val = (Anneal.HasStaticLayout.layout T).size.val) := by
 ///     unfold silly_size_of
-///     have h_align_pos : 0 < (Hermes.HasStaticLayout.layout T).align.val.val := (Hermes.HasStaticLayout.layout T).align.isValid.left
-///     have h_align_nz : (Hermes.HasStaticLayout.layout T).align.val.val ≠ 0 := by omega
+///     have h_align_pos : 0 < (Anneal.HasStaticLayout.layout T).align.val.val := (Anneal.HasStaticLayout.layout T).align.isValid.left
+///     have h_align_nz : (Anneal.HasStaticLayout.layout T).align.val.val ≠ 0 := by omega
 ///     simp_all
 ///     step
 ///     step
@@ -53,8 +53,8 @@ pub fn get_align_of_empty_tuple() -> usize {
 ///   rcases h_req with ⟨_, ⟨_sz, tl, _⟩⟩
 ///   have h_wp : Aeneas.Std.WP.spec (silly_size_of _val) (fun _ => True) := by
 ///     unfold silly_size_of
-///     have h_align_pos : 0 < (Hermes.HasStaticLayout.layout T).align.val.val := (Hermes.HasStaticLayout.layout T).align.isValid.left
-///     have h_align_nz : (Hermes.HasStaticLayout.layout T).align.val.val ≠ 0 := by omega
+///     have h_align_pos : 0 < (Anneal.HasStaticLayout.layout T).align.val.val := (Anneal.HasStaticLayout.layout T).align.isValid.left
+///     have h_align_nz : (Anneal.HasStaticLayout.layout T).align.val.val ≠ 0 := by omega
 ///     simp_all
 ///     step
 ///     step

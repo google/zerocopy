@@ -7,10 +7,10 @@ expected_status = "success"
 stdout_file = "expected-all.stdout"
 
 [[test.phases]]
-name = "Expand Hermes Only"
-args = ["expand", "--allow-sorry", "--emit", "hermes"]
+name = "Expand Anneal Only"
+args = ["expand", "--allow-sorry", "--emit", "anneal"]
 expected_status = "success"
-stdout_file = "expected-hermes.stdout"
+stdout_file = "expected-anneal.stdout"
 
 [[test.phases]]
 name = "Expand Aeneas Only"

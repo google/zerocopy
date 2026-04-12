@@ -1,5 +1,5 @@
 description = """
-Purpose: Exercises Hermes' handling of associated types in traits.
+Purpose: Exercises Anneal' handling of associated types in traits.
 Behavior: Compiles a Rust source featuring a trait with an associated type (`T::Assoc`) and verifies that the resulting Lean output correctly generated the signatures referencing the associated type.
 """
 

@@ -1,8 +1,8 @@
-//! Tests for macro expansion and interaction with Hermes specifications.
+//! Tests for macro expansion and interaction with Anneal specifications.
 
 macro_rules! make_fn_with_spec {
     ($name:ident, $val:expr) => {
-        /// ```hermes
+        /// ```anneal
         /// ensures: True
         /// ```
         pub fn $name() -> u32 {
@@ -34,7 +34,7 @@ pub mod hygiene {
     }
 
     /// Tests macro hygiene and variable resolution.
-    /// ```lean, hermes, spec
+    /// ```lean, anneal, spec
     /// proof:
     ///   sorry
     /// ```
@@ -44,7 +44,7 @@ pub mod hygiene {
 }
 
 pub mod edge_cases {
-    /// ```hermes
+    /// ```anneal
     /// isSafe : ∀ (self : Self), True
     /// ```
     pub unsafe trait MyTrait {
@@ -53,7 +53,7 @@ pub mod edge_cases {
 
     macro_rules! decl_trait {
         ($n:ident) => {
-            /// ```hermes
+            /// ```anneal
             /// isSafe : x > 0
             /// ```
             pub unsafe trait $n {
@@ -66,7 +66,7 @@ pub mod edge_cases {
     decl_trait!(HiddenTrait);
 
     // Macro invocation with attributes.
-    /// ```hermes
+    /// ```anneal
     /// context:
     /// -- Doc comment on macro invocation
     /// ```
@@ -74,19 +74,19 @@ pub mod edge_cases {
     decl_trait!(VisibleTrait);
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding_10() {}
+pub fn dummy_anneal_padding_10() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding_11() {}
+pub fn dummy_anneal_padding_11() {}
 

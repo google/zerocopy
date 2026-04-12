@@ -1,4 +1,4 @@
-/// ```lean, hermes
+/// ```lean, anneal
 /// context:
 /// theorem secret_proof : False := sorry
 /// ```

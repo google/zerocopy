@@ -4,7 +4,7 @@ pub union MyUnion {
     pub f2: f32,
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// isValid self := true
 /// ```
 pub struct Wrapper {

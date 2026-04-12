@@ -1,6 +1,6 @@
 description = """
 Purpose: Tests the negative branch of the Charon runtime version check.
-Behavior: Uses a script mock of Charon returning `0.0.0` as its version. Expects Hermes to immediately halt and emit a "Charon version mismatch" error.
+Behavior: Uses a script mock of Charon returning `0.0.0` as its version. Expects Anneal to immediately halt and emit a "Charon version mismatch" error.
 """
 
 [test]

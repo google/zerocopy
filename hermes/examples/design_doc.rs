@@ -1,4 +1,4 @@
-/// ```lean, hermes, unsafe(axiom)
+/// ```lean, anneal, unsafe(axiom)
 /// requires: b.val > 0
 /// ensures: ret.val = a.val / b.val
 /// ```
@@ -7,7 +7,7 @@ pub unsafe fn safe_div(a: u32, b: u32) -> u32 {
     unsafe { a / b }
 }
 
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures: ret.val = a.val
 /// proof:
 ///   unfold wrapper at h_returns
@@ -27,7 +27,7 @@ pub fn wrapper(a: u32) -> u32 {
     unsafe { safe_div(a, 1) }
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// isValid self := self.x.val % 2 = 0
 /// ```
 pub struct Even {
@@ -35,12 +35,12 @@ pub struct Even {
     x: usize,
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// isSafe : True
 /// ```
 pub unsafe trait FromBytes {}
 
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures: ret.val = x.val
 /// proof:
 ///   unfold read_val at h_returns
@@ -53,7 +53,7 @@ pub fn read_val(x: &u32) -> u32 {
     *x
 }
 
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// requires: x.val + add.val <= 4294967295
 /// ensures: x'.val = x.val + add.val
 /// proof:
@@ -74,7 +74,7 @@ pub unsafe fn add_in_place(x: &mut u32, add: u32) {
     *x += add;
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// context:
 ///   open alloc.vec
 /// requires: stack.length > 0#usize

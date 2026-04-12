@@ -1,6 +1,6 @@
 description = """
 Purpose: A special sanity-check test for the integration sandbox.
-Behavior: Proves that the test runner correctly cleans and handles state across multiple invocations in the same sandbox by running Hermes sequentially. This is essential for guaranteeing test consistency and verifying idempotent runs.
+Behavior: Proves that the test runner correctly cleans and handles state across multiple invocations in the same sandbox by running Anneal sequentially. This is essential for guaranteeing test consistency and verifying idempotent runs.
 """
 
 [test]

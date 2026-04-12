@@ -1,12 +1,12 @@
 
-=== Hermes Verification Failed ===
+=== Anneal Verification Failed ===
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: `isSafe` sections are only permitted on
   │ `unsafe` traits.
    ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
- 1 │ /// ```hermes
+ 1 │ /// ```anneal
  2 │ /// isSafe :
    · ──────┬─────
    ·       ╰── problematic block
@@ -14,12 +14,12 @@
    ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: `isSafe` sections are only permitted on
   │ `unsafe` traits.
    ╭─[[PROJECT_ROOT]/src/lib.rs:8:1]
- 7 │ /// ```hermes
+ 7 │ /// ```anneal
  8 │ /// isSafe :
    · ──────┬─────
    ·       ╰── problematic block
@@ -27,12 +27,12 @@
    ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: `isSafe` sections are only permitted on
   │ `unsafe` traits.
     ╭─[[PROJECT_ROOT]/src/lib.rs:16:1]
- 15 │ /// ```hermes
+ 15 │ /// ```anneal
  16 │ /// isSafe
     · ─────┬────
     ·      ╰── problematic block

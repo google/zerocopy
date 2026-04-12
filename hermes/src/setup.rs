@@ -1,4 +1,4 @@
-//! Subcommand for installing Hermes dependencies.
+//! Subcommand for installing Anneal dependencies.
 //!
 //! This module handles the automated download, verification, and installation
 //! of `charon`, `charon-driver`, and `aeneas`.
@@ -18,7 +18,7 @@ macro_rules! decode_hex_env {
     };
 }
 
-/// Supported platforms for Hermes dependencies.
+/// Supported platforms for Anneal dependencies.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Platform {
     LinuxX86_64,
@@ -27,7 +27,7 @@ pub enum Platform {
     MacosX86_64,
 }
 
-/// A specific tool within a Hermes dependency.
+/// A specific tool within a Anneal dependency.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Tool {
     Charon,
@@ -79,14 +79,14 @@ impl Platform {
     /// These hashes are baked into the binary at compile time from values
     /// provided by `build.rs` from the project's `Cargo.toml`. This ensures
     /// that we always download and verify the exact versions of dependencies
-    /// that this version of Hermes was built to work with.
+    /// that this version of Anneal was built to work with.
     pub fn expected_archive_hash(&self) -> [u8; 32] {
         use Platform::*;
         match self {
-            LinuxX86_64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64"),
-            LinuxAArch64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_AARCH64"),
-            MacosAArch64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64"),
-            MacosX86_64 => decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_X86_64"),
+            LinuxX86_64 => decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64"),
+            LinuxAArch64 => decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64"),
+            MacosAArch64 => decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64"),
+            MacosX86_64 => decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64"),
         }
     }
 
@@ -100,40 +100,40 @@ impl Platform {
         use Platform::*;
         match (self, tool) {
             (LinuxX86_64, Tool::Charon) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64_CHARON")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64_CHARON")
             }
             (LinuxX86_64, Tool::CharonDriver) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64_CHARON_DRIVER")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64_CHARON_DRIVER")
             }
             (LinuxAArch64, Tool::Charon) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_AARCH64_CHARON")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64_CHARON")
             }
             (LinuxAArch64, Tool::CharonDriver) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_AARCH64_CHARON_DRIVER")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64_CHARON_DRIVER")
             }
             (MacosAArch64, Tool::Charon) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON")
             }
             (MacosAArch64, Tool::CharonDriver) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON_DRIVER")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON_DRIVER")
             }
             (MacosX86_64, Tool::Charon) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_X86_64_CHARON")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64_CHARON")
             }
             (MacosX86_64, Tool::CharonDriver) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_X86_64_CHARON_DRIVER")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64_CHARON_DRIVER")
             }
             (LinuxX86_64, Tool::Aeneas) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_X86_64_AENEAS")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64_AENEAS")
             }
             (LinuxAArch64, Tool::Aeneas) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_LINUX_AARCH64_AENEAS")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64_AENEAS")
             }
             (MacosAArch64, Tool::Aeneas) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_AARCH64_AENEAS")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64_AENEAS")
             }
             (MacosX86_64, Tool::Aeneas) => {
-                decode_hex_env!("HERMES_AENEAS_CHECKSUM_MACOS_X86_64_AENEAS")
+                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64_AENEAS")
             }
             _ => {
                 unreachable!("unsupported tool combination for individual verification")
@@ -151,7 +151,7 @@ pub struct Toolchain {
 impl Toolchain {
     /// Resolves the toolchain manager and acquires a shared lock.
     pub fn resolve() -> Result<Self> {
-        let home = if let Ok(dir) = std::env::var("HERMES_TOOLCHAIN_DIR") {
+        let home = if let Ok(dir) = std::env::var("ANNEAL_TOOLCHAIN_DIR") {
             std::path::PathBuf::from(dir)
         } else if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
             let base = std::env::var("CARGO_MANIFEST_DIR")
@@ -160,7 +160,7 @@ impl Toolchain {
                 // which can happen if the binary is executed directly rather than
                 // via `cargo run`.
                 .unwrap_or_else(|_| std::env::current_dir().unwrap());
-            base.join("target").join("hermes-home")
+            base.join("target").join("anneal-home")
         } else {
             dirs::home_dir().ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?
         };
@@ -169,9 +169,9 @@ impl Toolchain {
 
         // We produce a unique hash of the toolchain component versions to
         // ensure that each combination of versions is installed into its own
-        // isolated directory. This allows multiple versions of Hermes to
+        // isolated directory. This allows multiple versions of Anneal to
         // coexist on the same machine without colliding, and ensures that
-        // switching branches or updating Hermes will automatically point to
+        // switching branches or updating Anneal will automatically point to
         // the correct toolchain version.
         //
         // We hash the expected archive checksum rather than version tags.
@@ -185,7 +185,7 @@ impl Toolchain {
         // We include the host platform's target triple in the directory name.
         // This ensures that toolchains for different architectures remain isolated
         // if they are stored in a shared filesystem (e.g., a networked home directory).
-        let root = home.join(".hermes").join("toolchain").join(format!(
+        let root = home.join(".anneal").join("toolchain").join(format!(
             "{}-{}",
             platform.triple(),
             short_hash
@@ -216,11 +216,11 @@ impl Toolchain {
         let bin_name = tool.name();
         let managed_path = self.bin_dir().join(bin_name);
 
-        // If HERMES_USE_PATH_FOR_TOOLS is set, we ignore the managed toolchain
+        // If ANNEAL_USE_PATH_FOR_TOOLS is set, we ignore the managed toolchain
         // and look for the tool in the system PATH. This is useful in tests
         // to allow mocking tools via PATH shims, which would otherwise be
         // bypassed by the managed toolchain's absolute paths.
-        if std::env::var("HERMES_USE_PATH_FOR_TOOLS").is_ok() {
+        if std::env::var("ANNEAL_USE_PATH_FOR_TOOLS").is_ok() {
             std::process::Command::new(bin_name)
         } else if managed_path.exists() {
             std::process::Command::new(managed_path)
@@ -360,7 +360,7 @@ fn ensure_elan_installed() -> Result<()> {
     let data = response.bytes().context("Failed to read elan response")?;
 
     let temp_dir = std::env::temp_dir();
-    let elan_extract_dir = temp_dir.join("elan-extract-hermes");
+    let elan_extract_dir = temp_dir.join("elan-extract-anneal");
     fs::create_dir_all(&elan_extract_dir).context("Failed to create elan extract dir")?;
 
     extract_artifact(&data, &elan_extract_dir)?;
@@ -398,12 +398,12 @@ fn ensure_elan_installed() -> Result<()> {
     Ok(())
 }
 
-/// Installs the pinned Lean toolchain required by Hermes using `elan`.
-/// It checks the environment variable `HERMES_LEAN_TOOLCHAIN` to determine
+/// Installs the pinned Lean toolchain required by Anneal using `elan`.
+/// It checks the environment variable `ANNEAL_LEAN_TOOLCHAIN` to determine
 /// which version to install. If the version is already listed in `elan
 /// toolchain list`, it skips installation to save time.
 fn install_lean_toolchain() -> Result<()> {
-    let version = env!("HERMES_LEAN_TOOLCHAIN");
+    let version = env!("ANNEAL_LEAN_TOOLCHAIN");
     println!("Installing Lean toolchain {}...", version);
 
     // Check if already installed
@@ -469,7 +469,7 @@ fn prebuild_lean_library(lean_dir: &Path) -> Result<()> {
     Ok(())
 }
 
-/// Sets up the Hermes toolchain by downloading and extracting dependencies.
+/// Sets up the Anneal toolchain by downloading and extracting dependencies.
 pub fn run_setup() -> Result<()> {
     ensure_elan_installed()?;
     install_lean_toolchain()?;
@@ -480,12 +480,12 @@ pub fn run_setup() -> Result<()> {
     drop(toolchain.take_lock());
 
     // Acquire global lock to prevent concurrent installations or repairs.
-    // This ensures that two instances of Hermes don't try to download or
+    // This ensures that two instances of Anneal don't try to download or
     // modify the toolchain at the same time.
     let _lock = toolchain.lock_exclusive()?;
     let platform = Platform::detect()?;
 
-    let tag = env!("HERMES_AENEAS_TAG");
+    let tag = env!("ANNEAL_AENEAS_TAG");
     let mut needs_install = false;
 
     for tool in TOOLS {
@@ -503,7 +503,7 @@ pub fn run_setup() -> Result<()> {
         // and verified set of binaries. This protects against
         // accidental corruption of toolchain components and ensures
         // that all binaries match the versions expected by this build
-        // of Hermes.
+        // of Anneal.
         let expected_bin_hash = platform.expected_bin_hash(*tool);
         let actual_hash = calculate_file_hash(&bin_path)?;
         if actual_hash != expected_bin_hash {
@@ -522,7 +522,7 @@ pub fn run_setup() -> Result<()> {
         // Perform installation. Note that, because we validate SHA-256
         // checksums against values baked into the binary, allowing the user to
         // override the download URL does not represent a security risk.
-        let env_key = "HERMES_SETUP_BASE_URL";
+        let env_key = "ANNEAL_SETUP_BASE_URL";
         let base_url = std::env::var(env_key).unwrap_or_else(|_| {
             "https://github.com/AeneasVerif/aeneas/releases/download".to_string()
         });

@@ -1,4 +1,4 @@
-description = "Verify that hermes setup repairs missing or corrupted binaries."
+description = "Verify that anneal setup repairs missing or corrupted binaries."
 
 [test]
 setup_mock = true

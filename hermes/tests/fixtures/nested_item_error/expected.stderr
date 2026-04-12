@@ -1,14 +1,14 @@
 
-=== Hermes Verification Failed ===
+=== Anneal Verification Failed ===
 
-[Hermes Error] hermes::nested_item
+[Anneal Error] anneal::nested_item
 
-  × Nested item error: Hermes cannot verify items defined inside function
+  × Nested item error: Anneal cannot verify items defined inside function
   │ bodies or other blocks. Move this item to the module level if you wish to
   │ verify it.
    ╭─[[PROJECT_ROOT]/src/lib.rs:2:5]
  1 │     fn outer() {
- 2 │ ╭─▶     /// ```lean, hermes
+ 2 │ ╭─▶     /// ```lean, anneal
  3 │ │       /// ```
  4 │ ├─▶     fn inner() {}
    · ╰──── this item is defined inside a function body

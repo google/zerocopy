@@ -1,7 +1,7 @@
 
-=== Hermes Verification Failed ===
+=== Anneal Verification Failed ===
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: Multiple unnamed bounds are not allowed. If you
   │ have multiple bounds, they must all be named (e.g., `requires
@@ -15,7 +15,7 @@
     ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: Multiple unnamed bounds are not allowed. If you
   │ have multiple bounds, they must all be named (e.g., `requires
@@ -29,7 +29,7 @@
     ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: Bound name `h_same` conflicts with an existing
   │ requires bound.
@@ -42,11 +42,11 @@
     ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: `proof context` sections cannot be named.
     ╭─[[PROJECT_ROOT]/src/lib.rs:75:1]
- 74 │ /// ```lean, hermes, spec
+ 74 │ /// ```lean, anneal, spec
  75 │ /// proof context (foo):
     · ────────────┬───────────
     ·             ╰── problematic block
@@ -54,13 +54,13 @@
     ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: Invalid bound name `123invalid`. Names must be
   │ valid identifiers (alphanumeric and underscores, starting with a letter or
   │ underscore).
     ╭─[[PROJECT_ROOT]/src/lib.rs:88:1]
- 87 │ /// ```lean, hermes, spec
+ 87 │ /// ```lean, anneal, spec
  88 │ /// requires (123invalid):
     · ─────────────┬────────────
     ·              ╰── problematic block
@@ -68,13 +68,13 @@
     ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: Invalid bound name ``. Names must be valid
   │ identifiers (alphanumeric and underscores, starting with a letter or
   │ underscore).
      ╭─[[PROJECT_ROOT]/src/lib.rs:100:1]
-  99 │ /// ```lean, hermes, spec
+  99 │ /// ```lean, anneal, spec
  100 │ /// requires ():
      · ────────┬───────
      ·         ╰── problematic block
@@ -82,12 +82,12 @@
      ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: Invalid bound name `if`. Names cannot be Lean
   │ keywords.
      ╭─[[PROJECT_ROOT]/src/lib.rs:126:1]
- 125 │ /// ```lean, hermes, spec
+ 125 │ /// ```lean, anneal, spec
  126 │ /// requires (if):
      · ─────────┬────────
      ·          ╰── problematic block
@@ -95,12 +95,12 @@
      ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: Invalid bound name `then`. Names cannot be Lean
   │ keywords.
      ╭─[[PROJECT_ROOT]/src/lib.rs:136:1]
- 135 │ /// ```lean, hermes, spec
+ 135 │ /// ```lean, anneal, spec
  136 │ /// ensures (then):
      · ─────────┬─────────
      ·          ╰── problematic block
@@ -108,7 +108,7 @@
      ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: Duplicate bound name `e1`.
      ╭─[[PROJECT_ROOT]/src/lib.rs:150:1]

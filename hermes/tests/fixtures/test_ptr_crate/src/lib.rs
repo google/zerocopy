@@ -1,4 +1,4 @@
-/// ```lean, hermes, unsafe(axiom)
+/// ```lean, anneal, unsafe(axiom)
 /// ensures:
 ///   ///   ///   ret.val = 0
 /// ```

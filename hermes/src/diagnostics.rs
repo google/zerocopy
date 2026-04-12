@@ -230,10 +230,10 @@ impl DiagnosticMapper {
     /// The fundamental workflow for an external error is:
     /// 1. Lean encounters a verification failure and emits a JSON line
     ///    containing its local start/end bytes in the `.lean` artifact.
-    /// 2. Hermes checks the cached `SourceMapping` array for that artifact,
+    /// 2. Anneal checks the cached `SourceMapping` array for that artifact,
     ///    and discovers exactly where the Lean bytes translate back to Rust
     ///    bytes.
-    /// 3. Hermes calls this method to print the error onto the Rust file
+    /// 3. Anneal calls this method to print the error onto the Rust file
     ///    canvas.
     pub fn render_raw<F>(
         &mut self,

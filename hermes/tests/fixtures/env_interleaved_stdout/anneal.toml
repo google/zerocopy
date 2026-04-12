@@ -1,6 +1,6 @@
 description = """
 Purpose: Validates robustness of Charon CLI message interception.
-Behavior: Intercepts parsed JSON messages interleaved with raw unstructured text `Line 1 from charon`. Assures the Hermes diagnostic monitor properly processes JSON segments without choking on unstructured noise.
+Behavior: Intercepts parsed JSON messages interleaved with raw unstructured text `Line 1 from charon`. Assures the Anneal diagnostic monitor properly processes JSON segments without choking on unstructured noise.
 """
 
 [test]

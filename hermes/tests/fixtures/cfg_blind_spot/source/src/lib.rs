@@ -1,6 +1,6 @@
 #[cfg(target_os = "haiku")]
 mod ghost {
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// ```
     pub fn hidden() {}
 }

@@ -1,4 +1,4 @@
-/// ```lean, hermes
+/// ```lean, anneal
 /// context:
 /// theorem my_deep_proof : True := trivial
 /// ```

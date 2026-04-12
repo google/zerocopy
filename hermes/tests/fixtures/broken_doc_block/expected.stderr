@@ -1,11 +1,11 @@
 
-=== Hermes Verification Failed ===
+=== Anneal Verification Failed ===
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
-  × Documentation block error: Unclosed Hermes block in documentation.
+  × Documentation block error: Unclosed Anneal block in documentation.
    ╭─[[PROJECT_ROOT]/src/lib.rs:1:1]
- 1 │ /// ```lean, hermes
+ 1 │ /// ```lean, anneal
    · ─────────┬─────────
    ·          ╰── problematic block
  2 │ /// context:

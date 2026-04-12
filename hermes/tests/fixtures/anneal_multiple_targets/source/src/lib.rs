@@ -1,5 +1,5 @@
 pub fn lib_fn() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
 pub fn dummy() {}

@@ -1,12 +1,12 @@
 
-=== Hermes Verification Failed ===
+=== Anneal Verification Failed ===
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: `requires` sections are only permitted on
   │ `unsafe` functions.
    ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
- 1 │ /// ```hermes
+ 1 │ /// ```anneal
  2 │ /// requires: True
    · ─────────┬────────
    ·          ╰── problematic block
@@ -14,7 +14,7 @@
    ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: Multiple unnamed bounds are not allowed. If you
   │ have multiple bounds, they must all be named (e.g., `requires
@@ -28,12 +28,12 @@
    ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: `requires` sections are only permitted on
   │ `unsafe` functions.
     ╭─[[PROJECT_ROOT]/src/lib.rs:13:1]
- 12 │ /// ```hermes
+ 12 │ /// ```anneal
  13 │ /// requires:
     · ──────┬──────
     ·       ╰── problematic block
@@ -41,12 +41,12 @@
     ╰────
 
 
-[Hermes Error] hermes::doc_block
+[Anneal Error] anneal::doc_block
 
   × Documentation block error: `requires` sections are only permitted on
   │ `unsafe` functions.
     ╭─[[PROJECT_ROOT]/src/lib.rs:18:1]
- 17 │ /// ```hermes
+ 17 │ /// ```anneal
  18 │ /// requires(h_true): True
     · ─────────────┬────────────
     ·              ╰── problematic block

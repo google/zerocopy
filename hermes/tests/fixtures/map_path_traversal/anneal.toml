@@ -1,6 +1,6 @@
 description = """
 Purpose: Validates that map_path mitigates path traversal out of the workspace.
-Behavior: Provides a Charon mock error natively located at `../../../etc/passwd`. Ensures Hermes refuses to map this out-of-bounds path instead of printing `/etc/passwd`.
+Behavior: Provides a Charon mock error natively located at `../../../etc/passwd`. Ensures Anneal refuses to map this out-of-bounds path instead of printing `/etc/passwd`.
 """
 
 [test]
