@@ -1,0 +1,2 @@
+Error: Aeneas failed to generate Funs.lean for 'MissingOutputMissingOutput7e7fa901e113b500', but Anneal found function/impl items in the source.
+This indicates that Aeneas silently failed to translate some items.

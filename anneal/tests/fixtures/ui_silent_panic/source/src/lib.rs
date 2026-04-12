@@ -1,0 +1,3 @@
+/// ```anneal
+/// ```
+pub fn foo() {}
