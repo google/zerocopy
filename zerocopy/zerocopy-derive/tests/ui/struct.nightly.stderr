@@ -205,6 +205,8 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy_renamed::Immutable` is n
              (A, B, C, D, E, F)
            and 130 others
    = help: see issue #48214
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
@@ -230,6 +232,8 @@ error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy_renamed::Immutable` is n
            and 130 others
    = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy_renamed::Immutable`
    = help: see issue #48214
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |

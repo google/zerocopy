@@ -119,8 +119,22 @@ fn main() {
     // Ignoring `RUSTFLAGS` and specifying our own flags here makes these
     // tests more reproducible.
 
-    // FIXME: These seem to have no effect (ie, rustc seems to still discover
-    // the real terminal width).
+    // The `--diagnostic-width` flag is the most reliable way to ensure that
+    // rustc's error messages are wrapped at a consistent width. This avoids
+    // flakiness in UI tests where the output might otherwise depend on the
+    // terminal width of the environment in which the tests are run.
+    //
+    // However, this flag was only stabilized in Rust 1.70.0 (and was unstable
+    // starting in 1.62.0), so we only pass it if we're not on our MSRV
+    // toolchain (which is 1.56.0).
+    if toolchain_meta_name != "msrv" {
+        config.program.args.push("--diagnostic-width=100".into());
+    }
+
+    // These environment variables are usually respected by CLI tools (including
+    // rustc) to determine the terminal width. As of this writing, rustc sometimes
+    // ignores them and discovers the real terminal width anyway; the
+    // `--diagnostic-width` flag above is more reliable.
     config.program.envs.push(("TERM".into(), Some("dumb".into())));
     config.program.envs.push(("COLUMNS".into(), Some("100".into())));
 
