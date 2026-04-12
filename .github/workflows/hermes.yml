@@ -185,7 +185,10 @@ jobs:
       # tests instead of specifically trying to carve out unit tests and risk
       # missing test categories.
       - name: Run all tests
-        run: docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo test --verbose
+        run: |
+          echo "Starting Docker run at $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          docker run -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo test --verbose
+          echo "Docker run exited at $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
   verify_examples:
     name: Verify example (${{ matrix.example }})
