@@ -130,13 +130,15 @@ jobs:
       - name: Create git tag
         env:
           VERSION: ${{ needs.check-version.outputs.version }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           set -eo pipefail
           TAG="v$VERSION"
           git config user.name "Google PR Creation Bot"
           git config user.email "github-pull-request-creation-bot@google.com"
           git tag -a "$TAG" -m "Release $TAG"
-          git push origin "$TAG"
+          git push https://x-access-token:$GH_TOKEN@github.com/$GH_REPO.git "$TAG"
         
       # NOTE: Relies on OIDC to be configured for this GHA workflow.
       - name: Publish zerocopy-derive
