@@ -4,5 +4,8 @@
   ],
   ".github/workflows/anneal.yml": [
     "joshlf"
+  ],
+  ".github/workflows/anneal-release.yml": [
+    "joshlf"
   ]
 }
