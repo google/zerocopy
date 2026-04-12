@@ -1,17 +1,6 @@
 
 === Hermes Verification Failed ===
 
-[Hermes Error] hermes::syn_error
-
-  × Syntax error in Rust source: cannot parse string into token stream
-   ╭─[[PROJECT_ROOT]/src/a.rs:1:12]
- 1 │ fn broken( {
-   ·            ▲
-   ·            ╰── here
- 2 │ 
-   ╰────
-
-
 [Hermes Error] hermes::doc_block
 
   × Documentation block error: Unclosed Hermes block in documentation.
@@ -20,6 +9,17 @@
    · ─────────┬─────────
    ·          ╰── problematic block
  2 │ /// context:
+   ╰────
+
+
+[Hermes Error] hermes::syn_error
+
+  × Syntax error in Rust source: cannot parse string into token stream
+   ╭─[[PROJECT_ROOT]/src/a.rs:1:12]
+ 1 │ fn broken( {
+   ·            ▲
+   ·            ╰── here
+ 2 │ 
    ╰────
 
 Error: Aborting due to 2 previous errors.

@@ -218,14 +218,12 @@
     ╰────
   help: if this is intentional, prefix it with an underscore
 
-Error: Lean build failed
-STDOUT:
-trace: .> LEAN_PATH=[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/Cli/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/batteries/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/Qq/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/aesop/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/proofwidgets/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/importGraph/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/LeanSearchClient/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/plausible/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/lean_lake/packages/mathlib/.lake/build/lib/lean:[TARGET_DIR]/worker_caches/<ID>/aeneas/backends/lean/.lake/build/lib/lean:[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean [ELAN_TOOLCHAIN]/bin/lean [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/generated/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.lean -o [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.olean -i [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/lib/lean/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.ilean -c [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.c --setup [PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/build/ir/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.setup.json --json
-error: generated/Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891/Funs.lean:24:21: unexpected token 'show'; expected '_' or identifier
-error: Lean exited with code 1
-Some required targets logged failures:
-- Test12LeanKeywordsArgsTest12LeanKeywordsArgsbfc34253d33aa891.Funs
-STDERR:
-warning: mathlib: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/mathlib' has local changes
-warning: batteries: repository '[PROJECT_ROOT]/target/hermes/hermes_test_target/lean/.lake/packages/batteries' has local changes
-error: build failed
+  ⚠ declaration uses `sorry`
+   ╭─[[PROJECT_ROOT]/src/lib.rs:7:4]
+ 6 │ /// proof context:
+ 7 │ ///   have h_foo : True := True.intro
+   ·    ─────────────────┬────────────────
+   ·                     ╰── here
+ 8 │ /// ```
+   ╰────
+
