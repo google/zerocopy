@@ -69,7 +69,8 @@ jobs:
         with:
           context: hermes
           file: hermes/Dockerfile
-          push: false
+          push: true
+          tags: ghcr.io/google/zerocopy/hermes:${{ steps.docker_tag.outputs.tag }}
           provenance: false
           build-args: |
             UID=${{ steps.get_uid.outputs.uid }}
@@ -115,20 +116,10 @@ jobs:
           echo "uid=$(id -u)" >> "$GITHUB_OUTPUT"
           echo "gid=$(id -g)" >> "$GITHUB_OUTPUT"
 
-      - name: Load image from cache
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
-        with:
-          context: hermes
-          file: hermes/Dockerfile
-          load: true
-          tags: hermes-ci:local
-          provenance: false
-          build-args: |
-            UID=${{ steps.get_uid.outputs.uid }}
-            GID=${{ steps.get_uid.outputs.gid }}
-          cache-from: |
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ steps.docker_tag.outputs.tag }}
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:main
+      - name: Pull and tag image
+        run: |
+          docker pull ghcr.io/google/zerocopy/hermes:${{ steps.docker_tag.outputs.tag }}
+          docker tag ghcr.io/google/zerocopy/hermes:${{ steps.docker_tag.outputs.tag }} hermes-ci:local
 
       # Ensure `llms-full.txt` file is up-to-date.
       - name: Check doc generation
@@ -201,30 +192,16 @@ jobs:
           echo "uid=$(id -u)" >> "$GITHUB_OUTPUT"
           echo "gid=$(id -g)" >> "$GITHUB_OUTPUT"
 
-      - name: Load image from cache
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
-        with:
-          context: hermes
-          file: hermes/Dockerfile
-          load: true
-          tags: hermes-ci:local
-          provenance: false
-          build-args: |
-            UID=${{ steps.get_uid.outputs.uid }}
-            GID=${{ steps.get_uid.outputs.gid }}
-          cache-from: |
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ steps.docker_tag.outputs.tag }}
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:main
+      - name: Pull and tag image
+        run: |
+          docker pull ghcr.io/google/zerocopy/hermes:${{ steps.docker_tag.outputs.tag }}
+          docker tag ghcr.io/google/zerocopy/hermes:${{ steps.docker_tag.outputs.tag }} hermes-ci:local
 
       - name: Verify example
         env:
           EXAMPLE: ${{ matrix.example }}
         run: |
           KNOWN_FAILING=("design_doc" "never_type" "ptr_concat")
-
-          echo "Setting up Hermes toolchain for Verify Examples"
-          docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 -e HERMES_TOOLCHAIN_DIR=/cache/hermes_toolchain hermes-ci:local cargo run setup
-
           example="$EXAMPLE"
 
           expect_failure=0
