@@ -7,6 +7,7 @@ fn ui() {
     unsafe { std::env::set_var("HERMES_UI_TEST_MODE", "true") };
 
     let mut config = Config::rustc(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/ui"));
+    config.program.args.push("--diagnostic-width=100".into());
 
     let args = Args::test().unwrap();
     config.with_args(&args);
