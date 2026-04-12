@@ -1,7 +1,10 @@
 FROM python:3.11-slim AS extractor
 WORKDIR /app
-COPY Cargo.toml tools/extract_minimal_toml.py ./
-RUN python3 extract_minimal_toml.py > Cargo.toml.minimal
+COPY Cargo.toml ./
+# Remove the [workspace] section so it can be built as a standalone package.
+# Also inject tree-sitter dependencies used by doc_gen to cache them too.
+RUN sed '1,2d' Cargo.toml > Cargo.toml.no_workspace && \
+    sed -i '/^\[dependencies\]$/a tree-sitter = "0.25"\ntree-sitter-lean4 = "0.2"' Cargo.toml.no_workspace
 
 FROM ubuntu:24.04
 
@@ -27,8 +30,8 @@ RUN if [ -z "$UID" ]; then echo "UID build arg is required" && exit 1; fi && \
     sed -i "s/^UID_MAX.*/UID_MAX $UID/" /etc/login.defs && \
     groupadd -g $GID hermes && \
     useradd -l -u $UID -g $GID -m hermes && \
-    mkdir /cache /opt/rustup /opt/cargo /opt/elan /workspace && \
-    chown hermes:hermes /cache /opt/rustup /opt/cargo /opt/elan /workspace
+    mkdir /cache /opt/rustup /opt/cargo /opt/elan /workspace /opt/hermes_target /opt/hermes_toolchain && \
+    chown hermes:hermes /cache /opt/rustup /opt/cargo /opt/elan /workspace /opt/hermes_target /opt/hermes_toolchain
 
 # Switch to non-root user for the rest of the build.
 USER hermes
@@ -42,26 +45,42 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no
 # Direct Hermes tests to write ephemeral integration targets here to leverage
 # overlayfs.
 ENV HERMES_INTEGRATION_TARGET_DIR=/cache/hermes_target
+
+# In the image, we build dependencies into /opt/hermes_target. This ensures
+# they are part of the image and available in CI matrix jobs.
+# In local development, docker.sh overrides this to /cache/hermes_target
+# via a volume mount, causing dependencies to be rebuilt once in the volume.
+# This double-build is intentional to support both environments efficiently.
+ENV CARGO_TARGET_DIR=/opt/hermes_target
 WORKDIR /workspace
 
-# Copy the minimal workspace configuration and source files needed for setup.
-COPY --from=extractor --chown=hermes:hermes /app/Cargo.toml.minimal ./Cargo.toml
+# Copy the workspace configuration (without workspace section) and lockfile.
+COPY --from=extractor --chown=hermes:hermes /app/Cargo.toml.no_workspace ./Cargo.toml
 COPY --chown=hermes:hermes Cargo.lock ./
+
+# Copy source files needed for setup.
 COPY --chown=hermes:hermes src/setup.rs src/util.rs ./src/
 COPY --chown=hermes:hermes build.rs ./
 
-# Create a minimal `main.rs` to build a standalone setup binary.
-RUN echo 'mod setup; mod util; fn main() -> anyhow::Result<()> { setup::run_setup() }' > src/main.rs
+# Create a minimal `main.rs` that runs setup, and a dummy test file.
+# This allows us to build all dependencies (including dev-dependencies)
+# in the image while still being able to run `setup`. It also avoids taking
+# a dependency on *most* source files, avoiding unnecessary container rebuilds
+# when source files change.
+RUN echo 'mod setup; mod util; fn main() -> anyhow::Result<()> { setup::run_setup() }' > src/main.rs && \
+    mkdir tests && echo 'fn main() {}' > tests/integration.rs
 
-# Build the minimal binary and cache dependencies.
-#
-# Allow `dead_code` warnings since we have only copied `setup.rs`, and so a lot
-# of items are unused. These warnings are harmless.
-RUN RUSTFLAGS='-Adead_code' cargo build
+# Build dependencies to cache them in the image.
+# Note: We do not use `RUSTFLAGS='-Adead_code'` here (even though the dummy
+# `main.rs` has dead code) because doing so would cause Cargo to invalidate
+# this cache and rebuild everything when we later run commands *without*
+# that flag (which is the default).
+RUN cargo build && \
+    cargo build --tests
 
 # Pre-build Lean libraries using the minimal binary.
-ENV HERMES_TOOLCHAIN_DIR=/cache/hermes_toolchain
-RUN cargo run setup
+ENV HERMES_TOOLCHAIN_DIR=/opt/hermes_toolchain
+RUN cargo run
 
 # Ensure the integration target directory exists.
 RUN mkdir -p /cache/hermes_target

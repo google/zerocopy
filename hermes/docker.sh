@@ -39,7 +39,22 @@ fi
 # `hermes` workspace.
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 IMAGE_NAME="hermes-dev"
-VOLUME_NAME="hermes-cache"
+# To avoid pollution between different git worktrees, we generate a unique
+# volume ID for each worktree and store it in a file. This ensures that
+# each worktree gets its own isolated named volume for caching.
+VOLUME_ID_FILE="$DIR/.docker-volume-id"
+if [ ! -f "$VOLUME_ID_FILE" ]; then
+    if command -v uuidgen >/dev/null 2>&1; then
+        uuidgen > "$VOLUME_ID_FILE"
+    elif [ -f /proc/sys/kernel/random/uuid ]; then
+        cat /proc/sys/kernel/random/uuid > "$VOLUME_ID_FILE"
+    else
+        # Fallback if neither is available
+        head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16 > "$VOLUME_ID_FILE"
+    fi
+fi
+VOLUME_ID=$(cat "$VOLUME_ID_FILE" | tr -d '[:space:]')
+VOLUME_NAME="hermes-cache-$VOLUME_ID"
 
 BUILD_CACHE=$(mktemp)
 
@@ -97,17 +112,30 @@ fi
 
 rm -f "$BUILD_CACHE"
 
-# Create the Docker volume used to cache compilation artifacts. A named volume
-# is required to persist incremental compilation data between ephemeral
-# 'docker run' invocations, decreasing subsequent build times.
-if ! "${DOCKER_CMD[@]}" volume inspect $VOLUME_NAME >/dev/null 2>&1; then
-    "${DOCKER_CMD[@]}" volume create $VOLUME_NAME >/dev/null
-fi
-
 # The '--init' flag ensures that Docker runs an init system as PID 1.
 # This allows the container to properly handle signals like SIGINT,
 # preventing orphaned toolchain lockfiles from being left behind.
 DOCKER_FLAGS=("--rm" "--init")
+
+# In local development (which is the only place this script is used), we use
+# a named volume to persist Cargo cache and target directories between runs.
+# CI does not use this script and relies on the pre-populated image cache
+# directly.
+
+# Create the Docker volume used to cache compilation artifacts.
+if ! "${DOCKER_CMD[@]}" volume inspect $VOLUME_NAME >/dev/null 2>&1; then
+    "${DOCKER_CMD[@]}" volume create $VOLUME_NAME >/dev/null
+fi
+
+# Use the volume for Cargo cache and target in local development.
+# This will obscure the image cache in /opt/cargo and /opt/hermes_target,
+# causing a double-build on the first run, but it allows for persistent
+# caching across runs in local dev.
+DOCKER_FLAGS+=("-e" "CARGO_HOME=/cache/cargo_home")
+DOCKER_FLAGS+=("-e" "CARGO_TARGET_DIR=/cache/hermes_target")
+
+# Mount the volume to /cache.
+DOCKER_FLAGS+=("-v" "$VOLUME_NAME:/cache")
 
 # Allocate a pseudo-TTY if the script is running in an interactive terminal.
 # This preserves colored output from Cargo and other utilities.
@@ -162,6 +190,5 @@ WORKDIR="/workspace/$REL_PATH"
 
 exec "${DOCKER_CMD[@]}" run "${DOCKER_FLAGS[@]}" \
     -v "$DIR:/workspace" \
-    -v "$VOLUME_NAME:/cache" \
     -w "$WORKDIR" \
     $IMAGE_NAME "$@"
