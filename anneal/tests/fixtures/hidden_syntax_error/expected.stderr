@@ -1,0 +1,15 @@
+
+=== Anneal Verification Failed ===
+
+[Anneal Error] anneal::syn_error
+
+  × Syntax error in Rust source: cannot parse string into token stream
+   ╭─[[PROJECT_ROOT]/src/lib.rs:3:21]
+ 2 │ mod broken {
+ 3 │      fn syntax_error( {  // Missing closing parenthesis
+   ·                     ▲
+   ·                     ╰── here
+ 4 │ }
+   ╰────
+
+Error: Aborting due to 1 previous errors.

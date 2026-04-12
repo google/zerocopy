@@ -1,0 +1,65 @@
+[External Error] generated/RawPtrDstLayoutRawPtrDstLayoutd9818cb8368391d4/RawPtrDstLayoutRawPtrDstLayoutd9818cb8368391d4.lean: unsolved goals
+slice : ConstRawPtr (Slice Std.U8)
+⊢ match do
+    let i ← size_of_val_raw slice
+    let i1 ← align_of_val_raw slice
+    ok (i, i1) with
+  | ok v => Anneal.Alignment ↑v.2 ∧ ↑v.2 ∣ ↑v.1
+  | fail e => False
+  | div => False
+  ⚠ This simp argument is unused:
+  │   size_of_val_raw.spec
+  │ 
+  │ Hint: Omit it from the simp argument list.
+  │   simp [̵s̵i̵z̵e̵_̵o̵f̵_̵v̵a̵l̵_̵r̵a̵w̵.̵s̵p̵e̵c̵,̵ ̵a̵l̵i̵g̵n̵_̵o̵f̵_̵v̵a̵l̵_̵r̵a̵w̵.̵s̵p̵e̵c̵]̵
+  │ [̲a̲l̲i̲g̲n̲_̲o̲f̲_̲v̲a̲l̲_̲r̲a̲w̲.̲s̲p̲e̲c̲]̲
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedSimpArgs
+  │ false`
+    ╭─[/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/tests/fixtures/raw_ptr_dst_layout/source/src/lib.rs:32:13]
+ 31 │ ///   unfold test_slice
+ 32 │ ///   simp [size_of_val_raw.spec, align_of_val_raw.spec]
+    ·             ──────────┬─────────
+    ·                       ╰── here
+ 33 │ /// ```
+    ╰────
+
+  ⚠ This simp argument is unused:
+  │   align_of_val_raw.spec
+  │ 
+  │ Hint: Omit it from the simp argument list.
+  │   simp [size_of_val_raw.spec,̵ ̵a̵l̵i̵g̵n̵_̵o̵f̵_̵v̵a̵l̵_̵r̵a̵w̵.̵s̵p̵e̵c̵]
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedSimpArgs
+  │ false`
+    ╭─[/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/tests/fixtures/raw_ptr_dst_layout/source/src/lib.rs:32:35]
+ 31 │ ///   unfold test_slice
+ 32 │ ///   simp [size_of_val_raw.spec, align_of_val_raw.spec]
+    ·                                   ──────────┬──────────
+    ·                                             ╰── here
+ 33 │ /// ```
+    ╰────
+
+[External Error] generated/RawPtrDstLayoutRawPtrDstLayoutd9818cb8368391d4/RawPtrDstLayoutRawPtrDstLayoutd9818cb8368391d4.lean: unsolved goals
+ptr : ConstRawPtr NonReprC
+⊢ match align_of_val_raw ptr with
+  | ok v => Anneal.Alignment ↑v
+  | fail e => False
+  | div => False
+  ⚠ This simp argument is unused:
+  │   align_of_val_raw.spec
+  │ 
+  │ Hint: Omit it from the simp argument list.
+  │   simp ̵[̵a̵l̵i̵g̵n̵_̵o̵f̵_̵v̵a̵l̵_̵r̵a̵w̵.̵s̵p̵e̵c̵]̵
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedSimpArgs
+  │ false`
+    ╭─[/usr/local/google/home/joshlf/workspace/zerocopy/hermes/tools/hermes/tests/fixtures/raw_ptr_dst_layout/source/src/lib.rs:47:13]
+ 46 │ ///   unfold test_non_repr_c_align
+ 47 │ ///   simp [align_of_val_raw.spec]
+    ·             ──────────┬──────────
+    ·                       ╰── here
+ 48 │ /// ```
+    ╰────
+
+Error: Lean verification failed

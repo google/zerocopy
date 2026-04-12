@@ -1,0 +1,12 @@
+description = """
+Purpose: Verifies baseline relative path mappings.
+Behavior: Confirms purely relative diagnostic paths like `src/lib.rs` remain mapped onto the project root correctly by the custom Anneal UI driver.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "success"
+
+[test.mock]
+charon = "mock_charon_output.json"
