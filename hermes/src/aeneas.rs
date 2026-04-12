@@ -21,20 +21,20 @@ use std::{
 use anyhow::{Context, Result, bail};
 use indicatif::{ProgressBar, ProgressStyle};
 
-use crate::{generate, resolve::LockedRoots, scanner::HermesArtifact, setup::Tool};
+use crate::{generate, resolve::LockedRoots, scanner::AnnealArtifact, setup::Tool};
 
-const HERMES_PRELUDE: &str = include_str!("Hermes.lean");
+const ANNEAL_PRELUDE: &str = include_str!("Anneal.lean");
 
 /// Orchestrates the Aeneas translation and Lean verification process.
 ///
-/// This function is the main entry point for the "backend" phase of Hermes.
+/// This function is the main entry point for the "backend" phase of Anneal.
 /// It assumes that Charon has already run and produced valid LLBC files.
 ///
 /// It requires `LockedRoots` to ensure safe, exclusive access to the
 /// `lean` and `generated` output directories.
 pub fn run_aeneas(
     roots: &LockedRoots,
-    artifacts: &[HermesArtifact],
+    artifacts: &[AnnealArtifact],
     args: &crate::resolve::Args,
 ) -> Result<()> {
     let llbc_root = roots.llbc_root();
@@ -52,11 +52,11 @@ pub fn run_aeneas(
     if tmp_lean_root.exists() {
         std::fs::remove_dir_all(&tmp_lean_root).context("Failed to cleanup stale tmp directory")?;
     }
-    std::fs::create_dir_all(tmp_lean_root.join("hermes"))?;
+    std::fs::create_dir_all(tmp_lean_root.join("anneal"))?;
 
     // 2. Write Standard Library & Configuration
-    let config_content = if args.allow_sorry { "axiom Hermes.allow_sorry : True\n" } else { "" };
-    write_if_changed(&tmp_lean_root.join("hermes").join("Config.lean"), config_content)
+    let config_content = if args.allow_sorry { "axiom Anneal.allow_sorry : True\n" } else { "" };
+    write_if_changed(&tmp_lean_root.join("anneal").join("Config.lean"), config_content)
         .context("Failed to write Config.lean")?;
 
     let mut prelude = String::new();
@@ -64,7 +64,7 @@ pub fn run_aeneas(
     if !args.allow_sorry {
         prelude.push_str("import Lean\n");
     }
-    prelude.push_str(HERMES_PRELUDE);
+    prelude.push_str(ANNEAL_PRELUDE);
 
     if !args.allow_sorry {
         prelude.push_str("\n\n");
@@ -79,13 +79,13 @@ pub fn run_aeneas(
         );
     }
 
-    write_if_changed(&tmp_lean_root.join("hermes").join("Hermes.lean"), &prelude)
-        .context("Failed to write Hermes prelude")?;
+    write_if_changed(&tmp_lean_root.join("anneal").join("Anneal.lean"), &prelude)
+        .context("Failed to write Anneal prelude")?;
 
     // 3. Write Toolchain
     write_if_changed(
         &tmp_lean_root.join("lean-toolchain"),
-        &format!("{}\n", env!("HERMES_LEAN_TOOLCHAIN")),
+        &format!("{}\n", env!("ANNEAL_LEAN_TOOLCHAIN")),
     )
     .context("Failed to write Lean toolchain")?;
 
@@ -110,7 +110,7 @@ pub fn run_aeneas(
         // STALE OUTPUT CLEANUP:
         // We must ensure that the output directory is clean before running Aeneas.
         // If stale files (e.g., `Funs.lean` from a previous run) persist, they might be used
-        // by Hermes even if Aeneas doesn't regenerate them (e.g. if the function was deleted).
+        // by Anneal even if Aeneas doesn't regenerate them (e.g. if the function was deleted).
         if output_dir.exists() {
             log::debug!("Cleaning stale output directory: {}", output_dir.display());
             std::fs::remove_dir_all(&output_dir).context("Failed to clean output directory")?;
@@ -152,7 +152,7 @@ pub fn run_aeneas(
         // functions/types. However, `Specs.lean` and `Generated.lean` expect
         // them to exist (as imports).
         //
-        // If Hermes found items that *should* result in these files being
+        // If Anneal found items that *should* result in these files being
         // generated, but they are missing, this indicates an Aeneas failure
         // (e.g. valid Rust code that Aeneas failed to translate). In this
         // case, we error out rather than creating an empty file to prevent
@@ -161,20 +161,20 @@ pub fn run_aeneas(
         if !funs_path.exists() {
             if artifact.has_functions() {
                 bail!(
-                    "Aeneas failed to generate Funs.lean for '{}', but Hermes found function/impl items in the source.\n\
+                    "Aeneas failed to generate Funs.lean for '{}', but Anneal found function/impl items in the source.\n\
                      This indicates that Aeneas silently failed to translate some items.",
                     slug
                 );
             }
             log::debug!(
-                "Funs.lean missing for {}, creating empty file. (No functions found by Hermes)",
+                "Funs.lean missing for {}, creating empty file. (No functions found by Anneal)",
                 slug
             );
             std::fs::write(&funs_path, "").context("Failed to create empty Funs.lean")?;
         } else {
             // Aeneas generates `def` for all functions. If a function calls an opaque
             // translated function (which emits as an `axiom`), Lean's bytecode compiler
-            // will reject it unless it's marked `noncomputable`. Since Hermes verification
+            // will reject it unless it's marked `noncomputable`. Since Anneal verification
             // never executes these functions directly in Lean, we safely wrap the entire
             // `Funs.lean` file in a `noncomputable section` to suppress these errors.
             let content =
@@ -187,13 +187,13 @@ pub fn run_aeneas(
         if !types_path.exists() {
             if artifact.has_types() {
                 bail!(
-                    "Aeneas failed to generate Types.lean for '{}', but Hermes found type/trait items in the source.\n\
+                    "Aeneas failed to generate Types.lean for '{}', but Anneal found type/trait items in the source.\n\
                      This indicates that Aeneas silently failed to translate some items.",
                     slug
                 );
             }
             log::debug!(
-                "Types.lean missing for {}, creating empty file. (No types found by Hermes)",
+                "Types.lean missing for {}, creating empty file. (No types found by Anneal)",
                 slug
             );
             std::fs::write(&types_path, "").context("Failed to create empty Types.lean")?;
@@ -255,7 +255,7 @@ pub fn run_aeneas(
         // Register the generated modules as roots for the Lake library.
         //
         // The `slug` is guaranteed to be PascalCase and alphanumeric (see
-        // `HermesArtifact::artifact_slug`), so it is always a valid Lean identifier.
+        // `AnnealArtifact::artifact_slug`), so it is always a valid Lean identifier.
         // We can safely append `.Funs` and `.Types` without needing complex escaping
         // or guillemets (`«...»`) in the Lake configuration.
         //
@@ -267,19 +267,19 @@ pub fn run_aeneas(
 
     // 4. Write Lakefile
     //
-    // If `HERMES_AENEAS_DIR` is set (e.g., in CI or local development via Docker),
+    // If `ANNEAL_AENEAS_DIR` is set (e.g., in CI or local development via Docker),
     // we use it. Otherwise, we default to the managed toolchain directory.
-    let aeneas_dep = if let Ok(path) = std::env::var("HERMES_AENEAS_DIR") {
+    let aeneas_dep = if let Ok(path) = std::env::var("ANNEAL_AENEAS_DIR") {
         // Use a path dependency to avoid git cloning.
         //
         // Note: We append the revision as a comment (`-- <rev>`) so that we can
         // verify in integration tests that the binary was built with the
         // correct revision, even when using a local override.
-        format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("HERMES_AENEAS_REV"))
+        format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("ANNEAL_AENEAS_REV"))
     } else {
         let toolchain = crate::setup::Toolchain::resolve()?;
         let path = toolchain.root.display();
-        format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("HERMES_AENEAS_REV"))
+        format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("ANNEAL_AENEAS_REV"))
     };
 
     let roots_str = lake_roots.iter().map(|r| format!("`{}", r)).collect::<Vec<_>>().join(", ");
@@ -291,7 +291,7 @@ open Lake DSL
 
 {aeneas_dep}
 
-package hermes_verification
+package anneal_verification
 
 @[default_target]
 lean_lib «Generated» where
@@ -299,9 +299,9 @@ lean_lib «Generated» where
   roots := #[{roots_str}]
 
 @[default_target]
-lean_lib «Hermes» where
-  srcDir := "hermes"
-  roots := #[`Config, `Hermes]
+lean_lib «Anneal» where
+  srcDir := "anneal"
+  roots := #[`Config, `Anneal]
 
 lean_lib «User» where
   srcDir := "user"
@@ -340,8 +340,8 @@ lean_lib «User» where
     Ok(())
 }
 
-/// Generates Hermes `Specs.lean` and writes `Generated.lean`, but does not run the `lake build`.
-pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
+/// Generates Anneal `Specs.lean` and writes `Generated.lean`, but does not run the `lake build`.
+pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     let lean_generated_root = roots.lean_generated_root();
     let mut generated_imports = String::new();
 
@@ -353,7 +353,7 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[HermesArtifact]
         let slug = artifact.artifact_slug();
         let output_dir = lean_generated_root.join(&slug);
 
-        // Generate Hermes specs
+        // Generate Anneal specs
         let generated = generate::generate_artifact(artifact);
         let specs_path = output_dir.join(artifact.lean_spec_file_name());
         let map_path = output_dir.join(format!("{}.lean.map", artifact.artifact_slug()));
@@ -385,9 +385,9 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[HermesArtifact]
     Ok(())
 }
 
-/// Completes Lean verification by generating Hermes `Specs.lean`, writing `Generated.lean`,
+/// Completes Lean verification by generating Anneal `Specs.lean`, writing `Generated.lean`,
 /// and running `lake build` + diagnostics.
-pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
+pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     generate_lean_workspace(roots, artifacts)?;
     run_lake(roots, artifacts)
 }
@@ -395,12 +395,12 @@ pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[HermesArtifact]) 
 /// Runs the Lean build process and diagnostics.
 ///
 /// This function:
-/// 1. Patches `lake-manifest.json` if `HERMES_AENEAS_DIR` is set (for local dev).
+/// 1. Patches `lake-manifest.json` if `ANNEAL_AENEAS_DIR` is set (for local dev).
 /// 2. Fetches Mathlib cache to avoid rebuilding it.
 /// 3. Builds the project with `lake build`.
 /// 4. Executes the `Diagnostics.lean` script to check proofs.
 /// 5. Parses JSON output from the script and maps it back to Rust source.
-fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
+fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     let generated = roots.lean_generated_root();
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
@@ -434,7 +434,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     // 2. Build the project (dependencies only)
     let toolchain = crate::setup::Toolchain::resolve()?;
     let mut cmd = toolchain.command(Tool::Lake);
-    cmd.args(["build", "Generated", "Hermes"]);
+    cmd.args(["build", "Generated", "Anneal"]);
     cmd.current_dir(lean_root);
     cmd.stdout(Stdio::piped());
     cmd.stderr(Stdio::piped());
@@ -505,7 +505,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
     for artifact in artifacts {
         let slug = artifact.artifact_slug();
         // The path in generated file is `generated/Slug/Specs.lean`
-        // We construct the relative path from the Lake root (which is `target/hermes/<hash>/lean`)
+        // We construct the relative path from the Lake root (which is `target/anneal/<hash>/lean`)
         let specs_rel_path = format!("generated/{}/{}", slug, artifact.lean_spec_file_name());
 
         let toolchain = crate::setup::Toolchain::resolve()?;
@@ -610,7 +610,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[HermesArtifact]) -> Result<()> {
         let cmd = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
             "cargo run generate"
         } else {
-            "cargo hermes generate"
+            "cargo anneal generate"
         };
         bail!(
             "Lean verification failed. Consider running `{cmd}`, iterating on generated `.lean` files, and copying results back to `.rs` files."

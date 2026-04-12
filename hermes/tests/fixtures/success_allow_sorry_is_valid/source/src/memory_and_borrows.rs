@@ -1,7 +1,7 @@
 //! Tests for memory safety, borrowing patterns, and lifetime management.
 
 /// Test for swapping two mutable references.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// proof:
 ///   sorry
 /// ```
@@ -19,7 +19,7 @@ pub fn swap_reordered(b: &mut u32, a: &mut u32) {
 }
 
 /// A "sandwich" borrow where an immutable borrow is taken between mutable operations.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// proof:
 ///   sorry
 /// ```
@@ -29,7 +29,7 @@ pub fn sandwich_borrow(a: &mut u32, b: &u32, c: &mut u32) {
 }
 
 /// Destructuring a mutable reference to a tuple.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// proof:
 ///   sorry
 /// ```
@@ -39,7 +39,7 @@ pub fn deep_destruct(x: &mut (u32, u32)) {
 }
 
 /// Explicit lifetime splitting with disjoint mutable borrows.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// proof:
 ///   sorry
 /// ```
@@ -52,7 +52,7 @@ pub fn partial_mut<'a, 'b>(x: &'a mut u32, y: &'b mut u32) {
 }
 
 /// Simple mutable reference passthrough.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// proof:
 ///   sorry
 /// ```
@@ -61,13 +61,13 @@ pub fn mut_passthrough(x: &mut u32) {
 }
 
 /// Verifying that `isValid` on mutable references is correctly handled in proofs.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// proof (h_x'_is_valid):
-///   simp_all [Hermes.IsValid.isValid]
+///   simp_all [Anneal.IsValid.isValid]
 /// ```
 pub fn target_mut_ref_is_valid(x: &mut u32) {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// requires: a.len = b.len
 /// proof (h_progress):
 ///   sorry
@@ -76,7 +76,7 @@ pub fn target_mut_ref_is_valid(x: &mut u32) {}
 /// ```
 pub unsafe fn zip(a: &[u8], b: &[u8]) {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
@@ -90,7 +90,7 @@ pub fn mix(a: &mut u32, b: &u32, c: &mut u32) {
 
 // --- Restored from missing tests ---
 // Restored fn nested_mut from test_3_4_deep_destruct
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:

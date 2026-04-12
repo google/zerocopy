@@ -1,8 +1,8 @@
-//! Tests for advanced Hermes framework features, including `isValid`, `unsafe(axiom)`, and configuration-dependent signatures.
+//! Tests for advanced Anneal framework features, including `isValid`, `unsafe(axiom)`, and configuration-dependent signatures.
 
 pub mod is_valid {
     // Struct for testing IsValid with explicit definition.
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// isValid self := self.x > self.y
     /// ```
     pub struct InvalidStruct {
@@ -16,21 +16,21 @@ pub mod is_valid {
 
     /// Triggers allow_sorry on the complex isValid autoParam.
     /// Should emit a single "declaration uses sorry" warning.
-    /// ```lean, hermes, spec
+    /// ```lean, anneal, spec
     /// ```
     pub fn unprovable_is_valid() -> InvalidStruct {
         InvalidStruct { x: 1, y: 2 }
     }
 
     /// Should NOT trigger any "declaration uses sorry" because `True` for `ValidStruct` is solved automatically.
-    /// ```lean, hermes, spec
+    /// ```lean, anneal, spec
     /// ```
     pub fn trivial_is_valid() -> ValidStruct {
         ValidStruct { z: 5 }
     }
 
     /// Struct for testing IsValid with explicit definition in framework context.
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// isValid self := self.val > (0 : Int)
     /// ```
     pub struct Positive {
@@ -51,7 +51,7 @@ pub mod is_valid {
 
     pub fn no_args_no_return() {}
 
-    /// ```hermes
+    /// ```anneal
     /// ensures:
     ///   True
     /// proof:
@@ -68,17 +68,17 @@ pub mod is_valid {
 
 pub mod axioms {
     /// A function verifying that `unsafe(axiom)` blocks correctly parse and redact.
-    /// ```lean, hermes, unsafe(axiom)
+    /// ```lean, anneal, unsafe(axiom)
     /// ```
     pub unsafe fn test_axiom_pseudo_name() {}
 
     /// A function verifying that entirely empty `axiom` blocks compile correctly.
-    /// ```lean, hermes, unsafe(axiom)
+    /// ```lean, anneal, unsafe(axiom)
     /// ```
     pub unsafe fn test_empty_axiom() {}
 
     /// Using `unsafe(axiom)` to redact a return value property.
-    /// ```lean, hermes, unsafe(axiom)
+    /// ```lean, anneal, unsafe(axiom)
     /// ```
     pub unsafe fn redact_return() -> i32 {
         1 + 1
@@ -94,8 +94,8 @@ pub mod signatures {
         pub handle: i32,
     }
 
-    /// Verifying that padded signatures (due to `cfg`) don't break Hermes specs.
-    /// ```lean, hermes, spec
+    /// Verifying that padded signatures (due to `cfg`) don't break Anneal specs.
+    /// ```lean, anneal, spec
     /// proof context:
     ///   have h_foo : True := True.intro
     /// ```
@@ -103,7 +103,7 @@ pub mod signatures {
 }
 
 pub mod visibility {
-    /// ```lean, hermes, spec
+    /// ```lean, anneal, spec
     /// requires (h_eq):
     ///   x = _y
     /// ensures:
@@ -121,35 +121,35 @@ pub mod visibility {
 
 fn clean() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
-fn _hermes_dummy_1() {}
+fn _anneal_dummy_1() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding_9() {}
+pub fn dummy_anneal_padding_9() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
 fn my_func() {}
 
 fn keep() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
-fn _hermes_dummy_2() {}
+fn _anneal_dummy_2() {}
 
 fn code() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
-fn _hermes_dummy_3() {}
+fn _anneal_dummy_3() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
 fn private_helper() {}
 

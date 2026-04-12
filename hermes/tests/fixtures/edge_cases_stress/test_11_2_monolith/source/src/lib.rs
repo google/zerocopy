@@ -22,10 +22,10 @@ generate_fns!(
 );
 
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding() {}
+pub fn dummy_anneal_padding() {}

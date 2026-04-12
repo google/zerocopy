@@ -3,7 +3,7 @@ pub struct Foo<const N: usize> {
     pub data: [u8; N],
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// isSafe :
 ///   fun _ => True
 /// ```

@@ -14,9 +14,9 @@ mod util;
 
 use clap::Parser;
 
-/// Hermes: A Literate Verification Toolchain
+/// Anneal: A Literate Verification Toolchain
 #[derive(Parser, Debug)]
-#[command(name = "cargo-hermes", version, about, long_about = None)]
+#[command(name = "cargo-anneal", version, about, long_about = None)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -26,7 +26,7 @@ struct Cli {
 enum Commands {
     /// Verify a crate
     Verify(resolve::Args),
-    /// Setup Hermes dependencies
+    /// Setup Anneal dependencies
     Setup(resolve::SetupArgs),
     /// Expand a crate's Lean output
     Expand(ExpandArgs),
@@ -40,7 +40,7 @@ enum Commands {
 pub enum EmitFormat {
     #[default]
     All,
-    Hermes,
+    Anneal,
     Aeneas,
 }
 
@@ -59,15 +59,15 @@ fn main() -> anyhow::Result<()> {
     // difficult to work around in integration tests.
     env_logger::builder().format_timestamp(None).init();
 
-    if std::env::var("HERMES_UI_TEST_MODE").is_ok() {
+    if std::env::var("ANNEAL_UI_TEST_MODE").is_ok() {
         ui_test_shim::run();
         return Ok(());
     }
 
     let mut args_iter = std::env::args_os().peekable();
-    let bin_name = args_iter.next().unwrap_or_else(|| "cargo-hermes".into());
-    // If we're being run as a cargo plugin, the second argument will be "hermes".
-    if args_iter.peek().is_some_and(|arg| arg == "hermes") {
+    let bin_name = args_iter.next().unwrap_or_else(|| "cargo-anneal".into());
+    // If we're being run as a cargo plugin, the second argument will be "anneal".
+    if args_iter.peek().is_some_and(|arg| arg == "anneal") {
         args_iter.next();
     }
     let args = Cli::parse_from(std::iter::once(bin_name).chain(args_iter));
@@ -110,7 +110,7 @@ fn main() -> anyhow::Result<()> {
                     let output_dir = lean_generated_root.join(&slug);
 
                     let emit_all = expand_args.emit == EmitFormat::All;
-                    let emit_hermes = emit_all || expand_args.emit == EmitFormat::Hermes;
+                    let emit_anneal = emit_all || expand_args.emit == EmitFormat::Anneal;
                     let emit_aeneas = emit_all || expand_args.emit == EmitFormat::Aeneas;
 
                     println!("=== Lean expansion for: {} ===", artifact.name.target_name);
@@ -137,8 +137,8 @@ fn main() -> anyhow::Result<()> {
                         }
                     }
 
-                    if emit_hermes {
-                        println!("--- Hermes ---");
+                    if emit_anneal {
+                        println!("--- Anneal ---");
                         let generated = generate::generate_artifact(artifact);
                         println!("{}", generated.code);
                     }
@@ -154,14 +154,14 @@ fn main() -> anyhow::Result<()> {
 
 fn prepare_and_run<F, R>(resolve_args: &resolve::Args, f: F) -> anyhow::Result<Option<R>>
 where
-    F: FnOnce(&resolve::LockedRoots, &[scanner::HermesArtifact]) -> anyhow::Result<R>,
+    F: FnOnce(&resolve::LockedRoots, &[scanner::AnnealArtifact]) -> anyhow::Result<R>,
 {
     let roots = resolve::resolve_roots(resolve_args)?;
 
     let packages = scanner::scan_workspace(&roots)?;
     if packages.is_empty() {
         log::warn!(
-            "No Hermes annotations (/// ```lean ...) found in the selected targets. Nothing to verify."
+            "No Anneal annotations (/// ```lean ...) found in the selected targets. Nothing to verify."
         );
         return Ok(None);
     }

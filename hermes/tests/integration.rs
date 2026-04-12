@@ -17,7 +17,7 @@ fn new_sorted_walkdir(path: impl AsRef<Path>) -> WalkDir {
     WalkDir::new(path).sort_by_file_name()
 }
 
-datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "hermes.toml$" } }
+datatest_stable::harness! { { test = run_integration_test, root = "tests/fixtures", pattern = "anneal.toml$" } }
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -39,11 +39,11 @@ enum ExpectedStatus {
 
 // A note on our "no implicit files" philosophy: We prefer explicit
 // configuration to implicit conventions. Thus, unless explicitly specified in
-// `hermes.toml` (e.g., via `stderr_file` or `matches_expected_directory`), the
+// `anneal.toml` (e.g., via `stderr_file` or `matches_expected_directory`), the
 // test runner will completely ignore all other files in
 // `tests/fixtures/<test_case>`. It will not implicitly search for "implicit
 // files" (like `expected.stderr`) if they are not named in the TOML
-// configuration block. That ensures that when you read `hermes.toml`, you
+// configuration block. That ensures that when you read `anneal.toml`, you
 // immediately know every single input and constraint of the test. Note that
 // there are still a few implicit files/directories, but most are explicit.
 #[derive(Deserialize, Default, Clone)]
@@ -130,7 +130,7 @@ static TOOLCHAIN_PATH: OnceLock<PathBuf> = OnceLock::new();
 fn get_target_dir() -> PathBuf {
     TARGET_DIR
         .get_or_init(|| {
-            if let Ok(override_dir) = std::env::var("HERMES_INTEGRATION_TARGET_DIR") {
+            if let Ok(override_dir) = std::env::var("ANNEAL_INTEGRATION_TARGET_DIR") {
                 PathBuf::from(override_dir)
             } else {
                 let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
@@ -143,15 +143,15 @@ fn get_target_dir() -> PathBuf {
 fn get_toolchain_path() -> PathBuf {
     TOOLCHAIN_PATH
         .get_or_init(|| {
-            let cargo_bin = env!("CARGO_BIN_EXE_cargo-hermes");
+            let cargo_bin = env!("CARGO_BIN_EXE_cargo-anneal");
             let output = Command::new(cargo_bin)
                 .arg("toolchain-path")
                 .output()
-                .expect("Failed to execute cargo-hermes toolchain-path");
+                .expect("Failed to execute cargo-anneal toolchain-path");
 
             if !output.status.success() {
                 panic!(
-                    "cargo-hermes toolchain-path failed: {:?}",
+                    "cargo-anneal toolchain-path failed: {:?}",
                     String::from_utf8_lossy(&output.stderr)
                 );
             }
@@ -405,7 +405,7 @@ impl TestContext {
         let target_dir = get_target_dir();
         fs::create_dir_all(&target_dir)?;
         let toolchain_path = get_toolchain_path();
-        let temp = tempfile::Builder::new().prefix("hermes-test-").tempdir_in(&target_dir)?;
+        let temp = tempfile::Builder::new().prefix("anneal-test-").tempdir_in(&target_dir)?;
 
         let sandbox_root = temp.path().join(&test_name);
         let home_dir = temp.path().join("home");
@@ -413,7 +413,7 @@ impl TestContext {
         copy_dir_contents(&source_dir, &sandbox_root)?;
 
         // Check if we should keep the test directory for debugging
-        let temp_dir_to_store = if std::env::var("HERMES_KEEP_TEST_DIR").as_deref() == Ok("1")
+        let temp_dir_to_store = if std::env::var("ANNEAL_KEEP_TEST_DIR").as_deref() == Ok("1")
             || std::env::var("KEEP_TEST_DIR").as_deref() == Ok("1")
         {
             #[allow(deprecated)]
@@ -433,7 +433,7 @@ impl TestContext {
             .map_err(|e| anyhow::anyhow!("Failed to acquire worker cache: {}", e))?;
 
         // 1. Seed the Lean workspace cache so Lake skips Mathlib downloads.
-        let lean_root = sandbox_root.join("target/hermes/hermes_test_target/lean");
+        let lean_root = sandbox_root.join("target/anneal/anneal_test_target/lean");
         fs::create_dir_all(&lean_root)?;
 
         // The Lean manifest dictates which dependencies Lake needs to
@@ -621,7 +621,7 @@ echo "---END-INVOCATION---" >> "{}"
     }
 
     fn run_hermes(&self, config: &TestConfig) -> assert_cmd::assert::Assert {
-        let mut cmd = assert_cmd::cargo_bin_cmd!("cargo-hermes");
+        let mut cmd = assert_cmd::cargo_bin_cmd!("cargo-anneal");
         cmd.env_clear();
 
         // After clearing the environment to prevent scope leakage, we must
@@ -637,9 +637,9 @@ echo "---END-INVOCATION---" >> "{}"
             "TEMP",
             "USER",
             "USERNAME",
-            "HERMES_TOOLCHAIN_DIR",
+            "ANNEAL_TOOLCHAIN_DIR",
         ] {
-            if var == "HERMES_TOOLCHAIN_DIR"
+            if var == "ANNEAL_TOOLCHAIN_DIR"
                 && (self.test_name == "setup_e2e" || self.test_name == "setup_repair")
             {
                 continue;
@@ -731,7 +731,7 @@ echo "---END-INVOCATION---" >> "{}"
                 tiny_http::Server::http("127.0.0.1:0").expect("Failed to start mock server");
             let port = server.server_addr().to_ip().unwrap().port();
             let base_url = format!("http://127.0.0.1:{}", port);
-            cmd.env("HERMES_SETUP_BASE_URL", base_url);
+            cmd.env("ANNEAL_SETUP_BASE_URL", base_url);
 
             let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
             let testdata_setup = manifest_dir.join("testdata/setup");
@@ -759,13 +759,13 @@ echo "---END-INVOCATION---" >> "{}"
             });
         }
 
-        cmd.env("HERMES_FORCE_TTY", "1");
+        cmd.env("ANNEAL_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
         let isolated_aeneas_dir = self.sandbox_root.join("aeneas_cache");
         fs::create_dir_all(&isolated_aeneas_dir).unwrap();
-        cmd.env("HERMES_AENEAS_DIR", isolated_aeneas_dir);
-        cmd.env("HERMES_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
-        cmd.env("HERMES_USE_PATH_FOR_TOOLS", "1");
+        cmd.env("ANNEAL_AENEAS_DIR", isolated_aeneas_dir);
+        cmd.env("ANNEAL_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
+        cmd.env("ANNEAL_USE_PATH_FOR_TOOLS", "1");
         cmd.env("RAYON_NUM_THREADS", "1");
 
         let original_path = std::env::var_os("PATH").unwrap_or_default();
@@ -788,8 +788,8 @@ echo "---END-INVOCATION---" >> "{}"
             // user's actual home directory but remains persistent across
             // multiple `hermes` invocations within this single test context.
             .env("HOME", &self.home_dir)
-            .env("HERMES_TEST_DIR_NAME", "hermes_test_target")
-            .env("HERMES_HASH_WITH_REMOVED_PREFIX", &self.sandbox_root);
+            .env("ANNEAL_TEST_DIR_NAME", "anneal_test_target")
+            .env("ANNEAL_HASH_WITH_REMOVED_PREFIX", &self.sandbox_root);
 
         for (k, v) in &config.env {
             cmd.env(k, v);
@@ -897,27 +897,27 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     let test_name = test_case_root.file_name().unwrap().to_string_lossy().to_string();
     assert!(
         !hermes_toml.description.trim().is_empty(),
-        "Test {} is missing a non-empty `description` field in hermes.toml",
+        "Test {} is missing a non-empty `description` field in anneal.toml",
         test_name
     );
 
     // Special handling for the "dirty_sandbox" test case.
-    if path_str.contains("dirty_sandbox/hermes.toml") {
+    if path_str.contains("dirty_sandbox/anneal.toml") {
         return run_dirty_sandbox_test(path);
     }
     // // Special handling for the "atomic_writes" test case.
-    // if path_str.contains("atomic_writes/hermes.toml") {
+    // if path_str.contains("atomic_writes/anneal.toml") {
     //     return run_atomic_writes_test(path);
     // }
     // Special handling for the "toolchain_versioning" test case.
-    if path_str.contains("toolchain_versioning/hermes.toml") {
+    if path_str.contains("toolchain_versioning/anneal.toml") {
         return run_toolchain_versioning_test(path);
     }
 
-    // Load the test configuration from the associated 'hermes.toml' manifest.
+    // Load the test configuration from the associated 'anneal.toml' manifest.
     let config = hermes_toml.test.unwrap_or_default();
 
-    // `path` is `tests/fixtures/<test_case>/hermes.toml`
+    // `path` is `tests/fixtures/<test_case>/anneal.toml`
     let ctx = TestContext::new(path, &config)?;
 
     if config.phases.is_empty() {
@@ -937,7 +937,7 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     // Verify that the artifacts generated by the toolchain match the expected
     // outputs.
     if !config.artifact.is_empty() {
-        let hermes_run_root = ctx.sandbox_root.join("target/hermes/hermes_test_target");
+        let hermes_run_root = ctx.sandbox_root.join("target/anneal/anneal_test_target");
         assert_artifacts_match(&hermes_run_root, &ctx.test_case_root, &config.artifact)?;
     }
 
@@ -962,7 +962,7 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
 
     // Always allowed baseline files/directories
     allowed_paths.insert(ctx.test_case_root.join("source"));
-    allowed_paths.insert(ctx.test_case_root.join("hermes.toml"));
+    allowed_paths.insert(ctx.test_case_root.join("anneal.toml"));
 
     // Track artifacts that are explicitly defined in the test configuration
     // TOML. This allows them to bypass the unmapped file directory check.
@@ -1033,7 +1033,7 @@ fn assert_no_unmapped_files(ctx: &TestContext, config: &TestConfig) {
         if !is_allowed {
             let rel = path.strip_prefix(&ctx.test_case_root).unwrap();
             panic!(
-                "Unmapped file or directory in test fixture: {:?}\nIf this file is part of the test payload, it must be explicitly configured in hermes.toml (e.g., via `matches_expected_dir`, `stderr_file`, or `mock`). If it is an obsolete snapshot or temporary file, please delete it.",
+                "Unmapped file or directory in test fixture: {:?}\nIf this file is part of the test payload, it must be explicitly configured in anneal.toml (e.g., via `matches_expected_dir`, `stderr_file`, or `mock`). If it is an obsolete snapshot or temporary file, please delete it.",
                 rel
             );
         }
@@ -1074,7 +1074,7 @@ fn run_single_phase(
             // `stale_output` tests to force Lake to regenerate its build
             // artifacts from scratch, ensuring that stale cached data doesn't
             // mask bugs in artifact generation or synchronization.
-            let lean_root = ctx.sandbox_root.join("target/hermes/hermes_test_target/lean");
+            let lean_root = ctx.sandbox_root.join("target/anneal/anneal_test_target/lean");
             let lake_dir = lean_root.join(".lake");
             if lake_dir.exists() {
                 fs::remove_dir_all(&lake_dir).expect("Failed to delete .lake directory");
@@ -1082,7 +1082,7 @@ fn run_single_phase(
             return Ok(());
         } else if action.starts_with("delete_toolchain_file ") {
             let file_name = action.strip_prefix("delete_toolchain_file ").unwrap();
-            let toolchain_root = ctx.home_dir.join(".hermes/toolchain");
+            let toolchain_root = ctx.home_dir.join(".anneal/toolchain");
 
             // The toolchain directory name includes a short hash of the version,
             // which changes whenever the managed dependencies are updated. To
@@ -1102,7 +1102,7 @@ fn run_single_phase(
             return Ok(());
         } else if action.starts_with("corrupt_toolchain_file ") {
             let file_name = action.strip_prefix("corrupt_toolchain_file ").unwrap();
-            let toolchain_root = ctx.home_dir.join(".hermes/toolchain");
+            let toolchain_root = ctx.home_dir.join(".anneal/toolchain");
 
             // Scan for the hash-prefixed toolchain directory.
             let build_dir = fs::read_dir(&toolchain_root)?
@@ -1128,7 +1128,7 @@ fn run_single_phase(
                 .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "Missing file name"))?;
             let expected_hash = parts.next();
 
-            let toolchain_root = ctx.home_dir.join(".hermes/toolchain");
+            let toolchain_root = ctx.home_dir.join(".anneal/toolchain");
             if !toolchain_root.exists() {
                 let home_exists = ctx.home_dir.exists();
                 let mut entries = Vec::new();
@@ -1208,7 +1208,7 @@ fn run_single_phase(
             return Ok(());
         } else if action.starts_with("assert_toolchain_file_missing ") {
             let file_name = action.strip_prefix("assert_toolchain_file_missing ").unwrap();
-            let toolchain_root = ctx.home_dir.join(".hermes/toolchain");
+            let toolchain_root = ctx.home_dir.join(".anneal/toolchain");
             if let Ok(entries) = fs::read_dir(&toolchain_root) {
                 for entry in entries.filter_map(|e| e.ok()) {
                     if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
@@ -1311,7 +1311,7 @@ fn assert_output_file(
 ) {
     let expected_path = test_case_root.join(expected_file);
     let bless = std::env::var("BLESS").as_deref() == Ok("1")
-        || std::env::var("HERMES_BLESS").as_deref() == Ok("1");
+        || std::env::var("ANNEAL_BLESS").as_deref() == Ok("1");
     let actual_str = String::from_utf8_lossy(actual_output);
     let actual_stripped = strip_ansi_escapes::strip(&*actual_str);
     let actual_str = String::from_utf8_lossy(&actual_stripped).into_owned().replace("\r", "");
@@ -1616,7 +1616,7 @@ fn assert_artifacts_match(
             let expected_path = test_case_root.join(expected_dir_name);
 
             let bless = std::env::var("BLESS").as_deref() == Ok("1")
-                || std::env::var("HERMES_BLESS").as_deref() == Ok("1");
+                || std::env::var("ANNEAL_BLESS").as_deref() == Ok("1");
 
             if bless {
                 // Wipe the existing expected directory before copying over the new

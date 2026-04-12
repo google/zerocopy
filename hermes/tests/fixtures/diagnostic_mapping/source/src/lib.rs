@@ -3,7 +3,7 @@
 /// Test Case 1: Error exactly inside a `proof context` block.
 /// The `by decide` tactic here is invalid for `1 = 2`.
 /// 
-/// ```hermes
+/// ```anneal
 /// ensures: ret == ()
 /// proof context:
 ///   have h : 1 = 2 := by decide
@@ -14,7 +14,7 @@ pub fn test_proof_context_exact_error() {}
 /// We'll use a tactic that has invalid syntax starting at the first character
 /// or leading to an error that subsumes the indentation if Lean reports it that way.
 /// 
-/// ```hermes
+/// ```anneal
 /// ensures: ret == ()
 /// proof context:
 ///  invalid_tactic_xyz
@@ -24,7 +24,7 @@ pub fn test_proof_context_invalid_syntax() {}
 /// Test Case 3: Error on an exact `have` variable name.
 /// `h_bad` doesn't exist.
 /// 
-/// ```hermes
+/// ```anneal
 /// ensures: ret == ()
 /// proof context:
 ///   exact h_bad
@@ -35,7 +35,7 @@ pub fn test_proof_context_unknown_variable() {}
 /// When a proof step is just left empty or lacks `sorry`, the compiler might report "uses sorry"
 /// on the entire context or the declaration.
 /// 
-/// ```hermes
+/// ```anneal
 /// ensures: ret == ()
 /// proof context:
 ///   sorry
@@ -46,7 +46,7 @@ pub fn test_proof_context_sorry() {}
 /// We leave the proof blank. The `uses sorry` error should be redirected 
 /// to the `ensures` keyword.
 /// 
-/// ```hermes
+/// ```anneal
 /// ensures: ret == ()
 /// ```
 pub fn test_synthetic_theorem_sorry() {}

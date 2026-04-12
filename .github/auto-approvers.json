@@ -2,7 +2,7 @@
   "hermes/": [
     "joshlf"
   ],
-  ".github/workflows/hermes.yml": [
+  ".github/workflows/anneal.yml": [
     "joshlf"
   ]
 }

@@ -1,6 +1,6 @@
 /// Sets `acc` to `val` if `val` is larger.
 ///
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ensures(h_max): acc' = max acc val
 ///
 /// proof (h_progress):

@@ -3,7 +3,7 @@ use std::{env, path::PathBuf, process::exit};
 use miette::Diagnostic as _;
 use serde::Serialize;
 
-use crate::{errors::HermesError, parse};
+use crate::{errors::AnnealError, parse};
 
 /// The entrypoint for running under the `ui_test` crate.
 ///
@@ -16,7 +16,7 @@ pub fn run() {
 
     // Spoof version if requested
     if args.iter().any(|a| matches!(a.as_str(), "-vV" | "--version")) {
-        println!("rustc 1.93.0-nightly (hermes-shim)");
+        println!("rustc 1.93.0-nightly (anneal-shim)");
         println!("binary: rustc");
         println!("commit-hash: 0000000000000000000000000000000000000000");
         println!("commit-date: 2025-01-01");
@@ -82,7 +82,7 @@ struct RustcSpanLine {
     highlight_end: usize,
 }
 
-fn emit_rustc_json(e: &HermesError, source: &str, file: &str) {
+fn emit_rustc_json(e: &AnnealError, source: &str, file: &str) {
     let msg = e.to_string();
     // Use miette's span to get byte offsets.
     let span = e.labels().and_then(|mut l| l.next());

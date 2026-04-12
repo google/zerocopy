@@ -10,7 +10,7 @@ pub mod edge_cases_types_test_2_2_string_types {
         pub e: char,
     }
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// proof (h_progress):
     ///   sorry
     /// proof context:
@@ -30,7 +30,7 @@ pub mod edge_cases_types_test_2_5_pointers {
         pub c: NonNull<u8>,
     }
     
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// proof (h_progress):
     ///   sorry
     /// proof context:

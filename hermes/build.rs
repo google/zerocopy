@@ -4,7 +4,7 @@ use std::fs;
 /// exposes it to the Rust compiler via environment variables.
 ///
 /// This allows us to "bake in" the specific Aeneas commit hash and Lean
-/// toolchain version into the Hermes binary, ensuring that the generated
+/// toolchain version into the Anneal binary, ensuring that the generated
 /// `lakefile.lean` and `lean-toolchain` files are always consistent with the
 /// versions specified in `Cargo.toml`.
 fn main() {
@@ -26,10 +26,10 @@ fn main() {
 
     // Key in `Cargo.toml` -> Environment variable name
     let vars = [
-        ("aeneas_rev", "HERMES_AENEAS_REV"),
-        ("lean_toolchain", "HERMES_LEAN_TOOLCHAIN"),
-        ("charon_version", "HERMES_CHARON_EXPECTED_VERSION"),
-        ("charon_rust_toolchain", "HERMES_CHARON_RUST_TOOLCHAIN"),
+        ("aeneas_rev", "ANNEAL_AENEAS_REV"),
+        ("lean_toolchain", "ANNEAL_LEAN_TOOLCHAIN"),
+        ("charon_version", "ANNEAL_CHARON_EXPECTED_VERSION"),
+        ("charon_rust_toolchain", "ANNEAL_CHARON_RUST_TOOLCHAIN"),
     ];
 
     for (key, env_var) in vars {
@@ -41,18 +41,18 @@ fn main() {
         println!("cargo:rustc-env={}={}", env_var, value);
     }
 
-    // Parse [package.metadata.hermes.dependencies]
-    if let Some(hermes_metadata) = cargo_toml
+    // Parse [package.metadata.anneal.dependencies]
+    if let Some(anneal_metadata) = cargo_toml
         .get("package")
         .and_then(|p| p.get("metadata"))
-        .and_then(|m| m.get("hermes"))
+        .and_then(|m| m.get("anneal"))
         .and_then(|h| h.get("dependencies"))
         .and_then(|d| d.as_table())
     {
-        for (dep_name, dep_meta) in hermes_metadata {
+        for (dep_name, dep_meta) in anneal_metadata {
             let dep_upper = dep_name.to_uppercase();
             if let Some(tag) = dep_meta.get("tag").and_then(|t| t.as_str()) {
-                println!("cargo:rustc-env=HERMES_{}_TAG={}", dep_upper, tag);
+                println!("cargo:rustc-env=ANNEAL_{}_TAG={}", dep_upper, tag);
             }
 
             if let Some(checksums) = dep_meta.get("checksums").and_then(|c| c.as_table()) {
@@ -61,7 +61,7 @@ fn main() {
                         // Standardize platform name for env var (dashes -> underscores, upper case)
                         let env_platform = platform.replace('-', "_").to_uppercase();
                         println!(
-                            "cargo:rustc-env=HERMES_{}_CHECKSUM_{}={}",
+                            "cargo:rustc-env=ANNEAL_{}_CHECKSUM_{}={}",
                             dep_upper, env_platform, hash
                         );
                     }

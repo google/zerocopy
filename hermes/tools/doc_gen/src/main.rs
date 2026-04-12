@@ -42,8 +42,8 @@ fn main() {
     let mut parser = tree_sitter::Parser::new();
     parser.set_language(&tree_sitter_lean4::language()).unwrap();
 
-    let lean_path = "src/Hermes.lean";
-    let source_code = fs::read_to_string(lean_path).expect("Failed to read src/Hermes.lean");
+    let lean_path = "src/Anneal.lean";
+    let source_code = fs::read_to_string(lean_path).expect("Failed to read src/Anneal.lean");
     let tree = parser.parse(&source_code, None).unwrap();
 
     let mut lean_docs = String::new();
@@ -104,8 +104,8 @@ fn main() {
         }
     }
 
-    // 3. Hermes.lean
-    full_txt.push_str("<!-- File: src/Hermes.lean -->\n\n");
+    // 3. Anneal.lean
+    full_txt.push_str("<!-- File: src/Anneal.lean -->\n\n");
     full_txt.push_str("```lean\n");
     full_txt.push_str(lean_docs.trim());
     full_txt.push_str("\n```\n");

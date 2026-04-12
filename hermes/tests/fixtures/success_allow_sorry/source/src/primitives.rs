@@ -1,9 +1,9 @@
 pub mod primitives_layout {
     #![crate_type = "lib"]
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 1
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -18,9 +18,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<u8>(), core::mem::align_of::<u8>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 1
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -35,9 +35,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<i8>(), core::mem::align_of::<i8>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 1
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -52,9 +52,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<bool>(), core::mem::align_of::<bool>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 4
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -69,9 +69,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<char>(), core::mem::align_of::<char>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 2
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -86,9 +86,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<u16>(), core::mem::align_of::<u16>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 2
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -103,9 +103,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<i16>(), core::mem::align_of::<i16>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 4
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -120,9 +120,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<u32>(), core::mem::align_of::<u32>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 4
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -137,9 +137,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<i32>(), core::mem::align_of::<i32>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 8
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -154,9 +154,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<u64>(), core::mem::align_of::<u64>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 8
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -171,9 +171,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<i64>(), core::mem::align_of::<i64>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 16
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -188,9 +188,9 @@ pub mod primitives_layout {
         (core::mem::size_of::<u128>(), core::mem::align_of::<u128>())
     }
     
-    /// ```hermes
+    /// ```anneal
     /// ensures (h_size): ret.1.val = 16
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -205,8 +205,8 @@ pub mod primitives_layout {
         (core::mem::size_of::<i128>(), core::mem::align_of::<i128>())
     }
     
-    /// ```hermes
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ```anneal
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry
@@ -219,8 +219,8 @@ pub mod primitives_layout {
         (core::mem::size_of::<usize>(), core::mem::align_of::<usize>())
     }
     
-    /// ```hermes
-    /// ensures (h_align_is_align): Hermes.IsAlignment ret.2.val
+    /// ```anneal
+    /// ensures (h_align_is_align): Anneal.IsAlignment ret.2.val
     /// ensures (h_align_div): ret.2.val ∣ ret.1.val
     /// proof (h_progress):
     ///   sorry

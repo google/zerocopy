@@ -1,5 +1,5 @@
 const _: () = {
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// context:
     /// theorem hidden_impl : True := trivial
     /// ```

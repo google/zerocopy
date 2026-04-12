@@ -1,6 +1,6 @@
 pub mod outer {
     pub mod inner {
-        /// ```lean, hermes, spec
+        /// ```lean, anneal, spec
         /// requires: x.val + 1 <= 4294967295
         /// ensures: ret.val = x.val + 1
         /// proof:

@@ -4,14 +4,14 @@ use ui_test::*;
 
 #[test]
 fn ui() {
-    unsafe { std::env::set_var("HERMES_UI_TEST_MODE", "true") };
+    unsafe { std::env::set_var("ANNEAL_UI_TEST_MODE", "true") };
 
     let mut config = Config::rustc(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/ui"));
 
     let args = Args::test().unwrap();
     config.with_args(&args);
 
-    let binary_path = compile_and_find_binary("cargo-hermes");
+    let binary_path = compile_and_find_binary("cargo-anneal");
     config.program.program = binary_path;
 
     run_tests(config).unwrap();

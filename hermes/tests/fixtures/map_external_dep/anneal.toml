@@ -1,0 +1,12 @@
+description = """
+Purpose: Exercises diagnostic mappings for strictly external crates.
+Behavior: Mocks an error springing from `serde` in the cargo registry (`.cargo/registry/...`). Validates Anneal properly interprets the absolute external paths within diagnostic logs.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+
+[test.mock]
+charon = "mock_charon_output.json"

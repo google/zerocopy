@@ -6,14 +6,14 @@ pub struct Widths {
     pub b: usize,
 }
 
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ```
 pub fn check_widths(x: isize, y: usize) -> (isize, usize) {
     (x, y)
 }
 
 /// Generic struct testing.
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct Container<T> {
@@ -21,7 +21,7 @@ pub struct Container<T> {
 }
 
 /// Dependent type testing with const generics.
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct ArrayPair<const N: usize> {
@@ -30,7 +30,7 @@ pub struct ArrayPair<const N: usize> {
 }
 
 /// Recursive struct testing.
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct Node {
@@ -38,7 +38,7 @@ pub struct Node {
 }
 
 /// Struct with where clauses.
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct Foo<T> {
@@ -46,7 +46,7 @@ pub struct Foo<T> {
 }
 
 /// Tests for tuple types.
-/// ```lean, hermes, spec
+/// ```lean, anneal, spec
 /// ```
 pub fn one_tuple(x: (u32,)) -> (u32,) {
     x
@@ -60,7 +60,7 @@ pub mod enums {
     /// An uninhabited enum.
     pub enum Void {}
 
-    /// ```lean, hermes, spec
+    /// ```lean, anneal, spec
     /// proof:
     ///   unfold invert at *
     ///   contradiction
@@ -76,7 +76,7 @@ pub mod enums {
     }
 
     /// Uninhabited type wrapper.
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// isValid self := nomatch self
     /// ```
     pub struct Wrapper {
@@ -84,50 +84,50 @@ pub mod enums {
     }
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding_1() {}
+pub fn dummy_anneal_padding_1() {}
 
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct ContainerValid<T> {
     pub inner: T,
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding_2() {}
+pub fn dummy_anneal_padding_2() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding_3() {}
+pub fn dummy_anneal_padding_3() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding_4() {}
+pub fn dummy_anneal_padding_4() {}
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:
 ///   have h_foo : True := True.intro
 /// ```
-pub fn dummy_hermes_padding_5() {}
+pub fn dummy_anneal_padding_5() {}
 

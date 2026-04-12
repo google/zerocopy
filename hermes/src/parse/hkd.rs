@@ -4,7 +4,7 @@ use quote::ToTokens;
 
 /// Generic support for bridging non-thread-safe AST nodes across threads.
 ///
-/// Hermes concurrently parses many Rust files using `rayon` worker threads.
+/// Anneal concurrently parses many Rust files using `rayon` worker threads.
 /// Because `syn` AST nodes are not guaranteed to be `Send + Sync` (and are
 /// often heavy to clone), we cannot send the raw `syn` types back to
 /// the main thread over a channel.

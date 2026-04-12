@@ -31,11 +31,11 @@ print("[package.metadata.build_rs]")
 for k, v in data["package"]["metadata"]["build_rs"].items():
     print(f"{k} = {json.dumps(v)}")
 
-print("[package.metadata.hermes.dependencies.aeneas]")
-for k, v in data["package"]["metadata"]["hermes"]["dependencies"]["aeneas"].items():
+print("[package.metadata.anneal.dependencies.aeneas]")
+for k, v in data["package"]["metadata"]["anneal"]["dependencies"]["aeneas"].items():
     if k != "checksums":
         print(f"{k} = {json.dumps(v)}")
 
-print("[package.metadata.hermes.dependencies.aeneas.checksums]")
-for k, v in data["package"]["metadata"]["hermes"]["dependencies"]["aeneas"]["checksums"].items():
+print("[package.metadata.anneal.dependencies.aeneas.checksums]")
+for k, v in data["package"]["metadata"]["anneal"]["dependencies"]["aeneas"]["checksums"].items():
     print(f"{k} = {json.dumps(v)}")

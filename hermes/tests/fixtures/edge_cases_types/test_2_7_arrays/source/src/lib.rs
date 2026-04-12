@@ -4,7 +4,7 @@ pub struct Arrays {
     pub large: [u8; 1024],
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// proof (h_progress):
 ///   sorry
 /// proof context:

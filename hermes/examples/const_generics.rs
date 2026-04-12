@@ -1,14 +1,14 @@
-/// ```hermes
+/// ```anneal
 /// isValid self := N > 0
 /// ```
 pub struct ConstGen<const N: usize>;
 
-/// ```hermes
+/// ```anneal
 /// isSafe : N > 0
 /// ```
 pub unsafe trait ConstTrait<const N: usize> {}
 
-/// ```hermes
+/// ```anneal
 /// ensures: if N.val = 0 then ret.val = 0 else True
 /// proof:
 ///   unfold use_const at h_returns

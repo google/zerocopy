@@ -55,13 +55,13 @@ pub struct Args {
     /// `isValid` annotations are currently unsound. In particular, Rust does
     /// not yet support annotating a field with `unsafe`, denoting that it
     /// carries an invariant. Thus, `isValid` annotations are effectively
-    /// advisory – any code which does not have a Hermes annotation can modify
+    /// advisory – any code which does not have a Anneal annotation can modify
     /// invariant-carrying fields without needing to use an `unsafe` block.
-    /// Without an `unsafe` block, Hermes has no way of knowing that an
+    /// Without an `unsafe` block, Anneal has no way of knowing that an
     /// operation needs to be analyzed for soundness.
     ///
     /// Once the `syn` parser supports parsing `unsafe` fields (which are
-    /// already supported in a nightly Rust feature), Hermes will require that
+    /// already supported in a nightly Rust feature), Anneal will require that
     /// `isValid` is only used on `unsafe` fields.
     #[arg(long)]
     pub unsound_allow_is_valid: bool,
@@ -72,7 +72,7 @@ pub struct SetupArgs {}
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 #[repr(u8)]
-pub enum HermesTargetKind {
+pub enum AnnealTargetKind {
     /// A library target (generic).
     Lib,
     /// A Rust library.
@@ -93,19 +93,19 @@ pub enum HermesTargetKind {
     Test,
 }
 
-// We map `cargo_metadata::TargetKind` to our own `HermesTargetKind` to
+// We map `cargo_metadata::TargetKind` to our own `AnnealTargetKind` to
 // strictly validate supported target types and simplify downstream logic.
 // While `cargo_metadata` is exhaustive, we only care about a subset of
 // targets relevant to verification.
 
-impl HermesTargetKind {
+impl AnnealTargetKind {
     pub fn is_lib(&self) -> bool {
-        use HermesTargetKind::*;
+        use AnnealTargetKind::*;
         matches!(self, Lib | RLib | ProcMacro | CDyLib | DyLib | StaticLib)
     }
 }
 
-impl TryFrom<&TargetKind> for HermesTargetKind {
+impl TryFrom<&TargetKind> for AnnealTargetKind {
     type Error = ();
 
     fn try_from(kind: &TargetKind) -> Result<Self, Self::Error> {
@@ -127,22 +127,22 @@ impl TryFrom<&TargetKind> for HermesTargetKind {
 }
 
 #[derive(Clone, Debug, Hash, PartialEq, Eq)]
-pub struct HermesTargetName {
+pub struct AnnealTargetName {
     pub package_name: PackageName,
     pub target_name: String,
-    pub kind: HermesTargetKind,
+    pub kind: AnnealTargetKind,
 }
 
 /// A fully resolved target ready for verification.
 ///
 /// This struct bridges the gap between `cargo_metadata`'s view of the world
-/// and Hermes's verification pipeline. It contains absolute paths to critical
+/// and Anneal's verification pipeline. It contains absolute paths to critical
 /// files, ensuring that downstream tools (Scanner, Charon) don't need to resolve
 /// paths relative to the CWD or workspace root again.
 #[derive(Debug)]
-pub struct HermesTarget {
-    pub name: HermesTargetName,
-    pub kind: HermesTargetKind,
+pub struct AnnealTarget {
+    pub name: AnnealTargetName,
+    pub kind: AnnealTargetKind,
     /// Path to the main source file for this target.
     pub src_path: PathBuf,
     /// Path to the `Cargo.toml` for this target.
@@ -152,41 +152,41 @@ pub struct HermesTarget {
 #[derive(Debug)]
 pub struct Roots {
     pub workspace: PathBuf,
-    // E.g., `target/hermes`.
-    hermes_global_root: PathBuf,
-    // E.g., `target/hermes/<hash>`.
-    hermes_run_root: PathBuf,
-    pub roots: Vec<HermesTarget>,
+    // E.g., `target/anneal`.
+    anneal_global_root: PathBuf,
+    // E.g., `target/anneal/<hash>`.
+    anneal_run_root: PathBuf,
+    pub roots: Vec<AnnealTarget>,
 }
 
 impl Roots {
     pub fn lock_run_root(&self) -> Result<LockedRoots<'_>> {
-        let lock = DirLock::lock_exclusive(self.hermes_run_root.clone())?;
-        Ok(LockedRoots { roots: self, hermes_run_root: lock })
+        let lock = DirLock::lock_exclusive(self.anneal_run_root.clone())?;
+        Ok(LockedRoots { roots: self, anneal_run_root: lock })
     }
 
     pub fn cargo_target_dir(&self) -> PathBuf {
-        self.hermes_global_root.join("cargo_target")
+        self.anneal_global_root.join("cargo_target")
     }
 }
 
 /// A wrapper around `Roots` that proves the build lock is held.
 ///
-/// This struct is the *only* way to access paths within the Hermes build
+/// This struct is the *only* way to access paths within the Anneal build
 /// directory (e.g., LLBC output, Lean generation). This enforces that all
 /// filesystem operations are guarded by the `BuildLock`.
 pub struct LockedRoots<'a> {
     roots: &'a Roots,
-    hermes_run_root: crate::util::DirLock,
+    anneal_run_root: crate::util::DirLock,
 }
 
 impl<'a> LockedRoots<'a> {
     pub fn llbc_root(&self) -> PathBuf {
-        self.hermes_run_root.path.join("llbc")
+        self.anneal_run_root.path.join("llbc")
     }
 
     pub fn lean_root(&self) -> PathBuf {
-        self.hermes_run_root.path.join("lean")
+        self.anneal_run_root.path.join("lean")
     }
 
     pub fn lean_generated_root(&self) -> PathBuf {
@@ -235,12 +235,12 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
     let selected_packages =
         resolve_packages(&metadata, &args.workspace, args.manifest.manifest_path.as_deref())?;
 
-    let (hermes_global_root, hermes_run_root) = resolve_run_roots(&metadata);
+    let (anneal_global_root, anneal_run_root) = resolve_run_roots(&metadata);
     let mut roots = Roots {
         workspace: metadata.workspace_root.as_std_path().to_owned(),
         // cargo_target_dir: metadata.target_directory.as_std_path().to_owned(),
-        hermes_global_root,
-        hermes_run_root,
+        anneal_global_root,
+        anneal_run_root,
         roots: Vec::new(),
     };
 
@@ -254,8 +254,8 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
             continue;
         }
 
-        roots.roots.extend(targets.into_iter().map(|(target, kind)| HermesTarget {
-            name: HermesTargetName {
+        roots.roots.extend(targets.into_iter().map(|(target, kind)| AnnealTarget {
+            name: AnnealTargetName {
                 package_name: package.name.clone(),
                 target_name: target.name.clone(),
                 kind,
@@ -278,12 +278,12 @@ fn resolve_run_roots(metadata: &Metadata) -> (PathBuf, PathBuf) {
     log::debug!("workspace_root: {:?}", metadata.workspace_root.as_std_path());
     // NOTE: Automatically handles `CARGO_TARGET_DIR` env var.
     let target_dir = metadata.target_directory.as_std_path();
-    let hermes_global = target_dir.join("hermes");
+    let anneal_global = target_dir.join("anneal");
 
     // Used by integration tests to ensure deterministic shadow dir names.
-    if let Ok(name) = std::env::var("HERMES_TEST_DIR_NAME") {
-        let run_root = hermes_global.join(name);
-        return (hermes_global, run_root);
+    if let Ok(name) = std::env::var("ANNEAL_TEST_DIR_NAME") {
+        let run_root = anneal_global.join(name);
+        return (anneal_global, run_root);
     }
 
     // Hash the path to the workspace root to avoid collisions between different
@@ -293,7 +293,7 @@ fn resolve_run_roots(metadata: &Metadata) -> (PathBuf, PathBuf) {
     // avoiding unnecessary cache invalidation.
     let workspace_root_hash = {
         let mut hasher = Sha256::new();
-        hasher.update(b"hermes_build_salt");
+        hasher.update(b"anneal_build_salt");
         hasher.update(metadata.workspace_root.as_str().as_bytes());
         let result = hasher.finalize();
         let mut bytes = [0u8; 8];
@@ -301,8 +301,8 @@ fn resolve_run_roots(metadata: &Metadata) -> (PathBuf, PathBuf) {
         u64::from_le_bytes(bytes)
     };
 
-    let run_root = hermes_global.join(format!("{workspace_root_hash:x}"));
-    (hermes_global, run_root)
+    let run_root = anneal_global.join(format!("{workspace_root_hash:x}"));
+    (anneal_global, run_root)
 }
 
 /// Resolves which packages to process based on workspace flags and CWD.
@@ -400,7 +400,7 @@ fn resolve_packages<'a>(
 fn resolve_targets<'a>(
     package: &'a Package,
     args: &Args,
-) -> Result<Vec<(&'a Target, HermesTargetKind)>> {
+) -> Result<Vec<(&'a Target, AnnealTargetKind)>> {
     log::trace!("resolve_targets({})", package.name);
     let default_mode = !args.lib
         && args.bin.is_empty()
@@ -419,19 +419,19 @@ fn resolve_targets<'a>(
         .iter()
         .flat_map(|target| {
             target.kind.iter().filter_map(move |raw_kind| {
-                let kind = HermesTargetKind::try_from(raw_kind).ok()?;
+                let kind = AnnealTargetKind::try_from(raw_kind).ok()?;
 
                 let include = if default_mode {
-                    kind.is_lib() || kind == HermesTargetKind::Bin
+                    kind.is_lib() || kind == AnnealTargetKind::Bin
                 } else {
                     (args.lib && kind.is_lib())
-                        || (args.bins && kind == HermesTargetKind::Bin)
-                        || (args.bin.contains(&target.name) && kind == HermesTargetKind::Bin)
-                        || (args.examples && kind == HermesTargetKind::Example)
+                        || (args.bins && kind == AnnealTargetKind::Bin)
+                        || (args.bin.contains(&target.name) && kind == AnnealTargetKind::Bin)
+                        || (args.examples && kind == AnnealTargetKind::Example)
                         || (args.example.contains(&target.name)
-                            && kind == HermesTargetKind::Example)
-                        || (args.tests && kind == HermesTargetKind::Test)
-                        || (args.test.contains(&target.name) && kind == HermesTargetKind::Test)
+                            && kind == AnnealTargetKind::Example)
+                        || (args.tests && kind == AnnealTargetKind::Test)
+                        || (args.test.contains(&target.name) && kind == AnnealTargetKind::Test)
                 };
 
                 include.then_some((target, kind))
@@ -469,7 +469,7 @@ pub fn check_for_external_deps(metadata: &Metadata) -> Result<()> {
             if !canonical_pkg_path.starts_with(&workspace_root) {
                 anyhow::bail!(
                     "Unsupported external dependency: '{}' at {:?}.\n\
-                     Hermes currently only supports verifying workspaces where all local \
+                     Anneal currently only supports verifying workspaces where all local \
                      dependencies are contained within the workspace root.",
                     pkg.name,
                     pkg_path

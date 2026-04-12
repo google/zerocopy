@@ -2,21 +2,21 @@ use anyhow::{Result, bail};
 use miette::NamedSource;
 
 use crate::{
-    errors::HermesError,
+    errors::AnnealError,
     parse::{ParsedItem, attr::FunctionBlockInner},
-    scanner::HermesArtifact,
+    scanner::AnnealArtifact,
 };
 
-/// Validates the collected Hermes artifacts.
+/// Validates the collected Anneal artifacts.
 ///
 /// Checks:
-/// 1. All `spec` functions (functions with a `/// ````hermes` block but not
+/// 1. All `spec` functions (functions with a `/// ````anneal` block but not
 ///    `unsafe(axiom)`) must have a non-empty `proof` section.
 ///
 /// If `allow_sorry` is true, this check is skipped, allowing incomplete
 /// proofs (which will typically be generated as `sorry` in Lean).
 pub fn validate_artifacts(
-    packages: &[HermesArtifact],
+    packages: &[AnnealArtifact],
     allow_sorry: bool,
     unsound_allow_is_valid: bool,
 ) -> Result<()> {
@@ -27,7 +27,7 @@ pub fn validate_artifacts(
         for package in packages {
             for item in &package.items {
                 if let ParsedItem::Type(decorated) = &item.item
-                    && !decorated.hermes.is_valid.is_empty()
+                    && !decorated.anneal.is_valid.is_empty()
                 {
                     let src = source_cache
                         .entry(item.source_file.clone())
@@ -38,8 +38,8 @@ pub fn validate_artifacts(
 
                     let named_source =
                         NamedSource::new(item.source_file.display().to_string(), src);
-                    let span = decorated.hermes.is_valid[0].keyword_span.inner;
-                    let err = HermesError::Unsoundness {
+                    let span = decorated.anneal.is_valid[0].keyword_span.inner;
+                    let err = AnnealError::Unsoundness {
                             src: named_source,
                             span,
                             msg: "`isValid` annotations are unsound and require the --unsound-allow-is-valid flag.".to_string(),
@@ -96,7 +96,7 @@ pub fn validate_artifacts(
 
                 let check_reserved = |name: &str| -> bool { reserved_names.contains(name) };
 
-                for clause in func.hermes.requires.iter() {
+                for clause in func.anneal.requires.iter() {
                     if clause.lines.iter().all(|l| l.content.trim().is_empty()) {
                         report_error("Requires bounds cannot be completely empty.");
                     }
@@ -109,7 +109,7 @@ pub fn validate_artifacts(
                         ));
                     }
                 }
-                for clause in func.hermes.ensures.iter() {
+                for clause in func.anneal.ensures.iter() {
                     if clause.lines.iter().all(|l| l.content.trim().is_empty()) {
                         report_error("Ensures bounds cannot be completely empty.");
                     }
@@ -123,10 +123,10 @@ pub fn validate_artifacts(
                     }
                 }
 
-                if let FunctionBlockInner::Proof { cases, .. } = &func.hermes.inner {
+                if let FunctionBlockInner::Proof { cases, .. } = &func.anneal.inner {
                     // 2. Check proof: coverage (only if not allow_sorry)
                     if !allow_sorry {
-                        let _has_ensures = !func.hermes.ensures.is_empty();
+                        let _has_ensures = !func.anneal.ensures.is_empty();
                         if !cases.is_empty() {
                             // Check that every ensures is covered exactly once
                             let mut provided_cases = std::collections::HashSet::new();
@@ -148,7 +148,7 @@ pub fn validate_artifacts(
                             // we do NOT insert "unnamed" into valid_names
                             // here.
 
-                            for ensure in func.hermes.ensures.iter() {
+                            for ensure in func.anneal.ensures.iter() {
                                 if let Some(name) = &ensure.name {
                                     valid_names.insert(name.content.clone());
                                 } else {
@@ -167,7 +167,7 @@ pub fn validate_artifacts(
                                         ));
                                     }
                                 } else {
-                                    if !has_unnamed_ensure && !func.hermes.ensures.is_empty() {
+                                    if !has_unnamed_ensure && !func.anneal.ensures.is_empty() {
                                         report_error(
                                             "Validation Error: You provided an unnamed `proof` block, but there are no unnamed `ensures` clauses to prove.",
                                         );
@@ -175,14 +175,14 @@ pub fn validate_artifacts(
                                 }
                             }
 
-                            for ensure in func.hermes.ensures.iter() {
+                            for ensure in func.anneal.ensures.iter() {
                                 // Missing proofs are allowed to fall through to
                                 // Lean's `autoParam` fallback logic
                                 // (`verify_user_bound`) to attempt `simp_all`
                                 // directly.
                                 if ensure.name.is_none() && !provided_cases.contains("h_anon") {
                                     let mut has_explicit_unnamed = false;
-                                    for e in func.hermes.ensures.iter() {
+                                    for e in func.anneal.ensures.iter() {
                                         if e.name.is_none() {
                                             has_explicit_unnamed = true;
                                         }
@@ -229,13 +229,13 @@ mod tests {
             },
             |_| {},
         );
-        packages.push(HermesArtifact {
-            name: crate::resolve::HermesTargetName {
+        packages.push(AnnealArtifact {
+            name: crate::resolve::AnnealTargetName {
                 package_name: cargo_metadata::PackageName::new("test".to_string()),
                 target_name: "test".to_string(),
-                kind: crate::resolve::HermesTargetKind::Lib,
+                kind: crate::resolve::AnnealTargetKind::Lib,
             },
-            target_kind: crate::resolve::HermesTargetKind::Lib,
+            target_kind: crate::resolve::AnnealTargetKind::Lib,
             manifest_path: std::path::PathBuf::from("Cargo.toml"),
             start_from: std::collections::HashSet::new(),
             items,
@@ -246,7 +246,7 @@ mod tests {
     #[test]
     fn test_valid_function() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// ```
             fn valid() {}
         "#;
@@ -256,7 +256,7 @@ mod tests {
     #[test]
     fn test_coverage_named_proofs() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (a):
             ///   true
             /// ensures (b):
@@ -271,7 +271,7 @@ mod tests {
         assert!(parse_and_validate(code).is_ok());
 
         let code_missing = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (a):
             ///   true
             /// ensures (b):
@@ -281,7 +281,7 @@ mod tests {
             /// ```
             fn missing_b() {}
         "#;
-        // Hermes now natively allows missing proof blocks to fall through
+        // Anneal now natively allows missing proof blocks to fall through
         // to `autoParam` evaluation in Lean, meaning this is structurally
         // valid.
         assert!(parse_and_validate(code_missing).is_ok());
@@ -291,7 +291,7 @@ mod tests {
     fn test_missing_proof_edge_cases() {
         // Edge Case 1: Multiple named bounds, none have proofs provided
         let code_all_missing = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (h_pos): ret > 0
             /// ensures (h_even): ret % 2 == 0
             /// ```
@@ -301,7 +301,7 @@ mod tests {
 
         // Edge Case 2: One bound explicitly proved, one omitted
         let code_mixed = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (h_pos): ret > 0
             /// ensures (h_even): ret % 2 == 0
             /// proof (h_pos):
@@ -314,7 +314,7 @@ mod tests {
         // Edge Case 3: Omitted named proofs alongside an unnamed proof
         // (The unnamed proof satisfies `h_anon`)
         let code_unnamed_mixed = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures: ret < 100
             /// ensures (h_pos): ret > 0
             /// proof:
@@ -329,7 +329,7 @@ mod tests {
         // (Even with auto-proving relaxed, we still enforce that provided
         // proofs map to bounds)
         let code_invalid_proof = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (h_pos): ret > 0
             /// proof (h_fake):
             ///   scalar_tac
@@ -342,7 +342,7 @@ mod tests {
     #[test]
     fn test_auto_generated_collision_requires() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// requires (h_x_is_valid):
             ///   true
             /// proof:
@@ -353,7 +353,7 @@ mod tests {
         assert!(parse_and_validate(code).is_err());
 
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// proof (h_anon):
             ///   trivial
             /// ```
@@ -363,8 +363,8 @@ mod tests {
 
         println!(
             "{:#?}",
-            crate::parse::attr::FunctionHermesBlock::parse_from_attrs(
-                &[syn::parse_quote!(#[doc = " ```hermes\n proof (h_anon): true\n ```"])],
+            crate::parse::attr::FunctionAnnealBlock::parse_from_attrs(
+                &[syn::parse_quote!(#[doc = " ```anneal\n proof (h_anon): true\n ```"])],
                 false,
                 ""
             )
@@ -374,7 +374,7 @@ mod tests {
     #[test]
     fn test_auto_generated_collision_mut_ref() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (h_y'_is_valid):
             ///   true
             /// proof (h_y'_is_valid):
@@ -387,7 +387,7 @@ mod tests {
     #[test]
     fn test_mismatched_proof_name() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (h_foo):
             ///   true
             /// proof (h_bar):
@@ -401,7 +401,7 @@ mod tests {
     #[test]
     fn test_valid_proof_for_auto_injected_bound() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// proof (h_x_is_valid):
             ///   trivial
             /// ```
@@ -413,7 +413,7 @@ mod tests {
     #[test]
     fn test_auto_generated_collision_ret() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (h_ret_is_valid):
             ///   true
             /// proof (h_ret_is_valid):
@@ -429,7 +429,7 @@ mod tests {
         let code = r#"
             struct Foo;
             impl Foo {
-                /// ```hermes
+                /// ```anneal
                 /// ensures (h_self'_is_valid):
                 ///   true
                 /// proof (h_self'_is_valid):
@@ -444,7 +444,7 @@ mod tests {
     #[test]
     fn test_anon_ensures_with_anon_proof() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures:
             ///   true
             /// proof:
@@ -458,7 +458,7 @@ mod tests {
     #[test]
     fn test_zero_ensures_no_proof_valid() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// requires (h_req):
             ///   true
             /// ```
@@ -470,7 +470,7 @@ mod tests {
     #[test]
     fn test_unnamed_ensures_with_named_proof_fails() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures:
             ///   true
             /// proof (foo):
@@ -484,7 +484,7 @@ mod tests {
     #[test]
     fn test_unnamed_proof_without_unnamed_ensure() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (h_foo):
             ///   true
             /// proof:
@@ -498,7 +498,7 @@ mod tests {
     #[test]
     fn test_proof_context_without_cases_valid() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (ens):
             ///   ret = x
             /// proof context:
@@ -514,7 +514,7 @@ mod tests {
     #[test]
     fn test_unnamed_proof_without_unnamed_ensure_fails() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (h_foo):
             ///   ret = x
             /// proof (unnamed):
@@ -531,7 +531,7 @@ mod tests {
     #[test]
     fn test_explicit_unnamed_name_valid() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// requires (unnamed):
             ///   x > 0
             /// ensures (ens):
@@ -548,7 +548,7 @@ mod tests {
     #[test]
     fn test_empty_requires_clause() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// requires (h_req):
             /// ensures (h_res):
             ///   true
@@ -563,7 +563,7 @@ mod tests {
     #[test]
     fn test_empty_ensures_clause() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// requires (h_req):
             ///   true
             /// ensures (h_res):
@@ -578,7 +578,7 @@ mod tests {
     #[test]
     fn test_zero_ensures_with_anon_proof_allowed() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// proof:
             ///   trivial
             /// ```
@@ -590,7 +590,7 @@ mod tests {
     #[test]
     fn test_zero_ensures_with_named_proof_fails() {
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// proof (foo):
             ///   trivial
             /// ```
@@ -603,7 +603,7 @@ mod tests {
     fn test_all_exhaustive_unnamed_singelton_edge_cases() {
         // Naming `h_anon` explicitly should fail
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// requires (h_anon):
             ///   true
             /// ```
@@ -614,7 +614,7 @@ mod tests {
         // Naming `h_anon` as proof target succeeds since it perfectly aliases
         // the unnamed proposition logic
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// proof (h_anon):
             ///   true
             /// ```
@@ -624,7 +624,7 @@ mod tests {
 
         // Order independence: parsing 1 unnamed and multiple named mixed
         let code = r#"
-            /// ```hermes
+            /// ```anneal
             /// requires (a):
             ///   true
             /// requires:
@@ -652,7 +652,7 @@ mod tests {
     fn test_h_progress_reserved() {
         // h_progress is reserved and cannot be required/ensured
         let code_req = r#"
-            /// ```hermes
+            /// ```anneal
             /// requires (h_progress):
             ///   true
             /// ```
@@ -661,7 +661,7 @@ mod tests {
         assert!(parse_and_validate(code_req).is_err());
 
         let code_ens = r#"
-            /// ```hermes
+            /// ```anneal
             /// ensures (h_progress):
             ///   true
             /// ```
@@ -671,7 +671,7 @@ mod tests {
 
         // h_progress CAN be used in proof blocks
         let code_proof = r#"
-            /// ```hermes
+            /// ```anneal
             /// proof (h_progress):
             ///   trivial
             /// ```

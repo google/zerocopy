@@ -3,7 +3,7 @@ pub struct NamedStruct {
     pub b: u16,
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// context:
 /// derive_sized sizedness_pass.NamedStruct
 /// ```

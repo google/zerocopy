@@ -1,4 +1,4 @@
-/// ```hermes
+/// ```anneal
 /// ensures:
 ///   if x >= 0 then ret = x else ret = -x
 /// proof (h_progress):

@@ -1,3 +1,3 @@
-/// ```lean, hermes
+/// ```lean, anneal
 /// ```
 fn main() {}

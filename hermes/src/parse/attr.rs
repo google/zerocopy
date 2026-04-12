@@ -3,15 +3,15 @@ use syn::{ExprLit, MetaNameValue};
 
 use super::*;
 
-/// Parsing logic for Hermes attributes and documentation blocks.
+/// Parsing logic for Anneal attributes and documentation blocks.
 ///
-/// This module handles the extraction and parsing of `/// ````hermes` blocks
+/// This module handles the extraction and parsing of `/// ````anneal` blocks
 /// from Rust source code. It supports various block types (Function, Type,
 /// Trait, Impl) and their respective sections (requires, ensures, proof,
 /// etc.).
 ///
 /// ### Indentation-Sensitive Parsing (Off-Side Rule)
-/// Hermes relies strictly on indentation to determine block structure within
+/// Anneal relies strictly on indentation to determine block structure within
 /// the parsed comments.
 /// - Top-level block keywords (`context`, `requires`, `ensures`, `proof`,
 ///   `axiom`) establish a baseline indentation.
@@ -24,13 +24,13 @@ use super::*;
 /// The parsing process involves:
 /// 1. Extracting raw documentation lines using `extract_doc_line` (handling
 ///    `/// `, `/** ... */`, `#[doc = ...]`).
-/// 2. Identifying Hermes blocks denoted by ` ```lean, hermes...` fences.
-/// 3. Parsing the indented content into structured `RawHermesSpecBody`
+/// 2. Identifying Anneal blocks denoted by ` ```lean, anneal...` fences.
+/// 3. Parsing the indented content into structured `RawAnnealSpecBody`
 ///    blocks.
 /// 4. Validating and converting the raw body into context-specific types
-///    (e.g., `FunctionHermesBlock`).
+///    (e.g., `FunctionAnnealBlock`).
 ///
-/// Represents a parsed attribute from a Hermes info string on a function.
+/// Represents a parsed attribute from a Anneal info string on a function.
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum FunctionAttribute {
     /// `spec`: Indicates a function specification and proof.
@@ -39,7 +39,7 @@ enum FunctionAttribute {
     UnsafeAxiom,
 }
 
-/// A single logical clause in a Hermes specification (e.g. one `requires`
+/// A single logical clause in a Anneal specification (e.g. one `requires`
 /// entry).
 ///
 /// A clause consists of a starting keyword line and any subsequent indented
@@ -86,11 +86,11 @@ impl<M: ThreadSafety> Propositions<M> {
     }
 }
 
-/// A parsed Hermes documentation block attached to a function.
+/// A parsed Anneal documentation block attached to a function.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub struct FunctionHermesBlock<M: ThreadSafety = Local> {
-    pub common: HermesBlockCommon<M>,
+pub struct FunctionAnnealBlock<M: ThreadSafety = Local> {
+    pub common: AnnealBlockCommon<M>,
     pub requires: Propositions<M>,
     pub ensures: Propositions<M>,
     pub inner: FunctionBlockInner<M>,
@@ -107,33 +107,33 @@ pub enum FunctionBlockInner<M: ThreadSafety = Local> {
     Axiom,
 }
 
-/// A parsed Hermes documentation block attached to a struct, enum, or union.
+/// A parsed Anneal documentation block attached to a struct, enum, or union.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub struct TypeHermesBlock<M: ThreadSafety = Local> {
-    pub common: HermesBlockCommon<M>,
+pub struct TypeAnnealBlock<M: ThreadSafety = Local> {
+    pub common: AnnealBlockCommon<M>,
     pub is_valid: Vec<Clause<M>>,
 }
 
-/// A parsed Hermes documentation block attached to a trait.
+/// A parsed Anneal documentation block attached to a trait.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub struct TraitHermesBlock<M: ThreadSafety = Local> {
-    pub common: HermesBlockCommon<M>,
+pub struct TraitAnnealBlock<M: ThreadSafety = Local> {
+    pub common: AnnealBlockCommon<M>,
     pub is_safe: Vec<Clause<M>>,
 }
 
-/// A parsed Hermes documentation block attached to an impl.
+/// A parsed Anneal documentation block attached to an impl.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub struct ImplHermesBlock<M: ThreadSafety = Local> {
-    pub common: HermesBlockCommon<M>,
+pub struct ImplAnnealBlock<M: ThreadSafety = Local> {
+    pub common: AnnealBlockCommon<M>,
 }
 
-/// Common fields shared by all Hermes documentation blocks.
+/// Common fields shared by all Anneal documentation blocks.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub struct HermesBlockCommon<M: ThreadSafety = Local> {
+pub struct AnnealBlockCommon<M: ThreadSafety = Local> {
     pub context: Vec<SpannedLine<M>>,
     /// The span of the entire block, including the opening and closing ` ``` `
     /// lines.
@@ -150,18 +150,18 @@ enum ParsedInfoString {
 
 /// Parses the info string of a code block.
 ///
-/// * `info`: The info string text (e.g. "lean, hermes, spec").
+/// * `info`: The info string text (e.g. "lean, anneal, spec").
 ///
 /// Returns:
-/// * `Ok(Some(Some(attr)))` if `hermes` was found and had valid arguments.
-/// * `Ok(Some(None))` if `hermes` was found but had no arguments.
-/// * `Ok(None)` if `hermes` was not found.
-/// * `Err(msg)` if `hermes` was found but had invalid arguments.
-fn parse_hermes_info_string(info: &str) -> Result<Option<ParsedInfoString>, String> {
+/// * `Ok(Some(Some(attr)))` if `anneal` was found and had valid arguments.
+/// * `Ok(Some(None))` if `anneal` was found but had no arguments.
+/// * `Ok(None)` if `anneal` was not found.
+/// * `Err(msg)` if `anneal` was found but had invalid arguments.
+fn parse_anneal_info_string(info: &str) -> Result<Option<ParsedInfoString>, String> {
     let mut tokens = info.split(',').map(str::trim).filter(|s| !s.is_empty());
 
-    // Find and consume the `hermes` token.
-    if tokens.find(|&t| t == "hermes").is_none() {
+    // Find and consume the `anneal` token.
+    if tokens.find(|&t| t == "anneal").is_none() {
         return Ok(None);
     }
 
@@ -169,7 +169,7 @@ fn parse_hermes_info_string(info: &str) -> Result<Option<ParsedInfoString>, Stri
     if let Some(second) = tokens.next() {
         let first = first_arg.unwrap_or("");
         return Err(format!(
-            "Multiple attributes specified after 'hermes' ('{first}', '{second}'). Only one attribute is allowed."
+            "Multiple attributes specified after 'anneal' ('{first}', '{second}'). Only one attribute is allowed."
         ));
     }
 
@@ -183,7 +183,7 @@ fn parse_hermes_info_string(info: &str) -> Result<Option<ParsedInfoString>, Stri
             Err(format!("Unknown or malformed attribute: '{token}'. Did you mean 'unsafe(axiom)'?"))
         }
         Some(token) => Err(format!(
-            "Unrecognized Hermes attribute: '{token}'. Supported attributes are 'spec', 'unsafe(axiom)'."
+            "Unrecognized Anneal attribute: '{token}'. Supported attributes are 'spec', 'unsafe(axiom)'."
         )),
     }
 }
@@ -348,22 +348,22 @@ where
     }
 
     if !closed {
-        return Err(Error::new(start, "Unclosed Hermes block in documentation."));
+        return Err(Error::new(start, "Unclosed Anneal block in documentation."));
     }
 
     Ok((lines, end))
 }
 
-/// Parses a "Hermes block" from a sequence of attributes.
+/// Parses a "Anneal block" from a sequence of attributes.
 ///
 /// This function flat-maps all documentation attributes into a single stream
 /// of lines, allowing it to handle both single-line `/// ` comments and
 /// multi-line `/** ... */` blocks transparently. It looks for a start fence
 /// ` ```... ` and parses the content until the end fence.
-fn parse_hermes_block_common(
+fn parse_anneal_block_common(
     attrs: &[Attribute],
     source: &str,
-) -> Result<Option<(ParsedHermesBody, ParsedInfoString)>, Error> {
+) -> Result<Option<(ParsedAnnealBody, ParsedInfoString)>, Error> {
     let mut all_lines = attrs.iter().flat_map(|attr| extract_doc_line(attr, source));
 
     let mut block = None;
@@ -387,7 +387,7 @@ fn parse_hermes_block_common(
         let fence = &trimmed[..fence_len];
         let info = &trimmed[fence_len..];
 
-        let parsed_info = match parse_hermes_info_string(info.trim()) {
+        let parsed_info = match parse_anneal_info_string(info.trim()) {
             Ok(Some(a)) => a,
             Ok(Option::None) => continue,
             Err(msg) => return Err(Error::new(start_original, msg)),
@@ -396,13 +396,13 @@ fn parse_hermes_block_common(
         if block.is_some() {
             return Err(Error::new(
                 start_original,
-                "Multiple Hermes blocks found on a single item.",
+                "Multiple Anneal blocks found on a single item.",
             ));
         }
 
         let (lines, end) = parse_block_lines(&mut all_lines, start_original, fence)?;
 
-        let body = match RawHermesSpecBody::parse(&lines) {
+        let body = match RawAnnealSpecBody::parse(&lines) {
             Ok(body) => body,
             Err((err_span, msg)) => {
                 // Map the error span back to the raw source span if possible.
@@ -415,7 +415,7 @@ fn parse_hermes_block_common(
             }
         };
         block = Some((
-            ParsedHermesBody {
+            ParsedAnnealBody {
                 body,
                 content_span: start_original.join(end).unwrap_or(start_original),
                 start_span: start_original,
@@ -453,8 +453,8 @@ fn parse_item_block_common(
     attrs: &[Attribute],
     context_name: &str,
     source: &str,
-) -> Result<Option<(HermesBlockCommon, RawHermesSpecBody)>, Error> {
-    parse_hermes_block_common(attrs, source)?
+) -> Result<Option<(AnnealBlockCommon, RawAnnealSpecBody)>, Error> {
+    parse_anneal_block_common(attrs, source)?
         .map(|(item, info)| {
             if !matches!(info, ParsedInfoString::GenericMode) {
                 return Err(Error::new(
@@ -483,7 +483,7 @@ fn parse_item_block_common(
                 "`proof` sections are only permitted on `spec` functions.",
             )?;
 
-            let common = HermesBlockCommon {
+            let common = AnnealBlockCommon {
                 context: std::mem::take(&mut body.context.lines),
                 content_span: AstNode::new(item.content_span),
                 start_span: AstNode::new(item.start_span),
@@ -494,13 +494,13 @@ fn parse_item_block_common(
         .transpose()
 }
 
-impl FunctionHermesBlock<Local> {
+impl FunctionAnnealBlock<Local> {
     pub fn parse_from_attrs(
         attrs: &[Attribute],
         is_unsafe: bool,
         source: &str,
     ) -> Result<Option<Self>, Error> {
-        let Some((item, parsed_info)) = parse_hermes_block_common(attrs, source)? else {
+        let Some((item, parsed_info)) = parse_anneal_block_common(attrs, source)? else {
             return Ok(None);
         };
 
@@ -579,7 +579,7 @@ impl FunctionHermesBlock<Local> {
         }
 
         Ok(Some(Self {
-            common: HermesBlockCommon {
+            common: AnnealBlockCommon {
                 context: body.context.lines,
                 content_span: AstNode::new(item.content_span),
                 start_span: AstNode::new(item.start_span),
@@ -591,7 +591,7 @@ impl FunctionHermesBlock<Local> {
     }
 }
 
-impl TypeHermesBlock<Local> {
+impl TypeAnnealBlock<Local> {
     pub fn parse_from_attrs(attrs: &[Attribute], source: &str) -> Result<Option<Self>, Error> {
         let Some((common, body)) = parse_item_block_common(attrs, "types", source)? else {
             return Ok(None);
@@ -602,7 +602,7 @@ impl TypeHermesBlock<Local> {
         if body.is_valid.is_empty() {
             return Err(Error::new(
                 common.start_span.inner,
-                "Hermes blocks on types must define an `isValid` type invariant. Did you misspell it?",
+                "Anneal blocks on types must define an `isValid` type invariant. Did you misspell it?",
             ));
         }
 
@@ -620,7 +620,7 @@ impl TypeHermesBlock<Local> {
     }
 }
 
-impl TraitHermesBlock<Local> {
+impl TraitAnnealBlock<Local> {
     pub fn parse_from_attrs(
         attrs: &[Attribute],
         is_unsafe: bool,
@@ -635,7 +635,7 @@ impl TraitHermesBlock<Local> {
         if body.is_safe.is_empty() {
             return Err(Error::new(
                 common.start_span.inner,
-                "Hermes blocks on traits must define an `isSafe` trait invariant. Did you misspell it?",
+                "Anneal blocks on traits must define an `isSafe` trait invariant. Did you misspell it?",
             ));
         }
 
@@ -657,7 +657,7 @@ impl TraitHermesBlock<Local> {
     }
 }
 
-impl ImplHermesBlock<Local> {
+impl ImplAnnealBlock<Local> {
     pub fn parse_from_attrs(attrs: &[Attribute], source: &str) -> Result<Option<Self>, Error> {
         let Some((common, body)) = parse_item_block_common(attrs, "impl items", source)? else {
             return Ok(None);
@@ -707,9 +707,9 @@ enum Section {
     IsSafe,
 }
 
-/// The structured content of a completely unvalidated Hermes specification block.
+/// The structured content of a completely unvalidated Anneal specification block.
 #[derive(Debug, Default, Clone)]
-pub(super) struct RawHermesSpecBody {
+pub(super) struct RawAnnealSpecBody {
     /// Content before any keyword (e.g., Lean imports, let bindings, type invariants)
     pub(super) context: RawSection,
     pub(super) requires: Propositions<Local>,
@@ -726,13 +726,13 @@ pub(super) enum ActiveClause {
     Named(String),
 }
 
-pub(super) struct ParsedHermesBody {
-    pub(super) body: RawHermesSpecBody,
+pub(super) struct ParsedAnnealBody {
+    pub(super) body: RawAnnealSpecBody,
     pub(super) content_span: Span,
     pub(super) start_span: Span,
 }
 
-impl RawHermesSpecBody {
+impl RawAnnealSpecBody {
     // Helper to push a line to the current active destination
     fn add_line(
         &mut self,
@@ -865,7 +865,7 @@ impl RawHermesSpecBody {
 
     /// Parses a sequence of raw documentation lines into structured sections.
     ///
-    /// This function implements the core state machine for parsing Hermes
+    /// This function implements the core state machine for parsing Anneal
     /// blocks. It iterates through lines, recognizing keywords (e.g.,
     /// `requires`, `ensures`) to switch sections, and collecting content lines
     /// into the current section.
@@ -935,7 +935,7 @@ impl RawHermesSpecBody {
         lines
             .into_iter()
             .try_fold(
-                (RawHermesSpecBody::default(), Section::Init, None::<usize>, None::<ActiveClause>),
+                (RawAnnealSpecBody::default(), Section::Init, None::<usize>, None::<ActiveClause>),
                 |(mut spec, current_section, baseline_indent, active_clause), line| {
                     let trimmed = line.content.trim();
                     let span = line.span;
@@ -1039,7 +1039,7 @@ impl RawHermesSpecBody {
                                         remaining_arg = remaining.trim_start();
                                     } else {
                                         let keyword_name = keywords.iter().find(|(_, s)| *s == section).unwrap().0.trim_end_matches(':');
-                                        return Err((span, format!("Hermes keyword `{}` must be followed by a colon (e.g., `{}:`).", keyword_name, keyword_name)));
+                                        return Err((span, format!("Anneal keyword `{}` must be followed by a colon (e.g., `{}:`).", keyword_name, keyword_name)));
                                     }
                                 }
                             }
@@ -1076,7 +1076,7 @@ impl RawHermesSpecBody {
                     if current_section == Section::Init {
                          return Err((
                             span,
-                            "Expected a Hermes keyword to start the block (e.g. `context`, `requires`, ...).".to_string(),
+                            "Expected a Anneal keyword to start the block (e.g. `context`, `requires`, ...).".to_string(),
                         ));
                     }
 
@@ -1084,7 +1084,7 @@ impl RawHermesSpecBody {
                         return Err((
                             span,
                             "Invalid indentation: expected an indented continuation or a valid \
-                             Hermes keyword (context, requires, ensures, proof, isValid, isSafe). \
+                             Anneal keyword (context, requires, ensures, proof, isValid, isSafe). \
                              Did you misspell a keyword?"
                                 .to_string(),
                         ));
@@ -1127,10 +1127,10 @@ impl<M: ThreadSafety> LiftToSafe for Propositions<M> {
     }
 }
 
-impl<M: ThreadSafety> LiftToSafe for HermesBlockCommon<M> {
-    type Target = HermesBlockCommon<Safe>;
+impl<M: ThreadSafety> LiftToSafe for AnnealBlockCommon<M> {
+    type Target = AnnealBlockCommon<Safe>;
     fn lift(self) -> Self::Target {
-        HermesBlockCommon {
+        AnnealBlockCommon {
             context: self.context.into_iter().map(|l| l.lift()).collect(),
             content_span: self.content_span.lift(),
             start_span: self.start_span.lift(),
@@ -1151,10 +1151,10 @@ impl<M: ThreadSafety> LiftToSafe for FunctionBlockInner<M> {
     }
 }
 
-impl<M: ThreadSafety> LiftToSafe for FunctionHermesBlock<M> {
-    type Target = FunctionHermesBlock<Safe>;
+impl<M: ThreadSafety> LiftToSafe for FunctionAnnealBlock<M> {
+    type Target = FunctionAnnealBlock<Safe>;
     fn lift(self) -> Self::Target {
-        FunctionHermesBlock {
+        FunctionAnnealBlock {
             common: self.common.lift(),
             requires: self.requires.lift(),
             ensures: self.ensures.lift(),
@@ -1163,30 +1163,30 @@ impl<M: ThreadSafety> LiftToSafe for FunctionHermesBlock<M> {
     }
 }
 
-impl<M: ThreadSafety> LiftToSafe for TypeHermesBlock<M> {
-    type Target = TypeHermesBlock<Safe>;
+impl<M: ThreadSafety> LiftToSafe for TypeAnnealBlock<M> {
+    type Target = TypeAnnealBlock<Safe>;
     fn lift(self) -> Self::Target {
-        TypeHermesBlock {
+        TypeAnnealBlock {
             common: self.common.lift(),
             is_valid: self.is_valid.into_iter().map(|c| c.lift()).collect(),
         }
     }
 }
 
-impl<M: ThreadSafety> LiftToSafe for TraitHermesBlock<M> {
-    type Target = TraitHermesBlock<Safe>;
+impl<M: ThreadSafety> LiftToSafe for TraitAnnealBlock<M> {
+    type Target = TraitAnnealBlock<Safe>;
     fn lift(self) -> Self::Target {
-        TraitHermesBlock {
+        TraitAnnealBlock {
             common: self.common.lift(),
             is_safe: self.is_safe.into_iter().map(|c| c.lift()).collect(),
         }
     }
 }
 
-impl<M: ThreadSafety> LiftToSafe for ImplHermesBlock<M> {
-    type Target = ImplHermesBlock<Safe>;
+impl<M: ThreadSafety> LiftToSafe for ImplAnnealBlock<M> {
+    type Target = ImplAnnealBlock<Safe>;
     fn lift(self) -> Self::Target {
-        ImplHermesBlock { common: self.common.lift() }
+        ImplAnnealBlock { common: self.common.lift() }
     }
 }
 
@@ -1227,37 +1227,37 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_hermes_info_string() {
-        // Not hermes
-        assert_eq!(parse_hermes_info_string(""), Ok(None));
-        assert_eq!(parse_hermes_info_string("rust"), Ok(None));
-        assert_eq!(parse_hermes_info_string("lean"), Ok(None));
+    fn test_parse_anneal_info_string() {
+        // Not anneal
+        assert_eq!(parse_anneal_info_string(""), Ok(None));
+        assert_eq!(parse_anneal_info_string("rust"), Ok(None));
+        assert_eq!(parse_anneal_info_string("lean"), Ok(None));
 
-        // Just hermes
+        // Just anneal
         assert_eq!(
-            parse_hermes_info_string("lean, hermes"),
+            parse_anneal_info_string("lean, anneal"),
             Ok(Some(ParsedInfoString::GenericMode))
         );
-        assert_eq!(parse_hermes_info_string(" hermes "), Ok(Some(ParsedInfoString::GenericMode)));
+        assert_eq!(parse_anneal_info_string(" anneal "), Ok(Some(ParsedInfoString::GenericMode)));
         assert_eq!(
-            parse_hermes_info_string("lean , hermes "),
+            parse_anneal_info_string("lean , anneal "),
             Ok(Some(ParsedInfoString::GenericMode))
         );
 
         // Valid attributes
         assert!(matches!(
-            parse_hermes_info_string("hermes, spec"),
+            parse_anneal_info_string("anneal, spec"),
             Ok(Some(ParsedInfoString::FunctionMode(FunctionAttribute::Spec)))
         ));
         assert!(matches!(
-            parse_hermes_info_string("lean,hermes,unsafe(axiom)"),
+            parse_anneal_info_string("lean,anneal,unsafe(axiom)"),
             Ok(Some(ParsedInfoString::FunctionMode(FunctionAttribute::UnsafeAxiom)))
         ));
 
         // Invalid attributes
-        assert!(parse_hermes_info_string("hermes, unknown").is_err());
-        assert!(parse_hermes_info_string("hermes, unsafe").is_err());
-        assert!(parse_hermes_info_string("hermes, spec, other").is_err());
+        assert!(parse_anneal_info_string("anneal, unknown").is_err());
+        assert!(parse_anneal_info_string("anneal, unsafe").is_err());
+        assert!(parse_anneal_info_string("anneal, spec, other").is_err());
     }
 
     #[test]
@@ -1281,16 +1281,16 @@ mod tests {
     #[test]
     fn test_parse_from_attrs_valid_spec() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```lean, hermes, spec"]),
+            parse_quote!(#[doc = " ```lean, anneal, spec"]),
             parse_quote!(#[doc = " context:"]),
             parse_quote!(#[doc = " body 1"]),
             parse_quote!(#[doc = " body 2"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
+        let block = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
         match block {
-            FunctionHermesBlock {
-                common: HermesBlockCommon { context, .. },
+            FunctionAnnealBlock {
+                common: AnnealBlockCommon { context, .. },
                 inner: FunctionBlockInner::Proof { .. },
                 ..
             } => {
@@ -1304,16 +1304,16 @@ mod tests {
     #[test]
     fn test_parse_from_attrs_valid_axiom() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```lean, hermes, unsafe(axiom)"]),
+            parse_quote!(#[doc = " ```lean, anneal, unsafe(axiom)"]),
             parse_quote!(#[doc = " context:"]),
             parse_quote!(#[doc = " body 1"]),
             parse_quote!(#[doc = " body 2"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+        let block = FunctionAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         match block {
-            FunctionHermesBlock {
-                common: HermesBlockCommon { context, .. },
+            FunctionAnnealBlock {
+                common: AnnealBlockCommon { context, .. },
                 inner: FunctionBlockInner::Axiom,
                 ..
             } => {
@@ -1327,21 +1327,21 @@ mod tests {
     #[test]
     fn test_parse_from_attrs_unclosed() {
         let attrs: Vec<syn::Attribute> =
-            vec![parse_quote!(#[doc = " ```hermes"]), parse_quote!(#[doc = " no end fence"])];
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
-        assert_eq!(err.to_string(), "Unclosed Hermes block in documentation.");
+            vec![parse_quote!(#[doc = " ```anneal"]), parse_quote!(#[doc = " no end fence"])];
+        let err = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        assert_eq!(err.to_string(), "Unclosed Anneal block in documentation.");
     }
 
     #[test]
     fn test_parse_from_attrs_interrupted() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " context:"]),
             parse_quote!(#[doc = " line 1"]),
             parse_quote!(#[derive(Clone)]), // Interrupts contiguous doc lines
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
+        let block = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
         assert_eq!(block.common.context.len(), 1);
         assert_eq!(block.common.context[0].content, " line 1");
     }
@@ -1349,13 +1349,13 @@ mod tests {
     #[test]
     fn test_parse_from_attrs_multiple_blocks() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " ```"]),
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
-        assert_eq!(err.to_string(), "Multiple Hermes blocks found on a single item.");
+        let err = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        assert_eq!(err.to_string(), "Multiple Anneal blocks found on a single item.");
     }
 
     fn mk_lines(lines: &[&str]) -> Vec<SpannedLine> {
@@ -1370,9 +1370,9 @@ mod tests {
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_empty() {
+    fn test_anneal_spec_body_parse_empty() {
         let lines = mk_lines(&[]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert!(!spec.context.is_present());
         assert!(spec.requires.is_empty());
         assert!(spec.ensures.is_empty());
@@ -1380,18 +1380,18 @@ mod tests {
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_context_only() {
+    fn test_anneal_spec_body_parse_context_only() {
         let lines = mk_lines(&["context:", "import Foo", "def bar := 1"]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert!(spec.context.is_present());
         assert_eq!(spec.context.lines.len(), 2);
         assert_eq!(spec.context.lines[0].content, "import Foo");
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_requires() {
+    fn test_anneal_spec_body_parse_requires() {
         let lines = mk_lines(&["requires:", "  x > 0", "  y > 0"]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 1);
         let clause = &spec.requires[0];
         assert_eq!(clause.lines.len(), 2);
@@ -1399,18 +1399,18 @@ mod tests {
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_multiple_clauses() {
+    fn test_anneal_spec_body_parse_multiple_clauses() {
         let lines = mk_lines(&["requires:", "  x > 0", "requires (foo):", "  y > 0"]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 2);
         assert_eq!(spec.requires[0].lines[0].content, "  x > 0");
         assert_eq!(spec.requires[1].lines[0].content, "  y > 0");
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_multiple_sections() {
+    fn test_anneal_spec_body_parse_multiple_sections() {
         let lines = mk_lines(&["requires:", "  x > 0", "ensures:", "  result = x"]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 1);
         assert_eq!(spec.ensures.len(), 1);
         assert_eq!(spec.requires[0].lines[0].content, "  x > 0");
@@ -1418,7 +1418,7 @@ mod tests {
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_interleaved_sections() {
+    fn test_anneal_spec_body_parse_interleaved_sections() {
         let lines = mk_lines(&[
             "requires:",
             "  x > 0",
@@ -1429,7 +1429,7 @@ mod tests {
             "ensures (ens_res):",
             "  result > 0",
         ]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 2);
         assert_eq!(spec.ensures.len(), 2);
         assert_eq!(spec.requires[0].lines[0].content, "  x > 0");
@@ -1439,9 +1439,9 @@ mod tests {
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_inline_arg() {
+    fn test_anneal_spec_body_parse_inline_arg() {
         let lines = mk_lines(&["requires: x > 0", "  y > 0"]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 1);
         assert_eq!(spec.requires[0].lines.len(), 2);
         assert_eq!(spec.requires[0].lines[0].content, "x > 0");
@@ -1449,7 +1449,7 @@ mod tests {
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_invalid_indent() {
+    fn test_anneal_spec_body_parse_invalid_indent() {
         let lines = mk_lines(&["requires:", "x > 0", "y > 0"]); // "y > 0" has same indent/no indent as requires?
         // mk_lines creates lines with 0 indent unless spaces are in string? Use specific strings.
         // Actually mk_lines takes &str, so if I pass "requires", it has 0 indent.
@@ -1459,22 +1459,22 @@ mod tests {
         // Because for continuation, we usually expect INDENT > BASELINE.
         // The code says: `indent <= baseline_indent.unwrap()` error.
         // So yes, 0 <= 0 error.
-        let spec = RawHermesSpecBody::parse(&lines);
+        let spec = RawAnnealSpecBody::parse(&lines);
         assert!(spec.is_err());
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_implicit_context_fails() {
+    fn test_anneal_spec_body_parse_implicit_context_fails() {
         let lines = mk_lines(&["import Foo"]);
-        let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+        let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
         assert!(
-            err.1.contains("Expected a Hermes keyword")
+            err.1.contains("Expected a Anneal keyword")
                 || err.1.contains("must be followed by a colon")
         );
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_strict_keywords() {
+    fn test_anneal_spec_body_parse_strict_keywords() {
         let lines = mk_lines(&[
             "context:",
             "requires_foo a",
@@ -1484,7 +1484,7 @@ mod tests {
             "  requires   ", // valid keyword
             "   genuine requirements ",
         ]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         // The first four are context lines because they don't match keywords strictly.
         assert_eq!(spec.context.lines.len(), 6);
         assert_eq!(spec.context.lines[0].content, "requires_foo a");
@@ -1502,7 +1502,7 @@ mod tests {
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_arguments_vs_continuation() {
+    fn test_anneal_spec_body_parse_arguments_vs_continuation() {
         let lines = mk_lines(&[
             "requires: a > 0",
             "  and b < 0", // Continuation: keeps original whitespace
@@ -1510,7 +1510,7 @@ mod tests {
             "proof:", // standalone keyword
             "  trivial",
         ]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert!(!spec.context.is_present());
 
         assert_eq!(spec.requires.len(), 1);
@@ -1528,10 +1528,10 @@ mod tests {
     }
 
     #[test]
-    fn test_hermes_spec_body_parse_multiple_same_section() {
+    fn test_anneal_spec_body_parse_multiple_same_section() {
         // Check that it can interleave sections or repeat them
         let lines = mk_lines(&["requires: a", "ensures: b", "requires (foo): c"]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 2);
         assert_eq!(spec.requires[0].lines[0].content, "a");
         assert_eq!(spec.requires[1].lines[0].content, "c");
@@ -1552,7 +1552,7 @@ mod tests {
     fn test_parse_spec_valid_indentation() {
         let lines =
             mk_lines(&["context:", "context_line", "requires:", "  req1", "ensures:", "  ens1"]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.context.lines[0].content, "context_line");
         assert_eq!(spec.requires[0].lines[0].content, "  req1");
         assert_eq!(spec.ensures.len(), 1);
@@ -1565,7 +1565,7 @@ mod tests {
             dummy_line("requires: a > 0"),
             dummy_line("ensures:\tb > 0"), // Tests tab whitespace
         ];
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 1);
         assert_eq!(spec.requires[0].lines[0].content, "a > 0");
         assert_eq!(spec.ensures.len(), 1);
@@ -1580,14 +1580,14 @@ mod tests {
             dummy_line(""),
             dummy_line("  b > 0"),
         ];
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires[0].lines.len(), 3); // 2 content lines + 1 blank line
     }
 
     #[test]
     fn test_parse_spec_header_no_indent_rules() {
         let lines = mk_lines(&["context:", "context_line", "  indented context", "more context"]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.context.lines.len(), 3);
     }
 
@@ -1599,7 +1599,7 @@ mod tests {
             dummy_line("ensure"), // Typo, missing 's'. Indentation is 0.
             dummy_line("  b > 0"),
         ];
-        let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+        let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
         assert!(
             err.1.contains("Invalid indentation") || err.1.contains("must be followed by a colon")
         );
@@ -1608,14 +1608,14 @@ mod tests {
     #[test]
     fn test_parse_spec_err_missing_colon_named_bound() {
         let lines = vec![dummy_line("requires (h_req)"), dummy_line("  a > 0")];
-        let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+        let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
         assert!(err.1.contains("must be followed by a colon"));
     }
 
     #[test]
     fn test_parse_spec_valid_apostrophe_name() {
         let lines = vec![dummy_line("requires (h_x'_is_valid):"), dummy_line("  true")];
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert_eq!(spec.requires.len(), 1);
         assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "h_x'_is_valid");
     }
@@ -1629,40 +1629,40 @@ mod tests {
             "  req1",
             "req2_oops", // This looks like a new keyword but isn't one, and isn't indented
         ]);
-        let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+        let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
         assert!(
             err.1.contains("Invalid indentation") || err.1.contains("must be followed by a colon")
         );
     }
 
     #[test]
-    fn test_parse_from_attrs_not_hermes() {
+    fn test_parse_from_attrs_not_anneal() {
         let attrs: Vec<syn::Attribute> =
             vec![parse_quote!(#[doc = " ```lean"]), parse_quote!(#[doc = " ```"])];
-        let block_func = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap();
+        let block_func = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap();
         assert!(block_func.is_none());
-        let block_item = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap();
+        let block_item = TypeAnnealBlock::parse_from_attrs(&attrs, "").unwrap();
         assert!(block_item.is_none());
     }
 
     #[test]
     fn test_type_block_valid() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " context:"]), // Types shouldn't really have context/header usually, but parser allows it?
-            // Actually TypeHermesBlock only takes `is_valid`.
-            // Let's check `parse_from_attrs` implementation for TypeHermesBlock.
+            // Actually TypeAnnealBlock only takes `is_valid`.
+            // Let's check `parse_from_attrs` implementation for TypeAnnealBlock.
             // It calls `parse_item_block_common`.
-            // `parse_item_block_common` allows header in `HermesBlockCommon`.
-            // But `TypeHermesBlock` struct doesn't have `context` field? It has `common: HermesBlockCommon`.
-            // `HermesBlockCommon` has `header`.
+            // `parse_item_block_common` allows header in `AnnealBlockCommon`.
+            // But `TypeAnnealBlock` struct doesn't have `context` field? It has `common: AnnealBlockCommon`.
+            // `AnnealBlockCommon` has `header`.
             // So yes, types can have context.
             parse_quote!(#[doc = " foo"]),
             parse_quote!(#[doc = " isValid self :="]),
             parse_quote!(#[doc = "  bar"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+        let block = TypeAnnealBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         assert_eq!(block.is_valid[0].lines[0].content, "isValid self :=");
         assert_eq!(block.is_valid[0].lines[1].content, "  bar");
         assert_eq!(block.common.context[0].content, " foo");
@@ -1671,27 +1671,27 @@ mod tests {
     #[test]
     fn test_type_block_missing_is_valid() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " context:"]),
             parse_quote!(#[doc = " foo"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+        let err = TypeAnnealBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(
             err.to_string(),
-            "Hermes blocks on types must define an `isValid` type invariant. Did you misspell it?"
+            "Anneal blocks on types must define an `isValid` type invariant. Did you misspell it?"
         );
     }
 
     #[test]
     fn test_trait_block_valid() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " isSafe"]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+        let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         assert_eq!(block.is_safe.len(), 1);
         assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
         assert_eq!(block.is_safe[0].lines[1].content, "  val == true");
@@ -1700,57 +1700,57 @@ mod tests {
     #[test]
     fn test_trait_block_missing_is_safe() {
         let attrs: Vec<syn::Attribute> =
-            vec![parse_quote!(#[doc = " ```hermes"]), parse_quote!(#[doc = " ```"])];
-        let err = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            vec![parse_quote!(#[doc = " ```anneal"]), parse_quote!(#[doc = " ```"])];
+        let err = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
         assert_eq!(
             err.to_string(),
-            "Hermes blocks on traits must define an `isSafe` trait invariant. Did you misspell it?"
+            "Anneal blocks on traits must define an `isSafe` trait invariant. Did you misspell it?"
         );
     }
 
     #[test]
     fn test_function_rejects_invariants() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes, spec"]),
+            parse_quote!(#[doc = " ```anneal, spec"]),
             parse_quote!(#[doc = " isValid"]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        let err = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
         assert_eq!(err.to_string(), "`isValid` sections are only permitted on types.");
     }
 
     #[test]
     fn test_type_rejects_function_clauses() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " requires:"]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " isValid"]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+        let err = TypeAnnealBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(err.to_string(), "`requires` sections are only permitted on functions.");
     }
 
     #[test]
     fn test_type_rejects_is_safe() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " isValid self :="]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " isSafe"]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+        let err = TypeAnnealBlock::parse_from_attrs(&attrs, "").unwrap_err();
         assert_eq!(err.to_string(), "`isSafe` sections are only permitted on traits.");
     }
     #[test]
     fn test_empty_section_is_present() {
         let lines = mk_lines(&["requires:", "  x > 0", "ensures:"]);
-        let spec = RawHermesSpecBody::parse(&lines).unwrap();
+        let spec = RawAnnealSpecBody::parse(&lines).unwrap();
         assert!(!spec.requires.is_empty());
         assert!(!spec.ensures.is_empty());
         assert!(spec.ensures[0].lines.is_empty());
@@ -1759,12 +1759,12 @@ mod tests {
     #[test]
     fn test_trait_rejects_is_valid() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " isSafe my_trait :"]),
             parse_quote!(#[doc = " isValid foo :="]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let err = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+        let err = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
         assert_eq!(err.to_string(), "`isValid` sections are only permitted on types.");
     }
 
@@ -1774,12 +1774,12 @@ mod tests {
         // `:=` to bypass validation. It should still preserve the keyword in
         // the generated parsed body.
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " isValid :="]),
             parse_quote!(#[doc = "  self.val > 0"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
+        let block = TypeAnnealBlock::parse_from_attrs(&attrs, "").unwrap().unwrap();
         // Since `isValid` has no inline arguments beyond `:=`, the first line is exactly "isValid :=".
         assert_eq!(block.is_valid[0].lines[0].content, "isValid :=");
         assert_eq!(block.is_valid[0].lines[1].content, "  self.val > 0");
@@ -1788,11 +1788,11 @@ mod tests {
     #[test]
     fn test_is_safe_extra_whitespace() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " isSafe     self    :="]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+        let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         // keep_keyword should preserve the exact string from the comment line
         assert_eq!(block.is_safe[0].lines[0].content, "isSafe     self    :=");
     }
@@ -1800,7 +1800,7 @@ mod tests {
     #[test]
     fn test_reject_section_points_to_keyword() {
         // Create dummy lines manually so we can distinguish raw_span
-        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```anneal"])];
 
         let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires:"]);
         let cont_attr: syn::Attribute = parse_quote!(#[doc = "  x > 0"]);
@@ -1809,7 +1809,7 @@ mod tests {
         attrs.push(cont_attr);
         attrs.push(parse_quote!(#[doc = " ```"]));
 
-        let err = TypeHermesBlock::parse_from_attrs(&attrs, "").unwrap_err();
+        let err = TypeAnnealBlock::parse_from_attrs(&attrs, "").unwrap_err();
 
         let lines = extract_doc_line(&requires_attr, "");
         assert_eq!(lines.len(), 1);
@@ -1819,12 +1819,12 @@ mod tests {
 
     #[test]
     fn test_parse_requires_on_safe_fn_errors() {
-        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```anneal"])];
         let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires: true"]);
         attrs.push(requires_attr.clone());
         attrs.push(parse_quote!(#[doc = " ```"]));
 
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        let err = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
         assert_eq!(
             err.to_string(),
             "`requires` sections are only permitted on `unsafe` functions."
@@ -1837,29 +1837,29 @@ mod tests {
     #[test]
     fn test_parse_requires_on_unsafe_fn_succeeds() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " requires: true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+        let block = FunctionAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         assert!(!block.requires.is_empty());
     }
 
     #[test]
     fn test_parse_ensures_only_on_safe_fn_succeeds() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " ensures: result > 0"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
+        let block = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
         assert!(block.requires.is_empty());
         assert!(!block.ensures.is_empty());
     }
 
     #[test]
     fn test_parse_multiple_requires_on_safe_fn_errors() {
-        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```anneal"])];
         let first_requires: syn::Attribute = parse_quote!(#[doc = " requires: x > 0"]);
         let second_requires: syn::Attribute = parse_quote!(#[doc = " requires (foo): y > 0"]);
 
@@ -1867,7 +1867,7 @@ mod tests {
         attrs.push(second_requires);
         attrs.push(parse_quote!(#[doc = " ```"]));
 
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        let err = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
         assert_eq!(
             err.to_string(),
             "`requires` sections are only permitted on `unsafe` functions."
@@ -1880,12 +1880,12 @@ mod tests {
 
     #[test]
     fn test_parse_empty_requires_on_safe_fn_errors() {
-        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```anneal"])];
         let requires_attr: syn::Attribute = parse_quote!(#[doc = " requires:"]);
         attrs.push(requires_attr.clone());
         attrs.push(parse_quote!(#[doc = " ```"]));
 
-        let err = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        let err = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
         assert_eq!(
             err.to_string(),
             "`requires` sections are only permitted on `unsafe` functions."
@@ -1897,12 +1897,12 @@ mod tests {
 
     #[test]
     fn test_parse_is_safe_on_safe_trait_errors() {
-        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```anneal"])];
         let is_safe_attr: syn::Attribute = parse_quote!(#[doc = " isSafe true"]);
         attrs.push(is_safe_attr.clone());
         attrs.push(parse_quote!(#[doc = " ```"]));
 
-        let err = TraitHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        let err = TraitAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
         assert_eq!(err.to_string(), "`isSafe` sections are only permitted on `unsafe` traits.");
         let lines = extract_doc_line(&is_safe_attr, "");
         let (_, _, is_safe_raw_span) = lines[0];
@@ -1912,17 +1912,17 @@ mod tests {
     #[test]
     fn test_parse_is_safe_on_unsafe_trait_succeeds() {
         let attrs: Vec<syn::Attribute> = vec![
-            parse_quote!(#[doc = " ```hermes"]),
+            parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " isSafe true"]),
             parse_quote!(#[doc = " ```"]),
         ];
-        let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+        let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         assert!(!block.is_safe.is_empty());
     }
 
     #[test]
     fn test_parse_multiple_is_safe_on_safe_trait_errors() {
-        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```anneal"])];
         let first_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe x > 0"]);
         let second_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe y > 0"]);
 
@@ -1930,7 +1930,7 @@ mod tests {
         attrs.push(second_is_safe);
         attrs.push(parse_quote!(#[doc = " ```"]));
 
-        let err = TraitHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        let err = TraitAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
         assert_eq!(err.to_string(), "`isSafe` sections are only permitted on `unsafe` traits.");
 
         let lines = extract_doc_line(&first_is_safe, "");
@@ -1940,14 +1940,14 @@ mod tests {
 
     #[test]
     fn test_parse_empty_is_safe_on_safe_trait_errors() {
-        // Here we test just the keyword without content. Notice that `TraitHermesBlock`
+        // Here we test just the keyword without content. Notice that `TraitAnnealBlock`
         // also checks for a colon (`:`). However, the `is_unsafe` check comes first!
-        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```hermes"])];
+        let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```anneal"])];
         let is_safe_attr: syn::Attribute = parse_quote!(#[doc = " isSafe"]);
         attrs.push(is_safe_attr.clone());
         attrs.push(parse_quote!(#[doc = " ```"]));
 
-        let err = TraitHermesBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
+        let err = TraitAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap_err();
         assert_eq!(err.to_string(), "`isSafe` sections are only permitted on `unsafe` traits.");
         let lines = extract_doc_line(&is_safe_attr, "");
         let (_, _, is_safe_raw_span) = lines[0];
@@ -1964,7 +1964,7 @@ mod tests {
                 "requires:",
                 "  proof_helper", // Should be content of requires
             ]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert!(!spec.requires.is_empty());
             assert_eq!(spec.requires[0].lines.len(), 1);
             assert_eq!(spec.requires[0].lines[0].content, "  proof_helper");
@@ -1979,7 +1979,7 @@ mod tests {
                 "requires:",
                 "  proof", // Indented 'proof' - parser must treat as continuation content
             ]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert!(!spec.requires.is_empty());
             assert_eq!(spec.requires[0].lines.len(), 1);
             assert_eq!(spec.requires[0].lines[0].content, "  proof"); // 'proof' is now a continuation
@@ -1989,7 +1989,7 @@ mod tests {
         #[test]
         fn test_multiple_sections_concatenation() {
             let lines = mk_lines(&["requires: a", "requires (foo): b"]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 2);
             assert_eq!(spec.requires[0].lines[0].content, "a");
             assert_eq!(spec.requires[1].lines[0].content, "b");
@@ -2001,27 +2001,27 @@ mod tests {
                 "requires:",
                 "  is_safe", // Typo for isSafe, should be content
             ]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires[0].lines[0].content, "  is_safe");
         }
 
         #[test]
         fn test_trait_rejects_function_keywords() {
             let attrs: Vec<syn::Attribute> = vec![
-                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " ```anneal"]),
                 parse_quote!(#[doc = " isSafe"]),
                 parse_quote!(#[doc = "  val"]),
                 parse_quote!(#[doc = " requires: true"]), // Should error
                 parse_quote!(#[doc = " ```"]),
             ];
-            let err = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            let err = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
             assert_eq!(err.to_string(), "`requires` sections are only permitted on functions.");
         }
 
         #[test]
         fn test_nested_fences_failure() {
             let attrs: Vec<syn::Attribute> = vec![
-                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " ```anneal"]),
                 parse_quote!(#[doc = " isSafe"]),
                 parse_quote!(#[doc = " ```"]), // Nested fence? No this is just premature close.
                 parse_quote!(#[doc = "  nested"]),
@@ -2036,7 +2036,7 @@ mod tests {
             // The result is valid block with just `isSafe`.
             // But if the INTENTION was nested, it fails silently or just closes early.
             // Let's verify it closes early.
-            let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+            let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert!(block.is_safe.len() == 1);
             assert!(!block.is_safe[0].lines.is_empty());
             assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
@@ -2045,7 +2045,7 @@ mod tests {
         #[test]
         fn test_nested_code_blocks() {
             let attrs: Vec<syn::Attribute> = vec![
-                parse_quote!(#[doc = " ````hermes"]),
+                parse_quote!(#[doc = " ````anneal"]),
                 parse_quote!(#[doc = " requires: true"]),
                 parse_quote!(#[doc = "  ```rust"]),
                 parse_quote!(#[doc = "  let x = 1;"]),
@@ -2055,7 +2055,7 @@ mod tests {
             ];
             // This test will fail currently because the parser stops at the first ` ``` `
             // instead of matching the length of the opening fence (````).
-            let block = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+            let block = FunctionAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
 
             assert_eq!(block.requires.len(), 1);
             // The parser should ideally skip the inner ```rust block and parse the ensures clause.
@@ -2065,7 +2065,7 @@ mod tests {
         #[test]
         fn test_nested_code_blocks_in_comments() {
             let attrs: Vec<syn::Attribute> = vec![
-                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " ```anneal"]),
                 parse_quote!(#[doc = " context:"]),
                 parse_quote!(#[doc = "   -- ```"]),
                 parse_quote!(#[doc = "   -- Some code"]),
@@ -2074,7 +2074,7 @@ mod tests {
                 parse_quote!(#[doc = " ```"]),
             ];
 
-            let block = FunctionHermesBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
+            let block = FunctionAnnealBlock::parse_from_attrs(&attrs, false, "").unwrap().unwrap();
 
             assert_eq!(block.common.context.len(), 3);
             assert_eq!(block.ensures.len(), 1);
@@ -2089,7 +2089,7 @@ mod tests {
                 "\t\ta > 0", // 2 chars indent
                 "  b > 0",   // 2 chars indent
             ]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires[0].lines.len(), 2);
             assert_eq!(spec.requires[0].lines[0].content, "\t\ta > 0");
             assert_eq!(spec.requires[0].lines[1].content, "  b > 0");
@@ -2098,13 +2098,13 @@ mod tests {
         #[test]
         fn test_missing_definition_syntax() {
             let attrs: Vec<syn::Attribute> = vec![
-                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " ```anneal"]),
                 parse_quote!(#[doc = " isSafe"]), // Missing body
                 parse_quote!(#[doc = " ```"]),
             ];
             // Should succeed with empty body or fail?
             // Currently parser allows empty sections.
-            let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+            let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert!(block.is_safe.len() == 1);
             assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
         }
@@ -2122,14 +2122,14 @@ mod tests {
             ]);
             // For Trait, we look for isSafe.
             let attrs: Vec<syn::Attribute> = vec![
-                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " ```anneal"]),
                 parse_quote!(#[doc = " isSafe Self :="]),
                 parse_quote!(#[doc = "  -- This is a comment"]),
                 parse_quote!(#[doc = "  x ≥ 0 ∧ y ≤ 10"]),
                 parse_quote!(#[doc = "  let result := 1"]),
                 parse_quote!(#[doc = " ```"]),
             ];
-            let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+            let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             // isSafe Self := (1)
             // -- This is a comment (2)
             // x ≥ 0 ∧ y ≤ 10 (3)
@@ -2143,9 +2143,9 @@ mod tests {
         #[test]
         fn test_argument_name_collisions() {
             // Verify that arguments named 'result', 'old_x' are parsed as content and don't trigger keywords.
-            // 'result' is not a keyword in Hermes parser, only a binder in generation.
+            // 'result' is not a keyword in Anneal parser, only a binder in generation.
             let lines = mk_lines(&["requires:", "  result > 0", "  old_x < new_x"]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires[0].lines.len(), 2);
             assert_eq!(spec.requires[0].lines[0].content, "  result > 0");
             assert_eq!(spec.requires[0].lines[1].content, "  old_x < new_x");
@@ -2155,14 +2155,14 @@ mod tests {
         fn test_interleaved_attributes() {
             // Verify that non-doc attributes are skipped and doc attributes are concatenated.
             let attrs: Vec<syn::Attribute> = vec![
-                parse_quote!(#[doc = " ```hermes"]),
+                parse_quote!(#[doc = " ```anneal"]),
                 parse_quote!(#[allow(dead_code)]), // Interleaved attribute
                 parse_quote!(#[doc = " isSafe"]),
                 parse_quote!(#[cfg(all())]), // Another Interleaved
                 parse_quote!(#[doc = "  val"]),
                 parse_quote!(#[doc = " ```"]),
             ];
-            let block = TraitHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+            let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert_eq!(block.is_safe.len(), 1);
             assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
             assert_eq!(block.is_safe[0].lines[1].content, "  val");
@@ -2171,9 +2171,9 @@ mod tests {
         #[test]
         fn test_comment_before_keyword_fails() {
             let lines = mk_lines(&["// comment", "context"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(
-                err.1.contains("Expected a Hermes keyword")
+                err.1.contains("Expected a Anneal keyword")
                     || err.1.contains("must be followed by a colon")
             );
         }
@@ -2181,7 +2181,7 @@ mod tests {
         #[test]
         fn test_context_inline_args() {
             let lines = mk_lines(&["context: inline_context", "more_context"]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.context.lines[0].content, "inline_context");
             assert_eq!(spec.context.lines[1].content, "more_context");
         }
@@ -2189,7 +2189,7 @@ mod tests {
         #[test]
         fn test_multiple_context_sections() {
             let lines = mk_lines(&["context: part1", "context: part2"]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.context.lines.len(), 2);
             assert_eq!(spec.context.lines[0].content, "part1");
             assert_eq!(spec.context.lines[1].content, "part2");
@@ -2198,7 +2198,7 @@ mod tests {
         #[test]
         fn test_delayed_context() {
             let lines = mk_lines(&["requires: x > 0", "context:", "added_to_context"]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert!(!spec.requires.is_empty());
             assert_eq!(spec.context.lines.len(), 1);
             assert_eq!(spec.context.lines[0].content, "added_to_context");
@@ -2207,9 +2207,9 @@ mod tests {
         #[test]
         fn test_case_sensitive_context() {
             let lines = mk_lines(&["Context"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(
-                err.1.contains("Expected a Hermes keyword")
+                err.1.contains("Expected a Anneal keyword")
                     || err.1.contains("must be followed by a colon")
             );
         }
@@ -2217,7 +2217,7 @@ mod tests {
         #[test]
         fn test_leading_whitespace_ignored() {
             let lines = mk_lines(&["   ", "", "context:", "stuff"]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.context.lines[0].content, "stuff");
         }
 
@@ -2231,7 +2231,7 @@ mod tests {
                 "  ensures:", // Indented keyword -> Continuation line
                 "    y > 0",  // Indented content -> Continuation line
             ]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].lines.len(), 3);
             assert_eq!(spec.requires[0].lines[0].content, "  x > 0");
@@ -2247,7 +2247,7 @@ mod tests {
                 "requires:",
                 "  (requires x)", // Safe
             ]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].lines[0].content, "  (requires x)");
         }
@@ -2255,7 +2255,7 @@ mod tests {
         #[test]
         fn test_edge_empty_clauses() {
             let lines = mk_lines(&["requires:", "ensures:"]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert!(spec.requires[0].lines.is_empty());
             assert_eq!(spec.ensures.len(), 1);
@@ -2267,7 +2267,7 @@ mod tests {
             // \u{2003} is em-space.
             // Rust string trim handles unicode whitespace.
             let lines = mk_lines(&["requires:", "\u{2003}x > 0"]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             // Indentation calculation:
             // "\u{2003}x > 0".len() (unicode text len in bytes) - "x > 0".len()
@@ -2294,7 +2294,7 @@ mod tests {
             ];
             // Parser calls `line.content.trim()`.
             // "requires\r".trim() -> "requires". Matches keyword.
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].lines[0].content, "  x > 0\r");
         }
@@ -2309,7 +2309,7 @@ mod tests {
                 "proof (named_case) :", // named
                 "  trivial",
             ]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
 
             // Context lines
             assert_eq!(spec.proof_context.lines.len(), 1);
@@ -2338,7 +2338,7 @@ mod tests {
                 "ensures (ens_result):",
                 "  result > 0",
             ]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
 
             assert_eq!(spec.requires.len(), 2);
 
@@ -2364,7 +2364,7 @@ mod tests {
                 "requires (missing_colon) a > 0",     // No colon
                 "ensures (missing_paren: result > 0", // Unclosed paren
             ]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("must be followed by a colon"));
         }
 
@@ -2376,7 +2376,7 @@ mod tests {
                 "proof\tcontext:", // tabs
                 "  let y = 2",
             ]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.proof_context.lines.len(), 2);
             assert_eq!(spec.proof_context.lines[0].content, "  let x = 1");
             assert_eq!(spec.proof_context.lines[1].content, "  let y = 2");
@@ -2397,7 +2397,7 @@ mod tests {
         #[test]
         fn test_parse_name_extraction() {
             let lines = vec![dummy_line("requires (h_name) : x > 0")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "h_name");
             assert_eq!(spec.requires[0].lines[0].content, "x > 0");
@@ -2406,7 +2406,7 @@ mod tests {
         #[test]
         fn test_parse_name_extraction_spacing() {
             let lines = vec![dummy_line("requires  (  h_name  )  :  x > 0")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "h_name");
             assert_eq!(spec.requires[0].lines[0].content, "x > 0");
@@ -2415,7 +2415,7 @@ mod tests {
         #[test]
         fn test_parse_colon_without_name() {
             let lines = vec![dummy_line("requires : x > 0")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert!(spec.requires[0].name.is_none());
             assert_eq!(spec.requires[0].lines[0].content, "x > 0");
@@ -2424,28 +2424,28 @@ mod tests {
         #[test]
         fn test_parse_name_without_colon() {
             let lines = vec![dummy_line("requires (h_name) x > 0")];
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("must be followed by a colon"));
         }
 
         #[test]
         fn test_parse_unmatched_parens() {
             let lines = vec![dummy_line("requires (h_name : x > 0")];
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("must be followed by a colon"));
         }
 
         #[test]
         fn test_parse_nested_parens() {
             let lines = vec![dummy_line("requires (h_name(1)): x > 0")];
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("must be followed by a colon"));
         }
 
         #[test]
         fn test_bizarre_proof_no_colon() {
             let lines = vec![dummy_line("proof (h_my_proof): trivial")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.proof_cases.len(), 1);
             assert_eq!(spec.proof_cases[0].name.as_ref().unwrap().content, "h_my_proof");
             assert_eq!(spec.proof_cases[0].lines[0].content, "trivial");
@@ -2454,7 +2454,7 @@ mod tests {
         #[test]
         fn test_bizarre_requires_no_space_before_paren() {
             let lines = vec![dummy_line("requires (h_no_space): x > 0")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "h_no_space");
             assert_eq!(spec.requires[0].lines[0].content, "x > 0");
@@ -2463,7 +2463,7 @@ mod tests {
         #[test]
         fn test_bizarre_requires_only_colon() {
             let lines = vec![dummy_line("requires: x > 0")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert!(spec.requires[0].name.is_none());
             assert_eq!(spec.requires[0].lines[0].content, "x > 0");
@@ -2473,7 +2473,7 @@ mod tests {
         fn test_bizarre_proof_with_unusual_unicode() {
             let lines = vec![dummy_line("proof (h_ßåç):")];
             // Rust's char::is_alphanumeric allows extended Unicode alphabetic chars.
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.proof_cases.len(), 1);
             assert_eq!(spec.proof_cases[0].name.as_ref().unwrap().content, "h_ßåç");
         }
@@ -2481,7 +2481,7 @@ mod tests {
         #[test]
         fn test_bizarre_multiple_colons() {
             let lines = vec![dummy_line("ensures (h_colons): : : x > 0")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.ensures.len(), 1);
             assert_eq!(spec.ensures[0].name.as_ref().unwrap().content, "h_colons");
             assert_eq!(spec.ensures[0].lines[0].content, ": : x > 0");
@@ -2490,14 +2490,14 @@ mod tests {
         #[test]
         fn test_bizarre_keep_keyword_interaction() {
             let lines = mk_lines(&["isValid (name):=", "  x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert_eq!(err.1, "`isValid` sections cannot be named.");
         }
 
         #[test]
         fn test_dusty_proof_context_with_colon() {
             let lines = vec![dummy_line("proof context: let x = 5")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert!(spec.proof_context.keyword_span.is_some());
             assert_eq!(spec.proof_context.lines[0].content, "let x = 5");
         }
@@ -2505,7 +2505,7 @@ mod tests {
         #[test]
         fn test_dusty_inner_colons() {
             let lines = mk_lines(&["requires (:h_name:):", "  x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert_eq!(
                 err.1,
                 "Invalid bound name `:h_name:`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore)."
@@ -2515,7 +2515,7 @@ mod tests {
         #[test]
         fn test_dusty_spaced_name() {
             let lines = mk_lines(&["requires (my name):", "  x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert_eq!(
                 err.1,
                 "Invalid bound name `my name`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore)."
@@ -2525,7 +2525,7 @@ mod tests {
         #[test]
         fn test_invalid_lean_identifier_symbols() {
             let lines = mk_lines(&["requires (h-foo!):", "  x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert_eq!(
                 err.1,
                 "Invalid bound name `h-foo!`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore)."
@@ -2535,7 +2535,7 @@ mod tests {
         #[test]
         fn test_invalid_lean_identifier_starts_with_number() {
             let lines = mk_lines(&["requires (1h_foo):", "  x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert_eq!(
                 err.1,
                 "Invalid bound name `1h_foo`. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore)."
@@ -2545,28 +2545,28 @@ mod tests {
         #[test]
         fn test_unsupported_named_is_valid() {
             let lines = mk_lines(&["isValid (my_inv):="]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert_eq!(err.1, "`isValid` sections cannot be named.");
         }
 
         #[test]
         fn test_unsupported_named_proof_context() {
             let lines = mk_lines(&["proof context (ctx_name):", "  have h : x = 0 := rfl"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert_eq!(err.1, "`proof context` sections cannot be named.");
         }
 
         #[test]
         fn test_dusty_proof_extra_closing_parens() {
             let lines = vec![dummy_line("proof (h_name)):")];
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("must be followed by a colon"));
         }
 
         #[test]
         fn test_empty_name() {
             let lines = mk_lines(&["requires (): x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert_eq!(
                 err.1,
                 "Invalid bound name ``. Names must be valid identifiers (alphanumeric and underscores, starting with a letter or underscore)."
@@ -2576,7 +2576,7 @@ mod tests {
         #[test]
         fn test_underscore_name() {
             let lines = vec![dummy_line("requires (_): x > 0")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "_");
         }
@@ -2584,7 +2584,7 @@ mod tests {
         #[test]
         fn test_proof_colon_stripping() {
             let lines = vec![dummy_line("proof:"), dummy_line("proof (foo):")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.proof_cases.len(), 2);
             assert!(spec.proof_cases[0].name.is_none());
             assert!(spec.proof_cases[0].lines.is_empty());
@@ -2595,7 +2595,7 @@ mod tests {
         #[test]
         fn test_double_colon_requires() {
             let lines = vec![dummy_line("requires (name):: x > 0")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].name.as_ref().unwrap().content, "name");
             assert_eq!(spec.requires[0].lines[0].content, ": x > 0");
@@ -2604,7 +2604,7 @@ mod tests {
         #[test]
         fn test_unnamed_missing_parens_colon() {
             let lines = vec![dummy_line("requires name: x > 0")];
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("must be followed by a colon"));
         }
 
@@ -2613,28 +2613,28 @@ mod tests {
             // "proofcontext" should not parse as "proof context"
             // Since it's the first line, it fails initialization.
             let lines = mk_lines(&["proofcontext:"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
-            assert!(err.1.contains("Expected a Hermes keyword to start the block"));
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
+            assert!(err.1.contains("Expected a Anneal keyword to start the block"));
         }
 
         #[test]
         fn test_adversarial_parens_in_name() {
             let lines = mk_lines(&["requires (foo()): x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("must be followed by a colon"));
         }
 
         #[test]
         fn test_adversarial_double_parens() {
             let lines = mk_lines(&["requires ((name)): x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("must be followed by a colon"));
         }
 
         #[test]
         fn test_adversarial_offside_spoofing() {
             let lines = mk_lines(&["requires (name):", "  requires (spoof): x > 0"]);
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.requires.len(), 1);
             assert_eq!(spec.requires[0].lines.len(), 1);
             assert_eq!(spec.requires[0].lines[0].content, "  requires (spoof): x > 0");
@@ -2649,7 +2649,7 @@ mod tests {
                                         // because it is at baseline indent but
                                         // is not a keyword.
             ];
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(
                 err.1.contains("Invalid indentation")
                     || err.1.contains("must be followed by a colon")
@@ -2659,7 +2659,7 @@ mod tests {
         #[test]
         fn test_adversarial_valid_keyword_with_trailing_colon() {
             let lines = vec![dummy_line("isValid:"), dummy_line("  true")];
-            let spec = RawHermesSpecBody::parse(&lines).unwrap();
+            let spec = RawAnnealSpecBody::parse(&lines).unwrap();
             assert_eq!(spec.is_valid[0].lines.len(), 2);
             assert_eq!(spec.is_valid[0].lines[0].content, "isValid:");
             assert_eq!(spec.is_valid[0].lines[1].content, "  true");
@@ -2668,42 +2668,42 @@ mod tests {
         #[test]
         fn test_adversarial_emoji_name() {
             let lines = mk_lines(&["requires (h_🦀): x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("Invalid bound name `h_🦀`"));
         }
 
         #[test]
         fn test_adversarial_context_named() {
             let lines = mk_lines(&["context (foo):"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert_eq!(err.1, "`context` sections cannot be named.");
         }
 
         #[test]
         fn test_adversarial_is_safe_named() {
             let lines = mk_lines(&["isSafe (foo):"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert_eq!(err.1, "`isSafe` sections cannot be named.");
         }
 
         #[test]
         fn test_adversarial_lean_keyword_requires() {
             let lines = mk_lines(&["requires (if): x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("Names cannot be Lean keywords"));
         }
 
         #[test]
         fn test_adversarial_lean_keyword_ensures() {
             let lines = mk_lines(&["ensures (then): x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("Names cannot be Lean keywords"));
         }
 
         #[test]
         fn test_adversarial_lean_keyword_proof() {
             let lines = mk_lines(&["requires: x > 0", "proof (theorem):", "  simp_all"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(
                 err.1.contains("Names cannot be Lean keywords")
                     || err.1.contains("must be followed by a colon")
@@ -2715,7 +2715,7 @@ mod tests {
             // A requires block that has a name but the colon is on the next line.
             // This is malformed and fails to parse.
             let lines = mk_lines(&["requires (name)", "  : x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("must be followed by a colon"));
         }
 
@@ -2723,7 +2723,7 @@ mod tests {
         fn test_adversarial_proof_context_named_no_colon() {
             // Trying to name a proof context without a colon. It falls back to unnamed content.
             let lines = mk_lines(&["proof context (foo) x = 1"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(
                 err.1.contains("must be followed by a colon") || err.1.contains("proof context")
             );
@@ -2734,7 +2734,7 @@ mod tests {
             // Testing multiple independent parens. The name should only be targeted on the first enclosed token
             // followed immediately by `:`. This one is NOT followed by `:`, so it fails!
             let lines = mk_lines(&["requires (name) (other): x > 0"]);
-            let err = RawHermesSpecBody::parse(&lines).unwrap_err();
+            let err = RawAnnealSpecBody::parse(&lines).unwrap_err();
             assert!(err.1.contains("must be followed by a colon"));
         }
     }
@@ -2743,14 +2743,14 @@ mod tests {
         use super::*;
 
         fn dummy_attr(doc: &str) -> syn::Attribute {
-            let doc_str = format!(" ```hermes\n{}\n```", doc);
+            let doc_str = format!(" ```anneal\n{}\n```", doc);
             syn::parse_quote!(#[doc = #doc_str])
         }
 
         #[test]
         fn test_multiple_unnamed_requires_allowed() {
             let attrs = vec![dummy_attr("requires: a > 0\nrequires: b > 0")];
-            let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            let err = FunctionAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
             assert!(
                 err.to_string().contains("Cannot mix named and unnamed `requires` clauses")
                     || err.to_string().contains("must all be named"),
@@ -2762,21 +2762,21 @@ mod tests {
         #[test]
         fn test_mix_named_unnamed_ensures_allowed() {
             let attrs = vec![dummy_attr("ensures (foo): a > 0\nensures: b > 0")];
-            let spec = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+            let spec = FunctionAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert_eq!(spec.ensures.len(), 2);
         }
 
         #[test]
         fn test_duplicate_requires_name() {
             let attrs = vec![dummy_attr("requires (foo): a > 0\nrequires (foo): b > 0")];
-            let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            let err = FunctionAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
             assert!(err.to_string().contains("Duplicate bound name `foo`"));
         }
 
         #[test]
         fn test_conflict_between_requires_and_ensures() {
             let attrs = vec![dummy_attr("requires (foo): a > 0\nensures (foo): b > 0")];
-            let err = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            let err = FunctionAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
             assert!(
                 err.to_string()
                     .contains("Bound name `foo` conflicts with an existing requires bound")
@@ -2787,7 +2787,7 @@ mod tests {
         fn test_multiple_proofs_mixed_allowed() {
             let attrs =
                 vec![dummy_attr("ensures (a): x\nensures (b): y\nproof (a): p1\nproof: p2")];
-            let spec = FunctionHermesBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
+            let spec = FunctionAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             if let crate::parse::attr::FunctionBlockInner::Proof { cases, .. } = spec.inner {
                 assert_eq!(cases.len(), 2);
             } else {
@@ -2816,7 +2816,7 @@ mod tests {
 
             for case in cases {
                 let attrs = vec![dummy_attr(case)];
-                match FunctionHermesBlock::parse_from_attrs(&attrs, true, "") {
+                match FunctionAnnealBlock::parse_from_attrs(&attrs, true, "") {
                     Ok(Some(parsed)) => {
                         // If it parsed successfully, it MUST mean that the
                         // keyword was completely ignored (e.g., `requires x >
@@ -2841,15 +2841,15 @@ mod tests {
                             case
                         );
                     }
-                    Ok(None) => {} // Block was not present, meaning hermes couldn't
-                    // parse it as hermes at all. This is fine.
+                    Ok(None) => {} // Block was not present, meaning anneal couldn't
+                    // parse it as anneal at all. This is fine.
                     Err(err) => {
                         let err_msg = err.to_string();
                         // Every explicitly rejected error must be one of these
                         assert!(
                             err_msg.contains("must be followed by a colon")
                                 || err_msg.contains("Names must be valid identifiers")
-                                || err_msg.contains("Expected a Hermes keyword to start the block"),
+                                || err_msg.contains("Expected a Anneal keyword to start the block"),
                             "Failed to correctly reject missing colon for case: `{}`. Instead got: {}",
                             case,
                             err_msg

@@ -4,7 +4,7 @@ pub enum List<T> {
 }
 
 impl<T> List<T> {
-    /// ```lean, hermes, spec
+    /// ```lean, anneal, spec
     /// context:
     ///   open _root_.linked_list
     ///   open _root_.linked_list.List

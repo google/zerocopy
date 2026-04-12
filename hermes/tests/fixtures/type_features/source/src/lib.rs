@@ -1,9 +1,9 @@
-/// ```hermes
+/// ```anneal
 /// isValid self := N > 0
 /// ```
 struct ConstGen<const N: usize>;
 
-/// ```hermes
+/// ```anneal
 /// isSafe :
 ///   N > 0
 /// ```
@@ -17,7 +17,7 @@ unsafe impl AssocType for ConstGen<10> {
     type Item = u32;
 }
 
-/// ```hermes
+/// ```anneal
 /// isSafe :
 ///   AssocType.Item Self = U32
 /// ```
@@ -25,7 +25,7 @@ unsafe trait UsesAssoc: AssocType {}
 
 enum Void {}
 
-/// ```hermes
+/// ```anneal
 /// isValid self := nomatch self
 /// ```
 struct VoidWrapper(Void);
@@ -35,12 +35,12 @@ enum DataEnum {
     B { x: u32 },
 }
 
-/// ```hermes
+/// ```anneal
 /// isValid self := match self with | .A _ => True | .B _ => False
 /// ```
 struct EnumWrapper(DataEnum);
 
-/// ```hermes
+/// ```anneal
 /// isValid self := match self with | .A _ => True | .B _ => False
 /// ```
 enum ValidatedEnum {

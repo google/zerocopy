@@ -7,7 +7,7 @@ pub struct Wrapper<T: Trait> {
     pub val: T::Assoc,
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// isSafe :
 ///   ...
 /// ```

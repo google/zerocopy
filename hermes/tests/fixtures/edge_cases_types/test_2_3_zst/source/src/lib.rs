@@ -1,21 +1,21 @@
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct Empty {}
 
-/// ```hermes
+/// ```anneal
 /// isValid self := True
 /// ```
 pub struct WrapUnit {
     pub f: (),
 }
 
-/// ```hermes
+/// ```anneal
 /// ensures: True
 /// ```
 pub fn unit_arg(_: ()) {}
 
-/// ```hermes
+/// ```anneal
 /// ensures: True
 /// ```
 pub fn unit_ret() -> () {}

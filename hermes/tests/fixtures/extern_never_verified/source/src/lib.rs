@@ -1,6 +1,6 @@
 pub mod a {
     pub mod b {
-        /// ```lean, hermes, unsafe(axiom)
+        /// ```lean, anneal, unsafe(axiom)
         /// ensures: True
         /// ```
         pub fn foo(x: u32) -> u32 {
@@ -11,7 +11,7 @@ pub mod a {
 
 pub struct S;
 impl S {
-    /// ```lean, hermes, unsafe(axiom)
+    /// ```lean, anneal, unsafe(axiom)
     /// ensures: True
     /// ```
     pub fn bar(x: u32) -> u32 {
@@ -22,7 +22,7 @@ impl S {
 pub mod inner {
     use super::S;
     impl S {
-        /// ```lean, hermes, unsafe(axiom)
+        /// ```lean, anneal, unsafe(axiom)
         /// ensures: True
         /// ```
         pub fn baz(x: u32) -> u32 {
@@ -33,13 +33,13 @@ pub mod inner {
 
 pub mod ffi {
     unsafe extern "C" {
-        /// ```lean, hermes
+        /// ```lean, anneal
         /// context:
         /// theorem ext_fn_ok : True := trivial
         /// ```
         pub fn ext_fn(x: u32) -> u32;
 
-        /// ```lean, hermes, unsafe(axiom)
+        /// ```lean, anneal, unsafe(axiom)
         /// ensures:
         ///   False
         /// ```
@@ -52,7 +52,7 @@ pub struct SafeArray<const N: usize> {
 }
 
 impl<const N: usize> SafeArray<N> {
-    /// ```lean, hermes
+    /// ```lean, anneal
     /// ensures:
     ///   ret = 0
     /// proof:
@@ -63,7 +63,7 @@ impl<const N: usize> SafeArray<N> {
     }
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ensures:
 ///   False
 /// proof:
@@ -73,7 +73,7 @@ pub fn diverge() -> ! {
     panic!()
 }
 
-/// ```lean, hermes
+/// ```lean, anneal
 /// ensures:
 ///   False && x = 42
 /// proof:
