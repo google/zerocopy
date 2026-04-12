@@ -1,0 +1,5 @@
+Lean workspace generated at: [PROJECT_ROOT]/target/anneal/anneal_test_target/lean
+
+To manually build and experiment:
+  1. cd [PROJECT_ROOT]/target/anneal/anneal_test_target/lean
+  2. lake build

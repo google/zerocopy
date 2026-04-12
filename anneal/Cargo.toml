@@ -1,0 +1,137 @@
+[workspace]
+members = [".", "tools/doc_gen"]
+
+[package]
+name = "cargo-anneal"
+edition = "2024"
+version = "0.1.0-alpha.9"
+description = "Formally verify that your safety comments are correct."
+categories = [
+  "development-tools::cargo-plugins",
+  "development-tools::testing",
+  "compilers",
+  "mathematics",
+  "security",
+]
+keywords = ["verification", "cargo", "plugin", "unsafe", "lean"]
+authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
+license = "BSD-2-Clause OR Apache-2.0 OR MIT"
+repository = "https://github.com/google/zerocopy/tree/main/hermes"
+publish = true
+
+exclude = [".*", "testdata"]
+
+[dependencies]
+anyhow = "1.0.102"
+cargo_metadata = "0.23.1"
+clap = { version = "4.6.0", features = ["derive"] }
+clap-cargo = { version = "0.18.3", features = ["cargo_metadata"] }
+dashmap = "6.1.0"
+env_logger = "0.11.10"
+log = "0.4.29"
+miette = { version = "7.6.0", features = ["derive", "fancy"] }
+proc-macro2 = { version = "1.0.106", features = ["span-locations"] }
+rayon = "1.11.0"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+syn = { version = "2.0.117", features = [
+  "full",
+  "visit",
+  "extra-traits",
+  "parsing",
+  "printing",
+] }
+quote = "1.0"
+thiserror = "2.0.18"
+walkdir = "2.5.0"
+indicatif = { version = "0.18.4", features = ["improved_unicode"] }
+console = "0.16.3"
+sha2 = "0.10"
+fs2 = "0.4"
+toml = "0.8"
+reqwest = { version = "0.12", features = ["blocking", "rustls-tls"] }
+dirs = "6.0"
+tar = "0.4"
+flate2 = "1.1"
+
+[build-dependencies]
+toml = "0.8"
+
+[dev-dependencies]
+syn = { version = "2.0.117", features = [
+  "printing",
+  "full",
+  "visit",
+  "extra-traits",
+  "parsing",
+] }
+proc-macro2 = { version = "1.0.106", features = ["span-locations"] }
+ui_test = "0.30.4"
+assert_cmd = "2.2.0"
+tempfile = "3.27.0"
+predicates = "3.1.4"
+tiny_http = "0.12"
+datatest-stable = "0.3.3"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+regex = "1.0"
+strip-ansi-escapes = "0.2.1"
+similar = "2.7.0"
+
+[package.metadata.build_rs]
+
+# The commit hash of the Aeneas repository to use.
+#
+# FIXME: Add a CI step to verify that this commit exists and matches the
+# toolchain version.
+aeneas_rev = "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+
+# The Lean toolchain version to use. This must match the version of Lean used
+# by Aeneas in the `lean-toolchain` file in the commit above.
+lean_toolchain = "leanprover/lean4:v4.28.0-rc1"
+
+# The expected Charon version.
+#
+# This is used by `src/charon.rs` to enforce that the runtime `charon` binary
+# matches the version expected by Anneal. This ensures compatibility with the
+# generated LLBC format.
+#
+# FIXME(https://github.com/AeneasVerif/charon/issues/1029): Check Charon commit
+# ID once that's supported
+#
+# FIXME(https://github.com/AeneasVerif/aeneas/issues/783): Check Aeneas
+# version/commit ID once that's supported
+charon_version = "0.1.174"
+
+# The Rust toolchain required by Charon.
+#
+# FIXME(#3165):
+# - Roll this from `tools/roll-pinned-prebuilts.py`
+# - Auto-install via `rustup` during `cargo anneal setup`
+charon_rust_toolchain = "nightly-2026-02-07"
+
+[package.metadata.anneal.dependencies.aeneas]
+# The per-commit release tag from AeneasVerif/charon
+tag = "build-2026.04.07.112215-42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+
+[package.metadata.anneal.dependencies.aeneas.checksums]
+linux-aarch64 = "a250ef38be509f69ff4c5fb35eded165255fae6f659172837cd3053978de863f"
+linux-aarch64-aeneas = "fca0dedece748b406f180341ba83d764eb7b2bf5f11fbb54668fc26609a3032d"
+linux-aarch64-charon = "471883ad31629b569e727e256e4f5ab2c1726bfb3060cb6585037c7088062ed3"
+linux-aarch64-charon-driver = "df2622bb873ae9d10b25294b291cbc07bca32c26554c4f825f3a6d2f094cdbe4"
+linux-x86_64 = "a448682a154590e65b0794c42487583352375fc04bdd6b2418324f6ecafcc94f"
+linux-x86_64-aeneas = "306d908964df4e54bfc57b2fc3d88809eace9e77ac639adf5c0f0d5a8574397e"
+linux-x86_64-charon = "bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836"
+linux-x86_64-charon-driver = "20379b2051dd51dbea8d720e4041d55afe9241b95ab911e3b06492110450ecd0"
+macos-aarch64 = "1dbeaafe875bec173e0d2cf3c6bbfa63d6c591d3ec554bafb0d2c3c52e1ded6d"
+macos-aarch64-aeneas = "f85db47ef602108c727bfac23d1e27fb52d4fb1010b0f55ffb748da65fb0a1b6"
+macos-aarch64-charon = "6510ace82180cd78875b0631638a200d8e55bc9090c9372ea1dc8eb08511b6fb"
+macos-aarch64-charon-driver = "3c11fcb6c5cd65cd14d9747c7f8ddd1522b608a1e79041c907cb79d3118054b2"
+macos-x86_64 = "e977c28b72ec041d4f13df0acc77ab59040743a9659b4eefffb71eb420cd5df6"
+macos-x86_64-aeneas = "ceb3d8ee898f941861efb1545537681e0f4419f332482468e520621a809cb09e"
+macos-x86_64-charon = "926c5ff8495c19b7a6f3aff1a3861970bae11bd374cf114ac3924a27bcae9ee7"
+macos-x86_64-charon-driver = "03e6617fe122f29111bf16538a5ba8f0beac6698ce473d99069439d30fa552e8"
+
+[[test]]
+name = "integration"
+harness = false
