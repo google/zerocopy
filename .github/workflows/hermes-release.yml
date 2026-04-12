@@ -1,0 +1,106 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Hermes Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'hermes/Cargo.toml'
+
+permissions: {}
+
+concurrency:
+  group: hermes-release
+  cancel-in-progress: false
+
+jobs:
+  check-version:
+    name: Check if version was updated
+    runs-on: ubuntu-latest
+    # Don't run this on forks.
+    if: github.repository == 'google/zerocopy'
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+      version: ${{ steps.check.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Determine if version was updated
+        id: check
+        run: |
+          set -eo pipefail
+          cd hermes
+          
+          CUR_VER=$(cargo metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "cargo-hermes").version')
+          
+          git checkout -q HEAD^
+          PREV_VER=$(cargo metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "cargo-hermes").version')
+          git checkout -q -
+          
+          if [ "$CUR_VER" != "$PREV_VER" ]; then
+            echo "Version change detected."
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "version=$CUR_VER" >> $GITHUB_OUTPUT
+          else
+            echo "Version unchanged."
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+  release:
+    name: Release to crates.io and GitHub
+    needs: check-version
+    if: needs.check-version.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write # required to create a git tag and a GitHub Release
+      id-token: write # required to publish to crates.io using OIDC
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Publish cargo-hermes
+        run: |
+          set -eo pipefail
+          cd hermes
+          # Temporarily disable vendoring
+          mv .cargo/config.toml .cargo/config.toml.bak
+          cargo publish --allow-dirty --registry crates-io
+          mv .cargo/config.toml.bak .cargo/config.toml
+
+      - name: Create git tag
+        env:
+          VERSION: ${{ needs.check-version.outputs.version }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -eo pipefail
+          TAG="hermes-v$VERSION"
+          git config user.name "Google PR Creation Bot"
+          git config user.email "github-pull-request-creation-bot@google.com"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push https://x-access-token:$GH_TOKEN@github.com/$GH_REPO.git "$TAG"
+
+      - name: Create GitHub Release
+        env:
+          VERSION: ${{ needs.check-version.outputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eo pipefail
+          TAG="hermes-v$VERSION"
+          gh release create "$TAG" --generate-notes

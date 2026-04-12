@@ -4,5 +4,8 @@
   ],
   ".github/workflows/hermes.yml": [
     "joshlf"
+  ],
+  ".github/workflows/hermes-release.yml": [
+    "joshlf"
   ]
 }
