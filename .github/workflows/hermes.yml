@@ -64,13 +64,63 @@ jobs:
           echo "uid=$(id -u)" >> "$GITHUB_OUTPUT"
           echo "gid=$(id -g)" >> "$GITHUB_OUTPUT"
 
-      - name: Build and cache layers
+      - name: Build Docker image (Dry Run)
+        id: build_dry
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: hermes
           file: hermes/Dockerfile
           push: false
+          tags: ghcr.io/google/zerocopy/hermes:${{ steps.docker_tag.outputs.tag }}
           provenance: false
+          # Use zstd compression at level 19 to minimize image size and maximize
+          # decompression speed on matrix runners. This shifts the heavy compression
+          # work to the beefy 64-core runner used for building the image, saving
+          # time in the consumer jobs that pull the image. Level 19 is the practical
+          # maximum for standard use.
+          outputs: type=image,compression=zstd,compression-level=19,force-compression=true
+          build-args: |
+            UID=${{ steps.get_uid.outputs.uid }}
+            GID=${{ steps.get_uid.outputs.gid }}
+          cache-from: |
+            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ steps.docker_tag.outputs.tag }}
+            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:main
+          cache-to: type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ steps.docker_tag.outputs.tag }},mode=max
+
+      - name: Check if remote image matches
+        id: check_remote
+        shell: bash
+        env:
+          DOCKER_TAG: ${{ steps.docker_tag.outputs.tag }}
+          LOCAL_DIGEST: ${{ steps.build_dry.outputs.digest }}
+        run: |
+          # Fetch the digest of the remote image
+          REMOTE_DIGEST=$(docker manifest inspect ghcr.io/google/zerocopy/hermes:$DOCKER_TAG | jq -r '.manifests[0].digest')
+
+          echo "Remote digest: $REMOTE_DIGEST"
+          echo "Local digest: $LOCAL_DIGEST"
+
+          if [ "$REMOTE_DIGEST" = "$LOCAL_DIGEST" ]; then
+            echo "match=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "match=false" >> "$GITHUB_OUTPUT"
+          fi
+        continue-on-error: true # Handle case where remote tag doesn't exist yet
+
+      # The build portion of this step will always be cached thanks to the
+      # dry-run build above.
+      - name: Build and push Docker image
+        if: steps.check_remote.outputs.match != 'true'
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        # NOTE: All arguments here must match the dry-run step above exactly
+        # in order to ensure we hit the cache for the local build!
+        with:
+          context: hermes
+          file: hermes/Dockerfile
+          push: true
+          tags: ghcr.io/google/zerocopy/hermes:${{ steps.docker_tag.outputs.tag }}
+          provenance: false
+          outputs: type=image,compression=zstd,compression-level=19,force-compression=true
           build-args: |
             UID=${{ steps.get_uid.outputs.uid }}
             GID=${{ steps.get_uid.outputs.gid }}
@@ -115,38 +165,48 @@ jobs:
           echo "uid=$(id -u)" >> "$GITHUB_OUTPUT"
           echo "gid=$(id -g)" >> "$GITHUB_OUTPUT"
 
-      - name: Load image from cache
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
-        with:
-          context: hermes
-          file: hermes/Dockerfile
-          load: true
-          tags: hermes-ci:local
-          provenance: false
-          build-args: |
-            UID=${{ steps.get_uid.outputs.uid }}
-            GID=${{ steps.get_uid.outputs.gid }}
-          cache-from: |
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ steps.docker_tag.outputs.tag }}
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:main
+      - name: Pull and tag image
+        run: |
+          docker pull ghcr.io/google/zerocopy/hermes:${STEPS_DOCKER_TAG_OUTPUTS_TAG}
+          docker tag ghcr.io/google/zerocopy/hermes:${STEPS_DOCKER_TAG_OUTPUTS_TAG} hermes-ci:local
+        env:
+          STEPS_DOCKER_TAG_OUTPUTS_TAG: ${{ steps.docker_tag.outputs.tag }}
 
       # Ensure `llms-full.txt` file is up-to-date.
       - name: Check doc generation
-        run: docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo run -p doc_gen -- --check
+        run: |
+          # We intentionally omit the `--rm` flag here. In the GitHub Actions
+          # environment, Docker's container removal process can take over 5
+          # minutes to complete after the tests finish. Since the runner VM is
+          # destroyed at the end of the job, leaving the container is safe and
+          # saves time.
+          docker run -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo run -p doc_gen -- --check
 
       # Run unit tests separately, as they're much less likely to have bugs
       # during local development, and this makes the GitHub Actions output
       # easier to skim (in particular, it's clear at a glance whether a failure
       # is due to unit or integration tests).
       - name: Run unit tests
-        run: docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo test --verbose --bin cargo-hermes
+        run: |
+          # We intentionally omit the `--rm` flag here. In the GitHub Actions
+          # environment, Docker's container removal process can take over 5
+          # minutes to complete after the tests finish. Since the runner VM is
+          # destroyed at the end of the job, leaving the container is safe and
+          # saves time.
+          docker run -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo test --verbose --bin cargo-hermes
 
       # We duplicate running unit tests since they're very cheap compared to
       # integration tests, and this way it's easier to be sure that we run all
       # tests instead of specifically trying to carve out unit tests and risk
       # missing test categories.
       - name: Run all tests
-        run: docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo test --verbose
+        run: |
+          # We intentionally omit the `--rm` flag here. In the GitHub Actions
+          # environment, Docker's container removal process can take over 5
+          # minutes to complete after the tests finish. Since the runner VM is
+          # destroyed at the end of the job, leaving the container is safe and
+          # saves time.
+          docker run -v $GITHUB_WORKSPACE/hermes:/workspace hermes-ci:local cargo test --verbose
 
   verify_examples:
     name: Verify example (${{ matrix.example }})
@@ -201,30 +261,18 @@ jobs:
           echo "uid=$(id -u)" >> "$GITHUB_OUTPUT"
           echo "gid=$(id -g)" >> "$GITHUB_OUTPUT"
 
-      - name: Load image from cache
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
-        with:
-          context: hermes
-          file: hermes/Dockerfile
-          load: true
-          tags: hermes-ci:local
-          provenance: false
-          build-args: |
-            UID=${{ steps.get_uid.outputs.uid }}
-            GID=${{ steps.get_uid.outputs.gid }}
-          cache-from: |
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:${{ steps.docker_tag.outputs.tag }}
-            type=registry,ref=ghcr.io/google/zerocopy/hermes-cache:main
+      - name: Pull and tag image
+        run: |
+          docker pull ghcr.io/google/zerocopy/hermes:${STEPS_DOCKER_TAG_OUTPUTS_TAG}
+          docker tag ghcr.io/google/zerocopy/hermes:${STEPS_DOCKER_TAG_OUTPUTS_TAG} hermes-ci:local
+        env:
+          STEPS_DOCKER_TAG_OUTPUTS_TAG: ${{ steps.docker_tag.outputs.tag }}
 
       - name: Verify example
         env:
           EXAMPLE: ${{ matrix.example }}
         run: |
           KNOWN_FAILING=("design_doc" "never_type" "ptr_concat")
-
-          echo "Setting up Hermes toolchain for Verify Examples"
-          docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 -e HERMES_TOOLCHAIN_DIR=/cache/hermes_toolchain hermes-ci:local cargo run setup
-
           example="$EXAMPLE"
 
           expect_failure=0
@@ -237,7 +285,12 @@ jobs:
 
           echo "Verifying $example (expect failure: $expect_failure)"
 
-          if docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 -e HERMES_TOOLCHAIN_DIR=/cache/hermes_toolchain hermes-ci:local cargo run verify --unsound-allow-is-valid --example "$example"; then
+          # We intentionally omit the `--rm` flag here. In the GitHub Actions
+          # environment, Docker's container removal process can take over 5
+          # minutes to complete after the tests finish. Since the runner VM is
+          # destroyed at the end of the job, leaving the container is safe and
+          # saves time.
+          if docker run -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 -e HERMES_TOOLCHAIN_DIR=/cache/hermes_toolchain hermes-ci:local cargo run verify --unsound-allow-is-valid --example "$example"; then
             if [ "$expect_failure" -eq 1 ]; then
               echo "::error::Example $example succeeded but was expected to fail."
               exit 1
