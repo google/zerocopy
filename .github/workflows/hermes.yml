@@ -221,10 +221,6 @@ jobs:
           EXAMPLE: ${{ matrix.example }}
         run: |
           KNOWN_FAILING=("design_doc" "never_type" "ptr_concat")
-
-          echo "Setting up Hermes toolchain for Verify Examples"
-          docker run --rm -v $GITHUB_WORKSPACE/hermes:/workspace -e __ZEROCOPY_LOCAL_DEV=1 -e HERMES_TOOLCHAIN_DIR=/cache/hermes_toolchain hermes-ci:local cargo run setup
-
           example="$EXAMPLE"
 
           expect_failure=0
