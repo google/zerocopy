@@ -29,8 +29,17 @@ fn compile_and_find_binary(name: &str) -> PathBuf {
 
     assert!(status.success(), "Failed to build binary '{}'", name);
 
-    let mut path = PathBuf::from(manifest_dir);
-    path.push("target");
+    let target_dir = std::env::var("CARGO_TARGET_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| PathBuf::from(manifest_dir).join("target"));
+
+    let target_dir = if target_dir.is_absolute() {
+        target_dir
+    } else {
+        PathBuf::from(manifest_dir).join(target_dir)
+    };
+
+    let mut path = target_dir;
     path.push("debug");
     path.push(name);
 
