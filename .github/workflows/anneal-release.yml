@@ -84,9 +84,14 @@ jobs:
         run: |
           set -eo pipefail
           cd anneal
-          # Temporarily disable vendoring
+          # Temporarily disable vendoring in anneal and root
           mv .cargo/config.toml .cargo/config.toml.bak
+          mv ../.cargo/config.toml ../.cargo/config.toml.bak
+          
           cargo publish --allow-dirty --registry crates-io
+          
+          # Restore configuration files
+          mv ../.cargo/config.toml.bak ../.cargo/config.toml
           mv .cargo/config.toml.bak .cargo/config.toml
 
       - name: Create git tag
