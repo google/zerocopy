@@ -15,7 +15,7 @@ The [main design document](docs/design/design.md) motivates Anneal and describes
 Install Anneal:
 
 ```
-cargo install cargo-anneal@0.1.0-alpha.13
+cargo install cargo-anneal@0.1.0-alpha.14
 ```
 
 Optionally, install the Charon and Aeneas toolchains from pre-built binaries:
