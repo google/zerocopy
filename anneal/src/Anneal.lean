@@ -1,5 +1,6 @@
-import Aeneas
-import Aeneas.Tactic.Solver.ScalarTac.ScalarTac
+import Aeneas.Std.Core
+import Aeneas.Std.WP
+import ScalarTac
 import Lean
 
 open Aeneas.Std Result
