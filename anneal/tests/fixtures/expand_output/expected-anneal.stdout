@@ -4,8 +4,7 @@
 -- Do not edit manually.
 
 import Anneal
-import Aeneas
-import Aeneas.Tactic.Solver.ScalarTac.ScalarTac
+import Aeneas.Std.Scalar.Core
 import «ExpandOutputExpandOutput1d49e11e5683007f».Funs
 import «ExpandOutputExpandOutput1d49e11e5683007f».Types
 

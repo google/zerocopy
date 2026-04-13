@@ -114,8 +114,7 @@ axiom ffi.diverge : Result Never
 -- Do not edit manually.
 
 import Anneal
-import Aeneas
-import Aeneas.Tactic.Solver.ScalarTac.ScalarTac
+import Aeneas.Std.Scalar.Core
 import «ExternNeverVerifiedExternNeverVerified7818cfb81635275f».Funs
 import «ExternNeverVerifiedExternNeverVerified7818cfb81635275f».Types
 
