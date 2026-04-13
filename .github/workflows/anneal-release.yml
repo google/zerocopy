@@ -75,7 +75,7 @@ jobs:
           fetch-depth: 0
 
       - name: Authenticate with crates.io
-        uses: rust-lang/crates-io-auth-action@v1
+        uses: rust-lang/crates-io-auth-action@bbd81622f20ce9e2dd9622e3218b975523e45bbe # v1.0.4
         id: auth
 
       - name: Publish cargo-anneal
@@ -84,15 +84,8 @@ jobs:
         run: |
           set -eo pipefail
           cd anneal
-          # Temporarily disable vendoring in anneal and root
-          mv .cargo/config.toml .cargo/config.toml.bak
-          mv ../.cargo/config.toml ../.cargo/config.toml.bak
-          
+          ./tools/pre-publish.sh
           cargo publish --allow-dirty --registry crates-io
-          
-          # Restore configuration files
-          mv ../.cargo/config.toml.bak ../.cargo/config.toml
-          mv .cargo/config.toml.bak .cargo/config.toml
 
       - name: Create git tag
         env:
