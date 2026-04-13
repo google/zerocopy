@@ -1,3 +1,0 @@
-/// ```lean, hermes
-/// ```
-fn main() {}
