@@ -663,7 +663,6 @@ echo "---END-INVOCATION---" >> "{}"
         }
 
         let toolchain_path = get_toolchain_path();
-        let lean_backend_dir = toolchain_path.join("backends/lean");
 
         // Resolve Mocks
 
@@ -762,9 +761,18 @@ echo "---END-INVOCATION---" >> "{}"
         cmd.env("ANNEAL_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
         let isolated_aeneas_dir = self.sandbox_root.join("aeneas_cache");
-        fs::create_dir_all(&isolated_aeneas_dir).unwrap();
-        cmd.env("ANNEAL_AENEAS_DIR", isolated_aeneas_dir);
-        cmd.env("ANNEAL_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
+        let isolated_lean_dir = isolated_aeneas_dir.join("backends/lean");
+
+        if !isolated_lean_dir.exists() {
+            fs::create_dir_all(isolated_lean_dir.parent().unwrap()).unwrap();
+
+            // Populate the isolated Aeneas directory from the worker cache
+            // to allow dependency pinning to work without test-specific code in src.
+            smart_clone_cache(&self.worker_cache.aeneas.join("backends/lean"), &isolated_lean_dir)
+                .expect("Failed to populate isolated Aeneas directory");
+        }
+
+        cmd.env("ANNEAL_AENEAS_DIR", &isolated_aeneas_dir);
         cmd.env("ANNEAL_USE_PATH_FOR_TOOLS", "1");
         cmd.env("RAYON_NUM_THREADS", "1");
 
@@ -821,7 +829,7 @@ echo "---END-INVOCATION---" >> "{}"
 /// - Hardlinks heavy immutable binaries (.olean, .c) to save disk space and
 ///   time. Because these were previously marked as read-only, any attempts at
 ///   mutation will fail loudly rather than result in race conditions.
-fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
+fn smart_clone_cache(source: &Path, target: &Path) -> anyhow::Result<()> {
     let walker = new_sorted_walkdir(source).into_iter().filter_entry(|e| {
         // Instantly bypass traversing inside ANY `.git/objects` directory!
         // This prevents ~230,000 file copies per Mathlib clone.
@@ -835,19 +843,29 @@ fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
     });
 
     for entry in walker {
-        let entry = entry.map_err(io::Error::other)?;
+        let entry = entry.map_err(|e| anyhow::anyhow!("Failed to walk directory: {}", e))?;
         let source_path = entry.path();
         let relative_path = source_path.strip_prefix(source).unwrap();
         let target_path = target.join(relative_path);
 
         if entry.file_type().is_dir() {
-            fs::create_dir_all(&target_path)?;
+            fs::create_dir_all(&target_path)
+                .map_err(|e| anyhow::anyhow!("Failed to create dir {:?}: {}", target_path, e))?;
 
             // If this is a .git directory, manually symlink its objects folder
             if source_path.file_name().and_then(|s| s.to_str()) == Some(".git") {
                 let src_objects = source_path.join("objects");
                 if src_objects.exists() {
-                    let _ = std::os::unix::fs::symlink(&src_objects, target_path.join("objects"));
+                    std::os::unix::fs::symlink(&src_objects, target_path.join("objects")).map_err(
+                        |e| {
+                            anyhow::anyhow!(
+                                "Failed to symlink .git/objects from {:?} to {:?}: {}",
+                                src_objects,
+                                target_path.join("objects"),
+                                e
+                            )
+                        },
+                    )?;
                 }
             }
         } else if entry.file_type().is_file() {
@@ -863,11 +881,19 @@ fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
                 || file_name == "lake.lock";
 
             if is_mutable_metadata {
-                fs::copy(source_path, &target_path)?;
-                let mut perms = fs::metadata(&target_path)?.permissions();
+                fs::copy(source_path, &target_path).map_err(|e| {
+                    anyhow::anyhow!("Failed to copy {:?} to {:?}: {}", source_path, target_path, e)
+                })?;
+                let mut perms = fs::metadata(&target_path)
+                    .map_err(|e| {
+                        anyhow::anyhow!("Failed to get metadata of {:?}: {}", target_path, e)
+                    })?
+                    .permissions();
                 #[allow(clippy::permissions_set_readonly_false)]
                 perms.set_readonly(false);
-                fs::set_permissions(&target_path, perms)?;
+                fs::set_permissions(&target_path, perms).map_err(|e| {
+                    anyhow::anyhow!("Failed to set permissions on {:?}: {}", target_path, e)
+                })?;
             } else {
                 // NOTE: It is crucial that we *don't* provide a deep-copy
                 // fallback path here. The symlinked files consume a huge amount
@@ -879,7 +905,14 @@ fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
                 // that these errors are surfaced (rather than being worked
                 // around – e.g. via deep copying) so that we know to fix the
                 // bugs.
-                std::os::unix::fs::symlink(source_path, &target_path)?;
+                std::os::unix::fs::symlink(source_path, &target_path).map_err(|e| {
+                    anyhow::anyhow!(
+                        "Failed to symlink {:?} to {:?}: {}",
+                        source_path,
+                        target_path,
+                        e
+                    )
+                })?;
             }
         }
     }
