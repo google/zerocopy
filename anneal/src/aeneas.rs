@@ -20,10 +20,24 @@ use std::{
 
 use anyhow::{Context, Result, bail};
 use indicatif::{ProgressBar, ProgressStyle};
+use serde::Deserialize;
 
 use crate::{generate, resolve::LockedRoots, scanner::AnnealArtifact, setup::Tool};
 
 const ANNEAL_PRELUDE: &str = include_str!("Anneal.lean");
+
+/// Represents the structure of Lake's `lake-manifest.json` file.
+/// We use this to discover transitive dependencies that need to be pinned.
+#[derive(Deserialize)]
+struct LakeManifest {
+    packages: Vec<LakePackage>,
+}
+
+/// A single package dependency in `lake-manifest.json`.
+#[derive(Deserialize)]
+struct LakePackage {
+    name: String,
+}
 
 /// Orchestrates the Aeneas translation and Lean verification process.
 ///
@@ -269,18 +283,69 @@ pub fn run_aeneas(
     //
     // If `ANNEAL_AENEAS_DIR` is set (e.g., in CI or local development via Docker),
     // we use it. Otherwise, we default to the managed toolchain directory.
-    let aeneas_dep = if let Ok(path) = std::env::var("ANNEAL_AENEAS_DIR") {
-        // Use a path dependency to avoid git cloning.
-        //
-        // Note: We append the revision as a comment (`-- <rev>`) so that we can
-        // verify in integration tests that the binary was built with the
-        // correct revision, even when using a local override.
-        format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("ANNEAL_AENEAS_REV"))
+    let (aeneas_root, aeneas_dep) = if let Ok(path) = std::env::var("ANNEAL_AENEAS_DIR") {
+        let root = std::path::PathBuf::from(path);
+        let dep = format!(
+            r#"require aeneas from "{}/backends/lean" -- {}"#,
+            root.display(),
+            env!("ANNEAL_AENEAS_REV")
+        );
+        (root, dep)
     } else {
         let toolchain = crate::setup::Toolchain::resolve()?;
-        let path = toolchain.root.display();
-        format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("ANNEAL_AENEAS_REV"))
+        let root = toolchain.root;
+        let dep = format!(
+            r#"require aeneas from "{}/backends/lean" -- {}"#,
+            root.display(),
+            env!("ANNEAL_AENEAS_REV")
+        );
+        (root, dep)
     };
+
+    // To prevent Lake from re-downloading dependencies (like Mathlib) and
+    // rebuilding Aeneas in the generated workspace, we explicitly pin all
+    // dependencies to the paths where they were already built in the toolchain
+    // directory. Lake records absolute paths in its trace files, so if we
+    // don't do this, it sees path mismatches and triggers rebuilds.
+    let manifest_path = aeneas_root.join("backends").join("lean").join("lake-manifest.json");
+    let mut extra_requires = String::new();
+
+    if manifest_path.exists() {
+        let manifest_content = std::fs::read_to_string(&manifest_path)
+            .context("Failed to read lake-manifest.json from Aeneas directory")?;
+        let manifest: LakeManifest = serde_json::from_str(&manifest_content)
+            .context("Failed to parse lake-manifest.json from Aeneas directory")?;
+
+        for package in manifest.packages {
+            let pkg_dir = aeneas_root
+                .join("backends")
+                .join("lean")
+                .join(".lake")
+                .join("packages")
+                .join(&package.name);
+
+            // We require all dependencies to be present in the toolchain.
+            // If they are missing, it indicates a broken or incomplete setup.
+            if !pkg_dir.exists() {
+                bail!(
+                    "Required dependency '{}' is missing from Aeneas directory at '{}'.\n\
+                     Please ensure it is built or run `cargo run setup` again.",
+                    package.name,
+                    pkg_dir.display()
+                );
+            }
+
+            // Generate a `require` statement pointing directly to the toolchain
+            // copy of the dependency.
+            writeln!(extra_requires, "require {} from \"{}\"", package.name, pkg_dir.display())?;
+        }
+    } else {
+        bail!(
+            "lake-manifest.json is missing from Aeneas directory at '{}'.\n\
+             Please ensure it is built or run `cargo run setup` again.",
+            manifest_path.display()
+        );
+    }
 
     let roots_str = lake_roots.iter().map(|r| format!("`{}", r)).collect::<Vec<_>>().join(", ");
 
@@ -290,7 +355,7 @@ import Lake
 open Lake DSL
 
 {aeneas_dep}
-
+{extra_requires}
 package anneal_verification
 
 @[default_target]
