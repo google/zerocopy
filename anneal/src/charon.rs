@@ -9,10 +9,7 @@
 //   feedback via `indicatif` and `miette`.
 // - Validating the extraction result.
 
-use std::{
-    io::{BufRead, BufReader},
-    process::Command,
-};
+use std::io::{BufRead, BufReader};
 
 use anyhow::{Context as _, Result, bail};
 use cargo_metadata::{Message, diagnostic::DiagnosticLevel};
@@ -43,7 +40,29 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[AnnealArtifact])
 
     let toolchain = crate::setup::Toolchain::resolve()?;
     check_charon_version(&toolchain)?;
-    check_rustup_toolchain()?;
+
+    let rust_sysroot = toolchain.root.join("rust");
+    let rust_bin = rust_sysroot.join("bin");
+    let rust_lib = rust_sysroot.join("lib");
+
+    // Helper closure to prepend a path to an existing environment variable,
+    // separating them with a colon if the variable is not empty. This is used
+    // to inject our managed Rust toolchain paths before the system paths.
+    let prepend_to_env_var = |var_name: &str, new_path: std::path::PathBuf| {
+        let current_val = std::env::var_os(var_name).unwrap_or_default();
+        let mut combined = new_path.into_os_string();
+        if !current_val.is_empty() {
+            combined.push(":");
+            combined.push(current_val);
+        }
+        combined
+    };
+
+    let new_path = prepend_to_env_var("PATH", rust_bin);
+
+    let lib_env_var =
+        if cfg!(target_os = "macos") { "DYLD_LIBRARY_PATH" } else { "LD_LIBRARY_PATH" };
+    let new_lib_path = prepend_to_env_var(lib_env_var, rust_lib);
 
     for artifact in packages {
         if artifact.start_from.is_empty() {
@@ -53,6 +72,11 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[AnnealArtifact])
         log::info!("Invoking Charon on package '{}'...", artifact.name.package_name);
 
         let mut cmd = toolchain.command(Tool::Charon);
+
+        cmd.env("CHARON_TOOLCHAIN_IS_IN_PATH", "1");
+        cmd.env("PATH", &new_path);
+        cmd.env(lib_env_var, &new_lib_path);
+
         cmd.arg("cargo");
         cmd.arg("--preset=aeneas");
 
@@ -282,33 +306,6 @@ fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
              Please run `{setup_cmd}` to install the correct version.",
             expected,
             version
-        );
-    }
-
-    Ok(())
-}
-
-/// Checks that the required rustup toolchain is installed.
-///
-/// `charon-driver` requires a specific nightly version of Rust to be
-/// installed via rustup. If it is missing, we provide a helpful error message
-/// with the installation command.
-fn check_rustup_toolchain() -> Result<()> {
-    let nightly_version = env!("ANNEAL_CHARON_RUST_TOOLCHAIN");
-
-    let output = Command::new("rustup")
-        .args(["toolchain", "list"])
-        .output()
-        .context("Failed to execute `rustup toolchain list`. Is rustup installed?")?;
-
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    if !stdout.contains(nightly_version) {
-        bail!(
-            "Missing required rustup toolchain: {nightly_version}\n\
-             Charon requires this specific nightly version to run.\n\
-             Please install it by running:\n\
-             \n\
-             rustup toolchain install {nightly_version}\n",
         );
     }
 
