@@ -592,7 +592,6 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
                 column_start: nat_diag.pos.column,
                 line_end: nat_diag.end_pos.as_ref().map_or(nat_diag.pos.line, |p| p.line),
                 column_end: nat_diag.end_pos.as_ref().map_or(nat_diag.pos.column, |p| p.column),
-                level: nat_diag.severity.clone(),
                 message: nat_diag.data.clone(),
             };
 
@@ -733,7 +732,6 @@ struct LeanDiagnostic {
     line_end: usize,
     #[allow(dead_code)]
     column_end: usize,
-    level: String,
     message: String,
 }
 
@@ -837,7 +835,6 @@ mod tests {
             column_start: 0,
             line_end: 0,
             column_end: 0,
-            level: "warning".into(),
             message: msg.into(),
         }
     }

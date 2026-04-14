@@ -12,6 +12,31 @@ use tar::Archive;
 
 use crate::util::DirLock;
 
+const MOCK_RUSTC_HASH: [u8; 32] = const {
+    decode_hex("0d98244543ccb295295e0e9b335fbace9e06e8121bbdad6135773bca27f507f5")
+        .expect("valid hex")
+};
+const MOCK_RUST_STD_HASH: [u8; 32] = const {
+    decode_hex("31d62a14beb156f010188c39cb5e6069fa6f4f0d48e06f961a9888cf9263d8c6")
+        .expect("valid hex")
+};
+const MOCK_RUSTC_DEV_HASH: [u8; 32] = const {
+    decode_hex("7680c83ea3ab6bae514155ee3924d9b452e6f6c852552a266943142806653a8c")
+        .expect("valid hex")
+};
+const MOCK_LLVM_TOOLS_HASH: [u8; 32] = const {
+    decode_hex("c44c8e08c9e1411589402262a960226918d5051f77bd76912a3cb09c3393f198")
+        .expect("valid hex")
+};
+const MOCK_MIRI_HASH: [u8; 32] = const {
+    decode_hex("c093bdc1b9749b19ae3f93e3a6d58c901b5d94d09b80690f24e060d1a121a4d7")
+        .expect("valid hex")
+};
+const MOCK_RUST_SRC_HASH: [u8; 32] = const {
+    decode_hex("c2aa19f097efaa4d789911e3b1b4c1bb8379e4ac4ce66c47d60d0144f0307482")
+        .expect("valid hex")
+};
+
 macro_rules! decode_hex_env {
     ($key:expr) => {
         const { decode_hex(env!($key)).expect("valid hex") }
@@ -27,23 +52,35 @@ pub enum Platform {
     MacosX86_64,
 }
 
-/// A specific tool within a Anneal dependency.
+/// A specific tool or component within an Anneal dependency.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Tool {
     Charon,
     CharonDriver,
     Aeneas,
     Lake,
+    Rustc,
+    Miri,
+    RustStd,
+    RustcDev,
+    LlvmTools,
+    RustSrc,
 }
 
 impl Tool {
-    /// Returns the name of the binary for this tool.
+    /// Returns the name of the binary or component for this tool.
     pub fn name(&self) -> &'static str {
         match self {
             Self::Charon => "charon",
             Self::CharonDriver => "charon-driver",
             Self::Aeneas => "aeneas",
             Self::Lake => "lake",
+            Self::Rustc => "rustc",
+            Self::Miri => "miri",
+            Self::RustStd => "rust-std",
+            Self::RustcDev => "rustc-dev",
+            Self::LlvmTools => "llvm-tools",
+            Self::RustSrc => "rust-src",
         }
     }
 }
@@ -97,6 +134,30 @@ impl Platform {
     /// allowing the `setup` command to detect and repair corruption of any
     /// of the toolchain components.
     pub fn expected_bin_hash(&self, tool: Tool) -> [u8; 32] {
+        if std::env::var("__ANNEAL_USE_MOCK_RUST_HASHES").is_ok() {
+            // When testing with mock Rust hashes, we intercept requests for Rust
+            // components and return the hardcoded mock hashes. For non-Rust
+            // tools, we fall through to the normal logic that reads hashes from
+            // environment variables.
+            //
+            // This approach is acceptable from a security perspective because:
+            // 1. The mock hashes are hardcoded in the binary and cannot be
+            //    overridden by an attacker via environment variables.
+            // 2. The mock archives only contain inert, empty files. Even if an
+            //    attacker forces the use of these mocks, they can only cause
+            //    the tool to fail to run, but cannot inject malicious behavior.
+            use Tool::*;
+            match tool {
+                Rustc => return MOCK_RUSTC_HASH,
+                RustStd => return MOCK_RUST_STD_HASH,
+                RustcDev => return MOCK_RUSTC_DEV_HASH,
+                LlvmTools => return MOCK_LLVM_TOOLS_HASH,
+                Miri => return MOCK_MIRI_HASH,
+                RustSrc => return MOCK_RUST_SRC_HASH,
+                Charon | CharonDriver | Aeneas | Lake => {}
+            }
+        }
+
         use Platform::*;
         match (self, tool) {
             (LinuxX86_64, Tool::Charon) => {
@@ -135,6 +196,74 @@ impl Platform {
             (MacosX86_64, Tool::Aeneas) => {
                 decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64_AENEAS")
             }
+
+            // Rust components
+            (LinuxX86_64, Tool::Rustc) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_RUSTC")
+            }
+            (LinuxX86_64, Tool::RustStd) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_RUST_STD")
+            }
+            (LinuxX86_64, Tool::RustcDev) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_RUSTC_DEV")
+            }
+            (LinuxX86_64, Tool::LlvmTools) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_LLVM_TOOLS_PREVIEW")
+            }
+            (LinuxX86_64, Tool::Miri) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_MIRI_PREVIEW")
+            }
+
+            (LinuxAArch64, Tool::Rustc) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_RUSTC")
+            }
+            (LinuxAArch64, Tool::RustStd) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_RUST_STD")
+            }
+            (LinuxAArch64, Tool::RustcDev) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_RUSTC_DEV")
+            }
+            (LinuxAArch64, Tool::LlvmTools) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_LLVM_TOOLS_PREVIEW")
+            }
+            (LinuxAArch64, Tool::Miri) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_MIRI_PREVIEW")
+            }
+
+            (MacosX86_64, Tool::Rustc) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_RUSTC")
+            }
+            (MacosX86_64, Tool::RustStd) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_RUST_STD")
+            }
+            (MacosX86_64, Tool::RustcDev) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_RUSTC_DEV")
+            }
+            (MacosX86_64, Tool::LlvmTools) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_LLVM_TOOLS_PREVIEW")
+            }
+            (MacosX86_64, Tool::Miri) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_MIRI_PREVIEW")
+            }
+
+            (MacosAArch64, Tool::Rustc) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_RUSTC")
+            }
+            (MacosAArch64, Tool::RustStd) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_RUST_STD")
+            }
+            (MacosAArch64, Tool::RustcDev) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_RUSTC_DEV")
+            }
+            (MacosAArch64, Tool::LlvmTools) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_LLVM_TOOLS_PREVIEW")
+            }
+            (MacosAArch64, Tool::Miri) => {
+                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_MIRI_PREVIEW")
+            }
+
+            (_, Tool::RustSrc) => decode_hex_env!("ANNEAL_RUST_CHECKSUM_RUST_SRC"),
+
             _ => {
                 unreachable!("unsupported tool combination for individual verification")
             }
@@ -179,6 +308,23 @@ impl Toolchain {
         // components that cannot drift from the underlying binaries.
         let mut hasher = Sha256::new();
         hasher.update(aeneas_hash);
+
+        // We also hash the individual tool checksums to ensure that updating
+        // any component (like the Rust toolchain) results in a new directory.
+        let tools = [
+            Tool::Charon,
+            Tool::CharonDriver,
+            Tool::Aeneas,
+            Tool::Rustc,
+            Tool::RustStd,
+            Tool::RustcDev,
+            Tool::LlvmTools,
+            Tool::Miri,
+            Tool::RustSrc,
+        ];
+        for tool in tools {
+            hasher.update(platform.expected_bin_hash(tool));
+        }
         let hash = format!("{:x}", hasher.finalize());
         let short_hash = &hash[..12];
 
@@ -318,6 +464,82 @@ fn extract_artifact(data: &[u8], target_dir: &Path) -> Result<()> {
             }
         }
     }
+
+    Ok(())
+}
+
+fn extract_rust_component(data: &[u8], target_dir: &Path, component_name: &str) -> Result<()> {
+    log::info!("Extracting component {} to {:?}...", component_name, target_dir);
+    let tar = GzDecoder::new(data);
+    let mut archive = Archive::new(tar);
+
+    fs::create_dir_all(target_dir).context("Failed to create target directory")?;
+
+    for entry in archive.entries().context("Failed to read archive entries")? {
+        let mut entry = entry.context("Failed to get archive entry")?;
+        let path = entry.path().context("Failed to get entry path")?.to_path_buf();
+
+        let mut components = path.components();
+        components.next(); // skip top level (e.g. rustc-nightly-x86_64-unknown-linux-gnu)
+        components.next(); // skip component name (e.g. rustc)
+
+        let rest = components.as_path();
+        if rest.as_os_str().is_empty() {
+            continue;
+        }
+
+        let target = target_dir.join(rest);
+        if let Some(parent) = target.parent() {
+            fs::create_dir_all(parent).context("Failed to create parent directory")?;
+        }
+
+        entry.unpack(&target).context("Failed to unpack archive entry")?;
+
+        if target.exists() {
+            let mut perms = fs::metadata(&target)?.permissions();
+            if perms.readonly() {
+                #[allow(clippy::permissions_set_readonly_false)]
+                perms.set_readonly(false);
+                fs::set_permissions(&target, perms)
+                    .context("Failed to set toolchain permissions")?;
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn setup_rust_toolchain(toolchain: &Toolchain, platform: Platform) -> Result<()> {
+    let sysroot = toolchain.root.join("rust");
+    println!("Setting up Rust toolchain at {:?}...", sysroot);
+
+    let base_url = std::env::var("ANNEAL_SETUP_RUST_BASE_URL").unwrap_or_else(|_| {
+        format!("https://static.rust-lang.org/dist/{}", env!("ANNEAL_RUST_DATE"))
+    });
+
+    let components = [
+        ("rustc", Tool::Rustc),
+        ("rust-std", Tool::RustStd),
+        ("rustc-dev", Tool::RustcDev),
+        ("llvm-tools", Tool::LlvmTools),
+        ("miri", Tool::Miri),
+    ];
+
+    for (name, tool) in components {
+        let url = format!("{}/{}-nightly-{}.tar.gz", base_url, name, platform.triple());
+        let expected_hash = platform.expected_bin_hash(tool);
+
+        println!("Downloading and extracting {}...", name);
+        let data = download_artifact(&url, &expected_hash)?;
+        extract_rust_component(&data, &sysroot, name)?;
+    }
+
+    // Handle rust-src separately as it is target-independent
+    let url = format!("{}/rust-src-nightly.tar.gz", base_url);
+    let expected_hash = platform.expected_bin_hash(Tool::RustSrc);
+    println!("Downloading and extracting rust-src...");
+    let data = download_artifact(&url, &expected_hash)?;
+    extract_rust_component(&data, &sysroot, "rust-src")?;
 
     Ok(())
 }
@@ -485,6 +707,8 @@ pub fn run_setup() -> Result<()> {
     let _lock = toolchain.lock_exclusive()?;
     let platform = Platform::detect()?;
 
+    setup_rust_toolchain(&toolchain, platform)?;
+
     let tag = env!("ANNEAL_AENEAS_TAG");
     let mut needs_install = false;
 
@@ -522,8 +746,7 @@ pub fn run_setup() -> Result<()> {
         // Perform installation. Note that, because we validate SHA-256
         // checksums against values baked into the binary, allowing the user to
         // override the download URL does not represent a security risk.
-        let env_key = "ANNEAL_SETUP_BASE_URL";
-        let base_url = std::env::var(env_key).unwrap_or_else(|_| {
+        let base_url = std::env::var("ANNEAL_SETUP_AENEAS_BASE_URL").unwrap_or_else(|_| {
             "https://github.com/AeneasVerif/aeneas/releases/download".to_string()
         });
 
@@ -610,6 +833,30 @@ mod tests {
         } else if cfg!(target_os = "macos") {
             assert!(triple.contains("apple-darwin"));
         }
+    }
+
+    #[test]
+    fn test_toolchain_resolve() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        // We must use an unsafe block because `set_var` is unsafe in recent Rust
+        // versions due to potential data races. We use it here to point the
+        // toolchain directory to our temporary directory, preventing the test
+        // from mutating the user's real home directory.
+        unsafe {
+            std::env::set_var("ANNEAL_TOOLCHAIN_DIR", temp_dir.path());
+        }
+
+        let toolchain = Toolchain::resolve().expect("Should resolve toolchain");
+
+        // Verify that the resolved toolchain root is located within the
+        // isolated temporary directory we specified.
+        assert!(toolchain.root.starts_with(temp_dir.path()));
+
+        // Verify that the resolved path includes the platform target triple,
+        // ensuring platform-specific isolation.
+        let path_str = toolchain.root.to_str().unwrap();
+        let platform = Platform::detect().unwrap();
+        assert!(path_str.contains(platform.triple()));
     }
 
     #[test]
