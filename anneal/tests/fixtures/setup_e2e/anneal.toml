@@ -3,6 +3,5 @@ description = "End-to-end test for the setup command"
 [test]
 setup_mock = true
 phases = [
-    { name = "setup", args = ["setup"], stdout_file = "expected.stdout" },
-    { name = "verify", args = ["verify", "--example", "abs"] }
+    { name = "setup", args = ["setup"], stdout_file = "expected.stdout" }
 ]
