@@ -55,6 +55,10 @@ fn main() {
                 println!("cargo:rustc-env=ANNEAL_{}_TAG={}", dep_upper, tag);
             }
 
+            if let Some(date) = dep_meta.get("date").and_then(|t| t.as_str()) {
+                println!("cargo:rustc-env=ANNEAL_{}_DATE={}", dep_upper, date);
+            }
+
             if let Some(checksums) = dep_meta.get("checksums").and_then(|c| c.as_table()) {
                 for (platform, checksum) in checksums {
                     if let Some(hash) = checksum.as_str() {
