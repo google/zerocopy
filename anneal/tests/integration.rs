@@ -869,6 +869,16 @@ fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
                 perms.set_readonly(false);
                 fs::set_permissions(&target_path, perms)?;
             } else {
+                // Make sure the source file is read-only to prevent accidental modification
+                // through symlinks!
+                if let Ok(metadata) = fs::metadata(source_path) {
+                    let mut perms = metadata.permissions();
+                    if !perms.readonly() {
+                        perms.set_readonly(true);
+                        fs::set_permissions(source_path, perms)
+                            .expect("Failed to set permissions to read-only");
+                    }
+                }
                 // NOTE: It is crucial that we *don't* provide a deep-copy
                 // fallback path here. The symlinked files consume a huge amount
                 // of disk space. Deep copying instead would consume many times
