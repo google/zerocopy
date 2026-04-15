@@ -3,7 +3,7 @@
 //! This module handles the automated download, verification, and installation
 //! of `charon`, `charon-driver`, and `aeneas`.
 
-use std::{fs, io::Read, path::Path};
+use std::{fs, io::Read, path::Path, process::Command};
 
 use anyhow::{Context, Result, bail};
 use flate2::read::GzDecoder;
@@ -358,7 +358,7 @@ impl Toolchain {
 
     /// Returns a Command for the specified tool, prioritizing the managed
     /// toolchain.
-    pub fn command(&self, tool: Tool) -> std::process::Command {
+    pub fn command(&self, tool: Tool) -> Command {
         let bin_name = tool.name();
         let managed_path = self.bin_dir().join(bin_name);
 
@@ -367,11 +367,13 @@ impl Toolchain {
         // to allow mocking tools via PATH shims, which would otherwise be
         // bypassed by the managed toolchain's absolute paths.
         if std::env::var("ANNEAL_USE_PATH_FOR_TOOLS").is_ok() {
-            std::process::Command::new(bin_name)
-        } else if managed_path.exists() {
-            std::process::Command::new(managed_path)
+            Command::new(bin_name)
+        } else if tool == Tool::Lake {
+            // Lake is not part of the managed toolchain; it is assumed to be
+            // installed on the system (e.g., via elan).
+            Command::new(bin_name)
         } else {
-            std::process::Command::new(bin_name)
+            Command::new(managed_path)
         }
     }
 
@@ -540,7 +542,7 @@ fn setup_rust_toolchain(toolchain: &Toolchain, platform: Platform) -> Result<()>
 /// process's `PATH` to ensure subsequent commands can find it immediately.
 fn ensure_elan_installed() -> Result<()> {
     println!("Checking for elan...");
-    let status = std::process::Command::new("elan")
+    let status = Command::new("elan")
         .arg("--version")
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())
@@ -573,7 +575,7 @@ fn ensure_elan_installed() -> Result<()> {
 
     let elan_init_path = elan_extract_dir.join("elan-init");
 
-    let status = std::process::Command::new(&elan_init_path)
+    let status = Command::new(&elan_init_path)
         .args(["-y", "--default-toolchain", "none"])
         .status()
         .context("Failed to run elan-init")?;
@@ -613,7 +615,7 @@ fn install_lean_toolchain() -> Result<()> {
     println!("Installing Lean toolchain {}...", version);
 
     // Check if already installed
-    let output = std::process::Command::new("elan")
+    let output = Command::new("elan")
         .args(["toolchain", "list"])
         .output()
         .context("Failed to run elan toolchain list")?;
@@ -626,7 +628,7 @@ fn install_lean_toolchain() -> Result<()> {
         }
     }
 
-    let status = std::process::Command::new("elan")
+    let status = Command::new("elan")
         .args(["toolchain", "install", version])
         .status()
         .context("Failed to run elan toolchain install")?;
@@ -649,7 +651,7 @@ fn prebuild_lean_library(lean_dir: &Path) -> Result<()> {
 
     // Fetch Mathlib cache
     println!("Fetching Mathlib cache...");
-    let status = std::process::Command::new("lake")
+    let status = Command::new("lake")
         .args(["exe", "cache", "get"])
         .current_dir(lean_dir)
         .status()
@@ -661,7 +663,7 @@ fn prebuild_lean_library(lean_dir: &Path) -> Result<()> {
 
     // Build the library
     println!("Building Aeneas Lean library...");
-    let status = std::process::Command::new("lake")
+    let status = Command::new("lake")
         .arg("build")
         .current_dir(lean_dir)
         .status()

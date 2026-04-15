@@ -90,19 +90,6 @@ aeneas_rev = "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
 # by Aeneas in the `lean-toolchain` file in the commit above.
 lean_toolchain = "leanprover/lean4:v4.28.0-rc1"
 
-# The expected Charon version.
-#
-# This is used by `src/charon.rs` to enforce that the runtime `charon` binary
-# matches the version expected by Anneal. This ensures compatibility with the
-# generated LLBC format.
-#
-# FIXME(https://github.com/AeneasVerif/charon/issues/1029): Check Charon commit
-# ID once that's supported
-#
-# FIXME(https://github.com/AeneasVerif/aeneas/issues/783): Check Aeneas
-# version/commit ID once that's supported
-charon_version = "0.1.174"
-
 # The Rust toolchain required by Charon.
 #
 # FIXME(#3165):
