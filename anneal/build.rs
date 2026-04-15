@@ -28,7 +28,6 @@ fn main() {
     let vars = [
         ("aeneas_rev", "ANNEAL_AENEAS_REV"),
         ("lean_toolchain", "ANNEAL_LEAN_TOOLCHAIN"),
-        ("charon_version", "ANNEAL_CHARON_EXPECTED_VERSION"),
         ("charon_rust_toolchain", "ANNEAL_CHARON_RUST_TOOLCHAIN"),
     ];
 
