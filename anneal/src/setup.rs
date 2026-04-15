@@ -368,10 +368,8 @@ impl Toolchain {
         // bypassed by the managed toolchain's absolute paths.
         if std::env::var("ANNEAL_USE_PATH_FOR_TOOLS").is_ok() {
             std::process::Command::new(bin_name)
-        } else if managed_path.exists() {
-            std::process::Command::new(managed_path)
         } else {
-            std::process::Command::new(bin_name)
+            std::process::Command::new(managed_path)
         }
     }
 

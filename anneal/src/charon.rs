@@ -39,7 +39,6 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[AnnealArtifact])
     std::fs::create_dir_all(&llbc_root).context("Failed to create LLBC output directory")?;
 
     let toolchain = crate::setup::Toolchain::resolve()?;
-    check_charon_version(&toolchain)?;
 
     let rust_sysroot = toolchain.root.join("rust");
     let rust_bin = rust_sysroot.join("bin");
@@ -268,46 +267,4 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[AnnealArtifact])
     Ok(())
 }
 
-/// Checks that the available `charon` binary matches the expected version.
-///
-/// This check ensures that the installed `charon` tool is compatible with
-/// Anneal. Mismatched versions can lead to subtle errors during LLBC
-/// generation or parsing due to format changes.
-///
-/// The expected version is defined in `Cargo.toml` and baked into the binary
-/// via `build.rs` and the `ANNEAL_CHARON_EXPECTED_VERSION` environment
-/// variable.
-fn check_charon_version(toolchain: &crate::setup::Toolchain) -> Result<()> {
-    // Set in `.cargo/config.toml` in the repository root.
-    let setup_cmd = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
-        "cargo run setup"
-    } else {
-        "cargo anneal setup"
-    };
 
-    let output = toolchain.command(Tool::Charon).arg("version").output().with_context(|| {
-        format!(
-            "Failed to execute `charon version`. Is charon installed? Try running `{setup_cmd}`."
-        )
-    })?;
-
-    if !output.status.success() {
-        bail!("`charon version` failed with status: {}. Try running `{setup_cmd}`.", output.status);
-    }
-
-    let version = String::from_utf8_lossy(&output.stdout).trim().to_string();
-    let expected = env!("ANNEAL_CHARON_EXPECTED_VERSION");
-
-    if version != expected {
-        bail!(
-            "Charon version mismatch.\n\
-             Expected: {}\n\
-             Found:    {}\n\
-             Please run `{setup_cmd}` to install the correct version.",
-            expected,
-            version
-        );
-    }
-
-    Ok(())
-}

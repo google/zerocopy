@@ -68,13 +68,9 @@ struct TestConfig {
     env: std::collections::HashMap<String, String>,
     #[serde(default)]
     phases: Vec<TestPhase>,
-    #[serde(default = "default_true")]
-    inject_charon_version: bool,
 }
 
-fn default_true() -> bool {
-    true
-}
+
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 #[serde(deny_unknown_fields)]
@@ -575,22 +571,7 @@ impl TestContext {
                 .unwrap();
         }
 
-        let should_inject_version = match mock_mode {
-            Some(MockMode::FailWithOutput(_)) => true,
-            Some(MockMode::Script(_)) => self.test_config.inject_charon_version,
-            Option::None => binary == "charon" && self.test_config.inject_charon_version,
-        };
 
-        if should_inject_version {
-            shim_content.push_str(&format!(
-                r#"if [ "$1" = "version" ]; then
-    echo "{}"
-    exit 0
-fi
-"#,
-                get_expected_charon_version()
-            ));
-        }
 
         shim_content.push_str(&format!(
             r#"for arg in "$@"; do
@@ -1398,7 +1379,6 @@ fn parse_command_log(content: &str) -> Vec<Vec<String>> {
 fn run_toolchain_versioning_test(path: &Path) -> datatest_stable::Result<()> {
     let config = TestConfig {
         args: Some(vec!["verify".into(), "--allow-sorry".into()]),
-        inject_charon_version: true,
         ..Default::default()
     };
 
@@ -1922,18 +1902,4 @@ fn run_dirty_sandbox_test(path: &Path) -> datatest_stable::Result<()> {
     Ok(())
 }
 
-fn get_expected_charon_version() -> String {
-    let cargo_toml_path =
-        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml");
-    let cargo_toml_content =
-        fs::read_to_string(&cargo_toml_path).expect("Failed to read Cargo.toml");
-    let cargo_toml: toml::Value =
-        toml::from_str(&cargo_toml_content).expect("Failed to parse Cargo.toml");
-    let metadata = cargo_toml
-        .get("package")
-        .and_then(|p| p.get("metadata"))
-        .and_then(|m| m.get("build_rs"))
-        .expect("Cargo.toml must have [package.metadata.build_rs]");
 
-    metadata.get("charon_version").and_then(|v| v.as_str()).unwrap().to_string()
-}
