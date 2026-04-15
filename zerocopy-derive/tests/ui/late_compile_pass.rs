@@ -53,11 +53,12 @@ struct FromZeros1 {
 
 #[derive(FromBytes)]
 //~[msrv]^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
-//~[msrv, stable, nightly]^^ ERROR: the trait bound `NotZerocopy: FromZeros` is not satisfied
-//~[msrv]^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
-//~[stable, nightly]^^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
-//~[stable, nightly]^^^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
+//~[msrv]^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
+//~[msrv, stable, nightly]^^^ ERROR: the trait bound `NotZerocopy: FromZeros` is not satisfied
+//~[msrv]^^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
+//~[stable, nightly]^^^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
 //~[stable, nightly]^^^^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
+//~[stable, nightly]^^^^^^^ ERROR: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 struct FromBytes1 {
     value: NotZerocopy,

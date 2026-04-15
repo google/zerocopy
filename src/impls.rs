@@ -383,15 +383,12 @@ const _: () = unsafe {
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_unsafe_extern_c_fn!(...));
 };
 
-#[cfg(all(
-    not(no_zerocopy_target_has_atomics_1_60_0),
-    any(
-        target_has_atomic = "8",
-        target_has_atomic = "16",
-        target_has_atomic = "32",
-        target_has_atomic = "64",
-        target_has_atomic = "ptr"
-    )
+#[cfg(any(
+    target_has_atomic = "8",
+    target_has_atomic = "16",
+    target_has_atomic = "32",
+    target_has_atomic = "64",
+    target_has_atomic = "ptr"
 ))]
 #[cfg_attr(doc_cfg, doc(cfg(rust = "1.60.0")))]
 mod atomics {
@@ -1354,7 +1351,6 @@ mod simd {
         // Rust 1.87. (Context in https://github.com/rust-lang/stdarch/issues/1484). Support is
         // split in two different version ranges on top of the base configuration, requiring either
         // little endian or the more recent version to be detected as well.
-        #[cfg(not(no_zerocopy_aarch64_simd_1_59_0))]
         simd_arch_mod!(
             #[cfg(all(
                 target_arch = "aarch64", 
@@ -2371,7 +2367,7 @@ mod tests {
                 vector_signed_long,
                 vector_unsigned_long
             );
-            #[cfg(all(target_arch = "aarch64", not(no_zerocopy_aarch64_simd_1_59_0)))]
+            #[cfg(target_arch = "aarch64")]
             #[rustfmt::skip]
             test_simd_arch_mod!(
                 aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
