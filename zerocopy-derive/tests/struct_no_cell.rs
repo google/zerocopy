@@ -103,3 +103,31 @@ where
     T: 'a + 'b + imp::Immutable;
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::Immutable);
+
+// Regression test for #2445: Fuchsia has `repr(C)` packet types with a large
+// computed array field, and they should still be `Immutable`.
+const FX_LOG_MAX_DATAGRAM_LEN: usize = 2032;
+
+#[derive(imp::Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct FxLogMetadata {
+    pid: u64,
+    tid: u64,
+    time: i64,
+    severity: i32,
+    dropped_logs: u32,
+}
+
+const FX_LOG_METADATA_SIZE: usize = imp::core::mem::size_of::<FxLogMetadata>();
+
+#[derive(imp::Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct FxLogPacket {
+    metadata: FxLogMetadata,
+    data: [u8; FX_LOG_MAX_DATAGRAM_LEN - FX_LOG_METADATA_SIZE],
+}
+
+util_assert_impl_all!(FxLogMetadata: imp::Immutable);
+util_assert_impl_all!(FxLogPacket: imp::Immutable);
