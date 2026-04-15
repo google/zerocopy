@@ -1121,13 +1121,32 @@ fn extract_generic_params(
                 // arguments for trait bounds. We construct the identifier by
                 // appending `Inst` to the base trait name, mimicking Aeneas's
                 // `Clause0Inst` and `TraitInst` naming patterns.
-                let dict_name = if mapped_trait.contains('.') {
+                let mut dict_name = if mapped_trait.contains('.') {
                     mapped_trait.split('.').next_back().unwrap().to_string()
                 } else {
                     mapped_trait.clone()
                 };
+                // Remove parentheses and take the first word to get a clean identifier
+                dict_name = dict_name.replace('(', "").replace(')', "");
+                if let Some(idx) = dict_name.find(' ') {
+                    dict_name = dict_name[..idx].to_string();
+                }
                 let dict_ident = format!("{}Inst", dict_name);
-                bounds.push(format!("({} : {} {})", dict_ident, mapped_trait, ty_str));
+
+                // Reconstruct the type with correct argument order (Self first)
+                let mut trait_type_str = dict_name.clone();
+                if let crate::parse::hkd::SafeType::Path { segments, .. } = trait_ty {
+                    if let Some(segment) = segments.last() {
+                        let gen_args: Vec<_> = segment.args.iter().map(map_type).collect();
+                        if !gen_args.is_empty() {
+                            trait_type_str =
+                                format!("{} {} {}", trait_type_str, ty_str, gen_args.join(" "));
+                        } else {
+                            trait_type_str = format!("{} {}", trait_type_str, ty_str);
+                        }
+                    }
+                }
+                bounds.push(format!("({} : {})", dict_ident, trait_type_str));
                 dict_args.push(dict_ident);
             }
         }
@@ -1222,7 +1241,7 @@ fn map_type(ty: &crate::parse::hkd::SafeType) -> String {
             if elems.is_empty() {
                 "Unit".to_string()
             } else {
-                elems.iter().map(map_type).collect::<Vec<_>>().join(" × ")
+                format!("({})", elems.iter().map(map_type).collect::<Vec<_>>().join(" × "))
             }
         }
         Ptr { mutability, elem } => {
@@ -1442,7 +1461,7 @@ mod tests {
     #[test]
     fn test_map_tuples() {
         assert_eq!(map_qt(parse_quote!(())), "Unit");
-        assert_eq!(map_qt(parse_quote!((u32, bool))), "Std.U32 × Bool");
+        assert_eq!(map_qt(parse_quote!((u32, bool))), "(Std.U32 × Bool)");
     }
 
     // --- Generation Tests ---
@@ -1966,7 +1985,7 @@ mod tests {
         generate_function(&func, &block, &mut builder, Path::new("test.rs"), &naming_context);
         let out = builder.buf;
 
-        assert!(out.contains("(self : Std.U32 × Std.U32)"));
+        assert!(out.contains("(self : (Std.U32 × Std.U32))"));
     }
 
     #[test]
@@ -2714,5 +2733,73 @@ mod tests {
         );
         assert_eq!(naming_context.item_namespace(&foreign_fn), "ffi");
         assert_eq!(naming_context.aeneas_call_name(&foreign_fn), "ext_fn");
+    }
+
+    #[test]
+    fn test_trait_bound_with_generics() {
+        let item: syn::ItemFn = parse_quote! {
+            fn foo<I, O, F: NoPanic<I, O>>(f: F, i: I) -> O { f(i) }
+        };
+        let func = crate::parse::AnnealDecorated {
+            item: FunctionItem::Free(AstNode { inner: item.mirror() }),
+            anneal: mk_block(vec![], vec![], None, None, vec![]),
+        };
+        let mut builder = LeanBuilder::new();
+        let naming_context = NamingContext::new("test".to_string());
+        generate_function(
+            &func.item,
+            &func.anneal,
+            &mut builder,
+            Path::new("test.rs"),
+            &naming_context,
+        );
+        let artifact = builder.finish();
+
+        // Check that the generated code does not contain invalid identifiers like `(NoPanic I O)Inst`
+        assert!(!artifact.code.contains("(NoPanic I O)Inst"));
+        // Check that it contains the fixed identifier `NoPanicInst`
+        assert!(artifact.code.contains("NoPanicInst"));
+        // Check that the type is correct `NoPanic F I O`
+        assert!(artifact.code.contains("NoPanicInst : NoPanic F I O"));
+    }
+
+    #[test]
+    fn test_trait_bounds_exhaustive() {
+        let cases: Vec<(syn::ItemFn, &str)> = vec![
+            (parse_quote! { fn foo<F: Trait>(f: F) {} }, "TraitInst : Trait F"),
+            (parse_quote! { fn foo<A, F: Trait<A>>(f: F) {} }, "TraitInst : Trait F A"),
+            (parse_quote! { fn foo<A, B, F: Trait<A, B>>(f: F) {} }, "TraitInst : Trait F A B"),
+            (parse_quote! { fn foo<F: path::Trait>(f: F) {} }, "TraitInst : Trait F"),
+            (parse_quote! { fn foo<A, F: path::Trait<A>>(f: F) {} }, "TraitInst : Trait F A"),
+            (
+                parse_quote! { fn foo<A, B, F: Trait<(A, B)>>(f: F) {} },
+                "TraitInst : Trait F (A × B)",
+            ),
+            (parse_quote! { fn foo<A, F: Trait<&A>>(f: F) {} }, "TraitInst : Trait F A"),
+        ];
+
+        for (item, expected) in cases {
+            let func = crate::parse::AnnealDecorated {
+                item: FunctionItem::Free(AstNode { inner: item.mirror() }),
+                anneal: mk_block(vec![], vec![], None, None, vec![]),
+            };
+            let mut builder = LeanBuilder::new();
+            let naming_context = NamingContext::new("test".to_string());
+            generate_function(
+                &func.item,
+                &func.anneal,
+                &mut builder,
+                Path::new("test.rs"),
+                &naming_context,
+            );
+            let artifact = builder.finish();
+
+            assert!(
+                artifact.code.contains(expected),
+                "Expected code to contain '{}', but got:\n{}",
+                expected,
+                artifact.code
+            );
+        }
     }
 }
