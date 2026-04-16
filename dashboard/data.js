@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776354537578,
+  "lastUpdate": 1776355223758,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -627,6 +627,38 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 804,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf",
+            "email": "joshlf@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "0b1feb6aca6fd24e2a3cfa14bea7cc4cef0981be",
+          "message": "[anneal] Release 0.1.0-alpha.18 (#3282)\n\ngherrit-pr-id: Gkbtn5ebnp72mu2i4uwnpr35uwig5qgwq",
+          "timestamp": "2026-04-16T15:36:32Z",
+          "url": "https://github.com/google/zerocopy/commit/0b1feb6aca6fd24e2a3cfa14bea7cc4cef0981be"
+        },
+        "date": 1776355221691,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 64,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 562,
             "unit": "seconds"
           }
         ]
