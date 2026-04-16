@@ -117,6 +117,8 @@ jobs:
     # skipped (which happens on PRs). We still require `check-version` to
     # succeed to avoid running on failures.
     if: always() && (needs.check-version.result == 'success')
+    permissions:
+      contents: write
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
