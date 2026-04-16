@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776343680353,
+  "lastUpdate": 1776343851677,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -183,6 +183,31 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/pull/3281/commits/f2557edfe3700e59ab0aa4667d9565211b19815d"
         },
         "date": 1776343678028,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 7,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "4ae7abd41d63c34fe97977ca584b3fdbf737ae45",
+          "message": "[ci][anneal] Add precompiled artifact build script and workflow",
+          "timestamp": "2026-04-16T09:27:34Z",
+          "url": "https://github.com/google/zerocopy/pull/3281/commits/4ae7abd41d63c34fe97977ca584b3fdbf737ae45"
+        },
+        "date": 1776343849245,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
