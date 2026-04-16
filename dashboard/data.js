@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776368018595,
+  "lastUpdate": 1776368196696,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1033,6 +1033,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 1176,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "867cd3a9a52ce81c4083c2a68299e33560e7a2c2",
+          "message": "[ci][anneal] Add `workflow_dispatch` Action to release new version",
+          "timestamp": "2026-04-16T18:39:54Z",
+          "url": "https://github.com/google/zerocopy/pull/3284/commits/867cd3a9a52ce81c4083c2a68299e33560e7a2c2"
+        },
+        "date": 1776368194348,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 73,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 560,
             "unit": "seconds"
           }
         ]
