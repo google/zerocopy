@@ -14,6 +14,7 @@ on:
       - main
     paths:
       - 'anneal/Cargo.toml'
+  pull_request:
 
 permissions: {}
 
@@ -61,7 +62,7 @@ jobs:
   release:
     name: Release to crates.io and GitHub
     needs: check-version
-    if: needs.check-version.outputs.changed == 'true'
+    if: needs.check-version.outputs.changed == 'true' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -108,3 +109,71 @@ jobs:
           set -eo pipefail
           TAG="anneal-v$VERSION"
           gh release create "$TAG" --generate-notes
+
+  publish-artifacts:
+    name: Publish Artifacts (${{ matrix.target }})
+    needs: [check-version, release]
+    # We use `always()` to ensure this job runs even if the `release` job is
+    # skipped (which happens on PRs). We still require `check-version` to
+    # succeed to avoid running on failures.
+    if: always() && (needs.check-version.result == 'success')
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x86_64
+            rust_triple: x86_64-unknown-linux-gnu
+          - os: ubuntu-24.04-arm
+            target: linux-aarch64
+            rust_triple: aarch64-unknown-linux-gnu
+          - os: macos-15-intel
+            target: macos-x86_64
+            rust_triple: x86_64-apple-darwin
+          - os: macos-latest
+            target: macos-aarch64
+            rust_triple: aarch64-apple-darwin
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Extract Metadata
+        id: meta
+        run: |
+          set -eo pipefail
+          cd anneal
+          AENEAS_TAG=$(sed -n 's/^tag = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          RUST_DATE=$(sed -n 's/^date = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          echo "aeneas_tag=$AENEAS_TAG" >> $GITHUB_OUTPUT
+          echo "rust_date=$RUST_DATE" >> $GITHUB_OUTPUT
+
+      - name: Install elan
+        run: |
+          set -eo pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Download and Package
+        env:
+          AENEAS_TAG: ${{ steps.meta.outputs.aeneas_tag }}
+          RUST_DATE: ${{ steps.meta.outputs.rust_date }}
+          TARGET: ${{ matrix.target }}
+          RUST_TRIPLE: ${{ matrix.rust_triple }}
+        run: |
+          set -eo pipefail
+          cd anneal
+          
+          STAGING_DIR="dist_staging"
+          mkdir -p "$STAGING_DIR"
+          
+          ./tools/build-prebuilt.sh ${{ matrix.rust_triple }}
+          
+      - name: Upload Artifact
+        if: github.event_name != 'pull_request' && needs.release.result == 'success'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: anneal-v${{ needs.check-version.outputs.version }}
+          files: anneal/anneal-toolchain-${{ matrix.target }}.tar.zst
+
