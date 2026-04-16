@@ -38,11 +38,8 @@ RUN if [ -z "$UID" ]; then echo "UID build arg is required" && exit 1; fi && \
 # Switch to non-root user for the rest of the build.
 USER anneal
 
-# Install Rust and the specific nightly toolchain required by Charon.
-# This version string is hardcoded here and must be kept in sync with
-# `Cargo.toml`.
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path \
- && rustup toolchain install --no-self-update nightly-2026-02-07 --profile minimal
+# Install Rust.
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile minimal
 
 # Direct Anneal tests to write ephemeral integration targets here to leverage
 # overlayfs.
