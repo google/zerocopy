@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776356709077,
+  "lastUpdate": 1776363251557,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -433,6 +433,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 709,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "e4bcb9706d73c8382594f0269046d5377efa8574",
+          "message": "[ci][anneal] Grant write permissions to publish-artifacts job",
+          "timestamp": "2026-04-16T16:01:32Z",
+          "url": "https://github.com/google/zerocopy/pull/3283/commits/e4bcb9706d73c8382594f0269046d5377efa8574"
+        },
+        "date": 1776363248505,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 9,
             "unit": "seconds"
           }
         ]
