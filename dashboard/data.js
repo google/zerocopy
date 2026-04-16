@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776368196696,
+  "lastUpdate": 1776368609967,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1063,6 +1063,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 560,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b943232a98fa7c9994151a765d52b1989a982048",
+          "message": "[ci][anneal] Add `workflow_dispatch` Action to release new version (#3284)\n\nRelease 0.1.0-alpha.19.\n\ngherrit-pr-id: G3sy75s2atk44kjhhoymwugs6wvpbfn4t",
+          "timestamp": "2026-04-16T15:19:24-04:00",
+          "tree_id": "c9f611ffd299eb3e0e9dea4702f3b30b5189fedb",
+          "url": "https://github.com/google/zerocopy/commit/b943232a98fa7c9994151a765d52b1989a982048"
+        },
+        "date": 1776368607407,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 71,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 568,
             "unit": "seconds"
           }
         ]
