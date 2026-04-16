@@ -129,6 +129,76 @@ jobs:
             type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:main
           cache-to: type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }},mode=max
 
+  measure_image_size:
+    # This job measures the size of the Docker image built in the previous step
+    # and records it to maintain a history of resource usage over time.
+    name: Measure Docker image size
+    runs-on: ubuntu-24.04-64core
+    needs: build_docker_env
+    # We only run this on the main branch (and the test branch for verification)
+    # to ensure we only track history for merged code.
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/anneal-dashboards'
+    permissions:
+      contents: write # Required to push benchmark data to the storage branch
+      packages: read # Required to pull the Docker image from GHCR
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate sanitized Docker tag
+        # We need to replace slashes in branch names with hyphens to form a valid
+        # Docker tag, matching the logic used in the build job.
+        id: docker_tag
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
+
+      - name: Pull image
+        # We pull the image we just built and tag it locally so we can inspect it.
+        run: |
+          docker pull ghcr.io/google/zerocopy/anneal:${STEPS_DOCKER_TAG_OUTPUTS_TAG}
+          docker tag ghcr.io/google/zerocopy/anneal:${STEPS_DOCKER_TAG_OUTPUTS_TAG} anneal-ci:local
+        env:
+          STEPS_DOCKER_TAG_OUTPUTS_TAG: ${{ steps.docker_tag.outputs.tag }}
+
+      - name: Measure size
+        # We use docker image inspect to get the size in bytes and convert it to
+        # Megabytes for easier reading on the dashboard.
+        id: measure
+        run: |
+          size=$(docker image inspect anneal-ci:local --format '{{.Size}}')
+          size_mb=$((size / 1024 / 1024))
+          echo "Image size: $size_mb MB"
+          echo "[{\"name\": \"Docker Image Size\", \"unit\": \"Megabytes\", \"value\": $size_mb}]" > output.json
+
+      - name: Store benchmark result
+        # We use github-action-benchmark to manage the history of image sizes.
+        # It is configured to store results in a dedicated branch to avoid
+        # complex cache management.
+        uses: benchmark-action/github-action-benchmark@a60cea5bc7b49e15c1f58f411161f99e0df48372 # v1.22.0
+        with:
+          name: Docker Image Size
+          tool: 'customSmallerIsBetter'
+          output-file-path: output.json
+          gh-pages-branch: benchmark-data
+          auto-push: true
+          benchmark-data-dir-path: dashboard
+          fail-on-alert: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
   anneal_tests:
     name: Anneal Tests
     runs-on: ubuntu-24.04-64core
