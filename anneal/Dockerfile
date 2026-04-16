@@ -16,7 +16,9 @@ ENV RUSTUP_HOME=/opt/rustup \
     PATH="/opt/cargo/bin:/opt/elan/bin:${PATH}"
 
 # Install system dependencies as root.
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git curl build-essential pkg-config libssl-dev && \
+# We add `graphviz` because it is required by `lake exe graph` to generate
+# the dependency graph, and `python3` to run the pruning script.
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git curl build-essential pkg-config libssl-dev graphviz python3 && \
     rm -rf /var/lib/apt/lists/*
 
 # Create the mapped user and empty directories for toolchains.
@@ -61,6 +63,7 @@ COPY --chown=anneal:anneal Cargo.lock ./
 # Copy source files needed for setup.
 COPY --chown=anneal:anneal src/setup.rs src/util.rs ./src/
 COPY --chown=anneal:anneal build.rs ./
+COPY --chown=anneal:anneal tools/prune_mathlib.py ./tools/
 
 # Create a minimal `main.rs` that runs setup, and a dummy test file.
 # This allows us to build all dependencies (including dev-dependencies)
@@ -79,8 +82,16 @@ RUN cargo build && \
     cargo build --tests
 
 # Pre-build Lean libraries using the minimal binary.
+#
+# We also generate the import graph and prune unused Mathlib artifacts here
+# to reduce the image size. This must be done after `cargo run` because that
+# command fetches and builds the dependencies.
 ENV ANNEAL_TOOLCHAIN_DIR=/opt/anneal_toolchain
-RUN cargo run
+RUN cargo run && \
+    LEAN_DIR=$(find /opt/anneal_toolchain/.anneal/toolchain/ -type d -name "lean" | head -n 1) && \
+    cd $LEAN_DIR && \
+    lake exe graph imports.dot --to Aeneas,Aeneas.Std.Core,Aeneas.Std.WP,Aeneas.Tactic.Solver.ScalarTac,Aeneas.Std.Scalar.Core --include-deps && \
+    python3 /workspace/tools/prune_mathlib.py imports.dot .lake/packages/mathlib
 
 # Ensure the integration target directory exists.
 RUN mkdir -p /cache/anneal_target
