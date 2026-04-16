@@ -6,6 +6,32 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
+# This workflow implements a complex release process for precompiled artifacts
+# of the Anneal toolchain.
+#
+# Motivation:
+# Previously, we relied solely on upstream prebuilts (from Aeneas and Rust).
+# To provide a better user experience, we want to distribute our own "fat"
+# artifacts that include these dependencies and pre-compiled Lean libraries.
+#
+# Obvious approaches like building locally and pushing binaries are rejected
+# because they require trusting developer machines. Building in CI and pushing
+# directly back to `main` is also rejected because it complicates protected
+# branch rules and can lead to concurrent modification issues.
+#
+# Design Outline:
+# - A manual GitHub Action (workflow_dispatch) is used to roll Aeneas.
+# - It builds our fat artifacts on trusted CI runners.
+# - It publishes them to a GitHub Pre-release with a unique tag.
+# - It automatically generates a PR that updates Cargo.toml with the new
+#   URLs and hashes of OUR artifacts.
+# - A local script remains available for simple version bumps without
+#   pinning updates.
+#
+# This ensures atomicity on `main` and keeps the process automated and
+# secure. We keep the workflows together in this file using conditional
+# logic to determine behavior.
+
 name: Anneal Release
 
 on:
@@ -17,12 +43,17 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Anneal version'
-        required: true
+      aeneas_version:
+        description: 'Aeneas version to roll to (optional)'
+        required: false
+        default: 'PROMPT: Enter Aeneas version'
+      crate_version:
+        description: 'New version for cargo-anneal (optional)'
+        required: false
+        default: 'PROMPT: Enter Cargo version'
       branch:
-        description: 'Branch to update'
-        required: true
+        description: 'Branch to target'
+        required: false
         default: 'main'
 
 permissions: {}
@@ -38,7 +69,7 @@ jobs:
     # Don't run this on forks. Also skip it on workflow_dispatch because that
     # trigger is specifically for creating the version-bumping PR, not for
     # checking if it was already done.
-    if: github.repository == 'google/zerocopy' && github.event_name != 'workflow_dispatch'
+    if: github.repository == 'google/zerocopy'
     outputs:
       changed: ${{ steps.check.outputs.changed }}
       version: ${{ steps.check.outputs.version }}
@@ -57,18 +88,53 @@ jobs:
           
           CUR_VER=$(cargo metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "cargo-anneal").version')
           
-          git checkout -q HEAD^
-          PREV_VER=$(cargo metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "cargo-anneal").version')
-          git checkout -q -
-          
-          if [ "$CUR_VER" != "$PREV_VER" ]; then
-            echo "Version change detected."
+          # If triggered manually, we assume the version has changed or we want
+          # to force a release/PR generation.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Triggered manually."
             echo "changed=true" >> $GITHUB_OUTPUT
-            echo "version=$CUR_VER" >> $GITHUB_OUTPUT
+            IN_VER="${{ github.event.inputs.crate_version }}"
+            if [ -n "$IN_VER" ] && [ "$IN_VER" != "PROMPT: Enter Cargo version" ]; then
+              echo "version=$IN_VER" >> $GITHUB_OUTPUT
+            else
+              echo "version=$CUR_VER" >> $GITHUB_OUTPUT
+            fi
           else
-            echo "Version unchanged."
-            echo "changed=false" >> $GITHUB_OUTPUT
+            git checkout -q HEAD^
+            PREV_VER=$(cargo metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "cargo-anneal").version')
+            git checkout -q -
+            
+            if [ "$CUR_VER" != "$PREV_VER" ]; then
+              echo "Version change detected."
+              echo "changed=true" >> $GITHUB_OUTPUT
+              echo "version=$CUR_VER" >> $GITHUB_OUTPUT
+            else
+              echo "Version unchanged."
+              echo "changed=false" >> $GITHUB_OUTPUT
+            fi
           fi
+
+  prepare-release:
+    name: Prepare Release
+    needs: check-version
+    runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.tag.outputs.tag_name }}
+    steps:
+      - name: Generate Tag
+        id: tag
+        run: |
+          set -eo pipefail
+          # We use a unique tag for manual artifact builds to avoid overwriting
+          # existing releases, and to allow uploading artifacts for the same
+          # version multiple times during development.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG_NAME="anneal-artifacts-$(date +'%Y.%m.%d.%H%M%S')-${{ github.sha }}"
+          else
+            # For standard releases, we use the version as the tag.
+            TAG_NAME="anneal-v${{ needs.check-version.outputs.version }}"
+          fi
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
   release:
     name: Release to crates.io and GitHub
@@ -123,12 +189,11 @@ jobs:
 
   publish-artifacts:
     name: Publish Artifacts (${{ matrix.target }})
-    needs: [check-version, release]
+    needs: [check-version, release, prepare-release]
     # We use `always()` to ensure this job runs even if the `release` job is
     # skipped (which happens on PRs). We still require `check-version` to
     # succeed to avoid running on failures.
-    # This job is also skipped on manual triggers (workflow_dispatch).
-    if: always() && (needs.check-version.result == 'success') && github.event_name != 'workflow_dispatch'
+    if: always() && (needs.check-version.result == 'success')
     permissions:
       contents: write # This is required to upload assets to a release.
     runs-on: ${{ matrix.os }}
@@ -186,22 +251,21 @@ jobs:
           ./tools/build-prebuilt.sh "$RUST_TRIPLE"
           
       - name: Upload Artifact
-        if: github.event_name != 'pull_request' && needs.release.result == 'success'
+        if: github.event_name == 'workflow_dispatch' || (github.event_name != 'pull_request' && needs.release.result == 'success')
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ needs.check-version.outputs.version }}
+          TAG_NAME: ${{ needs.prepare-release.outputs.tag_name }}
           TARGET: ${{ matrix.target }}
         run: |
-          gh release upload "anneal-v$VERSION" anneal/anneal-toolchain-$TARGET.tar.zst --clobber
+          gh release upload "$TAG_NAME" anneal/anneal-toolchain-$TARGET.tar.zst --clobber
 
-  release-version-action:
-    # This job handles manual release triggers. It updates version numbers and
-    # creates a PR for review. It does not perform actual publishing.
-    name: Release new Anneal versions
-    if: github.event_name == 'workflow_dispatch'
+  create-release-pr:
+    name: Create Release PR
+    needs: [publish-artifacts, prepare-release]
+    if: github.event_name == 'workflow_dispatch' && needs.publish-artifacts.result == 'success'
     permissions:
-      contents: read
-      pull-requests: write # Required to create pull requests
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -209,22 +273,32 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
           persist-credentials: false
-      - name: Overwrite Anneal files
+
+      - name: Install Python dependencies
+        run: pip install tomlkit
+
+      # This step closes the loop by downloading the artifacts we just
+      # published, computing their hashes, and baking them into Cargo.toml.
+      - name: Update Cargo.toml with hashes
         env:
-          VERSION: ${{ github.event.inputs.version }}
-        run: ./ci/release_anneal_version.sh "$VERSION"
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ./anneal/tools/prepare-release-pr.py \
+            --tag "${{ needs.prepare-release.outputs.tag_name }}" \
+            --aeneas-version "${{ github.event.inputs.aeneas_version }}" \
+            --crate-version "${{ github.event.inputs.crate_version }}"
 
       - name: Submit PR
         id: submit-pr
-        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0 # zizmor: ignore[superfluous-actions]
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0
         with:
-          commit-message: "Release Anneal ${{ github.event.inputs.version }}"
+          commit-message: "Release Anneal ${{ github.event.inputs.crate_version }}"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
-          title: "Release Anneal ${{ github.event.inputs.version }}"
-          branch: anneal-release-${{ github.event.inputs.version }}
+          title: "Release Anneal ${{ github.event.inputs.crate_version }}"
+          branch: anneal-release-${{ github.event.inputs.crate_version }}
           push-to-fork: google-pr-creation-bot/zerocopy
-          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
 
       - name: Add labels
         if: steps.submit-pr.outputs.pull-request-operation == 'created'
