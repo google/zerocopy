@@ -15,6 +15,15 @@ on:
     paths:
       - 'anneal/Cargo.toml'
   pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Anneal version'
+        required: true
+      branch:
+        description: 'Branch to update'
+        required: true
+        default: 'main'
 
 permissions: {}
 
@@ -26,8 +35,10 @@ jobs:
   check-version:
     name: Check if version was updated
     runs-on: ubuntu-latest
-    # Don't run this on forks.
-    if: github.repository == 'google/zerocopy'
+    # Don't run this on forks. Also skip it on workflow_dispatch because that
+    # trigger is specifically for creating the version-bumping PR, not for
+    # checking if it was already done.
+    if: github.repository == 'google/zerocopy' && github.event_name != 'workflow_dispatch'
     outputs:
       changed: ${{ steps.check.outputs.changed }}
       version: ${{ steps.check.outputs.version }}
@@ -62,7 +73,7 @@ jobs:
   release:
     name: Release to crates.io and GitHub
     needs: check-version
-    if: needs.check-version.outputs.changed == 'true' && github.event_name != 'pull_request'
+    if: needs.check-version.outputs.changed == 'true' && github.event_name != 'pull_request' && github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -116,7 +127,8 @@ jobs:
     # We use `always()` to ensure this job runs even if the `release` job is
     # skipped (which happens on PRs). We still require `check-version` to
     # succeed to avoid running on failures.
-    if: always() && (needs.check-version.result == 'success')
+    # Also skip on workflow_dispatch.
+    if: always() && (needs.check-version.result == 'success') && github.event_name != 'workflow_dispatch'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -179,4 +191,43 @@ jobs:
           TARGET: ${{ matrix.target }}
         run: |
           gh release upload "anneal-v$VERSION" anneal/anneal-toolchain-$TARGET.tar.zst --clobber
+
+  release-version-action:
+    # This job handles manual release triggers. It updates version numbers and
+    # creates a PR for review. It does not perform actual publishing.
+    name: Release new Anneal versions
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          persist-credentials: false
+      - name: Overwrite Anneal files
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+        run: ./ci/release_anneal_version.sh "$VERSION"
+
+      - name: Submit PR
+        id: submit-pr
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0
+        with:
+          commit-message: "Release Anneal ${{ github.event.inputs.version }}"
+          author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
+          committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
+          title: "Release Anneal ${{ github.event.inputs.version }}"
+          branch: anneal-release-${{ github.event.inputs.version }}
+          push-to-fork: google-pr-creation-bot/zerocopy
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
+
+      - name: Add labels
+        if: steps.submit-pr.outputs.pull-request-operation == 'created'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.submit-pr.outputs.pull-request-number }}
+        run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
 
