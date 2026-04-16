@@ -1,4 +1,0 @@
-Error: Charon version mismatch.
-Expected: 0.1.174
-Found:    0.0.0
-Please run `cargo anneal setup` to install the correct version.
