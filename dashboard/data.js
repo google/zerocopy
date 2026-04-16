@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776364931925,
+  "lastUpdate": 1776366130715,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -916,6 +916,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 576,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "748177693d1907006da102d49fd71071504b10ca",
+          "message": "[ci][anneal] Grant write permissions to publish-artifacts job (#3283)\n\ngherrit-pr-id: Gcqmoot6ezcmsbvzyvus2klwwinl46j37",
+          "timestamp": "2026-04-16T11:39:48-07:00",
+          "tree_id": "f397797cfc16d3c01e639fdb3a59128b75858959",
+          "url": "https://github.com/google/zerocopy/commit/748177693d1907006da102d49fd71071504b10ca"
+        },
+        "date": 1776366128232,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 69,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 1176,
             "unit": "seconds"
           }
         ]
