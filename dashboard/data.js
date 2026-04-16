@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776364830468,
+  "lastUpdate": 1776364931925,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -110,6 +110,35 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/commit/0b1feb6aca6fd24e2a3cfa14bea7cc4cef0981be"
         },
         "date": 1776356119353,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Image Size",
+            "value": 9848,
+            "unit": "Megabytes"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "748177693d1907006da102d49fd71071504b10ca",
+          "message": "[ci][anneal] Grant write permissions to publish-artifacts job (#3283)\n\ngherrit-pr-id: Gcqmoot6ezcmsbvzyvus2klwwinl46j37",
+          "timestamp": "2026-04-16T11:39:48-07:00",
+          "tree_id": "f397797cfc16d3c01e639fdb3a59128b75858959",
+          "url": "https://github.com/google/zerocopy/commit/748177693d1907006da102d49fd71071504b10ca"
+        },
+        "date": 1776364929918,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
