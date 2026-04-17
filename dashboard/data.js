@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776415528523,
+  "lastUpdate": 1776416284984,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1147,6 +1147,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 568,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "c5b13a1ef79cc2488b8c15e414bd516632c0e351",
+          "message": "[ci][anneal] Overhaul release process to support manual trigger and PR generation",
+          "timestamp": "2026-04-17T02:13:33Z",
+          "url": "https://github.com/google/zerocopy/pull/3285/commits/c5b13a1ef79cc2488b8c15e414bd516632c0e351"
+        },
+        "date": 1776416283253,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 67,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 577,
             "unit": "seconds"
           }
         ]
