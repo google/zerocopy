@@ -28,7 +28,6 @@ fn main() {
     let vars = [
         ("aeneas_rev", "ANNEAL_AENEAS_REV"),
         ("lean_toolchain", "ANNEAL_LEAN_TOOLCHAIN"),
-        ("charon_version", "ANNEAL_CHARON_EXPECTED_VERSION"),
         ("charon_rust_toolchain", "ANNEAL_CHARON_RUST_TOOLCHAIN"),
     ];
 
@@ -53,6 +52,10 @@ fn main() {
             let dep_upper = dep_name.to_uppercase();
             if let Some(tag) = dep_meta.get("tag").and_then(|t| t.as_str()) {
                 println!("cargo:rustc-env=ANNEAL_{}_TAG={}", dep_upper, tag);
+            }
+
+            if let Some(date) = dep_meta.get("date").and_then(|t| t.as_str()) {
+                println!("cargo:rustc-env=ANNEAL_{}_DATE={}", dep_upper, date);
             }
 
             if let Some(checksums) = dep_meta.get("checksums").and_then(|c| c.as_table()) {

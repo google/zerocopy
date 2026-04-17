@@ -14,6 +14,16 @@ on:
       - main
     paths:
       - 'anneal/Cargo.toml'
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Anneal version'
+        required: true
+      branch:
+        description: 'Branch to update'
+        required: true
+        default: 'main'
 
 permissions: {}
 
@@ -25,8 +35,10 @@ jobs:
   check-version:
     name: Check if version was updated
     runs-on: ubuntu-latest
-    # Don't run this on forks.
-    if: github.repository == 'google/zerocopy'
+    # Don't run this on forks. Also skip it on workflow_dispatch because that
+    # trigger is specifically for creating the version-bumping PR, not for
+    # checking if it was already done.
+    if: github.repository == 'google/zerocopy' && github.event_name != 'workflow_dispatch'
     outputs:
       changed: ${{ steps.check.outputs.changed }}
       version: ${{ steps.check.outputs.version }}
@@ -61,7 +73,7 @@ jobs:
   release:
     name: Release to crates.io and GitHub
     needs: check-version
-    if: needs.check-version.outputs.changed == 'true'
+    if: needs.check-version.outputs.changed == 'true' && github.event_name != 'pull_request' && github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -108,3 +120,116 @@ jobs:
           set -eo pipefail
           TAG="anneal-v$VERSION"
           gh release create "$TAG" --generate-notes
+
+  publish-artifacts:
+    name: Publish Artifacts (${{ matrix.target }})
+    needs: [check-version, release]
+    # We use `always()` to ensure this job runs even if the `release` job is
+    # skipped (which happens on PRs). We still require `check-version` to
+    # succeed to avoid running on failures.
+    # This job is also skipped on manual triggers (workflow_dispatch).
+    if: always() && (needs.check-version.result == 'success') && github.event_name != 'workflow_dispatch'
+    permissions:
+      contents: write # This is required to upload assets to a release.
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x86_64
+            rust_triple: x86_64-unknown-linux-gnu
+          - os: ubuntu-24.04-arm
+            target: linux-aarch64
+            rust_triple: aarch64-unknown-linux-gnu
+          - os: macos-15-intel
+            target: macos-x86_64
+            rust_triple: x86_64-apple-darwin
+          - os: macos-latest
+            target: macos-aarch64
+            rust_triple: aarch64-apple-darwin
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Extract Metadata
+        id: meta
+        run: |
+          set -eo pipefail
+          cd anneal
+          AENEAS_TAG=$(sed -n 's/^tag = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          RUST_DATE=$(sed -n 's/^date = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          echo "aeneas_tag=$AENEAS_TAG" >> $GITHUB_OUTPUT
+          echo "rust_date=$RUST_DATE" >> $GITHUB_OUTPUT
+
+      - name: Install elan
+        run: |
+          set -eo pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Install zstd (macOS)
+        if: runner.os == 'macOS'
+        run: brew install zstd
+
+      - name: Download and Package
+        env:
+          RUST_TRIPLE: ${{ matrix.rust_triple }}
+        run: |
+          set -eo pipefail
+          cd anneal
+          
+          STAGING_DIR="dist_staging"
+          mkdir -p "$STAGING_DIR"
+          
+          ./tools/build-prebuilt.sh "$RUST_TRIPLE"
+          
+      - name: Upload Artifact
+        if: github.event_name != 'pull_request' && needs.release.result == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.check-version.outputs.version }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          gh release upload "anneal-v$VERSION" anneal/anneal-toolchain-$TARGET.tar.zst --clobber
+
+  release-version-action:
+    # This job handles manual release triggers. It updates version numbers and
+    # creates a PR for review. It does not perform actual publishing.
+    name: Release new Anneal versions
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      pull-requests: write # Required to create pull requests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          persist-credentials: false
+      - name: Overwrite Anneal files
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+        run: ./ci/release_anneal_version.sh "$VERSION"
+
+      - name: Submit PR
+        id: submit-pr
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0 # zizmor: ignore[superfluous-actions]
+        with:
+          commit-message: "Release Anneal ${{ github.event.inputs.version }}"
+          author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
+          committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
+          title: "Release Anneal ${{ github.event.inputs.version }}"
+          branch: anneal-release-${{ github.event.inputs.version }}
+          push-to-fork: google-pr-creation-bot/zerocopy
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
+
+      - name: Add labels
+        if: steps.submit-pr.outputs.pull-request-operation == 'created'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.submit-pr.outputs.pull-request-number }}
+        run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
+

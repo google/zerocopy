@@ -33,8 +33,8 @@ jobs:
     name: Build Docker image
     runs-on: ubuntu-24.04-64core
     permissions:
-      contents: read
-      packages: write # required to push docker caches to ghcr.io # required to push docker caches to ghcr.io
+      contents: write # Required to push benchmark data to the storage branch
+      packages: write # required to push docker caches to ghcr.io
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -64,6 +64,10 @@ jobs:
           echo "uid=$(id -u)" >> "$GITHUB_OUTPUT"
           echo "gid=$(id -g)" >> "$GITHUB_OUTPUT"
 
+      - name: Start build timer
+        id: start_timer
+        run: echo "start=$(date +%s)" >> "$GITHUB_OUTPUT"
+
       - name: Build Docker image (Dry Run)
         id: build_dry
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
@@ -86,6 +90,29 @@ jobs:
             type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }}
             type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:main
           cache-to: type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }},mode=max
+
+      - name: Record build time
+        env:
+          START_TIME: ${{ steps.start_timer.outputs.start }}
+        run: |
+          end=$(date +%s)
+          start=$START_TIME
+          duration=$((end - start))
+          echo "Docker Build Time: $duration seconds"
+          echo "[{\"name\": \"Docker Build Time\", \"unit\": \"seconds\", \"value\": $duration}]" > build_time.json
+
+      - name: Store build time benchmark
+        uses: benchmark-action/github-action-benchmark@a60cea5bc7b49e15c1f58f411161f99e0df48372 # v1.22.0
+        with:
+          name: Docker Build Time
+          tool: 'customSmallerIsBetter'
+          output-file-path: build_time.json
+          gh-pages-branch: benchmark-data
+          auto-push: true
+          save-data-file: ${{ github.ref == 'refs/heads/main' }}
+          benchmark-data-dir-path: dashboard
+          fail-on-alert: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check if remote image matches
         id: check_remote
@@ -129,12 +156,82 @@ jobs:
             type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:main
           cache-to: type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }},mode=max
 
+  measure_image_size:
+    # This job measures the size of the Docker image built in the previous step
+    # and records it to maintain a history of resource usage over time.
+    name: Measure Docker image size
+    runs-on: ubuntu-24.04-64core
+    needs: build_docker_env
+    # We only run this on the main branch (and the test branch for verification)
+    # to ensure we only track history for merged code.
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/anneal-dashboards'
+    permissions:
+      contents: write # Required to push benchmark data to the storage branch
+      packages: read # Required to pull the Docker image from GHCR
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate sanitized Docker tag
+        # We need to replace slashes in branch names with hyphens to form a valid
+        # Docker tag, matching the logic used in the build job.
+        id: docker_tag
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
+
+      - name: Pull image
+        # We pull the image we just built and tag it locally so we can inspect it.
+        run: |
+          docker pull ghcr.io/google/zerocopy/anneal:${STEPS_DOCKER_TAG_OUTPUTS_TAG}
+          docker tag ghcr.io/google/zerocopy/anneal:${STEPS_DOCKER_TAG_OUTPUTS_TAG} anneal-ci:local
+        env:
+          STEPS_DOCKER_TAG_OUTPUTS_TAG: ${{ steps.docker_tag.outputs.tag }}
+
+      - name: Measure size
+        # We use docker image inspect to get the size in bytes and convert it to
+        # Megabytes for easier reading on the dashboard.
+        id: measure
+        run: |
+          size=$(docker image inspect anneal-ci:local --format '{{.Size}}')
+          size_mb=$((size / 1024 / 1024))
+          echo "Image size: $size_mb MB"
+          echo "[{\"name\": \"Docker Image Size\", \"unit\": \"Megabytes\", \"value\": $size_mb}]" > output.json
+
+      - name: Store benchmark result
+        # We use github-action-benchmark to manage the history of image sizes.
+        # It is configured to store results in a dedicated branch to avoid
+        # complex cache management.
+        uses: benchmark-action/github-action-benchmark@a60cea5bc7b49e15c1f58f411161f99e0df48372 # v1.22.0
+        with:
+          name: Docker Image Size
+          tool: 'customSmallerIsBetter'
+          output-file-path: output.json
+          gh-pages-branch: benchmark-data
+          auto-push: true
+          benchmark-data-dir-path: dashboard
+          fail-on-alert: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
   anneal_tests:
     name: Anneal Tests
     runs-on: ubuntu-24.04-64core
     needs: build_docker_env
     permissions:
-      contents: read
+      contents: write # Required to push benchmark data to the storage branch
       packages: read # required to pull docker caches from ghcr.io
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -167,7 +264,13 @@ jobs:
 
       - name: Pull and tag image
         run: |
+          start=$(date +%s)
           docker pull ghcr.io/google/zerocopy/anneal:${STEPS_DOCKER_TAG_OUTPUTS_TAG}
+          end=$(date +%s)
+          duration=$((end - start))
+          echo "Docker Pull Time: $duration seconds"
+          echo "[{\"name\": \"Docker Pull Time\", \"unit\": \"seconds\", \"value\": $duration}]" > pull_time.json
+          
           docker tag ghcr.io/google/zerocopy/anneal:${STEPS_DOCKER_TAG_OUTPUTS_TAG} anneal-ci:local
         env:
           STEPS_DOCKER_TAG_OUTPUTS_TAG: ${{ steps.docker_tag.outputs.tag }}
@@ -201,12 +304,33 @@ jobs:
       # missing test categories.
       - name: Run all tests
         run: |
+          start=$(date +%s)
           # We intentionally omit the `--rm` flag here. In the GitHub Actions
           # environment, Docker's container removal process can take over 5
           # minutes to complete after the tests finish. Since the runner VM is
           # destroyed at the end of the job, leaving the container is safe and
           # saves time.
           docker run -v $GITHUB_WORKSPACE/anneal:/workspace anneal-ci:local cargo test --verbose
+          end=$(date +%s)
+          duration=$((end - start))
+          echo "Test Time: $duration seconds"
+          echo "[{\"name\": \"Test Time\", \"unit\": \"seconds\", \"value\": $duration}]" > test_time.json
+
+      - name: Combine benchmarks
+        run: jq -s 'add' pull_time.json test_time.json > output.json
+
+      - name: Store CI duration benchmarks
+        uses: benchmark-action/github-action-benchmark@a60cea5bc7b49e15c1f58f411161f99e0df48372 # v1.22.0
+        with:
+          name: CI Durations
+          tool: 'customSmallerIsBetter'
+          output-file-path: output.json
+          gh-pages-branch: benchmark-data
+          auto-push: true
+          save-data-file: ${{ github.ref == 'refs/heads/main' }}
+          benchmark-data-dir-path: dashboard
+          fail-on-alert: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   verify_examples:
     name: Verify example (${{ matrix.example }})
@@ -233,6 +357,12 @@ jobs:
           - unchecked_get
           - update_max
     steps:
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/share/boost
+
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
@@ -306,10 +436,12 @@ jobs:
             fi
           fi
 
+
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
-      # WARNING: This name is load-bearing! It's how GitHub's settings UI configures which jobs
-      # to block on. DO NOT change this name without updating the settings UI to match.
+      # WARNING: This name is load-bearing! It's how GitHub's settings UI
+      # configures which jobs to block on. DO NOT change this name without
+      # updating the settings UI to match.
       name: All checks succeeded (anneal.yml)
       # On failure, we run and unconditionally exit with a failing status code.
       # On success, this job is skipped. Jobs skipped using `if:` are considered
@@ -318,7 +450,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_docker_env, anneal_tests, verify_examples]
+      needs: [build_docker_env, anneal_tests, verify_examples, measure_image_size]
       steps:
         - name: Mark the job as failed
           run: exit 1
