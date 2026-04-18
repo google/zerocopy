@@ -29,19 +29,19 @@ args = ["setup"]
 name = "Verify charon is restored"
 action = "assert_toolchain_binary charon bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836"
 
-# Phase 3: Corrupt aeneas and verify repair
+# Phase 3: Delete aeneas and verify repair
 [[test.phases]]
-name = "Corrupt aeneas"
-action = "corrupt_toolchain_file aeneas"
+name = "Delete aeneas"
+action = "delete_toolchain_file aeneas"
 
 [[test.phases]]
-name = "Verify aeneas is corrupted"
-action = "assert_toolchain_binary aeneas corrupted"
+name = "Verify aeneas is missing"
+action = "assert_toolchain_binary aeneas missing"
 
 [[test.phases]]
-name = "Repair corrupted aeneas"
+name = "Repair deleted aeneas"
 args = ["setup"]
 
 [[test.phases]]
-name = "Verify aeneas is repaired"
+name = "Verify aeneas is restored"
 action = "assert_toolchain_binary aeneas 306d908964df4e54bfc57b2fc3d88809eace9e77ac639adf5c0f0d5a8574397e"

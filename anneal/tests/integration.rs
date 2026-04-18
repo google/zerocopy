@@ -719,7 +719,6 @@ echo "---END-INVOCATION---" >> "{}"
             let base_url = format!("http://127.0.0.1:{}", port);
             cmd.env("ANNEAL_SETUP_AENEAS_BASE_URL", &base_url);
             cmd.env("ANNEAL_SETUP_RUST_BASE_URL", &base_url);
-            cmd.env("__ANNEAL_USE_MOCK_RUST_HASHES", "1");
 
             let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
             let testdata_setup = manifest_dir.join("testdata/setup");
@@ -767,9 +766,11 @@ echo "---END-INVOCATION---" >> "{}"
         // onto `/dummy`.
         let rustflags = format!("--remap-path-prefix={}=/dummy", self.test_case_root.display());
 
+        let ld_library_path = toolchain_path.join("rustc-nightly-x86_64-unknown-linux-gnu/rustc/lib");
         cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"))
             .env("PATH", new_path)
             .env("RUSTFLAGS", rustflags)
+            .env("LD_LIBRARY_PATH", ld_library_path)
             // Redirect HOME to the persistent home directory within the sandbox.
             // This ensures that the toolchain is looked up and potentially
             // repaired/reinstalled in a location that is isolated from the
