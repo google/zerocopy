@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776525752837,
+  "lastUpdate": 1776526243698,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1864,6 +1864,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 1185,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "a70cac3cdaaff55316ffc9d06ac81ec304fd6bca",
+          "message": "[ci][anneal] When publishing, prune Mathlib rather than removing it",
+          "timestamp": "2026-04-18T13:51:08Z",
+          "url": "https://github.com/google/zerocopy/pull/3290/commits/a70cac3cdaaff55316ffc9d06ac81ec304fd6bca"
+        },
+        "date": 1776526241669,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 79,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 579,
             "unit": "seconds"
           }
         ]
