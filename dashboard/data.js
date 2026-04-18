@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776537202849,
+  "lastUpdate": 1776537680710,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2158,6 +2158,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 580,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "56518f056f4547b74e710f0fc9bb3e5257fd3994",
+          "message": "[ci][anneal] In release, don't build tests; fix location of charon artifacts",
+          "timestamp": "2026-04-18T18:15:06Z",
+          "url": "https://github.com/google/zerocopy/pull/3293/commits/56518f056f4547b74e710f0fc9bb3e5257fd3994"
+        },
+        "date": 1776537677965,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 67,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 572,
             "unit": "seconds"
           }
         ]
