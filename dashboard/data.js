@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776545451264,
+  "lastUpdate": 1776545566375,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -371,6 +371,35 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/commit/fbdeab52de993f2bad6b650acd6aa8353d9edc89"
         },
         "date": 1776537200686,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Image Size",
+            "value": 9849,
+            "unit": "Megabytes"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "234b7e0927728428e836aa455a1960bca7cd52c3",
+          "message": "[ci][anneal] Remove tests before building Lean library in release (#3294)\n\ngherrit-pr-id: Gzcu4ycvlg2exazk6idhxol3x7mrndvgg",
+          "timestamp": "2026-04-18T16:48:59-04:00",
+          "tree_id": "4e11b4b4883ef6eb56a4c282538d0d5c9ce4d421",
+          "url": "https://github.com/google/zerocopy/commit/234b7e0927728428e836aa455a1960bca7cd52c3"
+        },
+        "date": 1776545564558,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
