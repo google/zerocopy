@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776526243698,
+  "lastUpdate": 1776526343947,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1894,6 +1894,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 579,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "00c910938978083a5405faed719ca02dcec730ad",
+          "message": "[ci][anneal] When publishing, prune Mathlib rather than removing it (#3290)\n\ngherrit-pr-id: Gob4ak2l443wyguc6vd6uej7wndlqzhis",
+          "timestamp": "2026-04-18T11:18:01-04:00",
+          "tree_id": "f83185dc52b9877770089fc9e13f3aba0ca5dab7",
+          "url": "https://github.com/google/zerocopy/commit/00c910938978083a5405faed719ca02dcec730ad"
+        },
+        "date": 1776526341480,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 108,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 571,
             "unit": "seconds"
           }
         ]
