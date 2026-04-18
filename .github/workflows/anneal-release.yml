@@ -131,17 +131,23 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write # required to create a GitHub release
+    outputs:
+      tag_name: ${{ steps.tag.outputs.tag_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Create Release
+        id: tag
         env:
           GH_TOKEN: ${{ github.token }}
-          AENEAS_VERSION: ${{ github.event.inputs.aeneas_version }}
+          GITHUB_SHA: ${{ github.sha }}
         run: |
-          gh release create "anneal-artifacts-$AENEAS_VERSION" --generate-notes --draft --prerelease || true
+          set -eo pipefail
+          TAG_NAME="build-$(date +'%Y.%m.%d.%H%M%S')-$GITHUB_SHA"
+          gh release create "$TAG_NAME" --generate-notes --draft --prerelease
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
   publish-artifacts:
     name: Publish Artifacts (${{ matrix.target }})
@@ -214,9 +220,10 @@ jobs:
           AENEAS_VERSION: ${{ github.event.inputs.aeneas_version }}
           TARGET: ${{ matrix.target }}
           EVENT_NAME: ${{ github.event_name }}
+          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
         run: |
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            TAG="anneal-artifacts-$AENEAS_VERSION"
+            TAG="$TAG_NAME"
           else
             TAG="anneal-v$VERSION"
           fi
@@ -237,9 +244,9 @@ jobs:
       - name: Publish Release
         env:
           GH_TOKEN: ${{ github.token }}
-          AENEAS_VERSION: ${{ github.event.inputs.aeneas_version }}
+          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
         run: |
-          gh release edit "anneal-artifacts-$AENEAS_VERSION" --draft=false
+          gh release edit "$TAG_NAME" --draft=false
 
   release-version-action:
     # This job handles manual release triggers. It updates version numbers and
