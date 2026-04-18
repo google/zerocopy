@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776517623613,
+  "lastUpdate": 1776517645731,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1604,6 +1604,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 582,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "23ff5079038cc931d8c3c1e65142e3fcb7225ec4",
+          "message": "[ci][anneal] Use draft release pattern to avoid immutable release error",
+          "timestamp": "2026-04-18T12:25:49Z",
+          "url": "https://github.com/google/zerocopy/pull/3288/commits/23ff5079038cc931d8c3c1e65142e3fcb7225ec4"
+        },
+        "date": 1776517643930,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 70,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 567,
             "unit": "seconds"
           }
         ]
