@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776517645731,
+  "lastUpdate": 1776520256019,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -995,6 +995,31 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/pull/3288/commits/23ff5079038cc931d8c3c1e65142e3fcb7225ec4"
         },
         "date": 1776516956643,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 6,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "a3638097edac2d1c9a5416788fcc427b739573e3",
+          "message": "[ci][anneal] Use unique tags for manual artifact releases",
+          "timestamp": "2026-04-18T12:53:13Z",
+          "url": "https://github.com/google/zerocopy/pull/3289/commits/a3638097edac2d1c9a5416788fcc427b739573e3"
+        },
+        "date": 1776520254372,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
