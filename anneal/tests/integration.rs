@@ -433,6 +433,14 @@ impl TestContext {
             }
         } else {
             let aeneas_cache_backend = toolchain_path.join("backends/lean");
+            if let Ok(rd) = fs::read_dir(&aeneas_cache_backend) {
+                println!("Global Aeneas backend contents:");
+                for e in rd.filter_map(|e| e.ok()) {
+                    println!("  {}", e.file_name().to_string_lossy());
+                }
+            } else {
+                println!("Global Aeneas backend does not exist at {:?}", aeneas_cache_backend);
+            }
             acquire_worker_cache(&target_dir, &aeneas_cache_backend)
                 .map_err(|e| anyhow::anyhow!("Failed to acquire worker cache: {}", e))?
         };
@@ -719,7 +727,6 @@ echo "---END-INVOCATION---" >> "{}"
             let base_url = format!("http://127.0.0.1:{}", port);
             cmd.env("ANNEAL_SETUP_AENEAS_BASE_URL", &base_url);
             cmd.env("ANNEAL_SETUP_RUST_BASE_URL", &base_url);
-            cmd.env("__ANNEAL_USE_MOCK_RUST_HASHES", "1");
 
             let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
             let testdata_setup = manifest_dir.join("testdata/setup");
@@ -749,9 +756,6 @@ echo "---END-INVOCATION---" >> "{}"
 
         cmd.env("ANNEAL_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
-        let isolated_aeneas_dir = self.sandbox_root.join("aeneas_cache");
-        fs::create_dir_all(&isolated_aeneas_dir).unwrap();
-        cmd.env("ANNEAL_AENEAS_DIR", isolated_aeneas_dir);
         cmd.env("ANNEAL_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
         cmd.env("ANNEAL_USE_PATH_FOR_TOOLS", "1");
         cmd.env("RAYON_NUM_THREADS", "1");
@@ -767,9 +771,11 @@ echo "---END-INVOCATION---" >> "{}"
         // onto `/dummy`.
         let rustflags = format!("--remap-path-prefix={}=/dummy", self.test_case_root.display());
 
+        let ld_library_path = toolchain_path.join("rustc-nightly-x86_64-unknown-linux-gnu/rustc/lib");
         cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"))
             .env("PATH", new_path)
             .env("RUSTFLAGS", rustflags)
+            .env("LD_LIBRARY_PATH", ld_library_path)
             // Redirect HOME to the persistent home directory within the sandbox.
             // This ensures that the toolchain is looked up and potentially
             // repaired/reinstalled in a location that is isolated from the
