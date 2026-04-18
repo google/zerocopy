@@ -112,9 +112,14 @@ lake exe cache get
 # This ensures that shared libraries required for plugin loading are generated.
 CI="" lake build
 
-# Prune heavy dependency sources to keep the final artifact small,
-# as per user preference for the "smallest possible artifact".
-rm -rf .lake/packages
+# Generate the dependency graph
+lake exe graph imports.dot --to Aeneas,Aeneas.Std.Core,Aeneas.Std.WP,Aeneas.Tactic.Solver.ScalarTac,Aeneas.Std.Scalar.Core --include-deps
+
+# Prune Mathlib based on the graph
+python3 ../../../tools/prune_mathlib.py imports.dot .lake/packages/mathlib
+
+# Clean up the graph file
+rm imports.dot
 
 cd ../.. # Back to dist_staging
 

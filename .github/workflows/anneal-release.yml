@@ -231,7 +231,7 @@ jobs:
 
   finalize-release:
     name: Finalize Release
-    needs: publish-artifacts
+    needs: [publish-artifacts, create-release]
     if: always() && needs.publish-artifacts.result == 'success' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
