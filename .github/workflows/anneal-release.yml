@@ -141,7 +141,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           AENEAS_VERSION: ${{ github.event.inputs.aeneas_version }}
         run: |
-          gh release create "anneal-artifacts-$AENEAS_VERSION" --generate-notes --prerelease || true
+          gh release create "anneal-artifacts-$AENEAS_VERSION" --generate-notes --draft --prerelease || true
 
   publish-artifacts:
     name: Publish Artifacts (${{ matrix.target }})
@@ -221,6 +221,25 @@ jobs:
             TAG="anneal-v$VERSION"
           fi
           gh release upload "$TAG" anneal/anneal-toolchain-$TARGET.tar.zst --clobber
+
+  finalize-release:
+    name: Finalize Release
+    needs: publish-artifacts
+    if: always() && needs.publish-artifacts.result == 'success' && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # required to publish the release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Publish Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AENEAS_VERSION: ${{ github.event.inputs.aeneas_version }}
+        run: |
+          gh release edit "anneal-artifacts-$AENEAS_VERSION" --draft=false
 
   release-version-action:
     # This job handles manual release triggers. It updates version numbers and
