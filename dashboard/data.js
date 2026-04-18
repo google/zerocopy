@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776416284984,
+  "lastUpdate": 1776513917266,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -696,6 +696,31 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/pull/3285/commits/c5b13a1ef79cc2488b8c15e414bd516632c0e351"
         },
         "date": 1776415526560,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 6,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "3112444f6eca22cf442f830212c03cd2388c3943",
+          "message": "[ci][anneal] Add manual trigger to publish precompiled artifacts",
+          "timestamp": "2026-04-18T11:58:41Z",
+          "url": "https://github.com/google/zerocopy/pull/3286/commits/3112444f6eca22cf442f830212c03cd2388c3943"
+        },
+        "date": 1776513915732,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
