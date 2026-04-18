@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776536036815,
+  "lastUpdate": 1776536135106,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1191,6 +1191,35 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 6,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b04142396963357c0bf3cf3d9e42e21070e38bfb",
+          "message": "[ci][anneal] Fix sysroot layout and exclude tests in builder script (#3291)\n\ngherrit-pr-id: Gxhjefmzsst6q46o4l36bblw2nfrkwncy",
+          "timestamp": "2026-04-18T14:15:01-04:00",
+          "tree_id": "aa056420098859d5eb3a1185b40c9c371163e624",
+          "url": "https://github.com/google/zerocopy/commit/b04142396963357c0bf3cf3d9e42e21070e38bfb"
+        },
+        "date": 1776536133230,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 8,
             "unit": "seconds"
           }
         ]
