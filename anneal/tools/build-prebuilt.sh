@@ -92,6 +92,11 @@ tar -xzf rustc-dev.tar.gz -C rust --strip-components=2
 tar -xzf llvm-tools.tar.gz -C rust --strip-components=2
 tar -xzf miri.tar.gz -C rust --strip-components=2
 tar -xzf rust-src.tar.gz -C rust --strip-components=2
+
+# Move charon and charon-driver to rust/bin to sit alongside rustc
+# This allows them to find shared libraries in ../lib relative to themselves.
+mv charon charon-driver rust/bin/
+
 # Nix preserves read-only permissions from the store, so we must make files
 # writable.
 chmod -R +w .
@@ -112,7 +117,7 @@ lake exe cache get
 
 # Force precompilation by unsetting CI environment variable.
 # This ensures that shared libraries required for plugin loading are generated.
-CI="" lake build
+CI="" lake build Aeneas
 
 # Generate the dependency graph
 lake exe graph imports.dot --to Aeneas,Aeneas.Std.Core,Aeneas.Std.WP,Aeneas.Tactic.Solver.ScalarTac,Aeneas.Std.Scalar.Core --include-deps
