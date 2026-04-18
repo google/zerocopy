@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776545351746,
+  "lastUpdate": 1776545451264,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1357,6 +1357,35 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 7,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "234b7e0927728428e836aa455a1960bca7cd52c3",
+          "message": "[ci][anneal] Remove tests before building Lean library in release (#3294)\n\ngherrit-pr-id: Gzcu4ycvlg2exazk6idhxol3x7mrndvgg",
+          "timestamp": "2026-04-18T16:48:59-04:00",
+          "tree_id": "4e11b4b4883ef6eb56a4c282538d0d5c9ce4d421",
+          "url": "https://github.com/google/zerocopy/commit/234b7e0927728428e836aa455a1960bca7cd52c3"
+        },
+        "date": 1776545448212,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 8,
             "unit": "seconds"
           }
         ]
