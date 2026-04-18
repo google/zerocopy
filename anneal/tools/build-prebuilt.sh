@@ -117,7 +117,16 @@ lake exe cache get
 
 # Force precompilation by unsetting CI environment variable.
 # This ensures that shared libraries required for plugin loading are generated.
-CI="" lake build Aeneas
+# Remove tests from AeneasMeta to avoid users compiling them
+rm -f AeneasMeta/Async/Test.lean
+rm -f AeneasMeta/Async/TestTactics.lean
+# Remove imports of these tests from Async.lean
+sed '/import AeneasMeta.Async.Test/d' AeneasMeta/Async.lean > AeneasMeta/Async.lean.tmp && mv AeneasMeta/Async.lean.tmp AeneasMeta/Async.lean
+
+# Remove Mathlib tests to keep the artifact small
+rm -rf .lake/packages/mathlib/MathlibTest
+
+CI="" lake build
 
 # Generate the dependency graph
 lake exe graph imports.dot --to Aeneas,Aeneas.Std.Core,Aeneas.Std.WP,Aeneas.Tactic.Solver.ScalarTac,Aeneas.Std.Scalar.Core --include-deps
@@ -127,15 +136,6 @@ python3 ../../../tools/prune_mathlib.py imports.dot .lake/packages/mathlib
 
 # Clean up the graph file
 rm imports.dot
-
-# Remove tests from AeneasMeta to avoid users compiling them
-rm -f AeneasMeta/Async/Test.lean
-rm -f AeneasMeta/Async/TestTactics.lean
-# Remove imports of these tests from Async.lean
-sed '/import AeneasMeta.Async.Test/d' AeneasMeta/Async.lean > AeneasMeta/Async.lean.tmp && mv AeneasMeta/Async.lean.tmp AeneasMeta/Async.lean
-
-# Remove Mathlib tests to keep the artifact small
-rm -rf .lake/packages/mathlib/MathlibTest
 
 cd ../.. # Back to dist_staging
 
