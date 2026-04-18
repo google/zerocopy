@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776514791645,
+  "lastUpdate": 1776515119209,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -809,6 +809,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 8,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "0cf19a0dab9a54ab95a4cc163cb76b245fc684a5",
+          "message": "[ci][anneal] Make concurrency group dynamic by branch/PR",
+          "timestamp": "2026-04-18T12:16:17Z",
+          "url": "https://github.com/google/zerocopy/pull/3287/commits/0cf19a0dab9a54ab95a4cc163cb76b245fc684a5"
+        },
+        "date": 1776515117956,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 5,
             "unit": "seconds"
           }
         ]
