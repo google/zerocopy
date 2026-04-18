@@ -53,6 +53,9 @@ reqwest = { version = "0.12", features = ["blocking", "rustls-tls"] }
 dirs = "6.0"
 tar = "0.4"
 flate2 = "1.1"
+# The zstd crate is required to support decompression of the new unified archive
+# format (.tar.zst) used for pre-built artifacts.
+zstd = "0.13"
 
 [build-dependencies]
 toml = "0.8"
@@ -84,7 +87,7 @@ similar = "2.7.0"
 #
 # FIXME: Add a CI step to verify that this commit exists and matches the
 # toolchain version.
-aeneas_rev = "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+aeneas_rev = "fbdeab52de993f2bad6b650acd6aa8353d9edc89"
 
 # The Lean toolchain version to use. This must match the version of Lean used
 # by Aeneas in the `lean-toolchain` file in the commit above.
@@ -96,64 +99,17 @@ lean_toolchain = "leanprover/lean4:v4.28.0-rc1"
 # - Roll this from `tools/roll-pinned-prebuilts.py`
 # - Auto-install via `rustup` during `cargo anneal setup`
 charon_rust_toolchain = "nightly-2026-02-07"
+charon_version = "0.1.0-dummy"
 
 [package.metadata.anneal.dependencies.aeneas]
 # The per-commit release tag from AeneasVerif/charon
-tag = "build-2026.04.07.112215-42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+tag = "build-2026.04.18.190229-fbdeab52de993f2bad6b650acd6aa8353d9edc89"
 
 [package.metadata.anneal.dependencies.aeneas.checksums]
-linux-aarch64 = "a250ef38be509f69ff4c5fb35eded165255fae6f659172837cd3053978de863f"
-linux-aarch64-aeneas = "fca0dedece748b406f180341ba83d764eb7b2bf5f11fbb54668fc26609a3032d"
-linux-aarch64-charon = "471883ad31629b569e727e256e4f5ab2c1726bfb3060cb6585037c7088062ed3"
-linux-aarch64-charon-driver = "df2622bb873ae9d10b25294b291cbc07bca32c26554c4f825f3a6d2f094cdbe4"
-linux-x86_64 = "a448682a154590e65b0794c42487583352375fc04bdd6b2418324f6ecafcc94f"
-linux-x86_64-aeneas = "306d908964df4e54bfc57b2fc3d88809eace9e77ac639adf5c0f0d5a8574397e"
-linux-x86_64-charon = "bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836"
-linux-x86_64-charon-driver = "20379b2051dd51dbea8d720e4041d55afe9241b95ab911e3b06492110450ecd0"
-macos-aarch64 = "1dbeaafe875bec173e0d2cf3c6bbfa63d6c591d3ec554bafb0d2c3c52e1ded6d"
-macos-aarch64-aeneas = "f85db47ef602108c727bfac23d1e27fb52d4fb1010b0f55ffb748da65fb0a1b6"
-macos-aarch64-charon = "6510ace82180cd78875b0631638a200d8e55bc9090c9372ea1dc8eb08511b6fb"
-macos-aarch64-charon-driver = "3c11fcb6c5cd65cd14d9747c7f8ddd1522b608a1e79041c907cb79d3118054b2"
-macos-x86_64 = "e977c28b72ec041d4f13df0acc77ab59040743a9659b4eefffb71eb420cd5df6"
-macos-x86_64-aeneas = "ceb3d8ee898f941861efb1545537681e0f4419f332482468e520621a809cb09e"
-macos-x86_64-charon = "926c5ff8495c19b7a6f3aff1a3861970bae11bd374cf114ac3924a27bcae9ee7"
-macos-x86_64-charon-driver = "03e6617fe122f29111bf16538a5ba8f0beac6698ce473d99069439d30fa552e8"
-
-[package.metadata.anneal.dependencies.rust]
-tag = "nightly-2026-02-07"
-date = "2026-02-07"
-
-[package.metadata.anneal.dependencies.rust.checksums]
-linux-x86_64-rustc = "f58a30c9fa9add81d0e99209fd960aa429f0a4ff7a37f9044e5d9eb1a598c925"
-linux-x86_64-rust-std = "1b06ef4654bcacd06c4f14094ca9bfe8d8bd4129c96b6b6594e3a9cf0d0214d2"
-linux-x86_64-rustc-dev = "7f120343b7153e166261558b07efb8081781cfdd617e5a59ac0e144cbbe9b3df"
-linux-x86_64-llvm-tools-preview = "4ca90ae6805121c591bb35998c12c69e6f77f9f7cc93edd72a26dfc017f0c098"
-linux-x86_64-miri-preview = "c90b56d0c094d6599f827b5feebb6a105af536b3540924fa373356a38f296d33"
-linux-x86_64-cargo = "414e784933c550d7b7c88bbaaa0578609c2c618c9d664ae9a966ce914c54b383"
-
-linux-aarch64-rustc = "cd781f03a07803fa6048e9848992c88d5b7311a5570e702754b8fc271e780a79"
-linux-aarch64-rust-std = "c7e9d1d54ccd6a9426be2de7b1e22d5a6eb4c0e18d0cff5c2dfe5e6a836d1e61"
-linux-aarch64-rustc-dev = "552302886c5a3ff8f97d55838efd48ec7876ccfc544f334affa6da59a159fc57"
-linux-aarch64-llvm-tools-preview = "1aa7233de3856fb213b7c1927e3d3378b5484a18adbb631bc116ff63fbbb151e"
-linux-aarch64-miri-preview = "de65c893bbcf186150204c27de29b408d6bbc59a49b6327119461cefafbc1b42"
-linux-aarch64-cargo = "c85804bd8644035d7981b28e3832ac54f7cbcce1e406319b32dff6ca55d0305c"
-
-macos-x86_64-rustc = "c17ebb6d433fd9cd09b6ca59c2e8c18114e0fd54917997a1b6dcaa1187d0dd23"
-macos-x86_64-rust-std = "8d3f34cc047d2daa578615e9ade5b9e80cda2b1a9d14677f1d901d52e840ea35"
-macos-x86_64-rustc-dev = "817b2b71d70b07f3f5dfb897b47598b1d64d2d789a71a1250d2123d53262adc5"
-macos-x86_64-llvm-tools-preview = "506df88302ff5bb3e652b743ceda9284e7a7fb96fd4c2b3c159a4bdacd815f22"
-macos-x86_64-miri-preview = "19f717a65f4c07065b732f43bd14e10303108fc68194e3b7d8d2d574736e4735"
-macos-x86_64-cargo = "3ee21dcd2266293458d58c417d3b0aa351bb4d567d20ed15552f992a6f2f3fe5"
-
-macos-aarch64-rustc = "7f3e916728eaecf5e32ec98a132d21aa677f2f9a9c08527ebbd1025755fda537"
-macos-aarch64-rust-std = "888548770827ece8c90fdc8efcb3a3fab0c38823d1f163535aaeec2f325c8001"
-macos-aarch64-rustc-dev = "3bed787e9d2b8dc21691bcb33ded3fe9b45f57f46d50fc82c4e2d7c6ea35f519"
-macos-aarch64-llvm-tools-preview = "df48a63ebccf2b983b450390908a58e8955bb6d38f8a84ad68dbcef3815aa9c9"
-macos-aarch64-miri-preview = "c99b5930e32cdddaa10fb08af3235fec9fede2327b9e4704591bae41c9e329d7"
-macos-aarch64-cargo = "6615a0d863d962e2479ce49b3312516abdbdf2403fd3796590cc5823f35d2202"
-
-rust-src = "404582b3ef31783b3ee390382e149736cc5d49e5b04d4d1ac39d1371a4ddedca"
-
+linux-aarch64 = "f285291f9412aa8068131545e18280fcb45803a9da1141e1698e8bf0efe63b38"
+linux-x86_64 = "70e89c218d76ed584bac1685c0390ce18ea9cb769e6e0cb756afe40795974a11"
+macos-aarch64 = "c87e1fc6db25345865fb9e841fc79f06c13c7811faa9ce0cfa0019ea18fc531b"
+macos-x86_64 = "c4a1f78ae509f9b3da962809e5ce8a0ac52d95e9b71927dd707019bc03a5de16"
 
 [[test]]
 name = "integration"

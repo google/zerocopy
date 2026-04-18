@@ -84,11 +84,10 @@ RUN cargo build && \
 # to reduce the image size. This must be done after `cargo run` because that
 # command fetches and builds the dependencies.
 ENV ANNEAL_TOOLCHAIN_DIR=/opt/anneal_toolchain
-RUN cargo run && \
-    LEAN_DIR=$(find /opt/anneal_toolchain/.anneal/toolchain/ -type d -name "lean" | head -n 1) && \
-    cd $LEAN_DIR && \
-    lake exe graph imports.dot --to Aeneas,Aeneas.Std.Core,Aeneas.Std.WP,Aeneas.Tactic.Solver.ScalarTac,Aeneas.Std.Scalar.Core --include-deps && \
-    python3 /workspace/tools/prune_mathlib.py imports.dot .lake/packages/mathlib
+# Run setup to fetch and install the pre-built toolchain.
+# The published artifact is pre-pruned by the builder script, so no additional
+# pruning is needed here.
+RUN cargo run
 
 # Ensure the integration target directory exists.
 RUN mkdir -p /cache/anneal_target
