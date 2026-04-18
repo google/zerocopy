@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776546112761,
+  "lastUpdate": 1776546293460,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1415,6 +1415,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 8,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "ccb611083f8a1cf2850455810c2efda327b8b6a7",
+          "message": "WIP: Local testing workarounds and crate migration",
+          "timestamp": "2026-04-18T18:29:51Z",
+          "url": "https://github.com/google/zerocopy/pull/3292/commits/ccb611083f8a1cf2850455810c2efda327b8b6a7"
+        },
+        "date": 1776546290527,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 853,
             "unit": "seconds"
           }
         ]
