@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776536304915,
+  "lastUpdate": 1776536789049,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2011,6 +2011,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 571,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "d38da7f292ab8f6f07773b1415448512c4419df2",
+          "message": "[ci][anneal] Fix sysroot layout and exclude tests in builder script",
+          "timestamp": "2026-04-18T15:18:08Z",
+          "url": "https://github.com/google/zerocopy/pull/3291/commits/d38da7f292ab8f6f07773b1415448512c4419df2"
+        },
+        "date": 1776536787777,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 68,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 578,
             "unit": "seconds"
           }
         ]
