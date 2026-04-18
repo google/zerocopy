@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776537680710,
+  "lastUpdate": 1776538404885,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2188,6 +2188,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 572,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "fbdeab52de993f2bad6b650acd6aa8353d9edc89",
+          "message": "[ci][anneal] In release, don't build tests; fix location of charon artifacts (#3293)\n\ngherrit-pr-id: Gblquwd2ikf5wze73xm7jfvth2rkkodn4",
+          "timestamp": "2026-04-18T14:29:47-04:00",
+          "tree_id": "58dd5ab95050f64eb5daeb42cd0f16b5db09d1e4",
+          "url": "https://github.com/google/zerocopy/commit/fbdeab52de993f2bad6b650acd6aa8353d9edc89"
+        },
+        "date": 1776538402221,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 70,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 1179,
             "unit": "seconds"
           }
         ]
