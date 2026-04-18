@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776515366382,
+  "lastUpdate": 1776515955052,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1398,6 +1398,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 565,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b79927b84d7e2e7ea4b4edb7b8dad8fbdcfa882d",
+          "message": "[ci][anneal] Make concurrency group dynamic by branch/PR (#3287)\n\ngherrit-pr-id: Gofynwkutejony366jjuzz2odt4a56v2g",
+          "timestamp": "2026-04-18T08:25:45-04:00",
+          "tree_id": "7c11975b9cc8f34223d23b1c0a55a4460f99c5ae",
+          "url": "https://github.com/google/zerocopy/commit/b79927b84d7e2e7ea4b4edb7b8dad8fbdcfa882d"
+        },
+        "date": 1776515953121,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 68,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 569,
             "unit": "seconds"
           }
         ]
