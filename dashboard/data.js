@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776538404885,
+  "lastUpdate": 1776545351746,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1332,6 +1332,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 6,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "8f72d85e3d0ba9a84cfc02d7ad3e3c895bc5e33f",
+          "message": "[ci][anneal] Remove tests before building Lean library in release",
+          "timestamp": "2026-04-18T18:29:51Z",
+          "url": "https://github.com/google/zerocopy/pull/3294/commits/8f72d85e3d0ba9a84cfc02d7ad3e3c895bc5e33f"
+        },
+        "date": 1776545349566,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 7,
             "unit": "seconds"
           }
         ]
