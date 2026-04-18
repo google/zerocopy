@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776514729390,
+  "lastUpdate": 1776514791645,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -168,6 +168,35 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/commit/b943232a98fa7c9994151a765d52b1989a982048"
         },
         "date": 1776368017180,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Image Size",
+            "value": 9849,
+            "unit": "Megabytes"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "479bc21ac4356293462e7d3a73f65ce7fbefa3cf",
+          "message": "[ci][anneal] Add manual trigger to publish precompiled artifacts (#3286)\n\nThis is part of a soft migration to the new system. It allows us to\npublish precompiled artifacts that will let us land a subsequent commit\nwhich makes use of them in `cargo-anneal`.\n\ngherrit-pr-id: Grdbltxkqkgnaqxnlrx4425qspr7nqrmw",
+          "timestamp": "2026-04-18T08:16:10-04:00",
+          "tree_id": "d591da17dc3a317f0821cf55f77f93344036f3b2",
+          "url": "https://github.com/google/zerocopy/commit/479bc21ac4356293462e7d3a73f65ce7fbefa3cf"
+        },
+        "date": 1776514789126,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
