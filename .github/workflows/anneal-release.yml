@@ -17,6 +17,10 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
+      aeneas_version:
+        description: 'Aeneas version to roll to'
+        required: false
+        default: 'PROMPT: Enter Aeneas version'
       version:
         description: 'Anneal version'
         required: true
@@ -121,14 +125,31 @@ jobs:
           TAG="anneal-v$VERSION"
           gh release create "$TAG" --generate-notes
 
+  create-release:
+    name: Create Release for Artifacts
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AENEAS_VERSION: ${{ github.event.inputs.aeneas_version }}
+        run: |
+          gh release create "anneal-artifacts-$AENEAS_VERSION" --generate-notes --prerelease || true
+
   publish-artifacts:
     name: Publish Artifacts (${{ matrix.target }})
-    needs: [check-version, release]
+    needs: [check-version, release, create-release]
     # We use `always()` to ensure this job runs even if the `release` job is
     # skipped (which happens on PRs). We still require `check-version` to
     # succeed to avoid running on failures.
-    # This job is also skipped on manual triggers (workflow_dispatch).
-    if: always() && (needs.check-version.result == 'success') && github.event_name != 'workflow_dispatch'
+    if: always() && (needs.check-version.result == 'success' || needs.create-release.result == 'success')
     permissions:
       contents: write # This is required to upload assets to a release.
     runs-on: ${{ matrix.os }}
@@ -186,13 +207,20 @@ jobs:
           ./tools/build-prebuilt.sh "$RUST_TRIPLE"
           
       - name: Upload Artifact
-        if: github.event_name != 'pull_request' && needs.release.result == 'success'
+        if: github.event_name == 'workflow_dispatch' || (github.event_name != 'pull_request' && needs.release.result == 'success')
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ needs.check-version.outputs.version }}
+          AENEAS_VERSION: ${{ github.event.inputs.aeneas_version }}
           TARGET: ${{ matrix.target }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          gh release upload "anneal-v$VERSION" anneal/anneal-toolchain-$TARGET.tar.zst --clobber
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            TAG="anneal-artifacts-$AENEAS_VERSION"
+          else
+            TAG="anneal-v$VERSION"
+          fi
+          gh release upload "$TAG" anneal/anneal-toolchain-$TARGET.tar.zst --clobber
 
   release-version-action:
     # This job handles manual release triggers. It updates version numbers and
