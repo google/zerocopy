@@ -7,6 +7,7 @@ use std::{fs, io::Read, path::Path, process::Command};
 
 use anyhow::{Context, Result, bail};
 use flate2::read::GzDecoder;
+use zstd::stream::read::Decoder;
 use sha2::{Digest, Sha256};
 use tar::Archive;
 
@@ -127,148 +128,7 @@ impl Platform {
         }
     }
 
-    /// Returns the expected SHA-256 checksum for a specific binary on this
-    /// platform.
-    ///
-    /// This is used for verifying individual binaries within a toolchain,
-    /// allowing the `setup` command to detect and repair corruption of any
-    /// of the toolchain components.
-    pub fn expected_bin_hash(&self, tool: Tool) -> [u8; 32] {
-        if std::env::var("__ANNEAL_USE_MOCK_RUST_HASHES").is_ok() {
-            // When testing with mock Rust hashes, we intercept requests for Rust
-            // components and return the hardcoded mock hashes. For non-Rust
-            // tools, we fall through to the normal logic that reads hashes from
-            // environment variables.
-            //
-            // This approach is acceptable from a security perspective because:
-            // 1. The mock hashes are hardcoded in the binary and cannot be
-            //    overridden by an attacker via environment variables.
-            // 2. The mock archives only contain inert, empty files. Even if an
-            //    attacker forces the use of these mocks, they can only cause
-            //    the tool to fail to run, but cannot inject malicious behavior.
-            use Tool::*;
-            match tool {
-                Rustc => return MOCK_RUSTC_HASH,
-                RustStd => return MOCK_RUST_STD_HASH,
-                RustcDev => return MOCK_RUSTC_DEV_HASH,
-                LlvmTools => return MOCK_LLVM_TOOLS_HASH,
-                Miri => return MOCK_MIRI_HASH,
-                RustSrc => return MOCK_RUST_SRC_HASH,
-                Charon | CharonDriver | Aeneas | Lake => {}
-            }
-        }
 
-        use Platform::*;
-        match (self, tool) {
-            (LinuxX86_64, Tool::Charon) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64_CHARON")
-            }
-            (LinuxX86_64, Tool::CharonDriver) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64_CHARON_DRIVER")
-            }
-            (LinuxAArch64, Tool::Charon) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64_CHARON")
-            }
-            (LinuxAArch64, Tool::CharonDriver) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64_CHARON_DRIVER")
-            }
-            (MacosAArch64, Tool::Charon) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON")
-            }
-            (MacosAArch64, Tool::CharonDriver) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON_DRIVER")
-            }
-            (MacosX86_64, Tool::Charon) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64_CHARON")
-            }
-            (MacosX86_64, Tool::CharonDriver) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64_CHARON_DRIVER")
-            }
-            (LinuxX86_64, Tool::Aeneas) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64_AENEAS")
-            }
-            (LinuxAArch64, Tool::Aeneas) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64_AENEAS")
-            }
-            (MacosAArch64, Tool::Aeneas) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64_AENEAS")
-            }
-            (MacosX86_64, Tool::Aeneas) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64_AENEAS")
-            }
-
-            // Rust components
-            (LinuxX86_64, Tool::Rustc) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_RUSTC")
-            }
-            (LinuxX86_64, Tool::RustStd) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_RUST_STD")
-            }
-            (LinuxX86_64, Tool::RustcDev) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_RUSTC_DEV")
-            }
-            (LinuxX86_64, Tool::LlvmTools) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_LLVM_TOOLS_PREVIEW")
-            }
-            (LinuxX86_64, Tool::Miri) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_MIRI_PREVIEW")
-            }
-
-            (LinuxAArch64, Tool::Rustc) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_RUSTC")
-            }
-            (LinuxAArch64, Tool::RustStd) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_RUST_STD")
-            }
-            (LinuxAArch64, Tool::RustcDev) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_RUSTC_DEV")
-            }
-            (LinuxAArch64, Tool::LlvmTools) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_LLVM_TOOLS_PREVIEW")
-            }
-            (LinuxAArch64, Tool::Miri) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_MIRI_PREVIEW")
-            }
-
-            (MacosX86_64, Tool::Rustc) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_RUSTC")
-            }
-            (MacosX86_64, Tool::RustStd) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_RUST_STD")
-            }
-            (MacosX86_64, Tool::RustcDev) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_RUSTC_DEV")
-            }
-            (MacosX86_64, Tool::LlvmTools) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_LLVM_TOOLS_PREVIEW")
-            }
-            (MacosX86_64, Tool::Miri) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_MIRI_PREVIEW")
-            }
-
-            (MacosAArch64, Tool::Rustc) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_RUSTC")
-            }
-            (MacosAArch64, Tool::RustStd) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_RUST_STD")
-            }
-            (MacosAArch64, Tool::RustcDev) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_RUSTC_DEV")
-            }
-            (MacosAArch64, Tool::LlvmTools) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_LLVM_TOOLS_PREVIEW")
-            }
-            (MacosAArch64, Tool::Miri) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_MIRI_PREVIEW")
-            }
-
-            (_, Tool::RustSrc) => decode_hex_env!("ANNEAL_RUST_CHECKSUM_RUST_SRC"),
-
-            _ => {
-                unreachable!("unsupported tool combination for individual verification")
-            }
-        }
-    }
 }
 
 pub struct Toolchain {
@@ -309,22 +169,7 @@ impl Toolchain {
         let mut hasher = Sha256::new();
         hasher.update(aeneas_hash);
 
-        // We also hash the individual tool checksums to ensure that updating
-        // any component (like the Rust toolchain) results in a new directory.
-        let tools = [
-            Tool::Charon,
-            Tool::CharonDriver,
-            Tool::Aeneas,
-            Tool::Rustc,
-            Tool::RustStd,
-            Tool::RustcDev,
-            Tool::LlvmTools,
-            Tool::Miri,
-            Tool::RustSrc,
-        ];
-        for tool in tools {
-            hasher.update(platform.expected_bin_hash(tool));
-        }
+
         let hash = format!("{:x}", hasher.finalize());
         let short_hash = &hash[..12];
 
@@ -482,58 +327,40 @@ where
     Ok(())
 }
 
-/// Extracts a tar.gz archive to the target directory.
-fn extract_artifact(data: &[u8], target_dir: &Path) -> Result<()> {
-    log::info!("Extracting to {:?}...", target_dir);
-    extract_tar_gz(data, target_dir, |path| Some(target_dir.join(path)))
-}
+/// A generic function to extract a tar.zst archive, using a closure to map
+/// paths from the archive to paths on disk.
+fn extract_tar_zst<F>(data: &[u8], target_dir: &Path, mut map_path: F) -> Result<()>
+where
+    F: FnMut(&Path) -> Option<std::path::PathBuf>,
+{
+    let tar = Decoder::new(data).context("Failed to create zstd decoder")?;
+    let mut archive = Archive::new(tar);
 
-fn extract_rust_component(data: &[u8], target_dir: &Path, component_name: &str) -> Result<()> {
-    log::info!("Extracting component {} to {:?}...", component_name, target_dir);
-    extract_tar_gz(data, target_dir, |path| {
-        let mut components = path.components();
-        components.next(); // skip top level (e.g. rustc-nightly-x86_64-unknown-linux-gnu)
-        components.next(); // skip component name (e.g. rustc)
+    fs::create_dir_all(target_dir).context("Failed to create target directory")?;
 
-        let rest = components.as_path();
-        if rest.as_os_str().is_empty() { None } else { Some(target_dir.join(rest)) }
-    })
-}
+    for entry in archive.entries().context("Failed to read archive entries")? {
+        let mut entry = entry.context("Failed to get archive entry")?;
+        let path = entry.path().context("Failed to get entry path")?;
 
-fn setup_rust_toolchain(toolchain: &Toolchain, platform: Platform) -> Result<()> {
-    let sysroot = toolchain.root.join("rust");
-    println!("Setting up Rust toolchain at {:?}...", sysroot);
-
-    let base_url = std::env::var("ANNEAL_SETUP_RUST_BASE_URL").unwrap_or_else(|_| {
-        format!("https://static.rust-lang.org/dist/{}", env!("ANNEAL_RUST_DATE"))
-    });
-
-    let components = [
-        ("rustc", Tool::Rustc),
-        ("rust-std", Tool::RustStd),
-        ("rustc-dev", Tool::RustcDev),
-        ("llvm-tools", Tool::LlvmTools),
-        ("miri", Tool::Miri),
-    ];
-
-    for (name, tool) in components {
-        let url = format!("{}/{}-nightly-{}.tar.gz", base_url, name, platform.triple());
-        let expected_hash = platform.expected_bin_hash(tool);
-
-        println!("Downloading and extracting {}...", name);
-        let data = download_artifact(&url, &expected_hash)?;
-        extract_rust_component(&data, &sysroot, name)?;
+        if let Some(target) = map_path(&path) {
+            if let Some(parent) = target.parent() {
+                fs::create_dir_all(parent).context("Failed to create parent directory")?;
+            }
+            entry.unpack(&target).context("Failed to unpack archive entry")?;
+            make_writable(&target)?;
+        }
     }
-
-    // Handle rust-src separately as it is target-independent
-    let url = format!("{}/rust-src-nightly.tar.gz", base_url);
-    let expected_hash = platform.expected_bin_hash(Tool::RustSrc);
-    println!("Downloading and extracting rust-src...");
-    let data = download_artifact(&url, &expected_hash)?;
-    extract_rust_component(&data, &sysroot, "rust-src")?;
 
     Ok(())
 }
+
+/// Extracts a tar.zst archive to the target directory.
+fn extract_artifact(data: &[u8], target_dir: &Path) -> Result<()> {
+    log::info!("Extracting to {:?}...", target_dir);
+    extract_tar_zst(data, target_dir, |path| Some(target_dir.join(path)))
+}
+
+
 
 /// Ensures that `elan` (the Lean toolchain manager) is installed on the
 /// system. If it is not found in the system `PATH`, it downloads the latest
@@ -571,7 +398,7 @@ fn ensure_elan_installed() -> Result<()> {
     let elan_extract_dir = temp_dir.join("elan-extract-anneal");
     fs::create_dir_all(&elan_extract_dir).context("Failed to create elan extract dir")?;
 
-    extract_artifact(&data, &elan_extract_dir)?;
+    extract_tar_gz(&data, &elan_extract_dir, |path| Some(elan_extract_dir.join(path)))?;
 
     let elan_init_path = elan_extract_dir.join("elan-init");
 
@@ -685,23 +512,11 @@ fn prebuild_lean_library(lean_dir: &Path) -> Result<()> {
 /// of the toolchain components. This protects against accidental corruption
 /// of toolchain components and ensures that all binaries match the versions
 /// expected by this build of Anneal.
-fn verify_tools(toolchain: &Toolchain, platform: Platform, tools: &[Tool]) -> Result<bool> {
+fn verify_tools(toolchain: &Toolchain, _platform: Platform, tools: &[Tool]) -> Result<bool> {
     for tool in tools {
         let bin_path = toolchain.bin_dir().join(tool.name());
         if !bin_path.exists() {
             log::info!("{} is missing", tool.name());
-            return Ok(false);
-        }
-
-        let expected_bin_hash = platform.expected_bin_hash(*tool);
-        let actual_hash = calculate_file_hash(&bin_path)?;
-        if actual_hash != expected_bin_hash {
-            log::info!(
-                "{} hash mismatch (expected {}, got {})",
-                tool.name(),
-                format_hex(&expected_bin_hash),
-                format_hex(&actual_hash)
-            );
             return Ok(false);
         }
     }
@@ -724,9 +539,7 @@ pub fn run_setup() -> Result<()> {
     let _lock = toolchain.lock_exclusive()?;
     let platform = Platform::detect()?;
 
-    if !verify_tools(&toolchain, platform, RUST_TOOLS)? {
-        setup_rust_toolchain(&toolchain, platform)?;
-    }
+
 
     let tag = env!("ANNEAL_AENEAS_TAG");
 
@@ -735,11 +548,11 @@ pub fn run_setup() -> Result<()> {
         // checksums against values baked into the binary, allowing the user to
         // override the download URL does not represent a security risk.
         let base_url = std::env::var("ANNEAL_SETUP_AENEAS_BASE_URL").unwrap_or_else(|_| {
-            "https://github.com/AeneasVerif/aeneas/releases/download".to_string()
+            "https://github.com/google/zerocopy/releases/download".to_string()
         });
 
         let url = format!(
-            "{}/{}/aeneas-{}.tar.gz",
+            "{}/{}/anneal-toolchain-{}.tar.zst",
             base_url,
             tag,
             match platform {

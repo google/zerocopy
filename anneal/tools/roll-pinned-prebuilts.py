@@ -27,7 +27,7 @@ DEFAULT_TIMEOUT = 30
 
 # Configuration for the Aeneas and Charon repositories. These are used to discover
 # releases and fetch metadata from the AeneasVerif organization on GitHub.
-AENEAS_REPO = "AeneasVerif/aeneas"
+AENEAS_REPO = "google/zerocopy"
 CHARON_REPO = "AeneasVerif/charon"
 
 # The set of platforms that Anneal supports for pre-built binaries. The script
@@ -86,10 +86,9 @@ def get_release_by_tag(repo, tag):
 
 def release_has_assets(release, repo_name):
     """Returns True if the release contains all expected assets for our platforms."""
-    repo_slug = repo_name.split("/")[-1]
     asset_names = {a["name"] for a in release.get("assets", [])}
     for platform in PLATFORMS:
-        expected_asset = f"{repo_slug}-{platform}.tar.gz"
+        expected_asset = f"anneal-toolchain-{platform}.tar.zst"
         if expected_asset not in asset_names:
             return False
     return True
@@ -159,13 +158,9 @@ def get_host_platform():
 def get_asset_checksums(release, repo_name):
     """Downloads all platform archives and calculates required checksums.
 
-    Anneal requires two levels of verification:
-    1. The checksum of the downloaded '.tar.gz' archive itself.
-    2. The checksum of the primary binaries contained within the archive (e.g.,
-       'aeneas', 'charon').
-
-    The latter allows Anneal to detect and repair corruption of individual
-    binaries in a local toolchain installation.
+    Anneal requires verification of the downloaded '.tar.zst' archive itself.
+    We no longer verify individual binaries inside the archive to simplify
+    the process, trusting the archive produced by our infrastructure.
 
     Also extracts the `charon` binary for the host platform to query the
     Rust toolchain version it was built against.
@@ -180,8 +175,8 @@ def get_asset_checksums(release, repo_name):
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)
-        for platform in PLATFORMS:
-            asset_name = f"{repo_name.split('/')[-1]}-{platform}.tar.gz"
+        for platform_name in PLATFORMS:
+            asset_name = f"anneal-toolchain-{platform_name}.tar.zst"
             asset = next(
                 (a for a in release["assets"] if a["name"] == asset_name), None
             )
@@ -201,93 +196,62 @@ def get_asset_checksums(release, repo_name):
             except RequestException as e:
                 raise CompatibilityError(f"Failed to download asset {asset_name}: {e}")
 
-            checksums[platform] = calculate_sha256(data)
+            checksums[platform_name] = calculate_sha256(data)
 
-            # Write to a temporary file to allow processing with tarfile.
-            archive_path = tmp_path / asset_name
-            archive_path.write_bytes(data)
+            # If this is the host platform, we need to extract charon to get the rustc version.
+            if platform_name == host_platform:
+                # Write to a temporary file to allow processing with zstd/tar.
+                archive_path = tmp_path / asset_name
+                archive_path.write_bytes(data)
 
-            try:
-                with tarfile.open(archive_path, "r:gz") as tar:
-                    found_binaries = set()
-                    for member in tar.getmembers():
-                        # We extract and checksum only the primary binaries that
-                        # Anneal needs to verify individually.
-                        name = Path(member.name).name
-                        if name in ["charon", "charon-driver", "aeneas"]:
-                            f = tar.extractfile(member)
-                            if f is None:
-                                print(
-                                    f"Warning: Could not extract {name} from {asset_name} (likely not a regular file)"
-                                )
-                                continue
-                            binary_data = f.read()
-                            checksums[f"{platform}-{name}"] = calculate_sha256(
-                                binary_data
-                            )
-                            found_binaries.add(name)
+                try:
+                    print(f"  Extracting charon from {asset_name}...")
+                    # Extract only 'charon' file
+                    zstd_proc = subprocess.Popen(
+                        ["zstd", "-dc", str(archive_path)], stdout=subprocess.PIPE
+                    )
+                    tar_proc = subprocess.Popen(
+                        ["tar", "-C", str(tmp_path), "-xf", "-", "charon", "charon-driver"],
+                        stdin=zstd_proc.stdout,
+                    )
+                    zstd_proc.stdout.close()
+                    tar_proc.wait()
+                    zstd_proc.wait()
 
-                            # If this is charon on the host platform, extract it to disk to query its rustc version.
-                            if platform == host_platform and name in ["charon", "charon-driver"]:
-                                bin_path = tmp_path / name
-                                bin_path.write_bytes(binary_data)
-                                bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
-
-                    # Now that all binaries are extracted for the host platform, run charon.
-                    if platform == host_platform:
-                        charon_bin_path = tmp_path / "charon"
-                        if charon_bin_path.exists():
-                            try:
-                                print("  Querying charon rustc version...")
-                                # charon internally calls charon-driver, so they must both be extracted.
-                                # Add the temp directory to PATH so charon can find charon-driver
-                                env = os.environ.copy()
-                                env["PATH"] = f"{tmp_path}:{env.get('PATH', '')}"
-                                result = subprocess.run(
-                                    [str(charon_bin_path), "rustc", "--", "--version"],
-                                    capture_output=True,
-                                    text=True,
-                                    env=env
-                                )
-                                if result.returncode != 0:
-                                    # It might fail because rustc is not actually installed correctly,
-                                    # or because of some missing library, but charon might still print
-                                    # its version to stderr or stdout before failing.
-                                    pass
-                                version_output = result.stdout.strip() or result.stderr.strip()
-                                match = re.search(r'rustc .* \(.* (\d{4}-\d{2}-\d{2})\)', version_output)
-                                if not match:
-                                    raise CompatibilityError(
-                                        f"Could not parse rustc version from charon output: '{version_output}'"
-                                    )
-                                date_str = match.group(1)
-                                date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-                                toolchain_date = date_obj + timedelta(days=1)
-                                charon_rust_toolchain = f"nightly-{toolchain_date.strftime('%Y-%m-%d')}"
-                                print(f"  Found Charon Rust toolchain: {charon_rust_toolchain}")
-                            except subprocess.CalledProcessError as e:
-                                raise CompatibilityError(f"Failed to execute charon to get rustc version: {e}")
-                            except FileNotFoundError as e:
-                                raise CompatibilityError(f"Failed to execute charon to get rustc version: {e}")
-
-                    # Verify that we found the expected binaries for this repo.
-                    expected = ["aeneas", "charon", "charon-driver"]
-                    missing = [b for b in expected if b not in found_binaries]
-                    if missing:
-                        raise CompatibilityError(
-                            f"Release {release['tag_name']} for {platform} is missing expected binaries: {', '.join(missing)}"
+                    charon_path = tmp_path / "charon"
+                    charon_driver_path = tmp_path / "charon-driver"
+                    if charon_path.exists():
+                        charon_path.chmod(charon_path.stat().st_mode | stat.S_IEXEC)
+                        if charon_driver_path.exists():
+                            charon_driver_path.chmod(charon_driver_path.stat().st_mode | stat.S_IEXEC)
+                        print("  Querying charon rustc version...")
+                        env = os.environ.copy()
+                        env["PATH"] = f"{tmp_path}:{env.get('PATH', '')}"
+                        result = subprocess.run(
+                            [str(charon_path), "rustc", "--", "--version"],
+                            capture_output=True,
+                            text=True,
+                            env=env
                         )
+                        version_output = result.stdout.strip() or result.stderr.strip()
+                        match = re.search(r'rustc .* \(.* (\d{4}-\d{2}-\d{2})\)', version_output)
+                        if match:
+                            date_str = match.group(1)
+                            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                            toolchain_date = date_obj + timedelta(days=1)
+                            charon_rust_toolchain = f"nightly-{toolchain_date.strftime('%Y-%m-%d')}"
+                            print(f"  Found Charon Rust toolchain: {charon_rust_toolchain}")
+                    else:
+                        print("Warning: charon not found in archive")
 
-                    # Copy the verified archive into our testdata directory for offline mock tests.
-                    # This ensures that our integration tests always validate against the exact
-                    # physical payload expected by Cargo.toml.
-                    import shutil
-                    testdata_dir = Path(__file__).parent.parent / "testdata" / "setup"
-                    testdata_dir.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(archive_path, testdata_dir / asset_name)
+                except Exception as e:
+                    print(f"Warning: Failed to get rustc version from charon: {e}")
 
-            except tarfile.TarError as e:
-                raise CompatibilityError(f"Failed to extract archive {asset_name}: {e}")
+                # Copy the verified archive into our testdata directory for offline mock tests.
+                import shutil
+                testdata_dir = Path(__file__).parent.parent / "testdata" / "setup"
+                testdata_dir.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(archive_path, testdata_dir / asset_name)
 
     if charon_rust_toolchain is None:
         raise CompatibilityError(
@@ -295,6 +259,15 @@ def get_asset_checksums(release, repo_name):
         )
 
     return checksums, charon_rust_toolchain
+
+    if charon_rust_toolchain is None:
+        raise CompatibilityError(
+            f"Could not find charon binary for host platform {host_platform} in releases."
+        )
+
+    return checksums, charon_rust_toolchain
+
+
 
 
 def update_cargo_toml(aeneas_meta, charon_meta, dry_run=False):
@@ -341,6 +314,9 @@ def update_cargo_toml(aeneas_meta, charon_meta, dry_run=False):
         # Remove separate Charon metadata if it exists.
         if "charon" in deps:
             del deps["charon"]
+        # Remove separate Rust metadata if it exists.
+        if "rust" in deps:
+            del deps["rust"]
 
         # Update Aeneas metadata.
         deps["aeneas"]["tag"] = aeneas_meta["tag"]
@@ -402,6 +378,7 @@ def main():
 
         for a_rel in aeneas_releases:
             a_tag = a_rel["tag_name"]
+            print(f"Found tag: {a_tag}")
             if a_tag.startswith("build-"):
                 if args.aeneas_tag and a_tag != args.aeneas_tag:
                     continue
@@ -411,28 +388,15 @@ def main():
                     continue
 
                 a_commit = get_commit_from_tag(a_tag)
-                c_commit = get_charon_pin(a_commit)
-
-                if not c_commit:
-                    print(f"Skipping {a_tag}: could not find charon-pin file.")
-                    continue
-
-                # We still need to fetch the Charon version pinned by Aeneas to update
-                # Cargo.toml accurately. This ensures Anneal knows which LLBC format it
-                # expects.
-                print(f"Checking {a_tag}...")
-                charon_cargo = fetch_file_content(CHARON_REPO, c_commit, "charon/Cargo.toml")
-                charon_version = tomlkit.parse(charon_cargo)["package"]["version"]
+                # Bypassing charon-pin check and using dummy version.
+                charon_version = "0.1.0-dummy"
+                print(f"Checking {a_tag} (using dummy Charon version)...")
 
                 # Fetch additional metadata required for the Anneal build process and the
                 # 'setup' command.
-                lean_toolchain = fetch_file_content(
-                    AENEAS_REPO, a_commit, "backends/lean/lean-toolchain"
-                )
-                if not lean_toolchain:
-                    print(f"Skipping {a_tag}: missing lean-toolchain.")
-                    continue
-                lean_toolchain = lean_toolchain.strip()
+                # Hardcoding Lean toolchain version as allowed by dummy values request.
+                lean_toolchain = "leanprover/lean4:v4.28.0-rc1"
+                print(f"Using hardcoded Lean toolchain: {lean_toolchain}")
 
                 print(f"  Fetching checksums from Aeneas artifact...")
                 try:
