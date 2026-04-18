@@ -36,8 +36,8 @@ mkdir -p "$STAGING_DIR"
 # We use sed to parse the TOML file. This is brittle but avoids external
 # dependencies like toml-cli.
 AENEAS_TAG=$(sed -n 's/^tag = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
-RUST_DATE=$(sed -n 's/^date = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
-RUST_VERSION=$(sed -n 's/^charon_rust_toolchain = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+RUST_DATE="2026-02-07"
+RUST_VERSION="nightly-2026-02-07"
 
 echo "Detected Aeneas Tag: $AENEAS_TAG"
 echo "Detected Rust Date: $RUST_DATE"
@@ -84,12 +84,14 @@ curl -L "$RUST_SRC_URL" -o "$STAGING_DIR/rust-src.tar.gz"
 echo "Unpacking artifacts..."
 cd "$STAGING_DIR"
 tar -xzf aeneas.tar.gz
-tar -xzf rustc.tar.gz
-tar -xzf rust-std.tar.gz
-tar -xzf rustc-dev.tar.gz
-tar -xzf llvm-tools.tar.gz
-tar -xzf miri.tar.gz
-tar -xzf rust-src.tar.gz
+
+mkdir -p rust
+tar -xzf rustc.tar.gz -C rust --strip-components=2
+tar -xzf rust-std.tar.gz -C rust --strip-components=2
+tar -xzf rustc-dev.tar.gz -C rust --strip-components=2
+tar -xzf llvm-tools.tar.gz -C rust --strip-components=2
+tar -xzf miri.tar.gz -C rust --strip-components=2
+tar -xzf rust-src.tar.gz -C rust --strip-components=2
 # Nix preserves read-only permissions from the store, so we must make files
 # writable.
 chmod -R +w .
@@ -121,13 +123,23 @@ python3 ../../../tools/prune_mathlib.py imports.dot .lake/packages/mathlib
 # Clean up the graph file
 rm imports.dot
 
+# Remove tests from AeneasMeta to avoid users compiling them
+rm -f AeneasMeta/Async/Test.lean
+rm -f AeneasMeta/Async/TestTactics.lean
+# Remove imports of these tests from Async.lean
+sed '/import AeneasMeta.Async.Test/d' AeneasMeta/Async.lean > AeneasMeta/Async.lean.tmp && mv AeneasMeta/Async.lean.tmp AeneasMeta/Async.lean
+
+# Remove Mathlib tests to keep the artifact small
+rm -rf .lake/packages/mathlib/MathlibTest
+
 cd ../.. # Back to dist_staging
 
 # Repackage the artifact.
 echo "Repackaging artifact..."
 # We remove the original archives before repackaging.
 rm -f aeneas.tar.gz rustc.tar.gz rust-std.tar.gz rustc-dev.tar.gz llvm-tools.tar.gz miri.tar.gz rust-src.tar.gz
-tar -cf - * | zstd -19 > ../anneal-toolchain-${AENEAS_TARGET}.tar.zst
+ZSTD_LEVEL="${ANNEAL_ZSTD_LEVEL:-19}"
+tar -cf - * | zstd -"$ZSTD_LEVEL" > ../anneal-toolchain-${AENEAS_TARGET}.tar.zst
 
 cd .. # Back to anneal directory
 echo "Precompiled artifacts built successfully."
