@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776520355002,
+  "lastUpdate": 1776520484081,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -255,6 +255,35 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/commit/2e69086d4e8951404a0ff12b31da02ae4950f589"
         },
         "date": 1776517018559,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Image Size",
+            "value": 9849,
+            "unit": "Megabytes"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f83d13e3ee1e5cba9e8cc8bf10cfdc321b43c4ec",
+          "message": "[ci][anneal] Use unique tags for manual artifact releases (#3289)\n\ngherrit-pr-id: Gqrfvtkdyjezdwwai5d37vq5omydsrajc",
+          "timestamp": "2026-04-18T09:51:02-04:00",
+          "tree_id": "457b1ff2bfdd5f79fd50c5e190a8047b24ace7ee",
+          "url": "https://github.com/google/zerocopy/commit/f83d13e3ee1e5cba9e8cc8bf10cfdc321b43c4ec"
+        },
+        "date": 1776520481691,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
