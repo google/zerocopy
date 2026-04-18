@@ -1,0 +1,21 @@
+[package]
+name = "dissimilar"
+version = "1.0.10"
+authors = ["David Tolnay <dtolnay@gmail.com>"]
+categories = ["algorithms", "text-processing"]
+description = "Diff library with semantic cleanup, based on Google's diff-match-patch"
+documentation = "https://docs.rs/dissimilar"
+edition = "2018"
+keywords = ["diff"]
+license = "Apache-2.0" # See the readme. The whole crate is Apache licensed. Some parts are additionally MIT licensed.
+repository = "https://github.com/dtolnay/dissimilar"
+rust-version = "1.36"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+rustdoc-args = [
+    "--generate-link-to-definition",
+    "--extern-html-root-url=core=https://doc.rust-lang.org",
+    "--extern-html-root-url=alloc=https://doc.rust-lang.org",
+    "--extern-html-root-url=std=https://doc.rust-lang.org",
+]
