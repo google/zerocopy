@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776516958431,
+  "lastUpdate": 1776517020444,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -226,6 +226,35 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/commit/b79927b84d7e2e7ea4b4edb7b8dad8fbdcfa882d"
         },
         "date": 1776515364269,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Image Size",
+            "value": 9849,
+            "unit": "Megabytes"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2e69086d4e8951404a0ff12b31da02ae4950f589",
+          "message": "[ci][anneal] Use draft release pattern to avoid immutable release error (#3288)\n\ngherrit-pr-id: Gtfo4rh2ird3aqm57btkd3l7zpsknc7y7",
+          "timestamp": "2026-04-18T08:53:08-04:00",
+          "tree_id": "6a3c4dbb13fa3fb4e2edbacc36b7a98143e5342c",
+          "url": "https://github.com/google/zerocopy/commit/2e69086d4e8951404a0ff12b31da02ae4950f589"
+        },
+        "date": 1776517018559,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
