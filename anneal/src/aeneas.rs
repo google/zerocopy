@@ -54,6 +54,66 @@ pub fn run_aeneas(
     }
     std::fs::create_dir_all(tmp_lean_root.join("anneal"))?;
 
+    // Copy the manifest from the toolchain to seed the workspace. This
+    // prevents Lake from resolving dependencies from scratch.
+    let toolchain = crate::setup::Toolchain::resolve()?;
+    let source_manifest = toolchain.root.join("backends/lean/lake-manifest.json");
+    let target_manifest = tmp_lean_root.join("lake-manifest.json");
+    if source_manifest.exists() {
+        std::fs::copy(&source_manifest, &target_manifest)
+            .context("Failed to copy lake-manifest.json from toolchain")?;
+
+        // FIXME: This manual injection of the `aeneas` package into the
+        // manifest is a hack to work around Lake's behavior. Lake requires all
+        // dependencies listed in `lakefile.lean` to be present in the
+        // manifest, and running `lake update` triggers a full re-resolution
+        // and cloning of all dependencies (like Mathlib), defeating the
+        // purpose of the pre-populated cache.
+        //
+        // An alternative design would be to generate a manifest for a dummy
+        // project that depends on `aeneas` during toolchain setup or release,
+        // and copy that manifest here. That would avoid this manual JSON
+        // manipulation, but would require updating the path to `aeneas` in the
+        // manifest to match the user's environment.
+        if let Ok(content) = std::fs::read_to_string(&target_manifest) {
+            if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
+                if let Some(packages) = json.get_mut("packages").and_then(|v| v.as_array_mut()) {
+                    let aeneas_url = toolchain.root.join("backends/lean").display().to_string();
+                    let entry = serde_json::json!({
+                        "dir": aeneas_url,
+                        "type": "path",
+                        "name": "aeneas",
+                        "subDir": null,
+                        "scope": "",
+                        "rev": null,
+                        "inputRev": null,
+                        "inherited": false,
+                        "configFile": "lakefile.lean",
+                        "manifestFile": "lake-manifest.json"
+                    });
+                    packages.push(entry);
+
+                    if let Ok(new_content) = serde_json::to_string_pretty(&json) {
+                        let _ = std::fs::write(&target_manifest, new_content);
+                    }
+                }
+            }
+        }
+    }
+
+    // Symlink the toolchain's `.lake/packages` directory into the workspace.
+    // This avoids redundant clones of large dependencies like Mathlib.
+    let source_packages = toolchain.root.join("backends/lean/.lake/packages");
+    let target_packages = tmp_lean_root.join(".lake/packages");
+    if source_packages.exists() {
+        // Ensure that the `.lake` directory exists in the target before
+        // symlinking packages into it.
+        std::fs::create_dir_all(tmp_lean_root.join(".lake"))
+            .context("Failed to create .lake directory in tmp workspace")?;
+        std::os::unix::fs::symlink(&source_packages, &target_packages)
+            .context("Failed to symlink .lake/packages from toolchain")?;
+    }
+
     // 2. Write Standard Library & Configuration
     let config_content = if args.allow_sorry { "axiom Anneal.allow_sorry : True\n" } else { "" };
     write_if_changed(&tmp_lean_root.join("anneal").join("Config.lean"), config_content)
