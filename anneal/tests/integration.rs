@@ -284,7 +284,6 @@ struct TestContext {
     test_name: String,
     sandbox_root: PathBuf,
     _temp_dir: Option<tempfile::TempDir>, // Kept alive to prevent deletion
-    test_config: TestConfig,
     home_dir: PathBuf,
 }
 
@@ -436,7 +435,6 @@ impl TestContext {
             test_name,
             sandbox_root,
             _temp_dir: temp_dir_to_store,
-            test_config: config.clone(),
             home_dir,
         })
     }
@@ -616,6 +614,11 @@ echo "---END-INVOCATION---" >> "{}"
             cmd.env("ANNEAL_SETUP_AENEAS_BASE_URL", &base_url);
             cmd.env("ANNEAL_SETUP_RUST_BASE_URL", &base_url);
             cmd.env("__ANNEAL_USE_MOCK_RUST_HASHES", "1");
+            // Skip the Lean library prebuild during setup-flow tests. Those
+            // fixtures only assert which binaries land on disk; running
+            // `prebuild_lean_library` would invoke `lake exe cache get` against
+            // real Mathlib infrastructure on every test.
+            cmd.env("__ANNEAL_SKIP_PREBUILD_LEAN", "1");
 
             let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
             let testdata_setup = manifest_dir.join("testdata/setup");

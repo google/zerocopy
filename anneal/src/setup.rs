@@ -770,7 +770,13 @@ pub fn run_setup() -> Result<()> {
 
         let lean_dir = toolchain.root.join("backends").join("lean");
         if lean_dir.exists() {
-            prebuild_lean_library(&toolchain.root, &lean_dir)?;
+            // The integration test harness sets this env var for `setup_mock`
+            // fixtures, which exercise the binary-install path but don't need a
+            // working Lean library and would otherwise hit Mathlib's real CI
+            // cache infrastructure on every run.
+            if std::env::var_os("__ANNEAL_SKIP_PREBUILD_LEAN").is_none() {
+                prebuild_lean_library(&toolchain.root, &lean_dir)?;
+            }
         } else {
             log::warn!("Lean directory not found at {:?}", lean_dir);
         }
