@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776588968973,
+  "lastUpdate": 1776589551850,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2610,6 +2610,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 1191,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c97dbc6586c7c62decf3263c180e089f1c0f2771",
+          "message": "[ci][anneal] Add workflow_dispatch argument for zstd compression level (#3296)\n\ngherrit-pr-id: Gqzpjc5efiwdcr4aqpzvz5nft7wfg43yo",
+          "timestamp": "2026-04-19T04:52:09-04:00",
+          "tree_id": "cb8d60712d6a66ca7c073d3f562146adac18c677",
+          "url": "https://github.com/google/zerocopy/commit/c97dbc6586c7c62decf3263c180e089f1c0f2771"
+        },
+        "date": 1776589549758,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 67,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 570,
             "unit": "seconds"
           }
         ]
