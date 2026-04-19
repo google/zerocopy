@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776590021451,
+  "lastUpdate": 1776616310385,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1656,6 +1656,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 7,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "8b193d7338e5d19ee86186ab0fa2118caf819d05",
+          "message": "[anneal] Adopt Lake artifact cache and share packages in workspace generation",
+          "timestamp": "2026-04-19T09:07:58Z",
+          "url": "https://github.com/google/zerocopy/pull/3298/commits/8b193d7338e5d19ee86186ab0fa2118caf819d05"
+        },
+        "date": 1776616308821,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 973,
             "unit": "seconds"
           }
         ]
