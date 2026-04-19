@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776588319466,
+  "lastUpdate": 1776588424106,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -400,6 +400,35 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/commit/234b7e0927728428e836aa455a1960bca7cd52c3"
         },
         "date": 1776545564558,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Image Size",
+            "value": 9849,
+            "unit": "Megabytes"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "62d9816418bdb3d566381c1a4070784f7cf5380e",
+          "message": "[ci][anneal] Unset CI variable to force precompilation in release (#3295)\n\ngherrit-pr-id: Gqyhjsrpqtnwssq7yrc7pgbciwjphfzjb",
+          "timestamp": "2026-04-19T04:43:16-04:00",
+          "tree_id": "1dafb6b1066e3e9fb1d974499739b7f95db50bcf",
+          "url": "https://github.com/google/zerocopy/commit/62d9816418bdb3d566381c1a4070784f7cf5380e"
+        },
+        "date": 1776588422075,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
