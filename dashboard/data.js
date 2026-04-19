@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776589614035,
+  "lastUpdate": 1776590021451,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2674,6 +2674,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 1187,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "9c57c85e7a39f4029fbe3a17f501af1cf5ec590a",
+          "message": "[ci][anneal] Add workflow_dispatch argument for zstd compression level",
+          "timestamp": "2026-04-19T08:43:21Z",
+          "url": "https://github.com/google/zerocopy/pull/3296/commits/9c57c85e7a39f4029fbe3a17f501af1cf5ec590a"
+        },
+        "date": 1776590019400,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 68,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 1186,
             "unit": "seconds"
           }
         ]
