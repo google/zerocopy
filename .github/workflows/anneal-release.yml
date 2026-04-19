@@ -17,6 +17,10 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
+      zstd_level:
+        description: 'Zstd compression level (1-22)'
+        required: false
+        default: '19'
       aeneas_version:
         description: 'Aeneas version to roll to'
         required: false
@@ -203,6 +207,7 @@ jobs:
       - name: Download and Package
         env:
           RUST_TRIPLE: ${{ matrix.rust_triple }}
+          ANNEAL_ZSTD_LEVEL: ${{ github.event.inputs.zstd_level || 19 }}
         run: |
           set -eo pipefail
           cd anneal
