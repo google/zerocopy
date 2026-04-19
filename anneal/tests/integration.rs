@@ -896,14 +896,17 @@ fn run_single_phase(
 
             return Ok(());
         } else if action == "delete_lake_dir" {
-            // Delete the `.lake` build artifacts directory. This is used in
-            // `stale_output` tests to force Lake to regenerate its build
-            // artifacts from scratch, ensuring that stale cached data doesn't
-            // mask bugs in artifact generation or synchronization.
+            // Delete Lake's build outputs to force regeneration of locally-
+            // compiled artifacts (e.g. the per-test `Generated.olean`),
+            // ensuring stale cached data doesn't mask bugs in artifact
+            // generation or synchronization. Scoped to `.lake/build/` so the
+            // sibling `.lake/packages/` symlink to the toolchain's dep
+            // checkouts is preserved — without that, Lake would re-clone
+            // every dependency from scratch.
             let lean_root = ctx.sandbox_root.join("target/anneal/anneal_test_target/lean");
-            let lake_dir = lean_root.join(".lake");
-            if lake_dir.exists() {
-                fs::remove_dir_all(&lake_dir).expect("Failed to delete .lake directory");
+            let build_dir = lean_root.join(".lake/build");
+            if build_dir.exists() {
+                fs::remove_dir_all(&build_dir).expect("Failed to delete .lake/build directory");
             }
             return Ok(());
         } else if action.starts_with("delete_toolchain_file ") {
