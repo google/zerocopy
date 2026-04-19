@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776546785737,
+  "lastUpdate": 1776588210341,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1440,6 +1440,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 853,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "d96ae3425fbffb13a9bb252fadb57ecbf119fcdc",
+          "message": "[ci][anneal] Unset CI variable to force precompilation in release",
+          "timestamp": "2026-04-18T20:49:04Z",
+          "url": "https://github.com/google/zerocopy/pull/3295/commits/d96ae3425fbffb13a9bb252fadb57ecbf119fcdc"
+        },
+        "date": 1776588208762,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 6,
             "unit": "seconds"
           }
         ]
