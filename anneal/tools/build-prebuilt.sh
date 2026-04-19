@@ -126,7 +126,7 @@ sed '/import AeneasMeta.Async.Test/d' AeneasMeta/Async.lean > AeneasMeta/Async.l
 # Remove Mathlib tests to keep the artifact small
 rm -rf .lake/packages/mathlib/MathlibTest
 
-CI="" lake build
+env -u CI lake build
 
 # Generate the dependency graph
 lake exe graph imports.dot --to Aeneas,Aeneas.Std.Core,Aeneas.Std.WP,Aeneas.Tactic.Solver.ScalarTac,Aeneas.Std.Scalar.Core --include-deps
