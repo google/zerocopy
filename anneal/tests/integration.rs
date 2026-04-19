@@ -396,6 +396,24 @@ impl TestContext {
                     }
                 }
             }
+
+            // Share the toolchain's already-checked-out dependency source trees
+            // (Mathlib, batteries, etc., each with its own multi-hundred-MB
+            // `.git/`) by symlinking the entire `packages/` directory into the
+            // sandbox. Without this, Lake re-clones every dep from scratch into
+            // each test's sandbox `.lake/packages/`. The dep-internal `.lake/
+            // build/` subdirs are shared across parallel tests as a result; that
+            // is safe as long as `LAKE_CACHE_DIR` keeps tests on the cache-read
+            // path so Lake never writes there.
+            let toolchain_packages = aeneas_backend_lean.join(".lake/packages");
+            if toolchain_packages.exists() {
+                let sandbox_lake = lean_root.join(".lake");
+                fs::create_dir_all(&sandbox_lake)?;
+                std::os::unix::fs::symlink(&toolchain_packages, sandbox_lake.join("packages"))
+                    .map_err(|e| {
+                        anyhow::anyhow!("Failed to symlink toolchain packages dir: {}", e)
+                    })?;
+            }
         }
 
         // Copy extra inputs based on config.
