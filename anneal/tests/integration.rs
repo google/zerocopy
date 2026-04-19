@@ -1,14 +1,12 @@
 use std::{
-    cmp, fs, io,
+    fs, io,
     os::unix::fs::PermissionsExt,
     path::{Path, PathBuf},
     process::Command,
     sync::OnceLock,
     thread,
-    time::Duration,
 };
 
-use fs2::FileExt;
 use serde::Deserialize;
 use sha2::Digest;
 use walkdir::WalkDir;
@@ -234,158 +232,58 @@ fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
     Ok(())
 }
 
-/// A guard that strictly enforces exclusive test access to a worker's
-/// compilation cache.
+/// Returns the path to Lake's content-addressed artifact cache, populated
+/// at toolchain setup time and consumed (read-only) by every test process.
 ///
-/// This struct holds a file lock corresponding to a specific directory within a
-/// worker pool. Because integration tests frequently compile and manipulate
-/// shared Lean environments, they must execute in complete isolation to prevent
-/// race conditions. Rather than expensively copying the entire environment for
-/// every test, we maintain a pool of persistent worker directories. This guard
-/// ensures that exactly one test process can utilize a given worker directory
-/// at any given time, automatically releasing the filesystem lock when the test
-/// concludes or panics.
-struct WorkerCacheGuard {
-    lock_file: std::fs::File,
-    pub aeneas: PathBuf,
-    pub lean_lake: PathBuf,
+/// The cache is colocated with the toolchain rather than `~/.cache/lake`
+/// because integration tests redirect `HOME` to a per-test sandbox; without
+/// pinning the cache to a stable path, every test would observe an empty
+/// `~/.cache/lake` and cold-build Mathlib.
+fn lake_cache_dir() -> PathBuf {
+    get_toolchain_path().join("lake_cache")
 }
 
-impl Drop for WorkerCacheGuard {
-    fn drop(&mut self) {
-        let _ = self.lock_file.unlock();
-    }
-}
-
-/// Acquires exclusive access to a persistent worker cache directory,
-/// initializing it if necessary.
+/// Asserts once per test process that the Aeneas Lean backend is fully
+/// precompiled and that the Lake artifact cache is reachable. Runs
+/// `lake build --no-build Mathlib` from the toolchain's `backends/lean`
+/// directory; this succeeds only if every required `.olean` is resolvable
+/// either from the toolchain's own `.lake/` or the artifact cache.
 ///
-/// This function implements a file-based spin-lock over a bounded pool of
-/// worker directories. When a test requests a cache, it iterates through the
-/// available worker directories and attempts to acquire a non-blocking
-/// exclusive filesystem lock on a marker file. If all workers are currently
-/// locked by other tests, the thread sleeps and retries.
-///
-/// Once a lock is acquired, this function checks if the worker directory has
-/// been fully populated with the necessary Aeneas and Lean artifacts. If not,
-/// it lazily clones them from the global read-only cache. This lazy
-/// initialization strategy prevents a massive upfront disk I/O spike at the
-/// beginning of the test suite, especially if a small number of tests are being
-/// run, and spreads the initialization cost across the lifetime of the test
-/// run.
-fn acquire_worker_cache(
-    target_dir: &Path,
-    global_aeneas_backend: &Path,
-) -> Result<WorkerCacheGuard, anyhow::Error> {
-    let worker_caches_dir = target_dir.join("worker_caches");
-    fs::create_dir_all(&worker_caches_dir)?;
+/// Runs at most once per test process via `OnceLock`. Panics on failure —
+/// the test suite cannot proceed without a working Lean cache, and a panic
+/// here surfaces the root cause far more clearly than a multi-hour Mathlib
+/// recompile inside an unrelated test.
+fn verify_lean_cache_warm() {
+    static VERIFIED: OnceLock<()> = OnceLock::new();
+    VERIFIED.get_or_init(|| {
+        let lean_dir = get_toolchain_path().join("backends/lean");
+        let output = Command::new("lake")
+            .args(["build", "--no-build", "Mathlib.Tactic"])
+            .env("LAKE_CACHE_DIR", lake_cache_dir())
+            .current_dir(&lean_dir)
+            .output()
+            .unwrap_or_else(|e| {
+                panic!("Failed to invoke `lake` to verify cache at {:?}: {}", lean_dir, e)
+            });
 
-    let base_cores = std::thread::available_parallelism().map(|n| n.get()).unwrap_or(16);
-
-    // The integration test suite spends a significant portion of its time
-    // waiting for the Lean compiler and Cargo toolchain to perform disk I/O.
-    // As a result, the operating system can efficiently interleave more test
-    // processes than there are physical CPU cores available. We overprovision
-    // the worker pool by a factor of 1.5 to prevent the test runner from being
-    // artificially bottlenecked by cache availability, while avoiding excessive
-    // I/O contention.
-    let num_workers = (base_cores as f64 * 1.5).ceil() as usize;
-
-    // ...however, each Lean process requires a significant amount of RAM, so we
-    // limit the number of workers to a safe number based on available system
-    // resources.
-    let num_workers = cmp::min(num_workers, calculate_dynamic_lean_concurrency_limit());
-
-    loop {
-        for i in 0..num_workers {
-            let worker_dir = worker_caches_dir.join(i.to_string());
-            fs::create_dir_all(&worker_dir)?;
-
-            let lock_path = worker_dir.join(".lock");
-            let lock_file = fs::OpenOptions::new()
-                .read(true)
-                .write(true)
-                .create(true)
-                .truncate(true)
-                .open(&lock_path)?;
-
-            // We attempt to acquire a non-blocking exclusive lock on the
-            // worker's lock file. This assumes that the underlying filesystem
-            // correctly supports POSIX advisory locks (via `flock` or `fcntl`),
-            // which is true for all filesystems supported by the Anneal
-            // development environment.
-            if lock_file.try_lock_exclusive().is_ok() {
-                let worker_aeneas = worker_dir.join("aeneas");
-                let worker_aeneas_backend_lean = worker_aeneas.join("backends").join("lean");
-                let worker_lean_lake = worker_dir.join("lean_lake");
-
-                if !worker_aeneas_backend_lean.exists() {
-                    fs::create_dir_all(worker_aeneas_backend_lean.parent().unwrap())?;
-                    smart_clone_cache(global_aeneas_backend, &worker_aeneas_backend_lean)?;
-                }
-
-                if !worker_lean_lake.exists() {
-                    let global_lake = global_aeneas_backend.join(".lake");
-                    if global_lake.exists() {
-                        smart_clone_cache(&global_lake, &worker_lean_lake)?;
-                    } else {
-                        fs::create_dir_all(&worker_lean_lake)?;
-                    }
-                }
-
-                return Ok(WorkerCacheGuard {
-                    lock_file,
-                    aeneas: worker_aeneas,
-                    lean_lake: worker_lean_lake,
-                });
-            }
+        if !output.status.success() {
+            panic!(
+                "Lean cache is not fully precompiled. `lake build --no-build Mathlib` at {:?} \
+                 reported missing artifacts. Re-run `cargo run setup` to repopulate the toolchain \
+                 and Lake artifact cache.\nstdout:\n{}\nstderr:\n{}",
+                lean_dir,
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr),
+            );
         }
-
-        // If all worker caches are currently locked, we yield execution and
-        // wait before retrying. This assumes that other test processes are
-        // actively making progress and will eventually release their lock.
-        thread::sleep(Duration::from_millis(100));
-    }
-}
-
-/// Reads /proc/meminfo to determine available RAM and calculates a safe number
-/// of concurrent Lean processes.
-fn calculate_dynamic_lean_concurrency_limit() -> usize {
-    // The Lean compiler seems to consume ~1GB of RAM per invocation. We double
-    // this (2GB) to provide a healthy safety margin for other system processes.
-    const LEAN_RAM_REQUIRED_BYTES: u64 = 2 * 1024 * 1024 * 1024;
-
-    // Attempt to read MemAvailable from /proc/meminfo
-    let available_ram_bytes = fs::read_to_string("/proc/meminfo").ok().and_then(|meminfo| {
-        meminfo.lines().find_map(|line| {
-            if line.starts_with("MemAvailable:") {
-                // Line format: "MemAvailable:   12345678 kB"
-                let parts: Vec<&str> = line.split_whitespace().collect();
-                parts.get(1).and_then(|kb| kb.parse::<u64>().ok()).map(|kb| kb * 1024)
-            } else {
-                None
-            }
-        })
     });
-
-    if let Some(bytes) = available_ram_bytes {
-        cmp::max(1, (bytes / LEAN_RAM_REQUIRED_BYTES) as usize)
-    } else {
-        // Fallback if /proc/meminfo is unreadable for some reason
-        4
-    }
 }
 
 struct TestContext {
     test_case_root: PathBuf,
     test_name: String,
     sandbox_root: PathBuf,
-    // Maintaining ownership of this guard ensures that the worker cache remains
-    // exclusively locked until the `TestContext` is dropped at the end of the
-    // test.
-    _worker_cache: WorkerCacheGuard,
     _temp_dir: Option<tempfile::TempDir>, // Kept alive to prevent deletion
-    test_config: TestConfig,
     home_dir: PathBuf,
 }
 
@@ -421,43 +319,32 @@ impl TestContext {
             Some(temp)
         };
 
-        // For mock setup tests, we do not have a real toolchain installed yet,
-        // so we cannot acquire a real worker cache or seed it. We use a dummy
-        // worker cache guard to satisfy the `TestContext` struct requirements.
-        let worker_cache = if config.setup_mock {
-            let dummy_file = fs::File::create(target_dir.join("dummy_lock"))?;
-            WorkerCacheGuard {
-                lock_file: dummy_file,
-                aeneas: PathBuf::new(),
-                lean_lake: PathBuf::new(),
-            }
-        } else {
-            let aeneas_cache_backend = toolchain_path.join("backends/lean");
-            acquire_worker_cache(&target_dir, &aeneas_cache_backend)
-                .map_err(|e| anyhow::anyhow!("Failed to acquire worker cache: {}", e))?
-        };
-
         let lean_root = sandbox_root.join("target/anneal/anneal_test_target/lean");
         fs::create_dir_all(&lean_root)?;
 
         // We skip seeding the Lean workspace cache for mock setup tests because
         // they do not run the full verification pipeline and do not need Lean.
         if !config.setup_mock {
-            // 1. Seed the Lean workspace cache so Lake skips Mathlib downloads.
+            // Verify once per test process that the toolchain's Lean cache and
+            // the Lake artifact cache are both populated. Catches a partially
+            // installed or wiped toolchain before it manifests as a multi-hour
+            // Mathlib recompile inside an unrelated test.
+            verify_lean_cache_warm();
 
             // The Lean manifest dictates which dependencies Lake needs to
-            // resolve. We copy this directly from the global cache to ensure
-            // the test sandbox observes exactly the same dependency tree as
-            // the precompiled artifacts. If we did not copy this lockfile,
-            // Lake would attempt to resolve dependencies from scratch. Since
-            // our dependencies specify floating branches rather than explicit
-            // git hashes in their configuration files, a fresh resolution
-            // could map to newer commits. A mismatch in a single commit hash
+            // resolve. We copy this directly from the toolchain to ensure the
+            // test sandbox observes exactly the same dependency tree as the
+            // precompiled artifacts. If we did not copy this lockfile, Lake
+            // would attempt to resolve dependencies from scratch. Since our
+            // dependencies specify floating branches rather than explicit git
+            // hashes in their configuration files, a fresh resolution could
+            // map to newer commits. A mismatch in a single commit hash
             // invalidates the shared compilation cache, causing Lean to
             // redundantly recompile the entire dependency tree (e.g.,
-            // Mathlib) from source. Copying the manifest guarantees a
-            // cache hit.
-            let source_manifest = toolchain_path.join("backends/lean").join("lake-manifest.json");
+            // Mathlib) from source. Copying the manifest guarantees a cache
+            // hit.
+            let aeneas_backend_lean = toolchain_path.join("backends/lean");
+            let source_manifest = aeneas_backend_lean.join("lake-manifest.json");
             let target_manifest = lean_root.join("lake-manifest.json");
             if source_manifest.exists() {
                 fs::copy(&source_manifest, &target_manifest)?;
@@ -467,7 +354,8 @@ impl TestContext {
                 fs::set_permissions(&target_manifest, perms)?;
 
                 // We must manually inject the `aeneas` package into the
-                // which in turn runs global post-update hooks. These hooks
+                // manifest. Otherwise Lake would consider the workspace
+                // unresolved and run global post-update hooks. These hooks
                 // trigger operations such as large cloud cache downloads for
                 // Mathlib, resulting in severe performance regressions (e.g.,
                 // tens of minutes per test run).
@@ -475,14 +363,17 @@ impl TestContext {
                 // By manually constructing the `aeneas` path dependency entry
                 // and injecting it into the manifest, we trick Lake into
                 // accepting the workspace configuration as fully resolved,
-                // preventing the execution of these expensive hooks.
+                // preventing the execution of these expensive hooks. The dep
+                // points directly at the (read-only) toolchain backend; Lake
+                // pulls compiled `.olean`s either from the backend's own
+                // `.lake/` or from `LAKE_CACHE_DIR`, so no per-test writable
+                // copy is needed.
                 if let Ok(content) = fs::read_to_string(&target_manifest) {
                     if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
                         if let Some(packages) =
                             json.get_mut("packages").and_then(|v| v.as_array_mut())
                         {
-                            let aeneas_url =
-                                format!("{}/backends/lean", worker_cache.aeneas.display());
+                            let aeneas_url = aeneas_backend_lean.display().to_string();
                             let entry = serde_json::json!({
                                 "dir": aeneas_url,
                                 "type": "path",
@@ -505,18 +396,23 @@ impl TestContext {
                 }
             }
 
-            let target_lake = lean_root.join(".lake");
-
-            // Rather than expensively copying the `.lake` directory for every test,
-            // we symlink the worker's mutable `.lake` directory into the test
-            // sandbox. Because the parent `TestContext` owns a
-            // `WorkerCacheGuard`, this test process has exclusive mutation rights
-            // to this target directory. This assumes that the Lean compiler
-            // (`lake`) cleanly follows symlinks for its cache directory without
-            // resolving absolute paths in a way that would accidentally leak
-            // modified paths into the final generated artifacts.
-            std::os::unix::fs::symlink(&worker_cache.lean_lake, &target_lake)
-                .map_err(|e| anyhow::anyhow!("Failed to symlink worker .lake cache: {}", e))?;
+            // Share the toolchain's already-checked-out dependency source trees
+            // (Mathlib, batteries, etc., each with its own multi-hundred-MB
+            // `.git/`) by symlinking the entire `packages/` directory into the
+            // sandbox. Without this, Lake re-clones every dep from scratch into
+            // each test's sandbox `.lake/packages/`. The dep-internal `.lake/
+            // build/` subdirs are shared across parallel tests as a result; that
+            // is safe as long as `LAKE_CACHE_DIR` keeps tests on the cache-read
+            // path so Lake never writes there.
+            let toolchain_packages = aeneas_backend_lean.join(".lake/packages");
+            if toolchain_packages.exists() {
+                let sandbox_lake = lean_root.join(".lake");
+                fs::create_dir_all(&sandbox_lake)?;
+                std::os::unix::fs::symlink(&toolchain_packages, sandbox_lake.join("packages"))
+                    .map_err(|e| {
+                        anyhow::anyhow!("Failed to symlink toolchain packages dir: {}", e)
+                    })?;
+            }
         }
 
         // Copy extra inputs based on config.
@@ -534,15 +430,7 @@ impl TestContext {
             }
         }
 
-        Ok(Self {
-            test_case_root,
-            test_name,
-            sandbox_root,
-            _worker_cache: worker_cache,
-            _temp_dir: temp_dir_to_store,
-            test_config: config.clone(),
-            home_dir,
-        })
+        Ok(Self { test_case_root, test_name, sandbox_root, _temp_dir: temp_dir_to_store, home_dir })
     }
 
     fn create_shim(
@@ -720,6 +608,11 @@ echo "---END-INVOCATION---" >> "{}"
             cmd.env("ANNEAL_SETUP_AENEAS_BASE_URL", &base_url);
             cmd.env("ANNEAL_SETUP_RUST_BASE_URL", &base_url);
             cmd.env("__ANNEAL_USE_MOCK_RUST_HASHES", "1");
+            // Skip the Lean library prebuild during setup-flow tests. Those
+            // fixtures only assert which binaries land on disk; running
+            // `prebuild_lean_library` would invoke `lake exe cache get` against
+            // real Mathlib infrastructure on every test.
+            cmd.env("__ANNEAL_SKIP_PREBUILD_LEAN", "1");
 
             let manifest_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
             let testdata_setup = manifest_dir.join("testdata/setup");
@@ -755,6 +648,17 @@ echo "---END-INVOCATION---" >> "{}"
         cmd.env("ANNEAL_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
         cmd.env("ANNEAL_USE_PATH_FOR_TOOLS", "1");
         cmd.env("RAYON_NUM_THREADS", "1");
+        // Pin Lake's content-addressed artifact cache to the toolchain-local
+        // path populated at setup time. `HOME` is redirected to a per-test
+        // sandbox below, so without this pin Lake would look in an empty
+        // `<sandbox>/home/.cache/lake` and cold-build Mathlib every test.
+        // `LAKE_ARTIFACT_CACHE` is intentionally NOT set: tests should be
+        // pure readers of the cache, never writers.
+        cmd.env("LAKE_CACHE_DIR", lake_cache_dir());
+        // Suppress Mathlib's post-update hook that would otherwise attempt to
+        // download Mathlib's CI cloud cache. We rely entirely on the toolchain's
+        // pre-populated artifact cache.
+        cmd.env("MATHLIB_NO_CACHE_ON_UPDATE", "1");
 
         let original_path = std::env::var_os("PATH").unwrap_or_default();
         let new_path = std::env::join_paths(
@@ -800,78 +704,6 @@ echo "---END-INVOCATION---" >> "{}"
 
         cmd.assert()
     }
-}
-
-/// Intelligently clones the Aeneas cache into the test sandbox.
-///
-/// - Deep copies mutable state (trace files, locks, git indices) so tests don't
-///   race.
-/// - Hardlinks heavy immutable binaries (.olean, .c) to save disk space and
-///   time. Because these were previously marked as read-only, any attempts at
-///   mutation will fail loudly rather than result in race conditions.
-fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
-    let walker = new_sorted_walkdir(source).into_iter().filter_entry(|e| {
-        // Instantly bypass traversing inside ANY `.git/objects` directory!
-        // This prevents ~230,000 file copies per Mathlib clone.
-        if e.file_name() == "objects"
-            && let Some(parent) = e.path().parent()
-            && parent.file_name().and_then(|s| s.to_str()) == Some(".git")
-        {
-            return false;
-        }
-        true
-    });
-
-    for entry in walker {
-        let entry = entry.map_err(io::Error::other)?;
-        let source_path = entry.path();
-        let relative_path = source_path.strip_prefix(source).unwrap();
-        let target_path = target.join(relative_path);
-
-        if entry.file_type().is_dir() {
-            fs::create_dir_all(&target_path)?;
-
-            // If this is a .git directory, manually symlink its objects folder
-            if source_path.file_name().and_then(|s| s.to_str()) == Some(".git") {
-                let src_objects = source_path.join("objects");
-                if src_objects.exists() {
-                    let _ = std::os::unix::fs::symlink(&src_objects, target_path.join("objects"));
-                }
-            }
-        } else if entry.file_type().is_file() {
-            let ext = source_path.extension().and_then(|s| s.to_str()).unwrap_or("");
-            let file_name = source_path.file_name().and_then(|s| s.to_str()).unwrap_or("");
-
-            let is_git_metadata = source_path.components().any(|c| c.as_os_str() == ".git");
-            let is_mutable_metadata = is_git_metadata
-                || ext == "trace"
-                || ext == "json"
-                || ext == "hash"
-                || ext == "log"
-                || file_name == "lake.lock";
-
-            if is_mutable_metadata {
-                fs::copy(source_path, &target_path)?;
-                let mut perms = fs::metadata(&target_path)?.permissions();
-                #[allow(clippy::permissions_set_readonly_false)]
-                perms.set_readonly(false);
-                fs::set_permissions(&target_path, perms)?;
-            } else {
-                // NOTE: It is crucial that we *don't* provide a deep-copy
-                // fallback path here. The symlinked files consume a huge amount
-                // of disk space. Deep copying instead would consume many times
-                // more disk space. Instead, we intentionally allow symlinking
-                // to fail and bubble up those errors. If these errors happen in
-                // practice, it indicates a bug in the test environment (often a
-                // bug in configuring Docker or related tools). It's important
-                // that these errors are surfaced (rather than being worked
-                // around – e.g. via deep copying) so that we know to fix the
-                // bugs.
-                std::os::unix::fs::symlink(source_path, &target_path)?;
-            }
-        }
-    }
-    Ok(())
 }
 
 fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
@@ -1058,14 +890,17 @@ fn run_single_phase(
 
             return Ok(());
         } else if action == "delete_lake_dir" {
-            // Delete the `.lake` build artifacts directory. This is used in
-            // `stale_output` tests to force Lake to regenerate its build
-            // artifacts from scratch, ensuring that stale cached data doesn't
-            // mask bugs in artifact generation or synchronization.
+            // Delete Lake's build outputs to force regeneration of locally-
+            // compiled artifacts (e.g. the per-test `Generated.olean`),
+            // ensuring stale cached data doesn't mask bugs in artifact
+            // generation or synchronization. Scoped to `.lake/build/` so the
+            // sibling `.lake/packages/` symlink to the toolchain's dep
+            // checkouts is preserved — without that, Lake would re-clone
+            // every dependency from scratch.
             let lean_root = ctx.sandbox_root.join("target/anneal/anneal_test_target/lean");
-            let lake_dir = lean_root.join(".lake");
-            if lake_dir.exists() {
-                fs::remove_dir_all(&lake_dir).expect("Failed to delete .lake directory");
+            let build_dir = lean_root.join(".lake/build");
+            if build_dir.exists() {
+                fs::remove_dir_all(&build_dir).expect("Failed to delete .lake/build directory");
             }
             return Ok(());
         } else if action.starts_with("delete_toolchain_file ") {
@@ -1808,13 +1643,12 @@ fn sanitize_output(output: &str, sanitize_sorry: bool) -> String {
         r"(?m)^leanprover/lean4:[^\n]*\n\nLean toolchain [^\n]* installed successfully\.\n",
     )
     .unwrap();
-    let re_worker_id = regex::Regex::new(r"worker_caches/\d+/").unwrap();
     let re_ip_port = regex::Regex::new(r"127\.0\.0\.1:\d+").unwrap();
     let re_rustup =
         regex::Regex::new(r"[^\s]*/(?:\.rustup|opt/rustup)/toolchains/[^/\s]+").unwrap();
     let re_elan = regex::Regex::new(r"[^\s]*/(?:\.elan|opt/elan)/toolchains/[^/\s]+").unwrap();
-    // Lake's build progress indicators are volatile as they depend on the hit/miss
-    // state of the persistent `worker_caches/<ID>/` directory. We strip the entire line.
+    // Lake's build progress indicators are volatile because they depend on
+    // artifact-cache hit/miss state. We strip the entire line.
     let re_lake_progress = regex::Regex::new(r"(?m)^.*\[\d+/\d+\].*$\n?").unwrap();
     // Aeneas pre-built library might produce warnings about `sorry` usage.
     // We strip them to make test output deterministic.
@@ -1839,7 +1673,6 @@ fn sanitize_output(output: &str, sanitize_sorry: bool) -> String {
     clean = re_lean_full_install
         .replace_all(&clean, "Lean toolchain leanprover/lean4:v4.28.0-rc1 is already installed.\n")
         .into_owned();
-    clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
     clean = re_ip_port.replace_all(&clean, "127.0.0.1:<PORT>").into_owned();
     clean = re_rustup.replace_all(&clean, "[RUSTUP_TOOLCHAIN]").into_owned();
     clean = re_elan.replace_all(&clean, "[ELAN_TOOLCHAIN]").into_owned();
