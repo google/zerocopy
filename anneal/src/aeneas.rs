@@ -405,7 +405,12 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
 
-    if !lean_root.join(".lake/packages/mathlib").exists() {
+    // Skip the Mathlib cloud-cache fetch when `LAKE_CACHE_DIR` is set: the
+    // caller has provided a pre-populated content-addressed artifact cache
+    // (e.g. integration tests pointing at the toolchain-local `lake_cache/`),
+    // and a redundant cloud fetch would be wasted bandwidth.
+    let has_artifact_cache = std::env::var_os("LAKE_CACHE_DIR").is_some();
+    if !has_artifact_cache && !lean_root.join(".lake/packages/mathlib").exists() {
         let toolchain = crate::setup::Toolchain::resolve()?;
         // 1. Run 'lake exe cache get' to fetch pre-built Mathlib artifacts
         // This prevents compiling Mathlib from source, which is slow and disk-heavy.
