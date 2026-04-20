@@ -279,7 +279,10 @@ pub fn run_aeneas(
     } else {
         let toolchain = crate::setup::Toolchain::resolve()?;
         let path = toolchain.root.display();
-        format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("ANNEAL_AENEAS_REV"))
+        format!(
+            r#"require aeneas from git "file://{path}/backends/lean" @ "main" -- {}"#,
+            env!("ANNEAL_AENEAS_REV")
+        )
     };
 
     let roots_str = lake_roots.iter().map(|r| format!("`{}", r)).collect::<Vec<_>>().join(", ");

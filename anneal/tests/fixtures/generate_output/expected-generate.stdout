@@ -2,4 +2,4 @@ Lean workspace generated at: [PROJECT_ROOT]/target/anneal/anneal_test_target/lea
 
 To manually build and experiment:
   1. cd [PROJECT_ROOT]/target/anneal/anneal_test_target/lean
-  2. lake build
+  2. LAKE_CACHE_DIR=[CACHE_ROOT]/lake-cache lake build
