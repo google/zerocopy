@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776675560707,
+  "lastUpdate": 1776675745963,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -458,6 +458,35 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/commit/c97dbc6586c7c62decf3263c180e089f1c0f2771"
         },
         "date": 1776588966385,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Image Size",
+            "value": 9849,
+            "unit": "Megabytes"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3a99d7582663d8082df5b23ed4fd793b4e124211",
+          "message": "[anneal] Make logo stroke width thicker (#3300)\n\ngherrit-pr-id: G6f3ij3lhnfnk4nvvj2ogaihrcweoqglb",
+          "timestamp": "2026-04-20T08:40:34Z",
+          "tree_id": "aa347751babb591182f2408e231a3bd5157aa8ac",
+          "url": "https://github.com/google/zerocopy/commit/3a99d7582663d8082df5b23ed4fd793b4e124211"
+        },
+        "date": 1776675744089,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
