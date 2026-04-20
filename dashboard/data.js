@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776683730553,
+  "lastUpdate": 1776723274853,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1841,6 +1841,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 7,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "a402330b52d2858335aa35b69fa0d0e680e0bc69",
+          "message": "[anneal] Use Lean artifact cache; use local-filesystem git dep",
+          "timestamp": "2026-04-20T13:24:00Z",
+          "url": "https://github.com/google/zerocopy/pull/3304/commits/a402330b52d2858335aa35b69fa0d0e680e0bc69"
+        },
+        "date": 1776723272253,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 832,
             "unit": "seconds"
           }
         ]
