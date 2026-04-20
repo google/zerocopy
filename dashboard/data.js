@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776673699428,
+  "lastUpdate": 1776674426212,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2779,6 +2779,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 1186,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "6aadac41296d8c218eb786d578657ed7ba10b14a",
+          "message": "[anneal] Make logo stroke width thicker",
+          "timestamp": "2026-04-20T01:38:32Z",
+          "url": "https://github.com/google/zerocopy/pull/3300/commits/6aadac41296d8c218eb786d578657ed7ba10b14a"
+        },
+        "date": 1776674423915,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 67,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 562,
             "unit": "seconds"
           }
         ]
