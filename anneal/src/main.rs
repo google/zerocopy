@@ -82,11 +82,12 @@ fn main() -> anyhow::Result<()> {
             prepare_and_run(&resolve_args, |locked_roots, packages| {
                 aeneas::generate_lean_workspace(locked_roots, packages)?;
                 let lean_root = locked_roots.lean_root();
+                let toolchain = setup::Toolchain::resolve()?;
                 println!("Lean workspace generated at: {}", lean_root.display());
                 println!();
                 println!("To manually build and experiment:");
                 println!("  1. cd {}", lean_root.display());
-                println!("  2. lake build");
+                println!("  2. LAKE_CACHE_DIR={} lake build", toolchain.cache_dir().display());
                 Ok(())
             })?;
         }
