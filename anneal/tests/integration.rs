@@ -625,9 +625,7 @@ echo "---END-INVOCATION---" >> "{}"
             "USERNAME",
             "ANNEAL_TOOLCHAIN_DIR",
         ] {
-            if var == "ANNEAL_TOOLCHAIN_DIR"
-                && (self.test_name == "setup_e2e" || self.test_name == "setup_repair")
-            {
+            if var == "ANNEAL_TOOLCHAIN_DIR" && self.test_name == "setup_e2e" {
                 continue;
             }
             if let Some(val) = std::env::var_os(var) {
