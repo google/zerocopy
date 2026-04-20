@@ -643,11 +643,19 @@ fn install_lean_toolchain() -> Result<()> {
 
 /// Pre-builds the Aeneas Lean library in the extracted toolchain directory.
 /// This prevents compiling the library from source when users verify their
-/// projects, which is slow and disk-heavy. It first attempts to fetch
-/// pre-compiled Mathlib artifacts using `lake exe cache get` to avoid
-/// compiling Mathlib from source, and then runs `lake build`.
-fn prebuild_lean_library(lean_dir: &Path) -> Result<()> {
+/// projects, which is slow and disk-heavy. It first fetches pre-compiled
+/// Mathlib artifacts using `lake exe cache get`, then runs `lake build`
+/// with `LAKE_ARTIFACT_CACHE=1` so the resulting `.olean`s are also
+/// published into Lake's content-addressed artifact cache. The cache is
+/// pinned to `<toolchain_root>/lake_cache/` via `LAKE_CACHE_DIR` so that
+/// reader processes — notably the integration test suite, which runs with
+/// `HOME` redirected to a per-test sandbox — can locate it deterministically
+/// without relying on the developer's home directory.
+fn prebuild_lean_library(toolchain_root: &Path, lean_dir: &Path) -> Result<()> {
     println!("Pre-building Aeneas Lean library at {:?}...", lean_dir);
+
+    let lake_cache_dir = toolchain_root.join("lake_cache");
+    fs::create_dir_all(&lake_cache_dir).context("Failed to create Lake cache dir")?;
 
     // Fetch Mathlib cache
     println!("Fetching Mathlib cache...");
@@ -661,10 +669,14 @@ fn prebuild_lean_library(lean_dir: &Path) -> Result<()> {
         bail!("Failed to fetch Mathlib cache; refusing to build from scratch");
     }
 
-    // Build the library
+    // Build the library, populating the artifact cache as a side effect.
+    // Targets are listed explicitly so that Mathlib's `.olean`s are also
+    // published into the artifact cache, not just Aeneas's own outputs.
     println!("Building Aeneas Lean library...");
     let status = Command::new("lake")
-        .arg("build")
+        .args(["build", "Mathlib", "Aeneas", "AeneasMeta"])
+        .env("LAKE_ARTIFACT_CACHE", "1")
+        .env("LAKE_CACHE_DIR", &lake_cache_dir)
         .current_dir(lean_dir)
         .status()
         .context("Failed to run `lake build`")?;
@@ -758,7 +770,13 @@ pub fn run_setup() -> Result<()> {
 
         let lean_dir = toolchain.root.join("backends").join("lean");
         if lean_dir.exists() {
-            prebuild_lean_library(&lean_dir)?;
+            // The integration test harness sets this env var for `setup_mock`
+            // fixtures, which exercise the binary-install path but don't need a
+            // working Lean library and would otherwise hit Mathlib's real CI
+            // cache infrastructure on every run.
+            if std::env::var_os("__ANNEAL_SKIP_PREBUILD_LEAN").is_none() {
+                prebuild_lean_library(&toolchain.root, &lean_dir)?;
+            }
         } else {
             log::warn!("Lean directory not found at {:?}", lean_dir);
         }
