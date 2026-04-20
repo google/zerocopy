@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776674486860,
+  "lastUpdate": 1776675491911,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2836,6 +2836,38 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 562,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf",
+            "email": "joshlf@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "3a99d7582663d8082df5b23ed4fd793b4e124211",
+          "message": "[anneal] Make logo stroke width thicker (#3300)\n\ngherrit-pr-id: G6f3ij3lhnfnk4nvvj2ogaihrcweoqglb",
+          "timestamp": "2026-04-20T08:40:34Z",
+          "url": "https://github.com/google/zerocopy/commit/3a99d7582663d8082df5b23ed4fd793b4e124211"
+        },
+        "date": 1776675490227,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 67,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 787,
             "unit": "seconds"
           }
         ]
