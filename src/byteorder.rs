@@ -193,9 +193,9 @@ macro_rules! impl_fmt_traits {
 }
 
 macro_rules! impl_ops_traits {
-    ($name:ident, $native:ident, "floating point number") => {
-        impl_ops_traits!($name, $native, @all_types);
-        impl_ops_traits!($name, $native, @signed_integer_floating_point);
+    ($name:ident, $native:ident, $bytes:expr, "floating point number") => {
+        impl_ops_traits!($name, $native, $bytes, @all_types);
+        impl_ops_traits!($name, $native, $bytes, @signed_integer_floating_point);
 
         impl<O: ByteOrder> PartialOrd for $name<O> {
             #[inline(always)]
@@ -204,21 +204,21 @@ macro_rules! impl_ops_traits {
             }
         }
     };
-    ($name:ident, $native:ident, "unsigned integer") => {
-        impl_ops_traits!($name, $native, @signed_unsigned_integer);
-        impl_ops_traits!($name, $native, @all_types);
+    ($name:ident, $native:ident, $bytes:expr, "unsigned integer") => {
+        impl_ops_traits!($name, $native, $bytes, @signed_unsigned_integer);
+        impl_ops_traits!($name, $native, $bytes, @all_types);
     };
-    ($name:ident, $native:ident, "signed integer") => {
-        impl_ops_traits!($name, $native, @signed_unsigned_integer);
-        impl_ops_traits!($name, $native, @signed_integer_floating_point);
-        impl_ops_traits!($name, $native, @all_types);
+    ($name:ident, $native:ident, $bytes:expr, "signed integer") => {
+        impl_ops_traits!($name, $native, $bytes, @signed_unsigned_integer);
+        impl_ops_traits!($name, $native, $bytes, @signed_integer_floating_point);
+        impl_ops_traits!($name, $native, $bytes, @all_types);
     };
-    ($name:ident, $native:ident, @signed_unsigned_integer) => {
-        impl_ops_traits!(@without_byteorder_swap $name, $native, BitAnd, bitand, BitAndAssign, bitand_assign);
-        impl_ops_traits!(@without_byteorder_swap $name, $native, BitOr, bitor, BitOrAssign, bitor_assign);
-        impl_ops_traits!(@without_byteorder_swap $name, $native, BitXor, bitxor, BitXorAssign, bitxor_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Shl, shl, ShlAssign, shl_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Shr, shr, ShrAssign, shr_assign);
+    ($name:ident, $native:ident, $bytes:expr, @signed_unsigned_integer) => {
+        impl_ops_traits!(@without_byteorder_swap $name, $native, $bytes, BitAnd, bitand, BitAndAssign, bitand_assign);
+        impl_ops_traits!(@without_byteorder_swap $name, $native, $bytes, BitOr, bitor, BitOrAssign, bitor_assign);
+        impl_ops_traits!(@without_byteorder_swap $name, $native, $bytes, BitXor, bitxor, BitXorAssign, bitxor_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $bytes, Shl, shl, ShlAssign, shl_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $bytes, Shr, shr, ShrAssign, shr_assign);
 
         impl<O> core::ops::Not for $name<O> {
             type Output = $name<O>;
@@ -251,7 +251,7 @@ macro_rules! impl_ops_traits {
             }
         }
     };
-    ($name:ident, $native:ident, @signed_integer_floating_point) => {
+    ($name:ident, $native:ident, $bytes:expr, @signed_integer_floating_point) => {
         impl<O: ByteOrder> core::ops::Neg for $name<O> {
             type Output = $name<O>;
 
@@ -263,14 +263,14 @@ macro_rules! impl_ops_traits {
             }
         }
     };
-    ($name:ident, $native:ident, @all_types) => {
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Add, add, AddAssign, add_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Div, div, DivAssign, div_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Mul, mul, MulAssign, mul_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Rem, rem, RemAssign, rem_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Sub, sub, SubAssign, sub_assign);
+    ($name:ident, $native:ident, $bytes:expr, @all_types) => {
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $bytes, Add, add, AddAssign, add_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $bytes, Div, div, DivAssign, div_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $bytes, Mul, mul, MulAssign, mul_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $bytes, Rem, rem, RemAssign, rem_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $bytes, Sub, sub, SubAssign, sub_assign);
     };
-    (@with_byteorder_swap $name:ident, $native:ident, $trait:ident, $method:ident, $trait_assign:ident, $method_assign:ident) => {
+    (@with_byteorder_swap $name:ident, $native:ident, $bytes:expr, $trait:ident, $method:ident, $trait_assign:ident, $method_assign:ident) => {
         impl<O: ByteOrder> core::ops::$trait<$name<O>> for $name<O> {
             type Output = $name<O>;
 
@@ -305,6 +305,24 @@ macro_rules! impl_ops_traits {
             }
         }
 
+        impl<O: ByteOrder> core::ops::$trait<$name<O>> for [u8; $bytes] {
+            type Output = $name<O>;
+
+            #[inline(always)]
+            fn $method(self, rhs: $name<O>) -> $name<O> {
+                core::ops::$trait::$method($name::<O>::from_bytes(self), rhs)
+            }
+        }
+
+        impl<O: ByteOrder> core::ops::$trait<[u8; $bytes]> for $name<O> {
+            type Output = $name<O>;
+
+            #[inline(always)]
+            fn $method(self, rhs: [u8; $bytes]) -> $name<O> {
+                core::ops::$trait::$method(self, $name::<O>::from_bytes(rhs))
+            }
+        }
+
         impl<O: ByteOrder> core::ops::$trait_assign<$name<O>> for $name<O> {
             #[inline(always)]
             fn $method_assign(&mut self, rhs: $name<O>) {
@@ -326,6 +344,20 @@ macro_rules! impl_ops_traits {
                 *self = core::ops::$trait::$method(*self, rhs);
             }
         }
+
+        impl<O: ByteOrder> core::ops::$trait_assign<$name<O>> for [u8; $bytes] {
+            #[inline(always)]
+            fn $method_assign(&mut self, rhs: $name<O>) {
+                *self = core::ops::$trait::$method($name::<O>::from_bytes(*self), rhs).to_bytes();
+            }
+        }
+
+        impl<O: ByteOrder> core::ops::$trait_assign<[u8; $bytes]> for $name<O> {
+            #[inline(always)]
+            fn $method_assign(&mut self, rhs: [u8; $bytes]) {
+                *self = core::ops::$trait::$method(*self, $name::<O>::from_bytes(rhs));
+            }
+        }
     };
     // Implement traits in terms of the same trait on the native type, but
     // without performing a byte order swap when both operands are byteorder
@@ -333,16 +365,13 @@ macro_rules! impl_ops_traits {
     //
     // When only one operand is a byteorder type, we still need to perform a
     // byteorder swap.
-    (@without_byteorder_swap $name:ident, $native:ident, $trait:ident, $method:ident, $trait_assign:ident, $method_assign:ident) => {
+    (@without_byteorder_swap $name:ident, $native:ident, $bytes:expr, $trait:ident, $method:ident, $trait_assign:ident, $method_assign:ident) => {
         impl<O: ByteOrder> core::ops::$trait<$name<O>> for $name<O> {
             type Output = $name<O>;
 
             #[inline(always)]
             fn $method(self, rhs: $name<O>) -> $name<O> {
-                let self_native = $native::from_ne_bytes(self.0);
-                let rhs_native = $native::from_ne_bytes(rhs.0);
-                let result_native = core::ops::$trait::$method(self_native, rhs_native);
-                $name(result_native.to_ne_bytes(), PhantomData)
+                <[u8; $bytes] as core::ops::$trait<$name<O>>>::$method(self.0, rhs)
             }
         }
 
@@ -382,6 +411,30 @@ macro_rules! impl_ops_traits {
             }
         }
 
+        impl<O: ByteOrder> core::ops::$trait<$name<O>> for [u8; $bytes] {
+            type Output = $name<O>;
+
+            #[inline(always)]
+            fn $method(self, rhs: $name<O>) -> $name<O> {
+                let self_native = $native::from_ne_bytes(self);
+                let rhs_native = $native::from_ne_bytes(rhs.0);
+                let result_native = core::ops::$trait::$method(self_native, rhs_native);
+                $name(result_native.to_ne_bytes(), PhantomData)
+            }
+        }
+
+        impl<O: ByteOrder> core::ops::$trait<[u8; $bytes]> for $name<O> {
+            type Output = $name<O>;
+
+            #[inline(always)]
+            fn $method(self, rhs: [u8; $bytes]) -> $name<O> {
+                let self_native = $native::from_ne_bytes(self.0);
+                let rhs_native = $native::from_ne_bytes(rhs);
+                let result_native = core::ops::$trait::$method(self_native, rhs_native);
+                $name(result_native.to_ne_bytes(), PhantomData)
+            }
+        }
+
         impl<O: ByteOrder> core::ops::$trait_assign<$name<O>> for $name<O> {
             #[inline(always)]
             fn $method_assign(&mut self, rhs: $name<O>) {
@@ -402,6 +455,20 @@ macro_rules! impl_ops_traits {
         impl<O: ByteOrder> core::ops::$trait_assign<$native> for $name<O> {
             #[inline(always)]
             fn $method_assign(&mut self, rhs: $native) {
+                *self = core::ops::$trait::$method(*self, rhs);
+            }
+        }
+
+        impl<O: ByteOrder> core::ops::$trait_assign<$name<O>> for [u8; $bytes] {
+            #[inline(always)]
+            fn $method_assign(&mut self, rhs: $name<O>) {
+                *self = core::ops::$trait::$method(*self, rhs).0;
+            }
+        }
+
+        impl<O: ByteOrder> core::ops::$trait_assign<[u8; $bytes]> for $name<O> {
+            #[inline(always)]
+            fn $method_assign(&mut self, rhs: [u8; $bytes]) {
                 *self = core::ops::$trait::$method(*self, rhs);
             }
         }
@@ -687,7 +754,7 @@ example of how it can be used for parsing UDP packets.
         }
 
         impl_fmt_traits!($name, $native, $number_kind);
-        impl_ops_traits!($name, $native, $number_kind);
+        impl_ops_traits!($name, $native, $bytes, $number_kind);
 
         impl<O: ByteOrder> Debug for $name<O> {
             #[inline]
