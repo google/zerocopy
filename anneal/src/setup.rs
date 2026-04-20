@@ -351,6 +351,11 @@ impl Toolchain {
         self.root.clone()
     }
 
+    /// Returns the cache directory for this toolchain.
+    pub fn cache_dir(&self) -> std::path::PathBuf {
+        self.root.join("lake-cache")
+    }
+
     /// Acquires an exclusive lock on the toolchain directory.
     pub fn lock_exclusive(&self) -> Result<DirLock> {
         DirLock::lock_exclusive(self.root.clone())
@@ -646,13 +651,15 @@ fn install_lean_toolchain() -> Result<()> {
 /// projects, which is slow and disk-heavy. It first attempts to fetch
 /// pre-compiled Mathlib artifacts using `lake exe cache get` to avoid
 /// compiling Mathlib from source, and then runs `lake build`.
-fn prebuild_lean_library(lean_dir: &Path) -> Result<()> {
+fn prebuild_lean_library(lean_dir: &Path, cache_dir: &Path) -> Result<()> {
     println!("Pre-building Aeneas Lean library at {:?}...", lean_dir);
 
     // Fetch Mathlib cache
     println!("Fetching Mathlib cache...");
     let status = Command::new("lake")
         .args(["exe", "cache", "get"])
+        .env("LAKE_CACHE_DIR", cache_dir)
+        .env("LAKE_ARTIFACT_CACHE", "1")
         .current_dir(lean_dir)
         .status()
         .context("Failed to run `lake exe cache get`")?;
@@ -665,6 +672,8 @@ fn prebuild_lean_library(lean_dir: &Path) -> Result<()> {
     println!("Building Aeneas Lean library...");
     let status = Command::new("lake")
         .arg("build")
+        .env("LAKE_CACHE_DIR", cache_dir)
+        .env("LAKE_ARTIFACT_CACHE", "1")
         .current_dir(lean_dir)
         .status()
         .context("Failed to run `lake build`")?;
@@ -757,11 +766,45 @@ pub fn run_setup() -> Result<()> {
         extract_artifact(&data, &toolchain.root)?;
 
         let lean_dir = toolchain.root.join("backends").join("lean");
-        if lean_dir.exists() {
-            prebuild_lean_library(&lean_dir)?;
-        } else {
-            log::warn!("Lean directory not found at {:?}", lean_dir);
+        // Initialize git repo in the extracted Lean directory
+        println!("Initializing git repository in {:?}...", lean_dir);
+        let status = Command::new("git")
+            .arg("init")
+            .current_dir(&lean_dir)
+            .status()
+            .context("Failed to run `git init`")?;
+        if !status.success() {
+            bail!("`git init` failed");
         }
+
+        let status = Command::new("git")
+            .args(["branch", "-m", "main"])
+            .current_dir(&lean_dir)
+            .status()
+            .context("Failed to run `git branch -m main`")?;
+        if !status.success() {
+            bail!("`git branch -m main` failed");
+        }
+
+        let status = Command::new("git")
+            .args(["add", "."])
+            .current_dir(&lean_dir)
+            .status()
+            .context("Failed to run `git add`")?;
+        if !status.success() {
+            bail!("`git add` failed");
+        }
+
+        let status = Command::new("git")
+            .args(["commit", "-m", "Initial commit from Anneal setup"])
+            .current_dir(&lean_dir)
+            .status()
+            .context("Failed to run `git commit`")?;
+        if !status.success() {
+            bail!("`git commit` failed");
+        }
+
+        prebuild_lean_library(&lean_dir, &toolchain.cache_dir())?;
 
         println!("Successfully installed toolchain v{tag}");
     } else {
