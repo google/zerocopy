@@ -767,6 +767,18 @@ pub fn run_setup() -> Result<()> {
 
         let lean_dir = toolchain.root.join("backends").join("lean");
         // Initialize git repo in the extracted Lean directory
+
+
+        prebuild_lean_library(&lean_dir, &toolchain.cache_dir())?;
+
+        println!("Successfully installed toolchain v{tag}");
+    } else {
+        log::info!("toolchain is already installed and verified");
+    }
+
+    let lean_dir = toolchain.root.join("backends").join("lean");
+    if lean_dir.exists() && !lean_dir.join(".git").exists() {
+        // Initialize git repo in the extracted Lean directory
         println!("Initializing git repository in {:?}...", lean_dir);
         let status = Command::new("git")
             .args(["init", "-b", "main", "-q"])
@@ -798,12 +810,6 @@ pub fn run_setup() -> Result<()> {
         if !status.success() {
             bail!("`git commit` failed");
         }
-
-        prebuild_lean_library(&lean_dir, &toolchain.cache_dir())?;
-
-        println!("Successfully installed toolchain v{tag}");
-    } else {
-        log::info!("toolchain is already installed and verified");
     }
 
     Ok(())
