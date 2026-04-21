@@ -51,6 +51,7 @@ fs2 = "0.4"
 toml = "0.8"
 reqwest = { version = "0.12", features = ["blocking", "rustls-tls"] }
 dirs = "6.0"
+tempfile = "3.27.0"
 tar = "0.4"
 flate2 = "1.1"
 
@@ -68,9 +69,9 @@ syn = { version = "2.0.117", features = [
 proc-macro2 = { version = "1.0.106", features = ["span-locations"] }
 ui_test = "0.30.4"
 assert_cmd = "2.2.0"
-tempfile = "3.27.0"
+
 predicates = "3.1.4"
-tiny_http = "0.12"
+
 datatest-stable = "0.3.3"
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
@@ -103,21 +104,9 @@ tag = "build-2026.04.07.112215-42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
 
 [package.metadata.anneal.dependencies.aeneas.checksums]
 linux-aarch64 = "a250ef38be509f69ff4c5fb35eded165255fae6f659172837cd3053978de863f"
-linux-aarch64-aeneas = "fca0dedece748b406f180341ba83d764eb7b2bf5f11fbb54668fc26609a3032d"
-linux-aarch64-charon = "471883ad31629b569e727e256e4f5ab2c1726bfb3060cb6585037c7088062ed3"
-linux-aarch64-charon-driver = "df2622bb873ae9d10b25294b291cbc07bca32c26554c4f825f3a6d2f094cdbe4"
 linux-x86_64 = "a448682a154590e65b0794c42487583352375fc04bdd6b2418324f6ecafcc94f"
-linux-x86_64-aeneas = "306d908964df4e54bfc57b2fc3d88809eace9e77ac639adf5c0f0d5a8574397e"
-linux-x86_64-charon = "bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836"
-linux-x86_64-charon-driver = "20379b2051dd51dbea8d720e4041d55afe9241b95ab911e3b06492110450ecd0"
 macos-aarch64 = "1dbeaafe875bec173e0d2cf3c6bbfa63d6c591d3ec554bafb0d2c3c52e1ded6d"
-macos-aarch64-aeneas = "f85db47ef602108c727bfac23d1e27fb52d4fb1010b0f55ffb748da65fb0a1b6"
-macos-aarch64-charon = "6510ace82180cd78875b0631638a200d8e55bc9090c9372ea1dc8eb08511b6fb"
-macos-aarch64-charon-driver = "3c11fcb6c5cd65cd14d9747c7f8ddd1522b608a1e79041c907cb79d3118054b2"
 macos-x86_64 = "e977c28b72ec041d4f13df0acc77ab59040743a9659b4eefffb71eb420cd5df6"
-macos-x86_64-aeneas = "ceb3d8ee898f941861efb1545537681e0f4419f332482468e520621a809cb09e"
-macos-x86_64-charon = "926c5ff8495c19b7a6f3aff1a3861970bae11bd374cf114ac3924a27bcae9ee7"
-macos-x86_64-charon-driver = "03e6617fe122f29111bf16538a5ba8f0beac6698ce473d99069439d30fa552e8"
 
 [package.metadata.anneal.dependencies.rust]
 tag = "nightly-2026-02-07"
