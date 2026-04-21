@@ -9,6 +9,7 @@ use anyhow::{Context, Result, bail};
 use flate2::read::GzDecoder;
 use sha2::{Digest, Sha256};
 use tar::Archive;
+use tempfile;
 
 use crate::util::DirLock;
 
@@ -160,43 +161,6 @@ impl Platform {
 
         use Platform::*;
         match (self, tool) {
-            (LinuxX86_64, Tool::Charon) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64_CHARON")
-            }
-            (LinuxX86_64, Tool::CharonDriver) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64_CHARON_DRIVER")
-            }
-            (LinuxAArch64, Tool::Charon) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64_CHARON")
-            }
-            (LinuxAArch64, Tool::CharonDriver) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64_CHARON_DRIVER")
-            }
-            (MacosAArch64, Tool::Charon) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON")
-            }
-            (MacosAArch64, Tool::CharonDriver) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64_CHARON_DRIVER")
-            }
-            (MacosX86_64, Tool::Charon) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64_CHARON")
-            }
-            (MacosX86_64, Tool::CharonDriver) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64_CHARON_DRIVER")
-            }
-            (LinuxX86_64, Tool::Aeneas) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64_AENEAS")
-            }
-            (LinuxAArch64, Tool::Aeneas) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64_AENEAS")
-            }
-            (MacosAArch64, Tool::Aeneas) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64_AENEAS")
-            }
-            (MacosX86_64, Tool::Aeneas) => {
-                decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64_AENEAS")
-            }
-
             // Rust components
             (LinuxX86_64, Tool::Rustc) => {
                 decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_RUSTC")
@@ -308,23 +272,9 @@ impl Toolchain {
         // components that cannot drift from the underlying binaries.
         let mut hasher = Sha256::new();
         hasher.update(aeneas_hash);
-
-        // We also hash the individual tool checksums to ensure that updating
-        // any component (like the Rust toolchain) results in a new directory.
-        let tools = [
-            Tool::Charon,
-            Tool::CharonDriver,
-            Tool::Aeneas,
-            Tool::Rustc,
-            Tool::RustStd,
-            Tool::RustcDev,
-            Tool::LlvmTools,
-            Tool::Miri,
-            Tool::RustSrc,
-        ];
-        for tool in tools {
-            hasher.update(platform.expected_bin_hash(tool));
-        }
+        // Hash the Rust toolchain tag to ensure that updating the Rust version
+        // results in a new, isolated toolchain directory.
+        hasher.update(env!("ANNEAL_RUST_TAG"));
         let hash = format!("{:x}", hasher.finalize());
         let short_hash = &hash[..12];
 
@@ -505,8 +455,8 @@ fn extract_rust_component(data: &[u8], target_dir: &Path, component_name: &str) 
     })
 }
 
-fn setup_rust_toolchain(toolchain: &Toolchain, platform: Platform) -> Result<()> {
-    let sysroot = toolchain.root.join("rust");
+fn setup_rust_toolchain(toolchain: &Toolchain, platform: Platform, tmp_root: &Path) -> Result<()> {
+    let sysroot = tmp_root.join("rust");
     println!("Setting up Rust toolchain at {:?}...", sysroot);
 
     let base_url = std::env::var("ANNEAL_SETUP_RUST_BASE_URL").unwrap_or_else(|_| {
@@ -688,34 +638,6 @@ fn prebuild_lean_library(lean_dir: &Path, cache_dir: &Path) -> Result<()> {
 
 /// Checks whether the specified tools are installed and have valid hashes.
 /// Returns `true` if all are valid, or `false` if any are missing or corrupt.
-///
-/// This is used for verifying individual binaries within a toolchain,
-/// allowing the `setup` command to detect and repair corruption of any
-/// of the toolchain components. This protects against accidental corruption
-/// of toolchain components and ensures that all binaries match the versions
-/// expected by this build of Anneal.
-fn verify_tools(toolchain: &Toolchain, platform: Platform, tools: &[Tool]) -> Result<bool> {
-    for tool in tools {
-        let bin_path = toolchain.bin_dir().join(tool.name());
-        if !bin_path.exists() {
-            log::info!("{} is missing", tool.name());
-            return Ok(false);
-        }
-
-        let expected_bin_hash = platform.expected_bin_hash(*tool);
-        let actual_hash = calculate_file_hash(&bin_path)?;
-        if actual_hash != expected_bin_hash {
-            log::info!(
-                "{} hash mismatch (expected {}, got {})",
-                tool.name(),
-                format_hex(&expected_bin_hash),
-                format_hex(&actual_hash)
-            );
-            return Ok(false);
-        }
-    }
-    Ok(true)
-}
 
 /// Sets up the Anneal toolchain by downloading and extracting dependencies.
 pub fn run_setup() -> Result<()> {
@@ -733,78 +655,95 @@ pub fn run_setup() -> Result<()> {
     let _lock = toolchain.lock_exclusive()?;
     let platform = Platform::detect()?;
 
-    if !verify_tools(&toolchain, platform, RUST_TOOLS)? {
-        setup_rust_toolchain(&toolchain, platform)?;
-    }
+    let parent_dir = toolchain.root.parent().unwrap();
+    fs::create_dir_all(parent_dir).context("Failed to create toolchain parent directory")?;
+    // To ensure atomic installation, we perform all extraction and setup steps
+    // in a temporary directory within the same parent folder. This prevents
+    // leaving the toolchain in a partially-installed state if the process is
+    // interrupted.
+    let temp_dir = tempfile::Builder::new()
+        .prefix("anneal-toolchain-tmp-")
+        .tempdir_in(parent_dir)
+        .context("Failed to create temporary directory for setup")?;
+    let tmp_root = temp_dir.path();
+
+    setup_rust_toolchain(&toolchain, platform, tmp_root)?;
 
     let tag = env!("ANNEAL_AENEAS_TAG");
 
-    if !verify_tools(&toolchain, platform, AENEAS_TOOLS)? {
-        // Perform installation. Note that, because we validate SHA-256
-        // checksums against values baked into the binary, allowing the user to
-        // override the download URL does not represent a security risk.
-        let base_url = std::env::var("ANNEAL_SETUP_AENEAS_BASE_URL").unwrap_or_else(|_| {
-            "https://github.com/AeneasVerif/aeneas/releases/download".to_string()
-        });
+    // Perform installation. Note that, because we validate SHA-256
+    // checksums against values baked into the binary, allowing the user to
+    // override the download URL does not represent a security risk.
+    let base_url = std::env::var("ANNEAL_SETUP_AENEAS_BASE_URL")
+        .unwrap_or_else(|_| "https://github.com/AeneasVerif/aeneas/releases/download".to_string());
 
-        let url = format!(
-            "{}/{}/aeneas-{}.tar.gz",
-            base_url,
-            tag,
-            match platform {
-                Platform::LinuxX86_64 => "linux-x86_64",
-                Platform::LinuxAArch64 => "linux-aarch64",
-                Platform::MacosAArch64 => "macos-aarch64",
-                Platform::MacosX86_64 => "macos-x86_64",
-            }
-        );
-
-        let expected_archive_hash = platform.expected_archive_hash();
-
-        let data = download_artifact(&url, &expected_archive_hash)?;
-
-        extract_artifact(&data, &toolchain.root)?;
-
-        let lean_dir = toolchain.root.join("backends").join("lean");
-        // Initialize git repo in the extracted Lean directory
-        println!("Initializing git repository in {:?}...", lean_dir);
-        let status = Command::new("git")
-            .args(["init", "-b", "main", "-q"])
-            .current_dir(&lean_dir)
-            .status()
-            .context("Failed to run `git init -b main`")?;
-        if !status.success() {
-            bail!("`git init -b main` failed");
+    let url = format!(
+        "{}/{}/aeneas-{}.tar.gz",
+        base_url,
+        tag,
+        match platform {
+            Platform::LinuxX86_64 => "linux-x86_64",
+            Platform::LinuxAArch64 => "linux-aarch64",
+            Platform::MacosAArch64 => "macos-aarch64",
+            Platform::MacosX86_64 => "macos-x86_64",
         }
+    );
 
-        let status = Command::new("git")
-            .args(["add", "."])
-            .current_dir(&lean_dir)
-            .status()
-            .context("Failed to run `git add`")?;
-        if !status.success() {
-            bail!("`git add` failed");
-        }
+    let expected_archive_hash = platform.expected_archive_hash();
 
-        let status = Command::new("git")
-            .args(["commit", "-m", "Initial commit from Anneal setup", "-q"])
-            .env("GIT_AUTHOR_NAME", "Anneal")
-            .env("GIT_AUTHOR_EMAIL", "anneal@example.com")
-            .env("GIT_COMMITTER_NAME", "Anneal")
-            .env("GIT_COMMITTER_EMAIL", "anneal@example.com")
-            .current_dir(&lean_dir)
-            .status()
-            .context("Failed to run `git commit`")?;
-        if !status.success() {
-            bail!("`git commit` failed");
-        }
+    let data = download_artifact(&url, &expected_archive_hash)?;
 
-        prebuild_lean_library(&lean_dir, &toolchain.cache_dir())?;
+    extract_artifact(&data, &tmp_root)?;
 
-        println!("Successfully installed toolchain v{tag}");
-    } else {
-        log::info!("toolchain is already installed and verified");
+    let lean_dir = tmp_root.join("backends").join("lean");
+
+    // Initialize git repo in the extracted Lean directory
+    println!("Initializing git repository in {:?}...", lean_dir);
+    let status = Command::new("git")
+        .args(["init", "-b", "main", "-q"])
+        .current_dir(&lean_dir)
+        .status()
+        .context("Failed to run `git init -b main`")?;
+    if !status.success() {
+        bail!("`git init -b main` failed");
     }
+
+    let status = Command::new("git")
+        .args(["add", "."])
+        .current_dir(&lean_dir)
+        .status()
+        .context("Failed to run `git add`")?;
+    if !status.success() {
+        bail!("`git add` failed");
+    }
+
+    let status = Command::new("git")
+        .args(["commit", "-m", "Initial commit from Anneal setup", "-q"])
+        .env("GIT_AUTHOR_NAME", "Anneal")
+        .env("GIT_AUTHOR_EMAIL", "anneal@example.com")
+        .env("GIT_COMMITTER_NAME", "Anneal")
+        .env("GIT_COMMITTER_EMAIL", "anneal@example.com")
+        .current_dir(&lean_dir)
+        .status()
+        .context("Failed to run `git commit`")?;
+    if !status.success() {
+        bail!("`git commit` failed");
+    }
+
+    prebuild_lean_library(&lean_dir, &toolchain.cache_dir())?;
+
+    println!("Successfully installed toolchain v{tag}");
+
+    // Once installation is successful, we atomically swap the temporary
+    // directory into the final target location. If the target directory
+    // already exists (e.g., a re-installation attempt), we delete it first to
+    // allow the rename to succeed on Unix systems.
+    let tmp_path = temp_dir.into_path();
+    if toolchain.root.exists() {
+        fs::remove_dir_all(&toolchain.root).context("Failed to remove old toolchain directory")?;
+    }
+    fs::rename(&tmp_path, &toolchain.root)
+        .context("Failed to rename temporary toolchain directory to target")?;
 
     Ok(())
 }
