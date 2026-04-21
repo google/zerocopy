@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776770217181,
+  "lastUpdate": 1776770325422,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -521,6 +521,35 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Image Size",
             "value": 11191,
+            "unit": "Megabytes"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "11515dce44b88a626b31d1fea053754dcb7331ca",
+          "message": "[anneal] Cleanup test infrastructure and implement atomic setup (#3305)\n\n- Remove obsolete worker pool and smart cache cloning from integration\n  tests\n- Configure tests to use the shared global Lean artifact cache via\n  `LAKE_CACHE_DIR`\n- Simplify `src/setup.rs` by assuming only fresh installations:\n  - Remove `verify_tools` and individual binary checksums for Aeneas\n  - Simplify toolchain directory hashing to use the Rust tag\n  - Make installation and Git initialization unconditional\n- Implement atomic installation in `setup` using a temporary directory\n  and rename\n- Remove setup-related tests which are less useful now, and will become\n  even less useful than that going forward as we simplify the setup\n  logic\n\nPrior to this change, the integration tests relied on a complex worker\npool and symlinking infrastructure to isolate tests and share build\nartifacts. This required large amounts of disk space (e.g., a specific\nrun with ~100 parallel worker threads and caches consumed ~100GB). In\nthis commit, removing the worker pool and cache cloning approach lets us\nsave significant disk space usage during integration test runs.\n\ngherrit-pr-id: G4c76oil24wlyjqav3c5s5woakn5rcxpm",
+          "timestamp": "2026-04-21T10:28:40Z",
+          "tree_id": "833adf0febc61c567363031fad512ce313ed7401",
+          "url": "https://github.com/google/zerocopy/commit/11515dce44b88a626b31d1fea053754dcb7331ca"
+        },
+        "date": 1776770322949,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Image Size",
+            "value": 9812,
             "unit": "Megabytes"
           }
         ]
