@@ -946,7 +946,10 @@ fn run_single_phase(
         }
     }
 
+    let start = std::time::Instant::now();
     let assert = ctx.run_anneal(&config);
+    let duration = start.elapsed();
+    println!("Test case {} took {:?}", ctx.test_name, duration);
 
     // Verify Exit Status
     let assert = match config.expected_status {
