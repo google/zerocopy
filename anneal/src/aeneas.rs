@@ -269,21 +269,12 @@ pub fn run_aeneas(
     //
     // If `ANNEAL_AENEAS_DIR` is set (e.g., in CI or local development via Docker),
     // we use it. Otherwise, we default to the managed toolchain directory.
-    let aeneas_dep = if let Ok(path) = std::env::var("ANNEAL_AENEAS_DIR") {
-        // Use a path dependency to avoid git cloning.
-        //
-        // Note: We append the revision as a comment (`-- <rev>`) so that we can
-        // verify in integration tests that the binary was built with the
-        // correct revision, even when using a local override.
-        format!(r#"require aeneas from "{path}/backends/lean" -- {}"#, env!("ANNEAL_AENEAS_REV"))
-    } else {
-        let toolchain = crate::setup::Toolchain::resolve()?;
-        let path = toolchain.root.display();
-        format!(
-            r#"require aeneas from git "file://{path}/backends/lean" @ "main" -- {}"#,
-            env!("ANNEAL_AENEAS_REV")
-        )
-    };
+    let toolchain = crate::setup::Toolchain::resolve()?;
+    let path = toolchain.root.display();
+    let aeneas_dep = format!(
+        r#"require aeneas from git "file://{path}/backends/lean" @ "main" -- {}"#,
+        env!("ANNEAL_AENEAS_REV")
+    );
 
     let roots_str = lake_roots.iter().map(|r| format!("`{}", r)).collect::<Vec<_>>().join(", ");
 

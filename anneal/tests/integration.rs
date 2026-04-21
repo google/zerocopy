@@ -234,156 +234,10 @@ fn check_source_freshness(source_dir: &Path) -> Result<(), anyhow::Error> {
     Ok(())
 }
 
-/// A guard that strictly enforces exclusive test access to a worker's
-/// compilation cache.
-///
-/// This struct holds a file lock corresponding to a specific directory within a
-/// worker pool. Because integration tests frequently compile and manipulate
-/// shared Lean environments, they must execute in complete isolation to prevent
-/// race conditions. Rather than expensively copying the entire environment for
-/// every test, we maintain a pool of persistent worker directories. This guard
-/// ensures that exactly one test process can utilize a given worker directory
-/// at any given time, automatically releasing the filesystem lock when the test
-/// concludes or panics.
-struct WorkerCacheGuard {
-    lock_file: std::fs::File,
-    pub aeneas: PathBuf,
-    pub lean_lake: PathBuf,
-}
-
-impl Drop for WorkerCacheGuard {
-    fn drop(&mut self) {
-        let _ = self.lock_file.unlock();
-    }
-}
-
-/// Acquires exclusive access to a persistent worker cache directory,
-/// initializing it if necessary.
-///
-/// This function implements a file-based spin-lock over a bounded pool of
-/// worker directories. When a test requests a cache, it iterates through the
-/// available worker directories and attempts to acquire a non-blocking
-/// exclusive filesystem lock on a marker file. If all workers are currently
-/// locked by other tests, the thread sleeps and retries.
-///
-/// Once a lock is acquired, this function checks if the worker directory has
-/// been fully populated with the necessary Aeneas and Lean artifacts. If not,
-/// it lazily clones them from the global read-only cache. This lazy
-/// initialization strategy prevents a massive upfront disk I/O spike at the
-/// beginning of the test suite, especially if a small number of tests are being
-/// run, and spreads the initialization cost across the lifetime of the test
-/// run.
-fn acquire_worker_cache(
-    target_dir: &Path,
-    global_aeneas_backend: &Path,
-) -> Result<WorkerCacheGuard, anyhow::Error> {
-    let worker_caches_dir = target_dir.join("worker_caches");
-    fs::create_dir_all(&worker_caches_dir)?;
-
-    let base_cores = std::thread::available_parallelism().map(|n| n.get()).unwrap_or(16);
-
-    // The integration test suite spends a significant portion of its time
-    // waiting for the Lean compiler and Cargo toolchain to perform disk I/O.
-    // As a result, the operating system can efficiently interleave more test
-    // processes than there are physical CPU cores available. We overprovision
-    // the worker pool by a factor of 1.5 to prevent the test runner from being
-    // artificially bottlenecked by cache availability, while avoiding excessive
-    // I/O contention.
-    let num_workers = (base_cores as f64 * 1.5).ceil() as usize;
-
-    // ...however, each Lean process requires a significant amount of RAM, so we
-    // limit the number of workers to a safe number based on available system
-    // resources.
-    let num_workers = cmp::min(num_workers, calculate_dynamic_lean_concurrency_limit());
-
-    loop {
-        for i in 0..num_workers {
-            let worker_dir = worker_caches_dir.join(i.to_string());
-            fs::create_dir_all(&worker_dir)?;
-
-            let lock_path = worker_dir.join(".lock");
-            let lock_file = fs::OpenOptions::new()
-                .read(true)
-                .write(true)
-                .create(true)
-                .truncate(true)
-                .open(&lock_path)?;
-
-            // We attempt to acquire a non-blocking exclusive lock on the
-            // worker's lock file. This assumes that the underlying filesystem
-            // correctly supports POSIX advisory locks (via `flock` or `fcntl`),
-            // which is true for all filesystems supported by the Anneal
-            // development environment.
-            if lock_file.try_lock_exclusive().is_ok() {
-                let worker_aeneas = worker_dir.join("aeneas");
-                let worker_aeneas_backend_lean = worker_aeneas.join("backends").join("lean");
-                let worker_lean_lake = worker_dir.join("lean_lake");
-
-                if !worker_aeneas_backend_lean.exists() {
-                    fs::create_dir_all(worker_aeneas_backend_lean.parent().unwrap())?;
-                    smart_clone_cache(global_aeneas_backend, &worker_aeneas_backend_lean)?;
-                }
-
-                if !worker_lean_lake.exists() {
-                    let global_lake = global_aeneas_backend.join(".lake");
-                    if global_lake.exists() {
-                        smart_clone_cache(&global_lake, &worker_lean_lake)?;
-                    } else {
-                        fs::create_dir_all(&worker_lean_lake)?;
-                    }
-                }
-
-                return Ok(WorkerCacheGuard {
-                    lock_file,
-                    aeneas: worker_aeneas,
-                    lean_lake: worker_lean_lake,
-                });
-            }
-        }
-
-        // If all worker caches are currently locked, we yield execution and
-        // wait before retrying. This assumes that other test processes are
-        // actively making progress and will eventually release their lock.
-        thread::sleep(Duration::from_millis(100));
-    }
-}
-
-/// Reads /proc/meminfo to determine available RAM and calculates a safe number
-/// of concurrent Lean processes.
-fn calculate_dynamic_lean_concurrency_limit() -> usize {
-    // The Lean compiler seems to consume ~1GB of RAM per invocation. We double
-    // this (2GB) to provide a healthy safety margin for other system processes.
-    const LEAN_RAM_REQUIRED_BYTES: u64 = 2 * 1024 * 1024 * 1024;
-
-    // Attempt to read MemAvailable from /proc/meminfo
-    let available_ram_bytes = fs::read_to_string("/proc/meminfo").ok().and_then(|meminfo| {
-        meminfo.lines().find_map(|line| {
-            if line.starts_with("MemAvailable:") {
-                // Line format: "MemAvailable:   12345678 kB"
-                let parts: Vec<&str> = line.split_whitespace().collect();
-                parts.get(1).and_then(|kb| kb.parse::<u64>().ok()).map(|kb| kb * 1024)
-            } else {
-                None
-            }
-        })
-    });
-
-    if let Some(bytes) = available_ram_bytes {
-        cmp::max(1, (bytes / LEAN_RAM_REQUIRED_BYTES) as usize)
-    } else {
-        // Fallback if /proc/meminfo is unreadable for some reason
-        4
-    }
-}
-
 struct TestContext {
     test_case_root: PathBuf,
     test_name: String,
     sandbox_root: PathBuf,
-    // Maintaining ownership of this guard ensures that the worker cache remains
-    // exclusively locked until the `TestContext` is dropped at the end of the
-    // test.
-    _worker_cache: WorkerCacheGuard,
     _temp_dir: Option<tempfile::TempDir>, // Kept alive to prevent deletion
     test_config: TestConfig,
     home_dir: PathBuf,
@@ -421,22 +275,6 @@ impl TestContext {
             Some(temp)
         };
 
-        // For mock setup tests, we do not have a real toolchain installed yet,
-        // so we cannot acquire a real worker cache or seed it. We use a dummy
-        // worker cache guard to satisfy the `TestContext` struct requirements.
-        let worker_cache = if config.setup_mock {
-            let dummy_file = fs::File::create(target_dir.join("dummy_lock"))?;
-            WorkerCacheGuard {
-                lock_file: dummy_file,
-                aeneas: PathBuf::new(),
-                lean_lake: PathBuf::new(),
-            }
-        } else {
-            let aeneas_cache_backend = toolchain_path.join("backends/lean");
-            acquire_worker_cache(&target_dir, &aeneas_cache_backend)
-                .map_err(|e| anyhow::anyhow!("Failed to acquire worker cache: {}", e))?
-        };
-
         let lean_root = sandbox_root.join("target/anneal/anneal_test_target/lean");
         fs::create_dir_all(&lean_root)?;
 
@@ -466,31 +304,22 @@ impl TestContext {
                 perms.set_readonly(false);
                 fs::set_permissions(&target_manifest, perms)?;
 
-                // We must manually inject the `aeneas` package into the
-                // which in turn runs global post-update hooks. These hooks
-                // trigger operations such as large cloud cache downloads for
-                // Mathlib, resulting in severe performance regressions (e.g.,
-                // tens of minutes per test run).
-                //
-                // By manually constructing the `aeneas` path dependency entry
-                // and injecting it into the manifest, we trick Lake into
-                // accepting the workspace configuration as fully resolved,
-                // preventing the execution of these expensive hooks.
+                // Inject aeneas dependency into manifest
                 if let Ok(content) = fs::read_to_string(&target_manifest) {
                     if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
                         if let Some(packages) =
                             json.get_mut("packages").and_then(|v| v.as_array_mut())
                         {
                             let aeneas_url =
-                                format!("{}/backends/lean", worker_cache.aeneas.display());
+                                format!("file://{}/backends/lean", toolchain_path.display());
                             let entry = serde_json::json!({
-                                "dir": aeneas_url,
-                                "type": "path",
+                                "url": aeneas_url,
+                                "type": "git",
                                 "name": "aeneas",
                                 "subDir": null,
                                 "scope": "",
-                                "rev": null,
-                                "inputRev": null,
+                                "rev": "main",
+                                "inputRev": "main",
                                 "inherited": false,
                                 "configFile": "lakefile.lean",
                                 "manifestFile": "lake-manifest.json"
@@ -504,19 +333,6 @@ impl TestContext {
                     }
                 }
             }
-
-            let target_lake = lean_root.join(".lake");
-
-            // Rather than expensively copying the `.lake` directory for every test,
-            // we symlink the worker's mutable `.lake` directory into the test
-            // sandbox. Because the parent `TestContext` owns a
-            // `WorkerCacheGuard`, this test process has exclusive mutation rights
-            // to this target directory. This assumes that the Lean compiler
-            // (`lake`) cleanly follows symlinks for its cache directory without
-            // resolving absolute paths in a way that would accidentally leak
-            // modified paths into the final generated artifacts.
-            std::os::unix::fs::symlink(&worker_cache.lean_lake, &target_lake)
-                .map_err(|e| anyhow::anyhow!("Failed to symlink worker .lake cache: {}", e))?;
         }
 
         // Copy extra inputs based on config.
@@ -538,7 +354,6 @@ impl TestContext {
             test_case_root,
             test_name,
             sandbox_root,
-            _worker_cache: worker_cache,
             _temp_dir: temp_dir_to_store,
             test_config: config.clone(),
             home_dir,
@@ -747,10 +562,12 @@ echo "---END-INVOCATION---" >> "{}"
 
         cmd.env("ANNEAL_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
-        let isolated_aeneas_dir = self.sandbox_root.join("aeneas_cache");
-        fs::create_dir_all(&isolated_aeneas_dir).unwrap();
-        cmd.env("ANNEAL_AENEAS_DIR", isolated_aeneas_dir);
+
         cmd.env("ANNEAL_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
+        // Set `LAKE_CACHE_DIR` to point to the global cache in the toolchain
+        // directory to share build artifacts across tests and avoid redundant
+        // recompilation.
+        cmd.env("LAKE_CACHE_DIR", toolchain_path.join("lake-cache"));
         cmd.env("ANNEAL_USE_PATH_FOR_TOOLS", "1");
         cmd.env("RAYON_NUM_THREADS", "1");
 
@@ -765,15 +582,28 @@ echo "---END-INVOCATION---" >> "{}"
         // onto `/dummy`.
         let rustflags = format!("--remap-path-prefix={}=/dummy", self.test_case_root.display());
 
-        cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"))
-            .env("PATH", new_path)
-            .env("RUSTFLAGS", rustflags)
-            // Redirect HOME to the persistent home directory within the sandbox.
-            // This ensures that the toolchain is looked up and potentially
-            // repaired/reinstalled in a location that is isolated from the
-            // user's actual home directory but remains persistent across
-            // multiple `anneal` invocations within this single test context.
+        cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"));
+        cmd.env("PATH", new_path);
+        cmd.env("RUSTFLAGS", rustflags);
+
+        // Configure git to trust all directories in this test sandbox
+        // Configure Git to trust all directories within this test sandbox.
+        // This is required because tests run as the host user but may access
+        // files created by the `anneal` user in the Docker image, triggering
+        // Git's 'dubious ownership' security check.
+        let status = std::process::Command::new("git")
+            .args(["config", "--global", "--add", "safe.directory", "*"])
             .env("HOME", &self.home_dir)
+            .status()
+            .expect("Failed to run git config");
+        assert!(status.success(), "git config failed");
+
+        // Redirect HOME to the persistent home directory within the sandbox.
+        // This ensures that the toolchain is looked up and potentially
+        // repaired/reinstalled in a location that is isolated from the
+        // user's actual home directory but remains persistent across
+        // multiple `anneal` invocations within this single test context.
+        cmd.env("HOME", &self.home_dir)
             .env("ANNEAL_TEST_DIR_NAME", "anneal_test_target")
             .env("ANNEAL_HASH_WITH_REMOVED_PREFIX", &self.sandbox_root);
 
@@ -798,78 +628,6 @@ echo "---END-INVOCATION---" >> "{}"
 
         cmd.assert()
     }
-}
-
-/// Intelligently clones the Aeneas cache into the test sandbox.
-///
-/// - Deep copies mutable state (trace files, locks, git indices) so tests don't
-///   race.
-/// - Hardlinks heavy immutable binaries (.olean, .c) to save disk space and
-///   time. Because these were previously marked as read-only, any attempts at
-///   mutation will fail loudly rather than result in race conditions.
-fn smart_clone_cache(source: &Path, target: &Path) -> io::Result<()> {
-    let walker = new_sorted_walkdir(source).into_iter().filter_entry(|e| {
-        // Instantly bypass traversing inside ANY `.git/objects` directory!
-        // This prevents ~230,000 file copies per Mathlib clone.
-        if e.file_name() == "objects"
-            && let Some(parent) = e.path().parent()
-            && parent.file_name().and_then(|s| s.to_str()) == Some(".git")
-        {
-            return false;
-        }
-        true
-    });
-
-    for entry in walker {
-        let entry = entry.map_err(io::Error::other)?;
-        let source_path = entry.path();
-        let relative_path = source_path.strip_prefix(source).unwrap();
-        let target_path = target.join(relative_path);
-
-        if entry.file_type().is_dir() {
-            fs::create_dir_all(&target_path)?;
-
-            // If this is a .git directory, manually symlink its objects folder
-            if source_path.file_name().and_then(|s| s.to_str()) == Some(".git") {
-                let src_objects = source_path.join("objects");
-                if src_objects.exists() {
-                    let _ = std::os::unix::fs::symlink(&src_objects, target_path.join("objects"));
-                }
-            }
-        } else if entry.file_type().is_file() {
-            let ext = source_path.extension().and_then(|s| s.to_str()).unwrap_or("");
-            let file_name = source_path.file_name().and_then(|s| s.to_str()).unwrap_or("");
-
-            let is_git_metadata = source_path.components().any(|c| c.as_os_str() == ".git");
-            let is_mutable_metadata = is_git_metadata
-                || ext == "trace"
-                || ext == "json"
-                || ext == "hash"
-                || ext == "log"
-                || file_name == "lake.lock";
-
-            if is_mutable_metadata {
-                fs::copy(source_path, &target_path)?;
-                let mut perms = fs::metadata(&target_path)?.permissions();
-                #[allow(clippy::permissions_set_readonly_false)]
-                perms.set_readonly(false);
-                fs::set_permissions(&target_path, perms)?;
-            } else {
-                // NOTE: It is crucial that we *don't* provide a deep-copy
-                // fallback path here. The symlinked files consume a huge amount
-                // of disk space. Deep copying instead would consume many times
-                // more disk space. Instead, we intentionally allow symlinking
-                // to fail and bubble up those errors. If these errors happen in
-                // practice, it indicates a bug in the test environment (often a
-                // bug in configuring Docker or related tools). It's important
-                // that these errors are surfaced (rather than being worked
-                // around – e.g. via deep copying) so that we know to fix the
-                // bugs.
-                std::os::unix::fs::symlink(source_path, &target_path)?;
-            }
-        }
-    }
-    Ok(())
 }
 
 fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
@@ -1806,13 +1564,11 @@ fn sanitize_output(output: &str, sanitize_sorry: bool) -> String {
         r"(?m)^leanprover/lean4:[^\n]*\n\nLean toolchain [^\n]* installed successfully\.\n",
     )
     .unwrap();
-    let re_worker_id = regex::Regex::new(r"worker_caches/\d+/").unwrap();
     let re_ip_port = regex::Regex::new(r"127\.0\.0\.1:\d+").unwrap();
     let re_rustup =
         regex::Regex::new(r"[^\s]*/(?:\.rustup|opt/rustup)/toolchains/[^/\s]+").unwrap();
     let re_elan = regex::Regex::new(r"[^\s]*/(?:\.elan|opt/elan)/toolchains/[^/\s]+").unwrap();
-    // Lake's build progress indicators are volatile as they depend on the hit/miss
-    // state of the persistent `worker_caches/<ID>/` directory. We strip the entire line.
+    // Lake's build progress indicators are volatile as they depend on the cache hit/miss state. We strip the entire line.
     let re_lake_progress = regex::Regex::new(r"(?m)^.*\[\d+/\d+\].*$\n?").unwrap();
     // Aeneas pre-built library might produce warnings about `sorry` usage.
     // We strip them to make test output deterministic.
@@ -1837,7 +1593,6 @@ fn sanitize_output(output: &str, sanitize_sorry: bool) -> String {
     clean = re_lean_full_install
         .replace_all(&clean, "Lean toolchain leanprover/lean4:v4.28.0-rc1 is already installed.\n")
         .into_owned();
-    clean = re_worker_id.replace_all(&clean, "worker_caches/<ID>/").into_owned();
     clean = re_ip_port.replace_all(&clean, "127.0.0.1:<PORT>").into_owned();
     clean = re_rustup.replace_all(&clean, "[RUSTUP_TOOLCHAIN]").into_owned();
     clean = re_elan.replace_all(&clean, "[ELAN_TOOLCHAIN]").into_owned();
