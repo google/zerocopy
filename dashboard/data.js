@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776731409766,
+  "lastUpdate": 1776731872524,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -3212,6 +3212,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 454,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d410c162d51977635ca5afac67d99a3b10327a94",
+          "message": "[anneal] Use Lean artifact cache; use local-filesystem git dep (#3304)\n\n- Store build artifacts in a user-global Lean content-addressed artifact\n  cache, populating it during `setup`.\n- Specify the dependency on the Aeneas Lean library as follows:\n  - During `setup`, initialize the Aeneas Lean library as a git repo\n  - During `generate`/`verify`, specify the dependency as a git\n    dependency on a local filesystem path\n\nPrior to this change, we specified the dependency as a non-git\nfilesystem dep, which had the effect of causing Lean to think it could\nmutate the user-global directory, causing races when multiple `anneal`\ncommands were run in parallel.\n\nRelease 0.1.0-alpha.20\n\ngherrit-pr-id: Gyo2pqvhru3x4cyrj6bhrnjtx7gamwkfr",
+          "timestamp": "2026-04-20T23:47:08Z",
+          "tree_id": "7e016397325b6d9523d680ba36126c476aaa7aa6",
+          "url": "https://github.com/google/zerocopy/commit/d410c162d51977635ca5afac67d99a3b10327a94"
+        },
+        "date": 1776731870152,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 92,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 444,
             "unit": "seconds"
           }
         ]
