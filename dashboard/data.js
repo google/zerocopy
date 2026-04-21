@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776728694212,
+  "lastUpdate": 1776729693332,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -1891,6 +1891,33 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 768,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf",
+            "email": "joshlf@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "d410c162d51977635ca5afac67d99a3b10327a94",
+          "message": "[anneal] Use Lean artifact cache; use local-filesystem git dep (#3304)\n\n- Store build artifacts in a user-global Lean content-addressed artifact\n  cache, populating it during `setup`.\n- Specify the dependency on the Aeneas Lean library as follows:\n  - During `setup`, initialize the Aeneas Lean library as a git repo\n  - During `generate`/`verify`, specify the dependency as a git\n    dependency on a local filesystem path\n\nPrior to this change, we specified the dependency as a non-git\nfilesystem dep, which had the effect of causing Lean to think it could\nmutate the user-global directory, causing races when multiple `anneal`\ncommands were run in parallel.\n\nRelease 0.1.0-alpha.20\n\ngherrit-pr-id: Gyo2pqvhru3x4cyrj6bhrnjtx7gamwkfr",
+          "timestamp": "2026-04-20T23:47:08Z",
+          "url": "https://github.com/google/zerocopy/commit/d410c162d51977635ca5afac67d99a3b10327a94"
+        },
+        "date": 1776729690945,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 823,
             "unit": "seconds"
           }
         ]
