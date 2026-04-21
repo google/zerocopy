@@ -14,12 +14,14 @@ use std::{
     fmt::Write,
     fs,
     io::{BufRead, BufReader},
-    process::Stdio,
+    path::Path,
+    process::{Command, Stdio},
     sync::{Arc, Mutex},
 };
 
 use anyhow::{Context, Result, bail};
 use indicatif::{ProgressBar, ProgressStyle};
+use walkdir::WalkDir;
 
 use crate::{generate, resolve::LockedRoots, scanner::AnnealArtifact, setup::Tool};
 
@@ -375,6 +377,222 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
 
     write_if_changed(&lean_generated_root.join("Generated.lean"), &generated_imports)
         .context("Failed to write Generated.lean")?;
+
+    // To avoid a slow full rebuild of dependencies in the newly generated
+    // workspace, we manually materialize the dependencies and fix up Lake's
+    // build trace files.
+    //
+    // Lake records absolute paths in its trace files. By default, when we
+    // generate a workspace and run `lake build`, Lake clones the dependencies
+    // into the workspace's `.lake/packages` directory. Since the paths in the
+    // clone do not match the paths in the toolchain where dependencies were
+    // pre-built, Lake considers the traces invalid and rebuilds everything.
+    //
+    // We bypass this by:
+    // - Manually writing the manifest with local file URLs.
+    // - Copying the pre-built dependency directories directly from the
+    //   toolchain to avoid cloning.
+    // - Post-processing the trace files to replace toolchain paths with
+    //   workspace paths.
+
+    // We read the `lake-manifest.json` generated during toolchain setup,
+    // modify it to include Aeneas as a dependency, and write it directly to
+    // the workspace. This prevents Lake from running dependency resolution
+    // and post-update hooks that would attempt to download external assets.
+    println!("Writing modified manifest to generated workspace...");
+    let lean_root = roots.lean_root();
+    let toolchain = crate::setup::Toolchain::resolve()?;
+    let toolchain_manifest_path =
+        toolchain.root.join("backends").join("lean").join("lake-manifest.json");
+    let user_manifest_path = lean_root.join("lake-manifest.json");
+
+    if toolchain_manifest_path.exists() {
+        let content = fs::read_to_string(&toolchain_manifest_path)
+            .context("Failed to read toolchain manifest")?;
+        let mut manifest: serde_json::Value =
+            serde_json::from_str(&content).context("Failed to parse toolchain manifest")?;
+
+        // Change name to anneal_verification
+        manifest["name"] = serde_json::Value::String("anneal_verification".to_string());
+
+        // Read actual HEAD commit of Aeneas in toolchain
+        let toolchain_aeneas_dir = toolchain.root.join("backends").join("lean");
+        let output = Command::new("git")
+            .args(["rev-parse", "HEAD"])
+            .current_dir(&toolchain_aeneas_dir)
+            .output()
+            .context("Failed to run `git rev-parse HEAD` in toolchain Aeneas")?;
+
+        if !output.status.success() {
+            bail!("`git rev-parse HEAD` failed in toolchain Aeneas");
+        }
+        let aeneas_rev = String::from_utf8(output.stdout)
+            .context("Failed to parse git output")?
+            .trim()
+            .to_string();
+
+        // Inject aeneas dependency
+        let aeneas_dep = serde_json::json!({
+            "configFile": "lakefile.lean",
+            "inherited": false,
+            "inputRev": "main",
+            "manifestFile": "lake-manifest.json",
+            "name": "aeneas",
+            "rev": aeneas_rev,
+            "scope": "",
+            "subDir": null,
+            "type": "git",
+            "url": format!("file://{}", toolchain_aeneas_dir.to_str().unwrap())
+        });
+
+        if let Some(packages) = manifest["packages"].as_array_mut() {
+            packages.insert(0, aeneas_dep);
+        } else {
+            bail!("Manifest packages is not an array");
+        }
+
+        let new_content = serde_json::to_string_pretty(&manifest)
+            .context("Failed to serialize modified manifest")?;
+        fs::write(&user_manifest_path, new_content).context("Failed to write user manifest")?;
+    } else {
+        bail!("Toolchain manifest missing at {}", toolchain_manifest_path.display());
+    }
+
+    // We manually copy the Aeneas package and all resolved dependencies from
+    // the toolchain into the workspace's `.lake/packages` directory. This
+    // populates the clones with the pre-built `.lake/build` artifacts.
+    // We also update the Git remote URL in each clone to match the local
+    // file URLs in the manifest, preventing Lake from deleting them due to
+    // a URL mismatch.
+    println!("Materializing packages by copying from toolchain...");
+    let user_project_packages = lean_root.join(".lake").join("packages");
+
+    // Ensure .lake/packages exists
+    fs::create_dir_all(&user_project_packages)
+        .context("Failed to create .lake/packages directory")?;
+
+    // Copy Aeneas
+    let toolchain_aeneas_dir = toolchain.root.join("backends").join("lean");
+    let user_aeneas_dir = user_project_packages.join("aeneas");
+
+    if toolchain_aeneas_dir.exists() {
+        if user_aeneas_dir.exists() {
+            fs::remove_dir_all(&user_aeneas_dir)
+                .context("Failed to remove existing Aeneas directory in workspace")?;
+        }
+        let status = Command::new("cp")
+            .args(["-r", toolchain_aeneas_dir.to_str().unwrap(), user_aeneas_dir.to_str().unwrap()])
+            .status()
+            .context("Failed to copy Aeneas directory")?;
+        if !status.success() {
+            bail!("Failed to copy Aeneas directory from toolchain to workspace");
+        }
+
+        // Add Git remote 'origin' to match manifest
+        let status = Command::new("git")
+            .args([
+                "remote",
+                "add",
+                "origin",
+                &format!("file://{}", toolchain_aeneas_dir.to_str().unwrap()),
+            ])
+            .current_dir(&user_aeneas_dir)
+            .status()
+            .context("Failed to run `git remote add` in Aeneas clone")?;
+        if !status.success() {
+            bail!("`git remote add` failed in Aeneas clone");
+        }
+    }
+
+    // Copy dependencies
+    let toolchain_packages_dir = toolchain.root.join("packages");
+    if toolchain_packages_dir.exists() {
+        for entry in fs::read_dir(&toolchain_packages_dir)
+            .context("Failed to read toolchain packages directory")?
+        {
+            let entry = entry.context("Failed to read directory entry")?;
+            let path = entry.path();
+            if path.is_dir() {
+                let pkg_name = path.file_name().unwrap().to_str().unwrap();
+                let user_pkg_dir = user_project_packages.join(pkg_name);
+
+                if user_pkg_dir.exists() {
+                    fs::remove_dir_all(&user_pkg_dir)
+                        .context("Failed to remove existing package directory in workspace")?;
+                }
+                let status = Command::new("cp")
+                    .args(["-r", path.to_str().unwrap(), user_pkg_dir.to_str().unwrap()])
+                    .status()
+                    .context("Failed to copy package directory")?;
+                if !status.success() {
+                    bail!("Failed to copy package directory for {}", pkg_name);
+                }
+
+                // Update Git remote URL to match manifest
+                let status = Command::new("git")
+                    .args([
+                        "remote",
+                        "set-url",
+                        "origin",
+                        &format!("file://{}", path.to_str().unwrap()),
+                    ])
+                    .current_dir(&user_pkg_dir)
+                    .status()
+                    .context("Failed to run `git remote set-url` in package clone")?;
+                if !status.success() {
+                    bail!("`git remote set-url` failed in package clone for {}", pkg_name);
+                }
+            }
+        }
+    }
+
+    // Finally, we fix the non-portable absolute paths embedded in Lake's
+    // `.trace` files. We replace all occurrences of paths pointing to the
+    // toolchain with the corresponding paths in the workspace's clone
+    // directory. This convinces Lake that the pre-built artifacts are valid
+    // for the current workspace location.
+    println!("Post-processing traces in the clone...");
+    let toolchain_aeneas = toolchain.root.join("backends").join("lean");
+    let toolchain_aeneas_str = toolchain_aeneas.to_str().unwrap();
+    let user_project_aeneas = user_project_packages.join("aeneas");
+    let user_project_aeneas_str = user_project_aeneas.to_str().unwrap();
+    let toolchain_packages_str = toolchain_packages_dir.to_str().unwrap();
+    let user_project_packages_str = user_project_packages.to_str().unwrap();
+
+    let process_build_dir = |dir: &Path| -> Result<()> {
+        if dir.exists() {
+            let walker = WalkDir::new(dir).into_iter();
+            for entry in walker {
+                let entry = entry.context("Failed to walk build directory")?;
+                let path = entry.path();
+                if path.is_file() && path.extension().map_or(false, |ext| ext == "trace") {
+                    let content = fs::read_to_string(path).context("Failed to read trace file")?;
+                    let mut new_content =
+                        content.replace(toolchain_aeneas_str, user_project_aeneas_str);
+                    new_content =
+                        new_content.replace(toolchain_packages_str, user_project_packages_str);
+
+                    if new_content != content {
+                        fs::write(path, new_content).context("Failed to write trace file")?;
+                    }
+                }
+            }
+        }
+        Ok(())
+    };
+
+    // Process all packages in .lake/packages
+    if user_project_packages.exists() {
+        for entry in
+            fs::read_dir(&user_project_packages).context("Failed to read user project packages")?
+        {
+            let entry = entry.context("Failed to read directory entry")?;
+            let path = entry.path();
+            if path.is_dir() {
+                process_build_dir(&path.join(".lake").join("build"))?;
+            }
+        }
+    }
 
     Ok(())
 }
