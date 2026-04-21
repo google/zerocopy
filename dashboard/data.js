@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776806483671,
+  "lastUpdate": 1776807728860,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2261,6 +2261,33 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 1074,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf",
+            "email": "joshlf@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "9329ada1b2801e305cd00db7c62b6987f8b7c80c",
+          "message": "[anneal] In `setup`, recursively cache Lean sources (#3306)\n\nInitialize all transitive Lean library dependencies of the Aeneas Lean\nlibrary as local Git repositories, and rewrite dependencies to point to\nthese as filesystem-local Git remotes. During `verify`, `lake build`\nclones any source code it doesn't already have access to. This ensures\nthat this at least clones from the local filesystem instead of from the\ninternet.\n\ngherrit-pr-id: Ghmd3zurxjuy6q66eay4blnbt7sfg7wlz",
+          "timestamp": "2026-04-21T21:21:56Z",
+          "url": "https://github.com/google/zerocopy/commit/9329ada1b2801e305cd00db7c62b6987f8b7c80c"
+        },
+        "date": 1776807726965,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 1171,
             "unit": "seconds"
           }
         ]
