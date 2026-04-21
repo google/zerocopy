@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776765820014,
+  "lastUpdate": 1776767305104,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -3376,6 +3376,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 797,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "f98458e7eaf54ff34b69e417ee34e79036f06547",
+          "message": "[anneal] Cleanup test infrastructure and implement atomic setup",
+          "timestamp": "2026-04-21T07:30:20Z",
+          "url": "https://github.com/google/zerocopy/pull/3305/commits/f98458e7eaf54ff34b69e417ee34e79036f06547"
+        },
+        "date": 1776767301864,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 100,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 1321,
             "unit": "seconds"
           }
         ]
