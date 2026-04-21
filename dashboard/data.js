@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776757602082,
+  "lastUpdate": 1776758549378,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -3271,6 +3271,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test Time",
             "value": 444,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "a71a6d5cd7992d285245277601df2ecd6dbce471",
+          "message": "[anneal] WIP: Burn integration cache to the ground",
+          "timestamp": "2026-04-21T07:30:20Z",
+          "url": "https://github.com/google/zerocopy/pull/3305/commits/a71a6d5cd7992d285245277601df2ecd6dbce471"
+        },
+        "date": 1776758545853,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 80,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 797,
             "unit": "seconds"
           }
         ]
