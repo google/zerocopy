@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776776768723,
+  "lastUpdate": 1776791236873,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2186,6 +2186,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 1063,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "75549b547463fed9471b5510f95a2127bffe3003",
+          "message": "[anneal] In `setup`, recursively cache Lean sources",
+          "timestamp": "2026-04-21T11:39:33Z",
+          "url": "https://github.com/google/zerocopy/pull/3306/commits/75549b547463fed9471b5510f95a2127bffe3003"
+        },
+        "date": 1776791235228,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 1086,
             "unit": "seconds"
           }
         ]
