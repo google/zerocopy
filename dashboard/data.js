@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776858650271,
+  "lastUpdate": 1776859041061,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -4781,6 +4781,45 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 667,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "a51752bdff4d521681a8c2d5d97396015114d6d8",
+          "message": "[anneal] Isolate docker images, not just volumes (#3322)",
+          "timestamp": "2026-04-22T11:31:34Z",
+          "tree_id": "733e7fc815782bd3e1b3ba6ad4af32aa90a0566f",
+          "url": "https://github.com/google/zerocopy/commit/a51752bdff4d521681a8c2d5d97396015114d6d8"
+        },
+        "date": 1776859038514,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 148,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 351,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 533,
             "unit": "seconds"
           }
         ]
