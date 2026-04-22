@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776846320100,
+  "lastUpdate": 1776846322713,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2621,6 +2621,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 13,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "e0a1dc6c006368f856ab5ea0069772bba390263e",
+          "message": "Add dummy theorem to lib.rs",
+          "timestamp": "2026-04-21T21:53:26Z",
+          "url": "https://github.com/google/zerocopy/pull/3319/commits/e0a1dc6c006368f856ab5ea0069772bba390263e"
+        },
+        "date": 1776846317898,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 11,
             "unit": "seconds"
           }
         ]
