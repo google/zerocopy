@@ -123,10 +123,9 @@ pub fn unknown_decrease(n: u32) -> u32 {
     }
 }
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec {T : Type} (x : T) :
+///   Aeneas.Std.WP.spec (old x) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn old<T>(x: T) -> T { x }

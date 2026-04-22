@@ -29,7 +29,7 @@ pub mod is_valid {
     /// ```lean, anneal, spec
     /// theorem spec :
     ///   Aeneas.Std.WP.spec (trivial_is_valid) (fun ret_ => True) := by
-    ///   simp_all
+    ///   trivial
     /// ```
     pub fn trivial_is_valid() -> ValidStruct {
         ValidStruct { z: 5 }
@@ -134,11 +134,10 @@ fn clean() {}
 /// ```
 fn _anneal_dummy_1() {}
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_9) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_9() {}
 
