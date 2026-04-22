@@ -1,11 +1,6 @@
 /// ```lean, anneal, spec
-/// ensures: ret.val = 0
-/// proof:
-///   unfold get_size_of_empty_tuple at h_returns
-///   simp_all
-///   subst ret
-///   rfl
-/// proof (h_progress):
+/// theorem spec :
+///   Aeneas.Std.WP.spec (get_size_of_empty_tuple) (fun ret_ => ret_.val = 0) := by
 ///   unfold get_size_of_empty_tuple
 ///   simp_all
 /// ```
@@ -14,13 +9,8 @@ pub fn get_size_of_empty_tuple() -> usize {
 }
 
 /// ```lean, anneal, spec
-/// ensures: ret.val = 1
-/// proof:
-///   unfold get_align_of_empty_tuple at h_returns
-///   simp_all
-///   subst ret
-///   rfl
-/// proof (h_progress):
+/// theorem spec :
+///   Aeneas.Std.WP.spec (get_align_of_empty_tuple) (fun ret_ => ret_.val = 1) := by
 ///   unfold get_align_of_empty_tuple
 ///   simp_all
 /// ```
@@ -28,40 +18,14 @@ pub fn get_align_of_empty_tuple() -> usize {
     core::mem::align_of::<()>()
 }
 
-/// ```anneal
-/// requires: ∃ (_sz : Anneal.core.marker.Sized T) (tl : Anneal.HasStaticLayout T), True
-/// ensures: match core.mem.size_of T with
-///   | Result.ok size => ret.val = size.val
-///   | _ => False
-/// proof:
-///   rcases h_anon with ⟨_sz, tl, _⟩
-///   have h_wp : Aeneas.Std.WP.spec (silly_size_of _val) (fun r => r.val = (Anneal.HasStaticLayout.layout T).size.val) := by
-///     unfold silly_size_of
-///     have h_align_pos : 0 < (Anneal.HasStaticLayout.layout T).align.val.val := (Anneal.HasStaticLayout.layout T).align.isValid.left
-///     have h_align_nz : (Anneal.HasStaticLayout.layout T).align.val.val ≠ 0 := by omega
-///     simp_all
-///     step
-///     step
-///     · rw [i_post]
-///       simp
-///     · rw [i_post] at r_post
-///       simp at r_post
-///       exact r_post
-///   have ⟨y, hy1, hy2⟩ := Aeneas.Std.WP.spec_imp_exists h_wp
-///   simp_all
-/// proof (h_progress):
-///   rcases h_req with ⟨_, ⟨_sz, tl, _⟩⟩
-///   have h_wp : Aeneas.Std.WP.spec (silly_size_of _val) (fun _ => True) := by
-///     unfold silly_size_of
-///     have h_align_pos : 0 < (Anneal.HasStaticLayout.layout T).align.val.val := (Anneal.HasStaticLayout.layout T).align.isValid.left
-///     have h_align_nz : (Anneal.HasStaticLayout.layout T).align.val.val ≠ 0 := by omega
-///     simp_all
-///     step
-///     step
-///     · rw [i_post]
-///       simp
-///   have ⟨y, hy1, _⟩ := Aeneas.Std.WP.spec_imp_exists h_wp
-///   exact ⟨y, hy1⟩
+/// ```lean, anneal, spec
+/// theorem spec {T : Type} (_val : ConstRawPtr T)
+///   (h_req : ∃ (_sz : Anneal.core.marker.Sized T) (tl : Anneal.HasStaticLayout T), True) :
+///   Aeneas.Std.WP.spec (silly_size_of _val) (fun ret_ =>
+///     match core.mem.size_of T with
+///     | Result.ok size => ret_.val = size.val
+///     | _ => False) := by
+///   sorry
 /// ```
 pub unsafe fn silly_size_of<T>(_val: *const T) -> usize {
     let size = core::mem::size_of::<T>();

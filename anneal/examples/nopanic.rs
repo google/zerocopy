@@ -1,19 +1,14 @@
-/// ```anneal
-/// isSafe: ∀ (f: Self) (i: I), ∃ (o: O), inst.coreopsfunctionFnOnceSelfTupleIOInst.call_once f i = ok o
+/// ```lean, anneal
+/// def isSafe {Self I O : Type} (inst : NoPanic Self I O) : Prop :=
+///   ∀ (f: Self) (i: I), ∃ (o: O), inst.coreopsfunctionFnOnceSelfTupleIOInst.call_once f i = ok o
 /// ```
 pub unsafe trait NoPanic<I, O>: FnOnce(I) -> O {}
 
-/// ```anneal
-/// requires: nopanic.NoPanic.Safe F NoPanicInst
-/// ensures: True
-/// proof (h_progress):
-///   rcases h_req.h_anon with ⟨isSafe⟩
-///   rcases isSafe f i with ⟨o, ho⟩
-///   use o
-///   unfold nopanic.foo
-///   rw [ho]
-/// proof:
-///   trivial
+/// ```lean, anneal, spec
+/// theorem spec {I O F : Type} (NoPanicInst : NoPanic F I O) (f : F) (i : I)
+///   (h_req : NoPanic.isSafe NoPanicInst) :
+///   Aeneas.Std.WP.spec (foo NoPanicInst f i) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub unsafe fn foo<I, O, F: NoPanic<I, O>>(f: F, i: I) -> O {
     f(i)

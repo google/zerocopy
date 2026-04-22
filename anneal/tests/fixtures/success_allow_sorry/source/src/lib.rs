@@ -8,4 +8,9 @@ pub mod cfg_and_macros;
 pub mod hierarchy_and_stress;
 pub mod logic_and_patterns;
 
-fn main() {}
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (main) (fun ret_ => True) := by
+///   sorry
+/// ```
+pub fn main() {}
