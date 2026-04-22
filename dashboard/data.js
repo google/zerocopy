@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776856364452,
+  "lastUpdate": 1776856947148,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2823,6 +2823,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 10,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "2a269c55f4ee2fc3ee14ab1323cd3a63fe4817cf",
+          "message": "Make Docker image tag and cache volume unique per worktree",
+          "timestamp": "2026-04-21T21:53:26Z",
+          "url": "https://github.com/google/zerocopy/pull/3322/commits/2a269c55f4ee2fc3ee14ab1323cd3a63fe4817cf"
+        },
+        "date": 1776856944766,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 6,
             "unit": "seconds"
           }
         ]
