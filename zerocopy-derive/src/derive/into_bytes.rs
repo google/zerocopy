@@ -113,18 +113,7 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
         .build())
 }
 
-/// Returns `true` iff `strct` has two or more fields which all share the
-/// same syntactic type token tree.
-///
-/// Comparison is syntactic (tokens only), not semantic: `T` and
-/// `<T as Trait>::Self_` compare unequal even if they resolve to the
-/// same type. This is deliberate. A proc macro has no type resolution,
-/// and the soundness argument the caller relies on (that `N` copies of
-/// the same type under `repr(C)` contain no padding) only holds when
-/// the types are actually the same at the Rust-layout level. Being
-/// strict about token equality keeps the rule trivially sound.
 fn all_fields_same_type(strct: &DataStruct) -> bool {
-    let fields = strct.fields();
     let mut fields =
         strct.fields().into_iter().map(|(_, _, ty)| ty.into_token_stream().to_string());
     if let Some(first) = fields.next() {

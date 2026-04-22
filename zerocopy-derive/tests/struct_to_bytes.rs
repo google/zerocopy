@@ -172,10 +172,6 @@ struct ReprCGenericHomogeneousTuple<T>(T, T);
 
 util_assert_impl_all!(ReprCGenericHomogeneousTuple<u8>: imp::IntoBytes);
 util_assert_impl_all!(ReprCGenericHomogeneousTuple<u64>: imp::IntoBytes);
-// `AU16` has alignment 2, so the fallback branch for generic `repr(C)`
-// would have required `AU16: Unaligned` and been rejected. See the
-// corresponding `util_assert_not_impl_any!` on
-// `ReprCGenericMultipleFields<_, AU16>` below.
 util_assert_impl_all!(ReprCGenericHomogeneousTuple<util::AU16>: imp::IntoBytes);
 
 #[derive(imp::IntoBytes)]
