@@ -7,6 +7,9 @@ pub struct Widths {
 }
 
 /// ```lean, anneal, spec
+/// theorem spec (x : _) (y : _) :
+///   Aeneas.Std.WP.spec (check_widths x y) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn check_widths(x: isize, y: usize) -> (isize, usize) {
     (x, y)
@@ -39,6 +42,9 @@ pub struct Foo<T> {
 
 /// Tests for tuple types.
 /// ```lean, anneal, spec
+/// theorem spec (x : _) :
+///   Aeneas.Std.WP.spec (one_tuple x) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn one_tuple(x: (u32,)) -> (u32,) {
     x
@@ -77,6 +83,9 @@ pub mod enums {
 }
 
 /// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_1) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn dummy_anneal_padding_1() {}
 
@@ -86,18 +95,30 @@ pub struct ContainerValid<T> {
 }
 
 /// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_2) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn dummy_anneal_padding_2() {}
 
 /// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_3) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn dummy_anneal_padding_3() {}
 
 /// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_4) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn dummy_anneal_padding_4() {}
 
 /// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_5) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn dummy_anneal_padding_5() {}
 

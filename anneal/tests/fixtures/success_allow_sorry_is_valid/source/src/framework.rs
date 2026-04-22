@@ -17,6 +17,9 @@ pub mod is_valid {
     /// Triggers allow_sorry on the complex isValid autoParam.
     /// Should emit a single "declaration uses sorry" warning.
     /// ```lean, anneal, spec
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (unprovable_is_valid) (fun ret_ => True) := by
+    ///   sorry
     /// ```
     pub fn unprovable_is_valid() -> InvalidStruct {
         InvalidStruct { x: 1, y: 2 }
@@ -104,6 +107,9 @@ pub mod signatures {
 
     /// Verifying that padded signatures (due to `cfg`) don't break Anneal specs.
     /// ```lean, anneal, spec
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (padded_signature_spec) (fun ret_ => True) := by
+    ///   sorry
     /// ```
     pub fn padded_signature_spec() {}
 }
@@ -129,6 +135,9 @@ fn clean() {}
 fn _anneal_dummy_1() {}
 
 /// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_9) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn dummy_anneal_padding_9() {}
 
