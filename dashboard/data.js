@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776846212860,
+  "lastUpdate": 1776846301147,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2416,6 +2416,31 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/pull/3307/commits/b1fdafb152f643383365c75682d3ca2a26628fce"
         },
         "date": 1776846209442,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 10,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "6515957a25a4a2e1130213684a65a5876cc5ea4f",
+          "message": "Add stderr_file to success_allow_sorry_is_valid anneal.toml",
+          "timestamp": "2026-04-21T21:53:26Z",
+          "url": "https://github.com/google/zerocopy/pull/3310/commits/6515957a25a4a2e1130213684a65a5876cc5ea4f"
+        },
+        "date": 1776846299166,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
