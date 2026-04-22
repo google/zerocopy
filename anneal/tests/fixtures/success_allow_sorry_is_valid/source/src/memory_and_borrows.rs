@@ -69,7 +69,7 @@ pub fn mut_passthrough(x: &mut u32) {
 /// ```lean, anneal, spec
 /// theorem spec (x : _) :
 ///   Aeneas.Std.WP.spec (target_mut_ref_is_valid x) (fun ret_ => True) := by
-///   simp_all [Aeneas.Std.IsValid.isValid]
+///   sorry
 /// ```
 pub fn target_mut_ref_is_valid(x: &mut u32) {}
 

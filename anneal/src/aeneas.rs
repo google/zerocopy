@@ -172,7 +172,7 @@ pub fn run_aeneas(
                 "Funs.lean missing for {}, creating empty file. (No functions found by Anneal)",
                 slug
             );
-            std::fs::write(&funs_path, "").context("Failed to create empty Funs.lean")?;
+            std::fs::write(&funs_path, "def dummy := ()\n").context("Failed to create empty Funs.lean")?;
         } else {
             // Aeneas generates `def` for all functions. If a function calls an opaque
             // translated function (which emits as an `axiom`), Lean's bytecode compiler
@@ -198,7 +198,7 @@ pub fn run_aeneas(
                 "Types.lean missing for {}, creating empty file. (No types found by Anneal)",
                 slug
             );
-            std::fs::write(&types_path, "").context("Failed to create empty Types.lean")?;
+            std::fs::write(&types_path, "def dummy := ()\n").context("Failed to create empty Types.lean")?;
         } else {
             // We patch the generated `Types.lean` file because Aeneas's code generator
             // outputs `@[discriminant]` without the requisite type argument. The Lean

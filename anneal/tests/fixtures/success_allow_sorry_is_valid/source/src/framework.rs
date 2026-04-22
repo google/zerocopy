@@ -118,9 +118,7 @@ pub mod visibility {
     /// ```lean, anneal, spec
     /// theorem spec (x : Std.U32) (_y : Std.U32) (h_eq : x = _y) :
     ///   Aeneas.Std.WP.spec (named_precondition_visibility x _y) (fun ret_ => ret_ = _y) := by
-    ///   unfold framework.visibility.named_precondition_visibility at *
-    ///   have h := h_eq
-    ///   simp_all
+    ///   sorry
     /// ```
     /// Note: `unfold` needs the full path in the spec.
     pub unsafe fn named_precondition_visibility(x: u32, _y: u32) -> u32 {
