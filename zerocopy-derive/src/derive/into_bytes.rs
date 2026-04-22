@@ -1,5 +1,5 @@
 use proc_macro2::{Span, TokenStream};
-use quote::quote;
+use quote::{quote, ToTokens};
 use syn::{Data, DataEnum, DataStruct, DataUnion, Error, Type};
 
 use crate::{
@@ -68,6 +68,23 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
         } else {
             (Some(PaddingCheck::Struct), false)
         }
+    } else if is_c && !repr.is_align_gt_1() && all_fields_same_type(strct) {
+        // All fields have the same syntactic type `T`, which under
+        // `repr(C)` without `#[repr(align)]` is sufficient to prove no
+        // padding. The `repr(C)` layout algorithm places each field at
+        // an offset that is a multiple of that field's alignment; with
+        // every field having the same type, the struct's alignment
+        // equals `align_of::<T>()`, field `i` sits at offset `i *
+        // size_of::<T>()` (always a multiple of `align_of::<T>()`), and
+        // the struct's total size is `N * size_of::<T>()` (also a
+        // multiple of its alignment). Hence there is no inter-field or
+        // trailing padding, and requiring `T: IntoBytes` (so that `T`
+        // itself is padding-free) proves the struct is padding-free.
+        //
+        // We prefer this to the `Unaligned`-requiring branch below
+        // because it accepts strictly more types without giving up any
+        // soundness guarantees.
+        (None, false)
     } else if is_c && !repr.is_align_gt_1() {
         // We can't use a padding check since there are generic type arguments.
         // Instead, we require all field types to implement `Unaligned`. This
@@ -94,6 +111,16 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
     Ok(ImplBlockBuilder::new(ctx, strct, Trait::IntoBytes, field_bounds)
         .padding_check(padding_check)
         .build())
+}
+
+fn all_fields_same_type(strct: &DataStruct) -> bool {
+    let fields = strct.fields();
+    let mut fields = fields.into_iter().map(|(_, _, ty)| ty.into_token_stream().to_string());
+    if let Some(first) = fields.next() {
+        fields.all(|field| field == first)
+    } else {
+        true
+    }
 }
 
 fn derive_into_bytes_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Error> {
