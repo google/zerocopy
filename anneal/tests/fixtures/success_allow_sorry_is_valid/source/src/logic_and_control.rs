@@ -55,9 +55,6 @@ pub fn crash() -> ! {
 }
 
 /// ```lean, anneal, spec
-/// theorem spec (x : Std.U32) :
-///   Aeneas.Std.WP.spec (shadow x) (fun ret_ => True) := by
-///   sorry
 /// ```
 pub fn shadow(x: u32) -> u32 {
     let x = x + 1;
@@ -73,16 +70,10 @@ pub struct S {
 }
 
 /// ```lean, anneal, spec
-/// theorem spec :
-///   Aeneas.Std.WP.spec (dummy_anneal_padding_6) (fun ret_ => True) := by
-///   sorry
 /// ```
 pub fn dummy_anneal_padding_6() {}
 
 /// ```lean, anneal, spec
-/// theorem spec :
-///   Aeneas.Std.WP.spec (dummy_anneal_padding_7) (fun ret_ => True) := by
-///   sorry
 /// ```
 pub fn dummy_anneal_padding_7() {}
 
@@ -117,8 +108,5 @@ pub fn unknown_decrease(n: u32) -> u32 {
 }
 
 /// ```lean, anneal, spec
-/// theorem spec {T : Type} (x : T) :
-///   Aeneas.Std.WP.spec (old x) (fun ret_ => True) := by
-///   sorry
 /// ```
 pub fn old<T>(x: T) -> T { x }
