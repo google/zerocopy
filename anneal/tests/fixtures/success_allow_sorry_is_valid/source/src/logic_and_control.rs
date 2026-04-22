@@ -60,10 +60,9 @@ pub fn crash() -> ! {
     panic!("crash")
 }
 
-/// ```lean, anneal
-/// proof (h_progress):
-///   sorry
-/// proof context:
+/// ```lean, anneal, spec
+/// theorem spec (x : Std.U32) :
+///   Aeneas.Std.WP.spec (shadow x) (fun ret_ => True) := by
 ///   sorry
 /// ```
 pub fn shadow(x: u32) -> u32 {
@@ -79,19 +78,17 @@ pub struct S {
     pub e: E,
 }
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_6) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_6() {}
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_7) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_7() {}
 
@@ -103,17 +100,21 @@ pub struct Checked {
     pub val: u32,
 }
 
-/// ```anneal
-/// ensures:
-///   True
+/// ```lean, anneal, spec
+/// -- FIXME: Remove manual sorry once we support omitting proofs
+/// theorem spec (x : Std.U32) :
+///   Aeneas.Std.WP.spec (add_one x) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn add_one(x: u32) -> u32 {
     x + 1
 }
 
-/// ```anneal
-/// ensures:
-///   True
+/// ```lean, anneal, spec
+/// -- FIXME: Remove manual sorry once we support omitting proofs
+/// theorem spec (n : Std.U32) :
+///   Aeneas.Std.WP.spec (unknown_decrease n) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn unknown_decrease(n: u32) -> u32 {
     if n > 0 {
