@@ -1,0 +1,3 @@
+import «CoalescedSuccessTestCoalescedSuccessTest4698412b6eef7f32».Funs
+import «CoalescedSuccessTestCoalescedSuccessTest4698412b6eef7f32».Types
+import «CoalescedSuccessTestCoalescedSuccessTest4698412b6eef7f32».FunsExternal
