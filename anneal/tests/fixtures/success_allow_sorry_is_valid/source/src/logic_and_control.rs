@@ -5,23 +5,17 @@ pub enum E {
     B(u32),
 }
 
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct MatchSpec {
     pub e: E,
 }
 
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct LetSpec {
     pub x: u32,
 }
 
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct IfSpec {
     pub check: bool,
     pub val: u32,
@@ -92,9 +86,7 @@ pub fn dummy_anneal_padding_6() {}
 /// ```
 pub fn dummy_anneal_padding_7() {}
 
-/// ```lean, anneal
-/// isValid self := True
-/// ```
+
 pub struct Checked {
     pub check: bool,
     pub val: u32,
