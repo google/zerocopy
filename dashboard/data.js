@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776855503074,
+  "lastUpdate": 1776855739187,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2771,6 +2771,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 9,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "0497a2dd3a4bbf07b2f4540f788255404b151784",
+          "message": "Add Total CI Duration benchmark to anneal workflow",
+          "timestamp": "2026-04-21T21:53:26Z",
+          "url": "https://github.com/google/zerocopy/pull/3323/commits/0497a2dd3a4bbf07b2f4540f788255404b151784"
+        },
+        "date": 1776855737107,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 10,
             "unit": "seconds"
           }
         ]
