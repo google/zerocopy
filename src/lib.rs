@@ -321,6 +321,7 @@
     all(feature = "simd-nightly", any(target_arch = "powerpc", target_arch = "powerpc64")),
     feature(stdarch_powerpc)
 )]
+#![cfg_attr(all(feature = "simd-nightly", target_arch = "s390x"), feature(stdarch_s390x))]
 #![cfg_attr(feature = "float-nightly", feature(f16, f128))]
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS, feature(coverage_attribute))]

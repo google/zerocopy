@@ -1344,11 +1344,27 @@ mod simd {
         );
         simd_arch_mod!(
             #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
-            powerpc, powerpc, vector_bool_long, vector_double, vector_signed_long, vector_unsigned_long
+            powerpc, powerpc,
+            vector_bool_char, vector_bool_short, vector_bool_int, vector_bool_long,
+            vector_double, vector_float,
+            vector_signed_char, vector_signed_short, vector_signed_int, vector_signed_long,
+            vector_unsigned_char, vector_unsigned_short, vector_unsigned_int, vector_unsigned_long
         );
         simd_arch_mod!(
             #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
-            powerpc64, powerpc64, vector_bool_long, vector_double, vector_signed_long, vector_unsigned_long
+            powerpc64, powerpc64,
+            vector_bool_char, vector_bool_short, vector_bool_int, vector_bool_long,
+            vector_double, vector_float,
+            vector_signed_char, vector_signed_short, vector_signed_int, vector_signed_long,
+            vector_unsigned_char, vector_unsigned_short, vector_unsigned_int, vector_unsigned_long
+        );
+        simd_arch_mod!(
+            #[cfg(all(feature = "simd-nightly", target_arch = "s390x"))]
+            s390x, s390x,
+            vector_bool_char, vector_bool_short, vector_bool_int, vector_bool_long_long,
+            vector_double, vector_float,
+            vector_signed_char, vector_signed_short, vector_signed_int, vector_signed_long_long,
+            vector_unsigned_char, vector_unsigned_short, vector_unsigned_int, vector_unsigned_long_long
         );
         // NOTE: NEON intrinsics were broken on big-endian platforms from their stabilization up to
         // Rust 1.87. (Context in https://github.com/rust-lang/stdarch/issues/1484). Support is
@@ -2357,20 +2373,60 @@ mod tests {
             #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
             test_simd_arch_mod!(
                 powerpc,
+                vector_bool_char,
+                vector_bool_short,
+                vector_bool_int,
                 vector_bool_long,
                 vector_double,
+                vector_float,
+                vector_signed_char,
+                vector_signed_short,
+                vector_signed_int,
                 vector_signed_long,
+                vector_unsigned_char,
+                vector_unsigned_short,
+                vector_unsigned_int,
                 vector_unsigned_long
             );
 
             #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
             test_simd_arch_mod!(
                 powerpc64,
+                vector_bool_char,
+                vector_bool_short,
+                vector_bool_int,
                 vector_bool_long,
                 vector_double,
+                vector_float,
+                vector_signed_char,
+                vector_signed_short,
+                vector_signed_int,
                 vector_signed_long,
+                vector_unsigned_char,
+                vector_unsigned_short,
+                vector_unsigned_int,
                 vector_unsigned_long
             );
+
+            #[cfg(all(feature = "simd-nightly", target_arch = "s390x"))]
+            test_simd_arch_mod!(
+                s390x,
+                vector_bool_char,
+                vector_bool_short,
+                vector_bool_int,
+                vector_bool_long_long,
+                vector_double,
+                vector_float,
+                vector_signed_char,
+                vector_signed_short,
+                vector_signed_int,
+                vector_signed_long_long,
+                vector_unsigned_char,
+                vector_unsigned_short,
+                vector_unsigned_int,
+                vector_unsigned_long_long
+            );
+
             #[cfg(all(target_arch = "aarch64", not(no_zerocopy_aarch64_simd_1_59_0)))]
             #[rustfmt::skip]
             test_simd_arch_mod!(
