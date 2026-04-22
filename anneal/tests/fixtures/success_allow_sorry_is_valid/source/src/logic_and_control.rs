@@ -5,23 +5,17 @@ pub enum E {
     B(u32),
 }
 
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct MatchSpec {
     pub e: E,
 }
 
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct LetSpec {
     pub x: u32,
 }
 
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct IfSpec {
     pub check: bool,
     pub val: u32,
@@ -55,15 +49,17 @@ pub mod shadowing {
 
 /// Tests for the never type and panics.
 /// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (crash) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn crash() -> ! {
     panic!("crash")
 }
 
-/// ```lean, anneal
-/// proof (h_progress):
-///   sorry
-/// proof context:
+/// ```lean, anneal, spec
+/// theorem spec (x : Std.U32) :
+///   Aeneas.Std.WP.spec (shadow x) (fun ret_ => True) := by
 ///   sorry
 /// ```
 pub fn shadow(x: u32) -> u32 {
@@ -72,48 +68,46 @@ pub fn shadow(x: u32) -> u32 {
     x
 }
 
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct S {
     pub e: E,
 }
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_6) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_6() {}
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_7) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_7() {}
 
-/// ```lean, anneal
-/// isValid self := True
-/// ```
+
 pub struct Checked {
     pub check: bool,
     pub val: u32,
 }
 
-/// ```anneal
-/// ensures:
-///   True
+/// ```lean, anneal, spec
+/// -- FIXME: Remove manual sorry once we support omitting proofs
+/// theorem spec (x : Std.U32) :
+///   Aeneas.Std.WP.spec (add_one x) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn add_one(x: u32) -> u32 {
     x + 1
 }
 
-/// ```anneal
-/// ensures:
-///   True
+/// ```lean, anneal, spec
+/// -- FIXME: Remove manual sorry once we support omitting proofs
+/// theorem spec (n : Std.U32) :
+///   Aeneas.Std.WP.spec (unknown_decrease n) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn unknown_decrease(n: u32) -> u32 {
     if n > 0 {
@@ -123,10 +117,9 @@ pub fn unknown_decrease(n: u32) -> u32 {
     }
 }
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec {T : Type} (x : T) :
+///   Aeneas.Std.WP.spec (old x) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn old<T>(x: T) -> T { x }

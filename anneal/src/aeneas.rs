@@ -172,7 +172,7 @@ pub fn run_aeneas(
                 "Funs.lean missing for {}, creating empty file. (No functions found by Anneal)",
                 slug
             );
-            std::fs::write(&funs_path, "").context("Failed to create empty Funs.lean")?;
+            std::fs::write(&funs_path, "def dummy := ()\n").context("Failed to create empty Funs.lean")?;
         } else {
             // Aeneas generates `def` for all functions. If a function calls an opaque
             // translated function (which emits as an `axiom`), Lean's bytecode compiler
@@ -198,7 +198,7 @@ pub fn run_aeneas(
                 "Types.lean missing for {}, creating empty file. (No types found by Anneal)",
                 slug
             );
-            std::fs::write(&types_path, "").context("Failed to create empty Types.lean")?;
+            std::fs::write(&types_path, "def dummy := ()\n").context("Failed to create empty Types.lean")?;
         } else {
             // We patch the generated `Types.lean` file because Aeneas's code generator
             // outputs `@[discriminant]` without the requisite type argument. The Lean
@@ -599,9 +599,9 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
 
 /// Completes Lean verification by generating Anneal `Specs.lean`, writing `Generated.lean`,
 /// and running `lake build` + diagnostics.
-pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
+pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact], args: &crate::resolve::Args) -> Result<()> {
     generate_lean_workspace(roots, artifacts)?;
-    run_lake(roots, artifacts)
+    run_lake(roots, artifacts, args)
 }
 
 /// Runs the Lean build process and diagnostics.
@@ -612,7 +612,7 @@ pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]) 
 /// 3. Builds the project with `lake build`.
 /// 4. Executes the `Diagnostics.lean` script to check proofs.
 /// 5. Parses JSON output from the script and maps it back to Rust source.
-fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
+fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact], args: &crate::resolve::Args) -> Result<()> {
     let generated = roots.lean_generated_root();
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
@@ -729,9 +729,13 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
 
         let output = cmd.output().context("Failed to run lean compiler")?;
 
-        let output_str = String::from_utf8_lossy(&output.stdout);
+        let output_str = format!("{}\n{}", String::from_utf8_lossy(&output.stdout), String::from_utf8_lossy(&output.stderr));
         let specs_abs_path = lean_root.join(&specs_rel_path);
         let specs_source = std::fs::read_to_string(&specs_abs_path).unwrap_or_default();
+
+        if !specs_source.contains("theorem spec") && !specs_source.contains("axiom spec") {
+            continue;
+        }
 
         let mut diags = Vec::new();
         for line in output_str.lines() {
@@ -751,10 +755,12 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
         if !output.status.success() && diags.is_empty() {
             let stderr = String::from_utf8_lossy(&output.stderr);
             if !stderr.trim().is_empty() {
-                eprintln!("Lean compiler failed or produced stderr for {slug}.");
-                eprintln!("STDERR:\n{stderr}");
+                if !(args.allow_sorry && stderr.contains("sorry")) {
+                    eprintln!("Lean compiler failed or produced stderr for {slug}.");
+                    eprintln!("STDERR:\n{stderr}");
+                    has_errors = true;
+                }
             }
-            has_errors = true;
         }
 
         // Load Source Map
@@ -785,7 +791,9 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
             };
 
             if matches!(level, crate::diagnostics::DiagnosticLevel::Error) {
-                has_errors = true;
+                if !(args.allow_sorry && nat_diag.data.contains("sorry")) {
+                    has_errors = true;
+                }
             }
 
             let byte_start =

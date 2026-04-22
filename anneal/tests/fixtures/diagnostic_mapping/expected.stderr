@@ -2,38 +2,51 @@
   │   1 = 2
   │ is false
     ╭─[[PROJECT_ROOT]/src/lib.rs:9:28]
-  8 │ /// proof context:
+  8 │ ///   Aeneas.Std.WP.spec (test_proof_context_exact_error) (fun ret_ => True) := by
   9 │ ///   have h : 1 = 2 := by decide
     ·                            ───┬──
     ·                               ╰── here
- 10 │ /// ```
+ 10 │ ///   simp_all
     ╰────
 
-  × Unknown identifier `invalid_tactic_xyz`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:20:6]
- 19 │ /// proof context:
- 20 │ ///  invalid_tactic_xyz
-    ·      ─────────┬────────
+[External Error] generated/DiagnosticMappingDiagnosticMappingcd9afc6f06ef2e2d/DiagnosticMappingDiagnosticMappingcd9afc6f06ef2e2d.lean: unknown tactic
+  × unsolved goals
+  │ ⊢ test_proof_context_invalid_syntax ⦃ ret_ => True ⦄
+    ╭─[[PROJECT_ROOT]/src/lib.rs:20:84]
+ 19 │     /// theorem spec :
+ 20 │ ╭─▶ ///   Aeneas.Std.WP.spec (test_proof_context_invalid_syntax) (fun ret_ => True) := by
+ 21 │ ├─▶ ///  invalid_tactic_xyz
+    · ╰──── here
+ 22 │     /// ```
+    ╰────
+
+  × Unknown identifier `h_bad`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:31:13]
+ 30 │ ///   Aeneas.Std.WP.spec (test_proof_context_unknown_variable) (fun ret_ => True) := by
+ 31 │ ///   exact h_bad
+    ·             ──┬──
     ·               ╰── here
- 21 │ /// ```
-    ╰────
-
-  × Unknown identifier `exact`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:30:7]
- 29 │ /// proof context:
- 30 │ ///   exact h_bad
-    ·       ──┬──
-    ·         ╰── here
- 31 │ /// ```
+ 32 │ /// ```
     ╰────
 
   × The 'sorry' tactic is forbidden; use --allow-sorry to allow it.
-    ╭─[[PROJECT_ROOT]/src/lib.rs:41:7]
- 40 │ /// proof context:
- 41 │ ///   sorry
+    ╭─[[PROJECT_ROOT]/src/lib.rs:42:7]
+ 41 │ ///   Aeneas.Std.WP.spec (test_proof_context_sorry) (fun ret_ => True) := by
+ 42 │ ///   sorry
     ·       ──┬──
     ·         ╰── here
- 42 │ /// ```
+ 43 │ /// ```
+    ╰────
+
+[External Error] generated/DiagnosticMappingDiagnosticMappingcd9afc6f06ef2e2d/DiagnosticMappingDiagnosticMappingcd9afc6f06ef2e2d.lean: unexpected token 'end'; expected '{' or tactic
+  × unsolved goals
+  │ ⊢ test_synthetic_theorem_sorry ⦃ ret_ => True ⦄
+    ╭─[[PROJECT_ROOT]/src/lib.rs:52:79]
+ 51 │ /// theorem spec :
+ 52 │ ///   Aeneas.Std.WP.spec (test_synthetic_theorem_sorry) (fun ret_ => True) := by
+    ·                                                                               ─┬
+    ·                                                                                ╰── here
+ 53 │ /// ```
     ╰────
 
 Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

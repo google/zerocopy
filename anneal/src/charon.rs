@@ -15,7 +15,7 @@ use anyhow::{Context as _, Result, bail};
 use cargo_metadata::{Message, diagnostic::DiagnosticLevel};
 
 use crate::{
-    parse::{ParsedItem, attr::FunctionBlockInner},
+    parse::ParsedItem,
     resolve::{AnnealTargetKind, Args, LockedRoots},
     scanner::AnnealArtifact,
     setup::Tool,
@@ -90,7 +90,7 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[AnnealArtifact])
         for item in &artifact.items {
             if let ParsedItem::Function(func) = &item.item {
                 // Check if the function body is an Axiom (unsafe)
-                if let FunctionBlockInner::Axiom { .. } = func.anneal.inner {
+                if func.anneal.mode == crate::parse::attr::FunctionAttribute::UnsafeAxiom {
                     // Mark `unsafe(axiom)` functions as opaque in Charon. This
                     // instructs Aeneas to treat the function as external and
                     // generate a template file (`FunsExternal_Template.lean`)

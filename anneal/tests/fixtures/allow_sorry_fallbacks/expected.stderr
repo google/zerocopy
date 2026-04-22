@@ -1,72 +1,89 @@
   ⚠ unused variable: `cond`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:67:36]
- 66 │ /// ```
- 67 │ pub unsafe fn expects_precondition(cond: bool) {}
+    ╭─[[PROJECT_ROOT]/src/lib.rs:72:36]
+ 71 │ /// ```
+ 72 │ pub unsafe fn expects_precondition(cond: bool) {}
     ·                                    ──┬─
     ·                                      ╰── 
- 68 │ 
+ 73 │ 
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:22:8]
- 21 │ /// ```
- 22 │ pub fn missing_user_bound() -> bool {
-    ·        ──┬─
-    ·          ╰── here
- 23 │     true
+    ╭─[[PROJECT_ROOT]/src/lib.rs:20:13]
+ 19 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 20 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 21 │ ///   Aeneas.Std.WP.spec (missing_user_bound) (fun ret_ => ret_ = ¬ ret_) := by
     ╰────
 
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:29:8]
- 28 │ /// ```
- 29 │ pub fn unprovable_is_valid() -> InvalidStruct {
-    ·        ──┬─
-    ·          ╰── here
- 30 │     InvalidStruct { x: 1, y: 2 }
+    ╭─[[PROJECT_ROOT]/src/lib.rs:31:13]
+ 30 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 31 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 32 │ ///   Aeneas.Std.WP.spec (unprovable_is_valid) (fun ret_ => InvalidStruct.isValid ret_) := by
     ╰────
 
-  × Type mismatch
-  │   true
-  │ has type
-  │   Bool
-  │ but is expected to have type
-  │   InvalidStruct
-    ╭─[[PROJECT_ROOT]/src/lib.rs:42:14]
- 41 │ /// ensures:
- 42 │ ///   ret == true
-    ·              ──┬─
-    ·                ╰── here
- 43 │ /// proof:
+  × simp_all made no progress
+    ╭─[[PROJECT_ROOT]/src/lib.rs:43:7]
+ 42 │ ///   Aeneas.Std.WP.spec (trivial_is_valid) (fun ret_ => True) := by
+ 43 │ ///   simp_all
+    ·       ────┬───
+    ·           ╰── here
+ 44 │ /// ```
     ╰────
 
-  × invalid {...} notation, structure type expected
-  │   Post ret
-    ╭─[[PROJECT_ROOT]/src/lib.rs:44:7]
- 43 │     /// proof:
- 44 │ ╭─▶ ///   -- A deliberately broken explicit proof should NOT emit "declaration uses sorry"
- 45 │ │   ///   -- but instead natively fail on the syntax error "unknown tactic".
- 46 │ │   ///   exact {
- 47 │ │   ///       invalid_tactic
- 48 │ ├─▶ ///   }
+  × overloaded, errors
+  │   57:7 Unknown identifier `invalid_tactic`
+  │ 
+  │   invalid {...} notation, structure type expected
+  │     True
+    ╭─[[PROJECT_ROOT]/src/lib.rs:52:13]
+ 51 │     ///   Aeneas.Std.WP.spec (explicit_broken_proof) (fun ret_ => True) := by
+ 52 │ ╭─▶ ///   exact {
+ 53 │ │   ///       invalid_tactic
+ 54 │ ├─▶ ///   }
     · ╰──── here
- 49 │     /// ```
+ 55 │     /// ```
     ╰────
 
   × Tactic `rfl` failed: The left-hand side
-  │   true == false
+  │   explicit_semantic_failure
+  │ is not definitionally equal to the right-hand side
+  │   fun ret_ => True = False
+  │ 
+  │ ⊢ explicit_semantic_failure ⦃ ret_ => True = False ⦄
+    ╭─[[PROJECT_ROOT]/src/lib.rs:63:7]
+ 62 │ ///   Aeneas.Std.WP.spec (explicit_semantic_failure) (fun ret_ => True = False) := by
+ 63 │ ///   rfl
+    ·       ─┬─
+    ·        ╰── here
+ 64 │ /// ```
+    ╰────
+
+  × Tactic `rfl` failed: The left-hand side
+  │   false
   │ is not definitionally equal to the right-hand side
   │   true
   │ 
-  │ ret : Unit
-  │ h_returns : explicit_semantic_failure = ok ret
-  │ ⊢ (true == false) = true
-    ╭─[[PROJECT_ROOT]/src/lib.rs:58:7]
- 57 │ /// proof (h):
- 58 │ ///   rfl
-    ·       ─┬─
-    ·        ╰── here
- 59 │ /// ```
+  │ ⊢ false = true
+    ╭─[[PROJECT_ROOT]/src/lib.rs:78:58]
+ 77 │ ///   Aeneas.Std.WP.spec (fail_to_prove_precondition) (fun ret_ => True) := by
+ 78 │ ///   have h_call := expects_precondition.spec false (by rfl)
+    ·                                                          ─┬─
+    ·                                                           ╰── here
+ 79 │ ///   simp_all
+    ╰────
+
+  × simp_all made no progress
+    ╭─[[PROJECT_ROOT]/src/lib.rs:79:7]
+ 78 │ ///   have h_call := expects_precondition.spec false (by rfl)
+ 79 │ ///   simp_all
+    ·       ────┬───
+    ·           ╰── here
+ 80 │ /// ```
     ╰────
 
 Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

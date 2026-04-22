@@ -2,8 +2,11 @@
 
 macro_rules! make_fn_with_spec {
     ($name:ident, $val:expr) => {
-        /// ```anneal
-        /// ensures: True
+        /// ```lean, anneal, spec
+        /// -- FIXME: Remove manual sorry once we support omitting proofs
+        /// theorem spec :
+        ///   Aeneas.Std.WP.spec ($name) (fun ret_ => True) := by
+        ///   sorry
         /// ```
         pub fn $name() -> u32 {
             $val
@@ -35,7 +38,8 @@ pub mod hygiene {
 
     /// Tests macro hygiene and variable resolution.
     /// ```lean, anneal, spec
-    /// proof:
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (check_hygiene) (fun ret_ => True) := by
     ///   sorry
     /// ```
     pub fn check_hygiene() {
@@ -44,8 +48,8 @@ pub mod hygiene {
 }
 
 pub mod edge_cases {
-    /// ```anneal
-    /// isSafe : ∀ (self : Self), True
+    /// ```lean, anneal
+    /// def isSafe {Self : Type} (inst : MyTrait Self) : Prop := True
     /// ```
     pub unsafe trait MyTrait {
         fn foo();
@@ -53,8 +57,8 @@ pub mod edge_cases {
 
     macro_rules! decl_trait {
         ($n:ident) => {
-            /// ```anneal
-            /// isSafe : x > 0
+            /// ```lean, anneal
+            /// def isSafe {Self : Type} (inst : $n Self) : Prop := True
             /// ```
             pub unsafe trait $n {
                 fn bar();
@@ -74,19 +78,17 @@ pub mod edge_cases {
     decl_trait!(VisibleTrait);
 }
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_10) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_10() {}
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_11) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_11() {}
 

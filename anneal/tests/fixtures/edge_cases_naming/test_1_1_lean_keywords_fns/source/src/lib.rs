@@ -1,10 +1,9 @@
 
 // Lean keywords that are valid Rust identifiers
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec («theorem») (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn theorem() {}
 pub fn axiom() {}
