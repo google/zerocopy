@@ -234,6 +234,10 @@ jobs:
       contents: write # Required to push benchmark data to the storage branch
       packages: read # required to pull docker caches from ghcr.io
     steps:
+      - name: Record job start time
+        id: job_start_time
+        run: echo "unix=$(date +%s)" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
@@ -317,7 +321,22 @@ jobs:
           echo "[{\"name\": \"Test Time\", \"unit\": \"seconds\", \"value\": $duration}]" > test_time.json
 
       - name: Combine benchmarks
-        run: jq -s 'add' pull_time.json test_time.json > output.json
+        env:
+          JOB_START_TIME_UNIX: ${{ steps.job_start_time.outputs.unix }}
+        run: |
+          total_duration=$(( $(date +%s) - $JOB_START_TIME_UNIX ))
+          echo "Total CI Duration (All Steps): $total_duration seconds"
+          echo "[{\"name\": \"Total CI Duration (All Steps)\", \"unit\": \"seconds\", \"value\": $total_duration}]" > total_time.json
+
+          jq -n \
+            --slurpfile pull pull_time.json \
+            --slurpfile test test_time.json \
+            --slurpfile total total_time.json \
+            '[
+              $pull[0][0],
+              $test[0][0],
+              $total[0][0]
+            ]' > output.json
 
       - name: Store CI duration benchmarks
         uses: benchmark-action/github-action-benchmark@a60cea5bc7b49e15c1f58f411161f99e0df48372 # v1.22.0
