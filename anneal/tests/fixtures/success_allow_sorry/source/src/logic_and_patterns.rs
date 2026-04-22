@@ -32,4 +32,10 @@ pub mod start_patterns {
         fn bar() {}
     }
 }
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_logic) (fun ret_ => True) := by
+///   sorry
+/// ```
+pub fn dummy_logic() {}
 

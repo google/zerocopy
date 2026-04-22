@@ -34,5 +34,10 @@ pub mod warn_cfg_attr_path {
 pub mod macro_blind_spot {
     macro_rules! gen_mod { ($n:ident) => { mod $n; } }
     gen_mod!(hidden);
-}
 
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_cfg) (fun ret_ => True) := by
+///   sorry
+/// ```
+pub fn dummy_cfg() {}

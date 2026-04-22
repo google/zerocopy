@@ -75,4 +75,10 @@ pub mod deep_invocation {
 
     fn _anneal_dummy() {}
 }
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_stress) (fun ret_ => True) := by
+///   sorry
+/// ```
+pub fn dummy_stress() {}
 
