@@ -125,16 +125,13 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
 /// strict about token equality keeps the rule trivially sound.
 fn all_fields_same_type(strct: &DataStruct) -> bool {
     let fields = strct.fields();
-    if fields.len() < 2 {
-        // Zero- and one-field cases are already handled by an earlier
-        // branch in `derive_into_bytes_struct`. Returning `false` here
-        // ensures those cases cannot reach this branch even if the
-        // order of checks is later rearranged.
-        return false;
+    let mut fields =
+        strct.fields().into_iter().map(|(_, _, ty)| ty.into_token_stream().to_string());
+    if let Some(first) = fields.next() {
+        fields.all(|field| field == first)
+    } else {
+        true
     }
-    let mut tokens = fields.iter().map(|(_, _, ty)| ty.to_token_stream().to_string());
-    let first = tokens.next().expect("len >= 2");
-    tokens.all(|t| t == first)
 }
 
 fn derive_into_bytes_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Error> {
