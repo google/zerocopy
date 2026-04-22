@@ -72,8 +72,7 @@ pub mod deep_invocation {
     pub mod nested;
     
     
-    /// ```lean, anneal
-    /// ```
+
     fn _anneal_dummy() {}
 }
 

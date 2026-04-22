@@ -729,7 +729,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact], args: &crate::res
 
         let output = cmd.output().context("Failed to run lean compiler")?;
 
-        let output_str = String::from_utf8_lossy(&output.stdout);
+        let output_str = format!("{}\n{}", String::from_utf8_lossy(&output.stdout), String::from_utf8_lossy(&output.stderr));
         let specs_abs_path = lean_root.join(&specs_rel_path);
         let specs_source = std::fs::read_to_string(&specs_abs_path).unwrap_or_default();
 
