@@ -1,0 +1,351 @@
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:17:13]
+ 16 │ /// ```lean, anneal, spec
+ 17 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 18 │ ///   Aeneas.Std.WP.spec (main) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/types_and_data.rs:10:13]
+  9 │ /// ```lean, anneal, spec
+ 10 │ /// theorem spec (x : _) (y : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 11 │ ///   Aeneas.Std.WP.spec (check_widths x y) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/types_and_data.rs:45:13]
+ 44 │ /// ```lean, anneal, spec
+ 45 │ /// theorem spec (x : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 46 │ ///   Aeneas.Std.WP.spec (one_tuple x) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/types_and_data.rs:62:17]
+ 61 │     /// ```lean, anneal, spec
+ 62 │     /// theorem spec (v : Void) :
+    ·                 ──┬─
+    ·                   ╰── here
+ 63 │     ///   Aeneas.Std.WP.spec (invert v) (fun ret_ => False) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/types_and_data.rs:86:13]
+ 85 │ /// ```lean, anneal, spec
+ 86 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 87 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_1) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/types_and_data.rs:98:13]
+ 97 │ /// ```lean, anneal, spec
+ 98 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 99 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_2) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/types_and_data.rs:105:13]
+ 104 │ /// ```lean, anneal, spec
+ 105 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 106 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_3) (fun ret_ => True) := by
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/types_and_data.rs:112:13]
+ 111 │ /// ```lean, anneal, spec
+ 112 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 113 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_4) (fun ret_ => True) := by
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/types_and_data.rs:119:13]
+ 118 │ /// ```lean, anneal, spec
+ 119 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 120 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_5) (fun ret_ => True) := by
+     ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/traits_and_impls.rs:34:21]
+ 33 │         /// ```lean, anneal, spec
+ 34 │         /// theorem spec :
+    ·                     ──┬─
+    ·                       ╰── here
+ 35 │         ///   Aeneas.Std.WP.spec (m1) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/traits_and_impls.rs:44:21]
+ 43 │         /// ```lean, anneal, spec
+ 44 │         /// theorem spec :
+    ·                     ──┬─
+    ·                       ╰── here
+ 45 │         ///   Aeneas.Std.WP.spec (m2) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/traits_and_impls.rs:54:21]
+ 53 │         /// ```lean, anneal, spec
+ 54 │         /// theorem spec :
+    ·                     ──┬─
+    ·                       ╰── here
+ 55 │         ///   Aeneas.Std.WP.spec (m3) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/traits_and_impls.rs:67:21]
+ 66 │         /// ```lean, anneal, spec
+ 67 │         /// theorem spec :
+    ·                     ──┬─
+    ·                       ╰── here
+ 68 │         ///   Aeneas.Std.WP.spec (process) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/traits_and_impls.rs:76:13]
+ 75 │ /// ```lean, anneal, spec
+ 76 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 77 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_8) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+   ╭─[[PROJECT_ROOT]/src/spec_syntax.rs:7:13]
+ 6 │ /// ```lean, anneal, spec
+ 7 │ /// theorem spec (x : Std.U32) :
+   ·             ──┬─
+   ·               ╰── here
+ 8 │ ///   Aeneas.Std.WP.spec (zero_ensures_no_proof x) (fun ret_ => True) := by
+   ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/spec_syntax.rs:24:13]
+ 23 │ /// ```lean, anneal, spec
+ 24 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 25 │ ///   Aeneas.Std.WP.spec (test_zero_args_no_bounds) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+   ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:5:13]
+ 4 │ /// ```lean, anneal, spec
+ 5 │ /// theorem spec (a : _) (b : _) :
+   ·             ──┬─
+   ·               ╰── here
+ 6 │ ///   Aeneas.Std.WP.spec (swap a b) (fun ret_ => True) := by
+   ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:24:13]
+ 23 │ /// ```lean, anneal, spec
+ 24 │ /// theorem spec (a : _) (b : _) (c : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 25 │ ///   Aeneas.Std.WP.spec (sandwich_borrow a b c) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:35:13]
+ 34 │ /// ```lean, anneal, spec
+ 35 │ /// theorem spec (x : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 36 │ ///   Aeneas.Std.WP.spec (deep_destruct x) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:46:13]
+ 45 │ /// ```lean, anneal, spec
+ 46 │ /// theorem spec (x : _) (y : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 47 │ ///   Aeneas.Std.WP.spec (partial_mut x y) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:60:13]
+ 59 │ /// ```lean, anneal, spec
+ 60 │ /// theorem spec (x : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 61 │ ///   Aeneas.Std.WP.spec (mut_passthrough x) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:70:13]
+ 69 │ /// ```lean, anneal, spec
+ 70 │ /// theorem spec (x : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 71 │ ///   Aeneas.Std.WP.spec (target_mut_ref_is_valid x) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:77:13]
+ 76 │ /// ```lean, anneal, spec
+ 77 │ /// theorem spec (a : _) (b : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 78 │ ///   Aeneas.Std.WP.spec (zip a b) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:84:13]
+ 83 │ /// ```lean, anneal, spec
+ 84 │ /// theorem spec (a : _) (b : _) (c : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 85 │ ///   Aeneas.Std.WP.spec (mix a b c) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:97:13]
+ 96 │ /// ```lean, anneal, spec
+ 97 │ /// theorem spec (x : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 98 │ ///   Aeneas.Std.WP.spec (nested_mut x) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/macro_checks.rs:41:17]
+ 40 │     /// ```lean, anneal, spec
+ 41 │     /// theorem spec :
+    ·                 ──┬─
+    ·                   ╰── here
+ 42 │     ///   Aeneas.Std.WP.spec (check_hygiene) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/macro_checks.rs:82:13]
+ 81 │ /// ```lean, anneal, spec
+ 82 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 83 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_10) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/macro_checks.rs:89:13]
+ 88 │ /// ```lean, anneal, spec
+ 89 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 90 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_11) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:52:13]
+ 51 │ /// ```lean, anneal, spec
+ 52 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 53 │ ///   Aeneas.Std.WP.spec (crash) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:61:13]
+ 60 │ /// ```lean, anneal, spec
+ 61 │ /// theorem spec (x : Std.U32) :
+    ·             ──┬─
+    ·               ╰── here
+ 62 │ ///   Aeneas.Std.WP.spec (shadow x) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:77:13]
+ 76 │ /// ```lean, anneal, spec
+ 77 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 78 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_6) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:84:13]
+ 83 │ /// ```lean, anneal, spec
+ 84 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 85 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_7) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:98:13]
+ 97 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 98 │ /// theorem spec (x : Std.U32) :
+    ·             ──┬─
+    ·               ╰── here
+ 99 │ ///   Aeneas.Std.WP.spec (add_one x) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:108:13]
+ 107 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 108 │ /// theorem spec (n : Std.U32) :
+     ·             ──┬─
+     ·               ╰── here
+ 109 │ ///   Aeneas.Std.WP.spec (unknown_decrease n) (fun ret_ => True) := by
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:121:13]
+ 120 │ /// ```lean, anneal, spec
+ 121 │ /// theorem spec {T : Type} (x : T) :
+     ·             ──┬─
+     ·               ╰── here
+ 122 │ ///   Aeneas.Std.WP.spec (old x) (fun ret_ => True) := by
+     ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/framework.rs:20:17]
+ 19 │     /// ```lean, anneal, spec
+ 20 │     /// theorem spec :
+    ·                 ──┬─
+    ·                   ╰── here
+ 21 │     ///   Aeneas.Std.WP.spec (unprovable_is_valid) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/framework.rs:110:17]
+ 109 │     /// ```lean, anneal, spec
+ 110 │     /// theorem spec :
+     ·                 ──┬─
+     ·                   ╰── here
+ 111 │     ///   Aeneas.Std.WP.spec (padded_signature_spec) (fun ret_ => True) := by
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/framework.rs:119:17]
+ 118 │     /// ```lean, anneal, spec
+ 119 │     /// theorem spec (x : Std.U32) (_y : Std.U32) (h_eq : x = _y) :
+     ·                 ──┬─
+     ·                   ╰── here
+ 120 │     ///   Aeneas.Std.WP.spec (named_precondition_visibility x _y) (fun ret_ => ret_ = _y) := by
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/framework.rs:135:13]
+ 134 │ /// ```lean, anneal, spec
+ 135 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 136 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_9) (fun ret_ => True) := by
+     ╰────
+

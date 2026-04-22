@@ -10,11 +10,10 @@ pub mod edge_cases_types_test_2_2_string_types {
         pub e: char,
     }
     
-    /// ```lean, anneal
-    /// proof (h_progress):
+    /// ```lean, anneal, spec
+    /// theorem spec (s : String) :
+    ///   Aeneas.Std.WP.spec (check_strings s) (fun ret_ => True) := by
     ///   sorry
-    /// proof context:
-    ///   have h_foo : True := True.intro
     /// ```
     pub fn check_strings(s: String) -> String {
         s
@@ -30,11 +29,10 @@ pub mod edge_cases_types_test_2_5_pointers {
         pub c: NonNull<u8>,
     }
     
-    /// ```lean, anneal
-    /// proof (h_progress):
+    /// ```lean, anneal, spec
+    /// theorem spec (p : *const u8) :
+    ///   Aeneas.Std.WP.spec (ptr_arg p) (fun ret_ => True) := by
     ///   sorry
-    /// proof context:
-    ///   have h_foo : True := True.intro
     /// ```
     pub fn ptr_arg(p: *const u8) -> *const u8 {
         p

@@ -638,10 +638,10 @@ mod tests {
         /// Returns the context of the Anneal block.
         fn anneal_context(&self) -> &[attr::SpannedLine] {
             match self {
-                Self::Function(f) => &f.anneal.common.context,
-                Self::Type(t) => &t.anneal.common.context,
-                Self::Trait(t) => &t.anneal.common.context,
-                Self::Impl(i) => &i.anneal.common.context,
+                Self::Function(f) => &f.anneal.content,
+                Self::Type(t) => &t.anneal.content,
+                Self::Trait(t) => &t.anneal.content,
+                Self::Impl(i) => &i.anneal.content,
             }
         }
     }
@@ -650,7 +650,6 @@ mod tests {
     fn test_parse_lean_block() {
         let code = r#"
             /// ```lean, anneal
-            /// context:
             /// theorem foo : True := by trivial
             /// ```
             fn foo() {}
@@ -661,7 +660,6 @@ mod tests {
         assert_eq!(
             src,
             "/// ```lean, anneal
-            /// context:
             /// theorem foo : True := by trivial
             /// ```
             fn foo() {}"
@@ -754,14 +752,12 @@ mod tests {
         let code = r#"
             mod a {
                 /// ```lean, anneal
-                /// context:
                 /// theorem a : True := trivial
                 /// ```
                 fn foo() {}
             }
             mod b {
                 /// ```lean, anneal
-                /// context:
                 /// theorem b : False := sorry
                 /// ```
                 fn foo() {}
@@ -884,7 +880,6 @@ anneal::syn_error
         let code = r#"
             extern "C" {
                 /// ```lean, anneal
-                /// context:
                 /// theorem ext_foo_ok : True := trivial
                 /// ```
                 fn ext_foo();
