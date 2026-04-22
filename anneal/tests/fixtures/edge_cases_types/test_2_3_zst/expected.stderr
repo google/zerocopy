@@ -1,1 +1,18 @@
-\n
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:15:13]
+ 14 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 15 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 16 │ ///   Aeneas.Std.WP.spec (unit_arg ()) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:23:13]
+ 22 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 23 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 24 │ ///   Aeneas.Std.WP.spec (unit_ret) (fun ret_ => True) := by
+    ╰────
+

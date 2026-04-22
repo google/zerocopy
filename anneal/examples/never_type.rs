@@ -1,5 +1,7 @@
 /// ```lean, anneal, spec
-/// ensures: False
+/// theorem spec (x : Std.U32) :
+///   Aeneas.Std.WP.spec (crashes x) (fun ret_ => False) := by
+///   sorry
 /// ```
 pub fn crashes(x: u32) -> ! {
     if x > 0 {

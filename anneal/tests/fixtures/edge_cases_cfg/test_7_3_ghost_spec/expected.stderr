@@ -1,8 +1,8 @@
    Compiling test_7_3_ghost_spec v0.1.0 ([PROJECT_ROOT])
 warning: when processing starting pattern `crate::windows_only`: path `crate::windows_only` does not correspond to any item
-  --> src/lib.rs:18:36
+  --> src/lib.rs:17:36
    |
-18 | pub fn linux_only() -> u32 { 100 }
+17 | pub fn linux_only() -> u32 { 100 }
    |                                   ^
 
 

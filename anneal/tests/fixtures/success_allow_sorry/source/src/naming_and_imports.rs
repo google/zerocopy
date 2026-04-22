@@ -28,11 +28,10 @@ pub mod edge_cases_naming_test_1_4_module_names {
     }
     
     
-    /// ```lean, anneal
-    /// proof (h_progress):
+    /// ```lean, anneal, spec
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (dummy_anneal_padding) (fun ret_ => True) := by
     ///   sorry
-    /// proof context:
-    ///   have h_foo : True := True.intro
     /// ```
     pub fn dummy_anneal_padding() {}
 }
@@ -46,11 +45,10 @@ pub mod edge_cases_modules_test_6_4_ambiguous_imports {
         pub struct S;
     }
     
-    /// ```lean, anneal
-    /// proof (h_progress):
+    /// ```lean, anneal, spec
+    /// theorem spec (x : a.S) (y : b.S) :
+    ///   Aeneas.Std.WP.spec (func x y) (fun ret_ => True) := by
     ///   sorry
-    /// proof context:
-    ///   have h_foo : True := True.intro
     /// ```
     pub fn func(x: a::S, y: b::S) {}
 }

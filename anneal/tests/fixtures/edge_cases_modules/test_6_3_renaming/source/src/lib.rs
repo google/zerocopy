@@ -1,10 +1,9 @@
 use std::vec::Vec as MyVec;
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec (v : MyVec Std.U32) :
+///   Aeneas.Std.WP.spec (use_alias v) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn use_alias(v: MyVec<u32>) -> usize {
     v.len()
