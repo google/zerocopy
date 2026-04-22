@@ -75,7 +75,7 @@ fn main() -> anyhow::Result<()> {
     match args.command {
         Commands::Verify(resolve_args) => {
             prepare_and_run(&resolve_args, |locked_roots, packages| {
-                aeneas::verify_lean_workspace(locked_roots, packages)
+                aeneas::verify_lean_workspace(locked_roots, packages, &resolve_args)
             })?;
         }
         Commands::Generate(resolve_args) => {

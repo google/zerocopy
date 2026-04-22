@@ -4,6 +4,9 @@
 /// Anneal should auto-inject proofs for implicit bounds (like isValid).
 ///
 /// ```lean, anneal, spec
+/// theorem spec (x : Std.U32) :
+///   Aeneas.Std.WP.spec (zero_ensures_no_proof x) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn zero_ensures_no_proof(x: u32) -> u32 {
     x
@@ -18,5 +21,8 @@ pub fn zero_guarantees_zero_params() {}
 /// The Pre structure should be completely omitted.
 ///
 /// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (test_zero_args_no_bounds) (fun ret_ => True) := by
+///   sorry
 /// ```
 fn test_zero_args_no_bounds() {}

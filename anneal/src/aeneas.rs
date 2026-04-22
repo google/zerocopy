@@ -599,9 +599,9 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
 
 /// Completes Lean verification by generating Anneal `Specs.lean`, writing `Generated.lean`,
 /// and running `lake build` + diagnostics.
-pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
+pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact], args: &crate::resolve::Args) -> Result<()> {
     generate_lean_workspace(roots, artifacts)?;
-    run_lake(roots, artifacts)
+    run_lake(roots, artifacts, args)
 }
 
 /// Runs the Lean build process and diagnostics.
@@ -612,7 +612,7 @@ pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]) 
 /// 3. Builds the project with `lake build`.
 /// 4. Executes the `Diagnostics.lean` script to check proofs.
 /// 5. Parses JSON output from the script and maps it back to Rust source.
-fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
+fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact], args: &crate::resolve::Args) -> Result<()> {
     let generated = roots.lean_generated_root();
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
@@ -785,7 +785,9 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
             };
 
             if matches!(level, crate::diagnostics::DiagnosticLevel::Error) {
-                has_errors = true;
+                if !(args.allow_sorry && nat_diag.data.contains("declaration uses `sorry`")) {
+                    has_errors = true;
+                }
             }
 
             let byte_start =
