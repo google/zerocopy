@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776846322713,
+  "lastUpdate": 1776846325414,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2646,6 +2646,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 11,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "809337c3f4ad5d7b48d4853bd13ef8aa7bba1948",
+          "message": "Add dummy theorems to all remaining empty spec blocks",
+          "timestamp": "2026-04-21T21:53:26Z",
+          "url": "https://github.com/google/zerocopy/pull/3318/commits/809337c3f4ad5d7b48d4853bd13ef8aa7bba1948"
+        },
+        "date": 1776846319083,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 10,
             "unit": "seconds"
           }
         ]
