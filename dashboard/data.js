@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776846308944,
+  "lastUpdate": 1776846311608,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2521,6 +2521,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 10,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "1da7ff4244f19e6c5816bad3d2fae6b875cc9378",
+          "message": "Remove all isValid annotations in logic_and_control.rs",
+          "timestamp": "2026-04-21T21:53:26Z",
+          "url": "https://github.com/google/zerocopy/pull/3311/commits/1da7ff4244f19e6c5816bad3d2fae6b875cc9378"
+        },
+        "date": 1776846303662,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 12,
             "unit": "seconds"
           }
         ]
