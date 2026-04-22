@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776857486629,
+  "lastUpdate": 1776857544427,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2926,6 +2926,33 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/pull/3301/commits/e1005b0f51361317d1f4883a6d3138c567301b22"
         },
         "date": 1776857288674,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 9,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf",
+            "email": "joshlf@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "a51752bdff4d521681a8c2d5d97396015114d6d8",
+          "message": "[anneal] Isolate docker images, not just volumes (#3322)",
+          "timestamp": "2026-04-22T11:31:34Z",
+          "url": "https://github.com/google/zerocopy/commit/a51752bdff4d521681a8c2d5d97396015114d6d8"
+        },
+        "date": 1776857542390,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
