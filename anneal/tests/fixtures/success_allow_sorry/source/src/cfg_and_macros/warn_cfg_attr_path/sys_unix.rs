@@ -3,3 +3,4 @@
 ///   True := by
 ///   sorry
 /// ```
+pub fn dummy() {}
