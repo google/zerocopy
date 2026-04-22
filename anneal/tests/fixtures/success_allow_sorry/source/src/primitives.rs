@@ -3,10 +3,7 @@ pub mod primitives_layout {
     
     /// ```lean, anneal, spec
     /// theorem spec :
-    ///   Aeneas.Std.WP.spec (test_u8) (fun ret_ =>
-    ///     ret_.1.val = 1 ∧
-    ///     Anneal.IsAlignment ret_.2.val ∧
-    ///     ret_.2.val ∣ ret_.1.val) := by
+    ///   Aeneas.Std.WP.spec (test_u8) (fun ret_ => True) := by
     ///   sorry
     /// ```
     pub fn test_u8() -> (usize, usize) {
