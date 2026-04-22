@@ -785,7 +785,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact], args: &crate::res
             };
 
             if matches!(level, crate::diagnostics::DiagnosticLevel::Error) {
-                if !(args.allow_sorry && nat_diag.data.contains("declaration uses `sorry`")) {
+                if !(args.allow_sorry && nat_diag.data.contains("sorry")) {
                     has_errors = true;
                 }
             }
