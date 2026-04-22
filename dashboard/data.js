@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776857291034,
+  "lastUpdate": 1776857366891,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -574,6 +574,35 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/commit/9329ada1b2801e305cd00db7c62b6987f8b7c80c"
         },
         "date": 1776809699339,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Image Size",
+            "value": 16277,
+            "unit": "Megabytes"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "a27cb57734782db8f7ba9da14e3aa8fd6ea200f9",
+          "message": "[ci][anneal] Track total CI duration in benchmark dashboard (#3323)",
+          "timestamp": "2026-04-22T11:11:58Z",
+          "tree_id": "22f1c20b8a2fe8fc6e2010a70b7e0c0b573332b6",
+          "url": "https://github.com/google/zerocopy/commit/a27cb57734782db8f7ba9da14e3aa8fd6ea200f9"
+        },
+        "date": 1776857364610,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
