@@ -130,8 +130,7 @@ pub mod visibility {
 
 fn clean() {}
 
-/// ```lean, anneal
-/// ```
+
 fn _anneal_dummy_1() {}
 
 /// ```lean, anneal, spec
@@ -141,23 +140,19 @@ fn _anneal_dummy_1() {}
 /// ```
 pub fn dummy_anneal_padding_9() {}
 
-/// ```lean, anneal
-/// ```
+
 fn my_func() {}
 
 fn keep() {}
 
-/// ```lean, anneal
-/// ```
+
 fn _anneal_dummy_2() {}
 
 fn code() {}
 
-/// ```lean, anneal
-/// ```
+
 fn _anneal_dummy_3() {}
 
-/// ```lean, anneal
-/// ```
+
 fn private_helper() {}
 

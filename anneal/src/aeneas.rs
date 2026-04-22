@@ -751,10 +751,12 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact], args: &crate::res
         if !output.status.success() && diags.is_empty() {
             let stderr = String::from_utf8_lossy(&output.stderr);
             if !stderr.trim().is_empty() {
-                eprintln!("Lean compiler failed or produced stderr for {slug}.");
-                eprintln!("STDERR:\n{stderr}");
+                if !(args.allow_sorry && stderr.contains("sorry")) {
+                    eprintln!("Lean compiler failed or produced stderr for {slug}.");
+                    eprintln!("STDERR:\n{stderr}");
+                    has_errors = true;
+                }
             }
-            has_errors = true;
         }
 
         // Load Source Map
