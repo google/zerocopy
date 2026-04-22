@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776846301147,
+  "lastUpdate": 1776846305030,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2441,6 +2441,31 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/google/zerocopy/pull/3310/commits/6515957a25a4a2e1130213684a65a5876cc5ea4f"
         },
         "date": 1776846299166,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 10,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "6acd8b409f306433335df1044f39e37fd7c70087",
+          "message": "Revert empty spec blocks in success_allow_sorry_is_valid",
+          "timestamp": "2026-04-21T21:53:26Z",
+          "url": "https://github.com/google/zerocopy/pull/3312/commits/6acd8b409f306433335df1044f39e37fd7c70087"
+        },
+        "date": 1776846303073,
         "tool": "customSmallerIsBetter",
         "benches": [
           {
