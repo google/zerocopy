@@ -62,9 +62,7 @@ pub fn shadow(x: u32) -> u32 {
     x
 }
 
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct S {
     pub e: E,
 }
