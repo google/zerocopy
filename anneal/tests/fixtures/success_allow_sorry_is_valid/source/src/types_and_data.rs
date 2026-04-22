@@ -55,8 +55,7 @@ pub mod enums {
     /// ```lean, anneal, spec
     /// theorem spec (v : Void) :
     ///   Aeneas.Std.WP.spec (invert v) (fun ret_ => False) := by
-    ///   unfold invert at *
-    ///   contradiction
+    ///   sorry
     /// ```
     pub fn invert(v: Void) -> ! {
         match v {}
