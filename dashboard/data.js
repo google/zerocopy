@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776846307069,
+  "lastUpdate": 1776846308944,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2496,6 +2496,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 12,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "e8b19d15dc991389600b50246a0e8323272a10a2",
+          "message": "Remove isValid from S in logic_and_control.rs",
+          "timestamp": "2026-04-21T21:53:26Z",
+          "url": "https://github.com/google/zerocopy/pull/3313/commits/e8b19d15dc991389600b50246a0e8323272a10a2"
+        },
+        "date": 1776846303593,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 10,
             "unit": "seconds"
           }
         ]
