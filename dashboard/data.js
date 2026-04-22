@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776846311608,
+  "lastUpdate": 1776846313982,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -2546,6 +2546,31 @@ window.BENCHMARK_DATA = {
           {
             "name": "Docker Build Time",
             "value": 12,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "6213ce106972645c8919a402c00678eea844e38e",
+          "message": "Use sorry for invert in types_and_data.rs",
+          "timestamp": "2026-04-21T21:53:26Z",
+          "url": "https://github.com/google/zerocopy/pull/3314/commits/6213ce106972645c8919a402c00678eea844e38e"
+        },
+        "date": 1776846306578,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Build Time",
+            "value": 13,
             "unit": "seconds"
           }
         ]
