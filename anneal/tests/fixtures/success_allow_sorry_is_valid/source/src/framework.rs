@@ -3,7 +3,7 @@
 pub mod is_valid {
     // Struct for testing IsValid with explicit definition.
     /// ```lean, anneal
-    /// isValid self := self.x > self.y
+    /// def isValid (self : InvalidStruct) : Prop := self.x.val > self.y.val
     /// ```
     pub struct InvalidStruct {
         pub x: u32,
@@ -17,6 +17,9 @@ pub mod is_valid {
     /// Triggers allow_sorry on the complex isValid autoParam.
     /// Should emit a single "declaration uses sorry" warning.
     /// ```lean, anneal, spec
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (unprovable_is_valid) (fun ret_ => True) := by
+    ///   sorry
     /// ```
     pub fn unprovable_is_valid() -> InvalidStruct {
         InvalidStruct { x: 1, y: 2 }
@@ -24,6 +27,9 @@ pub mod is_valid {
 
     /// Should NOT trigger any "declaration uses sorry" because `True` for `ValidStruct` is solved automatically.
     /// ```lean, anneal, spec
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (trivial_is_valid) (fun ret_ => True) := by
+    ///   trivial
     /// ```
     pub fn trivial_is_valid() -> ValidStruct {
         ValidStruct { z: 5 }
@@ -31,7 +37,7 @@ pub mod is_valid {
 
     /// Struct for testing IsValid with explicit definition in framework context.
     /// ```lean, anneal
-    /// isValid self := self.val > (0 : Int)
+    /// def isValid (self : Positive) : Prop := self.val.val > 0
     /// ```
     pub struct Positive {
         pub val: u32,
@@ -51,10 +57,9 @@ pub mod is_valid {
 
     pub fn no_args_no_return() {}
 
-    /// ```anneal
-    /// ensures:
-    ///   True
-    /// proof:
+    /// ```lean, anneal, spec
+    /// theorem spec (x : Std.U32) (p : Positive) :
+    ///   Aeneas.Std.WP.spec (immutable_args_no_return x p) (fun ret_ => True) := by
     ///   trivial
     /// ```
     pub fn immutable_args_no_return(_x: u32, _p: Positive) {}
@@ -69,16 +74,22 @@ pub mod is_valid {
 pub mod axioms {
     /// A function verifying that `unsafe(axiom)` blocks correctly parse and redact.
     /// ```lean, anneal, unsafe(axiom)
+    /// axiom spec :
+    ///   Aeneas.Std.WP.spec (test_axiom_pseudo_name) (fun ret_ => True)
     /// ```
     pub unsafe fn test_axiom_pseudo_name() {}
 
     /// A function verifying that entirely empty `axiom` blocks compile correctly.
     /// ```lean, anneal, unsafe(axiom)
+    /// axiom spec :
+    ///   Aeneas.Std.WP.spec (test_empty_axiom) (fun ret_ => True)
     /// ```
     pub unsafe fn test_empty_axiom() {}
 
     /// Using `unsafe(axiom)` to redact a return value property.
     /// ```lean, anneal, unsafe(axiom)
+    /// axiom spec :
+    ///   Aeneas.Std.WP.spec (redact_return) (fun ret_ => True)
     /// ```
     pub unsafe fn redact_return() -> i32 {
         1 + 1
@@ -96,22 +107,18 @@ pub mod signatures {
 
     /// Verifying that padded signatures (due to `cfg`) don't break Anneal specs.
     /// ```lean, anneal, spec
-    /// proof context:
-    ///   have h_foo : True := True.intro
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (padded_signature_spec) (fun ret_ => True) := by
+    ///   sorry
     /// ```
     pub fn padded_signature_spec() {}
 }
 
 pub mod visibility {
     /// ```lean, anneal, spec
-    /// requires (h_eq):
-    ///   x = _y
-    /// ensures:
-    ///   ret = _y
-    /// proof:
-    ///   unfold framework.visibility.named_precondition_visibility at *
-    ///   have h := h_eq
-    ///   simp_all
+    /// theorem spec (x : Std.U32) (_y : Std.U32) (h_eq : x = _y) :
+    ///   Aeneas.Std.WP.spec (named_precondition_visibility x _y) (fun ret_ => ret_ = _y) := by
+    ///   sorry
     /// ```
     /// Note: `unfold` needs the full path in the spec.
     pub unsafe fn named_precondition_visibility(x: u32, _y: u32) -> u32 {
@@ -121,35 +128,29 @@ pub mod visibility {
 
 fn clean() {}
 
-/// ```lean, anneal
-/// ```
+
 fn _anneal_dummy_1() {}
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_9) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_9() {}
 
-/// ```lean, anneal
-/// ```
+
 fn my_func() {}
 
 fn keep() {}
 
-/// ```lean, anneal
-/// ```
+
 fn _anneal_dummy_2() {}
 
 fn code() {}
 
-/// ```lean, anneal
-/// ```
+
 fn _anneal_dummy_3() {}
 
-/// ```lean, anneal
-/// ```
+
 fn private_helper() {}
 

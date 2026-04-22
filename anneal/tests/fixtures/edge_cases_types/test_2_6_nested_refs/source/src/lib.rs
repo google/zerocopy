@@ -1,8 +1,7 @@
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec (x : _) (y : _) (z : _) :
+///   Aeneas.Std.WP.spec (nested x y z) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn nested(x: &&u32, y: &mut &u32, z: &&mut u32) {
     let _ = **x;

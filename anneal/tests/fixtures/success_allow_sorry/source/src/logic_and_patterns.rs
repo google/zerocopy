@@ -3,9 +3,11 @@ pub mod edge_cases_modules_test_6_2_logic_visibility {
     pub mod inner {
         pub(crate) fn helper() -> u32 { 42 }
         
-        /// ```anneal
-        /// ensures:
-        ///   True
+        /// ```lean, anneal, spec
+        /// -- FIXME: Remove manual sorry once we support omitting proofs
+        /// theorem spec :
+        ///   Aeneas.Std.WP.spec (public_api) (fun ret_ => True) := by
+        ///   sorry
         /// ```
         pub fn public_api() -> u32 {
             helper()
@@ -13,24 +15,27 @@ pub mod edge_cases_modules_test_6_2_logic_visibility {
     }
     
     
-    /// ```lean, anneal
-    /// proof (h_progress):
+    /// ```lean, anneal, spec
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (dummy_anneal_padding) (fun ret_ => True) := by
     ///   sorry
-    /// proof context:
-    ///   have h_foo : True := True.intro
     /// ```
     pub fn dummy_anneal_padding() {}
 }
 
 pub mod start_patterns {
-    /// ```lean, anneal
-    /// ```
+
     fn foo() {}
     
     mod nested {
-        /// ```lean, anneal
-        /// ```
+
         fn bar() {}
     }
 }
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_logic) (fun ret_ => True) := by
+///   sorry
+/// ```
+pub fn dummy_logic() {}
 

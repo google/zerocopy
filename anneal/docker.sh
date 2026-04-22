@@ -38,7 +38,6 @@ fi
 # container. This assumes that the script is located in the root of the
 # `anneal` workspace.
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-IMAGE_NAME="anneal-dev"
 # To avoid pollution between different git worktrees, we generate a unique
 # volume ID for each worktree and store it in a file. This ensures that
 # each worktree gets its own isolated named volume for caching.
@@ -55,6 +54,7 @@ if [ ! -f "$VOLUME_ID_FILE" ]; then
 fi
 VOLUME_ID=$(cat "$VOLUME_ID_FILE" | tr -d '[:space:]')
 VOLUME_NAME="anneal-cache-$VOLUME_ID"
+IMAGE_NAME="anneal-dev:$VOLUME_ID"
 
 BUILD_CACHE=$(mktemp)
 

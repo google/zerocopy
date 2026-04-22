@@ -11,11 +11,10 @@ pub mod edge_cases_stress_test_11_4_namespace_bomb {
     }
     
     
-    /// ```lean, anneal
-    /// proof (h_progress):
+    /// ```lean, anneal, spec
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (dummy_anneal_padding) (fun ret_ => True) := by
     ///   sorry
-    /// proof context:
-    ///   have h_foo : True := True.intro
     /// ```
     pub fn dummy_anneal_padding() {}
 }
@@ -36,11 +35,10 @@ pub mod edge_cases_stress_test_11_1_chain {
     }
     
     
-    /// ```lean, anneal
-    /// proof (h_progress):
+    /// ```lean, anneal, spec
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (dummy_anneal_padding) (fun ret_ => True) := by
     ///   sorry
-    /// proof context:
-    ///   have h_foo : True := True.intro
     /// ```
     pub fn dummy_anneal_padding() {}
 }
@@ -62,11 +60,10 @@ pub mod edge_cases_stress_test_11_3_cycle {
     }
     
     
-    /// ```lean, anneal
-    /// proof (h_progress):
+    /// ```lean, anneal, spec
+    /// theorem spec :
+    ///   Aeneas.Std.WP.spec (dummy_anneal_padding) (fun ret_ => True) := by
     ///   sorry
-    /// proof context:
-    ///   have h_foo : True := True.intro
     /// ```
     pub fn dummy_anneal_padding() {}
 }
@@ -75,8 +72,13 @@ pub mod deep_invocation {
     pub mod nested;
     
     
-    /// ```lean, anneal
-    /// ```
+
     fn _anneal_dummy() {}
 }
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_stress) (fun ret_ => True) := by
+///   sorry
+/// ```
+pub fn dummy_stress() {}
 

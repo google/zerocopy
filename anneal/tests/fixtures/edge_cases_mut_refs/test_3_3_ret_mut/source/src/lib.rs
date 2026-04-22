@@ -1,9 +1,8 @@
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec (v : Vec Std.U32) :
+///   Aeneas.Std.WP.spec (pop v) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn pop(v: &mut Vec<u32>) -> Option<u32> {
     v.pop()

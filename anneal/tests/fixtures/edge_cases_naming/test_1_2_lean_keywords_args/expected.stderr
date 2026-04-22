@@ -1,229 +1,229 @@
   ⚠ unused variable: `theorem`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:10:5]
-  9 │ pub fn test_args(
- 10 │     theorem: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:9:5]
+  8 │ pub fn test_args(
+  9 │     theorem: u32,
     ·     ───┬───
     ·        ╰── 
- 11 │     axiom: u32,
+ 10 │     axiom: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `axiom`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:11:5]
- 10 │     theorem: u32,
- 11 │     axiom: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:10:5]
+  9 │     theorem: u32,
+ 10 │     axiom: u32,
     ·     ──┬──
     ·       ╰── 
- 12 │     variable: u32,
+ 11 │     variable: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `variable`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:12:5]
- 11 │     axiom: u32,
- 12 │     variable: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:11:5]
+ 10 │     axiom: u32,
+ 11 │     variable: u32,
     ·     ────┬───
     ·         ╰── 
- 13 │     lemma: u32,
+ 12 │     lemma: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `lemma`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:13:5]
- 12 │     variable: u32,
- 13 │     lemma: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:12:5]
+ 11 │     variable: u32,
+ 12 │     lemma: u32,
     ·     ──┬──
     ·       ╰── 
- 14 │     def: u32,
+ 13 │     def: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `def`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:14:5]
- 13 │     lemma: u32,
- 14 │     def: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:13:5]
+ 12 │     lemma: u32,
+ 13 │     def: u32,
     ·     ─┬─
     ·      ╰── 
- 15 │     class: u32,
+ 14 │     class: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `class`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:15:5]
- 14 │     def: u32,
- 15 │     class: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:14:5]
+ 13 │     def: u32,
+ 14 │     class: u32,
     ·     ──┬──
     ·       ╰── 
- 16 │     instance: u32,
+ 15 │     instance: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `instance`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:16:5]
- 15 │     class: u32,
- 16 │     instance: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:15:5]
+ 14 │     class: u32,
+ 15 │     instance: u32,
     ·     ────┬───
     ·         ╰── 
- 17 │     structure: u32,
+ 16 │     structure: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `structure`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:17:5]
- 16 │     instance: u32,
- 17 │     structure: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:16:5]
+ 15 │     instance: u32,
+ 16 │     structure: u32,
     ·     ────┬────
     ·         ╰── 
- 18 │     inductive: u32,
+ 17 │     inductive: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `inductive`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:18:5]
- 17 │     structure: u32,
- 18 │     inductive: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:17:5]
+ 16 │     structure: u32,
+ 17 │     inductive: u32,
     ·     ────┬────
     ·         ╰── 
- 19 │     from: u32,
+ 18 │     from: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `from`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:19:5]
- 18 │     inductive: u32,
- 19 │     from: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:18:5]
+ 17 │     inductive: u32,
+ 18 │     from: u32,
     ·     ──┬─
     ·       ╰── 
- 20 │     have: u32,
+ 19 │     have: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `have`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:20:5]
- 19 │     from: u32,
- 20 │     have: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:19:5]
+ 18 │     from: u32,
+ 19 │     have: u32,
     ·     ──┬─
     ·       ╰── 
- 21 │     show: u32,
+ 20 │     show: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `show`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:21:5]
- 20 │     have: u32,
- 21 │     show: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:20:5]
+ 19 │     have: u32,
+ 20 │     show: u32,
     ·     ──┬─
     ·       ╰── 
- 22 │     calc: u32,
+ 21 │     calc: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `calc`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:22:5]
- 21 │     show: u32,
- 22 │     calc: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:21:5]
+ 20 │     show: u32,
+ 21 │     calc: u32,
     ·     ──┬─
     ·       ╰── 
- 23 │     then: u32,
+ 22 │     then: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `then`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:23:5]
- 22 │     calc: u32,
- 23 │     then: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:22:5]
+ 21 │     calc: u32,
+ 22 │     then: u32,
     ·     ──┬─
     ·       ╰── 
- 24 │     with: u32,
+ 23 │     with: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `with`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:24:5]
- 23 │     then: u32,
- 24 │     with: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:23:5]
+ 22 │     then: u32,
+ 23 │     with: u32,
     ·     ──┬─
     ·       ╰── 
- 25 │     section: u32,
+ 24 │     section: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `section`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:25:5]
- 24 │     with: u32,
- 25 │     section: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:24:5]
+ 23 │     with: u32,
+ 24 │     section: u32,
     ·     ───┬───
     ·        ╰── 
- 26 │     namespace: u32,
+ 25 │     namespace: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `namespace`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:26:5]
- 25 │     section: u32,
- 26 │     namespace: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:25:5]
+ 24 │     section: u32,
+ 25 │     namespace: u32,
     ·     ────┬────
     ·         ╰── 
- 27 │     end: u32,
+ 26 │     end: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `end`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:27:5]
- 26 │     namespace: u32,
- 27 │     end: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:26:5]
+ 25 │     namespace: u32,
+ 26 │     end: u32,
     ·     ─┬─
     ·      ╰── 
- 28 │     import: u32,
+ 27 │     import: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `import`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:28:5]
- 27 │     end: u32,
- 28 │     import: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:27:5]
+ 26 │     end: u32,
+ 27 │     import: u32,
     ·     ───┬──
     ·        ╰── 
- 29 │     open: u32,
+ 28 │     open: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `open`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:29:5]
- 28 │     import: u32,
- 29 │     open: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:28:5]
+ 27 │     import: u32,
+ 28 │     open: u32,
     ·     ──┬─
     ·       ╰── 
- 30 │     attribute: u32,
+ 29 │     attribute: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `attribute`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:30:5]
- 29 │     open: u32,
- 30 │     attribute: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:29:5]
+ 28 │     open: u32,
+ 29 │     attribute: u32,
     ·     ────┬────
     ·         ╰── 
- 31 │     universe: u32,
+ 30 │     universe: u32,
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ unused variable: `universe`
-    ╭─[[PROJECT_ROOT]/src/lib.rs:31:5]
- 30 │     attribute: u32,
- 31 │     universe: u32,
+    ╭─[[PROJECT_ROOT]/src/lib.rs:30:5]
+ 29 │     attribute: u32,
+ 30 │     universe: u32,
     ·     ────┬───
     ·         ╰── 
- 32 │ ) {}
+ 31 │ ) {}
     ╰────
   help: if this is intentional, prefix it with an underscore
 
   ⚠ declaration uses `sorry`
-   ╭─[[PROJECT_ROOT]/src/lib.rs:7:4]
- 6 │ /// proof context:
- 7 │ ///   have h_foo : True := True.intro
-   ·    ─────────────────┬────────────────
-   ·                     ╰── here
- 8 │ /// ```
+   ╭─[[PROJECT_ROOT]/src/lib.rs:4:13]
+ 3 │ /// ```lean, anneal, spec
+ 4 │ /// theorem spec («theorem» : Std.U32) («axiom» : Std.U32) («variable» : Std.U32) («lemma» : Std.U32) («def» : Std.U32) («class» : Std.U32) («instance» : Std.U32) («structure» : Std.U32) («inductive» : Std.U32) («from» : Std.U32) («have» : Std.U32) («show» : Std.U32) («calc» : Std.U32) («then» : Std.U32) («with» : Std.U32) («section» : Std.U32) («namespace» : Std.U32) («end» : Std.U32) («import» : Std.U32) («open» : Std.U32) («attribute» : Std.U32) («universe» : Std.U32) :
+   ·             ──┬─
+   ·               ╰── here
+ 5 │ ///   Aeneas.Std.WP.spec (test_args «theorem» «axiom» «variable» «lemma» «def» «class» «instance» «structure» «inductive» «from» «have» «show» «calc» «then» «with» «section» «namespace» «end» «import» «open» «attribute» «universe») (fun ret_ => True) := by
    ╰────
 
