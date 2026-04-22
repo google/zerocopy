@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776856947148,
+  "lastUpdate": 1776857038490,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -4435,6 +4435,43 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 547,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf",
+            "email": "joshlf@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "a27cb57734782db8f7ba9da14e3aa8fd6ea200f9",
+          "message": "[ci][anneal] Track total CI duration in benchmark dashboard (#3323)",
+          "timestamp": "2026-04-22T11:11:58Z",
+          "url": "https://github.com/google/zerocopy/commit/a27cb57734782db8f7ba9da14e3aa8fd6ea200f9"
+        },
+        "date": 1776857036671,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Docker Pull Time",
+            "value": 151,
+            "unit": "seconds"
+          },
+          {
+            "name": "Test Time",
+            "value": 357,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 545,
             "unit": "seconds"
           }
         ]
