@@ -38,23 +38,23 @@ fi
 # container. This assumes that the script is located in the root of the
 # `anneal` workspace.
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-IMAGE_NAME="anneal-dev"
 # To avoid pollution between different git worktrees, we generate a unique
-# volume ID for each worktree and store it in a file. This ensures that
-# each worktree gets its own isolated named volume for caching.
-VOLUME_ID_FILE="$DIR/.docker-volume-id"
-if [ ! -f "$VOLUME_ID_FILE" ]; then
+# worktree ID and store it in a file. This ensures each worktree gets its own
+# isolated cache volume and Docker image tag.
+WORKTREE_ID_FILE="$DIR/.docker-worktree-id"
+if [ ! -f "$WORKTREE_ID_FILE" ]; then
     if command -v uuidgen >/dev/null 2>&1; then
-        uuidgen > "$VOLUME_ID_FILE"
+        uuidgen > "$WORKTREE_ID_FILE"
     elif [ -f /proc/sys/kernel/random/uuid ]; then
-        cat /proc/sys/kernel/random/uuid > "$VOLUME_ID_FILE"
+        cat /proc/sys/kernel/random/uuid > "$WORKTREE_ID_FILE"
     else
         # Fallback if neither is available
-        head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16 > "$VOLUME_ID_FILE"
+        head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16 > "$WORKTREE_ID_FILE"
     fi
 fi
-VOLUME_ID=$(cat "$VOLUME_ID_FILE" | tr -d '[:space:]')
-VOLUME_NAME="anneal-cache-$VOLUME_ID"
+WORKTREE_ID=$(cat "$WORKTREE_ID_FILE" | tr -d '[:space:]')
+IMAGE_NAME="anneal-dev-$WORKTREE_ID"
+VOLUME_NAME="anneal-cache-$WORKTREE_ID"
 
 BUILD_CACHE=$(mktemp)
 
@@ -63,7 +63,7 @@ BUILD_CACHE=$(mktemp)
 # and capture its output to prevent terminal spam during cached runs. If the
 # build takes longer than 5 seconds, we assume a rebuild is occurring and
 # stream the output to the terminal so the developer knows why it is pausing.
-DOCKER_BUILDKIT=1 "${DOCKER_CMD[@]}" build --progress=plain --build-arg UID=$ARG_UID --build-arg GID=$ARG_GID -t $IMAGE_NAME -f "$DIR/Dockerfile" "$DIR" > "$BUILD_CACHE" 2>&1 &
+DOCKER_BUILDKIT=1 "${DOCKER_CMD[@]}" build --progress=plain --build-arg UID=$ARG_UID --build-arg GID=$ARG_GID -t "$IMAGE_NAME" -f "$DIR/Dockerfile" "$DIR" > "$BUILD_CACHE" 2>&1 &
 BUILD_PID=$!
 
 # Wait up to 5 seconds for the build to finish silently.
@@ -123,8 +123,8 @@ DOCKER_FLAGS=("--rm" "--init")
 # directly.
 
 # Create the Docker volume used to cache compilation artifacts.
-if ! "${DOCKER_CMD[@]}" volume inspect $VOLUME_NAME >/dev/null 2>&1; then
-    "${DOCKER_CMD[@]}" volume create $VOLUME_NAME >/dev/null
+if ! "${DOCKER_CMD[@]}" volume inspect "$VOLUME_NAME" >/dev/null 2>&1; then
+    "${DOCKER_CMD[@]}" volume create "$VOLUME_NAME" >/dev/null
 fi
 
 # Use the volume for Cargo cache and target in local development.
@@ -191,4 +191,4 @@ WORKDIR="/workspace/$REL_PATH"
 exec "${DOCKER_CMD[@]}" run "${DOCKER_FLAGS[@]}" \
     -v "$DIR:/workspace" \
     -w "$WORKDIR" \
-    $IMAGE_NAME "$@"
+    "$IMAGE_NAME" "$@"
