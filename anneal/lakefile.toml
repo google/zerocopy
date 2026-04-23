@@ -1,0 +1,13 @@
+name = "anneal"
+version = "0.1.0"
+defaultTargets = ["Anneal"]
+
+[[require]]
+name = "aeneas"
+git = "https://github.com/AeneasVerif/aeneas"
+subDir = "backends/lean"
+rev = "main" # You can replace "main" with a specific commit hash to pin the dependency
+
+[[lean_lib]]
+name = "Anneal"
+srcDir = "src"
