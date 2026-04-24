@@ -113,6 +113,7 @@ simd = []
 simd-nightly = ["simd"]
 float-nightly = []
 std = ["alloc"]
+embedded_io = []
 # This feature depends on all other features that work on the stable compiler.
 # We make no stability guarantees about this feature; it may be modified or
 # removed at any time.
@@ -125,6 +126,7 @@ __internal_use_only_features_that_work_on_stable = [
 
 [dependencies]
 zerocopy-derive = { version = "=0.8.48", path = "zerocopy-derive", optional = true }
+embedded-io = { version = "=0.5.0" }
 
 # The "associated proc macro pattern" ensures that the versions of zerocopy and
 # zerocopy-derive remain equal, even if the 'derive' feature isn't used.

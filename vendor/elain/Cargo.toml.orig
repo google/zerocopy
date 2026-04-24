@@ -1,0 +1,11 @@
+[package]
+name = "elain"
+version = "0.3.1"
+authors = ["Jack Wrenn <me@jswrenn.com>"]
+edition = "2018"
+description = "Set a type's minimum alignment with const generics."
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+categories = ["no-std", "rust-patterns"]
+keywords = ["const", "const-generics", "alignment", "align", "layout"]
+repository = "https://github.com/jswrenn/elain"
