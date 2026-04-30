@@ -616,13 +616,14 @@ fn setup_aeneas_tools(platform: Platform, tmp_root: &Path) -> Result<()> {
 
     extract_artifact(&data, &tmp_root)?;
 
-    println!("Successfully installed Aeneas tools v{tag}");
+    println!("Successfully installed Aeneas tools version {tag}");
 
     Ok(())
 }
 
 fn setup_lake_packages(toolchain: &Toolchain, tmp_root: &Path) -> Result<()> {
     let lean_dir = tmp_root.join("backends").join("lean");
+    fs::create_dir_all(&lean_dir).context("Failed to create backends/lean directory")?;
 
     // Initialize git repo in the extracted Lean directory
     println!("Initializing git repository in {:?}...", lean_dir);
@@ -634,6 +635,9 @@ fn setup_lake_packages(toolchain: &Toolchain, tmp_root: &Path) -> Result<()> {
     if !status.success() {
         bail!("`git init -b main` failed");
     }
+
+    fs::File::create(&lean_dir.join(".gitignore"))
+        .context("Failed to create empty .gitignore for initial commit to Anneal git repository")?;
 
     let status = Command::new("git")
         .args(["add", "."])
