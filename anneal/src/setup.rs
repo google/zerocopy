@@ -1181,11 +1181,19 @@ pub fn run_setup() -> Result<()> {
         .context("Failed to create temporary directory for setup")?;
     let tmp_root = temp_dir.path();
 
-    // Rust toolchain, Aaneas tools, and Lake packages can all be fetched and setup in parallel.
-    let setup_fns: [Box<dyn Fn() -> Result<()> + Sync>; 3] = [
-        Box::new(|| setup_rust_toolchain(&toolchain, platform, tmp_root)),
-        Box::new(|| setup_aeneas_tools(platform, tmp_root)),
-        Box::new(|| setup_lake_packages(&toolchain, tmp_root)),
+    setup_rust_toolchain(&toolchain, platform, tmp_root)
+        .context("Failed to setup rust toolchain")?;
+
+    // Setup rust toolchain, Aaneas tools, and Lake packages, parallelizing work when possible.
+    let setup_fns: [Box<dyn Fn() -> Result<()> + Sync>; 2] = [
+        Box::new(|| {
+            setup_rust_toolchain(&toolchain, platform, tmp_root)
+                .context("Failed to setup rust toolchain")
+        }),
+        Box::new(|| {
+            setup_aeneas_tools(platform, tmp_root).context("Failed to setup anneas tools")?;
+            setup_lake_packages(&toolchain, tmp_root).context("Failed to setup lake packages")
+        }),
     ];
     setup_fns.par_iter().map(|setup_fn| setup_fn()).collect::<Result<()>>()?;
 
