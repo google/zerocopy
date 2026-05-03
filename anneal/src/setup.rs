@@ -7,6 +7,7 @@ use std::{fs, io::Read, path::Path, process::Command};
 
 use anyhow::{Context, Result, bail};
 use flate2::read::GzDecoder;
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use sha2::{Digest, Sha256};
 use tar::Archive;
 use tempfile;
@@ -553,212 +554,42 @@ fn setup_rust_toolchain(toolchain: &Toolchain, platform: Platform, tmp_root: &Pa
         format!("https://static.rust-lang.org/dist/{}", env!("ANNEAL_RUST_DATE"))
     });
 
-    let components = [
-        ("rustc", Tool::Rustc),
-        ("rust-std", Tool::RustStd),
-        ("rustc-dev", Tool::RustcDev),
-        ("llvm-tools", Tool::LlvmTools),
-        ("miri", Tool::Miri),
+    // Download and extract each rust component in parallel.
+    let metadata = |tool_name: &str, tool: Tool| -> (String, String, [u8; 32]) {
+        (
+            tool_name.to_string(),
+            format!("{}/{}-nightly-{}.tar.gz", base_url, tool_name, platform.triple()),
+            platform.expected_bin_hash(tool),
+        )
+    };
+    let component_metadata = [
+        metadata("rustc", Tool::Rustc),
+        metadata("rust-std", Tool::RustStd),
+        metadata("rustc-dev", Tool::RustcDev),
+        metadata("llvm-tools", Tool::LlvmTools),
+        metadata("miri", Tool::Miri),
+        (
+            "rust-src".to_string(),
+            format!("{}/rust-src-nightly.tar.gz", base_url),
+            platform.expected_bin_hash(Tool::RustSrc),
+        ),
     ];
+    component_metadata
+        .par_iter()
+        .map(|(name, url, expected_hash)| {
+            println!("Downloading and extracting {}...", name);
+            let data = download_artifact(&url, &expected_hash)?;
+            extract_rust_component(&data, &sysroot, name)?;
+            Ok(())
+        })
+        .collect::<Result<Vec<_>>>()?;
 
-    for (name, tool) in components {
-        let url = format!("{}/{}-nightly-{}.tar.gz", base_url, name, platform.triple());
-        let expected_hash = platform.expected_bin_hash(tool);
-
-        println!("Downloading and extracting {}...", name);
-        let data = download_artifact(&url, &expected_hash)?;
-        extract_rust_component(&data, &sysroot, name)?;
-    }
-
-    // Handle rust-src separately as it is target-independent
-    let url = format!("{}/rust-src-nightly.tar.gz", base_url);
-    let expected_hash = platform.expected_bin_hash(Tool::RustSrc);
-    println!("Downloading and extracting rust-src...");
-    let data = download_artifact(&url, &expected_hash)?;
-    extract_rust_component(&data, &sysroot, "rust-src")?;
+    println!("Successfully installed rust toolchain from {base_url}");
 
     Ok(())
 }
 
-/// Ensures that `elan` (the Lean toolchain manager) is installed on the
-/// system. If it is not found in the system `PATH`, it downloads the latest
-/// release from GitHub and runs `elan-init` to install it for the current
-/// user. It also attempts to add the `elan` bin directory to the current
-/// process's `PATH` to ensure subsequent commands can find it immediately.
-fn ensure_elan_installed() -> Result<()> {
-    println!("Checking for elan...");
-    let status = Command::new("elan")
-        .arg("--version")
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .status();
-
-    if status.is_ok() && status.unwrap().success() {
-        println!("elan is already installed.");
-        return Ok(());
-    }
-
-    println!("elan not found. Installing elan...");
-    let platform = Platform::detect()?;
-    let arch = platform.triple();
-
-    let url =
-        format!("https://github.com/leanprover/elan/releases/latest/download/elan-{}.tar.gz", arch);
-
-    println!("Downloading elan from {}...", url);
-    let response = reqwest::blocking::get(&url).context("Failed to download elan")?;
-    if !response.status().is_success() {
-        bail!("Failed to download elan: HTTP {}", response.status());
-    }
-    let data = response.bytes().context("Failed to read elan response")?;
-
-    let temp_dir = std::env::temp_dir();
-    let elan_extract_dir = temp_dir.join("elan-extract-anneal");
-    fs::create_dir_all(&elan_extract_dir).context("Failed to create elan extract dir")?;
-
-    extract_artifact(&data, &elan_extract_dir)?;
-
-    let elan_init_path = elan_extract_dir.join("elan-init");
-
-    let status = Command::new(&elan_init_path)
-        .args(["-y", "--default-toolchain", "none"])
-        .status()
-        .context("Failed to run elan-init")?;
-
-    let _ = fs::remove_dir_all(&elan_extract_dir);
-
-    if !status.success() {
-        bail!("elan-init failed");
-    }
-
-    // Add elan to PATH for current process
-    let home = dirs::home_dir().ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?;
-    let elan_bin = home.join(".elan").join("bin");
-    if elan_bin.exists() {
-        let path = std::env::var_os("PATH").unwrap_or_default();
-        let mut paths = std::env::split_paths(&path).collect::<Vec<_>>();
-        if !paths.contains(&elan_bin) {
-            paths.insert(0, elan_bin);
-            let new_path = std::env::join_paths(paths)?;
-            // SAFETY: This is a single-threaded setup context.
-            unsafe {
-                std::env::set_var("PATH", new_path);
-            }
-        }
-    }
-
-    println!("elan installed successfully.");
-    Ok(())
-}
-
-/// Installs the pinned Lean toolchain required by Anneal using `elan`.
-/// It checks the environment variable `ANNEAL_LEAN_TOOLCHAIN` to determine
-/// which version to install. If the version is already listed in `elan
-/// toolchain list`, it skips installation to save time.
-fn install_lean_toolchain() -> Result<()> {
-    let version = env!("ANNEAL_LEAN_TOOLCHAIN");
-    println!("Installing Lean toolchain {}...", version);
-
-    // Check if already installed
-    let output = Command::new("elan")
-        .args(["toolchain", "list"])
-        .output()
-        .context("Failed to run elan toolchain list")?;
-
-    if output.status.success() {
-        let stdout = String::from_utf8_lossy(&output.stdout);
-        if stdout.lines().any(|line| line.contains(version)) {
-            println!("Lean toolchain {} is already installed.", version);
-            return Ok(());
-        }
-    }
-
-    let status = Command::new("elan")
-        .args(["toolchain", "install", version])
-        .status()
-        .context("Failed to run elan toolchain install")?;
-
-    if !status.success() {
-        bail!("Failed to install Lean toolchain");
-    }
-
-    println!("Lean toolchain {} installed successfully.", version);
-    Ok(())
-}
-
-/// Pre-builds the Aeneas Lean library in the extracted toolchain directory.
-/// This prevents compiling the library from source when users verify their
-/// projects, which is slow and disk-heavy. It first attempts to fetch
-/// pre-compiled Mathlib artifacts using `lake exe cache get` to avoid
-/// compiling Mathlib from source, and then runs `lake build`.
-fn prebuild_lean_library(lean_dir: &Path, cache_dir: &Path) -> Result<()> {
-    println!("Pre-building Aeneas Lean library at {:?}...", lean_dir);
-
-    // Fetch Mathlib cache
-    println!("Fetching Mathlib cache...");
-    let status = Command::new("lake")
-        .args(["exe", "cache", "get"])
-        .env("LAKE_CACHE_DIR", cache_dir)
-        .env("LAKE_ARTIFACT_CACHE", "1")
-        .current_dir(lean_dir)
-        .status()
-        .context("Failed to run `lake exe cache get`")?;
-
-    if !status.success() {
-        bail!("Failed to fetch Mathlib cache; refusing to build from scratch");
-    }
-
-    // Build the library
-    println!("Building Aeneas Lean library...");
-    let status = Command::new("lake")
-        .arg("build")
-        .env("LAKE_CACHE_DIR", cache_dir)
-        .env("LAKE_ARTIFACT_CACHE", "1")
-        .current_dir(lean_dir)
-        .status()
-        .context("Failed to run `lake build`")?;
-
-    if !status.success() {
-        bail!("Failed to build Aeneas Lean library");
-    }
-
-    println!("Successfully pre-built Aeneas Lean library.");
-    Ok(())
-}
-
-/// Checks whether the specified tools are installed and have valid hashes.
-/// Returns `true` if all are valid, or `false` if any are missing or corrupt.
-
-/// Sets up the Anneal toolchain by downloading and extracting dependencies.
-pub fn run_setup() -> Result<()> {
-    ensure_elan_installed()?;
-    install_lean_toolchain()?;
-
-    let mut toolchain = Toolchain::resolve()?;
-    // Drop the shared lock acquired by resolve() so we can acquire an
-    // exclusive one.
-    drop(toolchain.take_lock());
-
-    // Acquire global lock to prevent concurrent installations or repairs.
-    // This ensures that two instances of Anneal don't try to download or
-    // modify the toolchain at the same time.
-    let _lock = toolchain.lock_exclusive()?;
-    let platform = Platform::detect()?;
-
-    let parent_dir = toolchain.root.parent().unwrap();
-    fs::create_dir_all(parent_dir).context("Failed to create toolchain parent directory")?;
-    // To ensure atomic installation, we perform all extraction and setup steps
-    // in a temporary directory within the same parent folder. This prevents
-    // leaving the toolchain in a partially-installed state if the process is
-    // interrupted.
-    let temp_dir = tempfile::Builder::new()
-        .prefix("anneal-toolchain-tmp-")
-        .tempdir_in(parent_dir)
-        .context("Failed to create temporary directory for setup")?;
-    let tmp_root = temp_dir.path();
-
-    setup_rust_toolchain(&toolchain, platform, tmp_root)?;
-
+fn setup_aeneas_tools(platform: Platform, tmp_root: &Path) -> Result<()> {
     let tag = env!("ANNEAL_AENEAS_TAG");
 
     // Perform installation. Note that, because we validate SHA-256
@@ -785,7 +616,14 @@ pub fn run_setup() -> Result<()> {
 
     extract_artifact(&data, &tmp_root)?;
 
+    println!("Successfully installed Aeneas tools version {tag}");
+
+    Ok(())
+}
+
+fn setup_lake_packages(toolchain: &Toolchain, tmp_root: &Path) -> Result<()> {
     let lean_dir = tmp_root.join("backends").join("lean");
+    fs::create_dir_all(&lean_dir).context("Failed to create backends/lean directory")?;
 
     // Initialize git repo in the extracted Lean directory
     println!("Initializing git repository in {:?}...", lean_dir);
@@ -797,6 +635,9 @@ pub fn run_setup() -> Result<()> {
     if !status.success() {
         bail!("`git init -b main` failed");
     }
+
+    fs::File::create(&lean_dir.join(".gitignore"))
+        .context("Failed to create empty .gitignore for initial commit to Anneal git repository")?;
 
     let status = Command::new("git")
         .args(["add", "."])
@@ -1122,7 +963,7 @@ pub fn run_setup() -> Result<()> {
     // `.trace` files in Aeneas and its dependencies, and replace the
     // temporary path with the final installation path.
     println!("Post-processing trace files to fix absolute paths...");
-    let tmp_path_str = temp_dir.path().to_str().unwrap();
+    let tmp_path_str = tmp_root.to_str().unwrap();
     let final_path_str = toolchain.root.to_str().unwrap();
 
     // Helper closure to process a build directory
@@ -1158,17 +999,212 @@ pub fn run_setup() -> Result<()> {
         }
     }
 
-    println!("Successfully installed toolchain v{tag}");
+    println!("Successfully prepared lake packages");
+
+    Ok(())
+}
+
+/// Ensures that `elan` (the Lean toolchain manager) is installed on the
+/// system. If it is not found in the system `PATH`, it downloads the latest
+/// release from GitHub and runs `elan-init` to install it for the current
+/// user. It also attempts to add the `elan` bin directory to the current
+/// process's `PATH` to ensure subsequent commands can find it immediately.
+fn ensure_elan_installed() -> Result<()> {
+    println!("Checking for elan...");
+    let status = Command::new("elan")
+        .arg("--version")
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status();
+
+    if status.is_ok() && status.unwrap().success() {
+        println!("elan is already installed.");
+        return Ok(());
+    }
+
+    println!("elan not found. Installing elan...");
+    let platform = Platform::detect()?;
+    let arch = platform.triple();
+
+    let url =
+        format!("https://github.com/leanprover/elan/releases/latest/download/elan-{}.tar.gz", arch);
+
+    println!("Downloading elan from {}...", url);
+    let response = reqwest::blocking::get(&url).context("Failed to download elan")?;
+    if !response.status().is_success() {
+        bail!("Failed to download elan: HTTP {}", response.status());
+    }
+    let data = response.bytes().context("Failed to read elan response")?;
+
+    let temp_dir = std::env::temp_dir();
+    let elan_extract_dir = temp_dir.join("elan-extract-anneal");
+    fs::create_dir_all(&elan_extract_dir).context("Failed to create elan extract dir")?;
+
+    extract_artifact(&data, &elan_extract_dir)?;
+
+    let elan_init_path = elan_extract_dir.join("elan-init");
+
+    let status = Command::new(&elan_init_path)
+        .args(["-y", "--default-toolchain", "none"])
+        .status()
+        .context("Failed to run elan-init")?;
+
+    let _ = fs::remove_dir_all(&elan_extract_dir);
+
+    if !status.success() {
+        bail!("elan-init failed");
+    }
+
+    // Add elan to PATH for current process
+    let home = dirs::home_dir().ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?;
+    let elan_bin = home.join(".elan").join("bin");
+    if elan_bin.exists() {
+        let path = std::env::var_os("PATH").unwrap_or_default();
+        let mut paths = std::env::split_paths(&path).collect::<Vec<_>>();
+        if !paths.contains(&elan_bin) {
+            paths.insert(0, elan_bin);
+            let new_path = std::env::join_paths(paths)?;
+            // SAFETY: This is a single-threaded setup context.
+            unsafe {
+                std::env::set_var("PATH", new_path);
+            }
+        }
+    }
+
+    println!("elan installed successfully.");
+    Ok(())
+}
+
+/// Installs the pinned Lean toolchain required by Anneal using `elan`.
+/// It checks the environment variable `ANNEAL_LEAN_TOOLCHAIN` to determine
+/// which version to install. If the version is already listed in `elan
+/// toolchain list`, it skips installation to save time.
+fn install_lean_toolchain() -> Result<()> {
+    let version = env!("ANNEAL_LEAN_TOOLCHAIN");
+    println!("Installing Lean toolchain {}...", version);
+
+    // Check if already installed
+    let output = Command::new("elan")
+        .args(["toolchain", "list"])
+        .output()
+        .context("Failed to run elan toolchain list")?;
+
+    if output.status.success() {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        if stdout.lines().any(|line| line.contains(version)) {
+            println!("Lean toolchain {} is already installed.", version);
+            return Ok(());
+        }
+    }
+
+    let status = Command::new("elan")
+        .args(["toolchain", "install", version])
+        .status()
+        .context("Failed to run elan toolchain install")?;
+
+    if !status.success() {
+        bail!("Failed to install Lean toolchain");
+    }
+
+    println!("Lean toolchain {} installed successfully.", version);
+    Ok(())
+}
+
+/// Pre-builds the Aeneas Lean library in the extracted toolchain directory.
+/// This prevents compiling the library from source when users verify their
+/// projects, which is slow and disk-heavy. It first attempts to fetch
+/// pre-compiled Mathlib artifacts using `lake exe cache get` to avoid
+/// compiling Mathlib from source, and then runs `lake build`.
+fn prebuild_lean_library(lean_dir: &Path, cache_dir: &Path) -> Result<()> {
+    println!("Pre-building Aeneas Lean library at {:?}...", lean_dir);
+
+    // Fetch Mathlib cache
+    println!("Fetching Mathlib cache...");
+    let status = Command::new("lake")
+        .args(["exe", "cache", "get"])
+        .env("LAKE_CACHE_DIR", cache_dir)
+        .env("LAKE_ARTIFACT_CACHE", "1")
+        .current_dir(lean_dir)
+        .status()
+        .context("Failed to run `lake exe cache get`")?;
+
+    if !status.success() {
+        bail!("Failed to fetch Mathlib cache; refusing to build from scratch");
+    }
+
+    // Build the library
+    println!("Building Aeneas Lean library...");
+    let status = Command::new("lake")
+        .arg("build")
+        .env("LAKE_CACHE_DIR", cache_dir)
+        .env("LAKE_ARTIFACT_CACHE", "1")
+        .current_dir(lean_dir)
+        .status()
+        .context("Failed to run `lake build`")?;
+
+    if !status.success() {
+        bail!("Failed to build Aeneas Lean library");
+    }
+
+    println!("Successfully pre-built Aeneas Lean library.");
+    Ok(())
+}
+
+/// Checks whether the specified tools are installed and have valid hashes.
+/// Returns `true` if all are valid, or `false` if any are missing or corrupt.
+
+/// Sets up the Anneal toolchain by downloading and extracting dependencies.
+pub fn run_setup() -> Result<()> {
+    ensure_elan_installed()?;
+    install_lean_toolchain()?;
+
+    let mut toolchain = Toolchain::resolve()?;
+    // Drop the shared lock acquired by resolve() so we can acquire an
+    // exclusive one.
+    drop(toolchain.take_lock());
+
+    // Acquire global lock to prevent concurrent installations or repairs.
+    // This ensures that two instances of Anneal don't try to download or
+    // modify the toolchain at the same time.
+    let _lock = toolchain.lock_exclusive()?;
+    let platform = Platform::detect()?;
+
+    let parent_dir = toolchain.root.parent().unwrap();
+    fs::create_dir_all(parent_dir).context("Failed to create toolchain parent directory")?;
+    // To ensure atomic installation, we perform all extraction and setup steps
+    // in a temporary directory within the same parent folder. This prevents
+    // leaving the toolchain in a partially-installed state if the process is
+    // interrupted.
+    let temp_dir = tempfile::Builder::new()
+        .prefix("anneal-toolchain-tmp-")
+        .tempdir_in(parent_dir)
+        .context("Failed to create temporary directory for setup")?;
+    let tmp_root = temp_dir.path();
+
+    setup_rust_toolchain(&toolchain, platform, tmp_root)
+        .context("Failed to setup rust toolchain")?;
+
+    // Setup rust toolchain, Aaneas tools, and Lake packages, parallelizing work when possible.
+    let setup_fns: [Box<dyn Fn() -> Result<()> + Sync>; 2] = [
+        Box::new(|| {
+            setup_rust_toolchain(&toolchain, platform, tmp_root)
+                .context("Failed to setup rust toolchain")
+        }),
+        Box::new(|| {
+            setup_aeneas_tools(platform, tmp_root).context("Failed to setup anneas tools")?;
+            setup_lake_packages(&toolchain, tmp_root).context("Failed to setup lake packages")
+        }),
+    ];
+    setup_fns.par_iter().map(|setup_fn| setup_fn()).collect::<Result<()>>()?;
 
     // Once installation is successful, we atomically swap the temporary
     // directory into the final target location. If the target directory
     // already exists (e.g., a re-installation attempt), we delete it first to
     // allow the rename to succeed on Unix systems.
-    let tmp_path = temp_dir.into_path();
     if toolchain.root.exists() {
         fs::remove_dir_all(&toolchain.root).context("Failed to remove old toolchain directory")?;
     }
-    fs::rename(&tmp_path, &toolchain.root)
+    fs::rename(tmp_root, &toolchain.root)
         .context("Failed to rename temporary toolchain directory to target")?;
 
     Ok(())
