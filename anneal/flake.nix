@@ -156,7 +156,7 @@
 
           outputHashMode = "recursive";
           outputHashAlgo = "sha256";
-          outputHash = "sha256-Grp9xOXiwtn4usqFCQByoDlDz89YM5LE22FEgDy2SOA=";
+          outputHash = "sha256-wNdiqggFuKVDAojDoUg8kUPmTaySQZyFkf3xO2olKho=";
 
           SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
 
@@ -255,6 +255,23 @@
             echo "Deleting cc wrapper..."
             rm -f "$ELAN_BIN_DIR/cc"
 
+            # 3.1 Replace the llvm-ar symlink with a relocatable shell script
+            # wrapper.
+            #
+            # Why: Nix's hooks replace `llvm-ar` with a symlink pointing directly
+            # to the absolute store path of the Nix GCC wrapper's `ar` binary.
+            # To prevent store path leakage and ensure relocatability on host
+            # systems, we replace the symlink with a shell script that simply
+            # delegates to the system's standard `ar` utility in PATH.
+            echo "Replacing llvm-ar symlink with relocatable host ar wrapper..."
+            rm -f "$ELAN_BIN_DIR/llvm-ar"
+            cat << 'EOF' > "$ELAN_BIN_DIR/llvm-ar"
+#!/usr/bin/env bash
+exec ar "$@"
+EOF
+            chmod +x "$ELAN_BIN_DIR/llvm-ar"
+
+
             # 4. Clean ELF headers and strip debug symbols from toolchain.
             #
             # We run a recursive sweep on the restored `.elan` compiler binaries
@@ -298,9 +315,15 @@
               fi
             }
             
-            find $out/.elan -type f | while read -r file; do
-              clean_elf "$file"
-            done
+            # Parallelize ELF cleaning across multiple CPU cores to utilize
+            # host resources.
+            #
+            # Why: Spawning `patchelf` and `strip` sequentially for 10,000+ files
+            # in a single-threaded bash loop takes several minutes. Using `xargs -P`
+            # allows us to execute `clean_elf` concurrently across 48 cores,
+            # shrinking this phase from minutes to seconds.
+            export -f clean_elf
+            find $out/.elan -type f -print0 | xargs -0 -n 1 -P 48 bash -c 'clean_elf "$0"'
             
 
 
@@ -326,6 +349,22 @@
           buildPhase = ''
             export HOME=$TMPDIR
             export PATH="$leanToolchain/bin:$PATH"
+            # Prepend the Lean toolchain library directories to LD_LIBRARY_PATH.
+            #
+            # Why: The Lean compiler binaries are dynamically linked to the Lean
+            # runtime library `libleanshared.so`. When executing compiled Lean
+            # executables (like `graph` under importGraph) during the build, the
+            # dynamic linker must be able to locate this shared library.
+            export LD_LIBRARY_PATH="$leanToolchain/lib:$leanToolchain/lib/lean:$LD_LIBRARY_PATH"
+
+            # Disable Mathlib's automatic post-update cache fetching hook.
+            #
+            # Why: Mathlib's `lakefile.lean` contains a `post_update` hook that
+            # attempts to execute the `cache` binary utility. Since we deleted
+            # this binary to prevent GCC wrapper store path leaks, the hook
+            # would crash the build. Setting this variable to "1" bypasses the
+            # hook cleanly.
+            export MATHLIB_NO_CACHE_ON_UPDATE=1
             
             # Copy Aeneas Lean project from static-assets
             cp -r $staticAssets/aeneas/backends/lean lean
@@ -342,22 +381,136 @@
             mkdir -p $TMPDIR/.cache
             cp -r $mathlibCache/cache/mathlib $TMPDIR/.cache/
             
-            # Populate packages!
-            mkdir -p .lake/packages
-            cp -r $mathlibCache/packages/* .lake/packages/
-            chmod -R +w .lake/packages
-            
+            # Populate local packages registry.
+            #
+            # Why: We deleted `.git` directories in `mathlibCache` to ensure
+            # deterministic and shebang-free outputs. As a result, Lake (which
+            # expects Git repositories) fails to find `.git` and attempts to
+            # re-clone them from GitHub, failing inside our sandboxed
+            # network-free build environment.
+            #
+            # We copy the package checkouts to a writeable directory
+            # `/build/packages` in $TMPDIR and run an inline Python script to
+            # rewrite the dependency declarations in Aeneas and all dependency
+            # lakefiles (Mathlib, Aesop, ImportGraph) to use local path
+            # dependencies. This allows Lake to resolve the local directories
+            # directly without checking for `.git` folders or running Git clones.
+            mkdir -p /build/packages
+            cp -r $mathlibCache/packages/* /build/packages/
+            chmod -R +w /build/packages
+
+            python3 << 'EOF'
+import os
+import json
+
+def strict_replace(path, target, replacement):
+    with open(path, 'r') as f:
+        content = f.read()
+    if target not in content:
+        raise Exception(f"Target not found in {path}")
+    if content.count(target) > 1:
+        raise Exception(f"Multiple targets found in {path}")
+    new_content = content.replace(target, replacement)
+    with open(path, 'w') as f:
+        f.write(new_content)
+
+def rewrite_manifest(manifest_path):
+    print(f"Rewriting manifest: {manifest_path}")
+    with open(manifest_path, 'r') as f:
+        json_data = json.load(f)
+    
+    if "packages" in json_data:
+        new_packages = []
+        for pkg in json_data["packages"]:
+            name = pkg["name"]
+            new_pkg = {
+                "type": "path",
+                "name": name,
+                "dir": f"/build/packages/{name}",
+                "inherited": pkg.get("inherited", False)
+            }
+            new_packages.append(new_pkg)
+        json_data["packages"] = new_packages
+        
+    with open(manifest_path, 'w') as f:
+        json.dump(json_data, f, indent=2)
+
+# 1. Rewrite Aeneas lakefile.lean (convert mathlib to path)
+strict_replace(
+    "lakefile.lean",
+    'require mathlib from git\n  "https://github.com/leanprover-community/mathlib4.git" @ "v4.28.0-rc1"',
+    'require mathlib from "/build/packages/mathlib"'
+)
+
+# 2. Rewrite Mathlib lakefile.lean (convert all its dependencies to paths)
+mathlib_lakefile = "/build/packages/mathlib/lakefile.lean"
+replacements = [
+    ("require \"leanprover-community\" / \"batteries\" @ git \"main\"",
+     "require batteries from \"/build/packages/batteries\""),
+    ("require \"leanprover-community\" / \"Qq\" @ git \"master\"",
+     "require Qq from \"/build/packages/Qq\""),
+    ("require \"leanprover-community\" / \"aesop\" @ git \"master\"",
+     "require aesop from \"/build/packages/aesop\""),
+    ("require \"leanprover-community\" / \"proofwidgets\" @ git \"v0.0.86\"",
+     "require proofwidgets from \"/build/packages/proofwidgets\""),
+    ("require \"leanprover-community\" / \"importGraph\" @ git \"main\"",
+     "require importGraph from \"/build/packages/importGraph\""),
+    ("require \"leanprover-community\" / \"LeanSearchClient\" @ git \"main\"",
+     "require LeanSearchClient from \"/build/packages/LeanSearchClient\""),
+    ("require \"leanprover-community\" / \"plausible\" @ git \"main\"",
+     "require plausible from \"/build/packages/plausible\""),
+]
+for target, rep in replacements:
+    strict_replace(mathlib_lakefile, target, rep)
+
+# 3. Rewrite Aesop lakefile.toml (convert batteries to path)
+strict_replace(
+    "/build/packages/aesop/lakefile.toml",
+    '[[require]]\nname = "batteries"\ngit = "https://github.com/leanprover-community/batteries"\nrev = "v4.28.0-rc1"',
+    '[[require]]\nname = "batteries"\npath = "/build/packages/batteries"'
+)
+
+# 4. Rewrite ImportGraph lakefile.toml (convert Cli to path)
+strict_replace(
+    "/build/packages/importGraph/lakefile.toml",
+    '[[require]]\nname = "Cli"\nscope = "leanprover"\nrev = "v4.28.0-rc1"',
+    '[[require]]\nname = "Cli"\npath = "/build/packages/Cli"'
+)
+
+# 5. Rewrite all lake-manifest.json files recursively to point to path dependencies
+rewrite_manifest("lake-manifest.json")
+for root, _, files in os.walk("/build/packages"):
+    for file in files:
+        if file == "lake-manifest.json":
+            rewrite_manifest(os.path.join(root, file))
+
+print("Successfully rewrote all lakefiles and manifests to use local path dependencies.")
+EOF
+
             lake build
             
             lake build graph:exe
             lake exe graph imports.dot
             
-            # Prune Mathlib
-            python3 $src/tools/prune_mathlib.py imports.dot .lake/packages/mathlib
+            # Prune Mathlib recursively based on the imports dependency graph.
+            #
+            # Why: Mathlib is large (~11 GB uncompressed). To reduce the final
+            # archive size, we prune out all Lean modules and object files that
+            # are not transitively imported by Aeneas. This shrinks Mathlib to
+            # a fraction of its original size.
+            python3 $src/tools/prune_mathlib.py imports.dot /build/packages/mathlib
             
-            mkdir -p $out
+            # Clean up intermediate files.
+            rm imports.dot
+
+            # Structure output cleanly to match the final prebuilt toolchain:
+            # 1. `backends/lean/` containing the compiled Aeneas Lean project.
+            # 2. `packages/` containing the pruned dependency checkouts.
+            mkdir -p $out/backends/lean
+            cp -r . $out/backends/lean/
             
-            cp -r . $out/
+            mkdir -p $out/packages
+            cp -r /build/packages/* $out/packages/
           '';
         };
 
@@ -376,8 +529,8 @@
           leanBuild = self.packages.${system}.lean-build;
 
           buildPhase = ''
-            mkdir -p $TMPDIR/dist_staging/backends
-            cp -r $leanBuild/* $TMPDIR/dist_staging/backends/lean
+            mkdir -p $TMPDIR/dist_staging
+            cp -r $leanBuild/* $TMPDIR/dist_staging/
             cp -r $staticAssets/rust $TMPDIR/dist_staging/
             
             # Revert store references and make staging binaries relocatable.
