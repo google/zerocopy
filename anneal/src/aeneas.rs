@@ -346,8 +346,10 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
         let slug = artifact.artifact_slug();
         let output_dir = lean_generated_root.join(&slug);
 
+        let funs_types = parse_funs_types_in_dir(&output_dir)?;
+
         // Generate Anneal specs
-        let generated = generate::generate_artifact(artifact);
+        let generated = generate::generate_artifact_with_funs_types(artifact, &funs_types);
         let specs_path = output_dir.join(artifact.lean_spec_file_name());
         let map_path = output_dir.join(format!("{}.lean.map", artifact.artifact_slug()));
 
@@ -589,6 +591,17 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
     }
 
     Ok(())
+}
+
+pub(crate) fn parse_funs_types_in_dir(output_dir: &Path) -> Result<crate::funs_types::FunsTypeMap> {
+    let funs_path = output_dir.join("Funs.lean");
+    if !funs_path.exists() {
+        return Ok(crate::funs_types::FunsTypeMap::new());
+    }
+
+    let content = std::fs::read_to_string(&funs_path)
+        .with_context(|| format!("Failed to read {}", funs_path.display()))?;
+    Ok(crate::funs_types::parse_funs_types(&content))
 }
 
 /// Completes Lean verification by generating Anneal `Specs.lean`, writing `Generated.lean`,

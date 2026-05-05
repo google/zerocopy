@@ -2,6 +2,7 @@ mod aeneas;
 mod charon;
 mod diagnostics;
 mod errors;
+mod funs_types;
 mod generate;
 mod parse;
 mod resolve;
@@ -140,7 +141,12 @@ fn main() -> anyhow::Result<()> {
 
                     if emit_anneal {
                         println!("--- Anneal ---");
-                        let generated = generate::generate_artifact(artifact);
+                        let funs_types = aeneas::parse_funs_types_in_dir(&output_dir)?;
+                        let generated = if funs_types.is_empty() {
+                            generate::generate_artifact(artifact)
+                        } else {
+                            generate::generate_artifact_with_funs_types(artifact, &funs_types)
+                        };
                         println!("{}", generated.code);
                     }
                 }
