@@ -596,12 +596,31 @@ EOF
 
           leanBuild = self.packages.${system}.aeneas-compiled;
           rustToolchain = self.packages.${system}.rust-toolchain;
+          leanToolchain = self.packages.${system}.lean-toolchain;
+          aeneasUnpacked = self.packages.${system}.aeneas-unpacked;
 
           buildPhase = ''
-            # 1. Recreate the staging directory layout
+            # 1. Recreate the staging directory layout recursively.
+            #
+            # Why: Since we copy from multiple read-only Nix store paths, we must
+            # recursively set write permissions after each copy. Otherwise, subsequent
+            # copies would crash with `Permission denied` when writing into newly created
+            # read-only chroot folders.
             mkdir -p $TMPDIR/dist_staging
+            
             cp -r $leanBuild/* $TMPDIR/dist_staging/
+            chmod -R +w $TMPDIR/dist_staging
+            
             cp -r $rustToolchain/* $TMPDIR/dist_staging/
+            chmod -R +w $TMPDIR/dist_staging
+            
+            cp -r $leanToolchain/* $TMPDIR/dist_staging/
+            chmod -R +w $TMPDIR/dist_staging
+
+            # Copy precompiled Aeneas and Charon binaries from the unpacked release
+            cp $aeneasUnpacked/aeneas $TMPDIR/dist_staging/
+            cp $aeneasUnpacked/charon $TMPDIR/dist_staging/
+            cp $aeneasUnpacked/charon-driver $TMPDIR/dist_staging/
             chmod -R +w $TMPDIR/dist_staging
 
             # 2. Un-Nixify staging binaries recursively to make them relocatable.
@@ -619,7 +638,13 @@ EOF
                 if patchelf --print-interpreter "$file" >/dev/null 2>&1; then
                   patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 "$file" || true
                 fi
-                patchelf --set-rpath "" "$file" || true
+                # Set relative RPATH pointing to our relocatable toolchain library folders.
+                #
+                # Why: Executables (such as `charon-driver`) require shared compiler
+                # runtime libraries (like `librustc_driver.so`) to execute. We set their RPATH
+                # to use the `$ORIGIN` dynamic linker variable, enabling them to locate
+                # their shared libraries chroot-relatively regardless of the install directory.
+                patchelf --set-rpath '$ORIGIN/lib:$ORIGIN/lib/lean' "$file" || true
                 strip "$file" || true
               fi
             done
@@ -678,6 +703,76 @@ EOF
             zstd -$ZSTD_LEVEL $omnibusTar -o $out
           '';
         };
+
+        # Standard sandboxed check that compiles the cargo-anneal Rust binary
+        # and executes its integration tests completely offline.
+        # It mounts the precompiled relocatable Zstd toolchain in the store
+        # and feeds it locally via the ANNEAL_TEST_LOCAL_ARCHIVE environment variable.
+        checks.integration-tests = pkgs.stdenv.mkDerivation {
+          pname = "cargo-anneal-integration-tests";
+          version = "0.1.0";
+
+          # Use the Aeneas Cargo project directory as source
+          src = ./.;
+
+          nativeBuildInputs = with pkgs; [
+            cargo
+            rustc
+            git
+            zstd
+            gnutar
+            graphviz
+            openssl
+            pkg-config
+            cacert
+            steam-run
+          ];
+
+          buildInputs = with pkgs; [
+            openssl
+          ];
+
+          # Precompiled monolithic Zstd toolchain package in the Nix store
+          omnibusArchive = self.packages.${system}.omnibus-archive;
+
+          # Set up CARGO_HOME and cache directories inside the writeable sandbox
+          CARGO_HOME = "/build/.cargo";
+          RUSTUP_HOME = "/build/.rustup";
+
+          # OpenSSL package mapping for cargo pkg-config
+          PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+
+          buildPhase = ''
+            export HOME=$TMPDIR
+            
+            # Feed the absolute Nix store path of the precompiled relocatable Zstd
+            # archive to the test process. The integration test harness reads this
+            # variable and dynamically forwards it via `--local-archive` CLI flags.
+            export ANNEAL_TEST_LOCAL_ARCHIVE="$omnibusArchive"
+            
+            # We must use the vendored-sources config to compile offline
+            # from local crates.
+            mkdir -p .cargo
+            cat <<EOF > .cargo/config.toml
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "vendor"
+EOF
+
+            # Run cargo test offline inside the hermetic sandbox!
+            # We filter to only run integration tests to keep execution scoped.
+            echo "Running cargo integration tests..."
+            steam-run cargo test --test integration --offline -- --nocapture
+          '';
+
+          installPhase = ''
+            # Checks only need to write a dummy successful output file to the store
+            echo "Integration tests completed successfully!" > $out
+          '';
+        };
+
 
 
 

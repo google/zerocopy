@@ -152,11 +152,27 @@ fn get_toolchain_path() -> PathBuf {
             let path_str = String::from_utf8(output.stdout).unwrap();
             let toolchain_path = PathBuf::from(path_str.trim());
 
-            if !toolchain_path.exists() {
-                panic!(
-                    "Resolved toolchain path does not exist: {:?}. Please run `cargo run setup` first.",
-                    toolchain_path
-                );
+            let has_real_files = fs::read_dir(&toolchain_path)
+                .map(|rd| {
+                    rd.filter_map(|e| e.ok()).any(|entry| {
+                        let name = entry.file_name();
+                        name != ".lock"
+                    })
+                })
+                .unwrap_or(false);
+            if !toolchain_path.exists() || !has_real_files {
+                println!("Toolchain missing or empty in sandbox. Running automatic setup...");
+                let mut setup_cmd = Command::new(cargo_bin);
+                setup_cmd.arg("setup");
+                if let Ok(archive_path) = std::env::var("ANNEAL_TEST_LOCAL_ARCHIVE") {
+                    setup_cmd.arg("--local-archive").arg(archive_path);
+                } else {
+                    panic!("ANNEAL_TEST_LOCAL_ARCHIVE env var is not set, cannot bootstrap toolchain offline!");
+                }
+                let status = setup_cmd
+                    .status()
+                    .expect("Failed to execute cargo-anneal setup during bootstrapping");
+                assert!(status.success(), "Automatic sandboxed bootstrapping setup failed!");
             }
 
             toolchain_path
@@ -528,6 +544,16 @@ echo "---END-INVOCATION---" >> "{}"
         cmd.env("LAKE_CACHE_DIR", toolchain_path.join("lake-cache"));
         cmd.env("ANNEAL_USE_PATH_FOR_TOOLS", "1");
         cmd.env("RAYON_NUM_THREADS", "1");
+
+        // Forward the toolchain root directory.
+        //
+        // Why: The bootstrapping phase populates a single global toolchain directory
+        // inside the sandbox root (`/build/.anneal/toolchain/...`). By exporting
+        // this variable, we instruct the child process `cargo-anneal` inside the
+        // test case to resolve its toolchain to this prebuilt directory instead of
+        // looking inside its own empty, sandboxed `HOME` directory.
+        let toolchain_base = toolchain_path.parent().unwrap().parent().unwrap().parent().unwrap();
+        cmd.env("ANNEAL_TOOLCHAIN_DIR", toolchain_base);
 
         let original_path = std::env::var_os("PATH").unwrap_or_default();
         let new_path = std::env::join_paths(
@@ -943,6 +969,15 @@ fn run_single_phase(
         }
         if phase.stdout_file.is_some() {
             config.stdout_file = phase.stdout_file.clone();
+        }
+    }
+
+    if let Some(args) = &mut config.args {
+        if args.first().map(|s| s.as_str()) == Some("setup") {
+            if let Ok(archive_path) = std::env::var("ANNEAL_TEST_LOCAL_ARCHIVE") {
+                args.push("--local-archive".into());
+                args.push(archive_path);
+            }
         }
     }
 

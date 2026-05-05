@@ -415,21 +415,15 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
         // Change name to anneal_verification
         manifest["name"] = serde_json::Value::String("anneal_verification".to_string());
 
-        // Read actual HEAD commit of Aeneas in toolchain
         let toolchain_aeneas_dir = toolchain.root.join("backends").join("lean");
-        let output = Command::new("git")
-            .args(["rev-parse", "HEAD"])
-            .current_dir(&toolchain_aeneas_dir)
-            .output()
-            .context("Failed to run `git rev-parse HEAD` in toolchain Aeneas")?;
 
-        if !output.status.success() {
-            bail!("`git rev-parse HEAD` failed in toolchain Aeneas");
-        }
-        let aeneas_rev = String::from_utf8(output.stdout)
-            .context("Failed to parse git output")?
-            .trim()
-            .to_string();
+        // Use the statically pinned compile-time revision of Aeneas.
+        //
+        // Why: In our hermetic relocatable toolchain, all Aeneas version assets
+        // are strictly locked and precompiled in the store. Wiping out unstable `.git` 
+        // directories inside the FOD prevents dynamic `git rev-parse` executions from 
+        // succeeding. We safely reuse the static build revision directly.
+        let aeneas_rev = env!("ANNEAL_AENEAS_REV").to_string();
 
         // Inject aeneas dependency
         let aeneas_dep = serde_json::json!({
@@ -486,6 +480,21 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
             .context("Failed to copy Aeneas directory")?;
         if !status.success() {
             bail!("Failed to copy Aeneas directory from toolchain to workspace");
+        }
+
+        // Initialize git repository in the copied Aeneas directory.
+        //
+        // Why: The precompiled relocatable toolchain does not contain a `.git` folder.
+        // To prevent `git remote add` from searching upwards and hitting the host's 
+        // git repository (causing `remote origin already exists` errors), we explicitly 
+        // initialize the copied folder as a standalone Git repository inside the sandbox.
+        let status = Command::new("git")
+            .args(["init", "-b", "main", "-q"])
+            .current_dir(&user_aeneas_dir)
+            .status()
+            .context("Failed to run `git init` in Aeneas clone")?;
+        if !status.success() {
+            bail!("`git init` failed in Aeneas clone");
         }
 
         // Add Git remote 'origin' to match manifest
