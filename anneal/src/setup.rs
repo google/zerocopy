@@ -853,9 +853,12 @@ pub fn run_setup() -> Result<()> {
 
     // Read the newly created HEAD commit hash and write it to a static file
     // `aeneas-commit.txt` inside the package directory.
-    // This allows us to read the hash directly at runtime during `cargo-anneal verify`
-    // instead of executing `git rev-parse HEAD`, which would fail inside Docker
-    // containers due to Git's "dubious ownership" security checks (due to mapped UIDs).
+    //
+    // This allows us to read the hash directly at runtime during `cargo-anneal
+    // verify` instead of executing `git rev-parse HEAD`. Spawning Git at
+    // runtime would fail inside Docker containers due to Git's "dubious
+    // ownership" security checks (caused by UID mapping mismatches between the
+    // build runner and the test runner).
     let output = Command::new("git")
         .args(["rev-parse", "HEAD"])
         .current_dir(&lean_dir)
@@ -864,10 +867,8 @@ pub fn run_setup() -> Result<()> {
     if !output.status.success() {
         bail!("`git rev-parse HEAD` failed during setup");
     }
-    let commit_hash = String::from_utf8(output.stdout)
-        .context("Failed to parse git output")?
-        .trim()
-        .to_string();
+    let commit_hash =
+        String::from_utf8(output.stdout).context("Failed to parse git output")?.trim().to_string();
     fs::write(lean_dir.join("aeneas-commit.txt"), commit_hash)
         .context("Failed to write aeneas-commit.txt")?;
 
@@ -904,8 +905,6 @@ pub fn run_setup() -> Result<()> {
             }
         }
     }
-
-
 
     // We now perform the core rewriting of dependency configurations to point
     // to the filesystem-local paths we just created using relative path dependencies.
@@ -971,10 +970,12 @@ pub fn run_setup() -> Result<()> {
 
     prebuild_lean_library(&lean_dir, &tmp_root.join("lake-cache"))?;
 
-    // Pre-compile the `graph` tool in importGraph dependency. This is required
-    // because Aeneas library itself does not import importGraph, so a standard
-    // `lake build` skips it. We must pre-compile it during setup so that the
-    // `lake exe graph` tool is available in the read-only toolchain.
+    // Pre-compile the `graph` tool in the `importGraph` dependency. This is
+    // required because the Aeneas library itself does not import
+    // `importGraph`, so a standard `lake build` skips it.
+    //
+    // We must pre-compile it during setup so that the `lake exe graph` tool is
+    // pre-built and available in the final read-only toolchain.
     println!("Pre-compiling importGraph graph tool inside toolchain...");
     let status = Command::new("lake")
         .args(["build", "importGraph/graph"])
@@ -998,7 +999,8 @@ pub fn run_setup() -> Result<()> {
             if path.is_dir() {
                 let dep_manifest = path.join("lake-manifest.json");
                 if dep_manifest.exists() {
-                    fs::remove_file(&dep_manifest).context("Failed to delete dependency manifest")?;
+                    fs::remove_file(&dep_manifest)
+                        .context("Failed to delete dependency manifest")?;
                 }
             }
         }

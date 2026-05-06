@@ -443,7 +443,8 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
                 if pkg["type"] == "path" {
                     if let Some(dir_str) = pkg["dir"].as_str() {
                         if dir_str == "../../packages/mathlib" {
-                            pkg["dir"] = serde_json::Value::String(".lake/packages/mathlib".to_string());
+                            pkg["dir"] =
+                                serde_json::Value::String(".lake/packages/mathlib".to_string());
                         }
                     }
                 }
@@ -479,8 +480,10 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
         materialize_package_optimized(&toolchain_aeneas_dir, &user_aeneas_dir)
             .context("Failed to materialize Aeneas package")?;
 
-        // Rename Aeneas precompiled configuration directory from [anonymous] to aeneas,
-        // and patch the trace file so that Lake validates the precompiled config correctly.
+        // Rename the Aeneas precompiled configuration directory from
+        // `[anonymous]` to `aeneas`, and patch its trace file so that
+        // Lake validates the precompiled configuration without
+        // re-elaborating it.
         let anon_config = user_aeneas_dir.join(".lake").join("config").join("[anonymous]");
         let user_config = user_aeneas_dir.join(".lake").join("config").join("aeneas");
         if anon_config.exists() {
@@ -618,8 +621,6 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     let generated = roots.lean_generated_root();
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
-
-
 
     // 2. Build the project (dependencies only)
     let toolchain = crate::setup::Toolchain::resolve()?;
@@ -1095,7 +1096,11 @@ fn materialize_package_optimized(src_dir: &Path, dest_dir: &Path) -> Result<()> 
 
         if path.is_file() {
             // Copy top-level metadata files
-            if file_name == "lakefile.lean" || file_name == "lakefile.toml" || file_name == "lean-toolchain" || file_name == "lake-manifest.json" {
+            if file_name == "lakefile.lean"
+                || file_name == "lakefile.toml"
+                || file_name == "lean-toolchain"
+                || file_name == "lake-manifest.json"
+            {
                 let dest_file = dest_dir.join(file_name);
                 fs::copy(&path, &dest_file)
                     .with_context(|| format!("Failed to copy file {}", file_name))?;
@@ -1122,7 +1127,8 @@ fn materialize_package_optimized(src_dir: &Path, dest_dir: &Path) -> Result<()> 
                 copy_dir_recursive(&path, &dest_widget)?;
                 make_dir_writable_recursive(&dest_widget)?;
             } else if file_name == ".lake" {
-                // Recreate `.lake` and `.lake/build`/`.lake/config` structure, and copy precompiled data
+                // Recreate the `.lake` structure and copy
+                // precompiled build and config data.
                 let src_build = path.join("build");
                 let src_config = path.join("config");
                 let dest_lake = dest_dir.join(".lake");
@@ -1130,19 +1136,26 @@ fn materialize_package_optimized(src_dir: &Path, dest_dir: &Path) -> Result<()> 
                 let dest_config = dest_lake.join("config");
 
                 if src_build.exists() {
-                    fs::create_dir_all(&dest_build).context("Failed to create dest build directory")?;
+                    fs::create_dir_all(&dest_build)
+                        .context("Failed to create dest build directory")?;
                     materialize_build_dir_optimized(&src_build, &dest_build)?;
                 }
 
                 if src_config.exists() {
-                    // Copy precompiled config (.olean & .trace) physically and make it writable
+                    // Copy precompiled config
+                    // physically and make it
+                    // writable.
                     copy_dir_recursive(&src_config, &dest_config)?;
                     make_dir_writable_recursive(&dest_config)?;
 
-                    // Adjust the package index (idx) in the trace file.
-                    // Since Aeneas is injected at index 0 in the sandbox manifest,
-                    // every other dependency's index shifts exactly by +1.
-                    // We parse the trace JSON, increment the `idx` field, and write it back.
+                    // Adjust the package index (`idx`)
+                    // in the trace file. Since Aeneas
+                    // is prepended at index 0 in the
+                    // sandbox manifest, every other
+                    // dependency's index shifts by +1.
+                    //
+                    // We parse the trace JSON, increment
+                    // the `idx` field, and write it back.
                     let trace_file = dest_config.join(pkg_name).join("lakefile.olean.trace");
                     if trace_file.exists() {
                         let content = fs::read_to_string(&trace_file)

@@ -274,8 +274,6 @@ impl TestContext {
             Some(temp)
         };
 
-
-
         // Copy extra inputs based on config.
         for extra in &config.extra_inputs {
             let extra_path = test_case_root.join(extra);
@@ -399,8 +397,6 @@ echo "---END-INVOCATION---" >> "{}"
             cmd.env("ELAN_HOME", elan_home);
         }
 
-
-
         // Resolve Mocks
 
         // Re-organizing execution flow:
@@ -465,7 +461,6 @@ echo "---END-INVOCATION---" >> "{}"
         cmd.env("ANNEAL_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
 
-
         cmd.env("ANNEAL_USE_PATH_FOR_TOOLS", "1");
         cmd.env("RAYON_NUM_THREADS", "1");
 
@@ -483,8 +478,6 @@ echo "---END-INVOCATION---" >> "{}"
         cmd.env("CARGO_TARGET_DIR", self.sandbox_root.join("target"));
         cmd.env("PATH", new_path);
         cmd.env("RUSTFLAGS", rustflags);
-
-
 
         // Redirect HOME to the persistent home directory within the sandbox.
         // This ensures that the toolchain is looked up and potentially
