@@ -479,6 +479,26 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
         materialize_package_optimized(&toolchain_aeneas_dir, &user_aeneas_dir)
             .context("Failed to materialize Aeneas package")?;
 
+        // Rename Aeneas precompiled configuration directory from [anonymous] to aeneas,
+        // and patch the trace file so that Lake validates the precompiled config correctly.
+        let anon_config = user_aeneas_dir.join(".lake").join("config").join("[anonymous]");
+        let user_config = user_aeneas_dir.join(".lake").join("config").join("aeneas");
+        if anon_config.exists() {
+            fs::create_dir_all(user_config.parent().unwrap())
+                .context("Failed to create config parent directory")?;
+            fs::rename(&anon_config, &user_config)
+                .context("Failed to rename Aeneas precompiled config directory")?;
+
+            let trace_file = user_config.join("lakefile.olean.trace");
+            if trace_file.exists() {
+                let content = fs::read_to_string(&trace_file)
+                    .context("Failed to read Aeneas config trace file")?;
+                let new_content = content.replace("[anonymous]", "aeneas");
+                fs::write(&trace_file, new_content)
+                    .context("Failed to write patched Aeneas config trace file")?;
+            }
+        }
+
         // Add Git remote 'origin' to match manifest
         let status = Command::new("git")
             .args([
@@ -1102,14 +1122,41 @@ fn materialize_package_optimized(src_dir: &Path, dest_dir: &Path) -> Result<()> 
                 copy_dir_recursive(&path, &dest_widget)?;
                 make_dir_writable_recursive(&dest_widget)?;
             } else if file_name == ".lake" {
-                // Recreate `.lake` and `.lake/build` directory structure, and symlink/copy files
+                // Recreate `.lake` and `.lake/build`/`.lake/config` structure, and copy precompiled data
                 let src_build = path.join("build");
+                let src_config = path.join("config");
                 let dest_lake = dest_dir.join(".lake");
                 let dest_build = dest_lake.join("build");
+                let dest_config = dest_lake.join("config");
 
                 if src_build.exists() {
                     fs::create_dir_all(&dest_build).context("Failed to create dest build directory")?;
                     materialize_build_dir_optimized(&src_build, &dest_build)?;
+                }
+
+                if src_config.exists() {
+                    // Copy precompiled config (.olean & .trace) physically and make it writable
+                    copy_dir_recursive(&src_config, &dest_config)?;
+                    make_dir_writable_recursive(&dest_config)?;
+
+                    // Adjust the package index (idx) in the trace file.
+                    // Since Aeneas is injected at index 0 in the sandbox manifest,
+                    // every other dependency's index shifts exactly by +1.
+                    // We parse the trace JSON, increment the `idx` field, and write it back.
+                    let trace_file = dest_config.join(pkg_name).join("lakefile.olean.trace");
+                    if trace_file.exists() {
+                        let content = fs::read_to_string(&trace_file)
+                            .context("Failed to read trace file during config load")?;
+                        if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
+                            if let Some(idx) = json["idx"].as_i64() {
+                                json["idx"] = serde_json::Value::Number((idx + 1).into());
+                                let new_content = serde_json::to_string_pretty(&json)
+                                    .context("Failed to serialize patched config trace")?;
+                                fs::write(&trace_file, new_content)
+                                    .context("Failed to write patched config trace file")?;
+                            }
+                        }
+                    }
                 }
             } else {
                 // This is a source directory (e.g., `Mathlib/`, `Aeneas/`, `Batteries/`).
