@@ -398,31 +398,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
 
-    if !lean_root.join(".lake/packages/mathlib").exists() {
-        let toolchain = crate::setup::Toolchain::resolve()?;
-        // 1. Run 'lake exe cache get' to fetch pre-built Mathlib artifacts
-        // This prevents compiling Mathlib from source, which is slow and disk-heavy.
-        let mut cache_cmd = toolchain.command(Tool::Lake);
-        cache_cmd.args(["exe", "cache", "get"]);
-        cache_cmd.current_dir(lean_root);
-        cache_cmd.stdout(Stdio::piped());
-        cache_cmd.stderr(Stdio::piped());
 
-        log::debug!("Running 'lake exe cache get'...");
-        let start = std::time::Instant::now();
-        if let Ok(output) = cache_cmd.output() {
-            if !output.status.success() {
-                log::warn!(
-                    " 'lake exe cache get' failed (status={}). Falling back to full build.\nstderr: {}",
-                    output.status,
-                    String::from_utf8_lossy(&output.stderr)
-                );
-            }
-        } else {
-            log::warn!("Failed to spawn 'lake exe cache get'");
-        }
-        log::trace!("'lake exe cache get' took {:.2?}", start.elapsed());
-    }
 
     // 2. Build the project (dependencies only)
     let toolchain = crate::setup::Toolchain::resolve()?;

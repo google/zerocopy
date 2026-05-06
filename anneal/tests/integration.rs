@@ -274,62 +274,7 @@ impl TestContext {
             Some(temp)
         };
 
-        let lean_root = sandbox_root.join("target/anneal/anneal_test_target/lean");
-        fs::create_dir_all(&lean_root)?;
 
-        // We skip seeding the Lean workspace cache for mock setup tests because
-        // they do not run the full verification pipeline and do not need Lean.
-        // 1. Seed the Lean workspace cache so Lake skips Mathlib downloads.
-
-        // The Lean manifest dictates which dependencies Lake needs to
-        // resolve. We copy this directly from the global cache to ensure
-        // the test sandbox observes exactly the same dependency tree as
-        // the precompiled artifacts. If we did not copy this lockfile,
-        // Lake would attempt to resolve dependencies from scratch. Since
-        // our dependencies specify floating branches rather than explicit
-        // git hashes in their configuration files, a fresh resolution
-        // could map to newer commits. A mismatch in a single commit hash
-        // invalidates the shared compilation cache, causing Lean to
-        // redundantly recompile the entire dependency tree (e.g.,
-        // Mathlib) from source. Copying the manifest guarantees a
-        // cache hit.
-        let source_manifest = toolchain_path.join("backends/lean").join("lake-manifest.json");
-        let target_manifest = lean_root.join("lake-manifest.json");
-        if source_manifest.exists() {
-            fs::copy(&source_manifest, &target_manifest)?;
-            let mut perms = fs::metadata(&target_manifest)?.permissions();
-            #[allow(clippy::permissions_set_readonly_false)]
-            perms.set_readonly(false);
-            fs::set_permissions(&target_manifest, perms)?;
-
-            // Inject aeneas dependency into manifest
-            if let Ok(content) = fs::read_to_string(&target_manifest) {
-                if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
-                    if let Some(packages) = json.get_mut("packages").and_then(|v| v.as_array_mut())
-                    {
-                        let aeneas_url =
-                            format!("file://{}/backends/lean", toolchain_path.display());
-                        let entry = serde_json::json!({
-                            "url": aeneas_url,
-                            "type": "git",
-                            "name": "aeneas",
-                            "subDir": null,
-                            "scope": "",
-                            "rev": "main",
-                            "inputRev": "main",
-                            "inherited": false,
-                            "configFile": "lakefile.lean",
-                            "manifestFile": "lake-manifest.json"
-                        });
-                        packages.push(entry);
-
-                        if let Ok(new_content) = serde_json::to_string_pretty(&json) {
-                            let _ = fs::write(&target_manifest, new_content);
-                        }
-                    }
-                }
-            }
-        }
 
         // Copy extra inputs based on config.
         for extra in &config.extra_inputs {
@@ -454,8 +399,7 @@ echo "---END-INVOCATION---" >> "{}"
             cmd.env("ELAN_HOME", elan_home);
         }
 
-        let toolchain_path = get_toolchain_path();
-        let lean_backend_dir = toolchain_path.join("backends/lean");
+
 
         // Resolve Mocks
 
@@ -521,11 +465,7 @@ echo "---END-INVOCATION---" >> "{}"
         cmd.env("ANNEAL_FORCE_TTY", "1");
         cmd.env("FORCE_COLOR", "1");
 
-        cmd.env("ANNEAL_INTEGRATION_TEST_LEAN_CACHE_DIR", &lean_backend_dir);
-        // Set `LAKE_CACHE_DIR` to point to the global cache in the toolchain
-        // directory to share build artifacts across tests and avoid redundant
-        // recompilation.
-        cmd.env("LAKE_CACHE_DIR", toolchain_path.join("lake-cache"));
+
         cmd.env("ANNEAL_USE_PATH_FOR_TOOLS", "1");
         cmd.env("RAYON_NUM_THREADS", "1");
 
@@ -544,17 +484,7 @@ echo "---END-INVOCATION---" >> "{}"
         cmd.env("PATH", new_path);
         cmd.env("RUSTFLAGS", rustflags);
 
-        // Configure git to trust all directories in this test sandbox
-        // Configure Git to trust all directories within this test sandbox.
-        // This is required because tests run as the host user but may access
-        // files created by the `anneal` user in the Docker image, triggering
-        // Git's 'dubious ownership' security check.
-        let status = std::process::Command::new("git")
-            .args(["config", "--global", "--add", "safe.directory", "*"])
-            .env("HOME", &self.home_dir)
-            .status()
-            .expect("Failed to run git config");
-        assert!(status.success(), "git config failed");
+
 
         // Redirect HOME to the persistent home directory within the sandbox.
         // This ensures that the toolchain is looked up and potentially

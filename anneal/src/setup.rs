@@ -885,6 +885,8 @@ pub fn run_setup() -> Result<()> {
         }
     }
 
+
+
     // We now perform the core rewriting of dependency configurations to point
     // to the filesystem-local paths we just created using relative path dependencies.
     let manifest_path = lean_dir.join("lake-manifest.json");
@@ -948,6 +950,25 @@ pub fn run_setup() -> Result<()> {
     }
 
     prebuild_lean_library(&lean_dir, &toolchain.cache_dir())?;
+
+    // Delete manifest files from dependencies AFTER pre-building.
+    // This is critical because mathlib's cache fetching tool (run during prebuild)
+    // requires its own manifest to function. However, once the toolchain is installed,
+    // we must not have any manifest files in the dependencies, otherwise Lake will
+    // read them during user project verification and attempt to resolve nested
+    // dependencies via Git, bypassing our path overrides.
+    if packages_dir.exists() {
+        for entry in fs::read_dir(&packages_dir).context("Failed to read packages directory")? {
+            let entry = entry.context("Failed to read directory entry")?;
+            let path = entry.path();
+            if path.is_dir() {
+                let dep_manifest = path.join("lake-manifest.json");
+                if dep_manifest.exists() {
+                    fs::remove_file(&dep_manifest).context("Failed to delete dependency manifest")?;
+                }
+            }
+        }
+    }
 
     // Lake records absolute paths in its `.trace` files (e.g., in the
     // compiler command lines). Since we built the project in a temporary
