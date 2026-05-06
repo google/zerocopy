@@ -851,6 +851,26 @@ pub fn run_setup() -> Result<()> {
         bail!("`git commit` failed");
     }
 
+    // Read the newly created HEAD commit hash and write it to a static file
+    // `aeneas-commit.txt` inside the package directory.
+    // This allows us to read the hash directly at runtime during `cargo-anneal verify`
+    // instead of executing `git rev-parse HEAD`, which would fail inside Docker
+    // containers due to Git's "dubious ownership" security checks (due to mapped UIDs).
+    let output = Command::new("git")
+        .args(["rev-parse", "HEAD"])
+        .current_dir(&lean_dir)
+        .output()
+        .context("Failed to run `git rev-parse HEAD` during setup")?;
+    if !output.status.success() {
+        bail!("`git rev-parse HEAD` failed during setup");
+    }
+    let commit_hash = String::from_utf8(output.stdout)
+        .context("Failed to parse git output")?
+        .trim()
+        .to_string();
+    fs::write(lean_dir.join("aeneas-commit.txt"), commit_hash)
+        .context("Failed to write aeneas-commit.txt")?;
+
     // Run `lake update` to resolve dependencies and generate the manifest.
     // We do this initially with remote URLs to let Lake resolve conflicts and
     // record the specific commit hashes in `lake-manifest.json`. This also
@@ -949,7 +969,21 @@ pub fn run_setup() -> Result<()> {
         fs::remove_file(&manifest_path).context("Failed to delete manifest")?;
     }
 
-    prebuild_lean_library(&lean_dir, &toolchain.cache_dir())?;
+    prebuild_lean_library(&lean_dir, &tmp_root.join("lake-cache"))?;
+
+    // Pre-compile the `graph` tool in importGraph dependency. This is required
+    // because Aeneas library itself does not import importGraph, so a standard
+    // `lake build` skips it. We must pre-compile it during setup so that the
+    // `lake exe graph` tool is available in the read-only toolchain.
+    println!("Pre-compiling importGraph graph tool inside toolchain...");
+    let status = Command::new("lake")
+        .args(["build", "importGraph/graph"])
+        .current_dir(&lean_dir)
+        .status()
+        .context("Failed to build importGraph/graph in toolchain")?;
+    if !status.success() {
+        bail!("Failed to build importGraph/graph in toolchain");
+    }
 
     // Delete manifest files from dependencies AFTER pre-building.
     // This is critical because mathlib's cache fetching tool (run during prebuild)

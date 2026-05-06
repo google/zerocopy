@@ -85,10 +85,12 @@ RUN cargo build && \
 # command fetches and builds the dependencies.
 ENV ANNEAL_TOOLCHAIN_DIR=/opt/anneal_toolchain
 RUN cargo run && \
+    chmod -R u+w /opt/anneal_toolchain && \
     LEAN_DIR=$(find /opt/anneal_toolchain/.anneal/toolchain/ -type d -path "*/backends/lean" | head -n 1) && \
     cd $LEAN_DIR && \
-    lake exe graph imports.dot --to Aeneas,Aeneas.Std.Core,Aeneas.Std.WP,Aeneas.Tactic.Solver.ScalarTac,Aeneas.Std.Scalar.Core --include-deps && \
-    python3 /workspace/tools/prune_mathlib.py imports.dot .lake/packages/mathlib
+    lake exe graph /workspace/imports.dot --to Aeneas,Aeneas.Std.Core,Aeneas.Std.WP,Aeneas.Tactic.Solver.ScalarTac,Aeneas.Std.Scalar.Core --include-deps && \
+    python3 /workspace/tools/prune_mathlib.py /workspace/imports.dot ../../packages/mathlib && \
+    chmod -R a-w /opt/anneal_toolchain
 
 # Ensure the integration target directory exists.
 RUN mkdir -p /cache/anneal_target
