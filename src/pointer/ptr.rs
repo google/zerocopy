@@ -233,7 +233,7 @@ mod _conversions {
             let raw = self.as_inner().as_non_null();
             // SAFETY: `self` satisfies the `Aligned` invariant, so we know that
             // `raw` is validly-aligned for `T`.
-            #[cfg(miri)]
+            #[cfg(all(test, miri))]
             unsafe {
                 crate::util::miri_promise_symbolic_alignment(
                     raw.as_ptr().cast(),
@@ -381,7 +381,7 @@ mod _conversions {
             let mut raw = self.as_inner().as_non_null();
             // SAFETY: `self` satisfies the `Aligned` invariant, so we know that
             // `raw` is validly-aligned for `T`.
-            #[cfg(miri)]
+            #[cfg(all(test, miri))]
             unsafe {
                 crate::util::miri_promise_symbolic_alignment(
                     raw.as_ptr().cast(),
