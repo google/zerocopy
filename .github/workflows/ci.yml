@@ -526,12 +526,15 @@ jobs:
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
-          MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +$TOOLCHAIN \
-            miri nextest run \
-            --test-threads "$THREADS" \
-            --package $CRATE \
-            --target $TARGET \
-            $FEATURES
+          # Run with and without unstable rust features.
+          for EXTRA_CFG_FLAGS in "" "--cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS"; do
+            MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS $EXTRA_CFG_FLAGS" ./cargo.sh +$TOOLCHAIN \
+              miri nextest run \
+              --test-threads "$THREADS" \
+              --package $CRATE \
+              --target $TARGET \
+              $FEATURES
+          done
         done
 
         mv .cargo/config.toml.bak .cargo/config.toml
