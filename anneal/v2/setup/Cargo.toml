@@ -1,0 +1,12 @@
+[package]
+name = "setup"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+log = "0.4"
+reqwest = { version = "0.12", features = ["blocking", "rustls-tls"] }
+sha2 = "0.10"
+tempfile = "3.27.0"
+tar = "0.4"
+zstd = "0.13"
