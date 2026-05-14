@@ -1,0 +1,26 @@
+[package]
+name = "toolchain-config-example-static-toml"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+toolchain-config = { path = "../.." }
+clap = { version = "4.6", features = ["derive"] }
+sha2 = "0.10"
+dirs = "6.0"
+
+[build-dependencies]
+toml = "0.8"
+
+[package.metadata.toolchain.linux.x86_64]
+checksum = "1111111111111111111111111111111111111111111111111111111111111111"
+url = "http://example.com/archive.tar.zst"
+
+[package.metadata.toolchain.macos.aarch64]
+checksum = "2222222222222222222222222222222222222222222222222222222222222222"
+url = "http://example.com/macos.tar.zst"
+
+[package.metadata.toolchain.windows.x86_64]
+checksum = "3333333333333333333333333333333333333333333333333333333333333333"
+url = "http://example.com/windows.tar.zst"

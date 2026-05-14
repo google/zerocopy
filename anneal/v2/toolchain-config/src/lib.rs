@@ -116,6 +116,7 @@ fn setup_from_archive<E: Extractor, D: digest::Digest>(
     extractor: &E,
 ) -> Result<Vec<u8>, std::io::Error> {
     let parent = dst.parent().expect("toolchains directory has parent");
+    std::fs::create_dir_all(parent)?;
     let temp_dir = tempfile::Builder::new().prefix("setup-").tempdir_in(parent)?;
 
     let mut hash_reader = HashReader::<_, D>::new(src);
@@ -186,6 +187,7 @@ fn link_or_copy_dir(src: &std::path::Path, dst: &std::path::Path) -> std::io::Re
 
 fn setup_from_directory(src: &std::path::Path, dst: &std::path::Path) -> Result<(), String> {
     let parent = dst.parent().expect("toolchains directory has parent");
+    std::fs::create_dir_all(parent).map_err(|e| format!("Failed to create toolchain parent directory: {e}"))?;
     let old_dir = if dst.symlink_metadata().is_ok() {
         let old = tempfile::Builder::new()
             .prefix("setup-old-")
