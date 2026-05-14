@@ -40,6 +40,7 @@ fn main() {
 
     match cli.command {
         Commands::Setup => {
+            // TODO: Probably use a flag, not an environment variable to activate override.
             let local_override = if std::env::var("__TOOLCHAIN_EXAMPLE_STATIC_TOML").is_ok() {
                 println!("Local testing override active. Assembling mock toolchain archive...");
                 let manifest_dir = std::env::var("CARGO_MANIFEST_DIR")
@@ -52,7 +53,7 @@ fn main() {
                 assert!(status.success(), "build-toolchain.sh script failed");
 
                 let archive_path = std::path::Path::new(&manifest_dir).join("toolchain.tar.zst");
-                Some(LocalOverride::Archive(archive_path))
+                Some(LocalOverride::<TarZstLibraryExtractor>::archive(archive_path))
             } else {
                 None
             };
