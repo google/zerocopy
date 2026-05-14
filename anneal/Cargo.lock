@@ -2593,6 +2593,7 @@ dependencies = [
  "dirs",
  "sha2",
  "toml",
+ "toml_const",
  "toolchain-config",
 ]
 

@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use sha2::Digest;
 use std::process::Command;
 use toolchain_config::{Checksum, Config, LocalOverride, RemoteArchive, TarZstLibraryExtractor};
 
@@ -25,19 +26,23 @@ fn get_root_dir() -> std::path::PathBuf {
     home.join(".toolchain-config-example-static-toml").join("toolchain")
 }
 
+toolchain_config::auto_install!{
+    pub const AUTO_CONFIG = "Cargo.toml";
+}
+
 fn main() {
     let cli = Cli::parse();
     let root_dir = get_root_dir();
 
     let checksum_bytes = decode_hex(env!("TOOLCHAIN_CHECKSUM"));
-    let config = Config::<TarZstLibraryExtractor, sha2::Sha256>::new(
-        RemoteArchive::new(env!("TOOLCHAIN_URL")),
-        Checksum::new(&checksum_bytes),
+    let mut hasher = sha2::Sha256::new();
+    let mut config = Config::new(
+        RemoteArchive::new(env!("TOOLCHAIN_URL"), &TarZstLibraryExtractor),
+        Checksum::new(&checksum_bytes, &mut hasher),
     );
 
     match cli.command {
         Commands::Install => {
-            // TODO: Probably use a flag, not an environment variable to activate override.
             let archive_path;
             let local_override = if std::env::var("__TOOLCHAIN_EXAMPLE_STATIC_TOML").is_ok() {
                 println!("Local testing override active. Assembling mock toolchain archive...");
@@ -51,13 +56,13 @@ fn main() {
                 assert!(status.success(), "build-toolchain.sh script failed");
 
                 archive_path = std::path::Path::new(&manifest_dir).join("toolchain.tar.zst");
-                Some(LocalOverride::<TarZstLibraryExtractor>::archive(&archive_path))
+                Some(LocalOverride::archive(&archive_path, &TarZstLibraryExtractor))
             } else {
                 None
             };
 
             println!("Provisioning toolchain environment...");
-            toolchain_config::install(&config, local_override, &root_dir)
+            toolchain_config::install_config(&mut config, local_override, &root_dir)
                 .expect("Setup subcommand failed");
             println!("Toolchain successfully set up.");
         }

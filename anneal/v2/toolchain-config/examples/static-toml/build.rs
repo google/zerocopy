@@ -9,7 +9,6 @@ fn main() {
 
     let metadata = toml
         .get("package")
-        .and_then(|p| p.get("metadata"))
         .and_then(|m| m.get("toolchain"))
         .expect("Missing [package.metadata.toolchain] in Cargo.toml");
 

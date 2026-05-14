@@ -9,18 +9,19 @@ toolchain-config = { path = "../.." }
 clap = { version = "4.6", features = ["derive"] }
 sha2 = "0.10"
 dirs = "6.0"
+toml_const = "1.2.1"
 
 [build-dependencies]
 toml = "0.8"
 
-[package.metadata.toolchain.linux.x86_64]
+[package.toolchain.linux.x86_64]
 checksum = "1111111111111111111111111111111111111111111111111111111111111111"
 url = "http://example.com/linux.x86_64.tar.zst"
 
-[package.metadata.toolchain.macos.aarch64]
+[package.toolchain.macos.aarch64]
 checksum = "2222222222222222222222222222222222222222222222222222222222222222"
 url = "http://example.com/macos.aarch64.tar.zst"
 
-[package.metadata.toolchain.windows.x86_64]
+[package.toolchain.windows.x86_64]
 checksum = "3333333333333333333333333333333333333333333333333333333333333333"
 url = "http://example.com/windows.x86_64.tar.zst"

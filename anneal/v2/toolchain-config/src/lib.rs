@@ -1,56 +1,63 @@
-#[derive(Debug, Clone)]
-pub struct RemoteArchive<'a, E>(pub &'a str, pub std::marker::PhantomData<E>);
+#[derive(Debug)]
+pub struct RemoteArchive<'a> {
+    url: &'a str,
+    extractor: &'a dyn Extractor,
+}
 
-#[derive(Debug, Clone)]
-pub struct Checksum<'a, D>(pub &'a [u8], pub std::marker::PhantomData<D>);
+pub struct Checksum<'a> {
+    bytes: &'a [u8],
+    digest: &'a mut dyn digest::DynDigest,
+}
 
-impl<'a, E> RemoteArchive<'a, E> {
-    pub fn new(url: &'a str) -> Self {
-        Self(url, std::marker::PhantomData)
+impl<'a> RemoteArchive<'a> {
+    pub fn new(url: &'a str, extractor: &'a dyn Extractor) -> Self {
+        Self { url, extractor }
     }
     pub fn url(&self) -> &'a str {
-        self.0
+        self.url
+    }
+    pub fn extractor(&self) -> &'a dyn Extractor {
+        self.extractor
     }
 }
 
-impl<'a, D> Checksum<'a, D> {
-    pub fn new(bytes: &'a [u8]) -> Self {
-        Self(bytes, std::marker::PhantomData)
+impl<'a> Checksum<'a> {
+    pub fn new(bytes: &'a [u8], digest: &'a mut dyn digest::DynDigest) -> Self {
+        Self { bytes, digest }
     }
     pub fn bytes(&self) -> &'a [u8] {
-        self.0
+        self.bytes
     }
 }
 
 /// Setup configuration specifying platform, remote source, and remote checksum.
-#[derive(Debug, Clone)]
-pub struct Config<'a, E, D> {
+pub struct Config<'a> {
     pub os: &'a str,
     pub arch: &'a str,
-    pub remote: RemoteArchive<'a, E>,
-    pub checksum: Checksum<'a, D>,
+    pub remote: RemoteArchive<'a>,
+    pub checksum: Checksum<'a>,
 }
 
 /// Local toolchain definition that overrides remote specified in [`Config`].
 #[derive(Debug, Clone)]
-pub enum LocalOverride<'a, E: Extractor = NoExtractor> {
+pub enum LocalOverride<'a> {
     Dir(&'a std::path::Path),
-    Archive((&'a std::path::Path, std::marker::PhantomData<E>)),
+    Archive(&'a std::path::Path, &'a dyn Extractor),
 }
 
-impl<'a, E: Extractor> LocalOverride<'a, E> {
+impl<'a> LocalOverride<'a> {
     pub fn dir(path: &'a std::path::Path) -> Self {
         Self::Dir(path)
     }
 
-    pub fn archive(path: &'a std::path::Path) -> Self {
-        Self::Archive((path, std::marker::PhantomData))
+    pub fn archive(path: &'a std::path::Path, extractor: &'a dyn Extractor) -> Self {
+        Self::Archive(path, extractor)
     }
 }
 
-impl<'a, E: Extractor, D: digest::Digest> Config<'a, E, D> {
+impl<'a> Config<'a> {
     /// Instantiates static toolchain parameters auto-detecting current runtime OS and Architecture.
-    pub fn new(remote: RemoteArchive<'a, E>, checksum: Checksum<'a, D>) -> Self {
+    pub fn new(remote: RemoteArchive<'a>, checksum: Checksum<'a>) -> Self {
         Self { os: std::env::consts::OS, arch: std::env::consts::ARCH, remote, checksum }
     }
 
@@ -58,8 +65,8 @@ impl<'a, E: Extractor, D: digest::Digest> Config<'a, E, D> {
     pub fn new_platform(
         os: &'a str,
         arch: &'a str,
-        remote: RemoteArchive<'a, E>,
-        checksum: Checksum<'a, D>,
+        remote: RemoteArchive<'a>,
+        checksum: Checksum<'a>,
     ) -> Self {
         Self { os, arch, remote, checksum }
     }
@@ -74,27 +81,14 @@ impl<'a, E: Extractor, D: digest::Digest> Config<'a, E, D> {
 /// An abstract extraction factory instantiating operational output streams targeting designated
 /// filesystem paths.
 pub trait Extractor {
-    /// Instantiates a new instance of this extractor type.
-    ///
-    /// Instantiated and used for extracting archives downloaded from [`Config::url`] or archives
-    /// designated by [`LocalOverride::Archive`].
-    fn new() -> Self
-    where
-        Self: Sized;
-
     /// Unpacks stream bytes directly into the specified target directory synchronously on the calling thread.
     fn extract(&self, src: &mut dyn std::io::Read, dst: &std::path::Path) -> std::io::Result<()>;
 }
 
-/// Marker type used by [`LocalOverride::Dir`] (which implies no archive extraction).
-pub struct NoExtractor;
-
-impl Extractor for NoExtractor {
-    fn new() -> Self {
-        panic!("NoExtractor is not constructible");
-    }
-    fn extract(&self, _src: &mut dyn std::io::Read, _dst: &std::path::Path) -> std::io::Result<()> {
-        panic!("Attempt to extract using NoExtractor");
+/// Implement core Extractor methods natively on generic references dynamically.
+impl<'a> std::fmt::Debug for dyn Extractor + 'a {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Extractor")
     }
 }
 
@@ -103,9 +97,6 @@ impl Extractor for NoExtractor {
 pub struct TarZstLibraryExtractor;
 
 impl Extractor for TarZstLibraryExtractor {
-    fn new() -> Self {
-        Self
-    }
     fn extract(&self, src: &mut dyn std::io::Read, dst: &std::path::Path) -> std::io::Result<()> {
         let decoder = zstd::Decoder::new(src)?;
         let mut archive = tar::Archive::new(decoder);
@@ -122,23 +113,23 @@ fn encode_hex(bytes: &[u8]) -> String {
     s
 }
 
-/// [`std::io::Read`] abstraction that encapsulates read-and-update-hasher.
-struct HashReader<R, D> {
+/// [`std::io::Read`] abstraction that encapsulates read-and-update-hasher dynamically.
+struct HashReader<'a, R> {
     inner: R,
-    hasher: D,
+    hasher: &'a mut dyn digest::DynDigest,
 }
 
-impl<R: std::io::Read, D: digest::Digest> HashReader<R, D> {
-    fn new(inner: R) -> Self {
-        Self { inner, hasher: D::new() }
+impl<'a, R: std::io::Read> HashReader<'a, R> {
+    fn new(inner: R, hasher: &'a mut dyn digest::DynDigest) -> Self {
+        Self { inner, hasher }
     }
 
-    fn finalize(self) -> Vec<u8> {
-        self.hasher.finalize().to_vec()
+    fn finalize(self) -> Box<[u8]> {
+        self.hasher.finalize_reset()
     }
 }
 
-impl<R: std::io::Read, D: digest::Digest> std::io::Read for HashReader<R, D> {
+impl<'a, R: std::io::Read> std::io::Read for HashReader<'a, R> {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
         let n = self.inner.read(buf)?;
         self.hasher.update(&buf[..n]);
@@ -146,16 +137,17 @@ impl<R: std::io::Read, D: digest::Digest> std::io::Read for HashReader<R, D> {
     }
 }
 
-fn install_from_archive<E: Extractor, D: digest::Digest>(
+fn install_from_archive(
     src: impl std::io::Read,
     dst: &std::path::Path,
-    extractor: &E,
-) -> Result<Vec<u8>, std::io::Error> {
+    extractor: &dyn Extractor,
+    hasher: &mut dyn digest::DynDigest,
+) -> Result<Box<[u8]>, std::io::Error> {
     let parent = dst.parent().expect("toolchains directory has parent");
     std::fs::create_dir_all(parent)?;
     let temp_dir = tempfile::Builder::new().prefix("setup-").tempdir_in(parent)?;
 
-    let mut hash_reader = HashReader::<_, D>::new(src);
+    let mut hash_reader = HashReader::new(src, hasher);
     extractor.extract(&mut hash_reader, temp_dir.path())?;
 
     // Handle atomic overwrite if dst already occupies the target path
@@ -245,9 +237,9 @@ fn install_from_directory(src: &std::path::Path, dst: &std::path::Path) -> Resul
     Ok(())
 }
 
-fn install_inner<CE: Extractor, D: digest::Digest, LE: Extractor>(
-    config: &Config<'_, CE, D>,
-    local_override: Option<LocalOverride<'_, LE>>,
+fn install_inner(
+    config: &mut Config<'_>,
+    local_override: Option<LocalOverride<'_>>,
     toolchain_root: &std::path::Path,
     fetcher: impl FnOnce(&str) -> Result<Box<dyn std::io::Read>, String>,
 ) -> Result<(), String> {
@@ -256,14 +248,13 @@ fn install_inner<CE: Extractor, D: digest::Digest, LE: Extractor>(
 
     if let Some(override_src) = local_override {
         match override_src {
-            LocalOverride::Archive((path, _)) => {
+            LocalOverride::Archive(path, extractor) => {
                 log::warn!(
                     "Toolchain contents from local archive may not match expected toolchain hash/version number."
                 );
-                let extractor = LE::new();
                 let file = std::fs::File::open(path)
                     .map_err(|e| format!("Failed to open local archive: {e}"))?;
-                install_from_archive::<LE, D>(file, &toolchain_dir, &extractor)
+                install_from_archive(file, &toolchain_dir, extractor, &mut *config.checksum.digest)
                     .map_err(|e| format!("Failed to extract archive: {e}"))?;
             }
             LocalOverride::Dir(path) => {
@@ -274,18 +265,22 @@ fn install_inner<CE: Extractor, D: digest::Digest, LE: Extractor>(
             }
         }
     } else {
-        let extractor = CE::new();
         let response = fetcher(config.remote.url())?;
 
-        let actual_hash = install_from_archive::<CE, D>(response, &toolchain_dir, &extractor)
-            .map_err(|e| format!("Failed to extract downloaded archive: {e}"))?;
+        let actual_hash = install_from_archive(
+            response,
+            &toolchain_dir,
+            config.remote.extractor(),
+            &mut *config.checksum.digest,
+        )
+        .map_err(|e| format!("Failed to extract downloaded archive: {e}"))?;
 
-        if actual_hash.as_slice() != config.checksum.bytes() {
+        if actual_hash.as_ref() != config.checksum.bytes() {
             let _ = std::fs::remove_dir_all(&toolchain_dir);
             return Err(format!(
                 "Checksum mismatch for downloaded archive. Expected {}, got {}",
                 expected_hex,
-                encode_hex(&actual_hash)
+                encode_hex(actual_hash.as_ref())
             ));
         }
     }
@@ -295,12 +290,12 @@ fn install_inner<CE: Extractor, D: digest::Digest, LE: Extractor>(
 
 /// Install a toolchain packaged with all its dependencies.
 ///
-/// The default behaviour is to install according to the remote URL and checksom in `config`. If
+/// The default behaviour is to install according to the remote URL and checksum in `config`. If
 /// `local_override` is provided, however, the toolchain naming convention associated with `config`
-/// will be used to install a local directory or archive.
-pub fn install<CE: Extractor, D: digest::Digest, LE: Extractor>(
-    config: &Config<'_, CE, D>,
-    local_override: Option<LocalOverride<'_, LE>>,
+/// will be used to install a local directory or archive natively.
+pub fn install_config(
+    config: &mut Config<'_>,
+    local_override: Option<LocalOverride<'_>>,
     toolchain_root: &std::path::Path,
 ) -> Result<(), String> {
     install_inner(config, local_override, toolchain_root, |url| {
@@ -313,9 +308,98 @@ pub fn install<CE: Extractor, D: digest::Digest, LE: Extractor>(
     })
 }
 
+pub struct Config2<'a> {
+    pub url: &'a str,
+    pub checksum: &'a [u8],
+}
+
+#[macro_export]
+macro_rules! auto_install {
+    ($vis:vis const $name:ident = $toml_config_file_path:literal ;) => {
+        $vis const $name: $crate::Config2 = {
+            // TODO: This doesn't actually work without the consumer depending on `toml_const`. Bleh.
+            use $crate::macro_util::toml_const;
+            toml_const::toml_const! {
+                const TOML_CONFIG: $toml_config_file_path;
+            }
+
+            use std::env::consts::*;
+            let config = match ($crate::macro_util::pack(OS), $crate::macro_util::pack(ARCH)) {
+                ($crate::macro_util::LINUX, $crate::macro_util::X86_64) => TOML_CONFIG.package.toolchain.linux.x86_64,
+                (_, _) => panic!("Unsupported os.arch on this machine"),
+            };
+            let url = config.url;
+            let checksum = config.checksum;
+            $crate::Config2 {
+                url: url,
+                checksum: &match $crate::macro_util::decode_hex(checksum) {
+                    Some(checksum) => checksum,
+                    None => panic!("Invalid hex-digit checksum in this machine's package.toolchain.<os>.<arch>.checksum field"),
+                },
+            }
+        };
+    }
+}
+
+#[doc(hidden)]
+pub mod macro_util {
+    pub use toml_const;
+
+    pub const fn decode_hex(s: &str) -> Option<[u8; 32]> {
+        let bytes = s.as_bytes();
+        if bytes.len() != 64 {
+            return None;
+        }
+        let mut res = [0u8; 32];
+        let mut i = 0;
+        while i < 32 {
+            let (h, l) = (bytes[i * 2], bytes[i * 2 + 1]);
+            let h_nib = match decode_nibble(h) {
+                Some(n) => n,
+                None => return None,
+            };
+            let l_nib = match decode_nibble(l) {
+                Some(n) => n,
+                None => return None,
+            };
+            res[i] = (h_nib << 4) | l_nib;
+            i += 1;
+        }
+        Some(res)
+    }
+
+    const fn decode_nibble(c: u8) -> Option<u8> {
+        match c {
+            b'0'..=b'9' => Some(c - b'0'),
+            b'a'..=b'f' => Some(c - b'a' + 10),
+            b'A'..=b'F' => Some(c - b'A' + 10),
+            _ => None,
+        }
+    }
+
+    pub const fn pack(s: &str) -> u128 {
+        let b = s.as_bytes();
+        assert!(b.len() <= 16, "slice too large to pack into u128");
+
+        let mut res = 0u128;
+        let mut i = 0;
+        while i < b.len() {
+            res |= (b[i] as u128) << (i * 8);
+            i += 1;
+        }
+        res
+    }
+
+    pub const LINUX: u128 = pack("linux");
+    pub const MACOS: u128 = pack("macos");
+    pub const X86_64: u128 = pack("x86_64");
+    pub const AARCH64: u128 = pack("aarch64");
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use sha2::Digest;
 
     fn create_test_archive(src_dir: &std::path::Path, archive_path: &std::path::Path) {
         let file = std::fs::File::create(archive_path).unwrap();
@@ -327,7 +411,6 @@ mod tests {
     }
 
     fn compute_sha256(path: &std::path::Path) -> Vec<u8> {
-        use sha2::Digest;
         let mut file = std::fs::File::open(path).unwrap();
         let mut hasher = sha2::Sha256::new();
         std::io::copy(&mut file, &mut hasher).unwrap();
@@ -335,7 +418,7 @@ mod tests {
     }
 
     #[test]
-    fn test_setup_from_directory() {
+    fn test_install_from_directory() {
         let temp = tempfile::tempdir().unwrap();
         let src = temp.path().join("src");
         std::fs::create_dir(&src).unwrap();
@@ -357,7 +440,7 @@ mod tests {
     }
 
     #[test]
-    fn test_setup_from_archive() {
+    fn test_install_from_archive() {
         let temp = tempfile::tempdir().unwrap();
         let src = temp.path().join("src");
         std::fs::create_dir(&src).unwrap();
@@ -368,44 +451,36 @@ mod tests {
 
         let dst = temp.path().join("dst");
         let file = std::fs::File::open(&archive_path).unwrap();
-        let hash = install_from_archive::<TarZstLibraryExtractor, sha2::Sha256>(
-            file,
-            &dst,
-            &TarZstLibraryExtractor,
-        )
-        .unwrap();
+        let mut hasher = sha2::Sha256::new();
+        let hash = install_from_archive(file, &dst, &TarZstLibraryExtractor, &mut hasher).unwrap();
 
-        assert_eq!(hash, compute_sha256(&archive_path));
+        assert_eq!(hash.as_ref(), compute_sha256(&archive_path));
         assert_eq!(std::fs::read_to_string(dst.join("data.txt")).unwrap(), "archive_content");
     }
 
     #[test]
-    fn test_setup_inner_local_directory() {
+    fn test_install_inner_local_directory() {
         let temp = tempfile::tempdir().unwrap();
         let src = temp.path().join("src");
         std::fs::create_dir(&src).unwrap();
         std::fs::write(src.join("test.txt"), "local_dir").unwrap();
 
         let expected_hash = [1u8; 32];
-        let config = Config::<TarZstLibraryExtractor, sha2::Sha256>::new(
-            RemoteArchive::new("http://example.com"),
-            Checksum::new(&expected_hash),
+        let mut hasher = sha2::Sha256::new();
+        let mut config = Config::new(
+            RemoteArchive::new("http://example.com", &TarZstLibraryExtractor),
+            Checksum::new(&expected_hash, &mut hasher),
         );
         let target_dir = config.toolchain_dir(temp.path());
 
-        install_inner(
-            &config,
-            Some(LocalOverride::<NoExtractor>::dir(&src)),
-            temp.path(),
-            |_| unreachable!(),
-        )
-        .unwrap();
+        install_inner(&mut config, Some(LocalOverride::dir(&src)), temp.path(), |_| unreachable!())
+            .unwrap();
 
         assert_eq!(std::fs::read_to_string(target_dir.join("test.txt")).unwrap(), "local_dir");
     }
 
     #[test]
-    fn test_setup_inner_local_archive() {
+    fn test_install_inner_local_archive() {
         let temp = tempfile::tempdir().unwrap();
         let src = temp.path().join("src");
         std::fs::create_dir(&src).unwrap();
@@ -415,15 +490,16 @@ mod tests {
         create_test_archive(&src, &archive_path);
 
         let expected_hash = [2u8; 32];
-        let config = Config::<TarZstLibraryExtractor, sha2::Sha256>::new(
-            RemoteArchive::new("http://example.com"),
-            Checksum::new(&expected_hash),
+        let mut hasher = sha2::Sha256::new();
+        let mut config = Config::new(
+            RemoteArchive::new("http://example.com", &TarZstLibraryExtractor),
+            Checksum::new(&expected_hash, &mut hasher),
         );
         let target_dir = config.toolchain_dir(temp.path());
 
         install_inner(
-            &config,
-            Some(LocalOverride::<TarZstLibraryExtractor>::archive(&archive_path)),
+            &mut config,
+            Some(LocalOverride::archive(&archive_path, &TarZstLibraryExtractor)),
             temp.path(),
             |_| unreachable!(),
         )
@@ -433,7 +509,7 @@ mod tests {
     }
 
     #[test]
-    fn test_setup_inner_remote_success() {
+    fn test_install_inner_remote_success() {
         let temp = tempfile::tempdir().unwrap();
         let src = temp.path().join("src");
         std::fs::create_dir(&src).unwrap();
@@ -443,14 +519,15 @@ mod tests {
         create_test_archive(&src, &archive_path);
 
         let actual_hash = compute_sha256(&archive_path);
-        let config = Config::<TarZstLibraryExtractor, sha2::Sha256>::new(
-            RemoteArchive::new("http://example.com"),
-            Checksum::new(&actual_hash),
+        let mut hasher = sha2::Sha256::new();
+        let mut config = Config::new(
+            RemoteArchive::new("http://example.com", &TarZstLibraryExtractor),
+            Checksum::new(&actual_hash, &mut hasher),
         );
         let target_dir = config.toolchain_dir(temp.path());
 
         let archive_path_clone = archive_path.clone();
-        install_inner::<_, _, NoExtractor>(&config, None, temp.path(), move |_url| {
+        install_inner(&mut config, None, temp.path(), move |_url| {
             let file = std::fs::File::open(&archive_path_clone).unwrap();
             Ok(Box::new(file))
         })
@@ -460,7 +537,7 @@ mod tests {
     }
 
     #[test]
-    fn test_setup_inner_remote_checksum_mismatch() {
+    fn test_install_inner_remote_checksum_mismatch() {
         let temp = tempfile::tempdir().unwrap();
         let src = temp.path().join("src");
         std::fs::create_dir(&src).unwrap();
@@ -473,14 +550,15 @@ mod tests {
         let mut expected_hash = actual_hash;
         expected_hash[0] ^= 1; // invalidate checksum
 
-        let config = Config::<TarZstLibraryExtractor, sha2::Sha256>::new(
-            RemoteArchive::new("http://example.com"),
-            Checksum::new(&expected_hash),
+        let mut hasher = sha2::Sha256::new();
+        let mut config = Config::new(
+            RemoteArchive::new("http://example.com", &TarZstLibraryExtractor),
+            Checksum::new(&expected_hash, &mut hasher),
         );
         let target_dir = config.toolchain_dir(temp.path());
 
         let archive_path_clone = archive_path.clone();
-        let res = install_inner::<_, _, NoExtractor>(&config, None, temp.path(), move |_url| {
+        let res = install_inner(&mut config, None, temp.path(), move |_url| {
             let file = std::fs::File::open(&archive_path_clone).unwrap();
             Ok(Box::new(file))
         });
