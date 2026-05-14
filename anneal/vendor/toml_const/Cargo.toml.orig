@@ -1,0 +1,26 @@
+[package]
+name = "toml_const"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Compile-time constants from TOML"
+readme = "README.md"
+repository = "https://github.com/facesthe/toml_const"
+license = "MIT"
+keywords = ["toml", "config", "static"]
+categories = ["no-std", "config", "development-tools::build-utils"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "toml_const"
+path = "src/lib.rs"
+
+[features]
+default = ["phf"]
+phf = ["dep:phf", "macros/phf"]
+
+[dependencies]
+toml = { workspace = true }
+macros = { path = "../toml_const_macros", package = "toml_const_macros", version = "1.2.1", default-features = false }
+phf = { version = "0.12", features = ["macros"], optional = true }

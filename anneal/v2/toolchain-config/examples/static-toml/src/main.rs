@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 use std::process::Command;
-use toolchain_config::{Config, LocalOverride, TarZstLibraryExtractor};
+use toolchain_config::{Checksum, Config, LocalOverride, RemoteArchive, TarZstLibraryExtractor};
 
 #[derive(Parser)]
 #[command(name = "toolchain-config-example-static-toml")]
@@ -12,15 +12,12 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    Setup,
+    Install,
     Hello,
 }
 
 fn decode_hex(s: &str) -> Vec<u8> {
-    (0..s.len())
-        .step_by(2)
-        .map(|i| u8::from_str_radix(&s[i..i + 2], 16).unwrap())
-        .collect()
+    (0..s.len()).step_by(2).map(|i| u8::from_str_radix(&s[i..i + 2], 16).unwrap()).collect()
 }
 
 fn get_root_dir() -> std::path::PathBuf {
@@ -34,13 +31,14 @@ fn main() {
 
     let checksum_bytes = decode_hex(env!("TOOLCHAIN_CHECKSUM"));
     let config = Config::<TarZstLibraryExtractor, sha2::Sha256>::new(
-        env!("TOOLCHAIN_URL"),
-        &checksum_bytes,
+        RemoteArchive::new(env!("TOOLCHAIN_URL")),
+        Checksum::new(&checksum_bytes),
     );
 
     match cli.command {
-        Commands::Setup => {
+        Commands::Install => {
             // TODO: Probably use a flag, not an environment variable to activate override.
+            let archive_path;
             let local_override = if std::env::var("__TOOLCHAIN_EXAMPLE_STATIC_TOML").is_ok() {
                 println!("Local testing override active. Assembling mock toolchain archive...");
                 let manifest_dir = std::env::var("CARGO_MANIFEST_DIR")
@@ -52,14 +50,14 @@ fn main() {
                     .expect("Failed to execute build-toolchain.sh");
                 assert!(status.success(), "build-toolchain.sh script failed");
 
-                let archive_path = std::path::Path::new(&manifest_dir).join("toolchain.tar.zst");
-                Some(LocalOverride::<TarZstLibraryExtractor>::archive(archive_path))
+                archive_path = std::path::Path::new(&manifest_dir).join("toolchain.tar.zst");
+                Some(LocalOverride::<TarZstLibraryExtractor>::archive(&archive_path))
             } else {
                 None
             };
 
             println!("Provisioning toolchain environment...");
-            toolchain_config::setup(&config, local_override, root_dir)
+            toolchain_config::install(&config, local_override, &root_dir)
                 .expect("Setup subcommand failed");
             println!("Toolchain successfully set up.");
         }
@@ -68,7 +66,10 @@ fn main() {
             let hello_bin = toolchain_dir.join("bin").join("hello");
 
             if !hello_bin.exists() {
-                eprintln!("Error: Toolchain executable missing at {:?}. Please run setup first.", hello_bin);
+                eprintln!(
+                    "Error: Toolchain executable missing at {:?}. Please run install first.",
+                    hello_bin
+                );
                 std::process::exit(1);
             }
 

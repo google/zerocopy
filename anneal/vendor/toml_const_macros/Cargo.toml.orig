@@ -1,0 +1,23 @@
+[package]
+name = "toml_const_macros"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "proc-macros for toml_const"
+repository = "https://github.com/facesthe/toml_const"
+license = "MIT"
+keywords = []
+categories = ["development-tools::build-utils"]
+
+[features]
+phf = []
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2", features = ["full"] }
+quote = "1"
+proc-macro2 = "1"
+toml = { workspace = true }
+indexmap = { workspace = true }
