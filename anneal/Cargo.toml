@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "tools/doc_gen", "v2/setup"]
+members = [".", "tools/doc_gen", "v2/toolchain-config"]
 
 [package]
 name = "cargo-anneal"
