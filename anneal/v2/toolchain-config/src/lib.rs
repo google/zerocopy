@@ -1,10 +1,12 @@
 /// Setup configuration binding external platform environments and baseline paths.
 #[derive(Debug, Clone)]
-pub struct Config<'a> {
+pub struct Config<'a, E, D> {
     pub os: &'a str,
     pub arch: &'a str,
     pub url: &'a str,
-    pub sha256: [u8; 32],
+    pub sha256: &'a [u8],
+    _extractor: std::marker::PhantomData<E>,
+    _digest: std::marker::PhantomData<D>,
 }
 
 /// Optional runtime override directing installation from local dev builds instead of remote hosts.
@@ -14,41 +16,46 @@ pub enum LocalOverride {
     Archive(std::path::PathBuf),
 }
 
-impl<'a> Config<'a> {
+impl<'a, E: Extractor, D: digest::Digest> Config<'a, E, D> {
     /// Instantiates static toolchain parameters auto-detecting current runtime OS and Architecture.
-    pub fn new(url: &'a str, sha256: [u8; 32]) -> Self {
+    pub fn new(url: &'a str, sha256: &'a [u8]) -> Self {
         Self {
             os: std::env::consts::OS,
             arch: std::env::consts::ARCH,
             url,
             sha256,
+            _extractor: std::marker::PhantomData,
+            _digest: std::marker::PhantomData,
         }
     }
 
     /// Explicitly overrides target platform parameters for specialized configurations.
-    pub fn new_platform(os: &'a str, arch: &'a str, url: &'a str, sha256: [u8; 32]) -> Self {
+    pub fn new_platform(os: &'a str, arch: &'a str, url: &'a str, sha256: &'a [u8]) -> Self {
         Self {
             os,
             arch,
             url,
             sha256,
+            _extractor: std::marker::PhantomData,
+            _digest: std::marker::PhantomData,
         }
     }
 
     /// Resolves the deterministic subdirectory path containing the verified toolchain files.
     pub fn toolchain_dir(&self, root: &std::path::Path) -> std::path::PathBuf {
-        let expected_hex = encode_hex(&self.sha256);
+        let expected_hex = encode_hex(self.sha256);
         root.join(&expected_hex[..6])
     }
 }
 
 /// An abstract extraction factory instantiating operational output streams targeting designated
 /// filesystem paths.
-///
-/// Consuming software can utilize this trait interface to decouple core processing workflows
-/// from concrete decompressor tools, facilitating modular injection of specialized archiving logic
-/// or isolated testing frameworks.
 pub trait Extractor {
+    /// Instantiates a new instance of this extractor type.
+    ///
+    /// Instantiated and used for extracting archives downloaded from [`Config::url`] when
+    /// no local override is specified during invocation.
+    fn new() -> Self;
     /// Unpacks stream bytes directly into the specified target directory synchronously on the calling thread.
     fn extract(&self, src: &mut dyn std::io::Read, dst: &std::path::Path) -> std::io::Result<()>;
 }
@@ -58,6 +65,9 @@ pub trait Extractor {
 pub struct TarZstLibraryExtractor;
 
 impl Extractor for TarZstLibraryExtractor {
+    fn new() -> Self {
+        Self
+    }
     fn extract(&self, src: &mut dyn std::io::Read, dst: &std::path::Path) -> std::io::Result<()> {
         let decoder = zstd::Decoder::new(src)?;
         let mut archive = tar::Archive::new(decoder);
@@ -65,50 +75,50 @@ impl Extractor for TarZstLibraryExtractor {
     }
 }
 
-fn encode_hex(bytes: &[u8; 32]) -> String {
+fn encode_hex(bytes: &[u8]) -> String {
     use std::fmt::Write;
-    let mut s = String::with_capacity(64);
+    let mut s = String::with_capacity(bytes.len() * 2);
     for &b in bytes {
         write!(&mut s, "{:02x}", b).unwrap();
     }
     s
 }
 
-struct HashReader<R> {
+struct HashReader<R, D> {
     inner: R,
-    hasher: sha2::Sha256,
+    hasher: D,
 }
 
-impl<R: std::io::Read> HashReader<R> {
+impl<R: std::io::Read, D: digest::Digest> HashReader<R, D> {
     fn new(inner: R) -> Self {
-        use sha2::Digest;
-        Self { inner, hasher: sha2::Sha256::new() }
+        Self {
+            inner,
+            hasher: D::new(),
+        }
     }
 
-    fn finalize(self) -> [u8; 32] {
-        use sha2::Digest;
-        self.hasher.finalize().into()
+    fn finalize(self) -> Vec<u8> {
+        self.hasher.finalize().to_vec()
     }
 }
 
-impl<R: std::io::Read> std::io::Read for HashReader<R> {
+impl<R: std::io::Read, D: digest::Digest> std::io::Read for HashReader<R, D> {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-        use sha2::Digest;
         let n = self.inner.read(buf)?;
         self.hasher.update(&buf[..n]);
         Ok(n)
     }
 }
 
-fn setup_from_archive(
+fn setup_from_archive<E: Extractor, D: digest::Digest>(
     src: impl std::io::Read,
     dst: &std::path::Path,
-    extractor: &dyn Extractor,
-) -> Result<[u8; 32], std::io::Error> {
+    extractor: &E,
+) -> Result<Vec<u8>, std::io::Error> {
     let parent = dst.parent().expect("toolchains directory has parent");
     let temp_dir = tempfile::Builder::new().prefix("setup-").tempdir_in(parent)?;
 
-    let mut hash_reader = HashReader::new(src);
+    let mut hash_reader = HashReader::<_, D>::new(src);
     extractor.extract(&mut hash_reader, temp_dir.path())?;
 
     // Handle atomic overwrite if dst already occupies the target path
@@ -196,14 +206,14 @@ fn setup_from_directory(src: &std::path::Path, dst: &std::path::Path) -> Result<
     Ok(())
 }
 
-fn setup_inner(
-    config: &Config<'_>,
+fn setup_inner<E: Extractor, D: digest::Digest>(
+    config: &Config<'_, E, D>,
     local_override: Option<LocalOverride>,
     toolchain_dir: std::path::PathBuf,
     fetcher: impl FnOnce(&str) -> Result<Box<dyn std::io::Read>, String>,
 ) -> Result<(), String> {
     let target_dir = config.toolchain_dir(&toolchain_dir);
-    let expected_hex = encode_hex(&config.sha256);
+    let expected_hex = encode_hex(config.sha256);
 
     if let Some(override_src) = local_override {
         match override_src {
@@ -211,10 +221,10 @@ fn setup_inner(
                 log::warn!(
                     "Toolchain contents from local archive may not match expected toolchain hash/version number."
                 );
-                let extractor = TarZstLibraryExtractor;
+                let extractor = E::new();
                 let file = std::fs::File::open(path)
                     .map_err(|e| format!("Failed to open local archive: {e}"))?;
-                setup_from_archive(file, &target_dir, &extractor)
+                setup_from_archive::<E, D>(file, &target_dir, &extractor)
                     .map_err(|e| format!("Failed to extract archive: {e}"))?;
             }
             LocalOverride::Dir(path) => {
@@ -225,13 +235,13 @@ fn setup_inner(
             }
         }
     } else {
-        let extractor = TarZstLibraryExtractor;
+        let extractor = E::new();
         let response = fetcher(config.url)?;
 
-        let actual_hash: [u8; 32] = setup_from_archive(response, &target_dir, &extractor)
+        let actual_hash = setup_from_archive::<E, D>(response, &target_dir, &extractor)
             .map_err(|e| format!("Failed to extract downloaded archive: {e}"))?;
 
-        if actual_hash != config.sha256 {
+        if actual_hash.as_slice() != config.sha256 {
             let _ = std::fs::remove_dir_all(&target_dir);
             return Err(format!(
                 "Checksum mismatch for downloaded archive. Expected {}, got {}",
@@ -248,8 +258,11 @@ fn setup_inner(
 ///
 /// This function processes the incoming dependency source and installs it into a toolchain
 /// directory named according to the source SHA256 hash.
-pub fn setup(
-    config: &Config<'_>,
+///
+/// When no local override is specified, the configured [`Extractor`] type `E` is instantiated
+/// via [`Extractor::new`] and used to extract the downloaded toolchain archive stream.
+pub fn setup<E: Extractor, D: digest::Digest>(
+    config: &Config<'_, E, D>,
     local_override: Option<LocalOverride>,
     toolchain_dir: std::path::PathBuf,
 ) -> Result<(), String> {
@@ -276,12 +289,12 @@ mod tests {
         encoder.finish().unwrap();
     }
 
-    fn compute_sha256(path: &std::path::Path) -> [u8; 32] {
+    fn compute_sha256(path: &std::path::Path) -> Vec<u8> {
         use sha2::Digest;
         let mut file = std::fs::File::open(path).unwrap();
         let mut hasher = sha2::Sha256::new();
         std::io::copy(&mut file, &mut hasher).unwrap();
-        hasher.finalize().into()
+        hasher.finalize().to_vec()
     }
 
     #[test]
@@ -297,7 +310,6 @@ mod tests {
         assert!(dst.join("file.txt").exists());
         assert_eq!(std::fs::read_to_string(dst.join("file.txt")).unwrap(), "hello");
 
-        // Test atomic replacement by running it again with updated contents
         let src2 = temp.path().join("src2");
         std::fs::create_dir(&src2).unwrap();
         std::fs::write(src2.join("file.txt"), "world").unwrap();
@@ -318,7 +330,7 @@ mod tests {
 
         let dst = temp.path().join("dst");
         let file = std::fs::File::open(&archive_path).unwrap();
-        let hash = setup_from_archive(file, &dst, &TarZstLibraryExtractor).unwrap();
+        let hash = setup_from_archive::<TarZstLibraryExtractor, sha2::Sha256>(file, &dst, &TarZstLibraryExtractor).unwrap();
 
         assert_eq!(hash, compute_sha256(&archive_path));
         assert_eq!(std::fs::read_to_string(dst.join("data.txt")).unwrap(), "archive_content");
@@ -332,7 +344,7 @@ mod tests {
         std::fs::write(src.join("test.txt"), "local_dir").unwrap();
 
         let expected_hash = [1u8; 32];
-        let config = Config::new("http://example.com", expected_hash);
+        let config = Config::<TarZstLibraryExtractor, sha2::Sha256>::new("http://example.com", &expected_hash);
         let target_dir = config.toolchain_dir(temp.path());
 
         setup_inner(
@@ -357,7 +369,7 @@ mod tests {
         create_test_archive(&src, &archive_path);
 
         let expected_hash = [2u8; 32];
-        let config = Config::new("http://example.com", expected_hash);
+        let config = Config::<TarZstLibraryExtractor, sha2::Sha256>::new("http://example.com", &expected_hash);
         let target_dir = config.toolchain_dir(temp.path());
 
         setup_inner(
@@ -382,7 +394,7 @@ mod tests {
         create_test_archive(&src, &archive_path);
 
         let actual_hash = compute_sha256(&archive_path);
-        let config = Config::new("http://example.com", actual_hash);
+        let config = Config::<TarZstLibraryExtractor, sha2::Sha256>::new("http://example.com", &actual_hash);
         let target_dir = config.toolchain_dir(temp.path());
 
         let archive_path_clone = archive_path.clone();
@@ -414,7 +426,7 @@ mod tests {
         let mut expected_hash = actual_hash;
         expected_hash[0] ^= 1; // invalidate checksum
 
-        let config = Config::new("http://example.com", expected_hash);
+        let config = Config::<TarZstLibraryExtractor, sha2::Sha256>::new("http://example.com", &expected_hash);
         let target_dir = config.toolchain_dir(temp.path());
 
         let archive_path_clone = archive_path.clone();
