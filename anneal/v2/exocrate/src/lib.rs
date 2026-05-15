@@ -277,7 +277,11 @@ macro_rules! parse_remote_archive {
 // TODO: Better name that connotes that we're hashing everything?
 #[macro_export]
 macro_rules! config {
-    ($vis:vis const $name:ident: Config = Config { rel_dir_path: $rel_dir_path:expr };) => {
+    ($vis:vis const $name:ident: Config = Config {
+        manifest_path: $manifest_path:literal,
+        lockfile_path: $lockfile_path:literal,
+        rel_dir_path: $rel_dir_path:expr $(,)?
+    };) => {
         $vis const $name: $crate::Config = {
             $crate::Config {
                 rel_dir_path: &$rel_dir_path,
@@ -287,8 +291,8 @@ macro_rules! config {
                         // function that is cheaper to evaluate at const time.
                         #[allow(long_running_const_eval)]
                         let hash = $crate::macro_util::Sha256::new()
-                            .update(include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/Cargo.toml")))
-                            .update(include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/Cargo.lock")))
+                            .update(include_bytes!($manifest_path))
+                            .update(include_bytes!($lockfile_path))
                             .update(std::env::consts::OS.as_bytes())
                             .update(std::env::consts::ARCH.as_bytes())
                             .finalize();
@@ -629,7 +633,11 @@ mod tests {
     #[test]
     fn test_config_macro() {
         config! {
-            const CONFIG: Config = Config { rel_dir_path: ["test", "project"] };
+            const CONFIG: Config = Config {
+                manifest_path: "../Cargo.toml",
+                lockfile_path: "../../Cargo.lock",
+                rel_dir_path: ["test", "project"],
+            };
         }
 
         assert_eq!(CONFIG.rel_dir_path, &["test", "project"]);

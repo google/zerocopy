@@ -8,7 +8,11 @@
 // those terms.
 
 exocrate::config! {
-    const CONFIG: Config = Config { rel_dir_path: [".anneal", "toolchain"] };
+    const CONFIG: Config = Config {
+        manifest_path: "../Cargo.toml",
+        lockfile_path: "../Cargo.lock",
+        rel_dir_path: [".anneal", "toolchain"],
+    };
 }
 
 exocrate::parse_remote_archive! {
