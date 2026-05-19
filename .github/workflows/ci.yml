@@ -40,10 +40,7 @@ env:
 
 jobs:
   build_test:
-    # Default to `ubuntu-latest`, but when running Miri tests, use the beefier
-    # `ubuntu-24.04-64core`. Miri tests are very expensive and parallelizable.
-    # Note that Miri tests are only run in the merge queue.
-    runs-on: ${{ (matrix.crate == 'zerocopy' && matrix.toolchain == 'nightly' && github.event_name != 'pull_request') && 'ubuntu-24.04-64core' || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     # We pre-compute a Docker image containing most dependencies. Each job in
     # the matrix runs in parallel, so without this pre-computation, most jobs
     # would duplicate the work of downloading crates from the internet.
