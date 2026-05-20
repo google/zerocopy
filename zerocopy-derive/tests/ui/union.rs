@@ -42,8 +42,7 @@ union IntoBytes1<T> {
 }
 
 #[derive(IntoBytes)]
-//~[msrv]^ ERROR: the trait bound `(): PaddingFree<IntoBytes2, 1_usize>` is not satisfied
-//~[stable, nightly]^^ ERROR: `IntoBytes2` has 1 total byte(s) of padding
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes2` has 1 total byte(s) of padding
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union IntoBytes2 {
@@ -95,7 +94,7 @@ union Unaligned1 {
 #[repr(packed, align(2))]
 //~[msrv, stable, nightly]^ ERROR: this conflicts with another representation hint
 union Unaligned3 {
-    //~[stable, nightly]^ ERROR: type has conflicting packed and align representation hints
+    //~[msrv, stable, nightly]^ ERROR: type has conflicting packed and align representation hints
     foo: u8,
 }
 
@@ -128,7 +127,7 @@ union Unaligned6 {
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed(2))]
 union Unaligned7 {
-    //~[stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
+    //~[msrv, stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
     foo: i16,
     bar: AU16,
 }

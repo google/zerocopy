@@ -89,21 +89,36 @@ documented guarantees do not hold.
 
 ## MSRV
 
+TL;DR:
+- 0.8 is our long-term stability (LTS) release train. On 0.8, we consider MSRV bumps to be breaking changes.
+- On 0.9, we do *not* consider MSRV bumps to be breaking changes.
+
+### 0.8
+
 <!-- Our policy used to be simply that MSRV was a breaking change in all
 circumstances. This implicitly relied on syn having the same MSRV policy, which
 it does not. See #1085 and #1088. -->
 
+*This section only applies to the 0.8 version train.*
+
 Without the `derive` feature enabled, zerocopy's minimum supported Rust version
 (MSRV) is encoded the `package.rust-version` field in its `Cargo.toml` file. For
-zerocopy, we consider an increase in MSRV to be a semver-breaking change, and
-will only increase our MSRV during semver-breaking version changes (e.g., 0.1 ->
-0.2, 1.0 -> 2.0, etc).
+zerocopy, we consider an increase in MSRV to be a semver-breaking change. We
+will not bump our MSRV on the 0.8 version train.
 
 For zerocopy with the `derive` feature enabled, and for the zerocopy-derive
 crate, we inherit the maximum MSRV any of our dependencies. As of this writing
 (2024-10-03), at least one dependency (syn) does *not* consider MSRV increases
 to be semver-breaking changes. Thus, using the `derive` feature may result in
-the effective MSRV increasing within a semver version train.
+the effective MSRV increasing within 0.8.
+
+### 0.9
+
+*This section only applies to the 0.9 version train.*
+
+0.9 has no official MSRV policy. We do not consider MSRV bumps to be breaking
+changes. We may adopt *some* MSRV policy in the future, but we make no
+guarantees about what it will be.
 
 ## Yanking
 

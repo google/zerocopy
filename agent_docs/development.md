@@ -33,7 +33,7 @@ This is equivalent to:
 `cargo +1.2.3 <command> [args]`
 
 ...where `1.2.3` is the toolchain version named by `<toolchain>` (e.g., `msrv` ->
-`1.56.0`).
+`1.78.0`).
 
 ### Toolchains
 
@@ -47,12 +47,12 @@ The `<toolchain>` argument is mandatory:
 
 ## MSRV (Minimum Supported Rust Version)
 
-The MSRV is **1.56.0**.
+The MSRV is **1.78.0**.
 
-- **Do NOT** use features stabilized after 1.56.0 unless version-gated.
+- **Do NOT** use features stabilized after 1.78.0 unless version-gated.
 - **Requirement:** Ask for user approval before introducing new version-gated
   behavior.
-- **Verify**: Ensure code compiles on 1.56.0 (`./cargo.sh +msrv ...`).
+- **Verify**: Ensure code compiles on 1.78.0 (`./cargo.sh +msrv ...`).
 
 ### Version Gating Convention
 

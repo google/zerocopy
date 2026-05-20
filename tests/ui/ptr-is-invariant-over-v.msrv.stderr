@@ -1,21 +1,34 @@
-error[E0623]: lifetime mismatch
-  --> $DIR/ptr-is-invariant-over-v.rs:21:14
+error: lifetime may not live long enough
+  --> $DIR/ptr-is-invariant-over-v.rs:21:5
    |
-18 |     big: Ptr<'small, &'big u32, (Exclusive, Aligned, Valid)>,
-   |          --------------------------------------------------- these two types are declared with different lifetimes...
+17 | fn _when_exclusive<'big: 'small, 'small>(
+   |                    ----          ------ lifetime `'small` defined here
+   |                    |
+   |                    lifetime `'big` defined here
 ...
 21 |     _small = big;
-   |              ^^^ ...but data from `big` flows into `big` here
-
-error[E0623]: lifetime mismatch
-  --> $DIR/ptr-is-invariant-over-v.rs:30:14
+   |     ^^^^^^^^^^^^ assignment requires that `'small` must outlive `'big`
    |
-27 |     big: Ptr<'small, &'big u32, (Shared, Aligned, Valid)>,
-   |          ------------------------------------------------ these two types are declared with different lifetimes...
+   = help: consider adding the following bound: `'small: 'big`
+   = note: requirement occurs because of the type `Ptr<'_, &u32, (zerocopy::invariant::Exclusive, Aligned, zerocopy::invariant::Valid)>`, which makes the generic argument `&u32` invariant
+   = note: the struct `Ptr<'a, T, I>` is invariant over the parameter `T`
+   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+
+error: lifetime may not live long enough
+  --> $DIR/ptr-is-invariant-over-v.rs:29:5
+   |
+25 | fn _when_shared<'big: 'small, 'small>(
+   |                 ----          ------ lifetime `'small` defined here
+   |                 |
+   |                 lifetime `'big` defined here
 ...
-30 |     _small = big;
-   |              ^^^ ...but data from `big` flows into `big` here
+29 |     _small = big;
+   |     ^^^^^^^^^^^^ assignment requires that `'small` must outlive `'big`
+   |
+   = help: consider adding the following bound: `'small: 'big`
+   = note: requirement occurs because of the type `Ptr<'_, &u32, (Shared, Aligned, zerocopy::invariant::Valid)>`, which makes the generic argument `&u32` invariant
+   = note: the struct `Ptr<'a, T, I>` is invariant over the parameter `T`
+   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0623`.

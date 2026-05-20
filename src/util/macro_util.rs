@@ -48,15 +48,12 @@ pub unsafe trait Field<Index> {
     type Type: ?Sized;
 }
 
-#[cfg_attr(
-    not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
-    diagnostic::on_unimplemented(
-        message = "`{T}` has {PADDING_BYTES} total byte(s) of padding",
-        label = "types with padding cannot implement `IntoBytes`",
-        note = "consider using `zerocopy::Unalign` to lower the alignment of individual fields",
-        note = "consider adding explicit fields where padding would be",
-        note = "consider using `#[repr(packed)]` to remove padding"
-    )
+#[diagnostic::on_unimplemented(
+    message = "`{T}` has {PADDING_BYTES} total byte(s) of padding",
+    label = "types with padding cannot implement `IntoBytes`",
+    note = "consider using `zerocopy::Unalign` to lower the alignment of individual fields",
+    note = "consider adding explicit fields where padding would be",
+    note = "consider using `#[repr(packed)]` to remove padding"
 )]
 pub trait PaddingFree<T: ?Sized, const PADDING_BYTES: usize> {}
 impl<T: ?Sized> PaddingFree<T, 0> for () {}
@@ -66,15 +63,12 @@ impl<T: ?Sized> PaddingFree<T, 0> for () {}
 // to `StaticPaddingFree` or something - or introduce a third trait with that
 // name) so that we can have more clear error messages.
 
-#[cfg_attr(
-    not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
-    diagnostic::on_unimplemented(
-        message = "`{T}` has one or more padding bytes",
-        label = "types with padding cannot implement `IntoBytes`",
-        note = "consider using `zerocopy::Unalign` to lower the alignment of individual fields",
-        note = "consider adding explicit fields where padding would be",
-        note = "consider using `#[repr(packed)]` to remove padding"
-    )
+#[diagnostic::on_unimplemented(
+    message = "`{T}` has one or more padding bytes",
+    label = "types with padding cannot implement `IntoBytes`",
+    note = "consider using `zerocopy::Unalign` to lower the alignment of individual fields",
+    note = "consider adding explicit fields where padding would be",
+    note = "consider using `#[repr(packed)]` to remove padding"
 )]
 pub trait DynamicPaddingFree<T: ?Sized, const HAS_PADDING: bool> {}
 impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
@@ -289,7 +283,6 @@ pub type SizeToTag<const SIZE: usize> = <() as size_to_tag::SizeToTag<SIZE>>::Ta
 
 // We put `Sized` in its own module so it can have the same name as the standard
 // library `Sized` without shadowing it in the parent module.
-#[cfg(not(no_zerocopy_diagnostic_on_unimplemented_1_78_0))]
 mod __size_of {
     #[diagnostic::on_unimplemented(
         message = "`{Self}` is unsized",
@@ -308,10 +301,6 @@ mod __size_of {
     }
 }
 
-#[cfg(no_zerocopy_diagnostic_on_unimplemented_1_78_0)]
-pub use core::mem::size_of;
-
-#[cfg(not(no_zerocopy_diagnostic_on_unimplemented_1_78_0))]
 pub use __size_of::size_of;
 
 /// How many padding bytes does the struct type `$t` have?
@@ -965,6 +954,7 @@ mod tests {
             macro_rules! test {
                 (#[$cfg:meta] ($($ts:ty),* ; $trailing_field_ty:ty) => $expect:expr) => {{
                     #[$cfg]
+                    #[allow(clippy::repr_packed_without_abi)]
                     struct Test($(#[allow(dead_code)] $ts,)* #[allow(dead_code)] $trailing_field_ty);
                     assert_eq!(test!(@offset $($ts),* ; $trailing_field_ty), $expect);
                 }};
@@ -1144,7 +1134,7 @@ mod tests {
         macro_rules! test {
             (#[$cfg:meta] ($($ts:ty),*) => $expect:expr) => {{
                 #[$cfg]
-                #[allow(dead_code)]
+                #[allow(dead_code, clippy::repr_packed_without_abi)]
                 struct Test($($ts),*);
                 assert_eq!(struct_padding!(Test, None::<NonZeroUsize>, None::<NonZeroUsize>, [$($ts),*]), $expect);
             }};
@@ -1211,7 +1201,7 @@ mod tests {
         macro_rules! test {
             (#[$cfg:meta] {$($fs:ident: $ts:ty),*} => $expect:expr) => {{
                 #[$cfg]
-                #[allow(unused)] // fields are never read
+                #[allow(unused, clippy::repr_packed_without_abi)] // fields are never read
                 union Test{ $($fs: $ts),* }
                 assert_eq!(union_padding!(Test, None::<NonZeroUsize>, None::<usize>, [$($ts),*]), $expect);
             }};

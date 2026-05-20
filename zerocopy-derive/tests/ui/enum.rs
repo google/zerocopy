@@ -173,7 +173,6 @@ enum FromZeros6 {
 #[repr(u8)]
 enum FromZeros7 {
     A = 1,
-    //~[msrv]^ ERROR: custom discriminant values are not allowed in enums with tuple or struct variants
     B(NotFromZeros),
 }
 
@@ -246,7 +245,7 @@ enum FromBytes8 {
 
 #[derive(FromBytes)]
 //~[msrv, stable, nightly]^ ERROR: the trait bound `bool: FromBytes` is not satisfied
-//~[stable, nightly]^^ ERROR: the trait bound `bool: FromBytes` is not satisfied
+//~[msrv, stable, nightly]^^ ERROR: the trait bound `bool: FromBytes` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum FooU8 {
@@ -621,8 +620,7 @@ enum Unaligned13 {
 //
 
 #[derive(IntoBytes)]
-//~[msrv]^ ERROR: the trait bound `(): PaddingFree<IntoBytes1, 1_usize>` is not satisfied
-//~[stable, nightly]^^ ERROR: `IntoBytes1` has 1 total byte(s) of padding
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes1` has 1 total byte(s) of padding
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum IntoBytes1 {
@@ -636,8 +634,7 @@ enum IntoBytes1 {
 struct Align4IntoBytes(u32);
 
 #[derive(IntoBytes)]
-//~[msrv]^ ERROR: the trait bound `(): PaddingFree<IntoBytes2, 3_usize>` is not satisfied
-//~[stable, nightly]^^ ERROR: `IntoBytes2` has 3 total byte(s) of padding
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes2` has 3 total byte(s) of padding
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum IntoBytes2 {
@@ -645,8 +642,7 @@ enum IntoBytes2 {
 }
 
 #[derive(IntoBytes)]
-//~[msrv]^ ERROR: the trait bound `(): PaddingFree<IntoBytes3, 2_usize>` is not satisfied
-//~[stable, nightly]^^ ERROR: `IntoBytes3` has 2 total byte(s) of padding
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes3` has 2 total byte(s) of padding
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u32)]
 enum IntoBytes3 {
@@ -679,8 +675,7 @@ enum IntoBytes6<T> {
 }
 
 #[derive(IntoBytes)]
-//~[msrv]^ ERROR: the trait bound `(): PaddingFree<IntoBytes7, 1_usize>` is not satisfied
-//~[stable, nightly]^^ ERROR: `IntoBytes7` has 1 total byte(s) of padding
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes7` has 1 total byte(s) of padding
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8, align(2))]
 enum IntoBytes7 {

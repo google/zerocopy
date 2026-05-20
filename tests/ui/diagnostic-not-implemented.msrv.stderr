@@ -4,6 +4,17 @@ error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
 16 |     takes_from_bytes::<NotZerocopy>();
    |                        ^^^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `FromBytes`:
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+             usize
+             u8
+           and 79 others
 note: required by a bound in `takes_from_bytes`
   --> $DIR/diagnostic-not-implemented.rs:77:24
    |
@@ -16,6 +27,17 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
 18 |     takes_from_zeros::<NotZerocopy>();
    |                        ^^^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
+   = help: the following other types implement trait `FromZeros`:
+             bool
+             char
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+           and 141 others
 note: required by a bound in `takes_from_zeros`
   --> $DIR/diagnostic-not-implemented.rs:78:24
    |
@@ -28,6 +50,17 @@ error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
 20 |     takes_immutable::<NotZerocopy>();
    |                       ^^^^^^^^^^^ the trait `Immutable` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(Immutable)]` to `NotZerocopy`
+   = help: the following other types implement trait `Immutable`:
+             bool
+             char
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+           and 128 others
 note: required by a bound in `takes_immutable`
   --> $DIR/diagnostic-not-implemented.rs:79:23
    |
@@ -40,6 +73,17 @@ error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
 22 |     takes_into_bytes::<NotZerocopy>();
    |                        ^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `IntoBytes`:
+             bool
+             char
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+           and 68 others
 note: required by a bound in `takes_into_bytes`
   --> $DIR/diagnostic-not-implemented.rs:80:24
    |
@@ -52,6 +96,17 @@ error[E0277]: the trait bound `NotZerocopy: KnownLayout` is not satisfied
 24 |     takes_known_layout::<NotZerocopy>();
    |                          ^^^^^^^^^^^ the trait `KnownLayout` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(KnownLayout)]` to `NotZerocopy`
+   = help: the following other types implement trait `KnownLayout`:
+             bool
+             char
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+           and 66 others
 note: required by a bound in `takes_known_layout`
   --> $DIR/diagnostic-not-implemented.rs:81:26
    |
@@ -64,6 +119,17 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
 26 |     takes_try_from_bytes::<NotZerocopy>();
    |                            ^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `TryFromBytes`:
+             bool
+             char
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+           and 153 others
 note: required by a bound in `takes_try_from_bytes`
   --> $DIR/diagnostic-not-implemented.rs:82:28
    |
@@ -76,6 +142,17 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::Unaligned` is not satisfie
 28 |     takes_unaligned::<NotZerocopy>();
    |                       ^^^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(Unaligned)]` to `NotZerocopy`
+   = help: the following other types implement trait `zerocopy::Unaligned`:
+             bool
+             i8
+             u8
+             NonZero<i8>
+             NonZero<u8>
+             ReadOnly<T>
+             U16<O>
+             U32<O>
+           and 26 others
 note: required by a bound in `takes_unaligned`
   --> $DIR/diagnostic-not-implemented.rs:83:23
    |
@@ -86,13 +163,46 @@ error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
   --> $DIR/diagnostic-not-implemented.rs:66:19
    |
 66 |     Foo.write_obj(NotZerocopy(()));
-   |                   ^^^^^^^^^^^^^^^ the trait `Immutable` is not implemented for `NotZerocopy`
+   |         --------- ^^^^^^^^^^^^^^^ the trait `Immutable` is not implemented for `NotZerocopy`
+   |         |
+   |         required by a bound introduced by this call
+   |
+note: required by a bound in `Foo::write_obj`
+  --> $DIR/diagnostic-not-implemented.rs:73:25
+   |
+73 |         fn write_obj<T: Immutable + IntoBytes>(&mut self, _val: T) {}
+   |                         ^^^^^^^^^ required by this bound in `Foo::write_obj`
+help: consider borrowing here
+   |
+66 |     Foo.write_obj(&NotZerocopy(()));
+   |                   +
+66 |     Foo.write_obj(&mut NotZerocopy(()));
+   |                   ++++
 
 error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
   --> $DIR/diagnostic-not-implemented.rs:66:19
    |
 66 |     Foo.write_obj(NotZerocopy(()));
-   |                   ^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `NotZerocopy`
+   |         --------- ^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `NotZerocopy`
+   |         |
+   |         required by a bound introduced by this call
+   |
+   = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `IntoBytes`:
+             bool
+             char
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+           and 68 others
+note: required by a bound in `Foo::write_obj`
+  --> $DIR/diagnostic-not-implemented.rs:73:37
+   |
+73 |         fn write_obj<T: Immutable + IntoBytes>(&mut self, _val: T) {}
+   |                                     ^^^^^^^^^ required by this bound in `Foo::write_obj`
 
 error: aborting due to 9 previous errors
 

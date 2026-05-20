@@ -53,8 +53,7 @@ struct KL12<T: ?Sized>(u8, T);
 
 fn test_kl12<T: ?Sized>(kl: &KL12<T>) {
     assert_kl(kl)
-    //~[msrv]^ ERROR: the trait bound `T: KnownLayout` is not satisfied
-    //~[stable, nightly]^^ ERROR: the trait bound `KL12<T>: KnownLayout` is not satisfied
+    //~[msrv, stable, nightly]^ ERROR: the trait bound `KL12<T>: KnownLayout` is not satisfied
 }
 
 // -| `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |

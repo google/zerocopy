@@ -82,7 +82,7 @@ struct Immutable2 {
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed)]
 struct TryFromBytesPacked {
-    //~[stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
+    //~[msrv, stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
     foo: AU16,
 }
 
@@ -90,7 +90,7 @@ struct TryFromBytesPacked {
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed(1))]
 struct TryFromBytesPackedN {
-    //~[stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
+    //~[msrv, stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
     foo: AU16,
 }
 
@@ -98,7 +98,7 @@ struct TryFromBytesPackedN {
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, packed)]
 struct TryFromBytesCPacked {
-    //~[stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
+    //~[msrv, stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
     foo: AU16,
 }
 
@@ -106,7 +106,7 @@ struct TryFromBytesCPacked {
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, packed(1))]
 struct TryFromBytesCPackedN {
-    //~[stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
+    //~[msrv, stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
     foo: AU16,
 }
 
@@ -127,8 +127,7 @@ struct IntoBytes1<T> {
 }
 
 #[derive(IntoBytes)]
-//~[stable, nightly]^ ERROR: `IntoBytes2` has 1 total byte(s) of padding
-//~[msrv]^^ ERROR: the trait bound `(): PaddingFree<IntoBytes2, 1_usize>` is not satisfied
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes2` has 1 total byte(s) of padding
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct IntoBytes2 {
@@ -137,8 +136,7 @@ struct IntoBytes2 {
 }
 
 #[derive(IntoBytes)]
-//~[stable, nightly]^ ERROR: `IntoBytes3` has 1 total byte(s) of padding
-//~[msrv]^^ ERROR: the trait bound `(): PaddingFree<IntoBytes3, 1_usize>` is not satisfied
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes3` has 1 total byte(s) of padding
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, packed(2))]
 struct IntoBytes3 {
@@ -163,15 +161,13 @@ type SliceU8 = [u8];
 struct IntoBytes4 {
     a: u8,
     b: SliceU8,
-    //~[stable, nightly]^ ERROR: `[u8]` is unsized
-    //~[msrv]^^ ERROR: the size for values of type `[u8]` cannot be known at compilation time
+    //~[msrv, stable, nightly]^ ERROR: `[u8]` is unsized
 }
 
 // Padding between `u8` and `[u16]`. `[u16]` is syntactically identifiable as a
 // slice, so this case is handled by our `repr(C)` slice DST support.
 #[derive(IntoBytes)]
-//~[msrv]^ ERROR: the trait bound `(): DynamicPaddingFree<IntoBytes5, true>` is not satisfied
-//~[stable, nightly]^^ ERROR: `IntoBytes5` has one or more padding bytes
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes5` has one or more padding bytes
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct IntoBytes5 {
@@ -182,8 +178,7 @@ struct IntoBytes5 {
 // Trailing padding after `[u8]`. `[u8]` is syntactically identifiable as a
 // slice, so this case is handled by our `repr(C)` slice DST support.
 #[derive(IntoBytes)]
-//~[msrv]^ ERROR: the trait bound `(): DynamicPaddingFree<IntoBytes6, true>` is not satisfied
-//~[stable, nightly]^^ ERROR: `IntoBytes6` has one or more padding bytes
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes6` has one or more padding bytes
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct IntoBytes6 {
@@ -195,8 +190,7 @@ struct IntoBytes6 {
 // is syntactically identifiable as a slice, so this case is handled by our
 // `repr(C)` slice DST support.
 #[derive(IntoBytes)]
-//~[msrv]^ ERROR: the trait bound `(): DynamicPaddingFree<IntoBytes7, true>` is not satisfied
-//~[stable, nightly]^^ ERROR: `IntoBytes7` has one or more padding bytes
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes7` has one or more padding bytes
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct IntoBytes7 {
@@ -242,7 +236,7 @@ struct IntoBytes11<T> {
 fn is_into_bytes_11<T: IntoBytes>() {
     if false {
         is_into_bytes_11::<IntoBytes11<AU16>>();
-        //~[stable, nightly]^ ERROR: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
+        //~[msrv, stable, nightly]^ ERROR: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
     }
 }
 
@@ -258,8 +252,7 @@ struct IntoBytes12<T> {
 // NOTE(#3063): This exists to ensure that our analysis for structs with
 // syntactic DSTs accounts for `align(N)`.
 #[derive(IntoBytes)]
-//~[msrv]^ ERROR: the trait bound `(): DynamicPaddingFree<IntoBytes13, true>` is not satisfied
-//~[stable, nightly]^^ ERROR: `IntoBytes13` has one or more padding bytes
+//~[msrv, stable, nightly]^ ERROR: `IntoBytes13` has one or more padding bytes
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, align(2))]
 struct IntoBytes13([u8]);
@@ -288,7 +281,7 @@ struct Unaligned2 {
 #[repr(packed, align(2))]
 //~[msrv, stable, nightly]^ ERROR: this conflicts with another representation hint
 struct Unaligned3;
-//~[stable, nightly]^ ERROR: type has conflicting packed and align representation hints
+//~[msrv, stable, nightly]^ ERROR: type has conflicting packed and align representation hints
 
 #[derive(Unaligned)]
 #[zerocopy(crate = "zerocopy_renamed")]
@@ -332,8 +325,7 @@ struct WeirdReprSpan;
 struct SplitAtNotKnownLayout([u8]);
 
 #[derive(SplitAt, KnownLayout)]
-//~[msrv]^ ERROR: type mismatch resolving `<u8 as zerocopy_renamed::KnownLayout>::PointerMetadata == usize`
-//~[msrv, stable, nightly]^^ ERROR: the trait bound `u8: SplitAt` is not satisfied
+//~[msrv, stable, nightly]^ ERROR: the trait bound `u8: SplitAt` is not satisfied
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct SplitAtSized(u8);
