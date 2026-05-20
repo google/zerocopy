@@ -514,44 +514,57 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
                     // allocation.
                     unsafe { #core::ptr::addr_of_mut!((*slf).#ident) }
                 }
-            }).outer_extras(if matches!(&ctx.ast.data, Data::Struct(..)) {
-            let fields_preserve_alignment = StructUnionRepr::from_attrs(&ctx.ast.attrs)
-                .map(|repr| repr.get_packed().is_none())
-                .unwrap();
-            let alignment = if fields_preserve_alignment {
-                quote! { Alignment }
-            } else {
-                quote! { #zerocopy_crate::invariant::Unaligned }
-            };
-            // SAFETY: See comments on items.
-            ImplBlockBuilder::new(
-                ctx,
-                data,
-                Trait::ProjectField {
-                    variant_id: variant_id.clone(),
-                    field: field.clone(),
-                    field_id: field_id.clone(),
-                    invariants: parse_quote!((Aliasing, Alignment, #zerocopy_crate::invariant::Initialized)),
-                },
-                FieldBounds::None,
-            )
-            .param_extras(vec![
-                parse_quote!(Aliasing: #zerocopy_crate::invariant::Aliasing),
-                parse_quote!(Alignment: #zerocopy_crate::invariant::Alignment),
-            ])
-            .inner_extras(quote! {
-                // SAFETY: Projection into structs is always infallible.
-                type Error = #zerocopy_crate::util::macro_util::core_reexport::convert::Infallible;
-                // SAFETY: The alignment of the projected `Ptr` is `Unaligned`
-                // if the structure is packed; otherwise inherited from the
-                // outer `Ptr`. If the validity of the outer pointer is
-                // `Initialized`, so too is the validity of its fields.
-                type Invariants = (Aliasing, #alignment, #zerocopy_crate::invariant::Initialized);
             })
-            .build()
-        } else {
-            quote! {}
-        })
+            .outer_extras(if matches!(&ctx.ast.data, Data::Struct(..)) {
+                let fields_preserve_alignment = StructUnionRepr::from_attrs(&ctx.ast.attrs)
+                    .map(|repr| repr.get_packed().is_none())
+                    .unwrap();
+                let alignment = if fields_preserve_alignment {
+                    quote! { Alignment }
+                } else {
+                    quote! { #zerocopy_crate::invariant::Unaligned }
+                };
+                // SAFETY: Must be invoked with `Initialized` or
+                // `AsInitialized`. See comments on items.
+                let impl_project_field =
+                    |validity| ImplBlockBuilder::new(
+                        ctx,
+                        data,
+                        Trait::ProjectField {
+                            variant_id: variant_id.clone(),
+                            field: field.clone(),
+                            field_id: field_id.clone(),
+                            invariants: parse_quote!((Aliasing, Alignment, #validity)),
+                        },
+                        FieldBounds::None,
+                    )
+                    .param_extras(vec![
+                        parse_quote!(Aliasing: #zerocopy_crate::invariant::Aliasing),
+                        parse_quote!(Alignment: #zerocopy_crate::invariant::Alignment),
+                    ])
+                    .inner_extras(quote! {
+                        // SAFETY: Projection into structs is always infallible.
+                        type Error = #zerocopy_crate::util::macro_util::core_reexport::convert::Infallible;
+                        // SAFETY: The alignment of the projected `Ptr` is
+                        // `Unaligned` if the structure is packed; otherwise
+                        // inherited from the outer `Ptr`. If the validity of the
+                        // outer pointer is `Initialized` or `AsInitialized`, so too
+                        // is the validity of its fields.
+                        type Invariants = (Aliasing, #alignment, #validity);
+                    })
+                    .build();
+                // SAFETY: Invoked with `Initialized`.
+                let project_initialized = impl_project_field(quote!(#zerocopy_crate::invariant::Initialized));
+                // SAFETY: Invoked with `AsInitialized`.
+                let project_as_initialized = impl_project_field(quote!(#zerocopy_crate::invariant::AsInitialized));
+                quote!{
+                    #project_initialized
+                    #project_as_initialized
+                }
+            } else {
+                quote! {}
+            }
+        )
         .build()
     });
 

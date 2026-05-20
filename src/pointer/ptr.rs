@@ -96,7 +96,7 @@ mod def {
         /// Note that this method does not consume `self`. The caller should
         /// watch out for `unsafe` code which uses the returned value in a way
         /// that violates the safety invariants of `self`.
-        pub(crate) fn as_inner(&self) -> PtrInner<'a, T> {
+        pub fn as_inner(&self) -> PtrInner<'a, T> {
             self.ptr
         }
     }

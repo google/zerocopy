@@ -149,6 +149,8 @@ pub(crate) trait DataExt {
     fn variants(&self) -> Vec<(Option<&Variant>, Vec<(&Visibility, TokenStream, &Type)>)>;
 
     fn tag(&self) -> Option<Ident>;
+
+    fn is_struct(&self) -> bool;
 }
 
 impl DataExt for Data {
@@ -175,6 +177,10 @@ impl DataExt for Data {
             Data::Union(un) => un.tag(),
         }
     }
+
+    fn is_struct(&self) -> bool {
+        matches!(self, Data::Struct(_))
+    }
 }
 
 impl DataExt for DataStruct {
@@ -188,6 +194,10 @@ impl DataExt for DataStruct {
 
     fn tag(&self) -> Option<Ident> {
         None
+    }
+
+    fn is_struct(&self) -> bool {
+        true
     }
 }
 
@@ -203,6 +213,10 @@ impl DataExt for DataEnum {
     fn tag(&self) -> Option<Ident> {
         Some(Ident::new("___ZerocopyTag", Span::call_site()))
     }
+
+    fn is_struct(&self) -> bool {
+        false
+    }
 }
 
 impl DataExt for DataUnion {
@@ -216,6 +230,10 @@ impl DataExt for DataUnion {
 
     fn tag(&self) -> Option<Ident> {
         None
+    }
+
+    fn is_struct(&self) -> bool {
+        false
     }
 }
 
@@ -309,6 +327,7 @@ pub(crate) enum Trait {
     TryFromBytes,
     FromZeros,
     FromBytes,
+    InitializeIntoBytes,
     IntoBytes,
     Unaligned,
     Sized,
@@ -337,6 +356,7 @@ impl ToTokens for Trait {
             Trait::TryFromBytes => "TryFromBytes",
             Trait::FromZeros => "FromZeros",
             Trait::FromBytes => "FromBytes",
+            Trait::InitializeIntoBytes => "InitializeIntoBytes",
             Trait::IntoBytes => "IntoBytes",
             Trait::Unaligned => "Unaligned",
             Trait::Sized => "Sized",
@@ -359,6 +379,7 @@ impl ToTokens for Trait {
             | Trait::FromZeros
             | Trait::FromBytes
             | Trait::IntoBytes
+            | Trait::InitializeIntoBytes
             | Trait::Unaligned
             | Trait::Sized
             | Trait::ByteHash

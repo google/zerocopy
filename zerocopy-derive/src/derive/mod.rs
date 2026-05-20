@@ -1,4 +1,5 @@
 pub mod from_bytes;
+pub mod initialize_into_bytes;
 pub mod into_bytes;
 pub mod known_layout;
 pub mod try_from_bytes;

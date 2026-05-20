@@ -121,6 +121,7 @@ derive!(Immutable => derive_immutable => crate::derive::derive_immutable);
 derive!(TryFromBytes => derive_try_from_bytes => crate::derive::try_from_bytes::derive_try_from_bytes);
 derive!(FromZeros => derive_from_zeros => crate::derive::from_bytes::derive_from_zeros);
 derive!(FromBytes => derive_from_bytes => crate::derive::from_bytes::derive_from_bytes);
+derive!(InitializeIntoBytes => derive_initialize_into_bytes => crate::derive::initialize_into_bytes::derive_initialize_into_bytes);
 derive!(IntoBytes => derive_into_bytes => crate::derive::into_bytes::derive_into_bytes);
 derive!(Unaligned => derive_unaligned => crate::derive::unaligned::derive_unaligned);
 derive!(ByteHash => derive_hash => crate::derive::derive_hash);

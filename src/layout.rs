@@ -750,6 +750,13 @@ impl DstLayout {
     }
 }
 
+/*pub enum Fields {
+    Primitive,
+    Struct { fields: &'static [(usize, DstLayout)] },
+    Union { fields: &'static [(usize, DstLayout)] },
+    Enum,
+}*/
+
 pub(crate) use cast_from::CastFrom;
 mod cast_from {
     use crate::*;

@@ -5496,6 +5496,27 @@ fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
     Ok((slf.recall_validity::<_, (_, (_, _))>().as_mut(), prefix_suffix.as_mut()))
 }
 
+/// # Safety
+///
+/// TODO
+pub unsafe trait InitializeIntoBytes {
+    #[doc(hidden)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
+    #[doc(hidden)]
+    fn initialize_padding(
+        ptr: Ptr<'_, Self, (invariant::Exclusive, invariant::Unaligned, invariant::AsInitialized)>,
+    );
+
+    /// Produce an [`IntoBytes`] reference to `Self` by initializing its
+    /// padding.
+    fn initialize_into_bytes(&mut self) -> &(impl IntoBytes + Immutable + ?Sized) {
+        &42
+    }
+}
+
 /// Analyzes whether a type is [`IntoBytes`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
@@ -5676,7 +5697,7 @@ pub use zerocopy_derive::IntoBytes;
     not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
     diagnostic::on_unimplemented(note = "Consider adding `#[derive(IntoBytes)]` to `{Self}`")
 )]
-pub unsafe trait IntoBytes {
+pub unsafe trait IntoBytes: InitializeIntoBytes {
     // The `Self: Sized` bound makes it so that this function doesn't prevent
     // `IntoBytes` from being object safe. Note that other `IntoBytes` methods
     // prevent object safety, but those provide a benefit in exchange for object

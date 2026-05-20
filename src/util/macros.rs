@@ -128,7 +128,18 @@ macro_rules! unsafe_impl {
             unsafe_impl!(@method $trait $(; |$candidate| $is_bit_valid)?);
         }
     }};
+    (@method InitializeIntoBytes ; |$slf:ident| $initialize_padding:expr) => {
+        #[allow(clippy::missing_inline_in_public_items, dead_code)]
+        #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
 
+        #[allow(unused_mut)]
+        #[inline(always)]
+        fn initialize_padding($slf: Ptr<'_, Self, (invariant::Exclusive, invariant::Unaligned, invariant::AsInitialized)>)
+        {
+            $initialize_padding
+        }
+    };
     (@method TryFromBytes ; |$candidate:ident| $is_bit_valid:expr) => {
         #[allow(clippy::missing_inline_in_public_items, dead_code)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
@@ -174,6 +185,7 @@ macro_rules! impl_for_transmute_from {
         $(#[$attr:meta])*
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?)?
         => $trait:ident for $ty:ty [$repr:ty]
+        $(|$slf:ident| $b:block)*
     ) => {
         const _: () = {
             $(#[$attr])*
@@ -214,12 +226,20 @@ macro_rules! impl_for_transmute_from {
                     $(<$tyvar $(: $(? $optbound +)* $($bound +)*)?>)?
                     $trait for $ty [$repr]
                 );
+
+                impl_for_transmute_from!(
+                    @initialize_into_bytes
+                    $(<$tyvar $(: $(? $optbound +)* $($bound +)*)?>)?
+                    $trait for $ty [$repr]
+                    $(|$slf| $b)*
+                );
             }
         };
     };
     (@assert_is_supported_trait TryFromBytes) => {};
     (@assert_is_supported_trait FromZeros) => {};
     (@assert_is_supported_trait FromBytes) => {};
+    (@assert_is_supported_trait InitializeIntoBytes) => {};
     (@assert_is_supported_trait IntoBytes) => {};
     (
         @is_bit_valid
@@ -242,7 +262,29 @@ macro_rules! impl_for_transmute_from {
         $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
         $trait:ident for $ty:ty [$repr:ty]
     ) => {
-        // Trait other than `TryFromBytes`; no `is_bit_valid` impl.
+        // Other trait; no additional items.
+    };
+    (
+        @initialize_into_bytes
+        $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
+        InitializeIntoBytes for $ty:ty [$repr:ty]
+    ) => {
+        #[inline(always)]
+        fn initialize_padding(ptr: Ptr<'_, Self, (invariant::Exclusive, invariant::Unaligned, invariant::AsInitialized)>)
+        {
+            let ptr = ptr.transmute::<$repr, _, (_, (_, _))>();
+            // SAFETY: This macro ensures that `$repr` and `Self` have the same
+            // size and bit validity. Thus, a bit-valid instance of `$repr` is
+            // also a bit-valid instance of `Self`.
+            <$repr as InitializeIntoBytes>::initialize_padding(ptr)
+        }
+    };
+    (
+        @initialize_into_bytes
+        $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
+        $trait:ident for $ty:ty [$repr:ty] $(|$slf:ident| $b:block)*
+    ) => {
+        // Other trait; no additional items.
     };
 }
 
@@ -525,6 +567,36 @@ macro_rules! unsafe_impl_known_layout {
     }};
 }
 
+macro_rules! impl_initialize_into_bytes {
+    ($(const $constvar:ident : $constty:ty, $tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
+        $(impl_initialize_into_bytes!(@inner const $constvar: $constty, $tyvar $(: ?$optbound)? => $ty);)*
+    };
+    ($($tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
+        $(impl_initialize_into_bytes!(@inner , $tyvar $(: ?$optbound)? => $ty);)*
+    };
+    ($($(#[$attrs:meta])* $ty:ty),*) => { $(impl_initialize_into_bytes!(@inner , => $(#[$attrs])* $ty);)* };
+    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $(#[$attrs:meta])* $ty:ty) => {
+        const _: () = {
+            #[allow(non_local_definitions)]
+            $(#[$attrs])*
+            // SAFETY: TODO
+            unsafe impl<$($tyvar $(: ?$optbound)?)? $(, const $constvar : $constty)?> InitializeIntoBytes for $ty
+            where
+                Self: IntoBytes
+            {
+                #[allow(clippy::missing_inline_in_public_items)]
+                #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+                fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
+
+                #[inline(always)]
+                fn initialize_padding(_: Ptr<'_, Self, (invariant::Exclusive, invariant::Unaligned, invariant::AsInitialized)>) {
+                    // By invariant on `Self: IntoBytes`, values of type `Self` never contain padding.
+                }
+            }
+        };
+    };
+}
+
 /// Uses `align_of` to confirm that a type or set of types have alignment 1.
 ///
 /// Note that `align_of<T>` requires `T: Sized`, so this macro doesn't work for
@@ -740,7 +812,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
     ($vis:vis T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
         crate::util::macros::__unsafe();
 
-        use crate::pointer::{TransmuteFrom, cast::{CastExact, TransitiveProject}, SizeEq, invariant::Valid};
+        use crate::pointer::{TransmuteFrom, cast::{CastExact, TransitiveProject}, SizeEq, invariant::{AsInitialized, Valid}};
         use crate::wrappers::ReadOnly;
 
         // SAFETY: The caller promises that `T` and `$wrapper<T>` have the same
@@ -748,6 +820,11 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
         unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Valid, Valid> for $wrapper<T> {}
         // SAFETY: See previous safety comment.
         unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Valid, Valid> for T {}
+        // SAFETY: See previous safety comment.
+        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, AsInitialized, AsInitialized> for $wrapper<T> {}
+        // SAFETY: See previous safety comment.
+        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, AsInitialized, AsInitialized> for T {}
+
         // SAFETY: The caller promises that a `T` to `$wrapper<T>` cast is
         // size-preserving.
         define_cast!(unsafe { $vis CastToWrapper<T $(: ?$optbound)? > = T => $wrapper<T> });

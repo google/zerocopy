@@ -656,6 +656,26 @@ mod len_of {
 
 pub(crate) use len_of::MetadataOf;
 
+#[doc(hidden)]
+#[inline(always)]
+pub const fn sort_fields<const N: usize>(mut arr: [(usize, usize); N]) -> [(usize, usize); N] {
+    let mut i = 0;
+    while i < N {
+        let mut j = 0;
+        while j + 1 < N - i {
+            if arr[j].0 > arr[j + 1].0 {
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+
+    arr
+}
+
 /// Since we support multiple versions of Rust, there are often features which
 /// have been stabilized in the most recent stable release which do not yet
 /// exist (stably) on our MSRV. This module provides polyfills for those

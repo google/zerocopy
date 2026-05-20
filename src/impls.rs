@@ -31,6 +31,8 @@ const _: () = unsafe {
     assert_unaligned!(());
 };
 
+impl_initialize_into_bytes!(());
+
 // SAFETY:
 // - `Immutable`: These types self-evidently do not contain any `UnsafeCell`s.
 // - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`: all bit
@@ -84,6 +86,10 @@ const _: () = unsafe {
     unsafe_impl!(#[cfg_attr(doc_cfg, doc(cfg(feature = "float-nightly")))] f128: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
 };
 
+impl_initialize_into_bytes!(
+    u8, i8, u16, i16, u32, i32, u64, i64, u128, i128, usize, isize, f32, f64
+);
+
 // SAFETY:
 // - `Immutable`: `bool` self-evidently does not contain any `UnsafeCell`s.
 // - `FromZeros`: Valid since "[t]he value false has the bit pattern 0x00" [1].
@@ -98,6 +104,7 @@ const _: () = unsafe {
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl!(bool: Immutable, FromZeros, IntoBytes, Unaligned) };
 assert_unaligned!(bool);
+impl_initialize_into_bytes!(bool);
 
 // SAFETY: The impl must only return `true` for its argument if the original
 // `Maybe<bool>` refers to a valid `bool`. We only return true if the `u8` value
@@ -127,6 +134,7 @@ const _: () = unsafe {
 // [1] https://doc.rust-lang.org/1.81.0/reference/types/textual.html
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl!(char: Immutable, FromZeros, IntoBytes) };
+impl_initialize_into_bytes!(char);
 
 // SAFETY: The impl must only return `true` for its argument if the original
 // `Maybe<char>` refers to a valid `char`. `char::from_u32` guarantees that it
@@ -161,6 +169,20 @@ const _: () = unsafe {
 //   layout as slices of type `[u8]`.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unaligned) };
+
+// SAFETY: By invariant on `Self: IntoBytes`, values of type `Self` never
+// contain padding and therefore require no additional initialization.
+unsafe impl InitializeIntoBytes for str
+where
+    Self: IntoBytes,
+{
+    #[inline(always)]
+    fn initialize_padding(
+        _: Ptr<'_, Self, (invariant::Exclusive, invariant::Unaligned, invariant::AsInitialized)>,
+    ) {
+        // By invariant on `Self: IntoBytes`, values of type `Self` never contain padding.
+    }
+}
 
 // SAFETY: The impl must only return `true` for its argument if the original
 // `Maybe<str>` refers to a valid `str`. `str::from_utf8` guarantees that it
@@ -235,6 +257,20 @@ const _: () = unsafe {
     unsafe_impl!(NonZeroI128: Immutable, IntoBytes);
     unsafe_impl!(NonZeroUsize: Immutable, IntoBytes);
     unsafe_impl!(NonZeroIsize: Immutable, IntoBytes);
+    impl_initialize_into_bytes!(
+        NonZeroU8,
+        NonZeroI8,
+        NonZeroU16,
+        NonZeroI16,
+        NonZeroU32,
+        NonZeroI32,
+        NonZeroU64,
+        NonZeroI64,
+        NonZeroU128,
+        NonZeroI128,
+        NonZeroUsize,
+        NonZeroIsize
+    );
     unsafe_impl_try_from_bytes_for_nonzero!(
         NonZeroU8[u8],
         NonZeroI8[i8],
@@ -277,19 +313,28 @@ const _: () = unsafe {
 //     are guaranteed to have the same size and alignment:
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
-    unsafe_impl!(Option<NonZeroU8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-    unsafe_impl!(Option<NonZeroI8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-    assert_unaligned!(Option<NonZeroU8>, Option<NonZeroI8>);
-    unsafe_impl!(Option<NonZeroU16>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI16>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU32>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI32>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU64>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI64>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU128>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI128>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroUsize>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroIsize>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    macro_rules! impl_for_options {
+        ($($inner:ty,)*) => {
+            $(
+                unsafe_impl!(Option<$inner>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+                impl_initialize_into_bytes!(Option<$inner>);
+            )*
+        }
+    }
+    impl_for_options!(
+        NonZeroU8,
+        NonZeroI8,
+        NonZeroU16,
+        NonZeroI16,
+        NonZeroU32,
+        NonZeroI32,
+        NonZeroU64,
+        NonZeroI64,
+        NonZeroU128,
+        NonZeroI128,
+        NonZeroUsize,
+        NonZeroIsize,
+    );
 };
 
 // SAFETY: While it's not fully documented, the consensus is that `Box<T>` does
@@ -404,6 +449,7 @@ mod atomics {
                 impl_for_transmute_from!(=> FromZeros for $atomics [$primitives]);
                 impl_for_transmute_from!(=> FromBytes for $atomics [$primitives]);
                 impl_for_transmute_from!(=> TryFromBytes for $atomics [$primitives]);
+                impl_for_transmute_from!(=> InitializeIntoBytes for $atomics [$primitives]);
                 impl_for_transmute_from!(=> IntoBytes for $atomics [$primitives]);
             )*
         };
@@ -419,7 +465,7 @@ mod atomics {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {{
             crate::util::macros::__unsafe();
 
-            use crate::pointer::{SizeEq, TransmuteFrom, invariant::Valid};
+            use crate::pointer::{SizeEq, TransmuteFrom, invariant::{AsInitialized, Valid}};
 
             $(
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
@@ -428,6 +474,17 @@ mod atomics {
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
                 // the same size and bit validity.
                 unsafe impl<$($tyvar)?> TransmuteFrom<$prim, Valid, Valid> for $atomic {}
+
+                 // SAFETY: The caller promised that `$atomic` and `$prim` have
+                // the same size and bit validity.
+                unsafe impl<$($tyvar)?> TransmuteFrom<$atomic, AsInitialized, AsInitialized> for $prim {}
+                // SAFETY: The caller promised that `$atomic` and `$prim` have
+                // the same size and bit validity.
+                unsafe impl<$($tyvar)?> TransmuteFrom<$prim, AsInitialized, AsInitialized> for $atomic {}
+
+                impl<$($tyvar)?> SizeEq<$atomic> for $prim {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
+                }
 
                 impl<$($tyvar)?> SizeEq<ReadOnly<$atomic>> for ReadOnly<$prim> {
                     type CastFrom = $crate::pointer::cast::CastSizedExact;
@@ -461,6 +518,7 @@ mod atomics {
         impl_known_layout!(AtomicBool);
         impl_for_transmute_from!(=> FromZeros for AtomicBool [bool]);
         impl_for_transmute_from!(=> TryFromBytes for AtomicBool [bool]);
+        impl_for_transmute_from!(=> InitializeIntoBytes for AtomicBool [bool]);
         impl_for_transmute_from!(=> IntoBytes for AtomicBool [bool]);
 
         // SAFETY: Per [1], `AtomicBool`, `AtomicU8`, and `AtomicI8` have the
@@ -653,6 +711,7 @@ const _: () = unsafe {
     unsafe_impl!(T: ?Sized => TryFromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromZeros for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
+    impl_initialize_into_bytes!(T: ?Sized => PhantomData<T>);
     unsafe_impl!(T: ?Sized => IntoBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => Unaligned for PhantomData<T>);
     assert_unaligned!(PhantomData<()>, PhantomData<u8>, PhantomData<u64>);
@@ -661,6 +720,7 @@ const _: () = unsafe {
 impl_for_transmute_from!(T: TryFromBytes => TryFromBytes for Wrapping<T>[T]);
 impl_for_transmute_from!(T: FromZeros => FromZeros for Wrapping<T>[T]);
 impl_for_transmute_from!(T: FromBytes => FromBytes for Wrapping<T>[T]);
+impl_for_transmute_from!(T: InitializeIntoBytes => InitializeIntoBytes for Wrapping<T>[T]);
 impl_for_transmute_from!(T: IntoBytes => IntoBytes for Wrapping<T>[T]);
 assert_unaligned!(Wrapping<()>, Wrapping<u8>);
 
@@ -735,6 +795,7 @@ const _: () = unsafe { unsafe_impl!(T: ?Sized + Immutable => Immutable for Manua
 impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>[T]);
 impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>[T]);
 impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>[T]);
+impl_for_transmute_from!(T: ?Sized + InitializeIntoBytes => InitializeIntoBytes for ManuallyDrop<T>[T]);
 impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>[T]);
 // SAFETY: `ManuallyDrop<T>` has the same layout as `T` [1], and thus has the
 // same alignment as `T`.
@@ -825,6 +886,7 @@ const _: () = {
 impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for Cell<T>[T]);
 impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for Cell<T>[T]);
 impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for Cell<T>[T]);
+impl_for_transmute_from!(T: ?Sized + InitializeIntoBytes => InitializeIntoBytes for Cell<T>[T]);
 impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for Cell<T>[T]);
 // SAFETY: `Cell<T>` has the same in-memory representation as `T` [1], and thus
 // has the same alignment as `T`.
@@ -836,6 +898,7 @@ const _: () = unsafe { unsafe_impl!(T: ?Sized + Unaligned => Unaligned for Cell<
 
 impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for UnsafeCell<T>[T]);
 impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for UnsafeCell<T>[T]);
+impl_for_transmute_from!(T: ?Sized + InitializeIntoBytes => InitializeIntoBytes for UnsafeCell<T>[T]);
 impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>[T]);
 // SAFETY: `UnsafeCell<T>` has the same in-memory representation as `T` [1], and
 // thus has the same alignment as `T`.
@@ -902,6 +965,9 @@ const _: () = unsafe {
     });
     unsafe_impl!(const N: usize, T: FromZeros => FromZeros for [T; N]);
     unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
+    unsafe_impl!(const N: usize, T: InitializeIntoBytes => InitializeIntoBytes for [T; N]; |slf| {
+        slf.as_slice().iter().for_each(InitializeIntoBytes::initialize_padding);
+    });
     unsafe_impl!(const N: usize, T: IntoBytes => IntoBytes for [T; N]);
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
@@ -933,6 +999,9 @@ const _: () = unsafe {
     });
     unsafe_impl!(T: FromZeros => FromZeros for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
+    unsafe_impl!(T: InitializeIntoBytes => InitializeIntoBytes for [T]; |slf| {
+        slf.iter().for_each(InitializeIntoBytes::initialize_padding);
+    });
     unsafe_impl!(T: IntoBytes => IntoBytes for [T]);
     unsafe_impl!(T: Unaligned => Unaligned for [T]);
 };
@@ -1310,7 +1379,7 @@ mod simd {
                 // SAFETY: See comment on module definition for justification.
                 #[allow(clippy::multiple_unsafe_ops_per_block)]
                 const _: () = unsafe {
-                    $( unsafe_impl!($typ: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes); )*
+                    $( unsafe_impl!($typ: Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes); )*
                 };
             }
         };
@@ -2187,18 +2256,18 @@ mod tests {
             !Unaligned
         );
 
-        assert_impls!(Option<NonZeroU8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(Option<NonZeroI8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(Option<NonZeroU16>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI16>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU32>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI32>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU64>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI64>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU128>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI128>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroUsize>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroIsize>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned);
+        assert_impls!(Option<NonZeroI8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned);
+        assert_impls!(Option<NonZeroU16>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI16>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU32>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI32>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU64>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI64>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU128>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI128>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroUsize>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroIsize>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned);
 
         // Implements none of the ZC traits.
         struct NotZerocopy;
@@ -2229,39 +2298,39 @@ mod tests {
         assert_impls!(Option<extern "C" fn()>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<ECFnManyArgs>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
 
-        assert_impls!(PhantomData<NotZerocopy>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(PhantomData<[u8]>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(PhantomData<NotZerocopy>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned);
+        assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned);
+        assert_impls!(PhantomData<[u8]>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned);
 
-        assert_impls!(ManuallyDrop<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(ManuallyDrop<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned);
         // This test is important because it allows us to test our hand-rolled
         // implementation of `<ManuallyDrop<T> as TryFromBytes>::is_bit_valid`.
-        assert_impls!(ManuallyDrop<bool>: KnownLayout, Immutable, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
-        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(ManuallyDrop<bool>: KnownLayout, Immutable, TryFromBytes, FromZeros, InitializeIntoBytes, IntoBytes, Unaligned, !FromBytes);
+        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned);
         // This test is important because it allows us to test our hand-rolled
         // implementation of `<ManuallyDrop<T> as TryFromBytes>::is_bit_valid`.
-        assert_impls!(ManuallyDrop<[bool]>: KnownLayout, Immutable, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
+        assert_impls!(ManuallyDrop<[bool]>: KnownLayout, Immutable, TryFromBytes, FromZeros, InitializeIntoBytes, IntoBytes, Unaligned, !FromBytes);
         assert_impls!(ManuallyDrop<NotZerocopy>: !Immutable, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(ManuallyDrop<[NotZerocopy]>: KnownLayout, !Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !Immutable);
-        assert_impls!(ManuallyDrop<[UnsafeCell<u8>]>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !Immutable);
-        assert_impls!(ManuallyDrop<[UnsafeCell<bool>]>: KnownLayout, TryFromBytes, FromZeros, IntoBytes, Unaligned, !Immutable, !FromBytes);
+        assert_impls!(ManuallyDrop<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned, !Immutable);
+        assert_impls!(ManuallyDrop<[UnsafeCell<u8>]>: KnownLayout, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned, !Immutable);
+        assert_impls!(ManuallyDrop<[UnsafeCell<bool>]>: KnownLayout, TryFromBytes, FromZeros, InitializeIntoBytes, IntoBytes, Unaligned, !Immutable, !FromBytes);
 
         assert_impls!(CoreMaybeUninit<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, Unaligned, !IntoBytes);
         assert_impls!(CoreMaybeUninit<NotZerocopy>: KnownLayout, TryFromBytes, FromZeros, FromBytes, !Immutable, !IntoBytes, !Unaligned);
         assert_impls!(CoreMaybeUninit<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, Unaligned, !Immutable, !IntoBytes);
 
-        assert_impls!(Wrapping<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(Wrapping<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned);
         // This test is important because it allows us to test our hand-rolled
         // implementation of `<Wrapping<T> as TryFromBytes>::is_bit_valid`.
-        assert_impls!(Wrapping<bool>: KnownLayout, Immutable, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
+        assert_impls!(Wrapping<bool>: KnownLayout, Immutable, TryFromBytes, FromZeros, InitializeIntoBytes, IntoBytes, Unaligned, !FromBytes);
         assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Wrapping<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !Immutable);
+        assert_impls!(Wrapping<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned, !Immutable);
 
-        assert_impls!(Unalign<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(Unalign<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, Unaligned);
         // This test is important because it allows us to test our hand-rolled
         // implementation of `<Unalign<T> as TryFromBytes>::is_bit_valid`.
-        assert_impls!(Unalign<bool>: KnownLayout, Immutable, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
+        assert_impls!(Unalign<bool>: KnownLayout, Immutable, TryFromBytes, FromZeros, InitializeIntoBytes, IntoBytes, Unaligned, !FromBytes);
         assert_impls!(Unalign<NotZerocopy>: KnownLayout, Unaligned, !Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes);
 
         assert_impls!(
@@ -2335,7 +2404,7 @@ mod tests {
                     {
                         use core::arch::$arch::{$($typ),*};
                         use crate::*;
-                        $( assert_impls!($typ: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned); )*
+                        $( assert_impls!($typ: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, InitializeIntoBytes, IntoBytes, !Unaligned); )*
                     }
                 };
             }

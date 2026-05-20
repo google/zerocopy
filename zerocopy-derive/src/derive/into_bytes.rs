@@ -3,18 +3,21 @@ use quote::quote;
 use syn::{Data, DataEnum, DataStruct, DataUnion, Error, Type};
 
 use crate::{
+    derive::initialize_into_bytes::derive_initialize_into_bytes,
     repr::{EnumRepr, StructUnionRepr},
     util::{
         generate_tag_enum, Ctx, DataExt, FieldBounds, ImplBlockBuilder, PaddingCheck, Trait,
         TraitBound,
     },
 };
-pub(crate) fn derive_into_bytes(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error> {
-    match &ctx.ast.data {
+pub(crate) fn derive_into_bytes(ctx: &Ctx, top_level: Trait) -> Result<TokenStream, Error> {
+    let initialize_into_bytes = derive_initialize_into_bytes(ctx, top_level)?;
+    let into_bytes = match &ctx.ast.data {
         Data::Struct(strct) => derive_into_bytes_struct(ctx, strct),
         Data::Enum(enm) => derive_into_bytes_enum(ctx, enm),
         Data::Union(unn) => derive_into_bytes_union(ctx, unn),
-    }
+    }?;
+    Ok(IntoIterator::into_iter([initialize_into_bytes, into_bytes]).collect())
 }
 fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream, Error> {
     let repr = StructUnionRepr::from_attrs(&ctx.ast.attrs)?;

@@ -505,6 +505,9 @@ example of how it can be used for parsing UDP packets.
             impl_or_verify!(O => Unaligned for $name<O>);
         };
 
+        #[cfg(not(any(feature = "derive", test)))]
+        impl_initialize_into_bytes!(O => $name<O>);
+
         impl<O> Default for $name<O> {
             #[inline(always)]
             fn default() -> $name<O> {
