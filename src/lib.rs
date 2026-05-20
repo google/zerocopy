@@ -5374,6 +5374,50 @@ pub unsafe trait FromBytes: FromZeros {
         let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
         let ptr = ptr.as_bytes();
         src.read_exact(ptr.as_mut())?;
+
+        // SAFETY: `buf` entirely consists of initialized bytes, and `Self` is
+        // `FromBytes`.
+        Ok(unsafe { buf.assume_init() })
+    }
+
+    /// Reads a copy of `self` from an `embedded_io::Read`.
+    ///
+    #[cfg(feature = "embedded_io")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "embedded_io")))]
+    #[inline(always)]
+    fn read_from_embedded_io<R>(
+        mut src: R,
+    ) -> core::result::Result<Self, embedded_io::ReadExactError<R::Error>>
+    where
+        Self: Sized,
+        R: embedded_io::Read,
+    {
+        // Taken from [FromBytes::read_from_io]:
+        //
+        // NOTE(#2319, #2320): We do `buf.zero()` separately rather than
+        // constructing `let buf = CoreMaybeUninit::zeroed()` because, if `Self`
+        // contains padding bytes, then a typed copy of `CoreMaybeUninit<Self>`
+        // will not necessarily preserve zeros written to those padding byte
+        // locations, and so `buf` could contain uninitialized bytes.
+        let mut buf = CoreMaybeUninit::<Self>::uninit();
+        buf.zero();
+
+        let ptr = Ptr::from_mut(&mut buf);
+        // Taken from [FromBytes::read_from_io]:
+        //
+        // SAFETY: After `buf.zero()`, `buf` consists entirely of initialized,
+        // zeroed bytes. Since `MaybeUninit` has no validity requirements, `ptr`
+        // cannot be used to write values which will violate `buf`'s bit
+        // validity. Since `ptr` has `Exclusive` aliasing, nothing other than
+        // `ptr` may be used to mutate `ptr`'s referent, and so its bit validity
+        // cannot be violated even though `buf` may have more permissive bit
+        // validity than `ptr`.
+        let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
+        let ptr = ptr.as_bytes();
+        src.read_exact(ptr.as_mut())?;
+
+        // Taken from [FromBytes::read_from_io]:
+        //
         // SAFETY: `buf` entirely consists of initialized bytes, and `Self` is
         // `FromBytes`.
         Ok(unsafe { buf.assume_init() })
@@ -6168,6 +6212,59 @@ pub unsafe trait IntoBytes {
     where
         Self: Immutable,
         W: io::Write,
+    {
+        dst.write_all(self.as_bytes())
+    }
+
+    /// Writes a copy of `self` to an `embedded_io::Write`.
+    ///
+    /// This is a shorthand for `dst.write_all(self.as_bytes())`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use zerocopy::{byteorder::big_endian::U16, FromBytes, IntoBytes};
+    /// use std::fs::File;
+    /// use embedded_io::Write;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, IntoBytes, Immutable, KnownLayout)]
+    /// #[repr(C, packed)]
+    /// struct GrayscaleImage {
+    ///     height: U16,
+    ///     width: U16,
+    ///     pixels: [U16],
+    /// }
+    ///
+    /// let image = GrayscaleImage::ref_from_bytes(&[0, 0, 0, 0][..]).unwrap();
+    /// let mut file = [0u8; 1024];
+    /// image.write_to_embedded_io(&mut file[..]).unwrap();
+    /// ```
+    ///
+    /// If the write fails, `write_to_embedded_io` returns `Err` and a partial write may
+    /// have occurred; e.g.:
+    ///
+    /// ```
+    /// # use zerocopy::IntoBytes;
+    ///
+    /// let src = u128::MAX;
+    /// let mut dst = [0u8; 2];
+    ///
+    /// let write_result = src.write_to_embedded_io(&mut dst[..]);
+    ///
+    /// assert!(write_result.is_err());
+    /// assert_eq!(dst, [255, 255]);
+    /// ```
+    #[cfg(feature = "embedded_io")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "embedded_io")))]
+    #[inline(always)]
+    fn write_to_embedded_io<W>(
+        &self,
+        mut dst: W,
+    ) -> core::result::Result<(), embedded_io::WriteAllError<W::Error>>
+    where
+        Self: Immutable,
+        W: embedded_io::Write,
     {
         dst.write_all(self.as_bytes())
     }
@@ -7071,6 +7168,56 @@ mod tests {
         assert!(u32::MAX.write_to_io(&mut short_buffer[..]).is_err());
         assert_eq!(short_buffer, [255, 255]);
         assert!(u32::read_from_io(&short_buffer[..]).is_err());
+    }
+
+    #[test]
+    #[cfg(feature = "embedded_io")]
+    fn test_read_write_embedded_io() {
+        let mut long_buffer = [0, 0, 0, 0];
+        assert!(matches!(u16::MAX.write_to_embedded_io(&mut long_buffer[..]), Ok(())));
+        assert_eq!(long_buffer, [255, 255, 0, 0]);
+        assert!(matches!(u16::read_from_embedded_io(&long_buffer[..]), Ok(u16::MAX)));
+
+        let mut short_buffer = [0, 0];
+        assert!(u32::MAX.write_to_embedded_io(&mut short_buffer[..]).is_err());
+        assert_eq!(short_buffer, [255, 255]);
+        assert!(u32::read_from_embedded_io(&short_buffer[..]).is_err());
+    }
+
+    #[test]
+    #[cfg(feature = "embedded_io")]
+    fn test_read_embedded_io_with_padding_soundness() {
+        // This test is designed to exhibit potential UB in
+        // `FromBytes::read_from_embedded_io`. (see #2319, #2320).
+
+        // On most platforms (where `align_of::<u16>() == 2`), `WithPadding`
+        // will have inter-field padding between `x` and `y`.
+        #[derive(FromBytes)]
+        #[repr(C)]
+        struct WithPadding {
+            x: u8,
+            y: u16,
+        }
+        struct ReadsInRead;
+        impl embedded_io::ErrorType for ReadsInRead {
+            type Error = embedded_io::ErrorKind;
+        }
+        impl embedded_io::Read for ReadsInRead {
+            fn read(&mut self, buf: &mut [u8]) -> Result<usize, Self::Error> {
+                // This body branches on every byte of `buf`, ensuring that it
+                // exhibits UB if any byte of `buf` is uninitialized.
+                if buf.iter().all(|&x| x == 0) {
+                    Ok(buf.len())
+                } else {
+                    buf.iter_mut().for_each(|x| *x = 0);
+                    Ok(buf.len())
+                }
+            }
+        }
+        assert!(matches!(
+            WithPadding::read_from_embedded_io(ReadsInRead),
+            Ok(WithPadding { x: 0, y: 0 })
+        ));
     }
 
     #[test]
