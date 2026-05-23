@@ -161,6 +161,7 @@ pub struct Roots {
     // E.g., `target/anneal/<hash>`.
     anneal_run_root: std::path::PathBuf,
     pub roots: Vec<AnnealTarget>,
+    pub metadata: cargo_metadata::Metadata,
 }
 
 impl Roots {
@@ -239,7 +240,12 @@ pub fn resolve_roots(args: &Args, toolchain: &crate::setup::Toolchain) -> anyhow
         resolve_packages(&metadata, &args.workspace, args.manifest.manifest_path.as_deref())?;
 
     let (anneal_global_root, anneal_run_root) = resolve_run_roots(&metadata);
-    let mut roots = Roots { anneal_global_root, anneal_run_root, roots: Vec::new() };
+    let mut roots = Roots {
+        anneal_global_root,
+        anneal_run_root,
+        roots: Vec::new(),
+        metadata: metadata.clone(), // `metadata` must outlive `selected_packages`.
+    };
 
     for package in selected_packages {
         log::trace!("Scanning package: {}", package.name);

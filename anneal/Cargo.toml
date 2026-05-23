@@ -4,6 +4,8 @@ members = ["."]
 [features]
 # Enables tests that assume a prebuilt exocrate archive.
 exocrate_tests = []
+# Enables tests that make network requests or download cargo dependencies.
+online_tests = []
 
 [package]
 name = "cargo-anneal"
