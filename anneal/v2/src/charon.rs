@@ -19,8 +19,7 @@
 //! - Validating the extraction result.
 
 use anyhow::Context as _;
-use rayon::prelude::IntoParallelRefIterator as _;
-use rayon::prelude::ParallelIterator as _;
+use rayon::prelude::{IntoParallelRefIterator as _, ParallelIterator as _};
 
 /// Runs Charon on the specified packages to generate LLBC artifacts.
 ///
@@ -70,6 +69,11 @@ pub fn run_charon(
         log::info!("Invoking Charon on package '{}'...", artifact.name.package_name);
 
         let mut cmd = toolchain.command(crate::setup::Tool::Charon)?;
+
+        // Redirect Cargo's build outputs to our safe local workspace target dir.
+        // This prevents permission errors when compiling read-only registry dependency directories.
+        let local_target_dir = roots.cargo_target_dir();
+        cmd.env("CARGO_TARGET_DIR", &local_target_dir);
 
         cmd.arg("cargo");
         cmd.arg("--preset=aeneas");
@@ -206,17 +210,42 @@ pub fn run_charon(
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "exocrate_tests")]
+    use std::fs;
+
+    #[cfg(feature = "exocrate_tests")]
+    use clap::Parser as _;
+
+    #[cfg(feature = "exocrate_tests")]
     use super::*;
     #[cfg(feature = "exocrate_tests")]
     use crate::resolve::{Args, resolve_roots};
     #[cfg(feature = "exocrate_tests")]
-    use crate::scanner::scan_workspace;
-    #[cfg(feature = "exocrate_tests")]
-    use clap::Parser as _;
-    #[cfg(feature = "exocrate_tests")]
-    use std::fs;
+    use crate::scanner::{ScanMode, scan_workspace};
 
-    // Shared helper to parse LLBC output and verify local status and compiled body variant.
+    /// Parses one LLBC artifact and verifies the locality and body shape of a function declaration.
+    ///
+    /// `expected_local` checks Charon's `fun.item_meta.is_local` bit: whether Charon considers the
+    /// function local to the crate currently being translated. `expected_structured` checks whether
+    /// Charon emitted a structured LLBC body for the function; when it is `false`, this helper
+    /// currently expects an opaque body.
+    ///
+    /// Charon can represent all four boolean combinations:
+    ///
+    /// * `true, true`: a local transparent function with a translated structured body.
+    /// * `true, false`: a local function whose body was intentionally kept opaque, for example by
+    ///   `#[charon::opaque]`, `#[aeneas::opaque]`, or an `--opaque` pattern.
+    /// * `false, false`: a foreign function that is referenced but whose body was not included.
+    /// * `false, true`: a foreign function whose body was included, for example when Charon is
+    ///   configured to include dependency bodies or can otherwise obtain MIR for a non-local item.
+    ///
+    /// Anneal's current target-management strategy intentionally hits only some of those states in
+    /// these Charon coordinator tests. Workspace roots are compiled as local structured artifacts,
+    /// so root functions are `true, true`. Dependencies that are not chased remain foreign opaque
+    /// declarations in the caller's LLBC, so they are `false, false`. When dependency chasing is
+    /// enabled, Anneal promotes each dependency to its own Charon target instead of embedding the
+    /// dependency body in the caller artifact; in that dependency artifact, the dependency's own
+    /// functions are again local structured declarations (`true, true`). Local opaque functions are
+    /// covered by annotation/integration tests rather than by these dependency-chasing cases.
     #[cfg(feature = "exocrate_tests")]
     fn assert_fn_body(
         path: &std::path::Path,
@@ -260,13 +289,13 @@ mod tests {
 
         if expected_structured {
             assert!(
-                matches!(fun.body, charon_lib::ullbc_ast::Body::Structured(_)),
+                matches!(fun.body, charon_lib::ast::Body::Structured(_)),
                 "Function {:?} was expected to contain a compiled structured implementation body!",
                 components
             );
         } else {
             assert!(
-                matches!(fun.body, charon_lib::ullbc_ast::Body::Opaque),
+                matches!(fun.body, charon_lib::ast::Body::Opaque),
                 "Function {:?} was expected to be Opaque (referred to but implementation body NOT included)!",
                 components
             );
@@ -283,6 +312,44 @@ mod tests {
             .expect("Failed to run setup");
             crate::setup::Toolchain::resolve().expect("Failed to resolve toolchain")
         })
+    }
+
+    #[cfg(feature = "exocrate_tests")]
+    fn write_log_path_dependency_fixture(temp_dir: &tempfile::TempDir) {
+        let log_dir = temp_dir.path().join("vendor").join("log");
+        std::fs::create_dir_all(log_dir.join("src")).unwrap();
+        std::fs::write(
+            log_dir.join("Cargo.toml"),
+            r#"
+[package]
+name = "log"
+version = "0.4.28"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+
+[workspace]
+"#,
+        )
+        .unwrap();
+        std::fs::write(
+            log_dir.join("src/lib.rs"),
+            r#"
+#[macro_export]
+macro_rules! info {
+    ($fmt:literal $(, $arg:expr)* $(,)?) => {{
+        $(let _ = &$arg;)*
+    }};
+    ($($arg:tt)*) => {{}};
+}
+
+pub fn max_level() -> usize {
+    0
+}
+"#,
+        )
+        .unwrap();
     }
 
     #[cfg(feature = "exocrate_tests")]
@@ -327,7 +394,7 @@ mod tests {
         let roots = resolve_roots(&args, toolchain).unwrap();
 
         // 6. Scan workspace.
-        let packages = scan_workspace(&roots).unwrap();
+        let packages = scan_workspace(&roots, ScanMode::WorkspaceOnly).unwrap();
         assert_eq!(packages.len(), 1);
 
         // 7. Lock run root.
@@ -389,7 +456,7 @@ mod tests {
         // 3. Resolve roots and scan workspace.
         let toolchain = resolve_test_toolchain();
         let roots = resolve_roots(&args, toolchain).unwrap();
-        let packages = scan_workspace(&roots).unwrap();
+        let packages = scan_workspace(&roots, ScanMode::WorkspaceOnly).unwrap();
         assert_eq!(packages.len(), 1);
 
         // 4. Lock run root.
@@ -423,7 +490,7 @@ mod tests {
 
     #[cfg(feature = "exocrate_tests")]
     #[test]
-    fn test_charon_crates_io_dependency() {
+    fn test_charon_crates_io_dependency_not_chased_workspace_only() {
         let _ = env_logger::builder().is_test(true).try_init();
 
         let temp_dir = tempfile::tempdir().unwrap();
@@ -456,9 +523,9 @@ mod tests {
 
         let toolchain = resolve_test_toolchain();
         let roots = resolve_roots(&args, toolchain).unwrap();
-        let packages = scan_workspace(&roots).unwrap();
+        let packages = scan_workspace(&roots, ScanMode::WorkspaceOnly).unwrap();
+        assert_eq!(packages.len(), 1);
         let locked_roots = roots.lock_run_root().unwrap();
-
         let res = run_charon(&args, &toolchain, &locked_roots, &packages, false);
         assert!(res.is_ok(), "charon failed: {:?}", res.err());
 
@@ -487,7 +554,7 @@ mod tests {
 
     #[cfg(feature = "exocrate_tests")]
     #[test]
-    fn test_charon_path_dependency_behavior() {
+    fn test_charon_path_dependency_not_chased_workspace_only() {
         let _ = env_logger::builder().is_test(true).try_init();
 
         let temp_dir = tempfile::tempdir().unwrap();
@@ -539,10 +606,9 @@ mod tests {
 
         let toolchain = resolve_test_toolchain();
         let roots = resolve_roots(&args, toolchain).unwrap();
-        let packages = scan_workspace(&roots).unwrap();
+        let packages = scan_workspace(&roots, ScanMode::WorkspaceOnly).unwrap();
         assert_eq!(packages.len(), 1);
         let locked_roots = roots.lock_run_root().unwrap();
-
         let res = run_charon(&args, &toolchain, &locked_roots, &packages, false);
         assert!(res.is_ok(), "charon failed: {:?}", res.err());
 
@@ -619,7 +685,7 @@ mod tests {
         // 3. Resolve roots and scan workspace.
         let toolchain = resolve_test_toolchain();
         let roots = resolve_roots(&args, toolchain).unwrap();
-        let packages = scan_workspace(&roots).unwrap();
+        let packages = scan_workspace(&roots, ScanMode::WorkspaceOnly).unwrap();
         assert_eq!(packages.len(), 2, "Expected exactly two packages resolved in workspace");
 
         // 4. Lock run root.
@@ -661,6 +727,384 @@ mod tests {
         assert!(
             !llbc_content_b.contains("func_a"),
             "Function 'func_a' was incorrectly translated in Package B!"
+        );
+    }
+
+    #[cfg(feature = "exocrate_tests")]
+    #[test]
+    fn test_charon_path_dependency_chasing() {
+        let _ = env_logger::builder().is_test(true).try_init();
+
+        let temp_dir = tempfile::tempdir().unwrap();
+        crate::workspace_fixture!(&temp_dir, {
+            "Cargo.toml" => r#"
+                [workspace]
+                resolver = "2"
+                members = [
+                    "test_proj",
+                ]
+                exclude = [
+                    "my_dep",
+                ]
+            "#,
+            "my_dep/Cargo.toml" => r#"
+                [package]
+                name = "my_dep"
+                version = "0.1.0"
+                edition = "2021"
+
+                [workspace]
+
+                [lib]
+                path = "src/lib.rs"
+            "#,
+            "my_dep/src/lib.rs" => r#"
+                pub fn dep_fn() {}
+            "#,
+            "test_proj/Cargo.toml" => r#"
+                [package]
+                name = "test_proj"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                my_dep = { path = "../my_dep" }
+
+                [lib]
+                path = "src/lib.rs"
+            "#,
+            "test_proj/src/lib.rs" => r#"
+                pub fn call_dep() {
+                    my_dep::dep_fn();
+                }
+            "#,
+        });
+
+        let args = Args::try_parse_from(&[
+            "cargo-anneal",
+            "--manifest-path",
+            temp_dir.path().join("test_proj").join("Cargo.toml").to_str().unwrap(),
+        ])
+        .unwrap();
+
+        // 1. Resolve roots.
+        let toolchain = resolve_test_toolchain();
+        let roots = resolve_roots(&args, toolchain).unwrap();
+
+        // 2. Scan workspace WITH include_dependencies = true!
+        let packages = scan_workspace(&roots, ScanMode::FollowDependencies).unwrap();
+
+        // 3. Assert that BOTH local project and external path dependency were promoted to target packages!
+        assert_eq!(packages.len(), 2, "Expected exactly two target artifacts promoted!");
+
+        let local_target = &packages[0];
+        let dep_target = &packages[1];
+
+        assert_eq!(local_target.name.package_name, "test_proj");
+        assert_eq!(dep_target.name.package_name, "my_dep");
+
+        let locked_roots = roots.lock_run_root().unwrap();
+
+        // 4. Run Charon coordinator.
+        let res = run_charon(&args, &toolchain, &locked_roots, &packages, false);
+        assert!(res.is_ok(), "charon failed: {:?}", res.err());
+
+        // 5. Verify test_proj target translated.
+        let llbc_path_local = local_target.llbc_path(&locked_roots);
+        assert!(llbc_path_local.exists());
+        assert_fn_body(
+            &llbc_path_local,
+            &["test_proj", "call_dep"],
+            true, // expected_local
+            true, // expected_structured
+        );
+
+        // 6. Verify path dependency was CHASED and compiled as an independent root target!
+        let llbc_path_dep = dep_target.llbc_path(&locked_roots);
+        assert!(
+            llbc_path_dep.exists(),
+            "Dependency LLBC file did not exist at {:?}",
+            llbc_path_dep
+        );
+        assert_fn_body(
+            &llbc_path_dep,
+            &["my_dep", "dep_fn"],
+            true, // expected_local
+            true, // expected_structured
+        );
+    }
+
+    #[cfg(all(feature = "exocrate_tests", feature = "online_tests"))]
+    #[test]
+    fn test_charon_crates_io_dependency_chasing() {
+        let _ = env_logger::builder().is_test(true).try_init();
+
+        let temp_dir = tempfile::tempdir().unwrap();
+        crate::workspace_fixture!(&temp_dir, {
+            "Cargo.toml" => r#"
+                [workspace]
+                resolver = "2"
+
+                [package]
+                name = "test_proj"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                log = "0.4"
+
+                [lib]
+                path = "src/lib.rs"
+
+                [patch.crates-io]
+                log = { path = "./vendor/log" }
+            "#,
+            "src/lib.rs" => r#"
+                pub fn log_info(msg: &str) {
+                    log::info!("{}", msg);
+                    let opt: Option<u32> = Some(42);
+                    let _x = opt.unwrap_or(0);
+                }
+            "#,
+        });
+
+        write_log_path_dependency_fixture(&temp_dir);
+
+        let args = Args::try_parse_from(&[
+            "cargo-anneal",
+            "--manifest-path",
+            temp_dir.path().join("Cargo.toml").to_str().unwrap(),
+        ])
+        .unwrap();
+
+        // 1. Resolve roots.
+        let toolchain = resolve_test_toolchain();
+        let roots = resolve_roots(&args, toolchain).unwrap();
+
+        // 2. Scan workspace WITH FollowDependencies mode!
+        let packages = scan_workspace(&roots, ScanMode::FollowDependencies).unwrap();
+        log::debug!(
+            "Promoted packages: {:?}",
+            packages.iter().map(|p| &p.name.package_name).collect::<Vec<_>>()
+        );
+
+        // 3. Verify that the external crates.io dependency 'log' was successfully promoted to a compile target!
+        let local_target = packages
+            .iter()
+            .find(|p| p.name.package_name == "test_proj")
+            .cloned()
+            .expect("local target test_proj was not resolved!");
+        let log_target = packages
+            .iter()
+            .find(|p| p.name.package_name == "log")
+            .cloned()
+            .expect("crates.io dependency log was not promoted!");
+
+        let locked_roots = roots.lock_run_root().unwrap();
+
+        // 4. Run Charon coordinator on ONLY our test targets to keep build hermetic
+        let targets_to_run = vec![local_target.clone(), log_target.clone()];
+        let res = run_charon(&args, &toolchain, &locked_roots, &targets_to_run, false);
+        assert!(res.is_ok(), "charon failed: {:?}", res.err());
+
+        // 5. Verify that the chased crates.io dependency 'log' was compiled as an independent root target (so definition is local to itself)!
+        let llbc_path_log = log_target.llbc_path(&locked_roots);
+        assert!(llbc_path_log.exists());
+        assert_fn_body(
+            &llbc_path_log,
+            &["log", "max_level"],
+            true, // expected_local
+            true, // expected_structured
+        );
+
+        // 6. Verify that the local crate still compiled while depending on the promoted crate.
+        let llbc_path_local = local_target.llbc_path(&locked_roots);
+        assert_fn_body(
+            &llbc_path_local,
+            &["test_proj", "log_info"],
+            true, // expected_local
+            true, // expected_structured
+        );
+    }
+
+    #[cfg(feature = "exocrate_tests")]
+    #[test]
+    fn test_charon_crates_io_dependency_chasing_offline_hermetic() {
+        let _ = env_logger::builder().is_test(true).try_init();
+
+        let temp_dir = tempfile::tempdir().unwrap();
+        crate::workspace_fixture!(&temp_dir, {
+            "Cargo.toml" => r#"
+                [workspace]
+                resolver = "2"
+
+                [package]
+                name = "test_proj"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                log = "0.4"
+
+                [lib]
+                path = "src/lib.rs"
+
+                [patch.crates-io]
+                log = { path = "./vendor/log" }
+            "#,
+            "src/lib.rs" => r#"
+                pub fn log_info(msg: &str) {
+                    log::info!("{}", msg);
+                    let opt: Option<u32> = Some(42);
+                    let _x = opt.unwrap_or(0);
+                }
+            "#,
+        });
+
+        let args = Args::try_parse_from(&[
+            "cargo-anneal",
+            "--manifest-path",
+            temp_dir.path().join("Cargo.toml").to_str().unwrap(),
+        ])
+        .unwrap();
+
+        write_log_path_dependency_fixture(&temp_dir);
+
+        // 1. Resolve roots.
+        let toolchain = resolve_test_toolchain();
+        let roots = resolve_roots(&args, toolchain).unwrap();
+
+        // 2. Scan workspace WITH FollowDependencies mode!
+        let packages = scan_workspace(&roots, ScanMode::FollowDependencies).unwrap();
+        log::debug!(
+            "Promoted packages: {:?}",
+            packages.iter().map(|p| &p.name.package_name).collect::<Vec<_>>()
+        );
+
+        // 3. Verify that the external crates.io dependency 'log' was successfully promoted to a compile target!
+        let local_target = packages
+            .iter()
+            .find(|p| p.name.package_name == "test_proj")
+            .cloned()
+            .expect("local target test_proj was not resolved!");
+        let log_target = packages
+            .iter()
+            .find(|p| p.name.package_name == "log")
+            .cloned()
+            .expect("crates.io dependency log was not promoted!");
+
+        let locked_roots = roots.lock_run_root().unwrap();
+
+        // 4. Run Charon coordinator on ONLY our test targets to keep build hermetic
+        let targets_to_run = vec![local_target.clone(), log_target.clone()];
+        let res = run_charon(&args, &toolchain, &locked_roots, &targets_to_run, false);
+        assert!(res.is_ok(), "charon failed: {:?}", res.err());
+
+        // 5. Verify that the chased crates.io dependency 'log' was compiled as an independent root target with local definition!
+        let llbc_path_log = log_target.llbc_path(&locked_roots);
+        assert!(llbc_path_log.exists());
+        assert_fn_body(
+            &llbc_path_log,
+            &["log", "max_level"],
+            true, // expected_local
+            true, // expected_structured
+        );
+    }
+
+    #[cfg(feature = "exocrate_tests")]
+    #[test]
+    fn test_charon_stdlib_unwrap_or_not_chased_workspace_only() {
+        let _ = env_logger::builder().is_test(true).try_init();
+
+        let temp_dir = tempfile::tempdir().unwrap();
+        crate::workspace_fixture!(&temp_dir, {
+            "Cargo.toml" => r#"
+                [package]
+                name = "test_proj"
+                version = "0.1.0"
+                edition = "2021"
+
+                [lib]
+                path = "src/lib.rs"
+            "#,
+            "src/lib.rs" => r#"
+                pub fn call_unwrap(opt: Option<u32>) -> u32 {
+                    opt.unwrap_or(0)
+                }
+            "#,
+        });
+
+        let args = Args::try_parse_from(&[
+            "cargo-anneal",
+            "--manifest-path",
+            temp_dir.path().join("Cargo.toml").to_str().unwrap(),
+        ])
+        .unwrap();
+
+        let toolchain = resolve_test_toolchain();
+        let roots = resolve_roots(&args, toolchain).unwrap();
+        let packages = scan_workspace(&roots, ScanMode::WorkspaceOnly).unwrap();
+        let locked_roots = roots.lock_run_root().unwrap();
+        let res = run_charon(&args, &toolchain, &locked_roots, &packages, false);
+        assert!(res.is_ok(), "charon failed: {:?}", res.err());
+
+        let llbc_path = packages[0].llbc_path(&locked_roots);
+        assert!(llbc_path.exists());
+
+        assert_fn_body(
+            &llbc_path,
+            &["test_proj", "call_unwrap"],
+            true, // expected_local
+            true, // expected_structured
+        );
+    }
+
+    #[cfg(feature = "exocrate_tests")]
+    #[test]
+    fn test_charon_stdlib_unwrap_or_chased_dependency_following() {
+        let _ = env_logger::builder().is_test(true).try_init();
+
+        let temp_dir = tempfile::tempdir().unwrap();
+        crate::workspace_fixture!(&temp_dir, {
+            "Cargo.toml" => r#"
+                [package]
+                name = "test_proj"
+                version = "0.1.0"
+                edition = "2021"
+
+                [lib]
+                path = "src/lib.rs"
+            "#,
+            "src/lib.rs" => r#"
+                pub fn call_unwrap(opt: Option<u32>) -> u32 {
+                    opt.unwrap_or(0)
+                }
+            "#,
+        });
+
+        let args = Args::try_parse_from(&[
+            "cargo-anneal",
+            "--manifest-path",
+            temp_dir.path().join("Cargo.toml").to_str().unwrap(),
+        ])
+        .unwrap();
+
+        let toolchain = resolve_test_toolchain();
+        let roots = resolve_roots(&args, toolchain).unwrap();
+        let packages = scan_workspace(&roots, ScanMode::FollowDependencies).unwrap();
+        assert_eq!(packages.len(), 1);
+        let locked_roots = roots.lock_run_root().unwrap();
+        let res = run_charon(&args, &toolchain, &locked_roots, &packages, false);
+        assert!(res.is_ok(), "charon failed: {:?}", res.err());
+
+        let llbc_path = packages[0].llbc_path(&locked_roots);
+        assert!(llbc_path.exists());
+
+        assert_fn_body(
+            &llbc_path,
+            &["test_proj", "call_unwrap"],
+            true, // expected_local
+            true, // expected_structured
         );
     }
 }
