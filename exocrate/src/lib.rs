@@ -73,7 +73,7 @@
 //! };
 //!
 //! // Check whether `source` archive is already installed at `location`, and if not, install it.
-//! let installed_exocrate_dir = CONFIG.resolve_installation_dir_or_install(location, source)
+//! let (installed_exocrate_dir, _) = CONFIG.resolve_installation_dir_or_install(location, source)
 //!     .expect("failed to resolve or install my-tool's exocrate");
 //!
 //! // Invoke tool installed from `tests/my-tool-deps.tar.zst` extracted to versioned exocrate
@@ -186,6 +186,15 @@ pub enum Source {
     Local(PathBuf),
 }
 
+/// Whether an installation was resolved or newly installed.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum ResolvedOrInstalled {
+    /// An existing installation was resolved.
+    ResolvedExisting,
+    /// A new installation was installed.
+    NewlyInstalled,
+}
+
 impl Config {
     /// Resolves the dependency directory, failing if it doesn't exist.
     pub fn resolve_installation_dir(&self, location: Location) -> IoResult<PathBuf> {
@@ -199,14 +208,14 @@ impl Config {
         &self,
         location: Location,
         source: Source,
-    ) -> IoResult<PathBuf> {
+    ) -> IoResult<(PathBuf, ResolvedOrInstalled)> {
         let dir_path = self.dir_path(location)?;
         if ManagedDirName::new(&dir_path).check_exists().is_ok() {
-            return Ok(dir_path);
+            return Ok((dir_path, ResolvedOrInstalled::ResolvedExisting));
         }
         let (reader, expected_sha) = self.open_source(source)?;
         install(reader, &dir_path, expected_sha)?;
-        Ok(dir_path)
+        Ok((dir_path, ResolvedOrInstalled::NewlyInstalled))
     }
 
     /// Opens the given source.
@@ -766,19 +775,21 @@ mod tests {
         let dev_path = config.dir_path(Location::LocalDev).unwrap();
         let _ = fs::remove_dir_all(&dev_path);
 
-        let resolved = config
+        let (resolved, status) = config
             .resolve_installation_dir_or_install(Location::LocalDev, Source::Local(archive_path))
             .unwrap();
         assert_eq!(resolved, dev_path);
+        assert_eq!(status, ResolvedOrInstalled::NewlyInstalled);
         assert!(dev_path.join("bin/compiler").exists());
 
-        let resolved2 = config
+        let (resolved2, status2) = config
             .resolve_installation_dir_or_install(
                 Location::LocalDev,
                 Source::Local(PathBuf::from("/nonexistent/path/should/not/be/accessed")),
             )
             .unwrap();
         assert_eq!(resolved2, dev_path);
+        assert_eq!(status2, ResolvedOrInstalled::ResolvedExisting);
 
         fs::remove_dir_all(&dev_path).unwrap();
     }
