@@ -10,6 +10,8 @@
 use clap::Parser as _;
 
 #[allow(dead_code)]
+mod resolve;
+#[allow(dead_code)]
 mod setup;
 #[allow(dead_code)]
 mod util;
