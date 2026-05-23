@@ -180,6 +180,7 @@ pub struct Roots {
     // E.g., `target/anneal/<hash>`.
     anneal_run_root: std::path::PathBuf,
     pub roots: Vec<AnnealTarget>,
+    pub metadata: cargo_metadata::Metadata,
 }
 
 impl Roots {
@@ -278,6 +279,7 @@ pub fn resolve_roots(args: &Args, toolchain: &crate::setup::Toolchain) -> anyhow
         anneal_global_root,
         anneal_run_root,
         roots: Vec::new(),
+        metadata: metadata.clone(), // `metadata` must outlive `selected_packages`.
     };
 
     for package in selected_packages {
