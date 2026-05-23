@@ -69,6 +69,10 @@ pub struct ExpandArgs {
     /// Do not show compilation progress bars
     #[arg(long)]
     pub no_progress: bool,
+
+    /// Recursively compile and translate all third-party dependencies to LLBC
+    #[arg(long)]
+    pub include_dependencies: bool,
 }
 
 fn setup(args: SetupArgs) -> anyhow::Result<()> {
@@ -78,7 +82,12 @@ fn setup(args: SetupArgs) -> anyhow::Result<()> {
 
 fn expand(args: ExpandArgs) -> anyhow::Result<()> {
     let roots = crate::resolve::resolve_roots(&args.resolve_args)?;
-    let packages = crate::scanner::scan_workspace(&roots)?;
+    let mode = if args.include_dependencies {
+        crate::scanner::ScanMode::FollowDependencies
+    } else {
+        crate::scanner::ScanMode::WorkspaceOnly
+    };
+    let packages = crate::scanner::scan_workspace(&roots, mode)?;
     if packages.is_empty() {
         log::warn!("No targets found to expand.");
         return Ok(());
