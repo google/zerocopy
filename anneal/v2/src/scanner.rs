@@ -9,6 +9,15 @@
 
 use sha2::Digest as _;
 
+/// Controls target scanning scope.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub enum ScanMode {
+    /// Scan local workspace member crates only.
+    WorkspaceOnly,
+    /// Walk all source code crates in the dependency graph and emit LLBC.
+    FollowDependencies,
+}
+
 /// Represents a compilation target (artifact) that needs to be processed.
 ///
 /// Charon compiles the entire target to generate LLBC files. The generated
@@ -103,7 +112,10 @@ impl AnnealArtifact {
 
 /// Scans the resolved workspace roots to identify the targets that need to be passed
 /// to Charon. No Rust source code parsing is performed during this step.
-pub fn scan_workspace(roots: &crate::resolve::Roots) -> anyhow::Result<Vec<AnnealArtifact>> {
+pub fn scan_workspace(
+    roots: &crate::resolve::Roots,
+    mode: ScanMode,
+) -> anyhow::Result<Vec<AnnealArtifact>> {
     let mut artifacts = Vec::new();
     for target in &roots.roots {
         artifacts.push(AnnealArtifact {
@@ -112,5 +124,24 @@ pub fn scan_workspace(roots: &crate::resolve::Roots) -> anyhow::Result<Vec<Annea
             manifest_path: target.manifest_path.clone(),
         });
     }
+
+    if mode == ScanMode::FollowDependencies {
+        for pkg in &roots.metadata.packages {
+            // Skip workspace members to prevent duplication.
+            if roots.metadata.workspace_members.contains(&pkg.id) {
+                continue;
+            }
+            artifacts.push(AnnealArtifact {
+                name: crate::resolve::AnnealTargetName {
+                    package_name: pkg.name.clone(),
+                    target_name: pkg.name.to_string(),
+                    kind: crate::resolve::AnnealTargetKind::Lib,
+                },
+                target_kind: crate::resolve::AnnealTargetKind::Lib,
+                manifest_path: pkg.manifest_path.as_std_path().to_owned(),
+            });
+        }
+    }
+
     Ok(artifacts)
 }
