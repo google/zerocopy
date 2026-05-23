@@ -70,6 +70,7 @@ impl Toolchain {
         Ok(Self { root })
     }
 
+    #[allow(dead_code)]
     pub fn root(&self) -> &std::path::Path {
         &self.root
     }

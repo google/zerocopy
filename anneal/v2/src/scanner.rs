@@ -91,6 +91,7 @@ impl AnnealArtifact {
     }
 
     /// Returns the name of the `.lean` spec file to use for this artifact.
+    #[allow(dead_code)]
     pub fn lean_spec_file_name(&self) -> String {
         format!("{}.lean", self.artifact_slug())
     }
