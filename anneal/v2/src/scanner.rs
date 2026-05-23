@@ -32,6 +32,20 @@ impl From<&crate::resolve::AnnealTarget> for AnnealArtifact {
     }
 }
 
+impl From<&cargo_metadata::Package> for AnnealArtifact {
+    fn from(package: &cargo_metadata::Package) -> Self {
+        Self {
+            name: crate::resolve::AnnealTargetName {
+                package_name: package.name.clone(),
+                target_name: package.name.to_string(),
+                kind: crate::resolve::AnnealTargetKind::Lib,
+            },
+            target_kind: crate::resolve::AnnealTargetKind::Lib,
+            manifest_path: package.manifest_path.as_std_path().to_owned(),
+        }
+    }
+}
+
 impl AnnealArtifact {
     /// Returns a unique, Lean-compatible artifact slug.
     ///

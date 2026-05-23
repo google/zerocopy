@@ -68,6 +68,10 @@ pub struct GenerateArgs {
     /// Do not show compilation progress bars
     #[arg(long)]
     pub no_progress: bool,
+
+    /// Recursively compile and translate all third-party dependencies to LLBC
+    #[arg(long)]
+    pub include_dependencies: bool,
 }
 
 fn setup(args: SetupArgs) -> anyhow::Result<()> {
@@ -78,7 +82,18 @@ fn setup(args: SetupArgs) -> anyhow::Result<()> {
 fn generate(args: GenerateArgs) -> anyhow::Result<()> {
     let toolchain = crate::setup::Toolchain::resolve()?;
     let roots = crate::resolve::resolve_roots(&args.resolve_args, &toolchain)?;
-    let packages = roots.roots.iter().map(crate::scanner::AnnealArtifact::from).collect::<Vec<_>>();
+    let mut packages =
+        roots.roots.iter().map(crate::scanner::AnnealArtifact::from).collect::<Vec<_>>();
+    if args.include_dependencies {
+        packages.extend(
+            roots
+                .metadata
+                .packages
+                .iter()
+                .filter(|package| !roots.metadata.workspace_members.contains(&package.id))
+                .map(crate::scanner::AnnealArtifact::from),
+        );
+    }
     if packages.is_empty() {
         log::warn!("No targets found to generate.");
         return Ok(());
