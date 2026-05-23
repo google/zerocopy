@@ -187,10 +187,12 @@ impl<'a> LockedRoots<'a> {
         }
     }
 
+    #[allow(dead_code)]
     pub fn lean_root(&self) -> std::path::PathBuf {
         self.anneal_run_root.path.join("lean")
     }
 
+    #[allow(dead_code)]
     pub fn lean_generated_root(&self) -> std::path::PathBuf {
         self.lean_root().join("generated")
     }
