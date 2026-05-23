@@ -57,10 +57,11 @@ fn setup_installation_dir(args: SetupArgs) -> std::path::PathBuf {
         None => exocrate::Source::Remote(REMOTE),
     };
 
-    CONFIG
+    let (installation_dir, _) = CONFIG
         .resolve_installation_dir_or_install(location, source)
         // FIXME: Implement unified error reporting (e.g., via `anyhow`).
-        .expect("failed to resolve-or-install dependencies")
+        .expect("failed to resolve-or-install dependencies");
+    installation_dir
 }
 
 fn setup(args: SetupArgs) {
