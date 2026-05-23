@@ -32,6 +32,45 @@ impl From<&crate::resolve::AnnealTarget> for AnnealArtifact {
     }
 }
 
+impl From<&cargo_metadata::Package> for AnnealArtifact {
+    fn from(package: &cargo_metadata::Package) -> Self {
+        Self {
+            name: crate::resolve::AnnealTargetName {
+                package_name: package.name.clone(),
+                target_name: package.name.to_string(),
+                kind: crate::resolve::AnnealTargetKind::Lib,
+            },
+            target_kind: crate::resolve::AnnealTargetKind::Lib,
+            manifest_path: package.manifest_path.as_std_path().to_owned(),
+        }
+    }
+}
+
+impl crate::resolve::Roots {
+    /// Returns the artifacts selected directly by the user's Cargo request.
+    pub fn root_packages(&self) -> Vec<AnnealArtifact> {
+        self.roots.iter().map(AnnealArtifact::from).collect()
+    }
+
+    /// Returns the selected roots and every non-workspace package in Cargo's
+    /// dependency graph.
+    ///
+    /// Cargo metadata does not include Rust sysroot crates such as `core`,
+    /// `alloc`, or `std`, so dependency chasing intentionally does not promote
+    /// those crates to standalone Anneal artifacts.
+    pub fn all_packages(&self) -> Vec<AnnealArtifact> {
+        let mut packages = self.root_packages();
+        packages.extend(
+            self.metadata
+                .packages
+                .iter()
+                .filter(|package| !self.metadata.workspace_members.contains(&package.id))
+                .map(AnnealArtifact::from),
+        );
+        packages
+    }
+}
+
 impl AnnealArtifact {
     /// Returns a unique, Lean-compatible artifact slug.
     ///
