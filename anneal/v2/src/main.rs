@@ -7,7 +7,15 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+use anyhow::Context as _;
 use clap::Parser as _;
+
+mod charon;
+mod diagnostics;
+mod resolve;
+mod scanner;
+mod setup;
+mod util;
 
 /// Anneal
 #[derive(clap::Parser, Debug)]
@@ -21,55 +29,77 @@ struct Cli {
 enum Commands {
     /// Setup Anneal dependencies
     Setup(SetupArgs),
+    /// Expand a crate (runs Charon)
+    Expand(ExpandArgs),
+
+    /// Helper to acquire shared or exclusive locks for multi-process integration testing (dev only)
+    #[cfg(feature = "exocrate_tests")]
+    TestLockHelper {
+        /// The role to run as: 'reader-a', 'reader-b', 'writer-a', or 'reader-exclusion'
+        #[arg(long)]
+        role: String,
+        /// Path to the directory to lock
+        #[arg(long)]
+        lock_dir: std::path::PathBuf,
+        /// Path to the shared log file where lock transitions are appended
+        #[arg(long)]
+        log_file: std::path::PathBuf,
+        /// Path to the temporary synchronization signal file
+        #[arg(long)]
+        sig_file: std::path::PathBuf,
+    },
 }
 
 #[derive(clap::Parser, Debug)]
 pub struct SetupArgs {
-    /// Path to a local dependency archive to use instead of downloading.
+    /// Path to a local dependency archive to use instead of downloading
     #[arg(long, value_name = "path-to-local-archive")]
     pub local_archive: Option<std::path::PathBuf>,
 }
 
-exocrate::config! {
-    const CONFIG: Config = Config {
-        rel_dir_path: [".anneal", "toolchain"],
-        versioned_files: &["../Cargo.toml", "../Cargo.lock"],
-    };
+#[derive(clap::Parser, Debug)]
+pub struct ExpandArgs {
+    #[command(flatten)]
+    pub resolve_args: crate::resolve::Args,
+
+    /// Controls where LLBC output is placed on the filesystem
+    #[arg(long, value_name = "output-dir")]
+    pub output_dir: Option<std::path::PathBuf>,
+
+    /// Do not show compilation progress bars
+    #[arg(long)]
+    pub no_progress: bool,
 }
 
-exocrate::parse_remote_archive! {
-    const REMOTE: RemoteArchive = "Cargo.toml" [
-        (linux, x86_64),
-        (macos, x86_64),
-        (linux, aarch64),
-        (macos, aarch64),
-    ];
+fn setup(args: SetupArgs) -> anyhow::Result<()> {
+    crate::setup::run_setup(crate::setup::SetupArgs { local_archive: args.local_archive })
+        .context("Failed to setup toolchain")
 }
 
-fn setup_installation_dir(args: SetupArgs) -> std::path::PathBuf {
-    let location = if std::env::var("__ANNEAL_LOCAL_DEV").is_ok() {
-        exocrate::Location::LocalDev
-    } else {
-        exocrate::Location::UserGlobal
-    };
-    let source = match args.local_archive {
-        Some(local_archive) => exocrate::Source::Local(local_archive),
-        None => exocrate::Source::Remote(REMOTE),
-    };
-
-    let (installation_dir, _) = CONFIG
-        .resolve_installation_dir_or_install(location, source)
-        // FIXME: Implement unified error reporting (e.g., via `anyhow`).
-        .expect("failed to resolve-or-install dependencies");
-    installation_dir
+fn expand(args: ExpandArgs) -> anyhow::Result<()> {
+    let toolchain = crate::setup::Toolchain::resolve()?;
+    let roots = crate::resolve::resolve_roots(&args.resolve_args, &toolchain)?;
+    let packages = crate::scanner::scan_workspace(&roots)?;
+    if packages.is_empty() {
+        log::warn!("No targets found to expand.");
+        return Ok(());
+    }
+    let mut locked_roots = roots.lock_run_root()?;
+    if let Some(output_dir) = args.output_dir {
+        locked_roots.llbc_override = Some(output_dir);
+    }
+    let show_progress = !args.no_progress;
+    crate::charon::run_charon(
+        &args.resolve_args,
+        &toolchain,
+        &locked_roots,
+        &packages,
+        show_progress,
+    )?;
+    Ok(())
 }
 
-fn setup(args: SetupArgs) {
-    let installation_dir = setup_installation_dir(args);
-    log::info!("anneal toolchain is installed at {:?}", installation_dir);
-}
-
-fn main() {
+fn main() -> anyhow::Result<()> {
     // Suppressing timestamps removes a source of nondeterminism that is
     // difficult to work around in integration tests.
     env_logger::builder().format_timestamp(None).init();
@@ -84,6 +114,12 @@ fn main() {
 
     match args.command {
         Commands::Setup(args) => setup(args),
+        Commands::Expand(args) => expand(args),
+
+        #[cfg(feature = "exocrate_tests")]
+        Commands::TestLockHelper { role, lock_dir, log_file, sig_file } => {
+            crate::util::run_test_lock_helper(&role, &lock_dir, &log_file, &sig_file)
+        }
     }
 }
 
@@ -91,21 +127,71 @@ fn main() {
 mod tests {
     #[cfg(feature = "exocrate_tests")]
     mod exocrate_tests {
-        use std::{
-            fs, io,
-            path::{Path, PathBuf},
-            process::Command,
-            sync::OnceLock,
-        };
-
-        use serde_json::{Value, json};
-
         const LOCAL_ARCHIVE: &str = "target/anneal-exocrate.tar.zst";
-        static INSTALLATION_DIR: OnceLock<PathBuf> = OnceLock::new();
+        static INSTALLATION_DIR: std::sync::OnceLock<std::path::PathBuf> =
+            std::sync::OnceLock::new();
 
         #[test]
         fn test_setup() {
             install_local_archive();
+        }
+
+        #[test]
+        fn test_setup_and_toolchain_paths() {
+            install_local_archive();
+
+            let toolchain =
+                crate::setup::Toolchain::resolve().expect("Failed to resolve toolchain");
+
+            assert!(toolchain.root().is_dir(), "root is not a directory: {:?}", toolchain.root());
+            assert!(
+                toolchain.aeneas_bin_dir().is_dir(),
+                "aeneas_bin_dir is not a directory: {:?}",
+                toolchain.aeneas_bin_dir()
+            );
+            assert!(
+                toolchain.rust_sysroot().is_dir(),
+                "rust_sysroot is not a directory: {:?}",
+                toolchain.rust_sysroot()
+            );
+            assert!(
+                toolchain.rust_bin().is_dir(),
+                "rust_bin is not a directory: {:?}",
+                toolchain.rust_bin()
+            );
+            assert!(
+                toolchain.rust_lib().is_dir(),
+                "rust_lib is not a directory: {:?}",
+                toolchain.rust_lib()
+            );
+            assert!(
+                crate::setup::Tool::Cargo.path(&toolchain).is_file(),
+                "cargo is not a file: {:?}",
+                crate::setup::Tool::Cargo.path(&toolchain)
+            );
+            assert!(
+                crate::setup::Tool::Rustc.path(&toolchain).is_file(),
+                "rustc is not a file: {:?}",
+                crate::setup::Tool::Rustc.path(&toolchain)
+            );
+
+            let cmd = toolchain
+                .command(crate::setup::Tool::Charon)
+                .expect("failed to construct charon command");
+            assert_eq!(
+                command_env(&cmd, "CHARON_TOOLCHAIN_IS_IN_PATH"),
+                Some(std::ffi::OsStr::new("1"))
+            );
+            assert_eq!(
+                std::env::split_paths(command_env(&cmd, "PATH").expect("PATH must be set"))
+                    .next()
+                    .as_deref(),
+                Some(toolchain.rust_bin().as_path())
+            );
+            let lib_var =
+                if cfg!(target_os = "macos") { "DYLD_LIBRARY_PATH" } else { "LD_LIBRARY_PATH" };
+            assert_eq!(command_env(&cmd, lib_var), Some(toolchain.rust_lib().as_os_str()));
+            assert!(command_env(&cmd, "HOME").is_none());
         }
 
         #[test]
@@ -119,21 +205,36 @@ mod tests {
                 .expect("archive Lake cache reuse test failed");
         }
 
-        fn install_local_archive() -> PathBuf {
+        fn install_local_archive() -> std::path::PathBuf {
             // ASSUMPTION: The CI dependency builder downloads the Nix-built
             // archive artifact to this path before running v2 tests.
             INSTALLATION_DIR
                 .get_or_init(|| {
-                    super::super::setup_installation_dir(super::super::SetupArgs {
+                    super::super::setup(super::super::SetupArgs {
                         local_archive: Some(LOCAL_ARCHIVE.into()),
                     })
+                    .expect("Failed to run setup");
+                    crate::setup::Toolchain::resolve()
+                        .expect("Failed to resolve toolchain")
+                        .root()
+                        .to_path_buf()
                 })
                 .clone()
         }
 
+        fn command_env<'a>(
+            cmd: &'a std::process::Command,
+            name: &str,
+        ) -> Option<&'a std::ffi::OsStr> {
+            cmd.get_envs().find_map(|(key, value)| {
+                (key == std::ffi::OsStr::new(name))
+                    .then(|| value.expect("environment variable should be set"))
+            })
+        }
+
         fn assert_archive_lake_cache_reuse(
-            toolchain_root: &Path,
-            temp_root: &Path,
+            toolchain_root: &std::path::Path,
+            temp_root: &std::path::Path,
         ) -> Result<(), Box<dyn std::error::Error>> {
             let aeneas_root = toolchain_root.join("aeneas");
             let aeneas_lean = aeneas_root.join("backends/lean");
@@ -142,10 +243,10 @@ mod tests {
 
             assert_no_write_bits(&aeneas_root)?;
 
-            fs::create_dir_all(workspace.join("generated"))?;
-            fs::copy(aeneas_lean.join("lean-toolchain"), workspace.join("lean-toolchain"))?;
-            fs::write(workspace.join("generated/Generated.lean"), "import Aeneas\n")?;
-            fs::write(
+            std::fs::create_dir_all(workspace.join("generated"))?;
+            std::fs::copy(aeneas_lean.join("lean-toolchain"), workspace.join("lean-toolchain"))?;
+            std::fs::write(workspace.join("generated/Generated.lean"), "import Aeneas\n")?;
+            std::fs::write(
                 workspace.join("lakefile.lean"),
                 format!(
                     r#"import Lake
@@ -181,8 +282,8 @@ lean_lib Generated where
             Ok(())
         }
 
-        fn assert_no_write_bits(root: &Path) -> Result<(), Box<dyn std::error::Error>> {
-            let metadata = fs::symlink_metadata(root)?;
+        fn assert_no_write_bits(root: &std::path::Path) -> Result<(), Box<dyn std::error::Error>> {
+            let metadata = std::fs::symlink_metadata(root)?;
             if metadata.file_type().is_symlink() {
                 return Ok(());
             }
@@ -190,7 +291,7 @@ lean_lib Generated where
                 panic!("archive path should be read-only: {}", root.display());
             }
             if metadata.is_dir() {
-                for entry in fs::read_dir(root)? {
+                for entry in std::fs::read_dir(root)? {
                     assert_no_write_bits(&entry?.path())?;
                 }
             }
@@ -198,26 +299,29 @@ lean_lib Generated where
         }
 
         #[cfg(unix)]
-        fn has_write_bits(permissions: &fs::Permissions) -> bool {
+        fn has_write_bits(permissions: &std::fs::Permissions) -> bool {
             use std::os::unix::fs::PermissionsExt as _;
             permissions.mode() & 0o222 != 0
         }
 
         #[cfg(not(unix))]
-        fn has_write_bits(permissions: &fs::Permissions) -> bool {
+        fn has_write_bits(permissions: &std::fs::Permissions) -> bool {
             !permissions.readonly()
         }
 
         fn write_relative_archive_manifest(
-            workspace: &Path,
-            aeneas_lean: &Path,
+            workspace: &std::path::Path,
+            aeneas_lean: &std::path::Path,
         ) -> Result<(), Box<dyn std::error::Error>> {
-            let aeneas_lean = fs::canonicalize(aeneas_lean)?;
-            let workspace = fs::canonicalize(workspace)?;
+            let aeneas_lean = std::fs::canonicalize(aeneas_lean)?;
+            let workspace = std::fs::canonicalize(workspace)?;
             let manifest_path = aeneas_lean.join("lake-manifest.json");
-            let manifest: Value = serde_json::from_reader(fs::File::open(&manifest_path)?)?;
-            let aeneas_packages =
-                manifest.get("packages").and_then(Value::as_array).ok_or_else(|| {
+            let manifest: serde_json::Value =
+                serde_json::from_reader(std::fs::File::open(&manifest_path)?)?;
+            let aeneas_packages = manifest
+                .get("packages")
+                .and_then(serde_json::Value::as_array)
+                .ok_or_else(|| {
                     invalid_data(format!(
                         "Aeneas Lake manifest {} is missing packages",
                         manifest_path.display()
@@ -225,7 +329,7 @@ lean_lib Generated where
                 })?;
 
             let aeneas_dir = relative_manifest_string(&aeneas_lean, &workspace)?;
-            let mut packages = vec![json!({
+            let mut packages = vec![serde_json::json!({
                 "type": "path",
                 "name": "aeneas",
                 "dir": aeneas_dir,
@@ -236,34 +340,36 @@ lean_lib Generated where
                 let mut entry = entry.as_object().cloned().ok_or_else(|| {
                     invalid_data("Aeneas Lake manifest package entry is not an object")
                 })?;
-                let package_type = entry.get("type").and_then(Value::as_str).ok_or_else(|| {
-                    invalid_data("Aeneas Lake manifest package entry is missing type")
-                })?;
+                let package_type =
+                    entry.get("type").and_then(serde_json::Value::as_str).ok_or_else(|| {
+                        invalid_data("Aeneas Lake manifest package entry is missing type")
+                    })?;
                 if package_type != "path" {
                     return Err(invalid_data(format!(
                         "Aeneas Lake manifest package entry is {package_type:?}, not a path dependency"
                     ))
                     .into());
                 }
-                let package_dir = entry.get("dir").and_then(Value::as_str).ok_or_else(|| {
-                    invalid_data("Aeneas Lake manifest package entry is missing dir")
-                })?;
-                let package_dir = Path::new(package_dir);
+                let package_dir =
+                    entry.get("dir").and_then(serde_json::Value::as_str).ok_or_else(|| {
+                        invalid_data("Aeneas Lake manifest package entry is missing dir")
+                    })?;
+                let package_dir = std::path::Path::new(package_dir);
                 let package_dir = if package_dir.is_absolute() {
                     package_dir.to_path_buf()
                 } else {
                     aeneas_lean.join(package_dir)
                 };
-                let package_dir = fs::canonicalize(package_dir)?;
+                let package_dir = std::fs::canonicalize(package_dir)?;
                 entry.insert(
                     "dir".to_string(),
-                    json!(relative_manifest_string(&package_dir, &workspace)?),
+                    serde_json::json!(relative_manifest_string(&package_dir, &workspace)?),
                 );
-                entry.insert("inherited".to_string(), json!(true));
-                packages.push(Value::Object(entry));
+                entry.insert("inherited".to_string(), serde_json::json!(true));
+                packages.push(serde_json::Value::Object(entry));
             }
 
-            let manifest = json!({
+            let manifest = serde_json::json!({
                 "version": "1.2.0",
                 "packagesDir": ".lake/packages",
                 "packages": packages,
@@ -271,7 +377,7 @@ lean_lib Generated where
                 "lakeDir": ".lake",
                 "fixedToolchain": false,
             });
-            fs::write(
+            std::fs::write(
                 workspace.join("lake-manifest.json"),
                 format!("{}\n", serde_json::to_string_pretty(&manifest)?),
             )?;
@@ -279,8 +385,8 @@ lean_lib Generated where
         }
 
         fn relative_manifest_string(
-            path: &Path,
-            base: &Path,
+            path: &std::path::Path,
+            base: &std::path::Path,
         ) -> Result<String, Box<dyn std::error::Error>> {
             let path = pathdiff::diff_paths(path, base).ok_or_else(|| {
                 invalid_data(format!(
@@ -292,17 +398,17 @@ lean_lib Generated where
             Ok(path.to_string_lossy().into_owned())
         }
 
-        fn lake_string(path: &Path) -> String {
+        fn lake_string(path: &std::path::Path) -> String {
             path.to_string_lossy().replace('\\', "\\\\").replace('"', "\\\"")
         }
 
         fn run_lake_archive_command(
-            workspace: &Path,
-            lean_root: &Path,
+            workspace: &std::path::Path,
+            lean_root: &std::path::Path,
             args: &[&str],
         ) -> Result<(), Box<dyn std::error::Error>> {
             let lean_bin = lean_root.join("bin");
-            let mut cmd = Command::new(lean_bin.join("lake"));
+            let mut cmd = std::process::Command::new(lean_bin.join("lake"));
             cmd.args(args).current_dir(workspace).env_clear();
 
             let lib_var =
@@ -314,7 +420,7 @@ lean_lib Generated where
 
             let output = cmd.output()?;
             if !output.status.success() {
-                return Err(io::Error::other(format!(
+                return Err(std::io::Error::other(format!(
                     "lake {:?} failed with status {}\nstdout:\n{}\nstderr:\n{}",
                     args,
                     output.status,
@@ -326,8 +432,8 @@ lean_lib Generated where
             Ok(())
         }
 
-        fn invalid_data(message: impl Into<String>) -> io::Error {
-            io::Error::new(io::ErrorKind::InvalidData, message.into())
+        fn invalid_data(message: impl Into<String>) -> std::io::Error {
+            std::io::Error::new(std::io::ErrorKind::InvalidData, message.into())
         }
     }
 }
