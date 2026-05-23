@@ -186,6 +186,33 @@ pub enum Source {
     Local(PathBuf),
 }
 
+pub enum ResolveOrInstallResult {
+    AlreadyInstalled(PathBuf),
+    NewlyInstalled(PathBuf),
+}
+
+impl std::ops::Deref for ResolveOrInstallResult {
+    type Target = std::path::Path;
+
+    fn deref(&self) -> &Self::Target {
+        use ResolveOrInstallResult::*;
+        match self {
+            AlreadyInstalled(path) => &path,
+            NewlyInstalled(path) => &path,
+        }
+    }
+}
+
+impl std::fmt::Debug for ResolveOrInstallResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        use ResolveOrInstallResult::*;
+        match self {
+            AlreadyInstalled(path) => path.fmt(f),
+            NewlyInstalled(path) => path.fmt(f),
+        }
+    }
+}
+
 impl Config {
     /// Resolves the dependency directory, failing if it doesn't exist.
     pub fn resolve_installation_dir(&self, location: Location) -> IoResult<PathBuf> {
@@ -199,14 +226,14 @@ impl Config {
         &self,
         location: Location,
         source: Source,
-    ) -> IoResult<PathBuf> {
+    ) -> IoResult<ResolveOrInstallResult> {
         let dir_path = self.dir_path(location);
         if ManagedDirName::new(&dir_path).check_exists().is_ok() {
-            return Ok(dir_path);
+            return Ok(ResolveOrInstallResult::AlreadyInstalled(dir_path));
         }
         let (reader, expected_sha) = self.open_source(source)?;
         install(reader, &dir_path, expected_sha)?;
-        Ok(dir_path)
+        Ok(ResolveOrInstallResult::NewlyInstalled(dir_path))
     }
 
     /// Opens the given source.
