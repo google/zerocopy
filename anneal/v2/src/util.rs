@@ -42,6 +42,7 @@ impl DirLock {
     ///
     /// Multiple processes can hold shared locks simultaneously, but an
     /// exclusive lock will block until all shared locks are released.
+    #[allow(dead_code)]
     pub(crate) fn lock_shared(path: std::path::PathBuf) -> anyhow::Result<Self> {
         let file = Self::open_lock_file(&path)?;
         file.lock_shared()

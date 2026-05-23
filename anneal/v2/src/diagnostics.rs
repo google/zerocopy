@@ -242,6 +242,7 @@ impl DiagnosticMapper {
     ///    bytes.
     /// 3. Anneal calls this method to print the error onto the Rust file
     ///    canvas.
+    #[allow(dead_code)]
     pub fn render_raw<F>(
         &mut self,
         file_name: &str,
