@@ -62,6 +62,8 @@ walkdir = "2.5.0"
 sha2 = "0.10"
 tempfile = "3.27.0"
 rayon = "1.11.0"
+# `tag` is `main` branch HEAD on 2026-06-03.
+charon_lib = { package = "charon", git = "https://github.com/AeneasVerif/charon.git", tag = "nightly-2026.06.03", default-features = false }
 
 [dev-dependencies]
 pathdiff = "0.2"
