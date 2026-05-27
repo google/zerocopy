@@ -11,8 +11,7 @@ extern crate zerocopy_renamed;
 use zerocopy_renamed::FromBytes;
 
 #[derive(FromBytes)]
-//~^ ERROR: `on_error` is experimental; pass '--cfg zerocopy_unstable_derive_on_error' to enable
-//~| ERROR: the trait bound `bool: FromBytes` is not satisfied
+//~^ ERROR: `on_error` is experimental; pass '--cfg zerocopy_unstable_linux' to enable
 #[zerocopy(crate = "zerocopy_renamed")]
 #[zerocopy(on_error = "skip")]
 #[repr(C)]

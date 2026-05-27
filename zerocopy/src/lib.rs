@@ -433,6 +433,10 @@ const _: () = {
     WARNING
 };
 
+#[doc(hidden)]
+#[cfg(all(any(feature = "derive", test), zerocopy_unstable_linux))]
+pub use zerocopy_derive::most_traits;
+
 /// Implements [`KnownLayout`].
 ///
 /// This derive analyzes various aspects of a type's layout that are needed for

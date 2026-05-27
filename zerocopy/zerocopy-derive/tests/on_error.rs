@@ -144,26 +144,118 @@ union BadIntoBytesUnionGeneric<T: imp::Copy> {
 
 util_assert_not_impl_any!(BadIntoBytesUnionGeneric<u8>: imp::IntoBytes);
 
-#[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
-mod trivial_bounds {
-    use super::*;
+#[derive(imp::FromBytes)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct TrivialBounds(bool);
 
-    #[derive(imp::FromBytes)]
-    #[zerocopy(on_error = "skip")]
-    #[zerocopy(crate = "zerocopy_renamed")]
-    #[repr(transparent)]
-    struct TrivialBounds(bool);
+util_assert_not_impl_any!(TrivialBounds: imp::FromBytes);
 
-    util_assert_not_impl_any!(TrivialBounds: imp::FromBytes);
-
-    #[derive(imp::IntoBytes)]
-    #[zerocopy(on_error = "skip")]
-    #[zerocopy(crate = "zerocopy_renamed")]
-    #[repr(C)]
-    struct BadIntoBytesStructPadding {
-        a: u8,
-        b: u16,
-    }
-
-    util_assert_not_impl_any!(BadIntoBytesStructPadding: imp::IntoBytes);
+#[derive(imp::IntoBytes)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct BadIntoBytesStructPadding {
+    a: u8,
+    b: u16,
 }
+
+util_assert_not_impl_any!(BadIntoBytesStructPadding: imp::IntoBytes);
+
+#[derive(imp::most_traits)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct NotFromBytes {
+    a: [bool],
+}
+
+util_assert_impl_all!(NotFromBytes:
+    imp::SplitAt,
+    imp::IntoBytes,
+    imp::KnownLayout,
+    imp::Unaligned,
+    imp::Immutable,
+);
+util_assert_not_impl_any!(NotFromBytes: imp::FromBytes);
+
+#[derive(imp::most_traits)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct NotFromZeros {
+    a: [imp::core::num::NonZeroU8],
+}
+
+util_assert_impl_all!(NotFromZeros:
+    imp::SplitAt,
+    imp::IntoBytes,
+    imp::KnownLayout,
+    imp::Unaligned,
+    imp::Immutable,
+);
+util_assert_not_impl_any!(NotFromZeros: imp::FromZeros);
+
+#[derive(imp::most_traits)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct NotUnaligned {
+    a: [u16],
+}
+
+util_assert_impl_all!(NotUnaligned:
+    imp::FromBytes,
+    imp::IntoBytes,
+    imp::KnownLayout,
+    imp::Immutable,
+    imp::SplitAt,
+);
+util_assert_not_impl_any!(NotUnaligned: imp::Unaligned);
+
+#[derive(imp::most_traits)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct NotIntoBytes {
+    a: [imp::core::mem::MaybeUninit<u8>],
+}
+
+util_assert_impl_all!(NotIntoBytes:
+    imp::FromBytes,
+    imp::KnownLayout,
+    imp::SplitAt,
+    imp::Unaligned,
+    imp::Immutable,
+);
+util_assert_not_impl_any!(NotIntoBytes: imp::IntoBytes);
+
+#[derive(imp::most_traits)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct NotImmutable {
+    a: [imp::core::cell::UnsafeCell<u8>],
+}
+
+util_assert_impl_all!(NotImmutable:
+    imp::FromBytes,
+    imp::IntoBytes,
+    imp::KnownLayout,
+    imp::SplitAt,
+    imp::Unaligned,
+);
+util_assert_not_impl_any!(NotImmutable: imp::Immutable);
+
+#[derive(imp::most_traits)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct NotSplit {
+    a: u8,
+    b: u8,
+}
+
+util_assert_impl_all!(NotSplit:
+    imp::FromBytes,
+    imp::IntoBytes,
+    imp::KnownLayout,
+    imp::Unaligned,
+    imp::Immutable,
+);
+util_assert_not_impl_any!(NotSplit: imp::SplitAt);
