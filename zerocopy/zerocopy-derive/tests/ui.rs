@@ -15,7 +15,7 @@ fn ui() {
     // present.
     UiTestRunner::new()
         .rustc_arg("--cfg=zerocopy_derive_union_into_bytes")
-        .rustc_arg("--cfg=zerocopy_unstable_derive_on_error")
+        .rustc_arg("--cfg=zerocopy_unstable_linux")
         .rustc_arg("-Wwarnings") // To ensure .stderr files reflect typical user encounter
         .run();
 

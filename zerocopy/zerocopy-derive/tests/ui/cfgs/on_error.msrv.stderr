@@ -1,4 +1,4 @@
-error: `on_error` is experimental; pass '--cfg zerocopy_unstable_derive_on_error' to enable
+error: `on_error` is experimental; pass '--cfg zerocopy_unstable_linux' to enable
   --> $DIR/on_error.rs:13:10
    |
 13 | #[derive(FromBytes)]
