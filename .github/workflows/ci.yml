@@ -520,6 +520,15 @@ jobs:
         THREADS=$(echo "$(nproc) * 2" | bc)
         echo "Running Miri tests with $THREADS threads" | tee -a $GITHUB_STEP_SUMMARY
 
+        # The internal miri tests use unstable rust features, so we want to make sure zerocopy
+        # still compiles without those features for downstream users. We'll use cargo directly since
+        # `cargo.sh` sets `__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS`, which turns on
+        # the unstable features.
+        RUSTFLAGS="--cfg miri -Zallow-features=" \
+          cargo \
+          +$(./cargo.sh --version $TOOLCHAIN) \
+          check
+
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do

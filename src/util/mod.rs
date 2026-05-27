@@ -56,7 +56,7 @@ impl<T: ?Sized> Clone for SendSyncPhantomData<T> {
     }
 }
 
-#[cfg(miri)]
+#[cfg(all(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS, miri))]
 extern "Rust" {
     /// Miri-provided intrinsic that marks the pointer `ptr` as aligned to
     /// `align`.
