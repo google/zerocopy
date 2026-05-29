@@ -233,6 +233,41 @@ fn test_into_bytes_struct_trailing() {
 }
 
 #[test]
+fn test_into_bytes_struct_homogeneous_generic() {
+    // A `#[repr(C)]` generic struct whose fields all share the same
+    // syntactic type has no padding, so the emitted `IntoBytes` impl
+    // bounds only on `IntoBytes` for the shared type and omits the
+    // `Unaligned` bound that the fallback branch would otherwise add.
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<T> {
+                a: T,
+                b: T,
+            }
+        } expands to "expected/into_bytes_struct_homogeneous_generic.expected.rs"
+    }
+}
+
+#[test]
+fn test_into_bytes_struct_homogeneous_generic_assoc_ty() {
+    // Exercises the case in which every field is an associated-type
+    // projection of the single type parameter. Token comparison sees
+    // the same sequence `P :: BaseField` for every field, so the
+    // homogeneous branch applies.
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<P: Config> {
+                c0: P::BaseField,
+                c1: P::BaseField,
+                c2: P::BaseField,
+            }
+        } expands to "expected/into_bytes_struct_homogeneous_generic_assoc_ty.expected.rs"
+    }
+}
+
+#[test]
 fn test_into_bytes_struct_trailing_generic() {
     test! {
         IntoBytes {
