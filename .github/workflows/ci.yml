@@ -1040,7 +1040,9 @@ jobs:
           cache-from: |
             type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }}
             type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
-          cache-to: type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }},mode=max
+          # External pull requests have read-only package permissions, so they
+          # can consume GHCR caches but cannot export updated cache layers.
+          cache-to: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && format('type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:{0},mode=max', steps.docker_tag.outputs.tag) || '' }}
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:

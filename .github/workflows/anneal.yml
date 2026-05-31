@@ -89,7 +89,9 @@ jobs:
           cache-from: |
             type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }}
             type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:main
-          cache-to: type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }},mode=max
+          # External pull requests have read-only package permissions, so they
+          # can consume GHCR caches but cannot export updated cache layers.
+          cache-to: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && format('type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:{0},mode=max', steps.docker_tag.outputs.tag) || '' }}
 
       - name: Record build time
         env:
@@ -137,7 +139,9 @@ jobs:
       # The build portion of this step will always be cached thanks to the
       # dry-run build above.
       - name: Build and push Docker image
-        if: steps.check_remote.outputs.match != 'true'
+        # External pull requests cannot write the PR-specific image tag to GHCR;
+        # trusted runs still push, so unexpected GHCR write failures stay loud.
+        if: steps.check_remote.outputs.match != 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         # NOTE: All arguments here must match the dry-run step above exactly
         # in order to ensure we hit the cache for the local build!
@@ -154,7 +158,9 @@ jobs:
           cache-from: |
             type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }}
             type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:main
-          cache-to: type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:${{ steps.docker_tag.outputs.tag }},mode=max
+          # External pull requests have read-only package permissions, so they
+          # can consume GHCR caches but cannot export updated cache layers.
+          cache-to: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && format('type=registry,ref=ghcr.io/google/zerocopy/anneal-cache:{0},mode=max', steps.docker_tag.outputs.tag) || '' }}
 
   measure_image_size:
     # This job measures the size of the Docker image built in the previous step
@@ -230,6 +236,10 @@ jobs:
     name: Anneal Tests
     runs-on: ubuntu-latest
     needs: build_docker_env
+    # External pull requests cannot push the Docker image these jobs pull from
+    # GHCR. Skip the consumer jobs in that case rather than failing on an
+    # expected permission denial.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write # Required to push benchmark data to the storage branch
       packages: read # required to pull docker caches from ghcr.io
@@ -355,6 +365,10 @@ jobs:
     name: Verify example (${{ matrix.example }})
     runs-on: ubuntu-latest
     needs: build_docker_env
+    # External pull requests cannot push the Docker image these jobs pull from
+    # GHCR. Skip the consumer jobs in that case rather than failing on an
+    # expected permission denial.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: read
       packages: read # required to pull docker caches from ghcr.io
