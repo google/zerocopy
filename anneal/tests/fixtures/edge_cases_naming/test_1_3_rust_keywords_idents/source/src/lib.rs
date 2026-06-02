@@ -1,8 +1,7 @@
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec («match») (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn r#match() {}
 pub fn r#type() {}

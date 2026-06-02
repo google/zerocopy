@@ -7,46 +7,44 @@ pub struct Widths {
 }
 
 /// ```lean, anneal, spec
+/// theorem spec (x : _) (y : _) :
+///   Aeneas.Std.WP.spec (check_widths x y) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn check_widths(x: isize, y: usize) -> (isize, usize) {
     (x, y)
 }
 
 /// Generic struct testing.
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct Container<T> {
     pub inner: T,
 }
 
 /// Dependent type testing with const generics.
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct ArrayPair<const N: usize> {
     pub a: [u8; N],
     pub b: [u8; N],
 }
 
 /// Recursive struct testing.
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct Node {
     pub next: Option<Box<Node>>,
 }
 
 /// Struct with where clauses.
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct Foo<T> {
     pub inner: T,
 }
 
 /// Tests for tuple types.
 /// ```lean, anneal, spec
+/// theorem spec (x : _) :
+///   Aeneas.Std.WP.spec (one_tuple x) (fun ret_ => True) := by
+///   sorry
 /// ```
 pub fn one_tuple(x: (u32,)) -> (u32,) {
     x
@@ -61,9 +59,9 @@ pub mod enums {
     pub enum Void {}
 
     /// ```lean, anneal, spec
-    /// proof:
-    ///   unfold invert at *
-    ///   contradiction
+    /// theorem spec (v : Void) :
+    ///   Aeneas.Std.WP.spec (invert v) (fun ret_ => False) := by
+    ///   sorry
     /// ```
     pub fn invert(v: Void) -> ! {
         match v {}
@@ -77,57 +75,50 @@ pub mod enums {
 
     /// Uninhabited type wrapper.
     /// ```lean, anneal
-    /// isValid self := nomatch self
+    /// def isValid (self : Wrapper) : Prop := nomatch self.v
     /// ```
     pub struct Wrapper {
         pub v: Void,
     }
 }
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_1) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_1() {}
 
-/// ```anneal
-/// isValid self := True
-/// ```
+
 pub struct ContainerValid<T> {
     pub inner: T,
 }
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_2) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_2() {}
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_3) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_3() {}
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_4) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_4() {}
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (dummy_anneal_padding_5) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn dummy_anneal_padding_5() {}
 

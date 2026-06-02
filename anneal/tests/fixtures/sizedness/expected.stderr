@@ -3,12 +3,13 @@
   │ 
   │ Hint: Additional diagnostic information may be available using the
   │ `set_option diagnostics true` command.
-   ╭─[[PROJECT_ROOT]/reject/src/lib.rs:8:5]
- 7 │ /// context:
- 8 │ /// derive_sized sizedness_reject.NamedDst
+   ╭─[[PROJECT_ROOT]/reject/src/lib.rs:7:5]
+ 6 │ /// ```lean, anneal
+ 7 │ /// derive_sized sizedness_reject.NamedDst
    ·     ───────────────────┬──────────────────
    ·                        ╰── here
- 9 │ /// ```
+ 8 │ /// ```
    ╰────
 
+[External Info] generated/SizednessRejectSizednessRejecte5f2b837e6f85fe5/SizednessRejectSizednessRejecte5f2b837e6f85fe5.lean: spec : dummy_force_compile ⦃ ret_ => True ⦄
 Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

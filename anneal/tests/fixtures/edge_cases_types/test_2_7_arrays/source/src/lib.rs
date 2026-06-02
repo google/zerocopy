@@ -4,11 +4,10 @@ pub struct Arrays {
     pub large: [u8; 1024],
 }
 
-/// ```lean, anneal
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec (x : _) :
+///   Aeneas.Std.WP.spec (slice_of_slices x) (fun ret_ => True) := by
 ///   sorry
-/// proof context:
-///   have h_foo : True := True.intro
 /// ```
 pub fn slice_of_slices(x: &[&[u8]]) -> usize {
     x.len()

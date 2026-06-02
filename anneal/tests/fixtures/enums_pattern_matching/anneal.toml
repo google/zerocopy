@@ -11,12 +11,12 @@ should_exist = true
 
 # Verify Enums Pattern Matching
 content_contains = [
-    "match self with",
-    "| Enum.A x => x > 10",
-    "| Enum.B b => b"
+    "match self.inner with",
+    "| Enum.A x => x.val > 10",
+    "| Enum.B b => b = true"
 ]
 
 [test]
 stderr_file = "expected.stderr"
-expected_status = "failure"
+expected_status = "success"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]

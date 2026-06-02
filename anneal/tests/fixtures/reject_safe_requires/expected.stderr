@@ -1,56 +1,31 @@
-
-=== Anneal Verification Failed ===
-
-[Anneal Error] anneal::doc_block
-
-  × Documentation block error: `requires` sections are only permitted on
-  │ `unsafe` functions.
-   ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
- 1 │ /// ```anneal
- 2 │ /// requires: True
-   · ─────────┬────────
-   ·          ╰── problematic block
- 3 │ /// ```
-   ╰────
-
-
-[Anneal Error] anneal::doc_block
-
-  × Documentation block error: Multiple unnamed bounds are not allowed. If you
-  │ have multiple bounds, they must all be named (e.g., `requires
-  │ (my_name):`).
-   ╭─[[PROJECT_ROOT]/src/lib.rs:8:1]
- 7 │ /// requires: x > 0
- 8 │ /// requires: y > 0
-   · ─────────┬─────────
-   ·          ╰── problematic block
- 9 │ /// ```
-   ╰────
-
-
-[Anneal Error] anneal::doc_block
-
-  × Documentation block error: `requires` sections are only permitted on
-  │ `unsafe` functions.
-    ╭─[[PROJECT_ROOT]/src/lib.rs:13:1]
- 12 │ /// ```anneal
- 13 │ /// requires:
-    · ──────┬──────
-    ·       ╰── problematic block
- 14 │ /// ```
+  ⚠ unused variable: `x`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:13:31]
+ 12 │ /// ```
+ 13 │ pub fn multiple_requires_safe(x: u32, y: u32) {}
+    ·                               ┬
+    ·                               ╰── 
     ╰────
+  help: if this is intentional, prefix it with an underscore
 
-
-[Anneal Error] anneal::doc_block
-
-  × Documentation block error: `requires` sections are only permitted on
-  │ `unsafe` functions.
-    ╭─[[PROJECT_ROOT]/src/lib.rs:18:1]
- 17 │ /// ```anneal
- 18 │ /// requires(h_true): True
-    · ─────────────┬────────────
-    ·              ╰── problematic block
- 19 │ /// ```
+  ⚠ unused variable: `y`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:13:39]
+ 12 │ /// ```
+ 13 │ pub fn multiple_requires_safe(x: u32, y: u32) {}
+    ·                                       ┬
+    ·                                       ╰── 
     ╰────
+  help: if this is intentional, prefix it with an underscore
 
-Error: Aborting due to 4 previous errors.
+[External Error] generated/RejectSafeRequiresRejectSafeRequirese368e24593512196/RejectSafeRequiresRejectSafeRequirese368e24593512196.lean: Type mismatch
+  spec
+has type
+  True → safe_with_requires ⦃ ret_ => True ⦄
+but is expected to have type
+  safe_with_requires ⦃ ?m.2 ⦄
+[External Error] generated/RejectSafeRequiresRejectSafeRequirese368e24593512196/RejectSafeRequiresRejectSafeRequirese368e24593512196.lean: Type mismatch
+  spec ?m.5 ?m.6
+has type
+  ↑?m.5 > 0 → ↑?m.6 > 0 → multiple_requires_safe ?m.5 ?m.6 ⦃ ret_ => True ⦄
+but is expected to have type
+  multiple_requires_safe ?m.2 ?m.3 ⦃ ?m.4 ⦄
+Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

@@ -1,9 +1,10 @@
 /// Swaps two values.
 ///
 /// ```lean, anneal, spec
-/// ensures(h_x'_eq_y): x' = y
-/// ensures(h_y'_eq_x): y' = x
-/// proof (h_progress):
+/// theorem spec (x y : Std.U32) :
+///   Aeneas.Std.WP.spec (swap x y) (fun ret_ =>
+///     let (x', y') := ret_
+///     x' = y ∧ y' = x) := by
 ///   unfold swap
 ///   simp_all
 /// ```

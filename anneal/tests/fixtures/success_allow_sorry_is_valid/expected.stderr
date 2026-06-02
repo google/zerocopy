@@ -1,0 +1,360 @@
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:17:13]
+ 16 │ /// ```lean, anneal, spec
+ 17 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 18 │ ///   Aeneas.Std.WP.spec (main) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : main ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/types_and_data.rs:10:13]
+  9 │ /// ```lean, anneal, spec
+ 10 │ /// theorem spec (x : _) (y : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 11 │ ///   Aeneas.Std.WP.spec (check_widths x y) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.5 ?m.6 : check_widths ?m.5 ?m.6 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/types_and_data.rs:45:13]
+ 44 │ /// ```lean, anneal, spec
+ 45 │ /// theorem spec (x : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 46 │ ///   Aeneas.Std.WP.spec (one_tuple x) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.4 : one_tuple ?m.4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/types_and_data.rs:62:17]
+ 61 │     /// ```lean, anneal, spec
+ 62 │     /// theorem spec (v : Void) :
+    ·                 ──┬─
+    ·                   ╰── here
+ 63 │     ///   Aeneas.Std.WP.spec (invert v) (fun ret_ => False) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.4 : invert ?m.4 ⦃ ret_ => False ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/types_and_data.rs:86:13]
+ 85 │ /// ```lean, anneal, spec
+ 86 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 87 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_1) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_1 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/types_and_data.rs:98:13]
+ 97 │ /// ```lean, anneal, spec
+ 98 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 99 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_2) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_2 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/types_and_data.rs:105:13]
+ 104 │ /// ```lean, anneal, spec
+ 105 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 106 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_3) (fun ret_ => True) := by
+     ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_3 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/types_and_data.rs:112:13]
+ 111 │ /// ```lean, anneal, spec
+ 112 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 113 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_4) (fun ret_ => True) := by
+     ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/types_and_data.rs:119:13]
+ 118 │ /// ```lean, anneal, spec
+ 119 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 120 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_5) (fun ret_ => True) := by
+     ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_5 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/traits_and_impls.rs:52:21]
+ 51 │         /// ```lean, anneal, spec
+ 52 │         /// theorem spec :
+    ·                     ──┬─
+    ·                       ╰── here
+ 53 │         ///   Aeneas.Std.WP.spec (process) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : process ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/traits_and_impls.rs:61:13]
+ 60 │ /// ```lean, anneal, spec
+ 61 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 62 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_8) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_8 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+   ╭─[[PROJECT_ROOT]/src/spec_syntax.rs:7:13]
+ 6 │ /// ```lean, anneal, spec
+ 7 │ /// theorem spec (x : Std.U32) :
+   ·             ──┬─
+   ·               ╰── here
+ 8 │ ///   Aeneas.Std.WP.spec (zero_ensures_no_proof x) (fun ret_ => True) := by
+   ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.4 : zero_ensures_no_proof ?m.4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/spec_syntax.rs:24:13]
+ 23 │ /// ```lean, anneal, spec
+ 24 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 25 │ ///   Aeneas.Std.WP.spec (test_zero_args_no_bounds) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : test_zero_args_no_bounds ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+   ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:5:13]
+ 4 │ /// ```lean, anneal, spec
+ 5 │ /// theorem spec (a : _) (b : _) :
+   ·             ──┬─
+   ·               ╰── here
+ 6 │ ///   Aeneas.Std.WP.spec (swap a b) (fun ret_ => True) := by
+   ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.5 ?m.6 : swap ?m.5 ?m.6 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:24:13]
+ 23 │ /// ```lean, anneal, spec
+ 24 │ /// theorem spec (a : _) (b : _) (c : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 25 │ ///   Aeneas.Std.WP.spec (sandwich_borrow a b c) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.6 ?m.7 ?m.8 : sandwich_borrow ?m.6 ?m.7 ?m.8 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:35:13]
+ 34 │ /// ```lean, anneal, spec
+ 35 │ /// theorem spec (x : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 36 │ ///   Aeneas.Std.WP.spec (deep_destruct x) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.4 : deep_destruct ?m.4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:46:13]
+ 45 │ /// ```lean, anneal, spec
+ 46 │ /// theorem spec (x : _) (y : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 47 │ ///   Aeneas.Std.WP.spec (partial_mut x y) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.5 ?m.6 : partial_mut ?m.5 ?m.6 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:60:13]
+ 59 │ /// ```lean, anneal, spec
+ 60 │ /// theorem spec (x : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 61 │ ///   Aeneas.Std.WP.spec (mut_passthrough x) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.4 : mut_passthrough ?m.4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:70:13]
+ 69 │ /// ```lean, anneal, spec
+ 70 │ /// theorem spec (x : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 71 │ ///   Aeneas.Std.WP.spec (target_mut_ref_is_valid x) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.4 : target_mut_ref_is_valid ?m.4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:77:13]
+ 76 │ /// ```lean, anneal, spec
+ 77 │ /// theorem spec (a : _) (b : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 78 │ ///   Aeneas.Std.WP.spec (zip a b) (fun ret_ => True) := by
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:84:13]
+ 83 │ /// ```lean, anneal, spec
+ 84 │ /// theorem spec (a : _) (b : _) (c : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 85 │ ///   Aeneas.Std.WP.spec (mix a b c) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.6 ?m.7 ?m.8 : mix ?m.6 ?m.7 ?m.8 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/memory_and_borrows.rs:97:13]
+ 96 │ /// ```lean, anneal, spec
+ 97 │ /// theorem spec (x : _) :
+    ·             ──┬─
+    ·               ╰── here
+ 98 │ ///   Aeneas.Std.WP.spec (nested_mut x) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.4 : nested_mut ?m.4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/macro_checks.rs:41:17]
+ 40 │     /// ```lean, anneal, spec
+ 41 │     /// theorem spec :
+    ·                 ──┬─
+    ·                   ╰── here
+ 42 │     ///   Aeneas.Std.WP.spec (check_hygiene) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : check_hygiene ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/macro_checks.rs:82:13]
+ 81 │ /// ```lean, anneal, spec
+ 82 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 83 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_10) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_10 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/macro_checks.rs:89:13]
+ 88 │ /// ```lean, anneal, spec
+ 89 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 90 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_11) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_11 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:52:13]
+ 51 │ /// ```lean, anneal, spec
+ 52 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 53 │ ///   Aeneas.Std.WP.spec (crash) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : crash ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:61:13]
+ 60 │ /// ```lean, anneal, spec
+ 61 │ /// theorem spec (x : Std.U32) :
+    ·             ──┬─
+    ·               ╰── here
+ 62 │ ///   Aeneas.Std.WP.spec (shadow x) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.4 : shadow ?m.4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:77:13]
+ 76 │ /// ```lean, anneal, spec
+ 77 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 78 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_6) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_6 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:84:13]
+ 83 │ /// ```lean, anneal, spec
+ 84 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 85 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_7) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_7 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:98:13]
+ 97 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 98 │ /// theorem spec (x : Std.U32) :
+    ·             ──┬─
+    ·               ╰── here
+ 99 │ ///   Aeneas.Std.WP.spec (add_one x) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.4 : add_one ?m.4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:108:13]
+ 107 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 108 │ /// theorem spec (n : Std.U32) :
+     ·             ──┬─
+     ·               ╰── here
+ 109 │ ///   Aeneas.Std.WP.spec (unknown_decrease n) (fun ret_ => True) := by
+     ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.4 : unknown_decrease ?m.4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/logic_and_control.rs:121:13]
+ 120 │ /// ```lean, anneal, spec
+ 121 │ /// theorem spec {T : Type} (x : T) :
+     ·             ──┬─
+     ·               ╰── here
+ 122 │ ///   Aeneas.Std.WP.spec (old x) (fun ret_ => True) := by
+     ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.6 : old ?m.6 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/framework.rs:20:17]
+ 19 │     /// ```lean, anneal, spec
+ 20 │     /// theorem spec :
+    ·                 ──┬─
+    ·                   ╰── here
+ 21 │     ///   Aeneas.Std.WP.spec (unprovable_is_valid) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : unprovable_is_valid ⦃ ret_ => True ⦄
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : trivial_is_valid ⦃ ret_ => True ⦄
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec ?m.5 ?m.6 : immutable_args_no_return ?m.5 ?m.6 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/framework.rs:110:17]
+ 109 │     /// ```lean, anneal, spec
+ 110 │     /// theorem spec :
+     ·                 ──┬─
+     ·                   ╰── here
+ 111 │     ///   Aeneas.Std.WP.spec (padded_signature_spec) (fun ret_ => True) := by
+     ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : padded_signature_spec ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/framework.rs:119:17]
+ 118 │     /// ```lean, anneal, spec
+ 119 │     /// theorem spec (x : Std.U32) (_y : Std.U32) (h_eq : x = _y) :
+     ·                 ──┬─
+     ·                   ╰── here
+ 120 │     ///   Aeneas.Std.WP.spec (named_precondition_visibility x _y) (fun ret_ => ret_ = _y) := by
+     ╰────
+
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/src/framework.rs:135:13]
+ 134 │ /// ```lean, anneal, spec
+ 135 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 136 │ ///   Aeneas.Std.WP.spec (dummy_anneal_padding_9) (fun ret_ => True) := by
+     ╰────
+
+[External Info] generated/CoalescedTestSpecs977930035aadd2fd/CoalescedTestSpecs977930035aadd2fd.lean: spec : dummy_anneal_padding_9 ⦃ ret_ => True ⦄

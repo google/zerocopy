@@ -5,5 +5,5 @@ Behavior: Evaluates structural logic involving `const N: usize` generics, associ
 
 [test]
 stderr_file = "expected.stderr"
-expected_status = "failure"
+expected_status = "success"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]

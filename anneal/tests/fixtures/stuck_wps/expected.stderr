@@ -1,179 +1,220 @@
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:10:4]
-  9 │ /// proof context:
- 10 │ ///   sorry
-    ·    ────┬───
-    ·        ╰── here
- 11 │ /// ```
+   ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:6:13]
+ 5 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 6 │ /// theorem spec :
+   ·             ──┬─
+   ·               ╰── here
+ 7 │ ///   Aeneas.Std.WP.spec (post0_trans_noproof) (fun ret_ => True) := by
+   ╰────
+
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post0_trans_noproof ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:13:13]
+ 12 │ /// ```lean, anneal, spec
+ 13 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 14 │ ///   Aeneas.Std.WP.spec (post0_trans_ctx_sorry) (fun ret_ => True) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post0_trans_ctx_sorry ⦃ ret_ => True ⦄
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:21:8]
- 20 │ /// ```
- 21 │ pub fn post0_opaque_noproof() { dep::opaque(); }
-    ·        ──┬─
-    ·          ╰── here
- 22 │ 
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:23:13]
+ 22 │ /// ```lean, anneal, spec
+ 23 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 24 │ ///   Aeneas.Std.WP.spec (post0_opaque_noproof) (fun ret_ => True) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post0_opaque_noproof ⦃ ret_ => True ⦄
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:27:4]
- 26 │ /// proof context:
- 27 │ ///   sorry
-    ·    ────┬───
-    ·        ╰── here
- 28 │ /// ```
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:30:13]
+ 29 │ /// ```lean, anneal, spec
+ 30 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 31 │ ///   Aeneas.Std.WP.spec (post0_opaque_ctx_sorry) (fun ret_ => True) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post0_opaque_ctx_sorry ⦃ ret_ => True ⦄
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:42:4]
- 41 │ /// proof context:
- 42 │ ///   sorry
-    ·    ────┬───
-    ·        ╰── here
- 43 │ /// ```
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:43:13]
+ 42 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 43 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 44 │ ///   Aeneas.Std.WP.spec (post1_impl_trans_noproof) (fun ret_ => True) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_impl_trans_noproof ⦃ ret_ => True ⦄
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:50:8]
- 49 │ /// ```
- 50 │ pub fn post1_impl_trans_named() -> u32 { 0 }
-    ·        ──┬─
-    ·          ╰── here
- 51 │ 
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:50:13]
+ 49 │ /// ```lean, anneal, spec
+ 50 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 51 │ ///   Aeneas.Std.WP.spec (post1_impl_trans_ctx_sorry) (fun ret_ => True) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_impl_trans_ctx_sorry ⦃ ret_ => True ⦄
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:57:8]
- 56 │ /// ```
- 57 │ pub fn post1_impl_opaque_noproof() -> u32 { dep::opaque_u32() }
-    ·        ──┬─
-    ·          ╰── here
- 58 │ 
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:57:13]
+ 56 │ /// ```lean, anneal, spec
+ 57 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 58 │ ///   Aeneas.Std.WP.spec (post1_impl_trans_named) (fun ret_ => True) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_impl_trans_named ⦃ ret_ => True ⦄
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:63:4]
- 62 │ /// proof context:
- 63 │ ///   sorry
-    ·    ────┬───
-    ·        ╰── here
- 64 │ /// ```
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:65:13]
+ 64 │ /// ```lean, anneal, spec
+ 65 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 66 │ ///   Aeneas.Std.WP.spec (post1_impl_opaque_noproof) (fun ret_ => True) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_impl_opaque_noproof ⦃ ret_ => True ⦄
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:73:8]
- 72 │ /// ```
- 73 │ pub fn post1_impl_opaque_named() -> u32 { dep::opaque_u32() }
-    ·        ──┬─
-    ·          ╰── here
- 74 │ 
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:72:13]
+ 71 │ /// ```lean, anneal, spec
+ 72 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 73 │ ///   Aeneas.Std.WP.spec (post1_impl_opaque_ctx_sorry) (fun ret_ => True) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_impl_opaque_ctx_sorry ⦃ ret_ => True ⦄
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:81:8]
- 80 │ /// ```
- 81 │ pub fn post1_expl_trans_noproof() {}
-    ·        ──┬─
-    ·          ╰── here
- 82 │ 
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:79:13]
+ 78 │ /// ```lean, anneal, spec
+ 79 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 80 │ ///   Aeneas.Std.WP.spec (post1_impl_opaque_named) (fun ret_ => True) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_impl_opaque_named ⦃ ret_ => True ⦄
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:86:4]
- 85 │ /// proof context:
- 86 │ ///   sorry
-    ·    ────┬───
-    ·        ╰── here
- 87 │ /// ```
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:90:13]
+ 89 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 90 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 91 │ ///   Aeneas.Std.WP.spec (post1_expl_trans_noproof) (fun ret_ => ret_ = () ∧ False) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_expl_trans_noproof ⦃ ret_ => ret_ = () ∧ False ⦄
   ⚠ declaration uses `sorry`
-    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:95:8]
- 94 │ /// ```
- 95 │ pub fn post1_expl_trans_unnamed() {}
-    ·        ──┬─
-    ·          ╰── here
- 96 │ 
+    ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:97:13]
+ 96 │ /// ```lean, anneal, spec
+ 97 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 98 │ ///   Aeneas.Std.WP.spec (post1_expl_trans_ctx_sorry) (fun ret_ => ret_ = () ∧ False) := by
     ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_expl_trans_ctx_sorry ⦃ ret_ => ret_ = () ∧ False ⦄
   ⚠ declaration uses `sorry`
-     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:103:8]
- 102 │ /// ```
- 103 │ pub fn post1_expl_opaque_noproof() { dep::opaque(); }
-     ·        ──┬─
-     ·          ╰── here
- 104 │ 
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:104:13]
+ 103 │ /// ```lean, anneal, spec
+ 104 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 105 │ ///   Aeneas.Std.WP.spec (post1_expl_trans_unnamed) (fun ret_ => ret_ = () ∧ False) := by
      ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_expl_trans_unnamed ⦃ ret_ => ret_ = () ∧ False ⦄
   ⚠ declaration uses `sorry`
-     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:110:4]
- 109 │ /// proof context:
- 110 │ ///   sorry
-     ·    ────┬───
-     ·        ╰── here
- 111 │ /// ```
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:112:13]
+ 111 │ /// ```lean, anneal, spec
+ 112 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 113 │ ///   Aeneas.Std.WP.spec (post1_expl_opaque_noproof) (fun ret_ => ret_ = () ∧ False) := by
      ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_expl_opaque_noproof ⦃ ret_ => ret_ = () ∧ False ⦄
   ⚠ declaration uses `sorry`
-     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:121:8]
- 120 │ /// ```
- 121 │ pub fn post1_expl_opaque_unnamed() { dep::opaque(); }
-     ·        ──┬─
-     ·          ╰── here
- 122 │ 
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:119:13]
+ 118 │ /// ```lean, anneal, spec
+ 119 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 120 │ ///   Aeneas.Std.WP.spec (post1_expl_opaque_ctx_sorry) (fun ret_ => ret_ = () ∧ False) := by
      ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_expl_opaque_ctx_sorry ⦃ ret_ => ret_ = () ∧ False ⦄
   ⚠ declaration uses `sorry`
-     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:130:8]
- 129 │ /// ```
- 130 │ pub fn post2_expl_trans_noproof() {}
-     ·        ──┬─
-     ·          ╰── here
- 131 │ 
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:126:13]
+ 125 │ /// ```lean, anneal, spec
+ 126 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 127 │ ///   Aeneas.Std.WP.spec (post1_expl_opaque_unnamed) (fun ret_ => ret_ = () ∧ False) := by
      ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post1_expl_opaque_unnamed ⦃ ret_ => ret_ = () ∧ False ⦄
   ⚠ declaration uses `sorry`
-     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:136:4]
- 135 │ /// proof context:
- 136 │ ///   sorry
-     ·    ────┬───
-     ·        ╰── here
- 137 │ /// ```
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:137:13]
+ 136 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 137 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 138 │ ///   Aeneas.Std.WP.spec (post2_expl_trans_noproof) (fun ret_ => ret_ = () ∧ False) := by
      ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post2_expl_trans_noproof ⦃ ret_ => ret_ = () ∧ False ⦄
   ⚠ declaration uses `sorry`
-     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:148:8]
- 147 │ /// ```
- 148 │ pub fn post2_expl_trans_named() {}
-     ·        ──┬─
-     ·          ╰── here
- 149 │ 
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:144:13]
+ 143 │ /// ```lean, anneal, spec
+ 144 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 145 │ ///   Aeneas.Std.WP.spec (post2_expl_trans_ctx_sorry) (fun ret_ => ret_ = () ∧ False) := by
      ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post2_expl_trans_ctx_sorry ⦃ ret_ => ret_ = () ∧ False ⦄
   ⚠ declaration uses `sorry`
-     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:157:8]
- 156 │ /// ```
- 157 │ pub fn post2_expl_opaque_noproof() { dep::opaque(); }
-     ·        ──┬─
-     ·          ╰── here
- 158 │ 
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:151:13]
+ 150 │ /// ```lean, anneal, spec
+ 151 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 152 │ ///   Aeneas.Std.WP.spec (post2_expl_trans_named) (fun ret_ => ret_ = () ∧ False) := by
      ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post2_expl_trans_named ⦃ ret_ => ret_ = () ∧ False ⦄
   ⚠ declaration uses `sorry`
-     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:165:4]
- 164 │ /// proof context:
- 165 │ ///   sorry
-     ·    ────┬───
-     ·        ╰── here
- 166 │ /// ```
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:159:13]
+ 158 │ /// ```lean, anneal, spec
+ 159 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 160 │ ///   Aeneas.Std.WP.spec (post2_expl_opaque_noproof) (fun ret_ => ret_ = () ∧ False) := by
      ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post2_expl_opaque_noproof ⦃ ret_ => ret_ = () ∧ False ⦄
   ⚠ declaration uses `sorry`
-     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:179:8]
- 178 │ /// ```
- 179 │ pub fn post2_expl_opaque_named() { dep::opaque(); }
-     ·        ──┬─
-     ·          ╰── here
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:166:13]
+ 165 │ /// ```lean, anneal, spec
+ 166 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 167 │ ///   Aeneas.Std.WP.spec (post2_expl_opaque_ctx_sorry) (fun ret_ => ret_ = () ∧ False) := by
      ╰────
 
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post2_expl_opaque_ctx_sorry ⦃ ret_ => ret_ = () ∧ False ⦄
+  ⚠ declaration uses `sorry`
+     ╭─[[PROJECT_ROOT]/crates/app/src/lib.rs:173:13]
+ 172 │ /// ```lean, anneal, spec
+ 173 │ /// theorem spec :
+     ·             ──┬─
+     ·               ╰── here
+ 174 │ ///   Aeneas.Std.WP.spec (post2_expl_opaque_named) (fun ret_ => ret_ = () ∧ False) := by
+     ╰────
+
+[External Info] generated/AppApp3ab72a420e4a84a5/AppApp3ab72a420e4a84a5.lean: spec : post2_expl_opaque_named ⦃ ret_ => ret_ = () ∧ False ⦄

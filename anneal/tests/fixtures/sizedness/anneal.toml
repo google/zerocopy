@@ -12,7 +12,7 @@ content_contains = ["derive_sized sizedness_pass.NamedStruct"]
 [[test.phases]]
 name = "reject"
 expected_status = "failure"
-args = ["verify", "--allow-sorry", "-p", "sizedness_reject"]
+args = ["verify", "-p", "sizedness_reject"]
 stderr_file = "expected.stderr"
 
 [[test.phases]]

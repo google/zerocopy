@@ -1,42 +1,33 @@
+anneal::unsoundness
 
-=== Anneal Verification Failed ===
-
-[Anneal Error] anneal::doc_block
-
-  × Documentation block error: `isSafe` sections are only permitted on
-  │ `unsafe` traits.
-   ╭─[[PROJECT_ROOT]/src/lib.rs:2:1]
+  × Unsoundness error: Annotations are only permitted on `unsafe` traits.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:1:1]
  1 │ /// ```anneal
+   · ──────┬──────
+   ·       ╰── problematic block
  2 │ /// isSafe :
-   · ──────┬─────
-   ·       ╰── problematic block
- 3 │ ///   true
    ╰────
 
+anneal::unsoundness
 
-[Anneal Error] anneal::doc_block
-
-  × Documentation block error: `isSafe` sections are only permitted on
-  │ `unsafe` traits.
-   ╭─[[PROJECT_ROOT]/src/lib.rs:8:1]
+  × Unsoundness error: Annotations are only permitted on `unsafe` traits.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:7:1]
+ 6 │ 
  7 │ /// ```anneal
- 8 │ /// isSafe :
-   · ──────┬─────
+   · ──────┬──────
    ·       ╰── problematic block
- 9 │ ///   true
+ 8 │ /// isSafe :
    ╰────
 
+anneal::unsoundness
 
-[Anneal Error] anneal::doc_block
-
-  × Documentation block error: `isSafe` sections are only permitted on
-  │ `unsafe` traits.
-    ╭─[[PROJECT_ROOT]/src/lib.rs:16:1]
+  × Unsoundness error: Annotations are only permitted on `unsafe` traits.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:15:1]
+ 14 │ 
  15 │ /// ```anneal
+    · ──────┬──────
+    ·       ╰── problematic block
  16 │ /// isSafe
-    · ─────┬────
-    ·      ╰── problematic block
- 17 │ /// ```
     ╰────
 
-Error: Aborting due to 3 previous errors.
+Error: Validation failed: Naming collisions or missing proofs detected.

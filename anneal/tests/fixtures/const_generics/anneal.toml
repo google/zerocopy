@@ -5,5 +5,5 @@ Behavior: Uses a struct and a trait generic over a constant value (`const N: usi
 
 [test]
 stderr_file = "expected.stderr"
-expected_status = "failure"
+expected_status = "success"
 args = ["verify", "--allow-sorry"]

@@ -1,1 +1,20 @@
-\n
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:15:13]
+ 14 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 15 │ /// theorem spec (x : Unit) :
+    ·             ──┬─
+    ·               ╰── here
+ 16 │ ///   Aeneas.Std.WP.spec (unit_arg x) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/Test23ZstTest23Zste8e9e415c325e395/Test23ZstTest23Zste8e9e415c325e395.lean: spec ?m.4 : unit_arg ?m.4 ⦃ ret_ => True ⦄
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:23:13]
+ 22 │ /// -- FIXME: Remove manual sorry once we support omitting proofs
+ 23 │ /// theorem spec :
+    ·             ──┬─
+    ·               ╰── here
+ 24 │ ///   Aeneas.Std.WP.spec (unit_ret) (fun ret_ => True) := by
+    ╰────
+
+[External Info] generated/Test23ZstTest23Zste8e9e415c325e395/Test23ZstTest23Zste8e9e415c325e395.lean: spec : unit_ret ⦃ ret_ => True ⦄

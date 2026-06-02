@@ -5,9 +5,10 @@ pub enum Enum {
 }
 
 /// ```lean, anneal
-/// isValid self := match self with
-///   | Enum.A x => x > 10
-///   | Enum.B b => b
+/// instance : Anneal.IsValid Wrapper where
+///   isValid self := match self.inner with
+///    | Enum.A x => x.val > 10
+///    | Enum.B b => b = true
 /// ```
 pub struct Wrapper {
     pub inner: Enum,

@@ -21,15 +21,10 @@ namespace expand_output
 
 namespace foo
 
-  structure Post  : Prop where
+ -- This is a test of the expand subcommand verbatim output.
+ theorem spec : True := by trivial
 
-theorem spec :
-  Aeneas.Std.WP.spec (foo) (fun ret_ => Post) := by
-  apply Anneal.wp_prove_orthogonal
-  · eval_progress "Missing orthogonal progress proof. The function progress verification was not automatically solvable." _root_.expand_output.foo
-  · rintro ret h_returns
-    exact
-      ⟨⟩
+  #check (spec  : Aeneas.Std.WP.spec (foo ) _)
 
 end foo
 

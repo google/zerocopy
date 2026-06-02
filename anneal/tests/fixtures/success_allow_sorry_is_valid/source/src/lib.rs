@@ -13,4 +13,9 @@ pub mod spec_syntax;
 pub mod traits_and_impls;
 pub mod types_and_data;
 
-fn main() {}
+/// ```lean, anneal, spec
+/// theorem spec :
+///   Aeneas.Std.WP.spec (main) (fun ret_ => True) := by
+///   sorry
+/// ```
+pub fn main() {}

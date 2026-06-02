@@ -1,11 +1,11 @@
-/// ```anneal
-/// isValid self := N > 0
+/// ```lean, anneal
+/// instance {N : Std.Usize} : Anneal.IsValid (ConstGen N) where
+///   isValid self := N.val > 0
 /// ```
 struct ConstGen<const N: usize>;
 
-/// ```anneal
-/// isSafe :
-///   N > 0
+/// ```lean, anneal
+/// def isSafe (Self : Type) (N : Std.Usize) : Prop := N.val > 0
 /// ```
 unsafe trait ConstTrait<const N: usize> {}
 
@@ -17,16 +17,17 @@ unsafe impl AssocType for ConstGen<10> {
     type Item = u32;
 }
 
-/// ```anneal
-/// isSafe :
-///   AssocType.Item Self = U32
+/// ```lean, anneal
+/// def isSafe (Self : Type) (inst : UsesAssoc Self) : Prop :=
+///   inst.parent_AssocType.Item = Std.U32
 /// ```
 unsafe trait UsesAssoc: AssocType {}
 
 enum Void {}
 
-/// ```anneal
-/// isValid self := nomatch self
+/// ```lean, anneal
+/// instance : Anneal.IsValid VoidWrapper where
+///   isValid self := nomatch self.v0
 /// ```
 struct VoidWrapper(Void);
 
@@ -35,13 +36,19 @@ enum DataEnum {
     B { x: u32 },
 }
 
-/// ```anneal
-/// isValid self := match self with | .A _ => True | .B _ => False
+/// ```lean, anneal
+/// instance : Anneal.IsValid EnumWrapper where
+///   isValid self := match self.v0 with
+///     | DataEnum.A _ => True
+///     | DataEnum.B _ => False
 /// ```
 struct EnumWrapper(DataEnum);
 
-/// ```anneal
-/// isValid self := match self with | .A _ => True | .B _ => False
+/// ```lean, anneal
+/// instance : Anneal.IsValid ValidatedEnum where
+///   isValid self := match self with
+///     | ValidatedEnum.A _ => True
+///     | ValidatedEnum.B _ => False
 /// ```
 enum ValidatedEnum {
     A(u32),

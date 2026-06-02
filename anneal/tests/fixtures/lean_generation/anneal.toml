@@ -4,7 +4,7 @@ Behavior: Specifically instructs the engine to persist the artifact (`style = le
 """
 
 [test]
-expected_status = "known_bug"
+expected_status = "success"
 stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]
 

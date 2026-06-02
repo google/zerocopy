@@ -19,6 +19,7 @@ ENV RUSTUP_HOME=/opt/rustup \
 # We add `graphviz` because it is required by `lake exe graph` to generate
 # the dependency graph, and `python3` to run the pruning script.
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git curl build-essential pkg-config libssl-dev graphviz python3 && \
+    git config --system --add safe.directory '*' && \
     rm -rf /var/lib/apt/lists/*
 
 # Create the mapped user and empty directories for toolchains.

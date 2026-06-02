@@ -1,10 +1,10 @@
   ⚠ struct `ConstGen` is never constructed
-   ╭─[[PROJECT_ROOT]/src/lib.rs:4:8]
- 3 │ /// ```
- 4 │ struct ConstGen<const N: usize>;
+   ╭─[[PROJECT_ROOT]/src/lib.rs:5:8]
+ 4 │ /// ```
+ 5 │ struct ConstGen<const N: usize>;
    ·        ────┬───
    ·            ╰── 
- 5 │ 
+ 6 │ 
    ╰────
 
   ⚠ trait `ConstTrait` is never used
@@ -44,41 +44,38 @@
     ╰────
 
   ⚠ struct `VoidWrapper` is never constructed
-    ╭─[[PROJECT_ROOT]/src/lib.rs:31:8]
- 30 │ /// ```
- 31 │ struct VoidWrapper(Void);
+    ╭─[[PROJECT_ROOT]/src/lib.rs:32:8]
+ 31 │ /// ```
+ 32 │ struct VoidWrapper(Void);
     ·        ─────┬─────
     ·             ╰── 
- 32 │ 
+ 33 │ 
     ╰────
 
   ⚠ enum `DataEnum` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:33:6]
- 32 │ 
- 33 │ enum DataEnum {
+    ╭─[[PROJECT_ROOT]/src/lib.rs:34:6]
+ 33 │ 
+ 34 │ enum DataEnum {
     ·      ────┬───
     ·          ╰── 
- 34 │     A(u32),
+ 35 │     A(u32),
     ╰────
 
   ⚠ struct `EnumWrapper` is never constructed
-    ╭─[[PROJECT_ROOT]/src/lib.rs:41:8]
- 40 │ /// ```
- 41 │ struct EnumWrapper(DataEnum);
+    ╭─[[PROJECT_ROOT]/src/lib.rs:45:8]
+ 44 │ /// ```
+ 45 │ struct EnumWrapper(DataEnum);
     ·        ─────┬─────
     ·             ╰── 
- 42 │ 
+ 46 │ 
     ╰────
 
   ⚠ enum `ValidatedEnum` is never used
-    ╭─[[PROJECT_ROOT]/src/lib.rs:46:6]
- 45 │ /// ```
- 46 │ enum ValidatedEnum {
+    ╭─[[PROJECT_ROOT]/src/lib.rs:53:6]
+ 52 │ /// ```
+ 53 │ enum ValidatedEnum {
     ·      ──────┬──────
     ·            ╰── 
- 47 │     A(u32),
+ 54 │     A(u32),
     ╰────
 
-[External Error] generated/TypeFeaturesTypeFeatures14bf621e28a09fa7/TypeFeaturesTypeFeatures14bf621e28a09fa7.lean: type expected, got
-  (UsesAssoc Self : Type → Type)
-Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

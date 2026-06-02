@@ -1,4 +1,4 @@
-description = "Verify that `requires` blocks are rejected on safe functions."
+description = "Verify that specs with preconditions are strictly rejected on safe functions."
 
 [test]
 args = ["verify"]

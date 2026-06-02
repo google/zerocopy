@@ -4,6 +4,6 @@ Behavior: Mutates a vector to return an inner value (`v.pop()`). Validates Aenea
 """
 
 [test]
-expected_status = "failure"
+expected_status = "success"
 stderr_file = "expected.stderr"
 args = ["verify", "--allow-sorry"]

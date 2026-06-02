@@ -2,3 +2,4 @@ description = "Coalesced successful integration tests"
 
 [test]
 args = ["verify", "--allow-sorry"]
+stderr_file = "expected.stderr"

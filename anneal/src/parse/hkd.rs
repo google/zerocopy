@@ -297,6 +297,7 @@ pub struct SafeSignature {
     pub name_span: miette::SourceSpan,
     pub inputs: Vec<SafeFnArg>,
     pub output: SafeReturnType,
+    pub unsafety: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -339,6 +340,7 @@ impl Mirror for syn::Signature {
                 syn::ReturnType::Default => SafeReturnType::Default,
                 syn::ReturnType::Type(_, t) => SafeReturnType::Type(t.mirror()),
             },
+            unsafety: self.unsafety.is_some(),
         }
     }
 }
@@ -500,11 +502,16 @@ impl Mirror for syn::ItemUnion {
 pub struct SafeItemTrait {
     pub ident: String,
     pub generics: SafeGenerics,
+    pub unsafety: bool,
 }
 impl Mirror for syn::ItemTrait {
     type Image = SafeItemTrait;
     fn mirror(&self) -> Self::Image {
-        SafeItemTrait { ident: self.ident.to_string(), generics: self.generics.mirror() }
+        SafeItemTrait {
+            ident: self.ident.to_string(),
+            generics: self.generics.mirror(),
+            unsafety: self.unsafety.is_some(),
+        }
     }
 }
 

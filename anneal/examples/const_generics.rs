@@ -1,19 +1,17 @@
-/// ```anneal
-/// isValid self := N > 0
+/// ```lean, anneal
+/// def isValid (N : Std.Usize) : Prop := N.val > 0
 /// ```
 pub struct ConstGen<const N: usize>;
 
-/// ```anneal
-/// isSafe : N > 0
+/// ```lean, anneal
+/// def isSafe (N : Std.Usize) : Prop := N.val > 0
 /// ```
 pub unsafe trait ConstTrait<const N: usize> {}
 
-/// ```anneal
-/// ensures: if N.val = 0 then ret.val = 0 else True
-/// proof:
-///   unfold use_const at h_returns
-///   split at h_returns <;> (try unfold Array.index_usize at h_returns) <;> (try split at h_returns) <;> simp_all <;> scalar_tac
-/// proof (h_progress):
+/// ```lean, anneal, spec
+/// theorem spec {N : Std.Usize} (arr : Array Std.U8 N) :
+///   Aeneas.Std.WP.spec (use_const arr) (fun ret_ =>
+///     if N.val = 0 then ret_.val = 0 else True) := by
 ///   unfold use_const
 ///   split <;> (try unfold Array.index_usize) <;> (try split) <;> simp_all <;> scalar_tac
 /// ```
