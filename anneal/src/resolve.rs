@@ -68,7 +68,11 @@ pub struct Args {
 }
 
 #[derive(Parser, Debug)]
-pub struct SetupArgs {}
+pub struct SetupArgs {
+    /// Use a local filesystem archive instead of downloading over the network
+    #[arg(long)]
+    pub local_archive: Option<PathBuf>,
+}
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 #[repr(u8)]

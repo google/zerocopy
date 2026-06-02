@@ -91,8 +91,8 @@ fn main() -> anyhow::Result<()> {
                 Ok(())
             })?;
         }
-        Commands::Setup(resolve::SetupArgs {}) => {
-            setup::run_setup()?;
+        Commands::Setup(setup_args) => {
+            setup::run_setup(setup_args)?;
         }
         Commands::ToolchainPath => {
             let toolchain = setup::Toolchain::resolve()?;

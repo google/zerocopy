@@ -7,6 +7,7 @@ use std::{fs, io::Read, path::Path, process::Command};
 
 use anyhow::{Context, Result, bail};
 use flate2::read::GzDecoder;
+use zstd::stream::read::Decoder as ZstdDecoder;
 use sha2::{Digest, Sha256};
 use tar::Archive;
 use tempfile;
@@ -114,124 +115,13 @@ impl Platform {
 
     /// Returns the expected SHA-256 checksum for the specified archive on this
     /// platform.
-    ///
-    /// These hashes are baked into the binary at compile time from values
-    /// provided by `build.rs` from the project's `Cargo.toml`. This ensures
-    /// that we always download and verify the exact versions of dependencies
-    /// that this version of Anneal was built to work with.
     pub fn expected_archive_hash(&self) -> [u8; 32] {
         use Platform::*;
         match self {
-            LinuxX86_64 => decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_X86_64"),
-            LinuxAArch64 => decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_LINUX_AARCH64"),
-            MacosAArch64 => decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_AARCH64"),
-            MacosX86_64 => decode_hex_env!("ANNEAL_AENEAS_CHECKSUM_MACOS_X86_64"),
-        }
-    }
-
-    /// Returns the expected SHA-256 checksum for a specific binary on this
-    /// platform.
-    ///
-    /// This is used for verifying individual binaries within a toolchain,
-    /// allowing the `setup` command to detect and repair corruption of any
-    /// of the toolchain components.
-    pub fn expected_bin_hash(&self, tool: Tool) -> [u8; 32] {
-        if std::env::var("__ANNEAL_USE_MOCK_RUST_HASHES").is_ok() {
-            // When testing with mock Rust hashes, we intercept requests for Rust
-            // components and return the hardcoded mock hashes. For non-Rust
-            // tools, we fall through to the normal logic that reads hashes from
-            // environment variables.
-            //
-            // This approach is acceptable from a security perspective because:
-            // 1. The mock hashes are hardcoded in the binary and cannot be
-            //    overridden by an attacker via environment variables.
-            // 2. The mock archives only contain inert, empty files. Even if an
-            //    attacker forces the use of these mocks, they can only cause
-            //    the tool to fail to run, but cannot inject malicious behavior.
-            use Tool::*;
-            match tool {
-                Rustc => return MOCK_RUSTC_HASH,
-                RustStd => return MOCK_RUST_STD_HASH,
-                RustcDev => return MOCK_RUSTC_DEV_HASH,
-                LlvmTools => return MOCK_LLVM_TOOLS_HASH,
-                Miri => return MOCK_MIRI_HASH,
-                RustSrc => return MOCK_RUST_SRC_HASH,
-                Charon | CharonDriver | Aeneas | Lake => {}
-            }
-        }
-
-        use Platform::*;
-        match (self, tool) {
-            // Rust components
-            (LinuxX86_64, Tool::Rustc) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_RUSTC")
-            }
-            (LinuxX86_64, Tool::RustStd) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_RUST_STD")
-            }
-            (LinuxX86_64, Tool::RustcDev) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_RUSTC_DEV")
-            }
-            (LinuxX86_64, Tool::LlvmTools) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_LLVM_TOOLS_PREVIEW")
-            }
-            (LinuxX86_64, Tool::Miri) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_X86_64_MIRI_PREVIEW")
-            }
-
-            (LinuxAArch64, Tool::Rustc) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_RUSTC")
-            }
-            (LinuxAArch64, Tool::RustStd) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_RUST_STD")
-            }
-            (LinuxAArch64, Tool::RustcDev) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_RUSTC_DEV")
-            }
-            (LinuxAArch64, Tool::LlvmTools) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_LLVM_TOOLS_PREVIEW")
-            }
-            (LinuxAArch64, Tool::Miri) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_LINUX_AARCH64_MIRI_PREVIEW")
-            }
-
-            (MacosX86_64, Tool::Rustc) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_RUSTC")
-            }
-            (MacosX86_64, Tool::RustStd) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_RUST_STD")
-            }
-            (MacosX86_64, Tool::RustcDev) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_RUSTC_DEV")
-            }
-            (MacosX86_64, Tool::LlvmTools) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_LLVM_TOOLS_PREVIEW")
-            }
-            (MacosX86_64, Tool::Miri) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_X86_64_MIRI_PREVIEW")
-            }
-
-            (MacosAArch64, Tool::Rustc) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_RUSTC")
-            }
-            (MacosAArch64, Tool::RustStd) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_RUST_STD")
-            }
-            (MacosAArch64, Tool::RustcDev) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_RUSTC_DEV")
-            }
-            (MacosAArch64, Tool::LlvmTools) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_LLVM_TOOLS_PREVIEW")
-            }
-            (MacosAArch64, Tool::Miri) => {
-                decode_hex_env!("ANNEAL_RUST_CHECKSUM_MACOS_AARCH64_MIRI_PREVIEW")
-            }
-
-            (_, Tool::RustSrc) => decode_hex_env!("ANNEAL_RUST_CHECKSUM_RUST_SRC"),
-
-            _ => {
-                unreachable!("unsupported tool combination for individual verification")
-            }
+            LinuxX86_64 => decode_hex_env!("ANNEAL_OMNIBUS_CHECKSUM_LINUX_X86_64"),
+            LinuxAArch64 => decode_hex_env!("ANNEAL_OMNIBUS_CHECKSUM_LINUX_AARCH64"),
+            MacosAArch64 => decode_hex_env!("ANNEAL_OMNIBUS_CHECKSUM_MACOS_AARCH64"),
+            MacosX86_64 => decode_hex_env!("ANNEAL_OMNIBUS_CHECKSUM_MACOS_X86_64"),
         }
     }
 }
@@ -268,14 +158,11 @@ impl Toolchain {
         // switching branches or updating Anneal will automatically point to
         // the correct toolchain version.
         //
-        // We hash the expected archive checksum rather than version tags.
+        // We hash the expected archive checksum.
         // Checksums provide a stable, data-anchored identity for the toolchain
         // components that cannot drift from the underlying binaries.
         let mut hasher = Sha256::new();
         hasher.update(aeneas_hash);
-        // Hash the Rust toolchain tag to ensure that updating the Rust version
-        // results in a new, isolated toolchain directory.
-        hasher.update(env!("ANNEAL_RUST_TAG"));
         let hash = format!("{:x}", hasher.finalize());
         let short_hash = &hash[..12];
 
@@ -469,10 +356,41 @@ where
     Ok(())
 }
 
-/// Extracts a tar.gz archive to the target directory.
+fn extract_tar_zst<F>(data: &[u8], target_dir: &Path, mut map_path: F) -> Result<()>
+where
+    F: FnMut(&Path) -> Option<std::path::PathBuf>,
+{
+    let tar = ZstdDecoder::new(data).context("Failed to create zstd decoder")?;
+    let mut archive = Archive::new(tar);
+
+    fs::create_dir_all(target_dir).context("Failed to create target directory")?;
+
+    for entry in archive.entries().context("Failed to read archive entries")? {
+        let mut entry = entry.context("Failed to get archive entry")?;
+        let path = entry.path().context("Failed to get entry path")?;
+
+        if let Some(target) = map_path(&path) {
+            if let Some(parent) = target.parent() {
+                fs::create_dir_all(parent).context("Failed to create parent directory")?;
+            }
+            entry.unpack(&target).context("Failed to unpack archive entry")?;
+            make_writable(&target)?;
+        }
+    }
+
+    Ok(())
+}
+
+/// Extracts a tar.gz or tar.zst archive to the target directory.
 fn extract_artifact(data: &[u8], target_dir: &Path) -> Result<()> {
     log::info!("Extracting to {:?}...", target_dir);
-    extract_tar_gz(data, target_dir, |path| Some(target_dir.join(path)))
+    if data.starts_with(&[0x28, 0xB5, 0x2F, 0xFD]) {
+        extract_tar_zst(data, target_dir, |path| Some(target_dir.join(path)))
+    } else if data.starts_with(&[0x1F, 0x8B]) {
+        extract_tar_gz(data, target_dir, |path| Some(target_dir.join(path)))
+    } else {
+        bail!("Unsupported archive format (neither zstd nor gzip magic found)");
+    }
 }
 
 /// Performs a strict string replacement in a file.
@@ -564,52 +482,6 @@ fn update_manifest_urls(manifest_path: &Path, base_path: &Path) -> Result<()> {
     Ok(())
 }
 
-fn extract_rust_component(data: &[u8], target_dir: &Path, component_name: &str) -> Result<()> {
-    log::info!("Extracting component {} to {:?}...", component_name, target_dir);
-    extract_tar_gz(data, target_dir, |path| {
-        let mut components = path.components();
-        components.next(); // skip top level (e.g. rustc-nightly-x86_64-unknown-linux-gnu)
-        components.next(); // skip component name (e.g. rustc)
-
-        let rest = components.as_path();
-        if rest.as_os_str().is_empty() { None } else { Some(target_dir.join(rest)) }
-    })
-}
-
-fn setup_rust_toolchain(toolchain: &Toolchain, platform: Platform, tmp_root: &Path) -> Result<()> {
-    let sysroot = tmp_root.join("rust");
-    println!("Setting up Rust toolchain at {:?}...", sysroot);
-
-    let base_url = std::env::var("ANNEAL_SETUP_RUST_BASE_URL").unwrap_or_else(|_| {
-        format!("https://static.rust-lang.org/dist/{}", env!("ANNEAL_RUST_DATE"))
-    });
-
-    let components = [
-        ("rustc", Tool::Rustc),
-        ("rust-std", Tool::RustStd),
-        ("rustc-dev", Tool::RustcDev),
-        ("llvm-tools", Tool::LlvmTools),
-        ("miri", Tool::Miri),
-    ];
-
-    for (name, tool) in components {
-        let url = format!("{}/{}-nightly-{}.tar.gz", base_url, name, platform.triple());
-        let expected_hash = platform.expected_bin_hash(tool);
-
-        println!("Downloading and extracting {}...", name);
-        let data = download_artifact(&url, &expected_hash)?;
-        extract_rust_component(&data, &sysroot, name)?;
-    }
-
-    // Handle rust-src separately as it is target-independent
-    let url = format!("{}/rust-src-nightly.tar.gz", base_url);
-    let expected_hash = platform.expected_bin_hash(Tool::RustSrc);
-    println!("Downloading and extracting rust-src...");
-    let data = download_artifact(&url, &expected_hash)?;
-    extract_rust_component(&data, &sysroot, "rust-src")?;
-
-    Ok(())
-}
 
 /// Ensures that `elan` (the Lean toolchain manager) is installed on the
 /// system. If it is not found in the system `PATH`, it downloads the latest
@@ -762,7 +634,7 @@ fn prebuild_aeneas_lean_library(lean_dir: &Path, cache_dir: &Path) -> Result<()>
 /// Returns `true` if all are valid, or `false` if any are missing or corrupt.
 
 /// Sets up the Anneal toolchain by downloading and extracting dependencies.
-pub fn run_setup() -> Result<()> {
+pub fn run_setup(args: crate::resolve::SetupArgs) -> Result<()> {
     ensure_elan_installed()?;
     install_lean_toolchain()?;
 
@@ -789,31 +661,34 @@ pub fn run_setup() -> Result<()> {
         .context("Failed to create temporary directory for setup")?;
     let tmp_root = temp_dir.path();
 
-    setup_rust_toolchain(&toolchain, platform, tmp_root)?;
+    let data = if let Some(path) = &args.local_archive {
+        println!("Using local archive: {:?}", path);
+        fs::read(path).context("Failed to read local archive")?
+    } else {
+        let tag = env!("ANNEAL_OMNIBUS_TAG");
 
-    let tag = env!("ANNEAL_AENEAS_TAG");
+        // Perform installation. Note that, because we validate SHA-256
+        // checksums against values baked into the binary, allowing the user to
+        // override the download URL does not represent a security risk.
+        let base_url = std::env::var("ANNEAL_SETUP_OMNIBUS_BASE_URL")
+            .unwrap_or_else(|_| "https://github.com/google/zerocopy/releases/download".to_string());
 
-    // Perform installation. Note that, because we validate SHA-256
-    // checksums against values baked into the binary, allowing the user to
-    // override the download URL does not represent a security risk.
-    let base_url = std::env::var("ANNEAL_SETUP_AENEAS_BASE_URL")
-        .unwrap_or_else(|_| "https://github.com/AeneasVerif/aeneas/releases/download".to_string());
+        let url = format!(
+            "{}/{}/anneal-toolchain-{}.tar.zst",
+            base_url,
+            tag,
+            match platform {
+                Platform::LinuxX86_64 => "linux-x86_64",
+                Platform::LinuxAArch64 => "linux-aarch64",
+                Platform::MacosAArch64 => "macos-aarch64",
+                Platform::MacosX86_64 => "macos-x86_64",
+            }
+        );
 
-    let url = format!(
-        "{}/{}/aeneas-{}.tar.gz",
-        base_url,
-        tag,
-        match platform {
-            Platform::LinuxX86_64 => "linux-x86_64",
-            Platform::LinuxAArch64 => "linux-aarch64",
-            Platform::MacosAArch64 => "macos-aarch64",
-            Platform::MacosX86_64 => "macos-x86_64",
-        }
-    );
+        let expected_archive_hash = platform.expected_archive_hash();
 
-    let expected_archive_hash = platform.expected_archive_hash();
-
-    let data = download_artifact(&url, &expected_archive_hash)?;
+        download_artifact(&url, &expected_archive_hash)?
+    };
 
     extract_artifact(&data, &tmp_root)?;
 
@@ -1043,7 +918,7 @@ pub fn run_setup() -> Result<()> {
         }
     }
 
-    println!("Successfully installed toolchain v{tag}");
+    println!("Successfully installed toolchain v{}", env!("ANNEAL_OMNIBUS_TAG"));
 
     // Once installation is successful, we atomically swap the temporary
     // directory into the final target location. If the target directory
