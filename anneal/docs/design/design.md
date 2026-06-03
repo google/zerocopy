@@ -49,7 +49,7 @@ Formalizing unsafe Rust requires precise reasoning about memory semantics. Howev
 
 Using Aeneas directly requires developers to adopt an entirely new toolchain (Lean), author manual verification definitions at-a-distance from their source Rust code, and ensure that they remain up-to-date as the Rust code changes. These ergonomic speedbumps significantly increase the barrier to entry for practical verification.
 
-## 4\. Anneal' Core Contributions
+## 4\. Anneal's Core Contributions
 
 Anneal is designed to orchestrate Charon and Aeneas while systematically resolving the limitations outlined above.
 
@@ -275,7 +275,7 @@ end FromBytes
 
 ## 7\. Desugaring to Aeneas
 
-To understand how Anneal’ surface syntax works, we must understand how Aeneas handles references. Aeneas achieves its verification ergonomics by performing a purely functional translation based on Rust’s strict borrow checker rules. It completely abstracts away raw memory, pointers, and spatial reasoning.
+To understand how Anneal’s surface syntax works, we must understand how Aeneas handles references. Aeneas achieves its verification ergonomics by performing a purely functional translation based on Rust’s strict borrow checker rules. It completely abstracts away raw memory, pointers, and spatial reasoning.
 
 Anneal allows developers to write specifications that look like standard, stateful Rust, and desugars them into theorems that apply to Aeneas’s generated pure functions.
 
