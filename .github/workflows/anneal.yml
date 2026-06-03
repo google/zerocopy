@@ -110,7 +110,9 @@ jobs:
           tool: 'customSmallerIsBetter'
           output-file-path: build_time.json
           gh-pages-branch: benchmark-data
-          auto-push: true
+          # External pull requests cannot push benchmark data to the
+          # `benchmark-data` branch.
+          auto-push: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
           save-data-file: ${{ github.ref == 'refs/heads/main' }}
           benchmark-data-dir-path: dashboard
           fail-on-alert: false
