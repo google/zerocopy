@@ -71,7 +71,7 @@ Anneal abstracts away the need to manually author Lean specifications in separat
 
 ## 5\. Architecture
 
-Once a programmer has annotated their Rust code with Anneal annotations (whose syntax is described in Section 5), interacting with Anneal is just a matter of running `cargo anneal verify`. Like the familiar `cargo check`, `cargo anneal verify` will exit cleanly on successful verification, or will print error messages describing verification failures.
+Once a programmer has annotated their Rust code with Anneal annotations (whose syntax is described in Section 6), interacting with Anneal is just a matter of running `cargo anneal verify`. Like the familiar `cargo check`, `cargo anneal verify` will exit cleanly on successful verification, or will print error messages describing verification failures.
 
 Anneal primarily operates by orchestrating the Charon, Aeneas, and Lean verification tools, managing the flow between Rust source, LLBC, and Lean through distinct stages:
 
