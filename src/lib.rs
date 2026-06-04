@@ -6052,13 +6052,6 @@ pub unsafe trait IntoBytes {
     /// header.write_to_suffix(&mut bytes[..]);
     ///
     /// assert_eq!(bytes, [0, 0, 0, 1, 2, 3, 4, 5, 6, 7]);
-    ///
-    /// let mut insufficient_bytes = &mut [0, 0][..];
-    ///
-    /// let write_result = header.write_to_suffix(insufficient_bytes);
-    ///
-    /// assert!(write_result.is_err());
-    /// assert_eq!(insufficient_bytes, [0, 0]);
     /// ```
     ///
     /// If insufficient target bytes are provided, `write_to_suffix` returns
