@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+//
 pub mod from_bytes;
 pub mod into_bytes;
 pub mod known_layout;

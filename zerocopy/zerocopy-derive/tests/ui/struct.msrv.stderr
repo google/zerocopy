@@ -57,9 +57,9 @@ error[E0277]: the trait bound `SplitAtNotKnownLayout: zerocopy_renamed::KnownLay
     |          ^^^^^^^ the trait `zerocopy_renamed::KnownLayout` is not implemented for `SplitAtNotKnownLayout`
     |
 note: required by a bound in `SplitAt`
-   --> $WORKSPACE/src/split_at.rs:61:27
+   --> $WORKSPACE/src/split_at.rs:63:27
     |
-61  | pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
+63  | pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `SplitAt`
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
 

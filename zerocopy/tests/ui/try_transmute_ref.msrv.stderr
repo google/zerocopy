@@ -44,9 +44,9 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
     |                                 ^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
     |
 note: required by a bound in `ValidityError`
-   --> $WORKSPACE/src/error.rs:588:45
+   --> $WORKSPACE/src/error.rs:590:45
     |
-588 | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
+590 | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
     |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
 
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
@@ -56,9 +56,9 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
     |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
     |
 note: required by a bound in `ValidityError`
-   --> $WORKSPACE/src/error.rs:588:45
+   --> $WORKSPACE/src/error.rs:590:45
     |
-588 | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
+590 | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
     |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
     = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 

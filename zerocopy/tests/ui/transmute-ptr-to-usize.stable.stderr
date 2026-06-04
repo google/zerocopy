@@ -9,9 +9,9 @@ error[E0277]: the trait bound `*const usize: IntoBytes` is not satisfied
    |
    = note: Consider adding `#[derive(IntoBytes)]` to `*const usize`
 help: the trait `IntoBytes` is implemented for `usize`
-  --> $WORKSPACE/src/impls.rs:77:5
+  --> $WORKSPACE/src/impls.rs:79:5
    |
-77 |     unsafe_impl!(usize: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+79 |     unsafe_impl!(usize: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 note: required by a bound in `POINTER_VALUE::transmute`
   --> $DIR/transmute-ptr-to-usize.rs:21:30

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+//
 // Copyright 2018 The Fuchsia Authors
 //
 // Licensed under the 2-Clause BSD License <LICENSE-BSD or
@@ -2833,7 +2835,7 @@ pub unsafe trait TryFromBytes {
     /// ```
     ///
     /// [`try_mut_from_bytes`]: TryFromBytes::try_mut_from_bytes
-    ///  
+    ///
     #[doc = codegen_header!("h5", "try_mut_from_bytes_with_elems")]
     ///
     /// See [`TryFromBytes::try_ref_from_bytes_with_elems`](#method.try_ref_from_bytes_with_elems.codegen).
