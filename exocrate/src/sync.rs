@@ -66,12 +66,20 @@ impl<'a> ManagedDirName<'a> {
     ///
     /// `check_exists_or_create` is **not** concurrency-safe if multiple
     /// concurrent calls are made *from the same process*.
+    #[cfg(test)]
     pub(crate) fn check_exists_or_create(
         self,
         populate: impl FnOnce(&Path) -> IoResult<()>,
     ) -> IoResult<ManagedDir<'a>> {
+        self.check_exists_or_create_with_status(populate).map(|(dir, _created)| dir)
+    }
+
+    pub(crate) fn check_exists_or_create_with_status(
+        self,
+        populate: impl FnOnce(&Path) -> IoResult<()>,
+    ) -> IoResult<(ManagedDir<'a>, bool)> {
         if let Ok(dir) = self.check_exists() {
-            return Ok(dir);
+            return Ok((dir, false));
         }
 
         if let Some(parent) = self.path.parent() {
@@ -117,7 +125,7 @@ impl<'a> ManagedDirName<'a> {
         // another process populated the directory.
         if let Ok(dir) = self.check_exists() {
             guard.completed = true;
-            return Ok(dir);
+            return Ok((dir, false));
         }
 
         // Clean up from any previous failed attempt to populate the directory.
@@ -142,7 +150,7 @@ impl<'a> ManagedDirName<'a> {
         })?;
 
         guard.completed = true;
-        Ok(ManagedDir { path: self.path })
+        Ok((ManagedDir { path: self.path }, true))
     }
 
     fn staging(&self) -> PathBuf {
