@@ -28,6 +28,8 @@ sed -i -e "s/cargo install cargo-anneal@[0-9a-zA-Z\.-]*/cargo install cargo-anne
 
 # Update Cargo.lock to reflect the version change in Cargo.toml. We must run
 # this in the anneal subdirectory because it is a separate workspace with its
-# own lockfile.
+# own lockfile. Use `cargo update` on the local package itself instead of
+# regenerating the entire lockfile; the release version bump should not also
+# roll dependency versions.
 cd anneal
-cargo generate-lockfile
+cargo update -p cargo-anneal --precise "$VERSION"

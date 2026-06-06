@@ -16,14 +16,6 @@ on:
       - 'anneal/Cargo.toml'
   workflow_dispatch:
     inputs:
-      zstd_level:
-        description: 'Zstd compression level (1-22)'
-        required: false
-        default: '19'
-      aeneas_version:
-        description: 'Aeneas version to roll to'
-        required: false
-        default: 'PROMPT: Enter Aeneas version'
       version:
         description: 'Anneal version'
         required: true
@@ -42,6 +34,8 @@ jobs:
   check-version:
     name: Check if version was updated
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # required to compare the checked-out commit with HEAD^
     # Don't run this on forks. Also skip it on workflow_dispatch because that
     # trigger is specifically for creating the version-bumping PR, not for
     # checking if it was already done.
@@ -70,11 +64,11 @@ jobs:
           
           if [ "$CUR_VER" != "$PREV_VER" ]; then
             echo "Version change detected."
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "version=$CUR_VER" >> $GITHUB_OUTPUT
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "version=$CUR_VER" >> "$GITHUB_OUTPUT"
           else
             echo "Version unchanged."
-            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
 
   release:
@@ -117,7 +111,7 @@ jobs:
           git config user.name "Google PR Creation Bot"
           git config user.email "github-pull-request-creation-bot@google.com"
           git tag -a "$TAG" -m "Release $TAG"
-          git push https://x-access-token:$GH_TOKEN@github.com/$GH_REPO.git "$TAG"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}.git" "$TAG"
 
       - name: Create GitHub Release
         env:
@@ -128,8 +122,62 @@ jobs:
           TAG="anneal-v$VERSION"
           gh release create "$TAG" --generate-notes
 
+  prepare-release-source:
+    name: Prepare release source patch
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      base_sha: ${{ steps.prepare.outputs.base_sha }}
+      short_base_sha: ${{ steps.prepare.outputs.short_base_sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Prepare version bump patch
+        id: prepare
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+        run: |
+          set -eo pipefail
+          BASE_SHA="$(git rev-parse HEAD)"
+          SHORT_BASE_SHA="${BASE_SHA:0:12}"
+
+          ./ci/release_anneal_version.sh "$VERSION"
+
+          python3 anneal/tools/check-release-pr-files.py \
+            --context "Release version bump" \
+            --include-untracked \
+            --allowed anneal/Cargo.lock \
+            --allowed anneal/Cargo.toml \
+            --allowed anneal/README.md \
+            --required anneal/Cargo.toml
+
+          git diff --binary > anneal-release-source.patch
+          if [ ! -s anneal-release-source.patch ]; then
+            echo "::error::Release version bump produced an empty patch."
+            exit 1
+          fi
+
+          echo "base_sha=${BASE_SHA}" >> "$GITHUB_OUTPUT"
+          echo "short_base_sha=${SHORT_BASE_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload release source patch
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: anneal-release-source-patch
+          path: anneal-release-source.patch
+          if-no-files-found: error
+          retention-days: 1
+
   create-release:
-    name: Create Release for Artifacts
+    name: Create toolchain artifact release
+    needs: prepare-release-source
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
@@ -137,157 +185,249 @@ jobs:
     outputs:
       tag_name: ${{ steps.tag.outputs.tag_name }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
       - name: Create Release
         id: tag
         env:
           GH_TOKEN: ${{ github.token }}
-          GITHUB_SHA: ${{ github.sha }}
+          VERSION: ${{ github.event.inputs.version }}
+          GH_REPO: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          BASE_SHA: ${{ needs.prepare-release-source.outputs.base_sha }}
+          SHORT_BASE_SHA: ${{ needs.prepare-release-source.outputs.short_base_sha }}
         run: |
           set -eo pipefail
-          TAG_NAME="build-$(date +'%Y.%m.%d.%H%M%S')-$GITHUB_SHA"
-          gh release create "$TAG_NAME" --generate-notes --draft --prerelease
-          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
+          TAG_NAME="anneal-toolchains-v${VERSION}-${GITHUB_RUN_ID}-${SHORT_BASE_SHA}"
+          gh release create "$TAG_NAME" \
+            --repo "$GH_REPO" \
+            --target "$BASE_SHA" \
+            --title "$TAG_NAME" \
+            --notes "Machine-generated Anneal toolchain artifacts for cargo-anneal ${VERSION}, built from ${BASE_SHA} after applying the generated release version-bump patch." \
+            --prerelease \
+            --latest=false
+          echo "tag_name=${TAG_NAME}" >> "$GITHUB_OUTPUT"
 
   publish-artifacts:
-    name: Publish Artifacts (${{ matrix.target }})
-    needs: [check-version, release, create-release]
-    # We use `always()` to ensure this job runs even if the `release` job is
-    # skipped (which happens on PRs). We still require `check-version` to
-    # succeed to avoid running on failures.
-    if: always() && (needs.check-version.result == 'success' || needs.create-release.result == 'success')
+    name: Publish toolchain artifact (${{ matrix.target }})
+    needs: [prepare-release-source, create-release]
+    if: github.event_name == 'workflow_dispatch'
     permissions:
+      actions: read # Required to download the release source patch.
       contents: write # This is required to upload assets to a release.
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
             target: linux-x86_64
-            rust_triple: x86_64-unknown-linux-gnu
+            cargo_os: linux
+            cargo_arch: x86_64
           - os: ubuntu-24.04-arm
             target: linux-aarch64
-            rust_triple: aarch64-unknown-linux-gnu
+            cargo_os: linux
+            cargo_arch: aarch64
           - os: macos-15-intel
             target: macos-x86_64
-            rust_triple: x86_64-apple-darwin
+            cargo_os: macos
+            cargo_arch: x86_64
           - os: macos-latest
             target: macos-aarch64
-            rust_triple: aarch64-apple-darwin
+            cargo_os: macos
+            cargo_arch: aarch64
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          ref: ${{ needs.prepare-release-source.outputs.base_sha }}
           persist-credentials: false
 
-      - name: Extract Metadata
-        id: meta
+      - name: Download release source patch
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: anneal-release-source-patch
+          path: .
+
+      - name: Apply release source patch
         run: |
           set -eo pipefail
-          cd anneal
-          AENEAS_TAG=$(sed -n 's/^tag = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
-          RUST_DATE=$(sed -n 's/^date = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
-          echo "aeneas_tag=$AENEAS_TAG" >> $GITHUB_OUTPUT
-          echo "rust_date=$RUST_DATE" >> $GITHUB_OUTPUT
+          git apply --check anneal-release-source.patch
+          git apply anneal-release-source.patch
 
-      - name: Install elan
+      - name: Free up disk space
+        if: runner.os == 'Linux'
         run: |
-          set -eo pipefail
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+          df -h
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/share/boost
+          df -h
 
-      - name: Install zstd (macOS)
-        if: runner.os == 'macOS'
-        run: brew install zstd
+      - name: Install Nix
+        uses: DeterminateSystems/determinate-nix-action@441b9e401ac050c38a07d8313748c5c2d17e8aff # v3.6.1
 
-      - name: Download and Package
-        env:
-          RUST_TRIPLE: ${{ matrix.rust_triple }}
-          ANNEAL_ZSTD_LEVEL: ${{ github.event.inputs.zstd_level || 19 }}
-        run: |
-          set -eo pipefail
-          cd anneal
-          
-          STAGING_DIR="dist_staging"
-          mkdir -p "$STAGING_DIR"
-          
-          ./tools/build-prebuilt.sh "$RUST_TRIPLE"
-          
-      - name: Upload Artifact
-        if: github.event_name == 'workflow_dispatch' || (github.event_name != 'pull_request' && needs.release.result == 'success')
+      # On Ubuntu 24.04 (currently `ubuntu-latest`), AppArmor restricts unprivileged user namespaces by default.
+      # The Nix build sandbox uses `bubblewrap` for Linux FHS execution, which requires creating a user namespace.
+      - name: Enable unprivileged user namespaces (Ubuntu 24.04)
+        if: runner.os == 'Linux'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Build and publish toolchain artifact
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ needs.check-version.outputs.version }}
-          AENEAS_VERSION: ${{ github.event.inputs.aeneas_version }}
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
           TARGET: ${{ matrix.target }}
-          EVENT_NAME: ${{ github.event_name }}
-          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
+          CARGO_OS: ${{ matrix.cargo_os }}
+          CARGO_ARCH: ${{ matrix.cargo_arch }}
         run: |
-          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            TAG="$TAG_NAME"
-          else
-            TAG="anneal-v$VERSION"
-          fi
-          gh release upload "$TAG" anneal/anneal-toolchain-$TARGET.tar.zst --clobber
+          set -eo pipefail
+          ARCHIVE_NAME="anneal-toolchain-${TARGET}.tar.zst"
+          MAX_GITHUB_RELEASE_ASSET_SIZE=2147483647
+          mkdir -p anneal/v2/target anneal/release-download-check anneal/release-metadata
 
-  finalize-release:
-    name: Finalize Release
-    needs: [publish-artifacts, create-release]
-    if: always() && needs.publish-artifacts.result == 'success' && github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write # required to publish the release
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+          nix build ./anneal/v2#omnibus-archive-ci --out-link "anneal/v2/target/${ARCHIVE_NAME}"
+          cp -L "anneal/v2/target/${ARCHIVE_NAME}" "anneal/${ARCHIVE_NAME}"
+          ARCHIVE_SIZE="$(python3 -c 'import os, sys; print(os.path.getsize(sys.argv[1]))' "anneal/${ARCHIVE_NAME}")"
+          printf 'Built %s (%s bytes)\n' "$ARCHIVE_NAME" "$ARCHIVE_SIZE"
+          if [ "$ARCHIVE_SIZE" -gt "$MAX_GITHUB_RELEASE_ASSET_SIZE" ]; then
+            echo "::error::${ARCHIVE_NAME} is ${ARCHIVE_SIZE} bytes, which exceeds GitHub's ${MAX_GITHUB_RELEASE_ASSET_SIZE}-byte release asset limit."
+            exit 1
+          fi
+
+          gh release upload "$TAG_NAME" "anneal/${ARCHIVE_NAME}" --repo "$GH_REPO" --clobber
+          gh release download "$TAG_NAME" \
+            --repo "$GH_REPO" \
+            --pattern "$ARCHIVE_NAME" \
+            --dir anneal/release-download-check \
+            --clobber
+          cmp "anneal/${ARCHIVE_NAME}" "anneal/release-download-check/${ARCHIVE_NAME}"
+
+          url="https://github.com/${GH_REPO}/releases/download/${TAG_NAME}/${ARCHIVE_NAME}"
+          python3 anneal/tools/collect-release-archive-metadata.py \
+            --archive "anneal/release-download-check/${ARCHIVE_NAME}" \
+            --target "$TARGET" \
+            --os "$CARGO_OS" \
+            --arch "$CARGO_ARCH" \
+            --url "$url" \
+            --out "anneal/release-metadata/${TARGET}.json"
+
+      - name: Restore AppArmor restriction
+        if: always() && runner.os == 'Linux'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
+
+      - name: Upload toolchain metadata
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          persist-credentials: false
-      - name: Publish Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
-        run: |
-          gh release edit "$TAG_NAME" --draft=false
+          name: anneal-toolchain-metadata-${{ matrix.target }}
+          path: anneal/release-metadata/${{ matrix.target }}.json
+          if-no-files-found: error
+          retention-days: 1
 
   release-version-action:
     # This job handles manual release triggers. It updates version numbers and
-    # creates a PR for review. It does not perform actual publishing.
-    name: Release new Anneal versions
+    # exocrate archive metadata, then creates a PR for review.
+    name: Release new Anneal version
+    needs: [prepare-release-source, create-release, publish-artifacts]
     if: github.event_name == 'workflow_dispatch'
     permissions:
-      contents: read
+      actions: read # Required to download toolchain metadata artifacts.
+      contents: write # Required by the fork-only create-pull-request fallback.
+      issues: write # Required to label the generated release PR.
       pull-requests: write # Required to create pull requests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ needs.prepare-release-source.outputs.base_sha }}
           persist-credentials: false
-      - name: Overwrite Anneal files
+
+      - name: Download release source patch
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: anneal-release-source-patch
+          path: .
+
+      - name: Apply release source patch
+        run: |
+          set -eo pipefail
+          git apply --check anneal-release-source.patch
+          git apply anneal-release-source.patch
+
+      - name: Download toolchain metadata
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: anneal-toolchain-metadata-*
+          path: anneal/release-metadata
+          merge-multiple: true
+
+      - name: Update Anneal archive metadata
         env:
-          VERSION: ${{ github.event.inputs.version }}
-        run: ./ci/release_anneal_version.sh "$VERSION"
+          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
+        run: |
+          set -eo pipefail
+          python3 anneal/tools/update-exocrate-metadata.py \
+            --cargo-toml anneal/Cargo.toml \
+            --metadata-dir anneal/release-metadata \
+            --expected-release-tag "$TAG_NAME" \
+            --require-all
+
+          rm -f anneal-release-source.patch
+          rm -rf anneal/release-metadata
+
+          python3 anneal/tools/check-release-pr-files.py \
+            --context "Release workflow" \
+            --include-untracked \
+            --allowed anneal/Cargo.lock \
+            --allowed anneal/Cargo.toml \
+            --allowed anneal/README.md \
+            --required anneal/Cargo.toml
 
       - name: Submit PR
-        id: submit-pr
+        id: submit-pr-upstream
+        if: github.repository == 'google/zerocopy'
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0 # zizmor: ignore[superfluous-actions]
         with:
           commit-message: "Release Anneal ${{ github.event.inputs.version }}"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           title: "Release Anneal ${{ github.event.inputs.version }}"
+          base: ${{ github.event.inputs.branch }}
           branch: anneal-release-${{ github.event.inputs.version }}
+          add-paths: |
+            anneal/Cargo.lock
+            anneal/Cargo.toml
+            anneal/README.md
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
 
+      - name: Submit PR (fork test)
+        id: submit-pr-fork
+        if: github.repository != 'google/zerocopy'
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0 # zizmor: ignore[superfluous-actions]
+        with:
+          commit-message: "Release Anneal ${{ github.event.inputs.version }}"
+          author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
+          committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
+          title: "Release Anneal ${{ github.event.inputs.version }}"
+          base: ${{ github.event.inputs.branch }}
+          branch: anneal-release-${{ github.event.inputs.version }}
+          add-paths: |
+            anneal/Cargo.lock
+            anneal/Cargo.toml
+            anneal/README.md
+          token: ${{ github.token }}
+
       - name: Add labels
-        if: steps.submit-pr.outputs.pull-request-operation == 'created'
+        if: steps.submit-pr-upstream.outputs.pull-request-operation == 'created'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ steps.submit-pr.outputs.pull-request-number }}
+          PR_NUMBER: ${{ steps.submit-pr-upstream.outputs.pull-request-number }}
         run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
 
+      - name: Add labels (fork test)
+        if: steps.submit-pr-fork.outputs.pull-request-operation == 'created'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.submit-pr-fork.outputs.pull-request-number }}
+        run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
