@@ -18,6 +18,7 @@ use std::{
     path::{Path, PathBuf},
     process::Stdio,
     sync::{Arc, Mutex},
+    time::SystemTime,
 };
 
 use anyhow::{Context, Result, bail};
@@ -423,6 +424,8 @@ fn copy_toolchain_tree_writable(src: &Path, dst: &Path) -> Result<()> {
         }
     }
 
+    normalize_lake_input_mtimes(dst)?;
+
     Ok(())
 }
 
@@ -459,6 +462,45 @@ fn make_writable(path: &Path) -> Result<()> {
             .with_context(|| format!("Failed to make {} writable", path.display()))?;
     }
     Ok(())
+}
+
+fn normalize_lake_input_mtimes(root: &Path) -> Result<()> {
+    // The installed toolchain archive is intentionally read-only, and
+    // `copy_toolchain_tree_writable` symlinks `.lake/build` directories back to
+    // that archive so each verification workspace does not copy several GiB of
+    // prebuilt `.olean` files. That optimization only works if Lake accepts the
+    // linked cache artifacts as newer than the copied source/config files. A
+    // normal file copy gives the copied inputs fresh mtimes, so Lake `--old`
+    // can decide that archive outputs are stale and then fail while trying to
+    // remove read-only files through the `.lake/build` symlinks. Mirror the
+    // archive builder's convention: copied Lake inputs are older than the
+    // archive cache artifacts, while generated project files keep their normal
+    // mtimes and remain mutable.
+    for entry in WalkDir::new(root) {
+        let entry = entry.with_context(|| format!("Failed to walk {}", root.display()))?;
+        if !entry.file_type().is_file() || !is_lake_input_file(entry.path()) {
+            continue;
+        }
+
+        let file = fs::File::options().write(true).open(entry.path()).with_context(|| {
+            format!("Failed to open {} to normalize mtime", entry.path().display())
+        })?;
+        file.set_times(fs::FileTimes::new().set_modified(SystemTime::UNIX_EPOCH))
+            .with_context(|| format!("Failed to normalize mtime for {}", entry.path().display()))?;
+    }
+
+    Ok(())
+}
+
+fn is_lake_input_file(path: &Path) -> bool {
+    if path.extension().and_then(|ext| ext.to_str()) == Some("lean") {
+        return true;
+    }
+
+    matches!(
+        path.file_name().and_then(|name| name.to_str()),
+        Some("lakefile.toml" | "lake-manifest.json" | "lean-toolchain")
+    )
 }
 
 /// Generates Anneal `Specs.lean` and writes `Generated.lean`, but does not run the `lake build`.
@@ -600,7 +642,6 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
         // We construct the relative path from the Lake root (which is `target/anneal/<hash>/lean`)
         let specs_rel_path = format!("generated/{}/{}", slug, artifact.lean_spec_file_name());
 
-        let toolchain = crate::setup::Toolchain::resolve()?;
         let mut cmd = std::process::Command::new(toolchain.lean_bin().join("lake"));
         cmd.args(["--keep-toolchain", "env", "lean", "--json", &specs_rel_path]);
         cmd.current_dir(lean_root);

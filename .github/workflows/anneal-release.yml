@@ -14,7 +14,6 @@ on:
       - main
     paths:
       - 'anneal/Cargo.toml'
-  pull_request:
   workflow_dispatch:
     inputs:
       zstd_level:
