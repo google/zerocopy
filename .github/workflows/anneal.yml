@@ -241,7 +241,7 @@ jobs:
         uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: anneal/v2/target/nix-cache-main
-          key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/v2/flake.nix', 'anneal/v2/flake.lock', 'anneal/v2/rewrite-lake-vendor.py') }}
+          key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/v2/flake.nix', 'anneal/v2/flake.lock', 'anneal/v2/rewrite-lake-vendor.py', 'anneal/v2/prune-lake-cache.py') }}
 
       # Pull request caches are scoped by GitHub to the PR merge ref, so they
       # can speed up repeated pushes to the same PR without becoming visible to
@@ -253,7 +253,7 @@ jobs:
         uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: anneal/v2/target/nix-cache-pr
-          key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/v2/flake.nix', 'anneal/v2/flake.lock', 'anneal/v2/rewrite-lake-vendor.py') }}
+          key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/v2/flake.nix', 'anneal/v2/flake.lock', 'anneal/v2/rewrite-lake-vendor.py', 'anneal/v2/prune-lake-cache.py') }}
 
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@441b9e401ac050c38a07d8313748c5c2d17e8aff # v3.6.1
