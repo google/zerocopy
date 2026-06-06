@@ -30,6 +30,44 @@ env:
 
 jobs:
 
+  static_checks:
+    name: Anneal Static Checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # zizmor: ignore[superfluous-actions]
+        with:
+          toolchain: stable
+
+      - name: Test Anneal support scripts
+        run: |
+          set -euo pipefail
+          export PYTHONDONTWRITEBYTECODE=1
+          python3 -m py_compile \
+            anneal/tools/check-release-pr-files.py \
+            anneal/tools/test_exocrate_metadata_helpers.py \
+            anneal/tools/test_release_pr_files.py \
+            anneal/tools/collect-release-archive-metadata.py \
+            anneal/tools/update-exocrate-metadata.py \
+            anneal/v2/tests/test_prune_lake_cache.py \
+            anneal/v2/prune-lake-cache.py \
+            anneal/v2/rewrite-lake-vendor.py
+          python3 -m unittest discover -s anneal/tools -p 'test_*.py'
+          python3 -m unittest discover -s anneal/v2/tests -p 'test_*.py'
+          bash anneal/tools/check-release-flow-dry-run.sh
+
+      - name: Install Nix
+        uses: DeterminateSystems/determinate-nix-action@441b9e401ac050c38a07d8313748c5c2d17e8aff # v3.6.1
+
+      - name: Check V2 flake evaluation
+        run: bash anneal/v2/check-flake-eval.sh
+
   anneal_tests:
     name: Anneal Tests
     runs-on: ubuntu-latest
@@ -285,6 +323,14 @@ jobs:
           archive="$(readlink -f target/anneal-exocrate.tar.zst)"
           rm target/anneal-exocrate.tar.zst
           cp "$archive" target/anneal-exocrate.tar.zst
+          archive_size="$(python3 -c 'import os, sys; print(os.path.getsize(sys.argv[1]))' target/anneal-exocrate.tar.zst)"
+          max_github_release_asset_size=2147483647
+          printf 'Built anneal-exocrate.tar.zst (%s bytes)\n' "$archive_size"
+          if [ "$archive_size" -gt "$max_github_release_asset_size" ]; then
+            echo "::error::anneal-exocrate.tar.zst is ${archive_size} bytes, which exceeds GitHub's ${max_github_release_asset_size}-byte release asset limit."
+            exit 1
+          fi
+          nix build "${nix_args[@]}" .#omnibus-archive-layout-check --no-link
         working-directory: anneal/v2
 
       # Re-enable the AppArmor namespace restriction to restore the runner host's default security posture.
@@ -388,7 +434,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [anneal_tests, verify_examples, v2_nix_cache, v2]
+      needs: [static_checks, anneal_tests, verify_examples, v2_nix_cache, v2]
       steps:
         - name: Mark the job as failed
           run: exit 1
