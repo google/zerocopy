@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780796567793,
+  "lastUpdate": 1780796586171,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -21275,6 +21275,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 691,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "ddbf207e85753e5129b157a2035e48684c965b41",
+          "message": "[anneal][v2] Implement out-of-tree dependency chasing for expand command",
+          "timestamp": "2026-06-07T01:16:30Z",
+          "url": "https://github.com/google/zerocopy/pull/3405/commits/ddbf207e85753e5129b157a2035e48684c965b41"
+        },
+        "date": 1780796584622,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 559,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 703,
             "unit": "seconds"
           }
         ]
