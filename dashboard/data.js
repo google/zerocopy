@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780796049340,
+  "lastUpdate": 1780796398684,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -21215,6 +21215,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 785,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "d551e1d6b5192206ffeb2a5ac12355c5fbda5b92",
+          "message": "[anneal][v2] Stabilize Nix omnibus archive builds",
+          "timestamp": "2026-06-07T01:15:06Z",
+          "url": "https://github.com/google/zerocopy/pull/3444/commits/d551e1d6b5192206ffeb2a5ac12355c5fbda5b92"
+        },
+        "date": 1780796397212,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 554,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 696,
             "unit": "seconds"
           }
         ]
