@@ -186,6 +186,29 @@ pub enum Source {
     Local(PathBuf),
 }
 
+/// Paths passed to an installation fixup hook.
+///
+/// The staging directory is the mutable, freshly extracted archive directory.
+/// The final directory is the stable path where the staging directory will be
+/// atomically published after the hook returns successfully.
+#[derive(Clone, Copy)]
+pub struct FixupPaths<'a> {
+    staging_dir: &'a Path,
+    final_dir: &'a Path,
+}
+
+impl<'a> FixupPaths<'a> {
+    /// The mutable directory containing freshly extracted archive contents.
+    pub fn staging_dir(&self) -> &'a Path {
+        self.staging_dir
+    }
+
+    /// The stable installation path that will exist after publication.
+    pub fn final_dir(&self) -> &'a Path {
+        self.final_dir
+    }
+}
+
 impl Config {
     /// Resolves the dependency directory, failing if it doesn't exist.
     pub fn resolve_installation_dir(&self, location: Location) -> IoResult<PathBuf> {
@@ -200,12 +223,28 @@ impl Config {
         location: Location,
         source: Source,
     ) -> IoResult<PathBuf> {
+        self.resolve_installation_dir_or_install_with_fixup(location, source, |_| Ok(()))
+    }
+
+    /// Resolves the dependency directory, installing and fixing it up if needed.
+    ///
+    /// The `fixup` hook runs once after a fresh archive extraction, but before
+    /// the managed directory is published. Mutate files through
+    /// [`FixupPaths::staging_dir`]; use [`FixupPaths::final_dir`] only for
+    /// fixups that need to write stable install-root references into those
+    /// staged files.
+    pub fn resolve_installation_dir_or_install_with_fixup(
+        &self,
+        location: Location,
+        source: Source,
+        fixup: impl FnOnce(FixupPaths<'_>) -> IoResult<()>,
+    ) -> IoResult<PathBuf> {
         let dir_path = self.dir_path(location);
         if ManagedDirName::new(&dir_path).check_exists().is_ok() {
             return Ok(dir_path);
         }
         let (reader, expected_sha) = self.open_source(source)?;
-        install(reader, &dir_path, expected_sha)?;
+        install_with_fixup(reader, &dir_path, expected_sha, fixup)?;
         Ok(dir_path)
     }
 
@@ -268,7 +307,17 @@ impl Config {
 
 /// Extracts the `.tar.zst` from `reader` and installs it at `dst`, optionally
 /// validating its hash.
+#[cfg(test)]
 fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>) -> IoResult<()> {
+    install_with_fixup(&mut reader, dst, expected_sha256, |_| Ok(()))
+}
+
+fn install_with_fixup(
+    mut reader: impl Read,
+    dst: &Path,
+    expected_sha256: Option<[u8; 32]>,
+    fixup: impl FnOnce(FixupPaths<'_>) -> IoResult<()>,
+) -> IoResult<()> {
     struct HashingReader<R> {
         reader: R,
         hasher: sha2::Sha256,
@@ -282,14 +331,20 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
         }
     }
 
-    sync::ManagedDirName::new(dst)
-        .check_exists_or_create(|target_dir| {
+    fn unpack_tar_zst(reader: impl Read, target_dir: &Path) -> IoResult<()> {
+        let decoder = zstd::stream::read::Decoder::new(reader)?;
+        let mut archive = tar::Archive::new(decoder);
+        archive.set_mask(0);
+        archive.set_preserve_permissions(true);
+        archive.unpack(target_dir)
+    }
+
+    let (_dir, _created) =
+        sync::ManagedDirName::new(dst).check_exists_or_create_with_status(|target_dir| {
             if let Some(expected) = expected_sha256 {
                 let mut hash_reader = HashingReader { reader, hasher: sha2::Sha256::new() };
                 {
-                    let decoder = zstd::stream::read::Decoder::new(&mut hash_reader)?;
-                    let mut archive = tar::Archive::new(decoder);
-                    archive.unpack(target_dir)?;
+                    unpack_tar_zst(&mut hash_reader, target_dir)?;
                 }
 
                 // Ensure any remaining trailing bytes in the stream are read
@@ -308,13 +363,13 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
                     ));
                 }
             } else {
-                let decoder = zstd::stream::read::Decoder::new(&mut reader)?;
-                let mut archive = tar::Archive::new(decoder);
-                archive.unpack(target_dir)?;
+                unpack_tar_zst(&mut reader, target_dir)?;
             }
+            fixup(FixupPaths { staging_dir: target_dir, final_dir: dst })?;
             Ok(())
-        })
-        .map(|_| ())
+        })?;
+
+    Ok(())
 }
 
 /// Parses a [`RemoteArchive`] from the `Cargo.toml` at `$cargo_toml_path`.
@@ -545,13 +600,19 @@ mod tests {
     use super::*;
 
     fn create_dummy_tar_zst(files: &[(&str, &[u8])]) -> Vec<u8> {
+        let files =
+            files.iter().map(|(name, content)| (*name, *content, 0o644)).collect::<Vec<_>>();
+        create_dummy_tar_zst_with_modes(&files)
+    }
+
+    fn create_dummy_tar_zst_with_modes(files: &[(&str, &[u8], u32)]) -> Vec<u8> {
         let mut zstd_enc = zstd::stream::write::Encoder::new(Vec::new(), 0).unwrap();
         {
             let mut tar_builder = tar::Builder::new(&mut zstd_enc);
-            for (name, content) in files {
+            for (name, content, mode) in files {
                 let mut header = tar::Header::new_gnu();
                 header.set_size(content.len() as u64);
-                header.set_mode(0o644);
+                header.set_mode(*mode);
                 header.set_cksum();
                 tar_builder.append_data(&mut header, name, *content).unwrap();
             }
@@ -593,6 +654,82 @@ mod tests {
         assert!(dst.is_dir());
         assert_eq!(fs::read_to_string(dst.join("hello.txt")).unwrap(), "hello world");
         assert_eq!(fs::read(dst.join("nested/dir/data.bin")).unwrap(), b"\x01\x02\x03");
+    }
+
+    #[test]
+    fn test_install_with_fixup() {
+        let temp = tempfile::tempdir().unwrap();
+        let dst = temp.path().join("install_target");
+        let tar_zst = create_dummy_tar_zst(&[("hello.txt", b"hello world")]);
+
+        install_with_fixup(tar_zst.as_slice(), &dst, None, |paths| {
+            assert_ne!(paths.staging_dir(), paths.final_dir());
+            assert!(
+                !paths.final_dir().exists(),
+                "final directory should not be visible until fixup completes"
+            );
+            fs::write(paths.staging_dir().join("fixed.txt"), "fixed")
+        })
+        .unwrap();
+
+        assert_eq!(fs::read_to_string(dst.join("hello.txt")).unwrap(), "hello world");
+        assert_eq!(fs::read_to_string(dst.join("fixed.txt")).unwrap(), "fixed");
+    }
+
+    #[test]
+    fn test_install_fixup_not_rerun_for_existing_dir() {
+        let temp = tempfile::tempdir().unwrap();
+        let dst = temp.path().join("install_target");
+        fs::create_dir_all(&dst).unwrap();
+        fs::write(dst.join("existing.txt"), "existing content").unwrap();
+
+        let bad_data = b"invalid archive data";
+        install_with_fixup(&bad_data[..], &dst, None, |_| {
+            panic!("fixup should not run for an existing installation");
+        })
+        .unwrap();
+
+        assert_eq!(fs::read_to_string(dst.join("existing.txt")).unwrap(), "existing content");
+    }
+
+    #[test]
+    fn test_install_fixup_failure_removes_installation() {
+        let temp = tempfile::tempdir().unwrap();
+        let dst = temp.path().join("install_target");
+        let tar_zst = create_dummy_tar_zst(&[("hello.txt", b"hello world")]);
+
+        let result = install_with_fixup(tar_zst.as_slice(), &dst, None, |_| {
+            Err(std::io::Error::new(std::io::ErrorKind::Other, "fixup failed"))
+        });
+
+        assert!(result.is_err());
+        assert!(!dst.exists());
+        let entries: Vec<_> = fs::read_dir(temp.path())
+            .unwrap()
+            .map(|e| e.unwrap().file_name())
+            .filter(|n| n != "install_target.lock")
+            .collect();
+        assert!(entries.is_empty());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_install_preserves_read_only_permissions() {
+        use std::os::unix::fs::PermissionsExt as _;
+
+        let temp = tempfile::tempdir().unwrap();
+        let dst = temp.path().join("install_target");
+        let tar_zst = create_dummy_tar_zst_with_modes(&[
+            ("readonly.txt", b"locked", 0o444),
+            ("bin/tool", b"tool", 0o555),
+        ]);
+
+        install(tar_zst.as_slice(), &dst, None).unwrap();
+
+        let readonly_mode = fs::metadata(dst.join("readonly.txt")).unwrap().permissions().mode();
+        let tool_mode = fs::metadata(dst.join("bin/tool")).unwrap().permissions().mode();
+        assert_eq!(readonly_mode & 0o777, 0o444);
+        assert_eq!(tool_mode & 0o777, 0o555);
     }
 
     #[test]
