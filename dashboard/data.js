@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780798336771,
+  "lastUpdate": 1780798339660,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -21549,6 +21549,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 701,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "09497849a10de8542552c70efd255a1cabc3190e",
+          "message": "[anneal][release] Upload toolchain archives before publishing release (#3445)\n\ngherrit-pr-id: Gzd6gegpj7efpcjpnjedmkndsvpemo4x5",
+          "timestamp": "2026-06-06T21:56:46-04:00",
+          "tree_id": "f86cc4da7ba9959ad95affd8220102de6bb5afe0",
+          "url": "https://github.com/google/zerocopy/commit/09497849a10de8542552c70efd255a1cabc3190e"
+        },
+        "date": 1780798338047,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 573,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 719,
             "unit": "seconds"
           }
         ]
