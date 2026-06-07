@@ -202,6 +202,7 @@ jobs:
             --target "$BASE_SHA" \
             --title "$TAG_NAME" \
             --notes "Machine-generated Anneal toolchain artifacts for cargo-anneal ${VERSION}, built from ${BASE_SHA} after applying the generated release version-bump patch." \
+            --draft \
             --prerelease \
             --latest=false
           echo "tag_name=${TAG_NAME}" >> "$GITHUB_OUTPUT"
@@ -431,3 +432,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ steps.submit-pr-fork.outputs.pull-request-number }}
         run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
+
+      - name: Publish toolchain artifact release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
+        run: |
+          set -eo pipefail
+          gh release edit "$TAG_NAME" --repo "$GH_REPO" --draft=false

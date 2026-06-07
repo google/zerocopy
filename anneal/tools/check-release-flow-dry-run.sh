@@ -139,4 +139,31 @@ for os_name, arch in sorted(expected):
         raise SystemExit(f"invalid URL for {os_name}.{arch}: {url!r}")
 PY
 
+python3 - <<'PY'
+import pathlib
+
+workflow = pathlib.Path(".github/workflows/anneal-release.yml").read_text(encoding="utf-8")
+
+create_release = 'gh release create "$TAG_NAME"'
+if create_release not in workflow:
+    raise SystemExit("release workflow no longer creates a toolchain release with TAG_NAME")
+
+create_release_index = workflow.index(create_release)
+publish_release_index = workflow.find('gh release edit "$TAG_NAME"')
+if publish_release_index == -1:
+    raise SystemExit("release workflow must publish the draft toolchain release after uploads succeed")
+if publish_release_index < create_release_index:
+    raise SystemExit("release workflow publishes the toolchain release before creating it")
+
+create_release_block = workflow[create_release_index:publish_release_index]
+if "--draft" not in create_release_block:
+    raise SystemExit(
+        "toolchain release must be created as a draft so GitHub immutable releases still allow asset uploads"
+    )
+
+publish_release_block = workflow[publish_release_index:publish_release_index + 500]
+if "--draft=false" not in publish_release_block:
+    raise SystemExit("toolchain release publish step must pass --draft=false")
+PY
+
 echo "Anneal release dry-run checks passed."
