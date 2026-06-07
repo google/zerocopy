@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780798355871,
+  "lastUpdate": 1780798357816,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -21673,6 +21673,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 710,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "3b23aff791170988152f6ec73d63fd4bf469bfeb",
+          "message": "[anneal][v2] Add pinned charon_lib dependency",
+          "timestamp": "2026-06-07T01:56:50Z",
+          "url": "https://github.com/google/zerocopy/pull/3418/commits/3b23aff791170988152f6ec73d63fd4bf469bfeb"
+        },
+        "date": 1780798354298,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 554,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 717,
             "unit": "seconds"
           }
         ]
