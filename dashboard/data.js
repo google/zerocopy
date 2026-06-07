@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780793244333,
+  "lastUpdate": 1780794883750,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -21035,6 +21035,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 705,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "11bf7f723639c90d6fa88b5dfd9333ec89c5f763",
+          "message": "[anneal] Keep vendored Lake inputs older than archive caches",
+          "timestamp": "2026-06-06T18:05:15Z",
+          "url": "https://github.com/google/zerocopy/pull/3443/commits/11bf7f723639c90d6fa88b5dfd9333ec89c5f763"
+        },
+        "date": 1780794882102,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 617,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 829,
             "unit": "seconds"
           }
         ]
