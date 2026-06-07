@@ -4,7 +4,7 @@ members = [".", "tools/doc_gen"]
 [package]
 name = "cargo-anneal"
 edition = "2024"
-version = "0.1.0-alpha.23"
+version = "0.1.0-alpha.24"
 description = "Formally verify that your safety comments are correct."
 categories = [
   "development-tools::cargo-plugins",
@@ -25,20 +25,20 @@ exclude = [".*", "testdata"]
 # this crate; `cargo anneal setup` uses this metadata by default when callers
 # do not provide a local archive.
 [package.metadata.exocrate.linux.x86_64]
-sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
-url = "https://example.com/linux-x86_64.tar.zst"
+sha256 = "d3d7bbcdfd2645f10e3e64a85b3e848197033992337c969a45576a3d0ec517d9"
+url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-linux-x86_64.tar.zst"
 
 [package.metadata.exocrate.macos.x86_64]
-sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
-url = "https://example.com/macos-x86_64.tar.zst"
+sha256 = "1252f15262d11f49795c8ed182a8b47f2ae4e627d90babb2f10636349f686438"
+url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-macos-x86_64.tar.zst"
 
 [package.metadata.exocrate.linux.aarch64]
-sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
-url = "https://example.com/linux-aarch64.tar.zst"
+sha256 = "a9c496fcf21670b2306d02722b9afcf375149315e929d53b6a7585d4daa19710"
+url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-linux-aarch64.tar.zst"
 
 [package.metadata.exocrate.macos.aarch64]
-sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
-url = "https://example.com/macos-aarch64.tar.zst"
+sha256 = "b4e0a5b420eb441e37564c365f06c215f61a3b825fc3df37293da7c3010d2b81"
+url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-macos-aarch64.tar.zst"
 
 [dependencies]
 anyhow = "1.0.102"
