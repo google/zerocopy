@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780794883750,
+  "lastUpdate": 1780795741184,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -21065,6 +21065,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 829,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "69f9854de647b89cf4dc5f5018db92d3b0c7e80d",
+          "message": "[anneal][release] Add exocrate archive metadata helpers",
+          "timestamp": "2026-06-07T01:15:34Z",
+          "url": "https://github.com/google/zerocopy/pull/3440/commits/69f9854de647b89cf4dc5f5018db92d3b0c7e80d"
+        },
+        "date": 1780795738602,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 553,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 713,
             "unit": "seconds"
           }
         ]
