@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780792602392,
+  "lastUpdate": 1780792614657,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -20675,6 +20675,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 723,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "344aa64cafe0fdb9f7ba493d1cea636233d78387",
+          "message": "[anneal][release] Publish Nix-built toolchain archives",
+          "timestamp": "2026-06-06T18:05:15Z",
+          "url": "https://github.com/google/zerocopy/pull/3441/commits/344aa64cafe0fdb9f7ba493d1cea636233d78387"
+        },
+        "date": 1780792612567,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 569,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 738,
             "unit": "seconds"
           }
         ]
