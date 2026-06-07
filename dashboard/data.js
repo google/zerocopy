@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780796605838,
+  "lastUpdate": 1780796608211,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -21365,6 +21365,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 730,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "7a0a8806be0269b7693901af0e94349f02a66088",
+          "message": "[anneal][release] Publish Nix-built toolchain archives (#3441)\n\ngherrit-pr-id: Grl7i4qbjhlucgcy6c42kx2y65nxbk4dz",
+          "timestamp": "2026-06-06T21:16:25-04:00",
+          "tree_id": "fb111b6fc1e885620ef8b8e3f504330005685b61",
+          "url": "https://github.com/google/zerocopy/commit/7a0a8806be0269b7693901af0e94349f02a66088"
+        },
+        "date": 1780796605836,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 545,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 748,
             "unit": "seconds"
           }
         ]
