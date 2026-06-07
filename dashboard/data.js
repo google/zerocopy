@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780798434565,
+  "lastUpdate": 1780802116029,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -21853,6 +21853,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 767,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "145818923+google-pr-creation-bot@users.noreply.github.com",
+            "name": "Google PR Creation Bot",
+            "username": "google-pr-creation-bot"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "83dbc577cabea1904f98ab8c05fea34b04537a3a",
+          "message": "Release Anneal 0.1.0-alpha.24 (#3446)",
+          "timestamp": "2026-06-06T22:48:01-04:00",
+          "tree_id": "37304c5f87e271085c176b1c6f47baa57b8ea4c8",
+          "url": "https://github.com/google/zerocopy/commit/83dbc577cabea1904f98ab8c05fea34b04537a3a"
+        },
+        "date": 1780802113667,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 572,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 753,
             "unit": "seconds"
           }
         ]
