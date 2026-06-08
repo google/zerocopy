@@ -155,6 +155,14 @@ def rewrite_trace_prefixes(
         )
         for name in packages
     ]
+    root_package_patterns = [
+        # Aeneas release archives can already contain traces produced in an
+        # upstream staging directory such as
+        # `/var/lib/.../dist_staging/backends/lean/...`. Those paths are not
+        # known to Nix, so strip any absolute package-root prefix ending in the
+        # Aeneas Lean backend layout.
+        re.compile(r"(?<![A-Za-z0-9_.-])(?:/[^/\s\"':]+)+/backends/lean/")
+    ]
     count = 0
 
     for trace in [*root.rglob("*.trace"), *(t for p in packages.values() for t in p.rglob("*.trace"))]:
@@ -172,6 +180,8 @@ def rewrite_trace_prefixes(
             else:
                 new_content = new_content.replace(prefix_text, "")
         for pattern in package_root_patterns:
+            new_content = pattern.sub("", new_content)
+        for pattern in root_package_patterns:
             new_content = pattern.sub("", new_content)
         if new_content != content:
             trace.write_text(new_content)
