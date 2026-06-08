@@ -445,6 +445,30 @@
             "test -f ../../packages/batteries/.lake/build/lib/lean/Batteries/Data/Array/Merge.olean"
             (runLeanCommand "lake --old build")
             "test -f ../../packages/batteries/.lake/build/lib/lean/Batteries/Data/Array/Merge.olean"
+            # Anneal v1 generated workspaces require this package directly
+            # from the installed archive. Prime the package config that Lake
+            # needs in that dependency context before the archive is frozen.
+            "mkdir -p $TMPDIR/aeneas-config-primer/generated"
+            "cp lean-toolchain $TMPDIR/aeneas-config-primer/lean-toolchain"
+            "cat > $TMPDIR/aeneas-config-primer/generated/Generated.lean <<'EOF'"
+            "import Aeneas"
+            "EOF"
+            "cat > $TMPDIR/aeneas-config-primer/lakefile.lean <<'EOF'"
+            "import Lake"
+            "open Lake DSL"
+            ""
+            "require aeneas from \"@AENEAS_ROOT@\""
+            ""
+            "package anneal_verification"
+            ""
+            "@[default_target]"
+            "lean_lib «Generated» where"
+            "  srcDir := \"generated\""
+            "  roots := #[`Generated]"
+            "EOF"
+            "substituteInPlace $TMPDIR/aeneas-config-primer/lakefile.lean --replace-fail @AENEAS_ROOT@ \"$PWD\""
+            "(cd $TMPDIR/aeneas-config-primer && ${runLeanCommand "lake --old build Generated"})"
+            "test -f .lake/config/aeneas/lakefile.olean"
             "python3 ${./rewrite-lake-vendor.py} --root . --packages-dir ../../packages --rewrite-traces --trace-prefix \"$leanToolchain=lean\""
             "TRACE_ABS_RE='(^|[\"[:space:]=:])/(nix/store|build|private/tmp/nix-build|ANNEAL_PLACEHOLDER_ROOT)'"
             "if find . ../../packages -type f -name \"*.trace\" -exec grep -EIl \"\$TRACE_ABS_RE\" {} + | tee /tmp/non-relocatable-traces | grep -q .; then"
@@ -578,6 +602,7 @@
               aeneas/bin/aeneas \
               aeneas/bin/charon \
               aeneas/bin/charon-driver \
+              aeneas/backends/lean/.lake/config/aeneas/lakefile.olean \
               aeneas/backends/lean/lakefile.lean \
               aeneas/packages/mathlib/lake-manifest.json \
               aeneas/packages/mathlib/.lake/config/mathlib/lakefile.olean \
