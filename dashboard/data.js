@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780944159758,
+  "lastUpdate": 1780949154389,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22145,6 +22145,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 707,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "jswrenn@amazon.com",
+            "name": "Jack Wrenn",
+            "username": "jswrenn"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8d7db04ed925d30bcf6eb0b5b1d801cbfb7b439c",
+          "message": "Introduce `derive(most_traits)` and rename unstable linux cfg (#3416)\n\nRenames `zerocopy_unstable_derive_on_error` to `zerocopy_unstable_linux`.\n\nAdds unstable `derive(most_traits)` which attempts to quietly derive\nall zerocopy traits, but excludes traits like `Hash` for which\nzerocopy provides optimized derives.\n\ngherrit-pr-id: G713b9f3eb6365b11e4e1777ee69e75a6fae758d3",
+          "timestamp": "2026-06-08T19:15:56Z",
+          "tree_id": "47ea280825f42007502c277fc5c6ef2e5d327fa1",
+          "url": "https://github.com/google/zerocopy/commit/8d7db04ed925d30bcf6eb0b5b1d801cbfb7b439c"
+        },
+        "date": 1780949151819,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 591,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 841,
             "unit": "seconds"
           }
         ]
