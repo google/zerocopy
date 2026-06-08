@@ -1021,6 +1021,9 @@ jobs:
           # Only scan the .github directory to avoid scanning vendored dependencies
           inputs: .github
           persona: pedantic
+          # Avoid failing CI on low-severity findings from token-backed online audits;
+          # those still show up in the non-blocking SARIF upload workflow.
+          min-severity: medium
           # We don't want to use GitHub Advanced Security because we want to
           # block the merge on zizmor failure, and the only way to do that
           # (without manually configuring a ruleset) is to fail the job, which
