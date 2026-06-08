@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780939003293,
+  "lastUpdate": 1780944159758,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22111,6 +22111,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 694,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "145818923+google-pr-creation-bot@users.noreply.github.com",
+            "name": "Google PR Creation Bot",
+            "username": "google-pr-creation-bot"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "21f83883aab036e45c3adfa252fa170c87e7d69a",
+          "message": "Release 0.8.51 (#3454)",
+          "timestamp": "2026-06-08T14:29:25-04:00",
+          "tree_id": "4828ff94b1990720c4e798e8b9c3ec7d08f6585d",
+          "url": "https://github.com/google/zerocopy/commit/21f83883aab036e45c3adfa252fa170c87e7d69a"
+        },
+        "date": 1780944158499,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 566,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 707,
             "unit": "seconds"
           }
         ]
