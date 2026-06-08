@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780932209918,
+  "lastUpdate": 1780939003293,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22077,6 +22077,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 748,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "francisco.t.gouveia@tecnico.ulisboa.pt",
+            "name": "Francisco Gouveia",
+            "username": "FranciscoTGouveia"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "0e2947411bfb4c4bf335027c8c76487fdd90896c",
+          "message": "[derive] Remove unnecessary clones (#3449)",
+          "timestamp": "2026-06-08T16:31:35Z",
+          "tree_id": "acc841e2d62016281be5b1503a7c0625b1232890",
+          "url": "https://github.com/google/zerocopy/commit/0e2947411bfb4c4bf335027c8c76487fdd90896c"
+        },
+        "date": 1780939002261,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 551,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 694,
             "unit": "seconds"
           }
         ]
