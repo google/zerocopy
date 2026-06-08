@@ -583,10 +583,12 @@
           pkgs.runCommand "anneal-toolchain-omnibus-layout-check" {
             nativeBuildInputs = with pkgs; [
               gnutar
+              python3
               zstd
             ];
 
             archive = self.packages.${system}.omnibus-archive-ci;
+            leanToolchainRaw = self.packages.${system}.lean-toolchain;
           } ''
             set -euo pipefail
 
@@ -634,6 +636,82 @@
               echo "ERROR: archive appears to contain repository checkout paths" >&2
               exit 1
             fi
+
+            mkdir -p "$TMPDIR/extracted"
+            zstd -dc "$archive" | tar -xf - -C "$TMPDIR/extracted"
+
+            if find "$TMPDIR/extracted/aeneas" -writable -print -quit | grep -q .; then
+              echo "ERROR: extracted Aeneas archive should be fully read-only" >&2
+              exit 1
+            fi
+
+            mkdir -p "$TMPDIR/generated-workspace/generated"
+            cp "$TMPDIR/extracted/aeneas/backends/lean/lean-toolchain" "$TMPDIR/generated-workspace/lean-toolchain"
+            cat > "$TMPDIR/generated-workspace/generated/Generated.lean" <<'EOF'
+            import Aeneas
+            EOF
+            cat > "$TMPDIR/generated-workspace/lakefile.lean" <<'EOF'
+            import Lake
+            open Lake DSL
+
+            require aeneas from "@AENEAS_ROOT@"
+
+            package anneal_verification
+
+            @[default_target]
+            lean_lib «Generated» where
+              srcDir := "generated"
+              roots := #[`Generated]
+            EOF
+            substituteInPlace "$TMPDIR/generated-workspace/lakefile.lean" \
+              --replace-fail @AENEAS_ROOT@ "$TMPDIR/extracted/aeneas/backends/lean"
+
+            # Model v1's runtime contract: the generated workspace records a
+            # complete locked manifest with absolute paths into the installed
+            # archive. Lake can then load primed package config caches read-only
+            # and replay read-only `.lake/build` artifacts with `--old`.
+            python3 - "$TMPDIR/extracted" "$TMPDIR/generated-workspace/lake-manifest.json" <<'PY'
+            import json
+            import pathlib
+            import sys
+
+            archive = pathlib.Path(sys.argv[1])
+            output = pathlib.Path(sys.argv[2])
+            aeneas = archive / "aeneas/backends/lean"
+            manifest = json.loads((aeneas / "lake-manifest.json").read_text())
+            packages = [
+                {
+                    "type": "path",
+                    "name": "aeneas",
+                    "dir": str(aeneas.resolve()),
+                    "inherited": False,
+                }
+            ]
+            for entry in manifest["packages"]:
+                if entry.get("type") != "path":
+                    raise RuntimeError(f"unexpected non-path package entry: {entry}")
+                entry = dict(entry)
+                entry["dir"] = str((aeneas / entry["dir"]).resolve())
+                entry["inherited"] = True
+                packages.append(entry)
+            output.write_text(json.dumps({
+                "version": "1.2.0",
+                "packagesDir": ".lake/packages",
+                "packages": packages,
+                "name": "anneal_verification",
+                "lakeDir": ".lake",
+                "fixedToolchain": False,
+            }, indent=2) + "\n")
+            PY
+            (
+              cd "$TMPDIR/generated-workspace"
+              unset CI
+              export LEAN_SYSROOT="$leanToolchainRaw"
+              export MATHLIB_NO_CACHE_ON_UPDATE=1
+              export PATH="$leanToolchainRaw/bin:$PATH"
+              ${runLeanCommand "$leanToolchainRaw/bin/lake --keep-toolchain --old build Generated"}
+              ${runLeanCommand "$leanToolchainRaw/bin/lake --keep-toolchain env lean --json generated/Generated.lean"}
+            )
 
             mkdir -p "$out"
             cp "$TMPDIR/archive/entries" "$out/entries"
