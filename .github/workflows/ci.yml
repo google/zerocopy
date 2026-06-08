@@ -51,7 +51,7 @@ jobs:
       packages: read # required to pull docker caches from ghcr.io
     defaults:
       run:
-        shell: /tmp/docker-shell.sh {0}
+        shell: /tmp/docker-shell.sh {0} # zizmor: ignore[misfeature] (CI intentionally routes build matrix commands through the prebuilt Docker image)
         working-directory: zerocopy
 
     strategy:
