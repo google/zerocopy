@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780928030494,
+  "lastUpdate": 1780932209918,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22043,6 +22043,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 707,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "88536c18282f3d0a6963bfa5725164780e0d8f9e",
+          "message": "Skip benchmark storage outside canonical main (#3452)",
+          "timestamp": "2026-06-08T14:38:34Z",
+          "tree_id": "e0271cb1815c4f268564d50c68a6b9edb85cb77c",
+          "url": "https://github.com/google/zerocopy/commit/88536c18282f3d0a6963bfa5725164780e0d8f9e"
+        },
+        "date": 1780932207463,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 548,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 748,
             "unit": "seconds"
           }
         ]
