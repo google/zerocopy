@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780912433165,
+  "lastUpdate": 1780918834946,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -21917,6 +21917,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 640,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "5c3a198669650cdb1253d9e68709f2e16ad01b17",
+          "message": "Fix create-pull-request action pins and update GitHub Actions workflow pins",
+          "timestamp": "2026-06-07T02:48:05Z",
+          "url": "https://github.com/google/zerocopy/pull/3448/commits/5c3a198669650cdb1253d9e68709f2e16ad01b17"
+        },
+        "date": 1780918833239,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 585,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 752,
             "unit": "seconds"
           }
         ]
