@@ -12,7 +12,7 @@ use std::{
 use assert_cmd::assert::Assert;
 use fs2::FileExt as _;
 use serde::Deserialize;
-use serde_json::json;
+use serde_json::{Value, json};
 use walkdir::WalkDir;
 
 fn new_sorted_walkdir(path: impl AsRef<Path>) -> WalkDir {
@@ -292,6 +292,210 @@ fn get_toolchain_install_dir() -> PathBuf {
 
 fn get_toolchain_bin_dir() -> PathBuf {
     get_toolchain_install_dir().join("aeneas").join("bin")
+}
+
+fn run_archive_lake_cache_reuse_test(test_name: &str) -> datatest_stable::Result<()> {
+    let _permit =
+        profile_step(test_name, None, "wait_toolchain_run_slot", || acquire_toolchain_run_slot());
+    let temp = tempfile::Builder::new()
+        .prefix("anneal-archive-cache-reuse-")
+        .tempdir_in(get_target_dir())?;
+    assert_archive_lake_cache_reuse(test_name, &get_toolchain_install_dir(), temp.path())
+}
+
+fn assert_archive_lake_cache_reuse(
+    test_name: &str,
+    toolchain_root: &Path,
+    temp_root: &Path,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let aeneas_root = toolchain_root.join("aeneas");
+    let aeneas_lean = aeneas_root.join("backends/lean");
+    let lean_root = toolchain_root.join("lean");
+    let workspace = temp_root.join("generated-workspace");
+
+    assert_no_write_bits(&aeneas_root)?;
+
+    fs::create_dir_all(workspace.join("generated"))?;
+    fs::copy(aeneas_lean.join("lean-toolchain"), workspace.join("lean-toolchain"))?;
+    fs::write(workspace.join("generated/Generated.lean"), "import Aeneas\n")?;
+    fs::write(
+        workspace.join("lakefile.lean"),
+        format!(
+            r#"import Lake
+open Lake DSL
+
+require aeneas from "{}"
+
+package anneal_verification
+
+@[default_target]
+lean_lib Generated where
+  srcDir := "generated"
+  roots := #[`Generated]
+"#,
+            lake_string(&aeneas_lean)
+        ),
+    )?;
+    write_relative_archive_manifest(&workspace, &aeneas_lean)?;
+
+    // This mirrors v1's generated workspace contract with the Nix-built
+    // archive: dependency paths are locked relative to the workspace, package
+    // caches are read-only, and `--old` must reuse the prebuilt Lake outputs.
+    run_lake_archive_command(
+        test_name,
+        &workspace,
+        &lean_root,
+        &["--keep-toolchain", "--old", "build", "Generated"],
+    )?;
+    run_lake_archive_command(
+        test_name,
+        &workspace,
+        &lean_root,
+        &["--keep-toolchain", "env", "lean", "--json", "generated/Generated.lean"],
+    )?;
+
+    Ok(())
+}
+
+fn assert_no_write_bits(root: &Path) -> Result<(), Box<dyn std::error::Error>> {
+    for entry in new_sorted_walkdir(root) {
+        let entry = entry?;
+        let metadata = fs::symlink_metadata(entry.path())?;
+        if metadata.file_type().is_symlink() {
+            continue;
+        }
+        if metadata.permissions().mode() & 0o222 != 0 {
+            panic!("archive path should be read-only: {}", entry.path().display());
+        }
+    }
+    Ok(())
+}
+
+fn write_relative_archive_manifest(
+    workspace: &Path,
+    aeneas_lean: &Path,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let aeneas_lean = fs::canonicalize(aeneas_lean)?;
+    let workspace = fs::canonicalize(workspace)?;
+    let manifest_path = aeneas_lean.join("lake-manifest.json");
+    let manifest: Value = serde_json::from_reader(fs::File::open(&manifest_path)?)?;
+    let aeneas_packages = manifest.get("packages").and_then(Value::as_array).ok_or_else(|| {
+        invalid_data(format!(
+            "Aeneas Lake manifest {} is missing packages",
+            manifest_path.display()
+        ))
+    })?;
+
+    let aeneas_dir = relative_manifest_string(&aeneas_lean, &workspace)?;
+    let mut packages = vec![json!({
+        "type": "path",
+        "name": "aeneas",
+        "dir": aeneas_dir,
+        "inherited": false,
+    })];
+
+    for entry in aeneas_packages {
+        let mut entry = entry
+            .as_object()
+            .cloned()
+            .ok_or_else(|| invalid_data("Aeneas Lake manifest package entry is not an object"))?;
+        let package_type = entry
+            .get("type")
+            .and_then(Value::as_str)
+            .ok_or_else(|| invalid_data("Aeneas Lake manifest package entry is missing type"))?;
+        if package_type != "path" {
+            return Err(invalid_data(format!(
+                "Aeneas Lake manifest package entry is {package_type:?}, not a path dependency"
+            ))
+            .into());
+        }
+        let package_dir = entry
+            .get("dir")
+            .and_then(Value::as_str)
+            .ok_or_else(|| invalid_data("Aeneas Lake manifest package entry is missing dir"))?;
+        let package_dir = Path::new(package_dir);
+        let package_dir = if package_dir.is_absolute() {
+            package_dir.to_path_buf()
+        } else {
+            aeneas_lean.join(package_dir)
+        };
+        let package_dir = fs::canonicalize(package_dir)?;
+        entry.insert("dir".to_string(), json!(relative_manifest_string(&package_dir, &workspace)?));
+        entry.insert("inherited".to_string(), json!(true));
+        packages.push(Value::Object(entry));
+    }
+
+    let manifest = json!({
+        "version": "1.2.0",
+        "packagesDir": ".lake/packages",
+        "packages": packages,
+        "name": "anneal_verification",
+        "lakeDir": ".lake",
+        "fixedToolchain": false,
+    });
+    fs::write(
+        workspace.join("lake-manifest.json"),
+        format!("{}\n", serde_json::to_string_pretty(&manifest)?),
+    )?;
+    Ok(())
+}
+
+fn relative_manifest_string(
+    path: &Path,
+    base: &Path,
+) -> Result<String, Box<dyn std::error::Error>> {
+    let path = pathdiff::diff_paths(path, base).ok_or_else(|| {
+        invalid_data(format!(
+            "failed to compute relative path from {} to {}",
+            base.display(),
+            path.display()
+        ))
+    })?;
+    Ok(path.to_string_lossy().into_owned())
+}
+
+fn lake_string(path: &Path) -> String {
+    path.to_string_lossy().replace('\\', "\\\\").replace('"', "\\\"")
+}
+
+fn run_lake_archive_command(
+    test_name: &str,
+    workspace: &Path,
+    lean_root: &Path,
+    args: &[&str],
+) -> Result<(), Box<dyn std::error::Error>> {
+    let lean_bin = lean_root.join("bin");
+    let mut cmd = process::Command::new(lean_bin.join("lake"));
+    cmd.args(args)
+        .current_dir(workspace)
+        .env_remove("CI")
+        .env("LEAN_SYSROOT", lean_root)
+        .env("MATHLIB_NO_CACHE_ON_UPDATE", "1")
+        .env("PATH", prepend_env_paths("PATH", &[lean_bin])?);
+
+    let lib_var = if cfg!(target_os = "macos") { "DYLD_LIBRARY_PATH" } else { "LD_LIBRARY_PATH" };
+    cmd.env(
+        lib_var,
+        prepend_env_paths(lib_var, &[lean_root.join("lib"), lean_root.join("lib/lean")])?,
+    );
+
+    run_command_with_profile(test_name, Some("archive_lake_cache_reuse"), cmd)?.assert.success();
+    Ok(())
+}
+
+fn prepend_env_paths(
+    var_name: &str,
+    new_paths: &[PathBuf],
+) -> Result<std::ffi::OsString, Box<dyn std::error::Error>> {
+    let mut paths = new_paths.to_vec();
+    if let Some(existing) = std::env::var_os(var_name) {
+        paths.extend(std::env::split_paths(&existing));
+    }
+    Ok(std::env::join_paths(paths)?)
+}
+
+fn invalid_data(message: impl Into<String>) -> io::Error {
+    io::Error::new(io::ErrorKind::InvalidData, message.into())
 }
 
 fn toolchain_run_jobs() -> usize {
@@ -947,6 +1151,11 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
     if path_str.contains("dirty_sandbox/anneal.toml") {
         return profile_step(&test_name, None, "dirty_sandbox_test", || {
             run_dirty_sandbox_test(path)
+        });
+    }
+    if path_str.contains("archive_lake_cache_reuse/anneal.toml") {
+        return profile_step(&test_name, None, "archive_lake_cache_reuse_test", || {
+            run_archive_lake_cache_reuse_test(&test_name)
         });
     }
     // Load the test configuration from the associated 'anneal.toml' manifest.
