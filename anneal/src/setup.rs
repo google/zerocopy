@@ -1,8 +1,14 @@
 //! Subcommand for installing Anneal dependencies.
 
-use std::{path::PathBuf, process::Command};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+    process::Command,
+    time::SystemTime,
+};
 
-use anyhow::Context as _;
+use anyhow::{Context as _, Result};
+use walkdir::WalkDir;
 
 pub struct SetupArgs {
     pub local_archive: Option<PathBuf>,
@@ -56,7 +62,9 @@ impl Toolchain {
         let root = CONFIG
             .resolve_installation_dir(location())
             .context("Toolchain not installed. Please run 'cargo anneal setup' first.")?;
-        Ok(Self { root })
+        let toolchain = Self { root };
+        toolchain.prepare_lake_packages()?;
+        Ok(toolchain)
     }
 
     pub fn bin_dir(&self) -> PathBuf {
@@ -106,6 +114,12 @@ impl Toolchain {
             Command::new(tool.path(self))
         }
     }
+
+    fn prepare_lake_packages(&self) -> Result<()> {
+        let aeneas_root = self.aeneas_root();
+        make_lake_config_dirs_writable(&aeneas_root)?;
+        normalize_lake_input_mtimes(&aeneas_root)
+    }
 }
 
 pub fn run_setup(args: SetupArgs) -> anyhow::Result<()> {
@@ -120,8 +134,113 @@ pub fn run_setup(args: SetupArgs) -> anyhow::Result<()> {
     let installation_dir = CONFIG
         .resolve_installation_dir_or_install(location(), source)
         .context("failed to resolve-or-install dependencies")?;
+    Toolchain { root: installation_dir.clone() }
+        .prepare_lake_packages()
+        .context("failed to prepare Lake package directories")?;
     log::info!("anneal toolchain is installed at {:?}", installation_dir);
     Ok(())
+}
+
+fn make_lake_config_dirs_writable(root: &Path) -> Result<()> {
+    if !root.exists() {
+        return Ok(());
+    }
+
+    let mut entries = WalkDir::new(root).into_iter();
+    while let Some(entry) = entries.next() {
+        let entry = entry.with_context(|| format!("Failed to walk {}", root.display()))?;
+        let path = entry.path();
+
+        if entry.file_type().is_dir() && is_lake_dir(path) {
+            ensure_lake_config_dir_writable(path)?;
+            entries.skip_current_dir();
+        }
+    }
+
+    Ok(())
+}
+
+fn ensure_lake_config_dir_writable(lake_dir: &Path) -> Result<()> {
+    let config_dir = lake_dir.join("config");
+    if !config_dir.exists() {
+        let original_permissions = fs::symlink_metadata(lake_dir)
+            .with_context(|| format!("Failed to stat {}", lake_dir.display()))?
+            .permissions();
+        make_writable(lake_dir)?;
+        fs::create_dir_all(&config_dir)
+            .with_context(|| format!("Failed to create {}", config_dir.display()))?;
+        fs::set_permissions(lake_dir, original_permissions)
+            .with_context(|| format!("Failed to restore permissions on {}", lake_dir.display()))?;
+    }
+    make_tree_writable(&config_dir)
+}
+
+fn make_tree_writable(root: &Path) -> Result<()> {
+    for entry in WalkDir::new(root) {
+        let entry = entry.with_context(|| format!("Failed to walk {}", root.display()))?;
+        make_writable(entry.path())?;
+    }
+    Ok(())
+}
+
+fn make_writable(path: &Path) -> Result<()> {
+    let metadata =
+        fs::symlink_metadata(path).with_context(|| format!("Failed to stat {}", path.display()))?;
+    if metadata.file_type().is_symlink() {
+        return Ok(());
+    }
+    let mut perms = metadata.permissions();
+    if perms.readonly() {
+        #[allow(clippy::permissions_set_readonly_false)]
+        perms.set_readonly(false);
+        fs::set_permissions(path, perms)
+            .with_context(|| format!("Failed to make {} writable", path.display()))?;
+    }
+    Ok(())
+}
+
+fn is_lake_dir(path: &Path) -> bool {
+    path.file_name().is_some_and(|name| name == ".lake")
+}
+
+fn normalize_lake_input_mtimes(root: &Path) -> Result<()> {
+    let mut entries = WalkDir::new(root).into_iter();
+    while let Some(entry) = entries.next() {
+        let entry = entry.with_context(|| format!("Failed to walk {}", root.display()))?;
+        let path = entry.path();
+
+        if entry.file_type().is_dir() && is_lake_build_dir(path) {
+            entries.skip_current_dir();
+            continue;
+        }
+
+        if !entry.file_type().is_file() || !is_lake_input_file(path) {
+            continue;
+        }
+
+        let file = fs::File::open(path)
+            .with_context(|| format!("Failed to open {} to normalize mtime", path.display()))?;
+        file.set_times(fs::FileTimes::new().set_modified(SystemTime::UNIX_EPOCH))
+            .with_context(|| format!("Failed to normalize mtime for {}", path.display()))?;
+    }
+
+    Ok(())
+}
+
+fn is_lake_build_dir(path: &Path) -> bool {
+    path.file_name().is_some_and(|name| name == "build")
+        && path.parent().and_then(Path::file_name).is_some_and(|name| name == ".lake")
+}
+
+fn is_lake_input_file(path: &Path) -> bool {
+    if path.extension().and_then(|ext| ext.to_str()) == Some("lean") {
+        return true;
+    }
+
+    matches!(
+        path.file_name().and_then(|name| name.to_str()),
+        Some("lakefile.lean" | "lakefile.toml" | "lake-manifest.json" | "lean-toolchain")
+    )
 }
 
 fn location() -> exocrate::Location {
@@ -209,5 +328,58 @@ mod tests {
             Tool::Aeneas.path(&toolchain),
             PathBuf::from("/tmp/toolchain/aeneas/bin/aeneas")
         );
+    }
+
+    #[test]
+    fn lake_config_fixup_leaves_build_cache_readonly() {
+        let temp = tempfile::tempdir().unwrap();
+        let aeneas_root = temp.path().join("aeneas");
+        let source_file = aeneas_root.join("backends/lean/Aeneas.lean");
+        let config_file = aeneas_root.join("backends/lean/.lake/config/aeneas/lakefile.olean");
+        let build_file = aeneas_root.join("backends/lean/.lake/build/lib/lean/Aeneas.olean");
+        let package_lake_dir = aeneas_root.join("packages/MiniDep/.lake");
+
+        std::fs::create_dir_all(source_file.parent().unwrap()).unwrap();
+        std::fs::create_dir_all(config_file.parent().unwrap()).unwrap();
+        std::fs::create_dir_all(build_file.parent().unwrap()).unwrap();
+        std::fs::create_dir_all(package_lake_dir.join("build")).unwrap();
+        std::fs::write(&source_file, "import Aeneas").unwrap();
+        std::fs::write(&config_file, "config").unwrap();
+        std::fs::write(&build_file, "build").unwrap();
+
+        make_tree_readonly(&aeneas_root);
+        Toolchain { root: temp.path().to_path_buf() }.prepare_lake_packages().unwrap();
+
+        let package_config_dir = package_lake_dir.join("config");
+        assert!(package_config_dir.is_dir());
+        assert!(!std::fs::metadata(&package_config_dir).unwrap().permissions().readonly());
+        assert!(
+            !std::fs::metadata(config_file.parent().unwrap()).unwrap().permissions().readonly()
+        );
+        assert!(!std::fs::metadata(&config_file).unwrap().permissions().readonly());
+        assert!(std::fs::metadata(&build_file).unwrap().permissions().readonly());
+        assert_eq!(modified_secs(&source_file), 0);
+        assert_ne!(modified_secs(&build_file), 0);
+
+        make_tree_writable(&aeneas_root).unwrap();
+    }
+
+    fn modified_secs(path: &Path) -> u64 {
+        std::fs::metadata(path)
+            .unwrap()
+            .modified()
+            .unwrap()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_secs()
+    }
+
+    fn make_tree_readonly(root: &Path) {
+        for entry in WalkDir::new(root).contents_first(true) {
+            let entry = entry.unwrap();
+            let mut perms = std::fs::metadata(entry.path()).unwrap().permissions();
+            perms.set_readonly(true);
+            std::fs::set_permissions(entry.path(), perms).unwrap();
+        }
     }
 }

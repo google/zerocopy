@@ -15,15 +15,13 @@ use std::{
     fmt::Write,
     fs,
     io::{BufRead, BufReader},
-    path::{Path, PathBuf},
+    path::PathBuf,
     process::Stdio,
     sync::{Arc, Mutex},
-    time::SystemTime,
 };
 
 use anyhow::{Context, Result, bail};
 use indicatif::{ProgressBar, ProgressStyle};
-use walkdir::WalkDir;
 
 use crate::{generate, resolve::LockedRoots, scanner::AnnealArtifact, setup::Tool};
 
@@ -271,8 +269,10 @@ pub fn run_aeneas(
 
     // 4. Write Lakefile
     //
-    // Aeneas and its Lean dependencies are unpacked from the managed archive.
-    let path = materialize_aeneas_dependency(&tmp_lean_root, &lean_root, &toolchain)?;
+    // Aeneas and its Lean dependencies are used directly from the managed
+    // archive. The archive build primes dependency caches, and setup makes
+    // Lake's small `.lake/config` lock area writable.
+    let path = toolchain.aeneas_lean_dir();
     let aeneas_dep = format!(
         r#"-- Aeneas rev: {}
 require aeneas from "{}""#,
@@ -312,15 +312,14 @@ lean_lib «User» where
     // temporary directory with the real one.
     let lean_root = roots.lean_root();
     if lean_root.exists() {
-        // Preserve the `.lake` directory and manifest to prevent re-downloading
-        // dependencies (like Mathlib) on subsequent runs.
+        // Preserve the `.lake` directory for generated-workspace build/config
+        // caches, but let Lake regenerate the manifest from the current
+        // Lakefile. The Aeneas dependency is an absolute path into the
+        // installed toolchain, so a manifest from another setup location would
+        // point at stale archive paths.
         let old_lake = lean_root.join(".lake");
-        let old_manifest = lean_root.join("lake-manifest.json");
         if old_lake.exists() {
             fs::rename(&old_lake, tmp_lean_root.join(".lake"))?;
-        }
-        if old_manifest.exists() {
-            fs::rename(&old_manifest, tmp_lean_root.join("lake-manifest.json"))?;
         }
 
         // Remove the existing directory before renaming the temporary directory.
@@ -336,171 +335,6 @@ lean_lib «User» where
         .context("Failed to rename temporary lean directory to target")?;
 
     Ok(())
-}
-
-fn materialize_aeneas_dependency(
-    tmp_lean_root: &Path,
-    lean_root: &Path,
-    toolchain: &crate::setup::Toolchain,
-) -> Result<PathBuf> {
-    let vendor_root = tmp_lean_root.join("vendor").join("aeneas");
-    let lean_dst = vendor_root.join("backends").join("lean");
-    let packages_dst = vendor_root.join("packages");
-
-    println!("Materializing packages by copying from toolchain...");
-    copy_toolchain_tree_writable(&toolchain.aeneas_lean_dir(), &lean_dst)
-        .context("Failed to copy Aeneas Lean package from toolchain")?;
-    copy_toolchain_tree_writable(&toolchain.aeneas_root().join("packages"), &packages_dst)
-        .context("Failed to copy Aeneas Lean dependencies from toolchain")?;
-
-    Ok(lean_root.join("vendor").join("aeneas").join("backends").join("lean"))
-}
-
-fn copy_toolchain_tree_writable(src: &Path, dst: &Path) -> Result<()> {
-    if dst.exists() {
-        fs::remove_dir_all(dst)
-            .with_context(|| format!("Failed to remove stale directory {}", dst.display()))?;
-    }
-
-    let mut entries = WalkDir::new(src).into_iter();
-    while let Some(entry) = entries.next() {
-        let entry = entry.with_context(|| format!("Failed to walk {}", src.display()))?;
-        let path = entry.path();
-        let rel = path.strip_prefix(src).with_context(|| {
-            format!("Failed to relativize {} against {}", path.display(), src.display())
-        })?;
-        let target = dst.join(rel);
-
-        if is_lake_build_dir(rel) {
-            // The Nix-built archive already contains Lake build caches for the
-            // immutable Aeneas dependency tree. Link those caches back to the
-            // read-only toolchain instead of copying several GiB of `.olean`
-            // files into every generated Lean workspace. The surrounding
-            // package/config/source files are still copied below so Lake can
-            // update small mutable metadata such as `.lake/config`.
-            if let Some(parent) = target.parent() {
-                fs::create_dir_all(parent).with_context(|| {
-                    format!("Failed to create parent directory {}", parent.display())
-                })?;
-            }
-            create_symlink(path, &target).with_context(|| {
-                format!(
-                    "Failed to link prebuilt Lake cache {} to {}",
-                    path.display(),
-                    target.display()
-                )
-            })?;
-            entries.skip_current_dir();
-        } else if entry.file_type().is_dir() {
-            fs::create_dir_all(&target)
-                .with_context(|| format!("Failed to create directory {}", target.display()))?;
-        } else if entry.file_type().is_symlink() {
-            let link = fs::read_link(path)
-                .with_context(|| format!("Failed to read symlink {}", path.display()))?;
-            if let Some(parent) = target.parent() {
-                fs::create_dir_all(parent).with_context(|| {
-                    format!("Failed to create parent directory {}", parent.display())
-                })?;
-            }
-            create_symlink(&link, &target)
-                .with_context(|| format!("Failed to copy symlink {}", target.display()))?;
-        } else if entry.file_type().is_file() {
-            if let Some(parent) = target.parent() {
-                fs::create_dir_all(parent).with_context(|| {
-                    format!("Failed to create parent directory {}", parent.display())
-                })?;
-            }
-            fs::copy(path, &target).with_context(|| {
-                format!("Failed to copy {} to {}", path.display(), target.display())
-            })?;
-            make_writable(&target)?;
-        }
-    }
-
-    for entry in WalkDir::new(dst).contents_first(true) {
-        let entry = entry.with_context(|| format!("Failed to walk {}", dst.display()))?;
-        if !entry.file_type().is_symlink() {
-            make_writable(entry.path())?;
-        }
-    }
-
-    normalize_lake_input_mtimes(dst)?;
-
-    Ok(())
-}
-
-fn is_lake_build_dir(rel: &Path) -> bool {
-    rel.file_name().is_some_and(|name| name == "build")
-        && rel.parent().and_then(Path::file_name).is_some_and(|name| name == ".lake")
-}
-
-#[cfg(unix)]
-fn create_symlink(src: &Path, dst: &Path) -> std::io::Result<()> {
-    std::os::unix::fs::symlink(src, dst)
-}
-
-#[cfg(windows)]
-fn create_symlink(src: &Path, dst: &Path) -> std::io::Result<()> {
-    if src.is_dir() {
-        std::os::windows::fs::symlink_dir(src, dst)
-    } else {
-        std::os::windows::fs::symlink_file(src, dst)
-    }
-}
-
-fn make_writable(path: &Path) -> Result<()> {
-    let metadata =
-        fs::symlink_metadata(path).with_context(|| format!("Failed to stat {}", path.display()))?;
-    if metadata.file_type().is_symlink() {
-        return Ok(());
-    }
-    let mut perms = metadata.permissions();
-    if perms.readonly() {
-        #[allow(clippy::permissions_set_readonly_false)]
-        perms.set_readonly(false);
-        fs::set_permissions(path, perms)
-            .with_context(|| format!("Failed to make {} writable", path.display()))?;
-    }
-    Ok(())
-}
-
-fn normalize_lake_input_mtimes(root: &Path) -> Result<()> {
-    // The installed toolchain archive is intentionally read-only, and
-    // `copy_toolchain_tree_writable` symlinks `.lake/build` directories back to
-    // that archive so each verification workspace does not copy several GiB of
-    // prebuilt `.olean` files. That optimization only works if Lake accepts the
-    // linked cache artifacts as newer than the copied source/config files. A
-    // normal file copy gives the copied inputs fresh mtimes, so Lake `--old`
-    // can decide that archive outputs are stale and then fail while trying to
-    // remove read-only files through the `.lake/build` symlinks. Mirror the
-    // archive builder's convention: copied Lake inputs are older than the
-    // archive cache artifacts, while generated project files keep their normal
-    // mtimes and remain mutable.
-    for entry in WalkDir::new(root) {
-        let entry = entry.with_context(|| format!("Failed to walk {}", root.display()))?;
-        if !entry.file_type().is_file() || !is_lake_input_file(entry.path()) {
-            continue;
-        }
-
-        let file = fs::File::options().write(true).open(entry.path()).with_context(|| {
-            format!("Failed to open {} to normalize mtime", entry.path().display())
-        })?;
-        file.set_times(fs::FileTimes::new().set_modified(SystemTime::UNIX_EPOCH))
-            .with_context(|| format!("Failed to normalize mtime for {}", entry.path().display()))?;
-    }
-
-    Ok(())
-}
-
-fn is_lake_input_file(path: &Path) -> bool {
-    if path.extension().and_then(|ext| ext.to_str()) == Some("lean") {
-        return true;
-    }
-
-    matches!(
-        path.file_name().and_then(|name| name.to_str()),
-        Some("lakefile.toml" | "lake-manifest.json" | "lean-toolchain")
-    )
 }
 
 /// Generates Anneal `Specs.lean` and writes `Generated.lean`, but does not run the `lake build`.
@@ -760,11 +594,10 @@ fn configure_lake_command(
     // FIXME: Replace this with a cleaner toolchain/archive contract.
     //
     // The Nix-built archive contains prebuilt Lake outputs for the vendored
-    // Aeneas package, and `materialize_aeneas_dependency` links each generated
-    // verification workspace's `vendor/aeneas/backends/lean/.lake/build` back
-    // to that read-only archive cache. That is only sound if Lake evaluates the
-    // vendored Aeneas package with the same build configuration that was used
-    // when the archive was produced.
+    // Aeneas package, and generated verification workspaces require that
+    // package directly from the installed archive. That is only sound if Lake
+    // evaluates Aeneas with the same build configuration that was used when the
+    // archive was produced.
     //
     // Aeneas' Lakefile currently makes one of those build settings depend on
     // the ambient `CI` environment variable:
@@ -775,9 +608,8 @@ fn configure_lake_command(
     // sets `CI=true` for normal workflow steps. If we let that variable reach
     // this child process, Lake observes a different Aeneas package config than
     // the one recorded in the archive traces. It then invalidates the prebuilt
-    // cache and attempts to rebuild/remove files below the symlinked
-    // `.lake/build`, which fails because those archive files are intentionally
-    // read-only.
+    // cache and attempts to rebuild/remove files below the installed archive's
+    // read-only `.lake/build`.
     //
     // Scrubbing `CI` here keeps local runs, example CI jobs, and the integration
     // test harness aligned with the archive build environment. A cleaner future
