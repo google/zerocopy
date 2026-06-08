@@ -41,7 +41,7 @@ fn main() {
     let root = env::current_dir().unwrap();
     let mut config = Config::rustc(tests_dir.clone());
     config.out_dir = root.join("target").join("ui-test-artifacts");
-    config.program.envs.push(("RUSTUP_TOOLCHAIN".into(), Some(toolchain.clone().into())));
+    config.program.envs.push(("RUSTUP_TOOLCHAIN".into(), Some(toolchain.into())));
 
     let toolchain_meta_name = env::var("ZEROCOPY_UI_TEST_TOOLCHAIN_META_NAME")
         .expect("ZEROCOPY_UI_TEST_TOOLCHAIN_META_NAME must be set by tests/ui.rs");

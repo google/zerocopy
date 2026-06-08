@@ -85,7 +85,6 @@ fn derive_known_layout_for_repr_c_struct<'a>(
     };
 
     let inner_extras = {
-        let leading_fields_tys = leading_fields_tys.clone();
         let methods = make_methods(*trailing_field_ty);
         let (_, ty_generics, _) = ctx.ast.generics.split_for_impl();
 
