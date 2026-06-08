@@ -149,6 +149,11 @@ jobs:
             ]' > output.json
 
       - name: Store CI duration benchmarks
+        # Only trusted main-branch pushes to the canonical repository can
+        # update the benchmark-data branch. Pull requests from forks receive a
+        # read-only GITHUB_TOKEN, and forks running this workflow should not try
+        # to publish benchmark history for google/zerocopy.
+        if: github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main'
         uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
         with:
           name: CI Durations
@@ -156,7 +161,7 @@ jobs:
           output-file-path: output.json
           gh-pages-branch: benchmark-data
           auto-push: true
-          save-data-file: ${{ github.ref == 'refs/heads/main' }}
+          save-data-file: true
           benchmark-data-dir-path: dashboard
           fail-on-alert: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
