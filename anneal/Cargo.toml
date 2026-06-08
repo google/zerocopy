@@ -68,6 +68,7 @@ console = "0.16.3"
 exocrate = { path = "../exocrate" }
 sha2 = "0.10"
 fs2 = "0.4"
+pathdiff = "0.2.3"
 toml = "0.8"
 tempfile = "3.27.0"
 
