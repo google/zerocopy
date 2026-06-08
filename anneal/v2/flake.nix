@@ -587,6 +587,7 @@
             ];
 
             archive = self.packages.${system}.omnibus-archive-ci;
+            leanToolchainRaw = self.packages.${system}.lean-toolchain;
           } ''
             set -euo pipefail
 
@@ -634,6 +635,45 @@
               echo "ERROR: archive appears to contain repository checkout paths" >&2
               exit 1
             fi
+
+            mkdir -p "$TMPDIR/extracted"
+            zstd -dc "$archive" | tar -xf - -C "$TMPDIR/extracted"
+
+            # Model v1 setup's runtime contract: Lake may write lock files in
+            # package `.lake/config` directories, but the archive's prebuilt
+            # `.lake/build` caches stay read-only. If source/config mtimes make
+            # Lake consider archived package outputs stale, this build fails
+            # while trying to remove those read-only outputs.
+            find "$TMPDIR/extracted/aeneas" -type d -path '*/.lake/config' -exec chmod -R u+w {} +
+
+            mkdir -p "$TMPDIR/generated-workspace/generated"
+            cp "$TMPDIR/extracted/aeneas/backends/lean/lean-toolchain" "$TMPDIR/generated-workspace/lean-toolchain"
+            cat > "$TMPDIR/generated-workspace/generated/Generated.lean" <<'EOF'
+            import Aeneas
+            EOF
+            cat > "$TMPDIR/generated-workspace/lakefile.lean" <<'EOF'
+            import Lake
+            open Lake DSL
+
+            require aeneas from "@AENEAS_ROOT@"
+
+            package anneal_verification
+
+            @[default_target]
+            lean_lib «Generated» where
+              srcDir := "generated"
+              roots := #[`Generated]
+            EOF
+            substituteInPlace "$TMPDIR/generated-workspace/lakefile.lean" \
+              --replace-fail @AENEAS_ROOT@ "$TMPDIR/extracted/aeneas/backends/lean"
+            (
+              cd "$TMPDIR/generated-workspace"
+              unset CI
+              export LEAN_SYSROOT="$leanToolchainRaw"
+              export MATHLIB_NO_CACHE_ON_UPDATE=1
+              export PATH="$leanToolchainRaw/bin:$PATH"
+              ${runLeanCommand "$leanToolchainRaw/bin/lake --keep-toolchain --old build Generated"}
+            )
 
             mkdir -p "$out"
             cp "$TMPDIR/archive/entries" "$out/entries"
