@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1780921151774,
+  "lastUpdate": 1780926228479,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -21977,6 +21977,38 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 698,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf",
+            "email": "joshlf@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "7055b342b38d159ef570d6a29f01f88f6e8086f1",
+          "message": "Fix create-pull-request action pins and update GitHub Actions workflow pins (#3448)\n\n* Fix create-pull-request action pins\n\n* Ignore intentional Docker shell in zizmor\n\n* Limit blocking zizmor findings to medium severity",
+          "timestamp": "2026-06-08T13:29:46Z",
+          "url": "https://github.com/google/zerocopy/commit/7055b342b38d159ef570d6a29f01f88f6e8086f1"
+        },
+        "date": 1780926226732,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 535,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 746,
             "unit": "seconds"
           }
         ]
