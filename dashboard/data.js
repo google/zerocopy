@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1781035889179,
+  "lastUpdate": 1781111912679,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22213,6 +22213,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 845,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "google",
+            "username": "google"
+          },
+          "committer": {
+            "name": "google",
+            "username": "google"
+          },
+          "id": "aab24b01ef4dac38c748e75c3b37826bf35f1a7c",
+          "message": "[anneal][v2] Check archive Lake cache reuse",
+          "timestamp": "2026-06-10T07:09:09Z",
+          "url": "https://github.com/google/zerocopy/pull/3453/commits/aab24b01ef4dac38c748e75c3b37826bf35f1a7c"
+        },
+        "date": 1781111911195,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 471,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 610,
             "unit": "seconds"
           }
         ]
