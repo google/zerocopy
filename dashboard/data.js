@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1781111912679,
+  "lastUpdate": 1781193725251,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22243,6 +22243,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 610,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c518ab291f6611c548b22304ae92c1b30268cf0b",
+          "message": "Add SPDX identifier to rustdoc CSS (#3458)\n\nCloses #3457",
+          "timestamp": "2026-06-11T15:15:45Z",
+          "tree_id": "009722640606913bb1fb99eb91402d136e47d00b",
+          "url": "https://github.com/google/zerocopy/commit/c518ab291f6611c548b22304ae92c1b30268cf0b"
+        },
+        "date": 1781193724062,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 560,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 723,
             "unit": "seconds"
           }
         ]
