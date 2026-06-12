@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1781277943882,
+  "lastUpdate": 1781296207165,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22307,6 +22307,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 605,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d35c00e208880d325eaf13ec99e3a413ac163c4c",
+          "message": "Use rustc's --diagnostic-width flag in UI tests (#3460)\n\nPass --diagnostic-width=100 to rustc in UI tests to ensure consistent\nerror message line-wrapping regardless of the terminal width of the\nenvironment in which the tests are run.\n\nThe flag is skipped for the 'msrv' toolchain (Rust 1.56.0) since it was\nonly stabilized in Rust 1.70.0.\n\nThe TERM/COLUMNS environment variables are retained since they can still\ninfluence other tools, but a comment is updated to clarify that\n--diagnostic-width is now the primary and more reliable mechanism.\n\nFixes #3113\n\nCo-authored-by: Krish Sapru <ksapru@bu.edu>",
+          "timestamp": "2026-06-12T16:16:29-04:00",
+          "tree_id": "82c493f15c1f8dc5c0dc547118340fe33b5b70b7",
+          "url": "https://github.com/google/zerocopy/commit/d35c00e208880d325eaf13ec99e3a413ac163c4c"
+        },
+        "date": 1781296205496,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 564,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 718,
             "unit": "seconds"
           }
         ]
