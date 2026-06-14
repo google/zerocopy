@@ -128,7 +128,7 @@ fn main() {
     // starting in 1.62.0), so we only pass it if we're not on our MSRV
     // toolchain (which is 1.56.0).
     if toolchain_meta_name != "msrv" {
-        config.program.args.push("--diagnostic-width=100".into());
+        config.program.args.push("--diagnostic-width=1000".into());
     }
 
     // These environment variables are usually respected by CLI tools (including
@@ -136,7 +136,7 @@ fn main() {
     // ignores them and discovers the real terminal width anyway; the
     // `--diagnostic-width` flag above is more reliable.
     config.program.envs.push(("TERM".into(), Some("dumb".into())));
-    config.program.envs.push(("COLUMNS".into(), Some("100".into())));
+    config.program.envs.push(("COLUMNS".into(), Some("1000".into())));
 
     // Set `-Wwarnings` in the `RUSTFLAGS` environment variable to ensure that
     // `.stderr` files reflect what the typical user would encounter.
