@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1781296207165,
+  "lastUpdate": 1781579008506,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22341,6 +22341,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 718,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sagartaunk@proton.me",
+            "name": "Sagar Taunk",
+            "username": "Sagartaunk"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "7b515a6b2902f9f925589f461d113ff98c3399d7",
+          "message": "[exocrate] use `XDG` cache dir instead of home dir (#3459)\n\nUse XDG cache dir instead of home dir on `UserGlobal` installs,\nto prevent polluting user home directories.\n\nFixes: #3420",
+          "timestamp": "2026-06-16T02:04:02Z",
+          "tree_id": "c22551cef15727a2f01057766162ecfcaeb6f09a",
+          "url": "https://github.com/google/zerocopy/commit/7b515a6b2902f9f925589f461d113ff98c3399d7"
+        },
+        "date": 1781579007188,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 571,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 713,
             "unit": "seconds"
           }
         ]
