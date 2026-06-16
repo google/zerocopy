@@ -42,10 +42,10 @@
         rustDate = "2026-05-31";
         leanVersion = "v4.30.0-rc2";
 
-        rustToolchainSha256 = if system == "x86_64-linux" then "sha256-tdLBvDewiNTUKOdMJ1pkU7mPrUY0xTFOZWdG9dDNiAk="
-                              else if system == "aarch64-linux" then "sha256-5gGGsObb22cKc2beF5UWMEJN4Df4PM23hK0A4QJ/kEM="
-                              else if system == "x86_64-darwin" then "sha256-v3By/ilhfQEfNECMoNlMC0pQndo5Lq1CTTbjcsaXMPw="
-                              else if system == "aarch64-darwin" then "sha256-I8pM8VuoBc5R/4ZR3ZiuHmbQjn361QOXTTU+kD5B0p8="
+        rustToolchainSha256 = if system == "x86_64-linux" then "sha256-MmvOgC3shIOVMWT1MTRajw8JuLwRk/P3LsmGVslNGKw="
+                              else if system == "aarch64-linux" then "sha256-gWFajI7TJyjslQLZm4VWBBsKA6nYe1lNQwrgUp2hwSA="
+                              else if system == "x86_64-darwin" then "sha256-dBLHRLo3omD7KRq0D8lzg6XiQfDKWOMD6YTrLQhEneo="
+                              else if system == "aarch64-darwin" then "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E="
                               else throw "Unsupported system: ${system}";
 
         leanToolchainSha256 = if system == "x86_64-linux" then "sha256-o47cQjSLK5YL8YZ2raaj+mGAvvO+dIDfVeP2L+WoyMs="
@@ -151,6 +151,7 @@
               "  cp -r $comp_dir/* $out/"
               "  rm -rf tmp_extract"
               "}"
+              "extract_component \"cargo\""
               "extract_component \"rustc\""
               "extract_component \"rust-std\""
               "extract_component \"rustc-dev\""
@@ -616,6 +617,7 @@
               aeneas/packages/mathlib/lake-manifest.json \
               aeneas/packages/mathlib/.lake/config/mathlib/lakefile.olean \
               lean/bin/lean \
+              rust/bin/cargo \
               rust/bin/rustc; do
               if ! grep -Fxq "$path" "$TMPDIR/archive/entries"; then
                 echo "ERROR: expected archive entry missing: $path" >&2
