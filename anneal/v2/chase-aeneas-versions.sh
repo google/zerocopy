@@ -87,6 +87,7 @@ need() {
 need curl
 need sha256sum
 need tar
+need gzip
 need zstd
 need strings
 need python3
@@ -145,6 +146,7 @@ if [[ ! -f "$charon_bin" ]]; then
   exit 1
 fi
 
+set +o pipefail
 commit_date=$(
   strings "$charon_bin" |
     grep -o 'rustc version .* ([0-9a-f]\{9\} [0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\})' |
@@ -152,20 +154,36 @@ commit_date=$(
     grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}' |
     tr -d '\n'
 )
+set -o pipefail
 
-if [[ -z "$commit_date" ]]; then
-  echo "could not infer Rust commit date from charon binary" >&2
-  exit 1
-fi
-
-rust_date=$(
-  python3 - "$commit_date" <<'PY'
+rust_date=
+if [[ -n "$commit_date" ]]; then
+  rust_date=$(
+    python3 - "$commit_date" <<'PY'
 import datetime
 import sys
 
 print((datetime.date.fromisoformat(sys.argv[1]) + datetime.timedelta(days=1)).isoformat())
 PY
-)
+  )
+fi
+
+if [[ -z "$rust_date" ]]; then
+  set +o pipefail
+  rust_date=$(
+    strings "$charon_bin" |
+      grep -o 'channel = "nightly-[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}"' |
+      head -n 1 |
+      sed -E 's/channel = "nightly-([^"]+)"/\1/' |
+      tr -d '\n'
+  )
+  set -o pipefail
+fi
+
+if [[ -z "$rust_date" ]]; then
+  echo "could not infer Rust toolchain date from charon binary" >&2
+  exit 1
+fi
 
 lean_dir="$work_dir/lean-toolchain"
 mkdir -p "$lean_dir"
@@ -177,7 +195,7 @@ lean_output_hash=$(hash_path_sri "$lean_dir")
 
 rust_dir="$work_dir/rust-toolchain"
 mkdir -p "$rust_dir"
-for component in rustc rust-std rustc-dev llvm-tools miri; do
+for component in cargo rustc rust-std rustc-dev llvm-tools miri; do
   archive="$work_dir/$component-nightly-$rust_platform.tar.gz"
   url="https://static.rust-lang.org/dist/$rust_date/$component-nightly-$rust_platform.tar.gz"
   download "$url" "$archive"
@@ -187,7 +205,7 @@ for component in rustc rust-std rustc-dev llvm-tools miri; do
   tar -xzf "$archive" -C "$tmp_extract"
   top_dir=$(find "$tmp_extract" -mindepth 1 -maxdepth 1 -type d | head -n 1)
   comp_dir=$(find "$top_dir" -mindepth 1 -maxdepth 1 -type d | head -n 1)
-  cp -R "$comp_dir"/. "$rust_dir"/
+  cp -R "$comp_dir"/* "$rust_dir"/
 done
 
 rust_src_archive="$work_dir/rust-src-nightly.tar.gz"
@@ -197,7 +215,11 @@ rm -rf "$tmp_extract"
 mkdir -p "$tmp_extract"
 tar -xzf "$rust_src_archive" -C "$tmp_extract"
 top_dir=$(find "$tmp_extract" -mindepth 1 -maxdepth 1 -type d | head -n 1)
-cp -R "$top_dir/rust-src"/. "$rust_dir"/
+cp -R "$top_dir/rust-src"/* "$rust_dir"/
+if [[ -d "$rust_dir/share/man" ]]; then
+  find "$rust_dir/share/man" -type f ! -name '*.gz' -exec gzip -n {} +
+fi
+chmod -R a+rX,a-w "$rust_dir"
 rust_output_hash=$(hash_path_sri "$rust_dir")
 
 mathlib_rev=$(
