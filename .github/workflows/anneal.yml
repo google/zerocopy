@@ -36,7 +36,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -63,7 +63,7 @@ jobs:
           bash anneal/tools/check-release-flow-dry-run.sh
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@4eea0b33e3d1f02ecfe37cf16e7204c424009606 # v3.21.0
+        uses: DeterminateSystems/determinate-nix-action@629b284231c2a82554b724e357e47fc6020833c8 # v3.21.2
 
       - name: Check V2 flake evaluation
         run: bash anneal/v2/check-flake-eval.sh
@@ -86,7 +86,7 @@ jobs:
         id: job_start_time
         run: echo "unix=$(date +%s)" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -202,7 +202,7 @@ jobs:
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/share/boost
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -265,7 +265,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -299,7 +299,7 @@ jobs:
           key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/v2/flake.nix', 'anneal/v2/flake.lock', 'anneal/v2/rewrite-lake-vendor.py', 'anneal/v2/prune-lake-cache.py') }}
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@4eea0b33e3d1f02ecfe37cf16e7204c424009606 # v3.21.0
+        uses: DeterminateSystems/determinate-nix-action@629b284231c2a82554b724e357e47fc6020833c8 # v3.21.2
 
       # On Ubuntu 24.04 (currently `ubuntu-latest`), AppArmor restricts unprivileged user namespaces by default.
       # The Nix build sandbox runs `steam-run` (which uses `bubblewrap`/`bwrap`) during the `mathlib-cache-download`
@@ -404,7 +404,7 @@ jobs:
       actions: read # Required to download the toolchain artifact.
       contents: read
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
