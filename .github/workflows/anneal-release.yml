@@ -45,7 +45,7 @@ jobs:
       version: ${{ steps.check.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -82,13 +82,13 @@ jobs:
       id-token: write # required to publish to crates.io using OIDC
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
           fetch-depth: 0
 
       - name: Authenticate with crates.io
-        uses: rust-lang/crates-io-auth-action@bbd81622f20ce9e2dd9622e3218b975523e45bbe # v1.0.4
+        uses: rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18 # v1.0.5
         id: auth
 
       - name: Publish cargo-anneal
@@ -133,7 +133,7 @@ jobs:
       short_base_sha: ${{ steps.prepare.outputs.short_base_sha }}
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ github.event.inputs.branch }}
           persist-credentials: false
@@ -237,7 +237,7 @@ jobs:
             cargo_arch: aarch64
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ needs.prepare-release-source.outputs.base_sha }}
           persist-credentials: false
@@ -264,7 +264,7 @@ jobs:
           df -h
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@4eea0b33e3d1f02ecfe37cf16e7204c424009606 # v3.21.0
+        uses: DeterminateSystems/determinate-nix-action@629b284231c2a82554b724e357e47fc6020833c8 # v3.21.2
 
       # On Ubuntu 24.04 (currently `ubuntu-latest`), AppArmor restricts unprivileged user namespaces by default.
       # The Nix build sandbox uses `bubblewrap` for Linux FHS execution, which requires creating a user namespace.
@@ -338,7 +338,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ needs.prepare-release-source.outputs.base_sha }}
           persist-credentials: false
@@ -387,7 +387,7 @@ jobs:
       - name: Submit PR
         id: submit-pr-upstream
         if: github.repository == 'google/zerocopy'
-        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0 # zizmor: ignore[superfluous-actions]
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.0 # zizmor: ignore[superfluous-actions]
         with:
           commit-message: "Release Anneal ${{ github.event.inputs.version }}"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
@@ -405,7 +405,7 @@ jobs:
       - name: Submit PR (fork test)
         id: submit-pr-fork
         if: github.repository != 'google/zerocopy'
-        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0 # zizmor: ignore[superfluous-actions]
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.0 # zizmor: ignore[superfluous-actions]
         with:
           commit-message: "Release Anneal ${{ github.event.inputs.version }}"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
