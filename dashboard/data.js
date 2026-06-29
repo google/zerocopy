@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1781579008506,
+  "lastUpdate": 1782765544544,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22375,6 +22375,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 713,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "mdittmer@users.noreply.github.com",
+            "name": "Mark Dittmer",
+            "username": "mdittmer"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d27346f15bbeb0d078b385a0a4c3a0e922c31c0f",
+          "message": "[anneal][v2] Add utility functions: environment helpers and DirLock (#3399)\n\nTAG=agy\n\ngherrit-pr-id: Gisb7egnyltdoxlay3of6lmsjbtlok7ct",
+          "timestamp": "2026-06-29T13:15:33-07:00",
+          "tree_id": "2cf8f87bafb2ba37493711fc0a677055eb800629",
+          "url": "https://github.com/google/zerocopy/commit/d27346f15bbeb0d078b385a0a4c3a0e922c31c0f"
+        },
+        "date": 1782765542397,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 379,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 599,
             "unit": "seconds"
           }
         ]
