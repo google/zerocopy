@@ -129,7 +129,7 @@ derive!(ByteHash => derive_hash => crate::derive::derive_hash);
 derive!(ByteEq => derive_eq => crate::derive::derive_eq);
 derive!(SplitAt => derive_split_at => crate::derive::derive_split_at);
 
-#[cfg_attr(zerocopy_unstable_linux, doc(hidden))]
+#[cfg_attr(not(zerocopy_unstable_linux), doc(hidden))]
 #[proc_macro_derive(most_traits, attributes(zerocopy))]
 pub fn most_traits(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ast = syn::parse_macro_input!(ts as DeriveInput);
