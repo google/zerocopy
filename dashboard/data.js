@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1782765544544,
+  "lastUpdate": 1782946646328,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22409,6 +22409,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 599,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "jswrenn@amazon.com",
+            "name": "Jack Wrenn",
+            "username": "jswrenn"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c8fb1ca16968099ef7c032db4e65c0a45830d188",
+          "message": "Hide unstable `derive(most_traits)` in documentation (#3470)\n\nFixes #3466\n\ngherrit-pr-id: G304df306ff9b25d6a30a8c91906232a439cf2ba4",
+          "timestamp": "2026-07-01T22:12:05Z",
+          "tree_id": "45b91fa616024143533ce14bcec216c5622ecb3f",
+          "url": "https://github.com/google/zerocopy/commit/c8fb1ca16968099ef7c032db4e65c0a45830d188"
+        },
+        "date": 1782946645331,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 445,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 594,
             "unit": "seconds"
           }
         ]
