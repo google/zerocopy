@@ -94,13 +94,19 @@ pinned-nightly = "nightly-2026-01-25"
 
 [package.metadata.docs.rs]
 all-features = true
-rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition", "--extend-css", "rustdoc/style.css"]
+rustdoc-args = [
+    "--cfg",
+    "doc_cfg",
+    "--generate-link-to-definition",
+    "--extend-css",
+    "rustdoc/style.css",
+]
 targets = [
     "x86_64-unknown-linux-gnu",
     "x86_64-apple-darwin",
     "x86_64-pc-windows-msvc",
     "i686-unknown-linux-gnu",
-    "i686-pc-windows-msvc"
+    "i686-pc-windows-msvc",
 ]
 
 [package.metadata.playground]
@@ -119,11 +125,13 @@ std = ["alloc"]
 __internal_use_only_features_that_work_on_stable = [
     "alloc",
     "derive",
+    "serde",
     "simd",
     "std",
 ]
 
 [dependencies]
+serde = { version = "1.0.144", default-features = false, optional = true }
 zerocopy-derive = { version = "=0.8.52", path = "zerocopy-derive", optional = true }
 
 # The "associated proc macro pattern" ensures that the versions of zerocopy and
@@ -141,5 +149,6 @@ regex = "1.0"
 rustversion = "1.0"
 static_assertions = "1.1"
 testutil = { path = "testutil" }
+serde_json = "1.0.143"
 # In tests, unlike in production, zerocopy-derive is not optional
 zerocopy-derive = { version = "=0.8.52", path = "zerocopy-derive" }
