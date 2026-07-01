@@ -215,3 +215,5 @@ cargo anneal verify
 - **`cargo anneal verify`**: Verifies the target crate.
 - **`cargo anneal expand`**: Outputs the generated Lean code without running full verification (useful for debugging).
 - **`cargo anneal generate`**: Generates the `.lean` files on disk, allowing you to iterate on proofs using standard Lean tooling before copying them back to Rust source.
+
+<!-- docs note docs-anneal-readme-note-1782908784 -->
