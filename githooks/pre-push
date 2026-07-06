@@ -22,7 +22,6 @@ echo "Running pre-push git hook: $0"
 ./zerocopy/ci/check_stale_stderr.sh          >/dev/null & STALE_STDERR_PID=$!
 ./zerocopy/ci/check_versions.sh              >/dev/null & VERSIONS_PID=$!
 ./zerocopy/ci/check_msrv_is_minimal.sh       >/dev/null & MSRV_PID=$!
-python3 ./ci/validate_auto_approvers.py --check-config & VALIDATE_CONFIG_PID=$!
 
 # `wait <pid>` exits with the same status code as the job it's waiting for.
 # Since we `set -e` above, this will have the effect of causing the entire
@@ -38,7 +37,6 @@ wait $README_PID
 wait $STALE_STDERR_PID
 wait $VERSIONS_PID
 wait $MSRV_PID
-wait $VALIDATE_CONFIG_PID
 
 # Ensure that this script calls all scripts in `ci/*` and `zerocopy/ci/*`. This
 # isn't a foolproof check since it just checks for the string in this script

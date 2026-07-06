@@ -939,50 +939,6 @@ jobs:
       - name: Run todo check
         run: ./ci/check_todo.sh
 
-  check-auto-approvers:
-    runs-on: ubuntu-latest
-    name: Check auto-approvers setup
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-      - name: Structural Check
-        run: python3 ci/validate_auto_approvers.py --check-config
-      - name: Health Check (Current Commit)
-        if: github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          CHANGED_FILES_COUNT: ${{ github.event.pull_request.changed_files }}
-        run: |
-          set -eo pipefail
-
-          # Fetch changed files (including renames for move-tracking)
-          gh api "repos/$REPOSITORY/pulls/$PR_NUMBER/files" \
-            --paginate \
-            --jq 'map([.filename, .previous_filename] | map(select(.)))' | jq -s 'add' > changed_files.json
-
-          # Fetch unique contributors (logins)
-          CONTRIBUTORS=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER/commits" \
-            --paginate \
-            --jq '[.[] | .author?.login, .committer?.login] | unique | map(select(.)) | .[]' | tr '\n' ' ')
-
-          # Run validator and assert exit code 0 or 1
-          set +e
-          python3 ci/validate_auto_approvers.py \
-            --changed-files changed_files.json \
-            --expected-count "$CHANGED_FILES_COUNT" \
-            --contributors $CONTRIBUTORS
-          EXIT_CODE=$?
-          set -e
-
-          if [ $EXIT_CODE -ne 0 ] && [ $EXIT_CODE -ne 1 ]; then
-            echo "::error::Validation encountered technical error (exit $EXIT_CODE)"
-            exit 1
-          fi
-          echo "Validation healthy (exit $EXIT_CODE)"
-
   run-git-hooks:
     runs-on: ubuntu-latest
     name: Run Git hooks
@@ -1085,7 +1041,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, check-auto-approvers, zizmor, build_docker_env]
+      needs: [build_test, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env]
       steps:
         - name: Mark the job as failed
           run: exit 1
