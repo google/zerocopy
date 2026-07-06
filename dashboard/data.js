@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783352689487,
+  "lastUpdate": 1783356906012,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22477,6 +22477,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 610,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "74878137+russellbanks@users.noreply.github.com",
+            "name": "Russell Banks",
+            "username": "russellbanks"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2f7aef51af32cbb8a23c38fa1d1de4b4bce15759",
+          "message": "Add PartialEq derive to Order (#3467)",
+          "timestamp": "2026-07-06T16:10:10Z",
+          "tree_id": "7b8e8cafec2c4ecfb2144f87c45d723fad702023",
+          "url": "https://github.com/google/zerocopy/commit/2f7aef51af32cbb8a23c38fa1d1de4b4bce15759"
+        },
+        "date": 1783356903707,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 458,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 680,
             "unit": "seconds"
           }
         ]
