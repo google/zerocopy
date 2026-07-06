@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783356906012,
+  "lastUpdate": 1783360761414,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22511,6 +22511,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 680,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ed09d09538fcee9790938efba206d5f50363e923",
+          "message": "[ci] Remove auto-approvers mechanism (#3473)\n\ngherrit-pr-id: Ghyweelxm6wjg643tibrylyutabstm4eo",
+          "timestamp": "2026-07-06T17:12:24Z",
+          "tree_id": "8e0dc3184919cc665174316533a89561c215fd6c",
+          "url": "https://github.com/google/zerocopy/commit/ed09d09538fcee9790938efba206d5f50363e923"
+        },
+        "date": 1783360759259,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 444,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 636,
             "unit": "seconds"
           }
         ]
