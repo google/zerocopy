@@ -36,7 +36,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -63,7 +63,7 @@ jobs:
           bash anneal/tools/check-release-flow-dry-run.sh
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@4eea0b33e3d1f02ecfe37cf16e7204c424009606 # v3.21.0
+        uses: DeterminateSystems/determinate-nix-action@629b284231c2a82554b724e357e47fc6020833c8 # v3.21.2
 
       - name: Check V2 flake evaluation
         run: bash anneal/v2/check-flake-eval.sh
@@ -86,7 +86,7 @@ jobs:
         id: job_start_time
         run: echo "unix=$(date +%s)" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -202,7 +202,7 @@ jobs:
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/share/boost
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -265,7 +265,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -281,7 +281,7 @@ jobs:
       # files so ordinary PRs can reuse the archive built from `main`.
       - name: Restore Anneal main Nix binary cache
         id: restore_anneal_main_nix_cache
-        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: anneal/v2/target/nix-cache-main
           key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/v2/flake.nix', 'anneal/v2/flake.lock', 'anneal/v2/rewrite-lake-vendor.py', 'anneal/v2/prune-lake-cache.py') }}
@@ -293,13 +293,13 @@ jobs:
       - name: Restore Anneal PR Nix binary cache
         id: restore_anneal_pr_nix_cache
         if: github.event_name == 'pull_request'
-        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: anneal/v2/target/nix-cache-pr
           key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/v2/flake.nix', 'anneal/v2/flake.lock', 'anneal/v2/rewrite-lake-vendor.py', 'anneal/v2/prune-lake-cache.py') }}
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@4eea0b33e3d1f02ecfe37cf16e7204c424009606 # v3.21.0
+        uses: DeterminateSystems/determinate-nix-action@629b284231c2a82554b724e357e47fc6020833c8 # v3.21.2
 
       # On Ubuntu 24.04 (currently `ubuntu-latest`), AppArmor restricts unprivileged user namespaces by default.
       # The Nix build sandbox runs `steam-run` (which uses `bubblewrap`/`bwrap`) during the `mathlib-cache-download`
@@ -362,7 +362,7 @@ jobs:
 
       - name: Save Anneal Nix binary cache
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.restore_anneal_main_nix_cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: anneal/v2/target/nix-cache-main
           key: ${{ steps.restore_anneal_main_nix_cache.outputs.cache-primary-key }}
@@ -380,7 +380,7 @@ jobs:
 
       - name: Save Anneal PR Nix binary cache
         if: github.event_name == 'pull_request' && steps.restore_anneal_pr_nix_cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: anneal/v2/target/nix-cache-pr
           key: ${{ steps.restore_anneal_pr_nix_cache.outputs.cache-primary-key }}
@@ -404,7 +404,7 @@ jobs:
       actions: read # Required to download the toolchain artifact.
       contents: read
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
