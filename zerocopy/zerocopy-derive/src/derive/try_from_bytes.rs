@@ -10,7 +10,7 @@ use syn::{
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
     util::{
-        const_block, enum_size_from_repr, generate_tag_enum, Ctx, DataExt, FieldBounds,
+        const_block, enum_size_from_repr, generate_tag_enum, Client, Ctx, DataExt, FieldBounds,
         ImplBlockBuilder, Trait, TraitBound,
     },
 };
@@ -238,6 +238,7 @@ pub(crate) fn derive_is_bit_valid(
             let variant_struct_field_index = Index::from(idx + 1);
             let (_, ty_generics, _) = ctx.ast.generics.split_for_impl();
             let has_field_trait = Trait::HasField {
+                client: Client::TryFromBytesDerive,
                 variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
                 // Since Rust does not presently support explicit visibility
                 // modifiers on enum fields, any public type is suitable here;
@@ -260,10 +261,10 @@ pub(crate) fn derive_is_bit_valid(
                     use #zerocopy_crate::pointer::cast::{CastSized, Projection};
 
                     slf.project::<___ZerocopyRawEnum #ty_generics, CastSized>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::REPR_C_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>>()
+                        .project::<_, Projection<#zerocopy_crate::TryFromBytesDerive, _, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>>()
+                        .project::<_, Projection<#zerocopy_crate::TryFromBytesDerive, _, { #zerocopy_crate::REPR_C_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>>()
+                        .project::<_, Projection<#zerocopy_crate::TryFromBytesDerive, _, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>>()
+                        .project::<_, Projection<#zerocopy_crate::TryFromBytesDerive, _, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>>()
                         .as_ptr()
                 }
             })
@@ -273,6 +274,7 @@ pub(crate) fn derive_is_bit_valid(
                 ctx,
                 data,
                 Trait::ProjectField {
+                    client: Client::TryFromBytesDerive,
                     variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
                     // Since Rust does not presently support explicit visibility
                     // modifiers on enum fields, any public type is suitable
@@ -321,6 +323,7 @@ pub(crate) fn derive_is_bit_valid(
                     let variant_md = variants.cast::<
                         _,
                         #zerocopy_crate::pointer::cast::Projection<
+                            #zerocopy_crate::TryFromBytesDerive,
                             // #zerocopy_crate::ReadOnly<_>,
                             _,
                             { #zerocopy_crate::REPR_C_UNION_VARIANT_ID },
@@ -431,6 +434,7 @@ pub(crate) fn derive_is_bit_valid(
             >();
 
             let variants = #zerocopy_crate::into_inner!(raw_enum.project::<
+                #zerocopy_crate::TryFromBytesDerive,
                 _,
                 { #zerocopy_crate::STRUCT_VARIANT_ID },
                 { #zerocopy_crate::ident_id!(variants) }
@@ -491,6 +495,7 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
         let field: Box<Type> = parse_quote!(#field_token);
         let field_id: Box<Expr> = parse_quote!({ #zerocopy_crate::ident_id!(#ident) });
         let has_field_trait = Trait::HasField {
+                client: Client::TryFromBytesDerive,
                 variant_id: variant_id.clone(),
                 field: field.clone(),
                 field_id: field_id.clone(),
@@ -530,6 +535,7 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
                 ctx,
                 data,
                 Trait::ProjectField {
+                    client: Client::TryFromBytesDerive,
                     variant_id: variant_id.clone(),
                     field,
                     field_id,
@@ -585,6 +591,7 @@ fn derive_try_from_bytes_struct(
             {
                 true #(&& {
                     let field_candidate =   #zerocopy_crate::into_inner!(candidate.reborrow().project::<
+                        #zerocopy_crate::TryFromBytesDerive,
                         _,
                         { #zerocopy_crate::STRUCT_VARIANT_ID },
                         { #zerocopy_crate::ident_id!(#field_names) }
@@ -644,6 +651,7 @@ fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> 
                             _,
                             _,
                             #zerocopy_crate::pointer::cast::Projection<
+                                #zerocopy_crate::TryFromBytesDerive,
                                 _,
                                 #variant_id,
                                 { #zerocopy_crate::ident_id!(#field_names) }
