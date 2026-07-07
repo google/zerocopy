@@ -79,7 +79,8 @@ use crate::util::*;
 /// are currently required to live at the crate root, and so the caller must
 /// specify the name in order to avoid name collisions.
 macro_rules! derive {
-    ($trait:ident => $outer:ident => $inner:path) => {
+    ($(#[$attr:meta])* $trait:ident => $outer:ident => $inner:path) => {
+        $(#[$attr])*
         #[proc_macro_derive($trait, attributes(zerocopy))]
         pub fn $outer(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
             let ast = syn::parse_macro_input!(ts as DeriveInput);
@@ -120,6 +121,7 @@ impl IntoTokenStream for Result<proc_macro2::TokenStream, Error> {
 
 derive!(KnownLayout => derive_known_layout => crate::derive::known_layout::derive);
 derive!(Immutable => derive_immutable => crate::derive::derive_immutable);
+derive!(#[doc(hidden)] Project => derive_project => crate::derive::project::derive);
 derive!(TryFromBytes => derive_try_from_bytes => crate::derive::try_from_bytes::derive_try_from_bytes);
 derive!(FromZeros => derive_from_zeros => crate::derive::from_bytes::derive_from_zeros);
 derive!(FromBytes => derive_from_bytes => crate::derive::from_bytes::derive_from_bytes);

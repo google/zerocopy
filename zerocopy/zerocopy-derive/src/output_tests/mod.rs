@@ -24,6 +24,7 @@ macro_rules! use_as_trait_name {
 use_as_trait_name!(
     KnownLayout => super::derive::known_layout::derive,
     Immutable => super::derive::derive_immutable,
+    Project => super::derive::project::derive,
     TryFromBytes => super::derive::try_from_bytes::derive_try_from_bytes,
     FromZeros => super::derive::from_bytes::derive_from_zeros,
     FromBytes => super::derive::from_bytes::derive_from_bytes,
@@ -155,6 +156,91 @@ fn test_immutable() {
         Immutable {
             struct Foo;
         } expands to "expected/immutable.expected.rs"
+    }
+}
+
+#[test]
+fn test_project_empty_struct() {
+    test! {
+        Project {
+            struct Foo;
+        } expands to {}
+    }
+}
+
+#[test]
+fn test_project_struct() {
+    test! {
+        Project {
+            struct Foo {
+                field: u8,
+            }
+        } expands to "expected/project_struct.expected.rs"
+    }
+}
+
+#[test]
+fn test_project_enum() {
+    test! {
+        Project {
+            #[repr(u8)]
+            enum ComplexWithGenerics<'a: 'static, const N: usize, X, Y: Deref>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                UnitLike,
+                StructLike { a: u8, b: X, c: X::Target, d: Y::Target, e: [(X, Y); N] },
+                TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
+            }
+        } expands to "expected/project_enum_1.expected.rs"
+    }
+
+    test! {
+        Project {
+            #[repr(u32)]
+            enum ComplexWithGenerics<'a: 'static, const N: usize, X, Y: Deref>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                UnitLike,
+                StructLike { a: u8, b: X, c: X::Target, d: Y::Target, e: [(X, Y); N] },
+                TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
+            }
+        } expands to "expected/project_enum_2.expected.rs"
+    }
+
+    test! {
+        Project {
+            #[repr(C)]
+            enum ComplexWithGenerics<'a: 'static, const N: usize, X, Y: Deref>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                UnitLike,
+                StructLike { a: u8, b: X, c: X::Target, d: Y::Target, e: [(X, Y); N] },
+                TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
+            }
+        } expands to "expected/project_enum_3.expected.rs"
+    }
+}
+
+#[test]
+fn test_project_union() {
+    test! {
+        Project {
+            #[repr(C)]
+            union Foo {
+                field: u8,
+            }
+        } expands to "expected/project_union_repr_c.expected.rs"
+    }
+
+    test! {
+        Project {
+            union Foo {
+                field: u8,
+            }
+        } expands to "expected/project_union_default_repr.expected.rs"
     }
 }
 
