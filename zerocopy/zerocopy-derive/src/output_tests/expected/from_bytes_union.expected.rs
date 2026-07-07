@@ -81,6 +81,7 @@ const _: () = {
         #[automatically_derived]
         const _: () = {
             unsafe impl ::zerocopy::HasField<
+                ::zerocopy::TryFromBytesDerive,
                 ẕa,
                 { ::zerocopy::UNION_VARIANT_ID },
                 { ::zerocopy::ident_id!(a) },
@@ -91,6 +92,7 @@ const _: () = {
                 fn project(
                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                 ) -> *mut <Self as ::zerocopy::HasField<
+                    ::zerocopy::TryFromBytesDerive,
                     ẕa,
                     { ::zerocopy::UNION_VARIANT_ID },
                     { ::zerocopy::ident_id!(a) },

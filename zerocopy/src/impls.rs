@@ -797,8 +797,12 @@ const _: () = {
     // documentation of `ManuallyDrop::new`, `ManuallyDrop::into_inner`,
     // `ManuallyDrop::take` and `ManuallyDrop::drop`.
     unsafe impl<T: ?Sized>
-        HasField<value, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!(value) }>
-        for ManuallyDrop<T>
+        HasField<
+            crate::TryFromBytesDerive,
+            value,
+            { crate::STRUCT_VARIANT_ID },
+            { crate::ident_id!(value) },
+        > for ManuallyDrop<T>
     {
         #[inline]
         fn only_derive_is_allowed_to_implement_this_trait()
@@ -1015,8 +1019,8 @@ mod tuples {
             // SAFETY: If all fields in `c` are `is_bit_valid`, so too is `c`.
             unsafe_impl!($($head_T: TryFromBytes,)* $next_T: TryFromBytes => TryFromBytes for ($($head_T,)* $next_T,); |c| {
                 let mut c = c;
-                $(TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<_, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($head_I) }>())) &&)*
-                    TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<_, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($next_I) }>()))
+                $(TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<crate::TryFromBytesDerive, _, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($head_I) }>())) &&)*
+                    TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<crate::TryFromBytesDerive, _, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($next_I) }>()))
             });
 
             // SAFETY: If all fields in `Self` are `FromZeros`, so too is `Self`.
@@ -1078,6 +1082,7 @@ mod tuples {
             //   `.1`, etc)
             // - `Type` has the same type as `$CurrI`; i.e., `$CurrT`.
             unsafe impl<$($AllT),+> crate::HasField<
+                crate::TryFromBytesDerive,
                 (),
                 { crate::STRUCT_VARIANT_ID },
                 { crate::ident_id!($CurrI)}
@@ -1104,6 +1109,7 @@ mod tuples {
 
             // SAFETY: See comments on items.
             unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                crate::TryFromBytesDerive,
                 (),
                 (Aliasing, Alignment, crate::invariant::Uninit),
                 { crate::STRUCT_VARIANT_ID },
@@ -1130,6 +1136,7 @@ mod tuples {
 
             // SAFETY: See comments on items.
             unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                crate::TryFromBytesDerive,
                 (),
                 (Aliasing, Alignment, crate::invariant::Initialized),
                 { crate::STRUCT_VARIANT_ID },
@@ -1156,6 +1163,7 @@ mod tuples {
 
             // SAFETY: See comments on items.
             unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                crate::TryFromBytesDerive,
                 (),
                 (Aliasing, Alignment, crate::invariant::Valid),
                 { crate::STRUCT_VARIANT_ID },

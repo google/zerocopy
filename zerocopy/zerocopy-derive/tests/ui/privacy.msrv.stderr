@@ -31,42 +31,42 @@ error[E0747]: type provided when a constant was expected
     = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-   --> $DIR/privacy.rs:135:52
+   --> $DIR/privacy.rs:135:90
     |
-135 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
-    |                                                    ^
-    |
-    = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-   --> $DIR/privacy.rs:138:52
-    |
-138 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
-    |                                                    ^
+135 |     let _: <Union as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
+    |                                                                                          ^
     |
     = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-   --> $DIR/privacy.rs:145:51
+   --> $DIR/privacy.rs:138:90
     |
-145 |     let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(0) }>>::Type =
-    |                                                   ^
-    |
-    = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-   --> $DIR/privacy.rs:148:51
-    |
-148 |     let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type =
-    |                                                   ^
+138 |     let _: <Union as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
+    |                                                                                          ^
     |
     = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-   --> $DIR/privacy.rs:152:51
+   --> $DIR/privacy.rs:145:89
     |
-152 |     let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
-    |                                                   ^
+145 |     let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(0) }>>::Type =
+    |                                                                                         ^
+    |
+    = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+   --> $DIR/privacy.rs:148:89
+    |
+148 |     let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(1) }>>::Type =
+    |                                                                                         ^
+    |
+    = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+   --> $DIR/privacy.rs:152:89
+    |
+152 |     let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
+    |                                                                                         ^
     |
     = help: const arguments cannot yet be inferred with `_`
 
@@ -103,42 +103,42 @@ error[E0747]: type provided when a constant was expected
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> $DIR/privacy.rs:70:56
+  --> $DIR/privacy.rs:70:94
    |
-70 |         let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
-   |                                                        ^
-   |
-   = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-  --> $DIR/privacy.rs:72:56
-   |
-72 |         let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type = 0u16;
-   |                                                        ^
+70 | ...   let _: <Union as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(a) }>>::Type ...
+   |                                                                                            ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> $DIR/privacy.rs:85:55
+  --> $DIR/privacy.rs:72:94
    |
-85 |         let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(0) }>>::Type = 0u8;
-   |                                                       ^
-   |
-   = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-  --> $DIR/privacy.rs:87:55
-   |
-87 |         let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type = 0u16;
-   |                                                       ^
+72 | ...   let _: <Union as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(b) }>>::Type ...
+   |                                                                                            ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> $DIR/privacy.rs:90:55
+  --> $DIR/privacy.rs:85:93
    |
-90 |         let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
-   |                                                       ^
+85 | ...   let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(0) }>>::Type =...
+   |                                                                                           ^
+   |
+   = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+  --> $DIR/privacy.rs:87:93
+   |
+87 | ...   let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(1) }>>::Type =...
+   |                                                                                           ^
+   |
+   = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+  --> $DIR/privacy.rs:90:93
+   |
+90 | ...   let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(a) }>>::Type =...
+   |                                                                                           ^
    |
    = help: const arguments cannot yet be inferred with `_`
 

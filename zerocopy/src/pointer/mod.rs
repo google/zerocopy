@@ -241,17 +241,18 @@ pub mod cast {
     /// A `Projection` is a [`Project`] which implements projection by
     /// delegating to an implementation of [`HasField::project`].
     #[allow(missing_debug_implementations, missing_copy_implementations)]
-    pub struct Projection<F: ?Sized, const VARIANT_ID: i128, const FIELD_ID: i128> {
+    pub struct Projection<Client, F: ?Sized, const VARIANT_ID: i128, const FIELD_ID: i128> {
         _never: core::convert::Infallible,
+        _client: PhantomData<Client>,
         _phantom: PhantomData<F>,
     }
 
     // SAFETY: `HasField::project` has the same safety post-conditions as
     // `Project::project`.
-    unsafe impl<T: ?Sized, F, const VARIANT_ID: i128, const FIELD_ID: i128> Project<T, T::Type>
-        for Projection<F, VARIANT_ID, FIELD_ID>
+    unsafe impl<T: ?Sized, Client, F, const VARIANT_ID: i128, const FIELD_ID: i128>
+        Project<T, T::Type> for Projection<Client, F, VARIANT_ID, FIELD_ID>
     where
-        T: HasField<F, VARIANT_ID, FIELD_ID>,
+        T: HasField<Client, F, VARIANT_ID, FIELD_ID>,
     {
         #[inline(always)]
         fn project(src: PtrInner<'_, T>) -> *mut T::Type {
@@ -292,10 +293,10 @@ pub mod cast {
     //
     // FIXME(https://github.com/rust-lang/unsafe-code-guidelines/issues/595):
     // Cite the documentation once it's updated.
-    unsafe impl<T: ?Sized, F, const FIELD_ID: i128> Cast<T, T::Type>
-        for Projection<F, { crate::REPR_C_UNION_VARIANT_ID }, FIELD_ID>
+    unsafe impl<T: ?Sized, Client, F, const FIELD_ID: i128> Cast<T, T::Type>
+        for Projection<Client, F, { crate::REPR_C_UNION_VARIANT_ID }, FIELD_ID>
     where
-        T: HasField<F, { crate::REPR_C_UNION_VARIANT_ID }, FIELD_ID>,
+        T: HasField<Client, F, { crate::REPR_C_UNION_VARIANT_ID }, FIELD_ID>,
     {
     }
 
