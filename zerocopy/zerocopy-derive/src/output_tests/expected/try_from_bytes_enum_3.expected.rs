@@ -34,6 +34,7 @@ const _: () = {
         {
             #[repr(C)]
             #[allow(dead_code)]
+            #[derive(Copy, Clone, PartialEq)]
             pub enum ___ZerocopyTag {
                 UnitLike,
                 StructLike,
@@ -91,115 +92,13 @@ const _: () = {
             #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
-                unsafe impl<
-                    'a: 'static,
-                    X,
-                    Y: Deref,
-                    const N: usize,
-                > ::zerocopy::TryFromBytes
-                for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                where
-                    X: Deref<Target = &'a [(X, Y); N]>,
-                    ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
-                        ___ZerocopyInnerTag,
-                    >: ::zerocopy::TryFromBytes,
-                    u8: ::zerocopy::TryFromBytes,
-                    X: ::zerocopy::TryFromBytes,
-                    X::Target: ::zerocopy::TryFromBytes,
-                    Y::Target: ::zerocopy::TryFromBytes,
-                    [(X, Y); N]: ::zerocopy::TryFromBytes,
-                    ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
-                        ComplexWithGenerics<'a, N, X, Y>,
-                    >: ::zerocopy::TryFromBytes,
-                {
-                    fn only_derive_is_allowed_to_implement_this_trait() {}
-                    #[inline]
-                    fn is_bit_valid<___ZcAlignment>(
-                        mut candidate: ::zerocopy::Maybe<'_, Self, ___ZcAlignment>,
-                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-                    where
-                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
-                    {
-                        true
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(0)
-                                    } > ()
-                                );
-                                <::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
-                                    ___ZerocopyInnerTag,
-                                > as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1)
-                                    } > ()
-                                );
-                                <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2)
-                                    } > ()
-                                );
-                                <X as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3)
-                                    } > ()
-                                );
-                                <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4)
-                                    } > ()
-                                );
-                                <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(5)
-                                    } > ()
-                                );
-                                <[(
-                                    X,
-                                    Y,
-                                ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(6)
-                                    } > ()
-                                );
-                                <::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
-                                    ComplexWithGenerics<'a, N, X, Y>,
-                                > as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                    }
-                }
+                enum ẕ0 {}
+                enum ẕ1 {}
+                enum ẕ2 {}
+                enum ẕ3 {}
+                enum ẕ4 {}
+                enum ẕ5 {}
+                enum ẕ6 {}
                 #[allow(
                     deprecated,
                     private_bounds,
@@ -213,626 +112,1200 @@ const _: () = {
                 #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
-                    enum ẕ0 {}
-                    enum ẕ1 {}
-                    enum ẕ2 {}
-                    enum ẕ3 {}
-                    enum ẕ4 {}
-                    enum ẕ5 {}
-                    enum ẕ6 {}
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasTag
-                        for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Tag = ();
-                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
-                        }
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasTag<::zerocopy::project_clients::TryFromBytesDerive>
+                    for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Tag = ();
+                        type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
+                            ___ZerocopyInnerTag,
+                        >;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ0,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(0) },
-                        > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
-                                ___ZerocopyInnerTag,
-                            >;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ0,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(0) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).0
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).0
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ0,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(0) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ0,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ0,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ0,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ1,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = u8;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ1,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(1) },
-                        > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = u8;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ1,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(1) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).1
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).1
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ1,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(1) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ1,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ1,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ1,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ2,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = X;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ2,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(2) },
-                        > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = X;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ2,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(2) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).2
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).2
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ2,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(2) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ2,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ2,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ2,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ3,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = X::Target;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ3,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(3) },
-                        > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = X::Target;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ3,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(3) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).3
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).3
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ3,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(3) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ3,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ3,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ3,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ4,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = Y::Target;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ4,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(4) },
-                        > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = Y::Target;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ4,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(4) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).4
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).4
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ4,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(4) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ4,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ4,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ4,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ5,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(5) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = [(X, Y); N];
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ5,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(5) },
-                        > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = [(X, Y); N];
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ5,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(5) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).5
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).5
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ5,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(5) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ5,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(5) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ5,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(5) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ5,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(5) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ6,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(6) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
+                            ComplexWithGenerics<'a, N, X, Y>,
+                        >;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ6,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(6) },
-                        > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
-                                ComplexWithGenerics<'a, N, X, Y>,
-                            >;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ6,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(6) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).6
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).6
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ6,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(6) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ6,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(6) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ6,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(6) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ6,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(6) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
                 };
             };
             #[repr(C)]
@@ -867,92 +1340,11 @@ const _: () = {
             #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
-                unsafe impl<
-                    'a: 'static,
-                    X,
-                    Y: Deref,
-                    const N: usize,
-                > ::zerocopy::TryFromBytes
-                for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                where
-                    X: Deref<Target = &'a [(X, Y); N]>,
-                    ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
-                        ___ZerocopyInnerTag,
-                    >: ::zerocopy::TryFromBytes,
-                    bool: ::zerocopy::TryFromBytes,
-                    Y: ::zerocopy::TryFromBytes,
-                    PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-                    ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
-                        ComplexWithGenerics<'a, N, X, Y>,
-                    >: ::zerocopy::TryFromBytes,
-                {
-                    fn only_derive_is_allowed_to_implement_this_trait() {}
-                    #[inline]
-                    fn is_bit_valid<___ZcAlignment>(
-                        mut candidate: ::zerocopy::Maybe<'_, Self, ___ZcAlignment>,
-                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-                    where
-                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
-                    {
-                        true
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(0)
-                                    } > ()
-                                );
-                                <::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
-                                    ___ZerocopyInnerTag,
-                                > as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1)
-                                    } > ()
-                                );
-                                <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2)
-                                    } > ()
-                                );
-                                <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3)
-                                    } > ()
-                                );
-                                <PhantomData<
-                                    &'a [(X, Y); N],
-                                > as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                            && {
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    candidate.reborrow().project:: < _, {
-                                    ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4)
-                                    } > ()
-                                );
-                                <::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
-                                    ComplexWithGenerics<'a, N, X, Y>,
-                                > as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            }
-                    }
-                }
+                enum ẕ0 {}
+                enum ẕ1 {}
+                enum ẕ2 {}
+                enum ẕ3 {}
+                enum ẕ4 {}
                 #[allow(
                     deprecated,
                     private_bounds,
@@ -966,458 +1358,864 @@ const _: () = {
                 #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
-                    enum ẕ0 {}
-                    enum ẕ1 {}
-                    enum ẕ2 {}
-                    enum ẕ3 {}
-                    enum ẕ4 {}
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasTag
-                        for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Tag = ();
-                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
-                        }
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasTag<::zerocopy::project_clients::TryFromBytesDerive>
+                    for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Tag = ();
+                        type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
+                            ___ZerocopyInnerTag,
+                        >;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ0,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(0) },
-                        > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
-                                ___ZerocopyInnerTag,
-                            >;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ0,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(0) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).0
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).0
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ0,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(0) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ0,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ0,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ0,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ1,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = bool;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ1,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(1) },
-                        > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = bool;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ1,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(1) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).1
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).1
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ1,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(1) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ1,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ1,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ1,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ2,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = Y;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ2,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(2) },
-                        > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = Y;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ2,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(2) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).2
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).2
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ2,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(2) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ2,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ2,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ2,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ3,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = PhantomData<&'a [(X, Y); N]>;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ3,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(3) },
-                        > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = PhantomData<&'a [(X, Y); N]>;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ3,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(3) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).3
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).3
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ3,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(3) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            const N: usize,
-                        > ::zerocopy::HasField<
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ3,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ3,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ3,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
+                    > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ4,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
+                            ComplexWithGenerics<'a, N, X, Y>,
+                        >;
+                        #[inline(always)]
+                        fn project(
+                            slf: ::zerocopy::pointer::PtrInner<'_, Self>,
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ4,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(4) },
-                        > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
-                                ComplexWithGenerics<'a, N, X, Y>,
-                            >;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ4,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(4) },
-                            >>::Type {
-                                let slf = slf.as_ptr();
-                                unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).4
-                                    )
-                                }
+                        >>::Type {
+                            let slf = slf.as_ptr();
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).4
+                                )
                             }
                         }
-                        #[allow(
-                            deprecated,
-                            private_bounds,
-                            non_local_definitions,
-                            non_camel_case_types,
-                            non_upper_case_globals,
-                            non_snake_case,
-                            non_ascii_idents,
-                            clippy::missing_inline_in_public_items,
-                        )]
-                        #[deny(ambiguous_associated_items)]
-                        #[automatically_derived]
-                        const _: () = {
-                            unsafe impl<
-                                'a: 'static,
-                                X,
-                                Y: Deref,
-                                Aliasing: ::zerocopy::invariant::Aliasing,
-                                Alignment: ::zerocopy::invariant::Alignment,
-                                const N: usize,
-                            > ::zerocopy::ProjectField<
-                                ẕ4,
-                                (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(4) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                                type Invariants = (
-                                    Aliasing,
-                                    Alignment,
-                                    ::zerocopy::invariant::Initialized,
-                                );
-                            }
-                        };
-                    };
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ4,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ4,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ4,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
                 };
             };
             #[repr(C)]
@@ -1464,7 +2262,8 @@ const _: () = {
                         X,
                         Y: Deref,
                         const N: usize,
-                    > ::zerocopy::HasTag for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    > ::zerocopy::HasTag<::zerocopy::project_clients::TryFromBytesDerive>
+                    for ___ZerocopyVariants<'a, { N }, X, Y> {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Tag = ();
                         type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
@@ -1489,6 +2288,7 @@ const _: () = {
                         Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ__field_StructLike,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_StructLike) },
@@ -1501,6 +2301,7 @@ const _: () = {
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ__field_StructLike,
                             { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_StructLike) },
@@ -1531,8 +2332,85 @@ const _: () = {
                         'a: 'static,
                         X,
                         Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ__field_StructLike,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::REPR_C_UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ__field_StructLike,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::REPR_C_UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ__field_TupleLike,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_TupleLike) },
@@ -1545,6 +2423,7 @@ const _: () = {
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ__field_TupleLike,
                             { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_TupleLike) },
@@ -1575,8 +2454,85 @@ const _: () = {
                         'a: 'static,
                         X,
                         Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ__field_TupleLike,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::REPR_C_UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ__field_TupleLike,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::REPR_C_UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ__nonempty,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__nonempty) },
@@ -1587,6 +2543,7 @@ const _: () = {
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕ__nonempty,
                             { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__nonempty) },
@@ -1600,22 +2557,88 @@ const _: () = {
                         }
                     }
                 };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ__nonempty,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::REPR_C_UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__nonempty) },
+                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕ__nonempty,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::REPR_C_UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__nonempty) },
+                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
             };
             #[repr(C)]
             struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
                 tag: ___ZerocopyOuterTag,
                 variants: ___ZerocopyVariants<'a, N, X, Y>,
             }
-            unsafe impl<
-                'a: 'static,
-                const N: usize,
-                X,
-                Y: Deref,
-            > ::zerocopy::pointer::InvariantsEq<___ZerocopyRawEnum<'a, N, X, Y>>
-            for ComplexWithGenerics<'a, N, X, Y>
-            where
-                X: Deref<Target = &'a [(X, Y); N]>,
-            {}
             #[allow(
                 deprecated,
                 private_bounds,
@@ -1649,7 +2672,8 @@ const _: () = {
                         X,
                         Y: Deref,
                         const N: usize,
-                    > ::zerocopy::HasTag for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    > ::zerocopy::HasTag<::zerocopy::project_clients::TryFromBytesDerive>
+                    for ___ZerocopyRawEnum<'a, { N }, X, Y> {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Tag = ();
                         type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
@@ -1674,6 +2698,7 @@ const _: () = {
                         Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕtag,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(tag) },
@@ -1684,6 +2709,7 @@ const _: () = {
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕtag,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(tag) },
@@ -1696,41 +2722,118 @@ const _: () = {
                             }
                         }
                     }
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            Aliasing: ::zerocopy::invariant::Aliasing,
-                            Alignment: ::zerocopy::invariant::Alignment,
-                            const N: usize,
-                        > ::zerocopy::ProjectField<
-                            ẕtag,
-                            (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                            { ::zerocopy::STRUCT_VARIANT_ID },
-                            { ::zerocopy::ident_id!(tag) },
-                        > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                            type Invariants = (
-                                Aliasing,
-                                Alignment,
-                                ::zerocopy::invariant::Initialized,
-                            );
-                        }
-                    };
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕtag,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(tag) },
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕtag,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(tag) },
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕtag,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(tag) },
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
                 };
                 #[allow(
                     deprecated,
@@ -1751,6 +2854,7 @@ const _: () = {
                         Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕvariants,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
@@ -1761,6 +2865,7 @@ const _: () = {
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
+                            ::zerocopy::project_clients::TryFromBytesDerive,
                             ẕvariants,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(variants) },
@@ -1773,41 +2878,118 @@ const _: () = {
                             }
                         }
                     }
-                    #[allow(
-                        deprecated,
-                        private_bounds,
-                        non_local_definitions,
-                        non_camel_case_types,
-                        non_upper_case_globals,
-                        non_snake_case,
-                        non_ascii_idents,
-                        clippy::missing_inline_in_public_items,
-                    )]
-                    #[deny(ambiguous_associated_items)]
-                    #[automatically_derived]
-                    const _: () = {
-                        unsafe impl<
-                            'a: 'static,
-                            X,
-                            Y: Deref,
-                            Aliasing: ::zerocopy::invariant::Aliasing,
-                            Alignment: ::zerocopy::invariant::Alignment,
-                            const N: usize,
-                        > ::zerocopy::ProjectField<
-                            ẕvariants,
-                            (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
-                            { ::zerocopy::STRUCT_VARIANT_ID },
-                            { ::zerocopy::ident_id!(variants) },
-                        > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
-                            type Invariants = (
-                                Aliasing,
-                                Alignment,
-                                ::zerocopy::invariant::Initialized,
-                            );
-                        }
-                    };
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕvariants,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕvariants,
+                        (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        ),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Initialized,
+                        );
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                        ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                        const N: usize,
+                    > ::zerocopy::ProjectField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
+                        ẕvariants,
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                        type Invariants = (
+                            ___ZcAliasing,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Valid,
+                        );
+                    }
                 };
             };
             #[allow(
@@ -1823,7 +3005,12 @@ const _: () = {
             #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
-                unsafe impl<'a: 'static, X, Y: Deref, const N: usize> ::zerocopy::HasTag
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
+                    const N: usize,
+                > ::zerocopy::HasTag<::zerocopy::project_clients::TryFromBytesDerive>
                 for ComplexWithGenerics<'a, { N }, X, Y>
                 where
                     X: Deref<Target = &'a [(X, Y); N]>,
@@ -1852,6 +3039,7 @@ const _: () = {
                     Y: Deref,
                     const N: usize,
                 > ::zerocopy::HasField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(a) },
@@ -1865,6 +3053,7 @@ const _: () = {
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                     ) -> *mut <Self as ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         (),
                         { ::zerocopy::ident_id!(StructLike) },
                         { ::zerocopy::ident_id!(a) },
@@ -1874,6 +3063,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -1882,6 +3072,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_StructLike) },
@@ -1890,6 +3081,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -1898,6 +3090,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(1) },
@@ -1924,12 +3117,13 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    Aliasing: ::zerocopy::invariant::Aliasing,
-                    Alignment: ::zerocopy::invariant::Alignment,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(a) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -1939,8 +3133,47 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        Aliasing,
-                        Alignment,
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    );
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    { ::zerocopy::ident_id!(StructLike) },
+                    { ::zerocopy::ident_id!(a) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
                 }
@@ -1962,8 +3195,72 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Reference,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    { ::zerocopy::ident_id!(StructLike) },
+                    { ::zerocopy::ident_id!(a) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ();
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Valid,
+                    );
+                    #[inline(always)]
+                    fn is_projectable(
+                        tag: ::zerocopy::pointer::Ptr<
+                            '_,
+                            <Self as ::zerocopy::HasTag<
+                                ::zerocopy::project_clients::TryFromBytesDerive,
+                            >>::Tag,
+                            (
+                                ::zerocopy::invariant::Shared,
+                                ___ZcAlignment,
+                                ::zerocopy::invariant::Valid,
+                            ),
+                        >,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
+                        (),
+                        (),
+                    > {
+                        let tag = tag.read::<::zerocopy::BecauseImmutable>();
+                        if tag == ___ZerocopyTag::StructLike {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(())
+                        } else {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Err(())
+                        }
+                    }
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
                     const N: usize,
                 > ::zerocopy::HasField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(b) },
@@ -1977,6 +3274,7 @@ const _: () = {
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                     ) -> *mut <Self as ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         (),
                         { ::zerocopy::ident_id!(StructLike) },
                         { ::zerocopy::ident_id!(b) },
@@ -1986,6 +3284,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -1994,6 +3293,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_StructLike) },
@@ -2002,6 +3302,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2010,6 +3311,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(2) },
@@ -2036,12 +3338,13 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    Aliasing: ::zerocopy::invariant::Aliasing,
-                    Alignment: ::zerocopy::invariant::Alignment,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(b) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -2051,8 +3354,47 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        Aliasing,
-                        Alignment,
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    );
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    { ::zerocopy::ident_id!(StructLike) },
+                    { ::zerocopy::ident_id!(b) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
                 }
@@ -2074,8 +3416,72 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Reference,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    { ::zerocopy::ident_id!(StructLike) },
+                    { ::zerocopy::ident_id!(b) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ();
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Valid,
+                    );
+                    #[inline(always)]
+                    fn is_projectable(
+                        tag: ::zerocopy::pointer::Ptr<
+                            '_,
+                            <Self as ::zerocopy::HasTag<
+                                ::zerocopy::project_clients::TryFromBytesDerive,
+                            >>::Tag,
+                            (
+                                ::zerocopy::invariant::Shared,
+                                ___ZcAlignment,
+                                ::zerocopy::invariant::Valid,
+                            ),
+                        >,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
+                        (),
+                        (),
+                    > {
+                        let tag = tag.read::<::zerocopy::BecauseImmutable>();
+                        if tag == ___ZerocopyTag::StructLike {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(())
+                        } else {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Err(())
+                        }
+                    }
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
                     const N: usize,
                 > ::zerocopy::HasField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(c) },
@@ -2089,6 +3495,7 @@ const _: () = {
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                     ) -> *mut <Self as ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         (),
                         { ::zerocopy::ident_id!(StructLike) },
                         { ::zerocopy::ident_id!(c) },
@@ -2098,6 +3505,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2106,6 +3514,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_StructLike) },
@@ -2114,6 +3523,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2122,6 +3532,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(3) },
@@ -2148,12 +3559,13 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    Aliasing: ::zerocopy::invariant::Aliasing,
-                    Alignment: ::zerocopy::invariant::Alignment,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(c) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -2163,8 +3575,47 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        Aliasing,
-                        Alignment,
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    );
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    { ::zerocopy::ident_id!(StructLike) },
+                    { ::zerocopy::ident_id!(c) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
                 }
@@ -2186,8 +3637,72 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Reference,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    { ::zerocopy::ident_id!(StructLike) },
+                    { ::zerocopy::ident_id!(c) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ();
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Valid,
+                    );
+                    #[inline(always)]
+                    fn is_projectable(
+                        tag: ::zerocopy::pointer::Ptr<
+                            '_,
+                            <Self as ::zerocopy::HasTag<
+                                ::zerocopy::project_clients::TryFromBytesDerive,
+                            >>::Tag,
+                            (
+                                ::zerocopy::invariant::Shared,
+                                ___ZcAlignment,
+                                ::zerocopy::invariant::Valid,
+                            ),
+                        >,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
+                        (),
+                        (),
+                    > {
+                        let tag = tag.read::<::zerocopy::BecauseImmutable>();
+                        if tag == ___ZerocopyTag::StructLike {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(())
+                        } else {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Err(())
+                        }
+                    }
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
                     const N: usize,
                 > ::zerocopy::HasField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(d) },
@@ -2201,6 +3716,7 @@ const _: () = {
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                     ) -> *mut <Self as ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         (),
                         { ::zerocopy::ident_id!(StructLike) },
                         { ::zerocopy::ident_id!(d) },
@@ -2210,6 +3726,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2218,6 +3735,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_StructLike) },
@@ -2226,6 +3744,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2234,6 +3753,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(4) },
@@ -2260,12 +3780,13 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    Aliasing: ::zerocopy::invariant::Aliasing,
-                    Alignment: ::zerocopy::invariant::Alignment,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(d) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -2275,8 +3796,47 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        Aliasing,
-                        Alignment,
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    );
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    { ::zerocopy::ident_id!(StructLike) },
+                    { ::zerocopy::ident_id!(d) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
                 }
@@ -2298,8 +3858,72 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Reference,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    { ::zerocopy::ident_id!(StructLike) },
+                    { ::zerocopy::ident_id!(d) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ();
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Valid,
+                    );
+                    #[inline(always)]
+                    fn is_projectable(
+                        tag: ::zerocopy::pointer::Ptr<
+                            '_,
+                            <Self as ::zerocopy::HasTag<
+                                ::zerocopy::project_clients::TryFromBytesDerive,
+                            >>::Tag,
+                            (
+                                ::zerocopy::invariant::Shared,
+                                ___ZcAlignment,
+                                ::zerocopy::invariant::Valid,
+                            ),
+                        >,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
+                        (),
+                        (),
+                    > {
+                        let tag = tag.read::<::zerocopy::BecauseImmutable>();
+                        if tag == ___ZerocopyTag::StructLike {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(())
+                        } else {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Err(())
+                        }
+                    }
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
                     const N: usize,
                 > ::zerocopy::HasField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(e) },
@@ -2313,6 +3937,7 @@ const _: () = {
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                     ) -> *mut <Self as ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         (),
                         { ::zerocopy::ident_id!(StructLike) },
                         { ::zerocopy::ident_id!(e) },
@@ -2322,6 +3947,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2330,6 +3956,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_StructLike) },
@@ -2338,6 +3965,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2346,6 +3974,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(5) },
@@ -2372,12 +4001,13 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    Aliasing: ::zerocopy::invariant::Aliasing,
-                    Alignment: ::zerocopy::invariant::Alignment,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(e) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -2387,8 +4017,47 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        Aliasing,
-                        Alignment,
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    );
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    { ::zerocopy::ident_id!(StructLike) },
+                    { ::zerocopy::ident_id!(e) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
                 }
@@ -2410,8 +4079,72 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Reference,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    { ::zerocopy::ident_id!(StructLike) },
+                    { ::zerocopy::ident_id!(e) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ();
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Valid,
+                    );
+                    #[inline(always)]
+                    fn is_projectable(
+                        tag: ::zerocopy::pointer::Ptr<
+                            '_,
+                            <Self as ::zerocopy::HasTag<
+                                ::zerocopy::project_clients::TryFromBytesDerive,
+                            >>::Tag,
+                            (
+                                ::zerocopy::invariant::Shared,
+                                ___ZcAlignment,
+                                ::zerocopy::invariant::Valid,
+                            ),
+                        >,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
+                        (),
+                        (),
+                    > {
+                        let tag = tag.read::<::zerocopy::BecauseImmutable>();
+                        if tag == ___ZerocopyTag::StructLike {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(())
+                        } else {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Err(())
+                        }
+                    }
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
                     const N: usize,
                 > ::zerocopy::HasField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(0) },
@@ -2425,6 +4158,7 @@ const _: () = {
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                     ) -> *mut <Self as ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         (),
                         { ::zerocopy::ident_id!(TupleLike) },
                         { ::zerocopy::ident_id!(0) },
@@ -2434,6 +4168,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2442,6 +4177,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_TupleLike) },
@@ -2450,6 +4186,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2458,6 +4195,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(1) },
@@ -2484,12 +4222,13 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    Aliasing: ::zerocopy::invariant::Aliasing,
-                    Alignment: ::zerocopy::invariant::Alignment,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(0) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -2499,8 +4238,47 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        Aliasing,
-                        Alignment,
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    );
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    { ::zerocopy::ident_id!(TupleLike) },
+                    { ::zerocopy::ident_id!(0) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
                 }
@@ -2522,8 +4300,72 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Reference,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    { ::zerocopy::ident_id!(TupleLike) },
+                    { ::zerocopy::ident_id!(0) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ();
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Valid,
+                    );
+                    #[inline(always)]
+                    fn is_projectable(
+                        tag: ::zerocopy::pointer::Ptr<
+                            '_,
+                            <Self as ::zerocopy::HasTag<
+                                ::zerocopy::project_clients::TryFromBytesDerive,
+                            >>::Tag,
+                            (
+                                ::zerocopy::invariant::Shared,
+                                ___ZcAlignment,
+                                ::zerocopy::invariant::Valid,
+                            ),
+                        >,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
+                        (),
+                        (),
+                    > {
+                        let tag = tag.read::<::zerocopy::BecauseImmutable>();
+                        if tag == ___ZerocopyTag::TupleLike {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(())
+                        } else {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Err(())
+                        }
+                    }
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
                     const N: usize,
                 > ::zerocopy::HasField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(1) },
@@ -2537,6 +4379,7 @@ const _: () = {
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                     ) -> *mut <Self as ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         (),
                         { ::zerocopy::ident_id!(TupleLike) },
                         { ::zerocopy::ident_id!(1) },
@@ -2546,6 +4389,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2554,6 +4398,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_TupleLike) },
@@ -2562,6 +4407,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2570,6 +4416,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(2) },
@@ -2596,12 +4443,13 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    Aliasing: ::zerocopy::invariant::Aliasing,
-                    Alignment: ::zerocopy::invariant::Alignment,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(1) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -2611,8 +4459,47 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        Aliasing,
-                        Alignment,
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    );
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    { ::zerocopy::ident_id!(TupleLike) },
+                    { ::zerocopy::ident_id!(1) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
                 }
@@ -2634,8 +4521,72 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Reference,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    { ::zerocopy::ident_id!(TupleLike) },
+                    { ::zerocopy::ident_id!(1) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ();
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Valid,
+                    );
+                    #[inline(always)]
+                    fn is_projectable(
+                        tag: ::zerocopy::pointer::Ptr<
+                            '_,
+                            <Self as ::zerocopy::HasTag<
+                                ::zerocopy::project_clients::TryFromBytesDerive,
+                            >>::Tag,
+                            (
+                                ::zerocopy::invariant::Shared,
+                                ___ZcAlignment,
+                                ::zerocopy::invariant::Valid,
+                            ),
+                        >,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
+                        (),
+                        (),
+                    > {
+                        let tag = tag.read::<::zerocopy::BecauseImmutable>();
+                        if tag == ___ZerocopyTag::TupleLike {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(())
+                        } else {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Err(())
+                        }
+                    }
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
                     const N: usize,
                 > ::zerocopy::HasField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(2) },
@@ -2649,6 +4600,7 @@ const _: () = {
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                     ) -> *mut <Self as ::zerocopy::HasField<
+                        ::zerocopy::project_clients::TryFromBytesDerive,
                         (),
                         { ::zerocopy::ident_id!(TupleLike) },
                         { ::zerocopy::ident_id!(2) },
@@ -2658,6 +4610,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2666,6 +4619,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_TupleLike) },
@@ -2674,6 +4628,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2682,6 +4637,7 @@ const _: () = {
                             .project::<
                                 _,
                                 Projection<
+                                    ::zerocopy::project_clients::TryFromBytesDerive,
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(3) },
@@ -2708,12 +4664,13 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    Aliasing: ::zerocopy::invariant::Aliasing,
-                    Alignment: ::zerocopy::invariant::Alignment,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(2) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -2723,89 +4680,221 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        Aliasing,
-                        Alignment,
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    );
+                }
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    { ::zerocopy::ident_id!(TupleLike) },
+                    { ::zerocopy::ident_id!(2) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
                 }
             };
-            let tag = {
-                let tag_ptr = unsafe {
-                    candidate
-                        .reborrow()
-                        .project_transmute_unchecked::<
-                            _,
-                            ::zerocopy::invariant::Initialized,
-                            ::zerocopy::pointer::cast::CastSized,
-                        >()
-                };
-                tag_ptr
-                    .recall_validity::<_, (_, (_, _))>()
-                    .read::<::zerocopy::BecauseImmutable>()
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<
+                    'a: 'static,
+                    X,
+                    Y: Deref,
+                    ___ZcAliasing: ::zerocopy::invariant::Reference,
+                    ___ZcAlignment: ::zerocopy::invariant::Alignment,
+                    const N: usize,
+                > ::zerocopy::ProjectField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
+                    (),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    { ::zerocopy::ident_id!(TupleLike) },
+                    { ::zerocopy::ident_id!(2) },
+                > for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Error = ();
+                    type Invariants = (
+                        ___ZcAliasing,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Valid,
+                    );
+                    #[inline(always)]
+                    fn is_projectable(
+                        tag: ::zerocopy::pointer::Ptr<
+                            '_,
+                            <Self as ::zerocopy::HasTag<
+                                ::zerocopy::project_clients::TryFromBytesDerive,
+                            >>::Tag,
+                            (
+                                ::zerocopy::invariant::Shared,
+                                ___ZcAlignment,
+                                ::zerocopy::invariant::Valid,
+                            ),
+                        >,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
+                        (),
+                        (),
+                    > {
+                        let tag = tag.read::<::zerocopy::BecauseImmutable>();
+                        if tag == ___ZerocopyTag::TupleLike {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(())
+                        } else {
+                            ::zerocopy::util::macro_util::core_reexport::result::Result::Err(())
+                        }
+                    }
+                }
             };
-            let mut raw_enum = candidate
+            let tag = candidate
+                .reborrow()
                 .cast::<
-                    ::zerocopy::ReadOnly<___ZerocopyRawEnum<'a, N, X, Y>>,
+                    ___ZerocopyTagPrimitive,
                     ::zerocopy::pointer::cast::CastSized,
                     (::zerocopy::pointer::BecauseRead, _),
-                >();
-            let variants = ::zerocopy::into_inner!(
-                raw_enum.project:: < _, { ::zerocopy::STRUCT_VARIANT_ID }, {
-                ::zerocopy::ident_id!(variants) } > ()
-            );
+                >()
+                .recall_validity::<_, (_, (_, _))>()
+                .read::<::zerocopy::BecauseImmutable>();
             match tag {
                 ___ZEROCOPY_TAG_UnitLike => true,
                 ___ZEROCOPY_TAG_StructLike => {
-                    let variant_md = variants
-                        .cast::<
-                            _,
-                            ::zerocopy::pointer::cast::Projection<
-                                _,
-                                { ::zerocopy::REPR_C_UNION_VARIANT_ID },
-                                { ::zerocopy::ident_id!(__field_StructLike) },
-                            >,
-                            _,
-                        >();
-                    let variant = variant_md
-                        .cast::<
-                            ::zerocopy::ReadOnly<
-                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                            >,
-                            ::zerocopy::pointer::cast::CastSized,
-                            (::zerocopy::pointer::BecauseRead, _),
-                        >();
-                    <___ZerocopyVariantStruct_StructLike<
-                        'a,
-                        N,
-                        X,
-                        Y,
-                    > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
+                    true
+                        && {
+                            let field_candidate = ::zerocopy::into_inner!(
+                                candidate.reborrow().project:: <
+                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                                ::zerocopy::ident_id!(StructLike) }, {
+                                ::zerocopy::ident_id!(a) }, > ()
+                            );
+                            <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                field_candidate,
+                            )
+                        }
+                        && {
+                            let field_candidate = ::zerocopy::into_inner!(
+                                candidate.reborrow().project:: <
+                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                                ::zerocopy::ident_id!(StructLike) }, {
+                                ::zerocopy::ident_id!(b) }, > ()
+                            );
+                            <X as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                field_candidate,
+                            )
+                        }
+                        && {
+                            let field_candidate = ::zerocopy::into_inner!(
+                                candidate.reborrow().project:: <
+                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                                ::zerocopy::ident_id!(StructLike) }, {
+                                ::zerocopy::ident_id!(c) }, > ()
+                            );
+                            <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                field_candidate,
+                            )
+                        }
+                        && {
+                            let field_candidate = ::zerocopy::into_inner!(
+                                candidate.reborrow().project:: <
+                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                                ::zerocopy::ident_id!(StructLike) }, {
+                                ::zerocopy::ident_id!(d) }, > ()
+                            );
+                            <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                field_candidate,
+                            )
+                        }
+                        && {
+                            let field_candidate = ::zerocopy::into_inner!(
+                                candidate.reborrow().project:: <
+                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                                ::zerocopy::ident_id!(StructLike) }, {
+                                ::zerocopy::ident_id!(e) }, > ()
+                            );
+                            <[(
+                                X,
+                                Y,
+                            ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                field_candidate,
+                            )
+                        }
                 }
                 ___ZEROCOPY_TAG_TupleLike => {
-                    let variant_md = variants
-                        .cast::<
-                            _,
-                            ::zerocopy::pointer::cast::Projection<
-                                _,
-                                { ::zerocopy::REPR_C_UNION_VARIANT_ID },
-                                { ::zerocopy::ident_id!(__field_TupleLike) },
-                            >,
-                            _,
-                        >();
-                    let variant = variant_md
-                        .cast::<
-                            ::zerocopy::ReadOnly<
-                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                            >,
-                            ::zerocopy::pointer::cast::CastSized,
-                            (::zerocopy::pointer::BecauseRead, _),
-                        >();
-                    <___ZerocopyVariantStruct_TupleLike<
-                        'a,
-                        N,
-                        X,
-                        Y,
-                    > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
+                    true
+                        && {
+                            let field_candidate = ::zerocopy::into_inner!(
+                                candidate.reborrow().project:: <
+                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                                ::zerocopy::ident_id!(TupleLike) }, {
+                                ::zerocopy::ident_id!(0) }, > ()
+                            );
+                            <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                field_candidate,
+                            )
+                        }
+                        && {
+                            let field_candidate = ::zerocopy::into_inner!(
+                                candidate.reborrow().project:: <
+                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                                ::zerocopy::ident_id!(TupleLike) }, {
+                                ::zerocopy::ident_id!(1) }, > ()
+                            );
+                            <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                field_candidate,
+                            )
+                        }
+                        && {
+                            let field_candidate = ::zerocopy::into_inner!(
+                                candidate.reborrow().project:: <
+                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                                ::zerocopy::ident_id!(TupleLike) }, {
+                                ::zerocopy::ident_id!(2) }, > ()
+                            );
+                            <PhantomData<
+                                &'a [(X, Y); N],
+                            > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                        }
                 }
                 _ => false,
             }
