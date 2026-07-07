@@ -61,7 +61,7 @@ const _: () = {
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
         const _: () = {
-            unsafe impl ::zerocopy::HasTag for Foo {
+            unsafe impl ::zerocopy::HasTag<::zerocopy::project_clients::TryFromBytesDerive> for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 type Tag = ();
                 type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
@@ -81,6 +81,7 @@ const _: () = {
         #[automatically_derived]
         const _: () = {
             unsafe impl ::zerocopy::HasField<
+                ::zerocopy::project_clients::TryFromBytesDerive,
                 ẕa,
                 { ::zerocopy::UNION_VARIANT_ID },
                 { ::zerocopy::ident_id!(a) },
@@ -91,6 +92,7 @@ const _: () = {
                 fn project(
                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                 ) -> *mut <Self as ::zerocopy::HasField<
+                    ::zerocopy::project_clients::TryFromBytesDerive,
                     ẕa,
                     { ::zerocopy::UNION_VARIANT_ID },
                     { ::zerocopy::ident_id!(a) },

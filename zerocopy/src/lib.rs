@@ -1182,11 +1182,22 @@ pub const UNION_VARIANT_ID: i128 = -2;
 #[doc(hidden)]
 pub const REPR_C_UNION_VARIANT_ID: i128 = -3;
 
+/// Marker types used to disambiguate implementations of projection traits that
+/// would otherwise conflict.
+#[doc(hidden)]
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+pub mod project_clients {
+    pub enum TryFromBytesDerive {}
+}
+
 /// # Safety
 ///
-/// `Self::ProjectToTag` must satisfy its safety invariant.
+/// `<Self as HasTag<Client>>::ProjectToTag` must satisfy its safety invariant.
+///
+/// The `Client` parameter exists solely to disambiguate between implementations
+/// of `HasTag` that would otherwise conflict.
 #[doc(hidden)]
-pub unsafe trait HasTag {
+pub unsafe trait HasTag<Client = project_clients::TryFromBytesDerive> {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
@@ -1199,7 +1210,8 @@ pub unsafe trait HasTag {
     /// # Safety
     ///
     /// It must be the case that, for all `slf: Ptr<'_, Self, I>`, it is sound
-    /// to project from `slf` to `Ptr<'_, Self::Tag, I>` using this projection.
+    /// to project from `slf` to
+    /// `Ptr<'_, <Self as HasTag<Client>>::Tag, I>` using this projection.
     type ProjectToTag: pointer::cast::Project<Self, Self::Tag>;
 }
 
@@ -1208,6 +1220,9 @@ pub unsafe trait HasTag {
 /// All implementations of `HasField` for a particular field `f` in `Self`
 /// should use the same `Field` type; this ensures that `Field` is inferable
 /// given an explicit `VARIANT_ID` and `FIELD_ID`.
+///
+/// The `Client` parameter exists solely to disambiguate between implementations
+/// of `HasField` that would otherwise conflict.
 ///
 /// # Safety
 ///
@@ -1232,8 +1247,8 @@ pub unsafe trait HasTag {
 ///
 /// The implementation of `project` must satisfy its safety post-condition.
 #[doc(hidden)]
-pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128>:
-    HasTag
+pub unsafe trait HasField<Client, Field, const VARIANT_ID: i128, const FIELD_ID: i128>:
+    HasTag<Client>
 {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
@@ -1263,15 +1278,18 @@ pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128>:
 /// other words, it is a type-level function over invariants; `I` goes in,
 /// `Self::Invariants` comes out.
 ///
+/// The `Client` parameter exists solely to disambiguate between implementations
+/// of `HasField` that would otherwise conflict.
+///
 /// # Safety
 ///
-/// `T: ProjectField<Field, I, VARIANT_ID, FIELD_ID>` if, for a
+/// `T: ProjectField<Client, Field, I, VARIANT_ID, FIELD_ID>` if, for a
 /// `ptr: Ptr<'_, T, I>` such that `T::is_projectable(ptr).is_ok()`,
-/// `<T as HasField<Field, VARIANT_ID, FIELD_ID>>::project(ptr.as_inner())`
+/// `<T as HasField<Client, Field, VARIANT_ID, FIELD_ID>>::project(ptr.as_inner())`
 /// conforms to `T::Invariants`.
 #[doc(hidden)]
-pub unsafe trait ProjectField<Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>:
-    HasField<Field, VARIANT_ID, FIELD_ID>
+pub unsafe trait ProjectField<Client, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>:
+    HasField<Client, Field, VARIANT_ID, FIELD_ID>
 where
     I: invariant::Invariants,
 {
@@ -1297,22 +1315,24 @@ where
     /// This method must be overriden if the field's projectability depends on
     /// the value of the bytes in `ptr`.
     #[inline(always)]
-    fn is_projectable<'a>(_ptr: Ptr<'a, Self::Tag, I>) -> Result<(), Self::Error> {
+    fn is_projectable<'a>(
+        _ptr: Ptr<'a, <Self as HasTag<Client>>::Tag, I>,
+    ) -> Result<(), Self::Error> {
         trait IsInfallible {
             const IS_INFALLIBLE: bool;
         }
 
-        struct Projection<T, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>(
-            PhantomData<(Field, I, T)>,
+        struct Projection<T, Client, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>(
+            PhantomData<(Client, Field, I, T)>,
         )
         where
-            T: ?Sized + HasField<Field, VARIANT_ID, FIELD_ID>,
+            T: ?Sized + HasField<Client, Field, VARIANT_ID, FIELD_ID>,
             I: invariant::Invariants;
 
-        impl<T, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128> IsInfallible
-            for Projection<T, Field, I, VARIANT_ID, FIELD_ID>
+        impl<T, Client, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128> IsInfallible
+            for Projection<T, Client, Field, I, VARIANT_ID, FIELD_ID>
         where
-            T: ?Sized + HasField<Field, VARIANT_ID, FIELD_ID>,
+            T: ?Sized + HasField<Client, Field, VARIANT_ID, FIELD_ID>,
             I: invariant::Invariants,
         {
             const IS_INFALLIBLE: bool = {
@@ -1348,7 +1368,7 @@ where
         }
 
         const_assert!(
-            <Projection<Self, Field, I, VARIANT_ID, FIELD_ID> as IsInfallible>::IS_INFALLIBLE
+            <Projection<Self, Client, Field, I, VARIANT_ID, FIELD_ID> as IsInfallible>::IS_INFALLIBLE
         );
 
         Ok(())
