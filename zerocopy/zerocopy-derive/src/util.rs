@@ -299,15 +299,41 @@ impl PaddingCheck {
 }
 
 #[derive(Clone)]
+pub(crate) enum Client {
+    TryFromBytesDerive,
+}
+
+impl ToTokens for Client {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let s = match self {
+            Client::TryFromBytesDerive => "TryFromBytesDerive",
+        };
+        let ident = Ident::new(s, Span::call_site());
+        tokens.extend(quote!(#ident));
+    }
+}
+
+impl Client {
+    pub(crate) fn crate_path(&self, ctx: &Ctx) -> Path {
+        let zerocopy_crate = &ctx.zerocopy_crate;
+        parse_quote!(#zerocopy_crate::#self)
+    }
+}
+
+#[derive(Clone)]
 pub(crate) enum Trait {
     KnownLayout,
-    HasTag,
+    HasTag {
+        client: Client,
+    },
     HasField {
+        client: Client,
         variant_id: Box<Expr>,
         field: Box<Type>,
         field_id: Box<Expr>,
     },
     ProjectField {
+        client: Client,
         variant_id: Box<Expr>,
         field: Box<Type>,
         field_id: Box<Expr>,
@@ -340,7 +366,7 @@ impl ToTokens for Trait {
             Trait::HasField { .. } => "HasField",
             Trait::ProjectField { .. } => "ProjectField",
             Trait::KnownLayout => "KnownLayout",
-            Trait::HasTag => "HasTag",
+            Trait::HasTag { .. } => "HasTag",
             Trait::Immutable => "Immutable",
             Trait::TryFromBytes => "TryFromBytes",
             Trait::FromZeros => "FromZeros",
@@ -354,14 +380,14 @@ impl ToTokens for Trait {
         };
         let ident = Ident::new(s, Span::call_site());
         let arguments: Option<syn::AngleBracketedGenericArguments> = match self {
-            Trait::HasField { variant_id, field, field_id } => {
-                Some(parse_quote!(<#field, #variant_id, #field_id>))
+            Trait::HasTag { client } => Some(parse_quote!(<#client>)),
+            Trait::HasField { client, variant_id, field, field_id } => {
+                Some(parse_quote!(<#client, #field, #variant_id, #field_id>))
             }
-            Trait::ProjectField { variant_id, field, field_id, invariants } => {
-                Some(parse_quote!(<#field, #invariants, #variant_id, #field_id>))
+            Trait::ProjectField { client, variant_id, field, field_id, invariants } => {
+                Some(parse_quote!(<#client, #field, #invariants, #variant_id, #field_id>))
             }
             Trait::KnownLayout
-            | Trait::HasTag
             | Trait::Immutable
             | Trait::TryFromBytes
             | Trait::FromZeros
@@ -383,6 +409,26 @@ impl Trait {
         let core = ctx.core_path();
         match self {
             Self::Sized => parse_quote!(#core::marker::#self),
+            Self::HasTag { client } => {
+                let client = client.crate_path(ctx);
+                parse_quote!(#zerocopy_crate::HasTag<#client>)
+            }
+            Self::HasField { client, variant_id, field, field_id } => {
+                let client = client.crate_path(ctx);
+                parse_quote!(#zerocopy_crate::HasField<#client, #field, #variant_id, #field_id>)
+            }
+            Self::ProjectField { client, variant_id, field, field_id, invariants } => {
+                let client = client.crate_path(ctx);
+                parse_quote!(
+                    #zerocopy_crate::ProjectField<
+                        #client,
+                        #field,
+                        #invariants,
+                        #variant_id,
+                        #field_id
+                    >
+                )
+            }
             _ => parse_quote!(#zerocopy_crate::#self),
         }
     }
