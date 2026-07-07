@@ -23,10 +23,10 @@ error: type `private::_::_::_::ẕ1` is private
     |         ^ private type
 
 error: type `private::_::_::_::ẕb` is private
-   --> $DIR/privacy.rs:138:49
+   --> $DIR/privacy.rs:138:87
     |
-138 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>:...
-    |                                                 ^ private type
+138 | ...erocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
+    |                                         ^ private type
 
 error: aborting due to 3 previous errors; 1 warning emitted
 
