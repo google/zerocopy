@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783360761414,
+  "lastUpdate": 1783535530926,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22545,6 +22545,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 636,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "fbe9f186937424a3fe1245359abb4fb31c63c1fd",
+          "message": "Inline zerocopy layout helpers (#3481)\n\n* Inline zerocopy layout helpers\n\n* Inline zerocopy layout helpers",
+          "timestamp": "2026-07-08T17:48:50Z",
+          "tree_id": "1809fc2efac6a31948a297482489cc74f4fdc1f1",
+          "url": "https://github.com/google/zerocopy/commit/fbe9f186937424a3fe1245359abb4fb31c63c1fd"
+        },
+        "date": 1783535529433,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 435,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 577,
             "unit": "seconds"
           }
         ]
