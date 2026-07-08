@@ -150,6 +150,7 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
     // Ensures that we add the minimum required padding.
     kani::ensures(|&p| p < align.get()),
 )]
+#[inline]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
 pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
     #[cfg(kani)]
@@ -252,6 +253,7 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
     n & mask
 }
 
+#[inline]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
 pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     if a.get() < b.get() {
@@ -261,6 +263,7 @@ pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     }
 }
 
+#[inline]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
 pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     if a.get() > b.get() {
