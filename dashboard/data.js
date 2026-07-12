@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783545811090,
+  "lastUpdate": 1783840617994,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22613,6 +22613,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 705,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "jswrenn@amazon.com",
+            "name": "Jack Wrenn",
+            "username": "jswrenn"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9fa46da91bd95e4f57e151082082044a41983ee8",
+          "message": "Make `ByteOrder::ORDER` and `Order` public; release 0.8.54 (#3475)\n\ngherrit-pr-id: Gd9e350a7c6d7eef44a2d2f32e00a2325b6413f7c",
+          "timestamp": "2026-07-12T06:32:21Z",
+          "tree_id": "c0ba7d652bbdd78fe5b966d7acb0488c6945274f",
+          "url": "https://github.com/google/zerocopy/commit/9fa46da91bd95e4f57e151082082044a41983ee8"
+        },
+        "date": 1783840616772,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 446,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 603,
             "unit": "seconds"
           }
         ]
