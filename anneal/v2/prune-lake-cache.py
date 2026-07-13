@@ -156,7 +156,8 @@ def prune_package(pkg_dir: Path, mathlib_closure: set[str] | None) -> None:
     print(f"Pruning package at: {pkg_dir}")
     traces_dir = pkg_dir / ".lake" / "build" / "lib" / "lean"
     if not traces_dir.exists():
-        print(f"No build traces found for {pkg_dir}, skipping pruning.")
+        print(f"No build traces found for {pkg_dir}; pruning package metadata only.")
+        remove_package_metadata(pkg_dir)
         return
 
     all_lean_files = []
