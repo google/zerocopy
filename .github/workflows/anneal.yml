@@ -63,7 +63,7 @@ jobs:
           bash anneal/tools/check-release-flow-dry-run.sh
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@629b284231c2a82554b724e357e47fc6020833c8 # v3.21.2
+        uses: DeterminateSystems/determinate-nix-action@c70cb8ae92d68c66953db28a26a63db1665bc837 # v3.21.5
 
       - name: Check V2 flake evaluation
         run: bash anneal/v2/check-flake-eval.sh
@@ -299,7 +299,7 @@ jobs:
           key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/v2/flake.nix', 'anneal/v2/flake.lock', 'anneal/v2/rewrite-lake-vendor.py', 'anneal/v2/prune-lake-cache.py') }}
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@629b284231c2a82554b724e357e47fc6020833c8 # v3.21.2
+        uses: DeterminateSystems/determinate-nix-action@c70cb8ae92d68c66953db28a26a63db1665bc837 # v3.21.5
 
       # On Ubuntu 24.04 (currently `ubuntu-latest`), AppArmor restricts unprivileged user namespaces by default.
       # The Nix build sandbox runs `steam-run` (which uses `bubblewrap`/`bwrap`) during the `mathlib-cache-download`
