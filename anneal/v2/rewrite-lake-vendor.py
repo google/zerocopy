@@ -34,7 +34,13 @@ def package_dirs(packages_dir: Path) -> dict[str, Path]:
 
 def replace_require_toml_blocks(path: Path, packages: dict[str, Path]) -> bool:
     content = path.read_text()
-    block_re = re.compile(r"(?ms)^\s*\[\[require\]\]\s*\n(?:(?!^\s*\[\[).*\n?)*")
+    # Match one TOML array-table block line by line. Using DOTALL here makes
+    # `.*` consume later `[[lean_lib]]` and other array tables, silently
+    # deleting package targets when the require block is replaced.
+    block_re = re.compile(
+        r"(?m)^[ \t]*\[\[require\]\][ \t]*\r?\n"
+        r"(?:(?!^[ \t]*\[)[^\r\n]*(?:\r?\n|\Z))*"
+    )
 
     changed = False
 
@@ -151,7 +157,7 @@ def rewrite_trace_prefixes(
     prefixes = trace_prefixes(root, packages_dir, packages, extra_prefixes)
     package_root_patterns = [
         re.compile(
-            rf"(?<![A-Za-z0-9_.-])(?:/[^\s\"':]+)+/(?:packages|\.lake/packages)/{re.escape(name)}/"
+            rf"(?<![A-Za-z0-9_.-])\/[^\s\"':]*/(?:packages|\.lake/packages)/{re.escape(name)}/"
         )
         for name in packages
     ]
@@ -161,8 +167,14 @@ def rewrite_trace_prefixes(
         # `/var/lib/.../dist_staging/backends/lean/...`. Those paths are not
         # known to Nix, so strip any absolute package-root prefix ending in the
         # Aeneas Lean backend layout.
-        re.compile(r"(?<![A-Za-z0-9_.-])(?:/[^/\s\"':]+)+/backends/lean/")
+        re.compile(r"(?<![A-Za-z0-9_.-])\/[^\s\"':]*/backends/lean/")
     ]
+    lean_executable_pattern = re.compile(
+        r"(?<![A-Za-z0-9_.-])\/[^\s\"']*/bin/lean(?=[\s\"']|$)"
+    )
+    proofwidgets_root_pattern = re.compile(
+        r"(?<![A-Za-z0-9_.-])\/[^\s\"':]*/widget(?=[/\s\"'>]|$)"
+    )
     count = 0
 
     for trace in [*root.rglob("*.trace"), *(t for p in packages.values() for t in p.rglob("*.trace"))]:
@@ -183,6 +195,12 @@ def rewrite_trace_prefixes(
             new_content = pattern.sub("", new_content)
         for pattern in root_package_patterns:
             new_content = pattern.sub("", new_content)
+        # Release artifacts can be produced outside Nix. Normalize the Lean
+        # executable and ProofWidgets working directory even when their full
+        # upstream prefixes are not known to this derivation.
+        new_content = lean_executable_pattern.sub("lean/bin/lean", new_content)
+        if "proofwidgets/widget/" in trace.as_posix():
+            new_content = proofwidgets_root_pattern.sub("widget", new_content)
         if new_content != content:
             trace.write_text(new_content)
             count += 1
