@@ -302,6 +302,12 @@
           dontPatchELF = true;
           dontStrip = true;
 
+          # This fixed-output fetch must preserve cached native artifacts
+          # exactly; Darwin's generic fixup hook would rewrite them.
+          preFixup = pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
+            fixDarwinDylibNamesIn() { :; }
+          '';
+
           outputHashMode = "recursive";
           outputHashAlgo = "sha256";
           outputHash = mathlibCacheDownloadSha256;
@@ -387,9 +393,15 @@
         };
 
         # Builds the Aeneas Lean backend against vendored, relative Lake paths.
-        packages.aeneas-compiled = pkgs.stdenv.mkDerivation {
+        packages.aeneas-compiled = pkgs.stdenv.mkDerivation ({
           pname = "aeneas-compiled";
           version = "0.1.0";
+
+          # Lake records content hashes for its native artifacts. Preserve
+          # those bytes after the final trace refresh; runtime binaries are
+          # normalized later when the omnibus archive is staged.
+          dontPatchELF = true;
+          dontStrip = true;
 
           src = pkgs.runCommand "empty-src" {} "mkdir $out";
 
@@ -446,31 +458,24 @@
             "test -f ../../packages/batteries/.lake/build/lib/lean/Batteries/Data/Array/Merge.olean"
             (runLeanCommand "lake --old build")
             "test -f ../../packages/batteries/.lake/build/lib/lean/Batteries/Data/Array/Merge.olean"
-            # FIXME: Remove this v1-only package config primer once generated
+            # FIXME: Remove this v1-only workspace primer once generated
             # workspaces migrate to v2.
             # Anneal v1 generated workspaces require this package directly
-            # from the installed archive. Prime the package config that Lake
-            # needs in that dependency context before the archive is frozen.
+            # from the installed archive. Prime both the named package config
+            # and hash-mode build traces that `lake setup-file` needs in that
+            # dependency context before the archive is frozen.
             "mkdir -p $TMPDIR/aeneas-config-primer/generated"
             "cp lean-toolchain $TMPDIR/aeneas-config-primer/lean-toolchain"
             "cat > $TMPDIR/aeneas-config-primer/generated/Generated.lean <<'EOF'"
             "import Aeneas"
             "EOF"
-            "cat > $TMPDIR/aeneas-config-primer/lakefile.lean <<'EOF'"
-            "import Lake"
-            "open Lake DSL"
-            ""
-            "require aeneas from \"@AENEAS_ROOT@\""
-            ""
-            "package anneal_verification"
-            ""
-            "@[default_target]"
-            "lean_lib «Generated» where"
-            "  srcDir := \"generated\""
-            "  roots := #[`Generated]"
-            "EOF"
+            "cp ${./prime-lakefile.lean} $TMPDIR/aeneas-config-primer/lakefile.lean"
+            "chmod +w $TMPDIR/aeneas-config-primer/lakefile.lean"
             "substituteInPlace $TMPDIR/aeneas-config-primer/lakefile.lean --replace-fail @AENEAS_ROOT@ \"$PWD\""
-            "(cd $TMPDIR/aeneas-config-primer && ${runLeanCommand "lake --old build Generated"})"
+            # `refreshLakeTraces` runs the same setup graph as Lean's language
+            # server once in old mode, computes real artifact hashes, and only
+            # publishes all exact hash-mode module traces after it succeeds.
+            "(cd $TMPDIR/aeneas-config-primer && ${runLeanCommand "lake run Anneal.refreshLakeTraces generated/Generated.lean"})"
             "test -f .lake/config/aeneas/lakefile.olean"
             "python3 ${./rewrite-lake-vendor.py} --root . --packages-dir ../../packages --rewrite-traces --trace-prefix \"$leanToolchain=lean\""
             "TRACE_ABS_RE='(^|[\"[:space:]=:])/(nix/store|build|private/tmp/nix-build|ANNEAL_PLACEHOLDER_ROOT)'"
@@ -481,6 +486,15 @@
             "fi"
             # Prune unused Lean modules and bulky upstream metadata.
             "python3 ${./prune-lake-cache.py} --project-root . --packages-root ../../packages"
+            # This is an assertion, not another refresh round: the ordinary
+            # hash-mode command used by Lean InfoView must accept the finished
+            # package tree without writing any repair metadata.
+            "chmod -R a-w . ../../packages"
+            "(cd $TMPDIR/aeneas-config-primer && ${runLeanCommand "lake setup-file generated/Generated.lean --no-build --no-cache --quiet >/dev/null"})"
+            "if find . ../../packages -type f -name \"*.trace.nobuild\" -print -quit | grep -q .; then"
+            "  echo \"ERROR: Lake setup-file left no-build repair traces behind\" >&2"
+            "  exit 1"
+            "fi"
             "cd ../.."
             "mkdir -p $out/backends $out/packages"
             "cp -r backends/lean $out/backends/"
@@ -488,7 +502,13 @@
             "mkdir -p $out/bin"
             "cp \$(find $aeneasUnpacked -maxdepth 1 -type f -executable) $out/bin/"
           ];
-        };
+        } // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+          # nixpkgs' Darwin fixup hook otherwise rewrites every cached
+          # `.dylib`/`.so` after Lake records its content hash.
+          preFixup = ''
+            fixDarwinDylibNamesIn() { :; }
+          '';
+        });
 
         # Stages the relocatable toolchain bundle before compression.
         packages.omnibus-tar = pkgs.stdenv.mkDerivation {
@@ -523,7 +543,11 @@
           ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
             # Remove Nix dynamic-linker and RPATH references from ELF binaries.
             "echo \"Cleaning up Nix store references...\""
-            "find $TMPDIR/dist_staging -type f -executable | while read -r file; do"
+            # Cached Lake artifacts were hashed by `aeneas-compiled`; mutating
+            # them here would make the read-only archive fail hash-mode IDE
+            # setup. They are already relocatable, so normalize only runtime
+            # and toolchain executables.
+            "find $TMPDIR/dist_staging -type f -executable ! -path \"$TMPDIR/dist_staging/aeneas/*/.lake/*\" | while read -r file; do"
             "  if file \"\$file\" | grep -q \"ELF 64-bit\"; then"
             "    echo \"Patching and stripping \$file...\""
             "    if patchelf --print-interpreter \"\$file\" >/dev/null 2>&1; then"
