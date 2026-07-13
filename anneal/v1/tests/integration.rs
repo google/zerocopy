@@ -259,35 +259,46 @@ fn get_toolchain_base_dir() -> PathBuf {
 fn get_toolchain_install_dir() -> PathBuf {
     TOOLCHAIN_INSTALL_DIR
         .get_or_init(|| {
-            let dir = get_toolchain_base_dir()
-                .join("anneal")
-                .join("toolchain")
-                .join(env!("ANNEAL_EXOCRATE_VERSION_SLUG"));
-            if !dir.exists() {
-                panic!(
-                    "Anneal toolchain is not installed at {}. Run `cargo run setup \
-                     --local-archive ...` once before running integration tests.",
-                    dir.display()
-                );
-            }
-
-            for path in [
-                dir.join("aeneas/bin/charon"),
-                dir.join("aeneas/bin/aeneas"),
-                dir.join("lean/bin/lake"),
-            ] {
-                if !path.exists() {
+            validate_toolchain_install_dir(&get_toolchain_base_dir(), "ANNEAL_TOOLCHAIN_DIR")
+                .unwrap_or_else(|error| {
                     panic!(
-                        "Anneal toolchain installation is missing {}. Re-run `cargo run setup \
-                         --local-archive ...` before running integration tests.",
-                        path.display()
-                    );
-                }
-            }
-
-            dir
+                        "{error}. Run `cargo run setup --local-archive ...` once before running \
+                         integration tests."
+                    )
+                })
         })
         .clone()
+}
+
+fn validate_toolchain_install_dir(
+    toolchain_base_dir: &Path,
+    environment_variable: &str,
+) -> Result<PathBuf, Box<dyn std::error::Error>> {
+    let dir = toolchain_base_dir
+        .join("anneal")
+        .join("toolchain")
+        .join(env!("ANNEAL_EXOCRATE_VERSION_SLUG"));
+    if !dir.exists() {
+        return Err(invalid_data(format!(
+            "{environment_variable} has no Anneal toolchain installed at {}",
+            dir.display()
+        ))
+        .into());
+    }
+
+    for path in
+        [dir.join("aeneas/bin/charon"), dir.join("aeneas/bin/aeneas"), dir.join("lean/bin/lake")]
+    {
+        if !path.exists() {
+            return Err(invalid_data(format!(
+                "{environment_variable} installation is missing {}",
+                path.display()
+            ))
+            .into());
+        }
+    }
+
+    Ok(dir)
 }
 
 fn get_toolchain_bin_dir() -> PathBuf {
@@ -300,14 +311,51 @@ fn run_archive_lake_cache_reuse_test(test_name: &str) -> datatest_stable::Result
     let temp = tempfile::Builder::new()
         .prefix("anneal-archive-cache-reuse-")
         .tempdir_in(get_target_dir())?;
-    assert_archive_lake_cache_reuse(test_name, &get_toolchain_install_dir(), temp.path())
+    let primary_toolchain = get_toolchain_install_dir();
+    let reference_toolchain =
+        if let Some(reference_base_dir) = std::env::var_os("ANNEAL_REFERENCE_TOOLCHAIN_DIR") {
+            let reference_toolchain = validate_toolchain_install_dir(
+                Path::new(&reference_base_dir),
+                "ANNEAL_REFERENCE_TOOLCHAIN_DIR",
+            )?;
+            let primary_canonical = fs::canonicalize(&primary_toolchain)?;
+            let reference_canonical = fs::canonicalize(&reference_toolchain)?;
+            if primary_canonical == reference_canonical {
+                return Err(invalid_data(format!(
+                    "ANNEAL_TOOLCHAIN_DIR and ANNEAL_REFERENCE_TOOLCHAIN_DIR resolve to the same \
+                     installed toolchain: {}",
+                    primary_canonical.display()
+                ))
+                .into());
+            }
+            Some(reference_toolchain)
+        } else {
+            None
+        };
+
+    let setup = assert_archive_lake_cache_reuse(test_name, &primary_toolchain, temp.path())?;
+    let Some(reference_toolchain) = reference_toolchain else { return Ok(()) };
+    let reference_setup = assert_archive_lake_cache_reuse(
+        test_name,
+        &reference_toolchain,
+        &temp.path().join("reference"),
+    )?;
+    if setup != reference_setup {
+        return Err(invalid_data(format!(
+            "Lake setup-file output differs between ANNEAL_TOOLCHAIN_DIR and \
+             ANNEAL_REFERENCE_TOOLCHAIN_DIR:\nprimary: {setup:#?}\nreference: {reference_setup:#?}"
+        ))
+        .into());
+    }
+
+    Ok(())
 }
 
 fn assert_archive_lake_cache_reuse(
     test_name: &str,
     toolchain_root: &Path,
     temp_root: &Path,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<Value, Box<dyn std::error::Error>> {
     let aeneas_root = toolchain_root.join("aeneas");
     let aeneas_lean = aeneas_root.join("backends/lean");
     let lean_root = toolchain_root.join("lean");
@@ -341,7 +389,7 @@ lean_lib Generated where
     // This is the workspace-loading path used by the Lean language server and
     // IDE InfoView on first open. `setup-file` checks dependency traces in hash
     // mode and is not allowed to repair the read-only archive.
-    run_lake_archive_setup_file(test_name, &workspace, toolchain_root, &lean_root)?;
+    let setup = run_lake_archive_setup_file(test_name, &workspace, toolchain_root, &lean_root)?;
     // This mirrors v1's generated workspace contract with the Nix-built
     // archive: dependency paths are locked relative to the workspace, package
     // caches are read-only, and `--old` must reuse the prebuilt Lake outputs.
@@ -365,7 +413,7 @@ lean_lib Generated where
         ],
     )?;
 
-    Ok(())
+    Ok(setup)
 }
 
 fn assert_no_write_bits(root: &Path) -> Result<(), Box<dyn std::error::Error>> {
@@ -485,7 +533,7 @@ fn run_lake_archive_setup_file(
     workspace: &Path,
     toolchain_root: &Path,
     lean_root: &Path,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<Value, Box<dyn std::error::Error>> {
     let cmd = lake_archive_command(
         workspace,
         lean_root,
@@ -516,7 +564,7 @@ fn run_lake_archive_setup_file(
         Some(input.as_bytes()),
     )?;
     let assert = run.assert.success();
-    let setup: Value = serde_json::from_slice(&assert.get_output().stdout)?;
+    let mut setup: Value = serde_json::from_slice(&assert.get_output().stdout)?;
     let import_arts = setup
         .get("importArts")
         .and_then(Value::as_object)
@@ -524,37 +572,70 @@ fn run_lake_archive_setup_file(
     if !import_arts.contains_key("Aeneas") {
         return Err(invalid_data("Lake setup-file output has no Aeneas import artifact").into());
     }
-    for (module, artifacts) in import_arts {
-        let artifacts = artifacts.as_array().ok_or_else(|| {
-            invalid_data(format!("Lake setup-file artifacts for {module} are not an array"))
-        })?;
-        for artifact in artifacts {
-            let artifact = artifact.as_str().ok_or_else(|| {
-                invalid_data(format!("Lake setup-file artifact for {module} is not a path"))
-            })?;
-            validate_setup_artifact(toolchain_root, artifact)?;
+    for field in ["dynlibs", "plugins"] {
+        if !setup.get(field).is_some_and(Value::is_array) {
+            return Err(invalid_data(format!("Lake setup-file output has no {field} array")).into());
         }
     }
-    for field in ["dynlibs", "plugins"] {
-        let artifacts = setup
-            .get(field)
-            .and_then(Value::as_array)
-            .ok_or_else(|| invalid_data(format!("Lake setup-file output has no {field} array")))?;
-        for artifact in artifacts {
-            let artifact = artifact.as_str().ok_or_else(|| {
-                invalid_data(format!("Lake setup-file {field} entry is not a path"))
-            })?;
-            validate_setup_artifact(toolchain_root, artifact)?;
-        }
+
+    let toolchain_root = fs::canonicalize(toolchain_root)?;
+    for field in ["importArts", "dynlibs", "plugins"] {
+        normalize_setup_path_field(
+            setup.get_mut(field).expect("validated Lake setup-file field is missing"),
+            field,
+            &toolchain_root,
+        )?;
     }
     fs::write(workspace.join("lean-server-setup.json"), &assert.get_output().stdout)?;
+    Ok(setup)
+}
+
+fn normalize_setup_path_field(
+    value: &mut Value,
+    field_path: &str,
+    toolchain_root: &Path,
+) -> Result<(), Box<dyn std::error::Error>> {
+    match value {
+        Value::String(artifact) => {
+            let normalized = normalize_setup_artifact(toolchain_root, artifact)?;
+            *artifact = normalized
+                .to_str()
+                .ok_or_else(|| {
+                    invalid_data(format!(
+                        "Lake setup-file artifact at {field_path} is not valid UTF-8: {}",
+                        normalized.display()
+                    ))
+                })?
+                .to_owned();
+        }
+        Value::Array(values) => {
+            for (index, value) in values.iter_mut().enumerate() {
+                normalize_setup_path_field(
+                    value,
+                    &format!("{field_path}[{index}]"),
+                    toolchain_root,
+                )?;
+            }
+        }
+        Value::Object(values) => {
+            for (key, value) in values {
+                normalize_setup_path_field(value, &format!("{field_path}.{key}"), toolchain_root)?;
+            }
+        }
+        _ => {
+            return Err(invalid_data(format!(
+                "Lake setup-file path field {field_path} contains a non-path value"
+            ))
+            .into());
+        }
+    }
     Ok(())
 }
 
-fn validate_setup_artifact(
+fn normalize_setup_artifact(
     toolchain_root: &Path,
     artifact: &str,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<PathBuf, Box<dyn std::error::Error>> {
     let artifact = Path::new(artifact);
     if !artifact.is_file() {
         return Err(invalid_data(format!(
@@ -564,7 +645,6 @@ fn validate_setup_artifact(
         .into());
     }
     let artifact = fs::canonicalize(artifact)?;
-    let toolchain_root = fs::canonicalize(toolchain_root)?;
     if !artifact.starts_with(&toolchain_root) {
         return Err(invalid_data(format!(
             "Lake setup-file returned an artifact outside the installed toolchain: {}",
@@ -572,7 +652,7 @@ fn validate_setup_artifact(
         ))
         .into());
     }
-    Ok(())
+    Ok(artifact.strip_prefix(toolchain_root)?.to_path_buf())
 }
 
 fn lake_archive_command(
@@ -581,10 +661,52 @@ fn lake_archive_command(
     args: &[&str],
 ) -> Result<process::Command, Box<dyn std::error::Error>> {
     let lean_bin = lean_root.join("bin");
+    let isolated_home = workspace.join(".anneal-test-home");
+    let isolated_xdg = workspace.join(".anneal-test-xdg");
+    let isolated_lake_cache = isolated_xdg.join("cache/lake");
+    for directory in [
+        &isolated_home,
+        &isolated_xdg.join("cache"),
+        &isolated_xdg.join("config"),
+        &isolated_xdg.join("data"),
+        &isolated_xdg.join("state"),
+        &isolated_lake_cache,
+    ] {
+        fs::create_dir_all(directory)?;
+    }
+
     let mut cmd = process::Command::new(lean_bin.join("lake"));
-    cmd.args(args)
-        .current_dir(workspace)
-        .env_remove("CI")
+    cmd.args(args).current_dir(workspace).env_remove("CI");
+    for variable in [
+        "LAKE_ARTIFACT_CACHE",
+        "LAKE_CACHE_ARTIFACT_ENDPOINT",
+        "LAKE_CACHE_DIR",
+        "LAKE_CACHE_KEY",
+        "LAKE_CACHE_REVISION_ENDPOINT",
+        "LAKE_CACHE_SERVICE",
+        "LAKE_CONFIG",
+        "LAKE_HOME",
+        "LAKE_INVALID_CONFIG",
+        "LAKE_NO_CACHE",
+        "LAKE_OVERRIDE_LEAN",
+        "LAKE_PKG_URL_MAP",
+        "LEAN_AR",
+        "LEAN_CC",
+        "LEAN_GITHASH",
+        "LEAN_MANUAL_ROOT",
+        "LEAN_PATH",
+        "LEAN_SRC_PATH",
+        "LEAN_SYSROOT",
+        "LEAN_WORKER_PATH",
+    ] {
+        cmd.env_remove(variable);
+    }
+    cmd.env("HOME", isolated_home)
+        .env("XDG_CACHE_HOME", isolated_xdg.join("cache"))
+        .env("XDG_CONFIG_HOME", isolated_xdg.join("config"))
+        .env("XDG_DATA_HOME", isolated_xdg.join("data"))
+        .env("XDG_STATE_HOME", isolated_xdg.join("state"))
+        .env("LAKE_CACHE_DIR", isolated_lake_cache)
         .env("LEAN_SYSROOT", lean_root)
         .env("MATHLIB_NO_CACHE_ON_UPDATE", "1")
         .env("PATH", prepend_env_paths("PATH", &[lean_bin])?);

@@ -105,6 +105,20 @@ class PruneLakeCacheTests(unittest.TestCase):
             self.assertTrue((package / ".lake" / "build" / "lib" / "lean" / "Aesop" / "Unused.olean").is_file())
             self.assertFalse((package / "docs").exists())
 
+    def test_prunes_metadata_without_build_traces(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            package = Path(tmp) / "Cli"
+
+            write(package / "Cli" / "Basic.lean")
+            write(package / "README.md", "unused package metadata\n")
+            write(package / ".github" / "workflows" / "ci.yml", "name: unused\n")
+
+            prune_lake_cache.prune_package(package, mathlib_closure=set())
+
+            self.assertTrue((package / "Cli" / "Basic.lean").is_file())
+            self.assertFalse((package / "README.md").exists())
+            self.assertFalse((package / ".github").exists())
+
 
 if __name__ == "__main__":
     unittest.main()
