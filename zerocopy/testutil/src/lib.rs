@@ -148,12 +148,22 @@ impl UiTestRunner {
         command.env_remove("CARGO_ENCODED_RUSTFLAGS");
         command.env_remove("CARGO_ENCODED_RUSTDOCFLAGS");
 
+        // With an explicit `--target`, Cargo does not pass `RUSTFLAGS` to host
+        // artifacts such as proc macros. Use a feature to enable the nightly
+        // test helper so that it is enabled in the host `zerocopy-derive`
+        // artifact as well.
+        let features = if matches!(&self.toolchain, ToolchainVersion::PinnedNightly) {
+            "derive,zerocopy-derive/__internal_use_only_nightly_features_in_tests"
+        } else {
+            "derive"
+        };
+
         let mut args = vec![
             "build",
             "-p",
             "zerocopy",
             "--features",
-            "derive",
+            features,
             "--tests",
             "--message-format=json",
         ];

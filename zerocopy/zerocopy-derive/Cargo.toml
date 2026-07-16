@@ -25,12 +25,19 @@ exclude = [".*", "tests/enum_from_bytes.rs", "tests/ui-nightly/enum_from_bytes_u
 [lints.rust]
 # See #1792 for more context.
 unexpected_cfgs = { level = "warn", check-cfg = [
+  'cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)',
   'cfg(zerocopy_derive_union_into_bytes)',
   'cfg(zerocopy_unstable_linux)',
 ] }
 
 [lib]
 proc-macro = true
+
+[features]
+# Enables a nightly-only proc macro used by UI tests. This must be a Cargo
+# feature rather than a cfg in `RUSTFLAGS`: with an explicit `--target`, Cargo
+# does not pass `RUSTFLAGS` to host-built proc macros.
+__internal_use_only_nightly_features_in_tests = []
 
 [dependencies]
 proc-macro2 = "1.0.1"
