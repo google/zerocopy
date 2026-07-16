@@ -50,33 +50,33 @@ jobs:
           set -euo pipefail
           export PYTHONDONTWRITEBYTECODE=1
           python3 -m py_compile \
-            anneal/tools/check-release-pr-files.py \
-            anneal/tools/test_exocrate_metadata_helpers.py \
-            anneal/tools/test_release_pr_files.py \
-            anneal/tools/collect-release-archive-metadata.py \
-            anneal/tools/update-exocrate-metadata.py \
-            anneal/v2/tests/test_prune_lake_cache.py \
-            anneal/v2/prune-lake-cache.py \
-            anneal/v2/rewrite-lake-vendor.py
-          python3 -m unittest discover -s anneal/tools -p 'test_*.py'
-          python3 -m unittest discover -s anneal/v2/tests -p 'test_*.py'
-          bash anneal/tools/check-release-flow-dry-run.sh
+            anneal/v1/tools/check-release-pr-files.py \
+            anneal/v1/tools/test_exocrate_metadata_helpers.py \
+            anneal/v1/tools/test_release_pr_files.py \
+            anneal/v1/tools/collect-release-archive-metadata.py \
+            anneal/v1/tools/update-exocrate-metadata.py \
+            anneal/tests/test_prune_lake_cache.py \
+            anneal/prune-lake-cache.py \
+            anneal/rewrite-lake-vendor.py
+          python3 -m unittest discover -s anneal/v1/tools -p 'test_*.py'
+          python3 -m unittest discover -s anneal/tests -p 'test_*.py'
+          bash anneal/v1/tools/check-release-flow-dry-run.sh
 
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@c70cb8ae92d68c66953db28a26a63db1665bc837 # v3.21.5
 
       - name: Check V2 flake evaluation
-        run: bash anneal/v2/check-flake-eval.sh
+        run: bash anneal/check-flake-eval.sh
 
   anneal_tests:
-    name: Anneal Tests
+    name: Anneal V1 Tests
     runs-on: ubuntu-latest
     needs: v2_nix_cache
     permissions:
       actions: read # Required to download the toolchain artifact.
       contents: write # Required to push benchmark data to the storage branch
     env:
-      ANNEAL_TOOLCHAIN_DIR: ${{ github.workspace }}/anneal/target/anneal-toolchain
+      ANNEAL_TOOLCHAIN_DIR: ${{ github.workspace }}/anneal/v1/target/anneal-toolchain
       __ZEROCOPY_LOCAL_DEV: 1
       RUSTFLAGS: ""
       RUSTDOCFLAGS: ""
@@ -99,16 +99,16 @@ jobs:
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: anneal-exocrate.tar.zst
-          path: anneal/v2/target
+          path: anneal/target
 
       # Ensure `llms-full.txt` file is up-to-date.
       - name: Check doc generation
         run: cargo run -p doc_gen -- --check
-        working-directory: anneal
+        working-directory: anneal/v1
 
       - name: Install Anneal toolchain archive
-        run: cargo run setup --local-archive v2/target/anneal-exocrate.tar.zst
-        working-directory: anneal
+        run: cargo run setup --local-archive ../target/anneal-exocrate.tar.zst
+        working-directory: anneal/v1
 
       # Run unit tests separately, as they're much less likely to have bugs
       # during local development, and this makes the GitHub Actions output
@@ -116,7 +116,7 @@ jobs:
       # is due to unit or integration tests).
       - name: Run unit tests
         run: cargo test --verbose --bin cargo-anneal
-        working-directory: anneal
+        working-directory: anneal/v1
 
       # We duplicate running unit tests since they're very cheap compared to
       # integration tests, and this way it's easier to be sure that we run all
@@ -130,7 +130,7 @@ jobs:
           duration=$((end - start))
           echo "Test Time: $duration seconds"
           echo "[{\"name\": \"Test Time\", \"unit\": \"seconds\", \"value\": $duration}]" > test_time.json
-        working-directory: anneal
+        working-directory: anneal/v1
 
       - name: Combine benchmarks
         env:
@@ -141,7 +141,7 @@ jobs:
           echo "[{\"name\": \"Total CI Duration (All Steps)\", \"unit\": \"seconds\", \"value\": $total_duration}]" > total_time.json
 
           jq -n \
-            --slurpfile test anneal/test_time.json \
+            --slurpfile test anneal/v1/test_time.json \
             --slurpfile total total_time.json \
             '[
               $test[0][0],
@@ -167,14 +167,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   verify_examples:
-    name: Verify example (${{ matrix.example }})
+    name: Verify V1 example (${{ matrix.example }})
     runs-on: ubuntu-latest
     needs: v2_nix_cache
     permissions:
       actions: read # Required to download the toolchain artifact.
       contents: read
     env:
-      ANNEAL_TOOLCHAIN_DIR: ${{ github.workspace }}/anneal/target/anneal-toolchain
+      ANNEAL_TOOLCHAIN_DIR: ${{ github.workspace }}/anneal/v1/target/anneal-toolchain
       __ZEROCOPY_LOCAL_DEV: 1
       RUSTFLAGS: ""
       RUSTDOCFLAGS: ""
@@ -215,11 +215,11 @@ jobs:
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: anneal-exocrate.tar.zst
-          path: anneal/v2/target
+          path: anneal/target
 
       - name: Install Anneal toolchain archive
-        run: cargo run setup --local-archive v2/target/anneal-exocrate.tar.zst
-        working-directory: anneal
+        run: cargo run setup --local-archive ../target/anneal-exocrate.tar.zst
+        working-directory: anneal/v1
 
       - name: Verify example
         env:
@@ -253,7 +253,7 @@ jobs:
               exit 1
             fi
           fi
-        working-directory: anneal
+        working-directory: anneal/v1
 
   # Build the Nix-produced toolchain archive once and fan out the exact archive
   # as a workflow artifact. This avoids forcing every downstream matrix runner
@@ -283,8 +283,8 @@ jobs:
         id: restore_anneal_main_nix_cache
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: anneal/v2/target/nix-cache-main
-          key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/v2/flake.nix', 'anneal/v2/flake.lock', 'anneal/v2/rewrite-lake-vendor.py', 'anneal/v2/prune-lake-cache.py') }}
+          path: anneal/target/nix-cache-main
+          key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py') }}
 
       # Pull request caches are scoped by GitHub to the PR merge ref, so they
       # can speed up repeated pushes to the same PR without becoming visible to
@@ -295,8 +295,8 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: anneal/v2/target/nix-cache-pr
-          key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/v2/flake.nix', 'anneal/v2/flake.lock', 'anneal/v2/rewrite-lake-vendor.py', 'anneal/v2/prune-lake-cache.py') }}
+          path: anneal/target/nix-cache-pr
+          key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py') }}
 
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@c70cb8ae92d68c66953db28a26a63db1665bc837 # v3.21.5
@@ -336,7 +336,7 @@ jobs:
             exit 1
           fi
           nix build "${nix_args[@]}" .#omnibus-archive-layout-check --no-link
-        working-directory: anneal/v2
+        working-directory: anneal
 
       # Re-enable the AppArmor namespace restriction to restore the runner host's default security posture.
       # `if: always()` ensures this cleanup step runs even if the Nix build fails.
@@ -358,13 +358,13 @@ jobs:
           # wrapper cheap; higher levels add CPU time for negligible size wins.
           nix copy .#omnibus-archive-ci \
             --to "file://$PWD/target/nix-cache-main/?compression=zstd&compression-level=1&trusted=1"
-        working-directory: anneal/v2
+        working-directory: anneal
 
       - name: Save Anneal Nix binary cache
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.restore_anneal_main_nix_cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: anneal/v2/target/nix-cache-main
+          path: anneal/target/nix-cache-main
           key: ${{ steps.restore_anneal_main_nix_cache.outputs.cache-primary-key }}
 
       - name: Populate Anneal PR Nix binary cache
@@ -376,20 +376,20 @@ jobs:
           # archive itself uses zstd level 6; keep this wrapper at level 1.
           nix copy .#omnibus-archive-ci \
             --to "file://$PWD/target/nix-cache-pr/?compression=zstd&compression-level=1&trusted=1"
-        working-directory: anneal/v2
+        working-directory: anneal
 
       - name: Save Anneal PR Nix binary cache
         if: github.event_name == 'pull_request' && steps.restore_anneal_pr_nix_cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: anneal/v2/target/nix-cache-pr
+          path: anneal/target/nix-cache-pr
           key: ${{ steps.restore_anneal_pr_nix_cache.outputs.cache-primary-key }}
 
       - name: Upload Anneal toolchain archive
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: anneal-exocrate.tar.zst
-          path: anneal/v2/target/anneal-exocrate.tar.zst
+          path: anneal/target/anneal-exocrate.tar.zst
           if-no-files-found: error
           retention-days: 1
           compression-level: 0
@@ -412,10 +412,10 @@ jobs:
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: anneal-exocrate.tar.zst
-          path: anneal/v2/target
+          path: anneal/target
 
       # FIXME: Pin this nightly to the same Rust date encoded in
-      # anneal/v2/flake.nix, or derive it from the archive metadata, so v2 CI is
+      # anneal/flake.nix, or derive it from the archive metadata, so v2 CI is
       # reproducible instead of following whatever nightly happens to be latest.
       - name: Install latest nightly Rust
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # zizmor: ignore[superfluous-actions]
@@ -424,7 +424,7 @@ jobs:
 
       - name: Run V2 tests
         run: cargo test --workspace --all-features # include, e.g., tests that assume exocrate prebuilt
-        working-directory: anneal/v2
+        working-directory: anneal
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:

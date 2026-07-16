@@ -9,6 +9,6 @@ if [ "$COUNT" -ne 1 ]; then
 fi
 
 # Replace it
-sed -i 's|docs/images/logo.svg|https://raw.githubusercontent.com/google/zerocopy/main/anneal/docs/images/logo.svg|g' README.md
+sed -i 's|docs/images/logo.svg|https://raw.githubusercontent.com/google/zerocopy/main/anneal/v1/docs/images/logo.svg|g' README.md
 
 echo "Pre-publish steps completed successfully."
