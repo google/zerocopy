@@ -148,6 +148,52 @@ impl UiTestRunner {
         command.env_remove("CARGO_ENCODED_RUSTFLAGS");
         command.env_remove("CARGO_ENCODED_RUSTDOCFLAGS");
 
+        // `cargo-zerocopy` includes
+        // `--cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS` in
+        // `RUSTFLAGS` for the pinned nightly. That cfg enables a test-only proc
+        // macro which requires `proc_macro::Span::def_site`, a nightly feature.
+        //
+        // Cargo historically treats host artifacts inconsistently depending
+        // on whether `--target` is present. Without `--target`, `RUSTFLAGS`
+        // apply to host artifacts such as proc macros and build scripts. With
+        // `--target`, they do not. Consequently, relying only on `RUSTFLAGS`
+        // would omit the test proc macro from the host `zerocopy-derive`
+        // artifact in explicit-target UI tests, even when the explicit target
+        // happens to equal the host triple.
+        //
+        // Configure target and host flags separately so that the test behaves
+        // consistently with and without `--target`:
+        //
+        // - `-Ztarget-applies-to-host` enables the `target-applies-to-host`
+        //   configuration key.
+        // - `target-applies-to-host=false` prevents ordinary `RUSTFLAGS` and
+        //   target/build configuration from also being applied to host
+        //   artifacts.
+        // - `-Zhost-config` enables the `host` configuration table.
+        // - `host.rustflags` supplies just the nightly-test cfg to host
+        //   artifacts, including the `zerocopy-derive` proc macro. It applies
+        //   to every host artifact in this build, but the uniquely-named cfg is
+        //   inert in crates which do not inspect it.
+        //
+        // Both `-Z` options are nightly-only, so they must not be passed during
+        // the MSRV or stable UI tests. Keep this configuration inline rather
+        // than in `.cargo/config.toml` so that ordinary stable Cargo commands
+        // never encounter it. See:
+        // https://doc.rust-lang.org/cargo/reference/unstable.html#host-config
+        if matches!(&self.toolchain, ToolchainVersion::PinnedNightly) {
+            command.args([
+                "-Ztarget-applies-to-host",
+                "-Zhost-config",
+                "--config",
+                "target-applies-to-host=false",
+                "--config",
+                // A `--config` value uses TOML syntax. The embedded quotes are
+                // part of that syntax; `Command::args` passes the entire raw
+                // string as one OS argument, so no shell quoting is needed.
+                r#"host.rustflags=["--cfg", "__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS"]"#,
+            ]);
+        }
+
         let mut args = vec![
             "build",
             "-p",
