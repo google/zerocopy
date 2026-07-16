@@ -1,10 +1,14 @@
 [workspace]
-members = [".", "tools/doc_gen"]
+members = ["."]
+
+[features]
+# Enables tests that assume a prebuilt exocrate archive.
+exocrate_tests = []
 
 [package]
 name = "cargo-anneal"
 edition = "2024"
-version = "0.1.0-alpha.24"
+version = "0.1.0-alpha.22"
 description = "Formally verify that your safety comments are correct."
 categories = [
   "development-tools::cargo-plugins",
@@ -24,89 +28,42 @@ exclude = [".*", "testdata"]
 # this crate; `cargo anneal setup` uses this metadata by default when callers
 # do not provide a local archive.
 [package.metadata.exocrate.linux.x86_64]
-sha256 = "d3d7bbcdfd2645f10e3e64a85b3e848197033992337c969a45576a3d0ec517d9"
-url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-linux-x86_64.tar.zst"
+sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+url = "https://example.com/linux-x86_64.tar.zst"
 
 [package.metadata.exocrate.macos.x86_64]
-sha256 = "1252f15262d11f49795c8ed182a8b47f2ae4e627d90babb2f10636349f686438"
-url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-macos-x86_64.tar.zst"
+sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+url = "https://example.com/macos-x86_64.tar.zst"
 
 [package.metadata.exocrate.linux.aarch64]
-sha256 = "a9c496fcf21670b2306d02722b9afcf375149315e929d53b6a7585d4daa19710"
-url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-linux-aarch64.tar.zst"
+sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+url = "https://example.com/linux-aarch64.tar.zst"
 
 [package.metadata.exocrate.macos.aarch64]
-sha256 = "b4e0a5b420eb441e37564c365f06c215f61a3b825fc3df37293da7c3010d2b81"
-url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-macos-aarch64.tar.zst"
+sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+url = "https://example.com/macos-aarch64.tar.zst"
 
 [dependencies]
+exocrate = { path = "../exocrate" }
+toml_const = "1.3.0"
+clap = { version = "4.5", features = ["derive"] }
+clap-cargo = { version = "0.18.3", features = ["cargo_metadata"] }
+env_logger = "0.11"
+log = "0.4"
 anyhow = "1.0.102"
 cargo_metadata = "0.23.1"
-clap = { version = "4.6.0", features = ["derive"] }
-clap-cargo = { version = "0.18.3", features = ["cargo_metadata"] }
-dashmap = "6.1.0"
-env_logger = "0.11.10"
-log = "0.4.29"
 miette = { version = "7.6.0", features = ["derive", "fancy"] }
-proc-macro2 = { version = "1.0.106", features = ["span-locations"] }
-rayon = "1.11.0"
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.149"
-syn = { version = "2.0.117", features = [
-  "full",
-  "visit",
-  "extra-traits",
-  "parsing",
-  "printing",
-] }
-quote = "1.0"
 thiserror = "2.0.18"
-walkdir = "2.5.0"
+serde_json = "1.0.149"
+serde = { version = "1.0.228", features = ["derive"] }
 indicatif = { version = "0.18.4", features = ["improved_unicode"] }
-console = "0.16.3"
-exocrate = { path = "../exocrate" }
-sha2 = "0.10"
 fs2 = "0.4"
-pathdiff = "0.2.3"
-toml = "0.8"
-tempfile = "3.27.0"
-
-[build-dependencies]
+walkdir = "2.5.0"
 sha2 = "0.10"
-toml = "0.8"
+tempfile = "3.27.0"
+rayon = "1.11.0"
+# `tag` is `main` branch HEAD on 2026-06-03.
+charon_lib = { package = "charon", git = "https://github.com/AeneasVerif/charon.git", tag = "nightly-2026.06.03", default-features = false }
 
 [dev-dependencies]
-syn = { version = "2.0.117", features = [
-  "printing",
-  "full",
-  "visit",
-  "extra-traits",
-  "parsing",
-] }
-proc-macro2 = { version = "1.0.106", features = ["span-locations"] }
-ui_test = "0.30.4"
-assert_cmd = "2.2.0"
-
-predicates = "3.1.4"
-
-datatest-stable = "0.3.3"
-serde = { version = "1.0", features = ["derive"] }
-toml = "0.8"
-regex = "1.0"
-strip-ansi-escapes = "0.2.1"
-similar = "2.7.0"
-
-[package.metadata.build_rs]
-
-# The commit hash of the Aeneas repository to use.
-#
-# FIXME: Add a CI step to verify that this commit exists and matches the
-# toolchain version.
-aeneas_rev = "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
-
-# The Lean toolchain version to use. This must match the version of Lean used
-# by Aeneas in the `lean-toolchain` file in the commit above.
-lean_toolchain = "leanprover/lean4:v4.30.0-rc2"
-[[test]]
-name = "integration"
-harness = false
+pathdiff = "0.2"

@@ -26,21 +26,21 @@ SPEC.loader.exec_module(check_release_pr_files)
 
 class ReleasePrFileTests(unittest.TestCase):
     def test_porcelain_status_paths_include_untracked_and_renames(self) -> None:
-        status = " M anneal/Cargo.toml\n?? anneal/release-metadata/linux.json\nR  old/path -> anneal/README.md\n"
+        status = " M anneal/v1/Cargo.toml\n?? anneal/v1/release-metadata/linux.json\nR  old/path -> anneal/v1/README.md\n"
         self.assertEqual(
             check_release_pr_files.parse_porcelain_status_paths(status),
-            ["anneal/Cargo.toml", "anneal/release-metadata/linux.json", "old/path", "anneal/README.md"],
+            ["anneal/v1/Cargo.toml", "anneal/v1/release-metadata/linux.json", "old/path", "anneal/v1/README.md"],
         )
 
     def test_validation_catches_unexpected_and_missing_files(self) -> None:
         errors = check_release_pr_files.validation_errors(
-            ["anneal/Cargo.toml", "anneal/release-metadata/linux.json"],
-            ["anneal/Cargo.toml", "anneal/Cargo.lock", "anneal/README.md"],
-            ["anneal/Cargo.toml", "anneal/README.md"],
+            ["anneal/v1/Cargo.toml", "anneal/v1/release-metadata/linux.json"],
+            ["anneal/v1/Cargo.toml", "anneal/v1/Cargo.lock", "anneal/v1/README.md"],
+            ["anneal/v1/Cargo.toml", "anneal/v1/README.md"],
         )
         self.assertEqual(len(errors), 2)
-        self.assertIn("anneal/release-metadata/linux.json", errors[0])
-        self.assertIn("anneal/README.md", errors[1])
+        self.assertIn("anneal/v1/release-metadata/linux.json", errors[0])
+        self.assertIn("anneal/v1/README.md", errors[1])
 
 
 if __name__ == "__main__":
