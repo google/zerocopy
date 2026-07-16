@@ -246,6 +246,16 @@ fn test_into_bytes_struct_trailing_generic() {
 }
 
 #[test]
+fn test_into_bytes_struct_homogeneous_generic() {
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<T, const N: usize>(T, [T; N], [T]);
+        } expands to "expected/into_bytes_struct_homogeneous_generic.expected.rs"
+    }
+}
+
+#[test]
 fn test_into_bytes_enum() {
     macro_rules! test_repr {
         ($(#[$attr:meta])*) => {

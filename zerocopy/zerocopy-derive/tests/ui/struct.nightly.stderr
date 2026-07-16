@@ -28,67 +28,75 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: cannot derive `Unaligned` on type with alignment greater than 1
-   --> $DIR/struct.rs:273:11
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> $DIR/struct.rs:270:10
     |
-273 | #[repr(C, align(2))]
+270 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: cannot derive `Unaligned` on type with alignment greater than 1
+   --> $DIR/struct.rs:302:11
+    |
+302 | #[repr(C, align(2))]
     |           ^^^^^^^^
 
 error: this conflicts with another representation hint
-   --> $DIR/struct.rs:279:8
+   --> $DIR/struct.rs:308:8
     |
-279 | #[repr(transparent, align(2))]
+308 | #[repr(transparent, align(2))]
     |        ^^^^^^^^^^^
 
 error: this conflicts with another representation hint
-   --> $DIR/struct.rs:288:8
+   --> $DIR/struct.rs:317:8
     |
-288 | #[repr(packed, align(2))]
+317 | #[repr(packed, align(2))]
     |        ^^^^^^^^^^^^^^^^
 
 error: this conflicts with another representation hint
-   --> $DIR/struct.rs:295:8
+   --> $DIR/struct.rs:324:8
     |
-295 | #[repr(align(1), align(2))]
+324 | #[repr(align(1), align(2))]
     |        ^^^^^^^^^^^^^^^^^^
 
 error: this conflicts with another representation hint
-   --> $DIR/struct.rs:301:8
+   --> $DIR/struct.rs:330:8
     |
-301 | #[repr(align(2), align(4))]
+330 | #[repr(align(2), align(4))]
     |        ^^^^^^^^^^^^^^^^^^
 
 error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
-   --> $DIR/struct.rs:305:10
+   --> $DIR/struct.rs:334:10
     |
-305 | #[derive(Unaligned)]
+334 | #[derive(Unaligned)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
-   --> $DIR/struct.rs:310:10
+   --> $DIR/struct.rs:339:10
     |
-310 | #[derive(Unaligned)]
+339 | #[derive(Unaligned)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: this conflicts with another representation hint
-   --> $DIR/struct.rs:320:19
+   --> $DIR/struct.rs:349:19
     |
-320 |   #[repr(packed(2), C)]
+349 |   #[repr(packed(2), C)]
     |  ___________________^
-321 | |
-322 | | #[derive(Unaligned)]
-323 | | #[zerocopy(crate = "zerocopy_renamed")]
-324 | | #[repr(C, packed(2))]
+350 | |
+351 | | #[derive(Unaligned)]
+352 | | #[zerocopy(crate = "zerocopy_renamed")]
+353 | | #[repr(C, packed(2))]
     | |________^
 
 error[E0692]: transparent struct cannot have other repr hints
-   --> $DIR/struct.rs:279:8
+   --> $DIR/struct.rs:308:8
     |
-279 | #[repr(transparent, align(2))]
+308 | #[repr(transparent, align(2))]
     |        ^^^^^^^^^^^  ^^^^^^^^
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -462,21 +470,21 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 
 error[E0587]: type has conflicting packed and align representation hints
-   --> $DIR/struct.rs:290:1
+   --> $DIR/struct.rs:319:1
     |
-290 | struct Unaligned3;
+319 | struct Unaligned3;
     | ^^^^^^^^^^^^^^^^^
 
 error[E0277]: the trait bound `SplitAtNotKnownLayout: zerocopy_renamed::KnownLayout` is not satisfied
-   --> $DIR/struct.rs:328:10
+   --> $DIR/struct.rs:357:10
     |
-328 | #[derive(SplitAt)]
+357 | #[derive(SplitAt)]
     |          ^^^^^^^ unsatisfied trait bound
     |
 help: the trait `zerocopy_renamed::KnownLayout` is not implemented for `SplitAtNotKnownLayout`
-   --> $DIR/struct.rs:332:1
+   --> $DIR/struct.rs:361:1
     |
-332 | struct SplitAtNotKnownLayout([u8]);
+361 | struct SplitAtNotKnownLayout([u8]);
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(KnownLayout)]` to `SplitAtNotKnownLayout`
     = help: the following other types implement trait `zerocopy_renamed::KnownLayout`:
@@ -494,19 +502,19 @@ note: required by a bound in `SplitAt`
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `u8: SplitAt` is not satisfied
-   --> $DIR/struct.rs:334:10
+   --> $DIR/struct.rs:363:10
     |
-334 | #[derive(SplitAt, KnownLayout)]
+363 | #[derive(SplitAt, KnownLayout)]
     |          ^^^^^^^ the trait `SplitAt` is not implemented for `u8`
     |
     = note: Consider adding `#[derive(SplitAt)]` to `u8`
 help: the following other types implement trait `SplitAt`
-   --> $DIR/struct.rs:328:10
+   --> $DIR/struct.rs:357:10
     |
-328 | #[derive(SplitAt)]
+357 | #[derive(SplitAt)]
     |          ^^^^^^^ `SplitAtNotKnownLayout`
 ...
-334 | #[derive(SplitAt, KnownLayout)]
+363 | #[derive(SplitAt, KnownLayout)]
     |          ^^^^^^^ `SplitAtSized`
    --> src/split_at.rs:253:0
     |
@@ -552,7 +560,29 @@ note: required by a bound in `is_into_bytes_11`
     |                        ^^^^^^^^^ required by this bound in `is_into_bytes_11`
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 36 previous errors
+error[E0271]: type mismatch resolving `<u8 as Identity>::Type == u16`
+   --> $DIR/struct.rs:290:33
+    |
+290 |             assert_into_bytes::<IntoBytes15<u16>>();
+    |                                 ^^^^^^^^^^^^^^^^ expected `u16`, found `u8`
+    |
+note: required for `IntoBytes15<u16>` to implement `zerocopy_renamed::IntoBytes`
+   --> $DIR/struct.rs:285:5
+    |
+285 |     zerocopy_derive::__test_hygienically_mixed_into_bytes!();
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+    = note: associated types for the current `impl` cannot be restricted in `where` clauses
+    = note: associated types for the current `impl` cannot be restricted in `where` clauses
+    = note: associated types for the current `impl` cannot be restricted in `where` clauses
+    = note: associated types for the current `impl` cannot be restricted in `where` clauses
+note: required by a bound in `assert_into_bytes`
+   --> $DIR/struct.rs:287:29
+    |
+287 |     fn assert_into_bytes<T: IntoBytes>() {
+    |                             ^^^^^^^^^ required by this bound in `assert_into_bytes`
+    = note: this error originates in the derive macro `zerocopy_renamed::IntoBytes` which comes from the expansion of the macro `zerocopy_derive::__test_hygienically_mixed_into_bytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-Some errors have detailed explanations: E0277, E0587, E0588, E0692.
-For more information about an error, try `rustc --explain E0277`.
+error: aborting due to 38 previous errors
+
+Some errors have detailed explanations: E0271, E0277, E0587, E0588, E0692.
+For more information about an error, try `rustc --explain E0271`.
