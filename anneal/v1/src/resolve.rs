@@ -1,30 +1,13 @@
-// Copyright 2026 The Fuchsia Authors
-//
-// Licensed under the 2-Clause BSD License <LICENSE-BSD or
-// https://opensource.org/license/bsd-2-clause>, Apache License, Version 2.0
-// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
-// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
-// This file may not be copied, modified, or distributed except according to
-// those terms.
+use std::{env, fs, path::PathBuf};
 
-//! Cargo package and target resolution for Anneal.
-//!
-//! Cargo selectors can identify several compilation artifacts depending on
-//! package layout: default selection may include libraries and binaries,
-//! `--tests` can build test harnesses plus supporting targets, and a library
-//! target can expose several crate types such as `rlib` and `cdylib`.
-//!
-//! This module resolves that selection into one explicit Anneal artifact per
-//! package target and target kind. Downstream stages process those artifacts
-//! independently, assigning each its own LLBC path and Charon configuration.
-//! This prevents selected rustc units from sharing a `--dest-file`, avoids
-//! collisions between workspace packages with the same Rust crate name, and
-//! permits per-target Charon options such as `--start-from` and `--opaque`.
+use anyhow::{Context, Result, anyhow};
+use cargo_metadata::{Metadata, MetadataCommand, Package, PackageName, Target, TargetKind};
+use clap::Parser;
+use sha2::{Digest, Sha256};
 
-use anyhow::Context as _;
-use sha2::Digest as _;
+use crate::util::DirLock;
 
-#[derive(clap::Parser, Debug)]
+#[derive(Parser, Debug)]
 pub struct Args {
     #[command(flatten)]
     pub manifest: clap_cargo::Manifest,
@@ -35,40 +18,60 @@ pub struct Args {
     #[command(flatten)]
     pub features: clap_cargo::Features,
 
-    /// Verify the library target.
+    /// Verify the library target
     #[arg(long)]
     pub lib: bool,
 
-    /// Verify specific binary targets.
+    /// Verify specific binary targets
     #[arg(long)]
     pub bin: Vec<String>,
 
-    /// Verify all binary targets.
+    /// Verify all binary targets
     #[arg(long)]
     pub bins: bool,
 
-    /// Verify specific example targets.
+    /// Verify specific example targets
     #[arg(long)]
     pub example: Vec<String>,
 
-    /// Verify all example targets.
+    /// Verify all example targets
     #[arg(long)]
     pub examples: bool,
 
-    /// Verify specific test targets.
+    /// Verify specific test targets
     #[arg(long)]
     pub test: Vec<String>,
 
-    /// Verify all test targets.
+    /// Verify all test targets
     #[arg(long)]
     pub tests: bool,
 
-    /// Permit Lean proof admissions (`sorry`, `admit`, or `sorryAx`).
-    ///
-    /// Without this explicit opt-in, generated Lean treats warnings as errors
-    /// so every declaration which semantically depends on an admission fails.
+    /// Allow `sorry` in proofs and inject `sorry` for missing proofs
     #[arg(long)]
     pub allow_sorry: bool,
+
+    /// Allow use of `isValid` annotations
+    ///
+    /// `isValid` annotations are currently unsound. In particular, Rust does
+    /// not yet support annotating a field with `unsafe`, denoting that it
+    /// carries an invariant. Thus, `isValid` annotations are effectively
+    /// advisory – any code which does not have a Anneal annotation can modify
+    /// invariant-carrying fields without needing to use an `unsafe` block.
+    /// Without an `unsafe` block, Anneal has no way of knowing that an
+    /// operation needs to be analyzed for soundness.
+    ///
+    /// Once the `syn` parser supports parsing `unsafe` fields (which are
+    /// already supported in a nightly Rust feature), Anneal will require that
+    /// `isValid` is only used on `unsafe` fields.
+    #[arg(long)]
+    pub unsound_allow_is_valid: bool,
+}
+
+#[derive(Parser, Debug)]
+pub struct SetupArgs {
+    /// Install dependencies from a locally built exocrate archive.
+    #[arg(long, value_name = "path-to-local-archive")]
+    pub local_archive: Option<PathBuf>,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -94,21 +97,23 @@ pub enum AnnealTargetKind {
     Test,
 }
 
+// We map `cargo_metadata::TargetKind` to our own `AnnealTargetKind` to
+// strictly validate supported target types and simplify downstream logic.
+// While `cargo_metadata` is exhaustive, we only care about a subset of
+// targets relevant to verification.
+
 impl AnnealTargetKind {
     pub fn is_lib(&self) -> bool {
         use AnnealTargetKind::*;
-        match self {
-            Lib | RLib | ProcMacro | CDyLib | DyLib | StaticLib => true,
-            Bin | Example | Test => false,
-        }
+        matches!(self, Lib | RLib | ProcMacro | CDyLib | DyLib | StaticLib)
     }
 }
 
-impl std::convert::TryFrom<&cargo_metadata::TargetKind> for AnnealTargetKind {
+impl TryFrom<&TargetKind> for AnnealTargetKind {
     type Error = ();
 
-    fn try_from(kind: &cargo_metadata::TargetKind) -> anyhow::Result<Self, Self::Error> {
-        use cargo_metadata::TargetKind::*;
+    fn try_from(kind: &TargetKind) -> Result<Self, Self::Error> {
+        use TargetKind::*;
         match kind {
             Lib => Ok(Self::Lib),
             RLib => Ok(Self::RLib),
@@ -127,15 +132,8 @@ impl std::convert::TryFrom<&cargo_metadata::TargetKind> for AnnealTargetKind {
 
 #[derive(Clone, Debug, Hash, PartialEq, Eq)]
 pub struct AnnealTargetName {
-    /// The Cargo package that owns this artifact.
-    pub package_name: cargo_metadata::PackageName,
-    /// The Cargo target name.
+    pub package_name: PackageName,
     pub target_name: String,
-    /// The target kind compiled for this artifact.
-    ///
-    /// This is part of the identity because one Cargo target can expose
-    /// multiple crate types, and because later Charon and Lean outputs must not
-    /// rely on target names alone.
     pub kind: AnnealTargetKind,
 }
 
@@ -149,32 +147,34 @@ pub struct AnnealTargetName {
 pub struct AnnealTarget {
     pub name: AnnealTargetName,
     pub kind: AnnealTargetKind,
-
+    /// Path to the main source file for this target.
+    pub src_path: PathBuf,
     /// Path to the `Cargo.toml` for this target.
-    pub manifest_path: std::path::PathBuf,
+    pub manifest_path: PathBuf,
 }
 
 #[derive(Debug)]
 pub struct Roots {
+    pub workspace: PathBuf,
     // E.g., `target/anneal`.
-    anneal_global_root: std::path::PathBuf,
+    anneal_global_root: PathBuf,
     // E.g., `target/anneal/<hash>`.
-    anneal_run_root: std::path::PathBuf,
+    anneal_run_root: PathBuf,
     pub roots: Vec<AnnealTarget>,
 }
 
 impl Roots {
-    pub fn lock_run_root(&self) -> anyhow::Result<LockedRoots<'_>> {
-        let lock = crate::util::DirLock::lock_exclusive(self.anneal_run_root.clone())?;
-        Ok(LockedRoots { roots: self, anneal_run_root: lock, llbc_override: None })
+    pub fn lock_run_root(&self) -> Result<LockedRoots<'_>> {
+        let lock = DirLock::lock_exclusive(self.anneal_run_root.clone())?;
+        Ok(LockedRoots { roots: self, anneal_run_root: lock })
     }
 
-    pub fn cargo_target_dir(&self) -> std::path::PathBuf {
+    pub fn cargo_target_dir(&self) -> PathBuf {
         self.anneal_global_root.join("cargo_target")
     }
 }
 
-/// A wrapper around [`crate::resolve::Roots`] that proves the build lock is held.
+/// A wrapper around `Roots` that proves the build lock is held.
 ///
 /// This struct is the *only* way to access paths within the Anneal build
 /// directory (e.g., LLBC output, Lean generation). This enforces that all
@@ -182,37 +182,38 @@ impl Roots {
 pub struct LockedRoots<'a> {
     roots: &'a Roots,
     anneal_run_root: crate::util::DirLock,
-    pub llbc_override: Option<std::path::PathBuf>,
 }
 
 impl<'a> LockedRoots<'a> {
-    pub fn llbc_root(&self) -> std::path::PathBuf {
-        if let Some(ref over) = self.llbc_override {
-            over.clone()
-        } else {
-            self.anneal_run_root.path.join("llbc")
-        }
+    pub fn llbc_root(&self) -> PathBuf {
+        self.anneal_run_root.path.join("llbc")
+    }
+
+    pub fn lean_root(&self) -> PathBuf {
+        self.anneal_run_root.path.join("lean")
+    }
+
+    pub fn lean_generated_root(&self) -> PathBuf {
+        self.lean_root().join("generated")
     }
 
     // We expose the Cargo target directory for convenience, as it is used
     // by downstream tools like Charon to coordinate dependency artifacts.
-    pub fn cargo_target_dir(&self) -> std::path::PathBuf {
+    pub fn cargo_target_dir(&self) -> PathBuf {
         self.roots.cargo_target_dir()
+    }
+
+    pub fn workspace(&self) -> &PathBuf {
+        &self.roots.workspace
     }
 }
 
 /// Resolves all verification roots.
 ///
 /// Each entry represents a distinct compilation artifact to be verified.
-/// Keeping this artifact list explicit is deliberate: later Charon invocation
-/// code should not have to rediscover which files a Cargo flag happened to
-/// produce for a particular workspace shape.
-pub fn resolve_roots(args: &Args, toolchain: &crate::setup::Toolchain) -> anyhow::Result<Roots> {
+pub fn resolve_roots(args: &Args) -> Result<Roots> {
     log::trace!("resolve_roots({:?})", args);
-    let mut cmd = cargo_metadata::MetadataCommand::new();
-    cmd.cargo_path(crate::setup::Tool::Cargo.path(toolchain))
-        .env("RUSTC", crate::setup::Tool::Rustc.path(toolchain))
-        .env(crate::setup::rust_library_path_env_var(), toolchain.rust_lib());
+    let mut cmd = MetadataCommand::new();
 
     if let Some(path) = &args.manifest.manifest_path {
         cmd.manifest_path(path);
@@ -227,19 +228,18 @@ pub fn resolve_roots(args: &Args, toolchain: &crate::setup::Toolchain) -> anyhow
     args.features.forward_metadata(&mut cmd);
 
     let metadata = cmd.exec().context("Failed to run 'cargo metadata'")?;
-    // We enforce that all local dependencies are contained within the workspace
-    // root. This is a temporary limitation to simplify the verification model
-    // and ensure a "hermetic-like" boundary for analysis. It prevents issues
-    // where experimental or local forks of dependencies might be picked up
-    // unpredictably, or where Charon might struggle to locate source files
-    // outside the standard project structure.
-    check_for_external_deps(&metadata)?;
-
     let selected_packages =
         resolve_packages(&metadata, &args.workspace, args.manifest.manifest_path.as_deref())?;
+    check_selected_packages_in_workspace(&metadata, &selected_packages)?;
 
     let (anneal_global_root, anneal_run_root) = resolve_run_roots(&metadata);
-    let mut roots = Roots { anneal_global_root, anneal_run_root, roots: Vec::new() };
+    let mut roots = Roots {
+        workspace: metadata.workspace_root.as_std_path().to_owned(),
+        // cargo_target_dir: metadata.target_directory.as_std_path().to_owned(),
+        anneal_global_root,
+        anneal_run_root,
+        roots: Vec::new(),
+    };
 
     for package in selected_packages {
         log::trace!("Scanning package: {}", package.name);
@@ -262,6 +262,7 @@ pub fn resolve_roots(args: &Args, toolchain: &crate::setup::Toolchain) -> anyhow
             // reference for the rest of the pipeline. This avoids ambiguity
             // if the CWD changes or if we're working with complex workspace
             // structures.
+            src_path: target.src_path.as_std_path().to_owned(),
             manifest_path: package.manifest_path.as_std_path().to_owned(),
         }));
     }
@@ -269,14 +270,18 @@ pub fn resolve_roots(args: &Args, toolchain: &crate::setup::Toolchain) -> anyhow
     Ok(roots)
 }
 
-fn resolve_run_roots(
-    metadata: &cargo_metadata::Metadata,
-) -> (std::path::PathBuf, std::path::PathBuf) {
+fn resolve_run_roots(metadata: &Metadata) -> (PathBuf, PathBuf) {
     log::trace!("resolve_run_root");
     log::debug!("workspace_root: {:?}", metadata.workspace_root.as_std_path());
     // NOTE: Automatically handles `CARGO_TARGET_DIR` env var.
     let target_dir = metadata.target_directory.as_std_path();
     let anneal_global = target_dir.join("anneal");
+
+    // Used by integration tests to ensure deterministic shadow dir names.
+    if let Ok(name) = std::env::var("ANNEAL_TEST_DIR_NAME") {
+        let run_root = anneal_global.join(name);
+        return (anneal_global, run_root);
+    }
 
     // Hash the path to the workspace root to avoid collisions between different
     // workspaces using the same target directory. We use SHA-256 (truncated to
@@ -284,7 +289,7 @@ fn resolve_run_roots(
     // build directory name remains consistent for the same workspace root,
     // avoiding unnecessary cache invalidation.
     let workspace_root_hash = {
-        let mut hasher = sha2::Sha256::new();
+        let mut hasher = Sha256::new();
         hasher.update(b"anneal_build_salt");
         hasher.update(metadata.workspace_root.as_str().as_bytes());
         let result = hasher.finalize();
@@ -299,13 +304,13 @@ fn resolve_run_roots(
 
 /// Resolves which packages to process based on workspace flags and CWD.
 fn resolve_packages<'a>(
-    metadata: &'a cargo_metadata::Metadata,
+    metadata: &'a Metadata,
     args: &clap_cargo::Workspace,
     manifest_path: Option<&std::path::Path>,
-) -> anyhow::Result<Vec<&'a cargo_metadata::Package>> {
+) -> Result<Vec<&'a Package>> {
     log::trace!("resolve_packages(workspace: {}, all: {})", args.workspace, args.all);
     let mut packages = if !args.package.is_empty() {
-        // Resolve explicitly selected packages (-p / --package).
+        // Resolve explicitly selected packages (-p / --package)
         args.package
             .iter()
             .map(|name| {
@@ -313,9 +318,9 @@ fn resolve_packages<'a>(
                     .packages
                     .iter()
                     .find(|p| p.name == *name)
-                    .ok_or_else(|| anyhow::anyhow!("Package '{}' not found in workspace", name))
+                    .ok_or_else(|| anyhow!("Package '{}' not found in workspace", name))
             })
-            .collect::<anyhow::Result<Vec<_>>>()?
+            .collect::<Result<Vec<_>>>()?
     } else if args.workspace || args.all {
         // Resolve entire workspace (--workspace / --all). This explicitly
         // selects all workspace members, ignoring any packages that might be
@@ -332,7 +337,7 @@ fn resolve_packages<'a>(
         let cwd = {
             let cwd_candidate = manifest_path
                 .map(|p| p.to_path_buf())
-                .unwrap_or_else(|| std::env::current_dir().unwrap_or_default())
+                .unwrap_or_else(|| env::current_dir().unwrap_or_default())
                 .canonicalize()
                 .context("Failed to canonicalize CWD")?;
 
@@ -345,7 +350,7 @@ fn resolve_packages<'a>(
             }
         };
 
-        // Find the package whose manifest directory is an ancestor of CWD.
+        // Find the package whose manifest directory is an ancestor of CWD
         let current_pkg = metadata.packages.iter().find(|p| {
             let manifest_dir = p.manifest_path.parent().unwrap();
             cwd.starts_with(manifest_dir)
@@ -363,14 +368,14 @@ fn resolve_packages<'a>(
                     .filter_map(|id| metadata.packages.iter().find(|p| &p.id == id))
                     .collect()
             } else {
-                return Err(anyhow::anyhow!(
+                return Err(anyhow!(
                     "Could not determine package from current directory. Please use -p <NAME> or --workspace."
                 ));
             }
         }
     };
 
-    // Filter out excluded packages (--exclude).
+    // Filter out excluded packages (--exclude)
     if !args.exclude.is_empty() {
         packages.retain(|p| !args.exclude.contains(&p.name));
     }
@@ -378,9 +383,8 @@ fn resolve_packages<'a>(
     Ok(packages)
 }
 
-/// Resolves the Cargo targets selected from one package.
-///
-/// Returns a list of `(Target, TargetKind)` pairs.
+/// Flattening Resolver:
+/// Returns a list of (Target, TargetKind) pairs.
 /// If a target is defined as `crate-type = ["rlib", "cdylib"]`, and both are
 /// requested, this returns two entries, allowing them to be verified
 /// independently.
@@ -388,12 +392,12 @@ fn resolve_packages<'a>(
 /// This flattening is critical because different crate types may be compiled
 /// with different flags or conditional compilation options (although the
 /// current scanner is CFG-agnostic, future improvements might respect this).
-/// Verifying them independently gives later stages a separate artifact identity
-/// and output path for every intended compilation mode.
+/// Verifying them independently ensures we cover all intended compilation
+/// modes.
 fn resolve_targets<'a>(
-    package: &'a cargo_metadata::Package,
+    package: &'a Package,
     args: &Args,
-) -> anyhow::Result<Vec<(&'a cargo_metadata::Target, AnnealTargetKind)>> {
+) -> Result<Vec<(&'a Target, AnnealTargetKind)>> {
     log::trace!("resolve_targets({})", package.name);
     let default_mode = !args.lib
         && args.bin.is_empty()
@@ -435,36 +439,38 @@ fn resolve_targets<'a>(
     Ok(selected_artifacts)
 }
 
-/// Scans the package graph to ensure all local dependencies are contained
-/// within the workspace root. Returns an error if an external path dependency
-/// is found.
-pub fn check_for_external_deps(metadata: &cargo_metadata::Metadata) -> anyhow::Result<()> {
-    log::trace!("check_for_external_deps");
-    // Canonicalize workspace root to handle symlinks correctly.
-    let workspace_root = std::fs::canonicalize(&metadata.workspace_root)
+// TODO: Eventually, we'll want to support selected packages outside the Cargo
+// workspace root by analyzing them in-place or teaching downstream stages how
+// to map those source files.
+
+/// Ensures every selected verification root is contained within the workspace root.
+fn check_selected_packages_in_workspace(metadata: &Metadata, packages: &[&Package]) -> Result<()> {
+    log::trace!("check_selected_packages_in_workspace");
+    // Canonicalize workspace root to handle symlinks correctly
+    let workspace_root = fs::canonicalize(&metadata.workspace_root)
         .context("Failed to canonicalize workspace root")?;
 
-    for pkg in &metadata.packages {
-        // We only care about packages that are "local" (source is None).
-        // If source is Some(...), it's from crates.io or git, which is fine
-        // (handled by Cargo).
-        if pkg.source.is_none() {
-            let pkg_path = pkg.manifest_path.as_std_path();
+    for pkg in packages {
+        let pkg_path = pkg.manifest_path.as_std_path();
 
-            // Canonicalize the package path for comparison.
-            let canonical_pkg_path = std::fs::canonicalize(pkg_path)
-                .with_context(|| format!("Failed to canonicalize path for package {}", pkg.name))?;
+        // Canonicalize the package path for comparison
+        let canonical_pkg_path = fs::canonicalize(pkg_path)
+            .with_context(|| format!("Failed to canonicalize path for package {}", pkg.name))?;
 
-            // Check if the package lives outside the workspace tree.
-            if !canonical_pkg_path.starts_with(&workspace_root) {
-                anyhow::bail!(
-                    "Unsupported external dependency: '{}' at {:?}.\n\
-                     Anneal currently only supports verifying workspaces where all local \
-                     dependencies are contained within the workspace root.",
-                    pkg.name,
-                    pkg_path
-                );
-            }
+        // We only constrain the packages Anneal will scan as verification
+        // roots. Cargo metadata may also include build-only local path
+        // dependencies from the Anneal implementation itself, such as the
+        // repository-root `exocrate` helper crate when running
+        // `cargo run verify`. Rejecting those would make Anneal's own package
+        // layout constrain user verification.
+        if !canonical_pkg_path.starts_with(&workspace_root) {
+            anyhow::bail!(
+                "Unsupported external package: '{}' at {:?}.\n\
+                 Anneal currently only supports verifying packages contained \
+                 within the workspace root.",
+                pkg.name,
+                pkg_path
+            );
         }
     }
 

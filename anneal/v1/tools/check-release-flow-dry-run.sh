@@ -28,13 +28,13 @@ cd "$WORKTREE"
 
 ./ci/release_anneal_version.sh "$VERSION"
 
-python3 anneal/tools/check-release-pr-files.py \
+python3 anneal/v1/tools/check-release-pr-files.py \
   --context "Release dry-run version bump" \
   --include-untracked \
-  --allowed anneal/Cargo.lock \
-  --allowed anneal/Cargo.toml \
-  --allowed anneal/README.md \
-  --required anneal/Cargo.toml
+  --allowed anneal/v1/Cargo.lock \
+  --allowed anneal/v1/Cargo.toml \
+  --allowed anneal/v1/README.md \
+  --required anneal/v1/Cargo.toml
 
 git diff --binary > "$PATCH"
 if [ ! -s "$PATCH" ]; then
@@ -47,15 +47,15 @@ git clean -fdx >/dev/null
 git apply --check "$PATCH"
 git apply "$PATCH"
 
-python3 anneal/tools/check-release-pr-files.py \
+python3 anneal/v1/tools/check-release-pr-files.py \
   --context "Release dry-run applied source patch" \
   --include-untracked \
-  --allowed anneal/Cargo.lock \
-  --allowed anneal/Cargo.toml \
-  --allowed anneal/README.md \
-  --required anneal/Cargo.toml
+  --allowed anneal/v1/Cargo.lock \
+  --allowed anneal/v1/Cargo.toml \
+  --allowed anneal/v1/README.md \
+  --required anneal/v1/Cargo.toml
 
-mkdir -p anneal/release-metadata
+mkdir -p anneal/v1/release-metadata
 for target in linux-x86_64 linux-aarch64 macos-x86_64 macos-aarch64; do
   case "$target" in
     linux-x86_64)
@@ -82,7 +82,7 @@ for target in linux-x86_64 linux-aarch64 macos-x86_64 macos-aarch64; do
 
   sha256="$(python3 -c 'import hashlib, sys; print(hashlib.sha256(sys.argv[1].encode()).hexdigest())' "$target")"
   url="https://github.com/google/zerocopy/releases/download/${TAG_NAME}/anneal-toolchain-${target}.tar.zst"
-  cat > "anneal/release-metadata/${target}.json" <<EOF
+  cat > "anneal/v1/release-metadata/${target}.json" <<EOF
 {
   "arch": "${cargo_arch}",
   "filename": "anneal-toolchain-${target}.tar.zst",
@@ -94,21 +94,21 @@ for target in linux-x86_64 linux-aarch64 macos-x86_64 macos-aarch64; do
 EOF
 done
 
-python3 anneal/tools/update-exocrate-metadata.py \
-  --cargo-toml anneal/Cargo.toml \
-  --metadata-dir anneal/release-metadata \
+python3 anneal/v1/tools/update-exocrate-metadata.py \
+  --cargo-toml anneal/v1/Cargo.toml \
+  --metadata-dir anneal/v1/release-metadata \
   --expected-release-tag "$TAG_NAME" \
   --require-all
 
-rm -rf anneal/release-metadata
+rm -rf anneal/v1/release-metadata
 
-python3 anneal/tools/check-release-pr-files.py \
+python3 anneal/v1/tools/check-release-pr-files.py \
   --context "Release dry-run metadata update" \
   --include-untracked \
-  --allowed anneal/Cargo.lock \
-  --allowed anneal/Cargo.toml \
-  --allowed anneal/README.md \
-  --required anneal/Cargo.toml
+  --allowed anneal/v1/Cargo.lock \
+  --allowed anneal/v1/Cargo.toml \
+  --allowed anneal/v1/README.md \
+  --required anneal/v1/Cargo.toml
 
 python3 - "$TAG_NAME" <<'PY'
 import pathlib
@@ -116,7 +116,7 @@ import sys
 import tomllib
 
 tag = sys.argv[1]
-manifest = tomllib.loads(pathlib.Path("anneal/Cargo.toml").read_text(encoding="utf-8"))
+manifest = tomllib.loads(pathlib.Path("anneal/v1/Cargo.toml").read_text(encoding="utf-8"))
 exocrate = manifest["package"]["metadata"]["exocrate"]
 expected = {
     ("linux", "x86_64"),

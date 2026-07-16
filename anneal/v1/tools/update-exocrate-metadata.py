@@ -8,7 +8,7 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-"""Update anneal/Cargo.toml's exocrate archive URLs and hashes."""
+"""Update anneal/v1/Cargo.toml's exocrate archive URLs and hashes."""
 
 import argparse
 import json
@@ -124,7 +124,7 @@ def update_manifest(cargo_toml: Path, metadata: dict[tuple[str, str], dict[str, 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--cargo-toml", default="anneal/Cargo.toml", type=Path)
+    parser.add_argument("--cargo-toml", default="anneal/v1/Cargo.toml", type=Path)
     parser.add_argument("--metadata-dir", type=Path)
     parser.add_argument("--metadata", action="append", default=[], type=Path)
     parser.add_argument("--expected-release-tag")

@@ -13,7 +13,7 @@ on:
     branches:
       - main
     paths:
-      - 'anneal/Cargo.toml'
+      - 'anneal/v1/Cargo.toml'
   workflow_dispatch:
     inputs:
       version:
@@ -54,7 +54,7 @@ jobs:
         id: check
         run: |
           set -eo pipefail
-          cd anneal
+          cd anneal/v1
           
           CUR_VER=$(cargo metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "cargo-anneal").version')
           
@@ -96,7 +96,7 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
         run: |
           set -eo pipefail
-          cd anneal
+          cd anneal/v1
           ./tools/pre-publish.sh
           cargo publish --allow-dirty --registry crates-io
 
@@ -150,13 +150,13 @@ jobs:
 
           ./ci/release_anneal_version.sh "$VERSION"
 
-          python3 anneal/tools/check-release-pr-files.py \
+          python3 anneal/v1/tools/check-release-pr-files.py \
             --context "Release version bump" \
             --include-untracked \
-            --allowed anneal/Cargo.lock \
-            --allowed anneal/Cargo.toml \
-            --allowed anneal/README.md \
-            --required anneal/Cargo.toml
+            --allowed anneal/v1/Cargo.lock \
+            --allowed anneal/v1/Cargo.toml \
+            --allowed anneal/v1/README.md \
+            --required anneal/v1/Cargo.toml
 
           git diff --binary > anneal-release-source.patch
           if [ ! -s anneal-release-source.patch ]; then
@@ -284,33 +284,33 @@ jobs:
           set -eo pipefail
           ARCHIVE_NAME="anneal-toolchain-${TARGET}.tar.zst"
           MAX_GITHUB_RELEASE_ASSET_SIZE=2147483647
-          mkdir -p anneal/v2/target anneal/release-download-check anneal/release-metadata
+          mkdir -p anneal/target anneal/v1/release-download-check anneal/v1/release-metadata
 
-          nix build ./anneal/v2#omnibus-archive-ci --out-link "anneal/v2/target/${ARCHIVE_NAME}"
-          cp -L "anneal/v2/target/${ARCHIVE_NAME}" "anneal/${ARCHIVE_NAME}"
-          ARCHIVE_SIZE="$(python3 -c 'import os, sys; print(os.path.getsize(sys.argv[1]))' "anneal/${ARCHIVE_NAME}")"
+          nix build ./anneal#omnibus-archive-ci --out-link "anneal/target/${ARCHIVE_NAME}"
+          cp -L "anneal/target/${ARCHIVE_NAME}" "anneal/v1/${ARCHIVE_NAME}"
+          ARCHIVE_SIZE="$(python3 -c 'import os, sys; print(os.path.getsize(sys.argv[1]))' "anneal/v1/${ARCHIVE_NAME}")"
           printf 'Built %s (%s bytes)\n' "$ARCHIVE_NAME" "$ARCHIVE_SIZE"
           if [ "$ARCHIVE_SIZE" -gt "$MAX_GITHUB_RELEASE_ASSET_SIZE" ]; then
             echo "::error::${ARCHIVE_NAME} is ${ARCHIVE_SIZE} bytes, which exceeds GitHub's ${MAX_GITHUB_RELEASE_ASSET_SIZE}-byte release asset limit."
             exit 1
           fi
 
-          gh release upload "$TAG_NAME" "anneal/${ARCHIVE_NAME}" --repo "$GH_REPO" --clobber
+          gh release upload "$TAG_NAME" "anneal/v1/${ARCHIVE_NAME}" --repo "$GH_REPO" --clobber
           gh release download "$TAG_NAME" \
             --repo "$GH_REPO" \
             --pattern "$ARCHIVE_NAME" \
-            --dir anneal/release-download-check \
+            --dir anneal/v1/release-download-check \
             --clobber
-          cmp "anneal/${ARCHIVE_NAME}" "anneal/release-download-check/${ARCHIVE_NAME}"
+          cmp "anneal/v1/${ARCHIVE_NAME}" "anneal/v1/release-download-check/${ARCHIVE_NAME}"
 
           url="https://github.com/${GH_REPO}/releases/download/${TAG_NAME}/${ARCHIVE_NAME}"
-          python3 anneal/tools/collect-release-archive-metadata.py \
-            --archive "anneal/release-download-check/${ARCHIVE_NAME}" \
+          python3 anneal/v1/tools/collect-release-archive-metadata.py \
+            --archive "anneal/v1/release-download-check/${ARCHIVE_NAME}" \
             --target "$TARGET" \
             --os "$CARGO_OS" \
             --arch "$CARGO_ARCH" \
             --url "$url" \
-            --out "anneal/release-metadata/${TARGET}.json"
+            --out "anneal/v1/release-metadata/${TARGET}.json"
 
       - name: Restore AppArmor restriction
         if: always() && runner.os == 'Linux'
@@ -320,7 +320,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: anneal-toolchain-metadata-${{ matrix.target }}
-          path: anneal/release-metadata/${{ matrix.target }}.json
+          path: anneal/v1/release-metadata/${{ matrix.target }}.json
           if-no-files-found: error
           retention-days: 1
 
@@ -359,7 +359,7 @@ jobs:
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: anneal-toolchain-metadata-*
-          path: anneal/release-metadata
+          path: anneal/v1/release-metadata
           merge-multiple: true
 
       - name: Update Anneal archive metadata
@@ -367,27 +367,27 @@ jobs:
           TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
         run: |
           set -eo pipefail
-          python3 anneal/tools/update-exocrate-metadata.py \
-            --cargo-toml anneal/Cargo.toml \
-            --metadata-dir anneal/release-metadata \
+          python3 anneal/v1/tools/update-exocrate-metadata.py \
+            --cargo-toml anneal/v1/Cargo.toml \
+            --metadata-dir anneal/v1/release-metadata \
             --expected-release-tag "$TAG_NAME" \
             --require-all
 
           rm -f anneal-release-source.patch
-          rm -rf anneal/release-metadata
+          rm -rf anneal/v1/release-metadata
 
-          python3 anneal/tools/check-release-pr-files.py \
+          python3 anneal/v1/tools/check-release-pr-files.py \
             --context "Release workflow" \
             --include-untracked \
-            --allowed anneal/Cargo.lock \
-            --allowed anneal/Cargo.toml \
-            --allowed anneal/README.md \
-            --required anneal/Cargo.toml
+            --allowed anneal/v1/Cargo.lock \
+            --allowed anneal/v1/Cargo.toml \
+            --allowed anneal/v1/README.md \
+            --required anneal/v1/Cargo.toml
 
       - name: Submit PR
         id: submit-pr-upstream
         if: github.repository == 'google/zerocopy'
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.0 # zizmor: ignore[superfluous-actions]
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1 # zizmor: ignore[superfluous-actions]
         with:
           commit-message: "Release Anneal ${{ github.event.inputs.version }}"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
@@ -396,16 +396,16 @@ jobs:
           base: ${{ github.event.inputs.branch }}
           branch: anneal-release-${{ github.event.inputs.version }}
           add-paths: |
-            anneal/Cargo.lock
-            anneal/Cargo.toml
-            anneal/README.md
+            anneal/v1/Cargo.lock
+            anneal/v1/Cargo.toml
+            anneal/v1/README.md
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
 
       - name: Submit PR (fork test)
         id: submit-pr-fork
         if: github.repository != 'google/zerocopy'
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.0 # zizmor: ignore[superfluous-actions]
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1 # zizmor: ignore[superfluous-actions]
         with:
           commit-message: "Release Anneal ${{ github.event.inputs.version }}"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
@@ -414,9 +414,9 @@ jobs:
           base: ${{ github.event.inputs.branch }}
           branch: anneal-release-${{ github.event.inputs.version }}
           add-paths: |
-            anneal/Cargo.lock
-            anneal/Cargo.toml
-            anneal/README.md
+            anneal/v1/Cargo.lock
+            anneal/v1/Cargo.toml
+            anneal/v1/README.md
           token: ${{ github.token }}
 
       - name: Add labels

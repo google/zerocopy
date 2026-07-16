@@ -1,213 +1,154 @@
-//! Subcommand for installing Anneal dependencies.
-
-use std::{path::PathBuf, process::Command};
+// Copyright 2026 The Fuchsia Authors
+//
+// Licensed under the 2-Clause BSD License <LICENSE-BSD or
+// https://opensource.org/license/bsd-2-clause>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
 
 use anyhow::Context as _;
 
 pub struct SetupArgs {
-    pub local_archive: Option<PathBuf>,
+    pub local_archive: Option<std::path::PathBuf>,
 }
 
-pub const CONFIG: exocrate::Config = exocrate::Config {
-    rel_dir_path: &["anneal", "toolchain"],
-    version_slug: env!("ANNEAL_EXOCRATE_VERSION_SLUG"),
-};
+exocrate::config! {
+    pub const CONFIG: Config = Config {
+        rel_dir_path: [".anneal", "toolchain"],
+        versioned_files: &["../Cargo.toml", "../Cargo.lock"],
+    };
+}
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+exocrate::parse_remote_archive! {
+    pub const REMOTE: RemoteArchive = "Cargo.toml" [
+        (linux, x86_64),
+        (macos, x86_64),
+        (linux, aarch64),
+        (macos, aarch64),
+    ];
+}
+
 pub enum Tool {
+    Cargo,
     Charon,
-    #[allow(dead_code)]
-    CharonDriver,
-    Aeneas,
+    Rustc,
 }
 
 impl Tool {
     pub fn name(&self) -> &'static str {
         match self {
+            Self::Cargo => "cargo",
             Self::Charon => "charon",
-            Self::CharonDriver => "charon-driver",
-            Self::Aeneas => "aeneas",
+            Self::Rustc => "rustc",
         }
     }
 
-    pub fn path(&self, toolchain: &Toolchain) -> PathBuf {
+    pub fn path(&self, toolchain: &Toolchain) -> std::path::PathBuf {
         match self {
-            Self::Charon | Self::CharonDriver | Self::Aeneas => {
-                toolchain.aeneas_bin_dir().join(self.name())
-            }
+            Self::Cargo | Self::Rustc => toolchain.rust_bin().join(self.name()),
+            Self::Charon => toolchain.aeneas_bin_dir().join(self.name()),
         }
     }
 }
 
 const AENEAS_DIR: &str = "aeneas";
-const AENEAS_BACKENDS_DIR: &str = "backends";
-const AENEAS_LEAN_DIR: &str = "lean";
-const BIN_DIR: &str = "bin";
-const LIB_DIR: &str = "lib";
-const LEAN_SYSROOT: &str = "lean";
 const RUST_SYSROOT: &str = "rust";
+const AENEAS_BIN_DIR: &str = "bin";
+const RUST_BIN_DIR: &str = "bin";
+const RUST_LIB_DIR: &str = "lib";
 
 pub struct Toolchain {
-    pub root: PathBuf,
+    root: std::path::PathBuf,
 }
 
 impl Toolchain {
     pub fn resolve() -> anyhow::Result<Self> {
+        let location = resolve_location();
         let root = CONFIG
-            .resolve_installation_dir(location())
+            .resolve_installation_dir(location)
             .context("Toolchain not installed. Please run 'cargo anneal setup' first.")?;
         Ok(Self { root })
     }
 
-    pub fn bin_dir(&self) -> PathBuf {
-        self.aeneas_bin_dir()
+    #[cfg(all(test, feature = "exocrate_tests"))]
+    pub fn root(&self) -> &std::path::Path {
+        &self.root
     }
 
-    pub fn cache_dir(&self) -> PathBuf {
-        self.root.join("lake-cache")
+    pub fn aeneas_bin_dir(&self) -> std::path::PathBuf {
+        self.root.join(AENEAS_DIR).join(AENEAS_BIN_DIR)
     }
 
-    pub fn aeneas_root(&self) -> PathBuf {
-        self.root.join(AENEAS_DIR)
-    }
-
-    pub fn aeneas_bin_dir(&self) -> PathBuf {
-        self.aeneas_root().join(BIN_DIR)
-    }
-
-    pub fn aeneas_lean_dir(&self) -> PathBuf {
-        self.aeneas_root().join(AENEAS_BACKENDS_DIR).join(AENEAS_LEAN_DIR)
-    }
-
-    pub fn rust_sysroot(&self) -> PathBuf {
+    pub fn rust_sysroot(&self) -> std::path::PathBuf {
         self.root.join(RUST_SYSROOT)
     }
 
-    pub fn rust_bin(&self) -> PathBuf {
-        self.rust_sysroot().join(BIN_DIR)
+    pub fn rust_bin(&self) -> std::path::PathBuf {
+        self.rust_sysroot().join(RUST_BIN_DIR)
     }
 
-    pub fn rust_lib(&self) -> PathBuf {
-        self.rust_sysroot().join(LIB_DIR)
+    pub fn rust_lib(&self) -> std::path::PathBuf {
+        self.rust_sysroot().join(RUST_LIB_DIR)
     }
 
-    pub fn lean_sysroot(&self) -> PathBuf {
-        self.root.join(LEAN_SYSROOT)
-    }
-
-    pub fn lean_bin(&self) -> PathBuf {
-        self.lean_sysroot().join(BIN_DIR)
-    }
-
-    pub fn command(&self, tool: Tool) -> Command {
-        if std::env::var("ANNEAL_USE_PATH_FOR_TOOLS").is_ok() {
-            Command::new(tool.name())
-        } else {
-            Command::new(tool.path(self))
+    pub fn command(&self, tool: Tool) -> anyhow::Result<std::process::Command> {
+        let mut cmd = std::process::Command::new(tool.path(self));
+        cmd.env_clear();
+        match tool {
+            Tool::Cargo | Tool::Rustc => {}
+            Tool::Charon => {
+                // The archive supplies Rust tools, but not host build tools
+                // such as the linker. Keep the caller's `PATH` after our Rust
+                // bin directory so Cargo builds use the managed Rust toolchain
+                // while still finding those host tools.
+                cmd.env("CHARON_TOOLCHAIN_IS_IN_PATH", "1")
+                    .env("PATH", prepend_current_path(self.rust_bin())?)
+                    .env(rust_library_path_env_var(), self.rust_lib());
+            }
         }
+        Ok(cmd)
     }
+}
+
+fn prepend_current_path(path: std::path::PathBuf) -> anyhow::Result<std::ffi::OsString> {
+    let mut paths = vec![path];
+    if let Some(current_path) = std::env::var_os("PATH") {
+        paths.extend(std::env::split_paths(&current_path));
+    }
+    std::env::join_paths(paths).context("failed to construct PATH for tool command")
+}
+
+/// Returns the platform library search path variable used by Rust tools.
+pub(crate) fn rust_library_path_env_var() -> &'static str {
+    if cfg!(target_os = "macos") { "DYLD_LIBRARY_PATH" } else { "LD_LIBRARY_PATH" }
 }
 
 pub fn run_setup(args: SetupArgs) -> anyhow::Result<()> {
-    let local_archive = args
-        .local_archive
-        .or_else(|| std::env::var_os("ANNEAL_SETUP_LOCAL_ARCHIVE").map(PathBuf::from));
-    let source = match local_archive {
+    let location = resolve_location();
+    let source = match args.local_archive {
         Some(local_archive) => exocrate::Source::Local(local_archive),
-        None => exocrate::Source::Remote(remote_archive()),
+        None => exocrate::Source::Remote(REMOTE),
     };
 
-    let installation_dir = CONFIG
-        .resolve_installation_dir_or_install(location(), source)
+    let (installation_dir, status) = CONFIG
+        .resolve_installation_dir_or_install(location, source)
         .context("failed to resolve-or-install dependencies")?;
-    log::info!("anneal toolchain is installed at {:?}", installation_dir);
+    match status {
+        exocrate::ResolvedOrInstalled::ResolvedExisting => {
+            log::warn!("anneal toolchain was already installed at {:?}", installation_dir);
+        }
+        exocrate::ResolvedOrInstalled::NewlyInstalled => {
+            log::info!("anneal toolchain freshly installed at {:?}", installation_dir);
+        }
+    }
     Ok(())
 }
 
-fn location() -> exocrate::Location {
-    if let Some(dir) = std::env::var_os("ANNEAL_TOOLCHAIN_DIR") {
-        exocrate::Location::Custom(PathBuf::from(dir))
-    } else if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok()
-        || std::env::var("__ANNEAL_LOCAL_DEV").is_ok()
-    {
+fn resolve_location() -> exocrate::Location {
+    if std::env::var("__ANNEAL_LOCAL_DEV").is_ok() {
         exocrate::Location::LocalDev
     } else {
         exocrate::Location::UserGlobal
-    }
-}
-
-fn remote_archive() -> exocrate::RemoteArchive {
-    match (std::env::consts::OS, std::env::consts::ARCH) {
-        ("linux", "x86_64") => remote_archive_for(
-            env!("ANNEAL_EXOCRATE_LINUX_X86_64_URL"),
-            env!("ANNEAL_EXOCRATE_LINUX_X86_64_SHA256"),
-        ),
-        ("macos", "x86_64") => remote_archive_for(
-            env!("ANNEAL_EXOCRATE_MACOS_X86_64_URL"),
-            env!("ANNEAL_EXOCRATE_MACOS_X86_64_SHA256"),
-        ),
-        ("linux", "aarch64") => remote_archive_for(
-            env!("ANNEAL_EXOCRATE_LINUX_AARCH64_URL"),
-            env!("ANNEAL_EXOCRATE_LINUX_AARCH64_SHA256"),
-        ),
-        ("macos", "aarch64") => remote_archive_for(
-            env!("ANNEAL_EXOCRATE_MACOS_AARCH64_URL"),
-            env!("ANNEAL_EXOCRATE_MACOS_AARCH64_SHA256"),
-        ),
-        (os, arch) => panic!("unsupported platform: {os}-{arch}"),
-    }
-}
-
-fn remote_archive_for(url: &'static str, sha256: &'static str) -> exocrate::RemoteArchive {
-    exocrate::RemoteArchive {
-        url,
-        sha256: decode_hex(sha256).expect("package.metadata.exocrate sha256 must be valid hex"),
-    }
-}
-
-fn decode_hex(s: &str) -> Option<[u8; 32]> {
-    let bytes = s.as_bytes();
-    if bytes.len() != 64 {
-        return None;
-    }
-    let mut res = [0u8; 32];
-    for i in 0..32 {
-        let h_nib = decode_nibble(bytes[i * 2])?;
-        let l_nib = decode_nibble(bytes[i * 2 + 1])?;
-        res[i] = (h_nib << 4) | l_nib;
-    }
-    Some(res)
-}
-
-fn decode_nibble(c: u8) -> Option<u8> {
-    match c {
-        b'0'..=b'9' => Some(c - b'0'),
-        b'a'..=b'f' => Some(c - b'a' + 10),
-        b'A'..=b'F' => Some(c - b'A' + 10),
-        _ => None,
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn tool_paths_use_omnibus_layout() {
-        let toolchain = Toolchain { root: PathBuf::from("/tmp/toolchain") };
-
-        assert_eq!(toolchain.bin_dir(), PathBuf::from("/tmp/toolchain/aeneas/bin"));
-        assert_eq!(
-            toolchain.aeneas_lean_dir(),
-            PathBuf::from("/tmp/toolchain/aeneas/backends/lean")
-        );
-        assert_eq!(
-            Tool::Charon.path(&toolchain),
-            PathBuf::from("/tmp/toolchain/aeneas/bin/charon")
-        );
-        assert_eq!(
-            Tool::Aeneas.path(&toolchain),
-            PathBuf::from("/tmp/toolchain/aeneas/bin/aeneas")
-        );
     }
 }

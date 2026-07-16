@@ -1,0 +1,504 @@
+use std::{
+    collections::{HashMap, HashSet},
+    ffi::OsStr,
+    path::{Path, PathBuf},
+    sync::mpsc::{self, Sender},
+};
+
+use anyhow::Result;
+use sha2::{Digest as _, Sha256};
+
+use crate::{
+    parse::{self, ParsedLeanItem},
+    resolve::{AnnealTargetKind, AnnealTargetName, LockedRoots, Roots},
+};
+
+#[derive(Clone)]
+struct ScannerContext {
+    err_tx: Sender<miette::Report>,
+    // `ParsedLeanItem`s must have their `module_path` field updated to be
+    // relative to the crate root.
+    item_tx: Sender<(AnnealTargetName, ParsedLeanItem<crate::parse::hkd::Safe>, String)>,
+    name: AnnealTargetName,
+    current_prefix: Vec<String>,
+}
+
+/// A scanned artifact containing all the necessary information to generate
+/// a Lean specification.
+///
+/// This represents a single Rust target (library, binary, etc.) and includes
+/// the list of discovered Anneal items and the calculated entry points for
+/// Charon.
+pub struct AnnealArtifact {
+    pub name: AnnealTargetName,
+    pub target_kind: AnnealTargetKind,
+    /// The path to the crate's `Cargo.toml`.
+    pub manifest_path: PathBuf,
+    pub items: Vec<ParsedLeanItem<crate::parse::hkd::Safe>>,
+    // NOTE: We store `start_from` as a `HashSet` rather than a `Vec` as an
+    // optimization: when we encounter items which we can't name (which carry
+    // Anneal annotations), we add their parent module to the list of
+    // entrypoints. If there are multiple items in the same module, this can
+    // lead to duplication in the list of entrypoints. Storing them in a
+    // `HashSet` avoids us having to de-dup later.
+    pub start_from: HashSet<String>,
+}
+
+impl AnnealArtifact {
+    /// Returns a unique, Lean-compatible "slug" for this artifact that matches
+    /// the name that Aeneas will expect for the corresponding Lean module.
+    ///
+    /// Guarantees uniqueness based on manifest path even if multiple packages
+    /// have the same name. The slug is guaranteed to be a valid Lean
+    /// identifier (no hyphens).
+    pub fn artifact_slug(&self) -> String {
+        fn hash(data: &[u8]) -> u64 {
+            let mut hasher = Sha256::new();
+            hasher.update(data);
+            let result = hasher.finalize();
+            let mut bytes = [0u8; 8];
+            bytes.copy_from_slice(&result[0..8]);
+            u64::from_le_bytes(bytes)
+        }
+
+        // Double-hash to make sure we can distinguish between e.g.
+        // (manifest_path, target_name) = ("abc", "def") and ("ab", "cdef"),
+        // which would hash identically if we just hashed their concatenation.
+        //
+        // Use SHA-256 not for security but rather stability – Rust's
+        // `DefaultHasher` doesn't guarantee stability even across runs of the
+        // same binary.
+        //
+        // `ANNEAL_HASH_WITH_REMOVED_PREFIX` allows our integration test
+        // framework to strip the randomized sandbox prefix from the manifest
+        // path before hashing, ensuring deterministic hashes even when running
+        // in a sandboxed environment.
+        let mut manifest_path_to_hash = self.manifest_path.as_path();
+        if let Ok(prefix) = std::env::var("ANNEAL_HASH_WITH_REMOVED_PREFIX") {
+            if let Ok(stripped) = self.manifest_path.strip_prefix(&prefix) {
+                manifest_path_to_hash = stripped;
+            }
+        }
+        let h0 = hash(manifest_path_to_hash.as_os_str().as_encoded_bytes());
+        let h1 = hash(self.name.target_name.as_bytes());
+        let h2 = hash(&[self.target_kind as u8]);
+        let hashes = [h0, h1, h2];
+        let h = hash(&hashes.map(u64::to_ne_bytes).concat());
+
+        // Converts kebab-case -> PascalCase.
+        // We convert both package and target names to PascalCase to ensure
+        // the generated Lean module name is a valid and idiomatic Lean
+        // identifier, matching Aeneas's output format.
+        let to_pascal = |s: &str| {
+            s.split(['-', '_'])
+                .map(|segment| {
+                    let mut chars = segment.chars();
+                    match chars.next() {
+                        None => String::new(),
+                        Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
+                    }
+                })
+                .collect::<String>()
+        };
+
+        let pkg = to_pascal(self.name.package_name.as_str());
+        let target = to_pascal(&self.name.target_name);
+
+        // We use the hash to ensure uniqueness.
+        format!("{}{}{:08x}", pkg, target, h)
+    }
+
+    /// Returns the name of the `.llbc` file to use for this artifact.
+    pub fn llbc_file_name(&self) -> String {
+        format!("{}.llbc", self.artifact_slug())
+    }
+
+    /// Returns the name of the `.lean` spec file to use for this artifact.
+    pub fn lean_spec_file_name(&self) -> String {
+        format!("{}.lean", self.artifact_slug())
+    }
+
+    /// Returns the absolute path to the .llbc file.
+    ///
+    /// This method requires `LockedRoots` to ensure that the caller holds the
+    /// build lock before accessing the build artifact path.
+    pub fn llbc_path(&self, roots: &LockedRoots) -> PathBuf {
+        roots.llbc_root().join(self.llbc_file_name())
+    }
+
+    /// Returns true if this artifact contains items that should result in a `Funs.lean` file.
+    pub fn has_functions(&self) -> bool {
+        self.items.iter().any(|i| {
+            matches!(
+                i.item,
+                crate::parse::ParsedItem::Function(_) | crate::parse::ParsedItem::Impl(_)
+            )
+        })
+    }
+
+    /// Returns true if this artifact contains items that should result in a `Types.lean` file.
+    pub fn has_types(&self) -> bool {
+        self.items.iter().any(|i| {
+            matches!(i.item, crate::parse::ParsedItem::Type(_) | crate::parse::ParsedItem::Trait(_))
+        })
+    }
+}
+
+/// Scans the workspace to identify Anneal entry points (`/// ```lean` blocks)
+/// and collects targets for verification.
+pub fn scan_workspace(roots: &Roots) -> Result<Vec<AnnealArtifact>> {
+    log::trace!("scan_workspace({:?})", roots);
+
+    let (err_tx, err_rx) = mpsc::channel::<miette::Report>();
+    let (item_tx, item_rx) =
+        mpsc::channel::<(AnnealTargetName, ParsedLeanItem<crate::parse::hkd::Safe>, String)>();
+
+    let monitor_handle = std::thread::spawn(move || {
+        let mut error_count = 0;
+        for err in err_rx {
+            if error_count == 0 {
+                eprintln!("\n=== Anneal Verification Failed ===");
+            }
+            error_count += 1;
+            // Use eprintln! to print immediately to stderr
+            // `miette::Report` natively formats with rich diagnostic spans via `{:?}`.
+            eprintln!("\n[Anneal Error] {:?}", err);
+        }
+        error_count
+    });
+
+    rayon::scope(|s| {
+        for target in &roots.roots {
+            let ctx = ScannerContext {
+                err_tx: err_tx.clone(),
+                item_tx: item_tx.clone(),
+                name: target.name.clone(),
+                current_prefix: vec!["crate".to_string()],
+            };
+            s.spawn(move |s| {
+                process_file_recursive(
+                    s,
+                    &target.src_path,
+                    ctx,
+                    false, // Initial call is top-level, so not inside block
+                    Vec::new(),
+                )
+            });
+        }
+    });
+
+    // Inform the monitor thread that no more errors will be sent, causing it to
+    // exit.
+    drop(err_tx);
+
+    let (mut entry_points, mut start_from_map) = {
+        drop(item_tx);
+        let mut entry_points =
+            HashMap::<AnnealTargetName, Vec<ParsedLeanItem<crate::parse::hkd::Safe>>>::new();
+        let mut start_from_map = HashMap::<AnnealTargetName, HashSet<String>>::new();
+        for (target, item, sf_str) in item_rx {
+            start_from_map.entry(target.clone()).or_default().insert(sf_str);
+            entry_points.entry(target).or_default().push(item);
+        }
+        (entry_points, start_from_map)
+    };
+
+    // Wait for the monitor to finish flushing the errors.
+    let count = monitor_handle.join().expect("Error monitor thread panicked");
+
+    if count > 0 {
+        return Err(anyhow::anyhow!("Aborting due to {} previous errors.", count));
+    }
+
+    Ok(roots
+        .roots
+        .iter()
+        .filter_map(|target| {
+            Some(AnnealArtifact {
+                name: target.name.clone(),
+                target_kind: target.kind,
+                manifest_path: target.manifest_path.clone(),
+                items: entry_points.remove(&target.name)?,
+                start_from: start_from_map.remove(&target.name).unwrap_or_default(),
+            })
+        })
+        .collect())
+}
+
+// NOTE: It might be tempting to try to deduplicate files to avoid re-processing
+// a file that is reachable via multiple paths. However, this is incorrect, as
+// this only happens if the file is named in multiple `#[path]` attributes, in
+// which case it logically constitutes a distinct module each time it is
+// referenced.
+fn process_file_recursive<'a>(
+    scope: &rayon::Scope<'a>,
+    src_path: &Path,
+    ctx: ScannerContext,
+    inside_block: bool,
+    mut ancestors: Vec<PathBuf>,
+) {
+    log::trace!("process_file_recursive(src_path: {:?})", src_path);
+
+    // Canonicalize the path to ensure we don't process the same file multiple
+    // times (e.g. via symlinks or different relative paths).
+    let src_path = match std::fs::canonicalize(src_path) {
+        Ok(p) => p,
+        Err(e) => {
+            // It is valid for a module to be declared but not exist (e.g., if
+            // it is cfg-gated for another platform). In strict Rust, we would
+            // check the cfg attributes, but since we are just scanning, it is
+            // safe to warn and return.
+            //
+            // Note: The scanner is currently CFG-agnostic. It does not evaluate
+            // `#[cfg(...)]` attributes, so it may attempt to scan files that
+            // are disabled for the current target (e.g., Windows-specific code
+            // on Linux). This is a known limitation that may cause build failures
+            // in Charon if it tries to verify non-existent items.
+            log::debug!("Skipping unreachable or missing file {:?}: {}", src_path, e);
+            return;
+        }
+    };
+
+    // Cycle detection: prevent infinite recursion on symlinks or recursive mod
+    // declarations, while still allowing identical files to be mounted in
+    // different branches of the tree. A cycle would represent an invalid crate
+    // anyway (i.e., an invalid set of `#[path]` attributes).
+    //
+    // Note: This check is purely path-based. It does not inspect the content of
+    // the file.
+    if ancestors.contains(&src_path) {
+        return;
+    }
+    ancestors.push(src_path.clone());
+
+    let result = parse::read_file_and_scan_compilation_unit(
+        &src_path,
+        inside_block,
+        |_src, res| match res {
+            Ok(mut item) => {
+                item.module_path.splice(0..0, ctx.current_prefix.clone());
+
+                let unreliable = match &item.item {
+                    crate::parse::ParsedItem::Impl(_) => true,
+                    crate::parse::ParsedItem::Function(f) => {
+                        matches!(
+                            f.item,
+                            crate::parse::FunctionItem::Impl(..)
+                                | crate::parse::FunctionItem::Trait(_)
+                                | crate::parse::FunctionItem::Foreign(_)
+                        )
+                    }
+                    _ => false,
+                };
+                let module_path = item.module_path.join("::");
+                let start_from_str = if unreliable {
+                    // For items where we cannot reliably determine the fully qualified
+                    // name (e.g., items inside `impl` blocks or `trait` definitions),
+                    // we must fall back to using the containing module as the
+                    // entry point. This forces Charon to analyze the entire module,
+                    // which is less efficient but ensures we don't miss the item.
+                    module_path
+                } else {
+                    format!("{}::{}", module_path, item.item.name().unwrap())
+                };
+
+                use crate::parse::hkd::LiftToSafe;
+                // Before sending the parsed item across the thread boundary
+                // (from the `rayon` worker back to the main thread), we must
+                // "lift" the AST nodes. This internally drops the rich,
+                // non-`Send` `syn` trees stored in the `Local` mode,
+                // transforming them into the lightweight, `Send`-safe `Safe`
+                // equivalents (e.g., `SafeType` and `SafeSignature`).
+                ctx.item_tx.send((ctx.name.clone(), item.lift(), start_from_str)).unwrap();
+            }
+            Err(e) => {
+                let _ = ctx.err_tx.send(miette::Report::new(e));
+            }
+        },
+    );
+
+    // After scanning the current file, we look for declared submodules that
+    // were not loaded inline (i.e., `mod foo;` instead of `mod foo { ... }`).
+    // `read_file_and_scan_compilation_unit` returns a list of these "unloaded"
+    // modules so we can resolve their paths and recurse.
+    let (_, unloaded_modules) = match result {
+        Ok(res) => res,
+        Err(e) => {
+            let _ = ctx.err_tx.send(miette::miette!("{:#}", e));
+            return;
+        }
+    };
+
+    // Determine the directory to search for child modules in.
+    // - For `mod.rs`, `lib.rs`, `main.rs`, children are in the parent directory.
+    //   e.g. `src/lib.rs` -> `mod foo` -> `src/foo.rs`
+    // - For `my_mod.rs`, children are in a sibling directory of the same name.
+    //   e.g. `src/my_mod.rs` -> `mod sub` -> `src/my_mod/sub.rs`
+    let file_stem = src_path.file_stem().and_then(OsStr::to_str).unwrap_or("");
+    let base_dir = if matches!(file_stem, "mod" | "lib" | "main") {
+        // If we are in `mod.rs`, `lib.rs`, or `main.rs`, then `mod foo;`
+        // looks for `foo.rs` or `foo/mod.rs` in the *same* directory.
+        //
+        // e.g. `src/lib.rs` -> `mod foo` -> `src/foo.rs`
+        src_path.parent().unwrap_or(&src_path).to_path_buf()
+    } else {
+        // If we are in `src/foo.rs`, then `mod bar;` looks for
+        // `src/foo/bar.rs` or `src/foo/bar/mod.rs`.
+        //
+        // e.g. src/foo.rs -> src/foo/
+        src_path.with_extension("")
+    };
+
+    // Resolve and queue child modules for processing.
+    for module in unloaded_modules {
+        if let Some(mod_path) =
+            resolve_module_path(&base_dir, &module.name, module.path_attr.as_deref())
+        {
+            // Spawn new tasks for discovered modules.
+            let mut ctx_clone = ctx.clone();
+            ctx_clone.current_prefix.push(module.name);
+
+            // TODO: Can we do something more efficient than cloning here? Maybe
+            // a linked list?
+            let ancestors = ancestors.clone();
+            scope.spawn(move |s| {
+                process_file_recursive(s, &mod_path, ctx_clone, module.inside_block, ancestors)
+            })
+        } else {
+            // This is an expected condition – it shows up when modules are
+            // conditionally compiled. Instead of implementing conditional
+            // compilation ourselves, we can just let rustc error later if
+            // this is actually an error.
+            //
+            // Example: `#[cfg(windows)] mod win_only;` on Linux. `win_only.rs`
+            // might not exist at all, or might verify successfully but be
+            // ignored by rustc. We just skip it here.
+            log::debug!("Could not resolve module '{}' in {:?}", module.name, src_path);
+        }
+    }
+}
+
+/// Resolves a module name to a file path, checking standard Rust locations.
+///
+/// * `base_dir`: The directory containing the parent file.
+/// * `mod_name`: The name of the module (e.g., "foo").
+/// * `path_attr`: The optional `#[path = "..."]` attribute string.
+fn resolve_module_path(
+    base_dir: &Path,
+    mod_name: &str,
+    path_attr: Option<&str>,
+) -> Option<PathBuf> {
+    log::trace!(
+        "resolve_module_path(base_dir: {:?}, mod_name: {:?}, path_attr: {:?})",
+        base_dir,
+        mod_name,
+        path_attr
+    );
+
+    // If `#[path = "..."]` is present, it overrides the standard lookup logic.
+    // The path is always relative to the current module's directory.
+    if let Some(custom_path) = path_attr {
+        let p = base_dir.join(custom_path);
+        if p.exists() {
+            return Some(p);
+        }
+        return None;
+    }
+
+    // Standard lookup: `foo.rs`
+    let inline = base_dir.join(format!("{}.rs", mod_name));
+    if inline.exists() {
+        return Some(inline);
+    }
+
+    // Standard lookup: `foo/mod.rs`
+    let nested = base_dir.join(mod_name).join("mod.rs");
+    if nested.exists() {
+        return Some(nested);
+    }
+
+    None
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use cargo_metadata::PackageName;
+
+    use super::*;
+    use crate::resolve::{AnnealTargetKind, AnnealTargetName};
+
+    #[test]
+    fn test_llbc_file_name_collision() {
+        let name_lib = AnnealTargetName {
+            package_name: PackageName::new("pkg".to_string()),
+            target_name: "name".to_string(),
+            kind: AnnealTargetKind::Lib,
+        };
+
+        let artifact_lib = AnnealArtifact {
+            name: name_lib.clone(),
+            target_kind: AnnealTargetKind::Lib,
+            manifest_path: PathBuf::from("Cargo.toml"),
+            start_from: std::collections::HashSet::new(),
+            items: vec![],
+        };
+
+        let name_bin = AnnealTargetName {
+            package_name: PackageName::new("pkg".to_string()),
+            target_name: "name".to_string(),
+            kind: AnnealTargetKind::Bin,
+        };
+
+        let artifact_bin = AnnealArtifact {
+            name: name_bin,
+            target_kind: AnnealTargetKind::Bin,
+            manifest_path: PathBuf::from("Cargo.toml"),
+            start_from: std::collections::HashSet::new(),
+            items: vec![],
+        };
+
+        let artifact_workspace_collision = AnnealArtifact {
+            name: name_lib.clone(),
+            target_kind: AnnealTargetKind::Lib,
+            // A different manifest but identical package/target semantics
+            manifest_path: PathBuf::from("crates/other/Cargo.toml"),
+            start_from: std::collections::HashSet::new(),
+            items: vec![],
+        };
+
+        // The file names must be distinct because of the trailing hash.
+        assert_ne!(artifact_lib.llbc_file_name(), artifact_bin.llbc_file_name());
+        assert!(artifact_lib.llbc_file_name().starts_with("PkgName"));
+        assert!(artifact_bin.llbc_file_name().starts_with("PkgName"));
+
+        // Distinct `manifest_path`s must prevent collisions even when the
+        // package name and target semantics are otherwise identical.
+        assert_ne!(artifact_lib.llbc_file_name(), artifact_workspace_collision.llbc_file_name());
+        assert!(artifact_workspace_collision.llbc_file_name().starts_with("PkgName"));
+    }
+
+    #[test]
+    fn test_lean_spec_file_name_uses_slug() {
+        let name = AnnealTargetName {
+            package_name: PackageName::new("pkg-foo".to_string()),
+            target_name: "name-bar".to_string(),
+            kind: AnnealTargetKind::Lib,
+        };
+
+        let artifact = AnnealArtifact {
+            name,
+            target_kind: AnnealTargetKind::Lib,
+            manifest_path: PathBuf::from("Cargo.toml"),
+            start_from: std::collections::HashSet::new(),
+            items: vec![],
+        };
+
+        // Slug should be PascalCase: PkgFoo_NameBar_<hash>
+        // Spec file should be slug + .lean
+        let spec_name = artifact.lean_spec_file_name();
+        assert!(spec_name.starts_with("PkgFooNameBar"));
+        assert!(spec_name.ends_with(".lean"));
+    }
+}
