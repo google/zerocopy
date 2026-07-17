@@ -1,5 +1,12 @@
 # Anneal
 
+> **Historical V1 prototype:** This directory preserves Anneal V1 for
+> maintenance, reproducibility, and design evidence. The active clean-room V2
+> redesign lives at [`anneal/`](../README.md). V1's syntax, architecture,
+> soundness claims, and proof methodology are not commitments for V2; known
+> lessons and limitations are summarized in
+> [the V2 history](../docs/history/v1-lessons.md).
+
 <img src="docs/images/logo.svg" width="100%">
 
 <p align="center"><em>logo by <a href="https://www.instagram.com/tinyneonspark">tinyneonspark</a></em></p>
