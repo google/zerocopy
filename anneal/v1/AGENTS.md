@@ -6,11 +6,17 @@ license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 This file may not be copied, modified, or distributed except according to
 those terms. -->
 
-# Anneal
+# Anneal V1 agent guide
 
-> **Note to AI Agents:** This document is intended for agents **developing** the
-> Anneal toolchain itself. If you are an agent **using** Anneal, please refer to
-> the `llms.txt` and `docs/agent/` directory instead.
+> **Historical prototype:** This file applies only to `anneal/v1/`. Anneal V2
+> is the clean-room redesign in the parent directory. V1 code, syntax, and
+> architecture are not V2 defaults. Read the [V2 agent guide](../AGENTS.md) and
+> [distilled V1 lessons](../docs/history/v1-lessons.md) before carrying an idea
+> from this subtree into V2.
+
+> **Note to AI Agents:** This document is intended for agents **developing the
+> V1 prototype** itself. If you are an agent **using V1**, please refer to the
+> `llms.txt` and `docs/agent/` directory instead.
 
 ## Basic commands
 
