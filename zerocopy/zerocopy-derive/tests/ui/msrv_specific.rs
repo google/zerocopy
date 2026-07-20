@@ -21,15 +21,15 @@ use self::util::util::AU16;
 
 fn main() {}
 
-// `repr(C, packed(2))` is not equivalent to `repr(C, packed)`.
+// `repr(C, packed(2))` can still have padding between heterogeneous fields.
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, packed(2))]
 struct IntoBytes1<T> {
-    t0: T,
-    // Add a second field to avoid triggering the "repr(C) struct with one
-    // field" special case.
-    t1: T,
+    byte: u8,
+    // For `T = AU16`, this field remains 2-aligned and leaves a padding byte
+    // after `byte`.
+    t: T,
 }
 
 fn is_into_bytes_1<T: IntoBytes>() {

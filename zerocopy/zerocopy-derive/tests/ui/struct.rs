@@ -228,15 +228,15 @@ struct IntoBytes10<T> {
     t: T,
 }
 
-// `repr(C, packed(2))` is not equivalent to `repr(C, packed)`.
+// `repr(C, packed(2))` can still have padding between heterogeneous fields.
 #[derive(IntoBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, packed(2))]
 struct IntoBytes11<T> {
-    t0: T,
-    // Add a second field to avoid triggering the "repr(C) struct with one
-    // field" special case.
-    t1: T,
+    byte: u8,
+    // For `T = AU16`, this field remains 2-aligned and leaves a padding byte
+    // after `byte`.
+    t: T,
 }
 
 fn is_into_bytes_11<T: IntoBytes>() {
@@ -263,6 +263,35 @@ struct IntoBytes12<T> {
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, align(2))]
 struct IntoBytes13([u8]);
+
+// A homogeneous multi-field optimization must still account for an explicit
+// outer alignment. For `T = u8` and `N = 0`, odd-length tails have trailing
+// padding.
+#[derive(IntoBytes)]
+//~[msrv, stable, nightly]^ ERROR: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C, align(2))]
+struct IntoBytes14<T, const N: usize>([T; N], [T]);
+
+// A type captured at a macro invocation site can have the same spelling as a
+// type parameter introduced by the macro while resolving to a different type.
+// The homogeneous `repr(C)` optimization must not treat them as the same type.
+#[cfg(nightly)]
+mod into_bytes_15 {
+    use super::IntoBytes;
+
+    type T = u8;
+
+    zerocopy_derive::__test_hygienically_mixed_into_bytes!();
+
+    fn assert_into_bytes<T: IntoBytes>() {
+        if false {
+            assert_into_bytes::<IntoBytes15<u8>>();
+            assert_into_bytes::<IntoBytes15<u16>>();
+            //~[nightly]^ ERROR: type mismatch resolving `<u8 as Identity>::Type == u16`
+        }
+    }
+}
 
 //
 // Unaligned errors
