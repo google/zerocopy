@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783955274007,
+  "lastUpdate": 1784565424493,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22681,6 +22681,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 678,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "830bc15e5b29dcad061ce9751845e73713907a5f",
+          "message": "[derive] Support `IntoBytes` on homogeneous generic structs (#3488)\n\nSupport deriving `IntoBytes` on unmodified `repr(C)` structs whose\nfields are all `T`, `[T; N]`, or a final `[T]` for the same generic type\nparameter `T`.\n\nAll such fields have the same alignment, and each field's size is a\nmultiple of that alignment. Thus, `repr(C)` introduces neither\ninter-field nor trailing padding.\n\nUse an `Identity<Type = T>` bound to have rustc verify that each field's\nelement type actually resolves to `T`. This guards against\nmacro-generated identifiers which compare equal in the derive but have\ndifferent hygiene contexts.\n\ngherrit-pr-id: Gsxxjwwhqbpepd5p73rd6libcy7n44svt",
+          "timestamp": "2026-07-20T15:53:40Z",
+          "tree_id": "a9de4864ffb4566b5910312bebd30958716e6c45",
+          "url": "https://github.com/google/zerocopy/commit/830bc15e5b29dcad061ce9751845e73713907a5f"
+        },
+        "date": 1784565423121,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 459,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 594,
             "unit": "seconds"
           }
         ]
