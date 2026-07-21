@@ -298,18 +298,20 @@ impl PaddingCheck {
     }
 }
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub(crate) enum Client {
+    ProjectDerive,
     TryFromBytesDerive,
 }
 
 impl ToTokens for Client {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let s = match self {
+            Client::ProjectDerive => "ProjectDerive",
             Client::TryFromBytesDerive => "TryFromBytesDerive",
         };
         let ident = Ident::new(s, Span::call_site());
-        tokens.extend(quote!(#ident));
+        tokens.extend(quote!(project_clients::#ident));
     }
 }
 
@@ -320,26 +322,22 @@ impl Client {
     }
 }
 
+/// Bundles the trait parameters for `HasField` and `ProjectField`.
+#[derive(Clone)]
+pub(crate) struct FieldProjection {
+    pub(crate) variant_id: Box<Expr>,
+    pub(crate) field: Box<Type>,
+    pub(crate) field_id: Box<Expr>,
+}
+
 #[derive(Clone)]
 pub(crate) enum Trait {
     KnownLayout,
-    HasTag {
-        client: Client,
-    },
-    HasField {
-        client: Client,
-        variant_id: Box<Expr>,
-        field: Box<Type>,
-        field_id: Box<Expr>,
-    },
-    ProjectField {
-        client: Client,
-        variant_id: Box<Expr>,
-        field: Box<Type>,
-        field_id: Box<Expr>,
-        invariants: Box<Type>,
-    },
+    HasTag { client: Client },
+    HasField { client: Client, projection: FieldProjection },
+    ProjectField { client: Client, projection: FieldProjection, invariants: Box<Type> },
     Immutable,
+    Project,
     TryFromBytes,
     FromZeros,
     FromBytes,
@@ -368,6 +366,7 @@ impl ToTokens for Trait {
             Trait::KnownLayout => "KnownLayout",
             Trait::HasTag { .. } => "HasTag",
             Trait::Immutable => "Immutable",
+            Trait::Project => "Project",
             Trait::TryFromBytes => "TryFromBytes",
             Trait::FromZeros => "FromZeros",
             Trait::FromBytes => "FromBytes",
@@ -381,14 +380,17 @@ impl ToTokens for Trait {
         let ident = Ident::new(s, Span::call_site());
         let arguments: Option<syn::AngleBracketedGenericArguments> = match self {
             Trait::HasTag { client } => Some(parse_quote!(<#client>)),
-            Trait::HasField { client, variant_id, field, field_id } => {
+            Trait::HasField { client, projection } => {
+                let FieldProjection { variant_id, field, field_id } = projection;
                 Some(parse_quote!(<#client, #field, #variant_id, #field_id>))
             }
-            Trait::ProjectField { client, variant_id, field, field_id, invariants } => {
+            Trait::ProjectField { client, projection, invariants } => {
+                let FieldProjection { variant_id, field, field_id } = projection;
                 Some(parse_quote!(<#client, #field, #invariants, #variant_id, #field_id>))
             }
             Trait::KnownLayout
             | Trait::Immutable
+            | Trait::Project
             | Trait::TryFromBytes
             | Trait::FromZeros
             | Trait::FromBytes
@@ -413,11 +415,13 @@ impl Trait {
                 let client = client.crate_path(ctx);
                 parse_quote!(#zerocopy_crate::HasTag<#client>)
             }
-            Self::HasField { client, variant_id, field, field_id } => {
+            Self::HasField { client, projection } => {
+                let FieldProjection { variant_id, field, field_id } = projection;
                 let client = client.crate_path(ctx);
                 parse_quote!(#zerocopy_crate::HasField<#client, #field, #variant_id, #field_id>)
             }
-            Self::ProjectField { client, variant_id, field, field_id, invariants } => {
+            Self::ProjectField { client, projection, invariants } => {
+                let FieldProjection { variant_id, field, field_id } = projection;
                 let client = client.crate_path(ctx);
                 parse_quote!(
                     #zerocopy_crate::ProjectField<
@@ -825,6 +829,7 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
     quote! {
         #repr
         #[allow(dead_code)]
+        #[derive(Copy, Clone, PartialEq)]
         pub enum ___ZerocopyTag {
             #(#variants,)*
         }

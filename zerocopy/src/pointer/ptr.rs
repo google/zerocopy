@@ -656,6 +656,22 @@ mod _transitions {
             unsafe { self.assume_invariants::<H>() }
         }
 
+        /// Downgrades `self` to shared aliasing.
+        #[inline]
+        #[must_use]
+        pub(super) fn into_shared(self) -> Ptr<'a, T, (Shared, I::Alignment, I::Validity)>
+        where
+            I::Aliasing: Reference,
+        {
+            // SAFETY: `I::Aliasing: Reference` guarantees that the source
+            // aliasing is either `Shared` or `Exclusive`. `Shared` requires no
+            // transition. If it is `Exclusive`, consuming `self` ends the only
+            // permitted access to the referent, so the returned pointer can
+            // soundly carry `Shared` aliasing. The referent type, alignment,
+            // and validity invariants are unchanged.
+            unsafe { self.assume_invariants() }
+        }
+
         /// Assumes that `self`'s referent is validly-aligned for `T` if
         /// required by `A`.
         ///
@@ -911,21 +927,22 @@ mod _casts {
 
         #[must_use]
         #[inline(always)]
-        pub(crate) fn project_tag<Client>(self) -> Ptr<'a, <T as HasTag<Client>>::Tag, I>
+        pub fn project_tag<Client>(
+            self,
+        ) -> Ptr<'a, <T as HasTag<Client>>::Tag, (Shared, I::Alignment, I::Validity)>
         where
             T: HasTag<Client>,
+            I::Aliasing: Reference,
         {
-            // SAFETY: By invariant on
-            // `<T as HasTag<Client>>::ProjectToTag`, this is a sound
-            // projection.
-            let tag = unsafe {
-                self.project_transmute_unchecked::<_, _, <T as HasTag<Client>>::ProjectToTag>()
+            let ptr = self.into_shared();
+            // SAFETY: By invariant on `ProjectToTag`, it is sound to project
+            // `ptr` to a shared tag pointer with the same validity invariant.
+            let ptr = unsafe {
+                ptr.project_transmute_unchecked::<_, _, <T as HasTag<Client>>::ProjectToTag>()
             };
-            // SAFETY: By invariant on
-            // `<T as HasTag<Client>>::ProjectToTag`, the projected pointer has
+            // SAFETY: By invariant on `ProjectToTag`, the projected pointer has
             // the same alignment as `self`.
-            let tag = unsafe { tag.assume_alignment() };
-            tag.unify_invariants()
+            unsafe { ptr.assume_alignment() }
         }
 
         /// Attempts to transform the pointer, restoring the original on
@@ -1339,6 +1356,23 @@ mod tests {
     #[allow(unused)] // Needed on our MSRV, but considered unused on later toolchains.
     use crate::util::AsAddress;
     use crate::{pointer::BecauseImmutable, util::testutil::AU64, FromBytes, Immutable};
+
+    #[test]
+    fn test_project_tag_downgrades_aliasing() {
+        #[allow(dead_code)]
+        #[derive(zerocopy_derive::Project)]
+        #[repr(u8)]
+        enum Enum {
+            Variant(u8),
+        }
+
+        let mut value = Enum::Variant(0);
+        let _: Ptr<
+            '_,
+            <Enum as crate::HasTag<crate::project_clients::ProjectDerive>>::Tag,
+            (Shared, Aligned, Valid),
+        > = Ptr::from_mut(&mut value).project_tag::<crate::project_clients::ProjectDerive>();
+    }
 
     mod test_ptr_try_cast_into_soundness {
         use super::*;

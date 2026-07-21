@@ -1181,9 +1181,21 @@ pub const STRUCT_VARIANT_ID: i128 = -1;
 pub const UNION_VARIANT_ID: i128 = -2;
 #[doc(hidden)]
 pub const REPR_C_UNION_VARIANT_ID: i128 = -3;
+
+/// Marker types used to disambiguate implementations of projection traits that
+/// would otherwise conflict.
 #[doc(hidden)]
-#[derive(Copy, Clone, Debug)]
-pub enum TryFromBytesDerive {}
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+pub mod project_clients {
+    pub enum TryFromBytesDerive {}
+
+    pub enum ProjectDerive {}
+}
+
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+#[doc(hidden)]
+pub use zerocopy_derive::Project;
 
 /// # Safety
 ///
@@ -1192,7 +1204,7 @@ pub enum TryFromBytesDerive {}
 /// The `Client` parameter exists solely to disambiguate between implementations
 /// of `HasTag` that would otherwise conflict.
 #[doc(hidden)]
-pub unsafe trait HasTag<Client = TryFromBytesDerive> {
+pub unsafe trait HasTag<Client = project_clients::TryFromBytesDerive> {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
@@ -1204,17 +1216,18 @@ pub unsafe trait HasTag<Client = TryFromBytesDerive> {
     ///
     /// # Safety
     ///
-    /// It must be the case that, for all `slf: Ptr<'_, Self, I>`, it is sound
-    /// to project from `slf` to
-    /// `Ptr<'_, <Self as HasTag<Client>>::Tag, I>` using this projection.
+    /// It must be the case that, for all `slf: Ptr<'_, Self, I>` where
+    /// `I::Aliasing` is `Shared`, it is sound to project it using this
+    /// projection to a `Ptr<'_, Self::Tag, (Shared, I::Alignment,
+    /// I::Validity)>`.
     type ProjectToTag: pointer::cast::Project<Self, Self::Tag>;
 }
 
 /// Projects a given field from `Self`.
 ///
-/// All implementations of `HasField` for a particular field `f` in `Self`
-/// should use the same `Field` type; this ensures that `Field` is inferable
-/// given an explicit `VARIANT_ID` and `FIELD_ID`.
+/// All implementations of `HasField` for a particular `Client` and field `f`
+/// in `Self` should use the same `Field` type; this ensures that `Field` is
+/// inferable given an explicit `Client`, `VARIANT_ID`, and `FIELD_ID`.
 ///
 /// The `Client` parameter exists solely to disambiguate between implementations
 /// of `HasField` that would otherwise conflict.
@@ -1223,13 +1236,15 @@ pub unsafe trait HasTag<Client = TryFromBytesDerive> {
 ///
 /// A field `f` is `HasField` for `Self` if and only if:
 ///
-/// - If `Self` has the layout of a struct or union type, then `VARIANT_ID` is
-///   `STRUCT_VARIANT_ID` or `UNION_VARIANT_ID` respectively; otherwise, if
-///   `Self` has the layout of an enum type, `VARIANT_ID` is the numerical index
-///   of the enum variant in which `f` appears. Note that `Self` does not need
-///   to actually *be* such a type – it just needs to have the same layout as
-///   such a type. For example, a `#[repr(transparent)]` wrapper around an enum
-///   has the same layout as that enum.
+/// - If `Self` has the layout of a struct type, `VARIANT_ID` is
+///   `STRUCT_VARIANT_ID`. If `Self` has the layout of a `repr(C)` union type,
+///   `VARIANT_ID` is `REPR_C_UNION_VARIANT_ID`; for other union layouts, it is
+///   `UNION_VARIANT_ID`. Otherwise, if `Self` has the layout of an enum type and
+///   `f` appears in a variant named `v`, `VARIANT_ID` is
+///   `zerocopy::ident_id!(v)`. Note that `Self` does not need to actually *be*
+///   such a type – it just needs to have the same layout as such a type. For
+///   example, a `#[repr(transparent)]` wrapper around an enum has the same
+///   layout as that enum.
 /// - If `f` has name `n`, `FIELD_ID` is `zerocopy::ident_id!(n)`; otherwise,
 ///   if `f` is at index `i`, `FIELD_ID` is `zerocopy::ident_id!(i)`.
 /// - `Field` is a type with the same visibility as `f`.
@@ -1274,12 +1289,14 @@ pub unsafe trait HasField<Client, Field, const VARIANT_ID: i128, const FIELD_ID:
 /// `Self::Invariants` comes out.
 ///
 /// The `Client` parameter exists solely to disambiguate between implementations
-/// of `HasField` that would otherwise conflict.
+/// of `ProjectField` (and their corresponding `HasField` implementations) that
+/// would otherwise conflict.
 ///
 /// # Safety
 ///
 /// `T: ProjectField<Client, Field, I, VARIANT_ID, FIELD_ID>` if, for a
-/// `ptr: Ptr<'_, T, I>` such that `T::is_projectable(ptr).is_ok()`,
+/// `ptr: Ptr<'_, T, I>` such that `T::is_projectable` returns `Ok(())`
+/// when passed the tag pointer projected from `ptr`,
 /// `<T as HasField<Client, Field, VARIANT_ID, FIELD_ID>>::project(ptr.as_inner())`
 /// conforms to `T::Invariants`.
 #[doc(hidden)]
@@ -1303,15 +1320,19 @@ where
 
     /// Is the given field projectable from `ptr`?
     ///
-    /// If a field with [`Self::Invariants`] is projectable from the referent,
-    /// this function produces an `Ok(ptr)` from which the projection can be
-    /// made; otherwise `Err`.
+    /// If a field with [`Self::Invariants`] is projectable from the containing
+    /// value whose projected tag is `ptr`, this function produces `Ok(())`;
+    /// otherwise it produces `Err`.
     ///
     /// This method must be overriden if the field's projectability depends on
     /// the value of the bytes in `ptr`.
     #[inline(always)]
     fn is_projectable<'a>(
-        _ptr: Ptr<'a, <Self as HasTag<Client>>::Tag, I>,
+        _ptr: Ptr<
+            'a,
+            <Self as HasTag<Client>>::Tag,
+            (invariant::Shared, I::Alignment, I::Validity),
+        >,
     ) -> Result<(), Self::Error> {
         trait IsInfallible {
             const IS_INFALLIBLE: bool;
@@ -1338,7 +1359,9 @@ where
                     // referent. This default implementation of `is_projectable`
                     // is non-destructive, as it does not overwrite any part of
                     // the referent.
-                    crate::STRUCT_VARIANT_ID | crate::UNION_VARIANT_ID => true,
+                    crate::STRUCT_VARIANT_ID
+                    | crate::UNION_VARIANT_ID
+                    | crate::REPR_C_UNION_VARIANT_ID => true,
                     _enum_variant => {
                         use crate::invariant::{Validity, ValidityKind};
                         match I::Validity::KIND {
