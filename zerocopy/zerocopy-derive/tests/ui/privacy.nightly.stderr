@@ -23,9 +23,9 @@ error: type `private::_::_::_::ẕ1` is private
     |         ^ private type
 
 error: type `private::_::_::_::ẕb` is private
-   --> $DIR/privacy.rs:172:87
+   --> $DIR/privacy.rs:172:104
     |
-172 | ...erocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
+172 | ...project_clients::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
     |                                         ^ private type
 
 error: aborting due to 3 previous errors; 1 warning emitted
