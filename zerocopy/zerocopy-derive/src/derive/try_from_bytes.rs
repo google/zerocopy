@@ -4,65 +4,20 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{
     parse_quote, spanned::Spanned as _, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error,
-    Expr, Fields, Ident, Index, Type,
+    Fields,
 };
 
 use crate::{
-    repr::{EnumRepr, StructUnionRepr},
+    derive::project::{
+        derive_has_field_enum, derive_has_field_struct_union, generate_tag_consts, tag_ident,
+        variant_struct_ident, variants_union_field_ident,
+    },
+    repr::EnumRepr,
     util::{
-        const_block, enum_size_from_repr, generate_tag_enum, Client, Ctx, DataExt, FieldBounds,
+        enum_size_from_repr, generate_tag_enum, Client, Ctx, DataExt, FieldBounds,
         ImplBlockBuilder, Trait, TraitBound,
     },
 };
-fn tag_ident(variant_ident: &Ident) -> Ident {
-    ident!(("___ZEROCOPY_TAG_{}", variant_ident), variant_ident.span())
-}
-
-/// Generates a constant for the tag associated with each variant of the enum.
-/// When we match on the enum's tag, each arm matches one of these constants. We
-/// have to use constants here because:
-///
-/// - The type that we're matching on is not the type of the tag, it's an
-///   integer of the same size as the tag type and with the same bit patterns.
-/// - We can't read the enum tag as an enum because the bytes may not represent
-///   a valid variant.
-/// - Patterns do not currently support const expressions, so we have to assign
-///   these constants to names rather than use them inline in the `match`
-///   statement.
-fn generate_tag_consts(data: &DataEnum) -> TokenStream {
-    let tags = data.variants.iter().map(|v| {
-        let variant_ident = &v.ident;
-        let tag_ident = tag_ident(variant_ident);
-
-        quote! {
-            // This casts the enum variant to its discriminant, and then
-            // converts the discriminant to the target integral type via a
-            // numeric cast [1].
-            //
-            // Because these are the same size, this is defined to be a no-op
-            // and therefore is a lossless conversion [2].
-            //
-            // [1] Per https://doc.rust-lang.org/1.81.0/reference/expressions/operator-expr.html#enum-cast:
-            //
-            //   Casts an enum to its discriminant.
-            //
-            // [2] Per https://doc.rust-lang.org/1.81.0/reference/expressions/operator-expr.html#numeric-cast:
-            //
-            //   Casting between two integers of the same size (e.g. i32 -> u32)
-            //   is a no-op.
-            const #tag_ident: ___ZerocopyTagPrimitive =
-                ___ZerocopyTag::#variant_ident as ___ZerocopyTagPrimitive;
-        }
-    });
-
-    quote! {
-        #(#tags)*
-    }
-}
-
-fn variant_struct_ident(variant_ident: &Ident) -> Ident {
-    ident!(("___ZerocopyVariantStruct_{}", variant_ident), variant_ident.span())
-}
 
 /// Generates variant structs for the given enum variant.
 ///
@@ -124,12 +79,6 @@ fn generate_variant_structs(ctx: &Ctx, data: &DataEnum) -> TokenStream {
     }
 }
 
-fn variants_union_field_ident(ident: &Ident) -> Ident {
-    // Field names are prefixed with `__field_` to prevent name collision
-    // with the `__nonempty` field.
-    ident!(("__field_{}", ident), ident.span())
-}
-
 fn generate_variants_union(ctx: &Ctx, data: &DataEnum) -> TokenStream {
     let generics = &ctx.ast.generics;
     let (_, ty_generics, _) = generics.split_for_impl();
@@ -163,8 +112,12 @@ fn generate_variants_union(ctx: &Ctx, data: &DataEnum) -> TokenStream {
         }
     };
 
-    let has_field =
-        derive_has_field_struct_union(&ctx.with_input(&variants_union), &variants_union.data);
+    let has_field = derive_has_field_struct_union(
+        &ctx.with_input(&variants_union),
+        &variants_union.data,
+        Client::TryFromBytesDerive,
+        true,
+    );
 
     quote! {
         #variants_union
@@ -231,81 +184,7 @@ pub(crate) fn derive_is_bit_valid(
         type ProjectToTag = #zerocopy_crate::pointer::cast::CastSized;
     })
     .build();
-    let has_fields = data.variants().into_iter().flat_map(|(variant, fields)| {
-        let variant_ident = &variant.unwrap().ident;
-        let variants_union_field_ident = variants_union_field_ident(variant_ident);
-        let field: Box<syn::Type> = parse_quote!(());
-        fields.into_iter().enumerate().map(move |(idx, (vis, ident, ty))| {
-            // Rust does not presently support explicit visibility modifiers on
-            // enum fields, but we guard against the possibility to ensure this
-            // derive remains sound.
-            assert!(matches!(vis, syn::Visibility::Inherited));
-            let variant_struct_field_index = Index::from(idx + 1);
-            let (_, ty_generics, _) = ctx.ast.generics.split_for_impl();
-            let has_field_trait = Trait::HasField {
-                client: Client::TryFromBytesDerive,
-                variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
-                // Since Rust does not presently support explicit visibility
-                // modifiers on enum fields, any public type is suitable here;
-                // we use `()`.
-                field: field.clone(),
-                field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
-            };
-            let has_field_path = has_field_trait.crate_path(ctx);
-            let has_field = ImplBlockBuilder::new(
-                ctx,
-                data,
-                has_field_trait,
-                FieldBounds::None,
-            )
-            .inner_extras(quote! {
-                type Type = #ty;
-
-                #[inline(always)]
-                fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut <Self as #has_field_path>::Type {
-                    use #zerocopy_crate::pointer::cast::{CastSized, Projection};
-
-                    slf.project::<___ZerocopyRawEnum #ty_generics, CastSized>()
-                        .project::<_, Projection<#zerocopy_crate::TryFromBytesDerive, _, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>>()
-                        .project::<_, Projection<#zerocopy_crate::TryFromBytesDerive, _, { #zerocopy_crate::REPR_C_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>>()
-                        .project::<_, Projection<#zerocopy_crate::TryFromBytesDerive, _, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>>()
-                        .project::<_, Projection<#zerocopy_crate::TryFromBytesDerive, _, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>>()
-                        .as_ptr()
-                }
-            })
-            .build();
-
-            let project = ImplBlockBuilder::new(
-                ctx,
-                data,
-                Trait::ProjectField {
-                    client: Client::TryFromBytesDerive,
-                    variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
-                    // Since Rust does not presently support explicit visibility
-                    // modifiers on enum fields, any public type is suitable
-                    // here; we use `()`.
-                    field: field.clone(),
-                    field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
-                    invariants: parse_quote!((Aliasing, Alignment, #zerocopy_crate::invariant::Initialized)),
-                },
-                FieldBounds::None,
-            )
-            .param_extras(vec![
-                parse_quote!(Aliasing: #zerocopy_crate::invariant::Aliasing),
-                parse_quote!(Alignment: #zerocopy_crate::invariant::Alignment),
-            ])
-            .inner_extras(quote! {
-                type Error = #zerocopy_crate::util::macro_util::core_reexport::convert::Infallible;
-                type Invariants = (Aliasing, Alignment, #zerocopy_crate::invariant::Initialized);
-            })
-            .build();
-
-            quote! {
-                #has_field
-                #project
-            }
-        })
-    });
+    let has_fields = derive_has_field_enum(ctx, data, repr, Client::TryFromBytesDerive);
 
     let core = ctx.core_path();
     let match_arms = data.variants.iter().map(|variant| {
@@ -365,8 +244,12 @@ pub(crate) fn derive_is_bit_valid(
         unsafe impl #impl_generics #zerocopy_crate::pointer::InvariantsEq<___ZerocopyRawEnum #ty_generics> for #self_ident #ty_generics #where_clause {}
     };
 
-    let raw_enum_projections =
-        derive_has_field_struct_union(&ctx.with_input(&raw_enum), &raw_enum.data);
+    let raw_enum_projections = derive_has_field_struct_union(
+        &ctx.with_input(&raw_enum),
+        &raw_enum.data,
+        Client::TryFromBytesDerive,
+        false,
+    );
 
     let raw_enum = quote! {
         #raw_enum
@@ -405,7 +288,7 @@ pub(crate) fn derive_is_bit_valid(
 
             #has_tag
 
-            #(#has_fields)*
+            #has_fields
 
             let tag = {
                 // SAFETY:
@@ -459,122 +342,6 @@ pub(crate) fn derive_try_from_bytes(ctx: &Ctx, top_level: Trait) -> Result<Token
         Data::Union(unn) => Ok(derive_try_from_bytes_union(ctx, unn, top_level)),
     }
 }
-fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
-    let fields = ctx.ast.data.fields();
-    if fields.is_empty() {
-        return quote! {};
-    }
-
-    let field_tokens = fields.iter().map(|(vis, ident, _)| {
-        let ident = ident!(("ẕ{}", ident), ident.span());
-        quote!(
-            #vis enum #ident {}
-        )
-    });
-
-    let zerocopy_crate = &ctx.zerocopy_crate;
-    let variant_id: Box<Expr> = match &ctx.ast.data {
-        Data::Struct(_) => parse_quote!({ #zerocopy_crate::STRUCT_VARIANT_ID }),
-        Data::Union(_) => {
-            let is_repr_c = StructUnionRepr::from_attrs(&ctx.ast.attrs)
-                .map(|repr| repr.is_c())
-                .unwrap_or(false);
-            if is_repr_c {
-                parse_quote!({ #zerocopy_crate::REPR_C_UNION_VARIANT_ID })
-            } else {
-                parse_quote!({ #zerocopy_crate::UNION_VARIANT_ID })
-            }
-        }
-        _ => unreachable!(),
-    };
-
-    let core = ctx.core_path();
-    let has_tag = ImplBlockBuilder::new(
-        ctx,
-        data,
-        Trait::HasTag { client: Client::TryFromBytesDerive },
-        FieldBounds::None,
-    )
-    .inner_extras(quote! {
-        type Tag = ();
-        type ProjectToTag = #zerocopy_crate::pointer::cast::CastToUnit;
-    })
-    .build();
-    let has_fields = fields.iter().map(move |(_, ident, ty)| {
-        let field_token = ident!(("ẕ{}", ident), ident.span());
-        let field: Box<Type> = parse_quote!(#field_token);
-        let field_id: Box<Expr> = parse_quote!({ #zerocopy_crate::ident_id!(#ident) });
-        let has_field_trait = Trait::HasField {
-                client: Client::TryFromBytesDerive,
-                variant_id: variant_id.clone(),
-                field: field.clone(),
-                field_id: field_id.clone(),
-            };
-            let has_field_path = has_field_trait.crate_path(ctx);
-            ImplBlockBuilder::new(
-                ctx,
-                data,
-                has_field_trait,
-                FieldBounds::None,
-            )
-            .inner_extras(quote! {
-                type Type = #ty;
-
-                #[inline(always)]
-                fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut <Self as #has_field_path>::Type {
-                    let slf = slf.as_ptr();
-                    // SAFETY: By invariant on `PtrInner`, `slf` is a non-null
-                    // pointer whose referent is zero-sized or lives in a valid
-                    // allocation. Since `#ident` is a struct or union field of
-                    // `Self`, this projection preserves or shrinks the referent
-                    // size, and so the resulting referent also fits in the same
-                    // allocation.
-                    unsafe { #core::ptr::addr_of_mut!((*slf).#ident) }
-                }
-            }).outer_extras(if matches!(&ctx.ast.data, Data::Struct(..)) {
-            let fields_preserve_alignment = StructUnionRepr::from_attrs(&ctx.ast.attrs)
-                .map(|repr| repr.get_packed().is_none())
-                .unwrap();
-            let alignment = if fields_preserve_alignment {
-                quote! { Alignment }
-            } else {
-                quote! { #zerocopy_crate::invariant::Unaligned }
-            };
-            // SAFETY: See comments on items.
-            ImplBlockBuilder::new(
-                ctx,
-                data,
-                Trait::ProjectField {
-                    client: Client::TryFromBytesDerive,
-                    variant_id: variant_id.clone(),
-                    field,
-                    field_id,
-                    invariants: parse_quote!((Aliasing, Alignment, #zerocopy_crate::invariant::Initialized)),
-                },
-                FieldBounds::None,
-            )
-            .param_extras(vec![
-                parse_quote!(Aliasing: #zerocopy_crate::invariant::Aliasing),
-                parse_quote!(Alignment: #zerocopy_crate::invariant::Alignment),
-            ])
-            .inner_extras(quote! {
-                // SAFETY: Projection into structs is always infallible.
-                type Error = #zerocopy_crate::util::macro_util::core_reexport::convert::Infallible;
-                // SAFETY: The alignment of the projected `Ptr` is `Unaligned`
-                // if the structure is packed; otherwise inherited from the
-                // outer `Ptr`. If the validity of the outer pointer is
-                // `Initialized`, so too is the validity of its fields.
-                type Invariants = (Aliasing, #alignment, #zerocopy_crate::invariant::Initialized);
-            })
-            .build()
-        } else {
-            quote! {}
-        })
-        .build()
-    });
-
-    const_block(field_tokens.into_iter().chain(Some(has_tag)).chain(has_fields).map(Some))
-}
 fn derive_try_from_bytes_struct(
     ctx: &Ctx,
     strct: &DataStruct,
@@ -600,7 +367,7 @@ fn derive_try_from_bytes_struct(
                 ___ZcAlignment: #zerocopy_crate::invariant::Alignment,
             {
                 true #(&& {
-                    let field_candidate =   #zerocopy_crate::into_inner!(candidate.reborrow().project::<
+                    let field_candidate = #zerocopy_crate::into_inner!(candidate.reborrow().project::<
                         #zerocopy_crate::TryFromBytesDerive,
                         _,
                         { #zerocopy_crate::STRUCT_VARIANT_ID },
@@ -613,23 +380,13 @@ fn derive_try_from_bytes_struct(
     });
     Ok(ImplBlockBuilder::new(ctx, strct, Trait::TryFromBytes, FieldBounds::ALL_SELF)
         .inner_extras(extras)
-        .outer_extras(derive_has_field_struct_union(ctx, strct))
+        .outer_extras(derive_has_field_struct_union(ctx, strct, Client::TryFromBytesDerive, false))
         .build())
 }
 fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> TokenStream {
     let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
 
     let zerocopy_crate = &ctx.zerocopy_crate;
-    let variant_id: Box<Expr> = {
-        let is_repr_c =
-            StructUnionRepr::from_attrs(&ctx.ast.attrs).map(|repr| repr.is_c()).unwrap_or(false);
-        if is_repr_c {
-            parse_quote!({ #zerocopy_crate::REPR_C_UNION_VARIANT_ID })
-        } else {
-            parse_quote!({ #zerocopy_crate::UNION_VARIANT_ID })
-        }
-    };
-
     let extras = try_gen_trivial_is_bit_valid(ctx, top_level).unwrap_or_else(|| {
         let fields = unn.fields();
         let field_names = fields.iter().map(|(_vis, name, _ty)| name);
@@ -649,25 +406,14 @@ fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> 
                 ___ZcAlignment: #zerocopy_crate::invariant::Alignment,
             {
                 false #(|| {
-                    // SAFETY:
-                    // - Since `ReadOnly<Self>: Immutable` unconditionally,
-                    //   neither `*slf` nor the returned pointer's referent
-                    //   permit interior mutation.
-                    // - Both source and destination validity are
-                    //   `Initialized`, which is always a sound
-                    //   transmutation.
-                    let field_candidate = unsafe {
-                        candidate.reborrow().project_transmute_unchecked::<
+                    let field_candidate = #zerocopy_crate::into_inner!(
+                        candidate.reborrow().project::<
+                            #zerocopy_crate::TryFromBytesDerive,
                             _,
-                            _,
-                            #zerocopy_crate::pointer::cast::Projection<
-                                #zerocopy_crate::TryFromBytesDerive,
-                                _,
-                                #variant_id,
-                                { #zerocopy_crate::ident_id!(#field_names) }
-                            >
+                            { #zerocopy_crate::UNION_VARIANT_ID },
+                            { #zerocopy_crate::ident_id!(#field_names) },
                         >()
-                    };
+                    );
 
                     <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
                 })*
@@ -676,7 +422,7 @@ fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> 
     });
     ImplBlockBuilder::new(ctx, unn, Trait::TryFromBytes, field_type_trait_bounds)
         .inner_extras(extras)
-        .outer_extras(derive_has_field_struct_union(ctx, unn))
+        .outer_extras(derive_has_field_struct_union(ctx, unn, Client::TryFromBytesDerive, false))
         .build()
 }
 fn derive_try_from_bytes_enum(

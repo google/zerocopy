@@ -106,6 +106,102 @@ const _: () = {
                 }
             }
         };
+        #[allow(
+            deprecated,
+            private_bounds,
+            non_local_definitions,
+            non_camel_case_types,
+            non_upper_case_globals,
+            non_snake_case,
+            non_ascii_idents,
+            clippy::missing_inline_in_public_items,
+        )]
+        #[deny(ambiguous_associated_items)]
+        #[automatically_derived]
+        const _: () = {
+            unsafe impl<
+                ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                ___ZcAlignment: ::zerocopy::invariant::Alignment,
+            > ::zerocopy::ProjectField<
+                ::zerocopy::TryFromBytesDerive,
+                ẕa,
+                (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                { ::zerocopy::UNION_VARIANT_ID },
+                { ::zerocopy::ident_id!(a) },
+            > for Foo {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                type Invariants = (
+                    ___ZcAliasing,
+                    ___ZcAlignment,
+                    ::zerocopy::invariant::Uninit,
+                );
+            }
+        };
+        #[allow(
+            deprecated,
+            private_bounds,
+            non_local_definitions,
+            non_camel_case_types,
+            non_upper_case_globals,
+            non_snake_case,
+            non_ascii_idents,
+            clippy::missing_inline_in_public_items,
+        )]
+        #[deny(ambiguous_associated_items)]
+        #[automatically_derived]
+        const _: () = {
+            unsafe impl<
+                ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                ___ZcAlignment: ::zerocopy::invariant::Alignment,
+            > ::zerocopy::ProjectField<
+                ::zerocopy::TryFromBytesDerive,
+                ẕa,
+                (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                { ::zerocopy::UNION_VARIANT_ID },
+                { ::zerocopy::ident_id!(a) },
+            > for Foo {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                type Invariants = (
+                    ___ZcAliasing,
+                    ___ZcAlignment,
+                    ::zerocopy::invariant::Initialized,
+                );
+            }
+        };
+        #[allow(
+            deprecated,
+            private_bounds,
+            non_local_definitions,
+            non_camel_case_types,
+            non_upper_case_globals,
+            non_snake_case,
+            non_ascii_idents,
+            clippy::missing_inline_in_public_items,
+        )]
+        #[deny(ambiguous_associated_items)]
+        #[automatically_derived]
+        const _: () = {
+            unsafe impl<
+                ___ZcAliasing: ::zerocopy::invariant::Aliasing,
+                ___ZcAlignment: ::zerocopy::invariant::Alignment,
+            > ::zerocopy::ProjectField<
+                ::zerocopy::TryFromBytesDerive,
+                ẕa,
+                (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                { ::zerocopy::UNION_VARIANT_ID },
+                { ::zerocopy::ident_id!(a) },
+            > for Foo {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
+                type Invariants = (
+                    ___ZcAliasing,
+                    ___ZcAlignment,
+                    ::zerocopy::invariant::Uninit,
+                );
+            }
+        };
     };
 };
 #[allow(
