@@ -24,6 +24,7 @@ macro_rules! use_as_trait_name {
 use_as_trait_name!(
     KnownLayout => super::derive::known_layout::derive,
     Immutable => super::derive::derive_immutable,
+    Project => super::derive::project::derive,
     TryFromBytes => super::derive::try_from_bytes::derive_try_from_bytes,
     FromZeros => super::derive::from_bytes::derive_from_zeros,
     FromBytes => super::derive::from_bytes::derive_from_bytes,
@@ -155,6 +156,26 @@ fn test_immutable() {
         Immutable {
             struct Foo;
         } expands to "expected/immutable.expected.rs"
+    }
+}
+
+#[test]
+fn test_project_empty_struct() {
+    test! {
+        Project {
+            struct Foo;
+        } expands to {}
+    }
+}
+
+#[test]
+fn test_project_struct() {
+    test! {
+        Project {
+            struct Foo {
+                field: u8,
+            }
+        } expands to "expected/project_struct.expected.rs"
     }
 }
 
