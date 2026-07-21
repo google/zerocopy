@@ -1015,8 +1015,8 @@ mod tuples {
             // SAFETY: If all fields in `c` are `is_bit_valid`, so too is `c`.
             unsafe_impl!($($head_T: TryFromBytes,)* $next_T: TryFromBytes => TryFromBytes for ($($head_T,)* $next_T,); |c| {
                 let mut c = c;
-                $(TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<crate::TryFromBytesDerive, _, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($head_I) }>())) &&)*
-                    TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<crate::TryFromBytesDerive, _, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($next_I) }>()))
+                $(TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<crate::project_clients::TryFromBytesDerive, _, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($head_I) }>())) &&)*
+                    TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<crate::project_clients::TryFromBytesDerive, _, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($next_I) }>()))
             });
 
             // SAFETY: If all fields in `Self` are `FromZeros`, so too is `Self`.
