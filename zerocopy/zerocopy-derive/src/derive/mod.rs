@@ -3,6 +3,7 @@
 pub mod from_bytes;
 pub mod into_bytes;
 pub mod known_layout;
+pub mod project;
 pub mod try_from_bytes;
 pub mod unaligned;
 
