@@ -27,14 +27,14 @@ mod private {
 
     const _: () = {
         let _: <StructWithNamedFields as zerocopy_renamed::HasField<
-            zerocopy_renamed::TryFromBytesDerive,
+            zerocopy_renamed::project_clients::TryFromBytesDerive,
             _,
             _,
             //~[msrv]^ ERROR: type provided when a constant was expected
             { zerocopy_renamed::ident_id!(a) },
         >>::Type = 0u8;
         let _: <StructWithNamedFields as zerocopy_renamed::HasField<
-            zerocopy_renamed::TryFromBytesDerive,
+            zerocopy_renamed::project_clients::TryFromBytesDerive,
             _,
             _,
             //~[msrv]^ ERROR: type provided when a constant was expected
@@ -48,14 +48,14 @@ mod private {
 
     const _: () = {
         let _: <StructWithAnonFields as zerocopy_renamed::HasField<
-            zerocopy_renamed::TryFromBytesDerive,
+            zerocopy_renamed::project_clients::TryFromBytesDerive,
             _,
             _,
             //~[msrv]^ ERROR: type provided when a constant was expected
             { zerocopy_renamed::ident_id!(0) },
         >>::Type = 0u8;
         let _: <StructWithAnonFields as zerocopy_renamed::HasField<
-            zerocopy_renamed::TryFromBytesDerive,
+            zerocopy_renamed::project_clients::TryFromBytesDerive,
             _,
             _,
             //~[msrv]^ ERROR: type provided when a constant was expected
@@ -72,14 +72,14 @@ mod private {
 
     const _: () = {
         let _: <Union as zerocopy_renamed::HasField<
-            zerocopy_renamed::TryFromBytesDerive,
+            zerocopy_renamed::project_clients::TryFromBytesDerive,
             _,
             _,
             //~[msrv]^ ERROR: type provided when a constant was expected
             { zerocopy_renamed::ident_id!(a) },
         >>::Type = 0u8;
         let _: <Union as zerocopy_renamed::HasField<
-            zerocopy_renamed::TryFromBytesDerive,
+            zerocopy_renamed::project_clients::TryFromBytesDerive,
             _,
             _,
             //~[msrv]^ ERROR: type provided when a constant was expected
@@ -97,14 +97,14 @@ mod private {
 
     const _: () = {
         let _: <Enum as zerocopy_renamed::HasField<
-            zerocopy_renamed::TryFromBytesDerive,
+            zerocopy_renamed::project_clients::TryFromBytesDerive,
             _,
             _,
             //~[msrv]^ ERROR: type provided when a constant was expected
             { zerocopy_renamed::ident_id!(0) },
         >>::Type = 0u8;
         let _: <Enum as zerocopy_renamed::HasField<
-            zerocopy_renamed::TryFromBytesDerive,
+            zerocopy_renamed::project_clients::TryFromBytesDerive,
             _,
             _,
             //~[msrv]^ ERROR: type provided when a constant was expected
@@ -112,14 +112,14 @@ mod private {
         >>::Type = 0u16;
 
         let _: <Enum as zerocopy_renamed::HasField<
-            zerocopy_renamed::TryFromBytesDerive,
+            zerocopy_renamed::project_clients::TryFromBytesDerive,
             _,
             _,
             //~[msrv]^ ERROR: type provided when a constant was expected
             { zerocopy_renamed::ident_id!(a) },
         >>::Type = 0u8;
         let _: <Enum as zerocopy_renamed::HasField<
-            zerocopy_renamed::TryFromBytesDerive,
+            zerocopy_renamed::project_clients::TryFromBytesDerive,
             _,
             { zerocopy_renamed::ident_id!(B) },
             { zerocopy_renamed::ident_id!(b) },
@@ -131,14 +131,14 @@ use private::*;
 
 const _: () = {
     let _: <StructWithNamedFields as zerocopy_renamed::HasField<
-        zerocopy_renamed::TryFromBytesDerive,
+        zerocopy_renamed::project_clients::TryFromBytesDerive,
         _,
         _,
         //~[msrv]^ ERROR: type provided when a constant was expected
         { zerocopy_renamed::ident_id!(a) },
     >>::Type = 0u8;
     let _: <StructWithNamedFields as zerocopy_renamed::HasField<
-        zerocopy_renamed::TryFromBytesDerive,
+        zerocopy_renamed::project_clients::TryFromBytesDerive,
         _,
         //~[stable, nightly]^ ERROR: type `private::_::_::_::ẕb` is private
         _,
@@ -149,14 +149,14 @@ const _: () = {
 
 const _: () = {
     let _: <StructWithAnonFields as zerocopy_renamed::HasField<
-        zerocopy_renamed::TryFromBytesDerive,
+        zerocopy_renamed::project_clients::TryFromBytesDerive,
         _,
         _,
         //~[msrv]^ ERROR: type provided when a constant was expected
         { zerocopy_renamed::ident_id!(0) },
     >>::Type = 0u8;
     let _: <StructWithAnonFields as zerocopy_renamed::HasField<
-        zerocopy_renamed::TryFromBytesDerive,
+        zerocopy_renamed::project_clients::TryFromBytesDerive,
         _,
         //~[stable, nightly]^ ERROR: type `private::_::_::_::ẕ1` is private
         _,
@@ -166,28 +166,28 @@ const _: () = {
 };
 
 const _: () = {
-    let _: <Union as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
+    let _: <Union as zerocopy_renamed::HasField<zerocopy_renamed::project_clients::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
 //~[msrv]^ ERROR: type provided when a constant was expected
         0u8;
-    let _: <Union as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
+    let _: <Union as zerocopy_renamed::HasField<zerocopy_renamed::project_clients::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
 //~[msrv]^ ERROR: type provided when a constant was expected
 //~[stable, nightly]^^ ERROR: type `private::_::_::_::ẕb` is private
         0u16;
 };
 
 const _: () = {
-    let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(0) }>>::Type =
+    let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::project_clients::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(0) }>>::Type =
 //~[msrv]^ ERROR: type provided when a constant was expected
         0u8;
-    let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(1) }>>::Type =
+    let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::project_clients::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(1) }>>::Type =
 //~[msrv]^ ERROR: type provided when a constant was expected
         0u16;
 
-    let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
+    let _: <Enum as zerocopy_renamed::HasField<zerocopy_renamed::project_clients::TryFromBytesDerive, _, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
 //~[msrv]^ ERROR: type provided when a constant was expected
         0u8;
     let _: <Enum as zerocopy_renamed::HasField<
-        zerocopy_renamed::TryFromBytesDerive,
+        zerocopy_renamed::project_clients::TryFromBytesDerive,
         _,
         { zerocopy_renamed::ident_id!(B) },
         { zerocopy_renamed::ident_id!(b) },
