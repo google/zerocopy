@@ -777,13 +777,13 @@ unsafe impl<T: HasTag<Client> + ?Sized, Client> HasTag<Client> for ReadOnly<T> {
 
 // SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
 // has the same fields at the same offsets. Thus, it satisfies the safety
-// invariants of `HasField<Client, Field, VARIANT_ID, FIELD_ID>` for field `f` exactly
-// when `T` does, as guaranteed by the `T: HasField` bound:
-// - If `VARIANT_ID` is `STRUCT_VARIANT_ID` or `UNION_VARIANT_ID`, then `T` has
-//   the layout of a struct or union type. Since `ReadOnly<T>` is a transparent
-//   wrapper around `T`, it does too. Otherwise, if `VARIANT_ID` is an enum
-//   variant index, then `T` has the layout of an enum type, and `ReadOnly<T>`
-//   does too.
+// invariants of `HasField<Client, Field, VARIANT_ID, FIELD_ID>` for field `f`
+// exactly when `T` does, as guaranteed by the `T: HasField` bound:
+// - If `VARIANT_ID` is `STRUCT_VARIANT_ID`, `UNION_VARIANT_ID`, or
+//   `REPR_C_UNION_VARIANT_ID`, then `T` has the layout of a struct, non-C union,
+//   or C union type respectively. Since `ReadOnly<T>` is a transparent wrapper
+//   around `T`, it does too. Otherwise, `VARIANT_ID` is the identifier ID of an
+//   enum variant; `T` has the layout of an enum type, and `ReadOnly<T>` does too.
 // - By `T: HasField<_, _, _, FIELD_ID>`:
 //   - `T` has a field `f` with name `n` such that
 //     `FIELD_ID = zerocopy::ident_id!(n)` or at index `i` such that
