@@ -298,14 +298,16 @@ impl PaddingCheck {
     }
 }
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub(crate) enum Client {
+    ProjectDerive,
     TryFromBytesDerive,
 }
 
 impl ToTokens for Client {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let s = match self {
+            Client::ProjectDerive => "ProjectDerive",
             Client::TryFromBytesDerive => "TryFromBytesDerive",
         };
         let ident = Ident::new(s, Span::call_site());
@@ -340,6 +342,7 @@ pub(crate) enum Trait {
         invariants: Box<Type>,
     },
     Immutable,
+    Project,
     TryFromBytes,
     FromZeros,
     FromBytes,
@@ -368,6 +371,7 @@ impl ToTokens for Trait {
             Trait::KnownLayout => "KnownLayout",
             Trait::HasTag { .. } => "HasTag",
             Trait::Immutable => "Immutable",
+            Trait::Project => "Project",
             Trait::TryFromBytes => "TryFromBytes",
             Trait::FromZeros => "FromZeros",
             Trait::FromBytes => "FromBytes",
@@ -389,6 +393,7 @@ impl ToTokens for Trait {
             }
             Trait::KnownLayout
             | Trait::Immutable
+            | Trait::Project
             | Trait::TryFromBytes
             | Trait::FromZeros
             | Trait::FromBytes
@@ -825,6 +830,7 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
     quote! {
         #repr
         #[allow(dead_code)]
+        #[derive(Copy, Clone)]
         pub enum ___ZerocopyTag {
             #(#variants,)*
         }

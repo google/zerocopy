@@ -18,6 +18,7 @@ const _: () = {
             {
                 #[repr(u8)]
                 #[allow(dead_code)]
+                #[derive(Copy, Clone)]
                 pub enum ___ZerocopyTag {
                     Bar,
                 }
