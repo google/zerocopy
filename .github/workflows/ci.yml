@@ -108,6 +108,11 @@ jobs:
             features: "--all-features"
           - toolchain: "stable"
             features: "--all-features"
+          # The derive feature inherits the MSRV of its dependencies. In
+          # particular, syn 3 requires Rust 1.71, so don't test feature sets
+          # that enable zerocopy-derive on the core library MSRV.
+          - toolchain: "msrv"
+            features: "--features __internal_use_only_features_that_work_on_stable"
           - toolchain: "no-zerocopy-simd-x86-avx12-1-89-0"
             features: "--all-features"
           - toolchain: "no-zerocopy-core-error-1-81-0"
@@ -132,8 +137,12 @@ jobs:
             features: "--features __internal_use_only_features_that_work_on_stable"
           - crate: "zerocopy-derive"
             features: "--all-features"
-          # Exclue any combination of zerocopy-derive and any toolchain version
-          # other than "msrv", "stable", and "nightly". These other versions
+          # Exclude zerocopy-derive on the core library MSRV; derive
+          # inherits the MSRV of its dependencies.
+          - crate: "zerocopy-derive"
+            toolchain: "msrv"
+          # Exclude any combination of zerocopy-derive and any toolchain version
+          # other than "stable" and "nightly". These other versions
           # exist to exercise zerocopy behavior which differs by toolchain;
           # zerocopy-derive doesn't behave differently on these toolchains.
           - crate: "zerocopy-derive"

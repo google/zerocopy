@@ -80,10 +80,10 @@ extra-traits = []
 fold = []
 full = []
 parsing = []
-printing = ["dep:quote"]
+printing = ["quote"]
 proc-macro = [
     "proc-macro2/proc-macro",
-    "quote?/proc-macro",
+    "quote/proc-macro",
 ]
 test = ["syn-test-suite/all-features"]
 visit = []
