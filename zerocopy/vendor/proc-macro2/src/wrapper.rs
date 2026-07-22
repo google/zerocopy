@@ -2,23 +2,13 @@ use crate::detection::inside_proc_macro;
 use crate::fallback::{self, FromStr2 as _};
 #[cfg(span_locations)]
 use crate::location::LineColumn;
-#[cfg(proc_macro_span)]
-use crate::probe::proc_macro_span;
-#[cfg(all(span_locations, proc_macro_span_file))]
-use crate::probe::proc_macro_span_file;
-#[cfg(all(span_locations, proc_macro_span_location))]
-use crate::probe::proc_macro_span_location;
 use crate::{Delimiter, Punct, Spacing, TokenTree};
-#[cfg(all(span_locations, not(proc_macro_span_file)))]
-use alloc::borrow::ToOwned as _;
-use alloc::string::{String, ToString as _};
-use alloc::vec::Vec;
-use core::ffi::CStr;
 use core::fmt::{self, Debug, Display};
 #[cfg(span_locations)]
 use core::ops::Range;
 use core::ops::RangeBounds;
-#[cfg(span_locations)]
+use std::ffi::CStr;
+#[cfg(super_unstable)]
 use std::path::PathBuf;
 
 #[derive(Clone)]
@@ -51,11 +41,11 @@ fn mismatch(line: u32) -> ! {
     #[cfg(procmacro2_backtrace)]
     {
         let backtrace = std::backtrace::Backtrace::force_capture();
-        panic!("compiler/fallback mismatch L{}\n\n{}", line, backtrace)
+        panic!("compiler/fallback mismatch #{}\n\n{}", line, backtrace)
     }
     #[cfg(not(procmacro2_backtrace))]
     {
-        panic!("compiler/fallback mismatch L{}", line)
+        panic!("compiler/fallback mismatch #{}", line)
     }
 }
 
@@ -192,13 +182,13 @@ impl From<TokenTree> for TokenStream {
 }
 
 impl FromIterator<TokenTree> for TokenStream {
-    fn from_iter<I: IntoIterator<Item = TokenTree>>(tokens: I) -> Self {
+    fn from_iter<I: IntoIterator<Item = TokenTree>>(trees: I) -> Self {
         if inside_proc_macro() {
             TokenStream::Compiler(DeferredTokenStream::new(
-                tokens.into_iter().map(into_compiler_token).collect(),
+                trees.into_iter().map(into_compiler_token).collect(),
             ))
         } else {
-            TokenStream::Fallback(tokens.into_iter().collect())
+            TokenStream::Fallback(trees.into_iter().collect())
         }
     }
 }
@@ -228,15 +218,15 @@ impl FromIterator<TokenStream> for TokenStream {
 }
 
 impl Extend<TokenTree> for TokenStream {
-    fn extend<I: IntoIterator<Item = TokenTree>>(&mut self, tokens: I) {
+    fn extend<I: IntoIterator<Item = TokenTree>>(&mut self, stream: I) {
         match self {
             TokenStream::Compiler(tts) => {
                 // Here is the reason for DeferredTokenStream.
-                for token in tokens {
+                for token in stream {
                     tts.extra.push(into_compiler_token(token));
                 }
             }
-            TokenStream::Fallback(tts) => tts.extend(tokens),
+            TokenStream::Fallback(tts) => tts.extend(stream),
         }
     }
 }
@@ -370,6 +360,45 @@ impl Iterator for TokenTreeIter {
     }
 }
 
+#[derive(Clone, PartialEq, Eq)]
+#[cfg(super_unstable)]
+pub(crate) enum SourceFile {
+    Compiler(proc_macro::SourceFile),
+    Fallback(fallback::SourceFile),
+}
+
+#[cfg(super_unstable)]
+impl SourceFile {
+    fn nightly(sf: proc_macro::SourceFile) -> Self {
+        SourceFile::Compiler(sf)
+    }
+
+    /// Get the path to this source file as a string.
+    pub(crate) fn path(&self) -> PathBuf {
+        match self {
+            SourceFile::Compiler(a) => a.path(),
+            SourceFile::Fallback(a) => a.path(),
+        }
+    }
+
+    pub(crate) fn is_real(&self) -> bool {
+        match self {
+            SourceFile::Compiler(a) => a.is_real(),
+            SourceFile::Fallback(a) => a.is_real(),
+        }
+    }
+}
+
+#[cfg(super_unstable)]
+impl Debug for SourceFile {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            SourceFile::Compiler(a) => Debug::fmt(a, f),
+            SourceFile::Fallback(a) => Debug::fmt(a, f),
+        }
+    }
+}
+
 #[derive(Copy, Clone)]
 pub(crate) enum Span {
     Compiler(proc_macro::Span),
@@ -427,11 +456,19 @@ impl Span {
         }
     }
 
+    #[cfg(super_unstable)]
+    pub(crate) fn source_file(&self) -> SourceFile {
+        match self {
+            Span::Compiler(s) => SourceFile::nightly(s.source_file()),
+            Span::Fallback(s) => SourceFile::Fallback(s.source_file()),
+        }
+    }
+
     #[cfg(span_locations)]
     pub(crate) fn byte_range(&self) -> Range<usize> {
         match self {
             #[cfg(proc_macro_span)]
-            Span::Compiler(s) => proc_macro_span::byte_range(s),
+            Span::Compiler(s) => s.byte_range(),
             #[cfg(not(proc_macro_span))]
             Span::Compiler(_) => 0..0,
             Span::Fallback(s) => s.byte_range(),
@@ -441,12 +478,12 @@ impl Span {
     #[cfg(span_locations)]
     pub(crate) fn start(&self) -> LineColumn {
         match self {
-            #[cfg(proc_macro_span_location)]
+            #[cfg(proc_macro_span)]
             Span::Compiler(s) => LineColumn {
-                line: proc_macro_span_location::line(s),
-                column: proc_macro_span_location::column(s).saturating_sub(1),
+                line: s.line(),
+                column: s.column().saturating_sub(1),
             },
-            #[cfg(not(proc_macro_span_location))]
+            #[cfg(not(proc_macro_span))]
             Span::Compiler(_) => LineColumn { line: 0, column: 0 },
             Span::Fallback(s) => s.start(),
         }
@@ -455,46 +492,24 @@ impl Span {
     #[cfg(span_locations)]
     pub(crate) fn end(&self) -> LineColumn {
         match self {
-            #[cfg(proc_macro_span_location)]
+            #[cfg(proc_macro_span)]
             Span::Compiler(s) => {
-                let end = proc_macro_span_location::end(s);
+                let end = s.end();
                 LineColumn {
-                    line: proc_macro_span_location::line(&end),
-                    column: proc_macro_span_location::column(&end).saturating_sub(1),
+                    line: end.line(),
+                    column: end.column().saturating_sub(1),
                 }
             }
-            #[cfg(not(proc_macro_span_location))]
+            #[cfg(not(proc_macro_span))]
             Span::Compiler(_) => LineColumn { line: 0, column: 0 },
             Span::Fallback(s) => s.end(),
-        }
-    }
-
-    #[cfg(span_locations)]
-    pub(crate) fn file(&self) -> String {
-        match self {
-            #[cfg(proc_macro_span_file)]
-            Span::Compiler(s) => proc_macro_span_file::file(s),
-            #[cfg(not(proc_macro_span_file))]
-            Span::Compiler(_) => "<token stream>".to_owned(),
-            Span::Fallback(s) => s.file(),
-        }
-    }
-
-    #[cfg(span_locations)]
-    pub(crate) fn local_file(&self) -> Option<PathBuf> {
-        match self {
-            #[cfg(proc_macro_span_file)]
-            Span::Compiler(s) => proc_macro_span_file::local_file(s),
-            #[cfg(not(proc_macro_span_file))]
-            Span::Compiler(_) => None,
-            Span::Fallback(s) => s.local_file(),
         }
     }
 
     pub(crate) fn join(&self, other: Span) -> Option<Span> {
         let ret = match (self, other) {
             #[cfg(proc_macro_span)]
-            (Span::Compiler(a), Span::Compiler(b)) => Span::Compiler(proc_macro_span::join(a, b)?),
+            (Span::Compiler(a), Span::Compiler(b)) => Span::Compiler(a.join(b)?),
             (Span::Fallback(a), Span::Fallback(b)) => Span::Fallback(a.join(b)?),
             _ => return None,
         };
@@ -937,7 +952,7 @@ impl Literal {
     pub(crate) fn subspan<R: RangeBounds<usize>>(&self, range: R) -> Option<Span> {
         match self {
             #[cfg(proc_macro_span)]
-            Literal::Compiler(lit) => proc_macro_span::subspan(lit, range).map(Span::Compiler),
+            Literal::Compiler(lit) => lit.subspan(range).map(Span::Compiler),
             #[cfg(not(proc_macro_span))]
             Literal::Compiler(_lit) => None,
             Literal::Fallback(lit) => lit.subspan(range).map(Span::Fallback),
@@ -982,6 +997,7 @@ pub(crate) fn invalidate_current_thread_spans() {
         panic!(
             "proc_macro2::extra::invalidate_current_thread_spans is not available in procedural macros"
         );
+    } else {
+        crate::fallback::invalidate_current_thread_spans();
     }
-    crate::fallback::invalidate_current_thread_spans();
 }

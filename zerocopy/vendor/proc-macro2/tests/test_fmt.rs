@@ -1,3 +1,5 @@
+#![allow(clippy::from_iter_instead_of_collect)]
+
 use proc_macro2::{Delimiter, Group, Ident, Span, TokenStream, TokenTree};
 use std::iter;
 

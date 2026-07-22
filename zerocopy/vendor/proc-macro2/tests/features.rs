@@ -1,5 +1,3 @@
-#![allow(clippy::assertions_on_constants, clippy::ignore_without_reason)]
-
 #[test]
 #[ignore]
 fn make_sure_no_proc_macro() {

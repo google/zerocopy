@@ -1,5 +1,5 @@
 use alloc::rc::Rc;
-use alloc::vec::{self, Vec};
+use alloc::vec;
 use core::mem;
 use core::panic::RefUnwindSafe;
 use core::slice;
@@ -102,13 +102,12 @@ impl<'a, T> RcVecMut<'a, T> {
         self.inner.extend(iter);
     }
 
-    pub(crate) fn as_mut(&mut self) -> RcVecMut<T> {
-        RcVecMut { inner: self.inner }
+    pub(crate) fn pop(&mut self) -> Option<T> {
+        self.inner.pop()
     }
 
-    pub(crate) fn take(self) -> RcVecBuilder<T> {
-        let vec = mem::take(self.inner);
-        RcVecBuilder { inner: vec }
+    pub(crate) fn as_mut(&mut self) -> RcVecMut<T> {
+        RcVecMut { inner: self.inner }
     }
 }
 

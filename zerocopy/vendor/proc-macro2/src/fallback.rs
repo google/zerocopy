@@ -5,22 +5,12 @@ use crate::location::LineColumn;
 use crate::parse::{self, Cursor};
 use crate::rcvec::{RcVec, RcVecBuilder, RcVecIntoIter, RcVecMut};
 use crate::{Delimiter, Spacing, TokenTree};
-use alloc::borrow::ToOwned as _;
-use alloc::boxed::Box;
 #[cfg(all(span_locations, not(fuzzing)))]
 use alloc::collections::BTreeMap;
-use alloc::format;
-use alloc::string::{String, ToString as _};
-#[cfg(all(span_locations, not(fuzzing)))]
-use alloc::vec;
-use alloc::vec::Vec;
 #[cfg(all(span_locations, not(fuzzing)))]
 use core::cell::RefCell;
 #[cfg(span_locations)]
 use core::cmp;
-#[cfg(all(span_locations, not(fuzzing)))]
-use core::cmp::Ordering;
-use core::ffi::CStr;
 use core::fmt::{self, Debug, Display, Write};
 use core::mem::ManuallyDrop;
 #[cfg(span_locations)]
@@ -30,12 +20,11 @@ use core::ptr;
 use core::str;
 #[cfg(feature = "proc-macro")]
 use core::str::FromStr;
+use std::ffi::CStr;
 #[cfg(wrap_proc_macro)]
 use std::panic;
-#[cfg(span_locations)]
+#[cfg(procmacro2_semver_exempt)]
 use std::path::PathBuf;
-#[cfg(all(span_locations, not(fuzzing)))]
-use std::thread_local;
 
 /// Force use of proc-macro2's fallback implementation of the API for now, even
 /// if the compiler's implementation is available.
@@ -136,32 +125,21 @@ fn push_token_from_proc_macro(mut vec: RcVecMut<TokenTree>, token: TokenTree) {
 // Nonrecursive to prevent stack overflow.
 impl Drop for TokenStream {
     fn drop(&mut self) {
-        let mut stack = Vec::new();
-        let mut current = match self.inner.get_mut() {
-            Some(inner) => inner.take().into_iter(),
+        let mut inner = match self.inner.get_mut() {
+            Some(inner) => inner,
             None => return,
         };
-        loop {
-            while let Some(token) = current.next() {
-                let group = match token {
-                    TokenTree::Group(group) => group.inner,
-                    _ => continue,
-                };
-                #[cfg(wrap_proc_macro)]
-                let group = match group {
-                    crate::imp::Group::Fallback(group) => group,
-                    crate::imp::Group::Compiler(_) => continue,
-                };
-                let mut group = group;
-                if let Some(inner) = group.stream.inner.get_mut() {
-                    stack.push(current);
-                    current = inner.take().into_iter();
-                }
-            }
-            match stack.pop() {
-                Some(next) => current = next,
-                None => return,
-            }
+        while let Some(token) = inner.pop() {
+            let group = match token {
+                TokenTree::Group(group) => group.inner,
+                _ => continue,
+            };
+            #[cfg(wrap_proc_macro)]
+            let group = match group {
+                crate::imp::Group::Fallback(group) => group,
+                crate::imp::Group::Compiler(_) => continue,
+            };
+            inner.extend(group.stream.take_inner());
         }
     }
 }
@@ -231,13 +209,13 @@ impl Display for TokenStream {
             }
             joint = false;
             match tt {
-                TokenTree::Group(tt) => write!(f, "{}", tt),
-                TokenTree::Ident(tt) => write!(f, "{}", tt),
+                TokenTree::Group(tt) => Display::fmt(tt, f),
+                TokenTree::Ident(tt) => Display::fmt(tt, f),
                 TokenTree::Punct(tt) => {
                     joint = tt.spacing() == Spacing::Joint;
-                    write!(f, "{}", tt)
+                    Display::fmt(tt, f)
                 }
-                TokenTree::Literal(tt) => write!(f, "{}", tt),
+                TokenTree::Literal(tt) => Display::fmt(tt, f),
             }?;
         }
 
@@ -322,6 +300,34 @@ impl IntoIterator for TokenStream {
     }
 }
 
+#[cfg(procmacro2_semver_exempt)]
+#[derive(Clone, PartialEq, Eq)]
+pub(crate) struct SourceFile {
+    path: PathBuf,
+}
+
+#[cfg(procmacro2_semver_exempt)]
+impl SourceFile {
+    /// Get the path to this source file as a string.
+    pub(crate) fn path(&self) -> PathBuf {
+        self.path.clone()
+    }
+
+    pub(crate) fn is_real(&self) -> bool {
+        false
+    }
+}
+
+#[cfg(procmacro2_semver_exempt)]
+impl Debug for SourceFile {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("SourceFile")
+            .field("path", &self.path())
+            .field("is_real", &self.is_real())
+            .finish()
+    }
+}
+
 #[cfg(all(span_locations, not(fuzzing)))]
 thread_local! {
     static SOURCE_MAP: RefCell<SourceMap> = RefCell::new(SourceMap {
@@ -375,52 +381,38 @@ impl FileInfo {
     }
 
     fn byte_range(&mut self, span: Span) -> Range<usize> {
-        self.byte(span.lo)..self.byte(span.hi)
-    }
-
-    fn byte(&mut self, ch: u32) -> usize {
-        let char_index = (ch - self.span.lo) as usize;
+        let lo_char = (span.lo - self.span.lo) as usize;
 
         // Look up offset of the largest already-computed char index that is
-        // less than or equal to the current requested one.
-        let (&previous_char_index, &previous_byte_offset) = self
+        // less than or equal to the current requested one. We resume counting
+        // chars from that point.
+        let (&last_char_index, &last_byte_offset) = self
             .char_index_to_byte_offset
-            .range(..=char_index)
+            .range(..=lo_char)
             .next_back()
             .unwrap_or((&0, &0));
 
-        if previous_char_index == char_index {
-            return previous_byte_offset;
-        }
-
-        // Look up next char index that is greater than the requested one. We
-        // resume counting chars from whichever point is closer.
-        let byte_offset = match self.char_index_to_byte_offset.range(char_index..).next() {
-            Some((&next_char_index, &next_byte_offset))
-                if next_char_index - char_index < char_index - previous_char_index =>
+        let lo_byte = if last_char_index == lo_char {
+            last_byte_offset
+        } else {
+            let total_byte_offset = match self.source_text[last_byte_offset..]
+                .char_indices()
+                .nth(lo_char - last_char_index)
             {
-                self.source_text[..next_byte_offset]
-                    .char_indices()
-                    .nth_back(next_char_index - char_index - 1)
-                    .unwrap()
-                    .0
-            }
-            _ => {
-                match self.source_text[previous_byte_offset..]
-                    .char_indices()
-                    .nth(char_index - previous_char_index)
-                {
-                    Some((byte_offset_from_previous, _ch)) => {
-                        previous_byte_offset + byte_offset_from_previous
-                    }
-                    None => self.source_text.len(),
-                }
-            }
+                Some((additional_offset, _ch)) => last_byte_offset + additional_offset,
+                None => self.source_text.len(),
+            };
+            self.char_index_to_byte_offset
+                .insert(lo_char, total_byte_offset);
+            total_byte_offset
         };
 
-        self.char_index_to_byte_offset
-            .insert(char_index, byte_offset);
-        byte_offset
+        let trunc_lo = &self.source_text[lo_byte..];
+        let char_len = (span.hi - span.lo) as usize;
+        lo_byte..match trunc_lo.char_indices().nth(char_len) {
+            Some((offset, _ch)) => lo_byte + offset,
+            None => self.source_text.len(),
+        }
     }
 
     fn source_text(&mut self, span: Span) -> String {
@@ -480,39 +472,36 @@ impl SourceMap {
         span
     }
 
-    fn find(&self, span: Span) -> usize {
-        match self.files.binary_search_by(|file| {
-            if file.span.hi < span.lo {
-                Ordering::Less
-            } else if file.span.lo > span.hi {
-                Ordering::Greater
-            } else {
-                assert!(file.span_within(span));
-                Ordering::Equal
+    #[cfg(procmacro2_semver_exempt)]
+    fn filepath(&self, span: Span) -> PathBuf {
+        for (i, file) in self.files.iter().enumerate() {
+            if file.span_within(span) {
+                return PathBuf::from(if i == 0 {
+                    "<unspecified>".to_owned()
+                } else {
+                    format!("<parsed string {}>", i)
+                });
             }
-        }) {
-            Ok(i) => i,
-            Err(_) => unreachable!("Invalid span with no related FileInfo!"),
         }
-    }
-
-    fn filepath(&self, span: Span) -> String {
-        let i = self.find(span);
-        if i == 0 {
-            "<unspecified>".to_owned()
-        } else {
-            format!("<parsed string {}>", i)
-        }
+        unreachable!("Invalid span with no related FileInfo!");
     }
 
     fn fileinfo(&self, span: Span) -> &FileInfo {
-        let i = self.find(span);
-        &self.files[i]
+        for file in &self.files {
+            if file.span_within(span) {
+                return file;
+            }
+        }
+        unreachable!("Invalid span with no related FileInfo!");
     }
 
     fn fileinfo_mut(&mut self, span: Span) -> &mut FileInfo {
-        let i = self.find(span);
-        &mut self.files[i]
+        for file in &mut self.files {
+            if file.span_within(span) {
+                return file;
+            }
+        }
+        unreachable!("Invalid span with no related FileInfo!");
     }
 }
 
@@ -555,6 +544,21 @@ impl Span {
         other
     }
 
+    #[cfg(procmacro2_semver_exempt)]
+    pub(crate) fn source_file(&self) -> SourceFile {
+        #[cfg(fuzzing)]
+        return SourceFile {
+            path: PathBuf::from("<unspecified>"),
+        };
+
+        #[cfg(not(fuzzing))]
+        SOURCE_MAP.with(|sm| {
+            let sm = sm.borrow();
+            let path = sm.filepath(*self);
+            SourceFile { path }
+        })
+    }
+
     #[cfg(span_locations)]
     pub(crate) fn byte_range(&self) -> Range<usize> {
         #[cfg(fuzzing)]
@@ -594,23 +598,6 @@ impl Span {
             let fi = sm.fileinfo(*self);
             fi.offset_line_column(self.hi as usize)
         })
-    }
-
-    #[cfg(span_locations)]
-    pub(crate) fn file(&self) -> String {
-        #[cfg(fuzzing)]
-        return "<unspecified>".to_owned();
-
-        #[cfg(not(fuzzing))]
-        SOURCE_MAP.with(|sm| {
-            let sm = sm.borrow();
-            sm.filepath(*self)
-        })
-    }
-
-    #[cfg(span_locations)]
-    pub(crate) fn local_file(&self) -> Option<PathBuf> {
-        None
     }
 
     #[cfg(not(span_locations))]
@@ -912,7 +899,7 @@ impl Display for Ident {
         if self.raw {
             f.write_str("r#")?;
         }
-        f.write_str(&self.sym)
+        Display::fmt(&self.sym, f)
     }
 }
 
