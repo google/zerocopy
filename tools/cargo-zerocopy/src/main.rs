@@ -382,11 +382,6 @@ fn delegate_cargo() -> Result<(), Error> {
 
                 // Computes the fully-qualified package name of workspace package `p`.
                 let fqpn = |p| {
-                    // Generate a lockfile, if absent.
-                    // This is a prerequisite of running pkgid.
-                    let _ = rustup(["run", version, "cargo", "generate-lockfile"], None)
-                        .output_or_exit();
-
                     let output = rustup(["run", version, "cargo", "pkgid", "-p"], None)
                         .arg(p)
                         .output_or_exit();
