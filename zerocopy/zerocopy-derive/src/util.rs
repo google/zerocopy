@@ -86,6 +86,8 @@ impl Ctx {
             }
         }
 
+        validate_syn3_supported_syntax(&ast)?;
+
         Ok(Self { ast, zerocopy_crate: path, skip_on_error, on_error_span })
     }
 
@@ -224,6 +226,58 @@ impl DataExt for DataUnion {
 
     fn tag(&self) -> Option<Ident> {
         None
+    }
+}
+
+fn validate_syn3_supported_syntax(ast: &DeriveInput) -> Result<(), Error> {
+    let mut error = None;
+
+    for field in raw_fields(&ast.data) {
+        if let Err(err) = field.modifiers.require_empty() {
+            combine_errors(&mut error, err);
+        }
+
+        if let Some((eq, _)) = &field.default {
+            combine_errors(
+                &mut error,
+                Error::new(eq.span(), "default field values are not supported by zerocopy derives"),
+            );
+        }
+    }
+
+    if let Some(error) = error {
+        Err(error)
+    } else {
+        Ok(())
+    }
+}
+
+fn raw_fields(data: &Data) -> impl '_ + Iterator<Item = &Field> {
+    let structs = match data {
+        Data::Struct(strct) => Some(strct.fields.iter()),
+        Data::Enum(_) | Data::Union(_) => None,
+    };
+    let enums = match data {
+        Data::Enum(enm) => Some(enm.variants.iter().flat_map(|variant| &variant.fields)),
+        Data::Struct(_) | Data::Union(_) => None,
+    };
+    let unions = match data {
+        Data::Union(unn) => Some(unn.fields.named.iter()),
+        Data::Struct(_) | Data::Enum(_) => None,
+    };
+
+    structs
+        .into_iter()
+        .flatten()
+        .chain(enums.into_iter().flatten())
+        .chain(unions.into_iter().flatten())
+}
+
+fn combine_errors(error: &mut Option<Error>, next: Error) {
+    if let Some(error) = error {
+        error.combine(next);
+    } else {
+        *error = Some(next);
     }
 }
 
@@ -814,7 +868,11 @@ pub(crate) fn enum_size_from_repr(repr: &EnumRepr) -> Result<usize, Error> {
 #[cfg(test)]
 pub(crate) mod testutil {
     use proc_macro2::TokenStream;
-    use syn::visit::{self, Visit};
+    use syn::{
+        parse_quote,
+        visit::{self, Visit},
+        DeriveInput,
+    };
 
     /// Checks for hygiene violations in the generated code.
     ///
@@ -840,6 +898,25 @@ pub(crate) mod testutil {
 
         let file = syn::parse2::<syn::File>(ts).expect("failed to parse generated output as File");
         AmbiguousItemVisitor.visit_file(&file);
+    }
+
+    #[test]
+    fn reject_default_field_values() {
+        let ast: DeriveInput = parse_quote! {
+            struct HasDefault {
+                field: u8 = 0,
+            }
+        };
+
+        let err = match super::Ctx::try_from_derive_input(ast) {
+            Ok(_) => panic!("expected default field value to be rejected"),
+            Err(err) => err,
+        };
+
+        assert!(
+            err.to_string().contains("default field values are not supported"),
+            "unexpected error: {err}",
+        );
     }
 
     #[test]
