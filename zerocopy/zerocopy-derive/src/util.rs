@@ -230,6 +230,10 @@ impl DataExt for DataUnion {
 }
 
 fn validate_syn3_supported_syntax(ast: &DeriveInput) -> Result<(), Error> {
+    // Syn may support unstable Rust syntax before zerocopy does. If we ignore
+    // new field-level syntax here, the generated impl may be based on an
+    // incomplete understanding of the input type. Validate these extension
+    // points before projecting fields down to the parts we currently use.
     let mut error = None;
 
     for field in raw_fields(&ast.data) {
