@@ -3,7 +3,7 @@ use crate::iter::IterDelimited;
 use crate::INDENT;
 use std::ptr;
 use syn::{
-    AngleBracketedGenericArguments, AssocConst, AssocType, Constraint, Expr, GenericArgument,
+    AngleBracketedGenericArguments, AssocConst, AssocType, Constraint, GenericArgument,
     ParenthesizedGenericArguments, Path, PathArguments, PathSegment, QSelf,
 };
 
@@ -50,20 +50,7 @@ impl Printer {
             #![cfg_attr(all(test, exhaustive), deny(non_exhaustive_omitted_patterns))]
             GenericArgument::Lifetime(lifetime) => self.lifetime(lifetime),
             GenericArgument::Type(ty) => self.ty(ty),
-            GenericArgument::Const(expr) => {
-                match expr {
-                    #![cfg_attr(all(test, exhaustive), allow(non_exhaustive_omitted_patterns))]
-                    Expr::Lit(expr) => self.expr_lit(expr),
-                    Expr::Block(expr) => self.expr_block(expr),
-                    // ERROR CORRECTION: Add braces to make sure that the
-                    // generated code is valid.
-                    _ => {
-                        self.word("{");
-                        self.expr(expr);
-                        self.word("}");
-                    }
-                }
-            }
+            GenericArgument::Const(expr) => self.const_argument(expr),
             GenericArgument::AssocType(assoc) => self.assoc_type(assoc),
             GenericArgument::AssocConst(assoc) => self.assoc_const(assoc),
             GenericArgument::Constraint(constraint) => self.constraint(constraint),
@@ -136,7 +123,7 @@ impl Printer {
             self.angle_bracketed_generic_arguments(generics, PathKind::Type);
         }
         self.word(" = ");
-        self.expr(&assoc.value);
+        self.const_argument(&assoc.value);
     }
 
     fn constraint(&mut self, constraint: &Constraint) {
@@ -161,9 +148,9 @@ impl Printer {
         self.cbox(INDENT);
         self.word("(");
         self.zerobreak();
-        for ty in arguments.inputs.iter().delimited() {
-            self.ty(&ty);
-            self.trailing_comma(ty.is_last);
+        for named_arg in arguments.inputs.iter().delimited() {
+            self.ty(&named_arg.ty);
+            self.trailing_comma(named_arg.is_last);
         }
         self.offset(-INDENT);
         self.word(")");
@@ -172,12 +159,9 @@ impl Printer {
     }
 
     pub fn qpath(&mut self, qself: &Option<QSelf>, path: &Path, kind: PathKind) {
-        let qself = match qself {
-            Some(qself) => qself,
-            None => {
-                self.path(path, kind);
-                return;
-            }
+        let Some(qself) = qself else {
+            self.path(path, kind);
+            return;
         };
 
         assert!(qself.position < path.segments.len());

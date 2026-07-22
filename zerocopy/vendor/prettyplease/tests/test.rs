@@ -20,7 +20,7 @@ fn test_parenthesize_cond() {
         },
         indoc! {"
             fn main() {
-                if (Struct {} == Struct {}) {}
+                if (Struct {}) == (Struct {}) {}
             }
         "},
     );
@@ -39,17 +39,11 @@ fn test_parenthesize_match_guard() {
                 }
             }
         },
-        // FIXME: no parens around `Struct {}` because anything until the `=>`
-        // is considered part of the match guard expression. Parsing of the
-        // expression is not terminated by `{` in that position.
-        //
-        // FIXME: the `true && false` needs parens. Otherwise the precedence is
-        // `(let _ = true) && false` which means something different.
         indoc! {"
             fn main() {
                 match () {
-                    () if let _ = (Struct {}) => {}
-                    () if let _ = true && false => {}
+                    () if let _ = Struct {} => {}
+                    () if let _ = (true && false) => {}
                 }
             }
         "},

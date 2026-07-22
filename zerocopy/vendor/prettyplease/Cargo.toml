@@ -11,13 +11,18 @@
 
 [package]
 edition = "2021"
-rust-version = "1.56"
+rust-version = "1.71"
 name = "prettyplease"
-version = "0.2.17"
+version = "0.3.0"
 authors = ["David Tolnay <dtolnay@gmail.com>"]
-links = "prettyplease02"
+build = "build.rs"
+links = "prettyplease03"
 exclude = ["cargo-expand"]
+autolib = false
+autobins = false
 autoexamples = false
+autotests = false
+autobenches = false
 description = "A minimal `syn` syntax tree pretty-printer"
 documentation = "https://docs.rs/prettyplease"
 readme = "README.md"
@@ -27,21 +32,39 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/dtolnay/prettyplease"
 
 [package.metadata.docs.rs]
-rustdoc-args = ["--generate-link-to-definition"]
 targets = ["x86_64-unknown-linux-gnu"]
+rustdoc-args = [
+    "--generate-link-to-definition",
+    "--generate-macro-expansion",
+    "--extern-html-root-url=core=https://doc.rust-lang.org",
+    "--extern-html-root-url=alloc=https://doc.rust-lang.org",
+    "--extern-html-root-url=std=https://doc.rust-lang.org",
+]
 
 [package.metadata.playground]
 features = ["verbatim"]
 
+[features]
+verbatim = ["syn/parsing"]
+
 [lib]
-doc-scrape-examples = false
+name = "prettyplease"
+path = "src/lib.rs"
+
+[[test]]
+name = "test"
+path = "tests/test.rs"
+
+[[test]]
+name = "test_precedence"
+path = "tests/test_precedence.rs"
 
 [dependencies.proc-macro2]
-version = "1.0.74"
+version = "1.0.80"
 default-features = false
 
 [dependencies.syn]
-version = "2.0.46"
+version = "3"
 features = ["full"]
 default-features = false
 
@@ -49,7 +72,7 @@ default-features = false
 version = "2"
 
 [dev-dependencies.proc-macro2]
-version = "1.0.74"
+version = "1.0.80"
 default-features = false
 
 [dev-dependencies.quote]
@@ -57,9 +80,12 @@ version = "1.0.35"
 default-features = false
 
 [dev-dependencies.syn]
-version = "2.0.46"
-features = ["parsing"]
+version = "3"
+features = [
+    "clone-impls",
+    "extra-traits",
+    "parsing",
+    "printing",
+    "visit-mut",
+]
 default-features = false
-
-[features]
-verbatim = ["syn/parsing"]

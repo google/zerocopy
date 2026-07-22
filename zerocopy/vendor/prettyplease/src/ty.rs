@@ -1,12 +1,13 @@
 use crate::algorithm::Printer;
+use crate::fixup::FixupContext;
 use crate::iter::IterDelimited;
 use crate::path::PathKind;
 use crate::INDENT;
 use proc_macro2::TokenStream;
 use syn::{
-    Abi, BareFnArg, BareVariadic, ReturnType, Type, TypeArray, TypeBareFn, TypeGroup,
-    TypeImplTrait, TypeInfer, TypeMacro, TypeNever, TypeParen, TypePath, TypePtr, TypeReference,
-    TypeSlice, TypeTraitObject, TypeTuple,
+    Abi, FnPtrVariadic, NamedArg, PointerMutability, ReturnType, Type, TypeArray, TypeFnPtr,
+    TypeGroup, TypeImplTrait, TypeInfer, TypeMacro, TypeNever, TypeParen, TypePath, TypePtr,
+    TypeReference, TypeSlice, TypeTraitObject, TypeTuple,
 };
 
 impl Printer {
@@ -14,7 +15,7 @@ impl Printer {
         match ty {
             #![cfg_attr(all(test, exhaustive), deny(non_exhaustive_omitted_patterns))]
             Type::Array(ty) => self.type_array(ty),
-            Type::BareFn(ty) => self.type_bare_fn(ty),
+            Type::FnPtr(ty) => self.type_fn_ptr(ty),
             Type::Group(ty) => self.type_group(ty),
             Type::ImplTrait(ty) => self.type_impl_trait(ty),
             Type::Infer(ty) => self.type_infer(ty),
@@ -36,11 +37,11 @@ impl Printer {
         self.word("[");
         self.ty(&ty.elem);
         self.word("; ");
-        self.expr(&ty.len);
+        self.expr(&ty.len, FixupContext::NONE);
         self.word("]");
     }
 
-    fn type_bare_fn(&mut self, ty: &TypeBareFn) {
+    fn type_fn_ptr(&mut self, ty: &TypeFnPtr) {
         if let Some(bound_lifetimes) = &ty.lifetimes {
             self.bound_lifetimes(bound_lifetimes);
         }
@@ -53,12 +54,12 @@ impl Printer {
         self.word("fn(");
         self.cbox(INDENT);
         self.zerobreak();
-        for bare_fn_arg in ty.inputs.iter().delimited() {
-            self.bare_fn_arg(&bare_fn_arg);
-            self.trailing_comma(bare_fn_arg.is_last && ty.variadic.is_none());
+        for named_arg in ty.inputs.iter().delimited() {
+            self.named_arg(&named_arg);
+            self.trailing_comma(named_arg.is_last && ty.variadic.is_none());
         }
         if let Some(variadic) = &ty.variadic {
-            self.bare_variadic(variadic);
+            self.fn_ptr_variadic(variadic);
             self.zerobreak();
         }
         self.offset(-INDENT);
@@ -108,10 +109,9 @@ impl Printer {
 
     fn type_ptr(&mut self, ty: &TypePtr) {
         self.word("*");
-        if ty.mutability.is_some() {
-            self.word("mut ");
-        } else {
-            self.word("const ");
+        match &ty.mutability {
+            PointerMutability::Const(_) => self.word("const "),
+            PointerMutability::Mut(_) => self.word("mut "),
         }
         self.ty(&ty.elem);
     }
@@ -179,7 +179,6 @@ impl Printer {
             AnonUnion(AnonUnion),
             DynStar(DynStar),
             MutSelf(MutSelf),
-            NotType(NotType),
         }
 
         struct AnonStruct {
@@ -196,10 +195,6 @@ impl Printer {
 
         struct MutSelf {
             ty: Option<Type>,
-        }
-
-        struct NotType {
-            inner: Type,
         }
 
         impl Parse for TypeVerbatim {
@@ -229,10 +224,6 @@ impl Printer {
                         Some(ty)
                     };
                     Ok(TypeVerbatim::MutSelf(MutSelf { ty }))
-                } else if lookahead.peek(Token![!]) {
-                    input.parse::<Token![!]>()?;
-                    let inner: Type = input.parse()?;
-                    Ok(TypeVerbatim::NotType(NotType { inner }))
                 } else if lookahead.peek(Token![...]) {
                     input.parse::<Token![...]>()?;
                     Ok(TypeVerbatim::Ellipsis)
@@ -286,16 +277,12 @@ impl Printer {
                     self.type_param_bound(&type_param_bound);
                 }
             }
-            TypeVerbatim::MutSelf(bare_fn_arg) => {
+            TypeVerbatim::MutSelf(named_arg) => {
                 self.word("mut self");
-                if let Some(ty) = &bare_fn_arg.ty {
+                if let Some(ty) = &named_arg.ty {
                     self.word(": ");
                     self.ty(ty);
                 }
-            }
-            TypeVerbatim::NotType(ty) => {
-                self.word("!");
-                self.ty(&ty.inner);
             }
         }
     }
@@ -310,16 +297,16 @@ impl Printer {
         }
     }
 
-    fn bare_fn_arg(&mut self, bare_fn_arg: &BareFnArg) {
-        self.outer_attrs(&bare_fn_arg.attrs);
-        if let Some((name, _colon)) = &bare_fn_arg.name {
+    fn named_arg(&mut self, named_arg: &NamedArg) {
+        self.outer_attrs(&named_arg.attrs);
+        if let Some((name, _colon)) = &named_arg.name {
             self.ident(name);
             self.word(": ");
         }
-        self.ty(&bare_fn_arg.ty);
+        self.ty(&named_arg.ty);
     }
 
-    fn bare_variadic(&mut self, variadic: &BareVariadic) {
+    fn fn_ptr_variadic(&mut self, variadic: &FnPtrVariadic) {
         self.outer_attrs(&variadic.attrs);
         if let Some((name, _colon)) = &variadic.name {
             self.ident(name);

@@ -179,8 +179,8 @@
 //!
 //! ```
 //! // [dependencies]
-//! // prettyplease = "0.2"
-//! // syn = { version = "2", default-features = false, features = ["full", "parsing"] }
+//! // prettyplease = "0.3"
+//! // syn = { version = "3", default-features = false, features = ["full", "parsing"] }
 //!
 //! const INPUT: &str = stringify! {
 //!     use crate::{
@@ -276,7 +276,7 @@
 //! style. The reason is that in the paper, the complete non-whitespace contents
 //! are assumed to be independent of linebreak decisions, with Scan and Print
 //! being only in control of the whitespace (spaces and line breaks). In Rust as
-//! idiomatically formattted by rustfmt, that is not the case. Trailing commas
+//! idiomatically formatted by rustfmt, that is not the case. Trailing commas
 //! are one example; the punctuation is only known *after* the broken vs
 //! non-broken status of the surrounding group is known:
 //!
@@ -320,8 +320,9 @@
 //! these situations with conditional punctuation tokens whose selection can be
 //! deferred and populated after it's known that the group is or is not broken.
 
-#![doc(html_root_url = "https://docs.rs/prettyplease/0.2.17")]
+#![doc(html_root_url = "https://docs.rs/prettyplease/0.3.0")]
 #![allow(
+    clippy::bool_to_int_with_if,
     clippy::cast_possible_wrap,
     clippy::cast_sign_loss,
     clippy::derive_partial_eq_without_eq,
@@ -334,7 +335,9 @@
     clippy::module_name_repetitions,
     clippy::must_use_candidate,
     clippy::needless_pass_by_value,
+    clippy::ref_option,
     clippy::similar_names,
+    clippy::struct_excessive_bools,
     clippy::too_many_lines,
     clippy::unused_self,
     clippy::vec_init_then_push
@@ -343,10 +346,12 @@
 
 mod algorithm;
 mod attr;
+mod classify;
 mod convenience;
 mod data;
 mod expr;
 mod file;
+mod fixup;
 mod generics;
 mod item;
 mod iter;
@@ -355,6 +360,7 @@ mod lit;
 mod mac;
 mod pat;
 mod path;
+mod precedence;
 mod ring;
 mod stmt;
 mod token;

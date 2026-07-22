@@ -167,8 +167,8 @@ from rustfmt-formatted code.
 
 ```rust
 // [dependencies]
-// prettyplease = "0.2"
-// syn = { version = "2", default-features = false, features = ["full", "parsing"] }
+// prettyplease = "0.3"
+// syn = { version = "3", default-features = false, features = ["full", "parsing"] }
 
 const INPUT: &str = stringify! {
     use crate::{
@@ -261,8 +261,8 @@ well-formatted Rust code that is locally indistinguishable from rustfmt's style.
 The reason is that in the paper, the complete non-whitespace contents are
 assumed to be independent of linebreak decisions, with Scan and Print being only
 in control of the whitespace (spaces and line breaks). In Rust as idiomatically
-formattted by rustfmt, that is not the case. Trailing commas are one example;
-the punctuation is only known *after* the broken vs non-broken status of the
+formatted by rustfmt, that is not the case. Trailing commas are one example; the
+punctuation is only known *after* the broken vs non-broken status of the
 surrounding group is known:
 
 ```rust

@@ -1,11 +1,12 @@
 use crate::algorithm::Printer;
+use crate::fixup::FixupContext;
 use crate::iter::IterDelimited;
 use crate::path::PathKind;
 use crate::INDENT;
 use proc_macro2::TokenStream;
 use syn::{
-    FieldPat, Pat, PatIdent, PatOr, PatParen, PatReference, PatRest, PatSlice, PatStruct, PatTuple,
-    PatTupleStruct, PatType, PatWild,
+    FieldPat, Pat, PatGuard, PatIdent, PatOr, PatParen, PatReference, PatRest, PatSlice, PatStruct,
+    PatTuple, PatTupleStruct, PatType, PatWild,
 };
 
 impl Printer {
@@ -13,13 +14,14 @@ impl Printer {
         match pat {
             #![cfg_attr(all(test, exhaustive), deny(non_exhaustive_omitted_patterns))]
             Pat::Const(pat) => self.expr_const(pat),
+            Pat::Guard(pat) => self.pat_guard(pat),
             Pat::Ident(pat) => self.pat_ident(pat),
             Pat::Lit(pat) => self.expr_lit(pat),
             Pat::Macro(pat) => self.expr_macro(pat),
             Pat::Or(pat) => self.pat_or(pat),
             Pat::Paren(pat) => self.pat_paren(pat),
             Pat::Path(pat) => self.expr_path(pat),
-            Pat::Range(pat) => self.expr_range(pat),
+            Pat::Range(pat) => self.expr_range(pat, FixupContext::NONE),
             Pat::Reference(pat) => self.pat_reference(pat),
             Pat::Rest(pat) => self.pat_rest(pat),
             Pat::Slice(pat) => self.pat_slice(pat),
@@ -31,6 +33,13 @@ impl Printer {
             Pat::Wild(pat) => self.pat_wild(pat),
             _ => unimplemented!("unknown Pat"),
         }
+    }
+
+    fn pat_guard(&mut self, pat: &PatGuard) {
+        self.outer_attrs(&pat.attrs);
+        self.pat(&pat.pat);
+        self.word(" if ");
+        self.expr(&pat.guard, FixupContext::NONE);
     }
 
     fn pat_ident(&mut self, pat: &PatIdent) {

@@ -1,5 +1,7 @@
 use crate::algorithm::Printer;
+use crate::fixup::FixupContext;
 use crate::iter::IterDelimited;
+use crate::mac;
 use crate::path::PathKind;
 use crate::INDENT;
 use proc_macro2::TokenStream;
@@ -8,8 +10,9 @@ use syn::{
     ForeignItemType, ImplItem, ImplItemConst, ImplItemFn, ImplItemMacro, ImplItemType, Item,
     ItemConst, ItemEnum, ItemExternCrate, ItemFn, ItemForeignMod, ItemImpl, ItemMacro, ItemMod,
     ItemStatic, ItemStruct, ItemTrait, ItemTraitAlias, ItemType, ItemUnion, ItemUse, Receiver,
-    Signature, StaticMutability, TraitItem, TraitItemConst, TraitItemFn, TraitItemMacro,
-    TraitItemType, Type, UseGlob, UseGroup, UseName, UsePath, UseRename, UseTree, Variadic,
+    ReceiverKind, Safety, Signature, StaticMutability, TraitItem, TraitItemConst, TraitItemFn,
+    TraitItemMacro, TraitItemType, UseGlob, UseGroup, UseName, UsePath, UseRename, UseTree,
+    Variadic,
 };
 
 impl Printer {
@@ -47,7 +50,7 @@ impl Printer {
         self.ty(&item.ty);
         self.word(" = ");
         self.neverbreak();
-        self.expr(&item.expr);
+        self.expr(&item.expr, FixupContext::NONE);
         self.word(";");
         self.end();
         self.hardbreak();
@@ -96,8 +99,8 @@ impl Printer {
         self.word("{");
         self.hardbreak_if_nonempty();
         self.inner_attrs(&item.attrs);
-        for stmt in &item.block.stmts {
-            self.stmt(stmt);
+        for stmt in item.block.stmts.iter().delimited() {
+            self.stmt(&stmt, stmt.is_last);
         }
         self.offset(-INDENT);
         self.end();
@@ -129,7 +132,7 @@ impl Printer {
         self.cbox(INDENT);
         self.ibox(-INDENT);
         self.cbox(INDENT);
-        if item.defaultness.is_some() {
+        if item.modifiers.defaultness.is_some() {
             self.word("default ");
         }
         if item.unsafety.is_some() {
@@ -139,10 +142,10 @@ impl Printer {
         self.generics(&item.generics);
         self.end();
         self.nbsp();
-        if let Some((negative_polarity, path, _for_token)) = &item.trait_ {
-            if negative_polarity.is_some() {
-                self.word("!");
-            }
+        if item.modifiers.polarity.is_some() {
+            self.word("!");
+        }
+        if let Some((path, _for_token)) = &item.trait_ {
             self.path(path, PathKind::Type);
             self.space();
             self.word("for ");
@@ -164,7 +167,7 @@ impl Printer {
 
     fn item_macro(&mut self, item: &ItemMacro) {
         self.outer_attrs(&item.attrs);
-        let semicolon = true;
+        let semicolon = mac::requires_semi(&item.mac.delimiter);
         self.mac(&item.mac, item.ident.as_ref(), semicolon);
         self.hardbreak();
     }
@@ -206,7 +209,7 @@ impl Printer {
         self.ty(&item.ty);
         self.word(" = ");
         self.neverbreak();
-        self.expr(&item.expr);
+        self.expr(&item.expr, FixupContext::NONE);
         self.word(";");
         self.end();
         self.hardbreak();
@@ -253,7 +256,7 @@ impl Printer {
         if item.unsafety.is_some() {
             self.word("unsafe ");
         }
-        if item.auto_token.is_some() {
+        if item.modifiers.auto_token.is_some() {
             self.word("auto ");
         }
         self.word("trait ");
@@ -365,7 +368,8 @@ impl Printer {
         use syn::parse::{Parse, ParseStream, Result};
         use syn::punctuated::Punctuated;
         use syn::{
-            braced, parenthesized, token, Attribute, Generics, Ident, Lifetime, Token, Visibility,
+            braced, parenthesized, token, Attribute, Generics, Ident, Lifetime, Token, Type,
+            Visibility,
         };
         use verbatim::{
             FlexibleItemConst, FlexibleItemFn, FlexibleItemStatic, FlexibleItemType,
@@ -745,6 +749,7 @@ impl Printer {
             self.word("{}");
         } else if use_group.items.len() == 1
             && match &use_group.items[0] {
+                UseTree::Name(use_name) => use_name.ident != "self",
                 UseTree::Rename(use_rename) => use_rename.ident != "self",
                 _ => true,
             }
@@ -828,7 +833,7 @@ impl Printer {
 
     fn foreign_item_macro(&mut self, foreign_item: &ForeignItemMacro) {
         self.outer_attrs(&foreign_item.attrs);
-        let semicolon = true;
+        let semicolon = mac::requires_semi(&foreign_item.mac.delimiter);
         self.mac(&foreign_item.mac, None, semicolon);
         self.hardbreak();
     }
@@ -844,7 +849,7 @@ impl Printer {
     #[cfg(feature = "verbatim")]
     fn foreign_item_verbatim(&mut self, tokens: &TokenStream) {
         use syn::parse::{Parse, ParseStream, Result};
-        use syn::{Attribute, Token, Visibility};
+        use syn::{Abi, Attribute, Token, Visibility};
         use verbatim::{FlexibleItemFn, FlexibleItemStatic, FlexibleItemType, WhereClauseLocation};
 
         enum ForeignItemVerbatim {
@@ -853,6 +858,16 @@ impl Printer {
             FnFlexible(FlexibleItemFn),
             StaticFlexible(FlexibleItemStatic),
             TypeFlexible(FlexibleItemType),
+        }
+
+        fn peek_signature(input: ParseStream) -> bool {
+            let fork = input.fork();
+            fork.parse::<Option<Token![const]>>().is_ok()
+                && fork.parse::<Option<Token![async]>>().is_ok()
+                && ((fork.parse::<Option<Token![safe]>>().unwrap().is_some())
+                    || fork.parse::<Option<Token![unsafe]>>().is_ok())
+                && fork.parse::<Option<Abi>>().is_ok()
+                && fork.peek(Token![fn])
         }
 
         impl Parse for ForeignItemVerbatim {
@@ -869,15 +884,13 @@ impl Printer {
                 let defaultness = false;
 
                 let lookahead = input.lookahead1();
-                if lookahead.peek(Token![const])
-                    || lookahead.peek(Token![async])
-                    || lookahead.peek(Token![unsafe])
-                    || lookahead.peek(Token![extern])
-                    || lookahead.peek(Token![fn])
-                {
+                if lookahead.peek(Token![fn]) || peek_signature(input) {
                     let flexible_item = FlexibleItemFn::parse(attrs, vis, defaultness, input)?;
                     Ok(ForeignItemVerbatim::FnFlexible(flexible_item))
-                } else if lookahead.peek(Token![static]) {
+                } else if lookahead.peek(Token![static])
+                    || ((input.peek(Token![unsafe]) || input.peek(Token![safe]))
+                        && input.peek2(Token![static]))
+                {
                     let flexible_item = FlexibleItemStatic::parse(attrs, vis, input)?;
                     Ok(ForeignItemVerbatim::StaticFlexible(flexible_item))
                 } else if lookahead.peek(Token![type]) {
@@ -943,7 +956,7 @@ impl Printer {
         if let Some((_eq_token, default)) = &trait_item.default {
             self.word(" = ");
             self.neverbreak();
-            self.expr(default);
+            self.expr(default, FixupContext::NONE);
         }
         self.word(";");
         self.end();
@@ -959,8 +972,8 @@ impl Printer {
             self.word("{");
             self.hardbreak_if_nonempty();
             self.inner_attrs(&trait_item.attrs);
-            for stmt in &block.stmts {
-                self.stmt(stmt);
+            for stmt in block.stmts.iter().delimited() {
+                self.stmt(&stmt, stmt.is_last);
             }
             self.offset(-INDENT);
             self.end();
@@ -1001,7 +1014,7 @@ impl Printer {
 
     fn trait_item_macro(&mut self, trait_item: &TraitItemMacro) {
         self.outer_attrs(&trait_item.attrs);
-        let semicolon = true;
+        let semicolon = mac::requires_semi(&trait_item.mac.delimiter);
         self.mac(&trait_item.mac, None, semicolon);
         self.hardbreak();
     }
@@ -1126,7 +1139,7 @@ impl Printer {
         self.outer_attrs(&impl_item.attrs);
         self.cbox(0);
         self.visibility(&impl_item.vis);
-        if impl_item.defaultness.is_some() {
+        if impl_item.modifiers.defaultness.is_some() {
             self.word("default ");
         }
         self.word("const ");
@@ -1136,7 +1149,7 @@ impl Printer {
         self.ty(&impl_item.ty);
         self.word(" = ");
         self.neverbreak();
-        self.expr(&impl_item.expr);
+        self.expr(&impl_item.expr, FixupContext::NONE);
         self.word(";");
         self.end();
         self.hardbreak();
@@ -1146,7 +1159,7 @@ impl Printer {
         self.outer_attrs(&impl_item.attrs);
         self.cbox(INDENT);
         self.visibility(&impl_item.vis);
-        if impl_item.defaultness.is_some() {
+        if impl_item.modifiers.defaultness.is_some() {
             self.word("default ");
         }
         self.signature(&impl_item.sig);
@@ -1154,8 +1167,8 @@ impl Printer {
         self.word("{");
         self.hardbreak_if_nonempty();
         self.inner_attrs(&impl_item.attrs);
-        for stmt in &impl_item.block.stmts {
-            self.stmt(stmt);
+        for stmt in impl_item.block.stmts.iter().delimited() {
+            self.stmt(&stmt, stmt.is_last);
         }
         self.offset(-INDENT);
         self.end();
@@ -1167,7 +1180,7 @@ impl Printer {
         self.outer_attrs(&impl_item.attrs);
         self.cbox(INDENT);
         self.visibility(&impl_item.vis);
-        if impl_item.defaultness.is_some() {
+        if impl_item.modifiers.defaultness.is_some() {
             self.word("default ");
         }
         self.word("type ");
@@ -1185,7 +1198,7 @@ impl Printer {
 
     fn impl_item_macro(&mut self, impl_item: &ImplItemMacro) {
         self.outer_attrs(&impl_item.attrs);
-        let semicolon = true;
+        let semicolon = mac::requires_semi(&impl_item.mac.delimiter);
         self.mac(&impl_item.mac, None, semicolon);
         self.hardbreak();
     }
@@ -1284,9 +1297,7 @@ impl Printer {
         if signature.asyncness.is_some() {
             self.word("async ");
         }
-        if signature.unsafety.is_some() {
-            self.word("unsafe ");
-        }
+        self.safety(&signature.safety);
         if let Some(abi) = &signature.abi {
             self.abi(abi);
         }
@@ -1314,6 +1325,14 @@ impl Printer {
         self.end();
     }
 
+    fn safety(&mut self, safety: &Safety) {
+        match safety {
+            Safety::Safe(_) => self.word("safe "),
+            Safety::Unsafe(_) => self.word("unsafe "),
+            Safety::Default => {}
+        }
+    }
+
     fn fn_arg(&mut self, fn_arg: &FnArg) {
         match fn_arg {
             FnArg::Receiver(receiver) => self.receiver(receiver),
@@ -1323,36 +1342,34 @@ impl Printer {
 
     fn receiver(&mut self, receiver: &Receiver) {
         self.outer_attrs(&receiver.attrs);
-        if let Some((_ampersand, lifetime)) = &receiver.reference {
-            self.word("&");
-            if let Some(lifetime) = lifetime {
-                self.lifetime(lifetime);
-                self.nbsp();
-            }
-        }
-        if receiver.mutability.is_some() {
-            self.word("mut ");
-        }
-        self.word("self");
-        if receiver.colon_token.is_some() {
-            self.word(": ");
-            self.ty(&receiver.ty);
-        } else {
-            let consistent = match (&receiver.reference, &receiver.mutability, &*receiver.ty) {
-                (Some(_), mutability, Type::Reference(ty)) => {
-                    mutability.is_some() == ty.mutability.is_some()
-                        && match &*ty.elem {
-                            Type::Path(ty) => ty.qself.is_none() && ty.path.is_ident("Self"),
-                            _ => false,
-                        }
+        match &receiver.kind {
+            #![cfg_attr(all(test, exhaustive), deny(non_exhaustive_omitted_patterns))]
+            ReceiverKind::Value => {
+                if receiver.mutability.is_some() {
+                    self.word("mut ");
                 }
-                (None, _, Type::Path(ty)) => ty.qself.is_none() && ty.path.is_ident("Self"),
-                _ => false,
-            };
-            if !consistent {
-                self.word(": ");
-                self.ty(&receiver.ty);
+                self.word("self");
             }
+            ReceiverKind::Reference(_ampersand, lifetime, mutability) => {
+                self.word("&");
+                if let Some(lifetime) = lifetime {
+                    self.lifetime(lifetime);
+                    self.nbsp();
+                }
+                if mutability.is_some() {
+                    self.word("mut ");
+                }
+                self.word("self");
+            }
+            ReceiverKind::Typed(_colon, ty) => {
+                if receiver.mutability.is_some() {
+                    self.word("mut ");
+                }
+                self.word("self");
+                self.word(": ");
+                self.ty(ty);
+            }
+            _ => unimplemented!("unknown ReceiverKind"),
         }
     }
 
@@ -1378,13 +1395,14 @@ impl Printer {
 #[cfg(feature = "verbatim")]
 mod verbatim {
     use crate::algorithm::Printer;
+    use crate::fixup::FixupContext;
     use crate::iter::IterDelimited;
     use crate::INDENT;
     use syn::ext::IdentExt;
     use syn::parse::{ParseStream, Result};
     use syn::{
-        braced, token, Attribute, Block, Expr, Generics, Ident, Signature, StaticMutability, Stmt,
-        Token, Type, TypeParamBound, Visibility, WhereClause,
+        braced, token, Attribute, Block, Expr, Generics, Ident, Safety, Signature,
+        StaticMutability, Stmt, Token, Type, TypeParamBound, Visibility, WhereClause,
     };
 
     pub struct FlexibleItemConst {
@@ -1408,6 +1426,7 @@ mod verbatim {
     pub struct FlexibleItemStatic {
         pub attrs: Vec<Attribute>,
         pub vis: Visibility,
+        pub safety: Safety,
         pub mutability: StaticMutability,
         pub ident: Ident,
         pub ty: Option<Type>,
@@ -1474,7 +1493,16 @@ mod verbatim {
             defaultness: bool,
             input: ParseStream,
         ) -> Result<Self> {
-            let sig: Signature = input.parse()?;
+            let constness: Option<Token![const]> = input.parse()?;
+            let asyncness: Option<Token![async]> = input.parse()?;
+            let safety = Safety::parse_safe_or_unsafe(input)?;
+
+            let lookahead = input.lookahead1();
+            let sig: Signature = if lookahead.peek(Token![extern]) || lookahead.peek(Token![fn]) {
+                input.parse()?
+            } else {
+                return Err(lookahead.error());
+            };
 
             let lookahead = input.lookahead1();
             let body = if lookahead.peek(Token![;]) {
@@ -1493,7 +1521,12 @@ mod verbatim {
                 attrs,
                 vis,
                 defaultness,
-                sig,
+                sig: Signature {
+                    constness,
+                    asyncness,
+                    safety,
+                    ..sig
+                },
                 body,
             })
         }
@@ -1501,6 +1534,7 @@ mod verbatim {
 
     impl FlexibleItemStatic {
         pub fn parse(attrs: Vec<Attribute>, vis: Visibility, input: ParseStream) -> Result<Self> {
+            let safety = Safety::parse_safe_or_unsafe(input)?;
             input.parse::<Token![static]>()?;
             let mutability: StaticMutability = input.parse()?;
             let ident = input.parse()?;
@@ -1530,6 +1564,7 @@ mod verbatim {
             Ok(FlexibleItemStatic {
                 attrs,
                 vis,
+                safety,
                 mutability,
                 ident,
                 ty,
@@ -1620,7 +1655,7 @@ mod verbatim {
                 self.word(" = ");
                 self.neverbreak();
                 self.ibox(-INDENT);
-                self.expr(value);
+                self.expr(value, FixupContext::NONE);
                 self.end();
             }
             self.where_clause_oneline_semi(&item.generics.where_clause);
@@ -1641,8 +1676,8 @@ mod verbatim {
                 self.word("{");
                 self.hardbreak_if_nonempty();
                 self.inner_attrs(&item.attrs);
-                for stmt in body {
-                    self.stmt(stmt);
+                for stmt in body.iter().delimited() {
+                    self.stmt(&stmt, stmt.is_last);
                 }
                 self.offset(-INDENT);
                 self.end();
@@ -1658,6 +1693,7 @@ mod verbatim {
             self.outer_attrs(&item.attrs);
             self.cbox(0);
             self.visibility(&item.vis);
+            self.safety(&item.safety);
             self.word("static ");
             self.static_mutability(&item.mutability);
             self.ident(&item.ident);
@@ -1668,7 +1704,7 @@ mod verbatim {
             if let Some(expr) = &item.expr {
                 self.word(" = ");
                 self.neverbreak();
-                self.expr(expr);
+                self.expr(expr, FixupContext::NONE);
             }
             self.word(";");
             self.end();
