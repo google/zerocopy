@@ -394,13 +394,6 @@ jobs:
           echo "Using non-nightly toolchain; not modifying RUSTFLAGS='$RUSTFLAGS' or MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
         fi
 
-    # On our MSRV, `cargo` does not know about the `rust-version` field. As a
-    # result, in `cargo.sh`, if we use our MSRV toolchain in order to run `cargo
-    # metadata`, we will not be able to extract the `rust-version` field. Thus,
-    # in `cargo.sh`, we explicitly do `cargo +stable metadata`. This requires a
-    # (more recent) stable toolchain to be installed. As of this writing, this
-    # toolchain is not used for anything else.
-
     # On the `thumbv6m-none-eabi` target, we can't run `cargo check --tests` due
     # to the `memchr` crate, so we just do `cargo check` instead.
     - name: Check
