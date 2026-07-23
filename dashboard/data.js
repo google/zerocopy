@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784568533798,
+  "lastUpdate": 1784818161364,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22749,6 +22749,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 514,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Joshua Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "010b6abcd0ebcf00e19ea1a075a6605ddb93d458",
+          "message": "[zerocopy] Remove obsolete dependency pinning (#3494)\n\nThe vendored dependency graph makes resolver-only direct dependencies\nin testutil unnecessary. Remove them, relax exact requirements already\nfixed by Cargo.lock, and prune winapi-util and windows-sys once they\nleave the graph.\n\nWith registry sources available locally, cargo-zerocopy no longer needs\nto generate a lockfile before resolving package IDs. Remove that call\nand an obsolete CI comment about using stable Cargo for metadata.\n\ngherrit-pr-id: G766m443zedlghi5gd5ww2n7egxarkoph",
+          "timestamp": "2026-07-23T13:59:45Z",
+          "tree_id": "92bfc06730d2b68b880715c32a0dd352232d3e09",
+          "url": "https://github.com/google/zerocopy/commit/010b6abcd0ebcf00e19ea1a075a6605ddb93d458"
+        },
+        "date": 1784818159747,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 472,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 624,
             "unit": "seconds"
           }
         ]
