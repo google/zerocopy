@@ -1,30 +1,30 @@
 use crate::public_http_api::default_execution_tool;
 use crate::{
-    metrics::{self, record_metric, Endpoint, HasLabelsCore, Outcome},
+    WebSocketConfig,
+    metrics::{self, Endpoint, HasLabelsCore, Outcome, record_metric},
     request_database::Handle,
     server_axum::api_orchestrator_integration_impls::*,
-    WebSocketConfig,
 };
 
 use axum::extract::ws::{Message, WebSocket};
-use futures::{future::Fuse, Future, FutureExt, StreamExt, TryFutureExt};
+use futures::{Future, FutureExt, StreamExt, TryFutureExt, future::Fuse};
 use orchestrator::{
-    coordinator::{self, Coordinator, CoordinatorFactory, DockerBackend},
     DropErrorDetailsExt,
+    coordinator::{self, Coordinator, CoordinatorFactory, DockerBackend},
 };
 use snafu::prelude::*;
 use std::{
-    collections::BTreeMap,
+    collections::{BTreeMap, HashMap},
     convert::TryFrom,
     pin::pin,
     sync::{
+        Arc, LazyLock, Mutex,
         atomic::{AtomicU64, Ordering},
-        Arc,
     },
     time::{Duration, Instant},
 };
 use tokio::{
-    sync::{mpsc, Semaphore},
+    sync::{Semaphore, mpsc},
     task::{AbortHandle, JoinSet},
     time,
 };
@@ -32,7 +32,7 @@ use tokio_util::{
     sync::{CancellationToken, DropGuard},
     time::FutureExt as _,
 };
-use tracing::{error, info, instrument, warn, Instrument};
+use tracing::{Instrument, error, info, instrument, warn};
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -157,10 +157,7 @@ enum MessageResponse {
     ExecuteStatus { payload: ExecuteStatus, meta: Meta },
 
     #[serde(rename = "output/execute/wsExecuteEnd")]
-    ExecuteEnd {
-        payload: ExecuteResponse,
-        meta: Meta,
-    },
+    ExecuteEnd { payload: ExecuteResponse, meta: Meta },
 }
 
 #[derive(Debug, serde::Serialize)]
@@ -188,15 +185,9 @@ pub(crate) struct ExecuteStatus {
 
 impl From<orchestrator::coordinator::ExecuteStatus> for ExecuteStatus {
     fn from(value: orchestrator::coordinator::ExecuteStatus) -> Self {
-        let coordinator::ExecuteStatus {
-            resident_set_size_bytes,
-            total_time_secs,
-        } = value;
+        let coordinator::ExecuteStatus { resident_set_size_bytes, total_time_secs } = value;
 
-        Self {
-            resident_set_size_bytes,
-            total_time_secs,
-        }
+        Self { resident_set_size_bytes, total_time_secs }
     }
 }
 
@@ -231,10 +222,7 @@ pub(crate) async fn handle(
             tracing::Span::current().record("ws_id", id);
             info!("WebSocket started");
 
-            Self {
-                clean: false,
-                start,
-            }
+            Self { clean: false, start }
         }
     }
 
@@ -263,6 +251,18 @@ pub(crate) async fn handle(
 type TaggedError = (Error, Option<Meta>);
 type ResponseTx = mpsc::Sender<Result<MessageResponse, TaggedError>>;
 type SharedCoordinator = Arc<Coordinator<DockerBackend>>;
+type ExecuteCache = Arc<Mutex<HashMap<coordinator::ExecuteRequest, CachedExecute>>>;
+const MAX_EXECUTE_CACHE_ENTRIES: usize = 16;
+
+static ANNEAL_EXECUTE_CACHE: LazyLock<ExecuteCache> = LazyLock::new(Default::default);
+
+#[derive(Debug, Clone)]
+struct CachedExecute {
+    stdout: String,
+    stderr: String,
+    success: bool,
+    exit_detail: String,
+}
 
 /// Manages a limited amount of access to the `Coordinator`.
 ///
@@ -276,6 +276,7 @@ type SharedCoordinator = Arc<Coordinator<DockerBackend>>;
 /// - Allows limited parallelism between jobs of different types.
 struct CoordinatorManager {
     coordinator: SharedCoordinator,
+    execute_cache: ExecuteCache,
     tasks: JoinSet<Result<(), TaggedError>>,
     semaphore: Arc<Semaphore>,
     abort_handles: [Option<AbortHandle>; Self::N_KINDS],
@@ -290,6 +291,7 @@ impl CoordinatorManager {
     fn new(factory: &CoordinatorFactory) -> Self {
         Self {
             coordinator: Arc::new(factory.build()),
+            execute_cache: ANNEAL_EXECUTE_CACHE.clone(),
             tasks: Default::default(),
             semaphore: Arc::new(Semaphore::new(Self::N_PARALLEL)),
             abort_handles: Default::default(),
@@ -308,18 +310,19 @@ impl CoordinatorManager {
 
     async fn spawn<F, Fut>(&mut self, handler: F) -> CoordinatorManagerResult<()>
     where
-        F: FnOnce(SharedCoordinator) -> Fut,
+        F: FnOnce(SharedCoordinator, ExecuteCache) -> Fut,
         F: 'static + Send,
         Fut: Future<Output = Result<(), TaggedError>>,
         Fut: 'static + Send,
     {
         let coordinator = self.coordinator.clone();
+        let execute_cache = self.execute_cache.clone();
         let semaphore = self.semaphore.clone();
 
         let new_abort_handle = self.tasks.spawn(
             async move {
                 let _permit = semaphore.acquire().await;
-                handler(coordinator).await
+                handler(coordinator, execute_cache).await
             }
             .in_current_span(),
         );
@@ -385,10 +388,8 @@ async fn handle_core(
     feature_flags: FeatureFlags,
     db: Handle,
 ) {
-    let accepted_handshake = connect_handshake(&mut socket)
-        .timeout(config.handshake_timeout)
-        .await
-        .unwrap_or(false);
+    let accepted_handshake =
+        connect_handshake(&mut socket).timeout(config.handshake_timeout).await.unwrap_or(false);
 
     if !accepted_handshake {
         return;
@@ -396,10 +397,7 @@ async fn handle_core(
 
     let (tx, mut rx) = mpsc::channel(3);
 
-    let ff = MessageResponse::FeatureFlags {
-        payload: feature_flags,
-        meta: create_server_meta(),
-    };
+    let ff = MessageResponse::FeatureFlags { payload: feature_flags, meta: create_server_meta() };
 
     if tx.send(Ok(ff)).await.is_err() {
         return;
@@ -568,9 +566,7 @@ async fn connect_handshake(socket: &mut WebSocket) -> bool {
 }
 
 fn create_server_meta() -> Meta {
-    Arc::new(MetaInner {
-        sequence_number: -1,
-    })
+    Arc::new(MetaInner { sequence_number: -1 })
 }
 
 fn error_to_response((error, meta): TaggedError) -> MessageResponse {
@@ -612,22 +608,21 @@ async fn handle_msg(
 
             let guard = db.clone().start_with_guard("ws.Execute", txt).await;
 
-            active_executions.insert(
-                meta.sequence_number,
-                (token.clone().drop_guard(), Some(execution_tx)),
-            );
+            active_executions
+                .insert(meta.sequence_number, (token.clone().drop_guard(), Some(execution_tx)));
 
             // TODO: Should a single execute / build / etc. session have a timeout of some kind?
             let spawned = manager
                 .spawn({
                     let tx = tx.clone();
                     let meta = meta.clone();
-                    async |coordinator| {
+                    async |coordinator, execute_cache| {
                         let r = handle_execute(
                             token,
                             execution_rx,
                             tx,
                             coordinator,
+                            execute_cache,
                             payload,
                             meta.clone(),
                         )
@@ -704,18 +699,19 @@ async fn handle_execute(
     rx: mpsc::Receiver<String>,
     tx: ResponseTx,
     coordinator: SharedCoordinator,
+    execute_cache: ExecuteCache,
     req: ExecuteRequest,
     meta: Meta,
 ) -> ExecuteResult<()> {
-    use execute_error::*;
     use CompletedOrAbandoned::*;
+    use execute_error::*;
 
     let req = coordinator::ExecuteRequest::try_from(req).context(BadRequestSnafu)?;
 
     let labels_core = req.labels_core();
 
     let start = Instant::now();
-    let v = handle_execute_inner(token, rx, tx, coordinator, req, meta).await;
+    let v = handle_execute_inner(token, rx, tx, coordinator, execute_cache, req, meta).await;
     let elapsed = start.elapsed();
 
     let outcome = match &v {
@@ -735,11 +731,66 @@ async fn handle_execute_inner(
     mut rx: mpsc::Receiver<String>,
     tx: ResponseTx,
     coordinator: SharedCoordinator,
+    execute_cache: ExecuteCache,
     req: coordinator::ExecuteRequest,
     meta: Meta,
 ) -> ExecuteResult<CompletedOrAbandoned<Outcome>> {
-    use execute_error::*;
     use CompletedOrAbandoned::*;
+    use execute_error::*;
+
+    let is_anneal_verify = req.execution_tool == coordinator::ExecutionTool::AnnealVerify;
+    let anneal_request_start = Instant::now();
+
+    let cache_key = if req.execution_tool == coordinator::ExecutionTool::AnnealVerify {
+        Some(req.clone())
+    } else {
+        None
+    };
+
+    if let Some(cached) =
+        cache_key.as_ref().and_then(|key| execute_cache.lock().ok()?.get(key).cloned())
+    {
+        if is_anneal_verify {
+            info!(
+                backend_total_ms = anneal_request_start.elapsed().as_millis(),
+                "[anneal-verify-timing] event=cache-hit"
+            );
+        }
+
+        let sent = tx.send(Ok(MessageResponse::ExecuteBegin { meta: meta.clone() })).await;
+        abandon_if_closed!(sent);
+
+        if !cached.stdout.is_empty() {
+            let sent = tx
+                .send(Ok(MessageResponse::ExecuteStdout {
+                    payload: cached.stdout,
+                    meta: meta.clone(),
+                }))
+                .await;
+            abandon_if_closed!(sent);
+        }
+
+        let stderr = format!(
+            "{}[anneal-cache] reused cached result for identical submission\n",
+            cached.stderr
+        );
+        let sent = tx
+            .send(Ok(MessageResponse::ExecuteStderr { payload: stderr, meta: meta.clone() }))
+            .await;
+        abandon_if_closed!(sent);
+
+        let response = ExecuteResponse { success: cached.success, exit_detail: cached.exit_detail };
+        let outcome = if response.success { Outcome::Success } else { Outcome::ErrorUserCode };
+
+        let sent = tx.send(Ok(MessageResponse::ExecuteEnd { payload: response, meta })).await;
+        abandon_if_closed!(sent);
+
+        return Ok(Completed(outcome));
+    }
+
+    if is_anneal_verify {
+        info!("[anneal-verify-timing] event=start cache_hit=false");
+    }
 
     let coordinator::ActiveExecution {
         permit: _permit,
@@ -748,31 +799,26 @@ async fn handle_execute_inner(
         mut stdout_rx,
         mut stderr_rx,
         mut status_rx,
-    } = coordinator
-        .begin_execute(token, req.clone())
-        .await
-        .context(BeginSnafu)?;
+    } = coordinator.begin_execute(token, req.clone()).await.context(BeginSnafu)?;
 
-    let sent = tx
-        .send(Ok(MessageResponse::ExecuteBegin { meta: meta.clone() }))
-        .await;
+    let sent = tx.send(Ok(MessageResponse::ExecuteBegin { meta: meta.clone() })).await;
     abandon_if_closed!(sent);
 
     let mut stdin_tx = Some(stdin_tx);
 
     let send_stdout = async |payload| {
         let meta = meta.clone();
-        tx.send(Ok(MessageResponse::ExecuteStdout { payload, meta }))
-            .await
+        tx.send(Ok(MessageResponse::ExecuteStdout { payload, meta })).await
     };
 
     let send_stderr = async |payload| {
         let meta = meta.clone();
-        tx.send(Ok(MessageResponse::ExecuteStderr { payload, meta }))
-            .await
+        tx.send(Ok(MessageResponse::ExecuteStderr { payload, meta })).await
     };
 
     let mut reported = false;
+    let mut stdout_cache = String::new();
+    let mut stderr_cache = String::new();
 
     let status = loop {
         enum Event {
@@ -811,11 +857,13 @@ async fn handle_execute_inner(
             }
 
             Stdout(stdout) => {
+                stdout_cache.push_str(&stdout);
                 let sent = send_stdout(stdout).await;
                 abandon_if_closed!(sent);
             }
 
             Stderr(stderr) => {
+                stderr_cache.push_str(&stderr);
                 let sent = send_stderr(stderr).await;
                 abandon_if_closed!(sent);
             }
@@ -828,9 +876,7 @@ async fn handle_execute_inner(
 
                 let payload = status.into();
                 let meta = meta.clone();
-                let sent = tx
-                    .send(Ok(MessageResponse::ExecuteStatus { payload, meta }))
-                    .await;
+                let sent = tx.send(Ok(MessageResponse::ExecuteStatus { payload, meta })).await;
                 abandon_if_closed!(sent);
             }
         }
@@ -838,11 +884,13 @@ async fn handle_execute_inner(
 
     // Drain any remaining output
     while let Some(Some(stdout)) = stdout_rx.recv().now_or_never() {
+        stdout_cache.push_str(&stdout);
         let sent = send_stdout(stdout).await;
         abandon_if_closed!(sent);
     }
 
     while let Some(Some(stderr)) = stderr_rx.recv().now_or_never() {
+        stderr_cache.push_str(&stderr);
         let sent = send_stderr(stderr).await;
         abandon_if_closed!(sent);
     }
@@ -850,23 +898,64 @@ async fn handle_execute_inner(
     let status = status.context(EndSnafu)?;
     let outcome = Outcome::from_success(&status);
 
-    let coordinator::ExecuteResponse {
-        success,
-        exit_detail,
-    } = status;
+    let coordinator::ExecuteResponse { success, exit_detail } = status;
+
+    if is_anneal_verify {
+        let backend_total_ms = anneal_request_start.elapsed().as_millis();
+        let cargo_anneal_verify_ms = extract_cargo_anneal_verify_ms(&stdout_cache)
+            .or_else(|| extract_cargo_anneal_verify_ms(&stderr_cache));
+        let cargo_anneal_verify_ms_found = cargo_anneal_verify_ms.is_some();
+        let backend_overhead_ms =
+            cargo_anneal_verify_ms.map(|ms| backend_total_ms.saturating_sub(ms.into()));
+
+        info!(
+            backend_total_ms,
+            cargo_anneal_verify_ms = cargo_anneal_verify_ms.unwrap_or(0),
+            cargo_anneal_verify_ms_found,
+            backend_overhead_ms = backend_overhead_ms.unwrap_or(0),
+            success,
+            "[anneal-verify-timing] event=finish"
+        );
+    }
+
+    if let Some(cache_key) = cache_key {
+        if let Ok(mut execute_cache) = execute_cache.lock() {
+            if execute_cache.len() >= MAX_EXECUTE_CACHE_ENTRIES {
+                execute_cache.clear();
+            }
+
+            execute_cache.insert(
+                cache_key,
+                CachedExecute {
+                    stdout: stdout_cache,
+                    stderr: stderr_cache,
+                    success,
+                    exit_detail: exit_detail.clone(),
+                },
+            );
+        }
+    }
 
     let sent = tx
         .send(Ok(MessageResponse::ExecuteEnd {
-            payload: ExecuteResponse {
-                success,
-                exit_detail,
-            },
+            payload: ExecuteResponse { success, exit_detail },
             meta,
         }))
         .await;
     abandon_if_closed!(sent);
 
     Ok(Completed(outcome))
+}
+
+fn extract_cargo_anneal_verify_ms(output: &str) -> Option<u64> {
+    output
+        .lines()
+        .find(|line| {
+            line.contains("[anneal] verification succeeded in")
+                || line.contains("[anneal] verification failed after")
+        })
+        .and_then(|line| line.split_whitespace().rev().nth(1))
+        .and_then(|ms| ms.parse().ok())
 }
 
 #[derive(Debug, Snafu)]
@@ -882,9 +971,7 @@ pub(crate) enum ExecuteError {
     End { source: coordinator::ExecuteError },
 
     #[snafu(display("Could not send stdin to the coordinator"))]
-    Stdin {
-        source: tokio::sync::mpsc::error::SendError<()>,
-    },
+    Stdin { source: tokio::sync::mpsc::error::SendError<()> },
 }
 
 type ExecuteResult<T, E = ExecuteError> = std::result::Result<T, E>;
@@ -907,7 +994,5 @@ enum Error {
     StreamingExecute { source: ExecuteError },
 
     #[snafu(display("Unable to pass stdin to the active execution"))]
-    StreamingCoordinatorExecuteStdin {
-        source: tokio::sync::mpsc::error::SendError<()>,
-    },
+    StreamingCoordinatorExecuteStdin { source: tokio::sync::mpsc::error::SendError<()> },
 }
