@@ -18,7 +18,7 @@ categories = [
   "security",
 ]
 keywords = ["verification", "cargo", "plugin", "unsafe", "lean"]
-authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
+authors = ["Josh Liebow-Feeser <joshlf@google.com>"]
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy/tree/main/anneal"
 publish = true

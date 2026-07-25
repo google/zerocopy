@@ -1,6 +1,6 @@
 # Anneal: A Literate Verification Toolchain for (`unsafe`) Rust
 
-Joshua Liebow-Feeser ([joshlf@google.com](mailto:joshlf@google.com))
+Josh Liebow-Feeser ([joshlf@google.com](mailto:joshlf@google.com))
 
 ## 1\. Summary
 
