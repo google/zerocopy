@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784818161364,
+  "lastUpdate": 1785169768580,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22783,6 +22783,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 624,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "bc9c4d8e004b1d458ca8a0e207ff35b26ac696bd",
+          "message": "[CI] Bump the all-actions group with 6 updates (#3497)\n\nBumps the all-actions group with 6 updates:\n\n| Package | From | To |\n| --- | --- | --- |\n| [actions/checkout](https://github.com/actions/checkout) | `7.0.0` | `7.0.1` |\n| [DeterminateSystems/determinate-nix-action](https://github.com/determinatesystems/determinate-nix-action) | `3.21.7` | `3.21.8` |\n| [docker/login-action](https://github.com/docker/login-action) | `4.4.0` | `4.5.1` |\n| [zizmorcore/zizmor-action](https://github.com/zizmorcore/zizmor-action) | `0.6.0` | `0.6.1` |\n| [ossf/scorecard-action](https://github.com/ossf/scorecard-action) | `2.4.3` | `2.4.4` |\n| [github/codeql-action/upload-sarif](https://github.com/github/codeql-action) | `4.37.1` | `4.37.3` |\n\n\nUpdates `actions/checkout` from 7.0.0 to 7.0.1\n- [Release notes](https://github.com/actions/checkout/releases)\n- [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/actions/checkout/compare/9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0...3d3c42e5aac5ba805825da76410c181273ba90b1)\n\nUpdates `DeterminateSystems/determinate-nix-action` from 3.21.7 to 3.21.8\n- [Release notes](https://github.com/determinatesystems/determinate-nix-action/releases)\n- [Commits](https://github.com/determinatesystems/determinate-nix-action/compare/2a0be2498974c2b6327e19780488744384637d88...d96678350ffd6a456235832eb11e1c491589b7bb)\n\nUpdates `docker/login-action` from 4.4.0 to 4.5.1\n- [Release notes](https://github.com/docker/login-action/releases)\n- [Commits](https://github.com/docker/login-action/compare/af1e73f918a031802d376d3c8bbc3fe56130a9b0...abd2ef45e78c5afb21d64d4ca52ee8550d9572c7)\n\nUpdates `zizmorcore/zizmor-action` from 0.6.0 to 0.6.1\n- [Release notes](https://github.com/zizmorcore/zizmor-action/releases)\n- [Commits](https://github.com/zizmorcore/zizmor-action/compare/6599ee8b7a49aef6a770f63d261d214911a7ce02...6fc4b006235f201fdab3722e17240ab420d580e5)\n\nUpdates `ossf/scorecard-action` from 2.4.3 to 2.4.4\n- [Release notes](https://github.com/ossf/scorecard-action/releases)\n- [Changelog](https://github.com/ossf/scorecard-action/blob/main/RELEASE.md)\n- [Commits](https://github.com/ossf/scorecard-action/compare/4eaacf0543bb3f2c246792bd56e8cdeffafb205a...2d1146689b8cda280b9bc96326124645441f03bc)\n\nUpdates `github/codeql-action/upload-sarif` from 4.37.1 to 4.37.3\n- [Release notes](https://github.com/github/codeql-action/releases)\n- [Changelog](https://github.com/github/codeql-action/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/github/codeql-action/compare/7188fc363630916deb702c7fdcf4e481b751f97a...e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81)\n\n---\nupdated-dependencies:\n- dependency-name: actions/checkout\n  dependency-version: 7.0.1\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: DeterminateSystems/determinate-nix-action\n  dependency-version: 3.21.8\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: docker/login-action\n  dependency-version: 4.5.1\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: all-actions\n- dependency-name: zizmorcore/zizmor-action\n  dependency-version: 0.6.1\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: ossf/scorecard-action\n  dependency-version: 2.4.4\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: github/codeql-action/upload-sarif\n  dependency-version: 4.37.3\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-07-27T15:46:00Z",
+          "tree_id": "6555534e4d8bf528c81a3516717679d6c8ac4f62",
+          "url": "https://github.com/google/zerocopy/commit/bc9c4d8e004b1d458ca8a0e207ff35b26ac696bd"
+        },
+        "date": 1785169766397,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 450,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 656,
             "unit": "seconds"
           }
         ]
