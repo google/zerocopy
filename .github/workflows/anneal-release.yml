@@ -45,7 +45,7 @@ jobs:
       version: ${{ steps.check.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -82,7 +82,7 @@ jobs:
       id-token: write # required to publish to crates.io using OIDC
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -133,7 +133,7 @@ jobs:
       short_base_sha: ${{ steps.prepare.outputs.short_base_sha }}
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.inputs.branch }}
           persist-credentials: false
@@ -237,7 +237,7 @@ jobs:
             cargo_arch: aarch64
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.prepare-release-source.outputs.base_sha }}
           persist-credentials: false
@@ -264,7 +264,7 @@ jobs:
           df -h
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@2a0be2498974c2b6327e19780488744384637d88 # v3.21.7
+        uses: DeterminateSystems/determinate-nix-action@d96678350ffd6a456235832eb11e1c491589b7bb # v3.21.8
 
       # On Ubuntu 24.04 (currently `ubuntu-latest`), AppArmor restricts unprivileged user namespaces by default.
       # The Nix build sandbox uses `bubblewrap` for Linux FHS execution, which requires creating a user namespace.
@@ -338,7 +338,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.prepare-release-source.outputs.base_sha }}
           persist-credentials: false
