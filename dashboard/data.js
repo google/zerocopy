@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785169768580,
+  "lastUpdate": 1785259254840,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22817,6 +22817,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 656,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "45661989+xtqqczze@users.noreply.github.com",
+            "name": "xtqqczze",
+            "username": "xtqqczze"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "53a3fbfa15d656b25b74688369f7248ff354a021",
+          "message": "chore(cargo): remove deprecated package authors field (#3499)",
+          "timestamp": "2026-07-28T13:08:43-04:00",
+          "tree_id": "c9f676dd4106df7df10eff8be874e22d567be13e",
+          "url": "https://github.com/google/zerocopy/commit/53a3fbfa15d656b25b74688369f7248ff354a021"
+        },
+        "date": 1785259253472,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 476,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 619,
             "unit": "seconds"
           }
         ]
