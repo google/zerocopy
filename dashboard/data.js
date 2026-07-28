@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785259254840,
+  "lastUpdate": 1785278709980,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22851,6 +22851,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 619,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "mt@debian.org",
+            "name": "Michael Tautschnig",
+            "username": "tautschnig"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "77d064d68af25dcaf48ee6c7c8952d84568b3b0e",
+          "message": "Fix unused 'extern crate alloc' error under cfg(kani) (#3501)\n\nBuilding zerocopy under Kani without the 'alloc' feature (e.g. plain\n'cargo kani autoharness' on the crate) fails with:\n\n    error: unused extern crate\n       --> src/lib.rs:405:1\n        |\n    405 | extern crate alloc;\n\nbecause the crate denies unused_extern_crates. Under cfg(kani) the crate is\nnot no_std (lib.rs gates no_std on 'not(any(test, kani, feature = \"std\"))'),\nso the Kani proofs resolve Vec/vec! through the std prelude, and nothing\nreferences the 'alloc' crate by name; the 'use alloc::...' imports are gated\non 'any(feature = \"alloc\", test)' only. Hence the 'kani' predicate in the\n'extern crate alloc' gate declares a crate that is never used unless the\n'alloc' feature is (also) enabled -- and CI always enables it via the stable\nfeature set, which is why this never showed up there.\n\nDrop 'kani' from the gate. Verified all configurations compile: 'cargo kani\n--only-codegen -Z function-contracts' with no features (previously broken)\nand with the stable feature set, plus 'cargo check' with no features\n(no_std), with 'alloc', and with '--tests'.",
+          "timestamp": "2026-07-28T22:00:59Z",
+          "tree_id": "f55236d047b08591d03ddc24f1b4c69ec94d404c",
+          "url": "https://github.com/google/zerocopy/commit/77d064d68af25dcaf48ee6c7c8952d84568b3b0e"
+        },
+        "date": 1785278708513,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 442,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 598,
             "unit": "seconds"
           }
         ]
