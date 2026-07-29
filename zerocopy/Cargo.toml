@@ -132,7 +132,7 @@ zerocopy-derive = { version = "=0.8.55", path = "zerocopy-derive" }
 # FIXME(#381) Remove this dependency once we have our own layout gadgets.
 elain = "0.3.0"
 itertools = "0.11"
-rand = { version = "0.8.5", default-features = false, features = ["small_rng"] }
+rand = { version = "0.8.7", default-features = false, features = ["small_rng"] }
 regex = "1.0"
 rustversion = "1.0"
 static_assertions = "1.1"
