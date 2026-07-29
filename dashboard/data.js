@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785278709980,
+  "lastUpdate": 1785293225258,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22885,6 +22885,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 598,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "926abd9cab2584258accdd912435e84acf42ad33",
+          "message": "Update rand to 0.8.7 (#3502)",
+          "timestamp": "2026-07-28T19:35:05-07:00",
+          "tree_id": "42b832725afed93ce861a2f35e55e5c5edf9b0f4",
+          "url": "https://github.com/google/zerocopy/commit/926abd9cab2584258accdd912435e84acf42ad33"
+        },
+        "date": 1785293223835,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 469,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 612,
             "unit": "seconds"
           }
         ]
