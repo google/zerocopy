@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785447299847,
+  "lastUpdate": 1785449116578,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23021,6 +23021,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 532,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "mdittmer@users.noreply.github.com",
+            "name": "Mark Dittmer",
+            "username": "mdittmer"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "14a43293d62514c0b05375439014a0147546c812",
+          "message": "[anneal][v2] Add Cargo workspace resolution and target resolution logic (#3401)\n\nTAG=agy\n\nResolve Cargo requests into explicit package, target, and target-kind artifacts instead of preserving only user-facing Cargo flags for later Charon invocation. This keeps downstream stages from relying on Cargo output conventions whose shape depends on flags and workspace configuration.\n\nA future single `charon cargo` invocation strategy would need to account for these hazards:\n\n- one `--dest-file` is unsafe when Cargo selects multiple primary units, since multiple Charon driver invocations can race on that path;\n- Charon directory output is named by Rust crate name, so workspace packages can collide when they share `[lib] name`;\n- target selectors such as `--tests`, `--bins`, and default selection can produce extra or multiple artifacts;\n- Charon options such as `--start-from` and `--opaque` are invocation-wide and would be applied to every selected target;\n- lib+bin package builds may compile a sibling library under `RUSTC_WRAPPER`, which can fail if that library is translated instead of producing the rlib the bin needs.\n\ngherrit-pr-id: Gjnh4bziqtksdvg43zzll4732lxlcuss3",
+          "timestamp": "2026-07-30T17:53:26-04:00",
+          "tree_id": "30586914d13addb59c85ab019496b7349a71de02",
+          "url": "https://github.com/google/zerocopy/commit/14a43293d62514c0b05375439014a0147546c812"
+        },
+        "date": 1785449114867,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 442,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 613,
             "unit": "seconds"
           }
         ]
