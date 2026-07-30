@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785441316300,
+  "lastUpdate": 1785446603631,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22953,6 +22953,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 610,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "mdittmer@users.noreply.github.com",
+            "name": "Mark Dittmer",
+            "username": "mdittmer"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "863f4d25b8766cddf161c9ae66f293eb1bd6cd59",
+          "message": "[anneal][v2] Include Cargo in exocrate Rust toolchain (#3463)\n\ngherrit-pr-id: Gusk7sfx53btetxh4h4ew4mg24cjvtya6",
+          "timestamp": "2026-07-30T16:56:42-04:00",
+          "tree_id": "2c4c136dc063e6a8bc39f034d60ebff3f087512e",
+          "url": "https://github.com/google/zerocopy/commit/863f4d25b8766cddf161c9ae66f293eb1bd6cd59"
+        },
+        "date": 1785446602099,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 476,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 614,
             "unit": "seconds"
           }
         ]
