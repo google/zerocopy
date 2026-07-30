@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785293225258,
+  "lastUpdate": 1785441316300,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22919,6 +22919,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 612,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "mdittmer@users.noreply.github.com",
+            "name": "Mark Dittmer",
+            "username": "mdittmer"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "1eb65783f96496bfe6ecd5a24bace91e7f4978fb",
+          "message": "[anneal][v2] Compile merged util module at stack base (#3474)\n\nThe v2 stack previously introduced util.rs in a merged PR but declared the module only when the Charon integration started using it. Declare the module as soon as it exists so later PRs can add users without making earlier files look inert.\n\nThe temporary dead_code allowance is needed because this bottom-of-stack commit only wires in the module; subsequent generate/Charon changes remove the allowance once the utilities have production call sites.\n\ngherrit-pr-id: Ga2l5vkuio57w6b4kafskxw2bg4ri57gr",
+          "timestamp": "2026-07-30T19:10:25Z",
+          "tree_id": "8e323a8f170b0f03e9ff30d21458733fa1fd1772",
+          "url": "https://github.com/google/zerocopy/commit/1eb65783f96496bfe6ecd5a24bace91e7f4978fb"
+        },
+        "date": 1785441314731,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 471,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 610,
             "unit": "seconds"
           }
         ]
