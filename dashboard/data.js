@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785449116578,
+  "lastUpdate": 1785451439516,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23055,6 +23055,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 613,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "mdittmer@users.noreply.github.com",
+            "name": "Mark Dittmer",
+            "username": "mdittmer"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "0d2899c1cccbd41ca05e70177843b06d915c6d29",
+          "message": "[anneal][v2] Add pinned charon_lib dependency (#3418)\n\ngherrit-pr-id: G3ub4smvhm3rbp6d53jhwn3knjeaw7ugn",
+          "timestamp": "2026-07-30T18:27:11-04:00",
+          "tree_id": "feef50016abc90592b9bb58371d52f124b1aa9e2",
+          "url": "https://github.com/google/zerocopy/commit/0d2899c1cccbd41ca05e70177843b06d915c6d29"
+        },
+        "date": 1785451437605,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 441,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 682,
             "unit": "seconds"
           }
         ]
