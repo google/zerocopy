@@ -9,6 +9,9 @@
 
 use clap::Parser as _;
 
+#[allow(dead_code)]
+mod util;
+
 /// Anneal
 #[derive(clap::Parser, Debug)]
 #[command(name = "cargo-anneal", version, about, long_about = None)]
