@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785446603631,
+  "lastUpdate": 1785447299847,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -22987,6 +22987,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 614,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "mdittmer@users.noreply.github.com",
+            "name": "Mark Dittmer",
+            "username": "mdittmer"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5d054cda0dd6533ca92f8a26a625a104c5e89bbd",
+          "message": "[anneal][v2] Add exocrate toolchain setup and Toolchain resolver (#3400)\n\nTAG=agy\n\ngherrit-pr-id: Gbbpbt76nsgp2ohpclea46vot5joxx7b5",
+          "timestamp": "2026-07-30T17:24:07-04:00",
+          "tree_id": "e831ccacf2f10718e28f9cf65c6153bb17d836b9",
+          "url": "https://github.com/google/zerocopy/commit/5d054cda0dd6533ca92f8a26a625a104c5e89bbd"
+        },
+        "date": 1785447298502,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 392,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 532,
             "unit": "seconds"
           }
         ]
