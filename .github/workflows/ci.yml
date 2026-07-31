@@ -80,7 +80,7 @@ jobs:
           "no-zerocopy-aarch64-simd-be-1-87-0",
           "no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0"
         ]
-        target: [
+        target: &build-targets [
           "i686-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
           "arm-unknown-linux-gnueabi",
@@ -93,45 +93,38 @@ jobs:
           "thumbv6m-none-eabi",
           "wasm32-unknown-unknown"
         ]
-        features: [
-          "--no-default-features",
-          "",
-          "--features __internal_use_only_features_that_work_on_stable",
-          "--all-features"
-        ]
-        crate: [ "zerocopy", "zerocopy-derive" ]
+        feature_profile: &feature-profiles [ "default", "stable", "all" ]
+        crate: &crates [ "zerocopy", "zerocopy-derive" ]
         event_name: [ "${{ github.event_name }}" ]
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
           - toolchain: "msrv"
-            features: "--all-features"
+            feature_profile: "all"
           - toolchain: "stable"
-            features: "--all-features"
+            feature_profile: "all"
           - toolchain: "no-zerocopy-simd-x86-avx12-1-89-0"
-            features: "--all-features"
+            feature_profile: "all"
           - toolchain: "no-zerocopy-core-error-1-81-0"
-            features: "--all-features"
+            feature_profile: "all"
           - toolchain: "no-zerocopy-diagnostic-on-unimplemented-1-78-0"
-            features: "--all-features"
+            feature_profile: "all"
           - toolchain: "no-zerocopy-generic-bounds-in-const-fn-1-61-0"
-            features: "--all-features"
+            feature_profile: "all"
           - toolchain: "no-zerocopy-target-has-atomics-1-60-0"
-            features: "--all-features"
+            feature_profile: "all"
           - toolchain: "no-zerocopy-aarch64-simd-1-59-0"
-            features: "--all-features"
+            feature_profile: "all"
           - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
-            features: "--all-features"
+            feature_profile: "all"
           - toolchain: "no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0"
-            features: "--all-features"
+            feature_profile: "all"
           # Exclude any combination for the zerocopy-derive crate which
           # uses zerocopy features.
           - crate: "zerocopy-derive"
-            features: "--no-default-features"
+            feature_profile: "stable"
           - crate: "zerocopy-derive"
-            features: "--features __internal_use_only_features_that_work_on_stable"
-          - crate: "zerocopy-derive"
-            features: "--all-features"
+            feature_profile: "all"
           # Exclue any combination of zerocopy-derive and any toolchain version
           # other than "msrv", "stable", and "nightly". These other versions
           # exist to exercise zerocopy behavior which differs by toolchain;
@@ -269,9 +262,11 @@ jobs:
           # the `std` feature since `thumbv6m-none-eabi` does not include a
           # pre-compiled std.
           - target: "thumbv6m-none-eabi"
-            features: "--features __internal_use_only_features_that_work_on_stable"
+            crate: "zerocopy"
+            feature_profile: "stable"
           - target: "thumbv6m-none-eabi"
-            features: "--all-features"
+            crate: "zerocopy"
+            feature_profile: "all"
           # Exclude most targets during PR development, but allow them in the
           # merge queue. This speeds up our development flow, while still
           # ensuring that errors on these targets are caught before a PR is
@@ -293,25 +288,29 @@ jobs:
           - target: "wasm32-unknown-unknown"
             event_name: "pull_request"
 
-    name: Build & Test (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.features }} / ${{ matrix.target }})
+    name: Build & Test (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.feature_profile }} / ${{ matrix.target }})
 
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - &ci_checkout
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 2
         persist-credentials: false
 
-    - name: Set up Docker Buildx
+    - &ci_setup_buildx
+      name: Set up Docker Buildx
       uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
 
-    - name: Log in to the Container registry
+    - &ci_registry_login
+      name: Log in to the Container registry
       uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Generate sanitized Docker tag
+    - &ci_docker_tag
+      name: Generate sanitized Docker tag
       id: docker_tag
       env:
         REF_NAME: ${{ github.ref_name }}
@@ -319,7 +318,8 @@ jobs:
       run: |
         echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
 
-    - name: Load image from cache
+    - &ci_load_image
+      name: Load image from cache
       uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
       with:
         context: .
@@ -333,7 +333,8 @@ jobs:
         # Notice we omit `cache-to` here. We don't want many parallel jobs
         # fighting to write the exact same layers back to the cache API.
 
-    - name: Create Docker Shell Wrapper
+    - &ci_docker_shell
+      name: Create Docker Shell Wrapper
       shell: bash
       run: |
         set -eo pipefail
@@ -355,17 +356,19 @@ jobs:
           -v /home/runner/.docker-cargo/git:/root/.cargo/git \
           -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
           -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
-          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURES -e ZC_TOOLCHAIN \
-          -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
+          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE -e FEATURES -e ZC_TOOLCHAIN \
+          -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS -e MIRI_MODEL_FLAGS \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
           -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           zerocopy-ci:local bash -c "git config --global --add safe.directory '*' && exec bash \"\$1\"" -- "$1"
         EOF
         chmod +x /tmp/docker-shell.sh
 
-    - name: Configure environment variables
+    - &ci_configure_environment
+      name: Configure environment variables
       env:
         TOOLCHAIN: ${{ matrix.toolchain }}
+        FEATURE_PROFILE: ${{ matrix.feature_profile }}
       run: |
         set -eo pipefail
 
@@ -386,6 +389,10 @@ jobs:
         echo "Found that the '$TOOLCHAIN' toolchain is $ZC_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
         echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
 
+        FEATURES="$(./ci/feature_profile.sh "$FEATURE_PROFILE")"
+        echo "Feature profile '$FEATURE_PROFILE' resolves to '$FEATURES'" | tee -a $GITHUB_STEP_SUMMARY
+        echo "FEATURES=$FEATURES" >> $GITHUB_ENV
+
         if [[ "$TOOLCHAIN" == 'nightly' ]]; then
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
           MIRIFLAGS="$MIRIFLAGS $ZC_NIGHTLY_MIRIFLAGS"
@@ -403,7 +410,6 @@ jobs:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         TARGET: ${{ matrix.target }}
-        FEATURES: ${{ matrix.features }}
       run: ./cargo.sh +$TOOLCHAIN check --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target == 'thumbv6m-none-eabi'
 
@@ -412,7 +418,6 @@ jobs:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         TARGET: ${{ matrix.target }}
-        FEATURES: ${{ matrix.features }}
       run: ./cargo.sh +$TOOLCHAIN check --tests --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
 
@@ -421,7 +426,6 @@ jobs:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         TARGET: ${{ matrix.target }}
-        FEATURES: ${{ matrix.features }}
       run: ./cargo.sh +$TOOLCHAIN build --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
 
@@ -430,7 +434,6 @@ jobs:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         TARGET: ${{ matrix.target }}
-        FEATURES: ${{ matrix.features }}
       run: |
         ./cargo.sh +$TOOLCHAIN test \
           --package $CRATE \
@@ -453,7 +456,6 @@ jobs:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         TARGET: ${{ matrix.target }}
-        FEATURES: ${{ matrix.features }}
       run: |
         # Run UI tests separately, treating warnings as warnings (rather than
         # as errors, as we do everywhere else in our CI tests). This allows
@@ -477,9 +479,6 @@ jobs:
       # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
       # Run compile tests when building for other targets.
       #
-      # Only run UI tests for zerocopy-derive, or for zerocopy with the derive
-      # feature.
-      #
       # Only run UI tests for the 'msrv', 'stable', and 'nightly' toolchains.
       # Other toolchains are tested only because zerocopy has behavior which
       # differs on those toolchains, but at present, none of that behavior
@@ -489,65 +488,7 @@ jobs:
       if: |
         (!contains(matrix.target, 'windows')) &&
         (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) &&
-          (matrix.crate == 'zerocopy-derive' ||
-            (matrix.features != '' && matrix.features != '--no-default-features')) &&
-          (matrix.toolchain == 'msrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
-
-    - name: Run tests under Miri
-      env:
-        TARGET: ${{ matrix.target }}
-        TOOLCHAIN: ${{ matrix.toolchain }}
-        CRATE: ${{ matrix.crate }}
-        FEATURES: ${{ matrix.features }}
-      run: |
-        set -eo pipefail
-
-        # FIXME(#2906): We do this because `cargo vendor` doesn't currently
-        # support vendoring std's dependencies (required in order to build std
-        # from source, which Miri does). As a workaround, we simply temporarily
-        # remove the cargo config and bypass vendoring altogether. Eventually,
-        # we should get vendoring working for std's dependencies too.
-        #
-        # See also: https://github.com/rust-lang/wg-cargo-std-aware/issues/23
-        mv .cargo/config.toml .cargo/config.toml.bak
-
-        # Work around https://github.com/rust-lang/miri/issues/3125
-        [ "$TARGET" == "aarch64-unknown-linux-gnu" ] && cargo clean
-
-        # Spawn twice the number of workers as there are CPU cores.
-        THREADS=$(echo "$(nproc) * 2" | bc)
-        echo "Running Miri tests with $THREADS threads" | tee -a $GITHUB_STEP_SUMMARY
-
-        # Run under both the stacked borrows model (default) and under the tree 
-        # borrows model to ensure we're compliant with both.
-        for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
-          MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +$TOOLCHAIN \
-            miri nextest run \
-            --test-threads "$THREADS" \
-            --package $CRATE \
-            --target $TARGET \
-            $FEATURES
-        done
-
-        mv .cargo/config.toml.bak .cargo/config.toml
-      # Only nightly has a working Miri, so we skip installing on all other
-      # toolchains.
-      #
-      # We skip Miri tests on pull request, but run them in the merge queue.
-      # Miri tests are far and away the most expensive aspect of our CI tests,
-      # but they rarely surface issues (ie, tests that pass `cargo test` but
-      # fail `cargo miri test`). Skipping them during PR development
-      # significantly speeds up our development flow, while still ensuring that
-      # Miri can catch any errors before a PR is merged into main.
-      #
-      # TODO(#22): Re-enable testing on riscv64gc-unknown-linux-gnu and/or
-      # wasm32-unknown-unknown once those work.
-      if: |
-        matrix.toolchain == 'nightly' &&
-        matrix.target != 'riscv64gc-unknown-linux-gnu' &&
-        matrix.target != 'thumbv6m-none-eabi' &&
-        matrix.target != 'wasm32-unknown-unknown' &&
-        github.event_name != 'pull_request'
+        (matrix.toolchain == 'msrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
 
     # On the `thumbv6m-none-eabi` target, we can't run `cargo clippy --tests`
     # due to the `memchr` crate, so we just do `cargo clippy` instead.
@@ -556,7 +497,6 @@ jobs:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         TARGET: ${{ matrix.target }}
-        FEATURES: ${{ matrix.features }}
       run: ./cargo.sh +$TOOLCHAIN clippy --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.toolchain == 'nightly' && matrix.target == 'thumbv6m-none-eabi'
 
@@ -565,7 +505,6 @@ jobs:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         TARGET: ${{ matrix.target }}
-        FEATURES: ${{ matrix.features }}
       run: ./cargo.sh +$TOOLCHAIN clippy --package $CRATE --target $TARGET $FEATURES --tests --verbose
       # Clippy improves the accuracy of lints over time, and fixes bugs. Only
       # running Clippy on nightly allows us to avoid having to write code which
@@ -582,7 +521,6 @@ jobs:
       env:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
-        FEATURES: ${{ matrix.features }}
         NIGHTLY_FLAG: ${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }}
       run: |
         # Include arguments passed during docs.rs deployments to make sure those
@@ -661,10 +599,93 @@ jobs:
       # TODO(#1565): Run on wasm32-unknown-unknown.
       if: |
         matrix.crate == 'zerocopy' &&
-        matrix.features == '--features __internal_use_only_features_that_work_on_stable' &&
+        matrix.feature_profile == 'stable' &&
         matrix.toolchain == 'stable' &&
         matrix.target != 'wasm32-unknown-unknown' &&
         env.ZC_SKIP_CARGO_SEMVER_CHECKS != '1'
+
+  # Miri tests are far and away the most expensive aspect of our CI tests, but
+  # they rarely surface issues that `cargo test` misses. Skip them during pull
+  # request development, while still ensuring that they run before a pull
+  # request is merged.
+  miri:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    needs: build_docker_env
+    permissions:
+      contents: read
+      packages: read # required to pull docker caches from ghcr.io
+    defaults:
+      run:
+        shell: /tmp/docker-shell.sh {0} # zizmor: ignore[misfeature] (CI intentionally routes Miri commands through the prebuilt Docker image)
+        working-directory: zerocopy
+
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [ "nightly" ]
+        target: *build-targets
+        feature_profile: *feature-profiles
+        crate: *crates
+        miri_model:
+          - name: "stacked"
+            flags: ""
+          - name: "tree"
+            flags: "-Zmiri-tree-borrows"
+        exclude:
+          # Miri does not currently support these targets.
+          - target: "riscv64gc-unknown-linux-gnu"
+          - target: "thumbv6m-none-eabi"
+          - target: "wasm32-unknown-unknown"
+          # zerocopy-derive has no zerocopy feature profiles of its own.
+          - crate: "zerocopy-derive"
+            feature_profile: "stable"
+          - crate: "zerocopy-derive"
+            feature_profile: "all"
+
+    name: Miri (${{ matrix.crate }} / ${{ matrix.feature_profile }} / ${{ matrix.miri_model.name }} / ${{ matrix.target }})
+
+    steps:
+    - *ci_checkout
+    - *ci_setup_buildx
+    - *ci_registry_login
+    - *ci_docker_tag
+    - *ci_load_image
+    - *ci_docker_shell
+    - *ci_configure_environment
+
+    - name: Run tests under Miri
+      env:
+        TARGET: ${{ matrix.target }}
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        MIRI_MODEL_FLAGS: ${{ matrix.miri_model.flags }}
+      run: |
+        set -eo pipefail
+
+        # FIXME(#2906): We do this because `cargo vendor` doesn't currently
+        # support vendoring std's dependencies (required in order to build std
+        # from source, which Miri does). As a workaround, we simply temporarily
+        # remove the cargo config and bypass vendoring altogether. Eventually,
+        # we should get vendoring working for std's dependencies too.
+        #
+        # See also: https://github.com/rust-lang/wg-cargo-std-aware/issues/23
+        mv .cargo/config.toml .cargo/config.toml.bak
+        trap 'mv .cargo/config.toml.bak .cargo/config.toml' EXIT
+
+        # Work around https://github.com/rust-lang/miri/issues/3125
+        [ "$TARGET" == "aarch64-unknown-linux-gnu" ] && cargo clean
+
+        # Spawn twice the number of workers as there are CPU cores.
+        THREADS=$(echo "$(nproc) * 2" | bc)
+        echo "Running Miri tests with $THREADS threads" | tee -a $GITHUB_STEP_SUMMARY
+
+        MIRIFLAGS="$MIRIFLAGS $MIRI_MODEL_FLAGS" ./cargo.sh +$TOOLCHAIN \
+          miri nextest run \
+          --test-threads "$THREADS" \
+          --package $CRATE \
+          --target $TARGET \
+          $FEATURES
 
   codegen:
     runs-on: ubuntu-latest
@@ -894,7 +915,7 @@ jobs:
 
   check-all-toolchains-tested:
     runs-on: ubuntu-latest
-    name: Check that all toolchains listed in Cargo.toml are tested in CI
+    name: Check CI feature and matrix invariants
     steps:
       - name: Install yq (for YAML parsing)
         # FIXME(https://github.com/mikefarah/yq/issues/2587): Remove
@@ -1036,7 +1057,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env]
+      needs: [build_test, miri, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env]
       steps:
         - name: Mark the job as failed
           run: exit 1
