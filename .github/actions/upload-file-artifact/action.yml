@@ -1,5 +1,5 @@
 name: Upload file artifact
-description: Publish one already-compressed file for jobs in this workflow run
+description: Publish one nonempty file as a direct Actions artifact
 
 inputs:
   name:
@@ -8,6 +8,10 @@ inputs:
   path:
     description: Exact path of the nonempty file to publish
     required: true
+  retention-days:
+    description: Days to retain the artifact; defaults to the short CI lifetime
+    required: false
+    default: "1"
 
 outputs:
   artifact-id:
@@ -49,10 +53,12 @@ runs:
         artifact_size=$(stat --format=%s "$ARTIFACT_PATH")
         echo "Uploading $ARTIFACT_NAME ($artifact_size bytes)" | tee -a "$GITHUB_STEP_SUMMARY"
 
-    # Both current callers produce tar archives whose contents are already
-    # compressed (Docker's image layers use gzip; Anneal uses zstd). Version 7's
-    # direct-file mode avoids a redundant ZIP on upload and extraction on every
-    # consumer. Keep this coordinated with download-artifact v8 in
+    # Large workflow-local callers produce tar archives whose contents are
+    # already compressed (Docker's image layers use gzip; Anneal uses zstd), so
+    # they keep the one-day default. The tiny benchmark JSON consumed by
+    # docs.yml explicitly opts into longer retention. Version 7's direct-file
+    # mode avoids a redundant ZIP on upload and extraction. Keep this
+    # coordinated with download-artifact v8 in
     # `../download-artifact-with-retry/action.yml`, which understands direct
     # artifacts and verifies their service-provided digest.
     - name: Upload artifact
@@ -62,7 +68,7 @@ runs:
         name: ${{ inputs.name }}
         path: ${{ inputs.path }}
         if-no-files-found: error
-        retention-days: 1
+        retention-days: ${{ inputs.retention-days }}
         archive: false
         # Artifacts are immutable. Delete an artifact with the same validated
         # name first so "Re-run all jobs" can republish it under a new ID.
