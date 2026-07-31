@@ -109,8 +109,9 @@ for f in ./ci/*; do
 done
 # Release helpers either mutate version/lock state or produce publication
 # artifacts, so neither belongs in a read-only pre-push hook. check_fmt.sh is
-# called through the repository-wide ci/check_fmt.sh rather than directly.
-GLOBIGNORE="./zerocopy/ci/@(release_crate_version|package_release_crates|check_fmt).sh"
+# called through the repository-wide ci/check_fmt.sh rather than directly;
+# feature_profile.sh is exercised by check_all_toolchains_tested.sh.
+GLOBIGNORE="./zerocopy/ci/@(release_crate_version|package_release_crates|check_fmt|feature_profile).sh"
 for f in ./zerocopy/ci/*; do
     grep "$f" githooks/pre-push >/dev/null || {
         echo "$f not called from githooks/pre-push" >&2
