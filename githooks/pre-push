@@ -10,6 +10,20 @@
 
 set -eo pipefail
 echo "Running pre-push git hook: $0"
+
+# The checks below use cargo-zerocopy's pinned stable and nightly toolchains.
+# On a fresh machine, check_fmt.sh and the two toolchain-policy checks can all
+# reach `rustup toolchain install` concurrently. Rustup shares component
+# download and rollback paths across toolchains, so those installations can
+# delete or rename one another's partial files. Bootstrap the two toolchains
+# serially, then retain the useful parallelism between the actual checks.
+#
+# Keep this list coordinated with the backgrounded scripts below: if another
+# script starts using a different cargo-zerocopy descriptor, initialize it here
+# before that script is allowed to run in parallel.
+./zerocopy/cargo.sh +stable --version >/dev/null
+./zerocopy/cargo.sh +nightly --version >/dev/null
+
 # Forego redirecting stdout to /dev/null on check_fmt.sh because the output from
 # `cargo fmt` is useful (and the good stuff is not delivered by stderr).
 #
@@ -18,6 +32,7 @@ echo "Running pre-push git hook: $0"
 ./ci/check_fmt.sh                                      & FMT_PID=$!
 ./ci/check_job_dependencies.sh      >/dev/null         & JOB_DEPS_PID=$!
 ./zerocopy/ci/check_all_toolchains_tested.sh >/dev/null & TOOLCHAINS_PID=$!
+./zerocopy/ci/test_check_all_toolchains_tested.sh >/dev/null & TOOLCHAINS_TEST_PID=$!
 ./zerocopy/ci/check_readme.sh                >/dev/null & README_PID=$!
 ./zerocopy/ci/check_stale_stderr.sh          >/dev/null & STALE_STDERR_PID=$!
 ./zerocopy/ci/check_versions.sh              >/dev/null & VERSIONS_PID=$!
@@ -32,6 +47,7 @@ echo "Running pre-push git hook: $0"
 wait $ACTIONS_PID
 wait $FMT_PID
 wait $TOOLCHAINS_PID
+wait $TOOLCHAINS_TEST_PID
 wait $JOB_DEPS_PID
 wait $README_PID
 wait $STALE_STDERR_PID
@@ -54,8 +70,11 @@ for f in ./ci/*; do
 done
 # We don't want to run release_crate_version here, zerocopy/ci/check_fmt.sh is
 # called by ci/check_fmt.sh above rather than directly, and feature_profile.sh
-# is a helper exercised by check_all_toolchains_tested.sh.
-GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt|feature_profile).sh"
+# and run_build_test_cell.sh are helpers exercised exhaustively by
+# check_all_toolchains_tested.sh. Keep this exemption synchronized with that
+# checker: adding a helper here without a checker-owned invocation would let a
+# CI policy script silently go unused.
+GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt|feature_profile|run_build_test_cell).sh"
 for f in ./zerocopy/ci/*; do
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done
