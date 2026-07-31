@@ -23,8 +23,13 @@ exclude = [".*", "tests/enum_from_bytes.rs", "tests/ui-nightly/enum_from_bytes_u
 
 [lints.rust]
 # See #1792 for more context.
+# cargo-zerocopy emits the UI-test cfg only for semantic toolchain descriptors
+# with diagnostic snapshots. The coverage cfg is emitted by cargo-llvm-cov.
+# `tests/ui.rs` uses both to make an unfiltered default Cargo test safe.
 unexpected_cfgs = { level = "warn", check-cfg = [
   'cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)',
+  'cfg(__ZEROCOPY_INTERNAL_USE_ONLY_UI_TEST_TOOLCHAIN)',
+  'cfg(coverage_nightly)',
   'cfg(zerocopy_derive_union_into_bytes)',
   'cfg(zerocopy_unstable_linux)',
 ] }
