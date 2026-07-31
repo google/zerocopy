@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785523027404,
+  "lastUpdate": 1785523894453,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23191,6 +23191,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 649,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "93ceec4e91abf6474ab028f0313f972d7e4a4deb",
+          "message": "[ci] Distribute immutable workflow artifacts (#3508)\n\nBuild and export the CI Docker image once, upload its gzip-layer archive\ndirectly, and have every matrix cell select that exact artifact by\nthe producer-generated ID. Load and validate the image locally, then\nremove the archive immediately. This eliminates per-cell Buildx setup,\nregistry login, and cache reconstruction while preserving fork behavior.\n\nApply the same immutable-ID contract to the Anneal toolchain\nfan-out. Upload both already-compressed files without a redundant ZIP,\ncentralize their filenames, and validate upload metadata, download\nselectors, file shape, digest, and rerun overwrite behavior in shared\nlocal actions.\n\nThe current Docker cache contains 1,275,967,148 compressed bytes. A\nrepresentative 60-cell hosted PR spent 3,265 aggregate seconds\nin per-cell Buildx and cache loading, averaging 54.4 seconds per\ncell. This change should remove repeated BuildKit bootstrap and\ncache-solve overhead; artifact transfer and docker load remain and\nrequire hosted follow-up measurement.\n\ngherrit-pr-id: Gr7m2v9k4x6c3p8s5d1f0h2j4l6n8q0w2",
+          "timestamp": "2026-07-31T14:40:14-04:00",
+          "tree_id": "5b640c5c1a0258f8e9a5e5ab18dc3b9577fbc773",
+          "url": "https://github.com/google/zerocopy/commit/93ceec4e91abf6474ab028f0313f972d7e4a4deb"
+        },
+        "date": 1785523893091,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 463,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 591,
             "unit": "seconds"
           }
         ]
