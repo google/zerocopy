@@ -69,6 +69,7 @@ class WorkflowArtifactTests(unittest.TestCase):
         self.assertIn(f'{retention_name}: "90"', release)
         retention = f"retention-days: ${{{{ env.{retention_name} }}}}"
         expected_uploads = {
+            "prepare-crates-release": 1,
             "prepare-release-source": 1,
             "build-toolchains": 2,
             "prepare-release-pr": 1,
