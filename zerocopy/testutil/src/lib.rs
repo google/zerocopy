@@ -196,6 +196,8 @@ impl UiTestRunner {
 
         let mut args = vec![
             "build",
+            "--locked",
+            "--offline",
             "-p",
             "zerocopy",
             "--features",
@@ -285,6 +287,7 @@ impl UiTestRunner {
             "stable",
             "cargo",
             "build",
+            "--locked",
             "--manifest-path=tools/ui-runner/Cargo.toml",
             "--message-format=json",
         ]);

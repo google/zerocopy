@@ -27,7 +27,10 @@ you **MUST** also read [agent_docs/reviewing.md](./agent_docs/reviewing.md).
 - **README Generation:** **DON'T** edit `README.md` directly. It is generated
   from `src/lib.rs`. Edit the top-level doc comment in `src/lib.rs` instead.
   - **To regenerate:**
-    `(cd .. && cargo -q run --manifest-path tools/Cargo.toml -p generate-readme) > README.md`
+    ```bash
+    (cd .. && cargo -q run --locked --manifest-path tools/Cargo.toml \
+      -p generate-readme) > README.md
+    ```
 
 <!-- TODO-check-disable -->
 - **TODOs:** **DON'T** use `TODO` comments unless you explicitly intend to block
