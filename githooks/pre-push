@@ -52,9 +52,10 @@ GLOBIGNORE="./*/@(release_crate_version|check_todo|release_anneal_version).sh" #
 for f in ./ci/*; do
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done
-# We don't want to run release_crate_version here, and zerocopy/ci/check_fmt.sh
-# is called by ci/check_fmt.sh above rather than directly.
-GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt).sh"
+# The release helpers are exercised by the release-workflow tests rather than
+# run during every push, and zerocopy/ci/check_fmt.sh is called by
+# ci/check_fmt.sh above rather than directly.
+GLOBIGNORE="./zerocopy/ci/@(release_crate_version|package_release_crates|check_fmt).sh"
 for f in ./zerocopy/ci/*; do
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done

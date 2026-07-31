@@ -1,7 +1,16 @@
 [package]
 name = "exocrate"
-version = "0.1.0"
+# `cargo-anneal` publishes this crate first and depends on this exact version.
+# Keep this coordinated with `anneal/v1/Cargo.toml` and the ordered package
+# plan in `.github/workflows/anneal-release.yml`.
+# Version 0.2.0 was published manually from a dirty tree. The checked-in API
+# has changed incompatibly since that archive, so the next honest version is
+# 0.3.0 rather than a reconstruction of the untagged 0.2.0 source.
+version = "0.3.0"
 edition = "2024"
+description = "Install and verify prebuilt toolchain archives"
+license = "BSD-2-Clause OR Apache-2.0 OR MIT"
+repository = "https://github.com/google/zerocopy"
 
 [dependencies]
 dirs = "6.0.0"
