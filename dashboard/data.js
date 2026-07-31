@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785523894453,
+  "lastUpdate": 1785524774681,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23225,6 +23225,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 591,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8efe66107228163cbc9055d16caf0c97c4b3f590",
+          "message": "[ci] Avoid redundant Anneal PR caches (#3509)\n\nTreat the PR-local Anneal Nix cache as a fallback for an exact miss in\nthe trusted main cache. Skip its restore, population, and save when\n`main` already supplies the same archive inputs.\n\nThis removes a redundant 1.465 GB cache transfer or publication from\nordinary pull requests while preserving branch-local reuse for\narchive-changing PRs.\n\ngherrit-pr-id: G8b5ff74785cf1dfeef62eb4ce695116cac0e9290",
+          "timestamp": "2026-07-31T14:53:44-04:00",
+          "tree_id": "d015c333b54167c1980e4544668bc3e6770771a6",
+          "url": "https://github.com/google/zerocopy/commit/8efe66107228163cbc9055d16caf0c97c4b3f590"
+        },
+        "date": 1785524772628,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 478,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 653,
             "unit": "seconds"
           }
         ]
