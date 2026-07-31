@@ -112,6 +112,14 @@ fn main() {
 
     config.stderr_filter(r"[^']*\.long-type-\d+\.txt", b"$OUT_DIR/long-type-HASH.txt");
 
+    // rustc summarizes long implementation-candidate lists as "and N
+    // others". The exact count changes when a CI feature profile enables more
+    // implementations, even when the diagnostic under test is unchanged.
+    // Normalize only that summary so one toolchain snapshot can exercise every
+    // feature profile without hiding differences in the candidates rustc does
+    // print.
+    config.stderr_filter(r"and \d+ others", b"and $$OTHER_TYPES others");
+
     // NOTE: We intentionally don't respect `RUSTFLAGS` here, as it is too
     // unreliable. Recall that we are only compiling the crate under test,
     // not zerocopy itself. Zerocopy has already been compiled by the time
