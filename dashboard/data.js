@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785504182854,
+  "lastUpdate": 1785523027404,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23157,6 +23157,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 591,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "bef8e4df913a9755132fe6d47a6f1a7f923290d5",
+          "message": "[ci] Retry transient setup failures (#3507)\n\nRetry Buildx setup, registry authentication, and Anneal artifact\ndownloads up to three times, with increasing jitter between\nattempts. Clean up only the expected partial artifact before a\ndownload retry.\n\nEnable bounded Cargo and rustup client-native retries for recognized\ntransient downloads, and propagate them through the CI image build\nand runtime container boundary.\n\nKeep every retry below the build and test command boundary so\ndeterministic compilation, test, Miri, and Anneal failures are never\nretried.\n\ngherrit-pr-id: G5v4j2xq7m3n6c9kptwfhzr8dsaeybluq",
+          "timestamp": "2026-07-31T14:24:41-04:00",
+          "tree_id": "367ab50bcbd558d608c9317a4f8cd5c4ea0503d6",
+          "url": "https://github.com/google/zerocopy/commit/bef8e4df913a9755132fe6d47a6f1a7f923290d5"
+        },
+        "date": 1785523025208,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 482,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 649,
             "unit": "seconds"
           }
         ]
