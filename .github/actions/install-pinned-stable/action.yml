@@ -1,0 +1,24 @@
+name: Install repository-pinned stable Rust
+description: Install and select the stable Rust version pinned by Zerocopy
+
+runs:
+  using: composite
+  steps:
+    # Release archives must be compressed by the same Cargo version in the
+    # unprivileged producer and privileged reconciler. Read the existing CI pin
+    # instead of duplicating a version here. Keep this path and metadata key
+    # coordinated with `zerocopy/Cargo.toml` and the toolchain roller.
+    - name: Read and install pinned stable Rust
+      shell: bash
+      run: |
+        set -euo pipefail
+        PINNED_STABLE="$(
+          python3 -c \
+            'import pathlib,tomllib; print(tomllib.loads(pathlib.Path("zerocopy/Cargo.toml").read_text())["package"]["metadata"]["ci"]["pinned-stable"])'
+        )"
+        if ! [[ "$PINNED_STABLE" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "Invalid pinned stable toolchain: $PINNED_STABLE" >&2
+          exit 1
+        fi
+        rustup toolchain install "$PINNED_STABLE" --profile minimal
+        echo "RUSTUP_TOOLCHAIN=$PINNED_STABLE" >> "$GITHUB_ENV"

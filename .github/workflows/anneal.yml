@@ -81,6 +81,28 @@ jobs:
       - name: Check V2 flake evaluation
         run: bash anneal/check-flake-eval.sh
 
+  # A workspace build can succeed even though Cargo would reject the published
+  # manifest. This invokes the exact unprivileged packaging script used by
+  # anneal-release.yml, catching path-only dependencies and missing packaged
+  # files before a release reaches its manually approved job.
+  check_publishable:
+    name: Check Anneal release crates are publishable
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # zizmor: ignore[superfluous-actions]
+        with:
+          toolchain: stable
+
+      - name: Package release crates
+        run: ./anneal/v1/tools/package-release-crates.sh
+
   anneal_tests:
     name: Anneal V1 Tests
     runs-on: ubuntu-latest
@@ -472,7 +494,7 @@ jobs:
       runs-on: ubuntu-latest
       permissions:
         contents: read
-      needs: [static_checks, anneal_tests, verify_examples, v2_nix_cache, v2]
+      needs: [static_checks, check_publishable, anneal_tests, verify_examples, v2_nix_cache, v2]
       steps:
         - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
           with:
