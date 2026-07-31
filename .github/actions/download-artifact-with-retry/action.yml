@@ -1,0 +1,79 @@
+name: Download artifact with retry
+description: Download one artifact, retrying transient service and transfer failures
+
+inputs:
+  name:
+    description: Name of the artifact to download
+    required: true
+  path:
+    description: Directory into which the artifact is extracted
+    required: true
+  expected-file:
+    description: File expected directly under path after extraction
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # download-artifact retries some blob transfers internally, but failures
+    # while looking up an artifact or obtaining a signed URL happen outside
+    # that retry loop. Retrying the complete action reacquires both. A failed
+    # extraction can leave a partial file behind, so remove exactly the one
+    # expected file before retrying; never clear the caller's whole directory.
+    - name: Download artifact (attempt 1)
+      id: download_1
+      continue-on-error: true
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+
+    - name: Clean up and wait to retry artifact download
+      if: ${{ !cancelled() && steps.download_1.outcome == 'failure' }}
+      shell: bash
+      env:
+        ARTIFACT_PATH: ${{ inputs.path }}
+        EXPECTED_FILE: ${{ inputs.expected-file }}
+      run: |
+        set -eu
+        rm -f -- "$ARTIFACT_PATH/$EXPECTED_FILE"
+        delay=$((5 + RANDOM % 11))
+        echo "Artifact download failed; retrying in ${delay}s"
+        sleep "$delay"
+
+    - name: Download artifact (attempt 2)
+      id: download_2
+      if: ${{ !cancelled() && steps.download_1.outcome == 'failure' }}
+      continue-on-error: true
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+
+    - name: Clean up and wait to retry artifact download again
+      if: ${{ !cancelled() && steps.download_2.outcome == 'failure' }}
+      shell: bash
+      env:
+        ARTIFACT_PATH: ${{ inputs.path }}
+        EXPECTED_FILE: ${{ inputs.expected-file }}
+      run: |
+        set -eu
+        rm -f -- "$ARTIFACT_PATH/$EXPECTED_FILE"
+        delay=$((15 + RANDOM % 16))
+        echo "Artifact download failed again; retrying in ${delay}s"
+        sleep "$delay"
+
+    - name: Download artifact (attempt 3)
+      if: ${{ !cancelled() && steps.download_2.outcome == 'failure' }}
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+
+    - name: Verify downloaded artifact
+      if: ${{ !cancelled() }}
+      shell: bash
+      env:
+        ARTIFACT_PATH: ${{ inputs.path }}
+        EXPECTED_FILE: ${{ inputs.expected-file }}
+      run: test -f "$ARTIFACT_PATH/$EXPECTED_FILE"
