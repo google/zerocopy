@@ -13,24 +13,67 @@ cd "$(dirname "$0")/.."
 which yq > /dev/null
 failed=0
 
-for i in $(find .github -iname '*.yaml' -or -iname '*.yml'); do
-  # Select jobs that are triggered by pull request.
-  if yq -e '.on | has("pull_request")' "$i" 2>/dev/null >/dev/null; then
-    # Check if the file has an `all-jobs-succeed` job.
-    if yq -e '.jobs | has("all-jobs-succeed")' "$i" 2>/dev/null >/dev/null; then
-      # This gets the list of jobs that `all-jobs-succeed` does not depend on.
-      missing=$(comm -23 \
-        <(yq -r '.jobs | keys | .[]' "$i" | grep -v '^all-jobs-succeed$' | sort | uniq) \
-        <(yq -r '.jobs["all-jobs-succeed"].needs[]?' "$i" | sort | uniq))
-
-      if [ -n "$missing" ]; then
-        missing_jobs="$(echo "$missing" | tr '\n' ' ')"
-        echo "$i: all-jobs-succeed missing dependencies on some jobs: $missing_jobs" | tee -a $GITHUB_STEP_SUMMARY >&2
-        failed=1
-      fi
-    fi
+report() {
+  echo "$1" >&2
+  if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+    echo "$1" >> "$GITHUB_STEP_SUMMARY"
   fi
-done
+}
+
+while IFS= read -r -d '' workflow; do
+  if ! yq -e '.jobs | has("all-jobs-succeed")' \
+      "$workflow" 2>/dev/null >/dev/null; then
+    continue
+  fi
+
+  all_jobs="$(
+    yq -r '.jobs | keys | .[]' "$workflow" \
+      | grep -v '^all-jobs-succeed$' \
+      | sort -u
+  )"
+  dependencies="$(
+    yq -r '.jobs["all-jobs-succeed"].needs[]?' "$workflow" \
+      | sort -u
+  )"
+
+  missing="$(comm -23 <(echo "$all_jobs") <(echo "$dependencies"))"
+  unexpected="$(comm -13 <(echo "$all_jobs") <(echo "$dependencies"))"
+  if [ -n "$missing" ]; then
+    report "$workflow: all-jobs-succeed is missing dependencies: $(tr '\n' ' ' <<< "$missing")"
+    failed=1
+  fi
+  if [ -n "$unexpected" ]; then
+    report "$workflow: all-jobs-succeed has unknown dependencies: $(tr '\n' ' ' <<< "$unexpected")"
+    failed=1
+  fi
+
+  dependency_count="$(
+    yq -r '.jobs["all-jobs-succeed"].needs | length' "$workflow"
+  )"
+  unique_dependency_count="$(
+    yq -r '.jobs["all-jobs-succeed"].needs | unique | length' "$workflow"
+  )"
+  if [ "$dependency_count" -ne "$unique_dependency_count" ]; then
+    report "$workflow: all-jobs-succeed contains duplicate dependencies"
+    failed=1
+  fi
+
+  condition="$(yq -r '.jobs["all-jobs-succeed"].if // ""' "$workflow")"
+  condition="$(tr -d '[:space:]' <<< "$condition")"
+  if [ "$condition" != '${{always()}}' ] && [ "$condition" != 'always()' ]; then
+    report "$workflow: all-jobs-succeed must use if: always()"
+    failed=1
+  fi
+
+  checker_count="$(
+    yq -r '[.jobs["all-jobs-succeed"].steps[]? | select(.uses == "./.github/actions/require-successful-jobs")] | length' \
+      "$workflow"
+  )"
+  if [ "$checker_count" -ne 1 ]; then
+    report "$workflow: all-jobs-succeed must invoke the shared result checker exactly once"
+    failed=1
+  fi
+done < <(find .github -type f \( -iname '*.yaml' -o -iname '*.yml' \) -print0)
 
 if [ "$failed" -eq 1 ]; then
   exit 1

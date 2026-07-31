@@ -465,14 +465,21 @@ jobs:
       # configures which jobs to block on. DO NOT change this name without
       # updating the settings UI to match.
       name: All checks succeeded (anneal.yml)
-      # On failure, we run and unconditionally exit with a failing status code.
-      # On success, this job is skipped. Jobs skipped using `if:` are considered
-      # to have succeeded:
-      #
-      # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
-      if: failure()
+      # `failure()` is false when a dependency is cancelled or skipped, and a
+      # skipped required check counts as success. Always run and inspect every
+      # dependency result explicitly so new conditions fail closed.
+      if: ${{ always() }}
       runs-on: ubuntu-latest
+      permissions:
+        contents: read
       needs: [static_checks, anneal_tests, verify_examples, v2_nix_cache, v2]
       steps:
-        - name: Mark the job as failed
-          run: exit 1
+        - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+          with:
+            persist-credentials: false
+        - name: Require every dependency to succeed
+          uses: ./.github/actions/require-successful-jobs
+          with:
+            needs-json: ${{ toJSON(needs) }}
+            workflow-cancelled: ${{ cancelled() }}
+            allowed-skipped-jobs: '[]'

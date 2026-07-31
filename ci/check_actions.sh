@@ -29,6 +29,7 @@ export PYTHONDONTWRITEBYTECODE=1
 # cannot silently reintroduce write authority.
 python3 .github/scripts/check-workflow-permissions.py .github/workflows
 python3 .github/scripts/test_check_workflow_permissions.py
+python3 .github/actions/require-successful-jobs/test_check.py
 
 # Files to exclude from validation (e.g., because they are not Actions/Workflows)
 # Use relative paths matching `find .github` output
