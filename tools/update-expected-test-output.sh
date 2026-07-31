@@ -11,6 +11,11 @@
 set -eo pipefail
 cd "$(dirname "$0")/../zerocopy"
 
+# Codegen tests invoke `cargo asm`. Installing through the same helper as the
+# validation workflow makes this script self-contained while keeping one exact
+# tool version for both snapshot generation and validation.
+bash ../tools/install-cargo-show-asm.sh
+
 # Update the `.stderr` reference files used to validate our UI tests and the
 # `.x86-64.mca` files used to validate our codegen tests.
 BLESS=1 ./cargo.sh +nightly test --test codegen -p zerocopy --all-features
