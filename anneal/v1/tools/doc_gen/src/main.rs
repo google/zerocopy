@@ -115,7 +115,7 @@ fn main() {
         let existing = fs::read_to_string(target_file).unwrap_or_default();
         if existing != full_txt {
             eprintln!(
-                "Error: {} is out of date. Please run `cargo run -p doc_gen` to update it.",
+                "Error: {} is out of date. Please run `cargo run --locked -p doc_gen` to update it.",
                 target_file
             );
             process::exit(1);
