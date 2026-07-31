@@ -22,8 +22,12 @@ systems=(
 
 packages=(
   aeneas-compiled
+  aeneas-compiled-fast
+  aeneas-compiled-slow
   aeneas-download
   aeneas-metadata-files
+  aeneas-prepared-cache
+  aeneas-prepared-sources
   aeneas-unpacked
   default
   leantar
@@ -32,8 +36,16 @@ packages=(
   mathlib-cache-unpacked
   omnibus-archive
   omnibus-archive-ci
+  omnibus-archive-ci-fast
+  omnibus-archive-ci-slow
+  omnibus-archive-fast
   omnibus-archive-layout-check
+  omnibus-archive-layout-check-fast
+  omnibus-archive-layout-check-slow
+  omnibus-archive-slow
   omnibus-tar
+  omnibus-tar-fast
+  omnibus-tar-slow
   rust-toolchain
 )
 
