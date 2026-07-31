@@ -355,7 +355,9 @@ jobs:
           -v /home/runner/.docker-cargo/git:/root/.cargo/git \
           -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
           -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
-          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURES -e RUSTFLAGS -e MIRIFLAGS -e ZC_TOOLCHAIN \
+          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURES -e ZC_TOOLCHAIN \
+          -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
+          -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
           -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           zerocopy-ci:local bash -c "git config --global --add safe.directory '*' && exec bash \"\$1\"" -- "$1"
         EOF
@@ -591,7 +593,7 @@ jobs:
         if [[ "$TOOLCHAIN" == "nightly" ]]; then
           export RUSTDOCFLAGS="-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS $RUSTDOCFLAGS"
         fi
-        ./cargo.sh +$TOOLCHAIN doc --document-private-items --package $CRATE $FEATURES
+        ./cargo.sh +$TOOLCHAIN doc --no-deps --document-private-items --package $CRATE $FEATURES
 
     # If the commit message contains the line `SKIP_CARGO_SEMVER_CHECKS=1`, then
     # skip the cargo-semver-checks step.
