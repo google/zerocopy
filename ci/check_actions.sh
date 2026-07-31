@@ -20,6 +20,103 @@ if [ ! -x "$HOME/.cargo/bin/action-validator" ]; then
     cargo install -q action-validator --version 0.8.0 --locked
 fi
 export PATH="$HOME/.cargo/bin:$PATH"
+export PYTHONDONTWRITEBYTECODE=1
+
+sha256_file() {
+    if command -v sha256sum >/dev/null; then
+        sha256sum "$1" | cut -d ' ' -f 1
+    elif command -v shasum >/dev/null; then
+        shasum -a 256 "$1" | cut -d ' ' -f 1
+    else
+        echo "$script_name: sha256sum or shasum is required" >&2
+        return 1
+    fi
+}
+
+# action-validator checks the workflow schema, while actionlint additionally
+# understands where expression functions are legal. GitHub silently declines
+# to create a run for some expression-context errors, so this check must also
+# run from the local pre-push hook rather than relying on hosted CI to diagnose
+# its own workflow file. Use a checksummed upstream binary: requiring a recent
+# Go compiler just to validate this repository would make every push depend on
+# an otherwise-unrelated development toolchain.
+actionlint_version=1.7.12
+# Keep these platform hashes coordinated with the checksum manifest attached to
+# https://github.com/rhysd/actionlint/releases/tag/v1.7.12.
+case "$(uname -s)/$(uname -m)" in
+    Linux/x86_64)
+        actionlint_platform=linux_amd64
+        actionlint_sha256=8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+        ;;
+    Linux/aarch64 | Linux/arm64)
+        actionlint_platform=linux_arm64
+        actionlint_sha256=325e971b6ba9bfa504672e29be93c24981eeb1c07576d730e9f7c8805afff0c6
+        ;;
+    Darwin/x86_64)
+        actionlint_platform=darwin_amd64
+        actionlint_sha256=5b44c3bc2255115c9b69e30efc0fecdf498fdb63c5d58e17084fd5f16324c644
+        ;;
+    Darwin/arm64)
+        actionlint_platform=darwin_arm64
+        actionlint_sha256=aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f
+        ;;
+    *)
+        echo "$script_name: actionlint $actionlint_version has no pinned binary for $(uname -s)/$(uname -m)" >&2
+        exit 1
+        ;;
+esac
+
+actionlint_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zerocopy/actionlint-$actionlint_version-$actionlint_platform"
+actionlint_bin="$actionlint_dir/actionlint"
+if [ ! -x "$actionlint_bin" ]; then
+    for tool in curl tar; do
+        if ! command -v "$tool" >/dev/null; then
+            echo "$script_name: $tool is required to install actionlint" >&2
+            exit 1
+        fi
+    done
+
+    echo "$script_name: actionlint not found, installing..." >&2
+    actionlint_tmp="$(mktemp -d "${TMPDIR:-/tmp}/zerocopy-actionlint.XXXXXXXX")"
+    trap 'rm -rf "$actionlint_tmp"' EXIT
+    actionlint_asset="actionlint_${actionlint_version}_${actionlint_platform}.tar.gz"
+    actionlint_archive="$actionlint_tmp/$actionlint_asset"
+    curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error \
+        --connect-timeout 15 --max-time 30 \
+        --retry 5 --retry-all-errors --retry-max-time 60 \
+        --output "$actionlint_archive" \
+        "https://github.com/rhysd/actionlint/releases/download/v${actionlint_version}/${actionlint_asset}"
+
+    actionlint_actual_sha256="$(sha256_file "$actionlint_archive")"
+    if [ "$actionlint_actual_sha256" != "$actionlint_sha256" ]; then
+        echo "$script_name: actionlint checksum mismatch: expected $actionlint_sha256, got $actionlint_actual_sha256" >&2
+        exit 1
+    fi
+
+    tar -xzf "$actionlint_archive" -C "$actionlint_tmp" actionlint
+    mkdir -p "$actionlint_dir"
+    actionlint_candidate="$actionlint_dir/.actionlint.$$"
+    install -m 0755 "$actionlint_tmp/actionlint" "$actionlint_candidate"
+    mv -f "$actionlint_candidate" "$actionlint_bin"
+    rm -rf "$actionlint_tmp"
+    trap - EXIT
+fi
+
+failed=0
+
+# Keep this pass focused on workflow structure and expression contexts. Shell
+# and Python sources already have their own repository checks, and enabling
+# actionlint's optional external integrations would make results depend on
+# whichever shellcheck/pyflakes versions happen to be installed on the host.
+# Run the GitHub-aware parser before the action-validator pass below: both
+# validators must accept a workflow before it is considered valid.
+if ! output=$("$actionlint_bin" -shellcheck= -pyflakes= 2>&1); then
+    echo "$script_name: ❌ actionlint validation failed" >&2
+    echo "$output" | sed "s|^|$script_name:   |" >&2
+    failed=1
+fi
+
+python3 .github/actions/require-successful-jobs/test_check.py
 
 # The hosted workflows delegate every apt operation to this bounded retry
 # helper. Its fake-command tests verify timeouts, retries, failure propagation,
@@ -32,8 +129,6 @@ EXCLUDE_FILES=(
     "./.github/dependabot.yml"
     "./.github/release.yml"
 )
-
-failed=0
 
 # Use process substitution and while loop to handle filenames with spaces robustly
 while IFS= read -r -d '' file; do
