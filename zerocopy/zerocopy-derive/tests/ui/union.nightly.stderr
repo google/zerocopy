@@ -78,7 +78,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy_renamed::Immutable` is n
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and 129 others
+           and $OTHER_TYPES others
    = note: required for `ManuallyDrop<UnsafeCell<()>>` to implement `zerocopy_renamed::Immutable`
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'

@@ -158,7 +158,7 @@ help: the trait `zerocopy_renamed::KnownLayout` is not implemented for `NotKnown
              AU16
              AtomicBool
              AtomicI16
-           and 73 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -187,7 +187,7 @@ help: the trait `zerocopy_renamed::KnownLayout` is not implemented for `NotKnown
              AU16
              AtomicBool
              AtomicI16
-           and 73 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -211,7 +211,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy_renamed::Immutable` is n
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and 130 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -237,7 +237,7 @@ error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy_renamed::Immutable` is n
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and 130 others
+           and $OTHER_TYPES others
    = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy_renamed::Immutable`
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
@@ -317,7 +317,7 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
               F32<O>
               F64<O>
               I128<O>
-            and 26 others
+            and $OTHER_TYPES others
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -496,7 +496,7 @@ help: the trait `zerocopy_renamed::KnownLayout` is not implemented for `SplitAtN
               AU16
               AtomicBool
               AtomicI16
-            and 73 others
+            and $OTHER_TYPES others
 note: required by a bound in `SplitAt`
    --> src/split_at.rs:63:0
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -547,7 +547,7 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
               F32<O>
               F64<O>
               I128<O>
-            and 26 others
+            and $OTHER_TYPES others
 note: required for `IntoBytes11<AU16>` to implement `zerocopy_renamed::IntoBytes`
    --> $DIR/struct.rs:232:10
     |
