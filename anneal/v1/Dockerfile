@@ -1,11 +1,3 @@
-FROM python:3.11-slim AS extractor
-WORKDIR /app
-COPY anneal/v1/Cargo.toml ./
-# Remove the [workspace] section so it can be built as a standalone package.
-# Also inject tree-sitter dependencies used by doc_gen to cache them too.
-RUN sed '1,2d' Cargo.toml > Cargo.toml.no_workspace && \
-    sed -i '/^\[dependencies\]$/a tree-sitter = "0.25"\ntree-sitter-lean4 = "0.2"' Cargo.toml.no_workspace
-
 FROM ubuntu:24.04
 
 # Relocate toolchains so that non-root developers can access and write to them
@@ -53,9 +45,12 @@ ENV ANNEAL_INTEGRATION_TARGET_DIR=/cache/anneal_target
 ENV CARGO_TARGET_DIR=/opt/anneal_target
 WORKDIR /workspace/anneal/v1
 
-# Copy the workspace configuration (without workspace section) and lockfile.
-COPY --from=extractor --chown=anneal:anneal /app/Cargo.toml.no_workspace ./Cargo.toml
+# Copy the real workspace manifests and lockfile. In particular, do not merge
+# doc_gen's dependencies into cargo-anneal: that synthetic package is not what
+# Cargo.lock describes, so a locked build would correctly reject it.
+COPY --chown=anneal:anneal anneal/v1/Cargo.toml ./Cargo.toml
 COPY --chown=anneal:anneal anneal/v1/Cargo.lock ./
+COPY --chown=anneal:anneal anneal/v1/tools/doc_gen/Cargo.toml ./tools/doc_gen/Cargo.toml
 
 # Copy source files needed to compile dependency-heavy modules.
 COPY --chown=anneal:anneal anneal/v1/src/setup.rs ./src/
@@ -63,19 +58,21 @@ COPY --chown=anneal:anneal exocrate/Cargo.toml /workspace/exocrate/Cargo.toml
 COPY --chown=anneal:anneal exocrate/src /workspace/exocrate/src
 COPY --chown=anneal:anneal anneal/v1/build.rs ./
 
-# Create a minimal `main.rs` and a dummy test file.
-# This allows us to build dependencies in the image without copying the full
-# source tree, avoiding unnecessary container rebuilds when source files change.
+# Create minimal sources for both workspace members and a dummy test. This
+# builds their real locked dependency graph without copying frequently changing
+# source files into the dependency-cache layer.
 RUN echo 'mod setup; fn main() {}' > src/main.rs && \
-    mkdir tests && echo 'fn main() {}' > tests/integration.rs
+    mkdir tests tools/doc_gen/src && \
+    echo 'fn main() {}' > tests/integration.rs && \
+    echo 'fn main() {}' > tools/doc_gen/src/main.rs
 
 # Build dependencies to cache them in the image.
 # Note: We do not use `RUSTFLAGS='-Adead_code'` here (even though the dummy
 # `main.rs` has dead code) because doing so would cause Cargo to invalidate
 # this cache and rebuild everything when we later run commands *without*
 # that flag (which is the default).
-RUN cargo build && \
-    cargo build --tests
+RUN cargo build --locked --workspace && \
+    cargo build --locked --workspace --tests
 
 # Use a stable shared install root inside test containers. CI installs the
 # Nix-built archive here before invoking tests or examples.

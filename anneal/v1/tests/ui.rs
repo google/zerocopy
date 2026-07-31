@@ -22,6 +22,7 @@ fn compile_and_find_binary(name: &str) -> PathBuf {
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let status = Command::new("cargo")
         .arg("build")
+        .arg("--locked")
         .arg("--bin")
         .arg(name)
         .current_dir(manifest_dir)

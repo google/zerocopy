@@ -14,29 +14,37 @@ those terms. -->
 
 ## Basic commands
 
-1. Run with `cargo run verify`.
-2. Run unit tests with `cargo test --bin cargo-anneal`.
-3. Run all tests (including integration tests) with `./docker.sh cargo test`.
-4. Run a *specific* integration test fixture with `./docker.sh cargo test --test integration fixture_name`.
+1. Run with `cargo run --locked verify`.
+2. Run unit tests with `cargo test --locked --bin cargo-anneal`.
+3. Run all tests (including integration tests) with
+   `./docker.sh cargo test --locked`.
+4. Run a *specific* integration test fixture with
+   `./docker.sh cargo test --locked --test integration fixture_name`.
 
 ## Tips
 
-1. Integration tests are expensive. Prefer `cargo test --bin cargo-anneal` for quick verification and iteration,
-   and only run `./docker.sh cargo test --test integration` when you need to verify the integration tests.
-2. To see the generated Lean code for a module, use `cargo run expand`. This will run Aeneas and Anneal but skip verification, outputting the generated `.lean` definitions to the terminal.
+1. Integration tests are expensive. Prefer
+   `cargo test --locked --bin cargo-anneal` for quick verification and
+   iteration, and only run
+   `./docker.sh cargo test --locked --test integration` when you need to verify
+   the integration tests.
+2. To see the generated Lean code for a module, use
+   `cargo run --locked expand`. This will run Aeneas and Anneal but skip
+   verification, outputting the generated `.lean` definitions to the terminal.
    ```bash
-   cargo run expand --example abs
+   cargo run --locked expand --example abs
    ```
-3. To see where intermediate artifacts are placed on disk, run with `RUST_LOG=cargo_anneal=trace` as a fallback:
+3. To see where intermediate artifacts are placed on disk, run with
+   `RUST_LOG=cargo_anneal=trace` as a fallback:
   ```bash
-  RUST_LOG=cargo_anneal=trace cargo run verify --example abs
+  RUST_LOG=cargo_anneal=trace cargo run --locked verify --example abs
   ```
 
 ## Integration Testing
 
 1. **Updating Expected Output:** Anneal integration tests (stored in `tests/fixtures/<test_name>`) assert against an `expected.stderr` or `out.txt` file. When you intentionally change the behavior or output of a test, do not edit these files manually. Instead, run the integration test with `BLESS=1` to automatically overwrite the snapshot files:
    ```bash
-   BLESS=1 ./docker.sh cargo test --test integration fixture_name
+   BLESS=1 ./docker.sh cargo test --locked --test integration fixture_name
    ```
 
 2. **Allowing `sorry`:** While developing and ensuring Aeneas translates Rust correctly, you don't have to write the full Lean proof immediately. You can write `sorry` inside the `proof` block. However, you must pass `--allow-sorry` to Anneal so the verifier doesn't fail immediately on the unimplemented proof. For integration tests, this is done by adding `--allow-sorry` to the `args` array in the fixture's `anneal.toml`:
@@ -52,10 +60,10 @@ The `docker.sh` script should be used. It handles building and caching the Docke
 
 Simply prefix your normal Cargo tests with `./docker.sh`:
 ```bash
-./docker.sh cargo test --test integration
+./docker.sh cargo test --locked --test integration
 
 # You can pass standard environment variables. They will be forwarded!
-BLESS=1 ./docker.sh cargo test --test integration
+BLESS=1 ./docker.sh cargo test --locked --test integration
 ```
 
 *(Under the hood, this evaluates your path and places you in the same working directory inside the container's bound `/workspace` volume)*
@@ -68,7 +76,7 @@ BLESS=1 ./docker.sh cargo test --test integration
    - If a test fails and you want to inspect the generated Lean code, use the `ANNEAL_KEEP_TEST_DIR=1` environment variable.
    - The test runner will preserve the directory and print its path to stderr:
      ```bash
-     ANNEAL_KEEP_TEST_DIR=1 ./docker.sh cargo test --test integration macro_edge_cases
+     ANNEAL_KEEP_TEST_DIR=1 ./docker.sh cargo test --locked --test integration macro_edge_cases
      ```
    - **Note:** Because the test runner operates inside Docker, the printed path will reside within the container's isolated `/cache` volume. To explore it, you must open a shell inside the container:
      ```bash
