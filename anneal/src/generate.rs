@@ -1,9 +1,6 @@
 use crate::parse::{
     FunctionItem, ParsedItem, TypeItem,
-    attr::{
-        Clause, FunctionAnnealBlock, FunctionBlockInner, SpannedLine, TraitAnnealBlock,
-        TypeAnnealBlock,
-    },
+    attr::{Clause, FunctionBlockInner, SpannedLine, TraitAnnealBlock, TypeAnnealBlock},
     hkd::AstNode,
 };
 
@@ -238,9 +235,7 @@ pub fn generate_item(
     naming_context: &NamingContext,
 ) {
     match &item.item {
-        ParsedItem::Function(func) => {
-            generate_function(&func.item, &func.anneal, builder, &item.source_file, naming_context)
-        }
+        ParsedItem::Function(_) => generate_function(item, builder, naming_context),
         ParsedItem::Type(ty) => {
             generate_type(&ty.item, &ty.anneal, builder, &item.source_file, naming_context)
         }
@@ -566,12 +561,17 @@ impl LeanBuilder {
 ///   by ...
 /// ```
 fn generate_function(
-    func: &FunctionItem<crate::parse::hkd::Safe>,
-    block: &FunctionAnnealBlock<crate::parse::hkd::Safe>,
+    item: &crate::parse::ParsedLeanItem<crate::parse::hkd::Safe>,
     builder: &mut LeanBuilder,
-    source_file: &std::path::Path,
     naming_context: &NamingContext,
 ) {
+    let ParsedItem::Function(decorated_func) = &item.item else {
+        unreachable!("generate_function must be called with a function item");
+    };
+    let func = &decorated_func.item;
+    let block = &decorated_func.anneal;
+    let source_file = item.source_file.as_path();
+
     let (fn_name, fn_span, impl_struct_name, generic_params, generic_bounds, dict_args) = match func
     {
         FunctionItem::Free(n) => {
@@ -677,23 +677,8 @@ fn generate_function(
     let has_args = !args.is_empty();
     let generate_pre = has_args || !prop_requires.is_empty();
 
-    let aeneas_fn_name = naming_context.aeneas_call_name(&crate::parse::ParsedLeanItem {
-        item: ParsedItem::Function(crate::parse::AnnealDecorated {
-            item: func.clone(),
-            anneal: block.clone(),
-        }),
-        module_path: Vec::new(),
-        source_file: source_file.to_path_buf(),
-    });
-
-    let aeneas_namespace = naming_context.item_namespace(&crate::parse::ParsedLeanItem {
-        item: ParsedItem::Function(crate::parse::AnnealDecorated {
-            item: func.clone(),
-            anneal: block.clone(),
-        }),
-        module_path: Vec::new(),
-        source_file: source_file.to_path_buf(),
-    });
+    let aeneas_fn_name = naming_context.aeneas_call_name(item);
+    let aeneas_namespace = naming_context.item_namespace(item);
     let fully_qualified_fnc = if aeneas_namespace.is_empty() {
         format!("_root_.{}.{}", naming_context.crate_name, aeneas_fn_name)
     } else {
@@ -929,14 +914,7 @@ fn generate_function(
         provided_cases,
         exact_fields,
         source_file,
-        spec_name: naming_context.item_spec_name(&crate::parse::ParsedLeanItem {
-            item: ParsedItem::Function(crate::parse::AnnealDecorated {
-                item: func.clone(),
-                anneal: block.clone(),
-            }),
-            module_path: Vec::new(),
-            source_file: source_file.to_path_buf(),
-        }),
+        spec_name: naming_context.item_spec_name(item),
         aeneas_fn_name: fully_qualified_fnc,
     });
 
@@ -1338,7 +1316,7 @@ mod tests {
 
     use super::*;
     use crate::parse::{
-        attr::{AnnealBlockCommon, Clause, FunctionBlockInner, Propositions},
+        attr::{AnnealBlockCommon, Clause, FunctionAnnealBlock, FunctionBlockInner, Propositions},
         hkd::{Mirror, Safe},
     };
 
@@ -1422,6 +1400,44 @@ mod tests {
             },
             is_safe: is_safe.into_iter().map(mk_clause).collect(),
         }
+    }
+
+    fn mk_function_item(
+        module_path: Vec<&str>,
+        func: &FunctionItem<crate::parse::hkd::Safe>,
+        block: &FunctionAnnealBlock<crate::parse::hkd::Safe>,
+        source_file: &Path,
+    ) -> crate::parse::ParsedLeanItem<crate::parse::hkd::Safe> {
+        crate::parse::ParsedLeanItem {
+            item: ParsedItem::Function(crate::parse::AnnealDecorated {
+                item: func.clone(),
+                anneal: block.clone(),
+            }),
+            module_path: module_path.into_iter().map(|part| part.to_string()).collect(),
+            source_file: source_file.to_path_buf(),
+        }
+    }
+
+    fn generate_function(
+        func: &FunctionItem<crate::parse::hkd::Safe>,
+        block: &FunctionAnnealBlock<crate::parse::hkd::Safe>,
+        builder: &mut LeanBuilder,
+        source_file: &Path,
+        naming_context: &NamingContext,
+    ) {
+        generate_function_in_path(vec!["crate"], func, block, builder, source_file, naming_context);
+    }
+
+    fn generate_function_in_path(
+        module_path: Vec<&str>,
+        func: &FunctionItem<crate::parse::hkd::Safe>,
+        block: &FunctionAnnealBlock<crate::parse::hkd::Safe>,
+        builder: &mut LeanBuilder,
+        source_file: &Path,
+        naming_context: &NamingContext,
+    ) {
+        let item = mk_function_item(module_path, func, block, source_file);
+        super::generate_function(&item, builder, naming_context);
     }
 
     // --- Type Mapping Tests ---
@@ -2801,5 +2817,27 @@ mod tests {
                 artifact.code
             );
         }
+    }
+
+    #[test]
+    fn test_generate_function_preserves_module_path_in_proof_tactics() {
+        let item: syn::ItemFn = parse_quote! { fn nested(x: u32) -> u32 { x } };
+        let func = FunctionItem::Free(AstNode { inner: item.mirror() });
+        let block = mk_block(vec![vec!["x > 0"]], vec![], Some(vec!["exact rfl"]), None, vec![]);
+
+        let mut builder = LeanBuilder::new();
+        let naming_context = NamingContext::new("test".to_string());
+        generate_function_in_path(
+            vec!["crate", "outer", "inner"],
+            &func,
+            &block,
+            &mut builder,
+            Path::new("test.rs"),
+            &naming_context,
+        );
+        let out = builder.buf;
+
+        assert!(out.contains("verify_is_valid h_x_is_valid _root_.test.outer.inner.nested"));
+        assert!(out.contains("verify_user_bound h_anon _root_.test.outer.inner.nested"));
     }
 }
