@@ -1,6 +1,6 @@
 FROM python:3.11-slim AS extractor
 WORKDIR /app
-COPY anneal/Cargo.toml ./
+COPY anneal/v1/Cargo.toml ./
 # Remove the [workspace] section so it can be built as a standalone package.
 # Also inject tree-sitter dependencies used by doc_gen to cache them too.
 RUN sed '1,2d' Cargo.toml > Cargo.toml.no_workspace && \
@@ -51,17 +51,17 @@ ENV ANNEAL_INTEGRATION_TARGET_DIR=/cache/anneal_target
 # via a volume mount, causing dependencies to be rebuilt once in the volume.
 # This double-build is intentional to support both environments efficiently.
 ENV CARGO_TARGET_DIR=/opt/anneal_target
-WORKDIR /workspace/anneal
+WORKDIR /workspace/anneal/v1
 
 # Copy the workspace configuration (without workspace section) and lockfile.
 COPY --from=extractor --chown=anneal:anneal /app/Cargo.toml.no_workspace ./Cargo.toml
-COPY --chown=anneal:anneal anneal/Cargo.lock ./
+COPY --chown=anneal:anneal anneal/v1/Cargo.lock ./
 
 # Copy source files needed to compile dependency-heavy modules.
-COPY --chown=anneal:anneal anneal/src/setup.rs ./src/
+COPY --chown=anneal:anneal anneal/v1/src/setup.rs ./src/
 COPY --chown=anneal:anneal exocrate/Cargo.toml /workspace/exocrate/Cargo.toml
 COPY --chown=anneal:anneal exocrate/src /workspace/exocrate/src
-COPY --chown=anneal:anneal anneal/build.rs ./
+COPY --chown=anneal:anneal anneal/v1/build.rs ./
 
 # Create a minimal `main.rs` and a dummy test file.
 # This allows us to build dependencies in the image without copying the full

@@ -23,5 +23,5 @@ zerocopy/ci/check_fmt.sh "$@"
 
 cargo +"$NIGHTLY" fmt --manifest-path tools/Cargo.toml --all "${FMT_FLAGS[@]}" >&2
 cargo +"$NIGHTLY" fmt --manifest-path anneal/Cargo.toml --all "${FMT_FLAGS[@]}" >&2
-cargo +"$NIGHTLY" fmt --manifest-path anneal/v2/Cargo.toml --all "${FMT_FLAGS[@]}" >&2
+cargo +"$NIGHTLY" fmt --manifest-path anneal/v1/Cargo.toml --all "${FMT_FLAGS[@]}" >&2
 cargo +"$NIGHTLY" fmt --manifest-path exocrate/Cargo.toml "${FMT_FLAGS[@]}" >&2

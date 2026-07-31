@@ -36,10 +36,10 @@ fi
 
 # Resolve the directory paths required to build the image and mount the
 # workspace volume into the container. The Docker build context is the repo
-# worktree root so the Dockerfile can copy both `anneal/` and the root-level
+# worktree root so the Dockerfile can copy both `anneal/v1/` and the root-level
 # `exocrate/` crate.
 ANNEAL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-WORKTREE_DIR="$(cd "$ANNEAL_DIR/.." >/dev/null 2>&1 && pwd)"
+WORKTREE_DIR="$(cd "$ANNEAL_DIR/../.." >/dev/null 2>&1 && pwd)"
 # To avoid pollution between different git worktrees, we generate a unique
 # worktree ID and store it in a file. This ensures each worktree gets its own
 # isolated cache volume and Docker image tag.
@@ -187,7 +187,7 @@ done
 # Determine the user's current working directory relative to the repository.
 # This path is passed to Docker so that the container executes the requested
 # command in the same relative directory as the caller.
-REL_PATH=$(realpath --relative-to="$WORKTREE_DIR" "$(pwd)" 2>/dev/null || echo "anneal")
+REL_PATH=$(realpath --relative-to="$WORKTREE_DIR" "$(pwd)" 2>/dev/null || echo "anneal/v1")
 WORKDIR="/workspace/$REL_PATH"
 
 exec "${DOCKER_CMD[@]}" run "${DOCKER_FLAGS[@]}" \
