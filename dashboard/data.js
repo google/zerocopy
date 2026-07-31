@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785451439516,
+  "lastUpdate": 1785497284584,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23089,6 +23089,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 682,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "dbb81cc7759bb6b21b82a1ca98bb32e9676f8655",
+          "message": "Reorganize Anneal v1 and v2 (#3487)\n\ngherrit-pr-id: Gaso4is5l3ore5u3xhbeclucymmqjxqz7",
+          "timestamp": "2026-07-31T07:01:38-04:00",
+          "tree_id": "8fa732dbd5d8802105753ef542a0154fa78e056c",
+          "url": "https://github.com/google/zerocopy/commit/dbb81cc7759bb6b21b82a1ca98bb32e9676f8655"
+        },
+        "date": 1785497282288,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 461,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 656,
             "unit": "seconds"
           }
         ]
