@@ -132,6 +132,7 @@ python3 .github/scripts/test_check_crate_version_change.py
 python3 .github/scripts/test_create_crates_release_plan.py
 python3 .github/scripts/test_reconcile_crates_release.py
 python3 .github/scripts/test_release_workflows.py
+python3 .github/scripts/test_locked_cargo_invocations.py
 python3 .github/actions/require-successful-jobs/test_check.py
 python3 githooks/test_pre_push.py
 
@@ -139,6 +140,13 @@ python3 githooks/test_pre_push.py
 # helper. Its fake-command tests verify timeouts, retries, failure propagation,
 # and argument validation without requiring root or network access.
 bash .github/scripts/test_install_apt_packages.sh
+
+# cargo-zerocopy is itself CI infrastructure. Its unit tests enforce the
+# default locked mode used by every Zerocopy build and test below. The tools
+# workspace is intentionally unvendored, so permit a fresh checkout to fetch
+# the exact dependencies recorded in its lockfile.
+cargo +stable test --locked --manifest-path tools/Cargo.toml \
+  -p cargo-zerocopy -p generate-readme
 
 # Files to exclude from validation (e.g., because they are not Actions/Workflows)
 # Use relative paths matching `find .github` output

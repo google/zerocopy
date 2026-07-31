@@ -70,4 +70,5 @@ if __name__ == "__main__":
     main()
 EOF
 
-cargo metadata --format-version 1 --no-deps | python3 -c "$PYTHON_SCRIPT"
+cargo metadata --locked --offline --format-version 1 --no-deps \
+  | python3 -c "$PYTHON_SCRIPT"
