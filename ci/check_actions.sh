@@ -117,6 +117,7 @@ if ! output=$("$actionlint_bin" -shellcheck= -pyflakes= 2>&1); then
 fi
 
 python3 .github/actions/require-successful-jobs/test_check.py
+python3 githooks/test_pre_push.py
 
 # Files to exclude from validation (e.g., because they are not Actions/Workflows)
 # Use relative paths matching `find .github` output
