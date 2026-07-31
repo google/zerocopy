@@ -11,9 +11,14 @@
 set -eo pipefail
 cd "$(dirname "$0")/.."
 
+# This check only reads workspace package declarations. Avoid resolving or
+# downloading dependencies, and fail instead of rewriting Cargo.lock if the
+# manifests and lockfile disagree.
+METADATA="$(cargo metadata -q --locked --offline --no-deps --format-version 1)"
+
 # Usage: version <crate-name>
 function version {
-  cargo metadata -q --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").version"
+  jq -r ".packages[] | select(.name == \"$1\").version" <<< "$METADATA"
 }
 
 ver_zerocopy=$(version zerocopy)
@@ -23,8 +28,8 @@ ver_zerocopy_derive=$(version zerocopy-derive)
 function dependency-version {
   KIND="$1"
   TARGET="$2"
-  cargo metadata -q --format-version 1 \
-    | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == $KIND and .target == $TARGET).req"
+  jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == $KIND and .target == $TARGET).req" \
+    <<< "$METADATA"
 }
 
 # The non-dev dependency version (kind `null` filters out the dev

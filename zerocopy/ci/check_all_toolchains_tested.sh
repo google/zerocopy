@@ -21,6 +21,6 @@ cd "$(dirname "$0")/.."
 diff \
   <(yq -r '.jobs.build_test.strategy.matrix.toolchain | .[]' ../.github/workflows/ci.yml | \
     sort -u | grep -v '^\(msrv\|stable\|nightly\)$') \
-  <(cargo metadata -q --format-version 1 | \
+  <(cargo metadata -q --locked --offline --no-deps --format-version 1 | \
     jq -r ".packages[] | select(.name == \"zerocopy\").metadata.\"build-rs\" | keys | .[]" | \
     sort -u) >&2
