@@ -83,13 +83,19 @@ fi
 # `zerocopy/ci/check_all_toolchains_tested.sh` without calling it from this
 # script.
 shopt -s extglob
-GLOBIGNORE="./*/@(release_crate_version|check_todo|release_anneal_version).sh" # We don't want to run these
+# Release helpers either mutate version state or prepare a credential-bearing
+# command for the privileged workflow, so they do not belong in this read-only
+# hook. Keep run_cargo_for_release synchronized with release.yml,
+# zerocopy/ci/package_release_crates.sh, and test_release_workflows.py.
+GLOBIGNORE="./*/@(release_crate_version|check_todo|release_anneal_version|run_cargo_for_release).sh"
 for f in ./ci/*; do
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done
-# We don't want to run release_crate_version here, and zerocopy/ci/check_fmt.sh
-# is called by ci/check_fmt.sh above rather than directly.
-GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt).sh"
+# The release helpers are exercised by the release-workflow tests rather than
+# run during every push. check_fmt.sh is called through the repository-wide
+# ci/check_fmt.sh rather than directly. Keep this exemption synchronized with
+# the release-workflow tests so a new CI helper cannot silently go unused.
+GLOBIGNORE="./zerocopy/ci/@(release_crate_version|package_release_crates|check_fmt).sh"
 for f in ./zerocopy/ci/*; do
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done

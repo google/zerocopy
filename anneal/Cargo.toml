@@ -44,7 +44,11 @@ sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 url = "https://example.com/macos-aarch64.tar.zst"
 
 [dependencies]
-exocrate = { path = "../exocrate" }
+# Keep the registry version coordinated with `exocrate/Cargo.toml` even though
+# this V2 package is not yet part of anneal-release.yml. That makes its package
+# boundary valid when V2 publication is eventually enabled and keeps this
+# workspace lockfile synchronized with the shared path dependency today.
+exocrate = { version = "=0.3.0", path = "../exocrate" }
 clap = { version = "4.5", features = ["derive"] }
 clap-cargo = { version = "0.18.3", features = ["cargo_metadata"] }
 env_logger = "0.11"
