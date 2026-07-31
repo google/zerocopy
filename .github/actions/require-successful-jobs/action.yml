@@ -1,0 +1,21 @@
+name: Require successful jobs
+description: Fail unless every required upstream job has an allowed result
+
+inputs:
+  needs-json:
+    description: The complete toJSON(needs) object for the gate job
+    required: true
+  allowed-skipped-jobs:
+    description: JSON array of job IDs which may intentionally be skipped
+    required: false
+    default: '[]'
+
+runs:
+  using: composite
+  steps:
+    - name: Check required job results
+      shell: bash
+      env:
+        REQUIRED_JOBS_NEEDS_JSON: ${{ inputs.needs-json }}
+        REQUIRED_JOBS_ALLOWED_SKIPPED: ${{ inputs.allowed-skipped-jobs }}
+      run: python3 "$GITHUB_ACTION_PATH/check.py"
