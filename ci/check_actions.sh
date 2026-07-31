@@ -34,6 +34,14 @@ python3 .github/scripts/test_create_crates_release_plan.py
 python3 .github/scripts/test_reconcile_crates_release.py
 python3 .github/scripts/test_release_workflows.py
 python3 .github/actions/require-successful-jobs/test_check.py
+python3 githooks/test_pre_push.py
+
+# cargo-zerocopy is itself CI infrastructure. Its unit tests enforce the
+# default locked mode used by every Zerocopy build and test below. The tools
+# workspace is intentionally unvendored, so permit a fresh checkout to fetch
+# the exact dependencies recorded in its lockfile.
+cargo +stable test --locked --manifest-path tools/Cargo.toml \
+  -p cargo-zerocopy -p generate-readme
 
 # Files to exclude from validation (e.g., because they are not Actions/Workflows)
 # Use relative paths matching `find .github` output

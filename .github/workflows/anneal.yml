@@ -139,11 +139,11 @@ jobs:
 
       # Ensure `llms-full.txt` file is up-to-date.
       - name: Check doc generation
-        run: cargo run -p doc_gen -- --check
+        run: cargo run --locked -p doc_gen -- --check
         working-directory: anneal/v1
 
       - name: Install Anneal toolchain archive
-        run: cargo run setup --local-archive "../target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+        run: cargo run --locked setup --local-archive "../target/$ANNEAL_TOOLCHAIN_ARCHIVE"
         working-directory: anneal/v1
 
       # Run unit tests separately, as they're much less likely to have bugs
@@ -151,7 +151,7 @@ jobs:
       # easier to skim (in particular, it's clear at a glance whether a failure
       # is due to unit or integration tests).
       - name: Run unit tests
-        run: cargo test --verbose --bin cargo-anneal
+        run: cargo test --locked --verbose --bin cargo-anneal
         working-directory: anneal/v1
 
       # We duplicate running unit tests since they're very cheap compared to
@@ -161,7 +161,7 @@ jobs:
       - name: Run all tests
         run: |
           start=$(date +%s)
-          cargo test --verbose
+          cargo test --locked --verbose
           end=$(date +%s)
           duration=$((end - start))
           echo "Test Time: $duration seconds"
@@ -252,7 +252,7 @@ jobs:
           expected-file: ${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
 
       - name: Install Anneal toolchain archive
-        run: cargo run setup --local-archive "../target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+        run: cargo run --locked setup --local-archive "../target/$ANNEAL_TOOLCHAIN_ARCHIVE"
         working-directory: anneal/v1
 
       - name: Verify example
@@ -272,7 +272,7 @@ jobs:
 
           echo "Verifying $example (expect failure: $expect_failure)"
 
-          if cargo run verify --unsound-allow-is-valid --example "$example"; then
+          if cargo run --locked verify --unsound-allow-is-valid --example "$example"; then
             if [ "$expect_failure" -eq 1 ]; then
               echo "::error::Example $example succeeded but was expected to fail."
               exit 1
@@ -478,7 +478,8 @@ jobs:
           toolchain: nightly
 
       - name: Run V2 tests
-        run: cargo test --workspace --all-features # include, e.g., tests that assume exocrate prebuilt
+        # Include, e.g., tests that assume exocrate is prebuilt.
+        run: cargo test --locked --workspace --all-features
         working-directory: anneal
 
   # Used to signal to branch protections that all other jobs have succeeded.

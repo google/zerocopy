@@ -108,8 +108,8 @@ jobs:
             # introduced on this new toolchain that we can fix automatically.
             # This is best-effort, so we don't let failure cause the whole job
             # to fail.
-            ./zerocopy/cargo.sh "+$VERSION_NAME" fix --allow-dirty --tests --package zerocopy $ZEROCOPY_FEATURES || true
-            ./zerocopy/cargo.sh "+$VERSION_NAME" fix --allow-dirty --tests --package zerocopy-derive             || true
+            ./zerocopy/cargo.sh "+$VERSION_NAME" fix --locked --allow-dirty --tests --package zerocopy $ZEROCOPY_FEATURES || true
+            ./zerocopy/cargo.sh "+$VERSION_NAME" fix --locked --allow-dirty --tests --package zerocopy-derive             || true
 
             ./tools/update-expected-test-output.sh
           }

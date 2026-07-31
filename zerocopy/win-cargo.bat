@@ -13,7 +13,7 @@
 @set TEMP_RUSTFLAGS=%RUSTFLAGS%
 @set RUSTFLAGS=
 @pushd "%SCRIPT_DIR%.."
-@cargo +stable build --manifest-path tools\Cargo.toml -p cargo-zerocopy -q
+@cargo +stable build --locked --manifest-path tools\Cargo.toml -p cargo-zerocopy -q
 @set CARGO_ZEROCOPY_BUILD_STATUS=%ERRORLEVEL%
 @popd
 @set RUSTFLAGS=%TEMP_RUSTFLAGS%
