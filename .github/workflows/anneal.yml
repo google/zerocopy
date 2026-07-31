@@ -303,11 +303,19 @@ jobs:
 
       # Pull request caches are scoped by GitHub to the PR merge ref, so they
       # can speed up repeated pushes to the same PR without becoming visible to
-      # `main` or to sibling PRs. Keep this separate from the trusted main cache
-      # so untrusted PR output cannot publish a shared substituter.
+      # `main` or to sibling PRs. This cache is a fallback for an exact miss in
+      # the trusted main cache above, not a second copy to restore after a main
+      # hit: both exact keys identify the same archive inputs, and the trusted
+      # main result is already usable by the PR.
+      #
+      # Keep this condition coordinated with both PR cache population steps
+      # below. An archive-changing PR must still be able to restore and publish
+      # its branch-local result after the trusted main key misses.
       - name: Restore Anneal PR Nix binary cache
         id: restore_anneal_pr_nix_cache
-        if: github.event_name == 'pull_request'
+        if: >-
+          github.event_name == 'pull_request' &&
+          steps.restore_anneal_main_nix_cache.outputs.cache-hit != 'true'
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: anneal/target/nix-cache-pr
@@ -383,7 +391,10 @@ jobs:
           key: ${{ steps.restore_anneal_main_nix_cache.outputs.cache-primary-key }}
 
       - name: Populate Anneal PR Nix binary cache
-        if: github.event_name == 'pull_request' && steps.restore_anneal_pr_nix_cache.outputs.cache-hit != 'true'
+        if: >-
+          github.event_name == 'pull_request' &&
+          steps.restore_anneal_main_nix_cache.outputs.cache-hit != 'true' &&
+          steps.restore_anneal_pr_nix_cache.outputs.cache-hit != 'true'
         run: |
           set -euo pipefail
           mkdir -p target/nix-cache-pr
@@ -394,7 +405,10 @@ jobs:
         working-directory: anneal
 
       - name: Save Anneal PR Nix binary cache
-        if: github.event_name == 'pull_request' && steps.restore_anneal_pr_nix_cache.outputs.cache-hit != 'true'
+        if: >-
+          github.event_name == 'pull_request' &&
+          steps.restore_anneal_main_nix_cache.outputs.cache-hit != 'true' &&
+          steps.restore_anneal_pr_nix_cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: anneal/target/nix-cache-pr
