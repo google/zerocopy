@@ -16,8 +16,8 @@ cd "$(dirname "$0")/.."
 # suppress all errors from it.
 (
   cd ..
-  cargo install -q cargo-readme --version 3.2.0
+  cargo install -q --locked --version '=3.2.0' cargo-readme
 )
 
-diff <(cd .. && cargo -q run --manifest-path tools/Cargo.toml -p generate-readme) README.md >&2
+diff <(cd .. && cargo -q run --locked --manifest-path tools/Cargo.toml -p generate-readme) README.md >&2
 exit $?

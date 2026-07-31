@@ -263,7 +263,7 @@ jobs:
             export RUSTDOCFLAGS="-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS"
 
             # TODO: Use `./cargo.sh` instead once we've debugged why it won't work.
-            cargo +$ZC_NIGHTLY_TOOLCHAIN doc --document-private-items --package zerocopy --all-features
+            cargo +$ZC_NIGHTLY_TOOLCHAIN doc --locked --offline --document-private-items --package zerocopy --all-features
 
       - name: Add HTML redirect to doc root
         # By default, Rustdoc doesn't redirect to the documentation root, so we
