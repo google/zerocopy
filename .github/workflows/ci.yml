@@ -36,6 +36,13 @@ env:
   # with `.github/workflows/anneal.yml` and the CI Dockerfile.
   CARGO_NET_RETRY: "10"
   RUSTUP_MAX_RETRIES: "10"
+  # These two values are the producer/consumer protocol for the matrix's CI
+  # image. `build_docker_env` must export this tag into this archive, each
+  # consumer must load that archive, and the Docker shell wrapper must run this
+  # tag. Keep the protocol centralized here rather than duplicating literals in
+  # the upload/download actions.
+  ZC_CI_IMAGE: zerocopy-ci:local
+  ZC_CI_IMAGE_ARCHIVE: zerocopy-ci.tar
   RUSTFLAGS: -Dwarnings
   RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
   # `ZC_NIGHTLY_XXX` are flags that we add to `XXX` only on the nightly
@@ -54,7 +61,6 @@ jobs:
     needs: build_docker_env
     permissions:
       contents: read
-      packages: read # required to pull docker caches from ghcr.io
     defaults:
       run:
         shell: /tmp/docker-shell.sh {0} # zizmor: ignore[misfeature] (CI intentionally routes build matrix commands through the prebuilt Docker image)
@@ -307,34 +313,38 @@ jobs:
         fetch-depth: 2
         persist-credentials: false
 
-    - name: Set up Docker
-      uses: ./.github/actions/setup-docker-with-retry
+    # The producer exposes the ID assigned by upload-artifact, rather than an
+    # artifact name. The ID identifies one immutable artifact from this exact
+    # run, so a renamed, stale, or Buildx-generated artifact cannot be selected
+    # accidentally. Checkout must remain first because this is a local action.
+    - name: Download prebuilt Docker image
+      uses: ./.github/actions/download-artifact-with-retry
       with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        artifact-id: ${{ needs.build_docker_env.outputs.image_artifact_id }}
+        path: ${{ runner.temp }}
+        expected-file: ${{ env.ZC_CI_IMAGE_ARCHIVE }}
 
-    - name: Generate sanitized Docker tag
-      id: docker_tag
-      env:
-        REF_NAME: ${{ github.ref_name }}
+    # This step runs before /tmp/docker-shell.sh exists, so its explicit Bash
+    # shell is load-bearing. The Docker exporter is single-platform; the
+    # producer and every consumer intentionally use the same ubuntu-latest
+    # runner architecture. If CI gains another architecture, build and select a
+    # distinct artifact ID for it rather than silently sharing this archive.
+    - name: Load prebuilt Docker image
       shell: bash
+      env:
+        IMAGE_ARCHIVE: ${{ runner.temp }}/${{ env.ZC_CI_IMAGE_ARCHIVE }}
+        IMAGE_NAME: ${{ env.ZC_CI_IMAGE }}
       run: |
-        echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
-
-    - name: Load image from cache
-      uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
-      with:
-        context: .
-        file: .github/workflows/Dockerfile
-        load: true # This loads the resulting image into the local 'docker' daemon
-        tags: zerocopy-ci:local
-        provenance: false
-        cache-from: |
-          type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }}
-          type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
-        # Notice we omit `cache-to` here. We don't want many parallel jobs
-        # fighting to write the exact same layers back to the cache API.
+        set -euo pipefail
+        # Keep the large archive only as long as `docker load` needs it. The
+        # trap also reclaims it if loading or validation fails, avoiding archive
+        # plus expanded-image disk pressure for later diagnostic steps.
+        trap 'rm -f -- "$IMAGE_ARCHIVE"' EXIT
+        docker load --input "$IMAGE_ARCHIVE"
+        docker image inspect "$IMAGE_NAME" >/dev/null
+        # `inspect` proves the tag exists; running a trivial command also proves
+        # that the archive matches this runner's architecture.
+        docker run --rm "$IMAGE_NAME" true
 
     - name: Create Docker Shell Wrapper
       shell: bash
@@ -363,7 +373,7 @@ jobs:
           -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
           -e ZC_SKIP_CARGO_SEMVER_CHECKS \
-          zerocopy-ci:local bash -c "git config --global --add safe.directory '*' && exec bash \"\$1\"" -- "$1"
+          "$ZC_CI_IMAGE" bash -c "git config --global --add safe.directory '*' && exec bash \"\$1\"" -- "$1"
         EOF
         chmod +x /tmp/docker-shell.sh
 
@@ -988,6 +998,11 @@ jobs:
   build_docker_env:
     name: Build Docker image
     runs-on: ubuntu-latest
+    # Consumers select the upload by this immutable, producer-generated ID.
+    # Do not replace it with a duplicated artifact-name string: an empty ID is
+    # deliberately rejected by download-artifact-with-retry before fan-out.
+    outputs:
+      image_artifact_id: ${{ steps.upload_image.outputs.artifact-id }}
     permissions:
       contents: read
       packages: write # required to push docker caches to ghcr.io
@@ -1011,19 +1026,34 @@ jobs:
         run: |
           echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
 
-      - name: Build and cache layers
+      - name: Build, cache, and export image
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           file: .github/workflows/Dockerfile
-          push: false
+          tags: ${{ env.ZC_CI_IMAGE }}
           provenance: false
+          # The Docker exporter creates a single archive accepted directly by
+          # `docker load`. Its gzip-compressed layers make the tar suitable for
+          # upload-file-artifact's direct (non-ZIP) transfer. This path and tag
+          # are coupled to the workflow-level producer/consumer values above.
+          outputs: type=docker,dest=${{ runner.temp }}/${{ env.ZC_CI_IMAGE_ARCHIVE }},compression=gzip
           cache-from: |
             type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }}
             type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
           # External pull requests have read-only package permissions, so they
           # can consume GHCR caches but cannot export updated cache layers.
           cache-to: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && format('type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:{0},mode=max', steps.docker_tag.outputs.tag) || '' }}
+
+      # Uploading is the producer's final gate. Matrix jobs cannot start until
+      # this succeeds and the job exposes its artifact ID, so no runner is spent
+      # on an image that was only partially published.
+      - name: Upload image for matrix jobs
+        id: upload_image
+        uses: ./.github/actions/upload-file-artifact
+        with:
+          name: ${{ env.ZC_CI_IMAGE_ARCHIVE }}
+          path: ${{ runner.temp }}/${{ env.ZC_CI_IMAGE_ARCHIVE }}
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
