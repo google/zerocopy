@@ -282,6 +282,23 @@ fn get_toolchain_rustflags(name: &str) -> String {
     format!("--cfg __ZEROCOPY_TOOLCHAIN=\"{}\"", name)
 }
 
+fn compose_flags(name: &str, env_flags: &str) -> String {
+    let wrapper_flags = format!("{} {}", get_rustflags(name), get_toolchain_rustflags(name));
+    if env_flags.is_empty() {
+        wrapper_flags
+    } else {
+        format!("{wrapper_flags} {env_flags}")
+    }
+}
+
+fn compose_toolchain_flags(
+    name: &str,
+    env_rustflags: &str,
+    env_rustdocflags: &str,
+) -> (String, String) {
+    (compose_flags(name, env_rustflags), compose_flags(name, env_rustdocflags))
+}
+
 fn rustup<'a>(args: impl IntoIterator<Item = &'a str>, env: Option<(&str, &str)>) -> Command {
     let mut cmd = Command::new("rustup");
     // It's important to set `RUSTUP_TOOLCHAIN` to override any value set while
@@ -357,22 +374,15 @@ fn delegate_cargo() -> Result<(), Error> {
 
                 let mut args = args_vec.into_iter();
 
-                let env_rustflags = env::vars()
-                    .filter_map(|(k, v)| if k == "RUSTFLAGS" { Some(v) } else { None })
-                    .next()
-                    .unwrap_or_default();
+                let env_rustflags = env::var("RUSTFLAGS").unwrap_or_default();
+                let env_rustdocflags = env::var("RUSTDOCFLAGS").unwrap_or_default();
+                let (rustflags, rustdocflags) =
+                    compose_toolchain_flags(name, &env_rustflags, &env_rustdocflags);
 
-                let rustflags = format!(
-                    "{} {} {}",
-                    get_rustflags(name),
-                    get_toolchain_rustflags(name),
-                    env_rustflags,
-                );
-
-                // Pass RUSTFLAGS to both Rust (via `RUSTFLAGS`) and Rustdoc
-                // (via `RUSTDOCFLAGS`).
+                // Pass wrapper flags to both Rust and Rustdoc while preserving
+                // the caller's independent RUSTFLAGS and RUSTDOCFLAGS.
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
-                cmd.env("RUSTDOCFLAGS", &rustflags);
+                cmd.env("RUSTDOCFLAGS", &rustdocflags);
 
                 if env::var("CARGO_TARGET_DIR").is_ok() {
                     eprintln!("[cargo-zerocopy] WARNING: `CARGO_TARGET_DIR` is set - this may cause `cargo-zerocopy` to behave unexpectedly");
@@ -450,5 +460,39 @@ fn main() {
         eprintln!("Error: {e}");
         print_usage();
         process::exit(1);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{compose_flags, compose_toolchain_flags};
+
+    #[test]
+    fn compose_flags_appends_caller_flags() {
+        let flags = compose_flags("nightly", "--cfg from_env");
+
+        assert!(flags.contains("--cfg __ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN=\"nightly\""));
+        assert!(flags.contains("--cfg __ZEROCOPY_TOOLCHAIN=\"nightly\""));
+        assert!(flags.ends_with("--cfg from_env"));
+    }
+
+    #[test]
+    fn compose_flags_omits_trailing_space_when_caller_flags_are_empty() {
+        let flags = compose_flags("stable", "");
+
+        assert!(flags.contains("--cfg __ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN=\"stable\""));
+        assert!(flags.contains("--cfg __ZEROCOPY_TOOLCHAIN=\"stable\""));
+        assert!(!flags.ends_with(' '));
+    }
+
+    #[test]
+    fn compose_toolchain_flags_keeps_rustdocflags_distinct_from_rustflags() {
+        let (rustflags, rustdocflags) =
+            compose_toolchain_flags("nightly", "--cfg rust_env", "--cfg rustdoc_env");
+
+        assert!(rustflags.ends_with("--cfg rust_env"));
+        assert!(rustdocflags.ends_with("--cfg rustdoc_env"));
+        assert!(!rustdocflags.contains("--cfg rust_env"));
+        assert!(!rustflags.contains("--cfg rustdoc_env"));
     }
 }
