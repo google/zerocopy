@@ -88,6 +88,18 @@ no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = "1.57.0"
 pinned-stable = "1.93.1"
 pinned-nightly = "nightly-2026-01-25"
 
+# Features which require a nightly compiler. CI checks that every other feature
+# is enabled by `__internal_use_only_features_that_work_on_stable`.
+nightly-features = ["float-nightly", "simd-nightly"]
+
+# Targets which Miri does not currently support in our CI configuration. New
+# build-matrix targets are treated as Miri-supported unless listed here.
+miri-unsupported-targets = [
+    "riscv64gc-unknown-linux-gnu",
+    "thumbv6m-none-eabi",
+    "wasm32-unknown-unknown",
+]
+
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition", "--extend-css", "rustdoc/style.css"]
