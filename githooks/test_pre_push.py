@@ -30,6 +30,10 @@ _CHECKS = (
     "zerocopy/ci/check_versions.sh",
     "zerocopy/ci/check_msrv_is_minimal.sh",
 )
+_EXEMPT_RELEASE_HELPERS = (
+    "ci/run_cargo_for_release.sh",
+    "zerocopy/ci/package_release_crates.sh",
+)
 
 _CHECK_STUB = """\
 #!/usr/bin/env bash
@@ -69,6 +73,15 @@ class FakeRepository:
             path = self.path / check
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(_CHECK_STUB, encoding="utf-8")
+            path.chmod(0o755)
+
+        # These helpers are deliberately inventoried but not executed by the
+        # read-only hook. Their presence catches drift in its GLOBIGNORE
+        # contract without invoking publication-oriented behavior in a test.
+        for helper in _EXEMPT_RELEASE_HELPERS:
+            path = self.path / helper
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("#!/usr/bin/env bash\nexit 99\n", encoding="utf-8")
             path.chmod(0o755)
 
         cargo = self.path / "zerocopy/cargo.sh"
