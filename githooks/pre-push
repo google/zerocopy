@@ -145,9 +145,11 @@ for f in ./ci/*; do
 done
 # The release helpers are exercised by the release-workflow tests rather than
 # run during every push. check_fmt.sh is called through the repository-wide
-# ci/check_fmt.sh rather than directly. Keep this exemption synchronized with
-# the release-workflow tests so a new CI helper cannot silently go unused.
-GLOBIGNORE="./zerocopy/ci/@(release_crate_version|package_release_crates|check_fmt).sh"
+# ci/check_fmt.sh rather than directly; feature_profile.sh, feature_policy.jq,
+# and test_feature_policy.sh are exercised by check_all_toolchains_tested.sh.
+# Keep these exemptions synchronized with their owning tests so a new CI helper
+# cannot silently go unused.
+GLOBIGNORE="./zerocopy/ci/@(release_crate_version|package_release_crates|check_fmt|feature_profile|test_feature_policy).sh:./zerocopy/ci/feature_policy.jq"
 for f in ./zerocopy/ci/*; do
     grep "$f" githooks/pre-push >/dev/null || {
         echo "$f not called from githooks/pre-push" >&2
