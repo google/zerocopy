@@ -31,14 +31,26 @@ rust-version = "1.56.0"
 
 exclude = [".*"]
 
-# The CI feature-policy checker reads this Cargo-owned requirement and derives
-# exactly which semantic matrix profiles may run the root UI target. Keep the
-# workflow's UI_TEST_CELLS list coordinated through that checker rather than
-# duplicating the feature graph in ci.yml.
+# The default build-matrix `cargo test` invocation is intentionally
+# unfiltered. Declare exceptional integration-test ownership here, where Cargo
+# can apply it consistently to local runs and every CI caller. The required
+# feature records the harness dependency described in tests/ui.rs and avoids
+# compiling an empty UI test target when derive support is disabled.
+# cargo-zerocopy identifies the three pinned UI-test toolchains; the UI harness
+# reports this target as ignored elsewhere.
 [[test]]
 name = "ui"
 path = "tests/ui.rs"
 required-features = ["derive"]
+
+# Codegen requires external tools and a carefully controlled environment, so
+# it is not part of Cargo's default test selection. The standalone codegen CI
+# job explicitly selects this target for both Clippy and execution. Keep that
+# job and ci/check_all_toolchains_tested.sh in sync with this declaration.
+[[test]]
+name = "codegen"
+path = "tests/codegen.rs"
+test = false
 
 [package.metadata.build-rs]
 # These key/value pairs are parsed by `build.rs`. Each entry names a `--cfg`
