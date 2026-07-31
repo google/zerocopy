@@ -31,6 +31,15 @@ rust-version = "1.56.0"
 
 exclude = [".*"]
 
+# The CI feature-policy checker reads this Cargo-owned requirement and derives
+# exactly which semantic matrix profiles may run the root UI target. Keep the
+# workflow's UI_TEST_CELLS list coordinated through that checker rather than
+# duplicating the feature graph in ci.yml.
+[[test]]
+name = "ui"
+path = "tests/ui.rs"
+required-features = ["derive"]
+
 [package.metadata.build-rs]
 # These key/value pairs are parsed by `build.rs`. Each entry names a `--cfg`
 # which will be emitted if zerocopy is built with a toolchain version *lower*
@@ -87,6 +96,18 @@ no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = "1.57.0"
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.93.1"
 pinned-nightly = "nightly-2026-01-25"
+
+# Features which require a nightly compiler. CI checks that every other feature
+# is enabled by `__internal_use_only_features_that_work_on_stable`.
+nightly-features = ["float-nightly", "simd-nightly"]
+
+# Targets which Miri does not currently support in our CI configuration. New
+# build-matrix targets are treated as Miri-supported unless listed here.
+miri-unsupported-targets = [
+    "riscv64gc-unknown-linux-gnu",
+    "thumbv6m-none-eabi",
+    "wasm32-unknown-unknown",
+]
 
 [package.metadata.docs.rs]
 all-features = true
