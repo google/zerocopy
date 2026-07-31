@@ -8,6 +8,13 @@
 
 FROM ubuntu:24.04
 
+# These are the same bounded, download-only retry counts configured in
+# `ci.yml`. Defining them before the first networked build step covers rustup
+# and Cargo operations while the image is built; the workflow-level values
+# cover host operations and are forwarded into containers at runtime.
+ENV CARGO_NET_RETRY=10 \
+    RUSTUP_MAX_RETRIES=10
+
 # Use `DEBIAN_FRONTEND=noninteractive` to prevent timezone prompts.
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     gcc-multilib    \

@@ -30,6 +30,12 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
+  # These are bounded, client-native retries for recognized transient download
+  # failures. They never rerun a Cargo or rustup command, so deterministic build
+  # and test failures still fail immediately. Keep these values coordinated
+  # with `.github/workflows/anneal.yml` and the CI Dockerfile.
+  CARGO_NET_RETRY: "10"
+  RUSTUP_MAX_RETRIES: "10"
   RUSTFLAGS: -Dwarnings
   RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
   # `ZC_NIGHTLY_XXX` are flags that we add to `XXX` only on the nightly
@@ -301,11 +307,8 @@ jobs:
         fetch-depth: 2
         persist-credentials: false
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
-
-    - name: Log in to the Container registry
-      uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
+    - name: Set up Docker
+      uses: ./.github/actions/setup-docker-with-retry
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
@@ -357,6 +360,7 @@ jobs:
           -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
           -e TOOLCHAIN -e CRATE -e TARGET -e FEATURES -e ZC_TOOLCHAIN \
           -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
+          -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
           -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           zerocopy-ci:local bash -c "git config --global --add safe.directory '*' && exec bash \"\$1\"" -- "$1"
@@ -992,11 +996,8 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
+      - name: Set up Docker
+        uses: ./.github/actions/setup-docker-with-retry
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
