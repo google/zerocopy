@@ -1,0 +1,85 @@
+name: Upload file artifact
+description: Publish one already-compressed file for jobs in this workflow run
+
+inputs:
+  name:
+    description: Artifact name; must exactly match the basename of path
+    required: true
+  path:
+    description: Exact path of the nonempty file to publish
+    required: true
+
+outputs:
+  artifact-id:
+    description: Immutable ID assigned to the published artifact
+    value: ${{ steps.upload.outputs.artifact-id }}
+  artifact-digest:
+    description: SHA-256 digest assigned to the published artifact
+    value: ${{ steps.upload.outputs.artifact-digest }}
+
+runs:
+  using: composite
+  steps:
+    - name: Validate artifact contract
+      shell: bash
+      env:
+        ARTIFACT_NAME: ${{ inputs.name }}
+        ARTIFACT_PATH: ${{ inputs.path }}
+      run: |
+        set -euo pipefail
+
+        # upload-artifact v7's direct-file mode derives the published name from
+        # the file basename, even though its overwrite path still looks up the
+        # explicit `name` input. Requiring them to match makes overwrite reliable
+        # on a full workflow rerun and prevents that subtle action contract from
+        # becoming an implicit coupling in each caller.
+        if [[ -z "$ARTIFACT_NAME" || "$ARTIFACT_NAME" == */* || "$ARTIFACT_NAME" == "." || "$ARTIFACT_NAME" == ".." ]]; then
+          echo "Artifact name must be a nonempty filename, not a path: $ARTIFACT_NAME" >&2
+          exit 1
+        fi
+        if [[ "${ARTIFACT_PATH##*/}" != "$ARTIFACT_NAME" ]]; then
+          echo "Artifact name '$ARTIFACT_NAME' does not match path basename '${ARTIFACT_PATH##*/}'" >&2
+          exit 1
+        fi
+        if [[ ! -s "$ARTIFACT_PATH" ]]; then
+          echo "Artifact is missing or empty: $ARTIFACT_PATH" >&2
+          exit 1
+        fi
+
+        artifact_size=$(stat --format=%s "$ARTIFACT_PATH")
+        echo "Uploading $ARTIFACT_NAME ($artifact_size bytes)" | tee -a "$GITHUB_STEP_SUMMARY"
+
+    # Both current callers produce tar archives whose contents are already
+    # compressed (Docker's image layers use gzip; Anneal uses zstd). Version 7's
+    # direct-file mode avoids a redundant ZIP on upload and extraction on every
+    # consumer. Keep this coordinated with download-artifact v8 in
+    # `../download-artifact-with-retry/action.yml`, which understands direct
+    # artifacts and verifies their service-provided digest.
+    - name: Upload artifact
+      id: upload
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+        if-no-files-found: error
+        retention-days: 1
+        archive: false
+        # Artifacts are immutable. Delete an artifact with the same validated
+        # name first so "Re-run all jobs" can republish it under a new ID.
+        overwrite: true
+
+    - name: Verify published artifact metadata
+      shell: bash
+      env:
+        ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+      run: |
+        set -eu
+        if [[ ! "$ARTIFACT_ID" =~ ^[0-9]+$ ]]; then
+          echo "Upload did not return a numeric artifact ID: $ARTIFACT_ID" >&2
+          exit 1
+        fi
+        if [[ -z "$ARTIFACT_DIGEST" ]]; then
+          echo "Upload did not return an artifact digest" >&2
+          exit 1
+        fi
