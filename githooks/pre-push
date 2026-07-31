@@ -10,6 +10,46 @@
 
 set -eo pipefail
 echo "Running pre-push git hook: $0"
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# These checks are assertions about tracked source; none is allowed to rewrite
+# a first-party workspace lockfile as a side effect. Discover the inventory so
+# a newly added workspace is protected automatically. Vendored packages and
+# test fixtures own independent lockfiles which these repository checks never
+# use, so exclude those source snapshots from this workspace-level contract.
+LOCKFILES=()
+while IFS= read -r -d '' lockfile; do
+    case "$lockfile" in
+        */vendor/*|*/tests/fixtures/*) continue ;;
+    esac
+    LOCKFILES+=("$lockfile")
+done < <(git ls-files -z -- '*Cargo.lock')
+
+if [[ ${#LOCKFILES[@]} -eq 0 ]]; then
+    echo "No first-party Cargo.lock files found; refusing to run unguarded" >&2
+    exit 1
+fi
+
+lockfile_hash() {
+    local lockfile="$1"
+    if [[ -f "$lockfile" ]]; then
+        # Unlike sha256sum, `git hash-object` is available on both Linux and
+        # macOS wherever this Git hook can run. Bypass clean filters so the
+        # snapshot represents the bytes that a check could mutate on disk.
+        git hash-object --no-filters -- "$lockfile"
+    else
+        # Preserve a pre-existing deletion in the snapshot. If a check
+        # recreates the file, the post-check value will still differ.
+        echo '<missing>'
+    fi
+}
+
+LOCKFILE_HASHES_BEFORE=()
+for lockfile in "${LOCKFILES[@]}"; do
+    LOCKFILE_HASHES_BEFORE+=("$(lockfile_hash "$lockfile")")
+done
+
 # Forego redirecting stdout to /dev/null on check_fmt.sh because the output from
 # `cargo fmt` is useful (and the good stuff is not delivered by stderr).
 #
@@ -23,20 +63,32 @@ echo "Running pre-push git hook: $0"
 ./zerocopy/ci/check_versions.sh              >/dev/null & VERSIONS_PID=$!
 ./zerocopy/ci/check_msrv_is_minimal.sh       >/dev/null & MSRV_PID=$!
 
-# `wait <pid>` exits with the same status code as the job it's waiting for.
-# Since we `set -e` above, this will have the effect of causing the entire
-# script to exit with a non-zero status code if any of these jobs does the same.
-# Note that, while `wait` (with no PID argument) waits for all backgrounded
-# jobs, it exits with code 0 even if one of the backgrounded jobs does not, so
-# we can't use it here.
-wait $ACTIONS_PID
-wait $FMT_PID
-wait $TOOLCHAINS_PID
-wait $JOB_DEPS_PID
-wait $README_PID
-wait $STALE_STDERR_PID
-wait $VERSIONS_PID
-wait $MSRV_PID
+# `wait` without a PID loses individual failures, while sequential bare waits
+# under `set -e` abandon the remaining children after the first failure. Record
+# each status explicitly so every child is reaped and every useful diagnostic
+# has a chance to finish.
+CHECKS_FAILED=0
+wait_for_check() {
+    local name="$1"
+    local pid="$2"
+    local status
+    if wait "$pid"; then
+        return
+    else
+        status=$?
+    fi
+    echo "$name failed with status $status" >&2
+    CHECKS_FAILED=1
+}
+
+wait_for_check "ci/check_actions.sh" "$ACTIONS_PID"
+wait_for_check "ci/check_fmt.sh" "$FMT_PID"
+wait_for_check "ci/check_job_dependencies.sh" "$JOB_DEPS_PID"
+wait_for_check "zerocopy/ci/check_all_toolchains_tested.sh" "$TOOLCHAINS_PID"
+wait_for_check "zerocopy/ci/check_readme.sh" "$README_PID"
+wait_for_check "zerocopy/ci/check_stale_stderr.sh" "$STALE_STDERR_PID"
+wait_for_check "zerocopy/ci/check_versions.sh" "$VERSIONS_PID"
+wait_for_check "zerocopy/ci/check_msrv_is_minimal.sh" "$MSRV_PID"
 
 # Ensure that this script calls all scripts in `ci/*` and `zerocopy/ci/*`. This
 # isn't a foolproof check since it just checks for the string in this script
@@ -50,13 +102,33 @@ wait $MSRV_PID
 shopt -s extglob
 GLOBIGNORE="./*/@(release_crate_version|check_todo|release_anneal_version).sh" # We don't want to run these
 for f in ./ci/*; do
-    grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
+    grep "$f" githooks/pre-push >/dev/null || {
+        echo "$f not called from githooks/pre-push" >&2
+        CHECKS_FAILED=1
+    }
 done
-# We don't want to run release_crate_version here, and zerocopy/ci/check_fmt.sh
-# is called by ci/check_fmt.sh above rather than directly.
-GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt).sh"
+# Release helpers either mutate version/lock state or produce publication
+# artifacts, so neither belongs in a read-only pre-push hook. check_fmt.sh is
+# called through the repository-wide ci/check_fmt.sh rather than directly.
+GLOBIGNORE="./zerocopy/ci/@(release_crate_version|package_release_crates|check_fmt).sh"
 for f in ./zerocopy/ci/*; do
-    grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
+    grep "$f" githooks/pre-push >/dev/null || {
+        echo "$f not called from githooks/pre-push" >&2
+        CHECKS_FAILED=1
+    }
 done
 unset GLOBIGNORE
 shopt -u extglob
+
+# Keep this comparison at the end of the hook so any future synchronous check
+# added after the parallel fan-out remains inside the same mutation guard.
+for index in "${!LOCKFILES[@]}"; do
+    lockfile="${LOCKFILES[$index]}"
+    hash_after="$(lockfile_hash "$lockfile")"
+    if [[ "$hash_after" != "${LOCKFILE_HASHES_BEFORE[$index]}" ]]; then
+        echo "$lockfile was modified by a nominally read-only pre-push check" >&2
+        CHECKS_FAILED=1
+    fi
+done
+
+exit "$CHECKS_FAILED"
