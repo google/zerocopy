@@ -24,6 +24,10 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
+  # `v2_nix_cache` produces this file and every downstream Anneal job validates
+  # the same filename after downloading by immutable artifact ID. Keep the
+  # filename centralized here; the ID, not this name, selects the artifact.
+  ANNEAL_TOOLCHAIN_ARCHIVE: anneal-exocrate.tar.zst
   # Keep these bounded, download-only retry counts coordinated with ci.yml and
   # its Dockerfile. Neither setting reruns a build or test command.
   CARGO_NET_RETRY: "10"
@@ -102,9 +106,9 @@ jobs:
       - name: Download Anneal toolchain archive
         uses: ./.github/actions/download-artifact-with-retry
         with:
-          name: anneal-exocrate.tar.zst
+          artifact-id: ${{ needs.v2_nix_cache.outputs.toolchain_artifact_id }}
           path: anneal/target
-          expected-file: anneal-exocrate.tar.zst
+          expected-file: ${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
 
       # Ensure `llms-full.txt` file is up-to-date.
       - name: Check doc generation
@@ -112,7 +116,7 @@ jobs:
         working-directory: anneal/v1
 
       - name: Install Anneal toolchain archive
-        run: cargo run setup --local-archive ../target/anneal-exocrate.tar.zst
+        run: cargo run setup --local-archive "../target/$ANNEAL_TOOLCHAIN_ARCHIVE"
         working-directory: anneal/v1
 
       # Run unit tests separately, as they're much less likely to have bugs
@@ -219,12 +223,12 @@ jobs:
       - name: Download Anneal toolchain archive
         uses: ./.github/actions/download-artifact-with-retry
         with:
-          name: anneal-exocrate.tar.zst
+          artifact-id: ${{ needs.v2_nix_cache.outputs.toolchain_artifact_id }}
           path: anneal/target
-          expected-file: anneal-exocrate.tar.zst
+          expected-file: ${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
 
       - name: Install Anneal toolchain archive
-        run: cargo run setup --local-archive ../target/anneal-exocrate.tar.zst
+        run: cargo run setup --local-archive "../target/$ANNEAL_TOOLCHAIN_ARCHIVE"
         working-directory: anneal/v1
 
       - name: Verify example
@@ -268,6 +272,11 @@ jobs:
   v2_nix_cache:
     name: Build Anneal Toolchain Archive
     runs-on: ubuntu-latest
+    # All consumers depend on this job and select exactly the immutable artifact
+    # instance it published. This replaces the formerly duplicated artifact-name
+    # contract across the producer and three fan-out sites.
+    outputs:
+      toolchain_artifact_id: ${{ steps.upload_toolchain.outputs.artifact-id }}
     permissions:
       contents: read
     steps:
@@ -330,15 +339,15 @@ jobs:
             fi
           done
 
-          nix build "${nix_args[@]}" .#omnibus-archive-ci --out-link target/anneal-exocrate.tar.zst
-          archive="$(readlink -f target/anneal-exocrate.tar.zst)"
-          rm target/anneal-exocrate.tar.zst
-          cp "$archive" target/anneal-exocrate.tar.zst
-          archive_size="$(python3 -c 'import os, sys; print(os.path.getsize(sys.argv[1]))' target/anneal-exocrate.tar.zst)"
+          nix build "${nix_args[@]}" .#omnibus-archive-ci --out-link "target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+          archive="$(readlink -f "target/$ANNEAL_TOOLCHAIN_ARCHIVE")"
+          rm "target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+          cp "$archive" "target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+          archive_size="$(python3 -c 'import os, sys; print(os.path.getsize(sys.argv[1]))' "target/$ANNEAL_TOOLCHAIN_ARCHIVE")"
           max_github_release_asset_size=2147483647
-          printf 'Built anneal-exocrate.tar.zst (%s bytes)\n' "$archive_size"
+          printf 'Built %s (%s bytes)\n' "$ANNEAL_TOOLCHAIN_ARCHIVE" "$archive_size"
           if [ "$archive_size" -gt "$max_github_release_asset_size" ]; then
-            echo "::error::anneal-exocrate.tar.zst is ${archive_size} bytes, which exceeds GitHub's ${max_github_release_asset_size}-byte release asset limit."
+            echo "::error::$ANNEAL_TOOLCHAIN_ARCHIVE is ${archive_size} bytes, which exceeds GitHub's ${max_github_release_asset_size}-byte release asset limit."
             exit 1
           fi
           nix build "${nix_args[@]}" .#omnibus-archive-layout-check --no-link
@@ -392,13 +401,14 @@ jobs:
           key: ${{ steps.restore_anneal_pr_nix_cache.outputs.cache-primary-key }}
 
       - name: Upload Anneal toolchain archive
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        id: upload_toolchain
+        # This archive is already zstd-compressed. The shared action publishes
+        # it directly instead of wrapping it in a ZIP that every matrix runner
+        # would otherwise have to extract.
+        uses: ./.github/actions/upload-file-artifact
         with:
-          name: anneal-exocrate.tar.zst
-          path: anneal/target/anneal-exocrate.tar.zst
-          if-no-files-found: error
-          retention-days: 1
-          compression-level: 0
+          name: ${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
+          path: anneal/target/${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
 
   v2:
     name: Run V2 tests
@@ -417,9 +427,9 @@ jobs:
       - name: Download Anneal toolchain archive
         uses: ./.github/actions/download-artifact-with-retry
         with:
-          name: anneal-exocrate.tar.zst
+          artifact-id: ${{ needs.v2_nix_cache.outputs.toolchain_artifact_id }}
           path: anneal/target
-          expected-file: anneal-exocrate.tar.zst
+          expected-file: ${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
 
       # FIXME: Pin this nightly to the same Rust date encoded in
       # anneal/flake.nix, or derive it from the archive metadata, so v2 CI is
