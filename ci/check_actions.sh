@@ -20,6 +20,16 @@ if [ ! -x "$HOME/.cargo/bin/action-validator" ]; then
     cargo install -q action-validator --version 0.8.0 --locked
 fi
 export PATH="$HOME/.cargo/bin:$PATH"
+export PYTHONDONTWRITEBYTECODE=1
+
+# Pull request and merge-group jobs execute proposed repository code. Keep
+# their GITHUB_TOKEN read-only even for same-repository PRs, whose tokens are
+# not automatically downgraded like fork tokens. The checker is deliberately
+# separate from individual workflows so a future publishing optimization
+# cannot silently reintroduce write authority.
+python3 .github/scripts/check-workflow-permissions.py .github/workflows
+python3 .github/scripts/test_check_workflow_permissions.py
+python3 .github/scripts/test_workflow_artifacts.py
 
 # Files to exclude from validation (e.g., because they are not Actions/Workflows)
 # Use relative paths matching `find .github` output

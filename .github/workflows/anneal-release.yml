@@ -26,6 +26,12 @@ on:
 
 permissions: {}
 
+env:
+  # The manual toolchain release can wait behind matrix work and environment
+  # approval. Keep every intermediate artifact available for the same long
+  # window; `.github/scripts/test_workflow_artifacts.py` owns this contract.
+  ANNEAL_RELEASE_ARTIFACT_RETENTION_DAYS: "90"
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -122,32 +128,72 @@ jobs:
           TAG="anneal-v$VERSION"
           gh release create "$TAG" --generate-notes
 
-  prepare-release-source:
-    name: Prepare release source patch
-    if: github.event_name == 'workflow_dispatch'
+  resolve-release-source:
+    name: Resolve release source
+    # The workflow definition and trusted validators must come from main. The
+    # independently selected source ref remains an explicit input below.
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     outputs:
-      base_sha: ${{ steps.prepare.outputs.base_sha }}
-      short_base_sha: ${{ steps.prepare.outputs.short_base_sha }}
+      base_sha: ${{ steps.resolve.outputs.base_sha }}
+      tag_name: ${{ steps.resolve.outputs.tag_name }}
     steps:
-      - name: Checkout
+      # This job resolves the operator-selected ref but executes no code from
+      # it. Its outputs are therefore safe to pass into privileged jobs; do not
+      # move selected-branch scripts into this job after the output step.
+      - name: Checkout selected ref without executing it
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.inputs.branch }}
           persist-credentials: false
           fetch-depth: 0
 
+      - name: Resolve immutable identifiers
+        id: resolve
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+        run: |
+          set -euo pipefail
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid Anneal version: $VERSION" >&2
+            exit 1
+          fi
+
+          BASE_SHA="$(git rev-parse HEAD)"
+          if ! [[ "$BASE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Checkout did not resolve to a commit SHA: $BASE_SHA" >&2
+            exit 1
+          fi
+          SHORT_BASE_SHA="${BASE_SHA:0:12}"
+          TAG_NAME="anneal-toolchains-v${VERSION}-${GITHUB_RUN_ID}-${SHORT_BASE_SHA}"
+
+          echo "base_sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
+          echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
+
+  prepare-release-source:
+    name: Prepare release source patch
+    needs: resolve-release-source
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.resolve-release-source.outputs.base_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+
       - name: Prepare version bump patch
-        id: prepare
         env:
           VERSION: ${{ github.event.inputs.version }}
         run: |
           set -eo pipefail
-          BASE_SHA="$(git rev-parse HEAD)"
-          SHORT_BASE_SHA="${BASE_SHA:0:12}"
-
           ./ci/release_anneal_version.sh "$VERSION"
 
           python3 anneal/v1/tools/check-release-pr-files.py \
@@ -164,56 +210,20 @@ jobs:
             exit 1
           fi
 
-          echo "base_sha=${BASE_SHA}" >> "$GITHUB_OUTPUT"
-          echo "short_base_sha=${SHORT_BASE_SHA}" >> "$GITHUB_OUTPUT"
-
       - name: Upload release source patch
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: anneal-release-source-patch
           path: anneal-release-source.patch
           if-no-files-found: error
-          retention-days: 1
+          retention-days: ${{ env.ANNEAL_RELEASE_ARTIFACT_RETENTION_DAYS }}
 
-  create-release:
-    name: Create toolchain artifact release
-    needs: prepare-release-source
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write # required to create a GitHub release
-    outputs:
-      tag_name: ${{ steps.tag.outputs.tag_name }}
-    steps:
-      - name: Create Release
-        id: tag
-        env:
-          GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ github.event.inputs.version }}
-          GH_REPO: ${{ github.repository }}
-          GITHUB_RUN_ID: ${{ github.run_id }}
-          BASE_SHA: ${{ needs.prepare-release-source.outputs.base_sha }}
-          SHORT_BASE_SHA: ${{ needs.prepare-release-source.outputs.short_base_sha }}
-        run: |
-          set -eo pipefail
-          TAG_NAME="anneal-toolchains-v${VERSION}-${GITHUB_RUN_ID}-${SHORT_BASE_SHA}"
-          gh release create "$TAG_NAME" \
-            --repo "$GH_REPO" \
-            --target "$BASE_SHA" \
-            --title "$TAG_NAME" \
-            --notes "Machine-generated Anneal toolchain artifacts for cargo-anneal ${VERSION}, built from ${BASE_SHA} after applying the generated release version-bump patch." \
-            --draft \
-            --prerelease \
-            --latest=false
-          echo "tag_name=${TAG_NAME}" >> "$GITHUB_OUTPUT"
-
-  publish-artifacts:
-    name: Publish toolchain artifact (${{ matrix.target }})
-    needs: [prepare-release-source, create-release]
+  build-toolchains:
+    name: Build toolchain artifact (${{ matrix.target }})
+    needs: resolve-release-source
     if: github.event_name == 'workflow_dispatch'
     permissions:
-      actions: read # Required to download the release source patch.
-      contents: write # This is required to upload assets to a release.
+      contents: read
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -239,20 +249,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ needs.prepare-release-source.outputs.base_sha }}
+          ref: ${{ needs.resolve-release-source.outputs.base_sha }}
           persist-credentials: false
-
-      - name: Download release source patch
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: anneal-release-source-patch
-          path: .
-
-      - name: Apply release source patch
-        run: |
-          set -eo pipefail
-          git apply --check anneal-release-source.patch
-          git apply anneal-release-source.patch
 
       - name: Free up disk space
         if: runner.os == 'Linux'
@@ -272,11 +270,13 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
-      - name: Build and publish toolchain artifact
+      # Toolchain contents depend only on the selected commit's flake inputs,
+      # not on cargo-anneal's requested package version. Build the exact commit
+      # and leave version-patch processing to a separate unprivileged job.
+      - name: Build toolchain artifact
         env:
-          GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
+          TAG_NAME: ${{ needs.resolve-release-source.outputs.tag_name }}
           TARGET: ${{ matrix.target }}
           CARGO_OS: ${{ matrix.cargo_os }}
           CARGO_ARCH: ${{ matrix.cargo_arch }}
@@ -284,7 +284,7 @@ jobs:
           set -eo pipefail
           ARCHIVE_NAME="anneal-toolchain-${TARGET}.tar.zst"
           MAX_GITHUB_RELEASE_ASSET_SIZE=2147483647
-          mkdir -p anneal/target anneal/v1/release-download-check anneal/v1/release-metadata
+          mkdir -p anneal/target anneal/v1/release-metadata
 
           nix build ./anneal#omnibus-archive-ci --out-link "anneal/target/${ARCHIVE_NAME}"
           cp -L "anneal/target/${ARCHIVE_NAME}" "anneal/v1/${ARCHIVE_NAME}"
@@ -295,17 +295,9 @@ jobs:
             exit 1
           fi
 
-          gh release upload "$TAG_NAME" "anneal/v1/${ARCHIVE_NAME}" --repo "$GH_REPO" --clobber
-          gh release download "$TAG_NAME" \
-            --repo "$GH_REPO" \
-            --pattern "$ARCHIVE_NAME" \
-            --dir anneal/v1/release-download-check \
-            --clobber
-          cmp "anneal/v1/${ARCHIVE_NAME}" "anneal/v1/release-download-check/${ARCHIVE_NAME}"
-
           url="https://github.com/${GH_REPO}/releases/download/${TAG_NAME}/${ARCHIVE_NAME}"
           python3 anneal/v1/tools/collect-release-archive-metadata.py \
-            --archive "anneal/v1/release-download-check/${ARCHIVE_NAME}" \
+            --archive "anneal/v1/${ARCHIVE_NAME}" \
             --target "$TARGET" \
             --os "$CARGO_OS" \
             --arch "$CARGO_ARCH" \
@@ -316,31 +308,41 @@ jobs:
         if: always() && runner.os == 'Linux'
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
 
+      - name: Upload toolchain archive
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: anneal-toolchain-${{ matrix.target }}.tar.zst
+          path: anneal/v1/anneal-toolchain-${{ matrix.target }}.tar.zst
+          if-no-files-found: error
+          retention-days: ${{ env.ANNEAL_RELEASE_ARTIFACT_RETENTION_DAYS }}
+          archive: false
+          overwrite: true
+
       - name: Upload toolchain metadata
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: anneal-toolchain-metadata-${{ matrix.target }}
+          name: ${{ matrix.target }}.json
           path: anneal/v1/release-metadata/${{ matrix.target }}.json
           if-no-files-found: error
-          retention-days: 1
+          retention-days: ${{ env.ANNEAL_RELEASE_ARTIFACT_RETENTION_DAYS }}
+          archive: false
+          overwrite: true
 
-  release-version-action:
-    # This job handles manual release triggers. It updates version numbers and
-    # exocrate archive metadata, then creates a PR for review.
-    name: Release new Anneal version
-    needs: [prepare-release-source, create-release, publish-artifacts]
+  prepare-release-pr:
+    # Selected-branch helper scripts create the final reviewable patch here,
+    # before any repository or release write credential is introduced.
+    name: Prepare final release PR patch
+    needs: [resolve-release-source, prepare-release-source, build-toolchains]
     if: github.event_name == 'workflow_dispatch'
     permissions:
       actions: read # Required to download toolchain metadata artifacts.
-      contents: write # Required by the fork-only create-pull-request fallback.
-      issues: write # Required to label the generated release PR.
-      pull-requests: write # Required to create pull requests
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ needs.prepare-release-source.outputs.base_sha }}
+          ref: ${{ needs.resolve-release-source.outputs.base_sha }}
           persist-credentials: false
 
       - name: Download release source patch
@@ -358,13 +360,13 @@ jobs:
       - name: Download toolchain metadata
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          pattern: anneal-toolchain-metadata-*
+          pattern: '*.json'
           path: anneal/v1/release-metadata
           merge-multiple: true
 
       - name: Update Anneal archive metadata
         env:
-          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
+          TAG_NAME: ${{ needs.resolve-release-source.outputs.tag_name }}
         run: |
           set -eo pipefail
           python3 anneal/v1/tools/update-exocrate-metadata.py \
@@ -383,6 +385,336 @@ jobs:
             --allowed anneal/v1/Cargo.toml \
             --allowed anneal/v1/README.md \
             --required anneal/v1/Cargo.toml
+
+      - name: Create final release PR patch
+        run: |
+          set -euo pipefail
+          git diff --binary > anneal-release-final.patch
+          if [ ! -s anneal-release-final.patch ]; then
+            echo "Final release PR patch is empty" >&2
+            exit 1
+          fi
+
+      - name: Upload final release PR patch
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: anneal-release-final-patch
+          path: anneal-release-final.patch
+          if-no-files-found: error
+          retention-days: ${{ env.ANNEAL_RELEASE_ARTIFACT_RETENTION_DAYS }}
+          overwrite: true
+
+  review-release:
+    name: Review release inputs
+    needs: [resolve-release-source, prepare-release-pr, build-toolchains]
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      # `github.workflow_sha` identifies the trusted workflow definition. The
+      # validators from this checkout inspect selected-branch outputs as data;
+      # no helper from the operator-selected branch executes in this job.
+      - name: Checkout trusted validators
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: trusted
+          persist-credentials: false
+
+      - name: Checkout selected source without executing it
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.resolve-release-source.outputs.base_sha }}
+          path: source
+          persist-credentials: false
+
+      - name: Download final release PR patch
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: anneal-release-final-patch
+          path: source
+
+      - name: Download toolchain metadata
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: '*.json'
+          path: release-metadata
+          merge-multiple: true
+
+      - name: Validate and summarize release inputs
+        env:
+          BASE_SHA: ${{ needs.resolve-release-source.outputs.base_sha }}
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ needs.resolve-release-source.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          python3 trusted/anneal/v1/tools/validate-release-artifacts.py \
+            --metadata-dir release-metadata \
+            --tag "$TAG_NAME" \
+            --repository "$GH_REPO"
+
+          cd source
+          git apply --check anneal-release-final.patch
+          git apply anneal-release-final.patch
+          rm anneal-release-final.patch
+          python3 ../trusted/anneal/v1/tools/check-release-pr-files.py \
+            --context "Trusted release review" \
+            --include-untracked \
+            --allowed anneal/v1/Cargo.lock \
+            --allowed anneal/v1/Cargo.toml \
+            --allowed anneal/v1/README.md \
+            --required anneal/v1/Cargo.toml
+
+          {
+            echo "## Anneal toolchain release"
+            echo
+            echo "- Source: \`$BASE_SHA\`"
+            echo "- Tag: \`$TAG_NAME\`"
+            echo
+            echo '### Release PR changes'
+            echo '```'
+            git diff --stat
+            echo '```'
+            echo
+            echo '### Toolchain archives'
+            jq -r \
+              '"- \(.target): \(.sha256) (\(.filename))"' \
+              ../release-metadata/*.json
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish-release-assets:
+    name: Publish toolchain release
+    needs: [resolve-release-source, review-release]
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Checkout trusted validators
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: trusted
+          persist-credentials: false
+
+      - name: Download toolchain archives
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: anneal-toolchain-*.tar.zst
+          path: release-assets
+          merge-multiple: true
+
+      - name: Download toolchain metadata
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: '*.json'
+          path: release-metadata
+          merge-multiple: true
+
+      - name: Validate untrusted release artifacts
+        env:
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ needs.resolve-release-source.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          python3 trusted/anneal/v1/tools/validate-release-artifacts.py \
+            --metadata-dir release-metadata \
+            --archive-dir release-assets \
+            --tag "$TAG_NAME" \
+            --repository "$GH_REPO"
+
+      - name: Create or reconcile the toolchain release
+        env:
+          BASE_SHA: ${{ needs.resolve-release-source.outputs.base_sha }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ needs.resolve-release-source.outputs.tag_name }}
+          VERSION: ${{ github.event.inputs.version }}
+        run: |
+          set -euo pipefail
+          if RELEASE="$(
+            gh release view "$TAG_NAME" \
+              --repo "$GH_REPO" \
+              --json isDraft,isPrerelease,tagName,targetCommitish 2>/dev/null
+          )"; then
+            if [ "$(jq -r .tagName <<< "$RELEASE")" != "$TAG_NAME" ] \
+                || [ "$(jq -r .isPrerelease <<< "$RELEASE")" != true ] \
+                || [ "$(jq -r .targetCommitish <<< "$RELEASE")" != "$BASE_SHA" ]; then
+              echo "Existing release has unexpected metadata: $RELEASE" >&2
+              exit 1
+            fi
+          else
+            gh release create "$TAG_NAME" \
+              --repo "$GH_REPO" \
+              --target "$BASE_SHA" \
+              --title "$TAG_NAME" \
+              --notes "Machine-generated Anneal toolchain artifacts for cargo-anneal ${VERSION}, built from exact source commit ${BASE_SHA}." \
+              --draft \
+              --prerelease \
+              --latest=false
+            RELEASE="$(
+              jq -cn --arg BASE_SHA "$BASE_SHA" '{
+                isDraft: true,
+                isPrerelease: true,
+                targetCommitish: $BASE_SHA
+              }'
+            )"
+          fi
+
+          IS_DRAFT="$(jq -r .isDraft <<< "$RELEASE")"
+          CHECK_DIR="$(mktemp -d)"
+          trap 'rm -rf "$CHECK_DIR"' EXIT
+          for ASSET in release-assets/*; do
+            NAME="${ASSET##*/}"
+            rm -f "$CHECK_DIR/$NAME"
+            if gh release download "$TAG_NAME" \
+                --repo "$GH_REPO" \
+                --pattern "$NAME" \
+                --dir "$CHECK_DIR" \
+                --clobber 2>/dev/null \
+                && cmp "$ASSET" "$CHECK_DIR/$NAME"; then
+              echo "Existing release asset matches: $NAME"
+              continue
+            fi
+
+            if [ "$IS_DRAFT" != true ]; then
+              echo "Published release has a missing or mismatched $NAME" >&2
+              exit 1
+            fi
+            gh release upload "$TAG_NAME" "$ASSET" \
+              --repo "$GH_REPO" \
+              --clobber
+            rm -f "$CHECK_DIR/$NAME"
+            gh release download "$TAG_NAME" \
+              --repo "$GH_REPO" \
+              --pattern "$NAME" \
+              --dir "$CHECK_DIR" \
+              --clobber
+            cmp "$ASSET" "$CHECK_DIR/$NAME"
+          done
+
+          EXPECTED_ASSETS="$(
+            find release-assets -mindepth 1 -maxdepth 1 -type f \
+              -printf '%f\n' | sort
+          )"
+          ACTUAL_ASSETS="$(
+            gh release view "$TAG_NAME" \
+              --repo "$GH_REPO" \
+              --json assets \
+              --jq '.assets[].name' \
+              | sort
+          )"
+          if [ "$ACTUAL_ASSETS" != "$EXPECTED_ASSETS" ]; then
+            echo "Release has an unexpected asset set" >&2
+            printf 'Expected:\n%s\nActual:\n%s\n' \
+              "$EXPECTED_ASSETS" "$ACTUAL_ASSETS" >&2
+            exit 1
+          fi
+
+          if [ "$IS_DRAFT" = true ]; then
+            gh release edit "$TAG_NAME" \
+              --repo "$GH_REPO" \
+              --draft=false
+          fi
+          if [ "$(
+            gh release view "$TAG_NAME" --repo "$GH_REPO" --json isDraft \
+              --jq .isDraft
+          )" != false ]; then
+            echo "Toolchain release is still a draft" >&2
+            exit 1
+          fi
+
+          # GitHub creates a missing tag only when a draft is published. The
+          # draft's exact target was checked above; now verify the resulting
+          # ref actually resolves to that commit before downstream PR CI starts
+          # consuming its public URLs.
+          TAG_SHA="$(
+            gh api "repos/$GH_REPO/commits/$TAG_NAME" --jq .sha
+          )"
+          if [ "$TAG_SHA" != "$BASE_SHA" ]; then
+            echo "Release tag points at $TAG_SHA, expected $BASE_SHA" >&2
+            exit 1
+          fi
+
+          for METADATA in release-metadata/*.json; do
+            URL="$(jq -r .url "$METADATA")"
+            AVAILABLE=false
+            for ATTEMPT in {1..10}; do
+              if curl --fail --silent --show-error --location --head "$URL" \
+                  >/dev/null; then
+                AVAILABLE=true
+                break
+              fi
+              echo "Asset is not public yet (attempt $ATTEMPT): $URL"
+              sleep 6
+            done
+            if [ "$AVAILABLE" != true ]; then
+              echo "Release asset did not become public: $URL" >&2
+              exit 1
+            fi
+          done
+
+  submit-release-pr:
+    name: Submit Anneal release PR
+    needs: [resolve-release-source, prepare-release-pr, publish-release-assets]
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      # This checkout is treated only as Git data. Before the bot token is
+      # passed to the pinned PR action, inline trusted workflow code applies
+      # and constrains the prepared patch without running repository scripts.
+      - name: Checkout selected source without executing it
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.resolve-release-source.outputs.base_sha }}
+          persist-credentials: false
+
+      - name: Download final release PR patch
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: anneal-release-final-patch
+          path: .
+
+      - name: Apply and constrain release PR patch
+        run: |
+          set -euo pipefail
+          git apply --check anneal-release-final.patch
+          git apply anneal-release-final.patch
+          rm anneal-release-final.patch
+          git diff --check
+
+          mapfile -t CHANGED < <(git diff --name-only)
+          if [ "${#CHANGED[@]}" -eq 0 ]; then
+            echo "Release patch changed no tracked files" >&2
+            exit 1
+          fi
+          FOUND_MANIFEST=false
+          for PATH in "${CHANGED[@]}"; do
+            case "$PATH" in
+              anneal/v1/Cargo.lock|anneal/v1/Cargo.toml|anneal/v1/README.md)
+                ;;
+              *)
+                echo "Release patch changed unexpected path: $PATH" >&2
+                exit 1
+                ;;
+            esac
+            if [ "$PATH" = anneal/v1/Cargo.toml ]; then
+              FOUND_MANIFEST=true
+            fi
+          done
+          if [ "$FOUND_MANIFEST" != true ]; then
+            echo "Release patch did not change anneal/v1/Cargo.toml" >&2
+            exit 1
+          fi
 
       - name: Submit PR
         id: submit-pr-upstream
@@ -422,22 +754,13 @@ jobs:
       - name: Add labels
         if: steps.submit-pr-upstream.outputs.pull-request-operation == 'created'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.submit-pr-upstream.outputs.pull-request-number }}
         run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
 
       - name: Add labels (fork test)
         if: steps.submit-pr-fork.outputs.pull-request-operation == 'created'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.submit-pr-fork.outputs.pull-request-number }}
         run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
-
-      - name: Publish toolchain artifact release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
-        run: |
-          set -eo pipefail
-          gh release edit "$TAG_NAME" --repo "$GH_REPO" --draft=false
