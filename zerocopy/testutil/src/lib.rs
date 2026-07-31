@@ -11,6 +11,52 @@
 
 use std::{env, path::PathBuf, process::Command};
 
+// `tools/cargo-zerocopy` sets this on every delegated Cargo process. Test
+// executables inherit it, allowing a UI test's recursive artifact build to use
+// the same feature-selection options as the outer Cargo invocation.
+const UI_TEST_FEATURE_ARGS_ENV: &str = "ZEROCOPY_UI_TEST_FEATURE_ARGS";
+
+// Decode the length-prefixed UTF-8 format produced by cargo-zerocopy. This
+// format avoids assigning special meaning to any character Cargo permits in
+// an argument. Keep the protocol and its fixed-vector tests in both workspaces
+// synchronized.
+fn decode_feature_selection_args(encoded: &str) -> Result<Vec<String>, String> {
+    let mut args = Vec::new();
+    let mut remaining = encoded;
+
+    while !remaining.is_empty() {
+        let colon = remaining.find(':').ok_or_else(|| "missing length delimiter".to_string())?;
+        let length = remaining[..colon]
+            .parse::<usize>()
+            .map_err(|_| "invalid argument length".to_string())?;
+        let contents = &remaining[colon + 1..];
+        if contents.len() < length {
+            return Err("argument is shorter than its encoded length".to_string());
+        }
+        if !contents.is_char_boundary(length) {
+            return Err("argument length splits a UTF-8 character".to_string());
+        }
+
+        let (arg, rest) = contents.split_at(length);
+        args.push(arg.to_string());
+        remaining = rest;
+    }
+
+    Ok(args)
+}
+
+fn outer_feature_selection_args() -> Vec<String> {
+    match env::var(UI_TEST_FEATURE_ARGS_ENV) {
+        Ok(encoded) => decode_feature_selection_args(&encoded).unwrap_or_else(|error| {
+            panic!("could not decode {}: {}", UI_TEST_FEATURE_ARGS_ENV, error)
+        }),
+        Err(env::VarError::NotPresent) => Vec::new(),
+        Err(env::VarError::NotUnicode(_)) => {
+            panic!("{} is not valid UTF-8", UI_TEST_FEATURE_ARGS_ENV)
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum ToolchainVersion {
     /// The version listed as our MSRV (ie, the `package.rust-version` key in
@@ -123,6 +169,7 @@ impl UiTestRunner {
         let mut rlib_path = None;
         let mut derive_lib_path = None;
         let mut static_assertions_path = None;
+        let mut zerocopy_features = None;
 
         let mut command = Command::new("cargo");
         command.current_dir(workspace_root.clone());
@@ -194,15 +241,23 @@ impl UiTestRunner {
             ]);
         }
 
-        let mut args = vec![
-            "build",
-            "-p",
-            "zerocopy",
-            "--features",
-            "derive",
-            "--tests",
-            "--message-format=json",
-        ];
+        command.args(["build", "-p", "zerocopy"]);
+
+        // cargo-zerocopy captured these options before starting the outer
+        // Cargo command. Applying them here makes default features,
+        // `--no-default-features`, explicit features, and `--all-features`
+        // behave identically in both builds.
+        //
+        // CI requires zerocopy-derive to define no features. If that changes,
+        // its package-local feature arguments will need an explicit mapping
+        // before they can be applied to this nested zerocopy build.
+        let feature_selection_args = outer_feature_selection_args();
+        command.args(&feature_selection_args);
+
+        // Both UI suites need the derive proc macro artifact. Cargo feature
+        // options are additive, so this retains the outer selection while
+        // structurally adding the one feature required by the harness.
+        command.args(["--features", "derive", "--tests", "--message-format=json"]);
 
         // `cargo-zerocopy` uses `ZEROCOPY_UI_TEST_TARGET` to pass the value of
         // any `--target` CLI argument. Here, we use this target when building
@@ -210,11 +265,8 @@ impl UiTestRunner {
         let target = env::var("ZEROCOPY_UI_TEST_TARGET").ok();
 
         if let Some(ref t) = target {
-            args.push("--target");
-            args.push(t);
+            command.args(["--target", t]);
         }
-
-        command.args(args);
 
         let output = command.output().expect("Failed to execute cargo build for artifacts");
         if !output.status.success() {
@@ -239,9 +291,17 @@ impl UiTestRunner {
                 if artifact.target.name == "zerocopy"
                     && artifact.target.kind.iter().any(|k| k == "lib")
                 {
+                    let features = artifact.features.clone();
                     for file in artifact.filenames {
                         if file.extension() == Some("rlib") {
+                            if let Some(ref previous) = zerocopy_features {
+                                assert_eq!(
+                                    previous, &features,
+                                    "zerocopy artifacts used different features"
+                                );
+                            }
                             rlib_path = Some(file);
+                            zerocopy_features = Some(features.clone());
                         }
                     }
                 } else if artifact.target.name == "zerocopy-derive"
@@ -269,6 +329,14 @@ impl UiTestRunner {
         let derive_lib_path = derive_lib_path.expect("failed to find zerocopy_derive proc-macro");
         let static_assertions_path =
             static_assertions_path.expect("failed to find static_assertions rlib");
+        let mut zerocopy_features =
+            zerocopy_features.expect("failed to find zerocopy artifact features");
+        zerocopy_features.sort();
+        zerocopy_features.dedup();
+        assert!(
+            zerocopy_features.iter().any(|feature| feature == "derive"),
+            "UI artifact build did not enable its required derive feature"
+        );
 
         let mut build_command = Command::new("rustup");
 
@@ -318,6 +386,13 @@ impl UiTestRunner {
             command.arg(format!("--rustc-arg={}", arg));
         }
 
+        // Cargo's artifact message is authoritative for the complete feature
+        // closure, including default, transitive, and implicit dependency
+        // features. Give each fixture exactly the cfgs Cargo gave zerocopy.
+        for feature in &zerocopy_features {
+            command.arg(format!("--rustc-arg=--cfg=feature={:?}", feature));
+        }
+
         command.env("ZEROCOPY_RLIB_PATH", rlib_path);
         command.env("ZEROCOPY_DERIVE_LIB_PATH", derive_lib_path);
         command.env("ZEROCOPY_STATIC_ASSERTIONS_PATH", static_assertions_path);
@@ -354,5 +429,34 @@ impl UiTestRunner {
 
         let mut proc = command.spawn().expect("Failed to spawn ui-runner");
         assert!(proc.wait().unwrap().success(), "ui-runner failed");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::decode_feature_selection_args;
+
+    #[test]
+    fn decodes_cargo_zerocopy_feature_selection_protocol() {
+        assert_eq!(
+            decode_feature_selection_args("14:--all-features10:--features19:derive,simd-nightly")
+                .unwrap(),
+            vec![
+                "--all-features".to_string(),
+                "--features".to_string(),
+                "derive,simd-nightly".to_string(),
+            ]
+        );
+        assert_eq!(
+            decode_feature_selection_args("0:1::2:μ").unwrap(),
+            vec!["".to_string(), ":".to_string(), "μ".to_string()]
+        );
+    }
+
+    #[test]
+    fn rejects_malformed_feature_selection_protocol() {
+        for encoded in &[":", "x:a", "2:a", "1:μ"] {
+            assert!(decode_feature_selection_args(encoded).is_err());
+        }
     }
 }
