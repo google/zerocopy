@@ -783,7 +783,7 @@ jobs:
         run: |
           set -eo pipefail
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
-          echo "RUSTFLAGS=$RUSTFLAGS" >> $GITHUB_ENV
+          echo "RUSTFLAGS=$RUSTFLAGS" >> "$GITHUB_ENV"
       - name: Check big endian for aarch64_be-unknown-linux-gnu target
         run: |
           set -eo pipefail
@@ -815,7 +815,7 @@ jobs:
         run: |
           set -eo pipefail
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
-          echo "RUSTFLAGS=$RUSTFLAGS" >> $GITHUB_ENV
+          echo "RUSTFLAGS=$RUSTFLAGS" >> "$GITHUB_ENV"
       # FIXME(#2906): We do this because `cargo vendor` doesn't currently
       # support vendoring std's dependencies (required in order to build std
       # from source, as we do here). As a workaround, we simply nuke the cargo
@@ -1059,14 +1059,28 @@ jobs:
       # WARNING: This name is load-bearing! It's how GitHub's settings UI configures which jobs
       # to block on. DO NOT change this name without updating the settings UI to match.
       name: All checks succeeded (ci.yml)
-      # On failure, we run and unconditionally exit with a failing status code.
-      # On success, this job is skipped. Jobs skipped using `if:` are considered
-      # to have succeeded:
-      #
-      # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
-      if: failure()
+      # `failure()` is false when a dependency is cancelled or skipped, and a
+      # skipped required check counts as success. Always run and inspect every
+      # dependency result explicitly so new conditions fail closed.
+      if: ${{ always() }}
       runs-on: ubuntu-latest
+      permissions:
+        contents: read
       needs: [build_test, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env]
       steps:
-        - name: Mark the job as failed
+        # `cancelled()` is only legal in an `if` expression; GitHub rejects the
+        # entire workflow if it appears in an action input. Keep this guard
+        # before checkout so a cancellation observed as the gate starts becomes
+        # a failed required check instead of a skipped successful check. The
+        # structural check in `ci/check_job_dependencies.sh` requires it.
+        - name: Reject workflow cancellation
+          if: ${{ cancelled() }}
           run: exit 1
+        - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+          with:
+            persist-credentials: false
+        - name: Require every dependency to succeed
+          uses: ./.github/actions/require-successful-jobs
+          with:
+            needs-json: ${{ toJSON(needs) }}
+            allowed-skipped-jobs: '[]'
