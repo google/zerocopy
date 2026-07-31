@@ -1,6 +1,9 @@
 # Anneal
 
-<img src="docs/images/logo.svg" width="100%">
+<img
+  src="https://raw.githubusercontent.com/google/zerocopy/main/anneal/v1/docs/images/logo.svg"
+  width="100%"
+>
 
 <p align="center"><em>logo by <a href="https://www.instagram.com/tinyneonspark">tinyneonspark</a></em></p>
 
