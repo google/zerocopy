@@ -261,6 +261,12 @@ error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
+error: zerocopy derives do not support combining `repr(C)` with an integer representation
+   --> $DIR/enum.rs:692:11
+    |
+692 | #[repr(C, u8)]
+    |           ^^
+
 error: generic parameters may not be used in const operations
    --> $DIR/enum.rs:677:7
     |
@@ -413,7 +419,7 @@ error[E0277]: the trait bound `(): PaddingFree<IntoBytes7, 1_usize>` is not sati
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 52 previous errors
+error: aborting due to 53 previous errors
 
 Some errors have detailed explanations: E0277, E0552, E0565, E0566, E0658.
 For more information about an error, try `rustc --explain E0277`.
