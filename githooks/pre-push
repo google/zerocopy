@@ -52,9 +52,14 @@ GLOBIGNORE="./*/@(release_crate_version|check_todo|release_anneal_version).sh" #
 for f in ./ci/*; do
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done
-# We don't want to run release_crate_version here, and zerocopy/ci/check_fmt.sh
-# is called by ci/check_fmt.sh above rather than directly.
-GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt).sh"
+# release_crate_version mutates version and lockfile state, so it does not
+# belong in a read-only pre-push hook. check_fmt.sh is called through the
+# repository-wide ci/check_fmt.sh rather than directly; feature_profile.sh and
+# feature_policy.jq are exercised directly by check_all_toolchains_tested.sh.
+# Keep this exemption synchronized with that checker: adding a helper here
+# without a checker-owned invocation would let a CI policy script silently go
+# unused.
+GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt|feature_profile).sh:./zerocopy/ci/feature_policy.jq"
 for f in ./zerocopy/ci/*; do
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done
