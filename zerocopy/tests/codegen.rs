@@ -44,6 +44,7 @@ fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
             .args([
                 "+nightly",
                 "asm",
+                "--locked",
                 "--quiet",
                 "-p",
                 "zerocopy",

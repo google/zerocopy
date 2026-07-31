@@ -241,7 +241,7 @@ impl UiTestRunner {
             ]);
         }
 
-        command.args(["build", "-p", "zerocopy"]);
+        command.args(["build", "--locked", "--offline", "-p", "zerocopy"]);
 
         // cargo-zerocopy captured these options before starting the outer
         // Cargo command. Applying them here makes default features,
@@ -353,6 +353,7 @@ impl UiTestRunner {
             "stable",
             "cargo",
             "build",
+            "--locked",
             "--manifest-path=tools/ui-runner/Cargo.toml",
             "--message-format=json",
         ]);
