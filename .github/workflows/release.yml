@@ -15,198 +15,229 @@ on:
     paths:
       - 'zerocopy/Cargo.toml'
       - 'zerocopy/zerocopy-derive/Cargo.toml'
+  # A manual run reconciles either current main or an exact older main commit.
+  # This remains usable after artifacts expire or main advances following a
+  # partial release. The job verifies that the selected SHA belongs to main.
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'Exact historical main SHA (default: current main)'
+        required: false
 
-# We set no permissions at the top level, and instead set them granularly for
-# each job.
 permissions: {}
 
-concurrency:
-  group: release
-  cancel-in-progress: false
+env:
+  CARGO_NET_RETRY: "10"
+  CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
 
 jobs:
   check-version:
-    name: Check if version was updated
+    name: Resolve release version
+    if: |
+      github.repository == 'google/zerocopy' &&
+      github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    # Don't run this on forks.
-    if: github.repository == 'google/zerocopy'
+    permissions:
+      contents: read
     outputs:
       changed: ${{ steps.check.outputs.changed }}
       version: ${{ steps.check.outputs.version }}
       prerelease: ${{ steps.check.outputs.prerelease }}
-    env:
-      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
+      sha: ${{ steps.source.outputs.sha }}
     steps:
-      - name: Checkout
+      - name: Checkout exact release source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
-          fetch-depth: 0 # Fetch all history for version comparison and tags
-
-      # Checks whether zerocopy's version (in `zerocopy/Cargo.toml`) or
-      # zerocopy-derive's version (in `zerocopy/zerocopy-derive/Cargo.toml`) were
-      # updated in this commit.
-      # We check below to make sure they're the same; the point of checking both
-      # (which is unnecessary if the commit correctly updates both) is to catch
-      # situations where one is updated – we want to catch it regardless of
-      # *which* one is updated.
-      - name: Determine if version was updated
-        id: check
-        run: |
-          set -eo pipefail
-
-          function cargo_zc {
-            # This helper lets the first commit which introduces the nested
-            # zerocopy/ layout compare versions against its parent commit, which
-            # still has cargo.sh at the repository root.
-            if [[ -x zerocopy/cargo.sh ]]; then
-              (cd zerocopy && ./cargo.sh "$@")
-            else
-              ./cargo.sh "$@"
-            fi
-          }
-
-          # Get current versions
-          #
-          # Pre-install toolchains so `rustup` output isn't piped to `jq`.
-          cargo_zc +stable help > /dev/null
-          CUR_VER_ZC=$(cargo_zc +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy").version')
-          CUR_VER_DERIVE=$(cargo_zc +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy-derive").version')
-
-          # Get previous versions using cargo metadata by temporarily checking it out
-          git checkout -q HEAD^
-          # Pre-install toolchains so `rustup` output isn't piped to `jq`.
-          cargo_zc +stable help > /dev/null
-          PREV_VER_ZC=$(cargo_zc +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy").version')
-          PREV_VER_DERIVE=$(cargo_zc +stable metadata -q --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy-derive").version')
-          git checkout -q -
-
-          if [ "$CUR_VER_ZC" != "$PREV_VER_ZC" ] || [ "$CUR_VER_DERIVE" != "$PREV_VER_DERIVE" ]; then
-            echo "Version change detected."
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "version=$CUR_VER_ZC" >> $GITHUB_OUTPUT
-
-            if [[ "${CUR_VER_ZC%+*}" == *-* ]]; then
-              echo "prerelease=true" >> $GITHUB_OUTPUT
-            else
-              echo "prerelease=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "Version unchanged."
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-
-  release:
-    name: Release to crates.io and GitHub
-    needs: check-version
-    if: needs.check-version.outputs.changed == 'true'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: zerocopy
-    # This environment is configured to require manual review before executing
-    # this job.
-    environment: release
-    permissions:
-      contents: write # required to create a git tag and a GitHub Release
-      id-token: write # required to publish to crates.io using OIDC
-    env:
-      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
+          ref: ${{ github.event.inputs.sha || github.sha }}
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Sanity check versions
-        run: ./ci/check_versions.sh
-
-      - name: Dry-run publish
-        run: |
-          set -eo pipefail
-          # Temporarily disable vendoring so that `cargo publish` can see the
-          # live registry and resolve workspace dependencies correctly.
-          mv .cargo/config.toml .cargo/config.toml.bak
-          ./cargo.sh +stable publish --dry-run --allow-dirty --package zerocopy-derive --registry crates-io
-          mv .cargo/config.toml.bak .cargo/config.toml
-
-      - name: Check if tag already exists
+      - name: Verify exact main source
+        id: source
         env:
-          VERSION: ${{ needs.check-version.outputs.version }}
+          MAIN_SHA: ${{ github.sha }}
+          SOURCE_SHA: ${{ github.event.inputs.sha || github.sha }}
         run: |
-          set -eo pipefail
-          TAG="v$VERSION"
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Error: Tag $TAG already exists." >&2
+          set -euo pipefail
+          if ! [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Release source must be a full lowercase commit SHA" >&2
             exit 1
           fi
+          if [ "$(git rev-parse HEAD)" != "$SOURCE_SHA" ]; then
+            echo "Checkout did not resolve the requested release SHA" >&2
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor "$SOURCE_SHA" "$MAIN_SHA"; then
+            echo "Release source is not an ancestor of canonical main" >&2
+            exit 1
+          fi
+          echo "sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
 
-      - name: Create git tag
+      # Compare with the state before the entire push, not HEAD^. A push can
+      # contain multiple commits, and a version bump need not be the last one.
+      # The shared helper also asserts that both coupled crate versions agree.
+      - name: Determine whether a release is required
+        id: check
+        env:
+          BEFORE: ${{ github.event.before || '0000000000000000000000000000000000000000' }}
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/check-crate-version-change.py \
+            --before "$BEFORE" \
+            --manifest zerocopy/Cargo.toml \
+            --manifest zerocopy/zerocopy-derive/Cargo.toml \
+            --require-same-version \
+            > release-version.json
+          cat release-version.json
+          echo "changed=$(jq -r .changed release-version.json)" \
+            >> "$GITHUB_OUTPUT"
+          echo "version=$(jq -r .version release-version.json)" \
+            >> "$GITHUB_OUTPUT"
+          echo "prerelease=$(jq -r .prerelease release-version.json)" \
+            >> "$GITHUB_OUTPUT"
+
+  prepare-release:
+    name: Package and inspect release crates
+    needs: check-version
+    if: needs.check-version.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      # This job has no release credential. It executes every packaging and
+      # validation operation that can safely happen before manual approval.
+      # Only `.crate` bytes cross the trust boundary. The privileged job builds
+      # its own plan from trusted workflow constants, reproduces each archive
+      # from the same SHA, and refuses to publish if any byte differs.
+      - name: Checkout exact release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.check-version.outputs.sha }}
+          persist-credentials: false
+
+      - name: Validate coordinated versions
+        working-directory: zerocopy
+        run: ./ci/check_versions.sh
+
+      # This same script runs for every PR in ci.yml. Keep its dependency order
+      # coordinated with the trusted plan in the publication job below; the
+      # script explains why the consumer package uses a local patch.
+      - name: Create deterministic crate archives
+        working-directory: zerocopy
         env:
           VERSION: ${{ needs.check-version.outputs.version }}
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
         run: |
-          set -eo pipefail
-          TAG="v$VERSION"
-          git config user.name "Google PR Creation Bot"
-          git config user.email "github-pull-request-creation-bot@google.com"
-          git tag -a "$TAG" -m "Release $TAG"
-          git push https://x-access-token:$GH_TOKEN@github.com/$GH_REPO.git "$TAG"
-        
+          set -euo pipefail
+          ./ci/package_release_crates.sh
+          mkdir release-crates
+          cp \
+            "target/by-toolchain/stable/package/zerocopy-derive-${VERSION}.crate" \
+            "target/by-toolchain/stable/package/zerocopy-${VERSION}.crate" \
+            release-crates/
+
+      - name: Upload prepared release archives
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: core-crates-${{ needs.check-version.outputs.sha }}
+          path: zerocopy/release-crates/*.crate
+          if-no-files-found: error
+          # Release approval can be delayed. These archives are small, and a
+          # long lifetime keeps the originally reviewed bytes resumable.
+          retention-days: 90
+          # A GitHub rerun reuses its run ID and artifact namespace.
+          overwrite: true
+
+  release:
+    name: Reconcile crates.io and GitHub release
+    needs: [check-version, prepare-release]
+    if: needs.check-version.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    # Serialize retries of one version, but do not let an old run awaiting
+    # approval block a later version. This replaces the old workflow-wide
+    # `release` lock which caused releases to queue behind stale approvals.
+    concurrency:
+      group: core-crates-${{ needs.check-version.outputs.version }}
+      cancel-in-progress: false
+    environment: release
+    permissions:
+      actions: read
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout exact release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.check-version.outputs.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Download prepared release archives
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: core-crates-${{ needs.check-version.outputs.sha }}
+          # Keep downloaded inputs outside the `zerocopy` package. Cargo
+          # includes unignored files under the package root, so placing a
+          # reference archive there would change the reproduced archive.
+          path: release-crates
+
+      # Do not accept commands, package names, paths, tags, or repositories
+      # from the unprivileged artifact-producing job. This plan is constructed
+      # from trusted workflow constants and the exact privileged checkout; only
+      # the archive bytes came from the earlier job. Keep this dependency order
+      # coordinated with zerocopy/ci/package_release_crates.sh.
+      - name: Create trusted release plan
+        env:
+          PRERELEASE: ${{ needs.check-version.outputs.prerelease }}
+          RELEASE_SHA: ${{ needs.check-version.outputs.sha }}
+          VERSION: ${{ needs.check-version.outputs.version }}
+        run: |
+          set -euo pipefail
+          PRERELEASE_ARG=()
+          if [ "$PRERELEASE" = true ]; then
+            PRERELEASE_ARG+=(--prerelease)
+          fi
+          python3 .github/scripts/create-crates-release-plan.py \
+            --repository "$GITHUB_REPOSITORY" \
+            --tag "v$VERSION" \
+            --sha "$RELEASE_SHA" \
+            --workflow release.yml \
+            --environment release \
+            "${PRERELEASE_ARG[@]}" \
+            --cargo-command zerocopy/cargo.sh \
+            --cargo-command +stable \
+            --package \
+            "zerocopy-derive=zerocopy/zerocopy-derive/Cargo.toml=release-crates/zerocopy-derive-${VERSION}.crate" \
+            --package \
+            "zerocopy=zerocopy/Cargo.toml=release-crates/zerocopy-${VERSION}.crate" \
+            --output release-plan.json
+          jq . release-plan.json
+
+      # crates.io must configure this exact trusted publisher separately for
+      # both `zerocopy-derive` and `zerocopy`: repository google/zerocopy,
+      # workflow release.yml, environment release. A configuration for one
+      # crate does not authorize the other.
       - name: Authenticate with crates.io
         uses: rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18 # v1.0.5
         id: auth
 
-      # NOTE: Relies on OIDC to be configured for this GHA workflow.
-      - name: Publish zerocopy-derive
+      # The reconciler is deliberately state-based: matching published crates,
+      # tags, and releases are accepted; mismatches fail; absent state is
+      # created in dependency order. It creates the tag only after every crate
+      # is public, so interruption at any earlier point is safely resumable.
+      - name: Reconcile release state
         env:
           CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
-        run: |
-          set -eo pipefail
-          mv .cargo/config.toml .cargo/config.toml.bak
-          ./cargo.sh +stable publish --allow-dirty --package zerocopy-derive --registry crates-io
-          mv .cargo/config.toml.bak .cargo/config.toml
-
-      # This should *technically* be unnecessary since `cargo publish` blocks
-      # until the published crate is available in the API, but we have observed
-      # this failing occasionally, presumably due to eventual consistency. 60
-      # seconds is likely overkill, but better safe than sorry.
-      - name: Wait for crates.io index propagation
-        run: sleep 60
-
-      # NOTE: Relies on OIDC to be configured for this GHA workflow.
-      - name: Publish zerocopy
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
-        run: |
-          set -eo pipefail
-          mv .cargo/config.toml .cargo/config.toml.bak
-
-          # Dry-run first to catch any last-minute issues now that
-          # `zerocopy-derive` is on crates.io.
-          ./cargo.sh +stable publish --dry-run --allow-dirty --package zerocopy --registry crates-io
-
-          ./cargo.sh +stable publish --allow-dirty --package zerocopy --registry crates-io
-          mv .cargo/config.toml.bak .cargo/config.toml
-
-      - name: Create GitHub Release
-        env:
-          VERSION: ${{ needs.check-version.outputs.version }}
-          PRERELEASE: ${{ needs.check-version.outputs.prerelease }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -eo pipefail
-          TAG="v$VERSION"
-          ARGS=(
-            "$TAG"
-            --generate-notes
-          )
-          if [ "$PRERELEASE" = "true" ]; then
-            ARGS+=(--prerelease)
-          else
-            # Only set --latest if it's not a prerelease.
-            ARGS+=(--latest)
-          fi
-          gh release create "${ARGS[@]}"
+          set -euo pipefail
+          restore_config() {
+            if [ -e zerocopy/.cargo/config.toml.release ]; then
+              mv zerocopy/.cargo/config.toml.release \
+                zerocopy/.cargo/config.toml
+            fi
+          }
+          trap restore_config EXIT
+          mv zerocopy/.cargo/config.toml \
+            zerocopy/.cargo/config.toml.release
+          python3 .github/scripts/reconcile-crates-release.py \
+            release-plan.json --root .
