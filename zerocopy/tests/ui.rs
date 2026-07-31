@@ -23,12 +23,17 @@
 use testutil::UiTestRunner;
 
 #[test]
-#[cfg_attr(miri, ignore)]
+// UI fixtures spawn external compiler processes, so Miri and source coverage
+// must not execute them. Ignoring coverage here lets CI use an unfiltered
+// default `cargo test` without attributing the subprocess's code to the test
+// process. Diagnostic snapshots exist only for the three pinned toolchains;
+// cargo-zerocopy emits the final cfg only for those semantic descriptors.
+#[cfg_attr(
+    any(miri, coverage_nightly, not(__ZEROCOPY_INTERNAL_USE_ONLY_UI_TEST_TOOLCHAIN)),
+    ignore
+)]
 fn test_ui() {
-    // FIXME: Instead of manually passing `--features derive` when building, we
-    // should just pass whatever is passed to us.
     UiTestRunner::new()
-        .rustc_arg("--cfg=feature=\"derive\"") // For tests that check #cfg(feature = "derive")
         .rustc_arg("-Wwarnings") // To reflect typical user experience in stderr
         .run();
 }
