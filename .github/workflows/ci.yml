@@ -694,7 +694,9 @@ jobs:
         run: |
           set -eo pipefail
           sudo apt install -qq llvm
-          ./cargo.sh +nightly install --quiet cargo-show-asm
+          # Snapshot generation calls this same helper, so generation and
+          # validation cannot silently select different tool releases.
+          bash ../tools/install-cargo-show-asm.sh
           RUSTFLAGS="$RUSTFLAGS -Awarnings" ./cargo.sh +nightly test \
             --package zerocopy \
             --target x86_64-unknown-linux-gnu \

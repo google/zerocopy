@@ -57,16 +57,20 @@ jobs:
         env:
           TOOLCHAIN: ${{ matrix.toolchain }}
         run: |
+          set -eo pipefail
+
           if [ "$TOOLCHAIN" == stable ]; then
-            # Install whatever the latest stable release is. This has the side
-            # effect of determining the latest stable release so that we can
-            # update `zerocopy/Cargo.toml`.
-            echo "ZC_TARGET_TOOLCHAIN=stable" >> $GITHUB_ENV
+            # Hosted runners may have an older `stable` toolchain installed.
+            # Update it explicitly so that this roller means "latest stable",
+            # independent of changes to the runner image.
+            rustup update stable --no-self-update
+            echo "ZC_TARGET_TOOLCHAIN=stable" >> "$GITHUB_ENV"
           else
             # Use yesterday's date (`-d '-1 day'`) so we're sure the nightly for
             # that date has actually been published yet. This allows us to not
             # worry about what time of day this job runs.
-            echo "ZC_TARGET_TOOLCHAIN=nightly-$(date -d '-1 day' +%Y-%m-%d)" >> $GITHUB_ENV
+            echo "ZC_TARGET_TOOLCHAIN=nightly-$(date -d '-1 day' +%Y-%m-%d)" \
+              >> "$GITHUB_ENV"
           fi
 
       - name: Update files
@@ -75,25 +79,30 @@ jobs:
         run: |
           set -eo pipefail
 
-          function validate-file {
-            REGEX="$1"
-            FILE="$2"
-            grep "$REGEX" "$FILE" >/dev/null || { echo "Failed to find line matching regex '$REGEX' in $FILE" >&2; exit 1; }
-          }
-
           function update-pinned-version {
             VERSION_NAME="$1"
             VERSION="$2"
             ZEROCOPY_FEATURES="$3"
 
-            # Confirm that `zerocopy/Cargo.toml` lists the pinned version in the expected
-            # format. This is a prerequisite for the subsequent `sed` command.
+            # Confirm that `zerocopy/Cargo.toml` lists exactly one pinned
+            # version in the expected format. This is a prerequisite for the
+            # subsequent `sed` command. Requiring exactly one match makes a
+            # future manifest reorganization fail visibly instead of silently
+            # editing only some of the version declarations.
             REGEX="^pinned-$VERSION_NAME = \"[a-z0-9\.-]*\"$"
-            validate-file "$REGEX" zerocopy/Cargo.toml
-            sed -i -e "s/$REGEX/pinned-$VERSION_NAME = \"$VERSION\"/" zerocopy/Cargo.toml
+            MATCH_COUNT="$(grep -Ec "$REGEX" zerocopy/Cargo.toml || true)"
+            if [ "$MATCH_COUNT" -ne 1 ]; then
+              echo "Expected exactly one line matching '$REGEX' in" \
+                "zerocopy/Cargo.toml; found $MATCH_COUNT" >&2
+              exit 1
+            fi
+            sed -i -e \
+              "s/$REGEX/pinned-$VERSION_NAME = \"$VERSION\"/" \
+              zerocopy/Cargo.toml
 
-            # Confirm that the update didn't bork `zerocopy/Cargo.toml`.
-            validate-file "$REGEX" zerocopy/Cargo.toml
+            # Confirm that the update produced precisely the requested value.
+            grep -Fx "pinned-$VERSION_NAME = \"$VERSION\"" \
+              zerocopy/Cargo.toml >/dev/null
 
             # Run `cargo fix` in case there are any warnings or errors
             # introduced on this new toolchain that we can fix automatically.
@@ -106,14 +115,24 @@ jobs:
           }
 
           if [ "$TOOLCHAIN" == stable ]; then
-            STABLE_VERSION="$(cargo +stable version | sed -e 's/^cargo \([0-9\.]*\) .*/\1/')"
-            update-pinned-version stable "$STABLE_VERSION" '--features __internal_use_only_features_that_work_on_stable'
+            STABLE_VERSION="$(
+              rustc +stable --version --verbose \
+                | sed -nE 's/^release: ([0-9]+\.[0-9]+\.[0-9]+)$/\1/p'
+            )"
+            if ! [[ "$STABLE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Could not determine the latest stable rustc version" >&2
+              exit 1
+            fi
+            update-pinned-version stable "$STABLE_VERSION" \
+              '--features __internal_use_only_features_that_work_on_stable'
 
             # Used as part of the branch name created by the "Submit PR" step.
-            echo "ZC_VERSION_FOR_BRANCH_NAME=$STABLE_VERSION" >> $GITHUB_ENV
+            echo "ZC_VERSION_FOR_BRANCH_NAME=$STABLE_VERSION" \
+              >> "$GITHUB_ENV"
           else
             update-pinned-version nightly "$ZC_TARGET_TOOLCHAIN" --all-features
-            echo "ZC_VERSION_FOR_BRANCH_NAME=$ZC_TARGET_TOOLCHAIN" >> $GITHUB_ENV
+            echo "ZC_VERSION_FOR_BRANCH_NAME=$ZC_TARGET_TOOLCHAIN" \
+              >> "$GITHUB_ENV"
           fi
 
       - name: Submit PR
@@ -142,9 +161,12 @@ jobs:
       contents: read
       pull-requests: write # Required to create pull requests
     strategy:
+      # A failure on one release branch must not cancel otherwise-independent
+      # rolls for the other branches.
+      fail-fast: false
       matrix:
         branch: ["main", "v0.7.x"]
-    name: Roll pinned Kani version
+    name: Roll pinned Kani version on ${{ matrix.branch }}
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -154,14 +176,42 @@ jobs:
       - run: |
           set -eo pipefail
 
-          # NOTE: If this is failing, try adding the `cargo add` command on a
-          # separate line to see its output. As is, we pipe stdout and stderr to
-          # `grep`, which will eat any error messages.
-          KANI_LATEST=$(cargo add --dry-run kani-verifier 2>&1 | grep -oh '[0-9]\+\.[0-9]\+\.[0-9]\+')
-          echo "ZC_KANI_LATEST=$KANI_LATEST" >> $GITHUB_ENV
+          # `cargo add --dry-run` prints versions of transitive dependencies as
+          # well as the selected Kani version. Parsing every SemVer from that
+          # output once produced a multi-line GITHUB_ENV value and broke this
+          # roller. `cargo search --limit 1` has one anchored record for the
+          # named package; fail if its format ever changes.
+          KANI_SEARCH="$(
+            cargo search kani-verifier \
+              --registry crates-io \
+              --limit 1 \
+              --color never
+          )"
+          KANI_LATEST="$(
+            sed -nE \
+              's/^kani-verifier = "([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' \
+              <<< "$KANI_SEARCH"
+          )"
+          if ! [[ "$KANI_LATEST" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Could not parse a Kani version from: $KANI_SEARCH" >&2
+            exit 1
+          fi
+          echo "ZC_KANI_LATEST=$KANI_LATEST" >> "$GITHUB_ENV"
 
           # Update the `kani-version:` argument in-place.
-          sed -i -E -e "s/^( *kani-version:)( [0-9]+\.[0-9]+\.[0-9]+)/\1 $KANI_LATEST/" .github/workflows/ci.yml
+          MATCH_COUNT="$(
+            grep -Ec '^ *kani-version: [0-9]+\.[0-9]+\.[0-9]+$' \
+              .github/workflows/ci.yml || true
+          )"
+          if [ "$MATCH_COUNT" -ne 1 ]; then
+            echo "Expected exactly one Kani version in ci.yml; found $MATCH_COUNT" >&2
+            exit 1
+          fi
+          sed -i -E -e \
+            "s/^( *kani-version:)( [0-9]+\.[0-9]+\.[0-9]+)/\1 $KANI_LATEST/" \
+            .github/workflows/ci.yml
+          grep -E "^ *kani-version: $KANI_LATEST$" \
+            .github/workflows/ci.yml >/dev/null
       - name: Submit PR
         id: submit-pr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.0 # zizmor: ignore[superfluous-actions]
