@@ -334,7 +334,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: Immutable` is not satisfied
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and 137 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -360,7 +360,7 @@ error[E0277]: the trait bound `UnsafeCell<u8>: Immutable` is not satisfied
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and 137 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -391,7 +391,7 @@ help: the trait `TryFromBytes` is not implemented for `NotTryFromBytes`
               (A, B, C, D, E, F)
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
-            and 157 others
+            and $OTHER_TYPES others
     = help: see issue #48214
     = note: the full name for the type has been written to '/long-type-HASH.txt'
     = note: consider using `--verbose` to print the full type name to the console
@@ -422,7 +422,7 @@ help: the trait `TryFromBytes` is not implemented for `NotFromZeros`
               (A, B, C, D, E, F)
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
-            and 157 others
+            and $OTHER_TYPES others
     = help: see issue #48214
     = note: the full name for the type has been written to '/long-type-HASH.txt'
     = note: consider using `--verbose` to print the full type name to the console
@@ -453,7 +453,7 @@ help: the trait `FromZeros` is not implemented for `NotFromZeros`
               (A, B, C, D, E, F)
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
-            and 142 others
+            and $OTHER_TYPES others
     = help: see issue #48214
     = note: the full name for the type has been written to '/long-type-HASH.txt'
     = note: consider using `--verbose` to print the full type name to the console
@@ -479,7 +479,7 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
               (A, B, C, D, E, F)
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
-            and 79 others
+            and $OTHER_TYPES others
     = help: see issue #48214
     = note: the full name for the type has been written to '/long-type-HASH.txt'
     = note: consider using `--verbose` to print the full type name to the console
@@ -594,7 +594,7 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
               (A, B, C, D, E, F)
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
-            and 79 others
+            and $OTHER_TYPES others
 note: required for `FooU8` to implement `FromBytes`
    --> $DIR/enum.rs:247:10
     |
