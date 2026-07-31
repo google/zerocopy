@@ -30,6 +30,10 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
+  # All yq consumers install one parser version. `ensure-yq.sh` has the same
+  # default for local hooks and rejects a mismatch here, so changing either
+  # side of this cross-file contract fails CI until both are updated.
+  YQ_VERSION: "4.44.1"
   # These are bounded, client-native retries for recognized transient download
   # failures. They never rerun a Cargo or rustup command, so deterministic build
   # and test failures still fail immediately. Keep these values coordinated
@@ -809,6 +813,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Check GitHub Actions
     steps:
+      - name: Install yq (for YAML parsing)
+        # Keep this pin coordinated with `ensure-yq.sh`.
+        # FIXME(https://github.com/mikefarah/yq/issues/2587): Remove
+        # `GONOSUMDB` once this bug is fixed.
+        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v${YQ_VERSION}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -862,9 +871,10 @@ jobs:
     name: Check CI feature and matrix invariants
     steps:
       - name: Install yq (for YAML parsing)
+        # Keep this pin coordinated with `ensure-yq.sh`.
         # FIXME(https://github.com/mikefarah/yq/issues/2587): Remove
         # `GONOSUMDB` once this bug is fixed.
-        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v4.44.1
+        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v${YQ_VERSION}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -886,9 +896,10 @@ jobs:
     name: Check all-jobs-succeeded depends on all jobs
     steps:
       - name: Install yq (for YAML parsing)
+        # Keep this pin coordinated with `ensure-yq.sh`.
         # FIXME(https://github.com/mikefarah/yq/issues/2587): Remove
         # `GONOSUMDB` once this bug is fixed.
-        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v4.44.1
+        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v${YQ_VERSION}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -914,9 +925,10 @@ jobs:
     name: Run Git hooks
     steps:
       - name: Install yq (for YAML parsing)
+        # Keep this pin coordinated with `ensure-yq.sh`.
         # FIXME(https://github.com/mikefarah/yq/issues/2587): Remove
         # `GONOSUMDB` once this bug is fixed.
-        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v4.44.1
+        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v${YQ_VERSION}
       - name: Install ripgrep
         run: |
          sudo apt-get update
@@ -966,7 +978,9 @@ jobs:
       image_artifact_id: ${{ steps.upload_image.outputs.artifact-id }}
     permissions:
       contents: read
-      packages: write # required to push docker caches to ghcr.io
+      # This job runs on PR and merge-group source, so it may consume but never
+      # mutate the shared cache. `publish-ci-cache.yml` owns the write token.
+      packages: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -974,18 +988,6 @@ jobs:
 
       - name: Set up Docker
         uses: ./.github/actions/setup-docker-with-retry
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Generate sanitized Docker tag
-        id: docker_tag
-        env:
-          REF_NAME: ${{ github.ref_name }}
-        shell: bash
-        run: |
-          echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
 
       - name: Build, cache, and export image
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
@@ -999,12 +1001,7 @@ jobs:
           # upload-file-artifact's direct (non-ZIP) transfer. This path and tag
           # are coupled to the workflow-level producer/consumer values above.
           outputs: type=docker,dest=${{ runner.temp }}/${{ env.ZC_CI_IMAGE_ARCHIVE }},compression=gzip
-          cache-from: |
-            type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:${{ steps.docker_tag.outputs.tag }}
-            type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
-          # External pull requests have read-only package permissions, so they
-          # can consume GHCR caches but cannot export updated cache layers.
-          cache-to: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && format('type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:{0},mode=max', steps.docker_tag.outputs.tag) || '' }}
+          cache-from: type=registry,ref=ghcr.io/google/zerocopy/zerocopy-ci-cache:main
 
       # Uploading is the producer's final gate. Matrix jobs cannot start until
       # this succeeds and the job exposes its artifact ID, so no runner is spent

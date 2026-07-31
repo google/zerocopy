@@ -108,14 +108,26 @@ failed=0
 # and Python sources already have their own repository checks, and enabling
 # actionlint's optional external integrations would make results depend on
 # whichever shellcheck/pyflakes versions happen to be installed on the host.
-# Run the GitHub-aware parser before the action-validator pass below: both
-# validators must accept a workflow before it is considered valid.
+# Run the GitHub-aware parser before the repository permission policy below:
+# both parsers must accept a workflow before it is considered valid.
 if ! output=$("$actionlint_bin" -shellcheck= -pyflakes= 2>&1); then
     echo "$script_name: ❌ actionlint validation failed" >&2
     echo "$output" | sed "s|^|$script_name:   |" >&2
     failed=1
 fi
 
+yq_bin="$(./.github/scripts/ensure-yq.sh)"
+export YQ="$yq_bin"
+
+# Pull request and merge-group jobs execute proposed repository code. Keep
+# their GITHUB_TOKEN read-only even for same-repository PRs, whose tokens are
+# not automatically downgraded like fork tokens. The checker is deliberately
+# separate from individual workflows so a future publishing optimization
+# cannot silently reintroduce write authority.
+python3 .github/scripts/check-workflow-permissions.py \
+  --yq "$yq_bin" .github/workflows
+python3 .github/scripts/test_check_workflow_permissions.py
+python3 .github/scripts/test_workflow_artifacts.py
 python3 .github/actions/require-successful-jobs/test_check.py
 python3 githooks/test_pre_push.py
 
