@@ -64,7 +64,16 @@ thiserror = "2.0.18"
 walkdir = "2.5.0"
 indicatif = { version = "0.18.4", features = ["improved_unicode"] }
 console = "0.16.3"
-exocrate = { path = "../../exocrate" }
+# crates.io requires every path dependency to name a registry version. The
+# Anneal release workflow publishes this exact exocrate version before
+# cargo-anneal. Keep the version coordinated with `exocrate/Cargo.toml` and
+# the workflow's ordered package plan.
+#
+# Historical exception: alpha.24 was manually published from a dirty manifest
+# with exocrate 0.2.0 and has no matching source tag. This corrected dependency
+# intentionally takes effect with the next cargo-anneal version bump; do not
+# attempt to recreate or retag alpha.24 from this source tree.
+exocrate = { version = "=0.3.0", path = "../../exocrate" }
 sha2 = "0.10"
 fs2 = "0.4"
 pathdiff = "0.2.3"
