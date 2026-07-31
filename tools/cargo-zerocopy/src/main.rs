@@ -294,6 +294,74 @@ fn rustup<'a>(args: impl IntoIterator<Item = &'a str>, env: Option<(&str, &str)>
     cmd
 }
 
+fn cargo_subcommand_index(args: &[String]) -> Option<usize> {
+    let mut index = 0;
+    while let Some(arg) = args.get(index) {
+        if arg == "--" {
+            return None;
+        }
+
+        // These Cargo-global options consume the following argument. Keep
+        // this list coordinated with Cargo's global CLI when another such
+        // option is passed through cargo-zerocopy.
+        if matches!(arg.as_str(), "--color" | "--config" | "--explain" | "-C" | "-Z") {
+            index += 2;
+            continue;
+        }
+
+        if arg.starts_with('-') {
+            index += 1;
+            continue;
+        }
+
+        return Some(index);
+    }
+    None
+}
+
+fn add_default_lock_mode(cmd: &mut Command, args: &mut Vec<String>) {
+    // Treat the lockfile as an input to every command delegated through this
+    // repository's Cargo wrapper.
+    //
+    // `--frozen` already implies `--locked`. Only inspect arguments before
+    // `--`, since a test binary or another delegated program may have its own
+    // unrelated argument with either spelling.
+    let cargo_args_end = args.iter().position(|arg| arg == "--").unwrap_or(args.len());
+    let lock_mode = if args[..cargo_args_end].iter().any(|arg| arg == "--frozen") {
+        Some("--frozen")
+    } else if args[..cargo_args_end].iter().any(|arg| arg == "--locked") {
+        Some("--locked")
+    } else {
+        None
+    };
+
+    // Cargo consumes global options before dispatching an external command.
+    // Clippy is a pinned rustup component and exposes Cargo's lock-mode flags,
+    // so put the effective mode in Clippy's own argument list. Do not do this
+    // for arbitrary `cargo-*` plugins: their argument languages are unrelated
+    // (for example, cargo-readme rejects `--locked`). Other Cargo-driving
+    // plugins must therefore spell their inner lock mode at their call sites.
+    if let Some(subcommand_index) = cargo_subcommand_index(&args[..cargo_args_end]) {
+        if args[subcommand_index] == "clippy" {
+            let forwarded = args[subcommand_index + 1..cargo_args_end]
+                .iter()
+                .any(|arg| arg == "--locked" || arg == "--frozen");
+            if !forwarded {
+                args.insert(subcommand_index + 1, lock_mode.unwrap_or("--locked").to_string());
+            }
+            return;
+        }
+    }
+
+    if lock_mode.is_none() {
+        cmd.arg("--locked");
+    }
+}
+
+fn cargo_pkgid(version: &str) -> Command {
+    rustup(["run", version, "cargo", "--locked", "--offline", "pkgid", "-p"], None)
+}
+
 fn delegate_cargo() -> Result<(), Error> {
     let mut args = env::args();
     let this = args.next().unwrap();
@@ -330,7 +398,7 @@ fn delegate_cargo() -> Result<(), Error> {
                     targets.push(t);
                 }
 
-                let args_vec = args.collect::<Vec<_>>();
+                let mut args_vec = args.collect::<Vec<_>>();
                 let mut i = 0;
                 while i < args_vec.len() {
                     let arg = &args_vec[i];
@@ -355,8 +423,6 @@ fn delegate_cargo() -> Result<(), Error> {
 
                 install_targets_or_exit(version, &targets)?;
 
-                let mut args = args_vec.into_iter();
-
                 let env_rustflags = env::vars()
                     .filter_map(|(k, v)| if k == "RUSTFLAGS" { Some(v) } else { None })
                     .next()
@@ -379,6 +445,8 @@ fn delegate_cargo() -> Result<(), Error> {
                 // RUSTDOCFLAGS.
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
                 cmd.env("RUSTDOCFLAGS", &rustdocflags);
+                add_default_lock_mode(&mut cmd, &mut args_vec);
+                let mut args = args_vec.into_iter();
 
                 if env::var("CARGO_TARGET_DIR").is_ok() {
                     eprintln!("[cargo-zerocopy] WARNING: `CARGO_TARGET_DIR` is set - this may cause `cargo-zerocopy` to behave unexpectedly");
@@ -388,9 +456,7 @@ fn delegate_cargo() -> Result<(), Error> {
 
                 // Computes the fully-qualified package name of workspace package `p`.
                 let fqpn = |p| {
-                    let output = rustup(["run", version, "cargo", "pkgid", "-p"], None)
-                        .arg(p)
-                        .output_or_exit();
+                    let output = cargo_pkgid(version).arg(p).output_or_exit();
                     String::from_utf8(output.stdout).unwrap().trim().to_string()
                 };
 
@@ -439,6 +505,83 @@ fn delegate_cargo() -> Result<(), Error> {
                 Err(Error::UnrecognizedArgument(arg.to_string()))
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod lock_mode_tests {
+    use super::*;
+
+    fn strings(args: &[&str]) -> Vec<String> {
+        args.iter().map(|arg| (*arg).to_string()).collect()
+    }
+
+    fn command_args(args: &[&str]) -> (Vec<String>, Vec<String>) {
+        let mut args = strings(args);
+        let mut cmd = Command::new("cargo");
+        add_default_lock_mode(&mut cmd, &mut args);
+        let global = cmd.get_args().map(|arg| arg.to_string_lossy().into_owned()).collect();
+        (global, args)
+    }
+
+    #[test]
+    fn defaults_to_locked() {
+        assert_eq!(command_args(&["test"]), (strings(&["--locked"]), strings(&["test"])));
+    }
+
+    #[test]
+    fn preserves_explicit_locked_or_frozen_mode() {
+        assert_eq!(
+            command_args(&["test", "--locked"]),
+            (Vec::new(), strings(&["test", "--locked"]))
+        );
+        assert_eq!(
+            command_args(&["--frozen", "test"]),
+            (Vec::new(), strings(&["--frozen", "test"]))
+        );
+    }
+
+    #[test]
+    fn forwards_lock_mode_to_clippy() {
+        assert_eq!(
+            command_args(&["clippy", "--tests"]),
+            (Vec::new(), strings(&["clippy", "--locked", "--tests"]))
+        );
+        assert_eq!(
+            command_args(&["--color", "always", "clippy"]),
+            (Vec::new(), strings(&["--color", "always", "clippy", "--locked"]))
+        );
+        assert_eq!(
+            command_args(&["--frozen", "clippy"]),
+            (Vec::new(), strings(&["--frozen", "clippy", "--frozen"]))
+        );
+        assert_eq!(
+            command_args(&["--locked", "--frozen", "clippy"]),
+            (Vec::new(), strings(&["--locked", "--frozen", "clippy", "--frozen"]))
+        );
+    }
+
+    #[test]
+    fn does_not_assume_other_plugin_argument_languages() {
+        assert_eq!(
+            command_args(&["readme", "--no-license"]),
+            (strings(&["--locked"]), strings(&["readme", "--no-license"]))
+        );
+    }
+
+    #[test]
+    fn ignores_test_binary_arguments() {
+        assert_eq!(
+            command_args(&["test", "--", "--locked"]),
+            (strings(&["--locked"]), strings(&["test", "--", "--locked"]))
+        );
+    }
+
+    #[test]
+    fn package_lookup_is_locked_and_offline() {
+        let cmd = cargo_pkgid("1.2.3");
+        let args = cmd.get_args().map(|arg| arg.to_string_lossy().into_owned()).collect::<Vec<_>>();
+        assert_eq!(args, ["run", "1.2.3", "cargo", "--locked", "--offline", "pkgid", "-p"]);
     }
 }
 

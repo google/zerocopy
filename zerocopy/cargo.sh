@@ -18,7 +18,7 @@ REPO_DIR="$(dirname "$ZEROCOPY_DIR")"
 # config does not apply to the unvendored tools workspace.
 (
   cd "$REPO_DIR"
-  env -u RUSTFLAGS -u CARGO_TARGET_DIR cargo +stable build --manifest-path tools/cargo-zerocopy/Cargo.toml -p cargo-zerocopy -q
+  env -u RUSTFLAGS -u CARGO_TARGET_DIR cargo +stable build --locked --manifest-path tools/cargo-zerocopy/Cargo.toml -p cargo-zerocopy -q
 )
 
 cd "$ZEROCOPY_DIR"
