@@ -13,24 +13,105 @@ cd "$(dirname "$0")/.."
 which yq > /dev/null
 failed=0
 
-for i in $(find .github -iname '*.yaml' -or -iname '*.yml'); do
-  # Select jobs that are triggered by pull request.
-  if yq -e '.on | has("pull_request")' "$i" 2>/dev/null >/dev/null; then
-    # Check if the file has an `all-jobs-succeed` job.
-    if yq -e '.jobs | has("all-jobs-succeed")' "$i" 2>/dev/null >/dev/null; then
-      # This gets the list of jobs that `all-jobs-succeed` does not depend on.
-      missing=$(comm -23 \
-        <(yq -r '.jobs | keys | .[]' "$i" | grep -v '^all-jobs-succeed$' | sort | uniq) \
-        <(yq -r '.jobs["all-jobs-succeed"].needs[]?' "$i" | sort | uniq))
-
-      if [ -n "$missing" ]; then
-        missing_jobs="$(echo "$missing" | tr '\n' ' ')"
-        echo "$i: all-jobs-succeed missing dependencies on some jobs: $missing_jobs" | tee -a $GITHUB_STEP_SUMMARY >&2
-        failed=1
-      fi
-    fi
+report() {
+  echo "$1" >&2
+  if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+    echo "$1" >> "$GITHUB_STEP_SUMMARY"
   fi
-done
+}
+
+while IFS= read -r -d '' workflow; do
+  if ! yq -e '.jobs | has("all-jobs-succeed")' \
+      "$workflow" 2>/dev/null >/dev/null; then
+    continue
+  fi
+
+  all_jobs="$(
+    yq -r '.jobs | keys | .[]' "$workflow" \
+      | grep -v '^all-jobs-succeed$' \
+      | sort -u
+  )"
+  dependencies="$(
+    yq -r '.jobs["all-jobs-succeed"].needs[]?' "$workflow" \
+      | sort -u
+  )"
+
+  missing="$(comm -23 <(echo "$all_jobs") <(echo "$dependencies"))"
+  unexpected="$(comm -13 <(echo "$all_jobs") <(echo "$dependencies"))"
+  if [ -n "$missing" ]; then
+    report "$workflow: all-jobs-succeed is missing dependencies: $(tr '\n' ' ' <<< "$missing")"
+    failed=1
+  fi
+  if [ -n "$unexpected" ]; then
+    report "$workflow: all-jobs-succeed has unknown dependencies: $(tr '\n' ' ' <<< "$unexpected")"
+    failed=1
+  fi
+
+  dependency_count="$(
+    yq -r '.jobs["all-jobs-succeed"].needs | length' "$workflow"
+  )"
+  unique_dependency_count="$(
+    yq -r '.jobs["all-jobs-succeed"].needs | unique | length' "$workflow"
+  )"
+  if [ "$dependency_count" -ne "$unique_dependency_count" ]; then
+    report "$workflow: all-jobs-succeed contains duplicate dependencies"
+    failed=1
+  fi
+
+  condition="$(yq -r '.jobs["all-jobs-succeed"].if // ""' "$workflow")"
+  condition="$(tr -d '[:space:]' <<< "$condition")"
+  if [ "$condition" != '${{always()}}' ] && [ "$condition" != 'always()' ]; then
+    report "$workflow: all-jobs-succeed must use if: always()"
+    failed=1
+  fi
+
+  # GitHub only permits the cancelled() status function in job and step `if`
+  # expressions. In particular, moving it into an action input makes GitHub
+  # reject the workflow before CI can report a failure. Require a fail-closed
+  # inline guard as the first step, before checkout or the shared action can be
+  # skipped, and reject continue-on-error on either the guard or its job. Keep
+  # this exact contract coordinated with the gate jobs in ci.yml and
+  # anneal.yml.
+  cancellation_guard_count="$(
+    yq -r '[.jobs["all-jobs-succeed"].steps[]? | select(.name == "Reject workflow cancellation" and (.if == "${{ cancelled() }}" or .if == "cancelled()") and .run == "exit 1" and ((.["continue-on-error"] // false) == false))] | length' \
+      "$workflow"
+  )"
+  first_step_is_guard="$(
+    yq -r '[.jobs["all-jobs-succeed"].steps[0] | select(.name == "Reject workflow cancellation" and (.if == "${{ cancelled() }}" or .if == "cancelled()") and .run == "exit 1" and ((.["continue-on-error"] // false) == false))] | length' \
+      "$workflow"
+  )"
+  gate_continue_on_error="$(
+    yq -r '.jobs["all-jobs-succeed"]["continue-on-error"] // false' \
+      "$workflow"
+  )"
+  if [ "$cancellation_guard_count" -ne 1 ] || \
+      [ "$first_step_is_guard" -ne 1 ] || \
+      [ "$gate_continue_on_error" != false ]; then
+    report "$workflow: all-jobs-succeed must reject cancellation in its first, fail-closed step"
+    failed=1
+  fi
+
+  checker_count="$(
+    yq -r '[.jobs["all-jobs-succeed"].steps[]? | select(.uses == "./.github/actions/require-successful-jobs")] | length' \
+      "$workflow"
+  )"
+  fail_closed_checker_count="$(
+    yq -r '[.jobs["all-jobs-succeed"].steps[]? | select(.uses == "./.github/actions/require-successful-jobs" and .with["needs-json"] == "${{ toJSON(needs) }}" and (has("if") == false) and ((.["continue-on-error"] // false) == false))] | length' \
+      "$workflow"
+  )"
+  # A conditional checker could turn a successful checkout into a successful
+  # gate without inspecting `needs`; continue-on-error would have the same
+  # effect after the checker reports failure, and any input other than the
+  # complete `needs` object would leave dependencies uninspected. Require the
+  # one checker step to be unconditional, fail-closed, and wired to exactly
+  # `toJSON(needs)`. Keep this coordinated with both gate jobs, just like the
+  # cancellation guard above.
+  if [ "$checker_count" -ne 1 ] || \
+      [ "$fail_closed_checker_count" -ne 1 ]; then
+    report "$workflow: all-jobs-succeed must invoke one unconditional, fail-closed shared result checker with the complete needs object"
+    failed=1
+  fi
+done < <(find .github -type f \( -iname '*.yaml' -o -iname '*.yml' \) -print0)
 
 if [ "$failed" -eq 1 ]; then
   exit 1
