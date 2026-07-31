@@ -10,6 +10,13 @@
 
 set -euo pipefail
 
+# This helper is the only translation from semantic CI profiles to Cargo
+# feature arguments. Both ci.yml's shared environment setup and
+# run_build_test_cell.sh consume it, while check_all_toolchains_tested.sh
+# validates every mapping and requires the matrix to add `no-default` as soon
+# as Cargo.toml defines a non-empty default feature set. Keep the output as
+# whitespace-separated arguments: run_build_test_cell.sh deliberately parses
+# it into an array without `eval`.
 if [[ $# -ne 1 ]]; then
   echo "usage: $0 <default|no-default|stable|all>" >&2
   exit 1

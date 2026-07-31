@@ -27,7 +27,7 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
              F32<O>
              F64<O>
              I128<O>
-           and 26 others
+           and $OTHER_TYPES others
 note: required for `IntoBytes1<AU16>` to implement `zerocopy_renamed::IntoBytes`
   --> $DIR/msrv_specific.rs:25:10
    |
