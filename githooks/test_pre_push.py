@@ -32,6 +32,7 @@ _CHECKS = (
     "ci/check_fmt.sh",
     "ci/check_job_dependencies.sh",
     "zerocopy/ci/check_all_toolchains_tested.sh",
+    "zerocopy/ci/test_check_all_toolchains_tested.sh",
     "zerocopy/ci/check_readme.sh",
     "zerocopy/ci/check_stale_stderr.sh",
     "zerocopy/ci/check_versions.sh",
@@ -53,6 +54,19 @@ if [[ "$check" == "${SLOW_CHECK:-}" ]]; then
 fi
 touch "$MARKER_DIR/${check//\\//_}"
 if [[ "$check" == "${FAIL_CHECK:-}" ]]; then
+    exit 23
+fi
+"""
+
+_CARGO_STUB = """\
+#!/usr/bin/env bash
+set -eu
+invocation="$*"
+printf '%s\\n' "$invocation" >> "$MARKER_DIR/cargo_invocations"
+if [[ "$invocation" == "${MUTATING_CARGO_INVOCATION:-}" ]]; then
+    echo mutation >> "$MUTATE_LOCKFILE"
+fi
+if [[ "$invocation" == "${FAIL_CARGO_INVOCATION:-}" ]]; then
     exit 23
 fi
 """
@@ -89,6 +103,10 @@ class FakeRepository:
             path.write_text(_CHECK_STUB, encoding="utf-8")
             path.chmod(0o755)
 
+        cargo = self.path / "zerocopy/cargo.sh"
+        cargo.write_text(_CARGO_STUB, encoding="utf-8")
+        cargo.chmod(0o755)
+
         subprocess.run(
             ["git", "init", "--quiet"], cwd=self.path, check=True
         )
@@ -124,10 +142,38 @@ class PrePushTest(unittest.TestCase):
     def test_successful_checks_leave_every_lockfile_unchanged(self):
         result = self.repository.run_hook()
         self.assertEqual(result.returncode, 0, result.stderr)
+        invocations = (
+            self.repository.markers / "cargo_invocations"
+        ).read_text(encoding="utf-8").splitlines()
+        self.assertEqual(invocations, ["+stable --version", "+nightly --version"])
 
     def test_can_run_from_a_repository_subdirectory(self):
         result = self.repository.run_hook(start_directory="zerocopy")
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_bootstrap_failure_still_guards_lockfiles(self):
+        lockfile = _LOCKFILES[-1]
+        result = self.repository.run_hook(
+            FAIL_CARGO_INVOCATION="+stable --version",
+            MUTATING_CARGO_INVOCATION="+stable --version",
+            MUTATE_LOCKFILE=str(self.repository.path / lockfile),
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "zerocopy/cargo.sh +stable --version failed with status 23",
+            result.stderr,
+        )
+        self.assertIn(f"{lockfile} was modified", result.stderr)
+        self.assertEqual(
+            (
+                self.repository.markers / "cargo_invocations"
+            ).read_text(encoding="utf-8").splitlines(),
+            ["+stable --version", "+nightly --version"],
+        )
+        for check in _CHECKS:
+            self.assertFalse(
+                (self.repository.markers / check.replace("/", "_")).exists()
+            )
 
     def test_each_first_party_lockfile_is_guarded_against_changes(self):
         for operation in ("mutate", "delete"):
