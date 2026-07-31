@@ -294,6 +294,27 @@ fn rustup<'a>(args: impl IntoIterator<Item = &'a str>, env: Option<(&str, &str)>
     cmd
 }
 
+fn add_default_lock_mode(cmd: &mut Command, args: &[String]) {
+    // Treat the lockfile as an input to every command delegated through this
+    // repository's Cargo wrapper. Put the default before Cargo's subcommand so
+    // it is also valid for external subcommands such as `cargo fmt`.
+    //
+    // `--frozen` already implies `--locked`. Only inspect arguments before
+    // `--`, since a test binary or another delegated program may have its own
+    // unrelated argument with either spelling.
+    let has_lock_mode = args
+        .iter()
+        .take_while(|arg| arg.as_str() != "--")
+        .any(|arg| arg == "--locked" || arg == "--frozen");
+    if !has_lock_mode {
+        cmd.arg("--locked");
+    }
+}
+
+fn cargo_pkgid(version: &str) -> Command {
+    rustup(["run", version, "cargo", "--locked", "--offline", "pkgid", "-p"], None)
+}
+
 fn delegate_cargo() -> Result<(), Error> {
     let mut args = env::args();
     let this = args.next().unwrap();
@@ -355,8 +376,6 @@ fn delegate_cargo() -> Result<(), Error> {
 
                 install_targets_or_exit(version, &targets)?;
 
-                let mut args = args_vec.into_iter();
-
                 let env_rustflags = env::vars()
                     .filter_map(|(k, v)| if k == "RUSTFLAGS" { Some(v) } else { None })
                     .next()
@@ -379,6 +398,8 @@ fn delegate_cargo() -> Result<(), Error> {
                 // RUSTDOCFLAGS.
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
                 cmd.env("RUSTDOCFLAGS", &rustdocflags);
+                add_default_lock_mode(&mut cmd, &args_vec);
+                let mut args = args_vec.into_iter();
 
                 if env::var("CARGO_TARGET_DIR").is_ok() {
                     eprintln!("[cargo-zerocopy] WARNING: `CARGO_TARGET_DIR` is set - this may cause `cargo-zerocopy` to behave unexpectedly");
@@ -388,9 +409,7 @@ fn delegate_cargo() -> Result<(), Error> {
 
                 // Computes the fully-qualified package name of workspace package `p`.
                 let fqpn = |p| {
-                    let output = rustup(["run", version, "cargo", "pkgid", "-p"], None)
-                        .arg(p)
-                        .output_or_exit();
+                    let output = cargo_pkgid(version).arg(p).output_or_exit();
                     String::from_utf8(output.stdout).unwrap().trim().to_string()
                 };
 
@@ -439,6 +458,41 @@ fn delegate_cargo() -> Result<(), Error> {
                 Err(Error::UnrecognizedArgument(arg.to_string()))
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn command_args(args: &[&str]) -> Vec<String> {
+        let args = args.iter().map(|arg| (*arg).to_string()).collect::<Vec<_>>();
+        let mut cmd = Command::new("cargo");
+        add_default_lock_mode(&mut cmd, &args);
+        cmd.get_args().map(|arg| arg.to_string_lossy().into_owned()).collect()
+    }
+
+    #[test]
+    fn defaults_to_locked() {
+        assert_eq!(command_args(&["test"]), ["--locked"]);
+    }
+
+    #[test]
+    fn preserves_explicit_locked_or_frozen_mode() {
+        assert!(command_args(&["test", "--locked"]).is_empty());
+        assert!(command_args(&["--frozen", "test"]).is_empty());
+    }
+
+    #[test]
+    fn ignores_test_binary_arguments() {
+        assert_eq!(command_args(&["test", "--", "--locked"]), ["--locked"]);
+    }
+
+    #[test]
+    fn package_lookup_is_locked_and_offline() {
+        let cmd = cargo_pkgid("1.2.3");
+        let args = cmd.get_args().map(|arg| arg.to_string_lossy().into_owned()).collect::<Vec<_>>();
+        assert_eq!(args, ["run", "1.2.3", "cargo", "--locked", "--offline", "pkgid", "-p"]);
     }
 }
 

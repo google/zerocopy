@@ -38,7 +38,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --pr
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 RUN cargo install cargo-nextest --locked                    && \
-    cargo install cargo-readme --version 3.2.0              && \
+    cargo install cargo-readme --locked --version '=3.2.0'  && \
     cargo install --locked action-validator --version 0.8.0 && \
     rm -rf /root/.cargo/registry /root/.cargo/git
 
