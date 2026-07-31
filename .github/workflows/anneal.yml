@@ -28,6 +28,10 @@ env:
   # the same filename after downloading by immutable artifact ID. Keep the
   # filename centralized here; the ID, not this name, selects the artifact.
   ANNEAL_TOOLCHAIN_ARCHIVE: anneal-exocrate.tar.zst
+  # This run-derived filename is the producer/consumer contract with the
+  # trusted publisher in `.github/workflows/docs.yml`. The test job may create
+  # the data, but only that post-CI workflow can write benchmark history.
+  ANNEAL_BENCHMARK_ARTIFACT: anneal-ci-duration-benchmarks-${{ github.run_id }}.json
   # Keep these bounded, download-only retry counts coordinated with ci.yml and
   # its Dockerfile. Neither setting reruns a build or test command.
   CARGO_NET_RETRY: "10"
@@ -62,6 +66,7 @@ jobs:
             anneal/v1/tools/test_exocrate_metadata_helpers.py \
             anneal/v1/tools/test_release_pr_files.py \
             anneal/v1/tools/collect-release-archive-metadata.py \
+            anneal/v1/tools/validate-release-artifacts.py \
             anneal/v1/tools/update-exocrate-metadata.py \
             anneal/tests/test_prune_lake_cache.py \
             anneal/prune-lake-cache.py \
@@ -82,7 +87,7 @@ jobs:
     needs: v2_nix_cache
     permissions:
       actions: read # Required to download the toolchain artifact.
-      contents: write # Required to push benchmark data to the storage branch
+      contents: read
     env:
       ANNEAL_TOOLCHAIN_DIR: ${{ github.workspace }}/anneal/v1/target/anneal-toolchain
       __ZEROCOPY_LOCAL_DEV: 1
@@ -155,25 +160,26 @@ jobs:
             '[
               $test[0][0],
               $total[0][0]
-            ]' > output.json
+            ]' > "$ANNEAL_BENCHMARK_ARTIFACT"
 
-      - name: Store CI duration benchmarks
-        # Only trusted main-branch pushes to the canonical repository can
-        # update the benchmark-data branch. Pull requests from forks receive a
-        # read-only GITHUB_TOKEN, and forks running this workflow should not try
-        # to publish benchmark history for google/zerocopy.
-        if: github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main'
-        uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
+      - name: Upload CI duration benchmarks
+        # This job runs PR-controlled code and therefore never receives write
+        # permission. On canonical main, publish its small result as an
+        # immutable Actions artifact. `docs.yml` selects this exact run only
+        # after both CI workflows succeed, validates the JSON, and performs the
+        # privileged benchmark-data update.
+        if: |
+          github.event_name == 'push' &&
+          github.repository == 'google/zerocopy' &&
+          github.ref == 'refs/heads/main'
+        uses: ./.github/actions/upload-file-artifact
         with:
-          name: CI Durations
-          tool: 'customSmallerIsBetter'
-          output-file-path: output.json
-          gh-pages-branch: benchmark-data
-          auto-push: true
-          save-data-file: true
-          benchmark-data-dir-path: dashboard
-          fail-on-alert: false
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ env.ANNEAL_BENCHMARK_ARTIFACT }}
+          path: ${{ env.ANNEAL_BENCHMARK_ARTIFACT }}
+          # docs.yml may pair this successful Anneal run with a delayed rerun
+          # of core CI. This JSON is tiny, so retain it long enough for that
+          # recovery path instead of inheriting the one-day matrix default.
+          retention-days: 90
 
   verify_examples:
     name: Verify V1 example (${{ matrix.example }})

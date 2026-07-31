@@ -7,15 +7,24 @@ inputs:
     required: false
     default: ghcr.io
   username:
-    description: Container registry username
-    required: true
+    description: Optional container registry username
+    required: false
+    default: ''
   password:
-    description: Container registry password or token
-    required: true
+    description: Optional container registry password or token
+    required: false
+    default: ''
 
 runs:
   using: composite
   steps:
+    - name: Validate registry credentials
+      if: ${{ (inputs.username == '') != (inputs.password == '') }}
+      shell: bash
+      run: |
+        echo "Registry username and password must be provided together" >&2
+        exit 1
+
     # Retry the actions themselves rather than reproducing their behavior in
     # shell. This preserves Buildx's builder cleanup and login-action's use of
     # password-stdin and its end-of-job logout. The first two attempts use
@@ -58,6 +67,7 @@ runs:
     # shell or expose it in a `docker login` command line.
     - name: Log in to the container registry (attempt 1)
       id: login_1
+      if: ${{ inputs.username != '' && inputs.password != '' }}
       continue-on-error: true
       uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
       with:
@@ -66,7 +76,7 @@ runs:
         password: ${{ inputs.password }}
 
     - name: Wait to retry container registry login
-      if: ${{ !cancelled() && steps.login_1.outcome == 'failure' }}
+      if: ${{ inputs.username != '' && inputs.password != '' && !cancelled() && steps.login_1.outcome == 'failure' }}
       shell: bash
       run: |
         set -eu
@@ -76,7 +86,7 @@ runs:
 
     - name: Log in to the container registry (attempt 2)
       id: login_2
-      if: ${{ !cancelled() && steps.login_1.outcome == 'failure' }}
+      if: ${{ inputs.username != '' && inputs.password != '' && !cancelled() && steps.login_1.outcome == 'failure' }}
       continue-on-error: true
       uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
       with:
@@ -85,7 +95,7 @@ runs:
         password: ${{ inputs.password }}
 
     - name: Wait to retry container registry login again
-      if: ${{ !cancelled() && steps.login_2.outcome == 'failure' }}
+      if: ${{ inputs.username != '' && inputs.password != '' && !cancelled() && steps.login_2.outcome == 'failure' }}
       shell: bash
       run: |
         set -eu
@@ -94,7 +104,7 @@ runs:
         sleep "$delay"
 
     - name: Log in to the container registry (attempt 3)
-      if: ${{ !cancelled() && steps.login_2.outcome == 'failure' }}
+      if: ${{ inputs.username != '' && inputs.password != '' && !cancelled() && steps.login_2.outcome == 'failure' }}
       uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
       with:
         registry: ${{ inputs.registry }}
