@@ -361,6 +361,10 @@ fn delegate_cargo() -> Result<(), Error> {
                     .filter_map(|(k, v)| if k == "RUSTFLAGS" { Some(v) } else { None })
                     .next()
                     .unwrap_or_default();
+                let env_rustdocflags = env::vars()
+                    .filter_map(|(k, v)| if k == "RUSTDOCFLAGS" { Some(v) } else { None })
+                    .next()
+                    .unwrap_or_default();
 
                 let rustflags = format!(
                     "{} {} {}",
@@ -368,11 +372,13 @@ fn delegate_cargo() -> Result<(), Error> {
                     get_toolchain_rustflags(name),
                     env_rustflags,
                 );
+                let rustdocflags = format!("{rustflags} {env_rustdocflags}");
 
-                // Pass RUSTFLAGS to both Rust (via `RUSTFLAGS`) and Rustdoc
-                // (via `RUSTDOCFLAGS`).
+                // Rustdoc needs the wrapper's cfgs and the caller's RUSTFLAGS
+                // in addition to any rustdoc-specific flags supplied through
+                // RUSTDOCFLAGS.
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
-                cmd.env("RUSTDOCFLAGS", &rustflags);
+                cmd.env("RUSTDOCFLAGS", &rustdocflags);
 
                 if env::var("CARGO_TARGET_DIR").is_ok() {
                     eprintln!("[cargo-zerocopy] WARNING: `CARGO_TARGET_DIR` is set - this may cause `cargo-zerocopy` to behave unexpectedly");
