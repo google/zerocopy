@@ -28,6 +28,22 @@ use std::{
 
 use toml::{map::Map, Value};
 
+// This list has two consumers outside this workspace:
+//
+// - The UI test entry points use the cfg named by `UI_TEST_TOOLCHAIN_CFG` to
+//   decide whether their diagnostic snapshots support the selected toolchain.
+// - `testutil::UiTestRunner` maps these same names to snapshot suffixes.
+//
+// Keep all three in sync. CI checks the coupling so adding another supported
+// UI toolchain fails until its snapshots and runner support are also added.
+const UI_TEST_TOOLCHAINS: [&str; 3] = ["msrv", "stable", "nightly"];
+const UI_TEST_TOOLCHAIN_CFG: &str = "__ZEROCOPY_INTERNAL_USE_ONLY_UI_TEST_TOOLCHAIN";
+
+// Cargo test executables inherit this variable from the delegated Cargo
+// process. `testutil::UiTestRunner` decodes it and reuses the outer command's
+// feature selection when it builds artifacts for the UI fixtures.
+const UI_TEST_FEATURE_ARGS_ENV: &str = "ZEROCOPY_UI_TEST_FEATURE_ARGS";
+
 #[derive(Debug)]
 enum Error {
     NoArguments,
@@ -264,12 +280,72 @@ fn install_targets_or_exit(version: &str, targets: &[String]) -> Result<(), Erro
     )
 }
 
+fn is_ui_test_toolchain(name: &str) -> bool {
+    UI_TEST_TOOLCHAINS.contains(&name)
+}
+
+// Extract Cargo's feature-selection options from the arguments before `--`.
+// UI tests invoke Cargo recursively to locate the exact artifacts supplied to
+// rustc. Reusing these options ensures that recursive build has the same
+// default, disabled-default, explicit, or all-feature policy as its parent.
+//
+// Preserve each option's spelling and ordering. Cargo makes repeated feature
+// options additive, and forwarding the original arguments delegates all of
+// those semantics back to Cargo instead of duplicating them here.
+fn capture_feature_selection_args(args: &[String]) -> Vec<String> {
+    let mut captured = Vec::new();
+    let mut index = 0;
+
+    while index < args.len() {
+        let arg = &args[index];
+        if arg == "--" {
+            break;
+        }
+
+        if arg == "--features" || arg == "-F" {
+            captured.push(arg.clone());
+            if let Some(value) = args.get(index + 1) {
+                captured.push(value.clone());
+                index += 1;
+            }
+        } else if arg == "--all-features"
+            || arg == "--no-default-features"
+            || arg.starts_with("--features=")
+            || (arg.starts_with("-F") && arg.len() > 2)
+        {
+            captured.push(arg.clone());
+        }
+
+        index += 1;
+    }
+
+    captured
+}
+
+// Environment variables cannot contain NUL bytes, so encode each argument as
+// its decimal UTF-8 byte length, a colon, and its unmodified contents. Unlike
+// choosing a separator, this remains lossless for every Unicode OS argument
+// Cargo accepts. `testutil::UiTestRunner` implements the matching decoder.
+fn encode_feature_selection_args(args: &[String]) -> String {
+    let mut encoded = String::new();
+    for arg in args {
+        encoded.push_str(&arg.len().to_string());
+        encoded.push(':');
+        encoded.push_str(arg);
+    }
+    encoded
+}
+
 fn get_rustflags(name: &str) -> String {
     // See #1792 for context on zerocopy_derive_union_into_bytes.
     let mut flags =
         "--cfg zerocopy_unstable_linux --cfg zerocopy_derive_union_into_bytes --cfg __ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE"
             .to_string();
     flags += &format!(" --cfg __ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN=\"{name}\"");
+
+    if is_ui_test_toolchain(name) {
+        flags += &format!(" --cfg {UI_TEST_TOOLCHAIN_CFG}");
+    }
 
     if name == "nightly" {
         flags += " --cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS";
@@ -352,6 +428,7 @@ fn delegate_cargo() -> Result<(), Error> {
                 }
 
                 let args_vec = args.collect::<Vec<_>>();
+                let feature_selection_args = capture_feature_selection_args(&args_vec);
                 let mut i = 0;
                 while i < args_vec.len() {
                     let arg = &args_vec[i];
@@ -399,6 +476,12 @@ fn delegate_cargo() -> Result<(), Error> {
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
                 cmd.env("RUSTDOCFLAGS", &rustdocflags);
                 add_default_lock_mode(&mut cmd, &args_vec);
+                // Test executables inherit this value. UiTestRunner uses it
+                // when recursively building zerocopy's fixture artifacts.
+                cmd.env(
+                    UI_TEST_FEATURE_ARGS_ENV,
+                    encode_feature_selection_args(&feature_selection_args),
+                );
                 let mut args = args_vec.into_iter();
 
                 if env::var("CARGO_TARGET_DIR").is_ok() {
@@ -462,7 +545,7 @@ fn delegate_cargo() -> Result<(), Error> {
 }
 
 #[cfg(test)]
-mod tests {
+mod lock_mode_tests {
     use super::*;
 
     fn command_args(args: &[&str]) -> Vec<String> {
@@ -510,5 +593,76 @@ fn main() {
         eprintln!("Error: {e}");
         print_usage();
         process::exit(1);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn strings(args: &[&str]) -> Vec<String> {
+        args.iter().map(|arg| (*arg).to_string()).collect()
+    }
+
+    #[test]
+    fn captures_all_feature_selection_spellings_before_separator() {
+        let args = strings(&[
+            "test",
+            "--all-features",
+            "--features",
+            "alloc,derive",
+            "-Fsimd",
+            "-F",
+            "std",
+            "--no-default-features",
+            "--features=float-nightly",
+            "--",
+            "--features",
+            "ignored-test-argument",
+        ]);
+
+        assert_eq!(
+            capture_feature_selection_args(&args),
+            strings(&[
+                "--all-features",
+                "--features",
+                "alloc,derive",
+                "-Fsimd",
+                "-F",
+                "std",
+                "--no-default-features",
+                "--features=float-nightly",
+            ])
+        );
+    }
+
+    #[test]
+    fn feature_selection_encoding_is_length_prefixed_utf8() {
+        assert_eq!(
+            encode_feature_selection_args(&strings(&[
+                "--all-features",
+                "--features",
+                "derive,simd-nightly",
+            ])),
+            "14:--all-features10:--features19:derive,simd-nightly"
+        );
+        assert_eq!(encode_feature_selection_args(&strings(&["", ":", "μ"])), "0:1::2:μ");
+    }
+
+    #[test]
+    fn ui_test_cfg_is_limited_to_snapshot_toolchains() {
+        for name in UI_TEST_TOOLCHAINS {
+            assert!(is_ui_test_toolchain(name));
+            assert!(get_rustflags(name)
+                .split_whitespace()
+                .any(|flag| flag == UI_TEST_TOOLCHAIN_CFG));
+        }
+
+        for name in ["no-zerocopy-core-error-1-81-0", "1.93.1", "beta", ""] {
+            assert!(!is_ui_test_toolchain(name));
+            assert!(!get_rustflags(name)
+                .split_whitespace()
+                .any(|flag| flag == UI_TEST_TOOLCHAIN_CFG));
+        }
     }
 }
