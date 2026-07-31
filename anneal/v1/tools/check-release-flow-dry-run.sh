@@ -162,6 +162,41 @@ prepare_pr = job("prepare-release-pr", "review-release")
 review = job("review-release", "publish-release-assets")
 publish = job("publish-release-assets", "submit-release-pr")
 submit = job("submit-release-pr", None)
+prepare_crates = job("prepare-crates-release", "release")
+release_crates = job("release", "resolve-release-source")
+
+if "package-release-crates.sh" not in prepare_crates:
+    raise SystemExit("crate preparation must run the PR-tested packaging script")
+if "./.github/actions/install-pinned-stable" not in prepare_crates:
+    raise SystemExit("crate preparation must install the pinned Cargo version")
+if "create-crates-release-plan.py" in prepare_crates:
+    raise SystemExit("unprivileged crate preparation must not supply commands")
+for forbidden in ("contents: write", "id-token: write", "CARGO_REGISTRY_TOKEN"):
+    if forbidden in prepare_crates:
+        raise SystemExit(f"crate preparation gained a credential: {forbidden}")
+
+if "environment: release" not in release_crates:
+    raise SystemExit("crate publisher must use the release environment")
+if "id-token: write" not in release_crates:
+    raise SystemExit("crate publisher is missing crates.io OIDC permission")
+if "create-crates-release-plan.py" not in release_crates:
+    raise SystemExit("crate publisher must construct its own trusted plan")
+if "./.github/actions/install-pinned-stable" not in release_crates:
+    raise SystemExit("crate publisher must install the pinned Cargo version")
+if "reconcile-crates-release.py" not in release_crates:
+    raise SystemExit("crate publisher must use the resumable reconciler")
+for forbidden in (
+    "./anneal/v1/tools/package-release-crates.sh",
+    "cargo publish",
+    "git tag",
+):
+    if forbidden in release_crates:
+        raise SystemExit(f"crate publisher bypasses the release plan: {forbidden}")
+
+if "tools/pre-publish.sh" in workflow:
+    raise SystemExit("release workflow still mutates source before publication")
+if "git checkout -q HEAD^" in workflow:
+    raise SystemExit("release version detection still assumes a one-commit push")
 
 for name, block in {
     "resolve-release-source": resolve,

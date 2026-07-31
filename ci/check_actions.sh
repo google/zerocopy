@@ -128,6 +128,10 @@ python3 .github/scripts/check-workflow-permissions.py \
   --yq "$yq_bin" .github/workflows
 python3 .github/scripts/test_check_workflow_permissions.py
 python3 .github/scripts/test_workflow_artifacts.py
+python3 .github/scripts/test_check_crate_version_change.py
+python3 .github/scripts/test_create_crates_release_plan.py
+python3 .github/scripts/test_reconcile_crates_release.py
+python3 .github/scripts/test_release_workflows.py
 python3 .github/actions/require-successful-jobs/test_check.py
 python3 githooks/test_pre_push.py
 
