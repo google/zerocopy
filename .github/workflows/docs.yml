@@ -6,15 +6,18 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-# Publish every commit from `main` to google.github.io/zerocopy.
+# Publish commits from `main` which pass both CI workflows to
+# google.github.io/zerocopy.
 
 name: Publish Rustdoc on GitHub Pages
 on:
-  # We trigger this workflow when the "Anneal Tests" workflow completes on the
-  # main branch. This ensures that we always pick up the latest benchmark
-  # data that was just computed and pushed to the storage branch.
+  # Both workflow names are coupled to `.github/workflows/ci.yml` and
+  # `.github/workflows/anneal.yml`. Triggering on both lets either workflow be
+  # the last to finish and lets a successful rerun repair a previously failed
+  # pair. The `coordinate` job below prevents the two completion events from
+  # deploying the same SHA twice.
   workflow_run: # zizmor: ignore[dangerous-triggers]
-    workflows: ["Anneal Tests"]
+    workflows: ["Build & Tests", "Anneal Tests"]
     types: [completed]
     branches: [main]
 
@@ -28,10 +31,124 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  coordinate:
+    name: Verify both CI workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only main-branch push runs publish documentation. In particular, a
+    # manually-dispatched CI run must not substitute for the checks associated
+    # with a commit's push.
+    if: |
+      github.repository == 'google/zerocopy' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      deploy: ${{ steps.coordinate.outputs.deploy }}
+      sha: ${{ steps.coordinate.outputs.sha }}
+      anneal_run_id: ${{ steps.coordinate.outputs.anneal_run_id }}
+    steps:
+      - name: Select the successful CI pair
+        id: coordinate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+          TRIGGER_RUN_ID: ${{ github.event.workflow_run.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          RUNS='[]'
+          for WORKFLOW in ci.yml anneal.yml; do
+            # These filenames are coupled to the workflow names in
+            # `on.workflow_run.workflows` above. Query by filename so a future
+            # run-name collision cannot satisfy this deployment gate.
+            RESPONSE="$(
+              gh api --method GET \
+                -H 'X-GitHub-Api-Version: 2022-11-28' \
+                "repos/$REPOSITORY/actions/workflows/$WORKFLOW/runs" \
+                -f branch=main \
+                -f event=push \
+                -f head_sha="$SOURCE_SHA" \
+                -F per_page=100
+            )"
+            RUN="$(
+              jq -c --arg SHA "$SOURCE_SHA" '
+                [.workflow_runs[]
+                  | select(
+                      .head_sha == $SHA
+                      and .head_branch == "main"
+                      and .event == "push"
+                    )]
+                | sort_by([.updated_at, .id])
+                | last // empty
+              ' <<< "$RESPONSE"
+            )"
+
+            if [ -z "$RUN" ]; then
+              echo "No $WORKFLOW push run exists for $SOURCE_SHA" \
+                >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            RUNS="$(jq -c --argjson RUN "$RUN" '. + [$RUN]' <<< "$RUNS")"
+          done
+
+          jq -r '
+            .[]
+            | "- \(.name): \(.status) / \(.conclusion // "pending") (\(.html_url))"
+          ' <<< "$RUNS" >> "$GITHUB_STEP_SUMMARY"
+
+          if ! jq -e '
+            all(.[]; .status == "completed" and .conclusion == "success")
+          ' <<< "$RUNS" >/dev/null; then
+            echo "Both CI workflows have not succeeded for $SOURCE_SHA" \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Both completions trigger this workflow. Only the completion with
+          # the latest `(updated_at, id)` pair proceeds, which makes the choice
+          # deterministic even when GitHub records both updates in the same
+          # second. A later successful rerun naturally becomes the new winner.
+          WINNER_RUN_ID="$(
+            jq -r 'sort_by([.updated_at, .id]) | last | .id' <<< "$RUNS"
+          )"
+          if [ "$WINNER_RUN_ID" != "$TRIGGER_RUN_ID" ]; then
+            echo "Run $WINNER_RUN_ID owns deployment for $SOURCE_SHA" \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # A manually rerun workflow retains event `push` even after its
+          # commit stops being the tip of main. Never let such a stale run
+          # replace newer Pages content.
+          MAIN_SHA="$(
+            gh api \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/$REPOSITORY/git/ref/heads/main" \
+              --jq .object.sha
+          )"
+          if [ "$MAIN_SHA" != "$SOURCE_SHA" ]; then
+            echo "Refusing to replace $MAIN_SHA docs with stale $SOURCE_SHA" \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "deploy=true" >> "$GITHUB_OUTPUT"
+          echo "sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
+          jq -r '
+            .[] | select(.name == "Anneal Tests") | "anneal_run_id=\(.id)"
+          ' <<< "$RUNS" >> "$GITHUB_OUTPUT"
+
   build:
     name: Build
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: coordinate
+    if: needs.coordinate.outputs.deploy == 'true'
     defaults:
       run:
         working-directory: zerocopy
@@ -40,6 +157,9 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # `workflow_run` otherwise checks out the latest default branch,
+          # which may not be the commit whose tests caused this deployment.
+          ref: ${{ needs.coordinate.outputs.sha }}
           persist-credentials: false
 
       - name: Configure GitHub pages
@@ -105,11 +225,35 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: [coordinate, build]
     permissions:
+      contents: read
       pages: write # Required for Pages deployment
       id-token: write # Required for OIDC-based Pages deployment
     steps:
+      - name: Revalidate current main immediately before deployment
+        id: current
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SOURCE_SHA: ${{ needs.coordinate.outputs.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          MAIN_SHA="$(
+            gh api \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/$REPOSITORY/git/ref/heads/main" \
+              --jq .object.sha
+          )"
+          if [ "$MAIN_SHA" = "$SOURCE_SHA" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Skipping stale $SOURCE_SHA; current main is $MAIN_SHA" \
+              >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Deploy to GitHub Pages
+        if: steps.current.outputs.deploy == 'true'
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
