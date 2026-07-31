@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785497284584,
+  "lastUpdate": 1785504182854,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23123,6 +23123,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 656,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b8c2b9fce55957e2cdbf0dc9373c591fb2abebee",
+          "message": "[ci] Forward env vars correctly (#3503)\n\ngherrit-pr-id: Gpaak2r3mpajdigm5vcopjcopsv6gcuxr",
+          "timestamp": "2026-07-31T12:36:57Z",
+          "tree_id": "ed3631b695b1c8a8ade0d537e9e8a4402e428f26",
+          "url": "https://github.com/google/zerocopy/commit/b8c2b9fce55957e2cdbf0dc9373c591fb2abebee"
+        },
+        "date": 1785504181333,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 453,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 591,
             "unit": "seconds"
           }
         ]
