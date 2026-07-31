@@ -646,10 +646,31 @@ impl TraitAnnealBlock<Local> {
             )?;
         }
 
+        if body.is_safe.len() > 1 {
+            return Err(Error::new(
+                body.is_safe[1].keyword_span.inner,
+                "Anneal blocks on traits may define only one `isSafe` invariant.",
+            ));
+        }
+
         for clause in &body.is_safe {
-            let first_line = clause.lines.first().map(|l| l.content.as_str()).unwrap_or("");
-            if first_line.is_empty() {
-                // Just keeping a dummy check if needed, or we can just remove the loop entirely.
+            let first_line = clause.lines.first().map(|l| l.content.trim()).unwrap_or_default();
+            let rest = first_line.strip_prefix("isSafe").map(str::trim_start).unwrap_or_default();
+
+            let Some(body_start) = rest.strip_prefix(":=").or_else(|| rest.strip_prefix(':'))
+            else {
+                return Err(Error::new(
+                    clause.keyword_span.inner,
+                    "Trait invariant `isSafe` must be declared as `isSafe : <Proposition>` or `isSafe := <Proposition>`.",
+                ));
+            };
+
+            let has_body = !body_start.trim().is_empty() || clause.lines.len() > 1;
+            if !has_body {
+                return Err(Error::new(
+                    clause.keyword_span.inner,
+                    "Trait invariant `isSafe` must include a proposition after `:` or `:=`.",
+                ));
             }
         }
 
@@ -1687,13 +1708,13 @@ mod tests {
     fn test_trait_block_valid() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```anneal"]),
-            parse_quote!(#[doc = " isSafe"]),
+            parse_quote!(#[doc = " isSafe :"]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
         let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         assert_eq!(block.is_safe.len(), 1);
-        assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
+        assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
         assert_eq!(block.is_safe[0].lines[1].content, "  val == true");
     }
 
@@ -1740,7 +1761,7 @@ mod tests {
             parse_quote!(#[doc = " ```anneal"]),
             parse_quote!(#[doc = " isValid self :="]),
             parse_quote!(#[doc = "  val == true"]),
-            parse_quote!(#[doc = " isSafe"]),
+            parse_quote!(#[doc = " isSafe :"]),
             parse_quote!(#[doc = "  val == true"]),
             parse_quote!(#[doc = " ```"]),
         ];
@@ -1760,7 +1781,7 @@ mod tests {
     fn test_trait_rejects_is_valid() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```anneal"]),
-            parse_quote!(#[doc = " isSafe my_trait :"]),
+            parse_quote!(#[doc = " isSafe : true"]),
             parse_quote!(#[doc = " isValid foo :="]),
             parse_quote!(#[doc = " ```"]),
         ];
@@ -1789,12 +1810,12 @@ mod tests {
     fn test_is_safe_extra_whitespace() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```anneal"]),
-            parse_quote!(#[doc = " isSafe     self    :="]),
+            parse_quote!(#[doc = " isSafe     :    True"]),
             parse_quote!(#[doc = " ```"]),
         ];
         let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
         // keep_keyword should preserve the exact string from the comment line
-        assert_eq!(block.is_safe[0].lines[0].content, "isSafe     self    :=");
+        assert_eq!(block.is_safe[0].lines[0].content, "isSafe     :    True");
     }
 
     #[test]
@@ -1898,7 +1919,7 @@ mod tests {
     #[test]
     fn test_parse_is_safe_on_safe_trait_errors() {
         let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```anneal"])];
-        let is_safe_attr: syn::Attribute = parse_quote!(#[doc = " isSafe true"]);
+        let is_safe_attr: syn::Attribute = parse_quote!(#[doc = " isSafe : true"]);
         attrs.push(is_safe_attr.clone());
         attrs.push(parse_quote!(#[doc = " ```"]));
 
@@ -1913,7 +1934,7 @@ mod tests {
     fn test_parse_is_safe_on_unsafe_trait_succeeds() {
         let attrs: Vec<syn::Attribute> = vec![
             parse_quote!(#[doc = " ```anneal"]),
-            parse_quote!(#[doc = " isSafe true"]),
+            parse_quote!(#[doc = " isSafe : true"]),
             parse_quote!(#[doc = " ```"]),
         ];
         let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
@@ -1923,8 +1944,8 @@ mod tests {
     #[test]
     fn test_parse_multiple_is_safe_on_safe_trait_errors() {
         let mut attrs: Vec<syn::Attribute> = vec![parse_quote!(#[doc = " ```anneal"])];
-        let first_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe x > 0"]);
-        let second_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe y > 0"]);
+        let first_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe : x > 0"]);
+        let second_is_safe: syn::Attribute = parse_quote!(#[doc = " isSafe := y > 0"]);
 
         attrs.push(first_is_safe.clone());
         attrs.push(second_is_safe);
@@ -1936,6 +1957,37 @@ mod tests {
         let lines = extract_doc_line(&first_is_safe, "");
         let (_, _, is_safe_raw_span) = lines[0];
         assert_eq!(format!("{:?}", err.span()), format!("{:?}", is_safe_raw_span));
+    }
+
+    #[test]
+    fn test_parse_multiple_is_safe_on_unsafe_trait_errors() {
+        let attrs: Vec<syn::Attribute> = vec![
+            parse_quote!(#[doc = " ```anneal"]),
+            parse_quote!(#[doc = " isSafe : x > 0"]),
+            parse_quote!(#[doc = " isSafe := y > 0"]),
+            parse_quote!(#[doc = " ```"]),
+        ];
+
+        let err = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "Anneal blocks on traits may define only one `isSafe` invariant."
+        );
+    }
+
+    #[test]
+    fn test_parse_empty_is_safe_after_operator_errors() {
+        let attrs: Vec<syn::Attribute> = vec![
+            parse_quote!(#[doc = " ```anneal"]),
+            parse_quote!(#[doc = " isSafe :"]),
+            parse_quote!(#[doc = " ```"]),
+        ];
+
+        let err = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "Trait invariant `isSafe` must include a proposition after `:` or `:=`."
+        );
     }
 
     #[test]
@@ -2009,7 +2061,7 @@ mod tests {
         fn test_trait_rejects_function_keywords() {
             let attrs: Vec<syn::Attribute> = vec![
                 parse_quote!(#[doc = " ```anneal"]),
-                parse_quote!(#[doc = " isSafe"]),
+                parse_quote!(#[doc = " isSafe :"]),
                 parse_quote!(#[doc = "  val"]),
                 parse_quote!(#[doc = " requires: true"]), // Should error
                 parse_quote!(#[doc = " ```"]),
@@ -2022,7 +2074,7 @@ mod tests {
         fn test_nested_fences_failure() {
             let attrs: Vec<syn::Attribute> = vec![
                 parse_quote!(#[doc = " ```anneal"]),
-                parse_quote!(#[doc = " isSafe"]),
+                parse_quote!(#[doc = " isSafe : true"]),
                 parse_quote!(#[doc = " ```"]), // Nested fence? No this is just premature close.
                 parse_quote!(#[doc = "  nested"]),
                 parse_quote!(#[doc = " ```"]),
@@ -2033,13 +2085,13 @@ mod tests {
             // It parses until `is_end_fence`.
             // So if we have ` ``` ` inside, it closes the block.
             // Then `nested` is outside.
-            // The result is valid block with just `isSafe`.
+            // The result is valid block with just `isSafe : true`.
             // But if the INTENTION was nested, it fails silently or just closes early.
             // Let's verify it closes early.
             let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert!(block.is_safe.len() == 1);
             assert!(!block.is_safe[0].lines.is_empty());
-            assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
+            assert_eq!(block.is_safe[0].lines[0].content, "isSafe : true");
         }
 
         #[test]
@@ -2102,11 +2154,11 @@ mod tests {
                 parse_quote!(#[doc = " isSafe"]), // Missing body
                 parse_quote!(#[doc = " ```"]),
             ];
-            // Should succeed with empty body or fail?
-            // Currently parser allows empty sections.
-            let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
-            assert!(block.is_safe.len() == 1);
-            assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
+            let err = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap_err();
+            assert_eq!(
+                err.to_string(),
+                "Trait invariant `isSafe` must be declared as `isSafe : <Proposition>` or `isSafe := <Proposition>`."
+            );
         }
 
         #[test]
@@ -2115,7 +2167,7 @@ mod tests {
             // The parser doesn't validate Lean lexical rules, just extracts lines.
             // But we want to ensure it doesn't choke on tokens.
             let _lines = mk_lines(&[
-                "isSafe Self :=",
+                "isSafe :",
                 "  -- This is a comment",
                 "  x ≥ 0 ∧ y ≤ 10",  // Unicode
                 "  let result := 1", // 'result' keyword in Lean
@@ -2123,14 +2175,14 @@ mod tests {
             // For Trait, we look for isSafe.
             let attrs: Vec<syn::Attribute> = vec![
                 parse_quote!(#[doc = " ```anneal"]),
-                parse_quote!(#[doc = " isSafe Self :="]),
+                parse_quote!(#[doc = " isSafe :"]),
                 parse_quote!(#[doc = "  -- This is a comment"]),
                 parse_quote!(#[doc = "  x ≥ 0 ∧ y ≤ 10"]),
                 parse_quote!(#[doc = "  let result := 1"]),
                 parse_quote!(#[doc = " ```"]),
             ];
             let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
-            // isSafe Self := (1)
+            // isSafe : (1)
             // -- This is a comment (2)
             // x ≥ 0 ∧ y ≤ 10 (3)
             // let result := 1 (4)
@@ -2157,14 +2209,14 @@ mod tests {
             let attrs: Vec<syn::Attribute> = vec![
                 parse_quote!(#[doc = " ```anneal"]),
                 parse_quote!(#[allow(dead_code)]), // Interleaved attribute
-                parse_quote!(#[doc = " isSafe"]),
+                parse_quote!(#[doc = " isSafe :"]),
                 parse_quote!(#[cfg(all())]), // Another Interleaved
                 parse_quote!(#[doc = "  val"]),
                 parse_quote!(#[doc = " ```"]),
             ];
             let block = TraitAnnealBlock::parse_from_attrs(&attrs, true, "").unwrap().unwrap();
             assert_eq!(block.is_safe.len(), 1);
-            assert_eq!(block.is_safe[0].lines[0].content, "isSafe");
+            assert_eq!(block.is_safe[0].lines[0].content, "isSafe :");
             assert_eq!(block.is_safe[0].lines[1].content, "  val");
         }
 
