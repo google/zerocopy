@@ -1,0 +1,171 @@
+{
+  "confirmed_novel_findings": [
+    {
+      "evidence": "The report twice locates unwrap_unchecked at src/lib.rs line 22, but the supplied numbered source places the unsafe expression at line 20; line 22 is blank.",
+      "field": "novel:s2:N1",
+      "label": "E"
+    }
+  ],
+  "mode": "C",
+  "reports": [
+    {
+      "atoms": {
+        "C1": "FAIL",
+        "C2": "PASS",
+        "C3": "PASS",
+        "C4": "PASS",
+        "C5": "PASS",
+        "C6": "PASS"
+      },
+      "hard_errors": [],
+      "label": "A",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "C1": "FAIL",
+        "C2": "PASS",
+        "C3": "PASS",
+        "C4": "PASS",
+        "C5": "PASS",
+        "C6": "PASS"
+      },
+      "hard_errors": [],
+      "label": "B",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "C1": "PASS",
+        "C2": "PASS",
+        "C3": "FAIL",
+        "C4": "FAIL",
+        "C5": "FAIL",
+        "C6": "PASS"
+      },
+      "hard_errors": [
+        "G11",
+        "CH2",
+        "CH6"
+      ],
+      "label": "C",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "C1": "FAIL",
+        "C2": "PASS",
+        "C3": "PASS",
+        "C4": "PASS",
+        "C5": "PASS",
+        "C6": "PASS"
+      },
+      "hard_errors": [],
+      "label": "D",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "C1": "FAIL",
+        "C2": "PASS",
+        "C3": "PASS",
+        "C4": "PASS",
+        "C5": "PASS",
+        "C6": "PASS"
+      },
+      "hard_errors": [],
+      "label": "E",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "C1": "FAIL",
+        "C2": "PASS",
+        "C3": "PASS",
+        "C4": "PASS",
+        "C5": "PASS",
+        "C6": "PASS"
+      },
+      "hard_errors": [],
+      "label": "F",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "C1": "FAIL",
+        "C2": "PASS",
+        "C3": "FAIL",
+        "C4": "FAIL",
+        "C5": "FAIL",
+        "C6": "PASS"
+      },
+      "hard_errors": [
+        "G11",
+        "CH2",
+        "CH6"
+      ],
+      "label": "G",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "C1": "FAIL",
+        "C2": "PASS",
+        "C3": "PASS",
+        "C4": "PASS",
+        "C5": "PASS",
+        "C6": "PASS"
+      },
+      "hard_errors": [],
+      "label": "H",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "C1": "FAIL",
+        "C2": "PASS",
+        "C3": "PASS",
+        "C4": "PASS",
+        "C5": "PASS",
+        "C6": "PASS"
+      },
+      "hard_errors": [],
+      "label": "I",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "C1": "FAIL",
+        "C2": "PASS",
+        "C3": "PASS",
+        "C4": "PASS",
+        "C5": "PASS",
+        "C6": "PASS"
+      },
+      "hard_errors": [],
+      "label": "J",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    }
+  ],
+  "schema_version": 1
+}
