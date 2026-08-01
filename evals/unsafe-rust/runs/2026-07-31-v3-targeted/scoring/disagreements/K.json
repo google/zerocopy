@@ -1,0 +1,138 @@
+{
+  "cells": [
+    {
+      "field": "novel:s2:N1",
+      "label": "A",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "Not independently proposed; adjudicate the candidate on its merits."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It correctly notes that the lane unchecked block and unsafe impl lack adjacent proof text and offers sound local comments without changing the contract."
+      }
+    },
+    {
+      "field": "atom:K3",
+      "label": "B",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "B asserts that usize is unsigned and uses that to prove n - 1 representable, but cites only the operator rules; no version-matched numeric-domain authority verifies this material premise."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "LP proves false `is_empty` gives `n > 0`, so `n - 1` is representable and below `n`, satisfying the exact unchecked-index contract; implementation is PROVED."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "B",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "B's PROVED verdict for last necessarily relies on the unchecked Rust-semantic premise that usize is unsigned/nonnegative; its only arithmetic authority is the operator page."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "B",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "B omits the versioned unsigned-integer-domain authority while consuming that premise in LP, despite claiming its TCB contains all governing cited contracts."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "TCB-R82 is limited to exact Rust 1.82 allowlisted slice, arithmetic, and unsafe-trait authorities."
+      }
+    },
+    {
+      "field": "novel:s2:N1",
+      "label": "B",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "Not independently proposed; adjudicate the candidate on its merits."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "PL-I and PL-R additionally identify missing local proof comments at both lane unsafe sites and supply accurate replacements."
+      }
+    },
+    {
+      "field": "novel:s2:N1",
+      "label": "D",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "Not independently proposed; adjudicate the candidate on its merits."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The proof-artifact ledger additionally flags missing local proofs for `High` and lane `read` and provides accurate adjacent comments."
+      }
+    },
+    {
+      "field": "novel:s2:N1",
+      "label": "E",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "Not independently proposed; adjudicate the candidate on its merits."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "F-3 additionally identifies absent local proof artifacts for the lane unsafe impl and unchecked call and supplies contract-preserving comments."
+      }
+    },
+    {
+      "field": "novel:s2:N1",
+      "label": "F",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "Not independently proposed; adjudicate the candidate on its merits."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "F-PL-DOC accurately notes that the `High` impl and lane `read` unsafe sites have no adjacent proof artifacts and gives valid proof comments."
+      }
+    },
+    {
+      "field": "novel:s2:N1",
+      "label": "G",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "Not independently proposed; adjudicate the candidate on its merits."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "F-PL-PROOF additionally identifies missing adjacent proof artifacts for the lane unsafe impl and unchecked read and supplies accurate comments."
+      }
+    },
+    {
+      "field": "novel:s2:N1",
+      "label": "I",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "Not independently proposed; adjudicate the candidate on its merits."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It additionally identifies absent adjacent proof comments for the `High` unsafe impl and lane unchecked access and proposes accurate local bridges."
+      }
+    },
+    {
+      "field": "novel:s2:N1",
+      "label": "J",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "Not independently proposed; adjudicate the candidate on its merits."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It additionally observes that `High`'s unsafe impl and `published_lane::read` lack local proof comments and supplies accurate adjacent proof text without treating this as an implementation failure."
+      }
+    }
+  ],
+  "mode": "K",
+  "schema_version": 1
+}

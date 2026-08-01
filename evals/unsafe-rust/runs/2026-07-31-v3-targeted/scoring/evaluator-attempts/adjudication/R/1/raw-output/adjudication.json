@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "mode": "R",
+  "decisions": [
+    {
+      "label": "I",
+      "field": "visible_scope_defect",
+      "decision": "ABSENT",
+      "evidence": "The report audits only the supplied lib.rs and fully retains Rust 1.82.0, every requested target, and every ordinary profile. Its added all-supported-editions statement is a stronger parametric claim about that same source, not a contraction or substitution of Required, and the common rules make additional correct regional detail harmless."
+    }
+  ],
+  "ambiguities": [
+    "The frozen materials do not define visible_scope_defect or expressly say whether an unrequested but non-narrowing theorem axis counts. REQUEST.md's 'exactly' could be read to exclude added axes, but SCORER.md's harmless-additional-detail rule and Required-subset-of-Covered framing favor ABSENT here."
+  ]
+}
