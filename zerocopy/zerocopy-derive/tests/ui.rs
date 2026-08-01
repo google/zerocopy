@@ -9,7 +9,14 @@
 use testutil::UiTestRunner;
 
 #[test]
-#[cfg_attr(miri, ignore)]
+// Keep this predicate synchronized with `tests/ui.rs`. UI fixtures spawn
+// external compiler processes, which Miri and source coverage must not run.
+// Diagnostic snapshots exist only for the pinned toolchains; cargo-zerocopy
+// emits the final cfg only for those semantic descriptors.
+#[cfg_attr(
+    any(miri, coverage_nightly, not(__ZEROCOPY_INTERNAL_USE_ONLY_UI_TEST_TOOLCHAIN)),
+    ignore
+)]
 fn ui() {
     // This tests the behavior when `--cfg zerocopy_derive_union_into_bytes` is
     // present.
