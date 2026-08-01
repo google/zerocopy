@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "status": "FROZEN",
+  "file_manifest_sha256": "059cde170e6e31d4ef4c4997b4a64413fdd9e47e9f9e5df74c1c9707bf6e3c58",
+  "review_signoffs": [
+    {
+      "reviewer_id": "v4-oracle-final-review",
+      "verdict": "PASS/FREEZE",
+      "file_manifest_sha256": "059cde170e6e31d4ef4c4997b4a64413fdd9e47e9f9e5df74c1c9707bf6e3c58",
+      "scope": "Independent read-only review of manifest-bound P/B/L/Q/R fixtures, requests, oracles, rubrics, authorities, TCBs, prompts, plan, controls, and scoring/protocol interactions; all expected theorems and full-domain gates verified; unresolved ambiguities: none.",
+      "independent_non_author": true,
+      "reviewed_utc": "2026-08-01T17:55:30Z"
+    },
+    {
+      "reviewer_id": "v4-oracle-review-2",
+      "verdict": "PASS/FREEZE",
+      "file_manifest_sha256": "059cde170e6e31d4ef4c4997b4a64413fdd9e47e9f9e5df74c1c9707bf6e3c58",
+      "scope": "Independent review of all P/B/L/Q/R fixtures, targets, requests, oracles, rubrics, authorities, TCB bounds, and scoring/protocol interactions through aggregation and integrity gates; unresolved ambiguities: none.",
+      "independent_non_author": true,
+      "reviewed_utc": "2026-08-01T17:58:58Z"
+    }
+  ],
+  "unresolved_ambiguities": [],
+  "reports_collected_before_lock": 0,
+  "locked_utc": "2026-08-01T17:59:23Z"
+}
