@@ -895,6 +895,23 @@ jobs:
       - name: Check crate versions match
         run: ./ci/check_versions.sh
 
+  # Workspace builds do not exercise Cargo's normalized published manifests.
+  # Run the exact unprivileged packaging script used by release.yml so a path
+  # dependency, missing included file, stale lockfile, or downstream package
+  # verification failure is caught on the PR that introduces it.
+  check_publishable:
+    runs-on: ubuntu-latest
+    name: Check release crates are publishable
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Package release crates
+        working-directory: zerocopy
+        run: ./ci/package_release_crates.sh
+
   check_msrv_is_minimal:
     runs-on: ubuntu-latest
     name: Check MSRV is minimal
@@ -1054,7 +1071,7 @@ jobs:
       runs-on: ubuntu-latest
       permissions:
         contents: read
-      needs: [build_test, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env]
+      needs: [build_test, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_publishable, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env]
       steps:
         # `cancelled()` is only legal in an `if` expression; GitHub rejects the
         # entire workflow if it appears in an action input. Keep this guard
