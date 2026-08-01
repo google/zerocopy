@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "mode": "C",
+  "decisions": [
+    {
+      "label": "C",
+      "field": "atom:C3",
+      "decision": "FAIL",
+      "evidence": "The report verifies cfg-attribute inclusion/removal and compile_error!, but BUILD-MAP-C supplies only the leaf cfg settings and the report never states or cites the version-matched Rust semantics making all(feature, target_arch) true."
+    },
+    {
+      "label": "C",
+      "field": "atom:C4",
+      "decision": "FAIL",
+      "evidence": "OBL-2 through OBL-4 prove the local bodies, but OBL-1 and Covered=Required require the omitted Rust semantics of not(feature) to establish selection for the required non-turbo cases."
+    },
+    {
+      "label": "C",
+      "field": "atom:C5",
+      "decision": "FAIL",
+      "evidence": "The local return-value derivations are correct, but behavioral closure over Required depends on OBL-1, whose body-selection argument does not verify the material not predicate semantics."
+    },
+    {
+      "label": "C",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "The positive selection and rejection conclusions necessarily use Rust not/all semantics that BUILD-MAP-C excludes and that the report's stated version-matched authority verifies only as a vague 'cfg axioms' shorthand."
+    },
+    {
+      "label": "C",
+      "field": "hard_error:CH2",
+      "decision": "PRESENT",
+      "evidence": "It claims Covered=Required although its stated OBL-1 derivation omits the material not predicate semantics needed to select the non-turbo body across Required."
+    },
+    {
+      "label": "C",
+      "field": "hard_error:CH6",
+      "decision": "PRESENT",
+      "evidence": "It reports full PROVED verdicts over Required while required non-turbo cases lack a complete authoritative body-selection derivation."
+    },
+    {
+      "label": "C",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "BUILD-MAP-C expressly admits no Rust semantics, while the report relies on all/not behavior beyond the cfg-attribute proposition it actually states and cites."
+    },
+    {
+      "label": "E",
+      "field": "novel:s2:N1",
+      "decision": "PRESENT",
+      "evidence": "The report twice locates unwrap_unchecked at src/lib.rs line 22, but the supplied numbered source places the unsafe expression at line 20; line 22 is blank."
+    },
+    {
+      "label": "G",
+      "field": "atom:C3",
+      "decision": "FAIL",
+      "evidence": "The report verifies cfg-attribute inclusion and compile_error!, but does not state or cite the version-matched semantics of all needed to derive that the rejection site's predicate is true."
+    },
+    {
+      "label": "G",
+      "field": "atom:C4",
+      "decision": "FAIL",
+      "evidence": "O-NON, O-GUARD, and O-UNWRAP prove the local bodies, but the claimed configuration partition and closure omit authoritative version-matched not predicate semantics for the non-turbo selection."
+    },
+    {
+      "label": "G",
+      "field": "atom:C5",
+      "decision": "FAIL",
+      "evidence": "The return-value cases are locally complete, but their union is not a complete Covered derivation because selection of the not(feature) body rests on an unstated material Rust premise."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "The PROVED and rejection conclusions necessarily rely on unchecked Rust not/all semantics; BUILD-MAP-C cannot authorize them and the report verifies only cfg inclusion/removal."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:CH2",
+      "decision": "PRESENT",
+      "evidence": "It claims configuration closure and Required subset-of Covered while omitting the material not predicate premise from its stated body-selection derivation."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:CH6",
+      "decision": "PRESENT",
+      "evidence": "It claims full PROVED verdicts over the union domain although required non-turbo cases lack a complete authoritative selection derivation."
+    },
+    {
+      "label": "G",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "The report keeps BUILD-MAP-C conspicuous but relies on Rust all/not semantics that the TCB excludes and that its cited/stated cfg proposition does not verify."
+    }
+  ],
+  "ambiguities": []
+}

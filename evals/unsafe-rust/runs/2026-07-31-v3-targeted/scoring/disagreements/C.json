@@ -1,0 +1,186 @@
+{
+  "cells": [
+    {
+      "field": "atom:C3",
+      "label": "C",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "BUILD-MAP-C and version-matched cfg and compile_error! contracts are combined to prove every turbo-W case fails before an artifact can ship."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "It verifies cfg-attribute inclusion and compile_error!, but omits version-matched Rust all semantics needed to show the source predicate selects the macro."
+      }
+    },
+    {
+      "field": "atom:C4",
+      "label": "C",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "OBL-2 proves unwrap_or, OBL-3/4 prove the guarded unchecked call, and Covered=Required supplies closure across every profile and debug state with a relative PROVED verdict."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "OBL-2 through OBL-4 are locally correct, but Covered=Required relies on OBL-1 body selection without verified version-matched not/all predicate semantics."
+      }
+    },
+    {
+      "field": "atom:C5",
+      "label": "C",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "OBL-2 through OBL-4 prove zero for None and the payload for Some in both feature cases, then close over Required."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "The return-value cases are locally right, but their aggregate configuration closure depends on the same incomplete cfg-selection authority."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "C",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The positive selection and rejection claims necessarily rely on unchecked Rust all/not semantics outside BUILD-MAP-C's admitted proposition."
+      }
+    },
+    {
+      "field": "hard_error:CH2",
+      "label": "C",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It claims Covered=Required although its stated cfg-selection derivation omits material version-matched all/not semantics."
+      }
+    },
+    {
+      "field": "hard_error:CH6",
+      "label": "C",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It claims full PROVED verdicts over Required while OBL-1 remains incomplete throughout that domain."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "C",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "The report consumes BUILD-MAP-C only for OBL-1/reachability and uses correctly matched Rust documentation for semantics."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The report uses all/not cfg-predicate behavior for rejection and body selection without verifying those propositions in version-matched Rust authority."
+      }
+    },
+    {
+      "field": "novel:s2:N1",
+      "label": "E",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "Not independently proposed; adjudicate the candidate on its merits."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The report locates unwrap_unchecked at line 22, but the supplied source places that unsafe call at line 20."
+      }
+    },
+    {
+      "field": "atom:C3",
+      "label": "G",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "It combines BUILD-MAP-C with versioned cfg and compile_error! semantics to prove every turbo-W build fails."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "The rejection argument verifies cfg-attribute inclusion and compile_error!, but never verifies the version-matched Rust semantics of all needed to select the macro."
+      }
+    },
+    {
+      "field": "atom:C4",
+      "label": "G",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "O-NON/O-GUARD/O-UNWRAP prove both branches, define parametric Covered, and explicitly derive Required subset-of Covered before the relative PROVED result."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "The body proofs are correct locally, but the claimed configuration partition and Covered closure rely on unverified version-matched not/all cfg-predicate semantics."
+      }
+    },
+    {
+      "field": "atom:C5",
+      "label": "G",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "The same obligations prove zero for None and the payload for Some, and state their configuration union is Covered."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "The local return-value cases are correct, but the aggregate behavioral closure uses the same incomplete cfg-selection premise."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "G",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The positive selection and rejection claims necessarily rely on unchecked Rust all/not semantics that BUILD-MAP-C does not authorize."
+      }
+    },
+    {
+      "field": "hard_error:CH2",
+      "label": "G",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It claims Covered closure although the stated cfg-selection derivation omits the material version-matched all/not predicate semantics."
+      }
+    },
+    {
+      "field": "hard_error:CH6",
+      "label": "G",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It claims full PROVED verdicts over the audit domain while the cfg-selection obligation used across that domain is incomplete."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "G",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "It keeps BUILD-MAP-C conspicuous and within configuration reachability/selection/rejection, with semantic claims from matched Rust docs."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The report cites cfg-attribute inclusion but omits authoritative version-matched all/not predicate propositions while relying on them for selection and rejection."
+      }
+    }
+  ],
+  "mode": "C",
+  "schema_version": 1
+}

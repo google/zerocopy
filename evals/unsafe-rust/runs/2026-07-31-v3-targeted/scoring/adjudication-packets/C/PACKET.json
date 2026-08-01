@@ -1,0 +1,21 @@
+{
+  "allowlist_sha256": "ad025876ef66f6e6578eea565088eaa99c24c0a603391d1e9f924858b3f63c48",
+  "common_rules_sha256": "b7ad63a8a816034852d1542e904eccce33c3e9ff60e6b4b2bb7f37f503ce8b82",
+  "disagreements_sha256": "780f7355b0edd93c48f6c97b335a60f184ec0af65aa4e7ab019b38dbceb611b1",
+  "disputed_labels": [
+    "C",
+    "E",
+    "G"
+  ],
+  "mode": "C",
+  "report_sha256": {
+    "C": "1409aa1649cd9e0950368deb23ade05351c03b9ab89a32e637514b9d43293e22",
+    "E": "5c927aebfbdd7b0c2213525642f94b9b2d634ddbe371c2de93761a8799809093",
+    "G": "78953c2a86ff27a79669c044278b47b0cb996b7bf6a47ca72e92fd5ec643ee43"
+  },
+  "rubric_sha256": "3953c17ad001ee677061118952a5ac4fae44e21cc1ed1d64a0a0b2ae41c0049c",
+  "schema_sha256": "58d36e6a54002a29fe7f45c4f65d966a307212e6d082be75d34772fc5b128209",
+  "schema_version": 1,
+  "source_score_packet_sha256": "d62b94c908cf13f894b80f4308c7c2b836bd750cb59fd82916880b92ad92aec1",
+  "target_byte_tree_sha256": "dc91c627439d64fdf16069e999d98b815021cda01721f3fb5dd63fd4ccc33c86"
+}
