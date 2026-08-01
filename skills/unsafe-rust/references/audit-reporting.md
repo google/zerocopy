@@ -15,9 +15,10 @@ Before reviewing proofs, record:
 
 - exact repository, source revision/digest, workspace packages, generated
   artifacts, and relevant uncommitted changes;
-- Rust/compiler/standard-library versions and supported range;
+- supported toolchain/configuration predicate, its controlling policy sources,
+  conflicts or gaps, audit cutoff, authorized resolution or conservative audit
+  domain, and enforced exclusions;
 - dependency resolution and relevant source identities;
-- supported configurations and exclusions;
 - API, module, binary, or whole-project scope;
 - soundness theorem and documented postconditions in scope;
 - TCB log identity/revision;
@@ -84,6 +85,13 @@ be `UNSOUND` while a different configuration remains `UNPROVED`. Issue `PROVED`
 for the combined default claim only when every in-scope soundness and
 documented-postcondition obligation is proved.
 
+Classify a witness using the execution as a whole. A valid execution that ever
+exhibits UB can establish `UNSOUND` but cannot itself establish the UB-free
+existence claim required for `CONTRACT-BROKEN`. If it is the only behavioral
+evidence, report that postcondition as `UNPROVED`. An independent UB-free
+witness or equivalent existence proof may establish `CONTRACT-BROKEN`;
+separate proofs may establish both verdicts.
+
 Place qualifications in the theorem, not in vague prose. Use:
 
 > PROVED for `<scope>` under `<supported-set predicate>`, relative to TCB
@@ -109,7 +117,8 @@ Each finding should contain:
   derivation;
 - smallest missing, false, circular, or unsupported implication;
 - authoritative contract or TCB entry involved;
-- whether a valid UB counterexample or postcondition counterexample is known;
+- whether a valid UB witness or a separate UB-free postcondition refutation or
+  equivalent existence proof is known;
 - affected callers, producers, consumers, generated output, and configurations;
 - minimal acceptable resolution;
 - compatibility and re-audit consequences.
@@ -156,8 +165,10 @@ A complete audit report contains:
 5. **Obligation coverage:** Proof sites and status summary; link to detailed
    proofs/findings rather than duplicating them. Include material reconstructed
    proofs missing from the reviewed proof artifacts.
-6. **Configuration closure:** Supported-set definition, axes, abstract or
-   enumerative coverage proof, generated artifacts, and enforced exclusions.
+6. **Configuration closure:** Supported-set definition, controlling policy
+   sources and conflicts, audit cutoff, authorized resolution or conservative
+   superset, axes, abstract or enumerative coverage proof, generated artifacts,
+   and enforced exclusions.
 7. **TCB audit log:** Every authoritative or admitted proposition and reviewer
    disposition.
 8. **Tool-derived evidence:** Exact theorem, artifact/model scope, bounds,
