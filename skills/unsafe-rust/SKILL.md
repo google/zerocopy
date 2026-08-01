@@ -38,6 +38,46 @@ Prove source-level Rust soundness first. State claims about a particular
 compiler backend, binary, platform, security property, probability, or
 deployment separately with their additional premises.
 
+## Recover the Required Domain
+
+Before consuming premises or issuing a full verdict, derive the exact domain
+quantified by the claim. Let `Required(case)` denote the valid uses, inputs,
+states, executions, Rust/toolchain versions, and configurations that the claim
+requires. Let `Covered(case)` hold exactly where every obligation the claim
+requires for that case has a complete derivation from applicable premises.
+Within one obligation, valid case lemmas may be unioned. Across distinct
+obligations, claim-level coverage is their pointwise conjunction—not a union of
+regions in which different obligations happened to be proved.
+
+- Preserve the controlling domain expressions symbolically, including ranges,
+  unions, exclusions, quantifiers, and conditional or moving policies. Record
+  their exact sources and audit cutoff.
+- If applicable project sources conflict or materially underdetermine support,
+  obtain an authorized resolution, derive an explicit conservative audit
+  domain containing every materially supported candidate predicate, or leave
+  the affected combined claim `UNPROVED`. Do not call a conservative audit
+  domain the resolved project promise.
+- Treat every normalization, enumeration, partition, exclusion, and policy
+  merge as a proof step. Prove equality before replacing one domain expression
+  with another, the required containment before using a conservative superset,
+  and `Required ⊆ Covered` before concluding `PROVED`.
+- A finite inventory requires evidence both that every listed member belongs
+  and that no required member is omitted. Endpoints, one representative per
+  apparent category, CI jobs, lockfiles, and other samples do not prove an
+  interval or set inventory.
+- Prefer a parametric proof over the symbolic predicate when enumeration would
+  be large or its exact membership is unavailable. Otherwise report proved
+  regions and the unresolved remainder; do not turn it into an implicit
+  exclusion.
+- An audit cutoff limits the temporal scope of a claim. It does not establish
+  semantic continuity, enumerate releases before the cutoff, or make sampled
+  documentation applicable between samples.
+
+Apply
+[configuration closure](references/configurations-and-generated-code.md#recover-the-required-supported-set)
+to derive supported compilation cases and prove every transformation of that
+predicate.
+
 ## Use Only Applicable Premises
 
 - Bottom out Rust-language and standard-library facts in exact applicable text
@@ -48,14 +88,6 @@ deployment separately with their additional premises.
 - Attach an applicability domain to every claim and premise, whether stated
   locally or inherited from an identified project policy or canonical entry. A
   derivation proves only the cases covered by all premises it consumes.
-- Define or inherit a precise supported toolchain/configuration predicate
-  before consuming versioned premises or issuing a full verdict. If applicable
-  project sources conflict or materially underdetermine that predicate, obtain
-  an authorized resolution, prove an explicit conservative superset covering
-  every materially supported candidate predicate identified from those
-  sources, or leave the affected full-scope claim `UNPROVED`. Do not silently
-  select an MSRV, current toolchain, or convenient interpretation, and do not
-  assume that one earliest version represents the whole predicate.
 - Apply a guarantee documented for an older Rust release to a later stable
   release only when an exact applicable Rust backwards-compatibility
   commitment preserves that exact proposition throughout the later release's
@@ -115,36 +147,29 @@ documentation gap and suggest an upstream improvement when appropriate.
 ## Follow the Proof Workflow
 
 1. **Frame the claim.** Record the artifact identity, exact scope, valid uses or
-   executions, Rust and dependency versions, the supported
-   toolchain/configuration predicate and its controlling sources, mandatory
-   postconditions, TCB, exclusions, unresolved support-policy conflicts, and
-   whether design alternatives are requested.
-2. **Inventory the surface.** Enumerate every in-scope safe and unsafe API
+   executions, mandatory postconditions, TCB, exclusions, and whether design
+   alternatives are requested.
+2. **Recover the domain.** Preserve the controlling expressions, derive
+   `Required`, justify every transformation or conservative enlargement, and
+   state how eventual proof cases will establish `Required ⊆ Covered`.
+3. **Inventory the surface.** Enumerate every in-scope safe and unsafe API
    surface, obligation site, invariant producer/transition/consumer, and
-   generated or expanded artifact across the supported set.
-3. **State every obligation.** Obtain each controlling contract, decompose it
+   generated or expanded artifact across the required domain.
+4. **State every obligation.** Obtain each controlling contract, decompose it
    literally, and state the exact proposition and applicability to prove.
-4. **Construct the derivation.** Derive every conjunct from checked local facts,
+5. **Construct the derivation.** Derive every conjunct from checked local facts,
    named invariants, applicable authoritative axioms, tool-derived theorems, or
    explicit TCB entries. Unfold definitions and seek indirect multi-premise
    derivations; absence of one direct sentence is not itself a documentation
    gap. Justify every intermediate inference.
-5. **Close composition.** Over the entire supported toolchain/configuration
-   predicate—by one parametric proof or an exhaustive partition as
-   appropriate—give every literal clause of each applicable controlling
-   contract and every safe surface a disposition. Ensure every consumed
-   premise has an admissible source. Try to falsify the contract reading, each
-   derivation, and coverage, including boundary and adversarial cases derived
-   from the clauses themselves rather than from any supposedly exhaustive
-   hazard list, before concluding `PROVED`.
-6. **Report exactly.** Keep unresolved obligations visible and state the
-   smallest missing implication. Record proofs, TCB, coverage, findings,
-   postcondition failures, documentation gaps, and residual scope without
-   optimism.
-
-Do not require a concrete UB counterexample to reject an incomplete proof. A
-missing, ambiguous, circular, or inapplicable derivation is sufficient for
-`UNPROVED`.
+6. **Close and challenge.** Give every literal contract clause and safe surface
+   a disposition, establish domain closure, and try to falsify the domain
+   recovery, contract reading, derivations, and coverage with boundary and
+   adversarial cases derived from the actual clauses.
+7. **Certify and report.** Apply the quantifier-sensitive certificates below.
+   Keep every unresolved obligation visible and state the smallest missing
+   implication. Record proofs, TCB, coverage, findings, postcondition failures,
+   documentation gaps, and residual scope without optimism.
 
 ## Write and Review Proof-Grade Documentation
 
@@ -217,16 +242,20 @@ new artifact and audit them anew.
 Read [audit-reporting.md](references/audit-reporting.md) before delivering a
 persistent or full audit.
 
-- **PROVED:** Every obligation for the exact named claim is discharged over its
-  complete applicability, relative to the stated TCB.
-- **UNPROVED:** At least one required derivation, premise, applicability or
-  coverage argument, postcondition proof, or citation is missing, ambiguous,
-  circular, or unverifiable.
-- **UNSOUND:** A valid use or in-scope execution is proved to reach undefined
-  behavior.
-- **CONTRACT-BROKEN:** It is proved that there exists a valid in-scope
-  execution which, considered as a whole, contains no undefined behavior and
-  falsifies a documented postcondition.
+| Verdict | Required certificate |
+|---|---|
+| **PROVED** | Every obligation for the exact named claim has a checked derivation over its complete applicability, `Required ⊆ Covered`, and every premise is proved from admissible sources or appears as an accepted entry in the stated TCB. |
+| **UNPROVED** | A required derivation, premise, applicability or domain-closure argument, postcondition proof, or citation remains missing, ambiguous, circular, or unverifiable, and no applicable existential refutation below is complete. |
+| **UNSOUND** | There exists a proved valid in-scope use or execution which reaches an executed operation or semantic event, its exact required safety proposition is false there, and applicable authoritative semantics—possibly together with an explicit TCB premise about the implementation—entails undefined behavior. |
+| **CONTRACT-BROKEN** | There exists a proved valid in-scope execution which, considered as a whole, contains no undefined behavior and falsifies a documented postcondition. |
+
+Failure to prove a universal obligation is enough for `UNPROVED`; do not invent
+a counterexample. Conversely, once all parts of an existential UB certificate
+are proved, report the scoped soundness claim `UNSOUND`; do not continue to
+demand a universal positive lemma and dilute the result to `UNPROVED`. A
+violation of user-authored safety prose is not by itself a runtime UB event:
+trace the certificate through applicable contracts to the exact authoritative
+or explicitly trusted UB consequence.
 
 Classify a witness using the execution as a whole, not observations from a
 prefix of an execution that later reaches undefined behavior. An
@@ -239,8 +268,11 @@ verdicts.
 
 Apply verdicts separately to soundness, documented postconditions, and
 conditional application claims. State exact scope, applicability, and TCB
-beside every verdict. Never substitute “looks sound,” “probably sound,” or test
-success.
+beside every verdict. For every affirmative claim spanning multiple Rust
+releases, identify a parametric proof, an exhaustive applicable partition, or
+an exact proposition-preserving compatibility premise whose covered domain
+contains the claimed release set. Never substitute endpoints, sparse samples,
+an audit cutoff, “looks sound,” “probably sound,” or test success.
 
 For a persistent audit, complete:
 

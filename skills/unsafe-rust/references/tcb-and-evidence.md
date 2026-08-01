@@ -192,8 +192,9 @@ is not unconditional Rust soundness.
 
 Classify evidence by what the exact result proves:
 
-- A concrete failing execution can refute a universal claim when the execution
-  is in scope and valid.
+- A concrete execution refutes only a claim whose applicable verdict certificate
+  it satisfies. A valid in-scope execution with a complete UB certificate can
+  refute soundness; a postcondition refutation must be UB-free as a whole.
 - A clean sampled test, fuzzing run, sanitizer run, interpreter execution, or
   stress run usually establishes only that the explored executions did not
   trigger the modeled failure.
