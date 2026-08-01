@@ -52,7 +52,9 @@ execution exhibits undefined behavior, make no claim that observations
 elsewhere—or notionally “before” that event—remain guaranteed. An unexecuted bad
 path does not by itself make a different execution undefined, but soundness of a
 safe API still quantifies over every valid use and execution, so one reachable
-valid counterexample refutes it.
+valid counterexample refutes it. Such a UB-containing execution cannot also
+establish a defined behavioral observation; apply the exact witness rule in
+`SKILL.md`.
 
 ## Qualify Applicability
 
@@ -75,6 +77,10 @@ Avoid repetitive local boilerplate. A proof may inherit applicability from an
 exactly identified project support policy, invariant definition, axiom entry,
 or TCB entry. The local proof must still make the inheritance and relevant case
 clear enough to review.
+
+Derive the required predicate under
+[Define the supported set](configurations-and-generated-code.md#define-the-supported-set),
+then carry it through every premise and case lemma below.
 
 A documented Rust guarantee from version `R` may support a later stable version
 only when an exact Rust backwards-compatibility commitment preserves that exact
@@ -125,6 +131,33 @@ these classes, the proof is incomplete.
 
 Distinguish the validity of a value of type `T` from a stronger library
 invariant attached to its role in an abstraction. Prove both when needed.
+
+Never promote one producer's admission contract into an invariant of its output
+type. A constructor, conversion, deserializer, FFI ingress, mutation, or other
+producer precondition applies at that invocation. It supports a fact about that
+particular result only through a proved postcondition or dataflow relation; it
+does not prove that every valid value came through that producer or that later
+transitions preserve the property.
+
+To rely on `I` as an invariant of every value in a stated set, provide a
+complete derivation over that set without reversing the producer implication.
+Such a derivation may, for example, use:
+
+1. applicable authoritative premises that entail `I` for every value in the
+   set;
+2. an enforced abstraction boundary plus a complete proof that every in-scope
+   ingress and producer establishes `I` and every transition preserves it;
+3. another applicable derivation, including a verified tool theorem, that
+   entails the exact quantified proposition; or
+4. the exact universal proposition as an admissible accepted TCB premise under
+   the TCB rules.
+
+This enumeration does not replace the entailment requirement or exclude other
+valid proof forms. A consumer may instead establish `I` for its particular
+values or quantified subset from local checks, proved producer and transition
+history, and other applicable premises. If neither derivation closes, leave
+the consuming obligation `UNPROVED`.
+
 Likewise, distinguish:
 
 - permission to perform an operation;
@@ -331,8 +364,9 @@ For each proof:
 1. Reconstruct the required preconditions from the callee or language/library
    contract rather than trusting the comment's summary.
 2. Open every citation and verify its exact proposition, version, and scope.
-3. Check each claimed local fact against the actual dataflow and all alternative
-   paths.
+3. Check each claimed local fact—including its quantifier, producer/transition
+   history, and applicability domain—against the actual dataflow and all
+   alternative paths.
 4. Expand every named invariant and ensure it is established initially and
    preserved by every permitted transition.
 5. Check quantifiers, arithmetic boundaries, zero-sized and empty cases,
@@ -358,8 +392,9 @@ proof artifact:
 - If the reconstruction succeeds, the implementation obligation may be proved,
   but report the inadequate comment and provide proposed replacement wording.
 - If the reconstruction fails, leave the obligation unproved.
-- If it yields a valid UB or postcondition counterexample, report `UNSOUND` or
-  `CONTRACT-BROKEN` as applicable.
+- If it yields a valid execution containing UB, report `UNSOUND`. If it proves
+  that a valid UB-free execution falsifies a postcondition, report
+  `CONTRACT-BROKEN`. Do not use the UB-containing execution itself for both.
 
 When changes are authorized, update the adjacent proof rather than leaving the
 reconstructed reasoning only in the review. A canonical checked proof or named
