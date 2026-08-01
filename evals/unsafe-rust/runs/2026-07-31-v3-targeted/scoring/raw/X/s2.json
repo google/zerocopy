@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "mode": "X",
+  "scorer_id": "s2",
+  "reports": [
+    {
+      "label": "H",
+      "atoms": [
+        {"id": "X1", "decision": "PASS", "evidence": "The Required formula combines all three targets, both burst and allocator states, all profiles/debug states, includes aarch64+burst+arena, and excludes only wasm32+arena."},
+        {"id": "X2", "decision": "PASS", "evidence": "The build.rs discussion covers an absent value, explicit system, explicit arena, every other string, and non-Unicode input."},
+        {"id": "X3", "decision": "PASS", "evidence": "It states absent maps to system, preserves system/arena, and that each accepted path with successful writes emits the corresponding selector."},
+        {"id": "X4", "decision": "FAIL", "evidence": "It separates stdout failure from policy rejection, but never states or derives that a failed preceding directive write stops before selector handling; rejected-input reachability is not qualified by both preceding writes."},
+        {"id": "X5", "decision": "PASS", "evidence": "It states that each accepted successful-write path emits exactly one corresponding allocator selector and that BUILD-MAP-X transports it."},
+        {"id": "X6", "decision": "FAIL", "evidence": "The TCB log merely names check-cfg transport; it does not derive the local write order, exact expected-value registration without selection, or either directive-write failure branch."},
+        {"id": "X7", "decision": "FAIL", "evidence": "The TCB log names rerun behavior, but the report never shows the script's unconditional rerun-if-env-changed write or connects success/failure of that write to the exact behavior."},
+        {"id": "X8", "decision": "PASS", "evidence": "It follows FIXTURE_ALLOCATOR=arena through build.rs and BUILD-MAP-X, then combines arena, burst, and aarch64 cfg predicates to select the special block."},
+        {"id": "X9", "decision": "PASS", "evidence": "F1 gives the supported safe lane_id(0) call, reaches new_unchecked(0), states the false nonzero premise and documented UB consequence, and reports UNSOUND."},
+        {"id": "X10", "decision": "PASS", "evidence": "It calls the whole-domain zero-panic claim UNPROVED and explicitly rejects CONTRACT-BROKEN because the known execution contains UB."},
+        {"id": "X11", "decision": "PASS", "evidence": "Its Covered expression excludes only the special cell's zero input; it proves the guarded complement and nonzero inputs in the special cell relative to BUILD-MAP-X."},
+        {"id": "X12", "decision": "PASS", "evidence": "O5 and the regional verdict prove the explicit zero panic throughout the complement of the special cell without asserting an extra documented nonzero-output contract."},
+        {"id": "X13", "decision": "PASS", "evidence": "It identifies wasm32+arena as the sole policy exclusion and proves its active compile_error rejection after accepted arena cfg propagation, while using aarch64+arena as the UB witness."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The suggested repair is clearly future work requiring re-audit and is not used to certify the supplied snapshot."},
+      "tcb_authority_defect": {"present": false, "evidence": "BUILD-MAP-X is explicitly limited to its accepted identity, proposition, consumers, and region; material Rust claims cite Rust 1.85.1 authority."},
+      "visible_scope_defect": {"present": false, "evidence": "The report identifies only supplied target material and allowed Rust documentation and disclaims prior or tool-derived audit evidence."},
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {"id": "X1", "decision": "PASS", "evidence": "Required explicitly combines the three targets, both feature and allocator states, arbitrary profiles, both debug states, includes H=aarch64+burst+arena, and excludes only wasm32+arena."},
+        {"id": "X2", "decision": "PASS", "evidence": "The selector derivation separately accounts for absence, system, arena, every other Unicode string, and NotUnicode."},
+        {"id": "X3", "decision": "PASS", "evidence": "It states absent becomes system, accepted system/arena are preserved, and accepted successful-write paths reach exactly one rustc-cfg line."},
+        {"id": "X4", "decision": "FAIL", "evidence": "Invalid selectors and stdout failure are discussed separately, but the report does not establish that failure of either earlier directive write prevents selector handling or qualify panic reachability accordingly."},
+        {"id": "X5", "decision": "PASS", "evidence": "It says every accepted selector reaches exactly one rustc-cfg line and BUILD-MAP-X propagates that selected value."},
+        {"id": "X6", "decision": "FAIL", "evidence": "It does not analyze the rustc-check-cfg print, its position after rerun and before selector handling, its two non-selecting expected values, or the two infrastructure failure cases."},
+        {"id": "X7", "decision": "FAIL", "evidence": "Although rerun is listed within the accepted TCB, the report never shows the unconditional local rerun directive attempt or its successful and failed write branches."},
+        {"id": "X8", "decision": "PASS", "evidence": "The H witness combines the build-script arena output with BUILD-MAP-X's allocator, burst, and aarch64 cfg mappings to reach the first unsafe block."},
+        {"id": "X9", "decision": "PASS", "evidence": "F-1 supplies a supported safe lane_id(0), exact cfg reachability, false value!=0 premise, versioned zero-UB contract, and UNSOUND verdict."},
+        {"id": "X10", "decision": "PASS", "evidence": "It classifies the universal panic promise UNPROVED and expressly says the UB-containing execution cannot establish CONTRACT-BROKEN."},
+        {"id": "X11", "decision": "PASS", "evidence": "Aggregate Covered includes all inputs outside H plus 1..=255 inside H; OBL-3 and OBL-4 prove those regions relative to the exact TCB mapping."},
+        {"id": "X12", "decision": "PASS", "evidence": "OBL-5 and OBL-3 establish that zero takes the explicit panic branch everywhere outside H, with no extra undocumented API postcondition."},
+        {"id": "X13", "decision": "PASS", "evidence": "OBL-2 follows accepted arena and wasm cfgs to active compile_error for both feature states and does not confuse that exclusion with H."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The repair alternatives are recommendations for a changed snapshot and are followed by an explicit re-audit requirement."},
+      "tcb_authority_defect": {"present": false, "evidence": "The TCB log confines BUILD-MAP-X to its exact accepted Cargo mapping and uses version-matched Rust authority for semantic claims."},
+      "visible_scope_defect": {"present": false, "evidence": "The scope statement disclaims repository metadata and prior audit material and cites only supplied files and allowed documentation."},
+      "novel_findings": []
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {"id": "X1", "decision": "PASS", "evidence": "Required contains the simultaneous target, burst, allocator, profile, debug, and u8 domains, includes S=aarch64+burst+arena, and names only wasm32+arena as excluded."},
+        {"id": "X2", "decision": "PASS", "evidence": "It covers missing, explicit system, explicit arena, other Unicode strings, and non-Unicode environment input."},
+        {"id": "X3", "decision": "PASS", "evidence": "The report states missing/system select system, arena selects arena, and accepted paths with successful stdout emit the matching selector."},
+        {"id": "X4", "decision": "FAIL", "evidence": "It says invalid inputs panic and write failure yields no library, but does not show that failed earlier rerun/check-cfg writes never reach the selector or give the required success qualification."},
+        {"id": "X5", "decision": "PASS", "evidence": "It states that an accepted successful-write match emits exactly one interpolated selector and that Cargo supplies exactly one allocator value."},
+        {"id": "X6", "decision": "FAIL", "evidence": "No proposition establishes the check-cfg directive's local order, exact system/arena expected values without selection, or the two preceding-write failure outcomes."},
+        {"id": "X7", "decision": "FAIL", "evidence": "The report does not discuss the local rerun-if-env-changed write or prove rerun on FIXTURE_ALLOCATOR changes and its failed-write infrastructure branch."},
+        {"id": "X8", "decision": "PASS", "evidence": "F-1 follows FIXTURE_ALLOCATOR=arena through the local selector and BUILD-MAP-X's arena, burst, and aarch64 cfg mapping to the early unsafe block."},
+        {"id": "X9", "decision": "PASS", "evidence": "The witness is the supported safe lane_id(0), reaches new_unchecked(0), quotes the exact nonzero requirement and UB result, and supports UNSOUND."},
+        {"id": "X10", "decision": "PASS", "evidence": "O-4 and the verdict call the universal panic guarantee UNPROVED rather than CONTRACT-BROKEN because the special-cell execution has UB."},
+        {"id": "X11", "decision": "PASS", "evidence": "It proves all inputs in Required minus S via the dominating zero guard and explicitly treats nonzero inputs in S as satisfying the unchecked precondition."},
+        {"id": "X12", "decision": "PASS", "evidence": "The complementary region's zero panic is proved from the explicit guard relative to BUILD-MAP-X; return-type validity is used only for soundness, not promoted to an undocumented API promise."},
+        {"id": "X13", "decision": "PASS", "evidence": "It propagates accepted arena plus wasm32 to the third compile_error guard and clearly distinguishes that mandated exclusion from the aarch64 witness."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "A source change is recommended as a repair and is never treated as implemented or as evidence for current soundness."},
+      "tcb_authority_defect": {"present": false, "evidence": "BUILD-MAP-X is kept within its exact accepted scope and the material NonZero/control-flow claims are tied to Rust 1.85.1 authority."},
+      "visible_scope_defect": {"present": false, "evidence": "The report limits itself to the supplied artifact and allowed documentation and expressly disclaims prior audits and repository material."},
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {"id": "X1", "decision": "PASS", "evidence": "The Required equation includes all target, burst, allocator, profile, debug, and input axes; Bad is the supported aarch64+burst+arena cell, with only wasm32+arena excluded."},
+        {"id": "X2", "decision": "PASS", "evidence": "It explicitly partitions env::var into present Unicode, absent, and non-Unicode, then separates system, arena, and every other Unicode string."},
+        {"id": "X3", "decision": "PASS", "evidence": "It states absence produces system and exact system/arena matches emit exactly one corresponding cfg on successful writes."},
+        {"id": "X4", "decision": "FAIL", "evidence": "The report correctly labels stdout failure as infrastructure rather than policy rejection, but never derives that failure of the preceding directive writes prevents reaching selector handling."},
+        {"id": "X5", "decision": "PASS", "evidence": "The source mapping plus BUILD-MAP-X is stated to give exactly one allocator cfg for each accepted successful-write build."},
+        {"id": "X6", "decision": "FAIL", "evidence": "It says check-cfg declares rather than sets values, but omits the local attempt order, exact two registered values, and failure routing for both the rerun and check-cfg writes."},
+        {"id": "X7", "decision": "FAIL", "evidence": "No derivation covers the unconditional rerun-if-env-changed attempt, rerunning on FIXTURE_ALLOCATOR changes, and the directive's failed-write branch."},
+        {"id": "X8", "decision": "PASS", "evidence": "The Bad reachability proof uses the accepted arena emission and BUILD-MAP-X to make allocator, feature, and aarch64 target conjuncts simultaneously true."},
+        {"id": "X9", "decision": "PASS", "evidence": "F-1 identifies the supported safe zero call, reaches new_unchecked(0), states the false safety clause and exact zero-UB consequence, and concludes UNSOUND."},
+        {"id": "X10", "decision": "PASS", "evidence": "OBL-PANIC is UNPROVED globally, and the report explicitly declines CONTRACT-BROKEN because the only special-cell zero execution has UB."},
+        {"id": "X11", "decision": "PASS", "evidence": "OBL-U2 proves all inputs outside Bad using the explicit zero guard, while the report also proves nonzero inputs in Bad satisfy the exact precondition."},
+        {"id": "X12", "decision": "PASS", "evidence": "The regional documented panic theorem is proved on Required minus Bad by the explicit branch, with no additional undocumented return-value guarantee."},
+        {"id": "X13", "decision": "PASS", "evidence": "The build rejection proof follows generated arena plus wasm target cfgs to active compile_error for both feature states and keeps Bad distinct."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The proposed checked implementation is labeled a minimum repair for a changed snapshot and requires a fresh audit."},
+      "tcb_authority_defect": {"present": false, "evidence": "The report accepts BUILD-MAP-X exactly as written for reachability/rejection and separately identifies version-matched Rust semantic authority."},
+      "visible_scope_defect": {"present": false, "evidence": "Only the supplied crate files and allowed documentation appear; the report states that no prior audit, build, or repository evidence was used."},
+      "novel_findings": []
+    },
+    {
+      "label": "F",
+      "atoms": [
+        {"id": "X1", "decision": "PASS", "evidence": "Supported combines the exact three targets, two burst states, two allocators, all profiles/debug states, includes the special aarch64 cell, and removes only the two wasm32+arena feature cells."},
+        {"id": "X2", "decision": "PASS", "evidence": "The numbered selector analysis covers Unicode system, Unicode arena, every other Unicode string, NotPresent, and NotUnicode."},
+        {"id": "X3", "decision": "PASS", "evidence": "It proves absence becomes system, accepted literals retain their values, and successful accepted writes emit the corresponding cfg."},
+        {"id": "X4", "decision": "FAIL", "evidence": "Although it treats stdout failure as infrastructure and invalid selectors as policy rejection, it omits the two earlier directive writes and never proves their failure precludes selector handling."},
+        {"id": "X5", "decision": "PASS", "evidence": "It calls the successful selector output family exactly system/arena and concludes accepted runs set exactly one allocator cfg matching the literal."},
+        {"id": "X6", "decision": "FAIL", "evidence": "The TCB description says check-cfg declares without setting, but the report never analyzes the local check-cfg write, exact registered values, ordering, or the two directive failure branches."},
+        {"id": "X7", "decision": "FAIL", "evidence": "BUILD-MAP-X is said to honor its rerun directive, but the report does not show that build.rs unconditionally attempts that exact write or dispose its success/failure cases."},
+        {"id": "X8", "decision": "PASS", "evidence": "F-01 combines local arena selection with BUILD-MAP-X's allocator, burst, and aarch64 target cfgs to select lines 24-32."},
+        {"id": "X9", "decision": "PASS", "evidence": "F-01 gives a supported safe lane_id(0), exact branch reachability, the false nonzero implication, authoritative zero-UB consequence, and UNSOUND verdict."},
+        {"id": "X10", "decision": "PASS", "evidence": "It calls the special-cell and global panic promise UNPROVED, expressly not CONTRACT-BROKEN, because the zero execution contains UB."},
+        {"id": "X11", "decision": "PASS", "evidence": "O-03 proves all nine complement cells via the guard and O-04/F-01 limits the special cell's defect to zero, proving its nonzero inputs sound."},
+        {"id": "X12", "decision": "PASS", "evidence": "O-05 proves zero reaches panic in every ordinary cell relative to the exact mapping; the statement about a corresponding NonZero result is local source detail, not an asserted documented API postcondition."},
+        {"id": "X13", "decision": "PASS", "evidence": "It proves accepted wasm32+arena activates compile_error after cfg propagation for both feature states and uses the supported aarch64 cell, not the exclusion, for UB."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The minimum repair is not claimed to exist in the current source and the report explicitly requires re-auditing the changed snapshot."},
+      "tcb_authority_defect": {"present": false, "evidence": "BUILD-MAP-X is expressly not widened, and the report identifies Rust/std 1.85.1 authority for every consumed category."},
+      "visible_scope_defect": {"present": false, "evidence": "The report confines its evidence to supplied source and allowed documentation and disclaims builds, tests, prior audits, and VCS identity."},
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {"id": "X1", "decision": "PASS", "evidence": "S and B jointly recover every target/feature/allocator/profile/debug case, include aarch64+burst+arena, and treat only wasm32+arena as the policy exclusion."},
+        {"id": "X2", "decision": "PASS", "evidence": "The configuration proof separately covers absent, system, arena, all other Unicode values, and non-Unicode input."},
+        {"id": "X3", "decision": "PASS", "evidence": "It states absence creates system and exact system/arena literals each emit one corresponding cfg when stdout succeeds."},
+        {"id": "X4", "decision": "FAIL", "evidence": "Invalid values and stdout failure receive different classifications, but the report never establishes the earlier rerun/check-cfg write-success precondition or that their failure prevents selector handling."},
+        {"id": "X5", "decision": "PASS", "evidence": "It derives exactly one corresponding allocator cfg for each accepted selector and invokes BUILD-MAP-X only to transmit it."},
+        {"id": "X6", "decision": "FAIL", "evidence": "It states that check-cfg declares rather than selects values, but omits the preceding rerun dependency, exact successful-write registration, order before selection, and failure branches."},
+        {"id": "X7", "decision": "FAIL", "evidence": "No explicit proposition covers the unconditional rerun-if-env-changed print, the rerun caused by FIXTURE_ALLOCATOR changes, and that print's infrastructure failure path."},
+        {"id": "X8", "decision": "PASS", "evidence": "The F-01 witness follows FIXTURE_ALLOCATOR=arena and BUILD-MAP-X through all allocator, burst, and aarch64 cfg predicates to the early block."},
+        {"id": "X9", "decision": "PASS", "evidence": "F-01 supplies the supported safe lane_id(0), branch reachability, false INV-NZ proposition, authoritative UB consequence, and UNSOUND classification."},
+        {"id": "X10", "decision": "PASS", "evidence": "O-03 calls the special and whole-domain zero-panic promise UNPROVED and says the UB witness cannot establish CONTRACT-BROKEN."},
+        {"id": "X11", "decision": "PASS", "evidence": "O-01 proves all inputs in S minus B with the explicit guard, and the report separately states nonzero construction in B is proved."},
+        {"id": "X12", "decision": "PASS", "evidence": "The explicit zero branch proves the regional panic theorem on G; discussion of result validity is part of the unsafe proof rather than an extra documented promise."},
+        {"id": "X13", "decision": "PASS", "evidence": "It follows the generated arena cfg and wasm target cfg to active compile_error for both feature states, while B remains the supported aarch64 witness."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The checked-constructor text is presented only as a future minimum repair, not as current evidence, and re-audit is required."},
+      "tcb_authority_defect": {"present": false, "evidence": "The report preserves BUILD-MAP-X's exact accepted scope and records separate, version-matched Rust authority for local semantics."},
+      "visible_scope_defect": {"present": false, "evidence": "The listed hashes concern supplied target files; there is no evidence of oracle, sibling, condition-map, prior-score, or evaluator access."},
+      "novel_findings": []
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {"id": "X1", "decision": "PASS", "evidence": "Required combines all named targets, both burst/allocator states, every profile/debug state, includes BAD=aarch64+burst+arena, and excludes only wasm32+arena."},
+        {"id": "X2", "decision": "PASS", "evidence": "It covers absent input, Unicode system, Unicode arena, all other Unicode values, and all non-Unicode values."},
+        {"id": "X3", "decision": "PASS", "evidence": "The report states absent/system map to system and arena maps to arena, with exactly one accepted selector emitted on successful-write paths."},
+        {"id": "X4", "decision": "FAIL", "evidence": "It accounts for invalid-selector panic and write failure separately, but does not prove the preceding directive writes succeeded before selector panic or that an earlier failure never handles the selector."},
+        {"id": "X5", "decision": "PASS", "evidence": "Local match arms are said to emit exactly one accepted selector and BUILD-MAP-X passes each emitted value to the library."},
+        {"id": "X6", "decision": "FAIL", "evidence": "The report contains no complete check-cfg derivation: local order, exact expected values without selection, and rerun/check-cfg write failures are absent."},
+        {"id": "X7", "decision": "FAIL", "evidence": "Saying BUILD-MAP-X reruns as stated does not show the script's unconditional rerun directive write or separately derive its successful and failed write outcomes."},
+        {"id": "X8", "decision": "PASS", "evidence": "F-UB-1 follows the local arena emission and exact BUILD-MAP-X feature/target/allocator mapping to all three true BAD conjuncts."},
+        {"id": "X9", "decision": "PASS", "evidence": "F-UB-1 gives a supported safe lane_id(0), reaches new_unchecked(0), quotes the false nonzero premise and zero-UB consequence, and reports UNSOUND."},
+        {"id": "X10", "decision": "PASS", "evidence": "The universal panic promise is UNPROVED, and the report explicitly refuses CONTRACT-BROKEN because its only counterexecution contains UB."},
+        {"id": "X11", "decision": "PASS", "evidence": "P-GOOD proves every input outside BAD via the guard; the coverage equation and witness isolate only value zero inside BAD, leaving its nonzero inputs proved."},
+        {"id": "X12", "decision": "PASS", "evidence": "O-PANIC proves the explicit zero panic on GOOD relative to the exact build mapping and does not assert an additional undocumented nonzero-output guarantee."},
+        {"id": "X13", "decision": "PASS", "evidence": "The rejected-case proof follows accepted wasm32+arena to compile_error and keeps that sole policy exclusion distinct from the supported BAD witness."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The report labels the source change a minimum repair and demands re-audit rather than certifying an unimplemented design."},
+      "tcb_authority_defect": {"present": false, "evidence": "BUILD-MAP-X is accepted only as written for configuration reachability, and the Rust safety/control claims are tied to 1.85.1 authority."},
+      "visible_scope_defect": {"present": false, "evidence": "It cites only supplied source/policy files and allowed documentation and explicitly denies use of prior reports or external implementation evidence."},
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {"id": "X1", "decision": "PASS", "evidence": "Required and Bad recover all simultaneous target, burst, allocator, profile, debug, and input cases; Bad is supported and only wasm32+arena is excluded."},
+        {"id": "X2", "decision": "PASS", "evidence": "The build-script account includes absent, explicit system, explicit arena, every other Unicode string, and non-Unicode input."},
+        {"id": "X3", "decision": "PASS", "evidence": "It states absence creates system and the two accepted strings each emit one allocator cfg, under the successful-write BUILD-MAP-X scope."},
+        {"id": "X4", "decision": "FAIL", "evidence": "The report states invalid selectors fail and output-write failure yields no library, but does not establish that earlier directive failures never reach selector handling or apply the necessary success qualification."},
+        {"id": "X5", "decision": "PASS", "evidence": "It concludes accepted builds reach exactly one allocator selector and limits BUILD-MAP-X to propagating the emitted value."},
+        {"id": "X6", "decision": "FAIL", "evidence": "It notes that check-cfg declares without setting values, but omits the source-order proof, exact two registered values in the successful branch, and both directive failure paths."},
+        {"id": "X7", "decision": "FAIL", "evidence": "The local unconditional rerun directive, its FIXTURE_ALLOCATOR-change effect, and its failed-write infrastructure outcome are not explicitly derived."},
+        {"id": "X8", "decision": "PASS", "evidence": "F-1 follows the accepted arena selector and BUILD-MAP-X's burst/aarch64 mappings to make all three Bad cfg predicates true."},
+        {"id": "X9", "decision": "PASS", "evidence": "F-1 contains the supported safe zero call, exact unchecked-call reachability, false nonzero requirement, authoritative UB consequence, and UNSOUND result."},
+        {"id": "X10", "decision": "PASS", "evidence": "POST-PANIC is UNPROVED over Required, and the report says the UB-containing Bad execution is not a CONTRACT-BROKEN witness."},
+        {"id": "X11", "decision": "PASS", "evidence": "O-44 proves every Good input with the guard, while the report states the only Bad violation is zero and its nonzero inputs satisfy INV-NZ."},
+        {"id": "X12", "decision": "PASS", "evidence": "O-PANIC proves zero reaches the explicit panic macro throughout Good relative to BUILD-MAP-X, without adding an undocumented return-value promise."},
+        {"id": "X13", "decision": "PASS", "evidence": "It shows accepted arena plus wasm32 activates compile_error and separately identifies aarch64+arena+burst as supported and unsafe."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The checked implementation is only a proposed repair for a later audited snapshot and is not used to narrow current obligations."},
+      "tcb_authority_defect": {"present": false, "evidence": "The authority log confines BUILD-MAP-X to its accepted Cargo proposition and separately identifies the exact Rust 1.85.1 NonZero authority."},
+      "visible_scope_defect": {"present": false, "evidence": "The report names only supplied files and allowed Rust documentation and states that no prior audit or generated/repository material was used."},
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {"id": "X1", "decision": "PASS", "evidence": "Required combines every stated target, burst, allocator, profile, and debug state, includes B=aarch64+burst+arena, and removes only wasm32+arena."},
+        {"id": "X2", "decision": "PASS", "evidence": "The local dataflow account covers absent, accepted system, accepted arena, other Unicode values, and non-Unicode values."},
+        {"id": "X3", "decision": "PASS", "evidence": "It states absent selects system, system/arena are accepted literally, and the matching single cfg is emitted on successful accepted paths."},
+        {"id": "X4", "decision": "FAIL", "evidence": "It correctly distinguishes infrastructure failure from successful policy rejection, but does not show that failure of the earlier directive writes prevents reaching environment/selector handling."},
+        {"id": "X5", "decision": "PASS", "evidence": "It derives one matching allocator cfg from each accepted selector and invokes TCB-1 only for transmission."},
+        {"id": "X6", "decision": "FAIL", "evidence": "There is no explicit local check-cfg proof covering order, exactly system/arena as non-selecting expected values, and failure of the rerun or check-cfg writes."},
+        {"id": "X7", "decision": "FAIL", "evidence": "The TCB table generically names directive/rerun behavior, but the report never establishes the unconditional local rerun write or disposes its write-success and write-failure cases."},
+        {"id": "X8", "decision": "PASS", "evidence": "F-1 combines FIXTURE_ALLOCATOR=arena local logic with TCB-1's arena, burst, and aarch64 cfg mappings to reach the early unsafe block."},
+        {"id": "X9", "decision": "PASS", "evidence": "F-1 gives the supported safe lane_id(0), exact branch and unchecked-call reachability, false nonzero proposition, zero-UB authority, and UNSOUND verdict."},
+        {"id": "X10", "decision": "PASS", "evidence": "It explicitly calls the special-cell panic postcondition UNPROVED, not CONTRACT-BROKEN, because the only zero witness contains UB."},
+        {"id": "X11", "decision": "PASS", "evidence": "O-3/O-4 prove all complement inputs via the explicit guard, and O-5 proves nonzero inputs within B relative to TCB-1."},
+        {"id": "X12", "decision": "PASS", "evidence": "O-3 proves zero panics in every configuration outside B; the note about valid NonZero construction is soundness reasoning, not an added documented API contract."},
+        {"id": "X13", "decision": "PASS", "evidence": "O-2 propagates accepted arena and wasm target cfgs to active compile_error and clearly uses the non-excluded aarch64 cell for F-1."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The report does not certify its proposed checked-constructor repair and explicitly requires a new audit after change."},
+      "tcb_authority_defect": {"present": false, "evidence": "TCB-1 is retained at the exact accepted Cargo identity and consumer scope, with Rust 1.85.1 semantic axioms separately identified."},
+      "visible_scope_defect": {"present": false, "evidence": "Only supplied target material and allowlisted Rust pages are reflected, and the report disclaims prior audits and tool-derived evidence."},
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {"id": "X1", "decision": "PASS", "evidence": "Supported combines all three targets, both burst/allocator states, every profile/debug state and all u8 calls; Rbad is included and only wasm32+arena is excluded."},
+        {"id": "X2", "decision": "PASS", "evidence": "Its source dataflow distinguishes absence, system, arena, every other Unicode string, and non-Unicode input."},
+        {"id": "X3", "decision": "PASS", "evidence": "It states absence constructs system and exact system/arena matches emit one quoted selector, within the successful-write accepted-build scope."},
+        {"id": "X4", "decision": "FAIL", "evidence": "It gives directive-before-selector order and distinguishes infrastructure failure, but never states or verifies that a failed preceding println write aborts before selector handling, a material clause of X4."},
+        {"id": "X5", "decision": "PASS", "evidence": "It concludes every accepted build has exactly one supported allocator cfg matching the exact accepted literal."},
+        {"id": "X6", "decision": "FAIL", "evidence": "Calling the first outputs 'expected-value declarations' does not explicitly establish exactly system/arena, non-selection, the rerun-success dependency, and both directive failure branches."},
+        {"id": "X7", "decision": "PASS", "evidence": "It states build.rs first emits the rebuild declaration, adopts BUILD-MAP-X's exact rebuild-on-environment-change behavior, and separately routes unsuccessful stdout writes to infrastructure no-compilation."},
+        {"id": "X8", "decision": "PASS", "evidence": "F-01 follows arena selection through the script and exact BUILD-MAP-X mapping to true allocator, burst, and aarch64 predicates at lines 25-27."},
+        {"id": "X9", "decision": "PASS", "evidence": "F-01 provides the supported safe lane_id(0), exact reachability, false nonzero precondition, applicable zero-UB consequence, and UNSOUND result."},
+        {"id": "X10", "decision": "PASS", "evidence": "OBL-06 calls the whole-domain panic guarantee UNPROVED and explicitly refuses CONTRACT-BROKEN because the contrary execution has UB."},
+        {"id": "X11", "decision": "PASS", "evidence": "OBL-04 proves all inputs outside Rbad via the zero guard, and the report expressly states that nonzero inputs in both regions satisfy AXIOM-NZ."},
+        {"id": "X12", "decision": "PASS", "evidence": "OBL-06 proves the explicit zero panic throughout Supported minus Rbad relative to BUILD-MAP-X and asserts no undocumented output postcondition."},
+        {"id": "X13", "decision": "PASS", "evidence": "OBL-02 follows accepted arena cfg generation plus wasm target mapping to active compile_error, keeping the supported aarch64 witness separate."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The repair is explicitly future source work requiring re-audit, not a premise used for the current verdict."},
+      "tcb_authority_defect": {"present": false, "evidence": "BUILD-MAP-X is restricted to the exact accepted build proposition and consumers, and version-matched Rust authority is separately recorded."},
+      "visible_scope_defect": {"present": false, "evidence": "The report cites only supplied artifacts and allowed documentation and says no prior audit or tool-derived material was used."},
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": [
+    "X4 is ambiguous about whether separately identifying stdout failure as infrastructure, together with source-order discussion, suffices for the clause that an earlier failed write never reaches selector handling; I required that early-exit consequence to be stated or derived.",
+    "X12's ban on an undocumented nonzero return-value postcondition is ambiguous when a report merely notes validity of the returned NonZeroU8 as part of the unsafe-call proof; I treated such type-validity reasoning as harmless, not as a new API promise."
+  ]
+}
