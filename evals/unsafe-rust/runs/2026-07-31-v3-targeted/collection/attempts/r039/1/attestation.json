@@ -1,0 +1,19 @@
+{
+  "agent_id": "/root/report_r039",
+  "api_state": "COMPLETED",
+  "attempt": 1,
+  "canonical_for_scoring": true,
+  "operational_scope_deviation": false,
+  "recorded_utc": "2026-08-01T06:46:33.935981Z",
+  "report_sha256": "c250345e3ded76516cb26af1a80874ba305fb015d70c75b3a82ad5eb7c3821b9",
+  "run_id": "r039",
+  "schema_version": 1,
+  "scope_evidence": "No known operational source-scope deviation.",
+  "semantic_noncompletion": false,
+  "source_isolation": "procedural",
+  "terminal_disposition": "COMPLETE",
+  "utf8": true,
+  "within_word_cap": true,
+  "word_cap": 2200,
+  "word_count": 1246
+}
