@@ -40,11 +40,17 @@ deployment separately with their additional premises.
 
 ## Recover the Required Domain
 
-Before consuming premises or issuing a full verdict, derive the exact domain
-quantified by the claim. Let `Required(case)` denote the valid uses, inputs,
-states, executions, Rust/toolchain versions, and configurations that the claim
-requires. Let `Covered(case)` hold exactly where every obligation the claim
-requires for that case has a complete derivation from applicable premises.
+Before proving the claim body or issuing a full verdict, derive the exact
+domain quantified by the claim. Let a `case` retain every relevant dimension of
+one valid use or execution: artifact, toolchain, configuration, input, state,
+time, and any other dimension on which an obligation or premise can vary. Let
+`Required(case)` denote the cases the claim requires and `Covered(case)` hold
+exactly where every obligation the claim requires for that case has a complete
+derivation from applicable premises. A local argument may project onto fewer
+dimensions only when it proves the lemma for every required case in each
+omitted-dimension fiber—parametrically or by proving those dimensions
+irrelevant—and must restore the full case before claim-level closure.
+
 Within one obligation, valid case lemmas may be unioned. Across distinct
 obligations, claim-level coverage is their pointwise conjunction—not a union of
 regions in which different obligations happened to be proved.
@@ -57,10 +63,15 @@ regions in which different obligations happened to be proved.
   domain containing every materially supported candidate predicate, or leave
   the affected combined claim `UNPROVED`. Do not call a conservative audit
   domain the resolved project promise.
-- Treat every normalization, enumeration, partition, exclusion, and policy
-  merge as a proof step. Prove equality before replacing one domain expression
-  with another, the required containment before using a conservative superset,
-  and `Required ⊆ Covered` before concluding `PROVED`.
+- Treat every asserted set relationship, normalization, enumeration,
+  partition, exclusion, and policy merge as a proof step. Prove the definition
+  of the exact relation asserted. For example, `A = B` needs `A ⊆ B` and
+  `B ⊆ A`; `A ⊊ B` needs `A ⊆ B` and a witness `w ∈ B \ A`;
+  incomparability needs witnesses `a ∈ A \ B` and `b ∈ B \ A`, with each
+  membership and nonmembership proved. Equivalent symbolic derivations are
+  acceptable, but required witnesses must remain explicit. Prove the
+  required containment before using a conservative superset and
+  `Required ⊆ Covered` before concluding `PROVED`.
 - A finite inventory requires evidence both that every listed member belongs
   and that no required member is omitted. Endpoints, one representative per
   apparent category, CI jobs, lockfiles, and other samples do not prove an
@@ -74,7 +85,7 @@ regions in which different obligations happened to be proved.
   documentation applicable between samples.
 
 Apply
-[configuration closure](references/configurations-and-generated-code.md#recover-the-required-supported-set)
+[configuration recovery](references/configurations-and-generated-code.md#recover-the-required-supported-set)
 to derive supported compilation cases and prove every transformation of that
 predicate.
 
@@ -82,9 +93,11 @@ predicate.
 
 - Bottom out Rust-language and standard-library facts in exact applicable text
   from versioned Rust Reference or standard-library documentation.
-- Quote and link the smallest sufficient set of passages whose propositions,
-  together with justified inference steps, entail the fact. Open each citation
-  and verify its wording, qualifications, version, and scope.
+- Quote and link the smallest sufficient set of passages whose explicitly
+  stated propositions, together with justified inference steps, entail the
+  fact. Open each citation and verify its wording, qualifications, version, and
+  scope. A page, allowlist entry, broad label such as “cfg semantics,” or nearby
+  cited clause does not supply a material proposition the proof never states.
 - Attach an applicability domain to every claim and premise, whether stated
   locally or inherited from an identified project policy or canonical entry. A
   derivation proves only the cases covered by all premises it consumes.
@@ -149,21 +162,31 @@ documentation gap and suggest an upstream improvement when appropriate.
 1. **Frame the claim.** Record the artifact identity, exact scope, valid uses or
    executions, mandatory postconditions, TCB, exclusions, and whether design
    alternatives are requested.
-2. **Recover the domain.** Preserve the controlling expressions, derive
-   `Required`, justify every transformation or conservative enlargement, and
-   state how eventual proof cases will establish `Required ⊆ Covered`.
-3. **Inventory the surface.** Enumerate every in-scope safe and unsafe API
-   surface, obligation site, invariant producer/transition/consumer, and
-   generated or expanded artifact across the required domain.
-4. **State every obligation.** Obtain each controlling contract, decompose it
-   literally, and state the exact proposition and applicability to prove.
-5. **Construct the derivation.** Derive every conjunct from checked local facts,
-   named invariants, applicable authoritative axioms, tool-derived theorems, or
-   explicit TCB entries. Unfold definitions and seek indirect multi-premise
-   derivations; absence of one direct sentence is not itself a documentation
-   gap. Justify every intermediate inference.
-6. **Close and challenge.** Give every literal contract clause and safe surface
-   a disposition, establish domain closure, and try to falsify the domain
+2. **Frame the full case domain.** Identify every relevant dimension and
+   preserve the controlling expressions, sources, candidate relationships, and
+   unresolved conflicts. State the proposed `Required` domain and how proof
+   cases will retain every dimension.
+3. **Inventory surfaces and transformations.** Enumerate every in-scope safe
+   and unsafe API surface, obligation site, invariant
+   producer/transition/consumer, and each material stage and alternative exit
+   by which build or generation inputs can affect the theorem domain, a
+   consumed premise, shipped artifacts or selected source, reachability, or an
+   in-scope postcondition.
+4. **State atomic obligations and premises.** Obtain each controlling contract,
+   decompose it literally, and state the exact proposition and applicability to
+   prove. Classify every material premise and identify its exact source.
+5. **Construct the derivation.** Derive `Required`, every asserted domain
+   relationship, and every claim conjunct from checked local facts, named
+   invariants, applicable authoritative axioms, tool-derived theorems, or
+   explicit TCB entries. Unfold definitions and composite transformations;
+   preserve material operation order and alternative exits; seek indirect
+   multi-premise derivations; and justify every intermediate inference.
+6. **Close, lint, and challenge.** Give every literal contract clause and safe
+   surface a disposition and establish domain closure. Reverse-trace each
+   conclusion used by a verdict or regional result through every material
+   inference to explicit, applicable premises; reconcile every Rust premise
+   with its checked quotation and link; and ensure no later-stage fact is
+   consumed on a path that exited earlier. Then try to falsify the domain
    recovery, contract reading, derivations, and coverage with boundary and
    adversarial cases derived from the actual clauses.
 7. **Certify and report.** Apply the quantifier-sensitive certificates below.
@@ -256,6 +279,13 @@ demand a universal positive lemma and dilute the result to `UNPROVED`. A
 violation of user-authored safety prose is not by itself a runtime UB event:
 trace the certificate through applicable contracts to the exact authoritative
 or explicitly trusted UB consequence.
+
+An existential certificate closes the universal verdict but does not excuse
+omitting another in-scope surface, operation, contract clause, or mandatory
+postcondition. Continue the inventory and give each independent obligation a
+disposition. Do not claim that a proved or affected region is exact or maximal
+unless its full case-domain equality is established; maximal positive remainder
+characterization is required only when the audit scope requests it.
 
 Classify a witness using the execution as a whole, not observations from a
 prefix of an execution that later reaches undefined behavior. An
