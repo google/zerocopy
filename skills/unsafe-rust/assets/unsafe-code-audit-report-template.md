@@ -67,7 +67,7 @@ and record every additional language-reachable surface in the table above.
 - [ ] safe trait methods and caller-provided implementations;
 - [ ] macros and macro-generated APIs;
 - [ ] reexports and configuration-specific APIs;
-- [ ] language-reachable `#[doc(hidden)]` safe items.
+- [ ] language-reachable `#[doc(hidden)]` safe items;
 - [ ] associated items, safe free functions/statics, callbacks, FFI entrypoints,
       blanket/default/auto-trait behavior, operators, and destruction whenever
       language-reachable or semantically relevant.
@@ -80,7 +80,7 @@ and record every additional language-reachable surface in the table above.
 
 ## Obligation Ledger
 
-| Obligation ID | Source/API | Exact proposition | Required domain | Premises and their applicability | Covered domain/cases | Proof location | Reviewer | Status |
+| Obligation ID | Source/API | Exact proposition | Required domain | Derivation, material premises, and their applicability | Covered domain/cases | Proof location | Reviewer | Status |
 |---|---|---|---|---|---|---|---|---|
 | `<OBL-...>` | `<location>` | `<goal>` | `<required applicability>` | `<facts/invariants/TCB + domains>` | `<scope/partition>` | `<link>` | `<identity>` | `<status>` |
 
@@ -88,23 +88,40 @@ and record every additional language-reachable surface in the table above.
 
 ### Required Domain Recovery
 
-| Step ID | Controlling source expression or prior predicate | Derived predicate/inventory/partition | Relation to prove (write symbolically) | Equality/containment evidence | Status |
+| Step ID | Controlling source expression or prior predicate | Derived predicate/inventory/partition | Relation to prove (write symbolically) | Required certificate: containments/witnesses/derivation | Status |
 |---|---|---|---|---|---|
-| `<DOMAIN-...>` | `<exact source + expression>` | `<symbolic result>` | `<derived = source / source ⊆ derived / derived ⊆ source / Required ⊆ union(cases)>` | `<derivation and source>` | `<proved / unresolved>` |
+| `<DOMAIN-...>` | `<exact source + expression>` | `<symbolic result>` | `<exact symbolic relation, e.g. derived = source or Required ⊆ union(cases)>` | `<derivation and source>` | `<proved / unresolved>` |
 
 - **Audit cutoff:** `<date/revision and effect on dynamic policies>`
 - **Exact `Required` predicate:** `<symbolic definition or link>`
+- **Configuration projection:** `<Required_cfg(configuration)>`
 - **Policy conflicts/authorized resolution:** `<conflicts, decision, or
   conservative audit domain without calling it the project promise>`
 - **Unresolved domain:** `<none or exact remainder/finding IDs>`
+
+### Build and Generation Pipeline
+
+`<Use this table for a materially nontrivial claim-relevant build, generation,
+expansion, linking, or artifact-selection pipeline. Otherwise record the simple
+selection facts in the obligation ledger.>`
+
+| Stage ID | Input/state region and predecessor | Ordered operation or transformation | Successful output/effect | Alternative exit and partial effects | Authority/TCB and applicability | Consumer |
+|---|---|---|---|---|---|---|
+| `<STAGE-...>` | `<exact cases in which reached>` | `<local source step or tool transition>` | `<exact consumed value/cardinality/identity/order, or universal output property>` | `<claim-relevant failure/rejection/other exit; later steps not reached>` | `<source proof + exact semantic premise>` | `<next stage/obligation>` |
+
+- **Freshness/invalidation:** `<input-change to rerun/cache/output identity
+  relation, or why irrelevant>`
 
 ### Covered Domain
 
 - **Discovered axes:** `<features, cfg, targets, architectures, OSes, SIMD,
   allocators, debug assertions, panic modes, generated output, and other actual
   axes>`
-- **Exact `Covered` predicate:** `<union valid case regions within each
-  obligation, then intersect across all claim-required obligations>`
+- **Configuration-fiber proof:** `<how every full Required case in each
+  Required_cfg fiber reaches its exact artifact/source or other in-scope build
+  outcome, with findings for any remainder>`
+- **Exact full-case `Covered` predicate:** `<union valid case regions within
+  each obligation, then intersect across all claim-required obligations>`
 - **Coverage proof:** `<parametric argument, justified exhaustive partition,
   justified finite enumeration, generator proof, or combination>`
 - **Closure certificate:** `<proof of Required ⊆ aggregate Covered, or finding
@@ -114,7 +131,7 @@ and record every additional language-reachable surface in the table above.
 - **Generated artifacts:** `<identity/proof>`
 - **Enforced exclusions:** `<how unsupported combinations cannot ship>`
 - **Sampled/tested configurations:** `<list and exact limited evidence provided>`
-- **Uncovered configurations:** `<none or finding IDs>`
+- **Uncovered full cases/configurations:** `<none or finding IDs>`
 
 ## TCB Summary
 
@@ -211,15 +228,23 @@ explicitly excluded region. Explain enforcement of exclusions.>`
 ## Final Attestation
 
 - [ ] Every in-scope obligation has a status.
-- [ ] Every controlling domain expression is preserved, and every normalization,
-      enumeration, partition, merge, or exclusion has its required equality or
-      containment proof.
+- [ ] Every conclusion used by a verdict or regional result and every claimed
+      set relationship satisfies [Make every derivation
+      reviewable](../references/proof-obligations.md#make-every-derivation-reviewable).
+- [ ] Every controlling domain expression is preserved, and every asserted set
+      relationship, normalization, enumeration, partition, merge, or exclusion
+      has the certificate required by its exact relation.
+- [ ] Every materially relevant build/generation path records required order,
+      exits, and partial progress and proves each consumed tool-interpretation,
+      output, and freshness proposition; no later-stage fact is used on a path
+      that exited earlier.
 - [ ] Every verdict has the certificate required by `SKILL.md`, including
       `Required ⊆ Covered` for `PROVED` and every existential link for
       `UNSOUND` or `CONTRACT-BROKEN`.
 - [ ] Every material derivation reconstructed during review is exposed with its
       applicability, and deficient proof artifacts are reported separately.
-- [ ] Every consumed citation and TCB entry was independently verified.
+- [ ] Every material semantic premise appears in the authority/TCB inventory,
+      and every consumed citation and TCB entry was independently verified.
 - [ ] Every consumed TCB entry supporting `PROVED` has an accepted human
       disposition.
 - [ ] Every mandatory documented postcondition was reviewed in addition to UB

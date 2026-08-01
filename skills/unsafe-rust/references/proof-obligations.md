@@ -5,6 +5,7 @@
 - [Form the theorem](#form-the-theorem)
 - [Qualify applicability](#qualify-applicability)
 - [Separate kinds of premises](#separate-kinds-of-premises)
+- [Make every derivation reviewable](#make-every-derivation-reviewable)
 - [Write safety documentation](#write-safety-documentation)
 - [Write local safety proofs](#write-local-safety-proofs)
 - [Carry invariants locally](#carry-invariants-locally)
@@ -177,6 +178,51 @@ Likewise, distinguish:
 - facts merely preserved by it;
 - obligations transferred to a returned pointer, reference, guard, token, or
   caller.
+
+## Make Every Derivation Reviewable
+
+A proof may be compact, but it must be reversible by a reviewer. A premise,
+intermediate proposition, or applicability restriction is material when
+deleting it leaves the remaining explicit premises insufficient to entail a
+certified conclusion; a countermodel may demonstrate that insufficiency. State
+every such component. Justify each transition unless its entailment is directly
+reviewable from the stated premises. Even a direct transition may not import an
+unstated Rust, library, tool, environmental, or TCB premise. Omit only immediate
+source syntax or purely logical rearrangement of already explicit premises.
+
+Do not hide a material component behind a name such as “layout rules,” “cfg
+semantics,” “the build mapping,” or “the type guarantees it.” A citation verifies
+only the proposition the proof extracts from it; an allowlisted page or another
+clause on the same page does not silently fill an unstated premise. Unfold
+composite behavior to the clauses actually used. When build or generation
+stages are relevant, apply
+[Prove build and generation pipelines](configurations-and-generated-code.md#prove-build-and-generation-pipelines).
+
+The ordinary proof prose or obligation ledger may carry this information. Do
+not create a separate graph when the existing proof is already
+reverse-traceable. Before certifying `PROVED`, `UNSOUND`, `CONTRACT-BROKEN`, or
+any regional result:
+
+1. start at every conclusion used by the certificate and recover its full-case
+   applicability, every premise and intermediate proposition, and why they
+   entail the conclusion;
+2. classify each premise as a checked source fact, mathematical step, named
+   invariant, Rust axiom, tool theorem, or TCB entry; check source facts and
+   invariants against their exact locations, dataflow, material operation order,
+   and alternative exits;
+3. check material, non-immediate mathematical and logical steps by their
+   explicit derivations or witnesses; they need no Rust citation;
+4. check every Rust semantic premise against its recorded exact versioned
+   quotation and link;
+5. check every other semantic premise against its verified tool theorem or
+   accepted TCB entry;
+6. ensure no projection, shorthand, page-level citation, or later-stage result
+   silently supplies a missing premise; and
+7. trace forward through every relevant exit to prove the postconditions and
+   invariants consumed later.
+
+If a required component remains absent, remove every conclusion that depends on
+it and apply the exact verdict certificate.
 
 ## Write Safety Documentation
 
@@ -398,7 +444,10 @@ For each proof:
 6. Verify every postcondition used downstream.
 7. Search for circularity, vacuity, hidden trust, and stronger conclusions than
    the cited facts entail.
-8. Record every missing implication so it cannot be forgotten, apply
+8. Apply [Make every derivation reviewable](#make-every-derivation-reviewable)
+   to every conclusion used by a verdict or regional result and every claimed
+   set relationship.
+9. Record every missing implication so it cannot be forgotten, apply
    [Search for indirect derivations](#search-for-indirect-derivations), and
    apply the verdict certificate in `SKILL.md`: report `UNPROVED` if a required
    implication remains absent and no existential refutation closes, or the
@@ -406,10 +455,9 @@ For each proof:
 
 If validation requires a material derivation absent from the existing safety
 comment, include that reconstructed derivation—or the smallest missing
-portion—in the review. A derivation is material when it supplies a necessary
-logical bridge that is neither stated nor an immediate syntactic or
-type-enforced fact visible at the proof site. Give its citations,
-applicability, and relationship to the required preconditions and
+portion—in the review. Apply the material-component definition in
+[Make every derivation reviewable](#make-every-derivation-reviewable). Give its
+citations, applicability, and relationship to the required preconditions and
 postconditions. Report the implementation result separately from the deficient
 proof artifact:
 
