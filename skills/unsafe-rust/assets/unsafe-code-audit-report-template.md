@@ -17,6 +17,8 @@
   do not present it as unconditional Rust soundness>`
 - **Scope:** `<APIs/modules/packages/binaries>`
 - **Supported configuration predicate:** `<exact definition or link>`
+- **Support-policy sources/conflicts:** `<controlling sources, ambiguity,
+  authorized resolution or conservative audit superset, and audit cutoff>`
 - **TCB log:** `<ID/revision/link>`
 - **Skill revision:** `<unsafe-rust revision>`
 - **Qualification:** `<exact conditional assumptions; “none beyond stated TCB”
@@ -137,7 +139,9 @@ Full log: `<link/ID>`
   none>`
 - **Defect:** `<smallest missing, false, circular, or unsupported implication>`
 - **Authority/TCB involved:** `<citations/IDs>`
-- **Counterexample:** `<valid UB/postcondition witness, or “not required/not
+- **UB witness:** `<valid in-scope execution reaching UB, or “not established”>`
+- **Defined postcondition refutation:** `<valid UB-free witness or equivalent
+  proof that an in-scope UB-free execution falsifies the postcondition, or “not
   established”>`
 - **Affected producers/consumers:** `<IDs/locations>`
 - **Required resolution:** `<minimum proof, contract, implementation, privacy,
