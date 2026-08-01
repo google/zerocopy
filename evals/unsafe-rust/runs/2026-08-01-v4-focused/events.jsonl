@@ -1,0 +1,1 @@
+{"details": {"lock_sha256": "cd7a300f83b045f76530eded20ec2d22bd6abbd484d6459ff50245fb07ef943e"}, "event": "freeze_locked", "phase": "freeze", "previous_event_sha256": null, "schema_version": 1, "sequence": 1, "sha256": "059cde170e6e31d4ef4c4997b4a64413fdd9e47e9f9e5df74c1c9707bf6e3c58", "time_utc": "2026-08-01T17:59:50.663768Z"}
