@@ -48,6 +48,14 @@ deployment separately with their additional premises.
 - Attach an applicability domain to every claim and premise, whether stated
   locally or inherited from an identified project policy or canonical entry. A
   derivation proves only the cases covered by all premises it consumes.
+- Define or inherit a precise supported toolchain/configuration predicate
+  before consuming versioned premises or issuing a full verdict. If applicable
+  project sources conflict or materially underdetermine that predicate, obtain
+  an authorized resolution, prove an explicit conservative superset covering
+  every materially supported candidate predicate identified from those
+  sources, or leave the affected full-scope claim `UNPROVED`. Do not silently
+  select an MSRV, current toolchain, or convenient interpretation, and do not
+  assume that one earliest version represents the whole predicate.
 - Apply a guarantee documented for an older Rust release to a later stable
   release only when an exact applicable Rust backwards-compatibility
   commitment preserves that exact proposition throughout the later release's
@@ -92,6 +100,13 @@ documentation gap and suggest an upstream improvement when appropriate.
   entails the exact needed precondition.
 - Trace dataflow across calls and time rather than limiting review to lexical
   unsafe blocks. Account for every producer, transition, and consumer.
+- Do not promote a producer's preconditions into a universal invariant of its
+  output type. Any type- or abstraction-wide conclusion needs a complete
+  derivation independent of that invalid reversal—for example, applicable
+  authoritative premises, construction-and-preservation closure under an
+  enforced boundary, or an admissible explicit TCB premise. Local checks and
+  other applicable derivations may instead prove the proposition for the
+  particular consumed values or quantified subset.
 - For new code, place invariant-bearing representation in the smallest
   practical leaf module, keep safely accessible representation fields private
   to it, and treat safe code outside that module—including the rest of the same
@@ -100,9 +115,10 @@ documentation gap and suggest an upstream improvement when appropriate.
 ## Follow the Proof Workflow
 
 1. **Frame the claim.** Record the artifact identity, exact scope, valid uses or
-   executions, Rust and dependency versions, supported configuration set,
-   mandatory postconditions, TCB, exclusions, and whether design alternatives
-   are requested.
+   executions, Rust and dependency versions, the supported
+   toolchain/configuration predicate and its controlling sources, mandatory
+   postconditions, TCB, exclusions, unresolved support-policy conflicts, and
+   whether design alternatives are requested.
 2. **Inventory the surface.** Enumerate every in-scope safe and unsafe API
    surface, obligation site, invariant producer/transition/consumer, and
    generated or expanded artifact across the supported set.
@@ -113,11 +129,14 @@ documentation gap and suggest an upstream improvement when appropriate.
    explicit TCB entries. Unfold definitions and seek indirect multi-premise
    derivations; absence of one direct sentence is not itself a documentation
    gap. Justify every intermediate inference.
-5. **Close composition.** Ensure every literal contract clause and safe surface
-   has a disposition, every premise consumed by unsafe code has an admissible
-   source, and every supported configuration region is proved by an abstract
-   argument or exhaustive partition. Try to falsify the contract reading,
-   inference chain, and coverage before concluding `PROVED`.
+5. **Close composition.** Over the entire supported toolchain/configuration
+   predicate—by one parametric proof or an exhaustive partition as
+   appropriate—give every literal clause of each applicable controlling
+   contract and every safe surface a disposition. Ensure every consumed
+   premise has an admissible source. Try to falsify the contract reading, each
+   derivation, and coverage, including boundary and adversarial cases derived
+   from the clauses themselves rather than from any supposedly exhaustive
+   hazard list, before concluding `PROVED`.
 6. **Report exactly.** Keep unresolved obligations visible and state the
    smallest missing implication. Record proofs, TCB, coverage, findings,
    postcondition failures, documentation gaps, and residual scope without
@@ -164,8 +183,9 @@ requires an unenforced implementer behavior.
 
 Read
 [configurations-and-generated-code.md](references/configurations-and-generated-code.md)
-for every full audit and whenever conditional compilation, targets, generated
-code, FFI, assembly, SIMD, allocators, linking, or build tooling is relevant.
+for every full audit and whenever supported-toolchain policy, conditional
+compilation, targets, generated code, FFI, assembly, SIMD, allocators, linking,
+or build tooling is relevant.
 Every supported combination of compilation options that can ship downstream
 must be sound. Use parametric proofs or exhaustive partitions when literal
 enumeration would explode; do not substitute a tested sample.
@@ -204,8 +224,18 @@ persistent or full audit.
   circular, or unverifiable.
 - **UNSOUND:** A valid use or in-scope execution is proved to reach undefined
   behavior.
-- **CONTRACT-BROKEN:** A documented postcondition is proved false even though
-  undefined behavior need not occur.
+- **CONTRACT-BROKEN:** It is proved that there exists a valid in-scope
+  execution which, considered as a whole, contains no undefined behavior and
+  falsifies a documented postcondition.
+
+Classify a witness using the execution as a whole, not observations from a
+prefix of an execution that later reaches undefined behavior. An
+undefined-behavior-containing execution can witness `UNSOUND` but cannot
+establish the existential claim required for `CONTRACT-BROKEN`. If it is the
+only behavioral evidence, report soundness as `UNSOUND` and the postcondition
+as `UNPROVED`. An independent UB-free witness or equivalent existence proof
+may establish `CONTRACT-BROKEN`; separate proofs may therefore establish both
+verdicts.
 
 Apply verdicts separately to soundness, documented postconditions, and
 conditional application claims. State exact scope, applicability, and TCB
