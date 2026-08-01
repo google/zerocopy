@@ -14,20 +14,52 @@
 ## Define the Supported Set
 
 Write a precise predicate `Supported(configuration)` before claiming full
-soundness. Derive it from published package metadata, documentation, target
-policy, feature declarations, build tooling, compiler support, downstream
-integration agreements, and the artifacts that can actually be shipped.
+soundness. Fix the exact source or packaged artifact and audit cutoff. Let the
+predicate range over every relevant toolchain component, host/target fact, and
+build option rather than reducing it to a `rustc` version string.
 
-Include every compilation option combination that downstream users are allowed
-to produce, not merely CI jobs or maintainer-preferred builds. If a compilable
-combination is exposed without a clear exclusion, conservatively treat it as
-supported until the project owner establishes otherwise.
+Classify support evidence before using it:
+
+- applicable package metadata, published policy, release documentation,
+  feature/target policy, and authorized downstream agreements may define the
+  project's support contract;
+- manifest checks, build scripts, `compile_error!`, wrappers, packaging rules,
+  and distribution controls may admit or enforce configurations; and
+- CI jobs, lockfiles, successful builds, `rust-toolchain.toml`, and maintainer
+  defaults observe or select particular configurations but do not by themselves
+  define or prove downstream support.
+
+Resolve inherited fields in the exact workspace and inspect the effective
+packaged metadata when it can differ. Interpret every mechanism through its
+applicable contract; do not hard-code a universal precedence among metadata,
+documentation, and agreements. A documented exclusion may delimit a support
+promise, but if soundness depends on preventing that configuration from
+shipping, require effective rejection before claiming closure.
+
+If applicable support declarations conflict or materially underdetermine the
+predicate, do not silently select the narrowest interpretation. Obtain an
+authorized project decision, prove an explicit conservative superset covering
+every materially supported candidate predicate identified from the controlling
+sources, or report regional results and leave the full claim `UNPROVED`. Do not
+call that conservative audit domain a newly inferred project promise. If a
+shippable configuration is exposed and no applicable contract clearly excludes
+it, include it in the unresolved conservative candidate domain until project
+authority resolves its status; successful compilation alone still does not
+define the support promise.
+
+Preserve conditional and nonlinear structure across every discovered axis
+rather than collapsing the predicate to a single MSRV. It may be finite,
+nonlinear, or moving and need not have a globally earliest toolchain. Resolve
+dynamic policies at the audit cutoff; cover later members only through an
+applicable parametric theorem or re-audit trigger.
 
 Record:
 
 - source revision and workspace/package selection;
 - Rust toolchain range, edition, standard-library identity, and relevant compiler
   flags;
+- controlling support-policy sources, conflicts, authorized resolutions, and
+  the audit cutoff;
 - target triples, target specifications, CPUs, features, ABIs, data layouts, and
   linkers;
 - Cargo features, dependency feature unification, optional dependencies, and
