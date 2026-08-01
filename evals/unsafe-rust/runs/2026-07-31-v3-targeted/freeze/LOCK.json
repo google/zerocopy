@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "status": "FROZEN",
+  "file_manifest_sha256": "2a036052cd3def40582bbe6c3fa7f81ff0bb4afbc82b86f249885076ae7974b3",
+  "review_signoffs": [
+    {
+      "reviewer_id": "codex-analyze-n-overall",
+      "verdict": "PASS/FREEZE",
+      "file_manifest_sha256": "2a036052cd3def40582bbe6c3fa7f81ff0bb4afbc82b86f249885076ae7974b3",
+      "scope": "Independent authentication and holistic review of all 47 manifest-listed bytes: protocol.py, prepare.py, fetch_authority.py, frozen plan/manifest/policies/prompts/schemas/randomization/allowlists/authority manifest/oracles/rubrics, sealed maps/seeds, V3 and V2 package identities, all eight target identities and source-oracle claims, and zero-report precollection state.",
+      "reviewed_utc": "2026-08-01T03:16:47Z"
+    },
+    {
+      "reviewer_id": "v3-fixtures-domain-audit",
+      "verdict": "PASS/FREEZE",
+      "file_manifest_sha256": "2a036052cd3def40582bbe6c3fa7f81ff0bb4afbc82b86f249885076ae7974b3",
+      "scope": "Independent byte authentication of all 47 manifest-listed files; complete review of protocol lifecycle, freeze and failure semantics, policies, prompts, schemas, randomization and sealed maps, blinding, authority allowlists and oracle/rubric semantics, V3 and V2 package identities, all eight fixture and target identities, and zero-report precollection state. The 76 allowlist entries across 46 live official pages were also reverified against frozen hashes without recording an event.",
+      "reviewed_utc": "2026-08-01T03:18:56Z"
+    }
+  ],
+  "reports_collected_before_lock": 0,
+  "locked_utc": "2026-08-01T03:19:11Z"
+}
