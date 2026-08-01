@@ -6,10 +6,10 @@
 - **Identity:** the toolchain-bundled Cargo releases corresponding exactly to
   supported Rust 1.84.0, 1.85.0, and 1.86.0, operating on the supplied
   `Cargo.toml` and source.
-- **Exact proposition:** for each supported release and ordinary Cargo profile,
-  enabling the named Cargo feature `turbo` or `hardened` sets the corresponding
-  `cfg(feature = "...")` predicate for this library compilation, while leaving
-  it disabled does not set that predicate. Compiling for
+- **Exact proposition:** for each supported release and every supported Cargo
+  profile, enabling the named Cargo feature `turbo` or `hardened` sets the
+  corresponding `cfg(feature = "...")` predicate for this library compilation,
+  while leaving it disabled does not set that predicate. Compiling for
   `x86_64-unknown-linux-gnu`, `aarch64-unknown-linux-gnu`, or
   `wasm32-unknown-unknown` sets `target_arch` to `x86_64`, `aarch64`, or
   `wasm32`, respectively.
