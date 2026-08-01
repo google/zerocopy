@@ -2,27 +2,18 @@
 
 ## Claims and Verdicts
 
-- **Soundness claim:** `<exact source-level or binary-level absence-of-UB theorem>`
-- **Soundness verdict:** `<PROVED / UNPROVED / UNSOUND; split by scope or
-  configuration when needed>`
-- **Documented-postcondition claim:** `<exact contracts in scope>`
-- **Documented-postcondition verdict:** `<PROVED / UNPROVED /
-  CONTRACT-BROKEN; split by contract, scope, or configuration when needed>`
+| Claim ID | Exact theorem | Required-domain ID | Verdict | Certificate/proof/finding | TCB and qualification |
+|---|---|---|---|---|---|
+| `<CLAIM-SOUND-...>` | `<source- or binary-level absence-of-UB theorem>` | `<DOMAIN-...>` | `<PROVED / UNPROVED / UNSOUND>` | `<closure proof or finding IDs>` | `<TCB + assumptions>` |
+| `<CLAIM-POST-...>` | `<documented postcondition>` | `<DOMAIN-...>` | `<PROVED / UNPROVED / CONTRACT-BROKEN>` | `<closure proof or finding IDs>` | `<TCB + assumptions>` |
+| `<CLAIM-APP-...>` | `<conditional deployment/security/probabilistic theorem, or omit>` | `<DOMAIN-...>` | `<exact qualified result>` | `<proof/finding IDs>` | `<explicit conditional TCB>` |
+
 - **Combined mandatory result:** `<PROVED only if every in-scope soundness and
   mandatory documented-postcondition obligation is proved; otherwise list all
   applicable component verdicts and finding IDs>`
-- **Conditional application claim:** `<deployment/security/probabilistic theorem,
-  or none>`
-- **Conditional application result:** `<exact qualified result and finding IDs;
-  do not present it as unconditional Rust soundness>`
 - **Scope:** `<APIs/modules/packages/binaries>`
-- **Supported configuration predicate:** `<exact definition or link>`
-- **Support-policy sources/conflicts:** `<controlling sources, ambiguity,
-  authorized resolution or conservative audit superset, and audit cutoff>`
 - **TCB log:** `<ID/revision/link>`
 - **Skill revision:** `<unsafe-rust revision>`
-- **Qualification:** `<exact conditional assumptions; “none beyond stated TCB”
-  if appropriate>`
 
 ## Audited Snapshot
 
@@ -93,14 +84,33 @@ and record every additional language-reachable surface in the table above.
 |---|---|---|---|---|---|---|---|---|
 | `<OBL-...>` | `<location>` | `<goal>` | `<required applicability>` | `<facts/invariants/TCB + domains>` | `<scope/partition>` | `<link>` | `<identity>` | `<status>` |
 
-## Configuration Closure
+## Theorem-Domain and Configuration Closure
 
-- **Supported set:** `<formal/operational definition>`
+### Required Domain Recovery
+
+| Step ID | Controlling source expression or prior predicate | Derived predicate/inventory/partition | Relation to prove (write symbolically) | Equality/containment evidence | Status |
+|---|---|---|---|---|---|
+| `<DOMAIN-...>` | `<exact source + expression>` | `<symbolic result>` | `<derived = source / source ⊆ derived / derived ⊆ source / Required ⊆ union(cases)>` | `<derivation and source>` | `<proved / unresolved>` |
+
+- **Audit cutoff:** `<date/revision and effect on dynamic policies>`
+- **Exact `Required` predicate:** `<symbolic definition or link>`
+- **Policy conflicts/authorized resolution:** `<conflicts, decision, or
+  conservative audit domain without calling it the project promise>`
+- **Unresolved domain:** `<none or exact remainder/finding IDs>`
+
+### Covered Domain
+
 - **Discovered axes:** `<features, cfg, targets, architectures, OSes, SIMD,
   allocators, debug assertions, panic modes, generated output, and other actual
   axes>`
-- **Coverage proof:** `<parametric argument, exhaustive partition, finite
-  enumeration, generator proof, or combination>`
+- **Exact `Covered` predicate:** `<union valid case regions within each
+  obligation, then intersect across all claim-required obligations>`
+- **Coverage proof:** `<parametric argument, justified exhaustive partition,
+  justified finite enumeration, generator proof, or combination>`
+- **Closure certificate:** `<proof of Required ⊆ aggregate Covered, or finding
+  ID>`
+- **Version-spanning premise basis:** `<parametric proof, exhaustive applicable
+  cases, exact compatibility entry, or unresolved>`
 - **Generated artifacts:** `<identity/proof>`
 - **Enforced exclusions:** `<how unsupported combinations cannot ship>`
 - **Sampled/tested configurations:** `<list and exact limited evidence provided>`
@@ -139,7 +149,14 @@ Full log: `<link/ID>`
   none>`
 - **Defect:** `<smallest missing, false, circular, or unsupported implication>`
 - **Authority/TCB involved:** `<citations/IDs>`
-- **UB witness:** `<valid in-scope execution reaching UB, or “not established”>`
+- **UB certificate — valid use:** `<why the use/execution is valid and in scope,
+  or “not established”>`
+- **UB certificate — reachability:** `<executed operation or semantic event,
+  or “not established”>`
+- **UB certificate — false safety proposition:** `<exact required clause and
+  derivation of its falsity, or “not established”>`
+- **UB certificate — consequence:** `<applicable authority/TCB derivation to
+  UB, or “not established”>`
 - **Defined postcondition refutation:** `<valid UB-free witness or equivalent
   proof that an in-scope UB-free execution falsifies the postcondition, or “not
   established”>`
@@ -194,10 +211,14 @@ explicitly excluded region. Explain enforcement of exclusions.>`
 ## Final Attestation
 
 - [ ] Every in-scope obligation has a status.
-- [ ] Every `PROVED` obligation has a complete checked derivation.
+- [ ] Every controlling domain expression is preserved, and every normalization,
+      enumeration, partition, merge, or exclusion has its required equality or
+      containment proof.
+- [ ] Every verdict has the certificate required by `SKILL.md`, including
+      `Required ⊆ Covered` for `PROVED` and every existential link for
+      `UNSOUND` or `CONTRACT-BROKEN`.
 - [ ] Every material derivation reconstructed during review is exposed with its
       applicability, and deficient proof artifacts are reported separately.
-- [ ] Every supported configuration is covered by proof.
 - [ ] Every consumed citation and TCB entry was independently verified.
 - [ ] Every consumed TCB entry supporting `PROVED` has an accepted human
       disposition.
