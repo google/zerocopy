@@ -1,0 +1,2 @@
+https://doc.rust-lang.org/1.80.0/std/hint/fn.unreachable_unchecked.html#safety
+https://doc.rust-lang.org/1.80.0/reference/behavior-considered-undefined.html
