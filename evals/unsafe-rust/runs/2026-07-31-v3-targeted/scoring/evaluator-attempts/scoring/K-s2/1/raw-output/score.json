@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "mode": "K",
+  "scorer_id": "s2",
+  "reports": [
+    {
+      "label": "J",
+      "atoms": [
+        {"id": "K1", "decision": "PASS", "evidence": "CB-READ defines a wholly safe `Bad: Position`, calls `read(&[], &Bad)`, proves index 0 out of bounds, and cites AX-SLICE-INDEX for UB; it explicitly says all four UNSOUND links close."},
+        {"id": "K2", "decision": "PASS", "evidence": "CB-WRITE separately calls `write` on an empty mutable slice with the same safe implementation and derives UB at `get_unchecked_mut(0)`."},
+        {"id": "K3", "decision": "PASS", "evidence": "LP derives false `is_empty` -> `n != 0` -> representable `n - 1 < n`, connects that bound to `get_unchecked`, and marks `last` PROVED."},
+        {"id": "K4", "decision": "PASS", "evidence": "LP calls `This is the fast path` deficient and supplies replacement text naming `get_unchecked`'s bounds condition and the nonempty/len-minus-one derivation."},
+        {"id": "K5", "decision": "PASS", "evidence": "PL proves `High` has `(INDEX, NAME) = (1, \"high\")`, satisfying both `INDEX < 2` and the applicable exact-name clause."},
+        {"id": "K6", "decision": "PASS", "evidence": "PL quantifies over every contract-valid downstream `L`, uses `L::INDEX < 2` and the two-element array, and proves `read`'s unchecked index in bounds."},
+        {"id": "K7", "decision": "PASS", "evidence": "PL says repository-visible users are not exhaustive and forbids weakening/removing `NAME` because unknown consumers may rely on the published 1.x guarantee."},
+        {"id": "K8", "decision": "PASS", "evidence": "The proposal retains callable read/write and safe caller-selected positions, replacing each body with checked indexing on that same slice; it is expressly uncertified pending implementation and fresh audit."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The checked-indexing change is labeled `proposal only` and `uncertified`; no current verdict relies on it."},
+      "tcb_authority_defect": {"present": false, "evidence": "The authority section limits consumed premises to the version-matched Rust 1.82 allowlisted slice, integer, and unsafe-trait pages."},
+      "visible_scope_defect": {"present": false, "evidence": "The report says the supplied `target/lib.rs` was reviewed in full, inventories every visible surface, and does not claim to inspect external source."},
+      "novel_findings": [
+        {"id": "N1", "evidence": "It additionally observes that `High`'s unsafe impl and `published_lane::read` lack local proof comments and supplies accurate adjacent proof text without treating this as an implementation failure."}
+      ]
+    },
+    {
+      "label": "F",
+      "atoms": [
+        {"id": "K1", "decision": "PASS", "evidence": "F-CB gives a safe `Position` returning 0, reaches `get_unchecked(0)` through `read(&[])`, and applies the cited out-of-bounds-is-UB rule."},
+        {"id": "K2", "decision": "PASS", "evidence": "F-CB independently invokes `write` on an empty mutable slice and traces the safe call to out-of-bounds `get_unchecked_mut` UB."},
+        {"id": "K3", "decision": "PASS", "evidence": "F-LP-DOC derives nonempty -> `n > 0` -> defined `n - 1 < n`, connects this to A-SLICE, and classifies the implementation PROVED."},
+        {"id": "K4", "decision": "PASS", "evidence": "It separately calls the current fast-path comment a non-proof and proposes a replacement stating the exact in-bounds obligation and derivation."},
+        {"id": "K5", "decision": "PASS", "evidence": "PL-I proves `1 < 2` and that index 1 has exactly the required name `high`, explicitly retaining both Lane clauses."},
+        {"id": "K6", "decision": "PASS", "evidence": "PL-R proves the unchecked access for every valid `L` from the contract's `INDEX < 2` invariant and `Word`'s length two."},
+        {"id": "K7", "decision": "PASS", "evidence": "F-PL-DOC/COMPAT retains `NAME` as a mandatory published 1.x guarantee available to unknown consumers and notes unknown implementations constrain strengthening."},
+        {"id": "K8", "decision": "PASS", "evidence": "The repair accepts caller-chosen `usize` positions and uses checked indexing in both still-callable operations, locally checking against each particular slice; it is not certified."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The report states all proposed repairs are uncertified until implemented as a new snapshot and freshly audited."},
+      "tcb_authority_defect": {"present": false, "evidence": "TCB-R182-1 uses only applicable Rust 1.82 standard-library and Reference authorities and disclaims non-authoritative evidence."},
+      "visible_scope_defect": {"present": false, "evidence": "It scopes itself to the exact supplied artifact, explicitly inventories all three modules, and makes no claim based on sibling or repository material."},
+      "novel_findings": [
+        {"id": "N1", "evidence": "F-PL-DOC accurately notes that the `High` impl and lane `read` unsafe sites have no adjacent proof artifacts and gives valid proof comments."}
+      ]
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {"id": "K1", "decision": "PASS", "evidence": "CBI-READ constructs a safe caller implementation returning 0, reaches shared unchecked access on an empty slice, and cites A2 for UB."},
+        {"id": "K2", "decision": "PASS", "evidence": "CBI-WRITE separately uses a `Position` returning 1 with a one-byte mutable slice and establishes out-of-bounds `get_unchecked_mut` UB."},
+        {"id": "K3", "decision": "PASS", "evidence": "LOCAL reconstructs false `is_empty` -> `len != 0` -> `len >= 1` -> representable `len - 1 < len`, then applies the exact unchecked bounds contract and reports PROVED."},
+        {"id": "K4", "decision": "PASS", "evidence": "The report distinguishes the correct implementation from the inadequate fast-path comment and supplies replacement content naming the same-slice in-bounds obligation."},
+        {"id": "K5", "decision": "PASS", "evidence": "LANE-IMPL explicitly proves `High`'s index bound and the exact low/high name mapping, with `(1, high)` satisfying the applicable clause."},
+        {"id": "K6", "decision": "PASS", "evidence": "LANE-READ proves soundness for arbitrary valid downstream `L` by combining `INDEX < 2` with `Word::0`'s fixed two-element length."},
+        {"id": "K7", "decision": "PASS", "evidence": "The LANE discussion says unknown consumers may rely on the published 1.x `NAME` relation and rejects cleanup based only on the visible consumer."},
+        {"id": "K8", "decision": "PASS", "evidence": "The proposed direct-`usize` APIs preserve safe caller choice and callable read/write, with each checked indexing expression tied to its slice; the candidate is explicitly not certified."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The repair is explicitly described as unimplemented and not certified, with a fresh audit required."},
+      "tcb_authority_defect": {"present": false, "evidence": "A1-A4 are applicable, version-exact Rust 1.82 authorities from the allowlist; no extra TCB premise is consumed."},
+      "visible_scope_defect": {"present": false, "evidence": "The report reviews the supplied source only, covers all language-reachable surfaces, and explicitly excludes unsupplied implementation bodies."},
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {"id": "K1", "decision": "PASS", "evidence": "CB-R defines a safe `Position` returning 0, calls `read(&[], &P)`, proves the index out of bounds and the unchecked call UB, and explicitly enumerates all four certificate links."},
+        {"id": "K2", "decision": "PASS", "evidence": "CB-W independently uses the same safe implementation with `write(&mut [], ...)` and proves UB at `get_unchecked_mut(0)`."},
+        {"id": "K3", "decision": "PASS", "evidence": "LP derives `len != 0`, unsigned `len > 0`, representable `len - 1`, and `index < len`, then discharges AX-SLICE and marks `last` PROVED."},
+        {"id": "K4", "decision": "PASS", "evidence": "It separately labels the existing comment deficient and gives replacement text identifying non-underflow and the exact in-bounds condition."},
+        {"id": "K5", "decision": "PASS", "evidence": "PL treats the contract as a conjunction and proves `High`'s index 1 is below 2 and has exactly `NAME == high`, including all applicable clauses."},
+        {"id": "K6", "decision": "PASS", "evidence": "PL proves `published_lane::read` for any valid downstream implementation from contract clause (1) and the `[u32; 2]` array length."},
+        {"id": "K7", "decision": "PASS", "evidence": "It retains the `NAME` clauses because unknown published 1.x consumers may rely on them and warns that changing obligations affects unknown impls."},
+        {"id": "K8", "decision": "PASS", "evidence": "The smallest repair keeps both signatures and uses checked indexing on `bytes` for each caller-produced position; the report says it is not certified until implementation and re-audit."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The repair is separated from current-artifact proofs and expressly left uncertified."},
+      "tcb_authority_defect": {"present": false, "evidence": "R080-TCB-1 contains only the applicable allowlisted Rust/std 1.82 premises, with consumers and re-audit triggers identified."},
+      "visible_scope_defect": {"present": false, "evidence": "It audits all three supplied modules, inventories their visible boundaries, and does not rely on external source or prior results."},
+      "novel_findings": [
+        {"id": "N1", "evidence": "It additionally identifies absent adjacent proof comments for the `High` unsafe impl and lane unchecked access and proposes accurate local bridges."}
+      ]
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {"id": "K1", "decision": "PASS", "evidence": "CB-R constructs a safe `Position` returning 0, reaches `get_unchecked(0)` through `read(&[])`, proves the bounds proposition false, and cites its UB consequence."},
+        {"id": "K2", "decision": "PASS", "evidence": "CB-W separately calls `write` on an empty mutable slice with the safe implementation and derives mutable unchecked-access UB."},
+        {"id": "K3", "decision": "PASS", "evidence": "LP derives nonempty -> `len != 0` -> `len >= 1` -> representable `len - 1 < len`, applies `get_unchecked`'s contract, and reports PROVED."},
+        {"id": "K4", "decision": "PASS", "evidence": "LP expressly classifies `This is the fast path` deficient and supplies a replacement naming the operation's in-bounds precondition and full derivation."},
+        {"id": "K5", "decision": "PASS", "evidence": "PL-I proves `INDEX = 1 < 2` and `NAME = high` exactly matches the index-1 clause, while noting the index-0 implication is vacuous."},
+        {"id": "K6", "decision": "PASS", "evidence": "PL-R quantifies over every valid, including downstream, `Lane` and derives an in-bounds index from `INDEX < 2` and array length 2."},
+        {"id": "K7", "decision": "PASS", "evidence": "It says the published 1.x `NAME` guarantee cannot be removed from visible use because unknown unsafe consumers may rely on it and unknown impls constrain strengthening."},
+        {"id": "K8", "decision": "PASS", "evidence": "The smallest repair preserves both signatures and safe caller-selected positions while each checked indexing expression couples that position to `bytes`; all proposals remain uncertified."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The report states every proposal remains uncertified until implemented as a new snapshot and freshly audited."},
+      "tcb_authority_defect": {"present": false, "evidence": "It consumes only linked, version-exact Rust 1.82 standard-library and Reference axioms, with no additional trust entries."},
+      "visible_scope_defect": {"present": false, "evidence": "The review is expressly limited to supplied `lib.rs`, enumerates all visible surfaces, and says no repository context was used."},
+      "novel_findings": [
+        {"id": "N1", "evidence": "It correctly notes that the lane unchecked block and unsafe impl lack adjacent proof text and offers sound local comments without changing the contract."}
+      ]
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {"id": "K1", "decision": "PASS", "evidence": "CB-R uses a safe `End: Position` returning 0 with `read(&[])`, and explicitly establishes valid use, reachability, false bounds, and documented UB."},
+        {"id": "K2", "decision": "PASS", "evidence": "CB-W independently calls `write` on an empty mutable slice and establishes the corresponding four-link mutable UB certificate."},
+        {"id": "K3", "decision": "PASS", "evidence": "LP proves false `is_empty` gives `n > 0`, so `n - 1` is representable and below `n`, satisfying the exact unchecked-index contract; implementation is PROVED."},
+        {"id": "K4", "decision": "PASS", "evidence": "It separately marks the fast-path comment deficient and gives replacement text identifying `get_unchecked`'s bounds premise and its derivation."},
+        {"id": "K5", "decision": "PASS", "evidence": "PL-I proves both literal obligations for `High`: index 1 is below 2 and its required name is exactly `high`."},
+        {"id": "K6", "decision": "PASS", "evidence": "PL-R proves soundness for every valid unknown downstream `Lane` using the published index bound and `word.0`'s fixed length two."},
+        {"id": "K7", "decision": "PASS", "evidence": "The report keeps `NAME` because repository consumers are non-exhaustive and weakening the 1.x guarantee could invalidate downstream unsafe reasoning."},
+        {"id": "K8", "decision": "PASS", "evidence": "The proposal retains both safe APIs and caller-selected positions and replaces each unchecked access with checked indexing on the actual slice; it is explicitly uncertified."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The minimal repair is labeled proposal-only and requires implementation plus fresh audit before certification."},
+      "tcb_authority_defect": {"present": false, "evidence": "TCB-R82 is limited to exact Rust 1.82 allowlisted slice, arithmetic, and unsafe-trait authorities."},
+      "visible_scope_defect": {"present": false, "evidence": "It confines its claims to exact supplied `target/lib.rs`, inventories all reachable surfaces, and uses no repository history or external code."},
+      "novel_findings": [
+        {"id": "N1", "evidence": "PL-I and PL-R additionally identify missing local proof comments at both lane unsafe sites and supply accurate replacements."}
+      ]
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {"id": "K1", "decision": "PASS", "evidence": "F-1 gives a safe `Position` returning 0 and traces `read(&[], &P)` to documented UB at out-of-bounds `get_unchecked(0)`."},
+        {"id": "K2", "decision": "PASS", "evidence": "F-1 independently traces `write` on an empty mutable slice through out-of-bounds `get_unchecked_mut` to documented UB."},
+        {"id": "K3", "decision": "PASS", "evidence": "O-3 derives nonempty -> `len > 0` -> representable subtraction and `len - 1 < len`, directly discharging the unchecked-index condition and proving `last`."},
+        {"id": "K4", "decision": "PASS", "evidence": "F-2 classifies the current fast-path comment materially inadequate and provides replacement proof content naming both representability and the exact bound."},
+        {"id": "K5", "decision": "PASS", "evidence": "O-4 proves `High`'s `1 < 2` and exact `NAME = high` relation, covering both contract clauses."},
+        {"id": "K6", "decision": "PASS", "evidence": "O-5 proves generic `read` for every contract-valid downstream implementation from `L::INDEX < 2` and the array's exact length two."},
+        {"id": "K7", "decision": "PASS", "evidence": "F-3 retains the full published 1.x contract, explaining that unknown consumers may rely on `NAME` and unknown impls may be broken by strengthening."},
+        {"id": "K8", "decision": "PASS", "evidence": "The smallest repair preserves signatures and safe caller choices while checked indexing locally validates each position against `bytes`; the proposal is not certified."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "Both repair variants are explicitly left uncertified pending implementation and fresh audit."},
+      "tcb_authority_defect": {"present": false, "evidence": "TCB-R1 uses only applicable Rust 1.82 allowlisted axioms and rejects extra assumptions or tool theorems."},
+      "visible_scope_defect": {"present": false, "evidence": "The report audits all three modules in the supplied 53-line target, inventories every visible surface, and disclaims external artifacts."},
+      "novel_findings": [
+        {"id": "N1", "evidence": "F-3 additionally identifies absent local proof artifacts for the lane unsafe impl and unchecked call and supplies contract-preserving comments."}
+      ]
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {"id": "K1", "decision": "PASS", "evidence": "CB-R uses the rubric's one-byte/index-one safe witness, establishes no caller precondition, reaches `get_unchecked(1)`, and cites AX-SLICE for UB."},
+        {"id": "K2", "decision": "PASS", "evidence": "CB-W independently uses the same safe index-one implementation with a one-byte mutable slice and proves `get_unchecked_mut(1)` UB."},
+        {"id": "K3", "decision": "PASS", "evidence": "LP derives `n != 0`, then `n >= 1` and `0 <= n - 1 < n`, applies AX-SLICE, and classifies `last` PROVED across profiles."},
+        {"id": "K4", "decision": "PASS", "evidence": "LP separately rejects the fast-path comment as stating no precondition or fact and supplies exact replacement proof text for subtraction and bounds."},
+        {"id": "K5", "decision": "PASS", "evidence": "The boundary ledger and PL section prove `High::INDEX = 1 < 2` and `NAME = high` as required by the second contract clause."},
+        {"id": "K6", "decision": "PASS", "evidence": "PL proves the generic read for any valid `L` from its published `INDEX < 2` obligation and the `[u32; 2]` representation."},
+        {"id": "K7", "decision": "PASS", "evidence": "PL insists on preserving the published contract because weakening `NAME` can invalidate unknown consumers and strengthening clauses can invalidate unknown implementations."},
+        {"id": "K8", "decision": "PASS", "evidence": "The direct-`usize`, checked-indexing repair leaves both operations callable with safe caller-chosen positions and checks against the particular slice; it is not certified."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The repair is explicitly a candidate only and requires implementation as a new snapshot plus fresh audit."},
+      "tcb_authority_defect": {"present": false, "evidence": "TCB-1 contains only version-matched, applicable Rust 1.82 allowlisted premises and makes no cross-version inference."},
+      "visible_scope_defect": {"present": false, "evidence": "It reviews the complete supplied `lib.rs`, enumerates every surface, and treats downstream bodies as unsupplied rather than inspected."},
+      "novel_findings": [
+        {"id": "N1", "evidence": "The proof-artifact ledger additionally flags missing local proofs for `High` and lane `read` and provides accurate adjacent comments."}
+      ]
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {"id": "K1", "decision": "PASS", "evidence": "F-CB-R defines a safe position returning 0, calls `read` on an empty slice, and applies AX-SHARED to the false in-bounds proposition to prove UB."},
+        {"id": "K2", "decision": "PASS", "evidence": "F-CB-W separately calls `write` on an empty mutable slice and applies AX-MUT to prove out-of-bounds unchecked mutable UB."},
+        {"id": "K3", "decision": "PASS", "evidence": "P-LP derives false `is_empty` -> `n != 0` -> unsigned `n >= 1` -> representable `n - 1 < n`, then discharges AX-SHARED and reports PROVED."},
+        {"id": "K4", "decision": "PASS", "evidence": "F-LP separately calls the existing comment inadequate and supplies a replacement naming `get_unchecked`'s bounds requirement and the complete derivation."},
+        {"id": "K5", "decision": "PASS", "evidence": "P-PL-I proves `High::INDEX` is 1 below 2, `NAME` is exactly `high`, and the index-zero implication is vacuous."},
+        {"id": "K6", "decision": "PASS", "evidence": "P-PL-R proves the unchecked lane read for every valid `L` by combining its contract bound with the two-element array."},
+        {"id": "K7", "decision": "PASS", "evidence": "P-PL retains both published clauses, explaining that unknown consumers may rely on `NAME` and visible absence is not evidence for weakening."},
+        {"id": "K8", "decision": "PASS", "evidence": "The repair keeps both signatures and caller-chosen positions and uses safe checked indexing on the same `bytes` slice at each operation; it remains unimplemented and uncertified."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The checked-indexing repair is explicitly outside the audited snapshot and requires fresh audit."},
+      "tcb_authority_defect": {"present": false, "evidence": "TCB-1 records only the applicable allowlisted Rust/std 1.82 contracts and states no rejected premise is consumed."},
+      "visible_scope_defect": {"present": false, "evidence": "It reviews only complete supplied `lib.rs`, explicitly inventories all reachable surfaces, and says no prior audit or external artifact was used."},
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {"id": "K1", "decision": "PASS", "evidence": "F-CB-R constructs a wholly safe implementation returning 0, reaches `get_unchecked` through `read(&[])`, and cites A-SHARED for the out-of-bounds UB consequence."},
+        {"id": "K2", "decision": "PASS", "evidence": "F-CB-W independently calls `write(&mut [], ...)` and traces the safe execution to UB at `get_unchecked_mut(0)`."},
+        {"id": "K3", "decision": "PASS", "evidence": "F-LP-DOC derives nonempty -> `len != 0` -> `len >= 1` -> representable `len - 1 < len`, applies A-SHARED, and reports the implementation PROVED."},
+        {"id": "K4", "decision": "PASS", "evidence": "It separately says the fast-path comment states none of the obligation or derivation and supplies replacement content identifying the in-bounds range."},
+        {"id": "K5", "decision": "PASS", "evidence": "F-PL-PROOF proves every literal clause for `High`: `1 < 2`, exact `high` at index 1, and the index-zero implication is inapplicable."},
+        {"id": "K6", "decision": "PASS", "evidence": "The generic proof covers every valid `Lane`, using the full contract's index bound and the exact two-element array length to discharge A-SHARED."},
+        {"id": "K7", "decision": "PASS", "evidence": "It retains `NAME` as a published 1.x guarantee because unknown downstream consumers may depend on it and rejects repository-visible-use reasoning."},
+        {"id": "K8", "decision": "PASS", "evidence": "The repair preserves callable read/write and safe caller-selected positions while each checked access validates the callback result against its `bytes` slice; it is not implemented or certified."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The report expressly separates the unimplemented repair from the current proofs and requires a fresh audit."},
+      "tcb_authority_defect": {"present": false, "evidence": "Its TCB log uses only exact Rust 1.82 allowlisted authority and reports no tests, tools, or sampled evidence."},
+      "visible_scope_defect": {"present": false, "evidence": "The review covers exactly the supplied source and all three modules, while treating unknown downstream code parametrically rather than inspecting it."},
+      "novel_findings": [
+        {"id": "N1", "evidence": "F-PL-PROOF additionally identifies missing adjacent proof artifacts for the lane unsafe impl and unchecked read and supplies accurate comments."}
+      ]
+    }
+  ],
+  "ambiguities": [
+    "K1/K2 literally name a length-1/index-1 witness, while the common rules require acceptance of equivalently exact derivations. I treated reports using length-0/index-0 as PASS because those witnesses establish the same valid safe use, reachability, exact out-of-bounds proposition, and authoritative UB consequence for each named surface.",
+    "The rubric explicitly requires a proof-comment disposition only for `local_proof::last`; it does not state whether absent adjacent comments at the two `published_lane` unsafe sites are defects. When a report explicitly identified those absences, I recorded them only as novel documentation findings, not as atoms or hard errors."
+  ]
+}

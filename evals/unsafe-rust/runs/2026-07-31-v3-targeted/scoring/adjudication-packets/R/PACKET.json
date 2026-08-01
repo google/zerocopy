@@ -1,0 +1,17 @@
+{
+  "allowlist_sha256": "1cef79dd2eaef588d2343439d0b1a54b816adebf188a59fc6349f45055872ea4",
+  "common_rules_sha256": "b7ad63a8a816034852d1542e904eccce33c3e9ff60e6b4b2bb7f37f503ce8b82",
+  "disagreements_sha256": "dbe2fddd347ec9f7bbb02fdd4970689c63ac0456ceaf8bfb6b2a324a72a7fcc2",
+  "disputed_labels": [
+    "I"
+  ],
+  "mode": "R",
+  "report_sha256": {
+    "I": "c29cf094b7026bbde11940bb1784b6393918115d74c5eec57207772ba46f0012"
+  },
+  "rubric_sha256": "a3e9b8d28e8b9d4eafc5f9c4b553d6b862a623b2f786e1e5e806ea212317bc18",
+  "schema_sha256": "58d36e6a54002a29fe7f45c4f65d966a307212e6d082be75d34772fc5b128209",
+  "schema_version": 1,
+  "source_score_packet_sha256": "91e06f36197e6786c17b7a35834afdeec5bfbbcf9b5bbce713915c08134dbd55",
+  "target_byte_tree_sha256": "d69df1b286abd8f7f8955ac56d702c1910eb596c0bd105b7998e39d7246ca063"
+}

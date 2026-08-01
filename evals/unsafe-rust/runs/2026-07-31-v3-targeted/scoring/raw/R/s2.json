@@ -1,0 +1,551 @@
+{
+  "schema_version": 1,
+  "mode": "R",
+  "scorer_id": "s2",
+  "reports": [
+    {
+      "label": "A",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "F-1 gives a safe downstream Oob implementation returning 2 and calls increment::<Oob> on [0, 0]."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "F-1 derives get_unchecked_mut(2) on length 2 and applies the cited Rust 1.82 out-of-bounds-call UB clause."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "The report declares the current safe API UNSOUND and says the Tail proof and redesign do not alter that verdict."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "The redesign section identifies the required capability as the fixed element-1 wrapping update, with no downstream generic use required."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "It proposes a nongeneric safe increment using &mut pair[1] and wrapping_add(1), removing caller-selected indices and unsafe code."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "Migration deletes Slot/Tail and generic calls, explicitly relying on the abstraction being unreleased and the break being authorized."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "It calls the redesign a proposal, not a verdict, and requires implementation followed by a fresh audit."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The proposal is explicitly excluded from the current verdict and is conditioned on implementation and re-audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The only consumed semantic premises are the exact Rust 1.82 slice and u32 standard-library pages, with propositions and consumers identified."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report audits the supplied lib.rs under the requested Rust 1.82 target/profile predicate and makes no broader artifact claim."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "F-1 constructs safe Oob::index() = 2 and invokes increment::<Oob> with a two-element array."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "F-1 proves dispatch reaches line 16 with 2, shows 2 is out of bounds for length 2, and applies the quoted Rust 1.82 UB clause."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "It reports the combined current artifact UNSOUND and expressly says the Tail proof does not narrow the generic API claim."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "The preferred-design section states the minimum capability is one fixed operation, not an implementer-selected index."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "It supplies a monomorphic safe function assigning pair[1].wrapping_add(1), with no implementer or index capability."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "It enumerates the breaking removal of Slot, Tail, generic calls, and downstream impls and ties authorization to the unreleased API."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "The candidate is labeled unimplemented with no audit verdict, followed by concrete fresh-snapshot audit requirements."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report explicitly separates the candidate from the current UNSOUND result and denies it an implemented-artifact verdict."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-R029-1 uses only version-exact Rust 1.82 standard-library contracts and identifies their consumers."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Required is copied from the request and the report limits itself to the exact supplied source and documented semantics."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "F-1 presents safe Bad::index() returning 2 and the safe increment::<Bad> call."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "It reaches the unchecked call with 2 on length 2 and invokes A-1's exact Rust 1.82 out-of-bounds UB consequence."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "The current-artifact verdict is UNSOUND throughout the supported set, independently of the regional Tail proof."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "It says the minimum capability is one fixed safe mutation and that neither slot identity nor implementer extensibility is needed."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "The proposed nongeneric function uses safe pair[1] indexing and wrapping_add, deleting the caller-controlled generic path."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "The migration intentionally removes generic calls, Slot implementations, and Tail, citing explicit authorization for the unreleased API."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "It calls the proposal unimplemented with no audit verdict and demands a new snapshot and audit after implementation."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The unimplemented redesign is not used to alter the current UNSOUND verdict and carries fresh-audit conditions."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-1 accepts only the two exact, versioned Rust 1.82 standard-library propositions with stated consumers."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The snapshot and semantic domain match the supplied source and the request's target/profile scope."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "F-1 gives a safe Outside implementation returning 2 and calls increment::<Outside> on [0u32, 0u32]."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "It derives get_unchecked_mut(2), establishes 2 is outside the length-2 array, and applies the cited Rust 1.82 call-site UB rule."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "The overall current-artifact soundness verdict is UNSOUND, explicitly unaffected by the redesign."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "The redesign reduces the requirement to the concrete element-1 wrapping transformation and rejects unneeded slot identity/extensibility."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "It proposes only a safe nongeneric pair[1] = pair[1].wrapping_add(1) function."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "The report describes removed downstream implementations/generic uses as an authorized break for an unreleased abstraction."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "It identifies the code as a design rather than an implemented verdict and requires fresh review of the implemented snapshot."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report expressly states the proposal does not qualify or alter the current-artifact result."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-1 is limited to the exact Rust 1.82 slice and wrapping_add documentation, with no extra semantic premise."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "It preserves the request's Rust, target, and ordinary-profile predicate and confines review to supplied lib.rs."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "F",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "F-1 shows a safe Bad implementation whose index is 2 and a safe generic call on [0, 0]."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "It proves normal reachability, falsifies 2 < pair.len() for length 2, and applies AXIOM-BOUNDS from Rust 1.82."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "The combined current-artifact result is UNSOUND, with the Tail subcase expressly unable to narrow it."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "The recommendation identifies the minimum capability as one fixed wrapping transformation rather than implementer-selected indexing."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "It deletes the trait and exposes a safe monomorphic pair[1].wrapping_add(1) implementation."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "The migration delta removes Tail, Slot, downstream impls, and generic calls under the request's unreleased-API authorization."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "The report denies the unimplemented proposal a PROVED verdict and requires a fresh exact-snapshot audit."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The proposal remains conditional and is not evidence for current soundness or narrower current obligations."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Its two ground premises are version-exact authoritative Rust 1.82 standard-library statements with applicable scope."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Required symbolically matches the exact source/version/target/profile scope in REQUEST.md."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "F-1 supplies a valid safe Bad implementation returning 2 and invokes increment::<Bad>."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "It shows the call reaches line 16 with index 2 on length 2 and applies the exact Rust 1.82 UB consequence."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "It labels the combined current artifact UNSOUND and says the Tail proof does not qualify the generic safe-use claim."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "The preferred design identifies the sole requirement as incrementing the second element modulo 2^32, without runtime-selected slot identity."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "It proposes a nongeneric safe destructuring implementation that obtains the second element and uses wrapping_add(1)."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "It describes disappearance of Slot, Tail, implementations, and generic dispatch as expressly authorized for the unreleased abstraction."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "It calls the redesign a proposal rather than a verdict and requires a fresh source audit after implementation."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The proposed design is not used to weaken or replace the current UNSOUND result and is conditioned on implementation."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The semantic claims rely only on the two exact Rust 1.82 standard-library pages; no external premise is admitted."
+      },
+      "visible_scope_defect": {
+        "present": true,
+        "evidence": "Its Supported set adds 'every Rust 1.82 edition,' an axis absent from REQUEST.md's exact Rust/target/ordinary-profile scope."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "F-1 constructs a safe Bad::index() returning 2 and calls increment::<Bad> on a two-element array."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "It establishes immediate reachability of the unchecked call, false bounds at index 2, and the versioned Rust UB consequence."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "The combined current-artifact result is UNSOUND, and no proposal participates in that verdict."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "The preferred redesign states the required operation is the fixed element-1 wrapping update and that genericity has no required consumer."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "It proposes a monomorphic safe pair[1].wrapping_add(1) function and removes Slot/Tail/unsafe code."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "It explains the source-breaking deletion and explicitly cites authorization from the abstraction being unreleased."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "The redesign heading says not implemented/no fresh verdict, and the report enumerates post-implementation audit work."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The redesign is kept outside the current verdict and is subject to implementation and independent re-audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The TCB consumes the exact Rust 1.82 slice and u32 contracts and records their propositions and consumers."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report uses the exact requested source/version/target/profile predicate and disclaims material beyond the supplied file."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "F-1 gives safe Oob::index() = 2 and the safe increment::<Oob> invocation."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "The four-part certificate reaches get_unchecked_mut(2), proves the bound false for length 2, and applies AX-SLICE's Rust 1.82 UB consequence."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "CLAIM-SOUND and the combined current-artifact result are both UNSOUND, independent of the redesign."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "It calls the fixed wrapping mutation the minimum capability and states generic implementer behavior is unnecessary."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "The specialized safe function borrows pair[1], applies wrapping_add(1), and has no caller-selected implementation/index."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "The migration explicitly removes public Slot, generic calls, and Tail under the unreleased-abstraction authorization."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "It states this is a design, not a verdict, and requires freezing and auditing the exact implemented snapshot."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The design is excluded from the current verdict and remains contingent on implementation and fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-R1 contains only exact versioned Rust standard-library axioms with explicit scope and consumers."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The supplied file hashes are correct and DOMAIN-R1 reproduces the request's exact semantic scope."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "P-1/F-1 constructs safe Bad::index() = 2 and invokes increment::<Bad> with [0, 0]."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "It reaches get_unchecked_mut(2) on length two and applies AXIOM-GET's exact Rust 1.82 call-site UB rule."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "The current-artifact and combined verdicts are UNSOUND, expressly irrespective of redesign."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "The recommendation reduces the requirement to one fixed wrapping update and says generic abstraction is unnecessary."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "It proposes a safe monomorphic pair[1].wrapping_add(1) function with no trait or unsafe block."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "The report details deletion of Slot/Tail/generic calls as an expressly authorized breaking change for the unreleased API."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "It labels the proposal unimplemented with no artifact verdict and requires a fresh implementation audit."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The unimplemented redesign is not credited toward current soundness and remains subject to fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Although it names a skill file, its semantic derivation consumes only the exact Rust 1.82 standard-library contracts."
+      },
+      "visible_scope_defect": {
+        "present": true,
+        "evidence": "The snapshot discloses an external Unsafe-Rust SKILL.md identity and SHA-256, and the residual section references skill guidance outside the supplied target/allowlist."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "U1 supplies a safe Bad implementation returning 2 and a safe increment::<Bad> call."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "U1 proves dispatch reaches line 16 with 2, falsifies the bound for length 2, and applies the quoted Rust 1.82 UB clause."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "The current and combined artifact verdicts are UNSOUND, with the Tail claim explicitly separate."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "The preferred design specializes the sole required fixed element-1 modular increment and rejects unneeded generic selection."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "It supplies a nongeneric safe pair[1] = pair[1].wrapping_add(1) function without implementer/index authority."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "The migration removes Slot, Tail, downstream implementations, and generic calls as an authorized unreleased-API break."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "It says the proposal is unimplemented with no audit verdict and lists the required independent new-snapshot audit."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The redesign remains conditional and does not participate in the current UNSOUND result."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-R1 is limited to exact Rust 1.82 standard-library axioms with applicability and consumers stated."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Required matches REQUEST.md and the report confines its claims to the exact supplied lib.rs and documented semantics."
+      },
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": [
+    "G12 enumerates prohibited oracle, sibling, condition-map, prior-report, or evaluator material, while the general no-inspection rule separately names skill packages. Report D exposes a SKILL.md hash but does not show that file was oracle or evaluator material; I recorded the visible scope defect but did not assign G12.",
+    "The rubric does not define whether a harmless terminal-newline line-count convention is itself a visible source-scope defect. Report A calls the exact trailing-newline file 19 lines while wc-style numbering yields 18; because its inventory and audited artifact otherwise match exactly, I did not flag it."
+  ]
+}
