@@ -1,0 +1,448 @@
+{
+  "schema_version": 1,
+  "mode": "Q",
+  "scorer_id": "s2",
+  "reports": [
+    {
+      "label": "C",
+      "atoms": [
+        {
+          "id": "Q1",
+          "decision": "PASS",
+          "evidence": "Separately states that every safe force_unreachable call is valid with no precondition and that delegated_nonzero valid uses require value != 0."
+        },
+        {
+          "id": "Q2",
+          "decision": "PASS",
+          "evidence": "Its numbered certificate gives a valid safe call, unconditional reachability, falsity of the not-reached obligation, and verified Rust 1.80.0 UB authority."
+        },
+        {
+          "id": "Q3",
+          "decision": "PASS",
+          "evidence": "Reports force_unreachable UNSOUND throughout D and explains that the complete witness refutes the universal soundness claim."
+        },
+        {
+          "id": "Q4",
+          "decision": "PASS",
+          "evidence": "Proves the unchanged nonzero argument satisfies the callee precondition, then states exact DEP-SOUND-1 and explains that the pin and declaration do not prove the absent implementation."
+        },
+        {
+          "id": "Q5",
+          "decision": "PASS",
+          "evidence": "Reports delegated_nonzero UNPROVED, rejects an invented UB witness, and requires recursive implementation audit or a precise accepted UNSAFE-DEP proposition."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Suggested repairs are explicitly future changes requiring fresh audit and are not used to justify the current artifact."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Consumes only the exact verified Rust 1.80.0 proposition and conspicuously rejects dependency implementation trust."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Confines the review to submitted packet files and the exact versioned Rust URL; it disclaims builds, dependency source, and prior audits."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {
+          "id": "Q1",
+          "decision": "PASS",
+          "evidence": "The claim table independently defines all safe force_unreachable invocations and nonzero delegated_nonzero invocations as the two valid-use domains."
+        },
+        {
+          "id": "Q2",
+          "decision": "PASS",
+          "evidence": "Derives a valid safe call, the body's unconditional execution of unreachable_unchecked, contradiction of the asserted unreachability, and the verified reaching-is-UB consequence."
+        },
+        {
+          "id": "Q3",
+          "decision": "PASS",
+          "evidence": "Assigns force_unreachable UNSOUND and says the safe program's invocation witnesses UB uniformly for every configuration in C."
+        },
+        {
+          "id": "Q4",
+          "decision": "PASS",
+          "evidence": "Discharges the identical nonzero call precondition and identifies DEP-SND-1 over exact 3.4.5 as missing because pinning is identity, not implementation correctness."
+        },
+        {
+          "id": "Q5",
+          "decision": "PASS",
+          "evidence": "Gives UNPROVED, states that no valid UB witness for the unavailable body exists, and calls for recursive audit or exact human UNSAFE-DEP acceptance."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Repair options are not treated as implemented or as evidence for either current verdict."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Uses the verified version-matched standard-library proposition and expressly admits no dependency implementation premise."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "States that only the supplied snapshot and exact Rust authority were used and that no unavailable dependency artifacts were inspected."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {
+          "id": "Q1",
+          "decision": "PASS",
+          "evidence": "Audits the APIs as Claim 1 and Claim 2, with every safe call valid for the first and exactly value != 0 valid for the second."
+        },
+        {
+          "id": "Q2",
+          "decision": "PASS",
+          "evidence": "States a well-typed safe caller can invoke the function, every invocation reaches the call, the not-reached obligation fails, and AXIOM-UU entails UB."
+        },
+        {
+          "id": "Q3",
+          "decision": "PASS",
+          "evidence": "Reports force_unreachable UNSOUND throughout D and calls the chain a valid in-scope UB witness for every member of D."
+        },
+        {
+          "id": "Q4",
+          "decision": "PASS",
+          "evidence": "Proves the unchanged value meets the dependency's identical precondition, then states the exact all-D provider-soundness proposition absent from source and TCB."
+        },
+        {
+          "id": "Q5",
+          "decision": "PASS",
+          "evidence": "Reports delegated_nonzero UNPROVED, refuses UNSOUND without a witness, and identifies recursive audit or precise dependency trust as resolution."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Proposed repairs and future trust changes are not used to narrow or certify the current artifact."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The TCB table limits accepted authority to the exact Rust 1.80.0 proposition and marks the unsafe-dependency proposition unaccepted."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Explicitly confines itself to submitted source, contract, evidence, and trust decision, with no body, build, execution, or prior audit."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {
+          "id": "Q1",
+          "decision": "PASS",
+          "evidence": "Defines the common compilation domain and separately states all well-typed safe calls versus nonzero unsafe calls as the valid-use domains."
+        },
+        {
+          "id": "Q2",
+          "decision": "PASS",
+          "evidence": "The four-step OBL-FU certificate explicitly supplies valid use, unconditional reachability, a false not-reached proposition, and the authoritative UB consequence."
+        },
+        {
+          "id": "Q3",
+          "decision": "PASS",
+          "evidence": "Reports force_unreachable UNSOUND throughout D and says the certificate applies parametrically across target and profile."
+        },
+        {
+          "id": "Q4",
+          "decision": "PASS",
+          "evidence": "Shows valid wrapper calls meet the callee's nonzero obligation and precisely states the missing all-configurations soundness theorem for exact dependency 3.4.5."
+        },
+        {
+          "id": "Q5",
+          "decision": "PASS",
+          "evidence": "Reports UNPROVED, says provider coverage is absent and no UB execution is known, and requires recursive audit or exact UNSAFE-DEP acceptance."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The minimum-resolution discussion is prospective and is not credited to the supplied current source."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Uses only the exact admitted Rust proposition and explicitly treats the dependency implementation proposition as not accepted."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Names only submitted packet artifacts and the allowlisted official page and disclaims dependency bodies, binaries, audits, and tools."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {
+          "id": "Q1",
+          "decision": "PASS",
+          "evidence": "Its exported-surface table distinguishes every safe force_unreachable invocation from delegated_nonzero calls restricted to values 1..=255."
+        },
+        {
+          "id": "Q2",
+          "decision": "PASS",
+          "evidence": "The numbered Claim F witness explicitly gives valid use, unconditional reachability, falsity of the not-reached requirement, and Rust 1.80.0 UB authority."
+        },
+        {
+          "id": "Q3",
+          "decision": "PASS",
+          "evidence": "Declares force_unreachable UNSOUND for every Required configuration and explains the certificate is parametric, not sampled."
+        },
+        {
+          "id": "Q4",
+          "decision": "PASS",
+          "evidence": "Proves the same nonzero value discharges the caller-side contract and states exact DEP-SOUND, which absent implementation and rejected trust do not establish."
+        },
+        {
+          "id": "Q5",
+          "decision": "PASS",
+          "evidence": "Reports UNPROVED, states no implementation fact supports an existential witness, and requires recursive audit or authorized precise UNSAFE-DEP propositions."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Suggested redesign and trust alternatives are future resolutions and never substitute for auditing the current source."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Consumes the exact versioned Rust Safety proposition and states that no dependency implementation proposition is admitted."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Limits consumed material to the supplied packet and official allowlisted URL and explicitly excludes repository, dependency source, tools, and prior audits."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {
+          "id": "Q1",
+          "decision": "PASS",
+          "evidence": "States Claim 1 covers every well-typed safe call without a precondition and Claim 2 covers exactly calls with value != 0."
+        },
+        {
+          "id": "Q2",
+          "decision": "PASS",
+          "evidence": "Its four numbered links provide a valid public safe call, unconditional reachability, falsity of unreachability, and the verified reaching-is-UB consequence."
+        },
+        {
+          "id": "Q3",
+          "decision": "PASS",
+          "evidence": "Labels force_unreachable UNSOUND and explains the valid UB witness exists for every configuration in D, not merely as a proof gap."
+        },
+        {
+          "id": "Q4",
+          "decision": "PASS",
+          "evidence": "Proves unchanged nonzero dataflow satisfies the callee precondition and identifies exact 3.4.5 provider UB-freedom across D as an unproved implementation proposition."
+        },
+        {
+          "id": "Q5",
+          "decision": "PASS",
+          "evidence": "Reports delegated_nonzero UNPROVED, says the packet reveals no dependency execution, and requires exact recursive implementation proof or authorized acceptance."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Future API repairs and possible trust acceptance are not treated as implemented or as narrowing current obligations."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Relies on the exact accepted Rust 1.80.0 citation and expressly rejects any unsafe-dependency implementation premise."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Confines evidence to supplied artifacts and the versioned official URL and states no builds, downloads, dependency-source claims, or audits contributed."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {
+          "id": "Q1",
+          "decision": "PASS",
+          "evidence": "The results table independently gives every safe invocation as force_unreachable's domain and value != 0 as delegated_nonzero's complete valid-use restriction."
+        },
+        {
+          "id": "Q2",
+          "decision": "PASS",
+          "evidence": "Proof S1 gives a valid direct safe call, immediate reachability, contradiction of the comment's unreachability premise, and verified Rust 1.80.0 reaching-is-UB text."
+        },
+        {
+          "id": "Q3",
+          "decision": "PASS",
+          "evidence": "Reports force_unreachable UNSOUND and calls the safe invocation a complete in-scope UB witness parametric over C."
+        },
+        {
+          "id": "Q4",
+          "decision": "PASS",
+          "evidence": "Shows unchanged v satisfies the dependency precondition and states the precise missing exact-package theorem for all nonzero values and configurations."
+        },
+        {
+          "id": "Q5",
+          "decision": "PASS",
+          "evidence": "Reports UNPROVED, rejects UNSOUND because no valid witness is supplied, and calls for dependency source audit or explicit exact-proposition acceptance."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Prospective resolution suggestions do not certify or contract the obligations of the supplied implementation."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-R1 contains only the exact verified Rust authority; the dependency proposition is explicitly unavailable and rejected."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "All identified source facts come from submitted files; the report disclaims builds, executions, expansions, dependency source, and other tool evidence."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "F",
+      "atoms": [
+        {
+          "id": "Q1",
+          "decision": "PASS",
+          "evidence": "Its claim table separately defines every safe invocation and every unsafe invocation satisfying value != 0 over the full target/profile domain."
+        },
+        {
+          "id": "Q2",
+          "decision": "PASS",
+          "evidence": "O-F1 identifies a valid public safe entry, unconditional reachability of the sole unsafe call, the circular false unreachability assertion, and exact UB authority."
+        },
+        {
+          "id": "Q3",
+          "decision": "PASS",
+          "evidence": "Reports force_unreachable UNSOUND and states the witness uniformly applies over all configurations in C."
+        },
+        {
+          "id": "Q4",
+          "decision": "PASS",
+          "evidence": "O-D1 proves the identical nonzero precondition; O-D2 states the exact all-valid-call provider theorem missing because contract and pin do not prove implementation soundness."
+        },
+        {
+          "id": "Q5",
+          "decision": "PASS",
+          "evidence": "Reports delegated_nonzero UNPROVED, says no valid UB witness exists, and requires recursive source audit or authorized exact UNSAFE-DEP acceptance."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report labels changes as required future resolutions and does not count them toward current soundness."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Accepts only the exact Rust 1.80.0 proposition and marks the precisely stated unsafe-dependency entry rejected and non-consumable."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Packet-file hashes and facts are from the supplied snapshot; the report disclaims builds, sampling, dependency implementation inspection, and outside evidence."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {
+          "id": "Q1",
+          "decision": "PASS",
+          "evidence": "Frames Claim 1 over all safe calls without a safety precondition and Claim 2 over precisely calls whose caller establishes value != 0."
+        },
+        {
+          "id": "Q2",
+          "decision": "PASS",
+          "evidence": "The complete refutation supplies a valid safe invocation, unconditional reachability, contradiction of the claimed unreachability, and the verified Rust 1.80.0 UB consequence."
+        },
+        {
+          "id": "Q3",
+          "decision": "PASS",
+          "evidence": "Reports force_unreachable UNSOUND throughout C and explains that the same witness derivation applies to every target/profile."
+        },
+        {
+          "id": "Q4",
+          "decision": "PASS",
+          "evidence": "Proves exact nonzero precondition propagation and states DEP-IMPL over exact 3.4.5, all configurations, and all nonzero calls as the missing theorem."
+        },
+        {
+          "id": "Q5",
+          "decision": "PASS",
+          "evidence": "Reports UNPROVED, refuses both PROVED and UNSOUND absent implementation evidence, and identifies recursive audit or precise trusted dependency evidence as necessary."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Repair and re-audit guidance is prospective and supplies no evidence about the current artifact."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The ledger accepts only the exact versioned Rust proposition and conspicuously marks DEP-IMPL not accepted."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "States that no builds, tests, executions, expansions, tools, dependency implementation, generated output, or prior audits were used."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {
+          "id": "Q1",
+          "decision": "PASS",
+          "evidence": "The claims table separately quantifies force_unreachable over every safe call and delegated_nonzero over every call satisfying the complete value != 0 precondition."
+        },
+        {
+          "id": "Q2",
+          "decision": "PASS",
+          "evidence": "Its four-part certificate explicitly supplies valid safe use, unconditional reachability, the false not-reached proposition, and verified Rust 1.80.0 UB authority."
+        },
+        {
+          "id": "Q3",
+          "decision": "PASS",
+          "evidence": "Reports force_unreachable UNSOUND throughout C and says the complete existential witness exists for every member of C."
+        },
+        {
+          "id": "Q4",
+          "decision": "PASS",
+          "evidence": "D1 proves caller-side nonzero propagation; D2 precisely states provider UB-freedom for exact 3.4.5 over all C and explains why body absence and rejected trust leave it missing."
+        },
+        {
+          "id": "Q5",
+          "decision": "PASS",
+          "evidence": "Reports delegated_nonzero UNPROVED with Covered empty under admitted premises, invents no execution, and requires exact audit, replacement, or accepted UNSAFE-DEP evidence."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Proposed corrections and trust alternatives remain future work and do not establish current coverage."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Consumes the exact accepted Rust 1.80.0 Safety proposition and labels the dependency proposition rejected and unusable."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Explicitly limits inspection to the submitted artifact and exact official URL and says no dependency body, audit, binary, lockfile, or tool result was inspected."
+      },
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": []
+}
