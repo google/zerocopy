@@ -1,0 +1,12 @@
+https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.is_none
+https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_unchecked
+https://doc.rust-lang.org/1.84.1/std/option/enum.Option.html#method.is_none
+https://doc.rust-lang.org/1.84.1/std/option/enum.Option.html#method.unwrap_unchecked
+https://doc.rust-lang.org/1.85.0/std/option/enum.Option.html#method.is_none
+https://doc.rust-lang.org/1.85.0/std/option/enum.Option.html#method.unwrap_unchecked
+https://doc.rust-lang.org/1.85.1/std/option/enum.Option.html#method.is_none
+https://doc.rust-lang.org/1.85.1/std/option/enum.Option.html#method.unwrap_unchecked
+https://doc.rust-lang.org/1.86.0/std/option/enum.Option.html#method.is_none
+https://doc.rust-lang.org/1.86.0/std/option/enum.Option.html#method.unwrap_unchecked
+https://doc.rust-lang.org/1.86.0/releases.html#version-1841-2025-01-30
+https://doc.rust-lang.org/1.86.0/releases.html#version-1851-2025-03-18
