@@ -4,6 +4,7 @@
 
 - [Freeze the audit claim](#freeze-the-audit-claim)
 - [Maintain an obligation ledger](#maintain-an-obligation-ledger)
+- [Reconcile derivations and evidence](#reconcile-derivations-and-evidence)
 - [Aggregate verdicts](#aggregate-verdicts)
 - [Write actionable findings](#write-actionable-findings)
 - [Deliver a complete report](#deliver-a-complete-report)
@@ -48,10 +49,16 @@ For each obligation, record:
 - supporting local facts, invariant clauses, axioms, and TCB entries, with the
   applicability of each premise;
 - domain actually covered by the derivation and any case partition;
-- the equality or containment proof for every domain transformation consumed;
+- the appropriate certificate for every asserted set relationship and domain
+  transformation consumed;
 - proof location;
 - reviewer verification;
 - status and finding link.
+
+A row may cite a canonical subproof rather than repeat it, but neither a row nor
+a proof name may hide a material inference. The record must let a reviewer
+reverse-trace the obligation through every intermediate proposition to its
+classified and applicable premises.
 
 Include obligations created by:
 
@@ -75,6 +82,17 @@ The ledger complements rather than replaces the proof workflow in
 follow changed propositions to every consumer; compiler-marked unsafe locations
 and textual diffs are only discovery starting points.
 
+## Reconcile Derivations and Evidence
+
+Apply [Make every derivation
+reviewable](proof-obligations.md#make-every-derivation-reviewable) before
+certifying any verdict or regional result. In a persistent report, ensure the
+obligation ledger and its canonical proofs expose that derivation, then
+reconcile every material semantic premise they use with the report's authority
+and TCB inventories. A valid fact found only by the reviewer may support a
+reconstructed implementation proof, but record the deficient report or safety
+comment rather than silently repairing its proof artifact.
+
 ## Aggregate Verdicts
 
 Use the verdict definitions in `SKILL.md` for individual obligations and the
@@ -94,6 +112,13 @@ link from valid use through reachability and a false safety proposition to the
 applicable UB consequence. For `CONTRACT-BROKEN`, certify that the falsifying
 execution is UB-free as a whole. Otherwise state the smallest gap and use
 `UNPROVED`.
+
+A completed existential refutation fixes its universal verdict but does not
+erase independent obligations elsewhere in scope. Continue the surface and
+site inventory. Report a positive or affected regional partition only at the
+granularity and completeness actually proved; do not imply maximality unless
+the task requests it and equality with the exact full-case region is
+established.
 
 Place qualifications in the theorem, not in vague prose. Use:
 
@@ -172,10 +197,11 @@ A complete audit report contains:
    proofs/findings rather than duplicating them. Include material reconstructed
    proofs missing from the reviewed proof artifacts.
 6. **Theorem-domain and configuration closure:** Controlling policy
-   expressions, symbolic `Required`, transformation/equivalence or containment
-   proofs, audit cutoff, axes, `Covered`, `Required ⊆ Covered`, premise-version
-   applicability, generated artifacts, enforced exclusions, and unresolved
-   remainder.
+   expressions, full-case symbolic `Required`, its `Required_cfg` projection,
+   set-relationship and transformation certificates, audit cutoff, axes, staged
+   build/generation relation, configuration-fiber proofs, `Covered`, claim
+   closure, premise-version applicability, generated artifacts, enforced
+   exclusions, and unresolved remainder.
 7. **TCB audit log:** Every authoritative or admitted proposition and reviewer
    disposition.
 8. **Tool-derived evidence:** Exact theorem, artifact/model scope, bounds,
