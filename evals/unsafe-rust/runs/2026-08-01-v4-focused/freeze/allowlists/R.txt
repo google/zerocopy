@@ -1,0 +1,6 @@
+https://doc.rust-lang.org/1.82.0/reference/visibility-and-privacy.html#visibility-and-privacy
+https://doc.rust-lang.org/1.82.0/reference/items/implementations.html#trait-implementations
+https://doc.rust-lang.org/1.82.0/reference/items/traits.html#unsafe-traits
+https://doc.rust-lang.org/1.82.0/reference/unsafe-keyword.html#unsafe-functions-unsafe-fn
+https://doc.rust-lang.org/1.82.0/std/primitive.slice.html#method.get_unchecked_mut
+https://doc.rust-lang.org/1.82.0/std/primitive.u32.html#method.wrapping_add
