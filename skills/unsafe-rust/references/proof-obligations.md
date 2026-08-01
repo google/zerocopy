@@ -47,14 +47,9 @@ supplies or consumes a safety contract as an obligation site. Follow each
 obligation until it reaches checked local facts, named invariants,
 authoritative axioms, or explicit TCB entries.
 
-Undefined behavior is a property of an entire execution. If any event in an
-execution exhibits undefined behavior, make no claim that observations
-elsewhere—or notionally “before” that event—remain guaranteed. An unexecuted bad
-path does not by itself make a different execution undefined, but soundness of a
-safe API still quantifies over every valid use and execution, so one reachable
-valid counterexample refutes it. Such a UB-containing execution cannot also
-establish a defined behavioral observation; apply the exact witness rule in
-`SKILL.md`.
+Apply the quantifier-sensitive verdict certificates in `SKILL.md` when a
+derivation fails or produces a counterexample. Do not confuse failure of a
+universal proof with proof of an existential refutation.
 
 ## Qualify Applicability
 
@@ -78,9 +73,12 @@ exactly identified project support policy, invariant definition, axiom entry,
 or TCB entry. The local proof must still make the inheritance and relevant case
 clear enough to review.
 
-Derive the required predicate under
-[Define the supported set](configurations-and-generated-code.md#define-the-supported-set),
-then carry it through every premise and case lemma below.
+Derive the required toolchain/configuration projection and every transformation
+of that projection under
+[Recover the required supported set](configurations-and-generated-code.md#recover-the-required-supported-set),
+then carry it through every premise and case lemma below. The domain covered by
+a derivation is the intersection of the applicability domains of every premise
+it consumes; the union of valid case lemmas must contain the required domain.
 
 A documented Rust guarantee from version `R` may support a later stable version
 only when an exact Rust backwards-compatibility commitment preserves that exact
@@ -107,6 +105,20 @@ prove the claim parametrically relative to a named compatibility premise or
 state an audit cutoff and later-release re-audit trigger. A compatibility
 premise about abstract semantics does not prove correctness of future compiler
 binaries.
+
+Before issuing any affirmative result spanning multiple Rust releases, record
+the exact required release predicate and one coverage basis:
+
+- an applicable parametric derivation over the whole predicate;
+- an exhaustive partition with applicable premises for every class or member;
+  or
+- an exact proposition-preserving backwards-compatibility premise whose domain
+  covers every later release claimed.
+
+Endpoint documentation, sparse version samples, an earliest supported release,
+and an audit cutoff do not prove the releases between them. If the coverage
+basis does not contain the claimed release predicate, narrow the proved region
+and leave the remainder `UNPROVED`.
 
 ## Separate Kinds of Premises
 
@@ -357,6 +369,16 @@ derivation is established, the obligation remains unproved. Distinguish “this
 audit did not complete a proof” from the stronger claim that authoritative
 documentation cannot support one.
 
+When a universal soundness derivation does not close, separately ask whether
+the established facts close an existential refutation. Identify a valid
+in-scope use or execution, prove reachability of the relevant operation or
+semantic event, prove its exact required safety proposition false there, and
+trace that failure to the applicable authoritative or explicitly trusted UB
+consequence. If every link is proved, apply `UNSOUND`; if any link is absent,
+the failed universal obligation remains `UNPROVED`. Do not demand a fact about
+every input to establish one existential witness, and do not infer a witness
+merely from the absence of a universal proof.
+
 ## Review a Proof
 
 For each proof:
@@ -378,7 +400,9 @@ For each proof:
    the cited facts entail.
 8. Record every missing implication so it cannot be forgotten, apply
    [Search for indirect derivations](#search-for-indirect-derivations), and
-   report `UNPROVED` if a required implication remains absent.
+   apply the verdict certificate in `SKILL.md`: report `UNPROVED` if a required
+   implication remains absent and no existential refutation closes, or the
+   applicable refutation verdict if one does.
 
 If validation requires a material derivation absent from the existing safety
 comment, include that reconstructed derivation—or the smallest missing
@@ -391,10 +415,8 @@ proof artifact:
 
 - If the reconstruction succeeds, the implementation obligation may be proved,
   but report the inadequate comment and provide proposed replacement wording.
-- If the reconstruction fails, leave the obligation unproved.
-- If it yields a valid execution containing UB, report `UNSOUND`. If it proves
-  that a valid UB-free execution falsifies a postcondition, report
-  `CONTRACT-BROKEN`. Do not use the UB-containing execution itself for both.
+- If the reconstruction fails, leave the obligation unproved unless it instead
+  closes one of the existential certificates in `SKILL.md`.
 
 When changes are authorized, update the adjacent proof rather than leaving the
 reconstructed reasoning only in the review. A canonical checked proof or named
