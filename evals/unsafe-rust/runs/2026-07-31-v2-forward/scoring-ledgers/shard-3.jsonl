@@ -1,0 +1,35 @@
+{"event":"blind_scoring_started","runtime":"/tmp/unsafe-rust-v2-score.IpMWrc","task_order":"N-s1 I-s1 A-s2 C-s1 V-s1 U-s2 C-s2 D-s2 H-s2 V-s2 P-s2 H-s1 N-s2 T-s2 D-s1 U-s1 P-s1 I-s2 A-s1 T-s1","interruptions":0,"deviations":"none"}
+{"event":"claim_attempt","task":"N-s1","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"I-s1","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"A-s2","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"C-s1","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"V-s1","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"U-s2","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"C-s2","score_preexisted":false,"claim_result":"claimed_by_this_orchestrator","deviations":"none"}
+{"event":"attempt_started","task":"C-s2","scorer_identity":"/root/score_c_s2_attempt1","attempt":1,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"claim_attempt","task":"D-s2","score_preexisted":false,"claim_result":"claimed_by_this_orchestrator","deviations":"none"}
+{"event":"attempt_started","task":"D-s2","scorer_identity":"/root/score_d_s2_attempt1","attempt":1,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"claim_attempt","task":"H-s2","score_preexisted":false,"claim_result":"claimed_by_this_orchestrator","deviations":"none"}
+{"event":"attempt_started","task":"H-s2","scorer_identity":"/root/score_h_s2_attempt1","attempt":1,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"score_preserved","task":"C-s2","scorer_identity":"/root/score_c_s2_attempt1","attempt_count":1,"score_sha256":"fea252b503175f62457625a303db9449cd0792bf102a603e74ed34138e38de1e","word_count":1978,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"claim_attempt","task":"V-s2","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"P-s2","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"H-s1","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"N-s2","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"T-s2","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"D-s1","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"U-s1","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"P-s1","score_preexisted":false,"claim_result":"owned_by_other_orchestrator","deviations":"none"}
+{"event":"claim_attempt","task":"I-s2","score_preexisted":false,"claim_result":"claimed_by_this_orchestrator","deviations":"none"}
+{"event":"attempt_started","task":"I-s2","scorer_identity":"/root/score_i_s2_attempt1","attempt":1,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"score_preserved","task":"H-s2","scorer_identity":"/root/score_h_s2_attempt1","attempt_count":1,"score_sha256":"92bc78a1e3af45ad683f39e95496c4d200a062db827e134fb288a91598958ac8","word_count":2140,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"claim_attempt","task":"A-s1","score_preexisted":false,"claim_result":"claimed_by_this_orchestrator","deviations":"none"}
+{"event":"attempt_started","task":"A-s1","scorer_identity":"/root/score_a_s1_attempt1","attempt":1,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"completion_reminder","task":"D-s2","scorer_identity":"/root/score_d_s2_attempt1","attempt":1,"text":"Complete now within the frozen word limit using only material already inspected; do not widen scope."}
+{"event":"score_preserved","task":"D-s2","scorer_identity":"/root/score_d_s2_attempt1","attempt_count":1,"score_sha256":"83a9477f1b4a33ec47e05e595fbb8d4f9d10be6d005a0457ed6a10f1c634a47f","word_count":1769,"reminders":1,"interruptions":0,"deviations":"none"}
+{"event":"claim_attempt","task":"T-s1","score_preexisted":false,"claim_result":"claimed_by_this_orchestrator","deviations":"none"}
+{"event":"attempt_started","task":"T-s1","scorer_identity":"/root/score_t_s1_attempt1","attempt":1,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"score_preserved","task":"I-s2","scorer_identity":"/root/score_i_s2_attempt1","attempt_count":1,"score_sha256":"21981b43c59dba36a651d43ed22c950596fb95677a26ee843a58fe6611f5855f","word_count":1895,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"score_preserved","task":"A-s1","scorer_identity":"/root/score_a_s1_attempt1","attempt_count":1,"score_sha256":"b753b88d8c03da2406b8e8de21e88a2b2d1f8fc1f61424fb24f1039e3947edd3","word_count":1988,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"score_preserved","task":"T-s1","scorer_identity":"/root/score_t_s1_attempt1","attempt_count":1,"score_sha256":"16ab5655130e681d3108d4ce151fb7fcf1cede8e4fd1d60dde7a6fd589172603","word_count":1905,"reminders":0,"interruptions":0,"deviations":"none"}
+{"event":"blind_scoring_orchestration_complete","schedule_task_count":20,"scores_present_at_final_audit":19,"claimed_by_other_orchestrator_without_score_at_final_audit":["T-s2"],"missing_unclaimed_tasks":0,"tasks_completed_by_this_orchestrator":["C-s2","D-s2","H-s2","I-s2","A-s1","T-s1"],"local_attempts":6,"local_scores_preserved":6,"local_reminders":1,"local_interruptions":0,"local_retries":0,"deviations":"none","ledger_json_lines_valid":true}
