@@ -186,7 +186,7 @@ output depends on:
 - downstream code into which the macro expands.
 
 Inspect expansions to discover API and caller obligations. Then apply
-[Audit generated and expanded code](configurations-and-generated-code.md#audit-generated-and-expanded-code)
+[Prove build and generation pipelines](configurations-and-generated-code.md#prove-build-and-generation-pipelines)
 to prove closure over every supported accepted input, output, and
 configuration. Include generated public APIs in the same safe/unsafe surface
 audit as handwritten items.
