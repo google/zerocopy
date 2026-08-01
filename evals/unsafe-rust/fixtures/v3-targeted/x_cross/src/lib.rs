@@ -37,7 +37,10 @@ pub fn lane_id(value: u8) -> NonZeroU8 {
         fixture_allocator = "arena"
     )))]
     {
-        NonZeroU8::new(value).expect("lane identifier must be nonzero")
+        if value == 0 {
+            panic!("lane identifier must be nonzero");
+        }
+        // SAFETY: The preceding branch proves that `value != 0`.
+        unsafe { NonZeroU8::new_unchecked(value) }
     }
 }
-

@@ -7,8 +7,9 @@
 
 ### Exact result
 
-`Required` includes every safe downstream implementation of `Slot` and safe
-instantiation of `increment`, not only the crate-owned `Tail`. A safe
+Within the exact target/profile scope declared in `REQUEST.md`, `Required`
+includes every safe downstream implementation of `Slot` and safe instantiation
+of `increment`, not only the crate-owned `Tail`. A safe
 implementation can return 2. Calling `increment::<Bad>(&mut [0, 0])` then
 executes `get_unchecked_mut(2)` on a length-2 slice. The Rust 1.82.0 contract
 requires an in-bounds index and says an out-of-bounds call is UB even if the
@@ -33,17 +34,18 @@ audit after implementation.
   and proposals.
 - **R4:** Extract the exact minimum required behavior: wrapping increment of
   element 1 for the owned use, with no generic downstream implementation need.
-- **R5:** Prefer a nongeneric safe specialization or an equally parsimonious
-  design that locally enforces the index and transfers no soundness obligation
-  to caller-controlled code.
+- **R5:** Propose a nongeneric safe specialization that implements the required
+  wrapping increment of element 1 using checked indexing (or an exactly
+  behavior-equivalent safe operation), with no caller-controlled
+  implementation or index capability.
 - **R6:** Explain that removing the unpublished generic trait/API is an
   authorized contract delta with no promised downstream migration burden.
 - **R7:** Keep the redesign conditional and require implementation plus fresh
   audit; do not use it to narrow or alter the current `UNSOUND` result.
 
-Equivalent safe formulations pass R5. Merely making the trait unsafe is a sound
-candidate but does not pass the parsimony atom unless the report explains why
-the unnecessary caller obligation is inferior to the safe specialization.
+Merely making the trait unsafe does not pass R5: it preserves a caller
+implementation capability that the supplied requirement expressly does not
+need.
 
 ### Hard errors
 
@@ -58,13 +60,17 @@ lets design intent narrow the current contract.
   `https://doc.rust-lang.org/1.82.0/std/primitive.slice.html#method.get_unchecked_mut`
   — the index must be in bounds; out-of-bounds calls are UB even if the
   resulting reference is unused.
+- Rust 1.82.0 `u32::wrapping_add`:
+  `https://doc.rust-lang.org/1.82.0/std/primitive.u32.html#method.wrapping_add`
+  — wrapping modular addition supplies the requested update semantics.
 
 ## K — multi-issue regression
 
 ### Exact results
 
-For `callback_index`, safe implementations of `Position` may return any
-`usize`. For a one-byte slice, an implementation returning 1 gives valid safe
+Within the exact target/profile scope declared in `REQUEST.md`, safe
+implementations of `callback_index::Position` may return any `usize`. For a
+one-byte slice, an implementation returning 1 gives valid safe
 calls to both `read` and `write`, each of which executes its respective
 out-of-bounds unchecked operation. Both safe surfaces are independently
 `UNSOUND`.
@@ -92,17 +98,22 @@ consumers mean the unused `NAME` clause cannot be weakened from the published
   `callback_index::write`; do not stop after K1.
 - **K3:** For `local_proof::last`, reconstruct the nonempty -> `len > 0` ->
   `len - 1 < len` derivation, connect it to the exact unchecked-index contract,
-  report the implementation obligation proved, and separately report the
-  existing safety comment materially deficient with replacement proof content.
-- **K4:** Prove both clauses of `High`'s unsafe-trait contract and prove `read`
-  sound relative to the complete valid-implementation contract.
-- **K5:** Retain the `NAME` clause and explain that unknown public
+  and report the implementation obligation proved.
+- **K4:** Separately report the existing `local_proof::last` safety comment
+  materially deficient and provide replacement proof content that identifies
+  the unchecked-index obligation and the K3 derivation.
+- **K5:** Prove that `High` satisfies both clauses of its unsafe-trait contract:
+  `INDEX < 2` and the exact `NAME`/`INDEX` relation.
+- **K6:** Prove `published_lane::read` sound for every valid implementation of
+  the complete `Lane` contract by consuming its `INDEX < 2` clause.
+- **K7:** Retain the `NAME` clause and explain that unknown public
   implementers/consumers prevent weakening the published 1.x contract merely
   because the only visible consumer uses `INDEX`.
-- **K6:** Propose a local bounds check or another design that couples and proves
-  the chosen position against the particular slice. Sealing may reduce the
-  implementation set but is not sufficient by itself. Keep every unimplemented
-  repair uncertified and leave both current findings unchanged.
+- **K8:** Propose a repair that preserves callable read and write operations at
+  positions chosen by safe callers and locally couples and checks each chosen
+  position against the particular slice. Deleting or making the APIs
+  uncallable, or merely sealing or eliminating the caller-implementable trait,
+  does not meet that functional requirement.
 
 Score each atom independently. Compact shared reasoning may serve K1 and K2
 only if it explicitly names both operations and shows that the witness reaches
@@ -116,9 +127,10 @@ surface sound, rejects the correct `last` implementation because its comment is
 bad, explicitly calls the deficient comment adequate, relies on that comment as
 the proof, claims complete requested coverage while omitting the reconstruction,
 weakens the published trait contract from visible use alone, treats sealing
-alone as a sufficient bounds proof, or certifies an unimplemented repair. A
-mere omitted comment-quality disposition fails K3 but is not independently a
-hard error.
+alone as satisfying the stated functional repair, claims a callable
+caller-position API is repaired without locally coupling the selected position
+to the particular slice, or certifies an unimplemented repair. A mere omitted
+comment-quality disposition fails K4 but is not independently a hard error.
 
 ### Authority
 
@@ -130,6 +142,10 @@ hard error.
   `https://doc.rust-lang.org/1.82.0/std/primitive.slice.html#method.len`
   and
   `https://doc.rust-lang.org/1.82.0/std/primitive.slice.html#method.is_empty`
+- Rust 1.82.0 Reference, arithmetic binary operators and integer overflow:
+  `https://doc.rust-lang.org/1.82.0/reference/expressions/operator-expr.html#arithmetic-and-logical-binary-operators`
+- Rust 1.82.0 Reference, unsigned integer value domains:
+  `https://doc.rust-lang.org/1.82.0/reference/types/numeric.html#integer-types`
 - Rust 1.82.0 Reference, unsafe traits:
   `https://doc.rust-lang.org/1.82.0/reference/items/traits.html#unsafe-traits`
 - Rust 1.82.0 Reference, unsafe-trait proof obligations:

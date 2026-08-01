@@ -59,13 +59,13 @@ dependency resolve times every ordinary profile.
   `UNSAFE-DEP` entry establishes that it honors its contract. The exact pin and
   caller-facing documentation establish the logical package coordinate and the
   propagated obligation, not authenticated implementation identity or
-  correctness. The smallest missing proposition is that the selected
-  `peer-unsafe-dep` 3.4.5 implementation satisfies the consumed safety/behavior
-  contract over this domain.
+  correctness. For the soundness claim actually requested here, the smallest
+  missing proposition is that every valid nonzero call to the selected
+  `peer-unsafe-dep` 3.4.5 implementation is free of UB over this exact domain.
 - **Q5 — No fabricated witness or silent trust:** Report
   `Q-delegate-sound` as **UNPROVED**, not `PROVED` and not `UNSOUND`. From the
   submitted packet, claim-level `Covered(Q-delegate-sound)` contains no case:
-  the dependency-correctness obligation is unresolved for all valid inputs.
+  the dependency-soundness obligation is unresolved for all valid inputs.
   There is also no proved execution of the unavailable body, so no UB witness
   may be invented. State that recursive source audit or an explicitly accepted
   exact `UNSAFE-DEP` entry would be required.
@@ -126,10 +126,11 @@ let `I = {0, ..., 255}`. The claims are:
   executes no unsafe operation, returns normally, and returns `2` rather than
   the promised input value `1`. That complete execution is UB-free and proves
   `W-return` **CONTRACT-BROKEN**.
-- **W4 — Cross-execution separation:** Do not transfer a conclusion between
-  the distinct executions. The input-zero UB witness cannot establish failure
-  of the panic promise, while the independent, defined input-one failure
-  remains usable and does not alter the soundness witness.
+
+Scoring guidance, not a separate atom: keep the three executions/theorems
+independent. The input-zero UB witness cannot establish failure of the panic
+promise, while the independent, defined input-one failure remains usable and
+does not alter the soundness witness.
 
 ### W hard errors
 
@@ -143,9 +144,7 @@ Any of these is a hard error:
 - claiming source observations remain guaranteed merely because they occur
   before the unsafe call;
 - falsely treating the independent input-one refutation as UB-containing, or
-  claiming complete behavioral coverage while omitting it; or
-- replacing the three separate theorem results with one undifferentiated
-  verdict that loses a required conclusion.
+  claiming complete behavioral coverage while omitting it.
 
 ### W authorities to verify before freezing
 
@@ -180,74 +179,90 @@ separately to soundness and the documented normal-return postcondition.
 
 ### Expected results and atoms
 
-- **M1 — Exact domains:** Preserve all four finite release sets and the
-  target/profile/call products exactly. Do not treat the cutoff as adding or
-  removing releases. State release regions beside each claim rather than
-  issuing an unscoped crate-wide `PROVED`.
-- **M2 — Parametric `acknowledge` proof:** Verify that accepted general entry
+- **M1 — `acknowledge` domain:** Preserve exact finite set `V_ack` and its
+  target/profile product; every well-typed call is in `Calls_ack` because the
+  API adds no safety precondition.
+- **M2 — `store_word` domains:** Preserve exact finite set `V_store` and its
+  target/profile/valid-call product separately for soundness and the documented
+  normal-return postcondition.
+- **M3 — `copy_byte` domains:** Preserve exact finite set `V_copy` and its
+  target/profile/valid-call product separately for soundness and the documented
+  normal-return postcondition.
+- **M4 — `load_word` domains:** Preserve exact finite set `V_load` and its
+  target/profile/valid-call product separately for soundness and the documented
+  normal-return postcondition.
+
+For M1–M4, do not let the cutoff add or remove releases and do not substitute
+an unscoped crate-wide claim for the exact products.
+
+- **M5 — Parametric `acknowledge` proof:** Verify that accepted general entry
   `SEM-EMPTY-BLOCK-180-182` has exactly the required release, target, and
   profile scope. Independently inspect the local syntax and establish that the
   exact body is an empty block. For arbitrary
   `(v, target, profile, call) in Required(M-ack)`, combine only those premises:
-  the block executes no operation or event, yields unit, and the `unsafe fn`
-  marker itself adds no executed operation. Thus
+  `acknowledge` is zero-parameter and unit-returning, the valid call has defined
+  callee evaluation and returns `()`, and the `unsafe fn` marker changes only
+  its static caller obligation. Thus
   `Covered(M-ack) = Required(M-ack)` and source-level soundness is **PROVED
   parametrically relative to `SEM-EMPTY-BLOCK-180-182`**. Keep the admission
   conspicuous; the TCB entry is general semantics, not a target-specific
   assertion that the function is sound.
-- **M3 — `store_word` soundness partition:** The 1.80.0 `ptr::write` authority
+- **M6 — `store_word` soundness partition:** The 1.80.0 `ptr::write` authority
   applies exactly to the 1.80.0 case and the 1.81.0 authority to the 1.81.0
   case. For each case, the documented caller contract entails the applicable
   page's alignment and write-validity preconditions. The identity
   `V_store = {1.80.0} union {1.81.0}` proves exhaustiveness. Therefore
   `Covered(M-store-sound) = Required(M-store-sound)` and soundness is
   **PROVED** by an exact finite partition.
-- **M4 — `store_word` postcondition partition:** In each exact release case,
+- **M7 — `store_word` postcondition partition:** In each exact release case,
   the applicable page says that `ptr::write(dst, value)` writes the supplied
   `value` to `dst` without reading or dropping the old value. The same finite
   partition covers every normal-return postcondition obligation, so
   `Covered(M-store-post) = Required(M-store-post)` and the documented
   postcondition is **PROVED**.
-- **M5 — `copy_byte` soundness under the exact TCB:** Verify the Rust 1.80.0
-  `copy_nonoverlapping` safety proposition, primitive `u8` size/alignment, and
-  `u8: Copy` base propositions. Then apply only accepted entry
+- **M8 — `copy_byte` soundness under the exact TCB:** Verify the Rust 1.80.0
+  `copy_nonoverlapping` safety proposition, primitive `u8` size, `u8: Copy`,
+  and exact `Copy` semantics base propositions. Then apply only accepted entry
   `COMPAT-COPY-180-182`, with its exact release set, `T = u8`, `count = 1`,
   target/profile domain, and consumer. The caller contract entails its source
   and destination validity, initialization, alignment, and nonoverlap clauses;
-  the admitted `u8` facts establish the one-byte specialization and avoid the
-  ownership hazard for non-`Copy` values. Thus
+  the admitted `u8` and `Copy` facts establish the one-byte specialization and
+  avoid the ownership hazard for non-`Copy` values. Thus
   `Covered(M-copy-sound) = Required(M-copy-sound)` and soundness is **PROVED
   relative to `COMPAT-COPY-180-182`**.
-- **M6 — `copy_byte` postcondition under the exact TCB:** The accepted entry
+- **M9 — `copy_byte` postcondition under the exact TCB:** The accepted entry
   preserves the base proposition that the call copies the source byte into the
   destination while leaving the source byte unchanged; `u8` has size one and
-  implements `Copy`. It covers every normal-return postcondition obligation,
-  so `Covered(M-copy-post) = Required(M-copy-post)` and the documented
+  implements `Copy` with the cited copy rather than move semantics. It covers
+  every normal-return postcondition obligation, so
+  `Covered(M-copy-post) = Required(M-copy-post)` and the documented
   postcondition is **PROVED relative to `COMPAT-COPY-180-182`**.
-- **M7 — `load_word` soundness remainder:** In the 1.80.0 and 1.82.0 endpoint
+- **M10 — `load_word` soundness remainder:** In the 1.80.0 and 1.82.0 endpoint
   cases, the exact `ptr::read` Safety sections plus exact-version `u32: Copy`
-  facts prove soundness from the caller contract, including safe retention of
-  the source value alongside the returned copy. Thus
+  and `Copy`-semantics facts prove soundness from the caller contract,
+  including safe retention of the source value alongside the returned copy.
+  Thus
   `Covered(M-load-sound) = {1.80.0, 1.82.0} times C_M times Calls_load`.
   The 1.80.1 and 1.81.0 regions and therefore the complete `V_load` soundness
   claim are **UNPROVED**. No UB witness is supplied, so `UNSOUND` does not
   follow.
-- **M8 — `load_word` postcondition remainder:** In the same two endpoint
+- **M11 — `load_word` postcondition remainder:** In the same two endpoint
   cases, the applicable `ptr::read` descriptions establish that the returned
   value is read from `src` while the source is left unchanged; the exact
-  `u32: Copy` facts discharge the ownership qualification. Therefore
+  `u32: Copy` and `Copy`-semantics facts discharge the ownership qualification.
+  Therefore
   `Covered(M-load-post) = {1.80.0, 1.82.0} times C_M times Calls_load`.
   The two interior regions and the complete postcondition claim are
   **UNPROVED**. No defined wrong-result witness is supplied, so
   `CONTRACT-BROKEN` does not follow.
-- **M9 — Evidence discipline:** If the report actually relies on endpoint
-  sampling, the cutoff, an unstated stability guarantee, backward projection,
-  evidence for another operation, or a widened TCB entry to fill the
-  `ptr::read` interior, reject that basis explicitly. Identify the smallest
-  missing premise as a verified authority for the interior releases, an exact
-  applicable accepted compatibility entry, or another complete parametric
-  proof. Do not require a report that used none of the listed invalid bases to
-  recite all of them.
+
+Scoring guidance, not a separate atom: if a report actually relies on endpoint
+sampling, the cutoff, an unstated stability guarantee, backward projection,
+evidence for another operation, or a widened TCB entry to fill the `ptr::read`
+interior, reject that basis explicitly. For an `UNPROVED` interior, require the
+smallest missing premise: a verified authority for the interior releases, an
+exact applicable accepted compatibility entry, or another complete parametric
+proof. A report that uses none of the listed invalid bases need not recite them.
 
 ### M hard errors
 
@@ -287,9 +302,12 @@ including all qualifications relevant to its exact release case:
   — copies `count * size_of::<T>()` bytes; source/destination validity,
   alignment, and nonoverlap requirements; base case only.
 - `https://doc.rust-lang.org/1.80.0/reference/type-layout.html#primitive-data-layout`
-  — `u8` has size and alignment 1.
+  — `u8` has size 1.
 - `https://doc.rust-lang.org/1.80.0/std/primitive.u8.html#impl-Copy-for-u8`
   — `u8` implements `Copy` in the compatibility base case.
+- `https://doc.rust-lang.org/1.80.0/std/marker/trait.Copy.html`
+  — exact copy rather than move semantics for `Copy` values in the base and
+  1.80.0 endpoint cases.
 - `https://doc.rust-lang.org/1.80.0/std/ptr/fn.read.html`
   — reads without moving, leaves source unchanged, and requires read validity,
   alignment, and initialization for this non-ZST.
@@ -299,6 +317,9 @@ including all qualifications relevant to its exact release case:
   — the same named propositions for the separate endpoint case.
 - `https://doc.rust-lang.org/1.82.0/std/primitive.u32.html#impl-Copy-for-u32`
   — `u32` implements `Copy` in the 1.82.0 endpoint case.
+- `https://doc.rust-lang.org/1.82.0/std/marker/trait.Copy.html`
+  — exact copy rather than move semantics for `Copy` values in the 1.82.0
+  endpoint case.
 
 The `acknowledge` and compatibility results additionally consume the two exact
 accepted propositions in target file `TCB.md`; that file is not Rust authority

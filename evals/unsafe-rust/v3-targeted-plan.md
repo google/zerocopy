@@ -8,13 +8,19 @@
 
 ## Purpose
 
-This confirmatory evaluation tests whether the V3 skill revision reliably
-changes the specific proof behavior that prevented V2 from passing its strict
-release gates, while preserving the abstraction-design and general-audit
-behaviors that V2 already performed well.
+This confirmatory evaluation tests whether V3 reliably exhibits the specific
+proof capabilities implicated by V2's strict-gate failures, while preserving
+the abstraction-design and general-audit capabilities that V2 already
+exhibited. Its primary result is an absolute capability result for V3, not an
+estimate of the causal effect of the revision.
 
-It tests mechanisms, not release readiness. Passing this evaluation permits a
-later broad release gate; it does not replace that gate.
+The coherent V2 package is a diagnostic comparator. Lower V2 performance can
+provide evidence consistent with targeted improvement; matched ceiling
+performance shows replication of an existing capability and supplies no
+evidence that V3 caused an improvement.
+
+It is a focused capability confirmation, not a release-readiness evaluation.
+Passing it permits a later broad release gate; it does not replace that gate.
 
 ## Frozen candidate conditions
 
@@ -22,7 +28,7 @@ The intended conditions are:
 
 | Condition | Package tree digest | `SKILL.md` digest | Role |
 |---|---|---|---|
-| V3 | `668f70202c7bc8f23f7f894fb784a9629fd292c7f6fe69ede815b0e4c10137bf` | `0e23f7747cc63014bade7543efaf745e7e9a7e5d6dee2a48c602ef7a3eba091e` | treatment |
+| V3 | `668f70202c7bc8f23f7f894fb784a9629fd292c7f6fe69ede815b0e4c10137bf` | `0e23f7747cc63014bade7543efaf745e7e9a7e5d6dee2a48c602ef7a3eba091e` | candidate |
 | V2 | `40b4171cc9daf7e51ba032aef52157a85a49c4c12cea8696deadb948e0867897` | `a0a75ef8a14497aa78b50b459981097ee99605c57fec95c637cf59aaa20fe766` | pre-change comparator |
 
 The comparison uses the coherent V2 package, not a synthetic deletion
@@ -53,7 +59,8 @@ failure.
 
 Tests preservation of a symbolic stable-release interval, membership of a
 non-`.0` patch release, rejection of sampled CI/toolchains as an inventory, and
-closure by a version-parametric proof over a justified superset.
+closure by either an exact applicable release partition or a version-parametric
+proof over a justified compatibility region.
 
 ### C — Conflicting policies, conservative union, and exclusions
 
@@ -65,8 +72,10 @@ superset without Cartesian enumeration.
 ### X — Conditional feature/target/allocator cross-product
 
 Tests recovery of an easily missed simultaneous configuration, distinction
-between a supported bad case and a genuinely enforced exclusion, and a complete
-region-scoped UB certificate.
+between a supported bad case and a genuinely enforced exclusion, complete
+coverage of the build script's accepted/rejected selector interface and emitted
+directives, a region-scoped UB certificate, UB-sensitive classification of the
+documented panic theorem, and positive closure over the proved remainder.
 
 ### Q — Existential refutation versus incomplete universal proof
 
@@ -114,14 +123,15 @@ into per-mode blind-scoring rubrics before collection.
   hard errors.
 - **H-release:** V3 passes every M atom in all five replicates with zero hard
   errors.
-- **H-regression:** V3 passes every R and K atom in all five replicates, with
+- **H-preservation:** V3 passes every R and K atom in all five replicates, with
   zero proposal laundering and zero hard errors.
 
 ## Primary gates
 
 The targeted confirmation passes only if all of the following hold:
 
-1. Every V3 semantic atom passes 5/5.
+1. Every frozen V3 atom passes 5/5, including domain, proof, verdict,
+   authority, design, compatibility, and review-process propositions.
 2. V3 has zero hard errors.
 3. V3 has zero proposal laundering.
 4. V3 silently admits no TCB premise and uses no invalid or inapplicable
@@ -131,14 +141,17 @@ The targeted confirmation passes only if all of the following hold:
 Failure of any primary gate fails the run. Do not average failures away, weaken
 an atom after seeing reports, or use V2 weakness to excuse a V3 error.
 
-## Secondary comparison
+## Diagnostic comparison
 
 After unblinding:
 
 - report V3 and V2 separately for every atom and mode;
-- require that no V3 atom has fewer passes than its matched V2 atom;
+- report whether any V3 atom has fewer passes than its matched V2 atom (the
+  absolute 5/5 V3 gate makes such a regression impossible in a passing run);
 - call V3 5/5 plus lower V2 performance evidence of targeted lift;
 - call matched 5/5 performance ceiling replication, not causal improvement;
+- do not describe any comparison as causal proof: the conditions are coherent
+  package versions that differ in more than one isolated instruction;
 - do not pool heterogeneous modes into a headline score.
 
 ## Global hard errors
@@ -175,7 +188,8 @@ Before collection, freeze and hash:
 - all target trees and opaque runtime copies;
 - the evaluated-agent prompt;
 - the oracle and per-mode scoring rubrics;
-- exact official documentation URLs or a byte-identified mirror;
+- one per-mode URL allowlist containing only exact official documentation URL
+  identities, or a byte-identified mirror manifest;
 - the randomized schedule and condition map;
 - output schema, word budgets, tool policy, and rerun policy.
 
@@ -183,12 +197,13 @@ Each report agent must:
 
 - be fresh and receive no prior conversation (`fork_turns="none"`);
 - audit exactly one cell without helper agents;
-- inspect only its opaque target, package, exact permitted official Rust/std
-  documentation, and empty output directory;
+- inspect only its opaque target, package, per-mode URL allowlist, the exact
+  permitted official Rust/std pages (or frozen mirror bytes), and empty output
+  directory;
 - avoid building, testing, executing, or macro-expanding the target;
 - write one `report.md` and return the same report;
-- stay within 1,800 words, except that K receives the same preregistered
-  2,200-word cap in both conditions.
+- stay within 1,800 words, except that X receives a 2,400-word cap and K a
+  2,200-word cap, identical across conditions.
 
 Only genuine infrastructure failures may be rerun. Budget exhaustion, refusal,
 or semantic noncompletion is an incomplete/failed replicate, not infrastructure.
@@ -211,6 +226,10 @@ After collection and before unblinding:
 The scorer must not infer a missing material premise from vague shorthand. The
 rubric must state in advance which compact formulations count, especially where
 one conceptual defect admits multiple independently scored witnesses.
+
+The V2 and V3 agents for a mode receive the same allowlist. An allowlist may
+identify URLs but must not summarize their propositions, expected use, verdict,
+or relation to an atom. Its contents and digest are frozen before collection.
 
 ## Oracle review
 
@@ -240,4 +259,3 @@ current zerocopy owning shards and integration, opaque holdouts, and matched V2
 and no-skill subsets. It retains zero hard errors, zero proposal laundering,
 focused zero-miss recovery, no repaired-side recurrence, and artifact-integrity
 requirements.
-
