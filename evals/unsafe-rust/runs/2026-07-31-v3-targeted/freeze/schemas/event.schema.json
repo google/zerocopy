@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "unsafe-rust-v3-targeted-event-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "sequence", "previous_event_sha256", "time_utc", "phase", "event", "details"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "sequence": {"type": "integer", "minimum": 1},
+    "previous_event_sha256": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      ]
+    },
+    "time_utc": {"type": "string", "format": "date-time"},
+    "phase": {
+      "enum": ["freeze", "collection", "scoring", "adjudication", "unblinding", "result"]
+    },
+    "event": {"type": "string", "minLength": 1},
+    "run_id": {"type": "string"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "agent_id": {"type": "string"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "details": {"type": "object"}
+  }
+}
