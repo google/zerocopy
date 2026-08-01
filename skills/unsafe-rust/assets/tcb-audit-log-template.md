@@ -78,6 +78,9 @@ support.>`
 
 ## Review Attestation
 
+- [ ] The audit's material semantic premises were reconciled against this
+      index; every Rust axiom or admitted proposition it consumes appears with
+      its exact source and applicability.
 - [ ] Every consumed entry has an exact proposition rather than a vague trust
       statement.
 - [ ] No entry merely assumes an in-scope conclusion or trusts code the declared
