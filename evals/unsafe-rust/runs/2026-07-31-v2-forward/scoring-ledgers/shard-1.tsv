@@ -1,0 +1,25 @@
+task	scorer_identity	attempt	status	score_sha256	word_count	reminders	interruptions	deviations
+N-s1	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+I-s1	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+A-s2	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+C-s1	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+V-s1	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+U-s2	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+C-s2	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+D-s2	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+H-s2	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+V-s2	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+P-s2	/root/score_p_s2_attempt1	1	claimed_running	-	-	0	none	atomic claim created; fresh scorer launched
+H-s1	none	0	claimed_dispatch_deferred	-	-	0	none	atomic claim succeeded, but fresh-agent spawn was rejected by thread limit; output untouched
+H-s1	none	0	dispatch_deferred	-	-	0	none	second fresh-agent spawn rejected by thread limit; claim retained and output untouched
+P-s2	/root/score_p_s2_attempt1	1	score_preserved	29ed1e2d6749b91f3b1d299ad0d774399631c9a7cd91c720256517541a4aab9b	2238	0	none	none
+H-s1	/root/score_h_s1_attempt1	1	claimed_running	-	-	0	none	launched after two recorded thread-limit deferrals; same frozen prompt
+H-s1	/root/score_h_s1_attempt1	1	score_preserved	7a6202b94ab93a00faf0d2a8e884d8e7601c83e8eefd9c552201c1af58587b42	2100	1	none	reminder sent at completion boundary; see prior launch deferrals
+N-s2	none	0	skipped_existing_score	-	-	0	none	score existence only; another scorer's output not inspected
+T-s2	none	0	claim_owned_elsewhere	-	-	0	none	claim mkdir returned File exists; no output inspected
+D-s1	none	0	skipped_existing_score	-	-	0	none	score existence only; another scorer's output not inspected
+U-s1	none	0	skipped_existing_score	-	-	0	none	score existence only; another scorer's output not inspected
+P-s1	none	0	skipped_existing_score	-	-	0	none	score existence only; another scorer's output not inspected
+I-s2	none	0	skipped_existing_score	-	-	0	none	score existence only; another scorer's output not inspected
+A-s1	none	0	skipped_existing_score	-	-	0	none	score existence only; another scorer's output not inspected
+T-s1	none	0	skipped_existing_score	-	-	0	none	score existence only; another scorer's output not inspected
