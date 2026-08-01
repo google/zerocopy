@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785524774681,
+  "lastUpdate": 1785543633701,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23259,6 +23259,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 653,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5a907c2986fc05b0d55237dc4d53b8a9f741eb48",
+          "message": "[ci] Gate docs on exact-SHA CI results (#3512)\n\nThe docs workflow previously deployed after Anneal alone and checked\nout whatever happened to be at the tip of main. A newer commit could\ntherefore be documented without having passed either workflow, and core\nCI failures did not block publication.\n\nTrigger the coordinator from both core and Anneal completions. Query\neach workflow by stable filename for the triggering SHA, require both\npush runs to have completed successfully, and let only the\ndeterministically later completion deploy. This also permits a\nsuccessful rerun to repair a failed pair without creating duplicate\ndeployments.\n\nPass the authorized SHA to checkout explicitly and expose the matching\nAnneal run ID for trusted consumers of that run's artifacts.\n\ngherrit-pr-id: Gythmn2x4ak26nzocje3gxts44y7itqe6",
+          "timestamp": "2026-07-31T20:08:28-04:00",
+          "tree_id": "65f56a07ac92200fc1d85f3757f08907d80d468e",
+          "url": "https://github.com/google/zerocopy/commit/5a907c2986fc05b0d55237dc4d53b8a9f741eb48"
+        },
+        "date": 1785543632091,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 475,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 622,
             "unit": "seconds"
           }
         ]
