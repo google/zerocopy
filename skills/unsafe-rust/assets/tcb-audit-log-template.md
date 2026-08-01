@@ -8,7 +8,8 @@
 - **Source snapshot:** `<repository + revision/digest>`
 - **Generated artifacts:** `<identities/digests>`
 - **Rust/toolchain scope:** `<versions>`
-- **Supported configuration predicate:** `<definition or link>`
+- **Supported configuration predicate:** `<certified domain ID/link in audit
+  report>`
 - **Theorem(s) supported:** `<exact soundness, postcondition, binary, or
   application claims>`
 - **Owner/reviewer:** `<names or roles>`
@@ -36,8 +37,8 @@ support.>`
 - **Disposition:** `<accepted / rejected / pending / superseded>`
 - **Exact proposition:** `<the smallest proposition accepted without further
   in-scope proof>`
-- **Quantification and scope:** `<inputs, executions, versions, targets,
-  configurations, APIs, and time interval>`
+- **Quantification and scope:** `<inputs, executions, exact release/version
+  regions, targets, configurations, APIs, and time interval>`
 - **Exact identity:** `<document URL + version, package + version/source,
   revision/digest, binary, model, tool, agreement, or environment>`
 - **Source/contract:** `<narrow link, document section, agreement, audit, or
@@ -88,6 +89,9 @@ support.>`
       proposition has an audit, additional contract, or explicit admission.
 - [ ] Every third-party unsafe implementation is recursively audited or
       explicitly admitted.
+- [ ] Every version-spanning compatibility entry states the exact proposition
+      preserved and its exact release/configuration region; pins, stability
+      badges, and sampled documentation are not used as interval coverage.
 - [ ] Tool-derived facts state their exact theorem and residual TCB.
 - [ ] External, deployment, and probabilistic assumptions qualify the verdict
       conspicuously.
