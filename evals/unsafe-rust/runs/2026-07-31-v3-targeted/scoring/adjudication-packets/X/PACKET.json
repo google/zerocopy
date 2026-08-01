@@ -1,0 +1,33 @@
+{
+  "allowlist_sha256": "af068f9a92b8ae31e27cf9ee34075c54dd7f44906cc7e3ccb4b2369ad1e11b56",
+  "common_rules_sha256": "b7ad63a8a816034852d1542e904eccce33c3e9ff60e6b4b2bb7f37f503ce8b82",
+  "disagreements_sha256": "b38c6655688c078ef4417fb7b34525c5185c53fd5f6b13ebb8126c9ad5e99ad6",
+  "disputed_labels": [
+    "A",
+    "B",
+    "C",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J"
+  ],
+  "mode": "X",
+  "report_sha256": {
+    "A": "86d896a590d75d6ab764037f04ed282c3a6fc822d7278bd68929a8b8f9de97d5",
+    "B": "dc42456b7c1205f0bfb4134d4928bd38b7804f990e4dfb1559639e4efd31d933",
+    "C": "6810e706f4b3974f0c1ef770bc1c8a4eb31bc902a454ca762c9f9491147e9917",
+    "E": "47f498ee490b32d33140eba16ddf4fa3ea10df4bd2c24d2275499fa30fd9de24",
+    "F": "9452fc8cae9f25d64b09d17822a59fceb98e19a1a754e327d799e9a462c09d69",
+    "G": "c9ca30c994fb58edbe9566764dbe3b28fac599dbda40a1d6603a7862e4a5620e",
+    "H": "14845b9df93acc77be643ccf456e5dfa333a01fe70cb6ffa9f74a1c33b66f600",
+    "I": "558ebe232a4e3fade4ffed4c1a4b61dc9c294c9ad3df86bcb8956dae957d2395",
+    "J": "53cf56027a48090998b1ca7fca43ec1200e98e1e8fe386339909fe1a840ffce4"
+  },
+  "rubric_sha256": "ed88cb738258d69cf2e410f33fc2cabe7a209fecf36440b23707f3b9ebaeda36",
+  "schema_sha256": "58d36e6a54002a29fe7f45c4f65d966a307212e6d082be75d34772fc5b128209",
+  "schema_version": 1,
+  "source_score_packet_sha256": "4dc5b8859a57b4102344d6c4f189d3b3df075d1e695d4367ffb50b4cc4cfdf30",
+  "target_byte_tree_sha256": "b15e0bf988b5eb8779ecb8d2cf825550354c739f234404aaef1bd27f41860af4"
+}

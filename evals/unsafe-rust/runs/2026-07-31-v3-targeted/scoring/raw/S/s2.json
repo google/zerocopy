@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "mode": "S",
+  "scorer_id": "s2",
+  "reports": [
+    {
+      "label": "J",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines Required with ReleasedStable(r), the closed 1.84.0–1.86.0 interval, all three targets, both telemetry states, every profile, and both debug states; rejects Cargo/CI substitution."},
+        {"id": "S2", "decision": "PASS", "evidence": "Verifies both Rust 1.84.0 Option pages and conspicuously applies accepted COMPAT-OPTION-184-186 only to its exact propositions, region, and consumers."},
+        {"id": "S3", "decision": "PASS", "evidence": "Says reaching unwrap_unchecked means is_none was false, so the unchanged, still-owned exhaustive Option value is Some."},
+        {"id": "S4", "decision": "PASS", "evidence": "Proves None takes the return-0 branch and Some(b) reaches the accepted unwrap contract and returns b."},
+        {"id": "S5", "decision": "PASS", "evidence": "Explains that no target, feature, profile, or debug axis occurs in the source and the derivation is identical over their complete product."},
+        {"id": "S6", "decision": "PASS", "evidence": "States Covered = Required, derives Required subseteq Covered by identity, and reports soundness PROVED relative to COMPAT-OPTION-184-186."},
+        {"id": "S7", "decision": "PASS", "evidence": "The same complete case and coverage proof supports the documented-result PROVED verdict, expressly TCB-relative."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No proposal is used; the only compatibility premise is the supplied, already accepted COMPAT-OPTION-184-186 entry."},
+      "tcb_authority_defect": {"present": false, "evidence": "The report identifies the exact base pages, accepted entry, proposition, region, consumers, exclusions, and qualification."},
+      "visible_scope_defect": {"present": false, "evidence": "It confines evidentiary claims to the supplied snapshot and allowlisted Rust pages and disclaims prior or tool-derived evidence."},
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines S as every released stable r in the inclusive interval, all three targets, both telemetry states, every profile, and both debug states; SUPPORT controls, not Cargo or CI."},
+        {"id": "S2", "decision": "PASS", "evidence": "Quotes the exact 1.84.0 is_none and unwrap_unchecked propositions and logs accepted COMPAT-OPTION-184-186 with exact scope and limitations."},
+        {"id": "S3", "decision": "PASS", "evidence": "Its exhaustive split shows false is_none on the unchanged borrowed value establishes Some(v) before unwrap_unchecked."},
+        {"id": "S4", "decision": "PASS", "evidence": "Shows None returns literal 0 and Some(v) falls through to the accepted unwrap postcondition returning v."},
+        {"id": "S5", "decision": "PASS", "evidence": "Notes the feature is unused and there are no cfg or target/profile/debug-sensitive operations, so one proof covers every axis."},
+        {"id": "S6", "decision": "PASS", "evidence": "Says COMPAT covers every member of S, no supported combination is uncovered, and soundness is PROVED for S relative to the entry."},
+        {"id": "S7", "decision": "PASS", "evidence": "Applies the same exhaustive and whole-S argument to a documented-result PROVED verdict with the same qualification."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The report consumes the fixture's accepted TCB entry and does not propose or certify an unimplemented design."},
+      "tcb_authority_defect": {"present": false, "evidence": "It verifies versioned base text and keeps the accepted entry's exact identity, scope, consumers, limitations, and disposition conspicuous."},
+      "visible_scope_defect": {"present": false, "evidence": "Its stated evidence is the six supplied target files and allowlisted Rust pages; it disclaims builds, execution, tests, and tool proof."},
+      "novel_findings": []
+    },
+    {
+      "label": "F",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Recovers the exact released-stable inclusive interval, three targets, both feature states, every profile, and both assertion states, while treating CI only as samples."},
+        {"id": "S2", "decision": "PASS", "evidence": "States both exact Rust 1.84.0 Option contracts and applies the supplied accepted compatibility entry over its complete authorized domain."},
+        {"id": "S3", "decision": "PASS", "evidence": "Derives that fallthrough means is_none was false and, by the accepted exact classification, the receiver is Some(v)."},
+        {"id": "S4", "decision": "PASS", "evidence": "O1–O3 establish None -> 0 and Some(v) -> v using the applicable accepted Option propositions."},
+        {"id": "S5", "decision": "PASS", "evidence": "Explicitly makes configuration closure parametric over the full Cartesian product and identifies the absence of every relevant source-selection axis."},
+        {"id": "S6", "decision": "PASS", "evidence": "The exhaustive safe-input proof plus parametric closure supports soundness PROVED for every supported configuration, conspicuously TCB-relative."},
+        {"id": "S7", "decision": "PASS", "evidence": "The same complete domain and case proof supports documented behavior PROVED relative to COMPAT-OPTION-184-186."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No report-authored or unimplemented compatibility design is used; only the accepted fixture entry is consumed."},
+      "tcb_authority_defect": {"present": false, "evidence": "The base authorities and accepted entry's proposition, full region, consumers, exclusions, and triggers are accurately recorded."},
+      "visible_scope_defect": {"present": false, "evidence": "The report restricts itself to the supplied snapshot and allowlisted authority and explicitly uses no execution, prior audit, or tool proof."},
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines Required symbolically as R x T x F x P x D with the exact stable-release interval, three targets, both feature states, all profiles, and both debug states."},
+        {"id": "S2", "decision": "PASS", "evidence": "Verifies both 1.84.0 base propositions and uses accepted COMPAT-OPTION-184-186 over exactly Required; the release inventory is additional, not the compatibility basis."},
+        {"id": "S3", "decision": "PASS", "evidence": "OBL-1 proves the true branch returns and false is_none leaves the exhaustive Option value as Some(v) before the unsafe call."},
+        {"id": "S4", "decision": "PASS", "evidence": "OBL-2 explicitly proves None returns 0 and Some(v) returns v, including Some(0), from the accepted contracts."},
+        {"id": "S5", "decision": "PASS", "evidence": "Shows no cfg/profile/debug/feature/target path exists and the TCB premise has the same complete configuration quantification."},
+        {"id": "S6", "decision": "PASS", "evidence": "States each obligation has Covered = Required, derives Required subseteq Covered, and reports soundness PROVED relative to the accepted entry."},
+        {"id": "S7", "decision": "PASS", "evidence": "Uses the same explicit closure certificate for the universal documented-result PROVED verdict with conspicuous qualification."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No proposed design narrows or certifies the current artifact; the report relies only on an already accepted fixture premise."},
+      "tcb_authority_defect": {"present": false, "evidence": "It accurately logs the exact versioned bases and the accepted entry's identity, proposition, region, consumers, exclusions, and disposition."},
+      "visible_scope_defect": {"present": false, "evidence": "It identifies only supplied target material and exact allowlisted Rust sources and denies builds, tests, prior audits, or tool-derived evidence."},
+      "novel_findings": []
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Preserves R as the exact symbolic released-stable interval and includes all targets, feature states, profiles, and debug states, expressly rejecting Cargo/CI substitution."},
+        {"id": "S2", "decision": "PASS", "evidence": "Checks both exact Rust 1.84.0 pages and applies accepted COMPAT-OPTION-184-186 with its exact proposition and authorized consumers."},
+        {"id": "S3", "decision": "PASS", "evidence": "O1 derives that reaching unwrap_unchecked means the branch test was false and the accepted iff proposition makes value Some(v)."},
+        {"id": "S4", "decision": "PASS", "evidence": "O2–O3 exhaust None and Some(v), yielding respectively 0 and v through the applicable contracts."},
+        {"id": "S5", "decision": "PASS", "evidence": "Shows control flow is independent of target, feature, profile, and assertion state and covers their full Cartesian product."},
+        {"id": "S6", "decision": "PASS", "evidence": "Explicitly states Covered = Required and Required subseteq Covered, then gives a whole-domain soundness PROVED verdict relative to the TCB."},
+        {"id": "S7", "decision": "PASS", "evidence": "The exhaustive behavior proof and same closure support documented result PROVED over Required with the same qualification."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No proposal appears; the compatibility basis is the supplied accepted entry rather than report-authored continuity."},
+      "tcb_authority_defect": {"present": false, "evidence": "It verifies the base pages and accurately confines the accepted entry to its exact proposition, region, consumers, and exclusions."},
+      "visible_scope_defect": {"present": false, "evidence": "The report confines its audit to the supplied snapshot and allowlisted pages and disclaims tool-derived or prior evidence."},
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines Supported(c) with the exact symbolic released-stable interval, all three targets, both telemetry states, every Cargo profile, and both debug states."},
+        {"id": "S2", "decision": "PASS", "evidence": "Identifies the two version-matched 1.84.0 Option authorities and states the exact accepted COMPAT proposition, base identity, full region, consumers, and limitations."},
+        {"id": "S3", "decision": "PASS", "evidence": "O1–O2 show the true branch returns; false is_none excludes None, exhaustive variants give Some, and no intervening mutation exists."},
+        {"id": "S4", "decision": "PASS", "evidence": "O3 proves None selects return 0 and Some(v) selects the accepted unwrap result v."},
+        {"id": "S5", "decision": "PASS", "evidence": "O4 identifies the absence of cfg and all feature/target/profile/debug-sensitive operations and treats the proof parametrically over the full domain."},
+        {"id": "S6", "decision": "PASS", "evidence": "All inputs and every Supported(c) are covered, and the report gives soundness PROVED relative to the accepted entry without using CI."},
+        {"id": "S7", "decision": "PASS", "evidence": "The exhaustive O3 behavior proof covers every Supported(c) and supports the expressly TCB-relative documented-behavior PROVED verdict."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The report neither proposes nor certifies future code; its only compatibility premise is the fixture's accepted entry."},
+      "tcb_authority_defect": {"present": false, "evidence": "It names the correct base pages and accepted entry and keeps its exact proposition, region, consumers, exclusions, and qualification visible."},
+      "visible_scope_defect": {"present": false, "evidence": "It states the supplied six-file snapshot and allowlisted authorities as evidence and disclaims builds, tests, prior audits, and tool proof."},
+      "novel_findings": []
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines D using the closed released-stable interval, three exact targets, both feature states, every profile, and both debug states, without replacing policy by Cargo or CI."},
+        {"id": "S2", "decision": "PASS", "evidence": "Verifies the exact 1.84.0 is_none, Some-return, and None-UB text and applies accepted COMPAT-OPTION-184-186 only over D and named consumers."},
+        {"id": "S3", "decision": "PASS", "evidence": "Defines FALLTHROUGH-SOME and proves it from the false branch, exhaustive Option variants, unchanged ownership, and the accepted classification."},
+        {"id": "S4", "decision": "PASS", "evidence": "The full case proof makes None return 0 before unsafe and Some(v) return v via the accepted unwrap result."},
+        {"id": "S5", "decision": "PASS", "evidence": "States the proof is parametric in target, feature, profile, and debug state because the source has no selection or dependent operation on those axes."},
+        {"id": "S6", "decision": "PASS", "evidence": "Explicitly derives Required = D subseteq Covered = D and reports soundness PROVED over exactly D relative to COMPAT."},
+        {"id": "S7", "decision": "PASS", "evidence": "The same exact-D closure and exhaustive case proof support RESULT PROVED relative to COMPAT."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No unimplemented proposal or report-authored compatibility rule is used; the supplied accepted entry is the only non-doc premise."},
+      "tcb_authority_defect": {"present": false, "evidence": "The report verifies versioned base text and records the accepted entry's exact identity, scope, consumers, exclusions, and triggers."},
+      "visible_scope_defect": {"present": false, "evidence": "It limits evidence to the supplied target files and allowlisted versioned pages and says no prior audit, build, run, or test was used."},
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Writes the exact symbolic Required predicate with the stable interval, three targets, both telemetry states, every profile, and both debug states, and rejects CI/Cargo contraction."},
+        {"id": "S2", "decision": "PASS", "evidence": "Quotes both exact 1.84.0 Option propositions and uses the supplied accepted compatibility entry as the explicit interval-coverage basis, not sampled pages."},
+        {"id": "S3", "decision": "PASS", "evidence": "O2 negates the taken is_none condition, uses the two Option variants, and retains the unchanged value as Some(v) at unwrap_unchecked."},
+        {"id": "S4", "decision": "PASS", "evidence": "Its exhaustive proof has None return 0 and Some(v) return v through the accepted unwrap postcondition."},
+        {"id": "S5", "decision": "PASS", "evidence": "Explains source identity across all target/feature/profile/debug coordinates and that the accepted contract has the same complete quantification."},
+        {"id": "S6", "decision": "PASS", "evidence": "States each Covered predicate equals Required, derives Required subseteq Covered, and reports soundness PROVED relative to COMPAT."},
+        {"id": "S7", "decision": "PASS", "evidence": "The same closure plus O4 supports the universal documented RESULT PROVED with conspicuous TCB qualification."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The report explicitly says the accepted entry, not sampled pages or a new compatibility rule, is the interval basis."},
+      "tcb_authority_defect": {"present": false, "evidence": "It identifies and verifies the base authority and confines the accepted entry to its exact proposition, Required region, consumers, and exclusions."},
+      "visible_scope_defect": {"present": false, "evidence": "It cites only supplied target material and exact allowlisted Rust pages and disclaims tools, builds, tests, execution, and expansion."},
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "States the exact released-stable inclusive predicate, the five correct released members, all three targets, both feature states, every profile, and both debug states; CI remains sampling only."},
+        {"id": "S2", "decision": "PASS", "evidence": "Verifies both exact Rust 1.84.0 base contracts and relies on the human-accepted COMPAT entry for uniform applicability over the complete supported domain."},
+        {"id": "S3", "decision": "PASS", "evidence": "O2 proves that reaching line 11 means is_none was false and therefore the exhaustive Option value is Some(v), satisfying the unsafe precondition."},
+        {"id": "S4", "decision": "PASS", "evidence": "O3 proves the exhaustive None -> 0 and Some(v) -> v result using the accepted exact propositions."},
+        {"id": "S5", "decision": "PASS", "evidence": "Shows one dataflow proof is parametric over every non-toolchain axis and the accepted entry covers every toolchain member and configuration axis."},
+        {"id": "S6", "decision": "PASS", "evidence": "Says no supported combination is uncovered and reports soundness PROVED throughout the exact supported set relative to COMPAT."},
+        {"id": "S7", "decision": "PASS", "evidence": "The same complete-domain derivation supports documented result PROVED throughout the supported set with explicit TCB qualification."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No future design or report-authored compatibility premise is used to certify or narrow the supplied artifact."},
+      "tcb_authority_defect": {"present": false, "evidence": "The report verifies the base pages and accurately records the accepted entry's identity, exact proposition, region, consumers, exclusions, and triggers."},
+      "visible_scope_defect": {"present": false, "evidence": "Its evidence remains the supplied target and exact allowlisted standard-library/release pages; it disclaims builds, tests, execution, and external proof."},
+      "novel_findings": []
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines Supported(c) with any released stable r in the closed interval, the exact three targets, both telemetry states, arbitrary profiles, and both debug states, with SUPPORT controlling."},
+        {"id": "S2", "decision": "PASS", "evidence": "States and links the exact 1.84.0 is_none and unwrap_unchecked propositions and applies accepted COMPAT-OPTION-184-186 over only its authorized region and consumers."},
+        {"id": "S3", "decision": "PASS", "evidence": "OBL-2 derives false is_none plus exhaustive variants and unchanged ownership into INV-BRANCH: value is Some(b) at the call."},
+        {"id": "S4", "decision": "PASS", "evidence": "OBL-4 exhaustively proves the true branch returns 0 for None and fallthrough returns b for Some(b)."},
+        {"id": "S5", "decision": "PASS", "evidence": "Explains the derivation is uniform over all target, feature, profile, and assertion coordinates and the accepted premise quantifies over their complete product."},
+        {"id": "S6", "decision": "PASS", "evidence": "Every safe input and supported configuration is covered, and the report gives soundness PROVED relative to the accepted entry over the complete domain."},
+        {"id": "S7", "decision": "PASS", "evidence": "The same exhaustive, whole-domain proof supports documented behavior PROVED relative to COMPAT-OPTION-184-186."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The report consumes only the supplied accepted compatibility premise and does not rely on an unimplemented proposal."},
+      "tcb_authority_defect": {"present": false, "evidence": "It records the exact base authority, accepted proposition, supported region, consumers, limitations, and conspicuous verdict qualification."},
+      "visible_scope_defect": {"present": false, "evidence": "It confines evidence to the supplied snapshot and exact allowlisted Rust sources and disclaims build, execution, tests, prior audit, and tool proof."},
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": []
+}

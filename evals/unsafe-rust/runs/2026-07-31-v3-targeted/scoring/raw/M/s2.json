@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "mode": "M",
+  "scorer_id": "s2",
+  "reports": [
+    {
+      "label": "G",
+      "atoms": [
+        {"id": "M1", "decision": "PASS", "evidence": "Defines A as the exact four-release set, quantifies every item-bearing target/profile, and states that acknowledge has no added caller obligation."},
+        {"id": "M2", "decision": "PASS", "evidence": "Uses S={1.80.0,1.81.0} and gives separate soundness and normal-return effect rows over every valid-call target/profile case."},
+        {"id": "M3", "decision": "PASS", "evidence": "Uses the exact four-member C set and separately records copy_byte soundness, destination equality, and source preservation over all axes."},
+        {"id": "M4", "decision": "PASS", "evidence": "Uses the exact four-member L set and separately states soundness and both load_word postconditions over valid calls and all configurations."},
+        {"id": "M5", "decision": "PASS", "evidence": "Checks the zero-parameter unit signature and exact {} body, consumes accepted SEM-EMPTY-BLOCK-180-182 only for acknowledge, and proves A coverage relative to it."},
+        {"id": "M6", "decision": "PASS", "evidence": "Applies the 1.80 and 1.81 write pages to their singleton cases, derives alignment/write validity from the caller contract, and exhausts S."},
+        {"id": "M7", "decision": "PASS", "evidence": "Each write page is used for storing value without reading or dropping the old value, and the two cases exhaust every stated postcondition obligation."},
+        {"id": "M8", "decision": "PASS", "evidence": "Verifies T=u8,count=1, size, Copy, validity/alignment/nonoverlap, and applies accepted COMPAT-COPY-180-182 only to copy_byte over C."},
+        {"id": "M9", "decision": "PASS", "evidence": "Uses the accepted entry plus one-byte Copy facts to prove destination equality and unchanged source throughout C, explicitly relative to the entry."},
+        {"id": "M10", "decision": "PASS", "evidence": "Proves read soundness only at 1.80.0 and 1.82.0 with matching read/u32:Copy facts, and leaves 1.80.1/1.81.0 and the whole claim UNPROVED."},
+        {"id": "M11", "decision": "PASS", "evidence": "Proves return-value and unchanged-source effects only at the two documented endpoints and leaves both interior postcondition regions UNPROVED."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No proposed design closes a current claim; the report requires new evidence and re-review for the load_word remainder."},
+      "tcb_authority_defect": {"present": false, "evidence": "Calls both entries human-accepted OUT-OF-BAND TCB premises, keeps their identities/consumers exact, and does not treat them as Rust authority."},
+      "visible_scope_defect": {"present": false, "evidence": "Expressly limits review to the supplied four-function source and exact packet authorities/TCB, with no visible prohibited source use."},
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {"id": "M1", "decision": "PASS", "evidence": "States the theorem over every contract-satisfying call and defines A as exactly 1.80.0,1.80.1,1.81.0,1.82.0 across all required targets/profiles."},
+        {"id": "M2", "decision": "PASS", "evidence": "Uses exact S={1.80.0,1.81.0} and separately lists store_word soundness and all normal-return effects over D(S)."},
+        {"id": "M3", "decision": "PASS", "evidence": "Uses exact C and separately lists soundness, destination-copy, and source-preservation claims for every valid call/configuration."},
+        {"id": "M4", "decision": "PASS", "evidence": "Uses exact L and separately treats load_word soundness, returned value, and unchanged source over the full call/configuration theorem."},
+        {"id": "M5", "decision": "PASS", "evidence": "Inspects the exact {}, zero-parameter, unit-return body and derives D(A) closure from accepted SEM-EMPTY-BLOCK-180-182 relative to the non-authoritative TCB."},
+        {"id": "M6", "decision": "PASS", "evidence": "Matches each of the 1.80/1.81 write contracts to its singleton release, caller alignment/write validity, and their exhaustive union S."},
+        {"id": "M7", "decision": "PASS", "evidence": "Uses both exact write descriptions to prove supplied-value storage and no read/drop of the old value on every case in S."},
+        {"id": "M8", "decision": "PASS", "evidence": "Checks T=u8,count=1, size, u8:Copy, Copy semantics, all pointer clauses, and exact COMPAT-COPY-180-182 scope/consumer."},
+        {"id": "M9", "decision": "PASS", "evidence": "The accepted compatibility premise is used exactly for one-byte destination copying and source preservation across D(C), relative to that TCB."},
+        {"id": "M10", "decision": "PASS", "evidence": "Uses release-matched read and u32 Copy facts at E={1.80.0,1.82.0}, calls them endpoint lemmas only, and leaves M and whole L UNPROVED."},
+        {"id": "M11", "decision": "PASS", "evidence": "Derives returned value and unchanged source at E, explicitly leaves both effects UNPROVED on M, and supplies no false stronger verdict."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "A possible future compatibility premise is only a resolution requirement followed by re-audit, never support for the current artifact."},
+      "tcb_authority_defect": {"present": false, "evidence": "Identifies SEM and COMPAT as the only accepted non-authoritative entries and confines each to its exact consumer."},
+      "visible_scope_defect": {"present": false, "evidence": "The report visibly uses only the submitted snapshot, TCB, and exact named official pages and excludes broader artifacts."},
+      "novel_findings": []
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {"id": "M1", "decision": "PASS", "evidence": "Defines exact V_ack and expressly crosses it with all item-bearing targets, ordinary profiles, and every contract-satisfying call; acknowledge has no extra obligation."},
+        {"id": "M2", "decision": "PASS", "evidence": "Defines exact V_store and the full valid-call product, then separately reports soundness and the three documented effects."},
+        {"id": "M3", "decision": "PASS", "evidence": "Defines exact V_copy and the full valid-call/configuration product separately for soundness and both postconditions."},
+        {"id": "M4", "decision": "PASS", "evidence": "Defines exact V_load and the full valid-call/configuration product, with separate soundness and postcondition coverage."},
+        {"id": "M5", "decision": "PASS", "evidence": "Checks no parameters, unit return, no additional obligation, and exact {} body; consumes accepted SEM only for acknowledge and proves Required subset Covered relative to it."},
+        {"id": "M6", "decision": "PASS", "evidence": "Uses the 1.80 and 1.81 write authorities only in matching cases, discharges write-validity/alignment, and proves their union is V_store."},
+        {"id": "M7", "decision": "PASS", "evidence": "Uses each write description for the supplied value and no read/drop effects; both singleton cases cover every postcondition obligation."},
+        {"id": "M8", "decision": "PASS", "evidence": "Checks local T=u8,count=1 and caller clauses, verifies all four base pages, and applies COMPAT only to copy_byte over its exact scope."},
+        {"id": "M9", "decision": "PASS", "evidence": "Derives one-byte destination equality and unchanged source from the accepted exact compatibility proposition and Copy facts over all V_copy."},
+        {"id": "M10", "decision": "PASS", "evidence": "Combines endpoint-specific read/u32:Copy/Copy pages with the caller contract, sets Covered to {1.80.0,1.82.0}, and leaves the interior and whole claim UNPROVED."},
+        {"id": "M11", "decision": "PASS", "evidence": "Proves returned-value and unchanged-source effects at the two endpoints and explicitly leaves both middle releases and full postcondition claim UNPROVED."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The suggested future narrow compatibility entry is not used for a current verdict and is expressly followed by re-review."},
+      "tcb_authority_defect": {"present": false, "evidence": "Calls SEM and COMPAT the only admitted non-authoritative premises, retains their exact scopes, and does not transfer them."},
+      "visible_scope_defect": {"present": false, "evidence": "Limits the audit to the supplied lib.rs/support/evidence/TCB snapshot and disclaims generated, dependency, build, and execution evidence."},
+      "novel_findings": []
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {"id": "M1", "decision": "PASS", "evidence": "Defines the exact release/target/profile configurations; ACK-S/P then checks no added caller requirement and gives a parametric proof for the zero-argument call, equivalently covering every well-typed call."},
+        {"id": "M2", "decision": "PASS", "evidence": "Uses exact {1.80.0,1.81.0}; the generic caller-contract proof applies to every valid dst/value call, and soundness plus all postconditions are listed separately."},
+        {"id": "M3", "decision": "PASS", "evidence": "Uses the exact four-release configuration set; the generic T=u8,count=1 caller proof covers every valid call and separately establishes soundness and both effects."},
+        {"id": "M4", "decision": "PASS", "evidence": "Uses the exact four-release configuration set; the generic src/caller-contract derivation covers every valid call and separately treats load soundness and both effects."},
+        {"id": "M5", "decision": "PASS", "evidence": "Independently checks the exact {}, zero-parameter, unit-return body and uses accepted SEM over its exact release/configuration scope and sole consumer."},
+        {"id": "M6", "decision": "PASS", "evidence": "The operation proof is parametric in caller inputs, applies each exact write page to its release, discharges alignment/write validity, and exhausts V_store."},
+        {"id": "M7", "decision": "PASS", "evidence": "Both release-specific descriptions establish storing value without reading or dropping old contents, with the exact two-case partition."},
+        {"id": "M8", "decision": "PASS", "evidence": "Checks T=u8,count=1, layout, u8:Copy, Copy semantics and all pointer clauses, then uses COMPAT only for its exact copy_byte consumer/scope."},
+        {"id": "M9", "decision": "PASS", "evidence": "Uses the accepted entry to establish the one-byte destination result and unchanged source over every V_copy release/configuration case."},
+        {"id": "M10", "decision": "PASS", "evidence": "Uses exact endpoint read/u32 Copy authorities, leaves 1.80.1 and 1.81.0 uncovered and full load soundness UNPROVED, and supplies no UB claim."},
+        {"id": "M11", "decision": "PASS", "evidence": "Uses endpoint descriptions and Copy facts for return/source effects, identifies the two-release interior gap, and leaves the complete postcondition UNPROVED."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "A future accepted compatibility proposition is only proposed to resolve the still-UNPROVED load gap and is not current evidence."},
+      "tcb_authority_defect": {"present": false, "evidence": "Identifies both entries as accepted OUT-OF-BAND TCB propositions and obeys their exact consumer restrictions."},
+      "visible_scope_defect": {"present": false, "evidence": "The visible source audit is confined to the supplied four-function snapshot and exact packet evidence; no prohibited material is invoked."},
+      "novel_findings": []
+    },
+    {
+      "label": "F",
+      "atoms": [
+        {"id": "M1", "decision": "PASS", "evidence": "Opening theorem quantifies every call, exact four-release acknowledge set, every item-bearing target, and both ordinary profiles; ACK proof notes no extra safety precondition."},
+        {"id": "M2", "decision": "PASS", "evidence": "Opening theorem supplies the valid-call product and the table uses exact {1.80.0,1.81.0} with separate soundness and all effect verdicts."},
+        {"id": "M3", "decision": "PASS", "evidence": "Opening theorem and table preserve all four V_copy releases, targets/profiles, valid calls, soundness, and both postconditions separately."},
+        {"id": "M4", "decision": "PASS", "evidence": "Opening theorem and table preserve all four V_load releases and full valid-call/configuration domains separately for soundness and effects."},
+        {"id": "M5", "decision": "PASS", "evidence": "Checks no additional caller condition and exact {}, and applies accepted SEM precisely to this body/signature, all four releases, targets, and profiles for defined unit return."},
+        {"id": "M6", "decision": "PASS", "evidence": "Uses version-matched 1.80/1.81 write pages, caller write-validity/alignment, and the exhaustive two-singleton partition."},
+        {"id": "M7", "decision": "PASS", "evidence": "Each write description proves the supplied value and no read/drop effects throughout the exact two-release Required set."},
+        {"id": "M8", "decision": "PASS", "evidence": "Checks T=u8,count=1, size, Copy facts, caller regions and exact accepted COMPAT scope, then proves all copy soundness obligations relative to it."},
+        {"id": "M9", "decision": "PASS", "evidence": "Uses one-byte Copy and accepted COMPAT to prove destination copying and source preservation across every required release/configuration."},
+        {"id": "M10", "decision": "PASS", "evidence": "Uses matching read/u32:Copy facts at only 1.80.0 and 1.82.0, identifies exactly the two missing releases, and leaves whole soundness UNPROVED."},
+        {"id": "M11", "decision": "PASS", "evidence": "Establishes both read effects at endpoints, leaves both effects UNPROVED in the interior, and rejects stronger UNSOUND/CONTRACT-BROKEN conclusions."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "Future authority/compatibility evidence is only a requested resolution and the current middle-release claims remain UNPROVED."},
+      "tcb_authority_defect": {"present": false, "evidence": "Labels both entries accepted OUT-OF-BAND propositions, retains exact quantifiers/consumers, and does not add a load compatibility premise."},
+      "visible_scope_defect": {"present": false, "evidence": "Audits exactly the supplied lib.rs and packet evidence, with explicit exclusions and no visible prohibited-source reliance."},
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {"id": "M1", "decision": "PASS", "evidence": "Defines the claim over every contract-satisfying call, exact acknowledge releases, all item-bearing targets, and ordinary profiles; notes no caller condition."},
+        {"id": "M2", "decision": "PASS", "evidence": "Preserves exact {1.80.0,1.81.0} and the opening valid-call/configuration theorem, separately reporting soundness and each documented store effect."},
+        {"id": "M3", "decision": "PASS", "evidence": "Preserves all four exact copy releases and the full call/configuration theorem, with separate soundness and two postcondition verdicts."},
+        {"id": "M4", "decision": "PASS", "evidence": "Preserves all four exact load releases and full call/configuration theorem, separately treating soundness, return value, and source preservation."},
+        {"id": "M5", "decision": "PASS", "evidence": "Checks exact {} and no extra caller condition, uses accepted SEM for this exact signature/body and all Required configurations, and proves defined unit return."},
+        {"id": "M6", "decision": "PASS", "evidence": "Substitutes T=u16, matches caller alignment/write validity to separate 1.80/1.81 contracts, and covers both exact releases."},
+        {"id": "M7", "decision": "PASS", "evidence": "Both write pages establish supplied-value overwrite without reading/dropping old contents, proving every listed effect over V_store."},
+        {"id": "M8", "decision": "PASS", "evidence": "Checks count/size/type, all caller clauses, u8 Copy facts, and applies accepted COMPAT exactly across V_copy for copy_byte."},
+        {"id": "M9", "decision": "PASS", "evidence": "Uses exact COMPAT plus size/Copy facts to prove the destination byte and unchanged source throughout every Required copy case."},
+        {"id": "M10", "decision": "PASS", "evidence": "Uses release-matched read and u32 Copy facts at the two endpoints, names the smallest interior premise, and leaves middle/full soundness UNPROVED."},
+        {"id": "M11", "decision": "PASS", "evidence": "Uses endpoint read descriptions and Copy facts for return/source effects, and leaves both middle releases and the whole postcondition claim UNPROVED."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "It does not use a suggested future premise to close the current load gap and states that new admissible evidence is required."},
+      "tcb_authority_defect": {"present": false, "evidence": "The TCB log distinguishes versioned authority from accepted OUT-OF-BAND SEM/COMPAT entries and limits each consumer exactly."},
+      "visible_scope_defect": {"present": false, "evidence": "The review visibly remains within the supplied four functions, packet files, and exact submitted pages, excluding external artifacts."},
+      "novel_findings": []
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {"id": "M1", "decision": "PASS", "evidence": "States soundness for every call satisfying caller obligations, exact four acknowledge releases, all item-bearing targets, and ordinary debug/release profiles."},
+        {"id": "M2", "decision": "PASS", "evidence": "Uses exact store release set and the universal valid-call/configuration theorem, with soundness and each documented effect separately."},
+        {"id": "M3", "decision": "PASS", "evidence": "Uses exact four-release copy set and separately treats universal soundness, destination result, and source preservation."},
+        {"id": "M4", "decision": "PASS", "evidence": "Uses exact four-release load set and separately treats universal soundness and both postconditions across all axes."},
+        {"id": "M5", "decision": "PASS", "evidence": "Checks zero parameters, unit return, exact {}, and no extra safety requirement; applies accepted SEM across exact scope and states unsafe only changes the static call obligation."},
+        {"id": "M6", "decision": "PASS", "evidence": "Uses the exact 1.80 and 1.81 write contracts in their releases, matches caller validity/alignment, and proves both required cases."},
+        {"id": "M7", "decision": "PASS", "evidence": "The two version-matched write descriptions prove overwrite with value and no read/drop of old value across the exact partition."},
+        {"id": "M8", "decision": "PASS", "evidence": "Checks T=u8,count=1, layout, u8:Copy, Copy semantics, pointer clauses, and exact COMPAT release/configuration/consumer scope."},
+        {"id": "M9", "decision": "PASS", "evidence": "Combines exact COMPAT with local type/count and Copy facts to prove destination equality and source preservation throughout Required."},
+        {"id": "M10", "decision": "PASS", "evidence": "Uses version-matched read/u32 Copy facts only at 1.80.0 and 1.82.0 and leaves the two interior releases and aggregate soundness UNPROVED."},
+        {"id": "M11", "decision": "PASS", "evidence": "Establishes return and unchanged-source effects only at the endpoints, names the missing interior implication, and leaves aggregate postconditions UNPROVED."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "A possible future compatibility premise is merely a resolution path; current interior claims remain UNPROVED."},
+      "tcb_authority_defect": {"present": false, "evidence": "Explicitly calls SEM and COMPAT the complete non-authoritative TCB and confines them to acknowledge and copy_byte respectively."},
+      "visible_scope_defect": {"present": false, "evidence": "Covers exactly the supplied four exported functions and named evidence, with no visible use of prohibited or sibling material."},
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {"id": "M1", "decision": "PASS", "evidence": "Opening claim expressly quantifies every contract-satisfying call, exact A, all item-bearing targets, and ordinary profiles; acknowledge has no hidden caller premise."},
+        {"id": "M2", "decision": "PASS", "evidence": "Uses exact S and the universal call/configuration claim, with separate soundness and Q-S1 through Q-S3 verdicts."},
+        {"id": "M3", "decision": "PASS", "evidence": "Uses exact C and the universal call/configuration claim, separately scoring soundness, destination result, and source preservation."},
+        {"id": "M4", "decision": "PASS", "evidence": "Uses exact L and universal call/configuration scope, separately scoring load soundness and Q-L1/Q-L2."},
+        {"id": "M5", "decision": "PASS", "evidence": "Locally checks zero parameters, unit return, exact {}, and no extra obligation, then instantiates accepted SEM only for acknowledge over all A."},
+        {"id": "M6", "decision": "PASS", "evidence": "Applies each exact write page to its matching release, derives alignment/write validity from the contract, and covers both S members."},
+        {"id": "M7", "decision": "PASS", "evidence": "Uses both exact write descriptions to establish value storage and no read/drop effects for the exhaustive S partition."},
+        {"id": "M8", "decision": "PASS", "evidence": "Verifies copy contract, u8 size, u8:Copy and Copy semantics, local count/type and all caller clauses, then uses exact COMPAT only for copy_byte."},
+        {"id": "M9", "decision": "PASS", "evidence": "The accepted entry expressly preserves Q-C1/Q-C2 with one-byte Copy semantics over all C, and the verdict is relative to it."},
+        {"id": "M10", "decision": "PASS", "evidence": "Uses exact read/u32 Copy facts at E={1.80.0,1.82.0}, identifies no interior authority, and leaves M and full L soundness UNPROVED."},
+        {"id": "M11", "decision": "PASS", "evidence": "Uses endpoint descriptions for return/source effects, leaves both effects UNPROVED on M, and supplies neither UNSOUND nor CONTRACT-BROKEN."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The report requires later admissible evidence and re-audit for the load remainder rather than crediting a proposed premise now."},
+      "tcb_authority_defect": {"present": false, "evidence": "Lists each entry as an accepted admitted TCB proposition with exact domain/consumer and keeps it separate from versioned authorities."},
+      "visible_scope_defect": {"present": false, "evidence": "Expressly confines the audit to the submitted snapshot and exact authorities/TCB and states no tool-derived or extra evidence was used."},
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {"id": "M1", "decision": "PASS", "evidence": "The opening theorem explicitly quantifies every contract-satisfying call over exact V_ack and all targets/profiles; ACK proof adds that every well-typed call has no extra safety condition."},
+        {"id": "M2", "decision": "PASS", "evidence": "The opening universal-call theorem and exact V_store configuration set combine to the full product; soundness and all documented effects are listed separately."},
+        {"id": "M3", "decision": "PASS", "evidence": "The opening theorem explicitly covers every valid call over exact V_copy/all configurations, and the table separates soundness from both postconditions."},
+        {"id": "M4", "decision": "PASS", "evidence": "The opening theorem explicitly covers every valid call over exact V_load/all configurations, with separate soundness, return-value, and source-preservation results."},
+        {"id": "M5", "decision": "PASS", "evidence": "The operation proof itself is universal: it checks zero parameters, unit return, exact {}, no extra caller condition, and exact accepted SEM scope/consumer."},
+        {"id": "M6", "decision": "PASS", "evidence": "Parametrically applies matching 1.80/1.81 write pages, derives caller validity/alignment, and exhausts the two exact release cases."},
+        {"id": "M7", "decision": "PASS", "evidence": "Both write descriptions prove supplied-value storage and no read/drop of old contents over the exact two-case partition."},
+        {"id": "M8", "decision": "PASS", "evidence": "Checks T=u8,count=1, all pointer clauses, base size/Copy propositions and exact COMPAT scope over every copy case."},
+        {"id": "M9", "decision": "PASS", "evidence": "Uses accepted COMPAT exactly to establish one-byte destination copy and unchanged source throughout V_copy."},
+        {"id": "M10", "decision": "PASS", "evidence": "Uses matching read/u32 Copy authorities at 1.80.0 and 1.82.0, rejects endpoint interpolation, and leaves interior/full soundness UNPROVED."},
+        {"id": "M11", "decision": "PASS", "evidence": "Proves return and source preservation only at endpoints and leaves both postconditions UNPROVED for the exact two-release interior and full domain."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The possible future compatibility entry is not credited to the current artifact; the load gap remains UNPROVED pending evidence and re-audit."},
+      "tcb_authority_defect": {"present": false, "evidence": "Identifies both entries as human-accepted narrow TCB premises and does not transfer them beyond their exact consumers."},
+      "visible_scope_defect": {"present": false, "evidence": "The visible review is limited to the supplied four-function artifact and exact packet evidence, with no prohibited material indicated."},
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {"id": "M1", "decision": "PASS", "evidence": "The aggregate claim explicitly covers UB freedom for every valid call over exact V_ack/configurations; ACK proof establishes no added caller obligation and exact empty-call coverage."},
+        {"id": "M2", "decision": "PASS", "evidence": "The universal valid-call claim nests over exact V_store/all configurations, and the ledger separately proves soundness and documented write results."},
+        {"id": "M3", "decision": "PASS", "evidence": "The universal valid-call claim nests over exact V_copy/all configurations, and COPY-S/Q separately cover soundness and both effects."},
+        {"id": "M4", "decision": "PASS", "evidence": "The universal valid-call claim nests over exact V_load/all configurations, and LOAD-S/Q separately cover soundness and both documented effects."},
+        {"id": "M5", "decision": "PASS", "evidence": "The derivation checks no added caller requirement and exact {}, uses accepted SEM over exactly four releases/all targets/profiles, and connects it only to acknowledge."},
+        {"id": "M6", "decision": "PASS", "evidence": "Uses exact singleton 1.80/1.81 write authorities, caller write-validity/alignment and their exhaustive V_store union."},
+        {"id": "M7", "decision": "PASS", "evidence": "The same two pages establish overwrite with the supplied value and neither reading nor dropping the old value across V_store."},
+        {"id": "M8", "decision": "PASS", "evidence": "Checks local u8/count=1, caller pointer clauses, 1.80 base layout/Copy facts and exact COMPAT consumer/configuration scope."},
+        {"id": "M9", "decision": "PASS", "evidence": "Uses accepted COMPAT only for exact one-byte destination/source effects over every V_copy release/configuration case."},
+        {"id": "M10", "decision": "PASS", "evidence": "Uses exact endpoint read/u32 Copy pages, covers only {1.80.0,1.82.0}, and leaves 1.80.1/1.81.0 and full soundness UNPROVED."},
+        {"id": "M11", "decision": "PASS", "evidence": "Uses endpoint facts for returned value/unchanged source, identifies the missing two-release premise, and leaves aggregate postconditions UNPROVED."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "It leaves the current load interior UNPROVED and requires actual versioned authority or an accepted premise followed by re-audit."},
+      "tcb_authority_defect": {"present": false, "evidence": "Separates accepted SEM/COMPAT TCB entries from versioned Rust authority, records exact consumers/triggers, and makes no transfer."},
+      "visible_scope_defect": {"present": false, "evidence": "The report visibly confines itself to supplied lib.rs, EVIDENCE.md, TCB entries, and exact named URLs with no prohibited-source signal."},
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": [
+    "Reports B, I, and D use Required for release-target-profile configurations while quantifying valid calls in surrounding theorem/proof text. The frozen rules both reserve Required for the full Calls_f product and accept equivalently exact derivations; I treated the nested universal quantification as semantically exact rather than a contraction."
+  ]
+}
