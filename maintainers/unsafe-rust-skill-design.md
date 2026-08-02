@@ -64,16 +64,20 @@ This model yields the core design:
 
 - A safety contract is an English-language theorem.
 - A safety comment is an English-language proof.
-- Every conclusion must follow from checked local facts, established named
-  invariants, legitimate boundary contracts, authoritative axioms, or explicit
-  TCB premises.
+- Inspection establishes literal artifact structure, not the semantic effect
+  of that structure. Every conclusion must follow from checked artifact facts,
+  applicable authoritative axioms or explicit TCB premises, and explicit
+  derivations through established lemmas and invariants.
 - Every missing implication makes the result unproved; demonstrating an actual
   UB execution is not required to reject the proof.
 - Proofs compose through contracts and invariant-carrying state, so global
   soundness follows from complete local discharge.
 
-The skill does not need to teach this as an ontology. It needs to make agents
-perform the consequences.
+The skill does not need a philosophical ontology or a closed taxonomy of
+unsafe operations. It does need a finite operational classification for every
+proof proposition or premise, explicit treatment of material inferences, and
+the artifact/semantics distinction, because those rules change whether an
+apparently complete proof actually has admissible premises.
 
 ## Design Principles
 
@@ -197,22 +201,45 @@ documentation. A cutoff bounds when the theorem was evaluated but supplies no
 semantic continuity. Each case lemma's premise applicability must survive
 composition across the whole claimed release and configuration region.
 
-### Proof compression must be reversible
+### Proof kernels separate artifact structure from semantics
 
-Compact proofs and canonical entries are necessary for usable reports, but
-compression may not hide a material inference. A reviewer must be able to start
-at every certified conclusion and recover each intermediate proposition,
-premise, applicability domain, source, and entailment step. A broad phrase such
-as “cfg semantics,” a page-level citation, or a named TCB entry supplies only
-the exact propositions the proof states and the source actually guarantees.
+An artifact fact is a directly checked property of the audited material:
+tokens, declarations, attributes, ordering, explicit annotations, generated
+text, or comparable literal structure. A Rust axiom is the exact semantic
+proposition entailed by applicable versioned Reference or standard-library
+text. A derived lemma follows from artifact facts, applicable semantic
+premises, earlier proved lemmas or invariants, and explicit logic or
+mathematics. Selected-dependency facts, verified tool theorems, and admitted
+TCB propositions retain their distinct trust treatment.
 
-The runtime package therefore uses the existing obligation ledger and proof
-prose for a final reverse-trace pass. It does not require an explicit graph or a
-second artifact. This is load-bearing because an audit can identify the right
-code path and reach the right high-level verdict while still lacking one
-semantic operator, numeric-domain fact, or stage transition needed to certify
-that verdict. Such a result is not proof-grade merely because the omitted fact
-is true or appears somewhere in an allowed document.
+The presence of syntax does not establish what compiling or executing it
+means. Type value domains, evaluation and return, branching and matching,
+arithmetic, configuration selection, accessibility, typing/coherence, and
+caller-side unsafe obligations are semantic propositions even when the
+relevant syntax is visible. Likewise, the text of a named invariant may be an
+artifact fact, but its truth at a consumer is a derived lemma requiring
+establishment and preservation proofs.
+
+The runtime procedure therefore uses one kernel discipline and requires a
+closed evidence-bearing kernel for each certified conclusion:
+
+```text
+artifact fact
+  + exact applicable Rust/stdlib axiom, selected-dependency fact,
+    verified tool theorem, or explicit TCB premise
+  + earlier proved lemma or invariant
+  + explicit logic or mathematics
+  -> derived lemma
+  -> consumer or certified conclusion
+```
+
+Kernel closure is a precondition to certification, not merely a final lint. A
+reviewer must be able to recover every consumed premise and inferential edge,
+applicability domain, source, and entailment direction. A broad topic label,
+page-level citation, or named TCB entry supplies only the proposition explicitly
+extracted and proved applicable. Ordinary proof prose and the obligation ledger
+may carry each kernel; an explicit global graph or second proof artifact is
+unnecessary.
 
 ### Producer contracts retain their quantifiers
 
@@ -268,6 +295,13 @@ existential refutation is complete only when a valid in-scope use reaches an
 operation or event whose exact required safety proposition is false and the
 applicable semantics entails UB; once those facts are proved, the scoped result
 is `UNSOUND` even though other executions were not analyzed universally.
+
+The valid-use premise discharges safety obligations owned outside the audited
+scope, including obligations imposed on caller or implementer code supplied by
+the witness. It must not assume the in-scope assertion being audited. Otherwise
+a bad crate-owned `unsafe impl`, unsafe declaration, or boundary assertion would
+become impossible to classify: its implementer contract would be assumed true
+before the certificate could prove that exact assertion false.
 
 The runtime therefore uses explicit verdict certificates. This prevents both
 optimistic acceptance from absence of a witness and over-cautious dilution of a
@@ -371,11 +405,13 @@ The installable package is structurally confined to `skills/unsafe-rust/`.
 Nothing in the runtime package links to `maintainers/`.
 
 - [`SKILL.md`](../skills/unsafe-rust/SKILL.md) contains the theorem, mandatory
-  workflow, hard trust/locality rules, routing, verdicts, and output contract.
+  workflow, always-loaded proof-kernel gate, hard trust/locality rules, routing,
+  verdicts, and output contract.
 - `agents/openai.yaml` contains UI metadata only and must not become a second
   instruction channel.
 - [`proof-obligations.md`](../skills/unsafe-rust/references/proof-obligations.md)
-  contains detailed contract, invariant, citation, and comment technique.
+  contains detailed evidence classification, kernel construction and closure,
+  valid-use, contract, invariant, citation, and comment technique.
 - [`abstraction-design.md`](../skills/unsafe-rust/references/abstraction-design.md)
   contains the conditional proof-oriented design process and the firewall
   between current-artifact verification and candidate design.
@@ -389,8 +425,8 @@ Nothing in the runtime package links to `maintainers/`.
   contains trust categories, dependency relationships, conditional claims, and
   tool-evidence evaluation.
 - [`audit-reporting.md`](../skills/unsafe-rust/references/audit-reporting.md)
-  contains scope, obligation-ledger, evidence reconciliation, finding, verdict,
-  and preservation rules.
+  contains scope, obligation-ledger, proof-kernel preservation, root/blocker,
+  finding, verdict, and audit-preservation rules.
 - `assets/` contains copyable audit artifacts, not additional hidden
   instructions.
 - Future evaluations belong outside the installable package.
@@ -419,10 +455,10 @@ column records candidate semantic evaluation scenarios, not execution results.
 | D05 — Treat caller safe code adversarially | Unsafe code trusts unenforced callback/trait behavior | Seal, validate, or make implementer contract unsafe | [API closure](../skills/unsafe-rust/SKILL.md#close-api-and-configuration-boundaries); [traits](../skills/unsafe-rust/references/api-boundaries-and-evolution.md#audit-traits-and-sealing) | EV05 — malicious safe trait impl |
 | D06 — Permit explicit selected-safe-dependency trust | Pointless recursive audits of intentionally chosen safe APIs | Record exact safe contract in TCB | [Premise policy](../skills/unsafe-rust/SKILL.md#use-only-applicable-premises); [dependency contracts](../skills/unsafe-rust/references/tcb-and-evidence.md#record-dependency-contracts) | EV06 — selected sort API versus caller comparator |
 | D07 — Audit or admit unsafe dependencies | Satisfying caller contract mistaken for implementation correctness | Recursive proof or `UNSAFE-DEP` entry | [Premise policy](../skills/unsafe-rust/SKILL.md#use-only-applicable-premises); [dependency contracts](../skills/unsafe-rust/references/tcb-and-evidence.md#record-dependency-contracts) | EV07 — unsound third-party unsafe helper |
-| D08 — Restrict Rust axioms to versioned Reference/std text | Folklore and explanatory documents become premises | Quote, link, and verify exact authority | [Premise policy](../skills/unsafe-rust/SKILL.md#use-only-applicable-premises); [citations](../skills/unsafe-rust/references/proof-obligations.md#cite-authoritative-axioms) | EV08 — mischaracterized citation |
+| D08 — Restrict Rust axioms to versioned Reference/std text | Folklore and explanatory documents become premises | Quote, link, and verify exact authority | [Premise policy](../skills/unsafe-rust/SKILL.md#use-only-applicable-premises); [proof kernel](../skills/unsafe-rust/references/proof-obligations.md#build-the-evidence-bearing-proof-kernel) | EV08 — mischaracterized citation |
 | D09 — Recover the full theorem domain losslessly and carry applicability through every derivation | A range, union, condition, input, or moving policy is contracted or projected away; a false set relationship or out-of-domain premise is then used to assert closure | Preserve the full case tuple and source predicates; use relation-appropriate containment/equality/witness certificates; require `Required ⊆ Covered`; certify every multi-version premise region | [Domain recovery](../skills/unsafe-rust/SKILL.md#recover-the-required-domain); [applicability](../skills/unsafe-rust/references/proof-obligations.md#qualify-applicability); [supported set](../skills/unsafe-rust/references/configurations-and-generated-code.md#recover-the-required-supported-set) | EV09 — nonlinear incomparable policies plus a configuration/input product and sparse version evidence |
-| D10 — Require indirect-derivation search before final failure | Valid multi-clause proofs are rejected because no single sentence states the conclusion | Unfold definitions, combine exact premises, and identify the smallest remaining gap | [Proof workflow](../skills/unsafe-rust/SKILL.md#follow-the-proof-workflow); [indirect derivations](../skills/unsafe-rust/references/proof-obligations.md#search-for-indirect-derivations) | EV10 — validity derived from orthogonal std guarantees |
-| D11 — Expose material reconstructed proofs | Reviewer silently accepts code whose safety comment omits the actual argument | Report reconstructed proof and proof-artifact defect separately | [Proof-grade documentation](../skills/unsafe-rust/SKILL.md#write-and-review-proof-grade-documentation); [proof review](../skills/unsafe-rust/references/proof-obligations.md#review-a-proof) | EV11 — sound operation with hand-waving comment |
+| D10 — Require indirect-derivation search before final failure | Valid multi-clause proofs are rejected because no single sentence states the conclusion | Unfold definitions, combine exact premises, and identify the smallest remaining gap | [Proof workflow](../skills/unsafe-rust/SKILL.md#follow-the-proof-workflow); [kernel closure](../skills/unsafe-rust/references/proof-obligations.md#close-and-lint-the-proof-kernel) | EV10 — validity derived from orthogonal std guarantees |
+| D11 — Expose material reconstructed proofs | Reviewer silently accepts code whose safety comment omits the actual argument | Report reconstructed proof and proof-artifact defect separately | [Proof-grade documentation](../skills/unsafe-rust/SKILL.md#write-and-review-proof-grade-documentation); [proof review](../skills/unsafe-rust/references/proof-obligations.md#review-and-reconstruct-a-proof) | EV11 — sound operation with hand-waving comment |
 | D12 — Include every safe API surface | Public field, trait, constructor, hidden item, or macro bypasses invariant | Apply explicit surface checklist | [API closure](../skills/unsafe-rust/SKILL.md#close-api-and-configuration-boundaries); [surface inventory](../skills/unsafe-rust/references/api-boundaries-and-evolution.md#enumerate-every-surface) | EV12 — macro-generated safe constructor |
 | D13 — Cover every supported configuration abstractly or concretely | Tested matrix misses shippable combination | Recover the required set and prove closure abstractly or by justified exhaustive cases | [API/configuration closure](../skills/unsafe-rust/SKILL.md#close-api-and-configuration-boundaries); [configuration reference](../skills/unsafe-rust/references/configurations-and-generated-code.md) | EV13 — feature/target interaction |
 | D14 — Prove the staged build/generation relation and shipped output | Endpoint mapping hides earlier failure, partial effects, stale reuse, or unsafe expansion | Follow every claim-relevant ordered operation and exit through emitted effects and tool interpretation; identify an exact output or prove the generator property | [Build and generation](../skills/unsafe-rust/references/configurations-and-generated-code.md#prove-build-and-generation-pipelines); [macros](../skills/unsafe-rust/references/api-boundaries-and-evolution.md#audit-macros-and-hidden-apis) | EV14 — fallible ordered build directives plus caller-token-dependent proc-macro output |
@@ -432,9 +468,10 @@ column records candidate semantic evaluation scenarios, not execution results.
 | D18 — Preserve `#[doc(hidden)]` soundness but not implied SemVer | Hidden reachability becomes hidden safety precondition | Audit direct safe use; separate compatibility | [API closure](../skills/unsafe-rust/SKILL.md#close-api-and-configuration-boundaries); [hidden APIs](../skills/unsafe-rust/references/api-boundaries-and-evolution.md#audit-macros-and-hidden-apis) | EV18 — reachable hidden safe constructor |
 | D19 — Treat contract changes as proof changes | Safety prose changes without caller/implementer re-audit | Directional compatibility analysis and triggers | [Contract evolution](../skills/unsafe-rust/references/api-boundaries-and-evolution.md#evolve-contracts-deliberately); [TCB evolution](../skills/unsafe-rust/references/tcb-and-evidence.md#review-and-evolve-the-tcb) | EV19 — strengthened unsafe precondition |
 | D20 — Separate literal audit from proof-oriented redesign | Inferred intent launders a current defect, or review misses a much simpler sound model | Preserve current verdict; derive minimum capability and re-audit implemented redesign | [Design routing](../skills/unsafe-rust/SKILL.md#design-for-provability-when-requested); [design reference](../skills/unsafe-rust/references/abstraction-design.md) | EV20 — overbroad nominal field abstraction |
-| D21 — Certify verdicts by logical proof shape | Invalid proof is accepted because no exploit is known, or a completed existential UB derivation is diluted to `UNPROVED` | Use `UNPROVED` for an incomplete universal proof; use `UNSOUND` when valid use, reachability, false safety proposition, and UB consequence all close | [Verdict certificates](../skills/unsafe-rust/SKILL.md#use-exact-verdicts); [report aggregation](../skills/unsafe-rust/references/audit-reporting.md#aggregate-verdicts) | EV21 — paired incomplete obligation with no witness and multi-premise exact-version witness that must close |
-| D22 — Preserve producer-contract quantifiers | One constructor's precondition is promoted into a postcondition or invariant of every value of its output type | Prove the exact consumed values or quantified set without reversing the producer implication | [Core composition](../skills/unsafe-rust/SKILL.md#compose-proofs-locally-and-literally); [premise classification](../skills/unsafe-rust/references/proof-obligations.md#separate-kinds-of-premises) | EV22 — unsafe constructor contract plus a separate safe producer that violates the assumed property |
-| D23 — Require reversible derivation closure before verdict certification | The report reaches the right endpoint while silently omitting a semantic operator, numeric-domain fact, stage transition, applicability restriction, or citation inventory entry | Reverse-trace every conclusion through explicit material inferences and reconcile every semantic premise with its exact authority or TCB entry; reuse ordinary proof prose and the obligation ledger | [Proof workflow](../skills/unsafe-rust/SKILL.md#follow-the-proof-workflow); [reviewable derivations](../skills/unsafe-rust/references/proof-obligations.md#make-every-derivation-reviewable); [evidence reconciliation](../skills/unsafe-rust/references/audit-reporting.md#reconcile-derivations-and-evidence) | EV23 — locally correct proof with one unstated composite-predicate premise and one invoked-but-uncited integer-domain premise |
+| D21 — Certify verdicts by logical proof shape | Invalid proof is accepted because no exploit is known, a proposed witness has an unproved safe-use path, or a completed existential UB derivation is diluted to `UNPROVED` | Use `UNPROVED` for an incomplete universal proof; use `UNSOUND` only after valid-use, reachability, false safety proposition, and UB consequence certificates all close | [Verdict certificates](../skills/unsafe-rust/SKILL.md#use-exact-verdicts); [valid uses](../skills/unsafe-rust/references/proof-obligations.md#certify-valid-uses); [report aggregation](../skills/unsafe-rust/references/audit-reporting.md#aggregate-verdicts) | EV21 — paired incomplete obligation with no witness and multi-premise exact-version witness whose safe-call status must be proved |
+| D22 — Preserve producer-contract quantifiers | One constructor's precondition is promoted into a postcondition or invariant of every value of its output type | Prove the exact consumed values or quantified set without reversing the producer implication | [Core composition](../skills/unsafe-rust/SKILL.md#compose-proofs-locally-and-literally); [producer quantifiers](../skills/unsafe-rust/references/proof-obligations.md#preserve-producer-quantifiers) | EV22 — unsafe constructor contract plus a separate safe producer that violates the assumed property |
+| D23 — Require a closed evidence-bearing proof kernel | Inspected syntax or a topical citation is treated as the semantic proposition needed, or a report reaches the right endpoint while omitting a consumed premise, inferential edge, applicability restriction, or exact entailment direction | Separate artifact facts from semantic premises; derive every consumed proposition explicitly; verify version, applicability, quotation direction, and closure before certification; reuse ordinary proof prose and the obligation ledger | [Proof-kernel gate](../skills/unsafe-rust/SKILL.md#close-an-evidence-bearing-proof-kernel); [kernel method](../skills/unsafe-rust/references/proof-obligations.md#build-the-evidence-bearing-proof-kernel); [kernel preservation](../skills/unsafe-rust/references/audit-reporting.md#preserve-closed-proof-kernels) | EV23 — visible construct with one uncited semantic edge plus a citation supporting only the wrong implication direction |
+| D24 — Separate root proof gaps from dependent fan-out | One missing premise is reported as many independent defects, or downstream obligations are silently accepted | Assign one stable root blocker/gap ID, mark every dependent positive obligation `UNPROVED`, and preserve independent direct defects | [Kernel closure](../skills/unsafe-rust/references/proof-obligations.md#close-and-lint-the-proof-kernel); [reporting](../skills/unsafe-rust/references/audit-reporting.md#preserve-closed-proof-kernels) | EV24 — one missing semantic premise feeding several obligations plus a separate direct defect; require one root finding and complete dependent dispositions |
 
 ## Explicit Non-goals
 
@@ -550,9 +587,11 @@ suite, require independent coverage of:
   unions, conditions, configuration/input products, relation-appropriate
   witnesses, justified projections and enumerations, `Required ⊆ Covered`,
   and multi-release premise applicability;
-- authority checking, reverse-traceable derivations, premise-to-citation
-  reconciliation, indirect derivation, producer quantifiers, local
-  invariant/dataflow composition, and exposed reconstructed proofs;
+- separation of artifact observations from semantic effects, closed
+  evidence-bearing kernels, exact citation-entailment direction and
+  applicability, indirect derivation, producer quantifiers, valid-use
+  certificates, local invariant/dataflow composition, and exposed
+  reconstructed proofs;
 - adversarial safe callers, every safe API boundary, interacting compilation
   configurations, and staged generated behavior with ordered fallible exits,
   tool interpretation, partial effects, and freshness where applicable;
