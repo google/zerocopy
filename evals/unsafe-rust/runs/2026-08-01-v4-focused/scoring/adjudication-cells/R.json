@@ -1,0 +1,266 @@
+{
+  "cells": [
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "R7 expressly depends on R3. A's R3 is unestablished because its safe-call certificate omits the required Rust 1.82 unsafe-function authority; conditional proposal language and a fresh-audit demand cannot cure that failed prerequisite."
+      },
+      "field": "atom:R7",
+      "label": "A",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "The proposal is correctly conditional with fresh-audit instructions, but R7's R3 dependency is unsatisfied."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "The design is expressly not a new verdict, does not alter current UNSOUND, and is conditioned on an exact-snapshot fresh audit."
+      }
+    },
+    {
+      "field": "hard_error:G5",
+      "label": "A",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The affirmative `UNSOUND` result lacks a checked-authority basis for one material valid-safe-use link."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It issues UNSOUND while the valid-safe-use link is incomplete: ordinary-function call safety is asserted without the required version-matched Rust authority."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "A",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The report necessarily relies on uncited Rust semantics to conclude the ordinary function call carries no safety obligation."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "Its certificate necessarily relies on an unchecked safe-versus-unsafe-function premise omitted from the cited Rust 1.82 authority set."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "A",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "`TCB-R182` omits checked Rust 1.82 safe-versus-unsafe-function authority consumed by witness validity."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "TCB-R182 claims the semantic premises are the cited authorities, but no Rust 1.82 unsafe-function authority supports the material assertion that increment's call carries no unsafe obligation."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "R7 expressly depends on R3. D's R3 is unestablished because its valid-safe-call premise lacks checked Rust 1.82 unsafe-function authority, so its otherwise conditional and unaudited sketch cannot make R7 pass."
+      },
+      "field": "atom:R7",
+      "label": "D",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "The sketch is correctly conditional and requires fresh audit, but R7's R3 dependency is not established."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "It tells the reader not to regard the sketch as audited or PROVED and requires a new exact-snapshot audit after implementation."
+      }
+    },
+    {
+      "field": "hard_error:G5",
+      "label": "D",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The `UNSOUND` conclusion lacks an authority-complete valid-safe-use link for the ordinary function call."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It issues UNSOUND with an incompletely verified valid-safe-use link because safe ordinary-function calling semantics are not sourced."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "D",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The proof necessarily relies on unchecked Rust safe-function caller semantics while claiming only cited version-matched axioms."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The certificate necessarily relies on unchecked safe-versus-unsafe-function authority absent from TCB-0."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "D",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The TCB omits checked Rust 1.82 authority for the ordinary-versus-unsafe-function premise consumed by witness validity."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "TCB-0 cites visibility, implementation, unsafe-trait, slice, and wrapping propositions but omits authority for the material safe-function call premise."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "R7 expressly depends on R3. F's R3 fails through its authority-incomplete safe-use certificate; saying the redesign is not a verdict and needs fresh audit satisfies direct clauses but not the dependency."
+      },
+      "field": "atom:R7",
+      "label": "F",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "It conditions the redesign on implementation and fresh audit, but the R3 dependency remains unmet."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "It says the proposal is not a new verdict and requires a fresh audit of the implemented snapshot and migrated callers."
+      }
+    },
+    {
+      "field": "hard_error:G5",
+      "label": "F",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The report issues `UNSOUND` without an authority-complete proof that both the impl and ordinary function call are valid safe use."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It issues UNSOUND although one required existential link, valid safe calling of increment, is asserted without the required version-matched authority."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "F",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "Its proof necessarily relies on unchecked Rust trait/function safety-boundary semantics omitted from `TCB-R033`."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The witness necessarily relies on unchecked safe-versus-unsafe-function semantics absent from TCB-R033."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "F",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The TCB lists visibility/coherence and library contracts but omits checked unsafe-trait and unsafe-function rules consumed by witness validity."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "TCB-R033 includes visibility, trait implementation, slice, and wrapping authorities but omits authority for its material assertion that increment is safely callable."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "R7 expressly depends on R3. G's R3 is unestablished because AX-ACCESS does not verify ordinary-function caller safety, so the explicit post-implementation audit does not satisfy the failed prerequisite."
+      },
+      "field": "atom:R7",
+      "label": "G",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "It conditionally requires fresh audit, but the listed R3 prerequisite is not established."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "The redesign is explicitly not a verdict, leaves current UNSOUND unchanged, and requires a fresh audit after implementation."
+      }
+    },
+    {
+      "field": "hard_error:G5",
+      "label": "G",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "Its `UNSOUND` certificate does not authoritatively establish that the ordinary generic call is a valid safe use."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It issues UNSOUND without a fully verified valid-safe-use link because safe ordinary-function calling semantics are unsupported by its authority set."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "G",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The TCB necessarily consumes an unchecked safe-versus-unsafe-function proposition absent from its authority inventory."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The report necessarily relies on the unchecked proposition that the non-unsafe increment declaration is callable without an unsafe obligation."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "G",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "`AX-ACCESS` is used to infer no caller-side unsafe obligation, but its cited visibility/implementation pages do not verify the required function rule."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "TCB-1 lists visibility, implementation, slice, and wrapping authorities but omits the material Rust 1.82 safe-versus-unsafe-function authority used by FIND-1."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "R7 expressly depends on R3. J's R3 is unestablished because its TCB omits safe-versus-unsafe-function authority for the witness call; its correct conditional framing cannot override that dependency."
+      },
+      "field": "atom:R7",
+      "label": "J",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "It leaves the sketch unimplemented and requires fresh audit, but R7's prerequisite R3 is not established."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "It labels the sketch unimplemented with no audit verdict, preserves current UNSOUND, and requires a fresh snapshot audit."
+      }
+    },
+    {
+      "field": "hard_error:G5",
+      "label": "J",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The `UNSOUND` result lacks checked support for the valid-safe-call link in its existential certificate."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It issues UNSOUND without fully verifying the valid-safe-use link; the ordinary-function call premise has no applicable cited authority."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "J",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The TCB necessarily relies on an unchecked ordinary-function caller-safety proposition."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The witness necessarily relies on unchecked safe-versus-unsafe-function semantics omitted from TCB-R016-r1."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "J",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "`TCB-R016-r1` omits the Rust 1.82 safe-function authority needed to establish that calling `increment` accepts no safety obligation."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "Its TCB names visibility, implementation, unsafe-trait, slice, and wrapping axioms but omits the safe-versus-unsafe-function rule material to calling increment safely."
+      }
+    }
+  ],
+  "mode": "R",
+  "schema_version": 1
+}
