@@ -4,7 +4,7 @@
 
 - [Freeze the audit claim](#freeze-the-audit-claim)
 - [Maintain an obligation ledger](#maintain-an-obligation-ledger)
-- [Reconcile derivations and evidence](#reconcile-derivations-and-evidence)
+- [Preserve closed proof kernels](#preserve-closed-proof-kernels)
 - [Aggregate verdicts](#aggregate-verdicts)
 - [Write actionable findings](#write-actionable-findings)
 - [Deliver a complete report](#deliver-a-complete-report)
@@ -46,19 +46,21 @@ For each obligation, record:
 - exact proposition to prove;
 - operation, contract, invariant, or postcondition that requires it;
 - required applicability domain;
-- supporting local facts, invariant clauses, axioms, and TCB entries, with the
-  applicability of each premise;
+- the artifact facts, semantic premises, derived lemmas, and explicit inference
+  that form its evidence-bearing proof kernel, with each component's source and
+  applicability;
 - domain actually covered by the derivation and any case partition;
 - the appropriate certificate for every asserted set relationship and domain
   transformation consumed;
 - proof location;
 - reviewer verification;
-- status and finding link.
+- exact certificate status, any root blocker/gap ID that blocks certification,
+  and finding link.
 
 A row may cite a canonical subproof rather than repeat it, but neither a row nor
 a proof name may hide a material inference. The record must let a reviewer
-reverse-trace the obligation through every intermediate proposition to its
-classified and applicable premises.
+reverse-trace the obligation through every intermediate proposition to literal
+artifact facts and exact applicable semantic premises.
 
 Include obligations created by:
 
@@ -82,16 +84,27 @@ The ledger complements rather than replaces the proof workflow in
 follow changed propositions to every consumer; compiler-marked unsafe locations
 and textual diffs are only discovery starting points.
 
-## Reconcile Derivations and Evidence
+## Preserve Closed Proof Kernels
 
-Apply [Make every derivation
-reviewable](proof-obligations.md#make-every-derivation-reviewable) before
-certifying any verdict or regional result. In a persistent report, ensure the
-obligation ledger and its canonical proofs expose that derivation, then
-reconcile every material semantic premise they use with the report's authority
-and TCB inventories. A valid fact found only by the reviewer may support a
-reconstructed implementation proof, but record the deficient report or safety
-comment rather than silently repairing its proof artifact.
+Apply [Close and lint the proof
+kernel](proof-obligations.md#close-and-lint-the-proof-kernel) before certifying
+any obligation, verdict, or regional result. The ledger or its linked canonical
+proof must expose the exact goal and case, artifact facts, semantic premises,
+inferences, derived proposition, and consumer. Reconcile every semantic premise
+with the report's authority, tool-evidence, or TCB inventories, and
+independently verify that each quotation entails the proposition in the
+direction consumed.
+
+When one missing premise blocks several later certificates, assign a stable
+root blocker/gap ID to the smallest gap and mark each dependent obligation with
+that ID. A dependent positive or universal obligation is `UNPROVED` even if its
+conditional reasoning after the missing premise is otherwise correct, but do
+not report the fan-out as several independent root defects. This does not
+override a separate closed existential certificate; aggregate that certificate
+under the exact `UNSOUND` or `CONTRACT-BROKEN` rule below. A valid fact found
+only by the reviewer may support a reconstructed implementation proof; record
+the deficient report or safety comment rather than silently repairing its proof
+artifact.
 
 ## Aggregate Verdicts
 
@@ -144,7 +157,8 @@ Each finding should contain:
 - proposed replacement proof text when the reviewed artifact omits that
   derivation;
 - smallest missing, false, circular, or unsupported implication;
-- authoritative contract or TCB entry involved;
+- authoritative contract, verified tool theorem/evidence, or TCB entry
+  involved;
 - for a claimed UB witness, the valid use, executed operation or semantic event,
   false required safety proposition, and authoritative or TCB-backed UB
   consequence;
