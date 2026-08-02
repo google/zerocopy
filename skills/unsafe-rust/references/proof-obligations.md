@@ -4,15 +4,14 @@
 
 - [Form the theorem](#form-the-theorem)
 - [Qualify applicability](#qualify-applicability)
-- [Separate kinds of premises](#separate-kinds-of-premises)
-- [Make every derivation reviewable](#make-every-derivation-reviewable)
+- [Build the evidence-bearing proof kernel](#build-the-evidence-bearing-proof-kernel)
+- [Close and lint the proof kernel](#close-and-lint-the-proof-kernel)
+- [Certify valid uses](#certify-valid-uses)
 - [Write safety documentation](#write-safety-documentation)
 - [Write local safety proofs](#write-local-safety-proofs)
 - [Carry invariants locally](#carry-invariants-locally)
 - [Prove temporal behavior](#prove-temporal-behavior)
-- [Cite authoritative axioms](#cite-authoritative-axioms)
-- [Search for indirect derivations](#search-for-indirect-derivations)
-- [Review a proof](#review-a-proof)
+- [Review and reconstruct a proof](#review-and-reconstruct-a-proof)
 
 ## Form the Theorem
 
@@ -45,8 +44,8 @@ For each local proof site:
 
 Treat every operation, declaration, implementation, or state transition that
 supplies or consumes a safety contract as an obligation site. Follow each
-obligation until it reaches checked local facts, named invariants,
-authoritative axioms, or explicit TCB entries.
+obligation until it reaches checked artifact facts, closed derived lemmas or
+invariants, authoritative axioms, or explicit TCB entries.
 
 Apply the quantifier-sensitive verdict certificates in `SKILL.md` when a
 derivation fails or produces a counterexample. Do not confuse failure of a
@@ -121,26 +120,64 @@ and an audit cutoff do not prove the releases between them. If the coverage
 basis does not contain the claimed release predicate, narrow the proved region
 and leave the remainder `UNPROVED`.
 
-## Separate Kinds of Premises
+## Build the Evidence-Bearing Proof Kernel
 
-Classify every premise:
+Express every material derivation as reviewable edges of this form:
 
-- **Local fact:** Established by inspected code, control/data flow, a type, or a
-  named invariant. Cite the exact check, branch, assignment, ownership fact, or
-  invariant clause.
-- **Rust axiom:** Entailed by exact applicable text in a versioned Rust Reference
-  or standard-library page. Quote and link it.
+```text
+artifact facts
+  + applicable Rust/stdlib axioms, verified tool theorems,
+    or explicit TCB premises
+  + earlier proved lemmas or invariants
+  + explicit logic or mathematics
+  -> derived proposition
+  -> consumer
+```
+
+Classify every proposition or premise:
+
+- **Artifact fact:** A literal property of the exact inspected source,
+  expansion, generated output, metadata, or other artifact. Cite the location
+  or identity that exhibits it. Artifact facts include that tokens,
+  declarations, annotations, expressions, branches, attributes, or lexical
+  token/AST ordering occur; they do not include the runtime value relation,
+  execution order, or other semantic effect of those constructs.
+- **Rust axiom:** A semantic proposition entailed by exact applicable text in a
+  versioned Rust Reference or standard-library page. Quote and link it.
+- **Derived lemma or invariant:** A proposition already derived from identified
+  artifact facts, axioms, prior lemmas, and explicit inference. Cite its
+  canonical proof and applicability rather than treating its name as a premise.
 - **Selected safe-dependency fact:** Supplied by a deliberately selected safe
   dependency contract and recorded in the TCB.
 - **Tool-derived fact:** Established by a verified tool theorem whose exact
-  proposition, model, scope, and premises entail the local fact. Record only its
-  residual unproved tool/model/translation premises in the TCB.
+  proposition, model, scope, and premises entail the needed proposition. Record
+  its residual unproved tool/model/translation premises in the TCB.
 - **Additional assumption:** External specification, unsafe dependency,
   compiler implementation, platform behavior, deployment restriction,
   probabilistic premise, or other admitted proposition recorded in the TCB.
 
-Never blur an assumption into a derived fact. If a premise does not fit one of
-these classes, the proof is incomplete.
+Pure logic and mathematics need no Rust citation, but state every material step
+or witness. Never blur an assumption into a derived fact. If a proposition or
+premise does not fit one of these classes or a material inference is unstated,
+the proof is incomplete.
+
+Source inspection is not a shortcut around semantic authority. Seeing an `if`,
+call, operator, type annotation, match, attribute, or tail expression proves
+that the construct occurs. Claims about evaluation order, branch or arm
+selection, return, arithmetic, inhabited values, name access, typing/coherence,
+configuration selection, or caller-side unsafe obligations require the exact
+applicable Rust or library propositions. A proof may derive control flow and
+dataflow locally, but those are conclusions from artifact facts plus semantics,
+not raw facts supplied by inspection.
+
+For every inferential edge consumed by a certified conclusion, record:
+
+1. the exact conclusion and applicability domain;
+2. every premise, its class, source, and applicability;
+3. the inference by which the premises entail the conclusion; and
+4. the operation, later lemma, postcondition, or verdict that consumes it.
+
+### Preserve Producer Quantifiers
 
 Distinguish the validity of a value of type `T` from a stronger library
 invariant attached to its role in an abstraction. Prove both when needed.
@@ -179,16 +216,16 @@ Likewise, distinguish:
 - obligations transferred to a returned pointer, reference, guard, token, or
   caller.
 
-## Make Every Derivation Reviewable
+## Close and Lint the Proof Kernel
 
-A proof may be compact, but it must be reversible by a reviewer. A premise,
-intermediate proposition, or applicability restriction is material when
-deleting it leaves the remaining explicit premises insufficient to entail a
+A proof may be compact, but a reviewer must be able to reverse it. A premise,
+intermediate proposition, applicability restriction, or inference is material
+when deleting it leaves the remaining explicit kernel insufficient to entail a
 certified conclusion; a countermodel may demonstrate that insufficiency. State
-every such component. Justify each transition unless its entailment is directly
-reviewable from the stated premises. Even a direct transition may not import an
-unstated Rust, library, tool, environmental, or TCB premise. Omit only immediate
-source syntax or purely logical rearrangement of already explicit premises.
+every such component. An immediately checkable material artifact fact may be
+recorded by an exact cited location without reproducing its literal tokens, but
+it may not be absent. Omit only a purely logical rearrangement of already
+explicit premises. Never omit the semantic proposition assigned to syntax.
 
 Do not hide a material component behind a name such as “layout rules,” “cfg
 semantics,” “the build mapping,” or “the type guarantees it.” A citation verifies
@@ -198,31 +235,88 @@ composite behavior to the clauses actually used. When build or generation
 stages are relevant, apply
 [Prove build and generation pipelines](configurations-and-generated-code.md#prove-build-and-generation-pipelines).
 
-The ordinary proof prose or obligation ledger may carry this information. Do
-not create a separate graph when the existing proof is already
-reverse-traceable. Before certifying `PROVED`, `UNSOUND`, `CONTRACT-BROKEN`, or
-any regional result:
+The ordinary proof prose or obligation ledger may carry the kernel. Do not
+create a separate graph when the existing proof is already reverse-traceable.
+Before certifying `PROVED`, `UNSOUND`, `CONTRACT-BROKEN`, or any regional
+result:
 
 1. start at every conclusion used by the certificate and recover its full-case
-   applicability, every premise and intermediate proposition, and why they
-   entail the conclusion;
-2. classify each premise as a checked source fact, mathematical step, named
-   invariant, Rust axiom, tool theorem, or TCB entry; check source facts and
-   invariants against their exact locations, dataflow, material operation order,
-   and alternative exits;
-3. check material, non-immediate mathematical and logical steps by their
-   explicit derivations or witnesses; they need no Rust citation;
-4. check every Rust semantic premise against its recorded exact versioned
-   quotation and link;
-5. check every other semantic premise against its verified tool theorem or
-   accepted TCB entry;
-6. ensure no projection, shorthand, page-level citation, or later-stage result
+   applicability, every edge, and every intermediate proposition;
+2. check each artifact fact against its exact identity and location, retaining
+   material operation order and alternative exits;
+3. check every Rust semantic premise against its stated exact proposition,
+   versioned quotation, link, qualifications, and applicability;
+4. check every other semantic premise against its verified tool theorem,
+   dependency contract, or accepted TCB entry;
+5. check material mathematical and logical steps by their explicit derivations
+   or witnesses; they need no Rust citation;
+6. write an implication or quantified proposition for each citation-to-claim
+   edge; reject any unjustified converse, inverse, strengthening, or domain
+   widening, and state any contrapositive step with its exact negation and
+   domain;
+7. ensure no projection, shorthand, page-level citation, or later-stage result
    silently supplies a missing premise; and
-7. trace forward through every relevant exit to prove the postconditions and
+8. trace forward through every relevant exit to prove the postconditions and
    invariants consumed later.
 
 If a required component remains absent, remove every conclusion that depends on
-it and apply the exact verdict certificate.
+it, assign a stable root blocker/gap ID to the smallest missing implication,
+and apply the exact verdict certificate. Give every dependent obligation a
+disposition, but mark it with that root blocker/gap ID rather than presenting
+the same omission as multiple independent defects.
+
+Do not equate the absence of one direct sentence with the absence of a proof.
+Before declaring a semantic leaf missing, restate the exact proposition,
+unfold relevant definitions, search for direct and stronger or orthogonal
+applicable guarantees, combine them through explicit intermediate lemmas, and
+try to construct a model satisfying the premises while falsifying the goal.
+If a model remains possible, state the smallest missing implication. If the
+Reference or standard-library documentation is ambiguous, inconsistent, or too
+weak, record that exact gap, treat explanatory sources or implementation
+behavior only as leads or explicit TCB assumptions, and suggest a narrowly
+scoped upstream documentation improvement.
+
+## Certify Valid Uses
+
+A universal API theorem quantifies over its exact valid-use domain, and any
+existential refutation needs a proved valid in-scope witness. Establish that
+domain generally or instantiate these propositions for the proposed witness:
+
+1. **Scope and source selection:** the relevant item, expansion,
+   implementation, or entrypoint exists and is selected in the exact case.
+2. **Boundary access and inputs:** a library caller can reach the exposed
+   boundary and supply every caller-controlled argument, implementation, or
+   capability used by the path; a binary or other entrypoint can receive the
+   permitted input/environment that starts the execution. Derive
+   implementation-internal values later in the separate execution-reachability
+   proof.
+3. **Typing and coherence:** the complete use is well typed; every generic,
+   trait, lifetime, visibility, coherence, and implementability requirement is
+   satisfied.
+4. **Boundary contracts:** every applicable documented unsafe caller or
+   implementer obligation owned outside the audited scope—including an
+   obligation imposed on caller or implementer code supplied by the witness—is
+   satisfied. No prose-only condition is imposed on a safe boundary. Do not
+   assume an in-scope audited impl, declaration, or boundary assertion; it may
+   be the safety proposition the later `UNSOUND` certificate proves false.
+5. **Unsafe-context obligations:** every corresponding caller- or
+   implementer-side compiler-enforced unsafe-context requirement at the exposed
+   call, impl, field, macro, FFI, or other boundary is absent or satisfied.
+   This is distinct from the truth of the in-scope safety assertion under
+   audit.
+6. **TCB qualification:** every dependency, external, deployment, or other
+   admitted premise used to validate the path is explicit and applicable.
+
+These are semantic propositions. For example, the inspected absence of the
+token `unsafe` in a function declaration does not by itself prove the exact
+caller obligation; cite the applicable language rule. For `UNSOUND`, combine
+the valid-use certificate with separate execution-reachability, false safety
+proposition, and UB-consequence edges. For `CONTRACT-BROKEN`, combine it with a
+whole-execution UB-freedom proof and postcondition refutation. Apply the same
+discipline, adapted to the proposition being proved, to any other existential
+use or execution claim. A purely mathematical witness for a set relation
+instead uses the certificate for that relation; it does not acquire
+inapplicable API-boundary fields.
 
 ## Write Safety Documentation
 
@@ -290,11 +384,12 @@ Use this structure:
 ```rust
 // SAFETY:
 // Obligation: `<operation>` requires P1, P2, and P3.
-// Facts:
-// - F1 follows from <exact check, type fact, or invariant clause>.
-// - F2 follows from TCB-... / AXIOM-... .
+// Artifact facts:
+// - A1: <literal construct or lexical token/AST ordering> occurs at <location>.
+// Semantic premises:
+// - S1: AXIOM-... / TCB-... states <exact applicable proposition>.
 // Derivation:
-// - F1 and F2 imply P1 because ...
+// - A1 and S1 imply P1 because ...
 // - ...
 // Result:
 // - The operation establishes Q.
@@ -370,71 +465,16 @@ Cryptographic infeasibility and low probability do not turn a possible
 execution into an unconditional Rust soundness proof. Move such premises to an
 explicit conditional application claim and TCB entry.
 
-## Cite Authoritative Axioms
-
-For every Rust or standard-library ground-truth proposition:
-
-1. Select documentation applicable to the audited compiler/library version.
-2. Link the narrowest applicable sections, including versions in the URLs.
-3. Quote the smallest sufficient set of excerpts whose propositions participate
-   in the derivation.
-4. State the proposition derived from each excerpt and justify the inference
-   that combines them.
-5. Check that qualifications, definitions, linked clauses, and surrounding
-   scope do not weaken it.
-6. Have the reviewer open the source and independently confirm the derivation.
-
-Apply [Qualify applicability](#qualify-applicability) when a citation and the
-claim concern different Rust versions.
-
-If the Reference or standard-library documentation is missing, ambiguous,
-internally inconsistent, or too weak, record the exact missing proposition.
-Treat explanatory sources or current implementation behavior only as leads or
-explicit additional assumptions. Recommend an upstream documentation report
-when appropriate.
-
-## Search for Indirect Derivations
-
-Do not equate the absence of a single direct documentation sentence with the
-absence of a proof. Before reporting an authoritative documentation gap or
-finalizing an important obligation as unproved:
-
-1. Restate the exact semantic property required and unfold relevant project
-   definitions.
-2. Search for applicable direct guarantees.
-3. Search for stronger, more general, or orthogonal authoritative facts whose
-   conjunction could entail the property.
-4. State every intermediate lemma and justify each inference rather than merely
-   collecting citations.
-5. Check the applicability of every premise and intermediate lemma.
-6. Try to construct a model that satisfies the premises while falsifying the
-   conclusion. If one remains possible, identify the missing implication.
-
-This search does not weaken the fail-closed rule. If no complete admissible
-derivation is established, the obligation remains unproved. Distinguish “this
-audit did not complete a proof” from the stronger claim that authoritative
-documentation cannot support one.
-
-When a universal soundness derivation does not close, separately ask whether
-the established facts close an existential refutation. Identify a valid
-in-scope use or execution, prove reachability of the relevant operation or
-semantic event, prove its exact required safety proposition false there, and
-trace that failure to the applicable authoritative or explicitly trusted UB
-consequence. If every link is proved, apply `UNSOUND`; if any link is absent,
-the failed universal obligation remains `UNPROVED`. Do not demand a fact about
-every input to establish one existential witness, and do not infer a witness
-merely from the absence of a universal proof.
-
-## Review a Proof
+## Review and Reconstruct a Proof
 
 For each proof:
 
 1. Reconstruct the required preconditions from the callee or language/library
    contract rather than trusting the comment's summary.
 2. Open every citation and verify its exact proposition, version, and scope.
-3. Check each claimed local fact—including its quantifier, producer/transition
-   history, and applicability domain—against the actual dataflow and all
-   alternative paths.
+3. Check each artifact fact against the exact artifact, and each derived local
+   lemma—including its quantifier, producer/transition history, and
+   applicability—against its complete kernel, dataflow, and alternative paths.
 4. Expand every named invariant and ensure it is established initially and
    preserved by every permitted transition.
 5. Check quantifiers, arithmetic boundaries, zero-sized and empty cases,
@@ -444,11 +484,10 @@ For each proof:
 6. Verify every postcondition used downstream.
 7. Search for circularity, vacuity, hidden trust, and stronger conclusions than
    the cited facts entail.
-8. Apply [Make every derivation reviewable](#make-every-derivation-reviewable)
+8. Apply [Close and lint the proof kernel](#close-and-lint-the-proof-kernel)
    to every conclusion used by a verdict or regional result and every claimed
    set relationship.
-9. Record every missing implication so it cannot be forgotten, apply
-   [Search for indirect derivations](#search-for-indirect-derivations), and
+9. Record every root missing implication and blocked dependent conclusion, then
    apply the verdict certificate in `SKILL.md`: report `UNPROVED` if a required
    implication remains absent and no existential refutation closes, or the
    applicable refutation verdict if one does.
@@ -456,7 +495,7 @@ For each proof:
 If validation requires a material derivation absent from the existing safety
 comment, include that reconstructed derivation—or the smallest missing
 portion—in the review. Apply the material-component definition in
-[Make every derivation reviewable](#make-every-derivation-reviewable). Give its
+[Close and lint the proof kernel](#close-and-lint-the-proof-kernel). Give its
 citations, applicability, and relationship to the required preconditions and
 postconditions. Report the implementation result separately from the deficient
 proof artifact:
