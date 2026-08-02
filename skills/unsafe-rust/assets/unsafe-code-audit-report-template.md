@@ -80,9 +80,9 @@ and record every additional language-reachable surface in the table above.
 
 ## Obligation Ledger
 
-| Obligation ID | Source/API | Exact proposition | Required domain | Derivation, material premises, and their applicability | Covered domain/cases | Proof location | Reviewer | Status |
+| Obligation ID | Source/API | Exact goal and consumer | Required case/domain | Evidence-bearing kernel and component provenance | Covered domain/cases and relation certificates | Proof location | Certificate status / root blockers / finding | Reviewer verification |
 |---|---|---|---|---|---|---|---|---|
-| `<OBL-...>` | `<location>` | `<goal>` | `<required applicability>` | `<facts/invariants/TCB + domains>` | `<scope/partition>` | `<link>` | `<identity>` | `<status>` |
+| `<OBL-...>` | `<location>` | `<proposition + operation, lemma, postcondition, or verdict that consumes it>` | `<required applicability>` | `<artifact facts + semantic premises + derived lemmas + explicit inference; exact source and applicability for each>` | `<scope/partition + set/domain-transformation certificate IDs>` | `<link>` | `<exact status; root blocker IDs or none; finding link or none>` | `<reviewer identity + verification result/link>` |
 
 ## Theorem-Domain and Configuration Closure
 
@@ -105,7 +105,7 @@ and record every additional language-reachable surface in the table above.
 expansion, linking, or artifact-selection pipeline. Otherwise record the simple
 selection facts in the obligation ledger.>`
 
-| Stage ID | Input/state region and predecessor | Ordered operation or transformation | Successful output/effect | Alternative exit and partial effects | Authority/TCB and applicability | Consumer |
+| Stage ID | Input/state region and predecessor | Ordered operation or transformation | Successful output/effect | Alternative exit and partial effects | Authority/tool/TCB and applicability | Consumer |
 |---|---|---|---|---|---|---|
 | `<STAGE-...>` | `<exact cases in which reached>` | `<local source step or tool transition>` | `<exact consumed value/cardinality/identity/order, or universal output property>` | `<claim-relevant failure/rejection/other exit; later steps not reached>` | `<source proof + exact semantic premise>` | `<next stage/obligation>` |
 
@@ -165,9 +165,29 @@ Full log: `<link/ID>`
 - **Proposed proof-artifact repair:** `<replacement comment/canonical proof, or
   none>`
 - **Defect:** `<smallest missing, false, circular, or unsupported implication>`
-- **Authority/TCB involved:** `<citations/IDs>`
-- **UB certificate — valid use:** `<why the use/execution is valid and in scope,
+- **Authority/tool/TCB involved:** `<citations/IDs>`
+- **Existential-certificate applicability:** `<required for a finding that
+  asserts a use/execution witness; otherwise “not applicable” for every
+  valid-use and UB field below>`
+- **Valid-use certificate — scope/source:** `<why the exact artifact, configuration,
+  input, state, and execution are in scope and the relevant source is selected,
   or “not established”>`
+- **Valid-use certificate — boundary access/inputs:** `<how a library caller can reach
+  the exposed boundary and supply every caller-controlled argument, impl, or
+  capability, or how the permitted binary/entrypoint input starts the
+  execution; “not established” if absent>`
+- **Valid-use certificate — typing/coherence:** `<why the complete use is well typed,
+  coherent, and implementable, or “not established”>`
+- **Valid-use certificate — boundary obligations:** `<why every applicable
+  caller or implementer contract owned outside the audited scope—including
+  contracts imposed on witness-supplied code—and every corresponding
+  compiler-enforced unsafe-context requirement needed to form the use is absent
+  or satisfied; identify rather than assume any in-scope audited impl,
+  declaration, boundary, or internal safety assertion tested below; or “not
+  established/not applicable”>`
+- **Valid-use certificate — TCB applicability:** `<dependency, external, deployment,
+  or other admitted premises used to validate the path, or “none/not
+  established”>`
 - **UB certificate — reachability:** `<executed operation or semantic event,
   or “not established”>`
 - **UB certificate — false safety proposition:** `<exact required clause and
@@ -229,8 +249,14 @@ explicitly excluded region. Explain enforcement of exclusions.>`
 
 - [ ] Every in-scope obligation has a status.
 - [ ] Every conclusion used by a verdict or regional result and every claimed
-      set relationship satisfies [Make every derivation
-      reviewable](../references/proof-obligations.md#make-every-derivation-reviewable).
+      set relationship satisfies [Close and lint the proof
+      kernel](../references/proof-obligations.md#close-and-lint-the-proof-kernel).
+- [ ] Artifact observations are not used as semantic propositions; every
+      consumed semantic edge has exact applicable authority, a verified tool
+      theorem, or an accepted TCB entry.
+- [ ] Every citation's extracted proposition and the conclusion that consumes
+      it were checked in implication form for direction, qualifications, and
+      domain.
 - [ ] Every controlling domain expression is preserved, and every asserted set
       relationship, normalization, enumeration, partition, merge, or exclusion
       has the certificate required by its exact relation.
@@ -241,10 +267,19 @@ explicitly excluded region. Explain enforcement of exclusions.>`
 - [ ] Every verdict has the certificate required by `SKILL.md`, including
       `Required ⊆ Covered` for `PROVED` and every existential link for
       `UNSOUND` or `CONTRACT-BROKEN`.
+- [ ] Every existential use or execution witness has a closed valid-use
+      certificate covering source selection, boundary access/inputs,
+      typing/coherence, boundary contracts owned outside the audited scope
+      (including contracts imposed on witness-supplied code), corresponding
+      unsafe-context requirements, and TCB applicability without assuming an
+      in-scope audited safety assertion; a `CONTRACT-BROKEN` witness additionally
+      proves whole-execution UB-freedom. Mathematical witnesses use the
+      certificate for their exact relation instead.
 - [ ] Every material derivation reconstructed during review is exposed with its
       applicability, and deficient proof artifacts are reported separately.
-- [ ] Every material semantic premise appears in the authority/TCB inventory,
-      and every consumed citation and TCB entry was independently verified.
+- [ ] Every material semantic premise appears in the authority, tool-evidence,
+      or TCB inventory, and every consumed citation, tool theorem, and TCB entry
+      was independently verified.
 - [ ] Every consumed TCB entry supporting `PROVED` has an accepted human
       disposition.
 - [ ] Every mandatory documented postcondition was reviewed in addition to UB
