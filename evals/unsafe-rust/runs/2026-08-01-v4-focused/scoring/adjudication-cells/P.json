@@ -1,0 +1,94 @@
+{
+  "cells": [
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "H lines 49-56 explicitly call S0 the exact Scarlet configuration predicate, but S0 omits v in V and t in T. Lines 58-59 add those bounds only to DS through Base; silently promoting that later conjunction into the standalone S0 atom would collapse P1 into P6."
+      },
+      "field": "atom:P1",
+      "label": "H",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "H lines 49–59 give the exact Scarlet predicate within full Base(c)."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "L49-56 labels S0 the exact Scarlet configuration predicate but omits the required v in V and t in T bounds; Base repairs only the later full-case DS."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "H lines 61-68 explicitly call I0 the exact Indigo configuration predicate, but I0 omits v in V and t in T. Lines 70-71 repair only the induced DI full-case set through Base, not the P2 configuration-predicate proposition."
+      },
+      "field": "atom:P2",
+      "label": "H",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "H lines 61–71 give the exact Indigo predicate within full Base(c)."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "L61-68 labels I0 the exact Indigo configuration predicate but omits the required v in V and t in T bounds; Base repairs only the later full-case DI."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "H",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "H's positive rejection and coverage claims necessarily rely on unchecked all/not Rust semantics absent from its exact-version authority inventory."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The positive rejection and non-turbo selection proofs at L99-112 and L139-140 necessarily rely on unchecked all/not Rust authority."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "PRESENT",
+        "evidence": "H lines 11-16 claim whole-domain soundness and behavior PROVED, while lines 139-143 use an unchecked complementary/not cfg rule for the non-turbo region admitted by Covered and lines 173-175 claim closure from it. Thus the affirmative verdicts lack a valid authority-closed Required subset-of Covered certificate."
+      },
+      "field": "hard_error:PH4",
+      "label": "H",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "L11-16 and L173-175 claim whole-domain soundness/behavior although the Covered derivations rely on the unverified not cfg premise at L139-140."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "PRESENT",
+        "evidence": "H lines 17-19 and 99-112 claim universal turbo/wasm rejection. They provide BUILD-MAP mapping, cfg-attribute text, and compile_error text, but no applicable exact-version all-predicate implication for the material step from two true leaves to cfg(all(...)) true."
+      },
+      "field": "hard_error:PH5",
+      "label": "H",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "L17-19 and L99-112 affirm universal turbo/wasm rejection without an applicable exact-version all implication."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "H",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "H omits material all/not Rust authority and fails to carry the accepted-TCB qualification into its behavioral conclusion."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "L99-112 and L139-140 omit exact-version all/not authority, and L15-16 omits conspicuous TCB qualification from behavior."
+      }
+    }
+  ],
+  "mode": "P",
+  "schema_version": 1
+}
