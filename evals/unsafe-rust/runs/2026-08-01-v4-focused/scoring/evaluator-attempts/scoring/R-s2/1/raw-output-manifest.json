@@ -1,0 +1,12 @@
+[
+  {
+    "path": ".",
+    "type": "directory"
+  },
+  {
+    "bytes": 26719,
+    "path": "score.json",
+    "sha256": "ad35d444b56e37377ddc62292f8aaae8924127adc72f8f4c970ae2b54526832f",
+    "type": "file"
+  }
+]
