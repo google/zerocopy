@@ -1,0 +1,12 @@
+{
+  "agent_id": "/root/v4_report_r047",
+  "api_state": "INFRASTRUCTURE_FAILURE",
+  "attempt": 1,
+  "evidence": "Coordinator reported not_found after the started agent vanished during the turn interruption; no report artifact existed.",
+  "operational_scope_deviation": false,
+  "recorded_utc": "2026-08-02T00:01:22.552554Z",
+  "rerunnable": true,
+  "run_id": "r047",
+  "schema_version": 1,
+  "terminal_disposition": "ORCHESTRATOR_TOOL_FAILURE"
+}
