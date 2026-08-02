@@ -1,0 +1,10 @@
+{
+  "agent_id": "/root/v4_score_b_s2",
+  "attempt": 1,
+  "disposition": "COMPLETE",
+  "identity": "B-s2",
+  "kind": "scorer",
+  "phase": "scoring",
+  "recorded_utc": "2026-08-02T00:37:18.253475Z",
+  "schema_version": 1
+}
