@@ -1,0 +1,12 @@
+{
+  "allowlist_sha256": "ecb90a801bfbf51797749e1eddf95b85a1acba5acc92b2c061612a317150c81e",
+  "cell_id": "ef849e68071dd35eab47d3cea2edea7c",
+  "output_initially_empty": true,
+  "package_byte_tree_sha256": "fc486dedde1f82ba232b4492808af85a12b27fa2aa27b1a35a3847b2b89f72e0",
+  "prepared_utc": "2026-08-01T21:34:06.229686Z",
+  "report_prompt_sha256": "51e25df313c675c2b764c3584e4984b1cb92f58cb864f5be8697f995ade32301",
+  "run_id": "r035",
+  "runtime_root": "/tmp/ur-eval/ef849e68071dd35eab47d3cea2edea7c",
+  "schema_version": 1,
+  "target_byte_tree_sha256": "2b194a735b69a8904b86baa43791a0ddac9f769ce32e87bf4e759822cb5cd52e"
+}
