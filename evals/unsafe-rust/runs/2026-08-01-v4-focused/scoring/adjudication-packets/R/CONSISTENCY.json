@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "mode": "R",
+  "atom_family_attestations": [
+    {
+      "atom_id": "R1",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. B, C, E, H, and I construct the return-2 downstream implementation and safe call with all four version-matched Rust authority links; A, D, F, G, and J use the same witness but omit material unsafe-function authority, so the common PASS/FAIL split is justified."
+    },
+    {
+      "atom_id": "R2",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report traces index 2 to get_unchecked_mut on length 2 and cites its UB consequence; B, C, E, H, and I also establish R1, while A, D, F, G, and J do not, yielding the same dependency-based split."
+    },
+    {
+      "atom_id": "R3",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. All literally say the current API is UNSOUND and proposal-independent, but only B, C, E, H, and I close dependent R2; A, D, F, G, and J therefore consistently fail R3."
+    },
+    {
+      "atom_id": "R4",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report extracts the owned wrapping increment of element 1 and expressly says downstream Slot implementations or generic calls need not be preserved; all PASS treatments are equivalent."
+    },
+    {
+      "atom_id": "R5",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Each proposes a nongeneric safe checked-index specialization with fixed element 1 and no caller-selected implementation or index; free-function and Tail inherent-method spellings are materially equivalent."
+    },
+    {
+      "atom_id": "R6",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report identifies removal of the trait/generic surface, gives the call-site migration, and ties the intentional downstream break to the expressly authorized unreleased contract delta."
+    },
+    {
+      "atom_id": "R7",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. All keep the sketch conditional and demand implementation plus fresh audit, but R7 expressly depends on R3: B, C, E, H, and I establish R3, whereas A, D, F, G, and J do not. The latter five must therefore be FAIL despite satisfying R7's direct redesign-language clauses."
+    }
+  ],
+  "defect_family_attestations": [
+    {
+      "field": "hard_error:G1",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; none claims full safe-API PROVED after contracting or failing to justify Required. Each PROVED statement is confined to the requested Tail behavior."
+    },
+    {
+      "field": "hard_error:G2",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; every positive Tail result supplies an all-input, target/profile-parametric coverage derivation or explicit Required-subset-of-Covered statement, so G2 is absent throughout."
+    },
+    {
+      "field": "hard_error:G3",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; none invents policy precedence or converts a conservative audit domain into a project promise."
+    },
+    {
+      "field": "hard_error:G4",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; some name an audit cutoff, but no report uses a cutoff, CI, endpoints, documentation sparsity, or badges as interval coverage. Coverage is source-parametric."
+    },
+    {
+      "field": "hard_error:G5",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. G5 is present for A, D, F, G, and J because their affirmative UNSOUND certificates omit checked authority for the valid ordinary safe-function call; it is absent for B, C, E, H, and I, which cite that Rust 1.82 rule."
+    },
+    {
+      "field": "hard_error:G6",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; no report issues only UNPROVED after establishing all four existential links. All issue UNSOUND."
+    },
+    {
+      "field": "hard_error:G7",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; none derives CONTRACT-BROKEN from the UB witness, and several expressly reject that use."
+    },
+    {
+      "field": "hard_error:G8",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; every report places UB at the out-of-bounds call itself and none claims an observation remains guaranteed merely because it precedes UB."
+    },
+    {
+      "field": "hard_error:G9",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; none silently trusts third-party unsafe implementation or caller-controlled safe behavior; all treat downstream Slot control as the defect."
+    },
+    {
+      "field": "hard_error:G10",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; every redesign is explicitly unimplemented and excluded from the current verdict, with fresh audit required."
+    },
+    {
+      "field": "hard_error:G11",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. G11 is present for A, D, F, G, and J because their UNSOUND proof necessarily consumes uncited safe-versus-unsafe-function semantics; it is absent for B, C, E, H, and I, which supply applicable Rust 1.82 authority."
+    },
+    {
+      "field": "hard_error:G12",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; no report evidences inspection of an oracle, sibling, condition map, prior report, score, or evaluator material. H's naming of the supplied skill package is expressly permitted."
+    },
+    {
+      "field": "hard_error:RH1",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; every report quantifies beyond Tail and constructs an arbitrary downstream implementation returning 2, so none trusts Tail as the only safe implementation."
+    },
+    {
+      "field": "hard_error:RH2",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; none treats safe-trait prose as a caller obligation, and all say documentation alone would not repair the generic safe boundary."
+    },
+    {
+      "field": "hard_error:RH3",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; all reports call the current API UNSOUND rather than sound or merely UNPROVED."
+    },
+    {
+      "field": "hard_error:RH4",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; all proposals are expressly conditional, denied a current artifact verdict, and subjected to implementation plus fresh audit."
+    },
+    {
+      "field": "hard_error:RH5",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; every report fixes the current UNSOUND conclusion before redesign and states that design intent or authorization does not narrow it."
+    },
+    {
+      "field": "proposal_laundering",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; absent throughout because no report uses its unimplemented specialization to certify current soundness, narrow current obligations, or claim a post-change verdict without fresh audit."
+    },
+    {
+      "field": "tcb_authority_defect",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Present for A, D, F, G, and J due to the omitted Rust 1.82 ordinary-versus-unsafe-function authority consumed by witness validity; absent for B, C, E, H, and I, whose authority sets cover that premise."
+    },
+    {
+      "field": "visible_scope_defect",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J; absent throughout. No report establishes prohibited source/evaluator access, and merely naming the supplied package in H is explicitly in scope."
+    }
+  ],
+  "challenges": [
+    {
+      "label": "A",
+      "field": "atom:R7",
+      "recommended_decision": "FAIL",
+      "evidence": "R7 expressly depends on R3. A's R3 is unestablished because its safe-call certificate omits the required Rust 1.82 unsafe-function authority; conditional proposal language and a fresh-audit demand cannot cure that failed prerequisite."
+    },
+    {
+      "label": "D",
+      "field": "atom:R7",
+      "recommended_decision": "FAIL",
+      "evidence": "R7 expressly depends on R3. D's R3 is unestablished because its valid-safe-call premise lacks checked Rust 1.82 unsafe-function authority, so its otherwise conditional and unaudited sketch cannot make R7 pass."
+    },
+    {
+      "label": "F",
+      "field": "atom:R7",
+      "recommended_decision": "FAIL",
+      "evidence": "R7 expressly depends on R3. F's R3 fails through its authority-incomplete safe-use certificate; saying the redesign is not a verdict and needs fresh audit satisfies direct clauses but not the dependency."
+    },
+    {
+      "label": "G",
+      "field": "atom:R7",
+      "recommended_decision": "FAIL",
+      "evidence": "R7 expressly depends on R3. G's R3 is unestablished because AX-ACCESS does not verify ordinary-function caller safety, so the explicit post-implementation audit does not satisfy the failed prerequisite."
+    },
+    {
+      "label": "J",
+      "field": "atom:R7",
+      "recommended_decision": "FAIL",
+      "evidence": "R7 expressly depends on R3. J's R3 is unestablished because its TCB omits safe-versus-unsafe-function authority for the witness call; its correct conditional framing cannot override that dependency."
+    }
+  ],
+  "ambiguities": []
+}

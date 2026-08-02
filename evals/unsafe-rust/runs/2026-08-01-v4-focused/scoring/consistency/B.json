@@ -1,0 +1,1132 @@
+{
+  "schema_version": 1,
+  "mode": "B",
+  "atom_family_attestations": [
+    {
+      "atom_id": "B1",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: every report states Rust/Cargo 1.85.1, all three targets, both feature/allocator/debug states, every profile and u8, with only wasm32/arena excluded; treatment is uniformly PASS."
+    },
+    {
+      "atom_id": "B2",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: B, D, and E verify the Result/VarError and pattern exhaustiveness needed for the six raw classes; A, C, F, G, H, I, and J assert the partition while omitting at least one material semantic leaf."
+    },
+    {
+      "atom_id": "B3",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: E alone verifies arm selection, source order, successful println line effect, and implicit normal return for both system paths; each other report omits at least one of those material clauses."
+    },
+    {
+      "atom_id": "B4",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: E alone verifies the complete arena-success trace through completed output and implicit return; A–D and F–J leave at least one path-selection, output, or return premise unverified."
+    },
+    {
+      "atom_id": "B5",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: D and E completely establish arena-stop arm selection, completed R/arena lines, later panic, and no current library; the other eight omit a material pattern or successful-output premise."
+    },
+    {
+      "atom_id": "B6",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: D and E completely prove both pre-allocator rejection arms, completed R prefix, no allocator attempt, panic, and no library; the other eight omit a material pattern and/or completed-output premise."
+    },
+    {
+      "atom_id": "B7",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: C, D, E, F, and J verify order plus successful- and failed-println effects for every write site; A, B, G, H, and I lack authority for the prior completed R line and H also lacks block order."
+    },
+    {
+      "atom_id": "B8",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: E alone closes successful local return, exact accepted Cargo mapping, and Rust cfg source selection; every other report consumes at least one unverified selector-success or cfg premise."
+    },
+    {
+      "atom_id": "B9",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: D and E fully establish the conditioned prior R-before-arena trace, arena-stop rerun paths, staleness, and no reuse; A–C and F–J lack a material local trace premise."
+    },
+    {
+      "atom_id": "B10",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: E alone combines a complete current arena mapping with verified key/value, all, cfg-removal, and compile_error semantics; the other nine have an incomplete mapping and/or cfg derivation."
+    },
+    {
+      "atom_id": "B11",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: E alone proves both directions of the exact Q/not-Q body partition from a complete build mapping and verified all/not/cfg rules; every other report leaves a required mapping or cfg leaf unverified."
+    },
+    {
+      "atom_id": "B12",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: all reports state safe zero use, false nonzero, zero UB, and UNSOUND, but only E verifies the full current-library-to-unchecked-body reachability chain; the other nine certificates are incomplete."
+    },
+    {
+      "atom_id": "B13",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: every report gives the intended maximal-region formula, but only E proves both containments with a complete build/body/control-flow basis; the other nine silently consume missing material premises."
+    },
+    {
+      "atom_id": "B14",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: every report states the not-Q zero-panic region, but only E completely verifies Required-to-checked-body coverage and equality/if/panic control flow across all fibers."
+    },
+    {
+      "atom_id": "B15",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: every report states UNPROVED rather than CONTRACT-BROKEN/PROVED, but only E also supplies the complete B12 UB certificate and B14 regional theorem required by this conjunctive atom."
+    }
+  ],
+  "defect_family_attestations": [
+    {
+      "field": "hard_error:BH1",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report makes the specific false affirmative claim defined by BH1; atom incompleteness alone was not promoted to this hard error."
+    },
+    {
+      "field": "hard_error:BH2",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report makes the specific false affirmative claim defined by BH2; atom incompleteness alone was not promoted to this hard error."
+    },
+    {
+      "field": "hard_error:BH3",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report makes the specific false affirmative claim defined by BH3; atom incompleteness alone was not promoted to this hard error."
+    },
+    {
+      "field": "hard_error:BH4",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report makes the specific false affirmative claim defined by BH4; atom incompleteness alone was not promoted to this hard error."
+    },
+    {
+      "field": "hard_error:BH5",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report makes the specific false affirmative claim defined by BH5; atom incompleteness alone was not promoted to this hard error."
+    },
+    {
+      "field": "hard_error:BH6",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report makes the specific false affirmative claim defined by BH6; atom incompleteness alone was not promoted to this hard error."
+    },
+    {
+      "field": "hard_error:BH7",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: A–D and F–J issue UNSOUND with an unverified current-library/source reachability link, so BH7 is present there; E verifies all four certificate links, so BH7 is absent for E."
+    },
+    {
+      "field": "hard_error:BH8",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report makes the specific false affirmative claim defined by BH8; atom incompleteness alone was not promoted to this hard error."
+    },
+    {
+      "field": "hard_error:BH9",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report makes the specific false affirmative claim defined by BH9; atom incompleteness alone was not promoted to this hard error."
+    },
+    {
+      "field": "hard_error:BH10",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report makes the specific false affirmative claim defined by BH10; atom incompleteness alone was not promoted to this hard error."
+    },
+    {
+      "field": "hard_error:G1",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report triggers the exact G1 global-hard-error proposition; missing atom proof alone was not treated as a substitute for that listed claim."
+    },
+    {
+      "field": "hard_error:G2",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report triggers the exact G2 global-hard-error proposition; missing atom proof alone was not treated as a substitute for that listed claim."
+    },
+    {
+      "field": "hard_error:G3",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report triggers the exact G3 global-hard-error proposition; missing atom proof alone was not treated as a substitute for that listed claim."
+    },
+    {
+      "field": "hard_error:G4",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report triggers the exact G4 global-hard-error proposition; missing atom proof alone was not treated as a substitute for that listed claim."
+    },
+    {
+      "field": "hard_error:G5",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: A–D and F–J issue UNSOUND without a fully verified reachability link, so G5 is present there; E alone verifies valid use, reachability, falsity, and the applicable UB consequence."
+    },
+    {
+      "field": "hard_error:G6",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report triggers the exact G6 global-hard-error proposition; missing atom proof alone was not treated as a substitute for that listed claim."
+    },
+    {
+      "field": "hard_error:G7",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report triggers the exact G7 global-hard-error proposition; missing atom proof alone was not treated as a substitute for that listed claim."
+    },
+    {
+      "field": "hard_error:G8",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report triggers the exact G8 global-hard-error proposition; missing atom proof alone was not treated as a substitute for that listed claim."
+    },
+    {
+      "field": "hard_error:G9",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report triggers the exact G9 global-hard-error proposition; missing atom proof alone was not treated as a substitute for that listed claim."
+    },
+    {
+      "field": "hard_error:G10",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report triggers the exact G10 global-hard-error proposition; missing atom proof alone was not treated as a substitute for that listed claim."
+    },
+    {
+      "field": "hard_error:G11",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: A–D and F–J necessarily rely on one or more unchecked material Rust premises for affirmative build/source/UNSOUND results; E verifies the complete material authority chain."
+    },
+    {
+      "field": "hard_error:G12",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report triggers the exact G12 global-hard-error proposition; missing atom proof alone was not treated as a substitute for that listed claim."
+    },
+    {
+      "field": "proposal_laundering",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: every remediation is expressly prospective and requires implementation/re-audit; no report uses it to certify or narrow the current artifact."
+    },
+    {
+      "field": "tcb_authority_defect",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: E keeps BUILD-MAP-ORDERED bounded and verifies every material Rust leaf; A–D and F–J also bound the TCB but make affirmative results while leaving different material Rust premises unchecked."
+    },
+    {
+      "field": "visible_scope_defect",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A–J: no report text establishes inspection of prohibited oracle, sibling, condition-map, prior-report, or evaluator material; supplied snapshot and authority references remain in scope."
+    }
+  ],
+  "challenges": [
+    {
+      "label": "A",
+      "field": "atom:B2",
+      "recommended_decision": "FAIL",
+      "evidence": "Calls the six raw classes exhaustive but does not verify Result Ok/Err exhaustiveness or tuple-struct enum matching; the frozen authority rule forbids promoting that assertion to a complete proof."
+    },
+    {
+      "label": "A",
+      "field": "atom:B3",
+      "recommended_decision": "FAIL",
+      "evidence": "The system-success trace asserts completed output and normal success but does not verify successful println output or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "A",
+      "field": "atom:B4",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-success trace asserts completed output and normal success but does not verify successful println output or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "A",
+      "field": "atom:B5",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-stop prefix/panic result is textually right, but does not verify successful println output, and its non-Unicode arm lacks tuple-struct-pattern authority; the complete ordered-prefix derivation is not verified."
+    },
+    {
+      "label": "A",
+      "field": "atom:B6",
+      "recommended_decision": "FAIL",
+      "evidence": "The two pre-allocator rejection outcomes are textually right, but does not verify successful println output, and its non-Unicode arm lacks tuple-struct-pattern authority; both raw-arm and completed-prefix clauses are not completely proved."
+    },
+    {
+      "label": "A",
+      "field": "atom:B7",
+      "recommended_decision": "FAIL",
+      "evidence": "The write-failure cases are listed, but does not verify the successful println effect needed for the preceding completed R line; the required completed prefix after a later failed write is not verified."
+    },
+    {
+      "label": "A",
+      "field": "atom:B8",
+      "recommended_decision": "FAIL",
+      "evidence": "The report bounds BUILD-MAP-ORDERED, but successful-output/normal-return and all/not cfg premises are unverified; successful current cfg-to-source composition is not a complete applicable derivation."
+    },
+    {
+      "label": "A",
+      "field": "atom:B9",
+      "recommended_decision": "FAIL",
+      "evidence": "The stale-build conclusion is textually right, but the prior R/arena prefix and arena-stop path rest on unverified successful-output and pattern premises; the requested local trace prerequisite is incomplete."
+    },
+    {
+      "label": "A",
+      "field": "atom:B10",
+      "recommended_decision": "FAIL",
+      "evidence": "The exclusion conclusion is textually right, but all/not key-value cfg truth is unverified atop an incomplete successful-selector mapping; effective current-build rejection is not completely derived."
+    },
+    {
+      "label": "A",
+      "field": "atom:B11",
+      "recommended_decision": "FAIL",
+      "evidence": "The Q/not-Q partition is asserted, but all/not key-value cfg truth is unverified atop an incomplete successful-selector mapping; both directions of current supported source selection are not completely proved."
+    },
+    {
+      "label": "A",
+      "field": "atom:B12",
+      "recommended_decision": "FAIL",
+      "evidence": "Valid safe use, false nonzero, zero UB, and UNSOUND are stated, but successful-output/normal-return and all/not cfg premises are unverified; the authoritative reachability link is missing."
+    },
+    {
+      "label": "A",
+      "field": "atom:B13",
+      "recommended_decision": "FAIL",
+      "evidence": "The maximal-region formula is correct, but successful-output/normal-return and all/not cfg premises are unverified; both containment and every-excluded-case UB proofs consume that missing basis."
+    },
+    {
+      "label": "A",
+      "field": "atom:B14",
+      "recommended_decision": "FAIL",
+      "evidence": "The regional zero-panic argument is stated, but successful-output/normal-return and all/not cfg premises are unverified; the Required-to-selected-body reachability chain is incomplete; Required-to-checked-body coverage is incomplete."
+    },
+    {
+      "label": "A",
+      "field": "atom:B15",
+      "recommended_decision": "FAIL",
+      "evidence": "The UNPROVED wording is correct, but the prerequisite B12/B14 certificates remain incomplete because successful-output/normal-return and all/not cfg premises are unverified; this conjunctive atom therefore fails."
+    },
+    {
+      "label": "B",
+      "field": "atom:B3",
+      "recommended_decision": "FAIL",
+      "evidence": "The system-success trace asserts completed output and normal success but does not verify successful println output or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "B",
+      "field": "atom:B4",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-success trace asserts completed output and normal success but does not verify successful println output or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "B",
+      "field": "atom:B5",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-stop prefix/panic result is textually right, but does not verify successful println output needed for the completed R and allocator prefixes; the complete ordered-prefix derivation is not verified."
+    },
+    {
+      "label": "B",
+      "field": "atom:B6",
+      "recommended_decision": "FAIL",
+      "evidence": "The two pre-allocator rejection outcomes are textually right, but does not verify successful println output needed for the completed R and allocator prefixes; both raw-arm and completed-prefix clauses are not completely proved."
+    },
+    {
+      "label": "B",
+      "field": "atom:B7",
+      "recommended_decision": "FAIL",
+      "evidence": "The write-failure cases are listed, but does not verify the successful println effect needed for the preceding completed R line; the required completed prefix after a later failed write is not verified."
+    },
+    {
+      "label": "B",
+      "field": "atom:B8",
+      "recommended_decision": "FAIL",
+      "evidence": "The report bounds BUILD-MAP-ORDERED, but successful-output and implicit-return premises are unverified; successful current cfg-to-source composition is not a complete applicable derivation."
+    },
+    {
+      "label": "B",
+      "field": "atom:B9",
+      "recommended_decision": "FAIL",
+      "evidence": "The stale-build conclusion is textually right, but the prior successful RERUN/arena prefix lacks verified successful-output semantics; the requested local trace prerequisite is incomplete."
+    },
+    {
+      "label": "B",
+      "field": "atom:B10",
+      "recommended_decision": "FAIL",
+      "evidence": "The exclusion conclusion is textually right, but effective current-build mapping is incomplete even though cfg Boolean rules are checked; effective current-build rejection is not completely derived."
+    },
+    {
+      "label": "B",
+      "field": "atom:B11",
+      "recommended_decision": "FAIL",
+      "evidence": "The Q/not-Q partition is asserted, but effective current-build mapping is incomplete even though cfg Boolean rules are checked; both directions of current supported source selection are not completely proved."
+    },
+    {
+      "label": "B",
+      "field": "atom:B12",
+      "recommended_decision": "FAIL",
+      "evidence": "Valid safe use, false nonzero, zero UB, and UNSOUND are stated, but successful-output and implicit-return premises are unverified; the authoritative reachability link is missing."
+    },
+    {
+      "label": "B",
+      "field": "atom:B13",
+      "recommended_decision": "FAIL",
+      "evidence": "The maximal-region formula is correct, but successful-output and implicit-return premises are unverified; both containment and every-excluded-case UB proofs consume that missing basis."
+    },
+    {
+      "label": "B",
+      "field": "atom:B14",
+      "recommended_decision": "FAIL",
+      "evidence": "The regional zero-panic argument is stated, but successful-output and implicit-return premises are unverified; the Required-to-selected-body reachability chain is incomplete; Required-to-checked-body coverage is incomplete."
+    },
+    {
+      "label": "B",
+      "field": "atom:B15",
+      "recommended_decision": "FAIL",
+      "evidence": "The UNPROVED wording is correct, but the prerequisite B12/B14 certificates remain incomplete because successful-output and implicit-return premises are unverified; this conjunctive atom therefore fails."
+    },
+    {
+      "label": "C",
+      "field": "atom:B2",
+      "recommended_decision": "FAIL",
+      "evidence": "Calls the six raw classes exhaustive but does not verify Result/VarError exhaustiveness or literal, wildcard, and tuple-struct pattern semantics; the frozen authority rule forbids promoting that assertion to a complete proof."
+    },
+    {
+      "label": "C",
+      "field": "atom:B3",
+      "recommended_decision": "FAIL",
+      "evidence": "The system-success trace asserts completed output and normal success but does not verify literal/tuple-pattern selection or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "C",
+      "field": "atom:B4",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-success trace asserts completed output and normal success but does not verify literal/tuple-pattern selection or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "C",
+      "field": "atom:B5",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-stop prefix/panic result is textually right, but does not verify the literal, wildcard, and tuple-pattern selection used by the rejection arms; the complete ordered-prefix derivation is not verified."
+    },
+    {
+      "label": "C",
+      "field": "atom:B6",
+      "recommended_decision": "FAIL",
+      "evidence": "The two pre-allocator rejection outcomes are textually right, but does not verify the literal, wildcard, and tuple-pattern selection used by the rejection arms; both raw-arm and completed-prefix clauses are not completely proved."
+    },
+    {
+      "label": "C",
+      "field": "atom:B8",
+      "recommended_decision": "FAIL",
+      "evidence": "The report bounds BUILD-MAP-ORDERED, but successful arm selection/return and all/not cfg semantics are unverified; successful current cfg-to-source composition is not a complete applicable derivation."
+    },
+    {
+      "label": "C",
+      "field": "atom:B9",
+      "recommended_decision": "FAIL",
+      "evidence": "The stale-build conclusion is textually right, but arena and arena-stop arm selection and the successful arena return are not fully verified; the requested local trace prerequisite is incomplete."
+    },
+    {
+      "label": "C",
+      "field": "atom:B10",
+      "recommended_decision": "FAIL",
+      "evidence": "The exclusion conclusion is textually right, but all/not, key/value truth, and false-cfg removal are unverified atop incomplete mapping; effective current-build rejection is not completely derived."
+    },
+    {
+      "label": "C",
+      "field": "atom:B11",
+      "recommended_decision": "FAIL",
+      "evidence": "The Q/not-Q partition is asserted, but all/not, key/value truth, and false-cfg removal are unverified atop incomplete mapping; both directions of current supported source selection are not completely proved."
+    },
+    {
+      "label": "C",
+      "field": "atom:B12",
+      "recommended_decision": "FAIL",
+      "evidence": "Valid safe use, false nonzero, zero UB, and UNSOUND are stated, but successful arm selection/return and all/not cfg semantics are unverified; the authoritative reachability link is missing."
+    },
+    {
+      "label": "C",
+      "field": "atom:B13",
+      "recommended_decision": "FAIL",
+      "evidence": "The maximal-region formula is correct, but successful arm selection/return and all/not cfg semantics are unverified; both containment and every-excluded-case UB proofs consume that missing basis."
+    },
+    {
+      "label": "C",
+      "field": "atom:B14",
+      "recommended_decision": "FAIL",
+      "evidence": "The regional zero-panic argument is stated, but successful arm selection/return and all/not cfg semantics are unverified; the Required-to-selected-body reachability chain is incomplete; Required-to-checked-body coverage is incomplete."
+    },
+    {
+      "label": "C",
+      "field": "atom:B15",
+      "recommended_decision": "FAIL",
+      "evidence": "The UNPROVED wording is correct, but the prerequisite B12/B14 certificates remain incomplete because successful arm selection/return and all/not cfg semantics are unverified; this conjunctive atom therefore fails."
+    },
+    {
+      "label": "D",
+      "field": "atom:B3",
+      "recommended_decision": "FAIL",
+      "evidence": "The system-success trace asserts completed output and normal success but does not verify implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "D",
+      "field": "atom:B4",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-success trace asserts completed output and normal success but does not verify implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "D",
+      "field": "atom:B8",
+      "recommended_decision": "FAIL",
+      "evidence": "The report bounds BUILD-MAP-ORDERED, but normal main return is an unverified material edge; successful current cfg-to-source composition is not a complete applicable derivation."
+    },
+    {
+      "label": "D",
+      "field": "atom:B10",
+      "recommended_decision": "FAIL",
+      "evidence": "The exclusion conclusion is textually right, but effective current-build mapping still depends on the unverified normal-return edge; effective current-build rejection is not completely derived."
+    },
+    {
+      "label": "D",
+      "field": "atom:B11",
+      "recommended_decision": "FAIL",
+      "evidence": "The Q/not-Q partition is asserted, but effective current-build mapping still depends on the unverified normal-return edge; both directions of current supported source selection are not completely proved."
+    },
+    {
+      "label": "D",
+      "field": "atom:B12",
+      "recommended_decision": "FAIL",
+      "evidence": "Valid safe use, false nonzero, zero UB, and UNSOUND are stated, but normal main return is an unverified material edge; the authoritative reachability link is missing."
+    },
+    {
+      "label": "D",
+      "field": "atom:B13",
+      "recommended_decision": "FAIL",
+      "evidence": "The maximal-region formula is correct, but normal main return is an unverified material edge; both containment and every-excluded-case UB proofs consume that missing basis."
+    },
+    {
+      "label": "D",
+      "field": "atom:B14",
+      "recommended_decision": "FAIL",
+      "evidence": "The regional zero-panic argument is stated, but normal main return is an unverified material edge; the Required-to-selected-body reachability chain is incomplete at normal main return; Required-to-checked-body coverage is incomplete."
+    },
+    {
+      "label": "D",
+      "field": "atom:B15",
+      "recommended_decision": "FAIL",
+      "evidence": "The UNPROVED wording is correct, but the prerequisite B12/B14 certificates remain incomplete because normal main return is an unverified material edge; this conjunctive atom therefore fails."
+    },
+    {
+      "label": "F",
+      "field": "atom:B2",
+      "recommended_decision": "FAIL",
+      "evidence": "Calls the six raw classes exhaustive but delegates the Rust-semantic raw partition to BUILD.md and does not verify Result/VarError or exact pattern behavior; the frozen authority rule forbids promoting that assertion to a complete proof."
+    },
+    {
+      "label": "F",
+      "field": "atom:B3",
+      "recommended_decision": "FAIL",
+      "evidence": "The system-success trace asserts completed output and normal success but does not verify literal/tuple-pattern selection or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "F",
+      "field": "atom:B4",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-success trace asserts completed output and normal success but does not verify literal/tuple-pattern selection or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "F",
+      "field": "atom:B5",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-stop prefix/panic result is textually right, but does not verify literal, wildcard, and tuple-pattern selection for the rejection arms; the complete ordered-prefix derivation is not verified."
+    },
+    {
+      "label": "F",
+      "field": "atom:B6",
+      "recommended_decision": "FAIL",
+      "evidence": "The two pre-allocator rejection outcomes are textually right, but does not verify literal, wildcard, and tuple-pattern selection for the rejection arms; both raw-arm and completed-prefix clauses are not completely proved."
+    },
+    {
+      "label": "F",
+      "field": "atom:B8",
+      "recommended_decision": "FAIL",
+      "evidence": "The report bounds BUILD-MAP-ORDERED, but raw-path selection/normal return and all/not cfg premises are unverified; successful current cfg-to-source composition is not a complete applicable derivation."
+    },
+    {
+      "label": "F",
+      "field": "atom:B9",
+      "recommended_decision": "FAIL",
+      "evidence": "The stale-build conclusion is textually right, but arena and arena-stop arm selection is delegated to unchecked source claims; the requested local trace prerequisite is incomplete."
+    },
+    {
+      "label": "F",
+      "field": "atom:B10",
+      "recommended_decision": "FAIL",
+      "evidence": "The exclusion conclusion is textually right, but all/not and false-cfg selection are unverified atop incomplete mapping; effective current-build rejection is not completely derived."
+    },
+    {
+      "label": "F",
+      "field": "atom:B11",
+      "recommended_decision": "FAIL",
+      "evidence": "The Q/not-Q partition is asserted, but all/not and false-cfg selection are unverified atop incomplete mapping; both directions of current supported source selection are not completely proved."
+    },
+    {
+      "label": "F",
+      "field": "atom:B12",
+      "recommended_decision": "FAIL",
+      "evidence": "Valid safe use, false nonzero, zero UB, and UNSOUND are stated, but raw-path selection/normal return and all/not cfg premises are unverified; the authoritative reachability link is missing."
+    },
+    {
+      "label": "F",
+      "field": "atom:B13",
+      "recommended_decision": "FAIL",
+      "evidence": "The maximal-region formula is correct, but raw-path selection/normal return and all/not cfg premises are unverified; both containment and every-excluded-case UB proofs consume that missing basis."
+    },
+    {
+      "label": "F",
+      "field": "atom:B14",
+      "recommended_decision": "FAIL",
+      "evidence": "The regional zero-panic argument is stated, but raw-path selection/normal return and all/not cfg premises are unverified; the Required-to-selected-body reachability chain is incomplete; Required-to-checked-body coverage is incomplete."
+    },
+    {
+      "label": "F",
+      "field": "atom:B15",
+      "recommended_decision": "FAIL",
+      "evidence": "The UNPROVED wording is correct, but the prerequisite B12/B14 certificates remain incomplete because raw-path selection/normal return and all/not cfg premises are unverified; this conjunctive atom therefore fails."
+    },
+    {
+      "label": "G",
+      "field": "atom:B2",
+      "recommended_decision": "FAIL",
+      "evidence": "Calls the six raw classes exhaustive but does not verify Result's two variants or tuple-struct pattern semantics; the frozen authority rule forbids promoting that assertion to a complete proof."
+    },
+    {
+      "label": "G",
+      "field": "atom:B3",
+      "recommended_decision": "FAIL",
+      "evidence": "The system-success trace asserts completed output and normal success but does not verify successful println output or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "G",
+      "field": "atom:B4",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-success trace asserts completed output and normal success but does not verify successful println output or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "G",
+      "field": "atom:B5",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-stop prefix/panic result is textually right, but does not verify successful println output, and the NotUnicode arm lacks tuple-pattern authority; the complete ordered-prefix derivation is not verified."
+    },
+    {
+      "label": "G",
+      "field": "atom:B6",
+      "recommended_decision": "FAIL",
+      "evidence": "The two pre-allocator rejection outcomes are textually right, but does not verify successful println output, and the NotUnicode arm lacks tuple-pattern authority; both raw-arm and completed-prefix clauses are not completely proved."
+    },
+    {
+      "label": "G",
+      "field": "atom:B7",
+      "recommended_decision": "FAIL",
+      "evidence": "The write-failure cases are listed, but does not verify the successful println effect needed for the preceding completed R line; the required completed prefix after a later failed write is not verified."
+    },
+    {
+      "label": "G",
+      "field": "atom:B8",
+      "recommended_decision": "FAIL",
+      "evidence": "The report bounds BUILD-MAP-ORDERED, but successful-output and implicit-return premises are unverified; successful current cfg-to-source composition is not a complete applicable derivation."
+    },
+    {
+      "label": "G",
+      "field": "atom:B9",
+      "recommended_decision": "FAIL",
+      "evidence": "The stale-build conclusion is textually right, but the prior complete R/arena prefix lacks verified println-success and normal-return premises; the requested local trace prerequisite is incomplete."
+    },
+    {
+      "label": "G",
+      "field": "atom:B10",
+      "recommended_decision": "FAIL",
+      "evidence": "The exclusion conclusion is textually right, but effective current-build mapping is incomplete despite otherwise checked cfg rules; effective current-build rejection is not completely derived."
+    },
+    {
+      "label": "G",
+      "field": "atom:B11",
+      "recommended_decision": "FAIL",
+      "evidence": "The Q/not-Q partition is asserted, but effective current-build mapping is incomplete despite otherwise checked cfg rules; both directions of current supported source selection are not completely proved."
+    },
+    {
+      "label": "G",
+      "field": "atom:B12",
+      "recommended_decision": "FAIL",
+      "evidence": "Valid safe use, false nonzero, zero UB, and UNSOUND are stated, but successful-output and implicit-return premises are unverified; the authoritative reachability link is missing."
+    },
+    {
+      "label": "G",
+      "field": "atom:B13",
+      "recommended_decision": "FAIL",
+      "evidence": "The maximal-region formula is correct, but successful-output and implicit-return premises are unverified; both containment and every-excluded-case UB proofs consume that missing basis."
+    },
+    {
+      "label": "G",
+      "field": "atom:B14",
+      "recommended_decision": "FAIL",
+      "evidence": "The regional zero-panic argument is stated, but successful-output and implicit-return premises are unverified; the Required-to-selected-body reachability chain is incomplete; Required-to-checked-body coverage is incomplete."
+    },
+    {
+      "label": "G",
+      "field": "atom:B15",
+      "recommended_decision": "FAIL",
+      "evidence": "The UNPROVED wording is correct, but the prerequisite B12/B14 certificates remain incomplete because successful-output and implicit-return premises are unverified; this conjunctive atom therefore fails."
+    },
+    {
+      "label": "H",
+      "field": "atom:B2",
+      "recommended_decision": "FAIL",
+      "evidence": "Calls the six raw classes exhaustive but does not verify Result's two variants or tuple-struct pattern semantics; the frozen authority rule forbids promoting that assertion to a complete proof."
+    },
+    {
+      "label": "H",
+      "field": "atom:B3",
+      "recommended_decision": "FAIL",
+      "evidence": "The system-success trace asserts completed output and normal success but does not verify block sequencing, successful println output, tuple matching, or implicit normal return; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "H",
+      "field": "atom:B4",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-success trace asserts completed output and normal success but does not verify block sequencing, successful println output, tuple matching, or implicit normal return; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "H",
+      "field": "atom:B5",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-stop prefix/panic result is textually right, but does not verify block order/successful output, and the non-Unicode arm lacks tuple-pattern authority; the complete ordered-prefix derivation is not verified."
+    },
+    {
+      "label": "H",
+      "field": "atom:B6",
+      "recommended_decision": "FAIL",
+      "evidence": "The two pre-allocator rejection outcomes are textually right, but does not verify block order/successful output, and the non-Unicode arm lacks tuple-pattern authority; both raw-arm and completed-prefix clauses are not completely proved."
+    },
+    {
+      "label": "H",
+      "field": "atom:B7",
+      "recommended_decision": "FAIL",
+      "evidence": "The write-failure cases are listed, but does not verify block sequencing or successful println output for the prior completed R line; the required completed prefix after a later failed write is not verified."
+    },
+    {
+      "label": "H",
+      "field": "atom:B8",
+      "recommended_decision": "FAIL",
+      "evidence": "The report bounds BUILD-MAP-ORDERED, but block/output/return and exact all/not cfg premises are unverified; successful current cfg-to-source composition is not a complete applicable derivation."
+    },
+    {
+      "label": "H",
+      "field": "atom:B9",
+      "recommended_decision": "FAIL",
+      "evidence": "The stale-build conclusion is textually right, but R-before-arena order, complete-line success, and arena-stop selection are not fully verified; the requested local trace prerequisite is incomplete."
+    },
+    {
+      "label": "H",
+      "field": "atom:B10",
+      "recommended_decision": "FAIL",
+      "evidence": "The exclusion conclusion is textually right, but all/not, key/value truth, and true/false cfg-attribute rules are unverified atop incomplete mapping; effective current-build rejection is not completely derived."
+    },
+    {
+      "label": "H",
+      "field": "atom:B11",
+      "recommended_decision": "FAIL",
+      "evidence": "The Q/not-Q partition is asserted, but all/not, key/value truth, and true/false cfg-attribute rules are unverified atop incomplete mapping; both directions of current supported source selection are not completely proved."
+    },
+    {
+      "label": "H",
+      "field": "atom:B12",
+      "recommended_decision": "FAIL",
+      "evidence": "Valid safe use, false nonzero, zero UB, and UNSOUND are stated, but block/output/return and exact all/not cfg premises are unverified; the authoritative reachability link is missing."
+    },
+    {
+      "label": "H",
+      "field": "atom:B13",
+      "recommended_decision": "FAIL",
+      "evidence": "The maximal-region formula is correct, but block/output/return and exact all/not cfg premises are unverified; both containment and every-excluded-case UB proofs consume that missing basis."
+    },
+    {
+      "label": "H",
+      "field": "atom:B14",
+      "recommended_decision": "FAIL",
+      "evidence": "The regional zero-panic argument is stated, but block/output/return and exact all/not cfg premises are unverified; the Required-to-selected-body reachability chain is incomplete; Required-to-checked-body coverage is incomplete."
+    },
+    {
+      "label": "H",
+      "field": "atom:B15",
+      "recommended_decision": "FAIL",
+      "evidence": "The UNPROVED wording is correct, but the prerequisite B12/B14 certificates remain incomplete because block/output/return and exact all/not cfg premises are unverified; this conjunctive atom therefore fails."
+    },
+    {
+      "label": "I",
+      "field": "atom:B2",
+      "recommended_decision": "FAIL",
+      "evidence": "Calls the six raw classes exhaustive but does not verify Result/VarError exhaustiveness or literal, wildcard, and tuple-pattern semantics; the frozen authority rule forbids promoting that assertion to a complete proof."
+    },
+    {
+      "label": "I",
+      "field": "atom:B3",
+      "recommended_decision": "FAIL",
+      "evidence": "The system-success trace asserts completed output and normal success but does not verify exact pattern selection, successful println output, or implicit normal return; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "I",
+      "field": "atom:B4",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-success trace asserts completed output and normal success but does not verify exact pattern selection, successful println output, or implicit normal return; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "I",
+      "field": "atom:B5",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-stop prefix/panic result is textually right, but does not verify rejection-arm patterns or the successful println effect for completed prefixes; the complete ordered-prefix derivation is not verified."
+    },
+    {
+      "label": "I",
+      "field": "atom:B6",
+      "recommended_decision": "FAIL",
+      "evidence": "The two pre-allocator rejection outcomes are textually right, but does not verify rejection-arm patterns or the successful println effect for completed prefixes; both raw-arm and completed-prefix clauses are not completely proved."
+    },
+    {
+      "label": "I",
+      "field": "atom:B7",
+      "recommended_decision": "FAIL",
+      "evidence": "The write-failure cases are listed, but does not verify the successful println effect needed for the preceding completed RERUN line; the required completed prefix after a later failed write is not verified."
+    },
+    {
+      "label": "I",
+      "field": "atom:B8",
+      "recommended_decision": "FAIL",
+      "evidence": "The report bounds BUILD-MAP-ORDERED, but pattern/output/return and exact all/not cfg premises are unverified; successful current cfg-to-source composition is not a complete applicable derivation."
+    },
+    {
+      "label": "I",
+      "field": "atom:B9",
+      "recommended_decision": "FAIL",
+      "evidence": "The stale-build conclusion is textually right, but pattern selection, complete-line success, and normal return are unverified; the requested local trace prerequisite is incomplete."
+    },
+    {
+      "label": "I",
+      "field": "atom:B10",
+      "recommended_decision": "FAIL",
+      "evidence": "The exclusion conclusion is textually right, but all/not key/value cfg semantics are unverified atop incomplete mapping; effective current-build rejection is not completely derived."
+    },
+    {
+      "label": "I",
+      "field": "atom:B11",
+      "recommended_decision": "FAIL",
+      "evidence": "The Q/not-Q partition is asserted, but all/not key/value cfg semantics are unverified atop incomplete mapping; both directions of current supported source selection are not completely proved."
+    },
+    {
+      "label": "I",
+      "field": "atom:B12",
+      "recommended_decision": "FAIL",
+      "evidence": "Valid safe use, false nonzero, zero UB, and UNSOUND are stated, but pattern/output/return and exact all/not cfg premises are unverified; the authoritative reachability link is missing."
+    },
+    {
+      "label": "I",
+      "field": "atom:B13",
+      "recommended_decision": "FAIL",
+      "evidence": "The maximal-region formula is correct, but pattern/output/return and exact all/not cfg premises are unverified; both containment and every-excluded-case UB proofs consume that missing basis."
+    },
+    {
+      "label": "I",
+      "field": "atom:B14",
+      "recommended_decision": "FAIL",
+      "evidence": "The regional zero-panic argument is stated, but pattern/output/return and exact all/not cfg premises are unverified; the Required-to-selected-body chain and if/equality flow are incomplete; Required-to-checked-body coverage is incomplete."
+    },
+    {
+      "label": "I",
+      "field": "atom:B15",
+      "recommended_decision": "FAIL",
+      "evidence": "The UNPROVED wording is correct, but the prerequisite B12/B14 certificates remain incomplete because pattern/output/return and exact all/not cfg premises are unverified; this conjunctive atom therefore fails."
+    },
+    {
+      "label": "J",
+      "field": "atom:B2",
+      "recommended_decision": "FAIL",
+      "evidence": "Calls the six raw classes exhaustive but does not verify match-arm choice or tuple-struct enum matching; the frozen authority rule forbids promoting that assertion to a complete proof."
+    },
+    {
+      "label": "J",
+      "field": "atom:B3",
+      "recommended_decision": "FAIL",
+      "evidence": "The system-success trace asserts completed output and normal success but does not verify match-arm selection or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "J",
+      "field": "atom:B4",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-success trace asserts completed output and normal success but does not verify match-arm selection or implicit normal return from main; a material RETURN/output clause is unproved."
+    },
+    {
+      "label": "J",
+      "field": "atom:B5",
+      "recommended_decision": "FAIL",
+      "evidence": "The arena-stop prefix/panic result is textually right, but does not verify match selection, including the NotUnicode tuple-struct arm; the complete ordered-prefix derivation is not verified."
+    },
+    {
+      "label": "J",
+      "field": "atom:B6",
+      "recommended_decision": "FAIL",
+      "evidence": "The two pre-allocator rejection outcomes are textually right, but does not verify match selection, including the NotUnicode tuple-struct arm; both raw-arm and completed-prefix clauses are not completely proved."
+    },
+    {
+      "label": "J",
+      "field": "atom:B8",
+      "recommended_decision": "FAIL",
+      "evidence": "The report bounds BUILD-MAP-ORDERED, but match-arm selection and implicit-return premises are unverified; successful current cfg-to-source composition is not a complete applicable derivation."
+    },
+    {
+      "label": "J",
+      "field": "atom:B9",
+      "recommended_decision": "FAIL",
+      "evidence": "The stale-build conclusion is textually right, but match-arm selection for arena and arena-stop is unverified; the requested local trace prerequisite is incomplete."
+    },
+    {
+      "label": "J",
+      "field": "atom:B10",
+      "recommended_decision": "FAIL",
+      "evidence": "The exclusion conclusion is textually right, but effective current-build mapping is incomplete even though cfg rules are checked; effective current-build rejection is not completely derived."
+    },
+    {
+      "label": "J",
+      "field": "atom:B11",
+      "recommended_decision": "FAIL",
+      "evidence": "The Q/not-Q partition is asserted, but effective current-build mapping is incomplete even though cfg rules are checked; both directions of current supported source selection are not completely proved."
+    },
+    {
+      "label": "J",
+      "field": "atom:B12",
+      "recommended_decision": "FAIL",
+      "evidence": "Valid safe use, false nonzero, zero UB, and UNSOUND are stated, but match-arm selection and implicit-return premises are unverified; the authoritative reachability link is missing."
+    },
+    {
+      "label": "J",
+      "field": "atom:B13",
+      "recommended_decision": "FAIL",
+      "evidence": "The maximal-region formula is correct, but match-arm selection and implicit-return premises are unverified; both containment and every-excluded-case UB proofs consume that missing basis."
+    },
+    {
+      "label": "J",
+      "field": "atom:B14",
+      "recommended_decision": "FAIL",
+      "evidence": "The regional zero-panic argument is stated, but match-arm selection and implicit-return premises are unverified; the Required-to-selected-body chain and if/equality flow are incomplete; Required-to-checked-body coverage is incomplete."
+    },
+    {
+      "label": "J",
+      "field": "atom:B15",
+      "recommended_decision": "FAIL",
+      "evidence": "The UNPROVED wording is correct, but the prerequisite B12/B14 certificates remain incomplete because match-arm selection and implicit-return premises are unverified; this conjunctive atom therefore fails."
+    },
+    {
+      "label": "A",
+      "field": "hard_error:G5",
+      "recommended_decision": "PRESENT",
+      "evidence": "The report issues UNSOUND although successful-output/normal-return and all/not cfg premises are unverified; one of the four required existential certificate links is not validly established."
+    },
+    {
+      "label": "A",
+      "field": "hard_error:BH7",
+      "recommended_decision": "PRESENT",
+      "evidence": "The mode-specific UNSOUND certificate lacks authoritative current-library/source reachability because successful-output/normal-return and all/not cfg premises are unverified; BH7 applies independently of the atom failure."
+    },
+    {
+      "label": "A",
+      "field": "hard_error:G11",
+      "recommended_decision": "PRESENT",
+      "evidence": "Its affirmative build/source and UNSOUND results necessarily consume unchecked Result/tuple-pattern, successful-println, implicit-return, and all/not premises; this is the exact G11 authority defect."
+    },
+    {
+      "label": "A",
+      "field": "tcb_authority_defect",
+      "recommended_decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded, but material Result/tuple-pattern, successful-println, implicit-return, and all/not premises remain unverified while supporting affirmative verdicts."
+    },
+    {
+      "label": "B",
+      "field": "hard_error:G5",
+      "recommended_decision": "PRESENT",
+      "evidence": "The report issues UNSOUND although successful-output and implicit-return premises are unverified; one of the four required existential certificate links is not validly established."
+    },
+    {
+      "label": "B",
+      "field": "hard_error:BH7",
+      "recommended_decision": "PRESENT",
+      "evidence": "The mode-specific UNSOUND certificate lacks authoritative current-library/source reachability because successful-output and implicit-return premises are unverified; BH7 applies independently of the atom failure."
+    },
+    {
+      "label": "B",
+      "field": "hard_error:G11",
+      "recommended_decision": "PRESENT",
+      "evidence": "Its affirmative build/source and UNSOUND results necessarily consume unchecked successful-println and implicit-main-return premises; this is the exact G11 authority defect."
+    },
+    {
+      "label": "B",
+      "field": "tcb_authority_defect",
+      "recommended_decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded, but material successful-println and implicit-main-return premises remain unverified while supporting affirmative verdicts."
+    },
+    {
+      "label": "C",
+      "field": "hard_error:G5",
+      "recommended_decision": "PRESENT",
+      "evidence": "The report issues UNSOUND although successful arm selection/return and all/not cfg semantics are unverified; one of the four required existential certificate links is not validly established."
+    },
+    {
+      "label": "C",
+      "field": "hard_error:BH7",
+      "recommended_decision": "PRESENT",
+      "evidence": "The mode-specific UNSOUND certificate lacks authoritative current-library/source reachability because successful arm selection/return and all/not cfg semantics are unverified; BH7 applies independently of the atom failure."
+    },
+    {
+      "label": "C",
+      "field": "hard_error:G11",
+      "recommended_decision": "PRESENT",
+      "evidence": "Its affirmative build/source and UNSOUND results necessarily consume unchecked Result/VarError, pattern, implicit-return, and all/not premises; this is the exact G11 authority defect."
+    },
+    {
+      "label": "C",
+      "field": "tcb_authority_defect",
+      "recommended_decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded, but material Result/VarError, pattern, implicit-return, and all/not premises remain unverified while supporting affirmative verdicts."
+    },
+    {
+      "label": "D",
+      "field": "hard_error:G5",
+      "recommended_decision": "PRESENT",
+      "evidence": "The report issues UNSOUND although normal main return is an unverified material edge; one of the four required existential certificate links is not validly established."
+    },
+    {
+      "label": "D",
+      "field": "hard_error:BH7",
+      "recommended_decision": "PRESENT",
+      "evidence": "The mode-specific UNSOUND certificate lacks authoritative current-library/source reachability because normal main return is an unverified material edge; BH7 applies independently of the atom failure."
+    },
+    {
+      "label": "D",
+      "field": "hard_error:G11",
+      "recommended_decision": "PRESENT",
+      "evidence": "Its affirmative build/source and UNSOUND results necessarily consume unchecked implicit-main-return semantics; this is the exact G11 authority defect."
+    },
+    {
+      "label": "D",
+      "field": "tcb_authority_defect",
+      "recommended_decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded, but material implicit-main-return semantics remain unverified while supporting affirmative verdicts."
+    },
+    {
+      "label": "F",
+      "field": "hard_error:G5",
+      "recommended_decision": "PRESENT",
+      "evidence": "The report issues UNSOUND although raw-path selection/normal return and all/not cfg premises are unverified; one of the four required existential certificate links is not validly established."
+    },
+    {
+      "label": "F",
+      "field": "hard_error:BH7",
+      "recommended_decision": "PRESENT",
+      "evidence": "The mode-specific UNSOUND certificate lacks authoritative current-library/source reachability because raw-path selection/normal return and all/not cfg premises are unverified; BH7 applies independently of the atom failure."
+    },
+    {
+      "label": "F",
+      "field": "hard_error:G11",
+      "recommended_decision": "PRESENT",
+      "evidence": "Its affirmative build/source and UNSOUND results necessarily consume unchecked Result/VarError, exact-pattern, implicit-return, and all/not premises; this is the exact G11 authority defect."
+    },
+    {
+      "label": "F",
+      "field": "tcb_authority_defect",
+      "recommended_decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded, but material Result/VarError, exact-pattern, implicit-return, and all/not premises remain unverified while supporting affirmative verdicts."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:G5",
+      "recommended_decision": "PRESENT",
+      "evidence": "The report issues UNSOUND although successful-output and implicit-return premises are unverified; one of the four required existential certificate links is not validly established."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:BH7",
+      "recommended_decision": "PRESENT",
+      "evidence": "The mode-specific UNSOUND certificate lacks authoritative current-library/source reachability because successful-output and implicit-return premises are unverified; BH7 applies independently of the atom failure."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:G11",
+      "recommended_decision": "PRESENT",
+      "evidence": "Its affirmative build/source and UNSOUND results necessarily consume unchecked Result/tuple-pattern, successful-println, and implicit-return premises; this is the exact G11 authority defect."
+    },
+    {
+      "label": "G",
+      "field": "tcb_authority_defect",
+      "recommended_decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded, but material Result/tuple-pattern, successful-println, and implicit-return premises remain unverified while supporting affirmative verdicts."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:G5",
+      "recommended_decision": "PRESENT",
+      "evidence": "The report issues UNSOUND although block/output/return and exact all/not cfg premises are unverified; one of the four required existential certificate links is not validly established."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:BH7",
+      "recommended_decision": "PRESENT",
+      "evidence": "The mode-specific UNSOUND certificate lacks authoritative current-library/source reachability because block/output/return and exact all/not cfg premises are unverified; BH7 applies independently of the atom failure."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:G11",
+      "recommended_decision": "PRESENT",
+      "evidence": "Its affirmative build/source and UNSOUND results necessarily consume unchecked Result/tuple-pattern, block-order, successful-println, implicit-return, and all/not premises; this is the exact G11 authority defect."
+    },
+    {
+      "label": "H",
+      "field": "tcb_authority_defect",
+      "recommended_decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded, but material Result/tuple-pattern, block-order, successful-println, implicit-return, and all/not premises remain unverified while supporting affirmative verdicts."
+    },
+    {
+      "label": "I",
+      "field": "hard_error:G5",
+      "recommended_decision": "PRESENT",
+      "evidence": "The report issues UNSOUND although pattern/output/return and exact all/not cfg premises are unverified; one of the four required existential certificate links is not validly established."
+    },
+    {
+      "label": "I",
+      "field": "hard_error:BH7",
+      "recommended_decision": "PRESENT",
+      "evidence": "The mode-specific UNSOUND certificate lacks authoritative current-library/source reachability because pattern/output/return and exact all/not cfg premises are unverified; BH7 applies independently of the atom failure."
+    },
+    {
+      "label": "I",
+      "field": "hard_error:G11",
+      "recommended_decision": "PRESENT",
+      "evidence": "Its affirmative build/source and UNSOUND results necessarily consume unchecked Result/VarError, pattern, successful-println, implicit-return, all/not, and if/equality premises; this is the exact G11 authority defect."
+    },
+    {
+      "label": "I",
+      "field": "tcb_authority_defect",
+      "recommended_decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded, but material Result/VarError, pattern, successful-println, implicit-return, all/not, and if/equality premises remain unverified while supporting affirmative verdicts."
+    },
+    {
+      "label": "J",
+      "field": "hard_error:G5",
+      "recommended_decision": "PRESENT",
+      "evidence": "The report issues UNSOUND although match-arm selection and implicit-return premises are unverified; one of the four required existential certificate links is not validly established."
+    },
+    {
+      "label": "J",
+      "field": "hard_error:BH7",
+      "recommended_decision": "PRESENT",
+      "evidence": "The mode-specific UNSOUND certificate lacks authoritative current-library/source reachability because match-arm selection and implicit-return premises are unverified; BH7 applies independently of the atom failure."
+    },
+    {
+      "label": "J",
+      "field": "hard_error:G11",
+      "recommended_decision": "PRESENT",
+      "evidence": "Its affirmative build/source and UNSOUND results necessarily consume unchecked match/tuple-pattern, implicit-return, and if/equality premises; this is the exact G11 authority defect."
+    },
+    {
+      "label": "J",
+      "field": "tcb_authority_defect",
+      "recommended_decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded, but material match/tuple-pattern, implicit-return, and if/equality premises remain unverified while supporting affirmative verdicts."
+    }
+  ],
+  "ambiguities": [
+    "The frozen rules say a URL grants page identity rather than a proposition, but do not quantify how much verbatim quotation is required when a report gives an accurate nearby paraphrase. The comparisons credit explicit proposition-level paraphrases and do not credit a bare page or a citation proving only a different clause.",
+    "The atom dependency lists do not say that failure propagates mechanically. Later-atom challenges above are based only on the later proof actually consuming the same missing material premise, not merely on an earlier atom label being FAIL."
+  ]
+}
