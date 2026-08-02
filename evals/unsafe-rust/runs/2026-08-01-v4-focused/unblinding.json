@@ -1,0 +1,15 @@
+{
+  "condition_map": {
+    "c0": "v3",
+    "c1": "v4"
+  },
+  "final_score_sha256": {
+    "B": "349ed96867c3f75e0e65723a8b11b60a96c1d32eeed28b39338f40760afae777",
+    "L": "7c1c2ce5335cb1c91d2610029636bf531075b76e8a72e82015868f607a9a0944",
+    "P": "03ed2a9cab7cf45702bac4b9319c979e14ed63e854ae4d29fccfe3c780d2e290",
+    "Q": "ac39b01aeb020d54d50a2cc5eefa0a7a9d155acfb8745195d0a46e77fd421e7b",
+    "R": "c5e372423dbeded79ccad0565bfe10e18bd82ca5eead7211e548f2b1d62c046c"
+  },
+  "schema_version": 1,
+  "unblinded_utc": "2026-08-02T01:57:38.011024Z"
+}
