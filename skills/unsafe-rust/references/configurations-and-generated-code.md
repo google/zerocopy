@@ -203,6 +203,12 @@ policy and build inputs
   -> selected shipped artifact and source
 ```
 
+Close every arrow with the [evidence-bearing proof
+kernel](proof-obligations.md#build-the-evidence-bearing-proof-kernel). Inspection
+can establish that a source operation, attribute, directive, or output occurs;
+its execution or interpretation is a semantic proposition requiring applicable
+Rust/stdlib authority, a verified tool theorem, or an explicit TCB premise.
+
 Include an operation, exit, or effect when it can change the theorem domain, an
 applicable or consumed premise, the selected or shipped artifact/source,
 semantic reachability, or an in-scope postcondition. Group paths only after
@@ -406,6 +412,9 @@ For each audit, report:
 - remaining assumptions, unknowns, and unsupported tool features;
 - triggers requiring re-audit.
 
-Mark the audit `UNPROVED` if `Required_cfg` is not justified, a required
-configuration fiber lacks a complete full-case argument, or any required full
-case remains outside `Covered`.
+Mark the configuration-closure obligation and every dependent affirmative claim
+`UNPROVED` if `Required_cfg` is not justified, a required configuration fiber
+lacks a complete full-case argument, or any required full case remains outside
+`Covered`. Apply final verdict certificates separately: a complete independent
+existential certificate may still establish `UNSOUND` or `CONTRACT-BROKEN` for
+its proved scope.
