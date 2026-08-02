@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "mode": "P",
+  "decisions": [
+    {
+      "label": "H",
+      "field": "atom:P1",
+      "decision": "FAIL",
+      "evidence": "H labels S0 itself the exact Scarlet configuration predicate, but S0 omits v in V and t in T and is true for !f outside those sets. The later DS := Base and S0 repairs the full-case domain, not the standalone P1 set."
+    },
+    {
+      "label": "H",
+      "field": "atom:P2",
+      "decision": "FAIL",
+      "evidence": "H labels I0 itself the exact Indigo configuration predicate, but I0 omits v in V and t in T and is true for !f outside those sets. The later DI := Base and I0 repairs the full-case domain, not the standalone P2 set."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "H's affirmative rejection proof moves from two true cfg leaves to cfg(all(...)) without an exact-version all quotation or supplying URL, and its non-turbo coverage invokes a 'complementary cfg' without exact-version not semantics. Both unchecked Rust premises are necessary to its positive conclusions."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:PH4",
+      "decision": "PRESENT",
+      "evidence": "H claims whole-domain soundness and behavior PROVED, but its non-turbo Covered region depends on the unchecked not-predicate selection premise. Consequently its stated Required subset-of Covered_sound and Covered_post containments are not valid authority-closed full-case certificates."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:PH5",
+      "decision": "PRESENT",
+      "evidence": "H affirmatively claims every turbo/wasm32 compilation is rejected. It supplies BUILD-MAP-POLICY mapping, cfg-attribute inclusion text, and compile_error! text, but omits the applicable exact-version all implication required to establish that cfg(all(...)) is true."
+    },
+    {
+      "label": "H",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "The report scopes BUILD-MAP-POLICY itself correctly, but omits material exact-version Rust authority for all and not while using both in positive rejection and branch-coverage proofs. Its behavioral headline also does not explicitly carry the BUILD-MAP-POLICY qualification required by its branch-selection proof."
+    }
+  ],
+  "ambiguities": [
+    "PH4 does not explicitly say whether a syntactically stated full-case containment that fails solely because Covered lacks a material authority premise triggers PH4 in addition to G11. I treat it as PH4 because valid Covered derivations are explicit dependencies of P19 and P23.",
+    "The behavioral headline's phrase 'on that same domain' clearly imports the audit domain but is grammatically ambiguous about importing the preceding soundness bullet's BUILD-MAP-POLICY qualification. This does not change the authority-defect decision, which independently follows from the omitted all/not authority."
+  ]
+}

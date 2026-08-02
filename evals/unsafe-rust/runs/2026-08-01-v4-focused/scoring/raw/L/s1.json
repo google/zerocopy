@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "mode": "L",
+  "scorer_id": "s1",
+  "reports": [
+    {
+      "label": "F",
+      "atoms": [
+        {"id": "L1", "decision": "PASS", "evidence": "Calls in-bounds the exact get_unchecked obligation, notes OOB is UB, and derives I < L."},
+        {"id": "L2", "decision": "FAIL", "evidence": "AX-IF quotes false => else but the proof uses the unsupported converse else => false."},
+        {"id": "L3", "decision": "PASS", "evidence": "AX-LEN explicitly identifies L as an element count represented as usize; as a natural count, L != 0 yields L >= 1."},
+        {"id": "L4", "decision": "FAIL", "evidence": "It asserts representability/profile independence as predecessor arithmetic without checking Rust subtraction or overflow semantics."},
+        {"id": "L5", "decision": "PASS", "evidence": "Step 3 explicitly derives I = L - 1 and 0 <= I < L."},
+        {"id": "L6", "decision": "FAIL", "evidence": "The full-scope PROVED closure depends on the unsupported branch, usize-domain, and subtraction premises."},
+        {"id": "L7", "decision": "PASS", "evidence": "Separately deems the lifetime-only comment deficient because it omits the bounds obligation and derivation."},
+        {"id": "L8", "decision": "PASS", "evidence": "Supplies adjacent text from false is_empty through nonzero length, defined predecessor, and the in-bounds conclusion."},
+        {"id": "L9", "decision": "FAIL", "evidence": "The four-entry inventory omits built-in subtraction/overflow and the rubric's separate usize-domain entry."},
+        {"id": "L10", "decision": "FAIL", "evidence": "Required numeric/subtraction/overflow entries are absent, and AX-IF's quote does not establish the proposition claimed."},
+        {"id": "L11", "decision": "FAIL", "evidence": "Its claim that no other Rust proposition is consumed conflicts with the unchecked numeric and control-flow premises."}
+      ],
+      "hard_errors": [
+        {"id": "LH4", "evidence": "Claims a complete authoritative reconciliation while silently consuming subtraction/overflow semantics and reversing AX-IF."},
+        {"id": "G11", "evidence": "The positive verdict necessarily relies on unchecked subtraction/overflow semantics and an inapplicable implication direction for AX-IF."}
+      ],
+      "proposal_laundering": {"present": false, "evidence": "The proposed comment is only a repair; the current-artifact verdict is not based on its implementation."},
+      "tcb_authority_defect": {"present": true, "evidence": "The asserted Rust-only TCB omits consumed subtraction/overflow authority and overclaims the cited if proposition."},
+      "visible_scope_defect": {"present": false, "evidence": "The report evidences only the supplied source and versioned allowlisted Rust authorities."},
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {"id": "L1", "decision": "PASS", "evidence": "AX-GET states the in-bounds requirement and OOB UB for the usize call."},
+        {"id": "L2", "decision": "PASS", "evidence": "O1 and AX-IF establish false on the else path; AX-EMPTY contraposition yields n != 0."},
+        {"id": "L3", "decision": "PASS", "evidence": "AX-LEN and AX-USIZE establish n: usize, unsigned, hence n > 0."},
+        {"id": "L4", "decision": "PASS", "evidence": "O2 checks subtraction and overflow authority and proves n - 1 representable in every profile."},
+        {"id": "L5", "decision": "PASS", "evidence": "O2 derives 0 <= n - 1 < n and identifies index with that value."},
+        {"id": "L6", "decision": "PASS", "evidence": "Gives full requested scope, exhaustive branch coverage, and an explicit Required subset-of Covered certificate."},
+        {"id": "L7", "decision": "PASS", "evidence": "Separately marks the lifetime comment deficient for omitting the exact bounds proof."},
+        {"id": "L8", "decision": "PASS", "evidence": "Replacement text states false branch, zero-length contract, positivity, no underflow, index < len, and get_unchecked's requirement."},
+        {"id": "L9", "decision": "PASS", "evidence": "Inventories if, is_empty, len/type, usize, subtraction, overflow, and get_unchecked, separating source facts and mathematics."},
+        {"id": "L10", "decision": "PASS", "evidence": "Each consumed Rust/std premise has a narrow 1.82.0 URL, exact excerpt, proposition, consumer, and applicability statement."},
+        {"id": "L11", "decision": "PASS", "evidence": "Explicitly maps every AX entry to O1-O3 and states no unlisted Rust/std or tool premise supplies an inference."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The replacement comment is not used to certify the current implementation."},
+      "tcb_authority_defect": {"present": false, "evidence": "The Rust 1.82 authority inventory is complete, applicable, checked, and reconciled."},
+      "visible_scope_defect": {"present": false, "evidence": "The report stays within the supplied source and allowlisted versioned authority."},
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {"id": "L1", "decision": "PASS", "evidence": "A7 identifies in-bounds indexing as required and an OOB index as UB."},
+        {"id": "L2", "decision": "FAIL", "evidence": "A2 quotes false => else but claims that execution of else entails false, reversing the cited implication."},
+        {"id": "L3", "decision": "PASS", "evidence": "A3 gives len's usize type and A4 gives unsigned nonnegativity, yielding L >= 1 from L != 0."},
+        {"id": "L4", "decision": "PASS", "evidence": "A5-A6 plus L >= 1 establish representability and no overflow under any ordinary profile."},
+        {"id": "L5", "decision": "PASS", "evidence": "Step 3 identifies index = L - 1 and derives 0 <= index < L."},
+        {"id": "L6", "decision": "FAIL", "evidence": "The claimed exhaustive full-scope closure depends materially on A2's unsupported converse."},
+        {"id": "L7", "decision": "PASS", "evidence": "Separately calls the current lifetime-only comment deficient and distinguishes artifact from implementation."},
+        {"id": "L8", "decision": "PASS", "evidence": "Provides adjacent wording covering false branch, zero-length implication, nonzero length, defined predecessor, bound, and callee requirement."},
+        {"id": "L9", "decision": "PASS", "evidence": "A1-A7 inventory all required Rust/std leaves and identifies remaining derivation as source facts or mathematics."},
+        {"id": "L10", "decision": "FAIL", "evidence": "The exact A2 excerpt does not supply its verified proposition that else execution entails a false condition."},
+        {"id": "L11", "decision": "FAIL", "evidence": "The claimed exact reconciliation overlooks the unsupported direction of the consumed branch premise."}
+      ],
+      "hard_errors": [
+        {"id": "LH4", "evidence": "Attests complete premise reconciliation although A2's quoted authority does not establish the branch proposition consumed."},
+        {"id": "G11", "evidence": "The PROVED result necessarily relies on an invalid converse of the quoted if rule."}
+      ],
+      "proposal_laundering": {"present": false, "evidence": "The replacement is a documentation proposal, not evidence for the current proof."},
+      "tcb_authority_defect": {"present": true, "evidence": "TCB-LAST-1 overstates what its A2 authority excerpt verifies."},
+      "visible_scope_defect": {"present": false, "evidence": "No prohibited material or out-of-scope inspection is evidenced."},
+      "novel_findings": []
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {"id": "L1", "decision": "PASS", "evidence": "AX-GET states the in-bounds obligation and OOB UB; the proof targets index < len."},
+        {"id": "L2", "decision": "FAIL", "evidence": "AX-IF supplies false => else, not the claimed else => false needed on the unsafe path."},
+        {"id": "L3", "decision": "PASS", "evidence": "AX-LEN gives n: usize and AX-USIZE gives nonnegativity, so n != 0 implies n >= 1."},
+        {"id": "L4", "decision": "PASS", "evidence": "AX-SUB/AX-OVERFLOW and n >= 1 prove n - 1 representable under every overflow setting."},
+        {"id": "L5", "decision": "PASS", "evidence": "Step 4 derives index = n - 1 and 0 <= index < n."},
+        {"id": "L6", "decision": "FAIL", "evidence": "Its closure relies on the unsupported AX-IF converse and defines Required without the valid-call/input dimension."},
+        {"id": "L7", "decision": "PASS", "evidence": "Correctly separates a deficient lifetime comment from a sound implementation claim."},
+        {"id": "L8", "decision": "PASS", "evidence": "Replacement text gives false branch, len > 0, non-underflowing subtraction, index < len, same slice, and get_unchecked."},
+        {"id": "L9", "decision": "PASS", "evidence": "Inventories all seven required Rust/std premises and classifies local/source and arithmetic reasoning."},
+        {"id": "L10", "decision": "FAIL", "evidence": "AX-IF's quoted sentence does not verify the report's only-for-false proposition."},
+        {"id": "L11", "decision": "FAIL", "evidence": "The stated exact reconciliation misses the invalid implication direction at the control-flow leaf."}
+      ],
+      "hard_errors": [
+        {"id": "G1", "evidence": "The formal Required product omits valid calls/inputs even though the full PROVED verdict quantifies over them."},
+        {"id": "LH4", "evidence": "Claims every nonlocal premise is checked and reconciled while AX-IF does not support the consumed converse."},
+        {"id": "G11", "evidence": "The positive proof necessarily relies on an inapplicable direction of its cited if authority."}
+      ],
+      "proposal_laundering": {"present": false, "evidence": "The comment repair is not treated as implemented current evidence."},
+      "tcb_authority_defect": {"present": true, "evidence": "The asserted Rust-only authority set contains an unsupported AX-IF proposition."},
+      "visible_scope_defect": {"present": false, "evidence": "The report confines itself to the supplied source and allowed Rust pages."},
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {"id": "L1", "decision": "PASS", "evidence": "A4 states OOB UB and the required in-bounds usize index."},
+        {"id": "L2", "decision": "FAIL", "evidence": "A3 quotes only false => consequent skipped and vaguely invokes other branch rules; it does not extract authority proving else-path false."},
+        {"id": "L3", "decision": "FAIL", "evidence": "It calls the element count a natural number but never verifies len's usize type or usize's nonnegative domain."},
+        {"id": "L4", "decision": "FAIL", "evidence": "It asserts representability/no underflow across profiles without inventorying built-in subtraction or Rust overflow semantics."},
+        {"id": "L5", "decision": "PASS", "evidence": "O2 explicitly derives index = n - 1 with 0 <= index < n."},
+        {"id": "L6", "decision": "FAIL", "evidence": "The PROVED closure depends on unsupported control-flow, unsigned-domain, and subtraction premises."},
+        {"id": "L7", "decision": "PASS", "evidence": "Separately finds the lifetime comment materially deficient for omitting the in-bounds derivation."},
+        {"id": "L8", "decision": "PASS", "evidence": "Replacement text states false is_empty, nonzero len, representable predecessor, index < len, and get_unchecked's bounds need."},
+        {"id": "L9", "decision": "FAIL", "evidence": "The four-entry list omits len's usize type, usize domain, built-in subtraction, and overflow behavior."},
+        {"id": "L10", "decision": "FAIL", "evidence": "Required numeric/arithmetic authorities are absent and A3's excerpt does not supply the asserted branch biconditional."},
+        {"id": "L11", "decision": "FAIL", "evidence": "Its completeness/no-silent-premise claim conflicts with the omitted Rust numeric and branch premises."}
+      ],
+      "hard_errors": [
+        {"id": "LH4", "evidence": "Calls the authority list complete while silently consuming usize, subtraction, overflow, and inadequately checked branch semantics."},
+        {"id": "G11", "evidence": "The positive result necessarily relies on unchecked Rust numeric and control-flow authority."}
+      ],
+      "proposal_laundering": {"present": false, "evidence": "The replacement wording is not used as if already implemented."},
+      "tcb_authority_defect": {"present": true, "evidence": "The purported authoritative inventory omits multiple consumed Rust premises."},
+      "visible_scope_defect": {"present": false, "evidence": "Only supplied source facts and allowlisted Rust documentation are evidenced."},
+      "novel_findings": []
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {"id": "L1", "decision": "PASS", "evidence": "A-GET quotes both the in-bounds obligation's OOB UB consequence and the element-reference result."},
+        {"id": "L2", "decision": "PASS", "evidence": "A-IF quotes both arm-selection directions; A-EMPTY contraposition yields nonzero length on else."},
+        {"id": "L3", "decision": "PASS", "evidence": "A-LEN establishes n: usize and A-USIZE nonnegativity, deriving n >= 1."},
+        {"id": "L4", "decision": "PASS", "evidence": "A-SUB/A-OVERFLOW plus n >= 1 establish no underflow or overflow in every profile."},
+        {"id": "L5", "decision": "PASS", "evidence": "O2 derives index = n - 1 and index < bytes.len()."},
+        {"id": "L6", "decision": "PASS", "evidence": "Exhaustive paths, parametric target/profile proof, and Required subset-of Covered are explicit."},
+        {"id": "L7", "decision": "PASS", "evidence": "Separately labels the lifetime statement deficient because it omits the bounds and arithmetic proof."},
+        {"id": "L8", "decision": "PASS", "evidence": "Adjacent replacement covers false branch, zero-length implication, nonzero len, defined subtraction, strict bound, and get_unchecked."},
+        {"id": "L9", "decision": "PASS", "evidence": "A-GET through A-USIZE inventory every required Rust/std leaf and separate source facts and mathematics."},
+        {"id": "L10", "decision": "PASS", "evidence": "All entries use narrow 1.82.0 URLs, exact excerpts, verified propositions, consumers, and full-domain qualification."},
+        {"id": "L11", "decision": "PASS", "evidence": "TCB/reconciliation states the exact consumers and excludes any additional premise, dependency, tool, or test."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The repair proposal is separate from the proof of the supplied implementation."},
+      "tcb_authority_defect": {"present": false, "evidence": "The authority set is version-matched, proposition-checked, complete, and consumer-mapped."},
+      "visible_scope_defect": {"present": false, "evidence": "No evidence of inspecting anything beyond supplied source and allowed authority appears."},
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {"id": "L1", "decision": "PASS", "evidence": "AX-GET states that OOB is UB and requires an in-bounds usize element index."},
+        {"id": "L2", "decision": "PASS", "evidence": "AX-IF quotes true/false arm selection and AX-EMPTY contraposition establishes L != 0 on the unsafe path."},
+        {"id": "L3", "decision": "PASS", "evidence": "AX-LEN gives L: usize and AX-USIZE gives minimum zero, so L != 0 implies L >= 1."},
+        {"id": "L4", "decision": "PASS", "evidence": "AX-SUB/AX-OVERFLOW show L - 1 remains in range in every ordinary profile."},
+        {"id": "L5", "decision": "PASS", "evidence": "Steps 3-4 derive index = L - 1 and index < bytes.len()."},
+        {"id": "L6", "decision": "PASS", "evidence": "It covers both Boolean paths across the exact target/profile domain and explicitly proves Required subset-of Covered."},
+        {"id": "L7", "decision": "PASS", "evidence": "It separately deems the existing comment deficient despite proving the implementation."},
+        {"id": "L8", "decision": "PASS", "evidence": "Replacement text gives the false branch, nonzero length, representable subtraction, strict bound, and get_unchecked obligation."},
+        {"id": "L9", "decision": "PASS", "evidence": "The seven-entry inventory covers all required Rust/std premises and classifies local facts and integer reasoning."},
+        {"id": "L10", "decision": "PASS", "evidence": "Every entry has the matching 1.82.0 narrow URL, extracted text/table fact, verified proposition, and applicability."},
+        {"id": "L11", "decision": "PASS", "evidence": "The proof consumes AX-IF through AX-GET as mapped and expressly excludes additional TCB or unlisted premises."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The proposed comment is a repair recommendation, not current-artifact proof evidence."},
+      "tcb_authority_defect": {"present": false, "evidence": "TCB-R182-v1 contains checked, applicable Rust authority for every consumed semantic premise."},
+      "visible_scope_defect": {"present": false, "evidence": "The report shows no inspection beyond the supplied target and allowlisted authority."},
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {"id": "L1", "decision": "PASS", "evidence": "A1 states the in-bounds usize obligation and OOB UB."},
+        {"id": "L2", "decision": "FAIL", "evidence": "A4 quotes false => else but uses it as else => false on the unsafe path."},
+        {"id": "L3", "decision": "FAIL", "evidence": "A2 verifies only element count; the proof's n: usize premise is neither inventoried nor checked as len's return type."},
+        {"id": "L4", "decision": "PASS", "evidence": "A5-A6 and n >= 1 establish an in-range subtraction in every ordinary profile."},
+        {"id": "L5", "decision": "PASS", "evidence": "The proof explicitly computes i = n - 1 and derives 0 <= i < n."},
+        {"id": "L6", "decision": "FAIL", "evidence": "Full Required closure depends on the unsupported branch converse and unverified len-to-usize link."},
+        {"id": "L7", "decision": "PASS", "evidence": "The report separately finds the lifetime-only comment deficient and not an implementation defect."},
+        {"id": "L8", "decision": "PASS", "evidence": "Adjacent replacement covers false branch, zero-length relation, nonzero len, safe predecessor, strict bound, and callee."},
+        {"id": "L9", "decision": "FAIL", "evidence": "It omits len's usize return type as a Rust/std premise and instead misclassifies inferred index typing as a local source fact."},
+        {"id": "L10", "decision": "FAIL", "evidence": "A2 does not extract the usize return type, and A4's quote does not establish its claimed reverse implication."},
+        {"id": "L11", "decision": "FAIL", "evidence": "The no-unlisted-premise reconciliation conflicts with the unchecked len typing and branch direction."}
+      ],
+      "hard_errors": [
+        {"id": "LH4", "evidence": "Certifies A1-A7 as complete while silently consuming len's return type and reversing the checked A4 implication."},
+        {"id": "G11", "evidence": "The implementation verdict necessarily relies on unchecked/inapplicable Rust authority at two material links."}
+      ],
+      "proposal_laundering": {"present": false, "evidence": "The replacement comment is not treated as part of the supplied artifact."},
+      "tcb_authority_defect": {"present": true, "evidence": "TCB-LAST-1 omits the consumed len return-type proposition and overclaims A4."},
+      "visible_scope_defect": {"present": false, "evidence": "The report evidences no prohibited or out-of-scope source access."},
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {"id": "L1", "decision": "PASS", "evidence": "A1 quotes OOB UB and states the in-bounds usize index requirement."},
+        {"id": "L2", "decision": "FAIL", "evidence": "A4's exact quote establishes false => else, not execution of else => false as consumed in O2."},
+        {"id": "L3", "decision": "PASS", "evidence": "A2 establishes n: usize and A5 its zero minimum, deriving n >= 1 from n != 0."},
+        {"id": "L4", "decision": "PASS", "evidence": "A6 checks subtraction/overflow and proves n - 1 representable across all ordinary profiles."},
+        {"id": "L5", "decision": "PASS", "evidence": "O2-O3 explicitly derive index = n - 1 and 0 <= index < n."},
+        {"id": "L6", "decision": "FAIL", "evidence": "The advertised Required subset-of Covered certificate materially relies on A4's unsupported converse."},
+        {"id": "L7", "decision": "PASS", "evidence": "Separately reports the comment deficient for omitting the actual bounds proof."},
+        {"id": "L8", "decision": "PASS", "evidence": "Replacement text states false branch, nonzero len, representability, strict bound, and the adjacent in-bounds obligation."},
+        {"id": "L9", "decision": "PASS", "evidence": "A1-A6 inventory all required semantic leaves, with subtraction/overflow combined and consumers reconciled."},
+        {"id": "L10", "decision": "FAIL", "evidence": "A4's quoted proposition does not supply the verified proposition used for branch reachability."},
+        {"id": "L11", "decision": "FAIL", "evidence": "The explicit reconciliation overlooks that A4 is consumed in an unverified direction."}
+      ],
+      "hard_errors": [
+        {"id": "LH4", "evidence": "Claims only checked version-matched premises and complete reconciliation while A4 does not support the consumed converse."},
+        {"id": "G11", "evidence": "The positive proof necessarily relies on an inapplicable direction of its if authority."}
+      ],
+      "proposal_laundering": {"present": false, "evidence": "The documentation repair is not used as current implementation evidence."},
+      "tcb_authority_defect": {"present": true, "evidence": "TCB-LAST-R1 overstates the branch proposition established by A4."},
+      "visible_scope_defect": {"present": false, "evidence": "The report contains no evidence of prohibited evaluation or sibling material access."},
+      "novel_findings": []
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {"id": "L1", "decision": "PASS", "evidence": "A5 quotes OOB UB and states 0 <= index < n as the usize in-bounds obligation."},
+        {"id": "L2", "decision": "PASS", "evidence": "A3 quotes both branch-selection directions and A2 contraposition yields n != 0 on else."},
+        {"id": "L3", "decision": "PASS", "evidence": "A1 gives n: usize and A4 gives minimum zero, hence a nonzero n is at least one."},
+        {"id": "L4", "decision": "PASS", "evidence": "A4 checks integer minus and overflow bounds, proving n - 1 in range for every width/profile."},
+        {"id": "L5", "decision": "PASS", "evidence": "O1 derives index = n - 1 and 0 <= index < n."},
+        {"id": "L6", "decision": "PASS", "evidence": "O1-O3 exhaust both branches and explicitly establish Required subset-of Covered over the full symbolic domain."},
+        {"id": "L7", "decision": "PASS", "evidence": "Separately finds the existing lifetime comment inadequate while retaining implementation PROVED."},
+        {"id": "L8", "decision": "PASS", "evidence": "Replacement text states branch false, nonzero length, defined subtraction, strict bound, and get_unchecked's requirement."},
+        {"id": "L9", "decision": "PASS", "evidence": "A1-A5 cover all seven required Rust/std propositions, with numeric and arithmetic entries grouped, and classify remaining logic/source facts."},
+        {"id": "L10", "decision": "PASS", "evidence": "Every consumed premise has a narrow 1.82.0 URL, exact quoted prose/signature/table entry, verified proposition, and scope."},
+        {"id": "L11", "decision": "PASS", "evidence": "The TCB log and O1-O3 mapping reconcile every authority to a consumer and exclude silent assumptions."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The replacement comment is a proposed artifact repair and does not narrow or certify the current obligation."},
+      "tcb_authority_defect": {"present": false, "evidence": "A1-A5 are version-matched, proposition-checked, applicable, complete, and reconciled."},
+      "visible_scope_defect": {"present": false, "evidence": "The report remains within the supplied source and allowlisted Rust documentation."},
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": [
+    "L8 does not specify whether a replacement must spell out the usize nonnegative-to-positive bridge verbatim; I treated direct nonzero/positive-length to defined-subtraction wording as sufficient when the bound and callee obligation were explicit."
+  ]
+}
