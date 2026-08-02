@@ -1,0 +1,12 @@
+[
+  {
+    "path": ".",
+    "type": "directory"
+  },
+  {
+    "bytes": 16706,
+    "path": "consistency.json",
+    "sha256": "9f4eb035e7c6d6bedd98431f3bdc0bf6453dff7eb0fc5b64339bcb52cf4a1372",
+    "type": "file"
+  }
+]
