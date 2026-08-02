@@ -46,6 +46,13 @@ code preserves soundness. For each unsafe surface, prove that its complete
 documented contract is sufficient and that its implementation establishes all
 documented postconditions for every valid use.
 
+When a universal proof or counterexample depends on a caller path through one
+of these surfaces, apply [Certify valid
+uses](proof-obligations.md#certify-valid-uses). Source visibility or a
+safe-looking declaration does not by itself prove access, well-typedness,
+coherence, or the absence of a caller- or implementer-side compiler-enforced
+unsafe-context requirement needed to form the use.
+
 Determine the controlling contract from the actual published or otherwise
 applicable normative text. Examples, rationale, tests, names, existing safety
 comments, and inferred design intent may aid discovery but may not narrow or
