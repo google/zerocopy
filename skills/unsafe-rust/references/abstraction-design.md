@@ -51,9 +51,9 @@ Record the constraints that the abstraction must satisfy:
 Use each source only for the proposition it actually establishes. User
 requirements can determine desired behavior. Current contracts determine
 current obligations. Call sites, tests, names, comments, history, and
-implementation structure may suggest intent or establish local source facts,
-but an inference about intent is not a Rust semantic premise and does not prove
-implementation correctness.
+implementation structure may suggest intent or establish literal artifact
+facts, but an inference about intent is not a Rust semantic premise and does
+not prove implementation correctness.
 
 Known internal consumers do not exhaust the consumers of a public API. Treat
 the published contract as a required constraint unless an applicable contract
