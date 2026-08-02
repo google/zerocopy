@@ -8,15 +8,9 @@
 > review—never this document, the source catalog, advisory/audit metadata, a
 > fixing diff, or an intended conclusion.
 >
-> **Status:** active protocol. The initial non-release pilot is recorded in
-> [`runs/2026-07-30-exploratory-pilot/`](runs/2026-07-30-exploratory-pilot/).
-> The frozen legacy rerun is recorded in
-> [`runs/2026-07-31-legacy-regression/`](runs/2026-07-31-legacy-regression/),
-> and the 54-run abstraction-design treatment/core-ablation experiment is
-> recorded in
-> [`runs/2026-07-31-abstraction-design-v1/`](runs/2026-07-31-abstraction-design-v1/).
-> The latter confirmed a material workflow improvement but failed its complete
-> preregistered gate set; none of these studies is a universal release proof.
+> **Status:** active protocol. Preserved executions live under [`runs/`](runs/);
+> each run's frozen manifest, rubric, integrity record, and results govern that
+> run. No development or evaluation run is a universal release proof.
 
 ## Evaluation Objective
 
@@ -68,9 +62,15 @@ agent, or a codebase is universally sound.
    package execution occurs only in a disposable, credential-free,
    network-disabled sandbox.
 10. **Separate authoring from validation.** Freeze the skill before running an
-    evaluation. If a result motivates a skill change, assign a new revision
-    and restart affected conditions; never patch the treatment in place after
-    observing its outputs.
+    evaluation. If a result motivates a skill change, assign a new
+    revision/candidate, rerun cumulative reusable prequalification, and use
+    only the unconsumed holdout permitted by the terminal program; never patch
+    a treatment in place after observing its outputs.
+11. **Finite terminal confirmation.** Each terminal candidate look uses its one
+    assigned lineage-disjoint fresh holdout. A failed effective treatment never
+    reappears; an unchanged treatment may be rebound after `INVALID` only under
+    the frozen infrastructure rule. Stop only at the first complete conjunctive
+    pass within the finite claim epoch.
 
 ## Evaluation Artifact Architecture
 
@@ -89,7 +89,11 @@ Keep four stores physically separate:
    - the full manifest described in the source catalog;
    - audit/advisory/issue/fix provenance;
    - known-finding atoms and human proofs;
-   - inaccessible to the audited agent and synthesis agents.
+   - inaccessible to every evaluated agent, candidate author/editor,
+     candidate-admission reviewer, candidate-side registrar, and any other
+     principal or process without the cohort-scoped frozen custody, oracle,
+     scoring, adjudication, or bounded-adversarial-review role permitted by the
+     exposure ledger below.
 4. **Result store**
    - immutable prompts, environment manifests, raw transcripts, reports, TCB
      logs, edits, tool outputs, resource usage, and scores;
@@ -225,7 +229,10 @@ record:
   OS/FFI/environment/deployment, build/proc-macro/supply-chain execution, and
   non-UB robustness/security;
 - supported configuration set and trigger subset;
-- every expected finding atom and its required discovery scope;
+- every expected finding atom, its direct acceptance criterion, required
+  discovery scope, prerequisite atom IDs, and certificate pass rule;
+- an acyclic validated atom-dependency graph and the transitive source-family
+  or metamorphic-lineage identity used for holdout assignment;
 - allowed classifications and accepted alternative proof paths;
 - whether a concrete UB witness is required, optional, or unavailable;
 - whether the case is Objective defect, Candidate, Scoped positive proof,
@@ -296,6 +303,32 @@ Use at least three independent replicates per condition for routine fixtures
 and five for release-gating, high-severity, current-zerocopy minimum-oracle, and
 private-holdout fixtures. Fix the sampling configuration when the platform
 allows it; otherwise record it.
+
+Predeclare and enforce a runner-controlled output-finalization protocol. A
+**run slot** is one frozen fixture × condition × replicate assignment; an
+**execution attempt** is one agent process launched for that slot. Permit
+exactly one live leased attempt per slot—never concurrent, speculative, or
+racing attempts. Before launch, define the complete scoreable output envelope,
+including the final response, every required report, TCB log, edit/diff or other
+file, relevant metadata, and process disposition.
+
+The trusted runner, not the agent or coordinator, must atomically seal the
+complete declared output tree through compare-and-swap, prohibit post-seal
+writes, and record slot/attempt IDs, tree and file digests, byte lengths,
+encoding/envelope checks, disposition, and completion state. The first terminal
+seal is canonical even if a later coordinator or transport step fails. Its
+completion marker means only that the runner sealed the attempt, not that its
+content or format is correct.
+
+A sealed slot cannot be retried; an empty, oversized, malformed, semantically
+incomplete, or otherwise defective canonical envelope receives its frozen
+consequence. Launch another attempt only after an independently attested,
+preregistered exogenous and content-independent operational condition leaves no
+canonical seal. A missing handoff caused by agent behavior or any failure whose
+classification depends on semantic output is the frozen slot failure, not a
+retry opportunity. Never inspect partial semantic content before making a retry
+decision. Preserve every lease, attempt, partial artifact, failed seal, retry
+attestation, and canonicalization record.
 
 An evaluation is invalid if a skill run gets more time, task-specific context,
 network, search results, or tool permissions than its baseline. The skill
@@ -440,11 +473,16 @@ time:
 
 - identify the exact operation/contract being justified;
 - enumerate every precondition;
-- derive each conjunct from local facts, named invariants, verified axioms, or
-  explicit TCB entries;
+- derive each conjunct through checked artifact facts, exact applicable
+  semantic premises, named proved invariants, explicit inference, and any
+  verified tool theorem or TCB entry;
 - prove the resulting invariant and mandatory postconditions;
 - reject a circular, restated, misquoted, inapplicable, or wrong-version proof;
 - distinguish `UNPROVED`, `UNSOUND`, and `CONTRACT-BROKEN`;
+- given one missing premise that blocks several later obligations plus a
+  separate direct defect, assign one stable root blocker/gap ID, mark every
+  dependent positive obligation `UNPROVED`, preserve the independent defect,
+  and do not duplicate the root omission as several findings;
 - trace dataflow from a state-producing unsafe API to a later consumer;
 - treat an adversarial safe trait implementation or callback correctly;
 - recognize all safe API surfaces, including public fields, constructors,
@@ -466,7 +504,7 @@ matching.
 Use the pinned source and closure process in
 [source-catalog.md](source-catalog.md).
 
-Build four sub-suites:
+Build four required sub-suites and one optional fifth:
 
 1. **`GRA-ATOM`:** one focused blind fixture for every confirmed note atom.
    This is the direct capability regression: can the skill recover every known
@@ -553,7 +591,7 @@ repair covered only one of several consumers.
 Materialize the exact immutable current commit identified in the source
 catalog, not the live worktree. Import the catalog/manifest's current
 invariant-owner shards. Run each with five fresh skill agents, five no-skill
-baselines, and at least three previous-skill agents. Give each shard enough
+baselines, and five previous-skill agents. Give each shard enough
 budget to close its own surface and configuration partition.
 
 The shard manifest must contain an invariant-owner/boundary coverage map
@@ -730,6 +768,46 @@ fixtures, not private holdouts. Keep true holdout identities, source, and
 answers only in an access-controlled store and refer to them in this plan by
 opaque cohort/version ID.
 
+Assign the conservative transitive closure of every common source/incident
+ancestor and every direct, reduced, renamed, reordered, or other metamorphic
+descendant to one lineage group. Treat that group as indivisible.
+Every terminal cohort must be lineage-disjoint from all public or exposed
+development fixtures, prequalification cases, runtime examples, prior results,
+and earlier or later terminal cohorts—not merely from the other holdouts.
+Permanently retire a cohort from confirmation when any of its semantic source,
+expected behavior, oracle, or result is exposed. A retired cohort may become a
+regression fixture but can never confirm a later candidate. Retirement occurs
+at first exposure; **consumption** occurs only after the bound look receives its
+terminal disposition and completes every frozen scoring and adjudication step.
+Only then may its content inform a later candidate through the append-only
+regression transition.
+
+Maintain an append-only principal/process exposure ledger. Any person, agent,
+service, or process exposed to any semantic source, oracle, lineage datum, or
+content-derived signal for an unconsumed cohort is tainted with that cohort.
+Roles are cohort-scoped:
+
+- A current-look actor may be tainted only by `H_n` and already consumed
+  cohorts, never by a later or unbound cohort. While `H_n` is unconsumed, that
+  actor may perform only the frozen execution, oracle, scoring, consistency,
+  adjudication, or bounded-adversarial-review role for `C_n/H_n`; it may not
+  author, advise, admit, or select a later candidate or alter a candidate-facing
+  protocol component.
+- A person or process with semantic access to any later/unbound cohort may
+  perform only its frozen future-bank custody or commitment role. It may not
+  access candidate bytes, outputs, scores, gate inputs, or results and may not
+  execute, review, score, adjudicate, author, advise, admit, or select a
+  candidate. The fixed opaque verifier is the only bridge and emits only the
+  terminal eligibility result specified below.
+- Candidate authors, editing agents, candidate-admission reviewers, and
+  candidate-side registrars remain untainted by every unconsumed cohort and its
+  lineage map.
+
+These rules include holdout/oracle authors, special adjudicators, custodians,
+services, and unnamed intermediaries. Any candidate-linked access crossing from
+a later/unbound cohort permanently aborts the claim epoch, retires every
+affected cohort, and emits no candidate-facing detail or repair opportunity.
+
 ## Scoring Model
 
 ### Per-finding atom
@@ -741,8 +819,8 @@ Score applicable dimensions on a three-point scale:
 | Discovery | Missing or wrong location | General concern near relevant code | Exact location/surface and full affected scope |
 | Required proposition | Wrong or absent | Some pre/postconditions identified | Every applicable pre/postcondition stated concretely |
 | Dataflow/invariant chain | Missing or circular | Partial producer/consumer trace | Every establishment, transition, suspension, consumer, and exit path accounted for |
-| Premises and authority | Folklore, unchecked, or hallucinated | Plausible but incomplete support | Local facts checked; exact versioned authority verified; non-axioms explicit in TCB |
-| Valid-use reasoning | Hidden caller assumption | Some adversarial cases | Quantifies over all valid uses and adversarial safe caller behavior |
+| Premises and authority | Folklore, unchecked, or hallucinated | Plausible but incomplete support | Artifact facts checked; every consumed semantic effect follows from exact applicable authority, verified tool theorem, or explicit TCB; implication direction is valid |
+| Valid-use reasoning | Hidden, circular, or assumed caller/implementer path | Some adversarial cases or certificate components | Closes source selection, boundary access/inputs, typing/coherence, every boundary contract owned outside the audited scope—including contracts imposed on witness-supplied code—plus corresponding unsafe-context obligations and TCB applicability, without assuming the in-scope audited safety assertion |
 | Configuration closure | Trigger/config missed | Trigger found but no supported-set proof | Every actually supported combination covered concretely or abstractly |
 | Classification | Incorrect verdict | Concern found but statuses conflated | Exact independent status for soundness, postconditions, and conditional claims |
 
@@ -771,6 +849,31 @@ Use separate rubrics:
 Do not aggregate scores across task modes or theorem domains as if their
 denominators were equivalent.
 
+### Dependency-aware atom decisions
+
+For rubrics whose atoms depend on other certificates, freeze an acyclic
+dependency graph and each atom's direct criterion before collection. Blind
+scorers first decide the proposition directly demanded by each atom without
+mechanically copying prerequisite failures. The evaluator then computes:
+
+```text
+blocked_by(a) = immediate prerequisites whose certificate_decision is not PASS
+
+certificate_decision(a) = PASS
+  iff direct_decision(a) is PASS and blocked_by(a) is empty
+```
+
+Preserve `direct_score` or `direct_decision`, immediate `blocked_by` IDs,
+`certificate_decision`, and the transitive set of `root_failures`. If an atom
+both fails directly and has failed prerequisites, record both. “Root” is
+relative to the frozen rubric graph; it is not a claim about the agent's mental
+process.
+
+Release gates use `certificate_decision`: directly stating a downstream
+conclusion does not prove it when a consumed prerequisite is unproved. Root and
+fan-out aggregates are diagnostic and may never convert a blocked certificate
+to success.
+
 ### Per-run dimensions
 
 Measure:
@@ -780,7 +883,9 @@ Measure:
 - unsupported `UNSOUND` and unsupported `PROVED` rates;
 - safe-surface discovery;
 - obligation-ledger completeness;
+- root-blocker/fan-out accuracy and nonduplicative finding accounting;
 - local proof completeness and non-circularity;
+- artifact-to-semantics edge closure and exact implication-direction accuracy;
 - citation accuracy, versioning, quotation scope, and actual verification;
 - TCB completeness, precision, versioning, and non-vacuity;
 - adversarial safe-caller handling;
@@ -845,47 +950,273 @@ Before the first scored run, freeze:
 - numerical non-inferiority and improvement margins; and
 - opaque holdout cohort/version IDs.
 
-The default gates are intentionally demanding:
+Before exposure, translate every normative default and run-specific gate into a
+versioned mandatory-root inventory. Map each normative requirement to a stable
+root gate ID and exact aggregation rule, and validate set equality plus acyclic
+dependency closure between that inventory and the executable manifest. Obtain
+an independent completeness signoff. An omitted root, orphaned prerequisite,
+weakened predicate, cycle, or mapping mismatch can never pass and receives the
+frozen abort/`INVALID`/`FAIL` disposition.
 
-1. Every admitted Objective-defect atom appears in an evaluator-oracle-blind
-   fixture.
-2. Every admitted Objective-defect atom is recovered and correctly classified
-   in every skill-enabled focused replicate.
-3. Every atom in a `GRA-MULTI` fixture is recovered in every release-gating
-   focused replicate; finding only the first issue fails that fixture.
-4. A preregistered full-source/sharded recall cohort meets its explicit
-   issue-level target. Use 100% when the prompt, scope, partition, and budget
-   expressly ask for complete recovery. Report broader naturalistic
-   full-repository recall per replicate without relabeling every stochastic
-   miss a hard error.
-5. There are zero hard errors.
-6. On focused Objective-defect fixtures, every applicable proof dimension
-   scores 2. Full-source cohorts have no applicable dimension at 0 and meet a
-   preregistered mean/floor.
-7. Fixed-side controls do not reproduce the repaired finding. Other valid
-   findings remain allowed. Scoped positive proofs are accepted only within
-   their exact theorem/model/TCB; Candidate and Challenge fixtures are never
-   global soundness labels.
-8. Every admitted Objective-defect item in the current-zerocopy minimum oracle
-   is addressed by each owning shard with correct
-   production/test/configuration scope. Candidate/Challenge entries are judged
-   on reasoning and calibration, not issue agreement.
-9. Every authoring fixture produces no unsound or vacuous edit and satisfies
-   all applicable contract, postcondition, configuration, TCB, and
-   compatibility dimensions.
-10. The runner emits a successful automated attestation for filesystem,
-    package, prompt, network, documentation, and paired-side isolation.
-11. The opaque holdout cohort has 100% focused Objective-defect recall, zero
-    hard errors, required proof-quality floors, no repaired-defect false
-    assertion, and no fixture-specific runtime-skill change.
-12. Skill-versus-baseline/prior-skill effects meet preregistered endpoints.
-    Suggested defaults are zero additional hard errors; a lower 95% paired
-    confidence bound above -2 percentage points for recall, adjudicated
-    precision, and proof-floor pass rate; and either a +10-point absolute
-    improvement or standardized paired effect of at least 0.5 on a primary
-    behavior the skill is intended to change. When the baseline is already at
-    least 95% and the skill meets the absolute safety floors, a preregistered
-    ceiling rule may accept non-inferiority without artificial “improvement.”
+The default root gates are intentionally demanding and nonwaivable:
+
+1. **`G-ORACLE-COVERAGE`:** Every admitted Objective-defect atom appears in an
+   evaluator-oracle-blind fixture.
+2. **`G-FOCUSED-RECALL`:** Every admitted Objective-defect atom is recovered and
+   correctly classified in every skill-enabled focused replicate.
+3. **`G-MULTI-COMPLETE`:** Every atom in a `GRA-MULTI` fixture is recovered in
+   every release-gating focused replicate; finding only the first issue fails
+   that fixture.
+4. **`G-NATURALISTIC-RECALL`:** A preregistered full-source/sharded recall cohort
+   meets its explicit issue-level target. Use 100% when the prompt, scope,
+   partition, and budget expressly ask for complete recovery. Report broader
+   naturalistic full-repository recall per replicate without relabeling every
+   stochastic miss a hard error.
+5. **`G-NO-HARD-ERROR`:** There are zero hard errors.
+6. **`G-PROOF-QUALITY`:** On focused Objective-defect fixtures, every applicable
+   proof dimension scores 2. Full-source cohorts have no applicable dimension
+   at 0 and meet a preregistered mean/floor.
+7. **`G-CONTROLS`:** Fixed-side controls do not reproduce the repaired finding.
+   Other valid findings remain allowed. Scoped positive proofs are accepted
+   only within their exact theorem/model/TCB; Candidate and Challenge fixtures
+   are never global soundness labels.
+8. **`G-CURRENT-ZEROCOPY`:** Every admitted Objective-defect item in the
+   current-zerocopy minimum oracle is addressed by each owning shard with
+   correct production/test/configuration scope. Candidate/Challenge entries are
+   judged on reasoning and calibration, not issue agreement.
+9. **`G-AUTHORING`:** Every authoring fixture produces no unsound or vacuous edit
+   and satisfies all applicable contract, postcondition, configuration, TCB,
+   and compatibility dimensions.
+10. **`G-ISOLATION`:** The runner emits a successful automated attestation for
+    filesystem, package, prompt, network, documentation, and paired-side
+    isolation.
+11. **`G-HOLDOUT`:** The opaque holdout cohort has 100% focused Objective-defect
+    recall, zero hard errors, required proof-quality floors, no repaired-defect
+    false assertion, and no fixture-specific runtime-skill change.
+12. **`G-COMPARISON`:** Skill-versus-baseline/prior-skill comparisons meet
+    preregistered endpoints.
+    In inferential mode, suggested defaults are zero additional hard errors; a
+    sequence-adjusted lower paired confidence bound at the preregistered
+    family-wise confidence level above -2 percentage points for recall,
+    adjudicated precision, and proof-floor pass rate; and either a +10-point
+    absolute improvement or standardized paired effect of at least 0.5 on a
+    primary behavior the skill is intended to change. When the baseline is
+    already at least 95% and the skill meets the absolute safety floors, a
+    preregistered ceiling rule may accept non-inferiority without artificial
+    “improvement.” In exact engineering-gate mode, use only the frozen exact
+    comparison predicate and report its named finite observations
+    descriptively. Do not claim an effect, improvement, non-inferiority,
+    probability, target-population property, or generalization.
+13. **`G-ADVERSARIAL-REVIEW`:** Every slot in a preregistered bounded review
+    completes. Freeze at least two independent qualified reviewers, their
+    independence from candidate authoring/admission, and their attested absence
+    of taint from every later/unbound cohort. Freeze their exact review materials
+    and scope, prompts, tools, budgets, number of passes, output schema, and
+    disagreement/adjudication rule. This is a distinct current-look
+    bounded-adversarial-review role: it may access only `H_n`, consumed history,
+    the complete candidate package, canonical reports and audit artifacts,
+    scoring/adjudication and gate inputs, and protocol/integrity evidence.
+    Missing, partial, invalid, cross-cohort, or unpreserved review output cannot
+    pass.
+14. **`G-NO-MATERIAL-FINDING`:** Every candidate finding from the bounded review
+    receives an evidence-backed disposition under the frozen versioned
+    materiality rule and adjudication procedure. The nonwaivable inclusive floor
+    qualifies at least any candidate unsoundness or vacuity; hard-error
+    enablement; oracle/holdout leakage; isolation, gate, retry, output,
+    identity, claim, stopping, or other protocol evasion/weakening; unsupported
+    inference or terminal assertion; candidate-specific overfit; or defect
+    capable of changing a mandatory-root predicate, input, outcome, or the
+    scoped terminal claim. A run-specific rule may add findings but never
+    exclude this floor. `PASS` requires zero unresolved or qualifying in-scope
+    material defects and no `UNKNOWN`/`ERROR` disposition. A qualifying finding
+    makes the look `FAIL`; it may not be removed by post-exposure quarantine,
+    scope revision, or candidate repair.
+
+### Finite terminal-candidate program
+
+Development and regression fixtures may be reused for prequalification. A
+terminal declaration requires a separate finite claim-level confirmatory
+program. Its immutable **claim epoch** owns every look and all persistent state;
+operational successor sequences are permitted only by its frozen restart rule
+and cannot reset that state. Before exposing its first holdout, freeze:
+
+- a content-addressed immutable genesis manifest containing every frozen field
+  in this list, and its digest as the canonical claim-epoch ID; whether the
+  release makes only an exact engineering-gate claim or also an
+  inferential/statistical claim; the exact user-facing assertion; and a
+  substantive claim-equivalence rule that does not depend on labels or file
+  identity;
+- for an inferential claim, its estimand, target population, sampling and
+  assignment units, lineage/dependence treatment, and selection-valid analysis;
+- a finite positive global `N_max`, the maximum number of terminal candidate
+  looks across the claim epoch and every permitted successor sequence;
+- mutually disjoint opaque cohorts `H1 ... HN_max`, allocated by indivisible
+  source/metamorphic lineages that are also disjoint from every exposed
+  development, prequalification, example, and prior-result lineage, together
+  with the lineage-commitment, candidate-side registrar, opaque-verifier, and
+  collision/TCB rules used for later eligibility checks;
+- an effective-treatment identity and equivalence schema over every
+  agent-visible candidate component and the frozen environment; a new name or
+  digest is not by itself a distinct treatment;
+- every program-invariant component: model and sampling policy, prompts, tools,
+  documentation, base prequalification corpus, holdout bank and lineage map,
+  runner, budgets, scorer, adjudication, and all protocol policies; each
+  candidate's agent-visible runtime byte tree is frozen separately before its
+  assigned exposure;
+- the persistent cumulative regression bank and its sole permitted mutation:
+  append each retired cohort and generalized adjudicated regression after its
+  current look;
+- the claim epoch's persistent append-only candidate-admission registry; for
+  each effective treatment it records identity and byte-tree digests, exposure
+  and outcome, and the evidence-backed behavior-affecting revision that makes a
+  distinct later treatment eligible;
+- every replicate, retry, atomic-output-finalization, invalidation, and
+  irreversible fail-fast rule;
+- the versioned mandatory-root gate inventory and a total executable gate
+  manifest in which every gate has a stable ID, predicate and version/digest,
+  typed inputs, prerequisites, missing/error behavior, and output; this includes
+  the bounded adversarial-review procedure, its frozen materiality rule, and the
+  admission rule for a later candidate revision;
+- the complete conjunctive stopping predicate; and
+- any across-candidate statistical error-control rule.
+
+Claims belong to the same epoch when a pass would be used to support the same
+user-facing release assertion or an aliased, overlapping, or post-exposure
+narrowing of its artifact/domain, population, estimand, or endpoints. Cosmetic
+rewording cannot create a fresh epoch. A genuinely non-overlapping claim may
+start a new epoch under an independently specified rule, but cannot establish
+`VN` retroactively for this one.
+
+A candidate enters the program only after passing the entire cumulative
+prequalification and a subtractive/coherence review of its runtime instructions,
+routed references, templates, and maintainer rationale. A **candidate look** is
+the complete binding and evaluation of one frozen candidate against its
+assigned cohort; it is distinct from the slot-level execution attempts governed
+by the retry policy, and its index is global across the claim epoch. **Semantic
+exposure** begins at the earliest candidate-linked human or process access to
+any holdout bit, contract, oracle or lineage content, or content-derived signal,
+regardless of which security boundary contains the access. Only demonstrably
+content-oblivious harness checks whose decisions are independent of those
+semantics and the fixed nonrevealing lineage-commitment check below may precede
+exposure. Any human semantic comparison or additional/cohort-specific signal
+counts as exposure. For candidate look `n`:
+
+Permit exactly one active candidate look in the claim epoch, including across
+operational successor sequences. Do not pre-admit, freeze for terminal use,
+bind, expose, or run `C_{n+1}` while `C_n` lacks a terminal outcome. Conditions,
+replicates, and slot attempts within the one bound look may use only their
+frozen schedule and retry rules.
+
+1. Freeze candidate `C_n`. A candidate-side registrar untainted by every
+   unconsumed holdout commits the complete candidate-author exposure and source
+   lineage set without accessing the holdout map. Before binding `H_n`, a fixed
+   trusted verifier compares only the precommitted opaque lineage identifiers
+   for `C_n`, the accumulated bank, and every unconsumed cohort. It may emit
+   only `PASS` or permanent claim-epoch `ABORT`; it reveals no cohort-specific
+   result and permits no candidate repair, retry, or cohort substitution. Any
+   semantic inspection, incomplete registrar basis, other output, or verifier
+   change invokes the frozen failure rule. Candidate authors and editing agents
+   remain unable to access any unconsumed cohort or its lineage map.
+2. At first semantic exposure, retire `H_n` permanently from later
+   confirmation. It becomes consumed only when this look terminalizes.
+   Retirement permits only the frozen completion, slot-retry, scoring,
+   consistency, and adjudication operations for this already-bound `C_n/H_n`
+   look.
+3. Run every required condition and replicate. A favorable partial cohort can
+   never pass. Fail-fast is permitted only to record an irreversible `FAIL`.
+4. Materialize every human adjudication or materiality decision into the
+   manifest's typed inputs, validate exact root-inventory equality and complete
+   dependency closure, then compute and publish every required root and
+   prerequisite with its predicate and input digests. Only explicit `PASS` for
+   every required root and its transitive prerequisites passes; a missing or
+   weaker root, closure error, or `UNKNOWN`/`ERROR` result can never support
+   `PASS` and receives the frozen abort/`FAIL`/`INVALID` disposition.
+5. Assign exactly one look outcome:
+   - `PASS` when the complete cohort is valid and every required gate passes;
+   - `FAIL` when the protocol-valid complete look has a failed gate or a frozen
+     irreversible fail-fast predicate fires; or
+   - `INVALID` only under a frozen infrastructure/protocol invalidation
+     predicate, never because of report content or an unfavorable result.
+
+An infrastructure failure before semantic exposure is not a look and may be
+retried against the same cohort under the frozen rule. After exposure, `H_n` is
+consumed even if the outcome is `INVALID`; any further confirmatory evaluation
+uses `H_{n+1}`. The same frozen candidate may be rebound after `INVALID` only
+when the predeclared infrastructure-only rule permits it. Predeclare whether
+the valid retry is an unchanged-candidate rebind or requires a later candidate.
+In inferential mode, every exposed invalid look must spend its `alpha_n`
+allocation or be accounted for by the preregistered always-valid sequential
+method. In exact engineering-gate mode, it consumes one of the finite `N_max`
+candidate looks in the claim epoch. An unexposed prelaunch failure consumes
+neither. Slot-level execution retries remain governed by the leased-attempt and
+atomic whole-envelope canonicalization rule and do not create extra candidate
+looks.
+
+Any agent-visible runtime-package change after exposure creates a new
+candidate. Any unpermitted change to a program-invariant environment, holdout,
+scorer, gate, identity rule, or protocol component aborts the operational
+sequence; it cannot be treated as another candidate. A successor sequence may
+continue the claim epoch only under the predeclared restart transition and must
+inherit its claim/effective-identity rules, cumulative regression bank,
+candidate registry, exposure and outcome ledger, remaining holdouts and global
+look budget, gate roots, stopping rule, and remaining statistical error budget.
+Otherwise the epoch terminates without `VN`. A post-exposure fixture quarantine
+or protocol repair never retroactively preserves the consumed look.
+
+Before `C_{n+1}` may be admitted or bound, `C_n` must have exactly one sealed
+terminal outcome, `H_n` must be consumed, every frozen scoring/adjudication step
+must be complete, and the outcome, exposure, cumulative-bank, and registry
+transitions must be atomically preserved. Add every revealed earlier cohort and
+every generalized regression derived from its adjudicated failures to reusable
+prequalification through the frozen append-only transition. After `FAIL`, the
+revision must contain a documented evidence-backed **effective-treatment**
+response under the frozen admission rule; an evaluator-only, comment-only,
+metadata-only, editorial, or identity-only mutation that cannot affect agent
+behavior does not buy another holdout look. The next candidate must pass the
+accumulated bank without adding fixture-specific runtime instructions. A
+protocol-valid `FAIL` permanently makes its whole effective-treatment
+equivalence class ineligible for another holdout look in the claim epoch,
+including any successor sequence or aliased claim, until the registry records
+an admitted evidence-backed behavior-affecting revision. The frozen admission
+rule, not a candidate-supplied label or digest, decides distinctness.
+
+Stop at the smallest global `n` whose entire cohort passes every frozen gate.
+`VN` is the immutable terminal record containing the claim-epoch ID, look index,
+the complete genesis manifest and digest—including the exact assertion, mode,
+claim-equivalence rule and, when applicable, estimand/population/analysis—
+candidate effective-treatment identity and byte-tree digest, environment,
+prompt/tool/corpus/holdout/protocol/gate identities, canonical output and
+scoring/adjudication manifests, complete `PASS` result, and a digest of the
+entire claim-epoch history: candidate admissions/identities/outcomes, prior
+canonical manifests, exposure/taint and cohort lifecycle ledgers, cumulative
+bank transitions, used/remaining global looks and alpha, retries, invalidations,
+and successor transitions. The candidate may be called version `VN` only for
+the exact assertion bound by that genesis manifest; terminal status is not an
+intrinsic context-free property of its bytes. `G-NO-MATERIAL-FINDING` means only
+that the frozen bounded procedure produced no unresolved qualifying finding; it
+does not claim that no undiscovered defect can exist.
+
+If no candidate passes by the claim epoch's global `N_max`, close the epoch
+permanently without a successful `VN`. No successor protocol, fresh bank,
+relabeling, overlap, or post-exposure narrowing can extend its look budget or
+produce `VN` for it. A genuinely new non-overlapping claim cannot retroactively
+rescue the closed epoch.
+
+For an inferential claim, allocate look-level error budgets `alpha_n` with
+`sum(alpha_n) <= alpha_total` or use another valid preregistered sequential
+method. Each look's joint pass test must be conditionally valid given all prior
+information and adaptive selection in the complete history, including prior
+outcomes, invalidations, candidate revisions and admissions, endpoint and model
+choices, missingness, adjudication, and protocol decisions. It must charge
+endpoint, model, selection, missingness, and other multiplicity within its
+allocation. Every permitted successor sequence inherits only the claim epoch's
+remaining `alpha_total`; freezing a new protocol does not reset it. Disjoint
+cohorts alone do not remove optional-stopping inflation. Exact engineering-gate
+mode supports only the descriptive proposition that the named candidate digest
+passed the named gate roots on the named finite slots under the frozen
+environment. Any causal, probabilistic, population, expected-future,
+generalized-quality, improvement, or non-inferiority claim requires inferential
+mode and its selection-valid method.
 
 The 2,177-record GRA ledger remains the full corpus-closure goal, but completing
 it is not a prerequisite to begin with a frozen, semantically adjudicated
@@ -919,8 +1250,10 @@ For every objective atom, two qualified reviewers should independently:
 5. check the safe reproducer or proof when available;
 6. inspect the repair and confirm what it changes;
 7. classify soundness, postcondition, compatibility, and conditional claims
-   separately; and
-8. reconcile disagreements before the atom becomes an Objective defect or
+   separately;
+8. agree on each atom's direct acceptance criterion, prerequisites, and acyclic
+   dependency graph; and
+9. reconcile disagreements before the atom becomes an Objective defect or
    Scoped positive proof.
 
 Audit notes, advisories, upstream acknowledgements, and fixing diffs are strong
@@ -987,7 +1320,7 @@ This is a fast regression signal, not the release claim.
 
 ### Candidate-release suite
 
-Run:
+For reusable prequalification, run:
 
 - every microfixture;
 - every `GRA-ATOM` and `GRA-MULTI` fixture;
@@ -995,8 +1328,12 @@ Run:
 - all zerocopy historical cases;
 - all current zerocopy shards and integration;
 - all authoring/review/evidence tests;
-- fixed/proved/calibration controls; and
-- the opaque access-controlled holdout cohort.
+- fixed/proved/calibration controls.
+
+After every reusable item passes, freeze the complete candidate and run its one
+assigned opaque access-controlled holdout cohort. Apply the finite
+terminal-candidate program for a terminal declaration; do not use that cohort
+as an iterative debugging set.
 
 ### Full corpus suite
 
@@ -1034,8 +1371,24 @@ Publish a report containing:
 - contamination checks;
 - automated isolation attestation;
 - condition/replicate counts and resource budgets;
+- the complete content-addressed claim-epoch genesis manifest and digest,
+  including the exact assertion, mode, equivalence rule and any inferential
+  estimand/population/analysis; terminal candidate index, global `N_max` use,
+  effective-treatment/package/protocol identities, persistent registry and
+  cumulative-bank transitions, assigned/retired/consumed cohort IDs, lineage
+  and taint-ledger checks, and any alpha spending;
+- every run slot, attempt lease, execution attempt, whole-envelope atomic
+  finalization disposition, retry attestation, and canonical-envelope selection;
 - separately reported task modes and theorem domains;
 - issue-level results, with no known atom hidden by aggregate metrics;
+- direct/root atom failures separately from certificate failures and their
+  `blocked_by` fan-out;
+- the mandatory-root inventory and total gate-manifest digests, root/dependency
+  closure validation, every gate's predicate/input digests, explicit
+  machine-readable outcome, and resulting terminal record or failure status;
+- every bounded adversarial-review packet, reviewer-independence attestation,
+  candidate-finding disposition and adjudication, and the
+  `G-ADVERSARIAL-REVIEW`/`G-NO-MATERIAL-FINDING` inputs and outcomes;
 - hard errors;
 - precision after novel-finding adjudication;
 - configuration and safe-surface coverage;
@@ -1067,6 +1420,11 @@ Actively monitor:
 - scorer awareness of condition;
 - evaluator disagreement hidden by one numeric score;
 - model updates being mistaken for skill improvements;
+- repeated-candidate optional stopping or unchanged-candidate resubmission;
+- holdout leakage through source-family or metamorphic siblings assigned to
+  different cohorts;
+- post-exposure fixture quarantine, substitution, retry, or package edits that
+  preserve a favorable result while changing its frozen denominator;
 - duplicating one incident across RustSec, GHSA, audit logs, and research
   datasets; and
 - benchmark-specific instructions accreting into the runtime skill.
@@ -1074,9 +1432,10 @@ Actively monitor:
 The response to contamination is access-controlled metamorphic/holdout renewal,
 not more explicit hints in the prompt.
 
-## Readiness Checklist for the Follow-Up Testing Turn
+## Per-Sequence Release-Gate Readiness Checklist
 
-Before running the first agent:
+Before launching the first semantic agent in a claim epoch, and again for every
+applicable inherited item before a permitted successor sequence:
 
 1. Freeze the skill revision.
 2. Implement the private fixture/oracle manifest and result schema.
@@ -1093,14 +1452,23 @@ Before running the first agent:
 9. Construct and review the hardened no-network VM/microVM runner for any
    executable artifact.
 10. Dry-run only the harness on a trivial non-evaluation fixture.
-11. Freeze prompts, corpus denominator/exclusions, budgets, conditions,
-    replicate/stopping/retry rules, numerical endpoints/margins, and scorer
-    rubrics.
+11. Freeze the canonical claim epoch and equivalence rule, effective-treatment
+    identity/equivalence and admission rules, prompts, corpus
+    denominator/exclusions, persistent regression/registry state, budgets,
+    conditions, leased-attempt/retry/finalization/invalidation rules, numerical
+    endpoints and margins, scorer rubrics, exact-engineering versus inferential
+    mode, mandatory gate-root inventory and total fail-closed executable
+    manifest, global finite `N_max`, fully lineage-disjoint holdout cohorts,
+    exact terminal stopping predicate, and across-candidate/successor error
+    control.
 12. Calibrate independent scorers and resolve every admission disagreement.
 13. Verify in an automated attestation that agents cannot read `evals/`,
     `maintainers/`, sibling worktrees, prior results, another condition's skill
-    package, or the other half of any pair.
+    package, or the other half of any pair; validate the principal/process
+    exposure ledger and role restrictions for every unconsumed holdout.
 
-Only then begin semantic testing. Any skill change made in response to a result
-starts a new skill revision and requires fresh runs; do not continue the same
+Only after every applicable item is satisfied may that sequence begin semantic
+testing. Any agent-visible skill change made in response to a result creates a
+new candidate: rerun the cumulative reusable prequalification and admit a fresh
+terminal look only under the claim epoch's frozen rule. Never continue the same
 agent conversation.
