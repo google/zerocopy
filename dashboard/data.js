@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785543633701,
+  "lastUpdate": 1785770868509,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23293,6 +23293,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 622,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6a677c91b717125e02ef3f302799cde189c39b12",
+          "message": "[CI] Bump the all-actions group with 2 updates (#3517)\n\nBumps the all-actions group with 2 updates: [DeterminateSystems/determinate-nix-action](https://github.com/determinatesystems/determinate-nix-action) and [github/codeql-action/upload-sarif](https://github.com/github/codeql-action).\n\n\nUpdates `DeterminateSystems/determinate-nix-action` from 3.21.8 to 3.21.9\n- [Release notes](https://github.com/determinatesystems/determinate-nix-action/releases)\n- [Commits](https://github.com/determinatesystems/determinate-nix-action/compare/d96678350ffd6a456235832eb11e1c491589b7bb...61cbfe2efc2d4e7a8a6d56967c3c1058e846c858)\n\nUpdates `github/codeql-action/upload-sarif` from 4.37.3 to 4.37.4\n- [Release notes](https://github.com/github/codeql-action/releases)\n- [Changelog](https://github.com/github/codeql-action/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/github/codeql-action/compare/e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81...f205ea1c3313d32999d8d6a48b4f6530d4437b38)\n\n---\nupdated-dependencies:\n- dependency-name: DeterminateSystems/determinate-nix-action\n  dependency-version: 3.21.9\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: github/codeql-action/upload-sarif\n  dependency-version: 4.37.4\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-08-03T14:42:22Z",
+          "tree_id": "e1839e9de0792e181e03b44dc3e5106366becbdf",
+          "url": "https://github.com/google/zerocopy/commit/6a677c91b717125e02ef3f302799cde189c39b12"
+        },
+        "date": 1785770866114,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 455,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 670,
             "unit": "seconds"
           }
         ]
