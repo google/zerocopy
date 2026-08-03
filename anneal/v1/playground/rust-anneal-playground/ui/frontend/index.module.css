@@ -1,0 +1,231 @@
+/* Non-theme variables */
+:root {
+  /* Fonts */
+  --primary-font: 'Open Sans', sans-serif;
+  --primary-font-size: 18px;
+  --secondary-font-size: calc(0.75 * var(--primary-font-size));
+
+  /* Header */
+  --header-transition: 0.2s ease-in-out;
+  --header-border-radius: 4px;
+
+  /* Border */
+  --border: 1px solid var(--border-color);
+}
+
+@define-mixin light-theme-vars {
+  --positive-luminance: white;
+  --negative-luminance: black;
+
+  /* Fonts */
+  --font-color: #444;
+  --font-color-high-contrast: var(--negative-luminance);
+
+  /* Links */
+  --link-color: #00e;
+  --link-color-visited: #551a8b;
+
+  /* Background */
+  --background-color: #e1e1db;
+  --background-color-high-contrast: var(--positive-luminance);
+
+  /* Code */
+  --code-background-color: #eee;
+
+  /* Border */
+  --border-color: #bbb;
+
+  /* Header */
+  --header-link-color: var(--negative-luminance);
+  --header-main-border: #dedede;
+  --header-tint: #428bca;
+  --header-accent-border: #bdbdbd;
+
+  /* The big red button */
+  --button-primary-color: var(--positive-luminance);
+  --button-primary-bg-color: #a42;
+  --button-primary-border-color: #80331a;
+  --button-primary-bg-color-light: color-mix(
+    in hsl,
+    var(--button-primary-bg-color),
+    var(--positive-luminance)
+  );
+  --button-primary-border-color-light: color-mix(
+    in hsl,
+    var(--button-primary-border-color),
+    var(--positive-luminance)
+  );
+
+  /* Clicked */
+  --button-primary-active-color: color-mix(
+    in hsl,
+    var(--positive-luminance),
+    var(--negative-luminance) 30%
+  );
+
+  /* Not the big red button */
+  --button-secondary-color: #444;
+  --button-secondary-bg-color-top: #fff;
+  --button-secondary-bg-color-bottom: #f9f9f9;
+  --button-secondary-bg-color: linear-gradient(
+    to bottom,
+    var(--button-secondary-bg-color-top),
+    var(--button-secondary-bg-color-bottom)
+  );
+  --button-secondary-border-color: color-mix(
+    in hsl,
+    var(--button-secondary-bg-color-bottom),
+    var(--negative-luminance) 20%
+  );
+
+  /* Disabled */
+  --button-secondary-bg-color-light: color-mix(
+    in hsl,
+    var(--button-secondary-bg-color-bottom),
+    var(--positive-luminance)
+  );
+  --button-secondary-border-color-light: color-mix(
+    in hsl,
+    var(--button-secondary-border-color),
+    var(--positive-luminance)
+  );
+  --button-secondary-color-light: color-mix(
+    in hsl,
+    var(--button-secondary-color),
+    var(--positive-luminance)
+  );
+
+  /* Clicked */
+  --button-secondary-active-color: color-mix(
+    in hsl,
+    var(--negative-luminance),
+    var(--positive-luminance) 30%
+  );
+
+  /* Output tabs */
+  --output-background-tab: #fcfcfc;
+  --output-current-tab: #f9ffff;
+
+  /* Output compiler highlighting */
+  --output-highlight-warning-color: #f79a06;
+  --output-highlight-warning-bg-color: inherit;
+  --output-highlight-error-color: #bf1b1b;
+  --output-highlight-error-bg-color: inherit;
+}
+
+@define-mixin dark-theme-vars {
+  --positive-luminance: black;
+  --negative-luminance: white;
+
+  /* Fonts */
+  --font-color: #dcdbd8;
+  --font-color-high-contrast: #dcdbd8;
+
+  /* Links */
+  --link-color: #b2dcff;
+  --link-color-visited: #eecaff;
+
+  /* Background */
+  --background-color: #444;
+  --background-color-high-contrast: #181818;
+
+  /* Code */
+  --code-background-color: #3c3c3c;
+
+  /* Border */
+  --border-color: #5e5e5e;
+
+  /* Header */
+  --header-main-border: #363b3d;
+  --header-accent-border: #bdbdbd;
+
+  /* The big red button */
+  --button-primary-color: #dcdbd8;
+  --button-primary-bg-color: #5d2310;
+  --button-primary-border-color: #612714;
+
+  /* Not the big red button */
+  --button-secondary-color: #dcdbd8;
+  --button-secondary-bg-color-top: #17191a;
+  --button-secondary-bg-color-bottom: #1a1c1d;
+  --button-secondary-border-color: color-mix(
+    in hsl,
+    var(--button-secondary-bg-color-bottom),
+    var(--negative-luminance) 40%
+  );
+
+  /* Output tabs */
+  --output-background-tab: #343434;
+  --output-current-tab: #191b1c;
+
+  /* Output compiler highlighting */
+  --output-highlight-warning-color: #ffe800;
+  --output-highlight-warning-bg-color: #330;
+  --output-highlight-error-color: #f5f5f5;
+  --output-highlight-error-bg-color: #820000;
+}
+
+:root,
+[data-theme='light']:root {
+  @mixin light-theme-vars;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @mixin dark-theme-vars;
+  }
+}
+
+[data-theme='dark']:root {
+  @mixin dark-theme-vars;
+}
+
+/* Modify normalized styles */
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: var(--primary-font);
+  font-optical-sizing: auto;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+a {
+  color: var(--link-color);
+}
+
+a:visited {
+  color: var(--link-color-visited);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  color: var(--font-color);
+  background-color: var(--background-color);
+  padding: 0 1em;
+  font-family: var(--primary-font);
+  font-optical-sizing: auto;
+  font-size: var(--primary-font-size);
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+:global(.language-rust_errors) {
+  & :global(.warning) {
+    color: var(--output-highlight-warning-color);
+    background-color: var(--output-highlight-warning-bg-color);
+  }
+
+  & :global(.error) {
+    color: var(--output-highlight-error-color);
+    background-color: var(--output-highlight-error-bg-color);
+  }
+}
