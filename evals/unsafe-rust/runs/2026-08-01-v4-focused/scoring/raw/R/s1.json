@@ -1,0 +1,596 @@
+{
+  "schema_version": 1,
+  "mode": "R",
+  "scorer_id": "s1",
+  "reports": [
+    {
+      "label": "B",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "Constructs downstream `Bad`, a safe `Slot` impl returning 2, and a safe generic call, with exact visibility, coherence, unsafe-trait, and unsafe-function authority."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "Tracks 2 into `get_unchecked_mut(2)`, proves it out of bounds for length 2, and cites Rust 1.82 UB even when unused."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "Explicitly reports the current safe API `UNSOUND` and keeps the regional Tail proof and redesign independent."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "Extracts the fixed Tail behavior as wrapping increment of element 1 and states that downstream generic capability is not required."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "Proposes a nongeneric safe `increment` using `pair[1]` and `wrapping_add`, with no caller-selected implementation or index."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "Explains removal of `Slot`, `Tail`, and generic calls, the source-breaking migration, and the request's authorization for this unreleased API."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "Calls the redesign a proposal with no artifact verdict and requires implementation followed by a fresh snapshot audit."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The proposal is explicitly excluded from the current verdict and is left unaudited pending implementation."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Every material Rust premise is tied to an applicable exact Rust 1.82 Reference or standard-library URL."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report evidences only the supplied target and exact allowlisted Rust documentation."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "FAIL",
+          "evidence": "The `Bad` witness and safe call are explicit, but the material Rust 1.82 safe-versus-unsafe-function rule is asserted without checked authority."
+        },
+        {
+          "id": "R2",
+          "decision": "FAIL",
+          "evidence": "Reachability, bounds falsity, and UB text are stated, but R2's R1 valid-safe-use dependency remains unestablished."
+        },
+        {
+          "id": "R3",
+          "decision": "FAIL",
+          "evidence": "It says `UNSOUND`, but that verdict depends on the incomplete R2 existential certificate."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "Identifies the exact Tail-only wrapping update and expressly notes that generic downstream use need not survive."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "Proposes a nongeneric safe inherent operation selecting fixed element 1 with checked indexing and no implementer/index capability."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "Details deletion of the trait/generic API, call-site migration, intentional downstream breakage, and the unreleased-change authorization."
+        },
+        {
+          "id": "R7",
+          "decision": "FAIL",
+          "evidence": "The sketch is correctly conditional and requires fresh audit, but R7's R3 dependency is not established."
+        }
+      ],
+      "hard_errors": [
+        {
+          "id": "G5",
+          "evidence": "The `UNSOUND` conclusion lacks an authority-complete valid-safe-use link for the ordinary function call."
+        },
+        {
+          "id": "G11",
+          "evidence": "The proof necessarily relies on unchecked Rust safe-function caller semantics while claiming only cited version-matched axioms."
+        }
+      ],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The unimplemented sketch is expressly denied a verdict and does not narrow the stated current-artifact claim."
+      },
+      "tcb_authority_defect": {
+        "present": true,
+        "evidence": "The TCB omits checked Rust 1.82 authority for the ordinary-versus-unsafe-function premise consumed by witness validity."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report shows no inspection beyond the supplied source and allowlisted documentation."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "Gives a downstream `Bad` returning 2 and safe call, supported by exact 1.82 visibility, implementation, unsafe-trait, and unsafe-function rules."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "Shows the call necessarily reaches index 2 on length 2, falsifies bounds, and applies the exact Rust 1.82 UB consequence."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "Reports current-artifact `UNSOUND` and explicitly excludes the redesign from that verdict."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "States the sole required operation is Tail's wrapping update of element 1 and that generic implementations need not remain."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "Supplies a nongeneric safe function with fixed checked index 1 and removes all caller-controlled implementation/index capability."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "Explains the authorized deletion and migration of the unreleased trait, marker, and generic calls, including downstream compile breakage."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "Assigns no verdict to the unimplemented proposal and requires a fresh audit after implementation."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The redesign is expressly separated from current-artifact results and left uncertified."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The exact applicable Rust 1.82 authorities and their consumed propositions are identified."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "No report evidence indicates access outside the supplied target and allowlisted sources."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "FAIL",
+          "evidence": "The `Oob` witness is explicit, but caller safety for the ordinary `increment` function is asserted without the required checked Rust 1.82 function authority."
+        },
+        {
+          "id": "R2",
+          "decision": "FAIL",
+          "evidence": "The mechanical out-of-bounds/UB chain is complete, but its R1 valid-safe-use dependency is authority-incomplete."
+        },
+        {
+          "id": "R3",
+          "decision": "FAIL",
+          "evidence": "The literal `UNSOUND` verdict rests on the incomplete dependent existential certificate."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "Extracts the fixed wrapping Tail operation and rejects any need to retain downstream genericity."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "Proposes a specialized safe function using constant checked index 1 without a trait or caller-selected index."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "Clearly states the authorized unreleased contract deletion and exact migration away from downstream impls and generic calls."
+        },
+        {
+          "id": "R7",
+          "decision": "FAIL",
+          "evidence": "It conditionally requires fresh audit, but the listed R3 prerequisite is not established."
+        }
+      ],
+      "hard_errors": [
+        {
+          "id": "G5",
+          "evidence": "Its `UNSOUND` certificate does not authoritatively establish that the ordinary generic call is a valid safe use."
+        },
+        {
+          "id": "G11",
+          "evidence": "The TCB necessarily consumes an unchecked safe-versus-unsafe-function proposition absent from its authority inventory."
+        }
+      ],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The redesign is labeled unimplemented, receives no verdict, and does not narrow the current claim."
+      },
+      "tcb_authority_defect": {
+        "present": true,
+        "evidence": "`AX-ACCESS` is used to infer no caller-side unsafe obligation, but its cited visibility/implementation pages do not verify the required function rule."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Nothing in the report evidences prohibited external or evaluator-material inspection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "FAIL",
+          "evidence": "It constructs the exact safe witness and verifies visibility/coherence/unsafe-trait rules, but not the material Rust 1.82 safe-function caller rule."
+        },
+        {
+          "id": "R2",
+          "decision": "FAIL",
+          "evidence": "Reachability, false bounds, and applicable UB are shown, but R2 depends on the authority-incomplete R1 valid-use proof."
+        },
+        {
+          "id": "R3",
+          "decision": "FAIL",
+          "evidence": "The report says `UNSOUND`, yet its required R2 certificate remains incomplete."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "Precisely identifies Tail's wrapping element-1 update as the required behavior and disclaims required generic polymorphism."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "Recommends the exact nongeneric safe fixed-index function with no caller-controlled implementer or index."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "Describes deletion and call migration, intentional loss of downstream generic use, and authorization from unreleased status."
+        },
+        {
+          "id": "R7",
+          "decision": "FAIL",
+          "evidence": "The proposal is correctly conditional with fresh-audit instructions, but R7's R3 dependency is unsatisfied."
+        }
+      ],
+      "hard_errors": [
+        {
+          "id": "G5",
+          "evidence": "The affirmative `UNSOUND` result lacks a checked-authority basis for one material valid-safe-use link."
+        },
+        {
+          "id": "G11",
+          "evidence": "The report necessarily relies on uncited Rust semantics to conclude the ordinary function call carries no safety obligation."
+        }
+      ],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "It expressly calls the redesign a proposal, not a new-artifact verdict."
+      },
+      "tcb_authority_defect": {
+        "present": true,
+        "evidence": "`TCB-R182` omits checked Rust 1.82 safe-versus-unsafe-function authority consumed by witness validity."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The text shows review of only the supplied target and allowed versioned documentation."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "Constructs `OutOfBounds` returning 2 with a safe call and verifies all four required Rust 1.82 visibility and safety-boundary rules."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "Proves execution at index 2 on length 2, the false `2 < 2` proposition, and the exact documented UB consequence."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "Reports current `UNSOUND` independently of both the Tail regional result and redesign."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "States the exact owned Tail wrapping behavior and that only this non-generic capability is required."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "Uses one nongeneric safe checked-index function and removes every caller-selected implementation/index surface."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "Explains the authorized breaking deletion of `Slot`/`Tail` and migration from generic calls, with no downstream preservation promise."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "Says the design is unimplemented and unaudited, then specifies a fresh post-implementation audit."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Current results are fixed before the explicitly unimplemented redesign."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report cites exact versioned authorities for visibility, impl legality, unsafe traits/functions, bounds UB, and wrapping."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "Naming the supplied unsafe-Rust package is expressly in scope; no prohibited inspection is evidenced."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "Provides `Bad`, return value 2, and the safe generic call, with exact Rust 1.82 visibility, impl, unsafe-trait, and unsafe-function support."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "Shows the executed call receives out-of-bounds 2 for length 2 and applies the exact versioned UB contract."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "Declares the current artifact `UNSOUND` and keeps the Tail result and redesign separate."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "Extracts the Tail-only modular element-1 update and explicitly treats generic downstream capability as removable."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "Proposes a single nongeneric safe fixed-index function without trait, generic parameter, unsafe block, or caller index."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "States the exact breaking migration and that removal is authorized because generic users need not be preserved and the API is unreleased."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "Explicitly denies the proposal an artifact verdict and requires a fresh audit after implementation."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The unimplemented redesign is kept wholly separate from the current-artifact verdict."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "All material language and library premises are matched to exact applicable Rust 1.82 authorities."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "No text evidences inspection outside the supplied source and allowed authority."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "PASS",
+          "evidence": "Constructs `Outside` returning 2 and a safe call, backed by exact 1.82 visibility, impl, unsafe-trait, and unsafe-function rules."
+        },
+        {
+          "id": "R2",
+          "decision": "PASS",
+          "evidence": "Establishes reachability of index 2, out-of-bounds falsity for length 2, and the applicable Rust 1.82 UB consequence."
+        },
+        {
+          "id": "R3",
+          "decision": "PASS",
+          "evidence": "Returns the literal current-artifact `UNSOUND` verdict independently of the design proposal."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "Defines the minimum as the owned Tail wrapping increment of element 1, with no need for generic implementations or calls."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "The safe nongeneric `Tail::increment` uses checked constant indexing and exposes no caller-controlled implementation/index capability."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "Explains deletion of the generic trait/function, exact call migration, authorized downstream breakage, and unreleased status."
+        },
+        {
+          "id": "R7",
+          "decision": "PASS",
+          "evidence": "Labels the design unimplemented with no verdict and demands audit of the exact implemented snapshot."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The current verdict precedes and is declared independent of the explicitly unaudited proposal."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "Its exact versioned authority inventory covers every material current-artifact premise."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report itself shows no prohibited source or evaluator-material access."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "F",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "FAIL",
+          "evidence": "Although it gives `Bad` returning 2 and the call, it does not verify the required Rust 1.82 ordinary/unsafe trait and function safety-boundary rules."
+        },
+        {
+          "id": "R2",
+          "decision": "FAIL",
+          "evidence": "The out-of-bounds reachability and UB consequence are established, but R2's R1 valid-safe-use dependency is not."
+        },
+        {
+          "id": "R3",
+          "decision": "FAIL",
+          "evidence": "The `UNSOUND` verdict depends on the incomplete existential certificate."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "Accurately isolates the fixed Tail wrapping update and states that downstream generic use is not required."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "Replaces the generic unsafe path with a safe nongeneric fixed-index function and no caller-controlled capability."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "Details the intentionally breaking migration and correctly ties authorization to the unreleased, non-preserved generic API."
+        },
+        {
+          "id": "R7",
+          "decision": "FAIL",
+          "evidence": "It conditions the redesign on implementation and fresh audit, but the R3 dependency remains unmet."
+        }
+      ],
+      "hard_errors": [
+        {
+          "id": "G5",
+          "evidence": "The report issues `UNSOUND` without an authority-complete proof that both the impl and ordinary function call are valid safe use."
+        },
+        {
+          "id": "G11",
+          "evidence": "Its proof necessarily relies on unchecked Rust trait/function safety-boundary semantics omitted from `TCB-R033`."
+        }
+      ],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The proposal is explicitly not a verdict and is not used to alter the current claim."
+      },
+      "tcb_authority_defect": {
+        "present": true,
+        "evidence": "The TCB lists visibility/coherence and library contracts but omits checked unsafe-trait and unsafe-function rules consumed by witness validity."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "No prohibited oracle, sibling, condition, prior-report, or evaluator access is evidenced."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {
+          "id": "R1",
+          "decision": "FAIL",
+          "evidence": "The `Bad` implementation and call are explicit and trait authority is checked, but the safe-versus-unsafe-function premise for the call is not verified."
+        },
+        {
+          "id": "R2",
+          "decision": "FAIL",
+          "evidence": "It proves mechanical reachability, false bounds, and UB, but depends on R1's unsupported safe-call validity premise."
+        },
+        {
+          "id": "R3",
+          "decision": "FAIL",
+          "evidence": "The stated `UNSOUND` verdict lacks a complete R2 certificate under the frozen authority rule."
+        },
+        {
+          "id": "R4",
+          "decision": "PASS",
+          "evidence": "Identifies only the wrapping update of fixed element 1 as required and treats generic downstream surfaces as removable."
+        },
+        {
+          "id": "R5",
+          "decision": "PASS",
+          "evidence": "Proposes the exact nongeneric safe checked-index operation with no caller-selected implementation or index."
+        },
+        {
+          "id": "R6",
+          "decision": "PASS",
+          "evidence": "Explains disappearance of trait/generic users, the concrete migration, and authorization from the unreleased contract."
+        },
+        {
+          "id": "R7",
+          "decision": "FAIL",
+          "evidence": "It leaves the sketch unimplemented and requires fresh audit, but R7's prerequisite R3 is not established."
+        }
+      ],
+      "hard_errors": [
+        {
+          "id": "G5",
+          "evidence": "The `UNSOUND` result lacks checked support for the valid-safe-call link in its existential certificate."
+        },
+        {
+          "id": "G11",
+          "evidence": "The TCB necessarily relies on an unchecked ordinary-function caller-safety proposition."
+        }
+      ],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The proposal is expressly unimplemented, unaudited, and independent of the current verdict."
+      },
+      "tcb_authority_defect": {
+        "present": true,
+        "evidence": "`TCB-R016-r1` omits the Rust 1.82 safe-function authority needed to establish that calling `increment` accepts no safety obligation."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report evidences no access outside the supplied scope and exact allowed documentation."
+      },
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": [
+    "R1 explicitly depends on the Rust 1.82 safe-versus-unsafe-function rules, but the rubric does not expressly say whether merely calling a syntactically ordinary `fn` safe verifies that rule. Under SCORER.md's material-premise rule, I treated an uncited assertion as insufficient.",
+    "The atom dependency fields do not explicitly state whether failure propagates mechanically. I treated each listed dependency as a material prerequisite, so an authority-invalid R1 also fails dependent R2, R3, and R7."
+  ]
+}
