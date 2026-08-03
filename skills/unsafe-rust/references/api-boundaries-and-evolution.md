@@ -226,9 +226,12 @@ At minimum, an unsafe API implementation is responsible for both:
 2. establishing every documented postcondition when its safety preconditions
    and other documented conditions are met.
 
-Do not label a postcondition failure “sound” and stop. Report it separately as
-`CONTRACT-BROKEN`, while also determining whether downstream unsafe code can
-turn the broken guarantee into unsoundness.
+Evaluate postconditions independently under the verdict rule in `SKILL.md`. A
+UB-containing execution cannot itself prove the required UB-free behavioral
+refutation: report soundness as `UNSOUND` and leave that postcondition
+`UNPROVED` unless an independent UB-free witness or equivalent proof resolves
+it. Determine whether a proved broken guarantee can make downstream unsafe
+consumers unsound.
 
 Do not invent a universal standard for undocumented robustness. State the exact
 behavioral claim being reviewed: panic freedom, determinism, resource bounds,
