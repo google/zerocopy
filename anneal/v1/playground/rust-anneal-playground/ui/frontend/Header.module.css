@@ -1,0 +1,12 @@
+.container,
+.left,
+.right {
+  display: flex;
+  gap: 0.5em;
+}
+
+.container {
+  font-size: var(--secondary-font-size);
+  padding: 1.25em 0;
+  justify-content: space-between;
+}
