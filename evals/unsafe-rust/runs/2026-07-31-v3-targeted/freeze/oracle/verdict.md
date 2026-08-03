@@ -1,12 +1,10 @@
-# V3 Targeted Evaluator Draft — Verdict and Release Modes
+# V3 Targeted Oracle — Verdict and Release Modes
 
 > **Evaluator-only material.** Never expose this file, its mode labels, atoms,
 > expected verdicts, or coverage relations to an evaluated report agent.
 >
-> This is a draft until both authority reviewers verify every cited page and
-> the final oracle and blind-scoring rubrics are frozen. Score propositions,
-> not keywords or report layout. Equivalent explicit derivations pass. Do not
-> infer a missing material link from vague shorthand.
+> Score propositions, not keywords or report layout. Equivalent explicit
+> derivations pass. Do not infer a missing material link from vague shorthand.
 
 ## Common scoring rules
 
@@ -23,7 +21,7 @@ mode-specific rule below or the frozen global rules say so.
 
 ## Q — Existential refutation and missing unsafe dependency
 
-Target: `fixtures/v3-targeted/q_quantifiers`.
+Target: supplied Q snapshot.
 
 Let `C_Q` be Rust 1.80.0 times every target on which the exact source and pinned
 dependency resolve times every ordinary profile.
@@ -85,7 +83,7 @@ Any of these is a hard error:
 - treating the unsafe dependency's documented caller precondition as though
   violating its prose were itself an executed UB event.
 
-### Q authority to verify before freezing
+### Q checked authority
 
 - `https://doc.rust-lang.org/1.80.0/std/hint/fn.unreachable_unchecked.html#safety`
   — exact proposition consumed: reaching
@@ -96,7 +94,7 @@ No Rust authority is asserted for the absent dependency implementation.
 
 ## W — Whole-execution UB and independent behavioral refutation
 
-Target: `fixtures/v3-targeted/w_whole_execution`.
+Target: supplied W snapshot.
 
 Let `C_W` be Rust 1.80.0 times every target on which this exact source and the
 used Rust 1.80.0 standard-library item exist times every ordinary profile, and
@@ -146,7 +144,7 @@ Any of these is a hard error:
 - falsely treating the independent input-one refutation as UB-containing, or
   claiming complete behavioral coverage while omitting it.
 
-### W authorities to verify before freezing
+### W checked authorities
 
 - `https://doc.rust-lang.org/1.80.0/std/hint/fn.unreachable_unchecked.html#safety`
   — reaching the function is undefined behavior.
@@ -159,7 +157,7 @@ Any of these is a hard error:
 
 ## M — Multi-release affirmative certificates
 
-Target: `fixtures/v3-targeted/m_multirelease`.
+Target: supplied M snapshot.
 
 Let `C_M` be every supported target times every ordinary profile. For a
 function `f`, let `Calls_f` be all calls satisfying its documented safety
@@ -288,7 +286,7 @@ Failure to establish a required positive regional result is an atom failure. It
 is not by itself a hard error unless the report also makes one of the false
 affirmative or scope-changing claims above.
 
-### M authorities to verify before freezing
+### M checked authorities
 
 Open each exact page and confirm the named description and Safety propositions,
 including all qualifications relevant to its exact release case:

@@ -2,9 +2,10 @@
 
 > **Evaluator-only material. Do not expose this file to evaluated agents.**
 >
-> **Preregistration status:** DRAFT. No evaluated report may be collected until
-> the packages, fixtures, prompts, oracle, rubrics, schedule, condition map, and
-> gates are independently checked, frozen, and identified in the run manifest.
+> **Preregistration status:** FROZEN. This status is effective only with a valid
+> `LOCK.json` whose root matches `file-manifest.sha256`. No evaluated report may
+> be collected before that lock exists and passes `protocol.py verify-static
+> --locked`.
 
 ## Purpose
 
@@ -45,7 +46,8 @@ Use eight focused modes, two conditions, and five fresh replicates per cell:
 
 Each evaluated agent receives one opaque package, one opaque target, and one
 empty output directory. Reports are randomized across conditions and modes.
-Condition identity is revealed only after reports have been preserved, hashed,
+The condition map is generated and sealed before collection. Condition identity
+is revealed to the analysis only after reports have been preserved, hashed,
 blind-scored twice, and adjudicated.
 
 Five replicates are an engineering reliability minimum, not a population-level
@@ -136,7 +138,8 @@ The targeted confirmation passes only if all of the following hold:
 3. V3 has zero proposal laundering.
 4. V3 silently admits no TCB premise and uses no invalid or inapplicable
    authority as a necessary proof premise.
-5. Every V3 report respects the frozen source-only scope and word budget.
+5. V3 has zero terminal semantic noncompletions.
+6. Every V3 report respects the frozen source-only scope and word budget.
 
 Failure of any primary gate fails the run. Do not average failures away, weaken
 an atom after seeing reports, or use V2 weakness to excuse a V3 error.
@@ -191,7 +194,19 @@ Before collection, freeze and hash:
 - one per-mode URL allowlist containing only exact official documentation URL
   identities, or a byte-identified mirror manifest;
 - the randomized schedule and condition map;
-- output schema, word budgets, tool policy, and rerun policy.
+- report-validation and aggregation programs, word budgets, tool policy, and
+  rerun policy.
+
+Every report, scorer, and adjudicator agent uses `gpt-5.6-sol` with reasoning
+effort `ultra`, `fork_turns="none"`, and no helper agents. The orchestration API
+does not expose a sampling seed or exact hosted model-build identifier; this is
+an acknowledged reproducibility limit. Collection follows the sealed schedule
+with at most three report agents active and a complete balanced-wave barrier.
+Immediately before preparing each wave, the authority verifier must reproduce
+the frozen official-document bytes. That wave may not be verified early: every
+earlier wave must already be complete and no cell in the new wave may yet be
+prepared. Protocol state transitions are serialized by one run-wide operation
+lock.
 
 Each report agent must:
 
@@ -201,20 +216,34 @@ Each report agent must:
   permitted official Rust/std pages (or frozen mirror bytes), and empty output
   directory;
 - avoid building, testing, executing, or macro-expanding the target;
-- write one `report.md` and return the same report;
+- write one canonical `report.md`; the final chat response is preserved only as
+  operational metadata and is never scored;
 - stay within 1,800 words, except that X receives a 2,400-word cap and K a
   2,200-word cap, identical across conditions.
 
 Only genuine infrastructure failures may be rerun. Budget exhaustion, refusal,
 or semantic noncompletion is an incomplete/failed replicate, not infrastructure.
 Preserve every invalid attempt and document the disposition before retrying.
+A terminal report noncompletion is blind-scored as produced; when no usable
+`report.md` exists it receives an evaluator-marked canonical placeholder so
+missing propositions fail without inventing agent work, and it independently
+fails the zero-semantic-noncompletion gate. A non-rerunnable
+invalid scorer or adjudicator output makes the run `INVALID`; no replacement
+judgment is fabricated.
+
+The same attempt lifecycle applies to scorers and adjudicators. An API failure
+before any agent identity exists is recorded but is not an attempt. A genuine
+infrastructure failure after start preserves that numbered attempt and permits
+exactly the next fresh attempt. Any non-infrastructure invalid evaluator output
+is terminal and makes the run `INVALID`.
 
 ## Blind scoring and adjudication
 
 After collection and before unblinding:
 
 1. Preserve and hash every raw report.
-2. Assign random anonymous labels independently within each mode.
+2. Materialize the pre-frozen anonymous-label map independently within each
+   mode.
 3. Give two fresh scorers the target, common scoring rules, exact per-mode
    rubric, and ten anonymous reports, but no package, condition map, sibling
    package, or prior scores.
@@ -222,6 +251,11 @@ After collection and before unblinding:
 5. Use a fresh adjudicator only for scorer disagreements.
 6. Adjudicate novel findings against source and authority before unblinding.
 7. Preserve raw scores, adjudications, ledgers, and all integrity checks.
+
+Blind scorers decide only scope defects visible in report content. The runner
+independently counts words and records every known operational path/tool/source
+deviation. Aggregation ORs those three sources into the source-scope/budget
+gate; no scorer is asked to infer unavailable execution telemetry.
 
 The scorer must not infer a missing material premise from vague shorthand. The
 rubric must state in advance which compact formulations count, especially where

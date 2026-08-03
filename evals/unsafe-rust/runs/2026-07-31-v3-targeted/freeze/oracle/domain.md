@@ -1,4 +1,4 @@
-# V3 Targeted Domain Evaluator Draft
+# V3 Targeted Domain Oracle
 
 > **Evaluator-only material.** Never expose this file, its mode labels, atoms,
 > intended predicates, hard-error rules, or authority list to an evaluated
@@ -462,13 +462,13 @@ For effective rejection, verify that `cfg(all(...))` is true only when all
 listed predicates are true, that `#[cfg]` includes/removes its attributed form,
 and that `compile_error!` causes compilation to fail:
 
-- `https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#configuration-options`
+- `https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#conditional-compilation`
 - `https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#the-cfg-attribute`
 - `https://doc.rust-lang.org/1.84.0/std/macro.compile_error.html`
-- `https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#configuration-options`
+- `https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#conditional-compilation`
 - `https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#the-cfg-attribute`
 - `https://doc.rust-lang.org/1.85.0/std/macro.compile_error.html`
-- `https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#configuration-options`
+- `https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#conditional-compilation`
 - `https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#the-cfg-attribute`
 - `https://doc.rust-lang.org/1.86.0/std/macro.compile_error.html`
 
@@ -509,7 +509,7 @@ Exact pages:
 - `https://doc.rust-lang.org/1.85.1/reference/patterns.html#or-patterns`
 - `https://doc.rust-lang.org/1.85.1/reference/patterns.html#wildcard-pattern`
 - `https://doc.rust-lang.org/1.85.1/std/macro.println.html`
-- `https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#configuration-options`
+- `https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#conditional-compilation`
 - `https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#the-cfg-attribute`
 - `https://doc.rust-lang.org/1.85.1/std/macro.compile_error.html`
 
@@ -525,4 +525,4 @@ review that entry, but do not enlarge it:
 - `https://doc.rust-lang.org/1.85.1/cargo/reference/features.html`
 
 No release blog, CI outcome, execution result, Miri result, prior report, or
-this evaluator draft is an authoritative Rust semantic premise.
+this evaluator oracle is an authoritative Rust semantic premise.
