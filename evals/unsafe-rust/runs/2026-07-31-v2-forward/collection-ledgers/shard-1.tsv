@@ -1,0 +1,58 @@
+run_id	schedule_cell	agent_identity	attempt_count	status	report_sha256	word_count	reminders	interruptions	deviations
+r009	U v1 2	/root/r009_attempt1	1	report_preserved	ea53253b4a33049eea65c8d34deae4702561166e137ce5ec4708c70e1dcf2160	545	0	none	none
+r017	T core 2	/root/r017_attempt1	1	report_preserved	0afe010b8798d44a794fe8ffcb444e8d0a0ccb59409c7a673e33d2d3d3a810c8	606	1	none	none
+r013	T v2 2	/root/r013_attempt1	1	report_preserved	c14e758783462060fe9b9c194166e123f15ba3f89f0196d81af05b32e758997c	688	1	none	none
+r029	U v1 4	/root/r029_attempt1	1	report_preserved	da0bef41cc49f09a92f46a6f232223ba5be564bbeb704d13bb454b6ca12b1a91	608	0	none	none
+r025	T v1 3	/root/r025_attempt1	1	report_preserved	0b0141d0950baf7dc99d4369b9695b01134186f3520e2d98485608b667eb7543	564	0	none	none
+r021	H v2 5	/root/r021_attempt1	1	report_preserved	f5d3a4ee09ae0b91dbc9b2ee20f4ccfa536357486be1a435bb5dc8a13bd71634	753	1	none	none
+r033	V v2 2	/root/r033_attempt1	1	report_preserved	8b0bf0c4068d0ee2ffde5955fbe34d60965b2b1a43226f6edb108d6fbdf03e51	587	1	none	none
+r041	U v1 1	/root/r041_attempt1	1	report_preserved	9eef421c24030f5384097f70ff7a362c1727b4e01b9a6b1433c9b26c60287f14	596	0	none	none
+r037	I core 3	/root/r037_attempt1	1	report_preserved	4dea235e86f070d05f79efb1003bbdb416bedd1b183862acebcd509000e9b186	611	1	none	none
+r045	I core 4	/root/r045_attempt1	1	report_preserved	0e4e310addef09fccbb8c55ff4dfedd4483a6c1a49ba599375205c04a1d9c622	750	0	none	none
+r049	H v2 4	/root/r049_attempt1	1	report_preserved	8cd6ea585a737f52a7fd9613e0a82c9a108991b4f7994627f47cb557d0bbaccc	636	1	none	none
+r053	A v1 5	/root/r053_attempt1	1	report_preserved	d8bab30358d420dceb254d92fa9c8954980610d6021a6730cf82932b85d062f6	703	1	none	none
+r057	D v1 2	/root/r057_attempt1	1	report_preserved	507a174baf8b6091bf71dea35c35b78085a4944b8fe84269025a7622ee0178ff	667	1	none	none
+r065	N v1 5	/root/r065_attempt1	1	report_preserved	1c8b6a58ba68c9d529f04cf2316c8b7e124bf62876a66137b523f9572c637570	761	1	none	none
+r061	A v2 1	/root/r061_attempt1	1	report_preserved	0078b09b962b7cb581aafa3a88b1ef2ab6d4c1267236932cffc3080c14002fb6	816	1	none	none
+r069	I v1 2	/root/r069_attempt1	1	report_preserved	61335ee60b72053c6e84b7336e60c0c29806e11cf88a91a957ecb1916470e0ea	795	1	none	none
+r073	D core 2	/root/r073_attempt1	1	report_preserved	296a6cea4bcf93774150d6a723ce4444881d751256418887d5192ab24c2e2c95	712	1	none	none
+r077	H v2 3	/root/r077_attempt1	1	report_preserved	bcb92212356566f1af03f0a05e21affa80d5f8b6b1e75684f8ed0a8dd31b1b15	718	1	none	none
+r081	P core 3	/root/r081_attempt1	1	report_preserved	20532f20a95e1fa2aed483b65dde4dec149c0a86aff12a3b3209bff31ba6f333	814	1	none	none
+r085	A v2 5	/root/r085_attempt1	1	report_preserved	ed0629438e582a4f351a37e36ab873ae22d447cd07ff234958bb4f85437b985b	761	1	none	none
+r089	C v2 5	/root/r089_attempt1	1	report_preserved	2f92001b01c7da9b9663ea6fc384143b53ccb202c62a6294aebcd9b254f054e3	632	1	none	none
+r093	D core 5	/root/r093_attempt1	1	report_preserved	b323721677d8d34b062d6b1ecf75937b909d4e7f5a4abd36960b585b898361f7	675	1	none	none
+r097	V core 5	/root/r097_attempt1	1	report_preserved	ff25b3bde39b04665282076673c2d99a4ca6f48c3399c8f27efb4c879394618d	652	1	none	none
+r101	V core 1	/root/r101_attempt1	1	report_preserved	1083dc4271efd972b60f67e6b14ea965227fbddddfb1c2438cdbcac9aa8c7b7b	784	1	none	none
+r113	N v2 3	none	0	dispatch_deferred	-	-	0	none	two spawn calls rejected by agent thread limit; no agent created and no output touched
+r105	C v2 1	/root/r105_attempt1	1	report_preserved	7f1d0e341c39a7d58717e3f3cc2d22add3c385388abca223d7f90d4005188a2d	646	1	none	none
+r117	P v1 4	none	0	dispatch_deferred	-	-	0	none	one spawn call rejected by agent thread limit; no agent created and no output touched
+r109	C v1 4	/root/r109_attempt1	1	report_preserved	a1c698a24b8995f90fc7279c2ac5a8986e2032be1dba94551dc332087a5317e0	718	0	none	none
+r113	N v2 3	/root/r113_attempt1	1	report_preserved	aa9cbf6ba448d6314d8667c7d55b9b2d9a4dbffdffb70f2dd32926ca44292678	794	1	none	none; see prior dispatch_deferred event
+r117	P v1 4	/root/r117_attempt1	1	report_preserved	99b552ac87a6950c55934a6c42b0acc575dfd44ef56ad29340aae782271449ca	976	1	none	none; see prior dispatch_deferred event
+r121	U core 2	/root/r121_attempt1	1	report_preserved	c8523f8efe46fea547b1b949b3a6712ddf689447b3b0f706b4e9ec071447d8e3	608	1	none	none
+r125	A v1 2	/root/r125_attempt1	1	report_preserved	b76eea85a53841c7385906efa8852f513b8467647c95ddce7f8a82489c24d37f	619	1	none	none
+r129	N v1 3	/root/r129_attempt1	1	report_preserved	a7303d5d170341cb37f4b0774618e746086b3b29d6ec95abdf8680719edf43ae	828	1	none	none
+r133	V v2 5	/root/r133_attempt1	1	report_preserved	df49c37470823ef1969457c775714d982094698bd478514bdef0b7ca58d2e5d5	654	1	none	none
+r137	T core 4	/root/r137_attempt1	1	report_preserved	04529d4b543ed0fbf014c6cc9172bb4d17bddca2f4ab987a8d93abc54808bca5	693	1	none	none
+r145	I v2 4	none	0	dispatch_deferred	-	-	0	none	one spawn call rejected by agent thread limit; no agent created and no output touched
+r141	D v1 1	/root/r141_attempt1	1	report_preserved	05f8c2590ec572bba6eed06d58292a04c5528333d5a0a7ca13557cb7b6033851	714	1	none	none
+r145	I v2 4	/root/r145_attempt1	1	report_preserved	98ef7788f4fb27ef94217d2ff2609a2fe63b89fb079a8192b621dc46179e0f14	721	1	none	none; see prior dispatch_deferred event
+r149	D v2 4	/root/r149_attempt1	1	report_preserved	5c3f27d040802eedc262795ec695af6206adc1fcc1aa2b7c4f7b2da4b7b5f845	637	1	none	none
+r076	not-read (existing report)	none	0	rebalance_skipped_existing_report	9f3b30b15a2cd223bb3d29f2bc32e2b07fcef6396dbc47f1db5261e55eae8a49	980	0	none	modulo-0 pool; not claimed
+r080	not-read (existing report)	none	0	rebalance_skipped_existing_report	2526724b8f6e4b6c1ac17e3ecbcbd73b9d1507e28f848ac17d4856eda0f69a03	719	0	none	modulo-0 pool; not claimed
+r084	not-read (existing report)	none	0	rebalance_skipped_existing_report	acdeda852771c8ac537223feadde4ffc99a86a3525184418ea55d5ff9a133b51	692	0	none	modulo-0 pool; not claimed
+r088	not-read (existing report)	none	0	rebalance_skipped_existing_report	b8bf937070e65165d3bfff905c75ad7c9fb06d1ed927958550f1ad283348fce7	687	0	none	modulo-0 pool; not claimed
+r092	not-read (existing report)	none	0	rebalance_skipped_existing_report	9cf79919a62f4997f1440850afb611941b5f6294f4adf6ce865b28e3619e231b	695	0	none	modulo-0 pool; not claimed
+r096	not-read (existing report)	none	0	rebalance_skipped_existing_report	c8cccc99a0d351e1ffc9c1a4326bed215db50dbf88326ed3063588234c0c100d	929	0	none	modulo-0 pool; not claimed
+r100	not-read (existing report)	none	0	rebalance_skipped_existing_report	415899e50b3f0e1e37c5f8e30a1b1f8832938b05bc8ca32237ef72e439b3f223	609	0	none	modulo-0 pool; not claimed
+r104	not-read (existing report)	none	0	rebalance_skipped_existing_report	b95a71b87221c128b3cfbd8fb2b8e038b589cd472f7788781e39ec1575395b0b	779	0	none	modulo-0 pool; not claimed
+r108	not-read (existing report)	none	0	rebalance_skipped_existing_report	566c7010d5056758ea0bb180b15c5c763ddc705658b9ad2adcf810eea12528f8	751	0	none	modulo-0 pool; not claimed
+r112	not-read (existing report)	none	0	rebalance_skipped_existing_report	f7043de7bd8c44dc4c711ef43a749b62cdbd849bcf139f595d9529f1477069d9	800	0	none	modulo-0 pool; not claimed
+r116	not-read (existing report)	none	0	rebalance_skipped_existing_report	a8f0eb9814170360c3a888780ab336551f411736a4d49dee1813dbf026bb2ed2	689	0	none	modulo-0 pool; not claimed
+r120	not-read (existing report)	none	0	rebalance_skipped_existing_report	11249b37dba870ac0ea1e9b26eb2c67bbea5b41ee53997fa8df52a5e5b7e9817	799	0	none	modulo-0 pool; not claimed
+r124	not-read (existing report)	none	0	rebalance_skipped_existing_report	2c4f58b1079ae12613802d74d64b7007b605bc2124a223e94dd3a71541b338e2	670	0	none	modulo-0 pool; not claimed
+r128	not-read (existing report)	none	0	rebalance_skipped_existing_report	501aa254255ce8d90a6f0c5ff387f53261725af547203b119141b65830df1c77	672	0	none	modulo-0 pool; not claimed
+r132	not-read (existing report)	none	0	rebalance_skipped_existing_report	015f35f23a6c6f6fbb91fdba9a362cd5bff32929c78994eb405f32841f45ee5a	710	0	none	modulo-0 pool; not claimed
+r136	not-read (existing report)	none	0	rebalance_skipped_existing_report	0c086ba81aaffd250c133a04e97451b15ec138e30bc5b78ca95fe3ef33bcf181	721	0	none	modulo-0 pool; not claimed
+r140	not-read (existing report)	none	0	rebalance_skipped_existing_report	770680fd022a39cfefd0140d8b71c1e974da29005fd68b4f7fcaf12d40b252a1	700	0	none	modulo-0 pool; not claimed
+r144	not-read (existing report)	none	0	rebalance_skipped_existing_report	62e725bd24db907896cce9b3363cd4f6fd5072e83efdddde5d9be146cdb3513a	726	0	none	modulo-0 pool; not claimed
