@@ -1,0 +1,40 @@
+.container {
+  display: flex;
+
+  --copied-duration: 1s ease-in-out;
+}
+
+.button {
+  composes: -buttonReset from '../shared.module.css';
+  transition: color var(--copied-duration);
+  cursor: pointer;
+  margin: 0 0.25em 0 0.5em;
+}
+
+.text {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    visibility var(--copied-duration),
+    opacity var(--copied-duration),
+    color var(--copied-duration);
+}
+
+.active {
+  composes: container;
+
+  & .button {
+    transition: color 0s;
+    color: green;
+  }
+
+  & .text {
+    visibility: visible;
+    opacity: 1;
+    transition:
+      visibility 0s,
+      opacity 0s,
+      color 0s;
+    color: green;
+  }
+}
