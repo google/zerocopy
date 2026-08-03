@@ -12,5 +12,6 @@ Keep the current-artifact verdict independent of every proposal. Explain the
 contract and migration delta of the preferred design and what must be audited
 after implementation. Do not edit or execute the source.
 
-Scope: exactly Rust 1.82.0, all targets and ordinary profiles, no additional
-TCB assumptions.
+Scope: exactly Rust 1.82.0, every target on which this exact source and its used
+Rust 1.82.0 standard-library items exist, every ordinary profile, and no
+additional TCB assumptions.

@@ -6,7 +6,7 @@
 - **Base authority:** the Rust 1.84.0 `Option::is_none` and
   `Option::unwrap_unchecked` standard-library pages.
 - **Exact proposition:** for every released stable Rust toolchain `r` satisfying
-  `1.84.0 <= r <= 1.86.0`, on every supported target and ordinary Cargo
+  `1.84.0 <= r <= 1.86.0`, on every supported target and every supported Cargo
   profile, with either feature or debug-assertion state, Rust preserves these
   base propositions without weakening, qualification, or added precondition:
   (1) `is_none` returns true exactly for `None`; and (2)

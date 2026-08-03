@@ -2,15 +2,13 @@
 
 ## `acknowledge`
 
-The submitted material for this claim is its exact empty body. It has no
-statements, calls, unsafe blocks, raw-pointer accesses, or state transitions.
-No Rust-version-specific library proposition is submitted for this claim. The
-semantic bridge from that syntactic fact to the multi-release claim is exactly
-accepted entry `SEM-EMPTY-BLOCK-180-182` in `TCB.md`.
+The submitted source material for this claim is its exact empty body. No
+Rust-version-specific library page is submitted. `TCB.md` contains accepted
+entry `SEM-EMPTY-BLOCK-180-182`.
 
 ## `store_word`
 
-The submitted authorities form two exact applicable cases:
+The submitted authorities are:
 
 - [`std::ptr::write`, Rust 1.80.0](https://doc.rust-lang.org/1.80.0/std/ptr/fn.write.html):
   the description says that `write` overwrites without reading or dropping the
@@ -19,11 +17,9 @@ The submitted authorities form two exact applicable cases:
 - [`std::ptr::write`, Rust 1.81.0](https://doc.rust-lang.org/1.81.0/std/ptr/fn.write.html):
   the same description and Safety propositions apply to the 1.81.0 case.
 
-No compatibility premise is needed or supplied for this two-member domain.
-
 ## `copy_byte`
 
-One exact base authority is supplied:
+The submitted authorities are:
 
 - [`std::ptr::copy_nonoverlapping`, Rust 1.80.0](https://doc.rust-lang.org/1.80.0/std/ptr/fn.copy_nonoverlapping.html):
   its description says that it copies `count * size_of::<T>()` bytes and does
@@ -32,17 +28,18 @@ One exact base authority is supplied:
   be properly aligned, and the regions not to overlap. For `T = u8` and
   `count = 1`, these are the exact caller-side clauses in `lib.rs`.
 - [Rust 1.80.0 primitive data layout](https://doc.rust-lang.org/1.80.0/reference/type-layout.html#primitive-data-layout):
-  `u8` has size and alignment 1.
+  `u8` has size 1.
 - [`u8: Copy`, Rust 1.80.0](https://doc.rust-lang.org/1.80.0/std/primitive.u8.html#impl-Copy-for-u8):
   `u8` implements `Copy`.
+- [`Copy` semantics, Rust 1.80.0](https://doc.rust-lang.org/1.80.0/std/marker/trait.Copy.html):
+  values of a `Copy` type are duplicated by a simple bitwise copy rather than
+  moved.
 
-The applicability of this authority beyond 1.80.0 is only the exact accepted
-compatibility proposition in `TCB.md`; no stability badge or sampled later
-page is submitted.
+`TCB.md` contains accepted entry `COMPAT-COPY-180-182`.
 
 ## `load_word`
 
-Only the two endpoint authorities are supplied:
+The submitted authorities are:
 
 - [`std::ptr::read`, Rust 1.80.0](https://doc.rust-lang.org/1.80.0/std/ptr/fn.read.html):
   the description says that `read` reads without moving and leaves the source
@@ -53,10 +50,11 @@ Only the two endpoint authorities are supplied:
   case.
 - [`u32: Copy`, Rust 1.80.0](https://doc.rust-lang.org/1.80.0/std/primitive.u32.html#impl-Copy-for-u32):
   `u32` implements `Copy` in the 1.80.0 endpoint case.
+- [`Copy` semantics, Rust 1.80.0](https://doc.rust-lang.org/1.80.0/std/marker/trait.Copy.html):
+  the corresponding copy rather than move semantics apply at that endpoint.
 - [`u32: Copy`, Rust 1.82.0](https://doc.rust-lang.org/1.82.0/std/primitive.u32.html#impl-Copy-for-u32):
   `u32` implements `Copy` in the 1.82.0 endpoint case.
+- [`Copy` semantics, Rust 1.82.0](https://doc.rust-lang.org/1.82.0/std/marker/trait.Copy.html):
+  the corresponding copy rather than move semantics apply at that endpoint.
 
-No `ptr::read` authority for 1.80.1 or 1.81.0, compatibility premise, semantic
-continuity theorem, or exhaustive interior partition is supplied. Evidence for
-`ptr::write`, `copy_nonoverlapping`, or the empty `acknowledge` body establishes
-no proposition about `ptr::read` on those two releases.
+These are all submitted authorities and TCB entries for `load_word`.
