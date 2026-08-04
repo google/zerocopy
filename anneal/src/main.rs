@@ -47,12 +47,7 @@ exocrate::config! {
 }
 
 exocrate::parse_remote_archive! {
-    const REMOTE: RemoteArchive = "Cargo.toml" [
-        (linux, x86_64),
-        (macos, x86_64),
-        (linux, aarch64),
-        (macos, aarch64),
-    ];
+    const REMOTE: RemoteArchive;
 }
 
 fn setup_installation_dir(args: SetupArgs) -> std::path::PathBuf {

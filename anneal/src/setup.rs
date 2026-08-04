@@ -21,12 +21,7 @@ exocrate::config! {
 }
 
 exocrate::parse_remote_archive! {
-    pub const REMOTE: RemoteArchive = "Cargo.toml" [
-        (linux, x86_64),
-        (macos, x86_64),
-        (linux, aarch64),
-        (macos, aarch64),
-    ];
+    pub const REMOTE: RemoteArchive;
 }
 
 pub enum Tool {

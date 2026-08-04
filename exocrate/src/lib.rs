@@ -349,65 +349,55 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
 /// [package.metadata.exocrate.macos.aarch64]
 /// sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 /// url = "https://example.com/macos-aarch64.tar.zst"
-/// ```
 ///
-/// The `parse_remote_archive!` invocation must specify the set of OS/Arch
-/// pairs, e.g.:
-///
-/// ```rust,ignore
+/// Example Usage:
 /// parse_remote_archive! {
-///     const REMOTE: RemoteArchive = "Cargo.toml" [
-///         (linux, x86_64),
-///         (linux, aarch64),
-///         (macos, aarch64),
-///         (macos, x86_64),
-///     ];
+///     const REMOTE: RemoteArchive;
 /// }
 /// ```
 ///
-/// **NOTE**: The calling crate must have its own dependency on the `toml_const`
-/// crate.
-// - FIXME(#3409): Lift this limitation.
-// - FIXME(#3410): Don't require the user to specify os/arch pairs in the macro invocation.
 #[macro_export]
 macro_rules! parse_remote_archive {
-    ($vis:vis const $name:ident: RemoteArchive = $cargo_toml_path:literal [
-        $(($os:ident, $arch:ident)),* $(,)?
-    ];) => {
+    ($vis:vis const $name:ident: RemoteArchive;) => {
         $vis const $name: $crate::RemoteArchive = {
-            ::toml_const::toml_const!{
-                const MANIFEST: $cargo_toml_path;
+            // Read the calling crate's `Cargo.toml`. `CARGO_MANIFEST_DIR` is expanded
+            // at the invocation site, so this always refers to the manifest of the crate
+            // using `parse_remote_archive!`, not the crate defining the macro.
+            const MANIFEST: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/Cargo.toml"));
+            const PREFIX: &str = "[package.metadata.exocrate.";
+
+            let Some(header) = $crate::macro_util::find_line(
+                MANIFEST,
+                ::std::env::consts::OS,
+                ::std::env::consts::ARCH,
+                PREFIX,
+            ) else {
+                panic!("unsupported platform")
+            };
+            let bytes = MANIFEST.as_bytes();
+            let mut body_start = header;
+            while body_start < bytes.len() && bytes[body_start] != b'\n' {
+                body_start += 1;
+            }
+            if body_start < bytes.len() {
+                body_start += 1;
             }
 
-            let config = {
-                use std::env::consts::*;
-                use $crate::macro_util::pack;
-
-                // NOTE: Rust doesn't support checking `&str`s for equality in a
-                // `const` context. We work around that limitation by packing
-                // their bytes into `u128`s, which can be compared.
-                //
-                // FIXME(#3410): How can we detect if os/arch pairs have been added to
-                // `Cargo.toml` without being added to the macro invocation?
-                match (pack(OS), pack(ARCH)) {
-                    $(
-                        (os, arch) if os == pack(stringify!($os)) && arch == pack(stringify!($arch)) => {
-                            MANIFEST.package.metadata.exocrate.$os.$arch
-                        }
-                    )*
-                    _ => panic!("unsupported platform"),
-                }
+            let Some(url) = $crate::macro_util::find_field(MANIFEST, body_start, "url") else {
+                panic!("missing `url` field")
             };
-
-            let Some(sha256) = $crate::macro_util::decode_hex(config.sha256) else {
+            let Some(sha256_str) =
+                $crate::macro_util::find_field(MANIFEST, body_start, "sha256")
+            else {
+                panic!("missing `sha256` field")
+            };
+            let Some(sha256) = $crate::macro_util::decode_hex(sha256_str) else {
                 panic!("invalid sha256")
             };
-            $crate::RemoteArchive {
-                sha256,
-                url: config.url,
-            }
+
+            $crate::RemoteArchive { sha256, url }
         };
-    }
+    };
 }
 
 /// Defines a versioned exocrate configuration (a [`Config`])
@@ -547,6 +537,157 @@ pub mod macro_util {
             i += 1;
         }
         res
+    }
+
+    #[doc(hidden)]
+    pub struct ParsedRemoteArchive<'a> {
+        pub url: &'a str,
+        pub sha256: &'a str,
+    }
+
+    /// Returns `true` if the bytes in `data` starting at `offset` exactly match
+    /// `to_search`.
+    ///
+    /// If `offset + to_search.len()` would exceed the bounds of `data`, this
+    /// function returns `false`.
+    pub const fn bytes_eq_at(data: &[u8], offset: usize, to_search: &[u8]) -> bool {
+        if offset + to_search.len() > data.len() {
+            return false;
+        }
+
+        let mut i = 0;
+        while i < to_search.len() {
+            if data[offset + i] != to_search[i] {
+                return false;
+            }
+            i += 1;
+        }
+
+        true
+    }
+
+    /// Searches `manifest` for a metadata section whose header matches
+    /// `prefix`, `os`, and `arch`.
+    /// The expected format is `[metadata.exocrate.manifest.{os}.{arch}]`
+    pub const fn find_line(manifest: &str, os: &str, arch: &str, prefix: &str) -> Option<usize> {
+        let bytes = manifest.as_bytes();
+        let os = os.as_bytes();
+        let arch = arch.as_bytes();
+        let prefix = prefix.as_bytes();
+
+        let mut i = 0;
+
+        while i < bytes.len() {
+            // Only consider the beginning of lines.
+            if i != 0 && bytes[i - 1] != b'\n' {
+                i += 1;
+                continue;
+            }
+
+            if !bytes_eq_at(bytes, i, prefix) {
+                while i < bytes.len() && bytes[i] != b'\n' {
+                    i += 1;
+                }
+                if i < bytes.len() {
+                    i += 1;
+                }
+                continue;
+            }
+
+            let mut pos = i + prefix.len();
+
+            if !bytes_eq_at(bytes, pos, os) {
+                while i < bytes.len() && bytes[i] != b'\n' {
+                    i += 1;
+                }
+                if i < bytes.len() {
+                    i += 1;
+                }
+                continue;
+            }
+            pos += os.len();
+
+            if pos >= bytes.len() || bytes[pos] != b'.' {
+                while i < bytes.len() && bytes[i] != b'\n' {
+                    i += 1;
+                }
+                if i < bytes.len() {
+                    i += 1;
+                }
+                continue;
+            }
+            pos += 1;
+
+            if !bytes_eq_at(bytes, pos, arch) {
+                while i < bytes.len() && bytes[i] != b'\n' {
+                    i += 1;
+                }
+                if i < bytes.len() {
+                    i += 1;
+                }
+                continue;
+            }
+            pos += arch.len();
+
+            if pos < bytes.len() && bytes[pos] == b']' {
+                return Some(i);
+            }
+
+            while i < bytes.len() && bytes[i] != b'\n' {
+                i += 1;
+            }
+            if i < bytes.len() {
+                i += 1;
+            }
+        }
+
+        None
+    }
+
+    /// This function finds the `value` for a passed `key` in the passed
+    /// `manifest` after starting at `start` offset. It  returns a `None`
+    /// variant if it hits a `[` or an `EOF` before finding the key.
+    ///
+    /// Note: Expected format for key/value pair is:
+    /// `Key = "Value"` do mind the spaces otherwise it will return `None`.
+    pub const fn find_field<'a>(manifest: &'a str, start: usize, key: &str) -> Option<&'a str> {
+        let bytes = manifest.as_bytes();
+        let key = key.as_bytes();
+        let mut i = start;
+        while i < bytes.len() {
+            if bytes[i] == b'[' {
+                return None;
+            }
+            if bytes_eq_at(bytes, i, key) {
+                let mut pos = i + key.len();
+                // expect exactly " = \"" (space, equals, space, quote)
+                if pos + 4 <= bytes.len()
+                    && bytes[pos] == b' '
+                    && bytes[pos + 1] == b'='
+                    && bytes[pos + 2] == b' '
+                    && bytes[pos + 3] == b'"'
+                {
+                    pos += 4;
+                    let value_start = pos;
+                    let mut value_end = value_start;
+                    while value_end < bytes.len() && bytes[value_end] != b'"' {
+                        value_end += 1;
+                    }
+                    if value_end < bytes.len() {
+                        let (_, rest) = manifest.split_at(value_start);
+                        let (value, _) = rest.split_at(value_end - value_start);
+                        return Some(value);
+                    }
+                }
+            }
+            while i < bytes.len() && bytes[i] != b'\n' {
+                i += 1;
+            }
+            if i < bytes.len() {
+                i += 1;
+            }
+        }
+        None
     }
 }
 
