@@ -13,9 +13,9 @@ use std::num::NonZeroU32;
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, quote_spanned, ToTokens};
 use syn::{
-    parse_quote, spanned::Spanned as _, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error,
-    Expr, ExprLit, Field, GenericParam, Ident, Index, Lit, LitStr, Meta, Path, Type, Variant,
-    Visibility, WherePredicate,
+    parse::ParseBuffer, parse_quote, spanned::Spanned as _, token::PathSep, Data, DataEnum,
+    DataStruct, DataUnion, DeriveInput, Error, Expr, ExprLit, Field, GenericParam, Ident, Index,
+    Lit, LitStr, Meta, Path, Type, Variant, Visibility, WherePredicate,
 };
 
 use crate::repr::{CompoundRepr, EnumRepr, PrimitiveRepr, Repr, Spanned};
@@ -32,6 +32,56 @@ pub(crate) struct Ctx {
     pub(crate) on_error_span: Option<proc_macro2::Span>,
 }
 
+#[derive(Eq, PartialEq)]
+enum CratePath {
+    External,
+    CrateRelative,
+    ModuleRelative,
+}
+
+fn validate_crate_path(path: &Path) -> Result<CratePath, ()> {
+    if path.segments.is_empty() {
+        return Err(());
+    }
+
+    enum ModuleRelative {
+        Yes,
+        No,
+    }
+    let first = path.segments[0].ident.to_string();
+    let (mut prev_segment, path_type) = match first.as_str() {
+        "Self" => return Err(()),
+        "crate" => {
+            if path.leading_colon.is_some() {
+                return Err(());
+            }
+            (ModuleRelative::No, CratePath::CrateRelative)
+        }
+        "self" | "super" => {
+            if path.leading_colon.is_some() {
+                return Err(());
+            }
+            (ModuleRelative::Yes, CratePath::ModuleRelative)
+        }
+        _ => (ModuleRelative::No, CratePath::External),
+    };
+
+    for seg in path.segments.iter().skip(1) {
+        let ident = seg.ident.to_string();
+        match ident.as_str() {
+            "Self" | "crate" | "self" => return Err(()),
+            "super" => match prev_segment {
+                ModuleRelative::Yes => {}
+                ModuleRelative::No => return Err(()),
+            },
+            _ => {
+                prev_segment = ModuleRelative::No;
+            }
+        }
+    }
+    Ok(path_type)
+}
+
 impl Ctx {
     /// Attempt to extract a crate path from the provided attributes. Defaults to
     /// `::zerocopy` if not found.
@@ -45,16 +95,32 @@ impl Ctx {
                 if meta_list.path.is_ident("zerocopy") {
                     attr.parse_nested_meta(|meta| {
                         if meta.path.is_ident("crate") {
-                            let expr = meta.value().and_then(|value| value.parse());
+                            let expr = meta.value().and_then(ParseBuffer::parse);
                             if let Ok(Expr::Lit(ExprLit { lit: Lit::Str(lit), .. })) = expr {
-                                if let Ok(path_lit) = lit.parse::<Ident>() {
-                                    path = parse_quote!(::#path_lit);
-                                    return Ok(());
+                                if let Ok(mut path_lit) = lit.parse_with(Path::parse_mod_style) {
+                                    if let Ok(crate_path) = validate_crate_path(&path_lit) {
+                                        // If not expressly relative, absolutize.
+                                        if path_lit.leading_colon.is_none() && crate_path == CratePath::External {
+                                            path_lit.leading_colon = Some(PathSep::default());
+                                        }
+                                        path = path_lit;
+                                        return Ok(());
+                                    }
+
+                                    return Err(Error::new(
+                                        lit.span(),
+                                        "`crate` attribute requires a valid module path",
+                                    ));
                                 }
+
+                                return Err(Error::new(
+                                    lit.span(),
+                                    "`crate` attribute requires a path as the value",
+                                ));
                             }
 
                             return Err(Error::new(
-                                Span::call_site(),
+                                meta.path.span(),
                                 "`crate` attribute requires a path as the value",
                             ));
                         }
@@ -859,5 +925,59 @@ pub(crate) mod testutil {
                 let _ = Self::Ambiguous;
             }
         });
+    }
+
+    #[test]
+    fn test_validate_crate_path() {
+        use syn::parse_str;
+
+        let valid = [
+            "zerocopy",
+            "crate",
+            "crate::foo::bar",
+            "self",
+            "self::foo",
+            "self::super::foo",
+            "super",
+            "super::foo",
+            "super::super::foo",
+            "super::super::super",
+            "foo::bar::baz",
+            "::foo::bar",
+        ];
+
+        for path_str in valid {
+            let path = parse_str::<syn::Path>(path_str).unwrap();
+            assert!(
+                super::validate_crate_path(&path).is_ok(),
+                "expected valid path for `{}`",
+                path_str
+            );
+        }
+
+        let invalid = [
+            "::crate::foo",
+            "::self::foo",
+            "::super::foo",
+            "Self",
+            "Self::foo",
+            "foo::Self::bar",
+            "foo::crate::bar",
+            "foo::super::bar",
+            "foo::self",
+            "super::foo::super",
+            "super::crate::foo",
+            "crate::super::foo",
+            "self::self::foo",
+        ];
+
+        for path_str in invalid {
+            let path = parse_str::<syn::Path>(path_str).unwrap();
+            assert!(
+                super::validate_crate_path(&path).is_err(),
+                "expected invalid path for `{}`",
+                path_str
+            );
+        }
     }
 }

@@ -18,25 +18,79 @@ include!("include.rs");
 
 extern crate zerocopy_renamed as _zerocopy;
 
-#[derive(_zerocopy::KnownLayout, _zerocopy::FromBytes, _zerocopy::Unaligned)]
-#[zerocopy(crate = "zerocopy_renamed")]
-#[repr(C)]
-struct TypeParams<'a, T, I: imp::Iterator> {
-    a: T,
-    c: I::Item,
-    d: u8,
-    e: imp::PhantomData<&'a [::core::primitive::u8]>,
-    f: imp::PhantomData<&'static ::core::primitive::str>,
-    g: imp::PhantomData<imp::String>,
+extern crate self as derive_path_test;
+
+pub mod nested {
+    pub extern crate zerocopy_renamed as reexported_zerocopy;
 }
 
-util_assert_impl_all!(
-    TypeParams<'static, (), imp::IntoIter<()>>:
-        _zerocopy::KnownLayout,
-        _zerocopy::FromZeros,
-        _zerocopy::FromBytes,
-        _zerocopy::Unaligned
-);
+macro_rules! test {
+    ($($path:tt)::*, $crate_str:tt) => {
+        #[derive(
+            $($path)::*::KnownLayout,
+            $($path)::*::FromBytes,
+            $($path)::*::Unaligned,
+        )]
+        #[zerocopy(crate = $crate_str)]
+        #[repr(C)]
+        struct TypeParams<'a, T, I: imp::Iterator> {
+            a: T,
+            c: I::Item,
+            d: u8,
+            e: imp::PhantomData<&'a [::core::primitive::u8]>,
+            f: imp::PhantomData<&'static ::core::primitive::str>,
+            g: imp::PhantomData<imp::String>,
+        }
+
+        util_assert_impl_all!(
+            TypeParams<'static, (), imp::IntoIter<()>>:
+                $($path)::*::KnownLayout,
+                $($path)::*::FromZeros,
+                $($path)::*::FromBytes,
+                $($path)::*::Unaligned
+        );
+    };
+}
+
+test!(_zerocopy, "zerocopy_renamed");
+
+mod nested_external {
+    use super::*;
+
+    test!(
+        derive_path_test::nested::reexported_zerocopy,
+        "derive_path_test::nested::reexported_zerocopy"
+    );
+}
+
+mod crate_relative {
+    use super::*;
+
+    test!(crate::nested::reexported_zerocopy, "crate::nested::reexported_zerocopy");
+}
+
+mod super_relative {
+    use super::*;
+
+    test!(super::nested::reexported_zerocopy, "super::nested::reexported_zerocopy");
+}
+
+mod self_super_relative {
+    use super::*;
+
+    test!(self::super::nested::reexported_zerocopy, "self::super::nested::reexported_zerocopy");
+}
+
+mod super_super_relative {
+    mod inner {
+        use super::super::*;
+
+        test!(
+            super::super::nested::reexported_zerocopy,
+            "super::super::nested::reexported_zerocopy"
+        );
+    }
+}
 
 // Regression test for #2177.
 //

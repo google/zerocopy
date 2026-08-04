@@ -366,3 +366,45 @@ struct SplitAtNotKnownLayout([u8]);
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct SplitAtSized(u8);
+
+#[derive(KnownLayout)]
+#[zerocopy(crate = "zerocopy_renamed"typo)]
+//~[msrv, stable, nightly]^ ERROR: `crate` attribute requires a path as the value
+#[repr(C)]
+struct InvalidCrateSuffix(u8);
+
+#[derive(KnownLayout)]
+#[zerocopy(crate = "Self::foo")]
+//~[msrv, stable, nightly]^ ERROR: `crate` attribute requires a valid module path
+#[repr(C)]
+struct InvalidCrateSelf(u8);
+
+#[derive(KnownLayout)]
+#[zerocopy(crate = "::crate::foo")]
+//~[msrv, stable, nightly]^ ERROR: `crate` attribute requires a valid module path
+#[repr(C)]
+struct InvalidCrateLeadingColonRelative(u8);
+
+#[derive(KnownLayout)]
+#[zerocopy(crate = "foo::crate::bar")]
+//~[msrv, stable, nightly]^ ERROR: `crate` attribute requires a valid module path
+#[repr(C)]
+struct InvalidCrateNonLeadingCrate(u8);
+
+#[derive(KnownLayout)]
+#[zerocopy(crate = "foo::super::bar")]
+//~[msrv, stable, nightly]^ ERROR: `crate` attribute requires a valid module path
+#[repr(C)]
+struct InvalidCrateNonLeadingSuper(u8);
+
+#[derive(KnownLayout)]
+#[zerocopy(crate = "foo::Self::bar")]
+//~[msrv, stable, nightly]^ ERROR: `crate` attribute requires a valid module path
+#[repr(C)]
+struct InvalidCrateMiddleSelf(u8);
+
+#[derive(KnownLayout)]
+#[zerocopy(crate = "foo::self")]
+//~[msrv, stable, nightly]^ ERROR: `crate` attribute requires a valid module path
+#[repr(C)]
+struct InvalidCrateTrailingSelf(u8);

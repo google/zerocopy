@@ -88,6 +88,48 @@ error: this conflicts with another representation hint
 353 | #[repr(C, packed(2))]
     |        ^
 
+error: `crate` attribute requires a path as the value
+   --> $DIR/struct.rs:371:20
+    |
+371 | #[zerocopy(crate = "zerocopy_renamed"typo)]
+    |                    ^^^^^^^^^^^^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:377:20
+    |
+377 | #[zerocopy(crate = "Self::foo")]
+    |                    ^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:383:20
+    |
+383 | #[zerocopy(crate = "::crate::foo")]
+    |                    ^^^^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:389:20
+    |
+389 | #[zerocopy(crate = "foo::crate::bar")]
+    |                    ^^^^^^^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:395:20
+    |
+395 | #[zerocopy(crate = "foo::super::bar")]
+    |                    ^^^^^^^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:401:20
+    |
+401 | #[zerocopy(crate = "foo::Self::bar")]
+    |                    ^^^^^^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:407:20
+    |
+407 | #[zerocopy(crate = "foo::self")]
+    |                    ^^^^^^^^^^^
+
 error[E0692]: transparent struct cannot have other repr hints
    --> $DIR/struct.rs:308:8
     |
@@ -528,7 +570,7 @@ note: required by a bound in `is_into_bytes_11`
     |                        ^^^^^^^^^ required by this bound in `is_into_bytes_11`
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 37 previous errors
+error: aborting due to 44 previous errors
 
 Some errors have detailed explanations: E0277, E0587, E0588, E0692.
 For more information about an error, try `rustc --explain E0277`.

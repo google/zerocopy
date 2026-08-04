@@ -81,7 +81,7 @@ error[E0271]: type mismatch resolving `<u8 as zerocopy_renamed::KnownLayout>::Po
     = help: see issue #48214
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 32 previous errors
+error: aborting due to 39 previous errors
 
 Some errors have detailed explanations: E0271, E0277, E0692.
 For more information about an error, try `rustc --explain E0271`.
