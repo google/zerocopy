@@ -10,6 +10,7 @@ use std::{
     env,
     fmt::Debug,
     path::{Path, PathBuf},
+    process::Command,
 };
 
 use ui_test::{
@@ -37,6 +38,7 @@ fn main() {
     );
     let toolchain = env::var("ZEROCOPY_UI_TEST_TOOLCHAIN")
         .expect("ZEROCOPY_UI_TEST_TOOLCHAIN must be set by tests/ui.rs");
+    let supports_diagnostic_width = rustc_supports_diagnostic_width(&toolchain);
 
     let root = env::current_dir().unwrap();
     let mut config = Config::rustc(tests_dir.clone());
@@ -125,9 +127,9 @@ fn main() {
     // terminal width of the environment in which the tests are run.
     //
     // However, this flag was only stabilized in Rust 1.70.0 (and was unstable
-    // starting in 1.62.0), so we only pass it if we're not on our MSRV
-    // toolchain (which is 1.56.0).
-    if toolchain_meta_name != "msrv" {
+    // starting in 1.62.0), so only pass it when the selected compiler supports
+    // it.
+    if supports_diagnostic_width {
         config.program.args.push("--diagnostic-width=100".into());
     }
 
@@ -215,6 +217,14 @@ fn main() {
         OverrideEmitter(ui_test::status_emitter::Text::verbose(), toolchain_meta_name),
     )
     .unwrap();
+}
+
+fn rustc_supports_diagnostic_width(toolchain: &str) -> bool {
+    Command::new("rustup")
+        .args(["run", toolchain, "rustc", "--diagnostic-width=100", "--version"])
+        .output()
+        .map(|output| output.status.success())
+        .unwrap_or(false)
 }
 
 // Used to add the `.msrv`, `.stable`, or `.nightly` suffix to test output files
