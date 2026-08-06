@@ -9,7 +9,7 @@
 [package]
 edition = "2021"
 name = "zerocopy-derive"
-version = "0.8.55"
+version = "0.8.56"
 description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
