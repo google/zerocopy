@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785770868509,
+  "lastUpdate": 1786012298437,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23327,6 +23327,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 670,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "josh.a.seaton@gmail.com",
+            "name": "Joshua Seaton",
+            "username": "joshuaseaton"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "79777923be3d918d51cd75b28a182a5cc7dba36c",
+          "message": "#[zerocopy(crate = \"...\")] should parse paths, not idents (#3544)\n\nCurrently it parses the supplied literal as an identifier rather than a\npath (contrary to its internal documentation).\n\nThis allows a crate to export an attribute macro of its own that deals\nin re-exported zerocopy derive macros.",
+          "timestamp": "2026-08-06T09:40:30Z",
+          "tree_id": "32e8f6d160bb0a3432b5d20877b1d08474701fcb",
+          "url": "https://github.com/google/zerocopy/commit/79777923be3d918d51cd75b28a182a5cc7dba36c"
+        },
+        "date": 1786012296818,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 464,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 594,
             "unit": "seconds"
           }
         ]
