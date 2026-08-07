@@ -365,9 +365,6 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
 /// }
 /// ```
 ///
-/// **NOTE**: The calling crate must have its own dependency on the `toml_const`
-/// crate.
-// - FIXME(#3409): Lift this limitation.
 // - FIXME(#3410): Don't require the user to specify os/arch pairs in the macro invocation.
 #[macro_export]
 macro_rules! parse_remote_archive {
@@ -375,7 +372,7 @@ macro_rules! parse_remote_archive {
         $(($os:ident, $arch:ident)),* $(,)?
     ];) => {
         $vis const $name: $crate::RemoteArchive = {
-            ::toml_const::toml_const!{
+            $crate::macro_util::toml_const::toml_const!{
                 const MANIFEST: $cargo_toml_path;
             }
 
@@ -482,6 +479,7 @@ macro_rules! config {
 #[doc(hidden)]
 pub mod macro_util {
     pub use sha2_const::Sha256;
+    pub use toml_const;
 
     /// Packs the bytes of `s` into a `u128`.
     ///

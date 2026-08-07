@@ -288,7 +288,6 @@ dependencies = [
  "sha2",
  "tempfile",
  "thiserror",
- "toml_const",
  "walkdir",
 ]
 
@@ -727,6 +726,7 @@ dependencies = [
  "sha2-const",
  "tar",
  "tempfile",
+ "toml_const",
  "ureq",
  "zstd",
 ]
@@ -2179,9 +2179,9 @@ dependencies = [
 
 [[package]]
 name = "toml_const"
-version = "1.3.0"
+version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "389864cf501669b741746e9bc35e66c67f2b80266482ad04c452e2410433f205"
+checksum = "683e27d47b82029b5ae915b5dd80c05b2065c1c06046199900e8b2acdf531135"
 dependencies = [
  "phf",
  "toml 0.9.12+spec-1.1.0",
@@ -2190,9 +2190,9 @@ dependencies = [
 
 [[package]]
 name = "toml_const_macros"
-version = "1.3.0"
+version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3e0f202adfb96027640ad9786a0657775414482cfd840c19e9957ada8cfbbfd"
+checksum = "4a0d196bfbd74f5f2a9e37f35632c7217e4c46dedaed0327a20dd1230fad9504"
 dependencies = [
  "indexmap",
  "proc-macro2",
