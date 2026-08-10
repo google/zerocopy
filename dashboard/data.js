@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1786015779283,
+  "lastUpdate": 1786359289882,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23395,6 +23395,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 627,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "4dda7c4f1747be9d62c1385aa0b3094e1e28365a",
+          "message": "[CI] Bump the all-actions group with 3 updates (#3547)\n\nBumps the all-actions group with 3 updates: [zizmorcore/zizmor-action](https://github.com/zizmorcore/zizmor-action), [step-security/harden-runner](https://github.com/step-security/harden-runner) and [github/codeql-action/upload-sarif](https://github.com/github/codeql-action).\n\n\nUpdates `zizmorcore/zizmor-action` from 0.6.1 to 0.6.2\n- [Release notes](https://github.com/zizmorcore/zizmor-action/releases)\n- [Commits](https://github.com/zizmorcore/zizmor-action/compare/6fc4b006235f201fdab3722e17240ab420d580e5...3dc1ecc9bcb9e94e9b2c709687979e1298497054)\n\nUpdates `step-security/harden-runner` from 2.20.0 to 2.20.1\n- [Release notes](https://github.com/step-security/harden-runner/releases)\n- [Commits](https://github.com/step-security/harden-runner/compare/bf7454d06d71f1098171f2acdf0cd4708d7b5920...b09bb98e06d4d774595224525879c09bc6e98c40)\n\nUpdates `github/codeql-action/upload-sarif` from 4.37.4 to 4.37.6\n- [Release notes](https://github.com/github/codeql-action/releases)\n- [Changelog](https://github.com/github/codeql-action/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/github/codeql-action/compare/f205ea1c3313d32999d8d6a48b4f6530d4437b38...5595ccaf912efad79be6eef63a5619ff05969be3)\n\n---\nupdated-dependencies:\n- dependency-name: zizmorcore/zizmor-action\n  dependency-version: 0.6.2\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: step-security/harden-runner\n  dependency-version: 2.20.1\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: github/codeql-action/upload-sarif\n  dependency-version: 4.37.6\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-08-10T10:11:39Z",
+          "tree_id": "e9932a3b53ba4102b7568e6077212f952adb6967",
+          "url": "https://github.com/google/zerocopy/commit/4dda7c4f1747be9d62c1385aa0b3094e1e28365a"
+        },
+        "date": 1786359288225,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 445,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 581,
             "unit": "seconds"
           }
         ]
