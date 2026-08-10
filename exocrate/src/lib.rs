@@ -41,15 +41,15 @@
 //! values directly, or derive them from the macros exported by `exocrate`:
 //!
 //! ```rust,no_run
-//! const CONFIG: exocrate::Config = exocrate::Config {
+//! const CONFIG: exocrate::Config = exocrate::Config::new (
 //!     // Path components that are joined to establish the base directory for all exocrate
 //!     // installations.
 //!     //
 //!     // For `my-tool` developers: `<my-tool-root>/target/.my-tool/exocrate/<version>`
 //!     // For `my-tool` users: `~/.my-tool/exocrate/<version>`
-//!     rel_dir_path: &[".my-tool", "exocrate"],
-//!     version_slug: "example-version",
-//! };
+//!     &[".my-tool", "exocrate"],
+//!     "example-version",
+//! );
 //!
 //! const REMOTE: exocrate::RemoteArchive = exocrate::RemoteArchive {
 //!     sha256: [0xaa; 32],
@@ -152,19 +152,8 @@ pub struct RemoteArchive {
 }
 
 pub struct Config {
-    /// The relative path of the directory containing dependencies, stored as a
-    /// sequence of path components for cross-platform compatibility.
-    ///
-    /// Dependencies are stored in `<rel_dir_path>`. In production use, this is
-    /// relative to the user cache directory. In development, this is relative
-    /// to Cargo's `target` directory if it can be resolved, and otherwise relative
-    /// relative to the current working directory.
-    //
-    // FIXME(#3408): Make this non-`pub` and validate at construction that each
-    // item is valid for the OS.
-    pub rel_dir_path: &'static [&'static str],
-    /// A unique identifier for this version of the dependencies.
-    pub version_slug: &'static str,
+    rel_dir_path: &'static [&'static str],
+    version_slug: &'static str,
 }
 
 /// The location to install dependencies.
@@ -275,6 +264,127 @@ impl Config {
 
         parts.extend(self.rel_dir_path);
         Ok(parts.join(self.version_slug))
+    }
+
+    /// Creates a new `Config` after validating `rel_dir_path` and
+    /// `version_slug`.
+    ///
+    /// `rel_dir_path` is the relative path of the directory
+    /// containing the dependencies, stored as a sequence of path
+    /// components for cross-platform compatibility.
+    ///
+    /// Dependencies are stored in `<rel_dir_path>`. In production
+    /// use, this is relative to the user cache directory. In
+    /// development, this is relative to Cargo's `target` directory
+    /// if it can be resolved, and otherwise relative to the current
+    /// working directory.
+    ///
+    /// `version_slug` is a unique identifier for this version of
+    /// the dependencies.
+    pub const fn new(rel_dir_path: &'static [&'static str], version_slug: &'static str) -> Self {
+        let mut i = 0;
+        while i < rel_dir_path.len() {
+            validate_path(rel_dir_path[i]);
+            i += 1;
+        }
+        // `version_slug` is joined onto the path in `dir_path` exactly like a
+        // `rel_dir_path` component, so it needs the same validation.
+        validate_path(version_slug);
+
+        Self { rel_dir_path, version_slug }
+    }
+}
+
+/// Validates a single path component.
+///
+/// This function intentionally accepts only a small cross-platform subset
+/// of path component names. Thus, it ignores platform-specific behavior
+/// and ensures that the same logical path is valid on Windows, macOS
+/// and Unix-like systems.
+///
+/// # Panics
+///
+/// Panics if the component:
+/// - is empty
+/// - is `.` or `..`
+/// - contains a path separator
+/// - contains a character reserved on Windows
+/// - is a Windows-reserved device name (matched by its stem)
+/// - contains a null byte
+const fn validate_path(part: &str) {
+    let bytes = part.as_bytes();
+
+    assert!(bytes.len() <= 255, "Error: each `rel_dir_path` component must not exceed 255 bytes.");
+    assert!(!bytes.is_empty(), "rel_dir_path component must not be empty");
+    assert!(
+        !(bytes.len() == 1 && bytes[0] == b'.'),
+        "Error: `rel_dir_path` component must not be '.'",
+    );
+    assert!(
+        !(bytes.len() == 2 && bytes[0] == b'.' && bytes[1] == b'.'),
+        "Error: `rel_dir_path` component must not be '..'",
+    );
+    let mut i = 0;
+    while i < bytes.len() {
+        let b = bytes[i];
+        assert!(
+            b != b'/' && b != b'\\',
+            "Error: `rel_dir_path` component must not contain a path separator ('/' or '\\')",
+        );
+        assert!(
+            b != b'\0'
+                && b != b'<'
+                && b != b'>'
+                && b != b':'
+                && b != b'"'
+                && b != b'|'
+                && b != b'?'
+                && b != b'*',
+            "Error: `rel_dir_path` component must not contain a character reserved on Windows: < > : \" | ? *",
+        );
+        assert!(
+            b >= 0x20 && b != 0x7f,
+            "Error: `rel_dir_path` component must not contain an ASCII control character",
+        );
+        i += 1;
+    }
+
+    // Device names reserved by windows.
+    let reserved_names: &[&[u8]] = &[
+        b"CON", b"PRN", b"AUX", b"NUL", b"COM0", b"COM1", b"COM2", b"COM3", b"COM4", b"COM5",
+        b"COM6", b"COM7", b"COM8", b"COM9", b"LPT0", b"LPT1", b"LPT2", b"LPT3", b"LPT4", b"LPT5",
+        b"LPT6", b"LPT7", b"LPT8", b"LPT9",
+    ];
+
+    // Length of the component up to (not including) the first
+    // '.'. If there is no `.`, then this equals `bytes.len()`.
+    //
+    // This is because Windows reserves device names matched by
+    // their stem, i.e., "CON.abc" is reserved the same as "CON".
+    // The following check covers both cases.
+    let mut len = 0;
+    while len < bytes.len() && bytes[len] != b'.' {
+        len += 1;
+    }
+    let mut r = 0;
+    while r < reserved_names.len() {
+        let name = reserved_names[r];
+        if len == name.len() {
+            let mut is_reserved = true;
+            let mut j = 0;
+            while j < len {
+                if bytes[j].to_ascii_uppercase() != name[j] {
+                    is_reserved = false;
+                    break;
+                }
+                j += 1;
+            }
+            assert!(
+                !is_reserved,
+                "Error: `rel_dir_path` component must not be a Windows-reserved device name.",
+            );
+        }
+        r += 1;
     }
 }
 
@@ -444,35 +554,33 @@ macro_rules! config {
         versioned_files: &[ $($path:literal),* $(,)? ] $(,)?
     };) => {
         #[allow(long_running_const_eval)]
-        $vis const $name: $crate::Config = {
-            $crate::Config {
-                rel_dir_path: &$rel_dir_path,
-                version_slug: {
-                    #[allow(long_running_const_eval)]
-                    const HEX: [u8; 64] = {
-                        // FIXME(#3411): Pick a reasonably-collision-resistant
-                        // hash function that is cheaper to evaluate at const
-                        // time and eliminate
-                        // `#[allow(long_running_const_eval)]` above.
-                        let mut hasher = $crate::macro_util::Sha256::new();
-                        $(
-                            hasher = hasher.update($path.as_bytes());
-                            hasher = hasher.update(include_bytes!($path));
-                        )*
-                        let hash = hasher
-                            .update(std::env::consts::OS.as_bytes())
-                            .update(std::env::consts::ARCH.as_bytes())
-                            .finalize();
-                        $crate::macro_util::encode_hex::<{ 32 }, { 64 }>(&hash)
-                    };
+        $vis const $name: $crate::Config = $crate::Config::new(
+            &$rel_dir_path,
+            {
+                #[allow(long_running_const_eval)]
+                const HEX: [u8; 64] = {
+                    // FIXME(#3411): Pick a reasonably-collision-resistant
+                    // hash function that is cheaper to evaluate at const
+                    // time and eliminate
+                    // `#[allow(long_running_const_eval)]` above.
+                    let mut hasher = $crate::macro_util::Sha256::new();
+                    $(
+                        hasher = hasher.update($path.as_bytes());
+                        hasher = hasher.update(include_bytes!($path));
+                    )*
+                    let hash = hasher
+                        .update(std::env::consts::OS.as_bytes())
+                        .update(std::env::consts::ARCH.as_bytes())
+                        .finalize();
+                    $crate::macro_util::encode_hex::<{ 32 }, { 64 }>(&hash)
+                };
 
-                    let Ok(s) = str::from_utf8(&HEX) else {
-                        unreachable!()
-                    };
-                    s
-                }
-            }
-        };
+                let Ok(s) = ::core::str::from_utf8(&HEX) else {
+                    unreachable!()
+                };
+                s
+            },
+        );
     };
 }
 
@@ -577,7 +685,7 @@ mod tests {
     }
 
     fn dummy_config(rel_dir_path: &'static [&'static str]) -> Config {
-        Config { rel_dir_path, version_slug: "slug" }
+        Config::new(rel_dir_path, "slug")
     }
 
     #[allow(dead_code)]
@@ -768,8 +876,7 @@ mod tests {
         let dummy_tar = create_dummy_tar_zst(&[("bin/compiler", b"binary data")]);
         fs::write(&archive_path, &dummy_tar).unwrap();
 
-        let config = Config { rel_dir_path: &["test_dir_install"], version_slug: "slug" };
-
+        let config = Config::new(&["test_dir_install"], "slug");
         let dev_path = config.dir_path(Location::LocalDev).unwrap();
         let _ = fs::remove_dir_all(&dev_path);
 
@@ -811,5 +918,45 @@ mod tests {
 
         assert_eq!(CONFIG.rel_dir_path, &["test", "project"]);
         assert_eq!(CONFIG.version_slug.len(), 64);
+    }
+    #[test]
+    fn test_valid_rel_dir_path() {
+        let config = Config::new(&["tool", "deps"], "v1");
+
+        assert_eq!(config.rel_dir_path, &["tool", "deps"]);
+        assert_eq!(config.version_slug, "v1");
+    }
+
+    #[test]
+    #[should_panic(expected = "must not contain a path separator")]
+    fn test_config_new_invalid_rel_dir_path() {
+        let _ = Config::new(&["foo/bar"], "v1");
+    }
+
+    #[test]
+    #[should_panic(expected = "must not contain a path separator")]
+    fn test_config_new_invalid_version_slug() {
+        let _ = Config::new(&["tool"], "v1/bar");
+    }
+    #[test]
+    fn test_config_new_similar_but_not_reserved_name() {
+        // "console" starts with "con" but has a different stem length,
+        // so it must not be treated as reserved.
+        let config = Config::new(&["console"], "v1");
+        assert_eq!(config.rel_dir_path, &["console"]);
+    }
+    #[test]
+    #[should_panic(expected = "must not be a Windows-reserved device name")]
+    fn test_config_new_windows_reserved_name() {
+        // Reserved names are matched case-insensitively.
+        let _ = Config::new(&["con"], "v1");
+    }
+
+    #[test]
+    #[should_panic(expected = "must not be a Windows-reserved device name")]
+    fn test_config_new_windows_reserved_name_with_extension() {
+        // "COM1.txt" is reserved the same as "COM1" since Windows
+        // matches device names by their stem, not the full name.
+        let _ = Config::new(&["COM1.txt"], "v1");
     }
 }
