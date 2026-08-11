@@ -8,10 +8,8 @@ pub struct SetupArgs {
     pub local_archive: Option<PathBuf>,
 }
 
-pub const CONFIG: exocrate::Config = exocrate::Config {
-    rel_dir_path: &["anneal", "toolchain"],
-    version_slug: env!("ANNEAL_EXOCRATE_VERSION_SLUG"),
-};
+pub const CONFIG: exocrate::Config =
+    exocrate::Config::new(&["anneal", "toolchain"], env!("ANNEAL_EXOCRATE_VERSION_SLUG"));
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Tool {
