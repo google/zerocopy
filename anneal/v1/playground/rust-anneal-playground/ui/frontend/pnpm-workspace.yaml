@@ -1,0 +1,7 @@
+allowBuilds:
+  '@parcel/watcher': false
+  'core-js': false
+  'unrs-resolver': false
+
+overrides:
+  dompurify: 3.4.13
