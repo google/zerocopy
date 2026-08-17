@@ -49,7 +49,7 @@ jobs:
           persist-credentials: false
 
       - name: Install stable Rust
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # zizmor: ignore[superfluous-actions]
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # zizmor: ignore[superfluous-actions]
         with:
           toolchain: stable
 
@@ -99,7 +99,7 @@ jobs:
           persist-credentials: false
 
       - name: Install stable Rust
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # zizmor: ignore[superfluous-actions]
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # zizmor: ignore[superfluous-actions]
         with:
           toolchain: stable
 
@@ -216,7 +216,7 @@ jobs:
           persist-credentials: false
 
       - name: Install stable Rust
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # zizmor: ignore[superfluous-actions]
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # zizmor: ignore[superfluous-actions]
         with:
           toolchain: stable
 
@@ -449,7 +449,7 @@ jobs:
       # anneal/flake.nix, or derive it from the archive metadata, so v2 CI is
       # reproducible instead of following whatever nightly happens to be latest.
       - name: Install latest nightly Rust
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # zizmor: ignore[superfluous-actions]
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # zizmor: ignore[superfluous-actions]
         with:
           toolchain: nightly
 
