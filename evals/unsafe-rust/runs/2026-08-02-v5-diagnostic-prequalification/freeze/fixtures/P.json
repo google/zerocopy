@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "P",
+  "prompt_regime": "CONTROLLED",
+  "neutral_label": "fixture-dogwood",
+  "source_digest": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+  "exact_prompt_set_sha256": "INTEGRATION_BOUND_EXACT_PROMPT_SET_SHA256",
+  "scoped_surfaces": [
+    "p_predicates/src/lib.rs::value_or_zero",
+    "p_predicates/src/lib.rs::turbo-wasm32 compile_error",
+    "p_predicates/POLICY-SCARLET.md",
+    "p_predicates/POLICY-INDIGO.md",
+    "p_predicates/REQUEST.md",
+    "p_predicates/TCB.md::BUILD-MAP-POLICY"
+  ],
+  "theorem_boundary_class": "Keep the two unresolved published support predicates distinct, choose a conservative full-case audit domain containing both, and prove source soundness and behavior by exact Required-to-Covered containment relative to BUILD-MAP-POLICY.",
+  "supported_set": [
+    "Rust 1.84.0, 1.85.0, and 1.86.0 with their bundled Cargo releases",
+    "targets x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu, and wasm32-unknown-unknown",
+    "both states of turbo and hardened",
+    "every Cargo profile and both debug-assertion states selected by each policy",
+    "every valid Option<u8> input",
+    "Scarlet and Indigo as separate current commitments with no authorized precedence rule"
+  ],
+  "trigger_set": [
+    "non-equal and non-containing published support predicates",
+    "full-case dimensions that must not be projected away",
+    "policy exclusion plus source compile-time rejection",
+    "cfg-selected safe and unsafe implementation branches",
+    "TCB-relative whole-domain containment proof"
+  ],
+  "alternative_proof_paths": [
+    "Any logically equivalent Scarlet and Indigo formulas and any valid separating witnesses are accepted.",
+    "Any conservative full-case domain containing both policy domains is accepted if both containments and both coverage inclusions are proved without claiming it is the exact promise."
+  ],
+  "witness_requirement": "Provide one configuration in Scarlet but not Indigo and one in Indigo but not Scarlet; canonical witnesses are (1.84.0, x86_64, turbo=true, hardened=false) and (1.84.0, x86_64, turbo=true, hardened=true). Whole-domain conclusions require symbolic coverage of every case dimension.",
+  "case_control_class": "DUAL_POLICY_PREDICATE_SEPARATION_WITH_TCB_RELATIVE_FIXED_SOUNDNESS_AND_BEHAVIOR_CONTROLS",
+  "contamination_risk": "Do not expose normalized policy relations, canonical separating witnesses, selected audit predicates, expected theorem results, atom/control IDs, or evaluator-only authority entailment decisions.",
+  "claim_layers": [
+    "PUBLISHED_SUPPORT_PROMISE_IDENTITY",
+    "CONSERVATIVE_FULL_CASE_AUDIT_DOMAIN",
+    "SOURCE_EFFECTIVE_REJECTION",
+    "IMPLEMENTATION_SOUNDNESS",
+    "DOCUMENTED_BEHAVIOR",
+    "TCB_RELATIVE_AUTHORITY_ENTAILMENT"
+  ],
+  "tcb_vacuity": "BUILD-MAP-POLICY is necessary for feature/target reachability and effective rejection and therefore qualifies the whole-domain conclusions. It supplies no Rust semantics, source-branch correctness, compatibility outside the three releases, or backend/binary theorem.",
+  "permissions": {
+    "target_access": "DECLARED_INPUTS_READ_ONLY",
+    "modification": "FORBIDDEN",
+    "build_run_test": "FORBIDDEN",
+    "network": "FORBIDDEN",
+    "authority_access": "AGENT_VISIBLE_NEUTRAL_ONLY",
+    "evaluator_only_material": "FORBIDDEN"
+  },
+  "scorer_expertise": "Boolean support-policy normalization, quantified full-case coverage, Rust cfg semantics across exact releases, Option behavior, and TCB-relative proof qualification.",
+  "scorer_version": "v5-diagnostic-direct-decision-v1",
+  "retirement_triggers": [
+    "Any byte change to source, request, either policy, TCB, or manifest",
+    "Authorization of a support-policy precedence or conflict-resolution rule",
+    "Any change to the three exact Rust/Cargo releases or authority propositions",
+    "Any semantic change to P atoms, controls, oracle, or defect rules"
+  ]
+}

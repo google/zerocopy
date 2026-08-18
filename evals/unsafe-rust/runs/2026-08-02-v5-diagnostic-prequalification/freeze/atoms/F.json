@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "F",
+  "atoms": [
+    {"id":"F1","direct_criterion":"Identify the single smallest unavailable selected-dependency implementation theorem G, with exact package/API/applicability, rather than replacing it with caller-facing documentation.","prerequisites":[],"authority_dependencies":["DEP-F-API","TCB-F-NO-IMPLEMENTATION"],"applicability":"REQUIRED"},
+    {"id":"F2","direct_criterion":"Assign one stable root blocker ID to G and do not duplicate that one omission as several independent findings.","prerequisites":["F1"],"authority_dependencies":[],"applicability":"REQUIRED"},
+    {"id":"F3","direct_criterion":"Give each of the three G-dependent wrappers its own UNPROVED disposition linked to one root, preserving reached call/tail-return, get/value, and typed-zero comparison semantics, distinct consumers, and scopes.","prerequisites":["F1","F2"],"authority_dependencies":["R183-CALL","R183-FUNCTION-BODY-RETURN","R183-BLOCK-TAIL","R183-INTEGER-LITERAL-CONTEXT","R183-INTEGER-EQUALITY","R183-NONZERO-NEW-UNCHECKED","R183-NONZERO-GET"],"applicability":"REQUIRED"},
+    {"id":"F4","direct_criterion":"Preserve correct conditional downstream reasoning after G, including NonZeroU8::get transfer, without laundering it into an unconditional certificate or another root.","prerequisites":["F1","F3"],"authority_dependencies":["R183-NONZERO-GET"],"applicability":"REQUIRED"},
+    {"id":"F5","direct_criterion":"Discover and classify the independent direct unsafe defect separately from G and its fan-out.","prerequisites":[],"authority_dependencies":["R183-NONZERO-NEW-UNCHECKED"],"applicability":"REQUIRED"},
+    {"id":"F6","direct_criterion":"Close the independent valid-use UB certificate and aggregate UNSOUND without erasing the three separately UNPROVED G-dependent obligations.","prerequisites":["F3","F5"],"authority_dependencies":["R183-UNSAFE-FUNCTIONS","R183-CALL"],"applicability":"REQUIRED"},
+    {"id":"F7","direct_criterion":"Produce a complete nonduplicative ledger showing decisions, one root/fan-out, independent certificate, typed-zero/get semantics, reached call/tail-return of the checked_token control, and final dispositions.","prerequisites":["F2","F3","F4","F5","F6"],"authority_dependencies":["R183-CALL","R183-FUNCTION-BODY-RETURN","R183-BLOCK-TAIL","R183-INTEGER-LITERAL-CONTEXT","R183-NONZERO-GET","R183-NONZERO-NEW"],"applicability":"REQUIRED"}
+  ]
+}
