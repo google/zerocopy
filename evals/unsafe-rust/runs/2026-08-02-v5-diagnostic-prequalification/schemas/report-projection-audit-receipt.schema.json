@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:report-projection-audit-receipt:1",
+  "$comment": "DRAFT / UNSEALED evaluator-only raw-to-projection binding receipt; never mounted to scorers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "label", "raw_report_sha256", "projected_report_sha256", "replacements"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "EVALUATOR-ONLY-AUDIT"},
+    "label": {"type": "string", "pattern": "^[A-O]$"},
+    "raw_report_sha256": {"$ref": "#/$defs/digest"},
+    "projected_report_sha256": {"$ref": "#/$defs/digest"},
+    "replacements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["category", "offset", "length", "secret_sha256", "placeholder"],
+        "properties": {
+          "category": {"type": "string", "minLength": 1},
+          "offset": {"type": "integer", "minimum": 0},
+          "length": {"type": "integer", "minimum": 1},
+          "secret_sha256": {"$ref": "#/$defs/digest"},
+          "placeholder": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  },
+  "$defs": {"digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

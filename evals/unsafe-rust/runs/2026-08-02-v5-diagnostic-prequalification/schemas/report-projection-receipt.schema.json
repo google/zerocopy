@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:report-projection-receipt:2",
+  "$comment": "DRAFT / UNSEALED value-free per-label scorer-visible projection receipt; raw/secret bindings are forbidden.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "label", "projected_report_sha256", "redaction_present", "replacement_count"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "PROJECTED"},
+    "label": {"type": "string", "pattern": "^[A-O]$"},
+    "projected_report_sha256": {"$ref": "#/$defs/digest"},
+    "redaction_present": {"type": "boolean"},
+    "replacement_count": {"type": "integer", "minimum": 0}
+  },
+  "$defs": {"digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

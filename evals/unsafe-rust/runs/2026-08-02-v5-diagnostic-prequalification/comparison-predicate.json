@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "predicate_id": "v5-diagnostic-absolute-and-not-trailing-v1",
+  "claim_kind": "EXACT_DESCRIPTIVE",
+  "modes": ["E", "V", "F", "P", "B", "L", "R", "Q"],
+  "conditions": ["v5", "v4", "no_skill"],
+  "replicates_per_cell": 5,
+  "unit": "MODE_ATOM_CERTIFICATE",
+  "absolute_v5": {
+    "quantifier": "FOR_EVERY_MODE_ATOM_REPLICATE",
+    "field": "certificate_decision",
+    "required_value": "PASS"
+  },
+  "not_trailing": {
+    "quantifier": "FOR_EVERY_MODE_ATOM",
+    "metric": "PASS_COUNT_ACROSS_FIVE_REPLICATES",
+    "comparisons": ["v5 >= v4", "v5 >= no_skill"]
+  },
+  "on_missing": "ERROR",
+  "on_malformed": "ERROR",
+  "permits_inferential_claim": false,
+  "permits_release_claim": false
+}
