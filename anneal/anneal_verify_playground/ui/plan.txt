@@ -1,0 +1,125 @@
+# Anneal Playground Fork Plan
+
+## Summary
+Build a production-ready fork of Rust Playground that adds **Verify with Anneal** as a Build menu action. Selecting it will use the existing execute pipeline, but send an additional execution-tool choice so the backend runs `cargo anneal verify` inside the sandbox container instead of normal `cargo run`. Deploy v1 on a single Docker-capable Google Compute Engine VM.
+
+## Item-By-Item Plan
+1. **Fork and set up the repo**
+   - Fork `rust-lang/rust-playground`.
+   - Clone the fork locally and add upstream remote.
+   - Build frontend with `pnpm install` / `pnpm build`.
+   - Build backend with `cargo build` from `ui`.
+   - Fetch or build current compiler Docker images to confirm the unmodified fork works.
+
+2. **Add the frontend Anneal action**
+   - Add a new primary action enum value, e.g. `AnnealVerify`.
+   - Add **Verify with Anneal** to the Build menu beside Run/Build/Test.
+   - Make selecting it update the primary button label to **Verify with Anneal**.
+   - Extend execute payload creation to include:
+     ```ts
+     executionTool: "cargo" | "anneal-verify"
+     ```
+   - Default all existing actions to `"cargo"`.
+
+3. **Carry the new field through HTTP and WebSocket execution**
+   - Update the frontend execute request body type.
+   - Update websocket execute payload type.
+   - Update backend `api::ExecuteRequest` to accept `executionTool`.
+   - Use a default of `"cargo"` if the field is missing so old requests still work.
+   - Update websocket backend request parsing with the same field and default.
+
+4. **Add backend validation and internal type**
+   - Add an orchestrator enum:
+     ```rust
+     ExecutionTool::Cargo
+     ExecutionTool::AnnealVerify
+     ```
+   - Parse API strings into this enum during `api::ExecuteRequest -> coordinator::ExecuteRequest`.
+   - Reject unknown values with the same style as existing `parse_channel`, `parse_mode`, etc.
+   - Add the field to metrics labels only if useful; otherwise keep existing execute metrics unchanged for v1.
+
+5. **Change command selection**
+   - In the orchestrator execute command builder:
+     - If `executionTool == Cargo`, keep existing behavior: `cargo run`, `cargo test`, or `cargo build`.
+     - If `executionTool == AnnealVerify`, run:
+       ```text
+       cargo anneal verify
+       ```
+   - Keep writing the user code and generated `Cargo.toml` through the existing Playground setup path.
+
+6. **Install Anneal inside compiler containers**
+   - Update the compiler Docker image to install a pinned `cargo-anneal` version.
+   - Run `cargo anneal setup` during image build so Lean/Aeneas/Charon dependencies are preinstalled.
+   - Confirm runtime containers still run with no network access.
+   - Increase container memory/time limits only if testing shows Anneal fails under current limits.
+
+7. **Local verification**
+   - Build `rust-stable`, `rust-beta`, and `rust-nightly` images or decide to support only stable initially.
+   - Run the backend locally.
+   - Verify existing Run/Build/Test behavior still works.
+   - Verify **Verify with Anneal** works on a small annotated example.
+   - Verify invalid `executionTool` values are rejected before reaching command execution.
+
+8. **Production deployment**
+   - Create a Google Compute Engine VM with Docker support.
+   - Recommended starter: 4 vCPU, 8 GB RAM, 80-160 GB SSD.
+   - Install Docker, firewall rules, system updates, and a reverse proxy such as Caddy for HTTPS.
+   - Deploy the frontend/backend and compiler images.
+   - Configure concurrency to start at one verification job at a time.
+   - Add restart behavior via systemd or equivalent.
+
+9. **Production hardening**
+   - Keep Docker runtime network disabled for verification containers.
+   - Keep memory/process limits enabled.
+   - Add disk cleanup for temporary build directories, old Docker layers, and logs.
+   - Add basic monitoring: uptime, disk usage, memory usage, failed verification count.
+   - Add backups/snapshots before major deploys.
+   - Add a simple abuse-control layer: request size limit, per-IP rate limit, and queue/concurrency cap.
+
+10. **Completion criteria**
+   - Public URL loads the forked Playground over HTTPS.
+   - Run/Build/Test still behave like upstream.
+   - Build menu includes **Verify with Anneal**.
+   - Selecting it runs `cargo anneal verify` inside the sandbox container.
+   - Output appears in the normal execution output pane.
+   - Existing malformed requests fail safely.
+   - Server survives restart and resumes serving the site.
+   - Basic monitoring and cleanup are in place.
+
+## Public Interfaces And Types
+- Add request field:
+  ```ts
+  executionTool?: "cargo" | "anneal-verify"
+  ```
+- Backend default:
+  ```text
+  missing executionTool => cargo
+  ```
+- New user-facing action:
+  ```text
+  Verify with Anneal
+  ```
+- New backend internal enum:
+  ```rust
+  ExecutionTool::{Cargo, AnnealVerify}
+  ```
+
+## Test Plan
+- Frontend: payload selector sends `"anneal-verify"` only for the Anneal action.
+- Frontend: Build menu action updates primary button label.
+- Backend: HTTP `/execute` accepts missing `executionTool`.
+- Backend: HTTP `/execute` rejects unknown `executionTool`.
+- Backend: WebSocket execute path accepts the new field.
+- Orchestrator: Cargo mode preserves existing `run/test/build` behavior.
+- Orchestrator: Anneal mode produces `cargo anneal verify`.
+- Docker: compiler image contains `cargo-anneal` and preinstalled Anneal toolchain.
+- End-to-end: small Anneal example succeeds; intentionally failing proof returns useful stderr.
+- Regression: normal Rust `fn main()` still runs successfully.
+
+## Assumptions
+- v1 uses a **single Google Compute Engine VM**.
+- v1 uses a **Build menu item** rather than a separate persistent dropdown.
+- v1 is **production-ready enough for a small public demo**, not high-traffic SaaS.
+- v1 starts with **one verification job at a time**.
+- `cargo-anneal` version is pinned during Docker image build.
+- If Anneal requires more than current Playground Docker limits, raise limits based on measured local failures.
