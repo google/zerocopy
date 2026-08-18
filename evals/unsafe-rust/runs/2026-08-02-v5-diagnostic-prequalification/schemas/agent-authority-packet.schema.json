@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/unsafe-rust/v5/agent-authority-packet.schema.json",
+  "$comment": "DRAFT / UNSEALED neutral authority packet; not a frozen evaluation artifact.",
+  "title": "Neutral report-agent Rust authority packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "title", "records"],
+  "properties": {
+    "schema": {"const": "rust-documentation-excerpts-v1"},
+    "title": {"const": "Rust documentation excerpts"},
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["version", "url", "exact_excerpt"],
+        "properties": {
+          "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+          "url": {"type": "string", "pattern": "^https://doc\\.rust-lang\\.org/[0-9]+\\.[0-9]+\\.[0-9]+/"},
+          "exact_excerpt": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
