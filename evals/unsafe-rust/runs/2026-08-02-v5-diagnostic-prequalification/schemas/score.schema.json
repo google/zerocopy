@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:mode-direct-score:2",
+  "$comment": "DRAFT / UNSEALED mode-level direct score over exactly A-O; derived certificate fields are forbidden.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mode", "scorer_id", "claim", "input_packet_sha256", "reports"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "DIRECT-SCORE"},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "scorer_id": {"enum": ["s1", "s2"]},
+    "claim": {"type": "string", "pattern": "^[EVFPBLRQ]-s[12]$"},
+    "input_packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reports": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": {"$ref": "#/$defs/report"}
+    }
+  },
+  "$defs": {
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "atoms", "hard_errors", "global_defects", "novel_findings"],
+      "properties": {
+        "label": {"type": "string", "pattern": "^[A-O]$"},
+        "atoms": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/direct_atom"}},
+        "hard_errors": {"type": "array", "items": {"$ref": "#/$defs/rule_decision"}},
+        "global_defects": {"type": "array", "items": {"$ref": "#/$defs/rule_decision"}},
+        "novel_findings": {"type": "array", "items": {"$ref": "#/$defs/novel"}}
+      }
+    },
+    "direct_atom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "direct_decision", "evidence"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[EVFPBLRQ][1-9][0-9]*$"},
+        "direct_decision": {"enum": ["PASS", "FAIL"]},
+        "evidence": {"type": "string", "minLength": 1}
+      }
+    },
+    "rule_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "present", "evidence"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^(GH[1-9][0-9]*|[EVFPBLRQ]H[1-9][0-9]*|GD[1-9][0-9]*)$"},
+        "present": {"type": "boolean"},
+        "evidence": {"type": "string", "minLength": 1}
+      }
+    },
+    "novel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "evidence"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^s[12]-N[1-9][0-9]*$"},
+        "description": {"type": "string", "minLength": 1},
+        "evidence": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

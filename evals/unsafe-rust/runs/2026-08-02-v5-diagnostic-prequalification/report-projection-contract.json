@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "algorithm_id": "finite-secret-byte-projection-v1",
+  "secret_categories": [
+    "TREATMENT_INSTRUCTION_OR_PACKAGE_IDENTITY",
+    "EVALUATION_CONDITION_IDENTITY",
+    "REPORT_AGENT_IDENTITY",
+    "CONDITION_BEARING_RUNTIME_IDENTIFIER",
+    "EVALUATOR_ONLY_ORACLE_SIBLING_SCORE_METADATA"
+  ],
+  "matching": "PROVENANCE_TYPED_EXACT_TOKENS_LONGEST_FIRST_LEFT_TO_RIGHT",
+  "allowed_match_kinds": [
+    "EXACT_ABSOLUTE_PATH",
+    "EXACT_HEX_DIGEST",
+    "EXACT_UUID_OR_RUNTIME_ID",
+    "EXACT_MULTIWORD_TREATMENT_PHRASE"
+  ],
+  "minimum_token_bytes": 12,
+  "forbidden_generic_tokens": ["v5", "v4", "no_skill", "condition"],
+  "placeholder_format": "[REDACTED:NOMINAL]",
+  "scorer_receipt_fields": ["projected_report_sha256", "redaction_present", "replacement_count"],
+  "evaluator_audit_receipt_fields": ["raw_report_sha256", "projected_report_sha256", "category", "offset", "length", "secret_sha256", "placeholder"],
+  "raw_report_policy": "SEALED_EVALUATOR_RESTRICTED",
+  "scorer_visible_policy": "PROJECTED_REPORT_PLUS_VALUE_FREE_RECEIPT",
+  "gh12_policy": "FORCE_PRESENT_IFF_RECEIPT_REDACTION_PRESENT",
+  "broad_regex_redaction_forbidden": true,
+  "ordinary_target_paths_and_source_names_preserved": true,
+  "generic_technical_condition_word_preserved": true,
+  "protected_target_values_must_not_match": true,
+  "style_inference_limitation_gate": "G-ISOLATION"
+}
