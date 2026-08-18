@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:attempt-envelope:1",
+  "$comment": "DRAFT / UNSEALED whole-envelope metadata schema; payload bytes are sibling files in the content-addressed object.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "identity", "envelope_spec_sha256", "output_entries", "total_output_bytes", "final_response", "process", "coordinator_metadata", "violations", "format_valid"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot_id", "attempt_id", "agent_id", "lease_sha256"],
+      "properties": {
+        "slot_id": {"$ref": "#/$defs/safe_id"},
+        "attempt_id": {"$ref": "#/$defs/safe_id"},
+        "agent_id": {"$ref": "#/$defs/safe_id"},
+        "lease_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "envelope_spec_sha256": {"$ref": "#/$defs/digest"},
+    "output_entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "kind", "declared"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "kind": {"enum": ["file", "directory", "symlink", "special", "not-directory"]},
+          "declared": {"type": "boolean"},
+          "size": {"type": "integer", "minimum": 0},
+          "sha256": {"$ref": "#/$defs/digest"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "total_output_bytes": {"type": "integer", "minimum": 0},
+    "final_response": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["present"], "properties": {"present": {"const": false}}},
+        {"type": "object", "additionalProperties": false, "required": ["present", "size", "sha256"], "properties": {"present": {"const": true}, "size": {"type": "integer", "minimum": 0}, "sha256": {"$ref": "#/$defs/digest"}}}
+      ]
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["disposition", "exit_code"],
+      "properties": {
+        "disposition": {"type": "string", "minLength": 1},
+        "exit_code": {"type": ["integer", "null"]}
+      }
+    },
+    "coordinator_metadata": {"type": "object"},
+    "violations": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "format_valid": {"type": "boolean"}
+  },
+  "$defs": {
+    "safe_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
