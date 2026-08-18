@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "V",
+  "atoms": [
+    {"id":"V1","direct_criterion":"State separate exact valid-use domains for the crate-owned-implementation API and the generic external-implementation control.","prerequisites":[],"authority_dependencies":[],"applicability":"REQUIRED"},
+    {"id":"V2","direct_criterion":"Establish exact source selection and downstream accessibility for each submitted witness or control use.","prerequisites":[],"authority_dependencies":["R183-VISIBILITY"],"applicability":"REQUIRED"},
+    {"id":"V3","direct_criterion":"Establish well-typedness, exact two-element array shapes, contextual usize typing of submitted index literals, coherence, and implementability of each complete use and trait implementation.","prerequisites":["V2"],"authority_dependencies":["R183-ARRAY-SHAPE","R183-INTEGER-LITERAL-CONTEXT","R183-TRAIT-IMPLEMENTATION"],"applicability":"REQUIRED"},
+    {"id":"V4","direct_criterion":"Establish that the exposed ordinary function call has no caller-side unsafe obligation and satisfy every other compiler-enforced unsafe-context obligation needed to form the use.","prerequisites":["V2","V3"],"authority_dependencies":["R183-UNSAFE-FUNCTIONS","R183-CALL"],"applicability":"REQUIRED"},
+    {"id":"V5","direct_criterion":"Keep the crate-owned unsafe impl's safety assertion inside the audited scope and do not assume it true when certifying the safe caller's valid use.","prerequisites":["V1","V2","V3","V4"],"authority_dependencies":["R183-UNSAFE-TRAITS"],"applicability":"REQUIRED"},
+    {"id":"V6","direct_criterion":"For the crate-owned invalid impl, prove array-to-slice method reachability, falsity of the exact in-scope assertion/in-bounds precondition, the applicable UB consequence, and the intended u8 dereference/copy result edge.","prerequisites":["V5"],"authority_dependencies":["R183-ARRAY-SHAPE","R183-ARRAY-SLICE-METHOD","R183-SLICE-GET-UNCHECKED","R183-DEREF-ASSIGN","R183-INTEGER-COPY-U8"],"applicability":"REQUIRED"},
+    {"id":"V7","direct_criterion":"Issue the exact scoped UNSOUND verdict once the complete valid-use UB certificate closes.","prerequisites":["V6"],"authority_dependencies":[],"applicability":"REQUIRED"},
+    {"id":"V8","direct_criterion":"Recognize that a downstream unsafe impl is an unsafe act whose implementer contract is owned outside the audited crate and must be satisfied for a valid-use witness.","prerequisites":["V2","V3"],"authority_dependencies":["R183-UNSAFE-TRAITS"],"applicability":"REQUIRED"},
+    {"id":"V9","direct_criterion":"Reject the submitted downstream impl that violates its unsafe implementer contract as a valid-use refutation, without using it to condemn the generic API.","prerequisites":["V8"],"authority_dependencies":[],"applicability":"REQUIRED"},
+    {"id":"V10","direct_criterion":"Accept the contract-satisfying downstream unsafe impl as a valid control and prove its reached array-to-slice receiver, local in-bounds obligation, and u8 dereference/copy result.","prerequisites":["V4","V8"],"authority_dependencies":["R183-ARRAY-SHAPE","R183-ARRAY-SLICE-METHOD","R183-SLICE-GET-UNCHECKED","R183-DEREF-ASSIGN","R183-INTEGER-COPY-U8"],"applicability":"REQUIRED"},
+    {"id":"V11","direct_criterion":"Keep the crate-owned-invalid, downstream-invalid, and downstream-valid conclusions separate and reconcile every consumed Rust premise to exact Rust 1.83 authority.","prerequisites":["V7","V9","V10"],"authority_dependencies":[],"applicability":"REQUIRED"}
+  ]
+}
