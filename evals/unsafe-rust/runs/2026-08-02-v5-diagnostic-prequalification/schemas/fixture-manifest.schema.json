@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:hidden-fixture-manifest:1",
+  "$comment": "DRAFT / UNSEALED hidden evaluator-only fixture manifest; never mounted to report agents.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mode", "prompt_regime", "neutral_label", "source_digest", "exact_prompt_set_sha256", "scoped_surfaces", "theorem_boundary_class", "supported_set", "trigger_set", "alternative_proof_paths", "witness_requirement", "case_control_class", "contamination_risk", "claim_layers", "tcb_vacuity", "permissions", "scorer_expertise", "scorer_version", "retirement_triggers"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["DRAFT", "READY"]},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "prompt_regime": {"enum": ["CONTROLLED", "NATURALISTIC"]},
+    "neutral_label": {"type": "string", "pattern": "^fixture-[a-z]+$"},
+    "source_digest": {
+      "oneOf": [
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        {"const": "INTEGRATION_BOUND_SOURCE_TREE_SHA256"}
+      ]
+    },
+    "exact_prompt_set_sha256": {
+      "$comment": "SHA-256 of protocol canonical_json_bytes for this mode's record in generated mode-launch-prompt-set.json. That record binds the exact sorted 15 {run_id,cell_id,prompt_sha256} launch records; individual launch records separately bind their exact prompt bytes and digests.",
+      "oneOf": [
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        {"const": "INTEGRATION_BOUND_EXACT_PROMPT_SET_SHA256"}
+      ]
+    },
+    "scoped_surfaces": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "theorem_boundary_class": {"type": "string", "minLength": 1},
+    "supported_set": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "trigger_set": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "alternative_proof_paths": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "witness_requirement": {"type": "string", "minLength": 1},
+    "case_control_class": {"type": "string", "minLength": 1},
+    "contamination_risk": {"type": "string", "minLength": 1},
+    "claim_layers": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "tcb_vacuity": {"type": "string", "minLength": 1},
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_access", "modification", "build_run_test", "network", "authority_access", "evaluator_only_material"],
+      "properties": {
+        "target_access": {"const": "DECLARED_INPUTS_READ_ONLY"},
+        "modification": {"const": "FORBIDDEN"},
+        "build_run_test": {"const": "FORBIDDEN"},
+        "network": {"const": "FORBIDDEN"},
+        "authority_access": {"const": "AGENT_VISIBLE_NEUTRAL_ONLY"},
+        "evaluator_only_material": {"const": "FORBIDDEN"}
+      }
+    },
+    "scorer_expertise": {"type": "string", "minLength": 1},
+    "scorer_version": {"type": "string", "minLength": 1},
+    "retirement_triggers": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "READY"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "source_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$", "not": {"const": "0000000000000000000000000000000000000000000000000000000000000000"}},
+          "exact_prompt_set_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "not": {"const": "0000000000000000000000000000000000000000000000000000000000000000"}}
+        }
+      }
+    }
+  ]
+}
