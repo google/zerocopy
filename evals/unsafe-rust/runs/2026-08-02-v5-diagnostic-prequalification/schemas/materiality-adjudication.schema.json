@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:materiality-adjudication:1",
+  "$comment": "DRAFT / UNSEALED complete resolution of a deterministic materiality union packet.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "packet_sha256", "resolutions"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "ADJUDICATED"},
+    "packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "resolutions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["cell_id", "decision", "evidence"],
+        "properties": {
+          "cell_id": {"type": "string", "pattern": "^[0-9a-f]{24}$"},
+          "decision": {"enum": ["BLOCKING", "NOT_BLOCKING"]},
+          "evidence": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

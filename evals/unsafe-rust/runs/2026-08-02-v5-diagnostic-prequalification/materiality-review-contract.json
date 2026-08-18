@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "reviewer_ids": ["m1", "m2"],
+  "independence": "DISTINCT_AGENTS_NO_OTHER_REVIEW_OUTPUT",
+  "scope": ["V5_CANDIDATE_REPORTS", "CANDIDATE_PACKAGE", "HARNESS_PROTOCOL", "ADVERSARIAL_AND_COHERENCE_REVIEWS"],
+  "inclusive_materiality_rule": "BLOCKING_IF_A_SUPPORTED_FINDING_COULD_CHANGE_CANDIDATE_ACCEPTABILITY_OR_INVALIDATE_HARNESS_INTERPRETATION",
+  "finding_id_pattern": "^m[12]-F[1-9][0-9]*$",
+  "empty_review_requirement": "COMPLETE_SCOPE_ATTESTATION_REQUIRED",
+  "disagreement_policy": "MANDATORY_INDEPENDENT_ADJUDICATION",
+  "novel_classification_is_not_materiality": true,
+  "ledger_completion": "BOTH_REVIEWS_COMPLETE_AND_EVERY_UNION_FINDING_RESOLVED"
+}
