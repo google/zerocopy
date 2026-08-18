@@ -875,19 +875,22 @@ mod _casts {
         }
 
         #[inline(always)]
-        pub fn project<F, const VARIANT_ID: i128, const FIELD_ID: i128>(
+        pub fn project<Client, F, const VARIANT_ID: i128, const FIELD_ID: i128>(
             mut self,
         ) -> Result<Ptr<'a, T::Type, T::Invariants>, T::Error>
         where
-            T: ProjectField<F, I, VARIANT_ID, FIELD_ID>,
+            T: ProjectField<Client, F, I, VARIANT_ID, FIELD_ID>,
             I::Aliasing: Reference,
         {
             use crate::pointer::cast::Projection;
-            match T::is_projectable(self.reborrow().project_tag()) {
+            match <T as ProjectField<Client, F, I, VARIANT_ID, FIELD_ID>>::is_projectable(
+                self.reborrow().project_tag::<Client>(),
+            ) {
                 Ok(()) => {
                     let inner = self.as_inner();
-                    let projected = inner.project::<_, Projection<F, VARIANT_ID, FIELD_ID>>();
-                    // SAFETY: By `T: ProjectField<F, I, VARIANT_ID, FIELD_ID>`,
+                    let projected =
+                        inner.project::<_, Projection<Client, F, VARIANT_ID, FIELD_ID>>();
+                    // SAFETY: By `T: ProjectField<Client, F, I, VARIANT_ID, FIELD_ID>`,
                     // for `self: Ptr<'_, T, I>` such that `T::is_projectable`
                     // (which we've verified in this match arm),
                     // `T::project(self.as_inner())` conforms to
@@ -908,15 +911,19 @@ mod _casts {
 
         #[must_use]
         #[inline(always)]
-        pub(crate) fn project_tag(self) -> Ptr<'a, T::Tag, I>
+        pub(crate) fn project_tag<Client>(self) -> Ptr<'a, <T as HasTag<Client>>::Tag, I>
         where
-            T: HasTag,
+            T: HasTag<Client>,
         {
-            // SAFETY: By invariant on `Self::ProjectToTag`, this is a sound
+            // SAFETY: By invariant on
+            // `<T as HasTag<Client>>::ProjectToTag`, this is a sound
             // projection.
-            let tag = unsafe { self.project_transmute_unchecked::<_, _, T::ProjectToTag>() };
-            // SAFETY: By invariant on `Self::ProjectToTag`, the projected
-            // pointer has the same alignment as `ptr`.
+            let tag = unsafe {
+                self.project_transmute_unchecked::<_, _, <T as HasTag<Client>>::ProjectToTag>()
+            };
+            // SAFETY: By invariant on
+            // `<T as HasTag<Client>>::ProjectToTag`, the projected pointer has
+            // the same alignment as `self`.
             let tag = unsafe { tag.assume_alignment() };
             tag.unify_invariants()
         }

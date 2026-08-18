@@ -758,7 +758,7 @@ const _: () = {
     pub enum value {}
 
     // SAFETY: See safety comment on `ProjectToTag`.
-    unsafe impl<T: ?Sized> HasTag for ManuallyDrop<T> {
+    unsafe impl<T: ?Sized, Client> HasTag<Client> for ManuallyDrop<T> {
         #[inline]
         fn only_derive_is_allowed_to_implement_this_trait()
         where
@@ -796,8 +796,8 @@ const _: () = {
     // private field, and because it is the name it is referred to in the public
     // documentation of `ManuallyDrop::new`, `ManuallyDrop::into_inner`,
     // `ManuallyDrop::take` and `ManuallyDrop::drop`.
-    unsafe impl<T: ?Sized>
-        HasField<value, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!(value) }>
+    unsafe impl<T: ?Sized, Client>
+        HasField<Client, value, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!(value) }>
         for ManuallyDrop<T>
     {
         #[inline]
@@ -1015,8 +1015,8 @@ mod tuples {
             // SAFETY: If all fields in `c` are `is_bit_valid`, so too is `c`.
             unsafe_impl!($($head_T: TryFromBytes,)* $next_T: TryFromBytes => TryFromBytes for ($($head_T,)* $next_T,); |c| {
                 let mut c = c;
-                $(TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<_, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($head_I) }>())) &&)*
-                    TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<_, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($next_I) }>()))
+                $(TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<crate::TryFromBytesDerive, _, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($head_I) }>())) &&)*
+                    TryFromBytes::is_bit_valid(into_inner!(c.reborrow().project::<crate::TryFromBytesDerive, _, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!($next_I) }>()))
             });
 
             // SAFETY: If all fields in `Self` are `FromZeros`, so too is `Self`.
@@ -1026,7 +1026,9 @@ mod tuples {
             unsafe_impl!($($head_T: FromBytes,)* $next_T: FromBytes => FromBytes for ($($head_T,)* $next_T,));
 
             // SAFETY: See safety comment on `ProjectToTag`.
-            unsafe impl<$($head_T,)* $next_T> crate::HasTag for ($($head_T,)* $next_T,) {
+            unsafe impl<Client, $($head_T,)* $next_T> crate::HasTag<Client>
+                for ($($head_T,)* $next_T,)
+            {
                 #[inline]
                 fn only_derive_is_allowed_to_implement_this_trait()
                 where
@@ -1077,7 +1079,8 @@ mod tuples {
             // - `()` has the same visibility as the `.$CurrI` field (ie, `.0`,
             //   `.1`, etc)
             // - `Type` has the same type as `$CurrI`; i.e., `$CurrT`.
-            unsafe impl<$($AllT),+> crate::HasField<
+            unsafe impl<Client, $($AllT),+> crate::HasField<
+                Client,
                 (),
                 { crate::STRUCT_VARIANT_ID },
                 { crate::ident_id!($CurrI)}
@@ -1103,7 +1106,8 @@ mod tuples {
             }
 
             // SAFETY: See comments on items.
-            unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+            unsafe impl<Client, Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                Client,
                 (),
                 (Aliasing, Alignment, crate::invariant::Uninit),
                 { crate::STRUCT_VARIANT_ID },
@@ -1129,7 +1133,8 @@ mod tuples {
             }
 
             // SAFETY: See comments on items.
-            unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+            unsafe impl<Client, Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                Client,
                 (),
                 (Aliasing, Alignment, crate::invariant::Initialized),
                 { crate::STRUCT_VARIANT_ID },
@@ -1155,7 +1160,8 @@ mod tuples {
             }
 
             // SAFETY: See comments on items.
-            unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+            unsafe impl<Client, Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                Client,
                 (),
                 (Aliasing, Alignment, crate::invariant::Valid),
                 { crate::STRUCT_VARIANT_ID },
