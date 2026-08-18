@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:integration-hooks:1",
+  "$comment": "DRAFT / UNSEALED blocking integration-hook inventory; every hook is intentionally unimplemented here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "blocking", "failure_gate", "hooks"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "DRAFT"},
+    "blocking": {"const": true},
+    "failure_gate": {"const": "D-STATIC-INTEGRITY"},
+    "hooks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "required", "implementation_status", "consumes", "produces"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^H-[A-Z][A-Z0-9-]*$"},
+          "required": {"const": true},
+          "implementation_status": {"const": "UNIMPLEMENTED"},
+          "consumes": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "produces": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    }
+  }
+}

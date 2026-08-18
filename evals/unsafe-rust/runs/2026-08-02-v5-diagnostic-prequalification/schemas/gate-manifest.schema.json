@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:gate-manifest:1",
+  "$comment": "DRAFT / UNSEALED typed diagnostic gate manifest.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "manifest_version", "gates"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "DRAFT"},
+    "manifest_version": {"type": "string", "minLength": 1},
+    "gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/gate"}
+    }
+  },
+  "$defs": {
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "mandatory_root", "description", "prerequisites", "inputs", "predicate", "on_missing", "on_error"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[DG]-[A-Z][A-Z0-9-]*$"},
+        "version": {"const": 1},
+        "mandatory_root": {"const": true},
+        "description": {"type": "string", "minLength": 1},
+        "prerequisites": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[DG]-[A-Z][A-Z0-9-]*$"}},
+        "inputs": {"type": "array", "items": {"$ref": "#/$defs/input"}},
+        "predicate": {"oneOf": [{"$ref": "#/$defs/constant"}, {"$ref": "#/$defs/boolean_true"}, {"$ref": "#/$defs/integer_equals"}]},
+        "on_missing": {"const": "ERROR"},
+        "on_error": {"const": "ERROR"}
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "source"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+        "type": {"enum": ["boolean", "integer", "string"]},
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "path"],
+          "properties": {"kind": {"const": "context"}, "path": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$"}}
+        }
+      }
+    },
+    "constant": {"type": "object", "additionalProperties": false, "required": ["kind", "outcome"], "properties": {"kind": {"const": "constant"}, "outcome": {"enum": ["PASS", "FAIL"]}}},
+    "boolean_true": {"type": "object", "additionalProperties": false, "required": ["kind", "input"], "properties": {"kind": {"const": "boolean_true"}, "input": {"type": "string"}}},
+    "integer_equals": {"type": "object", "additionalProperties": false, "required": ["kind", "input", "value"], "properties": {"kind": {"const": "integer_equals"}, "input": {"type": "string"}, "value": {"type": "integer"}}}
+  }
+}

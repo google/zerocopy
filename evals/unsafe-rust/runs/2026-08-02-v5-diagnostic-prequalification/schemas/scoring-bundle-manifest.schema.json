@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:scoring-bundle-manifest:1",
+  "$comment": "DRAFT / UNSEALED exact manifest binding every evaluator packet, output, launch envelope, and final score by mode.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "modes"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "BOUND"},
+    "modes": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["mode", "score_input_packet_digests", "direct_score_digests", "consistency_input_packet_digest", "consistency_review_digests", "adjudication_packet_digest", "adjudication_digest", "final_score_digest", "scorer_launch_envelope_digests", "consistency_launch_envelope_digests", "adjudicator_launch_envelope_digest"],
+        "properties": {
+          "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+          "score_input_packet_digests": {"$ref": "#/$defs/pair"},
+          "direct_score_digests": {"$ref": "#/$defs/pair"},
+          "consistency_input_packet_digest": {"$ref": "#/$defs/digest"},
+          "consistency_review_digests": {"$ref": "#/$defs/pair"},
+          "adjudication_packet_digest": {"$ref": "#/$defs/digest"},
+          "adjudication_digest": {"anyOf": [{"$ref": "#/$defs/digest"}, {"type": "null"}]},
+          "final_score_digest": {"$ref": "#/$defs/digest"},
+          "scorer_launch_envelope_digests": {"$ref": "#/$defs/pair"},
+          "consistency_launch_envelope_digests": {"$ref": "#/$defs/pair"},
+          "adjudicator_launch_envelope_digest": {"anyOf": [{"$ref": "#/$defs/digest"}, {"type": "null"}]}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "pair": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": {"$ref": "#/$defs/digest"}}
+  }
+}
