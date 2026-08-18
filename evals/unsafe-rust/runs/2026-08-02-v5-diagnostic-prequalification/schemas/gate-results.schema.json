@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:gate-results:1",
+  "$comment": "DRAFT / UNSEALED computed diagnostic gate result schema; release eligibility remains independently false.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "manifest_version", "context_trust", "release_eligibility", "gates"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "DRAFT-COMPUTED"},
+    "manifest_version": {"type": "string", "minLength": 1},
+    "context_trust": {"const": "UNBOUND_DRAFT_INPUT"},
+    "release_eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible", "decision", "blocking_gate_ids", "reason"],
+      "properties": {
+        "eligible": {"const": false},
+        "decision": {"const": "INELIGIBLE"},
+        "blocking_gate_ids": {"const": ["G-ISOLATION", "G-OUTPUT-FINALIZATION"]},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "direct_decision", "blocked_by", "certificate_decision", "root_failures", "errors"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[DG]-[A-Z][A-Z0-9-]*$"},
+          "direct_decision": {"enum": ["PASS", "FAIL", "ERROR"]},
+          "blocked_by": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[DG]-[A-Z][A-Z0-9-]*$"}},
+          "certificate_decision": {"enum": ["PASS", "FAIL", "ERROR"]},
+          "root_failures": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[DG]-[A-Z][A-Z0-9-]*$"}},
+          "errors": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    }
+  }
+}
