@@ -28,6 +28,12 @@ use std::{
 
 use toml::{map::Map, Value};
 
+// Cargo test executables inherit this variable from the delegated Cargo
+// process. `testutil::UiTestRunner` implements the matching decoder and reuses
+// the outer command's feature selection when it builds UI fixture artifacts.
+// Keep both ends and their fixed-vector tests synchronized.
+const UI_TEST_FEATURE_ARGS_ENV: &str = "ZEROCOPY_UI_TEST_FEATURE_ARGS";
+
 #[derive(Debug)]
 enum Error {
     NoArguments,
@@ -264,6 +270,58 @@ fn install_targets_or_exit(version: &str, targets: &[String]) -> Result<(), Erro
     )
 }
 
+// Extract Cargo's feature-selection options from the arguments before `--`.
+// UI tests invoke Cargo recursively to locate the exact artifacts supplied to
+// rustc. Reusing these options ensures that recursive build has the same
+// default, disabled-default, explicit, or all-feature policy as its parent.
+//
+// Preserve each option's spelling and ordering. Cargo makes repeated feature
+// options additive, and forwarding the original arguments delegates all of
+// those semantics back to Cargo instead of duplicating them here.
+fn capture_feature_selection_args(args: &[String]) -> Vec<String> {
+    let mut captured = Vec::new();
+    let mut index = 0;
+
+    while index < args.len() {
+        let arg = &args[index];
+        if arg == "--" {
+            break;
+        }
+
+        if arg == "--features" || arg == "-F" {
+            captured.push(arg.clone());
+            if let Some(value) = args.get(index + 1) {
+                captured.push(value.clone());
+                index += 1;
+            }
+        } else if arg == "--all-features"
+            || arg == "--no-default-features"
+            || arg.starts_with("--features=")
+            || (arg.starts_with("-F") && arg.len() > 2)
+        {
+            captured.push(arg.clone());
+        }
+
+        index += 1;
+    }
+
+    captured
+}
+
+// Environment variables cannot contain NUL bytes, so encode each argument as
+// its decimal UTF-8 byte length, a colon, and its unmodified contents. Unlike
+// choosing a separator, this remains lossless for every Unicode OS argument
+// Cargo accepts. `testutil::UiTestRunner` implements the matching decoder.
+fn encode_feature_selection_args(args: &[String]) -> String {
+    let mut encoded = String::new();
+    for arg in args {
+        encoded.push_str(&arg.len().to_string());
+        encoded.push(':');
+        encoded.push_str(arg);
+    }
+    encoded
+}
+
 fn get_rustflags(name: &str) -> String {
     // See #1792 for context on zerocopy_derive_union_into_bytes.
     let mut flags =
@@ -402,6 +460,7 @@ fn delegate_cargo() -> Result<(), Error> {
                 }
 
                 let mut args_vec = args.collect::<Vec<_>>();
+                let feature_selection_args = capture_feature_selection_args(&args_vec);
                 let mut i = 0;
                 while i < args_vec.len() {
                     let arg = &args_vec[i];
@@ -449,6 +508,12 @@ fn delegate_cargo() -> Result<(), Error> {
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
                 cmd.env("RUSTDOCFLAGS", &rustdocflags);
                 add_default_lock_mode(&mut cmd, &mut args_vec);
+                // Test executables inherit this value. UiTestRunner uses it
+                // when recursively building zerocopy's fixture artifacts.
+                cmd.env(
+                    UI_TEST_FEATURE_ARGS_ENV,
+                    encode_feature_selection_args(&feature_selection_args),
+                );
                 let mut args = args_vec.into_iter();
 
                 if env::var("CARGO_TARGET_DIR").is_ok() {
@@ -512,7 +577,7 @@ fn delegate_cargo() -> Result<(), Error> {
 }
 
 #[cfg(test)]
-mod lock_mode_tests {
+mod tests {
     use super::*;
 
     fn strings(args: &[&str]) -> Vec<String> {
@@ -585,6 +650,51 @@ mod lock_mode_tests {
         let cmd = cargo_pkgid("1.2.3");
         let args = cmd.get_args().map(|arg| arg.to_string_lossy().into_owned()).collect::<Vec<_>>();
         assert_eq!(args, ["run", "1.2.3", "cargo", "--locked", "--offline", "pkgid", "-p"]);
+    }
+
+    #[test]
+    fn captures_all_feature_selection_spellings_before_separator() {
+        let args = strings(&[
+            "test",
+            "--all-features",
+            "--features",
+            "alloc,derive",
+            "-Fsimd",
+            "-F",
+            "std",
+            "--no-default-features",
+            "--features=float-nightly",
+            "--",
+            "--features",
+            "ignored-test-argument",
+        ]);
+
+        assert_eq!(
+            capture_feature_selection_args(&args),
+            strings(&[
+                "--all-features",
+                "--features",
+                "alloc,derive",
+                "-Fsimd",
+                "-F",
+                "std",
+                "--no-default-features",
+                "--features=float-nightly",
+            ])
+        );
+    }
+
+    #[test]
+    fn feature_selection_encoding_is_length_prefixed_utf8() {
+        assert_eq!(
+            encode_feature_selection_args(&strings(&[
+                "--all-features",
+                "--features",
+                "derive,simd-nightly",
+            ])),
+            "14:--all-features10:--features19:derive,simd-nightly"
+        );
+        assert_eq!(encode_feature_selection_args(&strings(&["", ":", "μ"])), "0:1::2:μ");
     }
 }
 

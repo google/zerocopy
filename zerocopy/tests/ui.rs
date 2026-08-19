@@ -18,17 +18,17 @@
 //   does not pass `--cfg test` when it invokes Cargo. As a result, this
 //   `trybuild` test only tests the correct behavior when the "derive" feature
 //   is enabled.
-#![cfg(feature = "derive")]
+//
+// Cargo.toml therefore declares `derive` as this target's required feature.
+// Keep that as the sole whole-target gate: a second cfg here could drift and
+// let Cargo report a successful test executable containing zero tests.
 
 use testutil::UiTestRunner;
 
 #[test]
 #[cfg_attr(miri, ignore)]
 fn test_ui() {
-    // FIXME: Instead of manually passing `--features derive` when building, we
-    // should just pass whatever is passed to us.
     UiTestRunner::new()
-        .rustc_arg("--cfg=feature=\"derive\"") // For tests that check #cfg(feature = "derive")
         .rustc_arg("-Wwarnings") // To reflect typical user experience in stderr
         .run();
 }
