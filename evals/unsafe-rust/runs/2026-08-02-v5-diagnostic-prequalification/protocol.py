@@ -99,6 +99,7 @@ PROMPT_REGIMES = {
     "Q": "controlled",
 }
 SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
+PRODUCTION_ACTOR_ID = re.compile(r"^[a-z0-9][a-z0-9._-]{15,127}$")
 ATOM_ID = re.compile(r"^[EVFPBLRQ][1-9][0-9]*$")
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 REPORT_RUN_ID = re.compile(r"^r(?:00[1-9]|0[1-9][0-9]|1[01][0-9]|120)$")
@@ -446,6 +447,23 @@ def require_safe_id(value: Any, label: str) -> str:
     return value
 
 
+def require_production_actor_id(value: Any, label: str) -> str:
+    if not isinstance(value, str) or PRODUCTION_ACTOR_ID.fullmatch(value) is None:
+        raise ProtocolError(
+            f"{label} must use the canonical 16-128 byte lowercase ASCII identity grammar"
+        )
+    return value
+
+
+def reject_reviewer_runtime_reuse(
+    agent_id: str, reviewer_ids: set[str] | frozenset[str]
+) -> None:
+    if agent_id in reviewer_ids:
+        raise ProtocolError(
+            "a source/snapshot reviewer identity is permanently ineligible for runtime semantic roles"
+        )
+
+
 def require_relative_file(value: Any, label: str) -> str:
     if not isinstance(value, str) or not value or value != value.strip():
         raise ProtocolError(f"{label} must be a nonblank relative POSIX path")
@@ -484,17 +502,18 @@ def require_external_path(path: Path, label: str) -> Path:
     return resolved
 
 
-def require_state_root(
+def require_state_context(
     path: Path,
     *,
     static_root: Path | None = None,
     external_commitment_path: Path | None = None,
     test_capability: object | None = None,
-) -> Path:
-    """Bind production state to a verified bundle; isolate private synthetic tests."""
+) -> tuple[Path, Path | None, frozenset[str] | None]:
+    """Bind state and reviewer exclusions in one coherent static verification."""
+
     lexical = Path(os.path.abspath(os.fspath(path)))
     if static_root is not None:
-        root, _lock = load_verified_static_bundle(
+        root, _lock, reviewer_ids = load_verified_static_bundle(
             static_root, external_commitment_path
         )
         runtime_state = root / "runtime" / "state"
@@ -505,7 +524,7 @@ def require_state_root(
         for component in (root / "runtime", runtime_state):
             if component.exists() and component.is_symlink():
                 raise ProtocolError("runtime/state path components must not be symlinks")
-        return lexical
+        return lexical, root, reviewer_ids
     if test_capability is not _SYNTHETIC_TEST_CAPABILITY:
         raise ProtocolError(
             "state operation requires an explicit verified PRODUCTION static root"
@@ -513,7 +532,25 @@ def require_state_root(
     resolved = path.resolve()
     if is_within(resolved, RUN):
         raise ProtocolError("external protocol state root resolves inside the run tree")
-    return resolved
+    return resolved, None, None
+
+
+def require_state_root(
+    path: Path,
+    *,
+    static_root: Path | None = None,
+    external_commitment_path: Path | None = None,
+    test_capability: object | None = None,
+) -> Path:
+    """Compatibility wrapper returning the state path from a coherent context."""
+
+    state_root, _verified_root, _reviewer_ids = require_state_context(
+        path,
+        static_root=static_root,
+        external_commitment_path=external_commitment_path,
+        test_capability=test_capability,
+    )
+    return state_root
 
 
 def run_trusted_module(name: str, run_name: str) -> dict[str, Any]:
@@ -556,6 +593,18 @@ def trusted_integration_module() -> dict[str, Any]:
                 sys.modules.pop(name, None)
             else:
                 sys.modules[name] = module
+
+
+def require_production_runtime_actor(
+    value: Any,
+    label: str,
+    reviewer_ids: set[str] | frozenset[str],
+) -> str:
+    """Enforce the canonical actor domain and permanent reviewer exclusion."""
+
+    actor_id = require_production_actor_id(value, label)
+    reject_reviewer_runtime_reuse(actor_id, reviewer_ids)
+    return actor_id
 
 
 def maybe_inject_fault(fault_after: str | None, point: str) -> None:
@@ -4305,7 +4354,9 @@ def validate_bound_aggregate_receipts(
 def evaluate_bound_gates(
     static_root: Path, external_commitment_path: Path | None = None
 ) -> dict[str, Any]:
-    root, _ = load_verified_static_bundle(static_root, external_commitment_path)
+    root, _lock, _reviewer_ids = load_verified_static_bundle(
+        static_root, external_commitment_path
+    )
     aggregate_path = root / "runtime" / "state" / "aggregation" / "aggregate-context.json"
     aggregate = validate_aggregate_context_document(
         read_committed_json(aggregate_path, "stored aggregate context")
@@ -5173,7 +5224,11 @@ def _write_or_validate_immutable(path: Path, value: dict[str, Any]) -> None:
     fsync_directory(path.parent)
 
 
-def _authoritative_leases(state_root: Path) -> list[dict[str, Any]]:
+def _authoritative_leases(
+    state_root: Path,
+    *,
+    production_reviewer_ids: frozenset[str] | None = None,
+) -> list[dict[str, Any]]:
     slots_root = state_root / "slots"
     if not slots_root.exists():
         return []
@@ -5190,6 +5245,12 @@ def _authoritative_leases(state_root: Path) -> list[dict[str, Any]]:
         lease = validate_lease(read_json(lease_path))
         if lease["slot_id"] != slot_path.name:
             raise ProtocolError("authoritative lease/slot directory mismatch")
+        if production_reviewer_ids is not None:
+            require_production_runtime_actor(
+                lease["agent_id"],
+                "persisted production lease agent ID",
+                production_reviewer_ids,
+            )
         leases.append(lease)
     return leases
 
@@ -5207,17 +5268,15 @@ def acquire_lease(
     external_commitment_path: Path | None = None,
     test_capability: object | None = None,
 ) -> dict[str, Any]:
-    state_root = require_state_root(
+    state_root, verified_root, production_reviewer_ids = require_state_context(
         state_root,
         static_root=static_root,
         external_commitment_path=external_commitment_path,
         test_capability=test_capability,
     )
     agent_id = require_safe_id(agent_id, "agent ID")
-    if static_root is not None and len(agent_id.encode("utf-8")) < 16:
-        raise ProtocolError(
-            "production agent IDs must be at least 16 bytes for exact projection/audit binding"
-        )
+    if static_root is not None:
+        require_production_actor_id(agent_id, "production agent ID")
     launch_bytes = launch_path.read_bytes()
     launch = validate_launch_record(strict_json_loads(launch_bytes, "launch record"))
     slot_id = launch["slot_id"]
@@ -5235,11 +5294,20 @@ def acquire_lease(
     if sha256(input_packet_bytes) != launch["input_packet_sha256"]:
         raise ProtocolError("launch record/input-packet digest mismatch")
     evaluator_row: dict[str, Any] | None = None
-    verified_root: Path | None = None
-    if launch["role"] != "report" and static_root is not None:
-        verified_root, _lock = load_verified_static_bundle(
-            static_root, external_commitment_path
+    if static_root is not None:
+        if verified_root is None or production_reviewer_ids is None:
+            raise ProtocolError("production state context is incomplete")
+        require_production_runtime_actor(
+            agent_id, "production agent ID", production_reviewer_ids
         )
+        # Reject a pre-existing poisoned peer before materializing any launch
+        # input. The authoritative set is checked again under the mutation lock
+        # below, so a cooperating concurrent writer cannot race this preflight.
+        with operation_lock(state_root):
+            _authoritative_leases(
+                state_root, production_reviewer_ids=production_reviewer_ids
+            )
+    if launch["role"] != "report" and verified_root is not None:
         documents = load_ready_generated_documents(verified_root)
         expected_launch, evaluator_row = build_expected_evaluator_launch(
             verified_root, documents, launch["assignment_id"], input_packet_bytes
@@ -5257,10 +5325,7 @@ def acquire_lease(
             evaluator_row,
             input_packet_bytes,
         )
-    elif launch["role"] == "report" and static_root is not None:
-        verified_root, _lock = load_verified_static_bundle(
-            static_root, external_commitment_path
-        )
+    elif launch["role"] == "report" and verified_root is not None:
         # Do not treat the locked launch's target/package digests as
         # self-authenticating.  Rebuild all report material from the
         # authenticated condition map, target map, package/target identities,
@@ -5345,7 +5410,9 @@ def acquire_lease(
     agent_claim_path = state_root / "agents" / agent_id / "claim.json"
     root_claim_path = state_root / "attempt-roots" / f"{root_claim_id}.json"
     with operation_lock(state_root):
-        leases = _authoritative_leases(state_root)
+        leases = _authoritative_leases(
+            state_root, production_reviewer_ids=production_reviewer_ids
+        )
         existing = next((item for item in leases if item["slot_id"] == slot_id), None)
         recovering = existing is not None
         if existing is not None:
@@ -6051,7 +6118,7 @@ def seal_attempt(
     external_commitment_path: Path | None = None,
     test_capability: object | None = None,
 ) -> dict[str, Any]:
-    state_root = require_state_root(
+    state_root, _verified_root, production_reviewer_ids = require_state_context(
         state_root,
         static_root=static_root,
         external_commitment_path=external_commitment_path,
@@ -6060,6 +6127,10 @@ def seal_attempt(
     attempt_root = require_external_path(attempt_root, "attempt output root")
     slot_id = require_safe_id(slot_id, "slot ID")
     agent_id = require_safe_id(agent_id, "agent ID")
+    if production_reviewer_ids is not None:
+        agent_id = require_production_runtime_actor(
+            agent_id, "production agent ID", production_reviewer_ids
+        )
     if not isinstance(lease_token, str) or not re.fullmatch(r"[0-9a-f]{64}", lease_token):
         raise ProtocolError("invalid lease token")
     if not isinstance(metadata, dict):
@@ -6069,11 +6140,20 @@ def seal_attempt(
     terminal_claim_path = state_root / "slots" / slot_id / "terminal-claim.json"
     seal_failure_path = state_root / "slots" / slot_id / "seal-failure.json"
     with operation_lock(state_root):
+        _authoritative_leases(
+            state_root, production_reviewer_ids=production_reviewer_ids
+        )
         if canonical_path.exists():
             raise CanonicalAlreadySealed(f"slot {slot_id} already has a canonical first-terminal envelope")
         if not lease_path.is_file():
             raise ProtocolError(f"slot {slot_id} has no started lease")
         lease = validate_lease(read_json(lease_path))
+        if production_reviewer_ids is not None:
+            require_production_runtime_actor(
+                lease["agent_id"],
+                "persisted production lease agent ID",
+                production_reviewer_ids,
+            )
         ready_path = state_root / "slots" / slot_id / "lease-ready.json"
         ready = require_exact_keys(
             read_json(ready_path) if ready_path.is_file() and not ready_path.is_symlink() else None,
@@ -6344,7 +6424,7 @@ def verify_state(
     external_commitment_path: Path | None = None,
     test_capability: object | None = None,
 ) -> dict[str, Any]:
-    state_root = require_state_root(
+    state_root, _verified_root, production_reviewer_ids = require_state_context(
         state_root,
         static_root=static_root,
         external_commitment_path=external_commitment_path,
@@ -6355,10 +6435,16 @@ def verify_state(
     if not state_root.is_dir() or state_root.is_symlink():
         raise ProtocolError("protocol state root is not a regular directory")
     with operation_lock(state_root):
-        return _verify_state_locked(state_root)
+        return _verify_state_locked(
+            state_root, production_reviewer_ids=production_reviewer_ids
+        )
 
 
-def _verify_state_locked(state_root: Path) -> dict[str, Any]:
+def _verify_state_locked(
+    state_root: Path,
+    *,
+    production_reviewer_ids: frozenset[str] | None = None,
+) -> dict[str, Any]:
     allowed_root_names = {
         ".protocol.lock",
         "slots",
@@ -6426,6 +6512,12 @@ def _verify_state_locked(state_root: Path) -> dict[str, Any]:
         if not lease_path.is_file() or lease_path.is_symlink():
             raise ProtocolError(f"slot {slot_id} lacks a regular lease ledger")
         lease = validate_lease(read_json(lease_path))
+        if production_reviewer_ids is not None:
+            require_production_runtime_actor(
+                lease["agent_id"],
+                "persisted production lease agent ID",
+                production_reviewer_ids,
+            )
         if lease_path.lstat().st_mode & 0o222:
             raise ProtocolError(f"started lease is writable for slot {slot_id}")
         if lease["slot_id"] != slot_id:
@@ -6707,7 +6799,7 @@ def validate_aggregate_input_tree(static_root: Path) -> Path:
 def load_verified_static_bundle(
     static_root: Path,
     external_commitment_path: Path | None = None,
-) -> tuple[Path, dict[str, Any]]:
+) -> tuple[Path, dict[str, Any], frozenset[str]]:
     if (RUN / "STATIC-LOCK.json").exists():
         raise ProtocolError(
             "production operations must execute the trusted source protocol, "
@@ -6742,7 +6834,12 @@ def load_verified_static_bundle(
         raise ProtocolError("external commitment must use canonical JSON bytes")
     try:
         integration = trusted_integration_module()
-        lock = integration["verify_static"](
+        verifier = integration.get("verify_static_with_reviewer_ids")
+        if not callable(verifier):
+            raise ProtocolError(
+                "trusted integration lacks coherent static/reviewer verification"
+            )
+        verified = verifier(
             root,
             expected_bundle_kind="PRODUCTION",
             expected_external_commitment=commitment,
@@ -6775,7 +6872,21 @@ def load_verified_static_bundle(
     lock_path = root / "STATIC-LOCK.json"
     if sha256(lock_path.read_bytes()) == "0" * 64:  # defensive impossible sentinel
         raise ProtocolError("static lock digest is the forbidden zero sentinel")
-    return root, lock
+    if (
+        not isinstance(verified, tuple)
+        or len(verified) != 2
+        or not isinstance(verified[0], dict)
+        or not isinstance(verified[1], (set, frozenset))
+    ):
+        raise ProtocolError("trusted static verifier returned an invalid context")
+    lock, raw_reviewer_ids = verified
+    if len(raw_reviewer_ids) != 11:
+        raise ProtocolError("locked reviewer identity set is not exactly eleven actors")
+    reviewer_ids = frozenset(
+        require_production_actor_id(value, "locked reviewer actor ID")
+        for value in raw_reviewer_ids
+    )
+    return root, lock, reviewer_ids
 
 
 def load_ready_generated_documents(static_root: Path) -> dict[str, Any]:
@@ -6944,16 +7055,23 @@ def derive_blind_join(documents: dict[str, Any]) -> list[dict[str, Any]]:
     return result
 
 
-def load_canonical_attempt_inventory(static_root: Path) -> dict[str, dict[str, Any]]:
+def load_canonical_attempt_inventory(
+    static_root: Path,
+    production_reviewer_ids: frozenset[str],
+) -> dict[str, dict[str, Any]]:
     state_root = static_root / "runtime" / "state"
     if not state_root.is_dir() or state_root.is_symlink():
         raise ProtocolError("bound aggregate requires committed runtime/state")
     state_root = state_root.resolve()
     with operation_lock(state_root):
-        state = _verify_state_locked(state_root)
+        state = _verify_state_locked(
+            state_root, production_reviewer_ids=production_reviewer_ids
+        )
         if state["staging_entries"]:
             raise ProtocolError("bound aggregate forbids incomplete envelope stages")
-        leases = _authoritative_leases(state_root)
+        leases = _authoritative_leases(
+            state_root, production_reviewer_ids=production_reviewer_ids
+        )
         attempts: dict[str, dict[str, Any]] = {}
         for lease in leases:
             launch = load_bound_launch(lease)
@@ -7388,7 +7506,7 @@ def derive_aggregate_context(
 ) -> dict[str, Any]:
     """Derive every gate input from verified static and canonical runtime bytes."""
 
-    root, static_lock = load_verified_static_bundle(
+    root, static_lock, production_reviewer_ids = load_verified_static_bundle(
         static_root, external_commitment_path
     )
     inventory = validate_root_inventory(
@@ -7419,7 +7537,7 @@ def derive_aggregate_context(
     trusted_prepare = run_trusted_module("prepare.py", "v5_aggregate_prepare")
     trusted_prepare["validate_packages"](packages_document)
     blind_join = derive_blind_join(documents)
-    attempts = load_canonical_attempt_inventory(root)
+    attempts = load_canonical_attempt_inventory(root, production_reviewer_ids)
     by_run = {row["run_id"]: row for row in blind_join}
     report_attempts: dict[str, dict[str, Any]] = {}
     static_launches = {
@@ -7888,6 +8006,9 @@ def verify_draft() -> None:
         "schemas/score-input-packet.schema.json",
         "schemas/scoring-bundle-manifest.schema.json",
         "schemas/snapshot-review-contract.schema.json",
+        "schemas/source-review-contract.schema.json",
+        "schemas/source-review-receipt.schema.json",
+        "schemas/source-review-snapshot.schema.json",
         "schemas/word-count-receipt.schema.json",
         "schemas/word-count-manifest.schema.json",
         "freeze/controls.json",
@@ -8037,7 +8158,8 @@ def verify_draft() -> None:
             not isinstance(schema, dict)
             or schema.get("$schema")
             != "https://json-schema.org/draft/2020-12/schema"
-            or "DRAFT" not in schema.get("$comment", "")
+            or not isinstance(schema.get("$comment"), str)
+            or not schema["$comment"].strip()
             or not isinstance(schema.get("$id"), str)
             or re.fullmatch(r"(?:urn:[A-Za-z0-9][A-Za-z0-9+.-]*:|https://)[^#]+", schema["$id"])
             is None
@@ -8077,6 +8199,34 @@ def verify_draft() -> None:
 
 
 def self_test() -> None:
+    undefined_call_spelling = "trusted_" + "integrate("  # avoid matching this guard
+    if undefined_call_spelling in (RUN / "protocol.py").read_text(encoding="utf-8"):
+        raise AssertionError("protocol contains a call to the undefined trusted_integrate name")
+    assert require_production_actor_id(
+        "runtime-agent-0001", "synthetic production actor"
+    ) == "runtime-agent-0001"
+    for invalid_actor in (
+        "short",
+        "Runtime-Agent-0001",
+        "runtime_agent_é0001",
+        "runtime-agent-0001\n",
+    ):
+        try:
+            require_production_actor_id(invalid_actor, "synthetic production actor")
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError(
+                f"production actor grammar accepted an alias/control/Unicode value: {invalid_actor!r}"
+            )
+    try:
+        reject_reviewer_runtime_reuse(
+            "reviewer-actor-0001", frozenset({"reviewer-actor-0001"})
+        )
+    except ProtocolError:
+        pass
+    else:
+        raise AssertionError("runtime eligibility accepted a locked reviewer identity")
     validate_report_projection_contract(read_json(RUN / "report-projection-contract.json"))
     projection_inventory = {
         "schema_version": 1,
@@ -8860,36 +9010,75 @@ def self_test() -> None:
         wrong_commitment_path.write_bytes(
             canonical_json_bytes({"mock_external_commitment": False})
         )
+        mock_reviewer_ids = frozenset(
+            f"locked-reviewer-{index:04d}" for index in range(1, 12)
+        )
+        post_verify_reviewer_resolver_calls = 0
 
         def mock_trusted_integration() -> dict[str, Any]:
-            def mock_verify_static(
+            def mock_verify_static_with_reviewer_ids(
                 root: Path,
                 *,
                 expected_bundle_kind: str,
                 expected_external_commitment: Any,
-            ) -> dict[str, Any]:
+            ) -> tuple[dict[str, Any], frozenset[str]]:
                 if (
                     root != mock_bundle
                     or expected_bundle_kind != "PRODUCTION"
                     or expected_external_commitment != expected_commitment
                 ):
                     raise ProtocolError("mock external commitment mismatch")
-                return {"schema_version": 2, "status": "STATIC-LOCKED"}
+                return (
+                    {"schema_version": 2, "status": "STATIC-LOCKED"},
+                    mock_reviewer_ids,
+                )
 
-            return {"verify_static": mock_verify_static}
+            def forbidden_post_verify_reviewer_resolver(*_args: Any) -> frozenset[str]:
+                nonlocal post_verify_reviewer_resolver_calls
+                post_verify_reviewer_resolver_calls += 1
+                raise AssertionError(
+                    "protocol reopened reviewer receipts after static verification"
+                )
+
+            return {
+                "verify_static_with_reviewer_ids": (
+                    mock_verify_static_with_reviewer_ids
+                ),
+                "locked_reviewer_actor_ids": forbidden_post_verify_reviewer_resolver,
+            }
 
         saved_trusted_integration = globals()["trusted_integration_module"]
         globals()["trusted_integration_module"] = mock_trusted_integration
         try:
-            loaded_root, _mock_lock = load_verified_static_bundle(
+            loaded_root, _mock_lock, loaded_reviewer_ids = load_verified_static_bundle(
                 mock_bundle, commitment_path
             )
             assert loaded_root == mock_bundle
+            assert loaded_reviewer_ids == mock_reviewer_ids
+            if post_verify_reviewer_resolver_calls != 0:
+                raise AssertionError(
+                    "protocol used a second reviewer-ID resolver after verification"
+                )
             assert require_state_root(
                 mock_bundle / "runtime" / "state",
                 static_root=mock_bundle,
                 external_commitment_path=commitment_path,
             ) == mock_bundle / "runtime" / "state"
+            assert require_production_runtime_actor(
+                "runtime-agent-0001",
+                "mock production actor",
+                mock_reviewer_ids,
+            ) == "runtime-agent-0001"
+            try:
+                require_production_runtime_actor(
+                    next(iter(mock_reviewer_ids)),
+                    "mock production actor",
+                    mock_reviewer_ids,
+                )
+            except ProtocolError:
+                pass
+            else:
+                raise AssertionError("trusted reviewer resolver did not exclude its actor")
             for bad_commitment in (None, wrong_commitment_path):
                 try:
                     load_verified_static_bundle(mock_bundle, bad_commitment)
@@ -9292,6 +9481,12 @@ def self_test() -> None:
             inputs: dict[str, str],
             outputs: dict[str, str],
         ) -> dict[str, Any]:
+            """Build a temp-only runtime-validator fixture.
+
+            ``PASS`` is the runtime schema's validation outcome. This object
+            is never an independent-review receipt, never enters a static
+            bundle, and cannot authorize either production review boundary.
+            """
             phase = INTEGRATION_HOOK_PHASES[hook_id]
             return {
                 "schema_version": 2,
@@ -9490,6 +9685,269 @@ def self_test() -> None:
         def synthetic_verify(path: Path) -> dict[str, Any]:
             return verify_state(path, test_capability=_SYNTHETIC_TEST_CAPABILITY)
 
+        # Exercise the complete production acquisition branch behind explicit
+        # authenticated-boundary seams. This is deliberately more than a unit
+        # call to the actor helper: recurrence of an undefined helper name in
+        # acquire_lease would fail here.
+        production_mock_root = temporary_root / "production-acquire-static"
+        (production_mock_root / "runtime").mkdir(parents=True)
+        production_spec_path = production_mock_root / "spec.json"
+        production_spec_path.write_bytes(spec_path.read_bytes())
+        production_workspace = temporary_root / "production-acquire-workspace"
+        production_input = production_workspace / "input"
+        production_output = production_workspace / "output"
+        production_input.mkdir(parents=True)
+        production_launch = {
+            "schema_version": 1,
+            "status": "READY",
+            "role": "scorer",
+            "assignment_id": "E-s1",
+            "slot_id": "production-slot",
+            "run_id": None,
+            "cell_id": sha256(b"production-slot")[:32],
+            "mode": "E",
+            "fixture_id": None,
+            "task_mode": None,
+            "prompt_regime": None,
+            "condition_role": None,
+            "condition_label": None,
+            "target_label": None,
+            "replicate": None,
+            "workspace_root": str(production_workspace),
+            "input_root": str(production_input),
+            "output_root": str(production_output),
+            "target_path": None,
+            "output_path": "report.md",
+            "schema_paths": ["schemas/report.schema.json"],
+            "schedule_sha256": "1" * 64,
+            "prompt_sha256": "2" * 64,
+            "package_byte_tree_sha256": None,
+            "target_byte_tree_sha256": None,
+            "authority_packet_path": None,
+            "authority_packet_sha256": None,
+            "authority_packet_visibility": None,
+            "execution_manifest_sha256": "6" * 64,
+            "input_packet_sha256": sha256(input_packet_path.read_bytes()),
+            "envelope_spec_sha256": sha256(production_spec_path.read_bytes()),
+        }
+        production_launch_path = temporary_root / "production-acquire.launch.json"
+        production_launch_path.write_bytes(canonical_json_bytes(production_launch))
+        production_reviewer_ids = frozenset(
+            {"reviewer-actor-0001"}
+            | {f"reviewer-actor-{index:04d}" for index in range(2, 12)}
+        )
+        production_seams = {
+            "load_verified_static_bundle": globals()["load_verified_static_bundle"],
+            "load_ready_generated_documents": globals()["load_ready_generated_documents"],
+            "build_expected_evaluator_launch": globals()["build_expected_evaluator_launch"],
+            "materialize_evaluator_input_tree": globals()["materialize_evaluator_input_tree"],
+        }
+        active_production_launch = [production_launch]
+        forbid_production_materialization = [False]
+        globals()["load_verified_static_bundle"] = (
+            lambda static_root, external_commitment_path=None: (
+                Path(static_root).resolve(),
+                {"status": "STATIC-LOCKED"},
+                production_reviewer_ids,
+            )
+        )
+        globals()["load_ready_generated_documents"] = lambda _root: {}
+        globals()["build_expected_evaluator_launch"] = (
+            lambda _root, _documents, _assignment, _packet: (
+                active_production_launch[0],
+                {"envelope_spec_path": "spec.json"},
+            )
+        )
+        def mock_production_materialization(*_args: Any) -> None:
+            if forbid_production_materialization[0]:
+                raise AssertionError(
+                    "poisoned peer was detected only after input materialization"
+                )
+
+        globals()["materialize_evaluator_input_tree"] = mock_production_materialization
+        try:
+            production_lease = acquire_lease(
+                production_mock_root / "runtime" / "state",
+                production_launch_path,
+                "runtime-agent-9999",
+                production_spec_path,
+                production_output,
+                input_packet_path,
+                static_root=production_mock_root,
+                external_commitment_path=commitment_path,
+            )
+            if production_lease["agent_id"] != "runtime-agent-9999":
+                raise AssertionError("production acquisition changed its actor identity")
+
+            def make_production_launch(
+                slot_id: str, assignment_id: str
+            ) -> tuple[dict[str, Any], Path, Path]:
+                workspace = temporary_root / f"{slot_id}-workspace"
+                input_root = workspace / "input"
+                output_root = workspace / "output"
+                input_root.mkdir(parents=True)
+                launch = dict(production_launch)
+                launch.update(
+                    {
+                        "assignment_id": assignment_id,
+                        "slot_id": slot_id,
+                        "cell_id": sha256(slot_id.encode("utf-8"))[:32],
+                        "mode": assignment_id.split("-", 1)[0],
+                        "workspace_root": str(workspace),
+                        "input_root": str(input_root),
+                        "output_root": str(output_root),
+                    }
+                )
+                launch_path = temporary_root / f"{slot_id}.launch.json"
+                launch_path.write_bytes(canonical_json_bytes(launch))
+                return launch, launch_path, output_root
+
+            second_launch, second_launch_path, second_output = make_production_launch(
+                "production-slot-two", "F-s1"
+            )
+            active_production_launch[0] = second_launch
+            second_lease = acquire_lease(
+                production_mock_root / "runtime" / "state",
+                second_launch_path,
+                "runtime-agent-9998",
+                production_spec_path,
+                second_output,
+                input_packet_path,
+                static_root=production_mock_root,
+                external_commitment_path=commitment_path,
+            )
+            if second_lease["agent_id"] != "runtime-agent-9998":
+                raise AssertionError("second production acquisition changed its actor identity")
+            try:
+                active_production_launch[0] = production_launch
+                acquire_lease(
+                    production_mock_root / "runtime" / "state",
+                    production_launch_path,
+                    "reviewer-actor-0001",
+                    production_spec_path,
+                    production_output,
+                    input_packet_path,
+                    static_root=production_mock_root,
+                    external_commitment_path=commitment_path,
+                )
+            except ProtocolError:
+                pass
+            else:
+                raise AssertionError("production acquisition reused a locked reviewer")
+
+            def poison_peer_lease(root: Path, poisoned_actor: str) -> None:
+                peer_path = root / "runtime/state/slots/production-slot/lease.json"
+                peer = read_json(peer_path)
+                peer["agent_id"] = poisoned_actor
+                os.chmod(peer_path, 0o600)
+                peer_path.write_bytes(canonical_json_bytes(peer))
+                os.chmod(peer_path, 0o400)
+
+            def require_poison_reason(error: ProtocolError, poisoned_actor: str) -> None:
+                expected_reason = (
+                    "permanently ineligible"
+                    if poisoned_actor == "reviewer-actor-0001"
+                    else "canonical 16-128 byte"
+                )
+                if expected_reason not in str(error):
+                    raise AssertionError(
+                        "persisted peer-lease rejection had the wrong reason"
+                    ) from error
+
+            # Every production mutation validates all authoritative peer leases
+            # under the same operation lock. A poisoned, otherwise valid peer must
+            # stop both acquisition and sealing before either target is changed.
+            for poison_index, poisoned_actor in enumerate(
+                ("reviewer-actor-0001", "invalid-alias"), start=1
+            ):
+                poisoned_acquire_root = (
+                    temporary_root / f"poisoned-acquire-static-{poison_index}"
+                )
+                (poisoned_acquire_root / "runtime").mkdir(parents=True)
+                shutil.copytree(
+                    production_mock_root / "runtime/state",
+                    poisoned_acquire_root / "runtime/state",
+                )
+                (poisoned_acquire_root / "spec.json").write_bytes(
+                    production_spec_path.read_bytes()
+                )
+                poison_peer_lease(poisoned_acquire_root, poisoned_actor)
+                target_launch, target_launch_path, target_output = make_production_launch(
+                    f"poison-acquire-target-{poison_index}", "V-s1"
+                )
+                active_production_launch[0] = target_launch
+                forbid_production_materialization[0] = True
+                try:
+                    acquire_lease(
+                        poisoned_acquire_root / "runtime/state",
+                        target_launch_path,
+                        f"runtime-agent-88{poison_index:02d}",
+                        poisoned_acquire_root / "spec.json",
+                        target_output,
+                        input_packet_path,
+                        static_root=poisoned_acquire_root,
+                        external_commitment_path=commitment_path,
+                    )
+                except ProtocolError as error:
+                    require_poison_reason(error, poisoned_actor)
+                else:
+                    raise AssertionError("production acquisition accepted a poisoned peer lease")
+                finally:
+                    forbid_production_materialization[0] = False
+                if (
+                    (poisoned_acquire_root / "runtime/state/slots" / target_launch["slot_id"]).exists()
+                    or target_output.exists()
+                ):
+                    raise AssertionError(
+                        "production acquisition mutated state after finding a poisoned peer lease"
+                    )
+
+                poisoned_seal_root = (
+                    temporary_root / f"poisoned-seal-static-{poison_index}"
+                )
+                (poisoned_seal_root / "runtime").mkdir(parents=True)
+                shutil.copytree(
+                    production_mock_root / "runtime/state",
+                    poisoned_seal_root / "runtime/state",
+                )
+                (poisoned_seal_root / "spec.json").write_bytes(
+                    production_spec_path.read_bytes()
+                )
+                poison_peer_lease(poisoned_seal_root, poisoned_actor)
+                second_slot = poisoned_seal_root / "runtime/state/slots/production-slot-two"
+                try:
+                    seal_attempt(
+                        poisoned_seal_root / "runtime/state",
+                        second_lease["slot_id"],
+                        second_lease["lease_token"],
+                        second_lease["agent_id"],
+                        second_output,
+                        None,
+                        "PROCESS-EXITED",
+                        0,
+                        {},
+                        static_root=poisoned_seal_root,
+                        external_commitment_path=commitment_path,
+                    )
+                except ProtocolError as error:
+                    require_poison_reason(error, poisoned_actor)
+                else:
+                    raise AssertionError("production sealing accepted a poisoned peer lease")
+                if any(
+                    (second_slot / name).exists()
+                    for name in (
+                        "terminal-claim.json",
+                        "canonical.json",
+                        "seal-failure.json",
+                    )
+                ):
+                    raise AssertionError(
+                        "production sealing mutated state after finding a poisoned peer lease"
+                    )
+        finally:
+            for name, value in production_seams.items():
+                globals()[name] = value
+
         for fault_point in (
             "lease-cas",
             "attempt-root",
@@ -9546,6 +10004,35 @@ def self_test() -> None:
             {"synthetic": True},
         )
         assert pointer["format_valid"] is True
+        for forged_actor, expected_fragment in (
+            ("reviewer-actor-0001", "permanently ineligible"),
+            ("invalid-alias", "canonical 16-128 byte"),
+        ):
+            forged_state = temporary_root / f"persisted-{forged_actor}-state"
+            shutil.copytree(state, forged_state)
+            forged_lease_path = forged_state / "slots" / "slot-one" / "lease.json"
+            os.chmod(forged_lease_path, 0o600)
+            forged_lease = read_json(forged_lease_path)
+            forged_lease["agent_id"] = forged_actor
+            forged_lease_path.write_bytes(canonical_json_bytes(forged_lease))
+            os.chmod(forged_lease_path, 0o400)
+            try:
+                with operation_lock(forged_state):
+                    _verify_state_locked(
+                        forged_state,
+                        production_reviewer_ids=frozenset(
+                            {"reviewer-actor-0001"}
+                        ),
+                    )
+            except ProtocolError as error:
+                if expected_fragment not in str(error):
+                    raise AssertionError(
+                        "persisted production actor failed for the wrong reason"
+                    ) from error
+            else:
+                raise AssertionError(
+                    "persisted reviewer/alias actor survived production state verification"
+                )
         try:
             synthetic_seal(state, "slot-one", lease["lease_token"], "agent-one", output, b"replacement", "returned", 0, {})
         except CanonicalAlreadySealed:
@@ -9816,7 +10303,7 @@ def main() -> None:
             end="",
         )
     elif args.command == "build-evaluator-launch":
-        root, _lock = load_verified_static_bundle(
+        root, _lock, _reviewer_ids = load_verified_static_bundle(
             args.static_root, args.external_commitment
         )
         documents = load_ready_generated_documents(root)

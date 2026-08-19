@@ -1,31 +1,52 @@
 # V5 Static Integration — DRAFT / UNSEALED
 
-Production has three irreversible logical stages:
+Production has two review boundaries and five publication stages:
 
-1. `integrate.py prepare-snapshot` validates the selected sources and reviewed
-   overlay, materializes packages and targets, derives every map, schedule,
-   report prompt, report launch record, evaluator prompt, evaluator launch
-   contract, envelope specification, and execution manifest, and publishes a
-   read-only `REVIEW-CANDIDATE` without replacement. Report agents receive an
-   exact target/authority mount set plus the selected treatment package when
-   applicable; they receive no evaluator or attempt-envelope schema.
-2. Independent reviewers use `review-subject --private-copy` to verify the
-   published tree and create a separately custodied immutable copy. Every hook
-   has a locked contract naming exact artifact paths and hashes, the recognized
-   procedure/version, required check IDs, and evidence bindings. Reviewers
-   inspect the private copy and run `review-custody-check` at the end. Each v2
-   receipt binds the contract, descriptor, payload manifest, and reviewed
-   artifact-set digest. Prompt and randomization reviews therefore happen only
-   after their exact derived bytes exist. The receipt directory is flat and
-   contains exactly one `<HOOK-ID>.json` for every hook marked
-   `INDEPENDENT_RECEIPT_REQUIRED`—no missing, extra, or nested entry is accepted.
-3. `integrate.py finalize` re-verifies and copies the candidate, validates the
+1. `integrate.py prepare-source-review` mechanically transforms the checked-in
+   DRAFT semantic templates into an immutable `SOURCE-REVIEW-CANDIDATE`. The
+   candidate binds the exact trusted source declaration, all eight target
+   source trees, the 38 original DRAFT templates, the 38 transformed semantic
+   files, canonical report authority packet, concrete procedures and receipt
+   schema, full trusted reviewer-tool inventory, requested values, and seeds.
+2. Two independent oracle reviewers and one coherence reviewer each use
+   `review-source-subject`, work only from their verified private copy, run
+   `verify-source-quotations` where required, and author only the complete
+   contracted item-by-item work product and result evidence. The trusted
+   `build-source-review-receipt` command rechecks disjoint source/private-copy
+   custody, binds the actual
+   runtime and deterministic digests, validates that authored work, and
+   no-replace-publishes canonical read-only JSON. Finalization requires and
+   preserves those exact receipt bytes. Their canonical identities must be distinct
+   and authenticated out of band. `finalize-reviewed-inputs` verifies all
+   three exact receipts and no-replace-publishes the admitted candidate bytes;
+   it does not silently rewrite semantic content.
+3. `integrate.py prepare-snapshot` consumes those finalized reviewed inputs,
+   promotes lifecycle fields to READY, materializes packages and targets,
+   derives every map, schedule, report prompt/input-plan/launch record,
+   evaluator prompt/launch contract, envelope specification, and execution
+   manifest, and publishes a read-only `REVIEW-CANDIDATE` without replacement.
+   Report agents receive the exact target/authority mount set plus the selected
+   treatment package when applicable; they receive no evaluator or
+   attempt-envelope schema.
+4. Eight distinct snapshot reviewers use `review-subject` and
+   `review-custody-check` on private copies. Every hook contract binds exact
+   artifacts, concrete procedure and receipt schema, reviewer tools/runtime,
+   acceptance requirements, and complete work-product coverage. The trusted
+   `build-snapshot-review-receipt` command performs the same disjoint-custody, binding,
+   validation, and no-replace publication discipline. These eight
+   identities must also be disjoint from the three source reviewers and are
+   permanently ineligible for every runtime semantic role.
+5. `integrate.py finalize` re-verifies and copies the candidate, validates the
    exact receipt inventory, adds only those receipts plus the final status,
    first requires `runtime/state/` to remain exactly empty, constructs the
    static manifest, and writes `STATIC-LOCK.json` as the final
-   static byte mutation. Publication uses `renameat2(RENAME_NOREPLACE)` and
-   fsyncs content and parent directories. It fails closed where that primitive
-   is unavailable. It then completely writes and fsyncs a same-directory
+   static byte mutation. The finalizer derives the external commitment from
+   that fully verified private stage, re-verifies the stage and re-derives the
+   same commitment, then publishes the directory with
+   `renameat2(RENAME_NOREPLACE)`. It fully verifies the published path and
+   requires its derived commitment to equal the prepublication stage identity;
+   a coherently substituted bundle is therefore rejected rather than blessed.
+   It fails closed where that primitive is unavailable. It then completely writes and fsyncs a same-directory
    commitment stage, changes it to `0444`, fsyncs it again, and publishes it to
    the separately custodied final path with
    `renameat2(RENAME_NOREPLACE)` plus a parent-directory fsync. Thus an
@@ -33,12 +54,76 @@ Production has three irreversible logical stages:
    commitment is required to detect coherent replacement of the whole
    otherwise-self-consistent bundle.
 
-There is no production bypass combining these stages. The private self-test
+There is no production bypass combining these stages. The public production
+validators accept only canonical, read-only `PASS` receipts; the integration
+review-finalization boundary captures each receipt from one
+`O_NOFOLLOW|O_CLOEXEC|O_NONBLOCK` descriptor, verifies stable read-only regular
+inode metadata around the read, and copies only the validated captured bytes.
+It never validates one pathname read and later copies a second pathname read.
+The integration
+self-test's independent-review receipt helpers carry the
+distinct `SYNTHETIC-TEST-ONLY` status. The private self-test
 path carries an identity-checked process-local sentinel and can request only
 `SYNTHETIC-TEST-ONLY`; both status and lock bind that kind. This is API
 separation, not a Python-process security boundary. The public verifier requires
 an expected kind, and both its Python API and CLI require an expected external
 commitment for `PRODUCTION`; the CLI defaults to that kind.
+
+The checked-in schema files truthfully describe DRAFT source. Snapshot
+construction deterministically promotes only each schema's top-level lifecycle
+comment, and every later snapshot/lock verification byte-compares the complete
+schema inventory against that exact derivation. It additionally rejects
+`DRAFT` or `UNSEALED` prose in every schema mounted to an evaluator. Thus source
+status is not leaked through a READY agent-visible schema, and a caller cannot
+substitute an independently rewritten schema while preserving the comment.
+
+## Exact production command sequence
+
+The coordinator first creates a fresh input directory containing only
+`reviewed-values.json` (status `SOURCE-REVIEW-CANDIDATE`, an empty
+`reviewed_static` array, and `reviewed_static_base` equal to
+`DERIVED-BY-TRUSTED-SOURCE-REVIEW-BUILDER`) and `seeds.json`. Then:
+
+1. Run `integrate.py prepare-source-review --source-root UNSAFE_RUST_ROOT
+   --inputs SOURCE_INPUTS --output SOURCE_CANDIDATE
+   --acknowledge-source-review-values`.
+2. Give each of three independently authenticated actors a fresh private path.
+   Each runs `review-source-subject SOURCE_CANDIDATE --private-copy COPY`,
+   `reviewer-runtime-attestation`, its bound procedure (including
+   `verify-source-quotations --private-copy COPY` for the oracle reviews), and
+   writes its itemized `WORK_PRODUCT.json` and exact `RESULT.json`, then runs
+   `build-source-review-receipt --snapshot SOURCE_CANDIDATE --private-copy
+   COPY --review-name REVIEW_NAME --actor-id ACTOR_ID --work-product
+   WORK_PRODUCT.json --result RESULT.json --output
+   SOURCE_RECEIPTS/REVIEW_NAME`. Run `validate-source-review-receipts
+   --snapshot SOURCE_CANDIDATE --receipts SOURCE_RECEIPTS` after all three
+   read-only receipts exist.
+3. Run `finalize-reviewed-inputs --snapshot SOURCE_CANDIDATE --receipts
+   SOURCE_RECEIPTS --output REVIEWED_INPUTS
+   --acknowledge-authenticated-source-reviewers`.
+4. Run `prepare-snapshot --source-root UNSAFE_RUST_ROOT --inputs
+   REVIEWED_INPUTS --output SNAPSHOT --workspace-base FRESH_OPAQUE_WORKSPACE
+   --acknowledge-reviewed-inputs`.
+5. Give each of the eight distinct hook reviewers a fresh private copy using
+   `review-subject SNAPSHOT --private-copy COPY`. Each runs
+   `reviewer-runtime-attestation`, performs the bound procedure, writes its
+   itemized `WORK_PRODUCT.json` and exact `RESULT.json`, then runs
+   `build-snapshot-review-receipt --snapshot SNAPSHOT --private-copy COPY
+   --hook-id HOOK_ID --actor-id ACTOR_ID --work-product WORK_PRODUCT.json
+   --result RESULT.json --output SNAPSHOT_RECEIPTS/HOOK_ID.json`. Run
+   `validate-snapshot-review-receipts --snapshot SNAPSHOT --receipts
+   SNAPSHOT_RECEIPTS` after all eight read-only receipts exist.
+6. After authenticating all eleven identities and their pairwise separation,
+   run `finalize --snapshot SNAPSHOT --receipts SNAPSHOT_RECEIPTS --output
+   BUNDLE --external-commitment-output EXTERNAL_COMMITMENT
+   --acknowledge-reviewed-snapshot`.
+7. Before any semantic launch, run `verify-static BUNDLE
+   --expected-bundle-kind PRODUCTION --expected-external-commitment
+   EXTERNAL_COMMITMENT` from the separately trusted harness.
+
+The acknowledgement flags record coordinator decisions; they do not prove
+identity, reviewer honesty, or custody. Candidate trees, receipts, private
+copies, the final bundle, and external commitment must occupy disjoint paths.
 
 ## Commitments and path domain
 
@@ -105,10 +190,21 @@ coherently replaced bundle from the originally accepted bundle. The commitment
 must be authenticated and custodied by the coordinator; placing it inside
 attacker-replaceable candidate storage defeats its purpose.
 
+The trusted production verifier also returns the eleven reviewer identities
+from the same descriptor-captured receipt bytes whose sizes, modes, and
+digests it authenticates against the framed static manifest. Runtime state,
+lease, seal, and aggregation operations carry that returned exclusion set;
+they must not reopen receipt paths or derive a second identity set after the
+static verification completes.
+
 Publishing a directory and an external file cannot be one atomic filesystem
-transaction. Finalization verifies and no-replace-publishes the bundle first,
-then atomically no-replace-publishes the already-complete, fsynced, read-only
-commitment file. A crash can therefore leave a valid bundle with no final
+transaction. Finalization first derives the commitment from its verified
+private stage, re-verifies that stage and requires a second derivation to
+agree, no-replace-publishes the bundle, fully verifies the published path, and
+requires that path to derive the identical prepublication commitment. Only
+then does it atomically no-replace-publish the already-complete, fsynced,
+read-only commitment file and perform a final committed verification. A crash
+can therefore leave a valid bundle with no final
 commitment path; it cannot leave a partial or writable file at that path. A
 hard interruption may leave an unreferenced same-directory staging file, which
 has no authority and may never be substituted for the required final path.

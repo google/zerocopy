@@ -4,6 +4,17 @@
   "ready_for_freeze": false,
   "verification_date": "2026-08-19",
   "manifest_path": "propositions.json",
+  "current_v5_source_review": {
+    "status": "PENDING_INDEPENDENT_SOURCE_REVIEW",
+    "scope": "ALL_CURRENT_V5_EXACT_QUOTATIONS_LOCATORS_PROPOSITIONS_ORACLES_AND_CROSS_FILE_CLOSURE",
+    "exact_quotation_evidence_algorithm": "V5_EXACT_QUOTATION_EVIDENCE_V1",
+    "exact_quotation_evidence_sha256": "a3aff9b35d747b8dc12c90d8484f37d531447122ec186509ca62baa5e360bcaa",
+    "required_review_receipts": [
+      "static/integration/reviewed-inputs/source-review-receipts/oracle-review-1.json",
+      "static/integration/reviewed-inputs/source-review-receipts/oracle-review-2.json",
+      "static/integration/reviewed-inputs/source-review-receipts/coherence-review.json"
+    ]
+  },
   "rust_1_83_local_verification": {
     "status": "VERIFIED",
     "toolchain": {
@@ -14,7 +25,7 @@
       "docs_root": "/usr/local/google/home/joshlf/.rustup/toolchains/1.83.0-x86_64-unknown-linux-gnu/share/doc/rust/html",
       "rustc_verbose_sha256": "b7ae0e7c08f6345648e164d85d6e21d01282f0919e9c1dbc50392df53dbdfab7"
     },
-    "quotation_match_algorithm": "Within one rendered semantic element (p, li, td, dd, pre, tr, or h1-h5): Unicode NFKC; canonicalize smart quotation marks; remove Markdown backticks; remove whitespace; require exact remaining character sequence.",
+    "quotation_match_algorithm": "Decode HTML character references with the HTML parser. For a URL with a fragment, require exactly one matching element and scope h1-h6 through the next heading of equal or higher rank, a rustdoc item to its containing details element, a regular item to its containing section element, or otherwise the identified element itself. For a fragmentless citation, scope only the exact content-addressed page and make no subsection claim. Within one p, li, td, dd, pre, tr, or h1-h6 semantic element, insert one ASCII space at block and table-cell DOM boundaries, map curly quotation marks to ASCII, remove Markdown backticks, collapse whitespace runs to one ASCII space, trim, and require a nonempty exact character sequence; never concatenate distinct semantic elements.",
     "body_digest_algorithm": "SHA-256 of Unicode-NFKC rendered main-body text with all whitespace collapsed to single ASCII spaces.",
     "entries": [
       {
@@ -134,7 +145,7 @@
       {
         "id": "R183-CFG-PREDICATE",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 2,
+        "quotation_count": 3,
         "page_paths": [
           "reference/conditional-compilation.html"
         ]
@@ -142,7 +153,7 @@
       {
         "id": "R183-CFG-ATTRIBUTE",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 1,
+        "quotation_count": 2,
         "page_paths": [
           "reference/conditional-compilation.html"
         ]
@@ -361,7 +372,7 @@
       {
         "path_relative_to_docs_root": "reference/expressions/block-expr.html",
         "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html"
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html#block-expressions"
         ],
         "page_sha256": "f331ae747100685454adc27a66b02f3db00f4e26363c66e7413b468c887d2533",
         "normalized_main_body_sha256": "f542941a6dc7b2a5c896d8f69d0a7e5eb7ceb845374714b038cfbb3b5dd90a98"
@@ -369,7 +380,7 @@
       {
         "path_relative_to_docs_root": "reference/expressions/call-expr.html",
         "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html"
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html#call-expressions"
         ],
         "page_sha256": "fa4dfc7250243092a26eb59024f5a4279d53a53fadee5e60533250740bc2bdd2",
         "normalized_main_body_sha256": "63de838088d51359ee53c57047d924d32b16a285dbac8d54ea8aededd4adc0cc"
@@ -394,7 +405,7 @@
       {
         "path_relative_to_docs_root": "reference/expressions/match-expr.html",
         "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/reference/expressions/match-expr.html"
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/match-expr.html#match-expressions"
         ],
         "page_sha256": "aeb733a7f00887019cc1c343e6feef63f589d4f5c17730fe24c32b205ab2d299",
         "normalized_main_body_sha256": "1955cff4530b00c5c4456287f554b438de1a00db3bf2accb90f652e2c85718fa"
@@ -402,7 +413,7 @@
       {
         "path_relative_to_docs_root": "reference/expressions/method-call-expr.html",
         "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/reference/expressions/method-call-expr.html"
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/method-call-expr.html#method-call-expressions"
         ],
         "page_sha256": "b30eeb96beb6b66eb437fd70c48318d5edf62b34270ea3fe283676b527a5077c",
         "normalized_main_body_sha256": "e6868dba7ab00a732bb2ff6dd81d8ab05698b630dee933ceaad12a1d87b8def1"
@@ -422,7 +433,8 @@
       {
         "path_relative_to_docs_root": "reference/items/functions.html",
         "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#function-body"
+          "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#function-body",
+          "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#functions"
         ],
         "page_sha256": "eba1eb7c050103ba2f7f22b9648b19e6800617629981b93ca47f16cfd279b0c1",
         "normalized_main_body_sha256": "87acdf10ce4c48f3d3d45ba03303e11c7a2cd014782f647b80852298507a9fdf"
@@ -473,7 +485,7 @@
       {
         "path_relative_to_docs_root": "reference/types/array.html",
         "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/reference/types/array.html"
+          "https://doc.rust-lang.org/1.83.0/reference/types/array.html#array-types"
         ],
         "page_sha256": "dc9d81d347f859f1841c2a9da000c4279fa825038ea3376572aa4f01c3fba0b7",
         "normalized_main_body_sha256": "cff93e5d49906189e51fbe4c68699a4d091934eb641c94b1e89dda6d0e87f65a"
@@ -489,7 +501,7 @@
       {
         "path_relative_to_docs_root": "reference/types/numeric.html",
         "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/reference/types/numeric.html#integer-types"
+          "https://doc.rust-lang.org/1.83.0/reference/types/numeric.html#machine-dependent-integer-types"
         ],
         "page_sha256": "7c21b867c4ba43f66984ece635049dedb96783d8de0490750cd2f1ee0fe44ead",
         "normalized_main_body_sha256": "167a55b89cf47f6b867830a86d010e62d51b61a1a013c8705dda861a8baeb615"
@@ -497,7 +509,7 @@
       {
         "path_relative_to_docs_root": "reference/types/textual.html",
         "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#layout-and-bit-validity"
+          "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#textual-types"
         ],
         "page_sha256": "d4b8e10b76e49d31252c1a32a9678e4e8d3d8b0dd9396171931913a5eae24192",
         "normalized_main_body_sha256": "10922bae8119506d4b5611a97ae06d27697380eec8cb9d0449a88cd290630c6b"
@@ -593,7 +605,7 @@
       {
         "path_relative_to_docs_root": "std/str/fn.from_utf8.html",
         "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html"
+          "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html#examples"
         ],
         "page_sha256": "280dec62bf0be3e8abf5b5143906fe606397393a3b65abde2a105ec74f9b2a34",
         "normalized_main_body_sha256": "a6479e31d41879ee8d9f80be557634414b881ee1e4e35d8d43fb636fabacda8b"
@@ -610,14 +622,14 @@
     ],
     "uncovered_entries": []
   },
-  "reused_v4_authority_binding": {
-    "status": "BOUND_TO_FROZEN_REVIEW",
+  "versioned_page_byte_lineage": {
+    "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
     "scope": [
       "B Rust/Cargo 1.85.1",
       "P Rust 1.84.0, 1.85.0, and 1.86.0"
     ],
     "local_refetch_performed": false,
-    "coverage_basis": "Every requested URL is an exact row in the frozen V4 authority manifest; the locked V4 rubrics state that listed quotations/propositions were checked, and two independent signoffs cover authorities.",
+    "coverage_basis": "The frozen V4 authority manifest binds each cited versioned official page's bytes; current V5 locators may use corrected fragments on those same content-addressed pages. This is page-byte and historical lineage only: it does not claim that V4 reviewed the current V5 quotations, propositions, locators, or fragment scopes. Those current materials remain pending until the required V5 source-review receipts exist.",
     "freeze_root": "evals/unsafe-rust/runs/2026-08-01-v4-focused/freeze",
     "authority_manifest_sha256": "48444682cfc13966ce2769add9d4fbde82426a7a6e8777c421be8b26d15ff293",
     "file_manifest_sha256": "059cde170e6e31d4ef4c4997b4a64413fdd9e47e9f9e5df74c1c9707bf6e3c58",
@@ -634,16 +646,17 @@
     "entries": [
       {
         "id": "R185-ENV-VAR",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 3,
         "requested_urls": [
-          "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html",
+          "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotPresent",
+          "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotUnicode",
           "https://doc.rust-lang.org/1.85.1/std/env/fn.var.html"
         ]
       },
       {
         "id": "R185-RESULT",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/std/result/enum.Result.html"
@@ -651,15 +664,15 @@
       },
       {
         "id": "R185-MATCH-SELECTION",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
-          "https://doc.rust-lang.org/1.85.1/reference/expressions/match-expr.html"
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/match-expr.html#match-expressions"
         ]
       },
       {
         "id": "R185-PATTERNS",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 3,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/reference/patterns.html#literal-patterns",
@@ -669,15 +682,15 @@
       },
       {
         "id": "R185-FUNCTION-OUTPUT-UNIT",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
-          "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#function-body"
+          "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#functions"
         ]
       },
       {
         "id": "R185-FUNCTION-BODY-RETURN",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 2,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#function-body"
@@ -685,23 +698,23 @@
       },
       {
         "id": "R185-BLOCK-TAIL",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
-          "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html"
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html#block-expressions"
         ]
       },
       {
         "id": "R185-BLOCK-SEQUENCE",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
-          "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html"
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html#block-expressions"
         ]
       },
       {
         "id": "R185-STRING-AS-STR",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/std/string/struct.String.html#method.as_str"
@@ -709,7 +722,7 @@
       },
       {
         "id": "R185-PRINTLN",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 2,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/std/macro.println.html",
@@ -718,7 +731,7 @@
       },
       {
         "id": "R185-PANIC",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/std/macro.panic.html"
@@ -726,23 +739,23 @@
       },
       {
         "id": "R185-CFG-PREDICATE",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
-        "quotation_count": 2,
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 3,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#conditional-compilation"
         ]
       },
       {
         "id": "R185-CFG-ATTRIBUTE",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
-        "quotation_count": 1,
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 2,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#the-cfg-attribute"
         ]
       },
       {
         "id": "R185-COMPILE-ERROR",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/std/macro.compile_error.html"
@@ -750,48 +763,50 @@
       },
       {
         "id": "R185-CALL",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
-          "https://doc.rust-lang.org/1.85.1/reference/expressions/call-expr.html"
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/call-expr.html#call-expressions"
         ]
       },
       {
         "id": "R185-NONZERO-NEW-UNCHECKED",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 3,
         "requested_urls": [
-          "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html",
+          "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html#invalid-values",
           "https://doc.rust-lang.org/1.85.1/std/num/struct.NonZero.html#method.new_unchecked"
         ]
       },
       {
         "id": "R185-IF-SELECTION",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 2,
         "requested_urls": [
-          "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html"
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html#if-expressions"
         ]
       },
       {
         "id": "R185-INTEGER-COMPARISON",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
-        "quotation_count": 1,
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 2,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/reference/expressions/operator-expr.html#comparison-operators"
         ]
       },
       {
         "id": "R185-U8-DOMAIN",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 3,
         "requested_urls": [
-          "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html"
+          "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html",
+          "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MAX",
+          "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MIN"
         ]
       },
       {
         "id": "P-OPTION-UNWRAP-OR-184-186",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
           "https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_or",
@@ -801,7 +816,7 @@
       },
       {
         "id": "P-OPTION-UNWRAP-UNCHECKED-184-186",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 2,
         "requested_urls": [
           "https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_unchecked",
@@ -811,7 +826,7 @@
       },
       {
         "id": "P-CFG-184-186",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 4,
         "requested_urls": [
           "https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#conditional-compilation",
@@ -824,7 +839,7 @@
       },
       {
         "id": "P-COMPILE-ERROR-184-186",
-        "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
         "quotation_count": 1,
         "requested_urls": [
           "https://doc.rust-lang.org/1.84.0/std/macro.compile_error.html",
@@ -895,7 +910,7 @@
         "fragment_found": true
       },
       {
-        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html",
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html#invalid-values",
         "page_sha256": "873f77da05771f3c06a189cec0ab15c69a46d8e968dc7879c1d0fb11376b8ab6",
         "retrieved_utc": "2026-08-01T17:27:57.980517Z",
         "fragment_found": true
@@ -913,25 +928,25 @@
         "fragment_found": true
       },
       {
-        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html",
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html#block-expressions",
         "page_sha256": "eca5d1df45aaac303bdaa0a7a0a7e93f2e48b38171325e963bed90d3dbaf31ba",
         "retrieved_utc": "2026-08-01T17:27:57.387388Z",
         "fragment_found": true
       },
       {
-        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/call-expr.html",
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/call-expr.html#call-expressions",
         "page_sha256": "e2161195a1da5fcd2dcbb738db6d8d3bbe801774b46dd3d90a525c16a9aa07f7",
         "retrieved_utc": "2026-08-01T17:27:57.467148Z",
         "fragment_found": true
       },
       {
-        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html",
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html#if-expressions",
         "page_sha256": "66cb23b4db83562de51a0b3411d473b430c738aa934c44b75f30aa2dd02c8f05",
         "retrieved_utc": "2026-08-01T17:27:57.842840Z",
         "fragment_found": true
       },
       {
-        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/match-expr.html",
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/match-expr.html#match-expressions",
         "page_sha256": "281bbc7dfe2c0f330e7229684b55747cd3392845fad3a5be536ec5a4918ed695",
         "retrieved_utc": "2026-08-01T17:27:57.349298Z",
         "fragment_found": true
@@ -944,6 +959,12 @@
       },
       {
         "requested_url": "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#function-body",
+        "page_sha256": "29509dc1a7f35b06ff836884a33bd5877871e4b56e7b78667f2641649802be15",
+        "retrieved_utc": "2026-08-01T17:27:57.429150Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#functions",
         "page_sha256": "29509dc1a7f35b06ff836884a33bd5877871e4b56e7b78667f2641649802be15",
         "retrieved_utc": "2026-08-01T17:27:57.429150Z",
         "fragment_found": true
@@ -967,7 +988,13 @@
         "fragment_found": true
       },
       {
-        "requested_url": "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html",
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotPresent",
+        "page_sha256": "7d3b01ebf3fbb4231711605c08cba59bc18620355b8a280d0b1cb8d355465932",
+        "retrieved_utc": "2026-08-01T17:27:57.138948Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotUnicode",
         "page_sha256": "7d3b01ebf3fbb4231711605c08cba59bc18620355b8a280d0b1cb8d355465932",
         "retrieved_utc": "2026-08-01T17:27:57.138948Z",
         "fragment_found": true
@@ -1010,6 +1037,18 @@
       },
       {
         "requested_url": "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html",
+        "page_sha256": "3ccfd4f00c432ca6884ed62a38078fe5b56fe846ffc66564ec65825d1cf74d4f",
+        "retrieved_utc": "2026-08-01T17:27:57.310407Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MAX",
+        "page_sha256": "3ccfd4f00c432ca6884ed62a38078fe5b56fe846ffc66564ec65825d1cf74d4f",
+        "retrieved_utc": "2026-08-01T17:27:57.310407Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MIN",
         "page_sha256": "3ccfd4f00c432ca6884ed62a38078fe5b56fe846ffc66564ec65825d1cf74d4f",
         "retrieved_utc": "2026-08-01T17:27:57.310407Z",
         "fragment_found": true
@@ -1172,7 +1211,7 @@
     "schema_path": "../../schemas/agent-authority-packet.schema.json",
     "validator_path": "validate_agent_visible.py",
     "quotation_locator_path": "quotation-locators.json",
-    "sha256": "941b9fa50c93aa0fd826639d1a313ee3e61ffe6ba70223dcae958e7fd7a47cdc",
+    "sha256": "32d37b48adcd5e6f213681df0296ad1a1e30edd23cc2832771ba6ff51a052dac",
     "common_for_all_modes_and_conditions": true,
     "excluded_kinds": [
       "SUPPLIED_DEPENDENCY_EVIDENCE",

@@ -71,19 +71,38 @@ results preserve direct outcome, `blocked_by`, certificate outcome, and
 transitive root failures. `D-DIAGNOSTIC-COMPLETION` covers all other `D-*`
 gates but does not depend on or waive the two failed release blockers.
 
-Static integration and semantic execution are separate. Production integration
-itself is split into `SNAPSHOT_BUILD`, `SNAPSHOT_REVIEW`, and
-`FINALIZE_STATIC`; execution uses `RUNTIME_COLLECTION` and
-`POSTRUN_AGGREGATE`. `prepare-snapshot` first derives every static payload byte,
+Static integration and semantic execution are separate. Before
+`SNAPSHOT_BUILD`, `prepare-source-review` publishes an immutable theorem-input
+and semantic candidate. Two independent oracle reviewers and one coherence
+reviewer work from verified private copies and surface complete itemized work
+products. Only their exact, independently authenticated receipts permit
+`finalize-reviewed-inputs`. Production integration then proceeds through
+`SNAPSHOT_BUILD`, `SNAPSHOT_REVIEW`, and `FINALIZE_STATIC`; execution uses
+`RUNTIME_COLLECTION` and `POSTRUN_AGGREGATE`. `prepare-snapshot` derives every static payload byte,
 including the complete 120 report prompts/launches and all 43 possible
 evaluator prompts/runtime-instantiation contracts, then emits an immutable
 framed commitment with an exactly empty `runtime/state/`. Independent reviews
 use locked hook-specific artifact/procedure contracts and verified private
-copies to bind that exact candidate. `finalize` copies and rechecks
+copies, disjoint from their source candidates, to bind that exact candidate.
+Production receipts must be canonical read-only regular files. Finalization
+opens each through one no-follow, nonblocking descriptor, checks its inode and
+mode before and after reading, and preserves those exact captured bytes without
+reopening the pathname. `finalize` copies and rechecks
 the candidate without changing its payload, adds only the bound receipts and
 mechanical finalization records, and writes the whole-tree manifest and lock.
+It derives and rechecks the external commitment on the private stage before
+publication, then fully verifies the published path and requires it to derive
+that identical commitment before the commitment file can be published.
 There is no one-shot production path and no receipt over merely proposed input
-values. Production source/package/target identities come from the separately
+values. The three source and eight snapshot reviewers use one canonical actor
+identity grammar, are pairwise distinct, and are permanently excluded from all
+runtime semantic roles. One trusted static-verification operation authenticates
+the descriptor-captured receipt bytes against the static manifest and returns
+the exclusion set derived from those exact captures; runtime operations carry
+that set without reopening receipt paths. Contracts and receipts bind the exact reviewer tool
+set, observed Python/SSL/platform runtime, and item-by-item work product; actor
+authentication and reviewer honesty remain explicit coordinator TCB premises.
+Production source/package/target identities come from the separately
 trusted source declaration and source trees, never candidate self-description.
 The trusted verifier deterministically regenerates and byte-compares every
 report prompt, input plan, and launch record. This closes the relational joins
@@ -116,6 +135,10 @@ The coordinator acquires one exclusive lease for a slot before launch. Each
 started attempt uses a fresh directory. After the collaboration result returns,
 the coordinator supplies the final-response bytes, complete declared output
 tree, process disposition, and metadata to `protocol.py seal-attempt`.
+Every production acquire and seal validates all authoritative persisted peer
+leases under the operation lock: each actor must use the canonical production
+identity grammar and must not be one of the eleven locked source/snapshot
+reviewers. Acquire also performs this check before materializing launch inputs.
 
 The finalizer first captures and fsyncs a complete immutable envelope, then
 uses exclusive creation of one canonical pointer as a first-terminal
@@ -160,16 +183,26 @@ state tree. Evaluator
 identity qualification is necessarily a runtime check over actual assignments,
 not a static promise.
 
-Do not add stand-in hashes or empty oracle files. Until all reviewed inputs
-exist, only `prepare.py draft`, `prepare.py self-test`, `integrate.py draft`,
-and `integrate.py self-test` are valid. A real run uses `prepare-snapshot`,
-`review-subject --private-copy`, independent out-of-band review,
-`review-custody-check`, `finalize --external-commitment-output`, and finally
-`verify-static --expected-external-commitment` (which expects `PRODUCTION` by
-default). Both the public Python verifier and this CLI reject uncommitted
-`PRODUCTION` verification. The synthetic test
+Do not add stand-in hashes or empty oracle files. A real run uses, in order,
+`prepare-source-review`; three `review-source-subject` private copies with
+`reviewer-runtime-attestation`, exact quotation/oracle/coherence procedures,
+reviewer-authored itemized work products/results, and
+`build-source-review-receipt` plus `validate-source-review-receipts` custody
+and binding checks;
+`finalize-reviewed-inputs`; `prepare-snapshot`; eight `review-subject` private
+copies with reviewer-authored itemized work products/results followed by
+`build-snapshot-review-receipt` and `validate-snapshot-review-receipts`; `finalize
+--external-commitment-output`; and finally `verify-static
+--expected-external-commitment` (which expects `PRODUCTION` by default). Both
+the public Python verifier and this CLI reject uncommitted `PRODUCTION`
+verification, and public review finalizers reject integration-self-test
+independent-review receipts carrying `SYNTHETIC-TEST-ONLY` even if their actor
+field is renamed. The synthetic test
 writes only beneath an automatically removed temporary directory and can mint
-only `SYNTHETIC-TEST-ONLY` status.
+only `SYNTHETIC-TEST-ONLY` static/review status. Protocol self-test runtime
+validation fixtures may use the runtime receipt schema's `PASS` outcome only
+inside an automatically removed temporary state tree; they are not independent
+review receipts and cannot authorize either production review boundary.
 
 ## Static freeze boundary
 
@@ -185,8 +218,12 @@ manifest, lock, and descendants of the exact post-lock `runtime/state/`
 subtree are excluded; the `runtime/` and `runtime/state/` directory records are
 themselves inventoried. No sibling child of `runtime/` is allowed, and state is
 exactly empty until the lock exists. A separately custodied external commitment
-is required to detect replacement of an entire internally coherent bundle. It
-is completely written, fsynced, changed to `0444`, and fsynced again at a
+is required to detect replacement of an entire internally coherent bundle.
+The commitment is first derived and re-derived identically from the verified
+private finalization stage. After no-replace bundle publication, full
+verification and an identical commitment derivation are required before the
+external file can gain authority. The commitment file itself is completely
+written, fsynced, changed to `0444`, and fsynced again at a
 same-directory staging path before no-replace rename and parent fsync, so the
 final commitment path is either absent or complete and read-only. Recovery from
 the narrow bundle-published/commitment-missing crash window requires the

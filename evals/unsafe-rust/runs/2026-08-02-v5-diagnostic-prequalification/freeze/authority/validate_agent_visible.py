@@ -58,13 +58,15 @@ def quotations(entry: dict[str, Any]) -> list[str]:
 
 
 def expected_packet(
-    propositions: dict[str, Any], locators: dict[str, Any]
+    propositions: dict[str, Any], locators: dict[str, Any], *, expected_status: str
 ) -> dict[str, Any]:
     entries = {entry["id"]: entry for entry in propositions.get("entries", [])}
     if set(locators) != {"schema_version", "status", "records"}:
         raise AssertionError("quotation locator map has unexpected top-level fields")
-    if locators["schema_version"] != 1 or locators["status"] != "DRAFT":
-        raise AssertionError("quotation locator map is not schema-v1 DRAFT")
+    if locators["schema_version"] != 1 or locators["status"] != expected_status:
+        raise AssertionError(
+            f"quotation locator map is not schema-v1 {expected_status}"
+        )
     expected_pairs = {
         (entry["id"], excerpt)
         for entry in entries.values()
@@ -119,13 +121,16 @@ def expected_packet(
     }
 
 
-def validate() -> str:
-    propositions = read_json(PROPOSITIONS)
-    locators = read_json(LOCATORS)
-    packet = read_json(PACKET)
+def validate(authority_root: Path = HERE, *, expected_status: str = "DRAFT") -> str:
+    if expected_status not in {"DRAFT", "SOURCE-REVIEW-CANDIDATE", "READY"}:
+        raise AssertionError("authority projection expected status is unknown")
+    propositions = read_json(authority_root / "propositions.json")
+    locators = read_json(authority_root / "quotation-locators.json")
+    packet_path = authority_root / "agent-visible" / "common.json"
+    packet = read_json(packet_path)
     if set(packet) != TOP_KEYS:
         raise AssertionError("agent-visible packet has unexpected top-level fields")
-    if packet != expected_packet(propositions, locators):
+    if packet != expected_packet(propositions, locators, expected_status=expected_status):
         raise AssertionError(
             "agent-visible packet is not the exact sorted, deduplicated Rust-only projection"
         )
@@ -135,7 +140,7 @@ def validate() -> str:
         match = URL_VERSION.match(record["url"])
         if match is None or match.group(1) != record["version"]:
             raise AssertionError(f"URL/version mismatch: {record['url']}")
-    raw = PACKET.read_bytes()
+    raw = packet_path.read_bytes()
     return hashlib.sha256(raw).hexdigest()
 
 

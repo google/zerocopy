@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """Prepare, review, finalize, and verify a V5 prelaunch static bundle.
 
-Production integration is deliberately two-step. ``prepare-snapshot`` first
-materializes every derived byte which semantic reviewers must inspect and
-publishes an immutable REVIEW-CANDIDATE. Review receipts then bind that exact
-snapshot. ``finalize`` copies and re-verifies the snapshot, adds only the bound
+Production integration has two independently reviewed boundaries. First,
+``prepare-source-review`` constructs an immutable SOURCE-REVIEW-CANDIDATE from
+the DRAFT semantic templates and exact theorem inputs. Three independent
+source-review receipts bind that candidate before ``finalize-reviewed-inputs``
+can admit it. Then ``prepare-snapshot`` deterministically promotes the admitted
+semantic material to READY, derives every launch byte, and publishes an
+immutable REVIEW-CANDIDATE. Eight independent snapshot receipts bind that
+second candidate. ``finalize`` copies and re-verifies it, adds only the bound
 receipts and mechanical finalization records, and creates ``STATIC-LOCK.json``
 as the final static byte mutation. There is no one-shot production path.
 
@@ -20,14 +24,20 @@ import errno
 import hashlib
 import json
 import os
+import platform
 import re
+import runpy
 import shutil
+import ssl
 import stat
+import subprocess
+import sys
 import tempfile
 import types
 from pathlib import Path
 from typing import Any, Callable, Iterable
 
+sys.dont_write_bytecode = True
 import prepare
 
 
@@ -37,6 +47,78 @@ STATIC_MANIFEST = "STATIC-MANIFEST.sha256"
 STATIC_LOCK = "STATIC-LOCK.json"
 SNAPSHOT_MANIFEST = "REVIEW-SNAPSHOT.manifest"
 SNAPSHOT_DESCRIPTOR = "REVIEW-SNAPSHOT.json"
+SOURCE_REVIEW_MANIFEST = "SOURCE-REVIEW.manifest"
+SOURCE_REVIEW_DESCRIPTOR = "SOURCE-REVIEW.json"
+SOURCE_REVIEW_ALGORITHM = "V5_SOURCE_REVIEW_SNAPSHOT_V1"
+SOURCE_REVIEW_TRANSITION_ALGORITHM = "V5_REVIEWED_SOURCE_TRANSITION_V1"
+REVIEWED_STATIC_SET_ALGORITHM = "V5_REVIEWED_STATIC_RECORD_SET_V1"
+REVIEWER_TOOL_SET_ALGORITHM = "V5_REVIEWER_TOOL_SET_V1"
+REVIEWER_RUNTIME_ATTESTATION_ALGORITHM = "V5_REVIEWER_RUNTIME_ATTESTATION_V1"
+REVIEW_WORK_PRODUCT_ALGORITHM = "V5_REVIEW_WORK_PRODUCT_V1"
+REVIEW_WORK_PRODUCT_NARRATIVE_ALGORITHM = "V5_REVIEW_NARRATIVE_V1"
+REVIEW_COVERAGE_SET_ALGORITHM = "V5_REVIEW_COVERAGE_SET_V1"
+SOURCE_REVIEW_PROCEDURE_VERSION = "v5-source-review-v1"
+SOURCE_REVIEW_CONTRACT_ROOT = "source-review-contracts"
+SOURCE_REVIEW_PROCEDURE_ROOT = "source-review-procedures"
+SOURCE_REVIEW_THEOREM_ROOT = "theorem-inputs"
+SOURCE_REVIEW_KINDS = (
+    ("oracle-review-1.json", "INDEPENDENT_ORACLE"),
+    ("oracle-review-2.json", "INDEPENDENT_ORACLE"),
+    ("coherence-review.json", "COHERENCE"),
+)
+SOURCE_REVIEW_CHECK_IDS = {
+    "INDEPENDENT_ORACLE": (
+        "EXACT-SOURCE-REVIEW-BOUND",
+        "REVIEW-CONTRACT-BOUND",
+        "ARTIFACT-INVENTORY-CHECKED",
+        "EXACT-QUOTATIONS-AND-PAGE-BYTES-VERIFIED",
+        "ORACLE-ENTAILMENT-CHECKED",
+        "AUTHORITY-PROJECTION-CHECKED",
+        "END-OF-REVIEW-REVERIFIED",
+    ),
+    "COHERENCE": (
+        "EXACT-SOURCE-REVIEW-BOUND",
+        "REVIEW-CONTRACT-BOUND",
+        "ARTIFACT-INVENTORY-CHECKED",
+        "CONTROL-AND-DEFECT-COVERAGE-CHECKED",
+        "CROSS-FILE-CLOSURE-CHECKED",
+        "TRANSFORMATION-CORRECTNESS-CHECKED",
+        "END-OF-REVIEW-REVERIFIED",
+    ),
+}
+SOURCE_REVIEW_PROCEDURE_TEXT = {
+    "INDEPENDENT_ORACLE": """# V5 independent oracle source review
+
+Use only the verified private copy named by the coordinator as semantic input. Create it with `integrate.py review-source-subject SOURCE_CANDIDATE --private-copy PRIVATE_COPY`. Before reading semantic content, run `integrate.py source-review-custody-check --snapshot SOURCE_CANDIDATE --private-copy PRIVATE_COPY`. Those commands must be run from the separately trusted harness whose complete Python/schema tool set exactly matches the contract's `reviewer_tools` and `reviewer_tool_set_sha256`; run `integrate.py reviewer-runtime-attestation` with that same interpreter to inspect the runtime identity which the receipt builder will bind. The Python interpreter and standard library remain explicit TCB premises. Read the exact contract for this reviewer and check every artifact listed by it.
+
+1. Verify `theorem-inputs/source-declaration.json` and each exact target tree under `theorem-inputs/unsafe-rust/`. Confirm every mode, fixture identity, source path, and BYTE_TREE_V1 digest joins the declaration, fixture manifest, atoms, oracle, controls, and defect rules without substitution.
+2. Run `integrate.py verify-source-quotations --private-copy PRIVATE_COPY`. It must fetch every exact versioned official Rust page without redirects, match its frozen full-page SHA-256, validate every cited fragment, and find every exact excerpt within the referenced section. A deliberately fragmentless item-page citation proves only a page-wide, single-semantic-element match on those content-addressed bytes; it makes no subsection claim. Treat any unavailable, ambiguous, or mismatching authority premise as FAIL.
+3. For every atom and oracle conclusion, reconstruct the proof from the exact target bytes and cited authoritative propositions. Check preconditions, postconditions, supported configurations, witness reachability, defined-versus-UB distinctions, and all cross-file prerequisites. A hash alone is not semantic evidence.
+4. Recompute the agent-visible authority projection and confirm it equals both the reviewed canonical projection and `docs/rust-documentation.json` byte-for-byte, with no evaluator-only material.
+5. Record a concise, item-specific proof/rationale for every exact `coverage_items` entry in a work-product JSON object and a narrative report explaining findings and reconstructed proofs; do not collapse any item to a global PASS. Separately author the result JSON with the exact ordered check IDs and evidence required by the contract; a bare assertion of PASS is invalid. Produce no receipt if any required check is incomplete, unresolved, or failed. Otherwise run `integrate.py build-source-review-receipt --snapshot SOURCE_CANDIDATE --private-copy PRIVATE_COPY --review-name REVIEW_NAME --actor-id ACTOR_ID --work-product WORK_PRODUCT.json --result RESULT.json --output RECEIPTS/REVIEW_NAME`. The builder reruns custody, records the actual runtime, fills only deterministic contract/digest fields, validates the reviewer-authored work, reruns custody at the end, and no-replace-publishes one canonical read-only receipt. After all three actors finish, the coordinator must run `integrate.py validate-source-review-receipts --snapshot SOURCE_CANDIDATE --receipts RECEIPTS`.
+""",
+    "COHERENCE": """# V5 reviewed-source coherence review
+
+Use only the verified private copy named by the coordinator as semantic input. Create it with `integrate.py review-source-subject SOURCE_CANDIDATE --private-copy PRIVATE_COPY`. Before review, run `integrate.py source-review-custody-check --snapshot SOURCE_CANDIDATE --private-copy PRIVATE_COPY`. Those commands must be run from the separately trusted harness whose complete Python/schema tool set exactly matches the contract's `reviewer_tools` and `reviewer_tool_set_sha256`; run `integrate.py reviewer-runtime-attestation` with that same interpreter to inspect the runtime identity which the receipt builder will bind. The Python interpreter and standard library remain explicit TCB premises. Read the exact coherence contract and check every artifact listed by it.
+
+1. Verify the complete artifact inventory, `theorem-inputs/source-declaration.json`, and all target trees under `theorem-inputs/unsafe-rust/`. Confirm every mode-to-source join and BYTE_TREE_V1 identity is exact.
+2. Check all atom prerequisites and inverse authority consumers, every allowlist URL, fixture surface and supported-set declaration, control coverage, defect-rule coverage, and mode/fixture/source cross-reference. Reject missing, stale, duplicated, or contradictory records.
+3. Check the mechanical DRAFT-to-SOURCE-REVIEW-CANDIDATE transformation: semantic text is unchanged except exact lifecycle fields/markers and self-describing source bindings; no candidate file claims completed review or a not-yet-derived report-material digest.
+4. Confirm `docs/rust-documentation.json` is byte-identical to the canonical reviewed projection and that the review subject contains no unbound target, authority, procedure, or receipt-schema input.
+5. Record a concise, item-specific rationale for every exact `coverage_items` entry in a work-product JSON object and a narrative report explaining every finding; do not collapse any item to a path-level or global PASS. Separately author the result JSON with the exact ordered check IDs and evidence required by the contract; a bare assertion of PASS is invalid. Produce no receipt if any required check is incomplete, unresolved, or failed. Otherwise run `integrate.py build-source-review-receipt --snapshot SOURCE_CANDIDATE --private-copy PRIVATE_COPY --review-name coherence-review.json --actor-id ACTOR_ID --work-product WORK_PRODUCT.json --result RESULT.json --output RECEIPTS/coherence-review.json`. The builder reruns custody, records the actual runtime, fills only deterministic contract/digest fields, validates the reviewer-authored work, reruns custody at the end, and no-replace-publishes one canonical read-only receipt. After all three actors finish, the coordinator must run `integrate.py validate-source-review-receipts --snapshot SOURCE_CANDIDATE --receipts RECEIPTS`.
+""",
+}
+EXACT_QUOTATION_EVIDENCE_ALGORITHM = "V5_EXACT_QUOTATION_EVIDENCE_V1"
+EXACT_QUOTATION_EVIDENCE_SHA256 = (
+    "a3aff9b35d747b8dc12c90d8484f37d531447122ec186509ca62baa5e360bcaa"
+)
+REPORT_MATERIAL_SET_ALGORITHM = "V5_MODE_REPORT_MATERIAL_SET_V1"
+SOURCE_REVIEW_CANDIDATE_STATUS = "SOURCE-REVIEW-CANDIDATE"
+REVIEWED_FIXTURE_STATUS = SOURCE_REVIEW_CANDIDATE_STATUS
+REVIEWED_DERIVATION_SENTINEL = "DERIVE_DURING_SNAPSHOT_BUILD"
+REVIEWED_STATIC_DERIVED_BASE = "DERIVED-BY-TRUSTED-SOURCE-REVIEW-BUILDER"
+REVIEWED_STATIC_CANDIDATE_BASE = "reviewed-static"
+REVIEWED_STATIC_BUNDLE_BASE = "static/integration/reviewed-static-input"
 EXTERNAL_COMMITMENT_STATUS = "EXTERNAL-TRUST-COMMITMENT"
 RECOVERY_CUSTODY_ACKNOWLEDGEMENT = (
     "UNINTERRUPTED_TRUSTED_COORDINATOR_CUSTODY_SINCE_FINALIZATION"
@@ -113,6 +195,7 @@ HOOK_IMPLEMENTATION = {
     for hook_id, phase in HOOK_PHASES.items()
 }
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
+ACTOR_ID = re.compile(r"^[a-z0-9][a-z0-9._-]{15,127}$")
 OPAQUE_WORKSPACE_LEAF = re.compile(r"^[0-9a-f]{64}$")
 _SYNTHETIC_CAPABILITY = object()
 _FINALIZATION_PRECOMMIT_CAPABILITY = object()
@@ -132,6 +215,10 @@ PACKAGE_CROSS_CONDITION_FORBIDDEN_TOKENS = frozenset(
     }
 )
 SNAPSHOT_REVIEW_PROCEDURE_VERSION = "v5-snapshot-review-v1"
+SNAPSHOT_REVIEW_PROCEDURE_PATH = (
+    "static/integration/snapshot-review-procedure.md"
+)
+SNAPSHOT_REVIEW_RECEIPT_SCHEMA_PATH = "schemas/integration-receipt.schema.json"
 SNAPSHOT_REVIEW_CHECK_IDS = (
     "EXACT-SNAPSHOT-BOUND",
     "REVIEW-CONTRACT-BOUND",
@@ -139,6 +226,32 @@ SNAPSHOT_REVIEW_CHECK_IDS = (
     "HOOK-SEMANTICS-CHECKED",
     "END-OF-REVIEW-REVERIFIED",
 )
+SNAPSHOT_REVIEW_ACCEPTANCE_REQUIREMENTS = {
+    "H-VALIDATE-CROSS-REFERENCE-CLOSURE": (
+        "Verify exact stable IDs, schema/status fields, file inventories, and every forward/inverse cross-file join; reject any missing, extra, stale, duplicated, or contradictory record.",
+    ),
+    "H-VALIDATE-HIDDEN-FIXTURE-MANIFESTS": (
+        "For every mode, verify the trusted target source-tree identity, supported configuration set, safe/public surface inventory, control joins, all fifteen exact report-material bindings, and the complete reused-P lineage.",
+    ),
+    "H-VALIDATE-ORACLE-COVERAGE": (
+        "Verify every atom, prerequisite edge, inverse authority consumer, exact quotation locator, allowlist URL, oracle conclusion, control, and defect-rule obligation is complete and entailed by the exact reviewed theorem inputs.",
+    ),
+    "H-VALIDATE-INDEPENDENT-SIGNOFFS": (
+        "Verify the exact three source-review receipts and contracts, pairwise-distinct claimed reviewer identities, procedure/evidence coverage, immutable subject digests, and end-of-review custody reverification; treat out-of-band identity authentication as an explicit coordinator TCB premise rather than inferring it from bundle bytes.",
+    ),
+    "H-BUILD-VALIDATE-REPORT-AUTHORITY-PROJECTIONS": (
+        "Rebuild the exact allowed report-agent authority projection; verify every mounted copy is byte-identical and contains neither evaluator-only material nor an unapproved authority/source path.",
+    ),
+    "H-VALIDATE-PROMPT-RENDERINGS": (
+        "Rebuild and compare all 120 report prompts, input plans, launch records, exact mounts, role manifests, envelope specs, and all 43 evaluator contracts/prompts; verify cross-condition differential isolation and absence of unresolved markers.",
+    ),
+    "H-GENERATE-VERIFY-RANDOMIZATION": (
+        "Recompute every seed-derived condition, target, blind, launch, presentation, scoring, and consistency map; verify balance, blinding, reviewer assignment separation, and exact randomization commitments.",
+    ),
+    "H-VALIDATE-AGGREGATION-RULE-INVENTORY": (
+        "Verify complete fail-closed aggregation, comparison, materiality, gate, and root topology, including exact predicates, thresholds, prerequisites, decision domains, and every required output/input join.",
+    ),
+}
 
 
 class IntegrationError(ValueError):
@@ -167,6 +280,158 @@ def pretty_json_bytes(value: Any) -> bytes:
         json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False, allow_nan=False)
         + "\n"
     ).encode("utf-8")
+
+
+def require_actor_id(value: Any, label: str) -> str:
+    if not isinstance(value, str) or ACTOR_ID.fullmatch(value) is None:
+        raise IntegrationError(
+            f"{label} must be 16-128 lowercase ASCII safe-ID characters"
+        )
+    return value
+
+
+def current_reviewer_runtime_attestation() -> dict[str, str | int]:
+    return {
+        "schema_version": 1,
+        "algorithm": REVIEWER_RUNTIME_ATTESTATION_ALGORITHM,
+        "python_implementation": platform.python_implementation(),
+        "python_version": platform.python_version(),
+        "python_cache_tag": sys.implementation.cache_tag or "NONE",
+        "openssl_version": ssl.OPENSSL_VERSION,
+        "platform_system": platform.system(),
+        "platform_release": platform.release(),
+        "platform_machine": platform.machine(),
+    }
+
+
+def validate_reviewer_runtime_attestation(value: Any) -> dict[str, Any]:
+    runtime = exact_object(
+        value,
+        {
+            "schema_version",
+            "algorithm",
+            "python_implementation",
+            "python_version",
+            "python_cache_tag",
+            "openssl_version",
+            "platform_system",
+            "platform_release",
+            "platform_machine",
+        },
+        "reviewer runtime attestation",
+    )
+    if (
+        runtime["schema_version"] != 1
+        or runtime["algorithm"] != REVIEWER_RUNTIME_ATTESTATION_ALGORITHM
+        or any(
+            not isinstance(runtime[field], str)
+            or not runtime[field]
+            or not runtime[field].isascii()
+            or any(ord(character) < 0x20 for character in runtime[field])
+            for field in runtime
+            if field not in {"schema_version", "algorithm"}
+        )
+    ):
+        raise IntegrationError("reviewer runtime attestation is not exact ASCII metadata")
+    return runtime
+
+
+def review_coverage_set_sha256(items: list[dict[str, str]]) -> str:
+    return sha256(
+        REVIEW_COVERAGE_SET_ALGORITHM.encode("ascii")
+        + b"\0"
+        + canonical_json_bytes(items)
+    )
+
+
+def review_work_product_sha256(value: dict[str, Any]) -> str:
+    return sha256(
+        REVIEW_WORK_PRODUCT_ALGORITHM.encode("ascii")
+        + b"\0"
+        + canonical_json_bytes(value)
+    )
+
+
+def validate_review_work_product(
+    value: Any,
+    *,
+    expected_coverage_items: list[dict[str, str]],
+) -> tuple[dict[str, Any], str]:
+    work = exact_object(
+        value,
+        {"algorithm", "narrative", "narrative_sha256", "coverage"},
+        "review work product",
+    )
+    narrative = work["narrative"]
+    if (
+        work["algorithm"] != REVIEW_WORK_PRODUCT_ALGORITHM
+        or not isinstance(narrative, str)
+        or len(narrative.strip()) < 100
+    ):
+        raise IntegrationError("review work product narrative is not substantive")
+    expected_narrative_sha256 = sha256(
+        REVIEW_WORK_PRODUCT_NARRATIVE_ALGORITHM.encode("ascii")
+        + b"\0"
+        + narrative.encode("utf-8")
+    )
+    if work["narrative_sha256"] != expected_narrative_sha256:
+        raise IntegrationError("review work product narrative digest is wrong")
+    coverage = work["coverage"]
+    if not isinstance(coverage, list) or len(coverage) != len(expected_coverage_items):
+        raise IntegrationError("review work product coverage count is not exact")
+    observed_items: list[dict[str, str]] = []
+    for index, raw in enumerate(coverage):
+        item = exact_object(
+            raw,
+            {"id", "subject", "decision", "rationale"},
+            f"review work product coverage {index}",
+        )
+        observed_items.append({"id": item["id"], "subject": item["subject"]})
+        if (
+            item["decision"] != "PASS"
+            or not isinstance(item["rationale"], str)
+            or len(item["rationale"].strip()) < 40
+            or item["id"] not in item["rationale"]
+        ):
+            raise IntegrationError(
+                f"review work product rationale is not item-specific: {item['id']}"
+            )
+    if observed_items != expected_coverage_items:
+        raise IntegrationError("review work product coverage IDs/subjects are not exact")
+    return work, review_work_product_sha256(work)
+
+
+def synthetic_review_work_product(
+    coverage_items: list[dict[str, str]], *, label: str
+) -> dict[str, Any]:
+    """Build a private self-test work product; never used by a public command."""
+
+    narrative = (
+        f"Synthetic self-test work product for {label}. This record exercises exact "
+        "coverage inventory, canonical serialization, digest binding, and rejection "
+        "paths only; it is not an independent semantic review and cannot authorize "
+        "a production artifact."
+    )
+    return {
+        "algorithm": REVIEW_WORK_PRODUCT_ALGORITHM,
+        "narrative": narrative,
+        "narrative_sha256": sha256(
+            REVIEW_WORK_PRODUCT_NARRATIVE_ALGORITHM.encode("ascii")
+            + b"\0"
+            + narrative.encode("utf-8")
+        ),
+        "coverage": [
+            {
+                **item,
+                "decision": "PASS",
+                "rationale": (
+                    f"{item['id']}: synthetic self-test exercised the exact bound "
+                    "coverage identity and subject without claiming human review."
+                ),
+            }
+            for item in coverage_items
+        ],
+    }
 
 
 def reject_nonfinite(value: str) -> Any:
@@ -199,6 +464,87 @@ def read_json(path: Path) -> Any:
         return parse_json_bytes(path.read_bytes(), str(path))
     except OSError as error:
         raise IntegrationError(f"cannot read JSON {path}: {error}") from error
+
+
+def read_canonical_read_only_json(path: Path, label: str) -> tuple[Any, bytes]:
+    """Capture one production receipt through one immutable file descriptor."""
+
+    required_flags = ("O_NOFOLLOW", "O_CLOEXEC", "O_NONBLOCK")
+    if any(not hasattr(os, name) for name in required_flags):
+        raise IntegrationError(
+            f"{label} cannot be read without no-follow, close-on-exec, and nonblocking opens"
+        )
+    flags = os.O_RDONLY
+    for name in required_flags:
+        flags |= getattr(os, name)
+    descriptor: int | None = None
+    try:
+        descriptor = os.open(path, flags)
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode):
+            raise IntegrationError(f"{label} must be a real regular file")
+        if before.st_mode & 0o222:
+            raise IntegrationError(f"{label} must be read-only")
+        chunks: list[bytes] = []
+        while True:
+            chunk = os.read(descriptor, 1024 * 1024)
+            if not chunk:
+                break
+            chunks.append(chunk)
+        data = b"".join(chunks)
+        after = os.fstat(descriptor)
+        before_identity = (
+            before.st_dev,
+            before.st_ino,
+            before.st_mode,
+            before.st_nlink,
+            before.st_uid,
+            before.st_gid,
+            before.st_size,
+            before.st_mtime_ns,
+            before.st_ctime_ns,
+        )
+        after_identity = (
+            after.st_dev,
+            after.st_ino,
+            after.st_mode,
+            after.st_nlink,
+            after.st_uid,
+            after.st_gid,
+            after.st_size,
+            after.st_mtime_ns,
+            after.st_ctime_ns,
+        )
+        if before_identity != after_identity:
+            raise IntegrationError(f"{label} identity or mode changed while it was read")
+        if not stat.S_ISREG(after.st_mode) or after.st_mode & 0o222:
+            raise IntegrationError(f"{label} lost its read-only regular-file identity")
+    except OSError as error:
+        raise IntegrationError(f"cannot securely open/read {label}: {error}") from error
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+    value = parse_json_bytes(data, label)
+    if data != canonical_json_bytes(value):
+        raise IntegrationError(f"{label} must use exact canonical JSON bytes")
+    return value, data
+
+
+def capture_review_receipt_json(
+    path: Path,
+    label: str,
+    *,
+    synthetic_capability: object | None,
+) -> tuple[Any, bytes]:
+    """Capture receipt bytes once; production uses the descriptor-bound predicate."""
+
+    if synthetic_capability is _SYNTHETIC_CAPABILITY:
+        try:
+            data = path.read_bytes()
+        except OSError as error:
+            raise IntegrationError(f"cannot read {label}: {error}") from error
+        return parse_json_bytes(data, label), data
+    return read_canonical_read_only_json(path, label)
 
 
 def exact_object(value: Any, keys: set[str], label: str) -> dict[str, Any]:
@@ -249,6 +595,18 @@ def require_neutral_workspace_base(path: Path, forbidden_terms: Iterable[str]) -
 
 def paths_overlap(first: Path, second: Path) -> bool:
     return first == second or first in second.parents or second in first.parents
+
+
+def require_disjoint_review_subjects(
+    snapshot: Path, private_copy: Path, label: str
+) -> tuple[Path, Path]:
+    """Resolve and reject reflexive or nested source/private review subjects."""
+
+    source = snapshot.resolve()
+    private = private_copy.resolve()
+    if paths_overlap(source, private):
+        raise IntegrationError(f"{label} source and private copy must be disjoint")
+    return source, private
 
 
 def neutral_self_test_parent(forbidden_terms: Iterable[str]) -> Path:
@@ -322,13 +680,15 @@ def external_commitment_destination(
     return destination
 
 
-def _publish_external_commitment_file(path: Path, value: dict[str, Any]) -> None:
-    """Durably stage, then no-replace-publish, a read-only commitment file."""
+def publish_read_only_canonical_json(
+    path: Path, value: dict[str, Any], *, label: str
+) -> None:
+    """Durably stage and no-replace-publish one canonical read-only JSON file."""
 
-    destination = canonical_new_file_destination(path, "external commitment output")
+    destination = canonical_new_file_destination(path, label)
     data = canonical_json_bytes(value)
     descriptor, stage_text = tempfile.mkstemp(
-        prefix=f".{destination.name}.v5-commitment-stage-",
+        prefix=f".{destination.name}.v5-json-stage-",
         dir=destination.parent,
     )
     stage = Path(stage_text)
@@ -346,7 +706,7 @@ def _publish_external_commitment_file(path: Path, value: dict[str, Any]) -> None
             or stat.S_IMODE(destination.stat(follow_symlinks=False).st_mode) != 0o444
         ):
             raise IntegrationError(
-                "published external commitment is not the exact read-only staged file"
+                f"published {label} is not the exact read-only staged file"
             )
     except Exception:
         if descriptor >= 0:
@@ -355,6 +715,14 @@ def _publish_external_commitment_file(path: Path, value: dict[str, Any]) -> None
             stage.unlink()
             fsync_directory(stage.parent)
         raise
+
+
+def _publish_external_commitment_file(path: Path, value: dict[str, Any]) -> None:
+    """Durably publish a separately custodied external commitment."""
+
+    publish_read_only_canonical_json(
+        path, value, label="external commitment output"
+    )
 
 
 def fsync_directory(path: Path) -> None:
@@ -428,6 +796,10 @@ def validate_json_schema(
         "minimum",
         "oneOf",
         "allOf",
+        "if",
+        "then",
+        "else",
+        "not",
     }
     unsupported = set(schema) - allowed
     if unsupported:
@@ -456,6 +828,42 @@ def validate_json_schema(
             label=f"{label}.allOf[{index}]",
             root_schema=root_schema,
         )
+    if "if" in schema:
+        try:
+            validate_json_schema(
+                instance,
+                schema["if"],
+                label=f"{label}.if",
+                root_schema=root_schema,
+            )
+        except IntegrationError:
+            if "else" in schema:
+                validate_json_schema(
+                    instance,
+                    schema["else"],
+                    label=f"{label}.else",
+                    root_schema=root_schema,
+                )
+        else:
+            if "then" in schema:
+                validate_json_schema(
+                    instance,
+                    schema["then"],
+                    label=f"{label}.then",
+                    root_schema=root_schema,
+                )
+    if "not" in schema:
+        try:
+            validate_json_schema(
+                instance,
+                schema["not"],
+                label=f"{label}.not",
+                root_schema=root_schema,
+            )
+        except IntegrationError:
+            pass
+        else:
+            raise IntegrationError(f"{label}: value matched forbidden schema")
     if "oneOf" in schema:
         successes = 0
         for subschema in schema["oneOf"]:
@@ -639,6 +1047,80 @@ def tree_manifest_bytes(
     )
 
 
+def parse_tree_manifest_records(
+    payload: bytes,
+    *,
+    domain: bytes,
+    include_mode: bool,
+    label: str,
+) -> dict[str, dict[str, Any]]:
+    """Parse one exact framed tree without consulting any filesystem path."""
+
+    position = 0
+
+    def take(length: int, field: str) -> bytes:
+        nonlocal position
+        if length < 0 or position + length > len(payload):
+            raise IntegrationError(f"{label}: truncated {field}")
+        result = payload[position : position + length]
+        position += length
+        return result
+
+    def take_u64(field: str) -> int:
+        return int.from_bytes(take(8, field), "big")
+
+    prefix = domain + b"\0TREE\0"
+    if take(len(prefix), "tree prefix") != prefix:
+        raise IntegrationError(f"{label}: invalid tree domain or prefix")
+    count = take_u64("record count")
+    records: dict[str, dict[str, Any]] = {}
+    previous_path: bytes | None = None
+    record_prefix = domain + b"\0RECORD\0"
+    for index in range(count):
+        if take(len(record_prefix), f"record {index} prefix") != record_prefix:
+            raise IntegrationError(f"{label}: invalid record {index} domain or prefix")
+        kind = take(1, f"record {index} kind")
+        if kind not in {b"D", b"F"}:
+            raise IntegrationError(f"{label}: invalid record {index} kind")
+        path_bytes = take(
+            take_u64(f"record {index} path length"), f"record {index} path"
+        )
+        try:
+            path_text = path_bytes.decode("utf-8", errors="strict")
+        except UnicodeDecodeError as error:
+            raise IntegrationError(f"{label}: record {index} path is not UTF-8") from error
+        try:
+            canonical_path = prepare.portable_relative_path(
+                path_text, f"{label} record {index} path"
+            )
+        except ValueError as error:
+            raise IntegrationError(str(error)) from error
+        if canonical_path != path_bytes:
+            raise IntegrationError(f"{label}: record {index} path is not canonical")
+        if previous_path is not None and path_bytes <= previous_path:
+            raise IntegrationError(f"{label}: record paths are not strictly ordered")
+        previous_path = path_bytes
+        size = take_u64(f"record {index} size")
+        mode_length = take_u64(f"record {index} mode length")
+        expected_mode_length = 4 if include_mode else 0
+        if mode_length != expected_mode_length:
+            raise IntegrationError(f"{label}: record {index} mode framing is invalid")
+        mode_bytes = take(mode_length, f"record {index} mode")
+        mode = int.from_bytes(mode_bytes, "big") if include_mode else None
+        content_sha256 = take(32, f"record {index} content digest").hex()
+        if kind == b"D" and (size != 0 or content_sha256 != "0" * 64):
+            raise IntegrationError(f"{label}: directory record {index} has file content")
+        records[path_text] = {
+            "kind": kind.decode("ascii"),
+            "size": size,
+            "mode": mode,
+            "content_sha256": content_sha256,
+        }
+    if position != len(payload):
+        raise IntegrationError(f"{label}: trailing bytes follow the framed record set")
+    return records
+
+
 def publish_no_replace(stage: Path, output: Path) -> None:
     """Atomically publish one filesystem entry without replacing an extant path."""
 
@@ -783,15 +1265,29 @@ def validate_execution_config(value: Any) -> dict[str, Any]:
         "reasoning_effort",
         "sampling",
         "token_budget",
+        "token_budget_enforcement",
         "time_budget_seconds",
-        "tools",
-        "network_access",
-        "documentation_access",
-        "hosted_build",
+        "time_budget_enforcement",
+        "requested_tools",
+        "tool_capability_observation",
+        "tool_policy_enforcement",
+        "requested_network_access",
+        "network_capability_observation",
+        "network_policy_enforcement",
+        "requested_documentation_access",
+        "documentation_capability_observation",
+        "documentation_policy_enforcement",
+        "requested_hosted_build",
+        "hosted_build_capability_observation",
+        "hosted_build_policy_enforcement",
     }
     for role, raw in value.items():
         config = exact_object(raw, keys, f"execution config {role}")
-        text_fields = keys - {"token_budget", "time_budget_seconds", "tools"}
+        text_fields = keys - {
+            "token_budget",
+            "time_budget_seconds",
+            "requested_tools",
+        }
         if any(
             not isinstance(config[key], str) or not config[key].strip()
             for key in text_fields
@@ -800,19 +1296,46 @@ def validate_execution_config(value: Any) -> dict[str, Any]:
                 f"execution config {role} text fields must be declared nonblank strings"
             )
         if (
-            not isinstance(config["tools"], list)
-            or not config["tools"]
-            or any(not isinstance(tool, str) or not tool.strip() for tool in config["tools"])
-            or len(set(config["tools"])) != len(config["tools"])
+            not isinstance(config["requested_tools"], list)
+            or not config["requested_tools"]
+            or any(
+                not isinstance(tool, str) or not tool.strip()
+                for tool in config["requested_tools"]
+            )
+            or len(set(config["requested_tools"]))
+            != len(config["requested_tools"])
         ):
             raise IntegrationError(f"execution config {role} has invalid tools")
-        for integer in ("token_budget", "time_budget_seconds"):
-            if type(config[integer]) is not int or config[integer] < 1:
-                raise IntegrationError(f"execution config {role}.{integer} must be positive")
+        if (
+            config["token_budget"] is not None
+            or config["token_budget_enforcement"] != "UNAVAILABLE_NOT_ENFORCED"
+            or config["time_budget_seconds"] is not None
+            or config["time_budget_enforcement"] != "UNAVAILABLE_NOT_ENFORCED"
+        ):
+            raise IntegrationError(
+                f"execution config {role} must truthfully record unavailable, unenforced token/time limits"
+            )
+        for capability in ("tool", "network", "documentation", "hosted_build"):
+            if (
+                config[f"{capability}_policy_enforcement"]
+                != "PROMPT_ONLY_NOT_TECHNICALLY_ENFORCED"
+                or config[f"{capability}_capability_observation"]
+                != "SESSION_INHERITED_MAY_EXCEED_REQUEST"
+            ):
+                raise IntegrationError(
+                    f"execution config {role} overstates {capability} isolation"
+                )
     return value
 
 
-def validate_reviewed_values(value: Any, declaration_bytes: bytes) -> dict[str, Any]:
+def validate_reviewed_values(
+    value: Any,
+    declaration_bytes: bytes,
+    *,
+    expected_status: str = "READY",
+    require_empty_candidate_static: bool = True,
+    expected_reviewed_static_base: str | None = None,
+) -> dict[str, Any]:
     reviewed = exact_object(
         value,
         {
@@ -824,12 +1347,17 @@ def validate_reviewed_values(value: Any, declaration_bytes: bytes) -> dict[str, 
             "invocation_blocks",
             "execution_environment",
             "forbidden_tokens",
+            "reviewed_static_base",
             "reviewed_static",
         },
         "reviewed values",
     )
-    if reviewed["schema_version"] != 1 or reviewed["status"] != "READY":
-        raise IntegrationError("reviewed values must be schema-v1 READY")
+    if expected_status not in {"SOURCE-REVIEW-CANDIDATE", "READY"}:
+        raise IntegrationError("unknown reviewed-values lifecycle status")
+    if reviewed["schema_version"] != 1 or reviewed["status"] != expected_status:
+        raise IntegrationError(
+            f"reviewed values must be schema-v1 {expected_status}"
+        )
     if reviewed["source_declaration_sha256"] != sha256(declaration_bytes):
         raise IntegrationError("reviewed values do not bind the source declaration bytes")
     relative(reviewed["authority_packet_path"], "authority_packet_path")
@@ -877,6 +1405,24 @@ def validate_reviewed_values(value: Any, declaration_bytes: bytes) -> dict[str, 
         )
     if not isinstance(reviewed["reviewed_static"], list):
         raise IntegrationError("reviewed_static must be a list")
+    expected_static_base = expected_reviewed_static_base or (
+        REVIEWED_STATIC_DERIVED_BASE
+        if expected_status == SOURCE_REVIEW_CANDIDATE_STATUS
+        and require_empty_candidate_static
+        else REVIEWED_STATIC_CANDIDATE_BASE
+    )
+    if reviewed["reviewed_static_base"] != expected_static_base:
+        raise IntegrationError(
+            "reviewed_static_base does not identify the exact record path root"
+        )
+    if (
+        expected_status == SOURCE_REVIEW_CANDIDATE_STATUS
+        and require_empty_candidate_static
+        and reviewed["reviewed_static"] != []
+    ):
+        raise IntegrationError(
+            "SOURCE-REVIEW-CANDIDATE reviewed_static must be empty; the trusted builder derives it"
+        )
     return reviewed
 
 
@@ -1075,11 +1621,9 @@ def required_review_paths() -> set[str]:
         "freeze/authority/propositions.json",
         "freeze/authority/quotation-locators.json",
         "freeze/authority/verification.json",
+        "freeze/authority/agent-visible/common.json",
         "freeze/controls.json",
         "freeze/rules/defect-rules.json",
-        "freeze/reviews/oracle-review-1.json",
-        "freeze/reviews/oracle-review-2.json",
-        "freeze/reviews/coherence-review.json",
     }
     for mode in prepare.MODES:
         paths.update(
@@ -1093,7 +1637,253 @@ def required_review_paths() -> set[str]:
     return paths
 
 
-def validate_reviewed_static(root: Path, records: Any) -> None:
+def source_review_tool_records(tool_root: Path = RUN) -> list[dict[str, str]]:
+    """Bind all harness Python and JSON-schema inputs used by source review."""
+
+    tool_root = tool_root.resolve()
+    paths = {
+        path.relative_to(tool_root).as_posix()
+        for path in tool_root.rglob("*.py")
+        if "__pycache__" not in path.parts
+    }
+    schema_root = tool_root / "schemas"
+    if schema_root.is_dir():
+        paths.update(
+            path.relative_to(tool_root).as_posix()
+            for path in schema_root.rglob("*.json")
+        )
+    required = {
+        "integrate.py",
+        "prepare.py",
+        "freeze/validate_controls.py",
+        "freeze/validate_fixture_manifests.py",
+        "freeze/validate_oracle_materials.py",
+        "freeze/authority/validate_agent_visible.py",
+        "schemas/source-review-contract.schema.json",
+        "schemas/source-review-receipt.schema.json",
+        "schemas/source-review-snapshot.schema.json",
+    }
+    if not required.issubset(paths):
+        raise IntegrationError(
+            f"source-review tool inventory is incomplete: {sorted(required - paths)}"
+        )
+    records: list[dict[str, str]] = []
+    for path_text in sorted(paths):
+        path = tool_root / path_text
+        if path.is_symlink() or not path.is_file():
+            raise IntegrationError(
+                f"source-review tool is not a regular file: {path_text}"
+            )
+        records.append({"path": path_text, "sha256": sha256(path.read_bytes())})
+    return records
+
+
+def source_review_tool_set_sha256(records: list[dict[str, str]]) -> str:
+    return sha256(
+        REVIEWER_TOOL_SET_ALGORITHM.encode("ascii")
+        + b"\0"
+        + canonical_json_bytes(records)
+    )
+
+
+def source_review_procedure_files() -> dict[str, bytes]:
+    return {
+        f"{SOURCE_REVIEW_PROCEDURE_ROOT}/oracle.md": SOURCE_REVIEW_PROCEDURE_TEXT[
+            "INDEPENDENT_ORACLE"
+        ].encode("utf-8"),
+        f"{SOURCE_REVIEW_PROCEDURE_ROOT}/coherence.md": SOURCE_REVIEW_PROCEDURE_TEXT[
+            "COHERENCE"
+        ].encode("utf-8"),
+        f"{SOURCE_REVIEW_PROCEDURE_ROOT}/source-review-receipt.schema.json": (
+            RUN / "schemas" / "source-review-receipt.schema.json"
+        ).read_bytes(),
+    }
+
+
+def source_review_theorem_file_map(
+    declaration: dict[str, Any],
+) -> dict[str, bytes]:
+    """Return every regular theorem-input file under its review-copy path."""
+
+    result = {
+        f"{SOURCE_REVIEW_THEOREM_ROOT}/source-declaration.json": (
+            trusted_production_declaration_bytes()
+        )
+    }
+    for path_text in sorted(required_review_paths()):
+        result[
+            f"{SOURCE_REVIEW_THEOREM_ROOT}/draft-reviewed-static/{path_text}"
+        ] = (RUN / path_text).read_bytes()
+    unsafe_rust = trusted_unsafe_rust_root()
+    for record in declaration["targets"]:
+        source_path = relative(record["source_path"], "source-review target path")
+        source_root = unsafe_rust / source_path
+        reject_unsupported_tree(source_root, f"source-review target {record['mode']}")
+        for source in sorted(source_root.rglob("*"), key=lambda path: path.as_posix()):
+            if not source.is_file():
+                continue
+            relative_file = source.relative_to(source_root).as_posix()
+            destination = (
+                f"{SOURCE_REVIEW_THEOREM_ROOT}/unsafe-rust/"
+                f"{source_path}/{relative_file}"
+            )
+            if destination in result:
+                raise IntegrationError(
+                    f"duplicate source-review theorem input: {destination}"
+                )
+            result[destination] = source.read_bytes()
+    return result
+
+
+def source_review_support_file_map(
+    declaration: dict[str, Any],
+) -> dict[str, bytes]:
+    return {
+        **source_review_procedure_files(),
+        **source_review_theorem_file_map(declaration),
+    }
+
+
+def materialize_source_review_support(
+    root: Path, declaration: dict[str, Any]
+) -> None:
+    for path_text, data in source_review_procedure_files().items():
+        write_exclusive(root / path_text, data)
+    write_exclusive(
+        root / SOURCE_REVIEW_THEOREM_ROOT / "source-declaration.json",
+        trusted_production_declaration_bytes(),
+    )
+    for path_text in sorted(required_review_paths()):
+        write_exclusive(
+            root
+            / SOURCE_REVIEW_THEOREM_ROOT
+            / "draft-reviewed-static"
+            / path_text,
+            (RUN / path_text).read_bytes(),
+        )
+    unsafe_rust = trusted_unsafe_rust_root()
+    for record in declaration["targets"]:
+        source_path = relative(record["source_path"], "source-review target path")
+        copy_tree(
+            unsafe_rust / source_path,
+            root / SOURCE_REVIEW_THEOREM_ROOT / "unsafe-rust" / source_path,
+        )
+
+
+def reject_reviewed_static_residue(root: Path) -> None:
+    """Reject source-phase status residue without banning legitimate prose."""
+
+    stale_json_values = {
+        "DRAFT",
+        "DRAFT_VERIFIED_PENDING_CROSS_REVIEW",
+        "VERIFIED_PENDING_CROSS_REVIEW",
+        "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+        "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256",
+    }
+
+    def walk(value: Any, label: str) -> None:
+        if isinstance(value, dict):
+            for key, item in value.items():
+                walk(item, f"{label}.{key}")
+            return
+        if isinstance(value, list):
+            for index, item in enumerate(value):
+                walk(item, f"{label}[{index}]")
+            return
+        if isinstance(value, str) and (
+            value in stale_json_values
+            or value.startswith("DRAFT_")
+            or value.endswith("_PENDING_CROSS_REVIEW")
+        ):
+            raise IntegrationError(f"reviewed static retains source-DRAFT residue: {label}")
+
+    for path_text in sorted(required_review_paths()):
+        path = root / path_text
+        if path.suffix == ".json":
+            walk(read_json(path), path_text)
+        elif path_text.startswith("freeze/oracle/"):
+            text_value = path.read_text(encoding="utf-8")
+            if "**DRAFT / evaluator-only.**" in text_value:
+                raise IntegrationError(f"reviewed oracle retains its DRAFT marker: {path_text}")
+            if "**SOURCE-REVIEW-CANDIDATE / evaluator-only.**" not in text_value:
+                raise IntegrationError(
+                    f"reviewed oracle lacks its exact candidate marker: {path_text}"
+                )
+            if "**READY / evaluator-only.**" in text_value:
+                raise IntegrationError(
+                    f"reviewed oracle prematurely claims READY: {path_text}"
+                )
+
+
+def validate_reviewed_semantic_closure(
+    root: Path,
+    *,
+    expected_fixture_phase: str,
+    expected_source_digests: dict[str, str],
+    expected_report_material_digests: dict[str, str] | None = None,
+    evidence_source_root: Path | None = None,
+) -> None:
+    """Run the trusted semantic validators over reviewed or derived bytes."""
+
+    freeze = root / "freeze"
+    semantic_status = (
+        SOURCE_REVIEW_CANDIDATE_STATUS
+        if expected_fixture_phase == "SOURCE_REVIEW_CANDIDATE"
+        else "READY"
+    )
+    try:
+        runpy.run_path(
+            str(RUN / "freeze" / "validate_controls.py"),
+            run_name="v5_integration_controls",
+        )["validate"](freeze, expected_status=semantic_status)
+        runpy.run_path(
+            str(RUN / "freeze" / "validate_fixture_manifests.py"),
+            run_name="v5_integration_fixtures",
+        )["validate"](
+            freeze,
+            unsafe_rust_root=trusted_unsafe_rust_root(),
+            expected_phase=expected_fixture_phase,
+            expected_source_digests=expected_source_digests,
+            expected_report_material_digests=expected_report_material_digests,
+        )
+        runpy.run_path(
+            str(RUN / "freeze" / "validate_oracle_materials.py"),
+            run_name="v5_integration_oracles",
+        )["validate"](
+            freeze,
+            expected_status=semantic_status,
+            repository_root=(
+                trusted_unsafe_rust_root().parents[1]
+                if evidence_source_root is None
+                else None
+            ),
+            supplied_source_root=evidence_source_root,
+        )
+        projection_digest = runpy.run_path(
+            str(RUN / "freeze" / "authority" / "validate_agent_visible.py"),
+            run_name="v5_integration_authority_projection",
+        )["validate"](freeze / "authority", expected_status=semantic_status)
+    except (AssertionError, ValueError, KeyError, TypeError) as error:
+        raise IntegrationError("reviewed static semantic closure failed") from error
+    packet = freeze / "authority" / "agent-visible" / "common.json"
+    if projection_digest != sha256(packet.read_bytes()):
+        raise IntegrationError("reviewed authority projection digest mismatch")
+    for mode in prepare.MODES:
+        validate_schema_file(
+            read_json(freeze / "fixtures" / f"{mode}.json"),
+            RUN / "schemas" / "fixture-manifest.schema.json",
+            f"reviewed fixture manifest {mode}",
+        )
+
+
+def validate_reviewed_static(
+    root: Path,
+    records: Any,
+    *,
+    expected_decision: str = "PASS",
+) -> None:
+    if expected_decision not in {"PENDING", "PASS"}:
+        raise IntegrationError("reviewed static expected decision is unknown")
     if not isinstance(records, list):
         raise IntegrationError("reviewed_static must be a list")
     observed: set[str] = set()
@@ -1103,51 +1893,766 @@ def validate_reviewed_static(root: Path, records: Any) -> None:
         if path_text in observed:
             raise IntegrationError(f"duplicate static review path: {path_text}")
         observed.add(path_text)
-        if record["decision"] != "PASS":
-            raise IntegrationError(f"static review is not PASS: {path_text}")
+        if record["decision"] != expected_decision:
+            raise IntegrationError(
+                f"static review has wrong {expected_decision} phase: {path_text}"
+            )
         path = root / path_text
         if path.is_symlink() or not path.is_file():
             raise IntegrationError(f"reviewed static path is not a regular file: {path_text}")
         if sha256(path.read_bytes()) != digest(record["sha256"], f"review {path_text}"):
             raise IntegrationError(f"reviewed static digest mismatch: {path_text}")
-        if path.suffix == ".json" and not path_text.startswith("freeze/reviews/"):
+        if path.suffix == ".json":
             value = read_json(path)
-            if not isinstance(value, dict) or value.get("status") != "READY":
-                raise IntegrationError(f"reviewed JSON is not READY: {path_text}")
+            if path_text == "freeze/authority/agent-visible/common.json":
+                if (
+                    not isinstance(value, dict)
+                    or value.get("schema") != "rust-documentation-excerpts-v1"
+                ):
+                    raise IntegrationError(
+                        "reviewed agent-visible authority packet has the wrong schema"
+                    )
+                continue
+            expected_status = SOURCE_REVIEW_CANDIDATE_STATUS
+            if not isinstance(value, dict) or value.get("status") != expected_status:
+                raise IntegrationError(
+                    f"reviewed JSON has wrong lifecycle status: {path_text}"
+                )
     expected = required_review_paths()
     if observed != expected:
         missing = sorted(expected - observed)
         extra = sorted(observed - expected)
         raise IntegrationError(f"static review path set mismatch; missing={missing}, extra={extra}")
-    reviews = [
-        read_json(root / "freeze" / "reviews" / name)
-        for name in ("oracle-review-1.json", "oracle-review-2.json", "coherence-review.json")
+    reject_reviewed_static_residue(root)
+
+
+def source_review_artifacts(root: Path) -> list[dict[str, str]]:
+    values = read_json(root / "reviewed-values.json")
+    authority_path = relative(values["authority_packet_path"], "authority packet path")
+    paths = {
+        "reviewed-values.json",
+        "seeds.json",
+        authority_path,
+        *(f"reviewed-static/{path}" for path in required_review_paths()),
+        *(
+            path.relative_to(root).as_posix()
+            for support_root in (
+                root / SOURCE_REVIEW_PROCEDURE_ROOT,
+                root / SOURCE_REVIEW_THEOREM_ROOT,
+            )
+            for path in support_root.rglob("*")
+            if path.is_file()
+        ),
+    }
+    artifacts: list[dict[str, str]] = []
+    for path_text in sorted(paths):
+        path = root / path_text
+        if path.is_symlink() or not path.is_file():
+            raise IntegrationError(f"source-review artifact is not a regular file: {path_text}")
+        artifacts.append({"path": path_text, "sha256": sha256(path.read_bytes())})
+    return artifacts
+
+
+def source_review_coverage_items(
+    root: Path, review_kind: str
+) -> list[dict[str, str]]:
+    reviewed_root = root / "reviewed-static" / "freeze"
+    items: list[dict[str, str]] = []
+    if review_kind == "INDEPENDENT_ORACLE":
+        for mode in prepare.MODES:
+            atoms = read_json(reviewed_root / "atoms" / f"{mode}.json")["atoms"]
+            for atom in atoms:
+                items.append(
+                    {
+                        "id": f"atom:{atom['id']}",
+                        "subject": atom["direct_criterion"],
+                    }
+                )
+        locators = read_json(
+            reviewed_root / "authority" / "quotation-locators.json"
+        )["records"]
+        for locator_index, locator in enumerate(locators, start=1):
+            for edge_index, url in enumerate(locator["urls"], start=1):
+                items.append(
+                    {
+                        "id": (
+                            f"quotation:{locator_index:03d}:{edge_index:02d}:"
+                            f"{locator['authority_id']}"
+                        ),
+                        "subject": f"{url} | {locator['exact_excerpt']}",
+                    }
+                )
+        authority_entries = read_json(
+            reviewed_root / "authority" / "propositions.json"
+        )["entries"]
+        for entry in authority_entries:
+            items.append(
+                {
+                    "id": f"authority-proposition:{entry['id']}",
+                    "subject": (
+                        f"{entry['proposition']} | applicability={entry['applicability']} | "
+                        f"consumers={','.join(entry['consumers'])}"
+                    ),
+                }
+            )
+        for mode in prepare.MODES:
+            oracle_bytes = (reviewed_root / "oracle" / f"{mode}.md").read_bytes()
+            items.append(
+                {
+                    "id": f"oracle-conclusions:{mode}",
+                    "subject": f"mode={mode} oracle_sha256={sha256(oracle_bytes)}",
+                }
+            )
+        declaration = read_json(
+            root / SOURCE_REVIEW_THEOREM_ROOT / "source-declaration.json"
+        )
+        fixture_by_mode = {
+            mode: read_json(reviewed_root / "fixtures" / f"{mode}.json")
+            for mode in prepare.MODES
+        }
+        for target in declaration["targets"]:
+            mode = target["mode"]
+            fixture = fixture_by_mode[mode]
+            items.append(
+                {
+                    "id": f"target-source-join:{mode}",
+                    "subject": (
+                        f"fixture={target['fixture_id']} source={target['source_path']} "
+                        f"tree={fixture['source_tree_algorithm']}:"
+                        f"{fixture['source_tree_sha256']}"
+                    ),
+                }
+            )
+    elif review_kind == "COHERENCE":
+        for path_text in sorted(required_review_paths()):
+            items.append(
+                {"id": f"reviewed-path:{path_text}", "subject": path_text}
+            )
+        controls = read_json(reviewed_root / "controls.json")["controls"]
+        for control in controls:
+            items.append(
+                {
+                    "id": f"control:{control['id']}",
+                    "subject": control["rationale"],
+                }
+            )
+        authority_entries = read_json(
+            reviewed_root / "authority" / "propositions.json"
+        )["entries"]
+        for mode in prepare.MODES:
+            atoms = read_json(reviewed_root / "atoms" / f"{mode}.json")["atoms"]
+            for atom in atoms:
+                for prerequisite in atom["prerequisites"]:
+                    items.append(
+                        {
+                            "id": f"prerequisite:{atom['id']}:{prerequisite}",
+                            "subject": f"{atom['id']} immediately requires {prerequisite}",
+                        }
+                    )
+        for entry in authority_entries:
+            for consumer in entry["consumers"]:
+                items.append(
+                    {
+                        "id": f"authority-consumer:{entry['id']}:{consumer}",
+                        "subject": f"{entry['id']} is consumed by {consumer}",
+                    }
+                )
+        for mode in prepare.MODES:
+            allowlist = (
+                reviewed_root / "allowlists" / f"{mode}.txt"
+            ).read_text(encoding="utf-8").splitlines()
+            for index, url in enumerate(allowlist, start=1):
+                items.append(
+                    {
+                        "id": f"allowlist:{mode}:{index:03d}",
+                        "subject": url,
+                    }
+                )
+            fixture = read_json(reviewed_root / "fixtures" / f"{mode}.json")
+            for index, surface in enumerate(fixture["scoped_surfaces"], start=1):
+                items.append(
+                    {
+                        "id": f"fixture-surface:{mode}:{index:02d}",
+                        "subject": surface,
+                    }
+                )
+            for index, supported in enumerate(fixture["supported_set"], start=1):
+                items.append(
+                    {
+                        "id": f"supported-set:{mode}:{index:02d}",
+                        "subject": supported,
+                    }
+                )
+        declaration = read_json(
+            root / SOURCE_REVIEW_THEOREM_ROOT / "source-declaration.json"
+        )
+        for target in declaration["targets"]:
+            items.append(
+                {
+                    "id": f"mode-fixture-source-join:{target['mode']}",
+                    "subject": (
+                        f"mode={target['mode']} fixture={target['fixture_id']} "
+                        f"source={target['source_path']}"
+                    ),
+                }
+            )
+
+        def collect_rules(value: Any) -> None:
+            if isinstance(value, dict):
+                if isinstance(value.get("id"), str) and isinstance(
+                    value.get("criterion"), str
+                ):
+                    items.append(
+                        {
+                            "id": f"defect-rule:{value['id']}",
+                            "subject": value["criterion"],
+                        }
+                    )
+                for child in value.values():
+                    collect_rules(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_rules(child)
+
+        collect_rules(read_json(reviewed_root / "rules" / "defect-rules.json"))
+    else:
+        raise IntegrationError(f"unknown source-review kind: {review_kind}")
+    if (
+        not items
+        or len({item["id"] for item in items}) != len(items)
+        or any(not item["subject"].strip() for item in items)
+    ):
+        raise IntegrationError("source-review coverage inventory is not exact")
+    return items
+
+
+def derive_source_review_contracts(
+    root: Path, *, tool_root: Path = RUN
+) -> dict[str, dict[str, Any]]:
+    artifacts = source_review_artifacts(root)
+    artifact_set_sha256 = sha256(canonical_json_bytes(artifacts))
+    reviewed = read_json(root / "reviewed-values.json")
+    static_set_sha256 = sha256(canonical_json_bytes(reviewed["reviewed_static"]))
+    theorem_artifacts = [
+        artifact
+        for artifact in artifacts
+        if artifact["path"].startswith(f"{SOURCE_REVIEW_THEOREM_ROOT}/")
     ]
-    for index, review in enumerate(reviews):
-        exact_object(
-            review,
-            {"schema_version", "status", "review_kind", "reviewer_id", "decision", "input_digests"},
-            f"independent review {index}",
+    theorem_input_set_sha256 = sha256(canonical_json_bytes(theorem_artifacts))
+    reviewer_tools = source_review_tool_records(tool_root)
+    reviewer_tool_set_sha256 = source_review_tool_set_sha256(reviewer_tools)
+    evidence_bindings = {
+        "exact_quotation_evidence_algorithm": EXACT_QUOTATION_EVIDENCE_ALGORITHM,
+        "exact_quotation_evidence_sha256": EXACT_QUOTATION_EVIDENCE_SHA256,
+        "reviewed_source_transition_algorithm": SOURCE_REVIEW_TRANSITION_ALGORITHM,
+        "reviewed_static_set_algorithm": REVIEWED_STATIC_SET_ALGORITHM,
+        "reviewed_static_set_sha256": static_set_sha256,
+        "theorem_input_set_sha256": theorem_input_set_sha256,
+    }
+    result: dict[str, dict[str, Any]] = {}
+    for name, review_kind in SOURCE_REVIEW_KINDS:
+        coverage_items = source_review_coverage_items(root, review_kind)
+        procedure_path = (
+            f"{SOURCE_REVIEW_PROCEDURE_ROOT}/oracle.md"
+            if review_kind == "INDEPENDENT_ORACLE"
+            else f"{SOURCE_REVIEW_PROCEDURE_ROOT}/coherence.md"
+        )
+        receipt_schema_path = (
+            f"{SOURCE_REVIEW_PROCEDURE_ROOT}/source-review-receipt.schema.json"
+        )
+        contract = {
+            "schema_version": 1,
+            "status": "READY",
+            "review_kind": review_kind,
+            "procedure_id": f"v5-source-review/{Path(name).stem}",
+            "procedure_version": SOURCE_REVIEW_PROCEDURE_VERSION,
+            "procedure_path": procedure_path,
+            "procedure_sha256": sha256((root / procedure_path).read_bytes()),
+            "receipt_schema_path": receipt_schema_path,
+            "receipt_schema_sha256": sha256(
+                (root / receipt_schema_path).read_bytes()
+            ),
+            "reviewer_tool_set_algorithm": REVIEWER_TOOL_SET_ALGORITHM,
+            "reviewer_tools": reviewer_tools,
+            "reviewer_tool_set_sha256": reviewer_tool_set_sha256,
+            "reviewer_runtime_attestation_algorithm": (
+                REVIEWER_RUNTIME_ATTESTATION_ALGORITHM
+            ),
+            "custody_requirement": "VERIFIED_PRIVATE_COPY_AND_END_REVERIFY",
+            "required_check_ids": list(SOURCE_REVIEW_CHECK_IDS[review_kind]),
+            "coverage_items": coverage_items,
+            "coverage_set_algorithm": REVIEW_COVERAGE_SET_ALGORITHM,
+            "coverage_set_sha256": review_coverage_set_sha256(coverage_items),
+            "artifacts": artifacts,
+            "artifact_set_sha256": artifact_set_sha256,
+            "evidence_bindings": evidence_bindings,
+        }
+        validate_schema_file(
+            contract,
+            RUN / "schemas" / "source-review-contract.schema.json",
+            f"source review contract {name}",
+        )
+        result[name] = contract
+    return result
+
+
+def build_source_review_contracts(root: Path) -> dict[str, dict[str, Any]]:
+    contracts = derive_source_review_contracts(root)
+    for name, contract in contracts.items():
+        write_json(root / SOURCE_REVIEW_CONTRACT_ROOT / name, contract)
+    return contracts
+
+
+def validate_source_review_contracts(
+    root: Path, *, tool_root: Path = RUN
+) -> dict[str, dict[str, Any]]:
+    contract_root = root / SOURCE_REVIEW_CONTRACT_ROOT
+    if contract_root.is_symlink() or not contract_root.is_dir():
+        raise IntegrationError("source-review contract root must be a real directory")
+    expected_names = {name for name, _kind in SOURCE_REVIEW_KINDS}
+    observed = {path.name for path in contract_root.iterdir() if path.is_file()}
+    if observed != expected_names or any(
+        path.is_dir() or path.is_symlink() for path in contract_root.iterdir()
+    ):
+        raise IntegrationError("source-review contract inventory is not exact")
+    expected = derive_source_review_contracts(root, tool_root=tool_root)
+    for name, contract in expected.items():
+        if read_json(contract_root / name) != contract:
+            raise IntegrationError(f"source-review contract drifted: {name}")
+    return expected
+
+
+def validate_source_review_result(
+    value: Any,
+    *,
+    label: str,
+    review_kind: str,
+    contract: dict[str, Any],
+    descriptor_sha256: str,
+    manifest_sha256: str,
+    payload_sha256: str,
+    expected_inputs: dict[str, str],
+) -> dict[str, Any]:
+    """Validate only reviewer-authored source-review findings and evidence."""
+
+    result = exact_object(value, {"summary", "checks"}, label)
+    if not isinstance(result["summary"], str) or len(result["summary"].strip()) < 20:
+        raise IntegrationError("source review summary is not detailed")
+    checks = result["checks"]
+    if not isinstance(checks, list) or [
+        item.get("id") if isinstance(item, dict) else None for item in checks
+    ] != contract["required_check_ids"]:
+        raise IntegrationError("source review check inventory is not exact")
+    evidence: dict[str, str] = {}
+    for item in checks:
+        check = exact_object(
+            item, {"id", "status", "evidence"}, "source review check"
+        )
+        if (
+            check["status"] != "PASS"
+            or not isinstance(check["evidence"], str)
+            or len(check["evidence"].strip()) < 20
+        ):
+            raise IntegrationError("source review check evidence is invalid")
+        evidence[check["id"]] = check["evidence"]
+    contract_path = f"{SOURCE_REVIEW_CONTRACT_ROOT}/{Path(label).name}"
+    required_evidence: dict[str, tuple[str, ...]] = {
+        "EXACT-SOURCE-REVIEW-BOUND": (descriptor_sha256, payload_sha256),
+        "REVIEW-CONTRACT-BOUND": (
+            expected_inputs[contract_path],
+            contract["procedure_sha256"],
+            contract["receipt_schema_sha256"],
+            contract["procedure_version"],
+            contract["reviewer_tool_set_algorithm"],
+            contract["reviewer_tool_set_sha256"],
+            contract["coverage_set_algorithm"],
+            contract["coverage_set_sha256"],
+            contract["reviewer_runtime_attestation_algorithm"],
+        ),
+        "ARTIFACT-INVENTORY-CHECKED": (contract["artifact_set_sha256"],),
+        "END-OF-REVIEW-REVERIFIED": (manifest_sha256, payload_sha256),
+    }
+    if review_kind == "INDEPENDENT_ORACLE":
+        required_evidence.update(
+            {
+                "EXACT-QUOTATIONS-AND-PAGE-BYTES-VERIFIED": (
+                    EXACT_QUOTATION_EVIDENCE_ALGORITHM,
+                    EXACT_QUOTATION_EVIDENCE_SHA256,
+                ),
+                "ORACLE-ENTAILMENT-CHECKED": (
+                    SOURCE_REVIEW_TRANSITION_ALGORITHM,
+                    contract["evidence_bindings"]["theorem_input_set_sha256"],
+                ),
+                "AUTHORITY-PROJECTION-CHECKED": (
+                    contract["evidence_bindings"]["reviewed_static_set_sha256"],
+                ),
+            }
+        )
+    else:
+        required_evidence.update(
+            {
+                "CONTROL-AND-DEFECT-COVERAGE-CHECKED": (
+                    contract["evidence_bindings"]["reviewed_static_set_sha256"],
+                ),
+                "CROSS-FILE-CLOSURE-CHECKED": (
+                    SOURCE_REVIEW_TRANSITION_ALGORITHM,
+                ),
+                "TRANSFORMATION-CORRECTNESS-CHECKED": (
+                    REVIEWED_STATIC_SET_ALGORITHM,
+                    contract["evidence_bindings"]["reviewed_static_set_sha256"],
+                    contract["evidence_bindings"]["theorem_input_set_sha256"],
+                ),
+            }
+        )
+    for check_id, needles in required_evidence.items():
+        if any(needle not in evidence[check_id] for needle in needles):
+            raise IntegrationError(
+                f"source review lacks exact evidence binding {label}.{check_id}"
+            )
+    return result
+
+
+def _validate_source_review_receipts_captured(
+    receipt_root: Path,
+    *,
+    snapshot_root: Path,
+    descriptor_sha256: str,
+    manifest_sha256: str,
+    payload_sha256: str,
+    synthetic_capability: object | None = None,
+) -> tuple[dict[str, dict[str, Any]], dict[str, bytes]]:
+    if synthetic_capability not in {None, _SYNTHETIC_CAPABILITY}:
+        raise IntegrationError("unrecognized synthetic source-review capability")
+    if receipt_root.is_symlink() or not receipt_root.is_dir():
+        raise IntegrationError("source-review receipt root must be a real directory")
+    reject_unsupported_tree(receipt_root, "source-review receipt root")
+    entries = list(receipt_root.iterdir())
+    observed = {
+        path.name
+        for path in entries
+        if stat.S_ISREG(path.lstat().st_mode)
+    }
+    expected = {name for name, _kind in SOURCE_REVIEW_KINDS}
+    if observed != expected or len(entries) != len(expected):
+        raise IntegrationError("source-review receipt inventory is not exact")
+    contracts = validate_source_review_contracts(snapshot_root)
+    reviews: list[dict[str, Any]] = []
+    captured_bytes: dict[str, bytes] = {}
+    for index, (name, review_kind) in enumerate(SOURCE_REVIEW_KINDS):
+        raw_review, raw_bytes = capture_review_receipt_json(
+            receipt_root / name,
+            f"independent source review {index}",
+            synthetic_capability=synthetic_capability,
+        )
+        captured_bytes[name] = raw_bytes
+        review = exact_object(
+            raw_review,
+            {
+                "schema_version",
+                "status",
+                "review_kind",
+                "actor",
+                "reviewer_runtime",
+                "input_digests",
+                "output_digests",
+                "work_product",
+                "result",
+            },
+            f"independent source review {index}",
+        )
+        contract = contracts[name]
+        actor = exact_object(
+            review["actor"],
+            {"identity", "role", "implementation", "version"},
+            f"source review actor {index}",
         )
         if (
             review["schema_version"] != 1
-            or review["status"] != "READY"
-            or review["decision"] != "PASS"
-            or not isinstance(review["reviewer_id"], str)
-            or not review["reviewer_id"]
-            or not isinstance(review["input_digests"], dict)
-            or not review["input_digests"]
-            or any(not HEX64.fullmatch(item) for item in review["input_digests"].values())
+            or review["status"]
+            != (
+                "SYNTHETIC-TEST-ONLY"
+                if synthetic_capability is _SYNTHETIC_CAPABILITY
+                else "PASS"
+            )
+            or review["review_kind"] != review_kind
+            or actor["role"] != "INDEPENDENT_REVIEWER"
+            or actor["implementation"] != contract["procedure_id"]
+            or actor["version"] != contract["procedure_version"]
         ):
-            raise IntegrationError(f"invalid independent review {index}")
-    if [review["review_kind"] for review in reviews] != [
-        "INDEPENDENT_ORACLE",
-        "INDEPENDENT_ORACLE",
-        "COHERENCE",
-    ]:
-        raise IntegrationError("review kinds are not two oracle reviews plus coherence")
-    if len({review["reviewer_id"] for review in reviews}) != 3:
-        raise IntegrationError("reviewer identities must be pairwise distinct")
+            raise IntegrationError(f"invalid independent source review {index}")
+        identity = require_actor_id(actor["identity"], f"source review actor {index}")
+        if identity.startswith("synthetic-") and synthetic_capability is not _SYNTHETIC_CAPABILITY:
+            raise IntegrationError("synthetic source-review receipt cannot authorize production")
+        reviewer_runtime = validate_reviewer_runtime_attestation(
+            review["reviewer_runtime"]
+        )
+        if (
+            reviewer_runtime["algorithm"]
+            != contract["reviewer_runtime_attestation_algorithm"]
+        ):
+            raise IntegrationError("source reviewer runtime algorithm drifted")
+        work_product, work_product_sha256 = validate_review_work_product(
+            review["work_product"],
+            expected_coverage_items=contract["coverage_items"],
+        )
+        contract_path = f"{SOURCE_REVIEW_CONTRACT_ROOT}/{name}"
+        expected_inputs = {
+            SOURCE_REVIEW_DESCRIPTOR: descriptor_sha256,
+            SOURCE_REVIEW_MANIFEST: manifest_sha256,
+            contract_path: sha256((snapshot_root / contract_path).read_bytes()),
+            contract["procedure_path"]: contract["procedure_sha256"],
+            contract["receipt_schema_path"]: contract["receipt_schema_sha256"],
+            "trusted-reviewer-tool-set": contract[
+                "reviewer_tool_set_sha256"
+            ],
+            "reviewer-runtime-attestation": sha256(
+                canonical_json_bytes(reviewer_runtime)
+            ),
+        }
+        if review["input_digests"] != expected_inputs:
+            raise IntegrationError("source review does not bind the exact immutable subject")
+        if review["output_digests"] != {
+            "reviewed-payload-manifest": payload_sha256,
+            "reviewed-artifact-set": contract["artifact_set_sha256"],
+            "review-work-product": work_product_sha256,
+        }:
+            raise IntegrationError("source review output binding is not exact")
+        validate_source_review_result(
+            review["result"],
+            label=name,
+            review_kind=review_kind,
+            contract=contract,
+            descriptor_sha256=descriptor_sha256,
+            manifest_sha256=manifest_sha256,
+            payload_sha256=payload_sha256,
+            expected_inputs=expected_inputs,
+        )
+        validate_schema_file(
+            review,
+            RUN / "schemas" / "source-review-receipt.schema.json",
+            f"source review receipt {name}",
+        )
+        reviews.append(review)
+    if len({review["actor"]["identity"] for review in reviews}) != 3:
+        raise IntegrationError("source reviewer identities must be pairwise distinct")
+    validated = {
+        name: review for (name, _kind), review in zip(SOURCE_REVIEW_KINDS, reviews)
+    }
+    return validated, captured_bytes
+
+
+def validate_source_review_receipts(
+    receipt_root: Path,
+    *,
+    snapshot_root: Path,
+    descriptor_sha256: str,
+    manifest_sha256: str,
+    payload_sha256: str,
+    synthetic_capability: object | None = None,
+) -> dict[str, dict[str, Any]]:
+    validated, _captured_bytes = _validate_source_review_receipts_captured(
+        receipt_root,
+        snapshot_root=snapshot_root,
+        descriptor_sha256=descriptor_sha256,
+        manifest_sha256=manifest_sha256,
+        payload_sha256=payload_sha256,
+        synthetic_capability=synthetic_capability,
+    )
+    return validated
+
+
+def trusted_target_source_digests(declaration: dict[str, Any]) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for record in declaration["targets"]:
+        _path, tree_sha256 = trusted_declared_tree(
+            record["source_path"], f"{record['mode']} target"
+        )
+        result[record["mode"]] = tree_sha256
+    if set(result) != set(prepare.MODES):
+        raise IntegrationError("trusted target digest set is incomplete")
+    return result
+
+
+def derive_reviewed_static_files(
+    *, target_source_digests: dict[str, str]
+) -> dict[str, bytes]:
+    """Mechanically derive honest reviewed-source bytes from DRAFT templates."""
+
+    if set(target_source_digests) != set(prepare.MODES):
+        raise IntegrationError("reviewed-source target digests must cover every mode")
+    result: dict[str, bytes] = {}
+    for path_text in sorted(required_review_paths()):
+        source = RUN / path_text
+        if source.is_symlink() or not source.is_file():
+            raise IntegrationError(f"reviewed-source template is not a regular file: {path_text}")
+        if source.suffix == ".json" and path_text != "freeze/authority/agent-visible/common.json":
+            value = read_json(source)
+            if (
+                not isinstance(value, dict)
+                or (
+                    value.get("status") != "DRAFT"
+                    and path_text != "freeze/authority/verification.json"
+                )
+            ):
+                raise IntegrationError(f"reviewed-source JSON template is not DRAFT: {path_text}")
+            value = dict(value)
+            if path_text.startswith("freeze/fixtures/"):
+                mode = Path(path_text).stem
+                value.update(
+                    {
+                        "status": SOURCE_REVIEW_CANDIDATE_STATUS,
+                        "source_tree_algorithm": prepare.BYTE_TREE_ALGORITHM,
+                        "source_tree_sha256": target_source_digests[mode],
+                        "report_material_set_algorithm": REPORT_MATERIAL_SET_ALGORITHM,
+                        "exact_report_material_set_sha256": REVIEWED_DERIVATION_SENTINEL,
+                    }
+                )
+            elif path_text == "freeze/authority/propositions.json":
+                value["status"] = SOURCE_REVIEW_CANDIDATE_STATUS
+                value["verification"] = {
+                    "status": "PENDING_INDEPENDENT_SOURCE_REVIEW",
+                    "ledger": "verification.json",
+                    "ready_for_freeze": False,
+                }
+            elif path_text == "freeze/authority/verification.json":
+                if value.get("status") != "DRAFT_VERIFIED_PENDING_CROSS_REVIEW":
+                    raise IntegrationError("authority verification template is not pending review")
+                value["status"] = SOURCE_REVIEW_CANDIDATE_STATUS
+                value["ready_for_freeze"] = False
+                value["pending"] = [
+                    "two independent V5 oracle source-review receipts",
+                    "one independent V5 coherence source-review receipt",
+                    "snapshot derivation of exact report-material bindings",
+                ]
+            else:
+                value["status"] = SOURCE_REVIEW_CANDIDATE_STATUS
+            result[path_text] = pretty_json_bytes(value)
+        elif path_text.startswith("freeze/oracle/"):
+            data = source.read_bytes()
+            marker = b"**DRAFT / evaluator-only.**"
+            if data.count(marker) != 1:
+                raise IntegrationError(f"oracle template lacks one exact DRAFT marker: {path_text}")
+            result[path_text] = data.replace(
+                marker,
+                b"**SOURCE-REVIEW-CANDIDATE / evaluator-only.**",
+                1,
+            )
+        else:
+            result[path_text] = source.read_bytes()
+    return result
+
+
+def reviewed_static_records(
+    files: dict[str, bytes], *, decision: str = "PASS"
+) -> list[dict[str, str]]:
+    if set(files) != required_review_paths():
+        raise IntegrationError("reviewed static derived file set is not exact")
+    if decision not in {"PENDING", "PASS"}:
+        raise IntegrationError("reviewed static record decision is unknown")
+    return [
+        {"path": path, "sha256": sha256(files[path]), "decision": decision}
+        for path in sorted(files)
+    ]
+
+
+def derive_ready_reviewed_source_files(
+    reviewed_source_root: Path,
+) -> dict[str, bytes]:
+    """Promote the receipt-reviewed candidate bytes without semantic edits.
+
+    The independent source reviews attest the immutable candidate bytes.  This
+    deterministic transition changes lifecycle labels only; report-material
+    fixture bindings are derived separately after prompt/plan/launch creation.
+    """
+
+    result: dict[str, bytes] = {}
+    for path_text in sorted(required_review_paths()):
+        if path_text.startswith("freeze/fixtures/"):
+            continue
+        source = reviewed_source_root / path_text
+        if source.is_symlink() or not source.is_file():
+            raise IntegrationError(
+                f"reviewed-source promotion input is not a regular file: {path_text}"
+            )
+        data = source.read_bytes()
+        if source.suffix == ".json" and path_text != "freeze/authority/agent-visible/common.json":
+            value = read_json(source)
+            if (
+                not isinstance(value, dict)
+                or value.get("status") != SOURCE_REVIEW_CANDIDATE_STATUS
+            ):
+                raise IntegrationError(
+                    f"reviewed-source promotion input has wrong status: {path_text}"
+                )
+            value = dict(value)
+            if path_text == "freeze/authority/propositions.json":
+                if value.get("verification") != {
+                    "status": "PENDING_INDEPENDENT_SOURCE_REVIEW",
+                    "ledger": "verification.json",
+                    "ready_for_freeze": False,
+                }:
+                    raise IntegrationError(
+                        "authority proposition candidate overstates its review state"
+                    )
+                value["status"] = "READY"
+                value["verification"] = {
+                    "status": "VERIFIED",
+                    "ledger": "verification.json",
+                    "ready_for_freeze": True,
+                }
+            elif path_text == "freeze/authority/verification.json":
+                review = value.get("current_v5_source_review")
+                if (
+                    not isinstance(review, dict)
+                    or review.get("status")
+                    != "PENDING_INDEPENDENT_SOURCE_REVIEW"
+                ):
+                    raise IntegrationError(
+                        "authority verification candidate lacks pending V5 review"
+                    )
+                value["status"] = "READY_VERIFIED"
+                value["ready_for_freeze"] = True
+                value["pending"] = []
+                value["current_v5_source_review"] = {
+                    **review,
+                    "status": "VERIFIED_BY_INDEPENDENT_SOURCE_REVIEW_RECEIPTS",
+                }
+            else:
+                value["status"] = "READY"
+            result[path_text] = pretty_json_bytes(value)
+        elif path_text.startswith("freeze/oracle/"):
+            marker = b"**SOURCE-REVIEW-CANDIDATE / evaluator-only.**"
+            if data.count(marker) != 1:
+                raise IntegrationError(
+                    f"oracle source-review candidate marker is not exact: {path_text}"
+                )
+            result[path_text] = data.replace(
+                marker, b"**READY / evaluator-only.**", 1
+            )
+        else:
+            result[path_text] = data
+    return result
+
+
+def install_ready_reviewed_source_files(
+    stage: Path, reviewed_source_root: Path
+) -> None:
+    for path_text, data in derive_ready_reviewed_source_files(
+        reviewed_source_root
+    ).items():
+        replace_snapshot_build_bytes(stage / path_text, data)
+
+
+def require_exact_ready_reviewed_source_files(
+    root: Path, reviewed_source_root: Path
+) -> None:
+    expected = derive_ready_reviewed_source_files(reviewed_source_root)
+    for path_text, data in expected.items():
+        path = root / path_text
+        if path.is_symlink() or not path.is_file() or path.read_bytes() != data:
+            raise IntegrationError(
+                f"READY reviewed-source promotion drifted: {path_text}"
+            )
 
 
 def reviewable_snapshot_files(root: Path) -> set[str]:
@@ -1188,14 +2693,52 @@ def reviewable_snapshot_files(root: Path) -> set[str]:
     return result
 
 
+def snapshot_review_procedure_bytes() -> bytes:
+    if set(SNAPSHOT_REVIEW_ACCEPTANCE_REQUIREMENTS) != set(EXTERNAL_REVIEW_HOOKS):
+        raise IntegrationError("snapshot review acceptance requirement set is incomplete")
+    lines = [
+        "# V5 independent snapshot review procedure",
+        "",
+        "Review only a private copy produced by `integrate.py review-subject SNAPSHOT --private-copy PRIVATE_COPY`. Run `integrate.py review-custody-check --snapshot SNAPSHOT --private-copy PRIVATE_COPY` before inspecting semantic content. Run these commands from a separately trusted harness whose full Python/schema tool inventory equals the contract's reviewer-tool set; run `integrate.py reviewer-runtime-attestation` with that same interpreter to inspect the runtime identity which the receipt builder will bind. Read the hook-specific contract, verify every listed artifact and every acceptance requirement below, and authenticate the reviewer identity independently of the receipt bytes.",
+        "",
+        "Produce no receipt when any artifact, requirement, evidence item, or custody check is missing, unresolved, ambiguous, or failed. Otherwise author only the itemized work-product JSON and result JSON with the contract's exact ordered check IDs. The HOOK-SEMANTICS-CHECKED evidence must name the hook and the contract's acceptance-requirement SHA-256; a bare PASS assertion is invalid. Run `integrate.py build-snapshot-review-receipt --snapshot SNAPSHOT --private-copy PRIVATE_COPY --hook-id HOOK_ID --actor-id ACTOR_ID --work-product WORK_PRODUCT.json --result RESULT.json --output RECEIPTS/HOOK_ID.json`. The builder reruns custody, records the actual runtime, fills only deterministic contract/digest fields, validates the reviewer-authored work, reruns custody at the end, and no-replace-publishes canonical read-only JSON. After all eight actors finish, the coordinator must run `integrate.py validate-snapshot-review-receipts --snapshot SNAPSHOT --receipts RECEIPTS`.",
+        "",
+    ]
+    for hook_id in sorted(SNAPSHOT_REVIEW_ACCEPTANCE_REQUIREMENTS):
+        lines.extend((f"## {hook_id}", ""))
+        for requirement in SNAPSHOT_REVIEW_ACCEPTANCE_REQUIREMENTS[hook_id]:
+            lines.append(f"- {requirement}")
+        lines.append("")
+    return ("\n".join(lines).rstrip() + "\n").encode("utf-8")
+
+
+def install_snapshot_review_procedure(root: Path) -> None:
+    write_exclusive(
+        root / SNAPSHOT_REVIEW_PROCEDURE_PATH,
+        snapshot_review_procedure_bytes(),
+    )
+
+
 def derive_snapshot_review_contracts(root: Path) -> dict[str, dict[str, Any]]:
     """Bind each external review hook to an exact, complete artifact set."""
 
+    procedure_path = root / SNAPSHOT_REVIEW_PROCEDURE_PATH
+    procedure_bytes = snapshot_review_procedure_bytes()
+    if (
+        procedure_path.is_symlink()
+        or not procedure_path.is_file()
+        or procedure_path.read_bytes() != procedure_bytes
+    ):
+        raise IntegrationError("snapshot review procedure bytes are not exact")
     inventory = reviewable_snapshot_files(root)
+    reviewer_tools = source_review_tool_records(RUN)
+    reviewer_tool_set_sha256 = source_review_tool_set_sha256(reviewer_tools)
     selectors: dict[str, tuple[str, ...]] = {
         "H-VALIDATE-HIDDEN-FIXTURE-MANIFESTS": (
             "freeze/fixtures/",
             "freeze/controls",
+            "static/integration/reviewed-inputs/reviewed-static/freeze/fixtures/",
+            "static/integration/reviewed-static-input/freeze/fixtures/",
             "static/materialized/targets/",
             "targets.json",
         ),
@@ -1205,8 +2748,18 @@ def derive_snapshot_review_contracts(root: Path) -> dict[str, dict[str, Any]]:
             "freeze/allowlists/",
             "freeze/rules/",
             "freeze/authority/",
+            "static/integration/reviewed-inputs/theorem-inputs/",
+            "static/integration/source-declaration.json",
+            "static/materialized/targets/",
+            "targets.json",
         ),
-        "H-VALIDATE-INDEPENDENT-SIGNOFFS": ("freeze/reviews/",),
+        "H-VALIDATE-INDEPENDENT-SIGNOFFS": (
+            "static/integration/reviewed-static-input/",
+            "static/integration/reviewed-inputs/source-review-receipts/",
+            "static/integration/reviewed-inputs/source-review-contracts/",
+            "static/integration/reviewed-inputs/source-review-procedures/",
+            "static/integration/reviewed-inputs/SOURCE-REVIEW.",
+        ),
         "H-BUILD-VALIDATE-REPORT-AUTHORITY-PROJECTIONS": (
             "freeze/authority/",
             "static/materialized/common/docs/",
@@ -1292,14 +2845,49 @@ def derive_snapshot_review_contracts(root: Path) -> dict[str, dict[str, Any]]:
             {"path": path, "sha256": sha256((root / path).read_bytes())}
             for path in sorted(paths)
         ]
+        acceptance_requirements = list(
+            SNAPSHOT_REVIEW_ACCEPTANCE_REQUIREMENTS[hook_id]
+        )
+        coverage_items = [
+            {
+                "id": f"artifact:{artifact['path']}",
+                "subject": f"sha256={artifact['sha256']}",
+            }
+            for artifact in artifacts
+        ] + [
+            {
+                "id": f"acceptance-requirement:{index:02d}",
+                "subject": requirement,
+            }
+            for index, requirement in enumerate(acceptance_requirements, start=1)
+        ]
         contract = {
             "schema_version": 1,
             "status": "READY",
             "hook_id": hook_id,
             "procedure_id": f"v5-snapshot-review/{hook_id.lower()}",
             "procedure_version": SNAPSHOT_REVIEW_PROCEDURE_VERSION,
+            "procedure_path": SNAPSHOT_REVIEW_PROCEDURE_PATH,
+            "procedure_sha256": sha256(procedure_bytes),
+            "receipt_schema_path": SNAPSHOT_REVIEW_RECEIPT_SCHEMA_PATH,
+            "receipt_schema_sha256": sha256(
+                (root / SNAPSHOT_REVIEW_RECEIPT_SCHEMA_PATH).read_bytes()
+            ),
+            "reviewer_tool_set_algorithm": REVIEWER_TOOL_SET_ALGORITHM,
+            "reviewer_tools": reviewer_tools,
+            "reviewer_tool_set_sha256": reviewer_tool_set_sha256,
+            "reviewer_runtime_attestation_algorithm": (
+                REVIEWER_RUNTIME_ATTESTATION_ALGORITHM
+            ),
             "custody_requirement": "VERIFIED_PRIVATE_COPY_AND_END_REVERIFY",
             "required_check_ids": list(SNAPSHOT_REVIEW_CHECK_IDS),
+            "acceptance_requirements": acceptance_requirements,
+            "acceptance_requirements_sha256": sha256(
+                canonical_json_bytes(acceptance_requirements)
+            ),
+            "coverage_items": coverage_items,
+            "coverage_set_algorithm": REVIEW_COVERAGE_SET_ALGORITHM,
+            "coverage_set_sha256": review_coverage_set_sha256(coverage_items),
             "artifacts": artifacts,
             "artifact_set_sha256": sha256(canonical_json_bytes(artifacts)),
         }
@@ -1365,27 +2953,36 @@ def validate_integration_receipt(
     *,
     expected_hook_id: str,
     expected_phase: str,
+    synthetic_capability: object | None = None,
 ) -> dict[str, Any]:
     """Validate the stable v2 receipt contract shared with ``protocol.py``."""
 
+    expected_fields = {
+        "schema_version",
+        "status",
+        "phase",
+        "hook_id",
+        "receipt_kind",
+        "actor",
+        "input_digests",
+        "output_digests",
+        "result",
+    }
+    if expected_phase == "SNAPSHOT_REVIEW":
+        expected_fields.update({"reviewer_runtime", "work_product"})
     receipt = exact_object(
         value,
-        {
-            "schema_version",
-            "status",
-            "phase",
-            "hook_id",
-            "receipt_kind",
-            "actor",
-            "input_digests",
-            "output_digests",
-            "result",
-        },
+        expected_fields,
         f"receipt {expected_hook_id}",
     )
     if (
         receipt["schema_version"] != 2
-        or receipt["status"] != "PASS"
+        or receipt["status"]
+        != (
+            "SYNTHETIC-TEST-ONLY"
+            if synthetic_capability is _SYNTHETIC_CAPABILITY
+            else "PASS"
+        )
         or receipt["phase"] != expected_phase
         or receipt["hook_id"] != expected_hook_id
         or HOOK_PHASES.get(expected_hook_id) != expected_phase
@@ -1414,6 +3011,9 @@ def validate_integration_receipt(
         raise IntegrationError(f"receipt actor is incomplete: {expected_hook_id}")
     if expected_phase == "SNAPSHOT_REVIEW" and actor["role"] != "INDEPENDENT_REVIEWER":
         raise IntegrationError(f"snapshot receipt actor is not an independent reviewer")
+    if expected_phase == "SNAPSHOT_REVIEW":
+        require_actor_id(actor["identity"], f"snapshot review actor {expected_hook_id}")
+        validate_reviewer_runtime_attestation(receipt["reviewer_runtime"])
     for field in ("input_digests", "output_digests"):
         items = receipt[field]
         if not isinstance(items, dict) or not items or any(
@@ -1455,40 +3055,90 @@ def validate_integration_receipt(
     return receipt
 
 
-def snapshot_receipt_inputs(root: Path, hook_id: str) -> dict[str, str]:
+def snapshot_receipt_inputs(
+    root: Path,
+    hook_id: str,
+    *,
+    reviewer_runtime: dict[str, Any],
+) -> dict[str, str]:
     inputs = {
         SNAPSHOT_DESCRIPTOR: sha256((root / SNAPSHOT_DESCRIPTOR).read_bytes()),
         SNAPSHOT_MANIFEST: sha256((root / SNAPSHOT_MANIFEST).read_bytes()),
     }
     contract_path = f"static/integration/review-contracts/{hook_id}.json"
     inputs[contract_path] = sha256((root / contract_path).read_bytes())
+    inputs[SNAPSHOT_REVIEW_PROCEDURE_PATH] = sha256(
+        (root / SNAPSHOT_REVIEW_PROCEDURE_PATH).read_bytes()
+    )
+    inputs[SNAPSHOT_REVIEW_RECEIPT_SCHEMA_PATH] = sha256(
+        (root / SNAPSHOT_REVIEW_RECEIPT_SCHEMA_PATH).read_bytes()
+    )
+    contract = read_json(
+        root / f"static/integration/review-contracts/{hook_id}.json"
+    )
+    inputs["trusted-reviewer-tool-set"] = contract["reviewer_tool_set_sha256"]
+    inputs["reviewer-runtime-attestation"] = sha256(
+        canonical_json_bytes(reviewer_runtime)
+    )
     return inputs
 
 
-def validate_snapshot_review_receipt(
+def _validate_snapshot_review_receipt_captured(
     path: Path,
     expected_hook: str,
     snapshot: Path,
     descriptor: dict[str, Any],
-) -> dict[str, Any]:
+    *,
+    synthetic_capability: object | None = None,
+) -> tuple[dict[str, Any], bytes]:
+    if synthetic_capability not in {None, _SYNTHETIC_CAPABILITY}:
+        raise IntegrationError("unrecognized synthetic snapshot-review capability")
+    raw_receipt, raw_bytes = capture_review_receipt_json(
+        path,
+        f"snapshot review receipt {expected_hook}",
+        synthetic_capability=synthetic_capability,
+    )
     receipt = validate_integration_receipt(
-        read_json(path),
+        raw_receipt,
         expected_hook_id=expected_hook,
         expected_phase="SNAPSHOT_REVIEW",
+        synthetic_capability=synthetic_capability,
     )
     contract = validate_snapshot_review_contracts(snapshot)[expected_hook]
-    if receipt["input_digests"] != snapshot_receipt_inputs(snapshot, expected_hook):
+    reviewer_runtime = validate_reviewer_runtime_attestation(
+        receipt["reviewer_runtime"]
+    )
+    if (
+        reviewer_runtime["algorithm"]
+        != contract["reviewer_runtime_attestation_algorithm"]
+    ):
+        raise IntegrationError("snapshot reviewer runtime algorithm drifted")
+    _work_product, work_product_sha256 = validate_review_work_product(
+        receipt["work_product"],
+        expected_coverage_items=contract["coverage_items"],
+    )
+    if receipt["input_digests"] != snapshot_receipt_inputs(
+        snapshot,
+        expected_hook,
+        reviewer_runtime=reviewer_runtime,
+    ):
         raise IntegrationError(
             f"snapshot review does not bind the exact snapshot: {expected_hook}"
         )
     if receipt["output_digests"] != {
         "reviewed-payload-manifest": descriptor["payload_manifest_sha256"],
         "reviewed-artifact-set": contract["artifact_set_sha256"],
+        "review-work-product": work_product_sha256,
     }:
         raise IntegrationError(
             f"snapshot review output does not identify the reviewed payload: {expected_hook}"
         )
     actor = receipt["actor"]
+    if (
+        actor["identity"].startswith("synthetic-")
+        and synthetic_capability is not _SYNTHETIC_CAPABILITY
+    ):
+        raise IntegrationError("synthetic snapshot-review receipt cannot authorize production")
     if (
         actor["implementation"] != contract["procedure_id"]
         or actor["version"] != contract["procedure_version"]
@@ -1509,10 +3159,20 @@ def validate_snapshot_review_receipt(
             receipt["input_digests"][
                 f"static/integration/review-contracts/{expected_hook}.json"
             ],
+            contract["procedure_sha256"],
+            contract["receipt_schema_sha256"],
             contract["procedure_version"],
+            contract["coverage_set_algorithm"],
+            contract["coverage_set_sha256"],
+            contract["reviewer_tool_set_algorithm"],
+            contract["reviewer_tool_set_sha256"],
+            reviewer_runtime["algorithm"],
         ),
         "ARTIFACT-INVENTORY-CHECKED": (contract["artifact_set_sha256"],),
-        "HOOK-SEMANTICS-CHECKED": (expected_hook,),
+        "HOOK-SEMANTICS-CHECKED": (
+            expected_hook,
+            contract["acceptance_requirements_sha256"],
+        ),
         "END-OF-REVIEW-REVERIFIED": (
             receipt["input_digests"][SNAPSHOT_MANIFEST],
             descriptor["payload_manifest_sha256"],
@@ -1523,6 +3183,24 @@ def validate_snapshot_review_receipt(
             raise IntegrationError(
                 f"snapshot review lacks exact evidence binding {expected_hook}.{check_id}"
             )
+    return receipt, raw_bytes
+
+
+def validate_snapshot_review_receipt(
+    path: Path,
+    expected_hook: str,
+    snapshot: Path,
+    descriptor: dict[str, Any],
+    *,
+    synthetic_capability: object | None = None,
+) -> dict[str, Any]:
+    receipt, _captured_bytes = _validate_snapshot_review_receipt_captured(
+        path,
+        expected_hook,
+        snapshot,
+        descriptor,
+        synthetic_capability=synthetic_capability,
+    )
     return receipt
 
 
@@ -1587,6 +3265,53 @@ def replace_snapshot_build_bytes(path: Path, data: bytes) -> None:
     fsync_directory(path.parent)
 
 
+def promoted_schema_document(value: Any, name: str) -> dict[str, Any]:
+    """Derive the one exact lifecycle promotion for a source schema."""
+
+    if not isinstance(value, dict):
+        raise IntegrationError(f"schema is not an object: {name}")
+    comment = value.get("$comment")
+    if not isinstance(comment, str) or not comment.strip():
+        raise IntegrationError(f"schema lacks explicit lifecycle prose: {name}")
+    promoted_comment = comment.replace(
+        "DRAFT / UNSEALED", "READY / IMMUTABLE REVIEW-CANDIDATE"
+    ).replace("DRAFT source", "trusted source")
+    if "DRAFT" in promoted_comment or "UNSEALED" in promoted_comment:
+        raise IntegrationError(
+            f"schema comment contains an unrecognized source lifecycle marker: {name}"
+        )
+    return {**value, "$comment": promoted_comment}
+
+
+def validate_promoted_schema_inventory(root: Path) -> None:
+    """Require every staged schema to equal its trusted deterministic promotion."""
+
+    source_root = RUN / "schemas"
+    staged_root = root / "schemas"
+    if staged_root.is_symlink() or not staged_root.is_dir():
+        raise IntegrationError("promoted schema root must be a real directory")
+    source_names = {
+        path.name for path in source_root.iterdir() if path.is_file()
+    }
+    staged_names = {
+        path.name for path in staged_root.iterdir() if path.is_file()
+    }
+    if staged_names != source_names or any(
+        path.is_dir() or path.is_symlink() for path in staged_root.iterdir()
+    ):
+        raise IntegrationError("promoted schema inventory is not exact")
+    for name in sorted(source_names):
+        expected = promoted_schema_document(read_json(source_root / name), name)
+        staged_path = staged_root / name
+        if (
+            read_json(staged_path) != expected
+            or staged_path.read_bytes() != pretty_json_bytes(expected)
+        ):
+            raise IntegrationError(
+                f"promoted schema does not equal trusted derivation: {name}"
+            )
+
+
 def promote_operational_metadata(stage: Path) -> None:
     hooks = validate_hook_inventory(stage, expected_status="DRAFT")
     hooks = {**hooks, "status": "READY"}
@@ -1608,6 +3333,10 @@ def promote_operational_metadata(stage: Path) -> None:
         if not isinstance(value, dict) or value.get("status") != "DRAFT":
             raise IntegrationError(f"operational contract is not a DRAFT source: {name}")
         replace_snapshot_build_json(path, {**value, "status": "READY", **replacements})
+    for path in sorted((stage / "schemas").glob("*.json")):
+        replace_snapshot_build_json(
+            path, promoted_schema_document(read_json(path), path.name)
+        )
     markdown_paths = [stage / "plan.md", stage / "integration.md"]
     markdown_paths.extend(sorted((stage / "prompts").glob("*.md")))
     markdown_paths.extend(sorted((stage / "policies").glob("*.md")))
@@ -1648,6 +3377,7 @@ def promote_operational_metadata(stage: Path) -> None:
         replace_snapshot_build_bytes(path, data)
     validate_hook_inventory(stage, expected_status="READY")
     validate_runtime_policy(stage, expected_status="READY")
+    validate_promoted_schema_inventory(stage)
 
 
 def overlay_tree(source: Path, destination: Path) -> None:
@@ -2532,6 +4262,119 @@ def validate_report_material(
     return expected
 
 
+def mode_report_material_digests(
+    material: dict[str, Any], documents: dict[str, Any]
+) -> dict[str, str]:
+    """Bind exact per-mode prompt, input-plan, and launch-record bytes."""
+
+    records: dict[str, list[dict[str, Any]]] = {mode: [] for mode in prepare.MODES}
+    mode_by_target_label = {
+        row["target_label"]: row["mode"]
+        for row in documents["target-map.json"]["targets"]
+    }
+    for slot in documents["launch-schedule.json"]["slots"]:
+        try:
+            mode = mode_by_target_label[slot["target_label"]]
+        except KeyError as error:
+            raise IntegrationError(
+                "report-material binding schedule references an unknown target label"
+            ) from error
+        run_id = slot["run_id"]
+        record: dict[str, Any] = {"run_id": run_id}
+        for key, field in (
+            ("prompts", "prompt"),
+            ("input_plans", "input_plan"),
+            ("launches", "launch_record"),
+        ):
+            data = material[key][run_id]
+            record[f"{field}_length"] = len(data)
+            record[f"{field}_sha256"] = sha256(data)
+        records[mode].append(record)
+    result: dict[str, str] = {}
+    domain = REPORT_MATERIAL_SET_ALGORITHM.encode("ascii") + b"\0"
+    for mode in prepare.MODES:
+        ordered = sorted(records[mode], key=lambda item: int(item["run_id"][1:]))
+        if len(ordered) != prepare.REPORTS_PER_MODE:
+            raise IntegrationError(f"mode {mode} does not have exactly 15 report records")
+        binding = {
+            "schema_version": 1,
+            "algorithm": REPORT_MATERIAL_SET_ALGORITHM,
+            "mode": mode,
+            "records": ordered,
+        }
+        result[mode] = sha256(domain + canonical_json_bytes(binding))
+    return result
+
+
+def derive_ready_fixture_bytes(
+    reviewed_source_root: Path,
+    *,
+    source_digests: dict[str, str],
+    material_digests: dict[str, str],
+) -> dict[str, bytes]:
+    if set(source_digests) != set(prepare.MODES) or set(material_digests) != set(prepare.MODES):
+        raise IntegrationError("fixture binding maps must cover every mode")
+    result: dict[str, bytes] = {}
+    for mode in prepare.MODES:
+        path_text = f"freeze/fixtures/{mode}.json"
+        value = read_json(reviewed_source_root / path_text)
+        if value.get("status") != REVIEWED_FIXTURE_STATUS:
+            raise IntegrationError(f"fixture {mode} is not an honest reviewed-source input")
+        if (
+            value.get("source_tree_algorithm") != prepare.BYTE_TREE_ALGORITHM
+            or value.get("source_tree_sha256") != source_digests[mode]
+            or value.get("report_material_set_algorithm") != REPORT_MATERIAL_SET_ALGORITHM
+            or value.get("exact_report_material_set_sha256")
+            != REVIEWED_DERIVATION_SENTINEL
+        ):
+            raise IntegrationError(f"fixture {mode} reviewed-source bindings are invalid")
+        value = {
+            **value,
+            "status": "READY",
+            "exact_report_material_set_sha256": material_digests[mode],
+        }
+        validate_schema_file(
+            value,
+            RUN / "schemas" / "fixture-manifest.schema.json",
+            f"derived READY fixture {mode}",
+        )
+        result[path_text] = pretty_json_bytes(value)
+    return result
+
+
+def install_ready_fixture_manifests(
+    stage: Path,
+    reviewed_source_root: Path,
+    *,
+    source_digests: dict[str, str],
+    material_digests: dict[str, str],
+) -> None:
+    expected = derive_ready_fixture_bytes(
+        reviewed_source_root,
+        source_digests=source_digests,
+        material_digests=material_digests,
+    )
+    for path_text, data in expected.items():
+        replace_snapshot_build_bytes(stage / path_text, data)
+
+
+def require_exact_ready_fixture_manifests(
+    root: Path,
+    reviewed_source_root: Path,
+    *,
+    source_digests: dict[str, str],
+    material_digests: dict[str, str],
+) -> None:
+    expected = derive_ready_fixture_bytes(
+        reviewed_source_root,
+        source_digests=source_digests,
+        material_digests=material_digests,
+    )
+    for path_text, data in expected.items():
+        if (root / path_text).read_bytes() != data:
+            raise IntegrationError(f"READY fixture is not the exact derived binding: {path_text}")
+
+
 def validate_word_counter(source_path: Path) -> dict[str, Any]:
     if source_path.is_symlink() or not source_path.is_file():
         raise IntegrationError("staged word counter must be a regular file")
@@ -2577,6 +4420,8 @@ def copy_snapshot_review_receipts(
     snapshot: Path,
     receipts: Path,
     descriptor: dict[str, Any],
+    *,
+    synthetic_capability: object | None,
 ) -> dict[str, str]:
     reject_unsupported_tree(receipts, "snapshot review receipt root")
     observed = {
@@ -2593,13 +4438,40 @@ def copy_snapshot_review_receipts(
     if any(path.is_dir() for path in receipts.rglob("*")):
         raise IntegrationError("snapshot review receipt root may not contain directories")
     result: dict[str, str] = {}
+    snapshot_actor_ids: list[str] = []
     for hook_id in sorted(EXTERNAL_REVIEW_HOOKS):
         source = receipts / f"{hook_id}.json"
-        validate_snapshot_review_receipt(source, hook_id, snapshot, descriptor)
-        data = source.read_bytes()
+        validated_receipt, data = _validate_snapshot_review_receipt_captured(
+            source,
+            hook_id,
+            snapshot,
+            descriptor,
+            synthetic_capability=synthetic_capability,
+        )
+        snapshot_actor_ids.append(validated_receipt["actor"]["identity"])
         destination = stage / "static" / "integration-receipts" / source.name
         write_exclusive(destination, data)
         result[hook_id] = sha256(data)
+    if len(set(snapshot_actor_ids)) != len(EXTERNAL_REVIEW_HOOKS):
+        raise IntegrationError("snapshot reviewer identities must be pairwise distinct")
+    preserved_source_receipts = (
+        snapshot
+        / "static"
+        / "integration"
+        / "reviewed-inputs"
+        / "source-review-receipts"
+    )
+    if preserved_source_receipts.is_dir():
+        source_actor_ids = {
+            read_json(preserved_source_receipts / name)["actor"]["identity"]
+            for name, _review_kind in SOURCE_REVIEW_KINDS
+        }
+        if len(source_actor_ids) != len(SOURCE_REVIEW_KINDS):
+            raise IntegrationError("source reviewer identities are not distinct")
+        if source_actor_ids.intersection(snapshot_actor_ids):
+            raise IntegrationError(
+                "source and snapshot reviewer identities must be disjoint"
+            )
     write_json(
         stage / "static" / "integration-receipts" / "index.json",
         {
@@ -2616,6 +4488,37 @@ def copy_snapshot_review_receipts(
         },
     )
     return result
+
+
+def locked_reviewer_actor_ids(
+    *,
+    captured_source_receipts: dict[str, dict[str, Any]],
+    captured_snapshot_receipts: dict[str, dict[str, Any]],
+) -> frozenset[str]:
+    """Derive exclusions solely from receipts captured by one verification."""
+
+    if set(captured_source_receipts) != {
+        name for name, _kind in SOURCE_REVIEW_KINDS
+    }:
+        raise IntegrationError("captured source reviewer receipt set is not exact")
+    if set(captured_snapshot_receipts) != EXTERNAL_REVIEW_HOOKS:
+        raise IntegrationError("captured snapshot reviewer receipt set is not exact")
+    identities = [
+        require_actor_id(
+            captured_source_receipts[name]["actor"]["identity"],
+            f"locked source reviewer {name}",
+        )
+        for name, _kind in SOURCE_REVIEW_KINDS
+    ] + [
+        require_actor_id(
+            captured_snapshot_receipts[hook_id]["actor"]["identity"],
+            f"locked snapshot reviewer {hook_id}",
+        )
+        for hook_id in sorted(EXTERNAL_REVIEW_HOOKS)
+    ]
+    if len(identities) != 11 or len(set(identities)) != 11:
+        raise IntegrationError("locked reviewer identity inventory is not eleven distinct actors")
+    return frozenset(identities)
 
 
 def validate_runtime_carve_out(root: Path) -> None:
@@ -2683,6 +4586,41 @@ def snapshot_manifest_bytes(root: Path) -> bytes:
         excluded=snapshot_excluded,
         include_mode=False,
     )
+
+
+def source_review_excluded(relative_path: Path) -> bool:
+    if not relative_path.parts:
+        return False
+    return relative_path.parts[0] in {
+        SOURCE_REVIEW_MANIFEST,
+        SOURCE_REVIEW_DESCRIPTOR,
+        "source-review-receipts",
+    }
+
+
+def source_review_manifest_bytes(root: Path) -> bytes:
+    reject_interpreter_artifacts(root)
+    return tree_manifest_bytes(
+        root,
+        domain=b"ZEROCOPY\0V5\0SOURCE-REVIEW\0V1",
+        excluded=source_review_excluded,
+        include_mode=False,
+    )
+
+
+def normalize_read_only_review_tree(root: Path) -> None:
+    for path in root.rglob("*"):
+        os.chmod(path, 0o555 if path.is_dir() else 0o444, follow_symlinks=False)
+    os.chmod(root, 0o555)
+
+
+def verify_read_only_review_tree(root: Path) -> None:
+    if stat.S_IMODE(root.stat().st_mode) != 0o555:
+        raise IntegrationError("source-review root mode is not 0555")
+    for path in root.rglob("*"):
+        expected = 0o555 if path.is_dir() else 0o444
+        if stat.S_IMODE(path.stat().st_mode) != expected:
+            raise IntegrationError(f"source-review mode is not {expected:o}: {path}")
 
 
 def fsync_tree(root: Path) -> None:
@@ -2788,7 +4726,12 @@ def create_review_snapshot(root: Path, *, bundle_kind: str) -> dict[str, Any]:
 def validate_snapshot_build_products(root: Path, *, bundle_kind: str) -> None:
     """Re-run the mechanical SNAPSHOT_BUILD obligations on staged bytes."""
 
-    if bundle_kind == "PRODUCTION":
+    validate_promoted_schema_inventory(root)
+    preserved_inputs = root / "static" / "integration" / "reviewed-inputs"
+    reviewed_production_inputs = bundle_kind == "PRODUCTION" or preserved_inputs.is_dir()
+    if bundle_kind == "PRODUCTION" and not preserved_inputs.is_dir():
+        raise IntegrationError("PRODUCTION snapshot lacks finalized reviewed inputs")
+    if reviewed_production_inputs:
         for name in ("integrate.py", "prepare.py", "protocol.py", "word_count.py"):
             if (root / name).read_bytes() != (RUN / name).read_bytes():
                 raise IntegrationError(
@@ -2806,19 +4749,35 @@ def validate_snapshot_build_products(root: Path, *, bundle_kind: str) -> None:
         if not isinstance(value, dict) or value.get("status") != "READY":
             raise IntegrationError(f"promoted operational contract is not READY: {name}")
     declaration_bytes = (root / "static" / "integration" / "source-declaration.json").read_bytes()
-    if bundle_kind == "PRODUCTION" and declaration_bytes != trusted_production_declaration_bytes():
+    if reviewed_production_inputs and declaration_bytes != trusted_production_declaration_bytes():
         raise IntegrationError(
             "PRODUCTION snapshot does not embed the exact trusted source declaration bytes"
         )
     declaration = validate_source_declaration(
         parse_json_bytes(declaration_bytes, "locked source declaration"),
-        production=bundle_kind == "PRODUCTION",
+        production=reviewed_production_inputs,
     )
     values_bytes = (root / "static" / "integration" / "integration-values.json").read_bytes()
     values = validate_reviewed_values(
-        parse_json_bytes(values_bytes, "locked integration values"), declaration_bytes
+        parse_json_bytes(values_bytes, "locked integration values"),
+        declaration_bytes,
+        expected_reviewed_static_base=REVIEWED_STATIC_BUNDLE_BASE,
     )
-    validate_reviewed_static(root, values["reviewed_static"])
+    reviewed_source_root = root / "static" / "integration" / "reviewed-static-input"
+    if reviewed_production_inputs:
+        verify_source_review_snapshot(
+            preserved_inputs,
+            require_receipts=True,
+            require_read_only=False,
+            synthetic_capability=(
+                _SYNTHETIC_CAPABILITY
+                if bundle_kind == "SYNTHETIC-TEST-ONLY"
+                else None
+            ),
+        )
+    validate_reviewed_static(reviewed_source_root, values["reviewed_static"])
+    if reviewed_production_inputs:
+        require_exact_ready_reviewed_source_files(root, reviewed_source_root)
     packages_document = read_json(root / "packages.json")
     targets_document = read_json(root / "targets.json")
     packages = prepare.validate_packages(packages_document)
@@ -2831,7 +4790,7 @@ def validate_snapshot_build_products(root: Path, *, bundle_kind: str) -> None:
             ),
             production=True,
         )
-        if bundle_kind == "PRODUCTION"
+        if reviewed_production_inputs
         else declaration
     )
     for role in ("v5", "v4"):
@@ -2845,7 +4804,7 @@ def validate_snapshot_build_products(root: Path, *, bundle_kind: str) -> None:
         skill = package_root / source_record["skill_path"]
         if sha256(skill.read_bytes()) != package["skill_sha256"]:
             raise IntegrationError(f"materialized SKILL.md bytes changed: {role}")
-        if bundle_kind == "PRODUCTION":
+        if reviewed_production_inputs:
             trusted_record = trusted_declaration["packages"][role]
             trusted_root, trusted_tree_sha = trusted_declared_tree(
                 trusted_record["source_path"], f"{role} package"
@@ -2873,7 +4832,7 @@ def validate_snapshot_build_products(root: Path, *, bundle_kind: str) -> None:
         scan_target_leakage(target_root, values["forbidden_tokens"])
         if sha256(authority.read_bytes()) != target["authority_packet_sha256"]:
             raise IntegrationError(f"materialized authority binding changed: {mode}")
-        if bundle_kind == "PRODUCTION":
+        if reviewed_production_inputs:
             trusted_record = next(
                 item for item in trusted_declaration["targets"] if item["mode"] == mode
             )
@@ -3088,7 +5047,7 @@ def validate_snapshot_build_products(root: Path, *, bundle_kind: str) -> None:
     }
     if read_json(spec_root / "index.json") != expected_spec_index:
         raise IntegrationError("envelope-spec index does not derive exactly")
-    validate_report_material(
+    report_material = validate_report_material(
         root,
         documents,
         packages,
@@ -3097,6 +5056,26 @@ def validate_snapshot_build_products(root: Path, *, bundle_kind: str) -> None:
         execution_digests,
         spec_digests,
     )
+    source_digests = {
+        mode: targets[mode]["byte_tree_sha256"] for mode in prepare.MODES
+    }
+    material_digests = mode_report_material_digests(report_material, documents)
+    require_exact_ready_fixture_manifests(
+        root,
+        reviewed_source_root,
+        source_digests=source_digests,
+        material_digests=material_digests,
+    )
+    if reviewed_production_inputs:
+        validate_reviewed_semantic_closure(
+            root,
+            expected_fixture_phase="READY",
+            expected_source_digests=source_digests,
+            expected_report_material_digests=material_digests,
+            evidence_source_root=(
+                preserved_inputs / SOURCE_REVIEW_THEOREM_ROOT / "unsafe-rust"
+            ),
+        )
     expected_evaluator_contract, expected_evaluator_prompts = derive_evaluator_material(
         root, documents, execution_digests, spec_digests
     )
@@ -3130,6 +5109,22 @@ def validate_snapshot_build_products(root: Path, *, bundle_kind: str) -> None:
         root / "static" / "generated" / "evaluator-prompt-validation-receipt.json"
     ) != expected_evaluator_receipt:
         raise IntegrationError("evaluator prompt validation receipt does not derive exactly")
+    evaluator_schema_paths = {
+        path_text
+        for record in expected_evaluator_contract["assignments"]
+        for path_text in record["schema_paths"]
+    }
+    for path_text in sorted(evaluator_schema_paths):
+        schema = read_json(root / path_text)
+        comment = schema.get("$comment") if isinstance(schema, dict) else None
+        if (
+            not isinstance(comment, str)
+            or "DRAFT" in comment
+            or "UNSEALED" in comment
+        ):
+            raise IntegrationError(
+                f"agent-visible evaluator schema retains source lifecycle prose: {path_text}"
+            )
     validate_snapshot_review_contracts(root)
     word_binding = read_json(
         root / "static" / "integration" / "word-counter-binding.json"
@@ -3285,7 +5280,7 @@ def _verify_static_contents(
     root: Path,
     *,
     expected_bundle_kind: str,
-) -> dict[str, Any]:
+) -> tuple[dict[str, Any], frozenset[str]]:
     if expected_bundle_kind not in BUNDLE_KINDS:
         raise IntegrationError("expected_bundle_kind must be PRODUCTION or SYNTHETIC-TEST-ONLY")
     if root.is_symlink():
@@ -3351,6 +5346,12 @@ def _verify_static_contents(
     ):
         raise IntegrationError("static lock fields do not bind the verified static bundle")
     validate_schema_file(lock, RUN / "schemas" / "static-lock.schema.json", STATIC_LOCK)
+    manifest_records = parse_tree_manifest_records(
+        actual_manifest,
+        domain=b"ZEROCOPY\0V5\0STATIC-MANIFEST\0V1",
+        include_mode=True,
+        label="authenticated static manifest",
+    )
     descriptor = verify_review_snapshot(
         root,
         expected_candidate_kind=expected_bundle_kind,
@@ -3383,6 +5384,7 @@ def _verify_static_contents(
     if receipt_index != expected_index:
         raise IntegrationError("receipt index does not equal the static-lock inventory")
     receipt_root = root / "static" / "integration-receipts"
+    reject_unsupported_tree(receipt_root, "locked snapshot-review receipt root")
     observed = {
         path.name for path in receipt_root.iterdir() if path.is_file() and path.name != "index.json"
     }
@@ -3390,17 +5392,102 @@ def _verify_static_contents(
         raise IntegrationError("locked snapshot-review receipt file inventory is not exact")
     if any(path.is_dir() for path in receipt_root.rglob("*")):
         raise IntegrationError("locked snapshot-review receipt root contains a directory")
+    captured_snapshot_receipts: dict[str, dict[str, Any]] = {}
+    synthetic_capability = (
+        _SYNTHETIC_CAPABILITY
+        if expected_bundle_kind == "SYNTHETIC-TEST-ONLY"
+        else None
+    )
     for hook_id, expected_sha in receipt_map.items():
         digest(expected_sha, f"lock receipt {hook_id}")
         receipt_path = receipt_root / f"{hook_id}.json"
-        if sha256(receipt_path.read_bytes()) != expected_sha:
+        receipt, receipt_bytes = _validate_snapshot_review_receipt_captured(
+            receipt_path,
+            hook_id,
+            root,
+            descriptor,
+            synthetic_capability=synthetic_capability,
+        )
+        if sha256(receipt_bytes) != expected_sha:
             raise IntegrationError(f"static lock receipt digest mismatch: {hook_id}")
-        validate_snapshot_review_receipt(receipt_path, hook_id, root, descriptor)
+        captured_snapshot_receipts[hook_id] = receipt
+    reviewer_ids = frozenset()
+    if expected_bundle_kind == "PRODUCTION" or (
+        root
+        / "static"
+        / "integration"
+        / "reviewed-inputs"
+        / "source-review-receipts"
+    ).is_dir():
+        reviewed_inputs = root / "static" / "integration" / "reviewed-inputs"
+        source_descriptor_bytes = (
+            reviewed_inputs / SOURCE_REVIEW_DESCRIPTOR
+        ).read_bytes()
+        source_manifest_bytes = (
+            reviewed_inputs / SOURCE_REVIEW_MANIFEST
+        ).read_bytes()
+        source_descriptor = parse_json_bytes(
+            source_descriptor_bytes, "locked source-review descriptor"
+        )
+        captured_source_receipts, captured_source_bytes = (
+            _validate_source_review_receipts_captured(
+                reviewed_inputs / "source-review-receipts",
+                snapshot_root=reviewed_inputs,
+                descriptor_sha256=sha256(source_descriptor_bytes),
+                manifest_sha256=sha256(source_manifest_bytes),
+                payload_sha256=source_descriptor["payload_manifest_sha256"],
+                synthetic_capability=synthetic_capability,
+            )
+        )
+        for name, receipt_bytes in captured_source_bytes.items():
+            relative_path = (
+                "static/integration/reviewed-inputs/source-review-receipts/"
+                + name
+            )
+            record = manifest_records.get(relative_path)
+            if record != {
+                "kind": "F",
+                "size": len(receipt_bytes),
+                "mode": 0o444,
+                "content_sha256": sha256(receipt_bytes),
+            }:
+                raise IntegrationError(
+                    "captured source-review receipt is not the authenticated "
+                    f"static-manifest record: {name}"
+                )
+        reviewer_ids = locked_reviewer_actor_ids(
+            captured_source_receipts=captured_source_receipts,
+            captured_snapshot_receipts=captured_snapshot_receipts,
+        )
     validate_hook_inventory(root, expected_status="READY")
     validate_runtime_policy(root, expected_status="READY")
     validate_integration_status(root, expected_bundle_kind=expected_bundle_kind)
     verify_final_permissions(root)
-    return lock
+    if expected_bundle_kind == "PRODUCTION" and len(reviewer_ids) != 11:
+        raise IntegrationError(
+            "PRODUCTION verifier did not derive eleven reviewer exclusions"
+        )
+    return lock, reviewer_ids
+
+
+def verify_static_with_reviewer_ids(
+    root: Path,
+    *,
+    expected_bundle_kind: str,
+    expected_external_commitment: Any | None = None,
+) -> tuple[dict[str, Any], frozenset[str]]:
+    """Verify static identity and return its same-capture reviewer exclusions."""
+
+    if expected_bundle_kind == "PRODUCTION" and expected_external_commitment is None:
+        raise IntegrationError(
+            "PRODUCTION verification requires a separately custodied external commitment"
+        )
+    lock, reviewer_ids = _verify_static_contents(
+        root, expected_bundle_kind=expected_bundle_kind
+    )
+    if expected_external_commitment is not None:
+        verify_external_static_commitment(root, expected_external_commitment)
+    return lock, reviewer_ids
 
 
 def verify_static(
@@ -3417,13 +5504,11 @@ def verify_static(
     may be checked without an external commitment.
     """
 
-    if expected_bundle_kind == "PRODUCTION" and expected_external_commitment is None:
-        raise IntegrationError(
-            "PRODUCTION verification requires a separately custodied external commitment"
-        )
-    lock = _verify_static_contents(root, expected_bundle_kind=expected_bundle_kind)
-    if expected_external_commitment is not None:
-        verify_external_static_commitment(root, expected_external_commitment)
+    lock, _reviewer_ids = verify_static_with_reviewer_ids(
+        root,
+        expected_bundle_kind=expected_bundle_kind,
+        expected_external_commitment=expected_external_commitment,
+    )
     return lock
 
 
@@ -3437,7 +5522,10 @@ def _verify_static_precommit(
         and capability is not _RECOVERY_PRECOMMIT_CAPABILITY
     ):
         raise IntegrationError("uncommitted static verification capability is not authorized")
-    return _verify_static_contents(root, expected_bundle_kind=expected_bundle_kind)
+    lock, _reviewer_ids = _verify_static_contents(
+        root, expected_bundle_kind=expected_bundle_kind
+    )
+    return lock
 
 
 def _derive_external_static_commitment(root: Path) -> dict[str, Any]:
@@ -3586,6 +5674,537 @@ def recover_external_commitment(
     return commitment
 
 
+def validate_source_review_payload(root: Path) -> tuple[dict[str, Any], dict[str, str]]:
+    declaration_bytes = trusted_production_declaration_bytes()
+    declaration = validate_source_declaration(
+        parse_json_bytes(declaration_bytes, "trusted source declaration"),
+        production=True,
+    )
+    values = validate_reviewed_values(
+        read_json(root / "reviewed-values.json"),
+        declaration_bytes,
+        expected_status=SOURCE_REVIEW_CANDIDATE_STATUS,
+        require_empty_candidate_static=False,
+    )
+    prepare.validate_seeds(read_json(root / "seeds.json"))
+    support_files = source_review_support_file_map(declaration)
+    authority_path_text = relative(values["authority_packet_path"], "authority packet path")
+    if authority_path_text != "docs/rust-documentation.json":
+        raise IntegrationError("source-review authority packet path is not the fixed agent alias")
+    authority_path = root / authority_path_text
+    parse_json_bytes(authority_path.read_bytes(), "source-review authority packet")
+    expected_payload_files = {
+        "reviewed-values.json",
+        "seeds.json",
+        authority_path_text,
+        *(f"reviewed-static/{path}" for path in required_review_paths()),
+        *(f"{SOURCE_REVIEW_CONTRACT_ROOT}/{name}" for name, _kind in SOURCE_REVIEW_KINDS),
+        *support_files,
+    }
+    observed_payload_files = {
+        path.relative_to(root).as_posix()
+        for path in root.rglob("*")
+        if path.is_file() and not source_review_excluded(path.relative_to(root))
+    }
+    if observed_payload_files != expected_payload_files:
+        raise IntegrationError(
+            "source-review payload inventory is not exact; "
+            f"missing={sorted(expected_payload_files - observed_payload_files)}, "
+            f"extra={sorted(observed_payload_files - expected_payload_files)}"
+        )
+    observed_payload_directories = {
+        path.relative_to(root).as_posix()
+        for path in root.rglob("*")
+        if path.is_dir() and not source_review_excluded(path.relative_to(root))
+    }
+    expected_payload_directories: set[str] = set()
+    for path_text in expected_payload_files:
+        parent = Path(path_text).parent
+        while parent != Path("."):
+            expected_payload_directories.add(parent.as_posix())
+            parent = parent.parent
+    if observed_payload_directories != expected_payload_directories:
+        raise IntegrationError(
+            "source-review payload directory inventory is not exact; "
+            f"missing={sorted(expected_payload_directories - observed_payload_directories)}, "
+            f"extra={sorted(observed_payload_directories - expected_payload_directories)}"
+        )
+    for path_text, data in support_files.items():
+        path = root / path_text
+        if path.is_symlink() or not path.is_file() or path.read_bytes() != data:
+            raise IntegrationError(
+                f"source-review support/theorem input drifted: {path_text}"
+            )
+    for record in declaration["targets"]:
+        source_path = relative(record["source_path"], "source-review target path")
+        copied_target = (
+            root / SOURCE_REVIEW_THEOREM_ROOT / "unsafe-rust" / source_path
+        )
+        _trusted_path, expected_tree_sha256 = trusted_declared_tree(
+            source_path, f"source-review target {record['mode']}"
+        )
+        if prepare.byte_tree_v1(copied_target) != expected_tree_sha256:
+            raise IntegrationError(
+                f"source-review target tree does not match trusted identity: {record['mode']}"
+            )
+    source_digests = trusted_target_source_digests(declaration)
+    expected_static = derive_reviewed_static_files(
+        target_source_digests=source_digests
+    )
+    overlay = root / "reviewed-static"
+    observed_static = {
+        path.relative_to(overlay).as_posix(): path.read_bytes()
+        for path in overlay.rglob("*")
+        if path.is_file()
+    }
+    if observed_static != expected_static:
+        raise IntegrationError("source-review static bytes are not the exact trusted transition")
+    if values["reviewed_static"] != reviewed_static_records(
+        expected_static, decision="PENDING"
+    ):
+        raise IntegrationError("reviewed-values does not bind the exact reviewed-static bytes")
+    expected_authority = expected_static[
+        "freeze/authority/agent-visible/common.json"
+    ]
+    if authority_path.read_bytes() != expected_authority:
+        raise IntegrationError(
+            "source-review authority packet differs from the canonical reviewed projection"
+        )
+    validate_reviewed_static(
+        overlay, values["reviewed_static"], expected_decision="PENDING"
+    )
+    validate_reviewed_semantic_closure(
+        overlay,
+        expected_fixture_phase="SOURCE_REVIEW_CANDIDATE",
+        expected_source_digests=source_digests,
+        evidence_source_root=(
+            root / SOURCE_REVIEW_THEOREM_ROOT / "unsafe-rust"
+        ),
+    )
+    validate_source_review_contracts(root)
+    return values, source_digests
+
+
+def create_source_review_snapshot(root: Path) -> dict[str, Any]:
+    if any((root / name).exists() for name in (SOURCE_REVIEW_MANIFEST, SOURCE_REVIEW_DESCRIPTOR)):
+        raise IntegrationError("source-review snapshot records already exist")
+    if (root / "source-review-receipts").exists():
+        raise IntegrationError("source-review candidate already contains receipts")
+    validate_source_review_payload(root)
+    contracts = validate_source_review_contracts(root)
+    payload = source_review_manifest_bytes(root)
+    write_exclusive(root / SOURCE_REVIEW_MANIFEST, payload)
+    descriptor = {
+        "schema_version": 1,
+        "status": "REVIEW-CANDIDATE",
+        "review_kind": "V5-REVIEWED-SOURCE-INPUTS",
+        "payload_manifest_path": SOURCE_REVIEW_MANIFEST,
+        "payload_manifest_algorithm": MANIFEST_ALGORITHM,
+        "payload_manifest_sha256": sha256(payload),
+        "payload_entry_count": count_tree_entries(root, source_review_excluded),
+        "path_domain": PATH_DOMAIN,
+        "required_reviews": [
+            {
+                "file": name,
+                "review_kind": kind,
+                "contract_path": f"{SOURCE_REVIEW_CONTRACT_ROOT}/{name}",
+                "contract_sha256": sha256(
+                    pretty_json_bytes(contracts[name])
+                ),
+            }
+            for name, kind in SOURCE_REVIEW_KINDS
+        ],
+        "finalization_additions": ["source-review-receipts/**"],
+    }
+    validate_schema_file(
+        descriptor,
+        RUN / "schemas" / "source-review-snapshot.schema.json",
+        SOURCE_REVIEW_DESCRIPTOR,
+    )
+    write_json(root / SOURCE_REVIEW_DESCRIPTOR, descriptor)
+    normalize_read_only_review_tree(root)
+    fsync_tree(root)
+    return descriptor
+
+
+def verify_source_review_snapshot(
+    root: Path,
+    *,
+    require_receipts: bool,
+    require_read_only: bool = True,
+    synthetic_capability: object | None = None,
+) -> dict[str, Any]:
+    if root.is_symlink() or not root.is_dir():
+        raise IntegrationError("source-review snapshot must be a real directory")
+    descriptor = read_json(root / SOURCE_REVIEW_DESCRIPTOR)
+    validate_schema_file(
+        descriptor,
+        RUN / "schemas" / "source-review-snapshot.schema.json",
+        SOURCE_REVIEW_DESCRIPTOR,
+    )
+    expected_descriptor = {
+        "schema_version": 1,
+        "status": "REVIEW-CANDIDATE",
+        "review_kind": "V5-REVIEWED-SOURCE-INPUTS",
+        "payload_manifest_path": SOURCE_REVIEW_MANIFEST,
+        "payload_manifest_algorithm": MANIFEST_ALGORITHM,
+        "payload_manifest_sha256": sha256(
+            (root / SOURCE_REVIEW_MANIFEST).read_bytes()
+        ),
+        "payload_entry_count": count_tree_entries(root, source_review_excluded),
+        "path_domain": PATH_DOMAIN,
+        "required_reviews": [
+            {
+                "file": name,
+                "review_kind": kind,
+                "contract_path": f"{SOURCE_REVIEW_CONTRACT_ROOT}/{name}",
+                "contract_sha256": sha256(
+                    (root / SOURCE_REVIEW_CONTRACT_ROOT / name).read_bytes()
+                ),
+            }
+            for name, kind in SOURCE_REVIEW_KINDS
+        ],
+        "finalization_additions": ["source-review-receipts/**"],
+    }
+    if descriptor != expected_descriptor:
+        raise IntegrationError("source-review descriptor is not exact")
+    if (root / SOURCE_REVIEW_MANIFEST).read_bytes() != source_review_manifest_bytes(root):
+        raise IntegrationError("source-review manifest does not bind the exact payload")
+    validate_source_review_payload(root)
+    receipt_root = root / "source-review-receipts"
+    if require_receipts:
+        validate_source_review_receipts(
+            receipt_root,
+            snapshot_root=root,
+            descriptor_sha256=sha256((root / SOURCE_REVIEW_DESCRIPTOR).read_bytes()),
+            manifest_sha256=sha256((root / SOURCE_REVIEW_MANIFEST).read_bytes()),
+            payload_sha256=descriptor["payload_manifest_sha256"],
+            synthetic_capability=synthetic_capability,
+        )
+    elif receipt_root.exists():
+        raise IntegrationError("unfinalized source-review candidate contains receipts")
+    if require_read_only:
+        verify_read_only_review_tree(root)
+    return descriptor
+
+
+def prepare_source_review(
+    *, source_root: Path, inputs: Path, output: Path
+) -> None:
+    source_root = source_root.resolve()
+    inputs = inputs.resolve()
+    output = output.resolve()
+    if source_root != trusted_unsafe_rust_root():
+        raise IntegrationError("production source review requires the exact trusted source root")
+    if any(paths_overlap(first, second) for first, second in ((inputs, source_root), (output, source_root), (output, inputs))):
+        raise IntegrationError("source-review paths must be mutually disjoint")
+    if output.exists():
+        raise IntegrationError("source-review output already exists")
+    reject_unsupported_tree(inputs, "source-review input root")
+    declaration_bytes = trusted_production_declaration_bytes()
+    candidate_values = validate_reviewed_values(
+        read_json(inputs / "reviewed-values.json"),
+        declaration_bytes,
+        expected_status="SOURCE-REVIEW-CANDIDATE",
+    )
+    seeds_bytes = (inputs / "seeds.json").read_bytes()
+    prepare.validate_seeds(parse_json_bytes(seeds_bytes, "source-review seeds"))
+    authority_path_text = relative(
+        candidate_values["authority_packet_path"], "authority packet path"
+    )
+    if authority_path_text != "docs/rust-documentation.json":
+        raise IntegrationError("source-review authority packet path must use the fixed alias")
+    expected_inputs = {"reviewed-values.json", "seeds.json"}
+    observed_inputs = {
+        path.relative_to(inputs).as_posix()
+        for path in inputs.rglob("*")
+        if path.is_file()
+    }
+    if observed_inputs != expected_inputs:
+        raise IntegrationError("source-review input file inventory is not exact")
+    declaration = validate_source_declaration(
+        parse_json_bytes(declaration_bytes, "trusted source declaration"),
+        production=True,
+    )
+    static_files = derive_reviewed_static_files(
+        target_source_digests=trusted_target_source_digests(declaration)
+    )
+    authority_bytes = static_files["freeze/authority/agent-visible/common.json"]
+    candidate_snapshot_values = {
+        **candidate_values,
+        "status": SOURCE_REVIEW_CANDIDATE_STATUS,
+        "reviewed_static_base": REVIEWED_STATIC_CANDIDATE_BASE,
+        "reviewed_static": reviewed_static_records(
+            static_files, decision="PENDING"
+        ),
+    }
+    output.parent.mkdir(parents=True, exist_ok=True)
+    fsync_directory(output.parent)
+    stage = Path(tempfile.mkdtemp(prefix=".v5-source-review-stage-", dir=output.parent))
+    try:
+        write_exclusive(
+            stage / "reviewed-values.json",
+            pretty_json_bytes(candidate_snapshot_values),
+        )
+        write_exclusive(stage / "seeds.json", seeds_bytes)
+        write_exclusive(stage / authority_path_text, authority_bytes)
+        for path_text, data in static_files.items():
+            write_exclusive(stage / "reviewed-static" / path_text, data)
+        materialize_source_review_support(stage, declaration)
+        build_source_review_contracts(stage)
+        create_source_review_snapshot(stage)
+        verify_source_review_snapshot(stage, require_receipts=False)
+        publish_no_replace(stage, output)
+    except Exception:
+        if stage.exists():
+            make_tree_writable(stage)
+            shutil.rmtree(stage, ignore_errors=True)
+        raise
+
+
+def prepare_source_review_copy(snapshot: Path, private_copy: Path) -> dict[str, Any]:
+    snapshot = snapshot.resolve()
+    private_copy = private_copy.resolve()
+    if paths_overlap(snapshot, private_copy) or private_copy.exists():
+        raise IntegrationError("source-review private copy must be fresh and disjoint")
+    before = verify_source_review_snapshot(snapshot, require_receipts=False)
+    private_copy.parent.mkdir(parents=True, exist_ok=True)
+    fsync_directory(private_copy.parent)
+    stage = Path(tempfile.mkdtemp(prefix=".v5-source-review-copy-", dir=private_copy.parent))
+    try:
+        stage.rmdir()
+        copy_tree(snapshot, stage)
+        if verify_source_review_snapshot(stage, require_receipts=False) != before:
+            raise IntegrationError("source-review private copy changed during copy")
+        if verify_source_review_snapshot(snapshot, require_receipts=False) != before:
+            raise IntegrationError("source-review snapshot changed while copied")
+        publish_no_replace(stage, private_copy)
+    except Exception:
+        if stage.exists():
+            make_tree_writable(stage)
+            shutil.rmtree(stage, ignore_errors=True)
+        raise
+    return before
+
+
+def verify_source_review_custody(snapshot: Path, private_copy: Path) -> dict[str, Any]:
+    snapshot, private_copy = require_disjoint_review_subjects(
+        snapshot, private_copy, "source review"
+    )
+    source = verify_source_review_snapshot(snapshot, require_receipts=False)
+    private = verify_source_review_snapshot(private_copy, require_receipts=False)
+    if source != private or (snapshot / SOURCE_REVIEW_MANIFEST).read_bytes() != (private_copy / SOURCE_REVIEW_MANIFEST).read_bytes():
+        raise IntegrationError("source-review source and private copy no longer agree")
+    return private
+
+
+def verify_source_review_quotations(
+    private_copy: Path,
+    *,
+    online_validator: Callable[..., str] | None = None,
+) -> str:
+    """Run the network quotation check over an authenticated candidate copy.
+
+    ``online_validator`` is an internal self-test seam; the public CLI never
+    accepts or imports reviewer-supplied executable code.
+    """
+
+    private_copy = private_copy.resolve()
+    verify_source_review_snapshot(private_copy, require_receipts=False)
+    if online_validator is None:
+        validator = runpy.run_path(
+            str(RUN / "freeze" / "validate_oracle_materials.py"),
+            run_name="v5_online_exact_quotation_review",
+        )
+        online_validator = validator["verify_exact_quotations_online"]
+    result = online_validator(
+        private_copy / "reviewed-static" / "freeze",
+        expected_status=SOURCE_REVIEW_CANDIDATE_STATUS,
+        supplied_source_root=(
+            private_copy / SOURCE_REVIEW_THEOREM_ROOT / "unsafe-rust"
+        ),
+    )
+    if result != EXACT_QUOTATION_EVIDENCE_SHA256:
+        raise IntegrationError("online exact-quotation evidence digest drifted")
+    return result
+
+
+def build_source_review_receipt(
+    *,
+    snapshot: Path,
+    private_copy: Path,
+    review_name: str,
+    actor_id: str,
+    work_product_path: Path,
+    result_path: Path,
+    output: Path,
+) -> dict[str, Any]:
+    """Bind reviewer-authored findings into one exact production receipt."""
+
+    review_kind_by_name = dict(SOURCE_REVIEW_KINDS)
+    if review_name not in review_kind_by_name:
+        raise IntegrationError("source-review receipt name is not recognized")
+    if output.name != review_name:
+        raise IntegrationError("source-review receipt filename must equal its review name")
+    identity = require_actor_id(actor_id, "source reviewer actor")
+    snapshot = snapshot.resolve()
+    private_copy = private_copy.resolve()
+    destination = Path(os.path.abspath(output)).parent.resolve() / output.name
+    if paths_overlap(destination, snapshot) or paths_overlap(destination, private_copy):
+        raise IntegrationError("source-review receipt must be outside both review copies")
+    before = verify_source_review_custody(snapshot, private_copy)
+    contracts = validate_source_review_contracts(private_copy)
+    contract = contracts[review_name]
+    review_kind = review_kind_by_name[review_name]
+    reviewer_runtime = current_reviewer_runtime_attestation()
+    work_product, work_product_sha256 = validate_review_work_product(
+        read_json(work_product_path),
+        expected_coverage_items=contract["coverage_items"],
+    )
+    descriptor_sha256 = sha256(
+        (private_copy / SOURCE_REVIEW_DESCRIPTOR).read_bytes()
+    )
+    manifest_sha256 = sha256(
+        (private_copy / SOURCE_REVIEW_MANIFEST).read_bytes()
+    )
+    payload_sha256 = before["payload_manifest_sha256"]
+    contract_path = f"{SOURCE_REVIEW_CONTRACT_ROOT}/{review_name}"
+    expected_inputs = {
+        SOURCE_REVIEW_DESCRIPTOR: descriptor_sha256,
+        SOURCE_REVIEW_MANIFEST: manifest_sha256,
+        contract_path: sha256((private_copy / contract_path).read_bytes()),
+        contract["procedure_path"]: contract["procedure_sha256"],
+        contract["receipt_schema_path"]: contract["receipt_schema_sha256"],
+        "trusted-reviewer-tool-set": contract["reviewer_tool_set_sha256"],
+        "reviewer-runtime-attestation": sha256(
+            canonical_json_bytes(reviewer_runtime)
+        ),
+    }
+    result = validate_source_review_result(
+        read_json(result_path),
+        label=review_name,
+        review_kind=review_kind,
+        contract=contract,
+        descriptor_sha256=descriptor_sha256,
+        manifest_sha256=manifest_sha256,
+        payload_sha256=payload_sha256,
+        expected_inputs=expected_inputs,
+    )
+    receipt = {
+        "schema_version": 1,
+        "status": "PASS",
+        "review_kind": review_kind,
+        "actor": {
+            "identity": identity,
+            "role": "INDEPENDENT_REVIEWER",
+            "implementation": contract["procedure_id"],
+            "version": contract["procedure_version"],
+        },
+        "reviewer_runtime": reviewer_runtime,
+        "input_digests": expected_inputs,
+        "output_digests": {
+            "reviewed-payload-manifest": payload_sha256,
+            "reviewed-artifact-set": contract["artifact_set_sha256"],
+            "review-work-product": work_product_sha256,
+        },
+        "work_product": work_product,
+        "result": result,
+    }
+    validate_schema_file(
+        receipt,
+        RUN / "schemas" / "source-review-receipt.schema.json",
+        f"source review receipt {review_name}",
+    )
+    if verify_source_review_custody(snapshot, private_copy) != before:
+        raise IntegrationError("source-review subject changed while receipt was built")
+    publish_read_only_canonical_json(
+        destination, receipt, label="source-review receipt output"
+    )
+    return receipt
+
+
+def validate_production_source_review_receipts(
+    *, snapshot: Path, receipts: Path
+) -> dict[str, dict[str, Any]]:
+    snapshot = snapshot.resolve()
+    descriptor = verify_source_review_snapshot(
+        snapshot, require_receipts=False
+    )
+    return validate_source_review_receipts(
+        receipts.resolve(),
+        snapshot_root=snapshot,
+        descriptor_sha256=sha256((snapshot / SOURCE_REVIEW_DESCRIPTOR).read_bytes()),
+        manifest_sha256=sha256((snapshot / SOURCE_REVIEW_MANIFEST).read_bytes()),
+        payload_sha256=descriptor["payload_manifest_sha256"],
+    )
+
+
+def _finalize_reviewed_inputs(
+    *,
+    snapshot: Path,
+    receipts: Path,
+    output: Path,
+    synthetic_capability: object | None,
+) -> None:
+    if synthetic_capability not in {None, _SYNTHETIC_CAPABILITY}:
+        raise IntegrationError("unrecognized synthetic source-review capability")
+    snapshot = snapshot.resolve()
+    receipts = receipts.resolve()
+    output = output.resolve()
+    if any(paths_overlap(first, second) for first, second in ((snapshot, receipts), (snapshot, output), (receipts, output))):
+        raise IntegrationError("source-review snapshot, receipts, and output must be disjoint")
+    if output.exists():
+        raise IntegrationError("reviewed-input output already exists")
+    descriptor = verify_source_review_snapshot(snapshot, require_receipts=False)
+    validated, captured_receipts = _validate_source_review_receipts_captured(
+        receipts,
+        snapshot_root=snapshot,
+        descriptor_sha256=sha256((snapshot / SOURCE_REVIEW_DESCRIPTOR).read_bytes()),
+        manifest_sha256=sha256((snapshot / SOURCE_REVIEW_MANIFEST).read_bytes()),
+        payload_sha256=descriptor["payload_manifest_sha256"],
+        synthetic_capability=synthetic_capability,
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    fsync_directory(output.parent)
+    stage = Path(tempfile.mkdtemp(prefix=".v5-reviewed-inputs-stage-", dir=output.parent))
+    try:
+        stage.rmdir()
+        copy_tree(snapshot, stage)
+        make_tree_writable(stage)
+        for name, review in validated.items():
+            receipt_bytes = captured_receipts[name]
+            if parse_json_bytes(receipt_bytes, f"captured source review receipt {name}") != review:
+                raise IntegrationError("captured source-review receipt bytes drifted")
+            write_exclusive(
+                stage / "source-review-receipts" / name,
+                receipt_bytes,
+            )
+        normalize_read_only_review_tree(stage)
+        fsync_tree(stage)
+        verify_source_review_snapshot(
+            stage,
+            require_receipts=True,
+            synthetic_capability=synthetic_capability,
+        )
+        publish_no_replace(stage, output)
+    except Exception:
+        if stage.exists():
+            make_tree_writable(stage)
+            shutil.rmtree(stage, ignore_errors=True)
+        raise
+
+
+def finalize_reviewed_inputs(
+    *, snapshot: Path, receipts: Path, output: Path
+) -> None:
+    _finalize_reviewed_inputs(
+        snapshot=snapshot,
+        receipts=receipts,
+        output=output,
+        synthetic_capability=None,
+    )
+
+
 def prepare_private_review_copy(snapshot: Path, private_copy: Path) -> dict[str, Any]:
     """Make and verify the reviewer's private custody copy of a PRODUCTION snapshot."""
 
@@ -3632,19 +6251,143 @@ def prepare_private_review_copy(snapshot: Path, private_copy: Path) -> dict[str,
 def verify_private_review_custody(snapshot: Path, private_copy: Path) -> dict[str, Any]:
     """Perform the required paired end-of-review snapshot verification."""
 
+    snapshot, private_copy = require_disjoint_review_subjects(
+        snapshot, private_copy, "snapshot review"
+    )
     source_descriptor = verify_review_snapshot(
-        snapshot.resolve(), expected_candidate_kind="PRODUCTION"
+        snapshot, expected_candidate_kind="PRODUCTION"
     )
     private_descriptor = verify_review_snapshot(
-        private_copy.resolve(), expected_candidate_kind="PRODUCTION"
+        private_copy, expected_candidate_kind="PRODUCTION"
     )
     if source_descriptor != private_descriptor:
         raise IntegrationError("source snapshot and private review copy no longer agree")
-    if snapshot_manifest_bytes(snapshot.resolve()) != snapshot_manifest_bytes(
-        private_copy.resolve()
+    if snapshot_manifest_bytes(snapshot) != snapshot_manifest_bytes(
+        private_copy
     ):
         raise IntegrationError("source snapshot and private review copy payloads differ")
     return private_descriptor
+
+
+def build_snapshot_review_receipt(
+    *,
+    snapshot: Path,
+    private_copy: Path,
+    hook_id: str,
+    actor_id: str,
+    work_product_path: Path,
+    result_path: Path,
+    output: Path,
+) -> dict[str, Any]:
+    """Bind reviewer-authored findings into one exact snapshot receipt."""
+
+    if hook_id not in EXTERNAL_REVIEW_HOOKS:
+        raise IntegrationError("snapshot-review hook is not recognized")
+    if output.name != f"{hook_id}.json":
+        raise IntegrationError("snapshot-review receipt filename must equal its hook ID")
+    identity = require_actor_id(actor_id, "snapshot reviewer actor")
+    snapshot = snapshot.resolve()
+    private_copy = private_copy.resolve()
+    destination = Path(os.path.abspath(output)).parent.resolve() / output.name
+    if paths_overlap(destination, snapshot) or paths_overlap(destination, private_copy):
+        raise IntegrationError("snapshot-review receipt must be outside both review copies")
+    before = verify_private_review_custody(snapshot, private_copy)
+    contract = validate_snapshot_review_contracts(private_copy)[hook_id]
+    reviewer_runtime = current_reviewer_runtime_attestation()
+    work_product, work_product_sha256 = validate_review_work_product(
+        read_json(work_product_path),
+        expected_coverage_items=contract["coverage_items"],
+    )
+    receipt = {
+        "schema_version": 2,
+        "status": "PASS",
+        "phase": "SNAPSHOT_REVIEW",
+        "hook_id": hook_id,
+        "receipt_kind": "INDEPENDENT_SNAPSHOT_REVIEW",
+        "actor": {
+            "identity": identity,
+            "role": "INDEPENDENT_REVIEWER",
+            "implementation": contract["procedure_id"],
+            "version": contract["procedure_version"],
+        },
+        "reviewer_runtime": reviewer_runtime,
+        "input_digests": snapshot_receipt_inputs(
+            private_copy, hook_id, reviewer_runtime=reviewer_runtime
+        ),
+        "output_digests": {
+            "reviewed-payload-manifest": before["payload_manifest_sha256"],
+            "reviewed-artifact-set": contract["artifact_set_sha256"],
+            "review-work-product": work_product_sha256,
+        },
+        "work_product": work_product,
+        "result": read_json(result_path),
+    }
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(
+        prefix=".v5-snapshot-receipt-validation-", dir=destination.parent
+    ) as directory:
+        validation_path = Path(directory) / output.name
+        validation_path.write_bytes(canonical_json_bytes(receipt))
+        os.chmod(validation_path, 0o444)
+        validated = validate_snapshot_review_receipt(
+            validation_path,
+            hook_id,
+            private_copy,
+            before,
+        )
+    if verify_private_review_custody(snapshot, private_copy) != before:
+        raise IntegrationError("snapshot-review subject changed while receipt was built")
+    publish_read_only_canonical_json(
+        destination, validated, label="snapshot-review receipt output"
+    )
+    return validated
+
+
+def validate_production_snapshot_review_receipts(
+    *, snapshot: Path, receipts: Path
+) -> dict[str, dict[str, Any]]:
+    snapshot = snapshot.resolve()
+    receipts = receipts.resolve()
+    descriptor = verify_review_snapshot(
+        snapshot, expected_candidate_kind="PRODUCTION"
+    )
+    if receipts.is_symlink() or not receipts.is_dir():
+        raise IntegrationError("snapshot-review receipt root must be a real directory")
+    reject_unsupported_tree(receipts, "snapshot-review receipt root")
+    expected_names = {f"{hook_id}.json" for hook_id in EXTERNAL_REVIEW_HOOKS}
+    entries = list(receipts.iterdir())
+    observed_names = {
+        path.name for path in entries if stat.S_ISREG(path.lstat().st_mode)
+    }
+    if observed_names != expected_names or len(entries) != len(expected_names):
+        raise IntegrationError("snapshot-review receipt inventory is not exact")
+    validated = {
+        hook_id: validate_snapshot_review_receipt(
+            receipts / f"{hook_id}.json",
+            hook_id,
+            snapshot,
+            descriptor,
+        )
+        for hook_id in sorted(EXTERNAL_REVIEW_HOOKS)
+    }
+    snapshot_actor_ids = {
+        receipt["actor"]["identity"] for receipt in validated.values()
+    }
+    if len(snapshot_actor_ids) != len(EXTERNAL_REVIEW_HOOKS):
+        raise IntegrationError("snapshot reviewer identities must be pairwise distinct")
+    source_receipt_root = (
+        snapshot
+        / "static/integration/reviewed-inputs/source-review-receipts"
+    )
+    source_actor_ids = {
+        read_json(source_receipt_root / name)["actor"]["identity"]
+        for name, _review_kind in SOURCE_REVIEW_KINDS
+    }
+    if len(source_actor_ids) != len(SOURCE_REVIEW_KINDS):
+        raise IntegrationError("source reviewer identities are not pairwise distinct")
+    if source_actor_ids.intersection(snapshot_actor_ids):
+        raise IntegrationError("source and snapshot reviewer identities must be disjoint")
+    return validated
 
 
 def _prepare_snapshot(
@@ -3694,24 +6437,66 @@ def _prepare_snapshot(
     reject_unsupported_tree(source_root, "unsafe-rust source root")
     reject_unsupported_tree(inputs, "reviewed integration input root")
     declaration_bytes = declaration_path.read_bytes()
+    trusted_production_inputs = (
+        declaration_bytes == trusted_production_declaration_bytes()
+        and source_root == trusted_unsafe_rust_root()
+    )
     production_declaration = bundle_kind == "PRODUCTION"
-    if production_declaration and declaration_bytes != trusted_production_declaration_bytes():
+    reviewed_production_inputs = production_declaration or (
+        bundle_kind == "SYNTHETIC-TEST-ONLY"
+        and synthetic_capability is _SYNTHETIC_CAPABILITY
+        and trusted_production_inputs
+    )
+    if production_declaration and not trusted_production_inputs:
         raise IntegrationError(
-            "PRODUCTION preparation source declaration changed from trusted bytes"
+            "PRODUCTION preparation inputs changed from trusted source/declaration"
         )
     declaration = validate_source_declaration(
         parse_json_bytes(declaration_bytes, str(declaration_path)),
-        production=production_declaration,
+        production=reviewed_production_inputs,
     )
-    if production_declaration and source_root != trusted_unsafe_rust_root():
-        raise IntegrationError(
-            "production source declaration requires the exact unsafe-rust source root"
+    if reviewed_production_inputs:
+        verify_source_review_snapshot(
+            inputs,
+            require_receipts=True,
+            synthetic_capability=(
+                _SYNTHETIC_CAPABILITY
+                if bundle_kind == "SYNTHETIC-TEST-ONLY"
+                else None
+            ),
         )
     reviewed_path = inputs / "reviewed-values.json"
-    reviewed_bytes = reviewed_path.read_bytes()
-    reviewed = validate_reviewed_values(
-        parse_json_bytes(reviewed_bytes, str(reviewed_path)), declaration_bytes
-    )
+    source_reviewed_bytes = reviewed_path.read_bytes()
+    source_reviewed_value = parse_json_bytes(source_reviewed_bytes, str(reviewed_path))
+    if reviewed_production_inputs:
+        source_reviewed = validate_reviewed_values(
+            source_reviewed_value,
+            declaration_bytes,
+            expected_status=SOURCE_REVIEW_CANDIDATE_STATUS,
+            require_empty_candidate_static=False,
+        )
+        reviewed_source_files = {
+            record["path"]: (
+                inputs / "reviewed-static" / record["path"]
+            ).read_bytes()
+            for record in source_reviewed["reviewed_static"]
+        }
+        reviewed = {
+            **source_reviewed,
+            "status": "READY",
+            "reviewed_static_base": REVIEWED_STATIC_BUNDLE_BASE,
+            "reviewed_static": reviewed_static_records(
+                reviewed_source_files, decision="PASS"
+            ),
+        }
+        reviewed_bytes = pretty_json_bytes(reviewed)
+    else:
+        reviewed = validate_reviewed_values(source_reviewed_value, declaration_bytes)
+        reviewed = {
+            **reviewed,
+            "reviewed_static_base": REVIEWED_STATIC_BUNDLE_BASE,
+        }
+        reviewed_bytes = pretty_json_bytes(reviewed)
     seeds_path = inputs / "seeds.json"
     seeds_bytes = seeds_path.read_bytes()
     seeds = prepare.validate_seeds(parse_json_bytes(seeds_bytes, str(seeds_path)))
@@ -3726,6 +6511,20 @@ def _prepare_snapshot(
         if sha256(source_copy_manifest_bytes(stage)) != source_copy_digest:
             raise IntegrationError("DRAFT harness source changed while it was copied")
         promote_operational_metadata(stage)
+        preserved_reviewed_inputs = (
+            stage / "static" / "integration" / "reviewed-inputs"
+        )
+        if reviewed_production_inputs:
+            copy_tree(inputs, preserved_reviewed_inputs)
+            verify_source_review_snapshot(
+                preserved_reviewed_inputs,
+                require_receipts=True,
+                synthetic_capability=(
+                    _SYNTHETIC_CAPABILITY
+                    if bundle_kind == "SYNTHETIC-TEST-ONLY"
+                    else None
+                ),
+            )
         overlay = inputs / "reviewed-static"
         reject_unsupported_tree(overlay, "reviewed static overlay")
         overlay_files = {
@@ -3755,9 +6554,15 @@ def _prepare_snapshot(
                 f"extra={sorted(overlay_directories - expected_overlay_directories)}"
             )
         overlay_tree(overlay, stage)
+        preserved_reviewed_source = (
+            stage / "static" / "integration" / "reviewed-static-input"
+        )
+        copy_tree(overlay, preserved_reviewed_source)
+        if reviewed_production_inputs:
+            install_ready_reviewed_source_files(stage, preserved_reviewed_source)
         validate_hook_inventory(stage, expected_status="READY")
         validate_runtime_policy(stage, expected_status="READY")
-        validate_reviewed_static(stage, reviewed["reviewed_static"])
+        validate_reviewed_static(overlay, reviewed["reviewed_static"])
 
         reviewed_destination = stage / "static" / "integration" / "integration-values.json"
         write_exclusive(reviewed_destination, reviewed_bytes)
@@ -3795,7 +6600,7 @@ def _prepare_snapshot(
             stage / "static" / "generated" / "generation-binding.json", generation_binding
         )
         execution_digests, spec_digests = build_execution_and_envelope_specs(stage, reviewed)
-        build_prompts_and_launches(
+        report_material = build_prompts_and_launches(
             stage,
             documents,
             packages,
@@ -3805,12 +6610,37 @@ def _prepare_snapshot(
             execution_digests,
             spec_digests,
         )
+        source_digests = {
+            mode: targets[mode]["byte_tree_sha256"] for mode in prepare.MODES
+        }
+        material_digests = mode_report_material_digests(
+            report_material, documents
+        )
+        install_ready_fixture_manifests(
+            stage,
+            preserved_reviewed_source,
+            source_digests=source_digests,
+            material_digests=material_digests,
+        )
+        if production_declaration:
+            validate_reviewed_semantic_closure(
+                stage,
+                expected_fixture_phase="READY",
+                expected_source_digests=source_digests,
+                expected_report_material_digests=material_digests,
+                evidence_source_root=(
+                    preserved_reviewed_inputs
+                    / SOURCE_REVIEW_THEOREM_ROOT
+                    / "unsafe-rust"
+                ),
+            )
         build_evaluator_material(stage, documents, execution_digests, spec_digests)
         write_json(
             stage / "static" / "integration" / "word-counter-binding.json",
             validate_word_counter(stage / "word_count.py"),
         )
         (stage / RUNTIME_STATE).mkdir(parents=True)
+        install_snapshot_review_procedure(stage)
         build_snapshot_review_contracts(stage)
         create_review_snapshot(stage, bundle_kind=bundle_kind)
         verify_review_snapshot(stage, expected_candidate_kind=bundle_kind)
@@ -3886,14 +6716,20 @@ def _finalize_snapshot(
     try:
         stage.rmdir()
         copy_tree(snapshot, stage)
-        make_tree_writable(stage)
         staged_descriptor = verify_review_snapshot(
             stage, expected_candidate_kind=bundle_kind
         )
         if staged_descriptor != descriptor:
             raise IntegrationError("snapshot descriptor changed while copying for finalization")
+        # The copied subject remains immutable through custody verification.
+        # Only the verified private stage is then opened for finalization.
+        make_tree_writable(stage)
         receipt_map = copy_snapshot_review_receipts(
-            stage, stage, receipts, staged_descriptor
+            stage,
+            stage,
+            receipts,
+            staged_descriptor,
+            synthetic_capability=synthetic_capability,
         )
         creation_path = (
             "PRODUCTION_REVIEWED_SNAPSHOT_FINALIZATION"
@@ -3924,15 +6760,33 @@ def _finalize_snapshot(
             expected_bundle_kind=bundle_kind,
             capability=_FINALIZATION_PRECOMMIT_CAPABILITY,
         )
+        commitment = _derive_external_static_commitment(stage)
+        # The committed identity belongs to the verified private stage, not to
+        # whatever entry happens to be visible at the destination afterward.
+        _verify_static_precommit(
+            stage,
+            expected_bundle_kind=bundle_kind,
+            capability=_FINALIZATION_PRECOMMIT_CAPABILITY,
+        )
+        if _derive_external_static_commitment(stage) != commitment:
+            raise IntegrationError("final stage changed while deriving its commitment")
         publish_no_replace(stage, output)
         _verify_static_precommit(
             output,
             expected_bundle_kind=bundle_kind,
             capability=_FINALIZATION_PRECOMMIT_CAPABILITY,
         )
-        commitment = _derive_external_static_commitment(output)
+        if _derive_external_static_commitment(output) != commitment:
+            raise IntegrationError(
+                "published bundle is not the exact prepublication committed stage"
+            )
         if external_commitment_output is not None:
             _publish_external_commitment_file(external_commitment_output, commitment)
+        verify_static(
+            output,
+            expected_bundle_kind=bundle_kind,
+            expected_external_commitment=commitment,
+        )
         return commitment
     except Exception:
         if stage.exists():
@@ -3964,12 +6818,22 @@ def synthetic_execution_config() -> dict[str, Any]:
             "model": "synthetic-model",
             "reasoning_effort": "synthetic",
             "sampling": "UNAVAILABLE_IN_SYNTHETIC_TEST",
-            "token_budget": 1000,
-            "time_budget_seconds": 60,
-            "tools": ["read"],
-            "network_access": "DENIED",
-            "documentation_access": "MOUNTED_ONLY",
-            "hosted_build": "UNKNOWN_HOSTED_BUILD",
+            "token_budget": None,
+            "token_budget_enforcement": "UNAVAILABLE_NOT_ENFORCED",
+            "time_budget_seconds": None,
+            "time_budget_enforcement": "UNAVAILABLE_NOT_ENFORCED",
+            "requested_tools": ["read"],
+            "tool_capability_observation": "SESSION_INHERITED_MAY_EXCEED_REQUEST",
+            "tool_policy_enforcement": "PROMPT_ONLY_NOT_TECHNICALLY_ENFORCED",
+            "requested_network_access": "DENIED",
+            "network_capability_observation": "SESSION_INHERITED_MAY_EXCEED_REQUEST",
+            "network_policy_enforcement": "PROMPT_ONLY_NOT_TECHNICALLY_ENFORCED",
+            "requested_documentation_access": "MOUNTED_ONLY",
+            "documentation_capability_observation": "SESSION_INHERITED_MAY_EXCEED_REQUEST",
+            "documentation_policy_enforcement": "PROMPT_ONLY_NOT_TECHNICALLY_ENFORCED",
+            "requested_hosted_build": "DISABLED",
+            "hosted_build_capability_observation": "SESSION_INHERITED_MAY_EXCEED_REQUEST",
+            "hosted_build_policy_enforcement": "PROMPT_ONLY_NOT_TECHNICALLY_ENFORCED",
         }
         for role in ROLE_NAMES
     }
@@ -4025,52 +6889,184 @@ def synthetic_source_declaration(source_root: Path) -> dict[str, Any]:
     }
 
 
-def build_synthetic_reviewed_overlay(inputs: Path) -> list[dict[str, Any]]:
+def build_synthetic_reviewed_overlay(
+    inputs: Path, source_root: Path, declaration: dict[str, Any]
+) -> list[dict[str, Any]]:
     overlay = inputs / "reviewed-static"
-    review_kinds = {
-        "freeze/reviews/oracle-review-1.json": ("INDEPENDENT_ORACLE", "synthetic-oracle-1"),
-        "freeze/reviews/oracle-review-2.json": ("INDEPENDENT_ORACLE", "synthetic-oracle-2"),
-        "freeze/reviews/coherence-review.json": ("COHERENCE", "synthetic-coherence"),
+    target_source_digests = {
+        record["mode"]: prepare.byte_tree_v1(source_root / record["source_path"])
+        for record in declaration["targets"]
     }
-    for path_text in sorted(required_review_paths()):
+    files = derive_reviewed_static_files(
+        target_source_digests=target_source_digests
+    )
+    for path_text, data in files.items():
         destination = overlay / path_text
         destination.parent.mkdir(parents=True, exist_ok=True)
-        if path_text in review_kinds:
-            review_kind, reviewer_id = review_kinds[path_text]
-            destination.write_bytes(
-                pretty_json_bytes(
-                    {
-                        "schema_version": 1,
-                        "status": "READY",
-                        "review_kind": review_kind,
-                        "reviewer_id": reviewer_id,
-                        "decision": "PASS",
-                        "input_digests": {"synthetic-reviewed-scope": sha256(path_text.encode())},
-                    }
-                )
-            )
-            continue
-        source = RUN / path_text
-        if source.suffix == ".json":
-            value = read_json(source)
-            if (
-                not isinstance(value, dict)
-                or not isinstance(value.get("status"), str)
-                or not value["status"].startswith("DRAFT")
-            ):
-                raise AssertionError(f"synthetic overlay source is not DRAFT JSON: {path_text}")
-            destination.write_bytes(pretty_json_bytes({**value, "status": "READY"}))
-        else:
-            destination.write_bytes(source.read_bytes())
-    return [
-        {
-            "path": path.relative_to(overlay).as_posix(),
-            "sha256": sha256(path.read_bytes()),
-            "decision": "PASS",
+        destination.write_bytes(data)
+    records = reviewed_static_records(files)
+    validate_reviewed_static(overlay, records)
+    return records
+
+
+def write_synthetic_source_review_receipts(
+    snapshot: Path, receipts: Path
+) -> None:
+    """Private self-test fixture; production has no receipt-minting helper."""
+
+    descriptor = verify_source_review_snapshot(snapshot, require_receipts=False)
+    contracts = validate_source_review_contracts(snapshot)
+    descriptor_sha256 = sha256((snapshot / SOURCE_REVIEW_DESCRIPTOR).read_bytes())
+    manifest_sha256 = sha256((snapshot / SOURCE_REVIEW_MANIFEST).read_bytes())
+    receipts.mkdir()
+    for index, (name, review_kind) in enumerate(SOURCE_REVIEW_KINDS, start=1):
+        contract = contracts[name]
+        contract_path = f"{SOURCE_REVIEW_CONTRACT_ROOT}/{name}"
+        contract_sha256 = sha256((snapshot / contract_path).read_bytes())
+        reviewer_runtime = current_reviewer_runtime_attestation()
+        work_product = synthetic_review_work_product(
+            contract["coverage_items"], label=contract["procedure_id"]
+        )
+        work_product_sha256 = review_work_product_sha256(work_product)
+        generic_evidence = {
+            "EXACT-SOURCE-REVIEW-BOUND": (
+                f"Verified descriptor {descriptor_sha256} and exact payload "
+                f"{descriptor['payload_manifest_sha256']}."
+            ),
+            "REVIEW-CONTRACT-BOUND": (
+                f"Used contract {contract_sha256}, procedure "
+                f"{contract['procedure_sha256']}, receipt schema "
+                f"{contract['receipt_schema_sha256']}, under "
+                f"{contract['procedure_version']}; reviewer tools "
+                f"{contract['reviewer_tool_set_algorithm']} "
+                f"{contract['reviewer_tool_set_sha256']}; coverage "
+                f"{contract['coverage_set_algorithm']} "
+                f"{contract['coverage_set_sha256']}; reviewer runtime "
+                f"{reviewer_runtime['algorithm']}."
+            ),
+            "ARTIFACT-INVENTORY-CHECKED": (
+                f"Checked every artifact in exact set {contract['artifact_set_sha256']}."
+            ),
+            "END-OF-REVIEW-REVERIFIED": (
+                f"End reverified manifest {manifest_sha256} and payload "
+                f"{descriptor['payload_manifest_sha256']}."
+            ),
+            "EXACT-QUOTATIONS-AND-PAGE-BYTES-VERIFIED": (
+                "Verified every fetched official page byte hash and normalized excerpt "
+                f"under {EXACT_QUOTATION_EVIDENCE_ALGORITHM}; evidence "
+                f"{EXACT_QUOTATION_EVIDENCE_SHA256}."
+            ),
+            "ORACLE-ENTAILMENT-CHECKED": (
+                "Checked every oracle proposition and atom entailment after exact "
+                f"{SOURCE_REVIEW_TRANSITION_ALGORITHM} transformation against theorem "
+                f"inputs {contract['evidence_bindings']['theorem_input_set_sha256']}."
+            ),
+            "AUTHORITY-PROJECTION-CHECKED": (
+                "Checked the exact canonical authority projection within reviewed set "
+                f"{contract['evidence_bindings']['reviewed_static_set_sha256']}."
+            ),
+            "CONTROL-AND-DEFECT-COVERAGE-CHECKED": (
+                "Checked controls and defect coverage across exact reviewed set "
+                f"{contract['evidence_bindings']['reviewed_static_set_sha256']}."
+            ),
+            "CROSS-FILE-CLOSURE-CHECKED": (
+                "Checked all cross-file references under transformation contract "
+                f"{SOURCE_REVIEW_TRANSITION_ALGORITHM}."
+            ),
+            "TRANSFORMATION-CORRECTNESS-CHECKED": (
+                f"Checked {REVIEWED_STATIC_SET_ALGORITHM} exact transition output "
+                f"{contract['evidence_bindings']['reviewed_static_set_sha256']} against "
+                f"theorem inputs {contract['evidence_bindings']['theorem_input_set_sha256']}."
+            ),
         }
-        for path in sorted(overlay.rglob("*"))
-        if path.is_file()
-    ]
+        receipt = {
+            "schema_version": 1,
+            "status": "SYNTHETIC-TEST-ONLY",
+            "review_kind": review_kind,
+            "actor": {
+                "identity": f"synthetic-source-reviewer-{index}",
+                "role": "INDEPENDENT_REVIEWER",
+                "implementation": contract["procedure_id"],
+                "version": contract["procedure_version"],
+            },
+            "reviewer_runtime": reviewer_runtime,
+            "input_digests": {
+                SOURCE_REVIEW_DESCRIPTOR: descriptor_sha256,
+                SOURCE_REVIEW_MANIFEST: manifest_sha256,
+                contract_path: contract_sha256,
+                contract["procedure_path"]: contract["procedure_sha256"],
+                contract["receipt_schema_path"]: contract[
+                    "receipt_schema_sha256"
+                ],
+                "trusted-reviewer-tool-set": contract[
+                    "reviewer_tool_set_sha256"
+                ],
+                "reviewer-runtime-attestation": sha256(
+                    canonical_json_bytes(reviewer_runtime)
+                ),
+            },
+            "output_digests": {
+                "reviewed-payload-manifest": descriptor["payload_manifest_sha256"],
+                "reviewed-artifact-set": contract["artifact_set_sha256"],
+                "review-work-product": work_product_sha256,
+            },
+            "work_product": work_product,
+            "result": {
+                "summary": "Synthetic self-test statement over the exact source-review contract.",
+                "checks": [
+                    {"id": check_id, "status": "PASS", "evidence": generic_evidence[check_id]}
+                    for check_id in contract["required_check_ids"]
+                ],
+            },
+        }
+        (receipts / name).write_bytes(pretty_json_bytes(receipt))
+    validate_source_review_receipts(
+        receipts,
+        snapshot_root=snapshot,
+        descriptor_sha256=descriptor_sha256,
+        manifest_sha256=manifest_sha256,
+        payload_sha256=descriptor["payload_manifest_sha256"],
+        synthetic_capability=_SYNTHETIC_CAPABILITY,
+    )
+
+
+def coherently_mutate_reviewed_exact_quote(
+    reviewed_static_root: Path, old: str, new: str
+) -> None:
+    """Self-test helper which keeps all projection copies mutually consistent."""
+
+    propositions_path = reviewed_static_root / "freeze/authority/propositions.json"
+    locators_path = reviewed_static_root / "freeze/authority/quotation-locators.json"
+    packet_path = reviewed_static_root / "freeze/authority/agent-visible/common.json"
+    verification_path = reviewed_static_root / "freeze/authority/verification.json"
+    propositions = read_json(propositions_path)
+    locators = read_json(locators_path)
+    packet = read_json(packet_path)
+    replacements = 0
+    for entry in propositions["entries"]:
+        for key in ("quotation", "quotations"):
+            if key not in entry:
+                continue
+            if key == "quotation" and entry[key] == old:
+                entry[key] = new
+                replacements += 1
+            elif key == "quotations":
+                replacements += sum(value == old for value in entry[key])
+                entry[key] = [new if value == old else value for value in entry[key]]
+    for record in locators["records"]:
+        if record["exact_excerpt"] == old:
+            record["exact_excerpt"] = new
+    for record in packet["records"]:
+        if record["exact_excerpt"] == old:
+            record["exact_excerpt"] = new
+    if replacements < 1:
+        raise AssertionError("exact-quotation mutation sentinel found no proposition")
+    propositions_path.write_bytes(pretty_json_bytes(propositions))
+    locators_path.write_bytes(pretty_json_bytes(locators))
+    packet_path.write_bytes(pretty_json_bytes(packet))
+    verification = read_json(verification_path)
+    verification["agent_visible_projection"]["sha256"] = sha256(packet_path.read_bytes())
+    verification_path.write_bytes(pretty_json_bytes(verification))
 
 
 def write_synthetic_snapshot_receipts(
@@ -4086,10 +7082,18 @@ def write_synthetic_snapshot_receipts(
     for index, hook_id in enumerate(sorted(EXTERNAL_REVIEW_HOOKS), start=1):
         contract_path = f"static/integration/review-contracts/{hook_id}.json"
         contract = read_json(snapshot / contract_path)
-        inputs = snapshot_receipt_inputs(snapshot, hook_id)
+        reviewer_runtime = current_reviewer_runtime_attestation()
+        inputs = snapshot_receipt_inputs(
+            snapshot,
+            hook_id,
+            reviewer_runtime=reviewer_runtime,
+        )
+        work_product = synthetic_review_work_product(
+            contract["coverage_items"], label=contract["procedure_id"]
+        )
         receipt = {
             "schema_version": 2,
-            "status": "PASS",
+            "status": "SYNTHETIC-TEST-ONLY",
             "phase": "SNAPSHOT_REVIEW",
             "hook_id": hook_id,
             "receipt_kind": "INDEPENDENT_SNAPSHOT_REVIEW",
@@ -4099,11 +7103,14 @@ def write_synthetic_snapshot_receipts(
                 "implementation": contract["procedure_id"],
                 "version": contract["procedure_version"],
             },
+            "reviewer_runtime": reviewer_runtime,
             "input_digests": inputs,
             "output_digests": {
                 "reviewed-payload-manifest": descriptor["payload_manifest_sha256"],
                 "reviewed-artifact-set": contract["artifact_set_sha256"],
+                "review-work-product": review_work_product_sha256(work_product),
             },
+            "work_product": work_product,
             "result": {
                 "summary": f"Synthetic independent review passed the exact contract for {hook_id}.",
                 "checks": [
@@ -4121,7 +7128,14 @@ def write_synthetic_snapshot_receipts(
                         "status": "PASS",
                         "evidence": (
                             f"Used locked {contract['procedure_version']} contract "
-                            f"{inputs[contract_path]}."
+                            f"{inputs[contract_path]} and exact procedure "
+                            f"{contract['procedure_sha256']} with receipt schema "
+                            f"{contract['receipt_schema_sha256']}; coverage "
+                            f"{contract['coverage_set_algorithm']} "
+                            f"{contract['coverage_set_sha256']}; reviewer tools "
+                            f"{contract['reviewer_tool_set_algorithm']} "
+                            f"{contract['reviewer_tool_set_sha256']}; runtime "
+                            f"{reviewer_runtime['algorithm']}."
                         ),
                     },
                     {
@@ -4137,7 +7151,8 @@ def write_synthetic_snapshot_receipts(
                         "status": "PASS",
                         "evidence": (
                             f"Applied the recognized semantic procedure for {hook_id} "
-                            "to every contracted artifact."
+                            "to every contracted artifact under acceptance set "
+                            f"{contract['acceptance_requirements_sha256']}."
                         ),
                     },
                     {
@@ -4155,7 +7170,11 @@ def write_synthetic_snapshot_receipts(
         receipt_path = receipts / f"{hook_id}.json"
         receipt_path.write_bytes(pretty_json_bytes(receipt))
         validate_snapshot_review_receipt(
-            receipt_path, hook_id, snapshot, descriptor
+            receipt_path,
+            hook_id,
+            snapshot,
+            descriptor,
+            synthetic_capability=_SYNTHETIC_CAPABILITY,
         )
 
 
@@ -4169,6 +7188,99 @@ def expect_integration_failure(operation: Callable[[], Any], message: str) -> No
 
 def self_test() -> None:
     draft()
+    manifest_test_domain = b"ZEROCOPY\0V5\0SELF-TEST-MANIFEST\0V1"
+    manifest_directory = framed_record(
+        domain=manifest_test_domain,
+        kind=b"D",
+        path_bytes=b"a",
+        size=0,
+        content_sha256=b"\0" * 32,
+        mode=0o555,
+    )
+    manifest_file = framed_record(
+        domain=manifest_test_domain,
+        kind=b"F",
+        path_bytes=b"a/b.json",
+        size=2,
+        content_sha256=bytes.fromhex(sha256(b"{}")),
+        mode=0o444,
+    )
+    manifest_prefix = manifest_test_domain + b"\0TREE\0"
+    valid_manifest = (
+        manifest_prefix
+        + framed_u64(2)
+        + manifest_directory
+        + manifest_file
+    )
+    parsed_manifest = parse_tree_manifest_records(
+        valid_manifest,
+        domain=manifest_test_domain,
+        include_mode=True,
+        label="self-test framed manifest",
+    )
+    if parsed_manifest["a/b.json"] != {
+        "kind": "F",
+        "size": 2,
+        "mode": 0o444,
+        "content_sha256": sha256(b"{}"),
+    }:
+        raise AssertionError("framed-manifest parser changed an exact file record")
+    duplicate_manifest = (
+        manifest_prefix
+        + framed_u64(2)
+        + manifest_directory
+        + manifest_directory
+    )
+    noncanonical_record = framed_record(
+        domain=manifest_test_domain,
+        kind=b"F",
+        path_bytes=b"a/./b",
+        size=0,
+        content_sha256=bytes.fromhex(sha256(b"")),
+        mode=0o444,
+    )
+    invalid_kind_record = framed_record(
+        domain=manifest_test_domain,
+        kind=b"X",
+        path_bytes=b"x",
+        size=0,
+        content_sha256=bytes.fromhex(sha256(b"")),
+        mode=0o444,
+    )
+    for malformed_manifest, description in (
+        (valid_manifest[:-1], "truncated"),
+        (valid_manifest + b"trailing", "trailing-byte"),
+        (duplicate_manifest, "duplicate-path"),
+        (
+            manifest_prefix + framed_u64(1) + noncanonical_record,
+            "noncanonical-path",
+        ),
+        (
+            manifest_prefix + framed_u64(1) + invalid_kind_record,
+            "invalid-kind",
+        ),
+    ):
+        expect_integration_failure(
+            lambda malformed_manifest=malformed_manifest: parse_tree_manifest_records(
+                malformed_manifest,
+                domain=manifest_test_domain,
+                include_mode=True,
+                label="malformed self-test framed manifest",
+            ),
+            f"framed-manifest parser accepted {description} input",
+        )
+    for invalid_actor_id in (
+        "too-short",
+        "Reviewer-alias-0001",
+        "reviewer-unicode-é",
+        "reviewer-control-\n0001",
+    ):
+        expect_integration_failure(
+            lambda invalid_actor_id=invalid_actor_id: require_actor_id(
+                invalid_actor_id, "synthetic invalid reviewer"
+            ),
+            f"reviewer identity grammar accepted {invalid_actor_id!r}",
+        )
     forbidden_path_terms = read_json(RUN / "runtime-policy.json")[
         "agent_visible_path_forbidden_terms"
     ]
@@ -4191,6 +7303,132 @@ def self_test() -> None:
         dir=neutral_self_test_parent(forbidden_path_terms),
     ) as directory:
         temp = Path(directory)
+        receipt_predicate_path = temp / "receipt-predicate.json"
+        predicate_value = {"schema_version": 1, "status": "PASS"}
+        receipt_predicate_path.write_bytes(canonical_json_bytes(predicate_value))
+        os.chmod(receipt_predicate_path, 0o444)
+        if read_canonical_read_only_json(
+            receipt_predicate_path, "synthetic canonical receipt"
+        )[0] != predicate_value:
+            raise AssertionError("canonical read-only receipt predicate changed its value")
+        # The production reader must authenticate the opened inode, not metadata
+        # obtained from a pathname before a second open. Spoofing every Path.lstat
+        # result as the known-good file therefore cannot hide a writable inode or
+        # make a symlink acceptable.
+        writable_race_path = temp / "receipt-writable-lstat-race.json"
+        writable_race_path.write_bytes(canonical_json_bytes(predicate_value))
+        symlink_target = temp / "receipt-symlink-target.json"
+        symlink_target.write_bytes(canonical_json_bytes(predicate_value))
+        os.chmod(symlink_target, 0o444)
+        symlink_race_path = temp / "receipt-symlink-lstat-race.json"
+        symlink_race_path.symlink_to(symlink_target)
+        real_path_lstat = Path.lstat
+        known_good_info = receipt_predicate_path.lstat()
+
+        def spoof_receipt_lstat(path: Path) -> os.stat_result:
+            if path in {writable_race_path, symlink_race_path}:
+                return known_good_info
+            return real_path_lstat(path)
+
+        Path.lstat = spoof_receipt_lstat
+        try:
+            for race_path, reason in (
+                (writable_race_path, "read-only"),
+                (symlink_race_path, "securely open/read"),
+            ):
+                try:
+                    read_canonical_read_only_json(
+                        race_path, f"synthetic lstat-substitution {race_path.name}"
+                    )
+                except IntegrationError as error:
+                    if reason not in str(error):
+                        raise AssertionError(
+                            "receipt lstat-substitution rejection had the wrong reason"
+                        ) from error
+                else:
+                    raise AssertionError(
+                        "production receipt reader trusted spoofed pathname metadata"
+                    )
+        finally:
+            Path.lstat = real_path_lstat
+        # Replace the pathname after os.open but before the first descriptor
+        # metadata check. The callback must fire, the path must become valid B,
+        # and the successful capture must still be the already-opened valid A.
+        inode_race_path = temp / "receipt-open-inode-race.json"
+        inode_a_value = {"schema_version": 1, "status": "PASS", "value": "A"}
+        inode_b_value = {"schema_version": 1, "status": "PASS", "value": "B"}
+        inode_a_bytes = canonical_json_bytes(inode_a_value)
+        inode_b_bytes = canonical_json_bytes(inode_b_value)
+        inode_race_path.write_bytes(inode_a_bytes)
+        os.chmod(inode_race_path, 0o444)
+        inode_b_stage = temp / "receipt-open-inode-race-B.json"
+        inode_b_stage.write_bytes(inode_b_bytes)
+        os.chmod(inode_b_stage, 0o444)
+        real_os_fstat = os.fstat
+        inode_substitution_fired = False
+
+        def substitute_path_before_first_fstat(
+            descriptor: int,
+        ) -> os.stat_result:
+            nonlocal inode_substitution_fired
+            if not inode_substitution_fired:
+                os.replace(inode_b_stage, inode_race_path)
+                inode_substitution_fired = True
+            return real_os_fstat(descriptor)
+
+        os.fstat = substitute_path_before_first_fstat
+        try:
+            captured_inode_value, captured_inode_bytes = (
+                read_canonical_read_only_json(
+                    inode_race_path, "synthetic opened-inode substitution"
+                )
+            )
+        finally:
+            os.fstat = real_os_fstat
+        if (
+            not inode_substitution_fired
+            or inode_race_path.read_bytes() != inode_b_bytes
+            or captured_inode_value != inode_a_value
+            or captured_inode_bytes != inode_a_bytes
+        ):
+            raise AssertionError(
+                "production receipt capture followed a substituted pathname after open"
+            )
+        os.chmod(receipt_predicate_path, 0o644)
+        expect_integration_failure(
+            lambda: read_canonical_read_only_json(
+                receipt_predicate_path, "synthetic writable receipt"
+            ),
+            "production receipt predicate accepted writable bytes",
+        )
+        receipt_predicate_path.write_bytes(pretty_json_bytes(predicate_value))
+        os.chmod(receipt_predicate_path, 0o444)
+        expect_integration_failure(
+            lambda: read_canonical_read_only_json(
+                receipt_predicate_path, "synthetic noncanonical receipt"
+            ),
+            "production receipt predicate accepted noncanonical JSON",
+        )
+        direct_cli_root = temp / "direct-cli-no-bytecode"
+        direct_cli_root.mkdir()
+        direct_integrator = direct_cli_root / "integrate.py"
+        shutil.copy2(RUN / "integrate.py", direct_integrator)
+        shutil.copy2(RUN / "prepare.py", direct_cli_root / "prepare.py")
+        os.chmod(direct_integrator, 0o755)
+        direct_runtime = subprocess.run(
+            [str(direct_integrator), "reviewer-runtime-attestation"],
+            cwd=direct_cli_root,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        if (
+            parse_json_bytes(direct_runtime.stdout, "direct CLI runtime")
+            != current_reviewer_runtime_attestation()
+            or list(direct_cli_root.rglob("__pycache__"))
+            or list(direct_cli_root.rglob("*.pyc"))
+        ):
+            raise AssertionError("direct CLI invocation created Python cache artifacts")
         interrupted_commitment = temp / "interrupted-external-commitment.json"
         interrupted_stage: Path | None = None
         real_publish_no_replace = publish_no_replace
@@ -4241,7 +7479,9 @@ def self_test() -> None:
         (inputs / "authority.json").write_text(
             '{"synthetic":"neutral authority"}\n', encoding="utf-8"
         )
-        reviewed_static = build_synthetic_reviewed_overlay(inputs)
+        reviewed_static = build_synthetic_reviewed_overlay(
+            inputs, source_root, declaration
+        )
         reviewed = {
             "schema_version": 1,
             "status": "READY",
@@ -4258,6 +7498,7 @@ def self_test() -> None:
             },
             "execution_environment": synthetic_execution_config(),
             "forbidden_tokens": ["no_skill", "no-skill", "treatment-secret"],
+            "reviewed_static_base": REVIEWED_STATIC_CANDIDATE_BASE,
             "reviewed_static": reviewed_static,
         }
         (inputs / "reviewed-values.json").write_bytes(pretty_json_bytes(reviewed))
@@ -4501,6 +7742,7 @@ def self_test() -> None:
                 first_hook,
                 snapshot,
                 read_json(snapshot / SNAPSHOT_DESCRIPTOR),
+                synthetic_capability=_SYNTHETIC_CAPABILITY,
             ),
             "snapshot review accepted a stale snapshot digest",
         )
@@ -4524,6 +7766,7 @@ def self_test() -> None:
                 first_hook,
                 snapshot,
                 read_json(snapshot / SNAPSHOT_DESCRIPTOR),
+                synthetic_capability=_SYNTHETIC_CAPABILITY,
             ),
             "snapshot review accepted an unrecognized procedure",
         )
@@ -4620,20 +7863,14 @@ def self_test() -> None:
         ):
             raise AssertionError("report agent received an inexact visible mount set")
 
-        production_inputs = temp / "production-inputs"
-        production_inputs.mkdir()
-        (production_inputs / "authority.json").write_text(
-            '{"production_test":"neutral authority"}\n', encoding="utf-8"
-        )
-        production_reviewed_static = build_synthetic_reviewed_overlay(
-            production_inputs
-        )
+        source_review_inputs = temp / "source-review-inputs"
+        source_review_inputs.mkdir()
         production_declaration_bytes = trusted_production_declaration_bytes()
         production_reviewed = {
             "schema_version": 1,
-            "status": "READY",
+            "status": "SOURCE-REVIEW-CANDIDATE",
             "source_declaration_sha256": sha256(production_declaration_bytes),
-            "authority_packet_path": "authority.json",
+            "authority_packet_path": "docs/rust-documentation.json",
             "target_parameters": {
                 mode: {"task_mode": "unsafe_rust_audit", "word_cap": 1000}
                 for mode in prepare.MODES
@@ -4645,46 +7882,1016 @@ def self_test() -> None:
             },
             "execution_environment": synthetic_execution_config(),
             "forbidden_tokens": ["no_skill", "no-skill", "treatment-secret"],
-            "reviewed_static": production_reviewed_static,
+            "reviewed_static_base": REVIEWED_STATIC_DERIVED_BASE,
+            "reviewed_static": [],
         }
-        (production_inputs / "reviewed-values.json").write_bytes(
+        (source_review_inputs / "reviewed-values.json").write_bytes(
             pretty_json_bytes(production_reviewed)
         )
-        (production_inputs / "seeds.json").write_bytes(pretty_json_bytes(seeds))
+        (source_review_inputs / "seeds.json").write_bytes(pretty_json_bytes(seeds))
+        source_review_candidate = temp / "source-review-candidate"
+        prepare_source_review(
+            source_root=trusted_unsafe_rust_root(),
+            inputs=source_review_inputs,
+            output=source_review_candidate,
+        )
+        reviewer_tool_mirror = temp / "reviewer-tool-mirror"
+        for record in source_review_tool_records(RUN):
+            write_exclusive(
+                reviewer_tool_mirror / record["path"],
+                (RUN / record["path"]).read_bytes(),
+            )
+        validate_source_review_contracts(
+            source_review_candidate, tool_root=reviewer_tool_mirror
+        )
+        mirrored_integrator = reviewer_tool_mirror / "integrate.py"
+        mirrored_integrator.write_bytes(
+            mirrored_integrator.read_bytes() + b"\n# substituted reviewer tool\n"
+        )
+        expect_integration_failure(
+            lambda: validate_source_review_contracts(
+                source_review_candidate, tool_root=reviewer_tool_mirror
+            ),
+            "source-review contract accepted substituted reviewer-tool bytes",
+        )
+        production_declaration = validate_source_declaration(
+            parse_json_bytes(
+                production_declaration_bytes, "self-test production declaration"
+            ),
+            production=True,
+        )
+        production_source_digests = trusted_target_source_digests(
+            production_declaration
+        )
+        for mutation_name, old_quote, new_quote in (
+            (
+                "p-comma",
+                "Returns the contained `Some` value, consuming the `self` value, without checking that the value is not `None`.",
+                "Returns the contained `Some` value, consuming the `self` value without checking that the value is not `None`.",
+            ),
+            ("equality-premise", "`==` Equal", "`==` Comparison"),
+        ):
+            quotation_forgery = temp / f"source-quotation-forgery-{mutation_name}"
+            copy_tree(source_review_candidate, quotation_forgery)
+            make_tree_writable(quotation_forgery)
+            coherently_mutate_reviewed_exact_quote(
+                quotation_forgery / "reviewed-static", old_quote, new_quote
+            )
+            expect_integration_failure(
+                lambda quotation_forgery=quotation_forgery: validate_reviewed_semantic_closure(
+                    quotation_forgery / "reviewed-static",
+                    expected_fixture_phase="SOURCE_REVIEW_CANDIDATE",
+                    expected_source_digests=production_source_digests,
+                    evidence_source_root=(
+                        quotation_forgery
+                        / SOURCE_REVIEW_THEOREM_ROOT
+                        / "unsafe-rust"
+                    ),
+                ),
+                f"semantic closure accepted coherent exact-quotation drift: {mutation_name}",
+            )
+
+        lineage_overclaim = temp / "source-lineage-overclaim-forgery"
+        copy_tree(source_review_candidate, lineage_overclaim)
+        make_tree_writable(lineage_overclaim)
+        lineage_verification_path = (
+            lineage_overclaim
+            / "reviewed-static/freeze/authority/verification.json"
+        )
+        lineage_verification = read_json(lineage_verification_path)
+        lineage_verification["versioned_page_byte_lineage"]["coverage_basis"] = (
+            "The V4 reviews prove every current V5 quotation and proposition."
+        )
+        lineage_verification_path.write_bytes(
+            pretty_json_bytes(lineage_verification)
+        )
+        expect_integration_failure(
+            lambda: validate_reviewed_semantic_closure(
+                lineage_overclaim / "reviewed-static",
+                expected_fixture_phase="SOURCE_REVIEW_CANDIDATE",
+                expected_source_digests=production_source_digests,
+                evidence_source_root=(
+                    lineage_overclaim
+                    / SOURCE_REVIEW_THEOREM_ROOT
+                    / "unsafe-rust"
+                ),
+            ),
+            "semantic closure accepted a false V4-to-V5 authority-lineage overclaim",
+        )
+
+        authority_divergence = temp / "source-authority-divergence"
+        copy_tree(source_review_candidate, authority_divergence)
+        make_tree_writable(authority_divergence)
+        authority_path = authority_divergence / "docs/rust-documentation.json"
+        authority_path.write_bytes(authority_path.read_bytes() + b" ")
+        expect_integration_failure(
+            lambda: validate_source_review_payload(authority_divergence),
+            "source review accepted authority bytes divergent from canonical projection",
+        )
+
+        fixture_binding_forgery = temp / "source-fixture-binding-forgery"
+        copy_tree(source_review_candidate, fixture_binding_forgery)
+        make_tree_writable(fixture_binding_forgery)
+        fixture_path = fixture_binding_forgery / "reviewed-static/freeze/fixtures/E.json"
+        fixture = read_json(fixture_path)
+        fixture["source_tree_sha256"] = "0" * 64
+        fixture_path.write_bytes(pretty_json_bytes(fixture))
+        expect_integration_failure(
+            lambda: validate_source_review_payload(fixture_binding_forgery),
+            "source review accepted a caller-selected fixture source digest",
+        )
+
+        stale_marker_forgery = temp / "source-draft-marker-forgery"
+        copy_tree(source_review_candidate, stale_marker_forgery)
+        make_tree_writable(stale_marker_forgery)
+        oracle_path = stale_marker_forgery / "reviewed-static/freeze/oracle/E.md"
+        oracle_path.write_bytes(
+            oracle_path.read_bytes().replace(
+                b"**SOURCE-REVIEW-CANDIDATE / evaluator-only.**",
+                b"**DRAFT / evaluator-only.**",
+                1,
+            )
+        )
+        expect_integration_failure(
+            lambda: reject_reviewed_static_residue(
+                stale_marker_forgery / "reviewed-static"
+            ),
+            "reviewed source accepted a stale DRAFT oracle marker",
+        )
+        for reviewer_index in range(1, 4):
+            source_private_copy = temp / f"source-review-private-{reviewer_index}"
+            prepare_source_review_copy(source_review_candidate, source_private_copy)
+            verify_source_review_custody(source_review_candidate, source_private_copy)
+        expect_integration_failure(
+            lambda: verify_source_review_custody(
+                source_review_candidate, source_review_candidate
+            ),
+            "source-review custody accepted a reflexive private copy",
+        )
+        observed_quotation_handoff: dict[str, Any] = {}
+
+        def fake_online_quotation_validator(
+            freeze_root: Path,
+            *,
+            expected_status: str,
+            supplied_source_root: Path,
+        ) -> str:
+            observed_quotation_handoff.update(
+                {
+                    "freeze_root": freeze_root,
+                    "expected_status": expected_status,
+                    "supplied_source_root": supplied_source_root,
+                }
+            )
+            return EXACT_QUOTATION_EVIDENCE_SHA256
+
+        verify_source_review_quotations(
+            source_private_copy,
+            online_validator=fake_online_quotation_validator,
+        )
+        if observed_quotation_handoff != {
+            "freeze_root": source_private_copy.resolve()
+            / "reviewed-static"
+            / "freeze",
+            "expected_status": SOURCE_REVIEW_CANDIDATE_STATUS,
+            "supplied_source_root": source_private_copy.resolve()
+            / SOURCE_REVIEW_THEOREM_ROOT
+            / "unsafe-rust",
+        }:
+            raise AssertionError(
+                "source quotation CLI seam passed the wrong authenticated phase/root"
+            )
+        source_review_receipts = temp / "source-review-receipts"
+        write_synthetic_source_review_receipts(
+            source_review_candidate, source_review_receipts
+        )
+        source_receipt_template = read_json(
+            source_review_receipts / "oracle-review-1.json"
+        )
+        incomplete_source_work_path = temp / "incomplete-source-work-product.json"
+        incomplete_source_work = source_receipt_template["work_product"]
+        incomplete_source_work["coverage"][0]["decision"] = "UNRESOLVED"
+        incomplete_source_work_path.write_bytes(
+            pretty_json_bytes(incomplete_source_work)
+        )
+        source_result_path = temp / "source-result.json"
+        source_result_path.write_bytes(
+            pretty_json_bytes(source_receipt_template["result"])
+        )
+        expect_integration_failure(
+            lambda: build_source_review_receipt(
+                snapshot=source_review_candidate,
+                private_copy=source_review_candidate,
+                review_name="oracle-review-1.json",
+                actor_id="independent-source-reviewer-0001",
+                work_product_path=incomplete_source_work_path,
+                result_path=source_result_path,
+                output=temp / "reflexive-source-review" / "oracle-review-1.json",
+            ),
+            "source receipt builder accepted the review subject as its private copy",
+        )
+        expect_integration_failure(
+            lambda: build_source_review_receipt(
+                snapshot=source_review_candidate,
+                private_copy=source_private_copy,
+                review_name="oracle-review-1.json",
+                actor_id="independent-source-reviewer-0001",
+                work_product_path=incomplete_source_work_path,
+                result_path=source_result_path,
+                output=temp / "wrong-source-receipt-name.json",
+            ),
+            "source receipt builder accepted a filename different from review_name",
+        )
+        rejected_source_output = temp / "oracle-review-1.json"
+        expect_integration_failure(
+            lambda: build_source_review_receipt(
+                snapshot=source_review_candidate,
+                private_copy=source_private_copy,
+                review_name="oracle-review-1.json",
+                actor_id="independent-source-reviewer-0001",
+                work_product_path=incomplete_source_work_path,
+                result_path=source_result_path,
+                output=rejected_source_output,
+            ),
+            "source receipt builder invented a PASS for unresolved reviewer work",
+        )
+        if rejected_source_output.exists():
+            raise AssertionError("failed source receipt build published an output")
+        valid_source_work_path = temp / "valid-source-work-product.json"
+        valid_source_work_path.write_bytes(
+            pretty_json_bytes(
+                read_json(source_review_receipts / "oracle-review-1.json")[
+                    "work_product"
+                ]
+            )
+        )
+        incomplete_source_result_path = temp / "incomplete-source-result.json"
+        incomplete_source_result = read_json(
+            source_review_receipts / "oracle-review-1.json"
+        )["result"]
+        incomplete_source_result["checks"][0]["evidence"] = ""
+        incomplete_source_result_path.write_bytes(
+            pretty_json_bytes(incomplete_source_result)
+        )
+        expect_integration_failure(
+            lambda: build_source_review_receipt(
+                snapshot=source_review_candidate,
+                private_copy=source_private_copy,
+                review_name="oracle-review-1.json",
+                actor_id="independent-source-reviewer-0001",
+                work_product_path=valid_source_work_path,
+                result_path=incomplete_source_result_path,
+                output=rejected_source_output,
+            ),
+            "source receipt builder invented missing reviewer evidence",
+        )
+        if rejected_source_output.exists():
+            raise AssertionError("failed source evidence build published an output")
+        missing_source_receipt = temp / "missing-source-review-receipt"
+        copy_tree(source_review_receipts, missing_source_receipt)
+        (missing_source_receipt / "oracle-review-2.json").unlink()
+        expect_integration_failure(
+            lambda: validate_source_review_receipts(
+                missing_source_receipt,
+                snapshot_root=source_review_candidate,
+                descriptor_sha256=sha256(
+                    (source_review_candidate / SOURCE_REVIEW_DESCRIPTOR).read_bytes()
+                ),
+                manifest_sha256=sha256(
+                    (source_review_candidate / SOURCE_REVIEW_MANIFEST).read_bytes()
+                ),
+                payload_sha256=read_json(
+                    source_review_candidate / SOURCE_REVIEW_DESCRIPTOR
+                )["payload_manifest_sha256"],
+                synthetic_capability=_SYNTHETIC_CAPABILITY,
+            ),
+            "source review accepted a missing independent receipt",
+        )
+        wrong_source_check = temp / "wrong-source-review-check"
+        copy_tree(source_review_receipts, wrong_source_check)
+        wrong_receipt_path = wrong_source_check / "oracle-review-1.json"
+        wrong_receipt = read_json(wrong_receipt_path)
+        wrong_receipt["result"]["checks"][3]["id"] = "ARBITRARY-PASS"
+        wrong_receipt_path.write_bytes(pretty_json_bytes(wrong_receipt))
+        expect_integration_failure(
+            lambda: validate_source_review_receipts(
+                wrong_source_check,
+                snapshot_root=source_review_candidate,
+                descriptor_sha256=sha256(
+                    (source_review_candidate / SOURCE_REVIEW_DESCRIPTOR).read_bytes()
+                ),
+                manifest_sha256=sha256(
+                    (source_review_candidate / SOURCE_REVIEW_MANIFEST).read_bytes()
+                ),
+                payload_sha256=read_json(
+                    source_review_candidate / SOURCE_REVIEW_DESCRIPTOR
+                )["payload_manifest_sha256"],
+                synthetic_capability=_SYNTHETIC_CAPABILITY,
+            ),
+            "source review accepted a generic PASS in place of exact check coverage",
+        )
+        special_source_receipts = temp / "special-source-review-entry"
+        copy_tree(source_review_receipts, special_source_receipts)
+        os.mkfifo(special_source_receipts / "extra.fifo")
+        expect_integration_failure(
+            lambda: validate_source_review_receipts(
+                special_source_receipts,
+                snapshot_root=source_review_candidate,
+                descriptor_sha256=sha256(
+                    (source_review_candidate / SOURCE_REVIEW_DESCRIPTOR).read_bytes()
+                ),
+                manifest_sha256=sha256(
+                    (source_review_candidate / SOURCE_REVIEW_MANIFEST).read_bytes()
+                ),
+                payload_sha256=read_json(
+                    source_review_candidate / SOURCE_REVIEW_DESCRIPTOR
+                )["payload_manifest_sha256"],
+                synthetic_capability=_SYNTHETIC_CAPABILITY,
+            ),
+            "source-review receipt inventory ignored a special entry",
+        )
+        production_inputs = temp / "production-inputs"
+        expect_integration_failure(
+            lambda: finalize_reviewed_inputs(
+                snapshot=source_review_candidate,
+                receipts=source_review_receipts,
+                output=temp / "forbidden-synthetic-source-review-finalization",
+            ),
+            "synthetic source-review receipts authorized public production inputs",
+        )
+        _finalize_reviewed_inputs(
+            snapshot=source_review_candidate,
+            receipts=source_review_receipts,
+            output=production_inputs,
+            synthetic_capability=_SYNTHETIC_CAPABILITY,
+        )
+        for receipt_name, _review_kind in SOURCE_REVIEW_KINDS:
+            if (
+                production_inputs / "source-review-receipts" / receipt_name
+            ).read_bytes() != (source_review_receipts / receipt_name).read_bytes():
+                raise AssertionError(
+                    "source-review finalization did not preserve exact receipt bytes"
+                )
         production_snapshot = temp / "production-review-snapshot"
         production_workspace = Path("/tmp") / sha256(
             f"production-{temp}".encode()
         )
-        prepare_snapshot(
+        _prepare_snapshot(
             source_root=trusted_unsafe_rust_root(),
             inputs=production_inputs,
             output=production_snapshot,
             workspace_base=production_workspace,
+            declaration_path=SOURCE_DECLARATION,
+            bundle_kind="SYNTHETIC-TEST-ONLY",
+            synthetic_capability=_SYNTHETIC_CAPABILITY,
         )
-        production_private_copy = temp / "production-private-review-copy"
-        prepare_private_review_copy(production_snapshot, production_private_copy)
-        verify_private_review_custody(
-            production_snapshot, production_private_copy
+        same_hook = sorted(EXTERNAL_REVIEW_HOOKS)[0]
+        expect_integration_failure(
+            lambda: build_snapshot_review_receipt(
+                snapshot=production_snapshot,
+                private_copy=production_snapshot,
+                hook_id=same_hook,
+                actor_id="independent-snapshot-reviewer-0001",
+                work_product_path=temp / "unused-snapshot-work.json",
+                result_path=temp / "unused-snapshot-result.json",
+                output=temp / "wrong-snapshot-receipt-name.json",
+            ),
+            "snapshot receipt builder accepted a filename different from its hook ID",
+        )
+        expect_integration_failure(
+            lambda: build_snapshot_review_receipt(
+                snapshot=production_snapshot,
+                private_copy=production_snapshot,
+                hook_id=same_hook,
+                actor_id="independent-snapshot-reviewer-0001",
+                work_product_path=temp / "unused-snapshot-work.json",
+                result_path=temp / "unused-snapshot-result.json",
+                output=temp / "reflexive-snapshot-review" / f"{same_hook}.json",
+            ),
+            "snapshot receipt builder accepted the review subject as its private copy",
+        )
+        stale_schema_forgery = temp / "agent-visible-stale-schema-forgery"
+        copy_tree(production_snapshot, stale_schema_forgery)
+        make_tree_writable(stale_schema_forgery)
+        evaluator_contract = read_json(
+            stale_schema_forgery
+            / "static/generated/evaluator-launch-contracts.json"
+        )
+        evaluator_schema_path = evaluator_contract["assignments"][0][
+            "schema_paths"
+        ][0]
+        evaluator_schema = read_json(stale_schema_forgery / evaluator_schema_path)
+        evaluator_schema["$comment"] = (
+            "DRAFT / UNSEALED substituted evaluator-visible schema"
+        )
+        (stale_schema_forgery / evaluator_schema_path).write_bytes(
+            pretty_json_bytes(evaluator_schema)
+        )
+        expect_integration_failure(
+            lambda: validate_snapshot_build_products(
+                stale_schema_forgery, bundle_kind="SYNTHETIC-TEST-ONLY"
+            ),
+            "snapshot accepted stale DRAFT lifecycle prose in an evaluator schema",
+        )
+        for field in ("source_tree_sha256", "exact_report_material_set_sha256"):
+            ready_fixture_forgery = temp / f"ready-fixture-forgery-{field}"
+            copy_tree(production_snapshot, ready_fixture_forgery)
+            make_tree_writable(ready_fixture_forgery)
+            ready_fixture_path = ready_fixture_forgery / "freeze/fixtures/E.json"
+            ready_fixture = read_json(ready_fixture_path)
+            ready_fixture[field] = "0" * 64
+            ready_fixture_path.write_bytes(pretty_json_bytes(ready_fixture))
+            expect_integration_failure(
+                lambda ready_fixture_forgery=ready_fixture_forgery: validate_snapshot_build_products(
+                    ready_fixture_forgery, bundle_kind="SYNTHETIC-TEST-ONLY"
+                ),
+                f"snapshot validation accepted forged fixture binding {field}",
+            )
+
+        report_binding_forgery = temp / "coherent-report-material-forgery"
+        copy_tree(production_snapshot, report_binding_forgery)
+        make_tree_writable(report_binding_forgery)
+        forged_generated = report_binding_forgery / "static/generated"
+        forged_prompt_path = forged_generated / "report-prompts/r001.md"
+        forged_prompt_path.write_bytes(forged_prompt_path.read_bytes() + b"\ncoherent mutation\n")
+        forged_launch_path = forged_generated / "launch-records/r001.json"
+        forged_launch = read_json(forged_launch_path)
+        forged_launch["prompt_sha256"] = sha256(forged_prompt_path.read_bytes())
+        forged_launch_path.write_bytes(pretty_json_bytes(forged_launch))
+        forged_prompt_receipt_path = forged_generated / "prompt-validation-receipt.json"
+        forged_prompt_receipt = read_json(forged_prompt_receipt_path)
+        forged_prompt_receipt["launch_record_sha256"]["r001"] = sha256(
+            forged_launch_path.read_bytes()
+        )
+        forged_prompt_receipt_path.write_bytes(pretty_json_bytes(forged_prompt_receipt))
+        forged_prompt_set_path = forged_generated / "mode-launch-prompt-set.json"
+        forged_prompt_set = read_json(forged_prompt_set_path)
+        forged_record = next(
+            record
+            for mode_record in forged_prompt_set["modes"]
+            for record in mode_record["records"]
+            if record["run_id"] == "r001"
+        )
+        forged_record["prompt_sha256"] = sha256(forged_prompt_path.read_bytes())
+        forged_prompt_set_path.write_bytes(pretty_json_bytes(forged_prompt_set))
+        forged_documents = {
+            name: read_json(forged_generated / name)
+            for name in prepare.generated_documents(
+                prepare.validate_packages(read_json(report_binding_forgery / "packages.json")),
+                prepare.validate_targets(read_json(report_binding_forgery / "targets.json")),
+                prepare.validate_seeds(read_json(forged_generated / "seeds.json")),
+                status="READY",
+            )
+        }
+        forged_material = {
+            "prompts": {
+                path.stem: path.read_bytes()
+                for path in (forged_generated / "report-prompts").glob("*.md")
+            },
+            "input_plans": {
+                path.stem: path.read_bytes()
+                for path in (forged_generated / "report-input-plans").glob("*.json")
+            },
+            "launches": {
+                path.stem: path.read_bytes()
+                for path in (forged_generated / "launch-records").glob("*.json")
+            },
+        }
+        forged_material_digests = mode_report_material_digests(
+            forged_material, forged_documents
+        )
+        forged_target_label = next(
+            row["target_label"]
+            for row in forged_documents["launch-schedule.json"]["slots"]
+            if row["run_id"] == "r001"
+        )
+        forged_mode = next(
+            row["mode"]
+            for row in forged_documents["target-map.json"]["targets"]
+            if row["target_label"] == forged_target_label
+        )
+        forged_fixture_path = report_binding_forgery / f"freeze/fixtures/{forged_mode}.json"
+        forged_fixture = read_json(forged_fixture_path)
+        forged_fixture["exact_report_material_set_sha256"] = forged_material_digests[
+            forged_mode
+        ]
+        forged_fixture_path.write_bytes(pretty_json_bytes(forged_fixture))
+        expect_integration_failure(
+            lambda: validate_snapshot_build_products(
+                report_binding_forgery, bundle_kind="SYNTHETIC-TEST-ONLY"
+            ),
+            "snapshot accepted a coherent prompt/launch/fixture report-material forgery",
+        )
+        verify_review_snapshot(
+            production_snapshot,
+            expected_candidate_kind="SYNTHETIC-TEST-ONLY",
         )
         production_receipts = temp / "production-receipts"
         write_synthetic_snapshot_receipts(
             production_snapshot,
             production_receipts,
+            candidate_kind="SYNTHETIC-TEST-ONLY",
+        )
+        production_descriptor = read_json(
+            production_snapshot / SNAPSHOT_DESCRIPTOR
+        )
+        receipt_names = sorted(
+            f"{hook_id}.json" for hook_id in EXTERNAL_REVIEW_HOOKS
+        )
+        # Exercise the entire public PRODUCTION mechanical path with canonical
+        # 0444 receipts authored through the public builders. The fixture work
+        # products are test data, not an assertion that independent humans
+        # performed these reviews; reviewer honesty remains an admitted TCB
+        # premise. This regression exists to prove that genuine production-
+        # shaped custody and finalization mechanics are executable.
+        mechanical_source_receipts = temp / "mechanical-production-source-receipts"
+        for reviewer_index, (receipt_name, _review_kind) in enumerate(
+            SOURCE_REVIEW_KINDS, start=1
+        ):
+            private_copy = temp / f"mechanical-source-private-{reviewer_index}"
+            prepare_source_review_copy(source_review_candidate, private_copy)
+            template = read_json(source_review_receipts / receipt_name)
+            work_path = temp / f"mechanical-source-work-{reviewer_index}.json"
+            result_path = temp / f"mechanical-source-result-{reviewer_index}.json"
+            work_path.write_bytes(pretty_json_bytes(template["work_product"]))
+            result_path.write_bytes(pretty_json_bytes(template["result"]))
+            build_source_review_receipt(
+                snapshot=source_review_candidate,
+                private_copy=private_copy,
+                review_name=receipt_name,
+                actor_id=f"mechanical-source-reviewer-{reviewer_index:04d}",
+                work_product_path=work_path,
+                result_path=result_path,
+                output=mechanical_source_receipts / receipt_name,
+            )
+        mechanical_reviewed_inputs = temp / "mechanical-production-reviewed-inputs"
+        finalize_reviewed_inputs(
+            snapshot=source_review_candidate,
+            receipts=mechanical_source_receipts,
+            output=mechanical_reviewed_inputs,
+        )
+        mechanical_snapshot = temp / "mechanical-production-review-snapshot"
+        prepare_snapshot(
+            source_root=trusted_unsafe_rust_root(),
+            inputs=mechanical_reviewed_inputs,
+            output=mechanical_snapshot,
+            workspace_base=Path("/tmp")
+            / sha256(f"mechanical-production-{temp}".encode()),
+        )
+        mechanical_snapshot_templates = temp / "mechanical-snapshot-templates"
+        write_synthetic_snapshot_receipts(
+            mechanical_snapshot,
+            mechanical_snapshot_templates,
             candidate_kind="PRODUCTION",
+        )
+        mechanical_snapshot_receipts = temp / "mechanical-production-snapshot-receipts"
+        for reviewer_index, hook_id in enumerate(
+            sorted(EXTERNAL_REVIEW_HOOKS), start=1
+        ):
+            private_copy = temp / f"mechanical-snapshot-private-{reviewer_index}"
+            prepare_private_review_copy(mechanical_snapshot, private_copy)
+            template = read_json(
+                mechanical_snapshot_templates / f"{hook_id}.json"
+            )
+            work_path = temp / f"mechanical-snapshot-work-{reviewer_index}.json"
+            result_path = temp / f"mechanical-snapshot-result-{reviewer_index}.json"
+            work_path.write_bytes(pretty_json_bytes(template["work_product"]))
+            result_path.write_bytes(pretty_json_bytes(template["result"]))
+            build_snapshot_review_receipt(
+                snapshot=mechanical_snapshot,
+                private_copy=private_copy,
+                hook_id=hook_id,
+                actor_id=f"mechanical-snapshot-reviewer-{reviewer_index:04d}",
+                work_product_path=work_path,
+                result_path=result_path,
+                output=mechanical_snapshot_receipts / f"{hook_id}.json",
+            )
+        mechanical_bundle = temp / "mechanical-production-bundle"
+        mechanical_commitment_path = temp / "mechanical-production-commitment.json"
+        mechanical_commitment = finalize_snapshot(
+            snapshot=mechanical_snapshot,
+            receipts=mechanical_snapshot_receipts,
+            output=mechanical_bundle,
+            external_commitment_output=mechanical_commitment_path,
+        )
+        mechanical_lock, mechanical_reviewer_ids = verify_static_with_reviewer_ids(
+            mechanical_bundle,
+            expected_bundle_kind="PRODUCTION",
+            expected_external_commitment=mechanical_commitment,
+        )
+        if (
+            mechanical_lock["bundle_kind"] != "PRODUCTION"
+            or len(mechanical_reviewer_ids) != 11
+            or mechanical_commitment_path.read_bytes()
+            != canonical_json_bytes(mechanical_commitment)
+        ):
+            raise AssertionError(
+                "public mechanical PRODUCTION finalization did not verify exactly"
+            )
+        # A valid receipt path may be atomically replaced after validation. The
+        # finalizer must publish the bytes captured from the validated descriptor,
+        # never reopen that path and accidentally copy a different valid receipt.
+        substitution_receipts = temp / "snapshot-receipt-substitution"
+        copy_tree(production_receipts, substitution_receipts)
+        for reviewer_index, receipt_name in enumerate(receipt_names, start=1):
+            production_receipt_path = substitution_receipts / receipt_name
+            production_receipt = read_json(production_receipt_path)
+            production_receipt["status"] = "PASS"
+            production_receipt["actor"]["identity"] = (
+                f"independent-snapshot-reviewer-{reviewer_index:04d}"
+            )
+            production_receipt_path.write_bytes(
+                canonical_json_bytes(production_receipt)
+            )
+            os.chmod(production_receipt_path, 0o444)
+        substitution_name = receipt_names[0]
+        substitution_path = substitution_receipts / substitution_name
+        receipt_a = substitution_path.read_bytes()
+        receipt_b_value = read_json(substitution_path)
+        receipt_b_value["actor"]["identity"] = "alternate-snapshot-reviewer-9999"
+        receipt_b = canonical_json_bytes(receipt_b_value)
+        receipt_b_path = temp / "valid-substitute-snapshot-receipt.json"
+        receipt_b_path.write_bytes(receipt_b)
+        os.chmod(receipt_b_path, 0o444)
+        validate_snapshot_review_receipt(
+            receipt_b_path,
+            substitution_path.stem,
+            production_snapshot,
+            production_descriptor,
+        )
+        real_capture_review_receipt_json = capture_review_receipt_json
+        substitution_fired = False
+
+        def substitute_snapshot_receipt_after_capture(
+            path: Path,
+            label: str,
+            *,
+            synthetic_capability: object | None,
+        ) -> tuple[Any, bytes]:
+            nonlocal substitution_fired
+            value, data = real_capture_review_receipt_json(
+                path, label, synthetic_capability=synthetic_capability
+            )
+            if path == substitution_path and not substitution_fired:
+                os.replace(receipt_b_path, substitution_path)
+                substitution_fired = True
+            return value, data
+
+        globals()["capture_review_receipt_json"] = (
+            substitute_snapshot_receipt_after_capture
+        )
+        substitution_stage = temp / "snapshot-receipt-substitution-stage"
+        try:
+            copy_snapshot_review_receipts(
+                substitution_stage,
+                production_snapshot,
+                substitution_receipts,
+                production_descriptor,
+                synthetic_capability=None,
+            )
+        finally:
+            globals()["capture_review_receipt_json"] = (
+                real_capture_review_receipt_json
+            )
+        copied_substitution = (
+            substitution_stage
+            / "static"
+            / "integration-receipts"
+            / substitution_name
+        ).read_bytes()
+        if (
+            not substitution_fired
+            or substitution_path.read_bytes() != receipt_b
+            or copied_substitution != receipt_a
+        ):
+            raise AssertionError(
+                "snapshot receipt finalization did not preserve descriptor-captured bytes"
+            )
+        special_snapshot_receipts = temp / "special-snapshot-review-entry"
+        copy_tree(production_receipts, special_snapshot_receipts)
+        os.mkfifo(special_snapshot_receipts / "extra.fifo")
+        expect_integration_failure(
+            lambda: copy_snapshot_review_receipts(
+                temp / "special-snapshot-review-stage",
+                production_snapshot,
+                special_snapshot_receipts,
+                production_descriptor,
+                synthetic_capability=_SYNTHETIC_CAPABILITY,
+            ),
+            "snapshot-review receipt inventory ignored a special entry",
+        )
+        duplicate_snapshot_receipts = temp / "duplicate-snapshot-reviewers"
+        copy_tree(production_receipts, duplicate_snapshot_receipts)
+        first_snapshot_receipt = read_json(
+            duplicate_snapshot_receipts / receipt_names[0]
+        )
+        second_snapshot_receipt_path = (
+            duplicate_snapshot_receipts / receipt_names[1]
+        )
+        second_snapshot_receipt = read_json(second_snapshot_receipt_path)
+        second_snapshot_receipt["actor"]["identity"] = (
+            first_snapshot_receipt["actor"]["identity"]
+        )
+        second_snapshot_receipt_path.write_bytes(
+            pretty_json_bytes(second_snapshot_receipt)
+        )
+        expect_integration_failure(
+            lambda: copy_snapshot_review_receipts(
+                temp / "duplicate-snapshot-reviewer-stage",
+                production_snapshot,
+                duplicate_snapshot_receipts,
+                production_descriptor,
+                synthetic_capability=_SYNTHETIC_CAPABILITY,
+            ),
+            "snapshot finalization accepted duplicate reviewer identities",
+        )
+        overlapping_snapshot_receipts = temp / "overlapping-reviewers"
+        copy_tree(production_receipts, overlapping_snapshot_receipts)
+        overlap_path = overlapping_snapshot_receipts / receipt_names[0]
+        overlap_receipt = read_json(overlap_path)
+        source_actor = read_json(
+            production_snapshot
+            / "static/integration/reviewed-inputs/source-review-receipts"
+            / SOURCE_REVIEW_KINDS[0][0]
+        )["actor"]["identity"]
+        overlap_receipt["actor"]["identity"] = source_actor
+        overlap_path.write_bytes(pretty_json_bytes(overlap_receipt))
+        expect_integration_failure(
+            lambda: copy_snapshot_review_receipts(
+                temp / "overlapping-reviewer-stage",
+                production_snapshot,
+                overlapping_snapshot_receipts,
+                production_descriptor,
+                synthetic_capability=_SYNTHETIC_CAPABILITY,
+            ),
+            "snapshot finalization reused a source reviewer identity",
+        )
+        renamed_synthetic_receipt_path = production_receipts / (
+            f"{sorted(EXTERNAL_REVIEW_HOOKS)[0]}.json"
+        )
+        renamed_synthetic_receipt = read_json(renamed_synthetic_receipt_path)
+        renamed_synthetic_receipt["actor"]["identity"] = (
+            "apparently-independent-reviewer-01"
+        )
+        renamed_synthetic_path = temp / "renamed-synthetic-receipt.json"
+        renamed_synthetic_path.write_bytes(
+            pretty_json_bytes(renamed_synthetic_receipt)
+        )
+        expect_integration_failure(
+            lambda: validate_snapshot_review_receipt(
+                renamed_synthetic_path,
+                renamed_synthetic_receipt["hook_id"],
+                production_snapshot,
+                read_json(production_snapshot / SNAPSHOT_DESCRIPTOR),
+            ),
+            "renaming a synthetic actor made its test-only receipt production-acceptable",
+        )
+        atomic_swap_output = temp / "atomic-swap-final-output"
+        atomic_swap_bundle = temp / "atomic-swap-substitute-bundle"
+        copy_tree(output, atomic_swap_bundle)
+        real_bundle_publish = publish_no_replace
+
+        def substitute_valid_bundle(
+            stage_path: Path, destination_path: Path
+        ) -> None:
+            if destination_path == atomic_swap_output:
+                real_bundle_publish(atomic_swap_bundle, destination_path)
+            else:
+                real_bundle_publish(stage_path, destination_path)
+
+        globals()["publish_no_replace"] = substitute_valid_bundle
+        try:
+            expect_integration_failure(
+                lambda: _finalize_snapshot(
+                    snapshot=production_snapshot,
+                    receipts=production_receipts,
+                    output=atomic_swap_output,
+                    bundle_kind="SYNTHETIC-TEST-ONLY",
+                    synthetic_capability=_SYNTHETIC_CAPABILITY,
+                ),
+                "finalization blessed a coherently substituted bundle after publication",
+            )
+        finally:
+            globals()["publish_no_replace"] = real_bundle_publish
+        verify_static(
+            atomic_swap_output,
+            expected_bundle_kind="SYNTHETIC-TEST-ONLY",
+            expected_external_commitment=commitment,
         )
         production_output = temp / "production-bundle"
         production_commitment_path = temp / "production-external-commitment.json"
-        production_commitment = finalize_snapshot(
+        expect_integration_failure(
+            lambda: finalize_snapshot(
+                snapshot=production_snapshot,
+                receipts=production_receipts,
+                output=temp / "forbidden-public-production-bundle",
+                external_commitment_output=temp / "forbidden-public-commitment.json",
+            ),
+            "synthetic snapshot/receipts authorized public PRODUCTION finalization",
+        )
+        production_commitment = _finalize_snapshot(
             snapshot=production_snapshot,
             receipts=production_receipts,
             output=production_output,
+            bundle_kind="SYNTHETIC-TEST-ONLY",
+            synthetic_capability=_SYNTHETIC_CAPABILITY,
             external_commitment_output=production_commitment_path,
         )
         if read_json(production_commitment_path) != production_commitment:
             raise AssertionError("finalizer did not write its exact external commitment")
         verify_static(
             production_output,
-            expected_bundle_kind="PRODUCTION",
+            expected_bundle_kind="SYNTHETIC-TEST-ONLY",
+            expected_external_commitment=production_commitment,
+        )
+        # Static verification must bind the lock digest, semantic validation,
+        # and runtime reviewer-exclusion identity to one captured receipt byte
+        # object. Swap the path to a separately valid receipt after capture; the
+        # substitute deliberately collides with a source reviewer, so a later
+        # pathname reread would fail rather than silently consume A.
+        verify_swap_hook = sorted(EXTERNAL_REVIEW_HOOKS)[0]
+        verify_receipt_root = production_output / "static/integration-receipts"
+        verify_swap_path = verify_receipt_root / f"{verify_swap_hook}.json"
+        verify_receipt_a = verify_swap_path.read_bytes()
+        verify_receipt_b_value = read_json(verify_swap_path)
+        verify_receipt_b_value["actor"]["identity"] = read_json(
+            production_output
+            / "static/integration/reviewed-inputs/source-review-receipts"
+            / SOURCE_REVIEW_KINDS[0][0]
+        )["actor"]["identity"]
+        verify_receipt_b = pretty_json_bytes(verify_receipt_b_value)
+        verify_receipt_b_path = temp / "static-verifier-receipt-B.json"
+        verify_receipt_b_path.write_bytes(verify_receipt_b)
+        os.chmod(verify_receipt_b_path, 0o444)
+        validate_snapshot_review_receipt(
+            verify_receipt_b_path,
+            verify_swap_hook,
+            production_output,
+            read_json(production_output / SNAPSHOT_DESCRIPTOR),
+            synthetic_capability=_SYNTHETIC_CAPABILITY,
+        )
+        real_captured_receipt_validator = (
+            _validate_snapshot_review_receipt_captured
+        )
+        static_verify_substitution_fired = False
+
+        def substitute_static_receipt_after_capture(
+            path: Path,
+            expected_hook: str,
+            snapshot: Path,
+            descriptor: dict[str, Any],
+            *,
+            synthetic_capability: object | None = None,
+        ) -> tuple[dict[str, Any], bytes]:
+            nonlocal static_verify_substitution_fired
+            receipt, data = real_captured_receipt_validator(
+                path,
+                expected_hook,
+                snapshot,
+                descriptor,
+                synthetic_capability=synthetic_capability,
+            )
+            if path == verify_swap_path and not static_verify_substitution_fired:
+                os.chmod(verify_receipt_root, 0o755)
+                try:
+                    os.replace(verify_receipt_b_path, verify_swap_path)
+                finally:
+                    os.chmod(verify_receipt_root, 0o555)
+                static_verify_substitution_fired = True
+            return receipt, data
+
+        globals()["_validate_snapshot_review_receipt_captured"] = (
+            substitute_static_receipt_after_capture
+        )
+        try:
+            _verify_static_contents(
+                production_output,
+                expected_bundle_kind="SYNTHETIC-TEST-ONLY",
+            )
+        finally:
+            globals()["_validate_snapshot_review_receipt_captured"] = (
+                real_captured_receipt_validator
+            )
+            os.chmod(verify_receipt_root, 0o755)
+            try:
+                restore_receipt = temp / "static-verifier-receipt-A.json"
+                restore_receipt.write_bytes(verify_receipt_a)
+                os.chmod(restore_receipt, 0o444)
+                os.replace(restore_receipt, verify_swap_path)
+            finally:
+                os.chmod(verify_receipt_root, 0o555)
+        if (
+            not static_verify_substitution_fired
+            or verify_swap_path.read_bytes() != verify_receipt_a
+        ):
+            raise AssertionError(
+                "static receipt verifier did not consume one captured receipt object"
+            )
+        # Source receipts must be captured and joined to the already
+        # authenticated static-manifest records. Replacing A with a separately
+        # valid B after all snapshot receipts were captured must not let a later
+        # reviewer-ID pathname reopen change the exclusion set.
+        source_receipt_root = (
+            production_output
+            / "static/integration/reviewed-inputs/source-review-receipts"
+        )
+        source_swap_name = SOURCE_REVIEW_KINDS[0][0]
+        source_swap_path = source_receipt_root / source_swap_name
+        source_receipt_a = source_swap_path.read_bytes()
+        source_receipt_b_value = read_json(source_swap_path)
+        source_receipt_b_value["actor"]["identity"] = (
+            "alternate-source-reviewer-9999"
+        )
+        source_receipt_b = pretty_json_bytes(source_receipt_b_value)
+        source_receipt_b_path = temp / "static-verifier-source-receipt-B.json"
+        source_receipt_b_path.write_bytes(source_receipt_b)
+        os.chmod(source_receipt_b_path, 0o444)
+        source_validation_root = temp / "source-receipt-B-validation"
+        copy_tree(source_receipt_root, source_validation_root)
+        make_tree_writable(source_validation_root)
+        (source_validation_root / source_swap_name).write_bytes(source_receipt_b)
+        reviewed_inputs = (
+            production_output / "static/integration/reviewed-inputs"
+        )
+        reviewed_descriptor_bytes = (
+            reviewed_inputs / SOURCE_REVIEW_DESCRIPTOR
+        ).read_bytes()
+        reviewed_manifest_bytes = (
+            reviewed_inputs / SOURCE_REVIEW_MANIFEST
+        ).read_bytes()
+        reviewed_descriptor = parse_json_bytes(
+            reviewed_descriptor_bytes, "source late-swap descriptor"
+        )
+        _validate_source_review_receipts_captured(
+            source_validation_root,
+            snapshot_root=reviewed_inputs,
+            descriptor_sha256=sha256(reviewed_descriptor_bytes),
+            manifest_sha256=sha256(reviewed_manifest_bytes),
+            payload_sha256=reviewed_descriptor["payload_manifest_sha256"],
+            synthetic_capability=_SYNTHETIC_CAPABILITY,
+        )
+        source_late_swap_snapshot_count = 0
+        source_late_swap_fired = False
+
+        def swap_source_after_snapshot_captures(
+            path: Path,
+            expected_hook: str,
+            snapshot: Path,
+            descriptor: dict[str, Any],
+            *,
+            synthetic_capability: object | None = None,
+        ) -> tuple[dict[str, Any], bytes]:
+            nonlocal source_late_swap_snapshot_count, source_late_swap_fired
+            receipt, data = real_captured_receipt_validator(
+                path,
+                expected_hook,
+                snapshot,
+                descriptor,
+                synthetic_capability=synthetic_capability,
+            )
+            source_late_swap_snapshot_count += 1
+            if (
+                source_late_swap_snapshot_count == len(EXTERNAL_REVIEW_HOOKS)
+                and not source_late_swap_fired
+            ):
+                os.chmod(source_receipt_root, 0o755)
+                try:
+                    os.replace(source_receipt_b_path, source_swap_path)
+                finally:
+                    os.chmod(source_receipt_root, 0o555)
+                source_late_swap_fired = True
+            return receipt, data
+
+        globals()["_validate_snapshot_review_receipt_captured"] = (
+            swap_source_after_snapshot_captures
+        )
+        try:
+            expect_integration_failure(
+                lambda: _verify_static_contents(
+                    production_output,
+                    expected_bundle_kind="SYNTHETIC-TEST-ONLY",
+                ),
+                "late source-receipt substitution changed a verified exclusion set",
+            )
+        finally:
+            globals()["_validate_snapshot_review_receipt_captured"] = (
+                real_captured_receipt_validator
+            )
+            os.chmod(source_receipt_root, 0o755)
+            try:
+                source_restore = temp / "static-verifier-source-receipt-A.json"
+                source_restore.write_bytes(source_receipt_a)
+                os.chmod(source_restore, 0o444)
+                os.replace(source_restore, source_swap_path)
+            finally:
+                os.chmod(source_receipt_root, 0o555)
+        if not source_late_swap_fired:
+            raise AssertionError(
+                "late source-receipt substitution regression did not reach its seam"
+            )
+        verify_static(
+            production_output,
+            expected_bundle_kind="SYNTHETIC-TEST-ONLY",
             expected_external_commitment=production_commitment,
         )
         if stat.S_IMODE(
@@ -4696,7 +8903,7 @@ def self_test() -> None:
                 production_output,
                 expected_bundle_kind="PRODUCTION",
             ),
-            "public verifier accepted PRODUCTION without an external commitment",
+            "public verifier promoted a synthetic reviewed lifecycle to PRODUCTION",
         )
         wrong_production_commitment = {
             **production_commitment,
@@ -4705,7 +8912,7 @@ def self_test() -> None:
         expect_integration_failure(
             lambda: verify_static(
                 production_output,
-                expected_bundle_kind="PRODUCTION",
+                expected_bundle_kind="SYNTHETIC-TEST-ONLY",
                 expected_external_commitment=wrong_production_commitment,
             ),
             "public verifier accepted the wrong PRODUCTION commitment",
@@ -4723,98 +8930,16 @@ def self_test() -> None:
             "commitment publisher replaced an existing commitment",
         )
 
-        # Model interruption after bundle publication but before commitment
-        # publication: only the private recovery operation may bridge this gap.
-        recovery_output = temp / "production-bundle-needing-recovery"
-        _finalize_snapshot(
-            snapshot=production_snapshot,
-            receipts=production_receipts,
-            output=recovery_output,
-            bundle_kind="PRODUCTION",
-            synthetic_capability=None,
-        )
-        recovery_commitment_path = temp / "recovered-external-commitment.json"
         expect_integration_failure(
             lambda: recover_external_commitment(
-                root=recovery_output,
-                output=recovery_commitment_path,
-                custody_acknowledgement="",
-            ),
-            "recovery accepted no continuity-of-custody acknowledgement",
-        )
-        if os.path.lexists(recovery_commitment_path):
-            raise AssertionError("failed recovery created a commitment")
-        expect_integration_failure(
-            lambda: recover_external_commitment(
-                root=recovery_output,
-                output=recovery_output / "candidate-local-commitment.json",
+                root=production_output,
+                output=temp / "forbidden-synthetic-recovery.json",
                 custody_acknowledgement=RECOVERY_CUSTODY_ACKNOWLEDGEMENT,
             ),
-            "recovery accepted a commitment output inside the bundle",
-        )
-        existing_recovery_path = temp / "existing-recovery-output.json"
-        existing_recovery_path.write_bytes(b"already present\n")
-        expect_integration_failure(
-            lambda: recover_external_commitment(
-                root=recovery_output,
-                output=existing_recovery_path,
-                custody_acknowledgement=RECOVERY_CUSTODY_ACKNOWLEDGEMENT,
-            ),
-            "recovery replaced an existing output",
-        )
-        recovered_commitment = recover_external_commitment(
-            root=recovery_output,
-            output=recovery_commitment_path,
-            custody_acknowledgement=RECOVERY_CUSTODY_ACKNOWLEDGEMENT,
-        )
-        if (
-            read_json(recovery_commitment_path) != recovered_commitment
-            or stat.S_IMODE(
-                recovery_commitment_path.stat(follow_symlinks=False).st_mode
-            )
-            != 0o444
-        ):
-            raise AssertionError("trusted recovery did not publish its exact read-only commitment")
-        verify_static(
-            recovery_output,
-            expected_bundle_kind="PRODUCTION",
-            expected_external_commitment=recovered_commitment,
-        )
-        expect_integration_failure(
-            lambda: recover_external_commitment(
-                root=recovery_output,
-                output=recovery_commitment_path,
-                custody_acknowledgement=RECOVERY_CUSTODY_ACKNOWLEDGEMENT,
-            ),
-            "recovery replaced an already recovered commitment",
+            "production commitment recovery accepted a synthetic bundle",
         )
 
         trusted_protocol = __import__("protocol")
-        verified_production, _ = trusted_protocol.load_verified_static_bundle(
-            production_output, production_commitment_path
-        )
-        if verified_production != production_output:
-            raise AssertionError("trusted protocol returned the wrong production root")
-        ready_documents = trusted_protocol.load_ready_generated_documents(
-            production_output
-        )
-        if (
-            len(ready_documents["report-launch-records"]) != 120
-            or len(
-                ready_documents["evaluator-launch-contracts"]["assignments"]
-            )
-            != 43
-        ):
-            raise AssertionError(
-                "trusted protocol did not accept the exact report/evaluator derivations"
-            )
-        if trusted_protocol.require_state_root(
-            production_output / RUNTIME_STATE,
-            static_root=production_output,
-            external_commitment_path=production_commitment_path,
-        ) != production_output / RUNTIME_STATE:
-            raise AssertionError("trusted protocol returned the wrong bound state root")
-
         def expect_protocol_failure(operation: Callable[[], Any], message: str) -> None:
             try:
                 operation()
@@ -4823,23 +8948,10 @@ def self_test() -> None:
             raise AssertionError(message)
 
         expect_protocol_failure(
-            lambda: trusted_protocol.load_verified_static_bundle(production_output),
-            "trusted protocol accepted production without an external commitment",
-        )
-        expect_protocol_failure(
-            lambda: trusted_protocol.require_state_root(
-                production_output / RUNTIME_STATE,
-                static_root=production_output,
+            lambda: trusted_protocol.load_verified_static_bundle(
+                production_output, production_commitment_path
             ),
-            "trusted protocol accepted production state without a commitment",
-        )
-        expect_protocol_failure(
-            lambda: trusted_protocol.require_state_root(
-                production_output / RUNTIME_STATE,
-                static_root=output,
-                external_commitment_path=production_commitment_path,
-            ),
-            "trusted protocol accepted state bound to a mismatched static root",
+            "trusted protocol accepted a SYNTHETIC-TEST-ONLY bundle as PRODUCTION",
         )
         expect_protocol_failure(
             lambda: trusted_protocol.load_verified_static_bundle(
@@ -4882,13 +8994,87 @@ def self_test() -> None:
             lambda: verify_static(output, expected_bundle_kind="SYNTHETIC-TEST-ONLY"),
             "verify-static accepted changed static bytes",
         )
-    print("V5 snapshot/review/finalize synthetic self-test passed")
+    print("V5 snapshot/review/finalize mechanical-production and synthetic self-test passed")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("draft", help="validate the unsealed source and mechanism")
+    commands.add_parser(
+        "reviewer-runtime-attestation",
+        help="emit canonical JSON identifying the active reviewer Python/SSL runtime",
+    )
+    prepare_source = commands.add_parser(
+        "prepare-source-review",
+        help="derive and publish the immutable reviewed-source candidate",
+    )
+    prepare_source.add_argument("--source-root", type=Path, required=True)
+    prepare_source.add_argument("--inputs", type=Path, required=True)
+    prepare_source.add_argument("--output", type=Path, required=True)
+    prepare_source.add_argument(
+        "--acknowledge-source-review-values",
+        action="store_true",
+        required=True,
+        help="confirm that the requested policies, invocation text, and seeds are intentional",
+    )
+    review_source = commands.add_parser(
+        "review-source-subject",
+        help="verify a source-review candidate and publish a private review copy",
+    )
+    review_source.add_argument("snapshot", type=Path)
+    review_source.add_argument("--private-copy", type=Path, required=True)
+    source_custody = commands.add_parser(
+        "source-review-custody-check",
+        help="reverify source-review candidate and private copy at review completion",
+    )
+    source_custody.add_argument("--snapshot", type=Path, required=True)
+    source_custody.add_argument("--private-copy", type=Path, required=True)
+    verify_quotations = commands.add_parser(
+        "verify-source-quotations",
+        help=(
+            "fetch pinned official pages and verify every exact excerpt in a "
+            "verified private source-review copy"
+        ),
+    )
+    verify_quotations.add_argument("--private-copy", type=Path, required=True)
+    build_source_receipt = commands.add_parser(
+        "build-source-review-receipt",
+        help=(
+            "bind reviewer-authored work product and findings into one exact "
+            "source-review receipt"
+        ),
+    )
+    build_source_receipt.add_argument("--snapshot", type=Path, required=True)
+    build_source_receipt.add_argument("--private-copy", type=Path, required=True)
+    build_source_receipt.add_argument(
+        "--review-name",
+        choices=[name for name, _kind in SOURCE_REVIEW_KINDS],
+        required=True,
+    )
+    build_source_receipt.add_argument("--actor-id", required=True)
+    build_source_receipt.add_argument("--work-product", type=Path, required=True)
+    build_source_receipt.add_argument("--result", type=Path, required=True)
+    build_source_receipt.add_argument("--output", type=Path, required=True)
+    validate_source_receipts = commands.add_parser(
+        "validate-source-review-receipts",
+        help="validate the exact three-receipt production source-review set",
+    )
+    validate_source_receipts.add_argument("--snapshot", type=Path, required=True)
+    validate_source_receipts.add_argument("--receipts", type=Path, required=True)
+    finalize_source = commands.add_parser(
+        "finalize-reviewed-inputs",
+        help="bind three exact independent source-review receipts without replacement",
+    )
+    finalize_source.add_argument("--snapshot", type=Path, required=True)
+    finalize_source.add_argument("--receipts", type=Path, required=True)
+    finalize_source.add_argument("--output", type=Path, required=True)
+    finalize_source.add_argument(
+        "--acknowledge-authenticated-source-reviewers",
+        action="store_true",
+        required=True,
+        help="confirm out-of-band authentication of three distinct receipt actors",
+    )
     prepare_command = commands.add_parser(
         "prepare-snapshot", help="materialize a complete PRODUCTION review candidate"
     )
@@ -4914,6 +9100,28 @@ def main() -> None:
     )
     custody.add_argument("--snapshot", type=Path, required=True)
     custody.add_argument("--private-copy", type=Path, required=True)
+    build_snapshot_receipt = commands.add_parser(
+        "build-snapshot-review-receipt",
+        help=(
+            "bind reviewer-authored work product and findings into one exact "
+            "snapshot-review receipt"
+        ),
+    )
+    build_snapshot_receipt.add_argument("--snapshot", type=Path, required=True)
+    build_snapshot_receipt.add_argument("--private-copy", type=Path, required=True)
+    build_snapshot_receipt.add_argument(
+        "--hook-id", choices=sorted(EXTERNAL_REVIEW_HOOKS), required=True
+    )
+    build_snapshot_receipt.add_argument("--actor-id", required=True)
+    build_snapshot_receipt.add_argument("--work-product", type=Path, required=True)
+    build_snapshot_receipt.add_argument("--result", type=Path, required=True)
+    build_snapshot_receipt.add_argument("--output", type=Path, required=True)
+    validate_snapshot_receipts = commands.add_parser(
+        "validate-snapshot-review-receipts",
+        help="validate the exact eight-receipt production snapshot-review set",
+    )
+    validate_snapshot_receipts.add_argument("--snapshot", type=Path, required=True)
+    validate_snapshot_receipts.add_argument("--receipts", type=Path, required=True)
     finalize = commands.add_parser(
         "finalize", help="bind independent receipts and lock a PRODUCTION snapshot"
     )
@@ -4975,6 +9183,57 @@ def main() -> None:
     args = parser.parse_args()
     if args.command == "draft":
         draft()
+    elif args.command == "reviewer-runtime-attestation":
+        print(
+            canonical_json_bytes(current_reviewer_runtime_attestation()).decode("utf-8"),
+            end="",
+        )
+    elif args.command == "prepare-source-review":
+        prepare_source_review(
+            source_root=args.source_root,
+            inputs=args.inputs,
+            output=args.output,
+        )
+        print(f"wrote immutable source-review candidate: {args.output}")
+    elif args.command == "review-source-subject":
+        print(
+            pretty_json_bytes(
+                prepare_source_review_copy(args.snapshot, args.private_copy)
+            ).decode("utf-8"),
+            end="",
+        )
+    elif args.command == "source-review-custody-check":
+        print(
+            pretty_json_bytes(
+                verify_source_review_custody(args.snapshot, args.private_copy)
+            ).decode("utf-8"),
+            end="",
+        )
+    elif args.command == "verify-source-quotations":
+        verify_source_review_quotations(args.private_copy)
+    elif args.command == "build-source-review-receipt":
+        build_source_review_receipt(
+            snapshot=args.snapshot,
+            private_copy=args.private_copy,
+            review_name=args.review_name,
+            actor_id=args.actor_id,
+            work_product_path=args.work_product,
+            result_path=args.result,
+            output=args.output,
+        )
+        print(f"wrote validated source-review receipt: {args.output}")
+    elif args.command == "validate-source-review-receipts":
+        validate_production_source_review_receipts(
+            snapshot=args.snapshot, receipts=args.receipts
+        )
+        print("validated exact three-receipt production source-review set")
+    elif args.command == "finalize-reviewed-inputs":
+        finalize_reviewed_inputs(
+            snapshot=args.snapshot,
+            receipts=args.receipts,
+            output=args.output,
+        )
+        print(f"wrote finalized reviewed snapshot inputs: {args.output}")
     elif args.command == "prepare-snapshot":
         prepare_snapshot(
             source_root=args.source_root,
@@ -4997,6 +9256,22 @@ def main() -> None:
             ).decode("utf-8"),
             end="",
         )
+    elif args.command == "build-snapshot-review-receipt":
+        build_snapshot_review_receipt(
+            snapshot=args.snapshot,
+            private_copy=args.private_copy,
+            hook_id=args.hook_id,
+            actor_id=args.actor_id,
+            work_product_path=args.work_product,
+            result_path=args.result,
+            output=args.output,
+        )
+        print(f"wrote validated snapshot-review receipt: {args.output}")
+    elif args.command == "validate-snapshot-review-receipts":
+        validate_production_snapshot_review_receipts(
+            snapshot=args.snapshot, receipts=args.receipts
+        )
+        print("validated exact eight-receipt production snapshot-review set")
     elif args.command == "finalize":
         commitment = finalize_snapshot(
             snapshot=args.snapshot,
