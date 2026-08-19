@@ -30,7 +30,7 @@
   "requirements": [
     {"gate_id": "G-ISOLATION", "source": "testing-plan:artifact-architecture", "summary": "Nonwaivable release blocker: enforced filesystem, package, prompt, network, documentation, and paired-side isolation."},
     {"gate_id": "G-OUTPUT-FINALIZATION", "source": "testing-plan:fresh-agent-protocol", "summary": "Nonwaivable release blocker: trusted leased-attempt and atomic whole-envelope finalization."},
-    {"gate_id": "D-STATIC-INTEGRITY", "source": "run-specific", "summary": "Direct FAIL while recomputation, closure, signoffs, maps, whole-file binding/lock, and content-bound aggregate hooks remain unimplemented."},
+    {"gate_id": "D-STATIC-INTEGRITY", "source": "run-specific", "summary": "PASS only for a verified STATIC-LOCK whose canonical runtime envelopes, score merges, controls, materiality ledger, and comparison inputs deterministically rederive the exact bound aggregate context; caller-provided context remains FAIL."},
     {"gate_id": "D-ORACLE-COVERAGE", "source": "diagnostic-design", "summary": "Every diagnostic atom has evaluator-oracle-blind fixture coverage."},
     {"gate_id": "D-COLLECTION-COMPLETE", "source": "run-specific", "summary": "Every scheduled diagnostic slot has exactly one verified canonical terminal envelope."},
     {"gate_id": "D-OUTPUT-VALID", "source": "attempt-envelope.schema.json+aggregation-rules.json", "summary": "Every canonical envelope and enforced word-count receipt is valid; no terminal seal failed."},

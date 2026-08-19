@@ -4,10 +4,12 @@
   "$comment": "DRAFT / UNSEALED content-bound aggregate gate context; integration must derive, never accept caller booleans.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "status", "rules_sha256", "input_digests", "context"],
+  "required": ["schema_version", "status", "builder_id", "static_lock_sha256", "rules_sha256", "input_digests", "context", "binding_sha256"],
   "properties": {
     "schema_version": {"const": 1},
     "status": {"const": "DERIVED"},
+    "builder_id": {"const": "v5-diagnostic-aggregate-context-v1"},
+    "static_lock_sha256": {"$ref": "#/$defs/digest"},
     "rules_sha256": {"$ref": "#/$defs/digest"},
     "input_digests": {
       "type": "object",
@@ -30,7 +32,19 @@
         "coherence_review_sha256": {"$ref": "#/$defs/digest"}
       }
     },
-    "context": {"type": "object"}
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["oracle", "collection", "scores", "comparison", "review"],
+      "properties": {
+        "oracle": {"type": "object", "additionalProperties": false, "required": ["coverage_pass"], "properties": {"coverage_pass": {"type": "boolean"}}},
+        "collection": {"type": "object", "additionalProperties": false, "required": ["complete", "invalid_output_count"], "properties": {"complete": {"type": "boolean"}, "invalid_output_count": {"type": "integer", "minimum": 0}}},
+        "scores": {"type": "object", "additionalProperties": false, "required": ["focused_recall_pass", "proof_quality_pass", "controls_pass", "hard_error_count", "global_defect_count", "material_finding_count"], "properties": {"focused_recall_pass": {"type": "boolean"}, "proof_quality_pass": {"type": "boolean"}, "controls_pass": {"type": "boolean"}, "hard_error_count": {"type": "integer", "minimum": 0}, "global_defect_count": {"type": "integer", "minimum": 0}, "material_finding_count": {"type": "integer", "minimum": 0}}},
+        "comparison": {"type": "object", "additionalProperties": false, "required": ["predicate_pass"], "properties": {"predicate_pass": {"type": "boolean"}}},
+        "review": {"type": "object", "additionalProperties": false, "required": ["coherence_pass"], "properties": {"coherence_pass": {"type": "boolean"}}}
+      }
+    },
+    "binding_sha256": {"$ref": "#/$defs/digest"}
   },
   "$defs": {"digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
 }
