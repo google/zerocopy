@@ -5,10 +5,24 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "status", "manifest_version", "gates"],
+  "oneOf": [
+    {
+      "properties": {
+        "status": {"const": "DRAFT"},
+        "manifest_version": {"const": "v5-diagnostic-prequalification-draft-1"}
+      }
+    },
+    {
+      "properties": {
+        "status": {"const": "READY"},
+        "manifest_version": {"const": "v5-diagnostic-prequalification-1"}
+      }
+    }
+  ],
   "properties": {
     "schema_version": {"const": 1},
     "status": {"enum": ["DRAFT", "READY"]},
-    "manifest_version": {"type": "string", "minLength": 1},
+    "manifest_version": {"type": "string"},
     "gates": {
       "type": "array",
       "minItems": 1,
