@@ -13,6 +13,13 @@ and to zero bytes for no-skill. All other rendered prompt bytes for the same
 target/regime must be identical across conditions; the ordinary no-skill
 request therefore contains no hint that another treatment exists.
 
+Each agent starts in a fresh opaque external workspace. Every rendered prompt
+uses only the fixed workspace-relative aliases `input/` and `output/`, and the
+materialized leaves are identical across conditions except that V5/V4 have one
+package at `input/package/` while no-skill has no such entry. Absolute
+workspace paths are coordinator-only fields in static-locked launch records;
+they never occur in prompt bytes or agent-visible input documents.
+
 This collaboration environment does not enforce that boundary: agents share a
 checkout and coordinator/tool mediation. The executable manifest therefore
 fixes `G-ISOLATION` to direct `FAIL`. Procedural restraint is useful for

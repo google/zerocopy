@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:integration-status:1",
+  "$comment": "DRAFT source schema for a mechanically finalized READY bundle status.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "bundle_kind", "creation_path", "phase", "static_state", "semantic_launch_eligible", "semantic_launch_requires_expected_production_verification", "runtime_collection_receipts_required_after_lock", "postrun_aggregate_receipts_required_after_collection"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "READY"},
+    "bundle_kind": {"enum": ["PRODUCTION", "SYNTHETIC-TEST-ONLY"]},
+    "creation_path": {"enum": ["PRODUCTION_REVIEWED_SNAPSHOT_FINALIZATION", "PRIVATE_SYNTHETIC_SELF_TEST_FINALIZATION"]},
+    "phase": {"const": "FINALIZE_STATIC_COMPLETE"},
+    "static_state": {"const": "BOUND_BY_ROOT_STATIC_LOCK"},
+    "semantic_launch_eligible": {"type": "boolean"},
+    "semantic_launch_requires_expected_production_verification": {"const": true},
+    "runtime_collection_receipts_required_after_lock": {"const": true},
+    "postrun_aggregate_receipts_required_after_collection": {"const": true}
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "bundle_kind": {"const": "PRODUCTION"},
+        "creation_path": {"const": "PRODUCTION_REVIEWED_SNAPSHOT_FINALIZATION"},
+        "semantic_launch_eligible": {"const": true}
+      }
+    },
+    {
+      "properties": {
+        "bundle_kind": {"const": "SYNTHETIC-TEST-ONLY"},
+        "creation_path": {"const": "PRIVATE_SYNTHETIC_SELF_TEST_FINALIZATION"},
+        "semantic_launch_eligible": {"const": false}
+      }
+    }
+  ]
+}
