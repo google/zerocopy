@@ -28,6 +28,17 @@ use std::{
 
 use toml::{map::Map, Value};
 
+// This list has two consumers outside this workspace:
+//
+// - The UI test entry points use the cfg named by `UI_TEST_TOOLCHAIN_CFG` to
+//   decide whether their diagnostic snapshots support the selected toolchain.
+// - `testutil::UiTestRunner` maps these same names to snapshot suffixes.
+//
+// Keep all three in sync. CI checks the coupling so adding another supported
+// UI toolchain fails until its snapshots and runner support are also added.
+const UI_TEST_TOOLCHAINS: [&str; 3] = ["msrv", "stable", "nightly"];
+const UI_TEST_TOOLCHAIN_CFG: &str = "__ZEROCOPY_INTERNAL_USE_ONLY_UI_TEST_TOOLCHAIN";
+
 // Cargo test executables inherit this variable from the delegated Cargo
 // process. `testutil::UiTestRunner` implements the matching decoder and reuses
 // the outer command's feature selection when it builds UI fixture artifacts.
@@ -270,6 +281,10 @@ fn install_targets_or_exit(version: &str, targets: &[String]) -> Result<(), Erro
     )
 }
 
+fn is_ui_test_toolchain(name: &str) -> bool {
+    UI_TEST_TOOLCHAINS.contains(&name)
+}
+
 // Extract Cargo's feature-selection options from the arguments before `--`.
 // UI tests invoke Cargo recursively to locate the exact artifacts supplied to
 // rustc. Reusing these options ensures that recursive build has the same
@@ -328,6 +343,10 @@ fn get_rustflags(name: &str) -> String {
         "--cfg zerocopy_unstable_linux --cfg zerocopy_derive_union_into_bytes --cfg __ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE"
             .to_string();
     flags += &format!(" --cfg __ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN=\"{name}\"");
+
+    if is_ui_test_toolchain(name) {
+        flags += &format!(" --cfg {UI_TEST_TOOLCHAIN_CFG}");
+    }
 
     if name == "nightly" {
         flags += " --cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS";
@@ -695,6 +714,23 @@ mod tests {
             "14:--all-features10:--features19:derive,simd-nightly"
         );
         assert_eq!(encode_feature_selection_args(&strings(&["", ":", "μ"])), "0:1::2:μ");
+    }
+
+    #[test]
+    fn ui_test_cfg_is_limited_to_snapshot_toolchains() {
+        for name in UI_TEST_TOOLCHAINS {
+            assert!(is_ui_test_toolchain(name));
+            assert!(get_rustflags(name)
+                .split_whitespace()
+                .any(|flag| flag == UI_TEST_TOOLCHAIN_CFG));
+        }
+
+        for name in ["no-zerocopy-core-error-1-81-0", "1.93.1", "beta", ""] {
+            assert!(!is_ui_test_toolchain(name));
+            assert!(!get_rustflags(name)
+                .split_whitespace()
+                .any(|flag| flag == UI_TEST_TOOLCHAIN_CFG));
+        }
     }
 }
 

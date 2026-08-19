@@ -133,7 +133,6 @@ python3 .github/scripts/test_create_crates_release_plan.py
 python3 .github/scripts/test_reconcile_crates_release.py
 python3 .github/scripts/test_release_workflows.py
 python3 .github/scripts/test_locked_cargo_invocations.py
-python3 .github/scripts/test_ui_feature_coverage.py
 python3 .github/actions/require-successful-jobs/test_check.py
 python3 githooks/test_pre_push.py
 

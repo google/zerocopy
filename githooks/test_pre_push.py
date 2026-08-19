@@ -32,14 +32,23 @@ _CHECKS = (
     "ci/check_fmt.sh",
     "ci/check_job_dependencies.sh",
     "zerocopy/ci/check_all_toolchains_tested.sh",
+    "zerocopy/ci/test_check_all_toolchains_tested.sh",
     "zerocopy/ci/check_readme.sh",
     "zerocopy/ci/check_stale_stderr.sh",
     "zerocopy/ci/check_versions.sh",
     "zerocopy/ci/check_msrv_is_minimal.sh",
 )
-_EXEMPT_RELEASE_HELPERS = (
+_EXEMPT_HELPERS = (
+    "ci/check_todo.sh",
+    "ci/release_anneal_version.sh",
     "ci/run_cargo_for_release.sh",
+    "zerocopy/ci/check_fmt.sh",
+    "zerocopy/ci/feature_policy.jq",
+    "zerocopy/ci/feature_profile.sh",
     "zerocopy/ci/package_release_crates.sh",
+    "zerocopy/ci/release_crate_version.sh",
+    "zerocopy/ci/run_build_test_cell.sh",
+    "zerocopy/ci/test_feature_policy.sh",
 )
 
 _CHECK_STUB = """\
@@ -127,8 +136,8 @@ class FakeRepository:
 
         # These helpers are deliberately inventoried but not executed by the
         # read-only hook. Their presence catches drift in its GLOBIGNORE
-        # contract without invoking publication-oriented behavior in a test.
-        for helper in _EXEMPT_RELEASE_HELPERS:
+        # contract without invoking publication or nested build behavior.
+        for helper in _EXEMPT_HELPERS:
             path = self.path / helper
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text("#!/usr/bin/env bash\nexit 99\n", encoding="utf-8")
@@ -141,9 +150,7 @@ class FakeRepository:
         subprocess.run(
             ["git", "init", "--quiet"], cwd=self.path, check=True
         )
-        subprocess.run(
-            ["git", "add", "."], cwd=self.path, check=True
-        )
+        subprocess.run(["git", "add", "."], cwd=self.path, check=True)
 
     def close(self):
         self._temporary_directory.cleanup()
@@ -272,12 +279,16 @@ class PrePushTest(unittest.TestCase):
                     environment = (
                         {
                             "MUTATING_CHECK": "ci/check_actions.sh",
-                            "MUTATE_LOCKFILE": str(self.repository.path / lockfile),
+                            "MUTATE_LOCKFILE": str(
+                                self.repository.path / lockfile
+                            ),
                         }
                         if operation == "mutate"
                         else {
                             "DELETING_CHECK": "ci/check_actions.sh",
-                            "DELETE_LOCKFILE": str(self.repository.path / lockfile),
+                            "DELETE_LOCKFILE": str(
+                                self.repository.path / lockfile
+                            ),
                         }
                     )
                     result = self.repository.run_hook(**environment)
@@ -311,7 +322,8 @@ class PrePushTest(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("ci/check_actions.sh failed with status 23", result.stderr)
         self.assertIn(f"{lockfile} was modified", result.stderr)
-        self.assertTrue((self.repository.markers / slow_check.replace("/", "_")).is_file())
+        marker = self.repository.markers / slow_check.replace("/", "_")
+        self.assertTrue(marker.is_file())
 
     def test_reports_a_non_first_child_failure(self):
         failed_check = "zerocopy/ci/check_stale_stderr.sh"

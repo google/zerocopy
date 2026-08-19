@@ -53,10 +53,6 @@ env:
   # toolchain.
   ZC_NIGHTLY_RUSTFLAGS: -Zrandomize-layout
   ZC_NIGHTLY_MIRIFLAGS: "-Zmiri-strict-provenance -Zmiri-backtrace=full"
-  # Cargo.toml owns the UI target's required features. The feature-policy
-  # checker derives these exact crate/profile pairs from Cargo metadata and
-  # fails if either this list or the manifest changes alone.
-  ZC_UI_TEST_CELLS: '["zerocopy/stable","zerocopy/all","zerocopy-derive/default"]'
   CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
 
 jobs:
@@ -423,96 +419,17 @@ jobs:
           echo "Using non-nightly toolchain; not modifying RUSTFLAGS='$RUSTFLAGS' or MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
         fi
 
-    # On the `thumbv6m-none-eabi` target, we can't run `cargo check --tests` due
-    # to the `memchr` crate, so we just do `cargo check` instead.
-    - name: Check
+    # Keep this step unconditional. The helper classifies every target and
+    # fails if the workflow adds one without an explicit build/test mode.
+    # check_all_toolchains_tested.sh compares the helper's machine-readable
+    # policy with this matrix, preventing either side from drifting.
+    - name: Build and test
       env:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         TARGET: ${{ matrix.target }}
-      run: ./cargo.sh +$TOOLCHAIN check --package $CRATE --target $TARGET $FEATURES --verbose
-      if: matrix.target == 'thumbv6m-none-eabi'
-
-    - name: Check tests
-      env:
-        TOOLCHAIN: ${{ matrix.toolchain }}
-        CRATE: ${{ matrix.crate }}
-        TARGET: ${{ matrix.target }}
-      run: ./cargo.sh +$TOOLCHAIN check --tests --package $CRATE --target $TARGET $FEATURES --verbose
-      if: matrix.target != 'thumbv6m-none-eabi'
-
-    - name: Build
-      env:
-        TOOLCHAIN: ${{ matrix.toolchain }}
-        CRATE: ${{ matrix.crate }}
-        TARGET: ${{ matrix.target }}
-      run: ./cargo.sh +$TOOLCHAIN build --package $CRATE --target $TARGET $FEATURES --verbose
-      if: matrix.target != 'thumbv6m-none-eabi'
-
-    - name: Run tests
-      env:
-        TOOLCHAIN: ${{ matrix.toolchain }}
-        CRATE: ${{ matrix.crate }}
-        TARGET: ${{ matrix.target }}
-      run: |
-        ./cargo.sh +$TOOLCHAIN test \
-          --package $CRATE \
-          --target $TARGET \
-          $FEATURES \
-          --verbose \
-          -- \
-          --skip ui \
-          --skip codegen
-
-      # Only run tests when targetting Linux x86 (32- or 64-bit) - we're
-      # executing on Linux x86_64, so we can't run tests for any non-x86 target.
-      #
-      # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
-      # Run compile tests when building for other targets.
-      if: contains(matrix.target, 'linux') && (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686'))
-
-    - name: Run UI tests
-      env:
-        TOOLCHAIN: ${{ matrix.toolchain }}
-        CRATE: ${{ matrix.crate }}
-        TARGET: ${{ matrix.target }}
-      run: |
-        # Run UI tests separately, treating warnings as warnings (rather than
-        # as errors, as we do everywhere else in our CI tests). This allows
-        # our UI tests to more accurately reflect what users will see, and
-        # also ensures that we're not spuriously relying on warnings being
-        # errors to ensure compilation failure (if we were, then our code
-        # would be unsound whenever -Dwarnings is not enabled).
-        #
-        # TODO(#560), TODO(#187): Once we migrate to the ui-test crate, we
-        # likely won't have to special-case the UI tests like this.
-        RUSTFLAGS="$RUSTFLAGS -Wwarnings" ./cargo.sh +$TOOLCHAIN test \
-          --package $CRATE \
-          --target $TARGET \
-          $FEATURES \
-          --verbose \
-          --test ui
-
-      # Only run tests when targetting Linux x86 (32- or 64-bit) - we're
-      # executing on Linux x86_64, so we can't run tests for any non-x86 target.
-      #
-      # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
-      # Run compile tests when building for other targets.
-      #
-      # Only run UI tests for the 'msrv', 'stable', and 'nightly' toolchains.
-      # Other toolchains are tested only because zerocopy has behavior which
-      # differs on those toolchains, but at present, none of that behavior
-      # affects UI tests. If we were to run UI tests on these toolchains, we
-      # would need a new set of UI test files per toolchain, which would be a
-      # maintenance burden not worth the (at present, zero) benefit.
-      if: |
-        contains(
-          fromJSON(env.ZC_UI_TEST_CELLS),
-          format('{0}/{1}', matrix.crate, matrix.feature_profile)
-        ) &&
-        (!contains(matrix.target, 'windows')) &&
-        (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) &&
-         (matrix.toolchain == 'msrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
+        FEATURE_PROFILE: ${{ matrix.feature_profile }}
+      run: ./ci/run_build_test_cell.sh "$TOOLCHAIN" "$CRATE" "$TARGET" "$FEATURE_PROFILE"
 
     # On the `thumbv6m-none-eabi` target, we can't run `cargo clippy --tests`
     # due to the `memchr` crate, so we just do `cargo clippy` instead.
@@ -718,6 +635,17 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      # Cargo.toml excludes codegen from default test selection. This job owns
+      # both linting and executing that target so it cannot lose coverage when
+      # the ordinary build matrix uses an unfiltered default `cargo test`.
+      - name: Clippy
+        run: |
+          ./cargo.sh +nightly clippy --locked \
+            --package zerocopy \
+            --target x86_64-unknown-linux-gnu \
+            --all-features \
+            --test codegen \
+            --verbose
       - name: Run tests
         run: |
           set -eo pipefail
@@ -753,10 +681,7 @@ jobs:
             --doctests \
             --lcov \
             --output-path lcov.info \
-            --verbose \
-            -- \
-            --skip ui \
-            --skip codegen
+            --verbose
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
@@ -972,17 +897,16 @@ jobs:
           persist-credentials: false
       - name: Run check
         run: cd zerocopy && ./ci/check_all_toolchains_tested.sh
-      # These unit tests cover both ends of the cross-workspace feature
-      # protocol used by recursive UI fixture builds. Keep this step with the
-      # Cargo.toml/ci.yml policy check above so either side cannot drift alone.
-      - name: Test UI feature support
+      # These tests cover the feature protocol across the zerocopy and tools
+      # workspaces, plus the checker's fail-closed mutation coverage.
+      - name: Test CI support code
         run: |
           (cd zerocopy && ./cargo.sh +stable test --package testutil)
           # cargo.sh delegates from zerocopy/, whose vendor excludes the tools
           # workspace.
           TOOLS_STABLE="$(zerocopy/cargo.sh --version stable)"
-          cargo +"$TOOLS_STABLE" test --locked \
-            --manifest-path tools/cargo-zerocopy/Cargo.toml
+          cargo +"$TOOLS_STABLE" test --locked --manifest-path tools/cargo-zerocopy/Cargo.toml
+          (cd zerocopy && ./ci/test_check_all_toolchains_tested.sh)
 
   check-job-dependencies:
     runs-on: ubuntu-latest
