@@ -9,7 +9,18 @@
 use testutil::UiTestRunner;
 
 #[test]
-#[cfg_attr(miri, ignore)]
+#[cfg_attr(
+    any(
+        miri,
+        coverage_nightly,
+        not(any(
+            __ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "msrv",
+            __ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "stable",
+            __ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "nightly",
+        )),
+    ),
+    ignore
+)]
 fn ui() {
     // This tests the behavior when `--cfg zerocopy_derive_union_into_bytes` is
     // present.

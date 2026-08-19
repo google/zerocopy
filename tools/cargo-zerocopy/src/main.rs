@@ -28,6 +28,12 @@ use std::{
 
 use toml::{map::Map, Value};
 
+// Cargo test executables inherit these variables from the delegated process.
+// `testutil::UiTestRunner` reuses the exact outer feature selection when it
+// recursively builds artifacts for UI fixtures.
+const UI_TEST_FEATURE_ARG_COUNT_ENV: &str = "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT";
+const UI_TEST_FEATURE_ARG_ENV_PREFIX: &str = "ZEROCOPY_UI_TEST_FEATURE_ARG_";
+
 #[derive(Debug)]
 enum Error {
     NoArguments,
@@ -264,6 +270,47 @@ fn install_targets_or_exit(version: &str, targets: &[String]) -> Result<(), Erro
     )
 }
 
+// Capture Cargo feature-selection arguments before the test-binary separator.
+// Preserve their spelling and order: repeated feature options are additive,
+// and replaying the original arguments delegates their semantics back to
+// Cargo.
+fn capture_feature_selection_args(args: &[String]) -> Vec<String> {
+    let mut captured = Vec::new();
+    let mut index = 0;
+
+    while index < args.len() {
+        let arg = &args[index];
+        if arg == "--" {
+            break;
+        }
+
+        if arg == "--features" || arg == "-F" {
+            captured.push(arg.clone());
+            if let Some(value) = args.get(index + 1) {
+                captured.push(value.clone());
+                index += 1;
+            }
+        } else if arg == "--all-features"
+            || arg == "--no-default-features"
+            || arg.starts_with("--features=")
+            || (arg.starts_with("-F") && arg.len() > 2)
+        {
+            captured.push(arg.clone());
+        }
+
+        index += 1;
+    }
+
+    captured
+}
+
+fn set_ui_test_feature_args(command: &mut Command, args: &[String]) {
+    command.env(UI_TEST_FEATURE_ARG_COUNT_ENV, args.len().to_string());
+    for (index, arg) in args.iter().enumerate() {
+        command.env(format!("{}{}", UI_TEST_FEATURE_ARG_ENV_PREFIX, index), arg);
+    }
+}
+
 fn get_rustflags(name: &str) -> String {
     // See #1792 for context on zerocopy_derive_union_into_bytes.
     let mut flags =
@@ -331,6 +378,7 @@ fn delegate_cargo() -> Result<(), Error> {
                 }
 
                 let args_vec = args.collect::<Vec<_>>();
+                let feature_selection_args = capture_feature_selection_args(&args_vec);
                 let mut i = 0;
                 while i < args_vec.len() {
                     let arg = &args_vec[i];
@@ -379,6 +427,7 @@ fn delegate_cargo() -> Result<(), Error> {
                 // RUSTDOCFLAGS.
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
                 cmd.env("RUSTDOCFLAGS", &rustdocflags);
+                set_ui_test_feature_args(&mut cmd, &feature_selection_args);
 
                 if env::var("CARGO_TARGET_DIR").is_ok() {
                     eprintln!("[cargo-zerocopy] WARNING: `CARGO_TARGET_DIR` is set - this may cause `cargo-zerocopy` to behave unexpectedly");
@@ -439,6 +488,75 @@ fn delegate_cargo() -> Result<(), Error> {
                 Err(Error::UnrecognizedArgument(arg.to_string()))
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::{ffi::OsStr, process::Command};
+
+    use super::{capture_feature_selection_args, set_ui_test_feature_args};
+
+    fn strings(args: &[&str]) -> Vec<String> {
+        args.iter().map(|arg| (*arg).to_string()).collect()
+    }
+
+    #[test]
+    fn captures_feature_selection_before_separator() {
+        let args = strings(&[
+            "test",
+            "--all-features",
+            "--features",
+            "alloc,derive",
+            "-Fsimd",
+            "-F",
+            "std",
+            "--no-default-features",
+            "--features=float-nightly",
+            "--",
+            "--features",
+            "ignored-test-argument",
+        ]);
+
+        assert_eq!(
+            capture_feature_selection_args(&args),
+            strings(&[
+                "--all-features",
+                "--features",
+                "alloc,derive",
+                "-Fsimd",
+                "-F",
+                "std",
+                "--no-default-features",
+                "--features=float-nightly",
+            ])
+        );
+    }
+
+    #[test]
+    fn exports_indexed_ui_test_feature_args() {
+        fn configured_env<'a>(command: &'a Command, key: &str) -> Option<&'a OsStr> {
+            command
+                .get_envs()
+                .find(|(configured, _)| *configured == OsStr::new(key))
+                .and_then(|(_, value)| value)
+        }
+        fn assert_env(command: &Command, key: &str, value: &str) {
+            assert_eq!(configured_env(command, key), Some(OsStr::new(value)));
+        }
+
+        let mut command = Command::new("cargo");
+        set_ui_test_feature_args(&mut command, &strings(&["--features", "", "-Fμ"]));
+        assert_eq!(command.get_envs().count(), 4);
+        assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_0", "--features");
+        assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_1", "");
+        assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_2", "-Fμ");
+        assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT", "3");
+
+        let mut command = Command::new("cargo");
+        set_ui_test_feature_args(&mut command, &[]);
+        assert_eq!(command.get_envs().count(), 1);
+        assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT", "0");
     }
 }
 

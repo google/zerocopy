@@ -128,6 +128,20 @@ zerocopy-derive = { version = "=0.8.56", path = "zerocopy-derive", optional = tr
 [target.'cfg(any())'.dependencies]
 zerocopy-derive = { version = "=0.8.56", path = "zerocopy-derive" }
 
+# Cargo, rather than workflow predicates, owns integration-test eligibility.
+# The UI suite cannot produce meaningful results without derive support.
+[[test]]
+name = "ui"
+path = "tests/ui.rs"
+required-features = ["derive"]
+
+# This target requires LLVM tooling and is exercised by its dedicated CI job.
+# Exclude it from Cargo's ordinary unfiltered test selection.
+[[test]]
+name = "codegen"
+path = "tests/codegen.rs"
+test = false
+
 [dev-dependencies]
 # FIXME(#381) Remove this dependency once we have our own layout gadgets.
 elain = "0.3.0"
