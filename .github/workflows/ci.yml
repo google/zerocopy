@@ -338,9 +338,24 @@ jobs:
         trap 'rm -f -- "$IMAGE_ARCHIVE"' EXIT
         docker load --input "$IMAGE_ARCHIVE"
         docker image inspect "$IMAGE_NAME" >/dev/null
-        # `inspect` proves the tag exists; running a trivial command also proves
-        # that the archive matches this runner's architecture.
-        docker run --rm "$IMAGE_NAME" true
+        # Running Bash proves that the archive matches the runner architecture.
+        # Use the wrapper's explicit entrypoint and reject Cargo configuration
+        # that could replace native tests with a runner.
+        docker run --rm --entrypoint /bin/bash \
+          --env BASH_ENV= --env SHELLOPTS= \
+          "$IMAGE_NAME" -p -euo pipefail -c '
+          cargo_home="${CARGO_HOME:-${HOME:-/root}/.cargo}"
+          [[ "$cargo_home" == /root/.cargo ]]
+          [[ -d /root && ! -L /root && -d "$cargo_home" && ! -L "$cargo_home" ]]
+          [[ ! -L /home && ! -L /home/runner ]]
+          for config_dir in "$cargo_home" /home/runner/.cargo /home/.cargo /.cargo; do
+            [[ ! -L "$config_dir" ]]
+            for config_name in config config.toml; do
+              config_path="$config_dir/$config_name"
+              [[ ! -e "$config_path" && ! -L "$config_path" ]]
+            done
+          done
+        '
 
     - &create_docker_shell
       name: Create Docker Shell Wrapper
@@ -359,6 +374,7 @@ jobs:
         # temp dirs. Explicitly forward GitHub Actions internal state and matrix
         # environment variables.
         docker run --rm -i \
+          --entrypoint /bin/bash \
           --workdir "$PWD" \
           -v /home/runner/work:/home/runner/work \
           -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \
@@ -370,7 +386,8 @@ jobs:
           -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
           -e ZC_SKIP_CARGO_SEMVER_CHECKS \
-          "$ZC_CI_IMAGE" bash -c "git config --global --add safe.directory '*' && exec bash -e -o pipefail \"\$1\"" -- "$1"
+          -e BASH_ENV= -e SHELLOPTS= \
+          "$ZC_CI_IMAGE" -p -c "git config --global --add safe.directory '*' && exec /bin/bash -p -e -o pipefail \"\$1\"" -- "$1"
         EOF
         chmod +x /tmp/docker-shell.sh
 
