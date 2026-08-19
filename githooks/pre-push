@@ -10,33 +10,68 @@
 
 set -eo pipefail
 echo "Running pre-push git hook: $0"
+
+# The checks below use cargo-zerocopy's pinned stable and nightly toolchains.
+# On a fresh machine, check_fmt.sh and both toolchain-policy checks can all
+# reach rustup installation concurrently. Rustup shares download and rollback
+# paths across toolchains, so those installations can remove one another's
+# partial files. Bootstrap the two toolchains serially before retaining useful
+# parallelism between the actual checks.
+#
+# Keep this list coordinated with the backgrounded scripts below: if another
+# check starts using a different cargo-zerocopy descriptor, initialize it here
+# before that check may run in parallel.
+CHECKS_FAILED=0
+TOOLCHAINS_READY=1
+bootstrap_toolchain() {
+    local descriptor="$1"
+    local status
+    # Git sends the ref-update protocol to pre-push hooks on stdin. Bootstrap
+    # is deliberately noninteractive, and neither cargo-zerocopy nor a rustup
+    # child may consume input needed by a chained git-lfs or GHerrit hook.
+    if CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN=1 \
+        ./zerocopy/cargo.sh "+$descriptor" --version </dev/null >/dev/null; then
+        return
+    else
+        status=$?
+    fi
+    echo "zerocopy/cargo.sh +$descriptor --version failed with status $status" >&2
+    CHECKS_FAILED=1
+    TOOLCHAINS_READY=0
+}
+
+bootstrap_toolchain stable
+bootstrap_toolchain nightly
+
 # Forego redirecting stdout to /dev/null on check_fmt.sh because the output from
 # `cargo fmt` is useful (and the good stuff is not delivered by stderr).
 #
-# Background all jobs and wait for them so they can run in parallel.
-./ci/check_actions.sh                                  & ACTIONS_PID=$!
-./ci/check_fmt.sh                                      & FMT_PID=$!
-./ci/check_job_dependencies.sh      >/dev/null         & JOB_DEPS_PID=$!
-./zerocopy/ci/check_all_toolchains_tested.sh >/dev/null & TOOLCHAINS_PID=$!
-./zerocopy/ci/check_readme.sh                >/dev/null & README_PID=$!
-./zerocopy/ci/check_stale_stderr.sh          >/dev/null & STALE_STDERR_PID=$!
-./zerocopy/ci/check_versions.sh              >/dev/null & VERSIONS_PID=$!
-./zerocopy/ci/check_msrv_is_minimal.sh       >/dev/null & MSRV_PID=$!
+# Background all jobs and wait for them so they can run in parallel. Do not
+# launch them after a bootstrap failure: they could otherwise race to repair
+# the same incomplete toolchain state. Static script-inventory checks below
+# still run, including when bootstrap fails.
+if [[ "$TOOLCHAINS_READY" -eq 1 ]]; then
+    ./ci/check_actions.sh                                  & ACTIONS_PID=$!
+    ./ci/check_fmt.sh                                      & FMT_PID=$!
+    ./ci/check_job_dependencies.sh      >/dev/null         & JOB_DEPS_PID=$!
+    ./zerocopy/ci/check_all_toolchains_tested.sh >/dev/null & TOOLCHAINS_PID=$!
+    ./zerocopy/ci/check_readme.sh                >/dev/null & README_PID=$!
+    ./zerocopy/ci/check_stale_stderr.sh          >/dev/null & STALE_STDERR_PID=$!
+    ./zerocopy/ci/check_versions.sh              >/dev/null & VERSIONS_PID=$!
+    ./zerocopy/ci/check_msrv_is_minimal.sh       >/dev/null & MSRV_PID=$!
 
-# `wait <pid>` exits with the same status code as the job it's waiting for.
-# Since we `set -e` above, this will have the effect of causing the entire
-# script to exit with a non-zero status code if any of these jobs does the same.
-# Note that, while `wait` (with no PID argument) waits for all backgrounded
-# jobs, it exits with code 0 even if one of the backgrounded jobs does not, so
-# we can't use it here.
-wait $ACTIONS_PID
-wait $FMT_PID
-wait $TOOLCHAINS_PID
-wait $JOB_DEPS_PID
-wait $README_PID
-wait $STALE_STDERR_PID
-wait $VERSIONS_PID
-wait $MSRV_PID
+    # `wait <pid>` exits with the same status code as the job it's waiting for.
+    # Since we `set -e` above, this causes the hook to fail if a child does.
+    # A bare `wait` loses child statuses, so wait for each named process.
+    wait "$ACTIONS_PID"
+    wait "$FMT_PID"
+    wait "$TOOLCHAINS_PID"
+    wait "$JOB_DEPS_PID"
+    wait "$README_PID"
+    wait "$STALE_STDERR_PID"
+    wait "$VERSIONS_PID"
+    wait "$MSRV_PID"
+fi
 
 # Ensure that this script calls all scripts in `ci/*` and `zerocopy/ci/*`. This
 # isn't a foolproof check since it just checks for the string in this script
@@ -60,3 +95,5 @@ for f in ./zerocopy/ci/*; do
 done
 unset GLOBIGNORE
 shopt -u extglob
+
+exit "$CHECKS_FAILED"
