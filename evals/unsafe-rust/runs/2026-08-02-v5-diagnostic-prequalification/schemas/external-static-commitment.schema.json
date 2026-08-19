@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:external-static-commitment:1",
+  "$comment": "DRAFT / UNSEALED coordinator-held commitment needed to detect coherent replacement of an otherwise self-consistent locked bundle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "bundle_kind", "source_declaration_sha256", "static_lock_sha256", "static_manifest_sha256", "snapshot_descriptor_sha256", "snapshot_manifest_sha256", "receipt_index_sha256", "integrate_sha256", "prepare_sha256", "protocol_sha256", "word_count_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "EXTERNAL-TRUST-COMMITMENT"},
+    "bundle_kind": {"enum": ["PRODUCTION", "SYNTHETIC-TEST-ONLY"]},
+    "source_declaration_sha256": {"$ref": "#/$defs/digest"},
+    "static_lock_sha256": {"$ref": "#/$defs/digest"},
+    "static_manifest_sha256": {"$ref": "#/$defs/digest"},
+    "snapshot_descriptor_sha256": {"$ref": "#/$defs/digest"},
+    "snapshot_manifest_sha256": {"$ref": "#/$defs/digest"},
+    "receipt_index_sha256": {"$ref": "#/$defs/digest"},
+    "integrate_sha256": {"$ref": "#/$defs/digest"},
+    "prepare_sha256": {"$ref": "#/$defs/digest"},
+    "protocol_sha256": {"$ref": "#/$defs/digest"},
+    "word_count_sha256": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
