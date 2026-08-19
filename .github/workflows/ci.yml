@@ -540,7 +540,7 @@ jobs:
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
           MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +$TOOLCHAIN \
-            miri nextest run \
+            miri nextest run --locked \
             --test-threads "$THREADS" \
             --package $CRATE \
             --target $TARGET \
@@ -606,7 +606,7 @@ jobs:
         # Include arguments passed during docs.rs deployments to make sure those
         # work properly.
         set -eo pipefail
-        METADATA_DOCS_RS_RUSTDOC_ARGS="$(env -u RUSTFLAGS -u RUSTDOCFLAGS ./cargo.sh +stable metadata --manifest-path Cargo.toml --no-deps --format-version 1 | \
+        METADATA_DOCS_RS_RUSTDOC_ARGS="$(env -u RUSTFLAGS -u RUSTDOCFLAGS ./cargo.sh +stable metadata --offline --manifest-path Cargo.toml --no-deps --format-version 1 | \
           jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\"[]" | tr '\n' ' ')"
         if [[ "$TOOLCHAIN" == "nightly" ]]; then
           export RUSTDOCFLAGS="-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS $RUSTDOCFLAGS"
@@ -721,8 +721,8 @@ jobs:
       - name: Generate code coverage
         run: |
           set -eo pipefail
-          ./cargo.sh +nightly install --version 0.8.0 cargo-llvm-cov
-          ./cargo.sh +nightly llvm-cov \
+          ./cargo.sh +nightly install --locked --version 0.8.0 cargo-llvm-cov
+          ./cargo.sh +nightly llvm-cov --locked \
             --package zerocopy \
             --target x86_64-unknown-linux-gnu \
             --all-features \
@@ -835,7 +835,7 @@ jobs:
       - name: Check avr-none target
         run: RUSTFLAGS='-C target-cpu=atmega328p' ./cargo.sh +nightly check --target=avr-none -Zbuild-std=core --features simd,simd-nightly,float-nightly,derive
       - name: Clippy check avr-none target
-        run: RUSTFLAGS='-C target-cpu=atmega328p' ./cargo.sh +nightly clippy --target=avr-none -Zbuild-std=core --features simd,simd-nightly,float-nightly,derive
+        run: RUSTFLAGS='-C target-cpu=atmega328p' ./cargo.sh +nightly clippy --locked --target=avr-none -Zbuild-std=core --features simd,simd-nightly,float-nightly,derive
 
   check_fmt:
     runs-on: ubuntu-latest

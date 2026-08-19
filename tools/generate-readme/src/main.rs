@@ -30,7 +30,36 @@ const DISCLAIMER_FOOTER: &str = "\
 Disclaimer: Zerocopy is not an officially supported Google product.\
 ";
 
-fn main() {
+// cargo-readme includes this literal `v` in its `--version` output. Keep the
+// complete string pinned so an unrelated executable or output format cannot
+// accidentally satisfy the tool check.
+const CARGO_README_VERSION: &str = "cargo-readme v3.2.0";
+
+fn checked_stdout(
+    description: &str,
+    success: bool,
+    stdout: Vec<u8>,
+    stderr: &[u8],
+) -> Result<String, String> {
+    if !success {
+        return Err(format!("{description} failed: {}", String::from_utf8_lossy(stderr).trim()));
+    }
+    String::from_utf8(stdout)
+        .map_err(|error| format!("{description} emitted invalid UTF-8: {error}"))
+}
+
+fn check_cargo_readme_version(version: &str) -> Result<(), String> {
+    if version.trim() == CARGO_README_VERSION {
+        return Ok(());
+    }
+    Err(format!(
+        "expected {CARGO_README_VERSION:?}, got {:?}; install it with \
+         `cargo install --locked --version '=3.2.0' cargo-readme`",
+        version.trim(),
+    ))
+}
+
+fn generate_readme() -> Result<String, String> {
     let cwd = env::current_dir().unwrap();
     let readme_dir = env::var_os("ZEROCOPY_README_DIR").map(PathBuf::from).unwrap_or_else(|| {
         if cwd.join("zerocopy/Cargo.toml").exists() {
@@ -40,15 +69,33 @@ fn main() {
         }
     });
 
-    // This uses the `cargo readme` tool, which you can install via `cargo install
-    // cargo-readme --version 3.2.0`.
+    // This uses the exact `cargo readme` release installed by CI. Check PATH as
+    // well as documenting the installation command: developers can invoke this
+    // generator directly, without first running check_readme.sh.
+    let version_output = Command::new("cargo")
+        .current_dir(&readme_dir)
+        .args(["readme", "--version"])
+        .output()
+        .map_err(|error| format!("failed to run `cargo readme --version`: {error}"))?;
+    let version = checked_stdout(
+        "`cargo readme --version`",
+        version_output.status.success(),
+        version_output.stdout,
+        &version_output.stderr,
+    )?;
+    check_cargo_readme_version(&version)?;
+
     let output = Command::new("cargo")
         .current_dir(readme_dir)
         .args(["readme", "--no-license"])
         .output()
-        .unwrap();
-
-    let readme = String::from_utf8(output.stdout).unwrap();
+        .map_err(|error| format!("failed to run `cargo readme --no-license`: {error}"))?;
+    let readme = checked_stdout(
+        "`cargo readme --no-license`",
+        output.status.success(),
+        output.stdout,
+        &output.stderr,
+    )?;
 
     // This regex is used to strip code links like:
     //
@@ -60,5 +107,51 @@ fn main() {
         .unwrap()
         .replace_all(&readme, |caps: &Captures| caps[1].to_string());
 
-    println!("{}\n\n{}\n{}", COPYRIGHT_HEADER, body, DISCLAIMER_FOOTER);
+    Ok(format!("{}\n\n{}\n{}\n", COPYRIGHT_HEADER, body, DISCLAIMER_FOOTER))
+}
+
+fn main() {
+    match generate_readme() {
+        Ok(readme) => print!("{readme}"),
+        Err(error) => {
+            eprintln!("generate-readme: {error}");
+            std::process::exit(1);
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn accepts_successful_utf8_output() {
+        assert_eq!(
+            checked_stdout("command", true, b"output\n".to_vec(), b"ignored"),
+            Ok("output\n".to_string())
+        );
+    }
+
+    #[test]
+    fn accepts_only_the_pinned_cargo_readme() {
+        assert_eq!(check_cargo_readme_version("cargo-readme v3.2.0\n"), Ok(()));
+        assert!(check_cargo_readme_version("cargo-readme 3.2.0\n").is_err());
+        let error = check_cargo_readme_version("cargo-readme v3.3.0\n").unwrap_err();
+        assert!(error.contains("expected \"cargo-readme v3.2.0\""));
+        assert!(error.contains("--version '=3.2.0'"));
+    }
+
+    #[test]
+    fn reports_command_failure_with_stderr() {
+        assert_eq!(
+            checked_stdout("command", false, Vec::new(), b"useful error\n"),
+            Err("command failed: useful error".to_string())
+        );
+    }
+
+    #[test]
+    fn reports_non_utf8_output() {
+        let error = checked_stdout("command", true, vec![0xff], b"").unwrap_err();
+        assert!(error.contains("command emitted invalid UTF-8"));
+    }
 }

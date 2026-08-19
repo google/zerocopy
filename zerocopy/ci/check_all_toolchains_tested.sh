@@ -17,10 +17,13 @@ cd "$(dirname "$0")/.."
 #
 # If the inputs to `diff` are not identical, `diff` exits with a
 # non-zero error code, which causes this script to fail (thanks to
-# `set -e`).
+# `set -e`). Metadata is an input to this read-only policy check: keep its
+# locked/offline invocation coordinated with
+# .github/scripts/test_locked_cargo_invocations.py.
 diff \
   <(yq -r '.jobs.build_test.strategy.matrix.toolchain | .[]' ../.github/workflows/ci.yml | \
     sort -u | grep -v '^\(msrv\|stable\|nightly\)$') \
-  <(cargo metadata -q --format-version 1 | \
+  <(./cargo.sh +stable metadata --quiet --locked --offline --no-deps \
+      --format-version 1 | \
     jq -r ".packages[] | select(.name == \"zerocopy\").metadata.\"build-rs\" | keys | .[]" | \
     sort -u) >&2
