@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:report-input-plan:1",
+  "$comment": "DRAFT / UNSEALED structural schema; protocol.py additionally enforces exact destinations, source identities, ordering, and launch bindings.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "run_id", "cell_id", "input_alias", "output_alias", "entries"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "READY"},
+    "run_id": {"type": "string", "pattern": "^r(?:00[1-9]|0[1-9][0-9]|1[01][0-9]|120)$"},
+    "cell_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+    "input_alias": {"const": "input"},
+    "output_alias": {"const": "output"},
+    "entries": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["destination", "kind", "source_path", "sha256"],
+        "properties": {
+          "destination": {"type": "string", "pattern": "^input/(?![.][.]?(?:/|$))(?!.*(?:/[.][.]?)(?:/|$))(?!.*[\\u0000-\\u001f])(?!.*//)(?!.*[/]$).+$"},
+          "kind": {"enum": ["FILE", "BYTE_TREE_V1_DIRECTORY"]},
+          "source_path": {"type": "string", "pattern": "^(?!/)(?![.][.]?(?:/|$))(?!.*(?:/[.][.]?)(?:/|$))(?!.*[\\u0000-\\u001f])(?!.*//)(?!.*[/]$).+$"},
+          "sha256": {"$ref": "#/$defs/digest"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

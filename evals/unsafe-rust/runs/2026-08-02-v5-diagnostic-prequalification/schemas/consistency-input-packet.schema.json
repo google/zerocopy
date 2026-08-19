@@ -4,7 +4,7 @@
   "$comment": "DRAFT / UNSEALED deterministic packet shared byte-identically by the two independent consistency reviewers for a mode.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "status", "mode", "input_digests", "binding_sha256", "novel_assertions"],
+  "required": ["schema_version", "status", "mode", "input_digests", "binding_sha256", "labels_in_order", "novel_assertions", "packet_tree"],
   "properties": {
     "schema_version": {"const": 1},
     "status": {"const": "CONSISTENCY-INPUT-PACKET"},
@@ -22,6 +22,7 @@
       }
     },
     "binding_sha256": {"$ref": "#/$defs/digest"},
+    "labels_in_order": {"type": "array", "minItems": 15, "maxItems": 15, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-O]$"}},
     "novel_assertions": {
       "type": "array",
       "items": {
@@ -49,7 +50,8 @@
           }
         }
       }
-    }
+    },
+    "packet_tree": {"$ref": "urn:zerocopy:v5-diagnostic:draft:packet-tree:1"}
   },
   "$defs": {"digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
 }
