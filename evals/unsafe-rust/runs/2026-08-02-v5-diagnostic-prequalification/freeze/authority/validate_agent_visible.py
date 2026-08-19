@@ -60,7 +60,17 @@ def quotations(entry: dict[str, Any]) -> list[str]:
 def expected_packet(
     propositions: dict[str, Any], locators: dict[str, Any], *, expected_status: str
 ) -> dict[str, Any]:
-    entries = {entry["id"]: entry for entry in propositions.get("entries", [])}
+    raw_entries = propositions.get("entries", [])
+    if not isinstance(raw_entries, list) or any(
+        not isinstance(entry, dict) for entry in raw_entries
+    ):
+        raise AssertionError("authority proposition entries are not an array of objects")
+    entry_ids = [entry.get("id") for entry in raw_entries]
+    if any(not isinstance(entry_id, str) or not entry_id for entry_id in entry_ids):
+        raise AssertionError("authority proposition ID is invalid")
+    if len(entry_ids) != len(set(entry_ids)):
+        raise AssertionError("authority proposition IDs are not unique")
+    entries = {entry["id"]: entry for entry in raw_entries}
     if set(locators) != {"schema_version", "status", "records"}:
         raise AssertionError("quotation locator map has unexpected top-level fields")
     if locators["schema_version"] != 1 or locators["status"] != expected_status:
@@ -126,6 +136,7 @@ def validate(authority_root: Path = HERE, *, expected_status: str = "DRAFT") -> 
         raise AssertionError("authority projection expected status is unknown")
     propositions = read_json(authority_root / "propositions.json")
     locators = read_json(authority_root / "quotation-locators.json")
+    verification = read_json(authority_root / "verification.json")
     packet_path = authority_root / "agent-visible" / "common.json"
     packet = read_json(packet_path)
     if set(packet) != TOP_KEYS:
@@ -141,6 +152,28 @@ def validate(authority_root: Path = HERE, *, expected_status: str = "DRAFT") -> 
         if match is None or match.group(1) != record["version"]:
             raise AssertionError(f"URL/version mismatch: {record['url']}")
     raw = packet_path.read_bytes()
+    raw_entries = propositions.get("entries", [])
+    kinds = [entry.get("kind") for entry in raw_entries]
+    if any(not isinstance(kind, str) or not kind.strip() for kind in kinds):
+        raise AssertionError("authority proposition kind is invalid")
+    expected_excluded_kinds = sorted({kind for kind in kinds if kind != "RUST"})
+    if not isinstance(verification, dict):
+        raise AssertionError("authority verification ledger is not an object")
+    projection = verification.get("agent_visible_projection")
+    expected_projection = {
+        "status": "VALIDATED_STRICT_RUST_ONLY_PROJECTION",
+        "path": "agent-visible/common.json",
+        "schema_path": "../../schemas/agent-authority-packet.schema.json",
+        "validator_path": "validate_agent_visible.py",
+        "quotation_locator_path": "quotation-locators.json",
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "common_for_all_modes_and_conditions": True,
+        "excluded_kinds": expected_excluded_kinds,
+    }
+    if projection != expected_projection:
+        raise AssertionError(
+            "agent-visible projection ledger does not exactly state every excluded kind"
+        )
     return hashlib.sha256(raw).hexdigest()
 
 

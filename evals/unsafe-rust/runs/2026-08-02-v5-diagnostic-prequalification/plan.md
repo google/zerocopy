@@ -98,8 +98,11 @@ values. The three source and eight snapshot reviewers use one canonical actor
 identity grammar, are pairwise distinct, and are permanently excluded from all
 runtime semantic roles. One trusted static-verification operation authenticates
 the descriptor-captured receipt bytes against the static manifest and returns
-the exclusion set derived from those exact captures; runtime operations carry
-that set without reopening receipt paths. Contracts and receipts bind the exact reviewer tool
+both the exclusion set and a canonical evidence object containing those exact
+three source-review and eight snapshot-review captures. Runtime operations
+carry the exclusion set, while aggregation consumes that evidence object for
+its oracle/coherence booleans, digests, and materiality scope; neither path
+reopens a receipt pathname. Contracts and receipts bind the exact reviewer tool
 set, observed Python/SSL/platform runtime, and item-by-item work product; actor
 authentication and reviewer honesty remain explicit coordinator TCB premises.
 Production source/package/target identities come from the separately
@@ -117,7 +120,8 @@ Only `evaluate-bound-gates` can pass it: that path authenticates a
 `PRODUCTION` static lock with the trusted in-process verifier, deterministically
 rederives the complete aggregate from canonical envelopes, scorer/reviewer
 packets and outputs, final scores, word counts, projection audits, controls,
-materiality decisions, and oracle/coherence review, then validates the exact
+materiality decisions, the authenticated snapshot oracle-coverage receipt,
+and the full authenticated source oracle/coherence receipts, then validates the exact
 runtime-receipt set and its terminal content binding before evaluating the
 READY gate contract.
 

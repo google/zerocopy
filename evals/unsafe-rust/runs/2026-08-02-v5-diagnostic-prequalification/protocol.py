@@ -126,8 +126,18 @@ AGGREGATE_DIGEST_KEYS = (
     "comparison_predicate_sha256",
     "coherence_review_sha256",
 )
-AGGREGATE_BUILDER_ID = "v5-diagnostic-aggregate-context-v1"
+AGGREGATE_BUILDER_ID = "v5-diagnostic-aggregate-context-v2"
 PROJECTION_INVENTORY_BUILDER_ID = "v5-report-secret-inventory-v1"
+DIAGNOSTIC_CONTRACT_VERSIONS = {
+    "DRAFT": "v5-diagnostic-prequalification-draft-1",
+    "READY": "v5-diagnostic-prequalification-1",
+}
+AUTHENTICATED_REVIEW_EVIDENCE_ALGORITHM = "V5_AUTHENTICATED_REVIEW_EVIDENCE_V1"
+SOURCE_REVIEW_KINDS = {
+    "oracle-review-1.json": "INDEPENDENT_ORACLE",
+    "oracle-review-2.json": "INDEPENDENT_ORACLE",
+    "coherence-review.json": "COHERENCE",
+}
 SCORE_RESOURCE_PATHS = {
     "projection_bundle": "resources/projection-index.json",
     "atom_manifest": "resources/atom-manifest.json",
@@ -325,6 +335,11 @@ INTEGRATION_PHASES = (
     "RUNTIME_COLLECTION",
     "POSTRUN_AGGREGATE",
 )
+SNAPSHOT_REVIEW_HOOK_IDS = tuple(sorted(
+    hook_id
+    for hook_id in EXPECTED_INTEGRATION_HOOK_IDS
+    if INTEGRATION_HOOK_PHASES[hook_id] == "SNAPSHOT_REVIEW"
+))
 POSTLOCK_RECEIPT_HOOK_IDS = tuple(
     hook_id
     for hook_id in EXPECTED_INTEGRATION_HOOK_IDS
@@ -3746,7 +3761,7 @@ def validate_aggregation_rules(
     if (
         rules["schema_version"] != 1
         or rules["status"] != expected_status
-        or rules["rules_version"] != "v5-diagnostic-aggregate-v1"
+        or rules["rules_version"] != "v5-diagnostic-aggregate-v2"
         or rules["default_dispositions"]
         != {"missing": "ERROR", "malformed": "ERROR", "error": "ERROR"}
     ):
@@ -3802,10 +3817,12 @@ def validate_aggregation_rules(
         raise ProtocolError("aggregate rules do not cover every context-backed gate one-to-one")
     expected_formulas = {
         "oracle.coverage_pass": {
-            "kind": "oracle_exact_coverage_v1",
-            "population": "EVERY_MODE",
-            "required_decision": "PASS",
-            "set_relation": "covered_atom_ids == atom_manifest_ids",
+            "kind": "authenticated_oracle_review_closure_v2",
+            "population": "TWO_SOURCE_ORACLE_REVIEWS_AND_ONE_SNAPSHOT_COVERAGE_REVIEW",
+            "source_review_kind": "INDEPENDENT_ORACLE",
+            "source_review_count": 2,
+            "snapshot_hook_id": "H-VALIDATE-ORACLE-COVERAGE",
+            "required_status": "PASS",
         },
         "collection.complete": {
             "kind": "collection_exact_slots_v1",
@@ -3874,9 +3891,11 @@ def validate_aggregation_rules(
             "predicate_id": "v5-diagnostic-absolute-and-not-trailing-v1",
         },
         "review.coherence_pass": {
-            "kind": "coherence_decision_v1",
-            "population": "CANDIDATE_PACKAGE_AND_HARNESS",
-            "required_decision": "PASS",
+            "kind": "authenticated_coherence_review_v2",
+            "population": "ONE_SOURCE_COHERENCE_REVIEW",
+            "source_review_kind": "COHERENCE",
+            "source_review_count": 1,
+            "required_status": "PASS",
         },
     }
     for path, expected_formula in expected_formulas.items():
@@ -3927,6 +3946,8 @@ def validate_comparison_predicate(
 def validate_root_inventory(
     value: Any, expected_status: str = "DRAFT"
 ) -> dict[str, Any]:
+    if expected_status not in DIAGNOSTIC_CONTRACT_VERSIONS:
+        raise ProtocolError("root inventory expected status is invalid")
     inventory = require_exact_keys(
         value,
         {
@@ -3946,7 +3967,7 @@ def validate_root_inventory(
         or inventory["status"] != expected_status
         or inventory["inventory_kind"] != "DIAGNOSTIC"
         or inventory["inventory_version"]
-        != "v5-diagnostic-prequalification-draft-1"
+        != DIAGNOSTIC_CONTRACT_VERSIONS[expected_status]
         or inventory["scope"]
         != "Diagnostic rehearsal only; no admission, release, terminal look, or VN claim."
     ):
@@ -3998,7 +4019,7 @@ def validate_gate_manifest(
         manifest["schema_version"] != 1
         or manifest["status"] != expected_status
         or manifest["manifest_version"]
-        != "v5-diagnostic-prequalification-draft-1"
+        != DIAGNOSTIC_CONTRACT_VERSIONS[expected_status]
     ):
         raise ProtocolError(f"gate manifest must be schema-v1 {expected_status}")
     if not isinstance(manifest["gates"], list):
@@ -4354,14 +4375,18 @@ def validate_bound_aggregate_receipts(
 def evaluate_bound_gates(
     static_root: Path, external_commitment_path: Path | None = None
 ) -> dict[str, Any]:
-    root, _lock, _reviewer_ids = load_verified_static_bundle(
-        static_root, external_commitment_path
+    root, static_lock, reviewer_ids, review_evidence = (
+        load_verified_static_bundle_with_review_evidence(
+            static_root, external_commitment_path
+        )
     )
     aggregate_path = root / "runtime" / "state" / "aggregation" / "aggregate-context.json"
     aggregate = validate_aggregate_context_document(
         read_committed_json(aggregate_path, "stored aggregate context")
     )
-    rederived = derive_aggregate_context(root, external_commitment_path)
+    rederived = _derive_aggregate_context_from_verified(
+        root, static_lock, reviewer_ids, review_evidence
+    )
     if aggregate != rederived:
         raise ProtocolError("stored aggregate context is not the deterministic derivation")
     lock_sha = sha256((root / "STATIC-LOCK.json").read_bytes())
@@ -6796,10 +6821,111 @@ def validate_aggregate_input_tree(static_root: Path) -> Path:
     return input_root
 
 
-def load_verified_static_bundle(
+def validate_authenticated_review_evidence(
+    value: Any, reviewer_ids: frozenset[str]
+) -> dict[str, Any]:
+    evidence = require_exact_keys(
+        value,
+        {
+            "schema_version",
+            "status",
+            "algorithm",
+            "bundle_kind",
+            "source_review_receipts",
+            "snapshot_review_receipts",
+        },
+        "authenticated review evidence",
+    )
+    if (
+        evidence["schema_version"] != 1
+        or evidence["status"] != "AUTHENTICATED"
+        or evidence["algorithm"] != AUTHENTICATED_REVIEW_EVIDENCE_ALGORITHM
+        or evidence["bundle_kind"] != "PRODUCTION"
+    ):
+        raise ProtocolError("authenticated review evidence identity/status is invalid")
+    source_records = evidence["source_review_receipts"]
+    snapshot_records = evidence["snapshot_review_receipts"]
+    if not isinstance(source_records, list) or not isinstance(snapshot_records, list):
+        raise ProtocolError("authenticated review evidence inventories must be lists")
+    if [record.get("name") if isinstance(record, dict) else None for record in source_records] != list(
+        SOURCE_REVIEW_KINDS
+    ):
+        raise ProtocolError("authenticated source-review receipt order is not exact")
+    if [
+        record.get("hook_id") if isinstance(record, dict) else None
+        for record in snapshot_records
+    ] != list(SNAPSHOT_REVIEW_HOOK_IDS):
+        raise ProtocolError("authenticated snapshot-review receipt order is not exact")
+    observed_actor_ids: list[str] = []
+    for index, raw in enumerate(source_records):
+        record = require_exact_keys(
+            raw, {"name", "receipt_sha256", "receipt"}, f"source review evidence {index}"
+        )
+        receipt = record["receipt"]
+        if not isinstance(receipt, dict):
+            raise ProtocolError("authenticated source-review receipt is not an object")
+        if (
+            not isinstance(record["receipt_sha256"], str)
+            or not HEX64.fullmatch(record["receipt_sha256"])
+        ):
+            raise ProtocolError(f"source review evidence {index} digest is invalid")
+        if sha256(canonical_json_bytes(receipt)) != record["receipt_sha256"]:
+            raise ProtocolError("authenticated source-review receipt digest is not recomputable")
+        expected_kind = SOURCE_REVIEW_KINDS[record["name"]]
+        actor = receipt.get("actor")
+        if (
+            receipt.get("status") != "PASS"
+            or receipt.get("review_kind") != expected_kind
+            or not isinstance(actor, dict)
+        ):
+            raise ProtocolError("authenticated source-review receipt identity is invalid")
+        observed_actor_ids.append(
+            require_production_actor_id(
+                actor.get("identity"), f"source reviewer evidence actor {index}"
+            )
+        )
+    for index, raw in enumerate(snapshot_records):
+        record = require_exact_keys(
+            raw,
+            {"hook_id", "receipt_sha256", "receipt"},
+            f"snapshot review evidence {index}",
+        )
+        receipt = record["receipt"]
+        if not isinstance(receipt, dict):
+            raise ProtocolError("authenticated snapshot-review receipt is not an object")
+        if (
+            not isinstance(record["receipt_sha256"], str)
+            or not HEX64.fullmatch(record["receipt_sha256"])
+        ):
+            raise ProtocolError(f"snapshot review evidence {index} digest is invalid")
+        if sha256(canonical_json_bytes(receipt)) != record["receipt_sha256"]:
+            raise ProtocolError("authenticated snapshot-review receipt digest is not recomputable")
+        actor = receipt.get("actor")
+        if (
+            receipt.get("status") != "PASS"
+            or receipt.get("phase") != "SNAPSHOT_REVIEW"
+            or receipt.get("hook_id") != record["hook_id"]
+            or not isinstance(actor, dict)
+        ):
+            raise ProtocolError("authenticated snapshot-review receipt identity is invalid")
+        observed_actor_ids.append(
+            require_production_actor_id(
+                actor.get("identity"), f"snapshot reviewer evidence actor {index}"
+            )
+        )
+    if len(observed_actor_ids) != 11 or frozenset(observed_actor_ids) != reviewer_ids:
+        raise ProtocolError(
+            "authenticated review evidence actors do not equal the locked reviewer exclusions"
+        )
+    return strict_json_loads(
+        canonical_json_bytes(evidence), "canonical authenticated review evidence"
+    )
+
+
+def load_verified_static_bundle_with_review_evidence(
     static_root: Path,
     external_commitment_path: Path | None = None,
-) -> tuple[Path, dict[str, Any], frozenset[str]]:
+) -> tuple[Path, dict[str, Any], frozenset[str], dict[str, Any]]:
     if (RUN / "STATIC-LOCK.json").exists():
         raise ProtocolError(
             "production operations must execute the trusted source protocol, "
@@ -6834,10 +6960,10 @@ def load_verified_static_bundle(
         raise ProtocolError("external commitment must use canonical JSON bytes")
     try:
         integration = trusted_integration_module()
-        verifier = integration.get("verify_static_with_reviewer_ids")
+        verifier = integration.get("verify_static_with_review_evidence")
         if not callable(verifier):
             raise ProtocolError(
-                "trusted integration lacks coherent static/reviewer verification"
+                "trusted integration lacks coherent static/review-evidence verification"
             )
         verified = verifier(
             root,
@@ -6874,17 +7000,33 @@ def load_verified_static_bundle(
         raise ProtocolError("static lock digest is the forbidden zero sentinel")
     if (
         not isinstance(verified, tuple)
-        or len(verified) != 2
+        or len(verified) != 3
         or not isinstance(verified[0], dict)
         or not isinstance(verified[1], (set, frozenset))
+        or not isinstance(verified[2], dict)
     ):
         raise ProtocolError("trusted static verifier returned an invalid context")
-    lock, raw_reviewer_ids = verified
+    lock, raw_reviewer_ids, raw_review_evidence = verified
     if len(raw_reviewer_ids) != 11:
         raise ProtocolError("locked reviewer identity set is not exactly eleven actors")
     reviewer_ids = frozenset(
         require_production_actor_id(value, "locked reviewer actor ID")
         for value in raw_reviewer_ids
+    )
+    review_evidence = validate_authenticated_review_evidence(
+        raw_review_evidence, reviewer_ids
+    )
+    return root, lock, reviewer_ids, review_evidence
+
+
+def load_verified_static_bundle(
+    static_root: Path,
+    external_commitment_path: Path | None = None,
+) -> tuple[Path, dict[str, Any], frozenset[str]]:
+    root, lock, reviewer_ids, _review_evidence = (
+        load_verified_static_bundle_with_review_evidence(
+            static_root, external_commitment_path
+        )
     )
     return root, lock, reviewer_ids
 
@@ -7501,13 +7643,16 @@ def readable_tree_snapshot(
     return {"schema_version": 1, "status": "READABLE-SNAPSHOT", "files": records}
 
 
-def derive_aggregate_context(
-    static_root: Path, external_commitment_path: Path | None = None
+def _derive_aggregate_context_from_verified(
+    root: Path,
+    static_lock: dict[str, Any],
+    production_reviewer_ids: frozenset[str],
+    authenticated_review_evidence: dict[str, Any],
 ) -> dict[str, Any]:
-    """Derive every gate input from verified static and canonical runtime bytes."""
+    """Derive every gate input from one coherently verified static context."""
 
-    root, static_lock, production_reviewer_ids = load_verified_static_bundle(
-        static_root, external_commitment_path
+    authenticated_review_evidence = validate_authenticated_review_evidence(
+        authenticated_review_evidence, production_reviewer_ids
     )
     inventory = validate_root_inventory(
         read_json(root / "root-inventory.json"), "READY"
@@ -7699,50 +7844,38 @@ def derive_aggregate_context(
     static_lock_sha = sha256(lock_bytes)
     rules_path = root / "aggregation-rules.json"
     rules_sha = sha256(rules_path.read_bytes())
-    oracle_receipt_path = (
-        root
-        / "static"
-        / "integration-receipts"
-        / "H-VALIDATE-ORACLE-COVERAGE.json"
-    )
+    source_review_records = {
+        record["name"]: record
+        for record in authenticated_review_evidence["source_review_receipts"]
+    }
+    snapshot_review_records = {
+        record["hook_id"]: record
+        for record in authenticated_review_evidence["snapshot_review_receipts"]
+    }
+    oracle_coverage_record = snapshot_review_records[
+        "H-VALIDATE-ORACLE-COVERAGE"
+    ]
     oracle_receipt = validate_integration_receipt(
-        read_json(oracle_receipt_path),
+        oracle_coverage_record["receipt"],
         "H-VALIDATE-ORACLE-COVERAGE",
         "SNAPSHOT_REVIEW",
     )
-    review_root = root / "freeze" / "reviews"
-    oracle_reviews = [
-        read_json(review_root / name)
+    oracle_review_records = [
+        source_review_records[name]
         for name in ("oracle-review-1.json", "oracle-review-2.json")
     ]
-    coherence_review = read_json(review_root / "coherence-review.json")
-    for index, review in enumerate([*oracle_reviews, coherence_review]):
-        review = require_exact_keys(
-            review,
-            {
-                "schema_version",
-                "status",
-                "review_kind",
-                "reviewer_id",
-                "decision",
-                "input_digests",
-            },
-            f"independent static review {index}",
-        )
-        if (
-            review["schema_version"] != 1
-            or review["status"] != "READY"
-            or review["decision"] not in ("PASS", "FAIL")
-            or not isinstance(review["reviewer_id"], str)
-            or not review["reviewer_id"]
-            or not isinstance(review["input_digests"], dict)
-            or not review["input_digests"]
-            or any(
-                not isinstance(item, str) or not HEX64.fullmatch(item)
-                for item in review["input_digests"].values()
-            )
-        ):
-            raise ProtocolError("independent static review is invalid")
+    coherence_review_record = source_review_records["coherence-review.json"]
+    oracle_reviews = [record["receipt"] for record in oracle_review_records]
+    coherence_review = coherence_review_record["receipt"]
+    oracle_documents = {
+        "schema_version": 1,
+        "snapshot_oracle_coverage_receipt": oracle_coverage_record,
+        "source_oracle_review_receipts": oracle_review_records,
+    }
+    coherence_document = {
+        "schema_version": 1,
+        "source_coherence_review_receipt": coherence_review_record,
+    }
 
     candidate_package = packages_document["packages"]["v5"]
     if not isinstance(candidate_package, dict):
@@ -7771,8 +7904,9 @@ def derive_aggregate_context(
         "ADVERSARIAL_AND_COHERENCE_REVIEWS": {
             "schema_version": 1,
             "status": "COMPLETE",
-            "oracle_reviews": oracle_reviews,
-            "coherence_review": coherence_review,
+            "source_review_receipts": authenticated_review_evidence[
+                "source_review_receipts"
+            ],
         },
     }
     materiality_ledger, materiality_assignments = reconstruct_materiality_ledger(
@@ -7852,10 +7986,6 @@ def derive_aggregate_context(
     atom_documents = {
         mode: read_json(root / "freeze" / "atoms" / f"{mode}.json") for mode in MODES
     }
-    oracle_documents = {
-        "coverage_receipt": oracle_receipt,
-        "independent_reviews": oracle_reviews,
-    }
     comparison_predicate = validate_comparison_predicate(
         read_json(root / "comparison-predicate.json"), "READY"
     )
@@ -7883,7 +8013,9 @@ def derive_aggregate_context(
         "comparison_predicate_sha256": sha256(
             canonical_json_bytes(comparison_predicate)
         ),
-        "coherence_review_sha256": sha256(canonical_json_bytes(coherence_review)),
+        "coherence_review_sha256": sha256(
+            canonical_json_bytes(coherence_document)
+        ),
     }
     core = {
         "schema_version": 1,
@@ -7894,9 +8026,8 @@ def derive_aggregate_context(
         "input_digests": input_digests,
         "context": {
             "oracle": {
-                "coverage_pass": all(
-                    review["decision"] == "PASS" for review in oracle_reviews
-                )
+                "coverage_pass": oracle_receipt["status"] == "PASS"
+                and all(review["status"] == "PASS" for review in oracle_reviews)
             },
             "collection": {
                 "complete": len(report_attempts) == 120,
@@ -7913,11 +8044,26 @@ def derive_aggregate_context(
                 ),
             },
             "comparison": {"predicate_pass": comparison_pass},
-            "review": {"coherence_pass": coherence_review["decision"] == "PASS"},
+            "review": {"coherence_pass": coherence_review["status"] == "PASS"},
         },
     }
     return validate_aggregate_context_document(
         {**core, "binding_sha256": sha256(canonical_json_bytes(core))}
+    )
+
+
+def derive_aggregate_context(
+    static_root: Path, external_commitment_path: Path | None = None
+) -> dict[str, Any]:
+    """Verify once, then derive every gate input from that coherent capture."""
+
+    root, static_lock, reviewer_ids, review_evidence = (
+        load_verified_static_bundle_with_review_evidence(
+            static_root, external_commitment_path
+        )
+    )
+    return _derive_aggregate_context_from_verified(
+        root, static_lock, reviewer_ids, review_evidence
     )
 
 
@@ -8863,8 +9009,47 @@ def self_test() -> None:
         pass
     else:
         raise AssertionError("a weakened hard-error gate threshold was accepted")
-    ready_gates = {**copy.deepcopy(gates), "status": "READY"}
-    ready_inventory = {**copy.deepcopy(inventory), "status": "READY"}
+    ready_gates = {
+        **copy.deepcopy(gates),
+        "status": "READY",
+        "manifest_version": DIAGNOSTIC_CONTRACT_VERSIONS["READY"],
+    }
+    ready_inventory = {
+        **copy.deepcopy(inventory),
+        "status": "READY",
+        "inventory_version": DIAGNOSTIC_CONTRACT_VERSIONS["READY"],
+    }
+    validate_root_inventory(ready_inventory, "READY")
+    validate_gate_manifest(ready_gates, ready_inventory, "READY")
+    for crossed_inventory, expected_status in (
+        ({**copy.deepcopy(inventory), "status": "READY"}, "READY"),
+        (
+            {
+                **copy.deepcopy(ready_inventory),
+                "status": "DRAFT",
+            },
+            "DRAFT",
+        ),
+    ):
+        try:
+            validate_root_inventory(crossed_inventory, expected_status)
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("a crossed root-inventory status/version pair was accepted")
+    crossed_gates = {**copy.deepcopy(gates), "status": "READY"}
+    try:
+        validate_gate_manifest(crossed_gates, ready_inventory, "READY")
+    except ProtocolError:
+        pass
+    else:
+        raise AssertionError("a crossed gate-manifest status/version pair was accepted")
+    try:
+        validate_root_inventory(inventory, "UNKNOWN")
+    except ProtocolError:
+        pass
+    else:
+        raise AssertionError("an unknown operational-contract status was accepted")
     locked_results = _evaluate_gate_context(
         ready_gates,
         ready_inventory,
@@ -9010,18 +9195,56 @@ def self_test() -> None:
         wrong_commitment_path.write_bytes(
             canonical_json_bytes({"mock_external_commitment": False})
         )
-        mock_reviewer_ids = frozenset(
+        mock_reviewer_id_list = [
             f"locked-reviewer-{index:04d}" for index in range(1, 12)
-        )
+        ]
+        mock_reviewer_ids = frozenset(mock_reviewer_id_list)
+        mock_source_records: list[dict[str, Any]] = []
+        for index, (name, review_kind) in enumerate(SOURCE_REVIEW_KINDS.items()):
+            receipt = {
+                "status": "PASS",
+                "review_kind": review_kind,
+                "actor": {"identity": mock_reviewer_id_list[index]},
+            }
+            mock_source_records.append(
+                {
+                    "name": name,
+                    "receipt_sha256": sha256(canonical_json_bytes(receipt)),
+                    "receipt": receipt,
+                }
+            )
+        mock_snapshot_records: list[dict[str, Any]] = []
+        for index, hook_id in enumerate(SNAPSHOT_REVIEW_HOOK_IDS, start=3):
+            receipt = {
+                "status": "PASS",
+                "phase": "SNAPSHOT_REVIEW",
+                "hook_id": hook_id,
+                "actor": {"identity": mock_reviewer_id_list[index]},
+            }
+            mock_snapshot_records.append(
+                {
+                    "hook_id": hook_id,
+                    "receipt_sha256": sha256(canonical_json_bytes(receipt)),
+                    "receipt": receipt,
+                }
+            )
+        mock_review_evidence = {
+            "schema_version": 1,
+            "status": "AUTHENTICATED",
+            "algorithm": AUTHENTICATED_REVIEW_EVIDENCE_ALGORITHM,
+            "bundle_kind": "PRODUCTION",
+            "source_review_receipts": mock_source_records,
+            "snapshot_review_receipts": mock_snapshot_records,
+        }
         post_verify_reviewer_resolver_calls = 0
 
         def mock_trusted_integration() -> dict[str, Any]:
-            def mock_verify_static_with_reviewer_ids(
+            def mock_verify_static_with_review_evidence(
                 root: Path,
                 *,
                 expected_bundle_kind: str,
                 expected_external_commitment: Any,
-            ) -> tuple[dict[str, Any], frozenset[str]]:
+            ) -> tuple[dict[str, Any], frozenset[str], dict[str, Any]]:
                 if (
                     root != mock_bundle
                     or expected_bundle_kind != "PRODUCTION"
@@ -9031,6 +9254,7 @@ def self_test() -> None:
                 return (
                     {"schema_version": 2, "status": "STATIC-LOCKED"},
                     mock_reviewer_ids,
+                    mock_review_evidence,
                 )
 
             def forbidden_post_verify_reviewer_resolver(*_args: Any) -> frozenset[str]:
@@ -9041,8 +9265,8 @@ def self_test() -> None:
                 )
 
             return {
-                "verify_static_with_reviewer_ids": (
-                    mock_verify_static_with_reviewer_ids
+                "verify_static_with_review_evidence": (
+                    mock_verify_static_with_review_evidence
                 ),
                 "locked_reviewer_actor_ids": forbidden_post_verify_reviewer_resolver,
             }
@@ -9050,11 +9274,56 @@ def self_test() -> None:
         saved_trusted_integration = globals()["trusted_integration_module"]
         globals()["trusted_integration_module"] = mock_trusted_integration
         try:
-            loaded_root, _mock_lock, loaded_reviewer_ids = load_verified_static_bundle(
+            (
+                loaded_root,
+                _mock_lock,
+                loaded_reviewer_ids,
+                loaded_review_evidence,
+            ) = load_verified_static_bundle_with_review_evidence(
                 mock_bundle, commitment_path
             )
             assert loaded_root == mock_bundle
             assert loaded_reviewer_ids == mock_reviewer_ids
+            assert loaded_review_evidence == mock_review_evidence
+            evidence_mutations: list[tuple[str, dict[str, Any]]] = []
+            missing_evidence = copy.deepcopy(mock_review_evidence)
+            missing_evidence["source_review_receipts"].pop()
+            evidence_mutations.append(("missing source receipt", missing_evidence))
+            extra_evidence = copy.deepcopy(mock_review_evidence)
+            extra_evidence["snapshot_review_receipts"].append(
+                copy.deepcopy(extra_evidence["snapshot_review_receipts"][-1])
+            )
+            evidence_mutations.append(("extra snapshot receipt", extra_evidence))
+            wrong_hash_evidence = copy.deepcopy(mock_review_evidence)
+            wrong_hash_evidence["source_review_receipts"][0]["receipt_sha256"] = "0" * 64
+            evidence_mutations.append(("wrong receipt hash", wrong_hash_evidence))
+            nonpass_evidence = copy.deepcopy(mock_review_evidence)
+            nonpass_receipt = nonpass_evidence["source_review_receipts"][0]["receipt"]
+            nonpass_receipt["status"] = "FAIL"
+            nonpass_evidence["source_review_receipts"][0]["receipt_sha256"] = sha256(
+                canonical_json_bytes(nonpass_receipt)
+            )
+            evidence_mutations.append(("non-PASS source receipt", nonpass_evidence))
+            duplicate_actor_evidence = copy.deepcopy(mock_review_evidence)
+            duplicate_receipt = duplicate_actor_evidence["snapshot_review_receipts"][0][
+                "receipt"
+            ]
+            duplicate_receipt["actor"]["identity"] = mock_reviewer_id_list[0]
+            duplicate_actor_evidence["snapshot_review_receipts"][0][
+                "receipt_sha256"
+            ] = sha256(canonical_json_bytes(duplicate_receipt))
+            evidence_mutations.append(("duplicate reviewer actor", duplicate_actor_evidence))
+            for label, mutated_evidence in evidence_mutations:
+                try:
+                    validate_authenticated_review_evidence(
+                        mutated_evidence, mock_reviewer_ids
+                    )
+                except ProtocolError:
+                    pass
+                else:
+                    raise AssertionError(
+                        f"authenticated review evidence accepted {label}"
+                    )
             if post_verify_reviewer_resolver_calls != 0:
                 raise AssertionError(
                     "protocol used a second reviewer-ID resolver after verification"

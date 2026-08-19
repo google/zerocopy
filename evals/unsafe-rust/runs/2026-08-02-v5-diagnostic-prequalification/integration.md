@@ -191,11 +191,13 @@ must be authenticated and custodied by the coordinator; placing it inside
 attacker-replaceable candidate storage defeats its purpose.
 
 The trusted production verifier also returns the eleven reviewer identities
-from the same descriptor-captured receipt bytes whose sizes, modes, and
-digests it authenticates against the framed static manifest. Runtime state,
-lease, seal, and aggregation operations carry that returned exclusion set;
-they must not reopen receipt paths or derive a second identity set after the
-static verification completes.
+and a canonical review-evidence object from the same descriptor-captured
+receipt bytes whose sizes, modes, and digests it authenticates against the
+framed static manifest. Runtime state, lease, and seal operations carry the
+returned exclusion set. Aggregation consumes the returned source- and
+snapshot-review records directly for oracle/coherence decisions, input
+digests, and materiality review scope. No consumer may reopen receipt paths or
+derive a second identity/evidence set after static verification completes.
 
 Publishing a directory and an external file cannot be one atomic filesystem
 transaction. Finalization first derives the commitment from its verified

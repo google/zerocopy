@@ -19,6 +19,7 @@ directories. It cannot mint a bundle which authenticates as PRODUCTION.
 from __future__ import annotations
 
 import argparse
+import copy
 import ctypes
 import errno
 import hashlib
@@ -57,6 +58,7 @@ REVIEWER_RUNTIME_ATTESTATION_ALGORITHM = "V5_REVIEWER_RUNTIME_ATTESTATION_V1"
 REVIEW_WORK_PRODUCT_ALGORITHM = "V5_REVIEW_WORK_PRODUCT_V1"
 REVIEW_WORK_PRODUCT_NARRATIVE_ALGORITHM = "V5_REVIEW_NARRATIVE_V1"
 REVIEW_COVERAGE_SET_ALGORITHM = "V5_REVIEW_COVERAGE_SET_V1"
+AUTHENTICATED_REVIEW_EVIDENCE_ALGORITHM = "V5_AUTHENTICATED_REVIEW_EVIDENCE_V1"
 SOURCE_REVIEW_PROCEDURE_VERSION = "v5-source-review-v1"
 SOURCE_REVIEW_CONTRACT_ROOT = "source-review-contracts"
 SOURCE_REVIEW_PROCEDURE_ROOT = "source-review-procedures"
@@ -4737,17 +4739,28 @@ def validate_snapshot_build_products(root: Path, *, bundle_kind: str) -> None:
                 raise IntegrationError(
                     f"PRODUCTION snapshot {name} differs from the trusted verifier bytes"
                 )
-    for name in (
-        "gate-manifest.json",
-        "root-inventory.json",
-        "aggregation-rules.json",
-        "comparison-predicate.json",
-        "report-projection-contract.json",
-        "materiality-review-contract.json",
-    ):
+    operational_contracts = {
+        "gate-manifest.json": {
+            "manifest_version": "v5-diagnostic-prequalification-1"
+        },
+        "root-inventory.json": {
+            "inventory_version": "v5-diagnostic-prequalification-1"
+        },
+        "aggregation-rules.json": {},
+        "comparison-predicate.json": {},
+        "report-projection-contract.json": {},
+        "materiality-review-contract.json": {},
+    }
+    for name, exact_fields in operational_contracts.items():
         value = read_json(root / name)
-        if not isinstance(value, dict) or value.get("status") != "READY":
-            raise IntegrationError(f"promoted operational contract is not READY: {name}")
+        if (
+            not isinstance(value, dict)
+            or value.get("status") != "READY"
+            or any(value.get(key) != expected for key, expected in exact_fields.items())
+        ):
+            raise IntegrationError(
+                f"promoted operational contract identity is not exact: {name}"
+            )
     declaration_bytes = (root / "static" / "integration" / "source-declaration.json").read_bytes()
     if reviewed_production_inputs and declaration_bytes != trusted_production_declaration_bytes():
         raise IntegrationError(
@@ -5280,7 +5293,7 @@ def _verify_static_contents(
     root: Path,
     *,
     expected_bundle_kind: str,
-) -> tuple[dict[str, Any], frozenset[str]]:
+) -> tuple[dict[str, Any], frozenset[str], dict[str, Any]]:
     if expected_bundle_kind not in BUNDLE_KINDS:
         raise IntegrationError("expected_bundle_kind must be PRODUCTION or SYNTHETIC-TEST-ONLY")
     if root.is_symlink():
@@ -5393,6 +5406,7 @@ def _verify_static_contents(
     if any(path.is_dir() for path in receipt_root.rglob("*")):
         raise IntegrationError("locked snapshot-review receipt root contains a directory")
     captured_snapshot_receipts: dict[str, dict[str, Any]] = {}
+    captured_snapshot_bytes: dict[str, bytes] = {}
     synthetic_capability = (
         _SYNTHETIC_CAPABILITY
         if expected_bundle_kind == "SYNTHETIC-TEST-ONLY"
@@ -5411,7 +5425,10 @@ def _verify_static_contents(
         if sha256(receipt_bytes) != expected_sha:
             raise IntegrationError(f"static lock receipt digest mismatch: {hook_id}")
         captured_snapshot_receipts[hook_id] = receipt
+        captured_snapshot_bytes[hook_id] = receipt_bytes
     reviewer_ids = frozenset()
+    captured_source_receipts: dict[str, dict[str, Any]] = {}
+    captured_source_bytes: dict[str, bytes] = {}
     if expected_bundle_kind == "PRODUCTION" or (
         root
         / "static"
@@ -5467,7 +5484,68 @@ def _verify_static_contents(
         raise IntegrationError(
             "PRODUCTION verifier did not derive eleven reviewer exclusions"
         )
-    return lock, reviewer_ids
+    review_evidence = {
+        "schema_version": 1,
+        "status": "AUTHENTICATED",
+        "algorithm": AUTHENTICATED_REVIEW_EVIDENCE_ALGORITHM,
+        "bundle_kind": expected_bundle_kind,
+        "source_review_receipts": [
+            {
+                "name": name,
+                "receipt_sha256": sha256(captured_source_bytes[name]),
+                "receipt": parse_json_bytes(
+                    captured_source_bytes[name],
+                    f"authenticated source review evidence {name}",
+                ),
+            }
+            for name, _review_kind in SOURCE_REVIEW_KINDS
+            if name in captured_source_receipts
+        ],
+        "snapshot_review_receipts": [
+            {
+                "hook_id": hook_id,
+                "receipt_sha256": sha256(captured_snapshot_bytes[hook_id]),
+                "receipt": parse_json_bytes(
+                    captured_snapshot_bytes[hook_id],
+                    f"authenticated snapshot review evidence {hook_id}",
+                ),
+            }
+            for hook_id in sorted(EXTERNAL_REVIEW_HOOKS)
+        ],
+    }
+    if expected_bundle_kind == "PRODUCTION" and (
+        [record["name"] for record in review_evidence["source_review_receipts"]]
+        != [name for name, _review_kind in SOURCE_REVIEW_KINDS]
+        or [
+            record["hook_id"]
+            for record in review_evidence["snapshot_review_receipts"]
+        ]
+        != sorted(EXTERNAL_REVIEW_HOOKS)
+    ):
+        raise IntegrationError(
+            "PRODUCTION verifier did not retain the exact authenticated review evidence"
+        )
+    return lock, reviewer_ids, review_evidence
+
+
+def verify_static_with_review_evidence(
+    root: Path,
+    *,
+    expected_bundle_kind: str,
+    expected_external_commitment: Any | None = None,
+) -> tuple[dict[str, Any], frozenset[str], dict[str, Any]]:
+    """Verify static identity and return all same-capture review evidence."""
+
+    if expected_bundle_kind == "PRODUCTION" and expected_external_commitment is None:
+        raise IntegrationError(
+            "PRODUCTION verification requires a separately custodied external commitment"
+        )
+    lock, reviewer_ids, review_evidence = _verify_static_contents(
+        root, expected_bundle_kind=expected_bundle_kind
+    )
+    if expected_external_commitment is not None:
+        verify_external_static_commitment(root, expected_external_commitment)
+    return lock, reviewer_ids, review_evidence
 
 
 def verify_static_with_reviewer_ids(
@@ -5478,15 +5556,11 @@ def verify_static_with_reviewer_ids(
 ) -> tuple[dict[str, Any], frozenset[str]]:
     """Verify static identity and return its same-capture reviewer exclusions."""
 
-    if expected_bundle_kind == "PRODUCTION" and expected_external_commitment is None:
-        raise IntegrationError(
-            "PRODUCTION verification requires a separately custodied external commitment"
-        )
-    lock, reviewer_ids = _verify_static_contents(
-        root, expected_bundle_kind=expected_bundle_kind
+    lock, reviewer_ids, _review_evidence = verify_static_with_review_evidence(
+        root,
+        expected_bundle_kind=expected_bundle_kind,
+        expected_external_commitment=expected_external_commitment,
     )
-    if expected_external_commitment is not None:
-        verify_external_static_commitment(root, expected_external_commitment)
     return lock, reviewer_ids
 
 
@@ -5522,7 +5596,7 @@ def _verify_static_precommit(
         and capability is not _RECOVERY_PRECOMMIT_CAPABILITY
     ):
         raise IntegrationError("uncommitted static verification capability is not authorized")
-    lock, _reviewer_ids = _verify_static_contents(
+    lock, _reviewer_ids, _review_evidence = _verify_static_contents(
         root, expected_bundle_kind=expected_bundle_kind
     )
     return lock
@@ -7536,6 +7610,28 @@ def self_test() -> None:
             synthetic_capability=_SYNTHETIC_CAPABILITY,
         )
         verify_review_snapshot(snapshot, expected_candidate_kind="SYNTHETIC-TEST-ONLY")
+        for filename, version_field in (
+            ("root-inventory.json", "inventory_version"),
+            ("gate-manifest.json", "manifest_version"),
+        ):
+            operational_version_forgery = (
+                temp / f"operational-version-forgery-{filename.removesuffix('.json')}"
+            )
+            copy_tree(snapshot, operational_version_forgery)
+            make_tree_writable(operational_version_forgery)
+            operational_path = operational_version_forgery / filename
+            operational_value = read_json(operational_path)
+            operational_value[version_field] = (
+                "v5-diagnostic-prequalification-draft-1"
+            )
+            operational_path.write_bytes(pretty_json_bytes(operational_value))
+            expect_integration_failure(
+                lambda operational_version_forgery=operational_version_forgery: validate_snapshot_build_products(
+                    operational_version_forgery,
+                    bundle_kind="SYNTHETIC-TEST-ONLY",
+                ),
+                f"snapshot validation accepted READY/draft version drift: {filename}",
+            )
         evaluator_contract = read_json(
             snapshot / "static" / "generated" / "evaluator-launch-contracts.json"
         )
@@ -7977,6 +8073,76 @@ def self_test() -> None:
                 ),
             ),
             "semantic closure accepted a false V4-to-V5 authority-lineage overclaim",
+        )
+
+        projection_ledger_forgery = temp / "source-projection-ledger-forgery"
+        copy_tree(source_review_candidate, projection_ledger_forgery)
+        make_tree_writable(projection_ledger_forgery)
+        projection_authority_root = (
+            projection_ledger_forgery / "reviewed-static/freeze/authority"
+        )
+        projection_verification_path = projection_authority_root / "verification.json"
+        projection_propositions_path = projection_authority_root / "propositions.json"
+        base_projection_verification = read_json(projection_verification_path)
+        base_projection_propositions = read_json(projection_propositions_path)
+        validate_projection = runpy.run_path(
+            str(RUN / "freeze" / "authority" / "validate_agent_visible.py"),
+            run_name="v5_integration_projection_ledger_mutation",
+        )["validate"]
+
+        def reject_projection_ledger_mutation(
+            label: str,
+            verification_value: dict[str, Any],
+            propositions_value: dict[str, Any] | None = None,
+        ) -> None:
+            projection_verification_path.write_bytes(
+                pretty_json_bytes(verification_value)
+            )
+            projection_propositions_path.write_bytes(
+                pretty_json_bytes(
+                    base_projection_propositions
+                    if propositions_value is None
+                    else propositions_value
+                )
+            )
+
+            def validate_projection_ledger() -> None:
+                try:
+                    validate_projection(
+                        projection_authority_root,
+                        expected_status=SOURCE_REVIEW_CANDIDATE_STATUS,
+                    )
+                except (AssertionError, ValueError, KeyError, TypeError) as error:
+                    raise IntegrationError(
+                        "reviewed authority projection ledger validation failed"
+                    ) from error
+
+            expect_integration_failure(
+                validate_projection_ledger,
+                f"semantic closure accepted projection-ledger drift: {label}",
+            )
+
+        missing_kind = copy.deepcopy(base_projection_verification)
+        missing_kind["agent_visible_projection"]["excluded_kinds"].remove(
+            "TCB_BOUNDARY"
+        )
+        reject_projection_ledger_mutation("missing-kind", missing_kind)
+        stale_kind = copy.deepcopy(base_projection_verification)
+        stale_kind["agent_visible_projection"]["excluded_kinds"].append("STALE_KIND")
+        reject_projection_ledger_mutation("stale-kind", stale_kind)
+        duplicate_kind = copy.deepcopy(base_projection_verification)
+        duplicate_kind["agent_visible_projection"]["excluded_kinds"].append("TCB")
+        reject_projection_ledger_mutation("duplicate-kind", duplicate_kind)
+        novel_kind_propositions = copy.deepcopy(base_projection_propositions)
+        next(
+            entry
+            for entry in novel_kind_propositions["entries"]
+            if entry["kind"] == "TCB_BOUNDARY"
+        )["kind"] = "NOVEL_NON_RUST_KIND"
+        reject_projection_ledger_mutation(
+            "novel-proposition-kind",
+            copy.deepcopy(base_projection_verification),
+            novel_kind_propositions,
         )
 
         authority_divergence = temp / "source-authority-divergence"

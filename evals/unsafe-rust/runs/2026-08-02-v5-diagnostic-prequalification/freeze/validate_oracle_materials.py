@@ -959,8 +959,24 @@ def validate(
         )
 
     projection = verification["agent_visible_projection"]
-    require(isinstance(projection, dict), "agent-visible projection record is invalid")
-    packet = freeze_root / "authority" / projection.get("path", "")
+    expected_excluded_kinds = sorted(
+        {entry.get("kind") for entry in entries.values() if entry.get("kind") != "RUST"}
+    )
+    require(
+        projection
+        == {
+            "status": "VALIDATED_STRICT_RUST_ONLY_PROJECTION",
+            "path": "agent-visible/common.json",
+            "schema_path": "../../schemas/agent-authority-packet.schema.json",
+            "validator_path": "validate_agent_visible.py",
+            "quotation_locator_path": "quotation-locators.json",
+            "sha256": projection.get("sha256") if isinstance(projection, dict) else None,
+            "common_for_all_modes_and_conditions": True,
+            "excluded_kinds": expected_excluded_kinds,
+        },
+        "agent-visible projection record or excluded-kind inventory is invalid",
+    )
+    packet = freeze_root / "authority" / projection["path"]
     require(packet.is_file(), "agent-visible projection packet is absent")
     require(hashlib.sha256(packet.read_bytes()).hexdigest() == projection.get("sha256"), "agent-visible projection digest mismatch")
 

@@ -1215,7 +1215,8 @@
     "common_for_all_modes_and_conditions": true,
     "excluded_kinds": [
       "SUPPLIED_DEPENDENCY_EVIDENCE",
-      "TCB"
+      "TCB",
+      "TCB_BOUNDARY"
     ]
   },
   "uncovered_authority_entries": [],
