@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:materiality-adjudication-packet:1",
+  "$comment": "DRAFT / UNSEALED deterministic normalized union packet for materiality adjudication.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "input_digests", "binding_sha256", "union_findings", "cells", "packet_tree"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "MATERIALITY-ADJUDICATION-PACKET"},
+    "input_digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["review_packet_sha256", "review_m1_sha256", "review_m2_sha256"],
+      "properties": {
+        "review_packet_sha256": {"$ref": "#/$defs/digest"},
+        "review_m1_sha256": {"$ref": "#/$defs/digest"},
+        "review_m2_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "binding_sha256": {"$ref": "#/$defs/digest"},
+    "union_findings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/union_finding"}
+    },
+    "cells": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/cell"}
+    },
+    "packet_tree": {"$ref": "urn:zerocopy:v5-diagnostic:draft:packet-tree:1"}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "scope": {"enum": ["V5_CANDIDATE_REPORTS", "CANDIDATE_PACKAGE", "HARNESS_PROTOCOL", "ADVERSARIAL_AND_COHERENCE_REVIEWS"]},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "source_id", "description", "evidence", "decision"],
+      "properties": {
+        "reviewer_id": {"enum": ["m1", "m2"]},
+        "source_id": {"type": "string", "pattern": "^m[12]-F[1-9][0-9]*$"},
+        "description": {"type": "string", "minLength": 1},
+        "evidence": {"type": "string", "minLength": 1},
+        "decision": {"enum": ["BLOCKING", "NOT_BLOCKING"]}
+      }
+    },
+    "union_finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "scope", "normalized_description", "sources"],
+      "properties": {
+        "finding_id": {"type": "string", "pattern": "^M-[0-9a-f]{24}$"},
+        "scope": {"$ref": "#/$defs/scope"},
+        "normalized_description": {"type": "string", "minLength": 1},
+        "sources": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"$ref": "#/$defs/source"}}
+      }
+    },
+    "proposed_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "source_id", "decision"],
+      "properties": {
+        "reviewer_id": {"enum": ["m1", "m2"]},
+        "source_id": {"type": "string", "pattern": "^m[12]-F[1-9][0-9]*$"},
+        "decision": {"enum": ["BLOCKING", "NOT_BLOCKING"]}
+      }
+    },
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cell_id", "finding_id", "scope", "normalized_description", "source_ids", "proposed_decisions", "reasons"],
+      "properties": {
+        "cell_id": {"type": "string", "pattern": "^[0-9a-f]{24}$"},
+        "finding_id": {"type": "string", "pattern": "^M-[0-9a-f]{24}$"},
+        "scope": {"$ref": "#/$defs/scope"},
+        "normalized_description": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"type": "string", "pattern": "^m[12]-F[1-9][0-9]*$"}},
+        "proposed_decisions": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"$ref": "#/$defs/proposed_decision"}},
+        "reasons": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"enum": ["SINGLE_REVIEWER_FINDING", "REVIEWER_DISAGREEMENT"]}}
+      }
+    }
+  }
+}

@@ -7,7 +7,7 @@
   "required": ["schema_version", "status", "controls"],
   "properties": {
     "schema_version": {"const": 1},
-    "status": {"const": "DRAFT"},
+    "status": {"enum": ["DRAFT", "READY"]},
     "controls": {
       "type": "array",
       "minItems": 1,
