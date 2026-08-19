@@ -27,7 +27,7 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
              (A, B, C, D, E, F)
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
-           and 156 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -54,7 +54,7 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
              (A, B, C, D, E, F)
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
-           and 156 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -81,7 +81,7 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
              (A, B, C, D, E, F)
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
-           and 143 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -108,7 +108,7 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
              (A, B, C, D, E, F)
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
-           and 156 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -135,7 +135,7 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
              (A, B, C, D, E, F)
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
-           and 143 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -162,7 +162,7 @@ help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocop
              (A, B, C, D, E, F)
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
-           and 80 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -189,7 +189,7 @@ help: the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocop
              AtomicI64
              AtomicI8
              AtomicIsize
-           and 69 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -214,7 +214,7 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
              F32<O>
              F64<O>
              I128<O>
-           and 29 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -239,7 +239,7 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
              F32<O>
              F64<O>
              I128<O>
-           and 29 others
+           and $OTHER_TYPES others
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -264,7 +264,7 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
               F32<O>
               F64<O>
               I128<O>
-            and 29 others
+            and $OTHER_TYPES others
     = help: see issue #48214
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -289,7 +289,7 @@ help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocop
              (A, B, C, D, E, F)
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
-           and 80 others
+           and $OTHER_TYPES others
 note: required for `FromBytes1` to implement `zerocopy_renamed::FromBytes`
   --> $DIR/late_compile_pass.rs:54:10
    |
