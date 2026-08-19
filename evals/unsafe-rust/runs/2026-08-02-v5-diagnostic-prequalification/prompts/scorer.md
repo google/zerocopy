@@ -3,7 +3,7 @@
 Score all 15 opaque report labels `A` through `O` for mode `{{MODE}}` in the
 independently frozen `{{SCORER_ID}}` presentation order. You receive those
 reports and every evaluator-only dependency only through the exact content-bound
-packet `{{INPUT_ROOT}}/{{INPUT_PACKET_PATH}}`. You do not receive a
+packet at workspace-relative `input/{{INPUT_PACKET_PATH}}`. You do not receive a
 condition map, package identity, schedule, another scorer's output, or prior
 scores.
 
@@ -18,6 +18,6 @@ union, and classification disagreements are routed to adjudication.
 Do not infer a direct decision from a prerequisite, and do not compute
 `blocked_by`, `certificate_decision`, or `root_failures`; the protocol computes
 those from the frozen DAG after adjudication. Validate against the schema
-`{{SCORE_SCHEMA_PATH}}` beneath that input root. Emit one mode-level score containing
-exactly A–O only at `{{OUTPUT_ROOT}}/{{OUTPUT_PATH}}`; return only the relative
+`{{SCORE_SCHEMA_PATH}}` beneath that input alias. Emit one mode-level score containing
+exactly A–O only at workspace-relative `output/{{OUTPUT_PATH}}`; return only the relative
 output path.
