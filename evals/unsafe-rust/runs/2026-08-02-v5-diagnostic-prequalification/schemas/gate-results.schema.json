@@ -1,15 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:zerocopy:v5-diagnostic:draft:gate-results:1",
-  "$comment": "DRAFT / UNSEALED computed diagnostic gate result schema; release eligibility remains independently false.",
+  "$comment": "DRAFT / UNSEALED structural schema; protocol.py additionally enforces the exact keyed gate inventory and recomputed decisions; release eligibility remains independently false.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "status", "manifest_version", "context_trust", "release_eligibility", "gates"],
+  "required": ["schema_version", "status", "manifest_version", "context_trust", "static_lock_sha256", "aggregate_context_sha256", "release_eligibility", "gates"],
   "properties": {
     "schema_version": {"const": 1},
-    "status": {"const": "DRAFT-COMPUTED"},
+    "status": {"enum": ["DRAFT-COMPUTED", "LOCKED-COMPUTED"]},
     "manifest_version": {"type": "string", "minLength": 1},
-    "context_trust": {"const": "UNBOUND_DRAFT_INPUT"},
+    "context_trust": {"enum": ["UNBOUND_DRAFT_INPUT", "STATIC_LOCK_AND_DERIVED_AGGREGATE_BOUND"]},
+    "static_lock_sha256": {"anyOf": [{"type": "string", "pattern": "^[0-9a-f]{64}$"}, {"type": "null"}]},
+    "aggregate_context_sha256": {"anyOf": [{"type": "string", "pattern": "^[0-9a-f]{64}$"}, {"type": "null"}]},
     "release_eligibility": {
       "type": "object",
       "additionalProperties": false,
@@ -23,6 +25,9 @@
     },
     "gates": {
       "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "uniqueItems": true,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -37,5 +42,15 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "DRAFT-COMPUTED"}}},
+      "then": {"properties": {"context_trust": {"const": "UNBOUND_DRAFT_INPUT"}, "static_lock_sha256": {"type": "null"}, "aggregate_context_sha256": {"type": "null"}}}
+    },
+    {
+      "if": {"properties": {"status": {"const": "LOCKED-COMPUTED"}}},
+      "then": {"properties": {"context_trust": {"const": "STATIC_LOCK_AND_DERIVED_AGGREGATE_BOUND"}, "static_lock_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "aggregate_context_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}}
+    }
+  ]
 }

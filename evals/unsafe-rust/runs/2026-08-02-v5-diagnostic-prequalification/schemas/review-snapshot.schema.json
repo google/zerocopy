@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:review-snapshot:1",
+  "$comment": "DRAFT source schema for a complete staged payload awaiting independent review.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "candidate_for_bundle_kind", "payload_manifest_path", "payload_manifest_algorithm", "payload_manifest_sha256", "payload_entry_count", "path_domain", "finalization_additions"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "REVIEW-CANDIDATE"},
+    "candidate_for_bundle_kind": {"enum": ["PRODUCTION", "SYNTHETIC-TEST-ONLY"]},
+    "payload_manifest_path": {"const": "REVIEW-SNAPSHOT.manifest"},
+    "payload_manifest_algorithm": {"const": "V5_DOMAIN_FRAMED_TREE_V1"},
+    "payload_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "payload_entry_count": {"type": "integer", "minimum": 1},
+    "path_domain": {"const": "PORTABLE_ASCII_RELATIVE_PATH_V1"},
+    "finalization_additions": {"const": ["INTEGRATION-STATUS.json", "static/integration-receipts/**", "STATIC-MANIFEST.sha256", "STATIC-LOCK.json"]}
+  }
+}

@@ -6,6 +6,11 @@ must not be retried for timeout, exception, malformed output, incomplete output,
 or an inconvenient final response. A failure before lease creation is not a
 started attempt.
 
+Leasing is forbidden until root `STATIC-LOCK.json` passes whole-file
+reverification against root `STATIC-MANIFEST.sha256`. Post-lock mutable
+coordinator evidence is written only under `runtime/state/**`; the presence of
+any other `runtime/` child invalidates static verification.
+
 Every attempt uses a fresh output directory. After the agent returns, the
 coordinator captures all regular output bytes, special-entry defects, exact
 final-response bytes, process disposition, and coordinator metadata into one
