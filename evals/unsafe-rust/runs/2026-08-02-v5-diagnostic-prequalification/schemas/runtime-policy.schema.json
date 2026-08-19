@@ -1,16 +1,21 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:zerocopy:v5-diagnostic:draft:runtime-policy:2",
-  "$comment": "DRAFT / UNSEALED post-lock coordinator-state partition with neutral fresh external agent I/O roots.",
+  "$id": "urn:zerocopy:v5-diagnostic:runtime-policy:3",
+  "$comment": "DRAFT source schema; validates both the DRAFT source policy and its exact READY promotion.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "status", "mutable_root", "state_root", "static_manifest_exclusions", "draft_runtime_policy", "post_lock_state_policy", "agent_io_root_policy", "agent_input_leaf", "agent_output_leaf", "agent_visible_path_forbidden_terms", "symlink_policy", "seal_copy_policy", "evidence_policy", "fresh_attempt_root_policy", "frozen_input_policy", "outside_run_paths_for_synthetic_tests_only"],
+  "required": ["schema_version", "status", "static_manifest_path", "static_lock_path", "review_snapshot_manifest_path", "review_snapshot_descriptor_path", "mutable_root", "state_root", "static_manifest_exclusions", "runtime_carve_out", "draft_runtime_policy", "post_lock_state_policy", "agent_io_root_policy", "agent_input_leaf", "agent_output_leaf", "agent_visible_path_forbidden_terms", "symlink_policy", "seal_copy_policy", "evidence_policy", "fresh_attempt_root_policy", "frozen_input_policy", "snapshot_policy", "bundle_kind_policy", "static_manifest_algorithm", "path_domain", "metadata_policy", "synthetic_test_policy"],
   "properties": {
     "schema_version": {"const": 1},
-    "status": {"const": "DRAFT"},
+    "status": {"enum": ["DRAFT", "READY"]},
+    "static_manifest_path": {"const": "STATIC-MANIFEST.sha256"},
+    "static_lock_path": {"const": "STATIC-LOCK.json"},
+    "review_snapshot_manifest_path": {"const": "REVIEW-SNAPSHOT.manifest"},
+    "review_snapshot_descriptor_path": {"const": "REVIEW-SNAPSHOT.json"},
     "mutable_root": {"const": "runtime"},
     "state_root": {"const": "runtime/state"},
-    "static_manifest_exclusions": {"const": ["runtime/**"]},
+    "static_manifest_exclusions": {"const": ["runtime/state/**"]},
+    "runtime_carve_out": {"const": "EXACT_RUNTIME_STATE_SUBTREE_ONLY"},
     "draft_runtime_policy": {"const": "FORBIDDEN_UNTIL_VALID_LOCK_AND_STATIC_MANIFEST"},
     "post_lock_state_policy": {"const": "ONLY_COORDINATOR_STATE_AND_CONTENT_ADDRESSED_ENVELOPES"},
     "agent_io_root_policy": {"const": "FRESH_EXTERNAL_NEUTRAL_TMP_RANDOM_OPAQUE_ROOT"},
@@ -22,6 +27,11 @@
     "evidence_policy": {"const": "POST_LOCK_COMMITTED_RUNTIME_STATE_REQUIRED_AT_INTEGRATION"},
     "fresh_attempt_root_policy": {"const": "EXCLUSIVE_CREATE_ON_LEASE"},
     "frozen_input_policy": {"const": "NO_MUTATION_AFTER_LOCK"},
-    "outside_run_paths_for_synthetic_tests_only": {"const": true}
+    "snapshot_policy": {"const": "REVIEW_EXACT_STAGED_PAYLOAD_BEFORE_FINALIZATION"},
+    "bundle_kind_policy": {"const": "LOCK_AND_STATUS_MUST_MATCH_CALLER_EXPECTED_KIND"},
+    "static_manifest_algorithm": {"const": "V5_DOMAIN_FRAMED_TREE_V1"},
+    "path_domain": {"const": "PORTABLE_ASCII_RELATIVE_PATH_V1"},
+    "metadata_policy": {"const": "STATIC_FILES_0444_STATIC_DIRS_0555_RUNTIME_STATE_0700"},
+    "synthetic_test_policy": {"const": "PRIVATE_PATH_CAN_ONLY_MINT_SYNTHETIC_TEST_ONLY"}
   }
 }

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:materiality-review-contract:1",
+  "$comment": "DRAFT / UNSEALED exact materiality-review contract, promoted to READY in a production static bundle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "reviewer_ids", "independence", "scope", "inclusive_materiality_rule", "finding_id_pattern", "empty_review_requirement", "disagreement_policy", "novel_classification_is_not_materiality", "ledger_completion"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["DRAFT", "READY"]},
+    "reviewer_ids": {"const": ["m1", "m2"]},
+    "independence": {"const": "DISTINCT_AGENTS_NO_OTHER_REVIEW_OUTPUT"},
+    "scope": {"const": ["V5_CANDIDATE_REPORTS", "CANDIDATE_PACKAGE", "HARNESS_PROTOCOL", "ADVERSARIAL_AND_COHERENCE_REVIEWS"]},
+    "inclusive_materiality_rule": {"const": "BLOCKING_IF_A_SUPPORTED_FINDING_COULD_CHANGE_CANDIDATE_ACCEPTABILITY_OR_INVALIDATE_HARNESS_INTERPRETATION"},
+    "finding_id_pattern": {"const": "^m[12]-F[1-9][0-9]*$"},
+    "empty_review_requirement": {"const": "COMPLETE_SCOPE_ATTESTATION_REQUIRED"},
+    "disagreement_policy": {"const": "MANDATORY_INDEPENDENT_ADJUDICATION"},
+    "novel_classification_is_not_materiality": {"const": true},
+    "ledger_completion": {"const": "BOTH_REVIEWS_COMPLETE_AND_EVERY_UNION_FINDING_RESOLVED"}
+  }
+}
