@@ -10,6 +10,11 @@ Leasing is forbidden until root `STATIC-LOCK.json` passes whole-file
 reverification against root `STATIC-MANIFEST.sha256`. Post-lock mutable
 coordinator evidence is written only under `runtime/state/**`; the presence of
 any other `runtime/` child invalidates static verification.
+The coordinator must retain uninterrupted custody of the verified bundle,
+runtime state, external commitment, and lock from final publication through
+bound-gate evaluation, including between commands. A lock does not prevent a
+same-UID actor from atomically substituting or chmodding those paths; uncertain
+custody invalidates the run.
 
 Every attempt uses a fresh output directory. After the agent returns, the
 coordinator captures all regular output bytes, special-entry defects, exact
