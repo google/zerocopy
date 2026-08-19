@@ -7,11 +7,18 @@
   "source_digest": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
   "exact_prompt_set_sha256": "INTEGRATION_BOUND_EXACT_PROMPT_SET_SHA256",
   "scoped_surfaces": [
+    "q_metamorphic/Cargo.toml",
+    "q_metamorphic/src/lib.rs::LOCAL_ENTRY_B",
     "q_metamorphic/src/lib.rs::local_text",
     "q_metamorphic/src/lib.rs::catalog_text",
     "q_metamorphic/src/lib.rs::delegated_text",
-    "q_metamorphic/caller_examples.rs",
+    "q_metamorphic/caller_examples.rs::PEER_INPUT_A",
+    "q_metamorphic/caller_examples.rs::PEER_INPUT_B",
+    "q_metamorphic/caller_examples.rs::example_local",
+    "q_metamorphic/caller_examples.rs::example_peer_a",
+    "q_metamorphic/caller_examples.rs::example_peer_b",
     "q_metamorphic/DEPENDENCY-API.md",
+    "q_metamorphic/REQUEST.md",
     "q_metamorphic/SUPPORT.md",
     "q_metamorphic/TCB.md"
   ],
@@ -35,7 +42,7 @@
     "Any exact invalid-UTF-8 derivation for the false local branch is accepted if it reaches from_utf8_unchecked and the resulting str validity violation.",
     "Equivalent formulations of the ASCII caller domain are accepted if empty behavior, valid callers, invalid-caller rejection, and missing implementation evidence remain separate."
   ],
-  "witness_requirement": "local_text(false), including example_local, must be traced through INVALID_UTF8 to invalid str creation. example_peer_bytes is outside delegated_text's documented domain and cannot refute it. example_peer_ascii is within domain but cannot close the unavailable dependency implementation theorem.",
+  "witness_requirement": "local_text(false), including example_local, must be traced through LOCAL_ENTRY_B to a non-UTF-8 str escaping the safe API. The bare construction/return must not be mislabeled immediate UB under Rust 1.83; any claimed dynamic-UB execution needs an exact downstream operation. example_peer_a is outside delegated_text's documented domain and cannot refute it. example_peer_b is within domain but cannot close the unavailable dependency implementation theorem.",
   "case_control_class": "METAMORPHIC_LOCAL_NEGATIVE_CATALOG_POSITIVE_AND_DELEGATED_VALID_INVALID_CALLER_CONTROLS",
   "contamination_risk": "Do not expose which catalog byte changed, expected local/catalog/delegated verdicts, caller classifications, missing-root result, atom/control IDs, or evaluator-only oracle and TCB decisions.",
   "claim_layers": [

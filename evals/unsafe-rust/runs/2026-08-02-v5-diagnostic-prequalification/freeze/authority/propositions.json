@@ -26,7 +26,7 @@
       "quotation": "the tail expression of the block, if evaluated, ends up being returned to the caller",
       "proposition": "On normal completion, an evaluated function-body tail expression supplies the returned value.",
       "applicability": "Only reached normal-completion paths; an explicit return short-circuits this implicit return.",
-      "consumers": ["E3", "F3", "F7", "L6", "L9", "L10", "Q7"]
+      "consumers": ["E3", "F3", "F4", "F5", "F9", "F11", "L6", "L9", "L10", "Q7"]
     },
     {
       "id": "R183-BLOCK-TAIL",
@@ -36,7 +36,7 @@
       "quotations": ["Then the final operand is executed, if given.", "The type of a block is the type of the final operand, or `()` if the final operand is omitted."],
       "proposition": "A reached block final operand determines that block's value and type.",
       "applicability": "Only a syntactic final operand on a reached, nondiverging path; statements and source order remain source facts.",
-      "consumers": ["E3", "F3", "F7", "L6", "L9", "L10", "Q7"]
+      "consumers": ["E3", "F3", "F4", "F5", "F9", "F11", "L6", "L9", "L10", "Q7"]
     },
     {
       "id": "R183-BLOCK-SEQUENCE",
@@ -46,7 +46,7 @@
       "quotations": ["When evaluating a block expression, each statement, except for item declaration statements, is executed sequentially.", "Then the final operand is executed, if given."],
       "proposition": "Reached statements in these exact function blocks execute in source order before the optional final operand.",
       "applicability": "R's witness body and any explicit source-order derivation; branch and call semantics remain separate.",
-      "consumers": ["R4"]
+      "consumers": ["R4", "R12"]
     },
     {
       "id": "R183-MATCH-SELECTION",
@@ -56,24 +56,24 @@
       "quotation": "The first arm with a matching pattern is chosen as the branch target of the `match`, any variables bound by the pattern are assigned to local variables in the arm's block, and control enters the block.",
       "proposition": "A match evaluates the body of its first matching arm.",
       "applicability": "Unguarded arms in E and Q after the literal-pattern proposition establishes which pattern matches.",
-      "consumers": ["E4", "Q3", "Q6"]
+      "consumers": ["E4", "Q3", "Q6", "Q13"]
     },
     {
       "id": "R183-PATTERNS",
       "kind": "RUST",
       "versions": ["1.83.0"],
-      "urls": ["https://doc.rust-lang.org/1.83.0/reference/patterns.html#literal-patterns"],
-      "quotation": "Literal patterns match exactly the same value as what is created by the literal.",
-      "proposition": "The true and false literal patterns match exactly their corresponding bool values.",
-      "applicability": "Boolean literal arms in E and Q; exhaustiveness follows from the two-value bool domain plus both arms.",
-      "consumers": ["E4", "Q3", "Q6"]
+      "urls": ["https://doc.rust-lang.org/1.83.0/reference/patterns.html#literal-patterns", "https://doc.rust-lang.org/1.83.0/reference/types/boolean.html#boolean-type"],
+      "quotations": ["Literal patterns match exactly the same value as what is created by the literal.", "The boolean type or bool is a primitive data type that can take on one of two values, called true and false."],
+      "proposition": "The true and false literal patterns match exactly their corresponding bool values, and those two values exhaust bool.",
+      "applicability": "Boolean literal arms in E and Q after the exact scrutinee is established as bool.",
+      "consumers": ["E4", "Q3", "Q6", "Q13"]
     },
     {
       "id": "R183-IF-SELECTION",
       "kind": "RUST",
       "versions": ["1.83.0"],
       "urls": ["https://doc.rust-lang.org/1.83.0/reference/expressions/if-expr.html#if-expressions"],
-      "quotation": "If all `if` and `else if` conditions evaluate to `false` then any `else` block is executed.",
+      "quotations": ["If a condition operand evaluates to `true`, the consequent block is executed and any subsequent `else if` or `else` block is skipped.", "If all `if` and `else if` conditions evaluate to `false` then any `else` block is executed."],
       "proposition": "For these single-condition if/else expressions, a false condition executes the else block; a true condition executes the consequent and skips else.",
       "applicability": "E last_or/boundary_or, L last, and Q delegated_text; direction must match the reached unsafe path.",
       "consumers": ["E6", "L2", "L10", "Q7"]
@@ -83,7 +83,7 @@
       "kind": "RUST",
       "versions": ["1.83.0"],
       "urls": ["https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.len"],
-      "quotation": "Returns the number of elements in the slice.",
+      "quotations": ["pub const fn len(&self) -> usize", "Returns the number of elements in the slice."],
       "proposition": "slice::len returns the element count as usize.",
       "applicability": "The exact slices in E, L, and Q, plus arrays only after a separately established array-to-slice coercion; does not itself prove nonemptiness.",
       "consumers": ["E7", "L3", "L10", "Q7"]
@@ -96,7 +96,7 @@
       "quotations": ["Comparison operators are also defined both for primitive types and many types in the standard library.", "`==` Equal", "`!=` Not equal"],
       "proposition": "For same-typed primitive integer operands, == and != test value equality and inequality; in particular, false usize `len == 0` entails len != 0, and u8 `value != 0` is true exactly for a nonzero value.",
       "applicability": "The exact built-in usize equality expressions in E, L, and Q and the exact built-in u8 inequality in F; contextual typing and branch selection are separate premises.",
-      "consumers": ["E8", "F3", "L2", "L10", "Q7"]
+      "consumers": ["E8", "F5", "F11", "L2", "L10", "Q7"]
     },
     {
       "id": "R183-INTEGER-LITERAL-CONTEXT",
@@ -106,7 +106,7 @@
       "quotations": ["If an integer type can be uniquely determined from the surrounding program context, the expression has that type.", "The value of the expression is determined from the string representation of the token as follows:"],
       "proposition": "Each material unsuffixed decimal integer literal has the unique integer type forced by its exact surrounding expression and denotes its written nonnegative decimal value.",
       "applicability": "Only after the consumer identifies the contextual type constraint; no default-i32 inference is permitted where len, return, argument, array, or Option context uniquely fixes another type.",
-      "consumers": ["E5", "E8", "E9", "E15", "V3", "F3", "F7", "L2", "L4", "L10", "Q3", "Q7", "Q9", "Q10", "R2", "R3", "R7", "R8"]
+      "consumers": ["E5", "E8", "E9", "E15", "V3", "F5", "F7", "F11", "L2", "L4", "L10", "Q3", "Q7", "Q9", "Q10", "R2", "R3", "R7", "R8", "R12"]
     },
     {
       "id": "R183-USIZE-DOMAIN",
@@ -143,9 +143,9 @@
       "kind": "RUST",
       "versions": ["1.83.0"],
       "urls": ["https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked"],
-      "quotation": "Calling this method with an out-of-bounds index is undefined behavior even if the resulting reference is not used.",
-      "proposition": "For a usize element index, get_unchecked requires index < len; an out-of-bounds call is UB.",
-      "applicability": "The exact selected slice and index at each E, V, and L call.",
+      "quotations": ["Calling this method with an out-of-bounds index is undefined behavior even if the resulting reference is not used.", "pub unsafe fn get_unchecked<I>(&self, index: I,) -> &<I as SliceIndex<[T]>>::Output where I: SliceIndex<[T]>,"],
+      "proposition": "For a usize element index, get_unchecked requires index < len and an out-of-bounds call is UB; its exact signature exposes a borrowed receiver and elided borrowed output to which the separately cited lifetime-elision rule can be applied.",
+      "applicability": "The exact selected slice and usize index at each E, V, and L call; output-lifetime conclusions additionally require R183-LIFETIME-ELISION.",
       "consumers": ["E10", "E15", "V6", "V10", "L1", "L10"]
     },
     {
@@ -176,7 +176,7 @@
       "quotation": "If an item is public, then it can be accessed externally from some module `m` if you can access all the item's ancestor modules from `m`.",
       "proposition": "The public crate-root items in V, Q, and R are downstream-accessible.",
       "applicability": "Exact public crate-root items only; it does not establish implementation safety or runtime behavior.",
-      "consumers": ["V2", "Q2", "R2"]
+      "consumers": ["V2", "Q2", "R2", "R12"]
     },
     {
       "id": "R183-TRAIT-IMPLEMENTATION",
@@ -186,7 +186,7 @@
       "quotations": ["Given `impl<P1..=Pn> Trait<T1..=Tn> for T0`, an `impl` is valid only if at least one of the following is true:", "`Trait` is a local trait", "At least one of the types `T0..=Tn` must be a local type."],
       "proposition": "A downstream crate may implement an accessible upstream trait for its own local type, absent overlap.",
       "applicability": "Caller-local East/West/Outside types; the exact supplied impls are nonoverlapping.",
-      "consumers": ["V3", "R2"]
+      "consumers": ["V3", "R2", "R12"]
     },
     {
       "id": "R183-UNSAFE-TRAITS",
@@ -196,37 +196,37 @@
       "quotations": ["An unsafe trait is a trait that comes with extra safety conditions that must be upheld by implementations of the trait.", "By writing `unsafe impl`, the programmer states that they have taken care of satisfying the extra safety conditions required by the trait."],
       "proposition": "V's unsafe Slot puts its documented index postcondition on each implementer, and each unsafe impl asserts that implementer obligation discharged; the declaration does not make a false assertion true. R's trait lacks the unsafe qualifier and therefore is not governed by this unsafe-trait implementer obligation.",
       "applicability": "V's unsafe Slot and R's ordinary Slot; the exact contract text comes from the inspected trait declaration, while this authority assigns obligation ownership and assertion meaning.",
-      "consumers": ["V5", "V8", "R3"]
+      "consumers": ["V5", "V8", "R3", "R12"]
     },
     {
       "id": "R183-UNSAFE-FUNCTIONS",
       "kind": "RUST",
       "versions": ["1.83.0"],
-      "urls": ["https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-functions-unsafe-fn", "https://doc.rust-lang.org/1.83.0/reference/items/functions.html"],
+      "urls": ["https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-functions-unsafe-fn"],
       "quotations": ["We say they have extra safety conditions, which are requirements that must be upheld by all callers and that the compiler does not check.", "Such a function must be prefixed with the keyword `unsafe` and can only be called from inside an `unsafe` block, or inside `unsafe fn` without the `unsafe_op_in_unsafe_fn` lint."],
       "proposition": "A declaration carrying the unsafe function qualifier assigns its documented extra conditions to callers and requires an unsafe call context. The exact ordinary fn declarations inspected in V, F, and R carry no unsafe function qualifier, so this caller-side unsafe-fn rule imposes no extra obligation on their calls; Q's delegated_text, dependency method, and from_utf8_unchecked call do carry it.",
       "applicability": "The negative conclusion requires checking the exact declaration grammar/source, not merely observing that a particular call lacks an unsafe block.",
-      "consumers": ["V4", "F6", "Q2", "Q5", "R3"]
+      "consumers": ["V4", "F7", "F11", "Q2", "Q5", "R3", "R12"]
     },
     {
       "id": "R183-CALL",
       "kind": "RUST",
       "versions": ["1.83.0"],
       "urls": ["https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html"],
-      "quotation": "A call expression calls a function.",
-      "proposition": "A reached call expression invokes its selected function with the evaluated arguments and returns the function's result on normal completion.",
-      "applicability": "Only call reachability/transfer after source control flow and typing are separately established.",
-      "consumers": ["V4", "F3", "F6", "F7", "Q2", "Q5", "Q7", "R3"]
+      "quotations": ["A call expression calls a function.", "If the function eventually returns, then the expression completes."],
+      "proposition": "A reached call expression invokes its selected function and, if that function returns, the call expression completes.",
+      "applicability": "Only invocation/completion after source control flow, argument values, typing, and any returned-value transfer are separately established.",
+      "consumers": ["V4", "F3", "F4", "F5", "F7", "F9", "F11", "Q2", "Q5", "Q7", "R3", "R12"]
     },
     {
       "id": "R183-ARRAY-SHAPE",
       "kind": "RUST",
       "versions": ["1.83.0"],
-      "urls": ["https://doc.rust-lang.org/1.83.0/reference/types/array.html"],
-      "quotations": ["An array is a fixed-size sequence of `N` elements of type `T`. The array type is written as `[T; N]`.", "The size is a constant expression that evaluates to a `usize`."],
+      "urls": ["https://doc.rust-lang.org/1.83.0/reference/types/array.html", "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"],
+      "quotations": ["An array is a fixed-size sequence of `N` elements of type `T`. The array type is written as `[T; N]`.", "The size is a constant expression that evaluates to a `usize`.", "Indices are zero-based for arrays and slices."],
       "proposition": "A `[T; 2]` value has exactly two T elements and hence element indices 0 and 1; `[u8; 4]` and `[u8; 1]` have the corresponding exact lengths.",
       "applicability": "Exact array types in E, V, Q, and R after the integer/const literals are established.",
-      "consumers": ["E15", "V3", "V6", "V10", "Q2", "R3", "R4", "R5", "R8"]
+      "consumers": ["E15", "V3", "V6", "V10", "Q2", "R3", "R4", "R5", "R8", "R12"]
     },
     {
       "id": "R183-ARRAY-SLICE-METHOD",
@@ -235,8 +235,18 @@
       "urls": ["https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions", "https://doc.rust-lang.org/1.83.0/reference/expressions/method-call-expr.html", "https://doc.rust-lang.org/1.83.0/std/primitive.array.html"],
       "quotations": ["`[T; n]` to `[T]`.", "The first step is to build a list of candidate receiver types. Obtain these by repeatedly dereferencing the receiver expression's type, adding each type encountered to the list, then finally attempting an unsized coercion at the end, and adding the result type if that is successful.", "Arrays coerce to slices (`[T]`), so a slice method may be called on an array. Indeed, this provides most of the API for working with arrays."],
       "proposition": "The exact array receiver can resolve the slice method through array-to-slice unsizing; the separately established array shape supplies the element count for the resulting receiver view.",
-      "applicability": "E configured_lane, V choose, Q static-array-to-slice sites, and R increment; it does not itself establish bounds.",
-      "consumers": ["E15", "V6", "V10", "Q2", "R4"]
+      "applicability": "E configured_lane, V choose, and R increment array-receiver method calls; it does not establish non-method coercion sites or bounds.",
+      "consumers": ["E15", "V6", "V10", "R4", "R12"]
+    },
+    {
+      "id": "R183-ARRAY-SLICE-COERCION",
+      "kind": "RUST",
+      "versions": ["1.83.0"],
+      "urls": ["https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites", "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types", "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#least-upper-bound-coercions", "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions"],
+      "quotations": ["`let` statements where an explicit type is given.", "Arguments for function calls", "The value being coerced is the actual parameter, and it is coerced to the type of the formal parameter.", "To find the common type for a series of match arms.", "TyCtor(`T`) to TyCtor(`U`), where TyCtor(`T`) is one of", "`&T`", "and where `U` can be obtained from `T` by unsized coercion.", "`[T; n]` to `[T]`."],
+      "proposition": "An explicitly typed let binding and an actual function argument are coercion sites; match-arm least-upper-bound coercion finds a common arm type; and the reference type constructor can preserve the reference wrapper while an array pointee unsizes to a slice pointee.",
+      "applicability": "Q's exact `&'static [u8; N]` match arm and caller-example arguments where the inspected destination or formal type is `&[u8]`; this does not establish element values, referent lifetime, or method-call resolution.",
+      "consumers": ["Q2"]
     },
     {
       "id": "R183-DEREF-ASSIGN",
@@ -246,7 +256,7 @@
       "quotations": ["When applied to a pointer it denotes the pointed-to location.", "If the expression is of type `&mut T` or `*mut T`, and is either a local variable, a (nested) field of a local variable or is a mutable place expression, then the resulting memory location can be assigned to.", "An assignment expression moves a value into a specified place.", "An assignment expression always produces the unit value."],
       "proposition": "Reading `*shared_reference` reads the pointee place, while assignment through an applicable mutable-reference dereference stores the assigned value in that pointee place and evaluates to unit.",
       "applicability": "E record/unchecked-result reads, V unchecked-result reads, and R current/proposed element update after reference/index validity is separately established.",
-      "consumers": ["E5", "E10", "E15", "V6", "V10", "R7", "R8"]
+      "consumers": ["E5", "E10", "E15", "V6", "V10", "R7", "R8", "R12"]
     },
     {
       "id": "R183-INTEGER-COPY-U8",
@@ -276,7 +286,7 @@
       "quotations": ["Values whose type implements `Copy` are copied rather than moved upon assignment.", "impl Copy for u32"],
       "proposition": "The material u32 values read through references or passed to by-value methods are copied values, leaving the referenced storage valid.",
       "applicability": "R's exact u32 values only; reference validity and pointee selection are separate propositions.",
-      "consumers": ["R7", "R8"]
+      "consumers": ["R7", "R8", "R12"]
     },
     {
       "id": "R183-LIFETIME-ELISION",
@@ -284,29 +294,29 @@
       "versions": ["1.83.0"],
       "urls": ["https://doc.rust-lang.org/1.83.0/reference/lifetime-elision.html#lifetime-elision-in-functions"],
       "quotations": ["If there is exactly one lifetime used in the parameters (elided or not), that lifetime is assigned to all elided output lifetimes.", "If the receiver has type `&Self` or `&mut Self`, then the lifetime of that reference to `Self` is assigned to all elided output lifetime parameters."],
-      "proposition": "The output references of from_utf8_unchecked, get_unchecked, and get_unchecked_mut are tied to the applicable input/self borrow rather than unconstrained or fabricated lifetimes.",
-      "applicability": "Only these exact signatures after their parameter/receiver forms are checked on the versioned API page.",
-      "consumers": ["E10", "E15", "L6", "L9", "L10", "Q2", "Q6", "Q7"]
+      "proposition": "An elided output lifetime is assigned from the sole input lifetime, or from an applicable borrowed receiver under the receiver rule.",
+      "applicability": "Consumers must separately inspect the exact versioned API signature and establish that its parameter/receiver form satisfies one of these rules; this entry alone does not bind a named API.",
+      "consumers": ["E10", "E15", "L6", "L9", "L10", "Q2", "Q6", "Q7", "Q13"]
     },
     {
       "id": "R183-NONZERO-NEW-UNCHECKED",
       "kind": "RUST",
       "versions": ["1.83.0"],
-      "urls": ["https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new_unchecked", "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html#invalid-values"],
-      "quotations": ["The value must not be zero.", "If a type has a custom range of a valid values, then a valid value must be in that range.", "In the standard library, this affects `NonNull<T>` and `NonZero<T>`."],
+      "urls": ["https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new_unchecked"],
+      "quotations": ["This results in undefined behaviour if the value is zero.", "The value must not be zero."],
       "proposition": "NonZeroU8::new_unchecked(value) requires value != 0; passing zero violates its unsafe precondition and is UB.",
       "applicability": "F's staged/local calls and their exact u8 candidate; no dependency documentation discharges this premise.",
-      "consumers": ["F3", "F5"]
+      "consumers": ["F3", "F7", "F11"]
     },
     {
       "id": "R183-NONZERO-NEW",
       "kind": "RUST",
       "versions": ["1.83.0"],
       "urls": ["https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new"],
-      "quotation": "Creates a non-zero if the given value is not zero.",
+      "quotations": ["pub const fn new(n: T) -> Option<NonZero<T>>", "Creates a non-zero if the given value is not zero."],
       "proposition": "NonZeroU8::new returns Some(nonzero) for nonzero input and None for zero, without an unsafe precondition.",
       "applicability": "F checked_token positive control only.",
-      "consumers": ["F7"]
+      "consumers": ["F9", "F11"]
     },
     {
       "id": "R183-NONZERO-GET",
@@ -316,7 +326,7 @@
       "quotation": "Returns the contained value as a primitive type.",
       "proposition": "NonZeroU8::get returns the contained nonzero u8 value.",
       "applicability": "F staged_value and staged_is_nonzero after staged_token has actually produced a valid NonZeroU8.",
-      "consumers": ["F3", "F4", "F7"]
+      "consumers": ["F4", "F5", "F6", "F11"]
     },
     {
       "id": "R183-STRING-LITERAL",
@@ -326,47 +336,37 @@
       "quotation": "The expression's value is a reference to a statically allocated `str` containing the UTF-8 encoding of the represented string.",
       "proposition": "The exact north/south string literal expressions produce static valid-UTF-8 str values with the represented text.",
       "applicability": "Q local/catalog exact string literals before as_bytes.",
-      "consumers": ["Q1", "Q6"]
+      "consumers": ["Q1", "Q6", "Q13"]
     },
     {
       "id": "R183-STR-FROM-UTF8-UNCHECKED",
       "kind": "RUST",
       "versions": ["1.83.0"],
-      "urls": ["https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html#safety"],
-      "quotation": "The bytes passed in must be valid UTF-8.",
-      "proposition": "str::from_utf8_unchecked requires every passed byte sequence to be valid UTF-8.",
-      "applicability": "Q local_text and catalog_text exact selected byte slices.",
-      "consumers": ["Q4", "Q5", "Q6"]
+      "urls": ["https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html", "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html#safety"],
+      "quotations": ["The bytes passed in must be valid UTF-8.", "pub const unsafe fn from_utf8_unchecked(v: &[u8]) -> &str"],
+      "proposition": "str::from_utf8_unchecked requires every passed byte sequence to be valid UTF-8; its exact signature exposes one borrowed input and an elided borrowed output to which the separately cited lifetime-elision rule can be applied.",
+      "applicability": "Q local_text and catalog_text exact selected byte slices; output-lifetime conclusions additionally require R183-LIFETIME-ELISION.",
+      "consumers": ["Q4", "Q5", "Q6", "Q13"]
     },
     {
       "id": "R183-UTF8-VALIDITY",
       "kind": "RUST",
       "versions": ["1.83.0"],
-      "urls": ["https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html", "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#layout-and-bit-validity"],
-      "quotations": ["let sparkle_heart = vec![0, 159, 146, 150];", "assert!(str::from_utf8(&sparkle_heart).is_err());", "A value of type `str` is represented the same way as `[u8]`, a slice of 8-bit unsigned bytes.", "However, the Rust standard library makes extra assumptions about `str`: methods working on `str` assume and ensure that the data in there is valid UTF-8."],
-      "proposition": "The exact sequence [0, 159, 146, 150] is invalid UTF-8, and every existing str value has valid UTF-8 bytes.",
-      "applicability": "Q's exact documented invalid example and its existing string-literal controls; extracting their bytes requires R183-STR-AS-BYTES.",
-      "consumers": ["Q4", "Q6"]
+      "urls": ["https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html", "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#layout-and-bit-validity", "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#invariant"],
+      "quotations": ["let sparkle_heart = vec![0, 159, 146, 150];", "assert!(str::from_utf8(&sparkle_heart).is_err());", "A value of type `str` is represented the same way as `[u8]`, a slice of 8-bit unsigned bytes.", "However, the Rust standard library makes extra assumptions about `str`: methods working on `str` assume and ensure that the data in there is valid UTF-8.", "Rust libraries may assume that string slices are always valid UTF-8.", "Constructing a non-UTF-8 string slice is not immediate undefined behavior, but any function called on a string slice may assume that it is valid UTF-8, which means that a non-UTF-8 string slice can lead to undefined behavior down the road."],
+      "proposition": "The exact sequence [0, 159, 146, 150] is invalid UTF-8. Existing valid str controls have UTF-8 bytes. Constructing a non-UTF-8 string slice is not immediate UB, but it violates an invariant Rust libraries may assume and can lead to downstream UB.",
+      "applicability": "Q's exact documented invalid example, invalid-str escape, and existing string-literal controls; extracting control bytes requires R183-STR-AS-BYTES. It does not prove that bare construction or return is immediate UB.",
+      "consumers": ["Q4", "Q5", "Q6", "Q13"]
     },
     {
       "id": "R183-STR-AS-BYTES",
       "kind": "RUST",
       "versions": ["1.83.0"],
       "urls": ["https://doc.rust-lang.org/1.83.0/std/primitive.str.html#method.as_bytes"],
-      "quotation": "Converts a string slice to a byte slice.",
-      "proposition": "str::as_bytes returns the underlying byte slice of the valid UTF-8 str value.",
-      "applicability": "Q catalog_text's exact `\"north\".as_bytes()` and `\"south\".as_bytes()` expressions only.",
-      "consumers": ["Q6"]
-    },
-    {
-      "id": "R183-INVALID-VALUES-UB",
-      "kind": "RUST",
-      "versions": ["1.83.0"],
-      "urls": ["https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html", "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#layout-and-bit-validity"],
-      "quotations": ["Producing an invalid value. “Producing” a value happens any time a value is assigned to or read from a place, passed to a function/primitive operation or returned from a function/primitive operation.", "The Rust compiler assumes that all values produced during program execution are “valid”, and producing an invalid value is hence immediate UB."],
-      "proposition": "Producing or returning a str value whose bytes are not valid UTF-8 is undefined behavior.",
-      "applicability": "Q local_text(false) after exact invalidity and from_utf8_unchecked reachability are proved.",
-      "consumers": ["Q5"]
+      "quotations": ["Converts a string slice to a byte slice.", "pub const fn as_bytes(&self) -> &[u8]"],
+      "proposition": "str::as_bytes converts the string slice to its byte slice; its exact signature exposes a borrowed receiver and elided borrowed output to which the separately cited lifetime-elision rule can be applied.",
+      "applicability": "Q local_text's true-arm `\"north\".as_bytes()` and catalog_text's exact `\"north\".as_bytes()` and `\"south\".as_bytes()` expressions only; output-lifetime conclusions additionally require R183-LIFETIME-ELISION.",
+      "consumers": ["Q6", "Q13"]
     },
     {
       "id": "R183-SLICE-GET-UNCHECKED-MUT",
@@ -376,17 +376,17 @@
       "quotation": "Calling this method with an out-of-bounds index is undefined behavior even if the resulting reference is not used.",
       "proposition": "get_unchecked_mut requires its element index to be in bounds; index 2 is out of bounds for a length-2 array/slice and the call is UB.",
       "applicability": "R's reached pair/index witness.",
-      "consumers": ["R5"]
+      "consumers": ["R5", "R12"]
     },
     {
       "id": "R183-INDEXING",
       "kind": "RUST",
       "versions": ["1.83.0"],
       "urls": ["https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"],
-      "quotations": ["Array and slice-typed values can be indexed by writing a square-bracket-enclosed expression of type `usize` (the index) after them.", "When the array is mutable, the resulting memory location can be assigned to."],
-      "proposition": "For a two-element array, pair[1] is ordinary checked indexing of its second element and needs no unsafe block.",
-      "applicability": "R's proposed nongeneric specialization, with constant index 1 and exact [u32; 2] input.",
-      "consumers": ["R8"]
+      "quotations": ["Array and slice-typed values can be indexed by writing a square-bracket-enclosed expression of type `usize` (the index) after them.", "When the array is mutable, the resulting memory location can be assigned to.", "Array access is a constant expression, so bounds can be checked at compile-time with a constant index value.", "Otherwise a check will be performed at run-time that will put the thread in a panicked state if it fails."],
+      "proposition": "Array indexing uses a usize index, permits assignment through a mutable array, and is bounds-checked either at compile time for a constant array access or at run time otherwise.",
+      "applicability": "R's proposed specialization only after array shape and the contextually typed constant index 1 separately establish selection of the second in-bounds element; ordinary-function syntax is a separate source/unsafe-function premise.",
+      "consumers": ["R8", "R12"]
     },
     {
       "id": "R183-U32-WRAPPING-ADD",
@@ -396,7 +396,7 @@
       "quotation": "Wrapping (modular) addition. Computes `self + rhs`, wrapping around at the boundary of the type.",
       "proposition": "u32::wrapping_add(1) performs the required modular increment in every profile.",
       "applicability": "R's exact element-1 redesign behavior.",
-      "consumers": ["R7", "R8"]
+      "consumers": ["R7", "R8", "R12"]
     },
 
     {
@@ -564,7 +564,7 @@
       "kind": "RUST",
       "versions": ["1.85.1"],
       "urls": ["https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html"],
-      "quotation": "If all `if` and `else if` conditions evaluate to `false` then any `else` block is executed.",
+      "quotations": ["If a condition operand evaluates to `true`, the consequent block is executed and any subsequent `else if` or `else` block is skipped.", "If a condition operand evaluates to `false`, the consequent block is skipped and any subsequent `else if` condition is evaluated."],
       "proposition": "In B's checked body, value == 0 reaches panic; nonzero skips that branch and reaches new_unchecked.",
       "applicability": "Only the complementary selected body; the affected body contains no check.",
       "consumers": ["B12"]
@@ -616,8 +616,8 @@
       "versions": ["1.84.0", "1.85.0", "1.86.0"],
       "urls": ["https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#conditional-compilation", "https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#the-cfg-attribute", "https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#conditional-compilation", "https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#the-cfg-attribute", "https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#conditional-compilation", "https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#the-cfg-attribute"],
       "quotations": ["true if the option is set", "all of the given predicates", "predicate is false", "The `cfg` attribute conditionally includes the thing it is attached to based on a configuration predicate."],
-      "proposition": "On all three releases, P's cfg/all/not attributes select the intended compile-error or function body once TCB-P-BUILD-MAP supplies cfg options.",
-      "applicability": "P's exact three-release source and only the cfg options admitted by the TCB.",
+      "proposition": "On each listed release, a set cfg option makes its predicate true, all requires all listed predicates, not is true when its predicate is false, and cfg conditionally includes its attached item from the resulting predicate.",
+      "applicability": "P's exact source only after the report instantiates these constituent rules and separately consumes only the cfg options admitted by TCB-P-BUILD-MAP; this entry does not itself assert the fixture's branch map.",
       "consumers": ["P12", "P27"]
     },
     {
@@ -637,7 +637,7 @@
       "quotations": ["The returned value is nonzero.", "No implementation body, safety proof, build material, or artifact identity is included in the supplied snapshot."],
       "proposition": "peer-stage 2.1.0 publicly claims next_nonzero returns nonzero, but no supplied evidence proves the selected implementation fulfills that claim or is UB-free.",
       "applicability": "F only; this is contract/evidence-boundary data, not an implementation theorem.",
-      "consumers": ["F1"]
+      "consumers": ["F1", "F6", "F11"]
     },
     {
       "id": "DEP-Q-API",
@@ -664,7 +664,7 @@
       "quotation": "The authorized reviewer has accepted no dependency implementation, build, or artifact proposition for this target.",
       "proposition": "No peer-stage 2.1.0 implementation theorem may be assumed.",
       "applicability": "F; preserves G as unresolved until implementation/build/artifact evidence is supplied.",
-      "consumers": ["F1"]
+      "consumers": ["F1", "F11"]
     },
     {
       "id": "TCB-Q-NO-IMPLEMENTATION",

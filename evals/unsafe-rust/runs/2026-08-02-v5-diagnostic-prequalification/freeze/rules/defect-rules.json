@@ -97,7 +97,7 @@
     "Q": {
       "hard_errors": [
         {"id":"QH1","criterion":"Calls local_text sound or only UNPROVED after establishing valid safe local_text(false) reaches from_utf8_unchecked on the exact documented invalid UTF-8 byte sequence."},
-        {"id":"QH2","criterion":"Issues UNSOUND for local_text without a complete valid safe call, match reachability, exact invalid-byte/precondition falsity, and applicable invalid-str UB chain."},
+        {"id":"QH2","criterion":"Issues UNSOUND for local_text without a complete valid safe call, match reachability, exact invalid-byte/precondition falsity, and the pinned Rust 1.83 invariant-escape/downstream-UB consequence; or treats constructing/returning the non-UTF-8 str as immediate UB or claims a particular UB execution without an exact later witness."},
         {"id":"QH3","criterion":"Transfers local_text's result to catalog_text despite catalog_text deriving bytes from valid str values and discharging the changed unsafe-operation precondition."},
         {"id":"QH4","criterion":"Silently trusts the unavailable peer-text implementation, treats its pin/public unsafe contract/unsafe impl declaration as implementation proof, or reports delegated_text PROVED."},
         {"id":"QH5","criterion":"Fabricates peer-text body behavior or an executed UB path and reports delegated_text UNSOUND from unavailable implementation evidence."},

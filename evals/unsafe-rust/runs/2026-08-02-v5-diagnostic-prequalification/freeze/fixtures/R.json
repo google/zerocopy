@@ -8,9 +8,11 @@
   "exact_prompt_set_sha256": "INTEGRATION_BOUND_EXACT_PROMPT_SET_SHA256",
   "scoped_surfaces": [
     "r_redesign/lib.rs::Slot",
+    "r_redesign/lib.rs::Slot::index",
     "r_redesign/lib.rs::Tail",
+    "r_redesign/lib.rs::<Tail as Slot>::index",
     "r_redesign/lib.rs::increment",
-    "r_redesign/REQUEST.md required behavior and downstream constraints"
+    "r_redesign/REQUEST.md::Design review request"
   ],
   "theorem_boundary_class": "First assess the current public generic abstraction under valid safe downstream use; then assess a behavior-preserving capability-reducing redesign as a conditional proposal, not as current implementation proof.",
   "supported_set": [

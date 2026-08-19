@@ -7,6 +7,7 @@
   "source_digest": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
   "exact_prompt_set_sha256": "INTEGRATION_BOUND_EXACT_PROMPT_SET_SHA256",
   "scoped_surfaces": [
+    "e_semantics/Cargo.toml",
     "e_semantics/src/lib.rs::record",
     "e_semantics/src/lib.rs::last_or",
     "e_semantics/src/lib.rs::boundary_or",

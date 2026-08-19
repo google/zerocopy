@@ -49,8 +49,32 @@ FAMILY_PREFIX = {
 
 
 def load_json(path: Path) -> object:
-    with path.open(encoding="utf-8") as source:
-        return json.load(source)
+    return parse_json_bytes(path.read_bytes(), path)
+
+
+def reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON object key: {key!r}")
+        result[key] = value
+    return result
+
+
+def reject_nonfinite_number(token: str) -> object:
+    raise ValueError(f"non-finite JSON number: {token}")
+
+
+def parse_json_bytes(raw: bytes, label: object = "JSON input") -> object:
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError(f"{label}: not strict UTF-8") from error
+    return json.loads(
+        text,
+        object_pairs_hook=reject_duplicate_keys,
+        parse_constant=reject_nonfinite_number,
+    )
 
 
 def require(condition: bool, message: str) -> None:
@@ -82,7 +106,7 @@ def load_atoms() -> dict[str, str]:
 def main() -> None:
     atom_modes = load_atoms()
     raw_controls = CONTROLS_PATH.read_bytes()
-    document = json.loads(raw_controls)
+    document = parse_json_bytes(raw_controls, CONTROLS_PATH)
     require(isinstance(document, dict), "controls.json: root must be an object")
     require(set(document) == TOP_KEYS, "controls.json: top-level fields are not exact")
     require(document["schema_version"] == 1, "controls.json: schema_version must be 1")

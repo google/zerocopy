@@ -1,7 +1,6 @@
 https://doc.rust-lang.org/1.83.0/reference/visibility-and-privacy.html#visibility-and-privacy
 https://doc.rust-lang.org/1.83.0/reference/items/implementations.html#trait-implementations
 https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-functions-unsafe-fn
-https://doc.rust-lang.org/1.83.0/reference/items/functions.html
 https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html
 https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html
 https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked_mut

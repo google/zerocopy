@@ -10,39 +10,48 @@ Score the direct criteria in `../atoms/F.json`. Apply only closed IDs from
 harness from the frozen DAG; the scorer must still decide each dependent's
 direct criterion independently.
 
-## Exact missing root
+## Exact missing root and theorem obligations
 
-Use one stable root, conventionally `G`:
+Use one stable evidence root, conventionally `G`: the exact selected
+`peer-stage` 2.1.0 implementation/build/artifact and an applicable proof or
+accepted TCB proposition are unavailable. That one absence blocks two distinct
+propositions; it must not be rewritten as one overstrong theorem:
 
 ```text
-G = The selected peer-stage 2.1.0 implementation of next_nonzero is UB-free
-    for every u8 call and fulfills the exact claimed result contract,
-    including returning a nonzero u8 (and the claimed wrapping result).
+G-SAFE = every selected next_nonzero(u8) call is UB-free and returns a
+         nonzero u8.
+
+G-WRAP = every selected next_nonzero(value) call returns the exact documented
+         next-stage value, wrapping u8::MAX to 1.
 ```
 
-`DEPENDENCY-API.md` supplies the selected public claim but no body, build
-identity, artifact, or proof. `TCB.md` expressly accepts no implementation
-proposition. A pin and documentation are not G. Closing G requires recursive
-audit of the exact selected implementation/build/artifact or a newly accepted
-exact TCB entry with the needed proposition and applicability.
+`G-SAFE` is the minimal theorem needed to discharge `new_unchecked` and safe-API
+soundness. `G-WRAP` is additionally needed for the exact documented result, but
+is not a prerequisite for the nonzero safety proof. `DEPENDENCY-API.md` supplies
+both public claims but no body, build identity, artifact, or proof. `TCB.md`
+expressly accepts no implementation proposition. A pin and documentation close
+neither proposition. Closing either requires recursive audit of the exact
+selected implementation/build/artifact or a newly accepted proposition with
+the needed applicability.
 
-There is one unavailable theorem and three consumers, not three independent
-missing roots.
+There is one missing-evidence root, two theorem obligations, and three API
+consumers—not three independent roots and not one conflated theorem.
 
 ## Exact API ledger
 
 | API | Direct disposition | Root / certificate |
 |---|---|---|
-| `staged_token` | **UNPROVED** | blocked by G: without its nonzero result theorem, `new_unchecked(candidate)` is not discharged |
-| `staged_value` | **UNPROVED** | distinct exported consumer, transitively blocked by the same G through `staged_token` |
-| `staged_is_nonzero` | **UNPROVED** | distinct exported consumer, transitively blocked by the same G; its contextually typed `!= 0` does not prove the dependency result |
+| `staged_token` | **UNPROVED** | `G-SAFE` blocks sound construction; `G-WRAP` separately blocks the exact wrapping-result claim |
+| `staged_value` | **UNPROVED** | distinct exported consumer, transitively blocked through `staged_token`; exact returned value also needs `G-WRAP` |
+| `staged_is_nonzero` | **UNPROVED** | distinct exported consumer blocked by `G-SAFE`; its contextually typed `!= 0` does not prove the dependency result |
 | `local_token` | **UNSOUND** | independent valid safe call `local_token(0)` reaches `NonZeroU8::new_unchecked(0)` and violates its exact precondition |
 | `checked_token` | **PROVED / sound control** | safe `NonZeroU8::new`: zero produces `None`, nonzero produces `Some` |
 
-Conditional reasoning below G remains valid and should be preserved: if G is
-true, the staged unsafe constructor's nonzero obligation closes and the two
-downstream `.get()` consumers inherit the resulting value. That conditional
-certificate must not be relabeled unconditional and is not a second root.
+Conditional reasoning remains valid and should be preserved separately. Under
+`G-SAFE`, the staged unsafe constructor's nonzero obligation closes and both
+downstream `.get()` consumers inherit a nonzero value. Under `G-SAFE` plus
+`G-WRAP`, the documented exact values also follow. Neither conditional
+certificate may be relabeled unconditional or counted as another evidence root.
 
 The crate's exported safe API set is aggregate **UNSOUND** because the
 independent `local_token(0)` certificate is complete. That existential result

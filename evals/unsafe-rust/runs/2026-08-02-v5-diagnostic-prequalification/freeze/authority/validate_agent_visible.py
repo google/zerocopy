@@ -20,7 +20,27 @@ URL_VERSION = re.compile(r"^https://doc\.rust-lang\.org/([0-9]+\.[0-9]+\.[0-9]+)
 
 
 def read_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
+    try:
+        text = path.read_bytes().decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError(f"{path}: not strict UTF-8") from error
+
+    def reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError(f"{path}: duplicate JSON object key: {key!r}")
+            result[key] = value
+        return result
+
+    def reject_nonfinite_number(token: str) -> Any:
+        raise ValueError(f"{path}: non-finite JSON number: {token}")
+
+    return json.loads(
+        text,
+        object_pairs_hook=reject_duplicate_keys,
+        parse_constant=reject_nonfinite_number,
+    )
 
 
 def quotations(entry: dict[str, Any]) -> list[str]:

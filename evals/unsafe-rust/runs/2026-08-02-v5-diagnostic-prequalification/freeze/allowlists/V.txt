@@ -1,12 +1,12 @@
 https://doc.rust-lang.org/1.83.0/reference/visibility-and-privacy.html#visibility-and-privacy
 https://doc.rust-lang.org/1.83.0/reference/items/implementations.html#trait-implementations
 https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-functions-unsafe-fn
-https://doc.rust-lang.org/1.83.0/reference/items/functions.html
 https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html
 https://doc.rust-lang.org/1.83.0/reference/expressions/literal-expr.html#integer-literal-expressions
 https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-traits-unsafe-trait
 https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-trait-implementations-unsafe-impl
 https://doc.rust-lang.org/1.83.0/reference/types/array.html
+https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions
 https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions
 https://doc.rust-lang.org/1.83.0/reference/expressions/method-call-expr.html
 https://doc.rust-lang.org/1.83.0/std/primitive.array.html

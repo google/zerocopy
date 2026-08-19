@@ -7,16 +7,18 @@
   "source_digest": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
   "exact_prompt_set_sha256": "INTEGRATION_BOUND_EXACT_PROMPT_SET_SHA256",
   "scoped_surfaces": [
+    "f_fanout/Cargo.toml",
     "f_fanout/src/lib.rs::staged_token",
     "f_fanout/src/lib.rs::staged_value",
     "f_fanout/src/lib.rs::staged_is_nonzero",
     "f_fanout/src/lib.rs::local_token",
     "f_fanout/src/lib.rs::checked_token",
     "f_fanout/DEPENDENCY-API.md",
+    "f_fanout/REQUEST.md",
     "f_fanout/SUPPORT.md",
     "f_fanout/TCB.md"
   ],
-  "theorem_boundary_class": "One unavailable dependency-implementation theorem is a minimal root for the staged API fan-out; the independent local defect, checked control, conditional proofs, and aggregate conclusions remain separate.",
+  "theorem_boundary_class": "One unavailable selected-implementation evidence root blocks a minimal safety/nonzero theorem and a separate stronger wrapping-result theorem across three independently scored API consumers; the independent local defect, checked control, conditional proofs, and aggregate conclusions remain separate.",
   "supported_set": [
     "Rust 1.83.0, edition 2021",
     "all targets and profiles supported by that toolchain",
@@ -26,7 +28,7 @@
   ],
   "trigger_set": [
     "unsafe NonZeroU8 construction fed by an unavailable dependency implementation",
-    "multiple public conclusions sharing the same missing theorem",
+    "multiple public conclusions sharing one missing-evidence root but consuming distinct safety and behavior theorems",
     "independent unchecked NonZeroU8 construction from unconstrained input",
     "checked constructor positive control"
   ],

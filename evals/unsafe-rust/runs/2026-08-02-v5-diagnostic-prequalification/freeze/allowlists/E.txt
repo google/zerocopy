@@ -3,6 +3,7 @@ https://doc.rust-lang.org/1.83.0/reference/types/tuple.html#tuple-types
 https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html
 https://doc.rust-lang.org/1.83.0/reference/expressions/match-expr.html
 https://doc.rust-lang.org/1.83.0/reference/patterns.html#literal-patterns
+https://doc.rust-lang.org/1.83.0/reference/types/boolean.html#boolean-type
 https://doc.rust-lang.org/1.83.0/reference/expressions/if-expr.html#if-expressions
 https://doc.rust-lang.org/1.83.0/reference/expressions/literal-expr.html#integer-literal-expressions
 https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.len
@@ -15,6 +16,7 @@ https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#conditio
 https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#the-cfg-attribute
 https://doc.rust-lang.org/1.83.0/reference/lifetime-elision.html#lifetime-elision-in-functions
 https://doc.rust-lang.org/1.83.0/reference/types/array.html
+https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions
 https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions
 https://doc.rust-lang.org/1.83.0/reference/expressions/method-call-expr.html
 https://doc.rust-lang.org/1.83.0/std/primitive.array.html

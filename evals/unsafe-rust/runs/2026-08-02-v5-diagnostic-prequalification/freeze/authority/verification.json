@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "DRAFT_VERIFIED_PENDING_CROSS_REVIEW",
   "ready_for_freeze": false,
-  "verification_date": "2026-08-02",
+  "verification_date": "2026-08-19",
   "manifest_path": "propositions.json",
   "rust_1_83_local_verification": {
     "status": "VERIFIED",
@@ -61,15 +61,16 @@
       {
         "id": "R183-PATTERNS",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 1,
+        "quotation_count": 2,
         "page_paths": [
-          "reference/patterns.html"
+          "reference/patterns.html",
+          "reference/types/boolean.html"
         ]
       },
       {
         "id": "R183-IF-SELECTION",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 1,
+        "quotation_count": 2,
         "page_paths": [
           "reference/expressions/if-expr.html"
         ]
@@ -77,7 +78,7 @@
       {
         "id": "R183-SLICE-LEN",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 1,
+        "quotation_count": 2,
         "page_paths": [
           "std/primitive.slice.html"
         ]
@@ -125,7 +126,7 @@
       {
         "id": "R183-SLICE-GET-UNCHECKED",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 1,
+        "quotation_count": 2,
         "page_paths": [
           "std/primitive.slice.html"
         ]
@@ -175,14 +176,13 @@
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
         "quotation_count": 2,
         "page_paths": [
-          "reference/items/functions.html",
           "reference/unsafe-keyword.html"
         ]
       },
       {
         "id": "R183-CALL",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 1,
+        "quotation_count": 2,
         "page_paths": [
           "reference/expressions/call-expr.html"
         ]
@@ -190,8 +190,9 @@
       {
         "id": "R183-ARRAY-SHAPE",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 2,
+        "quotation_count": 3,
         "page_paths": [
+          "reference/expressions/array-expr.html",
           "reference/types/array.html"
         ]
       },
@@ -203,6 +204,14 @@
           "reference/expressions/method-call-expr.html",
           "reference/type-coercions.html",
           "std/primitive.array.html"
+        ]
+      },
+      {
+        "id": "R183-ARRAY-SLICE-COERCION",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 8,
+        "page_paths": [
+          "reference/type-coercions.html"
         ]
       },
       {
@@ -251,16 +260,15 @@
       {
         "id": "R183-NONZERO-NEW-UNCHECKED",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 3,
+        "quotation_count": 2,
         "page_paths": [
-          "reference/behavior-considered-undefined.html",
           "std/num/struct.NonZero.html"
         ]
       },
       {
         "id": "R183-NONZERO-NEW",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 1,
+        "quotation_count": 2,
         "page_paths": [
           "std/num/struct.NonZero.html"
         ]
@@ -284,7 +292,7 @@
       {
         "id": "R183-STR-FROM-UTF8-UNCHECKED",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 1,
+        "quotation_count": 2,
         "page_paths": [
           "std/str/fn.from_utf8_unchecked.html"
         ]
@@ -292,27 +300,19 @@
       {
         "id": "R183-UTF8-VALIDITY",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 4,
+        "quotation_count": 6,
         "page_paths": [
           "reference/types/textual.html",
+          "std/primitive.str.html",
           "std/str/fn.from_utf8.html"
         ]
       },
       {
         "id": "R183-STR-AS-BYTES",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 1,
-        "page_paths": [
-          "std/primitive.str.html"
-        ]
-      },
-      {
-        "id": "R183-INVALID-VALUES-UB",
-        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
         "quotation_count": 2,
         "page_paths": [
-          "reference/behavior-considered-undefined.html",
-          "reference/types/textual.html"
+          "std/primitive.str.html"
         ]
       },
       {
@@ -326,7 +326,7 @@
       {
         "id": "R183-INDEXING",
         "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
-        "quotation_count": 2,
+        "quotation_count": 4,
         "page_paths": [
           "reference/expressions/array-expr.html"
         ]
@@ -341,15 +341,6 @@
       }
     ],
     "pages": [
-      {
-        "path_relative_to_docs_root": "reference/behavior-considered-undefined.html",
-        "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html",
-          "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html#invalid-values"
-        ],
-        "page_sha256": "295150ae68ab5f98e7bccfbd98f79cd67c940114f96b63d1dc35f6b72d7de96c",
-        "normalized_main_body_sha256": "6b213babeedf1ad19f0cc7fb758f2c249865b06e39e7776d4dc9e4c2328de929"
-      },
       {
         "path_relative_to_docs_root": "reference/conditional-compilation.html",
         "requested_urls": [
@@ -431,7 +422,6 @@
       {
         "path_relative_to_docs_root": "reference/items/functions.html",
         "requested_urls": [
-          "https://doc.rust-lang.org/1.83.0/reference/items/functions.html",
           "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#function-body"
         ],
         "page_sha256": "eba1eb7c050103ba2f7f22b9648b19e6800617629981b93ca47f16cfd279b0c1",
@@ -472,6 +462,9 @@
       {
         "path_relative_to_docs_root": "reference/type-coercions.html",
         "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites",
+          "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types",
+          "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#least-upper-bound-coercions",
           "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions"
         ],
         "page_sha256": "7df33c092f9a9e83f4e3bce4110ec99230c5e2a8ef17cfa96895c1fe85faf0b4",
@@ -484,6 +477,14 @@
         ],
         "page_sha256": "dc9d81d347f859f1841c2a9da000c4279fa825038ea3376572aa4f01c3fba0b7",
         "normalized_main_body_sha256": "cff93e5d49906189e51fbe4c68699a4d091934eb641c94b1e89dda6d0e87f65a"
+      },
+      {
+        "path_relative_to_docs_root": "reference/types/boolean.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/types/boolean.html#boolean-type"
+        ],
+        "page_sha256": "9e90b1f77cc47901e8277347cf0f3e5751f1c7e8e5193af42b90ffbe1139304a",
+        "normalized_main_body_sha256": "f940f937d3ab8ffe4260c72bc164b46acd43e98f212d582a7db148c971e60c1e"
       },
       {
         "path_relative_to_docs_root": "reference/types/numeric.html",
@@ -558,6 +559,7 @@
       {
         "path_relative_to_docs_root": "std/primitive.str.html",
         "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#invariant",
           "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#method.as_bytes"
         ],
         "page_sha256": "56332993d9729428f037ecc87aac9a868cc33655d2041d0ebcbc55819e3a67fb",
@@ -599,6 +601,7 @@
       {
         "path_relative_to_docs_root": "std/str/fn.from_utf8_unchecked.html",
         "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html",
           "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html#safety"
         ],
         "page_sha256": "717c64b027dec98b055e4bc231b26ccd78dee639804b17d0f5ebe0d650528c28",
@@ -765,7 +768,7 @@
       {
         "id": "R185-IF-SELECTION",
         "status": "BOUND_TO_FROZEN_V4_AUTHORITY_REVIEW",
-        "quotation_count": 1,
+        "quotation_count": 2,
         "requested_urls": [
           "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html"
         ]
@@ -1057,6 +1060,57 @@
     "uncovered_entries": [],
     "uncovered_urls": []
   },
+  "b_cargo_corroborative_material": {
+    "status": "BOUND_TO_FROZEN_V4_REVIEW",
+    "role": "Corroborative review evidence for the exact accepted BUILD-MAP-ORDERED TCB entry only.",
+    "atom_authority_dependency": false,
+    "not_a_substitute_for": "TCB-B-BUILD-MAP",
+    "provenance": {
+      "authority_manifest_path": "evals/unsafe-rust/runs/2026-08-01-v4-focused/freeze/authority-manifest.tsv",
+      "authority_manifest_sha256": "48444682cfc13966ce2769add9d4fbde82426a7a6e8777c421be8b26d15ff293",
+      "rubric_path": "evals/unsafe-rust/runs/2026-08-01-v4-focused/freeze/rubrics/B.md",
+      "rubric_sha256": "13790584d0e5ede69cff8c2b1889be80c73df0722c4ea709c0e85ab82900a4bb",
+      "lock_path": "evals/unsafe-rust/runs/2026-08-01-v4-focused/freeze/LOCK.json",
+      "lock_sha256": "cd7a300f83b045f76530eded20ec2d22bd6abbd484d6459ff50245fb07ef943e"
+    },
+    "records": [
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/cargo/reference/build-scripts.html#life-cycle-of-a-build-script",
+        "page_sha256": "1247cbaf8ce775f17349367d13ac4eecc6d9cfa343310f12d8c1deccd19e07b2",
+        "retrieved_utc": "2026-08-01T17:27:58.029869Z",
+        "fragment_found": true,
+        "v4_review_excerpt": "after a build script ‘successfully finishes executing, the rest of the package will be compiled’; a nonzero exit halts the build. This reviews, but does not replace, BUILD-MAP-ORDERED."
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/cargo/reference/build-scripts.html#outputs-of-the-build-script",
+        "page_sha256": "1247cbaf8ce775f17349367d13ac4eecc6d9cfa343310f12d8c1deccd19e07b2",
+        "retrieved_utc": "2026-08-01T17:27:58.029869Z",
+        "fragment_found": true,
+        "v4_review_excerpt": "Cargo interprets each stdout line beginning with cargo:: as an instruction affecting package compilation, and instruction order can matter."
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/cargo/reference/build-scripts.html#rustc-cfg",
+        "page_sha256": "1247cbaf8ce775f17349367d13ac4eecc6d9cfa343310f12d8c1deccd19e07b2",
+        "retrieved_utc": "2026-08-01T17:27:58.029869Z",
+        "fragment_found": true,
+        "v4_review_excerpt": "the directive tells Cargo to pass its value to rustc's --cfg flag for conditional compilation."
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/cargo/reference/build-scripts.html#rerun-if-env-changed",
+        "page_sha256": "1247cbaf8ce775f17349367d13ac4eecc6d9cfa343310f12d8c1deccd19e07b2",
+        "retrieved_utc": "2026-08-01T17:27:58.029869Z",
+        "fragment_found": true,
+        "v4_review_excerpt": "the directive tells Cargo to rerun the script if that environment variable's value changes."
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/cargo/reference/features.html",
+        "page_sha256": "96b2337cd60180df5a8566f343e52938dfcaa369bf12e1e82723a2326f64cb25",
+        "retrieved_utc": "2026-08-01T17:27:58.075968Z",
+        "fragment_found": true,
+        "v4_review_excerpt": "Cargo sets enabled package features with rustc's --cfg, and source can test them with the cfg attribute or macro."
+      }
+    ]
+  },
   "supplied_tcb_and_dependency_evidence": {
     "status": "VERIFIED",
     "entries": [
@@ -1118,7 +1172,7 @@
     "schema_path": "../../schemas/agent-authority-packet.schema.json",
     "validator_path": "validate_agent_visible.py",
     "quotation_locator_path": "quotation-locators.json",
-    "sha256": "ce50d8bf6a1b165c28d362e9281dda8513b9546ea8b53c8058ecd6e3dc6b5217",
+    "sha256": "941b9fa50c93aa0fd826639d1a313ee3e61ffe6ba70223dcae958e7fd7a47cdc",
     "common_for_all_modes_and_conditions": true,
     "excluded_kinds": [
       "SUPPLIED_DEPENDENCY_EVIDENCE",

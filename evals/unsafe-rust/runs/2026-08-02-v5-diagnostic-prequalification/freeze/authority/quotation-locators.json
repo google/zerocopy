@@ -89,6 +89,13 @@
       ]
     },
     {
+      "authority_id": "R183-ARRAY-SHAPE",
+      "exact_excerpt": "Indices are zero-based for arrays and slices.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"
+      ]
+    },
+    {
       "authority_id": "R183-ARRAY-SLICE-METHOD",
       "exact_excerpt": "Arrays coerce to slices (`[T]`), so a slice method may be called on an array. Indeed, this provides most of the API for working with arrays.",
       "urls": [
@@ -104,6 +111,62 @@
     },
     {
       "authority_id": "R183-ARRAY-SLICE-METHOD",
+      "exact_excerpt": "`[T; n]` to `[T]`.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "`let` statements where an explicit type is given.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "Arguments for function calls",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "The value being coerced is the actual parameter, and it is coerced to the type of the formal parameter.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "To find the common type for a series of match arms.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#least-upper-bound-coercions"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "TyCtor(`T`) to TyCtor(`U`), where TyCtor(`T`) is one of",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "`&T`",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "and where `U` can be obtained from `T` by unsized coercion.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
       "exact_excerpt": "`[T; n]` to `[T]`.",
       "urls": [
         "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions"
@@ -140,6 +203,13 @@
     {
       "authority_id": "R183-CALL",
       "exact_excerpt": "A call expression calls a function.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html"
+      ]
+    },
+    {
+      "authority_id": "R183-CALL",
+      "exact_excerpt": "If the function eventually returns, then the expression completes.",
       "urls": [
         "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html"
       ]
@@ -216,6 +286,13 @@
     },
     {
       "authority_id": "R183-IF-SELECTION",
+      "exact_excerpt": "If a condition operand evaluates to `true`, the consequent block is executed and any subsequent `else if` or `else` block is skipped.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/if-expr.html#if-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-IF-SELECTION",
       "exact_excerpt": "If all `if` and `else if` conditions evaluate to `false` then any `else` block is executed.",
       "urls": [
         "https://doc.rust-lang.org/1.83.0/reference/expressions/if-expr.html#if-expressions"
@@ -223,7 +300,21 @@
     },
     {
       "authority_id": "R183-INDEXING",
+      "exact_excerpt": "Array access is a constant expression, so bounds can be checked at compile-time with a constant index value.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-INDEXING",
       "exact_excerpt": "Array and slice-typed values can be indexed by writing a square-bracket-enclosed expression of type `usize` (the index) after them.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-INDEXING",
+      "exact_excerpt": "Otherwise a check will be performed at run-time that will put the thread in a panicked state if it fails.",
       "urls": [
         "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"
       ]
@@ -334,20 +425,6 @@
       ]
     },
     {
-      "authority_id": "R183-INVALID-VALUES-UB",
-      "exact_excerpt": "Producing an invalid value. “Producing” a value happens any time a value is assigned to or read from a place, passed to a function/primitive operation or returned from a function/primitive operation.",
-      "urls": [
-        "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html"
-      ]
-    },
-    {
-      "authority_id": "R183-INVALID-VALUES-UB",
-      "exact_excerpt": "The Rust compiler assumes that all values produced during program execution are “valid”, and producing an invalid value is hence immediate UB.",
-      "urls": [
-        "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html"
-      ]
-    },
-    {
       "authority_id": "R183-LIFETIME-ELISION",
       "exact_excerpt": "If the receiver has type `&Self` or `&mut Self`, then the lifetime of that reference to `Self` is assigned to all elided output lifetime parameters.",
       "urls": [
@@ -383,17 +460,17 @@
       ]
     },
     {
-      "authority_id": "R183-NONZERO-NEW-UNCHECKED",
-      "exact_excerpt": "If a type has a custom range of a valid values, then a valid value must be in that range.",
+      "authority_id": "R183-NONZERO-NEW",
+      "exact_excerpt": "pub const fn new(n: T) -> Option<NonZero<T>>",
       "urls": [
-        "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html#invalid-values"
+        "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new"
       ]
     },
     {
       "authority_id": "R183-NONZERO-NEW-UNCHECKED",
-      "exact_excerpt": "In the standard library, this affects `NonNull<T>` and `NonZero<T>`.",
+      "exact_excerpt": "This results in undefined behaviour if the value is zero.",
       "urls": [
-        "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html#invalid-values"
+        "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new_unchecked"
       ]
     },
     {
@@ -411,8 +488,22 @@
       ]
     },
     {
+      "authority_id": "R183-PATTERNS",
+      "exact_excerpt": "The boolean type or bool is a primitive data type that can take on one of two values, called true and false.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/types/boolean.html#boolean-type"
+      ]
+    },
+    {
       "authority_id": "R183-SLICE-GET-UNCHECKED",
       "exact_excerpt": "Calling this method with an out-of-bounds index is undefined behavior even if the resulting reference is not used.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked"
+      ]
+    },
+    {
+      "authority_id": "R183-SLICE-GET-UNCHECKED",
+      "exact_excerpt": "pub unsafe fn get_unchecked<I>(&self, index: I,) -> &<I as SliceIndex<[T]>>::Output where I: SliceIndex<[T]>,",
       "urls": [
         "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked"
       ]
@@ -422,6 +513,13 @@
       "exact_excerpt": "Calling this method with an out-of-bounds index is undefined behavior even if the resulting reference is not used.",
       "urls": [
         "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked_mut"
+      ]
+    },
+    {
+      "authority_id": "R183-SLICE-LEN",
+      "exact_excerpt": "pub const fn len(&self) -> usize",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.len"
       ]
     },
     {
@@ -439,10 +537,24 @@
       ]
     },
     {
+      "authority_id": "R183-STR-AS-BYTES",
+      "exact_excerpt": "pub const fn as_bytes(&self) -> &[u8]",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#method.as_bytes"
+      ]
+    },
+    {
       "authority_id": "R183-STR-FROM-UTF8-UNCHECKED",
       "exact_excerpt": "The bytes passed in must be valid UTF-8.",
       "urls": [
         "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html#safety"
+      ]
+    },
+    {
+      "authority_id": "R183-STR-FROM-UTF8-UNCHECKED",
+      "exact_excerpt": "pub const unsafe fn from_utf8_unchecked(v: &[u8]) -> &str",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html"
       ]
     },
     {
@@ -527,6 +639,20 @@
       "exact_excerpt": "However, the Rust standard library makes extra assumptions about `str`: methods working on `str` assume and ensure that the data in there is valid UTF-8.",
       "urls": [
         "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#layout-and-bit-validity"
+      ]
+    },
+    {
+      "authority_id": "R183-UTF8-VALIDITY",
+      "exact_excerpt": "Constructing a non-UTF-8 string slice is not immediate undefined behavior, but any function called on a string slice may assume that it is valid UTF-8, which means that a non-UTF-8 string slice can lead to undefined behavior down the road.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#invariant"
+      ]
+    },
+    {
+      "authority_id": "R183-UTF8-VALIDITY",
+      "exact_excerpt": "Rust libraries may assume that string slices are always valid UTF-8.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#invariant"
       ]
     },
     {
@@ -643,7 +769,14 @@
     },
     {
       "authority_id": "R185-IF-SELECTION",
-      "exact_excerpt": "If all `if` and `else if` conditions evaluate to `false` then any `else` block is executed.",
+      "exact_excerpt": "If a condition operand evaluates to `false`, the consequent block is skipped and any subsequent `else if` condition is evaluated.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html"
+      ]
+    },
+    {
+      "authority_id": "R185-IF-SELECTION",
+      "exact_excerpt": "If a condition operand evaluates to `true`, the consequent block is executed and any subsequent `else if` or `else` block is skipped.",
       "urls": [
         "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html"
       ]
@@ -762,4 +895,3 @@
     }
   ]
 }
-

@@ -2,13 +2,13 @@
 
 use peer_text::AsciiDecoder;
 
-static INVALID_UTF8: [u8; 4] = [0, 159, 146, 150];
+static LOCAL_ENTRY_B: [u8; 4] = [0, 159, 146, 150];
 
 /// Returns text from the selected local catalog entry.
 pub fn local_text(primary: bool) -> &'static str {
     let bytes: &'static [u8] = match primary {
         true => "north".as_bytes(),
-        false => &INVALID_UTF8,
+        false => &LOCAL_ENTRY_B,
     };
 
     // SAFETY: The bytes come from the local text catalog.

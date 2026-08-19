@@ -4,26 +4,6 @@
   "records": [
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html",
-      "exact_excerpt": "Producing an invalid value. “Producing” a value happens any time a value is assigned to or read from a place, passed to a function/primitive operation or returned from a function/primitive operation."
-    },
-    {
-      "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html",
-      "exact_excerpt": "The Rust compiler assumes that all values produced during program execution are “valid”, and producing an invalid value is hence immediate UB."
-    },
-    {
-      "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html#invalid-values",
-      "exact_excerpt": "If a type has a custom range of a valid values, then a valid value must be in that range."
-    },
-    {
-      "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html#invalid-values",
-      "exact_excerpt": "In the standard library, this affects `NonNull<T>` and `NonZero<T>`."
-    },
-    {
-      "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#conditional-compilation",
       "exact_excerpt": "It is true if all of the given predicates are true, or if the list is empty."
     },
@@ -40,7 +20,22 @@
     {
       "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions",
+      "exact_excerpt": "Array access is a constant expression, so bounds can be checked at compile-time with a constant index value."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions",
       "exact_excerpt": "Array and slice-typed values can be indexed by writing a square-bracket-enclosed expression of type `usize` (the index) after them."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions",
+      "exact_excerpt": "Indices are zero-based for arrays and slices."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions",
+      "exact_excerpt": "Otherwise a check will be performed at run-time that will put the thread in a panicked state if it fails."
     },
     {
       "version": "1.83.0",
@@ -66,6 +61,16 @@
       "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html",
       "exact_excerpt": "A call expression calls a function."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html",
+      "exact_excerpt": "If the function eventually returns, then the expression completes."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/if-expr.html#if-expressions",
+      "exact_excerpt": "If a condition operand evaluates to `true`, the consequent block is executed and any subsequent `else if` or `else` block is skipped."
     },
     {
       "version": "1.83.0",
@@ -194,6 +199,41 @@
     },
     {
       "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites",
+      "exact_excerpt": "Arguments for function calls"
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites",
+      "exact_excerpt": "The value being coerced is the actual parameter, and it is coerced to the type of the formal parameter."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites",
+      "exact_excerpt": "`let` statements where an explicit type is given."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types",
+      "exact_excerpt": "TyCtor(`T`) to TyCtor(`U`), where TyCtor(`T`) is one of"
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types",
+      "exact_excerpt": "`&T`"
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types",
+      "exact_excerpt": "and where `U` can be obtained from `T` by unsized coercion."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#least-upper-bound-coercions",
+      "exact_excerpt": "To find the common type for a series of match arms."
+    },
+    {
+      "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions",
       "exact_excerpt": "`[T; n]` to `[T]`."
     },
@@ -206,6 +246,11 @@
       "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/reference/types/array.html",
       "exact_excerpt": "The size is a constant expression that evaluates to a `usize`."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/types/boolean.html#boolean-type",
+      "exact_excerpt": "The boolean type or bool is a primitive data type that can take on one of two values, called true and false."
     },
     {
       "version": "1.83.0",
@@ -264,8 +309,18 @@
     },
     {
       "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new",
+      "exact_excerpt": "pub const fn new(n: T) -> Option<NonZero<T>>"
+    },
+    {
+      "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new_unchecked",
       "exact_excerpt": "The value must not be zero."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new_unchecked",
+      "exact_excerpt": "This results in undefined behaviour if the value is zero."
     },
     {
       "version": "1.83.0",
@@ -279,6 +334,11 @@
     },
     {
       "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked",
+      "exact_excerpt": "pub unsafe fn get_unchecked<I>(&self, index: I,) -> &<I as SliceIndex<[T]>>::Output where I: SliceIndex<[T]>,"
+    },
+    {
+      "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked_mut",
       "exact_excerpt": "Calling this method with an out-of-bounds index is undefined behavior even if the resulting reference is not used."
     },
@@ -289,8 +349,28 @@
     },
     {
       "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.len",
+      "exact_excerpt": "pub const fn len(&self) -> usize"
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#invariant",
+      "exact_excerpt": "Constructing a non-UTF-8 string slice is not immediate undefined behavior, but any function called on a string slice may assume that it is valid UTF-8, which means that a non-UTF-8 string slice can lead to undefined behavior down the road."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#invariant",
+      "exact_excerpt": "Rust libraries may assume that string slices are always valid UTF-8."
+    },
+    {
+      "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#method.as_bytes",
       "exact_excerpt": "Converts a string slice to a byte slice."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#method.as_bytes",
+      "exact_excerpt": "pub const fn as_bytes(&self) -> &[u8]"
     },
     {
       "version": "1.83.0",
@@ -321,6 +401,11 @@
       "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html",
       "exact_excerpt": "let sparkle_heart = vec![0, 159, 146, 150];"
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html",
+      "exact_excerpt": "pub const unsafe fn from_utf8_unchecked(v: &[u8]) -> &str"
     },
     {
       "version": "1.83.0",
@@ -450,7 +535,12 @@
     {
       "version": "1.85.1",
       "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html",
-      "exact_excerpt": "If all `if` and `else if` conditions evaluate to `false` then any `else` block is executed."
+      "exact_excerpt": "If a condition operand evaluates to `false`, the consequent block is skipped and any subsequent `else if` condition is evaluated."
+    },
+    {
+      "version": "1.85.1",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html",
+      "exact_excerpt": "If a condition operand evaluates to `true`, the consequent block is executed and any subsequent `else if` or `else` block is skipped."
     },
     {
       "version": "1.85.1",
@@ -599,4 +689,3 @@
     }
   ]
 }
-

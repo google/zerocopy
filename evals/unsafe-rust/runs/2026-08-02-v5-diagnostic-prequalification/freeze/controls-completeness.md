@@ -12,7 +12,7 @@ The control inventory has two deliberately separate families:
   reconstruction, and deliberately conditional control cases whose exact
   classification must remain stable.
 
-Every one of the 109 atoms in the eight V5 atom manifests occurs in at least
+Every one of the 115 atoms in the eight V5 atom manifests occurs in at least
 one control. Every mode has at least one control in each family. Overlap between
 families is intentional where a classification is also the endpoint of a proof
 chain; it does not duplicate an atom certificate or change its weight.
