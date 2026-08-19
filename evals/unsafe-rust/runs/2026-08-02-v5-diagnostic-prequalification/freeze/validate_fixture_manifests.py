@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate hidden V5 manifests, exhaustive surfaces, and DRAFT bindings."""
+"""Validate hidden V5 manifests across source-review and snapshot phases."""
 
 from __future__ import annotations
 
@@ -43,7 +43,10 @@ REGIMES = {
     "Q": "CONTROLLED",
 }
 SOURCE_SENTINEL = "INTEGRATION_BOUND_SOURCE_TREE_SHA256"
-PROMPT_SET_SENTINEL = "INTEGRATION_BOUND_EXACT_PROMPT_SET_SHA256"
+REPORT_MATERIAL_SENTINEL = "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256"
+REVIEWED_DERIVATION_SENTINEL = "DERIVE_DURING_SNAPSHOT_BUILD"
+SOURCE_TREE_ALGORITHM = "BYTE_TREE_V1"
+REPORT_MATERIAL_SET_ALGORITHM = "V5_MODE_REPORT_MATERIAL_SET_V1"
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 ATOM_ID = re.compile(r"(?<![A-Za-z0-9_])[EVFPBLRQ][1-9][0-9]*(?![A-Za-z0-9_])")
 COMMON_TOP_KEYS = {
@@ -52,8 +55,10 @@ COMMON_TOP_KEYS = {
     "mode",
     "prompt_regime",
     "neutral_label",
-    "source_digest",
-    "exact_prompt_set_sha256",
+    "source_tree_algorithm",
+    "source_tree_sha256",
+    "report_material_set_algorithm",
+    "exact_report_material_set_sha256",
     "scoped_surfaces",
     "theorem_boundary_class",
     "supported_set",
@@ -106,8 +111,10 @@ ARRAY_FIELDS = {
 }
 STRING_FIELDS = {
     "neutral_label",
-    "source_digest",
-    "exact_prompt_set_sha256",
+    "source_tree_algorithm",
+    "source_tree_sha256",
+    "report_material_set_algorithm",
+    "exact_report_material_set_sha256",
     "theorem_boundary_class",
     "witness_requirement",
     "case_control_class",
@@ -430,9 +437,23 @@ def require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
-def main() -> None:
-    unsafe_rust = FREEZE.parents[2]
-    paths = sorted(FIXTURES_DIR.glob("*.json"), key=lambda path: path.name)
+def validate(
+    freeze_root: Path = FREEZE,
+    *,
+    unsafe_rust_root: Path | None = None,
+    expected_phase: str = "DRAFT",
+    expected_source_digests: dict[str, str] | None = None,
+    expected_report_material_digests: dict[str, str] | None = None,
+) -> dict[str, dict[str, object]]:
+    """Validate the same semantic closure at each honest lifecycle phase."""
+
+    require(
+        expected_phase in {"DRAFT", "SOURCE_REVIEW_CANDIDATE", "READY"},
+        f"unknown fixture validation phase: {expected_phase}",
+    )
+    unsafe_rust = unsafe_rust_root or freeze_root.parents[2]
+    fixtures_dir = freeze_root / "fixtures"
+    paths = sorted(fixtures_dir.glob("*.json"), key=lambda path: path.name)
     require({path.stem for path in paths} == set(MODES), "fixture manifest filenames must be exactly E,V,F,P,B,L,R,Q")
 
     statuses: set[str] = set()
@@ -446,13 +467,20 @@ def main() -> None:
         expected_keys = COMMON_TOP_KEYS | ({P_REUSE_KEY} if mode == "P" else set())
         require(isinstance(document, dict) and set(document) == expected_keys, f"{path}: fields are not exact")
         require(document["schema_version"] == 1, f"{path}: schema_version must be 1")
-        require(document["status"] in ("DRAFT", "READY"), f"{path}: invalid status")
+        expected_status = {
+            "DRAFT": "DRAFT",
+            "SOURCE_REVIEW_CANDIDATE": "SOURCE-REVIEW-CANDIDATE",
+            "READY": "READY",
+        }[expected_phase]
+        require(document["status"] == expected_status, f"{path}: status must be {expected_status}")
         require(document["mode"] == mode, f"{path}: mode/filename mismatch")
         require(document["prompt_regime"] == REGIMES[mode], f"{path}: prompt regime/mode mismatch")
         require(document["neutral_label"] == LABELS[mode], f"{path}: wrong stable neutral label")
         require(document["neutral_label"] not in labels, f"{path}: duplicate neutral label")
         labels.add(document["neutral_label"])
         statuses.add(document["status"])
+        require(document["source_tree_algorithm"] == SOURCE_TREE_ALGORITHM, f"{path}: wrong source-tree algorithm")
+        require(document["report_material_set_algorithm"] == REPORT_MATERIAL_SET_ALGORITHM, f"{path}: wrong report-material-set algorithm")
 
         for field in STRING_FIELDS:
             require(isinstance(document[field], str) and document[field].strip(), f"{path}: {field} must be nonblank")
@@ -502,23 +530,37 @@ def main() -> None:
             target_rows = (unsafe_rust / binding["target_map_path"]).read_text(encoding="utf-8").splitlines()
             require(target_row in target_rows, f"{path}: V4 target map does not bind the declared P source tree")
 
-        source_digest = document["source_digest"]
-        prompt_set_digest = document["exact_prompt_set_sha256"]
-        if document["status"] == "DRAFT":
+        source_digest = document["source_tree_sha256"]
+        material_digest = document["exact_report_material_set_sha256"]
+        if expected_phase == "DRAFT":
             require(source_digest == SOURCE_SENTINEL, f"{path}: DRAFT source digest must remain explicitly integration-bound")
-            require(prompt_set_digest == PROMPT_SET_SENTINEL, f"{path}: DRAFT prompt-set digest must remain explicitly integration-bound")
-            integration_bound.extend([f"{mode}.source_digest", f"{mode}.exact_prompt_set_sha256"])
+            require(material_digest == REPORT_MATERIAL_SENTINEL, f"{path}: DRAFT report-material digest must remain explicitly integration-bound")
+            integration_bound.extend([f"{mode}.source_tree_sha256", f"{mode}.exact_report_material_set_sha256"])
         else:
-            require(HEX64.fullmatch(source_digest) is not None, f"{path}: READY source digest must be SHA-256")
-            require(source_digest != "0" * 64, f"{path}: READY source digest cannot be the all-zero sentinel")
-            require(HEX64.fullmatch(prompt_set_digest) is not None, f"{path}: READY prompt-set digest must be SHA-256")
-            require(prompt_set_digest != "0" * 64, f"{path}: READY prompt-set digest cannot be all zero")
+            require(expected_source_digests is not None and set(expected_source_digests) == set(MODES), "expected source digests must cover every mode")
+            require(source_digest == expected_source_digests[mode], f"{path}: source-tree digest does not equal the trusted target")
+            require(HEX64.fullmatch(source_digest) is not None and source_digest != "0" * 64, f"{path}: source-tree digest must be a nonzero SHA-256")
+            if expected_phase == "SOURCE_REVIEW_CANDIDATE":
+                require(material_digest == REVIEWED_DERIVATION_SENTINEL, f"{path}: source-review candidate must not claim review of not-yet-derived report material")
+            else:
+                require(expected_report_material_digests is not None and set(expected_report_material_digests) == set(MODES), "expected report-material digests must cover every mode")
+                require(material_digest == expected_report_material_digests[mode], f"{path}: report-material digest does not equal the exact generated artifacts")
+                require(HEX64.fullmatch(material_digest) is not None and material_digest != "0" * 64, f"{path}: report-material digest must be a nonzero SHA-256")
 
         documents[mode] = document
 
     require(len(statuses) == 1, f"hidden fixture manifest statuses must advance atomically, got {sorted(statuses)}")
 
-    controls = load_json(FREEZE / "controls.json")
+    controls = load_json(freeze_root / "controls.json")
+    expected_control_status = {
+        "DRAFT": "DRAFT",
+        "SOURCE_REVIEW_CANDIDATE": "SOURCE-REVIEW-CANDIDATE",
+        "READY": "READY",
+    }[expected_phase]
+    require(
+        controls.get("status") == expected_control_status,
+        "controls status does not match fixture lifecycle phase",
+    )
     control_modes = {mode: set() for mode in MODES}
     for control in controls["controls"]:
         control_modes[control["mode"]].add(control["family"])
@@ -535,6 +577,11 @@ def main() -> None:
     )
     if integration_bound:
         print("READY_BLOCKED_PENDING_INTEGRATION: " + ", ".join(integration_bound))
+    return documents
+
+
+def main() -> None:
+    validate()
 
 
 if __name__ == "__main__":
