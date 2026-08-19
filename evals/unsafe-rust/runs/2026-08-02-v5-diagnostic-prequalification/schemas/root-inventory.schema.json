@@ -5,11 +5,25 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "status", "inventory_kind", "inventory_version", "scope", "release_eligibility", "required_gate_ids", "requirements"],
+  "oneOf": [
+    {
+      "properties": {
+        "status": {"const": "DRAFT"},
+        "inventory_version": {"const": "v5-diagnostic-prequalification-draft-1"}
+      }
+    },
+    {
+      "properties": {
+        "status": {"const": "READY"},
+        "inventory_version": {"const": "v5-diagnostic-prequalification-1"}
+      }
+    }
+  ],
   "properties": {
     "schema_version": {"const": 1},
     "status": {"enum": ["DRAFT", "READY"]},
     "inventory_kind": {"const": "DIAGNOSTIC"},
-    "inventory_version": {"type": "string", "minLength": 1},
+    "inventory_version": {"type": "string"},
     "scope": {"type": "string", "minLength": 1},
     "release_eligibility": {
       "type": "object",
