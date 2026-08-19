@@ -8,7 +8,7 @@
   "properties": {
     "schema_version": {"const": 1},
     "status": {"enum": ["DRAFT", "READY"]},
-    "rules_version": {"const": "v5-diagnostic-aggregate-v1"},
+    "rules_version": {"const": "v5-diagnostic-aggregate-v2"},
     "population_contract": {"type": "object"},
     "input_digest_contract": {"type": "object"},
     "default_dispositions": {
@@ -34,7 +34,7 @@
           "formula": {
             "type": "object",
             "required": ["kind", "population"],
-            "properties": {"kind": {"type": "string", "pattern": "^[a-z][a-z0-9_]*_v1$"}, "population": {"type": "string", "minLength": 1}}
+            "properties": {"kind": {"type": "string", "pattern": "^[a-z][a-z0-9_]*_v[1-9][0-9]*$"}, "population": {"type": "string", "minLength": 1}}
           }
         }
       }
