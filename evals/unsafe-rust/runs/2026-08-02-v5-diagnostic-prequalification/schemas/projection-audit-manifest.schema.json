@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:projection-audit-manifest:1",
+  "$comment": "DRAFT / UNSEALED structural schema; protocol.py additionally enforces the exact keyed r001-r120 inventory and deterministic projection bindings.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "records"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "COMPLETE"},
+    "records": {
+      "type": "array",
+      "minItems": 120,
+      "maxItems": 120,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["run_id", "mode", "label", "secret_inventory_sha256", "secret_inventory", "receipt_sha256", "receipt"],
+        "properties": {
+          "run_id": {"type": "string", "pattern": "^r(?:00[1-9]|0[1-9][0-9]|1[01][0-9]|120)$"},
+          "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+          "label": {"type": "string", "pattern": "^[A-O]$"},
+          "secret_inventory_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "secret_inventory": {"$ref": "urn:zerocopy:v5-diagnostic:draft:report-secret-inventory:1"},
+          "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "receipt": {"$ref": "urn:zerocopy:v5-diagnostic:draft:report-projection-audit-receipt:1"}
+        }
+      }
+    }
+  }
+}
