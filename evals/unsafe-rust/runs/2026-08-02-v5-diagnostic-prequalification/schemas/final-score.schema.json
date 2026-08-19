@@ -4,12 +4,14 @@
   "$comment": "DRAFT / UNSEALED mode envelope over A-O preserving direct, blocker, certificate, and root layers.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "status", "mode", "input_binding_sha256", "reports"],
+  "required": ["schema_version", "status", "mode", "input_binding_sha256", "adjudication_packet_sha256", "adjudication_sha256", "reports"],
   "properties": {
     "schema_version": {"const": 1},
     "status": {"const": "FINAL-SCORE"},
     "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
     "input_binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "adjudication_packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "adjudication_sha256": {"anyOf": [{"type": "string", "pattern": "^[0-9a-f]{64}$"}, {"type": "null"}]},
     "reports": {
       "type": "array",
       "minItems": 15,
