@@ -9,7 +9,7 @@ scores, reports needed for those cells, both consistency reviews, atom/defect
 inventories, oracle, allowlist, and authority packet. Condition and package
 identity remain hidden.
 
-The exact packet is `{{INPUT_ROOT}}/{{INPUT_PACKET_PATH}}`; do not inspect any
+The exact packet is workspace-relative `input/{{INPUT_PACKET_PATH}}`; do not inspect any
 other path.
 
 Resolve every packet cell exactly once with a typed direct decision and
@@ -18,6 +18,6 @@ novelty alone is not a material-finding penalty. Do not add or omit cells. Do no
 certificate decisions; `protocol.py` deterministically merges unchallenged
 agreements, applies these resolutions, and then propagates the frozen DAG.
 Validate against the schema `{{ADJUDICATION_SCHEMA_PATH}}` beneath that input
-root. Emit one
-mode-level adjudication only at `{{OUTPUT_ROOT}}/{{OUTPUT_PATH}}`; return only
+alias. Emit one
+mode-level adjudication only at workspace-relative `output/{{OUTPUT_PATH}}`; return only
 the relative output path.

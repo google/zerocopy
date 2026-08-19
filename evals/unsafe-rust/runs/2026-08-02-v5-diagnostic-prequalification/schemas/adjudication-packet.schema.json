@@ -4,7 +4,7 @@
   "$comment": "DRAFT / UNSEALED deterministic mode-level adjudication packet schema.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "status", "mode", "input_digests", "binding_sha256", "cells"],
+  "required": ["schema_version", "status", "mode", "input_digests", "binding_sha256", "cells", "packet_tree"],
   "properties": {
     "schema_version": {"const": 1},
     "status": {"const": "ADJUDICATION-PACKET"},
@@ -38,7 +38,8 @@
           "reasons": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["SCORER_DISAGREEMENT", "AGREED_POSITIVE_DEFECT", "CONSISTENCY_CHALLENGE", "CONSISTENCY_REVIEWER_DISAGREEMENT", "NOVEL_MANDATORY_ADJUDICATION", "NOVEL_CLASSIFICATION_DISAGREEMENT"]}}
         }
       }
-    }
+    },
+    "packet_tree": {"$ref": "urn:zerocopy:v5-diagnostic:draft:packet-tree:1"}
   },
   "$defs": {"digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
 }

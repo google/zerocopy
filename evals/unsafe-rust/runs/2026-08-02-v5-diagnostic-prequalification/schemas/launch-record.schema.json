@@ -8,12 +8,12 @@
   "properties": {
     "schema_version": {"const": 1},
     "status": {"const": "READY"},
-    "role": {"enum": ["report", "scorer", "consistency", "adjudicator"]},
+    "role": {"enum": ["report", "scorer", "consistency", "adjudicator", "materiality-reviewer", "materiality-adjudicator"]},
     "assignment_id": {"$ref": "#/$defs/safe_id"},
     "slot_id": {"$ref": "#/$defs/safe_id"},
-    "run_id": {"type": ["string", "null"]},
+    "run_id": {"anyOf": [{"type": "string", "pattern": "^r(?:00[1-9]|0[1-9][0-9]|1[01][0-9]|120)$"}, {"type": "null"}]},
     "cell_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
-    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q", null]},
     "fixture_id": {"type": ["string", "null"]},
     "task_mode": {"type": ["string", "null"]},
     "prompt_regime": {"type": ["string", "null"]},
@@ -26,7 +26,7 @@
     "output_root": {"type": "string", "minLength": 1},
     "target_path": {"type": ["string", "null"]},
     "output_path": {"type": "string", "minLength": 1},
-    "schema_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "schema_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^schemas/[A-Za-z0-9._/-]+\\.schema\\.json$"}},
     "schedule_sha256": {"$ref": "#/$defs/digest"},
     "prompt_sha256": {"$ref": "#/$defs/digest"},
     "package_byte_tree_sha256": {"type": ["string", "null"]},
@@ -38,6 +38,13 @@
     "input_packet_sha256": {"$ref": "#/$defs/digest"},
     "envelope_spec_sha256": {"$ref": "#/$defs/digest"}
   },
+  "allOf": [
+    {
+      "if": {"properties": {"role": {"const": "report"}}, "required": ["role"]},
+      "then": {"properties": {"schema_paths": {"maxItems": 0}}},
+      "else": {"properties": {"schema_paths": {"minItems": 1}}}
+    }
+  ],
   "$defs": {
     "safe_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
     "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
