@@ -7,7 +7,7 @@
   "required": ["schema_version", "status", "rules_version", "population_contract", "input_digest_contract", "default_dispositions", "rules"],
   "properties": {
     "schema_version": {"const": 1},
-    "status": {"const": "DRAFT"},
+    "status": {"enum": ["DRAFT", "READY"]},
     "rules_version": {"const": "v5-diagnostic-aggregate-v1"},
     "population_contract": {"type": "object"},
     "input_digest_contract": {"type": "object"},
