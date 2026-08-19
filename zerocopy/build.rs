@@ -91,6 +91,10 @@ fn main() {
         println!(
             "cargo:rustc-check-cfg=cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)"
         );
+        // cargo-zerocopy emits this only for toolchains with UI snapshots.
+        // `tests/ui.rs` uses it to make unfiltered Cargo tests safe on every
+        // other toolchain in the build matrix.
+        println!("cargo:rustc-check-cfg=cfg(__ZEROCOPY_INTERNAL_USE_ONLY_UI_TEST_TOOLCHAIN)");
         println!("cargo:rustc-check-cfg=cfg(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE)");
         println!("cargo:rustc-check-cfg=cfg(coverage_nightly)");
         println!("cargo:rustc-check-cfg=cfg(zerocopy_inline_always)");
