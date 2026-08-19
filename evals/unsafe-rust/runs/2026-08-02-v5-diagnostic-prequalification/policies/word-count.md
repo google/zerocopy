@@ -7,8 +7,12 @@ Unicode non-whitespace runs with Python `str.split()`. Code blocks, headings,
 tables, and citations count exactly like all other text.
 
 The counter source, algorithm ID, and passing exact-byte integration binding are
-covered by the prelaunch whole-file manifest and `STATIC-LOCK.json`. The raw
-report is sealed before counting. An over-cap report is a canonical
-format defect, never grounds for retry or replacement. Integration must freeze
-the counter source digest, passing self-test result, and per-mode caps before
-launch. The content-bound receipt schema is `word-count-receipt.schema.json`.
+covered by the prelaunch whole-file manifest and `STATIC-LOCK.json`.
+Integration descriptor-captures the staged counter and the separately trusted
+harness counter, requires exact byte equality, and compiles and executes only
+the trusted capture. It rejects a staged-path change before accepting the
+binding. The raw report is sealed before counting. An over-cap report is a
+canonical format defect, never grounds for retry or replacement. Integration
+must freeze the counter source digest, passing self-test result, and per-mode
+caps before launch. The content-bound receipt schema is
+`word-count-receipt.schema.json`.
