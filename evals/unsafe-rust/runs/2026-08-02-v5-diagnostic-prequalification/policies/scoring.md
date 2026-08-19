@@ -3,8 +3,9 @@
 Two independent blind scorers each receive all 15 reports for a mode in an
 independent presentation order and decide every atom's direct criterion and
 every closed defect rule. This is 16 scorer agents, not one scorer per report.
-One condition-blind consistency pass per mode attests every atom/defect family
-across A–O. The deterministic adjudication packet unions all scorer
+Two independent condition-blind consistency reviewers per mode each attest
+every atom/defect family across A–O. This is 16 consistency agents. The
+deterministic adjudication packet unions all scorer
 disagreements, agreed-positive hard/global flags, consistency challenges, and
 novel findings. At most one adjudicator per mode resolves all required cells.
 Only then does the protocol merge direct results and propagate the atom DAG
