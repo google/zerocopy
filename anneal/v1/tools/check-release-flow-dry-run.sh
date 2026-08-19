@@ -94,11 +94,25 @@ for target in linux-x86_64 linux-aarch64 macos-x86_64 macos-aarch64; do
 EOF
 done
 
+python3 anneal/v1/tools/validate-release-artifacts.py \
+  --metadata-dir anneal/v1/release-metadata \
+  --tag "$TAG_NAME" \
+  --repository google/zerocopy
+
 python3 anneal/v1/tools/update-exocrate-metadata.py \
   --cargo-toml anneal/v1/Cargo.toml \
   --metadata-dir anneal/v1/release-metadata \
   --expected-release-tag "$TAG_NAME" \
   --require-all
+
+# Use the same trusted semantic comparison as the review job. A loose URL or
+# platform-shape check here could pass while the actual release boundary would
+# reject the generated patch, or vice versa.
+python3 anneal/v1/tools/validate-release-artifacts.py \
+  --metadata-dir anneal/v1/release-metadata \
+  --cargo-toml anneal/v1/Cargo.toml \
+  --tag "$TAG_NAME" \
+  --repository google/zerocopy
 
 rm -rf anneal/v1/release-metadata
 
@@ -110,60 +124,63 @@ python3 anneal/v1/tools/check-release-pr-files.py \
   --allowed anneal/v1/README.md \
   --required anneal/v1/Cargo.toml
 
-python3 - "$TAG_NAME" <<'PY'
-import pathlib
-import sys
-import tomllib
-
-tag = sys.argv[1]
-manifest = tomllib.loads(pathlib.Path("anneal/v1/Cargo.toml").read_text(encoding="utf-8"))
-exocrate = manifest["package"]["metadata"]["exocrate"]
-expected = {
-    ("linux", "x86_64"),
-    ("linux", "aarch64"),
-    ("macos", "x86_64"),
-    ("macos", "aarch64"),
-}
-
-actual = {(os_name, arch) for os_name, by_arch in exocrate.items() for arch in by_arch}
-if actual != expected:
-    raise SystemExit(f"unexpected exocrate platforms: expected {expected}, got {actual}")
-
-for os_name, arch in sorted(expected):
-    metadata = exocrate[os_name][arch]
-    sha256 = metadata.get("sha256")
-    url = metadata.get("url")
-    if not isinstance(sha256, str) or len(sha256) != 64 or any(c not in "0123456789abcdef" for c in sha256):
-        raise SystemExit(f"invalid sha256 for {os_name}.{arch}: {sha256!r}")
-    if not isinstance(url, str) or f"/releases/download/{tag}/" not in url:
-        raise SystemExit(f"invalid URL for {os_name}.{arch}: {url!r}")
-PY
-
 python3 - <<'PY'
 import pathlib
 
 workflow = pathlib.Path(".github/workflows/anneal-release.yml").read_text(encoding="utf-8")
 
-create_release = 'gh release create "$TAG_NAME"'
-if create_release not in workflow:
-    raise SystemExit("release workflow no longer creates a toolchain release with TAG_NAME")
+def job(name: str, next_name: str | None) -> str:
+    start = workflow.index(f"  {name}:\n")
+    end = len(workflow) if next_name is None else workflow.index(f"  {next_name}:\n")
+    return workflow[start:end]
 
-create_release_index = workflow.index(create_release)
-publish_release_index = workflow.find('gh release edit "$TAG_NAME"')
-if publish_release_index == -1:
-    raise SystemExit("release workflow must publish the draft toolchain release after uploads succeed")
-if publish_release_index < create_release_index:
-    raise SystemExit("release workflow publishes the toolchain release before creating it")
 
-create_release_block = workflow[create_release_index:publish_release_index]
-if "--draft" not in create_release_block:
-    raise SystemExit(
-        "toolchain release must be created as a draft so GitHub immutable releases still allow asset uploads"
-    )
+resolve = job("resolve-release-source", "prepare-release-source")
+prepare = job("prepare-release-source", "build-toolchains")
+build = job("build-toolchains", "prepare-release-pr")
+prepare_pr = job("prepare-release-pr", "review-release")
+review = job("review-release", "publish-release-assets")
+publish = job("publish-release-assets", "submit-release-pr")
+submit = job("submit-release-pr", None)
 
-publish_release_block = workflow[publish_release_index:publish_release_index + 500]
-if "--draft=false" not in publish_release_block:
-    raise SystemExit("toolchain release publish step must pass --draft=false")
+for name, block in {
+    "resolve-release-source": resolve,
+    "prepare-release-source": prepare,
+    "build-toolchains": build,
+    "prepare-release-pr": prepare_pr,
+    "review-release": review,
+}.items():
+    if "contents: write" in block or "GOOGLE_PR_CREATION_BOT_TOKEN" in block:
+        raise SystemExit(f"unprivileged {name} job gained a repository credential")
+
+if "nix build" not in build or "gh release" in build or "GH_TOKEN" in build:
+    raise SystemExit("toolchain builders must build without release credentials")
+if "git apply anneal-release-source.patch" in build:
+    raise SystemExit("toolchain builders must build the exact selected commit")
+if "validate-release-artifacts.py" not in review:
+    raise SystemExit("release review must validate matrix-produced metadata")
+
+if "environment: release" not in publish or "contents: write" not in publish:
+    raise SystemExit("asset publisher must use the release environment and write token")
+for forbidden in (
+    "nix build",
+    "release_anneal_version.sh",
+    "update-exocrate-metadata.py",
+    "GOOGLE_PR_CREATION_BOT_TOKEN",
+):
+    if forbidden in publish:
+        raise SystemExit(f"asset publisher executes or receives forbidden input: {forbidden}")
+if "validate-release-artifacts.py" not in publish:
+    raise SystemExit("asset publisher must validate archives with trusted code")
+if '--draft' not in publish or '--draft=false' not in publish:
+    raise SystemExit("asset publisher must stage a draft before publishing it")
+
+if "GOOGLE_PR_CREATION_BOT_TOKEN" not in submit:
+    raise SystemExit("PR submitter is missing the bot credential")
+if "gh release" in submit or "nix build" in submit:
+    raise SystemExit("PR submitter must not hold release-asset authority")
+if workflow.index("  publish-release-assets:\n") > workflow.index("  submit-release-pr:\n"):
+    raise SystemExit("toolchain assets must be public before the release PR is submitted")
 PY
 
 echo "Anneal release dry-run checks passed."
