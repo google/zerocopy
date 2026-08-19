@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "DRAFT",
-  "rules_version": "v5-diagnostic-aggregate-v1",
+  "rules_version": "v5-diagnostic-aggregate-v2",
   "population_contract": {
     "candidate_condition": "v5",
     "candidate_only_paths": [
@@ -54,10 +54,12 @@
       "context_path": "oracle.coverage_pass",
       "output_type": "boolean",
       "formula": {
-        "kind": "oracle_exact_coverage_v1",
-        "population": "EVERY_MODE",
-        "required_decision": "PASS",
-        "set_relation": "covered_atom_ids == atom_manifest_ids"
+        "kind": "authenticated_oracle_review_closure_v2",
+        "population": "TWO_SOURCE_ORACLE_REVIEWS_AND_ONE_SNAPSHOT_COVERAGE_REVIEW",
+        "source_review_kind": "INDEPENDENT_ORACLE",
+        "source_review_count": 2,
+        "snapshot_hook_id": "H-VALIDATE-ORACLE-COVERAGE",
+        "required_status": "PASS"
       }
     },
     {
@@ -166,9 +168,11 @@
       "context_path": "review.coherence_pass",
       "output_type": "boolean",
       "formula": {
-        "kind": "coherence_decision_v1",
-        "population": "CANDIDATE_PACKAGE_AND_HARNESS",
-        "required_decision": "PASS"
+        "kind": "authenticated_coherence_review_v2",
+        "population": "ONE_SOURCE_COHERENCE_REVIEW",
+        "source_review_kind": "COHERENCE",
+        "source_review_count": 1,
+        "required_status": "PASS"
       }
     }
   ]
