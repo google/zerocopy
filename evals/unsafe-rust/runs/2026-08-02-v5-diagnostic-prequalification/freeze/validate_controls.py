@@ -82,14 +82,14 @@ def require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
-def load_atoms() -> dict[str, str]:
+def load_atoms(freeze_root: Path, expected_status: str) -> dict[str, str]:
     atom_modes: dict[str, str] = {}
     for mode in MODES:
-        path = ATOMS_DIR / f"{mode}.json"
+        path = freeze_root / "atoms" / f"{mode}.json"
         document = load_json(path)
         require(isinstance(document, dict), f"{path}: root must be an object")
         require(document.get("schema_version") == 1, f"{path}: schema_version must be 1")
-        require(document.get("status") == "DRAFT", f"{path}: status must be DRAFT")
+        require(document.get("status") == expected_status, f"{path}: status must be {expected_status}")
         require(document.get("mode") == mode, f"{path}: mode must be {mode}")
         atoms = document.get("atoms")
         require(isinstance(atoms, list), f"{path}: atoms must be an array")
@@ -103,14 +103,19 @@ def load_atoms() -> dict[str, str]:
     return atom_modes
 
 
-def main() -> None:
-    atom_modes = load_atoms()
-    raw_controls = CONTROLS_PATH.read_bytes()
-    document = parse_json_bytes(raw_controls, CONTROLS_PATH)
+def validate(freeze_root: Path = FREEZE, *, expected_status: str = "DRAFT") -> str:
+    require(
+        expected_status in {"DRAFT", "SOURCE-REVIEW-CANDIDATE", "READY"},
+        "controls expected status is unknown",
+    )
+    atom_modes = load_atoms(freeze_root, expected_status)
+    controls_path = freeze_root / "controls.json"
+    raw_controls = controls_path.read_bytes()
+    document = parse_json_bytes(raw_controls, controls_path)
     require(isinstance(document, dict), "controls.json: root must be an object")
     require(set(document) == TOP_KEYS, "controls.json: top-level fields are not exact")
     require(document["schema_version"] == 1, "controls.json: schema_version must be 1")
-    require(document["status"] == "DRAFT", "controls.json: status must be DRAFT")
+    require(document["status"] == expected_status, f"controls.json: status must be {expected_status}")
     controls = document["controls"]
     require(isinstance(controls, list) and controls, "controls.json: controls must be nonempty")
 
@@ -172,6 +177,11 @@ def main() -> None:
         f"controls ok: controls={len(controls)} atoms={len(atom_modes)} "
         f"covered={len(covered_atoms)} {counts} sha256={digest}"
     )
+    return digest
+
+
+def main() -> None:
+    validate()
 
 
 if __name__ == "__main__":
