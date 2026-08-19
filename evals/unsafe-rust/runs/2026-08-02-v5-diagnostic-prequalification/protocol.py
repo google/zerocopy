@@ -4389,7 +4389,7 @@ def evaluate_bound_gates(
     )
     if aggregate != rederived:
         raise ProtocolError("stored aggregate context is not the deterministic derivation")
-    lock_sha = sha256((root / "STATIC-LOCK.json").read_bytes())
+    lock_sha = review_evidence["static_lock_sha256"]
     rules_sha = sha256((root / "aggregation-rules.json").read_bytes())
     if (
         aggregate["static_lock_sha256"] != lock_sha
@@ -6831,6 +6831,7 @@ def validate_authenticated_review_evidence(
             "status",
             "algorithm",
             "bundle_kind",
+            "static_lock_sha256",
             "source_review_receipts",
             "snapshot_review_receipts",
         },
@@ -6841,6 +6842,8 @@ def validate_authenticated_review_evidence(
         or evidence["status"] != "AUTHENTICATED"
         or evidence["algorithm"] != AUTHENTICATED_REVIEW_EVIDENCE_ALGORITHM
         or evidence["bundle_kind"] != "PRODUCTION"
+        or not isinstance(evidence["static_lock_sha256"], str)
+        or not HEX64.fullmatch(evidence["static_lock_sha256"])
     ):
         raise ProtocolError("authenticated review evidence identity/status is invalid")
     source_records = evidence["source_review_receipts"]
@@ -7016,6 +7019,12 @@ def load_verified_static_bundle_with_review_evidence(
     review_evidence = validate_authenticated_review_evidence(
         raw_review_evidence, reviewer_ids
     )
+    if review_evidence["static_lock_sha256"] != commitment.get(
+        "static_lock_sha256"
+    ):
+        raise ProtocolError(
+            "authenticated review evidence does not equal the externally committed lock"
+        )
     return root, lock, reviewer_ids, review_evidence
 
 
@@ -7840,8 +7849,11 @@ def _derive_aggregate_context_from_verified(
         root / "freeze" / "atoms",
     )
 
-    lock_bytes = (root / "STATIC-LOCK.json").read_bytes()
-    static_lock_sha = sha256(lock_bytes)
+    static_lock_sha = authenticated_review_evidence["static_lock_sha256"]
+    if sha256(canonical_json_bytes(static_lock)) != static_lock_sha:
+        raise ProtocolError(
+            "verified lock object does not equal the authenticated review-evidence lock"
+        )
     rules_path = root / "aggregation-rules.json"
     rules_sha = sha256(rules_path.read_bytes())
     source_review_records = {
@@ -9187,13 +9199,25 @@ def self_test() -> None:
         )
         mock_declaration.parent.mkdir(parents=True)
         shutil.copyfile(RUN / "static-inputs" / "source-declaration.json", mock_declaration)
-        (mock_bundle / "STATIC-LOCK.json").write_bytes(canonical_json_bytes({"mock": True}))
+        mock_lock = {"schema_version": 2, "status": "STATIC-LOCKED"}
+        mock_lock_sha256 = sha256(canonical_json_bytes(mock_lock))
+        (mock_bundle / "STATIC-LOCK.json").write_bytes(
+            canonical_json_bytes(mock_lock)
+        )
         commitment_path = temporary_root / "external-static-commitment.json"
-        expected_commitment = {"mock_external_commitment": True}
+        expected_commitment = {
+            "mock_external_commitment": True,
+            "static_lock_sha256": mock_lock_sha256,
+        }
         commitment_path.write_bytes(canonical_json_bytes(expected_commitment))
         wrong_commitment_path = temporary_root / "wrong-external-static-commitment.json"
         wrong_commitment_path.write_bytes(
-            canonical_json_bytes({"mock_external_commitment": False})
+            canonical_json_bytes(
+                {
+                    "mock_external_commitment": False,
+                    "static_lock_sha256": mock_lock_sha256,
+                }
+            )
         )
         mock_reviewer_id_list = [
             f"locked-reviewer-{index:04d}" for index in range(1, 12)
@@ -9233,9 +9257,11 @@ def self_test() -> None:
             "status": "AUTHENTICATED",
             "algorithm": AUTHENTICATED_REVIEW_EVIDENCE_ALGORITHM,
             "bundle_kind": "PRODUCTION",
+            "static_lock_sha256": mock_lock_sha256,
             "source_review_receipts": mock_source_records,
             "snapshot_review_receipts": mock_snapshot_records,
         }
+        mock_review_evidence_to_return = mock_review_evidence
         post_verify_reviewer_resolver_calls = 0
 
         def mock_trusted_integration() -> dict[str, Any]:
@@ -9252,9 +9278,9 @@ def self_test() -> None:
                 ):
                     raise ProtocolError("mock external commitment mismatch")
                 return (
-                    {"schema_version": 2, "status": "STATIC-LOCKED"},
+                    mock_lock,
                     mock_reviewer_ids,
-                    mock_review_evidence,
+                    mock_review_evidence_to_return,
                 )
 
             def forbidden_post_verify_reviewer_resolver(*_args: Any) -> frozenset[str]:
@@ -9285,6 +9311,21 @@ def self_test() -> None:
             assert loaded_root == mock_bundle
             assert loaded_reviewer_ids == mock_reviewer_ids
             assert loaded_review_evidence == mock_review_evidence
+            wrong_lock_evidence = copy.deepcopy(mock_review_evidence)
+            wrong_lock_evidence["static_lock_sha256"] = "0" * 64
+            mock_review_evidence_to_return = wrong_lock_evidence
+            try:
+                load_verified_static_bundle_with_review_evidence(
+                    mock_bundle, commitment_path
+                )
+            except ProtocolError:
+                pass
+            else:
+                raise AssertionError(
+                    "review evidence from a different static lock was accepted"
+                )
+            finally:
+                mock_review_evidence_to_return = mock_review_evidence
             evidence_mutations: list[tuple[str, dict[str, Any]]] = []
             missing_evidence = copy.deepcopy(mock_review_evidence)
             missing_evidence["source_review_receipts"].pop()

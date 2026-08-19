@@ -243,3 +243,14 @@ workspace, input, and output paths occur only in coordinator launch records.
 Discovery of a frozen defect invalidates that bundle; it must not be patched in
 place. Runtime and post-run receipts are appended only beneath
 `runtime/state/` and cannot retroactively change the static lock.
+
+Production assumes uninterrupted coordinator custody of the verified bundle
+root, its ancestors and descendants, mutable runtime state, the external
+commitment, and the coordinator lock from final publication through bound-gate
+evaluation—including intervals between commands and while agents run. The lock
+and external commitment authenticate the root at verification boundaries;
+they do not prevent a same-UID actor from replacing or chmodding paths or from
+forging mutable state between those boundaries. Environments that include that
+threat must provide a private OS-enforced namespace or an equivalent
+descriptor-anchored snapshot before the run begins. Loss or uncertainty of
+custody requires discarding the bundle and its state.

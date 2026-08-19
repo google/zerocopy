@@ -468,8 +468,10 @@ def read_json(path: Path) -> Any:
         raise IntegrationError(f"cannot read JSON {path}: {error}") from error
 
 
-def read_canonical_read_only_json(path: Path, label: str) -> tuple[Any, bytes]:
-    """Capture one production receipt through one immutable file descriptor."""
+def capture_regular_file_bytes(
+    path: Path, label: str, *, require_read_only: bool
+) -> bytes:
+    """Capture one regular file through one no-follow descriptor."""
 
     required_flags = ("O_NOFOLLOW", "O_CLOEXEC", "O_NONBLOCK")
     if any(not hasattr(os, name) for name in required_flags):
@@ -485,7 +487,7 @@ def read_canonical_read_only_json(path: Path, label: str) -> tuple[Any, bytes]:
         before = os.fstat(descriptor)
         if not stat.S_ISREG(before.st_mode):
             raise IntegrationError(f"{label} must be a real regular file")
-        if before.st_mode & 0o222:
+        if require_read_only and before.st_mode & 0o222:
             raise IntegrationError(f"{label} must be read-only")
         chunks: list[bytes] = []
         while True:
@@ -519,13 +521,22 @@ def read_canonical_read_only_json(path: Path, label: str) -> tuple[Any, bytes]:
         )
         if before_identity != after_identity:
             raise IntegrationError(f"{label} identity or mode changed while it was read")
-        if not stat.S_ISREG(after.st_mode) or after.st_mode & 0o222:
-            raise IntegrationError(f"{label} lost its read-only regular-file identity")
+        if not stat.S_ISREG(after.st_mode) or (
+            require_read_only and after.st_mode & 0o222
+        ):
+            raise IntegrationError(f"{label} lost its required regular-file identity")
     except OSError as error:
         raise IntegrationError(f"cannot securely open/read {label}: {error}") from error
     finally:
         if descriptor is not None:
             os.close(descriptor)
+    return data
+
+
+def read_canonical_read_only_json(path: Path, label: str) -> tuple[Any, bytes]:
+    """Capture one production receipt through one immutable file descriptor."""
+
+    data = capture_regular_file_bytes(path, label, require_read_only=True)
     value = parse_json_bytes(data, label)
     if data != canonical_json_bytes(value):
         raise IntegrationError(f"{label} must use exact canonical JSON bytes")
@@ -4377,14 +4388,15 @@ def require_exact_ready_fixture_manifests(
             raise IntegrationError(f"READY fixture is not the exact derived binding: {path_text}")
 
 
-def validate_word_counter(source_path: Path) -> dict[str, Any]:
-    if source_path.is_symlink() or not source_path.is_file():
-        raise IntegrationError("staged word counter must be a regular file")
-    source_bytes = source_path.read_bytes()
+def validate_word_counter_bytes(source_bytes: bytes, source_label: str) -> dict[str, Any]:
+    """Execute one already trusted word-counter byte object."""
+
+    if not isinstance(source_bytes, bytes):
+        raise IntegrationError("trusted word counter source must be bytes")
     module = types.ModuleType("_v5_exact_staged_word_counter")
-    module.__file__ = str(source_path)
+    module.__file__ = source_label
     try:
-        code = compile(source_bytes, str(source_path), "exec", dont_inherit=True)
+        code = compile(source_bytes, source_label, "exec", dont_inherit=True)
         exec(code, module.__dict__)
     except Exception as error:
         raise IntegrationError("exact staged word-counter bytes failed to load") from error
@@ -4415,6 +4427,29 @@ def validate_word_counter(source_path: Path) -> dict[str, Any]:
         "source_sha256": sha256(source_bytes),
         "self_test": "PASS",
     }
+
+
+def validate_word_counter(source_path: Path) -> dict[str, Any]:
+    """Prove staged bytes equal trusted bytes and execute only the trusted capture."""
+
+    staged_bytes = capture_regular_file_bytes(
+        source_path, "staged word counter", require_read_only=False
+    )
+    trusted_path = RUN / "word_count.py"
+    trusted_bytes = capture_regular_file_bytes(
+        trusted_path, "trusted word counter", require_read_only=False
+    )
+    if staged_bytes != trusted_bytes:
+        raise IntegrationError("staged word counter differs from trusted harness bytes")
+    binding = validate_word_counter_bytes(trusted_bytes, str(trusted_path))
+    if (
+        capture_regular_file_bytes(
+            source_path, "staged word counter recheck", require_read_only=False
+        )
+        != staged_bytes
+    ):
+        raise IntegrationError("staged word counter changed during validation")
+    return binding
 
 
 def copy_snapshot_review_receipts(
@@ -5311,8 +5346,11 @@ def _verify_static_contents(
     expected_manifest = manifest_bytes(root)
     if actual_manifest != expected_manifest:
         raise IntegrationError("framed static manifest does not match the exact static tree")
+    raw_lock, lock_bytes = read_canonical_read_only_json(
+        lock_path, "static lock"
+    )
     lock = exact_object(
-        read_json(lock_path),
+        raw_lock,
         {
             "schema_version",
             "status",
@@ -5489,6 +5527,7 @@ def _verify_static_contents(
         "status": "AUTHENTICATED",
         "algorithm": AUTHENTICATED_REVIEW_EVIDENCE_ALGORITHM,
         "bundle_kind": expected_bundle_kind,
+        "static_lock_sha256": sha256(lock_bytes),
         "source_review_receipts": [
             {
                 "name": name,
@@ -5544,7 +5583,16 @@ def verify_static_with_review_evidence(
         root, expected_bundle_kind=expected_bundle_kind
     )
     if expected_external_commitment is not None:
-        verify_external_static_commitment(root, expected_external_commitment)
+        actual_commitment = verify_external_static_commitment(
+            root, expected_external_commitment
+        )
+        if (
+            review_evidence["static_lock_sha256"]
+            != actual_commitment["static_lock_sha256"]
+        ):
+            raise IntegrationError(
+                "same-capture review evidence does not equal the externally committed lock"
+            )
     return lock, reviewer_ids, review_evidence
 
 
@@ -7483,6 +7531,44 @@ def self_test() -> None:
             ),
             "production receipt predicate accepted noncanonical JSON",
         )
+        staged_counter = temp / "staged-word-count.py"
+        staged_counter.write_bytes((RUN / "word_count.py").read_bytes())
+        counter_sentinel = temp / "candidate-word-counter-executed"
+        replacement_counter = temp / "candidate-word-counter-replacement.py"
+        replacement_counter.write_text(
+            "from pathlib import Path\n"
+            f"Path({str(counter_sentinel)!r}).write_text('executed')\n"
+            "ALGORITHM_ID = 'malicious-candidate-counter'\n"
+            "def count_words(data): return 0\n",
+            encoding="utf-8",
+        )
+        real_file_capture = globals()["capture_regular_file_bytes"]
+        counter_substitution_fired = False
+
+        def substitute_counter_after_capture(
+            path: Path, label: str, *, require_read_only: bool
+        ) -> bytes:
+            nonlocal counter_substitution_fired
+            data = real_file_capture(
+                path, label, require_read_only=require_read_only
+            )
+            if path == staged_counter and not counter_substitution_fired:
+                os.replace(replacement_counter, staged_counter)
+                counter_substitution_fired = True
+            return data
+
+        globals()["capture_regular_file_bytes"] = substitute_counter_after_capture
+        try:
+            expect_integration_failure(
+                lambda: validate_word_counter(staged_counter),
+                "staged word-counter substitution escaped the final capture check",
+            )
+        finally:
+            globals()["capture_regular_file_bytes"] = real_file_capture
+        if not counter_substitution_fired or counter_sentinel.exists():
+            raise AssertionError(
+                "candidate word-counter bytes were not captured without execution"
+            )
         direct_cli_root = temp / "direct-cli-no-bytecode"
         direct_cli_root.mkdir()
         direct_integrator = direct_cli_root / "integrate.py"
@@ -8640,14 +8726,57 @@ def self_test() -> None:
             output=mechanical_bundle,
             external_commitment_output=mechanical_commitment_path,
         )
-        mechanical_lock, mechanical_reviewer_ids = verify_static_with_reviewer_ids(
+        (
+            mechanical_lock,
+            mechanical_reviewer_ids,
+            mechanical_review_evidence,
+        ) = verify_static_with_review_evidence(
             mechanical_bundle,
             expected_bundle_kind="PRODUCTION",
             expected_external_commitment=mechanical_commitment,
         )
+        mechanical_source_evidence = mechanical_review_evidence[
+            "source_review_receipts"
+        ]
+        mechanical_snapshot_evidence = mechanical_review_evidence[
+            "snapshot_review_receipts"
+        ]
+        expected_mechanical_actors = {
+            record["receipt"]["actor"]["identity"]
+            for record in [*mechanical_source_evidence, *mechanical_snapshot_evidence]
+        }
         if (
             mechanical_lock["bundle_kind"] != "PRODUCTION"
             or len(mechanical_reviewer_ids) != 11
+            or mechanical_reviewer_ids != expected_mechanical_actors
+            or mechanical_review_evidence["static_lock_sha256"]
+            != sha256((mechanical_bundle / STATIC_LOCK).read_bytes())
+            or [record["name"] for record in mechanical_source_evidence]
+            != [name for name, _kind in SOURCE_REVIEW_KINDS]
+            or [record["hook_id"] for record in mechanical_snapshot_evidence]
+            != sorted(EXTERNAL_REVIEW_HOOKS)
+            or any(
+                record["receipt_sha256"]
+                != sha256(
+                    (
+                        mechanical_bundle
+                        / "static/integration/reviewed-inputs/source-review-receipts"
+                        / record["name"]
+                    ).read_bytes()
+                )
+                for record in mechanical_source_evidence
+            )
+            or any(
+                record["receipt_sha256"]
+                != sha256(
+                    (
+                        mechanical_bundle
+                        / "static/integration-receipts"
+                        / f"{record['hook_id']}.json"
+                    ).read_bytes()
+                )
+                for record in mechanical_snapshot_evidence
+            )
             or mechanical_commitment_path.read_bytes()
             != canonical_json_bytes(mechanical_commitment)
         ):
@@ -8929,8 +9058,9 @@ def self_test() -> None:
         globals()["_validate_snapshot_review_receipt_captured"] = (
             substitute_static_receipt_after_capture
         )
+        substituted_review_evidence: dict[str, Any] | None = None
         try:
-            _verify_static_contents(
+            _lock, _reviewer_ids, substituted_review_evidence = _verify_static_contents(
                 production_output,
                 expected_bundle_kind="SYNTHETIC-TEST-ONLY",
             )
@@ -8948,6 +9078,15 @@ def self_test() -> None:
                 os.chmod(verify_receipt_root, 0o555)
         if (
             not static_verify_substitution_fired
+            or substituted_review_evidence is None
+            or next(
+                record
+                for record in substituted_review_evidence[
+                    "snapshot_review_receipts"
+                ]
+                if record["hook_id"] == verify_swap_hook
+            )["receipt_sha256"]
+            != sha256(verify_receipt_a)
             or verify_swap_path.read_bytes() != verify_receipt_a
         ):
             raise AssertionError(

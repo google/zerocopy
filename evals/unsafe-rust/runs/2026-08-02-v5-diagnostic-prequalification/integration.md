@@ -193,11 +193,14 @@ attacker-replaceable candidate storage defeats its purpose.
 The trusted production verifier also returns the eleven reviewer identities
 and a canonical review-evidence object from the same descriptor-captured
 receipt bytes whose sizes, modes, and digests it authenticates against the
-framed static manifest. Runtime state, lease, and seal operations carry the
-returned exclusion set. Aggregation consumes the returned source- and
-snapshot-review records directly for oracle/coherence decisions, input
-digests, and materiality review scope. No consumer may reopen receipt paths or
-derive a second identity/evidence set after static verification completes.
+framed static manifest. That object also binds the exact canonical
+`STATIC-LOCK.json` bytes and must agree with the separately custodied external
+commitment. Runtime state, lease, and seal operations carry the returned
+exclusion set. Aggregation consumes the returned source- and snapshot-review
+records and lock digest directly for oracle/coherence decisions, input digests,
+and materiality review scope. No consumer may reopen those receipt or lock
+paths or derive a second identity/evidence set after static verification
+completes.
 
 Publishing a directory and an external file cannot be one atomic filesystem
 transaction. Finalization first derives the commitment from its verified
@@ -225,18 +228,36 @@ review/finalization workflow.
 
 ## Trust assumptions
 
-The verifier and its `prepare.py` and `protocol.py` dependencies are loaded from the trusted harness
-installation, never from the candidate tree. The exact staged `word_count.py`
-bytes are executed by the coordinator during integration self-test; selecting
-that harness source is therefore a TCB decision. SHA-256 collision resistance,
-filesystem and kernel behavior (including fsync and `renameat2`), and honest
-authentication of the identity/version claims in independently supplied review
-receipts remain explicit external assumptions. Receipt validation mechanically
-proves content, procedure, artifact-inventory, and evidence-string binding; it
-does not prove that the named actor performed the work honestly, provide a
-signature, or provide an identity authority. The coordinator must authenticate
-reviewers and trust their honest execution out of band. Reviewer custody of the
-verified private copy between the two verification points is likewise an
-explicit actor/coordinator assumption. None of these mechanisms
-repairs the diagnostic harness's known shared-agent isolation and output-capture
-limitations.
+The verifier and its `prepare.py` and `protocol.py` dependencies are loaded
+from the trusted harness installation, never from the candidate tree. The
+candidate's staged `word_count.py` is descriptor-captured and compared with a
+separately captured trusted harness copy, but only the trusted capture is
+compiled and executed; selecting that trusted harness source and Python runtime
+is therefore a TCB decision.
+
+The verifier authenticates bytes, not continued ownership of a pathname. From
+successful final publication until bound-gate evaluation completes, the
+coordinator must retain uninterrupted, non-adversarial custody of the bundle
+root, its ancestors and descendants, `runtime/state`, the external commitment,
+and any coordinator lock. This includes intervals between commands and while
+semantic agents run; those agents receive only external materialized
+workspaces. A same-UID actor able to atomically replace or chmod the custodied
+tree is outside the mechanical guarantees. If that threat is in scope, the
+coordinator must first place the bundle in a private OS-enforced namespace or
+provide an equivalent descriptor-anchored snapshot. File modes and advisory
+locks constrain cooperating processes only. The external commitment detects a
+replacement at the next verification boundary, but cannot make already-returned
+`Path` objects immutable or authenticate mutable runtime state. If custody is
+ever uncertain, discard the bundle and its state.
+
+SHA-256 collision resistance, filesystem and kernel behavior (including fsync
+and `renameat2`), and honest authentication of the identity/version claims in
+independently supplied review receipts remain explicit external assumptions.
+Receipt validation mechanically proves content, procedure,
+artifact-inventory, and evidence-string binding; it does not prove that the
+named actor performed the work honestly, provide a signature, or provide an
+identity authority. The coordinator must authenticate reviewers and trust
+their honest execution out of band. Reviewer custody of the verified private
+copy between the two verification points is likewise an explicit
+actor/coordinator assumption. None of these mechanisms repairs the diagnostic
+harness's known shared-agent isolation and output-capture limitations.
