@@ -4,8 +4,10 @@
   "mode": "B",
   "prompt_regime": "NATURALISTIC",
   "neutral_label": "fixture-elm",
-  "source_digest": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
-  "exact_prompt_set_sha256": "INTEGRATION_BOUND_EXACT_PROMPT_SET_SHA256",
+  "source_tree_algorithm": "BYTE_TREE_V1",
+  "source_tree_sha256": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+  "report_material_set_algorithm": "V5_MODE_REPORT_MATERIAL_SET_V1",
+  "exact_report_material_set_sha256": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256",
   "scoped_surfaces": [
     "b_build/Cargo.toml",
     "b_build/build.rs",
