@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:zerocopy:v5-diagnostic:draft:materiality-ledger:1",
-  "$comment": "DRAFT / UNSEALED completed materiality ledger derived only after two reviews and required adjudication.",
+  "$comment": "DRAFT / UNSEALED structural schema; protocol.py additionally enforces exact keyed scopes/findings and deterministic two-review/adjudication derivation.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "status", "input_digests", "completed_reviewer_ids", "scope_complete", "findings"],
@@ -27,9 +27,11 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["finding_id", "blocking", "resolution", "sources"],
+        "required": ["finding_id", "scope", "normalized_description", "blocking", "resolution", "sources"],
         "properties": {
-          "finding_id": {"type": "string", "minLength": 1},
+          "finding_id": {"type": "string", "pattern": "^M-[0-9a-f]{24}$"},
+          "scope": {"enum": ["V5_CANDIDATE_REPORTS", "CANDIDATE_PACKAGE", "HARNESS_PROTOCOL", "ADVERSARIAL_AND_COHERENCE_REVIEWS"]},
+          "normalized_description": {"type": "string", "minLength": 1},
           "blocking": {"type": "boolean"},
           "resolution": {"enum": ["AGREED", "ADJUDICATED"]},
           "sources": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^m[12]-F[1-9][0-9]*$"}}

@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""DRAFT generator for the V5 diagnostic-prequalification design.
+"""Deterministic generator for the V5 diagnostic-prequalification design.
 
 This file does not contain package/target identities, atom manifests, or seeds.
-Those are integration inputs. Running ``verify-draft`` or ``self-test`` is safe;
-``generate`` requires an explicit integration root and output directory.
+Those are integration inputs. Running ``draft``/``verify-draft`` or
+``self-test`` is safe; ``generate`` emits only explicitly unverified draft
+documents. The reviewed static integration and freeze entrypoint is
+``integrate.py``.
 """
 
 from __future__ import annotations
@@ -51,14 +53,80 @@ SEED_NAMES = (
     "consistency",
 )
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
+INPUT_ALIAS = "input"
+OUTPUT_ALIAS = "output"
+BYTE_TREE_ALGORITHM = "BYTE_TREE_V1"
+PORTABLE_PATH_COMPONENT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+@%=:,-]*$")
 
 
 def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def portable_relative_path(value: str, field: str) -> bytes:
+    """Return the canonical UTF-8 bytes for the V5 portable path domain.
+
+    BYTE_TREE_V1's historical record encoding is intentionally unchanged.  New
+    V5 material rejects paths outside a strict portable ASCII subset before it
+    uses that encoding, so embedded delimiters, control bytes, undecodable
+    filesystem names, and platform-dependent spellings cannot collide.
+    """
+
+    if not isinstance(value, str) or not value or value != value.strip():
+        raise ValueError(f"{field} must be a nonblank relative path")
+    try:
+        encoded = value.encode("utf-8", errors="strict")
+    except UnicodeEncodeError as error:
+        raise ValueError(f"{field} is not strict UTF-8") from error
+    path = Path(value)
+    if (
+        path.is_absolute()
+        or ".." in path.parts
+        or value == "."
+        or path.as_posix() != value
+        or any(not PORTABLE_PATH_COMPONENT.fullmatch(part) for part in path.parts)
+    ):
+        raise ValueError(
+            f"{field} must be a normalized relative POSIX path in "
+            "PORTABLE_ASCII_RELATIVE_PATH_V1"
+        )
+    return encoded
+
+
+def byte_tree_v1(root: Path) -> str:
+    """Return the historical BYTE_TREE_V1 identity used by frozen packages.
+
+    The identity includes every directory record and, for files, the path,
+    byte length, and SHA-256 of the bytes. Symlinks and special entries are
+    rejected rather than followed.
+    """
+    if root.is_symlink() or not root.is_dir():
+        raise ValueError(f"BYTE_TREE_V1 root is not a real directory: {root}")
+    records: list[bytes] = []
+    for item in sorted(root.rglob("*"), key=lambda path: path.relative_to(root).as_posix()):
+        relative = item.relative_to(root).as_posix()
+        portable_relative_path(relative, "BYTE_TREE_V1 entry")
+        if item.is_symlink() or not (item.is_dir() or item.is_file()):
+            raise ValueError(f"unsupported BYTE_TREE_V1 entry: {item}")
+        if item.is_dir():
+            records.append(f"d\0{relative}\n".encode())
+        else:
+            data = item.read_bytes()
+            records.append(f"f\0{relative}\0{len(data)}\0{sha256(data)}\n".encode())
+    return sha256(b"".join(records))
+
+
 def json_dump(value: Any) -> str:
-    return json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    return (
+        json.dumps(
+            value,
+            indent=2,
+            sort_keys=True,
+            ensure_ascii=False,
+            allow_nan=False,
+        )
+        + "\n"
+    )
 
 
 def keyed(tag: str, seed: str, value: str) -> str:
@@ -71,16 +139,42 @@ def opaque_labels(count: int) -> tuple[str, ...]:
     return tuple(chr(ord("A") + index) for index in range(count))
 
 
+def _reject_nonfinite_json(value: str) -> Any:
+    raise ValueError(f"non-finite JSON number is forbidden: {value}")
+
+
+def _unique_json_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON object key is forbidden: {key!r}")
+        result[key] = value
+    return result
+
+
+def parse_json_bytes(data: bytes, label: str) -> Any:
+    try:
+        text = data.decode("utf-8", errors="strict")
+        return json.loads(
+            text,
+            object_pairs_hook=_unique_json_object,
+            parse_constant=_reject_nonfinite_json,
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError(f"cannot parse strict JSON {label}: {error}") from error
+
+
 def read_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
+    try:
+        return parse_json_bytes(path.read_bytes(), str(path))
+    except OSError as error:
+        raise ValueError(f"cannot read JSON {path}: {error}") from error
 
 
 def require_relative_path(value: Any, field: str) -> str:
-    if not isinstance(value, str) or not value or value != value.strip():
-        raise ValueError(f"{field} must be a nonblank relative path")
-    path = Path(value)
-    if path.is_absolute() or ".." in path.parts:
-        raise ValueError(f"{field} must not be absolute or traverse parents")
+    if not isinstance(value, str):
+        raise ValueError(f"{field} must be a path string")
+    portable_relative_path(value, field)
     return value
 
 
@@ -88,8 +182,8 @@ def render_report_prompt(
     regime: str,
     *,
     invocation_block: str,
-    input_root: str,
-    output_root: str,
+    input_root: str = INPUT_ALIAS,
+    output_root: str = OUTPUT_ALIAS,
     target_path: str,
     authority_path: str,
     task_mode: str,
@@ -102,8 +196,8 @@ def render_report_prompt(
         raise ValueError("invocation block must be text; use the empty string for no-skill")
     values = {
         "{{INVOCATION_BLOCK}}": invocation_block,
-        "{{INPUT_ROOT}}": require_absolute_normalized_path(input_root, "input root"),
-        "{{OUTPUT_ROOT}}": require_absolute_normalized_path(output_root, "output root"),
+        "{{INPUT_ROOT}}": require_agent_visible_alias(input_root, "input root"),
+        "{{OUTPUT_ROOT}}": require_agent_visible_alias(output_root, "output root"),
         "{{TARGET_PATH}}": require_relative_path(target_path, "target path"),
         "{{AUTHORITY_PATH}}": require_relative_path(authority_path, "authority path"),
         "{{TASK_MODE}}": task_mode,
@@ -124,11 +218,10 @@ def render_report_prompt(
     return template.encode("utf-8")
 
 
-def require_absolute_normalized_path(value: Any, field: str) -> str:
-    if not isinstance(value, str) or not Path(value).is_absolute():
-        raise ValueError(f"{field} must be an absolute path")
-    if str(Path(value).resolve()) != value:
-        raise ValueError(f"{field} must be normalized")
+def require_agent_visible_alias(value: Any, field: str) -> str:
+    expected = INPUT_ALIAS if field == "input root" else OUTPUT_ALIAS
+    if value != expected:
+        raise ValueError(f"{field} must be the fixed relative alias {expected!r}")
     return value
 
 
@@ -265,8 +358,14 @@ def integration_inputs(root: Path) -> tuple[dict[str, Any], dict[str, Any], dict
 
 
 def generated_documents(
-    packages: dict[str, Any], targets: dict[str, dict[str, Any]], seeds: dict[str, str]
+    packages: dict[str, Any],
+    targets: dict[str, dict[str, Any]],
+    seeds: dict[str, str],
+    *,
+    status: str = "DRAFT-GENERATED-UNVERIFIED",
 ) -> dict[str, Any]:
+    if status not in ("DRAFT-GENERATED-UNVERIFIED", "READY"):
+        raise ValueError("generated document status must be DRAFT-GENERATED-UNVERIFIED or READY")
     condition_order = sorted(
         CONDITIONS,
         key=lambda role: (keyed("condition-v5-diagnostic-v1", seeds["condition"], role), role),
@@ -274,7 +373,7 @@ def generated_documents(
     condition_labels = {role: f"c{index}" for index, role in enumerate(condition_order)}
     condition_map = {
         "schema_version": 1,
-        "status": "DRAFT-GENERATED-UNVERIFIED",
+        "status": status,
         "conditions": [
             {
                 "condition_label": condition_labels[role],
@@ -292,7 +391,7 @@ def generated_documents(
     mode_labels = {mode: f"m{index}" for index, mode in enumerate(mode_order)}
     target_map = {
         "schema_version": 1,
-        "status": "DRAFT-GENERATED-UNVERIFIED",
+        "status": status,
         "targets": [
             {"target_label": mode_labels[mode], **targets[mode]} for mode in mode_order
         ],
@@ -393,32 +492,32 @@ def generated_documents(
         "target-map.json": target_map,
         "launch-schedule.json": {
             "schema_version": 1,
-            "status": "DRAFT-GENERATED-UNVERIFIED",
+            "status": status,
             "slots": schedule,
         },
         "blind-map.json": {
             "schema_version": 1,
-            "status": "DRAFT-GENERATED-UNVERIFIED",
+            "status": status,
             "modes": blind_modes,
         },
         "presentation-orders.json": {
             "schema_version": 1,
-            "status": "DRAFT-GENERATED-UNVERIFIED",
+            "status": status,
             "presentations": presentations,
         },
         "scoring-schedule.json": {
             "schema_version": 1,
-            "status": "DRAFT-GENERATED-UNVERIFIED",
+            "status": status,
             "claims": scorer_claims,
         },
         "consistency-schedule.json": {
             "schema_version": 1,
-            "status": "DRAFT-GENERATED-UNVERIFIED",
+            "status": status,
             "claims": consistency_claims,
         },
         "randomization-commitments.json": {
             "schema_version": 1,
-            "status": "DRAFT-GENERATED-UNVERIFIED",
+            "status": status,
             "ordering_algorithm": "sha256(tag_utf8 || NUL || seed_bytes || NUL || value_utf8)",
             "commitment_algorithm": "sha256((seed_name + '-v5-diagnostic-v1')_utf8 || NUL || seed_bytes)",
             "commitments": commitments,
@@ -426,12 +525,17 @@ def generated_documents(
     }
 
 
-def verify_generated(documents: dict[str, Any], seeds: dict[str, str]) -> None:
+def verify_generated(
+    documents: dict[str, Any],
+    seeds: dict[str, str],
+    *,
+    expected_status: str = "DRAFT-GENERATED-UNVERIFIED",
+) -> None:
     if any(
-        document.get("status") != "DRAFT-GENERATED-UNVERIFIED"
+        document.get("status") != expected_status
         for document in documents.values()
     ):
-        raise AssertionError("generated documents are not marked DRAFT/UNVERIFIED")
+        raise AssertionError(f"generated documents are not marked {expected_status}")
     conditions = documents["condition-map.json"]["conditions"]
     if len(conditions) != 3 or {row["role"] for row in conditions} != set(CONDITIONS):
         raise AssertionError("condition map is not a three-way comparison")
@@ -541,7 +645,9 @@ def verify_generated(documents: dict[str, Any], seeds: dict[str, str]) -> None:
         row["mode"]: {key: item for key, item in row.items() if key != "target_label"}
         for row in targets
     }
-    regenerated = generated_documents(declared_packages, declared_targets, seeds)
+    regenerated = generated_documents(
+        declared_packages, declared_targets, seeds, status=expected_status
+    )
     if json_dump(documents) != json_dump(regenerated):
         raise AssertionError(
             "generated maps/schedules are not byte-identical to exact deterministic regeneration"
@@ -609,6 +715,8 @@ def verify_draft() -> None:
                 f"{regime} report template does not contain the identical operational block"
             )
     forbidden = (
+        "STATIC-LOCK.json",
+        "STATIC-MANIFEST.sha256",
         "LOCK.json",
         "file-manifest.sha256",
         "events.jsonl",
@@ -626,6 +734,22 @@ def verify_draft() -> None:
 
 def self_test() -> None:
     verify_draft()
+    for bad in (b'{"x":1,"x":2}', b'{"x":NaN}', b'\xff'):
+        try:
+            parse_json_bytes(bad, "synthetic-invalid")
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("strict JSON parser accepted invalid input")
+    for bad_path in ("../escape", "line\nbreak", "nonascii-µ", ".hidden", "a//b"):
+        try:
+            portable_relative_path(bad_path, "synthetic invalid path")
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(
+                f"portable path domain accepted an invalid path: {bad_path!r}"
+            )
     packages = {
         "v5": {
             "source_path": "synthetic/v5",
@@ -678,24 +802,24 @@ def self_test() -> None:
         baseline = render_report_prompt(
             regime,
             invocation_block="",
-            input_root="/synthetic/input",
-            output_root="/synthetic/output",
+            input_root=INPUT_ALIAS,
+            output_root=OUTPUT_ALIAS,
             target_path="target/REQUEST.md",
             authority_path="docs/rust-documentation.json",
             task_mode="synthetic_test_only",
-            output_path="output/report.md",
+            output_path="report.md",
             word_cap=1000,
         )
         invocation = "Follow the package-specific audit instructions."
         treatment = render_report_prompt(
             regime,
             invocation_block=invocation,
-            input_root="/synthetic/input",
-            output_root="/synthetic/output",
+            input_root=INPUT_ALIAS,
+            output_root=OUTPUT_ALIAS,
             target_path="target/REQUEST.md",
             authority_path="docs/rust-documentation.json",
             task_mode="synthetic_test_only",
-            output_path="output/report.md",
+            output_path="report.md",
             word_cap=1000,
         )
         if treatment.replace(invocation.encode("utf-8"), b"", 1) != baseline:
@@ -731,6 +855,7 @@ def write_generated(documents: dict[str, Any], output: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("draft")
     sub.add_parser("verify-draft")
     sub.add_parser("self-test")
     generate = sub.add_parser("generate")
@@ -743,7 +868,7 @@ def main() -> None:
         help="acknowledge that output is DRAFT/UNVERIFIED and cannot launch agents",
     )
     args = parser.parse_args()
-    if args.command == "verify-draft":
+    if args.command in ("draft", "verify-draft"):
         verify_draft()
     elif args.command == "self-test":
         self_test()
