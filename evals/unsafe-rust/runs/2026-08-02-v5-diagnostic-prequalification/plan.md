@@ -1,8 +1,8 @@
 # V5 Diagnostic Prequalification Harness Plan
 
 > **Status: DRAFT / UNSEALED.** This directory is harness source, not a frozen
-> evaluation. It intentionally contains no lock, file manifest, random seeds,
-> generated maps, event ledger, target/package identities, completed report,
+> evaluation. It intentionally contains no static lock, static file manifest,
+> random seeds, generated maps, event ledger, target/package identities, completed report,
 > score, or result. Any DRAFT atom/oracle/authority/allowlist/rule material
 > under `freeze/` is unapproved integration input, not a frozen artifact.
 
@@ -30,8 +30,9 @@ development/regression material and may be reused by later prequalification.
 - Prompt regime: controlled for `E`, `V`, `F`, `P`, and `Q`; naturalistic for
   `B`, `L`, and `R`.
 - Scoring: two blind mode-level direct-decision scorers each see all A–O in an
-  independent order (16 scorer agents total), one condition-blind consistency
-  review per mode, and at most one adjudicator per mode. The deterministic
+  independent order (16 scorer agents total), two independent condition-blind
+  consistency reviews per mode (16 consistency agents total), and at most one
+  adjudicator per mode. The deterministic
   adjudication packet unions disagreements, agreed-positive hard/global flags,
   consistency challenges, and every novel potentially material finding.
 
@@ -63,27 +64,51 @@ Novel findings remain open-ended but use scorer-scoped stable IDs and
 are always routed to adjudication. Consistency must attest every atom and defect
 family across all 15 labels exactly once.
 
-The diagnostic inventory and gate manifest are executable DRAFT design inputs.
+The diagnostic inventory and gate manifest are executable source design inputs.
 Their ID sets must be exactly equal, their dependency graph must be complete
 and acyclic, every input is typed, and missing/error inputs fail closed. Gate
 results preserve direct outcome, `blocked_by`, certificate outcome, and
 transitive root failures. `D-DIAGNOSTIC-COMPLETION` covers all other `D-*`
 gates but does not depend on or waive the two failed release blockers.
 
-This source tree does not yet have the deterministic aggregate/context builder
-needed to derive gate inputs from canonical envelopes, final mode scores,
-review packets, and their content digests. Caller-supplied context values are
-therefore only provisional direct diagnostics. `D-STATIC-INTEGRITY` is a
-constant direct `FAIL` and is upstream of every data-dependent D-* certificate,
-so favorable JSON cannot make diagnostic completion pass. The validated
-`integration-hooks.json` enumerates every missing blocking implementation step.
+Static integration and semantic execution are separate. Production integration
+itself is split into `SNAPSHOT_BUILD`, `SNAPSHOT_REVIEW`, and
+`FINALIZE_STATIC`; execution uses `RUNTIME_COLLECTION` and
+`POSTRUN_AGGREGATE`. `prepare-snapshot` first derives every static payload byte,
+including the complete 120 report prompts/launches and all 43 possible
+evaluator prompts/runtime-instantiation contracts, then emits an immutable
+framed commitment with an exactly empty `runtime/state/`. Independent reviews
+use locked hook-specific artifact/procedure contracts and verified private
+copies to bind that exact candidate. `finalize` copies and rechecks
+the candidate without changing its payload, adds only the bound receipts and
+mechanical finalization records, and writes the whole-tree manifest and lock.
+There is no one-shot production path and no receipt over merely proposed input
+values. Production source/package/target identities come from the separately
+trusted source declaration and source trees, never candidate self-description.
+The trusted verifier deterministically regenerates and byte-compares every
+report prompt, input plan, and launch record. This closes the relational joins
+from each scheduled target label and condition label to the exact trusted
+target and selected V5/V4/no-skill package; internally consistent launch or
+mount digests cannot substitute a different target or treatment. The trusted
+runtime repeats this check before leasing reports and while reconstructing the
+aggregate.
+`evaluate-gates` accepts caller-supplied JSON only on an explicitly
+unbound DRAFT path and therefore fixes `D-STATIC-INTEGRITY` to direct `FAIL`.
+Only `evaluate-bound-gates` can pass it: that path authenticates a
+`PRODUCTION` static lock with the trusted in-process verifier, deterministically
+rederives the complete aggregate from canonical envelopes, scorer/reviewer
+packets and outputs, final scores, word counts, projection audits, controls,
+materiality decisions, and oracle/coherence review, then validates the exact
+runtime-receipt set and its terminal content binding before evaluating the
+READY gate contract.
 
 `comparison-predicate.json` machine-freezes the descriptive comparison: every
 V5 mode/atom certificate must pass in all five replicates, and for every
 mode/atom the V5 five-replicate pass count must be at least the V4 and no-skill
 counts. Missing/malformed data is `ERROR`; no inferential or release claim is
-permitted. Its content-bound aggregate implementation is one of the blocking
-hooks.
+permitted. The deterministic aggregate builder computes this exact predicate
+from all 120 joined report outcomes; no caller-provided aggregate boolean is
+accepted on the bound path.
 
 ## Attempt and envelope protocol
 
@@ -96,41 +121,84 @@ The finalizer first captures and fsyncs a complete immutable envelope, then
 uses exclusive creation of one canonical pointer as a first-terminal
 compare-and-swap. Format defects are recorded inside the canonical envelope
 and evaluated after sealing. A later completion cannot replace the first seal.
-The DRAFT protocol permits no retry after a started lease; only a failure before
+The protocol permits no retry after a started lease; only a failure before
 lease acquisition is outside the attempt count.
 
 This is the strongest coordinator-side mechanism available here, but it does
 not make the coordinator a trusted runner. `G-OUTPUT-FINALIZATION` remains
 `FAIL` by construction.
 
-## Deliberately absent integration material
+## Reviewed integration material absent from the source tree
 
-Integration must later supply, review, and content-address:
+An integrated copy is valid only if integration has supplied, reviewed, and
+content-addressed:
 
-- `packages.json` with V5 and V4 package identities and `no_skill: null`;
-- `targets.json` with all target paths/digests, task modes, regimes, and caps;
+- reviewed target task modes/caps and V5/V4 invocation blocks; `integrate.py`
+  recomputes `packages.json` and `targets.json` from the fixed source selection,
+  including the unchanged V4 `p_predicates` source for mode P;
 - review/promotion of DRAFT `atoms/{mode}.json`, `oracle/{mode}.md`,
   `allowlists/{mode}.txt`, authority propositions, and defect rules;
 - fresh evaluator-custodied `seeds.json`;
 - complete offline authority snapshots and provenance bindings;
 - envelope specifications, reviewer packets, and coherence review;
-- generated condition/target/schedule/blind/presentation maps; and
-- the final input manifest and lock.
+- generated condition/target/schedule/blind/presentation maps;
+- every deterministic evaluator template rendering, assignment ID, input/output
+  packet schema, role execution manifest, envelope spec, and conditional-launch
+  rule; and
+- the final root `STATIC-MANIFEST.sha256` and `STATIC-LOCK.json`.
 
-Integration must implement every blocking hook—package/target tree and SKILL
-byte recomputation, READY and cross-reference validation, oracle/allowlist and
-signoff validation, treatment-render byte-delta review, READY envelope specs,
-randomization verification, whole-file manifest, lock-last, and content-bound
-aggregate derivation—in a new reviewed freeze. Merely changing a hook status or
-supplying favorable gate-context booleans is invalid.
+Hooks marked `DIRECTLY_REVALIDATED` are rerun by the trusted integration
+mechanism. Hooks marked `INDEPENDENT_RECEIPT_REQUIRED` run only after the full
+derived review snapshot exists; each receipt names a reviewer and review
+implementation/version, binds the exact snapshot descriptor, framed payload
+manifest, locked hook contract, and artifact-set digest, and records the exact
+required checks and evidence bindings. The unsigned receipt still depends on
+out-of-band authentication and the named reviewer's honesty; it is not a
+cryptographic proof that the actor performed the work. Runtime and post-run
+receipts cannot exist at prelaunch lock time and are confined to the post-lock
+state tree. Evaluator
+identity qualification is necessarily a runtime check over actual assignments,
+not a static promise.
 
-Do not add stand-in hashes or empty oracle files. Until all integration inputs
-exist, only `verify-draft` and synthetic self-tests are valid.
+Do not add stand-in hashes or empty oracle files. Until all reviewed inputs
+exist, only `prepare.py draft`, `prepare.py self-test`, `integrate.py draft`,
+and `integrate.py self-test` are valid. A real run uses `prepare-snapshot`,
+`review-subject --private-copy`, independent out-of-band review,
+`review-custody-check`, `finalize --external-commitment-output`, and finally
+`verify-static --expected-external-commitment` (which expects `PRODUCTION` by
+default). Both the public Python verifier and this CLI reject uncommitted
+`PRODUCTION` verification. The synthetic test
+writes only beneath an automatically removed temporary directory and can mint
+only `SYNTHETIC-TEST-ONLY` status.
 
-## Freeze boundary
+## Static freeze boundary
 
-Before any semantic agent is launched, a later integration change must validate
-all inputs, preserve two independent oracle-review packets with reasoning,
-generate fresh sealed maps, build the full input manifest, and create a lock as
-the last mutation. Discovery of a frozen defect invalidates that run; it must
-not be patched in place.
+Before any semantic agent is launched, integration validates all reviewed
+inputs, preserves two independent oracle-review packets plus an independent
+coherence review, generates the exact 120 READY report prompt/launch records
+and 43 deterministic evaluator prompt/launch contracts, obtains
+reviews of those exact bytes, and creates an injective domain-separated framed
+file-and-directory manifest. `STATIC-LOCK.json` is exclusively created as the
+final static byte mutation. It authenticates `bundle_kind`, snapshot and receipt
+digests, path domain, file/directory modes, and the whole static tree. Only the
+manifest, lock, and descendants of the exact post-lock `runtime/state/`
+subtree are excluded; the `runtime/` and `runtime/state/` directory records are
+themselves inventoried. No sibling child of `runtime/` is allowed, and state is
+exactly empty until the lock exists. A separately custodied external commitment
+is required to detect replacement of an entire internally coherent bundle. It
+is completely written, fsynced, changed to `0444`, and fsynced again at a
+same-directory staging path before no-replace rename and parent fsync, so the
+final commitment path is either absent or complete and read-only. Recovery from
+the narrow bundle-published/commitment-missing crash window requires the
+explicit `recover-external-commitment` operation, a fresh external output, exact
+trusted provenance revalidation, and a non-mechanical coordinator attestation
+that this exact bundle has remained under uninterrupted trusted custody since
+finalization. Recovery never overwrites; uncertain custody requires discarding
+and recreating the bundle.
+
+Agent workspaces are fresh external opaque directories. Rendered prompts refer
+only to the fixed workspace-relative aliases `input/` and `output/`; absolute
+workspace, input, and output paths occur only in coordinator launch records.
+Discovery of a frozen defect invalidates that bundle; it must not be patched in
+place. Runtime and post-run receipts are appended only beneath
+`runtime/state/` and cannot retroactively change the static lock.

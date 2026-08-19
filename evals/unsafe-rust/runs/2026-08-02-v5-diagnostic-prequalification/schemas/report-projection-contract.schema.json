@@ -7,7 +7,7 @@
   "required": ["schema_version", "status", "algorithm_id", "secret_categories", "matching", "allowed_match_kinds", "minimum_token_bytes", "forbidden_generic_tokens", "placeholder_format", "scorer_receipt_fields", "evaluator_audit_receipt_fields", "raw_report_policy", "scorer_visible_policy", "gh12_policy", "broad_regex_redaction_forbidden", "ordinary_target_paths_and_source_names_preserved", "generic_technical_condition_word_preserved", "protected_target_values_must_not_match", "style_inference_limitation_gate"],
   "properties": {
     "schema_version": {"const": 1},
-    "status": {"const": "DRAFT"},
+    "status": {"enum": ["DRAFT", "READY"]},
     "algorithm_id": {"const": "finite-secret-byte-projection-v1"},
     "secret_categories": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"type": "string"}},
     "matching": {"const": "PROVENANCE_TYPED_EXACT_TOKENS_LONGEST_FIRST_LEFT_TO_RIGHT"},
