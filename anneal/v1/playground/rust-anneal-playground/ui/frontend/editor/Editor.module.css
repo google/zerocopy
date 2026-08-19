@@ -1,0 +1,24 @@
+.container {
+  composes: -autoSize from '../shared.module.css';
+  position: relative;
+}
+
+.-advanced {
+  composes: -bodyMonospace -autoSize from '../shared.module.css';
+  position: absolute;
+}
+
+.ace {
+  composes: -advanced;
+}
+
+.monaco {
+  composes: -advanced;
+}
+
+.simple {
+  composes: -advanced;
+  border: none;
+  color: inherit;
+  background-color: inherit;
+}

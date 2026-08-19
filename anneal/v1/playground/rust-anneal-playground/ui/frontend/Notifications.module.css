@@ -1,0 +1,41 @@
+$buffer: 0.5em;
+$space: 0.25em;
+
+.container {
+  position: absolute;
+  right: $buffer;
+  bottom: $buffer;
+  left: $buffer;
+  z-index: 10;
+  margin-right: auto;
+  margin-left: auto;
+  border: 2px solid #428bca;
+  background: var(--background-color);
+  max-width: 50em;
+}
+
+.notification {
+  display: flex;
+}
+
+.notificationContent {
+  padding: $space 0 $space $space;
+  width: 100%;
+}
+
+.close {
+  composes: -buttonReset from './shared.module.css';
+  cursor: pointer;
+  padding: $space;
+}
+
+.action {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.5em;
+  gap: 0.5em;
+}
+
+.swapTheme {
+  width: 100%;
+}
