@@ -7,7 +7,7 @@
   "required": ["schema_version", "status", "predicate_id", "claim_kind", "modes", "conditions", "replicates_per_cell", "unit", "absolute_v5", "not_trailing", "on_missing", "on_malformed", "permits_inferential_claim", "permits_release_claim"],
   "properties": {
     "schema_version": {"const": 1},
-    "status": {"const": "DRAFT"},
+    "status": {"enum": ["DRAFT", "READY"]},
     "predicate_id": {"const": "v5-diagnostic-absolute-and-not-trailing-v1"},
     "claim_kind": {"const": "EXACT_DESCRIPTIVE"},
     "modes": {"const": ["E", "V", "F", "P", "B", "L", "R", "Q"]},

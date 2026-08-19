@@ -4,7 +4,7 @@
   "$comment": "DRAFT / UNSEALED content-bound scorer packet over projected A-O reports and value-free leakage receipts.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "status", "mode", "scorer_id", "input_digests", "labels_in_order", "reports"],
+  "required": ["schema_version", "status", "mode", "scorer_id", "input_digests", "resource_paths", "labels_in_order", "reports", "packet_tree"],
   "properties": {
     "schema_version": {"const": 1},
     "status": {"const": "SCORER-INPUT-PACKET"},
@@ -24,6 +24,20 @@
         "presentation_order_sha256": {"$ref": "#/$defs/digest"}
       }
     },
+    "resource_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projection_bundle", "atom_manifest", "defect_rules", "oracle", "allowlist", "evaluator_authority", "presentation_order"],
+      "properties": {
+        "projection_bundle": {"type": "string", "minLength": 1},
+        "atom_manifest": {"type": "string", "minLength": 1},
+        "defect_rules": {"type": "string", "minLength": 1},
+        "oracle": {"type": "string", "minLength": 1},
+        "allowlist": {"type": "string", "minLength": 1},
+        "evaluator_authority": {"type": "string", "minLength": 1},
+        "presentation_order": {"type": "string", "minLength": 1}
+      }
+    },
     "labels_in_order": {"type": "array", "minItems": 15, "maxItems": 15, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-O]$"}},
     "reports": {
       "type": "array",
@@ -32,15 +46,18 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["label", "projected_report_sha256", "leakage_receipt_sha256", "gh12_forced_present"],
+        "required": ["label", "projected_report_path", "projected_report_sha256", "leakage_receipt_path", "leakage_receipt_sha256", "gh12_forced_present"],
         "properties": {
           "label": {"type": "string", "pattern": "^[A-O]$"},
+          "projected_report_path": {"type": "string", "minLength": 1},
           "projected_report_sha256": {"$ref": "#/$defs/digest"},
+          "leakage_receipt_path": {"type": "string", "minLength": 1},
           "leakage_receipt_sha256": {"$ref": "#/$defs/digest"},
           "gh12_forced_present": {"type": "boolean"}
         }
       }
-    }
+    },
+    "packet_tree": {"$ref": "urn:zerocopy:v5-diagnostic:draft:packet-tree:1"}
   },
   "$defs": {"digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
 }

@@ -6,7 +6,7 @@ same content-bound consistency input packet as the other reviewer, but no
 condition identities, package identities, run order, other consistency output,
 or unblinding map.
 
-The exact packet is `{{INPUT_ROOT}}/{{INPUT_PACKET_PATH}}`; do not inspect any
+The exact packet is workspace-relative `input/{{INPUT_PACKET_PATH}}`; do not inspect any
 other path.
 
 Attest exactly once that you compared every atom family across all A–O and
@@ -29,6 +29,6 @@ a material-finding penalty. Category disagreements are adjudicated.
 Do not rescore prerequisites through their dependents and do not guess
 conditions from writing style. Do not coordinate with the other reviewer.
 Validate against the schema `{{CONSISTENCY_SCHEMA_PATH}}` beneath that input
-root. Emit exactly one
-mode-level consistency result only at `{{OUTPUT_ROOT}}/{{OUTPUT_PATH}}`; return
+alias. Emit exactly one
+mode-level consistency result only at workspace-relative `output/{{OUTPUT_PATH}}`; return
 only the relative output path.
