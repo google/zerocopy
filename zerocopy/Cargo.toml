@@ -87,6 +87,9 @@ no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = "1.57.0"
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.93.1"
 pinned-nightly = "nightly-2026-01-25"
+# Features which require the pinned nightly compiler. CI verifies that the
+# stable feature aggregate contains every other local feature.
+nightly-features = ["float-nightly", "simd-nightly"]
 
 [package.metadata.docs.rs]
 all-features = true
