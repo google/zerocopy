@@ -457,7 +457,7 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
     }
 
     let field_tokens = fields.iter().map(|(vis, ident, _)| {
-        let ident = ident!(("ẕ{}", ident), ident.span());
+        let ident = ident!(("___ZerocopyHasField_{}", ident), ident.span());
         quote!(
             #vis enum #ident {}
         )
@@ -487,7 +487,7 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
         })
         .build();
     let has_fields = fields.iter().map(move |(_, ident, ty)| {
-        let field_token = ident!(("ẕ{}", ident), ident.span());
+        let field_token = ident!(("___ZerocopyHasField_{}", ident), ident.span());
         let field: Box<Type> = parse_quote!(#field_token);
         let field_id: Box<Expr> = parse_quote!({ #zerocopy_crate::ident_id!(#ident) });
         let has_field_trait = Trait::HasField {

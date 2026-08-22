@@ -47,7 +47,7 @@ const _: () = {
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
     const _: () = {
-        enum ẕa {}
+        enum ___ZerocopyHasField_a {}
         #[allow(
             deprecated,
             private_bounds,
@@ -81,7 +81,7 @@ const _: () = {
         #[automatically_derived]
         const _: () = {
             unsafe impl ::zerocopy::HasField<
-                ẕa,
+                ___ZerocopyHasField_a,
                 { ::zerocopy::UNION_VARIANT_ID },
                 { ::zerocopy::ident_id!(a) },
             > for Foo {
@@ -91,7 +91,7 @@ const _: () = {
                 fn project(
                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                 ) -> *mut <Self as ::zerocopy::HasField<
-                    ẕa,
+                    ___ZerocopyHasField_a,
                     { ::zerocopy::UNION_VARIANT_ID },
                     { ::zerocopy::ident_id!(a) },
                 >>::Type {
