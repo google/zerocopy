@@ -1,0 +1,486 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+# Source: 286dd29655e7ae2f5603a8af89c270cc3bd52f2e
+# One row is one normalized obligation; occurrence counts expose repeats.
+# Cargo doc has no target argument, so its normalized target is empty.
+kind	crate	toolchain	feature_profile	target	miri_model	pr_occurrences	full_occurrences	condition	sources
+avr-check						1	1	always	check_avr_atmega/Check avr-none target
+avr-clippy						1	1	always	check_avr_atmega/Clippy check avr-none target
+big-endian-aarch64-build						1	1	always	check_be_aarch64/Check big endian for aarch64_be-unknown-linux-gnu target
+cargo-build	zerocopy	msrv	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	stable	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	msrv	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	all	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	all	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	all	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	all	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	all	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	all	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	all	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	all	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	stable	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	nightly	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-aarch64-simd-1-59-0	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-aarch64-simd-1-59-0	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-aarch64-simd-be-1-87-0	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-aarch64-simd-be-1-87-0	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy	stable	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	msrv	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	msrv	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	msrv	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	msrv	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	msrv	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	msrv	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	msrv	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	msrv	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	nightly	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	nightly	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	nightly	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	nightly	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	nightly	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	nightly	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	nightly	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	nightly	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	stable	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	stable	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	stable	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	stable	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	stable	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	stable	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-build	zerocopy-derive	stable	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-library	zerocopy	msrv	default	thumbv6m-none-eabi		0	1	always	build_test/Check thumb library
+cargo-check-library	zerocopy	nightly	default	thumbv6m-none-eabi		0	1	always	build_test/Check thumb library
+cargo-check-library	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	thumbv6m-none-eabi		0	1	always	build_test/Check thumb library
+cargo-check-library	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	thumbv6m-none-eabi		0	1	always	build_test/Check thumb library
+cargo-check-library	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	thumbv6m-none-eabi		0	1	always	build_test/Check thumb library
+cargo-check-library	zerocopy	stable	default	thumbv6m-none-eabi		0	1	always	build_test/Check thumb library
+cargo-check-library	zerocopy-derive	msrv	default	thumbv6m-none-eabi		0	1	always	build_test/Check thumb library
+cargo-check-library	zerocopy-derive	nightly	default	thumbv6m-none-eabi		0	1	always	build_test/Check thumb library
+cargo-check-library	zerocopy-derive	stable	default	thumbv6m-none-eabi		0	1	always	build_test/Check thumb library
+cargo-check-tests	zerocopy	msrv	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	stable	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	msrv	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	all	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	all	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	all	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	all	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	all	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	all	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	all	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	all	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	stable	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	nightly	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-aarch64-simd-1-59-0	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-aarch64-simd-1-59-0	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-aarch64-simd-be-1-87-0	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-aarch64-simd-be-1-87-0	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy	stable	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	msrv	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	msrv	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	msrv	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	msrv	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	msrv	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	msrv	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	msrv	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	msrv	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	nightly	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	nightly	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	nightly	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	nightly	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	nightly	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	nightly	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	nightly	default	wasm32-unknown-unknown		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	nightly	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	stable	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	stable	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	stable	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	stable	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	stable	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	stable	default	s390x-unknown-linux-gnu		0	1	always	build_test/Check cross target
+cargo-check-tests	zerocopy-derive	stable	default	x86_64-pc-windows-msvc		1	1	always	build_test/Check cross target
+cargo-clippy-library	zerocopy	nightly	default	thumbv6m-none-eabi		0	1	always	build_test/Clippy
+cargo-clippy-library	zerocopy-derive	nightly	default	thumbv6m-none-eabi		0	1	always	build_test/Clippy
+cargo-clippy-tests	zerocopy	nightly	all	aarch64-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	all	arm-unknown-linux-gnueabi		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	all	i686-unknown-linux-gnu		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	all	powerpc-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	all	powerpc64-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	all	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	all	s390x-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	all	wasm32-unknown-unknown		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	all	x86_64-pc-windows-msvc		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	all	x86_64-unknown-linux-gnu		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	default	i686-unknown-linux-gnu		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	default	s390x-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	default	wasm32-unknown-unknown		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	default	x86_64-pc-windows-msvc		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	stable	aarch64-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	stable	arm-unknown-linux-gnueabi		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	stable	i686-unknown-linux-gnu		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	stable	powerpc-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	stable	powerpc64-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	stable	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	stable	s390x-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	stable	wasm32-unknown-unknown		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	stable	x86_64-pc-windows-msvc		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy	nightly	stable	x86_64-unknown-linux-gnu		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy-derive	nightly	default	aarch64-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy-derive	nightly	default	arm-unknown-linux-gnueabi		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy-derive	nightly	default	i686-unknown-linux-gnu		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy-derive	nightly	default	powerpc-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy-derive	nightly	default	powerpc64-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy-derive	nightly	default	riscv64gc-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy-derive	nightly	default	s390x-unknown-linux-gnu		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy-derive	nightly	default	wasm32-unknown-unknown		0	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy-derive	nightly	default	x86_64-pc-windows-msvc		1	1	always	build_test/Clippy tests
+cargo-clippy-tests	zerocopy-derive	nightly	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Clippy tests
+cargo-doc	zerocopy	msrv	default			3	11	always	build_test/Cargo doc
+cargo-doc	zerocopy	msrv	stable			3	10	always	build_test/Cargo doc
+cargo-doc	zerocopy	nightly	all			3	10	always	build_test/Cargo doc
+cargo-doc	zerocopy	nightly	default			3	11	always	build_test/Cargo doc
+cargo-doc	zerocopy	nightly	stable			3	10	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-aarch64-simd-1-59-0	default			0	1	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-aarch64-simd-1-59-0	stable			0	1	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-aarch64-simd-be-1-87-0	default			0	1	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-aarch64-simd-be-1-87-0	stable			0	1	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-core-error-1-81-0	default			2	2	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-core-error-1-81-0	stable			2	2	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-diagnostic-on-unimplemented-1-78-0	default			2	2	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-diagnostic-on-unimplemented-1-78-0	stable			2	2	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-generic-bounds-in-const-fn-1-61-0	default			2	2	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-generic-bounds-in-const-fn-1-61-0	stable			2	2	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default			3	11	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable			3	10	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default			3	11	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable			3	10	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default			3	11	always	build_test/Cargo doc
+cargo-doc	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable			3	10	always	build_test/Cargo doc
+cargo-doc	zerocopy	stable	default			3	10	always	build_test/Cargo doc
+cargo-doc	zerocopy	stable	stable			3	9	always	build_test/Cargo doc
+cargo-doc	zerocopy-derive	msrv	default			3	11	always	build_test/Cargo doc
+cargo-doc	zerocopy-derive	nightly	default			3	11	always	build_test/Cargo doc
+cargo-doc	zerocopy-derive	stable	default			3	10	always	build_test/Cargo doc
+cargo-semver-check	zerocopy	stable	stable	aarch64-unknown-linux-gnu		0	1	unless SKIP_CARGO_SEMVER_CHECKS=1	build_test/Check semver compatibility
+cargo-semver-check	zerocopy	stable	stable	arm-unknown-linux-gnueabi		0	1	unless SKIP_CARGO_SEMVER_CHECKS=1	build_test/Check semver compatibility
+cargo-semver-check	zerocopy	stable	stable	i686-unknown-linux-gnu		1	1	unless SKIP_CARGO_SEMVER_CHECKS=1	build_test/Check semver compatibility
+cargo-semver-check	zerocopy	stable	stable	powerpc-unknown-linux-gnu		0	1	unless SKIP_CARGO_SEMVER_CHECKS=1	build_test/Check semver compatibility
+cargo-semver-check	zerocopy	stable	stable	powerpc64-unknown-linux-gnu		0	1	unless SKIP_CARGO_SEMVER_CHECKS=1	build_test/Check semver compatibility
+cargo-semver-check	zerocopy	stable	stable	riscv64gc-unknown-linux-gnu		0	1	unless SKIP_CARGO_SEMVER_CHECKS=1	build_test/Check semver compatibility
+cargo-semver-check	zerocopy	stable	stable	s390x-unknown-linux-gnu		0	1	unless SKIP_CARGO_SEMVER_CHECKS=1	build_test/Check semver compatibility
+cargo-semver-check	zerocopy	stable	stable	x86_64-pc-windows-msvc		1	1	unless SKIP_CARGO_SEMVER_CHECKS=1	build_test/Check semver compatibility
+cargo-semver-check	zerocopy	stable	stable	x86_64-unknown-linux-gnu		1	1	unless SKIP_CARGO_SEMVER_CHECKS=1	build_test/Check semver compatibility
+cargo-test	zerocopy	msrv	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	msrv	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	msrv	stable	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	msrv	stable	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	nightly	all	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	nightly	all	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	nightly	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	nightly	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	nightly	stable	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	nightly	stable	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-core-error-1-81-0	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-core-error-1-81-0	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-core-error-1-81-0	stable	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-core-error-1-81-0	stable	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-diagnostic-on-unimplemented-1-78-0	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-diagnostic-on-unimplemented-1-78-0	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-diagnostic-on-unimplemented-1-78-0	stable	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-diagnostic-on-unimplemented-1-78-0	stable	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-generic-bounds-in-const-fn-1-61-0	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-generic-bounds-in-const-fn-1-61-0	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-generic-bounds-in-const-fn-1-61-0	stable	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-generic-bounds-in-const-fn-1-61-0	stable	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	stable	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	stable	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	stable	stable	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy	stable	stable	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy-derive	msrv	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy-derive	msrv	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy-derive	nightly	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy-derive	nightly	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy-derive	stable	default	i686-unknown-linux-gnu		1	1	always	build_test/Test native target
+cargo-test	zerocopy-derive	stable	default	x86_64-unknown-linux-gnu		1	1	always	build_test/Test native target
+check-actions						2	2	always	check_actions/Check Actions | run-git-hooks/Run dependency check
+check-format						2	2	always	check_fmt/Check Rust formatting | run-git-hooks/Run dependency check
+check-hook-inventory						1	1	always	run-git-hooks/Run dependency check
+check-job-dependencies						2	2	always	check-job-dependencies/Run dependency check | run-git-hooks/Run dependency check
+check-msrv-minimal						2	2	always	check_msrv_is_minimal/Check MSRV is minimal | run-git-hooks/Run dependency check
+check-readme						2	2	always	check_readme/Check README.md | run-git-hooks/Run dependency check
+check-stale-stderr						2	2	always	check_stale_stderr/Check stale stderr | run-git-hooks/Run dependency check
+check-todo-comments						1	1	always	check-todo/Run todo check
+check-toolchains						2	2	always	check-all-toolchains-tested/Run check | run-git-hooks/Run dependency check
+check-versions						2	2	always	check_versions/Check crate versions match | run-git-hooks/Run dependency check
+ci-image-build-export						1	1	always	build_docker_env/Build, cache, and export image
+ci-image-upload						1	1	always	build_docker_env/Upload image for matrix jobs
+codegen-clippy						1	1	always	codegen/Clippy
+codegen-test						1	1	always	codegen/Run tests
+coverage-generate						1	1	always	coverage/Generate code coverage
+coverage-upload						1	1	always	coverage/Upload coverage to Codecov
+kani						1	1	always	kani/Run tests under Kani
+miri-test	zerocopy	nightly	all	aarch64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	aarch64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	arm-unknown-linux-gnueabi	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	arm-unknown-linux-gnueabi	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	i686-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	i686-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	powerpc-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	powerpc-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	powerpc64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	powerpc64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	s390x-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	s390x-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	x86_64-pc-windows-msvc	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	x86_64-pc-windows-msvc	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	x86_64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	all	x86_64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	aarch64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	aarch64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	arm-unknown-linux-gnueabi	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	arm-unknown-linux-gnueabi	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	i686-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	i686-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	powerpc-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	powerpc-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	powerpc64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	powerpc64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	s390x-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	s390x-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	x86_64-pc-windows-msvc	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	x86_64-pc-windows-msvc	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	x86_64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	default	x86_64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	aarch64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	aarch64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	arm-unknown-linux-gnueabi	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	arm-unknown-linux-gnueabi	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	i686-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	i686-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	powerpc-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	powerpc-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	powerpc64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	powerpc64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	s390x-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	s390x-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	x86_64-pc-windows-msvc	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	x86_64-pc-windows-msvc	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	x86_64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy	nightly	stable	x86_64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	aarch64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	aarch64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	arm-unknown-linux-gnueabi	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	arm-unknown-linux-gnueabi	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	i686-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	i686-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	powerpc-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	powerpc-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	powerpc64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	powerpc64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	s390x-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	s390x-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	x86_64-pc-windows-msvc	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	x86_64-pc-windows-msvc	tree	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	x86_64-unknown-linux-gnu	stacked	0	1	always	miri/Run tests under Miri
+miri-test	zerocopy-derive	nightly	default	x86_64-unknown-linux-gnu	tree	0	1	always	miri/Run tests under Miri
+required-check-aggregate						1	1	always	all-jobs-succeed/Require every dependency to succeed
+required-check-cancellation						1	1	always	all-jobs-succeed/Reject workflow cancellation
+zizmor						1	1	always	zizmor/zizmor
