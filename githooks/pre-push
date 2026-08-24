@@ -52,12 +52,16 @@ wait $MSRV_PID
 shopt -s extglob
 GLOBIGNORE="./*/@(release_crate_version|check_todo|release_anneal_version).sh" # We don't want to run these
 for f in ./ci/*; do
+    # `ci` also contains data directories. Only files can be standalone check
+    # scripts that this hook must invoke.
+    [[ -f "$f" ]] || continue
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done
 # We don't want to run release_crate_version here, and zerocopy/ci/check_fmt.sh
 # is called by ci/check_fmt.sh above rather than directly.
 GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt).sh"
 for f in ./zerocopy/ci/*; do
+    [[ -f "$f" ]] || continue
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done
 unset GLOBIGNORE
