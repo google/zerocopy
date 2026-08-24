@@ -1,0 +1,21 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+# This file records the source identity and independently checked counts.
+key	value
+build_full_cells	182
+build_pr_cells	60
+cargo_toml_sha256	235a850df53602086a981a81ddac60d324c334df1fe2e08496f2b25ebee21a16
+generic_manual_build_sets_equal	true
+generic_manual_miri_sets_equal	true
+miri_full_cells	64
+miri_pr_cells	0
+normalized_logical_obligations	475
+pre_push_sha256	1347fc661d5d11bb8ca9445ab951a7d6a0fae7fedacfed0cdf809c0f0e4b0c0a
+source_commit	286dd29655e7ae2f5603a8af89c270cc3bd52f2e
+standalone_occurrences	31
+workflow_sha256	c96b8759c45d37eadfdac274fffd67242a3e40e08b13c7027505eb8c03476d89
