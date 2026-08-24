@@ -1,0 +1,76 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+# Source commit: 286dd29655e7ae2f5603a8af89c270cc3bd52f2e
+# Workflow: .github/workflows/ci.yml
+# Rows are sorted lexicographically; descriptors are the matrix values.
+# The <none> marker represents the stacked model's empty flag.
+crate	toolchain	feature_profile	target	miri_model	miri_model_flags
+zerocopy	nightly	all	aarch64-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	all	aarch64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	all	arm-unknown-linux-gnueabi	stacked	<none>
+zerocopy	nightly	all	arm-unknown-linux-gnueabi	tree	-Zmiri-tree-borrows
+zerocopy	nightly	all	i686-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	all	i686-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	all	powerpc-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	all	powerpc-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	all	powerpc64-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	all	powerpc64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	all	s390x-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	all	s390x-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	all	x86_64-pc-windows-msvc	stacked	<none>
+zerocopy	nightly	all	x86_64-pc-windows-msvc	tree	-Zmiri-tree-borrows
+zerocopy	nightly	all	x86_64-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	all	x86_64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	default	aarch64-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	default	aarch64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	default	arm-unknown-linux-gnueabi	stacked	<none>
+zerocopy	nightly	default	arm-unknown-linux-gnueabi	tree	-Zmiri-tree-borrows
+zerocopy	nightly	default	i686-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	default	i686-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	default	powerpc-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	default	powerpc-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	default	powerpc64-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	default	powerpc64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	default	s390x-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	default	s390x-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	default	x86_64-pc-windows-msvc	stacked	<none>
+zerocopy	nightly	default	x86_64-pc-windows-msvc	tree	-Zmiri-tree-borrows
+zerocopy	nightly	default	x86_64-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	default	x86_64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	stable	aarch64-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	stable	aarch64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	stable	arm-unknown-linux-gnueabi	stacked	<none>
+zerocopy	nightly	stable	arm-unknown-linux-gnueabi	tree	-Zmiri-tree-borrows
+zerocopy	nightly	stable	i686-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	stable	i686-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	stable	powerpc-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	stable	powerpc-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	stable	powerpc64-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	stable	powerpc64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	stable	s390x-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	stable	s390x-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy	nightly	stable	x86_64-pc-windows-msvc	stacked	<none>
+zerocopy	nightly	stable	x86_64-pc-windows-msvc	tree	-Zmiri-tree-borrows
+zerocopy	nightly	stable	x86_64-unknown-linux-gnu	stacked	<none>
+zerocopy	nightly	stable	x86_64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy-derive	nightly	default	aarch64-unknown-linux-gnu	stacked	<none>
+zerocopy-derive	nightly	default	aarch64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy-derive	nightly	default	arm-unknown-linux-gnueabi	stacked	<none>
+zerocopy-derive	nightly	default	arm-unknown-linux-gnueabi	tree	-Zmiri-tree-borrows
+zerocopy-derive	nightly	default	i686-unknown-linux-gnu	stacked	<none>
+zerocopy-derive	nightly	default	i686-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy-derive	nightly	default	powerpc-unknown-linux-gnu	stacked	<none>
+zerocopy-derive	nightly	default	powerpc-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy-derive	nightly	default	powerpc64-unknown-linux-gnu	stacked	<none>
+zerocopy-derive	nightly	default	powerpc64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy-derive	nightly	default	s390x-unknown-linux-gnu	stacked	<none>
+zerocopy-derive	nightly	default	s390x-unknown-linux-gnu	tree	-Zmiri-tree-borrows
+zerocopy-derive	nightly	default	x86_64-pc-windows-msvc	stacked	<none>
+zerocopy-derive	nightly	default	x86_64-pc-windows-msvc	tree	-Zmiri-tree-borrows
+zerocopy-derive	nightly	default	x86_64-unknown-linux-gnu	stacked	<none>
+zerocopy-derive	nightly	default	x86_64-unknown-linux-gnu	tree	-Zmiri-tree-borrows
