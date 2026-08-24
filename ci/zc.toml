@@ -1,0 +1,410 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# This file describes ordinary, unprivileged CI coverage. It deliberately does
+# not configure workflow permissions, secrets, runners, action references, or
+# publication. Keep those security-sensitive choices visible in the small,
+# hand-written GitHub Actions workflows. A generated plan may select work, but
+# it must never grant privileges.
+#
+# `tools/zc/src/policy.rs` parses this file strictly. Keep field names and
+# selection spellings coordinated with that module. After this schema has
+# consumers, an incompatible change must increment `schema_version` and teach
+# the parser how to reject or migrate the old form deliberately.
+schema_version = 1
+
+[events]
+# These names must remain coordinated with `.github/workflows/ci.yml`. The
+# planner rejects an event absent from both lists, instead of assuming every
+# event other than `pull_request` deserves full or privileged behavior.
+reduced = ["pull_request"]
+full = ["merge_group", "push", "workflow_dispatch"]
+
+[features]
+# This is the one feature list which remains authoritative in
+# `zerocopy/Cargo.toml`. Repository inventory follows its Cargo feature edges
+# to find every stable feature, then derives the nightly-only complement from
+# the complete Cargo feature graph. Do not duplicate either set here.
+stable_feature_root = "__internal_use_only_features_that_work_on_stable"
+
+[[feature_profiles]]
+id = "default"
+selection = "default"
+
+[[feature_profiles]]
+id = "stable"
+selection = "stable-aggregate"
+
+[[feature_profiles]]
+id = "all"
+selection = "all"
+
+# The manifests are repository-relative so inventory can compare these entries
+# with Cargo metadata from any worktree. A package lists only profiles which
+# have package-local meaning; `zerocopy-derive` has no Zerocopy feature set.
+[[packages]]
+id = "zerocopy"
+manifest = "zerocopy/Cargo.toml"
+profiles = ["default", "stable", "all"]
+
+[[packages]]
+id = "zerocopy-derive"
+manifest = "zerocopy/zerocopy-derive/Cargo.toml"
+profiles = ["default"]
+
+# `mode` coordinates with the ordinary executor: native targets run tests,
+# cross targets compile tests and build the library, and the current thumb
+# target checks only the library because its test dependencies do not compile.
+# `pr_eligible` is the latency-reduced subset. The merge queue and other full
+# events still use every target selected by a toolchain scope. Miri and semver
+# eligibility are explicit so a new target cannot silently escape either kind
+# of coverage.
+[[targets]]
+id = "i686-unknown-linux-gnu"
+mode = "native"
+pr_eligible = true
+miri_eligible = true
+semver_eligible = true
+
+[[targets]]
+id = "x86_64-unknown-linux-gnu"
+mode = "native"
+pr_eligible = true
+miri_eligible = true
+semver_eligible = true
+
+[[targets]]
+id = "arm-unknown-linux-gnueabi"
+mode = "cross"
+pr_eligible = false
+miri_eligible = true
+semver_eligible = true
+
+[[targets]]
+id = "aarch64-unknown-linux-gnu"
+mode = "cross"
+pr_eligible = false
+miri_eligible = true
+semver_eligible = true
+
+[[targets]]
+id = "powerpc-unknown-linux-gnu"
+mode = "cross"
+pr_eligible = false
+miri_eligible = true
+semver_eligible = true
+
+[[targets]]
+id = "powerpc64-unknown-linux-gnu"
+mode = "cross"
+pr_eligible = false
+miri_eligible = true
+semver_eligible = true
+
+[[targets]]
+id = "riscv64gc-unknown-linux-gnu"
+mode = "cross"
+pr_eligible = false
+miri_eligible = false
+semver_eligible = true
+
+[[targets]]
+id = "s390x-unknown-linux-gnu"
+mode = "cross"
+pr_eligible = false
+miri_eligible = true
+semver_eligible = true
+
+[[targets]]
+id = "x86_64-pc-windows-msvc"
+mode = "cross"
+pr_eligible = true
+miri_eligible = true
+semver_eligible = true
+
+[[targets]]
+id = "thumbv6m-none-eabi"
+mode = "thumb"
+pr_eligible = false
+miri_eligible = false
+semver_eligible = false
+
+[[targets]]
+id = "wasm32-unknown-unknown"
+mode = "cross"
+pr_eligible = false
+miri_eligible = false
+semver_eligible = true
+
+# A target-set expression starts with all targets, all Miri-eligible targets,
+# or no targets (`explicit`), then applies its required `include` and `exclude`
+# lists. The Rust validator rejects redundant or ineffective adjustments. This
+# keeps deliberate exceptions visible while ensuring that a newly declared
+# target flows into broad sets automatically.
+[[target_sets]]
+id = "all"
+selection = "all"
+include = []
+exclude = []
+
+[[target_sets]]
+id = "without-thumb"
+selection = "all"
+include = []
+exclude = ["thumbv6m-none-eabi"]
+
+[[target_sets]]
+id = "without-wasm"
+selection = "all"
+include = []
+exclude = ["wasm32-unknown-unknown"]
+
+[[target_sets]]
+id = "without-thumb-or-wasm"
+selection = "all"
+include = []
+exclude = ["thumbv6m-none-eabi", "wasm32-unknown-unknown"]
+
+[[target_sets]]
+id = "x86-linux"
+selection = "explicit"
+include = ["i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu"]
+exclude = []
+
+[[target_sets]]
+id = "aarch64"
+selection = "explicit"
+include = ["aarch64-unknown-linux-gnu"]
+exclude = []
+
+[[target_sets]]
+id = "miri-supported"
+selection = "miri-eligible"
+include = []
+exclude = []
+
+[[target_sets]]
+id = "semver"
+selection = "all"
+include = []
+exclude = ["thumbv6m-none-eabi", "wasm32-unknown-unknown"]
+
+# `source` coordinates each descriptor with `zerocopy/Cargo.toml`. Standard
+# versions come from `rust-version` or `[package.metadata.ci]`; every `build-rs`
+# ID must exactly equal one key under `[package.metadata.build-rs]`. Inventory
+# validation owns that comparison so version numbers never drift into this file.
+[[toolchains]]
+id = "msrv"
+source = "manifest-rust-version"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default"]
+target_set = "all"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["stable"]
+target_set = "without-thumb"
+
+[[toolchains.scopes]]
+packages = ["zerocopy-derive"]
+profiles = ["default"]
+target_set = "all"
+
+[[toolchains]]
+id = "stable"
+source = "pinned-stable"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default"]
+target_set = "without-wasm"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["stable"]
+target_set = "without-thumb-or-wasm"
+
+[[toolchains.scopes]]
+packages = ["zerocopy-derive"]
+profiles = ["default"]
+target_set = "without-wasm"
+
+[[toolchains]]
+id = "nightly"
+source = "pinned-nightly"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default"]
+target_set = "all"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["stable", "all"]
+target_set = "without-thumb"
+
+[[toolchains.scopes]]
+packages = ["zerocopy-derive"]
+profiles = ["default"]
+target_set = "all"
+
+[[toolchains]]
+id = "no-zerocopy-simd-x86-avx12-1-89-0"
+source = "build-rs"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default"]
+target_set = "all"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["stable"]
+target_set = "without-thumb"
+
+[[toolchains]]
+id = "no-zerocopy-core-error-1-81-0"
+source = "build-rs"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default", "stable"]
+target_set = "x86-linux"
+
+[[toolchains]]
+id = "no-zerocopy-diagnostic-on-unimplemented-1-78-0"
+source = "build-rs"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default", "stable"]
+target_set = "x86-linux"
+
+[[toolchains]]
+id = "no-zerocopy-generic-bounds-in-const-fn-1-61-0"
+source = "build-rs"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default", "stable"]
+target_set = "x86-linux"
+
+[[toolchains]]
+id = "no-zerocopy-target-has-atomics-1-60-0"
+source = "build-rs"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default"]
+target_set = "all"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["stable"]
+target_set = "without-thumb"
+
+[[toolchains]]
+id = "no-zerocopy-aarch64-simd-1-59-0"
+source = "build-rs"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default", "stable"]
+target_set = "aarch64"
+
+[[toolchains]]
+id = "no-zerocopy-aarch64-simd-be-1-87-0"
+source = "build-rs"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default", "stable"]
+target_set = "aarch64"
+
+[[toolchains]]
+id = "no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0"
+source = "build-rs"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["default"]
+target_set = "all"
+
+[[toolchains.scopes]]
+packages = ["zerocopy"]
+profiles = ["stable"]
+target_set = "without-thumb"
+
+# Every declared model runs automatically. These are per-model additions to
+# the global `ZC_NIGHTLY_MIRIFLAGS` in `.github/workflows/ci.yml`; keep that
+# workflow setting and the executor's flag composition coordinated with this
+# list. The empty list for stacked borrows is explicit because behavior-bearing
+# lists never come from parser defaults.
+[[miri_models]]
+id = "stacked"
+flags = []
+
+[[miri_models]]
+id = "tree"
+flags = ["-Zmiri-tree-borrows"]
+
+[miri]
+toolchain = "nightly"
+event_category = "full"
+
+[[miri.scopes]]
+packages = ["zerocopy"]
+profiles = ["default", "stable", "all"]
+target_set = "miri-supported"
+
+[[miri.scopes]]
+packages = ["zerocopy-derive"]
+profiles = ["default"]
+target_set = "miri-supported"
+
+[semver]
+# Every target marked `semver_eligible` must be selected by this set or have
+# exactly one waiver below. Thumb is structurally inapplicable; wasm remains a
+# visible desired target whose current tool limitation requires a waiver.
+package = "zerocopy"
+toolchain = "stable"
+profile = "stable"
+target_set = "semver"
+
+# wasm remains a visible desired target even though it cannot yet run. Without
+# this waiver, removing wasm from the selected set could look like success.
+[[semver.waivers]]
+target = "wasm32-unknown-unknown"
+issue = "#1565"
+reason = "cargo-semver-checks does not yet support this target"
+
+[baselines]
+# These files are an independent observation of the workflow on main, not
+# generated truth from this policy. Later shadow planning must match them before
+# Actions consumes a plan. Update them only for an intentional coverage change.
+manifest = "ci/baselines/manifest.tsv"
+build_reduced = "ci/baselines/build-pr.tsv"
+build_full = "ci/baselines/build-full.tsv"
+miri_reduced = "ci/baselines/miri-pr.tsv"
+miri_full = "ci/baselines/miri-full.tsv"
+logical_obligations = "ci/baselines/logical-obligations.tsv"
+standalone_obligations = "ci/baselines/standalone-obligations.tsv"
+command_goldens = "ci/baselines/command-goldens.tsv"
+
+[limits]
+# GitHub expands at most 256 jobs in one matrix. The planner enforces that bound
+# after splitting logical work into shards; it must not reject a larger logical
+# plan merely because one unsharded matrix could not hold it. `max_plan_cells`
+# independently bounds expansion before sharding. Job outputs have a one-
+# megabyte limit estimated as UTF-16; 900,000 leaves room for accounting
+# differences. Rust validation also caps all three configured limits.
+max_matrix_cells = 256
+max_plan_cells = 4096
+max_job_output_utf16_bytes = 900000
