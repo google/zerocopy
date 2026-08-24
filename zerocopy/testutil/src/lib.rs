@@ -11,6 +11,36 @@
 
 use std::{env, path::PathBuf, process::Command};
 
+const UI_TEST_FEATURE_ARG_COUNT_ENV: &str = "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT";
+const UI_TEST_FEATURE_ARG_ENV_PREFIX: &str = "ZEROCOPY_UI_TEST_FEATURE_ARG_";
+
+fn decode_feature_selection_args(
+    count: Option<&str>,
+    mut get_arg: impl FnMut(usize) -> Option<String>,
+) -> Result<Vec<String>, String> {
+    let count = match count {
+        Some(count) => count,
+        None => return Ok(Vec::new()),
+    };
+    let count = count
+        .parse::<usize>()
+        .map_err(|_| format!("{} must be a non-negative integer", UI_TEST_FEATURE_ARG_COUNT_ENV))?;
+    (0..count)
+        .map(|index| {
+            get_arg(index)
+                .ok_or_else(|| format!("missing {}{}", UI_TEST_FEATURE_ARG_ENV_PREFIX, index))
+        })
+        .collect()
+}
+
+fn outer_feature_selection_args() -> Vec<String> {
+    let count = env::var(UI_TEST_FEATURE_ARG_COUNT_ENV).ok();
+    decode_feature_selection_args(count.as_deref(), |index| {
+        env::var(format!("{}{}", UI_TEST_FEATURE_ARG_ENV_PREFIX, index)).ok()
+    })
+    .unwrap_or_else(|error| panic!("invalid UI feature-argument protocol: {}", error))
+}
+
 #[derive(Debug)]
 pub enum ToolchainVersion {
     /// The version listed as our MSRV (ie, the `package.rust-version` key in
@@ -70,6 +100,7 @@ pub struct UiTestRunner {
     rustc_args: Vec<String>,
     tests_dir: String,
     tests_subdir: Option<String>,
+    use_outer_features: bool,
 }
 
 impl Default for UiTestRunner {
@@ -88,11 +119,17 @@ impl UiTestRunner {
             rustc_args: Vec::new(),
             tests_dir: "tests".to_string(), // Default prefix
             tests_subdir: None,
+            use_outer_features: false,
         }
     }
 
     pub fn rustc_arg(mut self, arg: impl Into<String>) -> Self {
         self.rustc_args.push(arg.into());
+        self
+    }
+
+    pub fn use_outer_features(mut self) -> Self {
+        self.use_outer_features = true;
         self
     }
 
@@ -123,6 +160,7 @@ impl UiTestRunner {
         let mut rlib_path = None;
         let mut derive_lib_path = None;
         let mut static_assertions_path = None;
+        let mut zerocopy_features = None;
 
         let mut command = Command::new("cargo");
         command.current_dir(workspace_root.clone());
@@ -194,15 +232,13 @@ impl UiTestRunner {
             ]);
         }
 
-        let mut args = vec![
-            "build",
-            "-p",
-            "zerocopy",
-            "--features",
-            "derive",
-            "--tests",
-            "--message-format=json",
-        ];
+        command.args(["build", "--locked", "--offline", "-p", "zerocopy"]);
+        if self.use_outer_features {
+            command.args(outer_feature_selection_args());
+        }
+        // Both UI suites require the derive proc macro. Cargo feature options
+        // are additive, so this retains the outer selection when present.
+        command.args(["--features", "derive", "--tests", "--message-format=json"]);
 
         // `cargo-zerocopy` uses `ZEROCOPY_UI_TEST_TARGET` to pass the value of
         // any `--target` CLI argument. Here, we use this target when building
@@ -210,11 +246,8 @@ impl UiTestRunner {
         let target = env::var("ZEROCOPY_UI_TEST_TARGET").ok();
 
         if let Some(ref t) = target {
-            args.push("--target");
-            args.push(t);
+            command.args(["--target", t]);
         }
-
-        command.args(args);
 
         let output = command.output().expect("Failed to execute cargo build for artifacts");
         if !output.status.success() {
@@ -239,9 +272,19 @@ impl UiTestRunner {
                 if artifact.target.name == "zerocopy"
                     && artifact.target.kind.iter().any(|k| k == "lib")
                 {
+                    let mut features = artifact.features.clone();
+                    features.sort();
+                    features.dedup();
                     for file in artifact.filenames {
                         if file.extension() == Some("rlib") {
+                            if let Some(ref previous) = zerocopy_features {
+                                assert_eq!(
+                                    previous, &features,
+                                    "zerocopy artifacts used different features"
+                                );
+                            }
                             rlib_path = Some(file);
+                            zerocopy_features = Some(features.clone());
                         }
                     }
                 } else if artifact.target.name == "zerocopy-derive"
@@ -269,6 +312,12 @@ impl UiTestRunner {
         let derive_lib_path = derive_lib_path.expect("failed to find zerocopy_derive proc-macro");
         let static_assertions_path =
             static_assertions_path.expect("failed to find static_assertions rlib");
+        let zerocopy_features =
+            zerocopy_features.expect("failed to find zerocopy artifact features");
+        assert!(
+            zerocopy_features.iter().any(|feature| feature == "derive"),
+            "UI artifact build did not enable its required derive feature"
+        );
 
         let mut build_command = Command::new("rustup");
 
@@ -285,6 +334,7 @@ impl UiTestRunner {
             "stable",
             "cargo",
             "build",
+            "--locked",
             "--manifest-path=tools/ui-runner/Cargo.toml",
             "--message-format=json",
         ]);
@@ -316,6 +366,12 @@ impl UiTestRunner {
 
         for arg in &self.rustc_args {
             command.arg(format!("--rustc-arg={}", arg));
+        }
+
+        // Cargo's artifact message is authoritative for the complete feature
+        // closure. Give each fixture exactly the cfgs Cargo gave zerocopy.
+        for feature in &zerocopy_features {
+            command.arg(format!("--rustc-arg=--cfg=feature={:?}", feature));
         }
 
         command.env("ZEROCOPY_RLIB_PATH", rlib_path);
@@ -354,5 +410,31 @@ impl UiTestRunner {
 
         let mut proc = command.spawn().expect("Failed to spawn ui-runner");
         assert!(proc.wait().unwrap().success(), "ui-runner failed");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::decode_feature_selection_args;
+
+    #[test]
+    fn decodes_indexed_feature_arguments() {
+        let values = ["", ":", "μ", "--features=derive,simd-nightly"];
+        assert_eq!(
+            decode_feature_selection_args(Some("4"), |index| {
+                values.get(index).map(|value| (*value).to_string())
+            })
+            .unwrap(),
+            values.iter().map(|value| (*value).to_string()).collect::<Vec<_>>()
+        );
+        assert!(decode_feature_selection_args(None, |_| panic!("must not read an argument"))
+            .unwrap()
+            .is_empty());
+    }
+
+    #[test]
+    fn rejects_invalid_feature_argument_protocol() {
+        assert!(decode_feature_selection_args(Some("invalid"), |_| None).is_err());
+        assert!(decode_feature_selection_args(Some("1"), |_| None).is_err());
     }
 }
