@@ -20,13 +20,13 @@
 // Cargo.toml section.
 
 use std::{
-    collections::HashSet,
-    env, fmt, fs,
+    collections::{BTreeMap, HashSet},
+    env, fmt,
     io::{self, BufRead as _, Write as _},
     process::{self, Command, Output, Stdio},
 };
 
-use toml::{map::Map, Value};
+use zc::metadata::ToolchainMetadata;
 
 // Cargo test executables inherit these variables from the delegated process.
 // `testutil::UiTestRunner` reuses the exact outer feature selection when it
@@ -98,7 +98,7 @@ struct Versions {
     msrv: String,
     stable: String,
     nightly: String,
-    build_rs: Map<String, Value>,
+    build_rs: BTreeMap<String, String>,
 }
 
 impl Versions {
@@ -111,25 +111,23 @@ impl Versions {
                 .build_rs
                 .get(name)
                 .ok_or(Error::UnrecognizedToolchain(name.to_string()))
-                .map(|value| value.as_str().unwrap())?,
+                .map(String::as_str)?,
         })
     }
 }
 
 fn get_toolchain_versions() -> Versions {
-    let manifest_text = fs::read_to_string("Cargo.toml").unwrap();
-    let manifest = toml::from_str::<Value>(&manifest_text).unwrap();
-
-    let package = manifest.as_table().unwrap()["package"].as_table().unwrap();
-    let metadata = package["metadata"].as_table().unwrap();
-    let build_rs = metadata["build-rs"].as_table().unwrap();
-    let ci = metadata["ci"].as_table().unwrap();
+    // `cargo.sh` runs this binary from the Zerocopy crate directory, so this
+    // path names the manifest whose toolchains the wrapper must select. The
+    // shared reader parses the file directly; it must not run Cargo while this
+    // wrapper is still deciding which Cargo toolchain to invoke.
+    let metadata = ToolchainMetadata::read("Cargo.toml").unwrap();
 
     Versions {
-        msrv: package["rust-version"].as_str().unwrap().to_string(),
-        stable: ci["pinned-stable"].as_str().unwrap().to_string(),
-        nightly: ci["pinned-nightly"].as_str().unwrap().to_string(),
-        build_rs: build_rs.clone(),
+        msrv: metadata.rust_version,
+        stable: metadata.pinned_stable,
+        nightly: metadata.pinned_nightly,
+        build_rs: metadata.build_rs,
     }
 }
 
