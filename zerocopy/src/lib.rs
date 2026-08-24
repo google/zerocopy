@@ -12,7 +12,8 @@
 // After updating the following doc comment, make sure to run the following
 // command to update `README.md` based on its contents:
 //
-//   (cd .. && cargo -q run --manifest-path tools/Cargo.toml -p generate-readme) > README.md
+//   ZEROCOPY_README_DIR=../zerocopy ../tools/cargo.sh -q run --locked \
+//     -p generate-readme > README.md
 
 //! ***<span style="font-size: 140%">Fast, safe, <span
 //! style="color:red;">compile error</span>. Pick two.</span>***

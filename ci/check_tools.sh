@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+#
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+set -eo pipefail
+cd "$(dirname "$0")/../tools"
+
+# shellcheck source=../tools/toolchain.sh
+source ./toolchain.sh
+
+# The stable-toolchain roller intentionally updates these two files together.
+# Check the copy here as well so a hand edit cannot make local tool builds use
+# a different compiler from the stable CI lane. Require one exact declaration
+# in each file; a future reorganization must update this check explicitly.
+# `tools/cargo.sh` and `zerocopy/win-cargo.bat` also parse the tools channel so
+# they can defeat persisted rustup directory overrides. The Unix scripts share
+# `tools/toolchain.sh`; keep its exact format coordinated with the independent
+# batch parser. A pre-existing Windows worktree may still contain CRLF TOML, so
+# the bootstrap parser accepts well-formed CRLF but rejects bare CR.
+#
+# Store the complete parser output so an embedded newline exposes duplicate
+# declarations. Do not use `mapfile`: macOS still ships Bash 3.2, which does
+# not provide that builtin.
+if ! TOOLS_CHANNEL="$(
+  zc_read_exact_rust_version_assignment rust-toolchain.toml channel
+)"; then
+  echo "Malformed line endings in tools/rust-toolchain.toml" >&2
+  exit 1
+fi
+if ! STABLE_CHANNEL="$(
+  zc_read_exact_rust_version_assignment \
+    ../zerocopy/Cargo.toml pinned-stable
+)"; then
+  echo "Malformed line endings in zerocopy/Cargo.toml" >&2
+  exit 1
+fi
+if [[ -z "$TOOLS_CHANNEL" || "$TOOLS_CHANNEL" == *$'\n'* || \
+      -z "$STABLE_CHANNEL" || "$STABLE_CHANNEL" == *$'\n'* ]]; then
+  echo "Expected one tools channel and one Zerocopy stable channel" >&2
+  exit 1
+fi
+if [[ "$TOOLS_CHANNEL" != "$STABLE_CHANNEL" ]]; then
+  echo "Tools compiler $TOOLS_CHANNEL does not match Zerocopy stable" \
+    "compiler $STABLE_CHANNEL" >&2
+  exit 1
+fi
+
+# Exercise the bootstrap parser independently of this checkout's line-ending
+# convention. The first sample is what an existing Git-for-Windows worktree
+# can contain after pulling `.gitattributes`; the other two prove that accepting
+# CRLF did not turn into accepting arbitrary carriage returns.
+if ! PARSED_CRLF_CHANNEL="$(
+  printf 'channel = "1.2.3"\r\n' | \
+    zc_read_exact_rust_version_assignment /dev/stdin channel
+)" || [[ "$PARSED_CRLF_CHANNEL" != "1.2.3" ]]; then
+  echo "Tools channel parser rejected a canonical CRLF declaration" >&2
+  exit 1
+fi
+if printf 'channel = "1.2.3"\r' | \
+    zc_read_exact_rust_version_assignment /dev/stdin channel >/dev/null; then
+  echo "Tools channel parser accepted an unterminated bare CR" >&2
+  exit 1
+fi
+if printf 'channel = "1.2\r.3"\n' | \
+    zc_read_exact_rust_version_assignment /dev/stdin channel >/dev/null; then
+  echo "Tools channel parser accepted an embedded bare CR" >&2
+  exit 1
+fi
+if zc_read_exact_rust_version_assignment /dev/null/missing channel \
+    >/dev/null 2>&1; then
+  echo "Tools channel parser accepted an input it could not open" >&2
+  exit 1
+fi
+DUPLICATE_CHANNELS="$(
+  printf 'channel = "1.2.3"\nchannel = "4.5.6"\n' | \
+    zc_read_exact_rust_version_assignment /dev/stdin channel
+)"
+if [[ "$DUPLICATE_CHANNELS" != $'1.2.3\n4.5.6' ]]; then
+  echo "Tools channel parser did not preserve duplicate declarations" >&2
+  exit 1
+fi
+
+# RUSTUP_TOOLCHAIN overrides tools/rust-toolchain.toml. Use an intentionally
+# invalid value to prove that the Unix wrapper's explicit pin defeats this
+# ambient override while it builds cargo-zerocopy, then reports the configured
+# stable version.
+WRAPPER_STABLE="$(
+  RUSTUP_TOOLCHAIN=zerocopy-ci-intentionally-invalid \
+    ../zerocopy/cargo.sh --version stable
+)"
+if [[ "$WRAPPER_STABLE" != "$STABLE_CHANNEL" ]]; then
+  echo "cargo.sh resolved stable to $WRAPPER_STABLE, expected $STABLE_CHANNEL" \
+    >&2
+  exit 1
+fi
+
+# Prove that the shared Unix wrapper defeats an ambient rustup override. Keep
+# the lockfile read-only: repository tools are part of CI's trusted setup, so
+# an unreviewed dependency change must never be created as a side effect of
+# testing them.
+RUSTUP_TOOLCHAIN=zerocopy-ci-intentionally-invalid \
+  ./cargo.sh test --locked --workspace
+
+# Exercise the public repository-level route in addition to the library tests.
+# The wrapper must establish the expected working directory, and the inventory
+# command must pin its own Cargo metadata invocation instead of inheriting this
+# deliberately invalid ambient override. Keep this command coordinated with
+# `tools/cargo-zerocopy/src/main.rs` and `tools/zc/src/cli.rs`.
+#
+# This audit owns the build.rs toolchain invariant.
+# Inventory requires the manifest metadata keys and policy descriptors to be
+# exactly equal, policy requires every descriptor to have nonempty scopes, and
+# planning validates those scopes for every event. Do not reconstruct that
+# relationship by parsing the generated Actions matrix: the workflow receives
+# its matrix through `fromJSON`, and the checked policy is its source.
+RUSTUP_TOOLCHAIN=zerocopy-ci-intentionally-invalid \
+  ../zerocopy/cargo.sh ci audit >/dev/null

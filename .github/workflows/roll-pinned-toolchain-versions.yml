@@ -114,6 +114,31 @@ jobs:
             ./tools/update-expected-test-output.sh
           }
 
+          function update-tools-toolchain {
+            VERSION="$1"
+
+            # `zerocopy/cargo.sh` builds repository tools from the `tools`
+            # directory, so rustup selects this pin before cargo-zerocopy can
+            # read the library's Cargo metadata. Keep this explicit copy
+            # coordinated with the stable pin above. This explicit update and
+            # the exact-match checks make a future file reorganization fail
+            # visibly instead of silently leaving the tools compiler behind.
+            REGEX='^channel = "[0-9]+\.[0-9]+\.[0-9]+"$'
+            MATCH_COUNT="$(
+              grep -Ec "$REGEX" tools/rust-toolchain.toml || true
+            )"
+            if [ "$MATCH_COUNT" -ne 1 ]; then
+              echo "Expected exactly one line matching '$REGEX' in" \
+                "tools/rust-toolchain.toml; found $MATCH_COUNT" >&2
+              exit 1
+            fi
+            sed -i -E \
+              "s/$REGEX/channel = \"$VERSION\"/" \
+              tools/rust-toolchain.toml
+            grep -Fx "channel = \"$VERSION\"" \
+              tools/rust-toolchain.toml >/dev/null
+          }
+
           if [ "$TOOLCHAIN" == stable ]; then
             STABLE_VERSION="$(
               rustc +stable --version --verbose \
@@ -123,6 +148,7 @@ jobs:
               echo "Could not determine the latest stable rustc version" >&2
               exit 1
             fi
+            update-tools-toolchain "$STABLE_VERSION"
             update-pinned-version stable "$STABLE_VERSION" \
               '--features __internal_use_only_features_that_work_on_stable'
 
