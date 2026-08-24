@@ -142,7 +142,7 @@ fn derive_known_layout_for_repr_c_struct<'a>(
             fields.iter().map(|(_vis, name, _ty)| field_index(name)).collect();
 
         // Define the collection of type-level field handles.
-        let field_defs = field_indices.iter().zip(fields).map(|(idx, (vis, _, _))| {
+        let field_defs = field_indices.iter().zip(fields).map(|(idx, _)| {
             quote! {
                 #vis struct #idx;
             }
