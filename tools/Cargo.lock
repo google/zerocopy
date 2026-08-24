@@ -112,7 +112,7 @@ dependencies = [
 name = "cargo-zerocopy"
 version = "0.0.0"
 dependencies = [
- "toml",
+ "zc",
 ]
 
 [[package]]
@@ -818,6 +818,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df79d97927682d2fd8adb29682d1140b343be4ac0f08fd68b7765d9c059d3945"
 dependencies = [
  "memchr",
+]
+
+[[package]]
+name = "zc"
+version = "0.0.0"
+dependencies = [
+ "serde",
+ "thiserror 2.0.18",
+ "toml",
 ]
 
 [[package]]
