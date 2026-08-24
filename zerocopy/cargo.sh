@@ -13,13 +13,15 @@ set -eo pipefail
 ZEROCOPY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 REPO_DIR="$(dirname "$ZEROCOPY_DIR")"
 
-# Build `cargo-zerocopy` without any RUSTFLAGS or CARGO_TARGET_DIR set in the
-# environment. Build it from the repository root so that Zerocopy's vendoring
-# config does not apply to the unvendored tools workspace.
-(
-  cd "$REPO_DIR"
-  env -u RUSTFLAGS -u CARGO_TARGET_DIR cargo +stable build --manifest-path tools/cargo-zerocopy/Cargo.toml -p cargo-zerocopy -q
-)
+# Build `cargo-zerocopy` without any RUSTFLAGS, CARGO_TARGET_DIR, or
+# RUSTUP_TOOLCHAIN set in the environment. `tools/cargo.sh` supplies the exact
+# compiler pin; clearing the variables also keeps their other effects out of
+# the build. That wrapper establishes `tools` as Cargo's discovery directory,
+# outside Zerocopy's vendored configuration. `--locked` prevents this bootstrap
+# step from silently changing the tools dependency graph.
+env -u RUSTFLAGS -u CARGO_TARGET_DIR -u RUSTUP_TOOLCHAIN \
+  "$REPO_DIR/tools/cargo.sh" build --locked --manifest-path Cargo.toml \
+    -p cargo-zerocopy -q
 
 cd "$ZEROCOPY_DIR"
 exec "$REPO_DIR/tools/target/debug/cargo-zerocopy" "$@"
