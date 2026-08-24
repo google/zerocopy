@@ -11,6 +11,7 @@ members = [
     "cargo-zerocopy",
     "generate-readme",
     "ui-runner",
+    "zc",
 ]
 resolver = "2"
 
@@ -22,4 +23,7 @@ publish = false
 
 [workspace.dependencies]
 regex = "1"
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"
 toml = "0.8"
+zc = { path = "zc" }
