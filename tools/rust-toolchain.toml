@@ -1,0 +1,21 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# This pin selects the compiler used to build repository tools. It does not set
+# Zerocopy's minimum supported Rust version. The stable-toolchain roller updates
+# this value together with `package.metadata.ci.pinned-stable` in
+# `zerocopy/Cargo.toml` so the two build paths do not drift accidentally.
+#
+# The Unix and Windows cargo-zerocopy wrappers and
+# `zerocopy/ci/check_readme.sh` parse the channel line so they can pass an
+# explicit `+<toolchain>` to cargo. `ci/check_tools.sh` validates the same line.
+# Keep its key, spacing, quotes, and numeric version format coordinated with
+# those parsers; changing the format should make them fail.
+[toolchain]
+channel = "1.93.1"
+profile = "minimal"
