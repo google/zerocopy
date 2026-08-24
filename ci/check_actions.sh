@@ -21,6 +21,11 @@ if [ ! -x "$HOME/.cargo/bin/action-validator" ]; then
 fi
 export PATH="$HOME/.cargo/bin:$PATH"
 
+# The pre-push hook coordinates concurrent repository checks and is itself
+# production code. Exercise it with fake check scripts so this validation does
+# not recursively run the real hook or depend on installed Rust toolchains.
+PYTHONDONTWRITEBYTECODE=1 python3 githooks/test_pre_push.py
+
 # Files to exclude from validation (e.g., because they are not Actions/Workflows)
 # Use relative paths matching `find .github` output
 EXCLUDE_FILES=(
