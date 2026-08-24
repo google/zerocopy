@@ -1,0 +1,71 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+# Source commit: 286dd29655e7ae2f5603a8af89c270cc3bd52f2e
+# Workflow: .github/workflows/ci.yml
+# Rows are sorted lexicographically; descriptors are the matrix values.
+crate	toolchain	feature_profile	target
+zerocopy	msrv	default	i686-unknown-linux-gnu
+zerocopy	msrv	default	x86_64-pc-windows-msvc
+zerocopy	msrv	default	x86_64-unknown-linux-gnu
+zerocopy	msrv	stable	i686-unknown-linux-gnu
+zerocopy	msrv	stable	x86_64-pc-windows-msvc
+zerocopy	msrv	stable	x86_64-unknown-linux-gnu
+zerocopy	nightly	all	i686-unknown-linux-gnu
+zerocopy	nightly	all	x86_64-pc-windows-msvc
+zerocopy	nightly	all	x86_64-unknown-linux-gnu
+zerocopy	nightly	default	i686-unknown-linux-gnu
+zerocopy	nightly	default	x86_64-pc-windows-msvc
+zerocopy	nightly	default	x86_64-unknown-linux-gnu
+zerocopy	nightly	stable	i686-unknown-linux-gnu
+zerocopy	nightly	stable	x86_64-pc-windows-msvc
+zerocopy	nightly	stable	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-core-error-1-81-0	default	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-core-error-1-81-0	default	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-core-error-1-81-0	stable	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-core-error-1-81-0	stable	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-diagnostic-on-unimplemented-1-78-0	default	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-diagnostic-on-unimplemented-1-78-0	default	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-diagnostic-on-unimplemented-1-78-0	stable	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-diagnostic-on-unimplemented-1-78-0	stable	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-generic-bounds-in-const-fn-1-61-0	default	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-generic-bounds-in-const-fn-1-61-0	default	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-generic-bounds-in-const-fn-1-61-0	stable	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-generic-bounds-in-const-fn-1-61-0	stable	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	x86_64-pc-windows-msvc
+zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	default	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	x86_64-pc-windows-msvc
+zerocopy	no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0	stable	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	x86_64-pc-windows-msvc
+zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	default	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	x86_64-pc-windows-msvc
+zerocopy	no-zerocopy-simd-x86-avx12-1-89-0	stable	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	x86_64-pc-windows-msvc
+zerocopy	no-zerocopy-target-has-atomics-1-60-0	default	x86_64-unknown-linux-gnu
+zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	i686-unknown-linux-gnu
+zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	x86_64-pc-windows-msvc
+zerocopy	no-zerocopy-target-has-atomics-1-60-0	stable	x86_64-unknown-linux-gnu
+zerocopy	stable	default	i686-unknown-linux-gnu
+zerocopy	stable	default	x86_64-pc-windows-msvc
+zerocopy	stable	default	x86_64-unknown-linux-gnu
+zerocopy	stable	stable	i686-unknown-linux-gnu
+zerocopy	stable	stable	x86_64-pc-windows-msvc
+zerocopy	stable	stable	x86_64-unknown-linux-gnu
+zerocopy-derive	msrv	default	i686-unknown-linux-gnu
+zerocopy-derive	msrv	default	x86_64-pc-windows-msvc
+zerocopy-derive	msrv	default	x86_64-unknown-linux-gnu
+zerocopy-derive	nightly	default	i686-unknown-linux-gnu
+zerocopy-derive	nightly	default	x86_64-pc-windows-msvc
+zerocopy-derive	nightly	default	x86_64-unknown-linux-gnu
+zerocopy-derive	stable	default	i686-unknown-linux-gnu
+zerocopy-derive	stable	default	x86_64-pc-windows-msvc
+zerocopy-derive	stable	default	x86_64-unknown-linux-gnu
