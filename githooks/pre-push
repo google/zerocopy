@@ -133,18 +133,21 @@ if [[ "$TOOLCHAINS_READY" -eq 1 ]]; then
     wait_for_check "zerocopy/ci/check_msrv_is_minimal.sh" "$MSRV_PID"
 fi
 
-# Ensure that this script calls all scripts in `ci/*` and `zerocopy/ci/*`. This
-# isn't a foolproof check since it just checks for the string in this script
-# (e.g., it could be in a comment, which would trigger a false positive), but it
-# should catch obvious errors. Also note that this entire hook is a nice-to-have
-# - failures that aren't caught here will still be caught in CI.
+# Ensure that this script calls all `*.sh` checks in `ci` and `zerocopy/ci`.
+# Documentation, registries, and baseline data also live in these directories;
+# they are inputs to checks rather than standalone commands. This isn't a
+# foolproof check since it just checks for the string in this script (e.g., it
+# could be in a comment, which would trigger a false positive), but it should
+# catch obvious errors. Also note that this entire hook is a nice-to-have -
+# failures that aren't caught here will still be caught in CI.
 #
 # This was added because, in #728, we added
 # `zerocopy/ci/check_all_toolchains_tested.sh` without calling it from this
 # script.
 shopt -s extglob
 GLOBIGNORE="./*/@(release_crate_version|check_todo|release_anneal_version).sh" # We don't want to run these
-for f in ./ci/*; do
+for f in ./ci/*.sh; do
+    [[ -f "$f" ]] || continue
     if ! grep "$f" githooks/pre-push >/dev/null; then
         echo "$f not called from githooks/pre-push" >&2
         CHECKS_FAILED=1
@@ -153,7 +156,8 @@ done
 # We don't want to run release_crate_version here, and zerocopy/ci/check_fmt.sh
 # is called by ci/check_fmt.sh above rather than directly.
 GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt).sh"
-for f in ./zerocopy/ci/*; do
+for f in ./zerocopy/ci/*.sh; do
+    [[ -f "$f" ]] || continue
     if ! grep "$f" githooks/pre-push >/dev/null; then
         echo "$f not called from githooks/pre-push" >&2
         CHECKS_FAILED=1
