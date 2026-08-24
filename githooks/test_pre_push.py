@@ -140,6 +140,17 @@ class FakeRepository:
             path.write_text("#!/usr/bin/env bash\nexit 99\n", encoding="utf-8")
             path.chmod(0o755)
 
+        # These files are CI inputs or documentation, not standalone checks.
+        # Their presence proves that the hook inventories only `*.sh` scripts.
+        for data_file in (
+            "ci/README.md",
+            "ci/workflow-jobs.tsv",
+            "zerocopy/ci/README.md",
+        ):
+            path = self.path / data_file
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("not a check script\n", encoding="utf-8")
+
         cargo = self.path / "zerocopy/cargo.sh"
         cargo.write_text(_CARGO_STUB, encoding="utf-8")
         cargo.chmod(0o755)
