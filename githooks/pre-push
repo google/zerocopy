@@ -50,15 +50,18 @@ for lockfile in "${LOCKFILES[@]}"; do
     LOCKFILE_HASHES_BEFORE+=("$(lockfile_hash "$lockfile")")
 done
 
-# check_fmt.sh uses cargo-zerocopy's pinned nightly toolchain. On a fresh
-# runner, it previously reached rustup concurrently with other checks. Rustup
-# shares download and rollback paths across toolchains, so one installation
-# could remove another installation's partial file. Bootstrap nightly before
-# retaining parallelism between the checks themselves.
+# check_fmt.sh uses cargo-zerocopy's pinned nightly toolchain. check_tools.sh
+# uses the exact stable compiler pinned in tools/rust-toolchain.toml. On a fresh
+# runner, these checks previously reached rustup concurrently. Rustup shares
+# download and rollback paths across toolchains, so one installation could
+# remove another installation's partial file. Bootstrap both toolchains in
+# sequence before retaining parallelism between the checks themselves.
 #
 # Keep this list coordinated with the backgrounded scripts below. If another
 # check starts using a different cargo-zerocopy descriptor, initialize it here
-# before that check may run in parallel.
+# before that check may run in parallel. The stable bootstrap also installs the
+# exact compiler pinned by tools/rust-toolchain.toml: zerocopy/cargo.sh builds
+# cargo-zerocopy with that pin, and CI requires it to equal `+stable`.
 CHECKS_FAILED=0
 TOOLCHAINS_READY=1
 bootstrap_toolchain() {
@@ -80,6 +83,7 @@ bootstrap_toolchain() {
     TOOLCHAINS_READY=0
 }
 
+bootstrap_toolchain stable
 bootstrap_toolchain nightly
 
 # Forego redirecting stdout to /dev/null on check_fmt.sh because the output from
@@ -106,6 +110,7 @@ if [[ "$TOOLCHAINS_READY" -eq 1 ]]; then
     ./ci/check_actions.sh                                  & ACTIONS_PID=$!
     ./ci/check_fmt.sh                                      & FMT_PID=$!
     ./ci/check_job_dependencies.sh      >/dev/null         & JOB_DEPS_PID=$!
+    ./ci/check_tools.sh                                    & TOOLS_PID=$!
     ./zerocopy/ci/check_all_toolchains_tested.sh >/dev/null & TOOLCHAINS_PID=$!
     ./zerocopy/ci/check_readme.sh                >/dev/null & README_PID=$!
     ./zerocopy/ci/check_stale_stderr.sh          >/dev/null & STALE_STDERR_PID=$!
@@ -119,6 +124,7 @@ if [[ "$TOOLCHAINS_READY" -eq 1 ]]; then
     wait_for_check "ci/check_actions.sh" "$ACTIONS_PID"
     wait_for_check "ci/check_fmt.sh" "$FMT_PID"
     wait_for_check "ci/check_job_dependencies.sh" "$JOB_DEPS_PID"
+    wait_for_check "ci/check_tools.sh" "$TOOLS_PID"
     wait_for_check \
         "zerocopy/ci/check_all_toolchains_tested.sh" "$TOOLCHAINS_PID"
     wait_for_check "zerocopy/ci/check_readme.sh" "$README_PID"
