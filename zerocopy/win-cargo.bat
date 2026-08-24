@@ -7,13 +7,13 @@
 @rem those terms.
 
 @rem Build `cargo-zerocopy` without any RUSTFLAGS set in the environment.
-@rem Build from the repository root so that Zerocopy's vendoring config does
-@rem not apply to the unvendored tools workspace.
+@rem Building from `tools` selects `tools\rust-toolchain.toml`, remains outside
+@rem Zerocopy's vendored configuration, and keeps the lockfile read-only.
 @set SCRIPT_DIR=%~dp0
 @set TEMP_RUSTFLAGS=%RUSTFLAGS%
 @set RUSTFLAGS=
-@pushd "%SCRIPT_DIR%.."
-@cargo +stable build --manifest-path tools\Cargo.toml -p cargo-zerocopy -q
+@pushd "%SCRIPT_DIR%..\tools"
+@cargo build --locked --manifest-path Cargo.toml -p cargo-zerocopy -q
 @set CARGO_ZEROCOPY_BUILD_STATUS=%ERRORLEVEL%
 @popd
 @set RUSTFLAGS=%TEMP_RUSTFLAGS%

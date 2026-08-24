@@ -14,11 +14,14 @@ ZEROCOPY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 REPO_DIR="$(dirname "$ZEROCOPY_DIR")"
 
 # Build `cargo-zerocopy` without any RUSTFLAGS or CARGO_TARGET_DIR set in the
-# environment. Build it from the repository root so that Zerocopy's vendoring
-# config does not apply to the unvendored tools workspace.
+# environment. Building from `tools` selects the compiler pinned by
+# `tools/rust-toolchain.toml` and stays outside Zerocopy's vendored Cargo
+# configuration. `--locked` also prevents this bootstrap step from silently
+# changing the tools dependency graph.
 (
-  cd "$REPO_DIR"
-  env -u RUSTFLAGS -u CARGO_TARGET_DIR cargo +stable build --manifest-path tools/cargo-zerocopy/Cargo.toml -p cargo-zerocopy -q
+  cd "$REPO_DIR/tools"
+  env -u RUSTFLAGS -u CARGO_TARGET_DIR \
+    cargo build --locked --manifest-path Cargo.toml -p cargo-zerocopy -q
 )
 
 cd "$ZEROCOPY_DIR"
