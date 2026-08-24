@@ -6,7 +6,11 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use std::{env, path::PathBuf, process::Command};
+use std::{
+    env, io,
+    path::PathBuf,
+    process::{Command, Output},
+};
 
 use regex::{Captures, Regex};
 
@@ -30,6 +34,19 @@ const DISCLAIMER_FOOTER: &str = "\
 Disclaimer: Zerocopy is not an officially supported Google product.\
 ";
 
+fn checked_output(command: &mut Command) -> io::Result<Output> {
+    let output = command.output()?;
+    if output.status.success() {
+        Ok(output)
+    } else {
+        Err(io::Error::other(format!(
+            "child command failed with {}:\n{}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr)
+        )))
+    }
+}
+
 fn main() {
     let cwd = env::current_dir().unwrap();
     let readme_dir = env::var_os("ZEROCOPY_README_DIR").map(PathBuf::from).unwrap_or_else(|| {
@@ -42,11 +59,14 @@ fn main() {
 
     // This uses the `cargo readme` tool, which you can install via `cargo install
     // cargo-readme --version 3.2.0`.
-    let output = Command::new("cargo")
-        .current_dir(readme_dir)
-        .args(["readme", "--no-license"])
-        .output()
-        .unwrap();
+    // The tools wrapper exports its checked compiler pin for this nested Cargo
+    // invocation. Propagate failure before printing any generated framing: a
+    // caller may redirect stdout directly onto README.md, so partial output
+    // would turn a tool failure into a destructive-looking regeneration.
+    let output = checked_output(
+        Command::new("cargo").current_dir(readme_dir).args(["readme", "--no-license"]),
+    )
+    .unwrap();
 
     let readme = String::from_utf8(output.stdout).unwrap();
 
@@ -61,4 +81,34 @@ fn main() {
         .replace_all(&readme, |caps: &Captures| caps[1].to_string());
 
     println!("{}\n\n{}\n{}", COPYRIGHT_HEADER, body, DISCLAIMER_FOOTER);
+}
+
+#[cfg(test)]
+mod tests {
+    use std::process::Command;
+
+    use super::checked_output;
+
+    #[cfg(any(unix, windows))]
+    #[test]
+    fn rejects_child_failure_without_returning_partial_stdout() {
+        #[cfg(unix)]
+        let mut command = {
+            let mut command = Command::new("sh");
+            command.args(["-c", "printf partial-output; printf child-diagnostic >&2; exit 7"]);
+            command
+        };
+        #[cfg(windows)]
+        let mut command = {
+            let mut command = Command::new("cmd");
+            command
+                .args(["/C", "<nul set /p=partial-output & >&2 echo child-diagnostic & exit /b 7"]);
+            command
+        };
+
+        let error = checked_output(&mut command).unwrap_err().to_string();
+        assert!(error.contains("child command failed with"));
+        assert!(error.contains("child-diagnostic"));
+        assert!(!error.contains("partial-output"));
+    }
 }

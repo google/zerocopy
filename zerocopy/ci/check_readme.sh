@@ -11,13 +11,25 @@
 set -eo pipefail
 cd "$(dirname "$0")/.."
 
+# Exercise the tools wrapper with an override which rustup cannot resolve. The
+# wrapper must replace it with the checked tools pin for both its outer Cargo
+# process and the generator's nested `cargo readme`; otherwise this check fails
+# before comparing generated output.
+export RUSTUP_TOOLCHAIN=zerocopy-ci-intentionally-invalid
+
 # Install again in case the installation failed during the
 # `generate_cache` step. We treat that step as best-effort and
 # suppress all errors from it.
-(
-  cd ..
-  cargo install -q cargo-readme --version 3.2.0
-)
+../tools/cargo.sh install -q cargo-readme --version 3.2.0 --locked
 
-diff <(cd .. && cargo -q run --manifest-path tools/Cargo.toml -p generate-readme) README.md >&2
+# `tools/cargo.sh` pins the compiler explicitly, defeating both
+# RUSTUP_TOOLCHAIN and rustup directory overrides, and establishes the tools
+# workspace as Cargo's discovery directory. Keep this invocation identical to
+# the regeneration commands in `../src/lib.rs` and `../AGENTS.md`. The
+# generator needs its source directory explicitly because its repository-layout
+# auto-detection intentionally starts from the tools workspace.
+diff <(
+  ZEROCOPY_README_DIR=../zerocopy \
+    ../tools/cargo.sh -q run --locked -p generate-readme
+) README.md >&2
 exit $?
