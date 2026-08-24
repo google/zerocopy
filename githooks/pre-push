@@ -145,6 +145,9 @@ fi
 shopt -s extglob
 GLOBIGNORE="./*/@(release_crate_version|check_todo|release_anneal_version).sh" # We don't want to run these
 for f in ./ci/*; do
+    # `ci` also contains data directories. Only files can be standalone check
+    # scripts that this hook must invoke.
+    [[ -f "$f" ]] || continue
     if ! grep "$f" githooks/pre-push >/dev/null; then
         echo "$f not called from githooks/pre-push" >&2
         CHECKS_FAILED=1
@@ -154,6 +157,7 @@ done
 # is called by ci/check_fmt.sh above rather than directly.
 GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt).sh"
 for f in ./zerocopy/ci/*; do
+    [[ -f "$f" ]] || continue
     if ! grep "$f" githooks/pre-push >/dev/null; then
         echo "$f not called from githooks/pre-push" >&2
         CHECKS_FAILED=1
