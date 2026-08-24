@@ -1,0 +1,43 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+# Source commit: 286dd29655e7ae2f5603a8af89c270cc3bd52f2e
+# Sources: .github/workflows/ci.yml and githooks/pre-push
+# Setup-only checkout and package-install steps are intentionally omitted.
+# Repeated obligation names preserve direct and pre-push-hook executions.
+obligation	events	job	step	working_directory	form	payload
+avr-check	pull_request,full	check_avr_atmega	Check avr-none target	zerocopy	direct	["./cargo.sh","+nightly","check","--target=avr-none","-Zbuild-std=core","--features","simd,simd-nightly,float-nightly,derive"]
+avr-clippy	pull_request,full	check_avr_atmega	Clippy check avr-none target	zerocopy	direct	["./cargo.sh","+nightly","clippy","--target=avr-none","-Zbuild-std=core","--features","simd,simd-nightly,float-nightly,derive"]
+big-endian-aarch64-build	pull_request,full	check_be_aarch64	Check big endian for aarch64_be-unknown-linux-gnu target	zerocopy	direct	["./cargo.sh","+nightly","build","--target=aarch64_be-unknown-linux-gnu","-Zbuild-std","--features","simd"]
+check-actions	pull_request,full	check_actions	Check Actions	.	direct	["./ci/check_actions.sh"]
+check-actions	pull_request,full	run-git-hooks	Run dependency check	.	pre-push-child	["./ci/check_actions.sh"]
+check-format	pull_request,full	check_fmt	Check Rust formatting	.	direct	["./ci/check_fmt.sh"]
+check-format	pull_request,full	run-git-hooks	Run dependency check	.	pre-push-child	["./ci/check_fmt.sh"]
+check-hook-inventory	pull_request,full	run-git-hooks	Run dependency check	.	pre-push-internal	githooks/pre-push inventory loops
+check-job-dependencies	pull_request,full	check-job-dependencies	Run dependency check	.	direct	["./ci/check_job_dependencies.sh"]
+check-job-dependencies	pull_request,full	run-git-hooks	Run dependency check	.	pre-push-child	["./ci/check_job_dependencies.sh"]
+check-msrv-minimal	pull_request,full	check_msrv_is_minimal	Check MSRV is minimal	zerocopy	direct	["./ci/check_msrv_is_minimal.sh"]
+check-msrv-minimal	pull_request,full	run-git-hooks	Run dependency check	.	pre-push-child	["./zerocopy/ci/check_msrv_is_minimal.sh"]
+check-readme	pull_request,full	check_readme	Check README.md	zerocopy	direct	["./ci/check_readme.sh"]
+check-readme	pull_request,full	run-git-hooks	Run dependency check	.	pre-push-child	["./zerocopy/ci/check_readme.sh"]
+check-stale-stderr	pull_request,full	check_stale_stderr	Check stale stderr	zerocopy	direct	["./ci/check_stale_stderr.sh"]
+check-stale-stderr	pull_request,full	run-git-hooks	Run dependency check	.	pre-push-child	["./zerocopy/ci/check_stale_stderr.sh"]
+check-todo-comments	pull_request,full	check-todo	Run todo check	.	direct	["./ci/check_todo.sh"]
+check-toolchains	pull_request,full	check-all-toolchains-tested	Run check	zerocopy	direct	["./ci/check_all_toolchains_tested.sh"]
+check-toolchains	pull_request,full	run-git-hooks	Run dependency check	.	pre-push-child	["./zerocopy/ci/check_all_toolchains_tested.sh"]
+check-versions	pull_request,full	check_versions	Check crate versions match	zerocopy	direct	["./ci/check_versions.sh"]
+check-versions	pull_request,full	run-git-hooks	Run dependency check	.	pre-push-child	["./zerocopy/ci/check_versions.sh"]
+ci-image-build-export	pull_request,full	build_docker_env	Build, cache, and export image	.	action	docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
+ci-image-upload	pull_request,full	build_docker_env	Upload image for matrix jobs	.	action	./.github/actions/upload-file-artifact
+codegen-clippy	pull_request,full	codegen	Clippy	zerocopy	direct	["./cargo.sh","+nightly","clippy","--locked","--package","zerocopy","--target","x86_64-unknown-linux-gnu","--all-features","--test","codegen","--verbose","--","-Dwarnings"]
+codegen-test	pull_request,full	codegen	Run tests	zerocopy	direct	["./cargo.sh","+nightly","test","--locked","--package","zerocopy","--target","x86_64-unknown-linux-gnu","--all-features","--verbose","--test","codegen"]
+coverage-generate	pull_request,full	coverage	Generate code coverage	zerocopy	direct	["./cargo.sh","+nightly","llvm-cov","--package","zerocopy","--target","x86_64-unknown-linux-gnu","--all-features","--doctests","--lcov","--output-path","lcov.info","--verbose"]
+coverage-upload	pull_request,full	coverage	Upload coverage to Codecov	zerocopy	action	codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f
+kani	pull_request,full	kani	Run tests under Kani	.	action	model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f
+required-check-aggregate	pull_request,full	all-jobs-succeed	Require every dependency to succeed	.	shell-contract	jq validates needs; miri must be skipped only on pull_request
+required-check-cancellation	pull_request,full	all-jobs-succeed	Reject workflow cancellation	.	shell-contract	exit 1 when cancelled() is true
+zizmor	pull_request,full	zizmor	zizmor	.	action	zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054
