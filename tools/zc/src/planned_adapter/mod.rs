@@ -14,9 +14,12 @@
 //! handwritten boundary. The producer must publish exact outputs through one
 //! unconditional singleton job. Each planned matrix job must consume the
 //! matching output and pass every selector through a real Docker invocation to
-//! the typed executor. A missing output, changed matrix expression, no-op
-//! interpreter, conditional step, or dropped selector could otherwise silently
-//! reduce coverage while the Rust plan and job-ID inventory remained valid.
+//! the typed executor. The required-check aggregate must then depend on the
+//! planner, both consumers, and the remaining dependency-inventory audit while
+//! enforcing the planned Miri conclusion. A missing output, changed matrix
+//! expression, no-op interpreter, conditional step, or dropped selector could
+//! otherwise silently reduce coverage while the Rust plan and job-ID inventory
+//! remained valid.
 //!
 //! This module is deliberately not a YAML or GitHub Actions interpreter. It
 //! recognizes the canonical source forms which carry the planned-job workflow
@@ -34,13 +37,14 @@ use thiserror::Error;
 
 use crate::{workflow::ReviewedWorkflowJobs, workflow_protocol::WORKFLOW_PATH};
 
+mod aggregate;
 mod matrix;
 mod planner;
 mod source;
 #[cfg(test)]
 mod test_support;
 
-/// Audits the checked workflow's planned-job publication and execution bridge.
+/// Audits the checked planned-job workflow bridge.
 ///
 /// The earlier workflow-inventory pass has already established that this fixed
 /// path is a regular workflow file beneath the canonical repository root. This
@@ -75,6 +79,7 @@ fn audit_source(
     let lines = workflow.lines().collect::<Vec<_>>();
     planner::audit(&lines, &mut errors);
     matrix::audit(&lines, reviewed_planned_jobs, &mut errors);
+    aggregate::audit(&lines, &mut errors);
 
     if errors.is_empty() {
         Ok(())

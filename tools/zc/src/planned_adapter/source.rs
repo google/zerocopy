@@ -351,6 +351,33 @@ pub(super) fn exact_step_lines<'a>(lines: &'a [&'a str], steps: &StepsBlock) -> 
         .collect()
 }
 
+pub(super) fn audit_exact_step_sequence(
+    lines: &[&str],
+    steps: &StepsBlock,
+    job: &str,
+    expected_names: &[&str],
+    errors: &mut ViolationSink,
+) {
+    let actual = lines
+        .iter()
+        .enumerate()
+        .filter(|(index, line)| {
+            steps.range.contains(index)
+                && !line.trim().is_empty()
+                && !line.trim_start().starts_with('#')
+                && indentation(line) == steps.marker_indent
+        })
+        .map(|(_, line)| line[steps.marker_indent..].to_owned())
+        .collect::<Vec<_>>();
+    let expected = expected_names.iter().map(|name| format!("- name: {name}")).collect::<Vec<_>>();
+    if actual != expected {
+        errors.push(
+            job_field_location(job, "steps"),
+            format!("steps must be exactly {expected:?} in order, found {actual:?}"),
+        );
+    }
+}
+
 pub(super) fn audit_step(
     lines: &[&str],
     steps: &StepsBlock,
