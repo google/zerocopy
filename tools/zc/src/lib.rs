@@ -8,6 +8,7 @@
 
 //! Shared, typed access to repository configuration and CI behavior.
 
+pub mod baseline;
 pub mod metadata;
 pub mod policy;
 pub mod workflow;
