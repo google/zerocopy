@@ -6,19 +6,10 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-[workspace]
-
-[package]
-name = "fields-unrelated-to-ci-are-ignored"
-rust-version = "1.56.0"
-
 [package.metadata.build-rs]
-no-zerocopy-example-1-60-0 = "1.60.0"
-no-zerocopy-example-1-81-0 = "1.81.0"
+no-zerocopy-alpha-1-60-0 = "1.60"
+wrong-prefix-1-61-0 = "1.61.0"
+no-zerocopy-extra-1-62-0 = "1.62.0" trailing-garbage
 
 [package.metadata.ci]
 pinned-stable = "1.93.1"
-pinned-nightly = "nightly-2026-01-25"
-
-[package.metadata.unrelated]
-field = "ignored"
