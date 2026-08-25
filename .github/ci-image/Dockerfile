@@ -6,6 +6,14 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
+# `build_docker_env` builds this file as the runtime for typed matrix cells.
+# This directory is the complete, isolated Docker context; the producer audit
+# rejects any entry other than this file and `.dockerignore`. Keep the complete
+# source coordinated with
+# `tools/zc/testdata/ci-image.Dockerfile` and
+# `tools/zc/src/planned_adapter/image.rs`; the producer audit rejects a
+# one-sided change before matrix fan-out.
+
 FROM ubuntu:24.04
 
 # These are the same bounded, download-only retry counts configured in
@@ -42,19 +50,24 @@ RUN cargo install cargo-nextest --locked                    && \
     cargo install --locked action-validator --version 0.8.0 && \
     rm -rf /root/.cargo/registry /root/.cargo/git
 
-WORKDIR /setup
-
-COPY zerocopy/Cargo.toml ./zerocopy/Cargo.toml
-COPY zerocopy/cargo.sh   ./zerocopy/cargo.sh
-COPY tools              ./tools
-
-ENV CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN=1
-WORKDIR /setup/zerocopy
-RUN ./cargo.sh +stable --version  && \
-    ./cargo.sh +nightly --version && \
-    ./cargo.sh +msrv --version    && \
+# Install the three high-traffic toolchains without executing code from the
+# checkout. The build previously copied and ran cargo-zerocopy, which made the
+# image depend on the entire mutable `tools` tree and allowed a change there to
+# replace Cargo before matrix execution. `planned_adapter/image.rs` checks
+# these defaults against the validated toolchain inventory, so changing a pin
+# in `zerocopy/Cargo.toml` fails CI until this cache seed is updated too.
+ARG ZC_MSRV_TOOLCHAIN=1.56.0
+ARG ZC_STABLE_TOOLCHAIN=1.93.1
+ARG ZC_NIGHTLY_TOOLCHAIN=nightly-2026-01-25
+RUN rustup toolchain install "$ZC_MSRV_TOOLCHAIN" \
+      -c rust-src -c rustfmt -c clippy && \
+    rustup toolchain install "$ZC_STABLE_TOOLCHAIN" \
+      -c rust-src -c rustfmt -c clippy && \
+    rustup toolchain install "$ZC_NIGHTLY_TOOLCHAIN" \
+      -c rust-src -c rustfmt -c clippy -c miri && \
     # Remove large intermediate artifacts to ensure that this step doesn't bloat
     # the Docker image cache.
     rm -rf /root/.cargo/registry /root/.cargo/git /root/.rustup/toolchains/*/share/doc
 
+ENV CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN=1
 WORKDIR /workspace
