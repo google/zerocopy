@@ -117,7 +117,7 @@ fn audit_job(
     let environment =
         BTreeMap::from([("EVENT_NAME".to_owned(), "${{ github.event_name }}".to_owned())]);
     let run = planner_run();
-    if let Some(steps) = audited_steps_block(fields, job, PLAN_JOB, errors) {
+    if let Some(steps) = audited_steps_block(fields, job, PLAN_JOB, 6, errors) {
         let actual_steps = exact_step_lines(lines, &steps);
         if actual_steps.len() != 3 {
             errors.push(
@@ -195,8 +195,14 @@ fn plan_output_expression(output: &str) -> String {
 mod tests {
     use std::path::Path;
 
-    use super::super::{audit_planned_adapter, audit_source, PlannedAdapterViolations};
-    use crate::workflow_protocol::{GITHUB_PLAN_COMMAND, PLAN_JOB, PLAN_STEP_NAME, TRUSTED_SHELL};
+    use super::{
+        super::{audit_planned_adapter, test_support::audit_feature, PlannedAdapterViolations},
+        audit,
+    };
+    use crate::{
+        workflow::{ReviewedWorkflowJobs, WORKFLOW_REGISTRY_PATH},
+        workflow_protocol::{GITHUB_PLAN_COMMAND, PLAN_JOB, PLAN_STEP_NAME, TRUSTED_SHELL},
+    };
 
     const CANONICAL_SOURCE: &str = r#"jobs:
   plan_ci:
@@ -239,6 +245,10 @@ mod tests {
     runs-on: ubuntu-latest
 "#;
 
+    fn audit_source(source: &str) -> Result<(), PlannedAdapterViolations> {
+        audit_feature(source, audit)
+    }
+
     fn rejected(label: &str, source: &str, expected: &str) {
         let error = match audit_source(source) {
             Ok(()) => panic!("{label}: mutation was accepted"),
@@ -280,7 +290,8 @@ mod tests {
         audit_source(CANONICAL_SOURCE).unwrap();
 
         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
-        audit_planned_adapter(&root).unwrap();
+        let reviewed = ReviewedWorkflowJobs::read(root.join(WORKFLOW_REGISTRY_PATH)).unwrap();
+        audit_planned_adapter(&root, &reviewed).unwrap();
     }
 
     #[test]

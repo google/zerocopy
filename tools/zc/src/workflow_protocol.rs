@@ -15,9 +15,13 @@
 pub(crate) const WORKFLOW_PATH: &str = ".github/workflows/ci.yml";
 
 pub(crate) const PLAN_JOB: &str = "plan_ci";
+pub(crate) const BUILD_JOB: &str = "build_test";
+pub(crate) const MIRI_JOB: &str = "miri";
 
 pub(crate) const PLAN_STEP_NAME: &str = "Validate inputs and project the plan";
 pub(crate) const PLAN_STEP_ID: &str = "plan";
+pub(crate) const BUILD_STEP_NAME: &str = "Execute checked build cell";
+pub(crate) const MIRI_STEP_NAME: &str = "Execute checked Miri cell";
 
 pub(crate) const GITHUB_PLAN_COMMAND: &str = "github-plan";
 pub(crate) const EXECUTE_BUILD_CELL_COMMAND: &str = "execute-build-cell";
@@ -40,3 +44,6 @@ pub(crate) const HOST_RUNNER: &str = "ubuntu-latest";
 pub(crate) const REPOSITORY_WORKING_DIRECTORY: &str = "zerocopy";
 pub(crate) const TRUSTED_SHELL: &str = "/usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}";
 pub(crate) const PLANNER_PATH: &str = "/home/runner/.cargo/bin:/usr/local/bin:/usr/bin:/bin";
+pub(crate) const HOST_DOCKER_RUN: &str = "/usr/bin/docker run --rm \\";
+pub(crate) const DOCKER_ENTRYPOINT_ARGUMENT: &str = "  --entrypoint /bin/bash \\";
+pub(crate) const DOCKER_OPTION_TERMINATOR: &str = "  -- \\";

@@ -253,6 +253,24 @@ pub(super) fn audit_read_permissions(
     );
 }
 
+pub(super) fn nested_fields<'a>(
+    lines: &'a [&'a str],
+    parent: &Field<'_>,
+    block_end: usize,
+    job: &str,
+    errors: &mut ViolationSink,
+) -> Option<Vec<Field<'a>>> {
+    if !parent.value.is_empty() {
+        errors.push(
+            job_field_location(job, parent.key),
+            format!("{} must use the canonical nested mapping form", parent.key),
+        );
+        return None;
+    }
+    let end = nested_block_end(lines, parent, block_end);
+    Some(job_fields_at_indent(lines, parent.line..end, job, parent.indent + 2, errors))
+}
+
 pub(super) fn nested_mapping(
     lines: &[&str],
     parent: &Field<'_>,
@@ -300,6 +318,7 @@ pub(super) fn audited_steps_block(
     fields: &[Field<'_>],
     job: Range<usize>,
     job_name: &str,
+    marker_indent: usize,
     errors: &mut ViolationSink,
 ) -> Option<StepsBlock> {
     let steps = unique_field(fields, "steps", job_name, errors)?;
@@ -315,7 +334,7 @@ pub(super) fn audited_steps_block(
         .filter_map(|field| (field.line > steps.line).then_some(field.line))
         .min()
         .unwrap_or(job.end);
-    Some(StepsBlock { range: steps.line + 1..end, marker_indent: steps.indent + 2 })
+    Some(StepsBlock { range: steps.line + 1..end, marker_indent })
 }
 
 /// Returns the significant source lines for each top-level item in `steps`.
@@ -539,6 +558,16 @@ pub(super) fn audit_singleton_job_contract(
     job: &str,
     errors: &mut ViolationSink,
 ) {
+    audit_host_job_contract(fields, job, errors);
+    if fields.iter().any(|field| field.key == "strategy") {
+        errors.push(
+            job_field_location(job, "strategy"),
+            "audited singleton jobs must run exactly once, without a strategy",
+        );
+    }
+}
+
+pub(super) fn audit_host_job_contract(fields: &[Field<'_>], job: &str, errors: &mut ViolationSink) {
     if let Some(runner) = unique_field(fields, "runs-on", job, errors) {
         if runner.value != HOST_RUNNER {
             errors.push(
@@ -562,12 +591,30 @@ pub(super) fn audit_singleton_job_contract(
             "audited jobs must not turn failures into successful conclusions",
         );
     }
-    if fields.iter().any(|field| field.key == "strategy") {
-        errors.push(
-            job_field_location(job, "strategy"),
-            "audited singleton jobs must run exactly once, without a strategy",
-        );
+}
+
+pub(super) fn parse_needs(value: &str) -> Result<BTreeSet<&str>, String> {
+    let dependencies = if is_job_id(value) {
+        vec![value]
+    } else {
+        let Some(value) = value.strip_prefix('[').and_then(|value| value.strip_suffix(']')) else {
+            return Err("needs must be one job ID or a canonical inline list".into());
+        };
+        if value.is_empty() {
+            return Err("needs list must not be empty".into());
+        }
+        value.split(", ").collect()
+    };
+    let mut unique = BTreeSet::new();
+    for dependency in dependencies {
+        if !is_job_id(dependency) {
+            return Err(format!("needs contains unsupported job ID `{dependency}`"));
+        }
+        if !unique.insert(dependency) {
+            return Err(format!("needs repeats job `{dependency}`"));
+        }
     }
+    Ok(unique)
 }
 
 pub(super) fn compare_map(
@@ -664,6 +711,12 @@ fn parse_mapping(declaration: &str) -> Option<(&str, &str)> {
     } else {
         remainder.strip_prefix(' ').map(|value| (key, value))
     }
+}
+
+fn is_job_id(value: &str) -> bool {
+    let mut bytes = value.bytes();
+    matches!(bytes.next(), Some(byte) if byte.is_ascii_alphabetic() || byte == b'_')
+        && bytes.all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-'))
 }
 
 fn step_end(lines: &[&str], start: usize, block_end: usize, marker_indent: usize) -> usize {
