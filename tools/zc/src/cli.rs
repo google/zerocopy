@@ -30,6 +30,10 @@ use thiserror::Error;
 
 use crate::{
     ci::{CiInputs, LoadCiError},
+    execution::{
+        execute_build_cell, execute_miri_cell, BuildCellSelector, CellExecutionError,
+        CellExecutionReport, MiriCellSelector,
+    },
     github::{GitHubProjection, ProjectionError, ProjectionWriteError},
     plan::{
         BuildPlanCell, ExecutionMode, FeatureSelection, MiriPlanCell, Plan, PlanError,
@@ -50,6 +54,7 @@ pub fn run(
     if let Command::GitHubPlan { github_output, artifact, .. } = &command {
         validate_publication_paths(github_output, artifact)?;
     }
+    let repository_root = repository_root.as_ref();
     let inputs =
         CiInputs::load(repository_root).map_err(|error| CliError::LoadInputs(Box::new(error)))?;
     let result = match command {
@@ -58,6 +63,14 @@ pub fn run(
         Command::Explain { event } => explain(&inputs, &event, &mut output),
         Command::GitHubPlan { event, github_output, artifact } => {
             write_github_plan(&inputs, &event, &github_output, &artifact, &mut output)
+        }
+        Command::ExecuteBuildCell { selector } => print_execution_report(
+            "ordinary build",
+            &execute_build_cell(&inputs, &selector)?,
+            &mut output,
+        ),
+        Command::ExecuteMiriCell { selector } => {
+            print_execution_report("Miri", &execute_miri_cell(&inputs, &selector)?, &mut output)
         }
     };
     match result {
@@ -77,6 +90,8 @@ enum Command {
     Plan { event: String },
     Explain { event: String },
     GitHubPlan { event: String, github_output: PathBuf, artifact: PathBuf },
+    ExecuteBuildCell { selector: BuildCellSelector },
+    ExecuteMiriCell { selector: MiriCellSelector },
 }
 
 impl Command {
@@ -100,8 +115,93 @@ impl Command {
                 }
             }
             "github-plan" => parse_github_plan(args),
+            "execute-build-cell" => parse_execution_cell(args, false),
+            "execute-miri-cell" => parse_execution_cell(args, true),
             _ => Err(CliError::UnknownCommand { command }),
         }
+    }
+}
+
+fn parse_execution_cell(
+    args: impl IntoIterator<Item = String>,
+    miri: bool,
+) -> Result<Command, CliError> {
+    let command = if miri { "execute-miri-cell" } else { "execute-build-cell" };
+    let mut args = args.into_iter();
+    let mut event = None;
+    let mut package = None;
+    let mut toolchain = None;
+    let mut feature_profile = None;
+    let mut target = None;
+    let mut miri_model = None;
+
+    while let Some(argument) = args.next() {
+        let (name, inline_value) = argument
+            .split_once('=')
+            .map_or((argument.as_str(), None), |(name, value)| (name, Some(value)));
+        let destination = match name {
+            "--event" => &mut event,
+            "--package" => &mut package,
+            "--toolchain" => &mut toolchain,
+            "--feature-profile" => &mut feature_profile,
+            "--target" => &mut target,
+            "--miri-model" if miri => &mut miri_model,
+            _ => {
+                return Err(CliError::UnknownArgument { command: command.to_owned(), argument });
+            }
+        };
+        if destination.is_some() {
+            return Err(CliError::DuplicateOption {
+                command: command.to_owned(),
+                option: name.to_owned(),
+            });
+        }
+        let value = match inline_value {
+            Some(value) => value.to_owned(),
+            None => {
+                let value = args.next().ok_or_else(|| CliError::MissingOptionValue {
+                    command: command.to_owned(),
+                    option: name.to_owned(),
+                })?;
+                if value.starts_with('-') {
+                    return Err(CliError::MissingOptionValueBefore {
+                        command: command.to_owned(),
+                        option: name.to_owned(),
+                        argument: value,
+                    });
+                }
+                value
+            }
+        };
+        if value.is_empty() {
+            return Err(CliError::MissingOptionValue {
+                command: command.to_owned(),
+                option: name.to_owned(),
+            });
+        }
+        *destination = Some(value);
+    }
+
+    let event = required_option(command, "--event", event)?;
+    let package = required_option(command, "--package", package)?;
+    let toolchain = required_option(command, "--toolchain", toolchain)?;
+    let feature_profile = required_option(command, "--feature-profile", feature_profile)?;
+    let target = required_option(command, "--target", target)?;
+    if miri {
+        Ok(Command::ExecuteMiriCell {
+            selector: MiriCellSelector::new(
+                event,
+                package,
+                toolchain,
+                feature_profile,
+                target,
+                required_option(command, "--miri-model", miri_model)?,
+            ),
+        })
+    } else {
+        Ok(Command::ExecuteBuildCell {
+            selector: BuildCellSelector::new(event, package, toolchain, feature_profile, target),
+        })
     }
 }
 
@@ -387,15 +487,36 @@ fn write_github_plan(
     Ok(())
 }
 
+fn print_execution_report(
+    kind: &str,
+    report: &CellExecutionReport,
+    output: &mut impl Write,
+) -> Result<(), CliError> {
+    writeln!(
+        output,
+        "executed {kind} cell: {} local process step(s)",
+        report.executed_steps().len()
+    )?;
+    for step in report.executed_steps() {
+        writeln!(output, "executed: {step}")?;
+    }
+    for step in report.workflow_owned_steps() {
+        writeln!(output, "skipped workflow-owned step: {step}")?;
+    }
+    Ok(())
+}
+
 /// A command-line syntax, input, planning, or output failure.
 #[derive(Debug, Error)]
 pub enum CliError {
     /// No command followed the literal `ci` argument.
-    #[error("missing CI command; expected `audit`, `plan`, `explain`, or `github-plan`")]
+    #[error(
+        "missing CI command; expected `audit`, `plan`, `explain`, `github-plan`, `execute-build-cell`, or `execute-miri-cell`"
+    )]
     MissingCommand,
     /// The command name is not part of the local CI interface.
     #[error(
-        "unknown CI command {command:?}; expected `audit`, `plan`, `explain`, or `github-plan`"
+        "unknown CI command {command:?}; expected `audit`, `plan`, `explain`, `github-plan`, `execute-build-cell`, or `execute-miri-cell`"
     )]
     UnknownCommand {
         /// The rejected command.
@@ -435,8 +556,8 @@ pub enum CliError {
         /// The option which cannot serve as an event name.
         argument: String,
     },
-    /// A plan or explanation command received an unsupported argument.
-    #[error("unknown argument {argument:?} for `ci {command}`; expected `--event EVENT`")]
+    /// A command received an unsupported argument.
+    #[error("unknown argument {argument:?} for `ci {command}`")]
     UnknownArgument {
         /// The command being parsed.
         command: String,
@@ -508,6 +629,9 @@ pub enum CliError {
     /// A checked plan could not be constructed.
     #[error(transparent)]
     Plan(#[from] PlanError),
+    /// A selected plan cell could not be executed.
+    #[error(transparent)]
+    Execution(#[from] CellExecutionError),
     /// A checked plan could not be serialized for GitHub Actions.
     #[error(transparent)]
     Projection(#[from] ProjectionError),
@@ -530,6 +654,7 @@ mod tests {
     };
 
     use super::{run, CliError, Command};
+    use crate::execution::{BuildCellSelector, MiriCellSelector};
 
     fn strings(args: &[&str]) -> Vec<String> {
         args.iter().map(|arg| (*arg).to_owned()).collect()
@@ -576,6 +701,49 @@ mod tests {
                 event: "push".to_owned(),
                 github_output: "output.txt".into(),
                 artifact: "plan.json".into(),
+            }
+        );
+        assert_eq!(
+            Command::parse(strings(&[
+                "execute-build-cell",
+                "--target=x86_64-unknown-linux-gnu",
+                "--package",
+                "zerocopy",
+                "--event=pull_request",
+                "--feature-profile=default",
+                "--toolchain=stable",
+            ]))
+            .unwrap(),
+            Command::ExecuteBuildCell {
+                selector: BuildCellSelector::new(
+                    "pull_request",
+                    "zerocopy",
+                    "stable",
+                    "default",
+                    "x86_64-unknown-linux-gnu",
+                ),
+            }
+        );
+        assert_eq!(
+            Command::parse(strings(&[
+                "execute-miri-cell",
+                "--event=push",
+                "--package=zerocopy",
+                "--toolchain=nightly",
+                "--feature-profile=all",
+                "--target=aarch64-unknown-linux-gnu",
+                "--miri-model=tree",
+            ]))
+            .unwrap(),
+            Command::ExecuteMiriCell {
+                selector: MiriCellSelector::new(
+                    "push",
+                    "zerocopy",
+                    "nightly",
+                    "all",
+                    "aarch64-unknown-linux-gnu",
+                    "tree",
+                ),
             }
         );
     }
@@ -661,6 +829,44 @@ mod tests {
             ])),
             Err(CliError::MissingOptionValue { command, option })
                 if command == "github-plan" && option == "--event"
+        ));
+        assert!(matches!(
+            Command::parse(strings(&[
+                "execute-build-cell",
+                "--event=pull_request",
+                "--package=zerocopy",
+                "--toolchain=stable",
+                "--feature-profile=default",
+                "--target=x86_64-unknown-linux-gnu",
+                "--miri-model=tree",
+            ])),
+            Err(CliError::UnknownArgument { command, argument })
+                if command == "execute-build-cell" && argument == "--miri-model=tree"
+        ));
+        assert!(matches!(
+            Command::parse(strings(&[
+                "execute-miri-cell",
+                "--event=push",
+                "--package=zerocopy",
+                "--toolchain=nightly",
+                "--feature-profile=default",
+                "--target=x86_64-unknown-linux-gnu",
+            ])),
+            Err(CliError::MissingOption { command, option })
+                if command == "execute-miri-cell" && option == "--miri-model"
+        ));
+        assert!(matches!(
+            Command::parse(strings(&[
+                "execute-build-cell",
+                "--event=pull_request",
+                "--package=zerocopy",
+                "--toolchain=stable",
+                "--feature-profile=default",
+                "--target=x86_64-unknown-linux-gnu",
+                "--target=i686-unknown-linux-gnu",
+            ])),
+            Err(CliError::DuplicateOption { command, option })
+                if command == "execute-build-cell" && option == "--target"
         ));
     }
 
