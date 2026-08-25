@@ -11,10 +11,11 @@
 //! Loading CI inputs is intentionally all-or-nothing. A caller cannot obtain a
 //! [`CiInputs`] until the policy is valid, its references agree with live Cargo
 //! metadata and repository files, every workflow job has an exact reviewed
-//! role, the handwritten semver action exactly implements typed policy, and
-//! every independently recorded legacy baseline parses canonically. Planners
-//! therefore consume checked data rather than remembering which validation
-//! passes must precede which lookups.
+//! role, the handwritten semver action exactly implements typed policy, every
+//! independently recorded legacy baseline parses canonically, and the typed
+//! execution model exactly reproduces that legacy evidence. Planners therefore
+//! consume checked data rather than remembering which validation passes must
+//! precede which lookups.
 
 use std::{
     fs, io,
@@ -25,6 +26,7 @@ use thiserror::Error;
 
 use crate::{
     baseline::{BaselineError, LegacyBaselinePaths, LegacyBaselines},
+    execution::{audit_execution, ExecutionAuditError},
     inventory::{AuditError, RepositoryInventory},
     policy::{Policy, ReadPolicyError},
     semver_adapter::{audit_semver_adapter, SemverAdapterAuditError},
@@ -92,7 +94,12 @@ impl CiInputs {
             )?,
         };
         let legacy = LegacyBaselines::read(&paths).map_err(LoadCiError::Baseline)?;
-        Ok(Self { policy, repository, workflow_jobs, legacy })
+        let inputs = Self { policy, repository, workflow_jobs, legacy };
+        // Keep the pure parity proof inside this checked boundary. Returning a
+        // `CiInputs` without this call would make correctness depend on every
+        // planner and CLI entry point remembering a second validation pass.
+        audit_execution(&inputs).map_err(LoadCiError::Execution)?;
+        Ok(inputs)
     }
 
     /// Returns the checked coverage policy.
@@ -181,6 +188,9 @@ pub enum LoadCiError {
     /// The frozen legacy evidence was unreadable or noncanonical.
     #[error(transparent)]
     Baseline(BaselineError),
+    /// Typed execution behavior differed from frozen legacy evidence.
+    #[error(transparent)]
+    Execution(ExecutionAuditError),
 }
 
 #[cfg(test)]
