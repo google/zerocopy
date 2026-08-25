@@ -9,6 +9,7 @@
 //! Shared, typed access to repository configuration and CI behavior.
 
 pub mod baseline;
+pub mod ci;
 mod identifier;
 pub mod inventory;
 pub mod metadata;
