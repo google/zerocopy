@@ -139,7 +139,8 @@ jobs:
       # By default, this is set to `true`, which means that a single CI job
       # failure will cause all outstanding jobs to be canceled. This slows down
       # development because it means that errors need to be encountered and
-      # fixed one at a time.
+      # fixed one at a time. The matrix audit also rejects `max-parallel` so
+      # this fan-out cannot be silently serialized.
       fail-fast: false
       # `plan_ci` emits a complete `include` object, including an empty one if
       # no cells are selected. Do not add handwritten axes or exclusions here:
@@ -238,8 +239,10 @@ jobs:
     # returning success without starting a container. The entrypoint override
     # and Bash startup options prevent image startup behavior or exported
     # functions from intercepting the typed executor argv. The option
-    # terminator forces the inherited image value to be parsed as an image.
-    # Keep this command and its options coordinated with `tools/zc/src/cli.rs`.
+    # terminator forces the inherited image value to be parsed as an image. The
+    # planned-job workflow audit in `planned_adapter/matrix.rs` checks the step
+    # fields exactly and this run block line-for-line. Keep protocol spellings
+    # coordinated through `tools/zc/src/workflow_protocol.rs`.
     - name: Execute checked build cell
       shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
       working-directory: zerocopy
@@ -382,13 +385,15 @@ jobs:
     permissions:
       contents: read
     strategy:
+      # The matrix audit requires exactly this concurrency setting and the
+      # matching plan output; extra strategy fields are rejected.
       fail-fast: false
       # A planner-disabled job skips before matrix expansion. When enabled, it
       # consumes exactly the Miri cells selected by the same checked plan used
       # by the executor below.
       matrix: ${{ fromJSON(needs.plan_ci.outputs.miri_matrix) }}
 
-    name: Miri (${{ matrix.crate }} / ${{ matrix.feature_profile }} / ${{ matrix.miri_model }} / ${{ matrix.target }})
+    name: Miri (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.feature_profile }} / ${{ matrix.miri_model }} / ${{ matrix.target }})
 
     steps:
     - *matrix_checkout
@@ -401,8 +406,9 @@ jobs:
     # This explicit Docker bridge does not rely on the generated job shell
     # actually executing its input. Its absolute Docker path, entrypoint
     # override, Bash startup options, and option terminator provide the same
-    # fail-closed boundary as the ordinary build bridge. Keep the separate
-    # Miri-model selector coordinated with `tools/zc/src/cli.rs`.
+    # fail-closed boundary as the ordinary build bridge. The matrix audit
+    # checks the fields exactly and this run block line-for-line. Keep the
+    # Miri-model and command spellings in `workflow_protocol.rs` coordinated.
     - name: Execute checked Miri cell
       shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
       working-directory: zerocopy
