@@ -119,6 +119,9 @@
 @endlocal & @set "CARGO_ZEROCOPY_BUILD_STATUS=%CARGO_ZEROCOPY_BUILD_STATUS%"
 @if not "%CARGO_ZEROCOPY_BUILD_STATUS%"=="0" exit /b %CARGO_ZEROCOPY_BUILD_STATUS%
 @rem Thin wrapper around the `cargo-zerocopy` binary in `tools/cargo-zerocopy`
+@rem Keep this working directory coordinated with cargo-zerocopy's `ci` route,
+@rem tools\zc\src\cli.rs, and zerocopy\cargo.sh. The typed CI commands pass `..`
+@rem as the repository root, so both wrappers must run from this directory.
 @pushd "%~dp0"
 @if errorlevel 1 exit /b 1
 @..\tools\target\debug\cargo-zerocopy %*

@@ -10,6 +10,7 @@
 
 pub mod baseline;
 pub mod ci;
+pub mod cli;
 mod identifier;
 pub mod inventory;
 pub mod metadata;
