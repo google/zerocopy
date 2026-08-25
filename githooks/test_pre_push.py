@@ -34,7 +34,6 @@ _CHECKS = (
     # Keep this fixture coordinated with the explicit fan-out in pre-push.
     # Omitting a real check here would leave its child handling untested.
     "ci/check_tools.sh",
-    "zerocopy/ci/check_all_toolchains_tested.sh",
     "zerocopy/ci/check_readme.sh",
     "zerocopy/ci/check_stale_stderr.sh",
     "zerocopy/ci/check_versions.sh",
