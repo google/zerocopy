@@ -1,0 +1,59 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+#
+# This is runtime input to `CiInputs::load`, not test data. Keep this exact
+# registry coordinated with every `.yml` or `.yaml` file and
+# top-level job under `.github/workflows`. A new job must receive a reviewed
+# role instead of silently falling outside typed planning and static workflow
+# checks. The permitted role spellings and their meanings are defined by
+# `WorkflowJobRole` in `tools/zc/src/workflow.rs`; update both files together.
+workflow	job	role
+.github/workflows/anneal-release.yml	check-version	release
+.github/workflows/anneal-release.yml	create-release	release
+.github/workflows/anneal-release.yml	prepare-release-source	release
+.github/workflows/anneal-release.yml	publish-artifacts	release
+.github/workflows/anneal-release.yml	release	release
+.github/workflows/anneal-release.yml	release-version-action	release
+.github/workflows/anneal.yml	all-jobs-succeed	aggregate
+.github/workflows/anneal.yml	anneal_tests	anneal
+.github/workflows/anneal.yml	static_checks	anneal
+.github/workflows/anneal.yml	v2	anneal
+.github/workflows/anneal.yml	v2_nix_cache	anneal
+.github/workflows/anneal.yml	verify_examples	anneal
+.github/workflows/backport-pr.yml	release	maintenance
+.github/workflows/ci.yml	all-jobs-succeed	aggregate
+.github/workflows/ci.yml	build_docker_env	static-ci
+.github/workflows/ci.yml	build_test	planned
+.github/workflows/ci.yml	check-all-toolchains-tested	static-ci
+.github/workflows/ci.yml	check-job-dependencies	static-ci
+.github/workflows/ci.yml	check-todo	static-ci
+.github/workflows/ci.yml	check_actions	static-ci
+.github/workflows/ci.yml	check_avr_atmega	static-ci
+.github/workflows/ci.yml	check_be_aarch64	static-ci
+.github/workflows/ci.yml	check_fmt	static-ci
+.github/workflows/ci.yml	check_msrv_is_minimal	static-ci
+.github/workflows/ci.yml	check_readme	static-ci
+.github/workflows/ci.yml	check_stale_stderr	static-ci
+.github/workflows/ci.yml	check_tools	static-ci
+.github/workflows/ci.yml	check_versions	static-ci
+.github/workflows/ci.yml	codegen	static-ci
+.github/workflows/ci.yml	coverage	static-ci
+.github/workflows/ci.yml	kani	static-ci
+.github/workflows/ci.yml	miri	planned
+.github/workflows/ci.yml	run-git-hooks	static-ci
+.github/workflows/ci.yml	zizmor	security
+.github/workflows/dependency-review.yml	dependency-review	security
+.github/workflows/docs.yml	build	documentation
+.github/workflows/docs.yml	coordinate	documentation
+.github/workflows/docs.yml	deploy	documentation
+.github/workflows/release-crate-version.yml	release	release
+.github/workflows/release.yml	check-version	release
+.github/workflows/release.yml	release	release
+.github/workflows/roll-pinned-toolchain-versions.yml	roll_kani	maintenance
+.github/workflows/roll-pinned-toolchain-versions.yml	roll_rust	maintenance
+.github/workflows/scorecard.yml	analysis	security
