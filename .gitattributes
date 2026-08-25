@@ -12,3 +12,13 @@ githooks/pre-push text eol=lf
 *.yaml text eol=lf
 *.toml text eol=lf
 *.tsv  text eol=lf
+
+# The Docker producer audit compares these extensionless sources byte-for-byte
+# after the shared CRLF normalization boundary. Keep the live inputs and
+# independent snapshots coordinated with
+# `tools/zc/src/planned_adapter/image.rs` and the explicit attribute test in
+# `tools/zc/src/ci.rs`.
+.github/ci-image/.dockerignore             text eol=lf
+.github/ci-image/Dockerfile                text eol=lf
+tools/zc/testdata/ci-image.Dockerfile       text eol=lf
+tools/zc/testdata/ci-image.dockerignore     text eol=lf

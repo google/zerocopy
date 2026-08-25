@@ -8,7 +8,7 @@
 
 //! Parser-backed preconditions for the canonical workflow source scanner.
 
-use std::{marker::PhantomData, mem::MaybeUninit};
+use std::{ffi::CStr, marker::PhantomData, mem::MaybeUninit};
 
 use libyaml_rs::{
     yaml_event_delete, yaml_event_t, yaml_parser_delete, yaml_parser_initialize, yaml_parser_parse,
@@ -20,6 +20,8 @@ use libyaml_rs::{
     YAML_SEQUENCE_END_EVENT, YAML_SEQUENCE_START_EVENT, YAML_SINGLE_QUOTED_SCALAR_STYLE,
     YAML_STREAM_END_EVENT, YAML_STREAM_START_EVENT, YAML_UTF8_ENCODING,
 };
+
+use crate::workflow_protocol::MATRIX_STEP_ANCHORS;
 
 #[derive(Debug)]
 pub(super) struct Violation {
@@ -175,9 +177,12 @@ pub(super) fn require_line_local_flow_nodes(source: &str) -> Result<(), Violatio
                 "flow sequences must stay on one source line so canonical indentation remains structural",
             ),
             YAML_ALIAS_EVENT => {
-                Some(Violation {
+                // SAFETY: this event tag activates the alias arm, whose
+                // anchor remains allocated until the event is deleted.
+                let anchor = unsafe { event.data.alias.anchor };
+                (!reviewed_anchor(anchor)).then_some(Violation {
                     line: Some(start_line),
-                    message: "YAML aliases are not supported by the canonical workflow source",
+                    message: "only the reviewed matrix step aliases may appear in the canonical workflow source",
                 })
             }
             YAML_STREAM_START_EVENT | YAML_STREAM_END_EVENT | YAML_DOCUMENT_END_EVENT => None,
@@ -215,10 +220,22 @@ fn node_property_violation(anchor: *const u8, tag: *const u8, line: usize) -> Op
             message: "explicit YAML tags are not supported by the canonical workflow source",
         });
     }
-    (!anchor.is_null()).then_some(Violation {
+    (!anchor.is_null() && !reviewed_anchor(anchor)).then_some(Violation {
         line: Some(line),
-        message: "YAML anchors are not supported by the canonical workflow source",
+        message:
+            "only the reviewed matrix step anchors may appear in the canonical workflow source",
     })
+}
+
+fn reviewed_anchor(anchor: *const u8) -> bool {
+    if anchor.is_null() {
+        return false;
+    }
+    // SAFETY: libyaml supplies every non-null anchor as a NUL-terminated byte
+    // string owned by the current event. Callers invoke this helper before
+    // deleting that event, and the bytes are only compared, never retained.
+    let anchor = unsafe { CStr::from_ptr(anchor.cast()) }.to_bytes();
+    MATRIX_STEP_ANCHORS.iter().any(|reviewed| anchor == reviewed.as_bytes())
 }
 
 fn close_collection(
@@ -340,12 +357,17 @@ mod tests {
     }
 
     #[test]
-    fn anchors_and_aliases_are_rejected() {
-        rejected("value: &replay_planner text\n", "YAML anchors are not supported");
+    fn only_reviewed_matrix_anchors_and_aliases_are_supported() {
+        rejected("value: &replay_planner text\n", "reviewed matrix step anchors");
         rejected(
-            "first: value\nsecond: *replay_planner\n",
-            "YAML aliases are not supported",
+            "first: &matrix_checkout value\nsecond: *replay_planner\n",
+            "reviewed matrix step aliases",
         );
+
+        require_line_local_flow_nodes(
+            "first: &matrix_checkout {value: one}\nsecond: *matrix_checkout\n",
+        )
+        .unwrap();
     }
 
     #[test]
