@@ -25,11 +25,13 @@ use std::{
     collections::{BTreeMap, BTreeSet},
     error::Error,
     fmt,
-    fs::{self, File},
+    fs::File,
     io::{self, Read},
     path::{Component, Path, PathBuf},
     str::FromStr,
 };
+
+use crate::repository_text;
 
 const MANIFEST_HEADER: &str = "key\tvalue";
 const BUILD_HEADER: &str = "crate\ttoolchain\tfeature_profile\ttarget";
@@ -1126,7 +1128,7 @@ impl Error for BaselineError {
 }
 
 fn read_source(path: &Path) -> Result<String, BaselineError> {
-    fs::read_to_string(path).map_err(|source| BaselineError {
+    repository_text::read(path).map_err(|source| BaselineError {
         path: path.to_path_buf(),
         line: None,
         message: format!("failed to read file: {source}"),

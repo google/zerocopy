@@ -133,7 +133,6 @@ pub(crate) struct WorkflowSources {
 
 impl WorkflowSources {
     /// Returns the already-read source for one GitHub-visible workflow path.
-    #[cfg(test)]
     pub(crate) fn source(&self, path: &str) -> Option<&str> {
         self.sources
             .iter()
