@@ -6,18 +6,19 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! Pure modeling and legacy-parity validation of unprivileged CI behavior.
+//! Modeling, parity validation, and local execution of unprivileged CI work.
 //!
 //! [`Plan`](crate::plan::Plan) decides matrix membership. This module takes the
 //! next deliberately separate step: it expands each selected cell into the
-//! ordinary Cargo or Miri operations which that cell means. It does not execute
-//! a process, inspect workflow YAML, or make any decision about runners,
-//! permissions, secrets, actions, environments, or publication. Those remain
-//! visible workflow authority in `.github/workflows/ci.yml`.
+//! ordinary Cargo or Miri operations which that cell means. The local executor
+//! can run one explicitly selected cell, but it does not inspect workflow YAML
+//! or make any decision about runners, permissions, secrets, actions, or
+//! publication. Those remain visible workflow authority in
+//! `.github/workflows/ci.yml`.
 //!
-//! The operation builders below are intended to become the single semantic
-//! source for a later executor. Until then, every place where their command
-//! spelling remains duplicated in `ci.yml` is called out explicitly. The
+//! The operation builders below are the single semantic source for both parity
+//! checking and local execution. Every place where their command spelling or
+//! setup remains duplicated in `ci.yml` is called out explicitly. The
 //! independent files under `ci/baselines/` are comparison evidence only: this
 //! module never reads a baseline row to construct proposed behavior. In
 //! particular, the legacy comparison covers the repository state named by the
@@ -27,11 +28,18 @@
 
 use std::{
     collections::{BTreeMap, BTreeSet},
+    env,
     error::Error,
     fmt,
-    path::Path,
+    fs::{self, OpenOptions},
+    io::{self, Write},
+    num::ParseIntError,
+    path::{Path, PathBuf},
+    process,
     str::FromStr,
 };
+
+use thiserror::Error as ThisError;
 
 use crate::{
     baseline::{
@@ -41,7 +49,9 @@ use crate::{
         WorkingDirectory,
     },
     ci::CiInputs,
-    plan::{BuildPlanCell, EventClass, ExecutionMode, FeatureSelection, MiriPlanCell, Plan},
+    plan::{
+        BuildPlanCell, EventClass, ExecutionMode, FeatureSelection, MiriPlanCell, Plan, PlanError,
+    },
     policy::{Policy, ToolchainSource},
     semver_adapter::{SemverAdapterSpec, SEMVER_FEATURE_GROUP},
 };
@@ -49,12 +59,21 @@ use crate::{
 const BUILD_JOB: &str = "build_test";
 const MIRI_JOB: &str = "miri";
 const MATRIX_WORKING_DIRECTORY: &str = "zerocopy";
+#[cfg(test)]
+const MIRI_CONFIG_PATH: &str = "zerocopy/.cargo/config.toml";
+#[cfg(test)]
+const MIRI_CONFIG_BACKUP_PATH: &str = "zerocopy/.cargo/config.toml.bak";
+const AARCH64_TARGET: &str = "aarch64-unknown-linux-gnu";
+const MIRI_THREAD_PLACEHOLDER: &str = "<2*nproc>";
+const NPROC_STEP: &str = "Determine Miri thread count";
 
-// These environment values are workflow command behavior, not policy. Keep
-// them coordinated with the top-level `env` block and the "Configure
-// environment variables" step in `.github/workflows/ci.yml`. A future
-// executor should consume these constants directly, at which point YAML no
-// longer needs to reproduce them.
+// These environment values are executor-owned command behavior, not policy.
+// Until `.github/workflows/ci.yml` delegates matrix commands to this executor,
+// the base values remain duplicated in its top-level `env` block and the
+// nightly additions in its "Configure environment variables" step. The frozen
+// command goldens prove that this model matches independently captured main;
+// they do not inspect that temporary live-YAML duplication. Migrated workflow
+// jobs must not reproduce these values in YAML.
 const BASE_RUSTFLAGS: &str = "-Dwarnings";
 const BASE_RUSTDOCFLAGS: &str = "-Dwarnings --cfg=zerocopy_unstable_ptr";
 const NIGHTLY_RUSTFLAGS: &str = "-Zrandomize-layout";
@@ -111,6 +130,883 @@ pub fn audit_execution(inputs: &CiInputs) -> Result<(), ExecutionAuditError> {
     let proposed = derive_execution(inputs, &mut mutation)
         .map_err(|message| ExecutionAuditError::one(format!("model construction: {message}")))?;
     compare_execution(inputs.legacy(), &proposed)
+}
+
+/// The complete identity of one selected ordinary build-plan cell.
+///
+/// Every field is required deliberately. A caller cannot accidentally run a
+/// different profile or target merely because policy adds another cell later.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct BuildCellSelector {
+    event: String,
+    package: String,
+    toolchain: String,
+    feature_profile: String,
+    target: String,
+}
+
+impl BuildCellSelector {
+    /// Constructs an exact ordinary-cell selector.
+    pub fn new(
+        event: impl Into<String>,
+        package: impl Into<String>,
+        toolchain: impl Into<String>,
+        feature_profile: impl Into<String>,
+        target: impl Into<String>,
+    ) -> Self {
+        Self {
+            event: event.into(),
+            package: package.into(),
+            toolchain: toolchain.into(),
+            feature_profile: feature_profile.into(),
+            target: target.into(),
+        }
+    }
+
+    fn description(&self) -> String {
+        format!(
+            "event={:?}, package={:?}, toolchain={:?}, feature_profile={:?}, target={:?}",
+            self.event, self.package, self.toolchain, self.feature_profile, self.target,
+        )
+    }
+}
+
+/// The complete identity of one selected Miri-plan cell.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct MiriCellSelector {
+    event: String,
+    package: String,
+    toolchain: String,
+    feature_profile: String,
+    target: String,
+    model: String,
+}
+
+impl MiriCellSelector {
+    /// Constructs an exact Miri-cell selector.
+    pub fn new(
+        event: impl Into<String>,
+        package: impl Into<String>,
+        toolchain: impl Into<String>,
+        feature_profile: impl Into<String>,
+        target: impl Into<String>,
+        model: impl Into<String>,
+    ) -> Self {
+        Self {
+            event: event.into(),
+            package: package.into(),
+            toolchain: toolchain.into(),
+            feature_profile: feature_profile.into(),
+            target: target.into(),
+            model: model.into(),
+        }
+    }
+
+    fn description(&self) -> String {
+        format!(
+            "event={:?}, package={:?}, toolchain={:?}, feature_profile={:?}, target={:?}, miri_model={:?}",
+            self.event, self.package, self.toolchain, self.feature_profile, self.target, self.model,
+        )
+    }
+}
+
+/// What one selected-cell invocation actually did locally.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CellExecutionReport {
+    executed_steps: Vec<String>,
+    workflow_owned_steps: Vec<String>,
+}
+
+impl CellExecutionReport {
+    fn new() -> Self {
+        Self { executed_steps: Vec::new(), workflow_owned_steps: Vec::new() }
+    }
+
+    /// Returns modeled process steps which completed successfully, in order.
+    pub fn executed_steps(&self) -> &[String] {
+        &self.executed_steps
+    }
+
+    /// Returns selected steps which remain owned by GitHub Actions.
+    pub fn workflow_owned_steps(&self) -> &[String] {
+        &self.workflow_owned_steps
+    }
+}
+
+/// A deterministic selection, model, process, or Miri-setup failure.
+#[derive(Debug, ThisError)]
+pub enum CellExecutionError {
+    /// The requested event could not be planned.
+    #[error(transparent)]
+    Plan(#[from] PlanError),
+    /// No selected cell has the complete requested identity.
+    #[error(
+        "no selected {kind} cell matches {selector}; the selector is unknown or excluded for this event"
+    )]
+    CellNotSelected {
+        /// The matrix kind being selected.
+        kind: &'static str,
+        /// The escaped, complete selector.
+        selector: String,
+    },
+    /// More than one selected cell has an identity which should be unique.
+    #[error("{matches} selected {kind} cells match {selector}; refusing an ambiguous execution")]
+    AmbiguousCell {
+        /// The matrix kind being selected.
+        kind: &'static str,
+        /// The escaped, complete selector.
+        selector: String,
+        /// Number of matching cells observed.
+        matches: usize,
+    },
+    /// Checked inputs could not be expanded into executable behavior.
+    #[error("cannot construct selected-cell execution: {message}")]
+    Model {
+        /// The model validation diagnostic.
+        message: String,
+    },
+    /// A selected operation is represented by a payload this executor cannot run.
+    #[error("step {step:?} has unsupported modeled payload {payload}")]
+    UnsupportedPayload {
+        /// Human-readable modeled step name.
+        step: String,
+        /// Stable payload description.
+        payload: &'static str,
+    },
+    /// A process could not be started.
+    #[error("failed to start step {step:?} with program {program:?}: {source}")]
+    StartProcess {
+        /// Human-readable modeled step name.
+        step: String,
+        /// Exact argv element used as the program.
+        program: String,
+        /// Operating-system process error.
+        #[source]
+        source: io::Error,
+    },
+    /// A process completed unsuccessfully.
+    #[error("step {step:?} failed ({status})")]
+    ProcessFailed {
+        /// Human-readable modeled step name.
+        step: String,
+        /// Exit-code or signal description.
+        status: String,
+    },
+    /// A required path could not be inspected.
+    #[error("failed to inspect {path:?}: {source}")]
+    InspectPath {
+        /// Path being inspected.
+        path: PathBuf,
+        /// Underlying filesystem error.
+        #[source]
+        source: io::Error,
+    },
+    /// The Miri Cargo directory could not be resolved before mutation.
+    #[error(
+        "failed to canonicalize Miri Cargo directory {path:?} before moving its config: {source}"
+    )]
+    ResolveMiriCargoDirectory {
+        /// Configured `.cargo` directory below the checked root.
+        path: PathBuf,
+        /// Underlying canonicalization error.
+        #[source]
+        source: io::Error,
+    },
+    /// The Miri Cargo directory resolves outside the checked checkout.
+    #[error(
+        "Miri Cargo directory {configured:?} resolves to {resolved:?}, outside checked repository root {repository_root:?}; refusing to move any config file"
+    )]
+    MiriCargoDirectoryOutsideRepository {
+        /// Configured path below the checkout.
+        configured: PathBuf,
+        /// Canonical target reached through intermediate links.
+        resolved: PathBuf,
+        /// Canonical root which supplied [`CiInputs`].
+        repository_root: PathBuf,
+    },
+    /// Miri's vendored Cargo configuration is absent or not a regular file.
+    #[error("Miri requires {path:?} to be a regular file")]
+    CargoConfigNotFile {
+        /// Expected Cargo configuration path.
+        path: PathBuf,
+    },
+    /// The fixed backup name is already occupied.
+    #[error(
+        "refusing to replace existing Miri Cargo-config backup {path:?}; inspect the config and backup, recover any interrupted move, and remove the backup before retrying"
+    )]
+    CargoConfigBackupExists {
+        /// Occupied backup path.
+        path: PathBuf,
+    },
+    /// An interrupted invocation left only the original backup name.
+    #[error(
+        "Miri Cargo config {config:?} is missing while backup {backup:?} exists; verify the backup and restore it without overwriting {config:?} before retrying"
+    )]
+    CargoConfigRecoveryRequired {
+        /// Missing normal configuration name.
+        config: PathBuf,
+        /// Existing backup which may contain the original bytes.
+        backup: PathBuf,
+    },
+    /// A create-only Cargo configuration link failed.
+    #[error(
+        "failed to {operation} Cargo config from {from:?} to create-only destination {to:?}: {source}; {from:?} was not removed"
+    )]
+    LinkCargoConfig {
+        /// Plain-language phase.
+        operation: &'static str,
+        /// Existing source which remains authoritative.
+        from: PathBuf,
+        /// Destination which was never replaced by this operation.
+        to: PathBuf,
+        /// Underlying filesystem error.
+        #[source]
+        source: io::Error,
+    },
+    /// Removing the source after a successful hard link failed.
+    #[error(
+        "failed to finish {operation} Cargo config by removing {from:?}: {source}; the original bytes are preserved at both {from:?} and {to:?}, so verify both names still refer to the same file and remove backup {recovery:?} to recover"
+    )]
+    UnlinkCargoConfig {
+        /// Plain-language phase.
+        operation: &'static str,
+        /// Source link which could not be removed.
+        from: PathBuf,
+        /// Successfully created link to the same bytes.
+        to: PathBuf,
+        /// Backup link to remove after verifying the reported dual-link state.
+        recovery: PathBuf,
+        /// Underlying filesystem error.
+        #[source]
+        source: io::Error,
+    },
+    /// Another entry appeared at the restoration destination.
+    #[error("cannot restore Miri Cargo config from {backup:?}: destination {config:?} now exists")]
+    CargoConfigRestoreBlocked {
+        /// Original configuration destination.
+        config: PathBuf,
+        /// Preserved backup containing the original file.
+        backup: PathBuf,
+    },
+    /// GNU `nproc` could not be started.
+    #[error("failed to start GNU nproc while determining the Miri thread count: {source}")]
+    StartNproc {
+        /// Operating-system process error.
+        #[source]
+        source: io::Error,
+    },
+    /// GNU `nproc` completed unsuccessfully.
+    #[error("GNU nproc failed while determining the Miri thread count ({status})")]
+    NprocFailed {
+        /// Exit-code or signal description.
+        status: String,
+    },
+    /// GNU `nproc` wrote stdout which was not UTF-8.
+    #[error("GNU nproc output is not UTF-8: {source}")]
+    NprocOutputNotUtf8 {
+        /// UTF-8 decoding error.
+        #[source]
+        source: std::str::Utf8Error,
+    },
+    /// GNU `nproc` did not write exactly one newline-terminated value.
+    #[error("GNU nproc output must be exactly one nonempty line terminated by LF; got {output:?}")]
+    NprocOutputShape {
+        /// Decoded output, rendered escaped by the diagnostic.
+        output: String,
+    },
+    /// GNU `nproc` did not write an unsigned decimal which fits `usize`.
+    #[error("GNU nproc output {value:?} is not a base-10 usize: {source}")]
+    NprocOutputParse {
+        /// Single output line, without its terminating newline.
+        value: String,
+        /// Integer parsing error.
+        #[source]
+        source: ParseIntError,
+    },
+    /// GNU `nproc` unexpectedly reported no available processors.
+    #[error("GNU nproc reported zero processors; the Miri thread count must be nonzero")]
+    NprocOutputZero,
+    /// Doubling GNU `nproc`'s result overflowed the host integer type.
+    #[error("cannot double GNU nproc value {available}: usize overflow")]
+    ThreadCountOverflow {
+        /// Processor count reported by GNU `nproc`.
+        available: usize,
+    },
+    /// A modeled argv template did not have exactly one dynamic element.
+    #[error(
+        "step {step:?} must contain dynamic argv element {placeholder:?} exactly once; found {occurrences}"
+    )]
+    DynamicPlaceholder {
+        /// Human-readable modeled step name.
+        step: String,
+        /// Exact placeholder being replaced.
+        placeholder: String,
+        /// Number of exact argv elements found.
+        occurrences: usize,
+    },
+    /// A GitHub step summary could not be appended.
+    #[error("failed to append Miri thread count to {path:?}: {source}")]
+    AppendStepSummary {
+        /// `GITHUB_STEP_SUMMARY` destination.
+        path: PathBuf,
+        /// Underlying filesystem error.
+        #[source]
+        source: io::Error,
+    },
+    /// Miri failed and restoring the temporarily moved Cargo config also failed.
+    #[error("{primary}; additionally, Cargo-config restoration failed: {restore}")]
+    MiriAndRestoreFailed {
+        /// Original setup or execution failure.
+        primary: Box<CellExecutionError>,
+        /// Restoration failure.
+        restore: Box<CellExecutionError>,
+    },
+}
+
+/// Executes the modeled commands for one exact selected ordinary build cell.
+///
+/// The semver action is intentionally not executed: GitHub requires its
+/// literal `uses` identity and security-relevant condition to remain in the
+/// workflow. If the selected cell includes that action, the returned report
+/// names it as workflow-owned instead of silently treating it as completed.
+pub fn execute_build_cell(
+    inputs: &CiInputs,
+    selector: &BuildCellSelector,
+) -> Result<CellExecutionReport, CellExecutionError> {
+    execute_build_cell_with(inputs, selector, &mut SystemExecutionHost)
+}
+
+/// Executes the modeled command for one exact selected Miri cell.
+pub fn execute_miri_cell(
+    inputs: &CiInputs,
+    selector: &MiriCellSelector,
+) -> Result<CellExecutionReport, CellExecutionError> {
+    execute_miri_cell_with(inputs, selector, &mut SystemExecutionHost)
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+struct ProcessInvocation {
+    step: String,
+    argv: Vec<String>,
+    working_directory: PathBuf,
+    environment: BTreeMap<String, String>,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct ProcessOutcome {
+    success: bool,
+    code: Option<i32>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+struct CapturedProcessOutcome {
+    success: bool,
+    code: Option<i32>,
+    stdout: Vec<u8>,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum PathKind {
+    Missing,
+    File,
+    Other,
+}
+
+/// The narrow host boundary keeps selection and execution tests incapable of
+/// invoking Cargo or mutating the checkout. It also keeps argv as a vector all
+/// the way to `std::process::Command`; no shell reparses feature strings,
+/// targets, flags, or future policy values.
+trait ExecutionHost {
+    fn run(&mut self, invocation: &ProcessInvocation) -> io::Result<ProcessOutcome>;
+    fn run_capture(&mut self, invocation: &ProcessInvocation)
+        -> io::Result<CapturedProcessOutcome>;
+    fn canonicalize(&mut self, path: &Path) -> io::Result<PathBuf>;
+    fn path_kind(&mut self, path: &Path) -> io::Result<PathKind>;
+    fn hard_link(&mut self, from: &Path, to: &Path) -> io::Result<()>;
+    fn remove_file(&mut self, path: &Path) -> io::Result<()>;
+    fn github_step_summary(&mut self) -> Option<PathBuf>;
+    fn append(&mut self, path: &Path, bytes: &[u8]) -> io::Result<()>;
+}
+
+struct SystemExecutionHost;
+
+fn system_command(invocation: &ProcessInvocation) -> io::Result<process::Command> {
+    let (program, arguments) =
+        invocation.argv.split_first().expect("validated modeled commands always have a program");
+    let working_directory = if invocation.working_directory.is_absolute() {
+        invocation.working_directory.clone()
+    } else {
+        env::current_dir()?.join(&invocation.working_directory)
+    };
+    let program_path = Path::new(program);
+    let executable = if program_path.is_absolute() || program_path.components().count() > 1 {
+        working_directory.join(program_path)
+    } else {
+        program_path.to_path_buf()
+    };
+    let mut command = process::Command::new(executable);
+    command
+        .args(arguments)
+        .current_dir(working_directory)
+        // Inherit unrelated runner state, but set every modeled variable
+        // directly. Shell assignment and word splitting are not part of the
+        // operation model.
+        .envs(&invocation.environment);
+    Ok(command)
+}
+
+impl ExecutionHost for SystemExecutionHost {
+    fn run(&mut self, invocation: &ProcessInvocation) -> io::Result<ProcessOutcome> {
+        let status = system_command(invocation)?.status()?;
+        Ok(ProcessOutcome { success: status.success(), code: status.code() })
+    }
+
+    fn run_capture(
+        &mut self,
+        invocation: &ProcessInvocation,
+    ) -> io::Result<CapturedProcessOutcome> {
+        // Only stdout is machine-readable. Preserve the program's stderr on
+        // the runner so a start or status failure retains its native context.
+        let output = system_command(invocation)?.stderr(process::Stdio::inherit()).output()?;
+        Ok(CapturedProcessOutcome {
+            success: output.status.success(),
+            code: output.status.code(),
+            stdout: output.stdout,
+        })
+    }
+
+    fn canonicalize(&mut self, path: &Path) -> io::Result<PathBuf> {
+        path.canonicalize()
+    }
+
+    fn path_kind(&mut self, path: &Path) -> io::Result<PathKind> {
+        match fs::symlink_metadata(path) {
+            Ok(metadata) if metadata.file_type().is_file() => Ok(PathKind::File),
+            Ok(_) => Ok(PathKind::Other),
+            Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(PathKind::Missing),
+            Err(error) => Err(error),
+        }
+    }
+
+    fn hard_link(&mut self, from: &Path, to: &Path) -> io::Result<()> {
+        fs::hard_link(from, to)
+    }
+
+    fn remove_file(&mut self, path: &Path) -> io::Result<()> {
+        fs::remove_file(path)
+    }
+
+    fn github_step_summary(&mut self) -> Option<PathBuf> {
+        env::var_os("GITHUB_STEP_SUMMARY").map(PathBuf::from)
+    }
+
+    fn append(&mut self, path: &Path, bytes: &[u8]) -> io::Result<()> {
+        OpenOptions::new().create(true).append(true).open(path)?.write_all(bytes)
+    }
+}
+
+fn execute_build_cell_with(
+    inputs: &CiInputs,
+    selector: &BuildCellSelector,
+    host: &mut impl ExecutionHost,
+) -> Result<CellExecutionReport, CellExecutionError> {
+    let repository_root = inputs.repository_root();
+    let plan = Plan::create(inputs, &selector.event)?;
+    let description = selector.description();
+    let cell = unique_match(
+        "ordinary build",
+        &description,
+        plan.builds().iter().filter(|cell| build_cell_matches(cell, selector)),
+    )?;
+    let semantics = BuildCellSemantics::from_plan(cell, inputs.policy())
+        .map_err(|message| CellExecutionError::Model { message })?;
+    let semver_adapter =
+        SemverAdapterSpec::from_checked_inputs(inputs.policy(), inputs.repository()).map_err(
+            |error| CellExecutionError::Model { message: format!("semver adapter: {error}") },
+        )?;
+    let operations = build_operations(
+        inputs.policy(),
+        &semver_adapter,
+        inputs.repository().zerocopy_docs_rs_rustdoc_args(),
+        &semantics,
+    )
+    .map_err(|message| CellExecutionError::Model { message })?;
+    let mut report = CellExecutionReport::new();
+
+    for operation in operations {
+        validate_operation(&operation).map_err(|message| CellExecutionError::Model { message })?;
+        if !operation.applicable {
+            return Err(CellExecutionError::Model {
+                message: format!(
+                    "selected operation {:?} is unexpectedly inapplicable",
+                    operation.kind
+                ),
+            });
+        }
+        match &operation.command.payload {
+            CommandPayload::Argv { argv, .. } => {
+                run_process(host, repository_root, &operation.command, argv)?;
+                report.executed_steps.push(operation.command.step.clone());
+            }
+            CommandPayload::ActionInputs { .. }
+                if operation.kind == MatrixOperationKind::CargoSemverCheck =>
+            {
+                // The action identity, condition, and permission boundary must
+                // stay literal in ci.yml. This explicit report is coupled to
+                // that audited adapter until GitHub supports dynamic `uses`.
+                report.workflow_owned_steps.push(operation.command.step.clone());
+            }
+            CommandPayload::ActionInputs { .. } => {
+                return Err(CellExecutionError::UnsupportedPayload {
+                    step: operation.command.step.clone(),
+                    payload: "action inputs",
+                });
+            }
+            CommandPayload::ArgvTemplate { .. } => {
+                return Err(CellExecutionError::UnsupportedPayload {
+                    step: operation.command.step.clone(),
+                    payload: "argv template in an ordinary build cell",
+                });
+            }
+        }
+    }
+    Ok(report)
+}
+
+fn execute_miri_cell_with(
+    inputs: &CiInputs,
+    selector: &MiriCellSelector,
+    host: &mut impl ExecutionHost,
+) -> Result<CellExecutionReport, CellExecutionError> {
+    let repository_root = inputs.repository_root();
+    let plan = Plan::create(inputs, &selector.event)?;
+    let description = selector.description();
+    let cell = unique_match(
+        "Miri",
+        &description,
+        plan.miri().iter().filter(|cell| miri_cell_matches(cell, selector)),
+    )?;
+    let semantics = MiriCellSemantics::from_plan(cell, inputs.policy())
+        .map_err(|message| CellExecutionError::Model { message })?;
+    let operation =
+        miri_operation(&semantics).map_err(|message| CellExecutionError::Model { message })?;
+    validate_operation(&operation).map_err(|message| CellExecutionError::Model { message })?;
+    if !operation.applicable {
+        return Err(CellExecutionError::Model {
+            message: "selected Miri operation is unexpectedly inapplicable".to_owned(),
+        });
+    }
+    let CommandPayload::ArgvTemplate { argv, dynamic_value } = &operation.command.payload else {
+        return Err(CellExecutionError::UnsupportedPayload {
+            step: operation.command.step.clone(),
+            payload: "non-template Miri command",
+        });
+    };
+    validate_dynamic_placeholder(&operation.command.step, argv, dynamic_value)?;
+
+    // This temporary vendoring bypass is the exact setup still duplicated by
+    // the Miri step in ci.yml (FIXME #2906). Both paths are fixed below rather
+    // than policy-selected. The executor assumes exclusive use of this
+    // checkout while the cell runs. A same-directory hard link atomically
+    // creates each destination only if it is absent on both Unix and Windows;
+    // unlinking the source then completes the move. If unlinking fails, both
+    // names preserve the original bytes and the typed error explains recovery.
+    let cargo_directory = resolve_miri_cargo_directory(host, repository_root)?;
+    let config = cargo_directory.join("config.toml");
+    let backup = cargo_directory.join("config.toml.bak");
+    let config_kind = inspect_path(host, &config)?;
+    let backup_kind = inspect_path(host, &backup)?;
+    match (config_kind, backup_kind) {
+        (PathKind::File, PathKind::Missing) => {}
+        (PathKind::File, PathKind::File | PathKind::Other) => {
+            return Err(CellExecutionError::CargoConfigBackupExists { path: backup });
+        }
+        (PathKind::Missing, PathKind::File) => {
+            return Err(CellExecutionError::CargoConfigRecoveryRequired { config, backup });
+        }
+        (PathKind::Missing | PathKind::Other, PathKind::Missing | PathKind::Other) => {
+            return Err(CellExecutionError::CargoConfigNotFile { path: config });
+        }
+        (PathKind::Other, PathKind::File) => {
+            return Err(CellExecutionError::CargoConfigNotFile { path: config });
+        }
+    }
+    move_cargo_config_create_only(host, &config, &backup, &backup, "temporarily move")?;
+
+    // Capture all fallible work as a result, then restore explicitly before
+    // returning it. Rust panics are outside this unwind-free contract;
+    // reporting a failed restore requires an ordinary return path rather than
+    // a best-effort Drop implementation which cannot return an error.
+    let primary = execute_miri_while_config_is_moved(
+        host,
+        repository_root,
+        &semantics,
+        &operation.command,
+        argv,
+        dynamic_value,
+    );
+    let restore = restore_miri_config(host, &config, &backup);
+    match (primary, restore) {
+        (Ok(report), Ok(())) => Ok(report),
+        (Err(primary), Ok(())) => Err(primary),
+        (Ok(_), Err(restore)) => Err(restore),
+        (Err(primary), Err(restore)) => Err(CellExecutionError::MiriAndRestoreFailed {
+            primary: Box::new(primary),
+            restore: Box::new(restore),
+        }),
+    }
+}
+
+fn resolve_miri_cargo_directory(
+    host: &mut impl ExecutionHost,
+    repository_root: &Path,
+) -> Result<PathBuf, CellExecutionError> {
+    let configured = repository_root.join(MATRIX_WORKING_DIRECTORY).join(".cargo");
+    let resolved = host.canonicalize(&configured).map_err(|source| {
+        CellExecutionError::ResolveMiriCargoDirectory { path: configured.clone(), source }
+    })?;
+    if !resolved.starts_with(repository_root) {
+        return Err(CellExecutionError::MiriCargoDirectoryOutsideRepository {
+            configured,
+            resolved,
+            repository_root: repository_root.to_path_buf(),
+        });
+    }
+    Ok(resolved)
+}
+
+fn execute_miri_while_config_is_moved(
+    host: &mut impl ExecutionHost,
+    repository_root: &Path,
+    semantics: &MiriCellSemantics,
+    command: &CommandSpec,
+    argv_template: &[String],
+    dynamic_value: &str,
+) -> Result<CellExecutionReport, CellExecutionError> {
+    let mut report = CellExecutionReport::new();
+    if semantics.target == AARCH64_TARGET {
+        // Keep this command coordinated with the workaround for rust-lang/miri
+        // #3125 in ci.yml. It is setup for the modeled Miri invocation, not an
+        // additional coverage decision.
+        let clean = CommandSpec {
+            job: MIRI_JOB.to_owned(),
+            step: "Clean aarch64 Miri target".to_owned(),
+            working_directory: WorkingDirectory::Relative(MATRIX_WORKING_DIRECTORY.to_owned()),
+            environment: command.environment.clone(),
+            payload: CommandPayload::Argv {
+                argv: vec!["cargo".to_owned(), "clean".to_owned()],
+                dynamic_value: None,
+            },
+        };
+        let CommandPayload::Argv { argv, .. } = &clean.payload else {
+            unreachable!("the local aarch64 cleanup is a fixed argv command");
+        };
+        run_process(host, repository_root, &clean, argv)?;
+        report.executed_steps.push(clean.step);
+    }
+
+    let threads = miri_thread_count(host, repository_root, &command.environment)?;
+    report.executed_steps.push(NPROC_STEP.to_owned());
+    let argv =
+        substitute_dynamic(&command.step, argv_template, dynamic_value, &threads.to_string())?;
+
+    if let Some(path) = host.github_step_summary() {
+        let summary = format!("Running Miri tests with {threads} threads\n");
+        host.append(&path, summary.as_bytes())
+            .map_err(|source| CellExecutionError::AppendStepSummary { path, source })?;
+    }
+    run_process(host, repository_root, command, &argv)?;
+    report.executed_steps.push(command.step.clone());
+    Ok(report)
+}
+
+fn miri_thread_count(
+    host: &mut impl ExecutionHost,
+    repository_root: &Path,
+    environment: &BTreeMap<String, String>,
+) -> Result<usize, CellExecutionError> {
+    // Keep this direct GNU `nproc` invocation coordinated with the Miri step
+    // in ci.yml. The frozen workflow computes `2 * nproc`; invoking the same
+    // program without a shell preserves nproc's handling of OMP overrides,
+    // while Rust performs the checked multiplication instead of `bc`.
+    let invocation = ProcessInvocation {
+        step: NPROC_STEP.to_owned(),
+        argv: vec!["nproc".to_owned()],
+        working_directory: repository_root.join(MATRIX_WORKING_DIRECTORY),
+        environment: environment.clone(),
+    };
+    let outcome = host
+        .run_capture(&invocation)
+        .map_err(|source| CellExecutionError::StartNproc { source })?;
+    if !outcome.success {
+        return Err(CellExecutionError::NprocFailed { status: process_status(outcome.code) });
+    }
+    parse_nproc_thread_count(&outcome.stdout)
+}
+
+fn parse_nproc_thread_count(stdout: &[u8]) -> Result<usize, CellExecutionError> {
+    let output = std::str::from_utf8(stdout)
+        .map_err(|source| CellExecutionError::NprocOutputNotUtf8 { source })?;
+    let Some(value) = output.strip_suffix('\n') else {
+        return Err(CellExecutionError::NprocOutputShape { output: output.to_owned() });
+    };
+    if value.is_empty() || value.contains(['\r', '\n']) {
+        return Err(CellExecutionError::NprocOutputShape { output: output.to_owned() });
+    }
+    let available = value.parse::<usize>().map_err(|source| {
+        CellExecutionError::NprocOutputParse { value: value.to_owned(), source }
+    })?;
+    // GNU nproc emits canonical unsigned decimal. Reject spellings which
+    // Rust's integer parser might accept but the modeled program never emits.
+    if !value.bytes().all(|byte| byte.is_ascii_digit()) || available.to_string() != value {
+        return Err(CellExecutionError::NprocOutputShape { output: output.to_owned() });
+    }
+    if available == 0 {
+        return Err(CellExecutionError::NprocOutputZero);
+    }
+    available.checked_mul(2).ok_or(CellExecutionError::ThreadCountOverflow { available })
+}
+
+fn restore_miri_config(
+    host: &mut impl ExecutionHost,
+    config: &Path,
+    backup: &Path,
+) -> Result<(), CellExecutionError> {
+    if inspect_path(host, config)? != PathKind::Missing {
+        return Err(CellExecutionError::CargoConfigRestoreBlocked {
+            config: config.to_path_buf(),
+            backup: backup.to_path_buf(),
+        });
+    }
+    move_cargo_config_create_only(host, backup, config, backup, "restore")
+}
+
+fn move_cargo_config_create_only(
+    host: &mut impl ExecutionHost,
+    from: &Path,
+    to: &Path,
+    recovery: &Path,
+    operation: &'static str,
+) -> Result<(), CellExecutionError> {
+    host.hard_link(from, to).map_err(|source| CellExecutionError::LinkCargoConfig {
+        operation,
+        from: from.to_path_buf(),
+        to: to.to_path_buf(),
+        source,
+    })?;
+    host.remove_file(from).map_err(|source| CellExecutionError::UnlinkCargoConfig {
+        operation,
+        from: from.to_path_buf(),
+        to: to.to_path_buf(),
+        recovery: recovery.to_path_buf(),
+        source,
+    })
+}
+
+fn inspect_path(
+    host: &mut impl ExecutionHost,
+    path: &Path,
+) -> Result<PathKind, CellExecutionError> {
+    host.path_kind(path)
+        .map_err(|source| CellExecutionError::InspectPath { path: path.to_path_buf(), source })
+}
+
+fn run_process(
+    host: &mut impl ExecutionHost,
+    repository_root: &Path,
+    command: &CommandSpec,
+    argv: &[String],
+) -> Result<(), CellExecutionError> {
+    let working_directory = match &command.working_directory {
+        WorkingDirectory::RepositoryRoot => repository_root.to_path_buf(),
+        WorkingDirectory::Relative(path) => repository_root.join(path),
+    };
+    let invocation = ProcessInvocation {
+        step: command.step.clone(),
+        argv: argv.to_vec(),
+        working_directory,
+        environment: command.environment.clone(),
+    };
+    let program = invocation.argv.first().cloned().ok_or_else(|| CellExecutionError::Model {
+        message: format!("step {:?} has an empty argv", command.step),
+    })?;
+    let outcome = host.run(&invocation).map_err(|source| CellExecutionError::StartProcess {
+        step: command.step.clone(),
+        program,
+        source,
+    })?;
+    if !outcome.success {
+        return Err(CellExecutionError::ProcessFailed {
+            step: command.step.clone(),
+            status: process_status(outcome.code),
+        });
+    }
+    Ok(())
+}
+
+fn process_status(code: Option<i32>) -> String {
+    code.map_or_else(|| "terminated by a signal".to_owned(), |code| format!("exit code {code}"))
+}
+
+fn validate_dynamic_placeholder(
+    step: &str,
+    argv: &[String],
+    placeholder: &str,
+) -> Result<(), CellExecutionError> {
+    let occurrences = argv.iter().filter(|argument| argument.as_str() == placeholder).count();
+    if occurrences != 1 {
+        return Err(CellExecutionError::DynamicPlaceholder {
+            step: step.to_owned(),
+            placeholder: placeholder.to_owned(),
+            occurrences,
+        });
+    }
+    Ok(())
+}
+
+fn substitute_dynamic(
+    step: &str,
+    argv: &[String],
+    placeholder: &str,
+    value: &str,
+) -> Result<Vec<String>, CellExecutionError> {
+    validate_dynamic_placeholder(step, argv, placeholder)?;
+    Ok(argv
+        .iter()
+        .map(|argument| if argument == placeholder { value.to_owned() } else { argument.clone() })
+        .collect())
+}
+
+fn build_cell_matches(cell: &BuildPlanCell, selector: &BuildCellSelector) -> bool {
+    cell.package().id() == selector.package
+        && cell.toolchain().id() == selector.toolchain
+        && cell.features().profile() == selector.feature_profile
+        && cell.target().triple() == selector.target
+}
+
+fn miri_cell_matches(cell: &MiriPlanCell, selector: &MiriCellSelector) -> bool {
+    cell.package().id() == selector.package
+        && cell.toolchain().id() == selector.toolchain
+        && cell.features().profile() == selector.feature_profile
+        && cell.target().triple() == selector.target
+        && cell.model().id() == selector.model
+}
+
+fn unique_match<'a, T>(
+    kind: &'static str,
+    selector: &str,
+    matches: impl Iterator<Item = &'a T>,
+) -> Result<&'a T, CellExecutionError> {
+    let matches = matches.collect::<Vec<_>>();
+    match matches.as_slice() {
+        [] => Err(CellExecutionError::CellNotSelected { kind, selector: selector.to_owned() }),
+        [cell] => Ok(*cell),
+        cells => Err(CellExecutionError::AmbiguousCell {
+            kind,
+            selector: selector.to_owned(),
+            matches: cells.len(),
+        }),
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd)]
@@ -677,21 +1573,21 @@ fn docs_operation(docs_rs_rustdoc_args: &[String], cell: &BuildCellSemantics) ->
     // understood by RUSTDOCFLAGS.
     let docs_rs_rustdoc_args = docs_rs_rustdoc_args.join(" ");
 
-    // The current command-golden format records only the environment variables
-    // whose special value belongs to this command. `ci.yml` still inherits
-    // ordinary matrix variables as well. Retaining this narrow representation
-    // is an awkward legacy exception; broadening it requires an intentional
-    // command-baseline migration rather than copying baseline data here.
-    let environment = if cell.pinned_nightly {
-        BTreeMap::from([(
-            "RUSTDOCFLAGS".to_owned(),
-            format!(
-                "-Z unstable-options --document-hidden-items {docs_rs_rustdoc_args} {BASE_RUSTDOCFLAGS}"
-            ),
-        )])
+    // Cargo doc inherits the same ordinary matrix environment as every other
+    // command, then its step replaces RUSTDOCFLAGS. Keep this complete map
+    // coordinated with the Cargo doc step in ci.yml and the representative
+    // nightly-docs command golden. The golden used to omit inherited
+    // RUSTFLAGS and MIRIFLAGS; retaining that omission in executable behavior
+    // would make this typed executor silently differ from CI.
+    let mut environment = ordinary_environment(cell.pinned_nightly);
+    let rustdocflags = if cell.pinned_nightly {
+        format!(
+            "-Z unstable-options --document-hidden-items {docs_rs_rustdoc_args} {BASE_RUSTDOCFLAGS}"
+        )
     } else {
-        BTreeMap::from([("RUSTDOCFLAGS".to_owned(), BASE_RUSTDOCFLAGS.to_owned())])
+        BASE_RUSTDOCFLAGS.to_owned()
     };
+    environment.insert("RUSTDOCFLAGS".to_owned(), rustdocflags);
     MatrixOperation {
         kind,
         // `cargo doc` intentionally has no `--target`; all target cells for
@@ -803,7 +1699,11 @@ fn miri_operation(cell: &MiriCellSemantics) -> Result<MatrixOperation, String> {
         return Err(format!("Miri cell uses non-nightly toolchain `{}`", cell.toolchain));
     }
     let kind = MatrixOperationKind::MiriTest;
-    let dynamic = "<2*nproc>".to_owned();
+    // Keep this placeholder coordinated with the frozen command golden and
+    // the direct GNU `nproc` invocation in `miri_thread_count`. The typed
+    // executor removes shell parsing and `bc`, but deliberately preserves
+    // nproc's processor-count semantics, including its OMP overrides.
+    let dynamic = MIRI_THREAD_PLACEHOLDER.to_owned();
     let mut argv = vec![
         "./cargo.sh".to_owned(),
         format!("+{}", cell.toolchain),
@@ -1495,12 +2395,20 @@ fn collect_difference<T: fmt::Debug + Ord>(
 
 #[cfg(test)]
 mod tests {
-    use std::{path::Path, sync::OnceLock};
+    use std::{
+        collections::{BTreeMap, VecDeque},
+        io,
+        path::{Path, PathBuf},
+        sync::OnceLock,
+    };
 
     use super::{
-        audit_execution, compare_execution, derive_execution, BuildCellSemantics, EventClass,
-        ExecutionMode, FeatureSelection, MatrixOperation, MatrixOperationKind, ModelMutation,
-        MIRI_JOB,
+        audit_execution, compare_execution, derive_execution, execute_build_cell_with,
+        execute_miri_cell_with, parse_nproc_thread_count, substitute_dynamic, unique_match,
+        BuildCellSelector, BuildCellSemantics, CapturedProcessOutcome, CellExecutionError,
+        EventClass, ExecutionHost, ExecutionMode, FeatureSelection, MatrixOperation,
+        MatrixOperationKind, MiriCellSelector, ModelMutation, PathKind, ProcessInvocation,
+        ProcessOutcome, MIRI_CONFIG_BACKUP_PATH, MIRI_CONFIG_PATH, MIRI_JOB, NPROC_STEP,
     };
     use crate::{baseline::CommandPayload, ci::CiInputs};
 
@@ -1519,6 +2427,758 @@ mod tests {
 
     fn model_error_with(mutation: &mut impl ModelMutation) -> String {
         derive_execution(inputs(), mutation).unwrap_err()
+    }
+
+    #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+    enum FakeEntry {
+        File(&'static str),
+        Other,
+    }
+
+    impl FakeEntry {
+        fn kind(self) -> PathKind {
+            match self {
+                Self::File(_) => PathKind::File,
+                Self::Other => PathKind::Other,
+            }
+        }
+    }
+
+    #[derive(Debug, Default)]
+    struct FakeExecutionHost {
+        invocations: Vec<ProcessInvocation>,
+        outcomes: VecDeque<ProcessOutcome>,
+        start_error: Option<io::ErrorKind>,
+        captured_invocations: Vec<ProcessInvocation>,
+        captured_outcomes: VecDeque<CapturedProcessOutcome>,
+        capture_start_error: Option<io::ErrorKind>,
+        canonicalized: Vec<PathBuf>,
+        canonicalize_result: Option<Result<PathBuf, io::ErrorKind>>,
+        entries: BTreeMap<PathBuf, FakeEntry>,
+        hard_links: Vec<(PathBuf, PathBuf)>,
+        removals: Vec<PathBuf>,
+        hard_link_race: Option<(PathBuf, FakeEntry)>,
+        remove_failures: VecDeque<(PathBuf, io::ErrorKind)>,
+        step_summary: Option<PathBuf>,
+        appended: BTreeMap<PathBuf, Vec<u8>>,
+        append_error: Option<io::ErrorKind>,
+        create_after_run: Option<(PathBuf, FakeEntry)>,
+    }
+
+    impl ExecutionHost for FakeExecutionHost {
+        fn run(&mut self, invocation: &ProcessInvocation) -> io::Result<ProcessOutcome> {
+            self.invocations.push(invocation.clone());
+            if let Some(kind) = self.start_error.take() {
+                return Err(io::Error::from(kind));
+            }
+            if let Some((path, kind)) = self.create_after_run.take() {
+                self.entries.insert(path, kind);
+            }
+            Ok(self.outcomes.pop_front().unwrap_or(ProcessOutcome { success: true, code: Some(0) }))
+        }
+
+        fn run_capture(
+            &mut self,
+            invocation: &ProcessInvocation,
+        ) -> io::Result<CapturedProcessOutcome> {
+            self.captured_invocations.push(invocation.clone());
+            if let Some(kind) = self.capture_start_error.take() {
+                return Err(io::Error::from(kind));
+            }
+            Ok(self.captured_outcomes.pop_front().unwrap_or(CapturedProcessOutcome {
+                success: true,
+                code: Some(0),
+                stdout: b"4\n".to_vec(),
+            }))
+        }
+
+        fn canonicalize(&mut self, path: &Path) -> io::Result<PathBuf> {
+            self.canonicalized.push(path.to_path_buf());
+            match self.canonicalize_result.take() {
+                Some(Ok(path)) => Ok(path),
+                Some(Err(kind)) => Err(io::Error::from(kind)),
+                None => Ok(path.to_path_buf()),
+            }
+        }
+
+        fn path_kind(&mut self, path: &Path) -> io::Result<PathKind> {
+            Ok(self.entries.get(path).copied().map(FakeEntry::kind).unwrap_or(PathKind::Missing))
+        }
+
+        fn hard_link(&mut self, from: &Path, to: &Path) -> io::Result<()> {
+            if self.hard_link_race.as_ref().is_some_and(|(path, _)| path == to) {
+                let (path, entry) = self.hard_link_race.take().unwrap();
+                self.entries.insert(path, entry);
+            }
+            if self.entries.contains_key(to) {
+                return Err(io::Error::from(io::ErrorKind::AlreadyExists));
+            }
+            let entry = self
+                .entries
+                .get(from)
+                .copied()
+                .ok_or_else(|| io::Error::from(io::ErrorKind::NotFound))?;
+            self.entries.insert(to.to_path_buf(), entry);
+            self.hard_links.push((from.to_path_buf(), to.to_path_buf()));
+            Ok(())
+        }
+
+        fn remove_file(&mut self, path: &Path) -> io::Result<()> {
+            if self.remove_failures.front().is_some_and(|(failed, _)| failed == path) {
+                let (_, kind) = self.remove_failures.pop_front().unwrap();
+                return Err(io::Error::from(kind));
+            }
+            self.entries.remove(path).ok_or_else(|| io::Error::from(io::ErrorKind::NotFound))?;
+            self.removals.push(path.to_path_buf());
+            Ok(())
+        }
+
+        fn github_step_summary(&mut self) -> Option<PathBuf> {
+            self.step_summary.clone()
+        }
+
+        fn append(&mut self, path: &Path, bytes: &[u8]) -> io::Result<()> {
+            if let Some(kind) = self.append_error.take() {
+                return Err(io::Error::from(kind));
+            }
+            self.appended.entry(path.to_path_buf()).or_default().extend_from_slice(bytes);
+            Ok(())
+        }
+    }
+
+    fn test_root() -> PathBuf {
+        inputs().repository_root().to_path_buf()
+    }
+
+    fn fake_host_with_miri_config(root: &Path) -> FakeExecutionHost {
+        let mut host = FakeExecutionHost::default();
+        host.entries.insert(root.join(MIRI_CONFIG_PATH), FakeEntry::File("original"));
+        host
+    }
+
+    fn captured_success(stdout: impl AsRef<[u8]>) -> CapturedProcessOutcome {
+        CapturedProcessOutcome { success: true, code: Some(0), stdout: stdout.as_ref().to_vec() }
+    }
+
+    fn build_selector(event: &str, profile: &str, target: &str) -> BuildCellSelector {
+        BuildCellSelector::new(event, "zerocopy", "stable", profile, target)
+    }
+
+    fn miri_selector(event: &str, target: &str, model: &str) -> MiriCellSelector {
+        MiriCellSelector::new(event, "zerocopy", "nightly", "default", target, model)
+    }
+
+    #[test]
+    fn execution_uses_checked_root_and_preserves_argv_and_environment_boundaries() {
+        let root = test_root();
+        assert!(root.is_absolute(), "CiInputs must retain its canonical root");
+        let mut host = FakeExecutionHost::default();
+        let selector = build_selector("pull_request", "stable", "x86_64-unknown-linux-gnu");
+        let report = execute_build_cell_with(inputs(), &selector, &mut host).unwrap();
+
+        assert_eq!(report.executed_steps, ["Test native target", "Cargo doc"]);
+        assert_eq!(report.workflow_owned_steps, ["Check semver compatibility"]);
+        assert_eq!(host.invocations.len(), 2);
+        assert_eq!(
+            host.invocations[0].argv,
+            [
+                "./cargo.sh",
+                "+stable",
+                "test",
+                "--package",
+                "zerocopy",
+                "--target",
+                "x86_64-unknown-linux-gnu",
+                "--no-default-features",
+                "--features",
+                "__internal_use_only_features_that_work_on_stable",
+                "--verbose",
+            ]
+        );
+        assert_eq!(host.invocations[0].working_directory, root.join("zerocopy"));
+        assert_eq!(
+            host.invocations[0].environment,
+            BTreeMap::from([
+                ("RUSTDOCFLAGS".to_owned(), "-Dwarnings --cfg=zerocopy_unstable_ptr".to_owned(),),
+                ("RUSTFLAGS".to_owned(), "-Dwarnings".to_owned()),
+            ])
+        );
+        assert_eq!(
+            host.invocations[1].environment,
+            BTreeMap::from([
+                ("RUSTDOCFLAGS".to_owned(), "-Dwarnings --cfg=zerocopy_unstable_ptr".to_owned()),
+                ("RUSTFLAGS".to_owned(), "-Dwarnings".to_owned()),
+            ])
+        );
+        assert!(host.hard_links.is_empty());
+    }
+
+    #[test]
+    fn nightly_docs_execute_with_the_complete_effective_environment() {
+        let mut host = FakeExecutionHost::default();
+        let selector = BuildCellSelector::new(
+            "push",
+            "zerocopy",
+            "nightly",
+            "all",
+            "x86_64-unknown-linux-gnu",
+        );
+
+        let report = execute_build_cell_with(inputs(), &selector, &mut host).unwrap();
+
+        assert_eq!(report.executed_steps, ["Test native target", "Clippy tests", "Cargo doc"]);
+        let docs =
+            host.invocations.iter().find(|invocation| invocation.step == "Cargo doc").unwrap();
+        assert_eq!(
+            docs.environment,
+            BTreeMap::from([
+                (
+                    "MIRIFLAGS".to_owned(),
+                    " -Zmiri-strict-provenance -Zmiri-backtrace=full".to_owned(),
+                ),
+                (
+                    "RUSTDOCFLAGS".to_owned(),
+                    "-Z unstable-options --document-hidden-items --cfg doc_cfg --generate-link-to-definition --extend-css rustdoc/style.css -Dwarnings --cfg=zerocopy_unstable_ptr"
+                        .to_owned(),
+                ),
+                ("RUSTFLAGS".to_owned(), "-Dwarnings -Zrandomize-layout".to_owned()),
+            ])
+        );
+    }
+
+    #[test]
+    fn unknown_and_event_excluded_cells_fail_without_processes() {
+        let mut host = FakeExecutionHost::default();
+        let unknown = BuildCellSelector::new(
+            "pull_request",
+            "unknown-package",
+            "stable",
+            "default",
+            "x86_64-unknown-linux-gnu",
+        );
+        assert!(matches!(
+            execute_build_cell_with(inputs(), &unknown, &mut host),
+            Err(CellExecutionError::CellNotSelected { .. })
+        ));
+        let excluded = build_selector("pull_request", "default", "aarch64-unknown-linux-gnu");
+        assert!(matches!(
+            execute_build_cell_with(inputs(), &excluded, &mut host),
+            Err(CellExecutionError::CellNotSelected { .. })
+        ));
+        let excluded_miri = miri_selector("pull_request", "x86_64-unknown-linux-gnu", "stacked");
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &excluded_miri, &mut host),
+            Err(CellExecutionError::CellNotSelected { .. })
+        ));
+        let unknown_event = build_selector("unknown-event", "default", "x86_64-unknown-linux-gnu");
+        assert!(matches!(
+            execute_build_cell_with(inputs(), &unknown_event, &mut host),
+            Err(CellExecutionError::Plan(_))
+        ));
+        assert!(host.invocations.is_empty());
+        assert!(host.hard_links.is_empty());
+    }
+
+    #[test]
+    fn duplicate_matches_fail_closed() {
+        let values = [1, 2];
+        assert!(matches!(
+            unique_match("test", "selector", values.iter()),
+            Err(CellExecutionError::AmbiguousCell { matches: 2, .. })
+        ));
+    }
+
+    #[test]
+    fn executes_aarch64_miri_setup_template_and_summary_then_restores_config() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let summary = root.join("step-summary");
+        let mut host = fake_host_with_miri_config(&root);
+        host.captured_outcomes.push_back(captured_success(b"3\n"));
+        host.step_summary = Some(summary.clone());
+        let selector = miri_selector("push", "aarch64-unknown-linux-gnu", "tree");
+
+        let report = execute_miri_cell_with(inputs(), &selector, &mut host).unwrap();
+
+        assert_eq!(
+            report.executed_steps,
+            ["Clean aarch64 Miri target", NPROC_STEP, "Run tests under Miri"]
+        );
+        assert!(report.workflow_owned_steps.is_empty());
+        assert_eq!(host.captured_invocations.len(), 1);
+        assert_eq!(host.captured_invocations[0].step, NPROC_STEP);
+        assert_eq!(host.captured_invocations[0].argv, ["nproc"]);
+        assert_eq!(host.captured_invocations[0].working_directory, root.join("zerocopy"));
+        assert_eq!(
+            host.captured_invocations[0].environment,
+            BTreeMap::from([
+                (
+                    "MIRIFLAGS".to_owned(),
+                    " -Zmiri-strict-provenance -Zmiri-backtrace=full -Zmiri-tree-borrows"
+                        .to_owned(),
+                ),
+                ("RUSTDOCFLAGS".to_owned(), "-Dwarnings --cfg=zerocopy_unstable_ptr".to_owned(),),
+                ("RUSTFLAGS".to_owned(), "-Dwarnings -Zrandomize-layout".to_owned()),
+            ])
+        );
+        assert_eq!(host.invocations.len(), 2);
+        assert_eq!(host.invocations[0].argv, ["cargo", "clean"]);
+        assert_eq!(
+            host.invocations[1].argv,
+            [
+                "./cargo.sh",
+                "+nightly",
+                "miri",
+                "nextest",
+                "run",
+                "--locked",
+                "--ignore-default-filter",
+                "--test-threads",
+                "6",
+                "--package",
+                "zerocopy",
+                "--target",
+                "aarch64-unknown-linux-gnu",
+            ]
+        );
+        assert_eq!(host.invocations[1].working_directory, root.join("zerocopy"));
+        assert_eq!(
+            host.invocations[1].environment["MIRIFLAGS"],
+            " -Zmiri-strict-provenance -Zmiri-backtrace=full -Zmiri-tree-borrows"
+        );
+        assert_eq!(host.appended[&summary], b"Running Miri tests with 6 threads\n");
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert!(!host.entries.contains_key(&backup));
+        assert_eq!(
+            host.hard_links,
+            [(config.clone(), backup.clone()), (backup.clone(), config.clone())]
+        );
+        assert_eq!(host.removals, [config, backup]);
+    }
+
+    #[test]
+    fn miri_process_failure_still_restores_config() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.outcomes.push_back(ProcessOutcome { success: false, code: Some(17) });
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        let error = execute_miri_cell_with(inputs(), &selector, &mut host).unwrap_err();
+
+        assert!(matches!(
+            error,
+            CellExecutionError::ProcessFailed { status, .. } if status == "exit code 17"
+        ));
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert!(!host.entries.contains_key(&backup));
+    }
+
+    #[test]
+    fn miri_thread_overflow_still_restores_config_without_running_cargo() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.captured_outcomes.push_back(captured_success(format!("{}\n", usize::MAX)));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::ThreadCountOverflow { available })
+                if available == usize::MAX
+        ));
+        assert!(host.invocations.is_empty());
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert!(!host.entries.contains_key(&backup));
+    }
+
+    #[test]
+    fn parses_exact_gnu_nproc_output_and_checked_doubles_it() {
+        assert_eq!(parse_nproc_thread_count(b"1\n").unwrap(), 2);
+        assert_eq!(parse_nproc_thread_count(b"17\n").unwrap(), 34);
+    }
+
+    #[test]
+    fn nproc_output_utf8_shape_parse_zero_and_overflow_failures_are_typed() {
+        assert!(matches!(
+            parse_nproc_thread_count(&[0xff, b'\n']),
+            Err(CellExecutionError::NprocOutputNotUtf8 { .. })
+        ));
+        for output in [
+            b"".as_slice(),
+            b"\n".as_slice(),
+            b"1".as_slice(),
+            b"1\r\n".as_slice(),
+            b"1\n2\n".as_slice(),
+            b"+1\n".as_slice(),
+            b"01\n".as_slice(),
+        ] {
+            assert!(
+                matches!(
+                    parse_nproc_thread_count(output),
+                    Err(CellExecutionError::NprocOutputShape { .. })
+                ),
+                "unexpected result for {output:?}"
+            );
+        }
+        assert!(matches!(
+            parse_nproc_thread_count(b"not-a-number\n"),
+            Err(CellExecutionError::NprocOutputParse { .. })
+        ));
+        let too_large = format!("{}0\n", usize::MAX);
+        assert!(matches!(
+            parse_nproc_thread_count(too_large.as_bytes()),
+            Err(CellExecutionError::NprocOutputParse { .. })
+        ));
+        assert!(matches!(
+            parse_nproc_thread_count(b"0\n"),
+            Err(CellExecutionError::NprocOutputZero)
+        ));
+        let overflow = format!("{}\n", usize::MAX);
+        assert!(matches!(
+            parse_nproc_thread_count(overflow.as_bytes()),
+            Err(CellExecutionError::ThreadCountOverflow { available })
+                if available == usize::MAX
+        ));
+    }
+
+    #[test]
+    fn nproc_start_failure_is_typed_and_restores_config() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.capture_start_error = Some(io::ErrorKind::NotFound);
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::StartNproc { source })
+                if source.kind() == io::ErrorKind::NotFound
+        ));
+        assert_eq!(host.captured_invocations.len(), 1);
+        assert!(host.invocations.is_empty());
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert!(!host.entries.contains_key(&backup));
+    }
+
+    #[test]
+    fn nproc_status_failure_is_typed_and_restores_config() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.captured_outcomes.push_back(CapturedProcessOutcome {
+            success: false,
+            code: Some(23),
+            stdout: Vec::new(),
+        });
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::NprocFailed { status }) if status == "exit code 23"
+        ));
+        assert_eq!(host.captured_invocations.len(), 1);
+        assert!(host.invocations.is_empty());
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert!(!host.entries.contains_key(&backup));
+    }
+
+    #[test]
+    fn nproc_decode_failure_restores_config_without_running_cargo() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.captured_outcomes.push_back(captured_success([0xff, b'\n']));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::NprocOutputNotUtf8 { .. })
+        ));
+        assert!(host.invocations.is_empty());
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert!(!host.entries.contains_key(&backup));
+    }
+
+    #[test]
+    fn miri_summary_failure_still_restores_config_without_running_cargo() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let summary = root.join("step-summary");
+        let mut host = fake_host_with_miri_config(&root);
+        host.step_summary = Some(summary.clone());
+        host.append_error = Some(io::ErrorKind::PermissionDenied);
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::AppendStepSummary { path, .. }) if path == summary
+        ));
+        assert!(host.invocations.is_empty());
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert!(!host.entries.contains_key(&backup));
+    }
+
+    #[test]
+    fn miri_rejects_existing_backup_before_mutating_or_running() {
+        let root = test_root();
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.entries.insert(backup.clone(), FakeEntry::File("stale-backup"));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::CargoConfigBackupExists { path }) if path == backup
+        ));
+        assert!(host.invocations.is_empty());
+        assert!(host.hard_links.is_empty());
+    }
+
+    #[test]
+    fn miri_reports_backup_only_state_as_explicit_recovery() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = FakeExecutionHost::default();
+        host.entries.insert(backup.clone(), FakeEntry::File("original"));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::CargoConfigRecoveryRequired {
+                config: error_config,
+                backup: error_backup,
+            }) if error_config == config && error_backup == backup
+        ));
+        assert_eq!(host.entries.get(&backup), Some(&FakeEntry::File("original")));
+        assert!(host.hard_links.is_empty());
+        assert!(host.removals.is_empty());
+        assert!(host.invocations.is_empty());
+    }
+
+    #[test]
+    fn initial_backup_race_never_replaces_either_file() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.hard_link_race = Some((backup.clone(), FakeEntry::File("racer")));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::LinkCargoConfig { operation, .. })
+                if operation == "temporarily move"
+        ));
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert_eq!(host.entries.get(&backup), Some(&FakeEntry::File("racer")));
+        assert!(host.hard_links.is_empty());
+        assert!(host.removals.is_empty());
+        assert!(host.invocations.is_empty());
+    }
+
+    #[test]
+    fn initial_unlink_failure_preserves_original_bytes_under_both_names() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.remove_failures.push_back((config.clone(), io::ErrorKind::PermissionDenied));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::UnlinkCargoConfig { operation, recovery, .. })
+                if operation == "temporarily move" && recovery == backup
+        ));
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert_eq!(host.entries.get(&backup), Some(&FakeEntry::File("original")));
+        assert_eq!(host.hard_links, [(config, backup)]);
+        assert!(host.removals.is_empty());
+        assert!(host.invocations.is_empty());
+    }
+
+    #[test]
+    fn restoration_race_never_replaces_either_file() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.hard_link_race = Some((config.clone(), FakeEntry::File("racer")));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::LinkCargoConfig { operation, .. })
+                if operation == "restore"
+        ));
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("racer")));
+        assert_eq!(host.entries.get(&backup), Some(&FakeEntry::File("original")));
+        assert_eq!(host.hard_links, [(config.clone(), backup.clone())]);
+        assert_eq!(host.removals, [config]);
+        assert_eq!(host.invocations.len(), 1);
+    }
+
+    #[test]
+    fn restoration_unlink_failure_preserves_original_bytes_under_both_names() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.remove_failures.push_back((backup.clone(), io::ErrorKind::PermissionDenied));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::UnlinkCargoConfig { operation, recovery, .. })
+                if operation == "restore" && recovery == backup
+        ));
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert_eq!(host.entries.get(&backup), Some(&FakeEntry::File("original")));
+        assert_eq!(
+            host.hard_links,
+            [(config.clone(), backup.clone()), (backup.clone(), config.clone())]
+        );
+        assert_eq!(host.removals, [config]);
+        assert_eq!(host.invocations.len(), 1);
+    }
+
+    #[test]
+    fn miri_rejects_a_non_file_config_without_mutation() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let mut host = FakeExecutionHost::default();
+        host.entries.insert(config.clone(), FakeEntry::Other);
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::CargoConfigNotFile { path }) if path == config
+        ));
+        assert!(host.hard_links.is_empty());
+        assert!(host.removals.is_empty());
+        assert!(host.invocations.is_empty());
+    }
+
+    #[test]
+    fn miri_rejects_a_canonicalized_cargo_directory_escape_before_mutation() {
+        let root = test_root();
+        let configured = root.join("zerocopy/.cargo");
+        let outside = root.parent().unwrap().join("outside-miri-cargo");
+        let config = root.join(MIRI_CONFIG_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.canonicalize_result = Some(Ok(outside.clone()));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::MiriCargoDirectoryOutsideRepository {
+                configured: error_configured,
+                resolved,
+                repository_root,
+            }) if error_configured == configured
+                && resolved == outside
+                && repository_root == root
+        ));
+        assert_eq!(host.canonicalized, [configured]);
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert!(host.hard_links.is_empty());
+        assert!(host.removals.is_empty());
+        assert!(host.invocations.is_empty());
+    }
+
+    #[test]
+    fn miri_reports_cargo_directory_canonicalization_failure_before_mutation() {
+        let root = test_root();
+        let configured = root.join("zerocopy/.cargo");
+        let config = root.join(MIRI_CONFIG_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.canonicalize_result = Some(Err(io::ErrorKind::PermissionDenied));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        assert!(matches!(
+            execute_miri_cell_with(inputs(), &selector, &mut host),
+            Err(CellExecutionError::ResolveMiriCargoDirectory { path, .. })
+                if path == configured
+        ));
+        assert_eq!(host.canonicalized, [configured]);
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert!(host.hard_links.is_empty());
+        assert!(host.removals.is_empty());
+        assert!(host.invocations.is_empty());
+    }
+
+    #[test]
+    fn miri_uses_an_in_repository_canonical_cargo_directory() {
+        let root = test_root();
+        let configured = root.join("zerocopy/.cargo");
+        let resolved = root.join("canonical-miri-cargo");
+        let config = resolved.join("config.toml");
+        let backup = resolved.join("config.toml.bak");
+        let mut host = FakeExecutionHost {
+            canonicalize_result: Some(Ok(resolved)),
+            ..FakeExecutionHost::default()
+        };
+        host.entries.insert(config.clone(), FakeEntry::File("original"));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        execute_miri_cell_with(inputs(), &selector, &mut host).unwrap();
+
+        assert_eq!(host.canonicalized, [configured]);
+        assert_eq!(host.entries.get(&config), Some(&FakeEntry::File("original")));
+        assert!(!host.entries.contains_key(&backup));
+        assert_eq!(
+            host.hard_links,
+            [(config.clone(), backup.clone()), (backup.clone(), config.clone())]
+        );
+    }
+
+    #[test]
+    fn reports_both_miri_and_restore_failures_and_preserves_backup() {
+        let root = test_root();
+        let config = root.join(MIRI_CONFIG_PATH);
+        let backup = root.join(MIRI_CONFIG_BACKUP_PATH);
+        let mut host = fake_host_with_miri_config(&root);
+        host.outcomes.push_back(ProcessOutcome { success: false, code: Some(1) });
+        host.create_after_run = Some((config.clone(), FakeEntry::File("racer")));
+        let selector = miri_selector("push", "x86_64-unknown-linux-gnu", "stacked");
+
+        let error = execute_miri_cell_with(inputs(), &selector, &mut host).unwrap_err();
+
+        assert!(matches!(error, CellExecutionError::MiriAndRestoreFailed { .. }));
+        assert_eq!(host.entries.get(&backup), Some(&FakeEntry::File("original")));
+    }
+
+    #[test]
+    fn dynamic_substitution_requires_one_exact_argv_element() {
+        let missing = ["prefix<threads>suffix".to_owned()];
+        assert!(matches!(
+            substitute_dynamic("Miri", &missing, "<threads>", "4"),
+            Err(CellExecutionError::DynamicPlaceholder { occurrences: 0, .. })
+        ));
+        let duplicate = ["<threads>".to_owned(), "<threads>".to_owned()];
+        assert!(matches!(
+            substitute_dynamic("Miri", &duplicate, "<threads>", "4"),
+            Err(CellExecutionError::DynamicPlaceholder { occurrences: 2, .. })
+        ));
+        assert_eq!(
+            substitute_dynamic(
+                "Miri",
+                &["--test-threads".to_owned(), "<threads>".to_owned()],
+                "<threads>",
+                "4",
+            )
+            .unwrap(),
+            ["--test-threads", "4"]
+        );
     }
 
     fn is_non_golden_native_test(class: EventClass, operation: &MatrixOperation) -> bool {
