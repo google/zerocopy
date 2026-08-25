@@ -36,12 +36,19 @@ zerocopy/Cargo.toml
   requests.
 - `miri-full.tsv` contains the 64 Miri cells for a full event.
 - `standalone-obligations.tsv` inventories operations outside the two test
-  matrices. It expands the current pre-push hook so repeated checks are visible.
+  matrices. It expands the pre-push hook at the source commit so repeated
+  checks are visible.
 - `logical-obligations.tsv` normalizes matrix and standalone operations and
   records their physical occurrence counts on pull-request and full events.
 - `command-goldens.tsv` records representative expanded argument vectors,
   action inputs, and relevant environment values.
 - `manifest.tsv` records source identity, counts, and cross-check results.
+
+These files describe the immutable source commit, not only today's live jobs.
+Some standalone rows therefore name operations retired after that commit,
+notably `check-all-toolchains-tested`. `execution.rs` continues to model those
+rows so the typed replacement proves parity with what it replaced; deleting
+them would weaken that evidence rather than remove a current check.
 
 Here, a *full event* means any non-pull-request event. `merge_group` was used to
 derive the rows. `push` and `workflow_dispatch` produce the same matrix sets
