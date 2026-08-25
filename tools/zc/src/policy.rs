@@ -31,6 +31,8 @@ use std::{
 use serde::Deserialize;
 use thiserror::Error;
 
+use crate::identifier::{self, IdentifierError, MAX_ID_BYTES};
+
 /// The only policy schema understood by this version of `zc`.
 pub const POLICY_SCHEMA_VERSION: u32 = 1;
 
@@ -60,12 +62,6 @@ const MAX_TARGET_SET_DECLARATIONS: usize = MAX_PLAN_CELLS as usize;
 /// target unless their aggregate upper bound fits the planner's existing hard
 /// expansion limit.
 const MAX_TARGET_SET_MEMBERSHIPS: u64 = MAX_PLAN_CELLS;
-
-/// Maximum bytes in one stable policy identifier.
-///
-/// Target-set resolution clones identifiers. The aggregate membership bound
-/// limits the number of clones, while this limit bounds the bytes in each one.
-const MAX_ID_BYTES: usize = 256;
 
 /// A conservative interpretation of GitHub's one-megabyte job-output limit.
 ///
@@ -978,36 +974,27 @@ impl Validator {
     }
 
     fn id(&mut self, location: &str, value: &str) -> Option<Id> {
-        if value.len() > MAX_ID_BYTES {
-            self.error(
-                location,
-                format!(
-                    "identifier is {} bytes, above the hard safety bound of {MAX_ID_BYTES}",
-                    value.len()
-                ),
-            );
-            return None;
+        match identifier::validate(value) {
+            Ok(()) => Some(Id(value.to_owned())),
+            Err(IdentifierError::TooLong { bytes }) => {
+                self.error(
+                    location,
+                    format!(
+                        "identifier is {bytes} bytes, above the hard safety bound of {MAX_ID_BYTES}"
+                    ),
+                );
+                None
+            }
+            Err(IdentifierError::InvalidSyntax) => {
+                self.error(
+                    location,
+                    format!(
+                        "`{value}` is not a stable identifier; use lowercase ASCII letters, digits, `_`, `-`, or `.`, and do not start or end with `-` or `.`"
+                    ),
+                );
+                None
+            }
         }
-        let valid = !value.is_empty()
-            && value.bytes().enumerate().all(|(index, byte)| match byte {
-                b'a'..=b'z' | b'0'..=b'9' | b'_' => true,
-                b'-' | b'.' => index != 0,
-                _ => false,
-            })
-            && !value.ends_with('-')
-            && !value.ends_with('.')
-            && value != "."
-            && value != "..";
-        if !valid {
-            self.error(
-                location,
-                format!(
-                    "`{value}` is not a stable identifier; use lowercase ASCII letters, digits, `_`, `-`, or `.`, and do not start or end with `-` or `.`"
-                ),
-            );
-            return None;
-        }
-        Some(Id(value.to_owned()))
     }
 
     fn id_set(&mut self, location: &str, values: &[String]) -> BTreeSet<Id> {
