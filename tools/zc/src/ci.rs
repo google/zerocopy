@@ -13,10 +13,11 @@
 //! metadata and repository files, every workflow job has an exact reviewed
 //! role, the handwritten matrix jobs exactly publish and consume typed plans,
 //! the complete standalone semver job consumes its typed target matrix and
-//! exactly implements policy, every independently recorded legacy baseline
-//! parses canonically, and the typed execution model exactly reproduces that
-//! legacy evidence. Planners therefore consume checked data rather than
-//! remembering which validation passes must precede which lookups.
+//! exactly implements policy, the required check exactly aggregates their
+//! conclusions, every independently recorded legacy baseline parses
+//! canonically, and the typed execution model exactly reproduces that legacy
+//! evidence. Planners therefore consume checked data rather than remembering
+//! which validation passes must precede which lookups.
 
 use std::{
     collections::HashMap,
@@ -70,11 +71,11 @@ impl CiInputs {
         let repository = RepositoryInventory::audit(&repository_root, &policy)
             .map_err(LoadCiError::Inventory)?;
         // Job-ID inventory cannot prove that a planned job publishes or
-        // consumes its typed matrix through the complete checked CLI. Audit
-        // that small planned-job workflow bridge while both checks refer to
-        // the same fixed file. The image producer also consumes the validated
-        // inventory here so its preinstalled compiler pins cannot drift from
-        // the toolchains selected by the typed plan.
+        // consumes its typed matrix through the complete checked CLI, or that
+        // those conclusions reach the required check. Audit that small bridge
+        // while every check refers to the same fixed file. The image producer
+        // also consumes validated inventory so its preinstalled compiler pins
+        // cannot drift from the toolchains selected by the typed plan.
         audit_planned_adapter(&repository_root, &workflow_jobs, &repository)
             .map_err(LoadCiError::PlannedAdapter)?;
         // `audit_workflows` deliberately recognizes jobs, not arbitrary YAML

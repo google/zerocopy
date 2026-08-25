@@ -18,10 +18,13 @@
 //! a real Docker invocation to the typed executor. Repository-owned actions,
 //! the Dockerfile, and the image context are mutable too, so this boundary
 //! resolves every source inside the checkout and requires its complete contents
-//! to match an independent reviewed snapshot. A missing output, changed matrix
-//! expression, substituted setup step, modified checkout, no-op interpreter,
-//! conditional step, or dropped selector could otherwise silently reduce
-//! coverage while the Rust plan and job-ID inventory remained valid.
+//! to match an independent reviewed snapshot. The required-check aggregate
+//! must then depend on the planner, all typed-plan consumers, and the remaining
+//! dependency-inventory audit while enforcing every optional planned
+//! conclusion. A missing output, changed matrix expression, substituted setup
+//! step, modified checkout, no-op interpreter, conditional step, or dropped
+//! selector could otherwise silently reduce coverage while the Rust plan and
+//! job-ID inventory remained valid.
 //!
 //! This module is deliberately not a YAML or GitHub Actions interpreter. It
 //! recognizes the canonical source forms which carry the planned-job workflow
@@ -42,6 +45,7 @@ use crate::{
     workflow_protocol::WORKFLOW_PATH,
 };
 
+mod aggregate;
 mod image;
 mod matrix;
 mod planner;
@@ -104,6 +108,7 @@ fn audit_source(
     planner::audit(&lines, &mut errors);
     image::audit(&lines, &mut errors);
     matrix::audit(&lines, reviewed_planned_jobs, &mut errors);
+    aggregate::audit(&lines, &mut errors);
 
     if errors.is_empty() {
         Ok(())

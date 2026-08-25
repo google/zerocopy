@@ -1349,10 +1349,7 @@ mod tests {
 
         repository.write_action("runs:\r  using: composite\n");
         let error = read_download_action(&repository.root).unwrap_err();
-        assert!(matches!(
-            error,
-            super::super::PlannedAdapterAuditError::ReadReviewedSource { .. }
-        ));
+        assert!(matches!(error, super::super::PlannedAdapterAuditError::ReadReviewedSource { .. }));
         assert!(error.to_string().contains("bare carriage return"), "{error}");
     }
 
