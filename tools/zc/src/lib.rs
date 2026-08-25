@@ -11,6 +11,7 @@
 pub mod baseline;
 pub mod ci;
 pub mod cli;
+pub mod github;
 pub mod inventory;
 pub mod metadata;
 pub mod plan;
