@@ -53,16 +53,29 @@ use crate::{
 pub const PROJECTION_SCHEMA_VERSION: u32 = 1;
 
 /// The fixed output name consumed by the ordinary build job.
+///
+/// Keep the producer and consumer expressions in the workflow coordinated
+/// with this value.
 pub const BUILD_MATRIX_OUTPUT: &str = "build_matrix";
 
 /// The fixed output name consumed by the Miri job.
+///
+/// This has the same producer/consumer contract as
+/// [`BUILD_MATRIX_OUTPUT`].
 pub const MIRI_MATRIX_OUTPUT: &str = "miri_matrix";
+
+/// The fixed job gate derived from whether the Miri matrix is nonempty.
+///
+/// The workflow must not independently classify events when deciding whether
+/// to run or require Miri.
+pub const MIRI_ENABLED_OUTPUT: &str = "miri_enabled";
 
 /// JSON ready for GitHub Actions plus a detailed review artifact.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct GitHubProjection {
     build_matrix_json: String,
     miri_matrix_json: String,
+    miri_enabled: bool,
     artifact: Vec<u8>,
     output_records: Vec<u8>,
     output_utf16_bytes: u64,
@@ -94,21 +107,27 @@ impl GitHubProjection {
         &self.miri_matrix_json
     }
 
+    /// Returns whether the projected Miri matrix contains any selected cells.
+    pub fn miri_enabled(&self) -> bool {
+        self.miri_enabled
+    }
+
     /// Returns deterministic, pretty JSON suitable for a workflow artifact.
     pub fn artifact_bytes(&self) -> &[u8] {
         &self.artifact
     }
 
-    /// Returns GitHub's UTF-16 size estimate for both output records.
+    /// Returns GitHub's UTF-16 size estimate for all output records.
     pub fn output_utf16_bytes(&self) -> u64 {
         self.output_utf16_bytes
     }
 
-    /// Appends the two checked `name=value` records to `GITHUB_OUTPUT`.
+    /// Appends the three checked `name=value` records to `GITHUB_OUTPUT`.
     ///
     /// The caller supplies the path rather than this library reading ambient
-    /// environment state. Names are fixed constants and compact JSON never
-    /// contains a literal newline, so plan data cannot inject another output.
+    /// environment state. Names are fixed constants, the gate is a Rust
+    /// boolean, and compact JSON never contains a literal newline, so plan data
+    /// cannot inject another output.
     pub fn append_to_github_output(
         &self,
         github_output: impl AsRef<Path>,
@@ -288,6 +307,8 @@ struct CompactMatrix<T> {
 // repository inputs and resolve feature arguments, target behavior, and Miri
 // flags themselves. Putting those derived details in the compact matrix would
 // create a second execution contract which could drift from that resolution.
+// Keep the handwritten Actions jobs and byte-for-byte compact-schema tests
+// below coordinated with any deliberate transport change.
 #[derive(Serialize)]
 struct CompactBuildCell<'a> {
     #[serde(rename = "crate")]
@@ -454,6 +475,7 @@ fn project(
     let selected_builds =
         one_workflow_shard("ordinary build matrix", &selected_builds, max_matrix_cells)?;
     let selected_miri = one_workflow_shard("Miri matrix", &selected_miri, max_matrix_cells)?;
+    let miri_enabled = !selected_miri.is_empty();
 
     let compact_builds = CompactMatrix {
         include: selected_builds
@@ -476,7 +498,7 @@ fn project(
     artifact.push(b'\n');
 
     let output_records = format!(
-        "{BUILD_MATRIX_OUTPUT}={build_matrix_json}\n{MIRI_MATRIX_OUTPUT}={miri_matrix_json}\n"
+        "{BUILD_MATRIX_OUTPUT}={build_matrix_json}\n{MIRI_MATRIX_OUTPUT}={miri_matrix_json}\n{MIRI_ENABLED_OUTPUT}={miri_enabled}\n"
     );
     let output_utf16_bytes = utf16_bytes(&output_records);
     if output_utf16_bytes > max_job_output_utf16_bytes {
@@ -489,6 +511,7 @@ fn project(
     Ok(GitHubProjection {
         build_matrix_json,
         miri_matrix_json,
+        miri_enabled,
         artifact,
         output_records: output_records.into_bytes(),
         output_utf16_bytes,
@@ -789,7 +812,7 @@ mod tests {
     use super::{
         one_workflow_shard, project, shard_cells, slash_normalized_path, utf16_bytes,
         CompactBuildCell, CompactMiriCell, GitHubProjection, ProjectionError, ProjectionWriteError,
-        BUILD_MATRIX_OUTPUT, MIRI_MATRIX_OUTPUT, PROJECTION_SCHEMA_VERSION,
+        BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT, PROJECTION_SCHEMA_VERSION,
     };
     use crate::{
         ci::CiInputs,
@@ -825,6 +848,7 @@ mod tests {
                 parse(projection.miri_matrix_json())["include"].as_array().unwrap().len(),
                 miri
             );
+            assert_eq!(projection.miri_enabled(), miri != 0);
 
             let artifact: Value = serde_json::from_slice(projection.artifact_bytes()).unwrap();
             assert_eq!(artifact["schema_version"], PROJECTION_SCHEMA_VERSION);
@@ -911,6 +935,7 @@ mod tests {
 
         assert_eq!(first.build_matrix_json(), second.build_matrix_json());
         assert_eq!(first.miri_matrix_json(), second.miri_matrix_json());
+        assert_eq!(first.miri_enabled(), second.miri_enabled());
         assert_eq!(first.artifact_bytes(), second.artifact_bytes());
         assert!(first.artifact_bytes().ends_with(b"\n"));
     }
@@ -920,6 +945,15 @@ mod tests {
         let projection = GitHubProjection::create(inputs(), "pull_request").unwrap();
 
         assert_eq!(projection.miri_matrix_json(), r#"{"include":[]}"#);
+        assert!(!projection.miri_enabled());
+    }
+
+    #[test]
+    fn a_nonempty_miri_matrix_enables_its_consumer() {
+        let projection = GitHubProjection::create(inputs(), "merge_group").unwrap();
+
+        assert_ne!(projection.miri_matrix_json(), r#"{"include":[]}"#);
+        assert!(projection.miri_enabled());
     }
 
     #[test]
@@ -957,19 +991,20 @@ mod tests {
 
         let projection = GitHubProjection::create(inputs(), "pull_request").unwrap();
         let records = format!(
-            "{BUILD_MATRIX_OUTPUT}={}\n{MIRI_MATRIX_OUTPUT}={}\n",
+            "{BUILD_MATRIX_OUTPUT}={}\n{MIRI_MATRIX_OUTPUT}={}\n{MIRI_ENABLED_OUTPUT}={}\n",
             projection.build_matrix_json(),
             projection.miri_matrix_json(),
+            projection.miri_enabled(),
         );
         assert_eq!(projection.output_utf16_bytes(), utf16_bytes(&records));
 
         // These sizes make growth in the compact workflow contract visible.
         // A deliberate coverage change can update them, but adding derived
         // execution details to every cell should not pass unnoticed.
-        assert_eq!(projection.output_utf16_bytes(), 14_794);
+        assert_eq!(projection.output_utf16_bytes(), 14_832);
         assert_eq!(
             GitHubProjection::create(inputs(), "merge_group").unwrap().output_utf16_bytes(),
-            60_798
+            60_834
         );
     }
 
@@ -1103,8 +1138,9 @@ mod tests {
             output.contains(&format!("{BUILD_MATRIX_OUTPUT}={}\n", projection.build_matrix_json()))
         );
         assert!(
-            output.ends_with(&format!("{MIRI_MATRIX_OUTPUT}={}\n", projection.miri_matrix_json()))
+            output.contains(&format!("{MIRI_MATRIX_OUTPUT}={}\n", projection.miri_matrix_json()))
         );
+        assert!(output.ends_with(&format!("{MIRI_ENABLED_OUTPUT}={}\n", projection.miri_enabled())));
         assert_eq!(fs::read(artifact).unwrap(), projection.artifact_bytes());
         assert_eq!(fs::read_dir(&directory).unwrap().count(), 2);
 

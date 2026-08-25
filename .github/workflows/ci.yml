@@ -15,11 +15,9 @@ name: Build & Tests
       - main
   pull_request:
   merge_group:
-  # Useful for manually testing changes to this workflow. Because we check for
-  # the merge queue by doing `github.event_name != 'pull_request'` rather than
-  # `github.event_name == 'merge_group'`, triggering via workflow dispatch has
-  # the effect of running all jobs, including those which would normally only be
-  # run in the merge queue.
+  # Useful for manually testing changes to this workflow. The typed planner
+  # classifies this as a full event, so its plan enables all ordinary CI work,
+  # including Miri.
   workflow_dispatch:
 
 permissions:
@@ -61,8 +59,8 @@ jobs:
   # jobs consume only the checked selectors from each matrix cell and pass them
   # back to `cargo-zerocopy`, which reconstructs and executes the complete
   # command without interpreting matrix data as shell text. Keep the output
-  # names coordinated with `tools/zc/src/github.rs` and the two `fromJSON`
-  # expressions below.
+  # names coordinated with `tools/zc/src/github.rs`, the two `fromJSON`
+  # expressions below, and the Miri eligibility consumers below.
   plan_ci:
     name: Plan ordinary CI work
     runs-on: ubuntu-latest
@@ -71,9 +69,10 @@ jobs:
     outputs:
       build_matrix: ${{ steps.plan.outputs.build_matrix }}
       miri_matrix: ${{ steps.plan.outputs.miri_matrix }}
-    defaults:
-      run:
-        working-directory: zerocopy
+      # This gate is derived from the projected Miri matrix, not independently
+      # from the event name. Keep it coordinated with `tools/zc/src/github.rs`,
+      # the Miri job condition, and the required-check aggregation.
+      miri_enabled: ${{ steps.plan.outputs.miri_enabled }}
     env:
       # upload-file-artifact requires its name to equal the path basename.
       # Keep this one value coordinated with the planner invocation and upload
@@ -86,11 +85,21 @@ jobs:
 
       - name: Validate inputs and project the plan
         id: plan
+        # The absolute custom shell removes Bash startup-control variables and
+        # enables privileged mode so inherited startup files, shell options,
+        # and exported functions cannot turn this step into a successful no-op.
+        shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
+        working-directory: zerocopy
         env:
           EVENT_NAME: ${{ github.event_name }}
+        # The runner applies GITHUB_PATH after merging step env, so assign the
+        # fixed path directly to the child command. Do not rely on cargo.sh's
+        # /usr/bin/env bash shebang. Privileged mode also prevents an imported
+        # function from replacing a builtin when this child Bash starts.
         run: |
           set -euo pipefail
-          ./cargo.sh ci github-plan \
+          PATH=/home/runner/.cargo/bin:/usr/local/bin:/usr/bin:/bin \
+          /bin/bash --noprofile --norc -p ./cargo.sh ci github-plan \
             --event "$EVENT_NAME" \
             --github-output "$GITHUB_OUTPUT" \
             --artifact "$RUNNER_TEMP/$CI_PLAN_ARTIFACT"
@@ -213,10 +222,19 @@ jobs:
 
     # The matrix values are data, not shell fragments. `cargo-zerocopy`
     # validates these selectors against the plan for this event, reconstructs
-    # the typed argv and environment, and executes the complete cell. Keep this
-    # invocation coordinated with `tools/zc/src/cli.rs`; adding a command here
-    # would bypass the checked execution model.
+    # the typed argv and environment, and executes the complete cell. This step
+    # deliberately does not use the job's generated Docker shell: auditing its
+    # path would not prove that the generated wrapper still invokes Docker.
+    # Instead, the complete bridge below is explicit. The absolute Docker path
+    # relies on the hosted Ubuntu runner contract and prevents a PATH shim from
+    # returning success without starting a container. The entrypoint override
+    # and Bash startup options prevent image startup behavior or exported
+    # functions from intercepting the typed executor argv. The option
+    # terminator forces the inherited image value to be parsed as an image.
+    # Keep this command and its options coordinated with `tools/zc/src/cli.rs`.
     - name: Execute checked build cell
+      shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
+      working-directory: zerocopy
       env:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
@@ -224,7 +242,28 @@ jobs:
         TARGET: ${{ matrix.target }}
       run: |
         set -euo pipefail
-        ./cargo.sh ci execute-build-cell \
+        /usr/bin/docker run --rm \
+          --workdir "$PWD" \
+          -v /home/runner/work:/home/runner/work \
+          -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \
+          -v /home/runner/.docker-cargo/git:/root/.cargo/git \
+          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
+          -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
+          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE \
+          -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
+          -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
+          -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
+          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
+          -e GIT_CONFIG_COUNT=1 \
+          -e GIT_CONFIG_KEY_0=safe.directory \
+          -e "GIT_CONFIG_VALUE_0=*" \
+          --entrypoint /bin/bash \
+          -- \
+          "$ZC_CI_IMAGE" \
+          --noprofile \
+          --norc \
+          -p \
+          ./cargo.sh ci execute-build-cell \
           --event "$GITHUB_EVENT_NAME" \
           --package "$CRATE" \
           --toolchain "$TOOLCHAIN" \
@@ -323,24 +362,26 @@ jobs:
         matrix.target != 'wasm32-unknown-unknown' &&
         env.ZC_SKIP_CARGO_SEMVER_CHECKS != '1'
 
-  # Miri runs only on full events because it is much more expensive than the
-  # ordinary build matrix. Each borrow model is its own matrix cell so the two
-  # models and all eligible target/profile combinations can run concurrently.
+  # Today's policy selects Miri only for full events because it is much more
+  # expensive than the ordinary build matrix. Each borrow model is its own
+  # matrix cell so the models and all eligible target/profile combinations can
+  # run concurrently. The job itself follows the plan rather than repeating
+  # that current policy.
   miri:
-    if: github.event_name != 'pull_request'
+    # The planner derives this output solely from whether it selected any Miri
+    # cells. Do not duplicate today's PR/full-event policy here: future policy
+    # changes must automatically enable or skip this job with the matrix they
+    # produce.
+    if: needs.plan_ci.outputs.miri_enabled == 'true'
     runs-on: ubuntu-latest
     needs: [build_docker_env, plan_ci]
     permissions:
       contents: read
-    defaults:
-      run:
-        shell: /tmp/docker-shell.sh {0} # zizmor: ignore[misfeature] (CI intentionally routes Miri through the prebuilt Docker image)
-        working-directory: zerocopy
     strategy:
       fail-fast: false
-      # Pull requests skip this job before matrix expansion. Full events consume
-      # exactly the Miri cells selected by the same checked plan used by the
-      # executor below.
+      # A planner-disabled job skips before matrix expansion. When enabled, it
+      # consumes exactly the Miri cells selected by the same checked plan used
+      # by the executor below.
       matrix: ${{ fromJSON(needs.plan_ci.outputs.miri_matrix) }}
 
     name: Miri (${{ matrix.crate }} / ${{ matrix.feature_profile }} / ${{ matrix.miri_model }} / ${{ matrix.target }})
@@ -349,12 +390,18 @@ jobs:
     - *matrix_checkout
     - *download_ci_image
     - *load_ci_image
-    - *create_docker_shell
 
     # As with ordinary cells, the workflow passes only selectors. Model flags,
     # feature arguments, the Cargo configuration transaction, and target
     # workarounds belong to the typed executor rather than this shell adapter.
+    # This explicit Docker bridge does not rely on the generated job shell
+    # actually executing its input. Its absolute Docker path, entrypoint
+    # override, Bash startup options, and option terminator provide the same
+    # fail-closed boundary as the ordinary build bridge. Keep the separate
+    # Miri-model selector coordinated with `tools/zc/src/cli.rs`.
     - name: Execute checked Miri cell
+      shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
+      working-directory: zerocopy
       env:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
@@ -363,7 +410,28 @@ jobs:
         MIRI_MODEL: ${{ matrix.miri_model }}
       run: |
         set -euo pipefail
-        ./cargo.sh ci execute-miri-cell \
+        /usr/bin/docker run --rm \
+          --workdir "$PWD" \
+          -v /home/runner/work:/home/runner/work \
+          -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \
+          -v /home/runner/.docker-cargo/git:/root/.cargo/git \
+          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
+          -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
+          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE -e MIRI_MODEL \
+          -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
+          -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
+          -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
+          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
+          -e GIT_CONFIG_COUNT=1 \
+          -e GIT_CONFIG_KEY_0=safe.directory \
+          -e "GIT_CONFIG_VALUE_0=*" \
+          --entrypoint /bin/bash \
+          -- \
+          "$ZC_CI_IMAGE" \
+          --noprofile \
+          --norc \
+          -p \
+          ./cargo.sh ci execute-miri-cell \
           --event "$GITHUB_EVENT_NAME" \
           --package "$CRATE" \
           --toolchain "$TOOLCHAIN" \
@@ -786,32 +854,39 @@ jobs:
 
         # GitHub can omit a job output at promotion time if its secret scanner
         # produces a false positive. Keep this comparison in expression space
-        # so the large JSON never enters a process environment; a PR's empty
-        # Miri plan is still the nonempty JSON value {"include":[]}.
+        # so the large JSON never enters a process environment. A disabled Miri
+        # plan is still the nonempty JSON value {"include":[]}; the boolean gate
+        # must also be present and canonical before aggregation trusts it.
         - name: Require published planner outputs
-          if: ${{ needs.plan_ci.result == 'success' && (needs.plan_ci.outputs.build_matrix == '' || needs.plan_ci.outputs.miri_matrix == '') }}
+          if: ${{ needs.plan_ci.result == 'success' && (needs.plan_ci.outputs.build_matrix == '' || needs.plan_ci.outputs.miri_matrix == '' || (needs.plan_ci.outputs.miri_enabled != 'true' && needs.plan_ci.outputs.miri_enabled != 'false')) }}
+          shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
           run: exit 1
 
         - name: Require every dependency to succeed
+          # Pin the absolute interpreter and remove Bash startup controls so a
+          # job default, PATH shim, or exported function cannot turn this
+          # required-check assertion into a successful no-op.
+          shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
           env:
-            EVENT_NAME: ${{ github.event_name }}
             # Do not serialize the entire `needs` object here: job outputs may
             # legitimately approach GitHub's configured output limit, while a
             # Linux process has a much smaller per-environment-value limit.
             # Results stay small regardless of matrix JSON size. Keep the
-            # separate Miri result so the one intentional PR skip is still
-            # identified rather than accepting an arbitrary skipped job.
+            # separate Miri result so a planner-disabled Miri job is identified
+            # rather than accepting an arbitrary skipped dependency.
             RESULTS_JSON: ${{ toJSON(needs.*.result) }}
+            MIRI_ENABLED: ${{ needs.plan_ci.outputs.miri_enabled }}
             MIRI_RESULT: ${{ needs.miri.result }}
           run: |
             set -euo pipefail
-            jq -e --arg event "$EVENT_NAME" --arg miri "$MIRI_RESULT" '
+            /usr/bin/jq -e --arg enabled "$MIRI_ENABLED" --arg miri "$MIRI_RESULT" '
               type == "array" and length > 0 and
-              if $event == "pull_request"
+              if $enabled == "false"
               then $miri == "skipped" and
                    ([.[] | select(. == "skipped")] | length) == 1 and
                    all(.[]; . == "success" or . == "skipped")
-              else $miri == "success" and
+              else $enabled == "true" and
+                   $miri == "success" and
                    all(.[]; . == "success")
               end
             ' <<< "$RESULTS_JSON"

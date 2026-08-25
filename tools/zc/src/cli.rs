@@ -645,7 +645,10 @@ mod tests {
     };
 
     use super::{run, CliError, Command};
-    use crate::execution::{BuildCellSelector, MiriCellSelector};
+    use crate::{
+        execution::{BuildCellSelector, MiriCellSelector},
+        github::{BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT},
+    };
 
     fn strings(args: &[&str]) -> Vec<String> {
         args.iter().map(|arg| (*arg).to_owned()).collect()
@@ -897,7 +900,7 @@ mod tests {
     }
 
     #[test]
-    fn github_plan_publishes_both_outputs_from_one_checked_projection() {
+    fn github_plan_publishes_all_outputs_from_one_checked_projection() {
         static NEXT: AtomicU64 = AtomicU64::new(0);
         let unique = NEXT.fetch_add(1, Ordering::Relaxed);
         let directory =
@@ -921,8 +924,9 @@ mod tests {
         .unwrap();
 
         let job_outputs = fs::read_to_string(github_output).unwrap();
-        assert!(job_outputs.starts_with("build_matrix={\"include\":["));
-        assert!(job_outputs.ends_with("miri_matrix={\"include\":[]}\n"));
+        assert!(job_outputs.starts_with(&format!("{BUILD_MATRIX_OUTPUT}={{\"include\":[")));
+        assert!(job_outputs.contains(&format!("{MIRI_MATRIX_OUTPUT}={{\"include\":[]}}\n")));
+        assert!(job_outputs.ends_with(&format!("{MIRI_ENABLED_OUTPUT}=false\n")));
         let artifact_json: serde_json::Value =
             serde_json::from_slice(&fs::read(artifact).unwrap()).unwrap();
         assert_eq!(artifact_json["event"], "pull_request");
