@@ -17,7 +17,8 @@
 //!
 //! There are two deliberately different JSON forms:
 //!
-//! - compact matrices contain only fields consumed by `ci.yml`; and
+//! - compact matrices contain only the exact selectors accepted by the typed
+//!   cell executors and intended for `ci.yml`; and
 //! - the pretty artifact records every candidate and its decision for people
 //!   diagnosing CI coverage.
 //!
@@ -282,27 +283,18 @@ struct CompactMatrix<T> {
     include: Vec<T>,
 }
 
+// These transport structs deliberately repeat only the selectors accepted by
+// `execute-build-cell` and `execute-miri-cell`. The executors load the checked
+// repository inputs and resolve feature arguments, target behavior, and Miri
+// flags themselves. Putting those derived details in the compact matrix would
+// create a second execution contract which could drift from that resolution.
 #[derive(Serialize)]
 struct CompactBuildCell<'a> {
     #[serde(rename = "crate")]
     package: &'a str,
     toolchain: &'a str,
     feature_profile: &'a str,
-    // Preserve the exact argument boundaries owned by `FeatureSelection`.
-    // When the workflow begins consuming this matrix, pass these entries to a
-    // typed executor as an array; never join them into shell text or subject
-    // them to word splitting or pathname expansion.
-    feature_args: Vec<String>,
     target: &'a str,
-    target_mode: CompactTargetMode,
-}
-
-#[derive(Clone, Copy, Serialize)]
-#[serde(rename_all = "snake_case")]
-enum CompactTargetMode {
-    Native,
-    Cross,
-    Thumb,
 }
 
 #[derive(Serialize)]
@@ -311,20 +303,8 @@ struct CompactMiriCell<'a> {
     package: &'a str,
     toolchain: &'a str,
     feature_profile: &'a str,
-    // This is the same checked Cargo argv fragment used by ordinary cells, not
-    // a second profile-name lookup or a Miri-specific translation.
-    feature_args: Vec<String>,
     target: &'a str,
-    miri_model: CompactMiriModel<'a>,
-}
-
-#[derive(Serialize)]
-struct CompactMiriModel<'a> {
-    name: &'a str,
-    // Preserve argument boundaries. The workflow uses only `name` as the
-    // selector for the typed executor; the flags remain visible for review
-    // without ever undergoing shell word splitting or pathname expansion.
-    flags: &'a [String],
+    miri_model: &'a str,
 }
 
 #[derive(Serialize)]
@@ -527,9 +507,7 @@ fn compact_build_cell(cell: &BuildPlanCell) -> CompactBuildCell<'_> {
         package: cell.package().id(),
         toolchain: cell.toolchain().id(),
         feature_profile: cell.features().profile(),
-        feature_args: cell.features().selection().cargo_args(),
         target: cell.target().triple(),
-        target_mode: execution_mode(cell.target().mode()),
     }
 }
 
@@ -538,9 +516,8 @@ fn compact_miri_cell(cell: &MiriPlanCell) -> CompactMiriCell<'_> {
         package: cell.package().id(),
         toolchain: cell.toolchain().id(),
         feature_profile: cell.features().profile(),
-        feature_args: cell.features().selection().cargo_args(),
         target: cell.target().triple(),
-        miri_model: CompactMiriModel { name: cell.model().id(), flags: cell.model().flags() },
+        miri_model: cell.model().id(),
     }
 }
 
@@ -673,29 +650,12 @@ fn decision_counts(decisions: impl Iterator<Item = CellDecision>) -> DecisionCou
     counts
 }
 
-fn execution_mode(mode: ExecutionMode) -> CompactTargetMode {
-    match mode {
-        ExecutionMode::Native => CompactTargetMode::Native,
-        ExecutionMode::Cross => CompactTargetMode::Cross,
-        ExecutionMode::Thumb => CompactTargetMode::Thumb,
-    }
-}
-
-impl From<CompactTargetMode> for ArtifactExecutionMode {
-    fn from(mode: CompactTargetMode) -> Self {
-        match mode {
-            CompactTargetMode::Native => Self::Native,
-            CompactTargetMode::Cross => Self::Cross,
-            CompactTargetMode::Thumb => Self::Thumb,
-        }
-    }
-}
-
-// Keep compact and artifact spellings tied to the same exhaustive conversion.
-// This overload avoids two independent matches if another execution mode is
-// added to the planner.
 fn execution_mode_for_artifact(mode: ExecutionMode) -> ArtifactExecutionMode {
-    execution_mode(mode).into()
+    match mode {
+        ExecutionMode::Native => ArtifactExecutionMode::Native,
+        ExecutionMode::Cross => ArtifactExecutionMode::Cross,
+        ExecutionMode::Thumb => ArtifactExecutionMode::Thumb,
+    }
 }
 
 fn slash_normalized_path(path: &Path) -> Result<String, ProjectionError> {
@@ -828,12 +788,12 @@ mod tests {
 
     use super::{
         one_workflow_shard, project, shard_cells, slash_normalized_path, utf16_bytes,
-        CompactBuildCell, CompactTargetMode, GitHubProjection, ProjectionError,
-        ProjectionWriteError, BUILD_MATRIX_OUTPUT, MIRI_MATRIX_OUTPUT, PROJECTION_SCHEMA_VERSION,
+        CompactBuildCell, CompactMiriCell, GitHubProjection, ProjectionError, ProjectionWriteError,
+        BUILD_MATRIX_OUTPUT, MIRI_MATRIX_OUTPUT, PROJECTION_SCHEMA_VERSION,
     };
     use crate::{
         ci::CiInputs,
-        plan::{FeatureSelection, Plan, PlanExplanation},
+        plan::{Plan, PlanExplanation},
     };
 
     fn inputs() -> &'static CiInputs {
@@ -889,13 +849,7 @@ mod tests {
                         "crate": cell.package().id(),
                         "toolchain": cell.toolchain().id(),
                         "feature_profile": cell.features().profile(),
-                        "feature_args": cell.features().selection().cargo_args(),
                         "target": cell.target().triple(),
-                        "target_mode": match cell.target().mode() {
-                            crate::plan::ExecutionMode::Native => "native",
-                            crate::plan::ExecutionMode::Cross => "cross",
-                            crate::plan::ExecutionMode::Thumb => "thumb",
-                        },
                     })
                 })
                 .collect::<Vec<_>>();
@@ -907,12 +861,8 @@ mod tests {
                         "crate": cell.package().id(),
                         "toolchain": cell.toolchain().id(),
                         "feature_profile": cell.features().profile(),
-                        "feature_args": cell.features().selection().cargo_args(),
                         "target": cell.target().triple(),
-                        "miri_model": {
-                            "name": cell.model().id(),
-                            "flags": cell.model().flags(),
-                        },
+                        "miri_model": cell.model().id(),
                     })
                 })
                 .collect::<Vec<_>>();
@@ -929,64 +879,29 @@ mod tests {
     }
 
     #[test]
-    fn compact_projection_carries_feature_semantics_not_just_profile_names() {
-        let projection = GitHubProjection::create(inputs(), "merge_group").unwrap();
-        let builds = parse(projection.build_matrix_json());
-        let builds = builds["include"].as_array().unwrap();
-
-        let args_for_profile = |profile: &str| {
-            builds
-                .iter()
-                .find(|cell| cell["crate"] == "zerocopy" && cell["feature_profile"] == profile)
-                .unwrap()["feature_args"]
-                .clone()
+    fn compact_cell_schemas_are_exact_executor_selectors() {
+        let build = CompactBuildCell {
+            package: "package",
+            toolchain: "toolchain",
+            feature_profile: "profile",
+            target: "target",
         };
-        assert_eq!(args_for_profile("default"), json!([]));
         assert_eq!(
-            args_for_profile("stable"),
-            json!([
-                "--no-default-features",
-                "--features",
-                "__internal_use_only_features_that_work_on_stable"
-            ])
+            serde_json::to_string(&build).unwrap(),
+            r#"{"crate":"package","toolchain":"toolchain","feature_profile":"profile","target":"target"}"#
         );
-        assert_eq!(args_for_profile("all"), json!(["--all-features"]));
 
-        let miri = parse(projection.miri_matrix_json());
-        assert!(miri["include"].as_array().unwrap().iter().all(|cell| {
-            cell["feature_args"]
-                == builds
-                    .iter()
-                    .find(|build| {
-                        build["crate"] == cell["crate"]
-                            && build["feature_profile"] == cell["feature_profile"]
-                    })
-                    .unwrap()["feature_args"]
-        }));
-    }
-
-    #[test]
-    fn every_feature_selection_serializes_exact_argument_boundaries() {
-        let projected = |selection: FeatureSelection| {
-            serde_json::to_value(CompactBuildCell {
-                package: "package",
-                toolchain: "toolchain",
-                feature_profile: "profile",
-                feature_args: selection.cargo_args(),
-                target: "target",
-                target_mode: CompactTargetMode::Native,
-            })
-            .unwrap()["feature_args"]
-                .clone()
+        let miri = CompactMiriCell {
+            package: "package",
+            toolchain: "toolchain",
+            feature_profile: "profile",
+            target: "target",
+            miri_model: "model",
         };
-
-        assert_eq!(projected(FeatureSelection::Default), json!([]));
-        assert_eq!(projected(FeatureSelection::NoDefault), json!(["--no-default-features"]));
         assert_eq!(
-            projected(FeatureSelection::StableAggregate { feature: "stable-root".to_owned() }),
-            json!(["--no-default-features", "--features", "stable-root"])
+            serde_json::to_string(&miri).unwrap(),
+            r#"{"crate":"package","toolchain":"toolchain","feature_profile":"profile","target":"target","miri_model":"model"}"#
         );
-        assert_eq!(projected(FeatureSelection::All), json!(["--all-features"]));
     }
 
     #[test]
@@ -1047,6 +962,15 @@ mod tests {
             projection.miri_matrix_json(),
         );
         assert_eq!(projection.output_utf16_bytes(), utf16_bytes(&records));
+
+        // These sizes make growth in the compact workflow contract visible.
+        // A deliberate coverage change can update them, but adding derived
+        // execution details to every cell should not pass unnoticed.
+        assert_eq!(projection.output_utf16_bytes(), 14_794);
+        assert_eq!(
+            GitHubProjection::create(inputs(), "merge_group").unwrap().output_utf16_bytes(),
+            60_798
+        );
     }
 
     #[test]
