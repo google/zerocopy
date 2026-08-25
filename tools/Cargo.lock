@@ -845,6 +845,7 @@ dependencies = [
  "cargo_metadata 0.23.1",
  "same-file",
  "serde",
+ "serde_json",
  "thiserror 2.0.18",
  "toml",
 ]
