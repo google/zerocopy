@@ -23,11 +23,12 @@ use super::{
 use crate::workflow_protocol::{
     BUILD_MATRIX_OUTPUT, CI_EVENT_OPTION, GITHUB_OUTPUT_OPTION, GITHUB_PLAN_COMMAND,
     MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT, PLANNER_PATH, PLAN_ARTIFACT_OPTION, PLAN_JOB,
-    PLAN_STEP_ID, PLAN_STEP_NAME, REPOSITORY_WORKING_DIRECTORY, TRUSTED_SHELL, WORKFLOW_PATH,
+    PLAN_STEP_ID, PLAN_STEP_NAME, REPOSITORY_WORKING_DIRECTORY, SEMVER_ENABLED_OUTPUT,
+    SEMVER_MATRIX_OUTPUT, TRUSTED_SHELL, WORKFLOW_PATH,
 };
 
 const PLAN_JOB_FIELDS: &[&str] = &["name", "runs-on", "permissions", "outputs", "env", "steps"];
-const PLAN_DISPLAY_NAME: &str = "Plan ordinary CI work";
+const PLAN_DISPLAY_NAME: &str = "Plan CI work";
 const PLAN_ARTIFACT_ENVIRONMENT: &str = "CI_PLAN_ARTIFACT";
 const PLAN_ARTIFACT_NAME: &str = "ci-plan.json";
 // GitHub merges the workflow-level environment into every job. Require one
@@ -181,10 +182,16 @@ fn audit_outputs(
     }
 
     let actual = nested_mapping(lines, outputs, job_end, PLAN_JOB, errors);
-    let expected = [BUILD_MATRIX_OUTPUT, MIRI_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT]
-        .into_iter()
-        .map(|output| (output.to_owned(), plan_output_expression(output)))
-        .collect::<BTreeMap<_, _>>();
+    let expected = [
+        BUILD_MATRIX_OUTPUT,
+        MIRI_MATRIX_OUTPUT,
+        MIRI_ENABLED_OUTPUT,
+        SEMVER_MATRIX_OUTPUT,
+        SEMVER_ENABLED_OUTPUT,
+    ]
+    .into_iter()
+    .map(|output| (output.to_owned(), plan_output_expression(output)))
+    .collect::<BTreeMap<_, _>>();
     compare_map(job_field_location(PLAN_JOB, "outputs"), &expected, &actual, errors);
 }
 
@@ -317,7 +324,7 @@ env:
   CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
 jobs:
   plan_ci:
-    name: Plan ordinary CI work
+    name: Plan CI work
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -325,6 +332,8 @@ jobs:
       build_matrix: ${{ steps.plan.outputs.build_matrix }}
       miri_matrix: ${{ steps.plan.outputs.miri_matrix }}
       miri_enabled: ${{ steps.plan.outputs.miri_enabled }}
+      semver_matrix: ${{ steps.plan.outputs.semver_matrix }}
+      semver_enabled: ${{ steps.plan.outputs.semver_enabled }}
     env:
       CI_PLAN_ARTIFACT: ci-plan.json
     steps:
@@ -430,8 +439,8 @@ jobs:
                 "extra output",
                 replace_once(
                     CANONICAL_SOURCE,
-                    "      miri_enabled: ${{ steps.plan.outputs.miri_enabled }}\n",
-                    "      miri_enabled: ${{ steps.plan.outputs.miri_enabled }}\n      surprise: ${{ steps.plan.outputs.surprise }}\n",
+                    "      semver_enabled: ${{ steps.plan.outputs.semver_enabled }}\n",
+                    "      semver_enabled: ${{ steps.plan.outputs.semver_enabled }}\n      surprise: ${{ steps.plan.outputs.surprise }}\n",
                 ),
                 "plan_ci.outputs.surprise",
             ),
@@ -448,14 +457,14 @@ jobs:
 
     #[test]
     fn producer_is_an_unconditional_host_singleton_with_one_steps_mapping() {
-        let header = "  plan_ci:\n    name: Plan ordinary CI work\n    runs-on: ubuntu-latest\n";
+        let header = "  plan_ci:\n    name: Plan CI work\n    runs-on: ubuntu-latest\n";
         let cases = [
             (
                 "changed runner",
                 replace_once(
                     CANONICAL_SOURCE,
                     header,
-                    "  plan_ci:\n    name: Plan ordinary CI work\n    runs-on: self-hosted\n",
+                    "  plan_ci:\n    name: Plan CI work\n    runs-on: self-hosted\n",
                 ),
                 ".runs-on",
             ),
@@ -464,7 +473,7 @@ jobs:
                 replace_once(
                     CANONICAL_SOURCE,
                     header,
-                    "  plan_ci:\n    name: Plan ordinary CI work\n    runs-on: ubuntu-latest\n    container: ignored.invalid/noop\n",
+                    "  plan_ci:\n    name: Plan CI work\n    runs-on: ubuntu-latest\n    container: ignored.invalid/noop\n",
                 ),
                 ".container",
             ),
@@ -473,7 +482,7 @@ jobs:
                 replace_once(
                     CANONICAL_SOURCE,
                     header,
-                    "  plan_ci:\n    name: Plan ordinary CI work\n    runs-on: ubuntu-latest\n    strategy:\n      matrix:\n        include: []\n",
+                    "  plan_ci:\n    name: Plan CI work\n    runs-on: ubuntu-latest\n    strategy:\n      matrix:\n        include: []\n",
                 ),
                 ".strategy",
             ),
@@ -482,7 +491,7 @@ jobs:
                 replace_once(
                     CANONICAL_SOURCE,
                     header,
-                    "  plan_ci:\n    name: Plan ordinary CI work\n    runs-on: ubuntu-latest\n    if: github.ref == 'refs/heads/main'\n",
+                    "  plan_ci:\n    name: Plan CI work\n    runs-on: ubuntu-latest\n    if: github.ref == 'refs/heads/main'\n",
                 ),
                 ".if",
             ),
@@ -491,7 +500,7 @@ jobs:
                 replace_once(
                     CANONICAL_SOURCE,
                     header,
-                    "  plan_ci:\n    name: Plan ordinary CI work\n    runs-on: ubuntu-latest\n    continue-on-error: true\n",
+                    "  plan_ci:\n    name: Plan CI work\n    runs-on: ubuntu-latest\n    continue-on-error: true\n",
                 ),
                 ".continue-on-error",
             ),
@@ -517,7 +526,7 @@ jobs:
 
     #[test]
     fn producer_top_level_fields_permissions_and_environment_are_exact() {
-        let header = "  plan_ci:\n    name: Plan ordinary CI work\n    runs-on: ubuntu-latest\n";
+        let header = "  plan_ci:\n    name: Plan CI work\n    runs-on: ubuntu-latest\n";
         let additions = [
             ("needs", "    needs: build_docker_env\n"),
             ("concurrency", "    concurrency: one-at-a-time\n"),
@@ -537,15 +546,15 @@ jobs:
         let cases = [
             (
                 "missing name",
-                replace_once(CANONICAL_SOURCE, "    name: Plan ordinary CI work\n", ""),
+                replace_once(CANONICAL_SOURCE, "    name: Plan CI work\n", ""),
                 "plan_ci.name",
             ),
             (
                 "changed name",
                 replace_once(
                     CANONICAL_SOURCE,
-                    "name: Plan ordinary CI work",
-                    "name: Maybe plan ordinary CI work",
+                    "name: Plan CI work",
+                    "name: Maybe plan CI work",
                 ),
                 "plan_ci.name",
             ),
@@ -836,8 +845,8 @@ jobs:
     fn scalar_fields_reject_indented_continuations_but_mappings_remain_valid() {
         let source = replace_once(
             CANONICAL_SOURCE,
-            "    name: Plan ordinary CI work\n    runs-on: ubuntu-latest\n",
-            "    name: Plan ordinary CI work\n    runs-on: ubuntu-latest\n      accidentally-nested\n",
+            "    name: Plan CI work\n    runs-on: ubuntu-latest\n",
+            "    name: Plan CI work\n    runs-on: ubuntu-latest\n      accidentally-nested\n",
         );
         rejected("scalar continuation", &source, "indented scalar continuation");
         audit_source(CANONICAL_SOURCE).unwrap();

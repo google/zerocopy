@@ -13,10 +13,14 @@
 //! The plan producer and its ordinary build and Miri consumers form a smaller
 //! handwritten boundary. The producer must publish exact outputs through one
 //! unconditional singleton job. Each planned matrix job must consume the
-//! matching output and pass every selector through a real Docker invocation to
-//! the typed executor. A missing output, changed matrix expression, no-op
-//! interpreter, conditional step, or dropped selector could otherwise silently
-//! reduce coverage while the Rust plan and job-ID inventory remained valid.
+//! matching output, run only its exact checkout and image setup, and pass every
+//! selector through a real Docker invocation to the typed executor. The local
+//! artifact action is mutable repository code, so this boundary also resolves
+//! it inside the checkout and rejects direct references to cross-step
+//! environment channels. A missing output, changed matrix expression,
+//! substituted setup step, no-op interpreter, conditional step, or dropped
+//! selector could otherwise silently reduce coverage while the Rust plan and
+//! job-ID inventory remained valid.
 //!
 //! This module is deliberately not a YAML or GitHub Actions interpreter. It
 //! recognizes the canonical source forms which carry the planned-job workflow
@@ -40,7 +44,7 @@ mod source;
 #[cfg(test)]
 mod test_support;
 
-/// Audits the checked workflow's planned-job publication and execution bridge.
+/// Audits the checked planned-job workflow and local-action bridge.
 ///
 /// The earlier workflow-inventory pass has already established that this fixed
 /// path is a regular workflow file beneath the canonical repository root. This
@@ -58,6 +62,7 @@ pub(crate) fn audit_planned_adapter(
         .map(|job| (job.workflow.as_str().to_owned(), job.job.as_str().to_owned()))
         .collect::<BTreeSet<_>>();
     audit_source(&workflow, &reviewed_planned_jobs)?;
+    matrix::audit_download_action(repository_root)?;
     Ok(())
 }
 
@@ -93,6 +98,42 @@ pub enum PlannedAdapterAuditError {
         /// Fixed GitHub-visible workflow path.
         path: PathBuf,
         /// Underlying file-system failure.
+        #[source]
+        source: io::Error,
+    },
+    /// The fixed matrix-local action path could not be resolved or inspected.
+    #[error("failed to inspect matrix setup action `{path}`: {source}")]
+    InspectLocalAction {
+        /// Repository-relative action path joined to the canonical root.
+        path: PathBuf,
+        /// Underlying file-system failure.
+        #[source]
+        source: io::Error,
+    },
+    /// The fixed matrix-local action resolved outside the canonical checkout.
+    #[error(
+        "matrix setup action `{path}` resolves outside repository `{repository_root}` to `{resolved}`"
+    )]
+    LocalActionOutsideRepository {
+        /// Repository-relative action path joined to the canonical root.
+        path: PathBuf,
+        /// Canonical target reached through any symlinks.
+        resolved: PathBuf,
+        /// Canonical repository root which must contain the target.
+        repository_root: PathBuf,
+    },
+    /// The fixed matrix-local action resolved to something other than a file.
+    #[error("matrix setup action `{path}` is not a regular file")]
+    LocalActionNotFile {
+        /// Canonical path which was inspected.
+        path: PathBuf,
+    },
+    /// The fixed matrix-local action could not be read as repository text.
+    #[error("failed to read matrix setup action `{path}`: {source}")]
+    ReadLocalAction {
+        /// Canonical action path.
+        path: PathBuf,
+        /// Underlying file-system or text-normalization failure.
         #[source]
         source: io::Error,
     },
