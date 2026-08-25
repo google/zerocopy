@@ -12,10 +12,11 @@
 //! [`CiInputs`] until the policy is valid, its references agree with live Cargo
 //! metadata and repository files, every workflow job has an exact reviewed
 //! role, the handwritten matrix jobs exactly publish and consume typed plans,
-//! independently recorded legacy baseline parses canonically, and the typed
-//! execution model exactly reproduces that legacy evidence. Planners
-//! therefore consume checked data rather than remembering which validation
-//! passes must precede which lookups.
+//! the complete standalone semver job consumes its typed target matrix and
+//! exactly implements policy, every independently recorded legacy baseline
+//! parses canonically, and the typed execution model exactly reproduces that
+//! legacy evidence. Planners therefore consume checked data rather than
+//! remembering which validation passes must precede which lookups.
 
 use std::{
     collections::HashMap,
@@ -32,6 +33,7 @@ use crate::{
     planned_adapter::{audit_planned_adapter, PlannedAdapterAuditError},
     policy::{Baselines, Policy, ReadPolicyError},
     repository_file::{self, OpenRepositoryFileError, OpenedRepositoryFile},
+    semver_adapter::{audit_semver_adapter, SemverAdapterAuditError},
     workflow::{
         audit_workflows, ReviewedWorkflowJobs, WorkflowAuditError, WorkflowRegistryError,
         WORKFLOW_REGISTRY_PATH,
@@ -108,6 +110,15 @@ impl CiInputs {
             .map_err(LoadCiError::Inventory)?;
         audit_planned_adapter(&repository_root, workflow_source, &workflow_jobs, &repository)
             .map_err(LoadCiError::PlannedAdapter)?;
+        // `audit_workflows` deliberately recognizes jobs, not arbitrary YAML
+        // steps. GitHub requires the semver action reference to remain literal,
+        // so check the complete standalone job only after policy and Cargo
+        // inventory are trustworthy. The preceding planned-adapter audit has
+        // already established exact planner publication and reviewed ownership;
+        // this focused audit checks semver's target-only matrix consumer, fresh
+        // runner boundary, checkout, preparation, and literal action.
+        audit_semver_adapter(workflow_source, &policy, &repository)
+            .map_err(LoadCiError::SemverAdapter)?;
         let baseline_files = OpenLegacyBaselineFiles::open(&repository_root, policy.baselines())?;
         let paths = baseline_files.paths();
         // Policy validation rejects two fields with the same lexical path.
@@ -354,6 +365,9 @@ pub enum LoadCiError {
     /// The planned-job workflow bridge did not publish or execute plans exactly.
     #[error(transparent)]
     PlannedAdapter(PlannedAdapterAuditError),
+    /// The standalone literal semver job did not implement policy.
+    #[error(transparent)]
+    SemverAdapter(SemverAdapterAuditError),
     /// The frozen legacy evidence was unreadable or noncanonical.
     #[error(transparent)]
     Baseline(BaselineError),

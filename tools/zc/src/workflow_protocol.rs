@@ -18,6 +18,7 @@ pub(crate) const PLAN_JOB: &str = "plan_ci";
 pub(crate) const BUILD_JOB: &str = "build_test";
 pub(crate) const MIRI_JOB: &str = "miri";
 pub(crate) const IMAGE_JOB: &str = "build_docker_env";
+pub(crate) const SEMVER_JOB: &str = "semver";
 
 // These are the workflow's only permitted YAML anchors. The build matrix owns
 // one exact definition of each and Miri owns one exact alias of each. Keep this
@@ -46,6 +47,7 @@ pub(crate) const PLAN_STEP_NAME: &str = "Validate inputs and project the plan";
 pub(crate) const PLAN_STEP_ID: &str = "plan";
 pub(crate) const BUILD_STEP_NAME: &str = "Execute checked build cell";
 pub(crate) const MIRI_STEP_NAME: &str = "Execute checked Miri cell";
+pub(crate) const SEMVER_STEP_NAME: &str = "Check semver compatibility";
 
 pub(crate) const GITHUB_PLAN_COMMAND: &str = "github-plan";
 pub(crate) const EXECUTE_BUILD_CELL_COMMAND: &str = "execute-build-cell";
@@ -63,6 +65,8 @@ pub(crate) const CELL_MIRI_MODEL_OPTION: &str = "--miri-model";
 pub(crate) const BUILD_MATRIX_OUTPUT: &str = "build_matrix";
 pub(crate) const MIRI_MATRIX_OUTPUT: &str = "miri_matrix";
 pub(crate) const MIRI_ENABLED_OUTPUT: &str = "miri_enabled";
+pub(crate) const SEMVER_MATRIX_OUTPUT: &str = "semver_matrix";
+pub(crate) const SEMVER_ENABLED_OUTPUT: &str = "semver_enabled";
 
 pub(crate) const HOST_RUNNER: &str = "ubuntu-latest";
 pub(crate) const REPOSITORY_WORKING_DIRECTORY: &str = "zerocopy";
