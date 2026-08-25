@@ -32,11 +32,11 @@
 //!   here.
 //! * `github.rs` owns the projected matrix field values consumed by
 //!   `matrix.crate`, `matrix.feature_profile`, `matrix.toolchain`, and
-//!   `matrix.target`. The workflow's "Configure environment variables" and
-//!   semver-skip steps turn those values into `env.ZC_TOOLCHAIN` and
+//!   `matrix.target`. The workflow's "Prepare cargo-semver-checks" step turns
+//!   those values into `env.ZC_TOOLCHAIN` and
 //!   `env.ZC_SKIP_CARGO_SEMVER_CHECKS`. This narrow parser fixes the adapter's
-//!   consumer expressions; it does not claim to parse those general shell
-//!   producers.
+//!   consumer expressions; it does not claim to parse that general shell
+//!   producer.
 //! * `execution.rs` models the same action as legacy command behavior. It must
 //!   consume the constants and typed values exported here rather than growing
 //!   an independent copy.
