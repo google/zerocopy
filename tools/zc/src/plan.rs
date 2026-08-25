@@ -13,8 +13,8 @@
 //! the frozen legacy files have each passed their owning validator. Planning
 //! therefore performs no file-system access and has no ambient inputs.
 //!
-//! This module selects ordinary build and Miri matrix members; it does not
-//! prove how GitHub executes them. In particular, a plan never contains
+//! This module selects ordinary build, Miri, and semver matrix members; it does
+//! not prove how GitHub executes them. In particular, a plan never contains
 //! permissions, secrets, runner labels, action references, publication
 //! choices, or shell commands. Keep those security-sensitive concerns in the
 //! small hand-written workflows.
@@ -241,6 +241,23 @@ impl MiriTargetSelector {
     }
 }
 
+/// A target whose public API is checked for semver compatibility.
+///
+/// This deliberately does not expose [`ExecutionMode`]. The semver action
+/// examines target-specific public API; it does not execute the ordinary
+/// build behavior associated with the same target.
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+pub struct SemverTargetSelector {
+    triple: String,
+}
+
+impl SemverTargetSelector {
+    /// Returns the Rust target triple whose public API must be checked.
+    pub fn triple(&self) -> &str {
+        &self.triple
+    }
+}
+
 /// A Miri borrow model selected for work.
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct MiriModelSelector {
@@ -328,6 +345,37 @@ impl MiriPlanCell {
     }
 }
 
+/// One selected semver matrix member with typed semantic intent.
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+pub struct SemverPlanCell {
+    package: PackageSelector,
+    toolchain: ToolchainSelector,
+    features: FeatureSelector,
+    target: SemverTargetSelector,
+}
+
+impl SemverPlanCell {
+    /// Returns the package selector.
+    pub fn package(&self) -> &PackageSelector {
+        &self.package
+    }
+
+    /// Returns the exact toolchain selector.
+    pub fn toolchain(&self) -> &ToolchainSelector {
+        &self.toolchain
+    }
+
+    /// Returns the semantic feature selector.
+    pub fn features(&self) -> &FeatureSelector {
+        &self.features
+    }
+
+    /// Returns the target whose public API must be checked.
+    pub fn target(&self) -> &SemverTargetSelector {
+        &self.target
+    }
+}
+
 /// Why the shared evaluator included or excluded one cell.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum DecisionReason {
@@ -341,6 +389,14 @@ pub enum DecisionReason {
     MiriEventCategoryMatches,
     /// This event category does not match the category configured for Miri.
     MiriEventCategoryDoesNotMatch,
+    /// Full events include every configured semver target.
+    FullEventIncludesSemver,
+    /// A reduced event includes this semver target because ordinary policy
+    /// marks the corresponding target eligible for reduced events.
+    ReducedEventIncludesEligibleSemverTarget,
+    /// A reduced event excludes this semver target because ordinary policy
+    /// does not mark the corresponding target eligible for reduced events.
+    ReducedEventExcludesIneligibleSemverTarget,
 }
 
 impl fmt::Display for DecisionReason {
@@ -360,6 +416,15 @@ impl fmt::Display for DecisionReason {
             Self::MiriEventCategoryDoesNotMatch => {
                 formatter.write_str("excluded because Miri runs in the other event category")
             }
+            Self::FullEventIncludesSemver => {
+                formatter.write_str("included because full events run every semver cell")
+            }
+            Self::ReducedEventIncludesEligibleSemverTarget => formatter.write_str(
+                "included because policy marks the semver target eligible for reduced events",
+            ),
+            Self::ReducedEventExcludesIneligibleSemverTarget => formatter.write_str(
+                "excluded because policy does not mark the semver target eligible for reduced events",
+            ),
         }
     }
 }
@@ -445,6 +510,39 @@ impl ExplainedMiriCell {
     }
 }
 
+/// One explained semver candidate.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ExplainedSemverCell {
+    cell: SemverPlanCell,
+    decision: CellDecision,
+}
+
+impl ExplainedSemverCell {
+    /// Returns the fully resolved candidate.
+    pub fn cell(&self) -> &SemverPlanCell {
+        &self.cell
+    }
+
+    /// Returns whether and why the candidate is selected.
+    pub fn decision(&self) -> CellDecision {
+        self.decision
+    }
+}
+
+impl fmt::Display for ExplainedSemverCell {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            formatter,
+            "semver {}/{}/{}/{}: {}",
+            self.cell.package.id,
+            self.cell.toolchain.id,
+            self.cell.features.profile,
+            self.cell.target.triple,
+            self.decision
+        )
+    }
+}
+
 impl fmt::Display for ExplainedMiriCell {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
@@ -467,6 +565,7 @@ pub struct PlanExplanation {
     class: EventClass,
     builds: Vec<ExplainedBuildCell>,
     miri: Vec<ExplainedMiriCell>,
+    semver: Vec<ExplainedSemverCell>,
 }
 
 impl PlanExplanation {
@@ -494,6 +593,11 @@ impl PlanExplanation {
     pub fn miri(&self) -> &[ExplainedMiriCell] {
         &self.miri
     }
+
+    /// Returns all semver candidates in deterministic order.
+    pub fn semver(&self) -> &[ExplainedSemverCell] {
+        &self.semver
+    }
 }
 
 impl fmt::Display for PlanExplanation {
@@ -503,6 +607,9 @@ impl fmt::Display for PlanExplanation {
             writeln!(formatter, "- {cell}")?;
         }
         for cell in &self.miri {
+            writeln!(formatter, "- {cell}")?;
+        }
+        for cell in &self.semver {
             writeln!(formatter, "- {cell}")?;
         }
         Ok(())
@@ -516,6 +623,7 @@ pub struct Plan {
     class: EventClass,
     builds: Vec<BuildPlanCell>,
     miri: Vec<MiriPlanCell>,
+    semver: Vec<SemverPlanCell>,
 }
 
 impl Plan {
@@ -543,6 +651,11 @@ impl Plan {
     pub fn miri(&self) -> &[MiriPlanCell] {
         &self.miri
     }
+
+    /// Returns semver cells in deterministic order.
+    pub fn semver(&self) -> &[SemverPlanCell] {
+        &self.semver
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -552,11 +665,18 @@ struct BuildCandidate {
 }
 
 #[derive(Clone, Debug)]
+struct SemverCandidate {
+    cell: SemverPlanCell,
+    reduced_eligible: bool,
+}
+
+#[derive(Clone, Debug)]
 struct EvaluatedPlan {
     event: String,
     class: EventClass,
     builds: Vec<ExplainedBuildCell>,
     miri: Vec<ExplainedMiriCell>,
+    semver: Vec<ExplainedSemverCell>,
 }
 
 impl EvaluatedPlan {
@@ -566,6 +686,7 @@ impl EvaluatedPlan {
         let class = classify_event(policy, event)?;
         let build_candidates = enumerate_build_candidates(policy, inputs.repository())?;
         let miri_candidates = enumerate_miri_candidates(policy, inputs.repository())?;
+        let semver_candidates = enumerate_semver_candidates(policy, &build_candidates)?;
 
         validate_legacy_membership(policy, inputs.legacy(), &build_candidates, &miri_candidates)?;
 
@@ -582,12 +703,20 @@ impl EvaluatedPlan {
             .cloned()
             .map(|cell| ExplainedMiriCell { cell, decision: evaluate_miri(class, miri_class) })
             .collect::<Vec<_>>();
+        let semver = semver_candidates
+            .values()
+            .map(|candidate| ExplainedSemverCell {
+                cell: candidate.cell.clone(),
+                decision: evaluate_semver(class, candidate.reduced_eligible),
+            })
+            .collect::<Vec<_>>();
 
         let selected = builds.iter().filter(|cell| cell.decision.is_included()).count()
-            + miri.iter().filter(|cell| cell.decision.is_included()).count();
+            + miri.iter().filter(|cell| cell.decision.is_included()).count()
+            + semver.iter().filter(|cell| cell.decision.is_included()).count();
         enforce_plan_limit(selected, policy.limits().max_plan_cells())?;
 
-        Ok(Self { event: event.to_owned(), class, builds, miri })
+        Ok(Self { event: event.to_owned(), class, builds, miri, semver })
     }
 
     fn into_plan(self) -> Plan {
@@ -601,7 +730,12 @@ impl EvaluatedPlan {
             .into_iter()
             .filter_map(|candidate| candidate.decision.is_included().then_some(candidate.cell))
             .collect();
-        Plan { event: self.event, class: self.class, builds, miri }
+        let semver = self
+            .semver
+            .into_iter()
+            .filter_map(|candidate| candidate.decision.is_included().then_some(candidate.cell))
+            .collect();
+        Plan { event: self.event, class: self.class, builds, miri, semver }
     }
 
     fn into_explanation(self) -> PlanExplanation {
@@ -610,6 +744,7 @@ impl EvaluatedPlan {
             class: self.class,
             builds: self.builds,
             miri: self.miri,
+            semver: self.semver,
         }
     }
 }
@@ -745,6 +880,81 @@ fn enumerate_miri_candidates(
     Ok(cells)
 }
 
+/// Derives semver work from the corresponding ordinary-build candidates.
+///
+/// Semver has its own matrix and runner, but its event-specific membership is
+/// deliberately the same as the package/toolchain/profile slice which used to
+/// host it. A full event selects every configured semver target; a reduced
+/// event inherits the target's ordinary reduced-event eligibility. Looking up
+/// every configured target in `builds` also makes the policy invariant that
+/// semver coverage is backed by ordinary build coverage fail closed here.
+fn enumerate_semver_candidates(
+    policy: &Policy,
+    builds: &BTreeMap<BuildPlanCell, BuildCandidate>,
+) -> Result<BTreeMap<SemverPlanCell, SemverCandidate>, PlanError> {
+    let semver = policy.semver();
+    let targets = policy.target_sets().get(semver.target_set().as_str()).ok_or_else(|| {
+        PlanError::MissingValidatedInput {
+            location: format!("target_sets.{}", semver.target_set().as_str()),
+        }
+    })?;
+    let mut cells = BTreeMap::new();
+    for target in targets {
+        let matches = builds
+            .values()
+            .filter(|candidate| {
+                let cell = &candidate.cell;
+                cell.package.id() == semver.package().as_str()
+                    && cell.toolchain.id() == semver.toolchain().as_str()
+                    && cell.features.profile() == semver.profile().as_str()
+                    && cell.target.triple() == target.as_str()
+            })
+            .collect::<Vec<_>>();
+        let candidate = match matches.as_slice() {
+            [candidate] => *candidate,
+            [] => {
+                return Err(PlanError::MissingValidatedInput {
+                    location: format!(
+                        "semver build coverage for {}/{}/{}/{}",
+                        semver.package(),
+                        semver.toolchain(),
+                        semver.profile(),
+                        target,
+                    ),
+                });
+            }
+            candidates => {
+                return Err(PlanError::DuplicateCell {
+                    kind: "semver build coverage",
+                    selector: format!(
+                        "{}/{}/{}/{} ({})",
+                        semver.package(),
+                        semver.toolchain(),
+                        semver.profile(),
+                        target,
+                        candidates.len(),
+                    ),
+                });
+            }
+        };
+        let cell = SemverPlanCell {
+            package: candidate.cell.package.clone(),
+            toolchain: candidate.cell.toolchain.clone(),
+            features: candidate.cell.features.clone(),
+            target: SemverTargetSelector { triple: target.as_str().to_owned() },
+        };
+        let semver_candidate =
+            SemverCandidate { cell: cell.clone(), reduced_eligible: candidate.reduced_eligible };
+        if cells.insert(cell.clone(), semver_candidate).is_some() {
+            return Err(PlanError::DuplicateCell {
+                kind: "semver",
+                selector: format_semver_selector(&cell),
+            });
+        }
+    }
+    Ok(cells)
+}
+
 fn target_set<'a>(policy: &'a Policy, scope: &Scope) -> Result<&'a BTreeSet<Id>, PlanError> {
     policy.target_sets().get(scope.target_set().as_str()).ok_or_else(|| {
         PlanError::MissingValidatedInput {
@@ -818,6 +1028,18 @@ fn evaluate_miri(actual: EventClass, configured: EventClass) -> CellDecision {
         CellDecision::Included(DecisionReason::MiriEventCategoryMatches)
     } else {
         CellDecision::Excluded(DecisionReason::MiriEventCategoryDoesNotMatch)
+    }
+}
+
+fn evaluate_semver(class: EventClass, reduced_eligible: bool) -> CellDecision {
+    match (class, reduced_eligible) {
+        (EventClass::Full, _) => CellDecision::Included(DecisionReason::FullEventIncludesSemver),
+        (EventClass::Reduced, true) => {
+            CellDecision::Included(DecisionReason::ReducedEventIncludesEligibleSemverTarget)
+        }
+        (EventClass::Reduced, false) => {
+            CellDecision::Excluded(DecisionReason::ReducedEventExcludesIneligibleSemverTarget)
+        }
     }
 }
 
@@ -931,6 +1153,13 @@ fn format_miri_selector(cell: &MiriPlanCell) -> String {
         cell.features.profile,
         cell.target.triple,
         cell.model.id
+    )
+}
+
+fn format_semver_selector(cell: &SemverPlanCell) -> String {
+    format!(
+        "{}/{}/{}/{}",
+        cell.package.id, cell.toolchain.id, cell.features.profile, cell.target.triple
     )
 }
 
@@ -1053,10 +1282,12 @@ mod tests {
                 assert_eq!(plan.class(), EventClass::Reduced);
                 assert_eq!(plan.builds().len(), 60);
                 assert!(plan.miri().is_empty());
+                assert_eq!(plan.semver().len(), 3);
             } else {
                 assert_eq!(plan.class(), EventClass::Full);
                 assert_eq!(plan.builds().len(), 182);
                 assert_eq!(plan.miri().len(), 64);
+                assert_eq!(plan.semver().len(), 9);
             }
         }
     }
@@ -1092,6 +1323,8 @@ mod tests {
         assert_eq!(reduced.miri().len(), inputs().legacy().miri_reduced().len());
         assert_eq!(full.builds().len(), inputs().legacy().build_full().len());
         assert_eq!(full.miri().len(), inputs().legacy().miri_full().len());
+        assert_eq!(reduced.semver().len(), 3);
+        assert_eq!(full.semver().len(), 9);
         assert_eq!(full, Plan::create(inputs(), "merge_group").unwrap());
     }
 
@@ -1144,6 +1377,35 @@ mod tests {
     }
 
     #[test]
+    fn semver_preserves_the_build_slices_event_membership() {
+        let reduced = PlanExplanation::create(inputs(), "pull_request").unwrap();
+        let full = PlanExplanation::create(inputs(), "push").unwrap();
+
+        let reduced_selected = reduced
+            .semver()
+            .iter()
+            .filter(|cell| cell.decision().is_included())
+            .map(|cell| cell.cell().target().triple())
+            .collect::<Vec<_>>();
+        assert_eq!(
+            reduced_selected,
+            ["i686-unknown-linux-gnu", "x86_64-pc-windows-msvc", "x86_64-unknown-linux-gnu",]
+        );
+        assert_eq!(full.semver().len(), 9);
+        assert!(full.semver().iter().all(|cell| cell.decision().is_included()));
+
+        let reduced_arm = reduced
+            .semver()
+            .iter()
+            .find(|cell| cell.cell().target().triple() == "arm-unknown-linux-gnueabi")
+            .unwrap();
+        assert_eq!(
+            reduced_arm.decision(),
+            CellDecision::Excluded(DecisionReason::ReducedEventExcludesIneligibleSemverTarget)
+        );
+    }
+
+    #[test]
     fn miri_interprets_tests_for_an_ordinary_cross_target() {
         let plan = Plan::create(inputs(), "merge_group").unwrap();
         let cross_target = "arm-unknown-linux-gnueabi";
@@ -1187,6 +1449,13 @@ mod tests {
         );
         assert!(included.to_string().contains("included because"));
         assert!(excluded.to_string().contains("excluded because"));
+        let semver = explanation
+            .semver()
+            .iter()
+            .find(|cell| cell.cell().target().triple() == "arm-unknown-linux-gnueabi")
+            .unwrap();
+        assert!(semver.to_string().starts_with("semver "));
+        assert!(semver.to_string().contains("excluded because"));
         let rendered = explanation.to_string();
         assert!(rendered.contains("event `pull_request` has reduced coverage"));
         assert!(rendered.contains("included because"));

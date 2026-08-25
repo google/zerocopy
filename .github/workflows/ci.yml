@@ -59,26 +59,29 @@ jobs:
   # deliberately unprivileged: it may select ordinary test work, but runner,
   # action, permission, and command authority remain in this workflow.
   #
-  # The ordinary build and Miri jobs consume these matrices directly. The
-  # jobs consume only the checked selectors from each matrix cell and pass them
-  # back to `cargo-zerocopy`, which reconstructs and executes the complete
-  # command without interpreting matrix data as shell text. Keep the output
-  # names coordinated with `tools/zc/src/workflow_protocol.rs`, the two
-  # `fromJSON` expressions below, and the Miri eligibility consumers below.
+  # The ordinary build, Miri, and semver jobs consume these matrices directly.
+  # The jobs consume only checked selectors from each matrix cell. The typed
+  # executors reconstruct ordinary build and Miri commands without interpreting
+  # matrix data as shell text; the separately audited semver adapter accepts
+  # only its target selector. Keep the output names coordinated with
+  # `tools/zc/src/workflow_protocol.rs`, the three `fromJSON` expressions below,
+  # and both optional-job eligibility consumers below.
   # The producer fields are checked by the planned-job workflow audit in
   # `tools/zc/src/planned_adapter/planner.rs`.
   plan_ci:
-    name: Plan ordinary CI work
+    name: Plan CI work
     runs-on: ubuntu-latest
     permissions:
       contents: read
     outputs:
       build_matrix: ${{ steps.plan.outputs.build_matrix }}
       miri_matrix: ${{ steps.plan.outputs.miri_matrix }}
-      # This gate is derived from the projected Miri matrix, not independently
-      # from the event name. Keep it coordinated with `workflow_protocol.rs`,
-      # the Miri job condition, and the required-check aggregation.
       miri_enabled: ${{ steps.plan.outputs.miri_enabled }}
+      semver_matrix: ${{ steps.plan.outputs.semver_matrix }}
+      # These gates are derived from their projected matrices, not independently
+      # from the event name. Keep them coordinated with `workflow_protocol.rs`,
+      # the optional job conditions, and the required-check aggregation.
+      semver_enabled: ${{ steps.plan.outputs.semver_enabled }}
     env:
       # upload-file-artifact requires its name to equal the path basename.
       # Keep this one value coordinated with the planner invocation and upload
@@ -130,10 +133,6 @@ jobs:
     needs: [build_docker_env, plan_ci]
     permissions:
       contents: read
-    defaults:
-      run:
-        shell: /tmp/docker-shell.sh {0} # zizmor: ignore[misfeature] (CI intentionally routes build matrix commands through the prebuilt Docker image)
-        working-directory: zerocopy
 
     strategy:
       # By default, this is set to `true`, which means that a single CI job
@@ -151,14 +150,13 @@ jobs:
     name: Build & Test (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.feature_profile }} / ${{ matrix.target }})
 
     steps:
+    # This defines the checkout step shared with Miri below. The planned-matrix
+    # audit checks its complete significant source and both aliases. Keep the
+    # anchor, action identity, and inputs coordinated with
+    # `tools/zc/src/planned_adapter/matrix.rs`.
     - &matrix_checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        # `Prepare cargo-semver-checks` reads the pull request head commit by
-        # its explicit SHA. Keep this depth large enough to include that parent
-        # of GitHub's synthetic pull request merge commit. A missing object
-        # makes `git log` fail rather than checking a different message.
-        fetch-depth: 2
         persist-credentials: false
 
     # The producer exposes the ID assigned by upload-artifact, rather than an
@@ -173,68 +171,34 @@ jobs:
         path: ${{ runner.temp }}
         expected-file: ${{ env.ZC_CI_IMAGE_ARCHIVE }}
 
-    # This step runs before /tmp/docker-shell.sh exists, so its explicit Bash
-    # shell is load-bearing. The Docker exporter is single-platform; the
-    # producer and every consumer intentionally use the same ubuntu-latest
-    # runner architecture. If CI gains another architecture, build and select a
-    # distinct artifact ID for it rather than silently sharing this archive.
+    # This host setup step uses an explicit shell. The Docker exporter is
+    # single-platform; the producer and every consumer intentionally use the
+    # same ubuntu-latest runner architecture. If CI gains another architecture,
+    # build and select a distinct artifact ID for it rather than silently
+    # sharing this archive.
     - &load_ci_image
       name: Load prebuilt Docker image
       shell: bash
       env:
         IMAGE_ARCHIVE: ${{ runner.temp }}/${{ env.ZC_CI_IMAGE_ARCHIVE }}
         IMAGE_NAME: ${{ env.ZC_CI_IMAGE }}
+      # Keep the large archive only as long as `docker load` needs it. The trap
+      # also reclaims it if loading or validation fails, avoiding archive plus
+      # expanded-image disk pressure for later diagnostic steps. `inspect`
+      # proves the tag exists; the trivial run also proves that the archive
+      # matches this runner's architecture.
       run: |
         set -euo pipefail
-        # Keep the large archive only as long as `docker load` needs it. The
-        # trap also reclaims it if loading or validation fails, avoiding archive
-        # plus expanded-image disk pressure for later diagnostic steps.
         trap 'rm -f -- "$IMAGE_ARCHIVE"' EXIT
         docker load --input "$IMAGE_ARCHIVE"
         docker image inspect "$IMAGE_NAME" >/dev/null
-        # `inspect` proves the tag exists; running a trivial command also proves
-        # that the archive matches this runner's architecture.
         docker run --rm "$IMAGE_NAME" true
-
-    - &create_docker_shell
-      name: Create Docker Shell Wrapper
-      shell: bash
-      run: |
-        set -eo pipefail
-
-        # Keep the Docker steps' Cargo cache separate from the host Cargo home.
-        # The container runs as root, while later host-side actions run as the
-        # runner user and need to write their own Cargo registry cache.
-        mkdir -p /home/runner/.docker-cargo/registry /home/runner/.docker-cargo/git
-
-        cat << 'EOF' > /tmp/docker-shell.sh
-        #!/bin/bash
-        # Boot an ephemeral container for the step, mounting the workspace and
-        # temp dirs. Explicitly forward GitHub Actions internal state and matrix
-        # environment variables.
-        docker run --rm -i \
-          --workdir "$PWD" \
-          -v /home/runner/work:/home/runner/work \
-          -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \
-          -v /home/runner/.docker-cargo/git:/root/.cargo/git \
-          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
-          -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
-          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE \
-          -e MIRI_MODEL -e ZC_TOOLCHAIN -e PR_HEAD_SHA \
-          -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
-          -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
-          -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
-          "$ZC_CI_IMAGE" bash -c "git config --global --add safe.directory '*' && exec bash -e -o pipefail \"\$1\"" -- "$1"
-        EOF
-        chmod +x /tmp/docker-shell.sh
 
     # The matrix values are data, not shell fragments. `cargo-zerocopy`
     # validates these selectors against the plan for this event, reconstructs
-    # the typed argv and environment, and executes the complete cell. This step
-    # deliberately does not use the job's generated Docker shell: auditing its
-    # path would not prove that the generated wrapper still invokes Docker.
-    # Instead, the complete bridge below is explicit. The absolute Docker path
+    # the typed argv and environment, and executes the complete cell. The
+    # complete Docker bridge below is explicit so the audit sees how the
+    # container is actually launched. The absolute Docker path
     # relies on the hosted Ubuntu runner contract and prevents a PATH shim from
     # returning success without starting a container. The entrypoint override
     # and Bash startup options prevent image startup behavior or exported
@@ -242,7 +206,10 @@ jobs:
     # terminator forces the inherited image value to be parsed as an image. The
     # planned-job workflow audit in `planned_adapter/matrix.rs` checks the step
     # fields exactly and this run block line-for-line. Keep protocol spellings
-    # coordinated through `tools/zc/src/workflow_protocol.rs`.
+    # coordinated through `tools/zc/src/workflow_protocol.rs`. Do not forward
+    # GITHUB_ENV or GITHUB_PATH into the container: the typed executor has no
+    # cross-step environment protocol, and it must remain the terminal step in
+    # this job. `planned_adapter/matrix.rs` audits that exact order.
     - name: Execute checked build cell
       shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
       working-directory: zerocopy
@@ -258,13 +225,12 @@ jobs:
           -v /home/runner/work:/home/runner/work \
           -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \
           -v /home/runner/.docker-cargo/git:/root/.cargo/git \
-          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
+          -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
           -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
           -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE \
           -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
           -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           -e GIT_CONFIG_COUNT=1 \
           -e GIT_CONFIG_KEY_0=safe.directory \
           -e "GIT_CONFIG_VALUE_0=*" \
@@ -281,93 +247,115 @@ jobs:
           --feature-profile "$FEATURE_PROFILE" \
           --target "$TARGET"
 
-    # The semver check must remain a literal `uses` step, so it cannot run
-    # inside the typed executor. This workflow-owned preparation resolves the
-    # one action input which GitHub expressions cannot compute and handles the
-    # documented skip marker. Keep its selector condition coordinated with the
-    # action condition and the semver policy in `ci/zc.toml`; a later audit
-    # replaces this manual cross-file contract with a checked one.
+  # Semver needs a literal `uses` step, so it cannot run inside the typed
+  # executor. Give it a fresh runner instead of sequencing it with ordinary
+  # builds. This isolates the action in both directions: build setup cannot
+  # alter semver's checkout or process environment, while code compiled by the
+  # semver action cannot leave checkout or runner state for an ordinary build.
+  # It also lets semver start as soon as planning finishes, in parallel with
+  # Docker image production and the ordinary build fan-out.
+  #
+  # `plan.rs` selects semver work from checked policy and coverage;
+  # `github.rs` projects only the target selectors below; and
+  # `semver_adapter.rs` audits this complete job header and exact three-step
+  # sequence. Keep those files, `workflow_protocol.rs`, the planner outputs
+  # above, and the required-check aggregation below coordinated with this job.
+  semver:
+    if: needs.plan_ci.outputs.semver_enabled == 'true'
+    runs-on: ubuntu-latest
+    needs: [plan_ci]
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      # The planner emits a complete `include` object. Target selection and
+      # waivers belong to `ci/zc.toml`; do not reproduce them as handwritten
+      # axes, exclusions, or step conditions here.
+      matrix: ${{ fromJSON(needs.plan_ci.outputs.semver_matrix) }}
+    name: Semver (${{ matrix.target }})
+    steps:
+    # Unlike the ordinary matrix checkout, this needs enough history to read
+    # the pull request head commit behind GitHub's synthetic merge commit. The
+    # semver audit owns this complete step; do not reuse the matrix anchor.
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        fetch-depth: 2
+        persist-credentials: false
+
+    # This preparation handles only the documented commit-message skip marker
+    # and the vendored-source workaround. Its step-local output prevents an
+    # ambient variable or unrelated step from suppressing the action. Keep its
+    # shell, directory, environment, and run block coordinated exactly with
+    # `SemverAdapterSpec` in `tools/zc/src/semver_adapter.rs`.
     - name: Prepare cargo-semver-checks
+      id: prepare_semver
+      shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
+      working-directory: zerocopy
       env:
-        TOOLCHAIN: ${{ matrix.toolchain }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       run: |
         set -euo pipefail
-
-        ZC_TOOLCHAIN="$(./cargo.sh --version "$TOOLCHAIN")"
-        printf "Resolved the '%s' toolchain to %s\n" \
-          "$TOOLCHAIN" "$ZC_TOOLCHAIN" | tee -a "$GITHUB_STEP_SUMMARY"
-        printf 'ZC_TOOLCHAIN=%s\n' "$ZC_TOOLCHAIN" >> "$GITHUB_ENV"
 
         # Pull request jobs check the head commit rather than GitHub's synthetic
         # merge commit. `PR_HEAD_SHA`, the depth-2 checkout above, and this
         # lookup are one contract: if checkout stops fetching that object,
         # `git log` fails instead of silently inspecting another message.
         if [[ "$GITHUB_EVENT_NAME" == 'pull_request' ]]; then
-          MESSAGE="$(git log -1 --pretty=%B "$PR_HEAD_SHA")"
+          MESSAGE="$(/usr/bin/git log -1 --pretty=%B "$PR_HEAD_SHA")"
           MESSAGE_SOURCE='pull request head commit message'
         else
-          MESSAGE="$(git log -1 --pretty=%B HEAD)"
+          MESSAGE="$(/usr/bin/git log -1 --pretty=%B HEAD)"
           MESSAGE_SOURCE='commit message'
         fi
 
-        if grep -Eq \
+        if /usr/bin/grep -Eq \
           '^[[:space:]]*SKIP_CARGO_SEMVER_CHECKS=1[[:space:]]*$' \
           <<< "$MESSAGE"; then
           printf "Found 'SKIP_CARGO_SEMVER_CHECKS=1' in the %s; " \
-            "$MESSAGE_SOURCE" | tee -a "$GITHUB_STEP_SUMMARY"
+            "$MESSAGE_SOURCE" | /usr/bin/tee -a "$GITHUB_STEP_SUMMARY"
           printf 'skipping cargo-semver-checks.\n' | \
-            tee -a "$GITHUB_STEP_SUMMARY"
-          printf 'ZC_SKIP_CARGO_SEMVER_CHECKS=1\n' >> "$GITHUB_ENV"
+            /usr/bin/tee -a "$GITHUB_STEP_SUMMARY"
+          printf 'run=false\n' >> "$GITHUB_OUTPUT"
         else
           # FIXME(#2906): cargo-semver-checks fetches the latest Zerocopy from
           # crates.io, but the vendored-source configuration cannot resolve
-          # that package. This exact file removal affects only a semver matrix
-          # cell. Switch to --baseline-rev before removing this workaround.
-          rm .cargo/config.toml
+          # that package. This exact file removal affects only this isolated
+          # checkout. Switch to --baseline-rev before removing the workaround.
+          /usr/bin/rm .cargo/config.toml
+          printf 'run=true\n' >> "$GITHUB_OUTPUT"
         fi
-      # TODO(#1565): Run on wasm32-unknown-unknown.
-      if: |
-        matrix.crate == 'zerocopy' &&
-        matrix.feature_profile == 'stable' &&
-        matrix.toolchain == 'stable' &&
-        matrix.target != 'wasm32-unknown-unknown'
 
-    # Check semver compatibility with the most recently-published version on
-    # crates.io. We do this in the matrix rather than in its own job so that it
-    # gets run on different targets. Some of our API is target-specific (e.g.,
-    # SIMD type impls), and so we need to run on each target.
+    # Check compatibility with the most recently published Zerocopy version.
+    # The planner selects each supported non-waived target because some public
+    # API is target-specific. Keep every literal and the action pin coordinated
+    # with `SemverAdapterSpec`; changing any one makes `ci audit` fail.
     - name: Check semver compatibility
       uses: obi1kenobi/cargo-semver-checks-action@6b69fcf40e9b5fb17adeb57e4b6ecd020649a239 # v2.9
       env:
-        # `zerocopy_unstable_ptr` exposes unstable API, so it should not be
-        # included in semver checks.
+        # `zerocopy_unstable_ptr` exposes unstable API. Preserve warning denial
+        # without inheriting that workflow-wide rustdoc cfg into this action.
         RUSTDOCFLAGS: -Dwarnings
+        RUSTFLAGS: -Dwarnings
       with:
-        # Don't semver check zerocopy-derive; as a proc macro, it doesn't have
-        # an API that cargo-semver-checks can understand.
+        # The proc-macro crate has no API cargo-semver-checks can understand.
         package: zerocopy
-        # Test on the stable toolchain, and thus don't test nightly features.
-        # We previously tested on the nightly toolchain, but this caused problems
-        # [1] because cargo-semver-checks only promises compatibility with the
-        # latest stable toolchain. Testing on the stable toolchain is more
-        # reliable, and doesn't require us to give up anything - we wouldn't want
-        # to test nightly-only features anyway, as we don't make stability
-        # guarantees regarding these features.
-        # 
-        # [1] See, for example: https://github.com/google/zerocopy/actions/runs/9466417300/job/26078264384?pr=1413
+        # Use only explicitly named stable features. The action supports the
+        # latest stable compiler, while nightly-only APIs carry no stability
+        # guarantee.
         feature-group: only-explicit-features
         features: __internal_use_only_features_that_work_on_stable
         manifest-path: zerocopy/Cargo.toml
-        rust-toolchain: ${{ env.ZC_TOOLCHAIN }}
+        # The action's automatic baseline-rustdoc cache key does not include
+        # `rust-target`. Give concurrent targets distinct prefixes so they do
+        # not race while reading and writing one cache entry.
+        prefix-key: ${{ matrix.target }}
+        # Keep this exact version coordinated with
+        # `zerocopy/Cargo.toml`'s `package.metadata.ci.pinned-stable` and
+        # `SemverAdapterSpec`. A partial stable-toolchain roll fails locally.
+        rust-toolchain: 1.93.1
         rust-target: ${{ matrix.target }}
-      # TODO(#1565): Run on wasm32-unknown-unknown.
       if: |
-        matrix.crate == 'zerocopy' &&
-        matrix.feature_profile == 'stable' &&
-        matrix.toolchain == 'stable' &&
-        matrix.target != 'wasm32-unknown-unknown' &&
-        env.ZC_SKIP_CARGO_SEMVER_CHECKS != '1'
+        steps.prepare_semver.outputs.run == 'true'
 
   # Today's policy selects Miri only for full events because it is much more
   # expensive than the ordinary build matrix. Each borrow model is its own
@@ -409,6 +397,9 @@ jobs:
     # fail-closed boundary as the ordinary build bridge. The matrix audit
     # checks the fields exactly and this run block line-for-line. Keep the
     # Miri-model and command spellings in `workflow_protocol.rs` coordinated.
+    # Keep the same GITHUB_ENV/GITHUB_PATH exclusion as the build bridge so a
+    # future step cannot inherit environment changes written by this container
+    # without first extending the typed audit.
     - name: Execute checked Miri cell
       shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
       working-directory: zerocopy
@@ -425,13 +416,12 @@ jobs:
           -v /home/runner/work:/home/runner/work \
           -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \
           -v /home/runner/.docker-cargo/git:/root/.cargo/git \
-          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
+          -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
           -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
           -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE -e MIRI_MODEL \
           -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
           -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           -e GIT_CONFIG_COUNT=1 \
           -e GIT_CONFIG_KEY_0=safe.directory \
           -e "GIT_CONFIG_VALUE_0=*" \
@@ -842,19 +832,19 @@ jobs:
       # success in branch protection, so this aggregation must fail closed.
       if: ${{ always() }}
       runs-on: ubuntu-latest
-      needs: [build_test, miri, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_tools, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env, plan_ci]
+      needs: [build_test, miri, semver, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_tools, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env, plan_ci]
       steps:
         - name: Reject workflow cancellation
           if: ${{ cancelled() }}
           run: exit 1
-
         # GitHub can omit a job output at promotion time if its secret scanner
         # produces a false positive. Keep this comparison in expression space
-        # so the large JSON never enters a process environment. A disabled Miri
-        # plan is still the nonempty JSON value {"include":[]}; the boolean gate
-        # must also be present and canonical before aggregation trusts it.
+        # so the large JSON never enters a process environment. A disabled
+        # optional plan is still the nonempty JSON value {"include":[]}; each
+        # boolean gate must also be present and canonical before aggregation
+        # trusts it.
         - name: Require published planner outputs
-          if: ${{ needs.plan_ci.result == 'success' && (needs.plan_ci.outputs.build_matrix == '' || needs.plan_ci.outputs.miri_matrix == '' || (needs.plan_ci.outputs.miri_enabled != 'true' && needs.plan_ci.outputs.miri_enabled != 'false')) }}
+          if: ${{ needs.plan_ci.result == 'success' && (needs.plan_ci.outputs.build_matrix == '' || needs.plan_ci.outputs.miri_matrix == '' || needs.plan_ci.outputs.semver_matrix == '' || (needs.plan_ci.outputs.miri_enabled != 'true' && needs.plan_ci.outputs.miri_enabled != 'false') || (needs.plan_ci.outputs.semver_enabled != 'true' && needs.plan_ci.outputs.semver_enabled != 'false')) }}
           shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
           run: exit 1
 
@@ -867,22 +857,29 @@ jobs:
             # Do not serialize the entire `needs` object here: job outputs may
             # legitimately approach GitHub's configured output limit, while a
             # Linux process has a much smaller per-environment-value limit.
-            # Results stay small regardless of matrix JSON size. Keep the
-            # separate Miri result so a planner-disabled Miri job is identified
-            # rather than accepting an arbitrary skipped dependency.
+            # Results stay small regardless of matrix JSON size. Separate
+            # optional-job results identify the only dependencies which may be
+            # skipped, and couple each skip to its planner-derived gate.
             RESULTS_JSON: ${{ toJSON(needs.*.result) }}
             MIRI_ENABLED: ${{ needs.plan_ci.outputs.miri_enabled }}
             MIRI_RESULT: ${{ needs.miri.result }}
+            SEMVER_ENABLED: ${{ needs.plan_ci.outputs.semver_enabled }}
+            SEMVER_RESULT: ${{ needs.semver.result }}
           run: |
             set -euo pipefail
-            /usr/bin/jq -e --arg enabled "$MIRI_ENABLED" --arg miri "$MIRI_RESULT" '
+            /usr/bin/jq -e \
+              --arg miri_enabled "$MIRI_ENABLED" \
+              --arg miri "$MIRI_RESULT" \
+              --arg semver_enabled "$SEMVER_ENABLED" \
+              --arg semver "$SEMVER_RESULT" '
+              def optional_job_ok($enabled; $result):
+                ($enabled == "false" and $result == "skipped") or
+                ($enabled == "true" and $result == "success");
               type == "array" and length > 0 and
-              if $enabled == "false"
-              then $miri == "skipped" and
-                   ([.[] | select(. == "skipped")] | length) == 1 and
-                   all(.[]; . == "success" or . == "skipped")
-              else $enabled == "true" and
-                   $miri == "success" and
-                   all(.[]; . == "success")
-              end
+              optional_job_ok($miri_enabled; $miri) and
+              optional_job_ok($semver_enabled; $semver) and
+              ([.[] | select(. == "skipped")] | length) ==
+                ([$miri_enabled, $semver_enabled] |
+                  map(select(. == "false")) | length) and
+              all(.[]; . == "success" or . == "skipped")
             ' <<< "$RESULTS_JSON"
