@@ -24,7 +24,9 @@
 use std::{
     collections::{BTreeMap, BTreeSet},
     error::Error,
-    fmt, fs, io,
+    fmt,
+    fs::{self, File},
+    io::{self, Read},
     path::{Component, Path, PathBuf},
     str::FromStr,
 };
@@ -53,6 +55,23 @@ pub struct LegacyBaselinePaths {
     pub logical_obligations: PathBuf,
     pub standalone_obligations: PathBuf,
     pub command_goldens: PathBuf,
+}
+
+/// Already-open files corresponding exactly to [`LegacyBaselinePaths`].
+///
+/// The checked CI boundary retains these handles while it compares file
+/// identities and parses bytes. Keep the fields coordinated with
+/// [`LegacyBaselinePaths`], [`LegacyBaselines::read_open`], and the bundle
+/// construction in `ci.rs`; adding a baseline role requires updating all four.
+pub(crate) struct LegacyBaselineFiles<'a> {
+    pub manifest: &'a File,
+    pub build_reduced: &'a File,
+    pub build_full: &'a File,
+    pub miri_reduced: &'a File,
+    pub miri_full: &'a File,
+    pub logical_obligations: &'a File,
+    pub standalone_obligations: &'a File,
+    pub command_goldens: &'a File,
 }
 
 /// One lowercase, stable identifier used by the old workflow matrices.
@@ -846,6 +865,36 @@ impl LegacyBaselines {
         )
     }
 
+    /// Reads and parses baseline bytes through already-validated handles.
+    pub(crate) fn read_open(
+        paths: &LegacyBaselinePaths,
+        files: LegacyBaselineFiles<'_>,
+    ) -> Result<Self, BaselineError> {
+        let manifest = read_open_source(&paths.manifest, files.manifest)?;
+        let build_reduced = read_open_source(&paths.build_reduced, files.build_reduced)?;
+        let build_full = read_open_source(&paths.build_full, files.build_full)?;
+        let miri_reduced = read_open_source(&paths.miri_reduced, files.miri_reduced)?;
+        let miri_full = read_open_source(&paths.miri_full, files.miri_full)?;
+        let logical_obligations =
+            read_open_source(&paths.logical_obligations, files.logical_obligations)?;
+        let standalone_obligations =
+            read_open_source(&paths.standalone_obligations, files.standalone_obligations)?;
+        let command_goldens = read_open_source(&paths.command_goldens, files.command_goldens)?;
+        Self::parse_sources(
+            paths,
+            BaselineSources {
+                manifest: &manifest,
+                build_reduced: &build_reduced,
+                build_full: &build_full,
+                miri_reduced: &miri_reduced,
+                miri_full: &miri_full,
+                logical_obligations: &logical_obligations,
+                standalone_obligations: &standalone_obligations,
+                command_goldens: &command_goldens,
+            },
+        )
+    }
+
     fn parse_sources(
         paths: &LegacyBaselinePaths,
         sources: BaselineSources<'_>,
@@ -1083,6 +1132,18 @@ fn read_source(path: &Path) -> Result<String, BaselineError> {
         message: format!("failed to read file: {source}"),
         source: Some(source),
     })
+}
+
+fn read_open_source(path: &Path, file: &File) -> Result<String, BaselineError> {
+    let mut source = String::new();
+    let mut reader = file;
+    reader.read_to_string(&mut source).map_err(|source| BaselineError {
+        path: path.to_path_buf(),
+        line: None,
+        message: format!("failed to read file: {source}"),
+        source: Some(source),
+    })?;
+    Ok(source)
 }
 
 struct BaselineSources<'a> {

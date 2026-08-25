@@ -206,7 +206,7 @@ impl ReviewedWorkflowJobs {
         Self::parse(path, &source)
     }
 
-    fn parse(path: &Path, source: &str) -> Result<Self, WorkflowRegistryError> {
+    pub(crate) fn parse(path: &Path, source: &str) -> Result<Self, WorkflowRegistryError> {
         let mut saw_header = false;
         let mut previous: Option<WorkflowJob> = None;
         let mut jobs = BTreeMap::new();
@@ -289,26 +289,18 @@ impl ReviewedWorkflowJobs {
 
 /// Checks every live workflow job against its reviewed role assignment.
 ///
-/// `reviewed_registry` must be the canonical path returned by the CI input
-/// boundary's containment check. Keeping resolution there prevents a caller
-/// from validating one path and reopening a different spelling here. This
-/// function then performs the remaining workflow-specific boundary exactly
-/// once: it reads the strict registry, scans every workflow, and reports all
-/// missing or unreviewed jobs together in deterministic order.
-// This validator deliberately lands before the all-input boundary in `ci.rs`
-// so its scanner and reviewed registry can be examined independently. The
-// later wiring commit removes this temporary allowance when production code
-// begins calling it; tests exercise it in the meantime.
-#[allow(dead_code)]
+/// `reviewed` must have been parsed from the open handle retained by the CI
+/// input boundary. Taking the checked value instead of a path makes reopening
+/// a replaced registry impossible here. This function scans every workflow and
+/// reports all missing or unreviewed jobs together in deterministic order.
 pub(crate) fn audit_workflows(
     repository_root: impl AsRef<Path>,
-    reviewed_registry: impl AsRef<Path>,
-) -> Result<ReviewedWorkflowJobs, WorkflowAuditError> {
-    let reviewed = ReviewedWorkflowJobs::read(reviewed_registry)?;
+    reviewed: ReviewedWorkflowJobs,
+) -> Result<(ReviewedWorkflowJobs, WorkflowSources), WorkflowAuditError> {
     let actual = read_workflow_sources(repository_root)?;
     let violations = compare_with_reviewed(&actual.inventories, &reviewed);
     if violations.is_empty() {
-        Ok(reviewed)
+        Ok((reviewed, actual))
     } else {
         Err(WorkflowAuditError::Violations(WorkflowAuditViolations(violations)))
     }
@@ -1339,7 +1331,9 @@ mod tests {
         let repository_root = manifest.join("../..");
         let registry = repository_root.join(WORKFLOW_REGISTRY_PATH);
 
-        audit_workflows(repository_root, registry).unwrap();
+        let reviewed = ReviewedWorkflowJobs::read(registry).unwrap();
+        let (_, sources) = audit_workflows(repository_root, reviewed).unwrap();
+        assert!(sources.source(".github/workflows/ci.yml").is_some());
     }
 
     #[test]
@@ -1360,7 +1354,8 @@ mod tests {
         )
         .unwrap();
 
-        let error = audit_workflows(&repository, &registry).unwrap_err();
+        let reviewed = ReviewedWorkflowJobs::read(&registry).unwrap();
+        let error = audit_workflows(&repository, reviewed).unwrap_err();
         let WorkflowAuditError::Violations(violations) = &error else {
             panic!("expected workflow violations, got {error:?}");
         };
