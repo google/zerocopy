@@ -3619,6 +3619,82 @@ mod tests {
     }
 
     #[test]
+    fn non_nightly_all_features_requires_an_empty_nightly_complement() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let policy_path = root.join("ci/zc.toml");
+        let policy_source = std::fs::read_to_string(&policy_path).unwrap();
+        let stable_scope = "[[toolchains]]\n\
+                            id = \"stable\"\n\
+                            source = \"pinned-stable\"\n\n\
+                            [[toolchains.scopes]]\n\
+                            packages = [\"zerocopy\"]\n\
+                            profiles = [\"default\"]\n\
+                            target_set = \"without-wasm\"";
+        let invalid_scope =
+            stable_scope.replace("profiles = [\"default\"]", "profiles = [\"default\", \"all\"]");
+        assert_eq!(policy_source.matches(stable_scope).count(), 1);
+        let policy =
+            crate::policy::Policy::parse(&policy_source.replacen(stable_scope, &invalid_scope, 1))
+                .unwrap();
+        let mut collected = super::CollectedRepository::collect(&root, &policy).unwrap();
+
+        let errors = collected.validate(&policy).unwrap_err();
+        assert!(
+            errors.errors().iter().any(|error| {
+                error.location() == "toolchains.stable.scopes[0].profiles"
+                    && error.message().contains(
+                        "non-nightly toolchain selects all-features profile `all` for package `zerocopy`",
+                    )
+            }),
+            "{errors}"
+        );
+
+        // The restriction is semantic, not a hard-coded profile/toolchain
+        // pairing: a package whose full graph is stable may use the same `all`
+        // profile on stable. Model that state by removing exactly today's two
+        // nightly-only leaves from the collected Cargo feature graph.
+        let zerocopy = collected.packages.get_mut(Path::new("zerocopy/Cargo.toml")).unwrap();
+        assert!(zerocopy.features.remove("float-nightly").is_some());
+        assert!(zerocopy.features.remove("simd-nightly").is_some());
+        collected.validate(&policy).unwrap();
+    }
+
+    #[test]
+    fn build_rs_metadata_and_policy_toolchains_must_match_both_ways() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let policy = crate::policy::Policy::read(root.join("ci/zc.toml")).unwrap();
+        let mut collected = super::CollectedRepository::collect(&root, &policy).unwrap();
+
+        let stale_policy_id = policy
+            .toolchains()
+            .iter()
+            .find(|(_, toolchain)| toolchain.source() == crate::policy::ToolchainSource::BuildRs)
+            .map(|(id, _)| id.as_str().to_owned())
+            .expect("repository policy has a build-rs compatibility toolchain");
+        assert!(collected.toolchain_metadata.build_rs.remove(&stale_policy_id).is_some());
+        let missing_policy_id = "unplanned-build-rs-toolchain";
+        assert!(collected
+            .toolchain_metadata
+            .build_rs
+            .insert(missing_policy_id.to_owned(), "1.70.0".to_owned())
+            .is_none());
+
+        let diagnostic = collected.validate(&policy).unwrap_err().to_string();
+        assert!(
+            diagnostic.contains(&format!(
+                "build-rs metadata key `{missing_policy_id}` has no policy toolchain"
+            )),
+            "{diagnostic}"
+        );
+        assert!(
+            diagnostic.contains(&format!(
+                "toolchains.{stale_policy_id}: build-rs policy toolchain has no matching manifest metadata key"
+            )),
+            "{diagnostic}"
+        );
+    }
+
+    #[test]
     fn docs_rs_rustdoc_args_fail_closed_on_malformed_metadata() {
         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
         let policy = crate::policy::Policy::read(root.join("ci/zc.toml")).unwrap();
@@ -3679,47 +3755,6 @@ mod tests {
                 == "zerocopy/Cargo.toml.package.metadata.docs.rs.rustdoc-args"),
             "{errors}"
         );
-    }
-
-    #[test]
-    fn non_nightly_all_features_requires_an_empty_nightly_complement() {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-        let policy_path = root.join("ci/zc.toml");
-        let policy_source = std::fs::read_to_string(&policy_path).unwrap();
-        let stable_scope = "[[toolchains]]\n\
-                            id = \"stable\"\n\
-                            source = \"pinned-stable\"\n\n\
-                            [[toolchains.scopes]]\n\
-                            packages = [\"zerocopy\"]\n\
-                            profiles = [\"default\"]\n\
-                            target_set = \"without-wasm\"";
-        let invalid_scope =
-            stable_scope.replace("profiles = [\"default\"]", "profiles = [\"default\", \"all\"]");
-        assert_eq!(policy_source.matches(stable_scope).count(), 1);
-        let policy =
-            crate::policy::Policy::parse(&policy_source.replacen(stable_scope, &invalid_scope, 1))
-                .unwrap();
-        let mut collected = super::CollectedRepository::collect(&root, &policy).unwrap();
-
-        let errors = collected.validate(&policy).unwrap_err();
-        assert!(
-            errors.errors().iter().any(|error| {
-                error.location() == "toolchains.stable.scopes[0].profiles"
-                    && error.message().contains(
-                        "non-nightly toolchain selects all-features profile `all` for package `zerocopy`",
-                    )
-            }),
-            "{errors}"
-        );
-
-        // The restriction is semantic, not a hard-coded profile/toolchain
-        // pairing: a package whose full graph is stable may use the same `all`
-        // profile on stable. Model that state by removing exactly today's two
-        // nightly-only leaves from the collected Cargo feature graph.
-        let zerocopy = collected.packages.get_mut(Path::new("zerocopy/Cargo.toml")).unwrap();
-        assert!(zerocopy.features.remove("float-nightly").is_some());
-        assert!(zerocopy.features.remove("simd-nightly").is_some());
-        collected.validate(&policy).unwrap();
     }
 
     #[test]
