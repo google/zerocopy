@@ -824,6 +824,7 @@ dependencies = [
 name = "zc"
 version = "0.0.0"
 dependencies = [
+ "cargo_metadata 0.23.1",
  "serde",
  "thiserror 2.0.18",
  "toml",
