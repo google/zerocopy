@@ -10,11 +10,18 @@
 //!
 //! The general workflow inventory in [`crate::workflow`] proves that every job
 //! has a reviewed role, but it intentionally does not inspect job behavior.
-//! The plan producer is a smaller handwritten boundary: it must publish the
-//! planner's exact outputs through one unconditional singleton job and one
-//! bounded step. A missing output, changed producer, no-op interpreter, or
-//! stale CLI command could otherwise silently reduce coverage while the Rust
-//! plan and job-ID inventory remained valid.
+//! The plan producer and its ordinary build and Miri consumers form a smaller
+//! handwritten boundary. The producer must publish exact outputs through one
+//! unconditional singleton job. Each planned matrix job must consume the
+//! matching output, run only its exact setup sequence, prove that setup left
+//! the checkout unchanged, and pass every selector through a real Docker
+//! invocation to the typed executor. The local artifact action is mutable
+//! repository code, so this boundary also resolves it inside the checkout and
+//! requires its complete source to match an independent reviewed snapshot. A
+//! missing output, substituted setup step, changed matrix expression, no-op
+//! interpreter, conditional step, or dropped selector could otherwise
+//! silently reduce coverage while the Rust plan and job-ID inventory remained
+//! valid.
 //!
 //! This module is deliberately not a YAML or GitHub Actions interpreter. It
 //! recognizes the canonical source forms which carry the planned-job workflow
@@ -30,12 +37,15 @@ use std::{
 
 use thiserror::Error;
 
-use crate::{repository_text, workflow_protocol::WORKFLOW_PATH};
+use crate::{repository_text, workflow::ReviewedWorkflowJobs, workflow_protocol::WORKFLOW_PATH};
 
+mod matrix;
 mod planner;
 mod source;
+#[cfg(test)]
+mod test_support;
 
-/// Audits the checked workflow's typed plan publication bridge.
+/// Audits the checked planned-job workflow and local-action bridge.
 ///
 /// The earlier workflow-inventory pass has already established that this fixed
 /// path is a regular workflow file beneath the canonical repository root. This
@@ -43,15 +53,24 @@ mod source;
 /// configurable path.
 pub(crate) fn audit_planned_adapter(
     repository_root: &Path,
+    reviewed_jobs: &ReviewedWorkflowJobs,
 ) -> Result<(), PlannedAdapterAuditError> {
     let path = repository_root.join(WORKFLOW_PATH);
     let workflow = repository_text::read(&path)
         .map_err(|source| PlannedAdapterAuditError::Read { path: path.clone(), source })?;
-    audit_source(&workflow)?;
+    let reviewed_planned_jobs = reviewed_jobs
+        .planned_jobs()
+        .map(|job| (job.workflow.as_str().to_owned(), job.job.as_str().to_owned()))
+        .collect::<BTreeSet<_>>();
+    audit_source(&workflow, &reviewed_planned_jobs)?;
+    matrix::audit_download_action(repository_root)?;
     Ok(())
 }
 
-fn audit_source(workflow: &str) -> Result<(), PlannedAdapterViolations> {
+fn audit_source(
+    workflow: &str,
+    reviewed_planned_jobs: &BTreeSet<(String, String)>,
+) -> Result<(), PlannedAdapterViolations> {
     let mut errors = ViolationSink::default();
     // Source-level checks intentionally require one canonical spelling. The
     // repository read boundary has already normalized a pre-existing Windows
@@ -62,6 +81,7 @@ fn audit_source(workflow: &str) -> Result<(), PlannedAdapterViolations> {
     }
     let lines = workflow.lines().collect::<Vec<_>>();
     planner::audit(&lines, &mut errors);
+    matrix::audit(&lines, reviewed_planned_jobs, &mut errors);
 
     if errors.is_empty() {
         Ok(())
@@ -82,7 +102,49 @@ pub enum PlannedAdapterAuditError {
         #[source]
         source: io::Error,
     },
-    /// The handwritten bridge no longer publishes the typed plan exactly.
+    /// A fixed matrix-audit file could not be resolved or inspected.
+    #[error("failed to inspect matrix audit file `{path}`: {source}")]
+    InspectMatrixAuditFile {
+        /// Repository-relative audit path joined to the canonical root.
+        path: PathBuf,
+        /// Underlying file-system failure.
+        #[source]
+        source: io::Error,
+    },
+    /// A fixed matrix-audit path contains a symbolic link.
+    #[error("matrix audit file path contains symbolic link `{path}`")]
+    MatrixAuditFileSymlink {
+        /// First symbolic-link component found beneath the canonical root.
+        path: PathBuf,
+    },
+    /// A fixed matrix-audit file resolved outside the canonical checkout.
+    #[error(
+        "matrix audit file `{path}` resolves outside repository `{repository_root}` to `{resolved}`"
+    )]
+    MatrixAuditFileOutsideRepository {
+        /// Repository-relative audit path joined to the canonical root.
+        path: PathBuf,
+        /// Canonical target reached through any symlinks.
+        resolved: PathBuf,
+        /// Canonical repository root which must contain the target.
+        repository_root: PathBuf,
+    },
+    /// A fixed matrix-audit path resolved to something other than a file.
+    #[error("matrix audit file `{path}` is not a regular file")]
+    MatrixAuditFileNotFile {
+        /// Canonical path which was inspected.
+        path: PathBuf,
+    },
+    /// A fixed matrix-audit file could not be read as repository text.
+    #[error("failed to read matrix audit file `{path}`: {source}")]
+    ReadMatrixAuditFile {
+        /// Canonical audit path.
+        path: PathBuf,
+        /// Underlying file-system or text-normalization failure.
+        #[source]
+        source: io::Error,
+    },
+    /// The handwritten bridge no longer publishes or executes typed plans exactly.
     #[error(transparent)]
     Invalid(#[from] PlannedAdapterViolations),
 }
