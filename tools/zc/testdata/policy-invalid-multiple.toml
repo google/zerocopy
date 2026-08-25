@@ -1,0 +1,91 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# Keep independent semantic mistakes in this fixture. One validation pass must
+# report them together so a policy author can repair more than one at a time.
+schema_version = 99
+
+[events]
+reduced = ["pull_request"]
+full = ["pull_request"]
+
+[features]
+stable_feature_root = "Bad root"
+
+[[feature_profiles]]
+id = "same"
+selection = "default"
+
+[[feature_profiles]]
+id = "same"
+selection = "all"
+
+[[packages]]
+id = "bad package"
+manifest = "../outside.toml"
+profiles = []
+
+[[targets]]
+id = "target"
+mode = "native"
+pr_eligible = false
+miri_eligible = false
+semver_eligible = false
+
+[[targets]]
+id = "target"
+mode = "cross"
+pr_eligible = false
+miri_eligible = false
+semver_eligible = false
+
+[[target_sets]]
+id = "empty"
+selection = "explicit"
+include = []
+exclude = []
+
+[[toolchains]]
+id = "nightly"
+source = "pinned-nightly"
+scopes = []
+
+[[miri_models]]
+id = "stacked"
+flags = [""]
+
+[miri]
+toolchain = "missing"
+event_category = "full"
+scopes = []
+
+[semver]
+package = "missing"
+toolchain = "missing"
+profile = "missing"
+target_set = "missing"
+
+[[semver.waivers]]
+target = "missing"
+issue = "not-an-issue"
+reason = ""
+
+[baselines]
+manifest = "../manifest.tsv"
+build_reduced = "ci/baselines/build-pr.tsv"
+build_full = "ci/baselines/build-full.tsv"
+miri_reduced = "ci/baselines/miri-pr.tsv"
+miri_full = "ci/baselines/miri-full.tsv"
+logical_obligations = "ci/baselines/logical-obligations.tsv"
+standalone_obligations = "ci/baselines/standalone-obligations.tsv"
+command_goldens = "ci/baselines/command-goldens.tsv"
+
+[limits]
+max_matrix_cells = 257
+max_plan_cells = 65537
+max_job_output_utf16_bytes = 1000001
