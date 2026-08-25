@@ -62,3 +62,11 @@ fi
 # created as a side effect of testing them.
 env -u RUSTUP_TOOLCHAIN \
   cargo "+$TOOLS_CHANNEL" test --locked --workspace
+
+# Exercise the public repository-level route in addition to the library tests.
+# The wrapper must establish the expected working directory, and the inventory
+# command must pin its own Cargo metadata invocation instead of inheriting this
+# deliberately invalid ambient override. Keep this command coordinated with
+# `tools/cargo-zerocopy/src/main.rs` and `tools/zc/src/cli.rs`.
+RUSTUP_TOOLCHAIN=zerocopy-ci-intentionally-invalid \
+  ../zerocopy/cargo.sh ci audit >/dev/null
