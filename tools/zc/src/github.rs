@@ -9,11 +9,11 @@
 //! A narrow, deterministic bridge from a checked CI plan to GitHub Actions.
 //!
 //! Planning and workflow authority deliberately remain separate. The planner
-//! decides which ordinary build and Miri cells belong to an event. This module
-//! serializes only those selectors and their documented execution meaning. It
-//! cannot choose runner labels, permissions, secrets, environments, actions,
-//! or shell commands; those choices remain visible in hand-written workflow
-//! YAML.
+//! decides which ordinary build, Miri, and semver cells belong to an event.
+//! This module serializes only those selectors and their documented execution
+//! meaning. It cannot choose runner labels, permissions, secrets, environments,
+//! actions, or shell commands; those choices remain visible in hand-written
+//! workflow YAML.
 //!
 //! There are two deliberately different JSON forms:
 //!
@@ -41,9 +41,12 @@ use crate::{
     ci::CiInputs,
     plan::{
         BuildPlanCell, CellDecision, DecisionReason, EventClass, ExecutionMode, FeatureSelection,
-        MiriPlanCell, PlanError, PlanExplanation,
+        MiriPlanCell, PlanError, PlanExplanation, SemverPlanCell,
     },
-    workflow_protocol::{BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT},
+    workflow_protocol::{
+        BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT, SEMVER_ENABLED_OUTPUT,
+        SEMVER_MATRIX_OUTPUT,
+    },
 };
 
 /// The artifact schema emitted by this version of `zc`.
@@ -51,7 +54,7 @@ use crate::{
 /// Increment this before making an incompatible change to the pretty JSON
 /// document. The compact matrix is a separate contract coordinated directly
 /// with `.github/workflows/ci.yml`.
-pub const PROJECTION_SCHEMA_VERSION: u32 = 1;
+pub const PROJECTION_SCHEMA_VERSION: u32 = 2;
 
 /// JSON ready for GitHub Actions plus a detailed review artifact.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -59,6 +62,8 @@ pub struct GitHubProjection {
     build_matrix_json: String,
     miri_matrix_json: String,
     miri_enabled: bool,
+    semver_matrix_json: String,
+    semver_enabled: bool,
     artifact: Vec<u8>,
     output_records: Vec<u8>,
     output_utf16_bytes: u64,
@@ -95,6 +100,16 @@ impl GitHubProjection {
         self.miri_enabled
     }
 
+    /// Returns the compact semver `include` matrix.
+    pub fn semver_matrix_json(&self) -> &str {
+        &self.semver_matrix_json
+    }
+
+    /// Returns whether the projected semver matrix contains any selected cells.
+    pub fn semver_enabled(&self) -> bool {
+        self.semver_enabled
+    }
+
     /// Returns deterministic, pretty JSON suitable for a workflow artifact.
     pub fn artifact_bytes(&self) -> &[u8] {
         &self.artifact
@@ -105,12 +120,12 @@ impl GitHubProjection {
         self.output_utf16_bytes
     }
 
-    /// Appends the three checked `name=value` records to `GITHUB_OUTPUT`.
+    /// Appends the five checked `name=value` records to `GITHUB_OUTPUT`.
     ///
     /// The caller supplies the path rather than this library reading ambient
-    /// environment state. Names are fixed constants, the gate is a Rust
-    /// boolean, and compact JSON never contains a literal newline, so plan data
-    /// cannot inject another output.
+    /// environment state. Names are fixed constants, gates are Rust booleans,
+    /// and compact JSON never contains a literal newline, so plan data cannot
+    /// inject another output.
     pub fn append_to_github_output(
         &self,
         github_output: impl AsRef<Path>,
@@ -203,7 +218,7 @@ pub enum ProjectionError {
         "GitHub output records require {actual} UTF-16 bytes, above limits.max_job_output_utf16_bytes ({maximum})"
     )]
     JobOutputTooLarge {
-        /// The exact estimate for both `name=value` records and newlines.
+        /// The exact estimate for all `name=value` records and newlines.
         actual: u64,
         /// The configured maximum.
         maximum: u64,
@@ -285,13 +300,15 @@ struct CompactMatrix<T> {
     include: Vec<T>,
 }
 
-// These transport structs deliberately repeat only the selectors accepted by
-// `execute-build-cell` and `execute-miri-cell`. The executors load the checked
-// repository inputs and resolve feature arguments, target behavior, and Miri
-// flags themselves. Putting those derived details in the compact matrix would
-// create a second execution contract which could drift from that resolution.
-// Keep the handwritten Actions jobs and byte-for-byte compact-schema tests
-// below coordinated with any deliberate transport change.
+// These transport structs deliberately repeat only selectors consumed by the
+// handwritten workflow adapters. The build and Miri executors reload checked
+// repository inputs and resolve their remaining behavior. Semver has one
+// policy-owned package/toolchain/profile tuple whose exact static action inputs
+// are audited separately, so only its varying target crosses this boundary.
+// Putting derived details in these compact matrices would create a second
+// execution contract which could drift from that resolution. Keep the
+// handwritten Actions jobs and byte-for-byte compact-schema tests below
+// coordinated with any deliberate transport change.
 #[derive(Serialize)]
 struct CompactBuildCell<'a> {
     #[serde(rename = "crate")]
@@ -312,6 +329,11 @@ struct CompactMiriCell<'a> {
 }
 
 #[derive(Serialize)]
+struct CompactSemverCell<'a> {
+    target: &'a str,
+}
+
+#[derive(Serialize)]
 struct ArtifactDocument<'a> {
     schema_version: u32,
     policy_schema_version: u32,
@@ -320,6 +342,7 @@ struct ArtifactDocument<'a> {
     counts: ArtifactCounts,
     build_cells: Vec<ArtifactBuildCell<'a>>,
     miri_cells: Vec<ArtifactMiriCell<'a>>,
+    semver_cells: Vec<ArtifactSemverCell<'a>>,
 }
 
 #[derive(Clone, Copy, Serialize)]
@@ -334,6 +357,7 @@ struct ArtifactCounts {
     total: DecisionCounts,
     build: DecisionCounts,
     miri: DecisionCounts,
+    semver: DecisionCounts,
 }
 
 #[derive(Clone, Copy, Serialize)]
@@ -358,6 +382,15 @@ struct ArtifactMiriCell<'a> {
     features: ArtifactFeatures<'a>,
     target: ArtifactMiriTarget<'a>,
     model: ArtifactMiriModel<'a>,
+    decision: ArtifactDecision,
+}
+
+#[derive(Serialize)]
+struct ArtifactSemverCell<'a> {
+    package: ArtifactPackage<'a>,
+    toolchain: ArtifactToolchain<'a>,
+    features: ArtifactFeatures<'a>,
+    target: ArtifactSemverTarget<'a>,
     decision: ArtifactDecision,
 }
 
@@ -408,6 +441,11 @@ struct ArtifactMiriTarget<'a> {
     execution: ArtifactMiriExecution,
 }
 
+#[derive(Serialize)]
+struct ArtifactSemverTarget<'a> {
+    triple: &'a str,
+}
+
 #[derive(Clone, Copy, Serialize)]
 #[serde(rename_all = "snake_case")]
 enum ArtifactMiriExecution {
@@ -435,6 +473,9 @@ enum ArtifactDecisionCode {
     ReducedEventExcludesIneligibleTarget,
     MiriEventCategoryMatches,
     MiriEventCategoryDoesNotMatch,
+    FullEventIncludesSemver,
+    ReducedEventIncludesEligibleSemverTarget,
+    ReducedEventExcludesIneligibleSemverTarget,
 }
 
 fn project(
@@ -450,6 +491,11 @@ fn project(
         .collect::<Vec<_>>();
     let selected_miri =
         explanation.miri().iter().filter(|cell| cell.decision().is_included()).collect::<Vec<_>>();
+    let selected_semver = explanation
+        .semver()
+        .iter()
+        .filter(|cell| cell.decision().is_included())
+        .collect::<Vec<_>>();
 
     // Sharding is deterministic and ready to reuse, but the current workflow
     // exposes one output and one consumer job for each matrix. Fail here until
@@ -458,7 +504,9 @@ fn project(
     let selected_builds =
         one_workflow_shard("ordinary build matrix", &selected_builds, max_matrix_cells)?;
     let selected_miri = one_workflow_shard("Miri matrix", &selected_miri, max_matrix_cells)?;
+    let selected_semver = one_workflow_shard("semver matrix", &selected_semver, max_matrix_cells)?;
     let miri_enabled = !selected_miri.is_empty();
+    let semver_enabled = !selected_semver.is_empty();
 
     let compact_builds = CompactMatrix {
         include: selected_builds
@@ -472,8 +520,15 @@ fn project(
             .map(|explained| compact_miri_cell(explained.cell()))
             .collect(),
     };
+    let compact_semver = CompactMatrix {
+        include: selected_semver
+            .iter()
+            .map(|explained| compact_semver_cell(explained.cell()))
+            .collect(),
+    };
     let build_matrix_json = compact_json("ordinary build matrix", &compact_builds)?;
     let miri_matrix_json = compact_json("Miri matrix", &compact_miri)?;
+    let semver_matrix_json = compact_json("semver matrix", &compact_semver)?;
 
     let artifact = artifact_document(explanation, policy_schema_version)?;
     let mut artifact = serde_json::to_vec_pretty(&artifact)
@@ -481,7 +536,7 @@ fn project(
     artifact.push(b'\n');
 
     let output_records = format!(
-        "{BUILD_MATRIX_OUTPUT}={build_matrix_json}\n{MIRI_MATRIX_OUTPUT}={miri_matrix_json}\n{MIRI_ENABLED_OUTPUT}={miri_enabled}\n"
+        "{BUILD_MATRIX_OUTPUT}={build_matrix_json}\n{MIRI_MATRIX_OUTPUT}={miri_matrix_json}\n{MIRI_ENABLED_OUTPUT}={miri_enabled}\n{SEMVER_MATRIX_OUTPUT}={semver_matrix_json}\n{SEMVER_ENABLED_OUTPUT}={semver_enabled}\n"
     );
     let output_utf16_bytes = utf16_bytes(&output_records);
     if output_utf16_bytes > max_job_output_utf16_bytes {
@@ -495,6 +550,8 @@ fn project(
         build_matrix_json,
         miri_matrix_json,
         miri_enabled,
+        semver_matrix_json,
+        semver_enabled,
         artifact,
         output_records: output_records.into_bytes(),
         output_utf16_bytes,
@@ -527,19 +584,25 @@ fn compact_miri_cell(cell: &MiriPlanCell) -> CompactMiriCell<'_> {
     }
 }
 
+fn compact_semver_cell(cell: &SemverPlanCell) -> CompactSemverCell<'_> {
+    CompactSemverCell { target: cell.target().triple() }
+}
+
 fn artifact_document<'a>(
     explanation: &'a PlanExplanation,
     policy_schema_version: u32,
 ) -> Result<ArtifactDocument<'a>, ProjectionError> {
     let build_counts = decision_counts(explanation.builds().iter().map(|cell| cell.decision()));
     let miri_counts = decision_counts(explanation.miri().iter().map(|cell| cell.decision()));
+    let semver_counts = decision_counts(explanation.semver().iter().map(|cell| cell.decision()));
     let counts = ArtifactCounts {
         total: DecisionCounts {
-            selected: build_counts.selected + miri_counts.selected,
-            excluded: build_counts.excluded + miri_counts.excluded,
+            selected: build_counts.selected + miri_counts.selected + semver_counts.selected,
+            excluded: build_counts.excluded + miri_counts.excluded + semver_counts.excluded,
         },
         build: build_counts,
         miri: miri_counts,
+        semver: semver_counts,
     };
 
     let build_cells = explanation
@@ -586,6 +649,23 @@ fn artifact_document<'a>(
             })
         })
         .collect::<Result<Vec<_>, ProjectionError>>()?;
+    let semver_cells = explanation
+        .semver()
+        .iter()
+        .map(|explained| {
+            let cell = explained.cell();
+            Ok(ArtifactSemverCell {
+                package: artifact_package(cell.package().id(), cell.package().manifest())?,
+                toolchain: ArtifactToolchain {
+                    id: cell.toolchain().id(),
+                    version: cell.toolchain().version(),
+                },
+                features: artifact_features(cell.features().profile(), cell.features().selection()),
+                target: ArtifactSemverTarget { triple: cell.target().triple() },
+                decision: artifact_decision(explained.decision()),
+            })
+        })
+        .collect::<Result<Vec<_>, ProjectionError>>()?;
 
     Ok(ArtifactDocument {
         schema_version: PROJECTION_SCHEMA_VERSION,
@@ -598,6 +678,7 @@ fn artifact_document<'a>(
         counts,
         build_cells,
         miri_cells,
+        semver_cells,
     })
 }
 
@@ -635,6 +716,13 @@ fn artifact_decision(decision: CellDecision) -> ArtifactDecision {
         DecisionReason::MiriEventCategoryMatches => ArtifactDecisionCode::MiriEventCategoryMatches,
         DecisionReason::MiriEventCategoryDoesNotMatch => {
             ArtifactDecisionCode::MiriEventCategoryDoesNotMatch
+        }
+        DecisionReason::FullEventIncludesSemver => ArtifactDecisionCode::FullEventIncludesSemver,
+        DecisionReason::ReducedEventIncludesEligibleSemverTarget => {
+            ArtifactDecisionCode::ReducedEventIncludesEligibleSemverTarget
+        }
+        DecisionReason::ReducedEventExcludesIneligibleSemverTarget => {
+            ArtifactDecisionCode::ReducedEventExcludesIneligibleSemverTarget
         }
     };
     ArtifactDecision {
@@ -794,13 +882,16 @@ mod tests {
 
     use super::{
         one_workflow_shard, project, shard_cells, slash_normalized_path, utf16_bytes,
-        CompactBuildCell, CompactMiriCell, GitHubProjection, ProjectionError, ProjectionWriteError,
-        PROJECTION_SCHEMA_VERSION,
+        CompactBuildCell, CompactMiriCell, CompactSemverCell, GitHubProjection, ProjectionError,
+        ProjectionWriteError, PROJECTION_SCHEMA_VERSION,
     };
     use crate::{
         ci::CiInputs,
         plan::{Plan, PlanExplanation},
-        workflow_protocol::{BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT},
+        workflow_protocol::{
+            BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT, SEMVER_ENABLED_OUTPUT,
+            SEMVER_MATRIX_OUTPUT,
+        },
     };
 
     fn inputs() -> &'static CiInputs {
@@ -817,11 +908,11 @@ mod tests {
 
     #[test]
     fn projects_all_current_events() {
-        for (event, builds, miri) in [
-            ("pull_request", 60, 0),
-            ("merge_group", 182, 64),
-            ("push", 182, 64),
-            ("workflow_dispatch", 182, 64),
+        for (event, builds, miri, semver) in [
+            ("pull_request", 60, 0, 3),
+            ("merge_group", 182, 64, 9),
+            ("push", 182, 64, 9),
+            ("workflow_dispatch", 182, 64, 9),
         ] {
             let projection = GitHubProjection::create(inputs(), event).unwrap();
             assert_eq!(
@@ -833,6 +924,11 @@ mod tests {
                 miri
             );
             assert_eq!(projection.miri_enabled(), miri != 0);
+            assert_eq!(
+                parse(projection.semver_matrix_json())["include"].as_array().unwrap().len(),
+                semver
+            );
+            assert_eq!(projection.semver_enabled(), semver != 0);
 
             let artifact: Value = serde_json::from_slice(projection.artifact_bytes()).unwrap();
             assert_eq!(artifact["schema_version"], PROJECTION_SCHEMA_VERSION);
@@ -840,6 +936,12 @@ mod tests {
             assert_eq!(artifact["event"], event);
             assert_eq!(artifact["counts"]["build"]["selected"], builds);
             assert_eq!(artifact["counts"]["miri"]["selected"], miri);
+            assert_eq!(artifact["counts"]["semver"]["selected"], semver);
+            assert_eq!(artifact["counts"]["total"]["selected"], builds + miri + semver);
+            assert_eq!(
+                artifact["counts"]["total"]["excluded"],
+                (182 - builds) + (64 - miri) + (9 - semver)
+            );
         }
     }
 
@@ -874,6 +976,11 @@ mod tests {
                     })
                 })
                 .collect::<Vec<_>>();
+            let expected_semver = plan
+                .semver()
+                .iter()
+                .map(|cell| json!({ "target": cell.target().triple() }))
+                .collect::<Vec<_>>();
 
             assert_eq!(
                 parse(projection.build_matrix_json())["include"],
@@ -882,6 +989,10 @@ mod tests {
             assert_eq!(
                 parse(projection.miri_matrix_json())["include"],
                 Value::Array(expected_miri)
+            );
+            assert_eq!(
+                parse(projection.semver_matrix_json())["include"],
+                Value::Array(expected_semver)
             );
         }
     }
@@ -910,6 +1021,9 @@ mod tests {
             serde_json::to_string(&miri).unwrap(),
             r#"{"crate":"package","toolchain":"toolchain","feature_profile":"profile","target":"target","miri_model":"model"}"#
         );
+
+        let semver = CompactSemverCell { target: "target" };
+        assert_eq!(serde_json::to_string(&semver).unwrap(), r#"{"target":"target"}"#);
     }
 
     #[test]
@@ -920,6 +1034,8 @@ mod tests {
         assert_eq!(first.build_matrix_json(), second.build_matrix_json());
         assert_eq!(first.miri_matrix_json(), second.miri_matrix_json());
         assert_eq!(first.miri_enabled(), second.miri_enabled());
+        assert_eq!(first.semver_matrix_json(), second.semver_matrix_json());
+        assert_eq!(first.semver_enabled(), second.semver_enabled());
         assert_eq!(first.artifact_bytes(), second.artifact_bytes());
         assert!(first.artifact_bytes().ends_with(b"\n"));
     }
@@ -938,6 +1054,26 @@ mod tests {
 
         assert_ne!(projection.miri_matrix_json(), r#"{"include":[]}"#);
         assert!(projection.miri_enabled());
+    }
+
+    #[test]
+    fn semver_projection_tracks_event_specific_targets() {
+        let reduced = GitHubProjection::create(inputs(), "pull_request").unwrap();
+        let full = GitHubProjection::create(inputs(), "merge_group").unwrap();
+
+        assert_eq!(
+            parse(reduced.semver_matrix_json()),
+            json!({
+                "include": [
+                    {"target": "i686-unknown-linux-gnu"},
+                    {"target": "x86_64-pc-windows-msvc"},
+                    {"target": "x86_64-unknown-linux-gnu"},
+                ]
+            })
+        );
+        assert_eq!(parse(full.semver_matrix_json())["include"].as_array().unwrap().len(), 9);
+        assert!(reduced.semver_enabled());
+        assert!(full.semver_enabled());
     }
 
     #[test]
@@ -975,20 +1111,22 @@ mod tests {
 
         let projection = GitHubProjection::create(inputs(), "pull_request").unwrap();
         let records = format!(
-            "{BUILD_MATRIX_OUTPUT}={}\n{MIRI_MATRIX_OUTPUT}={}\n{MIRI_ENABLED_OUTPUT}={}\n",
+            "{BUILD_MATRIX_OUTPUT}={}\n{MIRI_MATRIX_OUTPUT}={}\n{MIRI_ENABLED_OUTPUT}={}\n{SEMVER_MATRIX_OUTPUT}={}\n{SEMVER_ENABLED_OUTPUT}={}\n",
             projection.build_matrix_json(),
             projection.miri_matrix_json(),
             projection.miri_enabled(),
+            projection.semver_matrix_json(),
+            projection.semver_enabled(),
         );
         assert_eq!(projection.output_utf16_bytes(), utf16_bytes(&records));
 
         // These sizes make growth in the compact workflow contract visible.
         // A deliberate coverage change can update them, but adding derived
         // execution details to every cell should not pass unnoticed.
-        assert_eq!(projection.output_utf16_bytes(), 14_832);
+        assert_eq!(projection.output_utf16_bytes(), 15_148);
         assert_eq!(
             GitHubProjection::create(inputs(), "merge_group").unwrap().output_utf16_bytes(),
-            60_834
+            61_622
         );
     }
 
@@ -1022,10 +1160,12 @@ mod tests {
 
         let projection = GitHubProjection::create(inputs(), "merge_group").unwrap();
         let artifact: Value = serde_json::from_slice(projection.artifact_bytes()).unwrap();
-        for cell in artifact["build_cells"].as_array().unwrap() {
-            let manifest = cell["package"]["manifest"].as_str().unwrap();
-            assert!(!manifest.contains('\\'));
-            assert!(!Path::new(manifest).is_absolute());
+        for group in ["build_cells", "miri_cells", "semver_cells"] {
+            for cell in artifact[group].as_array().unwrap() {
+                let manifest = cell["package"]["manifest"].as_str().unwrap();
+                assert!(!manifest.contains('\\'));
+                assert!(!Path::new(manifest).is_absolute());
+            }
         }
     }
 
@@ -1060,10 +1200,21 @@ mod tests {
         assert_eq!(tree["target"]["execution"], "miri_interpreted");
         assert_eq!(tree["model"]["flags"], json!(["-Zmiri-tree-borrows"]));
 
+        let semver = artifact["semver_cells"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|cell| cell["target"]["triple"] == "x86_64-unknown-linux-gnu")
+            .unwrap();
+        assert_eq!(semver["toolchain"]["id"], "stable");
+        assert_eq!(semver["features"]["selection"]["kind"], "stable_aggregate");
+        assert_eq!(semver["decision"]["code"], "full_event_includes_semver");
+
         let mut keys = BTreeSet::new();
         collect_keys(&artifact, &mut keys);
         collect_keys(&parse(projection.build_matrix_json()), &mut keys);
         collect_keys(&parse(projection.miri_matrix_json()), &mut keys);
+        collect_keys(&parse(projection.semver_matrix_json()), &mut keys);
         for forbidden in [
             "permissions",
             "secrets",
@@ -1124,7 +1275,12 @@ mod tests {
         assert!(
             output.contains(&format!("{MIRI_MATRIX_OUTPUT}={}\n", projection.miri_matrix_json()))
         );
-        assert!(output.ends_with(&format!("{MIRI_ENABLED_OUTPUT}={}\n", projection.miri_enabled())));
+        assert!(output.contains(&format!("{MIRI_ENABLED_OUTPUT}={}\n", projection.miri_enabled())));
+        assert!(output
+            .contains(&format!("{SEMVER_MATRIX_OUTPUT}={}\n", projection.semver_matrix_json())));
+        assert!(
+            output.ends_with(&format!("{SEMVER_ENABLED_OUTPUT}={}\n", projection.semver_enabled()))
+        );
         assert_eq!(fs::read(artifact).unwrap(), projection.artifact_bytes());
         assert_eq!(fs::read_dir(&directory).unwrap().count(), 2);
 
