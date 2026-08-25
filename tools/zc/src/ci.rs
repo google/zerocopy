@@ -13,10 +13,11 @@
 //! metadata and repository files, every workflow job has an exact reviewed
 //! role, the handwritten matrix jobs exactly publish and consume typed plans,
 //! the complete standalone semver job consumes its typed target matrix and
-//! exactly implements policy, every independently recorded legacy baseline
-//! parses canonically, and the typed execution model exactly reproduces that
-//! legacy evidence. Planners therefore consume checked data rather than
-//! remembering which validation passes must precede which lookups.
+//! exactly implements policy, the required check exactly aggregates their
+//! conclusions, every independently recorded legacy baseline parses
+//! canonically, and the typed execution model exactly reproduces that legacy
+//! evidence. Planners therefore consume checked data rather than remembering
+//! which validation passes must precede which lookups.
 
 use std::{
     collections::HashMap,
@@ -91,11 +92,12 @@ impl CiInputs {
             audit_workflows(&repository_root, reviewed_workflow_jobs)
                 .map_err(|error| LoadCiError::Workflow(Box::new(error)))?;
         // Job-ID inventory cannot prove that a planned job publishes or
-        // consumes its typed matrix through the complete checked CLI. Audit
-        // that bridge using the exact bytes retained by the inventory pass,
-        // rather than reopening a possibly replaced path. The image producer
-        // also consumes validated inventory so its preinstalled compiler pins
-        // cannot drift from the toolchains selected by the typed plan.
+        // consumes its typed matrix through the complete checked CLI, or that
+        // those conclusions reach the required check. Audit that bridge using
+        // the exact bytes retained by the inventory pass, rather than reopening
+        // a possibly replaced path. The image producer also consumes validated
+        // inventory so its preinstalled compiler pins cannot drift from the
+        // toolchains selected by the typed plan.
         let workflow_source = workflow_sources.source(WORKFLOW_PATH).ok_or_else(|| {
             LoadCiError::RequiredWorkflowMissing { path: WORKFLOW_PATH.to_owned() }
         })?;
