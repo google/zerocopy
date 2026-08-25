@@ -46,6 +46,7 @@ workflow	job	role
 .github/workflows/ci.yml	miri	planned
 .github/workflows/ci.yml	plan_ci	static-ci
 .github/workflows/ci.yml	run-git-hooks	static-ci
+.github/workflows/ci.yml	semver	planned
 .github/workflows/ci.yml	zizmor	security
 .github/workflows/dependency-review.yml	dependency-review	security
 .github/workflows/docs.yml	build	documentation

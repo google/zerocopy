@@ -37,7 +37,7 @@ use crate::{
     github::{GitHubProjection, ProjectionError, ProjectionWriteError},
     plan::{
         BuildPlanCell, ExecutionMode, FeatureSelection, MiriPlanCell, Plan, PlanError,
-        PlanExplanation,
+        PlanExplanation, SemverPlanCell,
     },
     workflow_protocol::{
         CELL_FEATURE_PROFILE_OPTION, CELL_MIRI_MODEL_OPTION, CELL_PACKAGE_OPTION,
@@ -376,11 +376,12 @@ fn audit(inputs: &CiInputs, output: &mut impl Write) -> Result<(), CliError> {
     for plan in plans {
         writeln!(
             output,
-            "{}: {} coverage; {} build cells; {} Miri cells",
+            "{}: {} coverage; {} build cells; {} Miri cells; {} semver cells",
             plan.event(),
             plan.class(),
             plan.builds().len(),
             plan.miri().len(),
+            plan.semver().len(),
         )?;
     }
     Ok(())
@@ -392,11 +393,15 @@ fn print_plan(inputs: &CiInputs, event: &str, output: &mut impl Write) -> Result
     writeln!(output, "coverage: {}", plan.class())?;
     writeln!(output, "build cells: {}", plan.builds().len())?;
     writeln!(output, "Miri cells: {}", plan.miri().len())?;
+    writeln!(output, "semver cells: {}", plan.semver().len())?;
     for cell in plan.builds() {
         print_build_cell(output, cell)?;
     }
     for cell in plan.miri() {
         print_miri_cell(output, cell)?;
+    }
+    for cell in plan.semver() {
+        print_semver_cell(output, cell)?;
     }
     Ok(())
 }
@@ -439,6 +444,20 @@ fn print_miri_cell(output: &mut impl Write, cell: &MiriPlanCell) -> io::Result<(
         write!(output, "{flag}")?;
     }
     writeln!(output, "]")
+}
+
+fn print_semver_cell(output: &mut impl Write, cell: &SemverPlanCell) -> io::Result<()> {
+    write!(
+        output,
+        "semver: package={} manifest={} toolchain={} version={} profile={} features=",
+        cell.package().id(),
+        cell.package().manifest().display(),
+        cell.toolchain().id(),
+        cell.toolchain().version(),
+        cell.features().profile(),
+    )?;
+    print_feature_selection(output, cell.features().selection())?;
+    writeln!(output, " target={}", cell.target().triple())
 }
 
 fn print_feature_selection(
@@ -505,9 +524,6 @@ fn print_execution_report(
     )?;
     for step in report.executed_steps() {
         writeln!(output, "executed: {step}")?;
-    }
-    for step in report.workflow_owned_steps() {
-        writeln!(output, "skipped workflow-owned step: {step}")?;
     }
     Ok(())
 }
@@ -662,7 +678,10 @@ mod tests {
     use super::{run, CliError, Command};
     use crate::{
         execution::{BuildCellSelector, MiriCellSelector},
-        workflow_protocol::{BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT},
+        workflow_protocol::{
+            BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT, SEMVER_ENABLED_OUTPUT,
+            SEMVER_MATRIX_OUTPUT,
+        },
     };
 
     fn strings(args: &[&str]) -> Vec<String> {
@@ -887,10 +906,10 @@ mod tests {
             String::from_utf8(output).unwrap(),
             concat!(
                 "CI audit passed\n",
-                "merge_group: full coverage; 182 build cells; 64 Miri cells\n",
-                "pull_request: reduced coverage; 60 build cells; 0 Miri cells\n",
-                "push: full coverage; 182 build cells; 64 Miri cells\n",
-                "workflow_dispatch: full coverage; 182 build cells; 64 Miri cells\n",
+                "merge_group: full coverage; 182 build cells; 64 Miri cells; 9 semver cells\n",
+                "pull_request: reduced coverage; 60 build cells; 0 Miri cells; 3 semver cells\n",
+                "push: full coverage; 182 build cells; 64 Miri cells; 9 semver cells\n",
+                "workflow_dispatch: full coverage; 182 build cells; 64 Miri cells; 9 semver cells\n",
             )
         );
     }
@@ -901,10 +920,11 @@ mod tests {
         run(repository_root(), strings(&["plan", "--event", "pull_request"]), &mut output).unwrap();
         let output = String::from_utf8(output).unwrap();
         assert!(output.starts_with(
-            "event: pull_request\ncoverage: reduced\nbuild cells: 60\nMiri cells: 0\n"
+            "event: pull_request\ncoverage: reduced\nbuild cells: 60\nMiri cells: 0\nsemver cells: 3\n"
         ));
         assert_eq!(output.lines().filter(|line| line.starts_with("build: ")).count(), 60);
         assert!(!output.lines().any(|line| line.starts_with("miri: ")));
+        assert_eq!(output.lines().filter(|line| line.starts_with("semver: ")).count(), 3);
     }
 
     #[test]
@@ -974,7 +994,9 @@ mod tests {
         let job_outputs = fs::read_to_string(github_output).unwrap();
         assert!(job_outputs.starts_with(&format!("{BUILD_MATRIX_OUTPUT}={{\"include\":[")));
         assert!(job_outputs.contains(&format!("{MIRI_MATRIX_OUTPUT}={{\"include\":[]}}\n")));
-        assert!(job_outputs.ends_with(&format!("{MIRI_ENABLED_OUTPUT}=false\n")));
+        assert!(job_outputs.contains(&format!("{MIRI_ENABLED_OUTPUT}=false\n")));
+        assert!(job_outputs.contains(&format!("{SEMVER_MATRIX_OUTPUT}={{\"include\":[")));
+        assert!(job_outputs.ends_with(&format!("{SEMVER_ENABLED_OUTPUT}=true\n")));
         let artifact_json: serde_json::Value =
             serde_json::from_slice(&fs::read(artifact).unwrap()).unwrap();
         assert_eq!(artifact_json["event"], "pull_request");
