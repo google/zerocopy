@@ -13,8 +13,8 @@
 # new PR. Note that this does not guarantee that the roll will succeed: PRs go
 # through many tests which are not exercised here, and so the generated PR may
 # still fail CI. In particular, some nightly releases do not support all of the
-# target architectures that we use in CI; attempting to roll to any such release
-# will fail.
+# target architectures that we use in CI. The typed target-support refresh
+# rejects such a release before this workflow submits a pull request.
 
 name: Roll pinned toolchain versions
 on:
@@ -84,6 +84,15 @@ jobs:
             VERSION="$2"
             ZEROCOPY_FEATURES="$3"
 
+            # Capture the typed old value before editing the manifest. Keep
+            # this call and the refresh invocation below coordinated with
+            # `tools/zc/src/bin/refresh-rust-target-support.rs`: the command
+            # reconstructs the pre-edit manifest from this value and refuses
+            # to bless any unrelated pre-existing support-catalog drift.
+            OLD_VERSION="$(
+              ./zerocopy/cargo.sh --version "$VERSION_NAME"
+            )"
+
             # Confirm that `zerocopy/Cargo.toml` lists exactly one pinned
             # version in the expected format. This is a prerequisite for the
             # subsequent `sed` command. Requiring exactly one match makes a
@@ -110,6 +119,15 @@ jobs:
             # to fail.
             ./zerocopy/cargo.sh "+$VERSION_NAME" fix --allow-dirty --tests --package zerocopy $ZEROCOPY_FEATURES || true
             ./zerocopy/cargo.sh "+$VERSION_NAME" fix --allow-dirty --tests --package zerocopy-derive             || true
+
+            # Recompute exact ordinary, Miri, and semver target unions from
+            # the same typed policy and manifest sources used by inventory.
+            # The command verifies the changed compiler through rustup before
+            # atomically rewriting `ci/rust-target-support.toml`.
+            ./tools/cargo.sh run --locked --offline -p zc \
+              --bin refresh-rust-target-support -- \
+              --repository .. --pin "$VERSION_NAME" \
+              --old-version "$OLD_VERSION"
 
             ./tools/update-expected-test-output.sh
           }

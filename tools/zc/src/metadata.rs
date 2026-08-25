@@ -43,6 +43,10 @@ pub struct ToolchainMetadata {
     /// documented text format intact when changing these entries; this map is
     /// only the structured view of that separate contract.
     pub build_rs: BTreeMap<String, String>,
+    // This is intentionally private: consumers may ask whether the manifest
+    // owns a workspace, but cannot manufacture metadata which claims that
+    // topology without parsing the manifest.
+    defines_workspace: bool,
 }
 
 impl ToolchainMetadata {
@@ -57,7 +61,7 @@ impl ToolchainMetadata {
         Self::parse(path, &source)
     }
 
-    fn parse(path: &Path, source: &str) -> Result<Self, ReadMetadataError> {
+    pub(crate) fn parse(path: &Path, source: &str) -> Result<Self, ReadMetadataError> {
         let manifest: Manifest = toml::from_str(source)
             .map_err(|source| ReadMetadataError::Parse { path: path.to_path_buf(), source })?;
 
@@ -66,7 +70,17 @@ impl ToolchainMetadata {
             pinned_stable: manifest.package.metadata.ci.pinned_stable,
             pinned_nightly: manifest.package.metadata.ci.pinned_nightly,
             build_rs: manifest.package.metadata.build_rs,
+            defines_workspace: manifest.workspace.is_some(),
         })
+    }
+
+    /// Reports whether this package manifest also defines a Cargo workspace.
+    ///
+    /// Inventory uses this before trusting the sibling `Cargo.lock`. Keeping
+    /// the fact in the same typed parse as compiler metadata prevents a future
+    /// workspace move from silently changing which lockfile Cargo reads.
+    pub(crate) fn defines_workspace(&self) -> bool {
+        self.defines_workspace
     }
 }
 
@@ -95,6 +109,7 @@ pub enum ReadMetadataError {
 
 #[derive(Deserialize)]
 struct Manifest {
+    workspace: Option<toml::Table>,
     package: Package,
 }
 
@@ -134,6 +149,7 @@ mod tests {
         assert_eq!(metadata.rust_version, "1.56.0");
         assert_eq!(metadata.pinned_stable, "1.93.1");
         assert_eq!(metadata.pinned_nightly, "nightly-2026-01-25");
+        assert!(metadata.defines_workspace());
         assert_eq!(
             metadata.build_rs,
             [
