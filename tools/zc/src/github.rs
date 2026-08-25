@@ -43,6 +43,7 @@ use crate::{
         BuildPlanCell, CellDecision, DecisionReason, EventClass, ExecutionMode, FeatureSelection,
         MiriPlanCell, PlanError, PlanExplanation,
     },
+    workflow_protocol::{BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT},
 };
 
 /// The artifact schema emitted by this version of `zc`.
@@ -51,24 +52,6 @@ use crate::{
 /// document. The compact matrix is a separate contract coordinated directly
 /// with `.github/workflows/ci.yml`.
 pub const PROJECTION_SCHEMA_VERSION: u32 = 1;
-
-/// The fixed output name consumed by the ordinary build job.
-///
-/// Keep the producer and consumer expressions in the workflow coordinated
-/// with this value.
-pub const BUILD_MATRIX_OUTPUT: &str = "build_matrix";
-
-/// The fixed output name consumed by the Miri job.
-///
-/// This has the same producer/consumer contract as
-/// [`BUILD_MATRIX_OUTPUT`].
-pub const MIRI_MATRIX_OUTPUT: &str = "miri_matrix";
-
-/// The fixed job gate derived from whether the Miri matrix is nonempty.
-///
-/// The workflow must not independently classify events when deciding whether
-/// to run or require Miri.
-pub const MIRI_ENABLED_OUTPUT: &str = "miri_enabled";
 
 /// JSON ready for GitHub Actions plus a detailed review artifact.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -812,11 +795,12 @@ mod tests {
     use super::{
         one_workflow_shard, project, shard_cells, slash_normalized_path, utf16_bytes,
         CompactBuildCell, CompactMiriCell, GitHubProjection, ProjectionError, ProjectionWriteError,
-        BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT, PROJECTION_SCHEMA_VERSION,
+        PROJECTION_SCHEMA_VERSION,
     };
     use crate::{
         ci::CiInputs,
         plan::{Plan, PlanExplanation},
+        workflow_protocol::{BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT},
     };
 
     fn inputs() -> &'static CiInputs {
