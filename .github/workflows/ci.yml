@@ -139,7 +139,8 @@ jobs:
       # By default, this is set to `true`, which means that a single CI job
       # failure will cause all outstanding jobs to be canceled. This slows down
       # development because it means that errors need to be encountered and
-      # fixed one at a time.
+      # fixed one at a time. The matrix audit also rejects `max-parallel` so
+      # this fan-out cannot be silently serialized.
       fail-fast: false
       # `plan_ci` emits a complete `include` object, including an empty one if
       # no cells are selected. Do not add handwritten axes or exclusions here:
@@ -150,7 +151,7 @@ jobs:
     name: Build & Test (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.feature_profile }} / ${{ matrix.target }})
 
     steps:
-    -
+    - &matrix_checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         # `Prepare cargo-semver-checks` reads the pull request head commit by
@@ -164,7 +165,7 @@ jobs:
     # artifact name. The ID identifies one immutable artifact from this exact
     # run, so a renamed, stale, or Buildx-generated artifact cannot be selected
     # accidentally. Checkout must remain first because this is a local action.
-    -
+    - &download_ci_image
       name: Download prebuilt Docker image
       uses: ./.github/actions/download-artifact-with-retry
       with:
@@ -177,33 +178,36 @@ jobs:
     # producer and every consumer intentionally use the same ubuntu-latest
     # runner architecture. If CI gains another architecture, build and select a
     # distinct artifact ID for it rather than silently sharing this archive.
-    -
+    - &load_ci_image
       name: Load prebuilt Docker image
       shell: bash
       env:
         IMAGE_ARCHIVE: ${{ runner.temp }}/${{ env.ZC_CI_IMAGE_ARCHIVE }}
         IMAGE_NAME: ${{ env.ZC_CI_IMAGE }}
+      # Keep the large archive only as long as `docker load` needs it. The trap
+      # also reclaims it if loading or validation fails, avoiding archive plus
+      # expanded-image disk pressure for later diagnostic steps. `inspect`
+      # proves the tag exists; the trivial run also proves that the archive
+      # matches this runner's architecture.
       run: |
         set -euo pipefail
-        # Keep the large archive only as long as `docker load` needs it. The
-        # trap also reclaims it if loading or validation fails, avoiding archive
-        # plus expanded-image disk pressure for later diagnostic steps.
         trap 'rm -f -- "$IMAGE_ARCHIVE"' EXIT
         docker load --input "$IMAGE_ARCHIVE"
         docker image inspect "$IMAGE_NAME" >/dev/null
-        # `inspect` proves the tag exists; running a trivial command also proves
-        # that the archive matches this runner's architecture.
         docker run --rm "$IMAGE_NAME" true
 
-    -
-      name: Create Docker Shell Wrapper
+    # This wrapper remains necessary for the semver preparation later in this
+    # job. The typed executor below deliberately does not use it. The matrix
+    # audit checks this complete step because it runs before that executor and
+    # therefore must not acquire any unreviewed authority over the checkout.
+    - name: Create Docker Shell Wrapper
       shell: bash
+      # Keep the Docker steps' Cargo cache separate from the host Cargo home.
+      # The container runs as root, while later host-side actions run as the
+      # runner user and need to write their own Cargo registry cache.
       run: |
         set -eo pipefail
 
-        # Keep the Docker steps' Cargo cache separate from the host Cargo home.
-        # The container runs as root, while later host-side actions run as the
-        # runner user and need to write their own Cargo registry cache.
         mkdir -p /home/runner/.docker-cargo/registry /home/runner/.docker-cargo/git
 
         cat << 'EOF' > /tmp/docker-shell.sh
@@ -228,6 +232,92 @@ jobs:
         EOF
         chmod +x /tmp/docker-shell.sh
 
+    # Setup includes repository-owned code, so checking only the executor's
+    # source would not prove which checkout that executor invokes. Run this
+    # exact host-side gate after every setup step and share it with Miri below.
+    # It checks the expected commit with an empty environment, then constructs
+    # fresh Git metadata from that commit so setup cannot hide a change in the
+    # checkout's mutable index, local config, or attributes. It rejects every
+    # tracked, untracked, or ignored path. Keep this step and its alias
+    # coordinated with `tools/zc/src/planned_adapter/matrix.rs`.
+    - &verify_matrix_checkout
+      name: Verify matrix checkout is unchanged
+      shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
+      env:
+        EXPECTED_COMMIT: ${{ github.sha }}
+      run: |
+        set -euo pipefail
+        builtin cd -- "$GITHUB_WORKSPACE"
+        readonly -a source_git=(
+          /usr/bin/env -i
+          GIT_CONFIG_GLOBAL=/dev/null
+          GIT_CONFIG_NOSYSTEM=1
+          GIT_NO_REPLACE_OBJECTS=1
+          HOME=/dev/null
+          PATH=/usr/bin:/bin
+          /usr/bin/git
+          "--git-dir=$GITHUB_WORKSPACE/.git"
+          "--work-tree=$GITHUB_WORKSPACE"
+        )
+
+        actual_commit="$("${source_git[@]}" rev-parse --verify HEAD^{commit})"
+        if [[ "$actual_commit" != "$EXPECTED_COMMIT" ]]; then
+          printf 'Expected checkout commit %s, found %s\n' \
+            "$EXPECTED_COMMIT" "$actual_commit" >&2
+          exit 1
+        fi
+
+        # Do not trust the checkout's mutable index, local Git config, or
+        # attributes. Build a temporary repository whose object store is the
+        # checkout's content-addressed store, whose index comes from the
+        # expected commit, and whose attributes also come from that commit.
+        verification_directory="$(
+          /usr/bin/mktemp -d "$RUNNER_TEMP/matrix-checkout.XXXXXX"
+        )"
+        readonly verification_directory
+        trap '/usr/bin/rm -rf -- "$verification_directory"' EXIT
+        /usr/bin/env -i \
+          GIT_CONFIG_GLOBAL=/dev/null \
+          GIT_CONFIG_NOSYSTEM=1 \
+          HOME=/dev/null \
+          PATH=/usr/bin:/bin \
+          /usr/bin/git init --quiet --initial-branch=verified \
+            "$verification_directory/repository"
+
+        readonly -a trusted_git=(
+          /usr/bin/env -i
+          GIT_ATTR_NOSYSTEM=1
+          "GIT_ATTR_SOURCE=$EXPECTED_COMMIT"
+          GIT_CONFIG_GLOBAL=/dev/null
+          GIT_CONFIG_NOSYSTEM=1
+          "GIT_INDEX_FILE=$verification_directory/index"
+          GIT_NO_REPLACE_OBJECTS=1
+          "GIT_OBJECT_DIRECTORY=$GITHUB_WORKSPACE/.git/objects"
+          HOME=/dev/null
+          PATH=/usr/bin:/bin
+          /usr/bin/git
+          "--git-dir=$verification_directory/repository/.git"
+          "--work-tree=$GITHUB_WORKSPACE"
+          -c core.filemode=true
+          -c core.fsmonitor=false
+          -c core.ignoreCase=false
+          -c core.sparseCheckout=false
+          -c core.symlinks=true
+          -c core.untrackedCache=false
+        )
+        "${trusted_git[@]}" update-ref HEAD "$EXPECTED_COMMIT"
+        "${trusted_git[@]}" read-tree "$EXPECTED_COMMIT"
+        checkout_status="$(
+          "${trusted_git[@]}" status \
+            --porcelain=v1 --untracked-files=all --ignored=matching -- \
+            . ':(exclude).git'
+        )"
+        if [[ -n "$checkout_status" ]]; then
+          printf 'Matrix setup modified the checkout:\n%s\n' \
+            "$checkout_status" >&2
+          exit 1
+        fi
+
     # The matrix values are data, not shell fragments. `cargo-zerocopy`
     # validates these selectors against the plan for this event, reconstructs
     # the typed argv and environment, and executes the complete cell. This step
@@ -238,8 +328,10 @@ jobs:
     # returning success without starting a container. The entrypoint override
     # and Bash startup options prevent image startup behavior or exported
     # functions from intercepting the typed executor argv. The option
-    # terminator forces the inherited image value to be parsed as an image.
-    # Keep this command and its options coordinated with `tools/zc/src/cli.rs`.
+    # terminator forces the inherited image value to be parsed as an image. The
+    # planned-job workflow audit in `planned_adapter/matrix.rs` checks the step
+    # fields exactly and this run block line-for-line. Keep protocol spellings
+    # coordinated through `tools/zc/src/workflow_protocol.rs`.
     - name: Execute checked build cell
       shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
       working-directory: zerocopy
@@ -382,59 +474,21 @@ jobs:
     permissions:
       contents: read
     strategy:
+      # The matrix audit requires exactly this concurrency setting and the
+      # matching plan output; extra strategy fields are rejected.
       fail-fast: false
       # A planner-disabled job skips before matrix expansion. When enabled, it
       # consumes exactly the Miri cells selected by the same checked plan used
       # by the executor below.
       matrix: ${{ fromJSON(needs.plan_ci.outputs.miri_matrix) }}
 
-    name: Miri (${{ matrix.crate }} / ${{ matrix.feature_profile }} / ${{ matrix.miri_model }} / ${{ matrix.target }})
+    name: Miri (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.feature_profile }} / ${{ matrix.miri_model }} / ${{ matrix.target }})
 
     steps:
-    -
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        # `Prepare cargo-semver-checks` reads the pull request head commit by
-        # its explicit SHA. Keep this depth large enough to include that parent
-        # of GitHub's synthetic pull request merge commit. A missing object
-        # makes `git log` fail rather than checking a different message.
-        fetch-depth: 2
-        persist-credentials: false
-
-    # The producer exposes the ID assigned by upload-artifact, rather than an
-    # artifact name. The ID identifies one immutable artifact from this exact
-    # run, so a renamed, stale, or Buildx-generated artifact cannot be selected
-    # accidentally. Checkout must remain first because this is a local action.
-    -
-      name: Download prebuilt Docker image
-      uses: ./.github/actions/download-artifact-with-retry
-      with:
-        artifact-id: ${{ needs.build_docker_env.outputs.image_artifact_id }}
-        path: ${{ runner.temp }}
-        expected-file: ${{ env.ZC_CI_IMAGE_ARCHIVE }}
-
-    # This step runs before /tmp/docker-shell.sh exists, so its explicit Bash
-    # shell is load-bearing. The Docker exporter is single-platform; the
-    # producer and every consumer intentionally use the same ubuntu-latest
-    # runner architecture. If CI gains another architecture, build and select a
-    # distinct artifact ID for it rather than silently sharing this archive.
-    -
-      name: Load prebuilt Docker image
-      shell: bash
-      env:
-        IMAGE_ARCHIVE: ${{ runner.temp }}/${{ env.ZC_CI_IMAGE_ARCHIVE }}
-        IMAGE_NAME: ${{ env.ZC_CI_IMAGE }}
-      run: |
-        set -euo pipefail
-        # Keep the large archive only as long as `docker load` needs it. The
-        # trap also reclaims it if loading or validation fails, avoiding archive
-        # plus expanded-image disk pressure for later diagnostic steps.
-        trap 'rm -f -- "$IMAGE_ARCHIVE"' EXIT
-        docker load --input "$IMAGE_ARCHIVE"
-        docker image inspect "$IMAGE_NAME" >/dev/null
-        # `inspect` proves the tag exists; running a trivial command also proves
-        # that the archive matches this runner's architecture.
-        docker run --rm "$IMAGE_NAME" true
+    - *matrix_checkout
+    - *download_ci_image
+    - *load_ci_image
+    - *verify_matrix_checkout
 
     # As with ordinary cells, the workflow passes only selectors. Model flags,
     # feature arguments, the Cargo configuration transaction, and target
@@ -442,8 +496,9 @@ jobs:
     # This explicit Docker bridge does not rely on the generated job shell
     # actually executing its input. Its absolute Docker path, entrypoint
     # override, Bash startup options, and option terminator provide the same
-    # fail-closed boundary as the ordinary build bridge. Keep the separate
-    # Miri-model selector coordinated with `tools/zc/src/cli.rs`.
+    # fail-closed boundary as the ordinary build bridge. The matrix audit
+    # checks the fields exactly and this run block line-for-line. Keep the
+    # Miri-model and command spellings in `workflow_protocol.rs` coordinated.
     - name: Execute checked Miri cell
       shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
       working-directory: zerocopy
@@ -807,6 +862,11 @@ jobs:
           # the action only does if advanced-security is false.
           advanced-security: false
 
+  # `tools/zc/src/planned_adapter/image.rs` audits this complete producer job.
+  # Its build, export, upload, and local-action choices are coupled to that
+  # Rust contract and to the independent sources under `tools/zc/testdata`.
+  # Update all coordinated copies deliberately when changing image production;
+  # otherwise `zc ci check` fails before a matrix can consume the artifact.
   build_docker_env:
     name: Build Docker image
     runs-on: ubuntu-latest
@@ -817,13 +877,17 @@ jobs:
       image_artifact_id: ${{ steps.upload_image.outputs.artifact-id }}
     permissions:
       contents: read
-      packages: write # required to push docker caches to ghcr.io
+      # Required to push Docker caches to GHCR. The exact permission map is
+      # part of the producer audit in `planned_adapter/image.rs`.
+      packages: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Set up Docker
+        # The complete local action is coordinated with `image.rs` and
+        # `tools/zc/testdata/setup-docker-with-retry.action.yml`.
         uses: ./.github/actions/setup-docker-with-retry
         with:
           registry: ghcr.io
@@ -841,8 +905,12 @@ jobs:
       - name: Build, cache, and export image
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
-          context: .
-          file: .github/workflows/Dockerfile
+          # This directory contains only the audited Dockerfile and an audited
+          # `.dockerignore` which excludes every context file. Keep the path
+          # coordinated with `planned_adapter/image.rs`; adding any directory
+          # entry fails `zc ci check`.
+          context: .github/ci-image
+          file: .github/ci-image/Dockerfile
           tags: ${{ env.ZC_CI_IMAGE }}
           provenance: false
           # The Docker exporter creates a single archive accepted directly by
@@ -862,6 +930,8 @@ jobs:
       # on an image that was only partially published.
       - name: Upload image for matrix jobs
         id: upload_image
+        # The complete local action is coordinated with `image.rs` and
+        # `tools/zc/testdata/upload-file-artifact.action.yml`.
         uses: ./.github/actions/upload-file-artifact
         with:
           name: ${{ env.ZC_CI_IMAGE_ARCHIVE }}
