@@ -911,62 +911,74 @@ jobs:
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
-      # WARNING: This name is load-bearing! It's how GitHub's settings UI configures which jobs
-      # to block on. DO NOT change this name without updating the settings UI to match.
-      name: All checks succeeded (ci.yml)
-      # Run even when a dependency fails, is skipped, or is cancelled, then
-      # inspect every result explicitly. A skipped required check counts as
-      # success in branch protection, so this aggregation must fail closed.
-      if: ${{ always() }}
-      runs-on: ubuntu-latest
-      needs: [build_test, miri, semver, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_tools, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env, plan_ci]
-      steps:
-        - name: Reject workflow cancellation
-          if: ${{ cancelled() }}
-          run: exit 1
-        # GitHub can omit a job output at promotion time if its secret scanner
-        # produces a false positive. Keep this comparison in expression space
-        # so the large JSON never enters a process environment. A disabled
-        # optional plan is still the nonempty JSON value {"include":[]}; each
-        # boolean gate must also be present and canonical before aggregation
-        # trusts it.
-        - name: Require published planner outputs
-          if: ${{ needs.plan_ci.result == 'success' && (needs.plan_ci.outputs.build_matrix == '' || needs.plan_ci.outputs.miri_matrix == '' || needs.plan_ci.outputs.semver_matrix == '' || (needs.plan_ci.outputs.miri_enabled != 'true' && needs.plan_ci.outputs.miri_enabled != 'false') || (needs.plan_ci.outputs.semver_enabled != 'true' && needs.plan_ci.outputs.semver_enabled != 'false')) }}
-          shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
-          run: exit 1
+    # WARNING: The external branch-protection or ruleset setting expects this
+    # exact display name. Coordinate any rename with that setting. The source
+    # audit can enforce this spelling but cannot update repository settings.
+    name: All checks succeeded (ci.yml)
+    # Run even when a dependency fails, is skipped, or is cancelled, then
+    # inspect every result explicitly. A skipped required check counts as
+    # success in branch protection, so this aggregation must fail closed.
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    # The conclusion gate needs no repository authority. Keep this explicit so
+    # a future workflow-level permission expansion cannot reach this job.
+    permissions: {}
+    # `planned_adapter/aggregate.rs` audits the minimum path from the planner,
+    # both typed executors, and the semver adapter through
+    # `check-job-dependencies`. That script remains the owner of every other job
+    # in this complete dependency inventory.
+    needs: [build_test, miri, semver, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_tools, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env, plan_ci]
+    steps:
+      - name: Reject workflow cancellation
+        if: ${{ cancelled() }}
+        shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
+        run: exit 1
 
-        - name: Require every dependency to succeed
-          # Pin the absolute interpreter and remove Bash startup controls so a
-          # job default, PATH shim, or exported function cannot turn this
-          # required-check assertion into a successful no-op.
-          shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
-          env:
-            # Do not serialize the entire `needs` object here: job outputs may
-            # legitimately approach GitHub's configured output limit, while a
-            # Linux process has a much smaller per-environment-value limit.
-            # Results stay small regardless of matrix JSON size. Separate
-            # optional-job results identify the only dependencies which may be
-            # skipped, and couple each skip to its planner-derived gate.
-            RESULTS_JSON: ${{ toJSON(needs.*.result) }}
-            MIRI_ENABLED: ${{ needs.plan_ci.outputs.miri_enabled }}
-            MIRI_RESULT: ${{ needs.miri.result }}
-            SEMVER_ENABLED: ${{ needs.plan_ci.outputs.semver_enabled }}
-            SEMVER_RESULT: ${{ needs.semver.result }}
-          run: |
-            set -euo pipefail
-            /usr/bin/jq -e \
-              --arg miri_enabled "$MIRI_ENABLED" \
-              --arg miri "$MIRI_RESULT" \
-              --arg semver_enabled "$SEMVER_ENABLED" \
-              --arg semver "$SEMVER_RESULT" '
-              def optional_job_ok($enabled; $result):
-                ($enabled == "false" and $result == "skipped") or
-                ($enabled == "true" and $result == "success");
-              type == "array" and length > 0 and
-              optional_job_ok($miri_enabled; $miri) and
-              optional_job_ok($semver_enabled; $semver) and
-              ([.[] | select(. == "skipped")] | length) ==
-                ([$miri_enabled, $semver_enabled] |
-                  map(select(. == "false")) | length) and
-              all(.[]; . == "success" or . == "skipped")
-            ' <<< "$RESULTS_JSON"
+      # GitHub can omit a job output at promotion time if its secret scanner
+      # produces a false positive. Keep this comparison in expression space
+      # so the large JSON never enters a process environment. A disabled
+      # optional plan is still the nonempty JSON value {"include":[]}; each
+      # boolean gate must also be present and canonical before aggregation
+      # trusts it.
+      - name: Require published planner outputs
+        if: ${{ needs.plan_ci.result == 'success' && (needs.plan_ci.outputs.build_matrix == '' || needs.plan_ci.outputs.miri_matrix == '' || needs.plan_ci.outputs.semver_matrix == '' || (needs.plan_ci.outputs.miri_enabled != 'true' && needs.plan_ci.outputs.miri_enabled != 'false') || (needs.plan_ci.outputs.semver_enabled != 'true' && needs.plan_ci.outputs.semver_enabled != 'false')) }}
+        shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
+        run: exit 1
+
+      - name: Require every dependency to succeed
+        # Pin the absolute interpreter and remove Bash startup controls so a
+        # job default, PATH shim, or exported function cannot turn this
+        # required-check assertion into a successful no-op.
+        shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
+        env:
+          # Do not serialize the entire `needs` object here: job outputs may
+          # legitimately approach GitHub's configured output limit, while a
+          # Linux process has a much smaller per-environment-value limit.
+          # Results stay small regardless of matrix JSON size. Separate
+          # optional-job results identify the only dependencies which may be
+          # skipped, and couple each skip to its planner-derived gate.
+          RESULTS_JSON: ${{ toJSON(needs.*.result) }}
+          MIRI_ENABLED: ${{ needs.plan_ci.outputs.miri_enabled }}
+          MIRI_RESULT: ${{ needs.miri.result }}
+          SEMVER_ENABLED: ${{ needs.plan_ci.outputs.semver_enabled }}
+          SEMVER_RESULT: ${{ needs.semver.result }}
+        # The aggregate audit checks this hosted absolute jq path and the run
+        # block line-for-line.
+        run: |
+          set -euo pipefail
+          /usr/bin/jq -e \
+            --arg miri_enabled "$MIRI_ENABLED" \
+            --arg miri "$MIRI_RESULT" \
+            --arg semver_enabled "$SEMVER_ENABLED" \
+            --arg semver "$SEMVER_RESULT" '
+            def optional_job_ok($enabled; $result):
+              ($enabled == "false" and $result == "skipped") or
+              ($enabled == "true" and $result == "success");
+            type == "array" and length > 0 and
+            optional_job_ok($miri_enabled; $miri) and
+            optional_job_ok($semver_enabled; $semver) and
+            ([.[] | select(. == "skipped")] | length) ==
+              ([$miri_enabled, $semver_enabled] |
+                map(select(. == "false")) | length) and
+            all(.[]; . == "success" or . == "skipped")
+          ' <<< "$RESULTS_JSON"
