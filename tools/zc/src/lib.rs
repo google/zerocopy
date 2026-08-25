@@ -10,6 +10,8 @@
 
 pub mod baseline;
 mod identifier;
+pub mod inventory;
 pub mod metadata;
 pub mod policy;
+mod repository_file;
 pub mod workflow;
