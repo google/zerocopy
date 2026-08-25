@@ -19,5 +19,6 @@ pub mod plan;
 pub mod planned_adapter;
 pub mod policy;
 mod repository_text;
+pub mod semver_adapter;
 pub mod workflow;
 mod workflow_protocol;
