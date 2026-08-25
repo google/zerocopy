@@ -9,3 +9,4 @@
 //! Shared, typed access to repository configuration and CI behavior.
 
 pub mod metadata;
+pub mod policy;
