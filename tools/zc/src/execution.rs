@@ -17,10 +17,12 @@
 //! `.github/workflows/ci.yml`.
 //!
 //! The operation builders below are the single semantic source for both parity
-//! checking and local execution. Every place where their command spelling or
-//! setup remains duplicated in `ci.yml` is called out explicitly. The
-//! independent files under `ci/baselines/` are comparison evidence only: this
-//! module never reads a baseline row to construct proposed behavior. In
+//! checking and local execution. `ci.yml` passes complete cell selectors back
+//! to this module instead of reproducing Cargo or Miri commands. The semver
+//! action remains an explicit workflow-owned exception because GitHub requires
+//! a literal `uses` value. The independent files under `ci/baselines/` are
+//! comparison evidence only: this module never reads a baseline row to
+//! construct proposed behavior. In
 //! particular, the legacy comparison covers the repository state named by the
 //! baseline manifest. It is not an inventory of control-plane validation jobs
 //! added after that frozen source commit. Live workflow jobs and pre-push
@@ -72,13 +74,11 @@ const AARCH64_TARGET: &str = "aarch64-unknown-linux-gnu";
 const MIRI_THREAD_PLACEHOLDER: &str = "<2*nproc>";
 const NPROC_STEP: &str = "Determine Miri thread count";
 
-// These environment values are executor-owned command behavior, not policy.
-// Until `.github/workflows/ci.yml` delegates matrix commands to this executor,
-// the base values remain duplicated in its top-level `env` block and the
-// nightly additions in its "Configure environment variables" step. The frozen
-// command goldens prove that this model matches independently captured main;
-// they do not inspect that temporary live-YAML duplication. Migrated workflow
-// jobs must not reproduce these values in YAML.
+// These environment values are executor-owned behavior for planned matrix
+// cells, not policy. The workflow has similar top-level values for handwritten
+// static jobs, but planned cells set this complete map directly and do not
+// inherit changes to those jobs. The frozen command goldens prove that this
+// model matches independently captured main.
 const BASE_RUSTFLAGS: &str = "-Dwarnings";
 const BASE_RUSTDOCFLAGS: &str = "-Dwarnings --cfg=zerocopy_unstable_ptr";
 const NIGHTLY_RUSTFLAGS: &str = "-Zrandomize-layout";
@@ -744,10 +744,10 @@ fn execute_miri_cell_with(
     };
     validate_dynamic_placeholder(&operation.command.step, argv, dynamic_value)?;
 
-    // This temporary vendoring bypass is the exact setup still duplicated by
-    // the Miri step in ci.yml (FIXME #2906). Both paths are fixed below rather
-    // than policy-selected. The executor assumes exclusive use of this
-    // checkout while the cell runs. A same-directory hard link atomically
+    // This temporary vendoring bypass remains necessary for Miri (FIXME
+    // #2906). It is fixed executor setup rather than a policy-selected coverage
+    // decision. The executor assumes exclusive use of this checkout while the
+    // cell runs. A same-directory hard link atomically
     // creates each destination only if it is absent on both Unix and Windows;
     // unlinking the source then completes the move. If unlinking fails, both
     // names preserve the original bytes and the typed error explains recovery.
@@ -1594,20 +1594,16 @@ fn docs_operation(docs_rs_rustdoc_args: &[String], cell: &BuildCellSemantics) ->
     argv.extend(cell.features.cargo_args());
 
     // Repository inventory obtains this ordered sequence from the canonical
-    // Zerocopy package's `package.metadata.docs.rs.rustdoc-args`. `ci.yml`
-    // independently performs the same Cargo metadata lookup before invoking
-    // Cargo doc; keep that workflow adapter coordinated until a typed executor
-    // owns the invocation itself. Inventory rejects whitespace inside an
-    // element, so joining with one space preserves every argument boundary
-    // understood by RUSTDOCFLAGS.
+    // Zerocopy package's `package.metadata.docs.rs.rustdoc-args`. Inventory
+    // rejects whitespace inside an element, so joining with one space
+    // preserves every argument boundary understood by RUSTDOCFLAGS.
     let docs_rs_rustdoc_args = docs_rs_rustdoc_args.join(" ");
 
     // Cargo doc inherits the same ordinary matrix environment as every other
-    // command, then its step replaces RUSTDOCFLAGS. Keep this complete map
-    // coordinated with the Cargo doc step in ci.yml and the representative
-    // nightly-docs command golden. The golden used to omit inherited
-    // RUSTFLAGS and MIRIFLAGS; retaining that omission in executable behavior
-    // would make this typed executor silently differ from CI.
+    // command, then replaces RUSTDOCFLAGS. Keep this complete map coordinated
+    // with the representative nightly-docs command golden. The golden used to
+    // omit inherited RUSTFLAGS and MIRIFLAGS; retaining that omission in
+    // executable behavior would silently differ from the captured workflow.
     let mut environment = ordinary_environment(cell.pinned_nightly);
     let rustdocflags = if cell.pinned_nightly {
         format!(
@@ -1621,8 +1617,8 @@ fn docs_operation(docs_rs_rustdoc_args: &[String], cell: &BuildCellSemantics) ->
         kind,
         // `cargo doc` intentionally has no `--target`; all target cells for
         // the same package/toolchain/profile normalize to one obligation with
-        // an occurrence count. Keep this coupled to the Cargo doc step in
-        // `ci.yml` and the comment in logical-obligations.tsv.
+        // an occurrence count. Keep this coupled to the comment in
+        // logical-obligations.tsv.
         logical: matrix_logical_spec(
             kind,
             &cell.package,
@@ -2124,6 +2120,10 @@ const LEGACY_STANDALONE_SPECS: &[StandaloneSpec] = &[
         condition: ALWAYS,
         golden: None,
     },
+    // These two operations belong to the immutable source commit named by the
+    // baseline manifest. The live shell check was retired after typed
+    // inventory and policy validation took ownership of this invariant; keep
+    // the historical operations here so parity still proves what it replaced.
     StandaloneSpec {
         obligation: "check-toolchains",
         job: "check-all-toolchains-tested",
