@@ -25,11 +25,13 @@ use std::{
     collections::{BTreeMap, BTreeSet},
     error::Error,
     fmt,
-    fs::{self, File},
-    io::{self, Read},
+    fs::File,
+    io,
     path::{Component, Path, PathBuf},
     str::FromStr,
 };
+
+use crate::repository_text;
 
 const MANIFEST_HEADER: &str = "key\tvalue";
 const BUILD_HEADER: &str = "crate\ttoolchain\tfeature_profile\ttarget";
@@ -1126,7 +1128,7 @@ impl Error for BaselineError {
 }
 
 fn read_source(path: &Path) -> Result<String, BaselineError> {
-    fs::read_to_string(path).map_err(|source| BaselineError {
+    repository_text::read(path).map_err(|source| BaselineError {
         path: path.to_path_buf(),
         line: None,
         message: format!("failed to read file: {source}"),
@@ -1135,15 +1137,12 @@ fn read_source(path: &Path) -> Result<String, BaselineError> {
 }
 
 fn read_open_source(path: &Path, file: &File) -> Result<String, BaselineError> {
-    let mut source = String::new();
-    let mut reader = file;
-    reader.read_to_string(&mut source).map_err(|source| BaselineError {
+    repository_text::read_open(file).map_err(|source| BaselineError {
         path: path.to_path_buf(),
         line: None,
         message: format!("failed to read file: {source}"),
         source: Some(source),
-    })?;
-    Ok(source)
+    })
 }
 
 struct BaselineSources<'a> {
@@ -2421,6 +2420,37 @@ mod tests {
             .unwrap_err()
             .to_string()
             .contains("comments must not contain control characters"));
+    }
+
+    #[test]
+    fn retained_baseline_handles_normalize_only_well_formed_crlf() {
+        use std::{
+            fs, process,
+            sync::atomic::{AtomicU64, Ordering},
+        };
+
+        static NEXT_FILE: AtomicU64 = AtomicU64::new(0);
+        let unique = NEXT_FILE.fetch_add(1, Ordering::Relaxed);
+        let path = std::env::temp_dir()
+            .join(format!("zerocopy-open-baseline-text-test-{}-{unique}.tsv", process::id()));
+
+        // `CiInputs::load` deliberately retains already-open baseline handles
+        // so identity checks and parsing inspect the same file. Prove that
+        // this identity-preserving path has exactly the repository-text
+        // boundary promised for path-based reads: complete CRLF records are
+        // normalized, while an isolated carriage return remains invalid.
+        fs::write(&path, "header\r\nrow\r\n").unwrap();
+        let file = File::open(&path).unwrap();
+        assert_eq!(read_open_source(Path::new("baseline.tsv"), &file).unwrap(), "header\nrow\n");
+        drop(file);
+
+        fs::write(&path, "header\rrow\n").unwrap();
+        let file = File::open(&path).unwrap();
+        let error = read_open_source(Path::new("baseline.tsv"), &file).unwrap_err();
+        assert!(error.to_string().contains("bare carriage return"), "{error}");
+        drop(file);
+
+        fs::remove_file(path).unwrap();
     }
 
     #[test]
