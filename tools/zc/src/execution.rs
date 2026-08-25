@@ -10,17 +10,18 @@
 //!
 //! [`Plan`](crate::plan::Plan) decides matrix membership. This module takes the
 //! next deliberately separate step: it expands each selected cell into the
-//! ordinary Cargo or Miri operations which that cell means. The local executor
-//! can run one explicitly selected cell, but it does not inspect workflow YAML
-//! or make any decision about runners, permissions, secrets, actions, or
-//! publication. Those remain visible workflow authority in
+//! ordinary Cargo, Miri, or semver operations which that cell means. The local
+//! executor can run one explicitly selected cell, but it does not inspect
+//! workflow YAML or make any decision about runners, permissions, secrets,
+//! actions, or publication. Those remain visible workflow authority in
 //! `.github/workflows/ci.yml`.
 //!
 //! The operation builders below are the single semantic source for both parity
 //! checking and local execution. `ci.yml` passes complete cell selectors back
 //! to this module instead of reproducing Cargo or Miri commands. The semver
 //! action remains an explicit workflow-owned exception because GitHub requires
-//! a literal `uses` value. The independent files under `ci/baselines/` are
+//! a literal `uses` value, but its target membership and typed operation are
+//! modeled here. The independent files under `ci/baselines/` are
 //! comparison evidence only: this module never reads a baseline row to
 //! construct proposed behavior. In
 //! particular, the legacy comparison covers the repository state named by the
@@ -54,12 +55,16 @@ use crate::{
     ci::CiInputs,
     plan::{
         BuildPlanCell, EventClass, ExecutionMode, FeatureSelection, MiriPlanCell, Plan, PlanError,
+        SemverPlanCell,
     },
     policy::{Policy, ToolchainSource},
+    semver_adapter::{
+        SemverAdapterSpec, SEMVER_CACHE_PREFIX_INPUT, SEMVER_FEATURE_GROUP,
+        SEMVER_MATRIX_TARGET_EXPRESSION, SEMVER_TARGET_INPUT,
+    },
+    workflow_protocol::{BUILD_JOB, MIRI_JOB, SEMVER_JOB, SEMVER_STEP_NAME},
 };
 
-const BUILD_JOB: &str = "build_test";
-const MIRI_JOB: &str = "miri";
 const MATRIX_WORKING_DIRECTORY: &str = "zerocopy";
 // Keep the platform-neutral command model and its frozen evidence in terms of
 // the public Unix wrapper. Only the host boundary below translates that exact
@@ -87,13 +92,6 @@ const BASE_RUSTFLAGS: &str = "-Dwarnings";
 const BASE_RUSTDOCFLAGS: &str = "-Dwarnings --cfg=zerocopy_unstable_ptr";
 const NIGHTLY_RUSTFLAGS: &str = "-Zrandomize-layout";
 const NIGHTLY_MIRIFLAGS: &str = "-Zmiri-strict-provenance -Zmiri-backtrace=full";
-
-// GitHub requires `uses` to remain visible in workflow YAML. This typed value
-// freezes the action identity used by the command model, while the workflow
-// audit and ordinary code review continue to own the actual action authority.
-// Keep it coordinated with the "Check semver compatibility" step in `ci.yml`.
-const SEMVER_ACTION: &str =
-    "obi1kenobi/cargo-semver-checks-action@6b69fcf40e9b5fb17adeb57e4b6ecd020649a239";
 
 /// A deterministic failure proving that proposed execution behavior differs
 /// from independently captured legacy evidence.
@@ -230,22 +228,16 @@ impl MiriCellSelector {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CellExecutionReport {
     executed_steps: Vec<String>,
-    workflow_owned_steps: Vec<String>,
 }
 
 impl CellExecutionReport {
     fn new() -> Self {
-        Self { executed_steps: Vec::new(), workflow_owned_steps: Vec::new() }
+        Self { executed_steps: Vec::new() }
     }
 
     /// Returns modeled process steps which completed successfully, in order.
     pub fn executed_steps(&self) -> &[String] {
         &self.executed_steps
-    }
-
-    /// Returns selected steps which remain owned by GitHub Actions.
-    pub fn workflow_owned_steps(&self) -> &[String] {
-        &self.workflow_owned_steps
     }
 }
 
@@ -384,10 +376,9 @@ pub enum CellExecutionError {
 
 /// Executes the modeled commands for one exact selected ordinary build cell.
 ///
-/// The semver action is intentionally not executed: GitHub requires its
-/// literal `uses` identity and security-relevant condition to remain in the
-/// workflow. If the selected cell includes that action, the returned report
-/// names it as workflow-owned instead of silently treating it as completed.
+/// Semver is deliberately absent from this executor. It has an independent
+/// plan and workflow job so repository-controlled build code cannot share a
+/// runner with the compatibility check in either direction.
 pub fn execute_build_cell(
     inputs: &CiInputs,
     selector: &BuildCellSelector,
@@ -555,12 +546,9 @@ fn execute_build_cell_with(
     )?;
     let semantics = BuildCellSemantics::from_plan(cell, inputs.policy())
         .map_err(|message| CellExecutionError::Model { message })?;
-    let operations = build_operations(
-        inputs.policy(),
-        inputs.repository().zerocopy_docs_rs_rustdoc_args(),
-        &semantics,
-    )
-    .map_err(|message| CellExecutionError::Model { message })?;
+    let operations =
+        build_operations(inputs.repository().zerocopy_docs_rs_rustdoc_args(), &semantics)
+            .map_err(|message| CellExecutionError::Model { message })?;
     let mut report = CellExecutionReport::new();
 
     for operation in operations {
@@ -577,14 +565,6 @@ fn execute_build_cell_with(
             CommandPayload::Argv { argv, .. } => {
                 run_process(host, repository_root, &operation.command, argv)?;
                 report.executed_steps.push(operation.command.step.clone());
-            }
-            CommandPayload::ActionInputs { .. }
-                if operation.kind == MatrixOperationKind::CargoSemverCheck =>
-            {
-                // The action identity, condition, and permission boundary must
-                // stay literal in ci.yml. This explicit report is coupled to
-                // that audited adapter until GitHub supports dynamic `uses`.
-                report.workflow_owned_steps.push(operation.command.step.clone());
             }
             CommandPayload::ActionInputs { .. } => {
                 return Err(CellExecutionError::UnsupportedPayload {
@@ -921,13 +901,14 @@ impl MatrixOperationKind {
             Self::CargoClippyTests => "Clippy tests",
             Self::CargoClippyLibrary => "Clippy",
             Self::CargoDoc => "Cargo doc",
-            Self::CargoSemverCheck => "Check semver compatibility",
+            Self::CargoSemverCheck => SEMVER_STEP_NAME,
             Self::MiriTest => "Run tests under Miri",
         }
     }
 
     fn job(self) -> &'static str {
         match self {
+            Self::CargoSemverCheck => SEMVER_JOB,
             Self::MiriTest => MIRI_JOB,
             _ => BUILD_JOB,
         }
@@ -1007,9 +988,7 @@ struct MatrixOperation {
 #[derive(Clone, Debug)]
 struct BuildCellSemantics {
     package: String,
-    manifest: String,
     toolchain: String,
-    toolchain_version: String,
     pinned_nightly: bool,
     feature_profile: String,
     features: FeatureSelection,
@@ -1021,14 +1000,37 @@ impl BuildCellSemantics {
     fn from_plan(cell: &BuildPlanCell, policy: &Policy) -> Result<Self, String> {
         Ok(Self {
             package: cell.package().id().to_owned(),
-            manifest: path_text(cell.package().manifest())?,
             toolchain: cell.toolchain().id().to_owned(),
-            toolchain_version: cell.toolchain().version().to_owned(),
             pinned_nightly: is_pinned_nightly(policy, cell.toolchain().id())?,
             feature_profile: cell.features().profile().to_owned(),
             features: cell.features().selection().clone(),
             target: cell.target().triple().to_owned(),
             mode: cell.target().mode(),
+        })
+    }
+}
+
+#[derive(Clone, Debug)]
+struct SemverCellSemantics {
+    package: String,
+    manifest: String,
+    toolchain: String,
+    toolchain_version: String,
+    feature_profile: String,
+    features: FeatureSelection,
+    target: String,
+}
+
+impl SemverCellSemantics {
+    fn from_plan(cell: &SemverPlanCell) -> Result<Self, String> {
+        Ok(Self {
+            package: cell.package().id().to_owned(),
+            manifest: path_text(cell.package().manifest())?,
+            toolchain: cell.toolchain().id().to_owned(),
+            toolchain_version: cell.toolchain().version().to_owned(),
+            feature_profile: cell.features().profile().to_owned(),
+            features: cell.features().selection().clone(),
+            target: cell.target().triple().to_owned(),
         })
     }
 }
@@ -1111,6 +1113,7 @@ trait ModelMutation {
     fn mutate_docs_rs_rustdoc_args(&mut self, _arguments: &mut Vec<String>) {}
     fn mutate_build_cell(&mut self, _class: EventClass, _cell: &mut BuildCellSemantics) {}
     fn mutate_miri_cell(&mut self, _class: EventClass, _cell: &mut MiriCellSemantics) {}
+    fn mutate_semver_cell(&mut self, _class: EventClass, _cell: &mut SemverCellSemantics) {}
     fn mutate_operation(&mut self, _class: EventClass, _operation: &mut MatrixOperation) {}
 }
 
@@ -1122,6 +1125,14 @@ fn derive_execution(
     inputs: &CiInputs,
     mutation: &mut impl ModelMutation,
 ) -> Result<DerivedExecution, String> {
+    // GitHub requires the semver action invocation to remain literal workflow
+    // YAML. Build its typed specification once here as well as auditing that
+    // YAML at the `CiInputs` boundary. The independently planned semver cells
+    // and the live adapter therefore cannot acquire independent action
+    // identities, input sets, or explicit environment values.
+    let semver_adapter =
+        SemverAdapterSpec::from_checked_inputs(inputs.policy(), inputs.repository())
+            .map_err(|error| format!("semver adapter: {error}"))?;
     let mut docs_rs_rustdoc_args = inputs.repository().zerocopy_docs_rs_rustdoc_args().to_vec();
     mutation.mutate_docs_rs_rustdoc_args(&mut docs_rs_rustdoc_args);
     let reduced = plan_for_class(inputs, EventClass::Reduced)?;
@@ -1133,7 +1144,7 @@ fn derive_execution(
         for cell in plan.builds() {
             let mut cell = BuildCellSemantics::from_plan(cell, inputs.policy())?;
             mutation.mutate_build_cell(class, &mut cell);
-            for mut operation in build_operations(inputs.policy(), &docs_rs_rustdoc_args, &cell)? {
+            for mut operation in build_operations(&docs_rs_rustdoc_args, &cell)? {
                 mutation.mutate_operation(class, &mut operation);
                 validate_operation(&operation)?;
                 if !operation.applicable {
@@ -1143,6 +1154,28 @@ fn derive_execution(
                 if class == EventClass::Full {
                     collect_golden(&mut commands, operation)?;
                 }
+            }
+        }
+        for cell in plan.semver() {
+            let mut cell = SemverCellSemantics::from_plan(cell)?;
+            mutation.mutate_semver_cell(class, &mut cell);
+            let mut operation = semver_operation(&semver_adapter, &cell)?;
+            mutation.mutate_operation(class, &mut operation);
+            validate_operation(&operation)?;
+            if !operation.applicable {
+                continue;
+            }
+
+            // The frozen evidence describes the historical workflow in which
+            // this exact operation ran inside `build_test`. Normalize only its
+            // source job at the comparison boundary: the live typed operation
+            // above must continue to validate as belonging to the isolated
+            // semver job, while every other logical and command field remains
+            // subject to byte-for-byte legacy parity.
+            let operation = operation_for_frozen_legacy_evidence(operation);
+            record_logical(&mut logical, class, &operation.logical)?;
+            if class == EventClass::Full {
+                collect_golden(&mut commands, operation)?;
             }
         }
         for cell in plan.miri() {
@@ -1259,6 +1292,34 @@ fn validate_operation(operation: &MatrixOperation) -> Result<(), String> {
     Ok(())
 }
 
+/// Adapts a validated live operation to the source labels in frozen evidence.
+///
+/// The baseline source commit ran semver as a step of `build_test`, whereas
+/// the live control plane now gives it a separate runner. It also lacked the
+/// target-specific cache prefix now required to keep concurrent action runs
+/// from sharing one baseline-rustdoc cache. Keeping both adaptations here,
+/// immediately before evidence collection, preserves exact comparison of
+/// every historical field while the live workflow audits own these deliberate
+/// post-baseline changes. Callers must validate the live operation first: the
+/// adapted operation intentionally no longer passes live [`validate_operation`].
+fn operation_for_frozen_legacy_evidence(mut operation: MatrixOperation) -> MatrixOperation {
+    if operation.kind == MatrixOperationKind::CargoSemverCheck {
+        debug_assert_eq!(operation.logical.job, SEMVER_JOB);
+        debug_assert_eq!(operation.command.job, SEMVER_JOB);
+        operation.logical.job = BUILD_JOB.to_owned();
+        operation.command.job = BUILD_JOB.to_owned();
+        let CommandPayload::ActionInputs { inputs, .. } = &mut operation.command.payload else {
+            unreachable!("validated semver operations always use action inputs");
+        };
+        let Some(JsonValue::Object(with)) = inputs.get_mut("with") else {
+            unreachable!("validated semver action inputs always contain `with`");
+        };
+        let removed = with.remove(SEMVER_CACHE_PREFIX_INPUT);
+        debug_assert!(matches!(removed, Some(JsonValue::String(_))));
+    }
+    operation
+}
+
 fn matrix_logical_spec(
     kind: MatrixOperationKind,
     package: &str,
@@ -1297,7 +1358,6 @@ fn matrix_command(
 }
 
 fn build_operations(
-    policy: &Policy,
     docs_rs_rustdoc_args: &[String],
     cell: &BuildCellSemantics,
 ) -> Result<Vec<MatrixOperation>, String> {
@@ -1368,9 +1428,6 @@ fn build_operations(
     }
 
     operations.push(docs_operation(docs_rs_rustdoc_args, cell));
-    if semver_applies(policy, cell)? {
-        operations.push(semver_operation(cell)?);
-    }
     Ok(operations)
 }
 
@@ -1478,19 +1535,10 @@ fn docs_operation(docs_rs_rustdoc_args: &[String], cell: &BuildCellSemantics) ->
     }
 }
 
-fn semver_applies(policy: &Policy, cell: &BuildCellSemantics) -> Result<bool, String> {
-    let semver = policy.semver();
-    let targets = policy
-        .target_sets()
-        .get(semver.target_set().as_str())
-        .ok_or_else(|| format!("semver target set `{}` is absent", semver.target_set()))?;
-    Ok(cell.package == semver.package().as_str()
-        && cell.toolchain == semver.toolchain().as_str()
-        && cell.feature_profile == semver.profile().as_str()
-        && targets.iter().any(|target| target.as_str() == cell.target))
-}
-
-fn semver_operation(cell: &BuildCellSemantics) -> Result<MatrixOperation, String> {
+fn semver_operation(
+    adapter: &SemverAdapterSpec,
+    cell: &SemverCellSemantics,
+) -> Result<MatrixOperation, String> {
     let kind = MatrixOperationKind::CargoSemverCheck;
     let stable_feature = match &cell.features {
         FeatureSelection::StableAggregate { feature } => feature.clone(),
@@ -1501,16 +1549,45 @@ fn semver_operation(cell: &BuildCellSemantics) -> Result<MatrixOperation, String
             ));
         }
     };
-    let with = BTreeMap::from([
-        ("feature-group".to_owned(), JsonValue::String("only-explicit-features".to_owned())),
-        ("features".to_owned(), JsonValue::String(stable_feature)),
-        ("manifest-path".to_owned(), JsonValue::String(cell.manifest.clone())),
-        ("package".to_owned(), JsonValue::String(cell.package.clone())),
-        ("rust-target".to_owned(), JsonValue::String(cell.target.clone())),
-        ("rust-toolchain".to_owned(), JsonValue::String(cell.toolchain_version.clone())),
-    ]);
+    let mut resolved_inputs = adapter.inputs().clone();
+    let expected_static_inputs = [
+        ("feature-group", SEMVER_FEATURE_GROUP),
+        ("features", stable_feature.as_str()),
+        ("manifest-path", cell.manifest.as_str()),
+        ("package", cell.package.as_str()),
+        ("rust-toolchain", cell.toolchain_version.as_str()),
+    ];
+    for (name, actual) in expected_static_inputs {
+        let expected = resolved_inputs
+            .get(name)
+            .ok_or_else(|| format!("typed semver adapter has no `{name}` input"))?;
+        if expected != actual {
+            return Err(format!(
+                "semver cell `{}/{}/{}/{}` resolves `{name}` to `{actual}`, but the typed adapter requires `{expected}`",
+                cell.package, cell.toolchain, cell.feature_profile, cell.target
+            ));
+        }
+    }
+    // The target and its matching cache prefix are the only legitimately
+    // dynamic action inputs. Require both expressions before resolving them so
+    // the typed model cannot silently accept a static or unrelated cache key.
+    // The preceding comparison deliberately includes the compiler version so
+    // the workflow cannot regain an unaudited shell-produced toolchain bridge.
+    for name in [SEMVER_CACHE_PREFIX_INPUT, SEMVER_TARGET_INPUT] {
+        let expression = resolved_inputs
+            .get(name)
+            .ok_or_else(|| format!("typed semver adapter has no `{name}` input"))?;
+        if expression != SEMVER_MATRIX_TARGET_EXPRESSION {
+            return Err(format!(
+                "typed semver adapter resolves `{name}` from `{expression}`, expected `{SEMVER_MATRIX_TARGET_EXPRESSION}`"
+            ));
+        }
+        resolved_inputs.insert(name.to_owned(), cell.target.clone());
+    }
+    let with =
+        resolved_inputs.into_iter().map(|(name, value)| (name, JsonValue::String(value))).collect();
     let inputs = BTreeMap::from([
-        ("uses".to_owned(), JsonValue::String(SEMVER_ACTION.to_owned())),
+        ("uses".to_owned(), JsonValue::String(adapter.action().to_owned())),
         ("with".to_owned(), JsonValue::Object(with)),
     ]);
     Ok(MatrixOperation {
@@ -1524,13 +1601,10 @@ fn semver_operation(cell: &BuildCellSemantics) -> Result<MatrixOperation, String
             None,
         ),
         command: CommandSpec {
-            job: BUILD_JOB.to_owned(),
+            job: kind.job().to_owned(),
             step: kind.step().to_owned(),
             working_directory: WorkingDirectory::RepositoryRoot,
-            environment: BTreeMap::from([
-                ("RUSTDOCFLAGS".to_owned(), BASE_RUSTFLAGS.to_owned()),
-                ("RUSTFLAGS".to_owned(), BASE_RUSTFLAGS.to_owned()),
-            ]),
+            environment: adapter.environment().clone(),
             payload: CommandPayload::ActionInputs {
                 inputs,
                 dynamic_value: "third-party action implementation".to_owned(),
@@ -1649,7 +1723,7 @@ fn nightly_docs_golden(cell: &BuildCellSemantics) -> Option<&'static str> {
         .then_some("nightly-docs")
 }
 
-fn semver_golden(cell: &BuildCellSemantics) -> Option<&'static str> {
+fn semver_golden(cell: &SemverCellSemantics) -> Option<&'static str> {
     (cell.target == "x86_64-unknown-linux-gnu").then_some("semver")
 }
 
@@ -2258,15 +2332,21 @@ mod tests {
     use super::{
         audit_execution, checked_miri_thread_count, compare_execution, derive_execution,
         execute_build_cell_with, execute_miri_cell_with, miri_thread_count,
-        miri_wrapper_invocation, parse_nproc_thread_count, substitute_dynamic,
-        system_command_for_platform, unique_match, BuildCellSelector, BuildCellSemantics,
-        CapturedProcessOutcome, CellExecutionError, CommandSpec, EventClass, ExecutionHost,
-        ExecutionMode, FeatureSelection, HostPlatform, MatrixOperation, MatrixOperationKind,
-        MiriCellSelector, ModelMutation, ProcessInvocation, ProcessOutcome, WorkingDirectory,
-        AARCH64_TARGET, CARGO_WRAPPER, EXECUTION_CONTEXT_ENV, MIRI_JOB,
-        MIRI_REPOSITORY_ROOT_CONTEXT, MIRI_THREAD_PLACEHOLDER, NPROC_STEP, WINDOWS_CARGO_WRAPPER,
+        miri_wrapper_invocation, operation_for_frozen_legacy_evidence, parse_nproc_thread_count,
+        semver_operation, substitute_dynamic, system_command_for_platform, unique_match,
+        BuildCellSelector, BuildCellSemantics, CapturedProcessOutcome, CellExecutionError,
+        CommandSpec, EventClass, ExecutionHost, ExecutionMode, FeatureSelection, HostPlatform,
+        MatrixOperation, MatrixOperationKind, MiriCellSelector, ModelMutation, ProcessInvocation,
+        ProcessOutcome, SemverCellSemantics, WorkingDirectory, AARCH64_TARGET, BUILD_JOB,
+        CARGO_WRAPPER, EXECUTION_CONTEXT_ENV, MIRI_JOB, MIRI_REPOSITORY_ROOT_CONTEXT,
+        MIRI_THREAD_PLACEHOLDER, NPROC_STEP, SEMVER_JOB, WINDOWS_CARGO_WRAPPER,
     };
-    use crate::{baseline::CommandPayload, ci::CiInputs};
+    use crate::{
+        baseline::{CommandPayload, JsonValue},
+        ci::CiInputs,
+        plan::Plan,
+        semver_adapter::{SemverAdapterSpec, SEMVER_CACHE_PREFIX_INPUT},
+    };
 
     fn inputs() -> &'static CiInputs {
         static INPUTS: OnceLock<CiInputs> = OnceLock::new();
@@ -2454,7 +2534,6 @@ mod tests {
         let report = execute_build_cell_with(inputs(), &selector, &mut host).unwrap();
 
         assert_eq!(report.executed_steps, ["Test native target", "Cargo doc"]);
-        assert_eq!(report.workflow_owned_steps, ["Check semver compatibility"]);
         assert_eq!(host.invocations.len(), 2);
         assert_eq!(
             host.invocations[0].argv,
@@ -2881,6 +2960,68 @@ mod tests {
     #[test]
     fn typed_behavior_matches_all_frozen_legacy_evidence_exactly() {
         audit_execution(inputs()).unwrap();
+    }
+
+    #[test]
+    fn semver_normalizes_only_its_two_deliberate_post_baseline_changes() {
+        let plan = Plan::create(inputs(), "push").unwrap();
+        let cell = plan
+            .semver()
+            .iter()
+            .find(|cell| cell.target().triple() == "x86_64-unknown-linux-gnu")
+            .unwrap();
+        let cell = SemverCellSemantics::from_plan(cell).unwrap();
+        let adapter =
+            SemverAdapterSpec::from_checked_inputs(inputs().policy(), inputs().repository())
+                .unwrap();
+        let operation = semver_operation(&adapter, &cell).unwrap();
+
+        assert_eq!(operation.logical.job, SEMVER_JOB);
+        assert_eq!(operation.command.job, SEMVER_JOB);
+        super::validate_operation(&operation).unwrap();
+
+        let live = operation.clone();
+        let mut expected_historical_payload = live.command.payload.clone();
+        let CommandPayload::ActionInputs { inputs, .. } = &mut expected_historical_payload else {
+            panic!("semver operation must use action inputs");
+        };
+        let Some(JsonValue::Object(with)) = inputs.get_mut("with") else {
+            panic!("semver action inputs must contain `with`");
+        };
+        assert_eq!(
+            with.remove(SEMVER_CACHE_PREFIX_INPUT),
+            Some(JsonValue::String(cell.target.clone()))
+        );
+
+        let evidence = operation_for_frozen_legacy_evidence(operation);
+        assert_eq!(evidence.logical.job, BUILD_JOB);
+        assert_eq!(evidence.command.job, BUILD_JOB);
+        assert_eq!(evidence.logical.key, live.logical.key);
+        assert_eq!(evidence.logical.condition, live.logical.condition);
+        assert_eq!(evidence.logical.step, live.logical.step);
+        assert_eq!(evidence.command.step, live.command.step);
+        assert_eq!(evidence.command.working_directory, live.command.working_directory);
+        assert_eq!(evidence.command.environment, live.command.environment);
+        assert_eq!(evidence.command.payload, expected_historical_payload);
+    }
+
+    struct InvalidSemverFeatures(bool);
+
+    impl ModelMutation for InvalidSemverFeatures {
+        fn mutate_semver_cell(&mut self, class: EventClass, cell: &mut SemverCellSemantics) {
+            if !self.0 && class == EventClass::Full && cell.target == "x86_64-unknown-linux-gnu" {
+                cell.features = FeatureSelection::All;
+                self.0 = true;
+            }
+        }
+    }
+
+    #[test]
+    fn semver_rejects_feature_semantics_which_the_action_cannot_represent() {
+        let mut mutation = InvalidSemverFeatures(false);
+        let diagnostic = model_error_with(&mut mutation);
+        assert!(mutation.0, "the test must mutate its intended semver cell");
+        assert!(diagnostic.contains("requires stable-aggregate features"));
     }
 
     struct NonGoldenArgvMutation(bool);
