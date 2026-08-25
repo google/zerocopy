@@ -11,7 +11,7 @@
 use std::collections::BTreeSet;
 
 use super::{PlannedAdapterViolations, ViolationSink};
-use crate::workflow_protocol::{BUILD_JOB, MIRI_JOB, WORKFLOW_PATH};
+use crate::workflow_protocol::{BUILD_JOB, MIRI_JOB, SEMVER_JOB, WORKFLOW_PATH};
 
 pub(super) fn audit_feature(
     source: &str,
@@ -60,7 +60,7 @@ pub(super) fn replace_in_job(source: &str, job: &str, from: &str, to: &str) -> S
 }
 
 pub(super) fn canonical_planned_jobs() -> BTreeSet<(String, String)> {
-    [BUILD_JOB, MIRI_JOB]
+    [BUILD_JOB, MIRI_JOB, SEMVER_JOB]
         .into_iter()
         .map(|job| (WORKFLOW_PATH.to_owned(), job.to_owned()))
         .collect()
