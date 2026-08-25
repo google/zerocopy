@@ -39,6 +39,11 @@ use crate::{
         BuildPlanCell, ExecutionMode, FeatureSelection, MiriPlanCell, Plan, PlanError,
         PlanExplanation,
     },
+    workflow_protocol::{
+        CELL_FEATURE_PROFILE_OPTION, CELL_MIRI_MODEL_OPTION, CELL_PACKAGE_OPTION,
+        CELL_TARGET_OPTION, CELL_TOOLCHAIN_OPTION, CI_EVENT_OPTION, EXECUTE_BUILD_CELL_COMMAND,
+        EXECUTE_MIRI_CELL_COMMAND, GITHUB_OUTPUT_OPTION, GITHUB_PLAN_COMMAND, PLAN_ARTIFACT_OPTION,
+    },
 };
 
 /// Runs one local `cargo-zerocopy ci` command.
@@ -105,9 +110,9 @@ impl Command {
                     Ok(Self::Explain { event })
                 }
             }
-            "github-plan" => parse_github_plan(args),
-            "execute-build-cell" => parse_execution_cell(args, false),
-            "execute-miri-cell" => parse_execution_cell(args, true),
+            GITHUB_PLAN_COMMAND => parse_github_plan(args),
+            EXECUTE_BUILD_CELL_COMMAND => parse_execution_cell(args, false),
+            EXECUTE_MIRI_CELL_COMMAND => parse_execution_cell(args, true),
             _ => Err(CliError::UnknownCommand { command }),
         }
     }
@@ -117,7 +122,7 @@ fn parse_execution_cell(
     args: impl IntoIterator<Item = String>,
     miri: bool,
 ) -> Result<Command, CliError> {
-    let command = if miri { "execute-miri-cell" } else { "execute-build-cell" };
+    let command = if miri { EXECUTE_MIRI_CELL_COMMAND } else { EXECUTE_BUILD_CELL_COMMAND };
     let mut args = args.into_iter();
     let mut event = None;
     let mut package = None;
@@ -131,12 +136,12 @@ fn parse_execution_cell(
             .split_once('=')
             .map_or((argument.as_str(), None), |(name, value)| (name, Some(value)));
         let destination = match name {
-            "--event" => &mut event,
-            "--package" => &mut package,
-            "--toolchain" => &mut toolchain,
-            "--feature-profile" => &mut feature_profile,
-            "--target" => &mut target,
-            "--miri-model" if miri => &mut miri_model,
+            CI_EVENT_OPTION => &mut event,
+            CELL_PACKAGE_OPTION => &mut package,
+            CELL_TOOLCHAIN_OPTION => &mut toolchain,
+            CELL_FEATURE_PROFILE_OPTION => &mut feature_profile,
+            CELL_TARGET_OPTION => &mut target,
+            CELL_MIRI_MODEL_OPTION if miri => &mut miri_model,
             _ => {
                 return Err(CliError::UnknownArgument { command: command.to_owned(), argument });
             }
@@ -173,11 +178,11 @@ fn parse_execution_cell(
         *destination = Some(value);
     }
 
-    let event = required_option(command, "--event", event)?;
-    let package = required_option(command, "--package", package)?;
-    let toolchain = required_option(command, "--toolchain", toolchain)?;
-    let feature_profile = required_option(command, "--feature-profile", feature_profile)?;
-    let target = required_option(command, "--target", target)?;
+    let event = required_option(command, CI_EVENT_OPTION, event)?;
+    let package = required_option(command, CELL_PACKAGE_OPTION, package)?;
+    let toolchain = required_option(command, CELL_TOOLCHAIN_OPTION, toolchain)?;
+    let feature_profile = required_option(command, CELL_FEATURE_PROFILE_OPTION, feature_profile)?;
+    let target = required_option(command, CELL_TARGET_OPTION, target)?;
     if miri {
         Ok(Command::ExecuteMiriCell {
             selector: MiriCellSelector::new(
@@ -186,7 +191,7 @@ fn parse_execution_cell(
                 toolchain,
                 feature_profile,
                 target,
-                required_option(command, "--miri-model", miri_model)?,
+                required_option(command, CELL_MIRI_MODEL_OPTION, miri_model)?,
             ),
         })
     } else {
@@ -197,7 +202,7 @@ fn parse_execution_cell(
 }
 
 fn parse_github_plan(args: impl IntoIterator<Item = String>) -> Result<Command, CliError> {
-    let command = "github-plan";
+    let command = GITHUB_PLAN_COMMAND;
     let mut args = args.into_iter();
     let mut event = None;
     let mut github_output = None;
@@ -208,9 +213,9 @@ fn parse_github_plan(args: impl IntoIterator<Item = String>) -> Result<Command, 
             .split_once('=')
             .map_or((argument.as_str(), None), |(name, value)| (name, Some(value)));
         let destination = match name {
-            "--event" => &mut event,
-            "--github-output" => &mut github_output,
-            "--artifact" => &mut artifact,
+            CI_EVENT_OPTION => &mut event,
+            GITHUB_OUTPUT_OPTION => &mut github_output,
+            PLAN_ARTIFACT_OPTION => &mut artifact,
             _ => {
                 return Err(CliError::UnknownArgument { command: command.to_owned(), argument });
             }
@@ -247,9 +252,10 @@ fn parse_github_plan(args: impl IntoIterator<Item = String>) -> Result<Command, 
         *destination = Some(value);
     }
 
-    let event = required_option(command, "--event", event)?;
-    let github_output = PathBuf::from(required_option(command, "--github-output", github_output)?);
-    let artifact = PathBuf::from(required_option(command, "--artifact", artifact)?);
+    let event = required_option(command, CI_EVENT_OPTION, event)?;
+    let github_output =
+        PathBuf::from(required_option(command, GITHUB_OUTPUT_OPTION, github_output)?);
+    let artifact = PathBuf::from(required_option(command, PLAN_ARTIFACT_OPTION, artifact)?);
     Ok(Command::GitHubPlan { event, github_output, artifact })
 }
 
@@ -646,7 +652,7 @@ mod tests {
     use super::{run, CliError, Command};
     use crate::{
         execution::{BuildCellSelector, MiriCellSelector},
-        github::{BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT},
+        workflow_protocol::{BUILD_MATRIX_OUTPUT, MIRI_ENABLED_OUTPUT, MIRI_MATRIX_OUTPUT},
     };
 
     fn strings(args: &[&str]) -> Vec<String> {

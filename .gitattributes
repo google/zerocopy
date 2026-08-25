@@ -1,0 +1,8 @@
+# The typed CI tools audit these semantic inputs at source level, and several
+# readers deliberately reject noncanonical line endings. Keep this list
+# coordinated with `tools/zc/src/ci.rs` and its representative attribute test
+# so Git for Windows cannot rewrite a valid checkout into different input.
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.tsv  text eol=lf
