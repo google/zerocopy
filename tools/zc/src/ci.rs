@@ -37,6 +37,7 @@ pub const POLICY_PATH: &str = "ci/zc.toml";
 /// All repository-owned inputs accepted for CI planning.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CiInputs {
+    repository_root: PathBuf,
     policy: Policy,
     repository: RepositoryInventory,
     workflow_jobs: ReviewedWorkflowJobs,
@@ -86,7 +87,7 @@ impl CiInputs {
             )?,
         };
         let legacy = LegacyBaselines::read(&paths).map_err(LoadCiError::Baseline)?;
-        let inputs = Self { policy, repository, workflow_jobs, legacy };
+        let inputs = Self { repository_root, policy, repository, workflow_jobs, legacy };
         // Keep the pure parity proof inside this checked boundary. Returning a
         // `CiInputs` without this call would make correctness depend on every
         // planner and CLI entry point remembering a second validation pass.
@@ -112,6 +113,14 @@ impl CiInputs {
     /// Returns the independent description of legacy CI behavior.
     pub fn legacy(&self) -> &LegacyBaselines {
         &self.legacy
+    }
+
+    /// Returns the canonical checkout root which supplied every checked input.
+    ///
+    /// Execution uses this crate-private authority instead of accepting an
+    /// unrelated caller-supplied path after validation has completed.
+    pub(crate) fn repository_root(&self) -> &Path {
+        &self.repository_root
     }
 }
 
