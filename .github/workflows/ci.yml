@@ -53,6 +53,54 @@ env:
   CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
 
 jobs:
+  # Build the typed plan in parallel with the Docker image. This job is
+  # deliberately unprivileged: it may select ordinary test work, but runner,
+  # action, permission, and command authority remain in this workflow.
+  #
+  # The first rollout only publishes the matrices and review artifact. The
+  # existing handwritten matrices remain authoritative until later commits
+  # consume these outputs after shadow validation on real workflow runs.
+  plan_ci:
+    name: Plan ordinary CI work
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      build_matrix: ${{ steps.plan.outputs.build_matrix }}
+      miri_matrix: ${{ steps.plan.outputs.miri_matrix }}
+    defaults:
+      run:
+        working-directory: zerocopy
+    env:
+      # upload-file-artifact requires its name to equal the path basename.
+      # Keep this one value coordinated with the planner invocation and upload
+      # below rather than repeating a load-bearing artifact name.
+      CI_PLAN_ARTIFACT: ci-plan.json
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Validate inputs and project the plan
+        id: plan
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          ./cargo.sh ci github-plan \
+            --event "$EVENT_NAME" \
+            --github-output "$GITHUB_OUTPUT" \
+            --artifact "$RUNNER_TEMP/$CI_PLAN_ARTIFACT"
+
+      - name: Upload detailed plan for review
+        uses: ./.github/actions/upload-file-artifact
+        with:
+          name: ${{ env.CI_PLAN_ARTIFACT }}
+          path: ${{ runner.temp }}/${{ env.CI_PLAN_ARTIFACT }}
+          # This JSON is small and intended for PR review, unlike the large
+          # one-day fan-out archives used only by jobs in the same run.
+          retention-days: 14
+
   build_test:
     runs-on: ubuntu-latest
     # We pre-compute a Docker image containing most dependencies. Each job in
@@ -1058,25 +1106,40 @@ jobs:
       # success in branch protection, so this aggregation must fail closed.
       if: ${{ always() }}
       runs-on: ubuntu-latest
-      needs: [build_test, miri, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_tools, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env]
+      needs: [build_test, miri, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_tools, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env, plan_ci]
       steps:
         - name: Reject workflow cancellation
           if: ${{ cancelled() }}
           run: exit 1
 
+        # GitHub can omit a job output at promotion time if its secret scanner
+        # produces a false positive. Keep this comparison in expression space
+        # so the large JSON never enters a process environment; a PR's empty
+        # Miri plan is still the nonempty JSON value {"include":[]}.
+        - name: Require published planner outputs
+          if: ${{ needs.plan_ci.result == 'success' && (needs.plan_ci.outputs.build_matrix == '' || needs.plan_ci.outputs.miri_matrix == '') }}
+          run: exit 1
+
         - name: Require every dependency to succeed
           env:
             EVENT_NAME: ${{ github.event_name }}
-            NEEDS_JSON: ${{ toJSON(needs) }}
+            # Do not serialize the entire `needs` object here: job outputs may
+            # legitimately approach GitHub's configured output limit, while a
+            # Linux process has a much smaller per-environment-value limit.
+            # Results stay small regardless of matrix JSON size. Keep the
+            # separate Miri result so the one intentional PR skip is still
+            # identified rather than accepting an arbitrary skipped job.
+            RESULTS_JSON: ${{ toJSON(needs.*.result) }}
+            MIRI_RESULT: ${{ needs.miri.result }}
           run: |
             set -euo pipefail
-            jq -e --arg event "$EVENT_NAME" '
-              type == "object" and length > 0 and
-              all(
-                to_entries[];
-                if .key == "miri" and $event == "pull_request"
-                then .value.result == "skipped"
-                else .value.result == "success"
-                end
-              )
-            ' <<< "$NEEDS_JSON"
+            jq -e --arg event "$EVENT_NAME" --arg miri "$MIRI_RESULT" '
+              type == "array" and length > 0 and
+              if $event == "pull_request"
+              then $miri == "skipped" and
+                   ([.[] | select(. == "skipped")] | length) == 1 and
+                   all(.[]; . == "success" or . == "skipped")
+              else $miri == "success" and
+                   all(.[]; . == "success")
+              end
+            ' <<< "$RESULTS_JSON"

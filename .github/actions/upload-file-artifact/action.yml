@@ -1,5 +1,5 @@
 name: Upload file artifact
-description: Publish one already-compressed file for jobs in this workflow run
+description: Publish one exact file for jobs in this workflow run
 
 inputs:
   name:
@@ -8,6 +8,10 @@ inputs:
   path:
     description: Exact path of the nonempty file to publish
     required: true
+  retention-days:
+    description: Days to retain the artifact, from 1 through 90
+    required: false
+    default: "1"
 
 outputs:
   artifact-id:
@@ -25,6 +29,7 @@ runs:
       env:
         ARTIFACT_NAME: ${{ inputs.name }}
         ARTIFACT_PATH: ${{ inputs.path }}
+        RETENTION_DAYS: ${{ inputs.retention-days }}
       run: |
         set -euo pipefail
 
@@ -45,15 +50,19 @@ runs:
           echo "Artifact is missing or empty: $ARTIFACT_PATH" >&2
           exit 1
         fi
+        if [[ ! "$RETENTION_DAYS" =~ ^([1-9]|[1-8][0-9]|90)$ ]]; then
+          echo "Artifact retention must be an integer from 1 through 90: $RETENTION_DAYS" >&2
+          exit 1
+        fi
 
         artifact_size=$(stat --format=%s "$ARTIFACT_PATH")
         echo "Uploading $ARTIFACT_NAME ($artifact_size bytes)" | tee -a "$GITHUB_STEP_SUMMARY"
 
-    # Both current callers produce tar archives whose contents are already
-    # compressed (Docker's image layers use gzip; Anneal uses zstd). Version 7's
-    # direct-file mode avoids a redundant ZIP on upload and extraction on every
-    # consumer. Keep this coordinated with download-artifact v8 in
-    # `../download-artifact-with-retry/action.yml`, which understands direct
+    # The large tar callers are already compressed (Docker's image layers use
+    # gzip; Anneal uses zstd), while the CI plan caller needs its exact JSON
+    # bytes preserved for review. Version 7's direct-file mode handles both
+    # without a redundant ZIP. Keep this coordinated with download-artifact v8
+    # in `../download-artifact-with-retry/action.yml`, which understands direct
     # artifacts and verifies their service-provided digest.
     - name: Upload artifact
       id: upload
@@ -62,7 +71,7 @@ runs:
         name: ${{ inputs.name }}
         path: ${{ inputs.path }}
         if-no-files-found: error
-        retention-days: 1
+        retention-days: ${{ inputs.retention-days }}
         archive: false
         # Artifacts are immutable. Delete an artifact with the same validated
         # name first so "Re-run all jobs" can republish it under a new ID.
