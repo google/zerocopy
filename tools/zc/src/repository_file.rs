@@ -68,6 +68,11 @@ impl OpenedRepositoryFile {
         let current = Handle::from_path(path)?;
         Ok(retained == current)
     }
+
+    /// Consumes this input and retains its independently open identity handle.
+    pub(crate) fn into_identity(self) -> Handle {
+        self.identity
+    }
 }
 
 /// Opens one repository input through canonical containment and identity
