@@ -13,15 +13,15 @@
 //! The plan producer and its ordinary build and Miri consumers form a smaller
 //! handwritten boundary. The producer must publish exact outputs through one
 //! unconditional singleton job. Each planned matrix job must consume the
-//! matching output, run only its exact setup sequence, prove that setup left
-//! the checkout unchanged, and pass every selector through a real Docker
-//! invocation to the typed executor. The local artifact action is mutable
-//! repository code, so this boundary also resolves it inside the checkout and
-//! requires its complete source to match an independent reviewed snapshot. A
-//! missing output, substituted setup step, changed matrix expression, no-op
-//! interpreter, conditional step, or dropped selector could otherwise
-//! silently reduce coverage while the Rust plan and job-ID inventory remained
-//! valid.
+//! matching output, run only its exact checkout and image setup, prove that
+//! setup left the expected checkout unchanged, and pass every selector through
+//! a real Docker invocation to the typed executor. Repository-owned actions,
+//! the Dockerfile, and the image context are mutable too, so this boundary
+//! resolves every source inside the checkout and requires its complete contents
+//! to match an independent reviewed snapshot. A missing output, changed matrix
+//! expression, substituted setup step, modified checkout, no-op interpreter,
+//! conditional step, or dropped selector could otherwise silently reduce
+//! coverage while the Rust plan and job-ID inventory remained valid.
 //!
 //! This module is deliberately not a YAML or GitHub Actions interpreter. It
 //! recognizes the canonical source forms which carry the planned-job workflow
