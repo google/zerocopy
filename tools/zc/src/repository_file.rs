@@ -16,12 +16,14 @@
 
 use std::{
     fs::File,
-    io::{self, Read},
+    io,
     path::{Path, PathBuf},
 };
 
 use same_file::Handle;
 use thiserror::Error;
+
+use crate::repository_text;
 
 /// One repository input whose path, identity, and bytes share an open handle.
 #[derive(Debug)]
@@ -52,10 +54,7 @@ impl OpenedRepositoryFile {
 
     /// Reads text from the retained file rather than reopening its path.
     pub(crate) fn read_to_string(&self) -> io::Result<String> {
-        let mut file = &self.file;
-        let mut source = String::new();
-        file.read_to_string(&mut source)?;
-        Ok(source)
+        repository_text::read_open(&self.file)
     }
 
     /// Returns the opened file's permissions for a replacement file.
