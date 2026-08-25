@@ -9,3 +9,6 @@ those terms. -->
 # How to Contribute
 
 See our [Contributing Guide](https://github.com/google/zerocopy/discussions/1318).
+
+For the repository's CI configuration, update process, and local commands, see
+the [CI guide](ci/README.md).
