@@ -1,0 +1,161 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# This is independent, offline evidence for the Rust target/version pairs on
+# which CI currently relies. `ci/zc.toml` owns targets, target sets, and their
+# toolchain scopes; `zerocopy/Cargo.toml` owns the exact compiler versions.
+# `tools/zc/src/inventory.rs` resolves both files, then requires this support
+# map to contain exactly their selected pairs. A target, scope, or compiler
+# version change therefore fails planning until this file is reviewed too.
+#
+# Do not infer support from a target-looking name. The stable/nightly roller
+# invokes the typed `refresh-rust-target-support` tool after changing a pin.
+# For other policy or toolchain changes, install every affected exact version,
+# inspect the authoritative list, then update this compact file deliberately:
+#
+#   rustup target list --toolchain VERSION
+#
+# After updating all affected rows, install every cataloged compiler and run:
+#
+#   ./tools/cargo.sh test --locked --offline -p zc \
+#     inventory::tests::target_support_evidence_matches_rustup -- \
+#     --ignored --exact
+#
+# Every target below must appear in that output. Keep the toolchain tables and
+# each target array sorted lexicographically, and list only the union of targets
+# selected on that version by ordinary, Miri, and semver scopes. Do not copy
+# Rust's complete target catalog here: it would obscure the small set of
+# assumptions reviewers need to check.
+# This preamble and the tables are renderer-owned canonical text; update the
+# renderer in `tools/zc/src/inventory.rs` when changing these instructions.
+#
+schema_version = 1
+
+[[toolchains]]
+version = "1.56.0"
+targets = [
+    "aarch64-unknown-linux-gnu",
+    "arm-unknown-linux-gnueabi",
+    "i686-unknown-linux-gnu",
+    "powerpc-unknown-linux-gnu",
+    "powerpc64-unknown-linux-gnu",
+    "riscv64gc-unknown-linux-gnu",
+    "s390x-unknown-linux-gnu",
+    "thumbv6m-none-eabi",
+    "wasm32-unknown-unknown",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu",
+]
+
+[[toolchains]]
+version = "1.57.0"
+targets = [
+    "aarch64-unknown-linux-gnu",
+    "arm-unknown-linux-gnueabi",
+    "i686-unknown-linux-gnu",
+    "powerpc-unknown-linux-gnu",
+    "powerpc64-unknown-linux-gnu",
+    "riscv64gc-unknown-linux-gnu",
+    "s390x-unknown-linux-gnu",
+    "thumbv6m-none-eabi",
+    "wasm32-unknown-unknown",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu",
+]
+
+[[toolchains]]
+version = "1.59.0"
+targets = ["aarch64-unknown-linux-gnu"]
+
+[[toolchains]]
+version = "1.60.0"
+targets = [
+    "aarch64-unknown-linux-gnu",
+    "arm-unknown-linux-gnueabi",
+    "i686-unknown-linux-gnu",
+    "powerpc-unknown-linux-gnu",
+    "powerpc64-unknown-linux-gnu",
+    "riscv64gc-unknown-linux-gnu",
+    "s390x-unknown-linux-gnu",
+    "thumbv6m-none-eabi",
+    "wasm32-unknown-unknown",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu",
+]
+
+[[toolchains]]
+version = "1.61.0"
+targets = [
+    "i686-unknown-linux-gnu",
+    "x86_64-unknown-linux-gnu",
+]
+
+[[toolchains]]
+version = "1.78.0"
+targets = [
+    "i686-unknown-linux-gnu",
+    "x86_64-unknown-linux-gnu",
+]
+
+[[toolchains]]
+version = "1.81.0"
+targets = [
+    "i686-unknown-linux-gnu",
+    "x86_64-unknown-linux-gnu",
+]
+
+[[toolchains]]
+version = "1.87.0"
+targets = ["aarch64-unknown-linux-gnu"]
+
+[[toolchains]]
+version = "1.89.0"
+targets = [
+    "aarch64-unknown-linux-gnu",
+    "arm-unknown-linux-gnueabi",
+    "i686-unknown-linux-gnu",
+    "powerpc-unknown-linux-gnu",
+    "powerpc64-unknown-linux-gnu",
+    "riscv64gc-unknown-linux-gnu",
+    "s390x-unknown-linux-gnu",
+    "thumbv6m-none-eabi",
+    "wasm32-unknown-unknown",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu",
+]
+
+[[toolchains]]
+version = "1.93.1"
+targets = [
+    "aarch64-unknown-linux-gnu",
+    "arm-unknown-linux-gnueabi",
+    "i686-unknown-linux-gnu",
+    "powerpc-unknown-linux-gnu",
+    "powerpc64-unknown-linux-gnu",
+    "riscv64gc-unknown-linux-gnu",
+    "s390x-unknown-linux-gnu",
+    "thumbv6m-none-eabi",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu",
+]
+
+[[toolchains]]
+version = "nightly-2026-01-25"
+targets = [
+    "aarch64-unknown-linux-gnu",
+    "arm-unknown-linux-gnueabi",
+    "i686-unknown-linux-gnu",
+    "powerpc-unknown-linux-gnu",
+    "powerpc64-unknown-linux-gnu",
+    "riscv64gc-unknown-linux-gnu",
+    "s390x-unknown-linux-gnu",
+    "thumbv6m-none-eabi",
+    "wasm32-unknown-unknown",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu",
+]
