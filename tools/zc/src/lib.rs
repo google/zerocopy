@@ -12,5 +12,6 @@ pub mod baseline;
 pub mod ci;
 pub mod inventory;
 pub mod metadata;
+pub mod plan;
 pub mod policy;
 pub mod workflow;
