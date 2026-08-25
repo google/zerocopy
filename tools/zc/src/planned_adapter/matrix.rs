@@ -15,7 +15,7 @@ use super::{
         audit_exact_job_fields, audit_exact_scalar_field, audit_host_job_contract,
         audit_read_permissions, audit_step, audit_unique_run_mentions, audited_steps_block,
         compare_map, escape_control_characters, find_job, job_field_location, job_fields,
-        nested_fields, nested_mapping, parse_needs, unique_field, RunForm, StepExpectation,
+        nested_mapping, parse_needs, unique_field, RunForm, StepExpectation,
     },
     ViolationSink,
 };
@@ -55,21 +55,12 @@ struct MatrixJobExpectation {
     selectors: &'static [SelectorExpectation],
     forwarded_selector_environment: &'static str,
     condition: JobConditionExpectation,
-    run_defaults: Option<RunDefaultsExpectation>,
-}
-
-#[derive(Clone, Copy)]
-struct RunDefaultsExpectation {
-    shell: &'static str,
-    working_directory: &'static str,
 }
 
 const BUILD_DOCKER_JOB: &str = "build_docker_env";
-const BUILD_JOB_FIELDS: &[&str] =
-    &["runs-on", "needs", "permissions", "defaults", "strategy", "name", "steps"];
+const BUILD_JOB_FIELDS: &[&str] = &["runs-on", "needs", "permissions", "strategy", "name", "steps"];
 const MIRI_JOB_FIELDS: &[&str] =
     &["if", "runs-on", "needs", "permissions", "strategy", "name", "steps"];
-const BUILD_DEFAULT_SHELL: &str = "/tmp/docker-shell.sh {0} # zizmor: ignore[misfeature] (CI intentionally routes build matrix commands through the prebuilt Docker image)";
 const BUILD_DISPLAY_NAME: &str = "Build & Test (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.feature_profile }} / ${{ matrix.target }})";
 const MIRI_DISPLAY_NAME: &str = "Miri (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.feature_profile }} / ${{ matrix.miri_model }} / ${{ matrix.target }})";
 
@@ -134,10 +125,6 @@ const BUILD_EXPECTATION: MatrixJobExpectation = MatrixJobExpectation {
     selectors: &BUILD_SELECTORS,
     forwarded_selector_environment: "  -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE \\",
     condition: JobConditionExpectation::Absent,
-    run_defaults: Some(RunDefaultsExpectation {
-        shell: BUILD_DEFAULT_SHELL,
-        working_directory: REPOSITORY_WORKING_DIRECTORY,
-    }),
 };
 
 const MIRI_EXPECTATION: MatrixJobExpectation = MatrixJobExpectation {
@@ -151,7 +138,6 @@ const MIRI_EXPECTATION: MatrixJobExpectation = MatrixJobExpectation {
     forwarded_selector_environment:
         "  -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE -e MIRI_MODEL \\",
     condition: JobConditionExpectation::MiriEnabled,
-    run_defaults: None,
 };
 
 pub(super) fn audit(
@@ -205,9 +191,6 @@ fn audit_matrix_job(
     audit_condition(&fields, expected, errors);
     audit_host_job_contract(&fields, expected.job_name, errors);
     audit_read_permissions(lines, job.end, &fields, expected.job_name, errors);
-    if let Some(defaults) = expected.run_defaults {
-        audit_run_defaults(lines, job.end, &fields, expected.job_name, defaults, errors);
-    }
     audit_strategy(lines, job.end, &fields, expected, errors);
 
     if let Some(steps) = audited_steps_block(&fields, job, expected.job_name, 4, errors) {
@@ -237,42 +220,6 @@ fn audit_needs(fields: &[super::source::Field<'_>], job: &str, errors: &mut Viol
             format!("unexpected direct dependency `{extra}`"),
         );
     }
-}
-
-fn audit_run_defaults(
-    lines: &[&str],
-    job_end: usize,
-    fields: &[super::source::Field<'_>],
-    job: &str,
-    expected: RunDefaultsExpectation,
-    errors: &mut ViolationSink,
-) {
-    let Some(defaults) = unique_field(fields, "defaults", job, errors) else {
-        return;
-    };
-    let defaults_job = format!("{job}.defaults");
-    let Some(default_fields) = nested_fields(lines, defaults, job_end, &defaults_job, errors)
-    else {
-        return;
-    };
-    audit_exact_job_fields(&default_fields, &defaults_job, &["run"], errors);
-
-    let Some(run) = unique_field(&default_fields, "run", &defaults_job, errors) else {
-        return;
-    };
-    let run_job = format!("{defaults_job}.run");
-    let Some(run_fields) = nested_fields(lines, run, job_end, &run_job, errors) else {
-        return;
-    };
-    audit_exact_job_fields(&run_fields, &run_job, &["shell", "working-directory"], errors);
-    audit_exact_scalar_field(&run_fields, &run_job, "shell", expected.shell, errors);
-    audit_exact_scalar_field(
-        &run_fields,
-        &run_job,
-        "working-directory",
-        expected.working_directory,
-        errors,
-    );
 }
 
 fn audit_condition(
@@ -396,7 +343,6 @@ fn executor_run(expected: MatrixJobExpectation) -> Vec<String> {
         "  -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \\".to_owned(),
         "  -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \\".to_owned(),
         "  -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \\".to_owned(),
-        "  -e ZC_SKIP_CARGO_SEMVER_CHECKS \\".to_owned(),
         "  -e GIT_CONFIG_COUNT=1 \\".to_owned(),
         "  -e GIT_CONFIG_KEY_0=safe.directory \\".to_owned(),
         "  -e \"GIT_CONFIG_VALUE_0=*\" \\".to_owned(),
@@ -434,8 +380,8 @@ mod tests {
     use std::{collections::BTreeSet, path::Path};
 
     use super::{
-        audit, executor_run, BUILD_DEFAULT_SHELL, BUILD_DISPLAY_NAME, BUILD_EXPECTATION,
-        MIRI_DISPLAY_NAME, MIRI_EXPECTATION,
+        audit, executor_run, BUILD_DISPLAY_NAME, BUILD_EXPECTATION, MIRI_DISPLAY_NAME,
+        MIRI_EXPECTATION,
     };
     use crate::{
         planned_adapter::{
@@ -457,10 +403,6 @@ mod tests {
     needs: [build_docker_env, plan_ci]
     permissions:
       contents: read
-    defaults:
-      run:
-        shell: /tmp/docker-shell.sh {0} # zizmor: ignore[misfeature] (CI intentionally routes build matrix commands through the prebuilt Docker image)
-        working-directory: zerocopy
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.plan_ci.outputs.build_matrix) }}
@@ -487,7 +429,6 @@ mod tests {
           -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
           -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           -e GIT_CONFIG_COUNT=1 \
           -e GIT_CONFIG_KEY_0=safe.directory \
           -e "GIT_CONFIG_VALUE_0=*" \
@@ -536,7 +477,6 @@ mod tests {
           -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
           -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           -e GIT_CONFIG_COUNT=1 \
           -e GIT_CONFIG_KEY_0=safe.directory \
           -e "GIT_CONFIG_VALUE_0=*" \
@@ -828,44 +768,14 @@ mod tests {
                 "miri.permissions.id-token",
             ),
             (
-                "default shell",
+                "build defaults",
                 replace_in_job(
                     CANONICAL_SOURCE,
                     BUILD_JOB,
-                    BUILD_DEFAULT_SHELL,
-                    "/tmp/other-shell.sh {0}",
+                    "    strategy:\n",
+                    "    defaults: {}\n    strategy:\n",
                 ),
-                "build_test.defaults.run.shell",
-            ),
-            (
-                "default working directory",
-                replace_in_job(
-                    CANONICAL_SOURCE,
-                    BUILD_JOB,
-                    "        working-directory: zerocopy",
-                    "        working-directory: .",
-                ),
-                "build_test.defaults.run.working-directory",
-            ),
-            (
-                "extra run default",
-                replace_in_job(
-                    CANONICAL_SOURCE,
-                    BUILD_JOB,
-                    "        working-directory: zerocopy\n",
-                    "        working-directory: zerocopy\n        timeout-minutes: 1\n",
-                ),
-                "build_test.defaults.run.timeout-minutes",
-            ),
-            (
-                "scalar defaults",
-                replace_in_job(
-                    CANONICAL_SOURCE,
-                    BUILD_JOB,
-                    "    defaults:\n",
-                    "    defaults: {}\n",
-                ),
-                "canonical nested mapping",
+                "build_test.defaults",
             ),
             (
                 "Miri defaults",

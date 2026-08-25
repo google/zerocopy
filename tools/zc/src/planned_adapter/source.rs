@@ -236,24 +236,6 @@ pub(super) fn audit_read_permissions(
     );
 }
 
-pub(super) fn nested_fields<'a>(
-    lines: &'a [&'a str],
-    parent: &Field<'_>,
-    block_end: usize,
-    job: &str,
-    errors: &mut ViolationSink,
-) -> Option<Vec<Field<'a>>> {
-    if !parent.value.is_empty() {
-        errors.push(
-            job_field_location(job, parent.key),
-            format!("{} must use the canonical nested mapping form", parent.key),
-        );
-        return None;
-    }
-    let end = nested_block_end(lines, parent, block_end);
-    Some(job_fields_at_indent(lines, parent.line..end, job, parent.indent + 2, errors))
-}
-
 pub(super) fn nested_mapping(
     lines: &[&str],
     parent: &Field<'_>,

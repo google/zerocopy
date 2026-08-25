@@ -126,10 +126,6 @@ jobs:
     needs: [build_docker_env, plan_ci]
     permissions:
       contents: read
-    defaults:
-      run:
-        shell: /tmp/docker-shell.sh {0} # zizmor: ignore[misfeature] (CI intentionally routes build matrix commands through the prebuilt Docker image)
-        working-directory: zerocopy
 
     strategy:
       # By default, this is set to `true`, which means that a single CI job
@@ -169,11 +165,11 @@ jobs:
         path: ${{ runner.temp }}
         expected-file: ${{ env.ZC_CI_IMAGE_ARCHIVE }}
 
-    # This step runs before /tmp/docker-shell.sh exists, so its explicit Bash
-    # shell is load-bearing. The Docker exporter is single-platform; the
-    # producer and every consumer intentionally use the same ubuntu-latest
-    # runner architecture. If CI gains another architecture, build and select a
-    # distinct artifact ID for it rather than silently sharing this archive.
+    # This host setup step uses an explicit shell. The Docker exporter is
+    # single-platform; the producer and every consumer intentionally use the
+    # same ubuntu-latest runner architecture. If CI gains another architecture,
+    # build and select a distinct artifact ID for it rather than silently
+    # sharing this archive.
     - &load_ci_image
       name: Load prebuilt Docker image
       shell: bash
@@ -192,45 +188,11 @@ jobs:
         # that the archive matches this runner's architecture.
         docker run --rm "$IMAGE_NAME" true
 
-    - &create_docker_shell
-      name: Create Docker Shell Wrapper
-      shell: bash
-      run: |
-        set -eo pipefail
-
-        # Keep the Docker steps' Cargo cache separate from the host Cargo home.
-        # The container runs as root, while later host-side actions run as the
-        # runner user and need to write their own Cargo registry cache.
-        mkdir -p /home/runner/.docker-cargo/registry /home/runner/.docker-cargo/git
-
-        cat << 'EOF' > /tmp/docker-shell.sh
-        #!/bin/bash
-        # Boot an ephemeral container for the step, mounting the workspace and
-        # temp dirs. Explicitly forward GitHub Actions internal state and matrix
-        # environment variables.
-        docker run --rm -i \
-          --workdir "$PWD" \
-          -v /home/runner/work:/home/runner/work \
-          -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \
-          -v /home/runner/.docker-cargo/git:/root/.cargo/git \
-          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
-          -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
-          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE \
-          -e MIRI_MODEL -e ZC_TOOLCHAIN -e PR_HEAD_SHA \
-          -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
-          -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
-          -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
-          "$ZC_CI_IMAGE" bash -c "git config --global --add safe.directory '*' && exec bash -e -o pipefail \"\$1\"" -- "$1"
-        EOF
-        chmod +x /tmp/docker-shell.sh
-
     # The matrix values are data, not shell fragments. `cargo-zerocopy`
     # validates these selectors against the plan for this event, reconstructs
-    # the typed argv and environment, and executes the complete cell. This step
-    # deliberately does not use the job's generated Docker shell: auditing its
-    # path would not prove that the generated wrapper still invokes Docker.
-    # Instead, the complete bridge below is explicit. The absolute Docker path
+    # the typed argv and environment, and executes the complete cell. The
+    # complete Docker bridge below is explicit so the audit sees how the
+    # container is actually launched. The absolute Docker path
     # relies on the hosted Ubuntu runner contract and prevents a PATH shim from
     # returning success without starting a container. The entrypoint override
     # and Bash startup options prevent image startup behavior or exported
@@ -260,7 +222,6 @@ jobs:
           -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
           -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           -e GIT_CONFIG_COUNT=1 \
           -e GIT_CONFIG_KEY_0=safe.directory \
           -e "GIT_CONFIG_VALUE_0=*" \
@@ -278,49 +239,56 @@ jobs:
           --target "$TARGET"
 
     # The semver check must remain a literal `uses` step, so it cannot run
-    # inside the typed executor. This workflow-owned preparation resolves the
-    # one action input which GitHub expressions cannot compute and handles the
-    # documented skip marker. Keep its selector condition coordinated with the
-    # action condition and the semver policy in `ci/zc.toml`; a later audit
-    # replaces this manual cross-file contract with a checked one.
+    # inside the typed executor. This preparation handles only the documented
+    # commit-message skip marker and the vendored-source workaround. The action
+    # below receives its compiler as a checked literal; do not reintroduce an
+    # environment value produced by shell code. The named step output makes
+    # the skip decision local to this producer: neither a workflow environment
+    # default nor an unrelated step can suppress the action. The semver-adapter
+    # audit checks both steps, their order, and every behavior-bearing line.
     - name: Prepare cargo-semver-checks
+      id: prepare_semver
+      # This step needs the host checkout, not the CI image. Keep this shell
+      # coordinated with `workflow_protocol::TRUSTED_SHELL` and the semver
+      # adapter audit. Inheriting a job default would put an unaudited command
+      # interpreter between the checked script and runner.
+      shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
+      # The vendored Cargo configuration below is relative to this directory.
+      # Keep this value coordinated with `REPOSITORY_WORKING_DIRECTORY` and the
+      # semver adapter audit.
+      working-directory: zerocopy
       env:
-        TOOLCHAIN: ${{ matrix.toolchain }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       run: |
         set -euo pipefail
-
-        ZC_TOOLCHAIN="$(./cargo.sh --version "$TOOLCHAIN")"
-        printf "Resolved the '%s' toolchain to %s\n" \
-          "$TOOLCHAIN" "$ZC_TOOLCHAIN" | tee -a "$GITHUB_STEP_SUMMARY"
-        printf 'ZC_TOOLCHAIN=%s\n' "$ZC_TOOLCHAIN" >> "$GITHUB_ENV"
 
         # Pull request jobs check the head commit rather than GitHub's synthetic
         # merge commit. `PR_HEAD_SHA`, the depth-2 checkout above, and this
         # lookup are one contract: if checkout stops fetching that object,
         # `git log` fails instead of silently inspecting another message.
         if [[ "$GITHUB_EVENT_NAME" == 'pull_request' ]]; then
-          MESSAGE="$(git log -1 --pretty=%B "$PR_HEAD_SHA")"
+          MESSAGE="$(/usr/bin/git log -1 --pretty=%B "$PR_HEAD_SHA")"
           MESSAGE_SOURCE='pull request head commit message'
         else
-          MESSAGE="$(git log -1 --pretty=%B HEAD)"
+          MESSAGE="$(/usr/bin/git log -1 --pretty=%B HEAD)"
           MESSAGE_SOURCE='commit message'
         fi
 
-        if grep -Eq \
+        if /usr/bin/grep -Eq \
           '^[[:space:]]*SKIP_CARGO_SEMVER_CHECKS=1[[:space:]]*$' \
           <<< "$MESSAGE"; then
           printf "Found 'SKIP_CARGO_SEMVER_CHECKS=1' in the %s; " \
-            "$MESSAGE_SOURCE" | tee -a "$GITHUB_STEP_SUMMARY"
+            "$MESSAGE_SOURCE" | /usr/bin/tee -a "$GITHUB_STEP_SUMMARY"
           printf 'skipping cargo-semver-checks.\n' | \
-            tee -a "$GITHUB_STEP_SUMMARY"
-          printf 'ZC_SKIP_CARGO_SEMVER_CHECKS=1\n' >> "$GITHUB_ENV"
+            /usr/bin/tee -a "$GITHUB_STEP_SUMMARY"
+          printf 'run=false\n' >> "$GITHUB_OUTPUT"
         else
           # FIXME(#2906): cargo-semver-checks fetches the latest Zerocopy from
           # crates.io, but the vendored-source configuration cannot resolve
           # that package. This exact file removal affects only a semver matrix
           # cell. Switch to --baseline-rev before removing this workaround.
-          rm .cargo/config.toml
+          /usr/bin/rm .cargo/config.toml
+          printf 'run=true\n' >> "$GITHUB_OUTPUT"
         fi
       # TODO(#1565): Run on wasm32-unknown-unknown.
       if: |
@@ -336,6 +304,11 @@ jobs:
     - name: Check semver compatibility
       uses: obi1kenobi/cargo-semver-checks-action@6b69fcf40e9b5fb17adeb57e4b6ecd020649a239 # v2.9
       env:
+        # Keep both warning environments explicit and coordinated with
+        # `SemverAdapterSpec` in `tools/zc/src/semver_adapter.rs`. Inheriting
+        # `RUSTFLAGS` from the workflow-wide environment would let an unrelated
+        # edit silently change this action's typed command behavior.
+        RUSTFLAGS: -Dwarnings
         # `zerocopy_unstable_ptr` exposes unstable API, so it should not be
         # included in semver checks.
         RUSTDOCFLAGS: -Dwarnings
@@ -355,7 +328,11 @@ jobs:
         feature-group: only-explicit-features
         features: __internal_use_only_features_that_work_on_stable
         manifest-path: zerocopy/Cargo.toml
-        rust-toolchain: ${{ env.ZC_TOOLCHAIN }}
+        # Keep this exact version coordinated with
+        # `zerocopy/Cargo.toml`'s `package.metadata.ci.pinned-stable` and
+        # `SemverAdapterSpec`. A stable-toolchain roll which misses this copy
+        # fails `ci audit` before a matrix is published.
+        rust-toolchain: 1.93.1
         rust-target: ${{ matrix.target }}
       # TODO(#1565): Run on wasm32-unknown-unknown.
       if: |
@@ -363,7 +340,7 @@ jobs:
         matrix.feature_profile == 'stable' &&
         matrix.toolchain == 'stable' &&
         matrix.target != 'wasm32-unknown-unknown' &&
-        env.ZC_SKIP_CARGO_SEMVER_CHECKS != '1'
+        steps.prepare_semver.outputs.run == 'true'
 
   # Today's policy selects Miri only for full events because it is much more
   # expensive than the ordinary build matrix. Each borrow model is its own
@@ -427,7 +404,6 @@ jobs:
           -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
           -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           -e GIT_CONFIG_COUNT=1 \
           -e GIT_CONFIG_KEY_0=safe.directory \
           -e "GIT_CONFIG_VALUE_0=*" \
