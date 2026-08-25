@@ -12,7 +12,8 @@
 //! [`CiInputs`] until the policy is valid, its references agree with live Cargo
 //! metadata and repository files, every workflow job has an exact reviewed
 //! role, the handwritten matrix jobs exactly publish and consume typed plans,
-//! the handwritten semver action exactly implements typed policy, every
+//! the required check exactly aggregates their conclusions, the handwritten
+//! semver action exactly implements typed policy, every
 //! independently recorded legacy baseline parses canonically, and the typed
 //! execution model exactly reproduces that legacy evidence. Planners
 //! therefore consume checked data rather than remembering which validation
@@ -66,9 +67,9 @@ impl CiInputs {
         let workflow_jobs = audit_workflows(&repository_root, workflow_registry)
             .map_err(|error| LoadCiError::Workflow(Box::new(error)))?;
         // Job-ID inventory cannot prove that a planned job publishes or
-        // consumes its typed matrix through the complete checked CLI. Audit
-        // that small planned-job workflow bridge while both checks refer to
-        // the same fixed file.
+        // consumes its typed matrix through the complete checked CLI, or that
+        // those conclusions reach the required check. Audit that small
+        // planned-job workflow bridge while both checks refer to one file.
         audit_planned_adapter(&repository_root, &workflow_jobs)
             .map_err(LoadCiError::PlannedAdapter)?;
         let repository = RepositoryInventory::audit(&repository_root, &policy)
