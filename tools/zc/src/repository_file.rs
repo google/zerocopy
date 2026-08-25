@@ -28,12 +28,26 @@ use thiserror::Error;
 pub(crate) struct OpenedRepositoryFile {
     path: PathBuf,
     file: File,
+    // Retain this independently open handle for callers which compare file
+    // identity. Some platforms may reuse an identifier once its last handle
+    // closes, so a numeric identity captured and then dropped is insufficient.
+    identity: Handle,
 }
 
 impl OpenedRepositoryFile {
     /// Returns the canonical path checked immediately after the open.
     pub(crate) fn path(&self) -> &Path {
         &self.path
+    }
+
+    /// Returns the retained file used for all subsequent structured reads.
+    pub(crate) fn file(&self) -> &File {
+        &self.file
+    }
+
+    /// Returns the retained filesystem identity derived from [`Self::file`].
+    pub(crate) fn identity(&self) -> &Handle {
+        &self.identity
     }
 
     /// Reads text from the retained file rather than reopening its path.
@@ -122,7 +136,7 @@ pub(crate) fn open(
         });
     }
 
-    Ok(OpenedRepositoryFile { path: rechecked, file })
+    Ok(OpenedRepositoryFile { path: rechecked, file, identity })
 }
 
 /// A failure to open and retain one repository file safely.
