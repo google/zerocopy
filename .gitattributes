@@ -1,6 +1,14 @@
-# Shell entry points must remain LF so they can run before Rust tooling exists.
-# The shared bootstrap parser still accepts well-formed CRLF in the two TOML
-# files needed by an existing Windows worktree. Keep these rules coordinated
-# with `tools/toolchain.sh` and `ci/check_tools.sh`.
+# The typed CI tools audit the data formats below at source level. The shared
+# repository-text boundary normalizes CRLF left in an existing Windows
+# worktree. Shell entry points must themselves remain LF so they can run before
+# Rust is built; `tools/toolchain.sh` then handles the two TOML values needed
+# during bootstrap. Pure parsers and bare carriage returns remain strict. Keep
+# this list coordinated with `tools/zc/src/ci.rs`, `repository_text.rs`, the
+# bootstrap parser, and their tests so Git's index remains canonical and new
+# checkouts receive LF.
 *.sh   text eol=lf
 githooks/pre-push text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.tsv  text eol=lf

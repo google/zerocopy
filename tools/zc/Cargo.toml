@@ -15,6 +15,7 @@ publish.workspace = true
 
 [dependencies]
 cargo_metadata = "0.23.1"
+libyaml-rs.workspace = true
 same-file = "1.0.6"
 serde.workspace = true
 serde_json = "1"
