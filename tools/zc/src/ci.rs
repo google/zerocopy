@@ -11,7 +11,7 @@
 //! Loading CI inputs is intentionally all-or-nothing. A caller cannot obtain a
 //! [`CiInputs`] until the policy is valid, its references agree with live Cargo
 //! metadata and repository files, every workflow job has an exact reviewed
-//! role, the handwritten plan publisher exactly exposes typed outputs, the
+//! role, the handwritten matrix jobs exactly publish and consume typed plans,
 //! independently recorded legacy baseline parses canonically, and the typed
 //! execution model exactly reproduces that legacy evidence. Planners
 //! therefore consume checked data rather than remembering which validation
@@ -65,12 +65,16 @@ impl CiInputs {
             resolve_input_file(&repository_root, Path::new(WORKFLOW_REGISTRY_PATH))?;
         let workflow_jobs = audit_workflows(&repository_root, workflow_registry)
             .map_err(|error| LoadCiError::Workflow(Box::new(error)))?;
-        // Job-ID inventory cannot prove that the producer publishes the exact
-        // typed outputs through a real command. Audit that small planned-job
-        // workflow bridge while both checks refer to the same fixed file.
-        audit_planned_adapter(&repository_root).map_err(LoadCiError::PlannedAdapter)?;
         let repository = RepositoryInventory::audit(&repository_root, &policy)
             .map_err(LoadCiError::Inventory)?;
+        // Job-ID inventory cannot prove that a planned job publishes or
+        // consumes its typed matrix through the complete checked CLI. Audit
+        // that small planned-job workflow bridge while both checks refer to
+        // the same fixed file. The image producer also consumes the validated
+        // inventory here so its preinstalled compiler pins cannot drift from
+        // the toolchains selected by the typed plan.
+        audit_planned_adapter(&repository_root, &workflow_jobs, &repository)
+            .map_err(LoadCiError::PlannedAdapter)?;
         let baselines = policy.baselines();
         let paths = LegacyBaselinePaths {
             manifest: resolve_input_file(&repository_root, baselines.manifest().as_path())?,
@@ -253,7 +257,7 @@ pub enum LoadCiError {
     /// Workflow files or their reviewed role assignments were invalid.
     #[error(transparent)]
     Workflow(Box<WorkflowAuditError>),
-    /// The planned-job workflow bridge did not publish typed outputs exactly.
+    /// The planned-job workflow bridge did not publish or execute plans exactly.
     #[error(transparent)]
     PlannedAdapter(PlannedAdapterAuditError),
     /// The frozen legacy evidence was unreadable or noncanonical.
@@ -324,11 +328,15 @@ mod tests {
         let paths = [
             "tools/toolchain.sh",
             "githooks/pre-push",
+            ".github/ci-image/.dockerignore",
+            ".github/ci-image/Dockerfile",
             ".github/workflows/ci.yml",
             "ci/future-input.yaml",
             "ci/zc.toml",
             "ci/workflow-jobs.tsv",
             "ci/baselines/command-goldens.tsv",
+            "tools/zc/testdata/ci-image.Dockerfile",
+            "tools/zc/testdata/ci-image.dockerignore",
             "zerocopy/Cargo.toml",
         ];
         let output = Command::new("git")
