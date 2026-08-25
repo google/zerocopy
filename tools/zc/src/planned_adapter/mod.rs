@@ -17,10 +17,13 @@
 //! selector through a real Docker invocation to the typed executor. The local
 //! artifact action is mutable repository code, so this boundary also resolves
 //! it inside the checkout and rejects direct references to cross-step
-//! environment channels. A missing output, changed matrix expression,
-//! substituted setup step, no-op interpreter, conditional step, or dropped
-//! selector could otherwise silently reduce coverage while the Rust plan and
-//! job-ID inventory remained valid.
+//! environment channels. The required-check aggregate must then depend on the
+//! planner, all typed-plan consumers, and the remaining dependency-inventory
+//! audit while enforcing every optional planned conclusion. A missing output,
+//! changed matrix expression, substituted setup step, no-op interpreter,
+//! conditional step, or dropped selector could
+//! otherwise silently reduce coverage while the Rust plan and job-ID inventory
+//! remained valid.
 //!
 //! This module is deliberately not a YAML or GitHub Actions interpreter. It
 //! recognizes the canonical source forms which carry the planned-job workflow
@@ -38,6 +41,7 @@ use thiserror::Error;
 
 use crate::{repository_text, workflow::ReviewedWorkflowJobs, workflow_protocol::WORKFLOW_PATH};
 
+mod aggregate;
 mod matrix;
 mod planner;
 mod source;
@@ -81,6 +85,7 @@ fn audit_source(
     let lines = workflow.lines().collect::<Vec<_>>();
     planner::audit(&lines, &mut errors);
     matrix::audit(&lines, reviewed_planned_jobs, &mut errors);
+    aggregate::audit(&lines, &mut errors);
 
     if errors.is_empty() {
         Ok(())
