@@ -17,4 +17,5 @@ pub mod inventory;
 pub mod metadata;
 pub mod plan;
 pub mod policy;
+pub mod semver_adapter;
 pub mod workflow;

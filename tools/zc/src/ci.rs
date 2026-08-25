@@ -11,9 +11,10 @@
 //! Loading CI inputs is intentionally all-or-nothing. A caller cannot obtain a
 //! [`CiInputs`] until the policy is valid, its references agree with live Cargo
 //! metadata and repository files, every workflow job has an exact reviewed
-//! role, and every independently recorded legacy baseline parses canonically.
-//! Planners therefore consume checked data rather than remembering which
-//! validation passes must precede which lookups.
+//! role, the handwritten semver action exactly implements typed policy, and
+//! every independently recorded legacy baseline parses canonically. Planners
+//! therefore consume checked data rather than remembering which validation
+//! passes must precede which lookups.
 
 use std::{
     fs, io,
@@ -26,6 +27,7 @@ use crate::{
     baseline::{BaselineError, LegacyBaselinePaths, LegacyBaselines},
     inventory::{AuditError, RepositoryInventory},
     policy::{Policy, ReadPolicyError},
+    semver_adapter::{audit_semver_adapter, SemverAdapterAuditError},
     workflow::{audit_workflows, ReviewedWorkflowJobs, WorkflowAuditError, WORKFLOW_REGISTRY_PATH},
 };
 
@@ -60,6 +62,12 @@ impl CiInputs {
             .map_err(|error| LoadCiError::Workflow(Box::new(error)))?;
         let repository = RepositoryInventory::audit(&repository_root, &policy)
             .map_err(LoadCiError::Inventory)?;
+        // `audit_workflows` deliberately recognizes jobs, not arbitrary YAML
+        // steps. The semver action is the one remaining behavior-bearing step
+        // which GitHub requires us to keep literal. Check its exact canonical
+        // adapter only after both policy and Cargo inventory are trustworthy.
+        audit_semver_adapter(&repository_root, &policy, &repository)
+            .map_err(LoadCiError::SemverAdapter)?;
         let baselines = policy.baselines();
         let paths = LegacyBaselinePaths {
             manifest: resolve_input_file(&repository_root, baselines.manifest().as_path())?,
@@ -167,6 +175,9 @@ pub enum LoadCiError {
     /// Workflow files or their reviewed role assignments were invalid.
     #[error(transparent)]
     Workflow(Box<WorkflowAuditError>),
+    /// The literal semver action did not exactly implement typed policy.
+    #[error(transparent)]
+    SemverAdapter(SemverAdapterAuditError),
     /// The frozen legacy evidence was unreadable or noncanonical.
     #[error(transparent)]
     Baseline(BaselineError),
