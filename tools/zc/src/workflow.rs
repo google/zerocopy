@@ -24,11 +24,13 @@ use std::{
     collections::{BTreeMap, BTreeSet},
     fmt,
     fs::{self, File},
-    io::{self, Read},
+    io,
     path::{Path, PathBuf},
 };
 
 use thiserror::Error;
+
+use crate::repository_text;
 
 const WORKFLOW_DIRECTORY: &str = ".github/workflows";
 const REGISTRY_HEADER: &str = "workflow\tjob\trole";
@@ -284,6 +286,18 @@ impl ReviewedWorkflowJobs {
     pub fn role(&self, job: &WorkflowJob) -> Option<WorkflowJobRole> {
         self.jobs.get(job).copied()
     }
+
+    /// Iterates over the exact reviewed set delegated to the typed planner.
+    ///
+    /// The planned-job workflow audit compares this set with its fixed matrix
+    /// expectations. A registry edit therefore cannot label another job
+    /// `planned` without extending the behavioral audit which proves that job
+    /// consumes and executes a checked plan.
+    pub fn planned_jobs(&self) -> impl Iterator<Item = &WorkflowJob> {
+        self.jobs
+            .iter()
+            .filter_map(|(job, role)| (*role == WorkflowJobRole::Planned).then_some(job))
+    }
 }
 
 /// Checks every live workflow job against its reviewed role assignment.
@@ -394,7 +408,7 @@ fn read_workflow_sources(
         if !metadata.is_file() {
             return Err(WorkflowInventoryError::NotAFile { path });
         }
-        let source = read_open_workflow(&file).map_err(|source| {
+        let source = repository_text::read_open(&file).map_err(|source| {
             WorkflowInventoryError::ReadWorkflow { path: path.clone(), source }
         })?;
         let inventory = scan_workflow(workflow_path.clone(), &source)?;
@@ -402,13 +416,6 @@ fn read_workflow_sources(
         assert!(sources.insert(workflow_path, source).is_none());
     }
     Ok(WorkflowSources { inventories, sources })
-}
-
-fn read_open_workflow(file: &File) -> io::Result<String> {
-    let mut file = file;
-    let mut source = String::new();
-    file.read_to_string(&mut source)?;
-    Ok(source)
 }
 
 fn is_workflow_path(path: &Path) -> Result<bool, WorkflowInventoryError> {
@@ -1413,6 +1420,20 @@ mod tests {
             discovered.inventories[0].jobs,
             [JobId::parse("original").unwrap()].into_iter().collect()
         );
+
+        fs::remove_dir_all(repository).unwrap();
+    }
+
+    #[test]
+    fn discovered_sources_use_canonical_line_endings() {
+        let repository = temporary_directory("canonical-source");
+        let workflows = repository.join(".github/workflows");
+        fs::create_dir_all(&workflows).unwrap();
+        let canonical = "name: CI\non:\n  push:\njobs:\n  original:\n    runs-on: ubuntu-latest\n";
+        fs::write(workflows.join("ci.yml"), canonical.replace('\n', "\r\n")).unwrap();
+
+        let discovered = read_workflow_sources(&repository).unwrap();
+        assert_eq!(discovered.source(".github/workflows/ci.yml"), Some(canonical));
 
         fs::remove_dir_all(repository).unwrap();
     }

@@ -26,7 +26,7 @@ use std::{
     error::Error,
     fmt,
     fs::File,
-    io::{self, Read},
+    io,
     path::{Component, Path, PathBuf},
     str::FromStr,
 };
@@ -1137,15 +1137,12 @@ fn read_source(path: &Path) -> Result<String, BaselineError> {
 }
 
 fn read_open_source(path: &Path, file: &File) -> Result<String, BaselineError> {
-    let mut source = String::new();
-    let mut reader = file;
-    reader.read_to_string(&mut source).map_err(|source| BaselineError {
+    repository_text::read_open(file).map_err(|source| BaselineError {
         path: path.to_path_buf(),
         line: None,
         message: format!("failed to read file: {source}"),
         source: Some(source),
-    })?;
-    Ok(source)
+    })
 }
 
 struct BaselineSources<'a> {

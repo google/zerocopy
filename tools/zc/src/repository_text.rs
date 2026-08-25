@@ -15,11 +15,27 @@
 //! LF spelling, and a bare carriage return remains an error rather than being
 //! silently reinterpreted.
 
-use std::{fs, io, path::Path};
+use std::{
+    fs::{self, File},
+    io::{self, Read},
+    path::Path,
+};
 
 /// Reads one repository-owned text file into its canonical LF representation.
 pub(crate) fn read(path: &Path) -> io::Result<String> {
     normalize(fs::read_to_string(path)?)
+}
+
+/// Reads canonical repository text from an already-open file.
+///
+/// Callers which also rely on file identity use this entry point so the bytes
+/// and identity come from the same operating-system handle rather than two
+/// path lookups with a rename window between them.
+pub(crate) fn read_open(file: &File) -> io::Result<String> {
+    let mut reader = file;
+    let mut source = String::new();
+    reader.read_to_string(&mut source)?;
+    normalize(source)
 }
 
 fn normalize(source: String) -> io::Result<String> {
@@ -52,7 +68,7 @@ mod tests {
         sync::atomic::{AtomicU64, Ordering},
     };
 
-    use super::{normalize, read};
+    use super::{normalize, read, read_open};
 
     #[test]
     fn preserves_lf_and_normalizes_only_well_formed_crlf() {
@@ -79,6 +95,20 @@ mod tests {
         fs::write(&path, "one\rtwo\n").unwrap();
         let error = read(&path).unwrap_err();
         assert_eq!(error.kind(), std::io::ErrorKind::InvalidData);
+
+        fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn open_file_read_applies_the_same_normalization() {
+        static NEXT_FILE: AtomicU64 = AtomicU64::new(0);
+        let unique = NEXT_FILE.fetch_add(1, Ordering::Relaxed);
+        let path = std::env::temp_dir()
+            .join(format!("zerocopy-open-text-test-{}-{unique}.txt", process::id()));
+        fs::write(&path, "one\r\ntwo\r\n").unwrap();
+
+        let file = fs::File::open(&path).unwrap();
+        assert_eq!(read_open(&file).unwrap(), "one\ntwo\n");
 
         fs::remove_file(path).unwrap();
     }
