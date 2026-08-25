@@ -263,11 +263,6 @@ impl ReviewedWorkflowJobs {
 /// function then performs the remaining workflow-specific boundary exactly
 /// once: it reads the strict registry, scans every workflow, and reports all
 /// missing or unreviewed jobs together in deterministic order.
-// This validator deliberately lands before the all-input boundary in `ci.rs`
-// so its scanner and reviewed registry can be examined independently. The
-// later wiring commit removes this temporary allowance when production code
-// begins calling it; tests exercise it in the meantime.
-#[allow(dead_code)]
 pub(crate) fn audit_workflows(
     repository_root: impl AsRef<Path>,
     reviewed_registry: impl AsRef<Path>,
