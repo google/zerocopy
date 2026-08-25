@@ -56,6 +56,11 @@ impl OpenedRepositoryFile {
     pub(crate) fn read_to_string(&self) -> io::Result<String> {
         repository_text::read_open(&self.file)
     }
+
+    /// Consumes this input and retains its independently open identity handle.
+    pub(crate) fn into_identity(self) -> Handle {
+        self.identity
+    }
 }
 
 /// Opens one repository input through canonical containment and identity
