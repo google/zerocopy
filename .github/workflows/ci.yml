@@ -27,6 +27,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Every job and action inherits this mapping. The exact keys and values are a
+# source-level contract with `planned_adapter/planner.rs`; adding even a
+# seemingly unrelated variable can change Cargo, rustup, the compiler, or a
+# third-party action. Coordinate every change with that complete typed audit.
 env:
   CARGO_TERM_COLOR: always
   # These are bounded, client-native retries for recognized transient download
@@ -59,8 +63,10 @@ jobs:
   # jobs consume only the checked selectors from each matrix cell and pass them
   # back to `cargo-zerocopy`, which reconstructs and executes the complete
   # command without interpreting matrix data as shell text. Keep the output
-  # names coordinated with `tools/zc/src/github.rs`, the two `fromJSON`
-  # expressions below, and the Miri eligibility consumers below.
+  # names coordinated with `tools/zc/src/workflow_protocol.rs`, the two
+  # `fromJSON` expressions below, and the Miri eligibility consumers below.
+  # The producer fields are checked by the planned-job workflow audit in
+  # `tools/zc/src/planned_adapter/planner.rs`.
   plan_ci:
     name: Plan ordinary CI work
     runs-on: ubuntu-latest
@@ -70,7 +76,7 @@ jobs:
       build_matrix: ${{ steps.plan.outputs.build_matrix }}
       miri_matrix: ${{ steps.plan.outputs.miri_matrix }}
       # This gate is derived from the projected Miri matrix, not independently
-      # from the event name. Keep it coordinated with `tools/zc/src/github.rs`,
+      # from the event name. Keep it coordinated with `workflow_protocol.rs`,
       # the Miri job condition, and the required-check aggregation.
       miri_enabled: ${{ steps.plan.outputs.miri_enabled }}
     env:
@@ -88,6 +94,7 @@ jobs:
         # The absolute custom shell removes Bash startup-control variables and
         # enables privileged mode so inherited startup files, shell options,
         # and exported functions cannot turn this step into a successful no-op.
+        # The planner audit checks this exact shell template.
         shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
         working-directory: zerocopy
         env:
@@ -95,7 +102,8 @@ jobs:
         # The runner applies GITHUB_PATH after merging step env, so assign the
         # fixed path directly to the child command. Do not rely on cargo.sh's
         # /usr/bin/env bash shebang. Privileged mode also prevents an imported
-        # function from replacing a builtin when this child Bash starts.
+        # function from replacing a builtin when this child Bash starts. The
+        # planner audit checks the run block line-for-line.
         run: |
           set -euo pipefail
           PATH=/home/runner/.cargo/bin:/usr/local/bin:/usr/bin:/bin \
