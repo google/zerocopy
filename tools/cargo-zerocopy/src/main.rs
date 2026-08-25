@@ -27,10 +27,14 @@ use std::{
     collections::{BTreeMap, HashSet},
     env, fmt,
     io::{self, BufRead as _, Write as _},
+    path::{Path, PathBuf},
     process::{self, Command, Output, Stdio},
 };
 
-use zc::metadata::ToolchainMetadata;
+use zc::{
+    execution::{EXECUTION_CONTEXT_ENV, MIRI_REPOSITORY_ROOT_CONTEXT},
+    metadata::ToolchainMetadata,
+};
 
 // Cargo test executables inherit these variables from the delegated process.
 // `testutil::UiTestRunner` reuses the exact outer feature selection when it
@@ -45,6 +49,7 @@ enum Error {
     MissingToolchainVersion,
     UnrecognizedToolchain(String),
     Ci(zc::cli::CliError),
+    InvalidExecutionContext(String),
 }
 
 impl fmt::Display for Error {
@@ -55,6 +60,7 @@ impl fmt::Display for Error {
             Self::MissingToolchainVersion => write!(f, "No toolchain version specified after '--version'"),
             Self::UnrecognizedToolchain(name) => write!(f, "Unrecognized toolchain name: `{name}` (options are 'msrv', 'stable', and 'nightly')"),
             Self::Ci(error) => error.fmt(f),
+            Self::InvalidExecutionContext(message) => write!(f, "invalid internal execution context: {message}"),
         }
     }
 }
@@ -338,17 +344,83 @@ fn rustup<'a>(args: impl IntoIterator<Item = &'a str>, env: Option<(&str, &str)>
     // It's important to set `RUSTUP_TOOLCHAIN` to override any value set while
     // running this program. That variable overrides any `+<version>` CLI
     // argument.
-    cmd.args(args).env("RUSTUP_TOOLCHAIN", "");
+    cmd.args(args)
+        .env("RUSTUP_TOOLCHAIN", "")
+        // The executor protocol is consumed by this wrapper only; never leak
+        // it into rustup, Cargo, or metadata subprocesses.
+        .env_remove(EXECUTION_CONTEXT_ENV);
     if let Some((name, val)) = env {
         cmd.env(name, val);
     }
     cmd
 }
 
+fn internal_execution_context() -> Result<bool, Error> {
+    match env::var(EXECUTION_CONTEXT_ENV) {
+        Ok(value) => parse_execution_context(Some(&value)),
+        Err(env::VarError::NotPresent) => parse_execution_context(None),
+        Err(error) => Err(Error::InvalidExecutionContext(error.to_string())),
+    }
+}
+
+fn parse_execution_context(value: Option<&str>) -> Result<bool, Error> {
+    match value {
+        Some(value) if value == MIRI_REPOSITORY_ROOT_CONTEXT => Ok(true),
+        Some(value) => Err(Error::InvalidExecutionContext(format!("unrecognized value {value:?}"))),
+        None => Ok(false),
+    }
+}
+
+fn validate_execution_context(active: bool, toolchain: &str, args: &[String]) -> Result<(), Error> {
+    if !active {
+        return Ok(());
+    }
+    let expected = ["miri", "nextest", "run", "--manifest-path", "zerocopy/Cargo.toml"];
+    if toolchain != "nightly"
+        || args
+            .get(..expected.len())
+            .is_none_or(|actual| !actual.iter().map(String::as_str).eq(expected))
+    {
+        return Err(Error::InvalidExecutionContext(
+            "the repository-root context requires the nightly Miri command with its repository manifest".to_owned(),
+        ));
+    }
+    Ok(())
+}
+
+fn repository_root() -> Result<PathBuf, Error> {
+    let cwd =
+        env::current_dir().map_err(|error| Error::InvalidExecutionContext(error.to_string()))?;
+    cwd.parent().map(PathBuf::from).ok_or_else(|| {
+        Error::InvalidExecutionContext("wrapper cwd has no repository parent".to_owned())
+    })
+}
+
+fn default_target_dir(name: &str, repository_root: Option<&Path>) -> PathBuf {
+    if let Some(root) = repository_root {
+        root.join("zerocopy/target/by-toolchain").join(name)
+    } else {
+        PathBuf::from(format!("target/by-toolchain/{name}"))
+    }
+}
+
+fn package_id_command(version: &str, package: &str, repository_root: Option<&Path>) -> Command {
+    let mut command = rustup(["run", version, "cargo", "pkgid"], None);
+    if let Some(root) = repository_root {
+        command
+            .args(["--manifest-path", "zerocopy/Cargo.toml"])
+            .current_dir(root)
+            .env_remove(EXECUTION_CONTEXT_ENV);
+    }
+    command.arg("-p").arg(package);
+    command
+}
+
 fn delegate_cargo() -> Result<(), Error> {
     let mut args = env::args();
     let this = args.next().unwrap();
     let argument = args.next().ok_or(Error::NoArguments)?;
+    let execution_context = internal_execution_context()?;
 
     // Both repository wrappers deliberately invoke this binary from the
     // `zerocopy` directory. Keep the `..` repository root coordinated with
@@ -356,6 +428,11 @@ fn delegate_cargo() -> Result<(), Error> {
     // command before reading crate toolchain metadata: typed CI validation is
     // a repository-tools operation and does not delegate to Cargo.
     if argument == "ci" {
+        if execution_context {
+            return Err(Error::InvalidExecutionContext(
+                "the repository-root context is only valid for the Miri Cargo command".to_owned(),
+            ));
+        }
         return zc::cli::run("..", args, io::stdout().lock()).map_err(Error::Ci);
     }
 
@@ -363,11 +440,23 @@ fn delegate_cargo() -> Result<(), Error> {
 
     match argument.as_str() {
         "--version" => {
+            if execution_context {
+                return Err(Error::InvalidExecutionContext(
+                    "the repository-root context is only valid for the Miri Cargo command"
+                        .to_owned(),
+                ));
+            }
             let name = args.next().ok_or(Error::MissingToolchainVersion)?;
             println!("{}", versions.get(&name)?);
             Ok(())
         }
         "+all" => {
+            if execution_context {
+                return Err(Error::InvalidExecutionContext(
+                    "the repository-root context is only valid for the Miri Cargo command"
+                        .to_owned(),
+                ));
+            }
             eprintln!("[cargo-zerocopy] warning: running the same command for each toolchain (msrv, stable, nightly)");
             let args = args.collect::<Vec<_>>();
 
@@ -383,6 +472,12 @@ fn delegate_cargo() -> Result<(), Error> {
         arg => {
             if let Some(name) = arg.strip_prefix('+') {
                 let version = versions.get(name)?;
+                let args_vec = args.collect::<Vec<_>>();
+                validate_execution_context(execution_context, name, &args_vec)?;
+                // Resolve the executor-owned cwd before any installation or
+                // prompt. Once present, this option is the single source of
+                // truth for every root-relative Cargo setting below.
+                let repository_root = execution_context.then(repository_root).transpose()?;
 
                 install_toolchain_or_exit(&versions, name)?;
 
@@ -391,7 +486,6 @@ fn delegate_cargo() -> Result<(), Error> {
                     targets.push(t);
                 }
 
-                let args_vec = args.collect::<Vec<_>>();
                 let feature_selection_args = capture_feature_selection_args(&args_vec);
                 let mut i = 0;
                 while i < args_vec.len() {
@@ -443,17 +537,31 @@ fn delegate_cargo() -> Result<(), Error> {
                 cmd.env("RUSTDOCFLAGS", &rustdocflags);
                 set_ui_test_feature_args(&mut cmd, &feature_selection_args);
 
+                // Cargo must run from the repository root for Miri: this
+                // deliberately avoids discovering zerocopy/.cargo/config.toml,
+                // while retaining every wrapper-added flag and environment.
+                // The wrapper itself remains in the zerocopy directory.
+                if let Some(root) = &repository_root {
+                    cmd.current_dir(root);
+                    cmd.env_remove(EXECUTION_CONTEXT_ENV);
+                }
+
                 if env::var("CARGO_TARGET_DIR").is_ok() {
                     eprintln!("[cargo-zerocopy] WARNING: `CARGO_TARGET_DIR` is set - this may cause `cargo-zerocopy` to behave unexpectedly");
                 } else {
-                    cmd.env("CARGO_TARGET_DIR", format!("target/by-toolchain/{}", name));
+                    // The ordinary wrapper uses a path relative to its
+                    // `zerocopy` cwd. Root context moves only the Cargo child,
+                    // so keep the historical target location explicit.
+                    cmd.env(
+                        "CARGO_TARGET_DIR",
+                        default_target_dir(name, repository_root.as_deref()),
+                    );
                 }
 
                 // Computes the fully-qualified package name of workspace package `p`.
-                let fqpn = |p| {
-                    let output = rustup(["run", version, "cargo", "pkgid", "-p"], None)
-                        .arg(p)
-                        .output_or_exit();
+                let fqpn = |p: &str| {
+                    let output =
+                        package_id_command(version, p, repository_root.as_deref()).output_or_exit();
                     String::from_utf8(output.stdout).unwrap().trim().to_string()
                 };
 
@@ -462,36 +570,31 @@ fn delegate_cargo() -> Result<(), Error> {
                 // this because unqualified package names are sometimes ambiguous
                 // if a dev-dependency has taken a dependency on an earlier
                 // version of zerocopy or zerocopy-derive.
-                loop {
-                    let Some(arg) = args.next() else {
-                        break;
-                    };
+                while let Some(arg) = args.next() {
                     if arg == "-p" || arg == "--package" {
                         cmd.arg(&arg);
                         let Some(arg) = args.next() else {
                             break;
                         };
-                        cmd.arg(fqpn(arg));
-                    } else if arg.starts_with("-p") {
+                        cmd.arg(fqpn(&arg));
+                    } else if let Some(package) = arg.strip_prefix("-p") {
                         cmd.arg("-p");
-                        cmd.arg(fqpn(arg[2..].to_string()));
+                        cmd.arg(fqpn(package));
                     } else if arg == "--" {
                         cmd.arg("--");
                         cmd.args(args);
                         break;
-                    } else {
-                        if arg == "--target" {
-                            cmd.arg(&arg);
-                            if let Some(target) = args.next() {
-                                cmd.arg(&target);
-                                cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
-                            }
-                        } else if let Some(target) = arg.strip_prefix("--target=") {
-                            cmd.arg(&arg);
+                    } else if arg == "--target" {
+                        cmd.arg(&arg);
+                        if let Some(target) = args.next() {
+                            cmd.arg(&target);
                             cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
-                        } else {
-                            cmd.arg(arg);
                         }
+                    } else if let Some(target) = arg.strip_prefix("--target=") {
+                        cmd.arg(&arg);
+                        cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
+                    } else {
+                        cmd.arg(arg);
                     }
                 }
 
@@ -505,11 +608,40 @@ fn delegate_cargo() -> Result<(), Error> {
     }
 }
 
+fn print_usage() {
+    let name = env::args().next().unwrap();
+    eprintln!("Usage:");
+    eprintln!("  {} --version <toolchain-name>", name);
+    eprintln!("  {} +<toolchain-name> [...]", name);
+    eprintln!("  {} +all [...]", name);
+    eprintln!("  {} ci audit", name);
+    eprintln!("  {} ci plan --event <event>", name);
+    eprintln!("  {} ci explain --event <event>", name);
+    eprintln!("  {} ci github-plan --event <event> --github-output <path> --artifact <path>", name);
+    eprintln!("  {} ci execute-build-cell --event <event> --package <package> \\", name);
+    eprintln!("      --toolchain <toolchain> --feature-profile <profile> --target <target>");
+    eprintln!("  {} ci execute-miri-cell --event <event> --package <package> \\", name);
+    eprintln!("      --toolchain <toolchain> --feature-profile <profile> --target <target> \\");
+    eprintln!("      --miri-model <model>");
+}
+
+fn main() {
+    if let Err(e) = delegate_cargo() {
+        eprintln!("Error: {e}");
+        print_usage();
+        process::exit(1);
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use std::{ffi::OsStr, process::Command};
+    use std::{ffi::OsStr, path::Path, process::Command};
 
-    use super::{capture_feature_selection_args, set_ui_test_feature_args};
+    use super::{
+        capture_feature_selection_args, default_target_dir, package_id_command,
+        parse_execution_context, set_ui_test_feature_args, validate_execution_context,
+        EXECUTION_CONTEXT_ENV, MIRI_REPOSITORY_ROOT_CONTEXT,
+    };
 
     fn strings(args: &[&str]) -> Vec<String> {
         args.iter().map(|arg| (*arg).to_string()).collect()
@@ -572,25 +704,76 @@ mod tests {
         assert_eq!(command.get_envs().count(), 1);
         assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT", "0");
     }
-}
 
-fn print_usage() {
-    let name = env::args().next().unwrap();
+    #[test]
+    fn execution_context_accepts_only_the_exact_nightly_miri_shape() {
+        let args = strings(&["miri", "nextest", "run", "--manifest-path", "zerocopy/Cargo.toml"]);
+        assert!(validate_execution_context(true, "nightly", &args).is_ok());
+        assert!(validate_execution_context(false, "stable", &[]).is_ok());
 
-    eprintln!("Usage:");
-    eprintln!("  {} --version <toolchain-name>", name);
-    eprintln!("  {} +<toolchain-name> [...]", name);
-    eprintln!("  {} +all [...]", name);
-    eprintln!("  {} ci audit", name);
-    eprintln!("  {} ci plan --event <event>", name);
-    eprintln!("  {} ci explain --event <event>", name);
-    eprintln!("  {} ci github-plan --event <event> --github-output <path> --artifact <path>", name);
-}
+        for (toolchain, command) in [
+            ("stable", args.clone()),
+            ("nightly", strings(&["test"])),
+            ("nightly", strings(&["miri", "nextest", "run"])),
+            ("nightly", strings(&["miri", "nextest", "run", "--manifest-path", "Cargo.toml"])),
+        ] {
+            assert!(validate_execution_context(true, toolchain, &command).is_err());
+        }
+    }
 
-fn main() {
-    if let Err(e) = delegate_cargo() {
-        eprintln!("Error: {e}");
-        print_usage();
-        process::exit(1);
+    #[test]
+    fn execution_context_parser_is_exact_and_fail_closed() {
+        assert!(!parse_execution_context(None).unwrap());
+        assert!(parse_execution_context(Some(MIRI_REPOSITORY_ROOT_CONTEXT)).unwrap());
+        assert!(parse_execution_context(Some("miri-repository-root ")).is_err());
+        assert!(parse_execution_context(Some("1")).is_err());
+    }
+
+    #[test]
+    fn package_id_command_preserves_ordinary_mode_and_configures_root_mode() {
+        let ordinary = package_id_command("stable-version", "zerocopy", None);
+        assert_eq!(
+            ordinary.get_args().collect::<Vec<_>>(),
+            [
+                OsStr::new("run"),
+                OsStr::new("stable-version"),
+                OsStr::new("cargo"),
+                OsStr::new("pkgid"),
+                OsStr::new("-p"),
+                OsStr::new("zerocopy"),
+            ]
+        );
+        assert!(ordinary.get_current_dir().is_none());
+
+        let root = Path::new("/repo");
+        let root_mode = package_id_command("nightly-version", "zerocopy", Some(root));
+        assert_eq!(root_mode.get_current_dir(), Some(root));
+        assert_eq!(
+            root_mode.get_args().collect::<Vec<_>>(),
+            [
+                OsStr::new("run"),
+                OsStr::new("nightly-version"),
+                OsStr::new("cargo"),
+                OsStr::new("pkgid"),
+                OsStr::new("--manifest-path"),
+                OsStr::new("zerocopy/Cargo.toml"),
+                OsStr::new("-p"),
+                OsStr::new("zerocopy"),
+            ]
+        );
+        let context =
+            root_mode.get_envs().find(|(key, _)| *key == OsStr::new(EXECUTION_CONTEXT_ENV));
+        assert_eq!(context, Some((OsStr::new(EXECUTION_CONTEXT_ENV), None)));
+        assert_eq!(MIRI_REPOSITORY_ROOT_CONTEXT, "miri-repository-root");
+    }
+
+    #[test]
+    fn target_directory_preserves_relative_default_and_root_location() {
+        let root = Path::new("/repo");
+        assert_eq!(default_target_dir("nightly", None), Path::new("target/by-toolchain/nightly"));
+        assert_eq!(
+            default_target_dir("nightly", Some(root)),
+            Path::new("/repo/zerocopy/target/by-toolchain/nightly")
+        );
     }
 }
