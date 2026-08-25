@@ -21,14 +21,16 @@
 
 use std::{
     collections::BTreeSet,
+    fs,
     io::{self, Write},
-    path::Path,
+    path::{Path, PathBuf},
 };
 
 use thiserror::Error;
 
 use crate::{
     ci::{CiInputs, LoadCiError},
+    github::{GitHubProjection, ProjectionError, ProjectionWriteError},
     plan::{
         BuildPlanCell, ExecutionMode, FeatureSelection, MiriPlanCell, Plan, PlanError,
         PlanExplanation,
@@ -45,6 +47,9 @@ pub fn run(
     mut output: impl Write,
 ) -> Result<(), CliError> {
     let command = Command::parse(args)?;
+    if let Command::GitHubPlan { github_output, artifact, .. } = &command {
+        validate_publication_paths(github_output, artifact)?;
+    }
     let inputs =
         CiInputs::load(repository_root).map_err(|error| CliError::LoadInputs(Box::new(error)))?;
 
@@ -52,6 +57,9 @@ pub fn run(
         Command::Audit => audit(&inputs, &mut output),
         Command::Plan { event } => print_plan(&inputs, &event, &mut output),
         Command::Explain { event } => explain(&inputs, &event, &mut output),
+        Command::GitHubPlan { event, github_output, artifact } => {
+            write_github_plan(&inputs, &event, &github_output, &artifact, &mut output)
+        }
     }
 }
 
@@ -60,6 +68,7 @@ enum Command {
     Audit,
     Plan { event: String },
     Explain { event: String },
+    GitHubPlan { event: String, github_output: PathBuf, artifact: PathBuf },
 }
 
 impl Command {
@@ -82,9 +91,118 @@ impl Command {
                     Ok(Self::Explain { event })
                 }
             }
+            "github-plan" => parse_github_plan(args),
             _ => Err(CliError::UnknownCommand { command }),
         }
     }
+}
+
+fn parse_github_plan(args: impl IntoIterator<Item = String>) -> Result<Command, CliError> {
+    let command = "github-plan";
+    let mut args = args.into_iter();
+    let mut event = None;
+    let mut github_output = None;
+    let mut artifact = None;
+
+    while let Some(argument) = args.next() {
+        let (name, inline_value) = argument
+            .split_once('=')
+            .map_or((argument.as_str(), None), |(name, value)| (name, Some(value)));
+        let destination = match name {
+            "--event" => &mut event,
+            "--github-output" => &mut github_output,
+            "--artifact" => &mut artifact,
+            _ => {
+                return Err(CliError::UnknownArgument { command: command.to_owned(), argument });
+            }
+        };
+        if destination.is_some() {
+            return Err(CliError::DuplicateOption {
+                command: command.to_owned(),
+                option: name.to_owned(),
+            });
+        }
+        let value = match inline_value {
+            Some(value) => value.to_owned(),
+            None => {
+                let value = args.next().ok_or_else(|| CliError::MissingOptionValue {
+                    command: command.to_owned(),
+                    option: name.to_owned(),
+                })?;
+                if value.starts_with('-') {
+                    return Err(CliError::MissingOptionValueBefore {
+                        command: command.to_owned(),
+                        option: name.to_owned(),
+                        argument: value,
+                    });
+                }
+                value
+            }
+        };
+        if value.is_empty() {
+            return Err(CliError::MissingOptionValue {
+                command: command.to_owned(),
+                option: name.to_owned(),
+            });
+        }
+        *destination = Some(value);
+    }
+
+    let event = required_option(command, "--event", event)?;
+    let github_output = PathBuf::from(required_option(command, "--github-output", github_output)?);
+    let artifact = PathBuf::from(required_option(command, "--artifact", artifact)?);
+    Ok(Command::GitHubPlan { event, github_output, artifact })
+}
+
+fn validate_publication_paths(github_output: &Path, artifact: &Path) -> Result<(), CliError> {
+    // GitHub creates GITHUB_OUTPUT before invoking a step. Requiring that
+    // existing regular file makes this workflow-specific command fail closed
+    // when it is called with a misspelled or surprising destination.
+    let resolved_output =
+        github_output.canonicalize().map_err(|source| CliError::ResolvePublicationPath {
+            purpose: "GitHub output",
+            path: github_output.to_path_buf(),
+            source,
+        })?;
+    let output_metadata =
+        fs::metadata(&resolved_output).map_err(|source| CliError::ResolvePublicationPath {
+            purpose: "GitHub output",
+            path: github_output.to_path_buf(),
+            source,
+        })?;
+    if !output_metadata.is_file() {
+        return Err(CliError::PublicationPathNotFile {
+            purpose: "GitHub output",
+            path: github_output.to_path_buf(),
+        });
+    }
+
+    let file_name = artifact.file_name().ok_or_else(|| CliError::PublicationPathNotFile {
+        purpose: "artifact destination",
+        path: artifact.to_path_buf(),
+    })?;
+    let parent = artifact
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+        .unwrap_or_else(|| Path::new("."));
+    let resolved_parent =
+        parent.canonicalize().map_err(|source| CliError::ResolvePublicationPath {
+            purpose: "artifact parent",
+            path: parent.to_path_buf(),
+            source,
+        })?;
+    let resolved_artifact = resolved_parent.join(file_name);
+    if resolved_output == resolved_artifact {
+        return Err(CliError::PublicationPathsAlias { path: resolved_output });
+    }
+    Ok(())
+}
+
+fn required_option(command: &str, option: &str, value: Option<String>) -> Result<String, CliError> {
+    value.ok_or_else(|| CliError::MissingOption {
+        command: command.to_owned(),
+        option: option.to_owned(),
+    })
 }
 
 fn parse_event(command: &str, args: impl IntoIterator<Item = String>) -> Result<String, CliError> {
@@ -237,14 +355,40 @@ fn explain(inputs: &CiInputs, event: &str, output: &mut impl Write) -> Result<()
     Ok(())
 }
 
+fn write_github_plan(
+    inputs: &CiInputs,
+    event: &str,
+    github_output: &Path,
+    artifact: &Path,
+    output: &mut impl Write,
+) -> Result<(), CliError> {
+    let projection = GitHubProjection::create(inputs, event)?;
+
+    // Publish the diagnostic artifact first. If that create-only operation
+    // fails, no matrix output can escape from this invocation. The workflow
+    // also cannot consume outputs from a failed planning job, but this order
+    // keeps the local command's observable state as small as possible.
+    projection.write_artifact_atomically(artifact)?;
+    projection.append_to_github_output(github_output)?;
+    writeln!(
+        output,
+        "planned GitHub Actions work for {event:?}; wrote {} UTF-16 bytes of job outputs and artifact {:?}",
+        projection.output_utf16_bytes(),
+        artifact,
+    )?;
+    Ok(())
+}
+
 /// A command-line syntax, input, planning, or output failure.
 #[derive(Debug, Error)]
 pub enum CliError {
     /// No command followed the literal `ci` argument.
-    #[error("missing CI command; expected `audit`, `plan`, or `explain`")]
+    #[error("missing CI command; expected `audit`, `plan`, `explain`, or `github-plan`")]
     MissingCommand,
     /// The command name is not part of the local CI interface.
-    #[error("unknown CI command {command:?}; expected `audit`, `plan`, or `explain`")]
+    #[error(
+        "unknown CI command {command:?}; expected `audit`, `plan`, `explain`, or `github-plan`"
+    )]
     UnknownCommand {
         /// The rejected command.
         command: String,
@@ -291,12 +435,77 @@ pub enum CliError {
         /// The rejected argument.
         argument: String,
     },
+    /// A required named option was absent.
+    #[error("`ci {command}` requires `{option} VALUE`")]
+    MissingOption {
+        /// The command being parsed.
+        command: String,
+        /// The absent long option.
+        option: String,
+    },
+    /// A named option was repeated.
+    #[error("`ci {command}` received `{option}` more than once")]
+    DuplicateOption {
+        /// The command being parsed.
+        command: String,
+        /// The repeated long option.
+        option: String,
+    },
+    /// A named option ended before its value.
+    #[error("`ci {command} {option}` requires a value")]
+    MissingOptionValue {
+        /// The command being parsed.
+        command: String,
+        /// The option whose value is absent.
+        option: String,
+    },
+    /// Another option appeared where a value was required.
+    #[error("`ci {command} {option}` requires a value before {argument:?}")]
+    MissingOptionValueBefore {
+        /// The command being parsed.
+        command: String,
+        /// The option whose value is absent.
+        option: String,
+        /// The option which cannot serve as its value.
+        argument: String,
+    },
+    /// A workflow publication path could not be resolved safely.
+    #[error("failed to resolve {purpose} path {path:?}: {source}")]
+    ResolvePublicationPath {
+        /// Plain-language role of the path.
+        purpose: &'static str,
+        /// Caller-supplied path.
+        path: PathBuf,
+        /// Underlying filesystem error.
+        #[source]
+        source: io::Error,
+    },
+    /// A publication path which must name a regular file did not.
+    #[error("{purpose} path {path:?} must name a regular file")]
+    PublicationPathNotFile {
+        /// Plain-language role of the path.
+        purpose: &'static str,
+        /// Caller-supplied path.
+        path: PathBuf,
+    },
+    /// The output and artifact destinations resolve to the same file.
+    #[error("GitHub output and artifact destinations both resolve to {path:?}")]
+    PublicationPathsAlias {
+        /// Canonical destination shared by both arguments.
+        path: PathBuf,
+    },
     /// The repository's checked CI inputs could not be loaded.
     #[error(transparent)]
     LoadInputs(Box<LoadCiError>),
     /// A checked plan could not be constructed.
     #[error(transparent)]
     Plan(#[from] PlanError),
+    /// A checked plan could not be serialized for GitHub Actions.
+    #[error(transparent)]
+    Projection(#[from] ProjectionError),
+    /// A checked projection could not be published to its requested files.
+    #[error(transparent)]
+    ProjectionWrite(#[from] ProjectionWriteError),
     /// Human-readable output could not be written.
     #[error("failed to write CI command output: {0}")]
     Output(#[from] io::Error),
@@ -304,7 +513,12 @@ pub enum CliError {
 
 #[cfg(test)]
 mod tests {
-    use std::path::{Path, PathBuf};
+    use std::{
+        fs,
+        path::{Path, PathBuf},
+        process,
+        sync::atomic::{AtomicU64, Ordering},
+    };
 
     use super::{run, CliError, Command};
 
@@ -326,6 +540,22 @@ mod tests {
         assert_eq!(
             Command::parse(strings(&["explain", "--event=merge_group"])).unwrap(),
             Command::Explain { event: "merge_group".to_owned() }
+        );
+        assert_eq!(
+            Command::parse(strings(&[
+                "github-plan",
+                "--artifact=plan.json",
+                "--event",
+                "push",
+                "--github-output",
+                "output.txt",
+            ]))
+            .unwrap(),
+            Command::GitHubPlan {
+                event: "push".to_owned(),
+                github_output: "output.txt".into(),
+                artifact: "plan.json".into(),
+            }
         );
     }
 
@@ -362,6 +592,54 @@ mod tests {
             Command::parse(strings(&["plan", "pull_request"])),
             Err(CliError::UnknownArgument { command, argument })
                 if command == "plan" && argument == "pull_request"
+        ));
+        assert!(matches!(
+            Command::parse(strings(&[
+                "github-plan",
+                "--event",
+                "push",
+                "--artifact",
+                "plan.json",
+            ])),
+            Err(CliError::MissingOption { command, option })
+                if command == "github-plan" && option == "--github-output"
+        ));
+        assert!(matches!(
+            Command::parse(strings(&[
+                "github-plan",
+                "--event=push",
+                "--event",
+                "merge_group",
+                "--github-output=output",
+                "--artifact=artifact",
+            ])),
+            Err(CliError::DuplicateOption { command, option })
+                if command == "github-plan" && option == "--event"
+        ));
+        assert!(matches!(
+            Command::parse(strings(&[
+                "github-plan",
+                "--event",
+                "--artifact",
+                "plan.json",
+                "--github-output",
+                "output",
+            ])),
+            Err(CliError::MissingOptionValueBefore { command, option, argument })
+                if command == "github-plan"
+                    && option == "--event"
+                    && argument == "--artifact"
+        ));
+        assert!(matches!(
+            Command::parse(strings(&[
+                "github-plan",
+                "--event",
+                "",
+                "--github-output=output",
+                "--artifact=artifact",
+            ])),
+            Err(CliError::MissingOptionValue { command, option })
+                if command == "github-plan" && option == "--event"
         ));
     }
 
@@ -410,5 +688,66 @@ mod tests {
         let error =
             run("this/repository/does/not/exist", strings(&["plan"]), Vec::new()).unwrap_err();
         assert!(matches!(error, CliError::MissingEvent { .. }));
+    }
+
+    #[test]
+    fn github_plan_publishes_both_outputs_from_one_checked_projection() {
+        static NEXT: AtomicU64 = AtomicU64::new(0);
+        let unique = NEXT.fetch_add(1, Ordering::Relaxed);
+        let directory =
+            std::env::temp_dir().join(format!("zerocopy-ci-cli-test-{}-{unique}", process::id()));
+        fs::create_dir(&directory).unwrap();
+        let github_output = directory.join("github-output");
+        let artifact = directory.join("ci-plan.json");
+        let mut output = Vec::new();
+        fs::write(&github_output, "").unwrap();
+
+        run(
+            repository_root(),
+            vec![
+                "github-plan".to_owned(),
+                "--event=pull_request".to_owned(),
+                format!("--github-output={}", github_output.display()),
+                format!("--artifact={}", artifact.display()),
+            ],
+            &mut output,
+        )
+        .unwrap();
+
+        let job_outputs = fs::read_to_string(github_output).unwrap();
+        assert!(job_outputs.starts_with("build_matrix={\"include\":["));
+        assert!(job_outputs.ends_with("miri_matrix={\"include\":[]}\n"));
+        let artifact_json: serde_json::Value =
+            serde_json::from_slice(&fs::read(artifact).unwrap()).unwrap();
+        assert_eq!(artifact_json["event"], "pull_request");
+        assert!(String::from_utf8(output).unwrap().contains("planned GitHub Actions work"));
+
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn github_plan_rejects_aliased_destinations_before_repository_io() {
+        static NEXT: AtomicU64 = AtomicU64::new(0);
+        let unique = NEXT.fetch_add(1, Ordering::Relaxed);
+        let directory = std::env::temp_dir()
+            .join(format!("zerocopy-ci-cli-alias-test-{}-{unique}", process::id()));
+        fs::create_dir(&directory).unwrap();
+        let destination = directory.join("same-file");
+        fs::write(&destination, "").unwrap();
+
+        let error = run(
+            "this/repository/does/not/exist",
+            vec![
+                "github-plan".to_owned(),
+                "--event=pull_request".to_owned(),
+                format!("--github-output={}", destination.display()),
+                format!("--artifact={}/./same-file", directory.display()),
+            ],
+            Vec::new(),
+        )
+        .unwrap_err();
+        assert!(matches!(error, CliError::PublicationPathsAlias { .. }));
+
+        fs::remove_dir_all(directory).unwrap();
     }
 }

@@ -16,6 +16,7 @@
 //   cargo-zerocopy ci audit                   # checks all typed CI inputs and plans
 //   cargo-zerocopy ci plan --event <event>    # prints selected CI work
 //   cargo-zerocopy ci explain --event <event> # explains included and excluded work
+//   cargo-zerocopy ci github-plan [...]        # writes checked Actions matrices
 //
 // The meta-toolchain "all" instructs this script to run the provided command
 // once for each "major" toolchain (msrv, stable, nightly). This does not
@@ -583,6 +584,10 @@ fn print_usage() {
     eprintln!("  {} ci audit", name);
     eprintln!("  {} ci plan --event <event>", name);
     eprintln!("  {} ci explain --event <event>", name);
+    eprintln!(
+        "  {} ci github-plan --event <event> --github-output <path> --artifact <path>",
+        name
+    );
 }
 
 fn main() {
