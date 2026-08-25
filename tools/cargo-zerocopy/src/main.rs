@@ -13,6 +13,9 @@
 //   cargo-zerocopy --version <toolchain-name> # looks up the version for the named toolchain
 //   cargo-zerocopy +<toolchain-name> [...]    # runs cargo commands with the named toolchain
 //   cargo-zerocopy +all [...]                 # runs cargo commands with each toolchain
+//   cargo-zerocopy ci audit                   # checks all typed CI inputs and plans
+//   cargo-zerocopy ci plan --event <event>    # prints selected CI work
+//   cargo-zerocopy ci explain --event <event> # explains included and excluded work
 //
 // The meta-toolchain "all" instructs this script to run the provided command
 // once for each "major" toolchain (msrv, stable, nightly). This does not
@@ -40,6 +43,7 @@ enum Error {
     UnrecognizedArgument(String),
     MissingToolchainVersion,
     UnrecognizedToolchain(String),
+    Ci(zc::cli::CliError),
 }
 
 impl fmt::Display for Error {
@@ -48,7 +52,8 @@ impl fmt::Display for Error {
             Self::NoArguments => write!(f, "No arguments provided"),
             Self::UnrecognizedArgument(arg) => write!(f, "Unrecognized argument: '{arg}'"),
             Self::MissingToolchainVersion => write!(f, "No toolchain version specified after '--version'"),
-            Self::UnrecognizedToolchain(name) => write!(f, "Unrecognized toolchain name: `{name}` (options are 'msrv', 'stable', and 'nightly')")
+            Self::UnrecognizedToolchain(name) => write!(f, "Unrecognized toolchain name: `{name}` (options are 'msrv', 'stable', and 'nightly')"),
+            Self::Ci(error) => error.fmt(f),
         }
     }
 }
@@ -342,16 +347,26 @@ fn rustup<'a>(args: impl IntoIterator<Item = &'a str>, env: Option<(&str, &str)>
 fn delegate_cargo() -> Result<(), Error> {
     let mut args = env::args();
     let this = args.next().unwrap();
+    let argument = args.next().ok_or(Error::NoArguments)?;
+
+    // Both repository wrappers deliberately invoke this binary from the
+    // `zerocopy` directory. Keep the `..` repository root coordinated with
+    // `zc::cli`, `zerocopy/cargo.sh`, and `zerocopy/win-cargo.bat`. Route this
+    // command before reading crate toolchain metadata: typed CI validation is
+    // a repository-tools operation and does not delegate to Cargo.
+    if argument == "ci" {
+        return zc::cli::run("..", args, io::stdout().lock()).map_err(Error::Ci);
+    }
+
     let versions = get_toolchain_versions();
 
-    match args.next().as_deref() {
-        None => Err(Error::NoArguments),
-        Some("--version") => {
+    match argument.as_str() {
+        "--version" => {
             let name = args.next().ok_or(Error::MissingToolchainVersion)?;
             println!("{}", versions.get(&name)?);
             Ok(())
         }
-        Some("+all") => {
+        "+all" => {
             eprintln!("[cargo-zerocopy] warning: running the same command for each toolchain (msrv, stable, nightly)");
             let args = args.collect::<Vec<_>>();
 
@@ -364,7 +379,7 @@ fn delegate_cargo() -> Result<(), Error> {
             }
             Ok(())
         }
-        Some(arg) => {
+        arg => {
             if let Some(name) = arg.strip_prefix('+') {
                 let version = versions.get(name)?;
 
@@ -565,6 +580,9 @@ fn print_usage() {
     eprintln!("  {} --version <toolchain-name>", name);
     eprintln!("  {} +<toolchain-name> [...]", name);
     eprintln!("  {} +all [...]", name);
+    eprintln!("  {} ci audit", name);
+    eprintln!("  {} ci plan --event <event>", name);
+    eprintln!("  {} ci explain --event <event>", name);
 }
 
 fn main() {
