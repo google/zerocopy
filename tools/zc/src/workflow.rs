@@ -23,13 +23,13 @@
 
 use std::{
     collections::{BTreeMap, BTreeSet},
-    fmt,
-    fs::{self, File},
-    io::{self, Read},
+    fmt, fs, io,
     path::{Path, PathBuf},
 };
 
 use thiserror::Error;
+
+use crate::repository_file::{self, OpenRepositoryFileError};
 
 const WORKFLOW_DIRECTORY: &str = ".github/workflows";
 const REGISTRY_HEADER: &str = "workflow\tjob\trole";
@@ -202,7 +202,7 @@ impl ReviewedWorkflowJobs {
         Self::parse(path, &source)
     }
 
-    fn parse(path: &Path, source: &str) -> Result<Self, WorkflowRegistryError> {
+    pub(crate) fn parse(path: &Path, source: &str) -> Result<Self, WorkflowRegistryError> {
         let mut saw_header = false;
         let mut previous: Option<WorkflowJob> = None;
         let mut jobs = BTreeMap::new();
@@ -285,26 +285,18 @@ impl ReviewedWorkflowJobs {
 
 /// Checks every live workflow job against its reviewed role assignment.
 ///
-/// `reviewed_registry` must be the canonical path returned by the CI input
-/// boundary's containment check. Keeping resolution there prevents a caller
-/// from validating one path and reopening a different spelling here. This
-/// function then performs the remaining workflow-specific boundary exactly
-/// once: it reads the strict registry, scans every workflow, and reports all
-/// missing or unreviewed jobs together in deterministic order.
-// This validator deliberately lands before the all-input boundary in `ci.rs`
-// so its scanner and reviewed registry can be examined independently. The
-// later wiring commit removes this temporary allowance when production code
-// begins calling it; tests exercise it in the meantime.
-#[allow(dead_code)]
+/// `reviewed` must have been parsed from the open handle retained by the CI
+/// input boundary. Taking the checked value instead of a path makes reopening
+/// a replaced registry impossible here. This function scans every workflow and
+/// reports all missing or unreviewed jobs together in deterministic order.
 pub(crate) fn audit_workflows(
     repository_root: impl AsRef<Path>,
-    reviewed_registry: impl AsRef<Path>,
-) -> Result<ReviewedWorkflowJobs, WorkflowAuditError> {
-    let reviewed = ReviewedWorkflowJobs::read(reviewed_registry)?;
+    reviewed: ReviewedWorkflowJobs,
+) -> Result<(ReviewedWorkflowJobs, WorkflowSources), WorkflowAuditError> {
     let actual = read_workflow_sources(repository_root)?;
     let violations = compare_with_reviewed(&actual.inventories, &reviewed);
     if violations.is_empty() {
-        Ok(reviewed)
+        Ok((reviewed, actual))
     } else {
         Err(WorkflowAuditError::Violations(WorkflowAuditViolations(violations)))
     }
@@ -326,6 +318,19 @@ fn read_workflow_sources(
     let repository_root = supplied_root.canonicalize().map_err(|source| {
         WorkflowInventoryError::ResolveRepositoryRoot { path: supplied_root.to_path_buf(), source }
     })?;
+    let workflow_files = discover_workflow_files(&repository_root)?;
+    read_workflow_files(&repository_root, workflow_files)
+}
+
+/// Inventories workflow directory entries before any candidate is opened.
+///
+/// Keep this separate from [`read_workflow_files`]. In addition to making the
+/// two filesystem observations explicit, the separation lets tests replace a
+/// candidate after `DirEntry::file_type` and prove that the retained-handle
+/// boundary rejects the exact race which this inventory must defend against.
+fn discover_workflow_files(
+    repository_root: &Path,
+) -> Result<Vec<(PathBuf, WorkflowPath)>, WorkflowInventoryError> {
     let directory = repository_root.join(WORKFLOW_DIRECTORY);
     let resolved_directory = directory.canonicalize().map_err(|source| {
         WorkflowInventoryError::ReadDirectory { path: directory.clone(), source }
@@ -382,24 +387,30 @@ fn read_workflow_sources(
     if workflow_files.is_empty() {
         return Err(WorkflowInventoryError::NoWorkflowFiles { path: directory });
     }
+    Ok(workflow_files)
+}
 
+/// Opens and reads candidates collected by [`discover_workflow_files`].
+fn read_workflow_files(
+    repository_root: &Path,
+    workflow_files: Vec<(PathBuf, WorkflowPath)>,
+) -> Result<WorkflowSources, WorkflowInventoryError> {
     let mut inventories = Vec::with_capacity(workflow_files.len());
     let mut sources = BTreeMap::new();
     for (path, workflow_path) in workflow_files {
-        let file = File::open(&path).map_err(|source| WorkflowInventoryError::ReadWorkflow {
-            path: path.clone(),
-            source,
-        })?;
-        let metadata = file.metadata().map_err(|source| {
-            WorkflowInventoryError::InspectWorkflow { path: path.clone(), source }
-        })?;
-        // Recheck the opened object, rather than relying only on the earlier
-        // directory-entry observation. An ordinary replacement which changes
-        // the candidate to a directory or special file must not be read.
-        if !metadata.is_file() {
-            return Err(WorkflowInventoryError::NotAFile { path });
+        let opened = repository_file::open(repository_root, Path::new(workflow_path.as_str()))
+            .map_err(map_workflow_file_error)?;
+        // GitHub discovers a workflow only when the repository-tree entry is a
+        // direct regular file. The shared opener permits contained symlinks
+        // for policy-selected inputs, so impose this workflow-specific rule
+        // after it has checked and retained the opened object.
+        if opened.path() != path {
+            return Err(WorkflowInventoryError::RedirectedWorkflowFile {
+                path,
+                resolved: opened.path().to_path_buf(),
+            });
         }
-        let source = read_open_workflow(&file).map_err(|source| {
+        let source = opened.read_to_string().map_err(|source| {
             WorkflowInventoryError::ReadWorkflow { path: path.clone(), source }
         })?;
         let inventory = scan_workflow(workflow_path.clone(), &source)?;
@@ -409,11 +420,20 @@ fn read_workflow_sources(
     Ok(WorkflowSources { inventories, sources })
 }
 
-fn read_open_workflow(file: &File) -> io::Result<String> {
-    let mut file = file;
-    let mut source = String::new();
-    file.read_to_string(&mut source)?;
-    Ok(source)
+fn map_workflow_file_error(error: OpenRepositoryFileError) -> WorkflowInventoryError {
+    match error {
+        OpenRepositoryFileError::Path { path, source }
+        | OpenRepositoryFileError::Identity { path, source } => {
+            WorkflowInventoryError::InspectWorkflow { path, source }
+        }
+        OpenRepositoryFileError::ChangedDuringOpen { path, first, second } => {
+            WorkflowInventoryError::WorkflowChangedDuringOpen { path, first, second }
+        }
+        OpenRepositoryFileError::OutsideRepository { path, resolved, .. } => {
+            WorkflowInventoryError::RedirectedWorkflowFile { path, resolved }
+        }
+        OpenRepositoryFileError::NotFile { path } => WorkflowInventoryError::NotAFile { path },
+    }
 }
 
 fn is_workflow_path(path: &Path) -> Result<bool, WorkflowInventoryError> {
@@ -627,6 +647,26 @@ pub enum WorkflowInventoryError {
         path: PathBuf,
         /// Canonical local target which must not be followed.
         resolved: PathBuf,
+    },
+    /// A workflow entry was redirected after discovery or by a symbolic link.
+    #[error("workflow file `{path}` resolves to redirected path `{resolved}`")]
+    RedirectedWorkflowFile {
+        /// Exact repository-tree path GitHub inspects.
+        path: PathBuf,
+        /// Canonical local target which must not be followed.
+        resolved: PathBuf,
+    },
+    /// A workflow entry changed between its containment and identity checks.
+    #[error(
+        "workflow file `{path}` changed while it was opened: first resolved to `{first}`, then to `{second}`"
+    )]
+    WorkflowChangedDuringOpen {
+        /// Exact repository-tree path GitHub inspects.
+        path: PathBuf,
+        /// Canonical destination checked before opening.
+        first: PathBuf,
+        /// Canonical destination checked after opening.
+        second: PathBuf,
     },
     /// One directory entry could not be read.
     #[error("failed to read an entry in workflow directory `{path}`: {source}")]
@@ -854,9 +894,10 @@ mod tests {
     };
 
     use super::{
-        audit_workflows, compare_with_reviewed, discover_workflows, read_workflow_sources,
-        scan_workflow, JobId, ReviewedWorkflowJobs, WorkflowAuditError, WorkflowInventoryError,
-        WorkflowInventoryViolation, WorkflowJob, WorkflowPath, WORKFLOW_REGISTRY_PATH,
+        audit_workflows, compare_with_reviewed, discover_workflow_files, discover_workflows,
+        read_workflow_files, read_workflow_sources, scan_workflow, JobId, ReviewedWorkflowJobs,
+        WorkflowAuditError, WorkflowInventoryError, WorkflowInventoryViolation, WorkflowJob,
+        WorkflowPath, WORKFLOW_REGISTRY_PATH,
     };
 
     static NEXT_DIRECTORY: AtomicU64 = AtomicU64::new(0);
@@ -1125,7 +1166,9 @@ mod tests {
         let repository_root = manifest.join("../..");
         let registry = repository_root.join(WORKFLOW_REGISTRY_PATH);
 
-        audit_workflows(repository_root, registry).unwrap();
+        let reviewed = ReviewedWorkflowJobs::read(registry).unwrap();
+        let (_, sources) = audit_workflows(repository_root, reviewed).unwrap();
+        assert!(sources.source(".github/workflows/ci.yml").is_some());
     }
 
     #[test]
@@ -1146,7 +1189,8 @@ mod tests {
         )
         .unwrap();
 
-        let error = audit_workflows(&repository, &registry).unwrap_err();
+        let reviewed = ReviewedWorkflowJobs::read(&registry).unwrap();
+        let error = audit_workflows(&repository, reviewed).unwrap_err();
         let WorkflowAuditError::Violations(violations) = &error else {
             panic!("expected workflow violations, got {error:?}");
         };
@@ -1300,6 +1344,41 @@ mod tests {
 
             let error = discover_workflows(&repository).unwrap_err();
             assert!(matches!(error, WorkflowInventoryError::RedirectedWorkflowDirectory { .. }));
+
+            fs::remove_dir_all(temporary).unwrap();
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn workflow_replacement_after_directory_inventory_cannot_redirect_the_open() {
+        use std::os::unix::fs::symlink;
+
+        for target_inside_repository in [false, true] {
+            let temporary = temporary_directory("replaced-workflow");
+            let repository = temporary.join("repository");
+            let workflows = repository.join(".github/workflows");
+            let candidate = workflows.join("ci.yml");
+            let retained = workflows.join("retained.txt");
+            let target = if target_inside_repository {
+                repository.join("redirected-ci.yml")
+            } else {
+                temporary.join("outside-ci.yml")
+            };
+            fs::create_dir_all(&workflows).unwrap();
+            let source = "name: CI\non:\n  push:\njobs:\n  test:\n    runs-on: ubuntu-latest\n";
+            fs::write(&candidate, source).unwrap();
+            fs::write(&target, source).unwrap();
+            let repository = repository.canonicalize().unwrap();
+
+            // Complete the same `DirEntry::file_type` observation production
+            // uses, then replace that known regular file before the open.
+            let workflow_files = discover_workflow_files(&repository).unwrap();
+            fs::rename(&candidate, &retained).unwrap();
+            symlink(&target, &candidate).unwrap();
+
+            let error = read_workflow_files(&repository, workflow_files).unwrap_err();
+            assert!(matches!(error, WorkflowInventoryError::RedirectedWorkflowFile { .. }));
 
             fs::remove_dir_all(temporary).unwrap();
         }
