@@ -387,8 +387,9 @@ reason = "cargo-semver-checks does not yet support this target"
 
 [baselines]
 # These files are an independent observation of the workflow on main, not
-# generated truth from this policy. Later shadow planning must match them before
-# Actions consumes a plan. Update them only for an intentional coverage change.
+# generated truth from this policy. Planning must match them before Actions can
+# consume a plan or execute a selected cell. Update them only for an intentional
+# coverage change.
 manifest = "ci/baselines/manifest.tsv"
 build_reduced = "ci/baselines/build-pr.tsv"
 build_full = "ci/baselines/build-full.tsv"

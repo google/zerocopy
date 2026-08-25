@@ -19,11 +19,11 @@
 //! choices, or shell commands. Keep those security-sensitive concerns in the
 //! small hand-written workflows.
 //!
-//! The types below record the intended semantics that a later workflow
-//! projection must preserve. Before a workflow consumes a plan, that
-//! projection and its command behavior must be validated separately. Matrix
-//! membership equality alone cannot prove, for example, that native tests are
-//! executed, cross-target tests are only compiled, or Miri tests are
+//! The types below record the intended semantics preserved by the review
+//! artifact and typed executor. The workflow consumes only complete selectors;
+//! the executor resolves their command behavior again from this checked plan.
+//! Matrix membership equality alone cannot prove, for example, that native
+//! tests are executed, cross-target tests are only compiled, or Miri tests are
 //! interpreted.
 //!
 //! The selectors below coordinate three independently reviewed sources:
@@ -88,7 +88,7 @@ const LEGACY_EVENT_CLASSES: [(&str, EventClass); 4] = [
     ("workflow_dispatch", EventClass::Full),
 ];
 
-/// How a later workflow projection must handle an ordinary compilation target.
+/// How the typed executor must handle an ordinary compilation target.
 #[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub enum ExecutionMode {
     /// Build and execute tests on the runner.
@@ -133,11 +133,8 @@ pub enum FeatureSelection {
 impl FeatureSelection {
     /// Returns the exact ordered Cargo arguments for this selection.
     ///
-    /// The vector preserves argument boundaries; callers must pass its entries
-    /// as arguments rather than joining them into shell text. Until the typed
-    /// executor replaces the live adapter, keep this exhaustive translation
-    /// coordinated with the `FEATURE_PROFILE` case statement in
-    /// `.github/workflows/ci.yml`.
+    /// The vector preserves argument boundaries; the executor passes its
+    /// entries directly to a process rather than joining them into shell text.
     pub fn cargo_args(&self) -> Vec<String> {
         match self {
             Self::Default => Vec::new(),
