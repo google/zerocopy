@@ -133,7 +133,6 @@ pub(crate) struct WorkflowSources {
 
 impl WorkflowSources {
     /// Returns the already-read source for one GitHub-visible workflow path.
-    #[cfg(test)]
     pub(crate) fn source(&self, path: &str) -> Option<&str> {
         self.sources
             .iter()
@@ -1720,6 +1719,20 @@ mod tests {
             discovered.inventories[0].jobs,
             [JobId::parse("original").unwrap()].into_iter().collect()
         );
+
+        fs::remove_dir_all(repository).unwrap();
+    }
+
+    #[test]
+    fn discovered_sources_use_canonical_line_endings() {
+        let repository = temporary_directory("canonical-source");
+        let workflows = repository.join(".github/workflows");
+        fs::create_dir_all(&workflows).unwrap();
+        let canonical = "name: CI\non:\n  push:\njobs:\n  original:\n    runs-on: ubuntu-latest\n";
+        fs::write(workflows.join("ci.yml"), canonical.replace('\n', "\r\n")).unwrap();
+
+        let discovered = read_workflow_sources(&repository).unwrap();
+        assert_eq!(discovered.source(".github/workflows/ci.yml"), Some(canonical));
 
         fs::remove_dir_all(repository).unwrap();
     }
