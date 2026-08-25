@@ -11,8 +11,9 @@
 //! Loading CI inputs is intentionally all-or-nothing. A caller cannot obtain a
 //! [`CiInputs`] until the policy is valid, its references agree with live Cargo
 //! metadata and repository files, every workflow job has an exact reviewed
-//! role, every independently recorded legacy baseline parses canonically, and
-//! the typed execution model exactly reproduces that legacy evidence. Planners
+//! role, the handwritten plan publisher exactly exposes typed outputs, the
+//! independently recorded legacy baseline parses canonically, and the typed
+//! execution model exactly reproduces that legacy evidence. Planners
 //! therefore consume checked data rather than remembering which validation
 //! passes must precede which lookups.
 
@@ -27,6 +28,7 @@ use crate::{
     baseline::{BaselineError, LegacyBaselinePaths, LegacyBaselines},
     execution::{audit_execution, ExecutionAuditError},
     inventory::{AuditError, RepositoryInventory},
+    planned_adapter::{audit_planned_adapter, PlannedAdapterAuditError},
     policy::{Policy, ReadPolicyError},
     workflow::{audit_workflows, ReviewedWorkflowJobs, WorkflowAuditError, WORKFLOW_REGISTRY_PATH},
 };
@@ -61,6 +63,10 @@ impl CiInputs {
             resolve_input_file(&repository_root, Path::new(WORKFLOW_REGISTRY_PATH))?;
         let workflow_jobs = audit_workflows(&repository_root, workflow_registry)
             .map_err(|error| LoadCiError::Workflow(Box::new(error)))?;
+        // Job-ID inventory cannot prove that the producer publishes the exact
+        // typed outputs through a real command. Audit that small planned-job
+        // workflow bridge while both checks refer to the same fixed file.
+        audit_planned_adapter(&repository_root).map_err(LoadCiError::PlannedAdapter)?;
         let repository = RepositoryInventory::audit(&repository_root, &policy)
             .map_err(LoadCiError::Inventory)?;
         let baselines = policy.baselines();
@@ -183,6 +189,9 @@ pub enum LoadCiError {
     /// Workflow files or their reviewed role assignments were invalid.
     #[error(transparent)]
     Workflow(Box<WorkflowAuditError>),
+    /// The planned-job workflow bridge did not publish typed outputs exactly.
+    #[error(transparent)]
+    PlannedAdapter(PlannedAdapterAuditError),
     /// The frozen legacy evidence was unreadable or noncanonical.
     #[error(transparent)]
     Baseline(BaselineError),
@@ -193,7 +202,7 @@ pub enum LoadCiError {
 
 #[cfg(test)]
 mod tests {
-    use std::path::Path;
+    use std::{path::Path, process::Command};
 
     use super::{resolve_input_file, CiInputs, LoadCiError};
 
@@ -207,6 +216,33 @@ mod tests {
         assert!(inputs.legacy().miri_reduced().is_empty());
         assert_eq!(inputs.legacy().miri_full().len(), 64);
         assert_eq!(inputs.repository().policy_packages().len(), 2);
+    }
+
+    #[test]
+    fn repository_attributes_keep_semantic_ci_inputs_lf() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        // These paths represent every semantic extension consumed by CiInputs.
+        // The hypothetical YAML path keeps the currently unused `*.yaml` rule
+        // checked as well. Keep the set coordinated with `.gitattributes` when
+        // a new source-level input format is introduced.
+        let paths = [
+            ".github/workflows/ci.yml",
+            "ci/future-input.yaml",
+            "ci/zc.toml",
+            "ci/workflow-jobs.tsv",
+            "ci/baselines/command-goldens.tsv",
+            "zerocopy/Cargo.toml",
+        ];
+        let output = Command::new("git")
+            .current_dir(root)
+            .args(["check-attr", "eol", "--"])
+            .args(paths)
+            .output()
+            .unwrap();
+        assert!(output.status.success(), "git check-attr failed: {output:?}");
+        let stdout = String::from_utf8(output.stdout).unwrap();
+        let expected = paths.map(|path| format!("{path}: eol: lf"));
+        assert_eq!(stdout.lines().collect::<Vec<_>>(), expected);
     }
 
     #[cfg(unix)]
