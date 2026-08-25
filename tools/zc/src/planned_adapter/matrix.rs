@@ -18,8 +18,7 @@ use super::{
         audit_exact_job_fields, audit_exact_scalar_field, audit_host_job_contract,
         audit_read_permissions, audit_step, audit_unique_run_mentions, audited_steps_block,
         compare_map, escape_control_characters, exact_step_lines, find_job, job_field_location,
-        job_fields, nested_fields, nested_mapping, parse_needs, unique_field, RunForm,
-        StepExpectation,
+        job_fields, nested_mapping, parse_needs, unique_field, RunForm, StepExpectation,
     },
     ViolationSink,
 };
@@ -36,7 +35,8 @@ use crate::{
         CELL_TARGET_OPTION, CELL_TOOLCHAIN_OPTION, CI_EVENT_OPTION, DOCKER_ENTRYPOINT_ARGUMENT,
         DOCKER_OPTION_TERMINATOR, EXECUTE_BUILD_CELL_COMMAND, EXECUTE_MIRI_CELL_COMMAND,
         HOST_DOCKER_RUN, IMAGE_JOB, MIRI_ENABLED_OUTPUT, MIRI_JOB, MIRI_MATRIX_OUTPUT,
-        MIRI_STEP_NAME, PLAN_JOB, REPOSITORY_WORKING_DIRECTORY, TRUSTED_SHELL, WORKFLOW_PATH,
+        MIRI_STEP_NAME, PLAN_JOB, REPOSITORY_WORKING_DIRECTORY, SEMVER_JOB, TRUSTED_SHELL,
+        WORKFLOW_PATH,
     },
 };
 
@@ -64,13 +64,6 @@ struct MatrixJobExpectation {
     selectors: &'static [SelectorExpectation],
     forwarded_selector_environment: &'static str,
     condition: JobConditionExpectation,
-    run_defaults: Option<RunDefaultsExpectation>,
-}
-
-#[derive(Clone, Copy)]
-struct RunDefaultsExpectation {
-    shell: &'static str,
-    working_directory: &'static str,
 }
 
 const DOWNLOAD_ACTION_PATH: &str = ".github/actions/download-artifact-with-retry/action.yml";
@@ -89,29 +82,30 @@ const REVIEWED_SOURCES: &[ReviewedSource] = &[ReviewedSource {
     snapshot_path: DOWNLOAD_ACTION_SNAPSHOT_PATH,
     expected: DOWNLOAD_ACTION_EXPECTED_SOURCE,
 }];
-const BUILD_JOB_FIELDS: &[&str] =
-    &["runs-on", "needs", "permissions", "defaults", "strategy", "name", "steps"];
+const BUILD_JOB_FIELDS: &[&str] = &["runs-on", "needs", "permissions", "strategy", "name", "steps"];
 const MIRI_JOB_FIELDS: &[&str] =
     &["if", "runs-on", "needs", "permissions", "strategy", "name", "steps"];
-const BUILD_DEFAULT_SHELL: &str = "/tmp/docker-shell.sh {0} # zizmor: ignore[misfeature] (CI intentionally routes build matrix commands through the prebuilt Docker image)";
 const BUILD_DISPLAY_NAME: &str = "Build & Test (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.feature_profile }} / ${{ matrix.target }})";
 const MIRI_DISPLAY_NAME: &str = "Miri (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.feature_profile }} / ${{ matrix.miri_model }} / ${{ matrix.target }})";
 
-// The build job owns the setup definitions used by both typed matrix jobs.
-// Their exact source is part of the execution boundary: a preceding step can
-// otherwise alter the checkout, selected image, or process environment before
-// an exactly audited executor runs. Keep these definitions coordinated with
-// the corresponding steps and anchors in `.github/workflows/ci.yml`.
+// The build job defines these four reusable setup steps, and the Miri job
+// consumes the corresponding aliases. Their exact source is part of the typed
+// execution boundary: changing checkout identity, artifact selection, or the
+// host commands which load the image and verify the checkout can make an
+// otherwise-correct executor run against different code or a different
+// container.
 //
-// YAML comments outside a run block may change freely. Comments inside a run
-// block are shell input, so `exact_step_lines` retains them and the constants
-// below include them. The repository-owned downloader receives a separate
-// source audit because its local `uses` path cannot pin its implementation.
+// Keep these definitions synchronized with `&matrix_checkout`,
+// `&download_ci_image`, `&load_ci_image`, and `&verify_matrix_checkout` in
+// `.github/workflows/ci.yml`. YAML comments may change without changing
+// behavior; comments inside a block scalar are shell content and remain part
+// of the exact comparison. The repository-owned download action receives an
+// additional containment and complete-source audit below because its `uses`
+// line cannot pin its implementation independently of this checkout.
 const CHECKOUT_STEP: &[&str] = &[
     "    - &matrix_checkout",
     "      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
     "      with:",
-    "        fetch-depth: 2",
     "        persist-credentials: false",
 ];
 fn download_image_step() -> Vec<String> {
@@ -138,34 +132,6 @@ const LOAD_IMAGE_STEP: &[&str] = &[
     "        docker load --input \"$IMAGE_ARCHIVE\"",
     "        docker image inspect \"$IMAGE_NAME\" >/dev/null",
     "        docker run --rm \"$IMAGE_NAME\" true",
-];
-const CREATE_DOCKER_SHELL_STEP: &[&str] = &[
-    "    - name: Create Docker Shell Wrapper",
-    "      shell: bash",
-    "      run: |",
-    "        set -eo pipefail",
-    "        mkdir -p /home/runner/.docker-cargo/registry /home/runner/.docker-cargo/git",
-    "        cat << 'EOF' > /tmp/docker-shell.sh",
-    "        #!/bin/bash",
-    "        # Boot an ephemeral container for the step, mounting the workspace and",
-    "        # temp dirs. Explicitly forward GitHub Actions internal state and matrix",
-    "        # environment variables.",
-    "        docker run --rm -i \\",
-    "          --workdir \"$PWD\" \\",
-    "          -v /home/runner/work:/home/runner/work \\",
-    "          -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \\",
-    "          -v /home/runner/.docker-cargo/git:/root/.cargo/git \\",
-    "          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \\",
-    "          -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \\",
-    "          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE \\",
-    "          -e MIRI_MODEL -e ZC_TOOLCHAIN -e PR_HEAD_SHA \\",
-    "          -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \\",
-    "          -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \\",
-    "          -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \\",
-    "          -e ZC_SKIP_CARGO_SEMVER_CHECKS \\",
-    "          \"$ZC_CI_IMAGE\" bash -c \"git config --global --add safe.directory '*' && exec bash -e -o pipefail \\\"\\$1\\\"\" -- \"$1\"",
-    "        EOF",
-    "        chmod +x /tmp/docker-shell.sh",
 ];
 const VERIFY_CHECKOUT_STEP: &[&str] = &[
     "    - &verify_matrix_checkout",
@@ -250,11 +216,8 @@ const BUILD_STEP_MARKERS: &[&str] = &[
     "- &matrix_checkout",
     "- &download_ci_image",
     "- &load_ci_image",
-    "- name: Create Docker Shell Wrapper",
     "- &verify_matrix_checkout",
     "- name: Execute checked build cell",
-    "- name: Prepare cargo-semver-checks",
-    "- name: Check semver compatibility",
 ];
 const MIRI_STEP_MARKERS: &[&str] = &[
     "- *matrix_checkout",
@@ -325,10 +288,6 @@ const BUILD_EXPECTATION: MatrixJobExpectation = MatrixJobExpectation {
     selectors: &BUILD_SELECTORS,
     forwarded_selector_environment: "  -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE \\",
     condition: JobConditionExpectation::Absent,
-    run_defaults: Some(RunDefaultsExpectation {
-        shell: BUILD_DEFAULT_SHELL,
-        working_directory: REPOSITORY_WORKING_DIRECTORY,
-    }),
 };
 
 const MIRI_EXPECTATION: MatrixJobExpectation = MatrixJobExpectation {
@@ -342,7 +301,6 @@ const MIRI_EXPECTATION: MatrixJobExpectation = MatrixJobExpectation {
     forwarded_selector_environment:
         "  -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE -e MIRI_MODEL \\",
     condition: JobConditionExpectation::MiriEnabled,
-    run_defaults: None,
 };
 
 pub(super) fn audit(
@@ -366,10 +324,11 @@ pub(super) fn audit(
 }
 
 fn audit_anchor_ownership(lines: &[&str], errors: &mut ViolationSink) {
-    // YAML aliases bind outside the aliasing step. Exact definition and alias
-    // checks are not sufficient if another job can redefine the same anchor
-    // between them, so reserve each shared name for one definition and one use
-    // in the whole workflow. Full-line comments remain documentation.
+    // YAML aliases bind to anchor declarations outside the aliasing step. The
+    // exact build definition and Miri alias checks are insufficient if another
+    // job can redefine the same anchor between them, so reserve each name for
+    // exactly one definition and one use in the whole workflow. Full-line
+    // comments remain documentation and do not participate in YAML binding.
     for anchor in
         ["matrix_checkout", "download_ci_image", "load_ci_image", "verify_matrix_checkout"]
     {
@@ -408,6 +367,7 @@ fn audit_download_action(repository_root: &Path) -> Result<(), PlannedAdapterAud
     audit_reviewed_sources(repository_root, REVIEWED_SOURCES)
 }
 
+/// Reads the fixed local action through the shared reviewed-source boundary.
 #[cfg(test)]
 fn read_download_action(repository_root: &Path) -> Result<String, PlannedAdapterAuditError> {
     read_reviewed_source(repository_root, DOWNLOAD_ACTION_PATH).map(|(_, source, _)| source)
@@ -440,9 +400,13 @@ fn is_identifier_byte(byte: u8) -> bool {
 }
 
 fn audit_reviewed_roles(reviewed: &BTreeSet<(String, String)>, errors: &mut ViolationSink) {
-    let expected = [BUILD_EXPECTATION, MIRI_EXPECTATION]
+    // The matrix module directly audits build and Miri below. The standalone
+    // semver adapter has its own exact job audit, but its role still belongs in
+    // this single ownership equality check so adding or dropping `planned` in
+    // the registry cannot fall between the two focused modules.
+    let expected = [BUILD_JOB, MIRI_JOB, SEMVER_JOB]
         .into_iter()
-        .map(|spec| (WORKFLOW_PATH.to_owned(), spec.job_name.to_owned()))
+        .map(|job| (WORKFLOW_PATH.to_owned(), job.to_owned()))
         .collect::<BTreeSet<_>>();
     for (workflow, job) in expected.difference(reviewed) {
         errors.push(
@@ -471,9 +435,6 @@ fn audit_matrix_job(
     audit_condition(&fields, expected, errors);
     audit_host_job_contract(&fields, expected.job_name, errors);
     audit_read_permissions(lines, job.end, &fields, expected.job_name, errors);
-    if let Some(defaults) = expected.run_defaults {
-        audit_run_defaults(lines, job.end, &fields, expected.job_name, defaults, errors);
-    }
     audit_strategy(lines, job.end, &fields, expected, errors);
 
     if let Some(steps) = audited_steps_block(&fields, job, expected.job_name, 4, errors) {
@@ -505,18 +466,16 @@ fn audit_matrix_step_contract(
         );
     }
 
-    // `build_test` owns the definitions and Miri consumes exact aliases. The
-    // terminal executors have richer field-by-field audits below. The two
-    // semver steps follow the build executor and cannot affect it; their exact
-    // behavior remains outside this matrix-execution boundary until the
-    // standalone semver audit replaces them later in the stack.
+    // `build_test` owns the definitions and Miri must consume those exact
+    // aliases. Comparing complete significant steps prevents an extra field,
+    // alternate action, or setup command from hiding behind a familiar anchor
+    // name. The terminal executor has its richer field-by-field audit below.
     let owned = |step: &[&str]| step.iter().map(|line| (*line).to_owned()).collect();
     let expected_setup: Vec<Vec<String>> = if expected.job_name == BUILD_JOB {
         vec![
             owned(CHECKOUT_STEP),
             download_image_step(),
             owned(LOAD_IMAGE_STEP),
-            owned(CREATE_DOCKER_SHELL_STEP),
             owned(VERIFY_CHECKOUT_STEP),
         ]
     } else {
@@ -566,42 +525,6 @@ fn audit_needs(fields: &[super::source::Field<'_>], job: &str, errors: &mut Viol
             format!("unexpected direct dependency `{extra}`"),
         );
     }
-}
-
-fn audit_run_defaults(
-    lines: &[&str],
-    job_end: usize,
-    fields: &[super::source::Field<'_>],
-    job: &str,
-    expected: RunDefaultsExpectation,
-    errors: &mut ViolationSink,
-) {
-    let Some(defaults) = unique_field(fields, "defaults", job, errors) else {
-        return;
-    };
-    let defaults_job = format!("{job}.defaults");
-    let Some(default_fields) = nested_fields(lines, defaults, job_end, &defaults_job, errors)
-    else {
-        return;
-    };
-    audit_exact_job_fields(&default_fields, &defaults_job, &["run"], errors);
-
-    let Some(run) = unique_field(&default_fields, "run", &defaults_job, errors) else {
-        return;
-    };
-    let run_job = format!("{defaults_job}.run");
-    let Some(run_fields) = nested_fields(lines, run, job_end, &run_job, errors) else {
-        return;
-    };
-    audit_exact_job_fields(&run_fields, &run_job, &["shell", "working-directory"], errors);
-    audit_exact_scalar_field(&run_fields, &run_job, "shell", expected.shell, errors);
-    audit_exact_scalar_field(
-        &run_fields,
-        &run_job,
-        "working-directory",
-        expected.working_directory,
-        errors,
-    );
 }
 
 fn audit_condition(
@@ -719,13 +642,20 @@ fn executor_run(expected: MatrixJobExpectation) -> Vec<String> {
         "  -v /home/runner/work:/home/runner/work \\".to_owned(),
         "  -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \\".to_owned(),
         "  -v /home/runner/.docker-cargo/git:/root/.cargo/git \\".to_owned(),
-        "  -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \\".to_owned(),
+        // GITHUB_ENV and GITHUB_PATH are intentionally absent. The container
+        // must not use GitHub's cross-step file-command channels to alter the
+        // host environment. The exact sequence above keeps the executor
+        // terminal today; any future later step would first require extending
+        // this audit deliberately. Keep this line coordinated with both matrix
+        // job run blocks in `.github/workflows/ci.yml` and the local-action
+        // source audit in this module. Summary, output, and workspace paths are
+        // step-scoped data channels which the checked executor may still use.
+        "  -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \\".to_owned(),
         "  -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \\".to_owned(),
         expected.forwarded_selector_environment.to_owned(),
         "  -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \\".to_owned(),
         "  -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \\".to_owned(),
         "  -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \\".to_owned(),
-        "  -e ZC_SKIP_CARGO_SEMVER_CHECKS \\".to_owned(),
         "  -e GIT_CONFIG_COUNT=1 \\".to_owned(),
         "  -e GIT_CONFIG_KEY_0=safe.directory \\".to_owned(),
         "  -e \"GIT_CONFIG_VALUE_0=*\" \\".to_owned(),
@@ -770,8 +700,7 @@ mod tests {
 
     use super::{
         audit, audit_download_action, audit_download_action_source, download_image_step,
-        executor_run, read_download_action, BUILD_DEFAULT_SHELL, BUILD_DISPLAY_NAME,
-        BUILD_EXPECTATION, CHECKOUT_STEP, CREATE_DOCKER_SHELL_STEP,
+        executor_run, read_download_action, BUILD_DISPLAY_NAME, BUILD_EXPECTATION, CHECKOUT_STEP,
         DOWNLOAD_ACTION_EXPECTED_SOURCE, DOWNLOAD_ACTION_PATH, DOWNLOAD_ACTION_SNAPSHOT_PATH,
         LOAD_IMAGE_STEP, MIRI_DISPLAY_NAME, MIRI_EXPECTATION, TRUSTED_SHELL_LINE,
         VERIFY_CHECKOUT_STEP,
@@ -788,7 +717,7 @@ mod tests {
         policy::Policy,
         workflow::{ReviewedWorkflowJobs, WORKFLOW_REGISTRY_PATH},
         workflow_protocol::{
-            BUILD_JOB, EXECUTE_BUILD_CELL_COMMAND, EXECUTE_MIRI_CELL_COMMAND, MIRI_JOB,
+            BUILD_JOB, EXECUTE_BUILD_CELL_COMMAND, EXECUTE_MIRI_CELL_COMMAND, MIRI_JOB, SEMVER_JOB,
             TRUSTED_SHELL, WORKFLOW_PATH,
         },
     };
@@ -799,10 +728,6 @@ mod tests {
     needs: [build_docker_env, plan_ci]
     permissions:
       contents: read
-    defaults:
-      run:
-        shell: /tmp/docker-shell.sh {0} # zizmor: ignore[misfeature] (CI intentionally routes build matrix commands through the prebuilt Docker image)
-        working-directory: zerocopy
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.plan_ci.outputs.build_matrix) }}
@@ -811,7 +736,6 @@ mod tests {
     - &matrix_checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        fetch-depth: 2
         persist-credentials: false
     - &download_ci_image
       name: Download prebuilt Docker image
@@ -832,32 +756,6 @@ mod tests {
         docker load --input "$IMAGE_ARCHIVE"
         docker image inspect "$IMAGE_NAME" >/dev/null
         docker run --rm "$IMAGE_NAME" true
-    - name: Create Docker Shell Wrapper
-      shell: bash
-      run: |
-        set -eo pipefail
-        mkdir -p /home/runner/.docker-cargo/registry /home/runner/.docker-cargo/git
-        cat << 'EOF' > /tmp/docker-shell.sh
-        #!/bin/bash
-        # Boot an ephemeral container for the step, mounting the workspace and
-        # temp dirs. Explicitly forward GitHub Actions internal state and matrix
-        # environment variables.
-        docker run --rm -i \
-          --workdir "$PWD" \
-          -v /home/runner/work:/home/runner/work \
-          -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \
-          -v /home/runner/.docker-cargo/git:/root/.cargo/git \
-          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
-          -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
-          -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE \
-          -e MIRI_MODEL -e ZC_TOOLCHAIN -e PR_HEAD_SHA \
-          -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
-          -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
-          -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
-          "$ZC_CI_IMAGE" bash -c "git config --global --add safe.directory '*' && exec bash -e -o pipefail \"\$1\"" -- "$1"
-        EOF
-        chmod +x /tmp/docker-shell.sh
     - &verify_matrix_checkout
       name: Verify matrix checkout is unchanged
       shell: /usr/bin/env -u BASH_ENV -u ENV -u SHELLOPTS -u BASHOPTS /bin/bash --noprofile --norc -p -euo pipefail -- {0}
@@ -947,13 +845,12 @@ mod tests {
           -v /home/runner/work:/home/runner/work \
           -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \
           -v /home/runner/.docker-cargo/git:/root/.cargo/git \
-          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
+          -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
           -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
           -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE \
           -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
           -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           -e GIT_CONFIG_COUNT=1 \
           -e GIT_CONFIG_KEY_0=safe.directory \
           -e "GIT_CONFIG_VALUE_0=*" \
@@ -969,10 +866,6 @@ mod tests {
           --toolchain "$TOOLCHAIN" \
           --feature-profile "$FEATURE_PROFILE" \
           --target "$TARGET"
-    - name: Prepare cargo-semver-checks
-      run: echo audited separately later
-    - name: Check semver compatibility
-      run: echo audited separately later
   miri:
     if: needs.plan_ci.outputs.miri_enabled == 'true'
     runs-on: ubuntu-latest
@@ -1004,13 +897,12 @@ mod tests {
           -v /home/runner/work:/home/runner/work \
           -v /home/runner/.docker-cargo/registry:/root/.cargo/registry \
           -v /home/runner/.docker-cargo/git:/root/.cargo/git \
-          -e GITHUB_ENV -e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
+          -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \
           -e CI -e GITHUB_ACTIONS -e GITHUB_ACTOR -e GITHUB_REPOSITORY -e GITHUB_SHA -e GITHUB_REF -e GITHUB_EVENT_NAME \
           -e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE -e MIRI_MODEL \
           -e RUSTFLAGS -e RUSTDOCFLAGS -e MIRIFLAGS \
           -e CARGO_NET_RETRY -e RUSTUP_MAX_RETRIES \
           -e ZC_NIGHTLY_RUSTFLAGS -e ZC_NIGHTLY_MIRIFLAGS \
-          -e ZC_SKIP_CARGO_SEMVER_CHECKS \
           -e GIT_CONFIG_COUNT=1 \
           -e GIT_CONFIG_KEY_0=safe.directory \
           -e "GIT_CONFIG_VALUE_0=*" \
@@ -1182,14 +1074,13 @@ mod tests {
     }
 
     #[test]
-    fn matrix_setup_definitions_are_exact() {
+    fn matrix_setup_definitions_are_exact_and_yaml_comments_remain_free() {
         assert_eq!(TRUSTED_SHELL_LINE, format!("      shell: {TRUSTED_SHELL}"));
         let owned = |step: &[&str]| step.iter().map(|line| (*line).to_owned()).collect();
         for (step_name, step) in [
             ("checkout", owned(CHECKOUT_STEP)),
             ("download", download_image_step()),
             ("load", owned(LOAD_IMAGE_STEP)),
-            ("Docker shell", owned(CREATE_DOCKER_SHELL_STEP)),
             ("checkout verification", owned(VERIFY_CHECKOUT_STEP)),
         ] {
             for line in &step {
@@ -1198,22 +1089,26 @@ mod tests {
                 rejected(&format!("{step_name}: {line}"), &source, "exact canonical contract");
             }
         }
+
+        let comments = replace_in_job(
+            CANONICAL_SOURCE,
+            BUILD_JOB,
+            "    - &download_ci_image\n",
+            "    - &download_ci_image\n      # The source audit intentionally ignores documentation.\n",
+        );
+        audit_canonical(&comments).unwrap();
+
+        let scalar_comment = replace_in_step(
+            CANONICAL_SOURCE,
+            LOAD_IMAGE_STEP[0],
+            "        set -euo pipefail\n",
+            "        set -euo pipefail\n        # ${{ github.event.pull_request.title }}\n",
+        );
+        rejected("run scalar comment", &scalar_comment, "exact canonical contract");
     }
 
     #[test]
     fn prerequisite_checkout_overwrites_are_rejected() {
-        let overwrite_from_wrapper = replace_in_step(
-            CANONICAL_SOURCE,
-            CREATE_DOCKER_SHELL_STEP[0],
-            "        set -eo pipefail\n",
-            "        set -eo pipefail\n        printf malicious > zerocopy/cargo.sh\n",
-        );
-        rejected(
-            "wrapper overwrites cargo.sh",
-            &overwrite_from_wrapper,
-            "exact canonical contract",
-        );
-
         let inserted_overwrite = replace_in_job(
             CANONICAL_SOURCE,
             BUILD_JOB,
@@ -1314,6 +1209,15 @@ mod tests {
                 ),
             ),
             (
+                "build anchor renamed",
+                replace_in_job(
+                    CANONICAL_SOURCE,
+                    BUILD_JOB,
+                    "    - &matrix_checkout\n",
+                    "    - &wrong_anchor\n",
+                ),
+            ),
+            (
                 "Miri setup reordered",
                 replace_in_job(
                     CANONICAL_SOURCE,
@@ -1323,12 +1227,30 @@ mod tests {
                 ),
             ),
             (
+                "Miri alias renamed",
+                replace_in_job(
+                    CANONICAL_SOURCE,
+                    MIRI_JOB,
+                    "    - *download_ci_image\n",
+                    "    - *other_download\n",
+                ),
+            ),
+            (
                 "Miri alias extended",
                 replace_in_job(
                     CANONICAL_SOURCE,
                     MIRI_JOB,
                     "    - *verify_matrix_checkout\n",
                     "    - *verify_matrix_checkout\n      if: success()\n",
+                ),
+            ),
+            (
+                "Miri setup inserted",
+                replace_in_job(
+                    CANONICAL_SOURCE,
+                    MIRI_JOB,
+                    "    - *matrix_checkout\n",
+                    "    - *matrix_checkout\n    - name: Unexpected setup\n      run: true\n",
                 ),
             ),
             (
@@ -1418,6 +1340,23 @@ mod tests {
     }
 
     #[test]
+    fn local_download_action_read_normalizes_crlf_but_rejects_bare_cr() {
+        let repository = TemporaryRepository::new("line-endings");
+        repository.write_action(&DOWNLOAD_ACTION_EXPECTED_SOURCE.replace('\n', "\r\n"));
+        let source = read_download_action(&repository.root).unwrap();
+        assert_eq!(source, DOWNLOAD_ACTION_EXPECTED_SOURCE);
+        audit_download_action_source(&source).unwrap();
+
+        repository.write_action("runs:\r  using: composite\n");
+        let error = read_download_action(&repository.root).unwrap_err();
+        assert!(matches!(
+            error,
+            super::super::PlannedAdapterAuditError::ReadReviewedSource { .. }
+        ));
+        assert!(error.to_string().contains("bare carriage return"), "{error}");
+    }
+
+    #[test]
     fn local_download_action_path_is_contained_and_regular() {
         let missing = TemporaryRepository::new("missing");
         let error = read_download_action(&missing.root).unwrap_err();
@@ -1453,21 +1392,38 @@ mod tests {
 
     #[cfg(unix)]
     #[test]
-    fn local_download_action_rejects_a_symlink() {
+    fn local_download_action_rejects_file_and_ancestor_symlinks() {
         use std::os::unix::fs::symlink;
 
-        let repository = TemporaryRepository::new("symlink");
-        let outside = repository.directory.join("outside/action.yml");
-        fs::create_dir_all(outside.parent().unwrap()).unwrap();
-        fs::write(&outside, "runs:\n  using: composite\n  steps: []\n").unwrap();
-        fs::create_dir_all(repository.action_path().parent().unwrap()).unwrap();
-        symlink(&outside, repository.action_path()).unwrap();
+        for escape in ["file", "ancestor"] {
+            let repository = TemporaryRepository::new(escape);
+            let outside = repository.directory.join("outside");
+            fs::create_dir_all(&outside).unwrap();
+            let outside_action = if escape == "file" {
+                outside.join("action.yml")
+            } else {
+                outside.join("download-artifact-with-retry/action.yml")
+            };
+            fs::create_dir_all(outside_action.parent().unwrap()).unwrap();
+            fs::write(&outside_action, "runs:\n  using: composite\n  steps: []\n").unwrap();
 
-        let error = read_download_action(&repository.root).unwrap_err();
-        assert!(matches!(
-            error,
-            super::super::PlannedAdapterAuditError::ReviewedSourceSymlink { .. }
-        ));
+            if escape == "file" {
+                fs::create_dir_all(repository.action_path().parent().unwrap()).unwrap();
+                symlink(&outside_action, repository.action_path()).unwrap();
+            } else {
+                fs::create_dir_all(repository.root.join(".github")).unwrap();
+                symlink(&outside, repository.root.join(".github/actions")).unwrap();
+            }
+
+            let error = read_download_action(&repository.root).unwrap_err();
+            assert!(
+                matches!(
+                    error,
+                    super::super::PlannedAdapterAuditError::ReviewedSourceSymlink { .. }
+                ),
+                "{escape}: {error:?}"
+            );
+        }
     }
 
     #[cfg(unix)]
@@ -1513,11 +1469,19 @@ mod tests {
     }
 
     #[test]
-    fn reviewed_planned_roles_equal_the_two_audited_jobs() {
+    fn reviewed_planned_roles_equal_all_three_typed_plan_consumers() {
         let mut missing = canonical_planned_jobs();
         missing.remove(&(WORKFLOW_PATH.to_owned(), BUILD_JOB.to_owned()));
         assert_rejected(
             "missing build role",
+            audit_source(CANONICAL_SOURCE, &missing),
+            "must have the reviewed `planned` role",
+        );
+
+        let mut missing = canonical_planned_jobs();
+        missing.remove(&(WORKFLOW_PATH.to_owned(), SEMVER_JOB.to_owned()));
+        assert_rejected(
+            "missing standalone semver role",
             audit_source(CANONICAL_SOURCE, &missing),
             "must have the reviewed `planned` role",
         );
@@ -1759,44 +1723,14 @@ mod tests {
                 "miri.permissions.id-token",
             ),
             (
-                "default shell",
+                "build defaults",
                 replace_in_job(
                     CANONICAL_SOURCE,
                     BUILD_JOB,
-                    BUILD_DEFAULT_SHELL,
-                    "/tmp/other-shell.sh {0}",
+                    "    strategy:\n",
+                    "    defaults: {}\n    strategy:\n",
                 ),
-                "build_test.defaults.run.shell",
-            ),
-            (
-                "default working directory",
-                replace_in_job(
-                    CANONICAL_SOURCE,
-                    BUILD_JOB,
-                    "        working-directory: zerocopy",
-                    "        working-directory: .",
-                ),
-                "build_test.defaults.run.working-directory",
-            ),
-            (
-                "extra run default",
-                replace_in_job(
-                    CANONICAL_SOURCE,
-                    BUILD_JOB,
-                    "        working-directory: zerocopy\n",
-                    "        working-directory: zerocopy\n        timeout-minutes: 1\n",
-                ),
-                "build_test.defaults.run.timeout-minutes",
-            ),
-            (
-                "scalar defaults",
-                replace_in_job(
-                    CANONICAL_SOURCE,
-                    BUILD_JOB,
-                    "    defaults:\n",
-                    "    defaults: {}\n",
-                ),
-                "canonical nested mapping",
+                "build_test.defaults",
             ),
             (
                 "Miri defaults",
@@ -1895,6 +1829,18 @@ mod tests {
                 "-e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE -e MIRI_MODEL \\",
                 "-e TOOLCHAIN -e CRATE -e TARGET -e FEATURE_PROFILE \\",
                 "Miri forwarding",
+            ),
+            (
+                BUILD_JOB,
+                "-e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \\",
+                "-e GITHUB_ENV -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \\",
+                "host environment file command",
+            ),
+            (
+                MIRI_JOB,
+                "-e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \\",
+                "-e GITHUB_PATH -e GITHUB_STEP_SUMMARY -e GITHUB_OUTPUT -e GITHUB_WORKSPACE \\",
+                "host PATH file command",
             ),
             (BUILD_JOB, EXECUTE_BUILD_CELL_COMMAND, "wrong-build-command", "build command"),
             (MIRI_JOB, EXECUTE_MIRI_CELL_COMMAND, "wrong-miri-command", "Miri command"),

@@ -1632,9 +1632,32 @@ impl Validator {
             EventCategory::Reduced => (miri_matrix_cell_count, 0),
             EventCategory::Full => (0, miri_matrix_cell_count),
         };
-        let reduced_event_cell_count =
-            reduced_build_cell_count.saturating_add(reduced_miri_cell_count);
-        let full_event_cell_count = full_build_cell_count.saturating_add(full_miri_cell_count);
+        // Semver has its own matrix, but its target membership is the matching
+        // ordinary-build slice: full events select the complete configured set,
+        // while reduced events keep only targets marked `pr_eligible`. Keep
+        // this preflight coordinated with `plan::enumerate_semver_candidates`.
+        // Counting it here ensures a limit which can admit only the two Cargo
+        // matrices fails during policy validation rather than later planning.
+        let full_semver_cell_count = target_sets
+            .get(&semver.target_set)
+            .map_or(0, |members| u64::try_from(members.len()).unwrap_or(u64::MAX));
+        let reduced_semver_cell_count = target_sets.get(&semver.target_set).map_or(0, |members| {
+            u64::try_from(
+                members
+                    .iter()
+                    .filter(|target| {
+                        targets.get(*target).is_some_and(|target| target.pr_eligible())
+                    })
+                    .count(),
+            )
+            .unwrap_or(u64::MAX)
+        });
+        let reduced_event_cell_count = reduced_build_cell_count
+            .saturating_add(reduced_miri_cell_count)
+            .saturating_add(reduced_semver_cell_count);
+        let full_event_cell_count = full_build_cell_count
+            .saturating_add(full_miri_cell_count)
+            .saturating_add(full_semver_cell_count);
         self.check_plan_size("reduced-event", reduced_event_cell_count, limits);
         self.check_plan_size("full-event", full_event_cell_count, limits);
 
@@ -2562,8 +2585,8 @@ mod tests {
             mutate(REPOSITORY_POLICY, "max_matrix_cells = 256", "max_matrix_cells = 181");
         assert_eq!(Policy::parse(&matrix_limit).unwrap().limits().max_matrix_cells(), 181);
 
-        let plan_limit = mutate(REPOSITORY_POLICY, "max_plan_cells = 4096", "max_plan_cells = 245");
-        assert_invalid_contains(&plan_limit, &["full-event plan expands to 246 cells"]);
+        let plan_limit = mutate(REPOSITORY_POLICY, "max_plan_cells = 4096", "max_plan_cells = 254");
+        assert_invalid_contains(&plan_limit, &["full-event plan expands to 255 cells"]);
     }
 
     #[test]
