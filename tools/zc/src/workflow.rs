@@ -253,6 +253,18 @@ impl ReviewedWorkflowJobs {
     pub fn role(&self, job: &WorkflowJob) -> Option<WorkflowJobRole> {
         self.jobs.get(job).copied()
     }
+
+    /// Iterates over the exact reviewed set delegated to the typed planner.
+    ///
+    /// The planned-job workflow audit compares this set with its fixed matrix
+    /// expectations. A registry edit therefore cannot label another job
+    /// `planned` without extending the behavioral audit which proves that job
+    /// consumes and executes a checked plan.
+    pub fn planned_jobs(&self) -> impl Iterator<Item = &WorkflowJob> {
+        self.jobs
+            .iter()
+            .filter_map(|(job, role)| (*role == WorkflowJobRole::Planned).then_some(job))
+    }
 }
 
 /// Checks every live workflow job against its reviewed role assignment.
