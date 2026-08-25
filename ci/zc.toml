@@ -12,6 +12,9 @@
 # hand-written GitHub Actions workflows. A generated plan may select work, but
 # it must never grant privileges.
 #
+# See `ci/README.md` for the complete ownership and update guide and for local
+# commands which validate, inspect, project, or execute this policy.
+#
 # `tools/zc/src/policy.rs` parses this file strictly. Keep field names and
 # selection spellings coordinated with that module. After this schema has
 # consumers, an incompatible change must increment `schema_version` and teach
@@ -343,10 +346,10 @@ profiles = ["stable"]
 target_set = "without-thumb"
 
 # Every declared model runs automatically. These are per-model additions to
-# the global `ZC_NIGHTLY_MIRIFLAGS` in `.github/workflows/ci.yml`; keep that
-# workflow setting and the executor's flag composition coordinated with this
-# list. The empty list for stacked borrows is explicit because behavior-bearing
-# lists never come from parser defaults.
+# the nightly base flags owned by `tools/zc/src/execution.rs`; the workflow
+# passes only the selected model ID back to that executor. The empty list for
+# stacked borrows is explicit because behavior-bearing lists never come from
+# parser defaults.
 [[miri_models]]
 id = "stacked"
 flags = []
