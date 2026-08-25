@@ -65,6 +65,10 @@ pub struct CargoPackage {
     name: String,
     manifest: PathBuf,
     rust_version: Option<String>,
+    // Retain Cargo's structured package metadata so validation can select the
+    // docs.rs command contract from the exact policy-owned Zerocopy package.
+    // Raw metadata is deliberately not exposed from the checked inventory.
+    metadata: serde_json::Value,
     features: BTreeMap<String, BTreeSet<String>>,
     dependencies: BTreeMap<String, Dependency>,
     // Keep package identity separate from the renamed dependency keys above.
@@ -201,6 +205,7 @@ pub struct RepositoryInventory {
     policy_packages: BTreeMap<String, PackageInventory>,
     cargo_targets: BTreeSet<CargoTarget>,
     toolchain_versions: BTreeMap<String, String>,
+    zerocopy_docs_rs_rustdoc_args: Vec<String>,
 }
 
 impl RepositoryInventory {
@@ -229,6 +234,17 @@ impl RepositoryInventory {
     /// Returns exact compiler descriptors, keyed by policy toolchain ID.
     pub fn toolchain_versions(&self) -> &BTreeMap<String, String> {
         &self.toolchain_versions
+    }
+
+    /// Returns the ordered docs.rs Rustdoc arguments owned by Zerocopy.
+    ///
+    /// These are read from the canonical package selected by
+    /// `ci/zc.toml`, not from a package-name search or another workspace
+    /// member which happens to declare similar metadata. Inventory validation
+    /// has already rejected missing, empty, non-string, control-bearing, or
+    /// whitespace-bearing arguments.
+    pub fn zerocopy_docs_rs_rustdoc_args(&self) -> &[String] {
+        &self.zerocopy_docs_rs_rustdoc_args
     }
 }
 
@@ -444,6 +460,7 @@ impl CollectedRepository {
                 name: package.name.to_string(),
                 manifest: manifest.clone(),
                 rust_version: package.rust_version.as_ref().map(ToString::to_string),
+                metadata: package.metadata.clone(),
                 features: package
                     .features
                     .iter()
@@ -516,6 +533,8 @@ impl CollectedRepository {
         );
         validate_workspace_package_classification(policy, &self.packages, &mut errors);
         validate_cargo_target_classification(&self.packages, &mut errors);
+        let zerocopy_docs_rs_rustdoc_args =
+            validate_zerocopy_docs_rs_rustdoc_args(policy, &self.packages, &mut errors);
 
         let mut policy_packages = BTreeMap::new();
         for (id, package_policy) in policy.packages() {
@@ -582,6 +601,7 @@ impl CollectedRepository {
             policy_packages,
             cargo_targets,
             toolchain_versions,
+            zerocopy_docs_rs_rustdoc_args,
         })
     }
 
@@ -726,6 +746,101 @@ fn validate_workspace_package_classification_from_manifests(
             ),
         );
     }
+}
+
+/// Extracts the docs.rs Rustdoc arguments from the one package which owns the
+/// Zerocopy CI contract.
+///
+/// Cargo exposes arbitrary TOML package metadata as JSON. Treating a missing
+/// key, `null`, a scalar, or an object as an empty argument list would silently
+/// weaken the nightly documentation command. This parser accepts exactly an
+/// ordered, nonempty array of nonempty, whitespace-free strings and preserves
+/// the declared order verbatim. The whitespace restriction is load-bearing:
+/// the current workflow joins these elements into `RUSTDOCFLAGS`, whose parser
+/// cannot preserve an argument-internal space.
+fn validate_zerocopy_docs_rs_rustdoc_args(
+    policy: &Policy,
+    packages: &BTreeMap<PathBuf, CargoPackage>,
+    errors: &mut ErrorSink,
+) -> Vec<String> {
+    let Some(configured) = policy.packages().get(PRIMARY_PACKAGE_ID) else {
+        errors.push(
+            "packages.zerocopy",
+            "canonical Zerocopy package is absent, so docs.rs arguments have no owner",
+        );
+        return Vec::new();
+    };
+    let manifest = configured.manifest().as_path();
+    let location = format!("{}.package.metadata.docs.rs.rustdoc-args", manifest.display());
+    let Some(package) = packages.get(manifest) else {
+        errors.push(
+            &location,
+            format!(
+                "canonical Zerocopy manifest `{}` is absent from Cargo metadata",
+                manifest.display()
+            ),
+        );
+        return Vec::new();
+    };
+    if package.name != PRIMARY_PACKAGE_ID || package.manifest != manifest {
+        errors.push(
+            &location,
+            format!(
+                "metadata owner must be package `{PRIMARY_PACKAGE_ID}` at `{}`, found package `{}` at `{}`",
+                manifest.display(),
+                package.name,
+                package.manifest.display()
+            ),
+        );
+        return Vec::new();
+    }
+
+    let Some(package_metadata) = package.metadata.as_object() else {
+        errors.push(&location, "package metadata must be a JSON object");
+        return Vec::new();
+    };
+    let Some(docs) = package_metadata.get("docs").and_then(serde_json::Value::as_object) else {
+        errors.push(&location, "`package.metadata.docs` must be a table");
+        return Vec::new();
+    };
+    let Some(docs_rs) = docs.get("rs").and_then(serde_json::Value::as_object) else {
+        errors.push(&location, "`package.metadata.docs.rs` must be a table");
+        return Vec::new();
+    };
+    let Some(arguments) = docs_rs.get("rustdoc-args").and_then(serde_json::Value::as_array) else {
+        errors.push(&location, "`rustdoc-args` must be an array of strings");
+        return Vec::new();
+    };
+    if arguments.is_empty() {
+        errors.push(&location, "`rustdoc-args` must not be empty");
+        return Vec::new();
+    }
+
+    let mut parsed = Vec::with_capacity(arguments.len());
+    for (index, argument) in arguments.iter().enumerate() {
+        let argument_location = format!("{location}[{index}]");
+        let Some(argument) = argument.as_str() else {
+            errors.push(argument_location, "Rustdoc argument must be a string");
+            continue;
+        };
+        if argument.is_empty() {
+            errors.push(argument_location, "Rustdoc argument must not be empty");
+            continue;
+        }
+        if argument.chars().any(char::is_control) {
+            errors.push(argument_location, "Rustdoc argument must not contain control characters");
+            continue;
+        }
+        if argument.chars().any(char::is_whitespace) {
+            errors.push(
+                argument_location,
+                "Rustdoc argument must not contain whitespace because RUSTDOCFLAGS cannot preserve that argument boundary",
+            );
+            continue;
+        }
+        parsed.push(argument.to_owned());
+    }
+    parsed
 }
 
 fn relative_path(repository_root: &Path, path: &Path) -> Result<PathBuf, CollectError> {
@@ -1948,6 +2063,7 @@ mod tests {
             name: "example".to_owned(),
             manifest: "example/Cargo.toml".into(),
             rust_version: Some("1.56.0".to_owned()),
+            metadata: serde_json::Value::Null,
             features: [(
                 "stable".to_owned(),
                 root_members.iter().map(|member| (*member).to_owned()).collect(),
@@ -1979,6 +2095,7 @@ mod tests {
             name: name.to_owned(),
             manifest: manifest.into(),
             rust_version: None,
+            metadata: serde_json::Value::Null,
             features: BTreeMap::new(),
             dependencies: BTreeMap::new(),
             workspace_dependencies: workspace_dependencies.iter().map(PathBuf::from).collect(),
@@ -2115,6 +2232,7 @@ mod tests {
             name: package_name.to_owned(),
             manifest: manifest.into(),
             rust_version: None,
+            metadata: serde_json::Value::Null,
             features: BTreeMap::new(),
             dependencies: BTreeMap::new(),
             workspace_dependencies: BTreeSet::new(),
@@ -2467,6 +2585,7 @@ mod tests {
             name: "testutil".to_owned(),
             manifest: manifest.clone(),
             rust_version: None,
+            metadata: serde_json::Value::Null,
             features: BTreeMap::new(),
             dependencies: BTreeMap::new(),
             workspace_dependencies: BTreeSet::new(),
@@ -2791,6 +2910,79 @@ mod tests {
             .cargo_targets()
             .iter()
             .any(|target| target.name() == "ui" && target.package() == "zerocopy"));
+        assert_eq!(
+            inventory.zerocopy_docs_rs_rustdoc_args(),
+            [
+                "--cfg",
+                "doc_cfg",
+                "--generate-link-to-definition",
+                "--extend-css",
+                "rustdoc/style.css",
+            ]
+        );
+    }
+
+    #[test]
+    fn docs_rs_rustdoc_args_fail_closed_on_malformed_metadata() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let policy = crate::policy::Policy::read(root.join("ci/zc.toml")).unwrap();
+        let collected = super::CollectedRepository::collect(&root, &policy).unwrap();
+
+        for (case, metadata) in [
+            ("missing tables", serde_json::json!({})),
+            (
+                "scalar instead of array",
+                serde_json::json!({"docs": {"rs": {"rustdoc-args": "--cfg"}}}),
+            ),
+            ("empty array", serde_json::json!({"docs": {"rs": {"rustdoc-args": []}}})),
+            ("non-string argument", serde_json::json!({"docs": {"rs": {"rustdoc-args": [true]}}})),
+            ("empty argument", serde_json::json!({"docs": {"rs": {"rustdoc-args": [""]}}})),
+            (
+                "control character",
+                serde_json::json!({"docs": {"rs": {"rustdoc-args": ["bad\nargument"]}}}),
+            ),
+            (
+                "argument-internal whitespace",
+                serde_json::json!({"docs": {"rs": {"rustdoc-args": ["two words"]}}}),
+            ),
+        ] {
+            let mut mutation = collected.clone();
+            mutation.packages.get_mut(Path::new("zerocopy/Cargo.toml")).unwrap().metadata =
+                metadata;
+
+            let errors = mutation.validate(&policy).unwrap_err();
+            assert!(
+                errors.errors().iter().any(|error| {
+                    error
+                        .location()
+                        .starts_with("zerocopy/Cargo.toml.package.metadata.docs.rs.rustdoc-args")
+                }),
+                "{case}: {errors}"
+            );
+        }
+    }
+
+    #[test]
+    fn docs_rs_arguments_are_owned_only_by_the_canonical_package() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let policy = crate::policy::Policy::read(root.join("ci/zc.toml")).unwrap();
+        let mut collected = super::CollectedRepository::collect(&root, &policy).unwrap();
+        let metadata =
+            collected.packages.get(Path::new("zerocopy/Cargo.toml")).unwrap().metadata.clone();
+        collected.packages.get_mut(Path::new("zerocopy/Cargo.toml")).unwrap().metadata =
+            serde_json::json!({});
+        collected
+            .packages
+            .get_mut(Path::new("zerocopy/zerocopy-derive/Cargo.toml"))
+            .unwrap()
+            .metadata = metadata;
+
+        let errors = collected.validate(&policy).unwrap_err();
+        assert!(
+            errors.errors().iter().any(|error| error.location()
+                == "zerocopy/Cargo.toml.package.metadata.docs.rs.rustdoc-args"),
+            "{errors}"
+        );
     }
 
     #[test]
