@@ -17,6 +17,10 @@
 //   cargo-zerocopy ci plan --event <event>    # prints selected CI work
 //   cargo-zerocopy ci explain --event <event> # explains included and excluded work
 //   cargo-zerocopy ci github-plan [...]        # writes checked Actions matrices
+//   cargo-zerocopy ci execute-build-cell [...] # executes one checked ordinary cell
+//   cargo-zerocopy ci execute-miri-cell [...]  # executes one checked Miri cell
+//
+// See ci/README.md for the ownership and update rules behind these commands.
 //
 // The meta-toolchain "all" instructs this script to run the provided command
 // once for each "major" toolchain (msrv, stable, nightly). This does not
