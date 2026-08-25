@@ -16,6 +16,8 @@ pub mod github;
 pub mod inventory;
 pub mod metadata;
 pub mod plan;
+pub mod planned_adapter;
 pub mod policy;
 pub mod semver_adapter;
 pub mod workflow;
+mod workflow_protocol;
