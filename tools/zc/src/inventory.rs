@@ -2394,6 +2394,41 @@ mod tests {
     }
 
     #[test]
+    fn build_rs_metadata_and_policy_toolchains_must_match_both_ways() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let policy = crate::policy::Policy::read(root.join("ci/zc.toml")).unwrap();
+        let mut collected = super::CollectedRepository::collect(&root, &policy).unwrap();
+
+        let stale_policy_id = policy
+            .toolchains()
+            .iter()
+            .find(|(_, toolchain)| toolchain.source() == crate::policy::ToolchainSource::BuildRs)
+            .map(|(id, _)| id.as_str().to_owned())
+            .expect("repository policy has a build-rs compatibility toolchain");
+        assert!(collected.toolchain_metadata.build_rs.remove(&stale_policy_id).is_some());
+        let missing_policy_id = "unplanned-build-rs-toolchain";
+        assert!(collected
+            .toolchain_metadata
+            .build_rs
+            .insert(missing_policy_id.to_owned(), "1.70.0".to_owned())
+            .is_none());
+
+        let diagnostic = collected.validate(&policy).unwrap_err().to_string();
+        assert!(
+            diagnostic.contains(&format!(
+                "build-rs metadata key `{missing_policy_id}` has no policy toolchain"
+            )),
+            "{diagnostic}"
+        );
+        assert!(
+            diagnostic.contains(&format!(
+                "toolchains.{stale_policy_id}: build-rs policy toolchain has no matching manifest metadata key"
+            )),
+            "{diagnostic}"
+        );
+    }
+
+    #[test]
     fn docs_rs_rustdoc_args_fail_closed_on_malformed_metadata() {
         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
         let policy = crate::policy::Policy::read(root.join("ci/zc.toml")).unwrap();

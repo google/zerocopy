@@ -68,5 +68,12 @@ env -u RUSTUP_TOOLCHAIN \
 # command must pin its own Cargo metadata invocation instead of inheriting this
 # deliberately invalid ambient override. Keep this command coordinated with
 # `tools/cargo-zerocopy/src/main.rs` and `tools/zc/src/cli.rs`.
+#
+# This audit also owns the build.rs compatibility-toolchain invariant. Typed
+# inventory requires the manifest metadata keys and policy descriptors to be
+# exactly equal, policy requires every descriptor to have nonempty scopes, and
+# planning validates those scopes for every event. Do not reconstruct that
+# relationship by parsing the generated Actions matrix: the workflow now
+# receives its matrix through `fromJSON`, and the policy is its source.
 RUSTUP_TOOLCHAIN=zerocopy-ci-intentionally-invalid \
   ../zerocopy/cargo.sh ci audit >/dev/null

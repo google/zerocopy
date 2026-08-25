@@ -2105,6 +2105,10 @@ const LEGACY_STANDALONE_SPECS: &[StandaloneSpec] = &[
         condition: ALWAYS,
         golden: None,
     },
+    // These two operations belong to the immutable source commit named by the
+    // baseline manifest. The live shell check was retired after typed
+    // inventory and policy validation took ownership of this invariant; keep
+    // the historical operations here so parity still proves what it replaced.
     StandaloneSpec {
         obligation: "check-toolchains",
         job: "check-all-toolchains-tested",

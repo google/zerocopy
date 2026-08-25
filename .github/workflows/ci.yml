@@ -697,20 +697,6 @@ jobs:
       - name: Check MSRV is minimal
         run: ./ci/check_msrv_is_minimal.sh
 
-  check-all-toolchains-tested:
-    runs-on: ubuntu-latest
-    name: Check that all toolchains listed in Cargo.toml are tested in CI
-    steps:
-      - name: Install yq (for YAML parsing)
-        # FIXME(https://github.com/mikefarah/yq/issues/2587): Remove
-        # `GONOSUMDB` once this bug is fixed.
-        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v4.44.1
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Run check
-        run: cd zerocopy && ./ci/check_all_toolchains_tested.sh
-
   check-job-dependencies:
     runs-on: ubuntu-latest
     name: Check all-jobs-succeeded depends on all jobs
@@ -863,7 +849,7 @@ jobs:
     # `planned_adapter/aggregate.rs` audits the minimum path from the planner
     # and both executors through `check-job-dependencies`. That script remains
     # the owner of every other job in this complete dependency inventory.
-    needs: [build_test, miri, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_tools, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env, plan_ci]
+    needs: [build_test, miri, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_tools, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env, plan_ci]
     steps:
       - name: Reject workflow cancellation
         if: ${{ cancelled() }}
