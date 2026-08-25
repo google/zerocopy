@@ -29,7 +29,6 @@ workflow	job	role
 .github/workflows/ci.yml	all-jobs-succeed	aggregate
 .github/workflows/ci.yml	build_docker_env	static-ci
 .github/workflows/ci.yml	build_test	planned
-.github/workflows/ci.yml	check-all-toolchains-tested	static-ci
 .github/workflows/ci.yml	check-job-dependencies	static-ci
 .github/workflows/ci.yml	check-todo	static-ci
 .github/workflows/ci.yml	check_actions	static-ci
