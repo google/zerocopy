@@ -180,3 +180,18 @@ fi
 # testing them.
 RUSTUP_TOOLCHAIN=zerocopy-ci-intentionally-invalid \
   ./cargo.sh test --locked --workspace
+
+# Exercise the public repository-level route in addition to the library tests.
+# The wrapper must establish the expected working directory, and the inventory
+# command must pin its own Cargo metadata invocation instead of inheriting this
+# deliberately invalid ambient override. Keep this command coordinated with
+# `tools/cargo-zerocopy/src/main.rs` and `tools/zc/src/cli.rs`.
+#
+# This audit owns the build.rs toolchain invariant.
+# Inventory requires the manifest metadata keys and policy descriptors to be
+# exactly equal, policy requires every descriptor to have nonempty scopes, and
+# planning validates those scopes for every event. Do not reconstruct that
+# relationship from workflow syntax: the validated inventory and policy are
+# the checked source for this audit.
+RUSTUP_TOOLCHAIN=zerocopy-ci-intentionally-invalid \
+  ../zerocopy/cargo.sh ci audit >/dev/null
