@@ -48,7 +48,9 @@ const _: () = {
             <U>::pointer_to_metadata(ptr as *mut _)
         }
     }
+    #[allow(missing_debug_implementations)]
     struct __Zerocopy_Field_0;
+    #[allow(missing_debug_implementations)]
     struct __Zerocopy_Field_1;
     unsafe impl<T, U> ::zerocopy::util::macro_util::Field<__Zerocopy_Field_0>
     for Foo<T, U> {
@@ -61,6 +63,7 @@ const _: () = {
     #[repr(C)]
     #[repr(align(2))]
     #[doc(hidden)]
+    #[allow(missing_debug_implementations)]
     struct __ZerocopyKnownLayoutMaybeUninit<T, U>(
         ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
             <Foo<T, U> as ::zerocopy::util::macro_util::Field<__Zerocopy_Field_0>>::Type,
