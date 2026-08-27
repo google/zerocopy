@@ -62,6 +62,16 @@ use crate::{
 
 const PRIMARY_PACKAGE_ID: &str = "zerocopy";
 
+// This identity and feature are an intentional cross-file contract. The
+// explicit `[[test]]` entry in `zerocopy/Cargo.toml` lets Cargo decide whether
+// `zerocopy/tests/ui.rs` is enabled for a feature selection. That target then
+// asks `zerocopy/testutil` to reconstruct the same selection for its nested
+// fixture build. If the target or its requirement changes, both sides of that
+// protocol and the coverage proof below need review together.
+const PRIMARY_UI_TEST_NAME: &str = "ui";
+const PRIMARY_UI_TEST_SOURCE: &str = "zerocopy/tests/ui.rs";
+const PRIMARY_UI_REQUIRED_FEATURE: &str = "derive";
+
 // This checked-in file records only the target/version pairs selected by
 // policy. Inventory cannot ask every compiler directly: doing so would make
 // the unprivileged plan job download all of the historical build-rs toolchains
@@ -1096,6 +1106,7 @@ impl CollectedRepository {
         );
         validate_workspace_package_classification(policy, &self.packages, &mut errors);
         validate_cargo_target_classification(&self.packages, &mut errors);
+        validate_primary_ui_test_contract(&self.packages, &mut errors);
         let zerocopy_docs_rs_rustdoc_args =
             validate_zerocopy_docs_rs_rustdoc_args(policy, &self.packages, &mut errors);
 
@@ -1140,6 +1151,7 @@ impl CollectedRepository {
         }
 
         validate_non_nightly_all_feature_scopes(policy, &policy_packages, &mut errors);
+        validate_integration_test_native_execution(policy, &policy_packages, &mut errors);
         validate_policy_targets(policy, &mut errors);
         let build_rs_versions = validate_build_rs_contract(
             &self.primary_manifest_source,
@@ -2075,6 +2087,59 @@ fn validate_cargo_target_classification(
     }
 }
 
+/// Checks the manifest-owned gate for the root UI integration target.
+///
+/// Cargo, rather than a workflow condition, decides whether this target is
+/// enabled for a semantic feature profile. Requiring the exact target and the
+/// exact feature keeps that decision coordinated with the fixture compiler in
+/// `zerocopy/testutil/src/lib.rs`. A rename must fail too: otherwise deleting
+/// the explicit manifest entry could turn this into an ordinary auto-discovered
+/// target with no `required-features` gate.
+fn validate_primary_ui_test_contract(
+    packages: &BTreeMap<PathBuf, CargoPackage>,
+    errors: &mut ErrorSink,
+) {
+    let manifest = Path::new("zerocopy/Cargo.toml");
+    let location = "cargo.targets.zerocopy.ui";
+    let Some(package) = packages.get(manifest) else {
+        // Package-to-policy validation reports the missing canonical package.
+        return;
+    };
+    let mut targets = package.targets.iter().filter(|target| is_primary_ui_test(target));
+    let Some(target) = targets.next() else {
+        errors.push(
+            location,
+            format!(
+                "canonical UI integration target `{PRIMARY_UI_TEST_NAME}` at `{PRIMARY_UI_TEST_SOURCE}` is missing"
+            ),
+        );
+        return;
+    };
+    if targets.next().is_some() {
+        errors.push(location, "canonical UI integration target is reported more than once");
+        return;
+    }
+
+    let expected = BTreeSet::from([PRIMARY_UI_REQUIRED_FEATURE.to_owned()]);
+    if target.required_features != expected {
+        errors.push(
+            location,
+            format!(
+                "canonical UI integration target must require exactly {}; found {}",
+                display_set(&expected),
+                display_set(&target.required_features)
+            ),
+        );
+    }
+}
+
+fn is_primary_ui_test(target: &CargoTarget) -> bool {
+    target.package == PRIMARY_PACKAGE_ID
+        && target.name == PRIMARY_UI_TEST_NAME
+        && has_only_kind(target, "test")
+        && target.source == Path::new(PRIMARY_UI_TEST_SOURCE)
+}
+
 fn has_only_kind(target: &CargoTarget, kind: &str) -> bool {
     target.kinds.len() == 1 && target.kinds.contains(kind)
 }
@@ -2523,6 +2588,208 @@ fn validate_target_feature_references(
                 );
             }
         }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+struct NativeExecutionOwnership {
+    reduced: bool,
+    full: bool,
+}
+
+/// Proves that Cargo can execute every enabled integration target.
+///
+/// `CargoTarget::required_features` and the Cargo feature graph determine
+/// which package/profile pairs enable a target. `ci/zc.toml` independently
+/// assigns those pairs to toolchain scopes and target sets. The ordinary
+/// executor runs `cargo test` only for [`TargetMode::Native`]; cross targets
+/// compile tests and Thumb checks only the library. Join those typed facts here
+/// so a future feature, profile, scope, or target edit cannot leave an enabled
+/// integration test with compile-only coverage.
+///
+/// Coverage is required for every configured event class. A reduced event
+/// needs a native target marked `pr_eligible`; full events select every cell,
+/// so any native target owns that side. Only the manifest MSRV and pinned
+/// stable/nightly toolchains can own execution: both UI test entry points
+/// deliberately ignore historical build-rs boundary compilers. Applying that
+/// rule to all integration targets avoids a target-specific exception and
+/// guarantees every profile has coverage on a canonical supported compiler.
+/// This deliberately does not prescribe a particular compiler or target
+/// triple. The independent native-target allow-list above has already
+/// constrained what the current runner can execute, while this check asks only
+/// for the narrow semantic guarantee the integration target needs.
+fn validate_integration_test_native_execution(
+    policy: &Policy,
+    packages: &BTreeMap<String, PackageInventory>,
+    errors: &mut ErrorSink,
+) {
+    let ownership = native_execution_ownership(policy);
+    let has_reduced_events = !policy.events().reduced().is_empty();
+    let has_full_events = !policy.events().full().is_empty();
+
+    for (package_id, package_policy) in policy.packages() {
+        let Some(package) = packages.get(package_id.as_str()) else {
+            // Package inventory validation owns a missing manifest or package.
+            continue;
+        };
+        for target in package
+            .cargo
+            .targets
+            .iter()
+            .filter(|target| has_only_kind(target, "test") && target.test)
+        {
+            let location = format!("packages.{}.targets.{}", package_id.as_str(), target.name);
+            // The root UI suite is part of the stable compiler contract, not
+            // merely an all-features nightly smoke test. Keep this assertion
+            // semantic: `zerocopy/Cargo.toml` may reorganize the stable
+            // aggregate freely, but its closure must continue to contain the
+            // exact `derive` requirement checked above. Default-profile
+            // eligibility may change without duplicating that choice here.
+            if package_id.as_str() == PRIMARY_PACKAGE_ID
+                && is_primary_ui_test(target)
+                && !profile_enables_target(FeatureProfile::StableAggregate, package, target)
+            {
+                errors.push(
+                    &location,
+                    "canonical UI integration test must remain enabled by the stable aggregate feature profile",
+                );
+            }
+            let enabled_profiles =
+                package_policy
+                    .profiles()
+                    .iter()
+                    .filter(|profile_id| {
+                        policy.features().profiles().get(profile_id.as_str()).is_some_and(
+                            |profile| profile_enables_target(*profile, package, target),
+                        )
+                    })
+                    .collect::<Vec<_>>();
+
+            if enabled_profiles.is_empty() {
+                errors.push(
+                    &location,
+                    format!(
+                        "integration test `{}` requires {}, which no semantic feature profile declared for package `{}` enables",
+                        target.name,
+                        display_set(&target.required_features),
+                        package_id.as_str(),
+                    ),
+                );
+                continue;
+            }
+
+            for profile_id in enabled_profiles {
+                let selected = ownership
+                    .get(&(package_id.as_str(), profile_id.as_str()))
+                    .copied()
+                    .unwrap_or_default();
+                if has_reduced_events && !selected.reduced {
+                    errors.push(
+                        &location,
+                        format!(
+                            "integration test `{}` is enabled by profile `{}`, but no ordinary toolchain scope selects `{}/{}` on a PR-eligible native target",
+                            target.name,
+                            profile_id.as_str(),
+                            package_id.as_str(),
+                            profile_id.as_str(),
+                        ),
+                    );
+                }
+                if has_full_events && !selected.full {
+                    errors.push(
+                        &location,
+                        format!(
+                            "integration test `{}` is enabled by profile `{}`, but no ordinary toolchain scope selects `{}/{}` on a native target",
+                            target.name,
+                            profile_id.as_str(),
+                            package_id.as_str(),
+                            profile_id.as_str(),
+                        ),
+                    );
+                }
+            }
+        }
+    }
+}
+
+/// Returns whether Cargo enables a target under one semantic profile.
+///
+/// Keep this exhaustive match coordinated with `plan::feature_selector`, the
+/// sole translation from the same enum to Cargo arguments. Adding a profile
+/// meaning then requires both command generation and target reachability to be
+/// updated before the Rust code compiles.
+fn profile_enables_target(
+    profile: FeatureProfile,
+    package: &PackageInventory,
+    target: &CargoTarget,
+) -> bool {
+    match profile {
+        FeatureProfile::Default => target.required_features.is_subset(&package.default_features),
+        FeatureProfile::NoDefault => target.required_features.is_empty(),
+        FeatureProfile::StableAggregate => {
+            target.required_features.is_subset(&package.stable_features)
+        }
+        FeatureProfile::All => target
+            .required_features
+            .iter()
+            .all(|feature| package.cargo.features.contains_key(feature)),
+    }
+}
+
+/// Indexes ordinary package/profile selections which can execute tests.
+///
+/// A scope can use a broad target set and many toolchains can own the same
+/// package/profile pair. Collapse those details to the two event-class facts
+/// needed above while retaining fail-closed lookup for every policy reference.
+fn native_execution_ownership(policy: &Policy) -> BTreeMap<(&str, &str), NativeExecutionOwnership> {
+    let mut ownership = BTreeMap::new();
+    for toolchain in policy.toolchains().values() {
+        if !is_canonical_execution_toolchain(toolchain.source()) {
+            continue;
+        }
+        for scope in toolchain.scopes() {
+            let Some(targets) = policy.target_sets().get(scope.target_set().as_str()) else {
+                // Policy validation owns an unknown target set.
+                continue;
+            };
+            let mut scope_ownership = NativeExecutionOwnership::default();
+            for target_id in targets {
+                let Some(target) = policy.targets().get(target_id.as_str()) else {
+                    // Policy validation owns an unknown target.
+                    continue;
+                };
+                if target.mode() == TargetMode::Native {
+                    scope_ownership.full = true;
+                    scope_ownership.reduced |= target.pr_eligible();
+                }
+            }
+            for package_id in scope.packages() {
+                for profile_id in scope.profiles() {
+                    let selected = ownership
+                        .entry((package_id.as_str(), profile_id.as_str()))
+                        .or_insert_with(NativeExecutionOwnership::default);
+                    selected.full |= scope_ownership.full;
+                    selected.reduced |= scope_ownership.reduced;
+                }
+            }
+        }
+    }
+    ownership
+}
+
+/// Returns whether integration tests regard this compiler as execution.
+///
+/// Both UI suites use `cfg_attr` to ignore their test functions on historical
+/// build-rs boundary compilers. Those compilers remain useful compilation
+/// coverage, but letting them satisfy this proof could turn every UI result
+/// into an ignored test. The three canonical sources are the semantic compiler
+/// classes on which CI promises actual integration-test behavior.
+fn is_canonical_execution_toolchain(source: ToolchainSource) -> bool {
+    match source {
+        ToolchainSource::ManifestRustVersion
+        | ToolchainSource::PinnedStable
+        | ToolchainSource::PinnedNightly => true,
+        ToolchainSource::BuildRs => false,
     }
 }
 
@@ -3967,7 +4234,10 @@ mod tests {
         CollectError, CompilerFloorSource, Dependency, ErrorSink, PackageCompilerFloor,
         ResolvedPackage, RustEdition, RustTargetSupport, RustTargetSupportEntry,
     };
-    use crate::{metadata::ToolchainMetadata, policy::ToolchainSource};
+    use crate::{
+        metadata::ToolchainMetadata,
+        policy::{FeatureProfile, ToolchainSource},
+    };
 
     fn feature_package(root_members: &[&str]) -> CargoPackage {
         CargoPackage {
@@ -4107,6 +4377,18 @@ mod tests {
                 "{target}: {errors}"
             );
         }
+    }
+
+    #[test]
+    fn historical_build_rs_toolchains_cannot_own_integration_execution() {
+        for source in [
+            ToolchainSource::ManifestRustVersion,
+            ToolchainSource::PinnedStable,
+            ToolchainSource::PinnedNightly,
+        ] {
+            assert!(super::is_canonical_execution_toolchain(source));
+        }
+        assert!(!super::is_canonical_execution_toolchain(ToolchainSource::BuildRs));
     }
 
     fn live_target_support_inputs() -> (crate::policy::Policy, ToolchainMetadata, RustTargetSupport)
@@ -4682,6 +4964,43 @@ mod tests {
         assert!(errors.0.iter().all(|error| error.location.contains("broken")));
     }
 
+    #[test]
+    fn integration_target_enablement_follows_semantic_feature_closures() {
+        let mut cargo = feature_package(&["derive"]);
+        add_feature(&mut cargo, "derive", &[]);
+        add_feature(&mut cargo, "float-nightly", &[]);
+        let package = super::PackageInventory {
+            cargo,
+            stable_features: ["derive", "stable"].into_iter().map(str::to_owned).collect(),
+            nightly_features: ["float-nightly"].into_iter().map(str::to_owned).collect(),
+            default_features: BTreeSet::new(),
+        };
+        let mut target = cargo_target(
+            "example",
+            "integration",
+            &["test"],
+            "example/tests/integration.rs",
+            (true, false, false),
+        );
+
+        for (requirements, expected) in [
+            (&[][..], [true, true, true, true]),
+            (&["derive"][..], [false, false, true, true]),
+            (&["float-nightly"][..], [false, false, false, true]),
+        ] {
+            target.required_features =
+                requirements.iter().map(|feature| (*feature).to_owned()).collect();
+            let actual = [
+                FeatureProfile::Default,
+                FeatureProfile::NoDefault,
+                FeatureProfile::StableAggregate,
+                FeatureProfile::All,
+            ]
+            .map(|profile| super::profile_enables_target(profile, &package, &target));
+            assert_eq!(actual, expected, "requirements {requirements:?}");
+        }
+    }
+
     fn cargo_target(
         package: &str,
         name: &str,
@@ -4707,6 +5026,18 @@ mod tests {
         }
     }
 
+    fn mutate_target(
+        package: &mut CargoPackage,
+        name: &str,
+        mutate: impl FnOnce(&mut CargoTarget),
+    ) {
+        let mut target =
+            package.targets.iter().find(|target| target.name == name).cloned().unwrap();
+        assert!(package.targets.remove(&target));
+        mutate(&mut target);
+        assert!(package.targets.insert(target));
+    }
+
     fn target_classification_errors(
         manifest: &str,
         package_name: &str,
@@ -4727,6 +5058,69 @@ mod tests {
         let mut errors = ErrorSink::default();
         validate_cargo_target_classification(&packages, &mut errors);
         errors.finish()
+    }
+
+    fn primary_ui_contract_errors(required_features: &[&str]) -> super::InventoryErrors {
+        let mut target =
+            cargo_target("zerocopy", "ui", &["test"], "zerocopy/tests/ui.rs", (true, false, false));
+        target.required_features =
+            required_features.iter().map(|feature| (*feature).to_owned()).collect();
+        primary_ui_contract_errors_for(Some(target))
+    }
+
+    fn primary_ui_contract_errors_for(target: Option<CargoTarget>) -> super::InventoryErrors {
+        let package = CargoPackage {
+            name: "zerocopy".to_owned(),
+            manifest: "zerocopy/Cargo.toml".into(),
+            rust_version: None,
+            editions: ["2015".to_owned()].into_iter().collect(),
+            metadata: serde_json::Value::Null,
+            features: BTreeMap::new(),
+            dependencies: BTreeMap::new(),
+            workspace_dependencies: BTreeSet::new(),
+            targets: target.into_iter().collect(),
+        };
+        let packages = [(PathBuf::from("zerocopy/Cargo.toml"), package)].into_iter().collect();
+        let mut errors = ErrorSink::default();
+        super::validate_primary_ui_test_contract(&packages, &mut errors);
+        errors.finish()
+    }
+
+    #[test]
+    fn primary_ui_target_requires_exactly_derive() {
+        assert!(primary_ui_contract_errors(&["derive"]).errors().is_empty());
+
+        for (case, features) in [
+            ("missing derive", &[][..]),
+            ("changed derive", &["alloc"][..]),
+            ("extra requirement", &["alloc", "derive"][..]),
+        ] {
+            let errors = primary_ui_contract_errors(features);
+            assert_eq!(errors.errors().len(), 1, "{case}: {errors}");
+            assert!(errors.errors()[0].message().contains("must require exactly [`derive`]"));
+        }
+    }
+
+    #[test]
+    fn primary_ui_target_identity_is_exact() {
+        let missing = primary_ui_contract_errors_for(None);
+        assert_eq!(missing.errors().len(), 1, "{missing}");
+        assert!(missing.errors()[0].message().contains("canonical UI integration target"));
+
+        for (case, name, source) in [
+            ("renamed", "renamed-ui", "zerocopy/tests/ui.rs"),
+            ("moved", "ui", "zerocopy/tests/moved-ui.rs"),
+        ] {
+            let mut target =
+                cargo_target("zerocopy", name, &["test"], source, (true, false, false));
+            target.required_features = BTreeSet::from(["derive".to_owned()]);
+            let errors = primary_ui_contract_errors_for(Some(target));
+            assert_eq!(errors.errors().len(), 1, "{case}: {errors}");
+            assert!(
+                errors.errors()[0].message().contains("canonical UI integration target"),
+                "{case}: {errors}"
+            );
+        }
     }
 
     #[test]
@@ -5962,6 +6356,135 @@ mod tests {
                 "--extend-css",
                 "rustdoc/style.css",
             ]
+        );
+    }
+
+    #[test]
+    fn repository_audit_rejects_ui_required_feature_drift() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let policy = crate::policy::Policy::read(root.join("ci/zc.toml")).unwrap();
+        let collected = super::CollectedRepository::collect(&root, &policy).unwrap();
+
+        for (case, features) in [("missing derive", &[][..]), ("changed derive", &["alloc"][..])] {
+            let mut mutation = collected.clone();
+            let zerocopy = mutation.packages.get_mut(Path::new("zerocopy/Cargo.toml")).unwrap();
+            mutate_target(zerocopy, "ui", |target| {
+                target.required_features =
+                    features.iter().map(|feature| (*feature).to_owned()).collect();
+            });
+
+            let errors = mutation.validate(&policy).unwrap_err();
+            assert!(
+                errors.errors().iter().any(|error| {
+                    error.location() == "cargo.targets.zerocopy.ui"
+                        && error.message().contains("must require exactly [`derive`]")
+                }),
+                "{case}: {errors}"
+            );
+        }
+    }
+
+    #[test]
+    fn root_ui_test_remains_in_the_stable_feature_profile() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let policy = crate::policy::Policy::read(root.join("ci/zc.toml")).unwrap();
+        let mut collected = super::CollectedRepository::collect(&root, &policy).unwrap();
+        let zerocopy = collected.packages.get_mut(Path::new("zerocopy/Cargo.toml")).unwrap();
+        let stable_root = policy.features().stable_feature_root().as_str();
+        assert!(zerocopy.features.get_mut(stable_root).unwrap().remove("derive"));
+
+        let errors = collected.validate(&policy).unwrap_err();
+        assert!(
+            errors.errors().iter().any(|error| {
+                error.location() == "packages.zerocopy.targets.ui"
+                    && error
+                        .message()
+                        .contains("must remain enabled by the stable aggregate feature profile")
+            }),
+            "{errors}"
+        );
+    }
+
+    #[test]
+    fn integration_requirements_must_be_reachable_from_a_semantic_profile() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let source = std::fs::read_to_string(root.join("ci/zc.toml")).unwrap();
+        let all_profile = "[[feature_profiles]]\nid = \"all\"\nselection = \"all\"\n\n";
+        assert_eq!(source.matches(all_profile).count(), 1);
+        assert_eq!(source.matches("profiles = [\"default\", \"stable\", \"all\"]").count(), 2);
+        assert_eq!(source.matches("profiles = [\"stable\", \"all\"]").count(), 1);
+        let source = source
+            .replacen(all_profile, "", 1)
+            .replace(
+                "profiles = [\"default\", \"stable\", \"all\"]",
+                "profiles = [\"default\", \"stable\"]",
+            )
+            .replace("profiles = [\"stable\", \"all\"]", "profiles = [\"stable\"]");
+        let policy = crate::policy::Policy::parse(&source).unwrap();
+        let mut collected = super::CollectedRepository::collect(&root, &policy).unwrap();
+        let zerocopy = collected.packages.get_mut(Path::new("zerocopy/Cargo.toml")).unwrap();
+        // `float-nightly` exists, so the ordinary required-feature reference
+        // check accepts it. With the all-features semantic profile removed,
+        // however, no declared selection can enable this target.
+        mutate_target(zerocopy, "include", |target| {
+            target.required_features = BTreeSet::from(["float-nightly".to_owned()]);
+        });
+
+        let errors = collected.validate(&policy).unwrap_err();
+        assert!(
+            errors.errors().iter().any(|error| {
+                error.location() == "packages.zerocopy.targets.include"
+                    && error.message().contains(
+                        "which no semantic feature profile declared for package `zerocopy` enables",
+                    )
+            }),
+            "{errors}"
+        );
+    }
+
+    #[test]
+    fn integration_profiles_need_native_execution_on_reduced_events() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let source = std::fs::read_to_string(root.join("ci/zc.toml")).unwrap();
+        let native_pr_target = "mode = \"native\"\npr_eligible = true";
+        assert_eq!(source.matches(native_pr_target).count(), 2);
+        let policy = crate::policy::Policy::parse(
+            &source.replace(native_pr_target, "mode = \"native\"\npr_eligible = false"),
+        )
+        .unwrap();
+        let collected = super::CollectedRepository::collect(&root, &policy).unwrap();
+
+        let errors = collected.validate(&policy).unwrap_err();
+        assert!(
+            errors.errors().iter().any(|error| {
+                error.location() == "packages.zerocopy.targets.include"
+                    && error.message().contains(
+                        "enabled by profile `default`, but no ordinary toolchain scope selects `zerocopy/default` on a PR-eligible native target",
+                    )
+            }),
+            "{errors}"
+        );
+    }
+
+    #[test]
+    fn integration_profiles_need_native_execution_on_full_events() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let source = std::fs::read_to_string(root.join("ci/zc.toml")).unwrap();
+        assert_eq!(source.matches("mode = \"native\"").count(), 2);
+        let policy =
+            crate::policy::Policy::parse(&source.replace("mode = \"native\"", "mode = \"cross\""))
+                .unwrap();
+        let collected = super::CollectedRepository::collect(&root, &policy).unwrap();
+
+        let errors = collected.validate(&policy).unwrap_err();
+        assert!(
+            errors.errors().iter().any(|error| {
+                error.location() == "packages.zerocopy.targets.include"
+                    && error.message().contains(
+                        "enabled by profile `default`, but no ordinary toolchain scope selects `zerocopy/default` on a native target",
+                    )
+            }),
+            "{errors}"
         );
     }
 
