@@ -420,6 +420,70 @@ fn package_id_command(version: &str, package: &str, repository_root: Option<&Pat
     command
 }
 
+fn configure_delegated_cargo_command(
+    command: &mut Command,
+    rustdocflags: &str,
+    feature_selection_args: &[String],
+    repository_root: Option<&Path>,
+    default_target_dir: Option<PathBuf>,
+    args: Vec<String>,
+    mut fully_qualified_package: impl FnMut(&str) -> String,
+) {
+    command.env("RUSTDOCFLAGS", rustdocflags);
+    set_ui_test_feature_args(command, feature_selection_args);
+
+    // Cargo must run from the repository root for Miri: this deliberately
+    // avoids discovering zerocopy/.cargo/config.toml, while retaining every
+    // wrapper-added flag and environment. The wrapper itself remains in the
+    // zerocopy directory.
+    if let Some(root) = repository_root {
+        command.current_dir(root);
+        command.env_remove(EXECUTION_CONTEXT_ENV);
+    }
+
+    if let Some(default_target_dir) = default_target_dir {
+        // The ordinary wrapper uses a path relative to its `zerocopy` cwd.
+        // Root context moves only the Cargo child, so keep the historical
+        // target location explicit.
+        command.env("CARGO_TARGET_DIR", default_target_dir);
+    }
+
+    let mut args = args.into_iter();
+    // Replace `-p<package>`, `-p <package>` and `--package <package` with the
+    // equivalent of `-p $(cargo pkgid -p <package>)`. We do this because
+    // unqualified package names are sometimes ambiguous if a dev-dependency
+    // has taken a dependency on an earlier version of zerocopy or
+    // zerocopy-derive. Every other argv element crosses this final wrapper
+    // boundary unchanged.
+    while let Some(arg) = args.next() {
+        if arg == "-p" || arg == "--package" {
+            command.arg(&arg);
+            let Some(arg) = args.next() else {
+                break;
+            };
+            command.arg(fully_qualified_package(&arg));
+        } else if let Some(package) = arg.strip_prefix("-p") {
+            command.arg("-p");
+            command.arg(fully_qualified_package(package));
+        } else if arg == "--" {
+            command.arg("--");
+            command.args(args);
+            break;
+        } else if arg == "--target" {
+            command.arg(&arg);
+            if let Some(target) = args.next() {
+                command.arg(&target);
+                command.env("ZEROCOPY_UI_TEST_TARGET", target);
+            }
+        } else if let Some(target) = arg.strip_prefix("--target=") {
+            command.arg(&arg);
+            command.env("ZEROCOPY_UI_TEST_TARGET", target);
+        } else {
+            command.arg(arg);
+        }
+    }
+}
+
 fn delegate_cargo() -> Result<(), Error> {
     let mut args = env::args();
     let this = args.next().unwrap();
@@ -515,8 +579,6 @@ fn delegate_cargo() -> Result<(), Error> {
 
                 install_targets_or_exit(version, &targets)?;
 
-                let mut args = args_vec.into_iter();
-
                 let env_rustflags = env::vars()
                     .filter_map(|(k, v)| if k == "RUSTFLAGS" { Some(v) } else { None })
                     .next()
@@ -537,30 +599,23 @@ fn delegate_cargo() -> Result<(), Error> {
                 // Rustdoc needs the wrapper's cfgs and the caller's RUSTFLAGS
                 // in addition to any rustdoc-specific flags supplied through
                 // RUSTDOCFLAGS.
+                //
+                // A typed CI cell reaches this final Cargo construction only
+                // after `execution::preflight_ci_cargo_environment` rejects
+                // Cargo configuration and test-profile environment overrides.
+                // Native `execution::build_operations` relies on the resulting
+                // `cargo test` retaining Cargo's default inheritance from the
+                // dev profile. Keep this command transparent to modeled argv
+                // and do not add `--profile`, `--config`, or
+                // `CARGO_PROFILE_TEST_*` here. The helper's unit test makes
+                // that final-boundary assumption load-bearing.
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
-                cmd.env("RUSTDOCFLAGS", &rustdocflags);
-                set_ui_test_feature_args(&mut cmd, &feature_selection_args);
-
-                // Cargo must run from the repository root for Miri: this
-                // deliberately avoids discovering zerocopy/.cargo/config.toml,
-                // while retaining every wrapper-added flag and environment.
-                // The wrapper itself remains in the zerocopy directory.
-                if let Some(root) = &repository_root {
-                    cmd.current_dir(root);
-                    cmd.env_remove(EXECUTION_CONTEXT_ENV);
-                }
-
-                if env::var("CARGO_TARGET_DIR").is_ok() {
+                let cargo_target_dir_is_set = env::var("CARGO_TARGET_DIR").is_ok();
+                if cargo_target_dir_is_set {
                     eprintln!("[cargo-zerocopy] WARNING: `CARGO_TARGET_DIR` is set - this may cause `cargo-zerocopy` to behave unexpectedly");
-                } else {
-                    // The ordinary wrapper uses a path relative to its
-                    // `zerocopy` cwd. Root context moves only the Cargo child,
-                    // so keep the historical target location explicit.
-                    cmd.env(
-                        "CARGO_TARGET_DIR",
-                        default_target_dir(name, repository_root.as_deref()),
-                    );
                 }
+                let configured_target_dir = (!cargo_target_dir_is_set)
+                    .then(|| default_target_dir(name, repository_root.as_deref()));
 
                 // Computes the fully-qualified package name of workspace package `p`.
                 let fqpn = |p: &str| {
@@ -568,39 +623,15 @@ fn delegate_cargo() -> Result<(), Error> {
                         package_id_command(version, p, repository_root.as_deref()).output_or_exit();
                     String::from_utf8(output.stdout).unwrap().trim().to_string()
                 };
-
-                // Replace `-p<package>`, `-p <package>` and `--package <package`
-                // with the equivalent of `-p $(cargo pkgid -p <package>)`. We do
-                // this because unqualified package names are sometimes ambiguous
-                // if a dev-dependency has taken a dependency on an earlier
-                // version of zerocopy or zerocopy-derive.
-                while let Some(arg) = args.next() {
-                    if arg == "-p" || arg == "--package" {
-                        cmd.arg(&arg);
-                        let Some(arg) = args.next() else {
-                            break;
-                        };
-                        cmd.arg(fqpn(&arg));
-                    } else if let Some(package) = arg.strip_prefix("-p") {
-                        cmd.arg("-p");
-                        cmd.arg(fqpn(package));
-                    } else if arg == "--" {
-                        cmd.arg("--");
-                        cmd.args(args);
-                        break;
-                    } else if arg == "--target" {
-                        cmd.arg(&arg);
-                        if let Some(target) = args.next() {
-                            cmd.arg(&target);
-                            cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
-                        }
-                    } else if let Some(target) = arg.strip_prefix("--target=") {
-                        cmd.arg(&arg);
-                        cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
-                    } else {
-                        cmd.arg(arg);
-                    }
-                }
+                configure_delegated_cargo_command(
+                    &mut cmd,
+                    &rustdocflags,
+                    &feature_selection_args,
+                    repository_root.as_deref(),
+                    configured_target_dir,
+                    args_vec,
+                    fqpn,
+                );
 
                 cmd.execute();
 
@@ -642,9 +673,9 @@ mod tests {
     use std::{ffi::OsStr, path::Path, process::Command};
 
     use super::{
-        capture_feature_selection_args, default_target_dir, package_id_command,
-        parse_execution_context, set_ui_test_feature_args, validate_execution_context,
-        EXECUTION_CONTEXT_ENV, MIRI_REPOSITORY_ROOT_CONTEXT,
+        capture_feature_selection_args, configure_delegated_cargo_command, default_target_dir,
+        package_id_command, parse_execution_context, rustup, set_ui_test_feature_args,
+        validate_execution_context, EXECUTION_CONTEXT_ENV, MIRI_REPOSITORY_ROOT_CONTEXT,
     };
 
     fn strings(args: &[&str]) -> Vec<String> {
@@ -707,6 +738,53 @@ mod tests {
         set_ui_test_feature_args(&mut command, &[]);
         assert_eq!(command.get_envs().count(), 1);
         assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT", "0");
+    }
+
+    #[test]
+    fn final_cargo_delegation_preserves_native_ci_args_and_profile_boundary() {
+        let modeled = strings(&[
+            "test",
+            "--package",
+            "zerocopy",
+            "--target",
+            "x86_64-unknown-linux-gnu",
+            "--no-default-features",
+            "--features",
+            "__internal_use_only_features_that_work_on_stable",
+            "--verbose",
+        ]);
+        let features = capture_feature_selection_args(&modeled);
+        let mut command =
+            rustup(["run", "stable-version", "cargo"], Some(("RUSTFLAGS", "modeled rustflags")));
+
+        configure_delegated_cargo_command(
+            &mut command,
+            "modeled rustdocflags",
+            &features,
+            None,
+            Some(default_target_dir("stable", None)),
+            modeled.clone(),
+            str::to_owned,
+        );
+
+        let delegated = command.get_args().skip(3).collect::<Vec<_>>();
+        assert_eq!(
+            delegated,
+            modeled.iter().map(OsStr::new).collect::<Vec<_>>(),
+            "the final wrapper may rewrite package values, but must not add, remove, or reorder flags"
+        );
+        assert!(!delegated.iter().any(|argument| {
+            let argument = argument.to_string_lossy();
+            argument == "--release"
+                || argument == "-r"
+                || argument == "--profile"
+                || argument.starts_with("--profile=")
+                || argument == "--config"
+                || argument.starts_with("--config=")
+        }));
+        assert!(!command
+            .get_envs()
+            .any(|(name, _)| { name.to_string_lossy().starts_with("CARGO_PROFILE_TEST_") }));
     }
 
     #[test]

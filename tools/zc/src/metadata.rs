@@ -65,6 +65,20 @@ impl ToolchainMetadata {
         let manifest: Manifest = toml::from_str(source)
             .map_err(|source| ReadMetadataError::Parse { path: path.to_path_buf(), source })?;
 
+        // `execution::build_operations` deliberately uses one native
+        // `cargo test` invocation in place of separate dev-profile build and
+        // test passes. Cargo's test profile inherits the dev profile by
+        // default, so those artifacts have the same profile settings unless
+        // the workspace root declares `[profile.test]`. Reject every TOML
+        // spelling of that table here, before either inventory or the
+        // executor can rely on the consolidation. The executor separately
+        // rejects runner-owned Cargo configuration and
+        // `CARGO_PROFILE_TEST_*` overrides in CI; keep both halves of this
+        // assumption coordinated.
+        if manifest.profile.contains_key("test") {
+            return Err(ReadMetadataError::TestProfile { path: path.to_path_buf() });
+        }
+
         Ok(Self {
             rust_version: manifest.package.rust_version,
             pinned_stable: manifest.package.metadata.ci.pinned_stable,
@@ -105,12 +119,26 @@ pub enum ReadMetadataError {
         #[source]
         source: toml::de::Error,
     },
+    /// The workspace root declared a test profile which breaks CI's
+    /// build/test consolidation assumption.
+    #[error(
+        "Cargo test profile in `{path}` is unsupported: CI requires `cargo test` to inherit the dev profile"
+    )]
+    TestProfile {
+        /// The manifest which declared the profile.
+        path: PathBuf,
+    },
 }
 
 #[derive(Deserialize)]
 struct Manifest {
     workspace: Option<toml::Table>,
     package: Package,
+    // Cargo accepts table headers, dotted keys, quoted keys, and inline tables
+    // for the same logical profile map. Deserialize the map instead of
+    // searching source text so all equivalent spellings reach one check.
+    #[serde(default)]
+    profile: BTreeMap<String, toml::Value>,
 }
 
 #[derive(Deserialize)]
@@ -184,7 +212,9 @@ mod tests {
                 assert_eq!(error_path, path);
                 assert!(source.to_string().contains("pinned-nightly"));
             }
-            ReadMetadataError::Read { .. } => panic!("expected a parse error"),
+            ReadMetadataError::Read { .. } | ReadMetadataError::TestProfile { .. } => {
+                panic!("expected a parse error")
+            }
         }
         assert!(error.to_string().contains(&path.display().to_string()));
     }
@@ -197,8 +227,36 @@ mod tests {
 
         match &error {
             ReadMetadataError::Read { path: error_path, .. } => assert_eq!(error_path, &path),
-            ReadMetadataError::Parse { .. } => panic!("expected a read error"),
+            ReadMetadataError::Parse { .. } | ReadMetadataError::TestProfile { .. } => {
+                panic!("expected a read error")
+            }
         }
         assert!(error.to_string().contains(&path.display().to_string()));
+    }
+
+    #[test]
+    fn rejects_every_test_profile_toml_spelling() {
+        let path = Path::new("some-worktree/zerocopy/Cargo.toml");
+        let base = include_str!("../testdata/toolchains.toml");
+
+        for declaration in [
+            "[profile.test]\nopt-level = 1\n",
+            "[profile.\"test\"]\nopt-level = 1\n",
+            "[\"profile\".test]\nopt-level = 1\n",
+            "profile.test.opt-level = 1\n",
+            "profile = { test = { opt-level = 1 } }\n",
+        ] {
+            let source = format!("{declaration}\n{base}");
+            let error = ToolchainMetadata::parse(path, &source).unwrap_err();
+            assert!(
+                matches!(error, ReadMetadataError::TestProfile { path: ref error_path } if error_path == path),
+                "declaration {declaration:?} produced {error}"
+            );
+        }
+
+        // Changing dev settings preserves the assumption: Cargo test inherits
+        // the changed values just as a separate Cargo build would use them.
+        let source = format!("[profile.dev]\nopt-level = 1\n\n{base}");
+        ToolchainMetadata::parse(path, &source).unwrap();
     }
 }
