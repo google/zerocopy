@@ -26,15 +26,16 @@
 //! construct proposed behavior. In
 //! particular, the legacy comparison covers the repository state named by the
 //! baseline manifest. It is not an inventory of control-plane validation jobs
-//! added after that frozen source commit. Live workflow jobs and pre-push
-//! checks remain protected by their separate, present-day audits and tests.
+//! added after that frozen source commit. Live post-baseline behavior remains
+//! protected by separate current-state audits and tests.
 
 use std::{
     collections::{BTreeMap, BTreeSet},
     env,
     error::Error,
+    ffi::{OsStr, OsString},
     fmt,
-    fs::OpenOptions,
+    fs::{self, OpenOptions},
     io::{self, Write},
     num::{NonZeroUsize, ParseIntError},
     path::{Path, PathBuf},
@@ -92,9 +93,16 @@ const BASE_RUSTFLAGS: &str = "-Dwarnings";
 const BASE_RUSTDOCFLAGS: &str = "-Dwarnings --cfg=zerocopy_unstable_ptr";
 const NIGHTLY_RUSTFLAGS: &str = "-Zrandomize-layout";
 const NIGHTLY_MIRIFLAGS: &str = "-Zmiri-strict-provenance -Zmiri-backtrace=full";
+const CARGO_TEST_PROFILE_ENV_PREFIX: &str = "CARGO_PROFILE_TEST_";
+const CARGO_DEV_PANIC_ENVIRONMENT: &str = "CARGO_PROFILE_DEV_PANIC";
+// `.github/workflows/ci.yml` forwards both markers into the Docker executor,
+// and `planned_adapter::matrix` audits that literal bridge. Keep that workflow
+// contract coordinated with this detection: losing both markers would turn a
+// CI invocation into the deliberately permissive local behavior below.
+const CI_ENVIRONMENT_MARKERS: [&str; 2] = ["CI", "GITHUB_ACTIONS"];
 
 /// A deterministic failure proving that proposed execution behavior differs
-/// from independently captured legacy evidence.
+/// from its frozen legacy evidence or current-state required-build contract.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ExecutionAuditError {
     violations: Vec<String>,
@@ -133,8 +141,12 @@ impl fmt::Display for ExecutionAuditError {
 
 impl Error for ExecutionAuditError {}
 
-/// Expands all selected cells and compares command behavior, logical work,
-/// and standalone work with the exact frozen legacy sets.
+/// Expands all selected cells and checks their two independent evidence sets.
+///
+/// Historical command behavior, logical work, and standalone work must match
+/// the exact frozen legacy sets. Native builds added after that source commit
+/// must match the separate current-state contract derived from checked plans
+/// and Cargo inventory.
 ///
 /// This function is pure after [`CiInputs`] has loaded: it performs no file or
 /// process I/O. Callers should make it part of the checked input boundary
@@ -372,6 +384,58 @@ pub enum CellExecutionError {
         #[source]
         source: io::Error,
     },
+    /// CI could not determine which runner-local Cargo home Cargo would use.
+    #[error(
+        "CI Cargo preflight requires `CARGO_HOME` or its `{fallback}/.cargo` platform fallback to be set"
+    )]
+    CargoHomeUnavailable {
+        /// Platform-specific home variable Cargo would otherwise consult.
+        fallback: &'static str,
+    },
+    /// CI found a Cargo home spelling whose resolution is intentionally not
+    /// guessed by the executor.
+    #[error(
+        "CI Cargo preflight requires `{variable}` to select a nonempty absolute path; got {value:?}"
+    )]
+    InvalidCargoHome {
+        /// Environment variable which supplied the invalid path.
+        variable: &'static str,
+        /// Cargo home path selected or derived from the runner value.
+        value: PathBuf,
+    },
+    /// A runner-local Cargo configuration could change modeled CI commands.
+    #[error(
+        "CI Cargo preflight rejects runner-local Cargo configuration `{path}`; CI behavior must come from checked repository inputs"
+    )]
+    RunnerCargoConfiguration {
+        /// Configuration path Cargo would merge with repository configuration.
+        path: PathBuf,
+    },
+    /// The runner did not permit a Cargo configuration path to be inspected.
+    #[error("failed to inspect runner-local Cargo configuration `{path}`: {source}")]
+    InspectRunnerCargoConfiguration {
+        /// Candidate global Cargo configuration path.
+        path: PathBuf,
+        /// Underlying file-system error.
+        #[source]
+        source: io::Error,
+    },
+    /// Cargo would apply an ambient override to its test profile.
+    #[error(
+        "CI Cargo preflight rejects ambient test-profile override(s): {variables}; consolidated ordinary-library CI requires the built-in test profile"
+    )]
+    AmbientCargoTestProfile {
+        /// Sorted environment variable names carrying overrides.
+        variables: String,
+    },
+    /// Cargo would apply an ambient override to its dev panic strategy.
+    #[error(
+        "CI Cargo preflight rejects ambient dev-panic override(s): {variables}; consolidated CI requires the unwind panic strategy"
+    )]
+    AmbientCargoDevPanic {
+        /// Sorted environment variable names carrying overrides.
+        variables: String,
+    },
 }
 
 /// Executes the modeled commands for one exact selected ordinary build cell.
@@ -442,6 +506,8 @@ impl HostPlatform {
 /// boundary separately.
 trait ExecutionHost {
     fn platform(&self) -> HostPlatform;
+    fn environment_variables(&self) -> Vec<(OsString, OsString)>;
+    fn path_entry_exists(&self, path: &Path) -> io::Result<bool>;
     fn available_parallelism(&self) -> io::Result<NonZeroUsize>;
     fn run(&mut self, invocation: &ProcessInvocation) -> io::Result<ProcessOutcome>;
     fn run_capture(&mut self, invocation: &ProcessInvocation)
@@ -500,6 +566,16 @@ impl ExecutionHost for SystemExecutionHost {
     fn platform(&self) -> HostPlatform {
         HostPlatform::current()
     }
+    fn environment_variables(&self) -> Vec<(OsString, OsString)> {
+        env::vars_os().collect()
+    }
+    fn path_entry_exists(&self, path: &Path) -> io::Result<bool> {
+        match fs::symlink_metadata(path) {
+            Ok(_) => Ok(true),
+            Err(source) if source.kind() == io::ErrorKind::NotFound => Ok(false),
+            Err(source) => Err(source),
+        }
+    }
     fn available_parallelism(&self) -> io::Result<NonZeroUsize> {
         thread::available_parallelism()
     }
@@ -531,12 +607,179 @@ impl ExecutionHost for SystemExecutionHost {
     }
 }
 
+/// Rejects runner-owned inputs which can break native build/test
+/// consolidation, but only when the executor is running in CI.
+///
+/// Across the supported Cargo versions, one test command covers an ordinary
+/// library build unless Cargo selects a distinct test profile or the dev
+/// profile requests a non-unwind panic strategy which tests cannot preserve.
+/// The checked manifest and repository configuration are audited by
+/// `metadata::ToolchainMetadata` and `inventory::RepositoryInventory` before
+/// this boundary. This preflight covers the remaining runner-owned inputs:
+/// configuration in ancestors above the repository, Cargo's global
+/// configuration, and ambient profile variables. Typed argv validation
+/// separately prevents a checked command from adding `--profile` or
+/// `--config`.
+///
+/// Local execution deliberately skips this check when neither CI marker is
+/// present. A contributor can therefore reproduce a selected cell without
+/// abandoning ordinary personal Cargo configuration; only CI promises the
+/// exact consolidated semantics.
+fn preflight_ci_cargo_environment(
+    host: &impl ExecutionHost,
+    repository_root: &Path,
+) -> Result<(), CellExecutionError> {
+    let platform = host.platform();
+    let environment = host.environment_variables();
+    if !CI_ENVIRONMENT_MARKERS
+        .iter()
+        .any(|marker| environment_value(&environment, platform, marker).is_some())
+    {
+        return Ok(());
+    }
+
+    let profile_overrides = environment
+        .iter()
+        .filter(|(name, _)| {
+            environment_name_starts_with(platform, name, CARGO_TEST_PROFILE_ENV_PREFIX)
+        })
+        .map(|(name, _)| name.to_string_lossy().into_owned())
+        .collect::<BTreeSet<_>>();
+    if !profile_overrides.is_empty() {
+        return Err(CellExecutionError::AmbientCargoTestProfile {
+            variables: profile_overrides.into_iter().collect::<Vec<_>>().join(", "),
+        });
+    }
+
+    let dev_panic_overrides = environment
+        .iter()
+        .filter(|(name, _)| environment_name_equals(platform, name, CARGO_DEV_PANIC_ENVIRONMENT))
+        .map(|(name, _)| name.to_string_lossy().into_owned())
+        .collect::<BTreeSet<_>>();
+    if !dev_panic_overrides.is_empty() {
+        return Err(CellExecutionError::AmbientCargoDevPanic {
+            variables: dev_panic_overrides.into_iter().collect::<Vec<_>>().join(", "),
+        });
+    }
+
+    let fallback = cargo_home_fallback(platform);
+    let (variable, cargo_home) =
+        if let Some(value) = environment_value(&environment, platform, "CARGO_HOME") {
+            ("CARGO_HOME", PathBuf::from(value))
+        } else if let Some(value) = environment_value(&environment, platform, fallback) {
+            (fallback, PathBuf::from(value).join(".cargo"))
+        } else {
+            return Err(CellExecutionError::CargoHomeUnavailable { fallback });
+        };
+    if cargo_home.as_os_str().is_empty() || !absolute_path_for_platform(platform, &cargo_home) {
+        return Err(CellExecutionError::InvalidCargoHome { variable, value: cargo_home });
+    }
+
+    // Cargo begins at its delegated cwd and walks every ancestor before it
+    // reads Cargo home. Ordinary cells begin in `repository_root/zerocopy`;
+    // Miri moves its Cargo child to `repository_root`. Inventory audits the
+    // in-repository portions of both searches, including the one reviewed
+    // `zerocopy/.cargo/config.toml`, so begin strictly above the root here.
+    // The remaining ancestor set is identical for both cwd choices.
+    //
+    // Cargo recognizes both config names and gives the extensionless spelling
+    // precedence when both exist. Inspect them in that order from nearest to
+    // farthest, then inspect Cargo home. De-duplicate paths because Cargo home
+    // commonly equals an ancestor's `.cargo` directory. Reject any directory
+    // entry, including a broken symlink or directory, rather than parsing one
+    // while Cargo reads another. Keep this boundary coordinated with
+    // `inventory::validate_cargo_source_configuration`, which owns only paths
+    // at or below `repository_root`.
+    for path in cargo_configuration_candidates(repository_root, &cargo_home) {
+        let exists = host.path_entry_exists(&path).map_err(|source| {
+            CellExecutionError::InspectRunnerCargoConfiguration { path: path.clone(), source }
+        })?;
+        if exists {
+            return Err(CellExecutionError::RunnerCargoConfiguration { path });
+        }
+    }
+    Ok(())
+}
+
+fn cargo_home_fallback(platform: HostPlatform) -> &'static str {
+    match platform {
+        HostPlatform::Windows => "USERPROFILE",
+        HostPlatform::Linux | HostPlatform::Other => "HOME",
+    }
+}
+
+fn absolute_path_for_platform(platform: HostPlatform, path: &Path) -> bool {
+    match platform {
+        HostPlatform::Linux | HostPlatform::Other => path.is_absolute(),
+        // `Path` follows the build host's syntax, while fake-host tests model
+        // Windows from Unix too. Recognize the two absolute Windows forms
+        // explicitly so those tests exercise path inspection rather than
+        // stopping at a host-dependent `Path::is_absolute` result.
+        HostPlatform::Windows => {
+            let path = path.as_os_str().to_string_lossy();
+            let bytes = path.as_bytes();
+            (bytes.len() >= 3
+                && bytes[0].is_ascii_alphabetic()
+                && bytes[1] == b':'
+                && matches!(bytes[2], b'/' | b'\\'))
+                || path.starts_with("\\\\")
+                || path.starts_with("//")
+        }
+    }
+}
+
+fn cargo_configuration_candidates(repository_root: &Path, cargo_home: &Path) -> Vec<PathBuf> {
+    let mut paths = Vec::new();
+    let mut seen = BTreeSet::new();
+    let mut add_directory = |directory: PathBuf| {
+        for path in [directory.join("config"), directory.join("config.toml")] {
+            if seen.insert(path.clone()) {
+                paths.push(path);
+            }
+        }
+    };
+    for ancestor in repository_root.ancestors().skip(1) {
+        add_directory(ancestor.join(".cargo"));
+    }
+    add_directory(cargo_home.to_path_buf());
+    paths
+}
+
+fn environment_value<'a>(
+    environment: &'a [(OsString, OsString)],
+    platform: HostPlatform,
+    expected: &str,
+) -> Option<&'a OsStr> {
+    environment
+        .iter()
+        .find(|(name, _)| environment_name_equals(platform, name, expected))
+        .map(|(_, value)| value.as_os_str())
+}
+
+fn environment_name_equals(platform: HostPlatform, actual: &OsStr, expected: &str) -> bool {
+    match platform {
+        HostPlatform::Windows => actual.to_string_lossy().eq_ignore_ascii_case(expected),
+        HostPlatform::Linux | HostPlatform::Other => actual == OsStr::new(expected),
+    }
+}
+
+fn environment_name_starts_with(platform: HostPlatform, actual: &OsStr, expected: &str) -> bool {
+    match platform {
+        HostPlatform::Windows => actual
+            .to_string_lossy()
+            .get(..expected.len())
+            .is_some_and(|prefix| prefix.eq_ignore_ascii_case(expected)),
+        HostPlatform::Linux | HostPlatform::Other => actual.to_string_lossy().starts_with(expected),
+    }
+}
+
 fn execute_build_cell_with(
     inputs: &CiInputs,
     selector: &BuildCellSelector,
     host: &mut impl ExecutionHost,
 ) -> Result<CellExecutionReport, CellExecutionError> {
     let repository_root = inputs.repository_root();
+    preflight_ci_cargo_environment(host, repository_root)?;
     let plan = Plan::create(inputs, &selector.event)?;
     let description = selector.description();
     let cell = unique_match(
@@ -544,7 +787,7 @@ fn execute_build_cell_with(
         &description,
         plan.builds().iter().filter(|cell| build_cell_matches(cell, selector)),
     )?;
-    let semantics = BuildCellSemantics::from_plan(cell, inputs.policy())
+    let semantics = BuildCellSemantics::from_plan(cell, inputs)
         .map_err(|message| CellExecutionError::Model { message })?;
     let operations =
         build_operations(inputs.repository().zerocopy_docs_rs_rustdoc_args(), &semantics)
@@ -553,6 +796,8 @@ fn execute_build_cell_with(
 
     for operation in operations {
         validate_operation(&operation).map_err(|message| CellExecutionError::Model { message })?;
+        validate_exact_native_operation(&operation, &semantics)
+            .map_err(|message| CellExecutionError::Model { message })?;
         if !operation.applicable {
             return Err(CellExecutionError::Model {
                 message: format!(
@@ -589,6 +834,7 @@ fn execute_miri_cell_with(
     host: &mut impl ExecutionHost,
 ) -> Result<CellExecutionReport, CellExecutionError> {
     let repository_root = inputs.repository_root();
+    preflight_ci_cargo_environment(host, repository_root)?;
     let plan = Plan::create(inputs, &selector.event)?;
     let description = selector.description();
     let cell = unique_match(
@@ -868,6 +1114,7 @@ fn unique_match<'a, T>(
 #[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd)]
 enum MatrixOperationKind {
     CargoTest,
+    CargoBuildNative,
     CargoCheckTests,
     CargoBuild,
     CargoCheckLibrary,
@@ -882,6 +1129,7 @@ impl MatrixOperationKind {
     fn id(self) -> &'static str {
         match self {
             Self::CargoTest => "cargo-test",
+            Self::CargoBuildNative => "cargo-build",
             Self::CargoCheckTests => "cargo-check-tests",
             Self::CargoBuild => "cargo-build",
             Self::CargoCheckLibrary => "cargo-check-library",
@@ -896,6 +1144,7 @@ impl MatrixOperationKind {
     fn step(self) -> &'static str {
         match self {
             Self::CargoTest => "Test native target",
+            Self::CargoBuildNative => "Build native target",
             Self::CargoCheckTests | Self::CargoBuild => "Check cross target",
             Self::CargoCheckLibrary => "Check thumb library",
             Self::CargoClippyTests => "Clippy tests",
@@ -920,6 +1169,25 @@ impl MatrixOperationKind {
             _ => ObligationCondition::Always,
         }
     }
+
+    fn evidence(self) -> ExecutionEvidence {
+        match self {
+            Self::CargoBuildNative => ExecutionEvidence::CurrentRequiredNativeBuild,
+            _ => ExecutionEvidence::FrozenLegacy,
+        }
+    }
+
+    fn cargo_subcommand(self) -> Option<&'static str> {
+        match self {
+            Self::CargoTest => Some("test"),
+            Self::CargoBuildNative | Self::CargoBuild => Some("build"),
+            Self::CargoCheckTests | Self::CargoCheckLibrary => Some("check"),
+            Self::CargoClippyTests | Self::CargoClippyLibrary => Some("clippy"),
+            Self::CargoDoc => Some("doc"),
+            Self::MiriTest => Some("miri"),
+            Self::CargoSemverCheck => None,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
@@ -932,7 +1200,7 @@ struct LogicalKey {
     miri_model: Option<String>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 struct LogicalSpec {
     key: LogicalKey,
     condition: ObligationCondition,
@@ -940,7 +1208,7 @@ struct LogicalSpec {
     step: String,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 struct CommandSpec {
     job: String,
     step: String,
@@ -976,13 +1244,42 @@ impl CommandSpec {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 struct MatrixOperation {
     kind: MatrixOperationKind,
     logical: LogicalSpec,
     command: CommandSpec,
     golden: Option<&'static str>,
     applicable: bool,
+}
+
+/// Identifies which independent audit owns an operation.
+///
+/// Most operations reconstruct the immutable source named by
+/// `ci/baselines/manifest.tsv`. Required native builds correct an omission
+/// discovered later, so a separate current-state audit owns them instead of
+/// rewriting historical evidence.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum ExecutionEvidence {
+    FrozenLegacy,
+    CurrentRequiredNativeBuild,
+}
+
+/// The one library artifact kind Cargo assigns to a policy package.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum PackageLibraryKind {
+    Ordinary,
+    ProcMacro,
+}
+
+/// Whether one native `cargo test` proves the production library build.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum NativeBuildStrategy {
+    /// An enabled integration target compiles the ordinary library as a normal
+    /// dependency, independently of its unit-test harness.
+    TestCoversBuild,
+    /// The selected test graph does not prove the production artifact.
+    SeparateBuild,
 }
 
 #[derive(Clone, Debug)]
@@ -994,19 +1291,116 @@ struct BuildCellSemantics {
     features: FeatureSelection,
     target: String,
     mode: ExecutionMode,
+    native_build_strategy: NativeBuildStrategy,
 }
 
 impl BuildCellSemantics {
-    fn from_plan(cell: &BuildPlanCell, policy: &Policy) -> Result<Self, String> {
+    fn from_plan(cell: &BuildPlanCell, inputs: &CiInputs) -> Result<Self, String> {
         Ok(Self {
             package: cell.package().id().to_owned(),
             toolchain: cell.toolchain().id().to_owned(),
-            pinned_nightly: is_pinned_nightly(policy, cell.toolchain().id())?,
+            pinned_nightly: is_pinned_nightly(inputs.policy(), cell.toolchain().id())?,
             feature_profile: cell.features().profile().to_owned(),
             features: cell.features().selection().clone(),
             target: cell.target().triple().to_owned(),
             mode: cell.target().mode(),
+            native_build_strategy: native_build_strategy(
+                inputs,
+                cell.package().id(),
+                cell.features().selection(),
+            )?,
         })
+    }
+}
+
+fn package_library_kind(inputs: &CiInputs, package: &str) -> Result<PackageLibraryKind, String> {
+    let package = inputs
+        .repository()
+        .policy_packages()
+        .get(package)
+        .ok_or_else(|| format!("plan references package `{package}` absent from inventory"))?;
+    let mut libraries = package.cargo().targets().iter().filter_map(|target| {
+        let kinds = target.kinds();
+        if kinds.len() != 1 {
+            return None;
+        }
+        if kinds.contains("lib") {
+            Some(PackageLibraryKind::Ordinary)
+        } else if kinds.contains("proc-macro") {
+            Some(PackageLibraryKind::ProcMacro)
+        } else {
+            None
+        }
+    });
+    let Some(kind) = libraries.next() else {
+        return Err(format!("policy package `{}` has no library target", package.cargo().name()));
+    };
+    if libraries.next().is_some() {
+        return Err(format!(
+            "policy package `{}` has more than one library target",
+            package.cargo().name()
+        ));
+    }
+    Ok(kind)
+}
+
+fn native_build_strategy(
+    inputs: &CiInputs,
+    package: &str,
+    features: &FeatureSelection,
+) -> Result<NativeBuildStrategy, String> {
+    let package_inventory = inputs
+        .repository()
+        .policy_packages()
+        .get(package)
+        .ok_or_else(|| format!("plan references package `{package}` absent from inventory"))?;
+    let library_kind = package_library_kind(inputs, package)?;
+    let has_enabled_integration_test = package_inventory.cargo().targets().iter().any(|target| {
+        target.kinds().len() == 1
+            && target.kinds().contains("test")
+            && target.is_tested()
+            && feature_selection_enables_target(package_inventory, features, target)
+    });
+    Ok(native_build_strategy_for(library_kind, has_enabled_integration_test))
+}
+
+fn native_build_strategy_for(
+    library_kind: PackageLibraryKind,
+    has_enabled_integration_test: bool,
+) -> NativeBuildStrategy {
+    match (library_kind, has_enabled_integration_test) {
+        // Cargo 1.56 does not emit a proc macro's dev artifact from its test
+        // build. This remains separate even when it has integration tests.
+        (PackageLibraryKind::ProcMacro, _) | (PackageLibraryKind::Ordinary, false) => {
+            NativeBuildStrategy::SeparateBuild
+        }
+        (PackageLibraryKind::Ordinary, true) => NativeBuildStrategy::TestCoversBuild,
+    }
+}
+
+fn feature_selection_enables_target(
+    package: &crate::inventory::PackageInventory,
+    features: &FeatureSelection,
+    target: &crate::inventory::CargoTarget,
+) -> bool {
+    // Keep this exhaustive translation coordinated with
+    // `inventory::profile_enables_target`. Inventory evaluates the policy's
+    // semantic profile before planning; execution evaluates the resulting
+    // `FeatureSelection` so its build strategy cannot drift from the exact
+    // Cargo arguments it will run. The strategy truth-table test below makes
+    // the no-enabled-integration fallback independently load-bearing.
+    match features {
+        FeatureSelection::Default => {
+            target.required_features().is_subset(package.default_features())
+        }
+        FeatureSelection::NoDefault => target.required_features().is_empty(),
+        FeatureSelection::StableAggregate { .. } => {
+            target.required_features().is_subset(package.stable_features())
+        }
+        FeatureSelection::All => target
+            .required_features()
+            .iter()
+            .all(|feature| package.cargo().features().contains_key(feature)),
     }
 }
 
@@ -1109,6 +1503,19 @@ struct DerivedExecution {
     commands: CommandBehaviors,
 }
 
+/// One corrective native build selected for an event class.
+///
+/// This record deliberately includes both logical identity and the complete
+/// command. The current-state audit derives its expected records directly
+/// from checked plans and Cargo inventory, independently of
+/// `build_operations`.
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+struct RequiredNativeBuild {
+    class: EventClass,
+    logical: LogicalSpec,
+    command: CommandSpec,
+}
+
 trait ModelMutation {
     fn mutate_docs_rs_rustdoc_args(&mut self, _arguments: &mut Vec<String>) {}
     fn mutate_build_cell(&mut self, _class: EventClass, _cell: &mut BuildCellSemantics) {}
@@ -1139,20 +1546,36 @@ fn derive_execution(
     let full = plan_for_class(inputs, EventClass::Full)?;
     let mut logical = BTreeMap::<LogicalKey, LogicalAccumulator>::new();
     let mut commands = CommandBehaviors::new();
+    let mut required_native_builds = BTreeSet::new();
 
     for (class, plan) in [(EventClass::Reduced, &reduced), (EventClass::Full, &full)] {
         for cell in plan.builds() {
-            let mut cell = BuildCellSemantics::from_plan(cell, inputs.policy())?;
+            let mut cell = BuildCellSemantics::from_plan(cell, inputs)?;
             mutation.mutate_build_cell(class, &mut cell);
             for mut operation in build_operations(&docs_rs_rustdoc_args, &cell)? {
                 mutation.mutate_operation(class, &mut operation);
                 validate_operation(&operation)?;
+                validate_exact_native_operation(&operation, &cell)?;
                 if !operation.applicable {
                     continue;
                 }
-                record_logical(&mut logical, class, &operation.logical)?;
-                if class == EventClass::Full {
-                    collect_golden(&mut commands, operation)?;
+                match operation.kind.evidence() {
+                    ExecutionEvidence::FrozenLegacy => {
+                        record_logical(&mut logical, class, &operation.logical)?;
+                        if class == EventClass::Full {
+                            collect_golden(&mut commands, operation)?;
+                        }
+                    }
+                    ExecutionEvidence::CurrentRequiredNativeBuild => {
+                        let record = RequiredNativeBuild {
+                            class,
+                            logical: operation.logical,
+                            command: operation.command,
+                        };
+                        if !required_native_builds.insert(record.clone()) {
+                            return Err(format!("required native build is duplicated: {record:?}"));
+                        }
+                    }
                 }
             }
         }
@@ -1194,6 +1617,9 @@ fn derive_execution(
         }
     }
 
+    let expected_required_builds = expected_required_native_builds(inputs, &reduced, &full)?;
+    compare_required_native_builds(&expected_required_builds, &required_native_builds)?;
+
     let mut standalone = BTreeSet::new();
     for spec in LEGACY_STANDALONE_SPECS {
         let obligation = standalone_obligation(spec)?;
@@ -1225,6 +1651,105 @@ fn plan_for_class(inputs: &CiInputs, class: EventClass) -> Result<Plan, String> 
     };
     let event = events.iter().next().ok_or_else(|| format!("policy has no {class} event"))?;
     Plan::create(inputs, event.as_str()).map_err(|error| error.to_string())
+}
+
+/// Derives the corrective build set without consulting `build_operations`.
+///
+/// The legacy TSVs describe an immutable source commit at which native
+/// production builds were absent. This separate current-state assertion joins
+/// the checked plan to Cargo's audited target kind and enabled integration
+/// targets, then constructs the exact command required whenever tests cannot
+/// prove the production artifact. A future package, toolchain, profile, or
+/// native target therefore enters the set naturally.
+fn expected_required_native_builds(
+    inputs: &CiInputs,
+    reduced: &Plan,
+    full: &Plan,
+) -> Result<BTreeSet<RequiredNativeBuild>, String> {
+    let mut expected = BTreeSet::new();
+    for (class, plan) in [(EventClass::Reduced, reduced), (EventClass::Full, full)] {
+        for cell in plan.builds() {
+            if cell.target().mode() != ExecutionMode::Native
+                || native_build_strategy(inputs, cell.package().id(), cell.features().selection())?
+                    != NativeBuildStrategy::SeparateBuild
+            {
+                continue;
+            }
+
+            let package = cell.package().id().to_owned();
+            let toolchain = cell.toolchain().id().to_owned();
+            let feature_profile = cell.features().profile().to_owned();
+            let target = cell.target().triple().to_owned();
+            let mut argv = vec![
+                CARGO_WRAPPER.to_owned(),
+                format!("+{toolchain}"),
+                "build".to_owned(),
+                "--package".to_owned(),
+                package.clone(),
+                "--target".to_owned(),
+                target.clone(),
+            ];
+            argv.extend(cell.features().selection().cargo_args());
+            argv.push("--verbose".to_owned());
+
+            let pinned_nightly = is_pinned_nightly(inputs.policy(), &toolchain)?;
+            let mut environment = BTreeMap::from([
+                ("RUSTDOCFLAGS".to_owned(), BASE_RUSTDOCFLAGS.to_owned()),
+                ("RUSTFLAGS".to_owned(), BASE_RUSTFLAGS.to_owned()),
+            ]);
+            if pinned_nightly {
+                environment.insert(
+                    "RUSTFLAGS".to_owned(),
+                    format!("{BASE_RUSTFLAGS} {NIGHTLY_RUSTFLAGS}"),
+                );
+                environment.insert("MIRIFLAGS".to_owned(), format!(" {NIGHTLY_MIRIFLAGS}"));
+            }
+
+            let record = RequiredNativeBuild {
+                class,
+                logical: LogicalSpec {
+                    key: LogicalKey {
+                        kind: "cargo-build".to_owned(),
+                        package: Some(package),
+                        toolchain: Some(toolchain),
+                        feature_profile: Some(feature_profile),
+                        target: Some(target),
+                        miri_model: None,
+                    },
+                    condition: ObligationCondition::Always,
+                    job: BUILD_JOB.to_owned(),
+                    step: "Build native target".to_owned(),
+                },
+                command: CommandSpec {
+                    job: BUILD_JOB.to_owned(),
+                    step: "Build native target".to_owned(),
+                    working_directory: WorkingDirectory::Relative(
+                        MATRIX_WORKING_DIRECTORY.to_owned(),
+                    ),
+                    environment,
+                    payload: CommandPayload::Argv { argv, dynamic_value: None },
+                },
+            };
+            if !expected.insert(record.clone()) {
+                return Err(format!(
+                    "checked plans select a duplicate required native build: {record:?}"
+                ));
+            }
+        }
+    }
+    Ok(expected)
+}
+
+fn compare_required_native_builds(
+    expected: &BTreeSet<RequiredNativeBuild>,
+    actual: &BTreeSet<RequiredNativeBuild>,
+) -> Result<(), String> {
+    if expected == actual {
+        return Ok(());
+    }
+    let missing = expected.difference(actual).collect::<Vec<_>>();
+    let extra = actual.difference(expected).collect::<Vec<_>>();
+    Err(format!("required native build audit differs: missing {missing:?}; extra {extra:?}"))
 }
 
 fn record_logical(
@@ -1288,8 +1813,150 @@ fn validate_operation(operation: &MatrixOperation) -> Result<(), String> {
             operation.kind, operation.command.step, operation.logical.step
         ));
     }
+    if operation.kind == MatrixOperationKind::CargoTest {
+        validate_native_test_consolidation(&operation.command)?;
+    }
     operation.command.validate(operation.kind)?;
+    if let Some(expected) = operation.kind.cargo_subcommand() {
+        let argv = match &operation.command.payload {
+            CommandPayload::Argv { argv, .. } | CommandPayload::ArgvTemplate { argv, .. } => argv,
+            CommandPayload::ActionInputs { .. } => {
+                return Err(format!(
+                    "typed operation {:?} must invoke Cargo subcommand `{expected}` through argv",
+                    operation.kind
+                ));
+            }
+        };
+        if argv.get(2).map(String::as_str) != Some(expected) {
+            return Err(format!(
+                "typed operation {:?} must invoke Cargo subcommand `{expected}`; found {:?}",
+                operation.kind,
+                argv.get(2)
+            ));
+        }
+    }
     Ok(())
+}
+
+/// Checks the complete generated form of consolidated native operations.
+///
+/// Logical parity and representative command goldens cannot protect a
+/// non-golden cell from a conditional command change. Reconstructing the
+/// expected operation from the checked cell catches added test filters such
+/// as `--no-run`, changed feature arguments, or a different package/target.
+/// The current-state required-build set below additionally constructs its
+/// expected commands without calling `cargo_operation`.
+fn validate_exact_native_operation(
+    operation: &MatrixOperation,
+    cell: &BuildCellSemantics,
+) -> Result<(), String> {
+    let expected = match operation.kind {
+        MatrixOperationKind::CargoTest if operation.golden.is_none() => Some(cargo_operation(
+            MatrixOperationKind::CargoTest,
+            cell,
+            "test",
+            &[],
+            &[],
+            Some(cell.target.as_str()),
+            native_default_golden(cell),
+        )),
+        MatrixOperationKind::CargoBuildNative => Some(cargo_operation(
+            MatrixOperationKind::CargoBuildNative,
+            cell,
+            "build",
+            &[],
+            &[],
+            Some(cell.target.as_str()),
+            None,
+        )),
+        _ => None,
+    };
+    if expected.as_ref().is_some_and(|expected| expected != operation) {
+        return Err(format!(
+            "typed {:?} operation differs from the exact checked native cell",
+            operation.kind
+        ));
+    }
+    Ok(())
+}
+
+/// Checks the modeled half of native build/test consolidation.
+///
+/// [`preflight_ci_cargo_environment`] rejects equivalent inputs inherited from
+/// the runner before a selected cell is planned. The modeled environment is
+/// applied later, when [`run_process`] constructs its [`ProcessInvocation`],
+/// so it needs an independent check here. Keeping the argv check beside it
+/// also makes the consolidation fail closed for non-golden cells: frozen
+/// command evidence covers representative rows, but it is not the owner of
+/// this semantic invariant.
+fn validate_native_test_consolidation(command: &CommandSpec) -> Result<(), String> {
+    let profile_environment = command
+        .environment
+        .keys()
+        // The same model executes on Unix and Windows. Reject every ASCII-case
+        // spelling so a harmless Unix near-miss cannot become an override on
+        // a case-insensitive Windows runner.
+        .filter(|name| {
+            name.eq_ignore_ascii_case(CARGO_DEV_PANIC_ENVIRONMENT)
+                || name.get(..CARGO_TEST_PROFILE_ENV_PREFIX.len()).is_some_and(|candidate| {
+                    candidate.eq_ignore_ascii_case(CARGO_TEST_PROFILE_ENV_PREFIX)
+                })
+        })
+        .cloned()
+        .collect::<Vec<_>>();
+    if !profile_environment.is_empty() {
+        return Err(format!(
+            "native Cargo test must not set test-profile or dev-panic environment override(s): {}",
+            profile_environment.join(", ")
+        ));
+    }
+
+    let CommandPayload::Argv { argv, .. } = &command.payload else {
+        return Err("native Cargo test must use one concrete argv payload".to_owned());
+    };
+    if let Some(argument) = argv
+        .iter()
+        // Arguments after Cargo's separator belong to the test binary and
+        // cannot select Cargo configuration or a compilation profile.
+        .take_while(|argument| argument.as_str() != "--")
+        .find(|argument| cargo_argument_changes_profile(argument))
+    {
+        return Err(format!(
+            "native Cargo test must not select a profile or command-line configuration; found {argument:?}"
+        ));
+    }
+    Ok(())
+}
+
+fn cargo_argument_changes_profile(argument: &str) -> bool {
+    matches!(argument, "--release" | "--profile" | "--config")
+        || argument.starts_with("--profile=")
+        || argument.starts_with("--config=")
+        || cargo_short_flags_select_release(argument)
+}
+
+/// Returns whether a Cargo short-option cluster contains the release flag.
+///
+/// Cargo accepts boolean flags in either order, so both `-rv` and `-vr`
+/// select the release profile. Once a value-taking flag appears, however, the
+/// remainder belongs to that flag: the `r` in `-pcrate` is package-name data,
+/// not another option. The typed generator currently uses long spellings for
+/// these options, but recognizing their compact Cargo forms keeps this guard
+/// semantically accurate when it diagnoses a future modeled change.
+fn cargo_short_flags_select_release(argument: &str) -> bool {
+    let Some(cluster) = argument.strip_prefix('-').filter(|cluster| !cluster.starts_with('-'))
+    else {
+        return false;
+    };
+    for flag in cluster.chars() {
+        if flag == 'r' {
+            return true;
+        }
+        if matches!(flag, 'p' | 'j' | 'F' | 'Z' | 'C') {
+            return false;
+        }
+    }
+    false
 }
 
 /// Adapts a validated live operation to the source labels in frozen evidence.
@@ -1363,15 +2030,46 @@ fn build_operations(
 ) -> Result<Vec<MatrixOperation>, String> {
     let mut operations = Vec::new();
     match cell.mode {
-        ExecutionMode::Native => operations.push(cargo_operation(
-            MatrixOperationKind::CargoTest,
-            cell,
-            "test",
-            &[],
-            &[],
-            Some(cell.target.as_str()),
-            native_default_golden(cell),
-        )),
+        ExecutionMode::Native => {
+            // An ordinary library with an enabled integration target is
+            // compiled as that target's normal dependency, so one Cargo test
+            // pass covers both its production artifact and its tests. The
+            // checked root manifest, repository Cargo configuration, and
+            // runner preflight keep the test profile unmodified and the dev
+            // panic strategy at unwind.
+            //
+            // Cargo 1.56 does not produce a proc macro's dev-profile artifact
+            // this way. In addition, zerocopy-derive's tests enable a `syn`
+            // feature which its production dependency does not. Retain a
+            // separate build for every proc-macro package, deriving that
+            // choice from audited Cargo target metadata rather than a package
+            // name. An ordinary package/profile with no enabled integration
+            // target also retains its build; unit tests alone do not produce
+            // the normal library artifact. `expected_required_native_builds`
+            // independently checks the exact selected set because these
+            // corrective builds postdate the immutable legacy evidence.
+            if cell.native_build_strategy == NativeBuildStrategy::SeparateBuild {
+                let build = cargo_operation(
+                    MatrixOperationKind::CargoBuildNative,
+                    cell,
+                    "build",
+                    &[],
+                    &[],
+                    Some(cell.target.as_str()),
+                    None,
+                );
+                operations.push(build);
+            }
+            operations.push(cargo_operation(
+                MatrixOperationKind::CargoTest,
+                cell,
+                "test",
+                &[],
+                &[],
+                Some(cell.target.as_str()),
+                native_default_golden(cell),
+            ));
+        }
         ExecutionMode::Cross => {
             operations.push(cargo_operation(
                 MatrixOperationKind::CargoCheckTests,
@@ -2321,25 +3019,27 @@ fn collect_difference<T: fmt::Debug + Ord>(
 #[cfg(test)]
 mod tests {
     use std::{
-        collections::{BTreeMap, VecDeque},
-        ffi::OsStr,
+        collections::{BTreeMap, BTreeSet, VecDeque},
+        ffi::{OsStr, OsString},
         io,
         num::NonZeroUsize,
         path::{Path, PathBuf},
+        process::Command as StdCommand,
         sync::OnceLock,
     };
 
     use super::{
-        audit_execution, checked_miri_thread_count, compare_execution, derive_execution,
-        execute_build_cell_with, execute_miri_cell_with, miri_thread_count,
-        miri_wrapper_invocation, operation_for_frozen_legacy_evidence, parse_nproc_thread_count,
-        semver_operation, substitute_dynamic, system_command_for_platform, unique_match,
-        BuildCellSelector, BuildCellSemantics, CapturedProcessOutcome, CellExecutionError,
-        CommandSpec, EventClass, ExecutionHost, ExecutionMode, FeatureSelection, HostPlatform,
-        MatrixOperation, MatrixOperationKind, MiriCellSelector, ModelMutation, ProcessInvocation,
-        ProcessOutcome, SemverCellSemantics, WorkingDirectory, AARCH64_TARGET, BUILD_JOB,
-        CARGO_WRAPPER, EXECUTION_CONTEXT_ENV, MIRI_JOB, MIRI_REPOSITORY_ROOT_CONTEXT,
-        MIRI_THREAD_PLACEHOLDER, NPROC_STEP, SEMVER_JOB, WINDOWS_CARGO_WRAPPER,
+        audit_execution, cargo_configuration_candidates, checked_miri_thread_count,
+        compare_execution, derive_execution, execute_build_cell_with, execute_miri_cell_with,
+        miri_thread_count, miri_wrapper_invocation, operation_for_frozen_legacy_evidence,
+        parse_nproc_thread_count, preflight_ci_cargo_environment, semver_operation,
+        substitute_dynamic, system_command_for_platform, unique_match, BuildCellSelector,
+        BuildCellSemantics, CapturedProcessOutcome, CellExecutionError, CommandSpec, EventClass,
+        ExecutionHost, ExecutionMode, FeatureSelection, HostPlatform, MatrixOperation,
+        MatrixOperationKind, MiriCellSelector, ModelMutation, ProcessInvocation, ProcessOutcome,
+        SemverCellSemantics, WorkingDirectory, AARCH64_TARGET, BUILD_JOB, CARGO_WRAPPER,
+        EXECUTION_CONTEXT_ENV, MIRI_JOB, MIRI_REPOSITORY_ROOT_CONTEXT, MIRI_THREAD_PLACEHOLDER,
+        NPROC_STEP, SEMVER_JOB, WINDOWS_CARGO_WRAPPER,
     };
     use crate::{
         baseline::{CommandPayload, JsonValue},
@@ -2368,6 +3068,8 @@ mod tests {
     #[derive(Debug, Default)]
     struct FakeExecutionHost {
         platform: Option<HostPlatform>,
+        environment: BTreeMap<OsString, OsString>,
+        path_entries: BTreeMap<PathBuf, Result<bool, io::ErrorKind>>,
         parallelism: Option<Result<NonZeroUsize, io::ErrorKind>>,
         invocations: Vec<ProcessInvocation>,
         outcomes: VecDeque<ProcessOutcome>,
@@ -2383,6 +3085,12 @@ mod tests {
     impl ExecutionHost for FakeExecutionHost {
         fn platform(&self) -> HostPlatform {
             self.platform.unwrap_or(HostPlatform::Linux)
+        }
+        fn environment_variables(&self) -> Vec<(OsString, OsString)> {
+            self.environment.iter().map(|(name, value)| (name.clone(), value.clone())).collect()
+        }
+        fn path_entry_exists(&self, path: &Path) -> io::Result<bool> {
+            self.path_entries.get(path).copied().unwrap_or(Ok(false)).map_err(io::Error::from)
         }
         fn available_parallelism(&self) -> io::Result<NonZeroUsize> {
             self.parallelism
@@ -2435,6 +3143,354 @@ mod tests {
 
     fn miri_selector(event: &str, target: &str, model: &str) -> MiriCellSelector {
         MiriCellSelector::new(event, "zerocopy", "nightly", "default", target, model)
+    }
+
+    fn ci_environment(home_name: &str, home_value: &str) -> BTreeMap<OsString, OsString> {
+        BTreeMap::from([
+            (OsString::from("CI"), OsString::from("true")),
+            (OsString::from(home_name), OsString::from(home_value)),
+        ])
+    }
+
+    fn fake_repository_root() -> PathBuf {
+        PathBuf::from("/checkout/repository")
+    }
+
+    fn fake_preflight(host: &FakeExecutionHost) -> Result<(), CellExecutionError> {
+        preflight_ci_cargo_environment(host, &fake_repository_root())
+    }
+
+    #[test]
+    fn ci_preflight_rejects_both_global_config_names_and_home_locations() {
+        for (home_name, home_value, cargo_home) in [
+            ("CARGO_HOME", "/runner/cargo", PathBuf::from("/runner/cargo")),
+            ("HOME", "/runner/home", PathBuf::from("/runner/home/.cargo")),
+        ] {
+            for name in ["config", "config.toml"] {
+                let path = cargo_home.join(name);
+                let mut host = FakeExecutionHost {
+                    environment: ci_environment(home_name, home_value),
+                    ..Default::default()
+                };
+                host.path_entries.insert(path.clone(), Ok(true));
+
+                let error = fake_preflight(&host).unwrap_err();
+                assert!(
+                    matches!(error, CellExecutionError::RunnerCargoConfiguration { path: ref actual } if actual == &path),
+                    "{home_name}/{name}: {error}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn ci_preflight_rejects_configs_in_every_ancestor_above_the_repository() {
+        for path in [
+            PathBuf::from("/checkout/.cargo/config"),
+            PathBuf::from("/checkout/.cargo/config.toml"),
+            PathBuf::from("/.cargo/config"),
+            PathBuf::from("/.cargo/config.toml"),
+        ] {
+            let mut host = FakeExecutionHost {
+                environment: ci_environment("CARGO_HOME", "/runner/cargo"),
+                ..Default::default()
+            };
+            // `true` represents any directory entry. SystemExecutionHost uses
+            // symlink_metadata, so regular files, directories, and broken
+            // links all reach this same rejection.
+            host.path_entries.insert(path.clone(), Ok(true));
+
+            assert!(matches!(
+                fake_preflight(&host),
+                Err(CellExecutionError::RunnerCargoConfiguration { path: actual })
+                    if actual == path
+            ));
+        }
+    }
+
+    #[test]
+    fn ci_preflight_leaves_repository_owned_config_paths_to_inventory() {
+        let mut host = FakeExecutionHost {
+            environment: ci_environment("CARGO_HOME", "/runner/cargo"),
+            ..Default::default()
+        };
+        for path in [
+            "/checkout/repository/.cargo/config",
+            "/checkout/repository/.cargo/config.toml",
+            "/checkout/repository/zerocopy/.cargo/config",
+            "/checkout/repository/zerocopy/.cargo/config.toml",
+        ] {
+            host.path_entries.insert(PathBuf::from(path), Ok(true));
+        }
+
+        // Inventory accepts only the reviewed zerocopy config and rejects the
+        // other in-repository entries. The process boundary must not inspect
+        // or misclassify any of them as runner-owned input.
+        fake_preflight(&host).unwrap();
+    }
+
+    #[test]
+    fn cargo_config_candidates_preserve_precedence_and_remove_duplicates() {
+        let paths = cargo_configuration_candidates(
+            &fake_repository_root(),
+            // This Cargo home is the nearest ancestor's `.cargo` directory.
+            // Cargo reaches it twice conceptually but the preflight should
+            // inspect each physical spelling once.
+            Path::new("/checkout/.cargo"),
+        );
+        assert_eq!(
+            paths,
+            [
+                "/checkout/.cargo/config",
+                "/checkout/.cargo/config.toml",
+                "/.cargo/config",
+                "/.cargo/config.toml",
+            ]
+            .into_iter()
+            .map(PathBuf::from)
+            .collect::<Vec<_>>()
+        );
+
+        let mut host = FakeExecutionHost {
+            environment: ci_environment("CARGO_HOME", "/runner/cargo"),
+            ..Default::default()
+        };
+        for path in [
+            "/checkout/.cargo/config.toml",
+            "/checkout/.cargo/config",
+            "/.cargo/config",
+            "/runner/cargo/config",
+        ] {
+            host.path_entries.insert(PathBuf::from(path), Ok(true));
+        }
+        assert!(matches!(
+            fake_preflight(&host),
+            Err(CellExecutionError::RunnerCargoConfiguration { path })
+                if path == Path::new("/checkout/.cargo/config")
+        ));
+    }
+
+    #[test]
+    fn ci_preflight_reports_uninspectable_ancestor_configuration() {
+        let path = PathBuf::from("/checkout/.cargo/config.toml");
+        let mut host = FakeExecutionHost {
+            environment: ci_environment("CARGO_HOME", "/runner/cargo"),
+            ..Default::default()
+        };
+        host.path_entries.insert(path.clone(), Err(io::ErrorKind::PermissionDenied));
+
+        assert!(matches!(
+            fake_preflight(&host),
+            Err(CellExecutionError::InspectRunnerCargoConfiguration { path: actual, .. })
+                if actual == path
+        ));
+    }
+
+    #[test]
+    fn windows_uses_case_insensitive_userprofile_fallback_and_inspects_it() {
+        let cargo_home = PathBuf::from("C:\\Users\\runner").join(".cargo");
+        let path = cargo_home.join("config.toml");
+        let mut host = FakeExecutionHost {
+            platform: Some(HostPlatform::Windows),
+            environment: BTreeMap::from([
+                (OsString::from("github_actions"), OsString::from("true")),
+                (OsString::from("userprofile"), OsString::from("C:\\Users\\runner")),
+            ]),
+            ..Default::default()
+        };
+        host.path_entries.insert(path.clone(), Ok(true));
+
+        assert!(matches!(
+            fake_preflight(&host),
+            Err(CellExecutionError::RunnerCargoConfiguration { path: actual })
+                if actual == path
+        ));
+
+        let missing = FakeExecutionHost {
+            platform: Some(HostPlatform::Windows),
+            environment: BTreeMap::from([(
+                OsString::from("GITHUB_ACTIONS"),
+                OsString::from("true"),
+            )]),
+            ..Default::default()
+        };
+        assert!(matches!(
+            fake_preflight(&missing),
+            Err(CellExecutionError::CargoHomeUnavailable { fallback: "USERPROFILE" })
+        ));
+    }
+
+    #[test]
+    fn windows_cargo_home_precedes_userprofile() {
+        let fallback = PathBuf::from("C:\\Users\\runner").join(".cargo/config");
+        let mut host = FakeExecutionHost {
+            platform: Some(HostPlatform::Windows),
+            environment: BTreeMap::from([
+                (OsString::from("CI"), OsString::from("true")),
+                (OsString::from("cargo_home"), OsString::from("C:\\cargo")),
+                (OsString::from("userprofile"), OsString::from("C:\\Users\\runner")),
+            ]),
+            ..Default::default()
+        };
+        host.path_entries.insert(fallback, Ok(true));
+
+        fake_preflight(&host).unwrap();
+    }
+
+    #[test]
+    fn ci_preflight_uses_cargo_home_before_the_home_fallback() {
+        let mut host = FakeExecutionHost {
+            environment: BTreeMap::from([
+                (OsString::from("CI"), OsString::from("true")),
+                (OsString::from("CARGO_HOME"), OsString::from("/runner/cargo")),
+                (OsString::from("HOME"), OsString::from("/runner/home")),
+            ]),
+            ..Default::default()
+        };
+        // Cargo ignores HOME/.cargo when CARGO_HOME is present. The preflight
+        // must inspect the same location rather than rejecting an irrelevant
+        // personal file.
+        host.path_entries.insert(PathBuf::from("/runner/home/.cargo/config.toml"), Ok(true));
+
+        fake_preflight(&host).unwrap();
+    }
+
+    #[test]
+    fn ci_preflight_fails_closed_when_cargo_home_cannot_be_resolved() {
+        let host = FakeExecutionHost {
+            // Presence, not a convenient marker value, identifies CI. An
+            // empty value must not silently turn the strict boundary off.
+            environment: BTreeMap::from([(OsString::from("CI"), OsString::new())]),
+            ..Default::default()
+        };
+        assert!(matches!(
+            fake_preflight(&host),
+            Err(CellExecutionError::CargoHomeUnavailable { fallback: "HOME" })
+        ));
+
+        for (home_name, home_value) in [("HOME", ""), ("CARGO_HOME", "relative/cargo")] {
+            let mut environment = ci_environment(home_name, home_value);
+            // A present but invalid CARGO_HOME takes precedence over a valid
+            // HOME, matching Cargo instead of silently selecting a fallback.
+            if home_name == "CARGO_HOME" {
+                environment.insert(OsString::from("HOME"), OsString::from("/runner/home"));
+            }
+            let host = FakeExecutionHost { environment, ..Default::default() };
+            assert!(matches!(
+                fake_preflight(&host),
+                Err(CellExecutionError::InvalidCargoHome { variable, .. }) if variable == home_name
+            ));
+        }
+    }
+
+    #[test]
+    fn ci_preflight_rejects_every_test_profile_environment_form() {
+        for name in [
+            "CARGO_PROFILE_TEST_OPT_LEVEL",
+            "CARGO_PROFILE_TEST_BUILD_OVERRIDE_OPT_LEVEL",
+            "CARGO_PROFILE_TEST_PACKAGE_ZEROCOPY_OPT_LEVEL",
+            "CARGO_PROFILE_TEST_",
+        ] {
+            let mut environment = ci_environment("CARGO_HOME", "/runner/cargo");
+            // Even an empty value remains an attempted Cargo override; Cargo,
+            // not the executor, would otherwise decide how to interpret it.
+            environment.insert(OsString::from(name), OsString::new());
+            let host = FakeExecutionHost { environment, ..Default::default() };
+            let error = fake_preflight(&host).unwrap_err();
+            assert!(
+                matches!(error, CellExecutionError::AmbientCargoTestProfile { ref variables } if variables == name),
+                "{name}: {error}"
+            );
+        }
+
+        let host = FakeExecutionHost {
+            platform: Some(HostPlatform::Windows),
+            environment: BTreeMap::from([
+                (OsString::from("github_actions"), OsString::from("true")),
+                (OsString::from("cargo_home"), OsString::from("C:\\runner\\cargo")),
+                (OsString::from("cargo_profile_test_opt_level"), OsString::from("3")),
+            ]),
+            ..Default::default()
+        };
+        assert!(matches!(
+            fake_preflight(&host),
+            Err(CellExecutionError::AmbientCargoTestProfile { .. })
+        ));
+
+        let mut environment = ci_environment("CARGO_HOME", "/runner/cargo");
+        environment.insert(OsString::from("CARGO_PROFILE_TESTS_OPT_LEVEL"), OsString::from("3"));
+        let host = FakeExecutionHost { environment, ..Default::default() };
+        fake_preflight(&host).unwrap();
+    }
+
+    #[test]
+    fn ci_preflight_rejects_only_the_dev_panic_environment_override() {
+        let name = "CARGO_PROFILE_DEV_PANIC";
+        let mut environment = ci_environment("CARGO_HOME", "/runner/cargo");
+        // Presence is sufficient. Parsing Cargo's ambient value here would
+        // create a second profile implementation at the process boundary.
+        environment.insert(OsString::from(name), OsString::new());
+        let host = FakeExecutionHost { environment, ..Default::default() };
+        let error = fake_preflight(&host).unwrap_err();
+        assert!(
+            matches!(error, CellExecutionError::AmbientCargoDevPanic { ref variables } if variables == name),
+            "{error}"
+        );
+
+        let host = FakeExecutionHost {
+            platform: Some(HostPlatform::Windows),
+            environment: BTreeMap::from([
+                (OsString::from("github_actions"), OsString::from("true")),
+                (OsString::from("cargo_home"), OsString::from("C:\\runner\\cargo")),
+                (OsString::from("cargo_profile_dev_panic"), OsString::from("abort")),
+            ]),
+            ..Default::default()
+        };
+        assert!(matches!(
+            fake_preflight(&host),
+            Err(CellExecutionError::AmbientCargoDevPanic { .. })
+        ));
+
+        for near_miss in ["CARGO_PROFILE_DEV_OPT_LEVEL", "CARGO_PROFILE_DEV_PANICS"] {
+            let mut environment = ci_environment("CARGO_HOME", "/runner/cargo");
+            environment.insert(OsString::from(near_miss), OsString::from("3"));
+            let host = FakeExecutionHost { environment, ..Default::default() };
+            fake_preflight(&host).unwrap();
+        }
+    }
+
+    #[test]
+    fn non_ci_execution_preserves_personal_cargo_behavior() {
+        let path = PathBuf::from("/developer/cargo/config.toml");
+        let mut host = FakeExecutionHost {
+            environment: BTreeMap::from([
+                (OsString::from("CARGO_HOME"), OsString::from("/developer/cargo")),
+                (OsString::from("CARGO_PROFILE_TEST_OPT_LEVEL"), OsString::from("3")),
+                (OsString::from("CARGO_PROFILE_DEV_PANIC"), OsString::from("abort")),
+            ]),
+            ..Default::default()
+        };
+        host.path_entries.insert(path, Ok(true));
+
+        // The personal path and override are both allowed, and no HOME is
+        // needed, because the strict boundary is intentionally CI-only.
+        fake_preflight(&host).unwrap();
+    }
+
+    #[test]
+    fn ci_preflight_reports_uninspectable_global_configuration() {
+        let path = PathBuf::from("/runner/cargo/config");
+        let mut host = FakeExecutionHost {
+            environment: ci_environment("CARGO_HOME", "/runner/cargo"),
+            ..Default::default()
+        };
+        host.path_entries.insert(path.clone(), Err(io::ErrorKind::PermissionDenied));
+
+        assert!(matches!(
+            fake_preflight(&host),
+            Err(CellExecutionError::InspectRunnerCargoConfiguration { path: actual, .. })
+                if actual == path
+        ));
     }
 
     #[test]
@@ -2566,6 +3622,42 @@ mod tests {
                 ("RUSTFLAGS".to_owned(), "-Dwarnings".to_owned()),
             ])
         );
+    }
+
+    #[test]
+    fn native_proc_macro_execution_builds_before_running_tests() {
+        let root = test_root();
+        let mut host = FakeExecutionHost::default();
+        let selector = BuildCellSelector::new(
+            "pull_request",
+            "zerocopy-derive",
+            "stable",
+            "default",
+            "x86_64-unknown-linux-gnu",
+        );
+        let report = execute_build_cell_with(inputs(), &selector, &mut host).unwrap();
+
+        assert_eq!(
+            report.executed_steps,
+            ["Build native target", "Test native target", "Cargo doc"]
+        );
+        assert_eq!(host.invocations.len(), 3);
+        for (invocation, subcommand) in host.invocations[..2].iter().zip(["build", "test"]) {
+            assert_eq!(
+                invocation.argv,
+                [
+                    "./cargo.sh",
+                    "+stable",
+                    subcommand,
+                    "--package",
+                    "zerocopy-derive",
+                    "--target",
+                    "x86_64-unknown-linux-gnu",
+                    "--verbose",
+                ]
+            );
+            assert_eq!(invocation.working_directory, root.join("zerocopy"));
+        }
     }
 
     #[test]
@@ -2958,8 +4050,318 @@ mod tests {
     }
 
     #[test]
-    fn typed_behavior_matches_all_frozen_legacy_evidence_exactly() {
+    fn typed_behavior_matches_all_legacy_and_current_evidence() {
         audit_execution(inputs()).unwrap();
+    }
+
+    #[test]
+    fn current_audit_derives_every_required_native_build_from_inventory() {
+        assert_eq!(
+            super::package_library_kind(inputs(), "zerocopy").unwrap(),
+            super::PackageLibraryKind::Ordinary
+        );
+        assert_eq!(
+            super::package_library_kind(inputs(), "zerocopy-derive").unwrap(),
+            super::PackageLibraryKind::ProcMacro
+        );
+        assert_eq!(
+            super::native_build_strategy_for(super::PackageLibraryKind::Ordinary, true),
+            super::NativeBuildStrategy::TestCoversBuild
+        );
+        for (library_kind, has_enabled_integration_test) in [
+            (super::PackageLibraryKind::Ordinary, false),
+            (super::PackageLibraryKind::ProcMacro, false),
+            (super::PackageLibraryKind::ProcMacro, true),
+        ] {
+            assert_eq!(
+                super::native_build_strategy_for(library_kind, has_enabled_integration_test),
+                super::NativeBuildStrategy::SeparateBuild
+            );
+        }
+
+        let reduced = super::plan_for_class(inputs(), EventClass::Reduced).unwrap();
+        let full = super::plan_for_class(inputs(), EventClass::Full).unwrap();
+        let builds = super::expected_required_native_builds(inputs(), &reduced, &full).unwrap();
+        assert_eq!(builds.iter().filter(|build| build.class == EventClass::Reduced).count(), 6);
+        assert_eq!(builds.iter().filter(|build| build.class == EventClass::Full).count(), 6);
+    }
+
+    fn parse_cargo_tree_features(
+        stdout: &str,
+        context: &str,
+    ) -> Result<BTreeMap<String, BTreeSet<String>>, String> {
+        let mut packages = BTreeMap::<String, BTreeSet<String>>::new();
+        for line in stdout.lines() {
+            // Feature-edge labels are not package nodes and do not receive
+            // the requested format. Package rows use the literal tab below;
+            // Cargo may suffix a repeated row with its ordinary `(*)` marker.
+            let Some((package, features)) = line.split_once('\t') else {
+                continue;
+            };
+            let features = features.strip_suffix(" (*)").unwrap_or(features);
+            let features = features
+                .split(',')
+                .filter(|feature| !feature.is_empty())
+                .map(str::to_owned)
+                .collect::<BTreeSet<_>>();
+            if let Some(previous) = packages.get(package) {
+                if previous != &features {
+                    return Err(format!(
+                        "cargo tree reported ambiguous feature contexts for {package} in {context}: {previous:?} and {features:?}"
+                    ));
+                }
+            } else {
+                packages.insert(package.to_owned(), features);
+            }
+        }
+        if packages.is_empty() {
+            return Err(format!("cargo tree returned no package rows for {context}"));
+        }
+        Ok(packages)
+    }
+
+    fn cargo_tree_features(
+        package: &str,
+        target: &str,
+        features: &FeatureSelection,
+        edges: &str,
+    ) -> BTreeMap<String, BTreeSet<String>> {
+        let output = StdCommand::new(env!("CARGO"))
+            .current_dir(test_root().join("zerocopy"))
+            // CI requests colored Cargo diagnostics globally. Exercise that
+            // environment locally too, while the command-line override below
+            // keeps this machine-readable stdout free of terminal escapes.
+            // If the override is removed, the repeated-node `(*)` marker is
+            // colored and these smoke tests fail instead of silently parsing
+            // the escape bytes as part of a feature name.
+            .env("CARGO_TERM_COLOR", "always")
+            .args([
+                "tree",
+                "--color",
+                "never",
+                "--locked",
+                "--offline",
+                "--manifest-path",
+                "Cargo.toml",
+                "--package",
+                package,
+                "--target",
+                target,
+                "--edges",
+                edges,
+                "--prefix",
+                "none",
+                "--format",
+                "{p}\t{f}",
+            ])
+            .args(features.cargo_args())
+            .output()
+            .unwrap_or_else(|error| panic!("failed to start cargo tree for {package}: {error}"));
+        assert!(
+            output.status.success(),
+            "cargo tree for {package}/{target}/{features:?}/{edges} failed: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+
+        let stdout = String::from_utf8(output.stdout).expect("cargo tree output must be UTF-8");
+        parse_cargo_tree_features(&stdout, &format!("{package}/{target}/{features:?}/{edges}"))
+            .unwrap_or_else(|error| panic!("{error}"))
+    }
+
+    #[test]
+    fn cargo_tree_feature_parser_rejects_ambiguous_compile_contexts() {
+        let error = parse_cargo_tree_features(
+            "dependency v1.0.0\tdefault\ndependency v1.0.0\tdefault,test-only\n",
+            "fixture",
+        )
+        .unwrap_err();
+        assert!(error.contains("ambiguous feature contexts"));
+    }
+
+    #[test]
+    fn cargo_tree_smoke_test_detects_the_known_derive_feature_delta() {
+        // This negative control makes the smoke test fail if its two Cargo
+        // views accidentally become equivalent. The explicit proc-macro build
+        // remains the actual coverage for this known production/test delta.
+        let production = cargo_tree_features(
+            "zerocopy-derive",
+            "x86_64-unknown-linux-gnu",
+            &FeatureSelection::Default,
+            "normal,build",
+        );
+        let tests = cargo_tree_features(
+            "zerocopy-derive",
+            "x86_64-unknown-linux-gnu",
+            &FeatureSelection::Default,
+            "all",
+        );
+        let (syn, production_features) = production
+            .iter()
+            .find(|(package, _)| package.starts_with("syn v"))
+            .expect("the derive production graph must contain syn");
+        let test_features =
+            tests.get(syn).expect("the derive test graph must contain the same syn");
+        assert!(!production_features.contains("visit"));
+        assert!(test_features.contains("visit"));
+    }
+
+    #[test]
+    fn consolidated_library_tests_preserve_production_dependency_features() {
+        // This is a deliberately basic smoke test for the one assumption
+        // Cargo metadata cannot express directly. Cargo documents these tree
+        // edge selections as approximations rather than exact build plans, so
+        // do not treat this as a compilation proof. For every full-event
+        // consolidated profile/target, compare Cargo tree's production and
+        // test views. Extra test-only packages are harmless; a shared package
+        // gaining features is not. Ambiguous per-context rows fail closed
+        // rather than being merged. The check is a unit test so it runs once
+        // in `check_tools` instead of repeating on every matrix runner. Keep
+        // that ownership coordinated with `ci/check_tools.sh`.
+        let plan = Plan::create(inputs(), "push").unwrap();
+        let cases = plan
+            .builds()
+            .iter()
+            .filter(|cell| {
+                cell.target().mode() == ExecutionMode::Native
+                    && super::native_build_strategy(
+                        inputs(),
+                        cell.package().id(),
+                        cell.features().selection(),
+                    )
+                    .unwrap()
+                        == super::NativeBuildStrategy::TestCoversBuild
+            })
+            .map(|cell| {
+                (
+                    cell.package().id().to_owned(),
+                    cell.features().profile().to_owned(),
+                    cell.features().selection().clone(),
+                    cell.target().triple().to_owned(),
+                )
+            })
+            .collect::<BTreeSet<_>>();
+        assert!(!cases.is_empty(), "the live full plan must contain an ordinary native library");
+
+        for (package, profile, features, target) in cases {
+            let production = cargo_tree_features(&package, &target, &features, "normal,build");
+            let tests = cargo_tree_features(&package, &target, &features, "all");
+            for (dependency, production_features) in production {
+                let test_features = tests.get(&dependency).unwrap_or_else(|| {
+                    panic!(
+                        "test graph for {package}/{profile}/{target} omitted production dependency {dependency}"
+                    )
+                });
+                assert_eq!(
+                    test_features, &production_features,
+                    "test graph for {package}/{profile}/{target} changes production dependency features for {dependency}; retain a separate native build or extend the typed consolidation proof"
+                );
+            }
+        }
+    }
+
+    struct MissingRequiredNativeBuild(bool);
+
+    impl ModelMutation for MissingRequiredNativeBuild {
+        fn mutate_build_cell(&mut self, class: EventClass, cell: &mut BuildCellSemantics) {
+            if !self.0
+                && class == EventClass::Reduced
+                && cell.package == "zerocopy-derive"
+                && cell.mode == ExecutionMode::Native
+            {
+                cell.native_build_strategy = super::NativeBuildStrategy::TestCoversBuild;
+                self.0 = true;
+            }
+        }
+    }
+
+    #[test]
+    fn current_audit_rejects_a_missing_required_native_build() {
+        let mut mutation = MissingRequiredNativeBuild(false);
+        let diagnostic = model_error_with(&mut mutation);
+        assert!(mutation.0, "the test must mutate one selected proc-macro cell");
+        assert!(diagnostic.contains("required native build audit differs"));
+        assert!(diagnostic.contains("missing"));
+    }
+
+    struct ExtraRequiredNativeBuild(bool);
+
+    impl ModelMutation for ExtraRequiredNativeBuild {
+        fn mutate_build_cell(&mut self, class: EventClass, cell: &mut BuildCellSemantics) {
+            if !self.0
+                && class == EventClass::Full
+                && cell.package == "zerocopy"
+                && cell.toolchain == "stable"
+                && cell.feature_profile == "default"
+                && cell.mode == ExecutionMode::Native
+            {
+                cell.native_build_strategy = super::NativeBuildStrategy::SeparateBuild;
+                self.0 = true;
+            }
+        }
+    }
+
+    #[test]
+    fn current_audit_rejects_an_extra_native_library_build() {
+        let mut mutation = ExtraRequiredNativeBuild(false);
+        let diagnostic = model_error_with(&mut mutation);
+        assert!(mutation.0, "the test must mutate one selected library cell");
+        assert!(diagnostic.contains("required native build audit differs"));
+        assert!(diagnostic.contains("extra"));
+    }
+
+    #[derive(Clone, Copy, Debug)]
+    enum RequiredNativeBuildRecordMutation {
+        Target,
+        Features,
+        Environment,
+    }
+
+    struct MutatedRequiredNativeBuild {
+        mutation: RequiredNativeBuildRecordMutation,
+        mutated: bool,
+    }
+
+    impl ModelMutation for MutatedRequiredNativeBuild {
+        fn mutate_build_cell(&mut self, class: EventClass, cell: &mut BuildCellSemantics) {
+            if self.mutated
+                || class != EventClass::Reduced
+                || cell.package != "zerocopy-derive"
+                || cell.toolchain != "msrv"
+                || cell.target != "i686-unknown-linux-gnu"
+                || cell.native_build_strategy != super::NativeBuildStrategy::SeparateBuild
+            {
+                return;
+            }
+            match self.mutation {
+                RequiredNativeBuildRecordMutation::Target => {
+                    cell.target = "aarch64-unknown-linux-gnu".to_owned();
+                }
+                RequiredNativeBuildRecordMutation::Features => {
+                    cell.feature_profile = "mutated".to_owned();
+                    cell.features = FeatureSelection::NoDefault;
+                }
+                RequiredNativeBuildRecordMutation::Environment => {
+                    cell.pinned_nightly = true;
+                }
+            }
+            self.mutated = true;
+        }
+    }
+
+    #[test]
+    fn current_audit_exactly_compares_each_required_native_build_record() {
+        for mutation in [
+            RequiredNativeBuildRecordMutation::Target,
+            RequiredNativeBuildRecordMutation::Features,
+            RequiredNativeBuildRecordMutation::Environment,
+        ] {
+            let mut mutation = MutatedRequiredNativeBuild { mutation, mutated: false };
+            let diagnostic = model_error_with(&mut mutation);
+            assert!(mutation.mutated, "the test must mutate one required build record");
+            assert!(diagnostic.contains("required native build audit differs"), "{diagnostic}");
+            assert!(diagnostic.contains("missing"), "{diagnostic}");
+            assert!(diagnostic.contains("extra"), "{diagnostic}");
+        }
     }
 
     #[test]
@@ -3069,6 +4471,172 @@ mod tests {
         assert!(mutation.0, "the test must mutate its intended non-golden cell");
         assert!(diagnostic.contains("environment variable `RUSTFLAGS` contains a control"));
         assert!(!diagnostic.contains('\n'));
+    }
+
+    struct NativeTestProfileEnvironmentMutation(bool);
+
+    impl ModelMutation for NativeTestProfileEnvironmentMutation {
+        fn mutate_operation(&mut self, class: EventClass, operation: &mut MatrixOperation) {
+            if self.0 || !is_non_golden_native_test(class, operation) {
+                return;
+            }
+            operation
+                .command
+                .environment
+                .insert("CARGO_PROFILE_TEST_OPT_LEVEL".to_owned(), "3".to_owned());
+            self.0 = true;
+        }
+    }
+
+    #[test]
+    fn native_test_rejects_a_modeled_test_profile_environment_override() {
+        let mut mutation = NativeTestProfileEnvironmentMutation(false);
+        let diagnostic = model_error_with(&mut mutation);
+        assert!(mutation.0, "the test must mutate its intended non-golden cell");
+        assert!(
+            diagnostic.contains("must not set test-profile or dev-panic environment override"),
+            "{diagnostic}"
+        );
+        assert!(diagnostic.contains("CARGO_PROFILE_TEST_OPT_LEVEL"));
+    }
+
+    struct NativeDevPanicEnvironmentMutation(bool);
+
+    impl ModelMutation for NativeDevPanicEnvironmentMutation {
+        fn mutate_operation(&mut self, class: EventClass, operation: &mut MatrixOperation) {
+            if self.0 || !is_non_golden_native_test(class, operation) {
+                return;
+            }
+            operation
+                .command
+                .environment
+                .insert("cargo_profile_dev_panic".to_owned(), "abort".to_owned());
+            self.0 = true;
+        }
+    }
+
+    #[test]
+    fn native_test_rejects_a_modeled_dev_panic_environment_override() {
+        let mut mutation = NativeDevPanicEnvironmentMutation(false);
+        let diagnostic = model_error_with(&mut mutation);
+        assert!(mutation.0, "the test must mutate its intended non-golden cell");
+        assert!(
+            diagnostic.contains("must not set test-profile or dev-panic environment override"),
+            "{diagnostic}"
+        );
+        assert!(diagnostic.contains("cargo_profile_dev_panic"));
+    }
+
+    struct NativeTestCargoArgumentMutation {
+        argument: &'static str,
+        mutated: bool,
+    }
+
+    impl ModelMutation for NativeTestCargoArgumentMutation {
+        fn mutate_operation(&mut self, class: EventClass, operation: &mut MatrixOperation) {
+            if self.mutated || !is_non_golden_native_test(class, operation) {
+                return;
+            }
+            let CommandPayload::Argv { argv, .. } = &mut operation.command.payload else {
+                panic!("selected native Cargo test must use an argv payload");
+            };
+            argv.push(self.argument.to_owned());
+            self.mutated = true;
+        }
+    }
+
+    #[test]
+    fn native_test_rejects_every_modeled_profile_and_config_selector() {
+        for argument in [
+            "--release",
+            "-r",
+            "-rv",
+            "-vr",
+            "--profile",
+            "--profile=release",
+            "--config",
+            "--config=profile.test.opt-level=3",
+            "--config=profile.dev.panic='abort'",
+        ] {
+            let mut mutation = NativeTestCargoArgumentMutation { argument, mutated: false };
+            let diagnostic = model_error_with(&mut mutation);
+            assert!(mutation.mutated, "the test must mutate its intended non-golden cell");
+            assert!(
+                diagnostic.contains("must not select a profile or command-line configuration"),
+                "{argument}: {diagnostic}"
+            );
+            assert!(diagnostic.contains(argument), "{argument}: {diagnostic}");
+        }
+    }
+
+    #[test]
+    fn native_test_rejects_a_filter_which_would_only_compile_tests() {
+        let mut mutation = NativeTestCargoArgumentMutation { argument: "--no-run", mutated: false };
+        let diagnostic = model_error_with(&mut mutation);
+        assert!(mutation.mutated, "the test must mutate its intended non-golden cell");
+        assert!(diagnostic.contains("differs from the exact checked native cell"));
+    }
+
+    struct NativeTestSubcommandMutation(bool);
+
+    impl ModelMutation for NativeTestSubcommandMutation {
+        fn mutate_operation(&mut self, class: EventClass, operation: &mut MatrixOperation) {
+            if self.0 || !is_non_golden_native_test(class, operation) {
+                return;
+            }
+            let CommandPayload::Argv { argv, .. } = &mut operation.command.payload else {
+                panic!("selected native Cargo test must use an argv payload");
+            };
+            argv[2] = "build".to_owned();
+            self.0 = true;
+        }
+    }
+
+    #[test]
+    fn native_test_kind_requires_the_test_subcommand() {
+        let mut mutation = NativeTestSubcommandMutation(false);
+        let diagnostic = model_error_with(&mut mutation);
+        assert!(mutation.0, "the test must mutate its intended non-golden cell");
+        assert!(diagnostic.contains("must invoke Cargo subcommand `test`"));
+    }
+
+    struct NativeProcMacroBuildSubcommandMutation(bool);
+
+    impl ModelMutation for NativeProcMacroBuildSubcommandMutation {
+        fn mutate_operation(&mut self, class: EventClass, operation: &mut MatrixOperation) {
+            if self.0
+                || class != EventClass::Full
+                || operation.kind != MatrixOperationKind::CargoBuildNative
+            {
+                return;
+            }
+            let CommandPayload::Argv { argv, .. } = &mut operation.command.payload else {
+                panic!("native proc-macro build must use an argv payload");
+            };
+            argv[2] = "test".to_owned();
+            self.0 = true;
+        }
+    }
+
+    #[test]
+    fn native_proc_macro_build_kind_requires_the_build_subcommand() {
+        let mut mutation = NativeProcMacroBuildSubcommandMutation(false);
+        let diagnostic = model_error_with(&mut mutation);
+        assert!(mutation.0, "the test must mutate one native proc-macro build");
+        assert!(diagnostic.contains("must invoke Cargo subcommand `build`"));
+    }
+
+    #[test]
+    fn release_short_flag_detection_does_not_search_option_values() {
+        for argument in ["-pcrate", "-Fderive", "-j4", "-Zunstable-options", "-Ccheckout"] {
+            assert!(
+                !super::cargo_argument_changes_profile(argument),
+                "{argument} contains value data, not a release flag"
+            );
+        }
+        for argument in ["-r", "-rv", "-vr", "-vqr"] {
+            assert!(super::cargo_argument_changes_profile(argument), "{argument}");
+        }
     }
 
     struct NonGoldenCommandJobMutation(bool);
