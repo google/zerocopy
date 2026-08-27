@@ -29,7 +29,7 @@ Nix-backed build path; its temporary v1 example matrix is described at the end.
 | [`inventory.rs`](../tools/zc/src/inventory.rs) and [`metadata.rs`](../tools/zc/src/metadata.rs) | Live facts read from Cargo and checked repository files. Inventory resolves packages, feature closure, Cargo targets, compiler versions, and docs.rs arguments, then verifies every policy reference. It also checks the deliberately narrow `build.rs` metadata text contract and the two-way invariant that every `package.metadata.build-rs` version key has one typed build-rs toolchain descriptor and every such descriptor has a manifest key. Policy separately requires each descriptor to have nonempty scopes. |
 | [`ci.rs`](../tools/zc/src/ci.rs) | The all-or-nothing checked input boundary. `CiInputs::load` canonicalizes contained inputs and admits no plan until policy, Cargo inventory, workflow jobs, frozen baselines, and execution parity all pass. Its workflow-boundary checks audit exact planner publication, build and Miri consumers, required-check aggregation, and the complete standalone semver job. |
 | [`plan.rs`](../tools/zc/src/plan.rs) | Pure, deterministic ordinary-build, Miri, and semver membership. A plan contains complete selectors and execution meaning, but no command strings, permissions, runner labels, actions, secrets, or publication choices. Semver candidates are derived from the matching ordinary-build slice so reduced-event eligibility cannot drift. |
-| [`execution.rs`](../tools/zc/src/execution.rs) | The exact argv vectors and environment for ordinary build and Miri cells, the exact modeled action inputs and environment for semver cells, ordinary target behavior, Miri setup and model flags, and parity with frozen command and logical-work evidence. It executes only a build or Miri selector that resolves uniquely in a newly checked plan; the literal workflow executes semver. At the legacy-evidence boundary, a narrow adapter restores semver's historical `build_test` job label and removes the post-baseline target-specific cache prefix. |
+| [`execution.rs`](../tools/zc/src/execution.rs) | The exact argv vectors and environment for ordinary build and Miri cells, the exact modeled action inputs and environment for semver cells, ordinary target behavior, Miri setup and model flags, and parity with frozen command and logical-work evidence. It executes only a build or Miri selector that resolves uniquely in a newly checked plan; the literal workflow executes semver. At the legacy-evidence boundary, a narrow adapter restores semver's historical `build_test` job label and removes the post-baseline target-specific cache prefix. A separate current-state audit derives every required native build from checked plans, Cargo target kinds, and enabled integration targets, because those corrective operations postdate the immutable baseline. |
 | [`github.rs`](../tools/zc/src/github.rs) | Versioned, deterministic transport from one plan explanation to three compact GitHub matrices, two optional-job gates, and a detailed review artifact. It enforces per-matrix and combined UTF-16 job-output limits; it does not carry workflow authority. |
 | [`workflow_protocol.rs`](../tools/zc/src/workflow_protocol.rs) | Shared reviewed spellings used at CLI, projection, and workflow boundaries: commands, outputs, jobs, selectors, step and display names, the trusted host shell, and runner/Docker bridges. This private module prevents the Rust implementation and exact source audits from drifting internally; it does not grant workflow authority or choose coverage. |
 | [`ci/baselines`](baselines/README.md) | Independent evidence of the behavior that the typed implementation replaced: reduced/full matrix membership, logical and standalone work, and representative commands. These files are expected review data, not planner output. Because they describe one immutable source commit, they intentionally retain rows for historical operations that have since been retired. |
@@ -49,7 +49,9 @@ Nix-backed build path; its temporary v1 example matrix is described at the end.
 3. The execution model expands representative reduced and full behavior and
    must match the frozen matrix, logical-work, standalone-work, and command
    evidence exactly. This includes modeled semver action inputs for every
-   planned target. `ci audit` also plans every configured event.
+   planned target. It separately exact-compares every required native build
+   with an expected command derived from checked plans and Cargo inventory.
+   `ci audit` also plans every configured event.
 4. `Plan` or `PlanExplanation` selects cells for one exact event. Planning is
    pure after input validation.
 5. `GitHubProjection` creates three matrix outputs, two optional-job gates, and
@@ -171,6 +173,44 @@ contains the historical hosted and pre-push operations from its source commit;
 removing those rows would weaken replacement-parity evidence, not remove a live
 obligation.
 
+### Native build and test coverage
+
+Native ordinary-library cells use one `cargo test` command instead of a
+separate build and test only when Cargo inventory reports an integration
+target enabled by that cell's feature selection. Cargo then compiles the
+ordinary library artifact as an integration-test dependency. If no enabled
+integration target exists, the executor automatically retains a separate
+build; unit tests alone do not prove the normal library artifact. The root
+manifest may not define a test profile or a non-unwind dev panic strategy, and
+CI rejects equivalent Cargo configuration, command-line selectors, and
+environment overrides. Local execution remains permissive so personal Cargo
+configuration still works.
+
+Proc macros are different on the oldest supported Cargo: their test build does
+not produce the dev-profile artifact. `zerocopy-derive` also enables `syn`'s
+`visit` feature only through a dev-dependency, so its test graph is not its
+production graph. `execution.rs` therefore derives a separate native build for
+every proc-macro package from Cargo's audited target kind, regardless of its
+integration tests. These builds and the ordinary-library fallback were added
+after the frozen baseline. A separate current-state audit constructs their
+complete expected commands directly from the reduced and full plans and
+exact-compares them with the live model; never add them to the immutable legacy
+TSVs.
+
+Dev-dependency feature unification is not inherently limited to proc macros.
+For every consolidated profile and native target, the `zc` test suite asks
+`cargo tree` for its production and test views and requires every shared
+package to retain its reported production feature set. Cargo documents these
+views as approximations, not exact compilation plans, so this is a smoke test
+and review reminder rather than a proof. Multiple feature sets reported for
+one package fail as ambiguous instead of being merged. The repository-wide
+`check_tools` job owns this centralized check so matrix runners do not repeat
+those resolutions. If a dependency change makes the views diverge, retain a
+separate native build or deliberately strengthen the check before updating
+the reminder. Keep it coordinated with `execution::build_operations` and
+`ci/check_tools.sh`; profile guards do not prove dependency-feature
+equivalence.
+
 ### Compilation targets, events, and workflow jobs
 
 - Declare a compilation target once in `[[targets]]`, including its ordinary
@@ -225,8 +265,10 @@ obligation.
   (currently 900,000) bounds GitHub's UTF-16 estimate for the five output
   records together. Increasing one limit does not relax either of the others.
 
-After an intentional behavior change, update the files under `ci/baselines`
-using evidence independent of the new planner. Follow
+After an intentional change to behavior owned by frozen evidence, update the
+files under `ci/baselines` using evidence independent of the new planner. Do
+not put a post-baseline correction into those immutable records; give it a
+separate current-state audit like the required native builds above. Follow
 [`ci/baselines/README.md`](baselines/README.md): retain source identity, compare
 exact sets rather than only counts, preserve canonical sorting, and review the
 logical and command effects. Do not generate expected rows from the code they

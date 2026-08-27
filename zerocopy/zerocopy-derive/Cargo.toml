@@ -44,6 +44,10 @@ dissimilar = "1.0.9"
 prettyplease = "0.2.17"
 rustversion = "1.0"
 static_assertions = "1.1"
+# CI deliberately checks the production graph separately from the test graph:
+# this dev-only feature is unified with the production `syn/full` feature by
+# `cargo test`. Keep this coordinated with the proc-macro build rule and the
+# production-vs-test `cargo tree` reminder in `tools/zc/src/execution.rs`.
 syn = { version = "2.0.46", features = ["visit"] }
 testutil = { path = "../testutil" }
 # We import as `zerocopy-renamed` so that we can refer to the crate as

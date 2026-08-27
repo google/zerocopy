@@ -373,7 +373,7 @@ pub enum LoadCiError {
     /// The frozen legacy evidence was unreadable or noncanonical.
     #[error(transparent)]
     Baseline(BaselineError),
-    /// Typed execution behavior differed from frozen legacy evidence.
+    /// Typed execution behavior differed from legacy or current-state evidence.
     #[error(transparent)]
     Execution(ExecutionAuditError),
 }
