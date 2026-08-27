@@ -1253,8 +1253,11 @@ fn validate_cargo_source_configuration(
     // spelling in every repository-owned ancestor so a future root-level or
     // intermediate configuration cannot add unmodeled sources, environment,
     // build flags, aliases, or target-directory behavior before metadata.
-    // Host configuration above `repository_root` is outside this repository
-    // audit and is constrained separately at the process boundary.
+    // Host configuration strictly above `repository_root` is outside this
+    // repository audit. `execution::preflight_ci_cargo_environment` walks
+    // those remaining ancestors and Cargo home immediately before a selected
+    // CI cell can run. Keep that split exact so neither side skips the root or
+    // rejects the reviewed configuration below it.
     for ancestor in cargo_directory.ancestors().skip(1) {
         if !ancestor.starts_with(repository_root) {
             break;
@@ -4230,9 +4233,10 @@ mod tests {
         validate_package_source_symlink_containment, validate_policy_targets,
         validate_rust_target_support, validate_toolchain_lockfile_compatibility,
         validate_toolchain_package_floor, validate_workspace_package_classification_from_manifests,
-        workspace_dependency_closure, CargoLockfileVersion, CargoPackage, CargoTarget,
-        CollectError, CompilerFloorSource, Dependency, ErrorSink, PackageCompilerFloor,
-        ResolvedPackage, RustEdition, RustTargetSupport, RustTargetSupportEntry,
+        workspace_dependency_closure, CargoConfiguration, CargoLockfileVersion, CargoPackage,
+        CargoTarget, CollectError, CompilerFloorSource, Dependency, ErrorSink,
+        PackageCompilerFloor, ResolvedPackage, RustEdition, RustTargetSupport,
+        RustTargetSupportEntry,
     };
     use crate::{
         metadata::ToolchainMetadata,
@@ -4291,6 +4295,36 @@ mod tests {
         let closure = feature_closure(package, ["stable"], "packages.example", &mut errors);
         assert!(errors.is_empty(), "{}", errors.finish());
         assert_eq!(closure, expected.iter().map(|name| (*name).to_owned()).collect());
+    }
+
+    #[test]
+    fn checked_cargo_configuration_rejects_every_test_profile_toml_spelling() {
+        let reviewed = "[env]\n__ZEROCOPY_LOCAL_DEV = \"1\"\n\n\
+                        [source.crates-io]\nreplace-with = \"vendored\"\n\n\
+                        [source.vendored]\ndirectory = \"vendor\"\n";
+
+        // `metadata::ToolchainMetadata` performs the parallel typed check for
+        // the workspace manifest. This strict configuration schema covers the
+        // repository-owned Cargo input which is merged with that manifest;
+        // `execution::preflight_ci_cargo_environment` covers global
+        // configuration on the runner. Keep all three checks coordinated with
+        // native `cargo test` consolidation in `execution::build_operations`.
+        for declaration in [
+            "[profile.test]\nopt-level = 1\n",
+            "[profile.\"test\"]\nopt-level = 1\n",
+            "[\"profile\".test]\nopt-level = 1\n",
+            "profile.test.opt-level = 1\n",
+            "profile = { test = { opt-level = 1 } }\n",
+        ] {
+            let source = format!("{declaration}\n{reviewed}");
+            let error = toml::from_str::<CargoConfiguration>(&source)
+                .err()
+                .expect("test profile must be outside the reviewed Cargo configuration schema");
+            assert!(
+                error.to_string().contains("unknown field `profile`"),
+                "declaration {declaration:?} produced {error}"
+            );
+        }
     }
 
     #[test]
