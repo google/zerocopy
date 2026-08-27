@@ -231,6 +231,18 @@ fi
 RUSTUP_TOOLCHAIN=zerocopy-ci-intentionally-invalid \
   ./cargo.sh test --locked --workspace
 
+# The tools workspace test above exercises cargo-zerocopy's encoder for the
+# indexed UI feature-argument protocol. Its decoder lives in Zerocopy's
+# separate `testutil` workspace package, so `--workspace` cannot reach it.
+# Test that package explicitly and keep this command coordinated with the
+# protocol constants and fixed-vector tests in
+# `tools/cargo-zerocopy/src/main.rs` and `zerocopy/testutil/src/lib.rs`.
+# Route through the public wrapper so the test receives the same pinned stable
+# toolchain marker as an ordinary UI integration test, while the intentionally
+# invalid ambient override continues to prove that the wrapper owns selection.
+RUSTUP_TOOLCHAIN=zerocopy-ci-intentionally-invalid \
+  ../zerocopy/cargo.sh +stable test --locked --offline --package testutil --lib
+
 # Exercise the public repository-level route in addition to the library tests.
 # The wrapper must establish the expected working directory, and the inventory
 # command must pin its own Cargo metadata invocation instead of inheriting this
