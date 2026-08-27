@@ -28,4 +28,8 @@ env -u RUSTFLAGS -u CARGO_TARGET_DIR -u RUSTUP_TOOLCHAIN \
 # the repository root, so both platform wrappers must invoke cargo-zerocopy
 # from the Zerocopy crate directory.
 cd "$ZEROCOPY_DIR"
+# Typed CI runs `execution::preflight_ci_cargo_environment` before entering
+# this wrapper. Keep this final handoff transparent to its argv and inherited
+# environment; `configure_delegated_cargo_command` owns and tests the remaining
+# Rust-to-Cargo handoff used by native build/test consolidation.
 exec "$REPO_DIR/tools/target/debug/cargo-zerocopy" "$@"

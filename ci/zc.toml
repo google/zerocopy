@@ -60,9 +60,14 @@ id = "zerocopy-derive"
 manifest = "zerocopy/zerocopy-derive/Cargo.toml"
 profiles = ["default"]
 
-# `mode` coordinates with the ordinary executor: native targets run tests,
-# cross targets compile tests and build the library, and the current thumb
-# target checks only the library because its test dependencies do not compile.
+# `mode` coordinates with `execution::build_operations`: native targets run
+# tests. Proc macros always retain a separate production build; ordinary
+# package/profile pairs do too unless their audited feature selection enables
+# an integration target. Cross targets compile tests and build the library,
+# while the current thumb target checks only the library because its test
+# dependencies do not compile. Keep the native distinction coordinated with
+# the `cargo tree` smoke test in `execution.rs` and the explanation beside
+# `syn` in `zerocopy-derive/Cargo.toml`.
 # `pr_eligible` is the latency-reduced subset. The merge queue and other full
 # events still use every target selected by a toolchain scope. Miri and semver
 # eligibility are explicit so a new target cannot silently escape either kind
