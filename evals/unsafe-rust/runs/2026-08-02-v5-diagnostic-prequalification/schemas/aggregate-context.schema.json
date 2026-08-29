@@ -8,7 +8,7 @@
   "properties": {
     "schema_version": {"const": 1},
     "status": {"const": "DERIVED"},
-    "builder_id": {"const": "v5-diagnostic-aggregate-context-v2"},
+    "builder_id": {"const": "v5-diagnostic-aggregate-context-v3"},
     "static_lock_sha256": {"$ref": "#/$defs/digest"},
     "rules_sha256": {"$ref": "#/$defs/digest"},
     "input_digests": {
