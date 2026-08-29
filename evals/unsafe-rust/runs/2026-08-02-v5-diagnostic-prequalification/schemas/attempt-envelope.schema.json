@@ -21,24 +21,56 @@
     "envelope_spec_sha256": {"$ref": "#/$defs/digest"},
     "output_entries": {
       "type": "array",
+      "maxItems": 4096,
+      "$comment": "The protocol additionally enforces a 262144-byte cumulative UTF-8 path-token budget and exact sorted uniqueness.",
       "items": {
-        "type": "object",
-        "required": ["path", "kind", "declared"],
-        "properties": {
-          "path": {"type": "string", "minLength": 1},
-          "kind": {"enum": ["file", "directory", "symlink", "special", "not-directory"]},
-          "declared": {"type": "boolean"},
-          "size": {"type": "integer", "minimum": 0},
-          "sha256": {"$ref": "#/$defs/digest"}
-        },
-        "additionalProperties": false
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "kind", "declared", "size", "sha256", "captured"],
+            "properties": {
+              "path": {"$ref": "#/$defs/output_path_token"},
+              "kind": {"const": "file"},
+              "declared": {"type": "boolean"},
+              "size": {"type": "integer", "minimum": 0},
+              "sha256": {"oneOf": [{"$ref": "#/$defs/digest"}, {"type": "null"}]},
+              "captured": {"type": "boolean"}
+            },
+            "allOf": [
+              {"if": {"properties": {"captured": {"const": true}}}, "then": {"properties": {"sha256": {"$ref": "#/$defs/digest"}}}},
+              {"if": {"properties": {"captured": {"const": false}}}, "then": {"properties": {"sha256": {"type": "null"}}}}
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "kind", "declared"],
+            "properties": {
+              "path": {"$ref": "#/$defs/output_path_token"},
+              "kind": {"enum": ["directory", "symlink", "special", "not-directory"]},
+              "declared": {"type": "boolean"}
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "kind", "declared"],
+            "properties": {
+              "path": {"enum": ["_encoded-posix-path/X2VuY29kZWQtcG9zaXgtcGF0aC9jYXB0dXJlLWVudHJ5LWxpbWl0", "_encoded-posix-path/X2VuY29kZWQtcG9zaXgtcGF0aC9jYXB0dXJlLXBhdGgtYnl0ZS1saW1pdA"]},
+              "kind": {"const": "capture-limit"},
+              "declared": {"const": false}
+            }
+          }
+        ]
       }
     },
     "total_output_bytes": {"type": "integer", "minimum": 0},
     "final_response": {
       "oneOf": [
         {"type": "object", "additionalProperties": false, "required": ["present"], "properties": {"present": {"const": false}}},
-        {"type": "object", "additionalProperties": false, "required": ["present", "size", "sha256"], "properties": {"present": {"const": true}, "size": {"type": "integer", "minimum": 0}, "sha256": {"$ref": "#/$defs/digest"}}}
+        {"type": "object", "additionalProperties": false, "required": ["present", "captured", "size", "sha256", "prefix_sha256"], "properties": {"present": {"const": true}, "captured": {"type": "boolean"}, "size": {"type": "integer", "minimum": 0, "maximum": 4194304}, "sha256": {"$ref": "#/$defs/digest"}, "prefix_sha256": {"type": "null"}}},
+        {"type": "object", "additionalProperties": false, "required": ["present", "captured", "size", "sha256", "prefix_sha256"], "properties": {"present": {"const": true}, "captured": {"const": false}, "size": {"type": "integer", "minimum": 4194305}, "sha256": {"type": "null"}, "prefix_sha256": {"$ref": "#/$defs/digest"}}}
       ]
     },
     "process": {
@@ -46,7 +78,7 @@
       "additionalProperties": false,
       "required": ["disposition", "exit_code"],
       "properties": {
-        "disposition": {"type": "string", "minLength": 1},
+        "disposition": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
         "exit_code": {"type": ["integer", "null"]}
       }
     },
@@ -58,6 +90,14 @@
   },
   "$defs": {
     "safe_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
-    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "output_path_token": {
+      "$comment": "The first branch is the exact portable path grammar. The second admits only syntactically canonical unpadded base64url tokens; protocol.decode_output_path_token additionally verifies decoded nonempty relative POSIX bytes and rejects unnecessary encoding, properties JSON Schema cannot express.",
+      "type": "string",
+      "oneOf": [
+        {"pattern": "^(?!_encoded-posix-path/)(?!/)(?!.*\\\\)(?!.*//)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*[\\u0000-\\u001f])(?!\\s)(?!.*\\s$)[^/]+(?:/[^/]+)*$"},
+        {"pattern": "^_encoded-posix-path/(?=[A-Za-z0-9_-]{2,}$)(?:[A-Za-z0-9_-]{4})*(?:[A-Za-z0-9_-][AQgw]|[A-Za-z0-9_-]{2}[AEIMQUYcgkosw048])?$"}
+      ]
+    }
   }
 }

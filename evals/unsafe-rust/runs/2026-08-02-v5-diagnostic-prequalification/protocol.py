@@ -22,11 +22,15 @@ from __future__ import annotations
 
 import argparse
 import base64
+import binascii
 import contextlib
 import copy
+import ctypes
+import errno
 import fcntl
 import hashlib
 import json
+import math
 import os
 import re
 import runpy
@@ -39,7 +43,7 @@ import types
 import unicodedata
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path, PurePosixPath
-from typing import Any, Callable, Iterator
+from typing import Any, Callable, Iterator, NamedTuple
 
 
 RUN = Path(__file__).resolve().parent
@@ -126,7 +130,18 @@ AGGREGATE_DIGEST_KEYS = (
     "comparison_predicate_sha256",
     "coherence_review_sha256",
 )
-AGGREGATE_BUILDER_ID = "v5-diagnostic-aggregate-context-v2"
+AGGREGATE_BUILDER_ID = "v5-diagnostic-aggregate-context-v3"
+AGGREGATION_STAGE_MANIFEST_ALGORITHM = "V5_AGGREGATION_STAGE_MANIFEST_V1"
+AGGREGATION_TERMINAL_FAILURE_ALGORITHM = "V5_AGGREGATION_TERMINAL_FAILURE_V1"
+AGGREGATION_PENDING_STAGE_PREFIX = ".pending-"
+AGGREGATION_STAGE_ORDER = (
+    "01-report-products",
+    "02-scorer-products",
+    "03-consistency-products",
+    "04-score-products",
+    "05-materiality-products",
+    "final",
+)
 PROJECTION_INVENTORY_BUILDER_ID = "v5-report-secret-inventory-v1"
 DIAGNOSTIC_CONTRACT_VERSIONS = {
     "DRAFT": "v5-diagnostic-prequalification-draft-1",
@@ -373,7 +388,31 @@ class InjectedFault(ProtocolError):
     """Synthetic crash point used only by protocol fault-injection tests."""
 
 
+class AggregationStageDerivable(ProtocolError):
+    """Read-only progress reached a stage that has not yet been published."""
+
+    def __init__(self, progress: dict[str, Any]):
+        super().__init__(
+            f"aggregation stage is derivable but unpublished: {progress['current_stage']}"
+        )
+        self.progress = progress
+
+
 _SYNTHETIC_TEST_CAPABILITY = object()
+_PRODUCTION_LEASE_CAPABILITY = object()
+AGGREGATION_COORDINATOR_CLAIM = "coordinator-claim.json"
+AGGREGATION_TERMINAL_FAILURE = "terminal-failure.json"
+ENCODED_OUTPUT_PATH_PREFIX = "_encoded-posix-path/"
+MAX_ENVELOPE_CAPTURE_BYTES = 4 * 1024 * 1024
+MAX_OUTPUT_CAPTURE_ENTRIES = 4096
+MAX_OUTPUT_CAPTURE_PATH_BYTES = 256 * 1024
+
+
+class OversizedFinalResponse(NamedTuple):
+    """Stable source size plus the bounded prefix authenticated at sealing."""
+
+    size: int
+    prefix: bytes
 
 
 def sha256(data: bytes) -> str:
@@ -393,6 +432,55 @@ def reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
+def reject_json_surrogates(value: Any, label: str) -> None:
+    """Iteratively reject strings that are not Unicode scalar sequences."""
+
+    pending = [value]
+    seen_containers: set[int] = set()
+    while pending:
+        item = pending.pop()
+        if isinstance(item, str):
+            if any(0xD800 <= ord(character) <= 0xDFFF for character in item):
+                raise ProtocolError(f"{label} contains an unpaired Unicode surrogate")
+        elif isinstance(item, dict):
+            identity = id(item)
+            if identity in seen_containers:
+                continue
+            seen_containers.add(identity)
+            pending.extend(item.keys())
+            pending.extend(item.values())
+        elif isinstance(item, (list, tuple)):
+            identity = id(item)
+            if identity in seen_containers:
+                continue
+            seen_containers.add(identity)
+            pending.extend(item)
+
+
+def reject_json_nonfinite_numbers(value: Any, label: str) -> None:
+    """Iteratively reject exponent-overflow floats produced by json.loads."""
+
+    pending = [value]
+    seen_containers: set[int] = set()
+    while pending:
+        item = pending.pop()
+        if isinstance(item, float) and not math.isfinite(item):
+            raise ProtocolError(f"{label} contains a non-finite JSON number")
+        if isinstance(item, dict):
+            identity = id(item)
+            if identity in seen_containers:
+                continue
+            seen_containers.add(identity)
+            pending.extend(item.keys())
+            pending.extend(item.values())
+        elif isinstance(item, (list, tuple)):
+            identity = id(item)
+            if identity in seen_containers:
+                continue
+            seen_containers.add(identity)
+            pending.extend(item)
+
+
 def strict_json_loads(data: bytes | str, label: str = "JSON") -> Any:
     if isinstance(data, bytes):
         try:
@@ -404,19 +492,27 @@ def strict_json_loads(data: bytes | str, label: str = "JSON") -> Any:
     else:
         raise ProtocolError(f"{label} input must be bytes or text")
     try:
-        return json.loads(
+        value = json.loads(
             text,
             object_pairs_hook=reject_duplicate_json_keys,
             parse_constant=reject_json_constant,
         )
+        reject_json_surrogates(value, label)
+        reject_json_nonfinite_numbers(value, label)
+        return value
     except ProtocolError:
         raise
+    except RecursionError as error:
+        raise ProtocolError(f"{label} exceeds the JSON nesting limit") from error
     except json.JSONDecodeError as error:
         raise ProtocolError(f"{label} is not valid JSON") from error
+    except ValueError as error:
+        raise ProtocolError(f"{label} contains an unsupported JSON value") from error
 
 
 def canonical_json_bytes(value: Any) -> bytes:
     try:
+        reject_json_surrogates(value, "canonical JSON value")
         encoded = json.dumps(
             value,
             sort_keys=True,
@@ -424,13 +520,14 @@ def canonical_json_bytes(value: Any) -> bytes:
             ensure_ascii=False,
             allow_nan=False,
         )
-    except (TypeError, ValueError) as error:
+        return (encoded + "\n").encode("utf-8")
+    except (TypeError, ValueError, UnicodeEncodeError, RecursionError) as error:
         raise ProtocolError("value is not canonical finite JSON") from error
-    return (encoded + "\n").encode("utf-8")
 
 
 def pretty_json(value: Any) -> str:
     try:
+        reject_json_surrogates(value, "pretty JSON value")
         return (
             json.dumps(
                 value,
@@ -441,12 +538,80 @@ def pretty_json(value: Any) -> str:
             )
             + "\n"
         )
-    except (TypeError, ValueError) as error:
+    except (TypeError, ValueError, UnicodeEncodeError, RecursionError) as error:
         raise ProtocolError("value is not finite JSON") from error
 
 
 def read_json(path: Path) -> Any:
     return strict_json_loads(path.read_bytes(), str(path))
+
+
+def read_bounded_file_prefix_and_size(
+    path: Path, max_bytes: int, label: str
+) -> tuple[bytes, int]:
+    """Read a stable regular-file prefix and bind its actual source size."""
+
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+    )
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as error:
+        raise ProtocolError(f"{label} is not a readable regular file") from error
+    try:
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode):
+            raise ProtocolError(f"{label} is not a regular file")
+        chunks: list[bytes] = []
+        remaining = max_bytes + 1
+        while remaining:
+            chunk = os.read(descriptor, min(1024 * 1024, remaining))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        after = os.fstat(descriptor)
+        if (
+            before.st_dev,
+            before.st_ino,
+            before.st_mode,
+            before.st_size,
+            before.st_mtime_ns,
+            before.st_ctime_ns,
+        ) != (
+            after.st_dev,
+            after.st_ino,
+            after.st_mode,
+            after.st_size,
+            after.st_mtime_ns,
+            after.st_ctime_ns,
+        ):
+            raise ProtocolError(f"{label} changed during bounded capture")
+        data = b"".join(chunks)
+        if before.st_size <= max_bytes and len(data) != before.st_size:
+            raise ProtocolError(f"{label} was not completely captured")
+        if before.st_size > max_bytes and len(data) != max_bytes + 1:
+            raise ProtocolError(f"{label} oversize sentinel capture is incomplete")
+        return data, before.st_size
+    finally:
+        os.close(descriptor)
+
+
+def read_bounded_file_prefix(path: Path, max_bytes: int, label: str) -> bytes:
+    """Read a stable regular-file prefix, retaining at most ``max_bytes + 1``."""
+
+    return read_bounded_file_prefix_and_size(path, max_bytes, label)[0]
+
+
+def read_bounded_final_response(
+    path: Path, max_bytes: int, label: str
+) -> bytes | OversizedFinalResponse:
+    prefix, size = read_bounded_file_prefix_and_size(path, max_bytes, label)
+    if size <= max_bytes:
+        return prefix
+    return OversizedFinalResponse(size=size, prefix=prefix)
 
 
 def require_exact_keys(value: Any, keys: set[str], label: str) -> dict[str, Any]:
@@ -460,6 +625,12 @@ def require_safe_id(value: Any, label: str) -> str:
     if not isinstance(value, str) or not SAFE_ID.fullmatch(value):
         raise ProtocolError(f"invalid {label}: {value!r}")
     return value
+
+
+def path_entry_exists(path: Path) -> bool:
+    """Return whether a directory entry exists, including a dangling symlink."""
+
+    return path.exists() or path.is_symlink()
 
 
 def require_production_actor_id(value: Any, label: str) -> str:
@@ -485,6 +656,7 @@ def require_relative_file(value: Any, label: str) -> str:
     path = PurePosixPath(value)
     if (
         path.is_absolute()
+        or not path.parts
         or path.as_posix() != value
         or "\\" in value
         or value.endswith("/")
@@ -493,6 +665,154 @@ def require_relative_file(value: Any, label: str) -> str:
     ):
         raise ProtocolError(f"invalid {label}: {value!r}")
     return value
+
+
+def encode_output_path_token(value: str) -> str:
+    """Represent every POSIX relative pathname as canonical JSON-safe text."""
+
+    if not isinstance(value, str):
+        raise ProtocolError("captured output path must be a filesystem string")
+    raw = os.fsencode(value)
+    try:
+        portable = raw.decode("utf-8", errors="strict")
+        require_relative_file(portable, "captured output path")
+    except (UnicodeDecodeError, ProtocolError):
+        portable = None
+    if portable is not None and not portable.startswith(ENCODED_OUTPUT_PATH_PREFIX):
+        return portable
+    encoded = base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
+    if not encoded:
+        raise ProtocolError("captured output path is empty")
+    return ENCODED_OUTPUT_PATH_PREFIX + encoded
+
+
+def decode_output_path_token(value: Any) -> tuple[bytes, bool]:
+    """Validate/decode one canonical output token; bool means portable path."""
+
+    if not isinstance(value, str) or not value:
+        raise ProtocolError("envelope output path token is invalid")
+    if not value.startswith(ENCODED_OUTPUT_PATH_PREFIX):
+        portable = require_relative_file(value, "envelope output path")
+        return portable.encode("utf-8"), True
+    encoded = value.removeprefix(ENCODED_OUTPUT_PATH_PREFIX)
+    if not encoded or re.fullmatch(r"[A-Za-z0-9_-]+", encoded) is None:
+        raise ProtocolError("encoded envelope output path token is malformed")
+    padded = encoded + "=" * ((4 - len(encoded) % 4) % 4)
+    try:
+        raw = base64.b64decode(padded, altchars=b"-_", validate=True)
+    except (ValueError, binascii.Error) as error:
+        raise ProtocolError("encoded envelope output path token is malformed") from error
+    if base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=") != encoded:
+        raise ProtocolError("encoded envelope output path token is noncanonical")
+    parts = raw.split(b"/")
+    if (
+        not raw
+        or raw.startswith(b"/")
+        or raw.endswith(b"/")
+        or b"\x00" in raw
+        or any(part in (b"", b".", b"..") for part in parts)
+    ):
+        raise ProtocolError("encoded envelope output path bytes are not relative")
+    try:
+        decoded = raw.decode("utf-8", errors="strict")
+        require_relative_file(decoded, "decoded envelope output path")
+    except (UnicodeDecodeError, ProtocolError):
+        decoded = None
+    if decoded is not None and not decoded.startswith(ENCODED_OUTPUT_PATH_PREFIX):
+        raise ProtocolError("portable envelope output path was unnecessarily encoded")
+    return raw, False
+
+
+def output_capture_limit_path(reason: str) -> str:
+    suffix_by_reason = {
+        "entry-count": "capture-entry-limit",
+        "path-bytes": "capture-path-byte-limit",
+    }
+    try:
+        suffix = suffix_by_reason[reason]
+    except KeyError as error:
+        raise ProtocolError("output capture-limit reason is invalid") from error
+    return encode_output_path_token(ENCODED_OUTPUT_PATH_PREFIX + suffix)
+
+
+def output_capture_limit_violation(path: Any) -> str:
+    for reason in ("entry-count", "path-bytes"):
+        if path == output_capture_limit_path(reason):
+            return f"capture-limit:{reason}"
+    raise ProtocolError("output capture-limit sentinel path is invalid")
+
+
+def describe_final_response(
+    value: bytes | OversizedFinalResponse | None,
+) -> tuple[bytes | None, dict[str, Any]]:
+    """Normalize a response into retained bytes and an authenticated descriptor."""
+
+    if value is None:
+        return None, {
+            "present": False,
+            "size": None,
+            "sha256": None,
+            "prefix_sha256": None,
+        }
+    if type(value) is bytes:
+        size = len(value)
+        if size <= MAX_ENVELOPE_CAPTURE_BYTES:
+            return value, {
+                "present": True,
+                "size": size,
+                "sha256": sha256(value),
+                "prefix_sha256": None,
+            }
+        prefix = value[: MAX_ENVELOPE_CAPTURE_BYTES + 1]
+    elif type(value) is OversizedFinalResponse:
+        size = value.size
+        prefix = value.prefix
+        if (
+            type(size) is not int
+            or size <= MAX_ENVELOPE_CAPTURE_BYTES
+            or type(prefix) is not bytes
+            or len(prefix) != MAX_ENVELOPE_CAPTURE_BYTES + 1
+        ):
+            raise ProtocolError("oversized final-response descriptor is invalid")
+    else:
+        raise ProtocolError(
+            "final response must be bytes, a bounded oversized descriptor, or null"
+        )
+    return None, {
+        "present": True,
+        "size": size,
+        "sha256": None,
+        "prefix_sha256": sha256(prefix),
+    }
+
+
+def valid_final_response_binding(
+    size: Any, digest: Any, prefix_digest: Any
+) -> bool:
+    if size is None:
+        return digest is None and prefix_digest is None
+    if type(size) is not int or size < 0:
+        return False
+    if size <= MAX_ENVELOPE_CAPTURE_BYTES:
+        return (
+            isinstance(digest, str)
+            and HEX64.fullmatch(digest) is not None
+            and prefix_digest is None
+        )
+    return (
+        digest is None
+        and isinstance(prefix_digest, str)
+        and HEX64.fullmatch(prefix_digest) is not None
+    )
+
+
+def envelope_payload_relative_path(path_token: str) -> PurePosixPath:
+    raw, _portable = decode_output_path_token(path_token)
+    # Never mirror an agent-controlled pathname beneath the longer private
+    # staging prefix: a path valid in the workspace can exceed PATH_MAX there.
+    # The envelope record carries the injective pathname token; payload storage
+    # is uniformly fixed-width and content-addressed by the raw path bytes.
+    return PurePosixPath("output-files", sha256(raw))
 
 
 def is_within(path: Path, parent: Path) -> bool:
@@ -622,17 +942,140 @@ def require_production_runtime_actor(
     return actor_id
 
 
+def build_aggregation_coordinator_claim(
+    coordinator_actor_id: str,
+    static_lock_sha256: str,
+    reviewer_ids: frozenset[str],
+) -> dict[str, Any]:
+    coordinator_actor_id = require_production_runtime_actor(
+        coordinator_actor_id,
+        "aggregation coordinator actor ID",
+        reviewer_ids,
+    )
+    if not isinstance(static_lock_sha256, str) or not HEX64.fullmatch(
+        static_lock_sha256
+    ):
+        raise ProtocolError("aggregation coordinator claim has an invalid static lock")
+    return {
+        "schema_version": 1,
+        "status": "CLAIMED",
+        "coordinator_actor_id": coordinator_actor_id,
+        "static_lock_sha256": static_lock_sha256,
+    }
+
+
+def validate_aggregation_coordinator_claim(
+    value: Any,
+    static_lock_sha256: str,
+    reviewer_ids: frozenset[str],
+) -> dict[str, Any]:
+    claim = require_exact_keys(
+        value,
+        {
+            "schema_version",
+            "status",
+            "coordinator_actor_id",
+            "static_lock_sha256",
+        },
+        "aggregation coordinator claim",
+    )
+    expected = build_aggregation_coordinator_claim(
+        claim["coordinator_actor_id"], static_lock_sha256, reviewer_ids
+    )
+    if claim != expected:
+        raise ProtocolError("aggregation coordinator claim identity/binding mismatch")
+    return claim
+
+
+def load_aggregation_coordinator_claim(
+    state_root: Path,
+    static_lock_sha256: str,
+    reviewer_ids: frozenset[str],
+) -> dict[str, Any]:
+    path = state_root / "aggregation" / AGGREGATION_COORDINATOR_CLAIM
+    claim = validate_aggregation_coordinator_claim(
+        read_committed_json(path, "aggregation coordinator claim"),
+        static_lock_sha256,
+        reviewer_ids,
+    )
+    if path.read_bytes() != canonical_json_bytes(claim):
+        raise ProtocolError("aggregation coordinator claim is not canonical JSON")
+    return claim
+
+
 def maybe_inject_fault(fault_after: str | None, point: str) -> None:
     if fault_after == point:
         raise InjectedFault(f"synthetic fault after {point}")
 
 
 def fsync_directory(path: Path) -> None:
-    fd = os.open(path, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+    fd = os.open(
+        path,
+        os.O_RDONLY
+        | getattr(os, "O_DIRECTORY", 0)
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_CLOEXEC", 0),
+    )
     try:
         os.fsync(fd)
     finally:
         os.close(fd)
+
+
+def durable_mkdir(path: Path, mode: int = 0o700) -> None:
+    """Create or recover a real directory chain and durably link each component."""
+
+    path = Path(os.path.abspath(os.fspath(path)))
+    chain: list[Path] = []
+    cursor = path
+    while True:
+        chain.append(cursor)
+        parent = cursor.parent
+        if parent == cursor:
+            break
+        cursor = parent
+    chain.reverse()
+    missing_index = len(chain)
+    for index, directory in enumerate(chain):
+        try:
+            info = directory.lstat()
+        except FileNotFoundError:
+            missing_index = index
+            break
+        except OSError as error:
+            raise ProtocolError(
+                f"directory chain component is unavailable: {directory}"
+            ) from error
+        if not stat.S_ISDIR(info.st_mode):
+            raise ProtocolError(
+                f"directory chain component is not a real directory: {directory}"
+            )
+
+    # The deepest visible component may be the result of a prior mkdir whose
+    # self/parent fsync failed.  A retry must repair that namespace publication
+    # even when no component remains to create.
+    deepest_existing = chain[missing_index - 1]
+    fsync_directory(deepest_existing)
+    if deepest_existing.parent != deepest_existing:
+        fsync_directory(deepest_existing.parent)
+
+    for directory in chain[missing_index:]:
+        try:
+            os.mkdir(directory, mode=mode)
+        except FileExistsError:
+            pass
+        try:
+            info = directory.lstat()
+        except OSError as error:
+            raise ProtocolError(
+                f"directory chain component is unavailable: {directory}"
+            ) from error
+        if not stat.S_ISDIR(info.st_mode):
+            raise ProtocolError(
+                f"directory chain component is not a real directory: {directory}"
+            )
+        fsync_directory(directory)
+        fsync_directory(directory.parent)
 
 
 def fsync_tree(root: Path) -> None:
@@ -674,7 +1117,9 @@ def harden_tree_read_only(root: Path) -> None:
 
 
 def exclusive_write(path: Path, data: bytes) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
+    """Publish absent-or-complete immutable bytes with a hard-link CAS."""
+
+    durable_mkdir(path.parent)
     stage = path.parent / f".exclusive-stage-{path.name}-{secrets.token_hex(12)}"
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
     try:
@@ -686,6 +1131,8 @@ def exclusive_write(path: Path, data: bytes) -> None:
                 if written < 1:
                     raise OSError("short write")
                 view = view[written:]
+            os.fsync(fd)
+            os.fchmod(fd, 0o400)
             os.fsync(fd)
         finally:
             os.close(fd)
@@ -699,30 +1146,1000 @@ def exclusive_write(path: Path, data: bytes) -> None:
         fsync_directory(path.parent)
 
 
+def recover_exclusive_write_residues(state_root: Path) -> None:
+    """Discard only unpublished private CAS files after a coordinator crash."""
+
+    if not path_entry_exists(state_root):
+        return
+    residues: list[Path] = []
+    for directory, directory_names, file_names in os.walk(
+        state_root, topdown=True, followlinks=False
+    ):
+        directory_names.sort()
+        file_names.sort()
+        directory_path = Path(directory)
+        if directory_path.is_symlink():
+            raise ProtocolError(
+                f"protocol state contains a symlinked directory: {directory_path}"
+            )
+        for name in file_names:
+            if name.startswith(".exclusive-stage-"):
+                path = directory_path / name
+                if (
+                    re.fullmatch(r"\.exclusive-stage-.+-[0-9a-f]{24}", name)
+                    is None
+                    or path.is_symlink()
+                    or not path.is_file()
+                ):
+                    raise ProtocolError(
+                        f"invalid exclusive-write recovery residue: {path}"
+                    )
+                residues.append(path)
+    for path in residues:
+        parent = path.parent
+        original_mode = stat.S_IMODE(parent.lstat().st_mode)
+        try:
+            if not original_mode & stat.S_IWUSR:
+                os.chmod(parent, original_mode | stat.S_IWUSR)
+            path.unlink()
+            fsync_directory(parent)
+        finally:
+            if stat.S_IMODE(parent.lstat().st_mode) != original_mode:
+                os.chmod(parent, original_mode)
+                fsync_directory(parent)
+                fsync_directory(parent.parent)
+
+
 def write_stage_file(path: Path, data: bytes) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
+    durable_mkdir(path.parent)
     exclusive_write(path, data)
+
+
+def aggregation_stage_file_records(files: dict[str, bytes]) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for path_text, data in sorted(files.items()):
+        path_text = require_relative_file(path_text, "aggregation stage file path")
+        if path_text == "stage-manifest.json":
+            raise ProtocolError("aggregation stage payload cannot replace its manifest")
+        if not isinstance(data, bytes):
+            raise ProtocolError("aggregation stage payloads must be bytes")
+        records.append(
+            {
+                "path": path_text,
+                "size": len(data),
+                "sha256": sha256(data),
+            }
+        )
+    return records
+
+
+def build_aggregation_stage_manifest(
+    stage_id: str,
+    files: dict[str, bytes],
+    *,
+    static_lock_sha256: str,
+    coordinator_actor_id: str,
+    prerequisite_stage_sha256: str | None,
+    attempt_envelopes: dict[str, str],
+) -> dict[str, Any]:
+    if stage_id not in AGGREGATION_STAGE_ORDER:
+        raise ProtocolError(f"unknown aggregation stage: {stage_id}")
+    if not isinstance(static_lock_sha256, str) or not HEX64.fullmatch(
+        static_lock_sha256
+    ):
+        raise ProtocolError("aggregation stage lacks a valid static-lock digest")
+    coordinator_actor_id = require_production_actor_id(
+        coordinator_actor_id, "aggregation coordinator actor ID"
+    )
+    if prerequisite_stage_sha256 is not None and (
+        not isinstance(prerequisite_stage_sha256, str)
+        or not HEX64.fullmatch(prerequisite_stage_sha256)
+    ):
+        raise ProtocolError("aggregation stage prerequisite digest is invalid")
+    if not isinstance(attempt_envelopes, dict):
+        raise ProtocolError("aggregation stage attempt inventory must be an object")
+    attempts: list[dict[str, str]] = []
+    for assignment_id, digest in sorted(attempt_envelopes.items()):
+        require_safe_id(assignment_id, "aggregation stage attempt assignment")
+        if not isinstance(digest, str) or not HEX64.fullmatch(digest):
+            raise ProtocolError("aggregation stage attempt digest is invalid")
+        attempts.append(
+            {"assignment_id": assignment_id, "envelope_sha256": digest}
+        )
+    return {
+        "schema_version": 1,
+        "status": "COMPLETE",
+        "algorithm": AGGREGATION_STAGE_MANIFEST_ALGORITHM,
+        "stage_id": stage_id,
+        "static_lock_sha256": static_lock_sha256,
+        "coordinator_actor_id": coordinator_actor_id,
+        "prerequisite_stage_sha256": prerequisite_stage_sha256,
+        "attempt_envelopes": attempts,
+        "files": aggregation_stage_file_records(files),
+    }
+
+
+def aggregation_stage_digest(manifest: dict[str, Any]) -> str:
+    return sha256(canonical_json_bytes(manifest))
+
+
+def validate_aggregation_terminal_failure(value: Any) -> dict[str, Any]:
+    """Validate the canonical alternative terminal outcome shape."""
+
+    terminal = require_exact_keys(
+        value,
+        {
+            "schema_version",
+            "status",
+            "outcome",
+            "algorithm",
+            "static_lock_sha256",
+            "coordinator_actor_id",
+            "blocked_stage_id",
+            "prerequisite_stage_sha256",
+            "attempt_envelopes",
+            "failures",
+        },
+        "aggregation terminal failure",
+    )
+    if (
+        terminal["schema_version"] != 1
+        or terminal["status"] != "TERMINAL-FAILURE"
+        or terminal["outcome"] != "ERROR"
+        or terminal["algorithm"] != AGGREGATION_TERMINAL_FAILURE_ALGORITHM
+        or not isinstance(terminal["static_lock_sha256"], str)
+        or HEX64.fullmatch(terminal["static_lock_sha256"]) is None
+        or terminal["blocked_stage_id"] not in AGGREGATION_STAGE_ORDER
+    ):
+        raise ProtocolError("aggregation terminal failure identity is invalid")
+    require_production_actor_id(
+        terminal["coordinator_actor_id"],
+        "aggregation terminal-failure coordinator",
+    )
+    prerequisite = terminal["prerequisite_stage_sha256"]
+    if prerequisite is not None and (
+        not isinstance(prerequisite, str) or HEX64.fullmatch(prerequisite) is None
+    ):
+        raise ProtocolError("aggregation terminal-failure prerequisite is invalid")
+    if not isinstance(terminal["attempt_envelopes"], list):
+        raise ProtocolError("aggregation terminal-failure attempts must be a list")
+    attempt_rows: list[dict[str, str]] = []
+    for raw in terminal["attempt_envelopes"]:
+        row = require_exact_keys(
+            raw,
+            {"assignment_id", "envelope_sha256"},
+            "aggregation terminal-failure attempt",
+        )
+        require_safe_id(row["assignment_id"], "terminal-failure assignment")
+        if (
+            not isinstance(row["envelope_sha256"], str)
+            or HEX64.fullmatch(row["envelope_sha256"]) is None
+        ):
+            raise ProtocolError("terminal-failure envelope digest is invalid")
+        attempt_rows.append(row)
+    if attempt_rows != sorted(attempt_rows, key=lambda row: row["assignment_id"]) or len(
+        {row["assignment_id"] for row in attempt_rows}
+    ) != len(attempt_rows):
+        raise ProtocolError("terminal-failure attempts are not unique and sorted")
+    if not isinstance(terminal["failures"], list) or not terminal["failures"]:
+        raise ProtocolError("aggregation terminal failure has no failures")
+    failure_rows: list[dict[str, Any]] = []
+    for raw in terminal["failures"]:
+        row = require_exact_keys(
+            raw,
+            {
+                "assignment_id",
+                "role",
+                "envelope_sha256",
+                "primary_output_present",
+                "format_valid",
+                "semantic_valid",
+            },
+            "aggregation terminal-failure record",
+        )
+        require_safe_id(row["assignment_id"], "terminal-failure assignment")
+        if (
+            row["role"] not in SEMANTIC_AGENT_ROLES
+            or not isinstance(row["envelope_sha256"], str)
+            or HEX64.fullmatch(row["envelope_sha256"]) is None
+            or any(
+                type(row[name]) is not bool
+                for name in (
+                    "primary_output_present",
+                    "format_valid",
+                    "semantic_valid",
+                )
+            )
+        ):
+            raise ProtocolError("aggregation terminal-failure record is invalid")
+        failure_rows.append(row)
+    if failure_rows != sorted(failure_rows, key=lambda row: row["assignment_id"]) or len(
+        {row["assignment_id"] for row in failure_rows}
+    ) != len(failure_rows):
+        raise ProtocolError("terminal-failure records are not unique and sorted")
+    attempts = {
+        row["assignment_id"]: row["envelope_sha256"] for row in attempt_rows
+    }
+    if any(
+        row["assignment_id"] not in attempts
+        or attempts[row["assignment_id"]] != row["envelope_sha256"]
+        for row in failure_rows
+    ):
+        raise ProtocolError("terminal failures are not bound to the attempt inventory")
+    return terminal
+
+
+def build_aggregation_terminal_failure(
+    *,
+    blocked_stage_id: str,
+    static_lock_sha256: str,
+    coordinator_actor_id: str,
+    prerequisite_stage_sha256: str | None,
+    attempts: dict[str, dict[str, Any]],
+    cumulative_assignments: set[str],
+    failure_assignments: set[str],
+) -> dict[str, Any]:
+    """Build one order-independent terminal error at a sealed phase barrier."""
+
+    if not failure_assignments or not failure_assignments <= cumulative_assignments:
+        raise ProtocolError("aggregation terminal failure set is invalid")
+    attempt_envelopes = sealed_attempt_envelopes(
+        attempts, cumulative_assignments
+    )
+    failures: list[dict[str, Any]] = []
+    for assignment_id in sorted(failure_assignments):
+        attempt = attempts[assignment_id]
+        pointer = attempt["pointer"]
+        if not isinstance(pointer, dict):
+            raise ProtocolError("terminal failure lacks a canonical pointer")
+        failures.append(
+            {
+                "assignment_id": assignment_id,
+                "role": attempt["launch"]["role"],
+                "envelope_sha256": pointer["envelope_sha256"],
+                "primary_output_present": attempt["primary_bytes"] is not None,
+                "format_valid": pointer["format_valid"],
+                "semantic_valid": pointer["semantic_valid"],
+            }
+        )
+    return validate_aggregation_terminal_failure(
+        {
+            "schema_version": 1,
+            "status": "TERMINAL-FAILURE",
+            "outcome": "ERROR",
+            "algorithm": AGGREGATION_TERMINAL_FAILURE_ALGORITHM,
+            "static_lock_sha256": static_lock_sha256,
+            "coordinator_actor_id": coordinator_actor_id,
+            "blocked_stage_id": blocked_stage_id,
+            "prerequisite_stage_sha256": prerequisite_stage_sha256,
+            "attempt_envelopes": [
+                {
+                    "assignment_id": assignment_id,
+                    "envelope_sha256": digest,
+                }
+                for assignment_id, digest in sorted(attempt_envelopes.items())
+            ],
+            "failures": failures,
+        }
+    )
+
+
+def publish_or_verify_aggregation_terminal_failure(
+    aggregation_root: Path, expected: dict[str, Any]
+) -> dict[str, Any]:
+    """Publish an absent-or-identical immutable terminal error record."""
+
+    expected = validate_aggregation_terminal_failure(expected)
+    path = aggregation_root / AGGREGATION_TERMINAL_FAILURE
+    expected_bytes = canonical_json_bytes(expected)
+    if path.exists() or path.is_symlink():
+        actual = validate_aggregation_terminal_failure(
+            read_committed_json(path, "aggregation terminal failure")
+        )
+        if actual != expected or path.read_bytes() != expected_bytes:
+            raise ProtocolError("aggregation terminal failure is not the exact derivation")
+        fsync_directory(path.parent)
+        return actual
+    try:
+        exclusive_write(path, expected_bytes)
+    except FileExistsError:
+        pass
+    except BaseException:
+        if not path_entry_exists(path):
+            raise
+    actual = validate_aggregation_terminal_failure(
+        read_committed_json(path, "aggregation terminal failure")
+    )
+    if actual != expected or path.read_bytes() != expected_bytes:
+        raise ProtocolError("aggregation terminal failure lost its publication race")
+    fsync_directory(path.parent)
+    return actual
+
+
+def _validate_aggregation_stage_tree(
+    stage_root: Path,
+    expected_files: dict[str, bytes],
+    expected_manifest: dict[str, Any],
+) -> dict[str, Any]:
+    if stage_root.is_symlink() or not stage_root.is_dir():
+        raise ProtocolError(f"aggregation stage is not a real directory: {stage_root}")
+    expected_paths = set(expected_files) | {"stage-manifest.json"}
+    expected_directories: set[str] = set()
+    for path_text in expected_paths:
+        for parent in PurePosixPath(path_text).parents:
+            if parent.as_posix() not in ("", "."):
+                expected_directories.add(parent.as_posix())
+    actual_paths: set[str] = set()
+    actual_directories: set[str] = set()
+    for path in stage_root.rglob("*"):
+        relative = path.relative_to(stage_root).as_posix()
+        if path.is_symlink() or not (path.is_dir() or path.is_file()):
+            raise ProtocolError(f"unsupported aggregation stage entry: {relative}")
+        if path.is_dir():
+            actual_directories.add(relative)
+        else:
+            actual_paths.add(relative)
+            if path.lstat().st_mode & 0o222:
+                raise ProtocolError(f"aggregation stage file is mutable: {relative}")
+    if actual_paths != expected_paths:
+        raise ProtocolError(
+            "aggregation stage file inventory is not exact; "
+            f"missing={sorted(expected_paths - actual_paths)}, "
+            f"extra={sorted(actual_paths - expected_paths)}"
+        )
+    if actual_directories != expected_directories:
+        raise ProtocolError(
+            "aggregation stage directory inventory is not exact; "
+            f"missing={sorted(expected_directories - actual_directories)}, "
+            f"extra={sorted(actual_directories - expected_directories)}"
+        )
+    for path_text, expected_bytes in expected_files.items():
+        path = stage_root / Path(*PurePosixPath(path_text).parts)
+        if path.read_bytes() != expected_bytes:
+            raise ProtocolError(f"aggregation stage payload drifted: {path_text}")
+    manifest_path = stage_root / "stage-manifest.json"
+    manifest_bytes = manifest_path.read_bytes()
+    manifest = strict_json_loads(manifest_bytes, str(manifest_path))
+    if (
+        manifest != expected_manifest
+        or manifest_bytes != canonical_json_bytes(expected_manifest)
+    ):
+        raise ProtocolError("aggregation stage manifest is not the exact derivation")
+    for directory in (stage_root, *(path for path in stage_root.rglob("*") if path.is_dir())):
+        if directory.lstat().st_mode & 0o222:
+            raise ProtocolError(f"aggregation stage directory is mutable: {directory}")
+    return manifest
+
+
+def _discard_private_aggregation_stage(stage: Path) -> None:
+    """Discard only one protocol-owned, unpublished stage directory."""
+
+    if not stage.exists() and not stage.is_symlink():
+        return
+    if stage.is_symlink() or not stage.is_dir():
+        raise ProtocolError(f"private aggregation stage is not a real directory: {stage}")
+    for directory, directory_names, _file_names in os.walk(
+        stage, topdown=True, followlinks=False
+    ):
+        directory_names.sort()
+        directory_path = Path(directory)
+        if directory_path.is_symlink():
+            raise ProtocolError(
+                f"private aggregation stage contains a symlinked directory: {directory_path}"
+            )
+        os.chmod(directory_path, 0o700)
+    shutil.rmtree(stage)
+    fsync_directory(stage.parent)
+
+
+def _publish_directory_no_replace(stage: Path, output: Path) -> None:
+    """Atomically publish one same-directory tree without replacement."""
+
+    if stage.parent != output.parent:
+        raise ProtocolError("aggregation publication requires a same-directory stage")
+    libc = ctypes.CDLL(None, use_errno=True)
+    renameat2 = getattr(libc, "renameat2", None)
+    if renameat2 is None:
+        raise ProtocolError(
+            "aggregation publication requires renameat2(RENAME_NOREPLACE)"
+        )
+    renameat2.argtypes = [
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_uint,
+    ]
+    renameat2.restype = ctypes.c_int
+    result = renameat2(
+        -100,
+        os.fsencode(stage),
+        -100,
+        os.fsencode(output),
+        1,
+    )
+    if result != 0:
+        error = ctypes.get_errno()
+        if error == errno.EEXIST:
+            raise FileExistsError(output)
+        raise ProtocolError(
+            f"atomic aggregation publication failed: {os.strerror(error)}"
+        )
+    fsync_directory(output.parent)
+
+
+def publish_or_verify_aggregation_stage(
+    aggregation_root: Path,
+    stage_id: str,
+    files: dict[str, bytes],
+    *,
+    static_lock_sha256: str,
+    coordinator_actor_id: str,
+    prerequisite_stage_sha256: str | None,
+    attempt_envelopes: dict[str, str],
+) -> dict[str, Any]:
+    """Idempotently build, harden, and atomically publish one stage tree."""
+
+    expected_manifest = build_aggregation_stage_manifest(
+        stage_id,
+        files,
+        static_lock_sha256=static_lock_sha256,
+        coordinator_actor_id=coordinator_actor_id,
+        prerequisite_stage_sha256=prerequisite_stage_sha256,
+        attempt_envelopes=attempt_envelopes,
+    )
+    stage_root = (
+        aggregation_root / "final"
+        if stage_id == "final"
+        else aggregation_root / "derived" / stage_id
+    )
+    stage_parent = stage_root.parent
+    durable_mkdir(stage_parent)
+    if stage_parent.is_symlink() or not stage_parent.is_dir():
+        raise ProtocolError("aggregation stage parent is not a real directory")
+    pending = stage_parent / f"{AGGREGATION_PENDING_STAGE_PREFIX}{stage_id}"
+    if stage_root.exists() or stage_root.is_symlink():
+        if pending.exists() or pending.is_symlink():
+            _discard_private_aggregation_stage(pending)
+        manifest = _validate_aggregation_stage_tree(
+            stage_root, files, expected_manifest
+        )
+        fsync_directory(stage_parent)
+        return manifest
+    if pending.exists() or pending.is_symlink():
+        _discard_private_aggregation_stage(pending)
+    os.mkdir(pending, mode=0o700)
+    try:
+        for path_text, expected_bytes in sorted(files.items()):
+            path = pending / Path(*PurePosixPath(path_text).parts)
+            write_stage_file(path, expected_bytes)
+        write_stage_file(
+            pending / "stage-manifest.json",
+            canonical_json_bytes(expected_manifest),
+        )
+        harden_tree_read_only(pending)
+        _validate_aggregation_stage_tree(pending, files, expected_manifest)
+        try:
+            _publish_directory_no_replace(pending, stage_root)
+        except FileExistsError:
+            manifest = _validate_aggregation_stage_tree(
+                stage_root, files, expected_manifest
+            )
+            fsync_directory(stage_parent)
+            return manifest
+        except BaseException:
+            if not path_entry_exists(stage_root):
+                raise
+            manifest = _validate_aggregation_stage_tree(
+                stage_root, files, expected_manifest
+            )
+            fsync_directory(stage_parent)
+            return manifest
+        manifest = _validate_aggregation_stage_tree(
+            stage_root, files, expected_manifest
+        )
+        fsync_directory(stage_parent)
+        return manifest
+    finally:
+        if pending.exists() or pending.is_symlink():
+            _discard_private_aggregation_stage(pending)
+
+
+def aggregation_stage_file(
+    aggregation_root: Path, stage_id: str, relative_path: str
+) -> Path:
+    if stage_id not in AGGREGATION_STAGE_ORDER:
+        raise ProtocolError(f"unknown aggregation stage: {stage_id}")
+    relative_path = require_relative_file(
+        relative_path, "aggregation stage lookup path"
+    )
+    stage_root = (
+        aggregation_root / "final"
+        if stage_id == "final"
+        else aggregation_root / "derived" / stage_id
+    )
+    manifest = validate_committed_aggregation_stage(aggregation_root, stage_id)
+    path = stage_root / Path(*PurePosixPath(relative_path).parts)
+    if not path.is_file() or path.is_symlink() or path.lstat().st_mode & 0o222:
+        raise ProtocolError(
+            f"aggregation stage file is absent or mutable: {stage_id}/{relative_path}"
+        )
+    record = next(
+        (item for item in manifest["files"] if item["path"] == relative_path),
+        None,
+    )
+    data = path.read_bytes()
+    if (
+        record is None
+        or record["size"] != len(data)
+        or record["sha256"] != sha256(data)
+    ):
+        raise ProtocolError(
+            f"aggregation stage manifest does not authorize file: {stage_id}/{relative_path}"
+        )
+    return path
+
+
+def _aggregation_stage_root(aggregation_root: Path, stage_id: str) -> Path:
+    return (
+        aggregation_root / "final"
+        if stage_id == "final"
+        else aggregation_root / "derived" / stage_id
+    )
+
+
+def recover_private_aggregation_stages(aggregation_root: Path) -> None:
+    """Discard deterministic unpublished trees left by an interrupted publisher."""
+
+    for stage_id in AGGREGATION_STAGE_ORDER:
+        stage_root = _aggregation_stage_root(aggregation_root, stage_id)
+        pending = stage_root.parent / f"{AGGREGATION_PENDING_STAGE_PREFIX}{stage_id}"
+        if pending.exists() or pending.is_symlink():
+            _discard_private_aggregation_stage(pending)
+
+
+def validate_aggregation_directory_inventory(
+    aggregation_root: Path,
+    *,
+    require_final: bool,
+) -> tuple[str, ...]:
+    """Require the exact committed stage prefix and no unpublished siblings."""
+
+    if aggregation_root.is_symlink() or not aggregation_root.is_dir():
+        raise ProtocolError("aggregation root is not a real directory")
+    allowed_root = {
+        AGGREGATION_COORDINATOR_CLAIM,
+        AGGREGATION_TERMINAL_FAILURE,
+        "derived",
+        "final",
+    }
+    unexpected_root = {
+        path.name for path in aggregation_root.iterdir()
+    } - allowed_root
+    if unexpected_root:
+        raise ProtocolError(
+            f"aggregation root contains unexpected entries: {sorted(unexpected_root)}"
+        )
+    derived_root = aggregation_root / "derived"
+    committed: tuple[str, ...]
+    if path_entry_exists(derived_root):
+        if derived_root.is_symlink() or not derived_root.is_dir():
+            raise ProtocolError("aggregation derived root is not a real directory")
+        names: list[str] = []
+        for path in derived_root.iterdir():
+            if path.is_symlink() or not path.is_dir():
+                raise ProtocolError("aggregation derived root has a non-directory entry")
+            names.append(path.name)
+        expected_order = AGGREGATION_STAGE_ORDER[:-1]
+        name_set = set(names)
+        if len(name_set) != len(names) or not name_set <= set(expected_order):
+            raise ProtocolError(
+                f"aggregation derived stage inventory is invalid: {sorted(names)}"
+            )
+        prefix_length = len(name_set)
+        committed = tuple(expected_order[:prefix_length])
+        if name_set != set(committed):
+            raise ProtocolError("aggregation derived stages are not an ordered prefix")
+    else:
+        committed = ()
+    final_root = aggregation_root / "final"
+    terminal_path = aggregation_root / AGGREGATION_TERMINAL_FAILURE
+    if terminal_path.exists() or terminal_path.is_symlink():
+        if final_root.exists() or final_root.is_symlink():
+            raise ProtocolError(
+                "aggregation cannot contain both final and terminal-failure outcomes"
+            )
+        validate_aggregation_terminal_failure(
+            read_committed_json(terminal_path, "aggregation terminal failure")
+        )
+    if final_root.exists() or final_root.is_symlink():
+        if final_root.is_symlink() or not final_root.is_dir():
+            raise ProtocolError("final aggregation stage is not a real directory")
+        if committed != AGGREGATION_STAGE_ORDER[:-1]:
+            raise ProtocolError("final aggregation stage exists before every prerequisite stage")
+        committed = (*committed, "final")
+    if require_final and committed != AGGREGATION_STAGE_ORDER:
+        raise ProtocolError("complete aggregation does not contain the exact stage chain")
+    return committed
+
+
+def validate_committed_aggregation_stage(
+    aggregation_root: Path,
+    stage_id: str,
+) -> dict[str, Any]:
+    """Validate one stage's immutable manifest and exact self-contained byte tree."""
+
+    stage_root = _aggregation_stage_root(aggregation_root, stage_id)
+    manifest_path = stage_root / "stage-manifest.json"
+    manifest = require_exact_keys(
+        read_committed_json(manifest_path, f"{stage_id} manifest"),
+        {
+            "schema_version",
+            "status",
+            "algorithm",
+            "stage_id",
+            "static_lock_sha256",
+            "coordinator_actor_id",
+            "prerequisite_stage_sha256",
+            "attempt_envelopes",
+            "files",
+        },
+        f"{stage_id} manifest",
+    )
+    if manifest_path.read_bytes() != canonical_json_bytes(manifest):
+        raise ProtocolError(f"{stage_id} manifest is not canonical JSON")
+    payloads: dict[str, bytes] = {}
+    for record in manifest.get("files", []):
+        if not isinstance(record, dict) or set(record) != {"path", "size", "sha256"}:
+            raise ProtocolError(f"{stage_id} manifest file record is invalid")
+        path_text = require_relative_file(
+            record["path"], f"{stage_id} manifest file path"
+        )
+        if path_text in payloads:
+            raise ProtocolError(f"{stage_id} manifest repeats a file path")
+        path = stage_root / Path(*PurePosixPath(path_text).parts)
+        if path.is_symlink() or not path.is_file():
+            raise ProtocolError(f"{stage_id} manifest file is missing: {path_text}")
+        data = path.read_bytes()
+        if record["size"] != len(data) or record["sha256"] != sha256(data):
+            raise ProtocolError(f"{stage_id} manifest file binding mismatch: {path_text}")
+        payloads[path_text] = data
+    expected = build_aggregation_stage_manifest(
+        stage_id,
+        payloads,
+        static_lock_sha256=manifest.get("static_lock_sha256"),
+        coordinator_actor_id=manifest.get("coordinator_actor_id"),
+        prerequisite_stage_sha256=manifest.get("prerequisite_stage_sha256"),
+        attempt_envelopes={
+            row["assignment_id"]: row["envelope_sha256"]
+            for row in manifest.get("attempt_envelopes", [])
+            if isinstance(row, dict)
+            and set(row) == {"assignment_id", "envelope_sha256"}
+        },
+    )
+    return _validate_aggregation_stage_tree(stage_root, payloads, expected)
+
+
+def validate_aggregation_stage_chain(
+    aggregation_root: Path,
+    committed_stages: tuple[str, ...],
+    coordinator_claim: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Join every committed manifest to the claim and its exact predecessor."""
+
+    manifests: list[dict[str, Any]] = []
+    prerequisite: str | None = None
+    for stage_id in committed_stages:
+        manifest = validate_committed_aggregation_stage(
+            aggregation_root, stage_id
+        )
+        if (
+            manifest["static_lock_sha256"]
+            != coordinator_claim["static_lock_sha256"]
+            or manifest["coordinator_actor_id"]
+            != coordinator_claim["coordinator_actor_id"]
+            or manifest["prerequisite_stage_sha256"] != prerequisite
+        ):
+            raise ProtocolError(
+                f"aggregation stage chain/claim binding failed: {stage_id}"
+            )
+        manifests.append(manifest)
+        prerequisite = aggregation_stage_digest(manifest)
+    return manifests
+
+
+def validate_aggregation_attempt_bindings(
+    committed_stages: tuple[str, ...],
+    manifests: list[dict[str, Any]],
+    slot_results: list[dict[str, Any]],
+    terminal: dict[str, Any] | None,
+) -> None:
+    """Join stage/terminal inventories to the authoritative sealed envelopes."""
+
+    if len(committed_stages) != len(manifests):
+        raise ProtocolError("aggregation stage manifest inventory length drifted")
+    sealed = {
+        row["slot_id"]: row["envelope_sha256"]
+        for row in slot_results
+        if row["status"] == "SEALED"
+    }
+    all_slot_ids = {row["slot_id"] for row in slot_results}
+    report_ids = {f"r{index:03d}" for index in range(1, 121)}
+    scorer_ids = {f"{mode}-{scorer}" for mode in MODES for scorer in SCORERS}
+    consistency_ids = {
+        f"{mode}-{reviewer}"
+        for mode in MODES
+        for reviewer in CONSISTENCY_REVIEWERS
+    }
+    expected_sets: dict[str, set[str]] = {
+        "01-report-products": report_ids,
+        "02-scorer-products": report_ids | scorer_ids,
+        "03-consistency-products": report_ids | scorer_ids | consistency_ids,
+    }
+    manifest_by_stage = {
+        stage_id: manifest
+        for stage_id, manifest in zip(committed_stages, manifests, strict=True)
+    }
+    adjudicator_ids: set[str] = set()
+    stage_03 = manifest_by_stage.get("03-consistency-products")
+    if stage_03 is not None:
+        for record in stage_03["files"]:
+            match = re.fullmatch(
+                r"launches/adjudication/([EVFPBLRQ]-a1)\.json",
+                record["path"],
+            )
+            if match:
+                adjudicator_ids.add(match.group(1))
+    expected_sets["04-score-products"] = (
+        expected_sets["03-consistency-products"] | adjudicator_ids
+    )
+    expected_sets["05-materiality-products"] = (
+        expected_sets["04-score-products"] | set(MATERIALITY_REVIEWERS)
+    )
+    materiality_adjudicator_ids: set[str] = set()
+    stage_05 = manifest_by_stage.get("05-materiality-products")
+    if stage_05 is not None and any(
+        record["path"] == "launches/materiality/ma1.json"
+        for record in stage_05["files"]
+    ):
+        materiality_adjudicator_ids.add("ma1")
+    expected_sets["final"] = (
+        expected_sets["05-materiality-products"]
+        | materiality_adjudicator_ids
+    )
+    for stage_id, manifest in manifest_by_stage.items():
+        attempt_map = {
+            row["assignment_id"]: row["envelope_sha256"]
+            for row in manifest["attempt_envelopes"]
+        }
+        if set(attempt_map) != expected_sets[stage_id] or any(
+            sealed.get(assignment_id) != digest
+            for assignment_id, digest in attempt_map.items()
+        ):
+            raise ProtocolError(
+                f"aggregation stage attempt inventory is not authoritative: {stage_id}"
+            )
+    frontier_by_stage = {
+        None: report_ids,
+        "01-report-products": expected_sets["01-report-products"] | scorer_ids,
+        "02-scorer-products": expected_sets["02-scorer-products"]
+        | consistency_ids,
+        "03-consistency-products": expected_sets["03-consistency-products"]
+        | adjudicator_ids,
+        "04-score-products": expected_sets["04-score-products"]
+        | set(MATERIALITY_REVIEWERS),
+        "05-materiality-products": expected_sets["05-materiality-products"]
+        | materiality_adjudicator_ids,
+        "final": expected_sets["final"],
+    }
+    current_stage = committed_stages[-1] if committed_stages else None
+    if not all_slot_ids <= frontier_by_stage[current_stage]:
+        raise ProtocolError(
+            "runtime slot inventory contains a premature or unknown assignment"
+        )
+    if (
+        committed_stages
+        and committed_stages[-1] == "final"
+        and (
+            set(sealed) != expected_sets["final"]
+            or all_slot_ids != expected_sets["final"]
+        )
+    ):
+        raise ProtocolError("final aggregation does not bind every sealed attempt")
+    result_by_slot = {row["slot_id"]: row for row in slot_results}
+    phase_assignments_by_stage = {
+        "01-report-products": report_ids,
+        "02-scorer-products": scorer_ids,
+        "03-consistency-products": consistency_ids,
+        "04-score-products": adjudicator_ids,
+        "05-materiality-products": set(MATERIALITY_REVIEWERS),
+        "final": materiality_adjudicator_ids,
+    }
+
+    def phase_failure_ids(stage_id: str) -> set[str]:
+        return {
+            assignment_id
+            for assignment_id in phase_assignments_by_stage[stage_id]
+            if (
+                not result_by_slot[assignment_id]["primary_output_present"]
+                or not result_by_slot[assignment_id]["semantic_valid"]
+                or (
+                    stage_id != "01-report-products"
+                    and not result_by_slot[assignment_id]["format_valid"]
+                )
+            )
+        }
+
+    for stage_id in committed_stages:
+        if phase_failure_ids(stage_id):
+            raise ProtocolError(
+                f"committed aggregation stage has a terminal phase failure: {stage_id}"
+            )
+    if terminal is None:
+        return
+    blocked_stage = terminal["blocked_stage_id"]
+    blocked_index = AGGREGATION_STAGE_ORDER.index(blocked_stage)
+    if committed_stages != AGGREGATION_STAGE_ORDER[:blocked_index]:
+        raise ProtocolError("terminal failure does not follow the exact stage prefix")
+    expected_prerequisite = (
+        aggregation_stage_digest(manifests[-1]) if manifests else None
+    )
+    if terminal["prerequisite_stage_sha256"] != expected_prerequisite:
+        raise ProtocolError("terminal failure prerequisite-stage binding drifted")
+    phase_assignments = phase_assignments_by_stage[blocked_stage]
+    prior_assignments = (
+        expected_sets[AGGREGATION_STAGE_ORDER[blocked_index - 1]]
+        if blocked_index
+        else set()
+    )
+    expected_attempts = prior_assignments | phase_assignments
+    terminal_attempts = {
+        row["assignment_id"]: row["envelope_sha256"]
+        for row in terminal["attempt_envelopes"]
+    }
+    if (
+        set(terminal_attempts) != expected_attempts
+        or terminal_attempts != sealed
+        or all_slot_ids != expected_attempts
+    ):
+        raise ProtocolError("terminal failure attempt inventory is not exact")
+    expected_failure_ids = phase_failure_ids(blocked_stage)
+    expected_failures = [
+        {
+            "assignment_id": assignment_id,
+            "role": result_by_slot[assignment_id]["role"],
+            "envelope_sha256": result_by_slot[assignment_id]["envelope_sha256"],
+            "primary_output_present": result_by_slot[assignment_id][
+                "primary_output_present"
+            ],
+            "format_valid": result_by_slot[assignment_id]["format_valid"],
+            "semantic_valid": result_by_slot[assignment_id]["semantic_valid"],
+        }
+        for assignment_id in sorted(expected_failure_ids)
+    ]
+    if not expected_failures or terminal["failures"] != expected_failures:
+        raise ProtocolError("terminal failure records are not the exact phase failures")
 
 
 @contextlib.contextmanager
 def operation_lock(state_root: Path) -> Iterator[None]:
-    state_root.mkdir(parents=True, exist_ok=True)
+    durable_mkdir(state_root)
     lock_path = state_root / ".protocol.lock"
-    flags = os.O_RDWR | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0)
-    fd = os.open(lock_path, flags, 0o600)
+    flags = (
+        os.O_RDWR
+        | os.O_CREAT
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+    )
+    try:
+        fd = os.open(lock_path, flags, 0o600)
+    except OSError as error:
+        raise ProtocolError("protocol lock is not a writable regular file") from error
+    try:
+        opened = os.fstat(fd)
+        if not stat.S_ISREG(opened.st_mode):
+            raise ProtocolError("protocol lock is not a regular file")
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        listed = os.stat(lock_path, follow_symlinks=False)
+        if (
+            not stat.S_ISREG(listed.st_mode)
+            or (listed.st_dev, listed.st_ino) != (opened.st_dev, opened.st_ino)
+        ):
+            raise ProtocolError("protocol lock path changed during acquisition")
+        yield
+    finally:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_UN)
+        except OSError:
+            pass
+        os.close(fd)
+
+
+@contextlib.contextmanager
+def production_custody_lock(
+    static_root: Path, external_commitment_path: Path | None
+) -> Iterator[tuple[Path, Path]]:
+    """Serialize one trusted operation and detect ordinary root/path replacement.
+
+    The separately custodied commitment is the cooperative lock object.  This
+    detects path identity drift around an operation, while the documented
+    coordinator-custody premise still excludes an attacker that ignores the
+    lock or performs an ABA replacement under the same UID.
+    """
+
+    if external_commitment_path is None:
+        raise ProtocolError("production operation requires an external commitment")
+    root = Path(os.path.abspath(os.fspath(static_root)))
+    commitment = Path(os.path.abspath(os.fspath(external_commitment_path)))
+    if (
+        root.is_symlink()
+        or not root.is_dir()
+        or commitment.is_symlink()
+        or not commitment.is_file()
+        or is_within(commitment, root)
+    ):
+        raise ProtocolError("production custody paths are not disjoint regular paths")
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
+    fd = os.open(commitment, flags)
     try:
         fcntl.flock(fd, fcntl.LOCK_EX)
-        yield
+        commitment_before = os.fstat(fd)
+        commitment_path_before = os.stat(commitment, follow_symlinks=False)
+        root_before = os.stat(root, follow_symlinks=False)
+        identity = lambda info: (info.st_dev, info.st_ino)
+        if (
+            not stat.S_ISREG(commitment_before.st_mode)
+            or identity(commitment_before) != identity(commitment_path_before)
+            or not stat.S_ISDIR(root_before.st_mode)
+        ):
+            raise ProtocolError("production custody identity is invalid")
+        try:
+            yield root, commitment
+        finally:
+            # Run the closing identity check even when the operation exits by
+            # exception.  Some successful read-only APIs use an internal
+            # exception to return DERIVABLE progress, and must not bypass the
+            # custody boundary on that path.
+            try:
+                commitment_after = os.fstat(fd)
+                commitment_path_after = os.stat(commitment, follow_symlinks=False)
+                root_after = os.stat(root, follow_symlinks=False)
+            except OSError as error:
+                raise ProtocolError(
+                    "production custody path disappeared during operation"
+                ) from error
+            if (
+                identity(commitment_before) != identity(commitment_after)
+                or identity(commitment_before) != identity(commitment_path_after)
+                or identity(root_before) != identity(root_after)
+            ):
+                raise ProtocolError(
+                    "production custody identity changed during operation"
+                )
     finally:
         fcntl.flock(fd, fcntl.LOCK_UN)
         os.close(fd)
 
 
 def byte_tree_digest(root: Path) -> str:
-    """Hash every regular file with unambiguous path/length framing."""
+    """Hash every directory and regular file with unambiguous framing."""
 
+    try:
+        root_before = root.lstat()
+    except OSError as error:
+        raise ProtocolError(
+            f"immutable envelope root is unavailable: {root}"
+        ) from error
+    if not stat.S_ISDIR(root_before.st_mode):
+        raise ProtocolError(
+            f"immutable envelope root is not a real directory: {root}"
+        )
     hasher = hashlib.sha256()
-    files: list[Path] = []
+    records: list[tuple[bytes, bytes, bytes]] = []
     for directory, directory_names, file_names in os.walk(root, followlinks=False):
         directory_names.sort()
         file_names.sort()
@@ -731,20 +2148,38 @@ def byte_tree_digest(root: Path) -> str:
             path = directory_path / name
             if path.is_symlink():
                 raise ProtocolError(f"symlink in immutable envelope: {path}")
+            relative = path.relative_to(root).as_posix().encode("utf-8")
+            records.append((b"D", relative, b""))
         for name in file_names:
             path = directory_path / name
             info = path.lstat()
             if not stat.S_ISREG(info.st_mode):
                 raise ProtocolError(f"non-regular file in immutable envelope: {path}")
-            files.append(path)
-    for path in sorted(files, key=lambda item: item.relative_to(root).as_posix()):
-        relative = path.relative_to(root).as_posix().encode("utf-8")
-        data = path.read_bytes()
-        hasher.update(b"file\0")
+            relative = path.relative_to(root).as_posix().encode("utf-8")
+            records.append((b"F", relative, path.read_bytes()))
+    records.sort(key=lambda record: (record[1], record[0]))
+    hasher.update(b"V5_ENVELOPE_BYTE_TREE_V2\0")
+    hasher.update(len(records).to_bytes(8, "big"))
+    for kind, relative, data in records:
+        hasher.update(kind)
         hasher.update(len(relative).to_bytes(8, "big"))
         hasher.update(relative)
         hasher.update(len(data).to_bytes(8, "big"))
         hasher.update(data)
+    try:
+        root_after = root.lstat()
+    except OSError as error:
+        raise ProtocolError(
+            f"immutable envelope root disappeared during hashing: {root}"
+        ) from error
+    if (
+        not stat.S_ISDIR(root_after.st_mode)
+        or (root_before.st_dev, root_before.st_ino)
+        != (root_after.st_dev, root_after.st_ino)
+    ):
+        raise ProtocolError(
+            f"immutable envelope root changed during hashing: {root}"
+        )
     return hasher.hexdigest()
 
 
@@ -1930,19 +3365,17 @@ def build_consistency_packet(
     second_input_packet: dict[str, Any],
     atom_manifest: dict[str, Any],
     defect_rules: dict[str, Any],
-    evidence_packet: Any,
 ) -> dict[str, Any]:
     manifest = validate_atom_manifest(atom_manifest)
     first = validate_direct_score(first, manifest, defect_rules, "s1", first_input_packet)
     second = validate_direct_score(second, manifest, defect_rules, "s2", second_input_packet)
-    evidence_bytes = artifact_bytes(evidence_packet, "consistency evidence packet")
-    evidence_packet_sha256 = sha256(evidence_bytes)
     input_digests = {
         "score_s1_sha256": sha256(canonical_json_bytes(first)),
         "score_s2_sha256": sha256(canonical_json_bytes(second)),
+        "score_input_s1_sha256": sha256(canonical_json_bytes(first_input_packet)),
+        "score_input_s2_sha256": sha256(canonical_json_bytes(second_input_packet)),
         "atom_manifest_sha256": sha256(canonical_json_bytes(manifest)),
         "defect_rules_sha256": sha256(canonical_json_bytes(validate_defect_rules(defect_rules))),
-        "evidence_packet_sha256": evidence_packet_sha256,
     }
     grouped: dict[tuple[str, str], list[dict[str, str]]] = {}
     for score in (first, second):
@@ -1990,11 +3423,10 @@ def build_consistency_packet(
             "resources/defect-rules.json": canonical_json_bytes(
                 validate_defect_rules(defect_rules)
             ),
-            "resources/evidence-packet.bin": evidence_bytes,
         },
     )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "status": "CONSISTENCY-INPUT-PACKET",
         "mode": manifest["mode"],
         "input_digests": input_digests,
@@ -2021,7 +3453,7 @@ def validate_consistency_packet(value: Any) -> dict[str, Any]:
         "consistency input packet",
     )
     if (
-        packet["schema_version"] != 1
+        packet["schema_version"] != 2
         or packet["status"] != "CONSISTENCY-INPUT-PACKET"
         or packet["mode"] not in MODES
     ):
@@ -2031,9 +3463,10 @@ def validate_consistency_packet(value: Any) -> dict[str, Any]:
         {
             "score_s1_sha256",
             "score_s2_sha256",
+            "score_input_s1_sha256",
+            "score_input_s2_sha256",
             "atom_manifest_sha256",
             "defect_rules_sha256",
-            "evidence_packet_sha256",
         },
         "consistency packet input digests",
     )
@@ -2048,9 +3481,10 @@ def validate_consistency_packet(value: Any) -> dict[str, Any]:
     bound_files = {
         "score_s1_sha256": "scores/s1.json",
         "score_s2_sha256": "scores/s2.json",
+        "score_input_s1_sha256": "score-inputs/s1.json",
+        "score_input_s2_sha256": "score-inputs/s2.json",
         "atom_manifest_sha256": "resources/atom-manifest.json",
         "defect_rules_sha256": "resources/defect-rules.json",
-        "evidence_packet_sha256": "resources/evidence-packet.bin",
     }
     for digest_field, path in bound_files.items():
         if sha256(packet_file_bytes(tree, path)) != digests[digest_field]:
@@ -2099,6 +3533,15 @@ def validate_consistency_packet(value: Any) -> dict[str, Any]:
         sort_keys.append((assertion["label"], normalized))
     if len(ids) != len(set(ids)) or sort_keys != sorted(sort_keys):
         raise ProtocolError("novel assertions are not uniquely and deterministically ordered")
+    if {record["path"] for record in tree["files"]} != {
+        "scores/s1.json",
+        "scores/s2.json",
+        "score-inputs/s1.json",
+        "score-inputs/s2.json",
+        "resources/atom-manifest.json",
+        "resources/defect-rules.json",
+    }:
+        raise ProtocolError("consistency packet tree path set is not exact")
     return packet
 
 
@@ -2117,7 +3560,6 @@ def build_adjudication_packet(
     consistency_second: dict[str, Any],
     atom_manifest: dict[str, Any],
     defect_rules: dict[str, Any],
-    evidence_packet: Any,
 ) -> dict[str, Any]:
     manifest = validate_atom_manifest(atom_manifest)
     first = validate_direct_score(first, manifest, defect_rules, "s1", first_input_packet)
@@ -2129,7 +3571,6 @@ def build_adjudication_packet(
         second_input_packet,
         manifest,
         defect_rules,
-        evidence_packet,
     )
     consistency_first = validate_consistency(
         consistency_first, manifest, defect_rules, consistency_packet, "c1"
@@ -2195,14 +3636,13 @@ def build_adjudication_packet(
     input_digests = {
         "score_s1_sha256": sha256(canonical_json_bytes(first)),
         "score_s2_sha256": sha256(canonical_json_bytes(second)),
+        "score_input_s1_sha256": sha256(canonical_json_bytes(first_input_packet)),
+        "score_input_s2_sha256": sha256(canonical_json_bytes(second_input_packet)),
         "consistency_c1_sha256": sha256(canonical_json_bytes(consistency_first)),
         "consistency_c2_sha256": sha256(canonical_json_bytes(consistency_second)),
         "consistency_packet_sha256": sha256(canonical_json_bytes(consistency_packet)),
         "atom_manifest_sha256": sha256(canonical_json_bytes(manifest)),
         "defect_rules_sha256": sha256(canonical_json_bytes(validate_defect_rules(defect_rules))),
-        "evidence_packet_sha256": sha256(
-            artifact_bytes(evidence_packet, "adjudication evidence packet")
-        ),
     }
     binding_sha256 = sha256(canonical_json_bytes(input_digests))
     records = []
@@ -2228,13 +3668,10 @@ def build_adjudication_packet(
             "resources/defect-rules.json": canonical_json_bytes(
                 validate_defect_rules(defect_rules)
             ),
-            "resources/evidence-packet.bin": artifact_bytes(
-                evidence_packet, "adjudication evidence packet"
-            ),
         },
     )
     return {
-        "schema_version": 1,
+        "schema_version": 3,
         "status": "ADJUDICATION-PACKET",
         "mode": mode,
         "input_digests": input_digests,
@@ -2259,7 +3696,7 @@ def validate_adjudication_packet(value: Any) -> dict[str, Any]:
         "adjudication packet",
     )
     if (
-        packet["schema_version"] != 1
+        packet["schema_version"] != 3
         or packet["status"] != "ADJUDICATION-PACKET"
         or packet["mode"] not in MODES
     ):
@@ -2269,12 +3706,13 @@ def validate_adjudication_packet(value: Any) -> dict[str, Any]:
         {
             "score_s1_sha256",
             "score_s2_sha256",
+            "score_input_s1_sha256",
+            "score_input_s2_sha256",
             "consistency_c1_sha256",
             "consistency_c2_sha256",
             "consistency_packet_sha256",
             "atom_manifest_sha256",
             "defect_rules_sha256",
-            "evidence_packet_sha256",
         },
         "adjudication packet input digests",
     )
@@ -2288,12 +3726,13 @@ def validate_adjudication_packet(value: Any) -> dict[str, Any]:
     file_bindings = {
         "score_s1_sha256": "scores/s1.json",
         "score_s2_sha256": "scores/s2.json",
+        "score_input_s1_sha256": "score-inputs/s1.json",
+        "score_input_s2_sha256": "score-inputs/s2.json",
         "consistency_c1_sha256": "consistency/c1.json",
         "consistency_c2_sha256": "consistency/c2.json",
         "consistency_packet_sha256": "consistency/input.json",
         "atom_manifest_sha256": "resources/atom-manifest.json",
         "defect_rules_sha256": "resources/defect-rules.json",
-        "evidence_packet_sha256": "resources/evidence-packet.bin",
     }
     for digest_field, path in file_bindings.items():
         if sha256(packet_file_bytes(tree, path)) != digests[digest_field]:
@@ -2321,6 +3760,18 @@ def validate_adjudication_packet(value: Any) -> dict[str, Any]:
         sort_keys.append((cell["label"], cell["field"]))
     if sort_keys != sorted(sort_keys):
         raise ProtocolError("adjudication packet cells are not deterministically ordered")
+    if {record["path"] for record in tree["files"]} != {
+        "scores/s1.json",
+        "scores/s2.json",
+        "score-inputs/s1.json",
+        "score-inputs/s2.json",
+        "consistency/input.json",
+        "consistency/c1.json",
+        "consistency/c2.json",
+        "resources/atom-manifest.json",
+        "resources/defect-rules.json",
+    }:
+        raise ProtocolError("adjudication packet tree path set is not exact")
     return packet
 
 
@@ -2373,7 +3824,6 @@ def merge_final_scores(
     consistency_second: dict[str, Any],
     atom_manifest: dict[str, Any],
     defect_rules: dict[str, Any],
-    evidence_packet: Any,
     adjudication: dict[str, Any] | None,
 ) -> dict[str, Any]:
     manifest = validate_atom_manifest(atom_manifest)
@@ -2386,7 +3836,6 @@ def merge_final_scores(
         second_input_packet,
         manifest,
         defect_rules,
-        evidence_packet,
     )
     consistency_first = validate_consistency(
         consistency_first, manifest, defect_rules, consistency_packet, "c1"
@@ -2403,7 +3852,6 @@ def merge_final_scores(
         consistency_second,
         manifest,
         defect_rules,
-        evidence_packet,
     )
     if packet["cells"]:
         if adjudication is None:
@@ -4272,120 +5720,73 @@ def evaluate_gates(
 def validate_bound_aggregate_receipts(
     static_root: Path, aggregate: dict[str, Any]
 ) -> dict[str, str]:
-    aggregation_root = static_root / "runtime" / "state" / "aggregation"
-    receipt_root = aggregation_root / "integration-receipts"
+    final_root = static_root / "runtime" / "state" / "aggregation" / "final"
+    manifest = read_committed_json(
+        final_root / "stage-manifest.json", "final aggregation stage manifest"
+    )
+    coordinator_actor_id = require_production_actor_id(
+        manifest.get("coordinator_actor_id"), "aggregation coordinator actor ID"
+    )
+    receipt_root = final_root / "integration-receipts"
     if (
         not receipt_root.is_dir()
         or receipt_root.is_symlink()
         or receipt_root.lstat().st_mode & 0o222
     ):
         raise ProtocolError("bound aggregate receipt directory must be immutable")
+    expected_receipts = build_bound_aggregate_receipts(
+        aggregate, coordinator_actor_id
+    )
     expected_names = {f"{hook_id}.json" for hook_id in POSTLOCK_RECEIPT_HOOK_IDS}
-    actual_names = {path.name for path in receipt_root.iterdir()}
-    if actual_names != expected_names:
+    if {path.name for path in receipt_root.iterdir()} != expected_names:
         raise ProtocolError("bound aggregate receipt file set is not exact")
     receipt_digests: dict[str, str] = {}
-    receipts: dict[str, dict[str, Any]] = {}
     for hook_id in POSTLOCK_RECEIPT_HOOK_IDS:
         path = receipt_root / f"{hook_id}.json"
-        receipt = validate_integration_receipt(
-            read_committed_json(path, f"post-lock receipt {hook_id}"),
-            hook_id,
-            INTEGRATION_HOOK_PHASES[hook_id],
-        )
-        if path.read_bytes() != canonical_json_bytes(receipt):
-            raise ProtocolError(f"post-lock receipt is not canonical JSON: {hook_id}")
-        receipts[hook_id] = receipt
-        receipt_digests[hook_id] = sha256(path.read_bytes())
-    aggregate_path = aggregation_root / "aggregate-context.json"
-    aggregate_bytes = aggregate_path.read_bytes()
-    if aggregate_bytes != canonical_json_bytes(aggregate):
-        raise ProtocolError("stored aggregate context is not canonical JSON")
-    aggregate_sha = sha256(aggregate_bytes)
-    common_inputs = {
-        **aggregate["input_digests"],
-        "static_lock_sha256": aggregate["static_lock_sha256"],
-        "rules_sha256": aggregate["rules_sha256"],
-    }
-    runtime_outputs = {
-        "H-ENFORCE-WORD-COUNTER": {
-            "validated_word_counts_sha256": aggregate["input_digests"][
-                "word_counts_sha256"
-            ]
-        },
-        "H-BUILD-VALIDATE-SCORER-REPORT-PROJECTIONS": {
-            "validated_projection_audit_manifest_sha256": aggregate[
-                "input_digests"
-            ]["projection_audit_manifest_sha256"]
-        },
-        "H-VALIDATE-SCHEDULE-LEASE-ATTEMPT-LEDGER": {
-            "validated_schedule_slots_sha256": aggregate["input_digests"][
-                "schedule_slots_sha256"
-            ],
-            "validated_envelopes_sha256": aggregate["input_digests"][
-                "envelopes_sha256"
-            ],
-        },
-        "H-SEMANTICALLY-REVALIDATE-ENVELOPES": {
-            "validated_envelopes_sha256": aggregate["input_digests"][
-                "envelopes_sha256"
-            ]
-        },
-        "H-VALIDATE-EVALUATOR-INDEPENDENCE-QUALIFICATION": {
-            "validated_scoring_bundle_manifest_sha256": aggregate[
-                "input_digests"
-            ]["scoring_bundle_manifest_sha256"]
-        },
-        "H-RUN-VALIDATE-MATERIALITY-REVIEWS": {
-            "validated_materiality_ledger_sha256": aggregate["input_digests"][
-                "materiality_ledger_sha256"
-            ]
-        },
-    }
-    for hook_id, outputs in runtime_outputs.items():
-        receipt = receipts[hook_id]
-        if receipt["input_digests"] != common_inputs or receipt["output_digests"] != outputs:
-            raise ProtocolError(f"runtime receipt does not bind its exact artifact set: {hook_id}")
-    derive = receipts["H-DERIVE-AGGREGATE-CONTEXT"]
-    expected_derive_inputs = common_inputs
-    if (
-        derive["input_digests"] != expected_derive_inputs
-        or derive["output_digests"] != {"aggregate_context_sha256": aggregate_sha}
-    ):
-        raise ProtocolError("aggregate derivation receipt does not bind exact inputs/output")
-    bind = receipts["H-BIND-CONTEXT-INPUT-DIGESTS"]
-    bind_inputs = {
-        "static_lock_sha256": aggregate["static_lock_sha256"],
-        "rules_sha256": aggregate["rules_sha256"],
-        "aggregate_context_sha256": aggregate_sha,
-        **{
-            f"receipt::{hook_id}": receipt_digests[hook_id]
-            for hook_id in PRE_BIND_RECEIPT_HOOK_IDS
-        },
-    }
-    expected_binding = sha256(canonical_json_bytes(bind_inputs))
-    if (
-        bind["input_digests"] != bind_inputs
-        or bind["output_digests"] != {"bound_gate_context_sha256": expected_binding}
-    ):
-        raise ProtocolError("context-binding receipt is not the exact terminal binding")
+        expected_bytes = canonical_json_bytes(expected_receipts[hook_id])
+        if (
+            read_committed_json(path, f"post-lock receipt {hook_id}")
+            != expected_receipts[hook_id]
+            or path.read_bytes() != expected_bytes
+        ):
+            raise ProtocolError(
+                f"post-lock receipt is not the exact derivation: {hook_id}"
+            )
+        receipt_digests[hook_id] = sha256(expected_bytes)
     return receipt_digests
+
 
 
 def evaluate_bound_gates(
     static_root: Path, external_commitment_path: Path | None = None
+) -> dict[str, Any]:
+    with production_custody_lock(
+        static_root, external_commitment_path
+    ) as (root, commitment):
+        return _evaluate_bound_gates_under_custody(root, commitment)
+
+
+def _evaluate_bound_gates_under_custody(
+    static_root: Path, external_commitment_path: Path
 ) -> dict[str, Any]:
     root, static_lock, reviewer_ids, review_evidence = (
         load_verified_static_bundle_with_review_evidence(
             static_root, external_commitment_path
         )
     )
-    aggregate_path = root / "runtime" / "state" / "aggregation" / "aggregate-context.json"
-    aggregate = validate_aggregate_context_document(
-        read_committed_json(aggregate_path, "stored aggregate context")
-    )
     rederived = _derive_aggregate_context_from_verified(
         root, static_lock, reviewer_ids, review_evidence
+    )
+    aggregate_path = (
+        root
+        / "runtime"
+        / "state"
+        / "aggregation"
+        / "final"
+        / "aggregate-context.json"
+    )
+    aggregate = validate_aggregate_context_document(
+        read_committed_json(aggregate_path, "stored aggregate context")
     )
     if aggregate != rederived:
         raise ProtocolError("stored aggregate context is not the deterministic derivation")
@@ -4468,6 +5869,8 @@ def validate_launch_record(value: Any) -> dict[str, Any]:
             record["run_id"]
         ) is None:
             raise ProtocolError("report launch run_id must be exactly r001 through r120")
+        if record["assignment_id"] != record["run_id"]:
+            raise ProtocolError("report launch assignment/slot/run identity drifted")
         if record["prompt_regime"] != PROMPT_REGIMES[mode]:
             raise ProtocolError("launch mode/prompt-regime mismatch")
         for field in ("fixture_id", "task_mode"):
@@ -4614,7 +6017,10 @@ def evaluator_contract_index(documents: dict[str, Any]) -> dict[str, dict[str, A
         not isinstance(contract, dict)
         or contract.get("schema_version") != 1
         or contract.get("status") != "READY"
-        or contract.get("contract_id") != "v5-evaluator-runtime-instantiation-v1"
+        or contract.get("contract_id") != "v5-evaluator-runtime-instantiation-v2"
+        or contract.get("packet_authority")
+        != "PROTOCOL_DERIVED_IMMUTABLE_AGGREGATION_STAGE"
+        or contract.get("production_lease_route") != "ASSIGNMENT_ID_ONLY"
         or contract.get("input_alias") != "input"
         or contract.get("output_alias") != "output"
         or contract.get("input_packet_path") != "packet.json"
@@ -4651,9 +6057,15 @@ def validate_evaluator_packet_for_role(
     if role == "scorer":
         return validate_score_input_packet(packet, row["mode"], row["reviewer_id"])
     if role == "consistency":
-        return validate_consistency_packet(packet)
+        packet = validate_consistency_packet(packet)
+        if packet["mode"] != row["mode"]:
+            raise ProtocolError("consistency packet mode does not match its assignment")
+        return packet
     if role == "adjudicator":
-        return validate_adjudication_packet(packet)
+        packet = validate_adjudication_packet(packet)
+        if packet["mode"] != row["mode"]:
+            raise ProtocolError("adjudication packet mode does not match its assignment")
+        return packet
     if role == "materiality-reviewer":
         return validate_materiality_review_packet(packet, "READY")
     if role == "materiality-adjudicator":
@@ -4742,7 +6154,14 @@ def verify_evaluator_input_tree(
             for schema_path in row["schema_paths"]
         },
     }
+    expected_directories = {
+        parent.as_posix()
+        for path_text in expected_files
+        for parent in PurePosixPath(path_text).parents
+        if parent.as_posix() not in ("", ".")
+    }
     actual_files: set[str] = set()
+    actual_directories: set[str] = set()
     for path in input_root.rglob("*"):
         relative = path.relative_to(input_root).as_posix()
         if path.is_symlink() or not (path.is_dir() or path.is_file()):
@@ -4751,8 +6170,12 @@ def verify_evaluator_input_tree(
             actual_files.add(relative)
             if relative not in expected_files or path.read_bytes() != expected_files[relative]:
                 raise ProtocolError(f"evaluator input file substitution: {relative}")
+        else:
+            actual_directories.add(relative)
     if actual_files != set(expected_files):
         raise ProtocolError("evaluator input file set is not exact")
+    if actual_directories != expected_directories:
+        raise ProtocolError("evaluator input directory set is not exact")
 
 
 def materialize_evaluator_input_tree(
@@ -4791,9 +6214,8 @@ def materialize_evaluator_input_tree(
             harden_tree_read_only(input_root)
         fsync_directory(input_root.parent)
     finally:
-        if stage.exists():
-            os.chmod(stage, 0o700)
-            shutil.rmtree(stage)
+        if stage.exists() or stage.is_symlink():
+            _discard_private_aggregation_stage(stage)
 
 
 def validate_report_input_plan(
@@ -4977,9 +6399,8 @@ def materialize_report_input_tree(
             harden_tree_read_only(input_root)
         fsync_directory(input_root.parent)
     finally:
-        if stage.exists():
-            os.chmod(stage, 0o700)
-            shutil.rmtree(stage)
+        if stage.exists() or stage.is_symlink():
+            _discard_private_aggregation_stage(stage)
 
 
 def materialize_bound_report_inputs(
@@ -5024,6 +6445,131 @@ def materialize_bound_report_inputs(
     verify_report_input_tree(
         input_root, verified_static_root, plan, preparation["byte_tree_v1"]
     )
+
+
+def verify_production_lease_workspace(
+    lease: dict[str, Any],
+    static_root: Path,
+    *,
+    report_byte_tree: Any | None = None,
+) -> None:
+    """Revalidate the exact launch-bound input workspace before trusting output."""
+
+    launch = load_bound_launch(lease)
+    workspace_root = Path(launch["workspace_root"])
+    input_root = Path(launch["input_root"])
+    output_root = Path(launch["output_root"])
+    if (
+        workspace_root.is_symlink()
+        or not workspace_root.is_dir()
+        or stat.S_IMODE(workspace_root.lstat().st_mode) != 0o500
+        or input_root != workspace_root / "input"
+        or output_root != workspace_root / "output"
+        or input_root.is_symlink()
+        or not input_root.is_dir()
+        or stat.S_IMODE(input_root.lstat().st_mode) != 0o500
+        or output_root.is_symlink()
+        or not output_root.is_dir()
+        or {path.name for path in workspace_root.iterdir()} != {"input", "output"}
+    ):
+        raise ProtocolError("lease-bound workspace topology drifted")
+    for path in input_root.rglob("*"):
+        if path.is_symlink() or not (path.is_file() or path.is_dir()):
+            raise ProtocolError("lease-bound input contains an unsupported entry")
+        expected_mode = 0o400 if path.is_file() else 0o500
+        if stat.S_IMODE(path.lstat().st_mode) != expected_mode:
+            raise ProtocolError(
+                f"lease-bound input mode drifted: {path.relative_to(input_root)}"
+            )
+    packet_bytes = load_bound_input_packet_bytes(lease)
+    if launch["role"] == "report":
+        plan = validate_report_input_plan(
+            strict_json_loads(packet_bytes, "lease report input plan"), launch
+        )
+        if report_byte_tree is None:
+            report_byte_tree = run_trusted_module(
+                "prepare.py", "v5_seal_report_input_byte_tree"
+            )["byte_tree_v1"]
+        verify_report_input_tree(
+            input_root, static_root, plan, report_byte_tree
+        )
+    else:
+        verify_evaluator_input_tree(
+            input_root,
+            static_root,
+            {
+                "input_packet_path": "packet.json",
+                "schema_paths": launch["schema_paths"],
+            },
+            packet_bytes,
+        )
+
+
+def verify_production_lease_authority(
+    lease: dict[str, Any],
+    static_root: Path,
+    *,
+    ready_documents: dict[str, Any] | None = None,
+) -> None:
+    """Rederive one persisted lease from authenticated static/stage authority."""
+
+    launch = load_bound_launch(lease)
+    launch_bytes = load_bound_launch_bytes(lease)
+    packet_bytes = load_bound_input_packet_bytes(lease)
+    spec_bytes = load_bound_spec_bytes(lease)
+    if ready_documents is None:
+        ready_documents = load_ready_generated_documents(static_root)
+    if launch["role"] == "report":
+        run_id = launch["run_id"]
+        expected_launch = next(
+            (
+                item
+                for item in ready_documents["report-launch-records"]
+                if item["run_id"] == run_id
+            ),
+            None,
+        )
+        launch_path = (
+            static_root
+            / "static"
+            / "generated"
+            / "launch-records"
+            / f"{run_id}.json"
+        )
+        packet_path = (
+            static_root
+            / "static"
+            / "generated"
+            / "report-input-plans"
+            / f"{run_id}.json"
+        )
+        spec_path = (
+            static_root
+            / "static"
+            / "envelope-specs"
+            / f"report-{launch['mode']}.json"
+        )
+        if expected_launch is None or launch != expected_launch:
+            raise ProtocolError("persisted report lease is not the authenticated launch")
+    else:
+        packet_path, launch_path, spec_path, _packet, expected_launch = (
+            load_authoritative_evaluator_material(
+                static_root,
+                launch["assignment_id"],
+                capability=_PRODUCTION_LEASE_CAPABILITY,
+                ready_documents=ready_documents,
+            )
+        )
+        if launch != expected_launch:
+            raise ProtocolError(
+                "persisted evaluator lease is not the authoritative staged launch"
+            )
+    if (
+        launch_bytes != launch_path.read_bytes()
+        or packet_bytes != packet_path.read_bytes()
+        or spec_bytes != spec_path.read_bytes()
+    ):
+        raise ProtocolError("persisted production lease material drifted from authority")
 
 
 def validate_schedule_launch_ids(
@@ -5100,18 +6646,33 @@ def validate_envelope_spec(value: Any, require_ready: bool = True) -> dict[str, 
         raise ProtocolError("envelope spec must be schema-v1 DRAFT or READY")
     if require_ready and spec["status"] != "READY":
         raise ProtocolError("attempt leasing requires a READY envelope spec")
-    if type(spec["max_total_output_bytes"]) is not int or spec["max_total_output_bytes"] < 1:
-        raise ProtocolError("max_total_output_bytes must be a positive integer")
+    if (
+        type(spec["max_total_output_bytes"]) is not int
+        or spec["max_total_output_bytes"] < 1
+        or spec["max_total_output_bytes"] > MAX_ENVELOPE_CAPTURE_BYTES
+    ):
+        raise ProtocolError(
+            "max_total_output_bytes must be within the trusted capture bound"
+        )
     if not isinstance(spec["files"], list) or not spec["files"]:
         raise ProtocolError("envelope spec files must be a nonempty list")
     paths: list[str] = []
     for index, raw in enumerate(spec["files"]):
         item = require_exact_keys(raw, {"path", "required", "max_bytes", "utf8"}, f"envelope file {index}")
-        paths.append(require_relative_file(item["path"], f"envelope file {index} path"))
+        path = require_relative_file(item["path"], f"envelope file {index} path")
+        if path.startswith(ENCODED_OUTPUT_PATH_PREFIX):
+            raise ProtocolError(
+                f"envelope file {index} path uses the reserved encoded-output namespace"
+            )
+        paths.append(path)
         if type(item["required"]) is not bool or type(item["utf8"]) is not bool:
             raise ProtocolError(f"envelope file {index} flags must be booleans")
         if type(item["max_bytes"]) is not int or item["max_bytes"] < 0:
             raise ProtocolError(f"envelope file {index} max_bytes must be nonnegative")
+        if item["max_bytes"] > spec["max_total_output_bytes"]:
+            raise ProtocolError(
+                f"envelope file {index} max_bytes exceeds the total capture bound"
+            )
     if len(set(paths)) != len(paths):
         raise ProtocolError("envelope spec contains duplicate file paths")
     final = require_exact_keys(
@@ -5121,8 +6682,12 @@ def validate_envelope_spec(value: Any, require_ready: bool = True) -> dict[str, 
     )
     if type(final["required"]) is not bool or type(final["utf8"]) is not bool:
         raise ProtocolError("final response flags must be booleans")
-    if type(final["max_bytes"]) is not int or final["max_bytes"] < 0:
-        raise ProtocolError("final response max_bytes must be nonnegative")
+    if (
+        type(final["max_bytes"]) is not int
+        or final["max_bytes"] < 0
+        or final["max_bytes"] > MAX_ENVELOPE_CAPTURE_BYTES
+    ):
+        raise ProtocolError("final response max_bytes exceeds the trusted capture bound")
     if final["utf8"] is not True or not isinstance(final["utf8_fullmatch_regex"], str) or not final[
         "utf8_fullmatch_regex"
     ]:
@@ -5142,24 +6707,44 @@ def validate_envelope_spec(value: Any, require_ready: bool = True) -> dict[str, 
     return spec
 
 
-def load_bound_spec(lease: dict[str, Any]) -> dict[str, Any]:
+def load_bound_encoded_bytes(
+    lease: dict[str, Any], bytes_field: str, digest_field: str, label: str
+) -> bytes:
     try:
-        data = base64.b64decode(lease["envelope_spec_bytes_base64"], validate=True)
+        data = base64.b64decode(lease[bytes_field], validate=True)
     except Exception as error:
-        raise ProtocolError("lease envelope spec encoding is invalid") from error
-    if sha256(data) != lease.get("envelope_spec_sha256"):
-        raise ProtocolError("lease envelope spec digest mismatch")
+        raise ProtocolError(f"lease {label} encoding is invalid") from error
+    if sha256(data) != lease.get(digest_field):
+        raise ProtocolError(f"lease {label} digest mismatch")
+    return data
+
+
+def load_bound_spec_bytes(lease: dict[str, Any]) -> bytes:
+    return load_bound_encoded_bytes(
+        lease,
+        "envelope_spec_bytes_base64",
+        "envelope_spec_sha256",
+        "envelope spec",
+    )
+
+
+def load_bound_spec(lease: dict[str, Any]) -> dict[str, Any]:
+    data = load_bound_spec_bytes(lease)
     value = strict_json_loads(data, "lease envelope spec")
     return validate_envelope_spec(value, require_ready=True)
 
 
+def load_bound_launch_bytes(lease: dict[str, Any]) -> bytes:
+    return load_bound_encoded_bytes(
+        lease,
+        "launch_record_bytes_base64",
+        "launch_record_sha256",
+        "launch record",
+    )
+
+
 def load_bound_launch(lease: dict[str, Any]) -> dict[str, Any]:
-    try:
-        data = base64.b64decode(lease["launch_record_bytes_base64"], validate=True)
-    except Exception as error:
-        raise ProtocolError("lease launch-record encoding is invalid") from error
-    if sha256(data) != lease.get("launch_record_sha256"):
-        raise ProtocolError("lease launch-record digest mismatch")
+    data = load_bound_launch_bytes(lease)
     value = strict_json_loads(data, "lease launch record")
     launch = validate_launch_record(value)
     if launch["slot_id"] != lease.get("slot_id"):
@@ -5172,13 +6757,12 @@ def load_bound_input_packet(lease: dict[str, Any]) -> Any:
 
 
 def load_bound_input_packet_bytes(lease: dict[str, Any]) -> bytes:
-    try:
-        data = base64.b64decode(lease["input_packet_bytes_base64"], validate=True)
-    except Exception as error:
-        raise ProtocolError("lease input-packet encoding is invalid") from error
-    if sha256(data) != lease.get("input_packet_sha256"):
-        raise ProtocolError("lease input-packet digest mismatch")
-    return data
+    return load_bound_encoded_bytes(
+        lease,
+        "input_packet_bytes_base64",
+        "input_packet_sha256",
+        "input packet",
+    )
 
 
 def validate_lease(value: Any) -> dict[str, Any]:
@@ -5235,17 +6819,25 @@ def validate_lease(value: Any) -> dict[str, Any]:
 
 def _write_or_validate_immutable(path: Path, value: dict[str, Any]) -> None:
     expected = canonical_json_bytes(value)
-    if path.exists():
-        if (
-            not path.is_file()
-            or path.is_symlink()
-            or path.read_bytes() != expected
-            or path.lstat().st_mode & 0o222
-        ):
-            raise ProtocolError(f"immutable ledger mismatch: {path}")
-        return
-    exclusive_write(path, expected)
-    os.chmod(path, 0o400)
+    if not path_entry_exists(path):
+        try:
+            exclusive_write(path, expected)
+        except FileExistsError:
+            pass
+        except BaseException:
+            # The immutable hard-link CAS may have succeeded before a trailing
+            # durability operation reported an error.  If it did not publish
+            # anything, preserve that error.  Otherwise the exact committed
+            # marker below dominates and is made durable again.
+            if not path_entry_exists(path):
+                raise
+    if (
+        not path.is_file()
+        or path.is_symlink()
+        or path.read_bytes() != expected
+        or path.lstat().st_mode & 0o222
+    ):
+        raise ProtocolError(f"immutable ledger mismatch: {path}")
     fsync_directory(path.parent)
 
 
@@ -5255,7 +6847,7 @@ def _authoritative_leases(
     production_reviewer_ids: frozenset[str] | None = None,
 ) -> list[dict[str, Any]]:
     slots_root = state_root / "slots"
-    if not slots_root.exists():
+    if not path_entry_exists(slots_root):
         return []
     if not slots_root.is_dir() or slots_root.is_symlink():
         raise ProtocolError("protocol slots root is not a regular directory")
@@ -5268,6 +6860,7 @@ def _authoritative_leases(
         if not lease_path.is_file() or lease_path.is_symlink():
             raise ProtocolError(f"slot {slot_path.name} lacks its authoritative lease")
         lease = validate_lease(read_json(lease_path))
+        launch = load_bound_launch(lease)
         if lease["slot_id"] != slot_path.name:
             raise ProtocolError("authoritative lease/slot directory mismatch")
         if production_reviewer_ids is not None:
@@ -5292,15 +6885,33 @@ def acquire_lease(
     static_root: Path | None = None,
     external_commitment_path: Path | None = None,
     test_capability: object | None = None,
+    production_context: tuple[Path, frozenset[str]] | None = None,
+    production_capability: object | None = None,
 ) -> dict[str, Any]:
-    state_root, verified_root, production_reviewer_ids = require_state_context(
-        state_root,
-        static_root=static_root,
-        external_commitment_path=external_commitment_path,
-        test_capability=test_capability,
-    )
+    if production_context is not None:
+        if (
+            production_capability is not _PRODUCTION_LEASE_CAPABILITY
+            or static_root is not None
+            or external_commitment_path is not None
+            or test_capability is not None
+        ):
+            raise ProtocolError("private production lease context is invalid")
+        verified_root, production_reviewer_ids = production_context
+        state_root = Path(os.path.abspath(os.fspath(state_root)))
+        if state_root != verified_root / "runtime" / "state":
+            raise ProtocolError("production lease state root is not the verified bundle state")
+    elif static_root is not None or external_commitment_path is not None:
+        raise ProtocolError(
+            "generic acquire_lease cannot initiate a production lease; "
+            "use the assignment-only production wrapper"
+        )
+    else:
+        state_root, verified_root, production_reviewer_ids = require_state_context(
+            state_root,
+            test_capability=test_capability,
+        )
     agent_id = require_safe_id(agent_id, "agent ID")
-    if static_root is not None:
+    if verified_root is not None:
         require_production_actor_id(agent_id, "production agent ID")
     launch_bytes = launch_path.read_bytes()
     launch = validate_launch_record(strict_json_loads(launch_bytes, "launch record"))
@@ -5319,7 +6930,7 @@ def acquire_lease(
     if sha256(input_packet_bytes) != launch["input_packet_sha256"]:
         raise ProtocolError("launch record/input-packet digest mismatch")
     evaluator_row: dict[str, Any] | None = None
-    if static_root is not None:
+    if verified_root is not None:
         if verified_root is None or production_reviewer_ids is None:
             raise ProtocolError("production state context is incomplete")
         require_production_runtime_actor(
@@ -5333,23 +6944,32 @@ def acquire_lease(
                 state_root, production_reviewer_ids=production_reviewer_ids
             )
     if launch["role"] != "report" and verified_root is not None:
-        documents = load_ready_generated_documents(verified_root)
-        expected_launch, evaluator_row = build_expected_evaluator_launch(
-            verified_root, documents, launch["assignment_id"], input_packet_bytes
-        )
-        if launch != expected_launch or launch_bytes != canonical_json_bytes(expected_launch):
-            raise ProtocolError("evaluator launch is not the exact deterministic instantiation")
-        expected_spec_path = verified_root / Path(
-            *PurePosixPath(evaluator_row["envelope_spec_path"]).parts
-        )
-        if Path(os.path.abspath(os.fspath(spec_path))) != expected_spec_path:
-            raise ProtocolError("evaluator lease did not use the locked role envelope spec")
-        materialize_evaluator_input_tree(
-            Path(launch["input_root"]),
+        (
+            expected_packet_path,
+            expected_launch_path,
+            expected_spec_path,
+            _expected_packet,
+            expected_launch,
+        ) = load_authoritative_evaluator_material(
             verified_root,
-            evaluator_row,
-            input_packet_bytes,
+            launch["assignment_id"],
+            capability=_PRODUCTION_LEASE_CAPABILITY,
         )
+        evaluator_row = evaluator_contract_index(
+            load_ready_generated_documents(verified_root)
+        )[launch["assignment_id"]]
+        if (
+            Path(os.path.abspath(os.fspath(launch_path))) != expected_launch_path
+            or Path(os.path.abspath(os.fspath(input_packet_path)))
+            != expected_packet_path
+            or Path(os.path.abspath(os.fspath(spec_path))) != expected_spec_path
+            or launch != expected_launch
+            or launch_bytes != expected_launch_path.read_bytes()
+            or input_packet_bytes != expected_packet_path.read_bytes()
+        ):
+            raise ProtocolError(
+                "production evaluator lease must use its exact published stage artifacts"
+            )
     elif launch["role"] == "report" and verified_root is not None:
         # Do not treat the locked launch's target/package digests as
         # self-authenticating.  Rebuild all report material from the
@@ -5402,18 +7022,18 @@ def acquire_lease(
     ):
         if is_within(left, right) or is_within(right, left):
             raise ProtocolError(f"launch roots are not pairwise disjoint: {label}")
-    if not attempt_root.parent.is_dir():
-        raise ProtocolError("fresh attempt root parent must already exist")
-    if report_plan is not None:
-        if verified_root is None:
-            raise ProtocolError("report input materialization lacks a verified static root")
-        materialize_bound_report_inputs(
-            launch_path,
-            input_packet_path,
-            launch,
-            report_plan,
-            verified_root,
-        )
+    workspace_root = require_external_path(
+        Path(launch["workspace_root"]), "launch workspace root"
+    )
+    if (
+        input_root != workspace_root / "input"
+        or attempt_root != workspace_root / "output"
+    ):
+        raise ProtocolError("launch input/output roots are not exact workspace children")
+    workspace_parent = workspace_root.parent
+    durable_mkdir(workspace_parent)
+    if workspace_parent.is_symlink() or not workspace_parent.is_dir():
+        raise ProtocolError("launch workspace parent is not a real directory")
     root_claim_id = sha256(str(attempt_root).encode("utf-8"))
     lease = {
         "schema_version": 1,
@@ -5435,12 +7055,35 @@ def acquire_lease(
     agent_claim_path = state_root / "agents" / agent_id / "claim.json"
     root_claim_path = state_root / "attempt-roots" / f"{root_claim_id}.json"
     with operation_lock(state_root):
+        recover_exclusive_write_residues(state_root)
+        terminal_aggregation_path = (
+            state_root
+            / "aggregation"
+            / AGGREGATION_TERMINAL_FAILURE
+        )
+        if verified_root is not None and path_entry_exists(
+            terminal_aggregation_path
+        ):
+            raise ProtocolError("aggregation has already terminated with an error")
         leases = _authoritative_leases(
             state_root, production_reviewer_ids=production_reviewer_ids
         )
         existing = next((item for item in leases if item["slot_id"] == slot_id), None)
         recovering = existing is not None
         if existing is not None:
+            slot_root = state_root / "slots" / slot_id
+            terminal_entries = {
+                "terminal-claim.json",
+                "canonical.json",
+                "seal-failure.json",
+            }
+            if any(
+                (slot_root / name).exists() or (slot_root / name).is_symlink()
+                for name in terminal_entries
+            ):
+                raise LeaseAlreadyExists(
+                    f"slot {slot_id} is already in a terminal state"
+                )
             comparable = (
                 "agent_id",
                 "launch_record_sha256",
@@ -5461,9 +7104,13 @@ def acquire_lease(
                 )
             if any(item["attempt_root_claim_sha256"] == root_claim_id for item in leases):
                 raise LeaseAlreadyExists("attempt root already has an authoritative lease")
-            if agent_claim_path.exists() or root_claim_path.exists():
+            if path_entry_exists(agent_claim_path) or path_entry_exists(root_claim_path):
                 raise ProtocolError("orphan uniqueness claim exists without an authoritative lease")
-            if attempt_root.exists():
+            if workspace_root.exists() or workspace_root.is_symlink():
+                raise LeaseAlreadyExists(
+                    "unclaimed launch workspace is not fresh"
+                )
+            if path_entry_exists(attempt_root):
                 raise LeaseAlreadyExists("attempt root is not fresh")
             try:
                 exclusive_write(lease_path, canonical_json_bytes(lease))
@@ -5473,7 +7120,7 @@ def acquire_lease(
             fsync_directory(lease_path.parent)
         maybe_inject_fault(fault_after, "lease-cas")
         failure_path = state_root / "slots" / slot_id / "lease-failure.json"
-        if failure_path.exists():
+        if path_entry_exists(failure_path):
             raise ProtocolError("lease initialization has an immutable failure ledger")
         claim = {
             "schema_version": 1,
@@ -5483,56 +7130,145 @@ def acquire_lease(
             "launch_record_sha256": lease["launch_record_sha256"],
             "lease_sha256": sha256(canonical_json_bytes(lease)),
         }
+        ready_path = state_root / "slots" / slot_id / "lease-ready.json"
+        ready = {
+            "schema_version": 1,
+            "status": "LEASE-READY",
+            "slot_id": slot_id,
+            "attempt_id": lease["attempt_id"],
+            "lease_sha256": sha256(canonical_json_bytes(lease)),
+            "agent_claim_sha256": sha256(canonical_json_bytes(claim)),
+            "attempt_root_claim_sha256": root_claim_id,
+        }
         try:
-            if not attempt_root.exists():
-                os.mkdir(attempt_root, mode=0o700)
+            if not path_entry_exists(workspace_root):
+                os.mkdir(workspace_root, mode=0o700)
             elif (
                 not recovering
-                or not attempt_root.is_dir()
-                or attempt_root.is_symlink()
+                or workspace_root.is_symlink()
+                or not workspace_root.is_dir()
             ):
+                raise ProtocolError("lease-bound workspace root is not recoverable")
+            os.chmod(workspace_root, 0o700)
+            if recovering:
+                for path in sorted(
+                    workspace_root.iterdir(), key=lambda item: item.name
+                ):
+                    if path.name.startswith(
+                        (".input-stage-", ".evaluator-input-stage-")
+                    ):
+                        _discard_private_aggregation_stage(path)
+            allowed_workspace_entries = {"input", "output"}
+            unexpected_workspace_entries = {
+                path.name for path in workspace_root.iterdir()
+            } - allowed_workspace_entries
+            if unexpected_workspace_entries:
+                raise ProtocolError(
+                    "lease workspace contains unexpected sibling entries: "
+                    f"{sorted(unexpected_workspace_entries)}"
+                )
+            if launch["role"] == "report":
+                if report_plan is None or verified_root is None:
+                    raise ProtocolError(
+                        "report input materialization lacks a verified production context"
+                    )
+                materialize_bound_report_inputs(
+                    launch_path,
+                    input_packet_path,
+                    launch,
+                    report_plan,
+                    verified_root,
+                )
+            elif verified_root is not None:
+                if evaluator_row is None:
+                    raise ProtocolError(
+                        "evaluator input materialization lacks its assignment contract"
+                    )
+                materialize_evaluator_input_tree(
+                    input_root,
+                    verified_root,
+                    evaluator_row,
+                    input_packet_bytes,
+                )
+            else:
+                input_root.mkdir(parents=True, exist_ok=True)
+                os.chmod(input_root, 0o500)
+            if not path_entry_exists(attempt_root):
+                os.mkdir(attempt_root, mode=0o700)
+            elif not recovering or not attempt_root.is_dir() or attempt_root.is_symlink():
                 raise ProtocolError("lease-bound attempt root is not recoverable")
+            if recovering and not path_entry_exists(ready_path) and any(attempt_root.iterdir()):
+                raise ProtocolError(
+                    "pre-ready recovered attempt output root must be empty"
+                )
+            if {path.name for path in workspace_root.iterdir()} != {
+                "input",
+                "output",
+            }:
+                raise ProtocolError("ready workspace child inventory is not exact")
+            os.chmod(attempt_root, 0o700)
+            os.chmod(workspace_root, 0o500)
+            fsync_directory(workspace_root)
+            fsync_directory(workspace_parent)
             maybe_inject_fault(fault_after, "attempt-root")
             _write_or_validate_immutable(agent_claim_path, claim)
             maybe_inject_fault(fault_after, "agent-claim")
             _write_or_validate_immutable(root_claim_path, claim)
             maybe_inject_fault(fault_after, "root-claim")
-            ready = {
-                "schema_version": 1,
-                "status": "LEASE-READY",
-                "slot_id": slot_id,
-                "attempt_id": lease["attempt_id"],
-                "lease_sha256": sha256(canonical_json_bytes(lease)),
-                "agent_claim_sha256": sha256(canonical_json_bytes(claim)),
-                "attempt_root_claim_sha256": root_claim_id,
-            }
             _write_or_validate_immutable(
-                state_root / "slots" / slot_id / "lease-ready.json", ready
+                ready_path, ready
             )
             maybe_inject_fault(fault_after, "ready")
         except InjectedFault:
             raise
         except BaseException as error:
-            failure = {
-                "schema_version": 1,
-                "status": "LEASE-FAILED",
-                "slot_id": slot_id,
-                "attempt_id": lease["attempt_id"],
-                "lease_sha256": sha256(canonical_json_bytes(lease)),
-                "error_type": type(error).__name__,
-            }
-            try:
-                _write_or_validate_immutable(failure_path, failure)
-            except BaseException:
-                pass
+            if path_entry_exists(ready_path):
+                # Once the exact ready marker is published it dominates a
+                # trailing durability exception.  Revalidate every preceding
+                # immutable claim and the exact workspace before returning
+                # success; never create a contradictory failure marker.
+                _write_or_validate_immutable(agent_claim_path, claim)
+                _write_or_validate_immutable(root_claim_path, claim)
+                _write_or_validate_immutable(ready_path, ready)
+                if (
+                    workspace_root.is_symlink()
+                    or not workspace_root.is_dir()
+                    or {path.name for path in workspace_root.iterdir()}
+                    != {"input", "output"}
+                    or input_root.is_symlink()
+                    or not input_root.is_dir()
+                    or attempt_root.is_symlink()
+                    or not attempt_root.is_dir()
+                    or stat.S_IMODE(workspace_root.lstat().st_mode) != 0o500
+                    or stat.S_IMODE(attempt_root.lstat().st_mode) != 0o700
+                ):
+                    raise ProtocolError(
+                        "published lease readiness marker has invalid workspace state"
+                    ) from error
+                if verified_root is not None:
+                    verify_production_lease_workspace(lease, verified_root)
+                return lease
+            # Before readiness there is no terminal initialization outcome:
+            # exact intermediate claims/workspace materialization are
+            # idempotently recoverable by the same agent.  Persisting a
+            # failure companion here could turn a post-publication exception
+            # into contradictory state or make a transient error permanent.
             raise
     return lease
 
 
-def scan_output(root: Path) -> list[dict[str, Any]]:
-    if not root.exists():
+def scan_output(root: Path, max_capture_bytes: int) -> list[dict[str, Any]]:
+    if (
+        type(max_capture_bytes) is not int
+        or max_capture_bytes < 1
+        or max_capture_bytes > MAX_ENVELOPE_CAPTURE_BYTES
+    ):
+        raise ProtocolError("output capture byte bound is invalid")
+    if not path_entry_exists(root):
         return []
     entries: list[dict[str, Any]] = []
+    captured_bytes = 0
+    captured_path_bytes = 0
 
     def identity(info: os.stat_result) -> tuple[int, int, int, int, int, int]:
         return (
@@ -5544,25 +7280,85 @@ def scan_output(root: Path) -> list[dict[str, Any]]:
             info.st_ctime_ns,
         )
 
-    def stable_file_bytes(directory_fd: int, name: str, listed: os.stat_result) -> bytes:
-        flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
-        fd = os.open(name, flags, dir_fd=directory_fd)
+    def stable_file_bytes(
+        directory_fd: int,
+        name: str,
+        listed: os.stat_result,
+        remaining_capture_bytes: int,
+    ) -> tuple[bytes | None, int]:
+        flags = (
+            os.O_RDONLY
+            | getattr(os, "O_NOFOLLOW", 0)
+            | getattr(os, "O_NONBLOCK", 0)
+        )
+        original_mode = stat.S_IMODE(listed.st_mode)
+        mode_adjusted = False
+        try:
+            fd = os.open(name, flags, dir_fd=directory_fd)
+        except PermissionError:
+            os.chmod(
+                name,
+                original_mode | stat.S_IRUSR,
+                dir_fd=directory_fd,
+                follow_symlinks=False,
+            )
+            adjusted = os.stat(
+                name, dir_fd=directory_fd, follow_symlinks=False
+            )
+            if (
+                (listed.st_dev, listed.st_ino, listed.st_size, listed.st_mtime_ns)
+                != (
+                    adjusted.st_dev,
+                    adjusted.st_ino,
+                    adjusted.st_size,
+                    adjusted.st_mtime_ns,
+                )
+                or not stat.S_ISREG(adjusted.st_mode)
+            ):
+                raise ProtocolError(
+                    "output file changed while restoring coordinator readability"
+                )
+            listed = adjusted
+            mode_adjusted = True
+            try:
+                fd = os.open(name, flags, dir_fd=directory_fd)
+            except BaseException:
+                os.chmod(
+                    name,
+                    original_mode,
+                    dir_fd=directory_fd,
+                    follow_symlinks=False,
+                )
+                raise
         try:
             opened = os.fstat(fd)
             if identity(listed) != identity(opened) or not stat.S_ISREG(opened.st_mode):
                 raise ProtocolError(f"output entry changed during stable open: {name}")
+            after = os.fstat(fd)
+            if identity(opened) != identity(after):
+                raise ProtocolError(f"output file changed during capture: {name}")
+            if opened.st_size > remaining_capture_bytes:
+                return None, opened.st_size
             chunks: list[bytes] = []
-            while True:
-                chunk = os.read(fd, 1024 * 1024)
+            remaining = remaining_capture_bytes + 1
+            while remaining:
+                chunk = os.read(fd, min(1024 * 1024, remaining))
                 if not chunk:
                     break
                 chunks.append(chunk)
-            after = os.fstat(fd)
+                remaining -= len(chunk)
             data = b"".join(chunks)
-            if identity(opened) != identity(after) or len(data) != after.st_size:
-                raise ProtocolError(f"output file changed during capture: {name}")
-            return data
+            after = os.fstat(fd)
+            if (
+                identity(opened) != identity(after)
+                or len(data) != after.st_size
+                or len(data) > remaining_capture_bytes
+            ):
+                raise ProtocolError(f"output file changed during bounded capture: {name}")
+            return data, after.st_size
         finally:
+            if mode_adjusted:
+                os.fchmod(fd, original_mode)
             os.close(fd)
 
     directory_flags = (
@@ -5570,49 +7366,243 @@ def scan_output(root: Path) -> list[dict[str, Any]]:
         | getattr(os, "O_DIRECTORY", 0)
         | getattr(os, "O_NOFOLLOW", 0)
     )
-
-    def visit(directory_fd: int, prefix: PurePosixPath) -> None:
-        before = os.fstat(directory_fd)
-        if not stat.S_ISDIR(before.st_mode):
-            raise ProtocolError("output traversal descriptor is not a directory")
-        with os.scandir(directory_fd) as iterator:
-            current = sorted(iterator, key=lambda item: item.name)
-        for entry in current:
-            relative = (prefix / entry.name).as_posix()
-            listed = os.stat(entry.name, dir_fd=directory_fd, follow_symlinks=False)
-            if stat.S_ISLNK(listed.st_mode):
-                entries.append({"path": relative, "kind": "symlink"})
-            elif stat.S_ISDIR(listed.st_mode):
-                entries.append({"path": relative, "kind": "directory"})
-                child_fd = os.open(entry.name, directory_flags, dir_fd=directory_fd)
-                try:
-                    if identity(listed) != identity(os.fstat(child_fd)):
-                        raise ProtocolError(f"output directory changed during stable open: {relative}")
-                    visit(child_fd, prefix / entry.name)
-                finally:
-                    os.close(child_fd)
-                after = os.stat(entry.name, dir_fd=directory_fd, follow_symlinks=False)
-                if identity(listed) != identity(after):
-                    raise ProtocolError(f"output directory changed during capture: {relative}")
-            elif stat.S_ISREG(listed.st_mode):
-                data = stable_file_bytes(directory_fd, entry.name, listed)
-                entries.append({"path": relative, "kind": "file", "data": data})
-            else:
-                entries.append({"path": relative, "kind": "special"})
-        after = os.fstat(directory_fd)
-        if identity(before) != identity(after):
-            raise ProtocolError(f"output directory changed during traversal: {prefix.as_posix()}")
-
+    try:
+        root_listed = os.stat(root, follow_symlinks=False)
+    except OSError as error:
+        raise ProtocolError(
+            "attempt output root is not a stable non-symlink directory"
+        ) from error
+    if not stat.S_ISDIR(root_listed.st_mode):
+        raise ProtocolError(
+            "attempt output root is not a stable non-symlink directory"
+        )
+    root_original_mode = stat.S_IMODE(root_listed.st_mode)
+    root_mode_adjusted = False
+    root_required_mode = root_original_mode | stat.S_IRUSR | stat.S_IXUSR
+    if root_required_mode != root_original_mode:
+        os.chmod(root, root_required_mode, follow_symlinks=False)
+        root_adjusted = os.stat(root, follow_symlinks=False)
+        if (
+            (
+                root_listed.st_dev,
+                root_listed.st_ino,
+                root_listed.st_size,
+                root_listed.st_mtime_ns,
+            )
+            != (
+                root_adjusted.st_dev,
+                root_adjusted.st_ino,
+                root_adjusted.st_size,
+                root_adjusted.st_mtime_ns,
+            )
+            or not stat.S_ISDIR(root_adjusted.st_mode)
+        ):
+            raise ProtocolError(
+                "attempt output root changed while restoring coordinator readability"
+            )
+        root_listed = root_adjusted
+        root_mode_adjusted = True
     try:
         root_fd = os.open(root, directory_flags)
-    except (NotADirectoryError, OSError) as error:
-        raise ProtocolError("attempt output root is not a stable non-symlink directory") from error
+    except PermissionError:
+        if root_mode_adjusted:
+            os.chmod(root, root_original_mode, follow_symlinks=False)
+        raise ProtocolError(
+            "attempt output root is unreadable after coordinator mode recovery"
+        )
+    except OSError as error:
+        if root_mode_adjusted:
+            os.chmod(root, root_original_mode, follow_symlinks=False)
+        raise ProtocolError(
+            "attempt output root is not a stable non-symlink directory"
+        ) from error
+    directory_modes_to_restore: dict[tuple[str, ...], int] = {}
+    open_relative_directory: Callable[[tuple[str, ...]], int] | None = None
     try:
         root_identity = identity(os.fstat(root_fd))
-        visit(root_fd, PurePosixPath())
+        directory_identities: dict[tuple[str, ...], tuple[int, int, int, int, int, int]] = {
+            (): root_identity
+        }
+
+        def open_relative_directory(parts: tuple[str, ...]) -> int:
+            descriptor = os.dup(root_fd)
+            walked: tuple[str, ...] = ()
+            try:
+                for part in parts:
+                    child = os.open(part, directory_flags, dir_fd=descriptor)
+                    os.close(descriptor)
+                    descriptor = child
+                    walked = (*walked, part)
+                    expected = directory_identities.get(walked)
+                    if expected is None or identity(os.fstat(descriptor)) != expected:
+                        raise ProtocolError(
+                            "output directory changed during descriptor traversal"
+                        )
+                return descriptor
+            except BaseException:
+                os.close(descriptor)
+                raise
+
+        pending: list[tuple[str, ...]] = [()]
+        visited: list[tuple[str, ...]] = []
+        observed_entries = 0
+        capture_limit_reason: str | None = None
+        while pending:
+            parts = pending.pop()
+            try:
+                directory_fd = open_relative_directory(parts)
+            except OSError as error:
+                raise ProtocolError(
+                    "output directory disappeared during descriptor traversal"
+                ) from error
+            try:
+                before = os.fstat(directory_fd)
+                if (
+                    not stat.S_ISDIR(before.st_mode)
+                    or identity(before) != directory_identities[parts]
+                ):
+                    raise ProtocolError(
+                        "output traversal descriptor is not the expected directory"
+                    )
+                current: list[os.DirEntry[str]] = []
+                with os.scandir(directory_fd) as iterator:
+                    for child in iterator:
+                        observed_entries += 1
+                        if observed_entries > MAX_OUTPUT_CAPTURE_ENTRIES:
+                            capture_limit_reason = "entry-count"
+                            break
+                        current.append(child)
+                if capture_limit_reason is None:
+                    current.sort(key=lambda item: item.name)
+                    for entry in current:
+                        child_parts = (*parts, entry.name)
+                        raw_relative = PurePosixPath(*child_parts).as_posix()
+                        relative = encode_output_path_token(raw_relative)
+                        relative_bytes = len(relative.encode("utf-8"))
+                        if (
+                            captured_path_bytes + relative_bytes
+                            > MAX_OUTPUT_CAPTURE_PATH_BYTES
+                        ):
+                            capture_limit_reason = "path-bytes"
+                            break
+                        captured_path_bytes += relative_bytes
+                        listed = os.stat(
+                            entry.name,
+                            dir_fd=directory_fd,
+                            follow_symlinks=False,
+                        )
+                        if stat.S_ISLNK(listed.st_mode):
+                            entries.append({"path": relative, "kind": "symlink"})
+                        elif stat.S_ISDIR(listed.st_mode):
+                            entries.append({"path": relative, "kind": "directory"})
+                            original_mode = stat.S_IMODE(listed.st_mode)
+                            required_mode = original_mode | stat.S_IRUSR | stat.S_IXUSR
+                            if required_mode != original_mode:
+                                os.chmod(
+                                    entry.name,
+                                    required_mode,
+                                    dir_fd=directory_fd,
+                                    follow_symlinks=False,
+                                )
+                                adjusted = os.stat(
+                                    entry.name,
+                                    dir_fd=directory_fd,
+                                    follow_symlinks=False,
+                                )
+                                if (
+                                    (
+                                        listed.st_dev,
+                                        listed.st_ino,
+                                        listed.st_size,
+                                        listed.st_mtime_ns,
+                                    )
+                                    != (
+                                        adjusted.st_dev,
+                                        adjusted.st_ino,
+                                        adjusted.st_size,
+                                        adjusted.st_mtime_ns,
+                                    )
+                                    or not stat.S_ISDIR(adjusted.st_mode)
+                                ):
+                                    raise ProtocolError(
+                                        "output directory changed while restoring coordinator readability"
+                                    )
+                                directory_modes_to_restore[child_parts] = original_mode
+                                listed = adjusted
+                            directory_identities[child_parts] = identity(listed)
+                            pending.append(child_parts)
+                        elif stat.S_ISREG(listed.st_mode):
+                            data, size = stable_file_bytes(
+                                directory_fd,
+                                entry.name,
+                                listed,
+                                max_capture_bytes - captured_bytes,
+                            )
+                            if data is not None:
+                                captured_bytes += len(data)
+                            entries.append(
+                                {
+                                    "path": relative,
+                                    "kind": "file",
+                                    "captured": data is not None,
+                                    "size": size,
+                                    "data": data,
+                                }
+                            )
+                        else:
+                            entries.append({"path": relative, "kind": "special"})
+                if identity(before) != identity(os.fstat(directory_fd)):
+                    raise ProtocolError(
+                        "output directory changed during iterative traversal"
+                    )
+                visited.append(parts)
+            finally:
+                os.close(directory_fd)
+            if capture_limit_reason is not None:
+                pending.clear()
+                break
+
+        if capture_limit_reason is not None:
+            entries = [
+                {
+                    "path": output_capture_limit_path(capture_limit_reason),
+                    "kind": "capture-limit",
+                }
+            ]
+
+        # Reopen each directory through the original root descriptor after the
+        # full walk.  This preserves the former start/end identity guarantee
+        # without Python recursion or one open descriptor per nesting level.
+        for parts in visited:
+            try:
+                directory_fd = open_relative_directory(parts)
+            except OSError as error:
+                raise ProtocolError(
+                    "output directory disappeared after iterative traversal"
+                ) from error
+            try:
+                if identity(os.fstat(directory_fd)) != directory_identities[parts]:
+                    raise ProtocolError(
+                        "output directory changed after iterative traversal"
+                    )
+            finally:
+                os.close(directory_fd)
         if identity(os.stat(root, follow_symlinks=False)) != root_identity:
             raise ProtocolError("attempt output root path changed during traversal")
     finally:
+        if open_relative_directory is not None:
+            for parts, original_mode in sorted(
+                directory_modes_to_restore.items(),
+                key=lambda item: len(item[0]),
+                reverse=True,
+            ):
+                directory_fd = open_relative_directory(parts)
+                try:
+                    os.fchmod(directory_fd, original_mode)
+                finally:
+                    os.close(directory_fd)
+        if root_mode_adjusted:
+            os.fchmod(root_fd, root_original_mode)
         os.close(root_fd)
     return entries
 
@@ -5646,6 +7636,10 @@ def semantic_output_errors(lease: dict[str, Any], output_bytes: bytes | None) ->
             )
         elif role == "consistency":
             packet = validate_consistency_packet(input_packet)
+            if packet["mode"] != launch["mode"]:
+                raise ProtocolError(
+                    "consistency packet mode does not match the bound launch"
+                )
             tree = packet["packet_tree"]
             atoms = packet_json_file(tree, "resources/atom-manifest.json")
             rules = packet_json_file(tree, "resources/defect-rules.json")
@@ -5657,7 +7651,12 @@ def semantic_output_errors(lease: dict[str, Any], output_bytes: bytes | None) ->
                 launch["assignment_id"].rsplit("-", 1)[1],
             )
         elif role == "adjudicator":
-            validate_adjudication(output, validate_adjudication_packet(input_packet))
+            packet = validate_adjudication_packet(input_packet)
+            if packet["mode"] != launch["mode"]:
+                raise ProtocolError(
+                    "adjudication packet mode does not match the bound launch"
+                )
+            validate_adjudication(output, packet)
         elif role == "materiality-reviewer":
             validate_materiality_review(
                 output,
@@ -5683,13 +7682,20 @@ def capture_envelope(
     lease: dict[str, Any],
     spec: dict[str, Any],
     attempt_root: Path,
-    final_response: bytes | None,
+    final_response: bytes | OversizedFinalResponse | None,
     process_disposition: str,
     process_exit_code: int | None,
     metadata: dict[str, Any],
+    *,
+    fault_after: str | None = None,
 ) -> dict[str, Any]:
     violations: list[str] = []
-    scanned = scan_output(attempt_root)
+    scanned = scan_output(attempt_root, MAX_ENVELOPE_CAPTURE_BYTES)
+    retained_output_bytes = sum(
+        len(item["data"])
+        for item in scanned
+        if item["kind"] == "file" and item["captured"]
+    )
     declared = {item["path"]: item for item in spec["files"]}
     scanned_by_path = {item["path"]: item for item in scanned}
     records: list[dict[str, Any]] = []
@@ -5702,31 +7708,57 @@ def capture_envelope(
     for entry in scanned:
         path = entry["path"]
         kind = entry["kind"]
+        _raw_path, portable_path = decode_output_path_token(path)
         record: dict[str, Any] = {
             "path": path,
             "kind": kind,
-            "declared": path in declared or (kind == "directory" and path in declared_parent_directories),
+            "declared": portable_path
+            and (
+                path in declared
+                or (kind == "directory" and path in declared_parent_directories)
+            ),
         }
+        if not portable_path:
+            violations.append(f"invalid-path:{path}")
         if kind == "file":
             data = entry["data"]
-            total_bytes += len(data)
-            record.update({"size": len(data), "sha256": sha256(data)})
-            write_stage_file(stage / "payload" / "output" / Path(*PurePosixPath(path).parts), data)
-            if path in declared:
+            size = entry["size"]
+            captured = entry["captured"]
+            total_bytes += size
+            record.update(
+                {
+                    "size": size,
+                    "sha256": sha256(data) if captured else None,
+                    "captured": captured,
+                }
+            )
+            if captured:
+                payload_relative = envelope_payload_relative_path(path)
+                write_stage_file(
+                    stage / "payload" / Path(*payload_relative.parts), data
+                )
+                maybe_inject_fault(fault_after, "envelope-capture")
+            else:
+                violations.append(f"uncaptured-oversize:{path}:{size}")
+            if portable_path and path in declared:
                 requirement = declared[path]
-                if len(data) > requirement["max_bytes"]:
-                    violations.append(f"oversize:{path}:{len(data)}:{requirement['max_bytes']}")
-                if requirement["utf8"]:
+                if size > requirement["max_bytes"]:
+                    violations.append(f"oversize:{path}:{size}:{requirement['max_bytes']}")
+                if captured and requirement["utf8"]:
                     try:
                         data.decode("utf-8")
                     except UnicodeDecodeError:
                         violations.append(f"non-utf8:{path}")
             else:
                 violations.append(f"unexpected:{path}")
-        elif kind == "directory" and path not in declared_parent_directories:
+        elif kind == "directory" and (
+            not portable_path or path not in declared_parent_directories
+        ):
             violations.append(f"unexpected-directory:{path}")
         elif kind in ("symlink", "special", "not-directory"):
             violations.append(f"{kind}:{path}")
+        elif kind == "capture-limit":
+            violations.append(output_capture_limit_violation(path))
         records.append(record)
     for path, requirement in declared.items():
         entry = scanned_by_path.get(path)
@@ -5740,32 +7772,68 @@ def capture_envelope(
 
     launch = load_bound_launch(lease)
     primary = scanned_by_path.get(launch["output_path"])
-    semantic_errors = semantic_output_errors(
-        lease,
-        primary["data"] if primary is not None and primary["kind"] == "file" else None,
+    hard_capture_overflow = any(
+        entry["kind"] == "capture-limit"
+        or (entry["kind"] == "file" and not entry["captured"])
+        for entry in scanned
     )
-
     final_spec = spec["final_response"]
-    if final_response is None:
+    final_response_bytes, final_descriptor = describe_final_response(final_response)
+    if not final_descriptor["present"]:
         final_record: dict[str, Any] = {"present": False}
         if final_spec["required"]:
             violations.append("missing:final-response")
     else:
+        final_size = final_descriptor["size"]
+        final_captured = (
+            final_response_bytes is not None
+            and final_size
+            <= MAX_ENVELOPE_CAPTURE_BYTES - retained_output_bytes
+        )
         final_record = {
             "present": True,
-            "size": len(final_response),
-            "sha256": sha256(final_response),
+            "captured": final_captured,
+            "size": final_size,
+            "sha256": final_descriptor["sha256"],
+            "prefix_sha256": final_descriptor["prefix_sha256"],
         }
-        write_stage_file(stage / "payload" / "final-response.bin", final_response)
-        if len(final_response) > final_spec["max_bytes"]:
-            violations.append(f"oversize:final-response:{len(final_response)}:{final_spec['max_bytes']}")
-        try:
-            final_text = final_response.decode("utf-8")
-        except UnicodeDecodeError:
-            violations.append("non-utf8:final-response")
+        if final_captured:
+            assert final_response_bytes is not None
+            write_stage_file(
+                stage / "payload" / "final-response.bin", final_response_bytes
+            )
         else:
-            if re.fullmatch(final_spec["utf8_fullmatch_regex"], final_text) is None:
-                violations.append("format:final-response")
+            hard_capture_overflow = True
+            violations.append(
+                f"uncaptured-oversize:final-response:{final_size}"
+            )
+        if final_size > final_spec["max_bytes"]:
+            violations.append(
+                f"oversize:final-response:{final_size}:{final_spec['max_bytes']}"
+            )
+        if final_captured:
+            assert final_response_bytes is not None
+            try:
+                final_text = final_response_bytes.decode("utf-8")
+            except UnicodeDecodeError:
+                violations.append("non-utf8:final-response")
+            else:
+                if re.fullmatch(final_spec["utf8_fullmatch_regex"], final_text) is None:
+                    violations.append("format:final-response")
+    semantic_errors = (
+        ["semantic:output-capture-hard-limit"]
+        if hard_capture_overflow
+        else semantic_output_errors(
+            lease,
+            (
+                primary["data"]
+                if primary is not None
+                and primary["kind"] == "file"
+                and primary["captured"]
+                else None
+            ),
+        )
+    )
     if process_disposition not in spec["allowed_process_dispositions"]:
         violations.append(f"invalid-process-disposition:{process_disposition}")
     if process_exit_code is not None and type(process_exit_code) is not int:
@@ -5830,7 +7898,9 @@ def semantic_verify_envelope(
             "agent_id",
             "lease_sha256",
             "attempt_root",
+            "final_response_size",
             "final_response_sha256",
+            "final_response_prefix_sha256",
             "process_disposition",
             "process_exit_code",
             "metadata_sha256",
@@ -5862,22 +7932,58 @@ def semantic_verify_envelope(
         or terminal_claim["agent_id"] != lease["agent_id"]
         or terminal_claim["lease_sha256"] != lease_digest
         or terminal_claim["attempt_root"] != lease["attempt_root"]
-        or (
-            terminal_claim["final_response_sha256"] is not None
-            and (
-                not isinstance(terminal_claim["final_response_sha256"], str)
-                or not HEX64.fullmatch(terminal_claim["final_response_sha256"])
-            )
+        or not valid_final_response_binding(
+            terminal_claim["final_response_size"],
+            terminal_claim["final_response_sha256"],
+            terminal_claim["final_response_prefix_sha256"],
         )
         or not isinstance(terminal_claim["metadata_sha256"], str)
         or not HEX64.fullmatch(terminal_claim["metadata_sha256"])
         or terminal_claim["envelope_sha256"] != pointer["envelope_sha256"]
     ):
         raise ProtocolError("terminal claim identity/content binding is invalid")
-    if not object_path.is_dir() or object_path.name != pointer["envelope_sha256"]:
+    if (
+        object_path.name != pointer["envelope_sha256"]
+        or object_path.parent.name != "sha256"
+        or object_path.parent.parent.name != "objects"
+    ):
         raise ProtocolError("canonical object path/digest mismatch")
+    object_chain = (
+        object_path.parent.parent,
+        object_path.parent,
+        object_path,
+    )
+    object_chain_identities: list[tuple[int, int]] = []
+    for component in object_chain:
+        try:
+            info = component.lstat()
+        except OSError as error:
+            raise ProtocolError(
+                "canonical object chain is unavailable"
+            ) from error
+        if not stat.S_ISDIR(info.st_mode):
+            raise ProtocolError(
+                "canonical object chain contains a non-directory or symlink"
+            )
+        object_chain_identities.append((info.st_dev, info.st_ino))
     if byte_tree_digest(object_path) != pointer["envelope_sha256"]:
         raise ProtocolError("canonical object byte-tree digest mismatch")
+    for component, expected_identity in zip(
+        object_chain, object_chain_identities, strict=True
+    ):
+        try:
+            info = component.lstat()
+        except OSError as error:
+            raise ProtocolError(
+                "canonical object chain disappeared during verification"
+            ) from error
+        if (
+            not stat.S_ISDIR(info.st_mode)
+            or (info.st_dev, info.st_ino) != expected_identity
+        ):
+            raise ProtocolError(
+                "canonical object chain changed during verification"
+            )
     envelope = require_exact_keys(
         read_json(object_path / "envelope.json"),
         {
@@ -5918,77 +8024,147 @@ def semantic_verify_envelope(
         for index in range(1, len(PurePosixPath(path).parts))
     }
     records = envelope["output_entries"]
-    if not isinstance(records, list):
+    if (
+        not isinstance(records, list)
+        or len(records) > MAX_OUTPUT_CAPTURE_ENTRIES
+    ):
         raise ProtocolError("envelope output entries must be a list")
     seen_paths: list[str] = []
+    retained_path_bytes = 0
     total_bytes = 0
+    retained_output_bytes = 0
     violations: list[str] = []
+    hard_capture_overflow = False
     file_records: dict[str, dict[str, Any]] = {}
+    file_payload_paths: dict[str, str] = {}
     for raw in records:
         if not isinstance(raw, dict):
             raise ProtocolError("envelope output record is not an object")
         kind = raw.get("kind")
-        expected_keys = {"path", "kind", "declared", "size", "sha256"} if kind == "file" else {
+        expected_keys = {
+            "path",
+            "kind",
+            "declared",
+            "size",
+            "sha256",
+            "captured",
+        } if kind == "file" else {
             "path",
             "kind",
             "declared",
         }
         record = require_exact_keys(raw, expected_keys, "envelope output record")
-        path = require_relative_file(record["path"], "envelope output path")
-        if kind not in ("file", "directory", "symlink", "special", "not-directory"):
+        path = record["path"]
+        _raw_path, portable_path = decode_output_path_token(path)
+        retained_path_bytes += len(path.encode("utf-8"))
+        if retained_path_bytes > MAX_OUTPUT_CAPTURE_PATH_BYTES:
+            raise ProtocolError(
+                "envelope output path tokens exceed the hard byte limit"
+            )
+        if kind not in (
+            "file",
+            "directory",
+            "symlink",
+            "special",
+            "not-directory",
+            "capture-limit",
+        ):
             raise ProtocolError("envelope output record kind is invalid")
-        expected_declared = path in declared or (
-            kind == "directory" and path in declared_parent_directories
+        expected_declared = portable_path and (
+            path in declared
+            or (kind == "directory" and path in declared_parent_directories)
         )
         if type(record["declared"]) is not bool or record["declared"] is not expected_declared:
             raise ProtocolError("envelope declared flag is not recomputable")
         seen_paths.append(path)
+        if not portable_path:
+            violations.append(f"invalid-path:{path}")
         if kind == "file":
             if (
                 type(record["size"]) is not int
                 or record["size"] < 0
-                or not isinstance(record["sha256"], str)
-                or not HEX64.fullmatch(record["sha256"])
+                or type(record["captured"]) is not bool
             ):
-                raise ProtocolError("envelope file record size/digest is invalid")
-            payload_path = object_path / "payload" / "output" / Path(
-                *PurePosixPath(path).parts
-            )
-            if not payload_path.is_file() or payload_path.is_symlink():
-                raise ProtocolError(f"envelope payload file is missing or non-regular: {path}")
-            data = payload_path.read_bytes()
-            if len(data) != record["size"] or sha256(data) != record["sha256"]:
-                raise ProtocolError(f"envelope payload bytes disagree with record: {path}")
-            total_bytes += len(data)
+                raise ProtocolError("envelope file record size/capture state is invalid")
+            payload_relative = envelope_payload_relative_path(path)
+            payload_path = object_path / "payload" / Path(*payload_relative.parts)
+            data: bytes | None = None
+            if record["captured"]:
+                if (
+                    not isinstance(record["sha256"], str)
+                    or not HEX64.fullmatch(record["sha256"])
+                    or not payload_path.is_file()
+                    or payload_path.is_symlink()
+                ):
+                    raise ProtocolError(
+                        f"captured envelope payload is missing or invalid: {path}"
+                    )
+                remaining_payload_bytes = (
+                    MAX_ENVELOPE_CAPTURE_BYTES - retained_output_bytes
+                )
+                data = read_bounded_file_prefix(
+                    payload_path,
+                    remaining_payload_bytes,
+                    f"captured envelope payload {path}",
+                )
+                if len(data) != record["size"] or sha256(data) != record["sha256"]:
+                    raise ProtocolError(
+                        f"envelope payload bytes disagree with record: {path}"
+                    )
+                retained_output_bytes += len(data)
+                file_payload_paths[path] = payload_relative.as_posix()
+            else:
+                hard_capture_overflow = True
+                if record["sha256"] is not None or path_entry_exists(payload_path):
+                    raise ProtocolError(
+                        f"uncaptured envelope file unexpectedly has payload bytes: {path}"
+                    )
+                violations.append(
+                    f"uncaptured-oversize:{path}:{record['size']}"
+                )
+            total_bytes += record["size"]
             file_records[path] = record
-            requirement = declared.get(path)
+            requirement = declared.get(path) if portable_path else None
             if requirement is None:
                 violations.append(f"unexpected:{path}")
             else:
-                if len(data) > requirement["max_bytes"]:
+                if record["size"] > requirement["max_bytes"]:
                     violations.append(
-                        f"oversize:{path}:{len(data)}:{requirement['max_bytes']}"
+                        f"oversize:{path}:{record['size']}:{requirement['max_bytes']}"
                     )
-                if requirement["utf8"]:
+                if data is not None and requirement["utf8"]:
                     try:
                         data.decode("utf-8")
                     except UnicodeDecodeError:
                         violations.append(f"non-utf8:{path}")
-        elif kind == "directory" and path not in declared_parent_directories:
+        elif kind == "directory" and (
+            not portable_path or path not in declared_parent_directories
+        ):
             violations.append(f"unexpected-directory:{path}")
         elif kind in ("symlink", "special", "not-directory"):
             violations.append(f"{kind}:{path}")
+        elif kind == "capture-limit":
+            if len(records) != 1:
+                raise ProtocolError(
+                    "output capture-limit sentinel must be the only output record"
+                )
+            hard_capture_overflow = True
+            violations.append(output_capture_limit_violation(path))
     if seen_paths != sorted(seen_paths) or len(seen_paths) != len(set(seen_paths)):
         raise ProtocolError("envelope output records are not unique and sorted")
-    payload_output = object_path / "payload" / "output"
+    if len(set(file_payload_paths.values())) != len(file_payload_paths):
+        raise ProtocolError("envelope output path encoding collided")
+    payload_root = object_path / "payload"
     actual_payload_files: set[str] = set()
-    if payload_output.exists():
-        for path in payload_output.rglob("*"):
+    if path_entry_exists(payload_root):
+        for path in payload_root.rglob("*"):
             if path.is_symlink() or (not path.is_file() and not path.is_dir()):
                 raise ProtocolError("canonical payload contains a non-regular entry")
             if path.is_file():
-                actual_payload_files.add(path.relative_to(payload_output).as_posix())
-    if actual_payload_files != set(file_records):
+                relative_payload = path.relative_to(payload_root).as_posix()
+                if relative_payload != "final-response.bin":
+                    actual_payload_files.add(relative_payload)
+    if actual_payload_files != set(file_payload_paths.values()):
         raise ProtocolError("canonical payload file set does not equal envelope file records")
     for path, requirement in declared.items():
         record = next((item for item in records if item["path"] == path), None)
@@ -6003,37 +8179,84 @@ def semantic_verify_envelope(
         )
     if envelope["total_output_bytes"] != total_bytes:
         raise ProtocolError("envelope total output byte count mismatch")
+    if retained_output_bytes > MAX_ENVELOPE_CAPTURE_BYTES:
+        raise ProtocolError("retained output payload exceeds the hard byte limit")
 
     final_record = envelope["final_response"]
     if not isinstance(final_record, dict) or type(final_record.get("present")) is not bool:
         raise ProtocolError("envelope final-response record is invalid")
     final_path = object_path / "payload" / "final-response.bin"
     if final_record["present"]:
-        require_exact_keys(final_record, {"present", "size", "sha256"}, "final response")
-        if not final_path.is_file() or final_path.is_symlink():
-            raise ProtocolError("present final response lacks regular payload bytes")
-        final_bytes = final_path.read_bytes()
+        require_exact_keys(
+            final_record,
+            {"present", "captured", "size", "sha256", "prefix_sha256"},
+            "final response",
+        )
         if (
-            type(final_record["size"]) is not int
-            or final_record["size"] != len(final_bytes)
-            or final_record["sha256"] != sha256(final_bytes)
-            or terminal_claim["final_response_sha256"] != sha256(final_bytes)
-        ):
-            raise ProtocolError("final response payload/digest/terminal claim mismatch")
-        if len(final_bytes) > spec["final_response"]["max_bytes"]:
-            violations.append(
-                f"oversize:final-response:{len(final_bytes)}:{spec['final_response']['max_bytes']}"
+            type(final_record["captured"]) is not bool
+            or not valid_final_response_binding(
+                final_record["size"],
+                final_record["sha256"],
+                final_record["prefix_sha256"],
             )
-        try:
-            final_text = final_bytes.decode("utf-8")
-        except UnicodeDecodeError:
-            violations.append("non-utf8:final-response")
+            or terminal_claim["final_response_size"] != final_record["size"]
+            or terminal_claim["final_response_sha256"] != final_record["sha256"]
+            or terminal_claim["final_response_prefix_sha256"]
+            != final_record["prefix_sha256"]
+        ):
+            raise ProtocolError("final response record/terminal claim mismatch")
+        final_bytes: bytes | None = None
+        if final_record["captured"]:
+            if (
+                final_record["size"]
+                > MAX_ENVELOPE_CAPTURE_BYTES - retained_output_bytes
+            ):
+                raise ProtocolError(
+                    "captured final response exceeds the aggregate hard byte limit"
+                )
+            if not final_path.is_file() or final_path.is_symlink():
+                raise ProtocolError("captured final response lacks regular payload bytes")
+            final_bytes = read_bounded_file_prefix(
+                final_path,
+                MAX_ENVELOPE_CAPTURE_BYTES - retained_output_bytes,
+                "captured final-response payload",
+            )
+            if (
+                final_record["size"] != len(final_bytes)
+                or final_record["sha256"] != sha256(final_bytes)
+            ):
+                raise ProtocolError("final response payload/digest mismatch")
         else:
-            if re.fullmatch(spec["final_response"]["utf8_fullmatch_regex"], final_text) is None:
-                violations.append("format:final-response")
+            hard_capture_overflow = True
+            if (
+                path_entry_exists(final_path)
+                or final_record["size"]
+                <= MAX_ENVELOPE_CAPTURE_BYTES - retained_output_bytes
+            ):
+                raise ProtocolError("uncaptured final response state is invalid")
+            violations.append(
+                f"uncaptured-oversize:final-response:{final_record['size']}"
+            )
+        if final_record["size"] > spec["final_response"]["max_bytes"]:
+            violations.append(
+                f"oversize:final-response:{final_record['size']}:{spec['final_response']['max_bytes']}"
+            )
+        if final_bytes is not None:
+            try:
+                final_text = final_bytes.decode("utf-8")
+            except UnicodeDecodeError:
+                violations.append("non-utf8:final-response")
+            else:
+                if re.fullmatch(spec["final_response"]["utf8_fullmatch_regex"], final_text) is None:
+                    violations.append("format:final-response")
     else:
         require_exact_keys(final_record, {"present"}, "absent final response")
-        if final_path.exists() or terminal_claim["final_response_sha256"] is not None:
+        if (
+            path_entry_exists(final_path)
+            or terminal_claim["final_response_size"] is not None
+            or terminal_claim["final_response_sha256"] is not None
+            or terminal_claim["final_response_prefix_sha256"] is not None
+        ):
             raise ProtocolError("absent final response has payload bytes or terminal digest")
         if spec["final_response"]["required"]:
             violations.append("missing:final-response")
@@ -6058,14 +8281,16 @@ def semantic_verify_envelope(
         raise ProtocolError("canonical pointer format_valid disagrees with envelope")
     primary_record = file_records.get(launch["output_path"])
     primary_bytes = None
-    if primary_record is not None:
+    if primary_record is not None and primary_record["captured"]:
+        primary_relative = envelope_payload_relative_path(launch["output_path"])
         primary_bytes = (
-            object_path
-            / "payload"
-            / "output"
-            / Path(*PurePosixPath(launch["output_path"]).parts)
+            object_path / "payload" / Path(*primary_relative.parts)
         ).read_bytes()
-    expected_semantic_errors = semantic_output_errors(lease, primary_bytes)
+    expected_semantic_errors = (
+        ["semantic:output-capture-hard-limit"]
+        if hard_capture_overflow
+        else semantic_output_errors(lease, primary_bytes)
+    )
     if (
         envelope["semantic_errors"] != expected_semantic_errors
         or type(envelope["semantic_valid"]) is not bool
@@ -6073,8 +8298,6 @@ def semantic_verify_envelope(
         or pointer["semantic_valid"] is not envelope["semantic_valid"]
     ):
         raise ProtocolError("envelope semantic result disagrees with recomputation")
-    if launch["role"] == "report" and launch["output_path"] not in declared:
-        raise ProtocolError("bound report output is absent from envelope declaration")
     return envelope
 
 
@@ -6089,7 +8312,9 @@ def validate_terminal_claim(value: Any, lease: dict[str, Any]) -> dict[str, Any]
             "agent_id",
             "lease_sha256",
             "attempt_root",
+            "final_response_size",
             "final_response_sha256",
+            "final_response_prefix_sha256",
             "process_disposition",
             "process_exit_code",
             "metadata_sha256",
@@ -6105,15 +8330,13 @@ def validate_terminal_claim(value: Any, lease: dict[str, Any]) -> dict[str, Any]
         or claim["agent_id"] != lease["agent_id"]
         or claim["lease_sha256"] != sha256(canonical_json_bytes(lease))
         or claim["attempt_root"] != lease["attempt_root"]
-        or (
-            claim["final_response_sha256"] is not None
-            and (
-                not isinstance(claim["final_response_sha256"], str)
-                or not HEX64.fullmatch(claim["final_response_sha256"])
-            )
+        or not valid_final_response_binding(
+            claim["final_response_size"],
+            claim["final_response_sha256"],
+            claim["final_response_prefix_sha256"],
         )
         or not isinstance(claim["process_disposition"], str)
-        or not claim["process_disposition"]
+        or SAFE_ID.fullmatch(claim["process_disposition"]) is None
         or (
             claim["process_exit_code"] is not None
             and type(claim["process_exit_code"]) is not int
@@ -6127,13 +8350,45 @@ def validate_terminal_claim(value: Any, lease: dict[str, Any]) -> dict[str, Any]
     return claim
 
 
+def validate_committed_seal_failure(
+    path: Path,
+    lease: dict[str, Any],
+    terminal_claim: dict[str, Any],
+) -> dict[str, Any]:
+    failure = require_exact_keys(
+        read_committed_json(path, "seal failure"),
+        {
+            "schema_version",
+            "status",
+            "slot_id",
+            "attempt_id",
+            "terminal_claim_sha256",
+            "error_type",
+        },
+        "seal failure",
+    )
+    if (
+        failure["schema_version"] != 1
+        or failure["status"] != "SEAL-FAILED"
+        or failure["slot_id"] != lease["slot_id"]
+        or failure["attempt_id"] != lease["attempt_id"]
+        or failure["terminal_claim_sha256"]
+        != sha256(canonical_json_bytes(terminal_claim))
+        or not isinstance(failure["error_type"], str)
+        or SAFE_ID.fullmatch(failure["error_type"]) is None
+        or path.read_bytes() != canonical_json_bytes(failure)
+    ):
+        raise ProtocolError("seal-failure ledger is not exactly claim-bound")
+    return failure
+
+
 def seal_attempt(
     state_root: Path,
     slot_id: str,
     lease_token: str,
     agent_id: str,
     attempt_root: Path,
-    final_response: bytes | None,
+    final_response: bytes | OversizedFinalResponse | None,
     process_disposition: str,
     process_exit_code: int | None,
     metadata: dict[str, Any],
@@ -6142,13 +8397,31 @@ def seal_attempt(
     static_root: Path | None = None,
     external_commitment_path: Path | None = None,
     test_capability: object | None = None,
+    production_context: tuple[Path, frozenset[str]] | None = None,
+    production_capability: object | None = None,
 ) -> dict[str, Any]:
-    state_root, _verified_root, production_reviewer_ids = require_state_context(
-        state_root,
-        static_root=static_root,
-        external_commitment_path=external_commitment_path,
-        test_capability=test_capability,
-    )
+    if production_context is not None:
+        if (
+            production_capability is not _PRODUCTION_LEASE_CAPABILITY
+            or static_root is not None
+            or external_commitment_path is not None
+            or test_capability is not None
+        ):
+            raise ProtocolError("private production seal context is invalid")
+        verified_root, production_reviewer_ids = production_context
+        state_root = Path(os.path.abspath(os.fspath(state_root)))
+        if state_root != verified_root / "runtime" / "state":
+            raise ProtocolError("production seal state root is not the verified bundle state")
+    elif static_root is not None or external_commitment_path is not None:
+        raise ProtocolError(
+            "generic seal_attempt cannot finalize a production lease; "
+            "use the production seal wrapper"
+        )
+    else:
+        state_root, _verified_root, production_reviewer_ids = require_state_context(
+            state_root,
+            test_capability=test_capability,
+        )
     attempt_root = require_external_path(attempt_root, "attempt output root")
     slot_id = require_safe_id(slot_id, "slot ID")
     agent_id = require_safe_id(agent_id, "agent ID")
@@ -6160,19 +8433,43 @@ def seal_attempt(
         raise ProtocolError("invalid lease token")
     if not isinstance(metadata, dict):
         raise ProtocolError("coordinator metadata must be an object")
+    process_disposition = require_safe_id(
+        process_disposition, "process disposition"
+    )
+    if process_exit_code is not None and type(process_exit_code) is not int:
+        raise ProtocolError("process exit code must be an integer or null")
+    _final_response_bytes, final_response_descriptor = describe_final_response(
+        final_response
+    )
+    # Validate the complete caller-authored terminal request before acquiring
+    # the state lock or touching any recovery residue.  A request that could
+    # not survive validate_terminal_claim must never publish a claim/pointer.
+    metadata_bytes = canonical_json_bytes(metadata)
     lease_path = state_root / "slots" / slot_id / "lease.json"
     canonical_path = state_root / "slots" / slot_id / "canonical.json"
     terminal_claim_path = state_root / "slots" / slot_id / "terminal-claim.json"
     seal_failure_path = state_root / "slots" / slot_id / "seal-failure.json"
     with operation_lock(state_root):
+        recover_exclusive_write_residues(state_root)
+        canonical_preexisting = path_entry_exists(canonical_path)
+        aggregation_terminal_path = (
+            state_root
+            / "aggregation"
+            / AGGREGATION_TERMINAL_FAILURE
+        )
+        if (
+            production_context is not None
+            and not canonical_preexisting
+            and path_entry_exists(aggregation_terminal_path)
+        ):
+            raise ProtocolError("aggregation has already terminated with an error")
         _authoritative_leases(
             state_root, production_reviewer_ids=production_reviewer_ids
         )
-        if canonical_path.exists():
-            raise CanonicalAlreadySealed(f"slot {slot_id} already has a canonical first-terminal envelope")
         if not lease_path.is_file():
             raise ProtocolError(f"slot {slot_id} has no started lease")
         lease = validate_lease(read_json(lease_path))
+        launch = load_bound_launch(lease)
         if production_reviewer_ids is not None:
             require_production_runtime_actor(
                 lease["agent_id"],
@@ -6229,60 +8526,82 @@ def seal_attempt(
         spec = load_bound_spec(lease)
         if launch["envelope_spec_sha256"] != lease["envelope_spec_sha256"]:
             raise ProtocolError("launch/lease envelope-spec binding mismatch")
-        objects = state_root / "objects" / "sha256"
-        objects.mkdir(parents=True, exist_ok=True)
+        if production_context is not None:
+            verify_production_lease_authority(lease, verified_root)
         seal_request = {
             "lease_sha256": sha256(canonical_json_bytes(lease)),
-            "final_response_sha256": (
-                sha256(final_response) if final_response is not None else None
-            ),
+            "final_response_size": final_response_descriptor["size"],
+            "final_response_sha256": final_response_descriptor["sha256"],
+            "final_response_prefix_sha256": final_response_descriptor[
+                "prefix_sha256"
+            ],
             "process_disposition": process_disposition,
             "process_exit_code": process_exit_code,
-            "metadata_sha256": sha256(canonical_json_bytes(metadata)),
+            "metadata_sha256": sha256(metadata_bytes),
         }
+        expected_terminal_fields = {
+            "schema_version": 1,
+            "status": "TERMINAL-CLAIMED",
+            "slot_id": slot_id,
+            "attempt_id": lease["attempt_id"],
+            "agent_id": agent_id,
+            "attempt_root": lease["attempt_root"],
+            **seal_request,
+        }
+        if canonical_preexisting:
+            if path_entry_exists(seal_failure_path):
+                raise TerminalAlreadyClaimed(
+                    f"slot {slot_id} has both canonical and failed terminal state"
+                )
+            terminal_claim = validate_terminal_claim(
+                read_committed_json(terminal_claim_path, "terminal claim"), lease
+            )
+            if any(
+                terminal_claim.get(key) != value
+                for key, value in expected_terminal_fields.items()
+            ):
+                raise TerminalAlreadyClaimed(
+                    f"slot {slot_id} terminal recovery arguments do not match the claim"
+                )
+            pointer = read_committed_json(canonical_path, "canonical pointer")
+            object_path = (
+                state_root
+                / "objects"
+                / "sha256"
+                / terminal_claim["envelope_sha256"]
+            )
+            semantic_verify_envelope(
+                object_path, lease, pointer, terminal_claim
+            )
+            fsync_directory(object_path.parent)
+            os.chmod(canonical_path, 0o400)
+            os.chmod(canonical_path.parent, 0o500)
+            fsync_directory(canonical_path.parent)
+            fsync_directory(canonical_path.parent.parent)
+            return pointer
+        if production_context is not None:
+            verify_production_lease_workspace(lease, verified_root)
+        objects = state_root / "objects" / "sha256"
+        durable_mkdir(objects)
         request_id = sha256(canonical_json_bytes(seal_request))[:24]
         stage = objects / f".stage-{lease['attempt_id']}-{request_id}"
+        stage_prefix = f".stage-{lease['attempt_id']}-"
         terminal_claim: dict[str, Any]
         manifest: dict[str, Any]
         try:
-            if terminal_claim_path.exists():
-                if seal_failure_path.exists():
+            if path_entry_exists(terminal_claim_path):
+                terminal_claim = validate_terminal_claim(
+                    read_committed_json(terminal_claim_path, "terminal claim"),
+                    lease,
+                )
+                if path_entry_exists(seal_failure_path):
+                    validate_committed_seal_failure(
+                        seal_failure_path, lease, terminal_claim
+                    )
+                    fsync_directory(seal_failure_path.parent)
                     raise TerminalAlreadyClaimed(
                         f"slot {slot_id} has an immutable failed terminal transition"
                     )
-                terminal_claim = require_exact_keys(
-                    read_json(terminal_claim_path),
-                    {
-                        "schema_version",
-                        "status",
-                        "slot_id",
-                        "attempt_id",
-                        "agent_id",
-                        "lease_sha256",
-                        "attempt_root",
-                        "final_response_sha256",
-                        "process_disposition",
-                        "process_exit_code",
-                        "metadata_sha256",
-                        "envelope_sha256",
-                    },
-                    "terminal claim",
-                )
-                expected_terminal_fields = {
-                    "schema_version": 1,
-                    "status": "TERMINAL-CLAIMED",
-                    "slot_id": slot_id,
-                    "attempt_id": lease["attempt_id"],
-                    "agent_id": agent_id,
-                    "lease_sha256": sha256(canonical_json_bytes(lease)),
-                    "attempt_root": lease["attempt_root"],
-                    "final_response_sha256": (
-                        sha256(final_response) if final_response is not None else None
-                    ),
-                    "process_disposition": process_disposition,
-                    "process_exit_code": process_exit_code,
-                    "metadata_sha256": sha256(canonical_json_bytes(metadata)),
-                }
                 if any(
                     terminal_claim.get(key) != value
                     for key, value in expected_terminal_fields.items()
@@ -6293,31 +8612,35 @@ def seal_attempt(
                 digest = terminal_claim["envelope_sha256"]
                 if not isinstance(digest, str) or not HEX64.fullmatch(digest):
                     raise ProtocolError("terminal claim envelope digest is invalid")
+                # The claimed request owns its recovery stage.  Validate the
+                # persisted claim against this retry before discarding any
+                # sibling residue; a mismatched retry must be observationally
+                # read-only so the original claimant can still recover.
+                for residue in sorted(objects.iterdir(), key=lambda path: path.name):
+                    if residue.name.startswith(stage_prefix) and residue != stage:
+                        _discard_private_aggregation_stage(residue)
             else:
-                if seal_failure_path.exists():
+                if path_entry_exists(seal_failure_path):
                     raise ProtocolError("seal-failure ledger exists without terminal claim")
-                if stage.exists():
-                    if not stage.is_dir() or stage.is_symlink():
-                        raise ProtocolError("seal recovery stage is not a regular directory")
-                    digest = byte_tree_digest(stage)
-                    manifest = read_json(stage / "envelope.json")
-                    harden_tree_read_only(stage)
-                else:
-                    stage.mkdir(mode=0o700)
-                    manifest = capture_envelope(
-                        stage,
-                        lease,
-                        spec,
-                        attempt_root,
-                        final_response,
-                        process_disposition,
-                        process_exit_code,
-                        metadata,
-                    )
-                    fsync_tree(stage)
-                    digest = byte_tree_digest(stage)
-                    harden_tree_read_only(stage)
-                    fsync_directory(objects)
+                for residue in sorted(objects.iterdir(), key=lambda path: path.name):
+                    if residue.name.startswith(stage_prefix):
+                        _discard_private_aggregation_stage(residue)
+                stage.mkdir(mode=0o700)
+                manifest = capture_envelope(
+                    stage,
+                    lease,
+                    spec,
+                    attempt_root,
+                    final_response,
+                    process_disposition,
+                    process_exit_code,
+                    metadata,
+                    fault_after=fault_after,
+                )
+                fsync_tree(stage)
+                digest = byte_tree_digest(stage)
+                harden_tree_read_only(stage)
+                fsync_directory(objects)
                 terminal_claim = {
                     "schema_version": 1,
                     "status": "TERMINAL-CLAIMED",
@@ -6326,26 +8649,27 @@ def seal_attempt(
                     "agent_id": agent_id,
                     "lease_sha256": sha256(canonical_json_bytes(lease)),
                     "attempt_root": lease["attempt_root"],
-                    "final_response_sha256": (
-                        sha256(final_response) if final_response is not None else None
-                    ),
+                    "final_response_size": final_response_descriptor["size"],
+                    "final_response_sha256": final_response_descriptor["sha256"],
+                    "final_response_prefix_sha256": final_response_descriptor[
+                        "prefix_sha256"
+                    ],
                     "process_disposition": process_disposition,
                     "process_exit_code": process_exit_code,
-                    "metadata_sha256": sha256(canonical_json_bytes(metadata)),
+                    "metadata_sha256": sha256(metadata_bytes),
                     "envelope_sha256": digest,
                 }
-                exclusive_write(terminal_claim_path, canonical_json_bytes(terminal_claim))
-                os.chmod(terminal_claim_path, 0o400)
-                fsync_directory(terminal_claim_path.parent)
+                _write_or_validate_immutable(terminal_claim_path, terminal_claim)
             maybe_inject_fault(fault_after, "terminal-claim")
             object_path = objects / digest
-            if object_path.exists():
+            if path_entry_exists(object_path):
                 if (
                     not object_path.is_dir()
                     or object_path.is_symlink()
                     or byte_tree_digest(object_path) != digest
                 ):
                     raise ProtocolError(f"pre-existing envelope object is invalid: {digest}")
+                fsync_directory(objects)
             else:
                 if (
                     not stage.is_dir()
@@ -6353,8 +8677,17 @@ def seal_attempt(
                     or byte_tree_digest(stage) != digest
                 ):
                     raise ProtocolError("terminal claim lacks its immutable recovery stage")
-                os.rename(stage, object_path)
-                fsync_directory(objects)
+                try:
+                    os.rename(stage, object_path)
+                    fsync_directory(objects)
+                except BaseException:
+                    if (
+                        not object_path.is_dir()
+                        or object_path.is_symlink()
+                        or byte_tree_digest(object_path) != digest
+                    ):
+                        raise
+                    fsync_directory(objects)
             maybe_inject_fault(fault_after, "object-publish")
             manifest = read_json(object_path / "envelope.json")
             pointer = {
@@ -6371,15 +8704,116 @@ def seal_attempt(
             }
             semantic_verify_envelope(object_path, lease, pointer, terminal_claim)
             try:
-                exclusive_write(canonical_path, canonical_json_bytes(pointer))
-            except FileExistsError as error:
+                _write_or_validate_immutable(canonical_path, pointer)
+            except FileExistsError as error:  # pragma: no cover - helper normalizes races.
                 raise CanonicalAlreadySealed(f"slot {slot_id} lost the first-terminal CAS") from error
-        except InjectedFault:
+            maybe_inject_fault(fault_after, "canonical-cas")
+        except (InjectedFault, TerminalAlreadyClaimed):
             raise
         except BaseException as error:
-            if not terminal_claim_path.exists():
+            if path_entry_exists(canonical_path):
+                # A successfully published canonical pointer dominates a
+                # trailing durability exception.  Authenticate the complete
+                # claim/object/pointer closure and finish hardening instead of
+                # publishing a contradictory seal-failure ledger.
+                committed_claim = validate_terminal_claim(
+                    read_committed_json(terminal_claim_path, "terminal claim"),
+                    lease,
+                )
+                if any(
+                    committed_claim.get(key) != value
+                    for key, value in expected_terminal_fields.items()
+                ):
+                    raise ProtocolError(
+                        "published canonical pointer has a mismatched terminal claim"
+                    ) from error
+                committed_pointer = read_committed_json(
+                    canonical_path, "canonical pointer"
+                )
+                committed_object = (
+                    state_root
+                    / "objects"
+                    / "sha256"
+                    / committed_claim["envelope_sha256"]
+                )
+                semantic_verify_envelope(
+                    committed_object,
+                    lease,
+                    committed_pointer,
+                    committed_claim,
+                )
+                fsync_directory(committed_object.parent)
+                os.chmod(canonical_path, 0o400)
+                os.chmod(canonical_path.parent, 0o500)
+                fsync_directory(canonical_path.parent)
+                fsync_directory(canonical_path.parent.parent)
+                return committed_pointer
+            if not path_entry_exists(terminal_claim_path):
                 raise
-            claimed = read_json(terminal_claim_path)
+            claimed = validate_terminal_claim(
+                read_committed_json(terminal_claim_path, "terminal claim"), lease
+            )
+            if any(
+                claimed.get(key) != value
+                for key, value in expected_terminal_fields.items()
+            ):
+                raise ProtocolError(
+                    "published terminal claim does not match its sealing request"
+                ) from error
+            claimed_digest = claimed["envelope_sha256"]
+            published_object = state_root / "objects" / "sha256" / claimed_digest
+            recovery_candidate = (
+                published_object
+                if path_entry_exists(published_object)
+                else stage
+            )
+            recoverable = False
+            if (
+                recovery_candidate.is_dir()
+                and not recovery_candidate.is_symlink()
+                and byte_tree_digest(recovery_candidate) == claimed_digest
+            ):
+                try:
+                    recovery_manifest = read_json(
+                        recovery_candidate / "envelope.json"
+                    )
+                    recovery_pointer = {
+                        "schema_version": 1,
+                        "slot_id": slot_id,
+                        "attempt_id": lease["attempt_id"],
+                        "agent_id": agent_id,
+                        "lease_sha256": sha256(canonical_json_bytes(lease)),
+                        "launch_record_sha256": lease["launch_record_sha256"],
+                        "terminal_claim_sha256": sha256(
+                            canonical_json_bytes(claimed)
+                        ),
+                        "envelope_sha256": claimed_digest,
+                        "format_valid": recovery_manifest["format_valid"],
+                        "semantic_valid": recovery_manifest["semantic_valid"],
+                    }
+                    if recovery_candidate == published_object:
+                        semantic_verify_envelope(
+                            recovery_candidate,
+                            lease,
+                            recovery_pointer,
+                            claimed,
+                        )
+                    elif (
+                        type(recovery_manifest.get("format_valid")) is not bool
+                        or type(recovery_manifest.get("semantic_valid")) is not bool
+                    ):
+                        raise ProtocolError(
+                            "private recovery envelope lacks terminal validity fields"
+                        )
+                    recoverable = True
+                except BaseException:
+                    recoverable = False
+            if recoverable:
+                # The exact request still has a complete private or published
+                # recovery object.  Leave it retryable and preserve the
+                # triggering exception; do not turn a transient error into an
+                # immutable failed terminal transition.
+                raise
             failure = {
                 "schema_version": 1,
                 "status": "SEAL-FAILED",
@@ -6408,16 +8842,21 @@ def _validate_claim_inventory(
     nested: bool,
     label: str,
 ) -> None:
-    if not root.exists():
+    if not path_entry_exists(root):
         return
     if not root.is_dir() or root.is_symlink():
         raise ProtocolError(f"{label} claim root is not a regular directory")
     actual: list[Path] = []
     if nested:
+        expected_directories = {path.parent for path in expected}
         for directory in sorted(root.iterdir(), key=lambda item: item.name):
             if not directory.is_dir() or directory.is_symlink():
                 raise ProtocolError(f"{label} claim root contains a non-directory entry")
             require_safe_id(directory.name, f"{label} claim directory")
+            if directory not in expected_directories:
+                raise ProtocolError(
+                    f"{label} claim root contains an unreferenced directory"
+                )
             entries = list(directory.iterdir())
             if any(item.name != "claim.json" for item in entries):
                 raise ProtocolError(f"{label} claim directory contains an unexpected entry")
@@ -6449,14 +8888,26 @@ def verify_state(
     external_commitment_path: Path | None = None,
     test_capability: object | None = None,
 ) -> dict[str, Any]:
+    if static_root is not None or external_commitment_path is not None:
+        raise ProtocolError(
+            "generic verify_state cannot verify production state; "
+            "use verify_production_state"
+        )
     state_root, _verified_root, production_reviewer_ids = require_state_context(
         state_root,
-        static_root=static_root,
-        external_commitment_path=external_commitment_path,
         test_capability=test_capability,
     )
-    if not state_root.exists():
-        return {"schema_version": 1, "state_valid": True, "complete": False, "staging_entries": [], "slots": []}
+    if not path_entry_exists(state_root):
+        return {
+            "schema_version": 1,
+            "state_valid": True,
+            "complete": False,
+            "outcome": "IN_PROGRESS",
+            "all_started_attempts_terminal": False,
+            "all_outputs_valid": False,
+            "staging_entries": [],
+            "slots": [],
+        }
     if not state_root.is_dir() or state_root.is_symlink():
         raise ProtocolError("protocol state root is not a regular directory")
     with operation_lock(state_root):
@@ -6469,7 +8920,20 @@ def _verify_state_locked(
     state_root: Path,
     *,
     production_reviewer_ids: frozenset[str] | None = None,
+    production_static_root: Path | None = None,
 ) -> dict[str, Any]:
+    if (production_static_root is None) is not (
+        production_reviewer_ids is None
+    ):
+        raise ProtocolError("production state verification context is incomplete")
+    report_byte_tree = (
+        run_trusted_module("prepare.py", "v5_state_report_input_byte_tree")[
+            "byte_tree_v1"
+        ]
+        if production_static_root is not None
+        else None
+    )
+    ready_documents: dict[str, Any] | None = None
     allowed_root_names = {
         ".protocol.lock",
         "slots",
@@ -6483,15 +8947,26 @@ def _verify_state_locked(
         raise ProtocolError(
             f"unexpected protocol state entries: {sorted(unexpected_root)}"
         )
+    lock_path = state_root / ".protocol.lock"
+    if (
+        not lock_path.is_file()
+        or lock_path.is_symlink()
+        or not stat.S_ISREG(lock_path.lstat().st_mode)
+    ):
+        raise ProtocolError("protocol lock ledger is not a regular file")
     aggregation_root = state_root / "aggregation"
-    if aggregation_root.exists():
+    committed_aggregation_stages: tuple[str, ...] = ()
+    aggregation_claim: dict[str, Any] | None = None
+    aggregation_stage_manifests: list[dict[str, Any]] = []
+    aggregation_terminal: dict[str, Any] | None = None
+    if path_entry_exists(aggregation_root):
         if not aggregation_root.is_dir() or aggregation_root.is_symlink():
             raise ProtocolError("aggregation state root is not a regular directory")
         allowed_aggregation_names = {
-            "inputs",
+            AGGREGATION_COORDINATOR_CLAIM,
+            AGGREGATION_TERMINAL_FAILURE,
             "derived",
-            "integration-receipts",
-            "aggregate-context.json",
+            "final",
         }
         unexpected_aggregation = {
             path.name for path in aggregation_root.iterdir()
@@ -6501,23 +8976,82 @@ def _verify_state_locked(
                 "unexpected aggregation state entries: "
                 f"{sorted(unexpected_aggregation)}"
             )
+        committed_aggregation_stages = validate_aggregation_directory_inventory(
+            aggregation_root, require_final=False
+        )
+        claim_path = aggregation_root / AGGREGATION_COORDINATOR_CLAIM
+        claim = require_exact_keys(
+            read_committed_json(claim_path, "aggregation coordinator claim"),
+            {
+                "schema_version",
+                "status",
+                "coordinator_actor_id",
+                "static_lock_sha256",
+            },
+            "aggregation coordinator claim",
+        )
+        expected_static_lock_sha256 = (
+            sha256((production_static_root / "STATIC-LOCK.json").read_bytes())
+            if production_static_root is not None
+            else None
+        )
+        if (
+            claim["schema_version"] != 1
+            or claim["status"] != "CLAIMED"
+            or not isinstance(claim["coordinator_actor_id"], str)
+            or PRODUCTION_ACTOR_ID.fullmatch(claim["coordinator_actor_id"]) is None
+            or not isinstance(claim["static_lock_sha256"], str)
+            or HEX64.fullmatch(claim["static_lock_sha256"]) is None
+            or (
+                expected_static_lock_sha256 is not None
+                and claim["static_lock_sha256"] != expected_static_lock_sha256
+            )
+            or claim_path.read_bytes() != canonical_json_bytes(claim)
+        ):
+            raise ProtocolError("aggregation coordinator claim is malformed")
+        aggregation_claim = claim
+        aggregation_stage_manifests = validate_aggregation_stage_chain(
+            aggregation_root, committed_aggregation_stages, claim
+        )
+        terminal_path = aggregation_root / AGGREGATION_TERMINAL_FAILURE
+        if path_entry_exists(terminal_path):
+            aggregation_terminal = validate_aggregation_terminal_failure(
+                read_committed_json(
+                    terminal_path, "aggregation terminal failure"
+                )
+            )
+            if (
+                aggregation_terminal["static_lock_sha256"]
+                != claim["static_lock_sha256"]
+                or aggregation_terminal["coordinator_actor_id"]
+                != claim["coordinator_actor_id"]
+                or terminal_path.read_bytes()
+                != canonical_json_bytes(aggregation_terminal)
+            ):
+                raise ProtocolError(
+                    "aggregation terminal failure is not bound to the coordinator claim"
+                )
         for path in aggregation_root.rglob("*"):
             if path.is_symlink() or not (path.is_dir() or path.is_file()):
                 raise ProtocolError(f"unsupported aggregation state entry: {path}")
     slots_root = state_root / "slots"
     results: list[dict[str, Any]] = []
-    if slots_root.exists() and (not slots_root.is_dir() or slots_root.is_symlink()):
+    if path_entry_exists(slots_root) and (
+        not slots_root.is_dir() or slots_root.is_symlink()
+    ):
         raise ProtocolError("slots ledger root is not a regular directory")
     expected_agent_claims: dict[Path, dict[str, Any]] = {}
     expected_root_claims: dict[Path, dict[str, Any]] = {}
     referenced_objects: set[str] = set()
     slot_paths = (
         sorted(slots_root.iterdir(), key=lambda path: path.name)
-        if slots_root.exists()
+        if path_entry_exists(slots_root)
         else []
     )
-    if aggregation_root.exists() and not slot_paths:
-        raise ProtocolError("aggregation state exists without any authoritative attempt slots")
+    if committed_aggregation_stages and not slot_paths:
+        raise ProtocolError(
+            "committed aggregation stages exist without authoritative attempt slots"
+        )
     for slot_path in slot_paths:
         if not slot_path.is_dir() or slot_path.is_symlink():
             raise ProtocolError("slots ledger contains a non-directory entry")
@@ -6537,6 +9071,7 @@ def _verify_state_locked(
         if not lease_path.is_file() or lease_path.is_symlink():
             raise ProtocolError(f"slot {slot_id} lacks a regular lease ledger")
         lease = validate_lease(read_json(lease_path))
+        launch = load_bound_launch(lease)
         if production_reviewer_ids is not None:
             require_production_runtime_actor(
                 lease["agent_id"],
@@ -6564,9 +9099,9 @@ def _verify_state_locked(
         expected_root_claims[claim_items[1][0]] = expected_claim
         ready_path = slot_path / "lease-ready.json"
         lease_failure_path = slot_path / "lease-failure.json"
-        if lease_failure_path.exists():
+        if path_entry_exists(lease_failure_path):
             failure = require_exact_keys(
-                read_json(lease_failure_path),
+                read_committed_json(lease_failure_path, "lease failure"),
                 {
                     "schema_version",
                     "status",
@@ -6589,19 +9124,19 @@ def _verify_state_locked(
                 or lease_failure_path.lstat().st_mode & 0o222
             ):
                 raise ProtocolError(f"invalid lease-failure ledger for slot {slot_id}")
-            if ready_path.exists():
+            if path_entry_exists(ready_path):
                 raise ProtocolError(f"slot {slot_id} has both ready and failed lease ledgers")
             results.append(
                 {"slot_id": slot_id, "status": "LEASE_FAILED", "format_valid": False, "semantic_valid": False}
             )
             continue
-        if not ready_path.exists():
+        if not path_entry_exists(ready_path):
             results.append(
                 {"slot_id": slot_id, "status": "LEASE_INITIALIZING", "format_valid": False, "semantic_valid": False}
             )
             continue
         ready = require_exact_keys(
-            read_json(ready_path),
+            read_committed_json(ready_path, "lease readiness ledger"),
             {
                 "schema_version",
                 "status",
@@ -6638,9 +9173,25 @@ def _verify_state_locked(
         canonical_path = slot_path / "canonical.json"
         terminal_path = slot_path / "terminal-claim.json"
         failure_path = slot_path / "seal-failure.json"
-        if not terminal_path.exists():
-            if canonical_path.exists() or failure_path.exists():
+        if production_static_root is not None:
+            if ready_documents is None:
+                ready_documents = load_ready_generated_documents(
+                    production_static_root
+                )
+            verify_production_lease_authority(
+                lease,
+                production_static_root,
+                ready_documents=ready_documents,
+            )
+        if not path_entry_exists(terminal_path):
+            if path_entry_exists(canonical_path) or path_entry_exists(failure_path):
                 raise ProtocolError(f"slot {slot_id} has terminal artifacts without a claim")
+            if production_static_root is not None:
+                verify_production_lease_workspace(
+                    lease,
+                    production_static_root,
+                    report_byte_tree=report_byte_tree,
+                )
             results.append(
                 {"slot_id": slot_id, "status": "STARTED", "format_valid": False, "semantic_valid": False}
             )
@@ -6648,33 +9199,12 @@ def _verify_state_locked(
         if not terminal_path.is_file() or terminal_path.is_symlink() or terminal_path.lstat().st_mode & 0o222:
             raise ProtocolError(f"slot {slot_id} terminal claim is not immutable/regular")
         terminal_claim = validate_terminal_claim(read_json(terminal_path), lease)
-        terminal_claim_digest = sha256(canonical_json_bytes(terminal_claim))
         referenced_objects.add(terminal_claim["envelope_sha256"])
-        if not canonical_path.exists():
-            if failure_path.exists():
-                failure = require_exact_keys(
-                    read_json(failure_path),
-                    {
-                        "schema_version",
-                        "status",
-                        "slot_id",
-                        "attempt_id",
-                        "terminal_claim_sha256",
-                        "error_type",
-                    },
-                    "seal failure",
+        if not path_entry_exists(canonical_path):
+            if path_entry_exists(failure_path):
+                validate_committed_seal_failure(
+                    failure_path, lease, terminal_claim
                 )
-                if (
-                    failure["schema_version"] != 1
-                    or failure["status"] != "SEAL-FAILED"
-                    or failure["slot_id"] != slot_id
-                    or failure["attempt_id"] != lease["attempt_id"]
-                    or failure["terminal_claim_sha256"] != terminal_claim_digest
-                    or not isinstance(failure["error_type"], str)
-                    or not failure["error_type"]
-                    or failure_path.lstat().st_mode & 0o222
-                ):
-                    raise ProtocolError(f"invalid failed-seal ledger for slot {slot_id}")
                 results.append(
                     {
                         "slot_id": slot_id,
@@ -6693,9 +9223,9 @@ def _verify_state_locked(
                     }
                 )
             continue
-        if failure_path.exists():
+        if path_entry_exists(failure_path):
             raise ProtocolError(f"slot {slot_id} has both canonical and failed-seal ledgers")
-        pointer = read_json(canonical_path)
+        pointer = read_committed_json(canonical_path, "canonical pointer")
         if slot_path.lstat().st_mode & 0o222:
             raise ProtocolError(f"sealed slot directory is writable for slot {slot_id}")
         if canonical_path.lstat().st_mode & 0o222:
@@ -6711,14 +9241,26 @@ def _verify_state_locked(
         envelope = semantic_verify_envelope(
             object_path, lease, pointer, terminal_claim
         )
+        primary_relative = envelope_payload_relative_path(launch["output_path"])
+        primary_path = object_path / "payload" / Path(*primary_relative.parts)
         results.append(
             {
                 "slot_id": slot_id,
                 "status": "SEALED",
+                "role": launch["role"],
                 "envelope_sha256": digest,
+                "primary_output_present": primary_path.is_file()
+                and not primary_path.is_symlink(),
                 "format_valid": envelope["format_valid"],
                 "semantic_valid": envelope["semantic_valid"],
             }
+        )
+    if aggregation_claim is not None:
+        validate_aggregation_attempt_bindings(
+            committed_aggregation_stages,
+            aggregation_stage_manifests,
+            results,
+            aggregation_terminal,
         )
     _validate_claim_inventory(
         state_root / "agents", expected_agent_claims, nested=True, label="agent"
@@ -6729,9 +9271,16 @@ def _verify_state_locked(
         nested=False,
         label="attempt-root",
     )
-    objects_root = state_root / "objects" / "sha256"
+    objects_parent = state_root / "objects"
+    objects_root = objects_parent / "sha256"
     staging_entries: list[str] = []
-    if objects_root.exists():
+    if path_entry_exists(objects_parent):
+        if not objects_parent.is_dir() or objects_parent.is_symlink():
+            raise ProtocolError("content-addressed objects parent is not a regular directory")
+        if {path.name for path in objects_parent.iterdir()} != {"sha256"}:
+            raise ProtocolError(
+                "content-addressed objects parent does not contain exactly sha256"
+            )
         if not objects_root.is_dir() or objects_root.is_symlink():
             raise ProtocolError("content-addressed object root is not a regular directory")
         published = {
@@ -6756,16 +9305,31 @@ def _verify_state_locked(
         staging_entries = sorted(
             path.name for path in objects_root.iterdir() if path.name.startswith(".stage-")
         )
-    complete = bool(results) and all(item["status"] == "SEALED" for item in results)
+    all_started_attempts_terminal = bool(results) and all(
+        item["status"] == "SEALED" for item in results
+    )
+    final_published = bool(
+        committed_aggregation_stages
+        and committed_aggregation_stages[-1] == "final"
+    )
+    complete = final_published or aggregation_terminal is not None
     state_valid = not staging_entries and all(
-        item["status"] in ("STARTED", "SEALED")
-        and (item["status"] != "SEALED" or (item["format_valid"] and item["semantic_valid"]))
-        for item in results
+        item["status"] in ("STARTED", "SEALED") for item in results
+    )
+    all_outputs_valid = all_started_attempts_terminal and all(
+        item["format_valid"] and item["semantic_valid"] for item in results
     )
     return {
         "schema_version": 1,
         "state_valid": state_valid,
         "complete": complete,
+        "outcome": (
+            "ERROR"
+            if aggregation_terminal is not None
+            else "SUCCESS" if final_published else "IN_PROGRESS"
+        ),
+        "all_started_attempts_terminal": all_started_attempts_terminal,
+        "all_outputs_valid": all_outputs_valid,
         "staging_entries": staging_entries,
         "slots": results,
     }
@@ -6779,46 +9343,6 @@ def read_committed_json(path: Path, label: str) -> Any:
     ):
         raise ProtocolError(f"{label} must be an immutable regular file: {path}")
     return read_json(path)
-
-
-def validate_aggregate_input_tree(static_root: Path) -> Path:
-    input_root = static_root / "runtime" / "state" / "aggregation" / "inputs"
-    if (
-        input_root.is_symlink()
-        or not input_root.is_dir()
-        or input_root.lstat().st_mode & 0o222
-    ):
-        raise ProtocolError("aggregate input root must be an immutable real directory")
-    expected = {
-        "word-counts.json",
-        "projection-audit-manifest.json",
-        "scoring-bundle-manifest.json",
-        "materiality-ledger.json",
-        "final-scores",
-    }
-    actual = {path.name for path in input_root.iterdir()}
-    if actual != expected:
-        raise ProtocolError(
-            f"aggregate input file set is not exact; missing={sorted(expected - actual)}, "
-            f"extra={sorted(actual - expected)}"
-        )
-    final_root = input_root / "final-scores"
-    if (
-        final_root.is_symlink()
-        or not final_root.is_dir()
-        or final_root.lstat().st_mode & 0o222
-    ):
-        raise ProtocolError("final-score input root must be an immutable real directory")
-    expected_finals = {f"{mode}.json" for mode in MODES}
-    actual_finals = {path.name for path in final_root.iterdir()}
-    if actual_finals != expected_finals:
-        raise ProtocolError("final-score input file set is not exact")
-    for path in input_root.rglob("*"):
-        if path.is_symlink() or not (path.is_dir() or path.is_file()):
-            raise ProtocolError(f"aggregate input tree has an unsupported entry: {path}")
-        if path.lstat().st_mode & 0o222:
-            raise ProtocolError(f"aggregate input tree entry is mutable: {path}")
-    return input_root
 
 
 def validate_authenticated_review_evidence(
@@ -7097,6 +9621,9 @@ def load_ready_generated_documents(static_root: Path) -> dict[str, Any]:
                 reviewed_path.read_bytes(), str(reviewed_path)
             ),
             declaration_bytes,
+            expected_reviewed_static_base=integration[
+                "REVIEWED_STATIC_BUNDLE_BASE"
+            ],
         )
         packages = preparation["validate_packages"](
             read_json(static_root / "packages.json")
@@ -7206,314 +9733,752 @@ def derive_blind_join(documents: dict[str, Any]) -> list[dict[str, Any]]:
     return result
 
 
-def load_canonical_attempt_inventory(
+def load_aggregation_static_context(
+    root: Path,
+    static_lock: dict[str, Any],
+    production_reviewer_ids: frozenset[str],
+    authenticated_review_evidence: dict[str, Any],
+) -> dict[str, Any]:
+    """Load the immutable inputs shared by every runtime derivation stage."""
+
+    evidence = validate_authenticated_review_evidence(
+        authenticated_review_evidence, production_reviewer_ids
+    )
+    inventory = validate_root_inventory(
+        read_json(root / "root-inventory.json"), "READY"
+    )
+    gate_manifest = validate_gate_manifest(
+        read_json(root / "gate-manifest.json"), inventory, "READY"
+    )
+    validate_aggregation_rules(
+        read_json(root / "aggregation-rules.json"), gate_manifest, "READY"
+    )
+    validate_report_projection_contract(
+        read_json(root / "report-projection-contract.json"), "READY"
+    )
+    materiality_contract = validate_materiality_contract(
+        read_json(root / "materiality-review-contract.json"), "READY"
+    )
+    documents = load_ready_generated_documents(root)
+    integration = trusted_integration_module()
+    declaration_bytes = (
+        root / "static" / "integration" / "source-declaration.json"
+    ).read_bytes()
+    reviewed = integration["validate_reviewed_values"](
+        read_json(root / "static" / "integration" / "integration-values.json"),
+        declaration_bytes,
+        expected_reviewed_static_base=integration[
+            "REVIEWED_STATIC_BUNDLE_BASE"
+        ],
+    )
+    preparation = run_trusted_module("prepare.py", "v5_aggregation_prepare")
+    packages = read_json(root / "packages.json")
+    preparation["validate_packages"](packages)
+    targets_document = preparation["validate_targets"](
+        read_json(root / "targets.json")
+    )
+    target_rows = {
+        row["mode"]: row for row in documents["target-map.json"]["targets"]
+    }
+    if set(target_rows) != set(MODES):
+        raise ProtocolError("aggregation target map does not contain every mode")
+    rules = validate_defect_rules(
+        read_json(root / "freeze" / "rules" / "defect-rules.json"), "READY"
+    )
+    atoms = {
+        mode: validate_atom_manifest(
+            read_json(root / "freeze" / "atoms" / f"{mode}.json"),
+            mode,
+            "READY",
+        )
+        for mode in MODES
+    }
+    controls = validate_control_manifest(
+        read_json(root / "freeze" / "controls.json"),
+        "READY",
+        root / "freeze" / "atoms",
+    )
+    comparison = validate_comparison_predicate(
+        read_json(root / "comparison-predicate.json"), "READY"
+    )
+    static_lock_sha = evidence["static_lock_sha256"]
+    if sha256(canonical_json_bytes(static_lock)) != static_lock_sha:
+        raise ProtocolError(
+            "verified lock object does not equal the authenticated review-evidence lock"
+        )
+    return {
+        "root": root,
+        "static_lock": static_lock,
+        "static_lock_sha256": static_lock_sha,
+        "production_reviewer_ids": production_reviewer_ids,
+        "review_evidence": evidence,
+        "inventory": inventory,
+        "gate_manifest": gate_manifest,
+        "documents": documents,
+        "reviewed": reviewed,
+        "packages": packages,
+        "targets_document": targets_document,
+        "target_rows": target_rows,
+        "blind_join": derive_blind_join(documents),
+        "rules": rules,
+        "atoms": atoms,
+        "controls": controls,
+        "comparison": comparison,
+        "materiality_contract": materiality_contract,
+        "rules_sha256": sha256((root / "aggregation-rules.json").read_bytes()),
+    }
+
+
+def _load_attempt_progress_locked(
+    state_root: Path,
+    production_reviewer_ids: frozenset[str],
+    production_static_root: Path,
+) -> dict[str, dict[str, Any]]:
+    """Load STARTED/SEALED progress while the caller holds ``operation_lock``."""
+
+    state = _verify_state_locked(
+        state_root,
+        production_reviewer_ids=production_reviewer_ids,
+        production_static_root=production_static_root,
+    )
+    if state["staging_entries"]:
+        raise ProtocolError("aggregation forbids incomplete envelope object stages")
+    status_by_slot = {row["slot_id"]: row for row in state["slots"]}
+    attempts: dict[str, dict[str, Any]] = {}
+    for lease in _authoritative_leases(
+        state_root, production_reviewer_ids=production_reviewer_ids
+    ):
+        launch = load_bound_launch(lease)
+        assignment = launch["assignment_id"]
+        if assignment in attempts:
+            raise ProtocolError(f"duplicate canonical assignment: {assignment}")
+        progress = status_by_slot[lease["slot_id"]]
+        status = progress["status"]
+        attempt: dict[str, Any] = {
+            "status": status,
+            "lease": lease,
+            "launch": launch,
+            "pointer": None,
+            "envelope": None,
+            "object_path": None,
+            "primary_bytes": None,
+        }
+        if status == "SEALED":
+            slot_path = state_root / "slots" / lease["slot_id"]
+            pointer = read_json(slot_path / "canonical.json")
+            terminal = read_json(slot_path / "terminal-claim.json")
+            object_path = (
+                state_root / "objects" / "sha256" / pointer["envelope_sha256"]
+            )
+            envelope = semantic_verify_envelope(
+                object_path, lease, pointer, terminal
+            )
+            primary_relative = envelope_payload_relative_path(
+                launch["output_path"]
+            )
+            primary_path = object_path / "payload" / Path(
+                *primary_relative.parts
+            )
+            attempt.update(
+                {
+                    "pointer": pointer,
+                    "envelope": envelope,
+                    "object_path": object_path,
+                    "primary_bytes": (
+                        primary_path.read_bytes() if primary_path.is_file() else None
+                    ),
+                }
+            )
+        elif status != "STARTED":
+            raise ProtocolError(
+                f"aggregation cannot progress past incomplete terminal state: "
+                f"{assignment}/{status}"
+            )
+        attempts[assignment] = attempt
+    return attempts
+
+
+def load_attempt_progress(
     static_root: Path,
     production_reviewer_ids: frozenset[str],
 ) -> dict[str, dict[str, Any]]:
     state_root = static_root / "runtime" / "state"
     if not state_root.is_dir() or state_root.is_symlink():
-        raise ProtocolError("bound aggregate requires committed runtime/state")
+        raise ProtocolError("aggregation requires committed runtime/state")
     state_root = state_root.resolve()
     with operation_lock(state_root):
-        state = _verify_state_locked(
-            state_root, production_reviewer_ids=production_reviewer_ids
+        return _load_attempt_progress_locked(
+            state_root, production_reviewer_ids, static_root
         )
-        if state["staging_entries"]:
-            raise ProtocolError("bound aggregate forbids incomplete envelope stages")
-        leases = _authoritative_leases(
-            state_root, production_reviewer_ids=production_reviewer_ids
-        )
-        attempts: dict[str, dict[str, Any]] = {}
-        for lease in leases:
-            launch = load_bound_launch(lease)
-            assignment = launch["assignment_id"]
-            if assignment in attempts:
-                raise ProtocolError(f"duplicate canonical assignment: {assignment}")
-            slot_path = state_root / "slots" / lease["slot_id"]
-            canonical_path = slot_path / "canonical.json"
-            terminal_path = slot_path / "terminal-claim.json"
-            if not canonical_path.is_file() or not terminal_path.is_file():
-                raise ProtocolError(f"assignment is not canonically sealed: {assignment}")
-            pointer = read_json(canonical_path)
-            terminal = read_json(terminal_path)
-            object_path = (
-                state_root / "objects" / "sha256" / pointer["envelope_sha256"]
-            )
-            envelope = semantic_verify_envelope(object_path, lease, pointer, terminal)
-            primary_path = (
-                object_path
-                / "payload"
-                / "output"
-                / Path(*PurePosixPath(launch["output_path"]).parts)
-            )
-            primary = primary_path.read_bytes() if primary_path.is_file() else None
-            attempts[assignment] = {
-                "lease": lease,
-                "launch": launch,
-                "pointer": pointer,
-                "envelope": envelope,
-                "object_path": object_path,
-                "primary_bytes": primary,
-            }
+
+
+def load_canonical_attempt_inventory(
+    static_root: Path,
+    production_reviewer_ids: frozenset[str],
+) -> dict[str, dict[str, Any]]:
+    attempts = load_attempt_progress(static_root, production_reviewer_ids)
+    unsealed = sorted(
+        assignment
+        for assignment, attempt in attempts.items()
+        if attempt["status"] != "SEALED"
+    )
+    if unsealed:
+        raise ProtocolError(f"bound aggregate has unsealed assignments: {unsealed}")
     return attempts
 
 
-def require_valid_evaluator_attempt(
+def require_sealed_attempt(
     attempts: dict[str, dict[str, Any]],
-    assignment: str,
-    role: str,
-    static_root: Path,
-    documents: dict[str, Any],
+    assignment_id: str,
+    expected_role: str,
+    *,
+    require_semantic_validity: bool,
 ) -> dict[str, Any]:
-    attempt = attempts.get(assignment)
+    attempt = attempts.get(assignment_id)
     if attempt is None:
-        raise ProtocolError(f"missing canonical evaluator attempt: {assignment}")
-    launch = attempt["launch"]
+        raise ProtocolError(f"missing canonical attempt: {assignment_id}")
+    if attempt["status"] != "SEALED":
+        raise ProtocolError(f"attempt is not sealed: {assignment_id}")
     if (
-        launch["role"] != role
-        or attempt["pointer"]["format_valid"] is not True
-        or attempt["pointer"]["semantic_valid"] is not True
+        attempt["launch"]["role"] != expected_role
+        or attempt["pointer"] is None
         or attempt["primary_bytes"] is None
     ):
-        raise ProtocolError(f"invalid canonical evaluator attempt: {assignment}")
-    packet_bytes = load_bound_input_packet_bytes(attempt["lease"])
-    expected_launch, row = build_expected_evaluator_launch(
-        static_root, documents, assignment, packet_bytes
-    )
-    if launch != expected_launch:
-        raise ProtocolError(f"evaluator launch is not deterministically derived: {assignment}")
-    verify_evaluator_input_tree(
-        Path(launch["input_root"]), static_root, row, packet_bytes
-    )
+        raise ProtocolError(f"sealed attempt has no usable primary output: {assignment_id}")
+    if require_semantic_validity and (
+        attempt["pointer"]["format_valid"] is not True
+        or attempt["pointer"]["semantic_valid"] is not True
+    ):
+        raise ProtocolError(f"evaluator attempt is not semantically valid: {assignment_id}")
     return attempt
 
 
-def attempt_output_json(attempt: dict[str, Any], label: str) -> Any:
-    data = attempt["primary_bytes"]
-    if not isinstance(data, bytes):
-        raise ProtocolError(f"{label} lacks canonical primary output bytes")
-    return strict_json_loads(data, label)
-
-
-def reconstruct_final_scores(
-    static_root: Path,
-    attempts: dict[str, dict[str, Any]],
-    projection_manifest: dict[str, Any],
-    blind_join: list[dict[str, Any]],
-    projected_reports: dict[tuple[str, str], bytes],
-    scorer_receipts: dict[tuple[str, str], dict[str, Any]],
-    documents: dict[str, Any],
-) -> tuple[dict[str, dict[str, Any]], dict[str, Any], set[str]]:
-    rules = validate_defect_rules(
-        read_json(static_root / "freeze" / "rules" / "defect-rules.json"),
-        "READY",
-    )
-    projection_by_mode_label = {
-        (row["mode"], row["label"]): row
-        for row in projection_manifest["records"]
-    }
-    run_by_mode_label = {
-        (row["mode"], row["label"]): row for row in blind_join
-    }
-    final_root = (
-        static_root
-        / "runtime"
-        / "state"
-        / "aggregation"
-        / "inputs"
-        / "final-scores"
-    )
-    finals: dict[str, dict[str, Any]] = {}
-    bundle_rows: list[dict[str, Any]] = []
-    used_assignments: set[str] = set()
-    for mode in MODES:
-        atoms = validate_atom_manifest(
-            read_json(static_root / "freeze" / "atoms" / f"{mode}.json"),
-            mode,
-            "READY",
-        )
-        scorer_attempts = [
-            require_valid_evaluator_attempt(
-                attempts,
-                f"{mode}-{scorer}",
-                "scorer",
-                static_root,
-                documents,
+def sealed_attempt_envelopes(
+    attempts: dict[str, dict[str, Any]], assignment_ids: set[str]
+) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for assignment_id in sorted(assignment_ids):
+        attempt = attempts[assignment_id]
+        pointer = attempt.get("pointer")
+        if (
+            attempt.get("status") != "SEALED"
+            or not isinstance(pointer, dict)
+            or not isinstance(pointer.get("envelope_sha256"), str)
+            or not HEX64.fullmatch(pointer["envelope_sha256"])
+        ):
+            raise ProtocolError(
+                f"aggregation stage prerequisite is not sealed: {assignment_id}"
             )
-            for scorer in SCORERS
-        ]
-        used_assignments.update(f"{mode}-{scorer}" for scorer in SCORERS)
-        score_inputs = [load_bound_input_packet(item["lease"]) for item in scorer_attempts]
-        direct_scores = [
-            attempt_output_json(item, f"{mode} direct score {scorer}")
-            for scorer, item in zip(SCORERS, scorer_attempts)
-        ]
-        for scorer, packet, score in zip(SCORERS, score_inputs, direct_scores):
-            presentation = next(
+        result[assignment_id] = pointer["envelope_sha256"]
+    return result
+
+
+def exact_progress_partition(
+    attempts: dict[str, dict[str, Any]],
+    *,
+    completed: set[str],
+    eligible: set[str],
+    label: str,
+) -> tuple[set[str], set[str]]:
+    allowed = completed | eligible
+    missing_completed = completed - set(attempts)
+    if missing_completed:
+        raise ProtocolError(f"{label} lost completed attempts: {sorted(missing_completed)}")
+    sealed = {
+        assignment
+        for assignment in eligible
+        if assignment in attempts and attempts[assignment]["status"] == "SEALED"
+    }
+    started = {
+        assignment
+        for assignment in eligible
+        if assignment in attempts and attempts[assignment]["status"] == "STARTED"
+    }
+    extras = set(attempts) - allowed
+    if sealed != eligible and extras:
+        raise ProtocolError(f"{label} has premature or unknown attempts: {sorted(extras)}")
+    return sealed, started
+
+
+def aggregation_phase_failure_assignments(
+    attempts: dict[str, dict[str, Any]],
+    assignments: set[str],
+    *,
+    report_phase: bool,
+) -> set[str]:
+    """Return exactly the sealed phase outputs that prevent semantic derivation."""
+
+    failures: set[str] = set()
+    for assignment_id in sorted(assignments):
+        attempt = attempts.get(assignment_id)
+        if attempt is None or attempt.get("status") != "SEALED":
+            raise ProtocolError(
+                f"terminal-failure check requires a sealed attempt: {assignment_id}"
+            )
+        pointer = attempt.get("pointer")
+        if not isinstance(pointer, dict):
+            raise ProtocolError(
+                f"terminal-failure check lacks a canonical pointer: {assignment_id}"
+            )
+        if report_phase:
+            if (
+                attempt.get("primary_bytes") is None
+                or pointer["semantic_valid"] is not True
+            ):
+                failures.add(assignment_id)
+        elif (
+            attempt.get("primary_bytes") is None
+            or pointer["format_valid"] is not True
+            or pointer["semantic_valid"] is not True
+        ):
+            failures.add(assignment_id)
+    return failures
+
+
+def derive_report_products(
+    context: dict[str, Any],
+    attempts: dict[str, dict[str, Any]],
+) -> tuple[dict[str, bytes], dict[str, Any]]:
+    """Derive Stage 01 solely from the 120 canonical report envelopes."""
+
+    root = context["root"]
+    documents = context["documents"]
+    blind_join = context["blind_join"]
+    by_run = {row["run_id"]: row for row in blind_join}
+    expected_runs = {f"r{index:03d}" for index in range(1, 121)}
+    report_attempts: dict[str, dict[str, Any]] = {}
+    static_launches = {
+        launch["run_id"]: launch for launch in documents["report-launch-records"]
+    }
+    for run_id in sorted(expected_runs):
+        attempt = require_sealed_attempt(
+            attempts,
+            run_id,
+            "report",
+            require_semantic_validity=False,
+        )
+        joined = by_run[run_id]
+        if (
+            attempt["launch"]["run_id"] != run_id
+            or attempt["launch"]["mode"] != joined["mode"]
+            or attempt["launch"] != static_launches[run_id]
+        ):
+            raise ProtocolError(f"canonical report launch drifted: {run_id}")
+        report_attempts[run_id] = attempt
+
+    counter = run_trusted_module("word_count.py", "v5_stage_word_counter")
+    count_words = counter["count_words"]
+    word_records: list[dict[str, Any]] = []
+    projection_records: list[dict[str, Any]] = []
+    projected_reports: dict[tuple[str, str], bytes] = {}
+    scorer_receipts: dict[tuple[str, str], dict[str, Any]] = {}
+    for run_id in sorted(expected_runs):
+        attempt = report_attempts[run_id]
+        raw = attempt["primary_bytes"]
+        joined = by_run[run_id]
+        mode = joined["mode"]
+        word_count = count_words(raw)
+        word_records.append(
+            {
+                "run_id": run_id,
+                "receipt": {
+                    "schema_version": 1,
+                    "status": "COUNTED",
+                    "algorithm_id": "unicode-whitespace-runs-python-v1",
+                    "report_sha256": sha256(raw),
+                    "word_count": word_count,
+                    "word_cap": context["target_rows"][mode]["word_cap"],
+                    "valid": word_count
+                    <= context["target_rows"][mode]["word_cap"],
+                },
+            }
+        )
+        inventory = derive_report_secret_inventory(
+            root,
+            attempt["launch"],
+            attempt["lease"],
+            context["reviewed"],
+            context["packages"],
+            context["target_rows"][mode],
+        )
+        projected, scorer_receipt, audit_receipt = project_report_for_scorer(
+            joined["label"], raw, inventory
+        )
+        projection_records.append(
+            {
+                "run_id": run_id,
+                "mode": mode,
+                "label": joined["label"],
+                "secret_inventory_sha256": sha256(
+                    canonical_json_bytes(inventory)
+                ),
+                "secret_inventory": inventory,
+                "receipt_sha256": sha256(
+                    canonical_json_bytes(audit_receipt)
+                ),
+                "receipt": audit_receipt,
+            }
+        )
+        projected_reports[(mode, joined["label"])] = projected
+        scorer_receipts[(mode, joined["label"])] = scorer_receipt
+    word_manifest = validate_word_count_manifest(
+        {
+            "schema_version": 1,
+            "status": "COMPLETE",
+            "algorithm_id": "unicode-whitespace-runs-python-v1",
+            "records": word_records,
+        }
+    )
+    projection_manifest = validate_projection_audit_manifest(
+        {
+            "schema_version": 1,
+            "status": "COMPLETE",
+            "records": projection_records,
+        }
+    )
+    files: dict[str, bytes] = {
+        "word-counts.json": canonical_json_bytes(word_manifest),
+        "projection-audit-manifest.json": canonical_json_bytes(
+            projection_manifest
+        ),
+    }
+    scorer_packets: dict[str, dict[str, Any]] = {}
+    scorer_launches: dict[str, dict[str, Any]] = {}
+    for mode in MODES:
+        for scorer in SCORERS:
+            assignment = f"{mode}-{scorer}"
+            labels = next(
                 row["labels_in_order"]
                 for row in documents["presentation-orders.json"]["presentations"]
-                if row["claim"] == f"{mode}-{scorer}"
+                if row["claim"] == assignment
             )
-            expected_packet = build_score_input_packet(
+            packet = build_score_input_packet(
                 mode,
                 scorer,
-                presentation,
+                labels,
                 {
-                    label: projected_reports[(mode, label)]
-                    for label in LABELS
+                    label: projected_reports[(mode, label)] for label in LABELS
                 },
                 {
-                    label: scorer_receipts[(mode, label)]
-                    for label in LABELS
+                    label: scorer_receipts[(mode, label)] for label in LABELS
                 },
-                atoms,
-                rules,
-                (static_root / "freeze" / "oracle" / f"{mode}.md").read_bytes(),
-                (static_root / "freeze" / "allowlists" / f"{mode}.txt").read_bytes(),
-                (static_root / "freeze" / "authority" / "propositions.json").read_bytes(),
+                context["atoms"][mode],
+                context["rules"],
+                (root / "freeze" / "oracle" / f"{mode}.md").read_bytes(),
+                (root / "freeze" / "allowlists" / f"{mode}.txt").read_bytes(),
+                (root / "freeze" / "authority" / "propositions.json").read_bytes(),
             )
-            attempt = scorer_attempts[SCORERS.index(scorer)]
-            packet = require_exact_score_input_packet(
-                packet,
-                expected_packet,
-                mode,
-                scorer,
-                raw_bytes=load_bound_input_packet_bytes(attempt["lease"]),
+            packet_bytes = canonical_json_bytes(packet)
+            launch, _row = build_expected_evaluator_launch(
+                root, documents, assignment, packet_bytes
             )
-            validate_direct_score(score, atoms, rules, scorer, packet)
-            report_index_by_label = {row["label"]: row for row in packet["reports"]}
-            for label in LABELS:
-                audit = projection_by_mode_label[(mode, label)]["receipt"]
-                packet_report = report_index_by_label[label]
-                if (
-                    packet_report["projected_report_sha256"]
-                    != audit["projected_report_sha256"]
-                    or packet_file_bytes(
-                        packet["packet_tree"],
-                        packet_report["projected_report_path"],
-                    )
-                    != projected_reports[(mode, label)]
-                    or packet_report["gh12_forced_present"]
-                    is not bool(audit["replacements"])
-                ):
-                    raise ProtocolError(
-                        f"scorer packet/projection audit mismatch: {mode}/{scorer}/{label}"
-                    )
-                run = run_by_mode_label[(mode, label)]
-                if projection_by_mode_label[(mode, label)]["run_id"] != run["run_id"]:
-                    raise ProtocolError("projection audit/blind join run mismatch")
-        consistency_attempts = [
-            require_valid_evaluator_attempt(
-                attempts,
-                f"{mode}-{reviewer}",
-                "consistency",
-                static_root,
-                documents,
+            scorer_packets[assignment] = packet
+            scorer_launches[assignment] = launch
+            files[f"packets/scorers/{assignment}.json"] = packet_bytes
+            files[f"launches/scorers/{assignment}.json"] = canonical_json_bytes(
+                launch
             )
-            for reviewer in CONSISTENCY_REVIEWERS
-        ]
-        used_assignments.update(
-            f"{mode}-{reviewer}" for reviewer in CONSISTENCY_REVIEWERS
+    return files, {
+        "word_manifest": word_manifest,
+        "projection_manifest": projection_manifest,
+        "report_attempts": report_attempts,
+        "projected_reports": projected_reports,
+        "scorer_receipts": scorer_receipts,
+        "scorer_packets": scorer_packets,
+        "scorer_launches": scorer_launches,
+    }
+
+
+def require_staged_evaluator_attempt(
+    attempts: dict[str, dict[str, Any]],
+    assignment_id: str,
+    expected_role: str,
+    expected_packet: dict[str, Any],
+    expected_launch: dict[str, Any],
+) -> dict[str, Any]:
+    """Validate a sealed evaluator against immutable stage bytes only."""
+
+    attempt = require_sealed_attempt(
+        attempts,
+        assignment_id,
+        expected_role,
+        require_semantic_validity=True,
+    )
+    expected_packet_bytes = canonical_json_bytes(expected_packet)
+    if (
+        attempt["launch"] != expected_launch
+        or load_bound_launch(attempt["lease"]) != expected_launch
+        or load_bound_input_packet_bytes(attempt["lease"])
+        != expected_packet_bytes
+    ):
+        raise ProtocolError(
+            f"evaluator attempt is not bound to its authoritative stage: {assignment_id}"
         )
-        consistency_inputs = [
-            load_bound_input_packet(item["lease"]) for item in consistency_attempts
+    return attempt
+
+
+def derive_scorer_products(
+    context: dict[str, Any],
+    attempts: dict[str, dict[str, Any]],
+    report_products: dict[str, Any],
+) -> tuple[dict[str, bytes], dict[str, Any]]:
+    """Derive Stage 02 from the sixteen canonical direct-score attempts."""
+
+    root = context["root"]
+    documents = context["documents"]
+    files: dict[str, bytes] = {}
+    direct_scores: dict[tuple[str, str], dict[str, Any]] = {}
+    scorer_attempts: dict[tuple[str, str], dict[str, Any]] = {}
+    consistency_packets: dict[str, dict[str, Any]] = {}
+    consistency_launches: dict[str, dict[str, Any]] = {}
+    for mode in MODES:
+        score_inputs = [
+            report_products["scorer_packets"][f"{mode}-{scorer}"]
+            for scorer in SCORERS
         ]
-        if consistency_inputs[0] != consistency_inputs[1]:
-            raise ProtocolError(f"consistency reviewers did not receive byte-equal input: {mode}")
-        consistency_packet = validate_consistency_packet(consistency_inputs[0])
-        tree = consistency_packet["packet_tree"]
-        evidence = packet_file_bytes(tree, "resources/evidence-packet.bin")
-        rebuilt_consistency = build_consistency_packet(
-            direct_scores[0],
-            direct_scores[1],
+        mode_scores: list[dict[str, Any]] = []
+        for scorer, packet in zip(SCORERS, score_inputs):
+            assignment = f"{mode}-{scorer}"
+            attempt = require_staged_evaluator_attempt(
+                attempts,
+                assignment,
+                "scorer",
+                packet,
+                report_products["scorer_launches"][assignment],
+            )
+            score = attempt_output_json(attempt, f"{mode} direct score {scorer}")
+            validate_direct_score(
+                score,
+                context["atoms"][mode],
+                context["rules"],
+                scorer,
+                packet,
+            )
+            direct_scores[(mode, scorer)] = score
+            scorer_attempts[(mode, scorer)] = attempt
+            mode_scores.append(score)
+        packet = build_consistency_packet(
+            mode_scores[0],
+            mode_scores[1],
             score_inputs[0],
             score_inputs[1],
-            atoms,
-            rules,
-            evidence,
+            context["atoms"][mode],
+            context["rules"],
         )
-        if consistency_packet != rebuilt_consistency:
-            raise ProtocolError(f"consistency input is not deterministically derived: {mode}")
-        consistency_outputs = [
-            attempt_output_json(item, f"{mode} consistency {reviewer}")
-            for reviewer, item in zip(CONSISTENCY_REVIEWERS, consistency_attempts)
+        consistency_packets[mode] = packet
+        packet_bytes = canonical_json_bytes(packet)
+        files[f"packets/consistency/{mode}.json"] = packet_bytes
+        for reviewer in CONSISTENCY_REVIEWERS:
+            assignment = f"{mode}-{reviewer}"
+            launch, _row = build_expected_evaluator_launch(
+                root, documents, assignment, packet_bytes
+            )
+            consistency_launches[assignment] = launch
+            files[f"launches/consistency/{assignment}.json"] = canonical_json_bytes(
+                launch
+            )
+    return files, {
+        "direct_scores": direct_scores,
+        "scorer_attempts": scorer_attempts,
+        "consistency_packets": consistency_packets,
+        "consistency_launches": consistency_launches,
+    }
+
+
+def derive_consistency_products(
+    context: dict[str, Any],
+    attempts: dict[str, dict[str, Any]],
+    report_products: dict[str, Any],
+    scorer_products: dict[str, Any],
+) -> tuple[dict[str, bytes], dict[str, Any]]:
+    """Derive Stage 03 and its exact conditional mode-adjudicator set."""
+
+    root = context["root"]
+    documents = context["documents"]
+    files: dict[str, bytes] = {}
+    consistency_outputs: dict[tuple[str, str], dict[str, Any]] = {}
+    consistency_attempts: dict[tuple[str, str], dict[str, Any]] = {}
+    adjudication_packets: dict[str, dict[str, Any]] = {}
+    adjudication_launches: dict[str, dict[str, Any]] = {}
+    dispositions: list[dict[str, Any]] = []
+    for mode in MODES:
+        packet = scorer_products["consistency_packets"][mode]
+        outputs: list[dict[str, Any]] = []
+        for reviewer in CONSISTENCY_REVIEWERS:
+            assignment = f"{mode}-{reviewer}"
+            attempt = require_staged_evaluator_attempt(
+                attempts,
+                assignment,
+                "consistency",
+                packet,
+                scorer_products["consistency_launches"][assignment],
+            )
+            output = attempt_output_json(
+                attempt, f"{mode} consistency review {reviewer}"
+            )
+            validate_consistency(
+                output,
+                context["atoms"][mode],
+                context["rules"],
+                packet,
+                reviewer,
+            )
+            consistency_outputs[(mode, reviewer)] = output
+            consistency_attempts[(mode, reviewer)] = attempt
+            outputs.append(output)
+        score_inputs = [
+            report_products["scorer_packets"][f"{mode}-{scorer}"]
+            for scorer in SCORERS
         ]
-        for reviewer, output in zip(CONSISTENCY_REVIEWERS, consistency_outputs):
-            validate_consistency(output, atoms, rules, consistency_packet, reviewer)
+        direct_scores = [
+            scorer_products["direct_scores"][(mode, scorer)]
+            for scorer in SCORERS
+        ]
         adjudication_packet = build_adjudication_packet(
             direct_scores[0],
             direct_scores[1],
             score_inputs[0],
             score_inputs[1],
-            consistency_outputs[0],
-            consistency_outputs[1],
-            atoms,
-            rules,
-            evidence,
+            outputs[0],
+            outputs[1],
+            context["atoms"][mode],
+            context["rules"],
         )
-        adjudication: dict[str, Any] | None
-        adjudicator_envelope: str | None
-        adjudication_bytes: bytes | None
+        adjudication_packets[mode] = adjudication_packet
+        packet_bytes = canonical_json_bytes(adjudication_packet)
+        files[f"packets/adjudication/{mode}.json"] = packet_bytes
         assignment = f"{mode}-a1"
-        if adjudication_packet["cells"]:
-            adjudicator = require_valid_evaluator_attempt(
-                attempts, assignment, "adjudicator", static_root, documents
+        required = bool(adjudication_packet["cells"])
+        dispositions.append(
+            {
+                "mode": mode,
+                "assignment_id": assignment,
+                "packet_sha256": sha256(packet_bytes),
+                "disposition": (
+                    "LAUNCH_REQUIRED" if required else "NO_LAUNCH_EMPTY_PACKET"
+                ),
+            }
+        )
+        if required:
+            launch, _row = build_expected_evaluator_launch(
+                root, documents, assignment, packet_bytes
             )
-            used_assignments.add(assignment)
-            launch_packet = load_bound_input_packet(adjudicator["lease"])
-            if launch_packet != adjudication_packet:
-                raise ProtocolError(f"adjudicator packet is not deterministically derived: {mode}")
-            adjudication = attempt_output_json(adjudicator, f"{mode} adjudication")
-            validate_adjudication(adjudication, adjudication_packet)
-            adjudication_bytes = adjudicator["primary_bytes"]
-            adjudicator_envelope = adjudicator["pointer"]["envelope_sha256"]
+            adjudication_launches[assignment] = launch
+            files[f"launches/adjudication/{assignment}.json"] = canonical_json_bytes(
+                launch
+            )
+    disposition_document = {
+        "schema_version": 1,
+        "status": "DERIVED",
+        "records": dispositions,
+    }
+    files["adjudication-dispositions.json"] = canonical_json_bytes(
+        disposition_document
+    )
+    return files, {
+        "consistency_outputs": consistency_outputs,
+        "consistency_attempts": consistency_attempts,
+        "adjudication_packets": adjudication_packets,
+        "adjudication_launches": adjudication_launches,
+        "adjudication_dispositions": disposition_document,
+        "required_adjudicators": set(adjudication_launches),
+    }
+
+
+def derive_score_products(
+    context: dict[str, Any],
+    attempts: dict[str, dict[str, Any]],
+    report_products: dict[str, Any],
+    scorer_products: dict[str, Any],
+    consistency_products: dict[str, Any],
+) -> tuple[dict[str, bytes], dict[str, Any]]:
+    """Derive Stage 04 final scores and the complete materiality review input."""
+
+    root = context["root"]
+    documents = context["documents"]
+    finals: dict[str, dict[str, Any]] = {}
+    bundle_rows: list[dict[str, Any]] = []
+    adjudication_attempts: dict[str, dict[str, Any]] = {}
+    for mode in MODES:
+        score_inputs = [
+            report_products["scorer_packets"][f"{mode}-{scorer}"]
+            for scorer in SCORERS
+        ]
+        direct_scores = [
+            scorer_products["direct_scores"][(mode, scorer)]
+            for scorer in SCORERS
+        ]
+        consistency_outputs = [
+            consistency_products["consistency_outputs"][(mode, reviewer)]
+            for reviewer in CONSISTENCY_REVIEWERS
+        ]
+        packet = consistency_products["adjudication_packets"][mode]
+        assignment = f"{mode}-a1"
+        if assignment in consistency_products["required_adjudicators"]:
+            attempt = require_staged_evaluator_attempt(
+                attempts,
+                assignment,
+                "adjudicator",
+                packet,
+                consistency_products["adjudication_launches"][assignment],
+            )
+            adjudication = attempt_output_json(
+                attempt, f"{mode} adjudication"
+            )
+            validate_adjudication(adjudication, packet)
+            adjudication_attempts[assignment] = attempt
+            adjudication_digest = sha256(attempt["primary_bytes"])
+            adjudicator_envelope = attempt["pointer"]["envelope_sha256"]
         else:
             if assignment in attempts:
-                raise ProtocolError(f"empty adjudication packet has an adjudicator attempt: {mode}")
+                raise ProtocolError(
+                    f"empty mode adjudication packet has an attempt: {assignment}"
+                )
             adjudication = None
-            adjudication_bytes = None
+            adjudication_digest = None
             adjudicator_envelope = None
-        rebuilt_final = merge_final_scores(
+        final = merge_final_scores(
             direct_scores[0],
             direct_scores[1],
             score_inputs[0],
             score_inputs[1],
             consistency_outputs[0],
             consistency_outputs[1],
-            atoms,
-            rules,
-            evidence,
+            context["atoms"][mode],
+            context["rules"],
             adjudication,
         )
-        final_path = final_root / f"{mode}.json"
-        final = validate_final_score(
-            read_committed_json(final_path, f"{mode} final score"), atoms, rules
-        )
-        if final != rebuilt_final:
-            raise ProtocolError(f"stored final score is not the deterministic merge: {mode}")
+        validate_final_score(final, context["atoms"][mode], context["rules"])
         finals[mode] = final
+        scorer_attempts = [
+            scorer_products["scorer_attempts"][(mode, scorer)]
+            for scorer in SCORERS
+        ]
+        consistency_attempts = [
+            consistency_products["consistency_attempts"][(mode, reviewer)]
+            for reviewer in CONSISTENCY_REVIEWERS
+        ]
         bundle_rows.append(
             {
                 "mode": mode,
                 "score_input_packet_digests": [
-                    item["lease"]["input_packet_sha256"] for item in scorer_attempts
+                    item["lease"]["input_packet_sha256"]
+                    for item in scorer_attempts
                 ],
                 "direct_score_digests": [
                     sha256(item["primary_bytes"]) for item in scorer_attempts
                 ],
-                "consistency_input_packet_digest": consistency_attempts[0]["lease"][
-                    "input_packet_sha256"
-                ],
+                "consistency_input_packet_digest": consistency_attempts[0][
+                    "lease"
+                ]["input_packet_sha256"],
                 "consistency_review_digests": [
                     sha256(item["primary_bytes"]) for item in consistency_attempts
                 ],
                 "adjudication_packet_digest": sha256(
-                    canonical_json_bytes(adjudication_packet)
+                    canonical_json_bytes(packet)
                 ),
-                "adjudication_digest": (
-                    sha256(adjudication_bytes) if adjudication_bytes is not None else None
-                ),
-                "final_score_digest": sha256(final_path.read_bytes()),
+                "adjudication_digest": adjudication_digest,
+                "final_score_digest": sha256(canonical_json_bytes(final)),
                 "scorer_launch_envelope_digests": [
                     item["pointer"]["envelope_sha256"] for item in scorer_attempts
                 ],
@@ -7524,98 +10489,1957 @@ def reconstruct_final_scores(
                 "adjudicator_launch_envelope_digest": adjudicator_envelope,
             }
         )
-    expected_bundle = {
-        "schema_version": 1,
-        "status": "BOUND",
-        "modes": bundle_rows,
+    scoring_bundle = validate_scoring_bundle_manifest(
+        {"schema_version": 1, "status": "BOUND", "modes": bundle_rows}
+    )
+
+    projection_by_run = {
+        row["run_id"]: row
+        for row in report_products["projection_manifest"]["records"]
     }
-    bundle_path = (
-        static_root
-        / "runtime"
-        / "state"
-        / "aggregation"
-        / "inputs"
-        / "scoring-bundle-manifest.json"
+    joined_reports: list[dict[str, Any]] = []
+    for row in context["blind_join"]:
+        final_report = next(
+            item
+            for item in finals[row["mode"]]["reports"]
+            if item["label"] == row["label"]
+        )
+        audit = projection_by_run[row["run_id"]]["receipt"]
+        if ("GH12" in final_report["hard_errors"]) is not bool(
+            audit["replacements"]
+        ):
+            raise ProtocolError(
+                f"GH12 does not equal projection redaction presence: {row['run_id']}"
+            )
+        raw = report_products["report_attempts"][row["run_id"]][
+            "primary_bytes"
+        ]
+        try:
+            raw_text = raw.decode("utf-8", errors="strict")
+        except UnicodeDecodeError as error:
+            raise ProtocolError(
+                f"canonical report is not UTF-8: {row['run_id']}"
+            ) from error
+        joined_reports.append(
+            {
+                **row,
+                "raw_report_sha256": sha256(raw),
+                "raw_report": raw_text,
+                "projected_report_sha256": audit["projected_report_sha256"],
+                "final_report": final_report,
+            }
+        )
+
+    candidate_by_mode = {
+        mode: [
+            row
+            for row in joined_reports
+            if row["mode"] == mode and row["condition_role"] == "v5"
+        ]
+        for mode in MODES
+    }
+    control_records: list[dict[str, Any]] = []
+    for control in context["controls"]["controls"]:
+        candidates = candidate_by_mode[control["mode"]]
+        passed = all(
+            all(
+                next(
+                    atom
+                    for atom in row["final_report"]["atoms"]
+                    if atom["id"] == atom_id
+                )["certificate_decision"]
+                == "PASS"
+                for atom_id in control["atom_ids"]
+            )
+            for row in candidates
+        )
+        control_records.append(
+            {
+                "id": control["id"],
+                "family": control["family"],
+                "mode": control["mode"],
+                "passed": passed,
+                "candidate_run_ids": sorted(
+                    row["run_id"] for row in candidates
+                ),
+            }
+        )
+    control_results = validate_control_results(
+        {"schema_version": 1, "status": "DERIVED", "records": control_records},
+        context["controls"],
+        "READY",
+        root / "freeze" / "atoms",
     )
-    actual_bundle = validate_scoring_bundle_manifest(
-        read_committed_json(bundle_path, "scoring bundle manifest")
+
+    candidate_package = context["packages"]["packages"]["v5"]
+    if not isinstance(candidate_package, dict):
+        raise ProtocolError("integrated bundle lacks the V5 candidate package")
+    source_records = {
+        record["name"]: record
+        for record in context["review_evidence"]["source_review_receipts"]
+    }
+    snapshot_records = {
+        record["hook_id"]: record
+        for record in context["review_evidence"]["snapshot_review_receipts"]
+    }
+    scope_payloads = {
+        "V5_CANDIDATE_REPORTS": {
+            "schema_version": 1,
+            "status": "COMPLETE",
+            "reports": [
+                row for row in joined_reports if row["condition_role"] == "v5"
+            ],
+        },
+        "CANDIDATE_PACKAGE": {
+            "schema_version": 1,
+            "status": "CONTENT-BOUND",
+            "identity": candidate_package,
+            "tree": readable_tree_snapshot(root / candidate_package["source_path"]),
+        },
+        "HARNESS_PROTOCOL": {
+            "schema_version": 1,
+            "status": "STATIC-LOCKED",
+            "static_lock_sha256": context["static_lock_sha256"],
+            "tree": readable_tree_snapshot(root, exclude_top_level={"runtime"}),
+        },
+        "ADVERSARIAL_AND_COHERENCE_REVIEWS": {
+            "schema_version": 1,
+            "status": "AUTHENTICATED-COMPLETE",
+            "static_lock_sha256": context["static_lock_sha256"],
+            "source_review_receipts": context["review_evidence"][
+                "source_review_receipts"
+            ],
+            "snapshot_review_receipts": context["review_evidence"][
+                "snapshot_review_receipts"
+            ],
+        },
+    }
+    materiality_packet = build_materiality_review_packet(
+        scope_payloads, context["materiality_contract"], "READY"
     )
-    if actual_bundle != expected_bundle:
-        raise ProtocolError("scoring bundle manifest is not exactly recomputable")
-    return finals, actual_bundle, used_assignments
+    packet_bytes = canonical_json_bytes(materiality_packet)
+    materiality_launches: dict[str, dict[str, Any]] = {}
+    files: dict[str, bytes] = {
+        "scoring-bundle-manifest.json": canonical_json_bytes(scoring_bundle),
+        "packets/materiality-review.json": packet_bytes,
+    }
+    for mode in MODES:
+        files[f"final-scores/{mode}.json"] = canonical_json_bytes(finals[mode])
+    for index, scope in enumerate(MATERIALITY_SCOPES, start=1):
+        path = f"materiality-scopes/{index:02d}-{scope.lower().replace('_', '-')}.json"
+        files[path] = canonical_json_bytes(scope_payloads[scope])
+    for reviewer in MATERIALITY_REVIEWERS:
+        launch, _row = build_expected_evaluator_launch(
+            root, documents, reviewer, packet_bytes
+        )
+        materiality_launches[reviewer] = launch
+        files[f"launches/materiality/{reviewer}.json"] = canonical_json_bytes(
+            launch
+        )
+    return files, {
+        "finals": finals,
+        "scoring_bundle": scoring_bundle,
+        "adjudication_attempts": adjudication_attempts,
+        "joined_reports": joined_reports,
+        "candidate_by_mode": candidate_by_mode,
+        "control_results": control_results,
+        "source_review_records": source_records,
+        "snapshot_review_records": snapshot_records,
+        "scope_payloads": scope_payloads,
+        "materiality_packet": materiality_packet,
+        "materiality_launches": materiality_launches,
+    }
 
 
-def reconstruct_materiality_ledger(
-    static_root: Path,
+def derive_materiality_review_products(
+    context: dict[str, Any],
     attempts: dict[str, dict[str, Any]],
-    scope_payloads: dict[str, Any],
-    materiality_contract: dict[str, Any],
-    documents: dict[str, Any],
-) -> tuple[dict[str, Any], set[str]]:
-    reviewer_attempts = [
-        require_valid_evaluator_attempt(
+    score_products: dict[str, Any],
+) -> tuple[dict[str, bytes], dict[str, Any]]:
+    """Derive Stage 05 and the exact conditional materiality adjudicator."""
+
+    packet = score_products["materiality_packet"]
+    reviews: list[dict[str, Any]] = []
+    reviewer_attempts: dict[str, dict[str, Any]] = {}
+    for reviewer in MATERIALITY_REVIEWERS:
+        attempt = require_staged_evaluator_attempt(
             attempts,
             reviewer,
             "materiality-reviewer",
-            static_root,
-            documents,
+            packet,
+            score_products["materiality_launches"][reviewer],
         )
-        for reviewer in MATERIALITY_REVIEWERS
-    ]
-    packets = [load_bound_input_packet(item["lease"]) for item in reviewer_attempts]
-    if packets[0] != packets[1]:
-        raise ProtocolError("materiality reviewers did not receive byte-equal input")
-    expected_packet = build_materiality_review_packet(
-        scope_payloads, materiality_contract, "READY"
-    )
-    if packets[0] != expected_packet:
-        raise ProtocolError("materiality review packet does not contain the exact derived scope")
-    reviews = [
-        attempt_output_json(item, f"materiality review {reviewer}")
-        for reviewer, item in zip(MATERIALITY_REVIEWERS, reviewer_attempts)
-    ]
-    for reviewer, review in zip(MATERIALITY_REVIEWERS, reviews):
-        validate_materiality_review(review, expected_packet, reviewer, "READY")
+        review = attempt_output_json(attempt, f"materiality review {reviewer}")
+        validate_materiality_review(review, packet, reviewer, "READY")
+        reviews.append(review)
+        reviewer_attempts[reviewer] = attempt
     adjudication_packet = build_materiality_adjudication_packet(
-        expected_packet, reviews[0], reviews[1], "READY"
+        packet, reviews[0], reviews[1], "READY"
     )
-    used = set(MATERIALITY_REVIEWERS)
-    if adjudication_packet["cells"]:
-        adjudicator = require_valid_evaluator_attempt(
+    packet_bytes = canonical_json_bytes(adjudication_packet)
+    required = bool(adjudication_packet["cells"])
+    disposition = {
+        "schema_version": 1,
+        "status": "DERIVED",
+        "assignment_id": "ma1",
+        "packet_sha256": sha256(packet_bytes),
+        "disposition": (
+            "LAUNCH_REQUIRED" if required else "NO_LAUNCH_EMPTY_PACKET"
+        ),
+    }
+    files = {
+        "packets/materiality-adjudication.json": packet_bytes,
+        "materiality-adjudication-disposition.json": canonical_json_bytes(
+            disposition
+        ),
+    }
+    launch: dict[str, Any] | None = None
+    if required:
+        launch, _row = build_expected_evaluator_launch(
+            context["root"],
+            context["documents"],
+            "ma1",
+            packet_bytes,
+        )
+        files["launches/materiality/ma1.json"] = canonical_json_bytes(launch)
+    return files, {
+        "reviews": reviews,
+        "reviewer_attempts": reviewer_attempts,
+        "adjudication_packet": adjudication_packet,
+        "adjudication_launch": launch,
+        "requires_adjudicator": required,
+        "disposition": disposition,
+    }
+
+
+def build_runtime_integration_receipt(
+    hook_id: str,
+    coordinator_actor_id: str,
+    input_digests: dict[str, str],
+    output_digests: dict[str, str],
+) -> dict[str, Any]:
+    phase = INTEGRATION_HOOK_PHASES[hook_id]
+    if phase not in ("RUNTIME_COLLECTION", "POSTRUN_AGGREGATE"):
+        raise ProtocolError(f"hook is not a post-lock runtime hook: {hook_id}")
+    coordinator_actor_id = require_production_actor_id(
+        coordinator_actor_id, "aggregation coordinator actor ID"
+    )
+    receipt = {
+        "schema_version": 2,
+        "status": "PASS",
+        "phase": phase,
+        "hook_id": hook_id,
+        "receipt_kind": (
+            "RUNTIME_VALIDATION"
+            if phase == "RUNTIME_COLLECTION"
+            else "POSTRUN_VALIDATION"
+        ),
+        "actor": {
+            "identity": coordinator_actor_id,
+            "role": "V5_RUNTIME_COORDINATOR",
+            "implementation": "protocol.advance_aggregation",
+            "version": "v5-staged-aggregation-v1",
+        },
+        "input_digests": input_digests,
+        "output_digests": output_digests,
+        "result": {
+            "summary": (
+                f"Trusted staged aggregation deterministically revalidated {hook_id} "
+                "from the authenticated static bundle and canonical sealed attempts."
+            ),
+            "checks": [
+                {
+                    "id": "EXACT-DERIVATION-RECOMPUTED",
+                    "status": "PASS",
+                    "evidence": (
+                        f"{hook_id} inputs and outputs equal the protocol-owned "
+                        "deterministic derivation."
+                    ),
+                }
+            ],
+        },
+    }
+    return validate_integration_receipt(receipt, hook_id, phase)
+
+
+def build_bound_aggregate_receipts(
+    aggregate: dict[str, Any], coordinator_actor_id: str
+) -> dict[str, dict[str, Any]]:
+    aggregate = validate_aggregate_context_document(aggregate)
+    common_inputs = {
+        **aggregate["input_digests"],
+        "static_lock_sha256": aggregate["static_lock_sha256"],
+        "rules_sha256": aggregate["rules_sha256"],
+    }
+    runtime_outputs = {
+        "H-ENFORCE-WORD-COUNTER": {
+            "validated_word_counts_sha256": aggregate["input_digests"][
+                "word_counts_sha256"
+            ]
+        },
+        "H-BUILD-VALIDATE-SCORER-REPORT-PROJECTIONS": {
+            "validated_projection_audit_manifest_sha256": aggregate[
+                "input_digests"
+            ]["projection_audit_manifest_sha256"]
+        },
+        "H-VALIDATE-SCHEDULE-LEASE-ATTEMPT-LEDGER": {
+            "validated_schedule_slots_sha256": aggregate["input_digests"][
+                "schedule_slots_sha256"
+            ],
+            "validated_envelopes_sha256": aggregate["input_digests"][
+                "envelopes_sha256"
+            ],
+        },
+        "H-SEMANTICALLY-REVALIDATE-ENVELOPES": {
+            "validated_envelopes_sha256": aggregate["input_digests"][
+                "envelopes_sha256"
+            ]
+        },
+        "H-VALIDATE-EVALUATOR-INDEPENDENCE-QUALIFICATION": {
+            "validated_scoring_bundle_manifest_sha256": aggregate[
+                "input_digests"
+            ]["scoring_bundle_manifest_sha256"]
+        },
+        "H-RUN-VALIDATE-MATERIALITY-REVIEWS": {
+            "validated_materiality_ledger_sha256": aggregate["input_digests"][
+                "materiality_ledger_sha256"
+            ]
+        },
+    }
+    receipts = {
+        hook_id: build_runtime_integration_receipt(
+            hook_id, coordinator_actor_id, common_inputs, outputs
+        )
+        for hook_id, outputs in runtime_outputs.items()
+    }
+    aggregate_sha = sha256(canonical_json_bytes(aggregate))
+    receipts["H-DERIVE-AGGREGATE-CONTEXT"] = build_runtime_integration_receipt(
+        "H-DERIVE-AGGREGATE-CONTEXT",
+        coordinator_actor_id,
+        common_inputs,
+        {"aggregate_context_sha256": aggregate_sha},
+    )
+    bind_inputs = {
+        "static_lock_sha256": aggregate["static_lock_sha256"],
+        "rules_sha256": aggregate["rules_sha256"],
+        "aggregate_context_sha256": aggregate_sha,
+        **{
+            f"receipt::{hook_id}": sha256(
+                canonical_json_bytes(receipts[hook_id])
+            )
+            for hook_id in PRE_BIND_RECEIPT_HOOK_IDS
+        },
+    }
+    receipts["H-BIND-CONTEXT-INPUT-DIGESTS"] = build_runtime_integration_receipt(
+        "H-BIND-CONTEXT-INPUT-DIGESTS",
+        coordinator_actor_id,
+        bind_inputs,
+        {
+            "bound_gate_context_sha256": sha256(
+                canonical_json_bytes(bind_inputs)
+            )
+        },
+    )
+    if set(receipts) != set(POSTLOCK_RECEIPT_HOOK_IDS):
+        raise ProtocolError("derived post-lock receipt inventory is not exact")
+    return receipts
+
+
+def derive_final_aggregation_products(
+    context: dict[str, Any],
+    attempts: dict[str, dict[str, Any]],
+    report_products: dict[str, Any],
+    scorer_products: dict[str, Any],
+    consistency_products: dict[str, Any],
+    score_products: dict[str, Any],
+    materiality_products: dict[str, Any],
+    coordinator_actor_id: str,
+) -> tuple[dict[str, bytes], dict[str, Any]]:
+    """Derive the one authoritative final tree without caller-authored inputs."""
+
+    if materiality_products["requires_adjudicator"]:
+        attempt = require_staged_evaluator_attempt(
             attempts,
             "ma1",
             "materiality-adjudicator",
-            static_root,
-            documents,
+            materiality_products["adjudication_packet"],
+            materiality_products["adjudication_launch"],
         )
-        used.add("ma1")
-        if load_bound_input_packet(adjudicator["lease"]) != adjudication_packet:
-            raise ProtocolError("materiality adjudicator input is not deterministically derived")
-        adjudication = attempt_output_json(adjudicator, "materiality adjudication")
+        materiality_adjudication = attempt_output_json(
+            attempt, "materiality adjudication"
+        )
         validate_materiality_adjudication(
-            adjudication, adjudication_packet, "READY"
+            materiality_adjudication,
+            materiality_products["adjudication_packet"],
+            "READY",
         )
     else:
         if "ma1" in attempts:
-            raise ProtocolError("empty materiality adjudication packet has an adjudicator")
-        adjudication = None
-    expected_ledger = merge_materiality_ledger(
-        expected_packet, reviews[0], reviews[1], adjudication, "READY"
+            raise ProtocolError(
+                "empty materiality adjudication packet has an ma1 attempt"
+            )
+        materiality_adjudication = None
+    materiality_ledger = validate_materiality_ledger(
+        merge_materiality_ledger(
+            score_products["materiality_packet"],
+            materiality_products["reviews"][0],
+            materiality_products["reviews"][1],
+            materiality_adjudication,
+            "READY",
+        )
     )
-    ledger_path = (
-        static_root
+
+    expected_assignments = {
+        *(f"r{index:03d}" for index in range(1, 121)),
+        *(f"{mode}-{scorer}" for mode in MODES for scorer in SCORERS),
+        *(
+            f"{mode}-{reviewer}"
+            for mode in MODES
+            for reviewer in CONSISTENCY_REVIEWERS
+        ),
+        *consistency_products["required_adjudicators"],
+        *MATERIALITY_REVIEWERS,
+    }
+    if materiality_products["requires_adjudicator"]:
+        expected_assignments.add("ma1")
+    if set(attempts) != expected_assignments:
+        raise ProtocolError(
+            "final aggregation attempt inventory is not exact; "
+            f"missing={sorted(expected_assignments - set(attempts))}, "
+            f"extra={sorted(set(attempts) - expected_assignments)}"
+        )
+    if any(attempt["status"] != "SEALED" for attempt in attempts.values()):
+        raise ProtocolError("final aggregation contains an unsealed attempt")
+
+    candidate_by_mode = score_products["candidate_by_mode"]
+    focused_recall = all(
+        atom["certificate_decision"] == "PASS"
+        for rows in candidate_by_mode.values()
+        for row in rows
+        for atom in row["final_report"]["atoms"]
+    )
+    proof_quality = all(
+        row["passed"]
+        for row in score_products["control_results"]["records"]
+        if row["family"] == "PROOF_QUALITY"
+    )
+    classification_controls = all(
+        row["passed"]
+        for row in score_products["control_results"]["records"]
+        if row["family"] == "CLASSIFICATION_CONTROL"
+    )
+    hard_error_count = sum(
+        len(row["final_report"]["hard_errors"])
+        for rows in candidate_by_mode.values()
+        for row in rows
+    )
+    global_defect_count = sum(
+        len(row["final_report"]["global_defects"])
+        for rows in candidate_by_mode.values()
+        for row in rows
+    )
+    comparison_pass = focused_recall
+    for mode in MODES:
+        atom_ids = [
+            atom["id"]
+            for atom in score_products["finals"][mode]["reports"][0]["atoms"]
+        ]
+        for atom_id in atom_ids:
+            counts = {
+                condition: sum(
+                    next(
+                        atom
+                        for atom in row["final_report"]["atoms"]
+                        if atom["id"] == atom_id
+                    )["certificate_decision"]
+                    == "PASS"
+                    for row in score_products["joined_reports"]
+                    if row["mode"] == mode
+                    and row["condition_role"] == condition
+                )
+                for condition in ("v5", "v4", "no_skill")
+            }
+            comparison_pass = (
+                comparison_pass
+                and counts["v5"] >= counts["v4"]
+                and counts["v5"] >= counts["no_skill"]
+            )
+
+    word_by_run = {
+        row["run_id"]: row["receipt"]
+        for row in report_products["word_manifest"]["records"]
+    }
+    invalid_output_count = sum(
+        not (
+            report_products["report_attempts"][run_id]["pointer"]["format_valid"]
+            and report_products["report_attempts"][run_id]["pointer"][
+                "semantic_valid"
+            ]
+            and word_by_run[run_id]["valid"]
+        )
+        for run_id in sorted(report_products["report_attempts"])
+    )
+    envelope_summary = [
+        {
+            "assignment_id": assignment,
+            "role": attempt["launch"]["role"],
+            "envelope_sha256": attempt["pointer"]["envelope_sha256"],
+            "format_valid": attempt["pointer"]["format_valid"],
+            "semantic_valid": attempt["pointer"]["semantic_valid"],
+        }
+        for assignment, attempt in sorted(attempts.items())
+    ]
+    atom_documents = context["atoms"]
+    oracle_documents = {
+        "schema_version": 1,
+        "snapshot_oracle_coverage_receipt": score_products[
+            "snapshot_review_records"
+        ]["H-VALIDATE-ORACLE-COVERAGE"],
+        "source_oracle_review_receipts": [
+            score_products["source_review_records"][name]
+            for name in ("oracle-review-1.json", "oracle-review-2.json")
+        ],
+    }
+    coherence_document = {
+        "schema_version": 1,
+        "source_coherence_review_receipt": score_products[
+            "source_review_records"
+        ]["coherence-review.json"],
+    }
+    input_digests = {
+        "schedule_slots_sha256": sha256(
+            canonical_json_bytes(context["documents"]["launch-schedule.json"])
+        ),
+        "envelopes_sha256": sha256(canonical_json_bytes(envelope_summary)),
+        "word_counts_sha256": sha256(
+            canonical_json_bytes(report_products["word_manifest"])
+        ),
+        "atom_manifests_sha256": sha256(canonical_json_bytes(atom_documents)),
+        "oracle_receipts_sha256": sha256(canonical_json_bytes(oracle_documents)),
+        "blind_join_sha256": sha256(
+            canonical_json_bytes(context["blind_join"])
+        ),
+        "joined_reports_sha256": sha256(
+            canonical_json_bytes(score_products["joined_reports"])
+        ),
+        "projection_audit_manifest_sha256": sha256(
+            canonical_json_bytes(report_products["projection_manifest"])
+        ),
+        "scoring_bundle_manifest_sha256": sha256(
+            canonical_json_bytes(score_products["scoring_bundle"])
+        ),
+        "control_manifest_sha256": sha256(
+            canonical_json_bytes(context["controls"])
+        ),
+        "control_results_sha256": sha256(
+            canonical_json_bytes(score_products["control_results"])
+        ),
+        "materiality_ledger_sha256": sha256(
+            canonical_json_bytes(materiality_ledger)
+        ),
+        "comparison_predicate_sha256": sha256(
+            canonical_json_bytes(context["comparison"])
+        ),
+        "coherence_review_sha256": sha256(
+            canonical_json_bytes(coherence_document)
+        ),
+    }
+    oracle_coverage = score_products["snapshot_review_records"][
+        "H-VALIDATE-ORACLE-COVERAGE"
+    ]["receipt"]
+    source_oracle_receipts = [
+        score_products["source_review_records"][name]["receipt"]
+        for name in ("oracle-review-1.json", "oracle-review-2.json")
+    ]
+    coherence_receipt = score_products["source_review_records"][
+        "coherence-review.json"
+    ]["receipt"]
+    core = {
+        "schema_version": 1,
+        "status": "DERIVED",
+        "builder_id": AGGREGATE_BUILDER_ID,
+        "static_lock_sha256": context["static_lock_sha256"],
+        "rules_sha256": context["rules_sha256"],
+        "input_digests": input_digests,
+        "context": {
+            "oracle": {
+                "coverage_pass": oracle_coverage["status"] == "PASS"
+                and all(
+                    receipt["status"] == "PASS"
+                    for receipt in source_oracle_receipts
+                )
+            },
+            "collection": {
+                "complete": len(report_products["report_attempts"]) == 120,
+                "invalid_output_count": invalid_output_count,
+            },
+            "scores": {
+                "focused_recall_pass": focused_recall,
+                "proof_quality_pass": proof_quality,
+                "controls_pass": classification_controls,
+                "hard_error_count": hard_error_count,
+                "global_defect_count": global_defect_count,
+                "material_finding_count": sum(
+                    finding["blocking"]
+                    for finding in materiality_ledger["findings"]
+                ),
+            },
+            "comparison": {"predicate_pass": comparison_pass},
+            "review": {
+                "coherence_pass": coherence_receipt["status"] == "PASS"
+            },
+        },
+    }
+    aggregate = validate_aggregate_context_document(
+        {**core, "binding_sha256": sha256(canonical_json_bytes(core))}
+    )
+    receipts = build_bound_aggregate_receipts(aggregate, coordinator_actor_id)
+    files: dict[str, bytes] = {
+        "inputs/word-counts.json": canonical_json_bytes(
+            report_products["word_manifest"]
+        ),
+        "inputs/projection-audit-manifest.json": canonical_json_bytes(
+            report_products["projection_manifest"]
+        ),
+        "inputs/scoring-bundle-manifest.json": canonical_json_bytes(
+            score_products["scoring_bundle"]
+        ),
+        "inputs/materiality-ledger.json": canonical_json_bytes(
+            materiality_ledger
+        ),
+        "aggregate-context.json": canonical_json_bytes(aggregate),
+    }
+    for mode in MODES:
+        files[f"inputs/final-scores/{mode}.json"] = canonical_json_bytes(
+            score_products["finals"][mode]
+        )
+    for hook_id in POSTLOCK_RECEIPT_HOOK_IDS:
+        files[f"integration-receipts/{hook_id}.json"] = canonical_json_bytes(
+            receipts[hook_id]
+        )
+    return files, {
+        "aggregate": aggregate,
+        "materiality_ledger": materiality_ledger,
+        "receipts": receipts,
+        "expected_assignments": expected_assignments,
+    }
+
+
+def validate_aggregation_progress(value: Any) -> dict[str, Any]:
+    progress = require_exact_keys(
+        value,
+        {
+            "schema_version",
+            "status",
+            "current_stage",
+            "coordinator_actor_id",
+            "published_stages",
+            "sealed_assignments",
+            "started_assignments",
+            "leaseable_assignments",
+            "pending_assignments",
+            "final_aggregate_sha256",
+            "terminal_failure_sha256",
+        },
+        "aggregation progress",
+    )
+    status = progress["status"]
+    current_stage = progress["current_stage"]
+    if (
+        progress["schema_version"] != 1
+        or status
+        not in (
+            "WAITING",
+            "DERIVABLE",
+            "PUBLISHED",
+            "COMPLETE",
+            "TERMINAL-FAILURE",
+        )
+        or current_stage not in (*AGGREGATION_STAGE_ORDER, "reports")
+    ):
+        raise ProtocolError("aggregation progress identity/status is invalid")
+    require_production_actor_id(
+        progress["coordinator_actor_id"], "aggregation coordinator actor ID"
+    )
+    if not isinstance(progress["published_stages"], list):
+        raise ProtocolError("aggregation progress stage inventory must be a list")
+    published: list[dict[str, str]] = []
+    for raw in progress["published_stages"]:
+        row = require_exact_keys(
+            raw,
+            {"stage_id", "manifest_sha256"},
+            "aggregation progress stage",
+        )
+        if (
+            row["stage_id"] not in AGGREGATION_STAGE_ORDER
+            or not isinstance(row["manifest_sha256"], str)
+            or HEX64.fullmatch(row["manifest_sha256"]) is None
+        ):
+            raise ProtocolError("aggregation progress stage record is invalid")
+        published.append(row)
+    published_ids = tuple(row["stage_id"] for row in published)
+    if published_ids != AGGREGATION_STAGE_ORDER[: len(published_ids)]:
+        raise ProtocolError("aggregation progress stages are not the exact prefix")
+
+    assignment_lists: dict[str, list[str]] = {}
+    for field in (
+        "sealed_assignments",
+        "started_assignments",
+        "leaseable_assignments",
+        "pending_assignments",
+    ):
+        rows = progress[field]
+        if (
+            not isinstance(rows, list)
+            or rows != sorted(rows)
+            or len(rows) != len(set(rows))
+            or any(
+                not isinstance(assignment, str)
+                or (
+                    REPORT_RUN_ID.fullmatch(assignment) is None
+                    and re.fullmatch(r"[EVFPBLRQ]-(?:s[12]|c[12]|a1)", assignment)
+                    is None
+                    and assignment not in (*MATERIALITY_REVIEWERS, "ma1")
+                )
+                for assignment in rows
+            )
+        ):
+            raise ProtocolError(f"aggregation progress {field} is invalid")
+        assignment_lists[field] = rows
+    sealed = set(assignment_lists["sealed_assignments"])
+    started = set(assignment_lists["started_assignments"])
+    leaseable = set(assignment_lists["leaseable_assignments"])
+    pending = set(assignment_lists["pending_assignments"])
+    if (
+        sealed & started
+        or sealed & leaseable
+        or started & leaseable
+        or pending != started | leaseable
+    ):
+        raise ProtocolError("aggregation progress assignment partitions overlap or drift")
+
+    final_digest = progress["final_aggregate_sha256"]
+    terminal_digest = progress["terminal_failure_sha256"]
+    if final_digest is not None and (
+        not isinstance(final_digest, str) or HEX64.fullmatch(final_digest) is None
+    ):
+        raise ProtocolError("aggregation progress final digest is invalid")
+    if terminal_digest is not None and (
+        not isinstance(terminal_digest, str)
+        or HEX64.fullmatch(terminal_digest) is None
+    ):
+        raise ProtocolError("aggregation progress terminal digest is invalid")
+    if status == "WAITING":
+        valid_state = (
+            current_stage == "reports"
+            and not published_ids
+            and final_digest is None
+            and terminal_digest is None
+            and bool(pending)
+        )
+    elif status == "DERIVABLE":
+        valid_state = (
+            len(published_ids) < len(AGGREGATION_STAGE_ORDER)
+            and current_stage == AGGREGATION_STAGE_ORDER[len(published_ids)]
+            and final_digest is None
+            and terminal_digest is None
+            and not pending
+        )
+    elif status == "PUBLISHED":
+        valid_state = (
+            bool(published_ids)
+            and published_ids[-1] != "final"
+            and current_stage == published_ids[-1]
+            and final_digest is None
+            and terminal_digest is None
+            and bool(pending)
+        )
+    elif status == "COMPLETE":
+        valid_state = (
+            published_ids == AGGREGATION_STAGE_ORDER
+            and current_stage == "final"
+            and final_digest is not None
+            and terminal_digest is None
+            and 154 <= len(sealed) <= 163
+            and not pending
+            and not started
+            and not leaseable
+        )
+    else:
+        blocked_index = AGGREGATION_STAGE_ORDER.index(current_stage)
+        valid_state = (
+            published_ids == AGGREGATION_STAGE_ORDER[:blocked_index]
+            and final_digest is None
+            and terminal_digest is not None
+            and not pending
+            and not started
+            and not leaseable
+        )
+    if not valid_state:
+        raise ProtocolError("aggregation progress status/topology is inconsistent")
+    return progress
+
+
+def aggregation_progress_document(
+    *,
+    state: str,
+    current_stage: str,
+    coordinator_actor_id: str,
+    published_stages: list[dict[str, str]],
+    attempts: dict[str, dict[str, Any]],
+    leaseable_assignments: set[str],
+    pending_assignments: set[str],
+    final_aggregate_sha256: str | None = None,
+    terminal_failure_sha256: str | None = None,
+) -> dict[str, Any]:
+    return validate_aggregation_progress({
+        "schema_version": 1,
+        "status": state,
+        "current_stage": current_stage,
+        "coordinator_actor_id": require_production_actor_id(
+            coordinator_actor_id, "aggregation coordinator actor ID"
+        ),
+        "published_stages": published_stages,
+        "sealed_assignments": sorted(
+            assignment
+            for assignment, attempt in attempts.items()
+            if attempt["status"] == "SEALED"
+        ),
+        "started_assignments": sorted(
+            assignment
+            for assignment, attempt in attempts.items()
+            if attempt["status"] == "STARTED"
+        ),
+        "leaseable_assignments": sorted(leaseable_assignments),
+        "pending_assignments": sorted(pending_assignments),
+        "final_aggregate_sha256": final_aggregate_sha256,
+        "terminal_failure_sha256": terminal_failure_sha256,
+    })
+
+
+def advance_aggregation(
+    static_root: Path,
+    external_commitment_path: Path,
+    coordinator_actor_id: str | None,
+    *,
+    publish: bool = True,
+) -> dict[str, Any]:
+    """Advance the deterministic runtime DAG to its first unmet prerequisite."""
+
+    with production_custody_lock(
+        static_root, external_commitment_path
+    ) as (root, commitment):
+        return _advance_aggregation_under_custody(
+            root, commitment, coordinator_actor_id, publish=publish
+        )
+
+
+def _advance_aggregation_under_custody(
+    static_root: Path,
+    external_commitment_path: Path,
+    coordinator_actor_id: str | None,
+    *,
+    publish: bool,
+) -> dict[str, Any]:
+
+    if type(publish) is not bool:
+        raise ProtocolError("aggregation publish authority must be boolean")
+    if coordinator_actor_id is not None:
+        coordinator_actor_id = require_production_actor_id(
+            coordinator_actor_id, "aggregation coordinator actor ID"
+        )
+    root, static_lock, reviewer_ids, review_evidence = (
+        load_verified_static_bundle_with_review_evidence(
+            static_root, external_commitment_path
+        )
+    )
+    if coordinator_actor_id is not None:
+        require_production_runtime_actor(
+            coordinator_actor_id,
+            "aggregation coordinator actor ID",
+            reviewer_ids,
+        )
+    return _advance_aggregation_from_verified(
+        root,
+        static_lock,
+        reviewer_ids,
+        review_evidence,
+        coordinator_actor_id,
+        publish=publish,
+    )
+
+
+def _advance_aggregation_from_verified(
+    root: Path,
+    static_lock: dict[str, Any],
+    reviewer_ids: frozenset[str],
+    review_evidence: dict[str, Any],
+    coordinator_actor_id: str | None,
+    *,
+    publish: bool,
+) -> dict[str, Any]:
+    """Advance using one already authenticated static/reviewer capture."""
+
+    if type(publish) is not bool:
+        raise ProtocolError("aggregation publish authority must be boolean")
+    context = load_aggregation_static_context(
+        root, static_lock, reviewer_ids, review_evidence
+    )
+    state_root = root / "runtime" / "state"
+    if not state_root.is_dir() or state_root.is_symlink():
+        raise ProtocolError("aggregation requires an initialized runtime/state")
+    aggregation_root = state_root / "aggregation"
+    published_stages: list[dict[str, str]] = []
+
+    def require_no_terminal_before_wait() -> None:
+        terminal_path = aggregation_root / AGGREGATION_TERMINAL_FAILURE
+        if terminal_path.exists() or terminal_path.is_symlink():
+            raise ProtocolError(
+                "aggregation terminal failure exists before its sealed phase barrier"
+            )
+
+    def complete_stage(
+        stage_id: str,
+        files: dict[str, bytes],
+        prerequisite_sha: str | None,
+        prerequisite_assignments: set[str],
+    ) -> str:
+        expected_manifest = build_aggregation_stage_manifest(
+            stage_id,
+            files,
+            static_lock_sha256=context["static_lock_sha256"],
+            coordinator_actor_id=coordinator_actor_id,
+            prerequisite_stage_sha256=prerequisite_sha,
+            attempt_envelopes=sealed_attempt_envelopes(
+                attempts, prerequisite_assignments
+            ),
+        )
+        stage_path = (
+            aggregation_root / "final"
+            if stage_id == "final"
+            else aggregation_root / "derived" / stage_id
+        )
+        if publish:
+            manifest = publish_or_verify_aggregation_stage(
+                aggregation_root,
+                stage_id,
+                files,
+                static_lock_sha256=context["static_lock_sha256"],
+                coordinator_actor_id=coordinator_actor_id,
+                prerequisite_stage_sha256=prerequisite_sha,
+                attempt_envelopes=sealed_attempt_envelopes(
+                    attempts, prerequisite_assignments
+                ),
+            )
+        elif (stage_path / "stage-manifest.json").exists():
+            manifest = _validate_aggregation_stage_tree(
+                stage_path, files, expected_manifest
+            )
+        else:
+            raise AggregationStageDerivable(
+                aggregation_progress_document(
+                    state="DERIVABLE",
+                    current_stage=stage_id,
+                    coordinator_actor_id=coordinator_actor_id,
+                    published_stages=published_stages,
+                    attempts=attempts,
+                    leaseable_assignments=set(),
+                    pending_assignments=set(),
+                )
+            )
+        digest = aggregation_stage_digest(manifest)
+        expected_prefix = AGGREGATION_STAGE_ORDER[
+            : AGGREGATION_STAGE_ORDER.index(stage_id) + 1
+        ]
+        committed_stages = validate_aggregation_directory_inventory(
+            aggregation_root, require_final=stage_id == "final"
+        )
+        if (
+            committed_stages[: len(expected_prefix)] != expected_prefix
+            or (stage_id == "final" and committed_stages != expected_prefix)
+        ):
+            raise ProtocolError(
+                f"aggregation stage publication is not the exact prefix through {stage_id}"
+            )
+        published_stages.append(
+            {"stage_id": stage_id, "manifest_sha256": digest}
+        )
+        return digest
+
+    def complete_terminal_failure(
+        blocked_stage_id: str,
+        prerequisite_sha: str | None,
+        cumulative_assignments: set[str],
+        failure_assignments: set[str],
+    ) -> dict[str, Any]:
+        expected = build_aggregation_terminal_failure(
+            blocked_stage_id=blocked_stage_id,
+            static_lock_sha256=context["static_lock_sha256"],
+            coordinator_actor_id=coordinator_actor_id,
+            prerequisite_stage_sha256=prerequisite_sha,
+            attempts=attempts,
+            cumulative_assignments=cumulative_assignments,
+            failure_assignments=failure_assignments,
+        )
+        terminal_path = aggregation_root / AGGREGATION_TERMINAL_FAILURE
+        if publish:
+            terminal = publish_or_verify_aggregation_terminal_failure(
+                aggregation_root, expected
+            )
+        elif terminal_path.exists() or terminal_path.is_symlink():
+            terminal = validate_aggregation_terminal_failure(
+                read_committed_json(
+                    terminal_path, "aggregation terminal failure"
+                )
+            )
+            if (
+                terminal != expected
+                or terminal_path.read_bytes() != canonical_json_bytes(expected)
+            ):
+                raise ProtocolError(
+                    "aggregation terminal failure is not the exact rederivation"
+                )
+        else:
+            raise AggregationStageDerivable(
+                aggregation_progress_document(
+                    state="DERIVABLE",
+                    current_stage=blocked_stage_id,
+                    coordinator_actor_id=coordinator_actor_id,
+                    published_stages=published_stages,
+                    attempts=attempts,
+                    leaseable_assignments=set(),
+                    pending_assignments=set(),
+                )
+            )
+        expected_prefix = AGGREGATION_STAGE_ORDER[
+            : AGGREGATION_STAGE_ORDER.index(blocked_stage_id)
+        ]
+        if validate_aggregation_directory_inventory(
+            aggregation_root, require_final=False
+        ) != expected_prefix:
+            raise ProtocolError(
+                "terminal failure does not follow the exact committed stage prefix"
+            )
+        return aggregation_progress_document(
+            state="TERMINAL-FAILURE",
+            current_stage=blocked_stage_id,
+            coordinator_actor_id=coordinator_actor_id,
+            published_stages=published_stages,
+            attempts=attempts,
+            leaseable_assignments=set(),
+            pending_assignments=set(),
+            terminal_failure_sha256=sha256(canonical_json_bytes(terminal)),
+        )
+
+    with operation_lock(state_root):
+        claim_path = aggregation_root / AGGREGATION_COORDINATOR_CLAIM
+        if claim_path.exists() or claim_path.is_symlink():
+            claim = load_aggregation_coordinator_claim(
+                state_root, context["static_lock_sha256"], reviewer_ids
+            )
+            if (
+                coordinator_actor_id is not None
+                and coordinator_actor_id != claim["coordinator_actor_id"]
+            ):
+                raise ProtocolError("aggregation coordinator identity drifted")
+        else:
+            if coordinator_actor_id is None:
+                raise ProtocolError(
+                    "aggregation coordinator identity is required before report leasing"
+                )
+            if not publish:
+                raise ProtocolError(
+                    "read-only aggregation status requires an existing coordinator claim"
+                )
+            if _authoritative_leases(
+                state_root, production_reviewer_ids=reviewer_ids
+            ):
+                raise ProtocolError(
+                    "aggregation coordinator must be claimed before every semantic lease"
+                )
+            claim = build_aggregation_coordinator_claim(
+                coordinator_actor_id,
+                context["static_lock_sha256"],
+                reviewer_ids,
+            )
+        if publish:
+            recover_exclusive_write_residues(state_root)
+            if aggregation_root.exists():
+                recover_private_aggregation_stages(aggregation_root)
+            _write_or_validate_immutable(claim_path, claim)
+        coordinator_actor_id = claim["coordinator_actor_id"]
+        reserved_actor_ids = reviewer_ids | {coordinator_actor_id}
+        attempts = _load_attempt_progress_locked(
+            state_root, reserved_actor_ids, root
+        )
+        report_ids = {f"r{index:03d}" for index in range(1, 121)}
+        report_sealed, report_started = exact_progress_partition(
+            attempts,
+            completed=set(),
+            eligible=report_ids,
+            label="report collection",
+        )
+        if report_sealed != report_ids:
+            require_no_terminal_before_wait()
+            if validate_aggregation_directory_inventory(
+                aggregation_root, require_final=False
+            ):
+                raise ProtocolError(
+                    "aggregation stages exist before report collection is complete"
+                )
+            return aggregation_progress_document(
+                state="WAITING",
+                current_stage="reports",
+                coordinator_actor_id=coordinator_actor_id,
+                published_stages=published_stages,
+                attempts=attempts,
+                leaseable_assignments=report_ids - set(attempts),
+                pending_assignments=(report_ids - report_sealed) | report_started,
+            )
+
+        report_failures = aggregation_phase_failure_assignments(
+            attempts, report_ids, report_phase=True
+        )
+        if report_failures:
+            return complete_terminal_failure(
+                "01-report-products", None, report_ids, report_failures
+            )
+
+        report_files, report_products = derive_report_products(context, attempts)
+        stage_01_sha = complete_stage(
+            "01-report-products", report_files, None, report_ids
+        )
+        scorer_ids = {f"{mode}-{scorer}" for mode in MODES for scorer in SCORERS}
+        scorer_sealed, scorer_started = exact_progress_partition(
+            attempts,
+            completed=report_ids,
+            eligible=scorer_ids,
+            label="scorer collection",
+        )
+        if scorer_sealed != scorer_ids:
+            require_no_terminal_before_wait()
+            return aggregation_progress_document(
+                state="PUBLISHED",
+                current_stage="01-report-products",
+                coordinator_actor_id=coordinator_actor_id,
+                published_stages=published_stages,
+                attempts=attempts,
+                leaseable_assignments=scorer_ids - set(attempts),
+                pending_assignments=(scorer_ids - scorer_sealed) | scorer_started,
+            )
+
+        scorer_failures = aggregation_phase_failure_assignments(
+            attempts, scorer_ids, report_phase=False
+        )
+        if scorer_failures:
+            return complete_terminal_failure(
+                "02-scorer-products",
+                stage_01_sha,
+                report_ids | scorer_ids,
+                scorer_failures,
+            )
+
+        scorer_files, scorer_products = derive_scorer_products(
+            context, attempts, report_products
+        )
+        cumulative = report_ids | scorer_ids
+        stage_02_sha = complete_stage(
+            "02-scorer-products",
+            scorer_files,
+            stage_01_sha,
+            cumulative,
+        )
+        consistency_ids = {
+            f"{mode}-{reviewer}"
+            for mode in MODES
+            for reviewer in CONSISTENCY_REVIEWERS
+        }
+        consistency_sealed, consistency_started = exact_progress_partition(
+            attempts,
+            completed=cumulative,
+            eligible=consistency_ids,
+            label="consistency collection",
+        )
+        if consistency_sealed != consistency_ids:
+            require_no_terminal_before_wait()
+            return aggregation_progress_document(
+                state="PUBLISHED",
+                current_stage="02-scorer-products",
+                coordinator_actor_id=coordinator_actor_id,
+                published_stages=published_stages,
+                attempts=attempts,
+                leaseable_assignments=consistency_ids - set(attempts),
+                pending_assignments=(consistency_ids - consistency_sealed)
+                | consistency_started,
+            )
+
+        consistency_failures = aggregation_phase_failure_assignments(
+            attempts, consistency_ids, report_phase=False
+        )
+        if consistency_failures:
+            return complete_terminal_failure(
+                "03-consistency-products",
+                stage_02_sha,
+                cumulative | consistency_ids,
+                consistency_failures,
+            )
+
+        consistency_files, consistency_products = derive_consistency_products(
+            context, attempts, report_products, scorer_products
+        )
+        cumulative |= consistency_ids
+        stage_03_sha = complete_stage(
+            "03-consistency-products",
+            consistency_files,
+            stage_02_sha,
+            cumulative,
+        )
+        adjudicator_ids = consistency_products["required_adjudicators"]
+        adjudicator_sealed, adjudicator_started = exact_progress_partition(
+            attempts,
+            completed=cumulative,
+            eligible=adjudicator_ids,
+            label="mode adjudication collection",
+        )
+        if adjudicator_sealed != adjudicator_ids:
+            require_no_terminal_before_wait()
+            return aggregation_progress_document(
+                state="PUBLISHED",
+                current_stage="03-consistency-products",
+                coordinator_actor_id=coordinator_actor_id,
+                published_stages=published_stages,
+                attempts=attempts,
+                leaseable_assignments=adjudicator_ids - set(attempts),
+                pending_assignments=(adjudicator_ids - adjudicator_sealed)
+                | adjudicator_started,
+            )
+
+        adjudicator_failures = aggregation_phase_failure_assignments(
+            attempts, adjudicator_ids, report_phase=False
+        )
+        if adjudicator_failures:
+            return complete_terminal_failure(
+                "04-score-products",
+                stage_03_sha,
+                cumulative | adjudicator_ids,
+                adjudicator_failures,
+            )
+
+        score_files, score_products = derive_score_products(
+            context,
+            attempts,
+            report_products,
+            scorer_products,
+            consistency_products,
+        )
+        cumulative |= adjudicator_ids
+        stage_04_sha = complete_stage(
+            "04-score-products", score_files, stage_03_sha, cumulative
+        )
+        materiality_ids = set(MATERIALITY_REVIEWERS)
+        materiality_sealed, materiality_started = exact_progress_partition(
+            attempts,
+            completed=cumulative,
+            eligible=materiality_ids,
+            label="materiality review collection",
+        )
+        if materiality_sealed != materiality_ids:
+            require_no_terminal_before_wait()
+            return aggregation_progress_document(
+                state="PUBLISHED",
+                current_stage="04-score-products",
+                coordinator_actor_id=coordinator_actor_id,
+                published_stages=published_stages,
+                attempts=attempts,
+                leaseable_assignments=materiality_ids - set(attempts),
+                pending_assignments=(materiality_ids - materiality_sealed)
+                | materiality_started,
+            )
+
+        materiality_failures = aggregation_phase_failure_assignments(
+            attempts, materiality_ids, report_phase=False
+        )
+        if materiality_failures:
+            return complete_terminal_failure(
+                "05-materiality-products",
+                stage_04_sha,
+                cumulative | materiality_ids,
+                materiality_failures,
+            )
+
+        materiality_files, materiality_products = (
+            derive_materiality_review_products(context, attempts, score_products)
+        )
+        cumulative |= materiality_ids
+        stage_05_sha = complete_stage(
+            "05-materiality-products",
+            materiality_files,
+            stage_04_sha,
+            cumulative,
+        )
+        materiality_adjudicator_ids = (
+            {"ma1"} if materiality_products["requires_adjudicator"] else set()
+        )
+        ma_sealed, ma_started = exact_progress_partition(
+            attempts,
+            completed=cumulative,
+            eligible=materiality_adjudicator_ids,
+            label="materiality adjudication collection",
+        )
+        if ma_sealed != materiality_adjudicator_ids:
+            require_no_terminal_before_wait()
+            return aggregation_progress_document(
+                state="PUBLISHED",
+                current_stage="05-materiality-products",
+                coordinator_actor_id=coordinator_actor_id,
+                published_stages=published_stages,
+                attempts=attempts,
+                leaseable_assignments=materiality_adjudicator_ids - set(attempts),
+                pending_assignments=(materiality_adjudicator_ids - ma_sealed)
+                | ma_started,
+            )
+
+        materiality_adjudicator_failures = aggregation_phase_failure_assignments(
+            attempts, materiality_adjudicator_ids, report_phase=False
+        )
+        if materiality_adjudicator_failures:
+            return complete_terminal_failure(
+                "final",
+                stage_05_sha,
+                cumulative | materiality_adjudicator_ids,
+                materiality_adjudicator_failures,
+            )
+
+        cumulative |= materiality_adjudicator_ids
+        final_files, final_products = derive_final_aggregation_products(
+            context,
+            attempts,
+            report_products,
+            scorer_products,
+            consistency_products,
+            score_products,
+            materiality_products,
+            coordinator_actor_id,
+        )
+        complete_stage("final", final_files, stage_05_sha, cumulative)
+        return aggregation_progress_document(
+            state="COMPLETE",
+            current_stage="final",
+            coordinator_actor_id=coordinator_actor_id,
+            published_stages=published_stages,
+            attempts=attempts,
+            leaseable_assignments=set(),
+            pending_assignments=set(),
+            final_aggregate_sha256=sha256(
+                canonical_json_bytes(final_products["aggregate"])
+            ),
+        )
+
+
+def aggregation_status(
+    static_root: Path,
+    external_commitment_path: Path,
+) -> dict[str, Any]:
+    """Report deterministic aggregation progress without publishing any bytes."""
+
+    try:
+        return advance_aggregation(
+            static_root,
+            external_commitment_path,
+            None,
+            publish=False,
+        )
+    except AggregationStageDerivable as state:
+        return state.progress
+
+
+def build_production_evaluator_launch(
+    static_root: Path,
+    external_commitment_path: Path,
+    assignment_id: str,
+) -> dict[str, Any]:
+    """Return one already-derived authoritative evaluator launch."""
+
+    evaluator_stage_location(assignment_id)
+    with production_custody_lock(
+        static_root, external_commitment_path
+    ) as (root, commitment):
+        try:
+            progress = _advance_aggregation_under_custody(
+                root, commitment, None, publish=False
+            )
+        except AggregationStageDerivable as state:
+            progress = state.progress
+        if assignment_id not in progress["leaseable_assignments"]:
+            raise ProtocolError(
+                f"evaluator assignment is not currently leaseable: {assignment_id}"
+            )
+        verified_root, _lock, _reviewer_ids = load_verified_static_bundle(
+            root, commitment
+        )
+        _packet_path, _launch_path, _spec_path, _packet, launch = (
+            load_authoritative_evaluator_material(
+                verified_root,
+                assignment_id,
+                capability=_PRODUCTION_LEASE_CAPABILITY,
+            )
+        )
+        return launch
+
+
+def evaluator_stage_location(assignment_id: str) -> tuple[str, str, str]:
+    require_safe_id(assignment_id, "evaluator assignment")
+    if re.fullmatch(r"[EVFPBLRQ]-s[12]", assignment_id):
+        return (
+            "01-report-products",
+            f"packets/scorers/{assignment_id}.json",
+            f"launches/scorers/{assignment_id}.json",
+        )
+    match = re.fullmatch(r"([EVFPBLRQ])-c[12]", assignment_id)
+    if match:
+        mode = match.group(1)
+        return (
+            "02-scorer-products",
+            f"packets/consistency/{mode}.json",
+            f"launches/consistency/{assignment_id}.json",
+        )
+    match = re.fullmatch(r"([EVFPBLRQ])-a1", assignment_id)
+    if match:
+        mode = match.group(1)
+        return (
+            "03-consistency-products",
+            f"packets/adjudication/{mode}.json",
+            f"launches/adjudication/{assignment_id}.json",
+        )
+    if assignment_id in MATERIALITY_REVIEWERS:
+        return (
+            "04-score-products",
+            "packets/materiality-review.json",
+            f"launches/materiality/{assignment_id}.json",
+        )
+    if assignment_id == "ma1":
+        return (
+            "05-materiality-products",
+            "packets/materiality-adjudication.json",
+            "launches/materiality/ma1.json",
+        )
+    raise ProtocolError(f"unknown evaluator assignment: {assignment_id}")
+
+
+def load_authoritative_evaluator_material(
+    root: Path,
+    assignment_id: str,
+    *,
+    capability: object | None = None,
+    ready_documents: dict[str, Any] | None = None,
+) -> tuple[Path, Path, Path, dict[str, Any], dict[str, Any]]:
+    if capability is not _PRODUCTION_LEASE_CAPABILITY:
+        raise ProtocolError(
+            "evaluator stage material is available only through the assignment-only production route"
+        )
+    stage_id, packet_relative, launch_relative = evaluator_stage_location(
+        assignment_id
+    )
+    aggregation_root = root / "runtime" / "state" / "aggregation"
+    packet_path = aggregation_stage_file(
+        aggregation_root, stage_id, packet_relative
+    )
+    launch_path = aggregation_stage_file(
+        aggregation_root, stage_id, launch_relative
+    )
+    packet_bytes = packet_path.read_bytes()
+    launch_bytes = launch_path.read_bytes()
+    packet = strict_json_loads(packet_bytes, str(packet_path))
+    launch = validate_launch_record(strict_json_loads(launch_bytes, str(launch_path)))
+    documents = (
+        ready_documents
+        if ready_documents is not None
+        else load_ready_generated_documents(root)
+    )
+    expected_launch, row = build_expected_evaluator_launch(
+        root, documents, assignment_id, packet_bytes
+    )
+    if (
+        launch != expected_launch
+        or launch_bytes != canonical_json_bytes(expected_launch)
+    ):
+        raise ProtocolError(
+            f"published evaluator launch is not the exact derivation: {assignment_id}"
+        )
+    validate_evaluator_packet_for_role(packet, row)
+    spec_path = root / Path(*PurePosixPath(row["envelope_spec_path"]).parts)
+    return packet_path, launch_path, spec_path, packet, launch
+
+
+def acquire_evaluator_lease(
+    static_root: Path,
+    external_commitment_path: Path,
+    assignment_id: str,
+    agent_id: str,
+) -> dict[str, Any]:
+    """Lease one evaluator using only its assignment-owned staged material."""
+
+    with production_custody_lock(
+        static_root, external_commitment_path
+    ) as (root, commitment):
+        return _acquire_evaluator_lease_under_custody(
+            root, commitment, assignment_id, agent_id
+        )
+
+
+def _acquire_evaluator_lease_under_custody(
+    static_root: Path,
+    external_commitment_path: Path,
+    assignment_id: str,
+    agent_id: str,
+) -> dict[str, Any]:
+
+    evaluator_stage_location(assignment_id)
+    agent_id = require_production_actor_id(
+        agent_id, "production evaluator agent ID"
+    )
+    root, static_lock, reviewer_ids, review_evidence = (
+        load_verified_static_bundle_with_review_evidence(
+            static_root, external_commitment_path
+        )
+    )
+    claim = load_aggregation_coordinator_claim(
+        root / "runtime" / "state",
+        sha256(canonical_json_bytes(static_lock)),
+        reviewer_ids,
+    )
+    reserved_actor_ids = reviewer_ids | {claim["coordinator_actor_id"]}
+    require_production_runtime_actor(
+        agent_id, "production evaluator agent ID", reserved_actor_ids
+    )
+    state_root = root / "runtime" / "state"
+    with operation_lock(state_root):
+        _write_or_validate_immutable(
+            state_root / "aggregation" / AGGREGATION_COORDINATOR_CLAIM,
+            claim,
+        )
+        lease_path = state_root / "slots" / assignment_id / "lease.json"
+        recovering = lease_path.is_file() and not lease_path.is_symlink()
+        if recovering:
+            existing = validate_lease(
+                read_committed_json(lease_path, "recovering evaluator lease")
+            )
+            if (
+                existing["slot_id"] != assignment_id
+                or existing["agent_id"] != agent_id
+            ):
+                raise LeaseAlreadyExists(
+                    "evaluator assignment already belongs to a different lease"
+                )
+            recover_exclusive_write_residues(state_root)
+            recovered_state = _verify_state_locked(
+                state_root,
+                production_reviewer_ids=reserved_actor_ids,
+                production_static_root=root,
+            )
+            recovered_row = next(
+                (
+                    row
+                    for row in recovered_state["slots"]
+                    if row["slot_id"] == assignment_id
+                ),
+                None,
+            )
+            if recovered_row is None or recovered_row["status"] not in (
+                "LEASE_INITIALIZING",
+                "STARTED",
+            ):
+                raise LeaseAlreadyExists(
+                    "evaluator lease is not in a recoverable pre-terminal state"
+                )
+    if not recovering:
+        progress = _advance_aggregation_from_verified(
+            root,
+            static_lock,
+            reviewer_ids,
+            review_evidence,
+            None,
+            publish=True,
+        )
+        if assignment_id not in progress["leaseable_assignments"]:
+            raise ProtocolError(
+                f"evaluator assignment is not currently leaseable: {assignment_id}"
+            )
+    packet_path, launch_path, spec_path, _packet, launch = (
+        load_authoritative_evaluator_material(
+            root,
+            assignment_id,
+            capability=_PRODUCTION_LEASE_CAPABILITY,
+        )
+    )
+    return acquire_lease(
+        state_root,
+        launch_path,
+        agent_id,
+        spec_path,
+        Path(launch["output_root"]),
+        packet_path,
+        production_context=(root, reserved_actor_ids),
+        production_capability=_PRODUCTION_LEASE_CAPABILITY,
+    )
+
+
+def acquire_report_lease(
+    static_root: Path,
+    external_commitment_path: Path,
+    run_id: str,
+    agent_id: str,
+) -> dict[str, Any]:
+    """Lease one report using only its authenticated static run identity."""
+
+    with production_custody_lock(
+        static_root, external_commitment_path
+    ) as (root, commitment):
+        return _acquire_report_lease_under_custody(
+            root, commitment, run_id, agent_id
+        )
+
+
+def _acquire_report_lease_under_custody(
+    static_root: Path,
+    external_commitment_path: Path,
+    run_id: str,
+    agent_id: str,
+) -> dict[str, Any]:
+
+    if not isinstance(run_id, str) or REPORT_RUN_ID.fullmatch(run_id) is None:
+        raise ProtocolError("report lease run ID is invalid")
+    agent_id = require_production_actor_id(
+        agent_id, "production report agent ID"
+    )
+    root, static_lock, reviewer_ids = load_verified_static_bundle(
+        static_root, external_commitment_path
+    )
+    claim = load_aggregation_coordinator_claim(
+        root / "runtime" / "state",
+        sha256(canonical_json_bytes(static_lock)),
+        reviewer_ids,
+    )
+    reserved_actor_ids = reviewer_ids | {claim["coordinator_actor_id"]}
+    require_production_runtime_actor(
+        agent_id, "production report agent ID", reserved_actor_ids
+    )
+    state_root = root / "runtime" / "state"
+    with operation_lock(state_root):
+        _write_or_validate_immutable(
+            state_root / "aggregation" / AGGREGATION_COORDINATOR_CLAIM,
+            claim,
+        )
+    documents = load_ready_generated_documents(root)
+    launch = next(
+        item for item in documents["report-launch-records"] if item["run_id"] == run_id
+    )
+    launch_path = (
+        root / "static" / "generated" / "launch-records" / f"{run_id}.json"
+    )
+    plan_path = (
+        root
+        / "static"
+        / "generated"
+        / "report-input-plans"
+        / f"{run_id}.json"
+    )
+    spec_path = (
+        root
+        / "static"
+        / "envelope-specs"
+        / f"report-{launch['mode']}.json"
+    )
+    return acquire_lease(
+        state_root,
+        launch_path,
+        agent_id,
+        spec_path,
+        Path(launch["output_root"]),
+        plan_path,
+        production_context=(root, reserved_actor_ids),
+        production_capability=_PRODUCTION_LEASE_CAPABILITY,
+    )
+
+
+def seal_production_attempt(
+    static_root: Path,
+    external_commitment_path: Path,
+    slot_id: str,
+    lease_token: str,
+    agent_id: str,
+    final_response: bytes | OversizedFinalResponse | None,
+    process_disposition: str,
+    process_exit_code: int | None,
+    metadata: dict[str, Any],
+) -> dict[str, Any]:
+    """Seal using the attempt root already authenticated by the lease ledger."""
+
+    with production_custody_lock(
+        static_root, external_commitment_path
+    ) as (root, commitment):
+        return _seal_production_attempt_under_custody(
+            root,
+            commitment,
+            slot_id,
+            lease_token,
+            agent_id,
+            final_response,
+            process_disposition,
+            process_exit_code,
+            metadata,
+        )
+
+
+def _seal_production_attempt_under_custody(
+    static_root: Path,
+    external_commitment_path: Path,
+    slot_id: str,
+    lease_token: str,
+    agent_id: str,
+    final_response: bytes | OversizedFinalResponse | None,
+    process_disposition: str,
+    process_exit_code: int | None,
+    metadata: dict[str, Any],
+) -> dict[str, Any]:
+
+    slot_id = require_safe_id(slot_id, "slot ID")
+    agent_id = require_production_actor_id(
+        agent_id, "production seal agent ID"
+    )
+    if not isinstance(lease_token, str) or HEX64.fullmatch(lease_token) is None:
+        raise ProtocolError("invalid lease token")
+    if not isinstance(metadata, dict):
+        raise ProtocolError("coordinator metadata must be an object")
+    require_safe_id(process_disposition, "process disposition")
+    if process_exit_code is not None and type(process_exit_code) is not int:
+        raise ProtocolError("process exit code must be an integer or null")
+    describe_final_response(final_response)
+    canonical_json_bytes(metadata)
+    root, static_lock, reviewer_ids = load_verified_static_bundle(
+        static_root, external_commitment_path
+    )
+    state_root = root / "runtime" / "state"
+    claim = load_aggregation_coordinator_claim(
+        state_root,
+        sha256(canonical_json_bytes(static_lock)),
+        reviewer_ids,
+    )
+    reserved_actor_ids = reviewer_ids | {claim["coordinator_actor_id"]}
+    require_production_runtime_actor(
+        agent_id, "production seal agent ID", reserved_actor_ids
+    )
+    with operation_lock(state_root):
+        lease_path = state_root / "slots" / slot_id / "lease.json"
+        lease = validate_lease(
+            read_committed_json(lease_path, "production seal lease")
+        )
+        require_production_runtime_actor(
+            lease["agent_id"],
+            "persisted production lease agent ID",
+            reserved_actor_ids,
+        )
+        if lease["slot_id"] != slot_id:
+            raise ProtocolError("production seal slot/lease mismatch")
+        attempt_root = Path(lease["attempt_root"])
+    return seal_attempt(
+        state_root,
+        slot_id,
+        lease_token,
+        agent_id,
+        attempt_root,
+        final_response,
+        process_disposition,
+        process_exit_code,
+        metadata,
+        production_context=(root, reserved_actor_ids),
+        production_capability=_PRODUCTION_LEASE_CAPABILITY,
+    )
+
+
+def verify_production_state(
+    static_root: Path, external_commitment_path: Path
+) -> dict[str, Any]:
+    with production_custody_lock(
+        static_root, external_commitment_path
+    ) as (root, commitment):
+        return _verify_production_state_under_custody(root, commitment)
+
+
+def _verify_production_state_under_custody(
+    static_root: Path, external_commitment_path: Path
+) -> dict[str, Any]:
+    root, static_lock, reviewer_ids = load_verified_static_bundle(
+        static_root, external_commitment_path
+    )
+    state_root = root / "runtime" / "state"
+    claim = load_aggregation_coordinator_claim(
+        state_root,
+        sha256(canonical_json_bytes(static_lock)),
+        reviewer_ids,
+    )
+    with operation_lock(state_root):
+        return _verify_state_locked(
+            state_root,
+            production_reviewer_ids=reviewer_ids
+            | {claim["coordinator_actor_id"]},
+            production_static_root=root,
+        )
+
+
+def rederive_complete_aggregation_from_verified(
+    root: Path,
+    static_lock: dict[str, Any],
+    reviewer_ids: frozenset[str],
+    review_evidence: dict[str, Any],
+) -> dict[str, Any]:
+    """Rebuild and byte-compare the entire immutable stage chain."""
+
+    terminal_path = (
+        root
         / "runtime"
         / "state"
         / "aggregation"
-        / "inputs"
-        / "materiality-ledger.json"
+        / AGGREGATION_TERMINAL_FAILURE
     )
-    ledger = validate_materiality_ledger(
-        read_committed_json(ledger_path, "materiality ledger")
+    if terminal_path.exists() or terminal_path.is_symlink():
+        progress = _advance_aggregation_from_verified(
+            root,
+            static_lock,
+            reviewer_ids,
+            review_evidence,
+            None,
+            publish=False,
+        )
+        if progress["status"] != "TERMINAL-FAILURE":
+            raise ProtocolError("aggregation terminal outcome did not rederive")
+        raise ProtocolError(
+            "aggregation ended in an authenticated terminal error: "
+            f"{progress['current_stage']}/"
+            f"{progress['terminal_failure_sha256']}"
+        )
+
+    context = load_aggregation_static_context(
+        root, static_lock, reviewer_ids, review_evidence
     )
-    if ledger != expected_ledger:
-        raise ProtocolError("materiality ledger is not the deterministic review merge")
-    return ledger, used
+    aggregation_root = root / "runtime" / "state" / "aggregation"
+    validate_aggregation_directory_inventory(
+        aggregation_root, require_final=True
+    )
+    claim = load_aggregation_coordinator_claim(
+        root / "runtime" / "state",
+        context["static_lock_sha256"],
+        reviewer_ids,
+    )
+    coordinator_actor_id = claim["coordinator_actor_id"]
+    reserved_actor_ids = reviewer_ids | {coordinator_actor_id}
+    attempts = load_canonical_attempt_inventory(root, reserved_actor_ids)
+    first_manifest_path = (
+        aggregation_root
+        / "derived"
+        / "01-report-products"
+        / "stage-manifest.json"
+    )
+    first_manifest = read_committed_json(
+        first_manifest_path, "Stage 01 manifest"
+    )
+    if first_manifest.get("coordinator_actor_id") != coordinator_actor_id:
+        raise ProtocolError("Stage 01 coordinator does not equal the immutable claim")
+
+    def validate_stage(
+        stage_id: str,
+        files: dict[str, bytes],
+        prerequisite_sha: str | None,
+        prerequisite_assignments: set[str],
+    ) -> str:
+        expected = build_aggregation_stage_manifest(
+            stage_id,
+            files,
+            static_lock_sha256=context["static_lock_sha256"],
+            coordinator_actor_id=coordinator_actor_id,
+            prerequisite_stage_sha256=prerequisite_sha,
+            attempt_envelopes=sealed_attempt_envelopes(
+                attempts, prerequisite_assignments
+            ),
+        )
+        stage_root = (
+            aggregation_root / "final"
+            if stage_id == "final"
+            else aggregation_root / "derived" / stage_id
+        )
+        manifest = _validate_aggregation_stage_tree(stage_root, files, expected)
+        return aggregation_stage_digest(manifest)
+
+    report_ids = {f"r{index:03d}" for index in range(1, 121)}
+    report_files, report_products = derive_report_products(context, attempts)
+    stage_01_sha = validate_stage(
+        "01-report-products", report_files, None, report_ids
+    )
+    scorer_ids = {f"{mode}-{scorer}" for mode in MODES for scorer in SCORERS}
+    scorer_files, scorer_products = derive_scorer_products(
+        context, attempts, report_products
+    )
+    cumulative = report_ids | scorer_ids
+    stage_02_sha = validate_stage(
+        "02-scorer-products", scorer_files, stage_01_sha, cumulative
+    )
+    consistency_ids = {
+        f"{mode}-{reviewer}"
+        for mode in MODES
+        for reviewer in CONSISTENCY_REVIEWERS
+    }
+    consistency_files, consistency_products = derive_consistency_products(
+        context, attempts, report_products, scorer_products
+    )
+    cumulative |= consistency_ids
+    stage_03_sha = validate_stage(
+        "03-consistency-products",
+        consistency_files,
+        stage_02_sha,
+        cumulative,
+    )
+    score_files, score_products = derive_score_products(
+        context,
+        attempts,
+        report_products,
+        scorer_products,
+        consistency_products,
+    )
+    cumulative |= consistency_products["required_adjudicators"]
+    stage_04_sha = validate_stage(
+        "04-score-products", score_files, stage_03_sha, cumulative
+    )
+    materiality_files, materiality_products = derive_materiality_review_products(
+        context, attempts, score_products
+    )
+    cumulative |= set(MATERIALITY_REVIEWERS)
+    stage_05_sha = validate_stage(
+        "05-materiality-products",
+        materiality_files,
+        stage_04_sha,
+        cumulative,
+    )
+    if materiality_products["requires_adjudicator"]:
+        cumulative.add("ma1")
+    final_files, final_products = derive_final_aggregation_products(
+        context,
+        attempts,
+        report_products,
+        scorer_products,
+        consistency_products,
+        score_products,
+        materiality_products,
+        coordinator_actor_id,
+    )
+    validate_stage("final", final_files, stage_05_sha, cumulative)
+    return final_products
+
+
+def attempt_output_json(attempt: dict[str, Any], label: str) -> Any:
+    data = attempt["primary_bytes"]
+    if not isinstance(data, bytes):
+        raise ProtocolError(f"{label} lacks canonical primary output bytes")
+    return strict_json_loads(data, label)
 
 
 def readable_tree_snapshot(
@@ -7660,414 +12484,29 @@ def _derive_aggregate_context_from_verified(
 ) -> dict[str, Any]:
     """Derive every gate input from one coherently verified static context."""
 
-    authenticated_review_evidence = validate_authenticated_review_evidence(
-        authenticated_review_evidence, production_reviewer_ids
-    )
-    inventory = validate_root_inventory(
-        read_json(root / "root-inventory.json"), "READY"
-    )
-    gate_manifest = validate_gate_manifest(
-        read_json(root / "gate-manifest.json"), inventory, "READY"
-    )
-    validate_aggregation_rules(
-        read_json(root / "aggregation-rules.json"), gate_manifest, "READY"
-    )
-    validate_report_projection_contract(
-        read_json(root / "report-projection-contract.json"), "READY"
-    )
-    materiality_contract = validate_materiality_contract(
-        read_json(root / "materiality-review-contract.json"), "READY"
-    )
-    documents = load_ready_generated_documents(root)
-    trusted_integration = trusted_integration_module()
-    declaration_bytes = (
-        root / "static" / "integration" / "source-declaration.json"
-    ).read_bytes()
-    reviewed = trusted_integration["validate_reviewed_values"](
-        read_json(root / "static" / "integration" / "integration-values.json"),
-        declaration_bytes,
-    )
-    packages_document = read_json(root / "packages.json")
-    trusted_prepare = run_trusted_module("prepare.py", "v5_aggregate_prepare")
-    trusted_prepare["validate_packages"](packages_document)
-    blind_join = derive_blind_join(documents)
-    attempts = load_canonical_attempt_inventory(root, production_reviewer_ids)
-    by_run = {row["run_id"]: row for row in blind_join}
-    report_attempts: dict[str, dict[str, Any]] = {}
-    static_launches = {
-        launch["run_id"]: launch for launch in documents["report-launch-records"]
-    }
-    for run_id in sorted(by_run):
-        attempt = attempts.get(run_id)
-        if (
-            attempt is None
-            or attempt["launch"]["role"] != "report"
-            or attempt["launch"]["run_id"] != run_id
-            or attempt["launch"]["mode"] != by_run[run_id]["mode"]
-            or attempt["launch"] != static_launches[run_id]
-            or attempt["primary_bytes"] is None
-        ):
-            raise ProtocolError(f"missing or mismatched canonical report attempt: {run_id}")
-        report_attempts[run_id] = attempt
-
-    input_root = validate_aggregate_input_tree(root)
-    word_manifest_path = input_root / "word-counts.json"
-    word_manifest = validate_word_count_manifest(
-        read_committed_json(word_manifest_path, "word-count manifest")
-    )
-    word_by_run = {row["run_id"]: row["receipt"] for row in word_manifest["records"]}
-    target_rows = {
-        row["mode"]: row for row in documents["target-map.json"]["targets"]
-    }
-    counter = run_trusted_module("word_count.py", "v5_bound_word_counter")
-    count_words = counter["count_words"]
-    for run_id, attempt in report_attempts.items():
-        receipt = word_by_run[run_id]
-        raw = attempt["primary_bytes"]
-        mode = by_run[run_id]["mode"]
-        expected_count = count_words(raw)
-        if receipt != {
-            "schema_version": 1,
-            "status": "COUNTED",
-            "algorithm_id": "unicode-whitespace-runs-python-v1",
-            "report_sha256": sha256(raw),
-            "word_count": expected_count,
-            "word_cap": target_rows[mode]["word_cap"],
-            "valid": expected_count <= target_rows[mode]["word_cap"],
-        }:
-            raise ProtocolError(f"word-count receipt is not recomputable: {run_id}")
-
-    projection_path = input_root / "projection-audit-manifest.json"
-    projection_manifest = validate_projection_audit_manifest(
-        read_committed_json(projection_path, "projection audit manifest")
-    )
-    projection_by_run = {row["run_id"]: row for row in projection_manifest["records"]}
-    projected_reports: dict[tuple[str, str], bytes] = {}
-    scorer_receipts: dict[tuple[str, str], dict[str, Any]] = {}
-    for run_id, row in projection_by_run.items():
-        joined = by_run[run_id]
-        raw = report_attempts[run_id]["primary_bytes"]
-        expected_inventory = derive_report_secret_inventory(
-            root,
-            report_attempts[run_id]["launch"],
-            report_attempts[run_id]["lease"],
-            reviewed,
-            packages_document,
-            target_rows[joined["mode"]],
-        )
-        if row["secret_inventory"] != expected_inventory:
-            raise ProtocolError(f"projection secret inventory is not derived: {run_id}")
-        projected, scorer_receipt, recomputed_audit = project_report_for_scorer(
-            row["label"], raw, expected_inventory
-        )
-        if (
-            row["mode"] != joined["mode"]
-            or row["label"] != joined["label"]
-            or row["receipt"]["raw_report_sha256"]
-            != sha256(raw)
-            or row["receipt"] != recomputed_audit
-            or row["receipt"]["projected_report_sha256"] != sha256(projected)
-        ):
-            raise ProtocolError(f"projection audit does not bind raw report: {run_id}")
-        projected_reports[(row["mode"], row["label"])] = projected
-        scorer_receipts[(row["mode"], row["label"])] = scorer_receipt
-
-    finals, scoring_bundle, scoring_assignments = reconstruct_final_scores(
+    return rederive_complete_aggregation_from_verified(
         root,
-        attempts,
-        projection_manifest,
-        blind_join,
-        projected_reports,
-        scorer_receipts,
-        documents,
-    )
-    joined_reports: list[dict[str, Any]] = []
-    for row in blind_join:
-        final_report = next(
-            item for item in finals[row["mode"]]["reports"] if item["label"] == row["label"]
-        )
-        audit = projection_by_run[row["run_id"]]["receipt"]
-        gh12_present = "GH12" in final_report["hard_errors"]
-        if gh12_present is not bool(audit["replacements"]):
-            raise ProtocolError(
-                f"GH12 does not equal projection redaction presence: {row['run_id']}"
-            )
-        raw = report_attempts[row["run_id"]]["primary_bytes"]
-        try:
-            raw_text = raw.decode("utf-8", errors="strict")
-        except UnicodeDecodeError as error:
-            raise ProtocolError(f"canonical report is not UTF-8: {row['run_id']}") from error
-        joined_reports.append(
-            {
-                **row,
-                "raw_report_sha256": sha256(raw),
-                "raw_report": raw_text,
-                "projected_report_sha256": audit["projected_report_sha256"],
-                "final_report": final_report,
-            }
-        )
+        static_lock,
+        production_reviewer_ids,
+        authenticated_review_evidence,
+    )["aggregate"]
 
-    controls = validate_control_manifest(
-        read_json(root / "freeze" / "controls.json"),
-        "READY",
-        root / "freeze" / "atoms",
-    )
-    candidate_by_mode: dict[str, list[dict[str, Any]]] = {
-        mode: [
-            row
-            for row in joined_reports
-            if row["mode"] == mode and row["condition_role"] == "v5"
-        ]
-        for mode in MODES
-    }
-    control_records: list[dict[str, Any]] = []
-    for control in controls["controls"]:
-        candidates = candidate_by_mode[control["mode"]]
-        passed = all(
-            all(
-                next(atom for atom in row["final_report"]["atoms"] if atom["id"] == atom_id)[
-                    "certificate_decision"
-                ]
-                == "PASS"
-                for atom_id in control["atom_ids"]
-            )
-            for row in candidates
-        )
-        control_records.append(
-            {
-                "id": control["id"],
-                "family": control["family"],
-                "mode": control["mode"],
-                "passed": passed,
-                "candidate_run_ids": sorted(row["run_id"] for row in candidates),
-            }
-        )
-    control_results = validate_control_results(
-        {"schema_version": 1, "status": "DERIVED", "records": control_records},
-        controls,
-        "READY",
-        root / "freeze" / "atoms",
-    )
-
-    static_lock_sha = authenticated_review_evidence["static_lock_sha256"]
-    if sha256(canonical_json_bytes(static_lock)) != static_lock_sha:
-        raise ProtocolError(
-            "verified lock object does not equal the authenticated review-evidence lock"
-        )
-    rules_path = root / "aggregation-rules.json"
-    rules_sha = sha256(rules_path.read_bytes())
-    source_review_records = {
-        record["name"]: record
-        for record in authenticated_review_evidence["source_review_receipts"]
-    }
-    snapshot_review_records = {
-        record["hook_id"]: record
-        for record in authenticated_review_evidence["snapshot_review_receipts"]
-    }
-    oracle_coverage_record = snapshot_review_records[
-        "H-VALIDATE-ORACLE-COVERAGE"
-    ]
-    oracle_receipt = validate_integration_receipt(
-        oracle_coverage_record["receipt"],
-        "H-VALIDATE-ORACLE-COVERAGE",
-        "SNAPSHOT_REVIEW",
-    )
-    oracle_review_records = [
-        source_review_records[name]
-        for name in ("oracle-review-1.json", "oracle-review-2.json")
-    ]
-    coherence_review_record = source_review_records["coherence-review.json"]
-    oracle_reviews = [record["receipt"] for record in oracle_review_records]
-    coherence_review = coherence_review_record["receipt"]
-    oracle_documents = {
-        "schema_version": 1,
-        "snapshot_oracle_coverage_receipt": oracle_coverage_record,
-        "source_oracle_review_receipts": oracle_review_records,
-    }
-    coherence_document = {
-        "schema_version": 1,
-        "source_coherence_review_receipt": coherence_review_record,
-    }
-
-    candidate_package = packages_document["packages"]["v5"]
-    if not isinstance(candidate_package, dict):
-        raise ProtocolError("integrated bundle lacks the V5 candidate package")
-    package_snapshot = readable_tree_snapshot(root / candidate_package["source_path"])
-    harness_snapshot = readable_tree_snapshot(root, exclude_top_level={"runtime"})
-    candidate_rows = [row for row in joined_reports if row["condition_role"] == "v5"]
-    scope_payloads = {
-        "V5_CANDIDATE_REPORTS": {
-            "schema_version": 1,
-            "status": "COMPLETE",
-            "reports": candidate_rows,
-        },
-        "CANDIDATE_PACKAGE": {
-            "schema_version": 1,
-            "status": "CONTENT-BOUND",
-            "identity": candidate_package,
-            "tree": package_snapshot,
-        },
-        "HARNESS_PROTOCOL": {
-            "schema_version": 1,
-            "status": "STATIC-LOCKED",
-            "static_lock_sha256": static_lock_sha,
-            "tree": harness_snapshot,
-        },
-        "ADVERSARIAL_AND_COHERENCE_REVIEWS": {
-            "schema_version": 1,
-            "status": "COMPLETE",
-            "source_review_receipts": authenticated_review_evidence[
-                "source_review_receipts"
-            ],
-        },
-    }
-    materiality_ledger, materiality_assignments = reconstruct_materiality_ledger(
-        root, attempts, scope_payloads, materiality_contract, documents
-    )
-    allowed_assignments = set(report_attempts) | scoring_assignments | materiality_assignments
-    if set(attempts) != allowed_assignments:
-        raise ProtocolError(
-            f"unexpected canonical assignments in aggregate state: {sorted(set(attempts) - allowed_assignments)}"
-        )
-
-    focused_recall = all(
-        atom["certificate_decision"] == "PASS"
-        for rows in candidate_by_mode.values()
-        for row in rows
-        for atom in row["final_report"]["atoms"]
-    )
-    proof_quality = all(
-        row["passed"]
-        for row in control_results["records"]
-        if row["family"] == "PROOF_QUALITY"
-    )
-    classification_controls = all(
-        row["passed"]
-        for row in control_results["records"]
-        if row["family"] == "CLASSIFICATION_CONTROL"
-    )
-    hard_error_count = sum(
-        len(row["final_report"]["hard_errors"])
-        for rows in candidate_by_mode.values()
-        for row in rows
-    )
-    global_defect_count = sum(
-        len(row["final_report"]["global_defects"])
-        for rows in candidate_by_mode.values()
-        for row in rows
-    )
-    comparison_pass = focused_recall
-    for mode in MODES:
-        atom_ids = [atom["id"] for atom in finals[mode]["reports"][0]["atoms"]]
-        for atom_id in atom_ids:
-            counts = {
-                condition: sum(
-                    next(
-                        atom
-                        for atom in row["final_report"]["atoms"]
-                        if atom["id"] == atom_id
-                    )["certificate_decision"]
-                    == "PASS"
-                    for row in joined_reports
-                    if row["mode"] == mode and row["condition_role"] == condition
-                )
-                for condition in ("v5", "v4", "no_skill")
-            }
-            comparison_pass = comparison_pass and counts["v5"] >= counts["v4"] and counts[
-                "v5"
-            ] >= counts["no_skill"]
-
-    invalid_output_count = sum(
-        not (
-            attempt["pointer"]["format_valid"]
-            and attempt["pointer"]["semantic_valid"]
-            and word_by_run[run_id]["valid"]
-        )
-        for run_id, attempt in report_attempts.items()
-    )
-    envelope_summary = [
-        {
-            "assignment_id": assignment,
-            "role": attempt["launch"]["role"],
-            "envelope_sha256": attempt["pointer"]["envelope_sha256"],
-            "format_valid": attempt["pointer"]["format_valid"],
-            "semantic_valid": attempt["pointer"]["semantic_valid"],
-        }
-        for assignment, attempt in sorted(attempts.items())
-    ]
-    atom_documents = {
-        mode: read_json(root / "freeze" / "atoms" / f"{mode}.json") for mode in MODES
-    }
-    comparison_predicate = validate_comparison_predicate(
-        read_json(root / "comparison-predicate.json"), "READY"
-    )
-    input_digests = {
-        "schedule_slots_sha256": sha256(
-            canonical_json_bytes(documents["launch-schedule.json"])
-        ),
-        "envelopes_sha256": sha256(canonical_json_bytes(envelope_summary)),
-        "word_counts_sha256": sha256(canonical_json_bytes(word_manifest)),
-        "atom_manifests_sha256": sha256(canonical_json_bytes(atom_documents)),
-        "oracle_receipts_sha256": sha256(canonical_json_bytes(oracle_documents)),
-        "blind_join_sha256": sha256(canonical_json_bytes(blind_join)),
-        "joined_reports_sha256": sha256(canonical_json_bytes(joined_reports)),
-        "projection_audit_manifest_sha256": sha256(
-            canonical_json_bytes(projection_manifest)
-        ),
-        "scoring_bundle_manifest_sha256": sha256(
-            canonical_json_bytes(scoring_bundle)
-        ),
-        "control_manifest_sha256": sha256(canonical_json_bytes(controls)),
-        "control_results_sha256": sha256(canonical_json_bytes(control_results)),
-        "materiality_ledger_sha256": sha256(
-            canonical_json_bytes(materiality_ledger)
-        ),
-        "comparison_predicate_sha256": sha256(
-            canonical_json_bytes(comparison_predicate)
-        ),
-        "coherence_review_sha256": sha256(
-            canonical_json_bytes(coherence_document)
-        ),
-    }
-    core = {
-        "schema_version": 1,
-        "status": "DERIVED",
-        "builder_id": AGGREGATE_BUILDER_ID,
-        "static_lock_sha256": static_lock_sha,
-        "rules_sha256": rules_sha,
-        "input_digests": input_digests,
-        "context": {
-            "oracle": {
-                "coverage_pass": oracle_receipt["status"] == "PASS"
-                and all(review["status"] == "PASS" for review in oracle_reviews)
-            },
-            "collection": {
-                "complete": len(report_attempts) == 120,
-                "invalid_output_count": invalid_output_count,
-            },
-            "scores": {
-                "focused_recall_pass": focused_recall,
-                "proof_quality_pass": proof_quality,
-                "controls_pass": classification_controls,
-                "hard_error_count": hard_error_count,
-                "global_defect_count": global_defect_count,
-                "material_finding_count": sum(
-                    finding["blocking"] for finding in materiality_ledger["findings"]
-                ),
-            },
-            "comparison": {"predicate_pass": comparison_pass},
-            "review": {"coherence_pass": coherence_review["status"] == "PASS"},
-        },
-    }
-    return validate_aggregate_context_document(
-        {**core, "binding_sha256": sha256(canonical_json_bytes(core))}
-    )
 
 
 def derive_aggregate_context(
     static_root: Path, external_commitment_path: Path | None = None
 ) -> dict[str, Any]:
     """Verify once, then derive every gate input from that coherent capture."""
+
+    with production_custody_lock(
+        static_root, external_commitment_path
+    ) as (root, commitment):
+        return _derive_aggregate_context_under_custody(root, commitment)
+
+
+def _derive_aggregate_context_under_custody(
+    static_root: Path, external_commitment_path: Path
+) -> dict[str, Any]:
 
     root, static_lock, reviewer_ids, review_evidence = (
         load_verified_static_bundle_with_review_evidence(
@@ -8138,7 +12577,11 @@ def verify_draft() -> None:
         "schemas/comparison-predicate.schema.json",
         "schemas/agent-authority-packet.schema.json",
         "schemas/aggregate-context.schema.json",
+        "schemas/aggregation-coordinator-claim.schema.json",
+        "schemas/aggregation-progress.schema.json",
         "schemas/aggregation-rules.schema.json",
+        "schemas/aggregation-stage-manifest.schema.json",
+        "schemas/aggregation-terminal-failure.schema.json",
         "schemas/consistency-input-packet.schema.json",
         "schemas/control-manifest.schema.json",
         "schemas/control-results.schema.json",
@@ -8643,7 +13086,6 @@ def self_test() -> None:
     score_input_second = synthetic_score_packet("s2")
     clean_first = synthetic_score("s1", score_input_first)
     clean_second = synthetic_score("s2", score_input_second)
-    evidence_digest = b"synthetic evidence packet"
     clean_consistency_packet = build_consistency_packet(
         clean_first,
         clean_second,
@@ -8651,7 +13093,6 @@ def self_test() -> None:
         score_input_second,
         synthetic_atoms,
         synthetic_rules,
-        evidence_digest,
     )
     clean_consistency_first = synthetic_consistency("c1", clean_consistency_packet)
     clean_consistency_second = synthetic_consistency("c2", clean_consistency_packet)
@@ -8674,7 +13115,6 @@ def self_test() -> None:
         clean_consistency_second,
         synthetic_atoms,
         synthetic_rules,
-        evidence_digest,
     )
     assert empty_packet["cells"] == []
     clean_final = merge_final_scores(
@@ -8686,7 +13126,6 @@ def self_test() -> None:
         clean_consistency_second,
         synthetic_atoms,
         synthetic_rules,
-        evidence_digest,
         None,
     )
     assert len(clean_final["reports"]) == 15
@@ -8716,7 +13155,6 @@ def self_test() -> None:
         score_input_second,
         synthetic_atoms,
         synthetic_rules,
-        evidence_digest,
     )
     consistency_first = synthetic_consistency("c1", consistency_packet)
     consistency_second = synthetic_consistency(
@@ -8739,7 +13177,6 @@ def self_test() -> None:
         consistency_second,
         synthetic_atoms,
         synthetic_rules,
-        evidence_digest,
     )
     assert len(packet["cells"]) == 5
     decisions: list[dict[str, str]] = []
@@ -8773,7 +13210,6 @@ def self_test() -> None:
         consistency_second,
         synthetic_atoms,
         synthetic_rules,
-        evidence_digest,
         adjudication,
     )
     final_by_label = {report["label"]: report for report in final_score["reports"]}
@@ -8781,46 +13217,31 @@ def self_test() -> None:
     assert final_by_label["C"]["global_defects"] == []
     assert len(final_by_label["D"]["novel_findings"]) == 1
     assert final_by_label["D"]["novel_findings"][0]["classification"] == "VALID_NEW_FINDING"
+    stale_consistency_first = copy.deepcopy(consistency_first)
+    stale_consistency_first["challenges"].append(
+        {
+            "label": "A",
+            "field": "atom:E1",
+            "proposed_decision": "PASS",
+            "evidence": "A distinct valid challenge changes the adjudication packet.",
+        }
+    )
     stale_packet = build_adjudication_packet(
         first,
         second,
         score_input_first,
         score_input_second,
-        synthetic_consistency(
-            "c1",
-            build_consistency_packet(
-                first,
-                second,
-                score_input_first,
-                score_input_second,
-                synthetic_atoms,
-                synthetic_rules,
-                b"stale synthetic evidence packet",
-            ),
-        ),
-        synthetic_consistency(
-            "c2",
-            build_consistency_packet(
-                first,
-                second,
-                score_input_first,
-                score_input_second,
-                synthetic_atoms,
-                synthetic_rules,
-                b"stale synthetic evidence packet",
-            ),
-            "INVALID_ASSERTION",
-        ),
+        stale_consistency_first,
+        consistency_second,
         synthetic_atoms,
         synthetic_rules,
-        b"stale synthetic evidence packet",
     )
     try:
         validate_adjudication(adjudication, stale_packet)
     except ProtocolError:
         pass
     else:
-        raise AssertionError("stale adjudication survived an evidence-packet digest change")
+        raise AssertionError("stale adjudication survived a consistency-input change")
     unknown_rule_score = copy.deepcopy(clean_first)
     unknown_rule_score["reports"][0]["hard_errors"][0]["id"] = "GH999"
     try:
@@ -8949,13 +13370,32 @@ def self_test() -> None:
         pass
     else:
         raise AssertionError("tampered materiality packet content was accepted")
-    for bad_json in ('{"a":1,"a":2}', '{"a":NaN}'):
+    for bad_json in (
+        '{"a":1,"a":2}',
+        '{"a":NaN}',
+        '{"a":1e9999}',
+        '{"evidence":"\\ud800"}',
+    ):
         try:
             strict_json_loads(bad_json, "synthetic strict JSON")
         except ProtocolError:
             pass
         else:
             raise AssertionError("non-strict JSON was accepted")
+    try:
+        canonical_json_bytes({"evidence": "\ud800"})
+    except ProtocolError:
+        pass
+    else:
+        raise AssertionError("canonical JSON accepted an unpaired surrogate")
+    deeply_nested_json = "[" * 10000 + "0" + "]" * 10000
+    try:
+        strict_json_loads(deeply_nested_json, "synthetic deeply nested JSON")
+    except ProtocolError as error:
+        if "nesting limit" not in str(error):
+            raise AssertionError("deep JSON failed for the wrong reason") from error
+    else:
+        raise AssertionError("deeply nested JSON bypassed the bounded parser")
     assert REPORT_RUN_ID.fullmatch("r001") and REPORT_RUN_ID.fullmatch("r120")
     assert all(
         REPORT_RUN_ID.fullmatch(value) is None
@@ -9132,7 +13572,218 @@ def self_test() -> None:
 
     with tempfile.TemporaryDirectory(prefix="v5-diagnostic-protocol-", dir="/tmp") as temporary:
         temporary_root = Path(temporary)
-        for alias in ("a//b", "a/./b", "a\\b"):
+        mkdir_recovery_target = temporary_root / "durable-mkdir-recovery"
+        original_fsync_directory = globals()["fsync_directory"]
+        mkdir_parent_faults = 0
+
+        def fail_new_directory_parent_fsync(path: Path) -> None:
+            nonlocal mkdir_parent_faults
+            if (
+                Path(path) == mkdir_recovery_target.parent
+                and mkdir_recovery_target.is_dir()
+                and mkdir_parent_faults == 0
+            ):
+                mkdir_parent_faults += 1
+                raise OSError("synthetic mkdir parent-fsync failure")
+            original_fsync_directory(path)
+
+        globals()["fsync_directory"] = fail_new_directory_parent_fsync
+        try:
+            try:
+                durable_mkdir(mkdir_recovery_target)
+            except OSError:
+                pass
+            else:
+                raise AssertionError("durable mkdir parent-fsync fault was swallowed")
+        finally:
+            globals()["fsync_directory"] = original_fsync_directory
+        if mkdir_parent_faults != 1 or not mkdir_recovery_target.is_dir():
+            raise AssertionError("durable mkdir fault did not leave a visible directory")
+        mkdir_retry_fsyncs: list[Path] = []
+
+        def record_mkdir_retry_fsync(path: Path) -> None:
+            mkdir_retry_fsyncs.append(Path(path))
+            original_fsync_directory(path)
+
+        globals()["fsync_directory"] = record_mkdir_retry_fsync
+        try:
+            durable_mkdir(mkdir_recovery_target)
+        finally:
+            globals()["fsync_directory"] = original_fsync_directory
+        if (
+            mkdir_recovery_target not in mkdir_retry_fsyncs
+            or mkdir_recovery_target.parent not in mkdir_retry_fsyncs
+        ):
+            raise AssertionError(
+                "durable mkdir retry did not repair the visible directory link"
+            )
+        real_directory_chain = temporary_root / "real-directory-chain"
+        (real_directory_chain / "child").mkdir(parents=True)
+        symlinked_directory_chain = temporary_root / "symlinked-directory-chain"
+        symlinked_directory_chain.symlink_to(
+            real_directory_chain, target_is_directory=True
+        )
+        try:
+            durable_mkdir(symlinked_directory_chain / "child")
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("durable mkdir accepted a symlinked ancestor")
+        bounded_fifo = temporary_root / "bounded-input-fifo"
+        os.mkfifo(bounded_fifo)
+        try:
+            read_bounded_file_prefix(
+                bounded_fifo,
+                MAX_ENVELOPE_CAPTURE_BYTES,
+                "synthetic bounded FIFO",
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("bounded file capture blocked on or accepted a FIFO")
+        lock_fifo_state = temporary_root / "lock-fifo-state"
+        lock_fifo_state.mkdir()
+        os.mkfifo(lock_fifo_state / ".protocol.lock")
+        try:
+            verify_state(
+                lock_fifo_state,
+                test_capability=_SYNTHETIC_TEST_CAPABILITY,
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("protocol state accepted a FIFO lock ledger")
+
+        inventory_state = temporary_root / "exact-inventory-state"
+        inventory_state.mkdir()
+        verify_state(
+            inventory_state,
+            test_capability=_SYNTHETIC_TEST_CAPABILITY,
+        )
+        rogue_agent_directory = inventory_state / "agents" / "rogue-empty-agent"
+        rogue_agent_directory.mkdir(parents=True)
+        try:
+            verify_state(
+                inventory_state,
+                test_capability=_SYNTHETIC_TEST_CAPABILITY,
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("unreferenced empty agent claim directory was accepted")
+        rogue_agent_directory.rmdir()
+        rogue_agent_directory.parent.rmdir()
+
+        objects_parent = inventory_state / "objects"
+        objects_parent.write_bytes(b"not a directory\n")
+        try:
+            verify_state(
+                inventory_state,
+                test_capability=_SYNTHETIC_TEST_CAPABILITY,
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("regular-file objects parent was accepted")
+        objects_parent.unlink()
+        objects_parent.symlink_to("missing-objects-parent")
+        try:
+            verify_state(
+                inventory_state,
+                test_capability=_SYNTHETIC_TEST_CAPABILITY,
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("dangling-symlink objects parent was accepted")
+        objects_parent.unlink()
+        (objects_parent / "sha256").mkdir(parents=True)
+        (objects_parent / "rogue-sibling").touch()
+        try:
+            verify_state(
+                inventory_state,
+                test_capability=_SYNTHETIC_TEST_CAPABILITY,
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("objects parent with an unexpected sibling was accepted")
+
+        fifo_swap_output = temporary_root / "fifo-swap-output"
+        fifo_swap_output.mkdir()
+        fifo_swap_target = fifo_swap_output / "swap-target.txt"
+        fifo_swap_target.write_bytes(b"regular before stable open\n")
+        original_os_open = os.open
+        fifo_swap_fired = False
+
+        def fifo_swapping_open(
+            path: str | bytes | os.PathLike[str] | os.PathLike[bytes],
+            flags: int,
+            mode: int = 0o777,
+            *,
+            dir_fd: int | None = None,
+        ) -> int:
+            nonlocal fifo_swap_fired
+            if path == "swap-target.txt" and dir_fd is not None:
+                if not flags & getattr(os, "O_NONBLOCK", 0):
+                    raise AssertionError(
+                        "stable output open omitted the nonblocking race defense"
+                    )
+                fifo_swap_fired = True
+                os.rename(
+                    "swap-target.txt",
+                    "displaced-regular.txt",
+                    src_dir_fd=dir_fd,
+                    dst_dir_fd=dir_fd,
+                )
+                os.mkfifo("swap-target.txt", dir_fd=dir_fd)
+            return original_os_open(path, flags, mode, dir_fd=dir_fd)
+
+        os.open = fifo_swapping_open
+        try:
+            try:
+                scan_output(fifo_swap_output, MAX_ENVELOPE_CAPTURE_BYTES)
+            except ProtocolError as error:
+                if "changed during stable open" not in str(error):
+                    raise AssertionError(
+                        "regular-to-FIFO swap failed for the wrong reason"
+                    ) from error
+            else:
+                raise AssertionError("regular-to-FIFO swap was accepted")
+        finally:
+            os.open = original_os_open
+        if not fifo_swap_fired:
+            raise AssertionError("regular-to-FIFO stable-open race did not execute")
+        custody_root = temporary_root / "custody-root"
+        custody_displaced = temporary_root / "custody-root-displaced"
+        custody_commitment = temporary_root / "custody-commitment.json"
+        custody_root.mkdir()
+        custody_commitment.write_text("{}\n", encoding="utf-8")
+        try:
+            try:
+                with production_custody_lock(
+                    custody_root, custody_commitment
+                ):
+                    custody_root.rename(custody_displaced)
+                    custody_root.mkdir()
+                    raise AggregationStageDerivable(
+                        {"current_stage": "synthetic-custody-stage"}
+                    )
+            except ProtocolError as error:
+                if "custody identity changed" not in str(error):
+                    raise AssertionError(
+                        "exceptional custody drift failed for the wrong reason"
+                    ) from error
+            else:
+                raise AssertionError(
+                    "exceptional operation bypassed the closing custody check"
+                )
+        finally:
+            if custody_root.exists():
+                shutil.rmtree(custody_root)
+            if custody_displaced.exists():
+                custody_displaced.rename(custody_root)
+        for alias in (".", "a//b", "a/./b", "a\\b"):
             try:
                 require_relative_file(alias, "synthetic alias")
             except ProtocolError:
@@ -9589,6 +14240,17 @@ def self_test() -> None:
             "max_total_output_bytes": 8192,
             "allowed_process_dispositions": ["returned"],
         }
+        validate_envelope_spec(inventory_spec)
+        reserved_output_spec = copy.deepcopy(inventory_spec)
+        reserved_output_spec["files"][0]["path"] = (
+            ENCODED_OUTPUT_PATH_PREFIX + "reserved"
+        )
+        try:
+            validate_envelope_spec(reserved_output_spec)
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("reserved encoded-output namespace was declared")
         inventory_spec_bytes = canonical_json_bytes(inventory_spec)
         inventory_plan_bytes = canonical_json_bytes(report_plan)
         inventory_launch = {
@@ -9773,125 +14435,478 @@ def self_test() -> None:
             pass
         else:
             raise AssertionError("undeclared evaluator input file was accepted")
-        receipt_bundle = temporary_root / "bound-receipt-bundle"
-        receipt_root = (
-            receipt_bundle
-            / "runtime"
-            / "state"
-            / "aggregation"
-            / "integration-receipts"
-        )
-        receipt_root.mkdir(parents=True)
-        aggregate_path = receipt_root.parent / "aggregate-context.json"
-        aggregate_path.write_bytes(canonical_json_bytes(aggregate))
-        receipt_digests: dict[str, str] = {}
+        (evaluator_input / "undeclared.txt").unlink()
+        (evaluator_input / "undeclared-empty-directory").mkdir()
+        try:
+            verify_evaluator_input_tree(
+                evaluator_input,
+                evaluator_root,
+                evaluator_row,
+                scorer_packet_bytes,
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("undeclared evaluator input directory was accepted")
+        atomic_aggregation = temporary_root / "atomic-aggregation"
+        atomic_files = {"nested/value.json": canonical_json_bytes({"value": 1})}
+        original_directory_publish = globals()["_publish_directory_no_replace"]
 
-        def synthetic_runtime_receipt(
-            hook_id: str,
-            inputs: dict[str, str],
-            outputs: dict[str, str],
-        ) -> dict[str, Any]:
-            """Build a temp-only runtime-validator fixture.
+        def fail_before_directory_publish(_stage: Path, _output: Path) -> None:
+            raise InjectedFault("synthetic prepublication stage failure")
 
-            ``PASS`` is the runtime schema's validation outcome. This object
-            is never an independent-review receipt, never enters a static
-            bundle, and cannot authorize either production review boundary.
-            """
-            phase = INTEGRATION_HOOK_PHASES[hook_id]
-            return {
-                "schema_version": 2,
-                "status": "PASS",
-                "phase": phase,
-                "hook_id": hook_id,
-                "receipt_kind": (
-                    "RUNTIME_VALIDATION"
-                    if phase == "RUNTIME_COLLECTION"
-                    else "POSTRUN_VALIDATION"
-                ),
-                "actor": {
-                    "identity": "synthetic-test-integrator",
-                    "role": "SYNTHETIC_TEST_ORCHESTRATOR",
-                    "implementation": "protocol.self_test",
-                    "version": "v5",
-                },
-                "input_digests": inputs,
-                "output_digests": outputs,
-                "result": {
-                    "summary": "Synthetic receipt used only by the protocol self-test.",
-                    "checks": [
-                        {
-                            "id": "SYNTHETIC-CHECK",
-                            "status": "PASS",
-                            "evidence": "The self-test constructed and checked this exact receipt binding.",
-                        }
-                    ],
-                },
-            }
-
-        for hook_id in PRE_BIND_RECEIPT_HOOK_IDS:
-            common_inputs = {
-                **aggregate["input_digests"],
-                "static_lock_sha256": aggregate["static_lock_sha256"],
-                "rules_sha256": aggregate["rules_sha256"],
-            }
-            if hook_id == "H-DERIVE-AGGREGATE-CONTEXT":
-                inputs = common_inputs
-                outputs = {
-                    "aggregate_context_sha256": sha256(aggregate_path.read_bytes())
-                }
+        globals()["_publish_directory_no_replace"] = fail_before_directory_publish
+        try:
+            try:
+                publish_or_verify_aggregation_stage(
+                    atomic_aggregation,
+                    "01-report-products",
+                    atomic_files,
+                    static_lock_sha256="a" * 64,
+                    coordinator_actor_id="synthetic-runtime-coordinator-0001",
+                    prerequisite_stage_sha256=None,
+                    attempt_envelopes={},
+                )
+            except InjectedFault:
+                pass
             else:
-                inputs = common_inputs
-                outputs = {
-                    "H-ENFORCE-WORD-COUNTER": {
-                        "validated_word_counts_sha256": aggregate["input_digests"]["word_counts_sha256"]
+                raise AssertionError("prepublication aggregation-stage fault did not fire")
+        finally:
+            globals()["_publish_directory_no_replace"] = original_directory_publish
+        if any(atomic_aggregation.rglob(f"{AGGREGATION_PENDING_STAGE_PREFIX}*")):
+            raise AssertionError("failed aggregation publication left a pending tree")
+        atomic_manifest = publish_or_verify_aggregation_stage(
+            atomic_aggregation,
+            "01-report-products",
+            atomic_files,
+            static_lock_sha256="a" * 64,
+            coordinator_actor_id="synthetic-runtime-coordinator-0001",
+            prerequisite_stage_sha256=None,
+            attempt_envelopes={},
+        )
+        if publish_or_verify_aggregation_stage(
+            atomic_aggregation,
+            "01-report-products",
+            atomic_files,
+            static_lock_sha256="a" * 64,
+            coordinator_actor_id="synthetic-runtime-coordinator-0001",
+            prerequisite_stage_sha256=None,
+            attempt_envelopes={},
+        ) != atomic_manifest:
+            raise AssertionError("aggregation stage retry was not idempotent")
+        atomic_stage_root = atomic_aggregation / "derived" / "01-report-products"
+        if stat.S_IMODE(atomic_stage_root.lstat().st_mode) != 0o500 or any(
+            stat.S_IMODE(path.lstat().st_mode) != (0o500 if path.is_dir() else 0o400)
+            for path in atomic_stage_root.rglob("*")
+        ):
+            raise AssertionError("committed aggregation stage modes are not immutable")
+
+        durability_aggregation = temporary_root / "durability-aggregation"
+        durability_stage_root = (
+            durability_aggregation / "derived" / "01-report-products"
+        )
+        durability_stage_parent = durability_stage_root.parent
+        original_fsync_directory = globals()["fsync_directory"]
+        failed_stage_parent_fsyncs = 0
+
+        def fail_published_stage_parent_fsync(path: Path) -> None:
+            nonlocal failed_stage_parent_fsyncs
+            if (
+                Path(path) == durability_stage_parent
+                and path_entry_exists(durability_stage_root)
+            ):
+                failed_stage_parent_fsyncs += 1
+                raise OSError("synthetic postpublication stage parent fsync failure")
+            original_fsync_directory(path)
+
+        globals()["fsync_directory"] = fail_published_stage_parent_fsync
+        try:
+            try:
+                publish_or_verify_aggregation_stage(
+                    durability_aggregation,
+                    "01-report-products",
+                    atomic_files,
+                    static_lock_sha256="a" * 64,
+                    coordinator_actor_id="synthetic-runtime-coordinator-0001",
+                    prerequisite_stage_sha256=None,
+                    attempt_envelopes={},
+                )
+            except OSError:
+                pass
+            else:
+                raise AssertionError(
+                    "exhausted stage-parent fsync failures were swallowed"
+                )
+        finally:
+            globals()["fsync_directory"] = original_fsync_directory
+        if (
+            failed_stage_parent_fsyncs < 2
+            or not durability_stage_root.is_dir()
+        ):
+            raise AssertionError(
+                "postpublication stage durability fault did not preserve the exact stage"
+            )
+        repaired_stage_parent_fsyncs = 0
+
+        def count_repaired_stage_parent_fsync(path: Path) -> None:
+            nonlocal repaired_stage_parent_fsyncs
+            if Path(path) == durability_stage_parent:
+                repaired_stage_parent_fsyncs += 1
+            original_fsync_directory(path)
+
+        globals()["fsync_directory"] = count_repaired_stage_parent_fsync
+        try:
+            publish_or_verify_aggregation_stage(
+                durability_aggregation,
+                "01-report-products",
+                atomic_files,
+                static_lock_sha256="a" * 64,
+                coordinator_actor_id="synthetic-runtime-coordinator-0001",
+                prerequisite_stage_sha256=None,
+                attempt_envelopes={},
+            )
+        finally:
+            globals()["fsync_directory"] = original_fsync_directory
+        if repaired_stage_parent_fsyncs < 1:
+            raise AssertionError(
+                "pre-existing aggregation stage did not repair parent durability"
+            )
+        prefix_hole_root = temporary_root / "aggregation-prefix-hole"
+        (prefix_hole_root / "derived" / "02-scorer-products").mkdir(parents=True)
+        try:
+            validate_aggregation_directory_inventory(
+                prefix_hole_root, require_final=False
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("aggregation stage-prefix hole was accepted")
+        terminal_attempts: dict[str, dict[str, Any]] = {}
+        terminal_slot_rows: list[dict[str, Any]] = []
+        for index in range(1, 121):
+            assignment = f"r{index:03d}"
+            digest = sha256(assignment.encode("ascii"))
+            failing = assignment == "r001"
+            pointer_row = {
+                "envelope_sha256": digest,
+                "format_valid": not failing,
+                "semantic_valid": not failing,
+            }
+            terminal_attempts[assignment] = {
+                "status": "SEALED",
+                "launch": {"role": "report"},
+                "pointer": pointer_row,
+                "primary_bytes": None if failing else b"report\n",
+            }
+            terminal_slot_rows.append(
+                {
+                    "slot_id": assignment,
+                    "status": "SEALED",
+                    "role": "report",
+                    "envelope_sha256": digest,
+                    "primary_output_present": not failing,
+                    "format_valid": not failing,
+                    "semantic_valid": not failing,
+                }
+            )
+        terminal_document = build_aggregation_terminal_failure(
+            blocked_stage_id="01-report-products",
+            static_lock_sha256="b" * 64,
+            coordinator_actor_id="synthetic-runtime-coordinator-0001",
+            prerequisite_stage_sha256=None,
+            attempts=terminal_attempts,
+            cumulative_assignments=set(terminal_attempts),
+            failure_assignments={"r001"},
+        )
+        validate_aggregation_attempt_bindings(
+            (), [], terminal_slot_rows, terminal_document
+        )
+        terminal_durability_root = temporary_root / "terminal-durability"
+        terminal_durability_path = (
+            terminal_durability_root / AGGREGATION_TERMINAL_FAILURE
+        )
+        original_fsync_directory = globals()["fsync_directory"]
+        failed_terminal_parent_fsyncs = 0
+
+        def fail_published_terminal_parent_fsync(path: Path) -> None:
+            nonlocal failed_terminal_parent_fsyncs
+            if (
+                Path(path) == terminal_durability_root
+                and path_entry_exists(terminal_durability_path)
+            ):
+                failed_terminal_parent_fsyncs += 1
+                raise OSError(
+                    "synthetic postpublication terminal parent fsync failure"
+                )
+            original_fsync_directory(path)
+
+        globals()["fsync_directory"] = fail_published_terminal_parent_fsync
+        try:
+            try:
+                publish_or_verify_aggregation_terminal_failure(
+                    terminal_durability_root, terminal_document
+                )
+            except OSError:
+                pass
+            else:
+                raise AssertionError(
+                    "exhausted terminal-parent fsync failures were swallowed"
+                )
+        finally:
+            globals()["fsync_directory"] = original_fsync_directory
+        if (
+            failed_terminal_parent_fsyncs < 2
+            or not terminal_durability_path.is_file()
+        ):
+            raise AssertionError(
+                "postpublication terminal durability fault lost its exact record"
+            )
+        repaired_terminal_parent_fsyncs = 0
+
+        def count_repaired_terminal_parent_fsync(path: Path) -> None:
+            nonlocal repaired_terminal_parent_fsyncs
+            if Path(path) == terminal_durability_root:
+                repaired_terminal_parent_fsyncs += 1
+            original_fsync_directory(path)
+
+        globals()["fsync_directory"] = count_repaired_terminal_parent_fsync
+        try:
+            publish_or_verify_aggregation_terminal_failure(
+                terminal_durability_root, terminal_document
+            )
+        finally:
+            globals()["fsync_directory"] = original_fsync_directory
+        if repaired_terminal_parent_fsyncs < 1:
+            raise AssertionError(
+                "pre-existing terminal failure did not repair parent durability"
+            )
+        format_only_report = {
+            "r001": {
+                "status": "SEALED",
+                "launch": {"role": "report"},
+                "pointer": {
+                    "envelope_sha256": "c" * 64,
+                    "format_valid": False,
+                    "semantic_valid": True,
+                },
+                "primary_bytes": b"usable UTF-8 report\n",
+            }
+        }
+        if aggregation_phase_failure_assignments(
+            format_only_report, {"r001"}, report_phase=True
+        ):
+            raise AssertionError("usable format-only report incorrectly terminalized")
+        if aggregation_phase_failure_assignments(
+            format_only_report, {"r001"}, report_phase=False
+        ) != {"r001"}:
+            raise AssertionError("invalid evaluator format did not terminalize")
+        forged_terminal = copy.deepcopy(terminal_document)
+        forged_terminal["failures"] = []
+        try:
+            validate_aggregation_terminal_failure(forged_terminal)
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("empty aggregation terminal-failure set was accepted")
+        try:
+            validate_aggregation_attempt_bindings(
+                (),
+                [],
+                [
+                    *terminal_slot_rows,
+                    {
+                        "slot_id": "E-s1",
+                        "status": "STARTED",
+                        "format_valid": False,
+                        "semantic_valid": False,
                     },
-                    "H-BUILD-VALIDATE-SCORER-REPORT-PROJECTIONS": {
-                        "validated_projection_audit_manifest_sha256": aggregate["input_digests"]["projection_audit_manifest_sha256"]
-                    },
-                    "H-VALIDATE-SCHEDULE-LEASE-ATTEMPT-LEDGER": {
-                        "validated_schedule_slots_sha256": aggregate["input_digests"]["schedule_slots_sha256"],
-                        "validated_envelopes_sha256": aggregate["input_digests"]["envelopes_sha256"],
-                    },
-                    "H-SEMANTICALLY-REVALIDATE-ENVELOPES": {
-                        "validated_envelopes_sha256": aggregate["input_digests"]["envelopes_sha256"]
-                    },
-                    "H-VALIDATE-EVALUATOR-INDEPENDENCE-QUALIFICATION": {
-                        "validated_scoring_bundle_manifest_sha256": aggregate["input_digests"]["scoring_bundle_manifest_sha256"]
-                    },
-                    "H-RUN-VALIDATE-MATERIALITY-REVIEWS": {
-                        "validated_materiality_ledger_sha256": aggregate["input_digests"]["materiality_ledger_sha256"]
-                    },
-                }[hook_id]
-            receipt = synthetic_runtime_receipt(hook_id, inputs, outputs)
-            path = receipt_root / f"{hook_id}.json"
-            path.write_bytes(canonical_json_bytes(receipt))
-            receipt_digests[hook_id] = sha256(path.read_bytes())
-            os.chmod(path, 0o400)
-        bind_inputs = {
-            "static_lock_sha256": aggregate["static_lock_sha256"],
-            "rules_sha256": aggregate["rules_sha256"],
-            "aggregate_context_sha256": sha256(aggregate_path.read_bytes()),
+                ],
+                terminal_document,
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("terminal aggregation accepted a premature started slot")
+
+        clean_report_rows = [
+            {
+                **row,
+                "primary_output_present": True,
+                "format_valid": True,
+                "semantic_valid": True,
+            }
+            for row in terminal_slot_rows
+        ]
+        scorer_assignments = {
+            f"{mode}-{scorer}" for mode in MODES for scorer in SCORERS
+        }
+        consistency_assignments = {
+            f"{mode}-{reviewer}"
+            for mode in MODES
+            for reviewer in CONSISTENCY_REVIEWERS
+        }
+        report_assignments = set(terminal_attempts)
+
+        def synthetic_slot_row(
+            assignment_id: str, role: str, *, valid: bool = True
+        ) -> dict[str, Any]:
+            return {
+                "slot_id": assignment_id,
+                "status": "SEALED",
+                "role": role,
+                "envelope_sha256": sha256(assignment_id.encode("ascii")),
+                "primary_output_present": valid,
+                "format_valid": valid,
+                "semantic_valid": valid,
+            }
+
+        final_join_rows = [
+            *clean_report_rows,
+            *[
+                synthetic_slot_row(
+                    assignment,
+                    "scorer",
+                    valid=assignment != "E-s1",
+                )
+                for assignment in sorted(scorer_assignments)
+            ],
+            *[
+                synthetic_slot_row(assignment, "consistency")
+                for assignment in sorted(consistency_assignments)
+            ],
+            *[
+                synthetic_slot_row(assignment, "materiality-reviewer")
+                for assignment in MATERIALITY_REVIEWERS
+            ],
+        ]
+        final_join_digest_by_slot = {
+            row["slot_id"]: row["envelope_sha256"] for row in final_join_rows
+        }
+        cumulative_by_stage = {
+            "01-report-products": report_assignments,
+            "02-scorer-products": report_assignments | scorer_assignments,
+            "03-consistency-products": report_assignments
+            | scorer_assignments
+            | consistency_assignments,
+            "04-score-products": report_assignments
+            | scorer_assignments
+            | consistency_assignments,
+            "05-materiality-products": report_assignments
+            | scorer_assignments
+            | consistency_assignments
+            | set(MATERIALITY_REVIEWERS),
+            "final": report_assignments
+            | scorer_assignments
+            | consistency_assignments
+            | set(MATERIALITY_REVIEWERS),
+        }
+        final_join_manifests: list[dict[str, Any]] = []
+        final_join_prerequisite: str | None = None
+        for stage_id in AGGREGATION_STAGE_ORDER:
+            manifest = build_aggregation_stage_manifest(
+                stage_id,
+                {},
+                static_lock_sha256="d" * 64,
+                coordinator_actor_id="synthetic-runtime-coordinator-0001",
+                prerequisite_stage_sha256=final_join_prerequisite,
+                attempt_envelopes={
+                    assignment: final_join_digest_by_slot[assignment]
+                    for assignment in cumulative_by_stage[stage_id]
+                },
+            )
+            final_join_manifests.append(manifest)
+            final_join_prerequisite = aggregation_stage_digest(manifest)
+        try:
+            validate_aggregation_attempt_bindings(
+                AGGREGATION_STAGE_ORDER,
+                final_join_manifests,
+                final_join_rows,
+                None,
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError(
+                "final aggregation accepted an invalid committed scorer phase"
+            )
+
+        late_terminal_attempts = copy.deepcopy(terminal_attempts)
+        late_terminal_rows = list(terminal_slot_rows)
+        for assignment in sorted(scorer_assignments):
+            failing = assignment == "E-s1"
+            digest = sha256(assignment.encode("ascii"))
+            late_terminal_attempts[assignment] = {
+                "status": "SEALED",
+                "launch": {"role": "scorer"},
+                "pointer": {
+                    "envelope_sha256": digest,
+                    "format_valid": not failing,
+                    "semantic_valid": not failing,
+                },
+                "primary_bytes": None if failing else b"{}\n",
+            }
+            late_terminal_rows.append(
+                synthetic_slot_row(assignment, "scorer", valid=not failing)
+            )
+        late_stage_one = build_aggregation_stage_manifest(
+            "01-report-products",
+            {},
+            static_lock_sha256="e" * 64,
+            coordinator_actor_id="synthetic-runtime-coordinator-0001",
+            prerequisite_stage_sha256=None,
+            attempt_envelopes={
+                row["slot_id"]: row["envelope_sha256"]
+                for row in terminal_slot_rows
+            },
+        )
+        late_terminal = build_aggregation_terminal_failure(
+            blocked_stage_id="02-scorer-products",
+            static_lock_sha256="e" * 64,
+            coordinator_actor_id="synthetic-runtime-coordinator-0001",
+            prerequisite_stage_sha256=aggregation_stage_digest(late_stage_one),
+            attempts=late_terminal_attempts,
+            cumulative_assignments=set(late_terminal_attempts),
+            failure_assignments={"E-s1"},
+        )
+        try:
+            validate_aggregation_attempt_bindings(
+                ("01-report-products",),
+                [late_stage_one],
+                late_terminal_rows,
+                late_terminal,
+            )
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError(
+                "later terminal failure masked an invalid committed report phase"
+            )
+        receipt_bundle = temporary_root / "bound-receipt-bundle"
+        aggregation_root = receipt_bundle / "runtime" / "state" / "aggregation"
+        coordinator_actor = "synthetic-runtime-coordinator-0001"
+        receipts = build_bound_aggregate_receipts(aggregate, coordinator_actor)
+        final_files = {
+            "aggregate-context.json": canonical_json_bytes(aggregate),
             **{
-                f"receipt::{hook_id}": receipt_digests[hook_id]
-                for hook_id in PRE_BIND_RECEIPT_HOOK_IDS
+                f"integration-receipts/{hook_id}.json": canonical_json_bytes(receipt)
+                for hook_id, receipt in receipts.items()
             },
         }
-        bind = synthetic_runtime_receipt(
-            "H-BIND-CONTEXT-INPUT-DIGESTS",
-            bind_inputs,
-            {
-                "bound_gate_context_sha256": sha256(canonical_json_bytes(bind_inputs))
-            },
+        publish_or_verify_aggregation_stage(
+            aggregation_root,
+            "final",
+            final_files,
+            static_lock_sha256=aggregate["static_lock_sha256"],
+            coordinator_actor_id=coordinator_actor,
+            prerequisite_stage_sha256="d" * 64,
+            attempt_envelopes={},
         )
+        receipt_root = aggregation_root / "final" / "integration-receipts"
         bind_path = receipt_root / "H-BIND-CONTEXT-INPUT-DIGESTS.json"
-        bind_path.write_bytes(canonical_json_bytes(bind))
-        os.chmod(bind_path, 0o400)
-        os.chmod(aggregate_path, 0o400)
-        os.chmod(receipt_root, 0o500)
         validate_bound_aggregate_receipts(receipt_bundle, aggregate)
         os.chmod(receipt_root, 0o700)
         os.chmod(bind_path, 0o600)
-        bad_bind = copy.deepcopy(bind)
+        bad_bind = copy.deepcopy(receipts["H-BIND-CONTEXT-INPUT-DIGESTS"])
         bad_bind["output_digests"]["bound_gate_context_sha256"] = "0" * 64
         bind_path.write_bytes(canonical_json_bytes(bad_bind))
         os.chmod(bind_path, 0o400)
@@ -9904,18 +14919,26 @@ def self_test() -> None:
             raise AssertionError("tampered aggregate binding receipt was accepted")
         os.chmod(receipt_root, 0o700)
         state = temporary_root / "state"
+        durable_mkdir(state)
+        exclusive_residue = state / (".exclusive-stage-orphan-" + "0" * 24)
+        exclusive_residue.write_bytes(b"complete but unpublished")
+        os.chmod(exclusive_residue, 0o400)
+        with operation_lock(state):
+            recover_exclusive_write_residues(state)
+        if exclusive_residue.exists() or exclusive_residue.is_symlink():
+            raise AssertionError("exclusive-write crash residue was not recoverable")
         spec_path = temporary_root / "spec.json"
         spec = {
             "schema_version": 1,
             "status": "READY",
-            "files": [{"path": "report.md", "required": True, "max_bytes": 1024, "utf8": True}],
+            "files": [{"path": "report.md", "required": True, "max_bytes": 32768, "utf8": True}],
             "final_response": {
                 "required": True,
                 "max_bytes": 1024,
                 "utf8": True,
                 "utf8_fullmatch_regex": "^report\\.md\\n?$",
             },
-            "max_total_output_bytes": 2048,
+            "max_total_output_bytes": 32768,
             "allowed_process_dispositions": ["returned", "exception", "timeout"],
         }
         spec_path.write_bytes(canonical_json_bytes(spec))
@@ -9931,7 +14954,6 @@ def self_test() -> None:
         ) -> dict[str, Any]:
             workspace_root = attempt_root.parent
             input_root = workspace_root / "input"
-            input_root.mkdir(parents=True, exist_ok=True)
             role, assignment = {
                 "slot-one": ("scorer", "E-s1"),
                 "slot-invalid": ("scorer", "E-s2"),
@@ -9995,6 +15017,126 @@ def self_test() -> None:
         def synthetic_verify(path: Path) -> dict[str, Any]:
             return verify_state(path, test_capability=_SYNTHETIC_TEST_CAPABILITY)
 
+        invalid_terminal_requests: tuple[
+            tuple[str, bytes | None, Any, Any, Any], ...
+        ] = (
+            ("empty-disposition", b"report.md\n", "", 0, {}),
+            ("typed-disposition", b"report.md\n", 7, 0, {}),
+            ("boolean-exit", b"report.md\n", "returned", True, {}),
+            ("typed-response", "report.md\n", "returned", 0, {}),
+            (
+                "surrogate-metadata",
+                b"report.md\n",
+                "returned",
+                0,
+                {"bad": "\ud800"},
+            ),
+        )
+        for (
+            invalid_name,
+            invalid_response,
+            invalid_disposition,
+            invalid_exit_code,
+            invalid_metadata,
+        ) in invalid_terminal_requests:
+            invalid_state = temporary_root / f"invalid-terminal-{invalid_name}-state"
+            invalid_output = (
+                temporary_root / f"invalid-terminal-{invalid_name}-workspace" / "output"
+            )
+            invalid_lease = synthetic_lease(
+                "slot-one",
+                f"invalid-terminal-{invalid_name}-agent",
+                invalid_output,
+                lease_state=invalid_state,
+            )
+            (invalid_output / "report.md").write_text(
+                "terminal request preflight\n", encoding="utf-8"
+            )
+            try:
+                synthetic_seal(
+                    invalid_state,
+                    "slot-one",
+                    invalid_lease["lease_token"],
+                    invalid_lease["agent_id"],
+                    invalid_output,
+                    invalid_response,
+                    invalid_disposition,
+                    invalid_exit_code,
+                    invalid_metadata,
+                )
+            except ProtocolError:
+                pass
+            else:
+                raise AssertionError(
+                    f"invalid terminal request was accepted: {invalid_name}"
+                )
+            invalid_slot = invalid_state / "slots" / "slot-one"
+            invalid_objects = invalid_state / "objects" / "sha256"
+            if any(
+                path_entry_exists(invalid_slot / name)
+                for name in (
+                    "terminal-claim.json",
+                    "canonical.json",
+                    "seal-failure.json",
+                )
+            ) or (
+                path_entry_exists(invalid_objects)
+                and any(
+                    path.name.startswith(".stage-")
+                    for path in invalid_objects.iterdir()
+                )
+            ):
+                raise AssertionError(
+                    f"invalid terminal request mutated state: {invalid_name}"
+                )
+            invalid_verified = synthetic_verify(invalid_state)
+            if (
+                invalid_verified["state_valid"] is not True
+                or invalid_verified["slots"][0]["status"] != "STARTED"
+            ):
+                raise AssertionError(
+                    f"invalid terminal request poisoned its lease: {invalid_name}"
+                )
+
+        dangling_state = temporary_root / "dangling-ledger-state"
+        dangling_output = temporary_root / "dangling-ledger-workspace" / "output"
+        synthetic_lease(
+            "slot-one",
+            "dangling-ledger-agent",
+            dangling_output,
+            lease_state=dangling_state,
+        )
+        dangling_slot = dangling_state / "slots" / "slot-one"
+        ready_path = dangling_slot / "lease-ready.json"
+        ready_bytes = ready_path.read_bytes()
+        for dangling_name in (
+            "lease-failure.json",
+            "terminal-claim.json",
+            "canonical.json",
+            "seal-failure.json",
+        ):
+            dangling_path = dangling_slot / dangling_name
+            os.symlink("missing-ledger-target", dangling_path)
+            try:
+                synthetic_verify(dangling_state)
+            except ProtocolError:
+                pass
+            else:
+                raise AssertionError(
+                    f"dangling {dangling_name} ledger was treated as absent"
+                )
+            dangling_path.unlink()
+        ready_path.unlink()
+        os.symlink("missing-ledger-target", ready_path)
+        try:
+            synthetic_verify(dangling_state)
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("dangling lease-ready ledger was treated as absent")
+        ready_path.unlink()
+        exclusive_write(ready_path, ready_bytes)
+
         # Exercise the complete production acquisition branch behind explicit
         # authenticated-boundary seams. This is deliberately more than a unit
         # call to the actor helper: recurrence of an undefined helper name in
@@ -10006,7 +15148,6 @@ def self_test() -> None:
         production_workspace = temporary_root / "production-acquire-workspace"
         production_input = production_workspace / "input"
         production_output = production_workspace / "output"
-        production_input.mkdir(parents=True)
         production_launch = {
             "schema_version": 1,
             "status": "READY",
@@ -10049,10 +15190,14 @@ def self_test() -> None:
         production_seams = {
             "load_verified_static_bundle": globals()["load_verified_static_bundle"],
             "load_ready_generated_documents": globals()["load_ready_generated_documents"],
-            "build_expected_evaluator_launch": globals()["build_expected_evaluator_launch"],
+            "evaluator_contract_index": globals()["evaluator_contract_index"],
+            "load_authoritative_evaluator_material": globals()[
+                "load_authoritative_evaluator_material"
+            ],
             "materialize_evaluator_input_tree": globals()["materialize_evaluator_input_tree"],
         }
         active_production_launch = [production_launch]
+        active_production_launch_path = [production_launch_path]
         forbid_production_materialization = [False]
         globals()["load_verified_static_bundle"] = (
             lambda static_root, external_commitment_path=None: (
@@ -10062,20 +15207,50 @@ def self_test() -> None:
             )
         )
         globals()["load_ready_generated_documents"] = lambda _root: {}
-        globals()["build_expected_evaluator_launch"] = (
-            lambda _root, _documents, _assignment, _packet: (
+        globals()["evaluator_contract_index"] = lambda _documents: {
+            active_production_launch[0]["assignment_id"]: {}
+        }
+        globals()["load_authoritative_evaluator_material"] = (
+            lambda _root, _assignment, *, capability=None, ready_documents=None: (
+                input_packet_path,
+                active_production_launch_path[0],
+                production_spec_path,
+                strict_json_loads(input_packet_path.read_bytes(), "synthetic packet"),
                 active_production_launch[0],
-                {"envelope_spec_path": "spec.json"},
             )
         )
-        def mock_production_materialization(*_args: Any) -> None:
+        def mock_production_materialization(*args: Any) -> None:
             if forbid_production_materialization[0]:
                 raise AssertionError(
                     "poisoned peer was detected only after input materialization"
                 )
+            input_root = Path(args[0])
+            input_root.mkdir(parents=True, exist_ok=True)
+            os.chmod(input_root, 0o500)
 
         globals()["materialize_evaluator_input_tree"] = mock_production_materialization
         try:
+            production_reserved_ids = production_reviewer_ids | {
+                "aggregation-coordinator-0001"
+            }
+            try:
+                acquire_lease(
+                    production_mock_root / "runtime" / "state",
+                    production_launch_path,
+                    "runtime-agent-9999",
+                    production_spec_path,
+                    production_output,
+                    input_packet_path,
+                    static_root=production_mock_root,
+                    external_commitment_path=commitment_path,
+                )
+            except ProtocolError as error:
+                if "assignment-only production wrapper" not in str(error):
+                    raise AssertionError(
+                        "generic production acquisition failed for the wrong reason"
+                    ) from error
+            else:
+                raise AssertionError("generic production acquisition remained reachable")
             production_lease = acquire_lease(
                 production_mock_root / "runtime" / "state",
                 production_launch_path,
@@ -10083,8 +15258,11 @@ def self_test() -> None:
                 production_spec_path,
                 production_output,
                 input_packet_path,
-                static_root=production_mock_root,
-                external_commitment_path=commitment_path,
+                production_context=(
+                    production_mock_root,
+                    production_reserved_ids,
+                ),
+                production_capability=_PRODUCTION_LEASE_CAPABILITY,
             )
             if production_lease["agent_id"] != "runtime-agent-9999":
                 raise AssertionError("production acquisition changed its actor identity")
@@ -10095,7 +15273,6 @@ def self_test() -> None:
                 workspace = temporary_root / f"{slot_id}-workspace"
                 input_root = workspace / "input"
                 output_root = workspace / "output"
-                input_root.mkdir(parents=True)
                 launch = dict(production_launch)
                 launch.update(
                     {
@@ -10116,6 +15293,7 @@ def self_test() -> None:
                 "production-slot-two", "F-s1"
             )
             active_production_launch[0] = second_launch
+            active_production_launch_path[0] = second_launch_path
             second_lease = acquire_lease(
                 production_mock_root / "runtime" / "state",
                 second_launch_path,
@@ -10123,13 +15301,17 @@ def self_test() -> None:
                 production_spec_path,
                 second_output,
                 input_packet_path,
-                static_root=production_mock_root,
-                external_commitment_path=commitment_path,
+                production_context=(
+                    production_mock_root,
+                    production_reserved_ids,
+                ),
+                production_capability=_PRODUCTION_LEASE_CAPABILITY,
             )
             if second_lease["agent_id"] != "runtime-agent-9998":
                 raise AssertionError("second production acquisition changed its actor identity")
             try:
                 active_production_launch[0] = production_launch
+                active_production_launch_path[0] = production_launch_path
                 acquire_lease(
                     production_mock_root / "runtime" / "state",
                     production_launch_path,
@@ -10137,8 +15319,11 @@ def self_test() -> None:
                     production_spec_path,
                     production_output,
                     input_packet_path,
-                    static_root=production_mock_root,
-                    external_commitment_path=commitment_path,
+                    production_context=(
+                        production_mock_root,
+                        production_reserved_ids,
+                    ),
+                    production_capability=_PRODUCTION_LEASE_CAPABILITY,
                 )
             except ProtocolError:
                 pass
@@ -10186,6 +15371,7 @@ def self_test() -> None:
                     f"poison-acquire-target-{poison_index}", "V-s1"
                 )
                 active_production_launch[0] = target_launch
+                active_production_launch_path[0] = target_launch_path
                 forbid_production_materialization[0] = True
                 try:
                     acquire_lease(
@@ -10195,8 +15381,11 @@ def self_test() -> None:
                         poisoned_acquire_root / "spec.json",
                         target_output,
                         input_packet_path,
-                        static_root=poisoned_acquire_root,
-                        external_commitment_path=commitment_path,
+                        production_context=(
+                            poisoned_acquire_root,
+                            production_reserved_ids,
+                        ),
+                        production_capability=_PRODUCTION_LEASE_CAPABILITY,
                     )
                 except ProtocolError as error:
                     require_poison_reason(error, poisoned_actor)
@@ -10236,8 +15425,11 @@ def self_test() -> None:
                         "PROCESS-EXITED",
                         0,
                         {},
-                        static_root=poisoned_seal_root,
-                        external_commitment_path=commitment_path,
+                        production_context=(
+                            poisoned_seal_root,
+                            production_reserved_ids,
+                        ),
+                        production_capability=_PRODUCTION_LEASE_CAPABILITY,
                     )
                 except ProtocolError as error:
                     require_poison_reason(error, poisoned_actor)
@@ -10289,6 +15481,991 @@ def self_test() -> None:
             assert ready_path.is_file()
             assert validate_lease(recovered_lease)["agent_id"] == "fault-agent"
 
+        for fault_point in (
+            "envelope-capture",
+            "object-publish",
+            "canonical-cas",
+            "canonical-pointer",
+        ):
+            fault_state = temporary_root / f"seal-fault-state-{fault_point}"
+            fault_output = (
+                temporary_root / f"seal-fault-workspace-{fault_point}" / "output"
+            )
+            fault_lease = synthetic_lease(
+                "slot-one",
+                f"seal-fault-agent-{fault_point}",
+                fault_output,
+                lease_state=fault_state,
+            )
+            (fault_output / "report.md").write_text(
+                "fault recovery report\n", encoding="utf-8"
+            )
+            seal_arguments = (
+                fault_state,
+                "slot-one",
+                fault_lease["lease_token"],
+                f"seal-fault-agent-{fault_point}",
+                fault_output,
+                b"report.md\n",
+                "returned",
+                0,
+                {"fault_point": fault_point},
+            )
+            try:
+                synthetic_seal(*seal_arguments, fault_after=fault_point)
+            except InjectedFault:
+                pass
+            else:
+                raise AssertionError(
+                    f"seal fault injection did not fire: {fault_point}"
+                )
+            recovered_pointer = synthetic_seal(*seal_arguments)
+            canonical_fault_path = (
+                fault_state / "slots" / "slot-one" / "canonical.json"
+            )
+            canonical_before = canonical_fault_path.read_bytes()
+            try:
+                synthetic_seal(
+                    *seal_arguments[:-1],
+                    {"fault_point": fault_point, "changed": True},
+                )
+            except TerminalAlreadyClaimed:
+                pass
+            else:
+                raise AssertionError(
+                    f"changed seal recovery arguments were accepted: {fault_point}"
+                )
+            if canonical_fault_path.read_bytes() != canonical_before:
+                raise AssertionError("failed seal retry mutated the canonical pointer")
+            recovered_state = synthetic_verify(fault_state)
+            recovered_row = next(
+                row
+                for row in recovered_state["slots"]
+                if row["slot_id"] == "slot-one"
+            )
+            if (
+                recovered_row["status"] != "SEALED"
+                or recovered_row["envelope_sha256"]
+                != recovered_pointer["envelope_sha256"]
+                or recovered_state["staging_entries"]
+            ):
+                raise AssertionError(
+                    f"seal recovery state is incomplete: {fault_point}"
+                )
+
+        object_durability_state = temporary_root / "object-durability-state"
+        object_durability_output = (
+            temporary_root / "object-durability-workspace" / "output"
+        )
+        object_durability_lease = synthetic_lease(
+            "slot-one",
+            "object-durability-agent",
+            object_durability_output,
+            lease_state=object_durability_state,
+        )
+        (object_durability_output / "report.md").write_text(
+            "object durability report\n", encoding="utf-8"
+        )
+        object_durability_arguments = (
+            object_durability_state,
+            "slot-one",
+            object_durability_lease["lease_token"],
+            "object-durability-agent",
+            object_durability_output,
+            b"report.md\n",
+            "returned",
+            0,
+            {"durability": "object-parent"},
+        )
+        object_parent = object_durability_state / "objects" / "sha256"
+        original_fsync_directory = globals()["fsync_directory"]
+        failed_object_parent_fsyncs = 0
+
+        def fail_published_object_parent_fsync(path: Path) -> None:
+            nonlocal failed_object_parent_fsyncs
+            published_object_exists = object_parent.is_dir() and any(
+                child.is_dir() and HEX64.fullmatch(child.name) is not None
+                for child in object_parent.iterdir()
+            )
+            if Path(path) == object_parent and published_object_exists:
+                failed_object_parent_fsyncs += 1
+                raise OSError(
+                    "synthetic postpublication object-parent fsync failure"
+                )
+            original_fsync_directory(path)
+
+        globals()["fsync_directory"] = fail_published_object_parent_fsync
+        try:
+            try:
+                synthetic_seal(*object_durability_arguments)
+            except OSError:
+                pass
+            else:
+                raise AssertionError(
+                    "exhausted object-parent fsync failures were swallowed"
+                )
+        finally:
+            globals()["fsync_directory"] = original_fsync_directory
+        object_durability_slot = (
+            object_durability_state / "slots" / "slot-one"
+        )
+        if (
+            failed_object_parent_fsyncs < 2
+            or not path_entry_exists(
+                object_durability_slot / "terminal-claim.json"
+            )
+            or path_entry_exists(object_durability_slot / "canonical.json")
+            or path_entry_exists(object_durability_slot / "seal-failure.json")
+        ):
+            raise AssertionError(
+                "postpublication object durability fault poisoned recovery state"
+            )
+        repaired_object_parent_fsyncs = 0
+
+        def count_repaired_object_parent_fsync(path: Path) -> None:
+            nonlocal repaired_object_parent_fsyncs
+            if Path(path) == object_parent:
+                repaired_object_parent_fsyncs += 1
+            original_fsync_directory(path)
+
+        globals()["fsync_directory"] = count_repaired_object_parent_fsync
+        try:
+            synthetic_seal(*object_durability_arguments)
+        finally:
+            globals()["fsync_directory"] = original_fsync_directory
+        if repaired_object_parent_fsyncs < 1:
+            raise AssertionError(
+                "pre-existing envelope object did not repair parent durability"
+            )
+
+        original_immutable_writer = globals()["_write_or_validate_immutable"]
+        for claim_kind in ("agent", "attempt-root"):
+            claim_exception_state = (
+                temporary_root / f"{claim_kind}-claim-postpublish-state"
+            )
+            claim_exception_output = (
+                temporary_root
+                / f"{claim_kind}-claim-postpublish-workspace"
+                / "output"
+            )
+            claim_exception_fired = [False]
+
+            def raise_after_claim_publish(
+                path: Path,
+                value: dict[str, Any],
+                *,
+                expected_kind: str = claim_kind,
+            ) -> None:
+                original_immutable_writer(path, value)
+                is_expected = (
+                    expected_kind == "agent"
+                    and path.name == "claim.json"
+                    and path.parent.parent.name == "agents"
+                ) or (
+                    expected_kind == "attempt-root"
+                    and path.parent.name == "attempt-roots"
+                )
+                if is_expected and not claim_exception_fired[0]:
+                    claim_exception_fired[0] = True
+                    raise OSError(
+                        f"synthetic post-{expected_kind}-claim publication failure"
+                    )
+
+            globals()["_write_or_validate_immutable"] = raise_after_claim_publish
+            try:
+                try:
+                    synthetic_lease(
+                        "slot-one",
+                        f"{claim_kind}-claim-postpublish-agent",
+                        claim_exception_output,
+                        lease_state=claim_exception_state,
+                    )
+                except OSError:
+                    pass
+                else:
+                    raise AssertionError(
+                        f"post-{claim_kind}-claim exception was swallowed before readiness"
+                    )
+            finally:
+                globals()["_write_or_validate_immutable"] = original_immutable_writer
+            persisted_claim_lease = validate_lease(
+                read_json(
+                    claim_exception_state
+                    / "slots"
+                    / "slot-one"
+                    / "lease.json"
+                )
+            )
+            recovered_claim_lease = synthetic_lease(
+                "slot-one",
+                f"{claim_kind}-claim-postpublish-agent",
+                claim_exception_output,
+                lease_state=claim_exception_state,
+            )
+            if (
+                not claim_exception_fired[0]
+                or recovered_claim_lease != persisted_claim_lease
+                or path_entry_exists(
+                    claim_exception_state
+                    / "slots"
+                    / "slot-one"
+                    / "lease-failure.json"
+                )
+            ):
+                raise AssertionError(
+                    f"post-{claim_kind}-claim exception was not idempotently recoverable"
+                )
+
+        ready_exception_state = temporary_root / "ready-postpublish-state"
+        ready_exception_output = (
+            temporary_root / "ready-postpublish-workspace" / "output"
+        )
+        ready_exception_fired = [False]
+
+        def raise_after_ready_publish(path: Path, value: dict[str, Any]) -> None:
+            original_immutable_writer(path, value)
+            if path.name == "lease-ready.json" and not ready_exception_fired[0]:
+                ready_exception_fired[0] = True
+                raise OSError("synthetic post-ready publication failure")
+
+        globals()["_write_or_validate_immutable"] = raise_after_ready_publish
+        try:
+            ready_exception_lease = synthetic_lease(
+                "slot-one",
+                "ready-postpublish-agent",
+                ready_exception_output,
+                lease_state=ready_exception_state,
+            )
+        finally:
+            globals()["_write_or_validate_immutable"] = original_immutable_writer
+        ready_exception_slot = ready_exception_state / "slots" / "slot-one"
+        if (
+            not ready_exception_fired[0]
+            or path_entry_exists(ready_exception_slot / "lease-failure.json")
+            or synthetic_verify(ready_exception_state)["slots"][0]["status"]
+            != "STARTED"
+        ):
+            raise AssertionError(
+                "post-publication ready exception created contradictory lease state"
+            )
+
+        canonical_exception_state = temporary_root / "canonical-postpublish-state"
+        canonical_exception_output = (
+            temporary_root / "canonical-postpublish-workspace" / "output"
+        )
+        canonical_exception_lease = synthetic_lease(
+            "slot-one",
+            "canonical-postpublish-agent",
+            canonical_exception_output,
+            lease_state=canonical_exception_state,
+        )
+        (canonical_exception_output / "report.md").write_text(
+            "canonical postpublication recovery\n", encoding="utf-8"
+        )
+        canonical_exception_fired = [False]
+
+        def raise_after_canonical_publish(
+            path: Path, value: dict[str, Any]
+        ) -> None:
+            original_immutable_writer(path, value)
+            if path.name == "canonical.json" and not canonical_exception_fired[0]:
+                canonical_exception_fired[0] = True
+                raise OSError("synthetic post-canonical publication failure")
+
+        globals()["_write_or_validate_immutable"] = raise_after_canonical_publish
+        try:
+            canonical_exception_pointer = synthetic_seal(
+                canonical_exception_state,
+                "slot-one",
+                canonical_exception_lease["lease_token"],
+                canonical_exception_lease["agent_id"],
+                canonical_exception_output,
+                b"report.md\n",
+                "returned",
+                0,
+                {"synthetic": "postpublication"},
+            )
+        finally:
+            globals()["_write_or_validate_immutable"] = original_immutable_writer
+        canonical_exception_verified = synthetic_verify(canonical_exception_state)
+        if (
+            not canonical_exception_fired[0]
+            or path_entry_exists(
+                canonical_exception_state
+                / "slots"
+                / "slot-one"
+                / "seal-failure.json"
+            )
+            or canonical_exception_verified["slots"][0]["status"] != "SEALED"
+            or canonical_exception_verified["slots"][0]["envelope_sha256"]
+            != canonical_exception_pointer["envelope_sha256"]
+        ):
+            raise AssertionError(
+                "post-publication canonical exception created contradictory seal state"
+            )
+
+        claim_exception_state = temporary_root / "terminal-claim-postpublish-state"
+        claim_exception_output = (
+            temporary_root / "terminal-claim-postpublish-workspace" / "output"
+        )
+        claim_exception_lease = synthetic_lease(
+            "slot-one",
+            "terminal-claim-postpublish-agent",
+            claim_exception_output,
+            lease_state=claim_exception_state,
+        )
+        (claim_exception_output / "report.md").write_text(
+            "terminal claim postpublication recovery\n", encoding="utf-8"
+        )
+        terminal_claim_exception_fired = [False]
+
+        def raise_after_terminal_claim_publish(
+            path: Path, value: dict[str, Any]
+        ) -> None:
+            original_immutable_writer(path, value)
+            if (
+                path.name == "terminal-claim.json"
+                and not terminal_claim_exception_fired[0]
+            ):
+                terminal_claim_exception_fired[0] = True
+                raise OSError("synthetic post-terminal-claim publication failure")
+
+        globals()["_write_or_validate_immutable"] = raise_after_terminal_claim_publish
+        terminal_claim_arguments = (
+            claim_exception_state,
+            "slot-one",
+            claim_exception_lease["lease_token"],
+            claim_exception_lease["agent_id"],
+            claim_exception_output,
+            b"report.md\n",
+            "returned",
+            0,
+            {"synthetic": "terminal-claim-postpublication"},
+        )
+        try:
+            try:
+                synthetic_seal(*terminal_claim_arguments)
+            except OSError:
+                pass
+            else:
+                raise AssertionError(
+                    "post-terminal-claim exception was swallowed before canonical publication"
+                )
+        finally:
+            globals()["_write_or_validate_immutable"] = original_immutable_writer
+        claim_exception_slot = claim_exception_state / "slots" / "slot-one"
+        if (
+            not terminal_claim_exception_fired[0]
+            or not path_entry_exists(claim_exception_slot / "terminal-claim.json")
+            or path_entry_exists(claim_exception_slot / "seal-failure.json")
+        ):
+            raise AssertionError(
+                "post-terminal-claim exception did not preserve retryable state"
+            )
+        terminal_claim_pointer = synthetic_seal(*terminal_claim_arguments)
+        terminal_claim_verified = synthetic_verify(claim_exception_state)
+        if (
+            terminal_claim_verified["slots"][0]["status"] != "SEALED"
+            or terminal_claim_verified["slots"][0]["envelope_sha256"]
+            != terminal_claim_pointer["envelope_sha256"]
+            or path_entry_exists(claim_exception_slot / "seal-failure.json")
+        ):
+            raise AssertionError(
+                "post-terminal-claim exception was not idempotently recoverable"
+            )
+
+        failure_durability_state = temporary_root / "seal-failure-durability-state"
+        failure_durability_output = (
+            temporary_root / "seal-failure-durability-workspace" / "output"
+        )
+        failure_durability_lease = synthetic_lease(
+            "slot-one",
+            "seal-failure-durability-agent",
+            failure_durability_output,
+            lease_state=failure_durability_state,
+        )
+        (failure_durability_output / "report.md").write_text(
+            "seal failure durability\n", encoding="utf-8"
+        )
+        failure_durability_slot = (
+            failure_durability_state / "slots" / "slot-one"
+        )
+        failure_durability_path = failure_durability_slot / "seal-failure.json"
+        failure_durability_arguments = (
+            failure_durability_state,
+            "slot-one",
+            failure_durability_lease["lease_token"],
+            "seal-failure-durability-agent",
+            failure_durability_output,
+            b"report.md\n",
+            "returned",
+            0,
+            {"durability": "seal-failure-parent"},
+        )
+        destroyed_failure_stage = False
+
+        def destroy_stage_after_terminal_claim(
+            path: Path, value: dict[str, Any]
+        ) -> None:
+            nonlocal destroyed_failure_stage
+            original_immutable_writer(path, value)
+            if path.name == "terminal-claim.json" and not destroyed_failure_stage:
+                stages = sorted(
+                    (
+                        failure_durability_state / "objects" / "sha256"
+                    ).glob(f".stage-{failure_durability_lease['attempt_id']}-*")
+                )
+                if len(stages) != 1:
+                    raise AssertionError(
+                        "seal-failure durability fixture lacks its private stage"
+                    )
+                _discard_private_aggregation_stage(stages[0])
+                destroyed_failure_stage = True
+                raise OSError("synthetic nonrecoverable post-claim failure")
+
+        original_fsync_directory = globals()["fsync_directory"]
+        failed_seal_failure_parent_fsyncs = 0
+
+        def fail_seal_failure_parent_fsync(path: Path) -> None:
+            nonlocal failed_seal_failure_parent_fsyncs
+            if (
+                Path(path) == failure_durability_slot
+                and path_entry_exists(failure_durability_path)
+            ):
+                failed_seal_failure_parent_fsyncs += 1
+                raise OSError(
+                    "synthetic postpublication seal-failure parent fsync failure"
+                )
+            original_fsync_directory(path)
+
+        globals()["_write_or_validate_immutable"] = (
+            destroy_stage_after_terminal_claim
+        )
+        globals()["fsync_directory"] = fail_seal_failure_parent_fsync
+        try:
+            try:
+                synthetic_seal(*failure_durability_arguments)
+            except OSError:
+                pass
+            else:
+                raise AssertionError(
+                    "nonrecoverable post-claim seal failure was swallowed"
+                )
+        finally:
+            globals()["_write_or_validate_immutable"] = original_immutable_writer
+            globals()["fsync_directory"] = original_fsync_directory
+        if (
+            not destroyed_failure_stage
+            or failed_seal_failure_parent_fsyncs < 3
+            or not path_entry_exists(failure_durability_path)
+        ):
+            raise AssertionError(
+                "seal-failure durability fixture did not publish its failed outcome"
+            )
+        repaired_seal_failure_parent_fsyncs = 0
+
+        def count_repaired_seal_failure_parent_fsync(path: Path) -> None:
+            nonlocal repaired_seal_failure_parent_fsyncs
+            if Path(path) == failure_durability_slot:
+                repaired_seal_failure_parent_fsyncs += 1
+            original_fsync_directory(path)
+
+        globals()["fsync_directory"] = count_repaired_seal_failure_parent_fsync
+        try:
+            try:
+                synthetic_seal(*failure_durability_arguments)
+            except TerminalAlreadyClaimed:
+                pass
+            else:
+                raise AssertionError(
+                    "committed seal failure did not remain terminal on retry"
+                )
+        finally:
+            globals()["fsync_directory"] = original_fsync_directory
+        if repaired_seal_failure_parent_fsyncs < 1:
+            raise AssertionError(
+                "pre-existing seal failure did not repair parent durability"
+            )
+        failure_durability_verified = synthetic_verify(failure_durability_state)
+        if failure_durability_verified["slots"][0]["status"] != "SEAL_FAILED":
+            raise AssertionError("repaired seal-failure state did not verify")
+
+        invalid_path_state = temporary_root / "invalid-output-path-state"
+        invalid_path_output = (
+            temporary_root / "invalid-output-path-workspace" / "output"
+        )
+        invalid_path_lease = synthetic_lease(
+            "slot-one",
+            "invalid-output-path-agent",
+            invalid_path_output,
+            lease_state=invalid_path_state,
+        )
+        (invalid_path_output / "report.md").write_text(
+            "synthetic report\n", encoding="utf-8"
+        )
+        (invalid_path_output / "bad\\name").write_bytes(b"backslash path\n")
+        unreadable_file = invalid_path_output / "unreadable-file.txt"
+        unreadable_file.write_bytes(b"owner-read restored during capture\n")
+        os.chmod(unreadable_file, 0o000)
+        unreadable_directory = invalid_path_output / "unreadable-directory"
+        unreadable_directory.mkdir()
+        unreadable_child = unreadable_directory / "child.txt"
+        unreadable_child.write_bytes(b"nested owner-read restored during capture\n")
+        os.chmod(unreadable_child, 0o000)
+        os.chmod(unreadable_directory, 0o000)
+        invalid_output_fd = os.open(
+            invalid_path_output,
+            os.O_RDONLY | getattr(os, "O_DIRECTORY", 0),
+        )
+        try:
+            invalid_name_fd = os.open(
+                b"bad-\xff",
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+                0o600,
+                dir_fd=invalid_output_fd,
+            )
+            try:
+                os.write(invalid_name_fd, b"non-utf8 path\n")
+            finally:
+                os.close(invalid_name_fd)
+        finally:
+            os.close(invalid_output_fd)
+        os.chmod(invalid_path_output, 0o000)
+        invalid_path_pointer = synthetic_seal(
+            invalid_path_state,
+            "slot-one",
+            invalid_path_lease["lease_token"],
+            "invalid-output-path-agent",
+            invalid_path_output,
+            b"report.md\n",
+            "returned",
+            0,
+            {"synthetic": True},
+        )
+        if stat.S_IMODE(invalid_path_output.lstat().st_mode) != 0:
+            raise AssertionError("output capture did not restore output-root mode")
+        os.chmod(invalid_path_output, 0o700)
+        if (
+            stat.S_IMODE(unreadable_file.lstat().st_mode) != 0
+            or stat.S_IMODE(unreadable_directory.lstat().st_mode) != 0
+        ):
+            raise AssertionError("output capture did not restore agent-selected modes")
+        os.chmod(unreadable_directory, 0o700)
+        if stat.S_IMODE(unreadable_child.lstat().st_mode) != 0:
+            raise AssertionError("output capture did not restore nested file mode")
+        os.chmod(unreadable_file, 0o600)
+        os.chmod(unreadable_child, 0o600)
+        if invalid_path_pointer["format_valid"] is not False:
+            raise AssertionError("nonportable output paths were not format-invalid")
+        invalid_path_envelope = read_json(
+            invalid_path_state
+            / "objects"
+            / "sha256"
+            / invalid_path_pointer["envelope_sha256"]
+            / "envelope.json"
+        )
+        encoded_path_records = [
+            row
+            for row in invalid_path_envelope["output_entries"]
+            if row["path"].startswith(ENCODED_OUTPUT_PATH_PREFIX)
+        ]
+        if len(encoded_path_records) != 2 or not any(
+            violation.startswith("invalid-path:")
+            for violation in invalid_path_envelope["violations"]
+        ):
+            raise AssertionError("nonportable POSIX paths were not captured injectively")
+        invalid_path_verified = synthetic_verify(invalid_path_state)
+        if (
+            invalid_path_verified["state_valid"] is not True
+            or invalid_path_verified["slots"][0]["status"] != "SEALED"
+            or (
+                invalid_path_state / "slots" / "slot-one" / "seal-failure.json"
+            ).exists()
+        ):
+            raise AssertionError("nonportable output path stranded terminal sealing")
+        invalid_path_object = (
+            invalid_path_state
+            / "objects"
+            / "sha256"
+            / invalid_path_pointer["envelope_sha256"]
+        )
+        injected_empty_directory = invalid_path_object / "unbound-empty-directory"
+        os.chmod(invalid_path_object, 0o700)
+        injected_empty_directory.mkdir()
+        os.chmod(injected_empty_directory, 0o500)
+        os.chmod(invalid_path_object, 0o500)
+        try:
+            synthetic_verify(invalid_path_state)
+        except ProtocolError:
+            pass
+        else:
+            raise AssertionError("unbound empty canonical-object directory was accepted")
+        os.chmod(invalid_path_object, 0o700)
+        os.chmod(injected_empty_directory, 0o700)
+        injected_empty_directory.rmdir()
+        os.chmod(invalid_path_object, 0o500)
+        if synthetic_verify(invalid_path_state)["state_valid"] is not True:
+            raise AssertionError("canonical object did not recover after tamper removal")
+
+        report_overcap_workspace = temporary_root / "report-overcap-workspace"
+        report_overcap_output = report_overcap_workspace / "output"
+        report_overcap_spec = {
+            "schema_version": 1,
+            "status": "READY",
+            "files": [
+                {
+                    "path": "report.md",
+                    "required": True,
+                    "max_bytes": 64,
+                    "utf8": True,
+                }
+            ],
+            "final_response": {
+                "required": True,
+                "max_bytes": 1024,
+                "utf8": True,
+                "utf8_fullmatch_regex": "^report\\.md\\n?$",
+            },
+            "max_total_output_bytes": 64,
+            "allowed_process_dispositions": ["returned"],
+        }
+        report_overcap_spec_path = temporary_root / "report-overcap-spec.json"
+        report_overcap_spec_bytes = canonical_json_bytes(report_overcap_spec)
+        report_overcap_spec_path.write_bytes(report_overcap_spec_bytes)
+        report_overcap_packet_path = temporary_root / "report-overcap-plan.json"
+        report_overcap_packet_path.write_bytes(inventory_plan_bytes)
+        report_overcap_launch = {
+            **report_launch,
+            "workspace_root": str(report_overcap_workspace),
+            "input_root": str(report_overcap_workspace / "input"),
+            "output_root": str(report_overcap_output),
+            "input_packet_sha256": sha256(inventory_plan_bytes),
+            "envelope_spec_sha256": sha256(report_overcap_spec_bytes),
+        }
+        report_overcap_launch_path = temporary_root / "report-overcap-launch.json"
+        report_overcap_launch_path.write_bytes(
+            canonical_json_bytes(report_overcap_launch)
+        )
+        report_overcap_launch_bytes = canonical_json_bytes(report_overcap_launch)
+        report_overcap_lease = validate_lease(
+            {
+                **inventory_lease,
+                "agent_id": "report-overcap-agent",
+                "launch_record_sha256": sha256(report_overcap_launch_bytes),
+                "launch_record_bytes_base64": base64.b64encode(
+                    report_overcap_launch_bytes
+                ).decode("ascii"),
+                "attempt_root": str(report_overcap_output),
+                "attempt_root_claim_sha256": sha256(
+                    str(report_overcap_output).encode("utf-8")
+                ),
+                "envelope_spec_sha256": sha256(report_overcap_spec_bytes),
+                "envelope_spec_bytes_base64": base64.b64encode(
+                    report_overcap_spec_bytes
+                ).decode("ascii"),
+                "input_packet_sha256": sha256(inventory_plan_bytes),
+                "input_packet_bytes_base64": base64.b64encode(
+                    inventory_plan_bytes
+                ).decode("ascii"),
+            }
+        )
+        report_overcap_output.mkdir(parents=True)
+        report_overcap_output.joinpath("report.md").write_bytes(b"r" * 65)
+        report_overcap_stage = temporary_root / "report-overcap-envelope"
+        report_overcap_stage.mkdir()
+        report_overcap_envelope = capture_envelope(
+            report_overcap_stage,
+            report_overcap_lease,
+            report_overcap_spec,
+            report_overcap_output,
+            b"x" * 1025,
+            "returned",
+            0,
+            {"synthetic": True},
+        )
+        report_overcap_record = report_overcap_envelope["output_entries"][0]
+        if (
+            report_overcap_envelope["format_valid"] is not False
+            or report_overcap_envelope["semantic_valid"] is not True
+            or report_overcap_record["captured"] is not True
+            or report_overcap_record["size"] != 65
+            or report_overcap_envelope["final_response"]["captured"] is not True
+            or "total-output-oversize:65:64"
+            not in report_overcap_envelope["violations"]
+            or "oversize:final-response:1025:1024"
+            not in report_overcap_envelope["violations"]
+        ):
+            raise AssertionError(
+                "ordinary spec-overcap report/final response did not remain captured"
+            )
+        with report_overcap_output.joinpath("report.md").open("wb") as sparse:
+            sparse.truncate(MAX_ENVELOPE_CAPTURE_BYTES)
+        aggregate_hard_stage = temporary_root / "aggregate-hard-envelope"
+        aggregate_hard_stage.mkdir()
+        aggregate_hard_envelope = capture_envelope(
+            aggregate_hard_stage,
+            report_overcap_lease,
+            report_overcap_spec,
+            report_overcap_output,
+            b"x",
+            "returned",
+            0,
+            {"synthetic": True},
+        )
+        if (
+            aggregate_hard_envelope["output_entries"][0]["captured"] is not True
+            or aggregate_hard_envelope["final_response"]["captured"] is not False
+            or aggregate_hard_envelope["semantic_errors"]
+            != ["semantic:output-capture-hard-limit"]
+            or "uncaptured-oversize:final-response:1"
+            not in aggregate_hard_envelope["violations"]
+            or path_entry_exists(
+                aggregate_hard_stage / "payload" / "final-response.bin"
+            )
+        ):
+            raise AssertionError(
+                "aggregate output/final-response hard byte limit was not enforced"
+            )
+        report_overcap_output.joinpath("report.md").write_bytes(b"usable report\n")
+        report_hard_extra = report_overcap_output / "unexpected-large.bin"
+        with report_hard_extra.open("wb") as sparse:
+            sparse.truncate(64 * 1024 * 1024)
+        report_hard_extra_stage = temporary_root / "report-hard-extra-envelope"
+        report_hard_extra_stage.mkdir()
+        report_hard_extra_envelope = capture_envelope(
+            report_hard_extra_stage,
+            report_overcap_lease,
+            report_overcap_spec,
+            report_overcap_output,
+            b"report.md\n",
+            "returned",
+            0,
+            {"synthetic": True},
+        )
+        report_primary_record = next(
+            row
+            for row in report_hard_extra_envelope["output_entries"]
+            if row["path"] == "report.md"
+        )
+        if (
+            report_primary_record["captured"] is not True
+            or report_hard_extra_envelope["semantic_errors"]
+            != ["semantic:output-capture-hard-limit"]
+            or report_hard_extra_envelope["semantic_valid"] is not False
+        ):
+            raise AssertionError(
+                "hard overflow in an extra report file did not terminalize semantics"
+            )
+
+        hard_cap_state = temporary_root / "hard-cap-state"
+        hard_cap_output = temporary_root / "hard-cap-workspace" / "output"
+        hard_cap_lease = synthetic_lease(
+            "slot-invalid",
+            "hard-cap-agent",
+            hard_cap_output,
+            lease_state=hard_cap_state,
+        )
+        hard_cap_primary = hard_cap_output / "report.md"
+        with hard_cap_primary.open("wb") as sparse:
+            sparse.truncate(64 * 1024 * 1024)
+        hard_cap_pointer = synthetic_seal(
+            hard_cap_state,
+            "slot-invalid",
+            hard_cap_lease["lease_token"],
+            "hard-cap-agent",
+            hard_cap_output,
+            b"report.md\n",
+            "returned",
+            0,
+            {"synthetic": True},
+        )
+        hard_cap_envelope = read_json(
+            hard_cap_state
+            / "objects"
+            / "sha256"
+            / hard_cap_pointer["envelope_sha256"]
+            / "envelope.json"
+        )
+        hard_cap_record = hard_cap_envelope["output_entries"][0]
+        if (
+            hard_cap_record["captured"] is not False
+            or hard_cap_record["size"] != 64 * 1024 * 1024
+            or hard_cap_record["sha256"] is not None
+            or hard_cap_pointer["semantic_valid"] is not False
+            or synthetic_verify(hard_cap_state)["state_valid"] is not True
+            or (hard_cap_state / "slots" / "slot-invalid" / "seal-failure.json").exists()
+        ):
+            raise AssertionError("hard-cap output did not terminalize canonically")
+        oversized_final_response = read_bounded_final_response(
+            hard_cap_primary,
+            MAX_ENVELOPE_CAPTURE_BYTES,
+            "synthetic oversized final-response input",
+        )
+        if (
+            type(oversized_final_response) is not OversizedFinalResponse
+            or oversized_final_response.size != 64 * 1024 * 1024
+            or len(oversized_final_response.prefix)
+            != MAX_ENVELOPE_CAPTURE_BYTES + 1
+        ):
+            raise AssertionError("oversized CLI-style input was not prefix bounded")
+
+        hard_final_state = temporary_root / "hard-final-state"
+        hard_final_output = temporary_root / "hard-final-workspace" / "output"
+        hard_final_lease = synthetic_lease(
+            "slot-invalid",
+            "hard-final-agent",
+            hard_final_output,
+            lease_state=hard_final_state,
+        )
+        (hard_final_output / "report.md").write_bytes(b"{}\n")
+        hard_final_pointer = synthetic_seal(
+            hard_final_state,
+            "slot-invalid",
+            hard_final_lease["lease_token"],
+            "hard-final-agent",
+            hard_final_output,
+            oversized_final_response,
+            "returned",
+            0,
+            {"synthetic": True},
+        )
+        hard_final_envelope = read_json(
+            hard_final_state
+            / "objects"
+            / "sha256"
+            / hard_final_pointer["envelope_sha256"]
+            / "envelope.json"
+        )
+        if (
+            hard_final_envelope["final_response"]["captured"] is not False
+            or hard_final_envelope["final_response"]["size"]
+            != 64 * 1024 * 1024
+            or hard_final_envelope["final_response"]["sha256"] is not None
+            or hard_final_envelope["final_response"]["prefix_sha256"]
+            != sha256(oversized_final_response.prefix)
+            or hard_final_envelope["semantic_errors"]
+            != ["semantic:output-capture-hard-limit"]
+            or (
+                hard_final_state
+                / "objects"
+                / "sha256"
+                / hard_final_pointer["envelope_sha256"]
+                / "payload"
+                / "final-response.bin"
+            ).exists()
+            or (hard_final_state / "slots" / "slot-invalid" / "seal-failure.json").exists()
+            or synthetic_verify(hard_final_state)["state_valid"] is not True
+        ):
+            raise AssertionError("hard-cap final response did not seal canonically")
+
+        entry_cap_state = temporary_root / "entry-cap-state"
+        entry_cap_output = temporary_root / "entry-cap-workspace" / "output"
+        entry_cap_lease = synthetic_lease(
+            "slot-invalid",
+            "entry-cap-agent",
+            entry_cap_output,
+            lease_state=entry_cap_state,
+        )
+        (entry_cap_output / "report.md").write_bytes(b"{}\n")
+        for index in range(MAX_OUTPUT_CAPTURE_ENTRIES):
+            (entry_cap_output / f"extra-{index:04d}").touch()
+        entry_cap_pointer = synthetic_seal(
+            entry_cap_state,
+            "slot-invalid",
+            entry_cap_lease["lease_token"],
+            "entry-cap-agent",
+            entry_cap_output,
+            b"report.md\n",
+            "returned",
+            0,
+            {"synthetic": True},
+        )
+        entry_cap_envelope = read_json(
+            entry_cap_state
+            / "objects"
+            / "sha256"
+            / entry_cap_pointer["envelope_sha256"]
+            / "envelope.json"
+        )
+        if (
+            len(entry_cap_envelope["output_entries"]) != 1
+            or entry_cap_envelope["output_entries"][0]["kind"] != "capture-limit"
+            or "capture-limit:entry-count" not in entry_cap_envelope["violations"]
+            or entry_cap_pointer["semantic_valid"] is not False
+            or synthetic_verify(entry_cap_state)["state_valid"] is not True
+            or (entry_cap_state / "slots" / "slot-invalid" / "seal-failure.json").exists()
+        ):
+            raise AssertionError("entry-cap output did not terminalize canonically")
+
+        adversarial_tree_state = temporary_root / "adversarial-output-tree-state"
+        adversarial_tree_output = (
+            temporary_root / "adversarial-output-tree-workspace" / "output"
+        )
+        adversarial_tree_lease = synthetic_lease(
+            "slot-one",
+            "adversarial-output-tree-agent",
+            adversarial_tree_output,
+            lease_state=adversarial_tree_state,
+        )
+        (adversarial_tree_output / "report.md").write_text(
+            "synthetic report\n", encoding="utf-8"
+        )
+        deep_directories: list[Path] = []
+        deep_cursor = adversarial_tree_output
+        for _index in range(1050):
+            deep_cursor = deep_cursor / "d"
+            deep_cursor.mkdir()
+            deep_directories.append(deep_cursor)
+        long_directories: list[Path] = []
+        long_cursor = adversarial_tree_output
+        for index in range(20):
+            long_cursor = long_cursor / (f"p{index:02d}-" + "x" * 170)
+            long_cursor.mkdir()
+            long_directories.append(long_cursor)
+        long_file = long_cursor / "long-path-output.txt"
+        long_file.write_bytes(b"long path payload\n")
+        adversarial_tree_pointer = synthetic_seal(
+            adversarial_tree_state,
+            "slot-one",
+            adversarial_tree_lease["lease_token"],
+            "adversarial-output-tree-agent",
+            adversarial_tree_output,
+            b"report.md\n",
+            "returned",
+            0,
+            {"synthetic": True},
+        )
+        adversarial_tree_envelope = read_json(
+            adversarial_tree_state
+            / "objects"
+            / "sha256"
+            / adversarial_tree_pointer["envelope_sha256"]
+            / "envelope.json"
+        )
+        if (
+            adversarial_tree_pointer["format_valid"] is not False
+            or len(adversarial_tree_envelope["output_entries"]) != 1
+            or adversarial_tree_envelope["output_entries"][0]["kind"]
+            != "capture-limit"
+            or "capture-limit:path-bytes"
+            not in adversarial_tree_envelope["violations"]
+            or synthetic_verify(adversarial_tree_state)["state_valid"] is not True
+            or (
+                adversarial_tree_state
+                / "slots"
+                / "slot-one"
+                / "seal-failure.json"
+            ).exists()
+        ):
+            raise AssertionError(
+                "deep or workspace-only-long output path stranded canonical sealing"
+            )
+        long_file.unlink()
+        for directory in reversed(long_directories):
+            directory.rmdir()
+        for directory in reversed(deep_directories):
+            directory.rmdir()
+
         output = temporary_root / "workspace-one" / "output"
         lease = synthetic_lease("slot-one", "agent-one", output)
         try:
@@ -10314,6 +16491,69 @@ def self_test() -> None:
             {"synthetic": True},
         )
         assert pointer["format_valid"] is True
+        if synthetic_seal(
+            state,
+            "slot-one",
+            lease["lease_token"],
+            "agent-one",
+            output,
+            b"report.md\n",
+            "returned",
+            0,
+            {"synthetic": True},
+        ) != pointer:
+            raise AssertionError("same-argument canonical seal recovery drifted")
+        for symlink_component in ("object", "sha256", "objects"):
+            symlink_state = temporary_root / (
+                f"canonical-{symlink_component}-symlink-state"
+            )
+            shutil.copytree(state, symlink_state)
+            object_path = (
+                symlink_state
+                / "objects"
+                / "sha256"
+                / pointer["envelope_sha256"]
+            )
+            component = {
+                "object": object_path,
+                "sha256": object_path.parent,
+                "objects": object_path.parent.parent,
+            }[symlink_component]
+            displaced = component.with_name(
+                f".{component.name}-{symlink_component}-symlink-target"
+            )
+            os.chmod(component.parent, 0o700)
+            component.rename(displaced)
+            component.symlink_to(displaced, target_is_directory=True)
+            try:
+                synthetic_seal(
+                    symlink_state,
+                    "slot-one",
+                    lease["lease_token"],
+                    "agent-one",
+                    output,
+                    b"report.md\n",
+                    "returned",
+                    0,
+                    {"synthetic": True},
+                )
+            except ProtocolError as error:
+                if "canonical object chain" not in str(error):
+                    raise AssertionError(
+                        "canonical seal retry rejected a symlinked object "
+                        f"chain for the wrong reason: {symlink_component}"
+                    ) from error
+            else:
+                raise AssertionError(
+                    "canonical seal retry accepted a symlinked object "
+                    f"chain: {symlink_component}"
+                )
+        try:
+            synthetic_lease("slot-one", "agent-one", output)
+        except LeaseAlreadyExists:
+            pass
+        else:
+            raise AssertionError("a sealed assignment was reacquired")
         for forged_actor, expected_fragment in (
             ("reviewer-actor-0001", "permanently ineligible"),
             ("invalid-alias", "canonical 16-128 byte"),
@@ -10333,6 +16573,7 @@ def self_test() -> None:
                         production_reviewer_ids=frozenset(
                             {"reviewer-actor-0001"}
                         ),
+                        production_static_root=RUN,
                     )
             except ProtocolError as error:
                 if expected_fragment not in str(error):
@@ -10345,7 +16586,7 @@ def self_test() -> None:
                 )
         try:
             synthetic_seal(state, "slot-one", lease["lease_token"], "agent-one", output, b"replacement", "returned", 0, {})
-        except CanonicalAlreadySealed:
+        except (CanonicalAlreadySealed, TerminalAlreadyClaimed):
             pass
         else:
             raise AssertionError("canonical envelope was replaced")
@@ -10353,18 +16594,22 @@ def self_test() -> None:
         invalid_output = temporary_root / "workspace-invalid" / "output"
         invalid_lease = synthetic_lease("slot-invalid", "agent-invalid", invalid_output)
         (invalid_output / "extra-empty-directory").mkdir()
+        (invalid_output / "report.md").write_text(
+            deeply_nested_json, encoding="utf-8"
+        )
         invalid_pointer = synthetic_seal(
             state,
             "slot-invalid",
             invalid_lease["lease_token"],
             "agent-invalid",
             invalid_output,
-            None,
-            "not-allowed",
-            None,
+            b"report.md\n",
+            "returned",
+            0,
             {"synthetic": True},
         )
         assert invalid_pointer["format_valid"] is False
+        assert invalid_pointer["semantic_valid"] is False
         invalid_envelope = read_json(
             state
             / "objects"
@@ -10373,6 +16618,10 @@ def self_test() -> None:
             / "envelope.json"
         )
         assert "unexpected-directory:extra-empty-directory" in invalid_envelope["violations"]
+        assert any(
+            "nesting limit" in error
+            for error in invalid_envelope["semantic_errors"]
+        )
 
         format_output = temporary_root / "workspace-format" / "output"
         format_lease = synthetic_lease("slot-format", "agent-format", format_output)
@@ -10416,7 +16665,7 @@ def self_test() -> None:
                     {"marker": marker},
                 )
                 return "won"
-            except CanonicalAlreadySealed:
+            except (CanonicalAlreadySealed, TerminalAlreadyClaimed):
                 return "lost"
 
         with ThreadPoolExecutor(max_workers=2) as pool:
@@ -10426,6 +16675,16 @@ def self_test() -> None:
         recovery_output = temporary_root / "workspace-recovery" / "output"
         recovery_lease = synthetic_lease(
             "slot-recovery", "agent-recovery", recovery_output
+        )
+        stale_seal_stage = (
+            state
+            / "objects"
+            / "sha256"
+            / f".stage-{recovery_lease['attempt_id']}-{'f' * 24}"
+        )
+        durable_mkdir(stale_seal_stage)
+        (stale_seal_stage / "stale.json").write_text(
+            "{}\n", encoding="utf-8"
         )
         (recovery_output / "report.md").write_text(
             "recovery synthetic report\n", encoding="utf-8"
@@ -10447,11 +16706,51 @@ def self_test() -> None:
             pass
         else:
             raise AssertionError("terminal-claim fault injection did not fire")
+        if stale_seal_stage.exists() or stale_seal_stage.is_symlink():
+            raise AssertionError("stale pre-claim seal stage survived a retry")
         incomplete = synthetic_verify(state)
         recovery_row = next(
             row for row in incomplete["slots"] if row["slot_id"] == "slot-recovery"
         )
         assert recovery_row["status"] == "TERMINAL_CLAIMED_INCOMPLETE"
+        recovery_stages_before_wrong_retry = sorted(
+            (path.name, byte_tree_digest(path))
+            for path in (state / "objects" / "sha256").iterdir()
+            if path.name.startswith(f".stage-{recovery_lease['attempt_id']}-")
+        )
+        if len(recovery_stages_before_wrong_retry) != 1:
+            raise AssertionError("terminal-claim crash lacks its exact recovery stage")
+        try:
+            synthetic_seal(
+                state,
+                "slot-recovery",
+                recovery_lease["lease_token"],
+                "agent-recovery",
+                recovery_output,
+                b"report.md\n",
+                "returned",
+                0,
+                {"synthetic": True, "changed_retry": True},
+            )
+        except TerminalAlreadyClaimed:
+            pass
+        else:
+            raise AssertionError("changed terminal-claim recovery arguments were accepted")
+        recovery_stages_after_wrong_retry = sorted(
+            (path.name, byte_tree_digest(path))
+            for path in (state / "objects" / "sha256").iterdir()
+            if path.name.startswith(f".stage-{recovery_lease['attempt_id']}-")
+        )
+        if (
+            recovery_stages_after_wrong_retry
+            != recovery_stages_before_wrong_retry
+            or (
+                state / "slots" / "slot-recovery" / "seal-failure.json"
+            ).exists()
+        ):
+            raise AssertionError(
+                "mismatched terminal-claim retry poisoned the valid recovery state"
+            )
         recovery_pointer = synthetic_seal(
             state,
             "slot-recovery",
@@ -10468,11 +16767,962 @@ def self_test() -> None:
         verified = synthetic_verify(state)
         assert len(verified["slots"]) == 5
         assert sum(row["status"] == "SEALED" for row in verified["slots"]) == 5
-        assert verified["complete"] is True
-        assert verified["state_valid"] is False
+        assert verified["complete"] is False
+        assert verified["state_valid"] is True
+        assert verified["outcome"] == "IN_PROGRESS"
+        assert verified["all_started_attempts_terminal"] is True
+        assert verified["all_outputs_valid"] is False
     print(
         "DRAFT protocol self-test passed "
         "(atoms, closed rules, A-O scoring, adjudication union/merge, DAGs, gates, lease, envelope, CAS)"
+    )
+
+
+def production_runtime_self_test() -> None:
+    """Exercise complete minimum and maximum staged production runtimes."""
+
+    integration = trusted_integration_module()
+
+    def discard_temporary_tree(root: Path) -> None:
+        if not root.exists():
+            return
+        for directory, directory_names, _file_names in os.walk(
+            root, topdown=True, followlinks=False
+        ):
+            directory_names.sort()
+            directory_path = Path(directory)
+            if directory_path.is_symlink():
+                raise AssertionError("runtime self-test workspace contains a symlink")
+            os.chmod(directory_path, 0o700)
+        shutil.rmtree(root)
+
+    def tree_byte_mode_identity(root: Path) -> list[tuple[str, str, int, str | None]]:
+        records: list[tuple[str, str, int, str | None]] = []
+        for path in (root, *sorted(root.rglob("*"), key=lambda item: item.as_posix())):
+            relative = "." if path == root else path.relative_to(root).as_posix()
+            if path.is_symlink() or not (path.is_dir() or path.is_file()):
+                raise AssertionError(f"runtime identity tree has unsupported entry: {relative}")
+            records.append(
+                (
+                    relative,
+                    "directory" if path.is_dir() else "file",
+                    stat.S_IMODE(path.lstat().st_mode),
+                    sha256(path.read_bytes()) if path.is_file() else None,
+                )
+            )
+        return records
+
+    def clean_workspace(lease: dict[str, Any]) -> None:
+        discard_temporary_tree(Path(lease["attempt_root"]).parent)
+
+    def seal_output(
+        bundle: Path,
+        commitment: Path,
+        lease: dict[str, Any],
+        output: bytes,
+        *,
+        expect_valid: bool = True,
+        output_root_mode: int | None = None,
+    ) -> dict[str, Any]:
+        launch = load_bound_launch(lease)
+        output_path = Path(lease["attempt_root"]) / Path(
+            *PurePosixPath(launch["output_path"]).parts
+        )
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_bytes(output)
+        if output_root_mode is not None:
+            os.chmod(Path(lease["attempt_root"]), output_root_mode)
+        pointer = seal_production_attempt(
+            bundle,
+            commitment,
+            lease["slot_id"],
+            lease["lease_token"],
+            lease["agent_id"],
+            (launch["output_path"] + "\n").encode("utf-8"),
+            "RETURNED",
+            0,
+            {"runtime_self_test": True},
+        )
+        if expect_valid and (
+            pointer["format_valid"] is not True
+            or pointer["semantic_valid"] is not True
+        ):
+            raise AssertionError(
+                f"runtime self-test output was not valid: {lease['slot_id']}"
+            )
+        if not expect_valid and pointer["semantic_valid"] is not False:
+            raise AssertionError(
+                f"runtime self-test invalid output passed semantics: {lease['slot_id']}"
+            )
+        if output_root_mode is not None:
+            if (
+                stat.S_IMODE(Path(lease["attempt_root"]).lstat().st_mode)
+                != output_root_mode
+            ):
+                raise AssertionError(
+                    "production sealing did not restore the agent-selected output-root mode"
+                )
+            os.chmod(Path(lease["attempt_root"]), 0o700)
+        clean_workspace(lease)
+        return pointer
+
+    def clean_direct_score(packet: dict[str, Any]) -> dict[str, Any]:
+        mode = packet["mode"]
+        scorer = packet["scorer_id"]
+        atoms = packet_json_file(
+            packet["packet_tree"], SCORE_RESOURCE_PATHS["atom_manifest"]
+        )
+        rules = packet_json_file(
+            packet["packet_tree"], SCORE_RESOURCE_PATHS["defect_rules"]
+        )
+        packet_reports = {row["label"]: row for row in packet["reports"]}
+        return {
+            "schema_version": 1,
+            "status": "DIRECT-SCORE",
+            "mode": mode,
+            "scorer_id": scorer,
+            "claim": f"{mode}-{scorer}",
+            "input_packet_sha256": sha256(canonical_json_bytes(packet)),
+            "reports": [
+                {
+                    "label": label,
+                    "atoms": [
+                        {
+                            "id": atom["id"],
+                            "direct_decision": "PASS",
+                            "evidence": "Mechanical runtime-path proof-quality fixture.",
+                        }
+                        for atom in atoms["atoms"]
+                    ],
+                    "hard_errors": [
+                        {
+                            "id": rule_id,
+                            "present": (
+                                packet_reports[label]["gh12_forced_present"]
+                                if rule_id == "GH12"
+                                else False
+                            ),
+                            "evidence": "Mechanical runtime-path defect fixture.",
+                        }
+                        for rule_id in hard_error_ids(rules, mode)
+                    ],
+                    "global_defects": [
+                        {
+                            "id": rule_id,
+                            "present": False,
+                            "evidence": "Mechanical runtime-path global fixture.",
+                        }
+                        for rule_id in global_defect_ids(rules)
+                    ],
+                    "novel_findings": [],
+                }
+                for label in packet["labels_in_order"]
+            ],
+        }
+
+    def clean_consistency_review(
+        packet: dict[str, Any], reviewer: str, *, force_challenge: bool = False
+    ) -> dict[str, Any]:
+        atoms = packet_json_file(
+            packet["packet_tree"], "resources/atom-manifest.json"
+        )
+        rules = packet_json_file(
+            packet["packet_tree"], "resources/defect-rules.json"
+        )
+        atom_fields, defect_fields = atom_and_defect_fields(atoms, rules)
+        mode = packet["mode"]
+        review = {
+            "schema_version": 1,
+            "status": "CONSISTENCY-REVIEW",
+            "mode": mode,
+            "reviewer_id": reviewer,
+            "claim": f"{mode}-{reviewer}",
+            "input_packet_sha256": sha256(canonical_json_bytes(packet)),
+            "labels_reviewed": list(LABELS),
+            "atom_family_attestations": [
+                {
+                    "field": field,
+                    "labels_reviewed": list(LABELS),
+                    "evidence": "Mechanical A-O atom-family consistency fixture.",
+                }
+                for field in atom_fields
+            ],
+            "defect_family_attestations": [
+                {
+                    "field": field,
+                    "labels_reviewed": list(LABELS),
+                    "evidence": "Mechanical A-O defect-family consistency fixture.",
+                }
+                for field in defect_fields
+            ],
+            "challenges": [],
+            "novel_classifications": [
+                {
+                    "normalized_id": assertion["id"],
+                    "category": "INVALID_ASSERTION",
+                    "evidence": "Mechanical normalized-assertion routing fixture.",
+                }
+                for assertion in packet["novel_assertions"]
+            ],
+        }
+        if force_challenge:
+            review["challenges"].append(
+                {
+                    "label": LABELS[0],
+                    "field": atom_fields[0],
+                    "proposed_decision": "FAIL",
+                    "evidence": "Mechanical forced adjudication-path fixture.",
+                }
+            )
+        return review
+
+    def clean_adjudication(packet: dict[str, Any]) -> dict[str, Any]:
+        resolutions: list[dict[str, str]] = []
+        for cell in packet["cells"]:
+            field = cell["field"]
+            if field.startswith("atom:"):
+                decision = "PASS"
+            elif field.startswith("novel:"):
+                decision = "INVALID_ASSERTION"
+            else:
+                decision = "ABSENT"
+            resolutions.append(
+                {
+                    "cell_id": cell["cell_id"],
+                    "decision": decision,
+                    "evidence": "Mechanical runtime adjudication fixture.",
+                }
+            )
+        return {
+            "schema_version": 1,
+            "status": "ADJUDICATED",
+            "mode": packet["mode"],
+            "packet_sha256": sha256(canonical_json_bytes(packet)),
+            "resolutions": resolutions,
+        }
+
+    def clean_materiality_review(
+        packet: dict[str, Any], reviewer: str, *, force_finding: bool = False
+    ) -> dict[str, Any]:
+        return {
+            "schema_version": 1,
+            "status": "MATERIALITY-REVIEW",
+            "reviewer_id": reviewer,
+            "input_packet_sha256": sha256(canonical_json_bytes(packet)),
+            "scope_attestations": [
+                {
+                    "scope": scope,
+                    "complete": True,
+                    "evidence": "Mechanical exhaustive materiality-scope fixture.",
+                }
+                for scope in MATERIALITY_SCOPES
+            ],
+            "findings": (
+                [
+                    {
+                        "id": f"{reviewer}-F1",
+                        "scope": "HARNESS_PROTOCOL",
+                        "description": "Mechanical single-reviewer materiality fixture.",
+                        "evidence": "Mechanical runtime materiality finding fixture.",
+                        "proposed_blocking": False,
+                    }
+                ]
+                if force_finding
+                else []
+            ),
+        }
+
+    def clean_materiality_adjudication(packet: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "schema_version": 1,
+            "status": "ADJUDICATED",
+            "packet_sha256": sha256(canonical_json_bytes(packet)),
+            "resolutions": [
+                {
+                    "cell_id": cell["cell_id"],
+                    "decision": "NOT_BLOCKING",
+                    "evidence": "Mechanical runtime materiality resolution fixture.",
+                }
+                for cell in packet["cells"]
+            ],
+        }
+
+    with tempfile.TemporaryDirectory(prefix="v5-production-runtime-") as temp_text:
+        temporary_root = Path(temp_text)
+        # The mechanical fixture intentionally reruns the verbose semantic
+        # validators for every source/snapshot receipt.  Keep library output
+        # out of this runtime test while preserving every validation call.
+        with open(os.devnull, "w", encoding="utf-8") as quiet_output:
+            with contextlib.redirect_stdout(quiet_output):
+                bundle, commitment = integration[
+                    "_build_mechanical_production_bundle_for_protocol_self_test"
+                ](
+                    temporary_root / "static-fixture",
+                    synthetic_capability=integration["_SYNTHETIC_CAPABILITY"],
+                )
+        captured = load_verified_static_bundle_with_review_evidence(
+            bundle, commitment
+        )
+        cached_documents = load_ready_generated_documents(bundle)
+        cached_prepare = run_trusted_module(
+            "prepare.py", "v5_production_runtime_cached_prepare"
+        )
+        cached_word_count = run_trusted_module(
+            "word_count.py", "v5_production_runtime_cached_word_count"
+        )
+        cached_static_context = load_aggregation_static_context(
+            captured[0], captured[1], captured[2], captured[3]
+        )
+        cached_documents_baseline = copy.deepcopy(cached_documents)
+        cached_static_context_baseline = copy.deepcopy(cached_static_context)
+        captured_baseline = copy.deepcopy(captured)
+        original_load = globals()["load_verified_static_bundle"]
+        original_load_with_evidence = globals()[
+            "load_verified_static_bundle_with_review_evidence"
+        ]
+        original_load_documents = globals()["load_ready_generated_documents"]
+        original_load_static_context = globals()["load_aggregation_static_context"]
+        original_run_trusted_module = globals()["run_trusted_module"]
+        original_trusted_integration_module = globals()["trusted_integration_module"]
+
+        def require_test_paths(
+            static_root: Path, external_commitment_path: Path | None
+        ) -> None:
+            if (
+                Path(os.path.abspath(os.fspath(static_root))) != bundle
+                or external_commitment_path is None
+                or Path(os.path.abspath(os.fspath(external_commitment_path)))
+                != commitment
+            ):
+                raise AssertionError("runtime self-test verifier received the wrong roots")
+
+        def cached_load(
+            static_root: Path, external_commitment_path: Path | None = None
+        ) -> tuple[Path, dict[str, Any], frozenset[str]]:
+            require_test_paths(static_root, external_commitment_path)
+            return captured[:3]
+
+        def cached_load_with_evidence(
+            static_root: Path, external_commitment_path: Path | None = None
+        ) -> tuple[Path, dict[str, Any], frozenset[str], dict[str, Any]]:
+            require_test_paths(static_root, external_commitment_path)
+            return captured
+
+        def cached_load_documents(static_root: Path) -> dict[str, Any]:
+            if Path(os.path.abspath(os.fspath(static_root))) != bundle:
+                raise AssertionError(
+                    "runtime self-test document loader received the wrong root"
+                )
+            return cached_documents
+
+        def cached_load_static_context(
+            root: Path,
+            static_lock: dict[str, Any],
+            reviewer_ids: frozenset[str],
+            review_evidence: dict[str, Any],
+        ) -> dict[str, Any]:
+            if (
+                root != captured[0]
+                or static_lock != captured[1]
+                or reviewer_ids != captured[2]
+                or review_evidence != captured[3]
+            ):
+                raise AssertionError(
+                    "runtime self-test static-context loader received a different capture"
+                )
+            return cached_static_context
+
+        def cached_run_trusted_module(name: str, run_name: str) -> dict[str, Any]:
+            del run_name
+            if name == "integrate.py":
+                return integration
+            if name == "prepare.py":
+                return cached_prepare
+            if name == "word_count.py":
+                return cached_word_count
+            raise AssertionError(f"unexpected trusted module request: {name}")
+
+        globals()["load_verified_static_bundle"] = cached_load
+        globals()[
+            "load_verified_static_bundle_with_review_evidence"
+        ] = cached_load_with_evidence
+        globals()["load_ready_generated_documents"] = cached_load_documents
+        globals()["load_aggregation_static_context"] = cached_load_static_context
+        globals()["run_trusted_module"] = cached_run_trusted_module
+        globals()["trusted_integration_module"] = lambda: integration
+        try:
+            def reject_prevalidation_loader(*_args: Any, **_kwargs: Any) -> Any:
+                raise AssertionError(
+                    "invalid production request reached static-bundle loading"
+                )
+
+            globals()["load_verified_static_bundle"] = reject_prevalidation_loader
+            globals()[
+                "load_verified_static_bundle_with_review_evidence"
+            ] = reject_prevalidation_loader
+            try:
+                invalid_production_requests: tuple[
+                    tuple[str, Callable[[], Any]], ...
+                ] = (
+                    (
+                        "aggregation actor",
+                        lambda: _advance_aggregation_under_custody(
+                            bundle, commitment, "short", publish=True
+                        ),
+                    ),
+                    (
+                        "aggregation publish authority",
+                        lambda: _advance_aggregation_under_custody(
+                            bundle,
+                            commitment,
+                            "runtime-coordinator-0001",
+                            publish=1,  # type: ignore[arg-type]
+                        ),
+                    ),
+                    (
+                        "evaluator assignment",
+                        lambda: _acquire_evaluator_lease_under_custody(
+                            bundle,
+                            commitment,
+                            str(temporary_root / "redirected-slot"),
+                            "runtime-evaluator-0001",
+                        ),
+                    ),
+                    (
+                        "report agent",
+                        lambda: _acquire_report_lease_under_custody(
+                            bundle, commitment, "r001", "short"
+                        ),
+                    ),
+                    (
+                        "seal slot",
+                        lambda: _seal_production_attempt_under_custody(
+                            bundle,
+                            commitment,
+                            str(temporary_root / "redirected-slot"),
+                            "0" * 64,
+                            "runtime-sealer-0001",
+                            None,
+                            "RETURNED",
+                            0,
+                            {},
+                        ),
+                    ),
+                )
+                for label, operation in invalid_production_requests:
+                    try:
+                        operation()
+                    except ProtocolError:
+                        pass
+                    else:
+                        raise AssertionError(
+                            f"invalid production {label} request was accepted"
+                        )
+            finally:
+                globals()["load_verified_static_bundle"] = cached_load
+                globals()[
+                    "load_verified_static_bundle_with_review_evidence"
+                ] = cached_load_with_evidence
+            coordinator = "runtime-coordinator-0001"
+            progress = advance_aggregation(
+                bundle, commitment, coordinator
+            )
+            if (
+                progress["status"] != "WAITING"
+                or progress["current_stage"] != "reports"
+                or progress["leaseable_assignments"]
+                != [f"r{index:03d}" for index in range(1, 121)]
+            ):
+                raise AssertionError("initial aggregation progress is not exact")
+            mismatched_residue = (
+                bundle
+                / "runtime"
+                / "state"
+                / "aggregation"
+                / "derived"
+                / f"{AGGREGATION_PENDING_STAGE_PREFIX}01-report-products"
+            )
+            mismatched_residue.mkdir(parents=True)
+            (mismatched_residue / "private-data").write_bytes(
+                b"must survive a mismatched coordinator request\n"
+            )
+            try:
+                advance_aggregation(
+                    bundle, commitment, "runtime-coordinator-0002"
+                )
+            except ProtocolError:
+                pass
+            else:
+                raise AssertionError("aggregation coordinator identity drift was accepted")
+            if not mismatched_residue.is_dir():
+                raise AssertionError(
+                    "mismatched coordinator request deleted private recovery residue"
+                )
+            progress = advance_aggregation(bundle, commitment, coordinator)
+            if mismatched_residue.exists() or mismatched_residue.is_symlink():
+                raise AssertionError(
+                    "matching coordinator request did not recover private residue"
+                )
+            try:
+                acquire_report_lease(
+                    bundle, commitment, "r001", coordinator
+                )
+            except ProtocolError:
+                pass
+            else:
+                raise AssertionError("aggregation coordinator acquired a report lease")
+            if (bundle / "runtime" / "state" / "slots" / "r001").exists():
+                raise AssertionError("rejected coordinator lease mutated report state")
+            initial_state = verify_production_state(bundle, commitment)
+            if initial_state["state_valid"] is not True or initial_state["complete"]:
+                raise AssertionError("coordinator-only runtime state is invalid")
+
+            first_report_lease: dict[str, Any] | None = None
+            first_report_pointer: dict[str, Any] | None = None
+            for index in range(1, 121):
+                run_id = f"r{index:03d}"
+                lease = acquire_report_lease(
+                    bundle,
+                    commitment,
+                    run_id,
+                    f"runtime-report-{index:04d}",
+                )
+                sealed_pointer = seal_output(
+                    bundle,
+                    commitment,
+                    lease,
+                    (
+                        "Reviewed the supplied Rust target and reconstructed its "
+                        "local safety argument.\n"
+                    ).encode("utf-8"),
+                    output_root_mode=(
+                        0o000 if index == 1 else 0o400 if index == 2 else None
+                    ),
+                )
+                if index == 1:
+                    first_report_lease = copy.deepcopy(lease)
+                    first_report_pointer = sealed_pointer
+
+            progress = advance_aggregation(bundle, commitment, coordinator)
+            expected_scorers = sorted(
+                f"{mode}-{scorer}" for mode in MODES for scorer in SCORERS
+            )
+            if (
+                progress["current_stage"] != "01-report-products"
+                or progress["leaseable_assignments"] != expected_scorers
+            ):
+                raise AssertionError("Stage 01 did not expose the exact scorer set")
+
+            state_root = bundle / "runtime" / "state"
+            stage_01_checkpoint = temporary_root / "stage-01-state-checkpoint"
+            shutil.copytree(state_root, stage_01_checkpoint)
+            original_acquire_lease = globals()["acquire_lease"]
+            evaluator_fault_fired = [False]
+
+            def faulting_production_acquire(*args: Any, **kwargs: Any) -> dict[str, Any]:
+                if not evaluator_fault_fired[0]:
+                    evaluator_fault_fired[0] = True
+                    kwargs["fault_after"] = "lease-cas"
+                return original_acquire_lease(*args, **kwargs)
+
+            globals()["acquire_lease"] = faulting_production_acquire
+            try:
+                try:
+                    acquire_evaluator_lease(
+                        bundle,
+                        commitment,
+                        expected_scorers[0],
+                        "runtime-terminal-scorer-0001",
+                    )
+                except InjectedFault:
+                    pass
+                else:
+                    raise AssertionError(
+                        "production evaluator wrapper lease-CAS fault did not fire"
+                    )
+            finally:
+                globals()["acquire_lease"] = original_acquire_lease
+            if not evaluator_fault_fired[0]:
+                raise AssertionError("production evaluator lease fault seam was bypassed")
+            for index, assignment in enumerate(expected_scorers, start=1):
+                lease = acquire_evaluator_lease(
+                    bundle,
+                    commitment,
+                    assignment,
+                    f"runtime-terminal-scorer-{index:04d}",
+                )
+                packet = load_bound_input_packet(lease)
+                seal_output(
+                    bundle,
+                    commitment,
+                    lease,
+                    (
+                        canonical_json_bytes(clean_direct_score(packet))
+                        if index != 1
+                        else canonical_json_bytes({})
+                    ),
+                    expect_valid=index != 1,
+                )
+            terminal_progress = advance_aggregation(
+                bundle, commitment, coordinator
+            )
+            if (
+                terminal_progress["status"] != "TERMINAL-FAILURE"
+                or terminal_progress["current_stage"] != "02-scorer-products"
+                or terminal_progress["leaseable_assignments"]
+                or terminal_progress["pending_assignments"]
+            ):
+                raise AssertionError("invalid scorer phase did not terminalize exactly")
+            if first_report_lease is None or first_report_pointer is None:
+                raise AssertionError("first report retry fixture was not retained")
+            first_report_launch = load_bound_launch(first_report_lease)
+            if seal_production_attempt(
+                bundle,
+                commitment,
+                first_report_lease["slot_id"],
+                first_report_lease["lease_token"],
+                first_report_lease["agent_id"],
+                (first_report_launch["output_path"] + "\n").encode("utf-8"),
+                "RETURNED",
+                0,
+                {"runtime_self_test": True},
+            ) != first_report_pointer:
+                raise AssertionError(
+                    "published canonical seal did not dominate later aggregation failure"
+                )
+            terminal_state = verify_production_state(bundle, commitment)
+            if (
+                terminal_state["state_valid"] is not True
+                or terminal_state["complete"] is not True
+                or terminal_state["outcome"] != "ERROR"
+                or terminal_state["all_outputs_valid"] is not False
+                or len(terminal_state["slots"]) != 136
+                or aggregation_status(bundle, commitment) != terminal_progress
+            ):
+                raise AssertionError("authenticated terminal runtime state is inconsistent")
+            try:
+                acquire_evaluator_lease(
+                    bundle,
+                    commitment,
+                    "m1",
+                    "runtime-terminal-rejected-0001",
+                )
+            except ProtocolError:
+                pass
+            else:
+                raise AssertionError("terminal aggregation exposed a later evaluator lease")
+            for terminal_consumer in (
+                derive_aggregate_context,
+                evaluate_bound_gates,
+            ):
+                try:
+                    terminal_consumer(bundle, commitment)
+                except ProtocolError as error:
+                    if "authenticated terminal error" not in str(error):
+                        raise AssertionError(
+                            "terminal aggregate consumer failed for the wrong reason"
+                        ) from error
+                else:
+                    raise AssertionError("terminal aggregation masqueraded as a final result")
+            discard_temporary_tree(state_root)
+            shutil.copytree(stage_01_checkpoint, state_root)
+            if aggregation_status(bundle, commitment) != progress:
+                raise AssertionError("Stage 01 checkpoint did not restore byte-exact progress")
+
+            for index, assignment in enumerate(expected_scorers, start=1):
+                lease = acquire_evaluator_lease(
+                    bundle,
+                    commitment,
+                    assignment,
+                    f"runtime-scorer-{index:04d}",
+                )
+                packet = load_bound_input_packet(lease)
+                seal_output(
+                    bundle,
+                    commitment,
+                    lease,
+                    canonical_json_bytes(clean_direct_score(packet)),
+                )
+
+            progress = advance_aggregation(bundle, commitment, coordinator)
+            expected_consistency = sorted(
+                f"{mode}-{reviewer}"
+                for mode in MODES
+                for reviewer in CONSISTENCY_REVIEWERS
+            )
+            if (
+                progress["current_stage"] != "02-scorer-products"
+                or progress["leaseable_assignments"] != expected_consistency
+            ):
+                raise AssertionError(
+                    "Stage 02 did not expose the exact consistency-review set"
+                )
+            stage_02_progress = copy.deepcopy(progress)
+            stage_02_checkpoint = temporary_root / "stage-02-state-checkpoint"
+            shutil.copytree(state_root, stage_02_checkpoint)
+
+            for index, assignment in enumerate(expected_consistency, start=1):
+                reviewer = assignment.rsplit("-", 1)[1]
+                lease = acquire_evaluator_lease(
+                    bundle,
+                    commitment,
+                    assignment,
+                    f"runtime-consistency-{index:04d}",
+                )
+                packet = load_bound_input_packet(lease)
+                seal_output(
+                    bundle,
+                    commitment,
+                    lease,
+                    canonical_json_bytes(
+                        clean_consistency_review(packet, reviewer)
+                    ),
+                )
+
+            progress = advance_aggregation(bundle, commitment, coordinator)
+            if (
+                progress["current_stage"] != "04-score-products"
+                or progress["leaseable_assignments"] != ["m1", "m2"]
+                or any(
+                    assignment.endswith("-a1")
+                    for assignment in progress["sealed_assignments"]
+                )
+            ):
+                raise AssertionError(
+                    "empty mode adjudication did not deterministically skip every a1"
+                )
+
+            for index, reviewer in enumerate(MATERIALITY_REVIEWERS, start=1):
+                lease = acquire_evaluator_lease(
+                    bundle,
+                    commitment,
+                    reviewer,
+                    f"runtime-materiality-{index:04d}",
+                )
+                packet = load_bound_input_packet(lease)
+                seal_output(
+                    bundle,
+                    commitment,
+                    lease,
+                    canonical_json_bytes(
+                        clean_materiality_review(packet, reviewer)
+                    ),
+                )
+
+            progress = advance_aggregation(bundle, commitment, coordinator)
+            if (
+                progress["status"] != "COMPLETE"
+                or progress["current_stage"] != "final"
+                or len(progress["sealed_assignments"]) != 154
+                or "ma1" in progress["sealed_assignments"]
+                or progress["leaseable_assignments"]
+                or progress["pending_assignments"]
+            ):
+                raise AssertionError("minimum staged runtime did not finish at 154 attempts")
+            complete_state_identity = tree_byte_mode_identity(
+                bundle / "runtime" / "state"
+            )
+            stable_progress = advance_aggregation(bundle, commitment, coordinator)
+            if stable_progress != progress or aggregation_status(
+                bundle, commitment
+            ) != progress:
+                raise AssertionError("completed aggregation is not byte-stable/idempotent")
+            if tree_byte_mode_identity(
+                bundle / "runtime" / "state"
+            ) != complete_state_identity:
+                raise AssertionError("idempotent aggregation mutated the completed tree")
+            minimum_state = verify_production_state(bundle, commitment)
+            if (
+                minimum_state["state_valid"] is not True
+                or minimum_state["complete"] is not True
+                or len(minimum_state["slots"]) != 154
+            ):
+                raise AssertionError("minimum production state did not validate exactly")
+            minimum_gate_result = evaluate_bound_gates(bundle, commitment)
+            minimum_decisions = {
+                row["id"]: row["certificate_decision"]
+                for row in minimum_gate_result["gates"]
+            }
+            if any(
+                minimum_decisions[gate_id] != "PASS"
+                for gate_id in REQUIRED_ROOT_ORDER
+                if gate_id.startswith("D-")
+            ) or any(
+                minimum_decisions[gate_id] != "FAIL"
+                for gate_id in ("G-ISOLATION", "G-OUTPUT-FINALIZATION")
+            ):
+                raise AssertionError("minimum runtime gate outcomes are not exact")
+            if tree_byte_mode_identity(state_root) != complete_state_identity:
+                raise AssertionError(
+                    "minimum read-only verification mutated runtime state"
+                )
+
+            discard_temporary_tree(state_root)
+            shutil.copytree(stage_02_checkpoint, state_root)
+            if aggregation_status(bundle, commitment) != stage_02_progress:
+                raise AssertionError("Stage 02 checkpoint did not restore byte-exact progress")
+
+            for index, assignment in enumerate(expected_consistency, start=1):
+                reviewer = assignment.rsplit("-", 1)[1]
+                lease = acquire_evaluator_lease(
+                    bundle,
+                    commitment,
+                    assignment,
+                    f"runtime-max-consistency-{index:04d}",
+                )
+                packet = load_bound_input_packet(lease)
+                seal_output(
+                    bundle,
+                    commitment,
+                    lease,
+                    canonical_json_bytes(
+                        clean_consistency_review(
+                            packet, reviewer, force_challenge=True
+                        )
+                    ),
+                )
+
+            progress = advance_aggregation(bundle, commitment, coordinator)
+            expected_adjudicators = sorted(f"{mode}-a1" for mode in MODES)
+            if (
+                progress["current_stage"] != "03-consistency-products"
+                or progress["leaseable_assignments"] != expected_adjudicators
+            ):
+                raise AssertionError(
+                    "Stage 03 did not expose all eight conditional adjudicators"
+                )
+            for index, assignment in enumerate(expected_adjudicators, start=1):
+                lease = acquire_evaluator_lease(
+                    bundle,
+                    commitment,
+                    assignment,
+                    f"runtime-adjudicator-{index:04d}",
+                )
+                packet = load_bound_input_packet(lease)
+                if not packet["cells"]:
+                    raise AssertionError("conditional adjudicator received an empty packet")
+                seal_output(
+                    bundle,
+                    commitment,
+                    lease,
+                    canonical_json_bytes(clean_adjudication(packet)),
+                )
+
+            progress = advance_aggregation(bundle, commitment, coordinator)
+            if (
+                progress["current_stage"] != "04-score-products"
+                or progress["leaseable_assignments"] != ["m1", "m2"]
+            ):
+                raise AssertionError("maximum path did not reach materiality review")
+            for index, reviewer in enumerate(MATERIALITY_REVIEWERS, start=1):
+                lease = acquire_evaluator_lease(
+                    bundle,
+                    commitment,
+                    reviewer,
+                    f"runtime-max-materiality-{index:04d}",
+                )
+                packet = load_bound_input_packet(lease)
+                seal_output(
+                    bundle,
+                    commitment,
+                    lease,
+                    canonical_json_bytes(
+                        clean_materiality_review(
+                            packet, reviewer, force_finding=reviewer == "m1"
+                        )
+                    ),
+                )
+
+            progress = advance_aggregation(bundle, commitment, coordinator)
+            if (
+                progress["current_stage"] != "05-materiality-products"
+                or progress["leaseable_assignments"] != ["ma1"]
+            ):
+                raise AssertionError(
+                    "Stage 05 did not expose the conditional materiality adjudicator"
+                )
+            materiality_adjudicator = acquire_evaluator_lease(
+                bundle,
+                commitment,
+                "ma1",
+                "runtime-materiality-adjudicator-0001",
+            )
+            materiality_packet = load_bound_input_packet(materiality_adjudicator)
+            if not materiality_packet["cells"]:
+                raise AssertionError("materiality adjudicator received an empty packet")
+            seal_output(
+                bundle,
+                commitment,
+                materiality_adjudicator,
+                canonical_json_bytes(
+                    clean_materiality_adjudication(materiality_packet)
+                ),
+            )
+
+            progress = advance_aggregation(bundle, commitment, coordinator)
+            if (
+                progress["status"] != "COMPLETE"
+                or progress["current_stage"] != "final"
+                or len(progress["sealed_assignments"]) != 163
+                or not set(expected_adjudicators).issubset(
+                    progress["sealed_assignments"]
+                )
+                or "ma1" not in progress["sealed_assignments"]
+                or progress["leaseable_assignments"]
+                or progress["pending_assignments"]
+            ):
+                raise AssertionError("maximum staged runtime did not finish at 163 attempts")
+            complete_state_identity = tree_byte_mode_identity(
+                bundle / "runtime" / "state"
+            )
+        finally:
+            globals()["load_verified_static_bundle"] = original_load
+            globals()[
+                "load_verified_static_bundle_with_review_evidence"
+            ] = original_load_with_evidence
+            globals()["load_ready_generated_documents"] = original_load_documents
+            globals()["load_aggregation_static_context"] = original_load_static_context
+            globals()["run_trusted_module"] = original_run_trusted_module
+            globals()["trusted_integration_module"] = original_trusted_integration_module
+            if (
+                cached_documents != cached_documents_baseline
+                or cached_static_context != cached_static_context_baseline
+                or captured != captured_baseline
+            ):
+                raise AssertionError(
+                    "production runtime self-test mutated its authenticated cache"
+                )
+
+        final_state = verify_production_state(bundle, commitment)
+        if (
+            final_state["state_valid"] is not True
+            or final_state["complete"] is not True
+            or len(final_state["slots"]) != 163
+        ):
+            raise AssertionError("final production state did not validate exactly")
+        gate_result = evaluate_bound_gates(bundle, commitment)
+        decisions = {
+            row["id"]: row["certificate_decision"] for row in gate_result["gates"]
+        }
+        if any(
+            decisions[gate_id] != "PASS"
+            for gate_id in REQUIRED_ROOT_ORDER
+            if gate_id.startswith("D-")
+        ) or any(
+            decisions[gate_id] != "FAIL"
+            for gate_id in ("G-ISOLATION", "G-OUTPUT-FINALIZATION")
+        ):
+            raise AssertionError("maximum runtime gate outcomes are not exact")
+        if tree_byte_mode_identity(
+            bundle / "runtime" / "state"
+        ) != complete_state_identity:
+            raise AssertionError("read-only final verification mutated runtime state")
+        final_root = bundle / "runtime" / "state" / "aggregation" / "final"
+        if len(list((final_root / "integration-receipts").glob("*.json"))) != 8:
+            raise AssertionError("final aggregation lacks the exact eight receipts")
+    print(
+        "PRODUCTION staged runtime self-test passed "
+        "(154-attempt minimum and 163-attempt maximum, six stages)"
     )
 
 
@@ -10481,10 +17731,18 @@ def main() -> None:
     subcommands = parser.add_subparsers(dest="command", required=True)
     subcommands.add_parser("verify-draft")
     subcommands.add_parser("self-test")
+    subcommands.add_parser("self-test-production-runtime")
     subcommands.add_parser("validate-integration-spec")
     derive_aggregate = subcommands.add_parser("derive-aggregate-context")
     derive_aggregate.add_argument("--static-root", type=Path, required=True)
     derive_aggregate.add_argument("--external-commitment", type=Path, required=True)
+    advance = subcommands.add_parser("advance-aggregation")
+    advance.add_argument("--static-root", type=Path, required=True)
+    advance.add_argument("--external-commitment", type=Path, required=True)
+    advance.add_argument("--coordinator-actor", required=True)
+    status = subcommands.add_parser("aggregation-status")
+    status.add_argument("--static-root", type=Path, required=True)
+    status.add_argument("--external-commitment", type=Path, required=True)
     bound_gates = subcommands.add_parser("evaluate-bound-gates")
     bound_gates.add_argument("--static-root", type=Path, required=True)
     bound_gates.add_argument("--external-commitment", type=Path, required=True)
@@ -10492,7 +17750,16 @@ def main() -> None:
     evaluator_launch.add_argument("--static-root", type=Path, required=True)
     evaluator_launch.add_argument("--external-commitment", type=Path, required=True)
     evaluator_launch.add_argument("--assignment", required=True)
-    evaluator_launch.add_argument("--input-packet", type=Path, required=True)
+    report_lease = subcommands.add_parser("lease-report")
+    report_lease.add_argument("--static-root", type=Path, required=True)
+    report_lease.add_argument("--external-commitment", type=Path, required=True)
+    report_lease.add_argument("--run-id", required=True)
+    report_lease.add_argument("--agent", required=True)
+    evaluator_lease = subcommands.add_parser("lease-evaluator")
+    evaluator_lease.add_argument("--static-root", type=Path, required=True)
+    evaluator_lease.add_argument("--external-commitment", type=Path, required=True)
+    evaluator_lease.add_argument("--assignment", required=True)
+    evaluator_lease.add_argument("--agent", required=True)
     atoms = subcommands.add_parser("validate-atoms")
     atoms.add_argument("manifest", type=Path)
     rules = subcommands.add_parser("validate-rules")
@@ -10510,7 +17777,6 @@ def main() -> None:
     consistency_packet.add_argument("--input-s2", type=Path, required=True)
     consistency_packet.add_argument("--atoms", type=Path, required=True)
     consistency_packet.add_argument("--rules", type=Path, required=True)
-    consistency_packet.add_argument("--evidence", type=Path, required=True)
     consistency = subcommands.add_parser("validate-consistency")
     consistency.add_argument("--consistency", type=Path, required=True)
     consistency.add_argument("--atoms", type=Path, required=True)
@@ -10526,7 +17792,6 @@ def main() -> None:
     packet.add_argument("--consistency-c2", type=Path, required=True)
     packet.add_argument("--atoms", type=Path, required=True)
     packet.add_argument("--rules", type=Path, required=True)
-    packet.add_argument("--evidence", type=Path, required=True)
     adjudication_validate = subcommands.add_parser("validate-adjudication")
     adjudication_validate.add_argument("--adjudication", type=Path, required=True)
     adjudication_validate.add_argument("--input-packet", type=Path, required=True)
@@ -10539,7 +17804,6 @@ def main() -> None:
     merge.add_argument("--consistency-c2", type=Path, required=True)
     merge.add_argument("--atoms", type=Path, required=True)
     merge.add_argument("--rules", type=Path, required=True)
-    merge.add_argument("--evidence", type=Path, required=True)
     merge.add_argument("--adjudication", type=Path)
     materiality_packet = subcommands.add_parser("build-materiality-review-packet")
     for scope in MATERIALITY_SCOPES:
@@ -10568,29 +17832,17 @@ def main() -> None:
     materiality_merge.add_argument("--adjudication", type=Path)
     gates = subcommands.add_parser("evaluate-gates")
     gates.add_argument("context", type=Path)
-    lease = subcommands.add_parser("lease")
-    lease.add_argument("--state-root", type=Path, required=True)
-    lease.add_argument("--static-root", type=Path, required=True)
-    lease.add_argument("--external-commitment", type=Path, required=True)
-    lease.add_argument("--launch", type=Path, required=True)
-    lease.add_argument("--agent", required=True)
-    lease.add_argument("--envelope-spec", type=Path, required=True)
-    lease.add_argument("--attempt-root", type=Path, required=True)
-    lease.add_argument("--input-packet", type=Path, required=True)
     seal = subcommands.add_parser("seal-attempt")
-    seal.add_argument("--state-root", type=Path, required=True)
     seal.add_argument("--static-root", type=Path, required=True)
     seal.add_argument("--external-commitment", type=Path, required=True)
     seal.add_argument("--slot", required=True)
     seal.add_argument("--agent", required=True)
     seal.add_argument("--lease-token", required=True)
-    seal.add_argument("--attempt-root", type=Path, required=True)
     seal.add_argument("--final-response", type=Path)
     seal.add_argument("--process-disposition", required=True)
     seal.add_argument("--process-exit-code", type=int)
     seal.add_argument("--metadata", type=Path, required=True)
     verify = subcommands.add_parser("verify-state")
-    verify.add_argument("--state-root", type=Path, required=True)
     verify.add_argument("--static-root", type=Path, required=True)
     verify.add_argument("--external-commitment", type=Path, required=True)
     args = parser.parse_args()
@@ -10599,11 +17851,34 @@ def main() -> None:
     elif args.command == "self-test":
         verify_draft()
         self_test()
+    elif args.command == "self-test-production-runtime":
+        production_runtime_self_test()
     elif args.command == "derive-aggregate-context":
         sys.stdout.buffer.write(
             canonical_json_bytes(
                 derive_aggregate_context(args.static_root, args.external_commitment)
             )
+        )
+    elif args.command == "advance-aggregation":
+        print(
+            pretty_json(
+                advance_aggregation(
+                    args.static_root,
+                    args.external_commitment,
+                    args.coordinator_actor,
+                )
+            ),
+            end="",
+        )
+    elif args.command == "aggregation-status":
+        print(
+            pretty_json(
+                aggregation_status(
+                    args.static_root,
+                    args.external_commitment,
+                )
+            ),
+            end="",
         )
     elif args.command == "evaluate-bound-gates":
         print(
@@ -10613,17 +17888,36 @@ def main() -> None:
             end="",
         )
     elif args.command == "build-evaluator-launch":
-        root, _lock, _reviewer_ids = load_verified_static_bundle(
-            args.static_root, args.external_commitment
-        )
-        documents = load_ready_generated_documents(root)
-        launch, _row = build_expected_evaluator_launch(
-            root,
-            documents,
+        launch = build_production_evaluator_launch(
+            args.static_root,
+            args.external_commitment,
             args.assignment,
-            args.input_packet.read_bytes(),
         )
         sys.stdout.buffer.write(canonical_json_bytes(launch))
+    elif args.command == "lease-report":
+        print(
+            pretty_json(
+                acquire_report_lease(
+                    args.static_root,
+                    args.external_commitment,
+                    args.run_id,
+                    args.agent,
+                )
+            ),
+            end="",
+        )
+    elif args.command == "lease-evaluator":
+        print(
+            pretty_json(
+                acquire_evaluator_lease(
+                    args.static_root,
+                    args.external_commitment,
+                    args.assignment,
+                    args.agent,
+                )
+            ),
+            end="",
+        )
     elif args.command == "validate-atoms":
         print(pretty_json(validate_atom_manifest(read_json(args.manifest))), end="")
     elif args.command == "validate-integration-spec":
@@ -10667,7 +17961,6 @@ def main() -> None:
                     read_json(args.input_s2),
                     read_json(args.atoms),
                     read_json(args.rules),
-                    args.evidence,
                 )
             ),
             end="",
@@ -10697,7 +17990,6 @@ def main() -> None:
                     read_json(args.consistency_c2),
                     read_json(args.atoms),
                     read_json(args.rules),
-                    args.evidence,
                 )
             ),
             end="",
@@ -10723,7 +18015,6 @@ def main() -> None:
                     read_json(args.consistency_c2),
                     read_json(args.atoms),
                     read_json(args.rules),
-                    args.evidence,
                     read_json(args.adjudication) if args.adjudication is not None else None,
                 )
             ),
@@ -10793,38 +18084,28 @@ def main() -> None:
             ),
             end="",
         )
-    elif args.command == "lease":
-        print(
-            pretty_json(
-                acquire_lease(
-                    args.state_root,
-                    args.launch,
-                    args.agent,
-                    args.envelope_spec,
-                    args.attempt_root,
-                    args.input_packet,
-                    static_root=args.static_root,
-                    external_commitment_path=args.external_commitment,
-                )
-            ),
-            end="",
-        )
     elif args.command == "seal-attempt":
-        response = args.final_response.read_bytes() if args.final_response is not None else None
+        response = (
+            read_bounded_final_response(
+                args.final_response,
+                MAX_ENVELOPE_CAPTURE_BYTES,
+                "seal final-response input",
+            )
+            if args.final_response is not None
+            else None
+        )
         print(
             pretty_json(
-                seal_attempt(
-                    args.state_root,
+                seal_production_attempt(
+                    args.static_root,
+                    args.external_commitment,
                     args.slot,
                     args.lease_token,
                     args.agent,
-                    args.attempt_root,
                     response,
                     args.process_disposition,
                     args.process_exit_code,
                     read_json(args.metadata),
-                    static_root=args.static_root,
-                    external_commitment_path=args.external_commitment,
                 )
             ),
             end="",
@@ -10832,10 +18113,9 @@ def main() -> None:
     else:
         print(
             pretty_json(
-                verify_state(
-                    args.state_root,
-                    static_root=args.static_root,
-                    external_commitment_path=args.external_commitment,
+                verify_production_state(
+                    args.static_root,
+                    args.external_commitment,
                 )
             ),
             end="",
