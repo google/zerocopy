@@ -1,24 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:zerocopy:v5-diagnostic:draft:consistency-input-packet:1",
-  "$comment": "DRAFT / UNSEALED deterministic packet shared byte-identically by the two independent consistency reviewers for a mode.",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:consistency-input-packet:2",
+  "$comment": "DRAFT / UNSEALED deterministic packet shared byte-identically by the two independent consistency reviewers for a mode; the embedded scorer packets are the complete evidence source.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "status", "mode", "input_digests", "binding_sha256", "labels_in_order", "novel_assertions", "packet_tree"],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "status": {"const": "CONSISTENCY-INPUT-PACKET"},
     "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
     "input_digests": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["score_s1_sha256", "score_s2_sha256", "atom_manifest_sha256", "defect_rules_sha256", "evidence_packet_sha256"],
+      "required": ["score_s1_sha256", "score_s2_sha256", "score_input_s1_sha256", "score_input_s2_sha256", "atom_manifest_sha256", "defect_rules_sha256"],
       "properties": {
         "score_s1_sha256": {"$ref": "#/$defs/digest"},
         "score_s2_sha256": {"$ref": "#/$defs/digest"},
+        "score_input_s1_sha256": {"$ref": "#/$defs/digest"},
+        "score_input_s2_sha256": {"$ref": "#/$defs/digest"},
         "atom_manifest_sha256": {"$ref": "#/$defs/digest"},
-        "defect_rules_sha256": {"$ref": "#/$defs/digest"},
-        "evidence_packet_sha256": {"$ref": "#/$defs/digest"}
+        "defect_rules_sha256": {"$ref": "#/$defs/digest"}
       }
     },
     "binding_sha256": {"$ref": "#/$defs/digest"},
