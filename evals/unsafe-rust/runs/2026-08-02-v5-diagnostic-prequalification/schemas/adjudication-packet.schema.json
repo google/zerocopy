@@ -1,27 +1,28 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:zerocopy:v5-diagnostic:draft:adjudication-packet:2",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:adjudication-packet:3",
   "$comment": "DRAFT / UNSEALED deterministic mode-level adjudication packet schema.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "status", "mode", "input_digests", "binding_sha256", "cells", "packet_tree"],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 3},
     "status": {"const": "ADJUDICATION-PACKET"},
     "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
     "input_digests": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["score_s1_sha256", "score_s2_sha256", "consistency_c1_sha256", "consistency_c2_sha256", "consistency_packet_sha256", "atom_manifest_sha256", "defect_rules_sha256", "evidence_packet_sha256"],
+      "required": ["score_s1_sha256", "score_s2_sha256", "score_input_s1_sha256", "score_input_s2_sha256", "consistency_c1_sha256", "consistency_c2_sha256", "consistency_packet_sha256", "atom_manifest_sha256", "defect_rules_sha256"],
       "properties": {
         "score_s1_sha256": {"$ref": "#/$defs/digest"},
         "score_s2_sha256": {"$ref": "#/$defs/digest"},
+        "score_input_s1_sha256": {"$ref": "#/$defs/digest"},
+        "score_input_s2_sha256": {"$ref": "#/$defs/digest"},
         "consistency_c1_sha256": {"$ref": "#/$defs/digest"},
         "consistency_c2_sha256": {"$ref": "#/$defs/digest"},
         "consistency_packet_sha256": {"$ref": "#/$defs/digest"},
         "atom_manifest_sha256": {"$ref": "#/$defs/digest"},
-        "defect_rules_sha256": {"$ref": "#/$defs/digest"},
-        "evidence_packet_sha256": {"$ref": "#/$defs/digest"}
+        "defect_rules_sha256": {"$ref": "#/$defs/digest"}
       }
     },
     "binding_sha256": {"$ref": "#/$defs/digest"},
