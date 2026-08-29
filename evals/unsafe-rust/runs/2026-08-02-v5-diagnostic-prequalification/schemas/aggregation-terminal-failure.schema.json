@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:aggregation-terminal-failure:1",
+  "$comment": "DRAFT / UNSEALED canonical authenticated ERROR outcome at a sealed phase barrier. protocol.py additionally enforces canonical sorting, exact committed-stage prefix, predecessor digest, authoritative phase attempt inventory, and failure-to-envelope joins.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "outcome", "algorithm", "static_lock_sha256", "coordinator_actor_id", "blocked_stage_id", "prerequisite_stage_sha256", "attempt_envelopes", "failures"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "TERMINAL-FAILURE"},
+    "outcome": {"const": "ERROR"},
+    "algorithm": {"const": "V5_AGGREGATION_TERMINAL_FAILURE_V1"},
+    "static_lock_sha256": {"$ref": "#/$defs/digest"},
+    "coordinator_actor_id": {"$ref": "#/$defs/actor_id"},
+    "blocked_stage_id": {"$ref": "#/$defs/stage_id"},
+    "prerequisite_stage_sha256": {"$ref": "#/$defs/optional_digest"},
+    "attempt_envelopes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/attempt_binding"}
+    },
+    "failures": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/failure"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"blocked_stage_id": {"const": "01-report-products"}}, "required": ["blocked_stage_id"]},
+      "then": {
+        "properties": {
+          "prerequisite_stage_sha256": {"type": "null"},
+          "attempt_envelopes": {"minItems": 120, "maxItems": 120},
+          "failures": {"maxItems": 120, "items": {"$ref": "#/$defs/report_failure"}}
+        }
+      },
+      "else": {"properties": {"prerequisite_stage_sha256": {"$ref": "#/$defs/digest"}}}
+    },
+    {
+      "if": {"properties": {"blocked_stage_id": {"const": "02-scorer-products"}}, "required": ["blocked_stage_id"]},
+      "then": {"properties": {"attempt_envelopes": {"minItems": 136, "maxItems": 136}, "failures": {"maxItems": 16, "items": {"$ref": "#/$defs/scorer_failure"}}}}
+    },
+    {
+      "if": {"properties": {"blocked_stage_id": {"const": "03-consistency-products"}}, "required": ["blocked_stage_id"]},
+      "then": {"properties": {"attempt_envelopes": {"minItems": 152, "maxItems": 152}, "failures": {"maxItems": 16, "items": {"$ref": "#/$defs/consistency_failure"}}}}
+    },
+    {
+      "if": {"properties": {"blocked_stage_id": {"const": "04-score-products"}}, "required": ["blocked_stage_id"]},
+      "then": {"properties": {"attempt_envelopes": {"minItems": 153, "maxItems": 160}, "failures": {"maxItems": 8, "items": {"$ref": "#/$defs/adjudicator_failure"}}}}
+    },
+    {
+      "if": {"properties": {"blocked_stage_id": {"const": "05-materiality-products"}}, "required": ["blocked_stage_id"]},
+      "then": {"properties": {"attempt_envelopes": {"minItems": 154, "maxItems": 162}, "failures": {"maxItems": 2, "items": {"$ref": "#/$defs/materiality_reviewer_failure"}}}}
+    },
+    {
+      "if": {"properties": {"blocked_stage_id": {"const": "final"}}, "required": ["blocked_stage_id"]},
+      "then": {"properties": {"attempt_envelopes": {"minItems": 155, "maxItems": 163}, "failures": {"maxItems": 1, "items": {"$ref": "#/$defs/materiality_adjudicator_failure"}}}}
+    }
+  ],
+  "$defs": {
+    "stage_id": {"enum": ["01-report-products", "02-scorer-products", "03-consistency-products", "04-score-products", "05-materiality-products", "final"]},
+    "actor_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{15,127}$"},
+    "safe_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "optional_digest": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/digest"}]},
+    "attempt_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assignment_id", "envelope_sha256"],
+      "properties": {
+        "assignment_id": {"$ref": "#/$defs/safe_id"},
+        "envelope_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assignment_id", "role", "envelope_sha256", "primary_output_present", "format_valid", "semantic_valid"],
+      "properties": {
+        "assignment_id": {"$ref": "#/$defs/safe_id"},
+        "role": {"enum": ["report", "scorer", "consistency", "adjudicator", "materiality-reviewer", "materiality-adjudicator"]},
+        "envelope_sha256": {"$ref": "#/$defs/digest"},
+        "primary_output_present": {"type": "boolean"},
+        "format_valid": {"type": "boolean"},
+        "semantic_valid": {"type": "boolean"}
+      },
+      "not": {
+        "properties": {
+          "primary_output_present": {"const": true},
+          "format_valid": {"const": true},
+          "semantic_valid": {"const": true}
+        },
+        "required": ["primary_output_present", "format_valid", "semantic_valid"]
+      }
+    },
+    "report_failure": {
+      "allOf": [
+        {"$ref": "#/$defs/failure"},
+        {"properties": {"role": {"const": "report"}}},
+        {
+          "not": {
+            "properties": {
+              "primary_output_present": {"const": true},
+              "semantic_valid": {"const": true}
+            },
+            "required": ["primary_output_present", "semantic_valid"]
+          }
+        }
+      ]
+    },
+    "scorer_failure": {"allOf": [{"$ref": "#/$defs/failure"}, {"properties": {"role": {"const": "scorer"}}}]},
+    "consistency_failure": {"allOf": [{"$ref": "#/$defs/failure"}, {"properties": {"role": {"const": "consistency"}}}]},
+    "adjudicator_failure": {"allOf": [{"$ref": "#/$defs/failure"}, {"properties": {"role": {"const": "adjudicator"}}}]},
+    "materiality_reviewer_failure": {"allOf": [{"$ref": "#/$defs/failure"}, {"properties": {"role": {"const": "materiality-reviewer"}}}]},
+    "materiality_adjudicator_failure": {"allOf": [{"$ref": "#/$defs/failure"}, {"properties": {"role": {"const": "materiality-adjudicator"}}}]}
+  }
+}
