@@ -118,12 +118,12 @@ aggregate.
 unbound DRAFT path and therefore fixes `D-STATIC-INTEGRITY` to direct `FAIL`.
 Only `evaluate-bound-gates` can pass it: that path authenticates a
 `PRODUCTION` static lock with the trusted in-process verifier, deterministically
-rederives the complete aggregate from canonical envelopes, scorer/reviewer
-packets and outputs, final scores, word counts, projection audits, controls,
-materiality decisions, the authenticated snapshot oracle-coverage receipt,
-and the full authenticated source oracle/coherence receipts, then validates the exact
-runtime-receipt set and its terminal content binding before evaluating the
-READY gate contract.
+rederives and byte-compares the complete immutable six-stage chain from
+canonical envelopes, assignment-owned scorer/reviewer packets and outputs,
+final scores, word counts, projection audits, controls, materiality decisions,
+the authenticated snapshot oracle-coverage receipt, and the full authenticated
+source oracle/coherence receipts, then validates the exact runtime-receipt set
+and its terminal content binding before evaluating the READY gate contract.
 
 `comparison-predicate.json` machine-freezes the descriptive comparison: every
 V5 mode/atom certificate must pass in all five replicates, and for every
@@ -135,21 +135,108 @@ accepted on the bound path.
 
 ## Attempt and envelope protocol
 
-The coordinator acquires one exclusive lease for a slot before launch. Each
-started attempt uses a fresh directory. After the collaboration result returns,
-the coordinator supplies the final-response bytes, complete declared output
-tree, process disposition, and metadata to `protocol.py seal-attempt`.
-Every production acquire and seal validates all authoritative persisted peer
-leases under the operation lock: each actor must use the canonical production
-identity grammar and must not be one of the eleven locked source/snapshot
-reviewers. Acquire also performs this check before materializing launch inputs.
+Before any report or evaluator lease, the production coordinator no-replace
+publishes one immutable `aggregation/coordinator-claim.json` bound to the
+verified static-lock digest. The claimed actor is authenticated out of band,
+uses the canonical production identity grammar, is distinct from all eleven
+source/snapshot reviewers, and is thereafter reserved from every semantic
+role. Every production acquire and seal revalidates all authoritative peer
+leases under the operation lock and preserves those exclusions.
 
-The finalizer first captures and fsyncs a complete immutable envelope, then
-uses exclusive creation of one canonical pointer as a first-terminal
-compare-and-swap. Format defects are recorded inside the canonical envelope
-and evaluated after sealing. A later completion cannot replace the first seal.
-The protocol permits no retry after a started lease; only a failure before
-lease acquisition is outside the attempt count.
+The successful runtime is an exact immutable six-stage prefix:
+
+1. `01-report-products` binds all 120 report envelopes and derives word counts,
+   report projections, and the sixteen scorer packets and launches.
+2. `02-scorer-products` binds the sixteen scorer envelopes and derives the
+   sixteen consistency packets and launches.
+3. `03-consistency-products` binds the sixteen consistency envelopes and
+   derives the exact zero-to-eight mode-adjudicator frontier.
+4. `04-score-products` binds any required mode adjudicators, derives all final
+   mode scores and controls, and derives the two materiality-review assignments.
+5. `05-materiality-products` binds both materiality reviews and derives either
+   no materiality adjudicator or exactly assignment `ma1`.
+6. `final` binds any `ma1` envelope and publishes the materiality ledger,
+   runtime receipts, and aggregate gate context.
+
+Thus a successful execution has exactly 154 through 163 sealed attempts: 120
+reports, 16 scorers, 16 consistency reviewers, zero through eight mode
+adjudicators, two materiality reviewers, and zero or one materiality
+adjudicator. Each stage is built in a private sibling tree, completely written
+and fsynced, checked against an exact file/directory inventory, made read-only,
+and atomically published without replacement. Its canonical manifest binds the
+static lock, coordinator identity, predecessor-manifest digest, cumulative
+canonical envelope inventory, and every payload byte. Readers accept only the
+exact ordered prefix; `aggregation-status` reports `DERIVABLE` without
+publishing when a sealed phase could advance.
+
+Evaluator input is not accepted from a coordinator-selected packet path. The
+production lease API takes only an eligible assignment ID and agent identity,
+then finds that assignment's packet, launch, and envelope spec in the committed
+immutable predecessor stage and rederives their exact bytes. Each lease owns a
+fresh external workspace with exactly `input/` and `output/`; report inputs are
+materialized from the authenticated static input plan, while evaluator inputs
+are materialized from the assignment-owned stage packet and schema set.
+
+After the collaboration result returns, the coordinator supplies the
+final-response bytes, process disposition, and metadata to the production seal
+route. Under the seal lock it revalidates the exact lease-bound workspace
+topology and input bytes before boundedly capturing the output tree. This check
+detects persistent mutation, but same-UID agent code can transiently mutate an
+input and restore it before seal-time verification. If that threat is in scope,
+the runner must provide OS-enforced read-only input mounts or separate
+ownership; file modes and the final comparison alone are not a security
+boundary.
+
+Output capture retains at most 4,096 POSIX pathname entries and 256 KiB of
+cumulative canonical pathname-token bytes. Observing the 4,097th entry triggers
+the entry-count sentinel rather than retaining it.
+Portable UTF-8 relative paths remain literal; every nonportable or
+reserved-prefix path is represented by a canonical injective base64url token.
+Retained regular files use fixed-width digest-safe payload locations, and all
+retained file plus final-response payload shares one 4 MiB hard ceiling. Spec
+overages below that ceiling remain fully captured; hard-byte overflow becomes a
+`captured:false` record, while entry or path-byte overflow becomes one
+reason-specific capture-limit sentinel. Each is format-invalid and semantically
+unavailable without causing coordinator memory exhaustion.
+An oversized final-response source is bound by its stable actual size and an
+explicit SHA-256 of the retained 4 MiB-plus-one-byte prefix; no whole-response
+digest or payload capture is claimed.
+
+The finalizer first captures and fsyncs a complete private immutable envelope,
+then exclusively publishes a terminal claim binding the request and envelope
+digest. That claim is the first-terminal compare-and-swap. It next publishes
+the content-addressed object and, after semantic verification, the canonical
+pointer that completes the seal. Format defects are recorded inside the
+canonical envelope and evaluated after sealing. A later completion cannot
+replace the first terminal claim or seal.
+The protocol permits no fresh semantic execution or replacement attempt after a
+started lease; only a failure before lease acquisition is outside the attempt
+count. Repeating the coordinator operation is permitted solely to finish
+pre-readiness initialization or crash recovery without rerunning the agent.
+Before a terminal claim exists, an uncommitted private envelope stage may be
+discarded and recaptured; preserving the same final observed attempt-output
+tree and unchanged final-response, process, and metadata arguments is then a
+procedural coordinator invariant because no persisted request or capture exists
+to compare. Only the successful capture becomes authoritative. Once the
+terminal claim exists, its hashes and fields mechanically permit only the exact
+claim-bound sealing request.
+
+Aggregation waits for an entire current phase to seal before classifying it.
+An absent or non-strict-UTF-8 report primary is unusable and produces the
+canonical authenticated `terminal-failure.json` outcome `ERROR` before Stage
+01. Other report envelope format defects, including a spec-over-cap but usable
+report retained below the hard ceiling, remain canonical and continue through
+the complete six-stage
+derivation; they are counted by the final aggregate and make
+`D-OUTPUT-VALID` fail. A hard-cap report is unavailable and terminalizes. For
+every evaluator role, an absent primary or any
+format/semantic invalidity produces the same authenticated terminal `ERROR` at
+that phase barrier, because downstream semantic packets cannot be derived from
+that output. The terminal record binds the exact stage frontier, predecessor,
+coordinator, static lock, phase envelope set, and all failing envelope facts;
+it is immutable and mutually exclusive with `aggregation/final`. Bound-gate
+evaluation rederives and reports that terminal error rather than inventing a
+final aggregate.
 
 This is the strongest coordinator-side mechanism available here, but it does
 not make the coordinator a trusted runner. `G-OUTPUT-FINALIZATION` remains
