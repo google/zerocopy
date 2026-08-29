@@ -1,6 +1,8 @@
 # V5 Static Integration — DRAFT / UNSEALED
 
-Production has two review boundaries and five publication stages:
+Static production integration has two review boundaries and five publication
+stages, listed below. The separate post-lock semantic runtime has six
+aggregation stages documented in its own section later in this file.
 
 1. `integrate.py prepare-source-review` mechanically transforms the checked-in
    DRAFT semantic templates into an immutable `SOURCE-REVIEW-CANDIDATE`. The
@@ -124,6 +126,107 @@ The coordinator first creates a fresh input directory containing only
 The acknowledgement flags record coordinator decisions; they do not prove
 identity, reviewer honesty, or custody. Candidate trees, receipts, private
 copies, the final bundle, and external commitment must occupy disjoint paths.
+
+## Production staged runtime
+
+After static verification and before any semantic lease, run
+`protocol.py advance-aggregation --static-root BUNDLE
+--external-commitment EXTERNAL_COMMITMENT --coordinator-actor ACTOR`. On the
+first call this no-replace publishes an immutable coordinator claim bound to
+the verified static-lock digest. The actor must be independently authenticated,
+must be distinct from all eleven source/snapshot reviewers, and is reserved
+from every report or evaluator role. A preexisting semantic lease without this
+claim is invalid; later calls must use the same claimed identity.
+
+The returned progress first exposes only the 120 report assignments. Lease a
+report by run ID, never by caller-supplied launch/input paths, and seal it
+through the production route. Once all 120 are sealed, `advance-aggregation`
+derives and atomically publishes `01-report-products`. Each later call exposes
+only the exact evaluator assignment frontier derivable from the committed
+predecessor stage. `lease-evaluator` accepts the assignment and agent identity,
+then finds and rederives that assignment's packet, launch, and envelope spec
+from the immutable stage; a caller cannot provide or substitute those paths.
+
+The exact stage order is:
+
+1. `01-report-products`;
+2. `02-scorer-products`;
+3. `03-consistency-products`;
+4. `04-score-products`;
+5. `05-materiality-products`; and
+6. `final`.
+
+Each stage is first built as a complete private sibling tree, fsynced, checked
+for its exact file and directory inventory, hardened read-only, and published
+with `renameat2(RENAME_NOREPLACE)`. Its canonical manifest binds the verified
+static-lock digest, immutable coordinator claim, exact predecessor-manifest
+digest, cumulative canonical envelope digests, and every stage payload. Only an
+exact prefix is legal. An interrupted private staging tree has no authority and
+may be deterministically discarded before retry; a committed stage is accepted
+only if it byte-for-byte rederives.
+
+The successful path seals 154 through 163 attempts: 120 reports, 16 scorers,
+16 consistency reviewers, zero through eight conditional mode adjudicators,
+two materiality reviewers, and zero or one conditional materiality
+adjudicator. `aggregation-status` is read-only: `WAITING` means report
+collection is incomplete, `PUBLISHED` means an immutable stage is waiting on
+its next cohort, and `DERIVABLE` means the current sealed phase can produce an
+unpublished next artifact. `TERMINAL-FAILURE` means the exact current sealed
+phase produced the authenticated mutually exclusive `ERROR` outcome.
+`COMPLETE` requires 154 through 163 sealed assignments, all six manifests, and
+a final aggregate digest.
+
+At each sealed phase barrier, the coordinator first determines whether semantic
+derivation is possible. A report with no primary output or non-strict-UTF-8
+primary bytes produces immutable `aggregation/terminal-failure.json` with
+outcome `ERROR` before Stage 01. Other canonical report format defects continue
+through aggregation. In particular, a usable over-cap report is counted and
+projected; the final aggregate then makes `D-OUTPUT-VALID` fail. For scorers,
+consistency reviewers, either adjudicator role, and materiality reviewers, an
+absent primary or any format/semantic invalidity produces the authenticated
+terminal `ERROR` at that phase barrier because no downstream semantic packet
+can safely be derived. The terminal record binds the exact static lock,
+coordinator, blocked stage, predecessor, cumulative phase envelopes, and
+failure facts. It is mutually exclusive with `aggregation/final`, makes all
+later leasing/sealing invalid, and causes bound aggregate/gate evaluation to
+report the rederived error rather than fabricate a final context.
+
+Every acquired workspace must contain exactly the lease-bound `input/` and
+`output/` children. The production seal revalidates that topology and the exact
+report plan or evaluator packet/schema input tree under the operation lock
+before accepting output. This detects persistent drift. It cannot detect a
+same-UID agent that mutates an input, uses the changed bytes, and restores the
+original before seal-time verification. Where such an agent is in the threat
+model, launch with OS-enforced read-only input mounts or separate ownership;
+chmod and post-execution comparison are insufficient.
+
+Output sealing retains at most 4 MiB total across regular-file and
+final-response payload, at most 4,096 accepted tree entries, and at most 256
+KiB of cumulative canonical pathname-token bytes. Observing the 4,097th entry
+triggers the entry-count sentinel rather than retaining it. Spec-level overages below the
+aggregate byte ceiling remain fully captured and receive their later gate
+consequence. A file or final response beyond its remaining hard budget is
+authenticated but not retained; an entry-count or pathname-byte overflow
+collapses to one reason-specific authenticated capture-limit sentinel. Any hard
+overflow makes the primary semantically unavailable and produces the phase's
+terminal `ERROR` without unbounded coordinator memory or traversal work.
+Retained files use fixed-width digest-derived payload paths, while their literal
+or injective encoded POSIX pathname remains in the envelope record.
+For a final-response source larger than 4 MiB, sealing binds the stable actual
+source size and an explicitly named digest of the first 4 MiB plus one byte;
+the bounded prefix is never labeled as a digest of the complete source.
+
+Sealing fsyncs and hardens a complete private envelope before exclusively
+publishing the terminal claim that binds its digest and the request fields.
+That claim is the first-terminal authority. The coordinator then publishes and
+semantically verifies the content-addressed object before exclusively writing
+the canonical pointer that completes the seal. Before the claim exists, crash
+recovery may discard an uncommitted private stage and recapture without
+rerunning the agent; preserving the same final observed attempt-output tree and
+unchanged final-response, process, and metadata arguments is a procedural
+coordinator invariant because there is no persisted request or capture to
+compare. Only the successful capture becomes authoritative. After the claim
+exists, exact-argument recovery is mechanically enforced.
 
 ## Commitments and path domain
 
@@ -249,6 +352,12 @@ locks constrain cooperating processes only. The external commitment detects a
 replacement at the next verification boundary, but cannot make already-returned
 `Path` objects immutable or authenticate mutable runtime state. If custody is
 ever uncertain, discard the bundle and its state.
+
+The same limitation applies independently to the external agent workspaces.
+Seal-time exact-tree revalidation authenticates their final observed state, not
+every byte an agent observed during execution. Preventing transient same-UID
+input substitution is therefore an explicit runner/OS TCB obligation even when
+bundle custody itself is sound.
 
 SHA-256 collision resistance, filesystem and kernel behavior (including fsync
 and `renameat2`), and honest authentication of the identity/version claims in
