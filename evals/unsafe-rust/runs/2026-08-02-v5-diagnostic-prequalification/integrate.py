@@ -1506,6 +1506,10 @@ def validate_runtime_policy(root: Path, *, expected_status: str) -> dict[str, An
             "agent_visible_path_forbidden_terms",
             "symlink_policy",
             "seal_copy_policy",
+            "output_capture_hard_byte_limit",
+            "output_capture_hard_entry_limit",
+            "output_capture_hard_path_byte_limit",
+            "output_capture_overflow_policy",
             "evidence_policy",
             "fresh_attempt_root_policy",
             "frozen_input_policy",
@@ -1515,6 +1519,13 @@ def validate_runtime_policy(root: Path, *, expected_status: str) -> dict[str, An
             "path_domain",
             "metadata_policy",
             "synthetic_test_policy",
+            "coordinator_claim_policy",
+            "evaluator_input_policy",
+            "aggregation_stage_policy",
+            "successful_attempt_count_policy",
+            "terminal_outcome_policy",
+            "seal_workspace_policy",
+            "same_uid_agent_tcb_policy",
         },
         "runtime policy",
     )
@@ -1536,6 +1547,10 @@ def validate_runtime_policy(root: Path, *, expected_status: str) -> dict[str, An
         "agent_output_leaf": prepare.OUTPUT_ALIAS,
         "symlink_policy": "FORBIDDEN",
         "seal_copy_policy": "HASH_AND_COPY_EXTERNAL_OUTPUT_INTO_IN_TREE_CANONICAL_STATE",
+        "output_capture_hard_byte_limit": 4 * 1024 * 1024,
+        "output_capture_hard_entry_limit": 4096,
+        "output_capture_hard_path_byte_limit": 256 * 1024,
+        "output_capture_overflow_policy": "SPEC_OVERAGES_CAPTURED_UNTIL_HARD_LIMIT_HARD_OVERFLOW_AUTHENTICATED_UNAVAILABLE",
         "evidence_policy": "POST_LOCK_COMMITTED_RUNTIME_STATE_REQUIRED_AT_INTEGRATION",
         "fresh_attempt_root_policy": "EXCLUSIVE_CREATE_ON_LEASE",
         "frozen_input_policy": "NO_MUTATION_AFTER_LOCK",
@@ -1545,6 +1560,13 @@ def validate_runtime_policy(root: Path, *, expected_status: str) -> dict[str, An
         "path_domain": PATH_DOMAIN,
         "metadata_policy": "STATIC_FILES_0444_STATIC_DIRS_0555_RUNTIME_STATE_0700",
         "synthetic_test_policy": "PRIVATE_PATH_CAN_ONLY_MINT_SYNTHETIC_TEST_ONLY",
+        "coordinator_claim_policy": "IMMUTABLE_STATIC_LOCK_BOUND_CLAIM_BEFORE_ANY_SEMANTIC_LEASE",
+        "evaluator_input_policy": "ASSIGNMENT_ONLY_FROM_COMMITTED_IMMUTABLE_PREDECESSOR_STAGE",
+        "aggregation_stage_policy": "SIX_ATOMIC_NOREPLACE_IMMUTABLE_MANIFEST_BOUND_PREFIX_STAGES",
+        "successful_attempt_count_policy": "EXACTLY_154_TO_163_SEALED_ATTEMPTS",
+        "terminal_outcome_policy": "FINAL_SUCCESS_OR_AUTHENTICATED_TERMINAL_ERROR_MUTUALLY_EXCLUSIVE",
+        "seal_workspace_policy": "EXACT_LEASE_BOUND_INPUT_OUTPUT_TREE_REVALIDATED_UNDER_LOCK_AT_SEAL",
+        "same_uid_agent_tcb_policy": "OS_ENFORCED_READ_ONLY_INPUT_OR_SEPARATE_OWNERSHIP_REQUIRED_FOR_TRANSIENT_MUTATION_THREAT",
     }
     for key, expected in exact_values.items():
         if policy[key] != expected:
@@ -3823,7 +3845,9 @@ def derive_evaluator_material(
     contract = {
         "schema_version": 1,
         "status": "READY",
-        "contract_id": "v5-evaluator-runtime-instantiation-v1",
+        "contract_id": "v5-evaluator-runtime-instantiation-v2",
+        "packet_authority": "PROTOCOL_DERIVED_IMMUTABLE_AGGREGATION_STAGE",
+        "production_lease_route": "ASSIGNMENT_ID_ONLY",
         "input_alias": "input",
         "output_alias": "output",
         "input_packet_path": "packet.json",
@@ -6959,6 +6983,134 @@ def synthetic_execution_config() -> dict[str, Any]:
         }
         for role in ROLE_NAMES
     }
+
+
+def _build_mechanical_production_bundle_for_protocol_self_test(
+    temporary_root: Path,
+    *,
+    synthetic_capability: object,
+) -> tuple[Path, Path]:
+    """Build a real PRODUCTION-shaped bundle for protocol regression tests.
+
+    This private helper may only be called with this module's unforgeable
+    synthetic capability.  It uses the public production receipt builders and
+    finalizers, but its reviewer work products are mechanically generated test
+    fixtures and therefore must never escape a temporary self-test directory.
+    """
+
+    if synthetic_capability is not _SYNTHETIC_CAPABILITY:
+        raise IntegrationError("mechanical production test helper lacks its capability")
+    temporary_root = absolute_normalized(
+        temporary_root, "mechanical production protocol-test root"
+    )
+    if temporary_root.exists() or temporary_root.is_symlink():
+        raise IntegrationError(
+            f"mechanical production protocol-test root already exists: {temporary_root}"
+        )
+    temporary_root.mkdir(parents=True)
+    declaration_bytes = trusted_production_declaration_bytes()
+    inputs = temporary_root / "source-review-inputs"
+    inputs.mkdir()
+    reviewed = {
+        "schema_version": 1,
+        "status": "SOURCE-REVIEW-CANDIDATE",
+        "source_declaration_sha256": sha256(declaration_bytes),
+        "authority_packet_path": "docs/rust-documentation.json",
+        "target_parameters": {
+            mode: {"task_mode": "unsafe_rust_audit", "word_cap": 1000}
+            for mode in prepare.MODES
+        },
+        "invocation_blocks": {
+            "v5": "Use the selected current unsafe-Rust instruction package.",
+            "v4": "Use the selected historical unsafe-Rust instruction package.",
+            "no_skill": "",
+        },
+        "execution_environment": synthetic_execution_config(),
+        "forbidden_tokens": ["no_skill", "no-skill", "treatment-secret"],
+        "reviewed_static_base": REVIEWED_STATIC_DERIVED_BASE,
+        "reviewed_static": [],
+    }
+    (inputs / "reviewed-values.json").write_bytes(pretty_json_bytes(reviewed))
+    seeds = {
+        name: sha256(f"protocol-staged-runtime-{name}".encode())
+        for name in prepare.SEED_NAMES
+    }
+    (inputs / "seeds.json").write_bytes(pretty_json_bytes(seeds))
+
+    source_candidate = temporary_root / "source-review-candidate"
+    prepare_source_review(
+        source_root=trusted_unsafe_rust_root(),
+        inputs=inputs,
+        output=source_candidate,
+    )
+    source_templates = temporary_root / "source-review-templates"
+    write_synthetic_source_review_receipts(source_candidate, source_templates)
+    source_receipts = temporary_root / "source-review-receipts"
+    for index, (receipt_name, _review_kind) in enumerate(
+        SOURCE_REVIEW_KINDS, start=1
+    ):
+        private_copy = temporary_root / f"source-private-{index}"
+        prepare_source_review_copy(source_candidate, private_copy)
+        template = read_json(source_templates / receipt_name)
+        work_path = temporary_root / f"source-work-{index}.json"
+        result_path = temporary_root / f"source-result-{index}.json"
+        work_path.write_bytes(pretty_json_bytes(template["work_product"]))
+        result_path.write_bytes(pretty_json_bytes(template["result"]))
+        build_source_review_receipt(
+            snapshot=source_candidate,
+            private_copy=private_copy,
+            review_name=receipt_name,
+            actor_id=f"protocol-source-reviewer-{index:04d}",
+            work_product_path=work_path,
+            result_path=result_path,
+            output=source_receipts / receipt_name,
+        )
+    reviewed_inputs = temporary_root / "reviewed-inputs"
+    finalize_reviewed_inputs(
+        snapshot=source_candidate,
+        receipts=source_receipts,
+        output=reviewed_inputs,
+    )
+
+    snapshot = temporary_root / "snapshot"
+    prepare_snapshot(
+        source_root=trusted_unsafe_rust_root(),
+        inputs=reviewed_inputs,
+        output=snapshot,
+        workspace_base=Path("/tmp")
+        / sha256(f"protocol-staged-runtime-{temporary_root}".encode()),
+    )
+    snapshot_templates = temporary_root / "snapshot-review-templates"
+    write_synthetic_snapshot_receipts(
+        snapshot, snapshot_templates, candidate_kind="PRODUCTION"
+    )
+    snapshot_receipts = temporary_root / "snapshot-review-receipts"
+    for index, hook_id in enumerate(sorted(EXTERNAL_REVIEW_HOOKS), start=1):
+        private_copy = temporary_root / f"snapshot-private-{index}"
+        prepare_private_review_copy(snapshot, private_copy)
+        template = read_json(snapshot_templates / f"{hook_id}.json")
+        work_path = temporary_root / f"snapshot-work-{index}.json"
+        result_path = temporary_root / f"snapshot-result-{index}.json"
+        work_path.write_bytes(pretty_json_bytes(template["work_product"]))
+        result_path.write_bytes(pretty_json_bytes(template["result"]))
+        build_snapshot_review_receipt(
+            snapshot=snapshot,
+            private_copy=private_copy,
+            hook_id=hook_id,
+            actor_id=f"protocol-snapshot-reviewer-{index:04d}",
+            work_product_path=work_path,
+            result_path=result_path,
+            output=snapshot_receipts / f"{hook_id}.json",
+        )
+    bundle = temporary_root / "bundle"
+    commitment = temporary_root / "external-commitment.json"
+    finalize_snapshot(
+        snapshot=snapshot,
+        receipts=snapshot_receipts,
+        output=bundle,
+        external_commitment_output=commitment,
+    )
+    return bundle, commitment
 
 
 def synthetic_source_declaration(source_root: Path) -> dict[str, Any]:

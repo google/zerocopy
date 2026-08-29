@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:aggregation-progress:2",
+  "$comment": "DRAFT / UNSEALED read-only view of the staged production aggregation coordinator. protocol.py additionally enforces sorted assignment inventories, exact phase frontiers, manifest digests, and canonical-byte rederivation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "current_stage",
+    "coordinator_actor_id",
+    "published_stages",
+    "sealed_assignments",
+    "started_assignments",
+    "leaseable_assignments",
+    "pending_assignments",
+    "final_aggregate_sha256",
+    "terminal_failure_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["WAITING", "DERIVABLE", "PUBLISHED", "COMPLETE", "TERMINAL-FAILURE"]},
+    "current_stage": {"enum": ["reports", "01-report-products", "02-scorer-products", "03-consistency-products", "04-score-products", "05-materiality-products", "final"]},
+    "coordinator_actor_id": {"$ref": "#/$defs/actor_id"},
+    "published_stages": {"$ref": "#/$defs/prefix0to6"},
+    "sealed_assignments": {"$ref": "#/$defs/assignments"},
+    "started_assignments": {"$ref": "#/$defs/assignments"},
+    "leaseable_assignments": {"$ref": "#/$defs/assignments"},
+    "pending_assignments": {"$ref": "#/$defs/assignments"},
+    "final_aggregate_sha256": {"$ref": "#/$defs/optional_digest"},
+    "terminal_failure_sha256": {"$ref": "#/$defs/optional_digest"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "WAITING"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "current_stage": {"const": "reports"},
+          "published_stages": {"$ref": "#/$defs/prefix0"},
+          "pending_assignments": {"minItems": 1},
+          "final_aggregate_sha256": {"type": "null"},
+          "terminal_failure_sha256": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "PUBLISHED"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "pending_assignments": {"minItems": 1},
+          "final_aggregate_sha256": {"type": "null"},
+          "terminal_failure_sha256": {"type": "null"}
+        },
+        "oneOf": [
+          {"properties": {"current_stage": {"const": "01-report-products"}, "published_stages": {"$ref": "#/$defs/prefix1"}}},
+          {"properties": {"current_stage": {"const": "02-scorer-products"}, "published_stages": {"$ref": "#/$defs/prefix2"}}},
+          {"properties": {"current_stage": {"const": "03-consistency-products"}, "published_stages": {"$ref": "#/$defs/prefix3"}}},
+          {"properties": {"current_stage": {"const": "04-score-products"}, "published_stages": {"$ref": "#/$defs/prefix4"}}},
+          {"properties": {"current_stage": {"const": "05-materiality-products"}, "published_stages": {"$ref": "#/$defs/prefix5"}}}
+        ]
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "DERIVABLE"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "started_assignments": {"const": []},
+          "leaseable_assignments": {"const": []},
+          "pending_assignments": {"const": []},
+          "final_aggregate_sha256": {"type": "null"},
+          "terminal_failure_sha256": {"type": "null"}
+        },
+        "oneOf": [
+          {"properties": {"current_stage": {"const": "01-report-products"}, "published_stages": {"$ref": "#/$defs/prefix0"}}},
+          {"properties": {"current_stage": {"const": "02-scorer-products"}, "published_stages": {"$ref": "#/$defs/prefix1"}}},
+          {"properties": {"current_stage": {"const": "03-consistency-products"}, "published_stages": {"$ref": "#/$defs/prefix2"}}},
+          {"properties": {"current_stage": {"const": "04-score-products"}, "published_stages": {"$ref": "#/$defs/prefix3"}}},
+          {"properties": {"current_stage": {"const": "05-materiality-products"}, "published_stages": {"$ref": "#/$defs/prefix4"}}},
+          {"properties": {"current_stage": {"const": "final"}, "published_stages": {"$ref": "#/$defs/prefix5"}}}
+        ]
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "COMPLETE"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "current_stage": {"const": "final"},
+          "published_stages": {"$ref": "#/$defs/prefix6"},
+          "sealed_assignments": {"minItems": 154, "maxItems": 163},
+          "started_assignments": {"const": []},
+          "leaseable_assignments": {"const": []},
+          "pending_assignments": {"const": []},
+          "final_aggregate_sha256": {"$ref": "#/$defs/digest"},
+          "terminal_failure_sha256": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "TERMINAL-FAILURE"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "started_assignments": {"const": []},
+          "leaseable_assignments": {"const": []},
+          "pending_assignments": {"const": []},
+          "final_aggregate_sha256": {"type": "null"},
+          "terminal_failure_sha256": {"$ref": "#/$defs/digest"}
+        },
+        "oneOf": [
+          {"properties": {"current_stage": {"const": "01-report-products"}, "published_stages": {"$ref": "#/$defs/prefix0"}}},
+          {"properties": {"current_stage": {"const": "02-scorer-products"}, "published_stages": {"$ref": "#/$defs/prefix1"}}},
+          {"properties": {"current_stage": {"const": "03-consistency-products"}, "published_stages": {"$ref": "#/$defs/prefix2"}}},
+          {"properties": {"current_stage": {"const": "04-score-products"}, "published_stages": {"$ref": "#/$defs/prefix3"}}},
+          {"properties": {"current_stage": {"const": "05-materiality-products"}, "published_stages": {"$ref": "#/$defs/prefix4"}}},
+          {"properties": {"current_stage": {"const": "final"}, "published_stages": {"$ref": "#/$defs/prefix5"}}}
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "actor_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{15,127}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "optional_digest": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/digest"}]},
+    "assignments": {
+      "type": "array",
+      "maxItems": 163,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"}
+    },
+    "published_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_id", "manifest_sha256"],
+      "properties": {
+        "stage_id": {"enum": ["01-report-products", "02-scorer-products", "03-consistency-products", "04-score-products", "05-materiality-products", "final"]},
+        "manifest_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "prefix0to6": {"type": "array", "maxItems": 6, "uniqueItems": true, "items": {"$ref": "#/$defs/published_record"}},
+    "prefix0": {"type": "array", "maxItems": 0},
+    "prefix1": {"type": "array", "minItems": 1, "maxItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/published_record"}},
+    "prefix2": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": {"$ref": "#/$defs/published_record"}},
+    "prefix3": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/published_record"}},
+    "prefix4": {"type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": {"$ref": "#/$defs/published_record"}},
+    "prefix5": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"$ref": "#/$defs/published_record"}},
+    "prefix6": {"type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": {"$ref": "#/$defs/published_record"}}
+  }
+}
