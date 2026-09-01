@@ -1,0 +1,34 @@
+CI policy has 33 validation error(s):
+- schema_version: unsupported schema version 99; this zc supports exactly 1
+- events: event `pull_request` appears in both reduced and full; every event must select exactly one category
+- features.stable_feature_root: `Bad root` is not a stable identifier; use lowercase ASCII letters, digits, `_`, `-`, or `.`, and do not start or end with `-` or `.`
+- feature_profiles[1].id: duplicate profile ID `same`
+- packages[0].id: `bad package` is not a stable identifier; use lowercase ASCII letters, digits, `_`, `-`, or `.`, and do not start or end with `-` or `.`
+- packages[0].manifest: "../outside.toml" is not a safe repository-relative path; use non-empty `/`-separated components without `.`, `..`, a root, or a platform prefix
+- packages[0].profiles: selection cannot be empty
+- targets[1].id: duplicate target ID `target`
+- targets: at least one target must be eligible for pull-request CI
+- targets: at least one target must be eligible for Miri
+- targets: at least one target must be eligible for semver checking
+- target_sets[0]: target-set expression cannot select no targets
+- toolchains[0].scopes: selection cannot be empty
+- miri_models[0].flags[0]: each Miri flag must be one non-empty argument beginning with `-` and containing no whitespace or control characters
+- miri.scopes: selection cannot be empty
+- semver.waivers[0].issue: `not-an-issue` is not an issue reference such as `#1565`
+- semver.waivers[0].reason: waiver reason cannot be empty
+- baselines.manifest: "../manifest.tsv" is not a safe repository-relative path; use non-empty `/`-separated components without `.`, `..`, a root, or a platform prefix
+- limits.max_matrix_cells: must be between 1 and GitHub's hard limit of 256
+- limits.max_plan_cells: must be between 1 and the hard safety bound of 65536
+- limits.max_job_output_utf16_bytes: must be between 1 and the safe GitHub bound of 1000000
+- feature_profiles.same: feature profile is not valid for any package
+- targets.target: target is not selected by any target set
+- toolchains: no standard toolchain uses source `manifest-rust-version`
+- toolchains: no standard toolchain uses source `pinned-stable`
+- targets.target: target is never selected by an ordinary toolchain scope
+- miri.toolchain: unknown toolchain `missing`
+- semver.package: unknown package `missing`
+- semver.profile: unknown feature profile `missing`
+- semver.toolchain: unknown toolchain `missing`
+- semver.target_set: unknown target set `missing`
+- semver.waivers: unknown target `missing`
+- target_sets.empty: target set is never referenced
