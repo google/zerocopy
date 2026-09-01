@@ -31,6 +31,9 @@ _CHECKS = (
     "ci/check_actions.sh",
     "ci/check_fmt.sh",
     "ci/check_job_dependencies.sh",
+    # Keep this fixture coordinated with the explicit fan-out in pre-push.
+    # Omitting a real check here would leave its child handling untested.
+    "ci/check_tools.sh",
     "zerocopy/ci/check_all_toolchains_tested.sh",
     "zerocopy/ci/check_readme.sh",
     "zerocopy/ci/check_stale_stderr.sh",
@@ -213,7 +216,7 @@ class PrePushTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(
             self.cargo_invocations(),
-            ["+nightly --version"],
+            ["+stable --version", "+nightly --version"],
         )
         for check in _CHECKS:
             self.assertTrue(self.marker_for(check).is_file(), check)
@@ -246,19 +249,19 @@ class PrePushTest(unittest.TestCase):
     def test_bootstrap_failure_still_checks_lockfiles(self):
         lockfile = _LOCKFILES[-1]
         result = self.repository.run_hook(
-            FAIL_CARGO_INVOCATION="+nightly --version",
-            MUTATING_CARGO_INVOCATION="+nightly --version",
+            FAIL_CARGO_INVOCATION="+stable --version",
+            MUTATING_CARGO_INVOCATION="+stable --version",
             MUTATE_LOCKFILE=str(self.repository.path / lockfile),
         )
         self.assertNotEqual(result.returncode, 0)
         self.assertIn(
-            "zerocopy/cargo.sh +nightly --version failed with status 23",
+            "zerocopy/cargo.sh +stable --version failed with status 23",
             result.stderr,
         )
         self.assertIn(f"{lockfile} was modified", result.stderr)
         self.assertEqual(
             self.cargo_invocations(),
-            ["+nightly --version"],
+            ["+stable --version", "+nightly --version"],
         )
         for check in _CHECKS:
             self.assertFalse(self.marker_for(check).exists(), check)
