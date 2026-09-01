@@ -1,4 +1,4 @@
-# Copyright 2024 The Fuchsia Authors
+# Copyright 2026 The Fuchsia Authors
 #
 # Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
 # <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
@@ -8,10 +8,12 @@
 
 [package]
 edition.workspace = true
-name = "cargo-zerocopy"
+name = "zc"
 version.workspace = true
 license.workspace = true
 publish.workspace = true
 
 [dependencies]
-zc.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+toml.workspace = true

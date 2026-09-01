@@ -1,0 +1,188 @@
+// Copyright 2026 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
+
+//! Typed access to metadata in Zerocopy's package manifest.
+//!
+//! This module reads Zerocopy's manifest directly instead of invoking `cargo
+//! metadata`. One of its consumers is `cargo-zerocopy`, which must choose a
+//! toolchain before it invokes Cargo. Running Cargo to make that choice would
+//! make bootstrapping depend on the ambient toolchain and introduce a nested
+//! Cargo invocation into the wrapper's own setup path.
+//!
+//! `zerocopy/build.rs` also reads `[package.metadata.build-rs]`, but it parses
+//! that table as text. Its literal header and line-format requirements are a
+//! separate cross-file contract. Successfully reading the TOML here does not
+//! prove that `build.rs` can read differently formatted TOML.
+
+use std::{
+    collections::BTreeMap,
+    fs, io,
+    path::{Path, PathBuf},
+};
+
+use serde::Deserialize;
+use thiserror::Error;
+
+/// The toolchain information stored in the Zerocopy package manifest.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ToolchainMetadata {
+    /// The crate's minimum supported Rust version (`package.rust-version`).
+    pub rust_version: String,
+    /// The stable toolchain used by CI (`package.metadata.ci.pinned-stable`).
+    pub pinned_stable: String,
+    /// The nightly toolchain used by CI (`package.metadata.ci.pinned-nightly`).
+    pub pinned_nightly: String,
+    /// Version cfg names and their first supported Rust versions.
+    ///
+    /// `zerocopy/build.rs` reads the same table without a TOML parser. Keep its
+    /// documented text format intact when changing these entries; this map is
+    /// only the structured view of that separate contract.
+    pub build_rs: BTreeMap<String, String>,
+}
+
+impl ToolchainMetadata {
+    /// Reads toolchain metadata from the Zerocopy manifest at `path`.
+    ///
+    /// Errors retain the path supplied by the caller. This matters when a
+    /// validation command reads manifests from more than one worktree.
+    pub fn read(path: impl AsRef<Path>) -> Result<Self, ReadMetadataError> {
+        let path = path.as_ref();
+        let source = fs::read_to_string(path)
+            .map_err(|source| ReadMetadataError::Read { path: path.to_path_buf(), source })?;
+        Self::parse(path, &source)
+    }
+
+    fn parse(path: &Path, source: &str) -> Result<Self, ReadMetadataError> {
+        let manifest: Manifest = toml::from_str(source)
+            .map_err(|source| ReadMetadataError::Parse { path: path.to_path_buf(), source })?;
+
+        Ok(Self {
+            rust_version: manifest.package.rust_version,
+            pinned_stable: manifest.package.metadata.ci.pinned_stable,
+            pinned_nightly: manifest.package.metadata.ci.pinned_nightly,
+            build_rs: manifest.package.metadata.build_rs,
+        })
+    }
+}
+
+/// An error reading toolchain metadata from a Zerocopy manifest.
+#[derive(Debug, Error)]
+pub enum ReadMetadataError {
+    /// The manifest could not be read.
+    #[error("failed to read Zerocopy manifest `{path}`: {source}")]
+    Read {
+        /// The path passed to [`ToolchainMetadata::read`].
+        path: PathBuf,
+        /// The underlying file-system error.
+        #[source]
+        source: io::Error,
+    },
+    /// The manifest did not contain well-typed toolchain metadata.
+    #[error("failed to parse toolchain metadata from `{path}`: {source}")]
+    Parse {
+        /// The path passed to [`ToolchainMetadata::read`].
+        path: PathBuf,
+        /// The TOML syntax or deserialization error.
+        #[source]
+        source: toml::de::Error,
+    },
+}
+
+#[derive(Deserialize)]
+struct Manifest {
+    package: Package,
+}
+
+#[derive(Deserialize)]
+struct Package {
+    #[serde(rename = "rust-version")]
+    rust_version: String,
+    metadata: PackageMetadata,
+}
+
+#[derive(Deserialize)]
+struct PackageMetadata {
+    #[serde(rename = "build-rs")]
+    build_rs: BTreeMap<String, String>,
+    ci: CiMetadata,
+}
+
+#[derive(Deserialize)]
+struct CiMetadata {
+    #[serde(rename = "pinned-stable")]
+    pinned_stable: String,
+    #[serde(rename = "pinned-nightly")]
+    pinned_nightly: String,
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::{Path, PathBuf};
+
+    use super::{ReadMetadataError, ToolchainMetadata};
+
+    #[test]
+    fn reads_the_toolchain_contract() {
+        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("testdata/toolchains.toml");
+        let metadata = ToolchainMetadata::read(path).unwrap();
+
+        assert_eq!(metadata.rust_version, "1.56.0");
+        assert_eq!(metadata.pinned_stable, "1.93.1");
+        assert_eq!(metadata.pinned_nightly, "nightly-2026-01-25");
+        assert_eq!(
+            metadata.build_rs,
+            [
+                ("no-zerocopy-example-1-60-0".to_owned(), "1.60.0".to_owned()),
+                ("no-zerocopy-example-1-81-0".to_owned(), "1.81.0".to_owned()),
+            ]
+            .into_iter()
+            .collect()
+        );
+    }
+
+    #[test]
+    fn reports_the_manifest_path_for_invalid_metadata() {
+        let path = Path::new("some-worktree/zerocopy/Cargo.toml");
+        let error = ToolchainMetadata::parse(
+            path,
+            r#"
+                [package]
+                rust-version = "1.56.0"
+
+                [package.metadata.build-rs]
+                no-zerocopy-example-1-60-0 = "1.60.0"
+
+                [package.metadata.ci]
+                pinned-stable = "1.93.1"
+            "#,
+        )
+        .unwrap_err();
+
+        match &error {
+            ReadMetadataError::Parse { path: error_path, source } => {
+                assert_eq!(error_path, path);
+                assert!(source.to_string().contains("pinned-nightly"));
+            }
+            ReadMetadataError::Read { .. } => panic!("expected a parse error"),
+        }
+        assert!(error.to_string().contains(&path.display().to_string()));
+    }
+
+    #[test]
+    fn reports_the_manifest_path_for_io_errors() {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("testdata/this-file-intentionally-does-not-exist.toml");
+        let error = ToolchainMetadata::read(&path).unwrap_err();
+
+        match &error {
+            ReadMetadataError::Read { path: error_path, .. } => assert_eq!(error_path, &path),
+            ReadMetadataError::Parse { .. } => panic!("expected a read error"),
+        }
+        assert!(error.to_string().contains(&path.display().to_string()));
+    }
+}
