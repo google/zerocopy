@@ -26,4 +26,5 @@ regex = "1"
 serde = { version = "1", features = ["derive"] }
 thiserror = "2"
 toml = "0.8"
+yaml_serde = "0.10.7"
 zc = { path = "zc" }

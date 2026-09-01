@@ -17,3 +17,4 @@ publish.workspace = true
 serde.workspace = true
 thiserror.workspace = true
 toml.workspace = true
+yaml_serde.workspace = true
