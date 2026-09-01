@@ -664,7 +664,7 @@ jobs:
       - name: Install dependencies
         run: |
           set -eo pipefail
-          sudo apt install -qq llvm
+          ../.github/scripts/install-apt-packages.sh llvm
           # Snapshot generation calls this same helper, so generation and
           # validation cannot silently select different tool releases.
           bash ../tools/install-cargo-show-asm.sh
@@ -921,13 +921,13 @@ jobs:
     runs-on: ubuntu-latest
     name: Check for todo comments
     steps:
-      - name: Install ripgrep
-        run: |
-         sudo apt-get update
-         sudo apt-get install ripgrep
+      # Local actions and scripts are unavailable until after checkout. Keep
+      # this ordering coordinated with install-apt-packages.sh.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Install ripgrep
+        run: ./.github/scripts/install-apt-packages.sh ripgrep
       - name: Run todo check
         run: ./ci/check_todo.sh
 
@@ -935,17 +935,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Run Git hooks
     steps:
+      # Checkout must precede both the repository-owned apt helper and the
+      # hooks it prepares this runner to execute.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Install yq (for YAML parsing)
         # FIXME(https://github.com/mikefarah/yq/issues/2587): Remove
         # `GONOSUMDB` once this bug is fixed.
         run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v4.44.1
       - name: Install ripgrep
-        run: |
-         sudo apt-get update
-         sudo apt-get install ripgrep
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
+        run: ./.github/scripts/install-apt-packages.sh ripgrep
       - name: Run dependency check
         # Ensure that Git hooks execute successfully.
         #
