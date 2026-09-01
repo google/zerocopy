@@ -23,5 +23,9 @@ env -u RUSTFLAGS -u CARGO_TARGET_DIR -u RUSTUP_TOOLCHAIN \
   "$REPO_DIR/tools/cargo.sh" build --locked --manifest-path Cargo.toml \
     -p cargo-zerocopy -q
 
+# Keep this working directory coordinated with cargo-zerocopy's `ci` route,
+# `tools/zc/src/cli.rs`, and win-cargo.bat. The typed CI commands pass `..` as
+# the repository root, so both platform wrappers must invoke cargo-zerocopy
+# from the Zerocopy crate directory.
 cd "$ZEROCOPY_DIR"
 exec "$REPO_DIR/tools/target/debug/cargo-zerocopy" "$@"
