@@ -124,6 +124,10 @@
 @rem as the repository root, so both wrappers must run from this directory.
 @pushd "%~dp0"
 @if errorlevel 1 exit /b 1
+@rem Typed CI runs execution::preflight_ci_cargo_environment before entering
+@rem this wrapper. Keep this final handoff transparent to argv and the restored
+@rem environment; configure_delegated_cargo_command owns and tests the remaining
+@rem Rust-to-Cargo handoff used by native build/test consolidation.
 @..\tools\target\debug\cargo-zerocopy %*
 @set "CARGO_ZEROCOPY_STATUS=%ERRORLEVEL%"
 @popd
