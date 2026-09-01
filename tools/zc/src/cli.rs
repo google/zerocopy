@@ -30,6 +30,7 @@ use thiserror::Error;
 
 use crate::{
     ci::{CiInputs, LoadCiError},
+    execution::{audit_execution, ExecutionAuditError},
     github::{GitHubProjection, ProjectionError, ProjectionWriteError},
     plan::{
         BuildPlanCell, ExecutionMode, FeatureSelection, MiriPlanCell, Plan, PlanError,
@@ -52,6 +53,14 @@ pub fn run(
     }
     let inputs =
         CiInputs::load(repository_root).map_err(|error| CliError::LoadInputs(Box::new(error)))?;
+    // The execution model lands before its validation becomes part of
+    // `CiInputs::load`. Keep every current CLI path safe at this boundary in
+    // the meantime: in particular, `audit` cannot report success and
+    // `github-plan` cannot publish until exact command parity has passed. The
+    // follow-up input-boundary commit centralizes this call and removes the
+    // temporary CLI-specific error variant.
+    audit_execution(&inputs)?;
+
     let result = match command {
         Command::Audit => audit(&inputs, &mut output),
         Command::Plan { event } => print_plan(&inputs, &event, &mut output),
@@ -508,6 +517,9 @@ pub enum CliError {
     /// A checked plan could not be constructed.
     #[error(transparent)]
     Plan(#[from] PlanError),
+    /// Typed execution behavior differed from frozen legacy evidence.
+    #[error(transparent)]
+    Execution(#[from] ExecutionAuditError),
     /// A checked plan could not be serialized for GitHub Actions.
     #[error(transparent)]
     Projection(#[from] ProjectionError),
