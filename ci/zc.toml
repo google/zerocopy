@@ -63,7 +63,10 @@ profiles = ["default"]
 # `pr_eligible` is the latency-reduced subset. The merge queue and other full
 # events still use every target selected by a toolchain scope. Miri and semver
 # eligibility are explicit so a new target cannot silently escape either kind
-# of coverage.
+# of coverage. Keep every selected target/version pair coordinated with
+# `ci/rust-target-support.toml`. Inventory requires exact agreement. The typed
+# stable/nightly roller refreshes that evidence from the changed compiler;
+# other target or toolchain changes must refresh it deliberately.
 [[targets]]
 id = "i686-unknown-linux-gnu"
 mode = "native"
@@ -197,7 +200,10 @@ exclude = ["thumbv6m-none-eabi", "wasm32-unknown-unknown"]
 # `source` coordinates each descriptor with `zerocopy/Cargo.toml`. Standard
 # versions come from `rust-version` or `[package.metadata.ci]`; every `build-rs`
 # ID must exactly equal one key under `[package.metadata.build-rs]`. Inventory
-# validation owns that comparison so version numbers never drift into this file.
+# validation owns that comparison so version numbers never drift into this
+# file. The resolved version and each scope's expanded target set must also
+# match `ci/rust-target-support.toml`; a version or scope change intentionally
+# requires refreshing that independent support evidence.
 [[toolchains]]
 id = "msrv"
 source = "manifest-rust-version"

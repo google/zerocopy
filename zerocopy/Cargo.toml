@@ -27,11 +27,17 @@ categories = [
 keywords = ["cast", "convert", "transmute", "transmutation", "type-punning"]
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
+# `ci/zc.toml` selects this MSRV as a CI toolchain. Changing it must refresh
+# that exact version's selected targets in `ci/rust-target-support.toml`;
+# inventory rejects a one-sided change.
 rust-version = "1.56.0"
 
 exclude = [".*"]
 
 [package.metadata.build-rs]
+# `ci/zc.toml` also selects each version in this table as a historical CI
+# toolchain. Add, remove, or refresh its exact target-support entry in
+# `ci/rust-target-support.toml` whenever one of these versions changes.
 # These key/value pairs are parsed by `build.rs`. Each entry names a `--cfg`
 # which will be emitted if zerocopy is built with a toolchain version *lower*
 # than the specified version. In the emitted `--cfg`, dashes are replaced by
@@ -85,6 +91,9 @@ no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = "1.57.0"
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
+# Keep both exact version keys and their selected targets coordinated with
+# `ci/rust-target-support.toml`. The stable-toolchain roller must update that
+# independent support evidence in the same change.
 pinned-stable = "1.93.1"
 pinned-nightly = "nightly-2026-01-25"
 
