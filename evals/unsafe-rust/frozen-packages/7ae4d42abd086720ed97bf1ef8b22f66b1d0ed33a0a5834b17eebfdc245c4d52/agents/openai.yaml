@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unsafe Rust Authoring and Audit"
+  short_description: "Prove and audit unsafe Rust"
+  default_prompt: "Use $unsafe-rust to author or audit this unsafe Rust abstraction and its safety contracts."
