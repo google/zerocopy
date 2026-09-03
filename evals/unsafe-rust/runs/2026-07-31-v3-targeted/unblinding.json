@@ -1,0 +1,18 @@
+{
+  "condition_map": {
+    "c0": "v2",
+    "c1": "v3"
+  },
+  "final_score_sha256": {
+    "C": "ed6457c9815bb7275182cf6000f7795f28004e0cbba54e063e891178ab33e1b9",
+    "K": "f045aed4a1ec8942992a4c83a6e4611cc5d3c03d794a929f87f34041cd6a24bb",
+    "M": "c80f06d81c2814b3f3c8836a33071daf786fd253cd37f2115f6404c299bda3da",
+    "Q": "ac39b01aeb020d54d50a2cc5eefa0a7a9d155acfb8745195d0a46e77fd421e7b",
+    "R": "3b9b073459dd432b7348c55b177e3ffbfab51a021f70528926eb8957be256bb0",
+    "S": "b019e547c4b6df3c8bfd581507673eb2630d2fbfcf3fca3fd2356e0adbeec374",
+    "W": "36656cf7ae14fdb7deff205762f0a4f143dc32ad0297318b6b59aeee40e6d585",
+    "X": "05cd4259e8a68e4ba7b245350892845b068de73ad08e934fb7835462d0b9f51f"
+  },
+  "schema_version": 1,
+  "unblinded_utc": "2026-08-01T10:14:15.316432Z"
+}
