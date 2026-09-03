@@ -5,12 +5,22 @@
     {
       "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#conditional-compilation",
+      "exact_excerpt": "A configuration option. The predicate is true if the option is set, and false if it is unset."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#conditional-compilation",
       "exact_excerpt": "It is true if all of the given predicates are true, or if the list is empty."
     },
     {
       "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#conditional-compilation",
       "exact_excerpt": "It is true if its predicate is false and false if its predicate is true."
+    },
+    {
+      "version": "1.83.0",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#the-cfg-attribute",
+      "exact_excerpt": "If the predicate is true, the thing is rewritten to not have the `cfg` attribute on it. If the predicate is false, the thing is removed from the source code."
     },
     {
       "version": "1.83.0",
@@ -44,27 +54,27 @@
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html#block-expressions",
       "exact_excerpt": "The type of a block is the type of the final operand, or `()` if the final operand is omitted."
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html#block-expressions",
       "exact_excerpt": "Then the final operand is executed, if given."
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html#block-expressions",
       "exact_excerpt": "When evaluating a block expression, each statement, except for item declaration statements, is executed sequentially."
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html#call-expressions",
       "exact_excerpt": "A call expression calls a function."
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html#call-expressions",
       "exact_excerpt": "If the function eventually returns, then the expression completes."
     },
     {
@@ -94,12 +104,12 @@
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/match-expr.html",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/match-expr.html#match-expressions",
       "exact_excerpt": "The first arm with a matching pattern is chosen as the branch target of the `match`, any variables bound by the pattern are assigned to local variables in the arm's block, and control enters the block."
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/method-call-expr.html",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/expressions/method-call-expr.html#method-call-expressions",
       "exact_excerpt": "The first step is to build a list of candidate receiver types. Obtain these by repeatedly dereferencing the receiver expression's type, adding each type encountered to the list, then finally attempting an unsized coercion at the end, and adding the result type if that is successful."
     },
     {
@@ -155,12 +165,12 @@
     {
       "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#function-body",
-      "exact_excerpt": "If the output type is not explicitly stated, it is the unit type."
+      "exact_excerpt": "the tail expression of the block, if evaluated, ends up being returned to the caller"
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#function-body",
-      "exact_excerpt": "the tail expression of the block, if evaluated, ends up being returned to the caller"
+      "url": "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#functions",
+      "exact_excerpt": "If the output type is not explicitly stated, it is the unit type."
     },
     {
       "version": "1.83.0",
@@ -239,12 +249,12 @@
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/types/array.html",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/types/array.html#array-types",
       "exact_excerpt": "An array is a fixed-size sequence of `N` elements of type `T`. The array type is written as `[T; N]`."
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/types/array.html",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/types/array.html#array-types",
       "exact_excerpt": "The size is a constant expression that evaluates to a `usize`."
     },
     {
@@ -254,17 +264,17 @@
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/types/numeric.html#integer-types",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/types/numeric.html#machine-dependent-integer-types",
       "exact_excerpt": "The `usize` type is an unsigned integer type with the same number of bits as the platform's pointer type."
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#layout-and-bit-validity",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#textual-types",
       "exact_excerpt": "A value of type `str` is represented the same way as `[u8]`, a slice of 8-bit unsigned bytes."
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#layout-and-bit-validity",
+      "url": "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#textual-types",
       "exact_excerpt": "However, the Rust standard library makes extra assumptions about `str`: methods working on `str` assume and ensure that the data in there is valid UTF-8."
     },
     {
@@ -335,7 +345,7 @@
     {
       "version": "1.83.0",
       "url": "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked",
-      "exact_excerpt": "pub unsafe fn get_unchecked<I>(&self, index: I,) -> &<I as SliceIndex<[T]>>::Output where I: SliceIndex<[T]>,"
+      "exact_excerpt": "pub unsafe fn get_unchecked<I>( &self, index: I, ) -> &<I as SliceIndex<[T]>>::Output where I: SliceIndex<[T]>,"
     },
     {
       "version": "1.83.0",
@@ -394,12 +404,12 @@
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html",
+      "url": "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html#examples",
       "exact_excerpt": "assert!(str::from_utf8(&sparkle_heart).is_err());"
     },
     {
       "version": "1.83.0",
-      "url": "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html",
+      "url": "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html#examples",
       "exact_excerpt": "let sparkle_heart = vec![0, 159, 146, 150];"
     },
     {
@@ -450,7 +460,7 @@
     {
       "version": "1.84.0",
       "url": "https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_unchecked",
-      "exact_excerpt": "Returns the contained `Some` value, consuming the `self` value without checking that the value is not `None`."
+      "exact_excerpt": "Returns the contained `Some` value, consuming the `self` value, without checking that the value is not `None`."
     },
     {
       "version": "1.85.0",
@@ -490,17 +500,22 @@
     {
       "version": "1.85.0",
       "url": "https://doc.rust-lang.org/1.85.0/std/option/enum.Option.html#method.unwrap_unchecked",
-      "exact_excerpt": "Returns the contained `Some` value, consuming the `self` value without checking that the value is not `None`."
+      "exact_excerpt": "Returns the contained `Some` value, consuming the `self` value, without checking that the value is not `None`."
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html#invalid-values",
       "exact_excerpt": "In the standard library, this affects `NonNull<T>` and `NonZero<T>`."
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html",
-      "exact_excerpt": "Producing an invalid value is hence immediate UB."
+      "url": "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html#invalid-values",
+      "exact_excerpt": "and producing an invalid value is hence immediate UB."
+    },
+    {
+      "version": "1.85.1",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#conditional-compilation",
+      "exact_excerpt": "A configuration option. The predicate is true if the option is set, and false if it is unset."
     },
     {
       "version": "1.85.1",
@@ -515,47 +530,52 @@
     {
       "version": "1.85.1",
       "url": "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#the-cfg-attribute",
+      "exact_excerpt": "If the predicate is true, the thing is rewritten to not have the `cfg` attribute on it. If the predicate is false, the thing is removed from the source code."
+    },
+    {
+      "version": "1.85.1",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#the-cfg-attribute",
       "exact_excerpt": "The `cfg` attribute conditionally includes the thing it is attached to based on a configuration predicate."
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html#block-expressions",
       "exact_excerpt": "The type of a block is the type of the final operand, or `()` if the final operand is omitted."
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html#block-expressions",
       "exact_excerpt": "When evaluating a block expression, each statement, except for item declaration statements, is executed sequentially."
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/call-expr.html",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/call-expr.html#call-expressions",
       "exact_excerpt": "A call expression calls a function."
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html#if-expressions",
       "exact_excerpt": "If a condition operand evaluates to `false`, the consequent block is skipped and any subsequent `else if` condition is evaluated."
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html#if-expressions",
       "exact_excerpt": "If a condition operand evaluates to `true`, the consequent block is executed and any subsequent `else if` or `else` block is skipped."
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/match-expr.html",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/match-expr.html#match-expressions",
       "exact_excerpt": "The first arm with a matching pattern is chosen as the branch target of the `match`, any variables bound by the pattern are assigned to local variables in the arm's block, and control enters the block."
     },
     {
       "version": "1.85.1",
       "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/operator-expr.html#comparison-operators",
-      "exact_excerpt": "The comparison operators compare two operands and return a boolean value."
+      "exact_excerpt": "Comparison operators are also defined both for primitive types and many types in the standard library."
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#function-body",
-      "exact_excerpt": "If the output type is not explicitly stated, it is the unit type."
+      "url": "https://doc.rust-lang.org/1.85.1/reference/expressions/operator-expr.html#comparison-operators",
+      "exact_excerpt": "`==` Equal"
     },
     {
       "version": "1.85.1",
@@ -566,6 +586,11 @@
       "version": "1.85.1",
       "url": "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#function-body",
       "exact_excerpt": "the tail expression of the block, if evaluated, ends up being returned to the caller"
+    },
+    {
+      "version": "1.85.1",
+      "url": "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#functions",
+      "exact_excerpt": "If the output type is not explicitly stated, it is the unit type."
     },
     {
       "version": "1.85.1",
@@ -584,12 +609,12 @@
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html",
+      "url": "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotPresent",
       "exact_excerpt": "NotPresent"
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html",
+      "url": "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotUnicode",
       "exact_excerpt": "NotUnicode(OsString)"
     },
     {
@@ -629,12 +654,12 @@
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html",
+      "url": "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MAX",
       "exact_excerpt": "pub const MAX: u8 = 255u8"
     },
     {
       "version": "1.85.1",
-      "url": "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html",
+      "url": "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MIN",
       "exact_excerpt": "pub const MIN: u8 = 0u8"
     },
     {
@@ -685,7 +710,7 @@
     {
       "version": "1.86.0",
       "url": "https://doc.rust-lang.org/1.86.0/std/option/enum.Option.html#method.unwrap_unchecked",
-      "exact_excerpt": "Returns the contained `Some` value, consuming the `self` value without checking that the value is not `None`."
+      "exact_excerpt": "Returns the contained `Some` value, consuming the `self` value, without checking that the value is not `None`."
     }
   ]
 }
