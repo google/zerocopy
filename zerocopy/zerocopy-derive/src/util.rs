@@ -813,6 +813,12 @@ pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) 
             non_snake_case,
             non_ascii_idents,
             clippy::missing_inline_in_public_items,
+            // The derives emit one uninhabited `enum ẕ<field> {}` per field
+            // as a type-level field token. Since `never_type` stabilized
+            // (rust-lang/rust#155499), `clippy::empty_enums` fires on every
+            // empty enum, and because derive output carries call-site spans
+            // the lint lands on the user's `#[derive(...)]` line. See #3414.
+            clippy::empty_enums,
         )]
         #[deny(ambiguous_associated_items)]
         // While there are not currently any warnings that this suppresses
