@@ -1,0 +1,17 @@
+claim	labels_in_order
+S-s1	A,B,E,F,G,I,J,C,D,H
+S-s2	J,E,F,I,B,G,H,C,D,A
+C-s1	H,F,J,C,B,A,I,G,E,D
+C-s2	I,J,G,H,F,D,A,C,E,B
+X-s1	C,F,I,B,A,H,G,D,J,E
+X-s2	H,D,B,C,F,E,A,J,G,I
+Q-s1	D,B,E,F,A,I,G,J,H,C
+Q-s2	C,B,D,A,G,J,I,F,H,E
+W-s1	H,F,B,E,C,A,I,D,J,G
+W-s2	F,G,E,C,A,B,H,J,D,I
+M-s1	F,E,D,G,A,C,J,I,H,B
+M-s2	G,J,A,B,F,E,H,C,I,D
+R-s1	H,F,G,I,A,D,J,E,C,B
+R-s2	A,J,G,B,F,I,C,E,D,H
+K-s1	H,D,J,I,F,G,A,C,B,E
+K-s2	J,F,H,I,A,B,E,D,C,G
