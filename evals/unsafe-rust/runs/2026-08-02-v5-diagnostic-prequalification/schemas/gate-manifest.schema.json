@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:zerocopy:v5-diagnostic:draft:gate-manifest:1",
-  "$comment": "DRAFT / UNSEALED typed diagnostic gate manifest.",
+  "$comment": "DRAFT / UNSEALED structural schema; protocol.py additionally freezes the exact ordered gates, prerequisites, inputs, and predicates.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "status", "manifest_version", "gates"],
   "properties": {
     "schema_version": {"const": 1},
-    "status": {"const": "DRAFT"},
+    "status": {"enum": ["DRAFT", "READY"]},
     "manifest_version": {"type": "string", "minLength": 1},
     "gates": {
       "type": "array",
@@ -27,7 +27,7 @@
         "description": {"type": "string", "minLength": 1},
         "prerequisites": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[DG]-[A-Z][A-Z0-9-]*$"}},
         "inputs": {"type": "array", "items": {"$ref": "#/$defs/input"}},
-        "predicate": {"oneOf": [{"$ref": "#/$defs/constant"}, {"$ref": "#/$defs/boolean_true"}, {"$ref": "#/$defs/integer_equals"}]},
+        "predicate": {"oneOf": [{"$ref": "#/$defs/constant"}, {"$ref": "#/$defs/verified_bound_context"}, {"$ref": "#/$defs/boolean_true"}, {"$ref": "#/$defs/integer_equals"}]},
         "on_missing": {"const": "ERROR"},
         "on_error": {"const": "ERROR"}
       }
@@ -48,6 +48,7 @@
       }
     },
     "constant": {"type": "object", "additionalProperties": false, "required": ["kind", "outcome"], "properties": {"kind": {"const": "constant"}, "outcome": {"enum": ["PASS", "FAIL"]}}},
+    "verified_bound_context": {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "verified_bound_context"}}},
     "boolean_true": {"type": "object", "additionalProperties": false, "required": ["kind", "input"], "properties": {"kind": {"const": "boolean_true"}, "input": {"type": "string"}}},
     "integer_equals": {"type": "object", "additionalProperties": false, "required": ["kind", "input", "value"], "properties": {"kind": {"const": "integer_equals"}, "input": {"type": "string"}, "value": {"type": "integer"}}}
   }
