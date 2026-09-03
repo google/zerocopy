@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:runtime-policy:2",
+  "$comment": "DRAFT / UNSEALED post-lock coordinator-state partition with neutral fresh external agent I/O roots.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mutable_root", "state_root", "static_manifest_exclusions", "draft_runtime_policy", "post_lock_state_policy", "agent_io_root_policy", "agent_input_leaf", "agent_output_leaf", "agent_visible_path_forbidden_terms", "symlink_policy", "seal_copy_policy", "evidence_policy", "fresh_attempt_root_policy", "frozen_input_policy", "outside_run_paths_for_synthetic_tests_only"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "DRAFT"},
+    "mutable_root": {"const": "runtime"},
+    "state_root": {"const": "runtime/state"},
+    "static_manifest_exclusions": {"const": ["runtime/**"]},
+    "draft_runtime_policy": {"const": "FORBIDDEN_UNTIL_VALID_LOCK_AND_STATIC_MANIFEST"},
+    "post_lock_state_policy": {"const": "ONLY_COORDINATOR_STATE_AND_CONTENT_ADDRESSED_ENVELOPES"},
+    "agent_io_root_policy": {"const": "FRESH_EXTERNAL_NEUTRAL_TMP_RANDOM_OPAQUE_ROOT"},
+    "agent_input_leaf": {"const": "input"},
+    "agent_output_leaf": {"const": "output"},
+    "agent_visible_path_forbidden_terms": {"const": ["evals", "runtime", "condition", "package", "skill", "v5", "v4", "no_skill"]},
+    "symlink_policy": {"const": "FORBIDDEN"},
+    "seal_copy_policy": {"const": "HASH_AND_COPY_EXTERNAL_OUTPUT_INTO_IN_TREE_CANONICAL_STATE"},
+    "evidence_policy": {"const": "POST_LOCK_COMMITTED_RUNTIME_STATE_REQUIRED_AT_INTEGRATION"},
+    "fresh_attempt_root_policy": {"const": "EXCLUSIVE_CREATE_ON_LEASE"},
+    "frozen_input_policy": {"const": "NO_MUTATION_AFTER_LOCK"},
+    "outside_run_paths_for_synthetic_tests_only": {"const": true}
+  }
+}
