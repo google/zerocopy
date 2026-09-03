@@ -124,6 +124,57 @@ authoritative documentation is ambiguous or insufficient, identify the
 smallest missing proposition. Do not repair it with intuition. Report a
 documentation gap and suggest an upstream improvement when appropriate.
 
+## Close an Evidence-Bearing Proof Kernel
+
+Before certifying any conclusion, expose a minimal, reviewable kernel of this
+form:
+
+```text
+artifact facts
+  + applicable Rust/stdlib axioms, verified tool theorems,
+    or explicit TCB premises
+  + earlier proved lemmas or invariants
+  + explicit logic or mathematics
+  -> derived proposition
+  -> consumer, postcondition, or verdict
+```
+
+An artifact fact is only a literal property of the exact inspected source,
+expansion, generated output, or other artifact: for example, that a declaration,
+operator, type annotation, branch, tail expression, or attribute occurs at a
+location. Inspection alone does not establish what that construct means when
+compiled or executed. Branch selection, expression evaluation, function return,
+arithmetic behavior, type value domains, configuration selection, name access,
+typing/coherence, and caller-side unsafe obligations are semantic propositions;
+derive each from exact applicable authority or record the needed TCB premise.
+
+For every proof edge consumed by a certified conclusion, state the exact
+proposition and applicability, identify its premises and their sources, justify
+why they entail it, and identify its consumer. Quote the narrow text that
+entails each Rust axiom; a URL or topic label is not a proposition. Check
+direction explicitly: reject an unjustified converse, inverse, strengthened
+conclusion, or widened domain, and state any contrapositive step with its exact
+negation and domain. Canonical checked entries may be reused by identifier, but
+the local proof must show the proposition and inference being reused.
+
+Before treating a counterexample or caller path as a valid use, separately
+close its accessibility and selected-source path, well-typedness and coherence,
+every applicable caller and implementer contract owned outside the audited
+scope—including contracts imposed on witness-supplied code—and every
+corresponding compiler-enforced unsafe-context obligation needed to form the
+use. Do not assume an in-scope audited safety assertion merely because it
+appears on an unsafe impl, declaration, API boundary, or internal operation;
+that assertion may be the proposition an `UNSOUND` certificate later proves
+false. A declaration that looks safe is not, by inspection alone, proof that
+calling or implementing it carries no unsafe obligation.
+
+Do not issue `PROVED`, `UNSOUND`, `CONTRACT-BROKEN`, or an affirmative regional
+result until its required certificate closes. If a universal kernel remains
+incomplete, remove or qualify every dependent conclusion, record the smallest
+root gap and its dependent conclusions, search for an admissible indirect
+derivation, determine whether a separate existential certificate closes, and
+otherwise issue `UNPROVED`.
+
 ## Compose Proofs Locally and Literally
 
 - Identify the controlling contract independently of the existing safety
@@ -172,23 +223,22 @@ documentation gap and suggest an upstream improvement when appropriate.
    by which build or generation inputs can affect the theorem domain, a
    consumed premise, shipped artifacts or selected source, reachability, or an
    in-scope postcondition.
-4. **State atomic obligations and premises.** Obtain each controlling contract,
+4. **State atomic obligations and kernels.** Obtain each controlling contract,
    decompose it literally, and state the exact proposition and applicability to
-   prove. Classify every material premise and identify its exact source.
+   prove. Classify artifact facts, semantic premises, derived lemmas, and TCB
+   admissions; identify their exact sources and consumers.
 5. **Construct the derivation.** Derive `Required`, every asserted domain
-   relationship, and every claim conjunct from checked local facts, named
-   invariants, applicable authoritative axioms, tool-derived theorems, or
-   explicit TCB entries. Unfold definitions and composite transformations;
-   preserve material operation order and alternative exits; seek indirect
-   multi-premise derivations; and justify every intermediate inference.
+   relationship, and every claim conjunct through the evidence-bearing kernel
+   above. Unfold definitions and composite transformations; preserve material
+   operation order and alternative exits; seek indirect multi-premise
+   derivations; and justify every intermediate inference.
 6. **Close, lint, and challenge.** Give every literal contract clause and safe
    surface a disposition and establish domain closure. Reverse-trace each
-   conclusion used by a verdict or regional result through every material
-   inference to explicit, applicable premises; reconcile every Rust premise
-   with its checked quotation and link; and ensure no later-stage fact is
-   consumed on a path that exited earlier. Then try to falsify the domain
-   recovery, contract reading, derivations, and coverage with boundary and
-   adversarial cases derived from the actual clauses.
+   certificate, verify every semantic edge and implication direction, and
+   ensure no later-stage fact is consumed on a path that exited earlier. Then
+   try to falsify the domain recovery, contract reading, derivations, and
+   coverage with boundary and adversarial cases derived from the actual
+   clauses.
 7. **Certify and report.** Apply the quantifier-sensitive certificates below.
    Keep every unresolved obligation visible and state the smallest missing
    implication. Record proofs, TCB, coverage, findings, postcondition failures,
@@ -196,13 +246,14 @@ documentation gap and suggest an upstream improvement when appropriate.
 
 ## Write and Review Proof-Grade Documentation
 
-Read [proof-obligations.md](references/proof-obligations.md) before authoring or
-reviewing an unsafe contract, invariant, `SAFETY` comment, or local proof.
+Read [proof-obligations.md](references/proof-obligations.md) before authoring,
+reviewing, or auditing unsafe Rust and before certifying any proof, contract,
+invariant, `SAFETY` comment, or verdict.
 
 Keep each proof adjacent to the smallest cohesive unsafe operation or assertion.
-State the exact operation and its preconditions, cite checked facts and named
-invariants, show the derivation, and prove resulting postconditions and
-invariant state on every applicable exit.
+State the exact operation and its preconditions, cite checked artifact facts
+and proved lemmas or invariants, show the derivation, and prove resulting
+postconditions and invariant state on every applicable exit.
 
 When existing code can be validated only by reconstructing a material
 derivation absent from its safety comment, do not accept it silently. Include
@@ -269,7 +320,7 @@ persistent or full audit.
 |---|---|
 | **PROVED** | Every obligation for the exact named claim has a checked derivation over its complete applicability, `Required ⊆ Covered`, and every premise is proved from admissible sources or appears as an accepted entry in the stated TCB. |
 | **UNPROVED** | A required derivation, premise, applicability or domain-closure argument, postcondition proof, or citation remains missing, ambiguous, circular, or unverifiable, and no applicable existential refutation below is complete. |
-| **UNSOUND** | There exists a proved valid in-scope use or execution which reaches an executed operation or semantic event, its exact required safety proposition is false there, and applicable authoritative semantics—possibly together with an explicit TCB premise about the implementation—entails undefined behavior. |
+| **UNSOUND** | There exists a proved valid in-scope use or execution—with accessibility/source selection, well-typedness/coherence, every applicable caller and implementer contract owned outside the audited scope (including contracts imposed on witness-supplied code), and every corresponding unsafe-context obligation needed to form the use satisfied—which reaches an executed operation or semantic event, an exact in-scope audited safety proposition (whether internal or attached to an impl, declaration, or API boundary) is false there, and applicable authoritative semantics—possibly together with an explicit TCB premise about the implementation—entails undefined behavior. |
 | **CONTRACT-BROKEN** | There exists a proved valid in-scope execution which, considered as a whole, contains no undefined behavior and falsifies a documented postcondition. |
 
 Failure to prove a universal obligation is enough for `UNPROVED`; do not invent
