@@ -862,7 +862,7 @@ jobs:
 
   check_versions:
     runs-on: ubuntu-latest
-    name: Check crate versions match
+    name: Check crate versions and MSRVs match
     defaults:
       run:
         working-directory: zerocopy
@@ -870,10 +870,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      # Make sure that both crates are at the same version, and that zerocopy
-      # depends exactly upon the current version of zerocopy-derive. See
-      # `INTERNAL.md` for an explanation of why we do this.
-      - name: Check crate versions match
+      # Make sure that both crates are at the same version and MSRV, and that
+      # zerocopy depends exactly upon the current version of zerocopy-derive.
+      # See `INTERNAL.md` for an explanation of the version requirement.
+      - name: Check crate versions and MSRVs match
         run: ./ci/check_versions.sh
 
   check_msrv_is_minimal:

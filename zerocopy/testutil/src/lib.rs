@@ -43,8 +43,8 @@ fn outer_feature_selection_args() -> Vec<String> {
 
 #[derive(Debug)]
 pub enum ToolchainVersion {
-    /// The version listed as our MSRV (ie, the `package.rust-version` key in
-    /// `Cargo.toml`).
+    /// The shared package MSRV, sourced from `Cargo.toml` and required to match
+    /// `zerocopy-derive/Cargo.toml`.
     PinnedMsrv,
     /// The stable version pinned in CI.
     PinnedStable,
