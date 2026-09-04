@@ -1,0 +1,27 @@
+error[E0200]: the trait `zerocopy::invariant::Read<Shared, CallerReason>` requires an `unsafe impl` declaration
+  --> $DIR/read-requires-unsafe-impl.rs:19:1
+   |
+19 | impl Read<Shared, CallerReason> for Cell<Vec<u8>> {}
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: the trait `zerocopy::invariant::Read<Shared, CallerReason>` enforces invariants that the compiler can't check. Review the trait documentation and make sure this implementation upholds those invariants before adding the `unsafe` keyword
+help: add `unsafe` to this trait implementation
+   |
+19 | unsafe impl Read<Shared, CallerReason> for Cell<Vec<u8>> {}
+   | ++++++
+
+error[E0200]: the trait `zerocopy::invariant::Read<Shared, CallerReason>` requires an `unsafe impl` declaration
+  --> $DIR/read-requires-unsafe-impl.rs:22:1
+   |
+22 | impl Read<Shared, CallerReason> for Vec<u8> {}
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: the trait `zerocopy::invariant::Read<Shared, CallerReason>` enforces invariants that the compiler can't check. Review the trait documentation and make sure this implementation upholds those invariants before adding the `unsafe` keyword
+help: add `unsafe` to this trait implementation
+   |
+22 | unsafe impl Read<Shared, CallerReason> for Vec<u8> {}
+   | ++++++
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0200`.
