@@ -18,7 +18,7 @@ mod def {
 
     use crate::{
         ByteSlice, ByteSliceMut, CloneableByteSlice, CopyableByteSlice, IntoByteSlice,
-        IntoByteSliceMut,
+        IntoByteSliceMut, KnownLayout, PointerMetadata,
     };
 
     /// A typed reference derived from a byte slice.
@@ -60,29 +60,73 @@ mod def {
     /// }
     /// ```
     pub struct Ref<B, T: ?Sized>(
-        // INVARIANTS: The referent (via `.deref`, `.deref_mut`, `.into`) byte
-        // slice is aligned to `T`'s alignment and its size corresponds to a
-        // valid size for `T`.
+        // INVARIANTS:
+        // - The referent (via `.deref`, `.deref_mut`, `.into`) byte slice is
+        //   aligned to `T`'s alignment, and its size is valid for `T`.
+        // - If `T: KnownLayout`, let `metadata` be
+        //   `T::PointerMetadata::from_elem_count` applied to the second field.
+        //   Then `T::size_for_metadata(metadata)` is `Some(referent.len())`.
+        // - If `T` does not implement `KnownLayout`, the second field is zero.
         B,
+        usize,
         PhantomData<T>,
     );
 
-    impl<B, T: ?Sized> Ref<B, T> {
+    impl<B, T> Ref<B, T> {
+        /// Constructs a new `Ref` to a sized `T`.
+        ///
+        /// # Safety
+        ///
+        /// `bytes` dereferences (via [`deref`], [`deref_mut`], and [`into`]) to
+        /// a byte slice which is aligned to `T`'s alignment and whose size is
+        /// `size_of::<T>()`.
+        ///
+        /// [`deref`]: core::ops::Deref::deref
+        /// [`deref_mut`]: core::ops::DerefMut::deref_mut
+        /// [`into`]: core::convert::Into::into
+        pub(super) unsafe fn new_sized_unchecked(bytes: B) -> Ref<B, T> {
+            // INVARIANTS: The caller has promised that `bytes`'s referent is
+            // validly aligned and has size `size_of::<T>()`. If `T:
+            // KnownLayout`, then, since `T` is sized, `T::PointerMetadata` is
+            // `()`. Its element-count encoding is zero, decoding zero restores
+            // `()`, and `T::size_for_metadata(()) == Some(size_of::<T>())`. If
+            // `T` does not implement `KnownLayout`, the second field is zero as
+            // required.
+            Ref(bytes, 0, PhantomData)
+        }
+    }
+
+    impl<B, T: KnownLayout + ?Sized> Ref<B, T> {
         /// Constructs a new `Ref`.
         ///
         /// # Safety
         ///
         /// `bytes` dereferences (via [`deref`], [`deref_mut`], and [`into`]) to
-        /// a byte slice which is aligned to `T`'s alignment and whose size is a
-        /// valid size for `T`.
+        /// a byte slice which is aligned to `T`'s alignment and satisfies
+        /// `T::size_for_metadata(metadata) == Some(referent.len())`.
         ///
         /// [`deref`]: core::ops::Deref::deref
         /// [`deref_mut`]: core::ops::DerefMut::deref_mut
         /// [`into`]: core::convert::Into::into
-        pub(crate) unsafe fn new_unchecked(bytes: B) -> Ref<B, T> {
+        pub(super) unsafe fn new_unchecked(bytes: B, metadata: T::PointerMetadata) -> Ref<B, T> {
             // INVARIANTS: The caller has promised that `bytes`'s referent is
-            // validly-aligned and has a valid size.
-            Ref(bytes, PhantomData)
+            // validly aligned and has exactly the size described by `metadata`.
+            // `KnownLayout::PointerMetadata` is `()` for sized types and
+            // `usize` for slice DSTs. For both permitted metadata types,
+            // `from_elem_count(metadata.to_elem_count()) == metadata`: `()`
+            // round-trips through zero, while `usize` round-trips through
+            // itself. Thus, storing the element count preserves the metadata
+            // whose size the caller validated.
+            Ref(bytes, metadata.to_elem_count(), PhantomData)
+        }
+
+        /// Gets the pointer metadata represented by this `Ref`.
+        #[inline(always)]
+        pub(super) fn pointer_metadata(&self) -> T::PointerMetadata {
+            // INVARIANTS: `KnownLayout::PointerMetadata` is either `()` or
+            // `usize`. The former is reconstructed from the required zero
+            // field, while the latter is reconstructed unchanged.
+            T::PointerMetadata::from_elem_count(self.1)
         }
     }
 
@@ -96,15 +140,17 @@ mod def {
         /// `Any::downcast_ref`).
         ///
         /// `as_byte_slice` promises to return a `ByteSlice` whose referent is
-        /// validly-aligned for `T` and has a valid size for `T`.
+        /// validly aligned for `T` and has a valid size for `T`. If `T:
+        /// KnownLayout`, then `T::size_for_metadata(self.pointer_metadata())`
+        /// returns `Some(referent.len())`.
         pub(crate) unsafe fn as_byte_slice(&self) -> &impl ByteSlice {
             // INVARIANTS: The caller promises not to call methods other than
             // those on `ByteSlice`. Since `B: ByteSlice`, dereference stability
             // guarantees that calling `ByteSlice` methods will not change the
             // address or length of `self.0`'s referent.
             //
-            // SAFETY: By invariant on `self.0`, the alignment and size
-            // post-conditions are upheld.
+            // SAFETY: By invariant on `self`, the alignment, size, and metadata
+            // postconditions are upheld.
             &self.0
         }
     }
@@ -118,16 +164,19 @@ mod def {
         /// [`ByteSliceMut`] other than `ByteSliceMut` methods (for example, via
         /// `Any::downcast_mut`).
         ///
-        /// `as_byte_slice` promises to return a `ByteSlice` whose referent is
-        /// validly-aligned for `T` and has a valid size for `T`.
+        /// `as_byte_slice_mut` promises to return a `ByteSliceMut` whose
+        /// referent is validly aligned for `T` and has a valid size for `T`. If
+        /// `T: KnownLayout`, then
+        /// `T::size_for_metadata(self.pointer_metadata())` returns
+        /// `Some(referent.len())`.
         pub(crate) unsafe fn as_byte_slice_mut(&mut self) -> &mut impl ByteSliceMut {
             // INVARIANTS: The caller promises not to call methods other than
             // those on `ByteSliceMut`. Since `B: ByteSlice`, dereference
             // stability guarantees that calling `ByteSlice` methods will not
             // change the address or length of `self.0`'s referent.
             //
-            // SAFETY: By invariant on `self.0`, the alignment and size
-            // post-conditions are upheld.
+            // SAFETY: By invariant on `self`, the alignment, size, and metadata
+            // postconditions are upheld.
             &mut self.0
         }
     }
@@ -141,16 +190,19 @@ mod def {
         /// [`IntoByteSlice`] other than `IntoByteSlice` methods (for example,
         /// via `Any::downcast_ref`).
         ///
-        /// `as_byte_slice` promises to return a `ByteSlice` whose referent is
-        /// validly-aligned for `T` and has a valid size for `T`.
+        /// `into_byte_slice` promises to return an `IntoByteSlice` whose
+        /// referent is validly aligned for `T` and has a valid size for `T`. If
+        /// `T: KnownLayout`, then
+        /// `T::size_for_metadata(self.pointer_metadata())` returns
+        /// `Some(referent.len())`.
         pub(crate) unsafe fn into_byte_slice(self) -> impl IntoByteSlice<'a> {
             // INVARIANTS: The caller promises not to call methods other than
             // those on `IntoByteSlice`. Since `B: ByteSlice`, dereference
             // stability guarantees that calling `ByteSlice` methods will not
             // change the address or length of `self.0`'s referent.
             //
-            // SAFETY: By invariant on `self.0`, the alignment and size
-            // post-conditions are upheld.
+            // SAFETY: By invariant on `self`, the alignment, size, and metadata
+            // postconditions are upheld.
             self.0
         }
     }
@@ -164,16 +216,19 @@ mod def {
         /// [`IntoByteSliceMut`] other than `IntoByteSliceMut` methods (for
         /// example, via `Any::downcast_mut`).
         ///
-        /// `as_byte_slice` promises to return a `ByteSlice` whose referent is
-        /// validly-aligned for `T` and has a valid size for `T`.
+        /// `into_byte_slice_mut` promises to return an `IntoByteSliceMut` whose
+        /// referent is validly aligned for `T` and has a valid size for `T`. If
+        /// `T: KnownLayout`, then
+        /// `T::size_for_metadata(self.pointer_metadata())` returns
+        /// `Some(referent.len())`.
         pub(crate) unsafe fn into_byte_slice_mut(self) -> impl IntoByteSliceMut<'a> {
             // INVARIANTS: The caller promises not to call methods other than
             // those on `IntoByteSliceMut`. Since `B: ByteSlice`, dereference
             // stability guarantees that calling `ByteSlice` methods will not
             // change the address or length of `self.0`'s referent.
             //
-            // SAFETY: By invariant on `self.0`, the alignment and size
-            // post-conditions are upheld.
+            // SAFETY: By invariant on `self`, the alignment, size, and metadata
+            // postconditions are upheld.
             self.0
         }
     }
@@ -182,15 +237,17 @@ mod def {
         #[inline]
         fn clone(&self) -> Ref<B, T> {
             // INVARIANTS: Since `B: CloneableByteSlice`, `self.0.clone()` has
-            // the same address and length as `self.0`. Since `self.0` upholds
-            // the field invariants, so does `self.0.clone()`.
-            Ref(self.0.clone(), PhantomData)
+            // the same address and length as `self.0`. We copy `self.1`, so the
+            // clone also has the same metadata. Since `self` upholds the field
+            // invariants, so does the clone.
+            Ref(self.0.clone(), self.1, PhantomData)
         }
     }
 
     // INVARIANTS: Since `B: CopyableByteSlice`, the copied `Ref`'s `.0` has the
-    // same address and length as the original `Ref`'s `.0`. Since the original
-    // upholds the field invariants, so does the copy.
+    // same address and length as the original `Ref`'s `.0`. The copied `.1`
+    // has the same metadata. Since the original upholds the field invariants,
+    // so does the copy.
     impl<B: CopyableByteSlice + Copy, T: ?Sized> Copy for Ref<B, T> {}
 }
 
@@ -216,7 +273,7 @@ where
         }
 
         // SAFETY: We just validated size and alignment.
-        Ok(unsafe { Ref::new_unchecked(bytes) })
+        Ok(unsafe { Ref::new_sized_unchecked(bytes) })
     }
 }
 
@@ -241,7 +298,7 @@ where
         // new `bytes` is exactly the size of `T`. By safety postcondition on
         // `SplitByteSlice::split_at` we can rely on `split_at` to produce the
         // correct `bytes` and `suffix`.
-        let r = unsafe { Ref::new_unchecked(bytes) };
+        let r = unsafe { Ref::new_sized_unchecked(bytes) };
         Ok((r, suffix))
     }
 
@@ -263,7 +320,7 @@ where
         // constructing `bytes`, we validate that it has the proper alignment.
         // By safety postcondition on `SplitByteSlice::split_at` we can rely on
         // `split_at` to produce the correct `prefix` and `bytes`.
-        let r = unsafe { Ref::new_unchecked(bytes) };
+        let r = unsafe { Ref::new_sized_unchecked(bytes) };
         Ok((prefix, r))
     }
 }
@@ -310,13 +367,18 @@ where
     #[inline]
     pub fn from_bytes(source: B) -> Result<Ref<B, T>, CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        if let Err(e) =
-            Ptr::from_ref(source.deref()).try_cast_into_no_leftover::<T, BecauseImmutable>(None)
+        let metadata = match Ptr::from_ref(source.deref())
+            .try_cast_into_no_leftover::<T, BecauseImmutable>(None)
         {
-            return Err(e.with_src(()).with_src(source));
-        }
-        // SAFETY: `try_cast_into_no_leftover` validates size and alignment.
-        Ok(unsafe { Ref::new_unchecked(source) })
+            Ok(ptr) => T::pointer_to_metadata(ptr.as_inner().as_ptr()),
+            Err(e) => return Err(e.with_src(()).with_src(source)),
+        };
+        // SAFETY: `try_cast_into_no_leftover` returned an aligned `Ptr<T>` over
+        // the same byte range as `source`. `pointer_to_metadata` returns that
+        // pointer's metadata, so `T::size_for_metadata(metadata)` is
+        // `Some(source.len())`. `ByteSlice` guarantees that moving `source`
+        // preserves its referent's address and length.
+        Ok(unsafe { Ref::new_unchecked(source, metadata) })
     }
 }
 
@@ -364,10 +426,10 @@ where
     #[inline]
     pub fn from_prefix(source: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let remainder = match Ptr::from_ref(source.deref())
+        let (metadata, remainder) = match Ptr::from_ref(source.deref())
             .try_cast_into::<T, BecauseImmutable>(CastType::Prefix, None)
         {
-            Ok((_, remainder)) => remainder,
+            Ok((ptr, remainder)) => (T::pointer_to_metadata(ptr.as_inner().as_ptr()), remainder),
             Err(e) => {
                 return Err(e.with_src(()).with_src(source));
             }
@@ -381,11 +443,15 @@ where
         #[allow(unstable_name_collisions)]
         let split_at = unsafe { source.len().unchecked_sub(remainder.len()) };
         let (bytes, suffix) = source.split_at(split_at).map_err(|b| SizeError::new(b).into())?;
-        // SAFETY: `try_cast_into` validates size and alignment, and returns a
-        // `split_at` that indicates how many bytes of `source` correspond to a
-        // valid `T`. By safety postcondition on `SplitByteSlice::split_at` we
-        // can rely on `split_at` to produce the correct `source` and `suffix`.
-        let r = unsafe { Ref::new_unchecked(bytes) };
+        // SAFETY: `try_cast_into` returned an aligned `Ptr<T>` and a remainder
+        // which are non-overlapping, cover `source`, and place the `Ptr<T>` at
+        // `source`'s address. Thus, subtracting the remainder length produces
+        // the `Ptr<T>`'s byte length. `pointer_to_metadata` returned that
+        // pointer's metadata, so `T::size_for_metadata(metadata)` returns
+        // `Some(bytes.len())`. By the safety postcondition on
+        // `SplitByteSlice::split_at`, `bytes` has the same address and length
+        // as that typed prefix.
+        let r = unsafe { Ref::new_unchecked(bytes, metadata) };
         Ok((r, suffix))
     }
 
@@ -429,10 +495,10 @@ where
     #[inline]
     pub fn from_suffix(source: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let remainder = match Ptr::from_ref(source.deref())
+        let (metadata, remainder) = match Ptr::from_ref(source.deref())
             .try_cast_into::<T, BecauseImmutable>(CastType::Suffix, None)
         {
-            Ok((_, remainder)) => remainder,
+            Ok((ptr, remainder)) => (T::pointer_to_metadata(ptr.as_inner().as_ptr()), remainder),
             Err(e) => {
                 let e = e.with_src(());
                 return Err(e.with_src(source));
@@ -441,11 +507,15 @@ where
 
         let split_at = remainder.len();
         let (prefix, bytes) = source.split_at(split_at).map_err(|b| SizeError::new(b).into())?;
-        // SAFETY: `try_cast_into` validates size and alignment, and returns a
-        // `split_at` that indicates how many bytes of `source` correspond to a
-        // valid `T`. By safety postcondition on `SplitByteSlice::split_at` we
-        // can rely on `split_at` to produce the correct `prefix` and `bytes`.
-        let r = unsafe { Ref::new_unchecked(bytes) };
+        // SAFETY: For a suffix cast, `try_cast_into` returned an aligned
+        // `Ptr<T>` and a remainder which are non-overlapping, cover `source`,
+        // and place the remainder at `source`'s address. Splitting at the
+        // remainder length therefore makes `bytes` correspond to the typed
+        // suffix. `pointer_to_metadata` returned that pointer's metadata, so
+        // `T::size_for_metadata(metadata)` returns `Some(bytes.len())`. By the
+        // safety postcondition on `SplitByteSlice::split_at`, `bytes` has the
+        // same address and length as that typed suffix.
+        let r = unsafe { Ref::new_unchecked(bytes, metadata) };
         Ok((prefix, r))
     }
 }
@@ -497,7 +567,18 @@ where
         if source.len() != expected_len {
             return Err(SizeError::new(source).into());
         }
-        Self::from_bytes(source)
+        if let Err(e) = Ptr::from_ref(source.deref())
+            .try_cast_into_no_leftover::<T, BecauseImmutable>(Some(count))
+        {
+            return Err(e.with_src(()).with_src(source));
+        }
+        // SAFETY: Since explicit metadata was provided,
+        // `try_cast_into_no_leftover` only succeeded after producing an
+        // aligned `Ptr<T>` with metadata `count` over the same byte range as
+        // `source`. Thus, `T::size_for_metadata(count)` is
+        // `Some(source.len())`. `ByteSlice` guarantees that moving `source`
+        // preserves its referent's address and length.
+        Ok(unsafe { Ref::new_unchecked(source, count) })
     }
 }
 
@@ -549,7 +630,7 @@ where
             None => return Err(SizeError::new(source).into()),
         };
         let (prefix, bytes) = source.split_at(expected_len).map_err(SizeError::new)?;
-        Self::from_bytes(prefix).map(move |l| (l, bytes))
+        Self::from_bytes_with_elems(prefix, count).map(move |l| (l, bytes))
     }
 
     /// Constructs a `Ref` from the suffix of the given bytes with DST length
@@ -602,7 +683,7 @@ where
         // SAFETY: The preceding `source.len().checked_sub(expected_len)`
         // guarantees that `split_at` is in-bounds.
         let (bytes, suffix) = unsafe { source.split_at_unchecked(split_at) };
-        Self::from_bytes(suffix).map(move |l| (bytes, l))
+        Self::from_bytes_with_elems(suffix, count).map(move |l| (bytes, l))
     }
 }
 
@@ -624,6 +705,8 @@ where
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         static_assert_dst_is_not_zst!(T);
 
+        let metadata = r.pointer_metadata();
+
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `IntoByteSlice`.
         let b = unsafe { r.into_byte_slice() };
@@ -642,12 +725,12 @@ where
             return ptr.as_ref();
         }
 
-        // PANICS: By post-condition on `into_byte_slice`, `b`'s size and
-        // alignment are valid for `T`. By post-condition, `b.into_byte_slice()`
-        // produces a byte slice with identical address and length to that
-        // produced by `b.deref()`.
+        // PANICS: By post-condition on `into_byte_slice`, `b` is aligned for
+        // `T`, and its size is exactly the size encoded by `metadata`. By
+        // post-condition, `b.into_byte_slice()` produces a byte slice with
+        // identical address and length to that produced by `b.deref()`.
         let ptr = Ptr::from_ref(b.into_byte_slice())
-            .try_cast_into_no_leftover::<T, BecauseImmutable>(None)
+            .try_cast_into_no_leftover::<T, BecauseImmutable>(Some(metadata))
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.recall_validity();
         ptr.as_ref()
@@ -671,6 +754,8 @@ where
     pub fn into_mut(r: Self) -> &'a mut T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         static_assert_dst_is_not_zst!(T);
+
+        let metadata = r.pointer_metadata();
 
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `IntoByteSliceMut`.
@@ -697,12 +782,12 @@ where
             return ptr.as_mut();
         }
 
-        // PANICS: By post-condition on `into_byte_slice_mut`, `b`'s size and
-        // alignment are valid for `T`. By post-condition,
-        // `b.into_byte_slice_mut()` produces a byte slice with identical
-        // address and length to that produced by `b.deref_mut()`.
+        // PANICS: By post-condition on `into_byte_slice_mut`, `b` is aligned
+        // for `T`, and its size is exactly the size encoded by `metadata`. By
+        // post-condition, `b.into_byte_slice_mut()` produces a byte slice with
+        // identical address and length to that produced by `b.deref_mut()`.
         let ptr = Ptr::from_mut(b.into_byte_slice_mut())
-            .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
+            .try_cast_into_no_leftover::<T, BecauseExclusive>(Some(metadata))
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.recall_validity::<_, (_, (_, _))>();
         ptr.as_mut()
@@ -806,6 +891,8 @@ where
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         static_assert_dst_is_not_zst!(T);
 
+        let metadata = self.pointer_metadata();
+
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSlice`.
         let b = unsafe { self.as_byte_slice() };
@@ -824,11 +911,12 @@ where
             return ptr.as_ref();
         }
 
-        // PANICS: By postcondition on `as_byte_slice`, `b`'s size and alignment
-        // are valid for `T`, and by invariant on `ByteSlice`, these are
-        // preserved through `.deref()`, so this `unwrap` will not panic.
+        // PANICS: By postcondition on `as_byte_slice`, `b` is aligned for `T`,
+        // and its size is exactly the size encoded by `metadata`. By invariant
+        // on `ByteSlice`, these are preserved through `.deref()`, so this
+        // `unwrap` will not panic.
         let ptr = Ptr::from_ref(b)
-            .try_cast_into_no_leftover::<T, BecauseImmutable>(None)
+            .try_cast_into_no_leftover::<T, BecauseImmutable>(Some(metadata))
             .expect("zerocopy internal error: Deref::deref should be infallible");
         let ptr = ptr.recall_validity();
         ptr.as_ref()
@@ -847,6 +935,8 @@ where
     fn deref_mut(&mut self) -> &mut T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         static_assert_dst_is_not_zst!(T);
+
+        let metadata = self.pointer_metadata();
 
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSliceMut`.
@@ -873,12 +963,12 @@ where
             return ptr.as_mut();
         }
 
-        // PANICS: By postcondition on `as_byte_slice_mut`, `b`'s size and
-        // alignment are valid for `T`, and by invariant on `ByteSlice`, these
-        // are preserved through `.deref_mut()`, so this `unwrap` will not
-        // panic.
+        // PANICS: By postcondition on `as_byte_slice_mut`, `b` is aligned for
+        // `T`, and its size is exactly the size encoded by `metadata`. By
+        // invariant on `ByteSlice`, these are preserved through `.deref_mut()`,
+        // so this `unwrap` will not panic.
         let ptr = Ptr::from_mut(b)
-            .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
+            .try_cast_into_no_leftover::<T, BecauseExclusive>(Some(metadata))
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
         let ptr = ptr.recall_validity::<_, (_, (_, BecauseExclusive))>();
         ptr.as_mut()
@@ -1026,6 +1116,66 @@ mod tests {
         let buf_ptr = buf.as_ptr();
         let deref_ptr = r.deref().as_ptr();
         assert_eq!(buf_ptr, deref_ptr);
+    }
+
+    #[test]
+    #[allow(clippy::clone_on_copy)] // Exercise `Ref`'s manual `Clone` impl.
+    fn test_with_elems_preserves_ambiguous_metadata() {
+        #[derive(FromBytes, Immutable, KnownLayout)]
+        #[repr(C, align(8))]
+        struct Frame {
+            header: [u8; 8],
+            body: [u8],
+        }
+
+        #[derive(FromBytes, Immutable, KnownLayout)]
+        #[repr(C, align(8))]
+        struct OddHeader {
+            header: [u8; 7],
+            body: [u8],
+        }
+
+        // Dynamic trailing padding makes these pairs of distinct element
+        // counts produce the same total byte size. Thus, the byte length alone
+        // cannot recover the count supplied to a `*_with_elems` constructor.
+        assert_eq!(Frame::size_for_metadata(1), Some(16));
+        assert_eq!(Frame::size_for_metadata(8), Some(16));
+        assert_eq!(OddHeader::size_for_metadata(0), Some(8));
+        assert_eq!(OddHeader::size_for_metadata(1), Some(8));
+
+        let bytes = Align::<[u8; 32], AU64>::default();
+
+        let whole = Ref::<_, Frame>::from_bytes_with_elems(&bytes.t[..16], 1).unwrap();
+        assert_eq!(whole.body.len(), 1);
+        assert_eq!(Ref::bytes(&whole).len(), 16);
+        assert_eq!(whole.clone().body.len(), 1);
+        let copied = whole;
+        assert_eq!(copied.body.len(), 1);
+        assert_eq!(Ref::into_ref(whole).body.len(), 1);
+
+        let (prefix, rest) = Ref::<_, Frame>::from_prefix_with_elems(&bytes.t[..], 1).unwrap();
+        assert_eq!(prefix.body.len(), 1);
+        assert_eq!(rest.len(), 16);
+
+        let (before, suffix) = Ref::<_, Frame>::from_suffix_with_elems(&bytes.t[..24], 1).unwrap();
+        assert_eq!(before.len(), 8);
+        assert_eq!(suffix.body.len(), 1);
+
+        // Zero is real metadata, not a sentinel for "infer from the bytes".
+        let empty = Ref::<_, OddHeader>::from_bytes_with_elems(&bytes.t[..8], 0).unwrap();
+        assert!(empty.body.is_empty());
+        assert!(Ref::into_ref(empty).body.is_empty());
+
+        // The implicit constructors still choose the largest fitting count,
+        // and retain the metadata selected during their validating cast.
+        let inferred = Ref::<_, Frame>::from_bytes(&bytes.t[..16]).unwrap();
+        assert_eq!(inferred.body.len(), 8);
+        let (inferred, rest) = Ref::<_, Frame>::from_prefix(&bytes.t[..16]).unwrap();
+        assert_eq!(inferred.body.len(), 8);
+        assert!(rest.is_empty());
+        let (before, inferred) = Ref::<_, Frame>::from_suffix(&bytes.t[..16]).unwrap();
+        assert!(before.is_empty());
+        assert_eq!(inferred.body.len(), 8);
     }
 
     // Verify that values written to a `Ref` are properly shared between the
@@ -1251,6 +1401,13 @@ mod tests {
 
         *rf = u64::MAX;
         assert_eq!(buf.t, [0xFF; 8]);
+
+        // Exercise the unsized `into_mut` route, which must use the metadata
+        // retained by the constructor rather than infer fresh metadata.
+        let mut buf = Align::<[u8; 8], u16>::default();
+        let r = Ref::<_, [u16]>::from_bytes_with_elems(&mut buf.t[..], 4).unwrap();
+        let rf = Ref::into_mut(r);
+        assert_eq!(rf.len(), 4);
     }
 
     #[test]
@@ -1326,7 +1483,7 @@ mod benches {
         b.iter(move || {
             // SAFETY: The preceding `from_bytes` succeeded, and so we know that
             // `buf` is validly-aligned and has the correct length.
-            let r = unsafe { Ref::<&mut [u8], AU64>::new_unchecked(&mut *buf) };
+            let r = unsafe { Ref::<&mut [u8], AU64>::new_sized_unchecked(&mut *buf) };
             test::black_box(Ref::into_mut(test::black_box(r)));
         });
     }
@@ -1350,7 +1507,7 @@ mod benches {
         b.iter(|| {
             // SAFETY: The preceding `from_bytes` succeeded, and so we know that
             // `buf` is validly-aligned and has the correct length.
-            let r = unsafe { Ref::<&mut [u8], AU64>::new_unchecked(&mut *buf) };
+            let r = unsafe { Ref::<&mut [u8], AU64>::new_sized_unchecked(&mut *buf) };
             let mut temp = test::black_box(r);
             test::black_box(temp.deref_mut());
         });
