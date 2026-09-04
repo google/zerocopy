@@ -59,18 +59,18 @@ mod def {
     ///     }
     /// }
     /// ```
-    pub struct Ref<B, T: ?Sized>(
+    pub struct Ref<B, T: ?Sized> {
         // INVARIANTS:
         // - The referent (via `.deref`, `.deref_mut`, `.into`) byte slice is
         //   aligned to `T`'s alignment, and its size is valid for `T`.
         // - If `T: KnownLayout`, let `metadata` be
-        //   `T::PointerMetadata::from_elem_count` applied to the second field.
+        //   `T::PointerMetadata::from_elem_count` applied to `elem_count`.
         //   Then `T::size_for_metadata(metadata)` is `Some(referent.len())`.
-        // - If `T` does not implement `KnownLayout`, the second field is zero.
-        B,
-        usize,
-        PhantomData<T>,
-    );
+        bytes: B,
+        // Ignored when `T` does not implement `KnownLayout`.
+        elem_count: usize,
+        _marker: PhantomData<T>,
+    }
 
     impl<B, T> Ref<B, T> {
         /// Constructs a new `Ref` to a sized `T`.
@@ -88,15 +88,14 @@ mod def {
             // INVARIANTS: The caller has promised that `bytes`'s referent is
             // validly aligned and has size `size_of::<T>()`. If `T:
             // KnownLayout`, then, since `T` is sized, `T::PointerMetadata` is
-            // `()`. Its element-count encoding is zero, decoding zero restores
-            // `()`, and `T::size_for_metadata(()) == Some(size_of::<T>())`. If
-            // `T` does not implement `KnownLayout`, the second field is zero as
-            // required. `size_of` reports this size in bytes [1].
+            // `()`. `from_elem_count` returns `()` for any element count, and
+            // `T::size_for_metadata(()) == Some(size_of::<T>())`. `size_of`
+            // reports this size in bytes [1].
             //
             // [1] Per https://doc.rust-lang.org/1.56.0/core/mem/fn.size_of.html:
             //
             //     Returns the size of a type in bytes.
-            Ref(bytes, 0, PhantomData)
+            Ref { bytes, elem_count: 0, _marker: PhantomData }
         }
     }
 
@@ -127,16 +126,16 @@ mod def {
             //
             //     Pointers to slices also store the number of elements of the
             //     slice.
-            Ref(bytes, metadata.to_elem_count(), PhantomData)
+            Ref { bytes, elem_count: metadata.to_elem_count(), _marker: PhantomData }
         }
 
         /// Gets the pointer metadata represented by this `Ref`.
         #[inline(always)]
         pub(super) fn pointer_metadata(&self) -> T::PointerMetadata {
             // INVARIANTS: `KnownLayout::PointerMetadata` is either `()` or
-            // `usize`. The former is reconstructed from the required zero
-            // field, while the latter is reconstructed unchanged.
-            T::PointerMetadata::from_elem_count(self.1)
+            // `usize`. For `()`, `from_elem_count` ignores the element count;
+            // for `usize`, it returns the element count unchanged.
+            T::PointerMetadata::from_elem_count(self.elem_count)
         }
     }
 
@@ -157,11 +156,11 @@ mod def {
             // INVARIANTS: The caller promises not to call methods other than
             // those on `ByteSlice`. Since `B: ByteSlice`, dereference stability
             // guarantees that calling `ByteSlice` methods will not change the
-            // address or length of `self.0`'s referent.
+            // address or length of `self.bytes`'s referent.
             //
             // SAFETY: By invariant on `self`, the alignment, size, and metadata
             // postconditions are upheld.
-            &self.0
+            &self.bytes
         }
     }
 
@@ -183,11 +182,11 @@ mod def {
             // INVARIANTS: The caller promises not to call methods other than
             // those on `ByteSliceMut`. Since `B: ByteSlice`, dereference
             // stability guarantees that calling `ByteSlice` methods will not
-            // change the address or length of `self.0`'s referent.
+            // change the address or length of `self.bytes`'s referent.
             //
             // SAFETY: By invariant on `self`, the alignment, size, and metadata
             // postconditions are upheld.
-            &mut self.0
+            &mut self.bytes
         }
     }
 
@@ -209,11 +208,11 @@ mod def {
             // INVARIANTS: The caller promises not to call methods other than
             // those on `IntoByteSlice`. Since `B: ByteSlice`, dereference
             // stability guarantees that calling `ByteSlice` methods will not
-            // change the address or length of `self.0`'s referent.
+            // change the address or length of `self.bytes`'s referent.
             //
             // SAFETY: By invariant on `self`, the alignment, size, and metadata
             // postconditions are upheld.
-            self.0
+            self.bytes
         }
     }
 
@@ -235,29 +234,29 @@ mod def {
             // INVARIANTS: The caller promises not to call methods other than
             // those on `IntoByteSliceMut`. Since `B: ByteSlice`, dereference
             // stability guarantees that calling `ByteSlice` methods will not
-            // change the address or length of `self.0`'s referent.
+            // change the address or length of `self.bytes`'s referent.
             //
             // SAFETY: By invariant on `self`, the alignment, size, and metadata
             // postconditions are upheld.
-            self.0
+            self.bytes
         }
     }
 
     impl<B: CloneableByteSlice + Clone, T: ?Sized> Clone for Ref<B, T> {
         #[inline]
         fn clone(&self) -> Ref<B, T> {
-            // INVARIANTS: Since `B: CloneableByteSlice`, `self.0.clone()` has
-            // the same address and length as `self.0`. We copy `self.1`, so the
-            // clone also has the same metadata. Since `self` upholds the field
-            // invariants, so does the clone.
-            Ref(self.0.clone(), self.1, PhantomData)
+            // INVARIANTS: Since `B: CloneableByteSlice`, `self.bytes.clone()` has
+            // the same address and length as `self.bytes`. We copy
+            // `self.elem_count`, so the clone also has the same metadata. Since
+            // `self` upholds the field invariants, so does the clone.
+            Ref { bytes: self.bytes.clone(), elem_count: self.elem_count, _marker: PhantomData }
         }
     }
 
-    // INVARIANTS: Since `B: CopyableByteSlice`, the copied `Ref`'s `.0` has the
-    // same address and length as the original `Ref`'s `.0`. The copied `.1`
-    // has the same metadata. Since the original upholds the field invariants,
-    // so does the copy.
+    // INVARIANTS: Since `B: CopyableByteSlice`, the copied `Ref`'s `bytes` has the
+    // same address and length as the original `Ref`'s `bytes`. The copied
+    // `elem_count` has the same metadata. Since the original upholds the field
+    // invariants, so does the copy.
     impl<B: CopyableByteSlice + Copy, T: ?Sized> Copy for Ref<B, T> {}
 }
 

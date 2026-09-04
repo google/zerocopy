@@ -1,11 +1,11 @@
 Iterations:        100
-Instructions:      2200
-Total Cycles:      704
+Instructions:      2400
+Total Cycles:      672
 Total uOps:        2400
 
 Dispatch Width:    4
-uOps Per Cycle:    3.41
-IPC:               3.13
+uOps Per Cycle:    3.57
+IPC:               3.57
 Block RThroughput: 6.0
 
 
@@ -19,26 +19,28 @@ Instruction Info:
 
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
  1      1     0.33                        mov	rax, rdi
- 1      1     0.50                        lea	rcx, [rdx + rdx]
- 1      1     0.33                        test	rdx, rdx
- 1      1     0.50                        sets	dl
- 1      1     0.33                        cmp	rcx, -5
- 1      1     0.50                        setae	dil
- 1      1     0.33                        or	dil, dl
- 1      1     0.33                        mov	edx, 1
- 1      1     1.00                        je	.LBB5_2
- 1      0     0.25                        xor	eax, eax
+ 1      1     0.50                        lea	rdi, [rcx + rcx]
+ 1      1     0.33                        test	rcx, rcx
+ 1      1     0.50                        sets	r8b
+ 1      1     0.33                        cmp	rdi, -5
+ 1      1     0.50                        setae	r9b
+ 1      1     0.33                        or	r9b, r8b
+ 1      1     1.00                        jne	.LBB5_3
+ 1      1     0.33                        add	rdi, 4
+ 1      1     0.33                        cmp	rdi, rdx
+ 1      1     1.00                        ja	.LBB5_3
+ 1      1     0.33                        movabs	rdx, 4611686018427387902
+ 1      1     0.33                        cmp	rcx, rdx
+ 1      1     0.50                        setb	dl
+ 1      1     0.33                        test	sil, 1
+ 1      1     0.50                        sete	r8b
+ 1      1     0.33                        test	dl, r8b
+ 1      1     1.00                        jne	.LBB5_4
+ 1      1     1.00           *            mov	qword ptr [rax], 0
  1      1     1.00                  U     ret
- 1      1     0.33                        add	rcx, 4
- 1      1     0.33                        cmp	rcx, rsi
- 1      1     1.00                        jbe	.LBB5_4
- 1      0     0.25                        xor	eax, eax
- 1      1     1.00                  U     ret
- 1      0     0.25                        xor	edx, edx
- 1      1     0.33                        test	al, 1
- 2      2     0.67                        cmovne	rcx, rdx
- 2      2     0.67                        cmovne	rax, rdx
- 1      1     0.33                        mov	rdx, rcx
+ 1      1     1.00           *            mov	qword ptr [rax], rsi
+ 1      1     1.00           *            mov	qword ptr [rax + 8], rdi
+ 1      1     1.00           *            mov	qword ptr [rax + 16], rcx
  1      1     1.00                  U     ret
 
 
@@ -55,29 +57,31 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     6.99   7.00    -     7.01    -      -     
+ -      -     6.66   6.65   4.00   6.69   2.00   2.00   
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
- -      -     0.99    -      -     0.01    -      -     mov	rax, rdi
- -      -      -     1.00    -      -      -      -     lea	rcx, [rdx + rdx]
- -      -     1.00    -      -      -      -      -     test	rdx, rdx
- -      -     0.99    -      -     0.01    -      -     sets	dl
- -      -      -     1.00    -      -      -      -     cmp	rcx, -5
- -      -     0.99    -      -     0.01    -      -     setae	dil
- -      -     0.01   0.99    -      -      -      -     or	dil, dl
- -      -     0.01    -      -     0.99    -      -     mov	edx, 1
- -      -      -      -      -     1.00    -      -     je	.LBB5_2
- -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -     0.03   0.96    -     0.01    -      -     mov	rax, rdi
+ -      -     0.64   0.36    -      -      -      -     lea	rdi, [rcx + rcx]
+ -      -     0.34   0.66    -      -      -      -     test	rcx, rcx
+ -      -     0.99    -      -     0.01    -      -     sets	r8b
+ -      -     0.66   0.34    -      -      -      -     cmp	rdi, -5
+ -      -     0.67    -      -     0.33    -      -     setae	r9b
+ -      -     0.01   0.99    -      -      -      -     or	r9b, r8b
+ -      -      -      -      -     1.00    -      -     jne	.LBB5_3
+ -      -      -     0.99    -     0.01    -      -     add	rdi, 4
+ -      -     0.66   0.33    -     0.01    -      -     cmp	rdi, rdx
+ -      -      -      -      -     1.00    -      -     ja	.LBB5_3
+ -      -      -     0.01    -     0.99    -      -     movabs	rdx, 4611686018427387902
+ -      -     0.33   0.34    -     0.33    -      -     cmp	rcx, rdx
+ -      -     1.00    -      -      -      -      -     setb	dl
+ -      -     0.33   0.67    -      -      -      -     test	sil, 1
+ -      -     1.00    -      -      -      -      -     sete	r8b
+ -      -      -     1.00    -      -      -      -     test	dl, r8b
+ -      -      -      -      -     1.00    -      -     jne	.LBB5_4
+ -      -      -      -     1.00    -      -     1.00   mov	qword ptr [rax], 0
  -      -      -      -      -     1.00    -      -     ret
- -      -      -     0.02    -     0.98    -      -     add	rcx, 4
- -      -     0.01   0.99    -      -      -      -     cmp	rcx, rsi
- -      -      -      -      -     1.00    -      -     jbe	.LBB5_4
- -      -      -      -      -      -      -      -     xor	eax, eax
- -      -      -      -      -     1.00    -      -     ret
- -      -      -      -      -      -      -      -     xor	edx, edx
- -      -     0.99    -      -     0.01    -      -     test	al, 1
- -      -     1.00   1.00    -      -      -      -     cmovne	rcx, rdx
- -      -     1.00   1.00    -      -      -      -     cmovne	rax, rdx
- -      -      -     1.00    -      -      -      -     mov	rdx, rcx
+ -      -      -      -     1.00    -     1.00    -     mov	qword ptr [rax], rsi
+ -      -      -      -     1.00    -      -     1.00   mov	qword ptr [rax + 8], rdi
+ -      -      -      -     1.00    -     1.00    -     mov	qword ptr [rax + 16], rcx
  -      -      -      -      -     1.00    -      -     ret
