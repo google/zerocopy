@@ -253,16 +253,20 @@ unsafe impl<ST: ?Sized, DT: ?Sized> CastableFrom<ST, Initialized, Initialized> f
 ///
 /// # Safety
 ///
-/// `T: Read<A, R>` if either of the following conditions holds:
+/// Implementors must ensure that either of the following conditions holds:
 /// - `A` is [`Exclusive`]
-/// - `T` implements [`Immutable`](crate::Immutable)
+/// - `Self` implements [`Immutable`](crate::Immutable)
 ///
 /// As a consequence, if `T: Read<A, R>`, then any `Ptr<T, (A, ...)>` is
 /// permitted to perform unsynchronized reads from its referent.
-pub trait Read<A: Aliasing, R> {}
+pub unsafe trait Read<A: Aliasing, R> {}
 
-impl<A: Aliasing, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
-impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
+// SAFETY: `T: Immutable`, satisfying the second condition of `Read`'s safety
+// contract.
+unsafe impl<A: Aliasing, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
+// SAFETY: The aliasing argument is `Exclusive`, satisfying the first condition
+// of `Read`'s safety contract.
+unsafe impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
 
 /// Unsynchronized reads are permitted because only one live [`Ptr`](crate::Ptr)
 /// or reference may exist to the referent bytes at a time.
