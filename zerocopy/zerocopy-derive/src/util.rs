@@ -92,9 +92,9 @@ impl Ctx {
 
         for attr in &ast.attrs {
             if let Meta::List(ref meta_list) = attr.meta {
-                if meta_list.path.is_ident("zerocopy") {
+                if path_is_ident(&meta_list.path, "zerocopy") {
                     attr.parse_nested_meta(|meta| {
-                        if meta.path.is_ident("crate") {
+                        if path_is_ident(&meta.path, "crate") {
                             let expr = meta.value().and_then(ParseBuffer::parse);
                             if let Ok(Expr::Lit(ExprLit { lit: Lit::Str(lit), .. })) = expr {
                                 if let Ok(mut path_lit) = lit.parse_with(Path::parse_mod_style) {
@@ -125,7 +125,7 @@ impl Ctx {
                             ));
                         }
 
-                        if meta.path.is_ident("on_error") {
+                        if path_is_ident(&meta.path, "on_error") {
                             on_error_span = Some(meta.path.span());
                             let value = meta.value()?;
                             let s: LitStr = value.parse()?;
@@ -318,6 +318,18 @@ pub(crate) fn to_ident_str(t: &impl ToString) -> String {
         stripped.to_string()
     } else {
         s
+    }
+}
+
+/// Does `path` consist solely of the identifier `expected`?
+///
+/// Unlike [`Path::is_ident`], this treats a raw identifier and its ordinary
+/// spelling as the same identifier. Rust applies that same normalization when
+/// interpreting attribute names and arguments.
+pub(crate) fn path_is_ident(path: &Path, expected: &str) -> bool {
+    match path.get_ident() {
+        Some(ident) => to_ident_str(ident) == expected,
+        None => false,
     }
 }
 
@@ -979,5 +991,44 @@ pub(crate) mod testutil {
                 path_str
             );
         }
+    }
+
+    #[test]
+    fn test_path_is_ident() {
+        use syn::parse_str;
+
+        for (expected, ordinary, raw) in [
+            ("doc", "doc", "r#doc"),
+            ("repr", "repr", "r#repr"),
+            ("zerocopy", "zerocopy", "r#zerocopy"),
+            ("on_error", "on_error", "r#on_error"),
+        ] {
+            let ordinary = parse_str::<syn::Path>(ordinary).unwrap();
+            let raw = parse_str::<syn::Path>(raw).unwrap();
+            assert!(super::path_is_ident(&ordinary, expected));
+            assert!(super::path_is_ident(&raw, expected));
+        }
+
+        // `r#crate` is forbidden by Rust's raw identifier grammar.
+        let crate_path = parse_str::<syn::Path>("crate").unwrap();
+        assert!(super::path_is_ident(&crate_path, "crate"));
+
+        for path in ["::zerocopy", "module::zerocopy"] {
+            let path = parse_str::<syn::Path>(path).unwrap();
+            assert!(!super::path_is_ident(&path, "zerocopy"));
+        }
+    }
+
+    #[test]
+    fn test_raw_zerocopy_attributes() {
+        let ast: syn::DeriveInput = syn::parse_quote! {
+            #[r#zerocopy(crate = "renamed", r#on_error = "skip")]
+            struct Foo;
+        };
+
+        let ctx = super::Ctx::try_from_derive_input(ast).unwrap();
+        let path = &ctx.zerocopy_crate;
+        assert_eq!(quote::quote!(#path).to_string(), ":: renamed");
+        assert!(ctx.skip_on_error);
     }
 }
