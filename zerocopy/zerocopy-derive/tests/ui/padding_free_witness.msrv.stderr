@@ -1,0 +1,28 @@
+error[E0277]: the trait bound `(): macro_util::padding_seal::PaddingFree<Padded, 3_usize>` is not satisfied
+  --> $DIR/padding_free_witness.rs:22:6
+   |
+22 | impl zerocopy_renamed::util::macro_util::PaddingFree<Padded, 3> for () {}
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `macro_util::padding_seal::PaddingFree<Padded, 3_usize>` is not implemented for `()`
+   |
+   = help: the following implementations were found:
+             <() as macro_util::padding_seal::PaddingFree<T, 0_usize>>
+note: required by a bound in `PaddingFree`
+  --> $WORKSPACE/src/util/macro_util.rs:75:5
+   |
+75 |     padding_seal::PaddingFree<T, PADDING_BYTES>
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `PaddingFree`
+
+error[E0277]: the trait bound `(): macro_util::padding_seal::PaddingFree<Padded, 3_usize>` is not satisfied
+  --> $DIR/padding_free_witness.rs:13:21
+   |
+13 | #[derive(Immutable, IntoBytes)]
+   |                     ^^^^^^^^^ the trait `macro_util::padding_seal::PaddingFree<Padded, 3_usize>` is not implemented for `()`
+   |
+   = help: the following implementations were found:
+             <() as macro_util::padding_seal::PaddingFree<T, 0_usize>>
+   = help: see issue #48214
+   = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

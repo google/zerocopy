@@ -1,0 +1,40 @@
+error[E0277]: the trait bound `(): DynamicPaddingFree<PaddedTail, true>` is not satisfied
+  --> $DIR/dynamic_padding_free_witness.rs:13:21
+   |
+13 | #[derive(Immutable, IntoBytes)]
+   |                     ^^^^^^^^^ unsatisfied trait bound
+   |
+   = note: `()` implements similarly named trait `zerocopy::util::macro_util::DynamicPaddingFree`, but not `zerocopy::util::macro_util::padding_seal::DynamicPaddingFree<PaddedTail, true>`
+help: the trait `DynamicPaddingFree<PaddedTail, true>` is not implemented for `()`
+      but trait `DynamicPaddingFree<PaddedTail, false>` is implemented for it
+  --> src/util/macro_util.rs:61:4
+   = help: see issue #48214
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+   = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+11 + #![feature(trivial_bounds)]
+   |
+
+error[E0277]: the trait bound `(): DynamicPaddingFree<PaddedTail, true>` is not satisfied
+  --> $DIR/dynamic_padding_free_witness.rs:22:83
+   |
+22 | impl zerocopy_renamed::util::macro_util::DynamicPaddingFree<PaddedTail, true> for () {}
+   |                                                                                   ^^ unsatisfied trait bound
+   |
+   = note: `()` implements similarly named trait `zerocopy::util::macro_util::DynamicPaddingFree`, but not `zerocopy::util::macro_util::padding_seal::DynamicPaddingFree<PaddedTail, true>`
+help: the trait `DynamicPaddingFree<PaddedTail, true>` is not implemented for `()`
+      but trait `DynamicPaddingFree<PaddedTail, false>` is implemented for it
+  --> src/util/macro_util.rs:61:4
+note: required by a bound in `zerocopy::util::macro_util::DynamicPaddingFree`
+  --> src/util/macro_util.rs:95:0
+   = note: `DynamicPaddingFree` is a "sealed trait", because to implement it you also need to implement `zerocopy::util::macro_util::padding_seal::DynamicPaddingFree`, which is not accessible; this is usually done to force you to use one of the provided types that already implement it
+   = help: the following type implements the trait:
+             ()
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0277`.
