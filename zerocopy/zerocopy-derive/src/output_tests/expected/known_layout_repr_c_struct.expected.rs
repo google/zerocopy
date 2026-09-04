@@ -45,7 +45,7 @@ const _: () = {
         fn pointer_to_metadata(
             ptr: *mut Self,
         ) -> <Self as ::zerocopy::KnownLayout>::PointerMetadata {
-            <U>::pointer_to_metadata(ptr as *mut _)
+            <U as ::zerocopy::KnownLayout>::pointer_to_metadata(ptr as *mut _)
         }
     }
     #[allow(missing_debug_implementations)]
@@ -130,7 +130,7 @@ const _: () = {
                 U,
             > as ::zerocopy::util::macro_util::Field<
                 __Zerocopy_Field_1,
-            >>::Type as ::zerocopy::KnownLayout>::MaybeUninit>::pointer_to_metadata(
+            >>::Type as ::zerocopy::KnownLayout>::MaybeUninit as ::zerocopy::KnownLayout>::pointer_to_metadata(
                 ptr as *mut _,
             )
         }

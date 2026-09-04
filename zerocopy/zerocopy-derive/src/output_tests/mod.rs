@@ -58,10 +58,11 @@ macro_rules! test {
             let ts: proc_macro2::TokenStream = quote::quote!( $($i)* );
             let ast = syn::parse2::<syn::DeriveInput>(ts).unwrap();
             let ctx = crate::Ctx::try_from_derive_input(ast).unwrap();
-            let res = $name(&ctx, crate::util::Trait::$name);
+            let res = $name(&ctx, crate::util::Trait::$name).into_ts();
+            crate::util::testutil::check_hygiene(res.clone());
             let expected_toks = quote::quote!( $($o)* );
             let expected = pretty_print(expected_toks);
-            let actual = pretty_print(res.into_ts().into());
+            let actual = pretty_print(res);
             assert_eq_or_diff(&expected, &actual);
         }
     };
@@ -75,8 +76,9 @@ macro_rules! test {
             let ts: proc_macro2::TokenStream = quote::quote!( $($i)* );
             let ast = syn::parse2::<syn::DeriveInput>(ts).unwrap();
             let ctx = crate::Ctx::try_from_derive_input(ast).unwrap();
-            let res = $name(&ctx, crate::util::Trait::$name);
-            let actual = pretty_print(res.into_ts().into());
+            let res = $name(&ctx, crate::util::Trait::$name).into_ts();
+            crate::util::testutil::check_hygiene(res.clone());
+            let actual = pretty_print(res);
 
             if std::env::var("ZEROCOPY_BLESS").is_ok() {
                 let path = Path::new(env!("CARGO_MANIFEST_DIR"))

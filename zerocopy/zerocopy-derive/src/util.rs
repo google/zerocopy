@@ -890,17 +890,39 @@ pub(crate) mod testutil {
     pub(crate) fn check_hygiene(ts: TokenStream) {
         struct AmbiguousItemVisitor;
 
+        fn panic_ambiguous_path(path: &impl quote::ToTokens) -> ! {
+            panic!(
+                "Found ambiguous path `{}` in generated output. \
+                 All associated item access must be fully qualified (e.g., `<Self as Trait>::Item`) \
+                 to prevent hygiene issues.",
+                quote::quote!(#path)
+            );
+        }
+
         impl<'ast> Visit<'ast> for AmbiguousItemVisitor {
+            fn visit_expr_path(&mut self, i: &'ast syn::ExprPath) {
+                if let Some(qself) = &i.qself {
+                    if qself.position == 0 {
+                        panic_ambiguous_path(i);
+                    }
+                }
+                visit::visit_expr_path(self, i);
+            }
+
             fn visit_path(&mut self, i: &'ast syn::Path) {
                 if i.segments.len() > 1 && i.segments.first().unwrap().ident == "Self" {
-                    panic!(
-                    "Found ambiguous path `{}` in generated output. \
-                     All associated item access must be fully qualified (e.g., `<Self as Trait>::Item`) \
-                     to prevent hygiene issues.",
-                    quote::quote!(#i)
-                );
+                    panic_ambiguous_path(i);
                 }
                 visit::visit_path(self, i);
+            }
+
+            fn visit_type_path(&mut self, i: &'ast syn::TypePath) {
+                if let Some(qself) = &i.qself {
+                    if qself.position == 0 {
+                        panic_ambiguous_path(i);
+                    }
+                }
+                visit::visit_type_path(self, i);
             }
         }
 
@@ -923,6 +945,26 @@ pub(crate) mod testutil {
         check_hygiene(quote::quote! {
             fn foo() {
                 let _ = Self::Ambiguous;
+            }
+        });
+    }
+
+    #[test]
+    #[should_panic(expected = "Found ambiguous path `< T > :: Ambiguous`")]
+    fn test_check_hygiene_type_relative_expr_failure() {
+        check_hygiene(quote::quote! {
+            fn foo<T>() {
+                let _ = <T>::Ambiguous;
+            }
+        });
+    }
+
+    #[test]
+    #[should_panic(expected = "Found ambiguous path `< T > :: Ambiguous`")]
+    fn test_check_hygiene_type_relative_type_failure() {
+        check_hygiene(quote::quote! {
+            fn foo<T>() {
+                let _: <T>::Ambiguous;
             }
         });
     }

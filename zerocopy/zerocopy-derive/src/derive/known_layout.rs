@@ -81,7 +81,7 @@ fn derive_known_layout_for_repr_c_struct<'a>(
 
             #[inline(always)]
             fn pointer_to_metadata(ptr: *mut Self) -> <Self as #zerocopy_crate::KnownLayout>::PointerMetadata {
-                <#trailing_field_ty>::pointer_to_metadata(ptr as *mut _)
+                <#trailing_field_ty as #zerocopy_crate::KnownLayout>::pointer_to_metadata(ptr as *mut _)
             }
         }
     };
