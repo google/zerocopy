@@ -129,3 +129,32 @@ struct RawIdentifier {
 }
 
 util_assert_impl_all!(RawIdentifier: imp::KnownLayout);
+
+// Regression test for #3621. An inherent method on a concrete trailing field
+// must not be selected in place of `KnownLayout::pointer_to_metadata`.
+mod issue_3621 {
+    use super::imp;
+
+    #[derive(imp::KnownLayout)]
+    #[zerocopy(crate = "zerocopy_renamed")]
+    #[repr(C)]
+    struct Inner([u8]);
+
+    impl Inner {
+        fn pointer_to_metadata(_ptr: *mut Self) -> usize {
+            8
+        }
+    }
+
+    #[derive(imp::KnownLayout)]
+    #[zerocopy(crate = "zerocopy_renamed")]
+    #[repr(C)]
+    struct Outer(Inner);
+
+    #[test]
+    fn pointer_to_metadata_uses_known_layout_impl() {
+        let mut bytes = [0u8];
+        let ptr = &mut bytes[..] as *mut [u8] as *mut Inner as *mut Outer;
+        imp::assert_eq!(<Outer as imp::KnownLayout>::pointer_to_metadata(ptr), 1);
+    }
+}

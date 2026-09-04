@@ -112,3 +112,23 @@ mod issue_2177 {
 
     define!(Foo, u8);
 }
+
+// Regression test for #3621. An inherent method on a concrete trailing field
+// must not be selected in place of `KnownLayout::pointer_to_metadata`.
+mod issue_3621 {
+    use super::_zerocopy;
+
+    #[derive(_zerocopy::KnownLayout)]
+    #[zerocopy(crate = "zerocopy_renamed")]
+    #[repr(C)]
+    struct Inner([u8]);
+
+    impl Inner {
+        fn pointer_to_metadata() {}
+    }
+
+    #[derive(_zerocopy::KnownLayout)]
+    #[zerocopy(crate = "zerocopy_renamed")]
+    #[repr(C)]
+    struct Outer(Inner);
+}
