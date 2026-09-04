@@ -1,0 +1,43 @@
+error[E0277]: the trait bound `(): macro_util::padding_seal::DynamicPaddingFree<PaddedTail, true>` is not satisfied
+  --> $DIR/dynamic_padding_free_witness.rs:13:21
+   |
+13 | #[derive(Immutable, IntoBytes)]
+   |                     ^^^^^^^^^ unsatisfied trait bound
+   |
+   = note: `()` implements similarly named trait `DynamicPaddingFree`, but not `macro_util::padding_seal::DynamicPaddingFree<PaddedTail, true>`
+help: the trait `DynamicPaddingFree<PaddedTail, true>` is not implemented for `()`
+      but trait `DynamicPaddingFree<PaddedTail, false>` is implemented for it
+  --> $WORKSPACE/src/util/macro_util.rs:61:5
+   |
+61 |     impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: see issue #48214
+   = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `(): macro_util::padding_seal::DynamicPaddingFree<PaddedTail, true>` is not satisfied
+  --> $DIR/dynamic_padding_free_witness.rs:22:83
+   |
+22 | impl zerocopy_renamed::util::macro_util::DynamicPaddingFree<PaddedTail, true> for () {}
+   |                                                                                   ^^ unsatisfied trait bound
+   |
+   = note: `()` implements similarly named trait `DynamicPaddingFree`, but not `macro_util::padding_seal::DynamicPaddingFree<PaddedTail, true>`
+help: the trait `DynamicPaddingFree<PaddedTail, true>` is not implemented for `()`
+      but trait `DynamicPaddingFree<PaddedTail, false>` is implemented for it
+  --> $WORKSPACE/src/util/macro_util.rs:61:5
+   |
+61 |     impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: required by a bound in `DynamicPaddingFree`
+  --> $WORKSPACE/src/util/macro_util.rs:96:5
+   |
+95 | pub trait DynamicPaddingFree<T: ?Sized, const HAS_PADDING: bool>:
+   |           ------------------ required by a bound in this trait
+96 |     padding_seal::DynamicPaddingFree<T, HAS_PADDING>
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `DynamicPaddingFree`
+   = note: `DynamicPaddingFree` is a "sealed trait", because to implement it you also need to implement `zerocopy::util::macro_util::padding_seal::DynamicPaddingFree`, which is not accessible; this is usually done to force you to use one of the provided types that already implement it
+   = help: the following type implements the trait:
+             ()
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0277`.
