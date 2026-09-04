@@ -257,3 +257,39 @@ please let us know you use this feature: https://github.com/google/zerocopy/disc
         .build();
     Ok(quote!(#cfg_compile_error #impl_block))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn derive(input: syn::DeriveInput) -> TokenStream {
+        let ctx = Ctx::try_from_derive_input(input).unwrap();
+        derive_into_bytes(&ctx, Trait::IntoBytes).unwrap()
+    }
+
+    #[test]
+    fn raw_repr_matches_ordinary_repr() {
+        let ordinary = derive(parse_quote! {
+            #[repr(C)]
+            #[repr(align(8))]
+            struct Response {
+                status: u8,
+            }
+        });
+        let raw = derive(parse_quote! {
+            #[repr(C)]
+            #[r#repr(r#align(8))]
+            struct Response {
+                status: u8,
+            }
+        });
+
+        let ordinary = ordinary.to_string();
+        let raw = raw.to_string();
+
+        // In particular, both expansions contain the padding check which
+        // prevents the resulting type from implementing `IntoBytes`.
+        assert!(ordinary.contains("PaddingFree"));
+        assert_eq!(ordinary, raw);
+    }
+}
