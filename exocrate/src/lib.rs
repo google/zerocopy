@@ -271,7 +271,9 @@ impl Config {
     ///
     /// `rel_dir_path` is the relative path of the directory
     /// containing the dependencies, stored as a sequence of path
-    /// components for cross-platform compatibility.
+    /// components for cross-platform compatibility. Components must not
+    /// contain `@` or its Unicode compatibility forms U+FE6B and U+FF20,
+    /// which are reserved for staging directories.
     ///
     /// Dependencies are stored in `<rel_dir_path>`. In production
     /// use, this is relative to the user cache directory. In
@@ -280,7 +282,8 @@ impl Config {
     /// working directory.
     ///
     /// `version_slug` is a unique identifier for this version of
-    /// the dependencies.
+    /// the dependencies. Like `rel_dir_path` components, it must not contain a
+    /// reserved staging marker.
     pub const fn new(rel_dir_path: &'static [&'static str], version_slug: &'static str) -> Self {
         let mut i = 0;
         while i < rel_dir_path.len() {
@@ -311,9 +314,14 @@ impl Config {
 /// - contains a character reserved on Windows
 /// - is a Windows-reserved device name (matched by its stem)
 /// - contains a null byte
+/// - contains a marker reserved for staging directories
 const fn validate_path(part: &str) {
     let bytes = part.as_bytes();
 
+    assert!(
+        !sync::is_reserved_staging_name(part),
+        "Error: `Config` path components must not contain a reserved staging marker.",
+    );
     assert!(bytes.len() <= 255, "Error: each `rel_dir_path` component must not exceed 255 bytes.");
     assert!(!bytes.is_empty(), "rel_dir_path component must not be empty");
     assert!(
@@ -388,8 +396,8 @@ const fn validate_path(part: &str) {
     }
 }
 
-/// Extracts the `.tar.zst` from `reader` and installs it at `dst`, optionally
-/// validating its hash.
+/// Extracts the `.tar.zst` from `reader` and installs it at `dst`, validating
+/// its hash before extraction when an expected hash is provided.
 fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>) -> IoResult<()> {
     struct HashingReader<R> {
         reader: R,
@@ -408,19 +416,13 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
         .check_exists_or_create(|target_dir| {
             if let Some(expected) = expected_sha256 {
                 let mut hash_reader = HashingReader { reader, hasher: sha2::Sha256::new() };
-                {
-                    let decoder = zstd::stream::read::Decoder::new(&mut hash_reader)?;
-                    let mut archive = tar::Archive::new(decoder);
-                    archive.unpack(target_dir)?;
-                }
+                let mut archive_file = tempfile::tempfile()?;
 
-                // Ensure any remaining trailing bytes in the stream are read
-                // and hashed. Zstd may skip trailing data which isn't necessary
-                // to decompress, but we need to account for it in the hash, or
-                // else a valid archive could fail to hash properly if that
-                // archive contains trailing data which isn't required for
-                // decompression.
-                std::io::copy(&mut hash_reader, &mut std::io::sink())?;
+                // Read and authenticate the complete compressed stream before
+                // allowing its contents to affect the staging directory. The
+                // temporary file ensures that the bytes which are extracted
+                // are the same bytes which were authenticated.
+                std::io::copy(&mut hash_reader, &mut archive_file)?;
 
                 let hash: [u8; 32] = sha2::Digest::finalize(hash_reader.hasher).into();
                 if hash != expected {
@@ -429,6 +431,11 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
                         "SHA-256 hash mismatch",
                     ));
                 }
+
+                std::io::Seek::rewind(&mut archive_file)?;
+                let decoder = zstd::stream::read::Decoder::new(archive_file)?;
+                let mut archive = tar::Archive::new(decoder);
+                archive.unpack(target_dir)?;
             } else {
                 let decoder = zstd::stream::read::Decoder::new(&mut reader)?;
                 let mut archive = tar::Archive::new(decoder);
@@ -783,6 +790,21 @@ mod tests {
     }
 
     #[test]
+    fn test_install_hash_mismatch_precedes_archive_parsing() {
+        let temp = tempfile::tempdir().unwrap();
+        let dst = temp.path().join("install_target");
+        let invalid_data = b"definitely not a valid zstd or tar";
+        let mut incorrect_hash = compute_sha256(invalid_data);
+        incorrect_hash[0] ^= 1;
+
+        let error = install(&invalid_data[..], &dst, Some(incorrect_hash)).unwrap_err();
+
+        assert_eq!(error.kind(), std::io::ErrorKind::InvalidData);
+        assert_eq!(error.to_string(), "SHA-256 hash mismatch");
+        assert!(!dst.exists());
+    }
+
+    #[test]
     fn test_install_trailing_garbage_hash_mismatch() {
         let temp = tempfile::tempdir().unwrap();
         let dst = temp.path().join("install_target");
@@ -793,11 +815,12 @@ mod tests {
         let mut corrupted_archive = valid_tar_zst.clone();
         corrupted_archive.extend_from_slice(b"trailing garbage data");
 
-        // Even though the archive unpacks successfully, the trailing bytes should be
-        // read and hashed, causing a hash mismatch.
+        // The trailing bytes must be read and hashed before archive parsing,
+        // causing a hash mismatch without unpacking the archive.
         let result = install(corrupted_archive.as_slice(), &dst, Some(expected_hash));
         assert!(result.is_err());
         assert_eq!(result.unwrap_err().kind(), std::io::ErrorKind::InvalidData);
+        assert!(!dst.exists());
     }
 
     #[test]
@@ -925,6 +948,44 @@ mod tests {
 
         assert_eq!(config.rel_dir_path, &["tool", "deps"]);
         assert_eq!(config.version_slug, "v1");
+    }
+
+    #[test]
+    fn test_config_new_rejects_reserved_staging_names() {
+        for version_slug in [
+            "@Ab12CdE.tmp",
+            "@aB12cDe.TMP",
+            "@Ab12CdE.tmp. ",
+            "@ABCDEF\u{212a}.tmp",
+            " @Ab12CdE.tmp",
+            "\u{200c}@Ab12CdE.tmp",
+            "\u{fe6b}Ab12CdE.tmp",
+            "\u{ff20}Ab12CdE.tmp",
+            "other\u{fe6b}reserved_name",
+            "other\u{ff20}reserved_name",
+            "other@reserved_name",
+        ] {
+            let result = std::panic::catch_unwind(|| Config::new(&["tool"], version_slug));
+            assert!(result.is_err(), "{version_slug:?}");
+        }
+
+        let config = Config::new(&["tool"], "_v_1");
+        assert_eq!(config.version_slug, "_v_1");
+    }
+
+    #[test]
+    fn test_config_new_rejects_staging_marker_in_rel_dir_path() {
+        for rel_dir_path in [
+            &["@Ab12CdE.tmp"][..],
+            &["tool", "@Ab12CdE.tmp"][..],
+            &["tool", "\u{200c}@Ab12CdE.tmp", "deps"][..],
+            &["tool", "\u{fe6b}Ab12CdE.tmp", "deps"][..],
+            &["tool", "\u{ff20}Ab12CdE.tmp", "deps"][..],
+            &["tool@cache", "deps"][..],
+        ] {
+            let result = std::panic::catch_unwind(|| Config::new(rel_dir_path, "v1"));
+            assert!(result.is_err(), "{rel_dir_path:?}");
+        }
     }
 
     #[test]
