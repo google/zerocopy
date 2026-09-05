@@ -7,8 +7,8 @@ use syn::{parse_quote, Data, DataEnum, DataStruct, DataUnion, Error, Ident, Type
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
     util::{
-        generate_tag_enum, Ctx, DataExt, FieldBounds, ImplBlockBuilder, PaddingCheck, Trait,
-        TraitBound,
+        generate_tag_enum, reject_uninspectable_field_types, reject_uninspectable_generics, Ctx,
+        DataExt, FieldBounds, ImplBlockBuilder, PaddingCheck, Trait, TraitBound,
     },
 };
 pub(crate) fn derive_into_bytes(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error> {
@@ -17,6 +17,11 @@ pub(crate) fn derive_into_bytes(ctx: &Ctx, _top_level: Trait) -> Result<TokenStr
         Data::Enum(enm) => derive_into_bytes_enum(ctx, enm),
         Data::Union(unn) => derive_into_bytes_union(ctx, unn),
     }
+}
+
+fn validate_input(ctx: &Ctx) -> Result<(), Error> {
+    reject_uninspectable_generics(&ctx.ast.generics, "IntoBytes")?;
+    reject_uninspectable_field_types(&ctx.ast.data, "IntoBytes")
 }
 
 /// If every field is exactly `T`, `[T; _]`, or a final `[T]` for the same type
@@ -188,6 +193,10 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
         FieldBounds::ALL_SELF
     };
 
+    if let Err(error) = validate_input(ctx) {
+        return ctx.error_or_skip(error);
+    }
+
     Ok(ImplBlockBuilder::new(ctx, strct, Trait::IntoBytes, field_bounds)
         .padding_check(padding_check)
         .build())
@@ -200,6 +209,10 @@ fn derive_into_bytes_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Erro
             Span::call_site(),
             "must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout",
         ));
+    }
+
+    if let Err(error) = validate_input(ctx) {
+        return ctx.error_or_skip(error);
     }
 
     let tag_type_definition = match generate_tag_enum(ctx, &repr, enm) {
@@ -253,6 +266,10 @@ please let us know you use this feature: https://github.com/google/zerocopy/disc
             Span::call_site(),
             "must be #[repr(C)], #[repr(packed)], or #[repr(transparent)]",
         ));
+    }
+
+    if let Err(error) = validate_input(ctx) {
+        return ctx.error_or_skip(error);
     }
 
     let impl_block = ImplBlockBuilder::new(ctx, unn, Trait::IntoBytes, FieldBounds::ALL_SELF)

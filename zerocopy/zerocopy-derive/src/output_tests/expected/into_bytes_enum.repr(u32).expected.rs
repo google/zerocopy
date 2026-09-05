@@ -16,21 +16,17 @@ const _: () = {
         (): ::zerocopy::util::macro_util::PaddingFree<
             Self,
             {
-                #[repr(u32)]
-                #[allow(dead_code)]
-                pub enum ___ZerocopyTag {
-                    Bar,
-                }
-                unsafe impl ::zerocopy::Immutable for ___ZerocopyTag {
-                    fn only_derive_is_allowed_to_implement_this_trait() {}
-                }
                 ::zerocopy::enum_padding!(
-                    Self,
+                    @ tag_size, Self,
                     (::zerocopy::util::macro_util::core_reexport::option::Option::None::
                     < ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize >),
                     (::zerocopy::util::macro_util::core_reexport::option::Option::None::
                     < ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize >),
-                    ___ZerocopyTag, []
+                    { #[repr(u32)] #[allow(dead_code)] pub enum ___ZerocopyTag { Bar, }
+                    unsafe impl ::zerocopy::Immutable for ___ZerocopyTag { fn
+                    only_derive_is_allowed_to_implement_this_trait() {} }
+                    ::zerocopy::util::macro_util::core_reexport::mem::size_of:: <
+                    ___ZerocopyTag > () }, []
                 )
             },
         >,

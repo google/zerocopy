@@ -225,6 +225,438 @@ pub(crate) trait DataExt {
     fn tag(&self) -> Option<Ident>;
 }
 
+#[derive(Default)]
+struct UninspectableSyntaxFinder(Option<(Span, &'static str)>);
+
+impl UninspectableSyntaxFinder {
+    fn record(&mut self, span: Span, reason: &'static str) {
+        if self.0.is_none() {
+            self.0 = Some((span, reason));
+        }
+    }
+}
+
+impl<'ast> syn::visit::Visit<'ast> for UninspectableSyntaxFinder {
+    fn visit_attribute(&mut self, attr: &'ast syn::Attribute) {
+        self.record(attr.span(), "an attribute");
+    }
+
+    fn visit_expr(&mut self, expr: &'ast Expr) {
+        if matches!(expr, Expr::Verbatim(_)) {
+            self.record(expr.span(), "unsupported unresolved syntax");
+        } else {
+            syn::visit::visit_expr(self, expr);
+        }
+    }
+
+    fn visit_foreign_item(&mut self, item: &'ast syn::ForeignItem) {
+        if matches!(item, syn::ForeignItem::Verbatim(_)) {
+            self.record(item.span(), "unsupported unresolved syntax");
+        } else {
+            syn::visit::visit_foreign_item(self, item);
+        }
+    }
+
+    fn visit_impl_item(&mut self, item: &'ast syn::ImplItem) {
+        if matches!(item, syn::ImplItem::Verbatim(_)) {
+            self.record(item.span(), "unsupported unresolved syntax");
+        } else {
+            syn::visit::visit_impl_item(self, item);
+        }
+    }
+
+    fn visit_item(&mut self, item: &'ast syn::Item) {
+        if matches!(item, syn::Item::Verbatim(_)) {
+            self.record(item.span(), "unsupported unresolved syntax");
+        } else {
+            syn::visit::visit_item(self, item);
+        }
+    }
+
+    fn visit_lit(&mut self, lit: &'ast Lit) {
+        if matches!(lit, Lit::Verbatim(_)) {
+            self.record(lit.span(), "unsupported unresolved syntax");
+        } else {
+            syn::visit::visit_lit(self, lit);
+        }
+    }
+
+    fn visit_macro(&mut self, mac: &'ast syn::Macro) {
+        self.record(mac.span(), "a macro invocation");
+    }
+
+    fn visit_pat(&mut self, pat: &'ast syn::Pat) {
+        if matches!(pat, syn::Pat::Verbatim(_)) {
+            self.record(pat.span(), "unsupported unresolved syntax");
+        } else {
+            syn::visit::visit_pat(self, pat);
+        }
+    }
+
+    fn visit_trait_item(&mut self, item: &'ast syn::TraitItem) {
+        if matches!(item, syn::TraitItem::Verbatim(_)) {
+            self.record(item.span(), "unsupported unresolved syntax");
+        } else {
+            syn::visit::visit_trait_item(self, item);
+        }
+    }
+
+    fn visit_type(&mut self, ty: &'ast Type) {
+        if matches!(ty, Type::Verbatim(_)) {
+            self.record(ty.span(), "unsupported unresolved syntax");
+        } else {
+            syn::visit::visit_type(self, ty);
+        }
+    }
+
+    fn visit_type_param_bound(&mut self, bound: &'ast syn::TypeParamBound) {
+        if matches!(bound, syn::TypeParamBound::Verbatim(_)) {
+            self.record(bound.span(), "unsupported unresolved syntax");
+        } else {
+            syn::visit::visit_type_param_bound(self, bound);
+        }
+    }
+}
+
+fn reject_uninspectable_syntax(
+    finder: UninspectableSyntaxFinder,
+    derive_name: &str,
+    location: &str,
+) -> Result<(), Error> {
+    if let Some((span, reason)) = finder.0 {
+        return Err(Error::new(
+            span,
+            format!(
+                "cannot derive `{}` for a type containing {} in {}; write the expanded syntax explicitly",
+                derive_name, reason, location,
+            ),
+        ));
+    }
+    Ok(())
+}
+
+/// Rejects field types which contain macro invocations or uninspectable syntax.
+///
+/// A derive macro receives a field type macro before rustc expands it. If the
+/// derive copies that macro invocation into multiple generated locations, the
+/// expansions need not be identical (for example, a stateful procedural macro
+/// can emit a different type each time). Since a derive cannot inspect an
+/// expansion at proc-macro execution time, callers which rely on copied field
+/// types must reject the unresolved invocation itself.
+pub(crate) fn reject_uninspectable_types<'a>(
+    types: impl IntoIterator<Item = &'a Type>,
+    derive_name: &str,
+) -> Result<(), Error> {
+    use syn::visit::Visit as _;
+
+    for ty in types {
+        let mut finder = UninspectableSyntaxFinder::default();
+        finder.visit_type(ty);
+        reject_uninspectable_syntax(finder, derive_name, "a field type")?;
+    }
+
+    Ok(())
+}
+
+/// Rejects macro invocations or uninspectable syntax in copied generics.
+///
+/// A copied bound can change how an associated type shorthand in a field type
+/// resolves, so validating only the field type syntax is insufficient.
+pub(crate) fn reject_uninspectable_generics(
+    generics: &syn::Generics,
+    derive_name: &str,
+) -> Result<(), Error> {
+    use syn::visit::Visit as _;
+
+    let mut finder = UninspectableSyntaxFinder::default();
+    finder.visit_generics(generics);
+    reject_uninspectable_syntax(finder, derive_name, "generic parameters or predicates")
+}
+
+pub(crate) fn reject_uninspectable_field_types(
+    data: &dyn DataExt,
+    derive_name: &str,
+) -> Result<(), Error> {
+    reject_uninspectable_types(data.fields().into_iter().map(|(_, _, ty)| ty), derive_name)
+}
+
+/// Rejects identifiers which can capture generated helper items.
+///
+/// Derive output is unhygienic and is emitted in a nested scope. A helper item
+/// in that scope can therefore change the meaning of copied syntax. Reserve
+/// implementation-specific prefixes in target generic declarations and in
+/// unqualified paths and patterns whose resolution can change in the generated
+/// scope. Qualified paths cannot be captured by these helpers and remain
+/// supported.
+///
+/// Every copied syntax position whose meaning is used in a safety proof must
+/// also reject unresolved syntax (or validate it by an equally strict
+/// grammar): an unexpanded macro could otherwise produce a name which is not
+/// visible in this token stream.
+pub(crate) fn reject_reserved_identifiers(
+    ctx: &Ctx,
+    derive_name: &str,
+    reserved_prefixes: &[&str],
+) -> Result<(), Error> {
+    use syn::visit::Visit as _;
+
+    fn is_reserved(ident: &Ident, reserved_prefixes: &[&str]) -> bool {
+        let normalized = to_ident_str(ident);
+        reserved_prefixes.iter().any(|prefix| normalized.starts_with(prefix))
+    }
+
+    struct ReservedIdentifierFinder<'a> {
+        reserved_prefixes: &'a [&'a str],
+        found: Option<Ident>,
+    }
+
+    impl ReservedIdentifierFinder<'_> {
+        fn record(&mut self, ident: &Ident) {
+            if self.found.is_none() && is_reserved(ident, self.reserved_prefixes) {
+                self.found = Some(ident.clone());
+            }
+        }
+
+        fn visit_use_root(&mut self, tree: &syn::UseTree) {
+            match tree {
+                syn::UseTree::Name(name) => self.record(&name.ident),
+                syn::UseTree::Rename(rename) => self.record(&rename.ident),
+                syn::UseTree::Path(path) => {
+                    // Only the first segment is unqualified. The remainder is
+                    // resolved through it and cannot be captured directly.
+                    self.record(&path.ident);
+                }
+                syn::UseTree::Group(group) => {
+                    for tree in &group.items {
+                        self.visit_use_root(tree);
+                    }
+                }
+                syn::UseTree::Glob(_) => {}
+            }
+        }
+
+        fn visit_maybe_qself_path(&mut self, qself: Option<&syn::QSelf>, path: &Path) {
+            if let Some(qself) = qself {
+                self.visit_qself(qself);
+
+                // In `<T as path::Trait>::Assoc`, only the part of `path`
+                // before the associated item is resolved lexically. The
+                // associated item and any following segments are resolved
+                // through `T` and cannot be captured by a generated helper.
+                if qself.position > 0 && path.leading_colon.is_none() {
+                    if let Some(first) = path.segments.first() {
+                        self.record(&first.ident);
+                    }
+                }
+            } else if path.leading_colon.is_none() {
+                if let Some(first) = path.segments.first() {
+                    self.record(&first.ident);
+                }
+            }
+
+            // Generic arguments can themselves contain unqualified paths,
+            // including on associated segments which are otherwise safe.
+            for segment in &path.segments {
+                self.visit_path_arguments(&segment.arguments);
+            }
+        }
+    }
+
+    impl<'ast> syn::visit::Visit<'ast> for ReservedIdentifierFinder<'_> {
+        fn visit_expr_path(&mut self, path: &'ast syn::ExprPath) {
+            for attr in &path.attrs {
+                self.visit_attribute(attr);
+            }
+            self.visit_maybe_qself_path(path.qself.as_ref(), &path.path);
+        }
+
+        fn visit_expr_struct(&mut self, expr: &'ast syn::ExprStruct) {
+            for attr in &expr.attrs {
+                self.visit_attribute(attr);
+            }
+            self.visit_maybe_qself_path(expr.qself.as_ref(), &expr.path);
+            for field in &expr.fields {
+                self.visit_field_value(field);
+            }
+            if let Some(rest) = &expr.rest {
+                self.visit_expr(rest);
+            }
+        }
+
+        fn visit_item_use(&mut self, item: &'ast syn::ItemUse) {
+            if item.leading_colon.is_none() {
+                self.visit_use_root(&item.tree);
+            }
+        }
+
+        fn visit_path(&mut self, path: &'ast Path) {
+            self.visit_maybe_qself_path(None, path);
+        }
+
+        fn visit_pat_ident(&mut self, pat: &'ast syn::PatIdent) {
+            // A bare identifier in a pattern can resolve either as a binding
+            // or as an in-scope constant. A generated constant can therefore
+            // change the meaning of the copied pattern.
+            self.record(&pat.ident);
+            syn::visit::visit_pat_ident(self, pat);
+        }
+
+        fn visit_pat_struct(&mut self, pat: &'ast syn::PatStruct) {
+            for attr in &pat.attrs {
+                self.visit_attribute(attr);
+            }
+            self.visit_maybe_qself_path(pat.qself.as_ref(), &pat.path);
+            for field in &pat.fields {
+                self.visit_field_pat(field);
+            }
+            if let Some(rest) = &pat.rest {
+                self.visit_pat_rest(rest);
+            }
+        }
+
+        fn visit_pat_tuple_struct(&mut self, pat: &'ast syn::PatTupleStruct) {
+            for attr in &pat.attrs {
+                self.visit_attribute(attr);
+            }
+            self.visit_maybe_qself_path(pat.qself.as_ref(), &pat.path);
+            for elem in &pat.elems {
+                self.visit_pat(elem);
+            }
+        }
+
+        fn visit_type_path(&mut self, path: &'ast syn::TypePath) {
+            self.visit_maybe_qself_path(path.qself.as_ref(), &path.path);
+        }
+    }
+
+    let mut finder = ReservedIdentifierFinder { reserved_prefixes, found: None };
+
+    // The derive target is referenced unqualified inside generated helper
+    // scopes, so its name must not be capturable either.
+    finder.record(&ctx.ast.ident);
+    // A target type parameter is also in scope in generated impl methods. Its
+    // only semantic use can be hidden behind `Self`, so scanning path
+    // references alone does not prove that it cannot capture a generated
+    // helper type.
+    for param in &ctx.ast.generics.params {
+        if let syn::GenericParam::Type(param) = param {
+            finder.record(&param.ident);
+        }
+    }
+    finder.visit_generics(&ctx.ast.generics);
+    for (_, _, ty) in ctx.ast.data.fields() {
+        finder.visit_type(ty);
+    }
+
+    if let Some(ident) = finder.found {
+        return Err(Error::new(
+            ident.span(),
+            format!(
+                "cannot derive `{}` because the unqualified identifier `{}` is reserved for generated code; qualify the path or rename the identifier",
+                derive_name,
+                to_ident_str(&ident),
+            ),
+        ));
+    }
+
+    Ok(())
+}
+
+/// Rejects the contextual `Self` type in syntax which will be copied into a
+/// generated type.
+///
+/// `Self` resolves to the derive target in the input, but to the generated type
+/// in a copied field. That can change the field's layout or validity even when
+/// all generated helper names are fresh.
+#[derive(Default)]
+struct ContextualSelfFinder(Option<Span>);
+
+impl<'ast> syn::visit::Visit<'ast> for ContextualSelfFinder {
+    fn visit_path(&mut self, path: &'ast Path) {
+        if path.leading_colon.is_none()
+            && path
+                .segments
+                .first()
+                .map(|segment| to_ident_str(&segment.ident) == "Self")
+                .unwrap_or(false)
+        {
+            if self.0.is_none() {
+                self.0 = Some(path.span());
+            }
+            return;
+        }
+        syn::visit::visit_path(self, path);
+    }
+
+    fn visit_item_impl(&mut self, _item: &'ast syn::ItemImpl) {
+        // `Self` inside a nested impl denotes that impl's target, not the
+        // derive target whose syntax is being copied.
+    }
+
+    fn visit_item_enum(&mut self, _item: &'ast syn::ItemEnum) {
+        // `Self` inside a nested type definition denotes that nested type.
+    }
+
+    fn visit_item_struct(&mut self, _item: &'ast syn::ItemStruct) {
+        // `Self` inside a nested type definition denotes that nested type.
+    }
+
+    fn visit_item_trait(&mut self, _item: &'ast syn::ItemTrait) {
+        // `Self` inside a nested trait denotes that trait.
+    }
+
+    fn visit_item_trait_alias(&mut self, _item: &'ast syn::ItemTraitAlias) {
+        // `Self` inside a nested trait alias denotes that trait alias.
+    }
+
+    fn visit_item_union(&mut self, _item: &'ast syn::ItemUnion) {
+        // `Self` inside a nested type definition denotes that nested type.
+    }
+}
+
+fn reject_contextual_self(
+    finder: ContextualSelfFinder,
+    derive_name: &str,
+    location: &str,
+) -> Result<(), Error> {
+    if let Some(span) = finder.0 {
+        return Err(Error::new(
+            span,
+            format!(
+                "cannot derive `{}` with `Self` in {}; write the concrete type explicitly",
+                derive_name, location,
+            ),
+        ));
+    }
+    Ok(())
+}
+
+pub(crate) fn reject_contextual_self_in_types<'a>(
+    types: impl IntoIterator<Item = &'a Type>,
+    derive_name: &str,
+) -> Result<(), Error> {
+    use syn::visit::Visit as _;
+
+    for ty in types {
+        let mut finder = ContextualSelfFinder::default();
+        finder.visit_type(ty);
+        reject_contextual_self(finder, derive_name, "an enum field type")?;
+    }
+
+    Ok(())
+}
+
+pub(crate) fn reject_contextual_self_in_generics(
+    generics: &syn::Generics,
+    derive_name: &str,
+) -> Result<(), Error> {
+    use syn::visit::Visit as _;
+
+    let mut finder = ContextualSelfFinder::default();
+    finder.visit_generics(generics);
+    reject_contextual_self(finder, derive_name, "generic parameters or predicates")
+}
+
 impl DataExt for Data {
     fn fields(&self) -> Vec<(&Visibility, TokenStream, &Type)> {
         match self {
@@ -346,7 +778,7 @@ pub(crate) enum PaddingCheck {
     /// Check that every variant of the enum contains no padding.
     ///
     /// Because doing so requires a tag enum, this padding check requires an
-    /// additional `TokenStream` which defines the tag enum as `___ZerocopyTag`.
+    /// additional expression which computes the tag size in an isolated scope.
     Enum { tag_type_definition: TokenStream },
 }
 
@@ -364,15 +796,6 @@ impl PaddingCheck {
         let trt = Ident::new(trt, Span::call_site());
         let mcro = Ident::new(mcro, Span::call_site());
         (trt, mcro)
-    }
-
-    /// Sometimes performing the padding check requires some additional
-    /// "context" code. For enums, this is the definition of the tag enum.
-    pub(crate) fn validator_macro_context(&self) -> Option<&TokenStream> {
-        match self {
-            PaddingCheck::Struct | PaddingCheck::ReprCStruct | PaddingCheck::Union => None,
-            PaddingCheck::Enum { tag_type_definition } => Some(tag_type_definition),
-        }
     }
 }
 
@@ -648,46 +1071,71 @@ impl<'a> ImplBlockBuilder<'a> {
             (FieldBounds::Explicit(bounds), _) => bounds,
         };
 
-        let padding_check_bound = self
-            .padding_check
-            .map(|check| {
-                // Parse the repr for `align` and `packed` modifiers. Note that
-                // `Repr::<PrimitiveRepr, NonZeroU32>` is more permissive than
-                // what Rust supports for structs, enums, or unions, and thus
-                // reliably extracts these modifiers for any kind of type.
-                let repr =
-                    Repr::<PrimitiveRepr, NonZeroU32>::from_attrs(&self.ctx.ast.attrs).unwrap();
-                let core = self.ctx.core_path();
-                let option = quote! { #core::option::Option };
-                let nonzero = quote! { #core::num::NonZeroUsize };
-                let none = quote! { #option::None::<#nonzero> };
-                let repr_align =
-                    repr.get_align().map(|spanned| {
-                        let n = spanned.t.get();
-                        quote_spanned! { spanned.span => (#nonzero::new(#n as usize)) }
-                    }).unwrap_or(quote! { (#none) });
-                let repr_packed =
-                    repr.get_packed().map(|packed| {
-                        let n = packed.get();
-                        quote! { (#nonzero::new(#n as usize)) }
-                    }).unwrap_or(quote! { (#none) });
-                let variant_types = variants.iter().map(|(_, fields)| {
-                    let types = fields.iter().map(|(_vis, _name, ty)| ty);
-                    quote!([#((#types)),*])
-                });
-                let validator_context = check.validator_macro_context();
-                let (trt, validator_macro) = check.validator_trait_and_macro_idents();
-                let t = tag.iter();
-                parse_quote! {
-                    (): #zerocopy_crate::util::macro_util::#trt<
-                        Self,
-                        {
-                            #validator_context
-                            #zerocopy_crate::#validator_macro!(Self, #repr_align, #repr_packed, #(#t,)* #(#variant_types),*)
-                        }
-                    >
-                }
+        let padding_check_bound = self.padding_check.map(|check| {
+            // Parse the repr for `align` and `packed` modifiers. Note that
+            // `Repr::<PrimitiveRepr, NonZeroU32>` is more permissive than
+            // what Rust supports for structs, enums, or unions, and thus
+            // reliably extracts these modifiers for any kind of type.
+            let repr = Repr::<PrimitiveRepr, NonZeroU32>::from_attrs(&self.ctx.ast.attrs).unwrap();
+            let core = self.ctx.core_path();
+            let option = quote! { #core::option::Option };
+            let nonzero = quote! { #core::num::NonZeroUsize };
+            let none = quote! { #option::None::<#nonzero> };
+            let repr_align = repr
+                .get_align()
+                .map(|spanned| {
+                    let n = spanned.t.get();
+                    quote_spanned! { spanned.span => (#nonzero::new(#n as usize)) }
+                })
+                .unwrap_or(quote! { (#none) });
+            let repr_packed = repr
+                .get_packed()
+                .map(|packed| {
+                    let n = packed.get();
+                    quote! { (#nonzero::new(#n as usize)) }
+                })
+                .unwrap_or(quote! { (#none) });
+            let variant_types = variants.iter().map(|(_, fields)| {
+                let types = fields.iter().map(|(_vis, _name, ty)| ty);
+                quote!([#((#types)),*])
             });
+            let (trt, validator_macro) = check.validator_trait_and_macro_idents();
+            let check = match check {
+                PaddingCheck::Enum { tag_type_definition } => quote! {
+                    #zerocopy_crate::#validator_macro!(
+                        @tag_size,
+                        Self,
+                        #repr_align,
+                        #repr_packed,
+                        {
+                            #tag_type_definition
+                            #core::mem::size_of::<___ZerocopyTag>()
+                        },
+                        #(#variant_types),*
+                    )
+                },
+                _ => {
+                    let t = tag.iter();
+                    quote! {
+                        #zerocopy_crate::#validator_macro!(
+                            Self,
+                            #repr_align,
+                            #repr_packed,
+                            #(#t,)*
+                            #(#variant_types),*
+                        )
+                    }
+                }
+            };
+            parse_quote! {
+                (): #zerocopy_crate::util::macro_util::#trt<
+                    Self,
+                    {
+                        #check
+                    }
+                >
+            }
+        });
 
         let self_bounds: Option<WherePredicate> = match self.self_type_trait_bounds {
             SelfBounds::None => None,
@@ -1191,6 +1639,183 @@ pub(crate) fn enum_size_from_repr(repr: &EnumRepr) -> Result<usize, Error> {
 pub(crate) mod testutil {
     use proc_macro2::TokenStream;
     use syn::visit::{self, Visit};
+
+    #[test]
+    fn rejects_opaque_syntax_nested_in_field_types() {
+        let attributed: syn::Type = syn::parse_quote!(
+            [u8; #[stateful]
+            1]
+        );
+        let error = super::reject_uninspectable_types([&attributed], "IntoBytes").unwrap_err();
+        assert!(error.to_string().contains("containing an attribute"));
+
+        let verbatim = syn::Type::Verbatim(quote::quote!(dyn* Trait));
+        let error = super::reject_uninspectable_types([&verbatim], "KnownLayout").unwrap_err();
+        assert!(error.to_string().contains("unsupported unresolved syntax"));
+
+        let generic: syn::DeriveInput = syn::parse_quote! {
+            struct Packet<T: Select<{ choose!() }>>(T);
+        };
+        let error =
+            super::reject_uninspectable_generics(&generic.generics, "TryFromBytes").unwrap_err();
+        assert!(error.to_string().contains("a macro invocation"));
+        assert!(error.to_string().contains("generic parameters or predicates"));
+    }
+
+    #[test]
+    fn rejects_reserved_unqualified_identifiers() {
+        let direct: syn::DeriveInput = syn::parse_quote! {
+            struct Packet {
+                field: __ZerocopyGeneratedHelper,
+            }
+        };
+        let direct = super::Ctx::try_from_derive_input(direct).unwrap();
+        let error = super::reject_reserved_identifiers(&direct, "KnownLayout", &["__Zerocopy"])
+            .unwrap_err();
+        assert!(error.to_string().contains("`__ZerocopyGeneratedHelper` is reserved"));
+
+        let qualified: syn::DeriveInput = syn::parse_quote! {
+            struct Packet {
+                field: crate::types::__ZerocopyGeneratedHelper,
+            }
+        };
+        let qualified = super::Ctx::try_from_derive_input(qualified).unwrap();
+        super::reject_reserved_identifiers(&qualified, "KnownLayout", &["__Zerocopy"]).unwrap();
+
+        let qself_terminal: syn::DeriveInput = syn::parse_quote! {
+            struct Packet<T>(<T>::__ZerocopyAssociated);
+        };
+        let qself_terminal = super::Ctx::try_from_derive_input(qself_terminal).unwrap();
+        super::reject_reserved_identifiers(&qself_terminal, "KnownLayout", &["__Zerocopy"])
+            .unwrap();
+
+        let qself_expr_terminal: syn::DeriveInput = syn::parse_quote! {
+            struct Packet<T>([u8; <T>::__ZerocopyAssociated]);
+        };
+        let qself_expr_terminal = super::Ctx::try_from_derive_input(qself_expr_terminal).unwrap();
+        super::reject_reserved_identifiers(&qself_expr_terminal, "KnownLayout", &["__Zerocopy"])
+            .unwrap();
+
+        let qself_struct_terminals: syn::DeriveInput = syn::parse_quote! {
+            struct Packet<T>([u8; {
+                let _ = <T>::__ZerocopyStruct { field: 0 };
+                match todo!() {
+                    <T>::__ZerocopyStruct { field: _ } => 0,
+                    <T>::__ZerocopyTuple(_) => 1,
+                }
+            }]);
+        };
+        let qself_struct_terminals =
+            super::Ctx::try_from_derive_input(qself_struct_terminals).unwrap();
+        super::reject_reserved_identifiers(&qself_struct_terminals, "KnownLayout", &["__Zerocopy"])
+            .unwrap();
+
+        let qself_trait_root: syn::DeriveInput = syn::parse_quote! {
+            struct Packet<T>(<T as __ZerocopyTrait>::Associated);
+        };
+        let qself_trait_root = super::Ctx::try_from_derive_input(qself_trait_root).unwrap();
+        super::reject_reserved_identifiers(&qself_trait_root, "KnownLayout", &["__Zerocopy"])
+            .unwrap_err();
+
+        let qself_argument: syn::DeriveInput = syn::parse_quote! {
+            struct Packet<T>(<T>::Associated<__ZerocopyArgument>);
+        };
+        let qself_argument = super::Ctx::try_from_derive_input(qself_argument).unwrap();
+        super::reject_reserved_identifiers(&qself_argument, "KnownLayout", &["__Zerocopy"])
+            .unwrap_err();
+
+        let target: syn::DeriveInput = syn::parse_quote! {
+            struct __ZerocopyGeneratedHelper;
+        };
+        let target = super::Ctx::try_from_derive_input(target).unwrap();
+        super::reject_reserved_identifiers(&target, "KnownLayout", &["__Zerocopy"]).unwrap_err();
+
+        // The type parameter's only use is through `Self`, so this exercises
+        // declaration scanning rather than an ordinary type-path reference.
+        let type_parameter: syn::DeriveInput = syn::parse_quote! {
+            struct Packet<___ZerocopyType>(<Self as Assoc>::Type)
+            where
+                Self: Assoc;
+        };
+        let type_parameter = super::Ctx::try_from_derive_input(type_parameter).unwrap();
+        super::reject_reserved_identifiers(&type_parameter, "TryFromBytes", &["___Zerocopy"])
+            .unwrap_err();
+
+        let pattern: syn::DeriveInput = syn::parse_quote! {
+            enum Packet {
+                Variant([u8; match 0 { ___ZEROCOPY_TAG_Variant => 1, _ => 2 }]),
+            }
+        };
+        let pattern = super::Ctx::try_from_derive_input(pattern).unwrap();
+        super::reject_reserved_identifiers(&pattern, "TryFromBytes", &["___ZEROCOPY"]).unwrap_err();
+
+        let imported: syn::DeriveInput = syn::parse_quote! {
+            struct Packet([u8; {
+                use __ZerocopyGeneratedHelper as T;
+                core::mem::size_of::<T>()
+            }]);
+        };
+        let imported = super::Ctx::try_from_derive_input(imported).unwrap();
+        super::reject_reserved_identifiers(&imported, "KnownLayout", &["__Zerocopy"]).unwrap_err();
+
+        let qualified_import: syn::DeriveInput = syn::parse_quote! {
+            struct Packet([u8; {
+                use crate::types::__ZerocopyGeneratedHelper as T;
+                core::mem::size_of::<T>()
+            }]);
+        };
+        let qualified_import = super::Ctx::try_from_derive_input(qualified_import).unwrap();
+        super::reject_reserved_identifiers(&qualified_import, "KnownLayout", &["__Zerocopy"])
+            .unwrap();
+    }
+
+    #[test]
+    fn accepts_inspectable_blocks_but_rejects_nested_macros() {
+        let inspectable: syn::Type = syn::parse_quote!(
+            [u8; {
+                const N: usize = 4;
+                N
+            }]
+        );
+        super::reject_uninspectable_types([&inspectable], "IntoBytes").unwrap();
+
+        let macro_in_block: syn::Type = syn::parse_quote! {
+            [u8; { macro_rules! n { () => { 4 } } n!() }]
+        };
+        let error = super::reject_uninspectable_types([&macro_in_block], "IntoBytes").unwrap_err();
+        assert!(error.to_string().contains("a macro invocation"));
+    }
+
+    #[test]
+    fn rejects_contextual_self_recursively() {
+        let nested: syn::Type =
+            syn::parse_quote!([u8; core::mem::size_of::<core::mem::Discriminant<Self>>()]);
+        let error = super::reject_contextual_self_in_types([&nested], "TryFromBytes").unwrap_err();
+        assert!(error.to_string().contains("`Self` in an enum field type"));
+
+        let generic: syn::DeriveInput = syn::parse_quote! {
+            enum Packet<T: Select<Self>> {
+                Variant(T),
+            }
+        };
+        let error = super::reject_contextual_self_in_generics(&generic.generics, "TryFromBytes")
+            .unwrap_err();
+        assert!(error.to_string().contains("`Self` in generic parameters or predicates"));
+
+        let nested_items: syn::Type = syn::parse_quote! {
+            [u8; {
+                struct NestedStruct(core::marker::PhantomData<Self>);
+                enum NestedEnum {
+                    Variant(core::marker::PhantomData<Self>),
+                }
+                union NestedUnion {
+                    field: core::mem::ManuallyDrop<Self>,
+                }
+                0
+            }]
+        };
+        super::reject_contextual_self_in_types([&nested_items], "TryFromBytes").unwrap();
+    }
 
     /// Checks for hygiene violations in the generated code.
     ///
