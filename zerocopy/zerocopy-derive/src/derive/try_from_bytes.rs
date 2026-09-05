@@ -10,7 +10,7 @@ use syn::{
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
     util::{
-        const_block, enum_size_from_repr, generate_tag_enum, Ctx, DataExt, FieldBounds,
+        const_block, enum_could_be_from_bytes, generate_tag_enum, Ctx, DataExt, FieldBounds,
         ImplBlockBuilder, Trait, TraitBound,
     },
 };
@@ -200,7 +200,7 @@ pub(crate) fn derive_is_bit_valid(
     repr: &EnumRepr,
 ) -> Result<TokenStream, Error> {
     let trait_path = Trait::TryFromBytes.crate_path(ctx);
-    let tag_enum = generate_tag_enum(ctx, repr, data);
+    let tag_enum = generate_tag_enum(ctx, repr, data)?;
     let tag_consts = generate_tag_consts(data);
 
     let (outer_tag_type, inner_tag_type) = if repr.is_c() {
@@ -673,9 +673,7 @@ fn derive_try_from_bytes_enum(
     // then it *could* be `FromBytes` (even if the user hasn't derived
     // `FromBytes`). This holds if, for `repr(uN)` or `repr(iN)`, there are 2^N
     // variants.
-    let could_be_from_bytes = enum_size_from_repr(&repr)
-        .map(|size| enm.fields().is_empty() && enm.variants.len() == 1usize << size)
-        .unwrap_or(false);
+    let could_be_from_bytes = enum_could_be_from_bytes(&repr, enm);
 
     let trivial_is_bit_valid = try_gen_trivial_is_bit_valid(ctx, top_level);
     let extra = match (trivial_is_bit_valid, could_be_from_bytes) {
@@ -685,8 +683,7 @@ fn derive_try_from_bytes_enum(
         (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(ctx) },
         (None, false) => match derive_is_bit_valid(ctx, enm, &repr) {
             Ok(extra) => extra,
-            Err(_) if ctx.skip_on_error => return Ok(TokenStream::new()),
-            Err(e) => return Err(e),
+            Err(e) => return ctx.error_or_skip(e),
         },
     };
 

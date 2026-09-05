@@ -145,14 +145,14 @@ enum FromZeros4 {
     B = 2,
 }
 
-const NEGATIVE_ONE: i8 = -1;
+// Keep this enum's lack of a zero discriminant apparent to the derive.
 
 #[derive(FromZeros)]
 #[zerocopy(crate = "zerocopy_renamed")]
 //~[msrv, stable, nightly]^ ERROR: FromZeros only supported on enums with a variant that has a discriminant of `0`
 #[repr(i8)]
 enum FromZeros5 {
-    A = NEGATIVE_ONE,
+    A = -2,
     B,
 }
 

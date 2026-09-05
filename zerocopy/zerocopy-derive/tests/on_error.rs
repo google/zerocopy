@@ -99,6 +99,92 @@ enum BadTryFromBytesEnum {
 
 util_assert_not_impl_any!(BadTryFromBytesEnum: imp::TryFromBytes);
 
+#[derive(imp::TryFromBytes)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8)]
+enum ContextDependentTryFromBytes {
+    A = Self::TAG,
+}
+
+impl ContextDependentTryFromBytes {
+    const TAG: u8 = 0;
+}
+
+util_assert_not_impl_any!(ContextDependentTryFromBytes: imp::TryFromBytes);
+
+#[derive(imp::IntoBytes)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8)]
+enum ContextDependentIntoBytes {
+    A = Self::TAG,
+}
+
+impl ContextDependentIntoBytes {
+    const TAG: u8 = 0;
+}
+
+util_assert_not_impl_any!(ContextDependentIntoBytes: imp::IntoBytes);
+
+#[derive(imp::FromZeros)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8)]
+enum ContextDependentFromZeros {
+    A = 0,
+    B = Self::TAG,
+}
+
+impl ContextDependentFromZeros {
+    const TAG: u8 = 1;
+}
+
+util_assert_not_impl_any!(ContextDependentFromZeros: imp::TryFromBytes, imp::FromZeros);
+
+#[derive(imp::FromBytes)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8)]
+enum ContextDependentFromBytes {
+    A = 0,
+    B = Self::TAG,
+}
+
+impl ContextDependentFromBytes {
+    const TAG: u8 = 1;
+}
+
+util_assert_not_impl_any!(ContextDependentFromBytes:
+    imp::TryFromBytes,
+    imp::FromZeros,
+    imp::FromBytes,
+);
+
+#[derive(imp::most_traits)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8)]
+enum ContextDependentMostTraits {
+    A = 0,
+    B = Self::TAG,
+}
+
+impl ContextDependentMostTraits {
+    const TAG: u8 = 1;
+}
+
+util_assert_impl_all!(ContextDependentMostTraits:
+    imp::KnownLayout,
+    imp::Immutable,
+    imp::Unaligned,
+);
+util_assert_not_impl_any!(ContextDependentMostTraits:
+    imp::TryFromBytes,
+    imp::FromZeros,
+    imp::FromBytes,
+    imp::IntoBytes,
+);
+
 // Invalid union for IntoBytes (invalid repr).
 #[derive(imp::IntoBytes)]
 #[zerocopy(on_error = "skip")]

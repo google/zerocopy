@@ -1411,6 +1411,17 @@ where
 ///     discriminant values are specified.
 ///   - The fields of that variant must be `FromZeros`.
 ///
+/// When this derive needs to reproduce an enum's explicit discriminants in
+/// generated code to implement its `TryFromBytes` supertrait, it accepts only
+/// integer or byte literals, arithmetic and bitwise operations whose operands
+/// recursively use this grammar, unary `-` and `!`, grouping, and `.to_le()` or
+/// `.to_be()` directly on an explicitly typed integer literal. Paths (including
+/// paths to constants), macros, general calls and method calls, casts, and
+/// control-flow expressions are rejected. A fieldless enum whose variants
+/// exhaust every discriminant of its representation uses a validator that
+/// accepts every bit pattern without inspecting or copying discriminants, so
+/// this restriction does not apply.
+///
 /// This analysis is subject to change. Unsafe code may *only* rely on the
 /// documented [safety conditions] of `FromZeros`, and must *not* rely on the
 /// implementation details of this derive.
@@ -1633,6 +1644,16 @@ pub unsafe trait Immutable {
 ///     V2 = 10u32.to_le(),
 /// }
 /// ```
+///
+/// When this derive needs to reproduce an enum's explicit discriminants in
+/// generated code, it accepts only integer or byte literals, arithmetic and
+/// bitwise operations whose operands recursively use this grammar, unary `-`
+/// and `!`, grouping, and `.to_le()` or `.to_be()` directly on an explicitly
+/// typed integer literal. Paths (including paths to constants), macros,
+/// general calls and method calls, casts, and control-flow expressions are
+/// rejected. The original enum and generated helper evaluate each copied
+/// discriminant independently, so the derive cannot assume that an arbitrary
+/// const expression produces the same value both times.
 ///
 /// [safety conditions]: trait@TryFromBytes#safety
 #[cfg(any(feature = "derive", test))]
@@ -3901,6 +3922,17 @@ pub unsafe trait FromZeros: TryFromBytes {
 ///     bit pattern is a valid one).
 ///   - Its fields must be `FromBytes`.
 ///
+/// When this derive needs to reproduce an enum's explicit discriminants in
+/// generated code to implement its `TryFromBytes` supertrait, it accepts only
+/// integer or byte literals, arithmetic and bitwise operations whose operands
+/// recursively use this grammar, unary `-` and `!`, grouping, and `.to_le()` or
+/// `.to_be()` directly on an explicitly typed integer literal. Paths (including
+/// paths to constants), macros, general calls and method calls, casts, and
+/// control-flow expressions are rejected. A fieldless enum whose variants
+/// exhaust every discriminant of its representation uses a validator that
+/// accepts every bit pattern without inspecting or copying discriminants, so
+/// this restriction does not apply.
+///
 /// This analysis is subject to change. Unsafe code may *only* rely on the
 /// documented [safety conditions] of `FromBytes`, and must *not* rely on the
 /// implementation details of this derive.
@@ -5529,6 +5561,16 @@ fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
 /// # */
 /// }
 /// ```
+///
+/// When this derive reproduces an enum's explicit discriminants in generated
+/// code, it accepts only integer or byte literals, arithmetic and bitwise
+/// operations whose operands recursively use this grammar, unary `-` and `!`,
+/// grouping, and `.to_le()` or `.to_be()` directly on an explicitly typed
+/// integer literal. Paths (including paths to constants), macros, general
+/// calls and method calls, casts, and control-flow expressions are rejected.
+/// The original enum and generated helper evaluate each copied discriminant
+/// independently, so the derive cannot assume that an arbitrary const
+/// expression produces the same value both times.
 ///
 /// [safety conditions]: trait@IntoBytes#safety
 ///
