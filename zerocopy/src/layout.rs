@@ -65,6 +65,123 @@ pub(crate) struct TrailingSliceLayout<E = usize> {
     pub(crate) offset: usize,
     // The size of the element type of the trailing slice field.
     pub(crate) elem_size: E,
+    // When this describes a valid Rust type, `size_align` is a power of two,
+    // `size_prefix < size_align`, and, for a trailing slice length `elems`, the
+    // size of the enclosing type is:
+    //
+    //   size_prefix
+    //       + round_up(size_offset + elems * elem_size, size_align)
+    //
+    // `size_prefix` is always less than `size_align`. These fields are
+    // separate from `offset` because packing a field changes the field's
+    // placement and the enclosing type's alignment, but does not change
+    // trailing padding internal to the field's type. In particular, a nested
+    // slice DST can require an inner rounding operation whose origin differs
+    // from the physical offset of the trailing slice.
+    pub(crate) size_prefix: usize,
+    pub(crate) size_offset: usize,
+    pub(crate) size_align: NonZeroUsize,
+}
+
+impl TrailingSliceLayout {
+    /// Computes the size described by this layout for `elems` trailing slice
+    /// elements.
+    #[inline(always)]
+    pub(crate) const fn size_for_elems(self, elems: usize) -> Option<usize> {
+        let trailing_size = match self.elem_size.checked_mul(elems) {
+            Some(size) => size,
+            None => return None,
+        };
+        let without_padding = match self.size_offset.checked_add(trailing_size) {
+            Some(size) => size,
+            None => return None,
+        };
+        let with_padding = match without_padding
+            .checked_add(util::padding_needed_for(without_padding, self.size_align))
+        {
+            Some(size) => size,
+            None => return None,
+        };
+        self.size_prefix.checked_add(with_padding)
+    }
+
+    /// Returns the largest trailing slice length whose object size is exactly
+    /// `size`.
+    ///
+    /// Returns `None` if there is no such length or if the trailing slice
+    /// element is zero-sized.
+    #[inline(always)]
+    const fn metadata_for_exact_size(self, size: usize) -> Option<usize> {
+        if self.elem_size == 0 {
+            return None;
+        }
+
+        let rounded_size = match size.checked_sub(self.size_prefix) {
+            Some(size) => size,
+            None => return None,
+        };
+        #[allow(clippy::arithmetic_side_effects)]
+        if rounded_size % self.size_align.get() != 0 {
+            return None;
+        }
+        let available = match rounded_size.checked_sub(self.size_offset) {
+            Some(available) => available,
+            None => return None,
+        };
+        // PANICS: `self.elem_size != 0`, as checked above.
+        #[allow(clippy::arithmetic_side_effects)]
+        let elems = available / self.elem_size;
+
+        match self.size_for_elems(elems) {
+            Some(candidate_size) if candidate_size == size => Some(elems),
+            _ => None,
+        }
+    }
+
+    /// Returns whether `self` and `other` describe the same size for every
+    /// trailing slice length.
+    ///
+    /// This recognizes two sufficient forms. If both formulas use the same
+    /// rounding alignment and begin at the same residue, each future rounding
+    /// decision is identical. If the element size is a multiple of both
+    /// rounding alignments, neither formula's padding changes as the length
+    /// increases. In both cases, equality at length zero proves equality for
+    /// every length.
+    #[inline(always)]
+    pub(crate) const fn has_same_size_sequence(self, other: Self) -> bool {
+        if self.elem_size != other.elem_size {
+            return false;
+        }
+
+        match (self.size_for_elems(0), other.size_for_elems(0)) {
+            (Some(self_size), Some(other_size)) if self_size == other_size => {}
+            _ => return false,
+        }
+
+        let self_align = self.size_align.get();
+        let other_align = other.size_align.get();
+        let max_align = if self_align > other_align { self_align } else { other_align };
+
+        // Since valid layout alignments are powers of two, `max_align` is a
+        // multiple of both alignments. Every metadata increment therefore
+        // adds exactly `elem_size` to both rounded sizes.
+        #[allow(clippy::arithmetic_side_effects)]
+        if self.elem_size % max_align == 0 {
+            return true;
+        }
+
+        if self_align != other_align {
+            return false;
+        }
+
+        // Both formulas visit the same residue after every metadata increment,
+        // so they add and remove padding in lockstep.
+        #[allow(clippy::arithmetic_side_effects)]
+        let self_residue = self.size_offset % self_align;
+        #[allow(clippy::arithmetic_side_effects)]
+        let other_residue = other.size_offset % other_align;
+        self_residue == other_residue
+    }
 }
 
 impl SizeInfo {
@@ -76,9 +193,21 @@ impl SizeInfo {
     const fn try_to_nonzero_elem_size(&self) -> Option<SizeInfo<NonZeroUsize>> {
         Some(match *self {
             SizeInfo::Sized { size } => SizeInfo::Sized { size },
-            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+            SizeInfo::SliceDst(TrailingSliceLayout {
+                offset,
+                elem_size,
+                size_prefix,
+                size_offset,
+                size_align,
+            }) => {
                 if let Some(elem_size) = NonZeroUsize::new(elem_size) {
-                    SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
+                    SizeInfo::SliceDst(TrailingSliceLayout {
+                        offset,
+                        elem_size,
+                        size_prefix,
+                        size_offset,
+                        size_align,
+                    })
                 } else {
                     return None;
                 }
@@ -256,6 +385,12 @@ impl DstLayout {
             size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                 offset: 0,
                 elem_size: mem::size_of::<T>(),
+                size_prefix: 0,
+                size_offset: 0,
+                size_align: match NonZeroUsize::new(mem::align_of::<T>()) {
+                    Some(align) => align,
+                    None => const_unreachable!(),
+                },
             }),
             statically_shallow_unpadded: true,
         }
@@ -427,6 +562,9 @@ impl DstLayout {
                         SizeInfo::SliceDst(TrailingSliceLayout {
                             offset: trailing_offset,
                             elem_size,
+                            size_prefix,
+                            size_offset,
+                            size_align,
                         }) => {
                             // If the trailing field is dynamically sized, so too
                             // will the resulting layout. The offset of the trailing
@@ -440,11 +578,42 @@ impl DstLayout {
                             // panic otherwise (e.g., combining or aligning the
                             // components would create a size exceeding
                             // `usize::MAX`).
-                            let offset = match offset.checked_add(trailing_offset) {
+                            let trailing_offset = match offset.checked_add(trailing_offset) {
                                 Some(offset) => offset,
                                 None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
                             };
-                            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
+
+                            // Before normalization, the composite's size is:
+                            //
+                            //   offset + size_prefix
+                            //       + round_up(size_offset + elems * elem_size, size_align)
+                            //
+                            // Split `offset + size_prefix` into a remainder
+                            // less than `size_align` and a multiple of
+                            // `size_align`. The multiple can move inside the
+                            // rounding operation without changing the result.
+                            let unnormalized_prefix = match offset.checked_add(size_prefix) {
+                                Some(prefix) => prefix,
+                                None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
+                            };
+                            #[allow(clippy::arithmetic_side_effects)]
+                            let size_prefix = unnormalized_prefix % size_align.get();
+                            // `size_prefix` is a remainder of
+                            // `unnormalized_prefix`.
+                            #[allow(clippy::arithmetic_side_effects)]
+                            let prefix_multiple = unnormalized_prefix - size_prefix;
+                            let size_offset = match prefix_multiple.checked_add(size_offset) {
+                                Some(offset) => offset,
+                                None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
+                            };
+
+                            SizeInfo::SliceDst(TrailingSliceLayout {
+                                offset: trailing_offset,
+                                elem_size,
+                                size_prefix,
+                                size_offset,
+                                size_align,
+                            })
                         }
                     },
                 )
@@ -459,18 +628,11 @@ impl DstLayout {
     }
 
     /// Like `Layout::pad_to_align`, this routine rounds the size of this layout
-    /// up to the nearest multiple of this type's alignment or `repr_packed`
-    /// (whichever is less). This method leaves DST layouts unchanged, since the
-    /// trailing padding of DSTs is computed at runtime.
-    ///
-    /// The accompanying boolean is `true` if the resulting composition of
-    /// fields necessitated static (as opposed to dynamic) padding; otherwise
-    /// `false`.
+    /// up to the nearest multiple of this type's alignment. For DST layouts,
+    /// this updates the runtime size formula to account for trailing padding.
     ///
     /// In order to match the layout of a `#[repr(C)]` struct, this method
-    /// should be invoked after the invocations of [`DstLayout::extend`]. If
-    /// `self` corresponds to a type marked with `repr(packed(N))`, then
-    /// `repr_packed` should be set to `Some(N)`, otherwise `None`.
+    /// should be invoked after the invocations of [`DstLayout::extend`].
     ///
     /// This method cannot be used to match the layout of a record with the
     /// default representation, as that representation is mostly unspecified.
@@ -480,7 +642,7 @@ impl DstLayout {
     /// If a (potentially hypothetical) valid `repr(C)` type begins with fields
     /// whose layout are `self` followed only by zero or more bytes of trailing
     /// padding (not included in `self`), then unsafe code may rely on
-    /// `self.pad_to_align(repr_packed)` producing a layout that correctly
+    /// `self.pad_to_align()` producing a layout that correctly
     /// encapsulates the layout of that type.
     ///
     /// We make no guarantees to the behavior of this method if `self` cannot
@@ -504,10 +666,56 @@ impl DstLayout {
                 (padding, SizeInfo::Sized { size })
             }
             // For DST layouts, trailing padding depends on the length of the
-            // trailing DST and is computed at runtime. This does not alter the
-            // offset or element size of the layout, so we leave `size_info`
-            // unchanged.
-            size_info @ SizeInfo::SliceDst(_) => (0, size_info),
+            // trailing DST and is computed at runtime. Normalize the composed
+            // rounding operation back into the representation documented on
+            // `TrailingSliceLayout`.
+            SizeInfo::SliceDst(mut trailing) => {
+                if trailing.size_align.get() < self.align.get() {
+                    // `self.align` and `trailing.size_align` are powers of two,
+                    // so `self.align` is a multiple of `trailing.size_align`.
+                    // Rounding
+                    //
+                    //   size_prefix + round_up(x, size_align)
+                    //
+                    // to `self.align` is equivalent to rounding
+                    //
+                    //   round_up(size_prefix, size_align) + x
+                    //
+                    // directly to `self.align`. Since `size_prefix` is less
+                    // than `size_align`, its rounded value is either zero or
+                    // `size_align`.
+                    let prefix =
+                        if trailing.size_prefix == 0 { 0 } else { trailing.size_align.get() };
+                    trailing.size_offset = match trailing.size_offset.checked_add(prefix) {
+                        Some(offset) => offset,
+                        None => const_panic!("Adding padding caused size to overflow `usize`."),
+                    };
+                    trailing.size_prefix = 0;
+                    trailing.size_align = self.align;
+                } else {
+                    // `trailing.size_align` is a multiple of `self.align`, so
+                    // the inner rounded size is already aligned to
+                    // `self.align`. Only `size_prefix` needs to be rounded.
+                    let padding = padding_needed_for(trailing.size_prefix, self.align);
+                    let rounded_prefix = match trailing.size_prefix.checked_add(padding) {
+                        Some(prefix) => prefix,
+                        None => const_panic!("Adding padding caused size to overflow `usize`."),
+                    };
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let size_prefix = rounded_prefix % trailing.size_align.get();
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let prefix_multiple = rounded_prefix - size_prefix;
+                    trailing.size_offset = match trailing.size_offset.checked_add(prefix_multiple) {
+                        Some(offset) => offset,
+                        None => {
+                            const_panic!("Adding padding caused size to overflow `usize`.")
+                        }
+                    };
+                    trailing.size_prefix = size_prefix;
+                }
+
+                (0, SizeInfo::SliceDst(trailing))
+            }
         };
 
         let statically_shallow_unpadded = self.statically_shallow_unpadded && static_padding == 0;
@@ -527,15 +735,33 @@ impl DstLayout {
     #[must_use]
     #[inline(always)]
     pub const fn requires_dynamic_padding(self) -> bool {
-        // A `% self.align.get()` cannot panic, since `align` is non-zero.
+        // A `% size_align.get()` cannot panic, since `size_align` is non-zero.
         #[allow(clippy::arithmetic_side_effects)]
         match self.size_info {
             SizeInfo::Sized { .. } => false,
             SizeInfo::SliceDst(trailing_slice_layout) => {
                 // SAFETY: This predicate is formally proved sound by
                 // `proofs::prove_requires_dynamic_padding`.
-                trailing_slice_layout.offset % self.align.get() != 0
-                    || trailing_slice_layout.elem_size % self.align.get() != 0
+                let initial_padding = util::padding_needed_for(
+                    trailing_slice_layout.size_offset,
+                    trailing_slice_layout.size_align,
+                );
+                let initial_rounded_size =
+                    trailing_slice_layout.size_offset.checked_add(initial_padding);
+                let initial_size = match initial_rounded_size {
+                    Some(size) => trailing_slice_layout.size_prefix.checked_add(size),
+                    None => None,
+                };
+
+                match initial_size {
+                    Some(initial_size) => {
+                        initial_size != trailing_slice_layout.offset
+                            || trailing_slice_layout.elem_size
+                                % trailing_slice_layout.size_align.get()
+                                != 0
+                    }
+                    None => true,
+                }
             }
         }
     }
@@ -680,19 +906,28 @@ impl DstLayout {
                 }
                 (0, size)
             }
-            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
-                // Calculate the maximum number of bytes that could be consumed
-                // - any number of bytes larger than this will either not be a
-                // multiple of the alignment, or will be larger than
-                // `bytes_len`.
-                let max_total_bytes =
-                    util::round_down_to_next_multiple_of_alignment(bytes_len, self.align);
+            SizeInfo::SliceDst(TrailingSliceLayout {
+                elem_size,
+                size_prefix,
+                size_offset,
+                size_align,
+                ..
+            }) => {
+                let bytes_after_prefix = match bytes_len.checked_sub(size_prefix) {
+                    Some(bytes) => bytes,
+                    None => return Err(MetadataCastError::Size),
+                };
+                // The inner portion of every valid size is a multiple of
+                // `size_align`. Round the available bytes down to the largest
+                // such multiple.
+                let max_rounded_bytes =
+                    util::round_down_to_next_multiple_of_alignment(bytes_after_prefix, size_align);
                 // Calculate the maximum number of bytes that could be consumed
                 // by the trailing slice.
                 //
                 // FIXME(#67): Once our MSRV is 1.65, use let-else:
                 // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
-                let max_slice_and_padding_bytes = match max_total_bytes.checked_sub(offset) {
+                let max_slice_and_padding_bytes = match max_rounded_bytes.checked_sub(size_offset) {
                     Some(max) => max,
                     // `bytes_len` too small even for 0 trailing slice elements.
                     None => return Err(MetadataCastError::Size),
@@ -710,11 +945,11 @@ impl DstLayout {
                 // elem_size) * elem_size`.
                 //
                 // Guaranteed not to overflow on addition:
-                // - max_slice_and_padding_bytes == max_total_bytes - offset
-                // - elems * elem_size <= max_slice_and_padding_bytes == max_total_bytes - offset
-                // - elems * elem_size + offset <= max_total_bytes <= usize::MAX
+                // - max_slice_and_padding_bytes == max_rounded_bytes - size_offset
+                // - elems * elem_size <= max_slice_and_padding_bytes
+                // - elems * elem_size + size_offset <= max_rounded_bytes
                 #[allow(clippy::arithmetic_side_effects)]
-                let without_padding = offset + elems * elem_size.get();
+                let without_padding = size_offset + elems * elem_size.get();
                 // `self_bytes` is equal to the offset bytes plus the bytes
                 // consumed by the trailing slice plus any padding bytes
                 // required to satisfy the alignment. Note that we have computed
@@ -723,16 +958,20 @@ impl DstLayout {
                 // the size of an extra element.
                 //
                 // Guaranteed not to overflow:
-                // - By previous comment: without_padding == elems * elem_size +
-                //   offset <= max_total_bytes
-                // - By construction, `max_total_bytes` is a multiple of
-                //   `self.align`.
+                // - By previous comment: without_padding <= max_rounded_bytes
+                // - By construction, `max_rounded_bytes` is a multiple of
+                //   `size_align`.
                 // - At most, adding padding needed to round `without_padding`
-                //   up to the next multiple of the alignment will bring
-                //   `self_bytes` up to `max_total_bytes`.
+                //   up to the next multiple of `size_align` will bring the
+                //   rounded size up to `max_rounded_bytes`.
                 #[allow(clippy::arithmetic_side_effects)]
-                let self_bytes =
-                    without_padding + util::padding_needed_for(without_padding, self.align);
+                let rounded =
+                    without_padding + util::padding_needed_for(without_padding, size_align);
+                // `rounded <= max_rounded_bytes <= bytes_after_prefix`, so
+                // adding `size_prefix` cannot overflow and cannot exceed
+                // `bytes_len`.
+                #[allow(clippy::arithmetic_side_effects)]
+                let self_bytes = size_prefix + rounded;
                 (elems, self_bytes)
             }
         };
@@ -745,7 +984,7 @@ impl DstLayout {
             // - In the `Sized` branch, only returns `size` if `size <=
             //   bytes_len`.
             // - In the `SliceDst` branch, calculates `self_bytes <=
-            //   max_toatl_bytes`, which is upper-bounded by `bytes_len`.
+            //   bytes_len`.
             #[allow(clippy::arithmetic_side_effects)]
             CastType::Suffix => bytes_len - self_bytes,
         };
@@ -823,52 +1062,19 @@ mod cast_from {
                 // - If this is possible, any information necessary to perform
                 //   the `Src`->`Dst` metadata conversion at runtime.
                 //
-                // Assume that `Src` and `Dst` are slice DSTs, and define:
-                // - `S_OFF = Src::LAYOUT.size_info.offset`
-                // - `S_ELEM = Src::LAYOUT.size_info.elem_size`
-                // - `D_OFF = Dst::LAYOUT.size_info.offset`
-                // - `D_ELEM = Dst::LAYOUT.size_info.elem_size`
-                //
-                // We are trying to solve the following equation:
-                //
-                //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
-                //
-                // At runtime, we will be attempting to compute `d_meta`, given
-                // `s_meta` (a runtime value) and all other parameters (which
-                // are compile-time values). We can solve like so:
-                //
-                //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
-                //
-                //   d_meta * D_ELEM = S_OFF - D_OFF + s_meta * S_ELEM
-                //
-                //   d_meta = (S_OFF - D_OFF + s_meta * S_ELEM)/D_ELEM
-                //
-                // Since `d_meta` will be a `usize`, we need the right-hand side
-                // to be an integer, and this needs to hold for *any* value of
-                // `s_meta` (in order for our conversion to be infallible - ie,
-                // to not have to reject certain values of `s_meta` at runtime).
-                // This means that:
-                //
-                // - `s_meta * S_ELEM` must be a multiple of `D_ELEM`
-                // - Since this must hold for any value of `s_meta`, `S_ELEM`
-                //   must be a multiple of `D_ELEM`
-                // - `S_OFF - D_OFF` must be a multiple of `D_ELEM`
-                //
-                // Thus, let `OFFSET_DELTA_ELEMS = (S_OFF - D_OFF)/D_ELEM` and
-                // `ELEM_MULTIPLE = S_ELEM/D_ELEM`. We can rewrite the above
-                // expression as:
-                //
-                //   d_meta = (S_OFF - D_OFF + s_meta * S_ELEM)/D_ELEM
+                // For slice DSTs, destination metadata is an affine function
+                // of source metadata:
                 //
                 //   d_meta = OFFSET_DELTA_ELEMS + s_meta * ELEM_MULTIPLE
                 //
-                // Thus, we just need to compute the following and confirm that
-                // they have integer solutions in order to both a) determine
-                // whether infallible `Src` -> `Dst` casts are possible and, b)
-                // pre-compute the parameters necessary to perform those casts
-                // at runtime. These parameters are encapsulated in
-                // `CastParams`, which acts as a witness that such infallible
-                // casts are possible.
+                // `ELEM_MULTIPLE` scales the destination's trailing element
+                // size to the source's. `OFFSET_DELTA_ELEMS` selects a
+                // destination size equal to the source's zero-element size.
+                // We then prove that the two complete rounded size formulas
+                // produce the same sequence for all metadata. This is
+                // necessary because a packed outer DST can retain a nested
+                // field's rounding operation; comparing only physical
+                // trailing-slice offsets is not sufficient.
                 /// The parameters required in order to perform an
                 /// unsized-to-unsized pointer cast from `Src` to `Dst` as
                 /// described above.
@@ -910,6 +1116,32 @@ mod cast_from {
             }
 
             impl<Src: ?Sized, Dst: ?Sized> CastParams<Src, Dst> {
+                /// Returns whether mapping source metadata `n` to destination
+                /// metadata `dst_base + n * (src.elem_size / dst.elem_size)`
+                /// preserves object size for every `n`.
+                const fn size_sequences_match(
+                    src: TrailingSliceLayout,
+                    dst: TrailingSliceLayout,
+                    dst_base: usize,
+                ) -> bool {
+                    let base_bytes = match dst_base.checked_mul(dst.elem_size) {
+                        Some(bytes) => bytes,
+                        None => return false,
+                    };
+                    let size_offset = match dst.size_offset.checked_add(base_bytes) {
+                        Some(offset) => offset,
+                        None => return false,
+                    };
+                    let shifted_dst = TrailingSliceLayout {
+                        offset: dst.offset,
+                        elem_size: src.elem_size,
+                        size_prefix: dst.size_prefix,
+                        size_offset,
+                        size_align: dst.size_align,
+                    };
+                    src.has_same_size_sequence(shifted_dst)
+                }
+
                 const fn try_compute(
                     src: &DstLayout,
                     dst: &DstLayout,
@@ -932,44 +1164,16 @@ mod cast_from {
                             CastParamsInner::SizedToSized
                         }
                         (SizeInfo::Sized { size: src_size }, SizeInfo::SliceDst(dst)) => {
-                            let offset_delta = if let Some(od) = src_size.checked_sub(dst.offset) {
-                                od
-                            } else {
-                                return None;
+                            let dst_meta = match dst.metadata_for_exact_size(src_size) {
+                                Some(meta) => meta,
+                                None => return None,
                             };
-
-                            let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
-                                e
-                            } else {
-                                return None;
-                            };
-
-                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                            // divide by zero.
-                            #[allow(clippy::arithmetic_side_effects)]
-                            let delta_mod_other_elem = offset_delta % dst_elem_size.get();
-
-                            if delta_mod_other_elem != 0 {
-                                return None;
-                            }
-
-                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                            // divide by zero.
-                            #[allow(clippy::arithmetic_side_effects)]
-                            let dst_meta = offset_delta / dst_elem_size.get();
 
                             // SAFETY: The preceding math ensures that a `Dst`
                             // with `dst_meta` addresses `src_size` bytes.
                             CastParamsInner::SizedToUnsized { dst_meta }
                         }
                         (SizeInfo::SliceDst(src), SizeInfo::SliceDst(dst)) => {
-                            let offset_delta = if let Some(od) = src.offset.checked_sub(dst.offset)
-                            {
-                                od
-                            } else {
-                                return None;
-                            };
-
                             let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
                                 e
                             } else {
@@ -979,34 +1183,62 @@ mod cast_from {
                             // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
                             // divide by zero.
                             #[allow(clippy::arithmetic_side_effects)]
-                            let delta_mod_other_elem = offset_delta % dst_elem_size.get();
-
-                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                            // divide by zero.
-                            #[allow(clippy::arithmetic_side_effects)]
                             let elem_remainder = src.elem_size % dst_elem_size.get();
 
-                            if delta_mod_other_elem != 0
-                                || src.elem_size < dst.elem_size
-                                || elem_remainder != 0
-                            {
+                            if src.elem_size < dst.elem_size || elem_remainder != 0 {
                                 return None;
                             }
 
                             // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
                             // divide by zero.
                             #[allow(clippy::arithmetic_side_effects)]
-                            let offset_delta_elems = offset_delta / dst_elem_size.get();
-
-                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                            // divide by zero.
-                            #[allow(clippy::arithmetic_side_effects)]
                             let elem_multiple = src.elem_size / dst_elem_size.get();
 
+                            // Prefer the old exact-inner-offset solution. In
+                            // addition to preserving existing accepted casts,
+                            // it avoids selecting another metadata value from a
+                            // rounding plateau when that value would have a
+                            // different future padding sequence.
+                            let exact_offset_delta_elems =
+                                match src.size_offset.checked_sub(dst.size_offset) {
+                                    Some(delta) => {
+                                        #[allow(clippy::arithmetic_side_effects)]
+                                        let remainder = delta % dst_elem_size.get();
+                                        if remainder == 0 {
+                                            #[allow(clippy::arithmetic_side_effects)]
+                                            let elems = delta / dst_elem_size.get();
+                                            Some(elems)
+                                        } else {
+                                            None
+                                        }
+                                    }
+                                    None => None,
+                                };
+
+                            let offset_delta_elems = match exact_offset_delta_elems {
+                                Some(elems) if Self::size_sequences_match(src, dst, elems) => elems,
+                                _ => {
+                                    let src_zero_size = match src.size_for_elems(0) {
+                                        Some(size) => size,
+                                        None => return None,
+                                    };
+                                    let elems = match dst.metadata_for_exact_size(src_zero_size) {
+                                        Some(elems) => elems,
+                                        None => return None,
+                                    };
+                                    if !Self::size_sequences_match(src, dst, elems) {
+                                        return None;
+                                    }
+                                    elems
+                                }
+                            };
+
                             CastParamsInner::UnsizedToUnsized {
-                                // SAFETY: We checked above that this is an exact ratio.
+                                // SAFETY: `size_sequences_match` proves that
+                                // this affine metadata map preserves size.
                                 offset_delta_elems,
-                                // SAFETY: We checked above that this is an exact ratio.
+                                // SAFETY: We checked above that this is an exact
+                                // ratio of source to destination element size.
                                 elem_multiple,
                             }
                         }
@@ -1041,15 +1273,20 @@ mod cast_from {
                                 unstable_name_collisions,
                                 clippy::multiple_unsafe_ops_per_block
                             )]
-                            // SAFETY: `self` is a witness that the following
-                            // equation holds:
-                            //
-                            //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
-                            //
+                            // SAFETY: `self` witnesses that this affine map
+                            // makes `Src` and `Dst`'s complete rounded size
+                            // formulas equal for every source metadata value.
                             // Since the caller promises that `src_meta` is
-                            // valid `Src` metadata, this math will not
-                            // overflow, and the returned value will describe a
-                            // `Dst` of the same size.
+                            // valid `Src` metadata, `src_meta * S_ELEM <=
+                            // size_of_val(src) <= isize::MAX`. Since
+                            // `elem_multiple = S_ELEM / D_ELEM` and
+                            // `D_ELEM >= 1`, the multiplication below cannot
+                            // overflow. Sequence equality then gives
+                            // `(offset_delta_elems + src_meta *
+                            // elem_multiple) * D_ELEM <= size_of_val(src)`, so
+                            // the addition cannot overflow either. The
+                            // returned metadata therefore describes a `Dst`
+                            // of the same size.
                             unsafe {
                                 offset_delta_elems
                                     .unchecked_add(src_meta.unchecked_mul(elem_multiple))
@@ -1108,7 +1345,7 @@ mod tests {
     fn test_dst_layout_for_slice() {
         let layout = DstLayout::for_slice::<u32>();
         match layout.size_info {
-            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size, .. }) => {
                 assert_eq!(offset, 0);
                 assert_eq!(elem_size, 4);
             }
@@ -1192,15 +1429,21 @@ mod tests {
         let aligns = (0..29).map(|p| NonZeroUsize::new(2usize.pow(p)).unwrap());
         let packs = core::iter::once(None).chain(aligns.clone().map(Some));
 
-        for align in aligns {
+        for field_type_align in aligns {
             for pack in packs.clone() {
                 let base = DstLayout::for_type::<u8>();
                 let elem_size = 42;
                 let trailing_field_offset = 11;
 
                 let trailing_field = DstLayout {
-                    align,
-                    size_info: SizeInfo::SliceDst(TrailingSliceLayout { elem_size, offset: 11 }),
+                    align: field_type_align,
+                    size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                        elem_size,
+                        offset: trailing_field_offset,
+                        size_prefix: 0,
+                        size_offset: trailing_field_offset,
+                        size_align: field_type_align,
+                    }),
                     statically_shallow_unpadded: false,
                 };
 
@@ -1208,7 +1451,10 @@ mod tests {
 
                 let max_align = pack.unwrap_or(DstLayout::CURRENT_MAX_ALIGN).get();
 
-                let align = align.get().min(max_align);
+                let align = field_type_align.get().min(max_align);
+                let field_offset = align;
+                let size_prefix = field_offset % field_type_align.get();
+                let size_offset = field_offset - size_prefix + trailing_field_offset;
 
                 assert_eq!(
                     composite,
@@ -1216,7 +1462,10 @@ mod tests {
                         align: NonZeroUsize::new(align).unwrap(),
                         size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                             elem_size,
-                            offset: align + trailing_field_offset,
+                            offset: field_offset + trailing_field_offset,
+                            size_prefix,
+                            size_offset,
+                            size_align: field_type_align,
                         }),
                         statically_shallow_unpadded: false,
                     }
@@ -1292,7 +1541,8 @@ mod tests {
                 => padded { size: current_max_align * 2, align: current_max_align });
     }
 
-    /// Tests that calling `pad_to_align` on a DST `DstLayout` is a no-op.
+    /// Tests that calling `pad_to_align` on a DST `DstLayout` incorporates the
+    /// type's trailing-padding operation into its runtime size formula.
     #[test]
     fn test_dst_layout_pad_to_align_with_dst() {
         for align in (0..29).map(|p| NonZeroUsize::new(2usize.pow(p)).unwrap()) {
@@ -1300,13 +1550,62 @@ mod tests {
                 for elem_size in 0..10 {
                     let layout = DstLayout {
                         align,
-                        size_info: SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }),
+                        size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                            offset,
+                            elem_size,
+                            size_prefix: 0,
+                            size_offset: offset,
+                            size_align: DstLayout::MIN_ALIGN,
+                        }),
                         statically_shallow_unpadded: false,
                     };
-                    assert_eq!(layout.pad_to_align(), layout);
+                    assert_eq!(
+                        layout.pad_to_align(),
+                        DstLayout {
+                            align,
+                            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                                offset,
+                                elem_size,
+                                size_prefix: 0,
+                                size_offset: offset,
+                                size_align: align,
+                            }),
+                            statically_shallow_unpadded: false,
+                        }
+                    );
                 }
             }
         }
+    }
+
+    #[test]
+    fn test_trailing_slice_layout_size_sequence_equivalence() {
+        // These are the two normalized descriptions produced by a
+        // `repr(C, packed(2))` wrapper around slice DSTs whose element types
+        // both have size four but alignments four and two respectively. Their
+        // formulas differ structurally, but both simplify to `2 + 4 * elems`.
+        let align4 = TrailingSliceLayout {
+            offset: 2,
+            elem_size: 4,
+            size_prefix: 2,
+            size_offset: 0,
+            size_align: NonZeroUsize::new(4).unwrap(),
+        };
+        let align2 = TrailingSliceLayout {
+            offset: 2,
+            elem_size: 4,
+            size_prefix: 0,
+            size_offset: 2,
+            size_align: NonZeroUsize::new(2).unwrap(),
+        };
+        assert!(align4.has_same_size_sequence(align2));
+        for elems in 0..8 {
+            assert_eq!(align4.size_for_elems(elems), Some(2 + 4 * elems));
+            assert_eq!(align4.size_for_elems(elems), align2.size_for_elems(elems));
+        }
+
+        let dynamically_padded = TrailingSliceLayout { elem_size: 1, ..align4 };
+        assert!(!dynamically_padded.has_same_size_sequence(align2));
     }
 
     // This test takes a long time when running under Miri, so we skip it in
@@ -1325,16 +1624,26 @@ mod tests {
         #[allow(non_local_definitions)]
         impl From<(usize, usize)> for SizeInfo {
             fn from((offset, elem_size): (usize, usize)) -> SizeInfo {
-                SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
+                SizeInfo::SliceDst(TrailingSliceLayout {
+                    offset,
+                    elem_size,
+                    size_prefix: 0,
+                    size_offset: offset,
+                    size_align: DstLayout::MIN_ALIGN,
+                })
             }
         }
 
         fn layout<S: Into<SizeInfo>>(s: S, align: usize) -> DstLayout {
-            DstLayout {
-                size_info: s.into(),
-                align: NonZeroUsize::new(align).unwrap(),
-                statically_shallow_unpadded: false,
-            }
+            let align = NonZeroUsize::new(align).unwrap();
+            let size_info = match s.into() {
+                SizeInfo::SliceDst(mut trailing) => {
+                    trailing.size_align = align;
+                    SizeInfo::SliceDst(trailing)
+                }
+                size_info => size_info,
+            };
+            DstLayout { size_info, align, statically_shallow_unpadded: false }
         }
 
         /// This macro accepts arguments in the form of:
@@ -1531,10 +1840,18 @@ mod tests {
 
                 let resulting_size = match layout.size_info {
                     SizeInfo::Sized { size } => size,
-                    SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+                    SizeInfo::SliceDst(TrailingSliceLayout {
+                        elem_size,
+                        size_prefix,
+                        size_offset,
+                        size_align,
+                        ..
+                    }) => {
                         let padded_size = |elems| {
-                            let without_padding = offset + elems * elem_size;
-                            without_padding + util::padding_needed_for(without_padding, align)
+                            let without_padding = size_offset + elems * elem_size;
+                            size_prefix
+                                + without_padding
+                                + util::padding_needed_for(without_padding, size_align)
                         };
 
                         let resulting_size = padded_size(elems);
@@ -1562,8 +1879,15 @@ mod tests {
             } else {
                 let min_size = match layout.size_info {
                     SizeInfo::Sized { size } => size,
-                    SizeInfo::SliceDst(TrailingSliceLayout { offset, .. }) => {
-                        offset + util::padding_needed_for(offset, layout.align)
+                    SizeInfo::SliceDst(TrailingSliceLayout {
+                        size_prefix,
+                        size_offset,
+                        size_align,
+                        ..
+                    }) => {
+                        size_prefix
+                            + size_offset
+                            + util::padding_needed_for(size_offset, size_align)
                     }
                 };
 
@@ -1592,6 +1916,33 @@ mod tests {
                 .map(|(size_info, align)| layout(size_info, align));
         itertools::iproduct!(layouts, 0..8, 0..8, [CastType::Prefix, CastType::Suffix])
             .for_each(validate_behavior);
+
+        // Exercise a normalized formula which cannot be represented as
+        // `round_up(offset + elems * elem_size, align)`: the physical trailing
+        // slice begins at offset 7, while an inner aligned DST contributes the
+        // size formula `2 + round_up(5 + elems, 4)` to a packed outer type.
+        let nested_packed = DstLayout {
+            align: NonZeroUsize::new(2).unwrap(),
+            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                offset: 7,
+                elem_size: 1,
+                size_prefix: 2,
+                size_offset: 5,
+                size_align: NonZeroUsize::new(4).unwrap(),
+            }),
+            statically_shallow_unpadded: false,
+        };
+        itertools::iproduct!([nested_packed], 0..8, 0..24, [CastType::Prefix, CastType::Suffix])
+            .for_each(validate_behavior);
+
+        assert!(matches!(
+            nested_packed.validate_cast_and_convert_metadata(0, 8, CastType::Prefix),
+            Err(MetadataCastError::Size)
+        ));
+        assert!(matches!(
+            nested_packed.validate_cast_and_convert_metadata(0, 10, CastType::Prefix),
+            Ok((3, 10))
+        ));
     }
 
     #[test]
@@ -1631,9 +1982,13 @@ mod tests {
             let dst = args.elem_size.is_some();
             let layout = {
                 let size_info = match args.elem_size {
-                    Some(elem_size) => {
-                        SizeInfo::SliceDst(TrailingSliceLayout { offset: args.offset, elem_size })
-                    }
+                    Some(elem_size) => SizeInfo::SliceDst(TrailingSliceLayout {
+                        offset: args.offset,
+                        elem_size,
+                        size_prefix: 0,
+                        size_offset: args.offset,
+                        size_align: args.align,
+                    }),
                     None => SizeInfo::Sized {
                         // Rust only supports types whose sizes are a multiple
                         // of their alignment. If the macro created a type like
@@ -1955,13 +2310,30 @@ mod proofs {
 
     use super::*;
 
+    fn slice_dst_size_for_trailing_bytes(
+        layout: TrailingSliceLayout,
+        trailing_size: usize,
+    ) -> Option<usize> {
+        let without_padding = layout.size_offset.checked_add(trailing_size)?;
+        let padding = util::padding_needed_for(without_padding, layout.size_align);
+        let rounded = without_padding.checked_add(padding)?;
+        layout.size_prefix.checked_add(rounded)
+    }
+
+    fn any_layout_align() -> NonZeroUsize {
+        let exponent: u8 = kani::any();
+        kani::assume(usize::from(exponent) < POINTER_WIDTH_BITS - 1);
+
+        // `exponent < POINTER_WIDTH_BITS`, so the shift is in range and its
+        // result is non-zero. This construction is surjective over precisely
+        // the power-of-two alignments below `THEORETICAL_MAX_ALIGN`.
+        NonZeroUsize::new(1usize << exponent).unwrap()
+    }
+
     impl kani::Arbitrary for DstLayout {
         fn any() -> Self {
-            let align: NonZeroUsize = kani::any();
+            let align = any_layout_align();
             let size_info: SizeInfo = kani::any();
-
-            kani::assume(align.is_power_of_two());
-            kani::assume(align < DstLayout::THEORETICAL_MAX_ALIGN);
 
             // For testing purposes, we most care about instantiations of
             // `DstLayout` that can correspond to actual Rust types. We use
@@ -1970,10 +2342,27 @@ mod proofs {
             kani::assume(
                 match size_info {
                     SizeInfo::Sized { size } => Layout::from_size_align(size, align.get()),
-                    SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size: _ }) => {
-                        // `SliceDst` cannot encode an exact size, but we know
-                        // it is at least `offset` bytes.
-                        Layout::from_size_align(offset, align.get())
+                    SizeInfo::SliceDst(trailing) => {
+                        // `SliceDst` cannot encode one exact size. Validate its
+                        // minimum size and the invariants required of the size
+                        // formula for layouts of real Rust types.
+                        let padding =
+                            util::padding_needed_for(trailing.size_offset, trailing.size_align);
+                        let rounded = trailing.size_offset.checked_add(padding);
+                        let min_size =
+                            rounded.and_then(|size| trailing.size_prefix.checked_add(size));
+                        let unrounded_min_size =
+                            trailing.size_prefix.checked_add(trailing.size_offset);
+
+                        kani::assume(matches!(
+                            unrounded_min_size,
+                            Some(size) if size >= trailing.offset
+                        ));
+
+                        match min_size {
+                            Some(min_size) => Layout::from_size_align(min_size, align.get()),
+                            None => Layout::from_size_align(usize::MAX, align.get()),
+                        }
                     }
                 }
                 .is_ok(),
@@ -2004,11 +2393,19 @@ mod proofs {
         fn any() -> Self {
             let elem_size: usize = kani::any();
             let offset: usize = kani::any();
+            let size_offset: usize = kani::any();
+            let size_align = any_layout_align();
+            let raw_size_prefix: usize = kani::any();
+            // Since `size_align` is a power of two, masking is surjective over
+            // precisely the values in `0..size_align`.
+            #[allow(clippy::arithmetic_side_effects)]
+            let size_prefix = raw_size_prefix & (size_align.get() - 1);
 
             kani::assume(elem_size < DstLayout::MAX_SIZE);
             kani::assume(offset < DstLayout::MAX_SIZE);
+            kani::assume(size_offset < DstLayout::MAX_SIZE);
 
-            TrailingSliceLayout { elem_size, offset }
+            TrailingSliceLayout { elem_size, offset, size_prefix, size_offset, size_align }
         }
     }
 
@@ -2029,22 +2426,34 @@ mod proofs {
             loop {}
         };
 
-        let Some(unpadded_size) = size_info.offset.checked_add(trailing_slice_size) else {
-            // The `unpadded_size` exceeds `usize::MAX`; `meta`` is invalid.
+        let Some(trailing_slice_end) = size_info.offset.checked_add(trailing_slice_size) else {
+            // The trailing slice end exceeds `usize::MAX`; `meta` is invalid.
             kani::assume(false);
             loop {}
         };
 
-        if unpadded_size >= DstLayout::MAX_SIZE {
-            // The `unpadded_size` exceeds `isize::MAX`; `meta` is invalid.
+        let Some(without_padding) = size_info.size_offset.checked_add(trailing_slice_size) else {
+            kani::assume(false);
+            loop {}
+        };
+        let inner_padding = util::padding_needed_for(without_padding, size_info.size_align);
+        let Some(rounded_size) = without_padding.checked_add(inner_padding) else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(size) = size_info.size_prefix.checked_add(rounded_size) else {
+            kani::assume(false);
+            loop {}
+        };
+
+        if size > DstLayout::MAX_SIZE || trailing_slice_end > size {
+            // This metadata cannot describe a valid instance.
             kani::assume(false);
             loop {}
         }
 
-        let trailing_padding = util::padding_needed_for(unpadded_size, layout.align);
-
         if !layout.requires_dynamic_padding() {
-            assert!(trailing_padding == 0);
+            assert_eq!(trailing_slice_end, size);
         }
     }
 
@@ -2069,9 +2478,6 @@ mod proofs {
             unreachable!();
         };
 
-        // Under the above conditions, `DstLayout::extend` will not panic.
-        let composite = base.extend(field, packed);
-
         // The field's alignment is clamped by `max_align` (i.e., the
         // `packed` attribute, if any) [1].
         //
@@ -2082,10 +2488,6 @@ mod proofs {
         //   alignment of the field's type.
         let field_align = min(field.align, packed.unwrap_or(DstLayout::THEORETICAL_MAX_ALIGN));
 
-        // The struct's alignment is the maximum of its previous alignment and
-        // `field_align`.
-        assert_eq!(composite.align, max(base.align, field_align));
-
         // Compute the minimum amount of inter-field padding needed to
         // satisfy the field's alignment, and offset of the trailing field.
         // [1]
@@ -2095,7 +2497,36 @@ mod proofs {
         //   Inter-field padding is guaranteed to be the minimum required in
         //   order to satisfy each field's (possibly altered) alignment.
         let padding = padding_needed_for(base_size, field_align);
-        let offset = base_size + padding;
+        let offset = match base_size.checked_add(padding) {
+            Some(offset) => offset,
+            None => {
+                kani::assume(false);
+                loop {}
+            }
+        };
+
+        // Restrict the proof to fragments whose extension can correspond to a
+        // valid Rust layout. Outside this domain, `extend` is permitted to
+        // panic.
+        match field.size_info {
+            SizeInfo::Sized { size } => kani::assume(offset.checked_add(size).is_some()),
+            SizeInfo::SliceDst(trailing) => {
+                kani::assume(offset.checked_add(trailing.offset).is_some());
+                let unnormalized_prefix = offset.checked_add(trailing.size_prefix);
+                kani::assume(unnormalized_prefix.is_some());
+                let unnormalized_prefix = unnormalized_prefix.unwrap();
+                let size_prefix = unnormalized_prefix % trailing.size_align.get();
+                let prefix_multiple = unnormalized_prefix - size_prefix;
+                kani::assume(prefix_multiple.checked_add(trailing.size_offset).is_some());
+            }
+        }
+
+        // Under the above conditions, `DstLayout::extend` will not panic.
+        let composite = base.extend(field, packed);
+
+        // The struct's alignment is the maximum of its previous alignment and
+        // `field_align`.
+        assert_eq!(composite.align, max(base.align, field_align));
 
         // For testing purposes, we'll also construct `alloc::Layout`
         // stand-ins for `DstLayout`, and show that `extend` behaves
@@ -2132,29 +2563,52 @@ mod proofs {
                     panic!("The composite of two sized layouts must be sized.")
                 }
             }
-            SizeInfo::SliceDst(TrailingSliceLayout {
-                offset: field_offset,
-                elem_size: field_elem_size,
-            }) => {
-                if let SizeInfo::SliceDst(TrailingSliceLayout {
-                    offset: composite_offset,
-                    elem_size: composite_elem_size,
-                }) = composite.size_info
-                {
+            SizeInfo::SliceDst(field_trailing) => {
+                if let SizeInfo::SliceDst(composite_trailing) = composite.size_info {
                     // The offset of the trailing slice component is the sum
                     // of the offset of the trailing field and the trailing
                     // slice offset within that field.
-                    assert_eq!(composite_offset, offset + field_offset);
+                    assert_eq!(composite_trailing.offset, offset + field_trailing.offset);
                     // The elem size is unchanged.
-                    assert_eq!(composite_elem_size, field_elem_size);
+                    assert_eq!(composite_trailing.elem_size, field_trailing.elem_size);
 
+                    // The normalized formula must continue to describe the
+                    // size of the field at every trailing byte contribution
+                    // for which the checked size computation succeeds. This
+                    // is stronger than considering only products of a slice
+                    // length and `elem_size`, and avoids a nonlinear
+                    // multiplication in the verifier.
+                    let trailing_size: usize = kani::any();
+                    let field_size =
+                        match slice_dst_size_for_trailing_bytes(field_trailing, trailing_size) {
+                            Some(size) => size,
+                            None => {
+                                kani::assume(false);
+                                loop {}
+                            }
+                        };
+                    let expected_size = match offset.checked_add(field_size) {
+                        Some(size) => size,
+                        None => {
+                            kani::assume(false);
+                            loop {}
+                        }
+                    };
+                    assert_eq!(
+                        slice_dst_size_for_trailing_bytes(composite_trailing, trailing_size),
+                        Some(expected_size)
+                    );
+
+                    // `alloc::Layout` permits sizes which are not a multiple
+                    // of alignment, so this represents the unpadded prefix of
+                    // the DST through the start of its trailing slice.
                     let field_analog =
-                        Layout::from_size_align(field_offset, field_align.get()).unwrap();
+                        Layout::from_size_align(field_trailing.offset, field_align.get()).unwrap();
 
                     if let Ok((actual_composite, actual_offset)) = base_analog.extend(field_analog)
                     {
                         assert_eq!(actual_offset, offset);
-                        assert_eq!(actual_composite.size(), composite_offset);
+                        assert_eq!(actual_composite.size(), composite_trailing.offset);
                         assert_eq!(actual_composite.align(), composite.align.get());
                     } else {
                         // An error here reflects that composite of `base`
@@ -2195,6 +2649,24 @@ mod proofs {
 
         let layout: DstLayout = kani::any();
 
+        if let SizeInfo::SliceDst(trailing) = layout.size_info {
+            // Restrict the proof to fragments whose padded layout can
+            // correspond to a valid Rust type. Outside this domain,
+            // `pad_to_align` is permitted to panic.
+            if trailing.size_align.get() < layout.align.get() {
+                let prefix = if trailing.size_prefix == 0 { 0 } else { trailing.size_align.get() };
+                kani::assume(trailing.size_offset.checked_add(prefix).is_some());
+            } else {
+                let padding = padding_needed_for(trailing.size_prefix, layout.align);
+                let rounded_prefix = trailing.size_prefix.checked_add(padding);
+                kani::assume(rounded_prefix.is_some());
+                let rounded_prefix = rounded_prefix.unwrap();
+                let size_prefix = rounded_prefix % trailing.size_align.get();
+                let prefix_multiple = rounded_prefix - size_prefix;
+                kani::assume(trailing.size_offset.checked_add(prefix_multiple).is_some());
+            }
+        }
+
         let padded = layout.pad_to_align();
 
         // Calling `pad_to_align` does not alter the `DstLayout`'s alignment.
@@ -2219,9 +2691,40 @@ mod proofs {
             } else {
                 panic!("The padding of a sized layout must result in a sized layout.")
             }
+        } else if let (SizeInfo::SliceDst(unpadded_trailing), SizeInfo::SliceDst(padded_trailing)) =
+            (layout.size_info, padded.size_info)
+        {
+            assert_eq!(padded_trailing.offset, unpadded_trailing.offset);
+            assert_eq!(padded_trailing.elem_size, unpadded_trailing.elem_size);
+
+            // Prove the normalization for every trailing byte contribution
+            // for which the checked size computation succeeds. This is
+            // stronger than considering only products of a slice length and
+            // `elem_size`, and avoids a nonlinear multiplication in the
+            // verifier.
+            let trailing_size: usize = kani::any();
+            let unpadded_size =
+                match slice_dst_size_for_trailing_bytes(unpadded_trailing, trailing_size) {
+                    Some(size) => size,
+                    None => {
+                        kani::assume(false);
+                        loop {}
+                    }
+                };
+            let trailing_padding = padding_needed_for(unpadded_size, layout.align);
+            let expected_size = match unpadded_size.checked_add(trailing_padding) {
+                Some(size) => size,
+                None => {
+                    kani::assume(false);
+                    loop {}
+                }
+            };
+            assert_eq!(
+                slice_dst_size_for_trailing_bytes(padded_trailing, trailing_size),
+                Some(expected_size)
+            );
         } else {
-            // If the layout is a DST, padding cannot be statically added.
-            assert_eq!(padded.size_info, layout.size_info);
+            panic!("The padding of a DST layout must result in a DST layout.")
         }
     }
 }
