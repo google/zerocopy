@@ -576,15 +576,28 @@ mod len_of {
                 clippy::multiple_unsafe_ops_per_block
             )]
             // SAFETY: By invariant on `self`, a `&T` with metadata `self.meta`
-            // describes an object of size `<= isize::MAX`. This computes the
-            // size of such a `&T` without any trailing padding, and so neither
-            // the multiplication nor the addition will overflow.
-            let unpadded_size = unsafe {
+            // describes an object of size `<= isize::MAX`. The end of the
+            // trailing slice is no larger than the size of the object, and so
+            // neither the multiplication nor the addition will overflow.
+            let trailing_slice_end = unsafe {
                 let trailing_size = self.meta.unchecked_mul(trailing_slice_layout.elem_size);
                 trailing_size.unchecked_add(trailing_slice_layout.offset)
             };
 
-            util::padding_needed_for(unpadded_size, T::LAYOUT.align)
+            let size = match T::size_for_metadata(self.meta) {
+                Some(size) => size,
+                // SAFETY: By invariant on `self`, the size of `T` with this
+                // metadata is no larger than `isize::MAX`, and thus cannot
+                // overflow `usize`.
+                None => unsafe { core::hint::unreachable_unchecked() },
+            };
+
+            // Guaranteed not to underflow: By the `KnownLayout::LAYOUT`
+            // contract, all bytes after the trailing slice are padding in the
+            // object described by `size`.
+            #[allow(clippy::arithmetic_side_effects)]
+            let padding = size - trailing_slice_end;
+            padding
         }
 
         #[inline(always)]

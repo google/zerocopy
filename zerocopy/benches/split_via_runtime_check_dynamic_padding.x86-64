@@ -1,13 +1,13 @@
 bench_split_via_runtime_check_dynamic_padding:
 	mov rax, rdi
 	mov rdx, qword ptr [rsi + 16]
-	mov ecx, edx
-	and ecx, 3
-	cmp ecx, 1
+	lea rdi, [rdx + 2*rdx]
+	mov ecx, edi
+	not ecx
+	test cl, 3
 	jne .LBB5_1
 	mov rcx, qword ptr [rsi]
 	mov rsi, qword ptr [rsi + 8]
-	lea rdi, [rdx + 2*rdx]
 	add rdi, rcx
 	add rdi, 9
 	sub rsi, rdx
