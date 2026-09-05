@@ -86,6 +86,7 @@ jobs:
           # which a particular feature is supported.
           "no-zerocopy-simd-x86-avx12-1-89-0",
           "no-zerocopy-core-error-1-81-0",
+          "no-zerocopy-slice-ptr-len-1-79-0",
           "no-zerocopy-diagnostic-on-unimplemented-1-78-0",
           "no-zerocopy-generic-bounds-in-const-fn-1-61-0",
           "no-zerocopy-target-has-atomics-1-60-0",
@@ -120,6 +121,8 @@ jobs:
             feature_profile: "all"
           - toolchain: "no-zerocopy-core-error-1-81-0"
             feature_profile: "all"
+          - toolchain: "no-zerocopy-slice-ptr-len-1-79-0"
+            feature_profile: "all"
           - toolchain: "no-zerocopy-diagnostic-on-unimplemented-1-78-0"
             feature_profile: "all"
           - toolchain: "no-zerocopy-generic-bounds-in-const-fn-1-61-0"
@@ -146,6 +149,8 @@ jobs:
             toolchain: "no-zerocopy-simd-x86-avx12-1-89-0"
           - crate: "zerocopy-derive"
             toolchain: "no-zerocopy-core-error-1-81-0"
+          - crate: "zerocopy-derive"
+            toolchain: "no-zerocopy-slice-ptr-len-1-79-0"
           - crate: "zerocopy-derive"
             toolchain: "no-zerocopy-diagnostic-on-unimplemented-1-78-0"
           - crate: "zerocopy-derive"

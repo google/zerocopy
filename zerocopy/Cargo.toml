@@ -60,6 +60,9 @@ no-zerocopy-simd-x86-avx12-1-89-0 = "1.89.0"
 # From 1.81.0, Rust supports the `core::error::Error` trait.
 no-zerocopy-core-error-1-81-0 = "1.81.0"
 
+# From 1.79.0, Rust supports extracting the length from a raw slice pointer.
+no-zerocopy-slice-ptr-len-1-79-0 = "1.79.0"
+
 # From 1.78.0, Rust supports the `#[diagnostic::on_unimplemented]` attribute.
 no-zerocopy-diagnostic-on-unimplemented-1-78-0 = "1.78.0"
 
