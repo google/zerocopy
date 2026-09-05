@@ -1,0 +1,73 @@
+error: `Self` is not supported in enum discriminants because its meaning cannot be preserved in Zerocopy's generated helper enum
+  --> $DIR/issue_3619.rs:18:9
+   |
+18 |     A = Self::TAG,
+   |         ^^^^^^^^^
+
+error: `Self` is not supported in enum discriminants because its meaning cannot be preserved in Zerocopy's generated helper enum
+  --> $DIR/issue_3619.rs:30:9
+   |
+30 |     A = Self::TAG,
+   |         ^^^^^^^^^
+
+error: `Self` is not supported in enum discriminants because its meaning cannot be preserved in Zerocopy's generated helper enum
+  --> $DIR/issue_3619.rs:42:10
+   |
+42 |     A = <Self>::TAG,
+   |          ^^^^
+
+error: macros are not supported in enum discriminants because their expansion cannot be preserved in Zerocopy's generated helper enum
+  --> $DIR/issue_3619.rs:60:9
+   |
+60 |     A = contextual_tag!(),
+   |         ^^^^^^^^^^^^^^^^^
+
+error: paths are not supported in enum discriminants because Zerocopy's generated helper enum evaluates copied discriminants independently
+  --> $DIR/issue_3619.rs:74:9
+   |
+74 |     A = crate::TAG,
+   |         ^^^^^^^^^^
+
+error: paths are not supported in enum discriminants because Zerocopy's generated helper enum evaluates copied discriminants independently
+  --> $DIR/issue_3619.rs:85:9
+   |
+85 |     A = crate::TAG + 1,
+   |         ^^^^^^^^^^
+
+error: paths are not supported in enum discriminants because Zerocopy's generated helper enum evaluates copied discriminants independently
+  --> $DIR/issue_3619.rs:93:9
+   |
+93 |     A = TAG,
+   |         ^^^
+
+error: paths are not supported in enum discriminants because Zerocopy's generated helper enum evaluates copied discriminants independently
+   --> $DIR/issue_3619.rs:113:9
+    |
+113 |     A = ___ZerocopyTag::TAG,
+    |         ^^^^^^^^^^^^^^^^^^^
+
+error: this expression is not supported in enum discriminants because its meaning cannot be preserved in Zerocopy's generated helper enum
+   --> $DIR/issue_3619.rs:122:9
+    |
+122 |       A = match 0 {
+    |  _________^
+123 | |
+124 | |         ___ZEROCOPY_TAG_Raw if true => 0,
+125 | |         _ => 1,
+126 | |     },
+    | |_____^
+
+error: paths are not supported in enum discriminants because Zerocopy's generated helper enum evaluates copied discriminants independently
+   --> $DIR/issue_3619.rs:134:9
+    |
+134 |     A = crate::TypeRelativePath::TAG,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: `Self` is not supported in enum discriminants because its meaning cannot be preserved in Zerocopy's generated helper enum
+   --> $DIR/issue_3619.rs:147:18
+    |
+147 |     Flag(bool) = Self::TAG,
+    |                  ^^^^^^^^^
+
+error: aborting due to 11 previous errors
+

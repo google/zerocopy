@@ -8,7 +8,7 @@
 
 extern crate zerocopy_renamed;
 
-use zerocopy_renamed::FromBytes;
+use zerocopy_renamed::{FromBytes, TryFromBytes};
 
 #[derive(FromBytes)]
 //~^ ERROR: `on_error` is experimental; pass '--cfg zerocopy_unstable_linux' to enable
@@ -16,5 +16,18 @@ use zerocopy_renamed::FromBytes;
 #[zerocopy(on_error = "skip")]
 #[repr(C)]
 struct Foo(bool);
+
+#[derive(TryFromBytes)]
+//~^ ERROR: `on_error` is experimental; pass '--cfg zerocopy_unstable_linux' to enable
+#[zerocopy(crate = "zerocopy_renamed")]
+#[zerocopy(on_error = "skip")]
+#[repr(u8)]
+enum ContextDependentDiscriminant {
+    A = Self::TAG,
+}
+
+impl ContextDependentDiscriminant {
+    const TAG: u8 = 0;
+}
 
 fn main() {}

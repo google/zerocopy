@@ -1634,6 +1634,16 @@ pub unsafe trait Immutable {
 /// }
 /// ```
 ///
+/// When this derive needs to reproduce an enum's explicit discriminants in
+/// generated code, it accepts only integer or byte literals, arithmetic and
+/// bitwise operations whose operands recursively use this grammar, unary `-`
+/// and `!`, grouping, and `.to_le()` or `.to_be()` directly on an explicitly
+/// typed integer literal. Paths (including paths to constants), macros,
+/// general calls and method calls, casts, and control-flow expressions are
+/// rejected. The original enum and generated helper evaluate each copied
+/// discriminant independently, so the derive cannot assume that an arbitrary
+/// const expression produces the same value both times.
+///
 /// [safety conditions]: trait@TryFromBytes#safety
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
@@ -5529,6 +5539,16 @@ fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
 /// # */
 /// }
 /// ```
+///
+/// When this derive reproduces an enum's explicit discriminants in generated
+/// code, it accepts only integer or byte literals, arithmetic and bitwise
+/// operations whose operands recursively use this grammar, unary `-` and `!`,
+/// grouping, and `.to_le()` or `.to_be()` directly on an explicitly typed
+/// integer literal. Paths (including paths to constants), macros, general
+/// calls and method calls, casts, and control-flow expressions are rejected.
+/// The original enum and generated helper evaluate each copied discriminant
+/// independently, so the derive cannot assume that an arbitrary const
+/// expression produces the same value both times.
 ///
 /// [safety conditions]: trait@IntoBytes#safety
 ///
