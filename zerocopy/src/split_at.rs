@@ -270,9 +270,10 @@ unsafe impl<T> SplitAt for [T] {
 /// requires trailing padding, the trailing padding of the left part of the
 /// split `T` will overlap the right part. If `T` is a mutable reference or
 /// permits interior mutation, you must ensure that the left and right parts do
-/// not overlap. You can do this at zero-cost using using
-/// [`Self::via_immutable`], [`Self::via_into_bytes`], or
-/// [`Self::via_unaligned`], or with a dynamic check by using
+/// not overlap. You can do this without a runtime check using
+/// [`Self::via_immutable`] or [`Self::via_into_bytes`], using
+/// [`Self::via_unaligned`] (whose check is eliminated for fully-derived
+/// types), or with an explicit dynamic check using
 /// [`Self::via_runtime_check`].
 #[derive(Debug)]
 pub struct Split<T> {
@@ -459,6 +460,10 @@ where
     /// assert_eq!(rest, [5, 6, 7, 8, 9]);
     /// ```
     ///
+    /// # Panics
+    ///
+    /// Panics if the left portion requires trailing padding.
+    ///
     #[doc = codegen_header!("h5", "split_via_unaligned")]
     ///
     /// See [`Split::via_immutable`](#method.split_via_immutable.codegen).
@@ -474,8 +479,9 @@ where
 
     /// Produces the split parts of `self`, using a dynamic check to ensure that
     /// it is sound to have concurrent references to both parts. You should
-    /// prefer using [`Self::via_immutable`], [`Self::via_into_bytes`], or
-    /// [`Self::via_unaligned`], which have no runtime cost.
+    /// prefer using [`Self::via_immutable`] or [`Self::via_into_bytes`], which
+    /// have no runtime cost, or [`Self::via_unaligned`], whose check is
+    /// eliminated for fully-derived types.
     ///
     /// Note that this check is overly conservative if `T` is [`Immutable`]; for
     /// some types, this check will reject some splits which
@@ -708,6 +714,10 @@ where
     /// assert_eq!(packet.body, [1, 2, 3, 4, 0, 0, 0, 0, 0]);
     /// ```
     ///
+    /// # Panics
+    ///
+    /// Panics if the left portion requires trailing padding.
+    ///
     /// # Code Generation
     ///
     /// See [`Split::via_immutable`](#method.split_via_immutable.codegen).
@@ -723,8 +733,9 @@ where
 
     /// Produces the split parts of `self`, using a dynamic check to ensure that
     /// it is sound to have concurrent references to both parts. You should
-    /// prefer using [`Self::via_into_bytes`] or [`Self::via_unaligned`], which
-    /// have no runtime cost.
+    /// prefer using [`Self::via_into_bytes`], which has no runtime cost, or
+    /// [`Self::via_unaligned`], whose check is eliminated for fully-derived
+    /// types.
     ///
     /// # Examples
     ///
@@ -867,19 +878,34 @@ where
     where
         T: Unaligned,
     {
-        // SAFETY: By `T: SplitAt + Unaligned`, `T` is either a slice or a
-        // `repr(C)` or `repr(transparent)` slice DST that is well-aligned at
-        // any address and length. If `T` is a slice DST with alignment 1,
-        // `repr(C)` or `repr(transparent)` ensures that no padding is placed
-        // after the final element of the trailing slice. Consequently, `T` can
-        // be split into strictly non-overlapping parts any any index.
+        // The `SplitAt` derive rejects packed types, so ordinary fully-derived
+        // implementations of `SplitAt + Unaligned` require no trailing
+        // padding. A manual `SplitAt` implementation can satisfy the trait's
+        // contract for a packed wrapper around an aligned slice DST, though,
+        // and such a type can retain the inner type's trailing padding despite
+        // having alignment one itself. Check that case before creating
+        // potentially-overlapping pointers. For fully-derived implementations,
+        // `requires_dynamic_padding()` is false and this branch is eliminated
+        // at compile time.
+        if T::LAYOUT.requires_dynamic_padding() {
+            assert!(
+                self.l_len().padding_needed_for() == 0,
+                "Split::via_unaligned called at an index that requires trailing padding"
+            );
+        }
+
+        // SAFETY: If the layout can require dynamic padding, the check above
+        // established the precondition of `via_unchecked` for this exact
+        // metadata. Otherwise, the contract of `requires_dynamic_padding`
+        // establishes that no metadata requires trailing padding.
         unsafe { self.via_unchecked() }
     }
 
     /// Produces the split parts of `self`, using a dynamic check to ensure that
     /// it is sound to have concurrent references to both parts. You should
-    /// prefer using [`Self::via_immutable`], [`Self::via_into_bytes`], or
-    /// [`Self::via_unaligned`], which have no runtime cost.
+    /// prefer using [`Self::via_immutable`] or [`Self::via_into_bytes`], which
+    /// have no runtime cost, or [`Self::via_unaligned`], whose check is
+    /// eliminated for fully-derived types.
     #[inline(always)]
     fn via_runtime_check(self) -> Result<(Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>), Self> {
         let l_len = self.l_len();
