@@ -1471,6 +1471,43 @@ mod tests {
         // its `PanicOnDrop` temporary, which would cause a panic.
         assert_eq!(y.as_ref().map_err(|p| &p.src.0), Err::<&bool, _>(&2u8));
         mem::forget(y);
+
+        #[derive(Debug, TryFromBytes)]
+        #[repr(C, align(8))]
+        struct PaddedBool(bool);
+
+        #[derive(Debug, Immutable, KnownLayout)]
+        #[repr(C, align(8))]
+        struct PaddedZero(bool);
+
+        // SAFETY: `is_bit_valid` only accepts an all-zero representation,
+        // which is a valid `PaddedZero(false)`.
+        unsafe impl TryFromBytes for PaddedZero {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+
+            fn is_bit_valid<A>(candidate: Maybe<'_, Self, A>) -> bool
+            where
+                A: invariant::Alignment,
+            {
+                // Deliberately inspect every byte, including padding. This
+                // ensures that `try_transmute!` presents the validator with an
+                // entirely initialized destination-sized region.
+                crate::pointer::is_zeroed(candidate)
+            }
+        }
+
+        // A failed transmutation must return every source byte, including
+        // bytes which would be padding in the destination type.
+        let src = [2u8, 1, 2, 3, 4, 5, 6, 7];
+        let x: Result<PaddedBool, _> = try_transmute!(src);
+        assert_eq!(x.unwrap_err().into_src(), src);
+
+        let x: Result<PaddedZero, _> = try_transmute!([0u8; 8]);
+        assert!(!x.unwrap().0);
+
+        let src = [0u8, 1, 2, 3, 4, 5, 6, 7];
+        let x: Result<PaddedZero, _> = try_transmute!(src);
+        assert_eq!(x.unwrap_err().into_src(), src);
     }
 
     #[test]
