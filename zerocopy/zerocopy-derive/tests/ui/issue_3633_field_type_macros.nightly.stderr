@@ -1,0 +1,80 @@
+error: cannot derive `Immutable` for a type containing a macro invocation in a field type; write the expanded syntax explicitly
+  --> $DIR/issue_3633_field_type_macros.rs:34:18
+   |
+34 |     struct Value(field_type!());
+   |                  ^^^^^^^^^^^^^
+
+error: cannot derive `FromZeros` for a type containing a macro invocation in a field type; write the expanded syntax explicitly
+  --> $DIR/issue_3633_field_type_macros.rs:41:18
+   |
+41 |     struct Value(field_type!());
+   |                  ^^^^^^^^^^^^^
+
+error: cannot derive `FromBytes` for a type containing a macro invocation in a field type; write the expanded syntax explicitly
+  --> $DIR/issue_3633_field_type_macros.rs:48:18
+   |
+48 |     struct Value(field_type!());
+   |                  ^^^^^^^^^^^^^
+
+error: cannot derive `Unaligned` for a type containing a macro invocation in a field type; write the expanded syntax explicitly
+  --> $DIR/issue_3633_field_type_macros.rs:56:18
+   |
+56 |     struct Value(field_type!());
+   |                  ^^^^^^^^^^^^^
+
+error: cannot derive `SplitAt` for a type containing a macro invocation in a field type; write the expanded syntax explicitly
+  --> $DIR/issue_3633_field_type_macros.rs:70:22
+   |
+70 |     struct Value(u8, trailing_type!());
+   |                      ^^^^^^^^^^^^^^^^
+
+error: cannot derive `KnownLayout` for a type containing a macro invocation in generic parameters or predicates; write the expanded syntax explicitly
+  --> $DIR/issue_3633_field_type_macros.rs:80:36
+   |
+80 |     struct KnownLayout<T: Select<{ selection!() }>>(T::Assoc);
+   |                                    ^^^^^^^^^^^^
+
+error: cannot derive `Immutable` for a type containing a macro invocation in generic parameters or predicates; write the expanded syntax explicitly
+  --> $DIR/issue_3633_field_type_macros.rs:85:34
+   |
+85 |     struct Immutable<T: Select<{ selection!() }>>(T::Assoc);
+   |                                  ^^^^^^^^^^^^
+
+error: cannot derive `TryFromBytes` for a type containing a macro invocation in generic parameters or predicates; write the expanded syntax explicitly
+  --> $DIR/issue_3633_field_type_macros.rs:90:37
+   |
+90 |     struct TryFromBytes<T: Select<{ selection!() }>>(T::Assoc);
+   |                                     ^^^^^^^^^^^^
+
+error: cannot derive `FromZeros` for a type containing a macro invocation in generic parameters or predicates; write the expanded syntax explicitly
+  --> $DIR/issue_3633_field_type_macros.rs:95:34
+   |
+95 |     struct FromZeros<T: Select<{ selection!() }>>(T::Assoc);
+   |                                  ^^^^^^^^^^^^
+
+error: cannot derive `FromBytes` for a type containing a macro invocation in generic parameters or predicates; write the expanded syntax explicitly
+   --> $DIR/issue_3633_field_type_macros.rs:100:34
+    |
+100 |     struct FromBytes<T: Select<{ selection!() }>>(T::Assoc);
+    |                                  ^^^^^^^^^^^^
+
+error: cannot derive `IntoBytes` for a type containing a macro invocation in generic parameters or predicates; write the expanded syntax explicitly
+   --> $DIR/issue_3633_field_type_macros.rs:106:34
+    |
+106 |     struct IntoBytes<T: Select<{ selection!() }>>(T::Assoc);
+    |                                  ^^^^^^^^^^^^
+
+error: cannot derive `Unaligned` for a type containing a macro invocation in generic parameters or predicates; write the expanded syntax explicitly
+   --> $DIR/issue_3633_field_type_macros.rs:112:34
+    |
+112 |     struct Unaligned<T: Select<{ selection!() }>>(T::Assoc);
+    |                                  ^^^^^^^^^^^^
+
+error: cannot derive `SplitAt` for a type containing a macro invocation in generic parameters or predicates; write the expanded syntax explicitly
+   --> $DIR/issue_3633_field_type_macros.rs:118:32
+    |
+118 |     struct SplitAt<T: Select<{ selection!() }>>(u8, [T::Assoc]);
+    |                                ^^^^^^^^^^^^
+
+error: aborting due to 13 previous errors
+
