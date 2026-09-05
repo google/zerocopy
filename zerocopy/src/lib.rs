@@ -807,7 +807,8 @@ pub unsafe trait KnownLayout {
     /// # Safety
     ///
     /// `pointer_to_metadata` always returns the correct metadata stored in
-    /// `ptr`.
+    /// `ptr`. Since this method is safe, implementations must not dereference
+    /// `ptr` or require it to be non-null, aligned, live, or dereferenceable.
     #[doc(hidden)]
     fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata;
 
@@ -1073,29 +1074,93 @@ unsafe impl<T> KnownLayout for [T] {
 
     #[inline(always)]
     fn pointer_to_metadata(ptr: *mut [T]) -> usize {
-        #[allow(clippy::as_conversions)]
-        let slc = ptr as *const [()];
+        #[cfg(not(no_zerocopy_slice_ptr_len_1_79_0))]
+        {
+            // `*mut [T]::len` is safe even if `ptr` cannot be converted to a
+            // reference because it is null, unaligned, or otherwise dangling
+            // [1]. It reads only the raw pointer's metadata.
+            //
+            // [1] Per https://doc.rust-lang.org/1.79.0/std/primitive.pointer.html#method.len-1:
+            //
+            //   This function is safe, even when the raw slice cannot be cast
+            //   to a slice reference because the pointer is null or unaligned.
+            ptr.len()
+        }
 
-        // SAFETY:
-        // - `()` has alignment 1, so `slc` is trivially aligned.
-        // - `slc` was derived from a non-null pointer.
-        // - The size is 0 regardless of the length, so it is sound to
-        //   materialize a reference regardless of location.
-        // - By invariant, `self.ptr` has valid provenance.
-        let slc = unsafe { &*slc };
+        #[cfg(no_zerocopy_slice_ptr_len_1_79_0)]
+        {
+            // `*mut [T]::len` was not stable before Rust 1.79. In every Rust
+            // version from our 1.56 MSRV through 1.78, `Hash for *mut T`
+            // decomposes a raw pointer and passes its address and metadata to
+            // the hasher in that order [1]. `Hash for usize` passes its value
+            // to `Hasher::write_usize` [2]. Capture those two values to obtain
+            // a candidate for the slice length without dereferencing `ptr` or
+            // constructing a reference.
+            //
+            // This historical `Hash` implementation is only used to produce a
+            // candidate. Before returning it, we reconstruct a raw slice and
+            // authenticate the candidate with `ptr::eq`, which compares slice
+            // lengths as well as addresses [3]. Thus, an unexpected `Hash`
+            // implementation cannot cause us to return incorrect metadata; it
+            // can only fail to produce an authenticated candidate.
+            //
+            // [1] Per https://doc.rust-lang.org/1.56.0/src/core/hash/mod.rs.html#776-782:
+            //
+            //   let (address, metadata) = self.to_raw_parts();
+            //   state.write_usize(address as usize);
+            //   metadata.hash(state);
+            //
+            // [2] Per https://doc.rust-lang.org/1.56.0/src/core/hash/mod.rs.html#628-656:
+            //
+            //   fn hash<H: Hasher>(&self, state: &mut H) {
+            //       state.$meth(*self)
+            //   }
+            //   ...
+            //   (usize, write_usize),
+            //
+            // [3] Per https://doc.rust-lang.org/1.56.0/std/ptr/fn.eq.html:
+            //
+            //   Slices are also compared by their length (fat pointers).
+            struct MetadataHasher {
+                values: [usize; 2],
+                writes: usize,
+                valid: bool,
+            }
 
-        // This is correct because the preceding `as` cast preserves the number
-        // of slice elements. [1]
-        //
-        // [1] Per https://doc.rust-lang.org/reference/expressions/operator-expr.html#pointer-to-pointer-cast:
-        //
-        //   For slice types like `[T]` and `[U]`, the raw pointer types `*const
-        //   [T]`, `*mut [T]`, `*const [U]`, and `*mut [U]` encode the number of
-        //   elements in this slice. Casts between these raw pointer types
-        //   preserve the number of elements. ... The same holds for `str` and
-        //   any compound type whose unsized tail is a slice type, such as
-        //   struct `Foo(i32, [u8])` or `(u64, Foo)`.
-        slc.len()
+            impl Hasher for MetadataHasher {
+                #[inline(always)]
+                fn finish(&self) -> u64 {
+                    0
+                }
+
+                #[inline(always)]
+                fn write(&mut self, _bytes: &[u8]) {
+                    self.valid = false;
+                }
+
+                #[inline(always)]
+                fn write_usize(&mut self, value: usize) {
+                    match self.values.get_mut(self.writes) {
+                        Some(slot) => *slot = value,
+                        None => self.valid = false,
+                    }
+                    self.writes = self.writes.saturating_add(1);
+                }
+            }
+
+            let mut hasher = MetadataHasher { values: [0; 2], writes: 0, valid: true };
+            core::hash::Hash::hash(&ptr, &mut hasher);
+            assert!(
+                hasher.valid && hasher.writes == 2,
+                "unexpected raw-pointer Hash implementation"
+            );
+
+            let elems = hasher.values[1];
+            #[allow(clippy::as_conversions)]
+            let reconstructed = ptr::slice_from_raw_parts_mut(ptr as *mut T, elems);
+            assert!(ptr::eq(ptr, reconstructed), "captured value is not raw-slice metadata");
+            elems
+        }
     }
 }
 
@@ -6535,6 +6600,58 @@ mod tests {
         test!([()], layout(0, 1, Some(0), true));
         test!([u8], layout(0, 1, Some(1), true));
         test!(str, layout(0, 1, Some(1), true));
+    }
+
+    #[test]
+    fn test_known_layout_pointer_to_metadata() {
+        fn test<T>(data: *mut T, elems: usize) {
+            let ptr = ptr::slice_from_raw_parts_mut(data, elems);
+            assert_eq!(<[T] as KnownLayout>::pointer_to_metadata(ptr), elems);
+        }
+
+        for elems in [0, 1, usize::MAX] {
+            test(ptr::null_mut::<u8>(), elems);
+        }
+
+        test(NonNull::<u8>::dangling().as_ptr(), 0);
+
+        let mut bytes = [1, 2, 3];
+        test(bytes.as_mut_ptr(), bytes.len());
+        assert_eq!(bytes, [1, 2, 3]);
+
+        test(NonNull::<()>::dangling().as_ptr(), usize::MAX);
+
+        // Retaining and inspecting a raw pointer after freeing its allocation
+        // is safe so long as the pointer is not dereferenced.
+        let deallocated = {
+            let mut byte = Box::new(0u8);
+            let ptr: *mut u8 = &mut *byte;
+            drop(byte);
+            ptr
+        };
+        test(deallocated, 3);
+
+        // Metadata extraction requires neither element storage nor alignment
+        // for `T`; it does not access the pointer's referent.
+        test(NonNull::<u8>::dangling().as_ptr().cast::<u64>(), usize::MAX);
+    }
+
+    #[cfg(feature = "derive")]
+    #[test]
+    fn test_known_layout_pointer_to_metadata_derive() {
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct Dst {
+            prefix: u8,
+            trailing: [u8],
+        }
+
+        for elems in [0, 1, usize::MAX] {
+            let ptr = ptr::slice_from_raw_parts_mut(ptr::null_mut::<u8>(), elems);
+            #[allow(clippy::as_conversions)]
+            let ptr = ptr as *mut Dst;
+            assert_eq!(Dst::pointer_to_metadata(ptr), elems);
+        }
     }
 
     #[cfg(feature = "derive")]
