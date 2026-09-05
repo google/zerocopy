@@ -108,7 +108,7 @@ const _: () = {
     >>::Type = 0u8;
     let _: <StructWithNamedFields as zerocopy_renamed::HasField<
         _,
-        //~[stable, nightly]^ ERROR: type `private::_::_::_::ẕb` is private
+        //~[stable, nightly]^ ERROR: type `private::_::_::_::___ZerocopyHasField_b` is private
         _,
         //~[msrv]^ ERROR: type provided when a constant was expected
         { zerocopy_renamed::ident_id!(b) },
@@ -124,7 +124,7 @@ const _: () = {
     >>::Type = 0u8;
     let _: <StructWithAnonFields as zerocopy_renamed::HasField<
         _,
-        //~[stable, nightly]^ ERROR: type `private::_::_::_::ẕ1` is private
+        //~[stable, nightly]^ ERROR: type `private::_::_::_::___ZerocopyHasField_1` is private
         _,
         //~[msrv]^ ERROR: type provided when a constant was expected
         { zerocopy_renamed::ident_id!(1) },
@@ -137,7 +137,7 @@ const _: () = {
         0u8;
     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
 //~[msrv]^ ERROR: type provided when a constant was expected
-//~[stable, nightly]^^ ERROR: type `private::_::_::_::ẕb` is private
+//~[stable, nightly]^^ ERROR: type `private::_::_::_::___ZerocopyHasField_b` is private
         0u16;
 };
 

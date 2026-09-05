@@ -10,19 +10,19 @@ warning: variants `A` and `B` are never constructed
    |
    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
 
-error: type `private::_::_::_::ẕb` is private
+error: type `private::_::_::_::___ZerocopyHasField_b` is private
    --> $DIR/privacy.rs:110:9
     |
 110 |         _,
     |         ^ private type
 
-error: type `private::_::_::_::ẕ1` is private
+error: type `private::_::_::_::___ZerocopyHasField_1` is private
    --> $DIR/privacy.rs:126:9
     |
 126 |         _,
     |         ^ private type
 
-error: type `private::_::_::_::ẕb` is private
+error: type `private::_::_::_::___ZerocopyHasField_b` is private
    --> $DIR/privacy.rs:138:49
     |
 138 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>:...
