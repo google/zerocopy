@@ -529,30 +529,139 @@ where
 {
     static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
 
-    let mu_src = mem::MaybeUninit::new(src);
-    // SAFETY: `MaybeUninit` has no validity requirements.
-    let mu_dst: mem::MaybeUninit<ReadOnly<Dst>> =
-        unsafe { crate::util::transmute_unchecked(mu_src) };
+    #[repr(C)]
+    union Transmute<Src, Dst> {
+        src: mem::ManuallyDrop<Src>,
+        dst: mem::ManuallyDrop<mem::MaybeUninit<ReadOnly<Dst>>>,
+    }
 
-    let ptr = Ptr::from_ref(&mu_dst);
+    let transmute = Transmute { src: mem::ManuallyDrop::new(src) };
+    let is_valid = {
+        // SAFETY: A `repr(C)` union field has offset zero [1], and the union's
+        // alignment is at least that of every field [2]. `ManuallyDrop<T>` has
+        // `T`'s layout and bit validity [3], `MaybeUninit<T>` has `T`'s size
+        // and alignment and permits any bit value [4], and `ReadOnly<Dst>` is
+        // declared `repr(transparent)`, which gives it `Dst`'s size and
+        // alignment [5, 6]. The size assertion above therefore proves that
+        // `dst` describes exactly the storage initialized through `src`, at
+        // suitable alignment, without moving it. The reference is valid
+        // regardless of `Dst`'s bit validity because its referent is a
+        // `MaybeUninit`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.92.0/reference/items/unions.html#reading-and-writing-union-fields:
+        //
+        //     Fields might have a non-zero offset (except when the C
+        //     representation is used).
+        //
+        // [2] Per https://doc.rust-lang.org/1.92.0/reference/type-layout.html#reprc-unions:
+        //
+        //     The union will have [...] an alignment of the maximum alignment
+        //     of all of its fields.
+        //
+        // [3] Per https://doc.rust-lang.org/1.92.0/std/mem/struct.ManuallyDrop.html:
+        //
+        //     `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+        //     validity as `T`.
+        //
+        // [4] Per https://doc.rust-lang.org/1.92.0/std/mem/union.MaybeUninit.html#layout-1:
+        //
+        //     `MaybeUninit<T>` is guaranteed to have the same size, alignment,
+        //     and ABI as `T`.
+        //
+        //     [A]ny bit value is valid for a `MaybeUninit<T>`.
+        //
+        // [5] Per https://doc.rust-lang.org/1.92.0/reference/type-layout.html#the-transparent-representation:
+        //
+        //     Structs and enums with this representation have the same layout
+        //     and ABI as the only non-size 0 non-alignment 1 field, if present,
+        //     or unit otherwise.
+        //
+        // [6] Per https://doc.rust-lang.org/1.92.0/reference/type-layout.html#tuple-layout:
+        //
+        //     [...] unit tuple (`()`), which is guaranteed as a zero-sized type
+        //     to have a size of 0 and an alignment of 1.
+        //
+        // If the unit fallback applies, `Dst` therefore has that same size and
+        // alignment; otherwise, [5] gives `ReadOnly<Dst>` `Dst`'s layout
+        // directly. Thus `ReadOnly<Dst>` has `Dst`'s size and alignment in both
+        // cases.
+        let mu_dst = unsafe { &*transmute.dst };
+        let ptr = Ptr::from_ref(mu_dst);
 
-    // SAFETY: Since `Src: IntoBytes`, and since `size_of::<Src>() ==
-    // size_of::<Dst>()` by the preceding assertion, all of `mu_dst`'s bytes are
-    // initialized. `MaybeUninit` has no validity requirements, so even if
-    // `ptr` is used to mutate its referent (which it actually can't be - it's
-    // a shared `ReadOnly` pointer), that won't violate its referent's validity.
-    let ptr = unsafe { ptr.assume_validity::<Initialized>() };
-    if Dst::is_bit_valid(ptr.cast::<_, CastSized, _>()) {
-        // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is
-        // bit-valid for `Dst`. `ptr` points to `mu_dst`, and no intervening
-        // operations have mutated it, so it is a bit-valid `Dst`.
+        // SAFETY: `Src: IntoBytes` guarantees that all `size_of::<Src>()`
+        // bytes are initialized, including bytes which are padding in `Dst`.
+        // The size assertion above makes that exactly the byte range borrowed
+        // as `mu_dst`. `MaybeUninit` has no validity requirements, and this is
+        // a shared `ReadOnly` pointer, so validation cannot mutate the bytes.
+        // This discharges `assume_validity`'s initialized-byte precondition.
+        // The standard library states the corresponding initialization duty
+        // for extracting a value from `MaybeUninit` [1].
+        //
+        // [1] Per https://doc.rust-lang.org/1.92.0/std/mem/union.MaybeUninit.html#method.assume_init:
+        //
+        //     It is up to the caller to guarantee that the `MaybeUninit<T>`
+        //     really is in an initialized state.
+        let ptr = unsafe { ptr.assume_validity::<Initialized>() };
+        Dst::is_bit_valid(ptr.cast::<_, CastSized, _>())
+    };
+
+    if is_valid {
+        // SAFETY: Reading a C-representation union field interprets the union
+        // storage as that field's type, and the programmer must ensure that
+        // the resulting value is valid [1]. `MaybeUninit` permits any bit value
+        // [2], while `ManuallyDrop` preserves its inner type's bit validity
+        // [3], so this field read is valid. Moving the destination may discard
+        // destination padding, but no later operation needs those padding
+        // bytes: `Dst::is_bit_valid` has already validated the in-place bytes.
+        //
+        // [1] Per https://doc.rust-lang.org/1.92.0/reference/items/unions.html#reading-and-writing-union-fields:
+        //
+        //     Reading a union field reads the bits of the union at the field's
+        //     type.
+        //
+        //     It is the programmer's responsibility to make sure that the data
+        //     is valid at the field's type.
+        //
+        // [2] Per https://doc.rust-lang.org/1.92.0/std/mem/union.MaybeUninit.html#layout-1:
+        //
+        //     [A]ny bit value is valid for a `MaybeUninit<T>`.
+        //
+        // [3] Per https://doc.rust-lang.org/1.92.0/std/mem/struct.ManuallyDrop.html:
+        //
+        //     `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+        //     validity as `T`.
+        let mu_dst = mem::ManuallyDrop::into_inner(unsafe { transmute.dst });
+        // SAFETY: The preceding `Dst::is_bit_valid` call established that
+        // `mu_dst` contains a fully initialized, bit-valid `ReadOnly<Dst>`, and
+        // no intervening operation modified it. This satisfies `assume_init`'s
+        // requirement [1].
+        //
+        // [1] Per https://doc.rust-lang.org/1.92.0/std/mem/union.MaybeUninit.html#method.assume_init:
+        //
+        //     It is up to the caller to guarantee that the `MaybeUninit<T>`
+        //     really is in an initialized state.
         Ok(ReadOnly::into_inner(unsafe { mu_dst.assume_init() }))
     } else {
-        // SAFETY: `MaybeUninit` has no validity requirements.
-        let mu_src: mem::MaybeUninit<Src> = unsafe { crate::util::transmute_unchecked(mu_dst) };
-        // SAFETY: `mu_dst`/`mu_src` was constructed from `src` and never
-        // modified, so it is still bit-valid.
-        Err(ValidityError::new(unsafe { mu_src.assume_init() }))
+        // SAFETY: `transmute` was initialized by writing a valid `Src` through
+        // its `src` field. The only intervening access was a shared borrow and
+        // read-only validation through `dst`; it neither moved nor mutated any
+        // byte. Reading `src` therefore produces the original valid value, as
+        // required by the union-field rule [1]. `ManuallyDrop` has the same bit
+        // validity as `Src` [2], and this is the field's only move. In
+        // particular, the read preserves source bytes that would be padding in
+        // `Dst`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.92.0/reference/items/unions.html#reading-and-writing-union-fields:
+        //
+        //     It is the programmer's responsibility to make sure that the data
+        //     is valid at the field's type.
+        //
+        // [2] Per https://doc.rust-lang.org/1.92.0/std/mem/struct.ManuallyDrop.html:
+        //
+        //     `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+        //     validity as `T`.
+        let src = mem::ManuallyDrop::into_inner(unsafe { transmute.src });
+        Err(ValidityError::new(src))
     }
 }
 
