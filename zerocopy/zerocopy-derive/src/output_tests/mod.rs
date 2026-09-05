@@ -342,6 +342,91 @@ fn test_try_from_bytes_enum() {
     }
 }
 
+#[test]
+fn test_context_dependent_enum_discriminants() {
+    test! {
+        TryFromBytes {
+            #[repr(u8)]
+            enum Foo {
+                Bar = Self::TAG,
+            }
+        } expands to {
+            ::core::compile_error! {
+                "`Self` is not supported in enum discriminants because its meaning cannot be preserved in Zerocopy's generated helper enum"
+            }
+        } no_build
+    }
+
+    test! {
+        IntoBytes {
+            #[repr(u8)]
+            enum Foo {
+                Bar = Self::TAG,
+            }
+        } expands to {
+            ::core::compile_error! {
+                "`Self` is not supported in enum discriminants because its meaning cannot be preserved in Zerocopy's generated helper enum"
+            }
+        } no_build
+    }
+
+    test! {
+        TryFromBytes {
+            #[repr(u8)]
+            enum Foo {
+                Bar = tag!(),
+            }
+        } expands to {
+            ::core::compile_error! {
+                "macros are not supported in enum discriminants because their expansion cannot be preserved in Zerocopy's generated helper enum"
+            }
+        } no_build
+    }
+
+    test! {
+        TryFromBytes {
+            #[repr(u8)]
+            enum Foo {
+                Bar = TAG,
+            }
+        } expands to {
+            ::core::compile_error! {
+                "paths are not supported in enum discriminants because Zerocopy's generated helper enum evaluates copied discriminants independently"
+            }
+        } no_build
+    }
+
+    test! {
+        TryFromBytes {
+            #[repr(u8)]
+            enum Foo {
+                Bar = match 0 {
+                    ___ZEROCOPY_TAG_Baz if true => 0,
+                    _ => 1,
+                },
+                Baz = 2,
+            }
+        } expands to {
+            ::core::compile_error! {
+                "this expression is not supported in enum discriminants because its meaning cannot be preserved in Zerocopy's generated helper enum"
+            }
+        } no_build
+    }
+
+    test! {
+        TryFromBytes {
+            #[repr(u8)]
+            enum Foo {
+                Bar = crate::CUSTOM + 1u8,
+            }
+        } expands to {
+            ::core::compile_error! {
+                "paths are not supported in enum discriminants because Zerocopy's generated helper enum evaluates copied discriminants independently"
+            }
+        } no_build
+    }
+}
+
 // This goes at the bottom because it's so verbose and it makes scrolling past
 // other code a pain.
 #[test]
