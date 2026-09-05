@@ -50,6 +50,17 @@ pub unsafe trait Field<Index> {
     type Type: ?Sized;
 }
 
+// Seal the complete predicates, including their const parameters. Thus,
+// `PaddingFree<T, N>` implies `N == 0`, and `DynamicPaddingFree<T, B>` implies
+// `B == false`.
+mod padding_seal {
+    pub trait PaddingFree<T: ?Sized, const PADDING_BYTES: usize> {}
+    impl<T: ?Sized> PaddingFree<T, 0> for () {}
+
+    pub trait DynamicPaddingFree<T: ?Sized, const HAS_PADDING: bool> {}
+    impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
+}
+
 #[cfg_attr(
     not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
     diagnostic::on_unimplemented(
@@ -60,7 +71,10 @@ pub unsafe trait Field<Index> {
         note = "consider using `#[repr(packed)]` to remove padding"
     )
 )]
-pub trait PaddingFree<T: ?Sized, const PADDING_BYTES: usize> {}
+pub trait PaddingFree<T: ?Sized, const PADDING_BYTES: usize>:
+    padding_seal::PaddingFree<T, PADDING_BYTES>
+{
+}
 impl<T: ?Sized> PaddingFree<T, 0> for () {}
 
 // FIXME(#1112): In the slice DST case, we should delegate to *both*
@@ -78,7 +92,10 @@ impl<T: ?Sized> PaddingFree<T, 0> for () {}
         note = "consider using `#[repr(packed)]` to remove padding"
     )
 )]
-pub trait DynamicPaddingFree<T: ?Sized, const HAS_PADDING: bool> {}
+pub trait DynamicPaddingFree<T: ?Sized, const HAS_PADDING: bool>:
+    padding_seal::DynamicPaddingFree<T, HAS_PADDING>
+{
+}
 impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
 
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]

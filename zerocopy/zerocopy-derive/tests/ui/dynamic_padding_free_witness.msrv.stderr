@@ -1,0 +1,28 @@
+error[E0277]: the trait bound `(): macro_util::padding_seal::DynamicPaddingFree<PaddedTail, true>` is not satisfied
+  --> $DIR/dynamic_padding_free_witness.rs:22:6
+   |
+22 | impl zerocopy_renamed::util::macro_util::DynamicPaddingFree<PaddedTail, true> for () {}
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `macro_util::padding_seal::DynamicPaddingFree<PaddedTail, true>` is not implemented for `()`
+   |
+   = help: the following implementations were found:
+             <() as macro_util::padding_seal::DynamicPaddingFree<T, false>>
+note: required by a bound in `DynamicPaddingFree`
+  --> $WORKSPACE/src/util/macro_util.rs:96:5
+   |
+96 |     padding_seal::DynamicPaddingFree<T, HAS_PADDING>
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `DynamicPaddingFree`
+
+error[E0277]: the trait bound `(): macro_util::padding_seal::DynamicPaddingFree<PaddedTail, true>` is not satisfied
+  --> $DIR/dynamic_padding_free_witness.rs:13:21
+   |
+13 | #[derive(Immutable, IntoBytes)]
+   |                     ^^^^^^^^^ the trait `macro_util::padding_seal::DynamicPaddingFree<PaddedTail, true>` is not implemented for `()`
+   |
+   = help: the following implementations were found:
+             <() as macro_util::padding_seal::DynamicPaddingFree<T, false>>
+   = help: see issue #48214
+   = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

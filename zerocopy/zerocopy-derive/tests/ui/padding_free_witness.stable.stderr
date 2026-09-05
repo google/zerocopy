@@ -1,0 +1,43 @@
+error[E0277]: the trait bound `(): macro_util::padding_seal::PaddingFree<Padded, 3>` is not satisfied
+  --> $DIR/padding_free_witness.rs:13:21
+   |
+13 | #[derive(Immutable, IntoBytes)]
+   |                     ^^^^^^^^^ the trait `macro_util::padding_seal::PaddingFree<Padded, 3>` is not implemented for `()`
+   |
+   = note: `()` implements similarly named trait `PaddingFree`, but not `macro_util::padding_seal::PaddingFree<Padded, 3>`
+help: the trait `PaddingFree<Padded, 3>` is not implemented for `()`
+      but trait `PaddingFree<Padded, 0>` is implemented for it
+  --> $WORKSPACE/src/util/macro_util.rs:58:5
+   |
+58 |     impl<T: ?Sized> PaddingFree<T, 0> for () {}
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: see issue #48214
+   = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `(): macro_util::padding_seal::PaddingFree<Padded, 3>` is not satisfied
+  --> $DIR/padding_free_witness.rs:22:69
+   |
+22 | impl zerocopy_renamed::util::macro_util::PaddingFree<Padded, 3> for () {}
+   |                                                                     ^^ the trait `macro_util::padding_seal::PaddingFree<Padded, 3>` is not implemented for `()`
+   |
+   = note: `()` implements similarly named trait `PaddingFree`, but not `macro_util::padding_seal::PaddingFree<Padded, 3>`
+help: the trait `PaddingFree<Padded, 3>` is not implemented for `()`
+      but trait `PaddingFree<Padded, 0>` is implemented for it
+  --> $WORKSPACE/src/util/macro_util.rs:58:5
+   |
+58 |     impl<T: ?Sized> PaddingFree<T, 0> for () {}
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: required by a bound in `PaddingFree`
+  --> $WORKSPACE/src/util/macro_util.rs:75:5
+   |
+74 | pub trait PaddingFree<T: ?Sized, const PADDING_BYTES: usize>:
+   |           ----------- required by a bound in this trait
+75 |     padding_seal::PaddingFree<T, PADDING_BYTES>
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `PaddingFree`
+   = note: `PaddingFree` is a "sealed trait", because to implement it you also need to implement `zerocopy::util::macro_util::padding_seal::PaddingFree`, which is not accessible; this is usually done to force you to use one of the provided types that already implement it
+   = help: the following type implements the trait:
+             ()
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0277`.
