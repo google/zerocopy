@@ -12,10 +12,20 @@ use syn::{Data, Error};
 
 use crate::{
     repr::StructUnionRepr,
-    util::{Ctx, DataExt, FieldBounds, ImplBlockBuilder, Trait},
+    util::{
+        reject_uninspectable_field_types, reject_uninspectable_generics,
+        reject_uninspectable_types, Ctx, DataExt, FieldBounds, ImplBlockBuilder, Trait,
+    },
 };
 
 pub(crate) fn derive_immutable(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error> {
+    if let Err(error) = reject_uninspectable_generics(&ctx.ast.generics, "Immutable") {
+        return ctx.error_or_skip(error);
+    }
+    if let Err(error) = reject_uninspectable_field_types(&ctx.ast.data, "Immutable") {
+        return ctx.error_or_skip(error);
+    }
+
     Ok(match &ctx.ast.data {
         Data::Struct(strct) => {
             ImplBlockBuilder::new(ctx, strct, Trait::Immutable, FieldBounds::ALL_SELF).build()
@@ -122,6 +132,13 @@ pub(crate) fn derive_split_at(ctx: &Ctx, _top_level: Trait) -> Result<TokenStrea
     } else {
         return ctx.error_or_skip(Error::new(Span::call_site(), "must at least one field"));
     };
+
+    if let Err(error) = reject_uninspectable_types([*trailing_field], "SplitAt") {
+        return ctx.error_or_skip(error);
+    }
+    if let Err(error) = reject_uninspectable_generics(&ctx.ast.generics, "SplitAt") {
+        return ctx.error_or_skip(error);
+    }
 
     let zerocopy_crate = &ctx.zerocopy_crate;
     // SAFETY: `#ty`, per the above checks, is `repr(C)` or `repr(transparent)`

@@ -10,8 +10,11 @@ use syn::{
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
     util::{
-        const_block, enum_could_be_from_bytes, generate_tag_enum, Ctx, DataExt, FieldBounds,
-        ImplBlockBuilder, Trait, TraitBound,
+        const_block, enum_could_be_from_bytes, generate_tag_enum,
+        reject_contextual_self_in_generics, reject_contextual_self_in_types,
+        reject_reserved_identifiers, reject_uninspectable_field_types,
+        reject_uninspectable_generics, Ctx, DataExt, FieldBounds, ImplBlockBuilder, Trait,
+        TraitBound,
     },
 };
 fn tag_ident(variant_ident: &Ident) -> Ident {
@@ -257,13 +260,14 @@ pub(crate) fn derive_is_bit_valid(
 
                 #[inline(always)]
                 fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut <Self as #has_field_path>::Type {
-                    use #zerocopy_crate::pointer::cast::{CastSized, Projection};
-
-                    slf.project::<___ZerocopyRawEnum #ty_generics, CastSized>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::REPR_C_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>>()
+                    slf.project::<
+                            ___ZerocopyRawEnum #ty_generics,
+                            #zerocopy_crate::pointer::cast::CastSized,
+                        >()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>>()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::REPR_C_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>>()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>>()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>>()
                         .as_ptr()
                 }
             })
@@ -443,7 +447,52 @@ pub(crate) fn derive_is_bit_valid(
         }
     })
 }
+
+/// Validates input syntax whose meaning must be preserved in generated
+/// `TryFromBytes` code.
+///
+/// Keep this separate from code generation so supertrait derives can reject
+/// the entire generated impl chain when `on_error = "skip"` is requested.
+pub(crate) fn validate_try_from_bytes_input(ctx: &Ctx, top_level: Trait) -> Result<(), Error> {
+    let derive_name = match &top_level {
+        Trait::FromZeros => "FromZeros",
+        Trait::FromBytes => "FromBytes",
+        _ => "TryFromBytes",
+    };
+
+    reject_uninspectable_generics(&ctx.ast.generics, derive_name)?;
+    reject_uninspectable_field_types(&ctx.ast.data, derive_name)?;
+
+    let reserved = match &ctx.ast.data {
+        Data::Struct(_) | Data::Union(_) => &["___Zc", "ẕ"][..],
+        Data::Enum(_) => &["___Zc"][..],
+    };
+    reject_reserved_identifiers(ctx, derive_name, reserved)?;
+
+    let enm = match &ctx.ast.data {
+        Data::Enum(enm) => enm,
+        Data::Struct(_) | Data::Union(_) => return Ok(()),
+    };
+    let repr = EnumRepr::from_attrs(&ctx.ast.attrs)?;
+    let generates_field_helpers = try_gen_trivial_is_bit_valid(ctx, top_level).is_none()
+        && !enum_could_be_from_bytes(&repr, enm);
+    if generates_field_helpers {
+        reject_reserved_identifiers(ctx, derive_name, &["___Zerocopy", "___ZEROCOPY", "ẕ"])?;
+        reject_contextual_self_in_generics(&ctx.ast.generics, derive_name)?;
+        reject_contextual_self_in_types(
+            enm.variants.iter().flat_map(|variant| &variant.fields).map(|field| &field.ty),
+            derive_name,
+        )?;
+    }
+
+    Ok(())
+}
+
 pub(crate) fn derive_try_from_bytes(ctx: &Ctx, top_level: Trait) -> Result<TokenStream, Error> {
+    if let Err(error) = validate_try_from_bytes_input(ctx, top_level.clone()) {
+        return ctx.error_or_skip(error);
+    }
+
     match &ctx.ast.data {
         Data::Struct(strct) => derive_try_from_bytes_struct(ctx, strct, top_level),
         Data::Enum(enm) => derive_try_from_bytes_enum(ctx, enm, top_level),

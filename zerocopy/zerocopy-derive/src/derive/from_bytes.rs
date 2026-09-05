@@ -7,7 +7,7 @@ use syn::{
 };
 
 use crate::{
-    derive::try_from_bytes::derive_try_from_bytes,
+    derive::try_from_bytes::{derive_try_from_bytes, validate_try_from_bytes_input},
     repr::{CompoundRepr, EnumRepr, Repr, Spanned},
     util::{
         enum_could_be_from_bytes, enum_has_full_discriminant_domain, enum_size_from_repr,
@@ -96,7 +96,9 @@ pub(crate) fn derive_from_zeros(ctx: &Ctx, top_level: Trait) -> Result<TokenStre
     // this error so that we do not then emit a `FromZeros` impl without its
     // required `TryFromBytes` supertrait impl.
     if ctx.skip_on_error {
-        if let Err(error) = preflight_tag_enum(ctx) {
+        if let Err(error) = validate_try_from_bytes_input(ctx, top_level.clone())
+            .and_then(|()| preflight_tag_enum(ctx))
+        {
             return ctx.error_or_skip(error);
         }
     }
@@ -112,7 +114,9 @@ pub(crate) fn derive_from_bytes(ctx: &Ctx, top_level: Trait) -> Result<TokenStre
     // As above, skip the whole supertrait chain if its first impl cannot be
     // generated soundly.
     if ctx.skip_on_error {
-        if let Err(error) = preflight_tag_enum(ctx) {
+        if let Err(error) = validate_try_from_bytes_input(ctx, top_level.clone())
+            .and_then(|()| preflight_tag_enum(ctx))
+        {
             return ctx.error_or_skip(error);
         }
     }
