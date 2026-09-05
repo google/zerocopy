@@ -37,6 +37,13 @@ you **MUST** also read [agent_docs/reviewing.md](./agent_docs/reviewing.md).
 - **Documentation:** **DO** ensure that changes do not cause documentation to
   become out of date (e.g., renaming files referenced here).
 
+- **Derived traits in tests:** For traits whose documentation requires
+  derive-only implementation, test fixture types **MUST** use Zerocopy's
+  derives. Do not bypass a derive rejection with a manual implementation;
+  instead, test the lower-level internal primitive or extend the derive.
+  Generated derive-output snapshots and crate-owned built-in implementations
+  are exempt.
+
 ## Project Context
 
 ### Overview

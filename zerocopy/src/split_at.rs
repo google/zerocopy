@@ -188,10 +188,7 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     /// Attempts to split `self` in two.
     ///
     /// Returns `None` if `l_len` is greater than the length of `self`'s
-    /// trailing slice, or if the given `l_len` would result in [the trailing
-    /// padding](KnownLayout#slice-dst-layout) of the left portion overlapping
-    /// the right portion.
-    ///
+    /// trailing slice.
     ///
     /// # Examples
     ///
@@ -270,10 +267,12 @@ unsafe impl<T> SplitAt for [T] {
 /// requires trailing padding, the trailing padding of the left part of the
 /// split `T` will overlap the right part. If `T` is a mutable reference or
 /// permits interior mutation, you must ensure that the left and right parts do
-/// not overlap. You can do this at zero-cost using using
-/// [`Self::via_immutable`], [`Self::via_into_bytes`], or
-/// [`Self::via_unaligned`], or with a dynamic check by using
-/// [`Self::via_runtime_check`].
+/// not overlap. You can do this without a runtime check using
+/// [`Self::via_immutable`] or [`Self::via_into_bytes`]. When the layout never
+/// requires dynamic trailing padding, you can also use
+/// [`Self::via_unaligned`] if the trailing element type is [`Unaligned`], or
+/// [`Self::via_no_dynamic_padding`] without that bound. Otherwise, use the
+/// dynamic check in [`Self::via_runtime_check`].
 #[derive(Debug)]
 pub struct Split<T> {
     /// A pointer to the source slice DST.
@@ -423,8 +422,16 @@ where
         (l.as_ref(), r.as_ref())
     }
 
-    /// Produces the split parts of `self`, using [`Unaligned`] to ensure that
-    /// it is sound to have concurrent references to both parts.
+    /// Produces the split parts of `self`, requiring the trailing slice's
+    /// element type to be [`Unaligned`].
+    ///
+    /// This bound makes the method available to generic code that can name the
+    /// trailing element's alignment. At monomorphization, this method also
+    /// verifies that `T`'s layout never requires dynamic trailing padding.
+    /// This verification performs no runtime check. Use
+    /// [`Self::via_no_dynamic_padding`] when no [`Unaligned`] bound is
+    /// available, or [`Self::via_runtime_check`] for dynamically padded
+    /// layouts.
     ///
     /// # Examples
     ///
@@ -432,7 +439,7 @@ where
     /// use zerocopy::{SplitAt, FromBytes};
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(SplitAt, FromBytes, KnownLayout, Immutable, Unaligned)]
+    /// #[derive(SplitAt, FromBytes, KnownLayout, Immutable)]
     /// #[repr(C)]
     /// struct Packet {
     ///     length: u8,
@@ -450,13 +457,33 @@ where
     /// // Attempt to split `packet` at `length`.
     /// let split = packet.split_at(packet.length as usize).unwrap();
     ///
-    /// // Use the `Unaligned` bound on `Packet` to prove that it's okay to
-    /// // return concurrent references to `packet` and `rest`.
+    /// // Use the `Unaligned` bound on `Packet`'s trailing element type to make
+    /// // this no-runtime-check method available.
     /// let (packet, rest) = split.via_unaligned();
     ///
     /// assert_eq!(packet.length, 4);
     /// assert_eq!(packet.body, [1, 2, 3, 4]);
     /// assert_eq!(rest, [5, 6, 7, 8, 9]);
+    /// ```
+    ///
+    /// The [`Unaligned`] bound on the trailing element does not by itself
+    /// prove that the full layout has no dynamic trailing padding. Such a
+    /// layout is rejected at monomorphization:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::{FromBytes, Immutable, KnownLayout, SplitAt};
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, KnownLayout, SplitAt)]
+    /// #[repr(C, align(2))]
+    /// struct DynamicallyPadded {
+    ///     prefix: u8,
+    ///     trailing: [u8],
+    /// }
+    ///
+    /// let bytes = [0u8; 4];
+    /// let value = DynamicallyPadded::ref_from_bytes(&bytes).unwrap();
+    /// let _ = value.split_at(1).unwrap().via_unaligned();
     /// ```
     ///
     #[doc = codegen_header!("h5", "split_via_unaligned")]
@@ -466,16 +493,71 @@ where
     #[inline(always)]
     pub fn via_unaligned(self) -> (&'a T, &'a [T::Elem])
     where
-        T: Unaligned,
+        T::Elem: Unaligned,
     {
         let (l, r) = self.into_ptr().via_unaligned();
         (l.as_ref(), r.as_ref())
     }
 
+    /// Produces the split parts of `self` when `T`'s layout never requires
+    /// dynamic trailing padding.
+    ///
+    /// This method performs no runtime check and requires no trait bound that
+    /// expresses this layout property. Instead, it verifies the property at
+    /// monomorphization and produces a post-monomorphization error when the
+    /// concrete `T` may require dynamic trailing padding. Generic code that
+    /// can name an alignment bound may prefer [`Self::via_unaligned`];
+    /// dynamically padded layouts must use [`Self::via_runtime_check`]. This
+    /// method's check applies to every valid metadata value for `T`; in
+    /// contrast, [`Self::via_runtime_check`] can accept a particular split of
+    /// a type whose other metadata values require trailing padding.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::SplitAt;
+    ///
+    /// let words = [1u16, 2, 3, 4];
+    /// let split = SplitAt::split_at(&words[..], 2).unwrap();
+    /// let (left, right) = split.via_no_dynamic_padding();
+    /// assert_eq!(left, [1, 2]);
+    /// assert_eq!(right, [3, 4]);
+    /// ```
+    ///
+    /// A layout that can require dynamic trailing padding is rejected at
+    /// monomorphization:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::{FromBytes, Immutable, KnownLayout, SplitAt};
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, KnownLayout, SplitAt)]
+    /// #[repr(C, align(2))]
+    /// struct DynamicallyPadded {
+    ///     prefix: u8,
+    ///     trailing: [u8],
+    /// }
+    ///
+    /// let bytes = [0u8; 4];
+    /// let value = DynamicallyPadded::ref_from_bytes(&bytes).unwrap();
+    /// let _ = value.split_at(1).unwrap().via_no_dynamic_padding();
+    /// ```
+    ///
+    #[doc = codegen_header!("h5", "split_via_no_dynamic_padding")]
+    ///
+    /// See [`Split::via_immutable`](#method.split_via_immutable.codegen).
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn via_no_dynamic_padding(self) -> (&'a T, &'a [T::Elem]) {
+        let (l, r) = self.into_ptr().via_no_dynamic_padding();
+        (l.as_ref(), r.as_ref())
+    }
+
     /// Produces the split parts of `self`, using a dynamic check to ensure that
     /// it is sound to have concurrent references to both parts. You should
-    /// prefer using [`Self::via_immutable`], [`Self::via_into_bytes`], or
-    /// [`Self::via_unaligned`], which have no runtime cost.
+    /// prefer using [`Self::via_immutable`], [`Self::via_into_bytes`],
+    /// [`Self::via_unaligned`], or [`Self::via_no_dynamic_padding`], which have
+    /// perform no runtime check.
     ///
     /// Note that this check is overly conservative if `T` is [`Immutable`]; for
     /// some types, this check will reject some splits which
@@ -665,8 +747,16 @@ where
         (l.as_mut(), r.as_mut())
     }
 
-    /// Produces the split parts of `self`, using [`Unaligned`] to ensure that
-    /// it is sound to have concurrent references to both parts.
+    /// Produces the split parts of `self`, requiring the trailing slice's
+    /// element type to be [`Unaligned`].
+    ///
+    /// This bound makes the method available to generic code that can name the
+    /// trailing element's alignment. At monomorphization, this method also
+    /// verifies that `T`'s layout never requires dynamic trailing padding.
+    /// This verification performs no runtime check. Use
+    /// [`Self::via_no_dynamic_padding`] when no [`Unaligned`] bound is
+    /// available, or [`Self::via_runtime_check`] for dynamically padded
+    /// layouts.
     ///
     /// # Examples
     ///
@@ -674,7 +764,7 @@ where
     /// use zerocopy::{SplitAt, FromBytes};
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(SplitAt, FromBytes, KnownLayout, IntoBytes, Unaligned)]
+    /// #[derive(SplitAt, FromBytes, KnownLayout, IntoBytes)]
     /// #[repr(C)]
     /// struct Packet<B: ?Sized> {
     ///     length: u8,
@@ -693,8 +783,8 @@ where
     ///     // Attempt to split `packet` at `length`.
     ///     let split = packet.split_at_mut(packet.length as usize).unwrap();
     ///
-    ///     // Use the `Unaligned` bound on `Packet` to prove that it's okay to
-    ///     // return concurrent references to `packet` and `rest`.
+    ///     // Use the `Unaligned` bound on `Packet`'s trailing element type to
+    ///     // make this no-runtime-check method available.
     ///     let (packet, rest) = split.via_unaligned();
     ///
     ///     assert_eq!(packet.length, 4);
@@ -715,16 +805,52 @@ where
     #[inline(always)]
     pub fn via_unaligned(self) -> (&'a mut T, &'a mut [T::Elem])
     where
-        T: Unaligned,
+        T::Elem: Unaligned,
     {
         let (l, r) = self.into_ptr().via_unaligned();
         (l.as_mut(), r.as_mut())
     }
 
+    /// Produces the split parts of `self` when `T`'s layout never requires
+    /// dynamic trailing padding.
+    ///
+    /// This is the mutable counterpart to
+    /// [`Split::via_no_dynamic_padding`] for shared references. It performs no
+    /// runtime check and verifies the layout property at monomorphization.
+    /// Generic code that can name an alignment bound may prefer
+    /// [`Self::via_unaligned`]; dynamically padded layouts must use
+    /// [`Self::via_runtime_check`]. This method's check applies to every valid
+    /// metadata value for `T`; in contrast, [`Self::via_runtime_check`] can
+    /// accept a particular split of a type whose other metadata values require
+    /// trailing padding.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::SplitAt;
+    ///
+    /// let mut words = [1u16, 2, 3, 4];
+    /// let split = SplitAt::split_at_mut(&mut words[..], 2).unwrap();
+    /// let (left, right) = split.via_no_dynamic_padding();
+    /// left[0] = 5;
+    /// right[0] = 6;
+    /// assert_eq!(words, [5, 2, 6, 4]);
+    /// ```
+    ///
+    /// # Code Generation
+    ///
+    /// See [`Split::via_immutable`](#method.split_via_immutable.codegen).
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn via_no_dynamic_padding(self) -> (&'a mut T, &'a mut [T::Elem]) {
+        let (l, r) = self.into_ptr().via_no_dynamic_padding();
+        (l.as_mut(), r.as_mut())
+    }
+
     /// Produces the split parts of `self`, using a dynamic check to ensure that
     /// it is sound to have concurrent references to both parts. You should
-    /// prefer using [`Self::via_into_bytes`] or [`Self::via_unaligned`], which
-    /// have no runtime cost.
+    /// prefer using [`Self::via_into_bytes`], [`Self::via_unaligned`], or
+    /// [`Self::via_no_dynamic_padding`], which perform no runtime check.
     ///
     /// # Examples
     ///
@@ -860,26 +986,36 @@ where
         unsafe { self.via_unchecked() }
     }
 
-    /// Produces the split parts of `self`, using [`Unaligned`] to ensure that
-    /// it is sound to have concurrent references to both parts.
+    /// Produces the split parts of `self`, requiring the trailing slice's
+    /// element type to be [`Unaligned`].
     #[inline(always)]
     fn via_unaligned(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>)
     where
-        T: Unaligned,
+        T::Elem: Unaligned,
     {
-        // SAFETY: By `T: SplitAt + Unaligned`, `T` is either a slice or a
-        // `repr(C)` or `repr(transparent)` slice DST that is well-aligned at
-        // any address and length. If `T` is a slice DST with alignment 1,
-        // `repr(C)` or `repr(transparent)` ensures that no padding is placed
-        // after the final element of the trailing slice. Consequently, `T` can
-        // be split into strictly non-overlapping parts any any index.
+        self.via_no_dynamic_padding()
+    }
+
+    /// Produces the split parts of `self` when `T`'s layout never requires
+    /// dynamic trailing padding.
+    #[inline(always)]
+    fn via_no_dynamic_padding(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>) {
+        static_assert!(
+            T: ?Sized + KnownLayout => !T::LAYOUT.requires_dynamic_padding(),
+            "`Split::via_unaligned` and `Split::via_no_dynamic_padding` cannot be used with a type whose layout may require dynamic trailing padding; use `Split::via_runtime_check` instead"
+        );
+
+        // SAFETY: The assertion proves that no valid metadata for `T` requires
+        // trailing padding. `self.l_len()` is valid metadata by `Split`'s
+        // invariant, so `self.l_len().padding_needed_for() == 0`.
         unsafe { self.via_unchecked() }
     }
 
     /// Produces the split parts of `self`, using a dynamic check to ensure that
     /// it is sound to have concurrent references to both parts. You should
-    /// prefer using [`Self::via_immutable`], [`Self::via_into_bytes`], or
-    /// [`Self::via_unaligned`], which have no runtime cost.
+    /// prefer using [`Self::via_immutable`], [`Self::via_into_bytes`],
+    /// [`Self::via_unaligned`], or [`Self::via_no_dynamic_padding`], which have
+    /// perform no runtime check.
     #[inline(always)]
     fn via_runtime_check(self) -> Result<(Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>), Self> {
         let l_len = self.l_len();
@@ -1011,6 +1147,8 @@ mod tests {
             trailing: [u8],
         }
 
+        assert!(SliceDst::LAYOUT.requires_dynamic_padding());
+
         const N: usize = 16;
 
         let arr = [1u16; N];
@@ -1071,20 +1209,81 @@ mod tests {
     }
     #[test]
     fn test_split_at_via_unaligned() {
-        use crate::{FromBytes, Immutable, IntoBytes, KnownLayout, SplitAt, Unaligned};
-        #[derive(FromBytes, KnownLayout, SplitAt, IntoBytes, Immutable, Unaligned)]
-        #[repr(C)]
-        struct Packet {
-            length: u8,
-            body: [u8],
+        use crate::{Immutable, KnownLayout, Split, SplitAt, Unaligned};
+
+        fn via_unaligned<'a, T>(split: Split<&'a T>) -> (&'a T, &'a [T::Elem])
+        where
+            T: ?Sized + SplitAt,
+            T::Elem: Unaligned,
+        {
+            split.via_unaligned()
         }
 
-        let arr = [1, 2, 3, 4];
-        let packet = Packet::ref_from_bytes(&arr[..]).unwrap();
+        fn via_unaligned_mut<'a, T>(split: Split<&'a mut T>) -> (&'a mut T, &'a mut [T::Elem])
+        where
+            T: ?Sized + SplitAt,
+            T::Elem: Unaligned,
+        {
+            split.via_unaligned()
+        }
+
+        #[derive(KnownLayout, SplitAt, Immutable)]
+        #[repr(C, align(2))]
+        struct Packet<B: ?Sized> {
+            prefix: [u8; 2],
+            body: B,
+        }
+
+        // `Packet` has alignment 2 and does not implement `Unaligned`, but its
+        // two-byte trailing elements do. Since its size changes in two-byte
+        // increments, its concrete layout never requires dynamic padding.
+        assert!(!Packet::<[[u8; 2]]>::LAYOUT.requires_dynamic_padding());
+        let packet = Packet { prefix: [0, 1], body: [[2, 3], [4, 5], [6, 7]] };
+        let packet: &Packet<[[u8; 2]]> = &packet;
 
         let split = packet.split_at(2).unwrap();
-        let (l, r) = split.via_unaligned();
-        assert_eq!(l.length, 1);
-        assert_eq!(r, &[4]);
+        let (l, r) = via_unaligned(split);
+        assert_eq!(l.body, [[2, 3], [4, 5]]);
+        assert_eq!(r, &[[6, 7]]);
+
+        let mut packet = Packet { prefix: [0, 1], body: [[2, 3], [4, 5], [6, 7]] };
+        {
+            let packet: &mut Packet<[[u8; 2]]> = &mut packet;
+            let split = packet.split_at_mut(2).unwrap();
+            let (l, r) = via_unaligned_mut(split);
+            l.body[0] = [8, 9];
+            r[0] = [10, 11];
+        }
+        assert_eq!(packet.body, [[8, 9], [4, 5], [10, 11]]);
+    }
+
+    #[test]
+    fn test_split_at_via_no_dynamic_padding() {
+        use core::cell::Cell;
+
+        use crate::SplitAt;
+
+        // `u16` does not implement `Unaligned`, but `[u16]` never requires
+        // dynamic trailing padding.
+        let words = [1u16, 2, 3, 4];
+        let split = SplitAt::split_at(&words[..], 2).unwrap();
+        let (left, right) = split.via_no_dynamic_padding();
+        assert_eq!(left, [1, 2]);
+        assert_eq!(right, [3, 4]);
+
+        let mut words = [1u16, 2, 3, 4];
+        let split = SplitAt::split_at_mut(&mut words[..], 2).unwrap();
+        let (left, right) = split.via_no_dynamic_padding();
+        left[0] = 5;
+        right[0] = 6;
+        assert_eq!(words, [5, 2, 6, 4]);
+
+        // Exercise the safety-sensitive shared route with interior mutation.
+        let cells = [Cell::new(1u16), Cell::new(2), Cell::new(3)];
+        let split = SplitAt::split_at(&cells[..], 2).unwrap();
+        let (left, right) = split.via_no_dynamic_padding();
+        left[0].set(4);
+        right[0].set(5);
+        assert_eq!([cells[0].get(), cells[1].get(), cells[2].get()], [4, 2, 5]);
     }
 }
