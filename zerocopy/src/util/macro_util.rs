@@ -418,6 +418,25 @@ macro_rules! union_padding {
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! enum_padding {
+    (@tag_size, $t:ty, $_align:expr, $packed:expr, $disc_size:expr, $([$($ts:ty),*]),*) => {{
+        // The tag definition is evaluated in the lexical scope of
+        // `$disc_size`, separate from the caller's field type tokens. This
+        // prevents generated tag names from capturing those field types.
+        #[allow(clippy::as_conversions)]
+        const _: [(); 1] = [(); $packed.is_none() as usize];
+        let mut max = (0, $disc_size);
+        $({
+            let padding = $crate::util::macro_util::size_of::<$t>()
+                - (
+                    max.1
+                    $(+ $crate::util::macro_util::size_of::<$ts>())*
+                );
+            if padding > max.0 {
+                max.0 = padding;
+            }
+        })*
+        max.0
+    }};
     ($t:ty, $_align:expr, $packed:expr, $disc:ty, $([$($ts:ty),*]),*) => {{
         // The `align` and `packed` directives are irrelevant. `$align` can be
         // ignored because regardless of if and how it is set, comparing the

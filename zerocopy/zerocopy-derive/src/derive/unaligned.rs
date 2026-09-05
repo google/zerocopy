@@ -5,7 +5,10 @@ use syn::{Data, DataEnum, DataStruct, DataUnion, Error};
 
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
-    util::{Ctx, FieldBounds, ImplBlockBuilder, Trait},
+    util::{
+        reject_uninspectable_field_types, reject_uninspectable_generics, Ctx, FieldBounds,
+        ImplBlockBuilder, Trait,
+    },
 };
 
 pub(crate) fn derive_unaligned(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error> {
@@ -28,6 +31,12 @@ fn derive_unaligned_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream,
     let field_bounds = if repr.is_packed_1() {
         FieldBounds::None
     } else if repr.is_c() || repr.is_transparent() {
+        if let Err(error) = reject_uninspectable_generics(&ctx.ast.generics, "Unaligned") {
+            return ctx.error_or_skip(error);
+        }
+        if let Err(error) = reject_uninspectable_field_types(strct, "Unaligned") {
+            return ctx.error_or_skip(error);
+        }
         FieldBounds::ALL_SELF
     } else {
         return ctx.error_or_skip(Error::new(
@@ -53,6 +62,13 @@ fn derive_unaligned_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Error
         ));
     }
 
+    if let Err(error) = reject_uninspectable_generics(&ctx.ast.generics, "Unaligned") {
+        return ctx.error_or_skip(error);
+    }
+    if let Err(error) = reject_uninspectable_field_types(enm, "Unaligned") {
+        return ctx.error_or_skip(error);
+    }
+
     Ok(ImplBlockBuilder::new(ctx, enm, Trait::Unaligned, FieldBounds::ALL_SELF).build())
 }
 
@@ -68,6 +84,12 @@ fn derive_unaligned_union(ctx: &Ctx, unn: &DataUnion) -> Result<TokenStream, Err
     let field_type_trait_bounds = if repr.is_packed_1() {
         FieldBounds::None
     } else if repr.is_c() || repr.is_transparent() {
+        if let Err(error) = reject_uninspectable_generics(&ctx.ast.generics, "Unaligned") {
+            return ctx.error_or_skip(error);
+        }
+        if let Err(error) = reject_uninspectable_field_types(unn, "Unaligned") {
+            return ctx.error_or_skip(error);
+        }
         FieldBounds::ALL_SELF
     } else {
         return ctx.error_or_skip(Error::new(

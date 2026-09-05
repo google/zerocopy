@@ -1869,11 +1869,13 @@ const _: () = {
                         { ::zerocopy::ident_id!(StructLike) },
                         { ::zerocopy::ident_id!(a) },
                     >>::Type {
-                        use ::zerocopy::pointer::cast::{CastSized, Projection};
-                        slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
+                        slf.project::<
+                                ___ZerocopyRawEnum<'a, N, X, Y>,
+                                ::zerocopy::pointer::cast::CastSized,
+                            >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -1881,7 +1883,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_StructLike) },
@@ -1889,7 +1891,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -1897,7 +1899,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(1) },
@@ -1981,11 +1983,13 @@ const _: () = {
                         { ::zerocopy::ident_id!(StructLike) },
                         { ::zerocopy::ident_id!(b) },
                     >>::Type {
-                        use ::zerocopy::pointer::cast::{CastSized, Projection};
-                        slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
+                        slf.project::<
+                                ___ZerocopyRawEnum<'a, N, X, Y>,
+                                ::zerocopy::pointer::cast::CastSized,
+                            >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -1993,7 +1997,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_StructLike) },
@@ -2001,7 +2005,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2009,7 +2013,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(2) },
@@ -2093,11 +2097,13 @@ const _: () = {
                         { ::zerocopy::ident_id!(StructLike) },
                         { ::zerocopy::ident_id!(c) },
                     >>::Type {
-                        use ::zerocopy::pointer::cast::{CastSized, Projection};
-                        slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
+                        slf.project::<
+                                ___ZerocopyRawEnum<'a, N, X, Y>,
+                                ::zerocopy::pointer::cast::CastSized,
+                            >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2105,7 +2111,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_StructLike) },
@@ -2113,7 +2119,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2121,7 +2127,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(3) },
@@ -2205,11 +2211,13 @@ const _: () = {
                         { ::zerocopy::ident_id!(StructLike) },
                         { ::zerocopy::ident_id!(d) },
                     >>::Type {
-                        use ::zerocopy::pointer::cast::{CastSized, Projection};
-                        slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
+                        slf.project::<
+                                ___ZerocopyRawEnum<'a, N, X, Y>,
+                                ::zerocopy::pointer::cast::CastSized,
+                            >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2217,7 +2225,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_StructLike) },
@@ -2225,7 +2233,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2233,7 +2241,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(4) },
@@ -2317,11 +2325,13 @@ const _: () = {
                         { ::zerocopy::ident_id!(StructLike) },
                         { ::zerocopy::ident_id!(e) },
                     >>::Type {
-                        use ::zerocopy::pointer::cast::{CastSized, Projection};
-                        slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
+                        slf.project::<
+                                ___ZerocopyRawEnum<'a, N, X, Y>,
+                                ::zerocopy::pointer::cast::CastSized,
+                            >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2329,7 +2339,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_StructLike) },
@@ -2337,7 +2347,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2345,7 +2355,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(5) },
@@ -2429,11 +2439,13 @@ const _: () = {
                         { ::zerocopy::ident_id!(TupleLike) },
                         { ::zerocopy::ident_id!(0) },
                     >>::Type {
-                        use ::zerocopy::pointer::cast::{CastSized, Projection};
-                        slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
+                        slf.project::<
+                                ___ZerocopyRawEnum<'a, N, X, Y>,
+                                ::zerocopy::pointer::cast::CastSized,
+                            >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2441,7 +2453,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_TupleLike) },
@@ -2449,7 +2461,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2457,7 +2469,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(1) },
@@ -2541,11 +2553,13 @@ const _: () = {
                         { ::zerocopy::ident_id!(TupleLike) },
                         { ::zerocopy::ident_id!(1) },
                     >>::Type {
-                        use ::zerocopy::pointer::cast::{CastSized, Projection};
-                        slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
+                        slf.project::<
+                                ___ZerocopyRawEnum<'a, N, X, Y>,
+                                ::zerocopy::pointer::cast::CastSized,
+                            >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2553,7 +2567,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_TupleLike) },
@@ -2561,7 +2575,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2569,7 +2583,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(2) },
@@ -2653,11 +2667,13 @@ const _: () = {
                         { ::zerocopy::ident_id!(TupleLike) },
                         { ::zerocopy::ident_id!(2) },
                     >>::Type {
-                        use ::zerocopy::pointer::cast::{CastSized, Projection};
-                        slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
+                        slf.project::<
+                                ___ZerocopyRawEnum<'a, N, X, Y>,
+                                ::zerocopy::pointer::cast::CastSized,
+                            >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(variants) },
@@ -2665,7 +2681,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                                     { ::zerocopy::ident_id!(__field_TupleLike) },
@@ -2673,7 +2689,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(value) },
@@ -2681,7 +2697,7 @@ const _: () = {
                             >()
                             .project::<
                                 _,
-                                Projection<
+                                ::zerocopy::pointer::cast::Projection<
                                     _,
                                     { ::zerocopy::STRUCT_VARIANT_ID },
                                     { ::zerocopy::ident_id!(3) },

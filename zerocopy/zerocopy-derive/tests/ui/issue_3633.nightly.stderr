@@ -1,0 +1,32 @@
+error: cannot derive `KnownLayout` because the unqualified identifier `__Zerocopy_Field_header` is reserved for generated code; qualify the path or rename the identifier
+  --> $DIR/issue_3633.rs:22:17
+   |
+22 |         header: __Zerocopy_Field_header,
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^
+
+error: cannot derive `KnownLayout` for a type containing a macro invocation in a field type; write the expanded syntax explicitly
+  --> $DIR/issue_3633.rs:39:22
+   |
+39 |         header: [u8; len!()],
+   |                      ^^^^^^
+
+error: cannot derive `KnownLayout` for a type containing a macro invocation in a field type; write the expanded syntax explicitly
+  --> $DIR/issue_3633.rs:58:17
+   |
+58 |         header: header!(),
+   |                 ^^^^^^^^^
+
+error: cannot derive `KnownLayout` because the unqualified identifier `__Zerocopy_Field_header` is reserved for generated code; qualify the path or rename the identifier
+  --> $DIR/issue_3633.rs:86:19
+   |
+86 |     struct Packet<__Zerocopy_Field_header>
+   |                   ^^^^^^^^^^^^^^^^^^^^^^^
+
+error: cannot derive `KnownLayout` because the unqualified identifier `__Zerocopy_Field_0` is reserved for generated code; qualify the path or rename the identifier
+   --> $DIR/issue_3633.rs:104:17
+    |
+104 |             use __Zerocopy_Field_0 as T;
+    |                 ^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 5 previous errors
+
