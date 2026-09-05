@@ -75,14 +75,13 @@ error: FromZeros only supported on enums with a variant that has a discriminant 
     | |_^
 
 error: FromZeros only supported on enums with a variant that has a discriminant of `0`
-       help: This enum has discriminants which are not literal integers. One of those may define or imply which variant has a discriminant of zero. Use a literal integer to define or imply the variant with a discriminant of zero.
    --> $DIR/enum.rs:151:1
     |
 151 | / #[zerocopy(crate = "zerocopy_renamed")]
 152 | |
 153 | | #[repr(i8)]
 154 | | enum FromZeros5 {
-155 | |     A = NEGATIVE_ONE,
+155 | |     A = -2,
 156 | |     B,
 157 | | }
     | |_^
