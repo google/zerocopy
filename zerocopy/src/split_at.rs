@@ -270,10 +270,10 @@ unsafe impl<T> SplitAt for [T] {
 /// requires trailing padding, the trailing padding of the left part of the
 /// split `T` will overlap the right part. If `T` is a mutable reference or
 /// permits interior mutation, you must ensure that the left and right parts do
-/// not overlap. You can do this at zero-cost using using
-/// [`Self::via_immutable`], [`Self::via_into_bytes`], or
-/// [`Self::via_unaligned`], or with a dynamic check by using
-/// [`Self::via_runtime_check`].
+/// not overlap. You can do this without a runtime check using
+/// [`Self::via_immutable`] or [`Self::via_into_bytes`], or using
+/// [`Self::via_unaligned`] when the layout never requires dynamic trailing
+/// padding. Otherwise, use the dynamic check in [`Self::via_runtime_check`].
 #[derive(Debug)]
 pub struct Split<T> {
     /// A pointer to the source slice DST.
@@ -425,6 +425,10 @@ where
 
     /// Produces the split parts of `self`, using [`Unaligned`] to ensure that
     /// it is sound to have concurrent references to both parts.
+    ///
+    /// This method performs no runtime check. Calling it on a type whose layout
+    /// may require dynamic trailing padding produces a post-monomorphization
+    /// error; use [`Self::via_runtime_check`] for such layouts.
     ///
     /// # Examples
     ///
@@ -668,6 +672,10 @@ where
     /// Produces the split parts of `self`, using [`Unaligned`] to ensure that
     /// it is sound to have concurrent references to both parts.
     ///
+    /// This method performs no runtime check. Calling it on a type whose layout
+    /// may require dynamic trailing padding produces a post-monomorphization
+    /// error; use [`Self::via_runtime_check`] for such layouts.
+    ///
     /// # Examples
     ///
     /// ```
@@ -867,12 +875,14 @@ where
     where
         T: Unaligned,
     {
-        // SAFETY: By `T: SplitAt + Unaligned`, `T` is either a slice or a
-        // `repr(C)` or `repr(transparent)` slice DST that is well-aligned at
-        // any address and length. If `T` is a slice DST with alignment 1,
-        // `repr(C)` or `repr(transparent)` ensures that no padding is placed
-        // after the final element of the trailing slice. Consequently, `T` can
-        // be split into strictly non-overlapping parts any any index.
+        static_assert!(
+            T: ?Sized + KnownLayout => !T::LAYOUT.requires_dynamic_padding(),
+            "`Split::via_unaligned` cannot be used with a type whose layout may require dynamic trailing padding; use `Split::via_runtime_check` instead"
+        );
+
+        // SAFETY: The assertion proves that no valid metadata for `T` requires
+        // trailing padding. `self.l_len()` is valid metadata by `Split`'s
+        // invariant, so `self.l_len().padding_needed_for() == 0`.
         unsafe { self.via_unchecked() }
     }
 
@@ -1010,6 +1020,8 @@ mod tests {
             prefix: u8,
             trailing: [u8],
         }
+
+        assert!(SliceDst::LAYOUT.requires_dynamic_padding());
 
         const N: usize = 16;
 
