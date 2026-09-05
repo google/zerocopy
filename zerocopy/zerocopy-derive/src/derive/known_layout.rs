@@ -6,7 +6,11 @@ use syn::{parse_quote, Data, Error, Type};
 
 use crate::{
     repr::StructUnionRepr,
-    util::{Ctx, DataExt, FieldBounds, ImplBlockBuilder, SelfBounds, Trait},
+    util::{
+        reject_reserved_identifiers, reject_uninspectable_field_types,
+        reject_uninspectable_generics, Ctx, DataExt, FieldBounds, ImplBlockBuilder, SelfBounds,
+        Trait,
+    },
 };
 
 fn derive_known_layout_for_repr_c_struct<'a>(
@@ -265,6 +269,19 @@ pub(crate) fn derive(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error>
     };
 
     let fields = ctx.ast.data.fields();
+
+    if c_struct_repr.is_some() && !fields.is_empty() {
+        if let Err(error) = reject_uninspectable_generics(&ctx.ast.generics, "KnownLayout") {
+            return ctx.error_or_skip(error);
+        }
+        if let Err(error) = reject_uninspectable_field_types(&ctx.ast.data, "KnownLayout") {
+            return ctx.error_or_skip(error);
+        }
+
+        if let Err(error) = reject_reserved_identifiers(ctx, "KnownLayout", &["__Zerocopy"]) {
+            return ctx.error_or_skip(error);
+        }
+    }
 
     let (self_bounds, inner_extras, outer_extras) = c_struct_repr
         .as_ref()

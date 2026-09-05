@@ -1,0 +1,8 @@
+error: cannot derive `KnownLayout` because the unqualified identifier `__Zerocopy_Field_trailer` is reserved for generated code; qualify the path or rename the identifier
+  --> $DIR/issue_3633_known_layout_trailing.rs:22:14
+   |
+22 |     trailer: __Zerocopy_Field_trailer,
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+

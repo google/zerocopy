@@ -12,10 +12,20 @@ use syn::{Data, Error};
 
 use crate::{
     repr::StructUnionRepr,
-    util::{Ctx, DataExt, FieldBounds, ImplBlockBuilder, Trait},
+    util::{
+        reject_uninspectable_field_types, reject_uninspectable_impl_generics,
+        reject_uninspectable_types, Ctx, DataExt, FieldBounds, ImplBlockBuilder, Trait,
+    },
 };
 
 pub(crate) fn derive_immutable(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error> {
+    if let Err(error) = reject_uninspectable_impl_generics(&ctx.ast.generics, "Immutable") {
+        return ctx.error_or_skip(error);
+    }
+    if let Err(error) = reject_uninspectable_field_types(&ctx.ast.data, "Immutable") {
+        return ctx.error_or_skip(error);
+    }
+
     Ok(match &ctx.ast.data {
         Data::Struct(strct) => {
             ImplBlockBuilder::new(ctx, strct, Trait::Immutable, FieldBounds::ALL_SELF).build()
@@ -123,6 +133,13 @@ pub(crate) fn derive_split_at(ctx: &Ctx, _top_level: Trait) -> Result<TokenStrea
         return ctx.error_or_skip(Error::new(Span::call_site(), "must at least one field"));
     };
 
+    if let Err(error) = reject_uninspectable_types([*trailing_field], "SplitAt") {
+        return ctx.error_or_skip(error);
+    }
+    if let Err(error) = reject_uninspectable_impl_generics(&ctx.ast.generics, "SplitAt") {
+        return ctx.error_or_skip(error);
+    }
+
     let zerocopy_crate = &ctx.zerocopy_crate;
     // SAFETY: `#ty`, per the above checks, is `repr(C)` or `repr(transparent)`
     // and is not packed; its trailing field is guaranteed to be well-aligned
@@ -133,4 +150,19 @@ pub(crate) fn derive_split_at(ctx: &Ctx, _top_level: Trait) -> Result<TokenStrea
             type Elem = <#trailing_field as #zerocopy_crate::SplitAt>::Elem;
         })
         .build())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn split_at_ignores_discarded_generic_defaults() {
+        let input = syn::parse_quote! {
+            #[repr(C)]
+            struct Slice<T = default_type!()>(T, [u8]);
+        };
+        let ctx = Ctx::try_from_derive_input(input).unwrap();
+        derive_split_at(&ctx, Trait::SplitAt).unwrap();
+    }
 }

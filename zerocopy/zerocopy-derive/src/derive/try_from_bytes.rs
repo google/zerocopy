@@ -10,8 +10,12 @@ use syn::{
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
     util::{
-        const_block, enum_could_be_from_bytes, generate_tag_enum, validate_tag_enum_discriminants,
-        Ctx, DataExt, FieldBounds, ImplBlockBuilder, Trait, TraitBound,
+        const_block, enum_could_be_from_bytes, generate_tag_enum,
+        reject_contextual_self_in_generics, reject_contextual_self_in_types,
+        reject_reserved_identifiers, reject_reserved_identifiers_in_impl,
+        reject_uninspectable_field_types, reject_uninspectable_generics,
+        reject_uninspectable_impl_generics, validate_tag_enum_discriminants, Ctx, DataExt,
+        FieldBounds, ImplBlockBuilder, Trait, TraitBound,
     },
 };
 fn tag_ident(variant_ident: &Ident) -> Ident {
@@ -257,13 +261,14 @@ pub(crate) fn derive_is_bit_valid(
 
                 #[inline(always)]
                 fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut <Self as #has_field_path>::Type {
-                    use #zerocopy_crate::pointer::cast::{CastSized, Projection};
-
-                    slf.project::<___ZerocopyRawEnum #ty_generics, CastSized>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::REPR_C_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>>()
+                    slf.project::<
+                            ___ZerocopyRawEnum #ty_generics,
+                            #zerocopy_crate::pointer::cast::CastSized,
+                        >()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>>()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::REPR_C_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>>()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>>()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>>()
                         .as_ptr()
                 }
             })
@@ -443,22 +448,49 @@ pub(crate) fn derive_is_bit_valid(
         }
     })
 }
-/// Validates any input syntax that `TryFromBytes` code generation will copy
-/// into a helper definition.
+/// Validates input syntax whose meaning must be preserved in generated
+/// `TryFromBytes` code.
 ///
 /// Keep this separate from code generation so supertrait derives can reject
 /// the entire generated impl chain when `on_error = "skip"` is requested.
 pub(crate) fn validate_try_from_bytes_generation(ctx: &Ctx, top_level: Trait) -> Result<(), Error> {
+    let derive_name = match &top_level {
+        Trait::FromZeros => "FromZeros",
+        Trait::FromBytes => "FromBytes",
+        _ => "TryFromBytes",
+    };
+
+    reject_uninspectable_impl_generics(&ctx.ast.generics, derive_name)?;
+    reject_uninspectable_field_types(&ctx.ast.data, derive_name)?;
+
+    let reserved = match &ctx.ast.data {
+        Data::Struct(_) | Data::Union(_) => &["___Zc", "ẕ"][..],
+        Data::Enum(_) => &["___Zc"][..],
+    };
+    reject_reserved_identifiers_in_impl(ctx, derive_name, reserved)?;
+
     let enm = match &ctx.ast.data {
         Data::Enum(enm) => enm,
         Data::Struct(_) | Data::Union(_) => return Ok(()),
     };
     let repr = EnumRepr::from_attrs(&ctx.ast.attrs)?;
-    let generates_tag_enum = try_gen_trivial_is_bit_valid(ctx, top_level).is_none()
+    let generates_field_helpers = try_gen_trivial_is_bit_valid(ctx, top_level).is_none()
         && !enum_could_be_from_bytes(&repr, enm);
-    if generates_tag_enum {
+    if generates_field_helpers {
+        reject_uninspectable_generics(&ctx.ast.generics, derive_name)?;
+        reject_reserved_identifiers(
+            ctx,
+            derive_name,
+            &["___Zc", "___Zerocopy", "___ZEROCOPY", "ẕ"],
+        )?;
+        reject_contextual_self_in_generics(&ctx.ast.generics, derive_name)?;
+        reject_contextual_self_in_types(
+            enm.variants.iter().flat_map(|variant| &variant.fields).map(|field| &field.ty),
+            derive_name,
+        )?;
         validate_tag_enum_discriminants(enm)?;
     }
+
     Ok(())
 }
 
@@ -817,6 +849,53 @@ mod tests {
         // A nonexhaustive enum needs the helper and must pass validation.
         assert!(validate_try_from_bytes_generation(
             &context_dependent_enum(255),
+            Trait::TryFromBytes,
+        )
+        .is_err());
+    }
+
+    #[test]
+    fn generic_defaults_are_validated_only_when_copied_into_helpers() {
+        let direct_impl = syn::parse_quote! {
+            struct Struct<T = default_type!()>(T);
+        };
+        let direct_impl = Ctx::try_from_derive_input(direct_impl).unwrap();
+        assert!(validate_try_from_bytes_generation(&direct_impl, Trait::TryFromBytes).is_ok());
+
+        let variants = (0usize..256).map(|index| format_ident!("V{}", index));
+        let helperless_enum = syn::parse2(quote! {
+            #[repr(u8)]
+            enum Enum<const N: usize = { default_value!() }> {
+                #(#variants,)*
+            }
+        })
+        .unwrap();
+        let helperless_enum = Ctx::try_from_derive_input(helperless_enum).unwrap();
+        assert!(validate_try_from_bytes_generation(&helperless_enum, Trait::TryFromBytes).is_ok());
+
+        let helper_definition = syn::parse_quote! {
+            #[repr(u8)]
+            enum Enum<T = default_type!()> {
+                Value(T),
+                End,
+            }
+        };
+        let helper_definition = Ctx::try_from_derive_input(helper_definition).unwrap();
+        assert!(
+            validate_try_from_bytes_generation(&helper_definition, Trait::TryFromBytes).is_err()
+        );
+
+        let helper_captures_method_generic = syn::parse_quote! {
+            #[repr(u8)]
+            enum Enum<T = ___ZcAlignment> {
+                Value(T),
+                End,
+            }
+        };
+        let helper_captures_method_generic =
+            Ctx::try_from_derive_input(helper_captures_method_generic).unwrap();
+        assert!(validate_try_from_bytes_generation(
+            &helper_captures_method_generic,
             Trait::TryFromBytes,
         )
         .is_err());

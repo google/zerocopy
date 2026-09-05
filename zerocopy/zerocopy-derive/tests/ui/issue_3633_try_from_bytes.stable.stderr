@@ -1,0 +1,56 @@
+error: cannot derive `TryFromBytes` because the unqualified identifier `___ZerocopyTagPrimitive` is reserved for generated code; qualify the path or rename the identifier
+  --> $DIR/issue_3633_try_from_bytes.rs:22:14
+   |
+22 |         Flag(___ZerocopyTagPrimitive),
+   |              ^^^^^^^^^^^^^^^^^^^^^^^
+
+error: cannot derive `TryFromBytes` for a type containing a macro invocation in a field type; write the expanded syntax explicitly
+  --> $DIR/issue_3633_try_from_bytes.rs:41:14
+   |
+41 |         Flag(flag!()),
+   |              ^^^^
+
+error: cannot derive `TryFromBytes` because the unqualified identifier `___ZcAlignment` is reserved for generated code; qualify the path or rename the identifier
+  --> $DIR/issue_3633_try_from_bytes.rs:66:19
+   |
+66 |     struct Packet(___ZcAlignment);
+   |                   ^^^^^^^^^^^^^^
+
+error: cannot derive `TryFromBytes` because the unqualified identifier `ẕfield` is reserved for generated code; qualify the path or rename the identifier
+  --> $DIR/issue_3633_try_from_bytes.rs:76:16
+   |
+76 |         field: ẕfield,
+   |                ^^^^^^
+
+error: cannot derive `TryFromBytes` because the unqualified identifier `ẕ0` is reserved for generated code; qualify the path or rename the identifier
+  --> $DIR/issue_3633_try_from_bytes.rs:89:19
+   |
+89 |     struct Packet<ẕ0>(<Self as Assoc>::Type)
+   |                   ^^
+
+error: cannot derive `TryFromBytes` because the unqualified identifier `___ZerocopyTag` is reserved for generated code; qualify the path or rename the identifier
+   --> $DIR/issue_3633_try_from_bytes.rs:107:17
+    |
+107 |                 ___ZerocopyTag
+    |                 ^^^^^^^^^^^^^^
+
+error: cannot derive `TryFromBytes` because the unqualified identifier `___ZEROCOPY_TAG_Variant` is reserved for generated code; qualify the path or rename the identifier
+   --> $DIR/issue_3633_try_from_bytes.rs:123:21
+    |
+123 |                     ___ZEROCOPY_TAG_Variant => 1,
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^
+
+error: cannot derive `TryFromBytes` with `Self` in an enum field type; write the concrete type explicitly
+   --> $DIR/issue_3633_try_from_bytes.rs:146:21
+    |
+146 |         Flag([bool; Self::N]),
+    |                     ^^^^
+
+error: cannot derive `TryFromBytes` with `Self` in generic parameters or predicates; write the concrete type explicitly
+   --> $DIR/issue_3633_try_from_bytes.rs:164:27
+    |
+164 |     enum Packet<T: Select<Self>> {
+    |                           ^^^^
+
+error: aborting due to 9 previous errors
+
