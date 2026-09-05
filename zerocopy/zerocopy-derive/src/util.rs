@@ -835,16 +835,303 @@ pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) 
         };
     }
 }
-pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> TokenStream {
-    let zerocopy_crate = &ctx.zerocopy_crate;
-    let variants = data.variants.iter().map(|v| {
-        let ident = &v.ident;
-        if let Some((eq, discriminant)) = &v.discriminant {
-            quote! { #ident #eq #discriminant }
-        } else {
-            quote! { #ident }
+
+fn validate_tag_enum_discriminant(discriminant: &Expr) -> Result<(), Error> {
+    fn reject(syntax: impl ToTokens, message: &'static str) -> Result<(), Error> {
+        Err(Error::new_spanned(syntax, message))
+    }
+
+    fn validate_attrs(attrs: &[syn::Attribute]) -> Result<(), Error> {
+        match attrs.first() {
+            Some(attr) => reject(
+                attr,
+                "attributes are not supported in enum discriminants because their effect cannot \
+                 be preserved in Zerocopy's generated helper enum",
+            ),
+            None => Ok(()),
         }
-    });
+    }
+
+    fn has_supported_integer_suffix(integer: &syn::LitInt) -> bool {
+        matches!(
+            integer.suffix(),
+            "" | "u8"
+                | "u16"
+                | "u32"
+                | "u64"
+                | "u128"
+                | "usize"
+                | "i8"
+                | "i16"
+                | "i32"
+                | "i64"
+                | "i128"
+                | "isize"
+        )
+    }
+
+    fn validate_path(path: &Path) -> Result<(), Error> {
+        if path.segments.iter().any(|segment| segment.ident == "Self") {
+            // In the original discriminant, `Self` denotes the type being
+            // derived. In the copied discriminant, it would denote the
+            // generated tag enum instead.
+            return reject(
+                path,
+                "`Self` is not supported in enum discriminants because its meaning cannot be \
+                 preserved in Zerocopy's generated helper enum",
+            );
+        }
+
+        // The original enum and generated helper enum evaluate copied
+        // discriminants independently. Even a fully-qualified constant path
+        // is not guaranteed to evaluate repeatably: safe const evaluation can
+        // be nondeterministic, and a path can introduce caller-defined types
+        // whose operators have caller-defined semantics. Restrict every leaf
+        // to syntax whose value is defined directly by the compiler.
+        reject(
+            path,
+            "paths are not supported in enum discriminants because Zerocopy's generated helper \
+             enum evaluates copied discriminants independently",
+        )
+    }
+
+    fn validate_endian_method_call(call: &syn::ExprMethodCall) -> Result<(), Error> {
+        validate_attrs(&call.attrs)?;
+        let integer = match call.receiver.as_ref() {
+            Expr::Lit(ExprLit { attrs, lit: Lit::Int(integer), .. }) if attrs.is_empty() => integer,
+            _ => {
+                return reject(
+                    call,
+                    "only `.to_le()` and `.to_be()` on explicitly typed integer literals are \
+                     supported in enum discriminants",
+                )
+            }
+        };
+        if !integer.suffix().is_empty()
+            && has_supported_integer_suffix(integer)
+            && (call.method == "to_le" || call.method == "to_be")
+            && call.turbofish.is_none()
+            && call.args.is_empty()
+        {
+            // These inherent primitive methods are selected entirely by the
+            // explicit literal suffix and cannot be affected by the helper
+            // enum's surrounding item or trait scope.
+            Ok(())
+        } else {
+            reject(
+                call,
+                "only `.to_le()` and `.to_be()` on explicitly typed integer literals are \
+                 supported in enum discriminants",
+            )
+        }
+    }
+
+    fn validate_expr(expr: &Expr) -> Result<(), Error> {
+        match expr {
+            Expr::Binary(binary) => {
+                validate_attrs(&binary.attrs)?;
+                match &binary.op {
+                    syn::BinOp::Add(_)
+                    | syn::BinOp::Sub(_)
+                    | syn::BinOp::Mul(_)
+                    | syn::BinOp::Div(_)
+                    | syn::BinOp::Rem(_)
+                    | syn::BinOp::BitXor(_)
+                    | syn::BinOp::BitAnd(_)
+                    | syn::BinOp::BitOr(_)
+                    | syn::BinOp::Shl(_)
+                    | syn::BinOp::Shr(_) => {}
+                    _ => {
+                        return reject(
+                            binary.op,
+                            "only arithmetic and bitwise operators are supported in enum \
+                             discriminants",
+                        )
+                    }
+                }
+                validate_expr(&binary.left)?;
+                validate_expr(&binary.right)
+            }
+            Expr::Group(group) => {
+                validate_attrs(&group.attrs)?;
+                validate_expr(&group.expr)
+            }
+            Expr::Lit(lit) => {
+                validate_attrs(&lit.attrs)?;
+                match &lit.lit {
+                    Lit::Byte(_) => Ok(()),
+                    Lit::Int(integer) if has_supported_integer_suffix(integer) => Ok(()),
+                    Lit::Int(integer) => reject(
+                        integer,
+                        "only unsuffixed or primitive-integer-suffixed literals are supported in \
+                         enum discriminants",
+                    ),
+                    Lit::Verbatim(literal) => reject(
+                        literal,
+                        "unparsed syntax is not supported in enum discriminants because its \
+                         meaning cannot be preserved in Zerocopy's generated helper enum",
+                    ),
+                    _ => reject(
+                        &lit.lit,
+                        "only integer and byte literals are supported in enum discriminants",
+                    ),
+                }
+            }
+            Expr::MethodCall(call) => validate_endian_method_call(call),
+            Expr::Paren(paren) => {
+                validate_attrs(&paren.attrs)?;
+                validate_expr(&paren.expr)
+            }
+            Expr::Path(path) => {
+                validate_attrs(&path.attrs)?;
+                if let Some(qself) = &path.qself {
+                    if matches!(qself.ty.as_ref(), Type::Path(ty) if ty.qself.is_none() && ty.path.is_ident("Self"))
+                    {
+                        return reject(
+                            &qself.ty,
+                            "`Self` is not supported in enum discriminants because its meaning \
+                             cannot be preserved in Zerocopy's generated helper enum",
+                        );
+                    }
+                    return reject(
+                        path,
+                        "qualified type-relative paths are not supported in enum discriminants \
+                         because their meaning cannot be preserved in Zerocopy's generated \
+                         helper enum",
+                    );
+                }
+                validate_path(&path.path)
+            }
+            Expr::Unary(unary) => {
+                validate_attrs(&unary.attrs)?;
+                match &unary.op {
+                    syn::UnOp::Neg(_) | syn::UnOp::Not(_) => validate_expr(&unary.expr),
+                    _ => reject(
+                        unary.op,
+                        "only negation and bitwise-not unary operators are supported in enum \
+                         discriminants",
+                    ),
+                }
+            }
+            Expr::Macro(mac) => {
+                // A macro can emit `Self` even if its invocation does not
+                // contain a `Self` token. Expanding it once in the original
+                // enum and again in the helper enum can produce different
+                // values.
+                reject(
+                    mac,
+                    "macros are not supported in enum discriminants because their expansion \
+                     cannot be preserved in Zerocopy's generated helper enum",
+                )
+            }
+            Expr::Verbatim(tokens) => reject(
+                tokens,
+                "unparsed syntax is not supported in enum discriminants because its meaning \
+                 cannot be preserved in Zerocopy's generated helper enum",
+            ),
+            _ => {
+                // This is a positive grammar. In particular, it rejects every
+                // pattern, binding, control-flow construct, call, non-endian
+                // method call, block item, macro, and current or future
+                // unparsed AST variant. Those constructs can resolve names
+                // differently after the expression is copied into the
+                // generated helper enum.
+                reject(
+                    expr,
+                    "this expression is not supported in enum discriminants because its meaning \
+                     cannot be preserved in Zerocopy's generated helper enum",
+                )
+            }
+        }
+    }
+
+    validate_expr(discriminant)
+}
+
+pub(crate) fn validate_tag_enum_discriminants(data: &DataEnum) -> Result<(), Error> {
+    for variant in &data.variants {
+        if let Some((_, discriminant)) = &variant.discriminant {
+            validate_tag_enum_discriminant(discriminant)?;
+        }
+    }
+    Ok(())
+}
+
+fn tag_enum_discriminant_lint_attrs(ctx: &Ctx) -> Vec<TokenStream> {
+    ctx.ast
+        .attrs
+        .iter()
+        .filter_map(|attr| {
+            // A lint level explicitly attached to the source enum applies to
+            // its discriminants, but not to the generated helper enum. Copy
+            // only source-provided levels which can permit the primitive
+            // expressions admitted by `validate_tag_enum_discriminant`.
+            //
+            // In particular, do not add an unconditional `allow`: lowering a
+            // lint which an enclosing scope forbids is itself an error, even
+            // when the copied discriminant would not trigger that lint.
+            if !path_is_ident(attr.path(), "allow")
+                && !path_is_ident(attr.path(), "expect")
+                && !path_is_ident(attr.path(), "warn")
+            {
+                return None;
+            }
+
+            let nested = attr
+                .parse_args_with(
+                    syn::punctuated::Punctuated::<Meta, syn::Token![,]>::parse_terminated,
+                )
+                .ok()?;
+            let lints = nested.iter().filter_map(|meta| match meta {
+                Meta::Path(path)
+                    if path_is_ident(path, "overflowing_literals")
+                        || path_is_ident(path, "arithmetic_overflow") =>
+                {
+                    Some(path)
+                }
+                _ => None,
+            });
+            let lints = lints.collect::<Vec<_>>();
+            if lints.is_empty() {
+                return None;
+            }
+
+            // `warn` lowers these deny-by-default lints, and `expect` also
+            // permits them while requiring a diagnostic in the source item.
+            // The helper only needs the permissive level. Reproducing `warn`
+            // would emit duplicate diagnostics, while reproducing `expect`
+            // could create a new unfulfilled expectation.
+            Some(quote_spanned! { attr.span()=> #[allow(#(#lints),*)] })
+        })
+        .collect()
+}
+
+pub(crate) fn generate_tag_enum(
+    ctx: &Ctx,
+    repr: &EnumRepr,
+    data: &DataEnum,
+) -> Result<TokenStream, Error> {
+    // This proof assumes that rustc does not let a later attribute macro
+    // replace the input item while retaining this derive's output. That is a
+    // compiler TCB premise; rust-lang/rust#148423 tracks its violation. A
+    // local check cannot distinguish later active attributes from arbitrary
+    // inert derive-helper attributes, and a partial attribute allowlist would
+    // not protect Zerocopy's other generated unsafe impls.
+    validate_tag_enum_discriminants(data)?;
+    let zerocopy_crate = &ctx.zerocopy_crate;
+    let discriminant_lint_attrs = tag_enum_discriminant_lint_attrs(ctx);
+    let variants = data
+        .variants
+        .iter()
+        .map(|v| -> Result<TokenStream, Error> {
+            let ident = &v.ident;
+            if let Some((eq, discriminant)) = &v.discriminant {
+                Ok(quote! { #ident #eq #discriminant })
+            } else {
+                Ok(quote! { #ident })
+            }
+        })
+        .collect::<Result<Vec<_>, _>>()?;
 
     // Don't include any `repr(align)` when generating the tag enum, as that
     // could add padding after the tag but before any variants, which is not the
@@ -854,8 +1141,9 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
         EnumRepr::Compound(c, _) => quote! { #c },
     };
 
-    quote! {
+    Ok(quote! {
         #repr
+        #(#discriminant_lint_attrs)*
         #[allow(dead_code)]
         pub enum ___ZerocopyTag {
             #(#variants,)*
@@ -866,8 +1154,17 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
         unsafe impl #zerocopy_crate::Immutable for ___ZerocopyTag {
             fn only_derive_is_allowed_to_implement_this_trait() {}
         }
-    }
+    })
 }
+
+pub(crate) fn enum_has_full_discriminant_domain(repr: &EnumRepr, enm: &DataEnum) -> bool {
+    enum_size_from_repr(repr).map(|size| enm.variants.len() == 1usize << size).unwrap_or(false)
+}
+
+pub(crate) fn enum_could_be_from_bytes(repr: &EnumRepr, enm: &DataEnum) -> bool {
+    enm.fields().is_empty() && enum_has_full_discriminant_domain(repr, enm)
+}
+
 pub(crate) fn enum_size_from_repr(repr: &EnumRepr) -> Result<usize, Error> {
     use CompoundRepr::*;
     use PrimitiveRepr::*;
@@ -937,6 +1234,119 @@ pub(crate) mod testutil {
                 let _ = Self::Ambiguous;
             }
         });
+    }
+
+    #[test]
+    fn test_validate_tag_enum_discriminant_accepts_stable_context() {
+        use syn::parse_quote;
+
+        for expr in [
+            parse_quote!(1),
+            parse_quote!(1 + 2),
+            parse_quote!(!0 & (1 << 2)),
+            parse_quote!(9_u32.to_le()),
+            parse_quote!(0x0800_u16.to_be()),
+        ] {
+            assert!(super::validate_tag_enum_discriminant(&expr).is_ok());
+        }
+    }
+
+    #[test]
+    fn test_validate_tag_enum_discriminant_rejects_context_dependent_syntax() {
+        use syn::parse_quote;
+
+        for expr in [
+            parse_quote!(Self::TAG),
+            parse_quote!(1 + Self::TAG),
+            parse_quote!(<Self as crate::Tag>::TAG),
+            parse_quote!(TAG),
+            parse_quote!(module::TAG),
+            parse_quote!(crate::TAG),
+            parse_quote!(self::TAG),
+            parse_quote!(super::TAG),
+            parse_quote!(super::super::TAG),
+            parse_quote!(crate::CUSTOM + 1),
+            parse_quote!(crate::Type::TAG),
+            parse_quote!(::core::primitive::u8::MAX),
+            parse_quote!(<crate::Type>::TAG),
+            parse_quote!(<crate::Type as crate::Trait>::TAG),
+            parse_quote!(tag!()),
+            parse_quote!(1 + tag!()),
+            parse_quote!(crate::tag()),
+            parse_quote!(0_u8.count_ones()),
+            parse_quote!(0.to_le()),
+            parse_quote!((0_u8).to_le()),
+            parse_quote!(0 as u8),
+            parse_quote!(0_custom),
+            parse_quote!(if true { 0 } else { 1 }),
+            parse_quote!(match 0 {
+                ___ZEROCOPY_TAG_Raw if true => 0,
+                _ => 1,
+            }),
+            parse_quote!({
+                const TAG: u8 = 0;
+                TAG
+            }),
+            parse_quote!(crate::Tag::<u8>::VALUE),
+            parse_quote!(
+                #[cfg(any())]
+                1
+            ),
+            syn::Expr::Verbatim(quote::quote!(some future syntax)),
+        ] {
+            assert!(super::validate_tag_enum_discriminant(&expr).is_err());
+        }
+    }
+
+    #[test]
+    fn test_validate_tag_enum_discriminant_rejects_nested_verbatim_type() {
+        use syn::{Expr, Type};
+
+        // `syn` 2.0.56 accepts `dyn*` but represents it as `Type::Verbatim`.
+        // The `Self` token in this type must not evade structural validation.
+        let expr =
+            syn::parse_str::<Expr>("<dyn* crate::Marker<Self> as crate::Value>::VALUE").unwrap();
+        let ty = match &expr {
+            Expr::Path(path) => &path.qself.as_ref().unwrap().ty,
+            _ => panic!("expected an expression path"),
+        };
+        assert!(matches!(ty.as_ref(), Type::Verbatim(_)));
+        assert!(super::validate_tag_enum_discriminant(&expr).is_err());
+    }
+
+    #[test]
+    fn test_validate_tag_enum_discriminant_rejects_verbatim_literal() {
+        use syn::{parse_quote, Expr, Lit};
+
+        let mut expr: Expr = parse_quote!(0);
+        match &mut expr {
+            Expr::Lit(expr) => {
+                expr.lit = Lit::Verbatim(proc_macro2::Literal::u8_unsuffixed(0));
+            }
+            _ => panic!("expected a literal expression"),
+        }
+        assert!(super::validate_tag_enum_discriminant(&expr).is_err());
+    }
+
+    #[test]
+    fn test_tag_enum_discriminant_lint_attrs_normalize_permissive_levels() {
+        use syn::parse_quote;
+
+        let input = parse_quote! {
+            #[allow(overflowing_literals)]
+            #[warn(arithmetic_overflow)]
+            #[expect(overflowing_literals, reason = "checked on the source enum")]
+            #[deny(overflowing_literals)]
+            enum Foo {
+                A = 0,
+            }
+        };
+        let ctx = super::Ctx::try_from_derive_input(input).unwrap();
+        let attrs = super::tag_enum_discriminant_lint_attrs(&ctx);
+        assert_eq!(
+            quote::quote!(#(#attrs)*).to_string(),
+            "# [allow (overflowing_literals)] # [allow (arithmetic_overflow)] # [allow (overflowing_literals)]",
+        );
     }
 
     #[test]

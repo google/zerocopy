@@ -29,6 +29,56 @@ fn test_foo() {
     imp::assert!(<Foo as imp::TryFromBytes>::try_read_from_bytes(&[0, 0]).is_err());
 }
 
+#[allow(overflowing_literals)]
+#[derive(imp::Immutable, imp::IntoBytes, imp::KnownLayout, imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8)]
+enum AllowedLiteralOverflow {
+    A = 256,
+}
+
+#[test]
+fn test_allowed_discriminant_overflow_is_reproduced() {
+    crate::util::test_is_bit_valid::<AllowedLiteralOverflow, _>([0u8], true);
+    crate::util::test_is_bit_valid::<AllowedLiteralOverflow, _>([1u8], false);
+}
+
+mod forbidden_overflow_lints {
+    #![forbid(arithmetic_overflow, overflowing_literals)]
+
+    #[derive(
+        super::imp::Immutable,
+        super::imp::IntoBytes,
+        super::imp::KnownLayout,
+        super::imp::TryFromBytes,
+    )]
+    #[zerocopy(crate = "zerocopy_renamed")]
+    #[repr(u8)]
+    enum ValidDiscriminants {
+        Literal = 1,
+        Arithmetic = 1 + 1,
+    }
+}
+
+#[cfg(not(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "msrv"))]
+mod expected_overflow_lint {
+    #![deny(unfulfilled_lint_expectations)]
+
+    #[allow(unfulfilled_lint_expectations)]
+    #[expect(overflowing_literals)]
+    #[derive(
+        super::imp::Immutable,
+        super::imp::IntoBytes,
+        super::imp::KnownLayout,
+        super::imp::TryFromBytes,
+    )]
+    #[zerocopy(crate = "zerocopy_renamed")]
+    #[repr(u8)]
+    enum ValidDiscriminant {
+        A = 1,
+    }
+}
+
 #[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u16)]
@@ -78,8 +128,6 @@ fn test_baz() {
 // the code emitted by the derive.
 type i8 = bool;
 
-const THREE: ::core::primitive::i8 = 3;
-
 #[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i8)]
@@ -87,7 +135,7 @@ enum Blah {
     A = 1,
     B = 0,
     C = 1 + 2,
-    D = 3 + THREE,
+    D = 3 + 3,
 }
 
 util_assert_impl_all!(Blah: imp::TryFromBytes);
@@ -113,6 +161,24 @@ fn test_blah() {
     imp::assert!(<Blah as imp::TryFromBytes>::try_read_from_bytes(&[]).is_err());
     imp::assert!(<Blah as imp::TryFromBytes>::try_read_from_bytes(&[4]).is_err());
     imp::assert!(<Blah as imp::TryFromBytes>::try_read_from_bytes(&[0, 0]).is_err());
+}
+
+#[cfg(not(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "msrv"))]
+#[derive(imp::KnownLayout, imp::Immutable, imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8)]
+enum LiteralDerivedDiscriminantPacket {
+    Flag(bool) = 2 - 1,
+    Raw(u8) = 0,
+}
+
+#[cfg(not(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "msrv"))]
+#[test]
+fn test_literal_derived_discriminants_validate_the_actual_variant() {
+    crate::util::test_is_bit_valid::<LiteralDerivedDiscriminantPacket, _>([0u8, 255], true);
+    crate::util::test_is_bit_valid::<LiteralDerivedDiscriminantPacket, _>([1u8, 0], true);
+    crate::util::test_is_bit_valid::<LiteralDerivedDiscriminantPacket, _>([1u8, 1], true);
+    crate::util::test_is_bit_valid::<LiteralDerivedDiscriminantPacket, _>([1u8, 2], false);
 }
 
 #[derive(
@@ -376,10 +442,60 @@ enum B {
     A2 { a: A },
 }
 
-#[derive(imp::TryFromBytes)]
-#[zerocopy(crate = "zerocopy_renamed")]
-#[repr(u8)]
-enum FooU8 {
+const FULL_DOMAIN_ZERO: u8 = 0;
+
+macro_rules! define_full_domain_enums {
+    ($first:ident, $($variant:ident,)*) => {
+        #[derive(imp::TryFromBytes)]
+        #[zerocopy(crate = "zerocopy_renamed")]
+        #[repr(u8)]
+        enum FooU8 {
+            $first,
+            $($variant,)*
+        }
+
+        // `TryFromBytes` can use its trivial validator for a full-domain enum,
+        // and `FromZeros` knows that one of the fieldless variants represents
+        // zero even though it cannot evaluate the first discriminant itself.
+        #[derive(imp::FromBytes)]
+        #[zerocopy(on_error = "skip")]
+        #[zerocopy(crate = "zerocopy_renamed")]
+        #[repr(u8)]
+        enum FullDomainFromBytes {
+            $first = crate::FULL_DOMAIN_ZERO,
+            $($variant,)*
+        }
+
+        #[derive(imp::most_traits)]
+        #[zerocopy(crate = "zerocopy_renamed")]
+        #[repr(u8)]
+        enum FullDomainMostTraits {
+            $first = crate::FULL_DOMAIN_ZERO,
+            $($variant,)*
+        }
+
+        #[cfg(not(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "msrv"))]
+        #[derive(imp::FromBytes)]
+        #[zerocopy(on_error = "skip")]
+        #[zerocopy(crate = "zerocopy_renamed")]
+        #[repr(u8)]
+        enum FullDomainWithFieldFromBytes {
+            $first(u8) = 0 + 0,
+            $($variant,)*
+        }
+
+        #[cfg(not(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "msrv"))]
+        #[derive(imp::most_traits)]
+        #[zerocopy(crate = "zerocopy_renamed")]
+        #[repr(u8)]
+        enum FullDomainWithFieldMostTraits {
+            $first(u8) = 0 + 0,
+            $($variant,)*
+        }
+    };
+}
+
+define_full_domain_enums! {
     Variant0,
     Variant1,
     Variant2,
@@ -637,6 +753,29 @@ enum FooU8 {
     Variant254,
     Variant255,
 }
+
+util_assert_impl_all!(FullDomainFromBytes:
+    imp::TryFromBytes,
+    imp::FromZeros,
+    imp::FromBytes,
+);
+util_assert_impl_all!(FullDomainMostTraits:
+    imp::TryFromBytes,
+    imp::FromZeros,
+    imp::FromBytes,
+);
+#[cfg(not(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "msrv"))]
+util_assert_impl_all!(FullDomainWithFieldFromBytes:
+    imp::TryFromBytes,
+    imp::FromZeros,
+    imp::FromBytes,
+);
+#[cfg(not(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "msrv"))]
+util_assert_impl_all!(FullDomainWithFieldMostTraits:
+    imp::TryFromBytes,
+    imp::FromZeros,
+    imp::FromBytes,
+);
 
 #[test]
 fn test_trivial_is_bit_valid() {

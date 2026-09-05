@@ -10,8 +10,8 @@ use syn::{
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
     util::{
-        const_block, enum_size_from_repr, generate_tag_enum, Ctx, DataExt, FieldBounds,
-        ImplBlockBuilder, Trait, TraitBound,
+        const_block, enum_could_be_from_bytes, generate_tag_enum, validate_tag_enum_discriminants,
+        Ctx, DataExt, FieldBounds, ImplBlockBuilder, Trait, TraitBound,
     },
 };
 fn tag_ident(variant_ident: &Ident) -> Ident {
@@ -200,7 +200,7 @@ pub(crate) fn derive_is_bit_valid(
     repr: &EnumRepr,
 ) -> Result<TokenStream, Error> {
     let trait_path = Trait::TryFromBytes.crate_path(ctx);
-    let tag_enum = generate_tag_enum(ctx, repr, data);
+    let tag_enum = generate_tag_enum(ctx, repr, data)?;
     let tag_consts = generate_tag_consts(data);
 
     let (outer_tag_type, inner_tag_type) = if repr.is_c() {
@@ -443,7 +443,30 @@ pub(crate) fn derive_is_bit_valid(
         }
     })
 }
+/// Validates any input syntax that `TryFromBytes` code generation will copy
+/// into a helper definition.
+///
+/// Keep this separate from code generation so supertrait derives can reject
+/// the entire generated impl chain when `on_error = "skip"` is requested.
+pub(crate) fn validate_try_from_bytes_generation(ctx: &Ctx, top_level: Trait) -> Result<(), Error> {
+    let enm = match &ctx.ast.data {
+        Data::Enum(enm) => enm,
+        Data::Struct(_) | Data::Union(_) => return Ok(()),
+    };
+    let repr = EnumRepr::from_attrs(&ctx.ast.attrs)?;
+    let generates_tag_enum = try_gen_trivial_is_bit_valid(ctx, top_level).is_none()
+        && !enum_could_be_from_bytes(&repr, enm);
+    if generates_tag_enum {
+        validate_tag_enum_discriminants(enm)?;
+    }
+    Ok(())
+}
+
 pub(crate) fn derive_try_from_bytes(ctx: &Ctx, top_level: Trait) -> Result<TokenStream, Error> {
+    if let Err(error) = validate_try_from_bytes_generation(ctx, top_level.clone()) {
+        return ctx.error_or_skip(error);
+    }
+
     match &ctx.ast.data {
         Data::Struct(strct) => derive_try_from_bytes_struct(ctx, strct, top_level),
         Data::Enum(enm) => derive_try_from_bytes_enum(ctx, enm, top_level),
@@ -673,9 +696,7 @@ fn derive_try_from_bytes_enum(
     // then it *could* be `FromBytes` (even if the user hasn't derived
     // `FromBytes`). This holds if, for `repr(uN)` or `repr(iN)`, there are 2^N
     // variants.
-    let could_be_from_bytes = enum_size_from_repr(&repr)
-        .map(|size| enm.fields().is_empty() && enm.variants.len() == 1usize << size)
-        .unwrap_or(false);
+    let could_be_from_bytes = enum_could_be_from_bytes(&repr, enm);
 
     let trivial_is_bit_valid = try_gen_trivial_is_bit_valid(ctx, top_level);
     let extra = match (trivial_is_bit_valid, could_be_from_bytes) {
@@ -685,8 +706,7 @@ fn derive_try_from_bytes_enum(
         (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(ctx) },
         (None, false) => match derive_is_bit_valid(ctx, enm, &repr) {
             Ok(extra) => extra,
-            Err(_) if ctx.skip_on_error => return Ok(TokenStream::new()),
-            Err(e) => return Err(e),
+            Err(e) => return ctx.error_or_skip(e),
         },
     };
 
@@ -766,7 +786,41 @@ unsafe fn gen_trivial_is_bit_valid_unchecked(ctx: &Ctx) -> proc_macro2::TokenStr
 
 #[cfg(test)]
 mod tests {
+    use quote::{format_ident, quote};
+
     use super::*;
+
+    fn context_dependent_enum(variant_count: usize) -> Ctx {
+        let remaining_variants = (2..variant_count).map(|index| format_ident!("V{}", index));
+        let ast = syn::parse2(quote! {
+            #[repr(u8)]
+            enum Enum {
+                V0 = 0,
+                V1 = Self::TAG,
+                #(#remaining_variants,)*
+            }
+        })
+        .unwrap();
+        Ctx::try_from_derive_input(ast).unwrap().skip_on_error()
+    }
+
+    #[test]
+    fn test_validation_only_when_try_from_bytes_generates_tag_enum() {
+        // An exhaustive fieldless u8 enum gets a trivial validator, so its
+        // discriminants are never copied into a helper enum.
+        assert!(validate_try_from_bytes_generation(
+            &context_dependent_enum(256),
+            Trait::TryFromBytes,
+        )
+        .is_ok());
+
+        // A nonexhaustive enum needs the helper and must pass validation.
+        assert!(validate_try_from_bytes_generation(
+            &context_dependent_enum(255),
+            Trait::TryFromBytes,
+        )
+        .is_err());
+    }
 
     fn derive_error(input: DeriveInput) -> String {
         let ctx = Ctx::try_from_derive_input(input).unwrap();

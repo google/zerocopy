@@ -202,7 +202,10 @@ fn derive_into_bytes_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Erro
         ));
     }
 
-    let tag_type_definition = generate_tag_enum(ctx, &repr, enm);
+    let tag_type_definition = match generate_tag_enum(ctx, &repr, enm) {
+        Ok(tag_type_definition) => tag_type_definition,
+        Err(error) => return ctx.error_or_skip(error),
+    };
     Ok(ImplBlockBuilder::new(ctx, enm, Trait::IntoBytes, FieldBounds::ALL_SELF)
         .padding_check(PaddingCheck::Enum { tag_type_definition })
         .build())
