@@ -376,15 +376,39 @@ enum FromRawReprsError<E> {
     /// conservatively treat redundant reprs as conflicting (e.g.
     /// `#[repr(packed, packed)]`).
     Conflict,
+    /// `repr(C)` is combined with a primitive representation. This combination
+    /// is valid on data-carrying enums, but is not yet supported by our derive
+    /// macros.
+    UnsupportedCAndPrimitive,
+}
+
+/// Identifies the otherwise-valid representation combination that is not yet
+/// supported by our derive macros.
+trait IsCAndPrimitive {
+    fn is_c_and_primitive(&self, other: &Self) -> bool;
+}
+
+impl<Prim> IsCAndPrimitive for CompoundRepr<Prim> {
+    fn is_c_and_primitive(&self, other: &Self) -> bool {
+        use CompoundRepr::*;
+        matches!((self, other), (C, Primitive(_)) | (Primitive(_), C))
+    }
+}
+
+impl<Packed> IsCAndPrimitive for AlignRepr<Packed> {
+    fn is_c_and_primitive(&self, _other: &Self) -> bool {
+        false
+    }
 }
 
 /// Tries to extract a high-level repr from a list of `RawRepr`s.
-fn try_from_raw_reprs<'a, E, R: TryFrom<RawRepr, Error = FromRawReprError<E>>>(
+fn try_from_raw_reprs<'a, E, R: IsCAndPrimitive + TryFrom<RawRepr, Error = FromRawReprError<E>>>(
     r: impl IntoIterator<Item = &'a Spanned<RawRepr>>,
 ) -> Result<Option<Spanned<R>>, Spanned<FromRawReprsError<E>>> {
     // Walk the list of `RawRepr`s and attempt to convert each to an `R`. Bail
     // if we find any errors. If we find more than one which converts to an `R`,
-    // bail with a `Conflict` error.
+    // bail and distinguish the unsupported `repr(C, Int)` combination from
+    // genuinely conflicting hints.
     r.into_iter().try_fold(None, |found: Option<Spanned<R>>, raw| {
         let new = match Spanned::<R>::try_from(*raw) {
             Ok(r) => r,
@@ -400,13 +424,18 @@ fn try_from_raw_reprs<'a, E, R: TryFrom<RawRepr, Error = FromRawReprError<E>>>(
 
         if let Some(found) = found {
             // We already found an `R`, but this `RawRepr` also converts to an
-            // `R`, so that's a conflict.
+            // `R`, so this high-level representation cannot describe the pair.
             //
             // `Span::join` returns `None` if the two spans are from different
             // files or if we're not on the nightly compiler. In that case, just
             // use `new`'s span.
             let span = found.span.join(new.span).unwrap_or(new.span);
-            Err(Spanned::new(FromRawReprsError::Conflict, span))
+            let err = if found.t.is_c_and_primitive(&new.t) {
+                FromRawReprsError::UnsupportedCAndPrimitive
+            } else {
+                FromRawReprsError::Conflict
+            };
+            Err(Spanned::new(err, span))
         } else {
             Ok(Some(new))
         }
@@ -446,6 +475,12 @@ impl From<Spanned<FromAttrsError>> for Error {
                 // can't tell which repr came first, so we might report this on
                 // the first involved repr rather than the second, third, etc.
                 Error::new(span, "this conflicts with another representation hint")
+            }
+            FromAttrsError::FromRawReprs(FromRawReprsError::UnsupportedCAndPrimitive) => {
+                Error::new(
+                    span,
+                    "zerocopy derives do not support combining `repr(C)` with an integer representation",
+                )
             }
             FromAttrsError::Unrecognized => Error::new(span, "unrecognized representation hint"),
         }
@@ -825,8 +860,8 @@ mod tests {
         // that testing against u8 alone is fine.
         test!(@error #[repr(transparent, u8)] => EnumRepr => FromRawReprs(Conflict).into());
         test!(@error #[repr(u8, transparent)] => EnumRepr => FromRawReprs(Conflict).into());
-        test!(@error #[repr(C, u8)] => EnumRepr => FromRawReprs(Conflict).into());
-        test!(@error #[repr(u8, C)] => EnumRepr => FromRawReprs(Conflict).into());
+        test!(@error #[repr(C, u8)] => EnumRepr => FromRawReprs(UnsupportedCAndPrimitive).into());
+        test!(@error #[repr(u8, C)] => EnumRepr => FromRawReprs(UnsupportedCAndPrimitive).into());
         test!(@error #[repr(Rust, u8)] => EnumRepr => FromRawReprs(Conflict).into());
         test!(@error #[repr(u8, Rust)] => EnumRepr => FromRawReprs(Conflict).into());
         test!(@error #[repr(u8, u8)] => EnumRepr => FromRawReprs(Conflict).into());
