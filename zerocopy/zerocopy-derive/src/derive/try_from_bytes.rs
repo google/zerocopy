@@ -443,6 +443,12 @@ pub(crate) fn derive_is_bit_valid(
         }
     })
 }
+// Representative executable Kani regressions for concrete validators emitted
+// through this dispatcher live in the inline `mod proofs` in
+// `zerocopy/src/lib.rs`. They exercise those exact expansions plus the
+// consumer-side `Ptr`/read path; they are not a proof of this generator for
+// arbitrary derive inputs. Changes here or in the three branches below must
+// re-evaluate that family's fixtures, scope, and non-goals.
 pub(crate) fn derive_try_from_bytes(ctx: &Ctx, top_level: Trait) -> Result<TokenStream, Error> {
     match &ctx.ast.data {
         Data::Struct(strct) => derive_try_from_bytes_struct(ctx, strct, top_level),
