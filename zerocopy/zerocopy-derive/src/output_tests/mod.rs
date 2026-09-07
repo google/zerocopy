@@ -1006,11 +1006,25 @@ fn test_split_at() {
 
     test! {
         SplitAt {
+            #[repr(C, packed)]
+            struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
+        } expands to "expected/split_at_repr_c_packed.expected.rs"
+    }
+
+    test! {
+        SplitAt {
+            #[repr(C, packed(2))]
+            struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
+        } expands to "expected/split_at_repr_c_packed.expected.rs"
+    }
+
+    test! {
+        SplitAt {
             #[repr(packed)]
             struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
         } expands to {
             ::core::compile_error! {
-                "must not have #[repr(packed)] attribute"
+                "must have #[repr(C)] or #[repr(transparent)] in order to guarantee this type's layout is splitable"
             }
         } no_build
     }
@@ -1021,7 +1035,7 @@ fn test_split_at() {
             struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
         } expands to {
             ::core::compile_error! {
-                "must not have #[repr(packed)] attribute"
+                "must have #[repr(C)] or #[repr(transparent)] in order to guarantee this type's layout is splitable"
             }
         } no_build
     }
