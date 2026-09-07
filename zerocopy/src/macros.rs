@@ -1253,6 +1253,103 @@ macro_rules! cryptocorrosion_derive_traits {
     };
 }
 
+#[cfg(kani)]
+mod proofs {
+    use crate::{proof_support::bool_from_byte, ValidityError};
+
+    fn check_bool_acceptance(result_is_ok: bool, expected: Option<bool>) {
+        assert_eq!(result_is_ok, expected.is_some());
+        kani::cover!(result_is_ok && expected == Some(false));
+        kani::cover!(result_is_ok && expected == Some(true));
+        kani::cover!(!result_is_ok && expected.is_none());
+    }
+
+    // These proofs exhaust all 256 `u8` values. `bool_from_byte` is the shared
+    // Rust-Reference-based oracle and never constructs an invalid `bool`. The
+    // value proof checks the decoded value or recovered source. The reference
+    // proofs additionally check address identity and source recovery, and the
+    // mutable proof checks that both success- and error-path writes reach the
+    // original source.
+    //
+    // These are end-to-end proofs only for the `u8`-to-`bool` instantiations,
+    // not generic proofs of other type pairs, sizes, alignments, or macro arms.
+    // Kani does not fully model Rust aliasing, pointer provenance, invalid
+    // values, or uninitialized memory.
+
+    #[kani::proof]
+    fn prove_try_transmute_u8_to_bool() {
+        let src: u8 = kani::any();
+        let expected = bool_from_byte(src);
+        let result: Result<bool, ValidityError<u8, bool>> = crate::try_transmute!(src);
+
+        check_bool_acceptance(result.is_ok(), expected);
+
+        match result {
+            Ok(dst) => assert_eq!(Some(dst), expected),
+            Err(err) => {
+                assert!(expected.is_none());
+                assert_eq!(err.into_src(), src);
+            }
+        }
+    }
+
+    #[kani::proof]
+    fn prove_try_transmute_ref_u8_to_bool() {
+        let src: u8 = kani::any();
+        let src_ptr = core::ptr::addr_of!(src);
+        let expected = bool_from_byte(src);
+        let result: Result<&bool, ValidityError<&u8, bool>> = crate::try_transmute_ref!(&src);
+
+        check_bool_acceptance(result.is_ok(), expected);
+
+        match result {
+            Ok(dst) => {
+                assert_eq!((dst as *const bool).cast::<u8>(), src_ptr);
+                assert_eq!(Some(*dst), expected);
+            }
+            Err(err) => {
+                assert!(expected.is_none());
+                let recovered = err.into_src();
+                assert_eq!(recovered as *const u8, src_ptr);
+                assert_eq!(*recovered, src);
+            }
+        }
+    }
+
+    #[kani::proof]
+    fn prove_try_transmute_mut_u8_to_bool_restores_on_error() {
+        let mut src: u8 = kani::any();
+        let original = src;
+        let src_ptr = core::ptr::addr_of_mut!(src);
+        let expected = bool_from_byte(original);
+        let result: Result<&mut bool, ValidityError<&mut u8, bool>> =
+            crate::try_transmute_mut!(&mut src);
+
+        check_bool_acceptance(result.is_ok(), expected);
+
+        match result {
+            Ok(dst) => {
+                assert_eq!((dst as *mut bool).cast::<u8>(), src_ptr);
+                assert_eq!(Some(*dst), expected);
+                *dst = !*dst;
+            }
+            Err(err) => {
+                assert!(expected.is_none());
+                let recovered = err.into_src();
+                assert_eq!(recovered as *mut u8, src_ptr);
+                assert_eq!(*recovered, original);
+                *recovered = 0;
+            }
+        }
+
+        let expected = match expected {
+            Some(value) => u8::from(!value),
+            None => 0,
+        };
+        assert_eq!(src, expected);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{
