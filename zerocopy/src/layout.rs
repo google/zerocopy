@@ -1955,119 +1955,276 @@ mod proofs {
 
     use super::*;
 
+    // Kani proof-family scope
+    //
+    // Configuration: These harnesses use the common Kani CI configuration
+    // documented in `agent_docs/validation.md`: the CI-pinned Kani release and
+    // its bundled x86_64-unknown-linux-gnu compiler (64-bit little-endian),
+    // the stable-compatible feature bundle, `-Zfunction-contracts`, and one
+    // compiler layout selected by `--randomize-layout` per invocation. The
+    // fail-closed check documented there requires the manually audited Kani
+    // version to match the workflow pin. Compatibility between the cited
+    // versioned Rust contracts and that bundled compiler remains a manually
+    // checked TOOL/TCB premise, not a Kani conclusion.
+    //
+    // Common symbolic domain: A generated `DstLayout` has either `SizeInfo`
+    // variant and either value of `statically_shallow_unpadded`. Its alignment
+    // is a nonzero power of two strictly less than
+    // `THEORETICAL_MAX_ALIGN`. Thus, on this 64-bit target, the theoretical
+    // maximum is 2^63, is excluded, and the largest generated alignment is
+    // 2^62. A sized layout has `size <= MAX_SIZE`; a slice layout has
+    // `offset < MAX_SIZE` and `elem_size < MAX_SIZE`. Here `MAX_SIZE` is
+    // `isize::MAX`, or 2^63 - 1 on this target. In addition, safe
+    // `Layout::from_size_align` must accept `(size, align)` for a sized layout
+    // or `(offset, align)` for a slice layout. Per its contract [1], this means
+    // the alignment is nonzero and a power of two and the supplied size rounded
+    // up to that alignment is at most `isize::MAX`. The guard validates only a
+    // slice DST's static prefix; it places no further constraint on
+    // `elem_size` or on any runtime metadata.
+    //
+    // Resources and unwinding: The proof helpers and selected target methods
+    // execute zero heap-allocation calls, own zero arrays or variable-capacity
+    // buffers, use no pointers, do not recurse, and contain zero source-level
+    // loops. Every harness uses the explicit bound `#[kani::unwind(1)]`; Kani
+    // generally requires one more unwind than the number of iterations [5]. A
+    // successful result with retained unwinding checks establishes that this
+    // bound is sufficient for the exact translated paths. This is a
+    // loop-unwinding bound, not Rust panic-stack-unwinding coverage, which Kani
+    // does not support [7].
+    //
+    // Oracles and target policy: `Layout::{from_size_align,extend,
+    // pad_to_align}` are safe standard-library operations independent of
+    // zerocopy [1][2][3]. `Layout::extend` supplies an oracle only when it
+    // returns `Ok`; generated fragments are individually valid, but their
+    // composite need not be, and its `Err` branch supplies no Rust-layout
+    // conclusion. For a slice DST, the stand-in describes only its static
+    // prefix and alignment, not any runtime-sized value. Applying `packed`
+    // first uses the Reference rule that a field's effective alignment is the
+    // lesser of the packing value and the field alignment [4]. The
+    // unconditional `min`/`max`/`padding_needed_for` and direct field
+    // comparisons below restate `DstLayout`'s own policy; notably, the padding
+    // calculation uses the same zerocopy helper as the target. Those checks are
+    // useful self-consistency regressions, but are not independent Rust
+    // oracles and cannot rule out compensating bugs.
+    //
+    // Proof harnesses, implementation-policy regression, and partitions:
+    //
+    // - `prove_requires_dynamic_padding` directly generates a slice layout and
+    //   arbitrary `usize` metadata. It returns without asserting in the three
+    //   excluded partitions where `elem_size * meta` overflows, adding that
+    //   product to `offset` overflows, or the resulting unpadded size is
+    //   greater than or equal to `MAX_SIZE` (equality is excluded). For every
+    //   remaining metadata value, it establishes only the one-way internal
+    //   lemma that `!requires_dynamic_padding()` implies that zerocopy's
+    //   `padding_needed_for` returns zero. It does not prove the converse or an
+    //   actual Rust DST layout.
+    // - `prove_dst_layout_extend` directly generates a sized base and an
+    //   arbitrary sized-or-slice field. `packed` is either `None` or a nonzero
+    //   power of two at least `base.align`; unlike generated layout alignments,
+    //   `packed == THEORETICAL_MAX_ALIGN` is included. It establishes absence
+    //   of a modeled panic, variant propagation, the documented manual
+    //   alignment/size/static-prefix-offset relations, and preservation of a
+    //   slice field's element size. When the corresponding `Layout::extend`
+    //   succeeds, it additionally establishes that the target composite's size
+    //   and alignment, and the recomputed target-policy offset, equal the std
+    //   oracle. When it returns `Err`, only the target's nonpanic and
+    //   internal-policy checks remain.
+    // - `regression_dst_base_extend_has_some_assertion_failure` is only an
+    //   implementation-policy regression. It directly generates a slice-DST
+    //   base and reaches `extend` with either field variant and either packed
+    //   partition. Its `Some` partition is restricted to nonzero powers of two
+    //   no smaller than `base.align`; smaller packing values are excluded. A
+    //   passing Kani `should_panic` run means only that one or more failed
+    //   checks classified as `assertion` exist and no failed check of another
+    //   class exists; Kani treats that class as panic-related. It does not
+    //   identify the intended assertion or prove that every generated input
+    //   panics. It is retained as a coarse existential negative-regression
+    //   signal, not consumed as positive evidence for an `extend` theorem or
+    //   contract [6].
+    // - `prove_dst_layout_pad_to_align` covers both layout variants. It
+    //   establishes unchanged alignment; for a sized layout, a sized result
+    //   whose size and alignment equal `Layout::pad_to_align`; and for a slice
+    //   layout, unchanged `SizeInfo` as an internal target policy.
+    //
+    // Exclusions: No harness checks the returned
+    // `statically_shallow_unpadded` flag, `new_zst`, `for_repr_c_struct`, or the
+    // `#[cfg(not(kani))]` `CURRENT_MAX_ALIGN` assertions. This family is not a
+    // cross-target, cross-compiler, all-randomized-layout, allocator, or
+    // raw-memory theorem. The methods' safety documentation permits consumers
+    // to rely on results for fragments of valid `repr(C)` types. These
+    // generators check individual `Layout` validity, not that every encoded
+    // slice DST or composite is realizable as such a Rust type, so this family
+    // does not by itself discharge those complete safety contracts. Kani's
+    // general aliasing, provenance, invalid-value, and uninitialized-memory
+    // limits are recorded in `agent_docs/validation.md` [7]; these value-only
+    // paths do not exercise those memory operations, but remain conditional on
+    // Kani's translation, integer/panic models, bundled standard library,
+    // CBMC, and specifications. Most importantly, all slice-DST checks use the
+    // simplified `offset + elem_size * meta` model. They do not establish
+    // nested/custom DST layout correctness or resolve the separate known
+    // algorithm issue tracked by #3630 [8]; no failing partition is inferred
+    // here. The slice-base `should_panic` regression is not proof evidence for
+    // any of these exclusions or contracts. Covers below witness only these
+    // generator and pruning partitions; reachability is not an added
+    // correctness theorem.
+    //
+    // [1] https://doc.rust-lang.org/1.93.0/std/alloc/struct.Layout.html#method.from_size_align
+    // [2] https://doc.rust-lang.org/1.93.0/std/alloc/struct.Layout.html#method.extend
+    // [3] https://doc.rust-lang.org/1.93.0/std/alloc/struct.Layout.html#method.pad_to_align
+    // [4] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers
+    // [5] https://model-checking.github.io/kani/tutorial-loop-unwinding.html
+    // [6] https://model-checking.github.io/kani/reference/attributes.html#kanishould_panic
+    // [7] https://model-checking.github.io/kani/rust-feature-support.html
+    // [8] https://github.com/google/zerocopy/pull/3630
+
+    fn any_sized_size() -> usize {
+        let size = kani::any();
+        kani::assume(size <= DstLayout::MAX_SIZE);
+        size
+    }
+
+    fn any_trailing_slice_layout() -> TrailingSliceLayout {
+        let elem_size = kani::any();
+        let offset = kani::any();
+        kani::assume(elem_size < DstLayout::MAX_SIZE);
+        kani::assume(offset < DstLayout::MAX_SIZE);
+        TrailingSliceLayout { elem_size, offset }
+    }
+
+    fn any_size_info() -> SizeInfo {
+        if kani::any() {
+            SizeInfo::Sized { size: any_sized_size() }
+        } else {
+            SizeInfo::SliceDst(any_trailing_slice_layout())
+        }
+    }
+
+    fn any_layout_with_size_info(size_info: SizeInfo) -> DstLayout {
+        let align: NonZeroUsize = kani::any();
+
+        kani::assume(align.is_power_of_two());
+        kani::assume(align < DstLayout::THEORETICAL_MAX_ALIGN);
+
+        // This independent standard-library predicate is an input-domain oracle
+        // and guard, not a conclusion. For a slice DST, `offset` is only the
+        // static prefix.
+        kani::assume(
+            match size_info {
+                SizeInfo::Sized { size } => Layout::from_size_align(size, align.get()),
+                SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size: _ }) => {
+                    Layout::from_size_align(offset, align.get())
+                }
+            }
+            .is_ok(),
+        );
+
+        DstLayout { align, size_info, statically_shallow_unpadded: kani::any() }
+    }
+
+    fn any_sized_layout() -> (DstLayout, usize) {
+        let size = any_sized_size();
+        (any_layout_with_size_info(SizeInfo::Sized { size }), size)
+    }
+
+    fn any_slice_dst_layout() -> (DstLayout, TrailingSliceLayout) {
+        let trailing = any_trailing_slice_layout();
+        (any_layout_with_size_info(SizeInfo::SliceDst(trailing)), trailing)
+    }
+
+    // Shared packing domain for both `extend` harnesses: either `None`, or a
+    // nonzero power of two no smaller than the generated base alignment.
+    // Consequently, neither harness covers `Some` values below `base_align`.
+    // The lower bound is a proof-domain restriction, not a Rust language
+    // restriction on `repr(packed)` values.
+    fn any_packed_for(base_align: NonZeroUsize) -> Option<NonZeroUsize> {
+        let packed: Option<NonZeroUsize> = kani::any();
+        if let Some(max_align) = packed {
+            kani::assume(max_align.is_power_of_two());
+            kani::assume(base_align <= max_align);
+        }
+        packed
+    }
+
     impl kani::Arbitrary for DstLayout {
         fn any() -> Self {
-            let align: NonZeroUsize = kani::any();
-            let size_info: SizeInfo = kani::any();
-
-            kani::assume(align.is_power_of_two());
-            kani::assume(align < DstLayout::THEORETICAL_MAX_ALIGN);
-
-            // For testing purposes, we most care about instantiations of
-            // `DstLayout` that can correspond to actual Rust types. We use
-            // `Layout` to verify that our `DstLayout` satisfies the validity
-            // conditions of Rust layouts.
-            kani::assume(
-                match size_info {
-                    SizeInfo::Sized { size } => Layout::from_size_align(size, align.get()),
-                    SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size: _ }) => {
-                        // `SliceDst` cannot encode an exact size, but we know
-                        // it is at least `offset` bytes.
-                        Layout::from_size_align(offset, align.get())
-                    }
-                }
-                .is_ok(),
-            );
-
-            Self { align: align, size_info: size_info, statically_shallow_unpadded: kani::any() }
+            any_layout_with_size_info(kani::any())
         }
     }
 
     impl kani::Arbitrary for SizeInfo {
         fn any() -> Self {
-            let is_sized: bool = kani::any();
-
-            match is_sized {
-                true => {
-                    let size: usize = kani::any();
-
-                    kani::assume(size <= DstLayout::MAX_SIZE);
-
-                    SizeInfo::Sized { size }
-                }
-                false => SizeInfo::SliceDst(kani::any()),
-            }
+            any_size_info()
         }
     }
 
     impl kani::Arbitrary for TrailingSliceLayout {
         fn any() -> Self {
-            let elem_size: usize = kani::any();
-            let offset: usize = kani::any();
-
-            kani::assume(elem_size < DstLayout::MAX_SIZE);
-            kani::assume(offset < DstLayout::MAX_SIZE);
-
-            TrailingSliceLayout { elem_size, offset }
+            any_trailing_slice_layout()
         }
     }
 
     #[kani::proof]
+    #[kani::unwind(1)]
     fn prove_requires_dynamic_padding() {
-        let layout: DstLayout = kani::any();
-
-        let SizeInfo::SliceDst(size_info) = layout.size_info else {
-            kani::assume(false);
-            loop {}
-        };
+        let (layout, size_info) = any_slice_dst_layout();
 
         let meta: usize = kani::any();
 
         let Some(trailing_slice_size) = size_info.elem_size.checked_mul(meta) else {
-            // The `trailing_slice_size` exceeds `usize::MAX`; `meta` is invalid.
-            kani::assume(false);
-            loop {}
+            kani::cover!(true, "metadata element-count multiplication overflows");
+            return;
         };
 
         let Some(unpadded_size) = size_info.offset.checked_add(trailing_slice_size) else {
-            // The `unpadded_size` exceeds `usize::MAX`; `meta`` is invalid.
-            kani::assume(false);
-            loop {}
+            kani::cover!(true, "metadata static-prefix addition overflows");
+            return;
         };
 
         if unpadded_size >= DstLayout::MAX_SIZE {
-            // The `unpadded_size` exceeds `isize::MAX`; `meta` is invalid.
-            kani::assume(false);
-            loop {}
+            kani::cover!(
+                unpadded_size == DstLayout::MAX_SIZE,
+                "metadata size reaches MAX_SIZE exactly"
+            );
+            kani::cover!(unpadded_size > DstLayout::MAX_SIZE, "metadata size exceeds MAX_SIZE");
+            return;
         }
 
         let trailing_padding = util::padding_needed_for(unpadded_size, layout.align);
+        let requires_dynamic_padding = layout.requires_dynamic_padding();
 
-        if !layout.requires_dynamic_padding() {
+        kani::cover!(meta == 0, "accepted zero metadata");
+        kani::cover!(meta > 0, "accepted nonzero metadata");
+        kani::cover!(!requires_dynamic_padding, "no-dynamic-padding implication is reachable");
+        kani::cover!(requires_dynamic_padding, "dynamic-padding policy partition is reachable");
+        kani::cover!(
+            requires_dynamic_padding && trailing_padding != 0,
+            "dynamic-padding policy can observe nonzero runtime padding"
+        );
+
+        if !requires_dynamic_padding {
             assert!(trailing_padding == 0);
         }
     }
 
     #[kani::proof]
+    #[kani::unwind(1)]
     fn prove_dst_layout_extend() {
         use crate::util::{max, min, padding_needed_for};
 
-        let base: DstLayout = kani::any();
+        let (base, base_size) = any_sized_layout();
         let field: DstLayout = kani::any();
-        let packed: Option<NonZeroUsize> = kani::any();
+        let packed = any_packed_for(base.align);
 
-        if let Some(max_align) = packed {
-            kani::assume(max_align.is_power_of_two());
-            kani::assume(base.align <= max_align);
-        }
-
-        // The base can only be extended if it's sized.
-        kani::assume(matches!(base.size_info, SizeInfo::Sized { .. }));
-        let base_size = if let SizeInfo::Sized { size } = base.size_info {
-            size
-        } else {
-            unreachable!();
-        };
+        kani::cover!(packed.is_none(), "unpacked extension");
+        kani::cover!(packed.is_some(), "packed extension");
+        kani::cover!(
+            packed == Some(DstLayout::THEORETICAL_MAX_ALIGN),
+            "packing includes the theoretical maximum alignment"
+        );
+        kani::cover!(matches!(field.size_info, SizeInfo::Sized { .. }), "sized field");
+        kani::cover!(matches!(field.size_info, SizeInfo::SliceDst(..)), "slice-DST field");
+        kani::cover!(base_size == 0, "zero-size base");
+        kani::cover!(base_size == DstLayout::MAX_SIZE, "maximum-size base");
 
         // Under the above conditions, `DstLayout::extend` will not panic.
         let composite = base.extend(field, packed);
@@ -2075,7 +2232,7 @@ mod proofs {
         // The field's alignment is clamped by `max_align` (i.e., the
         // `packed` attribute, if any) [1].
         //
-        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers:
         //
         //   The alignments of each field, for the purpose of positioning
         //   fields, is the smaller of the specified alignment and the
@@ -2090,12 +2247,15 @@ mod proofs {
         // satisfy the field's alignment, and offset of the trailing field.
         // [1]
         //
-        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers:
         //
         //   Inter-field padding is guaranteed to be the minimum required in
         //   order to satisfy each field's (possibly altered) alignment.
         let padding = padding_needed_for(base_size, field_align);
         let offset = base_size + padding;
+
+        kani::cover!(padding == 0, "zero inter-field padding");
+        kani::cover!(padding > 0, "nonzero inter-field padding");
 
         // For testing purposes, we'll also construct `alloc::Layout`
         // stand-ins for `DstLayout`, and show that `extend` behaves
@@ -2114,8 +2274,10 @@ mod proofs {
                     let field_analog =
                         Layout::from_size_align(field_size, field_align.get()).unwrap();
 
-                    if let Ok((actual_composite, actual_offset)) = base_analog.extend(field_analog)
-                    {
+                    let actual = base_analog.extend(field_analog);
+                    kani::cover!(actual.is_ok(), "sized composite is a valid std Layout");
+                    kani::cover!(actual.is_err(), "sized composite exceeds std Layout limits");
+                    if let Ok((actual_composite, actual_offset)) = actual {
                         assert_eq!(actual_offset, offset);
                         assert_eq!(actual_composite.size(), composite_size);
                         assert_eq!(actual_composite.align(), composite.align.get());
@@ -2151,8 +2313,10 @@ mod proofs {
                     let field_analog =
                         Layout::from_size_align(field_offset, field_align.get()).unwrap();
 
-                    if let Ok((actual_composite, actual_offset)) = base_analog.extend(field_analog)
-                    {
+                    let actual = base_analog.extend(field_analog);
+                    kani::cover!(actual.is_ok(), "DST prefix composite is a valid std Layout");
+                    kani::cover!(actual.is_err(), "DST prefix composite exceeds std Layout limits");
+                    if let Ok((actual_composite, actual_offset)) = actual {
                         assert_eq!(actual_offset, offset);
                         assert_eq!(actual_composite.size(), composite_offset);
                         assert_eq!(actual_composite.align(), composite.align.get());
@@ -2174,26 +2338,44 @@ mod proofs {
 
     #[kani::proof]
     #[kani::should_panic]
-    fn prove_dst_layout_extend_dst_panics() {
-        let base: DstLayout = kani::any();
+    #[kani::unwind(1)]
+    // Implementation-policy regression only. `#[kani::proof]` registers the
+    // harness with Kani; its coarse existential `should_panic` signal is not
+    // consumed as positive evidence for an `extend` theorem or contract. See
+    // the proof-family scope above.
+    fn regression_dst_base_extend_has_some_assertion_failure() {
+        let (base, _) = any_slice_dst_layout();
         let field: DstLayout = kani::any();
-        let packed: Option<NonZeroUsize> = kani::any();
+        let packed = any_packed_for(base.align);
 
-        if let Some(max_align) = packed {
-            kani::assume(max_align.is_power_of_two());
-            kani::assume(base.align <= max_align);
-        }
-
-        kani::assume(matches!(base.size_info, SizeInfo::SliceDst(..)));
+        kani::cover!(packed.is_none(), "unpacked extension reaches the target");
+        kani::cover!(packed.is_some(), "packed extension reaches the target");
+        kani::cover!(
+            matches!(field.size_info, SizeInfo::Sized { .. }),
+            "sized field reaches the target"
+        );
+        kani::cover!(
+            matches!(field.size_info, SizeInfo::SliceDst(..)),
+            "slice-DST field reaches the target"
+        );
 
         let _ = base.extend(field, packed);
     }
 
     #[kani::proof]
+    #[kani::unwind(1)]
     fn prove_dst_layout_pad_to_align() {
         use crate::util::padding_needed_for;
 
         let layout: DstLayout = kani::any();
+
+        kani::cover!(matches!(layout.size_info, SizeInfo::Sized { .. }), "sized layout");
+        kani::cover!(matches!(layout.size_info, SizeInfo::SliceDst(..)), "slice-DST layout");
+        kani::cover!(layout.align == DstLayout::MIN_ALIGN, "minimum alignment");
+        kani::cover!(
+            layout.align.get() == DstLayout::THEORETICAL_MAX_ALIGN.get() / 2,
+            "largest generated alignment"
+        );
 
         let padded = layout.pad_to_align();
 
@@ -2207,6 +2389,12 @@ mod proofs {
                 // trailing padding needed to satisfy its alignment
                 // requirements.
                 let padding = padding_needed_for(unpadded_size, layout.align);
+                kani::cover!(padding == 0, "sized layout needs no trailing padding");
+                kani::cover!(padding > 0, "sized layout needs trailing padding");
+                kani::cover!(
+                    unpadded_size == DstLayout::MAX_SIZE,
+                    "sized layout includes MAX_SIZE boundary"
+                );
                 assert_eq!(padded_size, unpadded_size + padding);
 
                 // Prove that calling `DstLayout::pad_to_align` behaves
