@@ -3834,6 +3834,140 @@ pub unsafe trait FromZeros: TryFromBytes {
     }
 }
 
+#[cfg(all(kani, feature = "alloc", not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)))]
+mod from_zeros_proofs {
+    use core::cell::Cell;
+
+    use super::*;
+
+    struct DropTracked<'a> {
+        value: u8,
+        drops: &'a Cell<usize>,
+    }
+
+    impl Drop for DropTracked<'_> {
+        fn drop(&mut self) {
+            self.drops.set(self.drops.get() + 1);
+        }
+    }
+
+    #[derive(Copy, Clone)]
+    enum ExpectedSlot {
+        First,
+        Second,
+        Inserted,
+    }
+
+    // A value-level specification for this proof's deliberately fixed
+    // two-to-three-element domain, using safe slice semantics as the oracle for
+    // an overlapping move.
+    fn expected_after_single_insert(position: usize) -> [ExpectedSlot; 3] {
+        let mut expected = [ExpectedSlot::First, ExpectedSlot::Second, ExpectedSlot::Inserted];
+        expected.copy_within(position..2, position + 1);
+        expected[position] = ExpectedSlot::Inserted;
+        expected
+    }
+
+    // Configuration: Uses the common Kani CI configuration documented in
+    // `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
+    // x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
+    // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
+    // per invocation.
+    //
+    // Domain: this fixed two-to-three-element growth, every insertion position,
+    // and every initial and replacement `u8` payload on Kani's target.
+    //
+    // Establishes: the inserted all-zero representation is safely observed as
+    // `None`; the original boxes retain their address, value, and order against
+    // a safe fixed-array value model; all resulting slots are usable; and each
+    // referent's observable `Drop` implementation runs exactly once.
+    //
+    // This is not a generic theorem over `T`, vector length/capacity, insertion
+    // count, ZSTs, allocation failure, deallocation, or real allocator
+    // behavior. Raw-pointer equality observes addresses only; it does not
+    // establish a provenance theorem. Kani's allocator model and this concrete
+    // `Option<Box<DropTracked<'_>>>` instantiation bound all ownership claims.
+    #[kani::proof]
+    #[kani::unwind(4)]
+    fn prove_insert_vec_zeroed_grows_and_preserves_owned_values() {
+        const INITIAL_LEN: usize = 2;
+        const MAX_OUTPUT_LEN: usize = INITIAL_LEN + 1;
+
+        let initial: [u8; INITIAL_LEN] = kani::any();
+        let position = core::cmp::min(usize::from(kani::any::<u8>()), INITIAL_LEN);
+        let additional = 1;
+        let first_drops = Cell::new(0);
+        let second_drops = Cell::new(0);
+        let inserted_drops = Cell::new(0);
+        let first = Box::new(DropTracked { value: initial[0], drops: &first_drops });
+        let second = Box::new(DropTracked { value: initial[1], drops: &second_drops });
+        let first_ptr: *const DropTracked<'_> = &*first;
+        let second_ptr: *const DropTracked<'_> = &*second;
+        let expected = expected_after_single_insert(position);
+        let mut v = vec![Some(first), Some(second)];
+        let old_capacity = v.capacity();
+        // This intentionally forces the reallocation path in Kani's current
+        // allocator model; it is not a general guarantee of `vec!` or `Vec`.
+        assert!(old_capacity < INITIAL_LEN + additional);
+
+        let result =
+            <Option<Box<DropTracked<'_>>>>::insert_vec_zeroed(&mut v, position, additional);
+
+        kani::cover!(result.is_ok() && position == 0 && additional == 1);
+        kani::cover!(result.is_ok() && position == 1 && additional == 1);
+        kani::cover!(result.is_ok() && position == INITIAL_LEN && additional == 1);
+        kani::cover!(result.is_ok() && initial[0] != initial[1]);
+        assert!(result.is_ok());
+
+        let new_len = INITIAL_LEN + additional;
+        assert_eq!(v.len(), new_len);
+        assert!(v.capacity() >= new_len);
+        assert!(v.capacity() > old_capacity);
+        for idx in 0..new_len {
+            match expected[idx] {
+                ExpectedSlot::First => {
+                    let boxed = v[idx].as_ref().unwrap();
+                    let ptr: *const DropTracked<'_> = &**boxed;
+                    assert_eq!(ptr, first_ptr);
+                    assert_eq!(boxed.value, initial[0]);
+                }
+                ExpectedSlot::Second => {
+                    let boxed = v[idx].as_ref().unwrap();
+                    let ptr: *const DropTracked<'_> = &**boxed;
+                    assert_eq!(ptr, second_ptr);
+                    assert_eq!(boxed.value, initial[1]);
+                }
+                ExpectedSlot::Inserted => assert!(v[idx].is_none()),
+            }
+        }
+
+        let replacements: [u8; MAX_OUTPUT_LEN] = kani::any();
+        kani::cover!(replacements[0] != replacements[1] && replacements[1] != replacements[2]);
+        for idx in 0..new_len {
+            let slot = &mut v[idx];
+            match slot {
+                Some(boxed) => boxed.value = replacements[idx],
+                None => {
+                    *slot = Some(Box::new(DropTracked {
+                        value: replacements[idx],
+                        drops: &inserted_drops,
+                    }))
+                }
+            }
+        }
+        for idx in 0..new_len {
+            assert_eq!(v[idx].as_ref().unwrap().value, replacements[idx]);
+        }
+        assert_eq!(first_drops.get(), 0);
+        assert_eq!(second_drops.get(), 0);
+        assert_eq!(inserted_drops.get(), 0);
+        drop(v);
+        assert_eq!(first_drops.get(), 1);
+        assert_eq!(second_drops.get(), 1);
+        assert_eq!(inserted_drops.get(), 1);
+    }
+}
+
 /// Analyzes whether a type is [`FromBytes`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
