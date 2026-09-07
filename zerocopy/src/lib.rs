@@ -6455,460 +6455,1022 @@ mod alloc_support {
 #[doc(hidden)]
 pub use alloc_support::*;
 
-#[cfg(all(kani, feature = "derive"))]
+#[cfg(kani)]
 mod proofs {
-    //! Representative Kani regression proofs for generated implementations.
+    //! Kani proof families for definitions in the crate root.
     //!
-    //! Configuration: Uses the common Kani CI configuration documented in
-    //! `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
-    //! x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
-    //! `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
-    //! per invocation.
-    //!
-    //! Storage and bounds: Each of the four harnesses uses one fixed-size input
-    //! array. The shared validator copies it into explicit offset-zero and
-    //! offset-one source subobjects: both exercise the `Unaligned` type marker,
-    //! while each source exercises `Aligned` only when Rust's raw-pointer
-    //! `is_aligned` oracle says its physical address is aligned for the target
-    //! type. The public read makes its own aligned candidate. Oracle witnesses
-    //! and layout surrogates are also fixed size. None performs dynamic
-    //! allocation, and the proof source contains no explicit loop. Every
-    //! representation copy is at most eight bytes on the common Kani target.
-    //! Every harness carries `#[kani::unwind(9)]`, permitting an inlined
-    //! bytewise operation to examine those eight bytes and terminate, with
-    //! Kani's unwinding checks enforcing the bound. The two concrete placements
-    //! do not prove arbitrary absolute addresses or offsets other than zero and
-    //! one.
-    //!
-    //! These harnesses exercise the shared non-materializing
-    //! `ReadOnly`/`Ptr`/cast path ending in generated
-    //! [`TryFromBytes::is_bit_valid`] methods on initialized bytes with both
-    //! the `Unaligned` and `Aligned` type-level markers. They therefore prove
-    //! those composite paths, not the generated method in isolation. They
-    //! invoke the public value-reading API only after an independent safe
-    //! construction and documented layout rules establish that the candidate
-    //! representation is valid. Each theorem covers one fixed, sized derive
-    //! input and every byte pattern for that input on Kani's target. This is
-    //! not a generator theorem: it does not cover other derive inputs,
-    //! configurations, targets, or properties absent from Kani's memory model.
-    //! The sized inputs also deliberately avoid the nested-DST layout issue
-    //! tracked in #3630.
-    //!
-    //! Exact-candidate validity premise: every candidate byte is initialized,
-    //! and compiler-computed `offset_of!` results, including direct nested
-    //! field paths, select each field's bytes [4]. For structs, the Reference
-    //! "requires all fields/elements to be valid at their respective type"; for
-    //! enums, "all fields of the variant indicated by that discriminant must be
-    //! valid at their respective type" [1]. These rules impose no padding-value
-    //! condition. Consistently, for a representation with "initialized bytes at
-    //! byte offsets where the type has padding", `MaybeUninit` documents that
-    //! copying may lose those bytes while "the original value will be
-    //! preserved" [2]. Thus matching field values establish candidate validity
-    //! even when witness padding differs. This excludes extra user invariants
-    //! and remains a language premise rather than a Kani theorem. For each
-    //! `char` field, `char_from_bytes` safely selects the suffix at the
-    //! compiler-reported field offset and then asks `slice::first_chunk::<4>`
-    //! for its first four bytes [9]. Either safe operation fails closed if the
-    //! compiler-reported field is not fully in bounds; no `offset + 4` range
-    //! end is reconstructed. Dereferencing the returned array reference copies
-    //! the `[u8; 4]` because its element type is `Copy` [3]; that array then
-    //! reaches the shared `char_from_ne_bytes` oracle. The oracle's exact Rust
-    //! 1.93.0 `u32::from_ne_bytes`/`char::from_u32` bridge contracts and 32-bit
-    //! `char` representation premise are documented beside that helper.
-    //!
-    //! [1]: https://doc.rust-lang.org/1.93.0/reference/behavior-considered-undefined.html#invalid-values
-    //! [2]: https://doc.rust-lang.org/1.93.0/core/mem/union.MaybeUninit.html#validity
-    //! [3]: https://doc.rust-lang.org/1.93.0/reference/expressions.html#moved-and-copied-types
-    //!      https://doc.rust-lang.org/1.93.0/std/primitive.array.html#trait-implementations-1
-    //!      https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-Copy-for-u8
-    //!
-    //! [4]: https://doc.rust-lang.org/1.93.0/core/mem/macro.offset_of.html
-    //!
-    //!     Expands to the offset in bytes of a field from the beginning of the
-    //!     given type.
-    //!
-    //! For the packed struct, the `repr(C)` algorithm places fields in
-    //! declaration order after any required padding [5], while `packed(1)`
-    //! guarantees no inter-field padding [6]. The proof does not manually
-    //! replay that algorithm: it obtains the actual offsets and sizes from the
-    //! compiler and checks that both field ranges are in bounds,
-    //! nonoverlapping, and together exhaust the representation.
-    //! `usize::checked_add` computes the range ends and combined size,
-    //! refutable `let...else` patterns make arithmetic failure fail closed, and
-    //! primitive `usize` ordering supplies the bound and disjointness
-    //! comparisons [10]. All size, alignment, offset, and length equality
-    //! assertions use the shared `assert_same_usize`; its
-    //! `assert_eq!`/`usize::PartialEq` operations supply only equality
-    //! mechanics, while compiler queries and the cited language rules supply
-    //! the operands [11].
-    //!
-    //! [5]: https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-c-representation
-    //! [6]: https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers
-    //! [7]: https://doc.rust-lang.org/1.93.0/reference/type-layout.html#primitive-data-layout
-    //! [8]: https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#method.from_ne_bytes
-    //! [9]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.get
-    //!      https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.first_chunk
-    //! [10]: https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#method.checked_add
-    //!       https://doc.rust-lang.org/1.93.0/reference/statements.html#let-statements
-    //!       https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialOrd.html
-    //! [11]: https://doc.rust-lang.org/1.93.0/std/macro.assert_eq.html
-    //!       https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialEq.html#tymethod.eq
-    //!       https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialEq-for-usize
+    //! Each child module owns the scope, oracle, and non-goal documentation for
+    //! one proof family. Keeping the coordinator free of proof mechanics makes
+    //! each family discoverable without coupling unrelated harnesses.
 
-    use crate::{
-        proof_support::{
-            assert_same_usize, bool_from_byte, char_from_ne_bytes, validate_and_read_sized,
-        },
-        TryFromBytes,
-    };
+    #[cfg(feature = "derive")]
+    mod derived {
+        //! Representative Kani regression proofs for generated implementations.
+        //!
+        //! Configuration: Uses the common Kani CI configuration documented in
+        //! `agent_docs/validation.md`: the CI-pinned Kani release and its
+        //! bundled x86_64-unknown-linux-gnu compiler, the stable-compatible
+        //! feature bundle, `-Zfunction-contracts`, and one layout selected by
+        //! `--randomize-layout` per invocation.
+        //!
+        //! Storage and bounds: Each of the four harnesses uses one fixed-size
+        //! input array. The shared validator copies it into explicit
+        //! offset-zero and offset-one source subobjects: both exercise the
+        //! `Unaligned` type marker, while each source exercises `Aligned` only
+        //! when Rust's raw-pointer `is_aligned` oracle says its physical
+        //! address is aligned for the target type. The public read makes its
+        //! own aligned candidate. Oracle witnesses and layout surrogates are
+        //! also fixed size. None performs dynamic allocation, and the proof
+        //! source contains no explicit loop. Every representation copy is at
+        //! most eight bytes on the common Kani target. Every harness carries
+        //! `#[kani::unwind(9)]`, permitting an inlined bytewise operation to
+        //! examine those eight bytes and terminate, with Kani's unwinding
+        //! checks enforcing the bound. The two concrete placements do not prove
+        //! arbitrary absolute addresses or offsets other than zero and one.
+        //!
+        //! These harnesses exercise the shared non-materializing
+        //! `ReadOnly`/`Ptr`/cast path ending in generated
+        //! [`TryFromBytes::is_bit_valid`] methods on initialized bytes with
+        //! both the `Unaligned` and `Aligned` type-level markers. They
+        //! therefore prove those composite paths, not the generated method in
+        //! isolation. They invoke the public value-reading API only after an
+        //! independent safe construction and documented layout rules establish
+        //! that the candidate representation is valid. Each theorem covers one
+        //! fixed, sized derive input and every byte pattern for that input on
+        //! Kani's target. This is not a generator theorem: it does not cover
+        //! other derive inputs, configurations, targets, or properties absent
+        //! from Kani's memory model. The sized inputs also deliberately avoid
+        //! the nested-DST layout issue tracked in #3630.
+        //!
+        //! Exact-candidate validity premise: every candidate byte is
+        //! initialized, and compiler-computed `offset_of!` results, including
+        //! direct nested field paths, select each field's bytes [4]. For
+        //! structs, the Reference "requires all fields/elements to be valid at
+        //! their respective type"; for enums, "all fields of the variant
+        //! indicated by that discriminant must be valid at their respective
+        //! type" [1]. These rules impose no padding-value condition.
+        //! Consistently, for a representation with "initialized bytes at byte
+        //! offsets where the type has padding", `MaybeUninit` documents that
+        //! copying may lose those bytes while "the original value will be
+        //! preserved" [2]. Thus matching field values establish candidate
+        //! validity even when witness padding differs. This excludes extra user
+        //! invariants and remains a language premise rather than a Kani
+        //! theorem. For each `char` field, `char_from_bytes` safely selects the
+        //! suffix at the compiler-reported field offset and then asks
+        //! `slice::first_chunk::<4>` for its first four bytes [9]. Either safe
+        //! operation fails closed if the compiler-reported field is not fully
+        //! in bounds; no `offset + 4` range end is reconstructed. Dereferencing
+        //! the returned array reference copies the `[u8; 4]` because its
+        //! element type is `Copy` [3]; that array then reaches the shared
+        //! `char_from_ne_bytes` oracle. The oracle's exact Rust 1.93.0
+        //! `u32::from_ne_bytes`/`char::from_u32` bridge contracts and 32-bit
+        //! `char` representation premise are documented beside that helper.
+        //!
+        //! [1]: https://doc.rust-lang.org/1.93.0/reference/behavior-considered-undefined.html#invalid-values
+        //! [2]: https://doc.rust-lang.org/1.93.0/core/mem/union.MaybeUninit.html#validity
+        //! [3]: https://doc.rust-lang.org/1.93.0/reference/expressions.html#moved-and-copied-types
+        //!      https://doc.rust-lang.org/1.93.0/std/primitive.array.html#trait-implementations-1
+        //!      https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-Copy-for-u8
+        //!
+        //! [4]: https://doc.rust-lang.org/1.93.0/core/mem/macro.offset_of.html
+        //!
+        //!     Expands to the offset in bytes of a field from the beginning of
+        //!     the given type.
+        //!
+        //! For the packed struct, the `repr(C)` algorithm places fields in
+        //! declaration order after any required padding [5], while `packed(1)`
+        //! guarantees no inter-field padding [6]. The proof does not manually
+        //! replay that algorithm: it obtains the actual offsets and sizes from
+        //! the compiler and checks that both field ranges are in bounds,
+        //! nonoverlapping, and together exhaust the representation.
+        //! `usize::checked_add` computes the range ends and combined size,
+        //! refutable `let...else` patterns make arithmetic failure fail closed,
+        //! and primitive `usize` ordering supplies the bound and disjointness
+        //! comparisons [10]. All size, alignment, offset, and length equality
+        //! assertions use the shared `assert_same_usize`; its
+        //! `assert_eq!`/`usize::PartialEq` operations supply only equality
+        //! mechanics, while compiler queries and the cited language rules
+        //! supply the operands [11].
+        //!
+        //! [5]: https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-c-representation
+        //! [6]: https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers
+        //! [7]: https://doc.rust-lang.org/1.93.0/reference/type-layout.html#primitive-data-layout
+        //! [8]: https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#method.from_ne_bytes
+        //! [9]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.get
+        //!      https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.first_chunk
+        //! [10]: https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#method.checked_add
+        //!       https://doc.rust-lang.org/1.93.0/reference/statements.html#let-statements
+        //!       https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialOrd.html
+        //! [11]: https://doc.rust-lang.org/1.93.0/std/macro.assert_eq.html
+        //!       https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialEq.html#tymethod.eq
+        //!       https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialEq-for-usize
 
-    fn char_from_bytes(bytes: &[u8], offset: usize) -> Option<char> {
-        let Some(suffix) = bytes.get(offset..) else {
-            panic!("compiler-reported char field must start within the representation")
-        };
-        let Some(representation) = suffix.first_chunk::<4>() else {
-            panic!("compiler-reported char field must fit in the representation")
-        };
-        char_from_ne_bytes(*representation)
-    }
-
-    // Rust specifies that `u8` occupies one byte [7], and `u8::from_ne_bytes`
-    // constructs the integer whose memory representation is that byte [8]. Keep
-    // this language oracle explicit when a candidate representation becomes a
-    // safe `u8` field value; merely reusing the candidate byte as a value would
-    // leave the representation connection implicit.
-    fn u8_from_byte_representation(byte: u8) -> u8 {
-        u8::from_ne_bytes([byte])
-    }
-
-    fn cover_bool_cross_product(first: bool, second: bool) {
-        kani::cover!(first && second);
-        kani::cover!(first && !second);
-        kani::cover!(!first && second);
-        kani::cover!(!first && !second);
-    }
-
-    // Use compiler-reported sizes and offsets as the layout oracle. Two
-    // nonoverlapping in-bounds field ranges whose sizes sum to the
-    // representation size exhaust it; no manually reconstructed `repr(C)`
-    // formula is needed.
-    fn assert_two_fields_cover(
-        representation_len: usize,
-        first_offset: usize,
-        first_size: usize,
-        second_offset: usize,
-        second_size: usize,
-    ) {
-        let Some(first_end) = first_offset.checked_add(first_size) else {
-            panic!("first compiler-reported field range must not overflow")
-        };
-        let Some(second_end) = second_offset.checked_add(second_size) else {
-            panic!("second compiler-reported field range must not overflow")
-        };
-        assert!(first_end <= representation_len);
-        assert!(second_end <= representation_len);
-        assert!(first_end <= second_offset || second_end <= first_offset);
-        let Some(covered_size) = first_size.checked_add(second_size) else {
-            panic!("combined compiler-reported field size must not overflow")
-        };
-        assert_same_usize(covered_size, representation_len);
-    }
-
-    #[allow(dead_code)]
-    #[derive(TryFromBytes)]
-    #[repr(C)]
-    struct BoolAndChar {
-        flag: bool,
-        character: char,
-    }
-
-    #[kani::proof]
-    #[kani::unwind(9)]
-    fn prove_try_from_bytes_derive_struct() {
-        let bytes = kani::any::<[u8; core::mem::size_of::<BoolAndChar>()]>();
-        let flag_offset = core::mem::offset_of!(BoolAndChar, flag);
-        let character_offset = core::mem::offset_of!(BoolAndChar, character);
-        let flag = bool_from_byte(bytes[flag_offset]);
-        let character = char_from_bytes(&bytes, character_offset);
-        let flag_valid = flag.is_some();
-        let character_valid = character.is_some();
-        let expected = match (flag, character) {
-            (Some(flag), Some(character)) => Some(BoolAndChar { flag, character }),
-            _ => None,
+        use crate::{
+            proof_support::{
+                assert_same_usize, bool_from_byte, char_from_ne_bytes, validate_and_read_sized,
+            },
+            TryFromBytes,
         };
 
-        // Domain: all initialized representations of this fixed `repr(C)` type.
-        // Establishes: the composite non-materializing
-        // Ptr/cast/generated-validator path accepts exactly when both fields
-        // do. On those independently valid inputs, the public value-reading API
-        // succeeds and returns the oracle's field values.
-        // Oracle: actual field offsets plus safe checked `char` construction
-        // and the shared `bool` language-validity oracle. This is not a
-        // derive-generator or generic struct-layout theorem.
-        cover_bool_cross_product(flag_valid, character_valid);
-        let read = validate_and_read_sized!(BoolAndChar, bytes, expected);
-        if let Some(BoolAndChar { flag: actual_flag, character: actual_character }) = read {
-            assert_eq!(Some(actual_flag), flag);
-            assert_eq!(Some(actual_character), character);
+        fn char_from_bytes(bytes: &[u8], offset: usize) -> Option<char> {
+            let Some(suffix) = bytes.get(offset..) else {
+                panic!("compiler-reported char field must start within the representation")
+            };
+            let Some(representation) = suffix.first_chunk::<4>() else {
+                panic!("compiler-reported char field must fit in the representation")
+            };
+            char_from_ne_bytes(*representation)
+        }
+
+        // Rust specifies that `u8` occupies one byte [7], and
+        // `u8::from_ne_bytes` constructs the integer whose memory
+        // representation is that byte [8]. Keep this language oracle explicit
+        // when a candidate representation becomes a safe `u8` field value;
+        // merely reusing the candidate byte as a value would leave the
+        // representation connection implicit.
+        fn u8_from_byte_representation(byte: u8) -> u8 {
+            u8::from_ne_bytes([byte])
+        }
+
+        fn cover_bool_cross_product(first: bool, second: bool) {
+            kani::cover!(first && second);
+            kani::cover!(first && !second);
+            kani::cover!(!first && second);
+            kani::cover!(!first && !second);
+        }
+
+        // Use compiler-reported sizes and offsets as the layout oracle. Two
+        // nonoverlapping in-bounds field ranges whose sizes sum to the
+        // representation size exhaust it; no manually reconstructed `repr(C)`
+        // formula is needed.
+        fn assert_two_fields_cover(
+            representation_len: usize,
+            first_offset: usize,
+            first_size: usize,
+            second_offset: usize,
+            second_size: usize,
+        ) {
+            let Some(first_end) = first_offset.checked_add(first_size) else {
+                panic!("first compiler-reported field range must not overflow")
+            };
+            let Some(second_end) = second_offset.checked_add(second_size) else {
+                panic!("second compiler-reported field range must not overflow")
+            };
+            assert!(first_end <= representation_len);
+            assert!(second_end <= representation_len);
+            assert!(first_end <= second_offset || second_end <= first_offset);
+            let Some(covered_size) = first_size.checked_add(second_size) else {
+                panic!("combined compiler-reported field size must not overflow")
+            };
+            assert_same_usize(covered_size, representation_len);
+        }
+
+        #[allow(dead_code)]
+        #[derive(TryFromBytes)]
+        #[repr(C)]
+        struct BoolAndChar {
+            flag: bool,
+            character: char,
+        }
+
+        #[kani::proof]
+        #[kani::unwind(9)]
+        fn prove_try_from_bytes_derive_struct() {
+            let bytes = kani::any::<[u8; core::mem::size_of::<BoolAndChar>()]>();
+            let flag_offset = core::mem::offset_of!(BoolAndChar, flag);
+            let character_offset = core::mem::offset_of!(BoolAndChar, character);
+            let flag = bool_from_byte(bytes[flag_offset]);
+            let character = char_from_bytes(&bytes, character_offset);
+            let flag_valid = flag.is_some();
+            let character_valid = character.is_some();
+            let expected = match (flag, character) {
+                (Some(flag), Some(character)) => Some(BoolAndChar { flag, character }),
+                _ => None,
+            };
+
+            // Domain: all initialized representations of this fixed `repr(C)`
+            // type.
+            // Establishes: the composite non-materializing
+            // Ptr/cast/generated-validator path accepts exactly when both
+            // fields do. On those independently valid inputs, the public
+            // value-reading API succeeds and returns the oracle's field values.
+            // Oracle: actual field offsets plus safe checked `char`
+            // construction and the shared `bool` language-validity oracle. This
+            // is not a derive-generator or generic struct-layout theorem.
+            cover_bool_cross_product(flag_valid, character_valid);
+            let read = validate_and_read_sized!(BoolAndChar, bytes, expected);
+            if let Some(BoolAndChar { flag: actual_flag, character: actual_character }) = read {
+                assert_eq!(Some(actual_flag), flag);
+                assert_eq!(Some(actual_character), character);
+            }
+        }
+
+        #[allow(dead_code)]
+        #[derive(TryFromBytes)]
+        #[repr(C, packed)]
+        struct PackedBoolAndChar {
+            flag: bool,
+            character: char,
+        }
+
+        #[kani::proof]
+        #[kani::unwind(9)]
+        fn prove_try_from_bytes_derive_packed_struct() {
+            let bytes = kani::any::<[u8; core::mem::size_of::<PackedBoolAndChar>()]>();
+            let flag_offset = core::mem::offset_of!(PackedBoolAndChar, flag);
+            let character_offset = core::mem::offset_of!(PackedBoolAndChar, character);
+            // Ask the compiler for every layout input, then check the complete
+            // field ranges rather than reconstructing the packed layout
+            // algorithm.
+            assert_two_fields_cover(
+                core::mem::size_of::<PackedBoolAndChar>(),
+                flag_offset,
+                core::mem::size_of::<bool>(),
+                character_offset,
+                core::mem::size_of::<char>(),
+            );
+            let flag = bool_from_byte(bytes[flag_offset]);
+            let character = char_from_bytes(&bytes, character_offset);
+            let flag_valid = flag.is_some();
+            let character_valid = character.is_some();
+            let expected = match (flag, character) {
+                (Some(flag), Some(character)) => Some(PackedBoolAndChar { flag, character }),
+                _ => None,
+            };
+
+            // Domain: all initialized representations of this fixed packed
+            // type.
+            // Establishes: the composite non-materializing
+            // Ptr/cast/generated-validator path accepts exactly when both
+            // fields do. On those independently valid inputs, the public
+            // value-reading API succeeds and returns the oracle's field values.
+            // Oracle: compiler-reported size and packed field offsets, explicit
+            // in-bounds/nonoverlapping/exhaustive range checks grounded in the
+            // cited `repr(C)` and `packed(1)` rules, safe checked `char`
+            // construction, and the shared `bool` language-validity oracle.
+            // This does not generalize to other packing, alignment, or field
+            // combinations.
+            cover_bool_cross_product(flag_valid, character_valid);
+            let read = validate_and_read_sized!(PackedBoolAndChar, bytes, expected);
+            // Move packed fields into aligned locals before comparing them.
+            if let Some(PackedBoolAndChar { flag: actual_flag, character: actual_character }) = read
+            {
+                assert_eq!(Some(actual_flag), flag);
+                assert_eq!(Some(actual_character), character);
+            }
+        }
+
+        #[allow(dead_code)]
+        #[derive(Copy, Clone, TryFromBytes)]
+        #[repr(C)]
+        struct BoolFirst {
+            flag: bool,
+            byte: u8,
+        }
+
+        #[allow(dead_code)]
+        #[derive(Copy, Clone, TryFromBytes)]
+        #[repr(C)]
+        struct BoolLast {
+            byte: u8,
+            flag: bool,
+        }
+
+        #[allow(dead_code)]
+        #[derive(TryFromBytes)]
+        #[repr(C)]
+        union BoolAtEitherEnd {
+            first: BoolFirst,
+            last: BoolLast,
+        }
+
+        #[kani::proof]
+        #[kani::unwind(9)]
+        fn prove_try_from_bytes_derive_union() {
+            let bytes = kani::any::<[u8; core::mem::size_of::<BoolAtEitherEnd>()]>();
+            let first_offset = core::mem::offset_of!(BoolAtEitherEnd, first.flag);
+            let first_byte_offset = core::mem::offset_of!(BoolAtEitherEnd, first.byte);
+            let last_offset = core::mem::offset_of!(BoolAtEitherEnd, last.flag);
+            let last_byte_offset = core::mem::offset_of!(BoolAtEitherEnd, last.byte);
+            assert_same_usize(core::mem::size_of::<bool>(), 1);
+            assert_same_usize(core::mem::size_of::<u8>(), 1);
+            assert_two_fields_cover(
+                bytes.len(),
+                first_offset,
+                core::mem::size_of::<bool>(),
+                first_byte_offset,
+                core::mem::size_of::<u8>(),
+            );
+            assert_two_fields_cover(
+                bytes.len(),
+                last_offset,
+                core::mem::size_of::<bool>(),
+                last_byte_offset,
+                core::mem::size_of::<u8>(),
+            );
+            let first = bool_from_byte(bytes[first_offset]);
+            let last = bool_from_byte(bytes[last_offset]);
+            let first_byte = u8_from_byte_representation(bytes[first_byte_offset]);
+            let last_byte = u8_from_byte_representation(bytes[last_byte_offset]);
+            let first_valid = first.is_some();
+            let last_valid = last.is_some();
+
+            // The compiler-reported sizes and effective offsets satisfy the
+            // explicit coverage checks above: either active field consists of
+            // two one-byte fields at distinct in-bounds offsets in this
+            // two-byte union. The safely constructed active field therefore
+            // reconstructs the exact candidate bytes without relying on a
+            // padding premise or an inactive field. No union field is read by
+            // this proof.
+            let expected = if let Some(flag) = first {
+                Some(BoolAtEitherEnd { first: BoolFirst { flag, byte: first_byte } })
+            } else {
+                last.map(|flag| BoolAtEitherEnd { last: BoolLast { byte: last_byte, flag } })
+            };
+
+            // Domain: all initialized representations of this fixed two-field
+            // union.
+            // Establishes: the composite non-materializing
+            // Ptr/cast/generated-validator path accepts iff at least one field
+            // interpretation is valid, using actual union and struct field
+            // offsets plus the shared `bool` oracle. On accepted inputs, the
+            // public value-read succeeds. The OR is explicitly a zerocopy
+            // policy oracle, not evidence about Rust union validity or a
+            // theorem about every union or derive input.
+            cover_bool_cross_product(first_valid, last_valid);
+            // Union fields cannot be inspected through safe Rust, so the
+            // returned value is deliberately not used as a value oracle.
+            let _ = validate_and_read_sized!(BoolAtEitherEnd, bytes, expected);
+        }
+
+        #[allow(dead_code)]
+        #[derive(TryFromBytes)]
+        #[repr(u8)]
+        enum BoolOrByte {
+            Bool(bool),
+            Byte(u8),
+        }
+
+        #[allow(dead_code)]
+        #[derive(Copy, Clone)]
+        #[repr(u8)]
+        enum BoolOrByteTag {
+            Bool,
+            Byte,
+        }
+
+        #[derive(Copy, Clone)]
+        #[repr(C)]
+        struct BoolVariantRepr {
+            tag: BoolOrByteTag,
+            payload: bool,
+        }
+
+        #[derive(Copy, Clone)]
+        #[repr(C)]
+        struct ByteVariantRepr {
+            tag: BoolOrByteTag,
+            payload: u8,
+        }
+
+        #[allow(dead_code)]
+        #[derive(Copy, Clone)]
+        #[repr(C)]
+        union BoolOrByteRepr {
+            bool_variant: BoolVariantRepr,
+            byte_variant: ByteVariantRepr,
+        }
+
+        #[kani::proof]
+        #[kani::unwind(9)]
+        fn prove_try_from_bytes_derive_data_enum() {
+            let bytes = kani::any::<[u8; core::mem::size_of::<BoolOrByte>()]>();
+
+            // Residual language-layout rule: Rust Reference 1.93.0 specifies a
+            // primitive-representation enum with fields as a `repr(C)` union of
+            // `repr(C)` variant structs, whose first field is the tag and
+            // remaining fields are the variant payload [1]. Both the real enum
+            // and its tag surrogate declare the same implicit variants in the
+            // same order, so the Reference's implicit-discriminant rules give
+            // them the same tags [2]. The surrogate types above encode those
+            // language rules; `offset_of!` supplies every union and struct
+            // offset rather than duplicating byte positions.
+            //
+            // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#primitive-representation-of-enums-with-fields:
+            //
+            //     Each union member is a `repr(C)` struct whose first field is
+            //     the primitive-representation tag of the fieldless enum; "the
+            //     remaining fields are the fields of that variant."
+            //
+            // [2] Per https://doc.rust-lang.org/1.93.0/reference/items/enumerations.html#implicit-discriminants:
+            //
+            //     If the discriminant of the first variant ... is unspecified,
+            //     then it is set to zero. Each later implicit discriminant is
+            //     "one higher than the discriminant of the previous variant".
+            //
+            // [3] Per https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#enum-cast:
+            //
+            //     A fieldless enum value can be cast to an integer, producing
+            //     its discriminant value; the following numeric cast produces
+            //     `u8` here.
+            assert_same_usize(
+                core::mem::size_of::<BoolOrByte>(),
+                core::mem::size_of::<BoolOrByteRepr>(),
+            );
+            assert_same_usize(
+                core::mem::align_of::<BoolOrByte>(),
+                core::mem::align_of::<BoolOrByteRepr>(),
+            );
+            let tag_offset = core::mem::offset_of!(BoolOrByteRepr, bool_variant.tag);
+            let byte_tag_offset = core::mem::offset_of!(BoolOrByteRepr, byte_variant.tag);
+            assert_same_usize(tag_offset, byte_tag_offset);
+            let bool_payload_offset = core::mem::offset_of!(BoolOrByteRepr, bool_variant.payload);
+            let byte_payload_offset = core::mem::offset_of!(BoolOrByteRepr, byte_variant.payload);
+            let tag = u8_from_byte_representation(bytes[tag_offset]);
+            let byte_payload = u8_from_byte_representation(bytes[byte_payload_offset]);
+            let bool_payload = bool_from_byte(bytes[bool_payload_offset]);
+            let bool_payload_valid = bool_payload.is_some();
+            let expected = if tag == BoolOrByteTag::Bool as u8 {
+                bool_payload.map(BoolOrByte::Bool)
+            } else if tag == BoolOrByteTag::Byte as u8 {
+                Some(BoolOrByte::Byte(byte_payload))
+            } else {
+                None
+            };
+
+            // Domain: all initialized representations of this fixed `repr(u8)`
+            // data enum. Establishes: the composite non-materializing
+            // Ptr/cast/generated-validator path requires the `Bool` tag's
+            // payload to be valid, accepts every payload for the `Byte` tag,
+            // and rejects every other tag. The public API is invoked only for
+            // the first two cases, where it must succeed and return the
+            // corresponding safe variant constructed above. The Reference
+            // specifies the intended representation, but correspondence between
+            // this hand-written surrogate and the actual enum is a manually
+            // reviewed proof-specification/TCB premise; Kani does not
+            // independently query the enum payload offsets. This is not a
+            // generic enum-layout or derive-generator theorem.
+            kani::cover!(tag == BoolOrByteTag::Bool as u8 && bool_payload_valid);
+            kani::cover!(tag == BoolOrByteTag::Bool as u8 && !bool_payload_valid);
+            kani::cover!(tag == BoolOrByteTag::Byte as u8);
+            kani::cover!(tag >= 2);
+            let read = validate_and_read_sized!(BoolOrByte, bytes, expected);
+            match read {
+                Some(BoolOrByte::Bool(actual)) => {
+                    assert_eq!(tag, BoolOrByteTag::Bool as u8);
+                    assert_eq!(Some(actual), bool_payload);
+                }
+                Some(BoolOrByte::Byte(actual)) => {
+                    assert_eq!(tag, BoolOrByteTag::Byte as u8);
+                    assert_eq!(actual, byte_payload);
+                }
+                None => {}
+            }
         }
     }
 
-    #[allow(dead_code)]
-    #[derive(TryFromBytes)]
-    #[repr(C, packed)]
-    struct PackedBoolAndChar {
-        flag: bool,
-        character: char,
-    }
+    mod into_bytes {
+        //! Bounded Kani regression proofs for five [`IntoBytes`] byte-view and
+        //! slice-write methods.
+        //!
+        //! Configuration: Uses the common Kani CI configuration documented in
+        //! `agent_docs/validation.md`: the CI-pinned Kani release and its
+        //! bundled x86_64-unknown-linux-gnu compiler, the stable-compatible
+        //! feature bundle, `-Zfunction-contracts`, and one layout selected by
+        //! `--randomize-layout` per invocation.
+        //!
+        //! API surface: this family directly invokes exactly
+        //! [`IntoBytes::as_bytes`], [`IntoBytes::as_mut_bytes`],
+        //! [`IntoBytes::write_to`], [`IntoBytes::write_to_prefix`], and
+        //! [`IntoBytes::write_to_suffix`]. The common feature bundle enables
+        //! `std`, so it also compiles [`IntoBytes::write_to_io`]. It also
+        //! compiles the deprecated, doc-hidden `as_bytes_mut` forwarding method
+        //! and the hidden required implementor function
+        //! `only_derive_is_allowed_to_implement_this_trait`. No harness invokes
+        //! those three items, and this module directly establishes no behavior
+        //! for them.
+        //!
+        //! Storage domain: the shared-view harness and each of the three
+        //! slice-write harnesses separately cover every `u32`. The mutable-view
+        //! harness covers the full Cartesian product of every `[u32; 3]` and
+        //! every four-byte replacement. It owns that backing value (12 bytes on
+        //! Kani's target), a same-shaped snapshot, and four-byte
+        //! initial/replacement representations; it exposes only the middle
+        //! `u32` as a four-byte view. Each slice-write harness owns a six-byte
+        //! destination and snapshot and covers the full product of every
+        //! destination value and logical length from zero through six. It
+        //! passes exactly the offset-zero prefix `&mut destination[..len]`; no
+        //! harness varies the start index. The family does not cover
+        //! nonzero-start subslices (including same-length subslices of a
+        //! six-byte or larger object), exact-sized backing objects of lengths
+        //! zero through five, or any other backing size or shape. At length
+        //! zero, the target is the empty prefix; this does not claim a
+        //! Rust-specified raw address for that empty slice. The expected
+        //! passed-slice result and the separately observed caller-backing frame
+        //! both come from six-byte values. No harness dynamically allocates,
+        //! contains a source-level loop, or uses `kani::assume`. Each symbolic
+        //! scalar, array, and replacement is unconstrained. The shared
+        //! `any_usize_inclusive(MAX_DST_LEN)` generator uses checked
+        //! domain-size arithmetic, arbitrary `usize` remainder, and an
+        //! executable bound to reach every logical destination length `0..=6`;
+        //! this is input construction, not a target-policy oracle.
+        //!
+        //! Unwind domain: every harness has an unwind bound of seven with
+        //! unwinding assertions. The maximum fixed bytewise extent that can
+        //! drive a reachable elementwise operation is six: arbitrary
+        //! destination generation and the separate frame comparisons cover
+        //! `[u8; 6]`; each successful target or oracle byte copy is exactly
+        //! `size_of::<u32>() == 4` bytes. Operations on `[u32; 3]` cover three
+        //! elements, and its 12-byte storage size is not used as a loop bound.
+        //! No manual compiler- or Kani-lowering premise supplies this bound;
+        //! successful unwinding assertions establish that seven suffices for
+        //! every reachable translated loop in the exact modeled run.
+        //!
+        //! The harnesses check the `IntoBytes::as_bytes` exact-length/content
+        //! policy and the three slice-write methods' success, placement, and
+        //! passed-slice frames. Safe standard-library byte conversion and slice
+        //! copying independently specify expected values; they do not
+        //! independently establish what the zerocopy APIs are required to
+        //! return or write. Returned-view raw-address identity and preservation
+        //! of the unpassed `destination[len..6]` caller-backing suffix are
+        //! additional implementation-regression assertions, not documented API
+        //! postconditions. The outer-frame assertion establishes only
+        //! final-value preservation for this exact backing object under Kani's
+        //! model. In particular, Kani does not completely check reference
+        //! aliasing, pointer provenance, reference lifetimes, uninitialized
+        //! memory, or other properties absent from its model. Each slice-write
+        //! result is matched only to distinguish its variant, so the proofs do
+        //! not observe the `SizeError` payload or reference-recovery identity.
+        //! Each view target's referent is snapshotted before the call and the
+        //! returned view is observed afterward. The slice-write frames are
+        //! likewise observed only after the call, so neither observation
+        //! detects a transient mutation restored before return. These proofs do
+        //! not cover larger backing arrays or copy lengths, nonzero-start
+        //! destination subslices, zero-sized or padded types, other sized
+        //! types, any unsized input type, `write_to_io` writer interaction
+        //! (including partial writes, `write_all` retries, writer errors, and
+        //! writer panics), the deprecated `as_bytes_mut` forwarding entry
+        //! point, or the hidden implementor function. The unsized exclusion
+        //! includes ordinary slice and `str` DSTs as well as custom and nested
+        //! DST layouts (see #3630). Bound seven is a translated-loop bound for
+        //! this fixed family, not Rust panic-unwind coverage or a general bound
+        //! derived from object-allocation sizes.
+        //!
+        //! Language/library oracle basis: `VALUE_SIZE` is not reconstructed
+        //! from [`IntoBytes`]. Rust says "all values of a `Sized` type share
+        //! the same size and alignment" [1]. `size_of` states, "Returns the
+        //! size of a type in bytes" [2]; `size_of_val` states, "Returns the
+        //! size of the pointed-to value in bytes" [3]. Thus `size_of::<u32>()`
+        //! independently specifies the `size_of_val(self)` length in the target
+        //! APIs' contracts for this sized monomorphization. Safe
+        //! `u32::to_ne_bytes` "Returns the memory representation of this
+        //! integer" in native byte order [4], while `u32::from_ne_bytes`
+        //! "Creates a native endian integer value from its memory
+        //! representation" [5]. `copy_from_slice` "Copies all elements from
+        //! `src` into `self`" for an equal-length receiver [6]. These
+        //! operations do not call zerocopy; their independence is from the
+        //! implementation under proof, not from the pinned compiler, standard
+        //! library, or Kani translation/model.
+        //!
+        //! API-policy basis: The public [`IntoBytes`] contract says that any
+        //! `t: T` may be treated as an immutable `[u8]` of length
+        //! `size_of_val(t)`, and the public [`IntoBytes::as_bytes`] contract
+        //! says it gets the bytes of the value. The shared-view harness makes
+        //! that target-side policy precise for `u32`: the returned slice must
+        //! have the exact value size and contain the exact native memory
+        //! representation. `u32::to_ne_bytes` [4] only constructs the expected
+        //! representation; it does not establish that `as_bytes` must return
+        //! it. The success predicates, prefix/suffix placement, and error-path
+        //! passed-slice frames below separately restate the public
+        //! documentation of [`IntoBytes::write_to`],
+        //! [`IntoBytes::write_to_prefix`], and [`IntoBytes::write_to_suffix`].
+        //! Returned-view address identity and the unpassed caller-backing frame
+        //! are explicitly separate regression properties. These policy and
+        //! regression assertions are intentionally separate from the safe
+        //! language/library oracles that construct expected bytes and frame
+        //! values. The conclusions remain specific to `u32`, the configured
+        //! target's native byte order, and exactly the bounded buffers
+        //! described above.
+        //!
+        //! [1]: https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.properties.sized
+        //! [2]: https://doc.rust-lang.org/1.93.0/std/mem/fn.size_of.html
+        //! [3]: https://doc.rust-lang.org/1.93.0/std/mem/fn.size_of_val.html
+        //! [4]: https://doc.rust-lang.org/1.93.0/std/primitive.u32.html#method.to_ne_bytes
+        //! [5]: https://doc.rust-lang.org/1.93.0/std/primitive.u32.html#method.from_ne_bytes
+        //! [6]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.copy_from_slice
+        //!
+        //! Snapshot and observation basis: every pre-call array snapshot uses
+        //! the shared `copy_snapshot`, whose own documentation applies Rust's
+        //! dereference-result, block-value-context, and copied-place rules
+        //! [10]. Every asserted byte view and slice-write frame uses the shared
+        //! `assert_same_u8_elements`, which obtains element counts through
+        //! `slice::len` and compares them through the shared
+        //! `assert_same_usize` before comparing all ordered bytes through safe
+        //! slice iteration [11], copied iteration, iterator equality [12], and
+        //! `u8` equality [13]. The sole direct pinned-size assertion uses that
+        //! same factored equality helper [23]. `assert_eq!`/`usize::PartialEq`
+        //! supply only equality mechanics; the primitive-layout or slice
+        //! sources described here supply each expected operand. Thus no proof
+        //! assertion silently treats array or slice `PartialEq` as its oracle;
+        //! array equality remains only in reachability covers. These helpers
+        //! establish values, not allocation identity.
+        //!
+        //! Address oracle basis: the Reference permits `&T` to `*const T` and
+        //! `&mut T` to `*mut T` coercions [7]. Its sized pointer-to-pointer
+        //! cast rule says the pointer is "returned unchanged" [8]. Slice
+        //! `as_ptr` and `as_mut_ptr` return raw pointers to their buffers
+        //! [14][15]. `ptr::addr_eq` compares pointer addresses while ignoring
+        //! metadata [16]. Thus the pre-call source pointer and its cast to `u8`
+        //! independently compute the expected address, while the slice
+        //! accessors supply the returned-view address being tested. Address
+        //! identity is an additional regression assertion, and address equality
+        //! neither checks aliasing nor establishes a provenance theorem.
+        //!
+        //! Placement oracle basis: the Reference defines `start..end` as a
+        //! half-open `Range` containing exactly `start <= x < end` [17]. Rust
+        //! maps mutable indexing to `IndexMut`; arrays accept any slice index,
+        //! and `Range<usize>: SliceIndex<[T], Output = [T]>` returns the
+        //! selected mutable slice. Its documented panic conditions are
+        //! `start > end` or `end` beyond the array bound [18]. The shared
+        //! expected-range helper passes the policy-selected `Range` directly to
+        //! safe indexing and then to `copy_from_slice`; it does not manually
+        //! reconstruct either operation's bounds or equal-length precondition.
+        //! A policy error therefore reaches the safe operation's own checked
+        //! panic and fails verification. Exact and prefix copies pass `0..4`.
+        //! The suffix helper instead indexes the modeled logical
+        //! `expected[..len]` destination and calls safe
+        //! `slice::last_chunk_mut::<4>`, whose contract directly selects its
+        //! last four elements or returns `None` when fewer exist [20]. It is
+        //! reached only on the `len >= 4` policy branch and fails closed if
+        //! that safe oracle nevertheless returns `None`. Thus suffix placement
+        //! uses no reconstructed subtraction. These operations are the
+        //! Rust/library placement oracles; the target API policy still decides
+        //! whether a write is supposed to succeed.
+        //!
+        //! Passed-slice and caller-backing observation are deliberately
+        //! separate. After the target borrow ends, safe `slice::split_at(len)`
+        //! partitions the actual, expected, and pre-call arrays into the passed
+        //! prefix and unpassed suffix [21]. No preceding manual bound check
+        //! reconstructs `split_at`'s precondition. The passed prefix is
+        //! compared with the policy-selected safe copy. Separately, the
+        //! unpassed suffix is compared directly with its pre-call snapshot as
+        //! the additional regression frame described above. Kani's incomplete
+        //! aliasing, provenance, and reference-lifetime checks remain TOOL/TCB
+        //! premises for this outer-frame observation [22].
+        //!
+        //! Minimum-length classification basis: Rust comparison expressions
+        //! define `lhs >= rhs` in terms of `PartialOrd::ge(&lhs, &rhs)`, and
+        //! `usize` implements that operation [24]. Every prefix and suffix
+        //! harness first establishes `VALUE_SIZE == 4`; `destination_len`
+        //! independently ranges over every `usize` from zero through six. The
+        //! shared `minimum_length_policy_succeeds` predicate therefore returns
+        //! true exactly for lengths `4..=6` and false exactly for lengths
+        //! `0..=3`. The public zerocopy method contracts supply the
+        //! minimum-size policy; the Rust ordering rules only ground its
+        //! conversion to a Boolean.
+        //!
+        //! Result-classification basis: `classify_write_result` exhaustively
+        //! matches the target `Result` together with the API-policy success
+        //! Boolean. Rust match expressions select the first matching arm, tuple
+        //! patterns match each field, tuple-struct patterns select the
+        //! `Ok`/`Err` variant, and literal patterns match the Boolean value
+        //! [19]. The two disagreement arms panic, so successful verification
+        //! establishes target/policy agreement without reducing the target
+        //! result through `Result::is_ok` or Boolean equality.
+        //!
+        //! Fail-closed verification basis: both result/policy disagreement arms
+        //! and the suffix oracle's unexpected `None` arm invoke `panic!`. Rust
+        //! specifies that `panic!` panics the current thread [25]. Kani's exact
+        //! 0.67.0 release source says that it automatically checks panics and
+        //! attempts to prove the harness without panicking; its versioned
+        //! result semantics say that a harness verifies only if every
+        //! individual check succeeds, and otherwise reports failure [25]. Thus
+        //! a successful result excludes every modeled execution that reaches
+        //! any of these arms. This terminal-result claim remains limited to the
+        //! exact Kani model, including the incomplete checks recorded in [22].
+        //!
+        //! [7]: https://doc.rust-lang.org/1.93.0/reference/type-coercions.html#coercion-types
+        //! [8]: https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#pointer-to-pointer-cast
+        //! [9]: https://doc.rust-lang.org/1.93.0/reference/type-layout.html#primitive-data-layout
+        //! [10]: https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.deref.result
+        //!       https://doc.rust-lang.org/1.93.0/reference/expressions/block-expr.html#r-expr.block.value
+        //!       https://doc.rust-lang.org/1.93.0/reference/expressions.html#moved-and-copied-types
+        //! [11]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.iter
+        //! [12]: https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.copied
+        //!       https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.eq
+        //! [13]: https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-PartialEq-for-u8
+        //! [14]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.as_ptr
+        //! [15]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.as_mut_ptr
+        //! [16]: https://doc.rust-lang.org/1.93.0/std/ptr/fn.addr_eq.html
+        //! [17]: https://doc.rust-lang.org/1.93.0/reference/expressions/range-expr.html
+        //! [18]: https://doc.rust-lang.org/1.93.0/reference/expressions/array-expr.html#r-expr.array.index.trait
+        //!       https://doc.rust-lang.org/1.93.0/std/primitive.array.html#impl-IndexMut%3CI%3E-for-%5BT%3B+N%5D
+        //!       https://doc.rust-lang.org/1.93.0/std/ops/struct.Range.html#impl-SliceIndex%3C%5BT%5D%3E-for-Range%3Cusize%3E
+        //! [19]: https://doc.rust-lang.org/1.93.0/reference/expressions/match-expr.html
+        //!       https://doc.rust-lang.org/1.93.0/reference/patterns.html#tuple-patterns
+        //!       https://doc.rust-lang.org/1.93.0/reference/patterns.html#tuple-struct-patterns
+        //!       https://doc.rust-lang.org/1.93.0/reference/patterns.html#literal-patterns
+        //! [20]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.last_chunk_mut
+        //! [21]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.split_at
+        //! [22]: https://model-checking.github.io/kani/undefined-behaviour.html
+        //! [23]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.len
+        //!       https://doc.rust-lang.org/1.93.0/std/macro.assert_eq.html
+        //!       https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialEq.html#tymethod.eq
+        //!       https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialEq-for-usize
+        //! [24]: https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#comparison-operators
+        //!       https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialOrd.html#method.ge
+        //!       https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialOrd-for-usize
+        //! [25]: https://doc.rust-lang.org/1.93.0/std/macro.panic.html
+        //!       https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/README.md
+        //!       https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/docs/src/verification-results.md
 
-    #[kani::proof]
-    #[kani::unwind(9)]
-    fn prove_try_from_bytes_derive_packed_struct() {
-        let bytes = kani::any::<[u8; core::mem::size_of::<PackedBoolAndChar>()]>();
-        let flag_offset = core::mem::offset_of!(PackedBoolAndChar, flag);
-        let character_offset = core::mem::offset_of!(PackedBoolAndChar, character);
-        // Ask the compiler for every layout input, then check the complete
-        // field ranges rather than reconstructing the packed layout algorithm.
-        assert_two_fields_cover(
-            core::mem::size_of::<PackedBoolAndChar>(),
-            flag_offset,
-            core::mem::size_of::<bool>(),
-            character_offset,
-            core::mem::size_of::<char>(),
-        );
-        let flag = bool_from_byte(bytes[flag_offset]);
-        let character = char_from_bytes(&bytes, character_offset);
-        let flag_valid = flag.is_some();
-        let character_valid = character.is_some();
-        let expected = match (flag, character) {
-            (Some(flag), Some(character)) => Some(PackedBoolAndChar { flag, character }),
-            _ => None,
+        use crate::{
+            proof_support::{
+                any_usize_inclusive, assert_same_u8_elements, assert_same_usize, copy_snapshot,
+            },
+            IntoBytes,
         };
 
-        // Domain: all initialized representations of this fixed packed type.
-        // Establishes: the composite non-materializing
-        // Ptr/cast/generated-validator path accepts exactly when both fields
-        // do. On those independently valid inputs, the public value-reading API
-        // succeeds and returns the oracle's field values.
-        // Oracle: compiler-reported size and packed field offsets, explicit
-        // in-bounds/nonoverlapping/exhaustive range checks grounded in the
-        // cited `repr(C)` and `packed(1)` rules, safe checked `char`
-        // construction, and the shared `bool` language-validity oracle. This
-        // does not generalize to other packing, alignment, or field
-        // combinations.
-        cover_bool_cross_product(flag_valid, character_valid);
-        let read = validate_and_read_sized!(PackedBoolAndChar, bytes, expected);
-        // Move packed fields into aligned locals before comparing them.
-        if let Some(PackedBoolAndChar { flag: actual_flag, character: actual_character }) = read {
-            assert_eq!(Some(actual_flag), flag);
-            assert_eq!(Some(actual_character), character);
+        const VALUE_SIZE: usize = core::mem::size_of::<u32>();
+        const MAX_DST_LEN: usize = 6;
+
+        // Rust's primitive layout table fixes `u32` at four bytes [9]. Assert
+        // that concrete language premise in every independently selectable
+        // harness rather than letting array lengths and covers silently depend
+        // on it.
+        fn assert_modeled_u32_size() {
+            assert_same_usize(VALUE_SIZE, 4);
         }
-    }
 
-    #[allow(dead_code)]
-    #[derive(Copy, Clone, TryFromBytes)]
-    #[repr(C)]
-    struct BoolFirst {
-        flag: bool,
-        byte: u8,
-    }
+        fn destination_len() -> usize {
+            any_usize_inclusive(MAX_DST_LEN)
+        }
 
-    #[allow(dead_code)]
-    #[derive(Copy, Clone, TryFromBytes)]
-    #[repr(C)]
-    struct BoolLast {
-        byte: u8,
-        flag: bool,
-    }
+        // Share the one Rust ordering operation that translates the prefix and
+        // suffix APIs' minimum-size policy into a Boolean. In this family it
+        // maps exactly 0..=3 to false and 4..=6 to true, as grounded in [24].
+        fn minimum_length_policy_succeeds(len: usize) -> bool {
+            len >= VALUE_SIZE
+        }
 
-    #[allow(dead_code)]
-    #[derive(TryFromBytes)]
-    #[repr(C)]
-    union BoolAtEitherEnd {
-        first: BoolFirst,
-        last: BoolLast,
-    }
+        // Factor the initial view's size and contents together; pointer
+        // identity stays local because shared and mutable views expose
+        // different pointer types.
+        fn assert_initial_u32_byte_view(bytes: &[u8], before: &[u8; VALUE_SIZE]) {
+            assert_same_u8_elements(bytes, before);
+        }
 
-    #[kani::proof]
-    #[kani::unwind(9)]
-    fn prove_try_from_bytes_derive_union() {
-        let bytes = kani::any::<[u8; core::mem::size_of::<BoolAtEitherEnd>()]>();
-        let first_offset = core::mem::offset_of!(BoolAtEitherEnd, first.flag);
-        let first_byte_offset = core::mem::offset_of!(BoolAtEitherEnd, first.byte);
-        let last_offset = core::mem::offset_of!(BoolAtEitherEnd, last.flag);
-        let last_byte_offset = core::mem::offset_of!(BoolAtEitherEnd, last.byte);
-        assert_same_usize(core::mem::size_of::<bool>(), 1);
-        assert_same_usize(core::mem::size_of::<u8>(), 1);
-        assert_two_fields_cover(
-            bytes.len(),
-            first_offset,
-            core::mem::size_of::<bool>(),
-            first_byte_offset,
-            core::mem::size_of::<u8>(),
-        );
-        assert_two_fields_cover(
-            bytes.len(),
-            last_offset,
-            core::mem::size_of::<bool>(),
-            last_byte_offset,
-            core::mem::size_of::<u8>(),
-        );
-        let first = bool_from_byte(bytes[first_offset]);
-        let last = bool_from_byte(bytes[last_offset]);
-        let first_byte = u8_from_byte_representation(bytes[first_byte_offset]);
-        let last_byte = u8_from_byte_representation(bytes[last_byte_offset]);
-        let first_valid = first.is_some();
-        let last_valid = last.is_some();
+        fn expected_after_range_copy(
+            destination: &[u8; MAX_DST_LEN],
+            source: &[u8; VALUE_SIZE],
+            range: core::ops::Range<usize>,
+        ) -> [u8; MAX_DST_LEN] {
+            let mut expected = copy_snapshot(destination);
+            let selected = &mut expected[range];
+            selected.copy_from_slice(source);
+            expected
+        }
 
-        // The compiler-reported sizes and effective offsets satisfy the
-        // explicit coverage checks above: either active field consists of two
-        // one-byte fields at distinct in-bounds offsets in this two-byte union.
-        // The safely constructed active field therefore reconstructs the exact
-        // candidate bytes without relying on a padding premise or an inactive
-        // field. No union field is read by this proof.
-        let expected = if let Some(flag) = first {
-            Some(BoolAtEitherEnd { first: BoolFirst { flag, byte: first_byte } })
-        } else {
-            last.map(|flag| BoolAtEitherEnd { last: BoolLast { byte: last_byte, flag } })
-        };
+        fn expected_after_suffix_copy(
+            destination: &[u8; MAX_DST_LEN],
+            source: &[u8; VALUE_SIZE],
+            len: usize,
+        ) -> [u8; MAX_DST_LEN] {
+            let mut expected = copy_snapshot(destination);
+            let logical_destination = &mut expected[..len];
+            // A contradiction between the policy-selected success branch and
+            // this safe suffix oracle fails closed under [25].
+            let suffix = match logical_destination.last_chunk_mut::<VALUE_SIZE>() {
+                Some(suffix) => suffix,
+                None => panic!("successful suffix policy requires enough destination bytes"),
+            };
+            suffix.copy_from_slice(source);
+            expected
+        }
 
-        // Domain: all initialized representations of this fixed two-field
-        // union.
-        // Establishes: the composite non-materializing
-        // Ptr/cast/generated-validator path accepts iff at least one field
-        // interpretation is valid, using actual union and struct field offsets
-        // plus the shared `bool` oracle. On accepted inputs, the public
-        // value-read succeeds. The OR is explicitly a zerocopy policy oracle,
-        // not evidence about Rust union validity or a theorem about every union
-        // or derive input.
-        cover_bool_cross_product(first_valid, last_valid);
-        // Union fields cannot be inspected through safe Rust, so the returned
-        // value is deliberately not used as a value oracle.
-        let _ = validate_and_read_sized!(BoolAtEitherEnd, bytes, expected);
-    }
+        fn assert_passed_slice_result(
+            actual: &[u8; MAX_DST_LEN],
+            expected: &[u8; MAX_DST_LEN],
+            len: usize,
+        ) {
+            let (actual_passed, _) = actual.split_at(len);
+            let (expected_passed, _) = expected.split_at(len);
+            assert_same_u8_elements(actual_passed, expected_passed);
+        }
 
-    #[allow(dead_code)]
-    #[derive(TryFromBytes)]
-    #[repr(u8)]
-    enum BoolOrByte {
-        Bool(bool),
-        Byte(u8),
-    }
+        fn assert_unpassed_backing_frame(
+            actual: &[u8; MAX_DST_LEN],
+            before: &[u8; MAX_DST_LEN],
+            len: usize,
+        ) {
+            let (_, actual_unpassed) = actual.split_at(len);
+            let (_, before_unpassed) = before.split_at(len);
+            assert_same_u8_elements(actual_unpassed, before_unpassed);
+        }
 
-    #[allow(dead_code)]
-    #[derive(Copy, Clone)]
-    #[repr(u8)]
-    enum BoolOrByteTag {
-        Bool,
-        Byte,
-    }
-
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    struct BoolVariantRepr {
-        tag: BoolOrByteTag,
-        payload: bool,
-    }
-
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    struct ByteVariantRepr {
-        tag: BoolOrByteTag,
-        payload: u8,
-    }
-
-    #[allow(dead_code)]
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    union BoolOrByteRepr {
-        bool_variant: BoolVariantRepr,
-        byte_variant: ByteVariantRepr,
-    }
-
-    #[kani::proof]
-    #[kani::unwind(9)]
-    fn prove_try_from_bytes_derive_data_enum() {
-        let bytes = kani::any::<[u8; core::mem::size_of::<BoolOrByte>()]>();
-
-        // Residual language-layout rule: Rust Reference 1.93.0 specifies a
-        // primitive-representation enum with fields as a `repr(C)` union of
-        // `repr(C)` variant structs, whose first field is the tag and remaining
-        // fields are the variant payload [1]. Both the real enum and its tag
-        // surrogate declare the same implicit variants in the same order, so
-        // the Reference's implicit-discriminant rules give them the same tags
-        // [2]. The surrogate types above encode those language rules;
-        // `offset_of!` supplies every union and struct offset rather than
-        // duplicating byte positions.
-        //
-        // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#primitive-representation-of-enums-with-fields:
-        //
-        //     Each union member is a `repr(C)` struct whose first field is the
-        //     primitive-representation tag of the fieldless enum; "the
-        //     remaining fields are the fields of that variant."
-        //
-        // [2] Per https://doc.rust-lang.org/1.93.0/reference/items/enumerations.html#implicit-discriminants:
-        //
-        //     If the discriminant of the first variant ... is unspecified, then
-        //     it is set to zero. Each later implicit discriminant is "one
-        //     higher than the discriminant of the previous variant".
-        //
-        // [3] Per https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#enum-cast:
-        //
-        //     A fieldless enum value can be cast to an integer, producing its
-        //     discriminant value; the following numeric cast produces `u8`
-        //     here.
-        assert_same_usize(
-            core::mem::size_of::<BoolOrByte>(),
-            core::mem::size_of::<BoolOrByteRepr>(),
-        );
-        assert_same_usize(
-            core::mem::align_of::<BoolOrByte>(),
-            core::mem::align_of::<BoolOrByteRepr>(),
-        );
-        let tag_offset = core::mem::offset_of!(BoolOrByteRepr, bool_variant.tag);
-        let byte_tag_offset = core::mem::offset_of!(BoolOrByteRepr, byte_variant.tag);
-        assert_same_usize(tag_offset, byte_tag_offset);
-        let bool_payload_offset = core::mem::offset_of!(BoolOrByteRepr, bool_variant.payload);
-        let byte_payload_offset = core::mem::offset_of!(BoolOrByteRepr, byte_variant.payload);
-        let tag = u8_from_byte_representation(bytes[tag_offset]);
-        let byte_payload = u8_from_byte_representation(bytes[byte_payload_offset]);
-        let bool_payload = bool_from_byte(bytes[bool_payload_offset]);
-        let bool_payload_valid = bool_payload.is_some();
-        let expected = if tag == BoolOrByteTag::Bool as u8 {
-            bool_payload.map(BoolOrByte::Bool)
-        } else if tag == BoolOrByteTag::Byte as u8 {
-            Some(BoolOrByte::Byte(byte_payload))
-        } else {
-            None
-        };
-
-        // Domain: all initialized representations of this fixed `repr(u8)` data
-        // enum. Establishes: the composite non-materializing
-        // Ptr/cast/generated-validator path requires the `Bool` tag's payload
-        // to be valid, accepts every payload for the `Byte` tag, and rejects
-        // every other tag. The public API is invoked only for the first two
-        // cases, where it must succeed and return the corresponding safe
-        // variant constructed above. The Reference specifies the intended
-        // representation, but correspondence between this hand-written
-        // surrogate and the actual enum is a manually reviewed
-        // proof-specification/TCB premise; Kani does not independently query
-        // the enum payload offsets. This is not a generic enum-layout or
-        // derive-generator theorem.
-        kani::cover!(tag == BoolOrByteTag::Bool as u8 && bool_payload_valid);
-        kani::cover!(tag == BoolOrByteTag::Bool as u8 && !bool_payload_valid);
-        kani::cover!(tag == BoolOrByteTag::Byte as u8);
-        kani::cover!(tag >= 2);
-        let read = validate_and_read_sized!(BoolOrByte, bytes, expected);
-        match read {
-            Some(BoolOrByte::Bool(actual)) => {
-                assert_eq!(tag, BoolOrByteTag::Bool as u8);
-                assert_eq!(Some(actual), bool_payload);
+        fn classify_write_result<T, E>(result: Result<T, E>, expected_success: bool) -> bool {
+            // Both disagreements become failed Kani properties rather than
+            // ordinary Boolean results under the fail-closed semantics grounded
+            // in [25].
+            match (result, expected_success) {
+                (Ok(_), true) => true,
+                (Err(_), false) => false,
+                (Ok(_), false) => panic!("write unexpectedly succeeded"),
+                (Err(_), true) => panic!("write unexpectedly failed"),
             }
-            Some(BoolOrByte::Byte(actual)) => {
-                assert_eq!(tag, BoolOrByteTag::Byte as u8);
-                assert_eq!(actual, byte_payload);
+        }
+
+        #[kani::proof]
+        #[kani::unwind(7)]
+        fn prove_into_bytes_as_bytes() {
+            assert_modeled_u32_size();
+            let value = kani::any::<u32>();
+            // Snapshot both contents and length before invoking the target, so
+            // a target-induced value change still present at return cannot
+            // redefine its own expected result.
+            let expected = value.to_ne_bytes();
+            let value_address = (&value as *const u32) as *const u8;
+            let bytes = value.as_bytes();
+
+            // Domain: every `u32` on Kani's target. The public `IntoBytes` and
+            // `as_bytes` contracts supply the target policy that the view has
+            // the exact value length and contents. The pre-call
+            // `u32::to_ne_bytes` snapshot only constructs the independent
+            // expected native representation; it does not impose that policy on
+            // the target. This additionally establishes address identity and
+            // absence of target-induced net value mutation still observable at
+            // return; pointer equality remains subject to Kani's provenance
+            // model limits.
+            kani::cover!(value == 0);
+            kani::cover!(value == u32::MAX);
+            kani::cover!(value == 0x01020304);
+            assert_initial_u32_byte_view(bytes, &expected);
+            assert!(core::ptr::addr_eq(bytes.as_ptr(), value_address));
+            assert_same_u8_elements(&value.to_ne_bytes(), &expected);
+        }
+
+        #[kani::proof]
+        #[kani::unwind(7)]
+        fn prove_into_bytes_as_mut_bytes() {
+            assert_modeled_u32_size();
+            let mut values = kani::any::<[u32; 3]>();
+            let before = copy_snapshot(&values);
+            let initial_bytes = before[1].to_ne_bytes();
+            let replacement = kani::any::<[u8; VALUE_SIZE]>();
+            let value_address = (&mut values[1] as *mut u32) as *mut u8;
+
+            {
+                let bytes = values[1].as_mut_bytes();
+                assert_initial_u32_byte_view(bytes, &initial_bytes);
+                assert!(core::ptr::addr_eq(bytes.as_mut_ptr(), value_address));
+                // The shared helper observes the view before this overwrite, so
+                // a target-induced mutation still present at return is not
+                // erased by the replacement write.
+                bytes.copy_from_slice(&replacement);
+                assert_same_u8_elements(bytes, &replacement);
             }
-            None => {}
+
+            // Domain: every three-`u32` input and replacement representation.
+            // Establishes initial contents, exact address/length, and write
+            // propagation for the middle element, plus a frame for both
+            // neighbors. Pre-call native bytes, safe slice copying, and
+            // `u32::from_ne_bytes` are the oracles; this is not an aliasing
+            // theorem.
+            kani::cover!(replacement != initial_bytes);
+            kani::cover!(replacement == [0; VALUE_SIZE]);
+            kani::cover!(replacement == [u8::MAX; VALUE_SIZE]);
+            kani::cover!(before[0] != before[2]);
+            assert_eq!(values[0], before[0]);
+            assert_eq!(values[1], u32::from_ne_bytes(replacement));
+            assert_eq!(values[2], before[2]);
+        }
+
+        #[kani::proof]
+        #[kani::unwind(7)]
+        fn prove_into_bytes_write_to() {
+            assert_modeled_u32_size();
+            let value = kani::any::<u32>();
+            let source = value.to_ne_bytes();
+            let source_len = source.len();
+            let mut destination = kani::any::<[u8; MAX_DST_LEN]>();
+            let before = copy_snapshot(&destination);
+            let len = destination_len();
+
+            let expected_success = len == source_len;
+            let succeeded =
+                classify_write_result(value.write_to(&mut destination[..len]), expected_success);
+
+            // Domain: every `u32`, destination value, and destination length
+            // 0..=6 in the module-level offset-zero prefix destination family.
+            // Establishes the exact-length success condition and passed-slice
+            // result, plus the separate unpassed caller-backing frame. Success
+            // and the passed-slice error frame are API-policy assertions; once
+            // the successful branch and offset are selected, safe
+            // `copy_from_slice` constructs the independent expected contents.
+            // The outer frame is only the additional exact-harness regression
+            // property documented above.
+            kani::cover!(!succeeded && len == 0);
+            kani::cover!(!succeeded && len == source_len - 1);
+            kani::cover!(succeeded && len == source_len);
+            kani::cover!(!succeeded && len == source_len + 1);
+            kani::cover!(!succeeded && len == MAX_DST_LEN);
+            kani::cover!(succeeded && destination != before);
+
+            assert_same_u8_elements(&value.to_ne_bytes(), &source);
+            let expected = if expected_success {
+                expected_after_range_copy(&before, &source, 0..source_len)
+            } else {
+                copy_snapshot(&before)
+            };
+            assert_passed_slice_result(&destination, &expected, len);
+            assert_unpassed_backing_frame(&destination, &before, len);
+        }
+
+        #[kani::proof]
+        #[kani::unwind(7)]
+        fn prove_into_bytes_write_to_prefix() {
+            assert_modeled_u32_size();
+            let value = kani::any::<u32>();
+            let source = value.to_ne_bytes();
+            let source_len = source.len();
+            let mut destination = kani::any::<[u8; MAX_DST_LEN]>();
+            let before = copy_snapshot(&destination);
+            let len = destination_len();
+
+            let expected_success = minimum_length_policy_succeeds(len);
+            let succeeded = classify_write_result(
+                value.write_to_prefix(&mut destination[..len]),
+                expected_success,
+            );
+
+            // Domain: every `u32`, destination value, and destination length
+            // 0..=6 in the module-level offset-zero prefix destination family.
+            // Establishes the minimum-length success condition, exact prefix
+            // write, and preservation of the passed slice's suffix, plus the
+            // separate unpassed caller-backing frame. Success, placement, and
+            // the passed-slice error frame are API-policy assertions; safe
+            // `copy_from_slice` independently constructs the expected contents
+            // for the selected prefix. The outer frame is only the additional
+            // exact-harness regression property documented above.
+            kani::cover!(!succeeded && len == 0);
+            kani::cover!(!succeeded && len == source_len - 1);
+            kani::cover!(succeeded && len == source_len);
+            kani::cover!(succeeded && len == source_len + 1);
+            kani::cover!(succeeded && len == MAX_DST_LEN);
+            kani::cover!(succeeded && len == MAX_DST_LEN && destination != before);
+
+            assert_same_u8_elements(&value.to_ne_bytes(), &source);
+            let expected = if expected_success {
+                expected_after_range_copy(&before, &source, 0..source_len)
+            } else {
+                copy_snapshot(&before)
+            };
+            assert_passed_slice_result(&destination, &expected, len);
+            assert_unpassed_backing_frame(&destination, &before, len);
+        }
+
+        #[kani::proof]
+        #[kani::unwind(7)]
+        fn prove_into_bytes_write_to_suffix() {
+            assert_modeled_u32_size();
+            let value = kani::any::<u32>();
+            let source = value.to_ne_bytes();
+            let source_len = source.len();
+            let mut destination = kani::any::<[u8; MAX_DST_LEN]>();
+            let before = copy_snapshot(&destination);
+            let len = destination_len();
+
+            let expected_success = minimum_length_policy_succeeds(len);
+            let succeeded = classify_write_result(
+                value.write_to_suffix(&mut destination[..len]),
+                expected_success,
+            );
+
+            // Domain: every `u32`, destination value, and destination length
+            // 0..=6 in the module-level offset-zero prefix destination family.
+            // Establishes the minimum-length success condition, exact suffix
+            // write, and preservation of the passed slice's prefix, plus the
+            // separate unpassed caller-backing frame. Success, placement, and
+            // the passed-slice error frame are API-policy assertions. Safe
+            // `last_chunk_mut` selects the suffix without arithmetic, and
+            // `copy_from_slice` independently constructs its expected contents.
+            // The outer frame is only the additional exact-harness regression
+            // property documented above.
+            kani::cover!(!succeeded && len == 0);
+            kani::cover!(!succeeded && len == source_len - 1);
+            kani::cover!(succeeded && len == source_len);
+            kani::cover!(succeeded && len == source_len + 1);
+            kani::cover!(succeeded && len == MAX_DST_LEN);
+            kani::cover!(succeeded && len == MAX_DST_LEN && destination != before);
+
+            assert_same_u8_elements(&value.to_ne_bytes(), &source);
+            let expected = if expected_success {
+                expected_after_suffix_copy(&before, &source, len)
+            } else {
+                copy_snapshot(&before)
+            };
+            assert_passed_slice_result(&destination, &expected, len);
+            assert_unpassed_backing_frame(&destination, &before, len);
         }
     }
 }
