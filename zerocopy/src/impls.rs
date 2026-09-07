@@ -1385,7 +1385,9 @@ mod simd {
 
 #[cfg(kani)]
 mod proofs {
-    use core::num::NonZeroU16;
+    #[cfg(feature = "alloc")]
+    use alloc::boxed::Box;
+    use core::{mem, num::NonZeroU16, ptr::NonNull};
 
     use crate::proof_support::{bool_from_byte, char_from_ne_bytes, validate_and_read_sized};
 
@@ -1592,6 +1594,217 @@ mod proofs {
             assert_eq!(Some(values[3]), expected[3]);
         }
     }
+
+    // Domain: Every initialized eight-byte source sequence for the thin
+    // pointer-bearing monomorphizations below. Eight bytes is the pointer size
+    // of the common 64-bit Kani CI target documented above.
+    //
+    // Storage and bounds: Every harness uses one fixed eight-byte stack input.
+    // Separate copies at byte offsets zero and one within 16-aligned `repr(C)`
+    // storage exercise the `Unaligned` specialization at both addresses. The
+    // `Aligned` specialization runs at offset zero; the offset-one address is
+    // independently confirmed physically misaligned and is therefore not
+    // passed under that marker. Compiler alignment queries and the standard
+    // raw-pointer `is_aligned` operation check this matrix before any zerocopy
+    // validator runs. The asserted nontrivial destination alignment is a
+    // fail-closed fact of the pinned compiler and target, not a claim that
+    // Rust's general pointer-layout rules universally fix that alignment; the
+    // independent placement oracle is `is_aligned` on each actual address. The
+    // public API makes its own aligned candidate. None dynamically allocates.
+    // In particular, the
+    // `Option<Box<u8>>` harness constructs and reads only `None`, never a
+    // `Box`, so it exercises the null niche without exercising allocation. The
+    // proof source contains no explicit loop. No harness uses `kani::assume`;
+    // every initialized eight-byte input is unconstrained. The fixed pointer
+    // width and same-size premises use compiler `size_of` values compared
+    // through shared `assert_same_usize` [8]; that helper supplies equality
+    // mechanics, while the expected width is pinned configuration and the
+    // same-size relation is a fail-closed case premise. The destination
+    // greater-than-one guards use primitive `usize` ordering [9].
+    // `#[kani::unwind(9)]` permits each modeled oracle array comparison or
+    // target scan to examine eight bytes and terminate, with Kani's unwinding
+    // checks enforcing the bound.
+    //
+    // Establishes: At the aligned placement, both `Unaligned` and `Aligned`
+    // type-level markers, and at the deliberately physically misaligned
+    // placement, the `Unaligned` marker, make the non-materializing raw-byte
+    // validator implement zerocopy's conservative policy of accepting exactly
+    // the all-zero byte sequence. On that independently known-valid input, the
+    // public read API succeeds; a raw-pointer read is null and a niche `Option`
+    // read is `None`.
+    //
+    // Oracle: `all_zero_byte_policy_oracle` compares the complete candidate
+    // array with an array produced by Rust's repeat-array expression, which
+    // copies the `u8` value zero into every element [1]. Safe slice iteration,
+    // copied iteration, and `Iterator::eq` compare the candidate and generated
+    // array in order and report equality only when both iterators have equal
+    // length and equal elements [2]; primitive `u8` equality supplies each
+    // element comparison [7]. A successful comparison therefore establishes
+    // the exact all-zero representation required by the validity guarantees
+    // below. This is an explicit representation-policy oracle, evaluated
+    // before and independent of zerocopy's target byte scan; it is not inferred
+    // from agreement with that scan. `validate_and_read_sized!` compares the
+    // target with this predicate at every in-scope placement and only
+    // materializes an oracle-valid candidate. The standard library guarantees
+    // that zero-initializing a thin raw pointer produces null [3] and that an
+    // all-zero representation produces `None` for every optional pointer
+    // family instantiated below [4]. The safe `is_null` [5] and `is_none` [6]
+    // operations then independently classify the already-valid result. These
+    // output oracles do not themselves establish representation validity.
+    //
+    // Excludes: This does not claim that rejected nonzero bytes are invalid
+    // Rust pointers, and it does not quantify over arbitrary absolute
+    // addresses or offsets other than zero and one in the controlled storage.
+    // It also excludes the public read API's rejected-input path, fat pointers,
+    // other pointees, function signatures and ABIs, and non-Kani targets.
+    // Reference aliasing, raw-pointer provenance, invalid-value production, and
+    // uninitialized-memory handling along the composite cast/validation/read
+    // path remain TOOL/TCB premises because Kani does not completely check
+    // those semantics. The initialized source storage and independently valid
+    // accepted representation do not establish those unmodeled obligations.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.0/reference/expressions/array-expr.html#array-and-array-index-expressions:
+    //
+    //     `[a; b]` creates an array containing `b` copies of the value of `a`.
+    //
+    // [2] Per https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.iter,
+    // https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.copied,
+    // and https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.eq:
+    //
+    //     `iter` iterates over a slice, `copied` copies those elements, and
+    //     `eq` determines whether both iterators produce equal sequences.
+    //
+    // [3] Per https://doc.rust-lang.org/1.93.0/std/ptr/fn.null.html and
+    // https://doc.rust-lang.org/1.93.0/std/ptr/fn.null_mut.html:
+    //
+    //     Creates a null raw pointer.
+    //
+    //     This function is equivalent to zero-initializing the pointer:
+    //     `MaybeUninit::<*const T>::zeroed().assume_init()`. The resulting
+    //     pointer has the address 0.
+    //
+    //     Creates a null mutable raw pointer.
+    //
+    //     This function is equivalent to zero-initializing the pointer:
+    //     `MaybeUninit::<*mut T>::zeroed().assume_init()`. The resulting pointer
+    //     has the address 0.
+    //
+    // [4] Per https://doc.rust-lang.org/1.93.0/std/option/index.html#representation,
+    // whose guarantee table includes references, `NonNull`, function pointers,
+    // and `Box<U>` (specifically `Box<U, Global>`) when `U: Sized`:
+    //
+    //     `transmute::<_, Option<T>>([0u8; size_of::<T>()])` is sound and
+    //     produces `Option::<T>::None`.
+    //
+    // [5] Per https://doc.rust-lang.org/1.93.0/std/primitive.pointer.html#method.is_null:
+    //
+    //     `is_null` returns `true` when the raw pointer is null.
+    //
+    // [6] Per https://doc.rust-lang.org/1.93.0/std/option/enum.Option.html#method.is_none:
+    //
+    //     `is_none` returns `true` when the option is `None`.
+    //
+    // [7] Per https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-PartialEq-for-u8:
+    //
+    //     `u8` implements the `PartialEq` operation used by `Iterator::eq`.
+    //
+    // [8] https://doc.rust-lang.org/1.93.0/std/mem/fn.size_of.html
+    // https://doc.rust-lang.org/1.93.0/std/macro.assert_eq.html
+    // https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialEq.html#tymethod.eq
+    // https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialEq-for-usize
+    //
+    // [9] https://doc.rust-lang.org/1.93.0/std/mem/fn.align_of.html
+    // https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialOrd.html#method.gt
+    // https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialOrd-for-usize
+    fn all_zero_byte_policy_oracle<const N: usize>(bytes: &[u8; N]) -> bool {
+        bytes.iter().copied().eq([0u8; N].iter().copied())
+    }
+
+    macro_rules! zero_only_pointer_proof {
+        ($proof:ident, $ty:ty, $zero:expr, $value:ident => $assertion:expr) => {
+            #[kani::proof]
+            #[kani::unwind(9)]
+            fn $proof() {
+                crate::proof_support::assert_same_usize(mem::size_of::<usize>(), 8);
+                crate::proof_support::assert_same_usize(
+                    mem::size_of::<$ty>(),
+                    mem::size_of::<usize>(),
+                );
+                assert!(mem::align_of::<$ty>() > 1);
+                let bytes: [u8; mem::size_of::<$ty>()] = kani::any();
+                let expected_valid = all_zero_byte_policy_oracle(&bytes);
+                let expected = if expected_valid { Some($zero) } else { None };
+                let result = validate_and_read_sized!($ty, bytes, expected);
+                kani::cover!(expected_valid);
+                kani::cover!(!expected_valid);
+                if let Some($value) = result {
+                    $assertion;
+                }
+            }
+        };
+    }
+
+    zero_only_pointer_proof!(
+        prove_const_pointer_try_read_from_bytes,
+        *const u8,
+        core::ptr::null(),
+        value => assert!(value.is_null())
+    );
+    zero_only_pointer_proof!(
+        prove_mut_pointer_try_read_from_bytes,
+        *mut u8,
+        core::ptr::null_mut(),
+        value => assert!(value.is_null())
+    );
+    zero_only_pointer_proof!(
+        prove_option_non_null_try_read_from_bytes,
+        Option<NonNull<u8>>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_ref_try_read_from_bytes,
+        Option<&'static u8>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_mut_ref_try_read_from_bytes,
+        Option<&'static mut u8>,
+        None,
+        value => assert!(value.is_none())
+    );
+    #[cfg(feature = "alloc")]
+    zero_only_pointer_proof!(
+        prove_option_box_try_read_from_bytes,
+        Option<Box<u8>>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_fn_try_read_from_bytes,
+        Option<fn()>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_unsafe_fn_try_read_from_bytes,
+        Option<unsafe fn()>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_extern_c_fn_try_read_from_bytes,
+        Option<extern "C" fn()>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_unsafe_extern_c_fn_try_read_from_bytes,
+        Option<unsafe extern "C" fn()>,
+        None,
+        value => assert!(value.is_none())
+    );
 }
 
 #[cfg(test)]
