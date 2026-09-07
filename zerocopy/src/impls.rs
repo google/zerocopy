@@ -1385,7 +1385,9 @@ mod simd {
 
 #[cfg(kani)]
 mod proofs {
-    use core::num::NonZeroU16;
+    #[cfg(feature = "alloc")]
+    use alloc::boxed::Box;
+    use core::{mem, num::NonZeroU16, ptr::NonNull};
 
     use crate::proof_support::{bool_from_byte, validate_and_read_sized};
 
@@ -1532,6 +1534,118 @@ mod proofs {
             assert_eq!(Some(values[3]), expected[3]);
         }
     }
+
+    // Domain: Every initialized eight-byte source sequence for the thin
+    // pointer-bearing monomorphizations below. Eight bytes is the pointer size
+    // of the common 64-bit Kani CI target documented above.
+    //
+    // Establishes: The non-materializing raw-byte validator implements
+    // zerocopy's conservative policy of accepting exactly the all-zero byte
+    // sequence. On that independently known-valid input, the public read API
+    // succeeds; a raw-pointer read is null and a niche `Option` read is `None`.
+    //
+    // Oracle: Equality with an all-zero byte array specifies zerocopy's policy;
+    // it is not an independent Rust-validity oracle. The standard library
+    // guarantees that zero-initializing a thin raw pointer produces null [1]
+    // and that an all-zero representation produces `None` for every optional
+    // pointer family instantiated below [2]. Safe `is_null`/`is_none`
+    // observations then establish the meaning of accepted results.
+    //
+    // Excludes: This does not claim that rejected nonzero bytes are invalid
+    // Rust pointers. It also excludes the public read API's rejected-input
+    // path, provenance, fat pointers, other pointees, function signatures and
+    // ABIs, non-Kani targets, and Kani's incomplete invalid-value checking.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.0/std/ptr/fn.null.html and
+    // https://doc.rust-lang.org/1.93.0/std/ptr/fn.null_mut.html:
+    //
+    //     This function is equivalent to zero-initializing the pointer.
+    //
+    // [2] Per https://doc.rust-lang.org/1.93.0/std/option/index.html#representation,
+    // whose guarantee table includes sized `Box`, references, `NonNull`, and
+    // function pointers:
+    //
+    //     `transmute::<_, Option<T>>([0u8; size_of::<T>()])` is sound and
+    //     produces `Option::<T>::None`.
+    macro_rules! zero_only_pointer_proof {
+        ($proof:ident, $ty:ty, $zero:expr, $value:ident => $assertion:expr) => {
+            #[kani::proof]
+            #[kani::unwind(9)]
+            fn $proof() {
+                let bytes: [u8; mem::size_of::<$ty>()] = kani::any();
+                let expected_valid = bytes == [0; mem::size_of::<$ty>()];
+                let expected = if expected_valid { Some($zero) } else { None };
+                let result = validate_and_read_sized!($ty, bytes, expected);
+                kani::cover!(expected_valid);
+                kani::cover!(!expected_valid);
+                if let Some($value) = result {
+                    $assertion;
+                }
+            }
+        };
+    }
+
+    zero_only_pointer_proof!(
+        prove_const_pointer_try_read_from_bytes,
+        *const u8,
+        core::ptr::null(),
+        value => assert!(value.is_null())
+    );
+    zero_only_pointer_proof!(
+        prove_mut_pointer_try_read_from_bytes,
+        *mut u8,
+        core::ptr::null_mut(),
+        value => assert!(value.is_null())
+    );
+    zero_only_pointer_proof!(
+        prove_option_non_null_try_read_from_bytes,
+        Option<NonNull<u8>>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_ref_try_read_from_bytes,
+        Option<&'static u8>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_mut_ref_try_read_from_bytes,
+        Option<&'static mut u8>,
+        None,
+        value => assert!(value.is_none())
+    );
+    #[cfg(feature = "alloc")]
+    zero_only_pointer_proof!(
+        prove_option_box_try_read_from_bytes,
+        Option<Box<u8>>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_fn_try_read_from_bytes,
+        Option<fn()>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_unsafe_fn_try_read_from_bytes,
+        Option<unsafe fn()>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_extern_c_fn_try_read_from_bytes,
+        Option<extern "C" fn()>,
+        None,
+        value => assert!(value.is_none())
+    );
+    zero_only_pointer_proof!(
+        prove_option_unsafe_extern_c_fn_try_read_from_bytes,
+        Option<unsafe extern "C" fn()>,
+        None,
+        value => assert!(value.is_none())
+    );
 }
 
 #[cfg(test)]
