@@ -365,42 +365,328 @@ unsafe impl SplitByteSlice for cell::RefMut<'_, [u8]> {
 mod proofs {
     use super::*;
 
-    fn any_vec() -> Vec<u8> {
-        let len = kani::any();
-        kani::assume(len <= crate::DstLayout::MAX_SIZE);
-        vec![0u8; len]
+    // Domain: Every `[u8; 4]`, view length from 0 through 4, and every `usize`
+    // midpoint for the safe operation or every valid midpoint for the
+    // unchecked operation, for `&[u8]`, `&mut [u8]`, `Ref<[u8]>`, and
+    // `RefMut<[u8]>`.
+    //
+    // Establishes: Exact success/failure classification, returned lengths,
+    // contents, start and end addresses, and contiguity. Shared forms preserve
+    // the backing array; mutable forms perform at most one symbolic in-bounds
+    // write in each half and establish the frame condition for the entire
+    // backing array, including bytes outside the view. Failure leaves mutable
+    // inputs unchanged.
+    //
+    // Oracle: Safe `slice::split_at_checked` supplies result classification
+    // and expected partitions; safe `slice::split_at_mut` supplies expected
+    // mutations.
+    //
+    // Excludes: Larger allocations, other implementations, uninitialized
+    // storage, panic/unwind behavior, and aliasing, provenance, and borrow-model
+    // obligations that Kani does not fully model. Pointer equality checks only
+    // Kani's modeled addresses, not provenance. These are not generic
+    // `SplitByteSlice` implementation proofs.
+    const BUFFER_LEN: usize = 4;
+
+    struct ExpectedSplit {
+        left_len: usize,
+        right_len: usize,
+        left: *const u8,
+        right: *const u8,
+        end: *const u8,
+    }
+
+    struct Writes {
+        left_index: usize,
+        left_value: u8,
+        right_index: usize,
+        right_value: u8,
+    }
+
+    fn any_len() -> usize {
+        kani::any::<usize>() % (BUFFER_LEN + 1)
+    }
+
+    fn any_valid_mid(len: usize) -> usize {
+        // `len <= BUFFER_LEN`, so `len + 1` cannot overflow.
+        kani::any::<usize>() % (len + 1)
+    }
+
+    fn expected_split(left: &[u8], right: &[u8]) -> ExpectedSplit {
+        ExpectedSplit {
+            left_len: left.len(),
+            right_len: right.len(),
+            left: left.as_ptr(),
+            right: right.as_ptr(),
+            end: right[right.len()..].as_ptr(),
+        }
+    }
+
+    fn assert_split<B: ByteSlice>(
+        left: &B,
+        right: &B,
+        shape: ExpectedSplit,
+        mid: usize,
+        expected: &[u8],
+    ) {
+        let left = <B as Deref>::deref(left);
+        let right = <B as Deref>::deref(right);
+        let (expected_left, expected_right) = expected.split_at(mid);
+
+        assert_eq!(left, expected_left);
+        assert_eq!(right, expected_right);
+        assert_eq!(left.len(), shape.left_len);
+        assert_eq!(right.len(), shape.right_len);
+        assert_eq!(left.as_ptr(), shape.left);
+        assert_eq!(right.as_ptr(), shape.right);
+        assert_eq!(left[left.len()..].as_ptr(), right.as_ptr());
+        assert_eq!(right[right.len()..].as_ptr(), shape.end);
+    }
+
+    fn assert_unsplit<B: ByteSlice>(bytes: &B, base: *const u8, expected: &[u8]) {
+        let bytes = <B as Deref>::deref(bytes);
+
+        assert_eq!(bytes.as_ptr(), base);
+        assert_eq!(bytes, expected);
+    }
+
+    fn check_split_at<B: SplitByteSlice>(
+        bytes: B,
+        mid: usize,
+        expected: &[u8],
+    ) -> Result<(B, B), B> {
+        let (base, oracle, len) = {
+            let bytes = <B as Deref>::deref(&bytes);
+            let len = bytes.len();
+            let oracle =
+                bytes.split_at_checked(mid).map(|(left, right)| expected_split(left, right));
+            (bytes.as_ptr(), oracle, len)
+        };
+
+        let result = match (SplitByteSlice::split_at(bytes, mid), oracle) {
+            (Ok((left, right)), Some(shape)) => {
+                assert_split(&left, &right, shape, mid, expected);
+                Ok((left, right))
+            }
+            (Err(bytes), None) => {
+                assert_unsplit(&bytes, base, expected);
+                Err(bytes)
+            }
+            (Ok(_), None) => panic!("split succeeded when the std oracle rejected the midpoint"),
+            (Err(_), Some(_)) => panic!("split failed when the std oracle accepted the midpoint"),
+        };
+
+        // Ensure that bounds and result assertions are not proved vacuously.
+        kani::cover!(len == 0 && mid == 0);
+        kani::cover!(len > 0 && mid == 0);
+        kani::cover!(0 < mid && mid < len);
+        kani::cover!(len > 0 && mid == len);
+        kani::cover!(mid > len);
+        result
+    }
+
+    fn check_split_at_unchecked<B: SplitByteSlice>(
+        bytes: B,
+        mid: usize,
+        expected: &[u8],
+    ) -> (B, B) {
+        let (shape, len) = {
+            let bytes = <B as Deref>::deref(&bytes);
+            let len = bytes.len();
+            assert!(mid <= len);
+            let (left, right) = bytes.split_at(mid);
+            (expected_split(left, right), len)
+        };
+
+        // SAFETY: The preceding dereference yielded `len`, and the assertion
+        // establishes `mid <= len`. `ByteSlice` guarantees length-stable
+        // dereferencing through this call, so
+        // `mid <= bytes.deref().len()` at invocation. This is the same bound
+        // required by the standard slice operation [1].
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.split_at_unchecked:
+        //
+        //     Calling this method with an out-of-bounds index is undefined
+        //     behavior even if the resulting reference is not used. The caller
+        //     has to ensure that `0 <= mid <= self.len()`.
+        let (left, right) = unsafe { SplitByteSlice::split_at_unchecked(bytes, mid) };
+        assert_split(&left, &right, shape, mid, expected);
+
+        kani::cover!(len == 0 && mid == 0);
+        kani::cover!(len > 0 && mid == 0);
+        kani::cover!(0 < mid && mid < len);
+        kani::cover!(len > 0 && mid == len);
+        (left, right)
+    }
+
+    fn mutate_split<B: ByteSliceMut>(left: &mut B, right: &mut B, writes: &Writes) {
+        if let Some(byte) = <B as DerefMut>::deref_mut(left).get_mut(writes.left_index) {
+            kani::cover!(*byte != writes.left_value);
+            *byte = writes.left_value;
+        }
+        if let Some(byte) = <B as DerefMut>::deref_mut(right).get_mut(writes.right_index) {
+            kani::cover!(*byte != writes.right_value);
+            *byte = writes.right_value;
+        }
+    }
+
+    fn expected_after_writes(
+        original: &[u8; BUFFER_LEN],
+        len: usize,
+        mid: Option<usize>,
+        writes: &Writes,
+    ) -> [u8; BUFFER_LEN] {
+        let mut expected = *original;
+        if let Some(mid) = mid {
+            let (left, right) = expected[..len].split_at_mut(mid);
+            if let Some(byte) = left.get_mut(writes.left_index) {
+                *byte = writes.left_value;
+            }
+            if let Some(byte) = right.get_mut(writes.right_index) {
+                *byte = writes.right_value;
+            }
+        }
+        expected
+    }
+
+    fn assert_write_frame(
+        actual: &[u8; BUFFER_LEN],
+        original: &[u8; BUFFER_LEN],
+        len: usize,
+        mid: Option<usize>,
+        writes: &Writes,
+    ) {
+        let expected = expected_after_writes(original, len, mid, writes);
+        kani::cover!(len < BUFFER_LEN && expected != *original);
+        assert_eq!(*actual, expected);
+    }
+
+    fn any_writes() -> Writes {
+        Writes {
+            left_index: kani::any(),
+            left_value: kani::any(),
+            right_index: kani::any(),
+            right_value: kani::any(),
+        }
     }
 
     #[kani::proof]
-    fn prove_split_at_unchecked() {
-        let v = any_vec();
-        let slc = v.as_slice();
+    #[kani::unwind(5)]
+    fn prove_shared_slice_split_at() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let len = any_len();
+        let _ = check_split_at(&bytes[..len], kani::any(), &original[..len]);
+        assert_eq!(bytes, original);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_shared_slice_split_at_unchecked() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let len = any_len();
+        let mid = any_valid_mid(len);
+        let _ = check_split_at_unchecked(&bytes[..len], mid, &original[..len]);
+        assert_eq!(bytes, original);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_mut_slice_split_at() {
+        let mut bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let len = any_len();
         let mid = kani::any();
-        kani::assume(mid <= slc.len());
-        let (l, r) = unsafe { slc.split_at_unchecked(mid) };
-        assert_eq!(l.len() + r.len(), slc.len());
+        let writes = any_writes();
+        let split_mid = match check_split_at(&mut bytes[..len], mid, &original[..len]) {
+            Ok((mut left, mut right)) => {
+                mutate_split(&mut left, &mut right, &writes);
+                Some(mid)
+            }
+            Err(_) => None,
+        };
+        assert_write_frame(&bytes, &original, len, split_mid, &writes);
+    }
 
-        let slc: *const _ = slc;
-        let l: *const _ = l;
-        let r: *const _ = r;
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_mut_slice_split_at_unchecked() {
+        let mut bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let len = any_len();
+        let mid = any_valid_mid(len);
+        let writes = any_writes();
+        {
+            let (mut left, mut right) =
+                check_split_at_unchecked(&mut bytes[..len], mid, &original[..len]);
+            mutate_split(&mut left, &mut right, &writes);
+        }
+        assert_write_frame(&bytes, &original, len, Some(mid), &writes);
+    }
 
-        assert_eq!(slc.cast::<u8>(), l.cast::<u8>());
-        assert_eq!(unsafe { slc.cast::<u8>().add(mid) }, r.cast::<u8>());
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_ref_split_at() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let len = any_len();
+        let cell = cell::RefCell::new(bytes);
+        let bytes = cell::Ref::map(cell.borrow(), |bytes| &bytes[..len]);
+        let _ = check_split_at(bytes, kani::any(), &original[..len]);
+        assert_eq!(cell.into_inner(), original);
+    }
 
-        let mut v = any_vec();
-        let slc = v.as_mut_slice();
-        let len = slc.len();
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_ref_split_at_unchecked() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let len = any_len();
+        let mid = any_valid_mid(len);
+        let cell = cell::RefCell::new(bytes);
+        let bytes = cell::Ref::map(cell.borrow(), |bytes| &bytes[..len]);
+        let _ = check_split_at_unchecked(bytes, mid, &original[..len]);
+        assert_eq!(cell.into_inner(), original);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_ref_mut_split_at() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let len = any_len();
         let mid = kani::any();
-        kani::assume(mid <= slc.len());
-        let (l, r) = unsafe { slc.split_at_unchecked(mid) };
-        assert_eq!(l.len() + r.len(), len);
+        let writes = any_writes();
+        let cell = cell::RefCell::new(bytes);
+        let bytes = cell::RefMut::map(cell.borrow_mut(), |bytes| &mut bytes[..len]);
+        let split_mid = match check_split_at(bytes, mid, &original[..len]) {
+            Ok((mut left, mut right)) => {
+                mutate_split(&mut left, &mut right, &writes);
+                Some(mid)
+            }
+            Err(_) => None,
+        };
+        let bytes = cell.into_inner();
+        assert_write_frame(&bytes, &original, len, split_mid, &writes);
+    }
 
-        let l: *mut _ = l;
-        let r: *mut _ = r;
-        let slc: *mut _ = slc;
-
-        assert_eq!(slc.cast::<u8>(), l.cast::<u8>());
-        assert_eq!(unsafe { slc.cast::<u8>().add(mid) }, r.cast::<u8>());
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_ref_mut_split_at_unchecked() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let len = any_len();
+        let mid = any_valid_mid(len);
+        let writes = any_writes();
+        let cell = cell::RefCell::new(bytes);
+        let bytes = cell::RefMut::map(cell.borrow_mut(), |bytes| &mut bytes[..len]);
+        let (mut left, mut right) = check_split_at_unchecked(bytes, mid, &original[..len]);
+        mutate_split(&mut left, &mut right, &writes);
+        drop(left);
+        drop(right);
+        let bytes = cell.into_inner();
+        assert_write_frame(&bytes, &original, len, Some(mid), &writes);
     }
 }
 
