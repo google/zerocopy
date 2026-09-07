@@ -1520,6 +1520,110 @@ mod proofs {
     zero_only_pointer_proof!(prove_option_ref_try_read_from_bytes, Option<&'static u8>);
     zero_only_pointer_proof!(prove_option_box_try_read_from_bytes, Option<Box<u8>>);
     zero_only_pointer_proof!(prove_option_fn_try_read_from_bytes, Option<fn()>);
+
+    fn is_continuation(byte: u8) -> bool {
+        byte & 0b1100_0000 == 0b1000_0000
+    }
+
+    // This is intentionally independent of `core::str::from_utf8`, which the
+    // implementation under proof uses. The bound keeps both the proof and its
+    // loop unwind finite while exercising every one- through four-byte scalar
+    // encoding as well as mixtures of shorter encodings.
+    fn bounded_utf8_oracle(bytes: &[u8]) -> bool {
+        let mut index = 0;
+        while index < bytes.len() {
+            let first = bytes[index];
+            if first <= 0x7F {
+                index += 1;
+                continue;
+            }
+
+            if (0xC2..=0xDF).contains(&first) {
+                if index + 1 >= bytes.len() || !is_continuation(bytes[index + 1]) {
+                    return false;
+                }
+                index += 2;
+                continue;
+            }
+
+            if (0xE0..=0xEF).contains(&first) {
+                if index + 2 >= bytes.len() {
+                    return false;
+                }
+                let second = bytes[index + 1];
+                let second_valid = match first {
+                    0xE0 => (0xA0..=0xBF).contains(&second),
+                    0xED => (0x80..=0x9F).contains(&second),
+                    _ => is_continuation(second),
+                };
+                if !second_valid || !is_continuation(bytes[index + 2]) {
+                    return false;
+                }
+                index += 3;
+                continue;
+            }
+
+            if (0xF0..=0xF4).contains(&first) {
+                if index + 3 >= bytes.len() {
+                    return false;
+                }
+                let second = bytes[index + 1];
+                let second_valid = match first {
+                    0xF0 => (0x90..=0xBF).contains(&second),
+                    0xF4 => (0x80..=0x8F).contains(&second),
+                    _ => is_continuation(second),
+                };
+                if !second_valid
+                    || !is_continuation(bytes[index + 2])
+                    || !is_continuation(bytes[index + 3])
+                {
+                    return false;
+                }
+                index += 4;
+                continue;
+            }
+
+            return false;
+        }
+        true
+    }
+
+    fn str_validator_accepts<const N: usize>(bytes: [u8; N]) -> bool {
+        let source = ReadOnly::new(bytes);
+        let source: &ReadOnly<[u8]> = &source;
+        let mut candidate = Ptr::from_ref(source)
+            .transmute_with::<ReadOnly<str>, Initialized, CastUnsized, BecauseImmutable>();
+        <str as TryFromBytes>::is_bit_valid(candidate.reborrow_shared())
+    }
+
+    fn check_str_try_ref_from_bytes<const N: usize>(bytes: [u8; N]) {
+        let expected_valid = bounded_utf8_oracle(&bytes);
+        assert_eq!(str_validator_accepts(bytes), expected_valid);
+
+        let result = str::try_ref_from_bytes(&bytes);
+        assert_eq!(result.is_ok(), expected_valid);
+        if let Ok(value) = result {
+            assert_eq!(value.as_bytes(), bytes);
+        }
+        kani::cover!(expected_valid);
+    }
+
+    macro_rules! str_proof {
+        ($proof:ident, $len:expr) => {
+            #[kani::proof]
+            #[kani::unwind(5)]
+            fn $proof() {
+                let bytes: [u8; $len] = kani::any();
+                check_str_try_ref_from_bytes(bytes);
+                kani::cover!(!bounded_utf8_oracle(&bytes));
+            }
+        };
+    }
+
+    str_proof!(prove_one_byte_str_try_ref_from_bytes, 1);
+    str_proof!(prove_two_byte_str_try_ref_from_bytes, 2);
+    str_proof!(prove_three_byte_str_try_ref_from_bytes, 3);
+    str_proof!(prove_four_byte_str_try_ref_from_bytes, 4);
 }
 
 #[cfg(test)]
