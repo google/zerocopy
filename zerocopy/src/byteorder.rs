@@ -1007,6 +1007,8 @@ module!(network_endian, NetworkEndian, "network-endian");
 module!(native_endian, NativeEndian, "native-endian");
 
 #[cfg(any(test, kani))]
+// The Kani proofs reuse only part of the ordinary-test support in this module.
+#[cfg_attr(kani, allow(dead_code, unused_macros))]
 mod tests {
     use super::*;
 
@@ -1109,6 +1111,7 @@ mod tests {
     trait ByteOrderType:
         FromBytes + IntoBytes + Unaligned + Copy + Eq + Debug + Hash + From<Self::Native>
     {
+        type Order: ByteOrder;
         type Native: Native;
         type ByteArray: ByteArray;
 
@@ -1117,8 +1120,29 @@ mod tests {
         fn new(native: Self::Native) -> Self;
         fn get(self) -> Self::Native;
         fn set(&mut self, native: Self::Native);
-        fn from_bytes(bytes: Self::ByteArray) -> Self;
-        fn into_bytes(self) -> Self::ByteArray;
+        fn from_array(bytes: Self::ByteArray) -> Self;
+        fn into_array(self) -> Self::ByteArray;
+
+        #[cfg(kani)]
+        fn from_inherent_bytes(bytes: Self::ByteArray) -> Self;
+
+        #[cfg(kani)]
+        fn to_inherent_bytes(self) -> Self::ByteArray;
+
+        #[cfg(kani)]
+        fn proof_construct_from_stored_bytes(bytes: Self::ByteArray) -> Self;
+
+        #[cfg(kani)]
+        fn into_native_via_from(self) -> Self::Native;
+
+        #[cfg(kani)]
+        fn stored_bytes(self) -> Self::ByteArray;
+
+        #[cfg(kani)]
+        fn primitive_to_be_bytes(native: Self::Native) -> Self::ByteArray;
+
+        #[cfg(kani)]
+        fn primitive_to_le_bytes(native: Self::Native) -> Self::ByteArray;
 
         /// For `f32` and `f64`, NaN values are not considered equal to
         /// themselves. This method is like `assert_eq!`, but it treats NaN
@@ -1177,6 +1201,7 @@ mod tests {
             }
 
             impl<O: ByteOrder> ByteOrderType for $name<O> {
+                type Order = O;
                 type Native = $native;
                 type ByteArray = [u8; mem::size_of::<$native>()];
 
@@ -1194,12 +1219,49 @@ mod tests {
                     $name::set(self, native)
                 }
 
-                fn from_bytes(bytes: [u8; mem::size_of::<$native>()]) -> $name<O> {
+                fn from_array(bytes: [u8; mem::size_of::<$native>()]) -> $name<O> {
                     $name::from(bytes)
                 }
 
-                fn into_bytes(self) -> [u8; mem::size_of::<$native>()] {
+                fn into_array(self) -> [u8; mem::size_of::<$native>()] {
                     <[u8; mem::size_of::<$native>()]>::from(self)
+                }
+
+                #[cfg(kani)]
+                fn from_inherent_bytes(bytes: [u8; mem::size_of::<$native>()]) -> $name<O> {
+                    $name::from_bytes(bytes)
+                }
+
+                #[cfg(kani)]
+                fn to_inherent_bytes(self) -> [u8; mem::size_of::<$native>()] {
+                    $name::to_bytes(self)
+                }
+
+                #[cfg(kani)]
+                fn proof_construct_from_stored_bytes(
+                    bytes: [u8; mem::size_of::<$native>()],
+                ) -> $name<O> {
+                    $name { 0: bytes, 1: PhantomData }
+                }
+
+                #[cfg(kani)]
+                fn into_native_via_from(self) -> $native {
+                    <$native>::from(self)
+                }
+
+                #[cfg(kani)]
+                fn stored_bytes(self) -> [u8; mem::size_of::<$native>()] {
+                    self.0
+                }
+
+                #[cfg(kani)]
+                fn primitive_to_be_bytes(native: $native) -> [u8; mem::size_of::<$native>()] {
+                    <$native>::to_be_bytes(native)
+                }
+
+                #[cfg(kani)]
+                fn primitive_to_le_bytes(native: $native) -> [u8; mem::size_of::<$native>()] {
+                    <$native>::to_le_bytes(native)
                 }
             }
 
@@ -1322,8 +1384,8 @@ mod tests {
         const _BYTES: [u8; 2] = _FROM_BYTES.to_bytes();
     }
 
-    #[cfg_attr(test, test)]
-    #[cfg_attr(kani, kani::proof)]
+    #[cfg(test)]
+    #[test]
     fn test_zero() {
         fn test_zero<T: ByteOrderType>() {
             assert_eq!(T::ZERO.get(), T::Native::ZERO);
@@ -1333,8 +1395,8 @@ mod tests {
         call_for_all_types!(test_zero, NonNativeEndian);
     }
 
-    #[cfg_attr(test, test)]
-    #[cfg_attr(kani, kani::proof)]
+    #[cfg(test)]
+    #[test]
     fn test_max_value() {
         fn test_max_value<T: ByteOrderTypeUnsigned>() {
             assert_eq!(T::MAX_VALUE.get(), T::Native::MAX_VALUE);
@@ -1344,8 +1406,8 @@ mod tests {
         call_for_unsigned_types!(test_max_value, NonNativeEndian);
     }
 
-    #[cfg_attr(test, test)]
-    #[cfg_attr(kani, kani::proof)]
+    #[cfg(test)]
+    #[test]
     fn test_endian() {
         fn test<T: ByteOrderType>(invert: bool) {
             let mut r = SmallRng::seed_from_u64(RNG_SEED);
@@ -1357,14 +1419,14 @@ mod tests {
                     bytes = bytes.invert();
                 }
                 let mut from_native = T::new(native);
-                let from_bytes = T::from_bytes(bytes);
+                let from_bytes = T::from_array(bytes);
 
                 from_native.assert_eq_or_nan(from_bytes);
                 from_native.get().assert_eq_or_nan(native);
                 from_bytes.get().assert_eq_or_nan(native);
 
-                assert_eq!(from_native.into_bytes(), bytes);
-                assert_eq!(from_bytes.into_bytes(), bytes);
+                assert_eq!(from_native.into_array(), bytes);
+                assert_eq!(from_bytes.into_array(), bytes);
 
                 let updated = T::Native::rand(&mut r);
                 from_native.set(updated);
@@ -1382,6 +1444,284 @@ mod tests {
 
         call_for_all_types!(test_native, NativeEndian);
         call_for_all_types!(test_non_native, NonNativeEndian);
+    }
+
+    #[cfg(kani)]
+    mod proofs {
+        use super::*;
+
+        // This trait statically couples a wrapper's byte-order marker to the
+        // corresponding primitive-language oracle. Neither implementation
+        // calls a zerocopy conversion or reconstructs byte order manually.
+        trait PrimitiveByteOrderOracle<T: ByteOrderType> {
+            fn to_bytes(native: T::Native) -> T::ByteArray;
+        }
+
+        impl<T: ByteOrderType<Order = BigEndian>> PrimitiveByteOrderOracle<T> for BigEndian {
+            fn to_bytes(native: T::Native) -> T::ByteArray {
+                T::primitive_to_be_bytes(native)
+            }
+        }
+
+        impl<T: ByteOrderType<Order = LittleEndian>> PrimitiveByteOrderOracle<T> for LittleEndian {
+            fn to_bytes(native: T::Native) -> T::ByteArray {
+                T::primitive_to_le_bytes(native)
+            }
+        }
+
+        fn oracle_bytes<T: ByteOrderType>(native: T::Native) -> T::ByteArray
+        where
+            T::Order: PrimitiveByteOrderOracle<T>,
+        {
+            <T::Order as PrimitiveByteOrderOracle<T>>::to_bytes(native)
+        }
+
+        fn assert_stored_representation<T: ByteOrderType>(value: T, expected: T::ByteArray) {
+            assert_eq!(value.stored_bytes(), expected);
+        }
+
+        fn prove_zero_constant_contract<T: ByteOrderType>()
+        where
+            T::Order: PrimitiveByteOrderOracle<T>,
+        {
+            let zero_bytes = oracle_bytes::<T>(T::Native::ZERO);
+            assert_stored_representation::<T>(T::ZERO, zero_bytes);
+        }
+
+        fn prove_native_producer_contracts<T: ByteOrderType>(
+            native: T::Native,
+            expected: T::ByteArray,
+        ) {
+            // Each producer is inspected directly; no target decoder or
+            // encoder participates in these assertions.
+            assert_stored_representation::<T>(T::new(native), expected);
+            assert_stored_representation::<T>(T::from(native), expected);
+        }
+
+        fn prove_byte_producer_contracts<T: ByteOrderType>(bytes: T::ByteArray) {
+            // As above, direct field inspection prevents a producer defect
+            // from being hidden by a compensating consumer defect.
+            assert_stored_representation::<T>(T::from_array(bytes), bytes);
+            assert_stored_representation::<T>(T::from_inherent_bytes(bytes), bytes);
+        }
+
+        fn prove_native_consumer_contracts<T: ByteOrderType>(bytes: T::ByteArray)
+        where
+            T::Order: PrimitiveByteOrderOracle<T>,
+        {
+            // Fresh proof-only struct expressions supply the input to each
+            // consumer, so these assertions do not depend on a target
+            // constructor. Re-encoding with the primitive oracle compares
+            // floating-point representations byte-for-byte, including NaN
+            // payloads and signs.
+            let got = T::proof_construct_from_stored_bytes(bytes).get();
+            assert_eq!(oracle_bytes::<T>(got), bytes);
+
+            let converted = T::proof_construct_from_stored_bytes(bytes).into_native_via_from();
+            assert_eq!(oracle_bytes::<T>(converted), bytes);
+        }
+
+        fn prove_byte_consumer_contracts<T: ByteOrderType>(bytes: T::ByteArray) {
+            // Each consumer receives a separately and directly constructed
+            // wrapper, rather than the output of another target entry point.
+            let converted = T::proof_construct_from_stored_bytes(bytes).into_array();
+            assert_eq!(converted, bytes);
+
+            let extracted = T::proof_construct_from_stored_bytes(bytes).to_inherent_bytes();
+            assert_eq!(extracted, bytes);
+        }
+
+        fn prove_set_contract<T: ByteOrderType>(initial_bytes: T::ByteArray, updated: T::Native)
+        where
+            T::Order: PrimitiveByteOrderOracle<T>,
+        {
+            // `set` starts from a directly constructed representation and its
+            // result is directly inspected. The proof setup and oracle
+            // therefore do not call `new`, `get`, or either target byte
+            // conversion. The target `set` implementation itself may still
+            // delegate to another target entry point.
+            let mut value = T::proof_construct_from_stored_bytes(initial_bytes);
+            value.set(updated);
+            assert_stored_representation::<T>(value, oracle_bytes::<T>(updated));
+        }
+
+        fn prove_common_endian_contracts<T: ByteOrderType>() -> T::Native
+        where
+            T::Order: PrimitiveByteOrderOracle<T>,
+        {
+            prove_zero_constant_contract::<T>();
+
+            let native = kani::any::<T::Native>();
+            let bytes = oracle_bytes::<T>(native);
+            let zero_bytes = oracle_bytes::<T>(T::Native::ZERO);
+            kani::cover!(bytes == zero_bytes, "the zero representation is reachable");
+            kani::cover!(bytes != zero_bytes, "a nonzero representation is reachable");
+            prove_native_producer_contracts::<T>(native, bytes);
+            prove_byte_producer_contracts::<T>(bytes);
+            prove_native_consumer_contracts::<T>(bytes);
+            prove_byte_consumer_contracts::<T>(bytes);
+
+            let updated = kani::any::<T::Native>();
+            let updated_bytes = oracle_bytes::<T>(updated);
+            kani::cover!(updated_bytes == bytes, "an unchanged update is reachable");
+            kani::cover!(updated_bytes != bytes, "a changed update is reachable");
+            prove_set_contract::<T>(bytes, updated);
+
+            native
+        }
+
+        fn prove_unsigned_endian_contracts<T: ByteOrderTypeUnsigned>()
+        where
+            T::Order: PrimitiveByteOrderOracle<T>,
+        {
+            let _ = prove_common_endian_contracts::<T>();
+            let max_bytes = oracle_bytes::<T>(T::Native::MAX_VALUE);
+            assert_stored_representation::<T>(T::MAX_VALUE, max_bytes);
+        }
+
+        fn prove_float_endian_contracts<T: ByteOrderType>()
+        where
+            T::Order: PrimitiveByteOrderOracle<T>,
+        {
+            // Tie explicit NaN/non-NaN reachability to the same symbolic value
+            // used by every common producer, consumer, and mutator contract.
+            let native = prove_common_endian_contracts::<T>();
+            kani::cover!(native.is_nan(), "a NaN representation is reachable");
+            kani::cover!(!native.is_nan(), "a non-NaN representation is reachable");
+        }
+
+        // Configuration: Uses the common Kani CI configuration documented in
+        // `agent_docs/validation.md`: the CI-pinned Kani release and its
+        // bundled x86_64-unknown-linux-gnu compiler, the stable-compatible
+        // feature bundle, `-Zfunction-contracts`, and one layout selected by
+        // `--randomize-layout` per invocation.
+        //
+        // Domain and bounds: The 24 harnesses separately instantiate the 12
+        // wrappers below with concrete `BigEndian` and `LittleEndian` markers.
+        // Each quantifies over every Kani-modeled valid initial and replacement
+        // native value. All proof state is scalar or a fixed array of 2, 4, 8,
+        // or 16 bytes; `usize` and `isize` are 8 bytes on the CI target. Proof
+        // setup and the target methods request no dynamic allocation. No proof
+        // helper or target method contains a source-level loop or recursion.
+        // Every harness uses explicit unwind bound 17, one greater than the
+        // largest fixed byte-array length. The proof does not assume how the
+        // compiler or Kani lowers these operations: successful unwinding
+        // assertions establish that 17 is sufficient for every loop reachable
+        // in this exact modeled configuration.
+        //
+        // Established properties: For each primitive-oracle-produced
+        // representation, named contract lemmas separately check the producer
+        // entry points (`new`, `From<Native>`, inherent `from_bytes`, and
+        // `From<ByteArray>`), consumer entry points (`get`, `From<Wrapper> for
+        // Native`, inherent `to_bytes`, and `From<Wrapper> for ByteArray`), and
+        // the `set` mutator. Producer results, `ZERO`, and (for the five
+        // unsigned wrappers) `MAX_VALUE` are checked only by direct
+        // stored-field observation. Each consumer instead starts from a fresh
+        // proof-only struct expression, and `set` starts from a directly
+        // constructed representation whose result is directly observed. Thus
+        // no assertion composes a target producer with a target consumer.
+        // Target entry points which delegate to one another in the production
+        // implementation remain compositionally verified; these harnesses do
+        // not attribute a failure to a particular callee. The float harnesses
+        // cover both NaN and non-NaN inputs and compare their representations
+        // byte-for-byte.
+        //
+        // Oracle: Rust 1.93 documents each integer primitive's `to_be_bytes`
+        // and `to_le_bytes` as returning its memory representation in the
+        // named byte order [1]-[10], and documents the same contract for each
+        // floating-point primitive [11]-[12]. `primitive_to_be_bytes` and
+        // `primitive_to_le_bytes` are direct adapters to those inherent
+        // methods. The oracle path does not call the zerocopy conversion under
+        // proof, branch on native endianness, or reverse bytes manually.
+        // Proof-only field-indexed struct expressions place oracle bytes
+        // directly in field 0 [13], while tuple indexing evaluates to the
+        // location of the correspondingly named field [14]. These language
+        // operations construct and observe representation without calling a
+        // zerocopy conversion.
+        //
+        // Each integer `to_be_bytes` contract in [1]-[10] says:
+        //
+        // > Returns the memory representation of this integer as a byte array
+        // > in big-endian (network) byte order.
+        //
+        // The corresponding `to_le_bytes` sentence instead names
+        // "little-endian byte order." Each floating-point `to_be_bytes`
+        // contract in [11]-[12] says:
+        //
+        // > Returns the memory representation of this floating point number as
+        // > a byte array in big-endian (network) byte order.
+        //
+        // Its `to_le_bytes` counterpart instead names "little-endian byte
+        // order."
+        //
+        // [13] says a field struct expression "allows you to specify the value
+        // for each individual field" and that "The field names can be decimal
+        // integer values to specify indices for constructing tuple structs."
+        // [14] says a tuple-index expression "evaluates to the location of the
+        // field of the tuple operand with the same name as the tuple index."
+        //
+        // Non-goals: `BE`, `LE`, `NetworkEndian`, `NativeEndian`, and
+        // `NonNativeEndian` are aliases of the two proved marker types, not
+        // separate implementations; this does not prove their `cfg` selection
+        // on another target. The harnesses do not prove arbitrary-byte decoding
+        // beyond bytes represented by Kani's native-value model, constant
+        // evaluation, `Default`, `AsRef`/`AsMut`, comparisons, larger-number
+        // conversions, arithmetic or operator implementations, formatting,
+        // other targets or pointer widths, all randomized layouts, or behavior
+        // outside Kani's floating-point and Rust models.
+        //
+        // [1]: https://doc.rust-lang.org/1.93.0/std/primitive.u16.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.u16.html#method.to_le_bytes
+        // [2]: https://doc.rust-lang.org/1.93.0/std/primitive.u32.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.u32.html#method.to_le_bytes
+        // [3]: https://doc.rust-lang.org/1.93.0/std/primitive.u64.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.u64.html#method.to_le_bytes
+        // [4]: https://doc.rust-lang.org/1.93.0/std/primitive.u128.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.u128.html#method.to_le_bytes
+        // [5]: https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#method.to_le_bytes
+        // [6]: https://doc.rust-lang.org/1.93.0/std/primitive.i16.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.i16.html#method.to_le_bytes
+        // [7]: https://doc.rust-lang.org/1.93.0/std/primitive.i32.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.i32.html#method.to_le_bytes
+        // [8]: https://doc.rust-lang.org/1.93.0/std/primitive.i64.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.i64.html#method.to_le_bytes
+        // [9]: https://doc.rust-lang.org/1.93.0/std/primitive.i128.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.i128.html#method.to_le_bytes
+        // [10]: https://doc.rust-lang.org/1.93.0/std/primitive.isize.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.isize.html#method.to_le_bytes
+        // [11]: https://doc.rust-lang.org/1.93.0/std/primitive.f32.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.f32.html#method.to_le_bytes
+        // [12]: https://doc.rust-lang.org/1.93.0/std/primitive.f64.html#method.to_be_bytes and https://doc.rust-lang.org/1.93.0/std/primitive.f64.html#method.to_le_bytes
+        // [13]: https://doc.rust-lang.org/1.93.0/reference/expressions/struct-expr.html#field-struct-expression
+        // [14]: https://doc.rust-lang.org/1.93.0/reference/expressions/tuple-expr.html#tuple-indexing-expressions
+        macro_rules! endian_proofs {
+            ($(($proof:ident, $prove:ident, $ty:ty)),* $(,)?) => {
+                $(
+                    #[kani::proof]
+                    #[kani::unwind(17)]
+                    fn $proof() {
+                        $prove::<$ty>();
+                    }
+                )*
+            };
+        }
+
+        endian_proofs!(
+            (prove_u16_big_endian, prove_unsigned_endian_contracts, U16<BigEndian>),
+            (prove_u16_little_endian, prove_unsigned_endian_contracts, U16<LittleEndian>),
+            (prove_u32_big_endian, prove_unsigned_endian_contracts, U32<BigEndian>),
+            (prove_u32_little_endian, prove_unsigned_endian_contracts, U32<LittleEndian>),
+            (prove_u64_big_endian, prove_unsigned_endian_contracts, U64<BigEndian>),
+            (prove_u64_little_endian, prove_unsigned_endian_contracts, U64<LittleEndian>),
+            (prove_u128_big_endian, prove_unsigned_endian_contracts, U128<BigEndian>),
+            (prove_u128_little_endian, prove_unsigned_endian_contracts, U128<LittleEndian>),
+            (prove_usize_big_endian, prove_unsigned_endian_contracts, Usize<BigEndian>),
+            (prove_usize_little_endian, prove_unsigned_endian_contracts, Usize<LittleEndian>),
+            (prove_i16_big_endian, prove_common_endian_contracts, I16<BigEndian>),
+            (prove_i16_little_endian, prove_common_endian_contracts, I16<LittleEndian>),
+            (prove_i32_big_endian, prove_common_endian_contracts, I32<BigEndian>),
+            (prove_i32_little_endian, prove_common_endian_contracts, I32<LittleEndian>),
+            (prove_i64_big_endian, prove_common_endian_contracts, I64<BigEndian>),
+            (prove_i64_little_endian, prove_common_endian_contracts, I64<LittleEndian>),
+            (prove_i128_big_endian, prove_common_endian_contracts, I128<BigEndian>),
+            (prove_i128_little_endian, prove_common_endian_contracts, I128<LittleEndian>),
+            (prove_isize_big_endian, prove_common_endian_contracts, Isize<BigEndian>),
+            (prove_isize_little_endian, prove_common_endian_contracts, Isize<LittleEndian>),
+            (prove_f32_big_endian, prove_float_endian_contracts, F32<BigEndian>),
+            (prove_f32_little_endian, prove_float_endian_contracts, F32<LittleEndian>),
+            (prove_f64_big_endian, prove_float_endian_contracts, F64<BigEndian>),
+            (prove_f64_little_endian, prove_float_endian_contracts, F64<LittleEndian>),
+        );
     }
 
     #[test]
