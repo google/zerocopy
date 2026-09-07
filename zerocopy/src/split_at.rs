@@ -950,6 +950,119 @@ where
     }
 }
 
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    // These bounded harnesses establish byte-range and data-flow properties
+    // for the slice instantiation of `SplitAt` over a fixed live allocation.
+    // Kani does not fully model Rust reference aliasing or pointer provenance,
+    // so they do not by themselves discharge those parts of the safety proof.
+    const CAPACITY: usize = 8;
+
+    #[kani::proof]
+    #[kani::unwind(9)]
+    fn prove_slice_split_at_unchecked() {
+        let values: [u32; CAPACITY] = kani::any();
+        let source_len: usize = kani::any();
+        kani::assume(source_len <= CAPACITY);
+        let split: usize = kani::any();
+        kani::assume(split <= source_len);
+
+        kani::cover!(source_len == 0);
+        kani::cover!(source_len == CAPACITY);
+        kani::cover!(source_len > 0 && split == 0);
+        kani::cover!(source_len > 0 && split == source_len);
+        kani::cover!(split > 0 && split < source_len);
+
+        let source = &values[..source_len];
+        let source_ptr = source.as_ptr();
+        let split_ptr = source[split..].as_ptr();
+        let source_end = source[source_len..].as_ptr();
+        // SAFETY: `split <= source.len()`, and slices have no trailing
+        // padding, so the left and right portions do not overlap.
+        let (left, right) = unsafe { SplitAt::split_at_unchecked(source, split).via_unchecked() };
+
+        assert_eq!(left.len(), split);
+        assert_eq!(right.len(), source_len - split);
+        assert_eq!(left.as_ptr(), source_ptr);
+        assert_eq!(right.as_ptr(), split_ptr);
+        assert_eq!(left[left.len()..].as_ptr(), right.as_ptr());
+        assert_eq!(right[right.len()..].as_ptr(), source_end);
+
+        for index in 0..CAPACITY {
+            if index < split {
+                assert_eq!(left[index], values[index]);
+            } else if index < source_len {
+                assert_eq!(right[index - split], values[index]);
+            }
+        }
+    }
+
+    #[kani::proof]
+    #[kani::unwind(9)]
+    fn prove_slice_split_at_mut_unchecked() {
+        let original: [u32; CAPACITY] = kani::any();
+        let mut values = original;
+        let source_len: usize = kani::any();
+        kani::assume(source_len <= CAPACITY);
+        let split: usize = kani::any();
+        kani::assume(split <= source_len);
+        let left_value: u32 = kani::any();
+        let right_value: u32 = kani::any();
+
+        kani::cover!(source_len == 0);
+        kani::cover!(source_len == CAPACITY);
+        kani::cover!(source_len > 0 && split == 0);
+        kani::cover!(source_len > 0 && split == source_len);
+        kani::cover!(split > 0 && split < source_len);
+
+        {
+            let source = &mut values[..source_len];
+            let source_ptr = source.as_mut_ptr();
+            let split_ptr = source[split..].as_mut_ptr();
+            let source_end = source[source_len..].as_mut_ptr();
+            // SAFETY: `split <= source.len()`, and slices have no trailing
+            // padding, so the left and right portions do not overlap.
+            let (left, right) =
+                unsafe { SplitAt::split_at_mut_unchecked(source, split).via_unchecked() };
+
+            let left_len = left.len();
+            let right_len = right.len();
+            let left_ptr = left.as_mut_ptr();
+            let right_ptr = right.as_mut_ptr();
+            let left_end = left[left_len..].as_mut_ptr();
+            let right_end = right[right_len..].as_mut_ptr();
+            assert_eq!(left_len, split);
+            assert_eq!(right_len, source_len - split);
+            assert_eq!(left_ptr, source_ptr);
+            assert_eq!(right_ptr, split_ptr);
+            assert_eq!(left_end, right_ptr);
+            assert_eq!(right_end, source_end);
+
+            for index in 0..left.len() {
+                assert_eq!(left[index], original[index]);
+                left[index] = left_value;
+            }
+            for index in 0..right.len() {
+                assert_eq!(right[index], original[split + index]);
+                right[index] = right_value;
+            }
+        }
+
+        for index in 0..CAPACITY {
+            let expected = if index < split {
+                left_value
+            } else if index < source_len {
+                right_value
+            } else {
+                original[index]
+            };
+            assert_eq!(values[index], expected);
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "derive")]
