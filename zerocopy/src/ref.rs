@@ -993,6 +993,161 @@ where
         .recall_validity::<Valid, _>()
 }
 
+#[cfg(kani)]
+mod proofs {
+    use core::convert::TryInto as _;
+
+    use super::*;
+
+    // Configuration: Uses the common Kani CI configuration documented in
+    // `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
+    // x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
+    // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
+    // per invocation.
+    //
+    // `bytes` begins at offset zero, while the zero-length `u32` field gives
+    // the whole backing object `u32` alignment without contributing bytes.
+    #[repr(C)]
+    struct AlignedBytes {
+        bytes: [u8; 8],
+        _align: [u32; 0],
+    }
+
+    fn expected_after_u32_write(mut original: [u8; 8], start: usize, replacement: u32) -> [u8; 8] {
+        let end = start + mem::size_of::<u32>();
+        original[start..end].copy_from_slice(&replacement.to_ne_bytes());
+        original
+    }
+
+    // Domain: every contiguous range of an eight-byte, deliberately
+    // `u32`-aligned buffer; every buffer value; three replacement `u32`s; and
+    // one error-path replacement byte on Kani's target.
+    //
+    // Establishes: the safe sized `Ref<&mut [u8], u32>` constructor succeeds
+    // exactly for a size-and-alignment-valid range; dereference preserves exact
+    // address and contents; each of three safe mutation APIs writes through a
+    // fresh backing buffer with its own whole-buffer frame; and an error
+    // restores the exact source slice for safe repair.
+    //
+    // Classification oracle: `Ref::from_bytes` documents that construction
+    // succeeds exactly when the source has a valid size and alignment. For
+    // this sized `u32`, the conjunction of `len == size_of::<u32>()` and the
+    // compiler's pointer `is_aligned` observation is that contract predicate;
+    // it is not a separate standard-library conversion. Safe slice conversion,
+    // `u32::{from,to}_ne_bytes`, and `copy_from_slice` independently specify
+    // the returned value and mutation effects.
+    //
+    // This is not a generic `Ref<B, T>` theorem. Since every `u32` bit pattern
+    // is valid, it does not exercise validity errors; it also does not establish
+    // precedence when size and alignment both fail, custom/nested DST layout
+    // (#3630), or properties Kani does not fully model such as aliasing,
+    // provenance, invalid values, and uninitialized memory.
+    #[kani::proof]
+    #[kani::unwind(9)]
+    fn prove_sized_u32_from_bytes_deref_and_error_restoration() {
+        const CAPACITY: usize = 8;
+        const SIZE: usize = mem::size_of::<u32>();
+
+        let original: [u8; CAPACITY] = kani::any();
+        let deref_replacement: u32 = kani::any();
+        let write_replacement: u32 = kani::any();
+        let into_mut_replacement: u32 = kani::any();
+        let error_replacement: u8 = kani::any();
+        let mut backing = AlignedBytes { bytes: original, _align: [] };
+        let backing_ptr = backing.bytes.as_mut_ptr();
+        assert!(backing_ptr.cast::<u32>().is_aligned());
+        let start: usize = kani::any();
+        let len: usize = kani::any();
+
+        // Bound the theorem to all safe contiguous ranges of `backing.bytes`.
+        kani::assume(start <= CAPACITY);
+        kani::assume(len <= CAPACITY - start);
+        let end = start + len;
+
+        let source = &mut backing.bytes[start..end];
+        let source_ptr = source.as_mut_ptr();
+        let source_aligned = source_ptr.cast::<u32>().is_aligned();
+        let result = Ref::<_, u32>::from_bytes(source);
+        let expected_success = len == SIZE && source_aligned;
+
+        assert_eq!(result.is_ok(), expected_success);
+        kani::cover!(start == 0 && len == SIZE && result.is_ok());
+        kani::cover!(start == SIZE && len == SIZE && result.is_ok());
+        kani::cover!(start == 0 && len == SIZE - 1 && result.is_err());
+        kani::cover!(start == 1 && len == SIZE && result.is_err());
+        kani::cover!(start == 1 && len == SIZE - 1 && result.is_err());
+        kani::cover!(start == CAPACITY && len == 0 && result.is_err());
+        kani::cover!(!expected_success && len > 0 && error_replacement != original[start]);
+
+        match result {
+            Ok(mut typed) => {
+                let typed_ptr: *const u32 = &*typed;
+                assert_eq!(typed_ptr.cast::<u8>(), source_ptr as *const u8);
+                let source_bytes: [u8; SIZE] = original[start..end].try_into().unwrap();
+                assert_eq!(*typed, u32::from_ne_bytes(source_bytes));
+                kani::cover!(*typed != deref_replacement);
+                *typed = deref_replacement;
+                assert_eq!(Ref::bytes(&typed), &deref_replacement.to_ne_bytes());
+            }
+            Err(err) => {
+                if len != SIZE && source_aligned {
+                    assert!(matches!(&err, ConvertError::Size(_)));
+                } else if len == SIZE && !source_aligned {
+                    assert!(matches!(&err, ConvertError::Alignment(_)));
+                }
+                let recovered = err.into_src();
+                assert_eq!(recovered.as_mut_ptr(), source_ptr);
+                assert_eq!(recovered.len(), len);
+                assert_eq!(&*recovered, &original[start..end]);
+                if !recovered.is_empty() {
+                    recovered[0] = error_replacement;
+                }
+            }
+        }
+
+        let mut expected = original;
+        if expected_success {
+            expected = expected_after_u32_write(original, start, deref_replacement);
+        } else if len > 0 {
+            expected[start] = error_replacement;
+        }
+        assert_eq!(backing.bytes, expected);
+
+        if expected_success {
+            let source_bytes: [u8; SIZE] = original[start..end].try_into().unwrap();
+            let original_value = u32::from_ne_bytes(source_bytes);
+            let mut write_backing = AlignedBytes { bytes: original, _align: [] };
+            {
+                let source = &mut write_backing.bytes[start..end];
+                let mut typed = Ref::<_, u32>::from_bytes(source).unwrap();
+                kani::cover!(original_value != write_replacement);
+                Ref::write(&mut typed, write_replacement);
+                assert_eq!(*typed, write_replacement);
+                assert_eq!(Ref::bytes(&typed), &write_replacement.to_ne_bytes());
+            }
+            assert_eq!(
+                write_backing.bytes,
+                expected_after_u32_write(original, start, write_replacement)
+            );
+
+            let mut into_mut_backing = AlignedBytes { bytes: original, _align: [] };
+            {
+                let source = &mut into_mut_backing.bytes[start..end];
+                let source_ptr = source.as_mut_ptr();
+                let typed = Ref::<_, u32>::from_bytes(source).unwrap();
+                let typed = Ref::into_mut(typed);
+                assert_eq!((typed as *mut u32).cast::<u8>(), source_ptr);
+                kani::cover!(original_value != into_mut_replacement);
+                *typed = into_mut_replacement;
+            }
+            assert_eq!(
+                into_mut_backing.bytes,
+                expected_after_u32_write(original, start, into_mut_replacement)
+            );
+        }
+    }
+}
+
 #[cfg(test)]
 #[allow(clippy::assertions_on_result_states)]
 mod tests {
