@@ -342,3 +342,40 @@ pub(crate) fn bool_from_byte(byte: u8) -> Option<bool> {
 pub(crate) fn char_from_ne_bytes(bytes: [u8; 4]) -> Option<char> {
     char::from_u32(u32::from_ne_bytes(bytes))
 }
+
+// Take a pre-operation value snapshot using safe Rust language operations,
+// independently of any zerocopy target. Applying unary `*` to `value: &T`
+// denotes the referenced location [1]. Because `*value` is the final operand
+// of the function-body block, the block evaluates it in value-expression
+// context [2]. Evaluating a place expression in that context copies it instead
+// of moving it when the type implements `Copy` [3]; the bound makes that
+// premise explicit for every use. This records a value, not allocation
+// identity or independent storage for pointer-bearing `Copy` types.
+//
+// [1] https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.deref.result
+// [2] https://doc.rust-lang.org/1.93.0/reference/expressions/block-expr.html#r-expr.block.value
+// [3] https://doc.rust-lang.org/1.93.0/reference/expressions.html#moved-and-copied-types
+pub(crate) fn copy_snapshot<T: Copy>(value: &T) -> T {
+    *value
+}
+
+// Compare ordered byte values without treating slice or array `PartialEq` as
+// an implicit oracle. `slice::len` returns each slice's element count,
+// while the factored `assert_same_usize` supplies the documented equality
+// observation above. The first assertion therefore requires equal element
+// counts. `slice::iter` yields every item from start to end [1],
+// `Iterator::copied` copies those items and `Iterator::eq` compares the two
+// sequences [2], and `u8::eq` supplies element equality [3]. These safe
+// operations call no zerocopy target, so they are independent of that target
+// implementation, but not of the compiler, standard library, or Kani model.
+// They establish values only, not storage identity or provenance.
+//
+// [1] https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.len
+//     https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.iter
+// [2] https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.copied
+//     https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.eq
+// [3] https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-PartialEq-for-u8
+pub(crate) fn assert_same_u8_elements(actual: &[u8], expected: &[u8]) {
+    assert_same_usize(actual.len(), expected.len());
+    assert!(actual.iter().copied().eq(expected.iter().copied()));
+}
