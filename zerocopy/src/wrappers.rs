@@ -845,6 +845,577 @@ where
     }
 }
 
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+    use crate::proof_support::{assert_same_bool, assert_same_usize};
+
+    // Configuration: Uses the common Kani CI configuration documented in
+    // `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
+    // x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
+    // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
+    // per invocation.
+    //
+    // Domain: These normal-return harnesses are universal over the old and new
+    // byte values on Kani's target. One uses a `repr(transparent)` wrapper over
+    // `u8`, whose alignment is one. The other uses a `repr(C)` value with a
+    // destructor whose greater-than-one alignment is an explicit premise of
+    // the pinned compiler/target case. That value's `Unalign` receiver is at
+    // byte offset one in a `repr(C)` backing object aligned to the inner type,
+    // and is therefore physically misaligned for the inner type. Fail-closed
+    // `size_of` assertions record the pinned target's exact sizes: `Byte` and
+    // `Unalign<Byte>` are one byte, `DropTracked` and
+    // `Unalign<DropTracked>` are 16 bytes, and
+    // `Misaligned<DropTracked>` is 24 bytes. The alignment-one harness body
+    // declares five named locals; the write-back harness body declares eight.
+    // The latter count treats the zero-length alignment field as part of
+    // `backing`, not as a separate object. These are deliberately only
+    // harness-body binding counts: the exact reachable source paths also contain
+    // closure values and parameters, the terminal cover-helper parameters, and
+    // target/helper bindings (`t` on the alignment-one path; `copy`,
+    // `write_back`, `ret`, and the guard's second `copy` on the write-back
+    // path), plus function receiver parameters. The compiler may elide those
+    // values or introduce temporaries, so this proof makes no claim about a
+    // total stack-object count or stack-frame size. The
+    // harnesses and target perform no dynamic allocation, contain no
+    // `kani::assume`, and have no explicit source-level loop. Their explicit
+    // unwind bound is one, which also applies to any target or language-oracle
+    // loop Kani reaches, with unwinding assertions enabled.
+    //
+    // Establishes: Together, they exercise both branches of `Unalign::update`,
+    // including closure-result forwarding, mutation write-back from a receiver
+    // physically misaligned for `DropTracked`, and one observable final
+    // destructor.
+    //
+    // Proof-only isolation: Calls to the compiler-defined tuple-struct
+    // constructor create the receiver without calling `Unalign::new` [1], so
+    // constructor and `update` defects cannot compensate. A tuple-struct
+    // pattern observes the result without calling `into_inner`.
+    //
+    // Input generation: Shared `any_byte_update_case` performs exactly two
+    // explicitly typed `kani::any::<u8>` calls and constructs their result
+    // tuple; each harness destructures the returned tuple [35]. Shared
+    // `cover_byte_update_case` owns the common equal/unequal cover checks, and
+    // each harness calls it only after every target postcondition (and, on the
+    // write-back path, the final destructor-count postcondition) has succeeded.
+    // Kani 0.67 documents that `any::<T>` constructs a symbolic value
+    // representing every possible valid `T` [30]. Its exact
+    // implementation classifies `u8` as a trivial `Arbitrary` type, represented
+    // by an unconstrained symbolic value, and lowers every reached raw generator
+    // call to a nondeterministic assignment of the result type [31]. There is no
+    // assumption between either pair of calls and the target. Thus, under that
+    // documented Kani model, each harness quantifies over the full Cartesian
+    // product of two valid `u8` values; [13] supplies the exact `u8` domain. At
+    // their terminal call locations, the factored covers witness that both
+    // partitions can reach normal return after all assertions; they do not
+    // establish this universality. Centralizing the generators and the separate
+    // terminal cover helper prevents the two branch harnesses from drifting to
+    // different modeled domains or non-vacuity checks.
+    // Correctness of Kani's generator implementation, its source-to-model
+    // translation, and the independent/exhaustive interpretation of the two
+    // nondeterministic assignments remain explicit TOOL/TCB premises.
+    //
+    // Alignment and placement oracles: `align_of` returns a type's ABI-required
+    // alignment [15]. Every `size_of`, `align_of`, and `offset_of!` query below
+    // produces a `usize`; the shared `assert_same_usize` makes a mismatch fail
+    // through `assert_eq!` and `usize::PartialEq` [27]. The shared
+    // `assert_same_bool` uses the same assertion operation with
+    // `bool::PartialEq`. These helpers supply equality mechanics only. The
+    // expected numeric sizes and offsets remain the
+    // language-derived or pinned-compiler premises described here, not general
+    // layout theorems. `Byte` has the same layout as `u8` by its transparent
+    // representation [16]. Rust fixes `u8`'s size at one byte, requires
+    // alignment to be at least one, and requires size to be a multiple of
+    // alignment, so `Byte`'s alignment is exactly one [17]. This supplies the
+    // expected result of the first alignment assertion and selects the direct
+    // reference branch independently of `update`.
+    //
+    // Rust does not fix reference alignment across targets. For the pinned
+    // x86_64 compiler/target, the second alignment assertion records and checks
+    // the exact compiler-layout premise that `DropTracked`'s alignment exceeds
+    // one through primitive `usize` ordering [28]; no cross-target inference is
+    // made. `Unalign<T>` is declared
+    // `#[repr(C, packed)]`. Rust specifies that an omitted packing value is one
+    // and that `packed` lowers the type and field-positioning alignments [21].
+    // Since every Rust alignment is at least one [17], `Unalign<T>` therefore
+    // has alignment exactly one. Arrays of length zero have size zero and
+    // retain their element alignment [18]. The `repr(C)` backing type is
+    // consequently aligned to `T`, places its one-byte prefix at offset zero,
+    // and places its alignment-one `Unalign<T>` field immediately afterward at
+    // offset one [19]. Since the base is aligned to `T` and `T`'s alignment is
+    // greater than one, that field address is not aligned to `T`. Applying the
+    // same `repr(C)` first-field rule to `Unalign<T>` places its sole tuple field
+    // at offset zero; a separate `offset_of!` assertion records that edge
+    // explicitly. `offset_of!` asks the compiler for each field's byte offset;
+    // `addr_of!` obtains the inner field's address without creating a reference;
+    // and `is_aligned` reports whether it meets `T`'s alignment [20]. Those
+    // contracts supply the offsets, outer alignment, and physical-misalignment
+    // checks before the write-back branch is called. The greater-than-one
+    // alignment classifier uses primitive `usize` ordering [28]. The
+    // physical-misalignment classifier applies `!` to the `bool` returned by
+    // `is_aligned`; Rust defines that operation as logical NOT for `bool` [32].
+    // Each classifier is compared with `true` by `assert_same_bool`, so a
+    // mismatch fails through the factored `assert_eq!`/`bool::PartialEq`
+    // operation [27], with no direct `assert!` left at either site. The same
+    // stored misalignment classifier is passed unchanged to `kani::cover!`;
+    // Kani 0.67 defines that cover as asking whether some execution satisfies
+    // its condition at that location [33]. These explicit
+    // representation guarantees, rather than an unspecified default layout,
+    // supply the relevant placement under layout randomization.
+    //
+    // Other language oracles and assertion mapping: Named-field struct
+    // expressions initialize `DropTracked::value` with `old` and pass that
+    // value through `Misaligned::new` into its named `value` field [23]. This
+    // supplies the proof setup against which the closure-input assertion tests
+    // the target. Tuple-struct patterns destructure the wrapper, and their
+    // default binding mode moves the field into the `restored` local [2][3].
+    // More specifically, Rust says a place bound by value in a pattern denotes
+    // the value stored there, and permits moving a field when its containing
+    // place is movable and does not implement `Drop` [26]. Both `Misaligned` and
+    // `Unalign` meet that condition. Rust's packed-field guidance identifies
+    // direct value access as the alternative to creating a forbidden unaligned
+    // reference [21]. Thus both `Unalign(restored)` patterns observe the packed
+    // field by a language-checked value move, rather than through a reference.
+    // Compiler/Kani lowering of the non-`Copy`, unaligned field move remains part
+    // of the TOOL/TCB boundary below. Each
+    // closure maps its parameter to its body expression [4]; the body executes
+    // its statements in order and evaluates its final operand in value context
+    // [5]. Assignment copies or moves the right-hand value into the selected
+    // place [6]. Together those rules supply the expected closure input, field
+    // mutation, and closure result. At the `update` function boundary,
+    // `return f(t)` short-circuits the implicit return while the tail expression
+    // `ret` is returned to the caller [7]. Those two language paths map directly
+    // to the two `returned` assertions.
+    //
+    // All seven direct byte-and-counter `assert_eq!` checks in these harnesses
+    // compare primitive `u8` values. The alignment-one harness checks the
+    // closure input (`value.0` against `old`), forwarded result (`returned`
+    // against `old`), and restored field (`restored.0` against `new`). The
+    // write-back harness checks the analogous closure input, forwarded result,
+    // and restored field, followed by the `drops` counter against one. Each uses
+    // `assert_eq!`, which compares its operands using `PartialEq`; the primitive
+    // `u8` implementation supplies that equality [29]. Thus these assertions
+    // test the named value-flow and counter postconditions without calling
+    // `Unalign` equality or manually reconstructing bytes. The two
+    // factored `old == new`/`old != new` cover predicates use the same primitive
+    // equality only as terminal normal-return reachability witnesses, not as
+    // proof conclusions. This oracle still trusts Kani's lowering of
+    // `assert_eq!` and primitive equality.
+    //
+    // Finally, safe `drop` moves and drops `restored` before returning [8]. A
+    // moved local is deinitialized [9], and a partially initialized aggregate
+    // drops only fields which remain initialized [10]. The field-move rule [26]
+    // makes the two containing aggregates partially initialized: the by-value
+    // wrapper pattern leaves no initialized wrapper field to drop, while
+    // `backing` retains only its prefix and zero-length alignment fields.
+    // `drop(restored)` then moves and deinitializes `restored` while running its
+    // destructor inside `drop`. Destruction of the
+    // `DropTracked` value calls its `Drop::drop` implementation [10]. Moving
+    // `backing.value` leaves `_prefix` and `_align` initialized. Array
+    // destruction visits its elements [24], and `[DropTracked; 0]` has no
+    // elements, so `_align` invokes no `DropTracked` destructor; `_prefix` is a
+    // `u8` without a destructor. When the restored value's method is invoked,
+    // [5] executes its single body statement, `*self.drops += 1_u8`. Both
+    // operands of that compound assignment are known primitive `u8` values. Rust
+    // specifies that the assigned place is mutated by applying the operator
+    // [11], and specifies integer `+` as addition [12]. The harness initializes
+    // `drops` from `0_u8` and compares it with `1_u8`; the explicit suffixes and
+    // binding type fix both literals as `u8` without an inferred literal type
+    // [34]; the drop implementation suffixes its increment literal likewise.
+    // The mutable local `drops` denotes its memory location; `&mut drops`
+    // produces a mutable reference to that location, and the named-field struct
+    // expression stores the reference in `DropTracked::drops` [23][36]. Inside
+    // `Drop::drop`, field access through `self` denotes the stored field's
+    // location after automatically dereferencing the `&mut DropTracked`
+    // receiver, and built-in `*` applied to that stored `&mut u8` denotes its
+    // assignable pointee [36]. Thus the compound assignment mutates the counter
+    // location created by the harness; the final assertion tests that this
+    // observable connection survived `update` rather than assuming it. The
+    // specified `u8` range includes both values [13], so the
+    // mathematical result `0 + 1 = 1` is in range and does not meet Rust's
+    // definition of overflow [14]. Thus the expected
+    // single destructor invocation changes the counter once from zero to one,
+    // and the final assertion checks that specific effect without relying on a
+    // second target API. The move/destruction argument above supplies the
+    // exactly-once expectation; this does not claim that a `u8` counter is an
+    // injective record of an arbitrary number of destructor invocations.
+    //
+    // They do not prove `update` for arbitrary types, alignments, physical
+    // offsets, or layouts; extend the selected compiler's `DropTracked`
+    // alignment premise to another compiler or target; model panic unwinding or
+    // abort; or establish reference aliasing and lifetime validity, raw-pointer
+    // provenance, invalid-value, or uninitialized-memory obligations. Kani
+    // lists pointer-aliasing violations and invalid values as unsupported and
+    // does not track reference lifetimes [22]. In particular, the mutation and
+    // destructor assertions do not prove that moving `DropTracked` with
+    // `ptr::read`, using its `&mut u8`, and writing it back with `ptr::write`
+    // respects that reference's liveness and exclusive-access rules. Those are
+    // TOOL/TCB premises, not proof conclusions. Kani's feature table also marks
+    // destructors and `Drop` as only partially supported [22]. The exactly-once
+    // normal-path destructor result is therefore conditional on Kani 0.67's
+    // lowering and execution model for the particular drops reached here; the
+    // harness does not independently establish that model. The ordinary test
+    // module below separately samples panic restoration, but this Kani proof
+    // does not model panic unwinding.
+    //
+    // [1] Per Rust 1.93's tuple-struct-construction contract:
+    //
+    //     The constructor is a function which can be called to create a new
+    //     instance of the struct.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/items/structs.html#r-items.struct.tuple
+    //
+    // [2] Per Rust 1.93's tuple-struct-pattern contract:
+    //
+    //     They are also used to destructure a tuple struct or enum value.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/patterns.html#tuple-struct-patterns
+    //
+    // [3] Per Rust 1.93's binding-mode contract:
+    //
+    //     The default binding mode starts in “move” mode which uses move
+    //     semantics.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/patterns.html#binding-modes
+    //
+    // [4] Per Rust 1.93's closure contract:
+    //
+    //     A closure expression denotes a function that maps a list of
+    //     parameters onto the expression that follows the parameters.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/closure-expr.html
+    //
+    // [5] Per Rust 1.93's block-expression contract:
+    //
+    //     As a control flow expression, a block sequentially executes its
+    //     component non-item declaration statements and then its final optional
+    //     expression.
+    //
+    //     Blocks are always value expressions and evaluate the last operand in
+    //     value expression context.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/block-expr.html
+    //
+    // [6] Per Rust 1.93's assignment contract:
+    //
+    //     Next it either copies or moves the assigned value to the assigned
+    //     place.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#assignment-expressions
+    //
+    // [7] Per Rust 1.93's function-body contract, the body first binds its
+    // argument patterns and then returns its body value; specifically:
+    //
+    //     This means that the tail expression of the block, if evaluated, ends
+    //     up being returned to the caller. As usual, an explicit return
+    //     expression within the body of the function will short-cut that
+    //     implicit return, if reached.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/items/functions.html#function-body
+    //
+    // [8] Per Rust 1.93's `drop` contract:
+    //
+    //     Because `_x` is moved into the function, it is automatically dropped
+    //     before the function returns.
+    //
+    // https://doc.rust-lang.org/1.93.0/std/mem/fn.drop.html
+    //
+    // [9] Per Rust 1.93's move-expression contract:
+    //
+    //     After moving out of a place expression that evaluates to a local
+    //     variable, the location is deinitialized and cannot be read from again
+    //     until it is reinitialized.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions.html#moved-and-copied-types
+    //
+    // [10] Per Rust 1.93's destructor contract, destruction of `T: Drop` calls
+    // `<T as core::ops::Drop>::drop`, and:
+    //
+    //     If a variable has been partially initialized, only its initialized
+    //     fields are dropped.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/destructors.html
+    //
+    // [11] Per Rust 1.93's compound-assignment contract:
+    //
+    //     Compound assignment expressions combine arithmetic and logical
+    //     binary operators with assignment expressions.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.compound-assign.intro
+    //
+    // For operands known to be primitive, the same contract specifies that:
+    //
+    //     the place given by the evaluation of the left hand side is mutated
+    //     by applying the operator to the values of both sides.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.compound-assign.primitives
+    //
+    // [12] Rust 1.93's arithmetic-operator table assigns integer `+` the
+    // behavior "Addition":
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.arith-logic.behavior
+    //
+    // [13] Rust 1.93's unsigned-integer table gives `u8` minimum `0` and
+    // maximum `2^8 - 1`:
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/types/numeric.html#r-type.numeric.int.unsigned
+    //
+    // [14] Per Rust 1.93's integer-overflow contract, overflow includes:
+    //
+    //     When `+`, `*` or binary `-` create a value greater than the maximum
+    //     value, or less than the minimum value that can be stored.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.operator.int-overflow.binary-arith
+    //
+    // [15] Rust 1.93 specifies that `align_of` returns the ABI-required minimum
+    // alignment of the type in bytes:
+    //
+    // https://doc.rust-lang.org/1.93.0/core/mem/fn.align_of.html
+    //
+    // [16] Rust 1.93 specifies that a transparent struct has the same layout
+    // and ABI as its only non-zero-sized field:
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.repr.transparent.layout-abi
+    //
+    // [17] Rust 1.93 specifies that `u8` has size one, alignment is at least
+    // one, and size is a multiple of alignment:
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.primitive.size
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.properties.align
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.properties.size
+    //
+    // [18] Rust 1.93 specifies that `[T; N]` has size
+    // `size_of::<T>() * N` and the same alignment as `T`:
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#array-layout
+    //
+    // [19] Rust 1.93 specifies that a `repr(C)` struct is aligned to its most
+    // aligned field and places fields in declaration order with only the
+    // padding needed for each field's alignment:
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.repr.c.struct.align
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.repr.c.struct.size-field-offset
+    //
+    // [20] Rust 1.93 specifies that `offset_of!` expands to a field's byte
+    // offset, `addr_of!` creates a raw pointer without creating a reference,
+    // pointer `cast` casts to another pointer type, and `is_aligned` reports
+    // whether the pointer is properly aligned for `T`:
+    //
+    // https://doc.rust-lang.org/1.93.0/core/mem/macro.offset_of.html
+    // https://doc.rust-lang.org/1.93.0/std/ptr/macro.addr_of.html
+    // https://doc.rust-lang.org/1.93.0/std/primitive.pointer.html#method.cast
+    // https://doc.rust-lang.org/1.93.0/std/primitive.pointer.html#method.is_aligned
+    //
+    // [21] Rust 1.93 specifies:
+    //
+    //     For `packed`, if no value is given, as in `#[repr(packed)]`, then the
+    //     value is 1.
+    //
+    // It also makes each positioning alignment the smaller of that value and
+    // the field type's alignment. For value access at such an alignment, its
+    // guidance says references to unaligned fields are not allowed and:
+    //
+    //     Instead of creating a reference to a field, copy the value to a local
+    //     variable.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.repr.alignment.intro
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.repr.alignment.constraint-alignment
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.repr.alignment.packed
+    // https://doc.rust-lang.org/1.93.0/reference/type-layout.html#r-layout.repr.alignment.packed-fields
+    //
+    // [22] Kani documents pointer-aliasing violations and invalid values as
+    // unsupported, documents that it does not track reference lifetimes, and
+    // marks destructors and `Drop` as partially supported:
+    //
+    // https://model-checking.github.io/kani/rust-feature-support.html
+    // https://model-checking.github.io/kani/undefined-behaviour.html
+    //
+    // [23] Rust 1.93 specifies that a struct expression creates a struct value
+    // and that its named fields are supplied by the corresponding field values:
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/struct-expr.html
+    //
+    // [24] Rust 1.93 specifies:
+    //
+    //     The elements of an array or owned slice are dropped in order from the
+    //     first element to the last.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/destructors.html#destructors.operation.sequence
+    //
+    // [25] Rust 1.93 specifies that `size_of` returns a type's size in bytes:
+    // https://doc.rust-lang.org/1.93.0/core/mem/fn.size_of.html
+    //
+    // [26] Rust 1.93 specifies that a place "bound by value in a pattern"
+    // denotes the value stored there, and permits moving fields out of a movable
+    // containing place which does not implement `Drop`:
+    // https://doc.rust-lang.org/1.93.0/reference/expressions.html#moved-and-copied-types
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/field-expr.html#borrowing
+    //
+    // [27] https://doc.rust-lang.org/1.93.0/std/macro.assert_eq.html
+    // https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialEq.html#tymethod.eq
+    // https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialEq-for-usize
+    // https://doc.rust-lang.org/1.93.0/std/primitive.bool.html#impl-PartialEq-for-bool
+    //
+    // [28] https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialOrd.html#method.gt
+    // https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialOrd-for-usize
+    //
+    // [29] https://doc.rust-lang.org/1.93.0/std/macro.assert_eq.html
+    // https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialEq.html#tymethod.eq
+    // https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-PartialEq-for-u8
+    //
+    // [30] Kani 0.67's exact `any` contract says `Arbitrary` builds a symbolic
+    // value representing all possible valid values for `T`:
+    // https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/library/kani_core/src/lib.rs#L255-L279
+    //
+    // [31] Kani 0.67's exact implementation describes trivial `Arbitrary`
+    // types as unconstrained symbolic values, instantiates that implementation
+    // for `u8`, and lowers each raw generator call to a nondeterministic
+    // assignment of its result type:
+    // https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/library/kani_core/src/arbitrary.rs#L4-L7
+    // https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/library/kani_core/src/arbitrary.rs#L32-L65
+    // https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/kani-compiler/src/codegen_cprover_gotoc/overrides/hooks.rs#L334-L376
+    //
+    // [32] Rust 1.93's primitive negation table specifies logical NOT for
+    // `!` applied to a `bool`:
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.negate.results
+    //
+    // [33] Kani 0.67's exact `cover` contract says a cover checks whether at
+    // least one execution satisfies its condition at the call location:
+    // https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/library/kani_core/src/lib.rs#L228-L253
+    //
+    // [34] Rust 1.93's integer-literal contract assigns a suffixed integer
+    // literal the integer type named by its suffix:
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/literal-expr.html#integer-literal-expressions
+    //
+    // [35] Rust 1.93's tuple-expression and tuple-pattern contracts specify the
+    // ordered value construction and destructuring used by the shared case
+    // generator:
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/tuple-expr.html
+    // https://doc.rust-lang.org/1.93.0/reference/patterns.html#tuple-patterns
+    //
+    // [36] Rust 1.93 specifies that locals, dereferences, and field expressions
+    // are place expressions representing memory locations; field access
+    // automatically dereferences its container as needed; `&mut` applied to a
+    // place produces a mutable reference to that location; and built-in `*`
+    // applied to a mutable reference denotes an assignable pointed-to location:
+    // https://doc.rust-lang.org/1.93.0/reference/expressions.html#r-expr.place-value.place-memory-location
+    // https://doc.rust-lang.org/1.93.0/reference/expressions.html#r-expr.place-value.place-expr-kinds
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/field-expr.html#r-expr.field.autoref-deref
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.operator.borrow.result
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.deref.result
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.deref.mut
+    #[repr(transparent)]
+    struct Byte(u8);
+
+    #[repr(C)]
+    struct DropTracked<'a> {
+        value: u8,
+        drops: &'a mut u8,
+    }
+
+    // `repr(C)` and the alignment-one `Unalign<T>` field make `value` begin at
+    // byte offset one. The zero-length array contributes no bytes but gives the
+    // backing object `T`'s alignment. See the family proof above.
+    #[repr(C)]
+    struct Misaligned<T> {
+        _prefix: u8,
+        value: Unalign<T>,
+        _align: [T; 0],
+    }
+
+    impl<T> Misaligned<T> {
+        fn new(value: T) -> Self {
+            Self { _prefix: 0, value: Unalign(value), _align: [] }
+        }
+    }
+
+    impl Drop for DropTracked<'_> {
+        fn drop(&mut self) {
+            *self.drops += 1_u8;
+        }
+    }
+
+    // Shared proof-domain construction for both `Unalign::update` branches. See
+    // the generation contract above.
+    fn any_byte_update_case() -> (u8, u8) {
+        let old = kani::any::<u8>();
+        let new = kani::any::<u8>();
+        (old, new)
+    }
+
+    // Shared terminal normal-return witnesses for both `Unalign::update`
+    // branches. See the cover contract above.
+    fn cover_byte_update_case(old: u8, new: u8) {
+        kani::cover!(old == new, "old and new bytes can be equal");
+        kani::cover!(old != new, "old and new bytes can differ");
+    }
+
+    #[kani::proof]
+    #[kani::unwind(1)]
+    fn prove_unalign_update_alignment_one() {
+        assert_same_usize(mem::size_of::<Byte>(), 1);
+        assert_same_usize(mem::size_of::<Unalign<Byte>>(), 1);
+        assert_same_usize(mem::align_of::<Byte>(), 1);
+        let (old, new) = any_byte_update_case();
+        let mut value = Unalign(Byte(old));
+
+        let returned = value.update(|value| {
+            assert_eq!(value.0, old);
+            value.0 = new;
+            old
+        });
+
+        assert_eq!(returned, old);
+        // Destructuring is a language operation independent of `into_inner`,
+        // which exercises the same representation-sensitive path as `update`.
+        let Unalign(restored) = value;
+        assert_eq!(restored.0, new);
+        cover_byte_update_case(old, new);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(1)]
+    fn prove_unalign_update_write_back() {
+        assert_same_usize(mem::size_of::<DropTracked<'_>>(), 16);
+        assert_same_usize(mem::size_of::<Unalign<DropTracked<'_>>>(), 16);
+        assert_same_usize(mem::size_of::<Misaligned<DropTracked<'_>>>(), 24);
+        assert_same_bool(mem::align_of::<DropTracked<'_>>() > 1, true);
+        let (old, new) = any_byte_update_case();
+        let mut drops: u8 = 0_u8;
+
+        {
+            let mut backing = Misaligned::new(DropTracked { value: old, drops: &mut drops });
+            assert_same_usize(core::mem::offset_of!(Misaligned<DropTracked<'_>>, value), 1);
+            assert_same_usize(core::mem::offset_of!(Unalign<DropTracked<'_>>, 0), 0);
+            assert_same_usize(
+                mem::align_of::<Misaligned<DropTracked<'_>>>(),
+                mem::align_of::<DropTracked<'_>>(),
+            );
+            let receiver = ptr::addr_of!(backing.value.0);
+            let receiver_is_misaligned = !receiver.is_aligned();
+            assert_same_bool(receiver_is_misaligned, true);
+            kani::cover!(receiver_is_misaligned, "write-back receiver is physically misaligned");
+
+            let returned = backing.value.update(|value| {
+                assert_eq!(value.value, old);
+                value.value = new;
+                new
+            });
+
+            assert_eq!(returned, new);
+            // Use pattern matching as the independent observation of the
+            // packed wrapper's field instead of calling `into_inner`.
+            let Unalign(restored) = backing.value;
+            assert_eq!(restored.value, new);
+            drop(restored);
+        }
+
+        // After the restored value is observed, its destructor runs exactly
+        // once before this scope exits.
+        assert_eq!(drops, 1_u8);
+        cover_byte_update_case(old, new);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use core::panic::AssertUnwindSafe;
