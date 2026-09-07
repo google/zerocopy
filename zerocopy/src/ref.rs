@@ -993,6 +993,117 @@ where
         .recall_validity::<Valid, _>()
 }
 
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    // `bytes` begins at offset zero, while the zero-length `u32` field gives
+    // the whole backing object `u32` alignment without contributing bytes.
+    #[repr(C)]
+    struct AlignedBytes {
+        bytes: [u8; 8],
+        _align: [u32; 0],
+    }
+
+    // This exhaustively covers every contiguous range of an eight-byte
+    // `u32`-aligned backing buffer, every buffer value, and every pair of
+    // replacement `u32`s on Kani's target. It is a bounded regression proof
+    // for the sized `Ref<&mut [u8], u32>` instantiation, not a generic proof of
+    // `Ref` or a proof for the nested/custom DST layouts tracked by #3630.
+    // Kani does not fully model Rust aliasing, pointer provenance, invalid
+    // values, or uninitialized memory.
+    #[kani::proof]
+    #[kani::unwind(9)]
+    fn prove_sized_u32_from_bytes_deref_and_error_restoration() {
+        const CAPACITY: usize = 8;
+        const SIZE: usize = mem::size_of::<u32>();
+
+        let original: [u8; CAPACITY] = kani::any();
+        let deref_replacement: u32 = kani::any();
+        let write_replacement: u32 = kani::any();
+        let into_mut_replacement: u32 = kani::any();
+        let error_replacement: u8 = kani::any();
+        let mut backing = AlignedBytes { bytes: original, _align: [] };
+        let start: usize = kani::any();
+        let len: usize = kani::any();
+
+        // Bound the theorem to all safe contiguous ranges of `backing.bytes`.
+        kani::assume(start <= CAPACITY);
+        kani::assume(len <= CAPACITY - start);
+        let end = start + len;
+
+        let source = &mut backing.bytes[start..end];
+        let source_ptr = source.as_mut_ptr();
+        let result = Ref::<_, u32>::from_bytes(source);
+        let expected_success = len == SIZE && start % mem::align_of::<u32>() == 0;
+
+        assert_eq!(result.is_ok(), expected_success);
+        kani::cover!(start == 0 && len == SIZE && result.is_ok());
+        kani::cover!(start == SIZE && len == SIZE && result.is_ok());
+        kani::cover!(start == 0 && len == SIZE - 1 && result.is_err());
+        kani::cover!(start == 1 && len == SIZE && result.is_err());
+        kani::cover!(start == 1 && len == SIZE - 1 && result.is_err());
+        kani::cover!(start == CAPACITY && len == 0 && result.is_err());
+
+        match result {
+            Ok(mut typed) => {
+                let typed_ptr: *const u32 = &*typed;
+                assert_eq!(typed_ptr.cast::<u8>(), source_ptr as *const u8);
+                assert_eq!(
+                    *typed,
+                    u32::from_ne_bytes([
+                        original[start],
+                        original[start + 1],
+                        original[start + 2],
+                        original[start + 3],
+                    ])
+                );
+                kani::cover!(*typed != deref_replacement);
+                *typed = deref_replacement;
+                assert_eq!(Ref::bytes(&typed), &deref_replacement.to_ne_bytes());
+
+                kani::cover!(deref_replacement != write_replacement);
+                Ref::write(&mut typed, write_replacement);
+                assert_eq!(*typed, write_replacement);
+
+                let typed = Ref::into_mut(typed);
+                assert_eq!((typed as *mut u32).cast::<u8>(), source_ptr);
+                assert_eq!(*typed, write_replacement);
+                kani::cover!(write_replacement != into_mut_replacement);
+                *typed = into_mut_replacement;
+            }
+            Err(err) => {
+                if len != SIZE && start % mem::align_of::<u32>() == 0 {
+                    assert!(matches!(&err, ConvertError::Size(_)));
+                } else if len == SIZE && start % mem::align_of::<u32>() != 0 {
+                    assert!(matches!(&err, ConvertError::Alignment(_)));
+                }
+                let recovered = err.into_src();
+                assert_eq!(recovered.as_mut_ptr(), source_ptr);
+                assert_eq!(recovered.len(), len);
+                for offset in 0..len {
+                    assert_eq!(recovered[offset], original[start + offset]);
+                }
+                if !recovered.is_empty() {
+                    recovered[0] = error_replacement;
+                }
+            }
+        }
+
+        let replacement = into_mut_replacement.to_ne_bytes();
+        for index in 0..CAPACITY {
+            let expected = if expected_success && start <= index && index < end {
+                replacement[index - start]
+            } else if !expected_success && len > 0 && index == start {
+                error_replacement
+            } else {
+                original[index]
+            };
+            assert_eq!(backing.bytes[index], expected);
+        }
+    }
+}
+
 #[cfg(test)]
 #[allow(clippy::assertions_on_result_states)]
 mod tests {
