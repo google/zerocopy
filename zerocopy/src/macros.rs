@@ -1253,6 +1253,88 @@ macro_rules! cryptocorrosion_derive_traits {
     };
 }
 
+#[cfg(kani)]
+mod proofs {
+    use crate::ValidityError;
+
+    // These proofs exhaustively cover the 256 `u8` bit patterns for the
+    // concrete destination `bool`. They are end-to-end regression proofs of
+    // these macro instantiations, not generic proofs of the macros. Kani does
+    // not fully model Rust aliasing, pointer provenance, invalid values, or
+    // uninitialized memory.
+
+    #[kani::proof]
+    fn prove_try_transmute_u8_to_bool() {
+        let src: u8 = kani::any();
+        let result: Result<bool, ValidityError<u8, bool>> = crate::try_transmute!(src);
+
+        assert_eq!(result.is_ok(), src <= 1);
+        kani::cover!(src == 0 && result.is_ok());
+        kani::cover!(src == 1 && result.is_ok());
+        kani::cover!(src == 2 && result.is_err());
+
+        match result {
+            Ok(dst) => assert_eq!(dst, src != 0),
+            Err(err) => assert_eq!(err.into_src(), src),
+        }
+    }
+
+    #[kani::proof]
+    fn prove_try_transmute_ref_u8_to_bool() {
+        let src: u8 = kani::any();
+        let src_ptr = core::ptr::addr_of!(src);
+        let result: Result<&bool, ValidityError<&u8, bool>> = crate::try_transmute_ref!(&src);
+
+        assert_eq!(result.is_ok(), src <= 1);
+        kani::cover!(src == 0 && result.is_ok());
+        kani::cover!(src == 1 && result.is_ok());
+        kani::cover!(src == 2 && result.is_err());
+
+        match result {
+            Ok(dst) => {
+                assert_eq!((dst as *const bool).cast::<u8>(), src_ptr);
+                assert_eq!(*dst, src != 0);
+            }
+            Err(err) => {
+                let recovered = err.into_src();
+                assert_eq!(recovered as *const u8, src_ptr);
+                assert_eq!(*recovered, src);
+            }
+        }
+    }
+
+    #[kani::proof]
+    fn prove_try_transmute_mut_u8_to_bool_restores_on_error() {
+        let mut src: u8 = kani::any();
+        let original = src;
+        let src_ptr = core::ptr::addr_of_mut!(src);
+        let result: Result<&mut bool, ValidityError<&mut u8, bool>> =
+            crate::try_transmute_mut!(&mut src);
+
+        assert_eq!(result.is_ok(), original <= 1);
+        kani::cover!(original == 0 && result.is_ok());
+        kani::cover!(original == 1 && result.is_ok());
+        kani::cover!(original == 2 && result.is_err());
+
+        match result {
+            Ok(dst) => {
+                assert_eq!((dst as *mut bool).cast::<u8>(), src_ptr);
+                assert_eq!(*dst, original != 0);
+                *dst = !*dst;
+            }
+            Err(err) => {
+                let recovered = err.into_src();
+                assert_eq!(recovered as *mut u8, src_ptr);
+                assert_eq!(*recovered, original);
+                *recovered = 0;
+            }
+        }
+
+        let expected = if original <= 1 { original ^ 1 } else { 0 };
+        assert_eq!(src, expected);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{
