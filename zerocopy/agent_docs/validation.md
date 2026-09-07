@@ -69,10 +69,32 @@ usually sufficient.
           valid states (e.g., `align.is_power_of_two()`).
         - **Assertions:** Use `assert!(condition)` to verify the properties you
           want to prove.
+        - **Domain:** Document whether a proof is universal, target-specific,
+          or bounded by a concrete allocation or collection size.
+        - **Non-vacuity:** Use `kani::cover!` to check that important input and
+          result partitions are reachable. Every assumption must correspond to
+          a documented precondition or to the stated proof bound. Do not reject
+          inputs using an impossible assumption or a diverging loop.
+        - **Bit validity:** `kani::any::<T>()` produces only valid instances of
+          `T`. To verify a byte validator, generate arbitrary bytes and
+          construct `T` only after the validator accepts them.
+        - **Soundness boundary:** State which obligations Kani does not prove.
+          In particular, Kani does not completely check reference aliasing,
+          pointer provenance, invalid values, or uninitialized memory.
     - **CI:** Kani runs in CI using the `model-checking/kani-github-action` with
       specific feature flags to ensure compatibility.
 
-<!-- FIXME: Describe how to ensure that a Kani proof is "total" (esp wrt function inputs). -->
+Before running proofs locally, install the Kani version pinned in
+`.github/workflows/ci.yml`. Run the same proof configuration as CI with:
+
+```bash
+./cargo.sh +stable kani \
+  --package zerocopy \
+  --features __internal_use_only_features_that_work_on_stable \
+  --output-format=terse \
+  -Zfunction-contracts \
+  --randomize-layout
+```
 
 ## Feature Gates
 
