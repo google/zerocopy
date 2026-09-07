@@ -2075,7 +2075,7 @@ mod proofs {
         // The field's alignment is clamped by `max_align` (i.e., the
         // `packed` attribute, if any) [1].
         //
-        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers:
         //
         //   The alignments of each field, for the purpose of positioning
         //   fields, is the smaller of the specified alignment and the
@@ -2090,7 +2090,7 @@ mod proofs {
         // satisfy the field's alignment, and offset of the trailing field.
         // [1]
         //
-        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers:
         //
         //   Inter-field padding is guaranteed to be the minimum required in
         //   order to satisfy each field's (possibly altered) alignment.
