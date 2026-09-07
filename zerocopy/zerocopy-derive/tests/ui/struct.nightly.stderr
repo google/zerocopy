@@ -558,7 +558,7 @@ help: the following other types implement trait `SplitAt`
 ...
 363 | #[derive(SplitAt, KnownLayout)]
     |          ^^^^^^^ `SplitAtSized`
-   --> src/split_at.rs:253:0
+   --> src/split_at.rs:250:0
     |
     = note: `[T]`
     = help: see issue #48214
