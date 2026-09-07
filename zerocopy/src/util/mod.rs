@@ -467,6 +467,153 @@ where
     Ok(unsafe { alloc::boxed::Box::from_raw(ptr.as_ptr()) })
 }
 
+#[cfg(kani)]
+mod proofs {
+    use core::num::Wrapping;
+
+    use super::*;
+    use crate::pointer::{BecauseImmutable, BecauseInvariantsEq, BecauseMutationCompatible};
+
+    // These are bounded or concrete instantiation proofs, not generic proofs
+    // of the unsafe contracts above. Kani does not fully model Rust aliasing,
+    // pointer provenance, or allocator/deallocator compatibility. The
+    // allocation proofs deliberately avoid nested slice DSTs, whose layout is
+    // addressed separately by https://github.com/google/zerocopy/pull/3630.
+
+    #[kani::proof]
+    #[kani::unwind(13)]
+    fn prove_copy_unchecked_copies_prefix_and_preserves_frame() {
+        const SRC_CAPACITY: usize = 8;
+        const DST_CAPACITY: usize = 12;
+
+        let src: [u8; SRC_CAPACITY] = kani::any();
+        let mut dst: [u8; DST_CAPACITY] = kani::any();
+        let original_dst = dst;
+        let src_len: usize = kani::any();
+        let dst_len: usize = kani::any();
+
+        kani::assume(src_len <= SRC_CAPACITY);
+        kani::assume(dst_len <= DST_CAPACITY);
+        kani::assume(src_len <= dst_len);
+
+        kani::cover!(src_len == 0 && dst_len == 0);
+        kani::cover!(src_len == SRC_CAPACITY && src_len == dst_len);
+        kani::cover!(0 < src_len && src_len < dst_len && dst_len < DST_CAPACITY);
+
+        // SAFETY: The assumptions above establish that the source subslice is
+        // no longer than the destination subslice.
+        unsafe { copy_unchecked(&src[..src_len], &mut dst[..dst_len]) };
+
+        for idx in 0..DST_CAPACITY {
+            if idx < src_len {
+                assert_eq!(dst[idx], src[idx]);
+            } else {
+                assert_eq!(dst[idx], original_dst[idx]);
+            }
+        }
+    }
+
+    #[kani::proof]
+    fn prove_transmute_unchecked_u32_bytes_roundtrip() {
+        let src: u32 = kani::any();
+
+        // SAFETY: `[u8; 4]` and `u32` have the same size, and every bit pattern
+        // is valid for `[u8; 4]`.
+        let bytes: [u8; 4] = unsafe { transmute_unchecked(src) };
+        assert_eq!(bytes, src.to_ne_bytes());
+
+        // SAFETY: `[u8; 4]` and `u32` have the same size, and every bit pattern
+        // is valid for `u32`.
+        let roundtrip: u32 = unsafe { transmute_unchecked(bytes) };
+        assert_eq!(roundtrip, src);
+    }
+
+    #[kani::proof]
+    fn prove_transmute_ref_preserves_address_and_value() {
+        let src: u32 = kani::any();
+        let src_ptr: *const u32 = &src;
+
+        // SAFETY: `Wrapping<u32>` has the same alignment as `u32`.
+        let dst: &Wrapping<u32> = unsafe { transmute_ref::<_, _, BecauseImmutable>(&src) };
+        let dst_ptr: *const Wrapping<u32> = dst;
+
+        assert_eq!(src_ptr.cast::<u8>(), dst_ptr.cast::<u8>());
+        assert_eq!(src, dst.0);
+    }
+
+    #[kani::proof]
+    fn prove_transmute_mut_preserves_address_and_mutates_source() {
+        let mut src: u32 = kani::any();
+        let original = src;
+        let replacement: u32 = kani::any();
+        let src_ptr: *mut u32 = &mut src;
+
+        {
+            // SAFETY: `Wrapping<u32>` has the same alignment as `u32`.
+            let dst: &mut Wrapping<u32> = unsafe {
+                transmute_mut::<_, _, (BecauseMutationCompatible, BecauseInvariantsEq)>(&mut src)
+            };
+            let dst_ptr: *mut Wrapping<u32> = dst;
+
+            assert_eq!(src_ptr.cast::<u8>(), dst_ptr.cast::<u8>());
+            assert_eq!(dst.0, original);
+            dst.0 = replacement;
+            assert_eq!(dst.0, replacement);
+        }
+
+        kani::cover!(replacement != original);
+        assert_eq!(src, replacement);
+    }
+
+    #[cfg(feature = "alloc")]
+    #[kani::proof]
+    fn prove_new_box_zeroed_u32_on_success() {
+        // SAFETY: `alloc_zeroed` is one of the two allocator functions that
+        // `new_box` permits. An all-zero bit pattern is valid for `u32`.
+        let result = unsafe { new_box::<u32>((), alloc::alloc::alloc_zeroed) };
+        kani::cover!(result.is_ok());
+
+        if let Ok(mut boxed) = result {
+            assert_eq!(*boxed, 0);
+
+            let replacement: u32 = kani::any();
+            *boxed = replacement;
+            assert_eq!(*boxed, replacement);
+        }
+    }
+
+    #[cfg(feature = "alloc")]
+    #[kani::proof]
+    fn prove_new_box_zst() {
+        // SAFETY: `alloc` is one of the two allocator functions that `new_box`
+        // permits, and `()` has no bytes that could be invalid.
+        let result = unsafe { new_box::<()>((), alloc::alloc::alloc) };
+        assert!(result.is_ok());
+
+        let boxed = result.unwrap();
+        assert_eq!(mem::size_of_val(&*boxed), 0);
+    }
+
+    #[cfg(feature = "alloc")]
+    #[kani::proof]
+    fn prove_new_box_zeroed_byte_slice_on_success() {
+        const LEN: usize = 4;
+
+        // SAFETY: `alloc_zeroed` is one of the two allocator functions that
+        // `new_box` permits. Every initialized byte is valid for `u8`.
+        let result = unsafe { new_box::<[u8]>(LEN, alloc::alloc::alloc_zeroed) };
+        kani::cover!(result.is_ok());
+
+        if let Ok(boxed) = result {
+            assert_eq!(boxed.len(), LEN);
+            assert_eq!(boxed[0], 0);
+            assert_eq!(boxed[1], 0);
+            assert_eq!(boxed[2], 0);
+            assert_eq!(boxed[3], 0);
+        }
+    }
+}
+
 mod len_of {
     use super::*;
 
