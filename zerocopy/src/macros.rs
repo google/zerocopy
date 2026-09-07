@@ -1253,6 +1253,226 @@ macro_rules! cryptocorrosion_derive_traits {
     };
 }
 
+#[cfg(kani)]
+mod proofs {
+    use crate::{proof_support::bool_from_byte, ValidityError};
+
+    fn checked_bool_oracle(src: u8) -> Option<bool> {
+        bool_from_byte(src)
+    }
+
+    fn cover_bool_oracle(expected: Option<bool>) {
+        kani::cover!(expected == Some(false));
+        kani::cover!(expected == Some(true));
+        kani::cover!(expected.is_none());
+    }
+
+    fn zero_only_pointer_policy_oracle(src: usize) -> bool {
+        src.to_ne_bytes() == 0usize.to_ne_bytes()
+    }
+
+    // Configuration: Uses the common Kani CI configuration documented in
+    // `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
+    // x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
+    // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
+    // per invocation.
+    //
+    // `checked_bool_oracle` is a pure safe-Rust oracle: it delegates only to
+    // `bool_from_byte`, whose `u8::from(bool)` construction [1] and exhaustive
+    // language representation [2] are documented next to that shared helper.
+    // It neither invokes zerocopy nor consults the result under proof. Kani
+    // explores all 256 `u8` values, with covers for false, true, and invalid
+    // inputs. The value and reference macros are invoked only for the two
+    // independently valid representations; they check the decoded value,
+    // modeled address identity, and mutation propagation. `addr_of!` /
+    // `addr_of_mut!` independently obtain a raw pointer to the source place
+    // without creating an intermediate reference [5]. Rust's
+    // reference-to-raw coercions, sized pointer-cast rule, and raw-pointer
+    // address equality then specify the expected returned address [6][7]. This
+    // establishes address equality only, not equal provenance.
+    // Owned-value error restoration is exercised separately by the
+    // `usize`-to-thin-pointer instantiation. Its acceptance policy oracle uses
+    // safe `usize::to_ne_bytes` to obtain the source's exact memory
+    // representation [8], then compares it with a separately encoded integer
+    // zero using the standard array equality operation [9]. It neither
+    // reconstructs the target's byte scan nor calls zerocopy. Rust guarantees
+    // that constructing a thin raw pointer from any integer representation is
+    // valid [3]. On the accepted zero-representation case, safe
+    // `core::ptr::null()` independently supplies the expected pointer:
+    // its standard-library contract says that it creates a null raw pointer,
+    // is equivalent to zero-initializing that pointer, and has address zero
+    // [4]. Thus, even an erroneous acceptance cannot materialize an invalid
+    // destination value.
+    //
+    // Storage and bounds: Each bool harness uses one stack `u8`; the pointer
+    // harness uses one stack `usize` plus the two eight-byte arrays returned by
+    // its safe `to_ne_bytes` oracle calls. None performs dynamic allocation, and
+    // the proof source contains no explicit loop. No harness uses `kani::assume`;
+    // each symbolic `u8` or `usize` is unconstrained. Each bool harness carries
+    // `#[kani::unwind(1)]`; there is no modeled loop to iterate in these one-byte
+    // instantiations. On the common 64-bit target, the pointer target's
+    // zero-byte scan and the standard array comparison can each examine eight
+    // bytes in sequence; `#[kani::unwind(9)]` admits either operation's eight
+    // iterations plus loop termination, with Kani's unwinding checks enforcing
+    // the bound.
+    //
+    // These are end-to-end proofs only for the `u8`-to-`bool` instantiations,
+    // plus one `usize`-to-`*const u8` policy instantiation. They do not
+    // prove other type pairs, sizes, alignments, macro arms, or other
+    // compilation targets/toolchains. The public macros' invalid-`bool` input
+    // paths are deliberately not invoked because Kani does not completely
+    // check invalid-value production. Kani also does not fully model Rust
+    // aliasing, pointer provenance, or uninitialized memory; the pointer
+    // produced on acceptance is compared with `core::ptr::null()` and never
+    // dereferenced. Error recovery for the reference and mutable-reference
+    // macro arms is not exercised.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-From%3Cbool%3E-for-u8:
+    //
+    //     Converts from `bool` to `u8`, by turning `false` into `0` and `true`
+    //     into `1`.
+    //
+    // [2] Per https://doc.rust-lang.org/1.93.0/reference/types/boolean.html#representation:
+    //
+    //     The value false has the bit pattern `0x00` and the value true has the
+    //     bit pattern `0x01`. It is undefined behavior for an object with the
+    //     boolean type to have any other bit pattern.
+    //
+    // [3] Per https://doc.rust-lang.org/1.93.0/reference/types/pointer.html#bit-validity:
+    //
+    //     For thin raw pointers (i.e., for `P = *const T` or `P = *mut T` for
+    //     `T: Sized`), the inverse direction (transmuting from an integer or
+    //     array of integers to `P`) is always valid. However, the pointer
+    //     produced via such a transmutation may not be dereferenced (not even
+    //     if `T` has size zero).
+    //
+    // [4] Per https://doc.rust-lang.org/1.93.0/std/ptr/fn.null.html:
+    //
+    //     Creates a null raw pointer.
+    //
+    //     This function is equivalent to zero-initializing the pointer:
+    //     `MaybeUninit::<*const T>::zeroed().assume_init()`. The resulting
+    //     pointer has the address 0.
+    //
+    // [5] Per https://doc.rust-lang.org/1.93.0/std/ptr/macro.addr_of.html and
+    // https://doc.rust-lang.org/1.93.0/std/ptr/macro.addr_of_mut.html:
+    //
+    //     Creates a `const` raw pointer to a place, without creating an
+    //     intermediate reference.
+    //
+    //     Creates a `mut` raw pointer to a place, without creating an
+    //     intermediate reference.
+    //
+    // [6] Rust 1.93 lists the coercions “`&T` to `*const T`” and “`&mut T` to
+    // `*mut T`”:
+    // https://doc.rust-lang.org/1.93.0/reference/type-coercions.html#coercion-types
+    //
+    // [7] For sized pointer-to-pointer casts, Rust 1.93 says “the pointer is
+    // returned unchanged”; raw-pointer `PartialEq` says “Pointer equality is
+    // by address”:
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#pointer-to-pointer-cast
+    // https://doc.rust-lang.org/1.93.0/std/primitive.pointer.html#impl-PartialEq-for-*const+T
+    // https://doc.rust-lang.org/1.93.0/std/primitive.pointer.html#impl-PartialEq-for-*mut+T
+    //
+    // [8] Per https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#method.to_ne_bytes:
+    //
+    //     Returns the memory representation of this integer as a byte array in
+    //     native byte order.
+    //
+    // [9] Rust 1.93 implements `PartialEq` for equal-length arrays and uses it
+    // for the `==` comparison of the two independently produced arrays:
+    // https://doc.rust-lang.org/1.93.0/std/primitive.array.html#impl-PartialEq%3C%5BU;+N%5D%3E-for-%5BT;+N%5D
+
+    #[kani::proof]
+    #[kani::unwind(1)]
+    fn prove_try_transmute_u8_to_bool() {
+        let src: u8 = kani::any();
+        let expected = checked_bool_oracle(src);
+        cover_bool_oracle(expected);
+        if let Some(expected) = expected {
+            let result: Result<bool, ValidityError<u8, bool>> = crate::try_transmute!(src);
+            match result {
+                Ok(dst) => assert_eq!(dst, expected),
+                Err(_) => panic!("transmute rejected an independently valid bool"),
+            }
+        }
+    }
+
+    #[kani::proof]
+    #[kani::unwind(1)]
+    fn prove_try_transmute_ref_u8_to_bool() {
+        let src: u8 = kani::any();
+        let src_ptr = core::ptr::addr_of!(src);
+        let expected = checked_bool_oracle(src);
+        cover_bool_oracle(expected);
+        if let Some(expected) = expected {
+            let result: Result<&bool, ValidityError<&u8, bool>> = crate::try_transmute_ref!(&src);
+            match result {
+                Ok(dst) => {
+                    assert_eq!((dst as *const bool).cast::<u8>(), src_ptr);
+                    assert_eq!(*dst, expected);
+                }
+                Err(_) => panic!("reference transmute rejected an independently valid bool"),
+            }
+        }
+    }
+
+    #[kani::proof]
+    #[kani::unwind(1)]
+    fn prove_try_transmute_mut_u8_to_bool() {
+        let mut src: u8 = kani::any();
+        let src_ptr = core::ptr::addr_of_mut!(src);
+        let expected = checked_bool_oracle(src);
+        cover_bool_oracle(expected);
+        if let Some(expected) = expected {
+            let result: Result<&mut bool, ValidityError<&mut u8, bool>> =
+                crate::try_transmute_mut!(&mut src);
+            match result {
+                Ok(dst) => {
+                    assert_eq!((dst as *mut bool).cast::<u8>(), src_ptr);
+                    assert_eq!(*dst, expected);
+                    *dst = !*dst;
+                }
+                Err(_) => panic!("mutable transmute rejected an independently valid bool"),
+            }
+            assert_eq!(src, u8::from(!expected));
+        }
+    }
+
+    #[kani::proof]
+    #[kani::unwind(9)]
+    // This transmutation is the operation under proof. The resulting pointer
+    // is valid to produce by [3] and is never dereferenced. The independent
+    // acceptance-policy oracle obtains `src`'s exact representation with safe
+    // `usize::to_ne_bytes` [8] and compares it with an independently encoded
+    // integer zero [9]; safe `core::ptr::null()` is the expected result on that
+    // branch by [4]. On rejection, direct projection of the crate-visible error
+    // field observes the restored source without calling
+    // `ValidityError::into_src`, so accessor and macro defects cannot
+    // compensate.
+    // `#[allow(unknown_lints)]` is for `integer_to_ptr_transmutes` on the MSRV.
+    #[allow(unknown_lints)]
+    #[allow(integer_to_ptr_transmutes)]
+    fn prove_try_transmute_usize_to_pointer_policy_and_recovery() {
+        let src: usize = kani::any();
+        let expected_valid = zero_only_pointer_policy_oracle(src);
+        let result: Result<*const u8, ValidityError<usize, *const u8>> = crate::try_transmute!(src);
+
+        kani::cover!(expected_valid);
+        kani::cover!(!expected_valid);
+        match result {
+            Ok(pointer) => {
+                assert!(expected_valid);
+                assert_eq!(pointer, core::ptr::null());
+            }
+            Err(error) => {
+                assert!(!expected_valid);
+                assert_eq!(error.src, src);
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{
