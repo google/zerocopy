@@ -845,6 +845,247 @@ where
     }
 }
 
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    // Configuration: Uses the common Kani CI configuration documented in
+    // `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
+    // x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
+    // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
+    // per invocation.
+    //
+    // Domain: These normal-return harnesses are universal over the old and new
+    // byte values on Kani's target. One uses a one-byte, alignment-one value;
+    // the other uses a greater-than-one-aligned value with a destructor. All
+    // values and the drop counter have fixed size and automatic storage; the
+    // harnesses perform no dynamic allocation and have no explicit proof loop.
+    // Their explicit unwind bound is one, which also applies to any target or
+    // language-oracle loop Kani reaches, with unwinding assertions enabled.
+    //
+    // Establishes: Together, they exercise both branches of `Unalign::update`,
+    // including closure-result forwarding, mutation write-back, and one
+    // observable final destructor.
+    //
+    // Proof-only isolation: Calls to the compiler-defined tuple-struct
+    // constructor create the receiver without calling `Unalign::new` [1], so
+    // constructor and `update` defects cannot compensate. A tuple-struct
+    // pattern observes the result without calling `into_inner`.
+    //
+    // Language oracles and assertion mapping: Tuple-struct patterns destructure
+    // the wrapper, and their default binding mode moves the field into the
+    // `restored` local [2][3]. That supports both final field-value assertions
+    // without forming a reference to a potentially unaligned packed field.
+    // Each closure maps its parameter to its body expression [4]; the body
+    // executes its statements in order and evaluates its final operand in value
+    // context [5]. Assignment copies or moves the right-hand value into the
+    // selected place [6]. Together those rules supply the expected closure
+    // input, field mutation, and closure result. At the `update` function
+    // boundary, `return f(t)` short-circuits the implicit return while the tail
+    // expression `ret` is returned to the caller [7]. Those two language paths
+    // map directly to the two `returned` assertions.
+    //
+    // Finally, safe `drop` moves and drops `restored` before returning [8]. A
+    // moved local is deinitialized [9], and a partially initialized aggregate
+    // drops only fields which remain initialized [10]. Thus the by-value
+    // wrapper pattern moves its sole field into `restored`, leaving no wrapper
+    // field to drop; `drop(restored)` then moves and deinitializes `restored`
+    // while running its destructor inside `drop`. Destruction of the
+    // `DropTracked` value calls its `Drop::drop` implementation [10]. When that
+    // method is invoked, [5] executes its single body statement,
+    // `*self.drops += 1`. Both operands of that compound assignment are known
+    // primitive `u8` values. Rust specifies that the assigned place is mutated
+    // by applying the operator [11], and specifies integer `+` as addition
+    // [12]. The harness initializes `drops` to `0`; the specified `u8` range
+    // includes `1` [13], so the mathematical result `0 + 1 = 1` is in range and
+    // does not meet Rust's definition of overflow [14]. Thus the expected
+    // single destructor invocation changes the counter once from zero to one,
+    // and the final assertion checks that specific effect without relying on a
+    // second target API. The move/destruction argument above supplies the
+    // exactly-once expectation; this does not claim that a `u8` counter is an
+    // injective record of an arbitrary number of destructor invocations.
+    //
+    // They do not prove `update` for arbitrary types or layouts, model panic
+    // unwinding or abort, or establish the raw-pointer provenance and
+    // uninitialized-memory obligations which Kani does not completely check.
+    // The ordinary test module below separately samples panic restoration.
+    //
+    // [1] Per Rust 1.93's tuple-struct-construction contract:
+    //
+    //     The constructor is a function which can be called to create a new
+    //     instance of the struct.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/items/structs.html#r-items.struct.tuple
+    //
+    // [2] Per Rust 1.93's tuple-struct-pattern contract:
+    //
+    //     They are also used to destructure a tuple struct or enum value.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/patterns.html#tuple-struct-patterns
+    //
+    // [3] Per Rust 1.93's binding-mode contract:
+    //
+    //     The default binding mode starts in “move” mode which uses move
+    //     semantics.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/patterns.html#binding-modes
+    //
+    // [4] Per Rust 1.93's closure contract:
+    //
+    //     A closure expression denotes a function that maps a list of
+    //     parameters onto the expression that follows the parameters.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/closure-expr.html
+    //
+    // [5] Per Rust 1.93's block-expression contract:
+    //
+    //     As a control flow expression, a block sequentially executes its
+    //     component non-item declaration statements and then its final optional
+    //     expression.
+    //
+    //     Blocks are always value expressions and evaluate the last operand in
+    //     value expression context.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/block-expr.html
+    //
+    // [6] Per Rust 1.93's assignment contract:
+    //
+    //     Next it either copies or moves the assigned value to the assigned
+    //     place.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#assignment-expressions
+    //
+    // [7] Per Rust 1.93's function-body contract, the body first binds its
+    // argument patterns and then returns its body value; specifically:
+    //
+    //     This means that the tail expression of the block, if evaluated, ends
+    //     up being returned to the caller. As usual, an explicit return
+    //     expression within the body of the function will short-cut that
+    //     implicit return, if reached.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/items/functions.html#function-body
+    //
+    // [8] Per Rust 1.93's `drop` contract:
+    //
+    //     Because `_x` is moved into the function, it is automatically dropped
+    //     before the function returns.
+    //
+    // https://doc.rust-lang.org/1.93.0/std/mem/fn.drop.html
+    //
+    // [9] Per Rust 1.93's move-expression contract:
+    //
+    //     After moving out of a place expression that evaluates to a local
+    //     variable, the location is deinitialized and cannot be read from again
+    //     until it is reinitialized.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions.html#moved-and-copied-types
+    //
+    // [10] Per Rust 1.93's destructor contract, destruction of `T: Drop` calls
+    // `<T as core::ops::Drop>::drop`, and:
+    //
+    //     If a variable has been partially initialized, only its initialized
+    //     fields are dropped.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/destructors.html
+    //
+    // [11] Per Rust 1.93's compound-assignment contract:
+    //
+    //     Compound assignment expressions combine arithmetic and logical
+    //     binary operators with assignment expressions.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.compound-assign.intro
+    //
+    // For operands known to be primitive, the same contract specifies that:
+    //
+    //     the place given by the evaluation of the left hand side is mutated
+    //     by applying the operator to the values of both sides.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.compound-assign.primitives
+    //
+    // [12] Rust 1.93's arithmetic-operator table assigns integer `+` the
+    // behavior "Addition":
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.arith-logic.behavior
+    //
+    // [13] Rust 1.93's unsigned-integer table gives `u8` minimum `0` and
+    // maximum `2^8 - 1`:
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/types/numeric.html#r-type.numeric.int.unsigned
+    //
+    // [14] Per Rust 1.93's integer-overflow contract, overflow includes:
+    //
+    //     When `+`, `*` or binary `-` create a value greater than the maximum
+    //     value, or less than the minimum value that can be stored.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#r-expr.operator.int-overflow.binary-arith
+    struct Byte(u8);
+
+    struct DropTracked<'a> {
+        value: u8,
+        drops: &'a mut u8,
+    }
+
+    impl Drop for DropTracked<'_> {
+        fn drop(&mut self) {
+            *self.drops += 1;
+        }
+    }
+
+    #[kani::proof]
+    #[kani::unwind(1)]
+    fn prove_unalign_update_alignment_one() {
+        assert_eq!(mem::align_of::<Byte>(), 1);
+        let old = kani::any();
+        let new = kani::any();
+        let mut value = Unalign(Byte(old));
+
+        let returned = value.update(|value| {
+            assert_eq!(value.0, old);
+            value.0 = new;
+            old
+        });
+
+        assert_eq!(returned, old);
+        // Destructuring is a language operation independent of `into_inner`,
+        // which exercises the same representation-sensitive path as `update`.
+        let Unalign(restored) = value;
+        assert_eq!(restored.0, new);
+        kani::cover!(old == new);
+        kani::cover!(old != new);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(1)]
+    fn prove_unalign_update_write_back() {
+        assert!(mem::align_of::<DropTracked<'_>>() > 1);
+        let old = kani::any();
+        let new = kani::any();
+        let mut drops = 0;
+
+        {
+            let mut value = Unalign(DropTracked { value: old, drops: &mut drops });
+            let returned = value.update(|value| {
+                assert_eq!(value.value, old);
+                value.value = new;
+                new
+            });
+
+            assert_eq!(returned, new);
+            // Use pattern matching as the independent observation of the
+            // packed wrapper's field instead of calling `into_inner`.
+            let Unalign(restored) = value;
+            assert_eq!(restored.value, new);
+            drop(restored);
+        }
+
+        // After the restored value is observed, its destructor runs exactly
+        // once before this scope exits.
+        assert_eq!(drops, 1);
+        kani::cover!(old == new);
+        kani::cover!(old != new);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use core::panic::AssertUnwindSafe;
