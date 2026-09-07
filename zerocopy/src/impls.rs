@@ -1492,6 +1492,34 @@ mod proofs {
             }
         }
     }
+
+    // Rust only guarantees the all-zero representation to be valid for these
+    // pointer-bearing types. Check the validator before materializing the
+    // destination, then separately check that the public read API has the same
+    // acceptance boundary. Each harness exhausts every representation on
+    // Kani's target, but does not establish pointer provenance semantics.
+    macro_rules! zero_only_pointer_proof {
+        ($proof:ident, $ty:ty) => {
+            #[kani::proof]
+            fn $proof() {
+                let bytes: [u8; mem::size_of::<$ty>()] = kani::any();
+                let expected_valid = bytes == [0; mem::size_of::<$ty>()];
+                assert_eq!(validator_accepts!($ty, bytes), expected_valid);
+
+                let result = <$ty as TryFromBytes>::try_read_from_bytes(&bytes);
+                kani::cover!(expected_valid);
+                kani::cover!(!expected_valid);
+                assert_eq!(result.is_ok(), expected_valid);
+            }
+        };
+    }
+
+    zero_only_pointer_proof!(prove_const_pointer_try_read_from_bytes, *const u8);
+    zero_only_pointer_proof!(prove_mut_pointer_try_read_from_bytes, *mut u8);
+    zero_only_pointer_proof!(prove_option_non_null_try_read_from_bytes, Option<NonNull<u8>>);
+    zero_only_pointer_proof!(prove_option_ref_try_read_from_bytes, Option<&'static u8>);
+    zero_only_pointer_proof!(prove_option_box_try_read_from_bytes, Option<Box<u8>>);
+    zero_only_pointer_proof!(prove_option_fn_try_read_from_bytes, Option<fn()>);
 }
 
 #[cfg(test)]
