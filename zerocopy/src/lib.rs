@@ -366,7 +366,7 @@ mod macros;
 pub mod pointer;
 #[cfg(kani)]
 mod proof_support;
-#[cfg(all(kani, feature = "derive"))]
+#[cfg(kani)]
 mod proofs;
 mod r#ref;
 mod split_at;
