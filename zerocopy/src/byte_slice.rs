@@ -365,42 +365,475 @@ unsafe impl SplitByteSlice for cell::RefMut<'_, [u8]> {
 mod proofs {
     use super::*;
 
-    fn any_vec() -> Vec<u8> {
-        let len = kani::any();
-        kani::assume(len <= crate::DstLayout::MAX_SIZE);
-        vec![0u8; len]
+    // Configuration: Uses the common Kani CI configuration documented in
+    // `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
+    // x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
+    // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
+    // per invocation.
+    //
+    // Domain: Every four-byte array value, every view `start..end` satisfying
+    // `0 <= start <= end <= 4` (including every empty, prefix, interior, and
+    // suffix view), and every `usize` midpoint for the safe operation or every
+    // midpoint satisfying `mid <= end - start` for the unchecked operation,
+    // for `&[u8]`, `&mut [u8]`, `Ref<[u8]>`, and `RefMut<[u8]>`. The mutable
+    // harnesses also quantify over every `usize` index and `u8` value for one
+    // attempted write in each returned half.
+    // Every harness uses one fixed four-byte stack backing array and fixed-size
+    // snapshots; none performs a dynamic allocation. There is no explicit
+    // proof loop. The unwind bound is five for every harness and applies to
+    // any loop reached in zerocopy or a standard-library oracle, with Kani's
+    // unwinding assertions enabled.
+    //
+    // Establishes: Exact success/failure classification and returned lengths
+    // and ordered contents, including for empty partitions. For nonempty
+    // partitions, it also establishes start addresses; when both partitions
+    // are nonempty, their contiguity; and the source endpoint through whichever
+    // terminal partition is nonempty. Shared forms preserve the backing array;
+    // mutable forms perform at most one symbolic in-bounds write in each half
+    // and establish the frame condition for the entire backing array, including
+    // bytes outside the view. Failure preserves exact length and contents and,
+    // only for a nonempty input, its start address.
+    //
+    // Oracle: Safe `slice::split_at_checked` independently supplies result
+    // classification [1]; safe `slice::split_at` supplies expected partitions
+    // over the documented `[0, mid)` and `[mid, len)` ranges [2]; and safe
+    // `slice::split_at_mut` independently supplies expected mutations over the
+    // same ranges [3]. For nonempty slices only, safe `slice::as_ptr` identifies
+    // the buffer start [4], while `slice::as_ptr_range` identifies the
+    // half-open address range and one-past-the-end pointer [5]. Safe
+    // `slice::get_mut` makes each symbolic write conditional on its index being
+    // in bounds [6]. Safe shared and mutable `Range<usize>` indexing selects
+    // the half-open `view.start..view.end` subslice for each target input and,
+    // independently, from the pre-target copy used to compute the mutation
+    // frame [7]. Thus the expected values, nonempty address partition, and
+    // mutation frame come only from safe standard-library operations which do
+    // not call `SplitByteSlice`.
+    // `any_view` keeps `start <= end <= BUFFER_LEN`, excluding [7]'s panic
+    // cases. Because target setup uses the same safe indexing contract as the
+    // expected-value oracle, these proofs trust Rust's documented range mapping
+    // and Kani's model of it; they do not prove range indexing itself.
+    //
+    // Contents and whole-array frames use `assert_same_u8_elements`, not slice
+    // or array `PartialEq`. Safe `slice::iter` returns an iterator which “yields
+    // all items from start to end” [8]; `Iterator::copied` “copies all of its
+    // elements,” and `Iterator::eq` determines whether one iterator's elements
+    // equal another's [9]. `u8::eq` tests two `u8` values for equality [10].
+    // The helper separately checks equal lengths, so these operations establish
+    // the same ordered bytes. Whole arrays reach the helper through the
+    // Reference's `[T; n]` to `[T]` unsizing coercion [11]. These safe
+    // operations do not call zerocopy and establish neither allocation identity
+    // nor aliasing or provenance. The remaining array `PartialEq` uses occur
+    // only in `kani::cover!` reachability witnesses; no proof assertion depends
+    // on them.
+    //
+    // No cited address contract selects a unique buffer address for an empty
+    // slice. `expected_split` therefore records expected pointers only for
+    // nonempty partitions, and the assertion helpers gate every returned or
+    // failed-input pointer observation accordingly. Empty cases still establish
+    // exact lengths and ordered contents.
+    //
+    // Excludes: Larger backing storage, other implementations, uninitialized
+    // storage, program panic-unwind semantics, exact pointer identity for empty
+    // inputs or returned partitions, and aliasing, provenance, and borrow-model
+    // obligations that Kani does not fully model. Pointer equality checks only
+    // Kani's modeled addresses, not provenance. In particular, these harnesses
+    // exercise one split and optional writes; they do not prove `ByteSlice`'s
+    // full address-and-length stability theorem across arbitrary method
+    // sequences. These are not generic `SplitByteSlice` implementation proofs.
+    //
+    // [1] Rust 1.93 specifies that `mid <= len` returns the two documented
+    // index ranges, and says “`mid > len`, returns `None`”:
+    // https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.split_at_checked
+    //
+    // [2] Rust 1.93 specifies the shared results as `[0, mid)` and
+    // `[mid, len)`:
+    // https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.split_at
+    //
+    // [3] Rust 1.93 specifies the mutable results using the same ranges:
+    // https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.split_at_mut
+    //
+    // [4] Rust 1.93 says `as_ptr` returns a “raw pointer to the slice’s
+    // buffer”:
+    // https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.as_ptr
+    //
+    // [5] Rust 1.93 says the “returned range is half-open”; its end points one
+    // past the final element:
+    // https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.as_ptr_range
+    //
+    // [6] Rust 1.93 says `get_mut` returns `None` “if the index is out of
+    // bounds”:
+    // https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.get_mut
+    //
+    // [7] Rust 1.93 says, “A (half-open) range bounded inclusively below and
+    // exclusively above (`start..end`).” It further says, “The range
+    // `start..end` contains all values with `start <= x < end`.” For
+    // `SliceIndex<[T]> for Range<usize>`, `Output = [T]`; `index` says, “Returns
+    // a shared reference to the output at this location, panicking if out of
+    // bounds.” `index_mut` says, “Returns a mutable reference to the output at
+    // this location, panicking if out of bounds.” The implementation documents
+    // those panic cases as `start > end` or `end` out of bounds:
+    // https://doc.rust-lang.org/1.93.0/std/ops/struct.Range.html
+    // https://doc.rust-lang.org/1.93.0/std/ops/struct.Range.html#impl-SliceIndex%3C%5BT%5D%3E-for-Range%3Cusize%3E
+    //
+    // [8] https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.iter
+    //
+    // [9] https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.copied
+    // and https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.eq
+    //
+    // [10] https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-PartialEq-for-u8
+    //
+    // [11] https://doc.rust-lang.org/1.93.0/reference/type-coercions.html#r-coerce.unsize.slice
+    const BUFFER_LEN: usize = 4;
+
+    #[derive(Copy, Clone)]
+    struct View {
+        start: usize,
+        end: usize,
+    }
+
+    impl View {
+        fn range(self) -> core::ops::Range<usize> {
+            self.start..self.end
+        }
+    }
+
+    struct ExpectedSplit {
+        left_len: usize,
+        right_len: usize,
+        left_start: Option<*const u8>,
+        right_start: Option<*const u8>,
+        source_end: Option<*const u8>,
+    }
+
+    struct Writes {
+        left_index: usize,
+        left_value: u8,
+        right_index: usize,
+        right_value: u8,
+    }
+
+    fn any_view() -> View {
+        let first = kani::any::<usize>() % (BUFFER_LEN + 1);
+        let second = kani::any::<usize>() % (BUFFER_LEN + 1);
+        let view =
+            View { start: core::cmp::min(first, second), end: core::cmp::max(first, second) };
+
+        kani::cover!(view.start == 0 && view.end == 0);
+        kani::cover!(view.start == 0 && 0 < view.end && view.end < BUFFER_LEN);
+        kani::cover!(view.start == 0 && view.end == BUFFER_LEN);
+        kani::cover!(0 < view.start && view.start == view.end && view.end < BUFFER_LEN);
+        kani::cover!(0 < view.start && view.start < view.end && view.end < BUFFER_LEN);
+        kani::cover!(0 < view.start && view.start < view.end && view.end == BUFFER_LEN);
+        kani::cover!(view.start == BUFFER_LEN && view.end == BUFFER_LEN);
+        view
+    }
+
+    fn any_valid_mid(len: usize) -> usize {
+        // `len <= BUFFER_LEN`, so `len + 1` cannot overflow.
+        kani::any::<usize>() % (len + 1)
+    }
+
+    fn expected_split(left: &[u8], right: &[u8]) -> ExpectedSplit {
+        let left_len = left.len();
+        let right_len = right.len();
+        let left_start = if left.is_empty() { None } else { Some(left.as_ptr()) };
+        let right_start = if right.is_empty() { None } else { Some(right.as_ptr()) };
+        let source_end = if !right.is_empty() {
+            Some(right.as_ptr_range().end)
+        } else if !left.is_empty() {
+            Some(left.as_ptr_range().end)
+        } else {
+            None
+        };
+        ExpectedSplit { left_len, right_len, left_start, right_start, source_end }
+    }
+
+    fn assert_same_u8_elements(actual: &[u8], expected: &[u8]) {
+        assert_eq!(actual.len(), expected.len());
+        assert!(actual.iter().copied().eq(expected.iter().copied()));
+    }
+
+    fn assert_split<B: ByteSlice>(
+        left: &B,
+        right: &B,
+        shape: ExpectedSplit,
+        mid: usize,
+        expected: &[u8],
+    ) {
+        let left = <B as Deref>::deref(left);
+        let right = <B as Deref>::deref(right);
+        let (expected_left, expected_right) = expected.split_at(mid);
+        assert_same_u8_elements(left, expected_left);
+        assert_same_u8_elements(right, expected_right);
+        assert_eq!(left.len(), shape.left_len);
+        assert_eq!(right.len(), shape.right_len);
+        if !left.is_empty() {
+            assert_eq!(Some(left.as_ptr()), shape.left_start);
+        }
+        if !right.is_empty() {
+            assert_eq!(Some(right.as_ptr()), shape.right_start);
+            assert_eq!(Some(right.as_ptr_range().end), shape.source_end);
+        } else if !left.is_empty() {
+            assert_eq!(Some(left.as_ptr_range().end), shape.source_end);
+        }
+        if !left.is_empty() && !right.is_empty() {
+            assert_eq!(left.as_ptr_range().end, right.as_ptr());
+        }
+    }
+
+    fn assert_unsplit<B: ByteSlice>(bytes: &B, base: Option<*const u8>, expected: &[u8]) {
+        let bytes = <B as Deref>::deref(bytes);
+
+        assert_same_u8_elements(bytes, expected);
+        if !bytes.is_empty() {
+            assert_eq!(Some(bytes.as_ptr()), base);
+        }
+    }
+
+    fn check_split_at<B: SplitByteSlice>(
+        bytes: B,
+        mid: usize,
+        expected: &[u8],
+    ) -> Result<(B, B), B> {
+        let (base, oracle, len) = {
+            let bytes = <B as Deref>::deref(&bytes);
+            let len = bytes.len();
+            let oracle =
+                bytes.split_at_checked(mid).map(|(left, right)| expected_split(left, right));
+            let base = if bytes.is_empty() { None } else { Some(bytes.as_ptr()) };
+            (base, oracle, len)
+        };
+
+        let result = match (SplitByteSlice::split_at(bytes, mid), oracle) {
+            (Ok((left, right)), Some(shape)) => {
+                assert_split(&left, &right, shape, mid, expected);
+                Ok((left, right))
+            }
+            (Err(bytes), None) => {
+                assert_unsplit(&bytes, base, expected);
+                Err(bytes)
+            }
+            (Ok(_), None) => panic!("split succeeded when the std oracle rejected the midpoint"),
+            (Err(_), Some(_)) => panic!("split failed when the std oracle accepted the midpoint"),
+        };
+
+        // Ensure that bounds and result assertions are not proved vacuously.
+        kani::cover!(len == 0 && mid == 0);
+        kani::cover!(len > 0 && mid == 0);
+        kani::cover!(0 < mid && mid < len);
+        kani::cover!(len > 0 && mid == len);
+        kani::cover!(mid > len);
+        result
+    }
+
+    fn check_split_at_unchecked<B: SplitByteSlice>(
+        bytes: B,
+        mid: usize,
+        expected: &[u8],
+    ) -> (B, B) {
+        let (shape, len) = {
+            let bytes = <B as Deref>::deref(&bytes);
+            let len = bytes.len();
+            assert!(mid <= len);
+            let (left, right) = bytes.split_at(mid);
+            (expected_split(left, right), len)
+        };
+
+        // SAFETY: The preceding dereference yielded `len`, and the assertion
+        // establishes `mid <= len`. `ByteSlice` guarantees length-stable
+        // dereferencing through this call, so
+        // `mid <= bytes.deref().len()` at invocation. This is the same bound
+        // required by the standard slice operation [1].
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.split_at_unchecked:
+        //
+        //     Calling this method with an out-of-bounds index is undefined
+        //     behavior even if the resulting reference is not used. The caller
+        //     has to ensure that `0 <= mid <= self.len()`.
+        let (left, right) = unsafe { SplitByteSlice::split_at_unchecked(bytes, mid) };
+        assert_split(&left, &right, shape, mid, expected);
+
+        kani::cover!(len == 0 && mid == 0);
+        kani::cover!(len > 0 && mid == 0);
+        kani::cover!(0 < mid && mid < len);
+        kani::cover!(len > 0 && mid == len);
+        (left, right)
+    }
+
+    fn mutate_split<B: ByteSliceMut>(left: &mut B, right: &mut B, writes: &Writes) {
+        if let Some(byte) = <B as DerefMut>::deref_mut(left).get_mut(writes.left_index) {
+            kani::cover!(*byte != writes.left_value);
+            *byte = writes.left_value;
+        }
+        if let Some(byte) = <B as DerefMut>::deref_mut(right).get_mut(writes.right_index) {
+            kani::cover!(*byte != writes.right_value);
+            *byte = writes.right_value;
+        }
+    }
+
+    fn expected_after_writes(
+        original: &[u8; BUFFER_LEN],
+        view: View,
+        mid: Option<usize>,
+        writes: &Writes,
+    ) -> [u8; BUFFER_LEN] {
+        let mut expected = *original;
+        if let Some(mid) = mid {
+            let (left, right) = expected[view.range()].split_at_mut(mid);
+            if let Some(byte) = left.get_mut(writes.left_index) {
+                *byte = writes.left_value;
+            }
+            if let Some(byte) = right.get_mut(writes.right_index) {
+                *byte = writes.right_value;
+            }
+        }
+        expected
+    }
+
+    fn assert_write_frame(
+        actual: &[u8; BUFFER_LEN],
+        original: &[u8; BUFFER_LEN],
+        view: View,
+        mid: Option<usize>,
+        writes: &Writes,
+    ) {
+        let expected = expected_after_writes(original, view, mid, writes);
+        kani::cover!(view.start > 0 && expected != *original);
+        kani::cover!(view.end < BUFFER_LEN && expected != *original);
+        assert_same_u8_elements(actual, &expected);
+    }
+
+    fn any_writes() -> Writes {
+        Writes {
+            left_index: kani::any(),
+            left_value: kani::any(),
+            right_index: kani::any(),
+            right_value: kani::any(),
+        }
     }
 
     #[kani::proof]
-    fn prove_split_at_unchecked() {
-        let v = any_vec();
-        let slc = v.as_slice();
+    #[kani::unwind(5)]
+    fn prove_shared_slice_split_at() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let view = any_view();
+        let _ = check_split_at(&bytes[view.range()], kani::any(), &original[view.range()]);
+        assert_same_u8_elements(&bytes, &original);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_shared_slice_split_at_unchecked() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let view = any_view();
+        let len = original[view.range()].len();
+        let mid = any_valid_mid(len);
+        let _ = check_split_at_unchecked(&bytes[view.range()], mid, &original[view.range()]);
+        assert_same_u8_elements(&bytes, &original);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_mut_slice_split_at() {
+        let mut bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let view = any_view();
         let mid = kani::any();
-        kani::assume(mid <= slc.len());
-        let (l, r) = unsafe { slc.split_at_unchecked(mid) };
-        assert_eq!(l.len() + r.len(), slc.len());
+        let writes = any_writes();
+        let split_mid = match check_split_at(&mut bytes[view.range()], mid, &original[view.range()])
+        {
+            Ok((mut left, mut right)) => {
+                mutate_split(&mut left, &mut right, &writes);
+                Some(mid)
+            }
+            Err(_) => None,
+        };
+        assert_write_frame(&bytes, &original, view, split_mid, &writes);
+    }
 
-        let slc: *const _ = slc;
-        let l: *const _ = l;
-        let r: *const _ = r;
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_mut_slice_split_at_unchecked() {
+        let mut bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let view = any_view();
+        let len = original[view.range()].len();
+        let mid = any_valid_mid(len);
+        let writes = any_writes();
+        {
+            let (mut left, mut right) =
+                check_split_at_unchecked(&mut bytes[view.range()], mid, &original[view.range()]);
+            mutate_split(&mut left, &mut right, &writes);
+        }
+        assert_write_frame(&bytes, &original, view, Some(mid), &writes);
+    }
 
-        assert_eq!(slc.cast::<u8>(), l.cast::<u8>());
-        assert_eq!(unsafe { slc.cast::<u8>().add(mid) }, r.cast::<u8>());
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_ref_split_at() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let view = any_view();
+        let cell = cell::RefCell::new(bytes);
+        let bytes = cell::Ref::map(cell.borrow(), |bytes| &bytes[view.range()]);
+        let _ = check_split_at(bytes, kani::any(), &original[view.range()]);
+        assert_same_u8_elements(&cell.into_inner(), &original);
+    }
 
-        let mut v = any_vec();
-        let slc = v.as_mut_slice();
-        let len = slc.len();
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_ref_split_at_unchecked() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let view = any_view();
+        let len = original[view.range()].len();
+        let mid = any_valid_mid(len);
+        let cell = cell::RefCell::new(bytes);
+        let bytes = cell::Ref::map(cell.borrow(), |bytes| &bytes[view.range()]);
+        let _ = check_split_at_unchecked(bytes, mid, &original[view.range()]);
+        assert_same_u8_elements(&cell.into_inner(), &original);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_ref_mut_split_at() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let view = any_view();
         let mid = kani::any();
-        kani::assume(mid <= slc.len());
-        let (l, r) = unsafe { slc.split_at_unchecked(mid) };
-        assert_eq!(l.len() + r.len(), len);
+        let writes = any_writes();
+        let cell = cell::RefCell::new(bytes);
+        let bytes = cell::RefMut::map(cell.borrow_mut(), |bytes| &mut bytes[view.range()]);
+        let split_mid = match check_split_at(bytes, mid, &original[view.range()]) {
+            Ok((mut left, mut right)) => {
+                mutate_split(&mut left, &mut right, &writes);
+                Some(mid)
+            }
+            Err(_) => None,
+        };
+        let bytes = cell.into_inner();
+        assert_write_frame(&bytes, &original, view, split_mid, &writes);
+    }
 
-        let l: *mut _ = l;
-        let r: *mut _ = r;
-        let slc: *mut _ = slc;
-
-        assert_eq!(slc.cast::<u8>(), l.cast::<u8>());
-        assert_eq!(unsafe { slc.cast::<u8>().add(mid) }, r.cast::<u8>());
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_ref_mut_split_at_unchecked() {
+        let bytes = kani::any::<[u8; BUFFER_LEN]>();
+        let original = bytes;
+        let view = any_view();
+        let len = original[view.range()].len();
+        let mid = any_valid_mid(len);
+        let writes = any_writes();
+        let cell = cell::RefCell::new(bytes);
+        let bytes = cell::RefMut::map(cell.borrow_mut(), |bytes| &mut bytes[view.range()]);
+        let (mut left, mut right) = check_split_at_unchecked(bytes, mid, &original[view.range()]);
+        mutate_split(&mut left, &mut right, &writes);
+        drop(left);
+        drop(right);
+        let bytes = cell.into_inner();
+        assert_write_frame(&bytes, &original, view, Some(mid), &writes);
     }
 }
 
