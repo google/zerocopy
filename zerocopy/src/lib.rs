@@ -364,6 +364,8 @@ mod macros;
 #[cfg_attr(not(zerocopy_unstable_ptr), doc(hidden))]
 #[cfg_attr(doc_cfg, doc(cfg(zerocopy_unstable_ptr)))]
 pub mod pointer;
+#[cfg(all(kani, feature = "derive"))]
+mod proofs;
 mod r#ref;
 mod split_at;
 // FIXME(#252): If we make this pub, come up with a better name.
