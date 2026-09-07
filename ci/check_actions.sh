@@ -13,6 +13,61 @@ cd "$(dirname "$0")/.."
 
 script_name="ci/check_actions.sh"
 
+# The Kani toolchain audit is manual: it records the bundled compiler, target,
+# CBMC, option behavior, and the applicability of versioned Rust contracts.
+# Require its visible version label to match the executable workflow pin so an
+# automated pin-only roll cannot silently make that record stale.
+semver_core='(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)'
+kani_pin_line_regex="^[[:space:]]*kani-version:[[:space:]]+(${semver_core})$"
+kani_audit_line_regex="^[[:space:]]*-[[:space:]]+\*\*Recorded toolchain audit for \`kani-version: (${semver_core})\`:\*\*.*$"
+
+# Count every candidate before parsing. A valid line must not hide an
+# additional malformed or duplicate key/label.
+mapfile -t kani_pin_lines < <(
+    # Deliberately conservative: catch quoted keys, whitespace before `:`, and
+    # other noncanonical YAML spellings. The strict parser below accepts only
+    # the one canonical line, so an equivalent duplicate cannot hide from the
+    # audit-version comparison.
+    awk '
+        {
+            line = $0
+            sub(/^[[:space:]]*/, "", line)
+            if (line !~ /^#/ && line ~ /kani-version/) print
+        }
+    ' .github/workflows/ci.yml
+)
+mapfile -t kani_audit_lines < <(
+    grep -F 'Recorded toolchain audit for' zerocopy/agent_docs/validation.md || true
+)
+
+if [[ ${#kani_pin_lines[@]} -ne 1 ]]; then
+    echo "$script_name: expected exactly one Kani workflow-pin candidate; found ${#kani_pin_lines[@]}" >&2
+    exit 1
+fi
+if [[ ${#kani_audit_lines[@]} -ne 1 ]]; then
+    echo "$script_name: expected exactly one recorded Kani audit-label candidate; found ${#kani_audit_lines[@]}" >&2
+    exit 1
+fi
+if [[ "${kani_pin_lines[0]}" =~ $kani_pin_line_regex ]]; then
+    kani_version="${BASH_REMATCH[1]}"
+else
+    echo "$script_name: malformed Kani workflow pin: '${kani_pin_lines[0]}'" >&2
+    exit 1
+fi
+if [[ "${kani_audit_lines[0]}" =~ $kani_audit_line_regex ]]; then
+    kani_audit_version="${BASH_REMATCH[1]}"
+else
+    echo "$script_name: malformed recorded Kani audit label: '${kani_audit_lines[0]}'" >&2
+    exit 1
+fi
+if [[ "$kani_version" != "$kani_audit_version" ]]; then
+    printf '%s\n' \
+        "$script_name: Kani $kani_version is pinned, but the manual toolchain audit covers Kani $kani_audit_version." \
+        "$script_name: replace the compiler/target/CBMC audit, recheck every versioned contract and tool-option premise, update its version label, and rerun the complete Kani suite." \
+        >&2
+    exit 1
+fi
+
 # Ensure action-validator is installed
 if [ ! -x "$HOME/.cargo/bin/action-validator" ]; then
     echo "$script_name: action-validator not found, installing..." >&2
