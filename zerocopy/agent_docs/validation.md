@@ -60,8 +60,10 @@ usually sufficient.
     - **Purpose:** Use the
       [Kani Rust Verifier](https://model-checking.github.io/kani/) to prove the
       soundness of `unsafe` code or code relied upon by `unsafe` blocks. Unlike
-      testing, which checks specific inputs, Kani proves properties for *all*
-      possible inputs.
+      testing, which checks selected executions, Kani exhaustively checks a
+      harness's modeled state space. That state space is limited by the
+      harness's bounds and assumptions, its target and feature configuration,
+      and Kani's model of Rust.
     - **How to Write Proofs:**
         - **Harnesses:** Mark proof functions with `#[kani::proof]`.
         - **Inputs:** Use `kani::any()` to generate arbitrary inputs.
@@ -69,10 +71,51 @@ usually sufficient.
           valid states (e.g., `align.is_power_of_two()`).
         - **Assertions:** Use `assert!(condition)` to verify the properties you
           want to prove.
+        - **Oracles:** Prefer a safe Rust language or standard-library operation
+          as the source of expected behavior. If no such oracle exists, isolate
+          the manual oracle, state its normative basis, and explain both its
+          independence from the code under proof and its limitations. If the
+          predicate merely restates a zerocopy acceptance policy, label it as a
+          policy oracle rather than evidence of Rust-level validity.
+        - **Factoring:** Share repeated case generation, oracle construction,
+          and postcondition checks within the proof module. Keep distinct
+          harnesses when they exercise different entry points or contracts.
+        - **Domain:** Document whether a proof is universal, target-specific,
+          or bounded by a concrete allocation or collection size. State both
+          what is covered and what is not covered.
+        - **Non-vacuity:** Use `kani::cover!` to check that important input and
+          result partitions are reachable. Every assumption must correspond to
+          a documented precondition or to the stated proof bound. Do not reject
+          inputs using an impossible assumption or a diverging loop.
+        - **Bit validity:** `kani::any::<T>()` produces only valid instances of
+          `T`. To verify a byte validator, generate arbitrary bytes and
+          construct `T` only after the validator accepts them.
+        - **Soundness boundary:** State which obligations Kani does not prove.
+          In particular, Kani does not completely check reference aliasing,
+          pointer provenance, invalid values, or uninitialized memory.
+        - **Layout randomization:** `--randomize-layout` checks one randomized
+          layout per run; it does not prove behavior for every layout or target.
     - **CI:** Kani runs in CI using the `model-checking/kani-github-action` with
       specific feature flags to ensure compatibility.
+    - **Compiler and documentation compatibility:** Kani 0.67.0 bundles
+      `rustc 1.93.0-nightly (53732d5e0 2025-11-20)`. Current proof comments
+      cite the versioned Rust 1.93.0 Reference and standard-library
+      documentation only for guarantees that already applied to that compiler
+      snapshot. When changing the Kani pin, recheck both this recorded compiler
+      version and every proof premise that depends on versioned language or
+      library documentation.
 
-<!-- FIXME: Describe how to ensure that a Kani proof is "total" (esp wrt function inputs). -->
+Before running proofs locally, install the Kani version pinned in
+`.github/workflows/ci.yml`. Run the same proof configuration as CI with:
+
+```bash
+./cargo.sh +stable kani \
+  --package zerocopy \
+  --features __internal_use_only_features_that_work_on_stable \
+  --output-format=terse \
+  -Zfunction-contracts \
+  --randomize-layout
+```
 
 ## Feature Gates
 
