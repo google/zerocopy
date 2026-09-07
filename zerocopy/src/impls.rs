@@ -1383,6 +1383,117 @@ mod simd {
     };
 }
 
+#[cfg(kani)]
+mod proofs {
+    use core::num::NonZeroU16;
+
+    use super::*;
+    use crate::{
+        pointer::{invariant::Initialized, BecauseImmutable, Ptr},
+        wrappers::ReadOnly,
+    };
+
+    // These harnesses start with bytes so that Kani explores representations
+    // that are not valid values of the destination type. For these fixed-size
+    // types, they exhaust every byte pattern on Kani's target. They do not
+    // establish that Kani detects invalid typed values after construction.
+
+    // Evaluate the validator directly on initialized source bytes. This check
+    // happens before the end-to-end API may materialize a `T`, so a false
+    // positive cannot be hidden by compiler assumptions about `T`'s validity.
+    macro_rules! validator_accepts {
+        ($ty:ty, $bytes:expr) => {{
+            let source = ReadOnly::new($bytes);
+            let mut candidate = Ptr::from_ref(&source)
+                .transmute_with::<ReadOnly<$ty>, Initialized, CastSizedExact, BecauseImmutable>();
+            <$ty as TryFromBytes>::is_bit_valid(candidate.reborrow_shared())
+        }};
+    }
+
+    #[kani::proof]
+    fn prove_bool_try_read_from_bytes() {
+        let bytes: [u8; 1] = kani::any();
+        let expected_valid = bytes[0] < 2;
+        assert_eq!(validator_accepts!(bool, bytes), expected_valid);
+        let result = bool::try_read_from_bytes(&bytes);
+
+        kani::cover!(expected_valid);
+        kani::cover!(!expected_valid);
+        assert_eq!(result.is_ok(), expected_valid);
+        if let Ok(value) = result {
+            assert_eq!(value, bytes[0] != 0);
+        }
+    }
+
+    #[kani::proof]
+    fn prove_char_try_read_from_bytes() {
+        let bytes: [u8; 4] = kani::any();
+        let scalar = u32::from_ne_bytes(bytes);
+        let surrogate = scalar >= 0xD800 && scalar <= 0xDFFF;
+        let expected_valid = scalar <= 0x10FFFF && !surrogate;
+        assert_eq!(validator_accepts!(char, bytes), expected_valid);
+        let result = char::try_read_from_bytes(&bytes);
+
+        kani::cover!(expected_valid);
+        kani::cover!(surrogate);
+        kani::cover!(scalar > 0x10FFFF);
+        assert_eq!(result.is_ok(), expected_valid);
+        if let Ok(value) = result {
+            assert_eq!(u32::from(value), scalar);
+        }
+    }
+
+    #[kani::proof]
+    fn prove_nonzero_u16_try_read_from_bytes() {
+        let bytes: [u8; 2] = kani::any();
+        let integer = u16::from_ne_bytes(bytes);
+        let expected_valid = integer != 0;
+        assert_eq!(validator_accepts!(NonZeroU16, bytes), expected_valid);
+        let result = NonZeroU16::try_read_from_bytes(&bytes);
+
+        kani::cover!(expected_valid);
+        kani::cover!(!expected_valid);
+        assert_eq!(result.is_ok(), expected_valid);
+        if let Ok(value) = result {
+            assert_eq!(value.get(), integer);
+        }
+    }
+
+    #[kani::proof]
+    fn prove_option_nonzero_u16_try_read_from_bytes() {
+        let bytes: [u8; 2] = kani::any();
+        let integer = u16::from_ne_bytes(bytes);
+        assert!(validator_accepts!(Option<NonZeroU16>, bytes));
+        let result = Option::<NonZeroU16>::try_read_from_bytes(&bytes).unwrap();
+        let expected = if integer == 0 { None } else { Some(integer) };
+
+        kani::cover!(integer == 0);
+        kani::cover!(integer != 0);
+        assert_eq!(result.map(NonZeroU16::get), expected);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_bool_array_try_read_from_bytes() {
+        let bytes: [u8; 4] = kani::any();
+        let expected_valid = bytes[0] < 2 && bytes[1] < 2 && bytes[2] < 2 && bytes[3] < 2;
+        assert_eq!(validator_accepts!([bool; 4], bytes), expected_valid);
+        let result = <[bool; 4]>::try_read_from_bytes(&bytes);
+
+        kani::cover!(expected_valid);
+        kani::cover!(bytes[0] >= 2);
+        kani::cover!(bytes[1] >= 2);
+        kani::cover!(bytes[2] >= 2);
+        kani::cover!(bytes[3] >= 2);
+        assert_eq!(result.is_ok(), expected_valid);
+        if let Ok(values) = result {
+            for index in 0..4 {
+                assert_eq!(values[index], bytes[index] != 0);
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
