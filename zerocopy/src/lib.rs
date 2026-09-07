@@ -366,6 +366,8 @@ mod macros;
 pub mod pointer;
 #[cfg(kani)]
 mod proof_support;
+#[cfg(all(kani, feature = "derive"))]
+mod proofs;
 mod r#ref;
 mod split_at;
 // FIXME(#252): If we make this pub, come up with a better name.
