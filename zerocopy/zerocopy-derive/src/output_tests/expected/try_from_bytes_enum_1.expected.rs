@@ -213,13 +213,13 @@ const _: () = {
                 #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
-                    enum ẕ0 {}
-                    enum ẕ1 {}
-                    enum ẕ2 {}
-                    enum ẕ3 {}
-                    enum ẕ4 {}
-                    enum ẕ5 {}
-                    enum ẕ6 {}
+                    enum ___ZerocopyHasField_0 {}
+                    enum ___ZerocopyHasField_1 {}
+                    enum ___ZerocopyHasField_2 {}
+                    enum ___ZerocopyHasField_3 {}
+                    enum ___ZerocopyHasField_4 {}
+                    enum ___ZerocopyHasField_5 {}
+                    enum ___ZerocopyHasField_6 {}
                     #[allow(
                         deprecated,
                         private_bounds,
@@ -267,7 +267,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ0,
+                            ___ZerocopyHasField_0,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(0) },
                         > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -282,7 +282,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ0,
+                                ___ZerocopyHasField_0,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(0) },
                             >>::Type {
@@ -315,7 +315,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ0,
+                                ___ZerocopyHasField_0,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(0) },
@@ -352,7 +352,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ1,
+                            ___ZerocopyHasField_1,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(1) },
                         > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -365,7 +365,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ1,
+                                ___ZerocopyHasField_1,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(1) },
                             >>::Type {
@@ -398,7 +398,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ1,
+                                ___ZerocopyHasField_1,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(1) },
@@ -435,7 +435,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ2,
+                            ___ZerocopyHasField_2,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(2) },
                         > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -448,7 +448,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ2,
+                                ___ZerocopyHasField_2,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(2) },
                             >>::Type {
@@ -481,7 +481,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ2,
+                                ___ZerocopyHasField_2,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(2) },
@@ -518,7 +518,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ3,
+                            ___ZerocopyHasField_3,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(3) },
                         > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -531,7 +531,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ3,
+                                ___ZerocopyHasField_3,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(3) },
                             >>::Type {
@@ -564,7 +564,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ3,
+                                ___ZerocopyHasField_3,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(3) },
@@ -601,7 +601,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ4,
+                            ___ZerocopyHasField_4,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(4) },
                         > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -614,7 +614,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ4,
+                                ___ZerocopyHasField_4,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(4) },
                             >>::Type {
@@ -647,7 +647,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ4,
+                                ___ZerocopyHasField_4,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(4) },
@@ -684,7 +684,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ5,
+                            ___ZerocopyHasField_5,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(5) },
                         > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -697,7 +697,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ5,
+                                ___ZerocopyHasField_5,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(5) },
                             >>::Type {
@@ -730,7 +730,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ5,
+                                ___ZerocopyHasField_5,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(5) },
@@ -767,7 +767,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ6,
+                            ___ZerocopyHasField_6,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(6) },
                         > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -782,7 +782,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ6,
+                                ___ZerocopyHasField_6,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(6) },
                             >>::Type {
@@ -815,7 +815,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ6,
+                                ___ZerocopyHasField_6,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(6) },
@@ -966,11 +966,11 @@ const _: () = {
                 #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
-                    enum ẕ0 {}
-                    enum ẕ1 {}
-                    enum ẕ2 {}
-                    enum ẕ3 {}
-                    enum ẕ4 {}
+                    enum ___ZerocopyHasField_0 {}
+                    enum ___ZerocopyHasField_1 {}
+                    enum ___ZerocopyHasField_2 {}
+                    enum ___ZerocopyHasField_3 {}
+                    enum ___ZerocopyHasField_4 {}
                     #[allow(
                         deprecated,
                         private_bounds,
@@ -1018,7 +1018,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ0,
+                            ___ZerocopyHasField_0,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(0) },
                         > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1033,7 +1033,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ0,
+                                ___ZerocopyHasField_0,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(0) },
                             >>::Type {
@@ -1066,7 +1066,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ0,
+                                ___ZerocopyHasField_0,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(0) },
@@ -1103,7 +1103,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ1,
+                            ___ZerocopyHasField_1,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(1) },
                         > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1116,7 +1116,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ1,
+                                ___ZerocopyHasField_1,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(1) },
                             >>::Type {
@@ -1149,7 +1149,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ1,
+                                ___ZerocopyHasField_1,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(1) },
@@ -1186,7 +1186,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ2,
+                            ___ZerocopyHasField_2,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(2) },
                         > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1199,7 +1199,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ2,
+                                ___ZerocopyHasField_2,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(2) },
                             >>::Type {
@@ -1232,7 +1232,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ2,
+                                ___ZerocopyHasField_2,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(2) },
@@ -1269,7 +1269,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ3,
+                            ___ZerocopyHasField_3,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(3) },
                         > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1282,7 +1282,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ3,
+                                ___ZerocopyHasField_3,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(3) },
                             >>::Type {
@@ -1315,7 +1315,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ3,
+                                ___ZerocopyHasField_3,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(3) },
@@ -1352,7 +1352,7 @@ const _: () = {
                             Y: Deref,
                             const N: usize,
                         > ::zerocopy::HasField<
-                            ẕ4,
+                            ___ZerocopyHasField_4,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(4) },
                         > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1367,7 +1367,7 @@ const _: () = {
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut <Self as ::zerocopy::HasField<
-                                ẕ4,
+                                ___ZerocopyHasField_4,
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(4) },
                             >>::Type {
@@ -1400,7 +1400,7 @@ const _: () = {
                                 Alignment: ::zerocopy::invariant::Alignment,
                                 const N: usize,
                             > ::zerocopy::ProjectField<
-                                ẕ4,
+                                ___ZerocopyHasField_4,
                                 (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                                 { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(4) },
@@ -1443,9 +1443,9 @@ const _: () = {
             #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
-                enum ẕ__field_StructLike {}
-                enum ẕ__field_TupleLike {}
-                enum ẕ__nonempty {}
+                enum ___ZerocopyHasField___field_StructLike {}
+                enum ___ZerocopyHasField___field_TupleLike {}
+                enum ___ZerocopyHasField___nonempty {}
                 #[allow(
                     deprecated,
                     private_bounds,
@@ -1489,7 +1489,7 @@ const _: () = {
                         Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasField<
-                        ẕ__field_StructLike,
+                        ___ZerocopyHasField___field_StructLike,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_StructLike) },
                     > for ___ZerocopyVariants<'a, { N }, X, Y> {
@@ -1501,7 +1501,7 @@ const _: () = {
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
-                            ẕ__field_StructLike,
+                            ___ZerocopyHasField___field_StructLike,
                             { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_StructLike) },
                         >>::Type {
@@ -1533,7 +1533,7 @@ const _: () = {
                         Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasField<
-                        ẕ__field_TupleLike,
+                        ___ZerocopyHasField___field_TupleLike,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_TupleLike) },
                     > for ___ZerocopyVariants<'a, { N }, X, Y> {
@@ -1545,7 +1545,7 @@ const _: () = {
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
-                            ẕ__field_TupleLike,
+                            ___ZerocopyHasField___field_TupleLike,
                             { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_TupleLike) },
                         >>::Type {
@@ -1577,7 +1577,7 @@ const _: () = {
                         Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasField<
-                        ẕ__nonempty,
+                        ___ZerocopyHasField___nonempty,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__nonempty) },
                     > for ___ZerocopyVariants<'a, { N }, X, Y> {
@@ -1587,7 +1587,7 @@ const _: () = {
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
-                            ẕ__nonempty,
+                            ___ZerocopyHasField___nonempty,
                             { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__nonempty) },
                         >>::Type {
@@ -1629,8 +1629,8 @@ const _: () = {
             #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
-                enum ẕtag {}
-                enum ẕvariants {}
+                enum ___ZerocopyHasField_tag {}
+                enum ___ZerocopyHasField_variants {}
                 #[allow(
                     deprecated,
                     private_bounds,
@@ -1674,7 +1674,7 @@ const _: () = {
                         Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasField<
-                        ẕtag,
+                        ___ZerocopyHasField_tag,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(tag) },
                     > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
@@ -1684,7 +1684,7 @@ const _: () = {
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
-                            ẕtag,
+                            ___ZerocopyHasField_tag,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(tag) },
                         >>::Type {
@@ -1717,7 +1717,7 @@ const _: () = {
                             Alignment: ::zerocopy::invariant::Alignment,
                             const N: usize,
                         > ::zerocopy::ProjectField<
-                            ẕtag,
+                            ___ZerocopyHasField_tag,
                             (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(tag) },
@@ -1751,7 +1751,7 @@ const _: () = {
                         Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasField<
-                        ẕvariants,
+                        ___ZerocopyHasField_variants,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
                     > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
@@ -1761,7 +1761,7 @@ const _: () = {
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
-                            ẕvariants,
+                            ___ZerocopyHasField_variants,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(variants) },
                         >>::Type {
@@ -1794,7 +1794,7 @@ const _: () = {
                             Alignment: ::zerocopy::invariant::Alignment,
                             const N: usize,
                         > ::zerocopy::ProjectField<
-                            ẕvariants,
+                            ___ZerocopyHasField_variants,
                             (Aliasing, Alignment, ::zerocopy::invariant::Initialized),
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(variants) },
