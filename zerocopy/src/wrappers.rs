@@ -845,6 +845,87 @@ where
     }
 }
 
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    // These normal-return harnesses are universal over the old and new byte
+    // values on Kani's target. One uses a one-byte, alignment-one value; the
+    // other uses a greater-than-one-aligned value with a destructor. Together,
+    // they exercise both branches of `Unalign::update`, including
+    // closure-result forwarding, mutation write-back, and one observable final
+    // destructor.
+    //
+    // They do not prove `update` for arbitrary types or layouts, model panic
+    // unwinding or abort, or establish the raw-pointer provenance and
+    // uninitialized-memory obligations which Kani does not completely check.
+    // The ordinary test module below separately samples panic restoration.
+    struct Byte(u8);
+
+    struct DropTracked<'a> {
+        value: u8,
+        drops: &'a mut u8,
+    }
+
+    impl Drop for DropTracked<'_> {
+        fn drop(&mut self) {
+            *self.drops += 1;
+        }
+    }
+
+    #[kani::proof]
+    fn prove_unalign_update_alignment_one() {
+        assert_eq!(mem::align_of::<Byte>(), 1);
+        let old = kani::any();
+        let new = kani::any();
+        let mut value = Unalign::new(Byte(old));
+
+        let returned = value.update(|value| {
+            assert_eq!(value.0, old);
+            value.0 = new;
+            old
+        });
+
+        assert_eq!(returned, old);
+        // Destructuring is a language operation independent of `into_inner`,
+        // which exercises the same representation-sensitive path as `update`.
+        let Unalign(restored) = value;
+        assert_eq!(restored.0, new);
+        kani::cover!(old == new);
+        kani::cover!(old != new);
+    }
+
+    #[kani::proof]
+    fn prove_unalign_update_write_back() {
+        assert!(mem::align_of::<DropTracked<'_>>() > 1);
+        let old = kani::any();
+        let new = kani::any();
+        let mut drops = 0;
+
+        {
+            let mut value = Unalign::new(DropTracked { value: old, drops: &mut drops });
+            let returned = value.update(|value| {
+                assert_eq!(value.value, old);
+                value.value = new;
+                new
+            });
+
+            assert_eq!(returned, new);
+            // Use pattern matching as the independent observation of the
+            // transparent wrapper's field instead of calling `into_inner`.
+            let Unalign(restored) = value;
+            assert_eq!(restored.value, new);
+            drop(restored);
+        }
+
+        // After the restored value is observed, its destructor runs exactly
+        // once before this scope exits.
+        assert_eq!(drops, 1);
+        kani::cover!(old == new);
+        kani::cover!(old != new);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use core::panic::AssertUnwindSafe;
