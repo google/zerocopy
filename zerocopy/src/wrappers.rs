@@ -845,6 +845,128 @@ where
     }
 }
 
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    // Configuration: Uses the common Kani CI configuration documented in
+    // `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
+    // x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
+    // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
+    // per invocation.
+    //
+    // Domain: These normal-return harnesses are universal over the old and new
+    // byte values on Kani's target. One uses a one-byte, alignment-one value;
+    // the other uses a greater-than-one-aligned value with a destructor. All
+    // values and the drop counter have fixed size and automatic storage; the
+    // harnesses perform no dynamic allocation and have no explicit proof loop.
+    // Their explicit unwind bound is one, which also applies to any target or
+    // language-oracle loop Kani reaches, with unwinding assertions enabled.
+    //
+    // Establishes: Together, they exercise both branches of `Unalign::update`,
+    // including closure-result forwarding, mutation write-back, and one
+    // observable final destructor.
+    //
+    // Oracle: Direct tuple-struct literals construct the receiver without
+    // calling `Unalign::new`, so constructor and `update` defects cannot
+    // compensate. A Rust tuple-struct pattern binds and moves the wrapper's
+    // field without calling a zerocopy extraction method [1][2]. The
+    // destructor harness then passes that moved value to safe `drop`, which
+    // disposes of its argument before returning [3]; the independent counter
+    // observes the resulting `Drop` call.
+    //
+    // They do not prove `update` for arbitrary types or layouts, model panic
+    // unwinding or abort, or establish the raw-pointer provenance and
+    // uninitialized-memory obligations which Kani does not completely check.
+    // The ordinary test module below separately samples panic restoration.
+    //
+    // [1] Per Rust 1.93's tuple-struct-pattern contract:
+    //
+    //     They are also used to destructure a tuple struct or enum value.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/patterns.html#tuple-struct-patterns
+    //
+    // [2] Per Rust 1.93's binding-mode contract:
+    //
+    //     The default binding mode starts in “move” mode which uses move
+    //     semantics.
+    //
+    // https://doc.rust-lang.org/1.93.0/reference/patterns.html#binding-modes
+    //
+    // [3] Per Rust 1.93's `drop` contract:
+    //
+    //     Because `_x` is moved into the function, it is automatically dropped
+    //     before the function returns.
+    //
+    // https://doc.rust-lang.org/1.93.0/std/mem/fn.drop.html
+    struct Byte(u8);
+
+    struct DropTracked<'a> {
+        value: u8,
+        drops: &'a mut u8,
+    }
+
+    impl Drop for DropTracked<'_> {
+        fn drop(&mut self) {
+            *self.drops += 1;
+        }
+    }
+
+    #[kani::proof]
+    #[kani::unwind(1)]
+    fn prove_unalign_update_alignment_one() {
+        assert_eq!(mem::align_of::<Byte>(), 1);
+        let old = kani::any();
+        let new = kani::any();
+        let mut value = Unalign(Byte(old));
+
+        let returned = value.update(|value| {
+            assert_eq!(value.0, old);
+            value.0 = new;
+            old
+        });
+
+        assert_eq!(returned, old);
+        // Destructuring is a language operation independent of `into_inner`,
+        // which exercises the same representation-sensitive path as `update`.
+        let Unalign(restored) = value;
+        assert_eq!(restored.0, new);
+        kani::cover!(old == new);
+        kani::cover!(old != new);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(1)]
+    fn prove_unalign_update_write_back() {
+        assert!(mem::align_of::<DropTracked<'_>>() > 1);
+        let old = kani::any();
+        let new = kani::any();
+        let mut drops = 0;
+
+        {
+            let mut value = Unalign(DropTracked { value: old, drops: &mut drops });
+            let returned = value.update(|value| {
+                assert_eq!(value.value, old);
+                value.value = new;
+                new
+            });
+
+            assert_eq!(returned, new);
+            // Use pattern matching as the independent observation of the
+            // packed wrapper's field instead of calling `into_inner`.
+            let Unalign(restored) = value;
+            assert_eq!(restored.value, new);
+            drop(restored);
+        }
+
+        // After the restored value is observed, its destructor runs exactly
+        // once before this scope exits.
+        assert_eq!(drops, 1);
+        kani::cover!(old == new);
+        kani::cover!(old != new);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use core::panic::AssertUnwindSafe;
