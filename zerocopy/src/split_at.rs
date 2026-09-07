@@ -950,6 +950,184 @@ where
     }
 }
 
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    // Configuration: Uses the common Kani CI configuration documented in
+    // `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
+    // x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
+    // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
+    // per invocation.
+    //
+    // Domain: Every initialized `[u32; 8]`, source length from 0 through 8,
+    // and valid split point from 0 through the source length, for shared and
+    // mutable slices.
+    //
+    // Establishes: Exact returned lengths, contents, start and end addresses,
+    // and contiguity. The mutable harness also establishes all writes and the
+    // frame condition for the entire backing array.
+    //
+    // Oracle: Safe `slice::split_at` supplies the expected partitions and
+    // addresses; safe `slice::split_at_mut` supplies the expected mutations.
+    //
+    // Excludes: Other element types (including ZSTs), larger slices, custom
+    // slice DSTs and their padding (see #3630), other targets/layouts, and the
+    // aliasing, provenance, and reference-validity obligations that Kani does
+    // not fully model. Pointer equality checks Kani's modeled addresses, not
+    // provenance. This is not a generic `SplitAt` theorem.
+    const CAPACITY: usize = 8;
+
+    struct ExpectedSplit {
+        left_len: usize,
+        right_len: usize,
+        left: *const u32,
+        right: *const u32,
+        end: *const u32,
+    }
+
+    fn any_slice_split_case() -> ([u32; CAPACITY], usize, usize) {
+        let values = kani::any();
+        let source_len: usize = kani::any();
+        kani::assume(source_len <= CAPACITY);
+        let split: usize = kani::any();
+        kani::assume(split <= source_len);
+
+        kani::cover!(source_len == 0);
+        kani::cover!(source_len == CAPACITY);
+        kani::cover!(source_len > 0 && split == 0);
+        kani::cover!(source_len > 0 && split == source_len);
+        kani::cover!(split > 0 && split < source_len);
+
+        (values, source_len, split)
+    }
+
+    fn expected_split(source: &[u32], split: usize) -> ExpectedSplit {
+        let (left, right) = source.split_at(split);
+        ExpectedSplit {
+            left_len: left.len(),
+            right_len: right.len(),
+            left: left.as_ptr(),
+            right: right.as_ptr(),
+            end: right[right.len()..].as_ptr(),
+        }
+    }
+
+    fn assert_slice_split(
+        original: &[u32; CAPACITY],
+        source_len: usize,
+        split: usize,
+        expected: ExpectedSplit,
+        left: &[u32],
+        right: &[u32],
+    ) {
+        let (expected_left, expected_right) = original[..source_len].split_at(split);
+        assert_eq!(left, expected_left);
+        assert_eq!(right, expected_right);
+        assert_eq!(left.len(), expected.left_len);
+        assert_eq!(right.len(), expected.right_len);
+        assert_eq!(left.as_ptr(), expected.left);
+        assert_eq!(right.as_ptr(), expected.right);
+        assert_eq!(left[left.len()..].as_ptr(), right.as_ptr());
+        assert_eq!(right[right.len()..].as_ptr(), expected.end);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(33)]
+    fn prove_slice_split_at_unchecked() {
+        let (values, source_len, split) = any_slice_split_case();
+        let source = &values[..source_len];
+        let expected = expected_split(source, split);
+        // SAFETY: `any_slice_split_case` assumes `split <= source.len()`,
+        // which is the bound required by `SplitAt::split_at_unchecked`. This is
+        // also exactly the bound on the standard slice operation [1].
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.split_at_unchecked:
+        //
+        //     The caller has to ensure that `0 <= mid <= self.len()`.
+        let parts = unsafe { SplitAt::split_at_unchecked(source, split) };
+
+        // SAFETY: The array and slice layout guarantees [1] place each element
+        // immediately after the last, so the two portions have no overlapping
+        // padding. This satisfies `Split::via_unchecked`'s conditional
+        // no-overlap precondition.
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#array-layout
+        // and https://doc.rust-lang.org/1.93.0/reference/type-layout.html#slice-layout:
+        //
+        //     An array of `[T; N]` has a size of `size_of::<T>() * N` and
+        //     the same alignment of `T`.
+        //
+        //     Arrays are laid out so that the zero-based `nth` element of the
+        //     array is offset from the start of the array by
+        //     `n * size_of::<T>()` bytes.
+        //
+        //     Slices have the same layout as the section of the array they
+        //     slice.
+        let (left, right) = unsafe { parts.via_unchecked() };
+        assert_slice_split(&values, source_len, split, expected, left, right);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(33)]
+    fn prove_slice_split_at_mut_unchecked() {
+        let (original, source_len, split) = any_slice_split_case();
+        let mut values = original;
+        let left_value: u32 = kani::any();
+        let right_value: u32 = kani::any();
+        let mut expected_values = original;
+        let (expected_left, expected_right) = expected_values[..source_len].split_at_mut(split);
+        expected_left.fill(left_value);
+        expected_right.fill(right_value);
+
+        kani::cover!(split > 0 && original[0] != left_value);
+        kani::cover!(split < source_len && original[split] != right_value);
+
+        {
+            let source = &mut values[..source_len];
+            let expected = expected_split(source, split);
+            // SAFETY: `any_slice_split_case` assumes `split <= source.len()`,
+            // which is the bound required by
+            // `SplitAt::split_at_mut_unchecked`. This is also exactly the bound
+            // on the standard mutable slice operation [1].
+            //
+            // [1] Per https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.split_at_mut_unchecked:
+            //
+            //     The caller has to ensure that `0 <= mid <= self.len()`.
+            let parts = unsafe { SplitAt::split_at_mut_unchecked(source, split) };
+
+            // SAFETY: The array and slice layout guarantees [1] place each
+            // element immediately after the last, so the two exclusive
+            // portions have no overlapping padding. This satisfies
+            // `Split::via_unchecked`'s no-overlap precondition.
+            //
+            // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#array-layout
+            // and https://doc.rust-lang.org/1.93.0/reference/type-layout.html#slice-layout:
+            //
+            //     An array of `[T; N]` has a size of `size_of::<T>() * N` and
+            //     the same alignment of `T`.
+            //
+            //     Arrays are laid out so that the zero-based `nth` element of
+            //     the array is offset from the start of the array by
+            //     `n * size_of::<T>()` bytes.
+            //
+            //     Slices have the same layout as the section of the array they
+            //     slice.
+            let (left, right) = unsafe { parts.via_unchecked() };
+
+            assert_slice_split(&original, source_len, split, expected, left, right);
+
+            for index in 0..left.len() {
+                left[index] = left_value;
+            }
+            for index in 0..right.len() {
+                right[index] = right_value;
+            }
+        }
+        assert_eq!(values, expected_values);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "derive")]
