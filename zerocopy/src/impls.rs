@@ -1383,6 +1383,133 @@ mod simd {
     };
 }
 
+#[cfg(kani)]
+mod proofs {
+    use core::num::NonZeroU16;
+
+    use crate::proof_support::{bool_from_byte, validate_and_read_sized};
+
+    // Domain: Every initialized source byte sequence for `bool`, `char`,
+    // `NonZeroU16`, `Option<NonZeroU16>`, and `[bool; 4]` on Kani's target.
+    //
+    // Establishes: The raw-byte validator and the public read API agree with
+    // the oracle on acceptance, and each successful read has the oracle's
+    // value.
+    //
+    // Oracle: Safe standard-library constructors define `char` and nonzero
+    // integer validity. `bool_from_byte` is the one centralized manual Rust
+    // language oracle because Rust has no safe checked `u8`-to-`bool`
+    // conversion. The documented `char` representation, `NonZero` layout, and
+    // `Option` null-pointer optimization establish the byte-level mappings
+    // used by those oracles [1][2][3].
+    //
+    // Excludes: Other types and array lengths, non-native byte order, and
+    // validity or provenance behavior not modeled by Kani. Starting from bytes
+    // ensures that no invalid destination value exists before validation.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.0/reference/types/textual.html#character-type:
+    //
+    //     A value of type `char` is represented as a 32-bit unsigned word in
+    //     the 0x0000 to 0xD7FF or 0xE000 to 0x10FFFF range.
+    //
+    // [2] Per https://doc.rust-lang.org/1.93.0/std/num/struct.NonZero.html#layout:
+    //
+    //     `NonZero<T>` is guaranteed to have the same layout and bit validity
+    //     as `T` with the exception that the all-zero bit pattern is invalid.
+    //
+    // [3] Per https://doc.rust-lang.org/1.93.0/std/option/index.html#representation,
+    // whose guarantee table includes `num::NonZero*`:
+    //
+    //     transmute a value `t` of type `T` to type `Option<T>` (producing the
+    //     value `Some(t)`)
+    //
+    //     `transmute::<_, Option<T>>([0u8; size_of::<T>()])` is sound and
+    //     produces `Option::<T>::None`.
+
+    #[kani::proof]
+    fn prove_bool_try_read_from_bytes() {
+        let bytes: [u8; 1] = kani::any();
+        let expected = bool_from_byte(bytes[0]);
+        let expected_valid = expected.is_some();
+        let result = validate_and_read_sized!(bool, bytes, expected_valid);
+
+        kani::cover!(expected_valid);
+        kani::cover!(!expected_valid);
+        if let Ok(value) = result {
+            assert_eq!(Some(value), expected);
+        }
+    }
+
+    #[kani::proof]
+    fn prove_char_try_read_from_bytes() {
+        let bytes: [u8; 4] = kani::any();
+        let scalar = u32::from_ne_bytes(bytes);
+        let expected = char::from_u32(scalar);
+        let expected_valid = expected.is_some();
+        let result = validate_and_read_sized!(char, bytes, expected_valid);
+
+        kani::cover!(expected_valid);
+        kani::cover!((0xD800..=0xDFFF).contains(&scalar));
+        kani::cover!(scalar > 0x10FFFF);
+        if let Ok(value) = result {
+            assert_eq!(Some(value), expected);
+        }
+    }
+
+    #[kani::proof]
+    fn prove_nonzero_u16_try_read_from_bytes() {
+        let bytes: [u8; 2] = kani::any();
+        let integer = u16::from_ne_bytes(bytes);
+        let expected = NonZeroU16::new(integer);
+        let expected_valid = expected.is_some();
+        let result = validate_and_read_sized!(NonZeroU16, bytes, expected_valid);
+
+        kani::cover!(expected_valid);
+        kani::cover!(!expected_valid);
+        if let Ok(value) = result {
+            assert_eq!(Some(value), expected);
+        }
+    }
+
+    #[kani::proof]
+    fn prove_option_nonzero_u16_try_read_from_bytes() {
+        let bytes: [u8; 2] = kani::any();
+        let integer = u16::from_ne_bytes(bytes);
+        let result = validate_and_read_sized!(Option<NonZeroU16>, bytes, true).unwrap();
+        let expected = NonZeroU16::new(integer);
+
+        kani::cover!(integer == 0);
+        kani::cover!(integer != 0);
+        assert_eq!(result, expected);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_bool_array_try_read_from_bytes() {
+        let bytes: [u8; 4] = kani::any();
+        let expected = [
+            bool_from_byte(bytes[0]),
+            bool_from_byte(bytes[1]),
+            bool_from_byte(bytes[2]),
+            bool_from_byte(bytes[3]),
+        ];
+        let expected_valid = expected.iter().all(Option::is_some);
+        let result = validate_and_read_sized!([bool; 4], bytes, expected_valid);
+
+        kani::cover!(expected_valid);
+        kani::cover!(expected[0].is_none());
+        kani::cover!(expected[1].is_none());
+        kani::cover!(expected[2].is_none());
+        kani::cover!(expected[3].is_none());
+        if let Ok(values) = result {
+            assert_eq!(Some(values[0]), expected[0]);
+            assert_eq!(Some(values[1]), expected[1]);
+            assert_eq!(Some(values[2]), expected[2]);
+            assert_eq!(Some(values[3]), expected[3]);
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
