@@ -1383,6 +1383,202 @@ mod simd {
     };
 }
 
+#[cfg(kani)]
+mod proofs {
+    use core::num::NonZeroU16;
+
+    use crate::proof_support::{bool_from_byte, char_from_ne_bytes, validate_and_read_sized};
+
+    // Configuration: Every harness in this module uses the common Kani CI
+    // configuration documented in `agent_docs/validation.md`: the CI-pinned
+    // Kani release and its bundled x86_64-unknown-linux-gnu compiler (64-bit,
+    // little-endian), the stable-compatible feature bundle,
+    // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
+    // per invocation.
+    //
+    // Domain: Every exactly sized initialized source representation for `bool`,
+    // `char`, `NonZeroU16`, `Option<NonZeroU16>`, and `[bool; 4]` on Kani's
+    // target. The raw validator receives each representation at two controlled
+    // physical placements: byte offsets zero and one within separate
+    // 16-aligned `repr(C)` storage objects.
+    //
+    // Storage and bounds: All five harnesses use one fixed stack input of at
+    // most four bytes. The `Unaligned` specialization runs at both physical
+    // placements. The `Aligned` specialization runs at offset zero and also at
+    // offset one when the destination has alignment one. Compiler alignment
+    // queries and the standard raw-pointer `is_aligned` operation check the
+    // source type's alignment, the destination bound, and both actual addresses
+    // before any zerocopy validator runs. The public read makes its own aligned
+    // candidate. The harnesses perform no dynamic allocation and contain no
+    // explicit proof loop. Each carries `#[kani::unwind(5)]`, which permits any
+    // modeled bytewise operation or the target array validator to examine four
+    // bytes or elements and terminate, with Kani's unwinding checks enforcing
+    // the bound.
+    //
+    // Establishes: The non-materializing raw-byte validator agrees with the
+    // validity oracle for the exact marker/placement combinations above. On
+    // this target, offset one is physically misaligned for `char`,
+    // `NonZeroU16`, and `Option<NonZeroU16>`; each harness asserts its required
+    // nontrivial alignment. `bool` and `[bool; 4]` have alignment one, so no
+    // physically misaligned placement exists for them; both controlled
+    // addresses exercise both type-level markers. Those numeric alignment
+    // assertions are fail-closed facts of the pinned compiler and target, not
+    // claims that Rust's general primitive-layout rules universally fix these
+    // alignments; the independent placement oracle is raw-pointer `is_aligned`
+    // on each actual address. On independently oracle-valid inputs, the public
+    // read API succeeds and returns the oracle's value.
+    //
+    // Oracle: Safe standard-library constructors define `char` and nonzero
+    // integer validity. `char_from_ne_bytes` centralizes the exact
+    // `u32::from_ne_bytes` to `char::from_u32` bridge, with both Rust 1.93.0
+    // contracts documented next to that helper. `bool_from_byte` is the one
+    // centralized manual Rust language oracle because Rust has no safe checked
+    // `u8`-to-`bool` conversion. The documented `char` representation,
+    // `NonZero` layout, and `Option` null-pointer optimization establish the
+    // byte-level mappings used by those oracles [1][2][3]. For `[bool; 4]`, the
+    // compiler-checked one-byte element size and the array layout rule map the
+    // four checked elements to the exact four candidate bytes [4]. Physical
+    // placement is classified independently of zerocopy: raw-pointer
+    // `is_aligned` reports whether the candidate address is properly aligned
+    // for its destination type [5].
+    //
+    // Excludes: Other types and array lengths, source lengths other than the
+    // exact destination size, non-native byte order, and physical placements
+    // other than the two selected offsets. In particular, this does not
+    // quantify over arbitrary absolute addresses. It also excludes validity or
+    // provenance behavior not modeled by Kani. The public read API's invalid
+    // input path is deliberately not invoked; the raw validator proves
+    // rejection without risking production of an invalid `T` in a model that
+    // does not completely check that operation.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.0/reference/types/textual.html#character-type:
+    //
+    //     A value of type `char` is a Unicode scalar value (i.e. a code point
+    //     that is not a surrogate), represented as a 32-bit unsigned word in
+    //     the 0x0000 to 0xD7FF or 0xE000 to 0x10FFFF range.
+    //
+    // [2] Per https://doc.rust-lang.org/1.93.0/std/num/struct.NonZero.html#layout:
+    //
+    //     `NonZero<T>` is guaranteed to have the same layout and bit validity
+    //     as `T` with the exception that the all-zero bit pattern is invalid.
+    //
+    // [3] Per https://doc.rust-lang.org/1.93.0/std/option/index.html#representation,
+    // whose guarantee table includes `num::NonZero*`:
+    //
+    //     transmute a value `t` of type `T` to type `Option<T>` (producing the
+    //     value `Some(t)`)
+    //
+    //     `transmute::<_, Option<T>>([0u8; size_of::<T>()])` is sound and
+    //     produces `Option::<T>::None`.
+    //
+    // [4] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#array-layout:
+    //
+    //     Arrays are laid out so that the zero-based `nth` element of the
+    //     array is offset from the start of the array by
+    //     `n * size_of::<T>()` bytes.
+    //
+    // [5] Per https://doc.rust-lang.org/1.93.0/std/primitive.pointer.html#method.is_aligned:
+    //
+    //     Returns whether the pointer is properly aligned for `T`.
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_bool_try_read_from_bytes() {
+        assert_eq!(mem::align_of::<bool>(), 1);
+        let bytes: [u8; 1] = kani::any();
+        let expected = bool_from_byte(bytes[0]);
+        let expected_valid = expected.is_some();
+        let result = validate_and_read_sized!(bool, bytes, expected);
+
+        kani::cover!(expected_valid);
+        kani::cover!(!expected_valid);
+        if let Some(value) = result {
+            assert_eq!(Some(value), expected);
+        }
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_char_try_read_from_bytes() {
+        assert!(mem::align_of::<char>() > 1);
+        let bytes: [u8; 4] = kani::any();
+        let scalar = u32::from_ne_bytes(bytes);
+        let expected = char_from_ne_bytes(bytes);
+        let expected_valid = expected.is_some();
+        let result = validate_and_read_sized!(char, bytes, expected);
+
+        kani::cover!(expected_valid);
+        kani::cover!((0xD800..=0xDFFF).contains(&scalar));
+        kani::cover!(scalar > 0x10FFFF);
+        if let Some(value) = result {
+            assert_eq!(Some(value), expected);
+        }
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_nonzero_u16_try_read_from_bytes() {
+        assert!(mem::align_of::<NonZeroU16>() > 1);
+        let bytes: [u8; 2] = kani::any();
+        let integer = u16::from_ne_bytes(bytes);
+        let expected = NonZeroU16::new(integer);
+        let expected_valid = expected.is_some();
+        let result = validate_and_read_sized!(NonZeroU16, bytes, expected);
+
+        kani::cover!(expected_valid);
+        kani::cover!(!expected_valid);
+        if let Some(value) = result {
+            assert_eq!(Some(value), expected);
+        }
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_option_nonzero_u16_try_read_from_bytes() {
+        assert!(mem::align_of::<Option<NonZeroU16>>() > 1);
+        let bytes: [u8; 2] = kani::any();
+        let integer = u16::from_ne_bytes(bytes);
+        let expected = NonZeroU16::new(integer);
+        let result = validate_and_read_sized!(Option<NonZeroU16>, bytes, Some(expected)).unwrap();
+
+        kani::cover!(integer == 0);
+        kani::cover!(integer != 0);
+        assert_eq!(result, expected);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_bool_array_try_read_from_bytes() {
+        assert_eq!(mem::align_of::<[bool; 4]>(), 1);
+        assert_eq!(core::mem::size_of::<bool>(), core::mem::size_of::<u8>());
+        let bytes: [u8; 4] = kani::any();
+        let expected = [
+            bool_from_byte(bytes[0]),
+            bool_from_byte(bytes[1]),
+            bool_from_byte(bytes[2]),
+            bool_from_byte(bytes[3]),
+        ];
+        let expected_value = match expected {
+            [Some(a), Some(b), Some(c), Some(d)] => Some([a, b, c, d]),
+            _ => None,
+        };
+        let expected_valid = expected_value.is_some();
+        let result = validate_and_read_sized!([bool; 4], bytes, expected_value);
+
+        kani::cover!(expected_valid);
+        kani::cover!(expected[0].is_none());
+        kani::cover!(expected[1].is_none());
+        kani::cover!(expected[2].is_none());
+        kani::cover!(expected[3].is_none());
+        if let Some(values) = result {
+            assert_eq!(Some(values[0]), expected[0]);
+            assert_eq!(Some(values[1]), expected[1]);
+            assert_eq!(Some(values[2]), expected[2]);
+            assert_eq!(Some(values[3]), expected[3]);
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
