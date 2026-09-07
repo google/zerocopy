@@ -3832,6 +3832,72 @@ pub unsafe trait FromZeros: TryFromBytes {
     }
 }
 
+#[cfg(all(kani, feature = "alloc", not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)))]
+mod from_zeros_proofs {
+    use super::*;
+
+    // This fixed two-to-three-element growth exhausts all insertion positions,
+    // source bytes, and replacement bytes on Kani's target. The owned values
+    // make accidental duplication or loss observable in Kani's allocator
+    // model. This is not a generic allocator, provenance, or deallocation
+    // proof, and it does not cover allocation failure or the nested/custom DST
+    // layouts tracked by #3630.
+    #[kani::proof]
+    #[kani::unwind(4)]
+    fn prove_insert_vec_zeroed_grows_and_preserves_owned_values() {
+        const INITIAL_LEN: usize = 2;
+        const MAX_OUTPUT_LEN: usize = INITIAL_LEN + 1;
+
+        let initial: [u8; INITIAL_LEN] = kani::any();
+        let position = core::cmp::min(usize::from(kani::any::<u8>()), INITIAL_LEN);
+        let additional = 1;
+        let first = Box::new(initial[0]);
+        let second = Box::new(initial[1]);
+        let first_ptr: *const u8 = &*first;
+        let second_ptr: *const u8 = &*second;
+        let original_ptrs = [first_ptr, second_ptr];
+        let mut v = vec![Some(first), Some(second)];
+        let old_capacity = v.capacity();
+        assert!(old_capacity < INITIAL_LEN + additional);
+
+        let result = <Option<Box<u8>>>::insert_vec_zeroed(&mut v, position, additional);
+
+        kani::cover!(result.is_ok() && position == 0 && additional == 1);
+        kani::cover!(result.is_ok() && position == 1 && additional == 1);
+        kani::cover!(result.is_ok() && position == INITIAL_LEN && additional == 1);
+        assert!(result.is_ok());
+
+        let new_len = INITIAL_LEN + additional;
+        assert_eq!(v.len(), new_len);
+        assert!(v.capacity() >= new_len);
+        assert!(v.capacity() > old_capacity);
+        for idx in 0..new_len {
+            if idx >= position && idx < position + additional {
+                assert!(v[idx].is_none());
+            } else {
+                let original_idx = if idx < position { idx } else { idx - additional };
+                let boxed = v[idx].as_ref().unwrap();
+                let ptr: *const u8 = &**boxed;
+                assert_eq!(ptr, original_ptrs[original_idx]);
+                assert_eq!(**boxed, initial[original_idx]);
+            }
+        }
+
+        let replacements: [u8; MAX_OUTPUT_LEN] = kani::any();
+        for idx in 0..new_len {
+            let slot = &mut v[idx];
+            match slot {
+                Some(boxed) => **boxed = replacements[idx],
+                None => *slot = Some(Box::new(replacements[idx])),
+            }
+        }
+        for idx in 0..new_len {
+            assert_eq!(**v[idx].as_ref().unwrap(), replacements[idx]);
+        }
+        drop(v);
+    }
+}
+
 /// Analyzes whether a type is [`FromBytes`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
