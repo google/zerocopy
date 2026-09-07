@@ -17,4 +17,6 @@
 
 #[cfg(feature = "derive")]
 mod derived;
+#[cfg(all(feature = "alloc", not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)))]
+mod from_zeros;
 mod into_bytes;
