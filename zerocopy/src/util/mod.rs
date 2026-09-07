@@ -284,13 +284,34 @@ pub(crate) unsafe fn copy_unchecked(src: &[u8], dst: &mut [u8]) {
     // SAFETY: This invocation satisfies the safety contract of
     // copy_nonoverlapping [1]:
     // - `src.as_ptr()` is trivially valid for reads of `src.len()` bytes
-    // - `dst.as_ptr()` is valid for writes of `src.len()` bytes, because the
-    //   caller has promised that `src.len() <= dst.len()`
+    // - `dst.as_mut_ptr()` is valid for writes of `src.len()` bytes because
+    //   the caller has promised that `src.len() <= dst.len()`
     // - `src` and `dst` are, trivially, properly aligned
     // - the region of memory beginning at `src` with a size of `src.len()`
     //   bytes does not overlap with the region of memory beginning at `dst`
     //   with the same size, because `dst` is derived from an exclusive
-    //   reference.
+    //   reference which coexists with `src` [2].
+    //
+    // [1] Per https://doc.rust-lang.org/1.56.0/std/ptr/fn.copy_nonoverlapping.html#safety:
+    //
+    //     Behavior is undefined if any of the following conditions are
+    //     violated:
+    //
+    //     - `src` must be valid for reads of `count * size_of::<T>()` bytes.
+    //     - `dst` must be valid for writes of `count * size_of::<T>()` bytes.
+    //     - Both `src` and `dst` must be properly aligned.
+    //     - The region of memory beginning at `src` with a size of
+    //       `count * size_of::<T>()` bytes must not overlap with the region of
+    //       memory beginning at `dst` with the same size.
+    //
+    //     Note that even if the effectively copied size
+    //     (`count * size_of::<T>()`) is 0, the pointers must be non-null and
+    //     properly aligned.
+    //
+    // [2] Per https://doc.rust-lang.org/1.56.0/reference/types/pointer.html#mutable-references-mut:
+    //
+    //     A mutable reference (that hasn't been borrowed) is the only way to
+    //     access the value it points to.
     unsafe {
         core::ptr::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len());
     };
@@ -377,9 +398,11 @@ where
 /// # Safety
 ///
 /// `allocate` must be either `alloc::alloc::alloc` or
-/// `alloc::alloc::alloc_zeroed`. The referent of the box returned by `new_box`
-/// has the same bit-validity as the referent of the pointer returned by the
-/// given `allocate` and sufficient size to store `T` with `meta`.
+/// `alloc::alloc::alloc_zeroed`. Any `Box<T>` returned by this function must
+/// have a bit-valid referent with metadata `meta`. Thus `T` must permit the
+/// corresponding initial memory state: its zero-byte representation for a
+/// zero-sized instance, uninitialized bytes from `alloc`, or initialized
+/// all-zero bytes from `alloc_zeroed`.
 #[must_use = "has no side effects (other than allocation)"]
 #[cfg(feature = "alloc")]
 #[inline]
@@ -465,6 +488,287 @@ where
     // allocator).
     #[allow(clippy::undocumented_unsafe_blocks)]
     Ok(unsafe { alloc::boxed::Box::from_raw(ptr.as_ptr()) })
+}
+
+#[cfg(kani)]
+mod proofs {
+    use core::num::Wrapping;
+
+    use super::*;
+    use crate::pointer::{BecauseImmutable, BecauseInvariantsEq, BecauseMutationCompatible};
+
+    // `copy_unchecked` proof scope:
+    //
+    // Domain: Every source `[u8; 8]`, destination `[u8; 12]`, source length
+    // from 0 through 8, and destination length from the source length through
+    // 12.
+    // Establishes: The copied prefix and every destination frame byte exactly
+    // match a safe copy.
+    // Oracle: `slice::copy_from_slice` applied to a separate destination copy.
+    // Excludes: Larger allocations, overlapping regions (which safe input
+    // references preclude), and aliasing or provenance properties outside
+    // Kani's model. This is not a generic contract proof.
+    //
+    // Transmutation proof scope:
+    //
+    // Domain: Every `u32`, plus shared and mutable `u32` views as
+    // `Wrapping<u32>`.
+    // Establishes: Native byte representation, round-trip value, modeled
+    // address preservation, and mutation propagation.
+    // Oracle: Safe `u32::to_ne_bytes`, `u32::from_ne_bytes`, and `Wrapping`
+    // construction.
+    // Excludes: Other source/destination types, invalid representations, and
+    // provenance or aliasing guarantees. Pointer equality checks only Kani's
+    // modeled addresses. These are not generic transmutation contract proofs.
+    //
+    // Allocation proof scope:
+    //
+    // Domain: The successful `alloc_zeroed` paths for `u32` and `[u8]` of
+    // length 4, and the non-allocating dangling-pointer path for the unit ZST.
+    // Establishes: Within Kani's model, successful calls expose the expected
+    // zero contents, slice length, and mutation behavior.
+    // Oracle: Safe value construction supplies the expected contents and
+    // length. Dereferencing the returned `Box` only observes the target; it is
+    // not independent evidence that constructing that `Box` was sound.
+    // Excludes: Allocation failure behavior, uninitialized non-ZST referents,
+    // arbitrary types/metadata, and nested slice DSTs (see
+    // https://github.com/google/zerocopy/pull/3630). In particular, these are
+    // behavioral smoke regressions, not proofs of the `Box::from_raw`
+    // provenance, alignment, ownership, or allocator/deallocator obligations
+    // called out by FIXME #429 above, nor of `new_box`'s overall soundness.
+
+    #[kani::proof]
+    #[kani::unwind(13)]
+    fn prove_copy_unchecked_copies_prefix_and_preserves_frame() {
+        const SRC_CAPACITY: usize = 8;
+        const DST_CAPACITY: usize = 12;
+
+        let src: [u8; SRC_CAPACITY] = kani::any();
+        let mut dst: [u8; DST_CAPACITY] = kani::any();
+        let src_len: usize = kani::any();
+        let dst_len: usize = kani::any();
+
+        kani::assume(src_len <= SRC_CAPACITY);
+        kani::assume(dst_len <= DST_CAPACITY);
+        kani::assume(src_len <= dst_len);
+
+        kani::cover!(src_len == 0 && dst_len == 0);
+        kani::cover!(src_len == SRC_CAPACITY && src_len == dst_len);
+        kani::cover!(0 < src_len && src_len < dst_len && dst_len < DST_CAPACITY);
+        kani::cover!(src_len > 0 && src[0] != dst[0]);
+
+        let mut expected_dst = dst;
+        expected_dst[..src_len].copy_from_slice(&src[..src_len]);
+
+        // SAFETY: The assumptions above establish `src_len <= dst_len`, the
+        // sole caller precondition of `copy_unchecked`. The source and
+        // destination subslices are live, properly aligned `u8` regions in
+        // distinct arrays, and the destination contains at least `src_len`
+        // bytes. They therefore satisfy the wrapped operation's requirements
+        // [1].
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/std/ptr/fn.copy_nonoverlapping.html#safety:
+        //
+        //     `src` must be valid for reads of `count * size_of::<T>()` bytes.
+        //
+        //     `dst` must be valid for writes of `count * size_of::<T>()` bytes.
+        //
+        //     Both `src` and `dst` must be properly aligned.
+        //
+        //     The region of memory beginning at `src` with a size of
+        //     `count * size_of::<T>()` bytes must not overlap with the region
+        //     of memory beginning at `dst` with the same size.
+        //
+        //     Note that even if the effectively copied size
+        //     (`count * size_of::<T>()`) is 0, the pointers must be non-null
+        //     and properly aligned.
+        unsafe { copy_unchecked(&src[..src_len], &mut dst[..dst_len]) };
+
+        assert_eq!(dst, expected_dst);
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_transmute_unchecked_u32_bytes_roundtrip() {
+        let src: u32 = kani::any();
+
+        // SAFETY: `transmute_unchecked` statically checks that `[u8; 4]` and
+        // `u32` have the same size. `src` is initialized, and numeric bit
+        // validity is exactly that of an initialized byte array [1], so its
+        // representation is valid for `[u8; 4]`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/reference/types/numeric.html#bit-validity:
+        //
+        //     For every numeric type, `T`, the bit validity of `T` is
+        //     equivalent to the bit validity of `[u8; size_of::<T>()]`. An
+        //     uninitialized byte is not a valid `u8`.
+        let bytes: [u8; 4] = unsafe { transmute_unchecked(src) };
+        assert_eq!(bytes, src.to_ne_bytes());
+
+        // SAFETY: `transmute_unchecked` statically checks that `[u8; 4]` and
+        // `u32` have the same size. Every byte in `bytes` is initialized, and
+        // numeric bit validity is exactly that of an initialized byte array
+        // [1], so its representation is valid for `u32`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/reference/types/numeric.html#bit-validity:
+        //
+        //     For every numeric type, `T`, the bit validity of `T` is
+        //     equivalent to the bit validity of `[u8; size_of::<T>()]`. An
+        //     uninitialized byte is not a valid `u8`.
+        let roundtrip: u32 = unsafe { transmute_unchecked(bytes) };
+        assert_eq!(roundtrip, u32::from_ne_bytes(bytes));
+    }
+
+    #[kani::proof]
+    fn prove_transmute_ref_preserves_address_and_value() {
+        let src: u32 = kani::any();
+        let src_ptr: *const u32 = &src;
+
+        // SAFETY: A type's layout includes its alignment [1], and
+        // `Wrapping<u32>` has the same layout as `u32` [2]. Their alignments
+        // are therefore equal, satisfying `transmute_ref`'s sole caller
+        // precondition.
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html:
+        //
+        //     The layout of a type is its size, alignment, and the relative
+        //     offsets of its fields.
+        //
+        // [2] Per https://doc.rust-lang.org/1.93.0/std/num/struct.Wrapping.html#layout-1:
+        //
+        //     `Wrapping<T>` is guaranteed to have the same layout and ABI as
+        //     `T`.
+        let dst: &Wrapping<u32> = unsafe { transmute_ref::<_, _, BecauseImmutable>(&src) };
+        let dst_ptr: *const Wrapping<u32> = dst;
+
+        assert_eq!(src_ptr.cast::<u8>(), dst_ptr.cast::<u8>());
+        assert_eq!(*dst, Wrapping(src));
+    }
+
+    #[kani::proof]
+    fn prove_transmute_mut_preserves_address_and_mutates_source() {
+        let mut src: u32 = kani::any();
+        let original = src;
+        let replacement: u32 = kani::any();
+        let src_ptr: *mut u32 = &mut src;
+
+        {
+            // SAFETY: A type's layout includes its alignment [1], and
+            // `Wrapping<u32>` has the same layout as `u32` [2]. Their
+            // alignments are therefore equal, satisfying `transmute_mut`'s
+            // sole caller precondition.
+            //
+            // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html:
+            //
+            //     The layout of a type is its size, alignment, and the
+            //     relative offsets of its fields.
+            //
+            // [2] Per https://doc.rust-lang.org/1.93.0/std/num/struct.Wrapping.html#layout-1:
+            //
+            //     `Wrapping<T>` is guaranteed to have the same layout and ABI
+            //     as `T`.
+            let dst: &mut Wrapping<u32> = unsafe {
+                transmute_mut::<_, _, (BecauseMutationCompatible, BecauseInvariantsEq)>(&mut src)
+            };
+            let dst_ptr: *mut Wrapping<u32> = dst;
+
+            assert_eq!(src_ptr.cast::<u8>(), dst_ptr.cast::<u8>());
+            assert_eq!(*dst, Wrapping(original));
+            *dst = Wrapping(replacement);
+            assert_eq!(*dst, Wrapping(replacement));
+        }
+
+        kani::cover!(replacement != original);
+        assert_eq!(src, replacement);
+    }
+
+    #[cfg(feature = "alloc")]
+    #[kani::proof]
+    fn prove_new_box_zeroed_u32_on_success() {
+        // SAFETY: This passes `alloc_zeroed` directly, one of the two allocator
+        // functions permitted by `new_box`. It returns initialized zeroed
+        // memory [1], and every initialized representation is valid for a
+        // numeric type such as `u32` [2].
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/std/alloc/fn.alloc_zeroed.html:
+        //
+        //     Allocates zero-initialized memory with the global allocator.
+        //
+        // [2] Per https://doc.rust-lang.org/1.93.0/reference/types/numeric.html#bit-validity:
+        //
+        //     For every numeric type, `T`, the bit validity of `T` is
+        //     equivalent to the bit validity of `[u8; size_of::<T>()]`. An
+        //     uninitialized byte is not a valid `u8`.
+        let result = unsafe { new_box::<u32>((), alloc::alloc::alloc_zeroed) };
+        kani::cover!(result.is_ok());
+
+        if let Ok(mut boxed) = result {
+            assert_eq!(*boxed, 0);
+
+            let replacement: u32 = kani::any();
+            *boxed = replacement;
+            assert_eq!(*boxed, replacement);
+        }
+    }
+
+    #[cfg(feature = "alloc")]
+    #[kani::proof]
+    fn prove_new_box_zst() {
+        // SAFETY: This passes `alloc` directly, one of the two allocator
+        // functions permitted by `new_box`. The unit type has exactly one
+        // value [1] and occupies no bytes [2], so the resulting referent must
+        // be that valid value regardless of the allocator's byte contents.
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/reference/types/tuple.html#unit:
+        //
+        //     Its one value is also called unit or the unit value.
+        //
+        // [2] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#tuple-layout:
+        //
+        //     The exception to this is the unit tuple (`()`), which is
+        //     guaranteed as a zero-sized type to have a size of 0 and an
+        //     alignment of 1.
+        let result = unsafe { new_box::<()>((), alloc::alloc::alloc) };
+        assert!(result.is_ok());
+
+        let boxed = result.unwrap();
+        assert_eq!(mem::size_of_val(&*boxed), 0);
+    }
+
+    #[cfg(feature = "alloc")]
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_new_box_zeroed_byte_slice_on_success() {
+        const LEN: usize = 4;
+
+        // SAFETY: This passes `alloc_zeroed` directly, one of the two allocator
+        // functions permitted by `new_box`. It returns initialized zeroed
+        // memory [1]. Numeric bit validity is exactly the validity of an
+        // initialized byte array [2], so every element is a valid `u8`; slices
+        // have the layout of their array section [3].
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.0/std/alloc/fn.alloc_zeroed.html:
+        //
+        //     Allocates zero-initialized memory with the global allocator.
+        //
+        // [2] Per https://doc.rust-lang.org/1.93.0/reference/types/numeric.html#bit-validity:
+        //
+        //     For every numeric type, `T`, the bit validity of `T` is
+        //     equivalent to the bit validity of `[u8; size_of::<T>()]`. An
+        //     uninitialized byte is not a valid `u8`.
+        //
+        // [3] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#slice-layout:
+        //
+        //     Slices have the same layout as the section of the array they
+        //     slice.
+        let result = unsafe { new_box::<[u8]>(LEN, alloc::alloc::alloc_zeroed) };
+        kani::cover!(result.is_ok());
+
+        if let Ok(boxed) = result {
+            let expected = [0u8; LEN];
+            assert_eq!(&*boxed, &expected[..]);
+        }
+    }
 }
 
 mod len_of {
