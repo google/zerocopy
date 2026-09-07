@@ -289,10 +289,10 @@ where
     ///
     /// Given `let (left, right) = ptr.split_at(l_len)`, it is guaranteed that
     /// `left` and `right` are contiguous and non-overlapping if
-    /// `l_len.padding_needed_for() == 0`. This is true for all `[T]`.
+    /// the left part has no trailing padding. This is true for all `[T]`.
     ///
-    /// If `l_len.padding_needed_for() != 0`, then the left pointer will overlap
-    /// the right pointer to satisfy `T`'s padding requirements.
+    /// Any trailing padding in the left part begins at the right part's
+    /// starting address and may overlap its referent.
     #[inline]
     #[must_use]
     pub unsafe fn split_at_unchecked(
@@ -313,19 +313,14 @@ where
         // Trivially, `slf.meta() <= slf.meta()`.
         let right = unsafe { right.slice_unchecked(l_len..self.meta().get()) };
 
-        // SAFETY: If `l_len.padding_needed_for() == 0`, then `left` and `right`
-        // are non-overlapping. Proof: `left` is constructed `slf` with `l_len`
-        // as its (exclusive) upper bound. If `l_len.padding_needed_for() == 0`,
-        // then `left` requires no trailing padding following its final element.
-        // Since `right` is constructed from `slf`'s trailing slice with `l_len`
-        // as its (inclusive) lower bound, no byte is referred to by both
-        // pointers.
+        // SAFETY: If the left part has no trailing padding, then `left` and
+        // `right` are non-overlapping. Proof: `left` has `l_len` trailing
+        // elements, and `right` starts at element `l_len` of the original
+        // trailing slice. Without padding after `left`'s final element, no
+        // byte is referred to by both pointers.
         //
-        // Conversely, `l_len.padding_needed_for() == N`, where `N
-        // > 0`, `left` requires `N` bytes of trailing padding following its
-        // final element. Since `right` is constructed from the trailing slice
-        // of `slf` with `l_len` as its (inclusive) lower bound, the first `N`
-        // bytes of `right` are aliased by `left`.
+        // Any trailing padding in `left` begins at `right`'s starting
+        // address. If `right` is nonzero sized, the referents overlap.
         (left, right)
     }
 
