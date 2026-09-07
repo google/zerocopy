@@ -1389,7 +1389,12 @@ mod proofs {
     use alloc::boxed::Box;
     use core::{mem, num::NonZeroU16, ptr::NonNull};
 
-    use crate::proof_support::{bool_from_byte, char_from_ne_bytes, validate_and_read_sized};
+    use crate::{
+        pointer::{cast::CastUnsized, invariant::Initialized, BecauseImmutable, Ptr},
+        proof_support::{bool_from_byte, char_from_ne_bytes, validate_and_read_sized},
+        wrappers::ReadOnly,
+        TryFromBytes,
+    };
 
     // Configuration: Every harness in this module uses the common Kani CI
     // configuration documented in `agent_docs/validation.md`: the CI-pinned
@@ -1704,6 +1709,105 @@ mod proofs {
         None,
         value => assert!(value.is_none())
     );
+
+    // Domain: Every byte sequence of lengths zero through four. This includes
+    // the empty DST boundary, every single UTF-8 scalar encoding, and every
+    // mixture whose total encoded length fits the bound.
+    //
+    // Storage and bounds: Each harness uses one fixed stack array of zero to
+    // four bytes and performs no dynamic allocation. The proof source contains
+    // no explicit loop. Every harness carries `#[kani::unwind(5)]`, permitting
+    // each modeled validator, comparison, or UTF-8 scan to examine at most four
+    // bytes and terminate, with Kani's unwinding checks enforcing the bound.
+    //
+    // Establishes: The non-materializing internal unsized validator accepts
+    // exactly when the standard library does. On inputs independently accepted
+    // by the standard library, the public borrowed read API succeeds and
+    // returns the same text and length. Nonempty results retain the same input
+    // address; no address identity is claimed for empty slices.
+    //
+    // Oracle: `core::str::from_utf8` is the authoritative safe Rust validity
+    // and text oracle [1]. Address identity is checked directly against the
+    // source array with `str::as_ptr`, whose contract identifies the first byte
+    // of the string slice [2]; it is not inferred from the UTF-8 oracle's
+    // address. Consequently, these harnesses prove zerocopy's validator/cast
+    // plumbing, not the standard library's UTF-8 algorithm.
+    //
+    // Excludes: Longer strings, properties outside Kani's model, an independent
+    // proof of UTF-8 validity itself, and the public borrowed API's
+    // invalid-input path. The latter is not invoked because a bug which
+    // materialized invalid `str` would be undefined before its `Result` could
+    // safely be inspected, and Kani does not completely check invalid values.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.0/core/str/fn.from_utf8.html:
+    //
+    //     Not all byte slices are valid string slices, however: `&str`
+    //     requires that it is valid UTF-8. `from_utf8()` checks to ensure that
+    //     the bytes are valid UTF-8, and then does the conversion.
+    //
+    //     Returns `Err` if the slice is not UTF-8 with a description as to why
+    //     the provided slice is not UTF-8.
+    //
+    // [2] Per https://doc.rust-lang.org/1.93.0/std/primitive.str.html#method.as_ptr:
+    //
+    //     Converts a string slice to a raw pointer.
+    //
+    //     As string slices are a slice of bytes, the raw pointer points to a
+    //     `u8`. This pointer will be pointing to the first byte of the string
+    //     slice.
+
+    fn str_validator_accepts<const N: usize>(bytes: [u8; N]) -> bool {
+        let source = ReadOnly::new(bytes);
+        let source: &ReadOnly<[u8]> = &source;
+        let mut candidate = Ptr::from_ref(source)
+            .transmute_with::<ReadOnly<str>, Initialized, CastUnsized, BecauseImmutable>();
+        <str as TryFromBytes>::is_bit_valid(candidate.reborrow_shared())
+    }
+
+    fn check_str_try_ref_from_bytes<const N: usize>(bytes: [u8; N]) -> bool {
+        let expected = core::str::from_utf8(&bytes);
+        let expected_valid = expected.is_ok();
+        assert_eq!(str_validator_accepts(bytes), expected_valid);
+
+        if let Ok(expected) = expected {
+            let value = match str::try_ref_from_bytes(&bytes) {
+                Ok(value) => value,
+                Err(_) => panic!("public borrow rejected independently valid UTF-8"),
+            };
+            assert_eq!(value, expected);
+            if N != 0 {
+                assert_eq!(value.as_ptr(), bytes.as_ptr());
+            } else {
+                assert!(value.as_bytes().is_empty());
+            }
+        }
+        kani::cover!(expected_valid);
+        expected_valid
+    }
+
+    macro_rules! str_proof {
+        ($proof:ident, $len:expr) => {
+            #[kani::proof]
+            #[kani::unwind(5)]
+            fn $proof() {
+                let bytes: [u8; $len] = kani::any();
+                let expected_valid = check_str_try_ref_from_bytes(bytes);
+                kani::cover!(!expected_valid);
+            }
+        };
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_empty_str_try_ref_from_bytes() {
+        let bytes: [u8; 0] = [];
+        assert!(check_str_try_ref_from_bytes(bytes));
+    }
+
+    str_proof!(prove_one_byte_str_try_ref_from_bytes, 1);
+    str_proof!(prove_two_byte_str_try_ref_from_bytes, 2);
+    str_proof!(prove_three_byte_str_try_ref_from_bytes, 3);
+    str_proof!(prove_four_byte_str_try_ref_from_bytes, 4);
 }
 
 #[cfg(test)]
