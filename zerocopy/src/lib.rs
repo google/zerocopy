@@ -358,6 +358,8 @@ pub mod doctests;
 // stuttering.
 pub mod error;
 mod impls;
+#[cfg(kani)]
+mod into_bytes_proofs;
 #[doc(hidden)]
 pub mod layout;
 mod macros;
