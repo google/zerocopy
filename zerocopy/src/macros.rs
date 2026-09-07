@@ -1253,6 +1253,131 @@ macro_rules! cryptocorrosion_derive_traits {
     };
 }
 
+#[cfg(kani)]
+mod proofs {
+    use crate::{
+        proof_support::{bool_from_byte, validator_accepts_sized},
+        ValidityError,
+    };
+
+    fn checked_bool_oracle(src: u8) -> Option<bool> {
+        let bytes = [src];
+        let expected = bool_from_byte(src);
+        assert_eq!(validator_accepts_sized!(bool, bytes), expected.is_some());
+        kani::cover!(expected == Some(false));
+        kani::cover!(expected == Some(true));
+        kani::cover!(expected.is_none());
+        expected
+    }
+
+    // Configuration: Uses the common Kani CI configuration documented in
+    // `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
+    // x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
+    // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
+    // per invocation.
+    //
+    // The non-materializing validator proof exhausts all 256 `u8` values on
+    // Kani's target. `bool_from_byte` is the shared Rust-Reference-based oracle
+    // and never constructs an invalid `bool`. The value and reference macros
+    // are invoked only for the two independently valid representations; they
+    // check the decoded value, address identity, and mutation propagation.
+    // Owned-value error restoration is exercised separately by the
+    // `usize`-to-thin-pointer instantiation. Zerocopy conservatively accepts
+    // only zero, while Rust guarantees that constructing a thin raw pointer
+    // from any integer representation is valid [1]. Thus, even an erroneous
+    // acceptance cannot materialize an invalid destination value.
+    //
+    // These are end-to-end proofs only for the `u8`-to-`bool` instantiations,
+    // plus one `usize`-to-`*const u8` policy instantiation. They do not
+    // prove other type pairs, sizes, alignments, macro arms, or other
+    // compilation targets/toolchains. The public macros' invalid-`bool` input
+    // paths are deliberately not invoked because Kani does not completely
+    // check invalid-value production. Kani also does not fully model Rust
+    // aliasing, pointer provenance, or uninitialized memory; the pointer
+    // produced on acceptance is observed only with `is_null`, never
+    // dereferenced. Error recovery for the reference and mutable-reference
+    // macro arms is not exercised.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.0/reference/types/pointer.html#bit-validity:
+    //
+    //     For thin raw pointers ... the inverse direction (transmuting from an
+    //     integer or array of integers to `P`) is always valid.
+
+    #[kani::proof]
+    fn prove_try_transmute_u8_to_bool() {
+        let src: u8 = kani::any();
+        if let Some(expected) = checked_bool_oracle(src) {
+            let result: Result<bool, ValidityError<u8, bool>> = crate::try_transmute!(src);
+            match result {
+                Ok(dst) => assert_eq!(dst, expected),
+                Err(_) => panic!("transmute rejected an independently valid bool"),
+            }
+        }
+    }
+
+    #[kani::proof]
+    fn prove_try_transmute_ref_u8_to_bool() {
+        let src: u8 = kani::any();
+        let src_ptr = core::ptr::addr_of!(src);
+        if let Some(expected) = checked_bool_oracle(src) {
+            let result: Result<&bool, ValidityError<&u8, bool>> = crate::try_transmute_ref!(&src);
+            match result {
+                Ok(dst) => {
+                    assert_eq!((dst as *const bool).cast::<u8>(), src_ptr);
+                    assert_eq!(*dst, expected);
+                }
+                Err(_) => panic!("reference transmute rejected an independently valid bool"),
+            }
+        }
+    }
+
+    #[kani::proof]
+    fn prove_try_transmute_mut_u8_to_bool() {
+        let mut src: u8 = kani::any();
+        let src_ptr = core::ptr::addr_of_mut!(src);
+        if let Some(expected) = checked_bool_oracle(src) {
+            let result: Result<&mut bool, ValidityError<&mut u8, bool>> =
+                crate::try_transmute_mut!(&mut src);
+            match result {
+                Ok(dst) => {
+                    assert_eq!((dst as *mut bool).cast::<u8>(), src_ptr);
+                    assert_eq!(*dst, expected);
+                    *dst = !*dst;
+                }
+                Err(_) => panic!("mutable transmute rejected an independently valid bool"),
+            }
+            assert_eq!(src, u8::from(!expected));
+        }
+    }
+
+    #[kani::proof]
+    #[kani::unwind(9)]
+    // This transmutation is the operation under proof. The resulting pointer
+    // is valid to produce by the cited language rule and is never dereferenced.
+    // `#[allow(unknown_lints)]` is for `integer_to_ptr_transmutes` on the MSRV.
+    #[allow(unknown_lints)]
+    #[allow(integer_to_ptr_transmutes)]
+    fn prove_try_transmute_usize_to_pointer_policy_and_recovery() {
+        let src: usize = kani::any();
+        let bytes = src.to_ne_bytes();
+        let expected_valid = bytes.iter().all(|&byte| byte == 0);
+        let result: Result<*const u8, ValidityError<usize, *const u8>> = crate::try_transmute!(src);
+
+        kani::cover!(expected_valid);
+        kani::cover!(!expected_valid);
+        match result {
+            Ok(pointer) => {
+                assert!(expected_valid);
+                assert!(pointer.is_null());
+            }
+            Err(error) => {
+                assert!(!expected_valid);
+                assert_eq!(error.into_src(), src);
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{
