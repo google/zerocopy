@@ -1389,7 +1389,12 @@ mod proofs {
     use alloc::boxed::Box;
     use core::{mem, num::NonZeroU16, ptr::NonNull};
 
-    use crate::proof_support::{bool_from_byte, validate_and_read_sized};
+    use crate::{
+        pointer::{cast::CastUnsized, invariant::Initialized, BecauseImmutable, Ptr},
+        proof_support::{bool_from_byte, validate_and_read_sized},
+        wrappers::ReadOnly,
+        TryFromBytes,
+    };
 
     // Domain: Every initialized source byte sequence for `bool`, `char`,
     // `NonZeroU16`, `Option<NonZeroU16>`, and `[bool; 4]` on Kani's target.
@@ -1608,6 +1613,61 @@ mod proofs {
         Option<unsafe extern "C" fn()>,
         value => assert!(value.is_none())
     );
+
+    // Domain: Every byte sequence of lengths one through four. This includes
+    // every single UTF-8 scalar encoding and every mixture whose total encoded
+    // length fits the bound.
+    //
+    // Establishes: The internal unsized validator and public borrowed read API
+    // accept exactly when the standard library does; on success, the public API
+    // returns the same text and the same input view.
+    //
+    // Oracle: `core::str::from_utf8` is the authoritative safe Rust oracle.
+    // Consequently, these harnesses prove zerocopy's validator/cast plumbing,
+    // not the standard library's UTF-8 algorithm.
+    //
+    // Excludes: Empty and longer strings, properties outside Kani's model, and
+    // an independent proof of UTF-8 validity itself.
+
+    fn str_validator_accepts<const N: usize>(bytes: [u8; N]) -> bool {
+        let source = ReadOnly::new(bytes);
+        let source: &ReadOnly<[u8]> = &source;
+        let mut candidate = Ptr::from_ref(source)
+            .transmute_with::<ReadOnly<str>, Initialized, CastUnsized, BecauseImmutable>();
+        <str as TryFromBytes>::is_bit_valid(candidate.reborrow_shared())
+    }
+
+    fn check_str_try_ref_from_bytes<const N: usize>(bytes: [u8; N]) -> bool {
+        let expected = core::str::from_utf8(&bytes);
+        let expected_valid = expected.is_ok();
+        assert_eq!(str_validator_accepts(bytes), expected_valid);
+
+        let result = str::try_ref_from_bytes(&bytes);
+        assert_eq!(result.is_ok(), expected_valid);
+        if let (Ok(value), Ok(expected)) = (result, expected) {
+            assert_eq!(value, expected);
+            assert!(core::ptr::eq(value.as_bytes(), expected.as_bytes()));
+        }
+        kani::cover!(expected_valid);
+        expected_valid
+    }
+
+    macro_rules! str_proof {
+        ($proof:ident, $len:expr) => {
+            #[kani::proof]
+            #[kani::unwind(5)]
+            fn $proof() {
+                let bytes: [u8; $len] = kani::any();
+                let expected_valid = check_str_try_ref_from_bytes(bytes);
+                kani::cover!(!expected_valid);
+            }
+        };
+    }
+
+    str_proof!(prove_one_byte_str_try_ref_from_bytes, 1);
+    str_proof!(prove_two_byte_str_try_ref_from_bytes, 2);
+    str_proof!(prove_three_byte_str_try_ref_from_bytes, 3);
+    str_proof!(prove_four_byte_str_try_ref_from_bytes, 4);
 }
 
 #[cfg(test)]
