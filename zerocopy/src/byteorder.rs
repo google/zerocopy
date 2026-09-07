@@ -1007,6 +1007,8 @@ module!(network_endian, NetworkEndian, "network-endian");
 module!(native_endian, NativeEndian, "native-endian");
 
 #[cfg(any(test, kani))]
+// The Kani proofs reuse only part of the ordinary-test support in this module.
+#[cfg_attr(kani, allow(dead_code, unused_macros))]
 mod tests {
     use super::*;
 
@@ -1117,8 +1119,17 @@ mod tests {
         fn new(native: Self::Native) -> Self;
         fn get(self) -> Self::Native;
         fn set(&mut self, native: Self::Native);
-        fn from_bytes(bytes: Self::ByteArray) -> Self;
-        fn into_bytes(self) -> Self::ByteArray;
+        fn from_array(bytes: Self::ByteArray) -> Self;
+        fn into_array(self) -> Self::ByteArray;
+
+        #[cfg(kani)]
+        fn from_inherent_bytes(bytes: Self::ByteArray) -> Self;
+
+        #[cfg(kani)]
+        fn to_inherent_bytes(self) -> Self::ByteArray;
+
+        #[cfg(kani)]
+        fn native_to_ne_bytes(native: Self::Native) -> Self::ByteArray;
 
         /// For `f32` and `f64`, NaN values are not considered equal to
         /// themselves. This method is like `assert_eq!`, but it treats NaN
@@ -1194,12 +1205,27 @@ mod tests {
                     $name::set(self, native)
                 }
 
-                fn from_bytes(bytes: [u8; mem::size_of::<$native>()]) -> $name<O> {
+                fn from_array(bytes: [u8; mem::size_of::<$native>()]) -> $name<O> {
                     $name::from(bytes)
                 }
 
-                fn into_bytes(self) -> [u8; mem::size_of::<$native>()] {
+                fn into_array(self) -> [u8; mem::size_of::<$native>()] {
                     <[u8; mem::size_of::<$native>()]>::from(self)
+                }
+
+                #[cfg(kani)]
+                fn from_inherent_bytes(bytes: [u8; mem::size_of::<$native>()]) -> $name<O> {
+                    $name::from_bytes(bytes)
+                }
+
+                #[cfg(kani)]
+                fn to_inherent_bytes(self) -> [u8; mem::size_of::<$native>()] {
+                    $name::to_bytes(self)
+                }
+
+                #[cfg(kani)]
+                fn native_to_ne_bytes(native: $native) -> [u8; mem::size_of::<$native>()] {
+                    <$native>::to_ne_bytes(native)
                 }
             }
 
@@ -1322,8 +1348,8 @@ mod tests {
         const _BYTES: [u8; 2] = _FROM_BYTES.to_bytes();
     }
 
-    #[cfg_attr(test, test)]
-    #[cfg_attr(kani, kani::proof)]
+    #[cfg(test)]
+    #[test]
     fn test_zero() {
         fn test_zero<T: ByteOrderType>() {
             assert_eq!(T::ZERO.get(), T::Native::ZERO);
@@ -1333,8 +1359,8 @@ mod tests {
         call_for_all_types!(test_zero, NonNativeEndian);
     }
 
-    #[cfg_attr(test, test)]
-    #[cfg_attr(kani, kani::proof)]
+    #[cfg(test)]
+    #[test]
     fn test_max_value() {
         fn test_max_value<T: ByteOrderTypeUnsigned>() {
             assert_eq!(T::MAX_VALUE.get(), T::Native::MAX_VALUE);
@@ -1344,8 +1370,8 @@ mod tests {
         call_for_unsigned_types!(test_max_value, NonNativeEndian);
     }
 
-    #[cfg_attr(test, test)]
-    #[cfg_attr(kani, kani::proof)]
+    #[cfg(test)]
+    #[test]
     fn test_endian() {
         fn test<T: ByteOrderType>(invert: bool) {
             let mut r = SmallRng::seed_from_u64(RNG_SEED);
@@ -1357,14 +1383,14 @@ mod tests {
                     bytes = bytes.invert();
                 }
                 let mut from_native = T::new(native);
-                let from_bytes = T::from_bytes(bytes);
+                let from_bytes = T::from_array(bytes);
 
                 from_native.assert_eq_or_nan(from_bytes);
                 from_native.get().assert_eq_or_nan(native);
                 from_bytes.get().assert_eq_or_nan(native);
 
-                assert_eq!(from_native.into_bytes(), bytes);
-                assert_eq!(from_bytes.into_bytes(), bytes);
+                assert_eq!(from_native.into_array(), bytes);
+                assert_eq!(from_bytes.into_array(), bytes);
 
                 let updated = T::Native::rand(&mut r);
                 from_native.set(updated);
@@ -1382,6 +1408,170 @@ mod tests {
 
         call_for_all_types!(test_native, NativeEndian);
         call_for_all_types!(test_non_native, NonNativeEndian);
+    }
+
+    #[cfg(kani)]
+    mod proofs {
+        use super::*;
+
+        fn ordered_bytes<T: ByteOrderType>(native: T::Native, invert: bool) -> T::ByteArray {
+            let bytes = T::native_to_ne_bytes(native);
+            if invert {
+                bytes.invert()
+            } else {
+                bytes
+            }
+        }
+
+        fn prove_endian<T: ByteOrderType>(invert: bool) {
+            let zero_bytes = T::native_to_ne_bytes(T::Native::ZERO);
+            assert_eq!(T::native_to_ne_bytes(T::ZERO.get()), zero_bytes);
+            let ordered_zero = ordered_bytes::<T>(T::Native::ZERO, invert);
+            assert_eq!(T::ZERO.into_array(), ordered_zero);
+            assert_eq!(T::ZERO.to_inherent_bytes(), ordered_zero);
+
+            let native = kani::any::<T::Native>();
+            let native_bytes = T::native_to_ne_bytes(native);
+            let bytes = ordered_bytes::<T>(native, invert);
+            kani::cover!(!invert || bytes != native_bytes);
+            kani::cover!(native_bytes == zero_bytes);
+
+            let mut from_native = T::new(native);
+            let from_array = T::from_array(bytes);
+            let from_inherent_bytes = T::from_inherent_bytes(bytes);
+
+            // The primitives' inherent byte conversions preserve the exact
+            // floating-point representation, including NaN payloads.
+            assert_eq!(T::native_to_ne_bytes(from_native.get()), native_bytes);
+            assert_eq!(T::native_to_ne_bytes(from_array.get()), native_bytes);
+            assert_eq!(T::native_to_ne_bytes(from_inherent_bytes.get()), native_bytes);
+            assert_eq!(from_native.into_array(), bytes);
+            assert_eq!(from_native.to_inherent_bytes(), bytes);
+            assert_eq!(from_array.into_array(), bytes);
+            assert_eq!(from_array.to_inherent_bytes(), bytes);
+            assert_eq!(from_inherent_bytes.into_array(), bytes);
+            assert_eq!(from_inherent_bytes.to_inherent_bytes(), bytes);
+
+            let updated = kani::any::<T::Native>();
+            let updated_native_bytes = T::native_to_ne_bytes(updated);
+            let updated_bytes = ordered_bytes::<T>(updated, invert);
+            kani::cover!(updated_native_bytes != native_bytes);
+            from_native.set(updated);
+            assert_eq!(T::native_to_ne_bytes(from_native.get()), updated_native_bytes);
+            assert_eq!(from_native.into_array(), updated_bytes);
+            assert_eq!(from_native.to_inherent_bytes(), updated_bytes);
+        }
+
+        fn prove_unsigned_endian<T: ByteOrderTypeUnsigned>(invert: bool) {
+            prove_endian::<T>(invert);
+            let max_bytes = T::native_to_ne_bytes(T::Native::MAX_VALUE);
+            assert_eq!(T::native_to_ne_bytes(T::MAX_VALUE.get()), max_bytes);
+            let ordered_max = ordered_bytes::<T>(T::Native::MAX_VALUE, invert);
+            assert_eq!(T::MAX_VALUE.into_array(), ordered_max);
+            assert_eq!(T::MAX_VALUE.to_inherent_bytes(), ordered_max);
+        }
+
+        fn prove_float_endian<T: ByteOrderType>(invert: bool) {
+            prove_endian::<T>(invert);
+
+            // Tie explicit NaN/non-NaN reachability to the same representation
+            // assertions instead of relying only on `kani::any::<f32/f64>()`'s
+            // nominal domain.
+            let native = kani::any::<T::Native>();
+            let native_bytes = T::native_to_ne_bytes(native);
+            let bytes = ordered_bytes::<T>(native, invert);
+            let from_native = T::new(native);
+            kani::cover!(native.is_nan());
+            kani::cover!(!native.is_nan());
+            assert_eq!(T::native_to_ne_bytes(from_native.get()), native_bytes);
+            assert_eq!(from_native.into_array(), bytes);
+            assert_eq!(from_native.to_inherent_bytes(), bytes);
+        }
+
+        // Each loop-free harness covers every native value and update for one
+        // concrete wrapper. It proves the exact stored bytes and decoded value
+        // for `new`, inherent `from_bytes`/`to_bytes`, `get`, `set`, and both
+        // array `From` conversions. It also checks `ZERO` and, for unsigned
+        // wrappers, `MAX_VALUE`. The oracle is the corresponding primitive's
+        // inherent `to_ne_bytes` operation plus safe byte reversal.
+        //
+        // The native/non-native pair exercises both `ByteOrder::ORDER` branches
+        // on Kani's target. It does not directly instantiate the big-, little-,
+        // or network-endian marker types, prove constant evaluation or
+        // arithmetic/operator implementations, or establish behavior on other
+        // targets, pointer widths, or outside Kani's floating-point model.
+        macro_rules! endian_proofs {
+            ($(($proof:ident, $prove:ident, $ty:ty, $invert:expr)),* $(,)?) => {
+                $(
+                    #[kani::proof]
+                    fn $proof() {
+                        $prove::<$ty>($invert);
+                    }
+                )*
+            };
+        }
+
+        endian_proofs!(
+            (prove_u16_native_endian, prove_unsigned_endian, U16<NativeEndian>, false),
+            (
+                prove_u16_non_native_endian,
+                prove_unsigned_endian,
+                U16<NonNativeEndian>,
+                true
+            ),
+            (prove_u32_native_endian, prove_unsigned_endian, U32<NativeEndian>, false),
+            (
+                prove_u32_non_native_endian,
+                prove_unsigned_endian,
+                U32<NonNativeEndian>,
+                true
+            ),
+            (prove_u64_native_endian, prove_unsigned_endian, U64<NativeEndian>, false),
+            (
+                prove_u64_non_native_endian,
+                prove_unsigned_endian,
+                U64<NonNativeEndian>,
+                true
+            ),
+            (prove_u128_native_endian, prove_unsigned_endian, U128<NativeEndian>, false),
+            (
+                prove_u128_non_native_endian,
+                prove_unsigned_endian,
+                U128<NonNativeEndian>,
+                true
+            ),
+            (prove_usize_native_endian, prove_unsigned_endian, Usize<NativeEndian>, false),
+            (
+                prove_usize_non_native_endian,
+                prove_unsigned_endian,
+                Usize<NonNativeEndian>,
+                true
+            ),
+            (prove_i16_native_endian, prove_endian, I16<NativeEndian>, false),
+            (prove_i16_non_native_endian, prove_endian, I16<NonNativeEndian>, true),
+            (prove_i32_native_endian, prove_endian, I32<NativeEndian>, false),
+            (prove_i32_non_native_endian, prove_endian, I32<NonNativeEndian>, true),
+            (prove_i64_native_endian, prove_endian, I64<NativeEndian>, false),
+            (prove_i64_non_native_endian, prove_endian, I64<NonNativeEndian>, true),
+            (prove_i128_native_endian, prove_endian, I128<NativeEndian>, false),
+            (prove_i128_non_native_endian, prove_endian, I128<NonNativeEndian>, true),
+            (prove_isize_native_endian, prove_endian, Isize<NativeEndian>, false),
+            (prove_isize_non_native_endian, prove_endian, Isize<NonNativeEndian>, true),
+            (prove_f32_native_endian, prove_float_endian, F32<NativeEndian>, false),
+            (
+                prove_f32_non_native_endian,
+                prove_float_endian,
+                F32<NonNativeEndian>,
+                true
+            ),
+            (prove_f64_native_endian, prove_float_endian, F64<NativeEndian>, false),
+            (
+                prove_f64_non_native_endian,
+                prove_float_endian,
+                F64<NonNativeEndian>,
+                true
+            ),
+        );
     }
 
     #[test]
