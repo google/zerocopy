@@ -382,6 +382,31 @@ pub(crate) fn nonzero_u16_from_ne_bytes(bytes: [u8; 2]) -> Option<core::num::Non
     core::num::NonZeroU16::new(u16::from_ne_bytes(bytes))
 }
 
+/// Classifies whether a complete fixed byte array is the all-zero sequence.
+///
+/// Rust's repeat-array expression constructs `[0u8; N]` by copying the value
+/// zero into every element [1]. Safe slice iteration yields both arrays in
+/// order [2]; `Iterator::copied` copies each `u8` [3]; and `Iterator::eq`
+/// returns true exactly when both sequences have equal length and
+/// pairwise-equal elements [4]. Primitive `u8` equality supplies each element
+/// comparison [5]. Thus a true result directly establishes that every
+/// candidate byte is zero, without manually reconstructing an integer or
+/// calling any zerocopy target.
+///
+/// This helper classifies bytes only. Each caller must separately identify the
+/// contract or explicit zerocopy policy which makes all-zero meaningful for
+/// the destination under proof. Its iteration is also subject to the caller's
+/// Kani unwind bound.
+///
+/// [1]: https://doc.rust-lang.org/1.93.0/reference/expressions/array-expr.html#array-expressions
+/// [2]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.iter
+/// [3]: https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.copied
+/// [4]: https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.eq
+/// [5]: https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-PartialEq-for-u8
+pub(crate) fn all_zero_byte_policy_oracle<const N: usize>(bytes: &[u8; N]) -> bool {
+    bytes.iter().copied().eq([0u8; N].iter().copied())
+}
+
 // Generate every `usize` in the inclusive range `0..=max` without scattering
 // domain arithmetic across harnesses. The common Kani configuration documents
 // that `kani::any::<usize>()` produces an arbitrary valid target `usize`.
