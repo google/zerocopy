@@ -443,6 +443,13 @@ pub(crate) fn derive_is_bit_valid(
         }
     })
 }
+
+// Concrete consumer-side Kani proofs for representative expansions from this
+// entry point live beside their derive invocations in
+// `zerocopy/src/proofs/try_from_bytes_derive.rs`. They verify the emitted
+// implementations together with the consuming crate's validation path, not
+// this generator universally; see the generated-output exception in
+// `zerocopy/agent_docs/validation.md`.
 pub(crate) fn derive_try_from_bytes(ctx: &Ctx, top_level: Trait) -> Result<TokenStream, Error> {
     match &ctx.ast.data {
         Data::Struct(strct) => derive_try_from_bytes_struct(ctx, strct, top_level),
@@ -450,6 +457,7 @@ pub(crate) fn derive_try_from_bytes(ctx: &Ctx, top_level: Trait) -> Result<Token
         Data::Union(unn) => Ok(derive_try_from_bytes_union(ctx, unn, top_level)),
     }
 }
+
 fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
     let fields = ctx.ast.data.fields();
     if fields.is_empty() {

@@ -57,6 +57,16 @@ usually sufficient.
   (token streams) in `zerocopy-derive/src/output_tests.rs`.
 - **Formal Verification (Kani):** Place Kani proofs in a `mod proofs` module
   within the source file they test.
+    - **Generated-output exception:** A semantic proof of proc-macro-generated
+      code may live in a focused child of the consuming source file's inline
+      `mod proofs` when the defining proc-macro crate cannot invoke its own
+      macro and the proof requires consumer-crate internals. Keep each concrete
+      derive invocation beside the harness that verifies its expansion, and
+      cross-link the consumer proof and generator source so that changes to
+      either side trigger review. This exception covers only the enumerated
+      concrete expansions and their linked runtime paths; it does not turn
+      consumer-side verification into a universal theorem about the generator
+      or its token output.
     - **Purpose:** Use the
       [Kani Rust Verifier](https://model-checking.github.io/kani/) to prove the
       soundness of `unsafe` code or code relied upon by `unsafe` blocks. Unlike
