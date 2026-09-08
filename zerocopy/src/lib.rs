@@ -5931,11 +5931,7 @@ pub unsafe trait IntoBytes {
     {
         let src = self.as_bytes();
         if dst.len() == src.len() {
-            // SAFETY: Within this branch of the conditional, we have ensured
-            // that `dst.len()` is equal to `src.len()`. Neither the size of the
-            // source nor the size of the destination change between the above
-            // size check and the invocation of `copy_unchecked`.
-            unsafe { util::copy_unchecked(src, dst) }
+            util::copy_prefix(src, dst);
             Ok(())
         } else {
             Err(SizeError::new(self))
@@ -6018,12 +6014,7 @@ pub unsafe trait IntoBytes {
         let src = self.as_bytes();
         match dst.get_mut(..src.len()) {
             Some(dst) => {
-                // SAFETY: Within this branch of the `match`, we have ensured
-                // through fallible subslicing that `dst.len()` is equal to
-                // `src.len()`. Neither the size of the source nor the size of
-                // the destination change between the above subslicing operation
-                // and the invocation of `copy_unchecked`.
-                unsafe { util::copy_unchecked(src, dst) }
+                util::copy_prefix(src, dst);
                 Ok(())
             }
             None => Err(SizeError::new(self)),
@@ -6125,13 +6116,7 @@ pub unsafe trait IntoBytes {
             // than panicking.
             return Err(SizeError::new(self));
         };
-        // SAFETY: Through fallible subslicing of `dst`, we have ensured that
-        // `dst.len()` is equal to `src.len()`. Neither the size of the source
-        // nor the size of the destination change between the above subslicing
-        // operation and the invocation of `copy_unchecked`.
-        unsafe {
-            util::copy_unchecked(src, dst);
-        }
+        util::copy_prefix(src, dst);
         Ok(())
     }
 
