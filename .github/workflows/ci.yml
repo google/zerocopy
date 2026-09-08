@@ -735,10 +735,12 @@ jobs:
           # TODO(https://github.com/model-checking/kani-github-action/issues/56):
           # Go back to testing all features once the Kani GitHub Action supports
           # specifying a particular toolchain.
-          args: "--manifest-path zerocopy/Cargo.toml --package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse -Zfunction-contracts --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
+          # Memory-safety, overflow, undefined-function, and unwinding checks
+          # are enabled by default. Kani 0.65 removed their positive flags.
+          args: "--manifest-path zerocopy/Cargo.toml --package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse -Zfunction-contracts --randomize-layout"
           # This version is automatically rolled by
           # `roll-pinned-toolchain-versions.yml`.
-          kani-version: 0.60.0
+          kani-version: 0.67.0
 
   # NEON intrinsics are currently broken on big-endian platforms. [1] This test ensures
   # that we don't accidentally attempt to compile these intrinsics on such platforms. We
