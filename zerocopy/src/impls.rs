@@ -1389,9 +1389,14 @@ mod proofs {
     use alloc::boxed::Box;
     use core::{mem, num::NonZeroU16, ptr::NonNull};
 
-    use crate::proof_support::{
-        all_zero_byte_policy_oracle, bool_from_byte, char_from_ne_bytes, nonzero_u16_from_ne_bytes,
-        validate_and_read_sized,
+    use crate::{
+        pointer::{cast::CastUnsized, invariant::Initialized, BecauseImmutable, Ptr},
+        proof_support::{
+            all_zero_byte_policy_oracle, assert_same_bool, assert_same_u8_elements, bool_from_byte,
+            char_from_ne_bytes, nonzero_u16_from_ne_bytes, validate_and_read_sized,
+        },
+        wrappers::ReadOnly,
+        TryFromBytes,
     };
 
     // Configuration: Every harness in this module uses the common Kani CI
@@ -1793,6 +1798,211 @@ mod proofs {
         None,
         value => assert!(value.is_none())
     );
+
+    // Domain: Two independently selectable proof families each cover every
+    // byte sequence of lengths zero through four. This includes the empty DST
+    // boundary, every single UTF-8 scalar encoding, and every mixture whose
+    // total encoded length fits the bound. The direct-validator family checks
+    // both alignment-marker implementations sealed by the current pointer
+    // model: `Unaligned`, which `transmute_with` produces, and `Aligned`, which
+    // `bikeshed_recall_aligned` safely recalls because `str: Unaligned`.
+    //
+    // Storage and bounds: Each harness uses one fixed stack array of zero to
+    // four bytes and performs no dynamic allocation. Every checking helper
+    // receives a shared slice borrow of that array; none copies it into a
+    // second array. The non-materializing validator helper's safe zerocopy
+    // conversion from `&[u8]` to `&ReadOnly<[u8]>` creates only another shared
+    // reference, not wrapper storage. That conversion is target-path setup
+    // rather than an independent oracle: the harness relies on the Rust/Kani
+    // model to preserve the referent through it, then tests the resulting
+    // validator plumbing against the standard-library oracle below. No harness
+    // uses `kani::assume`, and the proof source contains no explicit loop.
+    // Every harness carries `#[kani::unwind(5)]`,
+    // permitting each modeled validator, comparison, or UTF-8 scan to examine
+    // at most four bytes and terminate, with Kani's unwinding checks enforcing
+    // the bound.
+    //
+    // Establishes: In its own five harnesses, each direct non-materializing
+    // `is_bit_valid::<Unaligned>` and `is_bit_valid::<Aligned>` specialization
+    // accepts exactly when the standard library does. In a separate five
+    // harnesses, each input independently accepted by the standard library is
+    // passed to the public borrowed read API, which succeeds and returns the
+    // same ordered bytes and length. `str::as_bytes` provides the safe
+    // byte-slice views used by the shared elementwise oracle [6]. That observer
+    // obtains both counts with `slice::len`, compares them through the shared
+    // equality helpers, and then compares ordered bytes through safe iteration
+    // [7]. The four syntactically nonempty public harnesses unconditionally
+    // check that the result retains the input address within Kani's pointer
+    // model; pointer equality is only an address observation, not a provenance
+    // or aliasing theorem. No address identity is claimed for empty slices.
+    //
+    // Oracle: `core::str::from_utf8` is the authoritative safe Rust validity
+    // and text oracle [1]. Each harness's array-to-slice coercion is a
+    // compiler-checked unsizing coercion [2]. On nonempty valid input,
+    // `slice::as_ptr` supplies the address of that borrowed source slice's
+    // buffer [3], while `str::as_ptr` supplies the address of the first byte of
+    // the returned string [4]. `ptr::addr_eq` then compares those addresses
+    // while explicitly discarding pointer metadata [5]. The shared
+    // `assert_same_bool` comparison makes a false address or validity result a
+    // failed assertion using `assert_eq!` and `bool::PartialEq` [7]. The
+    // expected address is therefore extracted from the original borrowed
+    // storage, not inferred from the UTF-8 oracle's address. Consequently,
+    // these harnesses prove zerocopy's validator/cast plumbing, not the
+    // standard library's UTF-8 algorithm.
+    //
+    // Rust match and enum-pattern semantics classify the standard-library
+    // `Result` without a target-derived Boolean [8].
+    //
+    // Excludes: Longer strings, an independent proof of UTF-8 validity itself,
+    // and the public borrowed API's invalid-input path. The latter is not
+    // invoked because a bug which materialized invalid `str` would be undefined
+    // before its `Result` could safely be inspected. Kani does not completely
+    // check reference aliasing, pointer provenance, invalid values, or
+    // uninitialized memory, so those obligations—including whether the
+    // observed equal address carries the required provenance—remain explicit
+    // tool/TCB premises rather than conclusions of these harnesses.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.0/core/str/fn.from_utf8.html:
+    //
+    //     Not all byte slices are valid string slices, however: `&str`
+    //     requires that it is valid UTF-8. `from_utf8()` checks to ensure that
+    //     the bytes are valid UTF-8, and then does the conversion.
+    //
+    //     Returns `Err` if the slice is not UTF-8 with a description as to why
+    //     the provided slice is not UTF-8.
+    //
+    // [2] Rust 1.93 lists `[T; n]` to `[T]` among its unsized coercions:
+    // https://doc.rust-lang.org/1.93.0/reference/type-coercions.html#unsized-coercions
+    //
+    // [3] Per https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.as_ptr:
+    //
+    //     Returns a raw pointer to the slice's buffer.
+    //
+    // [4] Per https://doc.rust-lang.org/1.93.0/std/primitive.str.html#method.as_ptr:
+    //
+    //     Converts a string slice to a raw pointer.
+    //
+    //     As string slices are a slice of bytes, the raw pointer points to a
+    //     `u8`. This pointer will be pointing to the first byte of the string
+    //     slice.
+    //
+    // [5] Per https://doc.rust-lang.org/1.93.0/std/ptr/fn.addr_eq.html:
+    //
+    //     Compares the addresses of the two pointers for equality, ignoring
+    //     any metadata in fat pointers.
+    //
+    // [6] Per https://doc.rust-lang.org/1.93.0/std/primitive.str.html#method.as_bytes:
+    //
+    //     Converts a string slice to a byte slice.
+    //
+    // [7] https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.len
+    // https://doc.rust-lang.org/1.93.0/std/macro.assert_eq.html
+    // https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialEq.html#tymethod.eq
+    // https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialEq-for-usize
+    // https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.iter
+    // https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.copied
+    // https://doc.rust-lang.org/1.93.0/std/iter/trait.Iterator.html#method.eq
+    // https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-PartialEq-for-u8
+    // https://doc.rust-lang.org/1.93.0/std/primitive.bool.html#impl-PartialEq-for-bool
+    // [8] https://doc.rust-lang.org/1.93.0/reference/expressions/match-expr.html
+    // https://doc.rust-lang.org/1.93.0/reference/patterns.html#tuple-struct-patterns
+
+    fn assert_str_validators_match(bytes: &[u8], expected_valid: bool) {
+        let source: &ReadOnly<[u8]> = bytes.into();
+        let mut candidate = Ptr::from_ref(source)
+            .transmute_with::<ReadOnly<str>, Initialized, CastUnsized, BecauseImmutable>();
+        let unaligned_valid = <str as TryFromBytes>::is_bit_valid(candidate.reborrow_shared());
+        let aligned_candidate = candidate.reborrow_shared().bikeshed_recall_aligned();
+        let aligned_valid = <str as TryFromBytes>::is_bit_valid(aligned_candidate);
+        assert_same_bool(unaligned_valid, expected_valid);
+        assert_same_bool(aligned_valid, expected_valid);
+    }
+
+    fn assert_empty_valid_str_borrow(bytes: &[u8], expected: &str) {
+        match str::try_ref_from_bytes(bytes) {
+            Ok(value) => assert_same_u8_elements(value.as_bytes(), expected.as_bytes()),
+            Err(_) => assert_same_bool(false, true),
+        }
+    }
+
+    fn assert_nonempty_valid_str_borrow(bytes: &[u8], expected: &str) {
+        match str::try_ref_from_bytes(bytes) {
+            Ok(value) => {
+                assert_same_u8_elements(value.as_bytes(), expected.as_bytes());
+                assert_same_bool(core::ptr::addr_eq(value.as_ptr(), bytes.as_ptr()), true);
+            }
+            Err(_) => assert_same_bool(false, true),
+        }
+    }
+
+    macro_rules! str_validator_proof {
+        ($proof:ident, $len:expr) => {
+            #[kani::proof]
+            #[kani::unwind(5)]
+            fn $proof() {
+                let bytes: [u8; $len] = kani::any();
+                match core::str::from_utf8(&bytes) {
+                    Ok(_) => {
+                        kani::cover!(true, "standard library accepts this byte sequence");
+                        assert_str_validators_match(&bytes, true);
+                    }
+                    Err(_) => {
+                        kani::cover!(true, "standard library rejects this byte sequence");
+                        assert_str_validators_match(&bytes, false);
+                    }
+                }
+            }
+        };
+    }
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_empty_str_validators() {
+        let bytes: [u8; 0] = [];
+        match core::str::from_utf8(&bytes) {
+            Ok(_) => assert_str_validators_match(&bytes, true),
+            Err(_) => assert_same_bool(false, true),
+        }
+    }
+
+    str_validator_proof!(prove_one_byte_str_validators, 1);
+    str_validator_proof!(prove_two_byte_str_validators, 2);
+    str_validator_proof!(prove_three_byte_str_validators, 3);
+    str_validator_proof!(prove_four_byte_str_validators, 4);
+
+    #[kani::proof]
+    #[kani::unwind(5)]
+    fn prove_empty_str_try_ref_from_bytes() {
+        let bytes: [u8; 0] = [];
+        match core::str::from_utf8(&bytes) {
+            Ok(expected) => assert_empty_valid_str_borrow(&bytes, expected),
+            Err(_) => assert_same_bool(false, true),
+        }
+    }
+
+    macro_rules! nonempty_str_borrow_proof {
+        ($proof:ident, $len:expr) => {
+            #[kani::proof]
+            #[kani::unwind(5)]
+            fn $proof() {
+                let bytes: [u8; $len] = kani::any();
+                match core::str::from_utf8(&bytes) {
+                    Ok(expected) => {
+                        kani::cover!(true, "standard library accepts this byte sequence");
+                        assert_nonempty_valid_str_borrow(&bytes, expected);
+                    }
+                    Err(_) => {
+                        kani::cover!(true, "standard library rejects this byte sequence");
+                    }
+                }
+            }
+        };
+    }
+
+    nonempty_str_borrow_proof!(prove_one_byte_str_try_ref_from_bytes, 1);
+    nonempty_str_borrow_proof!(prove_two_byte_str_try_ref_from_bytes, 2);
+    nonempty_str_borrow_proof!(prove_three_byte_str_try_ref_from_bytes, 3);
+    nonempty_str_borrow_proof!(prove_four_byte_str_try_ref_from_bytes, 4);
 }
 
 #[cfg(test)]
