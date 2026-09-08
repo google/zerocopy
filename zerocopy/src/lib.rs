@@ -368,6 +368,7 @@ pub mod pointer;
 mod proof_support;
 #[cfg(kani)]
 mod proofs {
+    mod into_bytes;
     #[cfg(feature = "derive")]
     mod try_from_bytes_derive;
 }
