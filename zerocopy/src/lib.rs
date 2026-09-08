@@ -786,10 +786,16 @@ pub unsafe trait KnownLayout {
     ///   where `size == size_of::<Self>()`
     /// - If `Self` is a slice DST, then `LAYOUT.size_info ==
     ///   SizeInfo::SliceDst(slice_layout)` where:
+    ///   - `slice_layout.size_rounding` decodes to a power-of-two alignment
+    ///     and a phase which is less than that alignment
     ///   - The size, `size`, of an instance of `Self` with `elems` trailing
-    ///     slice elements is equal to `slice_layout.offset +
-    ///     slice_layout.elem_size * elems` rounded up to the nearest multiple
-    ///     of `LAYOUT.align`
+    ///     slice elements is equal to `slice_layout.size_base +
+    ///     round_up(size_phase + slice_layout.elem_size * elems, size_align)`,
+    ///     where `(size_align, size_phase)` is decoded from
+    ///     `slice_layout.size_rounding`
+    ///   - The trailing slice begins at byte offset `slice_layout.offset`
+    ///   - `slice_layout.offset + slice_layout.elem_size * elems` does not
+    ///     overflow and is no greater than `size`
     ///   - For such an instance, any bytes in the range `[slice_layout.offset +
     ///     slice_layout.elem_size * elems, size)` are padding and must not be
     ///     assumed to be initialized
@@ -1004,11 +1010,7 @@ impl PointerMetadata for usize {
     #[inline]
     fn size_for_metadata(self, layout: DstLayout) -> Option<usize> {
         match layout.size_info {
-            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
-                let slice_len = elem_size.checked_mul(self)?;
-                let without_padding = offset.checked_add(slice_len)?;
-                without_padding.checked_add(util::padding_needed_for(without_padding, layout.align))
-            }
+            SizeInfo::SliceDst(trailing) => trailing.size_for_elems(self),
             // NOTE: This branch is unreachable, but we return `None` rather
             // than `unreachable!()` to avoid generating panic paths.
             SizeInfo::Sized { .. } => None,
@@ -6497,6 +6499,39 @@ mod tests {
         }
     }
 
+    // These types exercise a nested slice DST whose inner trailing-padding
+    // operation cannot be flattened into the alignment of the packed outer
+    // type. For `NestedPackedDstOuter<[u8]>`, the trailing slice begins at
+    // offset 7, but the size for `elems` elements is
+    // `2 + round_up(5 + elems, 4)`.
+    //
+    // The Reference rejects directly placing an alignment-4 field in a
+    // `repr(packed(2))` type. Rust currently accepts this construction through
+    // generic indirection. So long as Rust accepts it, this test deliberately
+    // treats its layout as following the otherwise-applicable `repr(C)` and
+    // `repr(packed)` rules.
+    #[derive(FromBytes, Immutable, KnownLayout)]
+    #[repr(C, align(4))]
+    struct NestedPackedDstWord([u8; 4]);
+
+    #[derive(FromBytes, Immutable, KnownLayout)]
+    #[repr(C)]
+    struct NestedPackedDstInner<T: ?Sized> {
+        a: NestedPackedDstWord,
+        b: u8,
+        tail: T,
+    }
+
+    #[derive(FromBytes, Immutable, KnownLayout)]
+    #[repr(C, packed(2))]
+    struct NestedPackedDstOuter<T: ?Sized> {
+        z: u8,
+        inner: ManuallyDrop<NestedPackedDstInner<T>>,
+    }
+
+    #[repr(C, align(2))]
+    struct Align2<T>(T);
+
     #[test]
     fn test_known_layout() {
         // Test that `$ty` and `ManuallyDrop<$ty>` have the expected layout.
@@ -6511,17 +6546,23 @@ mod tests {
             };
         }
 
-        let layout =
-            |offset, align, trailing_slice_elem_size, statically_shallow_unpadded| DstLayout {
-                align: NonZeroUsize::new(align).unwrap(),
+        let layout = |offset, align, trailing_slice_elem_size, statically_shallow_unpadded| {
+            let align = NonZeroUsize::new(align).unwrap();
+            let size_phase = offset % align.get();
+            DstLayout {
+                align,
                 size_info: match trailing_slice_elem_size {
                     None => SizeInfo::Sized { size: offset },
-                    Some(elem_size) => {
-                        SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
-                    }
+                    Some(elem_size) => SizeInfo::SliceDst(TrailingSliceLayout {
+                        offset,
+                        elem_size,
+                        size_base: offset - size_phase,
+                        size_rounding: SizeRounding::new(align, size_phase),
+                    }),
                 },
                 statically_shallow_unpadded,
-            };
+            }
+        };
 
         test!((), layout(0, 1, None, false));
         test!(u8, layout(1, 1, None, false));
@@ -6535,6 +6576,112 @@ mod tests {
         test!([()], layout(0, 1, Some(0), true));
         test!([u8], layout(0, 1, Some(1), true));
         test!(str, layout(0, 1, Some(1), true));
+    }
+
+    #[test]
+    fn test_nested_packed_dst_layout() {
+        fn assert_native_size<const N: usize>(expected: usize) {
+            let value = NestedPackedDstOuter {
+                z: 0,
+                inner: ManuallyDrop::new(NestedPackedDstInner {
+                    a: NestedPackedDstWord([0; 4]),
+                    b: 0,
+                    tail: [0; N],
+                }),
+            };
+            let value: &NestedPackedDstOuter<[u8]> = &value;
+            assert_eq!(mem::size_of_val(value), expected);
+            assert_eq!(NestedPackedDstOuter::<[u8]>::size_for_metadata(N), Some(expected));
+        }
+
+        assert_native_size::<0>(10);
+        assert_native_size::<1>(10);
+        assert_native_size::<2>(10);
+        assert_native_size::<3>(10);
+        assert_native_size::<4>(14);
+        assert_native_size::<7>(14);
+        assert_native_size::<8>(18);
+
+        let layout = NestedPackedDstOuter::<[u8]>::LAYOUT;
+        assert_eq!(layout.align.get(), 2);
+        assert!(layout.requires_dynamic_padding());
+        assert_eq!(
+            layout.size_info,
+            SizeInfo::SliceDst(TrailingSliceLayout {
+                offset: 7,
+                elem_size: 1,
+                size_base: 6,
+                size_rounding: SizeRounding::new(NonZeroUsize::new(4).unwrap(), 1),
+            })
+        );
+
+        // Eight bytes used to be incorrectly accepted for a zero-element
+        // value. The actual Rust layout requires ten bytes.
+        let short = Align2([0u8; 8]);
+        assert!(NestedPackedDstOuter::<[u8]>::ref_from_bytes_with_elems(&short.0, 0).is_err());
+        assert!(pointer::Ptr::from_ref(&short.0[..])
+            .try_cast_into::<NestedPackedDstOuter<[u8]>, pointer::BecauseImmutable>(
+                CastType::Prefix,
+                Some(0),
+            )
+            .is_err());
+
+        let full = Align2([0, 0, 0, 0, 0, 0, 0, 0, b'S', b'!']);
+        let value = NestedPackedDstOuter::<[u8]>::ref_from_bytes_with_elems(&full.0, 0).unwrap();
+        assert_eq!(mem::size_of_val(value), 10);
+
+        // When metadata is inferred, lengths 0 through 3 all produce a
+        // ten-byte object. Parsing chooses the largest trailing-slice length
+        // which fits exactly.
+        let inferred = NestedPackedDstOuter::<[u8]>::ref_from_bytes(&full.0).unwrap();
+        assert_eq!(pointer::Ptr::from_ref(inferred).len(), 3);
+
+        // `MetadataOf::padding_needed_for` is consumed by `SplitAt` to decide
+        // whether two mutable projections would overlap. It must include the
+        // inner type's trailing padding, not just padding to the outer packed
+        // alignment.
+        for (elems, expected) in [(0, 3), (1, 2), (2, 1), (3, 0), (4, 3)] {
+            // SAFETY: The `assert_native_size` calls above construct an
+            // instance for every metadata value used by this loop and
+            // establish that its size is at most 14 bytes. The Reference
+            // states that the upper bound on object size is `isize::MAX` [1].
+            // Thus the 14-byte maximum does not exceed `isize::MAX`, exactly
+            // satisfying `MetadataOf::new_unchecked`'s precondition.
+            //
+            // [1] Per https://doc.rust-lang.org/1.92.0/reference/types/numeric.html#machine-dependent-integer-types:
+            //
+            //     The theoretical upper bound on object and array size is the
+            //     maximum `isize` value.
+            let meta =
+                unsafe { util::MetadataOf::<NestedPackedDstOuter<[u8]>>::new_unchecked(elems) };
+            assert_eq!(meta.padding_needed_for(), expected);
+        }
+    }
+
+    // Before Rust 1.76, rust-lang/rust#118537 caused `addr_of_mut!` to
+    // miscompute the offset of an unsized field in a packed struct. The fix is
+    // rust-lang/rust#118540. Keep the layout and parsing regression above on
+    // all supported compilers, and gate only the projection regression which
+    // necessarily exercises that independent compiler bug.
+    #[rustversion::since(1.76.0)]
+    #[test]
+    fn test_nested_packed_dst_projection() {
+        let full = Align2([0, 0, 0, 0, 0, 0, 0, 0, b'S', b'!']);
+
+        // The projected inner value occupies the final eight bytes of the full
+        // ten-byte input, including the two sentinel bytes.
+        let (value, rest) = pointer::Ptr::from_ref(&full.0[..])
+            .try_cast_into::<NestedPackedDstOuter<[u8]>, pointer::BecauseImmutable>(
+                CastType::Prefix,
+                Some(0),
+            )
+            .unwrap();
+        assert!(rest.as_ref().is_empty());
+        let inner = value.project::<_, { STRUCT_VARIANT_ID }, { ident_id!(inner) }>().unwrap();
+        assert_eq!(
+            inner.as_bytes::<pointer::BecauseImmutable>().as_ref(),
+            &[0, 0, 0, 0, 0, 0, b'S', b'!']
+        );
     }
 
     #[cfg(feature = "derive")]
@@ -6592,10 +6739,19 @@ mod tests {
             statically_shallow_unpadded: false,
         };
 
-        let unsized_layout = |align, elem_size, offset, statically_shallow_unpadded| DstLayout {
-            align: NonZeroUsize::new(align).unwrap(),
-            size_info: SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }),
-            statically_shallow_unpadded,
+        let unsized_layout = |align, elem_size, offset, statically_shallow_unpadded| {
+            let align = NonZeroUsize::new(align).unwrap();
+            let size_phase = offset % align.get();
+            DstLayout {
+                align,
+                size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                    offset,
+                    elem_size,
+                    size_base: offset - size_phase,
+                    size_rounding: SizeRounding::new(align, size_phase),
+                }),
+                statically_shallow_unpadded,
+            }
         };
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
@@ -7504,6 +7660,16 @@ mod tests {
             assert_eq!(&*s, &[0, 0, 0]);
             s[1] = 3;
             assert_eq!(&*s, &[0, 3, 0]);
+        }
+
+        #[test]
+        fn test_new_box_zeroed_with_elems_nested_packed_dst() {
+            let mut value = NestedPackedDstOuter::<[u8]>::new_box_zeroed_with_elems(0).unwrap();
+            assert_eq!(mem::size_of_val(&*value), 10);
+
+            // Exercise the whole-object write that exposed the former
+            // under-allocation under Miri and AddressSanitizer.
+            value.zero();
         }
 
         #[test]
