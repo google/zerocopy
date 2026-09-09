@@ -730,6 +730,7 @@ jobs:
           persist-credentials: false
       - uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
         with:
+          command: zerocopy/ci/run_kani.sh
           # Use `--features __internal_use_only_features_that_work_on_stable`
           # because the Kani GitHub Action uses its own pinned nightly
           # toolchain. Sometimes, we make changes to our nightly features for
@@ -742,7 +743,9 @@ jobs:
           # specifying a particular toolchain.
           # Memory-safety, overflow, undefined-function, and unwinding checks
           # are enabled by default. Kani 0.65 removed their positive flags.
-          args: "--manifest-path zerocopy/Cargo.toml --package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse -Zfunction-contracts --randomize-layout"
+          # The custom command enters the `zerocopy` crate directory before
+          # forwarding these arguments.
+          args: "--manifest-path Cargo.toml --package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse -Zfunction-contracts --randomize-layout"
           # This version is automatically rolled by
           # `roll-pinned-toolchain-versions.yml`.
           kani-version: 0.67.0
