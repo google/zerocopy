@@ -76,7 +76,27 @@ usually sufficient.
       and Kani's model of Rust.
     - **How to Write Proofs:**
         - **Harnesses:** Mark proof functions with `#[kani::proof]`.
-        - **Inputs:** Use `kani::any()` to generate arbitrary inputs.
+        - **Inputs:** Use `kani::any()` to generate arbitrary inputs. Kani
+          0.67's [tagged `any` contract] says that `any::<T>()` constructs an
+          arbitrary valid `T`, and that `Arbitrary` implementations are
+          expected to represent every possible value. Its tagged generic
+          [array dispatch] delegates `[T; N]` generation to `T::any_array`;
+          tagged [primitive implementations] override that method and obtain
+          primitive arrays, as well as scalar primitive integers, from raw
+          model hooks. The tagged [raw-any functions] carry the hooks which the
+          compiler's [raw-any lowering] and [raw-array lowering] replace with
+          destination-typed nondeterministic expressions. Kani's [dependency
+          pin] selects CBMC 6.8.0, whose [nondeterminism model] and
+          [separate-choice example] permit separately evaluated
+          nondeterministic expressions to choose differently. Treat
+          completeness, validity, and the premise that each
+          dynamic evaluation is a fresh, mutually unconstrained choice as
+          TOOL/TCB inputs, not properties proved by a harness. `kani::assume`
+          only
+          filters this generated domain; it does not establish its original
+          completeness. A custom or derived `Arbitrary` implementation needs
+          its own domain/image argument because the safe trait cannot enforce
+          the documented completeness expectation.
         - **Assumptions:** Use `kani::assume(condition)` to constrain inputs to
           valid states (e.g., `align.is_power_of_two()`).
         - **Assertions:** Use `assert!(condition)` to verify the properties you
@@ -103,23 +123,21 @@ usually sufficient.
           factored into a nearby family or module scope only when every covered
           harness refers to it unambiguously.
         - **Non-vacuity:** Use `kani::cover!` to check that important input and
-          result partitions are reachable. Every assumption must correspond to
-          a documented precondition or to the stated proof bound. Do not reject
-          inputs using an impossible assumption or a diverging loop. Kani 0.67
-          [treats cover properties as reporting-only][Kani cover renderer] and
-          has no
-          `--fail-on-cover` option: zero satisfied covers can accompany a
-          successful verification result. `ci/run_kani.sh` therefore checks
-          every emitted cover summary and fails unless all cover properties are
-          satisfied. Its parser is part of the pinned-version audit and must be
-          revalidated when Kani or its output format changes.
-        - **Bit validity:** `kani::any::<T>()` produces only valid instances of
-          `T`. To verify a byte validator, generate arbitrary bytes and decide
-          expected acceptance using an independent oracle before consulting the
-          target. Never materialize `T` merely because the validator under
-          proof accepts: that validator may be the bug. Construct `T` only
-          through an independently safe checked operation. If no such operation
-          exists, exercise only a non-materializing decision path for invalid
+          result partitions are reachable. The CI and local commands below use
+          a fresh explicit target and per-harness output, then fail unless every
+          emitted cover-class property is `SATISFIED`; Kani's successful
+          verification result alone is insufficient. Every assumption must
+          correspond to a documented precondition or to the stated proof bound.
+          Do not reject inputs using an impossible assumption or a diverging
+          loop.
+        - **Bit validity:** Under the TOOL/TCB premise recorded in **Inputs**,
+          `kani::any::<T>()` produces only valid instances of `T`. To verify a
+          byte validator, generate arbitrary bytes and decide expected
+          acceptance using an independent oracle before consulting the target.
+          Never materialize `T` merely because the validator under proof
+          accepts: that validator may be the bug. Construct `T` only through an
+          independently safe checked operation. If no such operation exists,
+          exercise only a non-materializing decision path for invalid
           candidates and document that limitation.
         - **Soundness boundary:** State which obligations Kani does not prove.
           In particular, Kani does not completely check reference aliasing,
@@ -148,7 +166,11 @@ usually sufficient.
       `x86_64-unknown-linux-gnu` (64-bit, little-endian) with
       `__internal_use_only_features_that_work_on_stable` (`alloc`, `derive`,
       `simd`, and `std`), `-Zfunction-contracts`, and one layout selected by
-      `--randomize-layout` per invocation. Source-level proof scopes should
+      `--randomize-layout` per invocation. The runner also supplies a fresh
+      explicit `--target-dir` with
+      `-Zunstable-options --output-into-files`, followed by
+      `ci/check_kani_cover.py`; this output/checking pair changes the acceptance
+      condition, not the modeled Rust program. Source-level proof scopes should
       refer to this common configuration and state any deviations.
     - **Compiler and documentation compatibility:** After installing the
       pinned Kani release, inspect the `kani-compiler` executable in that
@@ -170,6 +192,51 @@ usually sufficient.
       target, CBMC, and option-behavior record; recheck every versioned Rust
       contract against the new compiler snapshot; and rerun the complete Kani
       suite. Only then update the label to the new pin.
+    - **Fail-closed cover enforcement for Kani 0.67:** This release does not
+      expose `--fail-on-cover`; its [exact argument declaration] instead gates
+      `--output-into-files` behind `-Zunstable-options`. Its [exact result
+      renderer] explicitly excludes `kani::cover!` properties from overall
+      verification success, maps their results to `SATISFIED`,
+      `UNSATISFIABLE`, `UNREACHABLE`, or `UNDETERMINED`, and emits a separate
+      `N of M cover properties satisfied` summary only when cover properties
+      exist. The [Kani 0.67 result documentation] gives the same statuses and
+      syntax. Its [exact property-name formatter] renders the `cover` class as
+      `<function>.cover.<integer>` (or `cover.<integer>` without a function),
+      which is the only form the checker classifies as a cover. This is a
+      version-pinned audited output-format premise, not a general Kani format
+      contract. The [per-harness writer] renders the complete regular-format
+      result for each selected harness below the explicit target's
+      `result_output_dir`; [exact result assembly] appends the verification-time
+      footer; and the compiler's [exact metadata schema] calls its two inventory
+      fields the proof and test harnesses discovered in the compiled crate. The
+      canonical CI invocation supplies no harness filter and does not enable
+      test harnesses, so that discovery is the complete proof-harness set for
+      the selected zerocopy package/configuration. `ci/run_kani.sh` rejects
+      Kani's `--harness`, `--exact`, and `--tests` selection flags to preserve
+      that no-filter protocol.
+
+      `ci/check_kani_cover.py` therefore consumes the one Kani run rather than
+      rerunning it. On a fresh target it requires real, non-symlink directory
+      roots; exactly one regular metadata file containing a nonempty harness
+      inventory; an exact one-to-one set of regular result files; a
+      structurally complete successful result for every harness; agreement
+      between parsed properties and both summaries; at least one cover across
+      the run; and `SATISFIED` for every cover-class property. For an individual
+      harness with no covers, Kani omits the cover summary; the checker accepts
+      that case only after parsing the complete check inventory and finding no
+      cover-class checks. Missing, stale, duplicate, symlinked, or malformed
+      inventory artifacts and unsatisfiable, unreachable, or undetermined cover
+      evidence all fail closed. A nonzero Kani exit still fails directly before
+      the checker runs.
+
+      This validates the integrity of Kani's emitted inventory, not source-level
+      proof coverage. It has no independent manifest of the harness and cover
+      declarations which ought to exist. Deleting a harness, or deleting one
+      cover while at least one other remains, can remove that obligation from
+      both Kani's metadata/results and the checker count. Review the documented
+      proof scopes and source diff for those coverage regressions; add an
+      independently maintained inventory if they must become mechanically
+      enforced.
     - **Recorded toolchain audit for `kani-version: 0.67.0`:** On 2026-09-08,
       `kani-compiler --version --verbose` reported `rustc 1.93.0-nightly`, commit
       `53732d5e076329a62f71d3c6901886ce8a71e812` dated 2025-11-20, LLVM 21.1.5,
@@ -178,25 +245,40 @@ usually sufficient.
       The bundled `cbmc --version` reported CBMC 6.8.0, and its `--help`
       reported `--no-malloc-may-fail  disable potential malloc failure` and
       `--malloc-may-fail  allow malloc calls to return a null pointer`. The
-      admitted compatibility proposition is that the versioned Rust 1.93.0
-      contracts cited by the current proofs describe the corresponding
-      behavior of this nightly snapshot. This was checked manually, not proved
-      by Kani. The audited terse output reports cover summaries as
-      `** N of M cover properties satisfied`, with canonical nonnegative `N`
-      and positive `M`. `ci/run_kani.sh` rejects malformed summary candidates,
-      requires `N == M` for every summary, and requires at least one recognized
-      summary. Pre-push exercises its parser against valid, unsatisfied,
-      absent, nonnumeric, zero-total, noncanonical, extra-token, numeric-
-      precision-edge, and mixed multiple-summary fixtures. Kani 0.67
-      [does not model stack unwinding][Kani panic strategies] even though
-      its bundled compiler's target cfg reports `panic="unwind"`; proofs may
-      use reachable panics as failed properties but may not infer cleanup or
-      post-panic behavior.
+      `cargo kani --help` output exposed no `--fail-on-cover`, and a direct
+      `cargo kani --fail-on-cover --version` probe rejected that argument. A
+      direct `-Zunstable-options --output-into-files` probe confirmed the exact
+      per-harness result and metadata syntax consumed by the checker above. The
+      exact Kani 0.67 [panic-strategy support record] says stack unwinding is
+      not modeled even though the bundled compiler reports `panic="unwind"`;
+      under its exact [panic-checking record] and [verification-result
+      semantics], proofs may use a reachable panic as a failed property, but
+      may not infer cleanup or post-panic behavior. The admitted compatibility
+      proposition is that the versioned Rust 1.93.0 contracts cited by the
+      current proofs describe the corresponding behavior of this nightly
+      snapshot. This was checked manually, not proved by Kani.
 
 [Rust feature support]: https://model-checking.github.io/kani/rust-feature-support.html
 [undefined-behaviour guide]: https://model-checking.github.io/kani/undefined-behaviour.html
-[Kani cover renderer]: https://github.com/model-checking/kani/blob/kani-0.67.0/kani-driver/src/cbmc_property_renderer.rs
-[Kani panic strategies]: https://github.com/model-checking/kani/blob/kani-0.67.0/docs/src/rust-feature-support.md#panic-strategies
+[tagged `any` contract]: https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/lib.rs#L255-L279
+[array dispatch]: https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/arbitrary.rs#L125-L131
+[primitive implementations]: https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/arbitrary.rs#L22-L70
+[raw-any functions]: https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/lib.rs#L333-L367
+[raw-any lowering]: https://github.com/model-checking/kani/blob/kani-0.67.0/kani-compiler/src/codegen_cprover_gotoc/overrides/hooks.rs#L334-L375
+[raw-array lowering]: https://github.com/model-checking/kani/blob/kani-0.67.0/kani-compiler/src/codegen_cprover_gotoc/overrides/hooks.rs#L1034-L1044
+[dependency pin]: https://github.com/model-checking/kani/blob/kani-0.67.0/kani-dependencies#L1-L3
+[nondeterminism model]: https://github.com/diffblue/cbmc/blob/cbmc-6.8.0/doc/cprover-manual/modeling-nondeterminism.md#L7-L13
+[separate-choice example]: https://github.com/diffblue/cbmc/blob/cbmc-6.8.0/doc/cprover-manual/modeling-nondeterminism.md#L46-L59
+[exact argument declaration]: https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/kani-driver/src/args/mod.rs
+[exact result renderer]: https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/kani-driver/src/cbmc_property_renderer.rs
+[Kani 0.67 result documentation]: https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/docs/src/verification-results.md#cover-property-results
+[exact property-name formatter]: https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/kani-driver/src/cbmc_output_parser.rs
+[per-harness writer]: https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/kani-driver/src/harness_runner.rs
+[exact result assembly]: https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/kani-driver/src/call_cbmc.rs
+[exact metadata schema]: https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/kani_metadata/src/lib.rs
+[panic-strategy support record]: https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/docs/src/rust-feature-support.md#panic-strategies
+[panic-checking record]: https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/README.md
+[verification-result semantics]: https://github.com/model-checking/kani/blob/4feaaad1d6a2378a6ff6caa3b4fc5d6999c7bb5d/docs/src/verification-results.md
 
 Before running proofs locally, install the Kani version pinned in
 `.github/workflows/ci.yml`. Run the same proof configuration as CI with:
@@ -210,6 +292,10 @@ ci/run_kani.sh \
   -Zfunction-contracts \
   --randomize-layout
 ```
+
+The runner's private fresh target is part of the checker protocol: reusing one
+can leave Kani metadata or result files from another invocation, which the
+checker rejects.
 
 ## Feature Gates
 
