@@ -20,6 +20,13 @@ struct LoudValid;
 
 util_assert_impl_all!(LoudValid: imp::FromBytes);
 
+#[derive(imp::FromBytes)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+struct ___ZcAlignment(u8);
+
+util_assert_impl_all!(___ZcAlignment: imp::FromBytes);
+
 // `derive(Unaligned)` fails without a repr.
 #[derive(imp::FromBytes, imp::IntoBytes, imp::Unaligned)]
 #[zerocopy(on_error = "skip")]
@@ -237,6 +244,68 @@ util_assert_not_impl_any!(BadIntoBytesUnionGeneric<u8>: imp::IntoBytes);
 struct TrivialBounds(bool);
 
 util_assert_not_impl_any!(TrivialBounds: imp::FromBytes);
+
+macro_rules! skipped_field_type {
+    () => {
+        u8
+    };
+}
+
+#[derive(imp::TryFromBytes)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+struct UninspectableTryFromBytes(skipped_field_type!());
+
+util_assert_not_impl_any!(UninspectableTryFromBytes: imp::TryFromBytes);
+
+#[derive(imp::FromBytes)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+struct UninspectableFromBytes(skipped_field_type!());
+
+util_assert_not_impl_any!(UninspectableFromBytes:
+    imp::TryFromBytes,
+    imp::FromZeros,
+    imp::FromBytes,
+);
+
+type ___ZerocopyTagPrimitive = bool;
+
+#[derive(imp::FromZeros)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8)]
+enum ReservedFromZeros {
+    Zero(___ZerocopyTagPrimitive),
+    One,
+}
+
+util_assert_not_impl_any!(ReservedFromZeros: imp::TryFromBytes, imp::FromZeros);
+
+trait Select<const N: usize> {
+    type Assoc;
+}
+
+impl Select<0> for () {
+    type Assoc = u8;
+}
+
+macro_rules! skipped_selection {
+    () => {
+        0
+    };
+}
+
+#[derive(imp::FromBytes)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+struct UninspectableGeneric<T: Select<{ skipped_selection!() }>>(T::Assoc);
+
+util_assert_not_impl_any!(UninspectableGeneric<()>:
+    imp::TryFromBytes,
+    imp::FromZeros,
+    imp::FromBytes,
+);
 
 #[derive(imp::IntoBytes)]
 #[zerocopy(on_error = "skip")]

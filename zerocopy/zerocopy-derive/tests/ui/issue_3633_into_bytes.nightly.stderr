@@ -1,0 +1,34 @@
+error: cannot derive `IntoBytes` for a type containing a macro invocation in a field type; write the expanded syntax explicitly
+  --> $DIR/issue_3633_into_bytes.rs:37:17
+   |
+37 |         Variant(field_type!()),
+   |                 ^^^^^^^^^^^^^
+
+error: cannot derive `IntoBytes` for a type containing a macro invocation in a field type; write the expanded syntax explicitly
+  --> $DIR/issue_3633_into_bytes.rs:52:24
+   |
+52 |     struct Packet([u8; len!()]);
+   |                        ^^^^^^
+
+error[E0277]: `Padded` has 1 total byte(s) of padding
+  --> $DIR/issue_3633_into_bytes.rs:17:10
+   |
+17 | #[derive(zerocopy_derive::IntoBytes)]
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^ types with padding cannot implement `IntoBytes`
+   |
+   = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
+   = note: consider adding explicit fields where padding would be
+   = note: consider using `#[repr(packed)]` to remove padding
+help: the trait `PaddingFree<Padded, 1>` is not implemented for `()`
+      but trait `PaddingFree<Padded, 0>` is implemented for it
+  --> src/util/macro_util.rs:64:0
+   = help: see issue #48214
+   = note: this error originates in the derive macro `zerocopy_derive::IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+11 + #![feature(trivial_bounds)]
+   |
+
+error: aborting due to 3 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

@@ -10,8 +10,12 @@ use syn::{
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
     util::{
-        const_block, enum_could_be_from_bytes, generate_tag_enum, validate_tag_enum_discriminants,
-        Ctx, DataExt, FieldBounds, ImplBlockBuilder, Trait, TraitBound,
+        const_block, enum_could_be_from_bytes, generate_tag_enum,
+        reject_contextual_self_in_generics, reject_contextual_self_in_types,
+        reject_reserved_identifiers, reject_reserved_identifiers_in_impl,
+        reject_uninspectable_field_types, reject_uninspectable_generics,
+        reject_uninspectable_impl_generics, validate_tag_enum_discriminants, Ctx, DataExt,
+        FieldBounds, ImplBlockBuilder, Trait, TraitBound,
     },
 };
 fn tag_ident(variant_ident: &Ident) -> Ident {
@@ -257,13 +261,14 @@ pub(crate) fn derive_is_bit_valid(
 
                 #[inline(always)]
                 fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut <Self as #has_field_path>::Type {
-                    use #zerocopy_crate::pointer::cast::{CastSized, Projection};
-
-                    slf.project::<___ZerocopyRawEnum #ty_generics, CastSized>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::REPR_C_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>>()
-                        .project::<_, Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>>()
+                    slf.project::<
+                            ___ZerocopyRawEnum #ty_generics,
+                            #zerocopy_crate::pointer::cast::CastSized,
+                        >()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>>()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::REPR_C_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>>()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>>()
+                        .project::<_, #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>>()
                         .as_ptr()
                 }
             })
@@ -443,22 +448,76 @@ pub(crate) fn derive_is_bit_valid(
         }
     })
 }
-/// Validates any input syntax that `TryFromBytes` code generation will copy
-/// into a helper definition.
+/// Validates input syntax whose meaning must be preserved in generated
+/// `TryFromBytes` code.
 ///
 /// Keep this separate from code generation so supertrait derives can reject
 /// the entire generated impl chain when `on_error = "skip"` is requested.
 pub(crate) fn validate_try_from_bytes_generation(ctx: &Ctx, top_level: Trait) -> Result<(), Error> {
+    let derive_name = match &top_level {
+        Trait::FromZeros => "FromZeros",
+        Trait::FromBytes => "FromBytes",
+        _ => "TryFromBytes",
+    };
+
+    reject_uninspectable_impl_generics(&ctx.ast.generics, derive_name)?;
+    reject_uninspectable_field_types(&ctx.ast.data, derive_name)?;
+
+    let uses_from_bytes_trivial_validator = try_gen_trivial_is_bit_valid(ctx, top_level).is_some();
+    let (copied_syntax_prefixes, target_name_prefixes): (&[&str], &[&str]) =
+        match (&ctx.ast.data, uses_from_bytes_trivial_validator) {
+            // `derive_has_field_struct_union` emits no field-marker helpers for
+            // a zero-field struct. A nontrivial validator still introduces its
+            // method type parameter, so that prefix remains reserved for
+            // retained target type parameters. The FromBytes trivial branch is
+            // reachable only when the target has no generic parameters, and
+            // copies no input syntax into the method scope.
+            (Data::Struct(strct), true) if strct.fields.is_empty() => (&[], &[]),
+            (Data::Struct(strct), false) if strct.fields.is_empty() => (&["___Zc"], &[]),
+            // The field-marker helpers are emitted even for a trivial
+            // validator. The FromBytes-only trivial branch has no target
+            // generics and its method body mentions only `Self`, so its method
+            // generic cannot capture user syntax. Struct and union target names
+            // are copied into the field-marker helper scope, but are referenced
+            // as `Self` inside either validator, so only the field-marker
+            // prefix applies to their names.
+            (Data::Struct(_) | Data::Union(_), true) => (&["ẕ"], &["ẕ"]),
+            (Data::Struct(_) | Data::Union(_), false) => (&["___Zc", "ẕ"], &["ẕ"]),
+            // A full enum validator copies its target name into the generated
+            // nested-helper scope validated below. Inside its validator, an
+            // exhaustive helperless enum refers to the target only as `Self`.
+            (Data::Enum(_), true) => (&[], &[]),
+            (Data::Enum(_), false) => (&["___Zc"], &[]),
+        };
+    reject_reserved_identifiers_in_impl(
+        ctx,
+        derive_name,
+        copied_syntax_prefixes,
+        target_name_prefixes,
+    )?;
+
     let enm = match &ctx.ast.data {
         Data::Enum(enm) => enm,
         Data::Struct(_) | Data::Union(_) => return Ok(()),
     };
     let repr = EnumRepr::from_attrs(&ctx.ast.attrs)?;
-    let generates_tag_enum = try_gen_trivial_is_bit_valid(ctx, top_level).is_none()
-        && !enum_could_be_from_bytes(&repr, enm);
-    if generates_tag_enum {
+    let generates_full_enum_validator =
+        !uses_from_bytes_trivial_validator && !enum_could_be_from_bytes(&repr, enm);
+    if generates_full_enum_validator {
+        reject_uninspectable_generics(&ctx.ast.generics, derive_name)?;
+        reject_reserved_identifiers(
+            ctx,
+            derive_name,
+            &["___Zc", "___Zerocopy", "___ZEROCOPY", "ẕ"],
+        )?;
+        reject_contextual_self_in_generics(&ctx.ast.generics, derive_name)?;
+        reject_contextual_self_in_types(
+            enm.variants.iter().flat_map(|variant| &variant.fields).map(|field| &field.ty),
+            derive_name,
+        )?;
         validate_tag_enum_discriminants(enm)?;
     }
+
     Ok(())
 }
 
@@ -820,6 +879,169 @@ mod tests {
             Trait::TryFromBytes,
         )
         .is_err());
+    }
+
+    #[test]
+    fn generic_defaults_are_validated_only_when_copied_into_helpers() {
+        let direct_impl = syn::parse_quote! {
+            struct Struct<T = default_type!()>(T);
+        };
+        let direct_impl = Ctx::try_from_derive_input(direct_impl).unwrap();
+        assert!(validate_try_from_bytes_generation(&direct_impl, Trait::TryFromBytes).is_ok());
+
+        let variants = (0usize..256).map(|index| format_ident!("V{}", index));
+        let helperless_enum = syn::parse2(quote! {
+            #[repr(u8)]
+            enum ___ZcAlignment<const N: usize = { default_value!() }> {
+                #(#variants,)*
+            }
+        })
+        .unwrap();
+        let helperless_enum = Ctx::try_from_derive_input(helperless_enum).unwrap();
+        assert!(validate_try_from_bytes_generation(&helperless_enum, Trait::TryFromBytes).is_ok());
+
+        let helper_definition = syn::parse_quote! {
+            #[repr(u8)]
+            enum Enum<T = default_type!()> {
+                Value(T),
+                End,
+            }
+        };
+        let helper_definition = Ctx::try_from_derive_input(helper_definition).unwrap();
+        assert!(
+            validate_try_from_bytes_generation(&helper_definition, Trait::TryFromBytes).is_err()
+        );
+
+        let helper_captures_method_generic = syn::parse_quote! {
+            #[repr(u8)]
+            enum Enum<T = ___ZcAlignment> {
+                Value(T),
+                End,
+            }
+        };
+        let helper_captures_method_generic =
+            Ctx::try_from_derive_input(helper_captures_method_generic).unwrap();
+        assert!(validate_try_from_bytes_generation(
+            &helper_captures_method_generic,
+            Trait::TryFromBytes,
+        )
+        .is_err());
+    }
+
+    #[test]
+    fn reserves_validator_names_only_when_generated_code_can_capture_them() {
+        let nongeneric = || {
+            let ast = syn::parse_quote! {
+                struct Struct(___ZcAlignment);
+            };
+            Ctx::try_from_derive_input(ast).unwrap()
+        };
+
+        assert!(validate_try_from_bytes_generation(&nongeneric(), Trait::FromBytes).is_ok());
+        assert!(validate_try_from_bytes_generation(&nongeneric(), Trait::TryFromBytes).is_err());
+        assert!(validate_try_from_bytes_generation(&nongeneric(), Trait::FromZeros).is_err());
+        assert!(validate_try_from_bytes_generation(
+            &nongeneric().skip_on_error(),
+            Trait::FromBytes,
+        )
+        .is_err());
+
+        let generic = syn::parse_quote! {
+            struct Struct<T>(___ZcAlignment, T);
+        };
+        let generic = Ctx::try_from_derive_input(generic).unwrap();
+        assert!(validate_try_from_bytes_generation(&generic, Trait::FromBytes).is_err());
+
+        let field_marker = format_ident!("ẕfield");
+        let field_marker = syn::parse2(quote! {
+            struct Struct(#field_marker);
+        })
+        .unwrap();
+        let field_marker = Ctx::try_from_derive_input(field_marker).unwrap();
+        assert!(validate_try_from_bytes_generation(&field_marker, Trait::FromBytes).is_err());
+
+        let struct_target = || {
+            let ast = syn::parse_quote! {
+                struct ___ZcAlignment(bool);
+            };
+            Ctx::try_from_derive_input(ast).unwrap()
+        };
+        assert!(validate_try_from_bytes_generation(&struct_target(), Trait::TryFromBytes).is_ok());
+        assert!(validate_try_from_bytes_generation(&struct_target(), Trait::FromZeros).is_ok());
+        assert!(validate_try_from_bytes_generation(
+            &struct_target().skip_on_error(),
+            Trait::FromBytes,
+        )
+        .is_ok());
+
+        let union_target = syn::parse_quote! {
+            union ___ZcAlignment {
+                value: bool,
+            }
+        };
+        let union_target = Ctx::try_from_derive_input(union_target).unwrap();
+        assert!(validate_try_from_bytes_generation(&union_target, Trait::TryFromBytes).is_ok());
+
+        let generic_target = syn::parse_quote! {
+            struct ___ZcAlignment<T>(T);
+        };
+        let generic_target = Ctx::try_from_derive_input(generic_target).unwrap();
+        assert!(validate_try_from_bytes_generation(&generic_target, Trait::FromBytes).is_ok());
+
+        let zero_field_target = format_ident!("ẕUnit");
+        let zero_field_marker_names = syn::parse2(quote! {
+            struct #zero_field_target<const N: usize>;
+        })
+        .unwrap();
+        let zero_field_marker_names = Ctx::try_from_derive_input(zero_field_marker_names).unwrap();
+        assert!(validate_try_from_bytes_generation(&zero_field_marker_names, Trait::TryFromBytes,)
+            .is_ok());
+        assert!(
+            validate_try_from_bytes_generation(&zero_field_marker_names, Trait::FromBytes,).is_ok()
+        );
+
+        let zero_field_trivial = syn::parse_quote! {
+            struct ___ZcAlignment;
+        };
+        let zero_field_trivial = Ctx::try_from_derive_input(zero_field_trivial).unwrap();
+        assert!(validate_try_from_bytes_generation(&zero_field_trivial, Trait::FromBytes).is_ok());
+
+        let field_marker_target_ident = format_ident!("ẕfield");
+        let field_marker_target = syn::parse2(quote! {
+            struct #field_marker_target_ident {
+                field: bool,
+            }
+        })
+        .unwrap();
+        let field_marker_target = Ctx::try_from_derive_input(field_marker_target).unwrap();
+        assert!(
+            validate_try_from_bytes_generation(&field_marker_target, Trait::TryFromBytes,).is_err()
+        );
+
+        let union_field_marker_target_ident = format_ident!("ẕvalue");
+        let union_field_marker_target = syn::parse2(quote! {
+            union #union_field_marker_target_ident {
+                value: bool,
+            }
+        })
+        .unwrap();
+        let union_field_marker_target =
+            Ctx::try_from_derive_input(union_field_marker_target).unwrap();
+        assert!(validate_try_from_bytes_generation(
+            &union_field_marker_target,
+            Trait::TryFromBytes,
+        )
+        .is_err());
+
+        let enum_target = syn::parse_quote! {
+            #[repr(u8)]
+            enum ___ZcAlignment {
+                Value(bool),
+                End,
+            }
+        };
+        let enum_target = Ctx::try_from_derive_input(enum_target).unwrap();
+        assert!(validate_try_from_bytes_generation(&enum_target, Trait::TryFromBytes).is_err());
     }
 
     fn derive_error(input: DeriveInput) -> String {
