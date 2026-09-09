@@ -47,7 +47,7 @@ pub trait Alignment: Sealed {
     fn read<T, I, R>(ptr: crate::Ptr<'_, T, I>) -> T
     where
         T: Copy + Read<I::Aliasing, R>,
-        I: Invariants<Alignment = Self, Validity = Valid>,
+        I: Invariants<Alignment = Self, Validity = Safe>,
         I::Aliasing: Reference;
 }
 
@@ -101,7 +101,7 @@ pub enum ValidityKind {
     Uninit,
     AsInitialized,
     Initialized,
-    Valid,
+    Safe,
 }
 
 /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
@@ -147,7 +147,7 @@ impl Alignment for Unaligned {
     fn read<T, I, R>(ptr: crate::Ptr<'_, T, I>) -> T
     where
         T: Copy + Read<I::Aliasing, R>,
-        I: Invariants<Alignment = Self, Validity = Valid>,
+        I: Invariants<Alignment = Self, Validity = Safe>,
         I::Aliasing: Reference,
     {
         (*ptr.into_unalign().as_ref()).into_inner()
@@ -162,7 +162,7 @@ impl Alignment for Aligned {
     fn read<T, I, R>(ptr: crate::Ptr<'_, T, I>) -> T
     where
         T: Copy + Read<I::Aliasing, R>,
-        I: Invariants<Alignment = Self, Validity = Valid>,
+        I: Invariants<Alignment = Self, Validity = Safe>,
         I::Aliasing: Reference,
     {
         *ptr.as_ref()
@@ -227,11 +227,11 @@ unsafe impl Validity for Initialized {
 
 /// The referent of a `Ptr<T>` is valid for `T`, upholding bit validity and any
 /// library safety invariants.
-pub enum Valid {}
-// SAFETY: `Valid`'s validity is well-defined for all `T: ?Sized`, and is not a
+pub enum Safe {}
+// SAFETY: `Safe`'s validity is well-defined for all `T: ?Sized`, and is not a
 // function of any property of `T` other than its bit validity.
-unsafe impl Validity for Valid {
-    const KIND: ValidityKind = ValidityKind::Valid;
+unsafe impl Validity for Safe {
+    const KIND: ValidityKind = ValidityKind::Safe;
 }
 
 /// # Safety
@@ -289,7 +289,7 @@ mod sealed {
     impl Sealed for Uninit {}
     impl Sealed for AsInitialized {}
     impl Sealed for Initialized {}
-    impl Sealed for Valid {}
+    impl Sealed for Safe {}
 
     impl<A: Sealed, AA: Sealed, V: Sealed> Sealed for (A, AA, V) {}
 

@@ -85,7 +85,7 @@ macro_rules! test_enum {
                     .unwrap()
                     .transmute::<
                         imp::MaybeUninit<u8>,
-                        imp::invariant::Valid,
+                        imp::invariant::Safe,
                         (_, (_, imp::BecauseExclusive)),
                     >()
                     .bikeshed_recall_aligned()
@@ -104,7 +104,7 @@ macro_rules! test_enum {
                     .unwrap()
                     .transmute::<
                         imp::MaybeUninit<u16>,
-                        imp::invariant::Valid,
+                        imp::invariant::Safe,
                         (_, (_, imp::BecauseExclusive)),
                     >()
                     .try_into_aligned()
@@ -124,7 +124,7 @@ macro_rules! test_enum {
                     .unwrap()
                     .transmute::<
                         imp::MaybeUninit<u8>,
-                        imp::invariant::Valid,
+                        imp::invariant::Safe,
                         (_, (_, imp::BecauseExclusive)),
                     >()
                     .bikeshed_recall_aligned()
@@ -143,7 +143,7 @@ macro_rules! test_enum {
                     .unwrap()
                     .transmute::<
                         imp::MaybeUninit<u16>,
-                        imp::invariant::Valid,
+                        imp::invariant::Safe,
                         (_, (_, imp::BecauseExclusive)),
                     >()
                     .try_into_aligned()
@@ -157,7 +157,7 @@ macro_rules! test_enum {
                 let _: imp::MaybeUninit<Enum> = *ptr
                     .transmute::<
                         imp::MaybeUninit<Enum>,
-                        imp::invariant::Valid,
+                        imp::invariant::Safe,
                         (_, (_, imp::BecauseExclusive)),
                     >()
                     .try_into_aligned()
@@ -188,7 +188,7 @@ macro_rules! test_enum {
                     >()
                     .unwrap()
                     .recall_validity::<
-                        imp::invariant::Valid,
+                        imp::invariant::Safe,
                         (_, (_, imp::BecauseExclusive)),
                     >()
                     .as_mut();
@@ -205,7 +205,7 @@ macro_rules! test_enum {
                     >()
                     .unwrap()
                     .recall_validity::<
-                        imp::invariant::Valid,
+                        imp::invariant::Safe,
                         (_, (_, imp::BecauseExclusive)),
                     >()
                     .as_mut();
@@ -222,7 +222,7 @@ macro_rules! test_enum {
                     >()
                     .unwrap()
                     .recall_validity::<
-                        imp::invariant::Valid,
+                        imp::invariant::Safe,
                         (_, (_, imp::BecauseExclusive)),
                     >()
                     .as_mut();
@@ -239,7 +239,7 @@ macro_rules! test_enum {
                     >()
                     .unwrap()
                     .recall_validity::<
-                        imp::invariant::Valid,
+                        imp::invariant::Safe,
                         (_, (_, imp::BecauseExclusive)),
                     >()
                     .as_mut();
