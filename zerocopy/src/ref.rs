@@ -1005,6 +1005,15 @@ mod proofs {
     const CAPACITY: usize = 8;
     const SIZE: usize = mem::size_of::<u32>();
 
+    // This factored Rust-library oracle asks `usize::checked_sub` for one byte
+    // below `u32`'s actual size rather than manually reconstructing `SIZE - 1`.
+    // `SIZE` comes from `size_of::<u32>()` [12], `checked_sub` returns `None`
+    // instead of underflowing [38], and `expect` makes that case fail closed as
+    // a checked Kani property [28][30].
+    fn one_byte_short_of_u32() -> usize {
+        SIZE.checked_sub(1).expect("u32 must have nonzero size")
+    }
+
     // Configuration: Uses the common Kani CI configuration documented in
     // `agent_docs/validation.md`: the CI-pinned Kani release and its bundled
     // x86_64-unknown-linux-gnu compiler, the stable-compatible feature bundle,
@@ -1030,10 +1039,11 @@ mod proofs {
 
     /// A safe contiguous view of an eight-byte backing buffer.
     ///
-    /// `View::any` covers all 45 pairs satisfying `0 <= start <= end <= 8`,
-    /// including every empty view. Keeping range selection here makes the
-    /// quantified range identical across the six harnesses without hiding
-    /// any zerocopy operation under test.
+    /// Under the shared Kani input-model premise below, `View::any` quantifies
+    /// over all 45 pairs satisfying `0 <= start <= end <= 8`, including every
+    /// empty view. Keeping range selection here makes the quantified range
+    /// identical across the six harnesses without hiding any zerocopy operation
+    /// under test.
     #[derive(Clone, Copy)]
     struct View {
         start: usize,
@@ -1064,6 +1074,110 @@ mod proofs {
     fn construction_oracle(source: &[u8]) -> bool {
         source.len() == SIZE && source.as_ptr().cast::<u32>().is_aligned()
     }
+
+    // Each operation harness checks two setup modes over the same symbolic
+    // inputs. The public mode retains end-to-end coverage through
+    // `Ref::from_bytes`. The direct mode bypasses that constructor and creates
+    // a `Ref` only after safe Rust observations recheck the current slice's
+    // size and alignment. The concrete byte-slice stability premise below
+    // completes `Ref::new_unchecked`'s temporal safety precondition for this
+    // sized `u32`.
+    // Relative to that explicit stability premise, a compensating
+    // `from_bytes`/operation defect cannot satisfy both modes. The direct mode
+    // still trusts the unsafe byte-slice trait contracts as proof setup; those
+    // are not conclusions of the operation harnesses.
+    fn ref_operation_setup<'a>(
+        source: &'a mut [u8],
+        use_public_constructor: bool,
+    ) -> Ref<&'a mut [u8], u32> {
+        assert_eq!(source.len(), SIZE);
+        assert!(source.as_ptr().cast::<u32>().is_aligned());
+        if use_public_constructor {
+            Ref::<_, u32>::from_bytes(source).expect("constructible view should produce a Ref")
+        } else {
+            // SAFETY: Here `B` is exactly `&mut [u8]`. The two assertions above
+            // establish that its current referent is exactly
+            // `size_of::<u32>()` bytes and aligned for `u32`. `&mut [u8]`'s
+            // `ByteSlice`, `ByteSliceMut`, `IntoByteSlice`, and
+            // `IntoByteSliceMut` implementations promise that its shared,
+            // mutable, and consuming byte-slice views preserve that address and
+            // length, as detailed in the direct-setup stability premise below.
+            // Thus every view named by `new_unchecked`'s safety contract
+            // retains the established size and alignment.
+            unsafe { Ref::new_unchecked(source) }
+        }
+    }
+
+    // The direct error mode likewise bypasses `Ref::from_bytes`: it passes the
+    // exact source to the error constructors for the independently observed
+    // rejection reason. The source-level payload lemma below establishes how
+    // those expressions store it. This isolates `CastError::into_src` from a
+    // compensating `Ref::from_bytes` defect while retaining the public mode's
+    // end-to-end error-restoration check.
+    fn error_operation_setup<'a>(
+        source: &'a mut [u8],
+        use_public_constructor: bool,
+    ) -> CastError<&'a mut [u8], u32> {
+        assert!(!construction_oracle(source));
+        if use_public_constructor {
+            match Ref::<_, u32>::from_bytes(source) {
+                Err(err) => err,
+                Ok(typed) => {
+                    mem::forget(typed);
+                    panic!()
+                }
+            }
+        } else if source.len() != SIZE {
+            ConvertError::Size(SizeError::<_, u32>::new(source))
+        } else {
+            assert!(!source.as_ptr().cast::<u32>().is_aligned());
+            assert!(mem::align_of::<u32>() > 1);
+            // SAFETY: The preceding `align_of` assertion is exactly
+            // `AlignmentError::new_unchecked`'s precondition for `Dst = u32`.
+            ConvertError::Alignment(unsafe { AlignmentError::<_, u32>::new_unchecked(source) })
+        }
+    }
+
+    fn cover_operation_setup_modes(use_public_constructor: bool) {
+        kani::cover!(
+            use_public_constructor,
+            "the public Ref::from_bytes setup reaches the named operation"
+        );
+        kani::cover!(
+            !use_public_constructor,
+            "the direct-constructor setup reaches the named operation"
+        );
+    }
+
+    // Direct-setup payload and stability lemma: At each `new`/`new_unchecked`
+    // function call, Rust passes the argument through the declared parameter
+    // and returns the function body's value [45]. With moved-place semantics
+    // [17], the non-`Copy` source is therefore moved into the `bytes` or `src`
+    // parameter.
+    // The exact body of `Ref::new_unchecked` is `Ref(bytes, PhantomData)`; it
+    // moves `bytes` into `Ref`'s only data-bearing field. `SizeError::new` and
+    // `AlignmentError::new_unchecked` have `Self { src, ... }` bodies, whose
+    // field shorthand moves that same `src` into the field of that name. The
+    // direct error branch then moves that error into the corresponding
+    // `ConvertError` tuple variant. Rust's struct-expression rules—including
+    // tuple structs and variants' use of call expressions—[43], call-expression
+    // semantics [42], and value-producing block tail expressions [44] complete
+    // these payload facts without observing the later target operation. Thus
+    // these exact constructors cannot shift, replace, or otherwise reconstruct
+    // the source consumed by the named operation. Their source bodies and this
+    // derivation are a versioned proof artifact which must be re-audited if any
+    // constructor changes.
+    //
+    // Separately, the local unsafe `ByteSlice` contract promises that repeated
+    // `Deref`/`DerefMut` views preserve address and length across calls to its
+    // byte-slice super-APIs. `IntoByteSlice` and `IntoByteSliceMut` promise
+    // their consuming views have that same address and length. This proof uses
+    // the crate's concrete unsafe implementations of those traits for
+    // `&mut [u8]` as a setup premise. Combined with the safe current-slice size
+    // and alignment assertions at the unsafe call, that stability premise
+    // discharges the remainder of `Ref::new_unchecked`'s temporal contract. The
+    // harnesses do not prove those unsafe trait implementations; they remain in
+    // the zerocopy TCB alongside the pinned Rust/Kani model.
 
     // This independent value oracle copies from the immutable pre-operation
     // snapshot using safe slice-to-array conversion, then asks `u32` to decode
@@ -1114,48 +1228,60 @@ mod proofs {
         original
     }
 
-    // Domain: The constructor harness covers every one of the 45 contiguous
-    // ranges of an eight-byte, deliberately `u32`-aligned buffer and every
-    // buffer value on Kani's target. The error-restoration harness covers the
-    // same values and ranges and every replacement `u8`, then assumes the
-    // explicit construction policy rejects its range. `View` records only the
-    // two range endpoints; every length used by a policy, cover, or result
-    // observation comes directly from `slice::len` on the safely indexed
-    // source rather than reconstructed as `end - start`. The immutable
-    // `Deref` harness and three mutation harnesses generate the same ranges,
-    // then assume the explicit construction policy oracle as setup; their
-    // effective range is therefore every generated range whose length is
-    // `size_of::<u32>()` and whose start pointer Rust's
-    // `is_aligned::<u32>()` observation accepts. Covers witness constructible
-    // views at offsets zero and `SIZE`; they do not claim that those witnesses
+    // Domain: The constructor harness universally quantifies over each of the
+    // 45 contiguous ranges of an eight-byte, deliberately `u32`-aligned buffer
+    // and every buffer value on Kani's target. The error-restoration harness
+    // universally quantifies over the same values and ranges and every
+    // replacement `u8`, then assumes the explicit construction policy rejects
+    // its range. `View` records only the two range endpoints; every length used
+    // by a policy, cover, or result observation comes directly from
+    // `slice::len` on the safely indexed source rather than reconstructed as
+    // `end - start`. The immutable `Deref` harness and three mutation harnesses
+    // generate the same ranges, then assume the explicit construction policy
+    // oracle as setup; their effective range is therefore every generated
+    // range whose length is `size_of::<u32>()` and whose start pointer Rust's
+    // `is_aligned::<u32>()` observation accepts. Each of those five operation
+    // harnesses additionally quantifies over both values of a fresh Boolean
+    // setup choice: one branch reaches the named operation through public
+    // `Ref::from_bytes`, while the other bypasses it through the direct
+    // invariant-bearing setup above. Covers witness constructible views at
+    // offsets zero and `SIZE`; they do not claim that those witnesses
     // exhaustively classify aligned offsets on every target. Each mutation
-    // harness independently covers every buffer value and replacement `u32`;
-    // splitting them removes an irrelevant Cartesian product without
+    // harness independently quantifies over every buffer value and replacement
+    // `u32`; splitting them removes an irrelevant Cartesian product without
     // restricting any individual mutation API's value domain.
     //
-    // Kani 0.67 documents that `kani::any::<T>()` creates a symbolic valid
-    // `T`, with `Arbitrary` representing all possible valid values of that
-    // type [35]. The two `usize` calls in `View::any` therefore initially cover
-    // every pair of target `usize` values. Primitive ordering supplies the two
-    // Boolean range predicates [25], and Kani documents that `kani::assume`
-    // makes a true predicate valid on subsequent paths while successfully
-    // exiting paths where it is false [36]. Those two assumptions consequently
-    // retain exactly the 45 pairs satisfying `start <= end <= CAPACITY`; they
-    // define this domain rather than prove the inequalities. The same `any`
-    // contract quantifies each harness's `[u8; CAPACITY]` buffer and its `u8`
-    // or `u32` replacement over every valid value of that concrete type.
+    // Kani 0.67 documents that `kani::any::<T>()` creates an arbitrary valid
+    // `T`, and that `Arbitrary` implementations are expected to represent all
+    // possible values of their type [35]. Under the Kani input
+    // translation/model TOOL/TCB premise recorded in
+    // `agent_docs/validation.md`, the two primitive `usize` calls in
+    // `View::any` jointly quantify over every pair of target `usize` values.
+    // Primitive ordering supplies the two Boolean range predicates [25], and
+    // Kani documents that `kani::assume` makes a true predicate valid on
+    // subsequent paths while successfully exiting paths where it is false
+    // [36]. Those two assumptions consequently retain exactly the 45 pairs
+    // satisfying `start <= end <= CAPACITY`; they define this domain rather
+    // than prove the inequalities. Under the same TOOL/TCB
+    // premise, each harness's `[u8; CAPACITY]` buffer, its `u8` or `u32`
+    // replacement, and each operation harness's setup Boolean universally
+    // range over every valid value of those concrete types.
     // Each successful-operation harness later passes the independently
     // evaluated `construction_oracle(source)` Boolean to the same Kani
     // assumption primitive [36]. Those calls retain exactly the generated
     // views which the explicit size-and-alignment policy accepts, defining the
-    // effective operation domain described above without assuming that the
-    // target constructor itself succeeds.
-    // The error-restoration harness instead assumes the negation of that
-    // independently evaluated Boolean, retaining exactly the generated views
-    // rejected by the policy. Each harness uses one fixed, stack-backed
-    // `AlignedBytes` object and separate fixed-size value snapshots. It
-    // performs no dynamic allocation and contains no explicit proof loop. The
-    // unwind bound of nine applies to
+    // effective operation domain described above. The setup helper then
+    // rechecks the exact size and alignment with safe Rust observations before
+    // either requiring the public constructor to succeed or calling the unsafe
+    // invariant-bearing constructor directly. The error-restoration harness
+    // instead assumes the negation of that independently evaluated Boolean,
+    // retaining exactly the generated views rejected by the policy. Its public
+    // branch requires `Ref::from_bytes` to return an error; its direct branch
+    // constructs the independently classified size or alignment error around
+    // the same source. Each harness uses one fixed, stack-backed `AlignedBytes`
+    // object and separate fixed-size value snapshots. It performs no dynamic
+    // allocation and contains no explicit proof loop. The unwind bound of nine
+    // applies to
     // every loop reached in zerocopy or the standard-library oracles, with
     // unwinding assertions enabled.
     //
@@ -1164,29 +1290,54 @@ mod proofs {
     // that property and triggers the condition [37]. The fail-closed Kani
     // runner described in `agent_docs/validation.md` requires every emitted
     // cover property to be satisfied. The constructor and error-restoration
-    // harnesses each cover rejected examples with a three-byte aligned view, a
-    // four-byte misaligned view, a three-byte misaligned view, and an empty end
-    // view; the constructor also covers accepted views at offsets zero and
-    // `SIZE`. Each rejected-view cover group contains both `SIZE - 1`
-    // expressions, which equal three without overflow as derived below. The
-    // error-restoration `u8` inequality cover witnesses a non-idempotent
-    // recovered-source write. The `Deref`, `DerefMut`, `write`, and `into_mut`
-    // covers each witness accepted views at offsets zero and
+    // harnesses each cover rejected examples with an aligned view one byte
+    // shorter than `SIZE`, an exact-sized misaligned view, a one-byte-short
+    // misaligned view, and an empty end view; the constructor also covers
+    // accepted views at offsets zero and `SIZE`. Each rejected-view cover group
+    // obtains both one-byte-short boundaries from the checked Rust-library
+    // oracle above. The error-restoration `u8` inequality cover witnesses a
+    // non-idempotent recovered-source write. The `Deref`, `DerefMut`, `write`,
+    // and `into_mut` covers each witness accepted views at offsets zero and
     // `SIZE`; the `DerefMut` and `into_mut` `u32` inequality covers witness
     // non-idempotent typed writes, while `write`'s iterator-inequality cover
     // witnesses a replacement whose native bytes differ from the selected
-    // pre-call bytes. These covers establish only existence in the modeled
-    // domain, not the correctness or exhaustiveness of a partition.
+    // pre-call bytes. Every operation harness also covers both setup choices
+    // after the named operation returns, so neither the public integration path
+    // nor the direct-isolation path can disappear vacuously. These covers
+    // establish only existence in the modeled domain, not the correctness or
+    // exhaustiveness of a partition.
     //
-    // Together, the six harnesses establish: the safe sized
+    // Relative to the direct-setup payload/stability lemma and the common
+    // tool-model premises, the six harnesses establish: the safe sized
     // `Ref<&mut [u8], u32>` constructor succeeds exactly for a
-    // size-and-alignment-valid range; immutable and mutable dereference
-    // preserve exact address and contents; each mutation API writes through
-    // to exactly the selected bytes; and a construction error returns a slice
-    // whose modeled raw address, element count, and ordered bytes match the
-    // input. A modeled first-byte write through that returned slice produces
-    // the expected whole-buffer final frame. These observations do not prove
-    // the returned slice's provenance, reference identity, or lifetime.
+    // size-and-alignment-valid range; both the public-constructor integration
+    // path and the direct-invariant setup path give immutable and mutable
+    // dereference the expected address and contents; each mutation API has the
+    // expected final write-through frame on both paths; and both a public
+    // construction error and a directly constructed error return a slice whose
+    // modeled raw address, element count, and ordered bytes match the input. A
+    // modeled first-byte write through that returned slice produces the
+    // expected whole-buffer final frame. These observations do not prove the
+    // returned slice's provenance, reference identity, or lifetime.
+    //
+    // Setup isolation and timing: Every complete backing-frame assertion is a
+    // final-state observation at its stated normal-return control point. It
+    // does not exclude a transient write that is restored before that
+    // observation. The constructor-classification harness independently proves
+    // that `Ref::from_bytes`, followed by forgetting either result payload,
+    // leaves the final backing bytes unchanged for every generated constructor
+    // case; it does not establish either payload's internal source state. The
+    // other five harnesses therefore do not attempt to derive a named
+    // operation's result by composing that weak constructor frame. Instead,
+    // each checks the same named operation under both public-constructor setup
+    // and direct setup. The direct observations do not execute or depend on
+    // `Ref::from_bytes`; relative to the direct-setup payload and byte-slice
+    // stability lemma above, a defect in that constructor cannot mask a named
+    // operation defect on the direct state. The exact constructor expressions
+    // plus Rust's move/construction semantics establish the payload portion of
+    // that lemma; the concrete unsafe byte-slice stability implementations
+    // remain its explicit zerocopy TCB premise. Neither setup mode rules out
+    // restored transient writes or proves destructor behavior excluded below.
     //
     // API-policy oracles: `Ref::from_bytes` documents the rejection direction:
     // invalid source size or alignment returns `Err`. The constructor harness
@@ -1196,11 +1347,10 @@ mod proofs {
     // For this sized `u32`, the checks are `len == size_of::<u32>()` and the
     // compiler's pointer `is_aligned` observation. Slice `len` supplies the
     // number of source `u8` byte elements [11], while `size_of::<u32>()`
-    // independently supplies `u32`'s size in bytes [12]. The primitive-layout
-    // table fixes that size at four bytes [38]. Consequently `SIZE: usize` is
-    // four, and each `SIZE - 1` cover computes integer subtraction `4 - 1 = 3`;
-    // three is representable by `usize`, so the subtraction cannot produce a
-    // value below the type's minimum and does not overflow [38]. Primitive
+    // independently supplies `u32`'s size in bytes [12]. Every one-byte-short
+    // cover obtains its boundary through the factored `checked_sub` oracle;
+    // Rust returns `None` instead of underflowing [38], and `expect` plus
+    // Kani's panic checking makes that case fail closed [28][30]. Primitive
     // `usize` equality supplies only the `==`/`!=` classification mechanics
     // [24]; it does not make this zerocopy policy independent. Rust's lazy
     // Boolean `&&` evaluates its right operand only when its left operand is
@@ -1218,7 +1368,7 @@ mod proofs {
     // safe length and alignment observations identify the failed condition but
     // do not independently choose its error variant. Constructing a `Ref` from
     // the source is expected to preserve its referent address. The constructor
-    // is also expected not to mutate the source: its
+    // is also expected to return with the source bytes unchanged: its
     // `#[must_use = "has no side effects"]` annotation motivates that policy,
     // but the harness conservatively treats source non-mutation as an adopted
     // zerocopy regression property rather than inferring it from a diagnostic
@@ -1228,12 +1378,13 @@ mod proofs {
     // These are zerocopy API policies, not independent Rust-language evidence;
     // the constructor harness checks the implementation and error
     // discriminants against them. The immutable-`Deref` and mutation harnesses
-    // assume only this independent policy oracle before using the constructor
-    // as setup; they never assume that the constructor's result is successful.
-    // Their `expect` calls therefore recheck valid-input acceptance, while only
-    // the constructor harness classifies rejected views. The
-    // error-restoration harness separately assumes policy rejection and
-    // rechecks that setup before calling `into_src`.
+    // assume only this policy oracle to define their range. Their public setup
+    // branches recheck valid-input acceptance, while their direct branches
+    // separately assert the unsafe constructor's exact size/alignment
+    // preconditions and never call `Ref::from_bytes`. The error-restoration
+    // harness similarly assumes policy rejection: its public branch rechecks
+    // that `Ref::from_bytes` fails, while its direct branch constructs the
+    // independently classified error variant without calling it.
     //
     // Referent and mutation-placement policies: `Ref`'s type documentation
     // defines it as a reference to a `T` stored in `B`, with `B`'s mutability.
@@ -1253,10 +1404,11 @@ mod proofs {
     //   mutable reference to `T`; the adopted placement policy is that the
     //   reference addresses the same selected backing bytes and writes through
     //   to them.
-    // These policies connect each target operation to the independently built
-    // whole-buffer effect oracle. The byte-conversion and safe-slice contracts
-    // below determine the expected bytes, but do not themselves establish where
-    // any zerocopy API places a write.
+    // These policies connect each target operation, under either explicitly
+    // selected setup mode, to the independently built whole-buffer effect
+    // oracle. The byte-conversion and safe-slice contracts below determine the
+    // expected bytes, but do not themselves establish where any zerocopy API
+    // places a write.
     //
     // Value and effect oracles: safe slice-to-array conversion copies into
     // `[u8; N]` when the slice length is `N` [1]. `u32::{from,to}_ne_bytes`
@@ -1308,6 +1460,10 @@ mod proofs {
     // [35], and [36] exactly as mapped above. `value_oracle`'s explicit
     // `Result` match consumes the safe conversion contract [1] and Rust's
     // match/variant semantics [23]; its error arm returns `None` directly.
+    // The checked one-byte-short oracle consumes [12]'s actual size, [38]'s
+    // checked subtraction, and [30]'s success-or-panic extraction; [28] makes a
+    // hypothetical underflow fail verification rather than silently narrowing
+    // a cover.
     // The constructor harness's match on `(result, expected_success)` consumes
     // [23] to classify the actual `Result`; either mismatched
     // variant/value arm triggers a deliberately false shared Boolean
@@ -1317,9 +1473,18 @@ mod proofs {
     // error-kind assertions additionally consume [23]'s explicit variant
     // matches and the zerocopy variant policy
     // in [22]; neither safe observation selects a `ConvertError` discriminant.
-    // The error-restoration harness's separate `Result` match consumes [23];
-    // its unexpected `Ok` arm forgets the wrapper, fails a verification
-    // assertion, and returns, while its `Err` arm alone reaches `into_src`.
+    // The error-restoration setup's public-branch `Result` match consumes [23];
+    // its unexpected `Ok` arm forgets the wrapper and panics, while its `Err`
+    // arm alone reaches `into_src`. The direct successful setup rechecks
+    // `slice::len`, `size_of`, and pointer alignment before calling the local
+    // unsafe `Ref::new_unchecked`; its safety comment combines the observations
+    // and concrete byte-slice stability premise to discharge the constructor's
+    // complete sized-`u32` precondition. The direct error
+    // setup selects `SizeError::new` from length inequality. Its alignment arm
+    // rechecks source misalignment, and `align_of::<u32>() > 1` [41] discharges
+    // `AlignmentError::new_unchecked`'s exact safety precondition. The direct
+    // setup payload lemma maps the exact constructor expressions through
+    // [17] and [42]-[44], rather than merely assuming their payload result.
     // Every proof assertion here omits custom formatting arguments. Kani 0.67's
     // verification standard library maps those `assert!` and `assert_eq!`
     // forms, including the shared Boolean assertion, to `kani::assert` [27]. A
@@ -1335,12 +1500,14 @@ mod proofs {
     // occur only in the `DerefMut` and `into_mut` harnesses; they consume the
     // symbolic replacement, assignment semantics [9], [21], and the applicable
     // method-placement policy above. The `Ref::write` harness deliberately
-    // performs no `Deref` observation: after constructor setup, its only
+    // performs no `Deref` observation: after the selected setup, its only
     // post-target assertion is the complete backing frame. Its distinct-value
-    // cover compares copied iteration over the selected original bytes with
-    // consuming array iteration over the replacement bytes [18][19]. The array
-    // `IntoIterator` implementation moves each array value in start-to-end
-    // order [33]. Every post-mutation
+    // cover occurs after `write` returns and the wrapper is forgotten, and
+    // compares copied iteration over the selected original bytes with consuming
+    // array iteration over the replacement bytes [18][19]. It witnesses
+    // reachability of that post-target control point, not the write result. The
+    // array `IntoIterator` implementation moves each array value in
+    // start-to-end order [33]. Every post-mutation
     // whole-buffer frame assertion consumes [3], [4], [6], [11], [12],
     // [17]-[20], [24], [34], and [40], plus the applicable placement policy;
     // the `DerefMut` and `into_mut` frames additionally consume [9]. The
@@ -1349,10 +1516,13 @@ mod proofs {
     // end result ownership without running the wrapper or error destructor.
     // Since ordinary destructor operation would recursively destroy fields
     // [32], this also excludes destruction of their `B`; the separately owned
-    // backing object is not forgotten. Those outer frames therefore observe
-    // only the named target operation rather than a target-plus-destruction
-    // composition. The constructor and immutable-`Deref` frames consume the
-    // adopted non-mutation policy above. The separate error-restoration frame
+    // backing object is not forgotten. Each operation frame directly observes
+    // the selected setup plus the named target. The public branch is an
+    // end-to-end constructor-rooted sequence; the direct branch supplies the
+    // target-specific result conditional on the explicitly bounded setup
+    // premise above, rather than composing with the constructor harness. The
+    // constructor and immutable-`Deref` frames consume the adopted non-mutation
+    // policy above. The separate error-restoration frame
     // consumes [6]-[9], [11], [17]-[20], [23]-[24], [34], and [40]: an empty
     // selected range is unchanged, while a nonempty range has only its first
     // byte replaced. The modeled-address assertions consume [5]'s sized pointer
@@ -1411,6 +1581,18 @@ mod proofs {
     //   the maximum field alignment rounded up to a valid final size.
     // - [15] `DerefMut::deref_mut` returns `&mut Self::Target`; `Ref`'s `Deref`
     //   implementation defines `Target = T`.
+    // - [41] `align_of::<T>()` returns `T`'s ABI-required minimum alignment in
+    //   bytes; the direct alignment-error setup checks that value rather than
+    //   manually reconstructing `u32`'s numeric alignment.
+    // - [45] At a function call, arguments pass through parameters. Evaluating
+    //   the body conceptually binds parameter patterns to argument expressions
+    //   and returns the body's value. With [17]'s move semantics,
+    //   the non-`Copy` source is moved into each constructor's `bytes` or `src`
+    //   parameter. [43]'s struct field shorthand installs that `src` operand in
+    //   the named field and specifies that tuple structs and variants are
+    //   instantiated with call expressions; [42] defines those calls. [44]
+    //   makes each constructor body's final expression its block value. Thus
+    //   the exact source—not a reconstruction—reaches the corresponding field.
     // - [20]-[21] `u8` and `u32` document that `PartialEq::eq` tests whether
     //   its operands are equal and is used by `==`, while `PartialEq::ne`
     //   tests whether they are not equal and is used by `!=`.
@@ -1426,9 +1608,8 @@ mod proofs {
     //   its pattern to match.
     // - [37] Each `kani::cover!` creates a cover property, and `SATISFIED`
     //   means Kani found an execution which triggers its condition.
-    // - [38] The primitive-layout table fixes `u32`'s size at four bytes, `-`
-    //   is integer subtraction, and subtraction overflows only when its result
-    //   is outside the integer type's range.
+    // - [38] `usize::checked_sub` returns `None` when integer underflow occurs
+    //   and otherwise returns the subtraction result.
     // - [39] `&&` is logical AND and evaluates its right operand only when its
     //   left operand is true; `!` on a Boolean is logical negation.
     // - [40] Evaluating `return` moves its argument to the function's output
@@ -1502,16 +1683,21 @@ mod proofs {
     // https://doc.rust-lang.org/1.93.0/reference/expressions/if-expr.html#if-let-patterns
     // https://doc.rust-lang.org/1.93.0/reference/expressions/if-expr.html#r-expr.if.condition-true
     // https://doc.rust-lang.org/1.93.0/reference/expressions/if-expr.html#r-expr.if.else-if
-    // [35]: https://model-checking.github.io/kani/crates/doc/kani/fn.any.html
-    // [36]: https://model-checking.github.io/kani/crates/doc/kani/fn.assume.html
+    // [35]: https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/lib.rs#L255-L279
+    // https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/arbitrary.rs#L32-L70
+    // https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/arbitrary.rs#L125-L131
+    // [36]: https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/lib.rs#L139-L167
     // [37]: https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani/src/lib.rs#L66-L77
     // https://github.com/model-checking/kani/blob/kani-0.67.0/docs/src/verification-results.md#cover-property-results
-    // [38]: https://doc.rust-lang.org/1.93.0/reference/type-layout.html#primitive-data-layout
-    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#overflow
-    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#arithmetic-and-logical-binary-operators
+    // [38]: https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#method.checked_sub
     // [39]: https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#lazy-boolean-operators
     // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#negation-operators
     // [40]: https://doc.rust-lang.org/1.93.0/reference/expressions/return-expr.html
+    // [41]: https://doc.rust-lang.org/1.93.0/core/mem/fn.align_of.html
+    // [42]: https://doc.rust-lang.org/1.93.0/reference/expressions/call-expr.html
+    // [43]: https://doc.rust-lang.org/1.93.0/reference/expressions/struct-expr.html
+    // [44]: https://doc.rust-lang.org/1.93.0/reference/expressions/block-expr.html
+    // [45]: https://doc.rust-lang.org/1.93.0/reference/items/functions.html#function-body
     //
     // These are not generic `Ref<B, T>` theorems. `Ref::from_bytes` performs no
     // representation-validity check for any `T`; `u32: FromBytes` only enables
@@ -1535,7 +1721,10 @@ mod proofs {
     // harness deliberately does not dereference a successful `Ref` or recover
     // an error's source. It forgets either result payload before observing the
     // whole-buffer frame, so that frame excludes destruction of the wrapper,
-    // error, and their `B` fields. It proves no generic drop behavior.
+    // error, and their `B` fields. This is only a constructor final-state
+    // property: it neither exposes a result payload's internal source nor
+    // composes into an operation-specific theorem. It does not rule out a
+    // restored transient write and proves no generic drop behavior.
     #[kani::proof]
     #[kani::unwind(9)]
     fn prove_sized_u32_from_bytes_classification() {
@@ -1558,9 +1747,10 @@ mod proofs {
                     mem::forget(typed);
                 }
                 (Err(err), false) => {
-                    kani::cover!(view.start == 0 && source_len == SIZE - 1);
+                    let one_byte_short = one_byte_short_of_u32();
+                    kani::cover!(view.start == 0 && source_len == one_byte_short);
                     kani::cover!(view.start == 1 && source_len == SIZE);
-                    kani::cover!(view.start == 1 && source_len == SIZE - 1);
+                    kani::cover!(view.start == 1 && source_len == one_byte_short);
                     kani::cover!(view.start == CAPACITY && source_len == 0);
                     if source_len != SIZE && source_aligned {
                         match &err {
@@ -1589,18 +1779,21 @@ mod proofs {
         assert_same_u8_elements(&backing.bytes, &original);
     }
 
-    // Scope: successful construction is setup; immutable `Deref::deref` is
-    // the operation under proof. For every constructible view and buffer
-    // value, it must preserve the selected referent's address and initial
-    // value. The harness then forgets the temporary `Ref` before checking the
-    // whole-buffer frame, excluding wrapper and `B` destruction and proving no
-    // generic drop behavior. It does not establish provenance, reference
-    // identity, or lifetime safety.
+    // Scope: For every constructible view and buffer value, immutable
+    // `Deref::deref` must preserve the selected referent's address and initial
+    // value under both setup modes. The public mode proves the complete
+    // `Ref::from_bytes`-then-`Deref` integration sequence. The direct mode
+    // bypasses `from_bytes` and attributes the result to `Deref`, conditional
+    // on the explicit direct-setup premise above. The harness forgets the
+    // temporary `Ref` before its final-state frame, excluding wrapper and `B`
+    // destruction and proving no generic drop behavior. It does not establish
+    // provenance, reference identity, or lifetime safety.
     #[kani::proof]
     #[kani::unwind(9)]
     fn prove_sized_u32_deref() {
         let original: [u8; CAPACITY] = kani::any();
         let view = View::any();
+        let use_public_constructor: bool = kani::any();
         let mut backing = AlignedBytes { bytes: copy_snapshot(&original), _align: [] };
         assert!(backing.bytes.as_mut_ptr().cast::<u32>().is_aligned());
 
@@ -1611,8 +1804,7 @@ mod proofs {
             kani::assume(construction_oracle(source));
             let expected_value = value_oracle(&original, view)
                 .expect("construction oracle requires an exact-size value oracle");
-            let typed =
-                Ref::<_, u32>::from_bytes(source).expect("constructible view should produce a Ref");
+            let typed = ref_operation_setup(source, use_public_constructor);
 
             kani::cover!(view.start == 0 && source_len == SIZE);
             kani::cover!(view.start == SIZE && source_len == SIZE);
@@ -1621,24 +1813,29 @@ mod proofs {
             let typed_ptr: *const u32 = typed_ref;
             assert_eq!(typed_ptr.cast::<u8>(), source_ptr as *const u8);
             assert_eq!(*typed_ref, expected_value);
+            cover_operation_setup_modes(use_public_constructor);
             mem::forget(typed);
         }
 
         assert_same_u8_elements(&backing.bytes, &original);
     }
 
-    // Scope: failed construction is setup; `CastError::into_src` is the
-    // operation under proof. For every rejected view and replacement byte, the
-    // returned slice must preserve the input's modeled address, length, and
-    // ordered bytes. A modeled first-byte write through that slice must have
-    // the independent repair oracle's whole-buffer frame. This does not prove
-    // source-reference identity, provenance, or lifetime safety.
+    // Scope: For every policy-rejected view and replacement byte,
+    // `CastError::into_src` must return a slice preserving the input's modeled
+    // address, length, and ordered bytes under both setup modes. The public
+    // mode proves the failed-`Ref::from_bytes`-then-`into_src` integration
+    // sequence. Direct mode wraps the source in the classified error and
+    // isolates `into_src`, conditional on the source-level direct-setup payload
+    // lemma above. A modeled first-byte write through the returned slice must
+    // then have the independent repair oracle's final whole-buffer frame. This
+    // does not prove source-reference identity, provenance, or lifetime safety.
     #[kani::proof]
     #[kani::unwind(9)]
     fn prove_sized_u32_error_into_src() {
         let original: [u8; CAPACITY] = kani::any();
         let error_replacement: u8 = kani::any();
         let view = View::any();
+        let use_public_constructor: bool = kani::any();
         let mut backing = AlignedBytes { bytes: copy_snapshot(&original), _align: [] };
         assert!(backing.bytes.as_mut_ptr().cast::<u32>().is_aligned());
 
@@ -1647,18 +1844,12 @@ mod proofs {
             let source_ptr = source.as_mut_ptr();
             let source_len = source.len();
             kani::assume(!construction_oracle(source));
-            let err = match Ref::<_, u32>::from_bytes(source) {
-                Err(err) => err,
-                Ok(typed) => {
-                    mem::forget(typed);
-                    assert_same_bool(false, true);
-                    return;
-                }
-            };
+            let err = error_operation_setup(source, use_public_constructor);
 
-            kani::cover!(view.start == 0 && source_len == SIZE - 1);
+            let one_byte_short = one_byte_short_of_u32();
+            kani::cover!(view.start == 0 && source_len == one_byte_short);
             kani::cover!(view.start == 1 && source_len == SIZE);
-            kani::cover!(view.start == 1 && source_len == SIZE - 1);
+            kani::cover!(view.start == 1 && source_len == one_byte_short);
             kani::cover!(view.start == CAPACITY && source_len == 0);
             if let Some(first) = view.get(&original).first() {
                 kani::cover!(error_replacement != *first);
@@ -1670,26 +1861,30 @@ mod proofs {
             if let Some(first) = recovered.first_mut() {
                 *first = error_replacement;
             }
+            cover_operation_setup_modes(use_public_constructor);
         }
 
         let expected = repair_frame_oracle(&original, view, error_replacement);
         assert_same_u8_elements(&backing.bytes, &expected);
     }
 
-    // Scope: successful construction is setup; `DerefMut::deref_mut` is the
-    // operation under proof. For every constructible view and every original
-    // and replacement value, it must preserve address and initial value, and a
-    // write through the returned reference must have the exact whole-buffer
-    // frame supplied by the independent oracle. After the returned borrow ends,
-    // the harness forgets the temporary `Ref`; the outer frame therefore
-    // excludes destruction of the wrapper and its `B` field and proves no
-    // generic drop behavior.
+    // Scope: For every constructible view and every original and replacement
+    // value, `DerefMut::deref_mut` must preserve address and initial value, and
+    // a write through the returned reference must have the independent oracle's
+    // exact whole-buffer frame under both setup modes. The public mode proves
+    // the constructor-rooted integration sequence; the direct mode bypasses
+    // `from_bytes` and isolates `DerefMut`, conditional on the direct-setup
+    // premise above. After the returned borrow ends, the harness forgets the
+    // temporary `Ref`; the outer final-state frame therefore excludes
+    // destruction of the wrapper and its `B` field and proves no generic drop
+    // behavior.
     #[kani::proof]
     #[kani::unwind(9)]
     fn prove_sized_u32_deref_mut() {
         let original: [u8; CAPACITY] = kani::any();
         let replacement: u32 = kani::any();
         let view = View::any();
+        let use_public_constructor: bool = kani::any();
         let mut backing = AlignedBytes { bytes: copy_snapshot(&original), _align: [] };
         assert!(backing.bytes.as_mut_ptr().cast::<u32>().is_aligned());
 
@@ -1700,8 +1895,7 @@ mod proofs {
             kani::assume(construction_oracle(source));
             let original_value = value_oracle(&original, view)
                 .expect("construction oracle requires an exact-size value oracle");
-            let mut typed =
-                Ref::<_, u32>::from_bytes(source).expect("constructible view should produce a Ref");
+            let mut typed = ref_operation_setup(source, use_public_constructor);
 
             kani::cover!(view.start == 0 && source_len == SIZE);
             kani::cover!(view.start == SIZE && source_len == SIZE);
@@ -1713,6 +1907,7 @@ mod proofs {
                 assert_eq!(*typed_mut, original_value);
                 *typed_mut = replacement;
             }
+            cover_operation_setup_modes(use_public_constructor);
             mem::forget(typed);
         }
 
@@ -1721,24 +1916,28 @@ mod proofs {
         assert_same_u8_elements(&backing.bytes, &expected);
     }
 
-    // Scope: successful construction is setup; `Ref::write` is the operation
-    // under proof. For every constructible view and every original and
-    // replacement value, the independent oracle supplies the exact
-    // whole-buffer native-byte frame. The harness performs no typed `Deref`
-    // observation, so a separate `Deref` regression cannot be misattributed to
-    // `write`. It is fixed to `u32` and does not establish `Ref::write`'s
-    // separate promise to forget its argument; `u32` destruction is
-    // unobservable here. After the target call, the harness uses safe
-    // `mem::forget` to consume the wrapper without running its drop glue; this
-    // isolates the outer frame from wrapper destruction and proves no generic
-    // `Ref` drop behavior. A snapshot-only cover witnesses a replacement whose
-    // native bytes differ from the selected pre-call bytes.
+    // Scope: For every constructible view and every original and replacement
+    // value, the independent oracle supplies `Ref::write`'s exact whole-buffer
+    // native-byte frame under both setup modes. The public mode proves the
+    // constructor-rooted integration sequence; the direct mode bypasses
+    // `from_bytes` and isolates `write`, conditional on the direct-setup
+    // premise above. The harness performs no typed `Deref` observation, so a
+    // separate `Deref` regression cannot be misattributed to `write`. This is
+    // fixed to `u32`; it does not establish `Ref::write`'s separate promise to
+    // forget its argument. `u32` destruction is unobservable here. After the
+    // target call, the harness uses safe `mem::forget` to consume the wrapper
+    // without running its drop glue; this excludes wrapper destruction and
+    // proves no generic `Ref` drop behavior. A snapshot-only cover after setup
+    // and `write` witnesses post-target reachability for a changing input; it
+    // is not a write-result oracle.
     #[kani::proof]
     #[kani::unwind(9)]
     fn prove_sized_u32_write() {
         let original: [u8; CAPACITY] = kani::any();
         let replacement: u32 = kani::any();
         let view = View::any();
+        let use_public_constructor: bool = kani::any();
+        let replacement_bytes = replacement.to_ne_bytes();
         let mut backing = AlignedBytes { bytes: copy_snapshot(&original), _align: [] };
         assert!(backing.bytes.as_mut_ptr().cast::<u32>().is_aligned());
 
@@ -1746,16 +1945,18 @@ mod proofs {
             let source = view.get_mut(&mut backing.bytes);
             let source_len = source.len();
             kani::assume(construction_oracle(source));
-            let replacement_bytes = replacement.to_ne_bytes();
-            kani::cover!(!view.get(&original).iter().copied().eq(replacement_bytes));
-            let mut typed =
-                Ref::<_, u32>::from_bytes(source).expect("constructible view should produce a Ref");
+            let mut typed = ref_operation_setup(source, use_public_constructor);
 
             kani::cover!(view.start == 0 && source_len == SIZE);
             kani::cover!(view.start == SIZE && source_len == SIZE);
 
             Ref::write(&mut typed, replacement);
             mem::forget(typed);
+            cover_operation_setup_modes(use_public_constructor);
+            kani::cover!(
+                !view.get(&original).iter().copied().eq(replacement_bytes),
+                "a changing input reaches the post-Ref::write control point"
+            );
         }
 
         let expected = write_frame_oracle(&original, view, replacement)
@@ -1763,17 +1964,20 @@ mod proofs {
         assert_same_u8_elements(&backing.bytes, &expected);
     }
 
-    // Scope: successful construction is setup; `Ref::into_mut` is the
-    // operation under proof. For every constructible view and every original
-    // and replacement value, its returned reference must preserve address and
+    // Scope: For every constructible view and every original and replacement
+    // value, `Ref::into_mut`'s returned reference must preserve address and
     // initial value, and a write through it must have the independent oracle's
-    // exact whole-buffer frame.
+    // exact whole-buffer frame under both setup modes. The public mode proves
+    // the constructor-rooted integration sequence; the direct mode bypasses
+    // `from_bytes` and isolates `into_mut`, conditional on the direct-setup
+    // premise above.
     #[kani::proof]
     #[kani::unwind(9)]
     fn prove_sized_u32_into_mut() {
         let original: [u8; CAPACITY] = kani::any();
         let replacement: u32 = kani::any();
         let view = View::any();
+        let use_public_constructor: bool = kani::any();
         let mut backing = AlignedBytes { bytes: copy_snapshot(&original), _align: [] };
         assert!(backing.bytes.as_mut_ptr().cast::<u32>().is_aligned());
 
@@ -1784,8 +1988,7 @@ mod proofs {
             kani::assume(construction_oracle(source));
             let original_value = value_oracle(&original, view)
                 .expect("construction oracle requires an exact-size value oracle");
-            let typed =
-                Ref::<_, u32>::from_bytes(source).expect("constructible view should produce a Ref");
+            let typed = ref_operation_setup(source, use_public_constructor);
             let typed = Ref::into_mut(typed);
 
             kani::cover!(view.start == 0 && source_len == SIZE);
@@ -1796,6 +1999,7 @@ mod proofs {
             assert_eq!(*typed, original_value);
             *typed = replacement;
             assert_eq!(*typed, replacement);
+            cover_operation_setup_modes(use_public_constructor);
         }
 
         let expected = write_frame_oracle(&original, view, replacement)
