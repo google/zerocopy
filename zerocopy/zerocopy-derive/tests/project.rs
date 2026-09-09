@@ -30,7 +30,7 @@ struct Tuple(u8, u16);
 fn struct_fields() {
     let named = Named { byte: 1, word: 0x0203 };
     let word: imp::core::result::Result<
-        imp::Ptr<'_, u16, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, u16, SharedAligned<imp::invariant::Safe>>,
         imp::core::convert::Infallible,
     > = imp::Ptr::from_ref(&named)
         .project::<imp::project_clients::ProjectDerive, _, { imp::STRUCT_VARIANT_ID }, { imp::ident_id!(word) }>();
@@ -38,7 +38,7 @@ fn struct_fields() {
 
     let tuple = Tuple(4, 0x0506);
     let field: imp::core::result::Result<
-        imp::Ptr<'_, u16, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, u16, SharedAligned<imp::invariant::Safe>>,
         imp::core::convert::Infallible,
     > = imp::Ptr::from_ref(&tuple)
         .project::<imp::project_clients::ProjectDerive, _, { imp::STRUCT_VARIANT_ID }, { imp::ident_id!(1) }>();
@@ -77,7 +77,7 @@ fn struct_validity_is_preserved() {
     imp::assert!(projected.is_ok());
 
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Safe>>,
         imp::core::convert::Infallible,
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::STRUCT_VARIANT_ID }, { imp::ident_id!(second) }>();
@@ -96,7 +96,7 @@ struct Packed {
 fn packed_struct_loses_alignment() {
     let value = Packed { byte: 1, word: 0x0203_0405 };
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, u32, SharedUnaligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, u32, SharedUnaligned<imp::invariant::Safe>>,
         imp::core::convert::Infallible,
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::STRUCT_VARIANT_ID }, { imp::ident_id!(word) }>();
@@ -112,9 +112,9 @@ struct Unsized<T: ?imp::Sized> {
 }
 
 fn project_unsized_tail(
-    value: imp::Ptr<'_, Unsized<[u8]>, SharedAligned<imp::invariant::Valid>>,
+    value: imp::Ptr<'_, Unsized<[u8]>, SharedAligned<imp::invariant::Safe>>,
 ) -> imp::core::result::Result<
-    imp::Ptr<'_, [u8], SharedAligned<imp::invariant::Valid>>,
+    imp::Ptr<'_, [u8], SharedAligned<imp::invariant::Safe>>,
     imp::core::convert::Infallible,
 > {
     value.project::<imp::project_clients::ProjectDerive, _, { imp::STRUCT_VARIANT_ID }, { imp::ident_id!(tail) }>()
@@ -171,14 +171,14 @@ enum CEnum {
 fn repr_c_enum_checks_its_tag() {
     let value = CEnum::Flag { value: 0x1234 };
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, u16, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, u16, SharedAligned<imp::invariant::Safe>>,
         (),
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::ident_id!(Flag) }, { imp::ident_id!(value) }>();
     imp::assert_eq!(*projected.unwrap().as_ref(), 0x1234);
 
     let wrong_variant: imp::core::result::Result<
-        imp::Ptr<'_, u32, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, u32, SharedAligned<imp::invariant::Safe>>,
         (),
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::ident_id!(Number) }, { imp::ident_id!(0) }>();
@@ -198,20 +198,20 @@ fn repr_u8_enum_validity_and_tag_checks() {
     let value = U8Enum::A(11);
 
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Safe>>,
         (),
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::ident_id!(A) }, { imp::ident_id!(0) }>();
     imp::assert_eq!(*projected.unwrap().as_ref(), 11);
 
     let wrong_variant: imp::core::result::Result<
-        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Safe>>,
         (),
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::ident_id!(B) }, { imp::ident_id!(0) }>();
     imp::assert!(wrong_variant.is_err());
 
-    // SAFETY: `Uninit` permits every bit pattern. Unlike a `Valid`
+    // SAFETY: `Uninit` permits every bit pattern. Unlike a `Safe`
     // projection, this projection must not inspect the tag.
     let uninit = unsafe { imp::Ptr::from_ref(&value).assume_validity::<imp::invariant::Uninit>() };
     let wrong_variant: imp::core::result::Result<
@@ -244,7 +244,7 @@ struct Generic<T, U> {
 fn generic_fields_need_no_zerocopy_bounds() {
     let value = Generic { first: util::NotZerocopy(1u8), second: util::NotZerocopy(0x0203u16) };
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, util::NotZerocopy<u16>, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, util::NotZerocopy<u16>, SharedAligned<imp::invariant::Safe>>,
         imp::core::convert::Infallible,
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::STRUCT_VARIANT_ID }, { imp::ident_id!(second) }>();
@@ -264,7 +264,7 @@ fn generic_enum_fields_need_no_zerocopy_bounds() {
     let inner = util::NotZerocopy(0x1234u16);
     let value: GenericEnum<'_, util::NotZerocopy<u16>, 2> = GenericEnum::Borrowed(&inner);
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, &util::NotZerocopy<u16>, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, &util::NotZerocopy<u16>, SharedAligned<imp::invariant::Safe>>,
         (),
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::ident_id!(Borrowed) }, { imp::ident_id!(0) }>();
@@ -288,7 +288,7 @@ mod visibility {
 fn public_marker_is_inferred_across_module_boundary() {
     let value = visibility::new();
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, u16, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, u16, SharedAligned<imp::invariant::Safe>>,
         imp::core::convert::Infallible,
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::STRUCT_VARIANT_ID }, { imp::ident_id!(field) }>();
@@ -326,7 +326,7 @@ fn project_and_try_from_bytes_impls_coexist() {
 
     let value = ProjectThenTryFromBytes { field: 42 };
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, u8, SharedAligned<imp::invariant::Safe>>,
         imp::core::convert::Infallible,
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::STRUCT_VARIANT_ID }, { imp::ident_id!(field) }>();
@@ -344,7 +344,7 @@ fn project_and_try_from_bytes_impls_coexist() {
 
     let value = ProjectAndTryFromBytes::B { field: true };
     let projected: imp::core::result::Result<
-        imp::Ptr<'_, bool, SharedAligned<imp::invariant::Valid>>,
+        imp::Ptr<'_, bool, SharedAligned<imp::invariant::Safe>>,
         (),
     > = imp::Ptr::from_ref(&value)
         .project::<imp::project_clients::ProjectDerive, _, { imp::ident_id!(B) }, { imp::ident_id!(field) }>();

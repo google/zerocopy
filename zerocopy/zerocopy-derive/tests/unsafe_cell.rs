@@ -15,7 +15,7 @@ include!("include.rs");
 // Test to make sure that all of our derives are compatible with `UnsafeCell`s.
 //
 // We test both `FromBytes` and `FromZeros`, as the `FromBytes` implied derive
-// of `TryFromBytes` emits a trivial `is_bit_valid` impl - we want to test the
+// of `TryFromBytes` emits a trivial `is_safe` impl - we want to test the
 // non-trivial impl, which deriving `FromZeros` accomplishes.
 
 #[derive(imp::FromBytes, imp::IntoBytes, imp::KnownLayout, imp::Unaligned)]

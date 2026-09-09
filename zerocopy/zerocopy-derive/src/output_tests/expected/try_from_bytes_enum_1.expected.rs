@@ -26,7 +26,7 @@ const _: () = {
     {
         fn only_derive_is_allowed_to_implement_this_trait() {}
         #[inline]
-        fn is_bit_valid<___ZcAlignment>(
+        fn is_safe<___ZcAlignment>(
             mut candidate: ::zerocopy::Maybe<'_, Self, ___ZcAlignment>,
         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
         where
@@ -281,7 +281,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ0,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -293,7 +293,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -449,7 +449,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ1,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(1) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -461,7 +461,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -617,7 +617,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ2,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(2) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -629,7 +629,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -785,7 +785,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ3,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(3) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -797,7 +797,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -953,7 +953,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ4,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(4) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -965,7 +965,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -1121,7 +1121,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ5,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(5) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -1133,7 +1133,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -1291,7 +1291,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ6,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(6) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -1303,7 +1303,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -1527,7 +1527,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ0,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
                     > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1539,7 +1539,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -1695,7 +1695,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ1,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(1) },
                     > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1707,7 +1707,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -1863,7 +1863,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ2,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(2) },
                     > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1875,7 +1875,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -2031,7 +2031,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ3,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(3) },
                     > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -2043,7 +2043,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -2201,7 +2201,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ4,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(4) },
                     > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -2213,7 +2213,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -2822,7 +2822,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕtag,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(tag) },
                     > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
@@ -2831,7 +2831,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -2978,7 +2978,7 @@ const _: () = {
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕvariants,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
                     > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
@@ -2987,7 +2987,7 @@ const _: () = {
                         type Invariants = (
                             ___ZcAliasing,
                             ___ZcAlignment,
-                            ::zerocopy::invariant::Valid,
+                            ::zerocopy::invariant::Safe,
                         );
                     }
                 };
@@ -3201,7 +3201,7 @@ const _: () = {
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(a) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3213,7 +3213,7 @@ const _: () = {
                     type Invariants = (
                         ___ZcAliasing,
                         ___ZcAlignment,
-                        ::zerocopy::invariant::Valid,
+                        ::zerocopy::invariant::Safe,
                     );
                     #[inline(always)]
                     fn is_projectable(
@@ -3225,7 +3225,7 @@ const _: () = {
                             (
                                 ::zerocopy::invariant::Shared,
                                 ___ZcAlignment,
-                                ::zerocopy::invariant::Valid,
+                                ::zerocopy::invariant::Safe,
                             ),
                         >,
                     ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
@@ -3422,7 +3422,7 @@ const _: () = {
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(b) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3434,7 +3434,7 @@ const _: () = {
                     type Invariants = (
                         ___ZcAliasing,
                         ___ZcAlignment,
-                        ::zerocopy::invariant::Valid,
+                        ::zerocopy::invariant::Safe,
                     );
                     #[inline(always)]
                     fn is_projectable(
@@ -3446,7 +3446,7 @@ const _: () = {
                             (
                                 ::zerocopy::invariant::Shared,
                                 ___ZcAlignment,
-                                ::zerocopy::invariant::Valid,
+                                ::zerocopy::invariant::Safe,
                             ),
                         >,
                     ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
@@ -3643,7 +3643,7 @@ const _: () = {
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(c) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3655,7 +3655,7 @@ const _: () = {
                     type Invariants = (
                         ___ZcAliasing,
                         ___ZcAlignment,
-                        ::zerocopy::invariant::Valid,
+                        ::zerocopy::invariant::Safe,
                     );
                     #[inline(always)]
                     fn is_projectable(
@@ -3667,7 +3667,7 @@ const _: () = {
                             (
                                 ::zerocopy::invariant::Shared,
                                 ___ZcAlignment,
-                                ::zerocopy::invariant::Valid,
+                                ::zerocopy::invariant::Safe,
                             ),
                         >,
                     ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
@@ -3864,7 +3864,7 @@ const _: () = {
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(d) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3876,7 +3876,7 @@ const _: () = {
                     type Invariants = (
                         ___ZcAliasing,
                         ___ZcAlignment,
-                        ::zerocopy::invariant::Valid,
+                        ::zerocopy::invariant::Safe,
                     );
                     #[inline(always)]
                     fn is_projectable(
@@ -3888,7 +3888,7 @@ const _: () = {
                             (
                                 ::zerocopy::invariant::Shared,
                                 ___ZcAlignment,
-                                ::zerocopy::invariant::Valid,
+                                ::zerocopy::invariant::Safe,
                             ),
                         >,
                     ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
@@ -4085,7 +4085,7 @@ const _: () = {
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(e) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4097,7 +4097,7 @@ const _: () = {
                     type Invariants = (
                         ___ZcAliasing,
                         ___ZcAlignment,
-                        ::zerocopy::invariant::Valid,
+                        ::zerocopy::invariant::Safe,
                     );
                     #[inline(always)]
                     fn is_projectable(
@@ -4109,7 +4109,7 @@ const _: () = {
                             (
                                 ::zerocopy::invariant::Shared,
                                 ___ZcAlignment,
-                                ::zerocopy::invariant::Valid,
+                                ::zerocopy::invariant::Safe,
                             ),
                         >,
                     ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
@@ -4306,7 +4306,7 @@ const _: () = {
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(0) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4318,7 +4318,7 @@ const _: () = {
                     type Invariants = (
                         ___ZcAliasing,
                         ___ZcAlignment,
-                        ::zerocopy::invariant::Valid,
+                        ::zerocopy::invariant::Safe,
                     );
                     #[inline(always)]
                     fn is_projectable(
@@ -4330,7 +4330,7 @@ const _: () = {
                             (
                                 ::zerocopy::invariant::Shared,
                                 ___ZcAlignment,
-                                ::zerocopy::invariant::Valid,
+                                ::zerocopy::invariant::Safe,
                             ),
                         >,
                     ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
@@ -4527,7 +4527,7 @@ const _: () = {
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(1) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4539,7 +4539,7 @@ const _: () = {
                     type Invariants = (
                         ___ZcAliasing,
                         ___ZcAlignment,
-                        ::zerocopy::invariant::Valid,
+                        ::zerocopy::invariant::Safe,
                     );
                     #[inline(always)]
                     fn is_projectable(
@@ -4551,7 +4551,7 @@ const _: () = {
                             (
                                 ::zerocopy::invariant::Shared,
                                 ___ZcAlignment,
-                                ::zerocopy::invariant::Valid,
+                                ::zerocopy::invariant::Safe,
                             ),
                         >,
                     ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
@@ -4748,7 +4748,7 @@ const _: () = {
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(2) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4760,7 +4760,7 @@ const _: () = {
                     type Invariants = (
                         ___ZcAliasing,
                         ___ZcAlignment,
-                        ::zerocopy::invariant::Valid,
+                        ::zerocopy::invariant::Safe,
                     );
                     #[inline(always)]
                     fn is_projectable(
@@ -4772,7 +4772,7 @@ const _: () = {
                             (
                                 ::zerocopy::invariant::Shared,
                                 ___ZcAlignment,
-                                ::zerocopy::invariant::Valid,
+                                ::zerocopy::invariant::Safe,
                             ),
                         >,
                     ) -> ::zerocopy::util::macro_util::core_reexport::result::Result<
@@ -4808,9 +4808,7 @@ const _: () = {
                                 ::zerocopy::ident_id!(StructLike) }, {
                                 ::zerocopy::ident_id!(a) }, > ()
                             );
-                            <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                field_candidate,
-                            )
+                            <u8 as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
                         }
                         && {
                             let field_candidate = ::zerocopy::into_inner!(
@@ -4819,9 +4817,7 @@ const _: () = {
                                 ::zerocopy::ident_id!(StructLike) }, {
                                 ::zerocopy::ident_id!(b) }, > ()
                             );
-                            <X as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                field_candidate,
-                            )
+                            <X as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
                         }
                         && {
                             let field_candidate = ::zerocopy::into_inner!(
@@ -4830,7 +4826,7 @@ const _: () = {
                                 ::zerocopy::ident_id!(StructLike) }, {
                                 ::zerocopy::ident_id!(c) }, > ()
                             );
-                            <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                            <X::Target as ::zerocopy::TryFromBytes>::is_safe(
                                 field_candidate,
                             )
                         }
@@ -4841,7 +4837,7 @@ const _: () = {
                                 ::zerocopy::ident_id!(StructLike) }, {
                                 ::zerocopy::ident_id!(d) }, > ()
                             );
-                            <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                            <Y::Target as ::zerocopy::TryFromBytes>::is_safe(
                                 field_candidate,
                             )
                         }
@@ -4855,9 +4851,7 @@ const _: () = {
                             <[(
                                 X,
                                 Y,
-                            ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                field_candidate,
-                            )
+                            ); N] as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
                         }
                 }
                 ___ZEROCOPY_TAG_TupleLike => {
@@ -4869,9 +4863,7 @@ const _: () = {
                                 ::zerocopy::ident_id!(TupleLike) }, {
                                 ::zerocopy::ident_id!(0) }, > ()
                             );
-                            <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                field_candidate,
-                            )
+                            <bool as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
                         }
                         && {
                             let field_candidate = ::zerocopy::into_inner!(
@@ -4880,9 +4872,7 @@ const _: () = {
                                 ::zerocopy::ident_id!(TupleLike) }, {
                                 ::zerocopy::ident_id!(1) }, > ()
                             );
-                            <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                field_candidate,
-                            )
+                            <Y as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
                         }
                         && {
                             let field_candidate = ::zerocopy::into_inner!(
@@ -4893,7 +4883,7 @@ const _: () = {
                             );
                             <PhantomData<
                                 &'a [(X, Y); N],
-                            > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            > as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
                         }
                 }
                 _ => false,

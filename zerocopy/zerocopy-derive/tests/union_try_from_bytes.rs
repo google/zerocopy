@@ -25,8 +25,8 @@ util_assert_impl_all!(One: imp::TryFromBytes);
 
 #[test]
 fn one() {
-    crate::util::test_is_bit_valid::<One, _>([42u8], true);
-    crate::util::test_is_bit_valid::<One, _>([43u8], true);
+    crate::util::test_is_safe::<One, _>([42u8], true);
+    crate::util::test_is_safe::<One, _>([43u8], true);
 }
 
 #[derive(imp::Immutable, imp::TryFromBytes, imp::IntoBytes)]
@@ -41,9 +41,9 @@ util_assert_impl_all!(Two: imp::TryFromBytes);
 
 #[test]
 fn two() {
-    crate::util::test_is_bit_valid::<Two, _>(Two { a: false }, true);
-    crate::util::test_is_bit_valid::<Two, _>(Two { b: true }, true);
-    crate::util::test_is_bit_valid::<Two, _>([2u8], false);
+    crate::util::test_is_safe::<Two, _>(Two { a: false }, true);
+    crate::util::test_is_safe::<Two, _>(Two { b: true }, true);
+    crate::util::test_is_safe::<Two, _>([2u8], false);
 }
 
 #[derive(imp::Immutable, imp::TryFromBytes)]
@@ -56,9 +56,9 @@ union BoolAndZst {
 
 #[test]
 fn bool_and_zst() {
-    crate::util::test_is_bit_valid::<BoolAndZst, _>([0u8], true);
-    crate::util::test_is_bit_valid::<BoolAndZst, _>([1u8], true);
-    crate::util::test_is_bit_valid::<BoolAndZst, _>([2u8], true);
+    crate::util::test_is_safe::<BoolAndZst, _>([0u8], true);
+    crate::util::test_is_safe::<BoolAndZst, _>([1u8], true);
+    crate::util::test_is_safe::<BoolAndZst, _>([2u8], true);
 }
 
 #[derive(imp::FromBytes)]
@@ -71,10 +71,10 @@ union MaybeFromBytes<T: imp::Copy> {
 #[test]
 fn test_maybe_from_bytes() {
     // When deriving `FromBytes` on a type with no generic parameters, we emit a
-    // trivial `is_bit_valid` impl that always returns true. This test confirms
+    // trivial `is_safe` impl that always returns true. This test confirms
     // that we *don't* spuriously do that when generic parameters are present.
 
-    crate::util::test_is_bit_valid::<MaybeFromBytes<bool>, _>([2u8], false);
+    crate::util::test_is_safe::<MaybeFromBytes<bool>, _>([2u8], false);
 }
 
 #[derive(imp::Immutable, imp::TryFromBytes)]
@@ -134,7 +134,7 @@ util_assert_impl_all!(UnsafeCellUnion: imp::TryFromBytes);
 
 #[test]
 fn unsafe_cell_union() {
-    crate::util::test_is_bit_valid::<UnsafeCellUnion, _>([0u8], true);
-    crate::util::test_is_bit_valid::<UnsafeCellUnion, _>([1u8], true);
-    crate::util::test_is_bit_valid::<UnsafeCellUnion, _>([2u8], false);
+    crate::util::test_is_safe::<UnsafeCellUnion, _>([0u8], true);
+    crate::util::test_is_safe::<UnsafeCellUnion, _>([1u8], true);
+    crate::util::test_is_safe::<UnsafeCellUnion, _>([2u8], false);
 }

@@ -49,7 +49,7 @@ fn uninit() {
         .unwrap()
         .transmute::<
             imp::MaybeUninit<u8>,
-            imp::invariant::Valid,
+            imp::invariant::Safe,
             (_, (_, imp::BecauseExclusive)),
         >()
         .bikeshed_recall_aligned()
@@ -68,7 +68,7 @@ fn uninit() {
         .unwrap()
         .transmute::<
             imp::MaybeUninit<Align2>,
-            imp::invariant::Valid,
+            imp::invariant::Safe,
             (_, (_, imp::BecauseExclusive)),
         >()
         .try_into_aligned()
@@ -82,7 +82,7 @@ fn uninit() {
     let _: imp::MaybeUninit<Padded> = *ptr
         .transmute::<
             imp::MaybeUninit<Padded>,
-            imp::invariant::Valid,
+            imp::invariant::Safe,
             (_, (_, imp::BecauseExclusive)),
         >()
         .try_into_aligned()
@@ -108,7 +108,7 @@ fn initialized() {
             { imp::ident_id!(first) },
         >()
         .unwrap()
-        .recall_validity::<imp::invariant::Valid, (_, (_, imp::BecauseExclusive))>();
+        .recall_validity::<imp::invariant::Safe, (_, (_, imp::BecauseExclusive))>();
     *first.as_mut() = FIRST;
     imp::assert_eq!(
         *ptr.reborrow()
@@ -119,7 +119,7 @@ fn initialized() {
                 { imp::ident_id!(first) },
             >()
             .unwrap()
-            .recall_validity::<imp::invariant::Valid, (_, (_, imp::BecauseExclusive))>()
+            .recall_validity::<imp::invariant::Safe, (_, (_, imp::BecauseExclusive))>()
             .as_ref(),
         FIRST,
     );
@@ -133,7 +133,7 @@ fn initialized() {
             { imp::ident_id!(second) },
         >()
         .unwrap()
-        .recall_validity::<imp::invariant::Valid, (_, (_, imp::BecauseExclusive))>();
+        .recall_validity::<imp::invariant::Safe, (_, (_, imp::BecauseExclusive))>();
     *second.as_mut() = SECOND;
     imp::assert_eq!(
         ptr.reborrow()
@@ -144,7 +144,7 @@ fn initialized() {
                 { imp::ident_id!(second) },
             >()
             .unwrap()
-            .recall_validity::<imp::invariant::Valid, (_, (_, imp::BecauseExclusive))>()
+            .recall_validity::<imp::invariant::Safe, (_, (_, imp::BecauseExclusive))>()
             .as_ref()
             .0,
         SECOND.0,
@@ -206,7 +206,7 @@ fn valid() {
         SECOND.0,
     );
 
-    // A valid `Padded` is the strictest form through which a `Valid`
+    // A valid `Padded` is the strictest form through which a `Safe`
     // `Ptr<Padded>` may be read.
     let value = ptr.as_ref();
     imp::assert_eq!(value.first, FIRST);

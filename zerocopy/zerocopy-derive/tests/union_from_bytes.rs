@@ -22,7 +22,7 @@ union Zst {
 }
 
 util_assert_impl_all!(Zst: imp::FromBytes);
-test_trivial_is_bit_valid!(Zst => test_zst_trivial_is_bit_valid);
+test_trivial_is_safe!(Zst => test_zst_trivial_is_safe);
 
 #[derive(imp::Immutable, imp::FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
@@ -31,7 +31,7 @@ union One {
 }
 
 util_assert_impl_all!(One: imp::FromBytes);
-test_trivial_is_bit_valid!(One => test_one_trivial_is_bit_valid);
+test_trivial_is_safe!(One => test_one_trivial_is_safe);
 
 #[derive(imp::Immutable, imp::FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
@@ -41,7 +41,7 @@ union Two {
 }
 
 util_assert_impl_all!(Two: imp::FromBytes);
-test_trivial_is_bit_valid!(Two => test_two_trivial_is_bit_valid);
+test_trivial_is_safe!(Two => test_two_trivial_is_safe);
 
 #[derive(imp::Immutable, imp::FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
@@ -58,7 +58,7 @@ where
 }
 
 util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::FromBytes);
-test_trivial_is_bit_valid!(TypeParams<'static, (), imp::IntoIter<()>> => test_type_params_trivial_is_bit_valid);
+test_trivial_is_safe!(TypeParams<'static, (), imp::IntoIter<()>> => test_type_params_trivial_is_safe);
 
 // Deriving `imp::FromBytes` should work if the union has bounded parameters.
 
@@ -76,7 +76,7 @@ where
 }
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::FromBytes);
-test_trivial_is_bit_valid!(WithParams<'static, 'static, u8, 42> => test_with_params_trivial_is_bit_valid);
+test_trivial_is_safe!(WithParams<'static, 'static, u8, 42> => test_with_params_trivial_is_safe);
 
 #[derive(imp::FromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
@@ -86,4 +86,4 @@ union UnsafeCellUnion {
 }
 
 util_assert_impl_all!(UnsafeCellUnion: imp::FromBytes);
-test_trivial_is_bit_valid!(UnsafeCellUnion => test_unsafe_cell_union_trivial_is_bit_valid);
+test_trivial_is_safe!(UnsafeCellUnion => test_unsafe_cell_union_trivial_is_safe);

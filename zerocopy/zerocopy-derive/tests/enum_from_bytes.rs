@@ -34,15 +34,15 @@ include!("include.rs");
 
 #[test]
 #[allow(deprecated)]
-fn test_trivial_is_bit_valid() {
+fn test_trivial_is_safe() {
     // Since we derive `FromBytes`, the implied `TryFromBytes` derive's
-    // `is_bit_valid` impl is trivial - it unconditionally returns `true`.
-    util::test_trivial_is_bit_valid::<FooU8>();
-    util::test_trivial_is_bit_valid::<FooI8>();
-    util::test_trivial_is_bit_valid::<FooU8Align>();
-    util::test_trivial_is_bit_valid::<FooI8Align>();
-    util::test_trivial_is_bit_valid::<FooU16>();
-    util::test_trivial_is_bit_valid::<FooI16>();
+    // `is_safe` impl is trivial - it unconditionally returns `true`.
+    util::test_trivial_is_safe::<FooU8>();
+    util::test_trivial_is_safe::<FooI8>();
+    util::test_trivial_is_safe::<FooU8Align>();
+    util::test_trivial_is_safe::<FooI8Align>();
+    util::test_trivial_is_safe::<FooU16>();
+    util::test_trivial_is_safe::<FooI16>();
 }
 
 // Make sure no deprecation warning is generated from our derive (see #553).

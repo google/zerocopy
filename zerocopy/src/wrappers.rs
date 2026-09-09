@@ -11,7 +11,7 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
-use crate::pointer::{invariant::Valid, SizeEq, TransmuteFrom};
+use crate::pointer::{invariant::Safe, SizeEq, TransmuteFrom};
 
 /// A type with no alignment requirement.
 ///
@@ -143,7 +143,7 @@ impl_known_layout!(T => Unalign<T>);
 // - `Immutable`: `Unalign<T>` has the same fields as `T`, so it permits
 //   interior mutation exactly when `T` does.
 // - `TryFromBytes`: `Unalign<T>` has the same the same bit validity as `T`, so
-//   `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
+//   `T::is_safe` is a sound implementation of `is_safe`.
 //
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
@@ -151,7 +151,7 @@ const _: () = unsafe {
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
-        |c| T::is_bit_valid(c.transmute::<_, _, BecauseImmutable>())
+        |c| T::is_safe(c.transmute::<_, _, BecauseImmutable>())
     );
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
@@ -665,7 +665,7 @@ const _: () = unsafe {
 // SAFETY:
 // - `ReadOnly<T>` has the same alignment as `T`, and so it is `Unaligned`
 //   exactly when `T` is as well.
-// - `ReadOnly<T>` has the same bit validity as `T`, and so this `is_bit_valid`
+// - `ReadOnly<T>` has the same bit validity as `T`, and so this `is_safe`
 //   implementation is correct, and thus the `TryFromBytes` impl is sound.
 // - `ReadOnly<T>` has the same bit validity as `T`, and so it is `FromZeros`,
 //   `FromBytes`, and `IntoBytes` exactly when `T` is as well.
@@ -673,7 +673,7 @@ const _: () = unsafe {
     unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ReadOnly<T>);
     unsafe_impl!(
         T: ?Sized + TryFromBytes => TryFromBytes for ReadOnly<T>;
-        |c| T::is_bit_valid(c.cast::<_, <ReadOnly<T> as SizeEq<ReadOnly<ReadOnly<T>>>>::CastFrom, _>())
+        |c| T::is_safe(c.cast::<_, <ReadOnly<T> as SizeEq<ReadOnly<ReadOnly<T>>>>::CastFrom, _>())
     );
     unsafe_impl!(T: ?Sized + FromZeros => FromZeros for ReadOnly<T>);
     unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ReadOnly<T>);
@@ -709,11 +709,11 @@ const _: () = {
 
 // SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
 // it has the same bit validity as `T`.
-unsafe impl<T: ?Sized> TransmuteFrom<T, Valid, Valid> for ReadOnly<T> {}
+unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for ReadOnly<T> {}
 
 // SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
 // it has the same bit validity as `T`.
-unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Valid, Valid> for T {}
+unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Safe, Safe> for T {}
 
 impl<'a, T: ?Sized + Immutable> From<&'a T> for &'a ReadOnly<T> {
     #[inline(always)]

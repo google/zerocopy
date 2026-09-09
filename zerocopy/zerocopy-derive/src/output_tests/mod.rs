@@ -688,10 +688,10 @@ fn test_from_bytes_enum() {
 }
 
 #[test]
-fn test_try_from_bytes_trivial_is_bit_valid_enum() {
+fn test_try_from_bytes_trivial_is_safe_enum() {
     // Even when we aren't deriving `FromBytes` as the top-level trait,
     // `TryFromBytes` on enums still detects whether we *could* derive
-    // `FromBytes`, and if so, performs the same "trivial `is_bit_valid`"
+    // `FromBytes`, and if so, performs the same "trivial `is_safe`"
     // optimization.
     test! {
         TryFromBytes {
@@ -954,7 +954,7 @@ fn test_try_from_bytes_trivial_is_bit_valid_enum() {
                 Variant254,
                 Variant255,
             }
-        } expands to "expected/try_from_bytes_trivial_is_bit_valid_enum.expected.rs"
+        } expands to "expected/try_from_bytes_trivial_is_safe_enum.expected.rs"
     }
 }
 

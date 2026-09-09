@@ -639,12 +639,12 @@ enum FooU8 {
 }
 
 #[test]
-fn test_trivial_is_bit_valid() {
+fn test_trivial_is_safe() {
     // Though we don't derive `FromBytes`, `FooU8` *could* soundly implement
-    // `FromBytes`. Therefore, `TryFromBytes` derive's `is_bit_valid` impl is
+    // `FromBytes`. Therefore, `TryFromBytes` derive's `is_safe` impl is
     // trivial - it unconditionally returns `true`.
     util_assert_not_impl_any!(FooU8: imp::FromBytes);
-    util::test_trivial_is_bit_valid::<FooU8>();
+    util::test_trivial_is_safe::<FooU8>();
 }
 
 #[deny(non_camel_case_types)]
