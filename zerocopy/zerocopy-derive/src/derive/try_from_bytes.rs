@@ -763,3 +763,41 @@ unsafe fn gen_trivial_is_bit_valid_unchecked(ctx: &Ctx) -> proc_macro2::TokenStr
         }
     )
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn derive_error(input: DeriveInput) -> String {
+        let ctx = Ctx::try_from_derive_input(input).unwrap();
+        match derive_try_from_bytes(&ctx, Trait::TryFromBytes) {
+            Ok(_) => panic!("expected derive to reject conflicting representations"),
+            Err(error) => error.to_string(),
+        }
+    }
+
+    #[test]
+    fn raw_repr_conflict_matches_ordinary_repr() {
+        let ordinary = derive_error(parse_quote! {
+            #[repr(C, align(8))]
+            #[repr(u8)]
+            enum Packet {
+                Value(core::num::NonZeroU8),
+                End,
+            }
+        });
+        let raw = derive_error(parse_quote! {
+            #[repr(C, align(8))]
+            #[r#repr(r#u8)]
+            enum Packet {
+                Value(core::num::NonZeroU8),
+                End,
+            }
+        });
+
+        // Rejecting both spellings prevents generating a validator whose
+        // synthetic enum layout disagrees with the compiler's actual layout.
+        assert_eq!(ordinary, "this conflicts with another representation hint");
+        assert_eq!(ordinary, raw);
+    }
+}
