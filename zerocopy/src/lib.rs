@@ -368,6 +368,8 @@ pub mod pointer;
 mod proof_support;
 #[cfg(kani)]
 mod proofs {
+    #[cfg(all(feature = "alloc", not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)))]
+    mod from_zeros;
     mod into_bytes;
     #[cfg(feature = "derive")]
     mod try_from_bytes_derive;
