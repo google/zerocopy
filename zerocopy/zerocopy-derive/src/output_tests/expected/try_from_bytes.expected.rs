@@ -14,7 +14,7 @@ const _: () = {
     unsafe impl ::zerocopy::TryFromBytes for Foo {
         fn only_derive_is_allowed_to_implement_this_trait() {}
         #[inline]
-        fn is_bit_valid<___ZcAlignment>(
+        fn is_safe<___ZcAlignment>(
             mut candidate: ::zerocopy::Maybe<'_, Self, ___ZcAlignment>,
         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
         where
