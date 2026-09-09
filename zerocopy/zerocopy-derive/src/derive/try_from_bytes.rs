@@ -16,14 +16,14 @@ use crate::{
     },
 };
 
-/// Generates an implementation of `is_bit_valid` for an arbitrary enum.
+/// Generates an implementation of `is_safe` for an arbitrary enum.
 ///
 /// For an enum with fields, [`derive_enum`] generates the representation model
 /// and projection impls. This function reads the tag, matches it against the
 /// enum's discriminants, and validates each field of the selected variant
 /// through those projections. A fieldless enum needs only the generated tag
 /// enum and discriminant constants.
-pub(crate) fn derive_is_bit_valid(
+pub(crate) fn derive_is_safe(
     ctx: &Ctx,
     data: &DataEnum,
     repr: &EnumRepr,
@@ -69,18 +69,18 @@ pub(crate) fn derive_is_bit_valid(
                         { #zerocopy_crate::ident_id!(#field_names) },
                     >()
                 );
-                <#field_tys as #trait_path>::is_bit_valid(field_candidate)
+                <#field_tys as #trait_path>::is_safe(field_candidate)
             })*
         }
     });
 
     Ok(quote! {
-        // SAFETY: We use `is_bit_valid` to validate that the bit pattern of the
+        // SAFETY: We use `is_safe` to validate that the bit pattern of the
         // enum's tag corresponds to one of the enum's discriminants. Then, we
         // check the bit validity of each field of the corresponding variant.
-        // Thus, this is a sound implementation of `is_bit_valid`.
+        // Thus, this is a sound implementation of `is_safe`.
         #[inline]
-        fn is_bit_valid<___ZcAlignment>(
+        fn is_safe<___ZcAlignment>(
             mut candidate: #zerocopy_crate::Maybe<'_, Self, ___ZcAlignment>,
         ) -> #core::primitive::bool
         where
@@ -117,20 +117,20 @@ fn derive_try_from_bytes_struct(
     strct: &DataStruct,
     top_level: Trait,
 ) -> Result<TokenStream, Error> {
-    let extras = try_gen_trivial_is_bit_valid(ctx, top_level).unwrap_or_else(|| {
+    let extras = try_gen_trivial_is_safe(ctx, top_level).unwrap_or_else(|| {
         let zerocopy_crate = &ctx.zerocopy_crate;
         let fields = strct.fields();
         let field_names = fields.iter().map(|(_vis, name, _ty)| name);
         let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
         let core = ctx.core_path();
         quote!(
-            // SAFETY: We use `is_bit_valid` to validate that each field is
+            // SAFETY: We use `is_safe` to validate that each field is
             // bit-valid, and only return `true` if all of them are. The bit
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation
-            // of `is_bit_valid`.
+            // of `is_safe`.
             #[inline]
-            fn is_bit_valid<___ZcAlignment>(
+            fn is_safe<___ZcAlignment>(
                 mut candidate: #zerocopy_crate::Maybe<'_, Self, ___ZcAlignment>,
             ) -> #core::primitive::bool
             where
@@ -143,7 +143,7 @@ fn derive_try_from_bytes_struct(
                         { #zerocopy_crate::STRUCT_VARIANT_ID },
                         { #zerocopy_crate::ident_id!(#field_names) }
                     >());
-                    <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
+                    <#field_tys as #zerocopy_crate::TryFromBytes>::is_safe(field_candidate)
                 })*
             }
         )
@@ -158,19 +158,19 @@ fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> 
 
     let zerocopy_crate = &ctx.zerocopy_crate;
     let union_variant_id = struct_union_variant_id(ctx);
-    let extras = try_gen_trivial_is_bit_valid(ctx, top_level).unwrap_or_else(|| {
+    let extras = try_gen_trivial_is_safe(ctx, top_level).unwrap_or_else(|| {
         let fields = unn.fields();
         let field_names = fields.iter().map(|(_vis, name, _ty)| name);
         let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
         let core = ctx.core_path();
         quote!(
-            // SAFETY: We use `is_bit_valid` to validate that any field is
+            // SAFETY: We use `is_safe` to validate that any field is
             // bit-valid; we only return `true` if at least one of them is.
             // The bit validity of a union is not yet well defined in Rust,
             // but it is guaranteed to be no more strict than this
             // definition. See #696 for a more in-depth discussion.
             #[inline]
-            fn is_bit_valid<___ZcAlignment>(
+            fn is_safe<___ZcAlignment>(
                 mut candidate: #zerocopy_crate::Maybe<'_, Self, ___ZcAlignment>,
             ) -> #core::primitive::bool
             where
@@ -186,7 +186,7 @@ fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> 
                         >()
                     );
 
-                    <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
+                    <#field_tys as #zerocopy_crate::TryFromBytes>::is_safe(field_candidate)
                 })*
             }
         )
@@ -212,13 +212,13 @@ fn derive_try_from_bytes_enum(
         .map(|size| enm.fields().is_empty() && enm.variants.len() == 1usize << size)
         .unwrap_or(false);
 
-    let trivial_is_bit_valid = try_gen_trivial_is_bit_valid(ctx, top_level);
-    let extra = match (trivial_is_bit_valid, could_be_from_bytes) {
-        (Some(is_bit_valid), _) => is_bit_valid,
+    let trivial_is_safe = try_gen_trivial_is_safe(ctx, top_level);
+    let extra = match (trivial_is_safe, could_be_from_bytes) {
+        (Some(is_safe), _) => is_safe,
         // SAFETY: It would be sound for the enum to implement `FromBytes`, as
-        // required by `gen_trivial_is_bit_valid_unchecked`.
-        (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(ctx) },
-        (None, false) => match derive_is_bit_valid(ctx, enm, &repr) {
+        // required by `gen_trivial_is_safe_unchecked`.
+        (None, true) => unsafe { gen_trivial_is_safe_unchecked(ctx) },
+        (None, false) => match derive_is_safe(ctx, enm, &repr) {
             Ok(extra) => extra,
             Err(_) if ctx.skip_on_error => return Ok(TokenStream::new()),
             Err(e) => return Err(e),
@@ -229,14 +229,14 @@ fn derive_try_from_bytes_enum(
         .inner_extras(extra)
         .build())
 }
-fn try_gen_trivial_is_bit_valid(ctx: &Ctx, top_level: Trait) -> Option<proc_macro2::TokenStream> {
+fn try_gen_trivial_is_safe(ctx: &Ctx, top_level: Trait) -> Option<proc_macro2::TokenStream> {
     // If the top-level trait is `FromBytes` and `Self` has no type parameters,
     // then the `FromBytes` derive will fail compilation if `Self` is not
     // actually soundly `FromBytes`, and so we can rely on that for our
-    // `is_bit_valid` impl. It's plausible that we could make changes - or Rust
+    // `is_safe` impl. It's plausible that we could make changes - or Rust
     // could make changes (such as the "trivial bounds" language feature) - that
     // make this no longer true. To hedge against these, we include an explicit
-    // `Self: FromBytes` check in the generated `is_bit_valid`, which is
+    // `Self: FromBytes` check in the generated `is_safe`, which is
     // bulletproof.
     //
     // If `ctx.skip_on_error` is true, we can't rely on the `FromBytes` derive
@@ -250,7 +250,7 @@ fn try_gen_trivial_is_bit_valid(ctx: &Ctx, top_level: Trait) -> Option<proc_macr
         Some(quote!(
             // SAFETY: See inline.
             #[inline(always)]
-            fn is_bit_valid<___ZcAlignment>(
+            fn is_safe<___ZcAlignment>(
                 _candidate: #zerocopy_crate::Maybe<'_, Self, ___ZcAlignment>,
             ) -> #core::primitive::bool
             where
@@ -281,14 +281,14 @@ fn try_gen_trivial_is_bit_valid(ctx: &Ctx, top_level: Trait) -> Option<proc_macr
 /// # Safety
 ///
 /// All initialized bit patterns must be valid for `Self`.
-unsafe fn gen_trivial_is_bit_valid_unchecked(ctx: &Ctx) -> proc_macro2::TokenStream {
+unsafe fn gen_trivial_is_safe_unchecked(ctx: &Ctx) -> proc_macro2::TokenStream {
     let zerocopy_crate = &ctx.zerocopy_crate;
     let core = ctx.core_path();
     quote!(
-        // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
+        // SAFETY: The caller of `gen_trivial_is_safe_unchecked` has
         // promised that all initialized bit patterns are valid for `Self`.
         #[inline(always)]
-        fn is_bit_valid<___ZcAlignment>(
+        fn is_safe<___ZcAlignment>(
             _candidate: #zerocopy_crate::Maybe<'_, Self, ___ZcAlignment>,
         ) -> #core::primitive::bool
         where

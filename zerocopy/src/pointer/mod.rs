@@ -25,9 +25,9 @@ pub use transmute::*;
 use crate::wrappers::ReadOnly;
 
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
-/// to [`TryFromBytes::is_bit_valid`].
+/// to [`TryFromBytes::is_safe`].
 ///
-/// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
+/// [`TryFromBytes::is_safe`]: crate::TryFromBytes::is_safe
 pub type Maybe<'a, T, Alignment = invariant::Unaligned> =
     Ptr<'a, ReadOnly<T>, (invariant::Shared, Alignment, invariant::Initialized)>;
 
