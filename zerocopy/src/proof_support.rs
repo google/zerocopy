@@ -382,6 +382,29 @@ pub(crate) fn nonzero_u16_from_ne_bytes(bytes: [u8; 2]) -> Option<core::num::Non
     core::num::NonZeroU16::new(u16::from_ne_bytes(bytes))
 }
 
+// Generate every `usize` in the inclusive range `0..=max` without scattering
+// domain arithmetic across harnesses. The common Kani configuration documents
+// that `kani::any::<usize>()` produces an arbitrary valid target `usize`.
+// `checked_add` and `expect` make `max == usize::MAX` fail closed [1]. For the
+// resulting nonzero modulus, Rust's unsigned remainder lies below the divisor
+// [2]; the assertion makes that range guarantee executable rather than an
+// implicit caller premise. Every result is reachable because choosing the same
+// arbitrary input leaves each value below the modulus unchanged. This helper
+// constructs proof inputs only; it is not a semantic oracle for a zerocopy
+// target and contains no assumption.
+//
+// [1] https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#method.checked_add
+//     https://doc.rust-lang.org/1.93.0/std/option/enum.Option.html#method.expect
+// [2] https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#arithmetic-and-logical-binary-operators
+//     https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialOrd.html#method.le
+//     https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialOrd-for-usize
+pub(crate) fn any_usize_inclusive(max: usize) -> usize {
+    let modulus = max.checked_add(1).expect("inclusive usize domain must have a finite size");
+    let value = kani::any::<usize>() % modulus;
+    assert!(value <= max);
+    value
+}
+
 // Take a pre-operation value snapshot using safe Rust language operations,
 // independently of any zerocopy target. Applying unary `*` to `value: &T`
 // denotes the referenced location [1]. Because `*value` is the final operand
