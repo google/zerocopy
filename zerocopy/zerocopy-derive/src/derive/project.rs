@@ -81,7 +81,7 @@ pub(crate) fn generate_tag_consts(data: &DataEnum) -> TokenStream {
 enum Validity {
     Uninit,
     Initialized,
-    Valid,
+    Safe,
 }
 
 impl Validity {
@@ -92,7 +92,7 @@ impl Validity {
             Validity::Initialized => {
                 parse_quote!(#zerocopy_crate::invariant::Initialized)
             }
-            Validity::Valid => parse_quote!(#zerocopy_crate::invariant::Valid),
+            Validity::Safe => parse_quote!(#zerocopy_crate::invariant::Safe),
         }
     }
 
@@ -101,14 +101,14 @@ impl Validity {
     ///
     /// Struct fields preserve all three validity invariants. Union fields
     /// preserve `Uninit` and `Initialized`. No projection is generated from a
-    /// `Valid` union.
+    /// `Safe` union.
     fn output_validity_for_struct_or_union(self, data: &Data) -> Option<Self> {
         match (data, self) {
             (Data::Struct(_), validity) => Some(validity),
             (Data::Union(_), validity @ (Validity::Uninit | Validity::Initialized)) => {
                 Some(validity)
             }
-            (Data::Union(_), Validity::Valid) => None,
+            (Data::Union(_), Validity::Safe) => None,
             (Data::Enum(_), _) => unreachable!(),
         }
     }
@@ -231,11 +231,12 @@ pub(crate) fn derive_projection_struct_union(
                 // the referent, and are therefore infallible.
                 type Error = #zerocopy_crate::util::macro_util::core_reexport::convert::Infallible;
 
-                // SAFETY: Projection preserves aliasing. It also preserves alignment
-                // unless the containing type is packed. `Validity` determines whether
-                // a projection is emitted and, if so, computes its output validity:
-                // struct fields preserve validity; union fields preserve `Uninit` and
-                // `Initialized`, and no projection is emitted for `Valid` union input.
+                // SAFETY: Projection preserves aliasing. It also preserves
+                // alignment unless the containing type is packed. `Validity`
+                // determines whether a projection is emitted and, if so,
+                // computes its output validity: struct fields preserve validity;
+                // union fields preserve `Uninit` and `Initialized`, and no
+                // projection is emitted for `Safe` union input.
                 type Invariants = (___ZcAliasing, #output_alignment, #output_validity);
             })
             .build()
@@ -243,13 +244,13 @@ pub(crate) fn derive_projection_struct_union(
 
         let project_uninit = derive_project_field(Validity::Uninit);
         let project_initialized = derive_project_field(Validity::Initialized);
-        let project_valid = derive_project_field(Validity::Valid);
+        let project_safe = derive_project_field(Validity::Safe);
 
         quote! {
             #has_field
             #project_uninit
             #project_initialized
-            #project_valid
+            #project_safe
         }
     });
 
@@ -438,14 +439,13 @@ pub(crate) fn derive_enum(
             // prepends its inner tag before reproducing the enum fields in
             // source order, so `idx + 1` selects that same field. The assertion
             // above enforces that `repr` is `repr(C)` or a primitive
-            // representation;
-            // `___ZerocopyRawEnum` and its nested types model exactly the
-            // representations specified by [1] and [2]. Those representations
-            // use `repr(C)` structs for variant fields, so field projection
-            // preserves alignment. Each `ProjectField` impl preserves the input
-            // validity. The `Uninit` and `Initialized` projections are
+            // representation; `___ZerocopyRawEnum` and its nested types model
+            // exactly the representations specified by [1] and [2]. Those
+            // representations use `repr(C)` structs for variant fields, so field
+            // projection preserves alignment. Each `ProjectField` impl preserves
+            // the input validity. The `Uninit` and `Initialized` projections are
             // infallible because those validity invariants do not depend on the
-            // enum's tag. The `Valid` projection first checks that the tag
+            // enum's tag. The `Safe` projection first checks that the tag
             // selects `variant_ident`; its `Reference` aliasing bound prevents
             // mutation of the tag between that check and field projection. The
             // corresponding `HasTag` impl projects to the raw representation's
@@ -465,7 +465,7 @@ pub(crate) fn derive_enum(
             //   field. The first field of each struct in the union is [...] the
             //   tag and the remaining fields are the fields of that variant.
             let derive_enum_project_field = |validity| {
-                let (error, is_projectable, aliasing_bound) = if validity == Validity::Valid {
+                let (error, is_projectable, aliasing_bound) = if validity == Validity::Safe {
                     assert!(!matches!(validity, Validity::Uninit | Validity::Initialized));
                     (
                         quote! { () },
@@ -478,7 +478,7 @@ pub(crate) fn derive_enum(
                                     (
                                         #zerocopy_crate::invariant::Shared,
                                         ___ZcAlignment,
-                                        #zerocopy_crate::invariant::Valid,
+                                        #zerocopy_crate::invariant::Safe,
                                     ),
                                 >,
                             ) -> #core::result::Result<(), ()> {
@@ -517,7 +517,7 @@ pub(crate) fn derive_enum(
 
             let project_uninit = derive_enum_project_field(Validity::Uninit);
             let project_initialized = derive_enum_project_field(Validity::Initialized);
-            let project_valid = derive_enum_project_field(Validity::Valid);
+            let project_valid = derive_enum_project_field(Validity::Safe);
 
             quote! {
                 #has_field
