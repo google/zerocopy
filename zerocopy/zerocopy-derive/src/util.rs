@@ -151,7 +151,7 @@ pub(crate) trait DataExt {
     /// FIXME: Extracting field names for enums doesn't really make sense. Types
     /// makes sense because we don't care about where they live - we just care
     /// about transitive ownership. But for field names, we'd only use them when
-    /// generating is_bit_valid, which cares about where they live.
+    /// generating is_safe, which cares about where they live.
     fn fields(&self) -> Vec<(&Visibility, TokenStream, &Type)>;
 
     fn variants(&self) -> Vec<(Option<&Variant>, Vec<(&Visibility, TokenStream, &Type)>)>;

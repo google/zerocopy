@@ -411,7 +411,7 @@ use core::alloc::Layout;
 // Used by `KnownLayout`.
 #[doc(hidden)]
 pub use crate::layout::*;
-// Used by `TryFromBytes::is_bit_valid`.
+// Used by `TryFromBytes::is_safe`.
 #[doc(hidden)]
 pub use crate::pointer::{invariant::BecauseImmutable, Maybe, Ptr};
 // For each trait polyfill, as soon as the corresponding feature is stable, the
@@ -1374,9 +1374,9 @@ where
                             // type – the type itself is irrelevant.
                             ValidityKind::Uninit | ValidityKind::Initialized => true,
                             // The projectability of an enum field from an
-                            // `AsInitialized` or `Valid` state is a dynamic
+                            // `AsInitialized` or `Safe` state is a dynamic
                             // property of its tag.
-                            ValidityKind::AsInitialized | ValidityKind::Valid => false,
+                            ValidityKind::AsInitialized | ValidityKind::Safe => false,
                         }
                     }
                 };
@@ -1792,25 +1792,25 @@ pub unsafe trait TryFromBytes {
     ///
     /// # Safety
     ///
-    /// Unsafe code may assume that, if `is_bit_valid(candidate)` returns true,
+    /// Unsafe code may assume that, if `is_safe(candidate)` returns true,
     /// `*candidate` contains a valid `Self`.
     ///
     /// # Panics
     ///
-    /// `is_bit_valid` may panic. Callers are responsible for ensuring that any
-    /// `unsafe` code remains sound even in the face of `is_bit_valid`
+    /// `is_safe` may panic. Callers are responsible for ensuring that any
+    /// `unsafe` code remains sound even in the face of `is_safe`
     /// panicking. (We support user-defined validation routines; so long as
     /// these routines are not required to be `unsafe`, there is no way to
     /// ensure that these do not generate panics.)
     ///
-    /// Besides user-defined validation routines panicking, `is_bit_valid` will
+    /// Besides user-defined validation routines panicking, `is_safe` will
     /// either panic or fail to compile if called on a pointer with [`Shared`]
     /// aliasing when `Self: !Immutable`.
     ///
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     /// [`Shared`]: invariant::Shared
     #[doc(hidden)]
-    fn is_bit_valid<A>(candidate: Maybe<'_, Self, A>) -> bool
+    fn is_safe<A>(candidate: Maybe<'_, Self, A>) -> bool
     where
         A: invariant::Alignment;
 
@@ -3404,14 +3404,14 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // This call may panic. If that happens, it doesn't cause any soundness
     // issues, as we have not generated any invalid state which we need to fix
     // before returning.
-    if !Wrapping::<T>::is_bit_valid(c_ptr.reborrow_shared().forget_aligned()) {
+    if !Wrapping::<T>::is_safe(c_ptr.reborrow_shared().forget_aligned()) {
         return Err(ValidityError::new(source).into());
     }
 
     fn _assert_same_size_and_validity<T>()
     where
-        Wrapping<T>: pointer::TransmuteFrom<T, invariant::Valid, invariant::Valid>,
-        T: pointer::TransmuteFrom<Wrapping<T>, invariant::Valid, invariant::Valid>,
+        Wrapping<T>: pointer::TransmuteFrom<T, invariant::Safe, invariant::Safe>,
+        T: pointer::TransmuteFrom<Wrapping<T>, invariant::Safe, invariant::Safe>,
     {
     }
 

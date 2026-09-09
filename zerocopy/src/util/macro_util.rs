@@ -29,7 +29,7 @@ use core::{marker::PhantomData, mem, num::Wrapping};
 use crate::{
     pointer::{
         cast::CastSized,
-        invariant::{Aligned, Initialized, Valid},
+        invariant::{Aligned, Initialized, Safe},
         BecauseImmutable,
     },
     FromBytes, Immutable, IntoBytes, KnownLayout, Ptr, ReadOnly, TryFromBytes, ValidityError,
@@ -518,9 +518,9 @@ pub const fn hash_name(name: &str) -> i128 {
 ///
 /// `try_transmute` may either produce a post-monomorphization error or a panic
 /// if `Dst` is bigger than `Src`. Otherwise, `try_transmute` panics under the
-/// same circumstances as [`is_bit_valid`].
+/// same circumstances as [`is_safe`].
 ///
-/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+/// [`is_safe`]: TryFromBytes::is_safe
 #[inline(always)]
 pub fn try_transmute<Src, Dst>(src: Src) -> Result<Dst, ValidityError<Src, Dst>>
 where
@@ -542,8 +542,8 @@ where
     // `ptr` is used to mutate its referent (which it actually can't be - it's
     // a shared `ReadOnly` pointer), that won't violate its referent's validity.
     let ptr = unsafe { ptr.assume_validity::<Initialized>() };
-    if Dst::is_bit_valid(ptr.cast::<_, CastSized, _>()) {
-        // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is
+    if Dst::is_safe(ptr.cast::<_, CastSized, _>()) {
+        // SAFETY: Since `Dst::is_safe`, we know that `ptr`'s referent is
         // bit-valid for `Dst`. `ptr` points to `mu_dst`, and no intervening
         // operations have mutated it, so it is a bit-valid `Dst`.
         Ok(ReadOnly::into_inner(unsafe { mu_dst.assume_init() }))
@@ -878,7 +878,7 @@ where
         let ptr = Ptr::from_ref(self.0)
             .recall_validity::<Initialized, _>()
             .transmute_with::<Dst, Initialized, crate::layout::CastFrom<Dst>, (crate::pointer::BecauseMutationCompatible, _)>()
-            .recall_validity::<Valid, _>();
+            .recall_validity::<Safe, _>();
 
         static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
             Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
@@ -911,7 +911,7 @@ where
         let ptr = Ptr::from_mut(self.0)
             .recall_validity::<Initialized, (_, (_, _))>()
             .transmute_with::<Dst, Initialized, crate::layout::CastFrom<Dst>, _>()
-            .recall_validity::<Valid, (_, (_, _))>();
+            .recall_validity::<Safe, (_, (_, _))>();
 
         static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
             Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
