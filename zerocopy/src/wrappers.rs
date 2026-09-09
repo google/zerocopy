@@ -984,22 +984,17 @@ mod proofs {
     // field by a language-checked value move, rather than through a reference.
     // Compiler/Kani lowering of the non-`Copy`, unaligned field move remains part
     // of the TOOL/TCB boundary below. Each
-    // closure maps its parameter to its body expression [4]. The bare `old`
-    // and `new` paths in both bodies are capture paths rooted in the
-    // correspondingly named enclosing locals. Both closures omit `move`, so
-    // Rust infers their capture modes while preferring shared references; each
-    // body only reads these two locals, and therefore captures both through
-    // `ImmBorrow` [38]. A local path is a place expression. Evaluating each
-    // captured `old` or `new` occurrence in the assertion operand, assignment
-    // right-hand side, or tail result's value context obtains the stored value
-    // and copies it because `u8: Copy` [9][38]. Thus every `old` use observes
-    // tuple field zero's arbitrary byte and every `new` use observes tuple
-    // field one's arbitrary byte. The body executes its statements in order
-    // and evaluates its final operand in value context [5]. Assignment copies
-    // or moves the right-hand value into the selected place [6].
-    // Together those rules supply the expected closure input, field mutation,
-    // and closure result without treating compiler capture behavior as an
-    // unstated oracle. At the `update` function boundary,
+    // closure maps its parameter to its body expression [4]; the body executes
+    // its statements in order and evaluates its final operand in value context
+    // [5]. Both are explicitly `move` closures, so Rust captures the `old` and
+    // `new` place expressions by value [38]. Since `u8: Copy`, each captured
+    // value is an exact byte copy and the original outer binding remains
+    // usable for the post-call observations [38]. Every use of those names in
+    // a closure body therefore evaluates the captured copy, rather than
+    // consulting a target result. Assignment copies or moves the right-hand
+    // value into the selected place [6]. Together those rules supply the
+    // expected closure input, field mutation, and closure result. At the
+    // `update` function boundary,
     // `return f(t)` short-circuits the implicit return while the tail expression
     // `ret` is returned to the caller [7]. Those two language paths map directly
     // to the two `returned` assertions.
@@ -1313,17 +1308,11 @@ mod proofs {
     // https://github.com/model-checking/kani/blob/kani-0.67.0/kani-dependencies#L1-L3
     // https://github.com/diffblue/cbmc/blob/cbmc-6.8.0/doc/cprover-manual/modeling-nondeterminism.md#L7-L13
     // https://github.com/diffblue/cbmc/blob/cbmc-6.8.0/doc/cprover-manual/modeling-nondeterminism.md#L46-L59
-    // [38] Rust 1.93 specifies that a non-`move` closure infers captures while
-    // preferring shared references; capture modes borrow or move environmental
-    // places; local paths are place expressions; evaluating a place in value
-    // context obtains its stored value and copies it for `Copy` types; and
-    // `u8` implements `Copy`:
-    // https://doc.rust-lang.org/1.93.0/reference/expressions/closure-expr.html#r-expr.closure.capture-inference
+    // [38] Rust 1.93 specifies that `move` closures capture referenced place
+    // expressions by value. Reading a `Copy` value in value-expression context
+    // copies rather than moves it, and primitive `u8` implements `Copy`:
     // https://doc.rust-lang.org/1.93.0/reference/types/closure.html#capture-modes
-    // https://doc.rust-lang.org/1.93.0/reference/types/closure.html#copy-values
-    // https://doc.rust-lang.org/1.93.0/reference/expressions/path-expr.html#r-expr.path.place
-    // https://doc.rust-lang.org/1.93.0/reference/expressions.html#r-expr.move.intro
-    // https://doc.rust-lang.org/1.93.0/reference/expressions.html#r-expr.move.copy
+    // https://doc.rust-lang.org/1.93.0/reference/expressions.html#moved-and-copied-types
     // https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-Copy-for-u8
     #[repr(transparent)]
     struct Byte(u8);
@@ -1374,7 +1363,7 @@ mod proofs {
         let (old, new) = any_unalign_update_bytes();
         let mut value = Unalign(Byte(old));
 
-        let returned = value.update(|value| {
+        let returned = value.update(move |value| {
             assert_eq!(value.0, old);
             value.0 = new;
             old
@@ -1410,7 +1399,7 @@ mod proofs {
             assert!(!receiver.is_aligned());
             kani::cover!(!receiver.is_aligned(), "write-back receiver is physically misaligned");
 
-            let returned = backing.value.update(|value| {
+            let returned = backing.value.update(move |value| {
                 assert_eq!(value.value, old);
                 value.value = new;
                 new
