@@ -436,7 +436,7 @@ fn prove_try_from_bytes_derive_data_enum() {
     // valid, accepts every payload for the `Byte` tag, and rejects every other
     // tag. The public API is invoked only for the first two cases, where it must
     // succeed and return the corresponding safe variant constructed above. The
-    // The Reference specifies the intended representation, but correspondence
+    // Reference specifies the intended representation, but correspondence
     // between this hand-written surrogate and the actual enum is a manually
     // reviewed proof-specification/TCB premise; Kani does not independently
     // query the enum payload offsets. This is not a generic enum-layout or
