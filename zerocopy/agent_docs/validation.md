@@ -92,6 +92,17 @@ usually sufficient.
           properties; and explicit non-goals. Shared configuration may be
           factored into a nearby family or module scope only when every covered
           harness refers to it unambiguously.
+        - **Non-vacuity:** Use `kani::cover!` to check that important input and
+          result partitions are reachable. Every assumption must correspond to
+          a documented precondition or to the stated proof bound. Do not reject
+          inputs using an impossible assumption or a diverging loop. Kani 0.67
+          [treats cover properties as reporting-only][Kani cover renderer] and
+          has no
+          `--fail-on-cover` option: zero satisfied covers can accompany a
+          successful verification result. `ci/run_kani.sh` therefore checks
+          every emitted cover summary and fails unless all cover properties are
+          satisfied. Its parser is part of the pinned-version audit and must be
+          revalidated when Kani or its output format changes.
         - **Bit validity:** `kani::any::<T>()` produces only valid instances of
           `T`. To verify a byte validator, generate arbitrary bytes and decide
           expected acceptance using an independent oracle before consulting the
@@ -114,8 +125,17 @@ usually sufficient.
           layout per run; it does not prove behavior for every layout or target.
     - **Kani CI configuration:** The exact Kani release is the single
       `kani-version` pin in `.github/workflows/ci.yml`; its bundled compiler is
-      the proof toolchain. CI runs on `x86_64-unknown-linux-gnu` (64-bit,
-      little-endian) with
+      the proof toolchain. `ci/run_kani.sh` enters this crate and invokes Kani
+      through `cargo.sh +stable`. The `stable` label selects the repository
+      wrapper configuration; Kani still compiles the proof target with its own
+      bundled compiler. Kani supplies `cfg(kani)` to target crates and
+      `cfg(kani_host)` to host build targets. The wrapper additionally supplies
+      `cfg(zerocopy_unstable_linux)`,
+      `cfg(zerocopy_derive_union_into_bytes)`,
+      `cfg(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE)`,
+      `cfg(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN = "stable")`, and
+      `cfg(__ZEROCOPY_TOOLCHAIN = "stable")`. CI runs on
+      `x86_64-unknown-linux-gnu` (64-bit, little-endian) with
       `__internal_use_only_features_that_work_on_stable` (`alloc`, `derive`,
       `simd`, and `std`), `-Zfunction-contracts`, and one layout selected by
       `--randomize-layout` per invocation. Source-level proof scopes should
@@ -151,32 +171,35 @@ usually sufficient.
       admitted compatibility proposition is that the versioned Rust 1.93.0
       contracts cited by the current proofs describe the corresponding
       behavior of this nightly snapshot. This was checked manually, not proved
-      by Kani. Kani 0.67 [does not model stack unwinding][Kani panic strategies]
-      even though
+      by Kani. The audited terse output reports cover summaries as
+      `** N of M cover properties satisfied`, with canonical nonnegative `N`
+      and positive `M`. `ci/run_kani.sh` rejects malformed summary candidates,
+      requires `N == M` for every summary, and requires at least one recognized
+      summary. Pre-push exercises its parser against valid, unsatisfied,
+      absent, nonnumeric, zero-total, noncanonical, extra-token, numeric-
+      precision-edge, and mixed multiple-summary fixtures. Kani 0.67
+      [does not model stack unwinding][Kani panic strategies] even though
       its bundled compiler's target cfg reports `panic="unwind"`; proofs may
       use reachable panics as failed properties but may not infer cleanup or
       post-panic behavior.
 
 [Rust feature support]: https://model-checking.github.io/kani/rust-feature-support.html
 [undefined-behaviour guide]: https://model-checking.github.io/kani/undefined-behaviour.html
+[Kani cover renderer]: https://github.com/model-checking/kani/blob/kani-0.67.0/kani-driver/src/cbmc_property_renderer.rs
 [Kani panic strategies]: https://github.com/model-checking/kani/blob/kani-0.67.0/docs/src/rust-feature-support.md#panic-strategies
 
 Before running proofs locally, install the Kani version pinned in
-`.github/workflows/ci.yml`. Run Kani locally through the required repository
-wrapper with:
+`.github/workflows/ci.yml`. Run the same proof configuration as CI with:
 
 ```bash
-./cargo.sh +stable kani \
+ci/run_kani.sh \
+  --manifest-path Cargo.toml \
   --package zerocopy \
   --features __internal_use_only_features_that_work_on_stable \
   --output-format=terse \
   -Zfunction-contracts \
   --randomize-layout
 ```
-
-At this intermediate commit, CI invokes `cargo-kani` directly while the
-wrapper injects project source-selection cfgs. Consequently, the local and CI
-source-selection configurations are not identical.
 
 ## Feature Gates
 
