@@ -366,6 +366,12 @@ mod macros;
 pub mod pointer;
 #[cfg(kani)]
 mod proof_support;
+// Coordinator for proof families that exercise crate-level APIs or generated
+// implementations rather than one source module. Each child module's
+// top-level documentation enumerates its exact entry points, symbolic and
+// concrete bounds, established properties, and non-goals. This list therefore
+// controls compilation only; it is not itself a claim that the listed proofs
+// cover all implementations of the corresponding trait.
 #[cfg(kani)]
 mod proofs {
     #[cfg(all(feature = "alloc", not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)))]
