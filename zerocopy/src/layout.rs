@@ -122,7 +122,7 @@ impl DstLayout {
 
     /// The current, documented max alignment of a type \[1\].
     ///
-    /// \[1\] Per <https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers>:
+    /// \[1\] Per <https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers>:
     ///
     ///   The alignment value must be a power of two from 1 up to
     ///   2<sup>29</sup>.
@@ -365,7 +365,7 @@ impl DstLayout {
         // The field's alignment is clamped by `repr_packed` (i.e., the
         // `repr(packed(N))` attribute, if any) [1].
         //
-        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers:
         //
         //   The alignments of each field, for the purpose of positioning
         //   fields, is the smaller of the specified alignment and the alignment
@@ -386,7 +386,7 @@ impl DstLayout {
                 // satisfy the field's alignment, and offset of the trailing
                 // field. [1]
                 //
-                // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+                // [1] Per https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers:
                 //
                 //   Inter-field padding is guaranteed to be the minimum
                 //   required in order to satisfy each field's (possibly
