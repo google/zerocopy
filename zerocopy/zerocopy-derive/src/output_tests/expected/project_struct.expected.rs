@@ -154,7 +154,7 @@ const _: () = {
         > ::zerocopy::ProjectField<
             ::zerocopy::project_clients::ProjectDerive,
             ẕfield,
-            (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Valid),
+            (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
             { ::zerocopy::STRUCT_VARIANT_ID },
             { ::zerocopy::ident_id!(field) },
         > for Foo {
@@ -163,7 +163,7 @@ const _: () = {
             type Invariants = (
                 ___ZcAliasing,
                 ___ZcAlignment,
-                ::zerocopy::invariant::Valid,
+                ::zerocopy::invariant::Safe,
             );
         }
     };

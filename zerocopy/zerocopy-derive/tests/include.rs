@@ -90,33 +90,33 @@ pub mod util {
     }
 
     #[macro_export]
-    macro_rules! test_trivial_is_bit_valid {
+    macro_rules! test_trivial_is_safe {
         ($x:ty => $name:ident) => {
             #[test]
             fn $name() {
-                util::test_trivial_is_bit_valid::<$x>();
+                util::test_trivial_is_safe::<$x>();
             }
         };
     }
 
     // Under some circumstances, our `TryFromBytes` derive generates a trivial
-    // `is_bit_valid` impl that unconditionally returns `true`. This test
+    // `is_safe` impl that unconditionally returns `true`. This test
     // attempts to validate that this is, indeed, the behavior of our
     // `TryFromBytes` derive. It is not foolproof, but is likely to catch some
     // mistakes.
     //
     // As of this writing, this happens when deriving `TryFromBytes` thanks to a
     // top-level `#[derive(FromBytes)]`.
-    pub fn test_trivial_is_bit_valid<T: super::imp::TryFromBytes>() {
+    pub fn test_trivial_is_safe<T: super::imp::TryFromBytes>() {
         use super::imp::{MaybeUninit, Ptr, ReadOnly};
 
-        // This test works based on the insight that a trivial `is_bit_valid`
+        // This test works based on the insight that a trivial `is_safe`
         // impl should never load any bytes from memory. Thus, while it is
-        // technically a violation of `is_bit_valid`'s safety precondition to
-        // pass a pointer to uninitialized memory, the `is_bit_valid` impl we
+        // technically a violation of `is_safe`'s safety precondition to
+        // pass a pointer to uninitialized memory, the `is_safe` impl we
         // expect our derives to generate should never touch this memory, and
         // thus should never exhibit UB. By contrast, if our derives are
-        // spuriously generating non-trivial `is_bit_valid` impls, this should
+        // spuriously generating non-trivial `is_safe` impls, this should
         // cause UB which may be caught by Miri.
 
         let mut buf = MaybeUninit::<T>::uninit();
@@ -127,12 +127,12 @@ pub mod util {
         let ptr = ptr.reborrow_shared();
 
         let ptr = ptr.cast::<_, ::zerocopy_renamed::pointer::cast::CastSized, _>();
-        assert!(<T as super::imp::TryFromBytes>::is_bit_valid(ptr));
+        assert!(<T as super::imp::TryFromBytes>::is_safe(ptr));
     }
 
-    pub fn test_is_bit_valid<T: super::imp::TryFromBytes, V: super::imp::IntoBytes>(
+    pub fn test_is_safe<T: super::imp::TryFromBytes, V: super::imp::IntoBytes>(
         val: V,
-        is_bit_valid: bool,
+        is_safe: bool,
     ) {
         use super::imp::{
             pointer::{cast::CastSized, BecauseImmutable},
@@ -144,6 +144,6 @@ pub mod util {
         let candidate = candidate.recall_validity();
         let candidate = candidate.cast::<ReadOnly<T>, CastSized, (_, BecauseImmutable)>();
 
-        super::imp::assert_eq!(T::is_bit_valid(candidate), is_bit_valid);
+        super::imp::assert_eq!(T::is_safe(candidate), is_safe);
     }
 }

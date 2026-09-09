@@ -61,8 +61,8 @@ fn test_enum_try_from_bytes() {
     // The `Value` payload is at byte offset one and is zero, so the candidate
     // is invalid. Both spellings must generate the same field validator.
     let bytes = [0, 0];
-    util::test_is_bit_valid::<OrdinaryPacket, _>(Wire(bytes), false);
-    util::test_is_bit_valid::<RawPacket, _>(Wire(bytes), false);
+    util::test_is_safe::<OrdinaryPacket, _>(Wire(bytes), false);
+    util::test_is_safe::<RawPacket, _>(Wire(bytes), false);
 }
 
 #[derive(imp::KnownLayout)]
