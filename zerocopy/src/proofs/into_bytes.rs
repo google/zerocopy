@@ -166,8 +166,10 @@
 //! `expected[..len]` destination and calls safe
 //! `slice::last_chunk_mut::<4>`, whose contract directly selects its last four
 //! elements or returns `None` when fewer exist [20]. It is reached only on the
-//! `len >= 4` policy branch and fails closed if that safe oracle nevertheless
-//! returns `None`. Thus suffix placement uses no reconstructed subtraction.
+//! branch where the shared safe minimum-length oracle reports that the actual
+//! passed slice contains a value-sized chunk, and it fails closed if this safe
+//! suffix oracle nevertheless returns `None`. Thus suffix placement uses no
+//! reconstructed subtraction.
 //! These operations are the Rust/library placement oracles; the target API
 //! policy still decides whether a write is supposed to succeed.
 //!
@@ -181,13 +183,18 @@
 //! incomplete aliasing, provenance, and reference-lifetime checks remain
 //! TOOL/TCB premises for this outer-frame observation [22].
 //!
-//! Success-ordering basis: Rust comparison expressions use `PartialOrd`, whose
-//! `ge` method implements `>=`; primitive `usize` supplies that implementation
-//! [24]. `assert_modeled_u32_size` establishes `VALUE_SIZE == 4`, while
-//! `destination_len` ranges over exactly `0..=6`. Thus
-//! `len >= VALUE_SIZE` is true exactly for lengths 4, 5, and 6. This comparison
-//! is only the language mechanism implementing the documented zerocopy
-//! minimum-length policy; it is not an independent source of that policy.
+//! Minimum-length policy oracle basis: the shared
+//! `minimum_length_policy_oracle` asks safe
+//! `slice::first_chunk::<VALUE_SIZE>` about the actual passed destination.
+//! `first_chunk` "Returns the first `N` elements of the slice, or `None` if it
+//! has fewer than `N` elements," and `Option::is_some` returns true exactly for
+//! `Some` [24]. `assert_modeled_u32_size` establishes `VALUE_SIZE == 4`, while
+//! `destination_len` reaches every logical length in `0..=6`. The oracle
+//! therefore reports success exactly for lengths 4, 5, and 6 without manually
+//! reconstructing `len >= VALUE_SIZE`. Both minimum-length APIs use this one
+//! factored translation. It remains a zerocopy policy oracle: the safe
+//! language/library operations establish destination capacity, not that the
+//! public API ought to use this acceptance policy.
 //!
 //! Result-classification basis: `classify_write_result` exhaustively matches
 //! the target `Result` together with the API-policy success Boolean. Rust match
@@ -232,9 +239,8 @@
 //!       https://doc.rust-lang.org/1.93.0/std/macro.assert_eq.html
 //!       https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialEq.html#tymethod.eq
 //!       https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialEq-for-usize
-//! [24]: https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#comparison-operators
-//!       https://doc.rust-lang.org/1.93.0/std/cmp/trait.PartialOrd.html#method.ge
-//!       https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-PartialOrd-for-usize
+//! [24]: https://doc.rust-lang.org/1.93.0/std/primitive.slice.html#method.first_chunk
+//!       https://doc.rust-lang.org/1.93.0/std/option/enum.Option.html#method.is_some
 //! [25]: https://github.com/model-checking/kani/blob/kani-0.67.0/library/std/src/lib.rs#L19-L45
 //!       https://github.com/model-checking/kani/blob/kani-0.67.0/library/std/src/lib.rs#L91-L107
 //! [26]: https://github.com/model-checking/kani/blob/kani-0.67.0/docs/src/tutorial-kinds-of-failure.md#L1-L5
@@ -261,6 +267,13 @@ fn assert_modeled_u32_size() {
 
 fn destination_len() -> usize {
     any_usize_inclusive(MAX_DST_LEN)
+}
+
+// This is a policy oracle, not evidence that zerocopy chose the right policy.
+// Safe `first_chunk` independently reports whether the actual passed slice has
+// room for a value-sized chunk [24], avoiding a duplicate manual inequality.
+fn minimum_length_policy_oracle(destination: &[u8]) -> bool {
+    destination.first_chunk::<VALUE_SIZE>().is_some()
 }
 
 // Factor the initial view's size and contents together; pointer identity stays
@@ -441,7 +454,7 @@ fn prove_into_bytes_write_to_prefix() {
     let before = copy_snapshot(&destination);
     let len = destination_len();
 
-    let expected_success = len >= VALUE_SIZE;
+    let expected_success = minimum_length_policy_oracle(&destination[..len]);
     let succeeded =
         classify_write_result(value.write_to_prefix(&mut destination[..len]), expected_success);
 
@@ -482,7 +495,7 @@ fn prove_into_bytes_write_to_suffix() {
     let before = copy_snapshot(&destination);
     let len = destination_len();
 
-    let expected_success = len >= VALUE_SIZE;
+    let expected_success = minimum_length_policy_oracle(&destination[..len]);
     let succeeded =
         classify_write_result(value.write_to_suffix(&mut destination[..len]), expected_success);
 

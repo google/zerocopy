@@ -961,36 +961,35 @@ mod proofs {
     // `-Zfunction-contracts`, and one layout selected by `--randomize-layout`
     // per invocation.
     //
-    // Domain: Each harness considers every initialized `[u32; 8]`, every
+    // Domain: Each harness quantifies over every initialized `[u32; 8]`, every
     // source length in `0..=8`, and every split point in
-    // `0..=source.len()`. The mutable consumer additionally considers every
-    // pair of `u32` values written through its left and right results. Separate
-    // harnesses cover shared and mutable slices. The two calls to
-    // `assume_usize_at_most` in `any_slice_split_case` express exactly the
-    // finite length bounds: they pass independently evaluated Rust `usize`
-    // ordering results to Kani's assumption primitive as documented below;
-    // neither mutation value is constrained. The common covers witness empty,
-    // full, leading, trailing, and interior partitions. The two
+    // `0..=source.len()`. The mutable consumer additionally quantifies over
+    // every pair of `u32` values written through its left and right results.
+    // Kani 0.67 documents `kani::any::<T>()` as constructing an arbitrary valid
+    // `T`, with `Arbitrary` expected to represent all possible values [21]. Its
+    // tagged built-in implementations obtain scalar `u32` and `usize` from the
+    // raw model hook [22]. The generic array implementation delegates
+    // `[T; N]` generation to `T::any_array`; primitive `u32` overrides that
+    // method and obtains the complete `[u32; 8]` through the raw-array hook
+    // [22][23]. The raw hooks lower to destination-typed nondeterministic
+    // expressions, and pinned CBMC permits separate evaluations to choose
+    // differently [24]. Completeness, validity, and the premise that each
+    // evaluation is a fresh, mutually unconstrained choice are explicit
+    // TOOL/TCB inputs. Thus `any_slice_split_case` initially ranges over
+    // `[u32; 8]` x `usize` x `usize`. Its two calls to
+    // `assume_usize_at_most` retain exactly `source_len <= 8` and
+    // `split <= source_len`: they pass independently evaluated Rust `usize`
+    // ordering results to Kani's assumption primitive as documented below.
+    // The mutable consumer's later two `u32` calls independently range over
+    // the complete `u32` x `u32` product. This argument is limited to those
+    // exact built-in types; it does not extend to custom or derived
+    // `Arbitrary` implementations without a separate domain/image argument.
+    // Separate harnesses exercise shared and mutable slices. The common covers
+    // witness empty, full, leading, trailing, and interior partitions. The two
     // mutable-consumer covers use `partition_first_value_oracle` to separately
     // witness a nonempty left or right partition whose first value changes;
     // covers establish reachability only and do not narrow the universal
     // mutation domain.
-    //
-    // Symbolic-input basis and TOOL boundary: Kani 0.67 documents
-    // `any::<T>()` as representing every valid `T`. Its exact `Arbitrary`
-    // implementations for the unsigned primitive types and arrays route these
-    // `[u32; CAPACITY]`, `usize`, and `u32` requests through the raw-any path
-    // [21][22]. Kani lowers that path's `AnyRawHook` to a destination-typed
-    // nondeterministic expression, and its pinned CBMC 6.8.0 model permits
-    // separate nondeterministic calls to make different choices [23]. We
-    // accept as a TOOL/TCB premise, rather than a conclusion of these
-    // harnesses, that each dynamic `kani::any` evaluation is a fresh, mutually
-    // unconstrained valid choice. Thus the first three calls in
-    // `any_slice_split_case` initially range over the Cartesian product of all
-    // valid `[u32; CAPACITY]`, `usize`, and `usize` values; the two assumptions
-    // retain exactly `source_len <= CAPACITY && split <= source_len`. The
-    // mutable-consumer harness's later two calls independently range over the
-    // complete `u32` x `u32` value product and are not constrained.
     //
     // `kani::any` supplies initialized, valid values; it does not generate an
     // invalid or uninitialized value [21]. That restriction omits no valid
@@ -998,7 +997,7 @@ mod proofs {
     // means these harnesses say nothing about invalid or uninitialized source
     // states. Kani's incomplete invalid-value, uninitialized-memory, aliasing,
     // provenance, and reference-validity analyses remain explicit TOOL/TCB
-    // limits [24].
+    // limits [25].
     //
     // Proof decomposition:
     // - The two `split_at_*_unchecked` harnesses call only the descriptor
@@ -1227,15 +1226,15 @@ mod proofs {
     // https://doc.rust-lang.org/1.93.0/std/ops/struct.RangeTo.html#impl-SliceIndex%3C%5BT%5D%3E-for-RangeTo%3Cusize%3E
     // [20] https://doc.rust-lang.org/1.93.0/std/primitive.array.html#impl-Copy-for-%5BT;+N%5D
     // [21] https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/lib.rs#L255-L279
-    // https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/arbitrary.rs#L32-L77
-    // [22] https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/arbitrary.rs#L125-L132
-    // https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/lib.rs#L333-L367
-    // [23] https://github.com/model-checking/kani/blob/kani-0.67.0/kani-compiler/src/codegen_cprover_gotoc/overrides/hooks.rs#L334-L375
+    // [22] https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/arbitrary.rs#L22-L70
+    // [23] https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/arbitrary.rs#L125-L131
+    // [24] https://github.com/model-checking/kani/blob/kani-0.67.0/library/kani_core/src/lib.rs#L333-L367
+    // https://github.com/model-checking/kani/blob/kani-0.67.0/kani-compiler/src/codegen_cprover_gotoc/overrides/hooks.rs#L334-L375
     // https://github.com/model-checking/kani/blob/kani-0.67.0/kani-compiler/src/codegen_cprover_gotoc/overrides/hooks.rs#L1034-L1044
     // https://github.com/model-checking/kani/blob/kani-0.67.0/kani-dependencies#L1-L3
     // https://github.com/diffblue/cbmc/blob/cbmc-6.8.0/doc/cprover-manual/modeling-nondeterminism.md#L7-L13
     // https://github.com/diffblue/cbmc/blob/cbmc-6.8.0/doc/cprover-manual/modeling-nondeterminism.md#L46-L59
-    // [24] https://github.com/model-checking/kani/blob/kani-0.67.0/docs/src/undefined-behaviour.md#L22-L42
+    // [25] https://github.com/model-checking/kani/blob/kani-0.67.0/docs/src/undefined-behaviour.md#L22-L42
     // https://github.com/model-checking/kani/blob/kani-0.67.0/docs/src/rust-feature-support.md#L97-L105
     //
     // Excludes: Other element types (including ZSTs), larger slices, custom
