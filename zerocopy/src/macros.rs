@@ -1292,13 +1292,24 @@ mod proofs {
     // proof. Kani explores all 256 `u8` values, with covers for false, true,
     // and invalid inputs. The value and reference macros are invoked only for
     // the two independently valid representations; they check the decoded
-    // value, the explicit zerocopy same-address policy, and mutation
-    // propagation. `addr_of!` / `addr_of_mut!` obtain a raw pointer to the
-    // source place without creating an intermediate reference [5]. Rust's
-    // reference-to-raw coercions, sized pointer casts, and raw-pointer equality
-    // independently specify how both modeled addresses are observed [6][7].
-    // Requiring them to match is a zerocopy policy oracle, not a Rust-language
-    // requirement, and establishes no provenance property.
+    // value and the explicit zerocopy same-address policy. `addr_of!` /
+    // `addr_of_mut!` obtain a raw pointer to the source place without creating
+    // an intermediate reference [5]. Rust's reference-to-raw coercions, sized
+    // pointer casts, and raw-pointer equality independently specify how both
+    // modeled addresses are observed [6][7]. Requiring them to match is a
+    // zerocopy policy oracle, not a Rust-language requirement, and establishes
+    // no provenance property.
+    //
+    // Before the mutable macro is called, logical `!` derives a replacement
+    // solely from the independently decoded `expected` bool [13], and [1]
+    // converts that replacement to its expected source byte. The target result
+    // cannot influence either value. On success, dereference observes the bool
+    // at the returned reference's location [14], assignment copies or moves
+    // the precomputed replacement into that location [15], and `assert_eq!`
+    // plus primitive `u8` equality compares the source with the precomputed
+    // byte after the mutable borrow ends [16]. This chain proves only modeled
+    // value propagation; the reference obligations remain in the TOOL/TCB
+    // boundary below.
     //
     // Owned-value pointer policy: Two independent harnesses exercise the
     // owned-value macro. The first covers every `usize` as a direct
@@ -1308,7 +1319,16 @@ mod proofs {
     // safe iteration, and primitive equality. The helper's adjacent docs give
     // those exact Rust 1.93 contracts; it never reconstructs an integer or
     // calls zerocopy. This family separately adopts all-zero acceptance as the
-    // explicit conservative zerocopy pointer policy under test.
+    // explicit conservative zerocopy pointer policy under test. Before the
+    // macro consumes `src`, the shared safe-Rust `copy_snapshot` records its
+    // `Copy` value using the concrete `usize: Copy` implementation [17] and
+    // the dereference, value-expression, and copied-place rules documented
+    // next to that helper. On `Err`, the shared
+    // `assert_same_usize` observes the directly projected error field against
+    // that snapshot using `assert_eq!` and primitive `usize` equality. Neither
+    // helper calls zerocopy or consults its result while constructing the
+    // expectation. This recovery check establishes abstract `usize` equality,
+    // not byte preservation, independent storage, or provenance.
     //
     // The second harness covers every `[u8; 16]` source and transmutes to
     // `PaddedPointer`. Pinned compiler observations require an eight-byte thin
@@ -1316,61 +1336,55 @@ mod proofs {
     // the remaining eight bytes are therefore genuine destination tail
     // padding [10][11]. Safe `slice::first_chunk` obtains exactly the first
     // eight source bytes, with `Option::expect` making a missing chunk fail
-    // closed [9]. The same shared all-zero classifier supplies the pointer-field
-    // policy while deliberately ignoring the padding bytes. The derived
-    // `TryFromBytes` validator is part of the target path, not an oracle. The
-    // end-to-end harness proves, rather than assumes, that macro acceptance
-    // matches that field policy and is independent of the padding. Covers
-    // witness acceptance and rejection with nonzero padding but do not
-    // constrain the universal input domain. On every rejection, the shared
+    // closed [9]. The same shared all-zero classifier supplies the
+    // pointer-field policy while deliberately ignoring the padding bytes. The
+    // derived `TryFromBytes` validator is part of the target path; it is not
+    // an oracle. The end-to-end harness proves, rather than assumes, that macro
+    // acceptance matches that field policy and is independent of the padding.
+    // Its covers witness acceptance and rejection with nonzero padding without
+    // constraining the universal input domain. On every rejection, the shared
     // ordered-byte observer compares all 16 returned source bytes with a safe
     // pre-call snapshot. It projects the crate-visible error field rather than
     // calling `ValidityError::into_src`, preventing accessor and macro defects
     // from compensating.
     //
-    // Mutable-bool write-back: The replacement `!expected` is computed from
-    // the independent checked-bool oracle before the target is invoked. For a
-    // `bool`, logical negation exchanges `true` and `false` [14]. Built-in
-    // dereference of `&mut bool` denotes the pointed-to assignable place, and
-    // assignment copies the independently computed right-hand value into that
-    // place [14]. After the target reference's last use, safe `u8::from`
-    // supplies the expected source representation [1], and primitive `u8`
-    // equality supplies the final observation [15]. None of those operations
-    // consults zerocopy to construct the expected mutation or result.
-    //
     // Destination validity and accepted value: Rust guarantees that every
-    // integer representation can validly produce a thin raw pointer [3];
-    // [10][11] establish that bytes 8 through 15 are destination tail padding,
-    // and Rust expressly permits uninitialized memory in padding [12]. We use
-    // that language rule as the TCB premise that those padding bytes impose no
-    // additional value-validity constraint; Kani does not prove that premise.
-    // Thus an erroneous acceptance in either pointer harness still cannot
-    // materialize an invalid destination. On the accepted all-zero field, safe
-    // `core::ptr::null()` independently supplies the expected pointer by its
-    // standard-library contract [4]. Neither harness dereferences the result.
+    // integer representation can validly produce a thin raw pointer [3]. Rust
+    // also states both that padding need not be initialized and that a struct's
+    // validity requires its fields to be valid at their respective types [12].
+    // `PaddedPointer` has exactly one field; [3] proves that field valid, while
+    // [10][11] identify every remaining destination byte as tail padding.
+    // Therefore those remaining bytes add no validity obligation. This
+    // derivation is independent of the derived validator and Kani's padding
+    // model. Thus an erroneous acceptance in either pointer harness still
+    // cannot materialize an invalid destination. On the accepted all-zero
+    // field, safe `core::ptr::null()` independently supplies the expected
+    // pointer by its standard-library contract [4]. Neither harness
+    // dereferences the result.
     //
     // Storage and bounds: Each bool harness uses one stack `u8`; the direct
-    // pointer harness uses one `usize` and its eight-byte representation. The
-    // padded harness uses one 16-byte source plus its safe snapshot; all other
-    // values are fixed-size compiler temporaries. No harness allocates,
-    // contains an explicit source loop, or uses `kani::assume`; every symbolic
-    // input is unconstrained. Bool harnesses use unwind one. The direct pointer
-    // harness uses unwind nine for an eight-byte target/helper scan plus
-    // termination. The padded harness uses unwind 17 for its 16-byte recovery
-    // comparison plus termination. Kani's unwinding checks enforce each bound.
+    // pointer harness uses one `usize`, its safe `Copy` value snapshot, and its
+    // eight-byte representation. The padded harness uses one 16-byte source
+    // plus its safe snapshot; all other values are fixed-size compiler
+    // temporaries. No harness allocates, contains an explicit source loop, or
+    // uses `kani::assume`; every symbolic input is unconstrained. Bool
+    // harnesses use unwind one. The direct pointer harness uses unwind nine for
+    // an eight-byte target/helper scan plus termination. The padded harness
+    // uses unwind 17 for its 16-byte recovery comparison plus termination.
+    // Kani's unwinding checks enforce each bound.
     //
     // Scope and TOOL/TCB boundary: These are end-to-end proofs only for the
     // listed `u8`-to-`bool`, `usize`-to-`*const u8`, and
-    // `[u8; 16]`-to-`PaddedPointer` instantiations on the pinned target. They do
-    // not prove other types, padding shapes, sizes, alignments, macro arms, or
-    // toolchains. Invalid-bool public paths remain uninvoked because Kani does
-    // not completely check invalid-value production. Reading and writing the
-    // reference-macro results presupposes live, dereferenceable references with
-    // valid lifetime, aliasing, and provenance; Kani does not completely check
-    // those obligations, so they remain TOOL/TCB premises rather than proof
-    // conclusions. Its uninitialized-memory/padding model is likewise a
-    // premise for the padded recovery result. In particular, this harness also
-    // verifies when the target body is locally replaced with the typed
+    // `[u8; 16]`-to-`PaddedPointer` instantiations on the pinned target. They
+    // do not prove other types, padding shapes, sizes, alignments, macro arms,
+    // or toolchains. Because Kani does not completely check invalid-value
+    // production, invalid-bool public paths remain uninvoked. Reading and
+    // writing reference-macro results presupposes live, dereferenceable
+    // references with valid lifetime, aliasing, and provenance; Kani does not
+    // completely check those obligations, so they remain TOOL/TCB premises
+    // rather than proof conclusions. Its uninitialized-memory/padding model is
+    // likewise a premise for the padded recovery result. In particular, it
+    // also verifies when the target body is locally replaced with the typed
     // `MaybeUninit<ReadOnly<Dst>>` implementation immediately before
     // 94f0da71; Kani does not expose that implementation's compiler-permitted
     // destination-padding loss. The theorem therefore observes every
@@ -1448,14 +1462,37 @@ mod proofs {
     // https://doc.rust-lang.org/1.93.0/core/mem/fn.align_of.html
     // https://doc.rust-lang.org/1.93.0/core/mem/macro.offset_of.html
     //
-    // [12] https://doc.rust-lang.org/1.93.0/reference/behavior-considered-undefined.html#invalid-values
-    // [13] https://doc.rust-lang.org/1.93.0/reference/expressions.html#moved-and-copied-types
-    // https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-Copy-for-usize
-    // [14] https://doc.rust-lang.org/1.93.0/reference/types/boolean.html#logical-not
+    // [12] Rust 1.93 states that padding bytes need not be initialized, and
+    // states a struct's validity requirement in terms of its fields:
+    // https://doc.rust-lang.org/1.93.0/core/mem/union.MaybeUninit.html#initialization-invariant
+    // https://doc.rust-lang.org/1.93.0/reference/behavior-considered-undefined.html#invalid-values
+    //
+    //     Padding bytes do not have to be initialized.
+    //
+    //     A struct, tuple, and array requires all fields/elements to be valid
+    //     at their respective type.
+    //
+    // [13] Rust 1.93 classifies `!` on a primitive `bool` as logical NOT and
+    // evaluates its operand in value-expression context:
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#negation-operators
+    //
+    // [14] Per Rust 1.93, dereferencing a pointer denotes its pointed-to
+    // location, and the location resulting from dereferencing `&mut T` can be
+    // assigned to:
     // https://doc.rust-lang.org/1.93.0/reference/expressions/operator-expr.html#the-dereference-operator
-    // https://doc.rust-lang.org/1.93.0/reference/expressions/assignment-expr.html
-    // [15] https://doc.rust-lang.org/1.93.0/std/macro.assert_eq.html
+    //
+    // [15] Rust 1.93 says that an assignment next copies or moves its assigned
+    // value to its assigned place:
+    // https://doc.rust-lang.org/1.93.0/reference/expressions/assignment-expr.html#basic-assignments
+    //
+    // [16] `assert_eq!` asserts equality of its operands, and primitive `bool`
+    // and `u8` supply the two equality operations used by the mutable harness:
+    // https://doc.rust-lang.org/1.93.0/std/macro.assert_eq.html
+    // https://doc.rust-lang.org/1.93.0/std/primitive.bool.html#impl-PartialEq-for-bool
     // https://doc.rust-lang.org/1.93.0/std/primitive.u8.html#impl-PartialEq-for-u8
+    //
+    // [17] Rust 1.93 lists the primitive `usize` implementation of `Copy`:
+    // https://doc.rust-lang.org/1.93.0/std/primitive.usize.html#impl-Copy-for-usize
 
     #[kani::proof]
     #[kani::unwind(1)]
@@ -1499,18 +1536,19 @@ mod proofs {
         let expected = checked_bool_oracle(src);
         cover_bool_oracle(expected);
         if let Some(expected) = expected {
-            let expected_after_mutation = !expected;
+            let replacement = !expected;
+            let replacement_byte = u8::from(replacement);
             let result: Result<&mut bool, ValidityError<&mut u8, bool>> =
                 crate::try_transmute_mut!(&mut src);
             match result {
                 Ok(dst) => {
                     assert_eq!((dst as *mut bool).cast::<u8>(), src_ptr);
                     assert_eq!(*dst, expected);
-                    *dst = expected_after_mutation;
+                    *dst = replacement;
                 }
                 Err(_) => panic!("mutable transmute rejected an independently valid bool"),
             }
-            assert_eq!(src, u8::from(expected_after_mutation));
+            assert_eq!(src, replacement_byte);
         }
     }
 
@@ -1521,21 +1559,18 @@ mod proofs {
     // `usize::to_ne_bytes` [8] plus the shared complete-array classifier supply
     // the independently observed bytes to which this family applies its
     // explicit zero-only pointer policy. Safe `core::ptr::null()` is the
-    // expected result on that branch by [4]. Before the target consumes its
-    // `usize` source, the shared `copy_snapshot` takes an independent safe-Rust
-    // pre-call value snapshot. Its documented dereference/value-expression
-    // kernel copies the value because `usize: Copy` [13]. On rejection, direct
-    // projection of the crate-visible error field avoids
-    // `ValidityError::into_src`, and the shared `assert_same_usize` supplies
-    // primitive `usize` equality independently of the target. Accessor and
-    // macro defects therefore cannot compensate.
+    // expected result on that branch by [4]. On rejection, direct projection
+    // of the crate-visible error field and the shared `usize` observer compare
+    // the restored source with the safe pre-call snapshot without calling
+    // `ValidityError::into_src`, so accessor and macro defects cannot
+    // compensate.
     // `#[allow(unknown_lints)]` is for `integer_to_ptr_transmutes` on the MSRV.
     #[allow(unknown_lints)]
     #[allow(integer_to_ptr_transmutes)]
     fn prove_try_transmute_usize_to_pointer_policy_and_recovery() {
         let src: usize = kani::any();
-        let expected_src = copy_snapshot(&src);
-        let src_bytes = expected_src.to_ne_bytes();
+        let snapshot = copy_snapshot(&src);
+        let src_bytes = snapshot.to_ne_bytes();
         let expected_valid = all_zero_byte_policy_oracle(&src_bytes);
         let result: Result<*const u8, ValidityError<usize, *const u8>> = crate::try_transmute!(src);
 
@@ -1548,7 +1583,7 @@ mod proofs {
             }
             Err(error) => {
                 assert!(!expected_valid);
-                assert_same_usize(error.src, expected_src);
+                assert_same_usize(error.src, snapshot);
             }
         }
     }
