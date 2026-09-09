@@ -1,0 +1,105 @@
+error: `cryptocorrosion_derive_traits!` does not support `cfg_attr`; use direct `cfg` attributes
+  --> $DIR/cryptocorrosion-unsupported-attributes.rs:21:1
+   |
+21 | / zerocopy::cryptocorrosion_derive_traits! {
+22 | |     #[repr(C)]
+23 | |     #[cfg_attr(all(), cfg(any()))]
+24 | |     struct CfgAttr(u8);
+25 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: `cryptocorrosion_derive_traits!` only supports `cfg`, `derive`, `allow`, and `doc` attributes
+  --> $DIR/cryptocorrosion-unsupported-attributes.rs:27:1
+   |
+27 | / zerocopy::cryptocorrosion_derive_traits! {
+28 | |     #[repr(C)]
+29 | |     #[deprecated]
+30 | |     struct Unsupported(u8);
+31 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: `cryptocorrosion_derive_traits!` only supports field types composed of identifiers, identifier generic arguments, and arrays with literal lengths
+  --> $DIR/cryptocorrosion-unsupported-attributes.rs:38:1
+   |
+38 | / zerocopy::cryptocorrosion_derive_traits! {
+39 | |     #[repr(C)]
+40 | |     struct MacroStruct(field_type!());
+41 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: `cryptocorrosion_derive_traits!` only supports field types composed of identifiers, identifier generic arguments, and arrays with literal lengths
+  --> $DIR/cryptocorrosion-unsupported-attributes.rs:43:1
+   |
+43 | / zerocopy::cryptocorrosion_derive_traits! {
+44 | |     #[repr(C)]
+45 | |     union MacroUnion {
+46 | |         byte: field_type!(),
+47 | |     }
+48 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: `cryptocorrosion_derive_traits!` only supports field types composed of identifiers, identifier generic arguments, and arrays with literal lengths
+  --> $DIR/cryptocorrosion-unsupported-attributes.rs:50:1
+   |
+50 | / zerocopy::cryptocorrosion_derive_traits! {
+51 | |     @emit
+52 | |     [C]
+53 | |     []
+54 | |     struct DirectMacroStruct(field_type!());
+55 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: `cryptocorrosion_derive_traits!` only supports field types composed of identifiers, identifier generic arguments, and arrays with literal lengths
+  --> $DIR/cryptocorrosion-unsupported-attributes.rs:57:1
+   |
+57 | / zerocopy::cryptocorrosion_derive_traits! {
+58 | |     @emit
+59 | |     [C]
+60 | |     []
+...  |
+63 | |     }
+64 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: `cryptocorrosion_derive_traits!` only supports field types composed of identifiers, identifier generic arguments, and arrays with literal lengths
+  --> $DIR/cryptocorrosion-unsupported-attributes.rs:66:1
+   |
+66 | / zerocopy::cryptocorrosion_derive_traits! {
+67 | |     @parse
+68 | |     [C]
+69 | |     [{ all() }]
+70 | |     [(doc [= "forwarded"])]
+71 | |     struct DirectParseMacroStruct(field_type!());
+72 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: `cryptocorrosion_derive_traits!` only supports field types composed of identifiers, identifier generic arguments, and arrays with literal lengths
+  --> $DIR/cryptocorrosion-unsupported-attributes.rs:74:1
+   |
+74 | / zerocopy::cryptocorrosion_derive_traits! {
+75 | |     @parse
+76 | |     [C]
+77 | |     [{ all() }]
+...  |
+81 | |     }
+82 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 8 previous errors
+
