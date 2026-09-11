@@ -189,28 +189,48 @@ jobs:
           )"
           KANI_LATEST="$(
             sed -nE \
-              's/^kani-verifier = "([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' \
+              's/^kani-verifier = "((0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*))".*/\1/p' \
               <<< "$KANI_SEARCH"
           )"
-          if ! [[ "$KANI_LATEST" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          KANI_SEMVER_CORE='(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)'
+          KANI_VERSION_REGEX="^${KANI_SEMVER_CORE}$"
+          if ! [[ "$KANI_LATEST" =~ $KANI_VERSION_REGEX ]]; then
             echo "Could not parse a Kani version from: $KANI_SEARCH" >&2
             exit 1
           fi
           echo "ZC_KANI_LATEST=$KANI_LATEST" >> "$GITHUB_ENV"
 
-          # Update the `kani-version:` argument in-place.
-          MATCH_COUNT="$(
-            grep -Ec '^ *kani-version: [0-9]+\.[0-9]+\.[0-9]+$' \
-              .github/workflows/ci.yml || true
-          )"
-          if [ "$MATCH_COUNT" -ne 1 ]; then
-            echo "Expected exactly one Kani version in ci.yml; found $MATCH_COUNT" >&2
+          # Update only the executable `kani-version:` argument in-place. Do
+          # not mechanically update the manual compiler/CBMC audit in
+          # `agent_docs/validation.md`: on branches which carry that audit,
+          # `ci/check_actions.sh` deliberately fails until a human replaces
+          # the audit and its version label after checking the new release.
+          mapfile -t KANI_PIN_LINES < <(
+            # Count every non-comment textual candidate before requiring the
+            # one canonical spelling below. This catches quoted YAML keys,
+            # whitespace before `:`, and malformed duplicates.
+            awk '
+              {
+                line = $0
+                sub(/^[[:space:]]*/, "", line)
+                if (line !~ /^#/ && line ~ /kani-version/) print
+              }
+            ' .github/workflows/ci.yml
+          )
+          if [ "${#KANI_PIN_LINES[@]}" -ne 1 ]; then
+            echo "Expected exactly one Kani pin candidate in ci.yml; found ${#KANI_PIN_LINES[@]}" >&2
             exit 1
           fi
+          KANI_PIN_LINE_REGEX="^([[:space:]]*)kani-version:[[:space:]]+${KANI_SEMVER_CORE}$"
+          if ! [[ "${KANI_PIN_LINES[0]}" =~ $KANI_PIN_LINE_REGEX ]]; then
+            echo "Malformed Kani pin in ci.yml: ${KANI_PIN_LINES[0]}" >&2
+            exit 1
+          fi
+          KANI_PIN_INDENT="${BASH_REMATCH[1]}"
           sed -i -E -e \
-            "s/^( *kani-version:)( [0-9]+\.[0-9]+\.[0-9]+)/\1 $KANI_LATEST/" \
+            "s/^([[:space:]]*)kani-version:[[:space:]]+${KANI_SEMVER_CORE}$/\1kani-version: $KANI_LATEST/" \
             .github/workflows/ci.yml
-          grep -E "^ *kani-version: $KANI_LATEST$" \
+          grep -F -x "${KANI_PIN_INDENT}kani-version: $KANI_LATEST" \
             .github/workflows/ci.yml >/dev/null
       - name: Submit PR
         id: submit-pr
@@ -220,6 +240,16 @@ jobs:
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           title: "[ci] Roll pinned Kani version"
+          body: |
+            This automation updates only the executable Kani pin; it does not
+            claim that the prior manual compiler/CBMC audit applies to the new
+            release.
+
+            On branches carrying that audit, `ci/check_actions.sh` will fail
+            closed until a human installs the new release, replaces the
+            compiler/target/CBMC record, rechecks every versioned Rust contract
+            and tool-option premise, updates the audited-version label, and
+            reruns the complete Kani suite.
           branch: roll-pinned-kani-to-${{ env.ZC_KANI_LATEST }}-for-${{ matrix.branch }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]

@@ -329,6 +329,15 @@ fn get_toolchain_rustflags(name: &str) -> String {
     format!("--cfg __ZEROCOPY_TOOLCHAIN=\"{}\"", name)
 }
 
+fn join_flags(flags: &[&str]) -> String {
+    flags
+        .iter()
+        .map(|flag| flag.trim())
+        .filter(|flag| !flag.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
 fn rustup<'a>(args: impl IntoIterator<Item = &'a str>, env: Option<(&str, &str)>) -> Command {
     let mut cmd = Command::new("rustup");
     // It's important to set `RUSTUP_TOOLCHAIN` to override any value set while
@@ -414,13 +423,12 @@ fn delegate_cargo() -> Result<(), Error> {
                     .next()
                     .unwrap_or_default();
 
-                let rustflags = format!(
-                    "{} {} {}",
-                    get_rustflags(name),
-                    get_toolchain_rustflags(name),
-                    env_rustflags,
-                );
-                let rustdocflags = format!("{rustflags} {env_rustdocflags}");
+                let rustflags = join_flags(&[
+                    &get_rustflags(name),
+                    &get_toolchain_rustflags(name),
+                    &env_rustflags,
+                ]);
+                let rustdocflags = join_flags(&[&rustflags, &env_rustdocflags]);
 
                 // Rustdoc needs the wrapper's cfgs and the caller's RUSTFLAGS
                 // in addition to any rustdoc-specific flags supplied through
@@ -495,10 +503,18 @@ fn delegate_cargo() -> Result<(), Error> {
 mod tests {
     use std::{ffi::OsStr, process::Command};
 
-    use super::{capture_feature_selection_args, set_ui_test_feature_args};
+    use super::{capture_feature_selection_args, join_flags, set_ui_test_feature_args};
 
     fn strings(args: &[&str]) -> Vec<String> {
         args.iter().map(|arg| (*arg).to_string()).collect()
+    }
+
+    #[test]
+    fn joins_nonempty_flags_without_outer_whitespace() {
+        assert_eq!(
+            join_flags(&["", "  --cfg foo ", " ", "-C opt-level=2"]),
+            "--cfg foo -C opt-level=2"
+        );
     }
 
     #[test]
