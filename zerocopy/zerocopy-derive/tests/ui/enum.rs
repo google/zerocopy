@@ -686,3 +686,11 @@ enum IntoBytes6<T> {
 enum IntoBytes7 {
     A,
 }
+
+#[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C, u8)]
+//~[msrv, stable, nightly]^ ERROR: zerocopy derives do not support combining `repr(C)` with an integer representation
+enum CAndPrimitiveIsUnsupported {
+    A(u8),
+}
