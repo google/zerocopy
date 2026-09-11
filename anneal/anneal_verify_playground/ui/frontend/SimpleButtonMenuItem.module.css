@@ -1,0 +1,7 @@
+.container {
+  composes: -menuItemFullButton from './shared.module.css';
+
+  &:hover {
+    color: var(--header-tint);
+  }
+}

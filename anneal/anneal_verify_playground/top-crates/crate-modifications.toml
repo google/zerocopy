@@ -1,0 +1,23 @@
+additions = [
+    # Crates that the compiler recommends
+    # rg 'https://crates.io/crates/[a-z_-]+' \
+    #   --glob '**/tests/**/*.stderr' \
+    #   --glob 'compiler/rustc_error_codes/**/*.md' \
+    #   --only-matching \
+    #   --no-line-number \
+    #   --no-filename \
+    #   | sort \
+    #   | uniq \
+    #   | cut -d '/' -f 5
+    "async-trait",
+    "sptr",
+    # Crate that The Rust Programming Language book uses
+    "trpl",
+]
+
+[[exclusions]]
+# crypto-common 0.1.7 depends on `generic-array =0.14.7`. Since
+# there's now a version 1.x of generic-array; it's no big deal to
+# exclude the newest version of the older series.
+name = "generic-array"
+versions = "0.14.9"
