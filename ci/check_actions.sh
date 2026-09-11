@@ -21,6 +21,11 @@ if [ ! -x "$HOME/.cargo/bin/action-validator" ]; then
 fi
 export PATH="$HOME/.cargo/bin:$PATH"
 
+# The hosted workflows delegate every apt operation to this bounded retry
+# helper. Its fake-command tests verify timeouts, retries, failure propagation,
+# and argument validation without requiring root or network access.
+bash .github/scripts/test_install_apt_packages.sh
+
 # Files to exclude from validation (e.g., because they are not Actions/Workflows)
 # Use relative paths matching `find .github` output
 EXCLUDE_FILES=(
