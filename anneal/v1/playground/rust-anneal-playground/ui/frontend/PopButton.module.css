@@ -1,0 +1,35 @@
+$arrow-height: 10px;
+$arrow-width: 20px;
+
+.container {
+  z-index: 10;
+  font-size: var(--secondary-font-size);
+
+  & button:enabled {
+    cursor: pointer;
+  }
+}
+
+.arrow {
+  fill: var(--background-color-high-contrast);
+}
+
+.-content {
+  margin: $arrow-height;
+  box-shadow:
+    5px 5px 20px -3px rgb(0 0 0 / 25%),
+    0 0 5px -2px rgb(0 0 0 / 90%);
+  border-radius: var(--header-border-radius);
+  background: var(--background-color-high-contrast);
+  color: var(--font-color);
+}
+
+.contentBottom {
+  composes: -content;
+  margin-top: 0;
+}
+
+.contentTop {
+  composes: -content;
+  margin-bottom: 0;
+}

@@ -1,0 +1,24 @@
+[package]
+authors = ["Jake Goulding <jake.goulding@integer32.com>"]
+name = "rust-playground-top-crates"
+version = "0.1.7"
+edition = "2018"
+
+description = "Calculates what crates should be included in the playground"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/rust-lang/rust-playground"
+
+[workspace]
+
+[dependencies]
+cargo = "0.97.0"
+cargo-util-schemas = "0.14.0"
+itertools = "0.14.0"
+reqwest = { version = "0.13.0", features = ["json"] }
+semver = { version = "1.0.11", features = ["serde"] }
+serde = "1.0.1"
+serde_derive = "1.0.1"
+serde_json = "1.0.0"
+tempfile = "3.20.0"
+tokio = { version = "1.52.3", default-features = false, features = ["rt", "macros"] }
+toml = "1.0.3"

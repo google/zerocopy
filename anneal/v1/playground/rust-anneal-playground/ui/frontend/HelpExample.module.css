@@ -1,0 +1,21 @@
+.container {
+  position: relative;
+}
+
+.loadExample {
+  position: absolute;
+  top: 0;
+  right: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.5s;
+  cursor: pointer;
+  border: none;
+  border-bottom-left-radius: 0.5em;
+  background: rgb(255 255 255 / 80%);
+}
+
+.container:hover .loadExample {
+  visibility: visible;
+  opacity: 1;
+}

@@ -1,0 +1,14 @@
+# Keep root Docker/CI build contexts from sending local build artifacts.
+.git
+.DS_Store
+**/.DS_Store
+
+target
+**/target
+
+ui/target
+ui/frontend/node_modules
+ui/frontend/dist
+ui/frontend/.cache
+ui/frontend/.webpack
+ui/tmp

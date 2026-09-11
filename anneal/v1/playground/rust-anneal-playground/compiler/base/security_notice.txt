@@ -1,0 +1,11 @@
+# Hello, and thanks for looking into the Rust Playground's security!
+#
+# This build is running on an unprivileged, sandboxed Docker container with no
+# network access, so while you can technically run arbitrary code on the
+# Playground you shouldn't be able to do any damage with it.
+#
+# Nothing is perfect though: if you find a way to escape the sandbox, please
+# disclose it following our security policy! You can find the policy at:
+#
+#    https://www.rust-lang.org/policies/security
+#
