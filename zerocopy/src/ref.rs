@@ -703,7 +703,7 @@ where
         // address and length to that produced by `b.deref_mut()`.
         let ptr = Ptr::from_mut(b.into_byte_slice_mut())
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
-            .expect("zerocopy internal error: into_ref should be infallible");
+            .expect("zerocopy internal error: into_mut should be infallible");
         let ptr = ptr.recall_validity::<_, (_, (_, _))>();
         ptr.as_mut()
     }
