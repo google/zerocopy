@@ -280,7 +280,7 @@ unsafe impl SplitByteSlice for &mut [u8] {
         //   true for these two sub-slices of `self`.
         // - The memory referenced by the returned slice cannot be accessed
         //   through any other pointer (not derived from the return value) for
-        //   the duration of lifetime `'a``, because:
+        //   the duration of lifetime `'a`, because:
         //   - `split_at_unchecked` consumes `self` (which is not `Copy`),
         //   - `split_at_unchecked` does not exfiltrate any references to this
         //     memory, besides those references returned below,
@@ -427,8 +427,12 @@ mod tests {
         let borrow_mut = cell.borrow_mut();
         let slice_ref_mut: cell::RefMut<'_, [u8]> = cell::RefMut::map(borrow_mut, |a| &mut a[..]);
         // SAFETY: 2 is within bounds of [1, 2, 3, 4]
-        let (l, r) = unsafe { slice_ref_mut.split_at_unchecked(2) };
+        let (mut l, mut r) = unsafe { slice_ref_mut.split_at_unchecked(2) };
         assert_eq!(*l, [1, 2]);
         assert_eq!(*r, [3, 4]);
+        l[0] = 5;
+        r[0] = 6;
+        drop((l, r));
+        assert_eq!(*cell.borrow(), [5, 2, 6, 4]);
     }
 }
