@@ -280,7 +280,7 @@ unsafe impl SplitByteSlice for &mut [u8] {
         //   true for these two sub-slices of `self`.
         // - The memory referenced by the returned slice cannot be accessed
         //   through any other pointer (not derived from the return value) for
-        //   the duration of lifetime `'a`, because:
+        //   the duration of lifetime `'a``, because:
         //   - `split_at_unchecked` consumes `self` (which is not `Copy`),
         //   - `split_at_unchecked` does not exfiltrate any references to this
         //     memory, besides those references returned below,
