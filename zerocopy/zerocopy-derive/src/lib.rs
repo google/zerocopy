@@ -213,7 +213,7 @@ pub fn most_traits(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// Deprecated: prefer [`FromZeros`] instead.
 #[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
 #[doc(hidden)]
-#[proc_macro_derive(FromZeroes)]
+#[proc_macro_derive(FromZeroes, attributes(zerocopy))]
 pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_from_zeros(ts)
 }
@@ -221,7 +221,7 @@ pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStrea
 /// Deprecated: prefer [`IntoBytes`] instead.
 #[deprecated(since = "0.8.0", note = "`AsBytes` was renamed to `IntoBytes`")]
 #[doc(hidden)]
-#[proc_macro_derive(AsBytes)]
+#[proc_macro_derive(AsBytes, attributes(zerocopy))]
 pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_into_bytes(ts)
 }
