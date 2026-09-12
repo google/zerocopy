@@ -186,12 +186,17 @@ pub(crate) fn derive_projection_struct_union(
                     slf: #zerocopy_crate::pointer::PtrInner<'_, Self>,
                 ) -> *mut <Self as #has_field_path>::Type {
                     let slf = slf.as_ptr();
-                    // SAFETY: By invariant on `PtrInner`, `slf` is a non-null
-                    // pointer whose referent is zero-sized or lives in a valid
-                    // allocation. Since `#ident` is a struct or union field of
-                    // `Self`, this projection preserves or shrinks the referent
-                    // size, and so the resulting referent also fits in the same
-                    // allocation.
+                    // SAFETY: By invariant on `PtrInner`, if `Self` is
+                    // non-zero-sized, `slf`'s referent is contained in a
+                    // non-null, nonwrapping allocation address range. The
+                    // projected field address is in-bounds or one-past that
+                    // range, so it is non-null [1]. If `Self` is zero-sized,
+                    // every field has offset zero, so the projection preserves
+                    // `slf`'s non-null address. In either case, projecting a
+                    // field preserves provenance and the field's bytes are a
+                    // subset of `slf`'s referent.
+                    //
+                    // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
                     unsafe { #core::ptr::addr_of_mut!((*slf).#ident) }
                 }
             })
