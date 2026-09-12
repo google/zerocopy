@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pr: [3674, 3675, 3676, 3677]
+        pr: [3677]
     env:
       CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
       CARGO_NET_RETRY: '10'
@@ -39,7 +39,7 @@ jobs:
         env:
           PR_NUMBER: ${{ matrix.pr }}
           GH_TOKEN: ${{ github.token }}
-        run: python3 .audit-recovery/prepare.py
+        run: python3 .audit-recovery/recover_pointer.py
       - name: Check MSRV
         working-directory: ${{ steps.recover.outputs.worktree }}/zerocopy
         run: ./cargo.sh +msrv check --tests --features __internal_use_only_features_that_work_on_stable
