@@ -1356,7 +1356,7 @@ mod tests {
         } => 0);
         test!(#[repr(u32)] #[repr(C)] {
             A(u8, u8, u8, u8),
-            B(U16),
+            B(U16, u8, u8),
             C(u8, u8, U16),
             D(U16, U16),
             E(U32),

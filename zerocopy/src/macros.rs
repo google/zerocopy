@@ -601,7 +601,7 @@ macro_rules! transmute_mut {
 /// will *not* be dropped. Semantically, its bits will be copied into a new value
 /// of type `Dst`, the original `Src` will be forgotten, and the value of type
 /// `Dst` will be returned. If the transmutation fails, ownership of the original
-/// `Src` is returned in the [`ValidityError`].
+/// `Src` is returned in the [`crate::ValidityError`].
 ///
 /// # Examples
 ///
@@ -1709,7 +1709,7 @@ mod tests {
         assert_eq!(*value.unwrap(), 0);
         assert_eq!(ctr, 1);
 
-        let mut ctr = 0;
+        let mut ctr: usize = 0;
         let value: Result<&mut usize, _> = try_transmute_mut!({
             ctr += 1;
             &mut ctr
