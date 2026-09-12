@@ -1,0 +1,232 @@
+# Temporary audit publication tooling; never merged into main or audit PRs.
+name: Audit patch objects
+'on':
+  push:
+    branches: [joshlf/audit-publication-runner-20260912]
+    paths: [.audit-publication/request.json, .github/workflows/audit-publication.yml]
+permissions: {}
+concurrency:
+  group: audit-publication-20260912
+  cancel-in-progress: false
+jobs:
+  create-objects:
+    if: github.repository == 'google/zerocopy' && github.actor == 'joshlf'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Verify patches and create immutable Git objects
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 - <<'PYCODE'
+          """Import reviewed audit deltas as Git objects without changing any Git ref."""
+          import base64
+          import gzip
+          import hashlib
+          import io
+          import json
+          import os
+          from pathlib import Path, PurePosixPath
+          import re
+          import subprocess
+          import tempfile
+          import urllib.error
+          import urllib.request
+          
+          REPOSITORY = "google/zerocopy"
+          RUNNER_BRANCH = "joshlf/audit-publication-runner-20260912"
+          BRANCHES = {
+              3674: "joshlf/audit-derive-fixes-20260912",
+              3675: "joshlf/audit-core-fixes-20260912",
+              3676: "joshlf/audit-macro-fixes-20260912",
+              3677: "joshlf/audit-pointer-contracts-20260912",
+          }
+          PREFIXES = (
+              "zerocopy/src/",
+              "zerocopy/tests/",
+              "zerocopy/zerocopy-derive/src/",
+              "zerocopy/zerocopy-derive/tests/",
+          )
+          SHA = re.compile(r"[0-9a-f]{40}\Z")
+          MAX_PATCH_BYTES = 8 * 1024 * 1024
+          
+          
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  raise RuntimeError("Unexpected API redirect; no credentials forwarded")
+          
+          
+          OPENER = urllib.request.build_opener(NoRedirect())
+          
+          
+          def api(path, payload=None):
+              """Use the job token only for object-creation calls to this repository."""
+              if not path.startswith(("git/", "contents/")):
+                  raise ValueError("Unexpected API resource")
+              headers = {
+                  "Accept": "application/vnd.github+json",
+                  "X-GitHub-Api-Version": "2022-11-28",
+                  "User-Agent": "zerocopy-audit-publication",
+              }
+              data = None
+              if payload is not None:
+                  if path not in ("git/blobs", "git/trees", "git/commits"):
+                      raise ValueError("Only immutable Git object creation is allowed")
+                  headers["Authorization"] = "Bearer " + os.environ["GH_TOKEN"]
+                  headers["Content-Type"] = "application/json"
+                  data = json.dumps(payload).encode()
+              req = urllib.request.Request(
+                  "https://api.github.com/repos/" + REPOSITORY + "/" + path,
+                  data=data,
+                  headers=headers,
+              )
+              try:
+                  with OPENER.open(req, timeout=60) as response:
+                      return json.load(response)
+              except urllib.error.HTTPError as error:
+                  raise RuntimeError("GitHub API returned HTTP " + str(error.code)) from None
+          
+          
+          def valid_path(path):
+              p = PurePosixPath(path)
+              if (
+                  not isinstance(path, str)
+                  or not path.startswith(PREFIXES)
+                  or p.is_absolute()
+                  or ".." in p.parts
+                  or str(p) != path
+                  or any(ord(c) < 32 for c in path)
+              ):
+                  raise ValueError("Path is outside the authorized source/test directories")
+              return path
+          
+          
+          def git(cwd, *args, input_bytes=None):
+              # No repository code, hooks, credential helpers, or global Git config runs.
+              env = {
+                  k: v for k, v in os.environ.items()
+                  if k not in ("GH_TOKEN", "GITHUB_TOKEN")
+                  and not k.startswith("GIT_")
+              }
+              env.update({
+                  "GIT_CONFIG_NOSYSTEM": "1",
+                  "GIT_CONFIG_GLOBAL": "/dev/null",
+                  "GIT_TERMINAL_PROMPT": "0",
+              })
+              completed = subprocess.run(
+                  ["git", "-c", "core.hooksPath=/dev/null", "-c", "credential.helper=", *args],
+                  cwd=cwd, env=env, input=input_bytes, capture_output=True, timeout=180,
+              )
+              if completed.returncode:
+                  raise RuntimeError(completed.stderr.decode("utf-8", errors="replace")[:4000])
+              return completed.stdout
+          
+          
+          def publish(request):
+              number = request["pr_number"]
+              if number not in BRANCHES:
+                  raise ValueError("Unexpected PR number")
+              parent = request["parent_sha"]
+              digest = request["patch_sha256"]
+              if not SHA.fullmatch(parent) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+                  raise ValueError("Invalid parent or checksum")
+              allowed = set(map(valid_path, request["allowed_paths"]))
+              if not allowed or len(allowed) > 300:
+                  raise ValueError("Invalid changed-file allowlist")
+              live = api("git/ref/heads/" + BRANCHES[number])["object"]["sha"]
+              if live != parent:
+                  raise RuntimeError("PR branch advanced; rebase and review the patch before retrying")
+              packed = base64.b64decode(request["patch_gzip_base64"], validate=True)
+              if len(packed) > 2 * 1024 * 1024:
+                  raise ValueError("Compressed patch is too large")
+              with gzip.GzipFile(fileobj=io.BytesIO(packed)) as stream:
+                  patch = stream.read(MAX_PATCH_BYTES + 1)
+              if len(patch) > MAX_PATCH_BYTES or hashlib.sha256(patch).hexdigest() != digest:
+                  raise ValueError("Patch size/checksum verification failed")
+              patch.decode("utf-8")
+              if b"GIT binary patch" in patch:
+                  raise ValueError("This runner accepts only text and symlink changes")
+              parent_info = api("git/commits/" + parent)
+              with tempfile.TemporaryDirectory(prefix="zc-audit-") as directory:
+                  git(directory, "init", "--quiet")
+                  git(directory, "fetch", "--no-tags", "--depth=1",
+                      "https://github.com/" + REPOSITORY + ".git", parent)
+                  git(directory, "read-tree", parent)
+                  git(directory, "apply", "--cached", "--check", "--whitespace=error-all", "-", input_bytes=patch)
+                  git(directory, "apply", "--cached", "--whitespace=error-all", "-", input_bytes=patch)
+                  names = git(directory, "diff", "--cached", "--name-only", "--no-renames", "-z", parent)
+                  changed = {valid_path(n.decode("utf-8")) for n in names.split(b"\0") if n}
+                  if changed != allowed:
+                      raise ValueError("Actual changed files differ from the reviewed allowlist")
+                  git(directory, "diff", "--cached", "--check", parent)
+                  expected_tree = git(directory, "write-tree").decode().strip()
+                  elements = []
+                  for path in sorted(changed):
+                      entry = git(directory, "ls-files", "--stage", "-z", "--", path)
+                      if not entry:
+                          elements.append({"path": path, "mode": "100644", "type": "blob", "sha": None})
+                          continue
+                      info, name = entry.rstrip(b"\0").split(b"\t", 1)
+                      mode, expected_blob, stage = info.decode().split()
+                      if name.decode() != path or stage != "0" or mode not in ("100644", "120000"):
+                          raise ValueError("Unsupported file mode or index entry")
+                      content = git(directory, "show", ":" + path)
+                      if len(content) > 4 * 1024 * 1024:
+                          raise ValueError("Changed file exceeds the size limit")
+                      content.decode("utf-8")
+                      if mode == "120000":
+                          target = content.decode()
+                          if target.startswith("/") or "\0" in target:
+                              raise ValueError("Invalid symlink target")
+                          resolved = os.path.normpath(str(PurePosixPath(path).parent / target))
+                          valid_path(resolved)
+                      actual = hashlib.sha1(b"blob " + str(len(content)).encode() + b"\0" + content).hexdigest()
+                      if actual != expected_blob:
+                          raise ValueError("Local Git blob hash mismatch")
+                      blob = api("git/blobs", {"content": base64.b64encode(content).decode(), "encoding": "base64"})
+                      if blob["sha"] != expected_blob:
+                          raise ValueError("Published Git blob hash mismatch")
+                      elements.append({"path": path, "mode": mode, "type": "blob", "sha": expected_blob})
+                  tree = api("git/trees", {"base_tree": parent_info["tree"]["sha"], "tree": elements})
+                  if tree["sha"] != expected_tree:
+                      raise ValueError("Published tree differs from the checked patch result")
+                  message = request["commit_message"]
+                  if not isinstance(message, str) or len(message) > 4000:
+                      raise ValueError("Invalid commit message")
+                  message += "\n\nPatch-SHA256: " + digest
+                  message += "\nAgent-Authored-By: AI agent acting on Josh Liebow-Feeser's behalf"
+                  commit = api("git/commits", {"message": message, "tree": tree["sha"], "parents": [parent]})
+                  # Deliberately do not update refs or push. The parent verifies the diff
+                  # and publishes through the separately authorized GitHub connector.
+                  result = {"pr_number": number, "parent_sha": parent, "commit_sha": commit["sha"],
+                            "tree_sha": tree["sha"], "patch_sha256": digest, "files": elements,
+                            "refs_modified": False}
+                  print("AUDIT_COMMIT_OBJECT " + json.dumps(result, sort_keys=True), flush=True)
+                  with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+                      summary.write("## PR #" + str(number) + "\n\nCommit object: `" + commit["sha"]
+                                    + "`\n\nParent: `" + parent + "`\n\nNo refs changed.\n\n")
+                  return result
+          
+          
+          def main():
+              if (os.environ.get("GITHUB_REPOSITORY") != REPOSITORY
+                  or os.environ.get("GITHUB_REF") != "refs/heads/" + RUNNER_BRANCH
+                  or os.environ.get("GITHUB_ACTOR") != "joshlf"):
+                  raise RuntimeError("Unexpected repository, branch, or actor")
+              revision = os.environ["GITHUB_SHA"]
+              if not SHA.fullmatch(revision):
+                  raise ValueError("Invalid runner revision")
+              entry = api("contents/.audit-publication/request.json?ref=" + revision)
+              requests = json.loads(base64.b64decode(entry["content"]))
+              if not isinstance(requests, list) or len(requests) > 4:
+                  raise ValueError("Expected at most four explicit publication requests")
+              for request in requests:
+                  publish(request)
+          
+          
+          if __name__ == "__main__":
+              main()
+          PYCODE
