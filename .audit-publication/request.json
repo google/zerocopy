@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "pr_number": 3676,
+    "parent_sha": "9ed4ab1316ee47de0abd06ea5ec081a69b362a88",
+    "patch_comment_id": 5646631825,
+    "patch_sha256": "c211250950a08796fbae1ecb31522e31435e03f639c7b1f1efdf52e1490814e9",
+    "allowed_paths": [
+      "zerocopy/src/macros.rs",
+      "zerocopy/src/util/macro_util.rs",
+      "zerocopy/zerocopy-derive/tests/exported_macro_hygiene.rs"
+    ],
+    "commit_message": "Fix exported macro hygiene and document transmute outcomes"
+  }
+]
