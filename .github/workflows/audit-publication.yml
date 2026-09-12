@@ -64,7 +64,7 @@ jobs:
           
           def api(path, payload=None):
               """Use the job token only for object-creation calls to this repository."""
-              if not path.startswith(("git/", "contents/")):
+              if not path.startswith(("git/", "contents/", "issues/comments/")):
                   raise ValueError("Unexpected API resource")
               headers = {
                   "Accept": "application/vnd.github+json",
@@ -133,19 +133,39 @@ jobs:
               digest = request["patch_sha256"]
               if not SHA.fullmatch(parent) or not re.fullmatch(r"[0-9a-f]{64}", digest):
                   raise ValueError("Invalid parent or checksum")
-              allowed = set(map(valid_path, request["allowed_paths"]))
-              if not allowed or len(allowed) > 300:
+              inspect_only = request.get("inspect_only", False)
+              allowed = set(map(valid_path, request.get("allowed_paths", [])))
+              if (not inspect_only and not allowed) or len(allowed) > 300:
                   raise ValueError("Invalid changed-file allowlist")
               live = api("git/ref/heads/" + BRANCHES[number])["object"]["sha"]
               if live != parent:
                   raise RuntimeError("PR branch advanced; rebase and review the patch before retrying")
-              packed = base64.b64decode(request["patch_gzip_base64"], validate=True)
-              if len(packed) > 2 * 1024 * 1024:
-                  raise ValueError("Compressed patch is too large")
-              with gzip.GzipFile(fileobj=io.BytesIO(packed)) as stream:
-                  patch = stream.read(MAX_PATCH_BYTES + 1)
-              if len(patch) > MAX_PATCH_BYTES or hashlib.sha256(patch).hexdigest() != digest:
-                  raise ValueError("Patch size/checksum verification failed")
+              if "patch_comment_id" in request:
+                  comment_id = request["patch_comment_id"]
+                  if not isinstance(comment_id, int) or comment_id <= 0:
+                      raise ValueError("Invalid comment identifier")
+                  body = api("issues/comments/" + str(comment_id))["body"]
+                  parts = re.findall(r"```(?:text|base64)?[ \t]*\n([A-Za-z0-9+/=\s]+?)\n```", body)
+                  candidates = ["".join(part.split()) for part in parts]
+                  if len(candidates) > 1:
+                      candidates.append("".join(candidates))
+              else:
+                  candidates = [request["patch_gzip_base64"]]
+              patch = None
+              for encoded in candidates:
+                  try:
+                      packed = base64.b64decode(encoded, validate=True)
+                      if len(packed) > 2 * 1024 * 1024:
+                          continue
+                      with gzip.GzipFile(fileobj=io.BytesIO(packed)) as stream:
+                          candidate = stream.read(MAX_PATCH_BYTES + 1)
+                      if len(candidate) <= MAX_PATCH_BYTES and hashlib.sha256(candidate).hexdigest() == digest:
+                          patch = candidate
+                          break
+                  except (ValueError, OSError, EOFError):
+                      continue
+              if patch is None:
+                  raise ValueError("No complete patch with the specified checksum was found")
               patch.decode("utf-8")
               if b"GIT binary patch" in patch:
                   raise ValueError("This runner accepts only text and symlink changes")
@@ -159,10 +179,18 @@ jobs:
                   git(directory, "apply", "--cached", "--whitespace=error-all", "-", input_bytes=patch)
                   names = git(directory, "diff", "--cached", "--name-only", "--no-renames", "-z", parent)
                   changed = {valid_path(n.decode("utf-8")) for n in names.split(b"\0") if n}
-                  if changed != allowed:
+                  export = Path(os.environ["GITHUB_WORKSPACE"]) / "audit-export" / str(number)
+                  export.mkdir(parents=True, exist_ok=True)
+                  (export / "change.patch").write_bytes(patch)
+                  (export / "changed-paths.json").write_text(json.dumps(sorted(changed)))
+                  print("AUDIT_CHANGED_PATHS " + json.dumps({"pr": number, "paths": sorted(changed)}))
+                  if not inspect_only and changed != allowed:
                       raise ValueError("Actual changed files differ from the reviewed allowlist")
                   git(directory, "diff", "--cached", "--check", parent)
                   expected_tree = git(directory, "write-tree").decode().strip()
+                  if inspect_only:
+                      print("Inspection only; no Git objects or refs created")
+                      return
                   elements = []
                   for path in sorted(changed):
                       entry = git(directory, "ls-files", "--stage", "-z", "--", path)
@@ -204,6 +232,7 @@ jobs:
                   result = {"pr_number": number, "parent_sha": parent, "commit_sha": commit["sha"],
                             "tree_sha": tree["sha"], "patch_sha256": digest, "files": elements,
                             "refs_modified": False}
+                  (export / "result.json").write_text(json.dumps(result, indent=2))
                   print("AUDIT_COMMIT_OBJECT " + json.dumps(result, sort_keys=True), flush=True)
                   with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
                       summary.write("## PR #" + str(number) + "\n\nCommit object: `" + commit["sha"]
@@ -230,3 +259,11 @@ jobs:
           if __name__ == "__main__":
               main()
           PYCODE
+      - name: Export exact patches and publication receipts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: audit-patch-export
+          path: audit-export/
+          if-no-files-found: ignore
+          retention-days: 2
