@@ -458,7 +458,7 @@ macro_rules! into_inner {
 #[macro_export]
 macro_rules! ident_id {
     ($field:ident) => {
-        $crate::util::macro_util::hash_name(stringify!($field))
+        $crate::util::macro_util::hash_ident(stringify!($field))
     };
     ($field:literal) => {
         $field
@@ -477,18 +477,23 @@ macro_rules! ident_id {
 #[must_use]
 #[allow(clippy::as_conversions, clippy::indexing_slicing, clippy::arithmetic_side_effects)]
 pub const fn hash_name(name: &str) -> i128 {
+    hash_name_from(name, 0)
+}
+
+const fn hash_name_from(name: &str, offset: usize) -> i128 {
     let name = name.as_bytes();
+    let len = name.len() - offset;
 
     // We guarantee freedom from hash collisions between any two strings of
     // length 16 or less by having the hashes of such strings be equal to
     // their value. There is still a possibility that such strings will have
     // the same value as the hash of a string of length > 16.
-    if name.len() <= size_of::<u128>() {
+    if len <= size_of::<u128>() {
         let mut bytes = [0u8; 16];
 
         let mut i = 0;
-        while i < name.len() {
-            bytes[i] = name[i];
+        while i < len {
+            bytes[i] = name[i + offset];
             i += 1;
         }
 
@@ -500,14 +505,27 @@ pub const fn hash_name(name: &str) -> i128 {
     // than normal 64-bit FxHasher.
     let mut hash = 0u128;
     let mut i = 0;
-    while i < name.len() {
+    while i < len {
         // This is just FxHasher's `0x517cc1b727220a95` constant
         // concatenated back-to-back.
         const K: u128 = 0x517cc1b727220a95517cc1b727220a95;
-        hash = (hash.rotate_left(5) ^ (name[i] as u128)).wrapping_mul(K);
+        hash = (hash.rotate_left(5) ^ (name[i + offset] as u128)).wrapping_mul(K);
         i += 1;
     }
     i128::from_ne_bytes(hash.to_ne_bytes())
+}
+
+/// Computes the hash of an identifier, ignoring a leading raw identifier
+/// prefix.
+#[inline(always)]
+#[must_use]
+pub const fn hash_ident(name: &str) -> i128 {
+    let bytes = name.as_bytes();
+    if bytes.len() >= 2 && bytes[0] == b'r' && bytes[1] == b'#' {
+        hash_name_from(name, 2)
+    } else {
+        hash_name(name)
+    }
 }
 
 /// Attempts to transmute `Src` into `Dst`.
@@ -516,9 +534,11 @@ pub const fn hash_name(name: &str) -> i128 {
 ///
 /// # Panics
 ///
-/// `try_transmute` may either produce a post-monomorphization error or a panic
-/// if `Dst` is bigger than `Src`. Otherwise, `try_transmute` panics under the
-/// same circumstances as [`is_safe`].
+/// `try_transmute` rejects all unequal-size source and destination types with a
+/// compile-time assertion (which may appear as a post-monomorphization error or
+/// panic). For equal-size types, invalid destination bit patterns produce a
+/// [`ValidityError`], while `try_transmute` panics under the same circumstances
+/// as [`is_safe`].
 ///
 /// [`is_safe`]: TryFromBytes::is_safe
 #[inline(always)]
@@ -1000,7 +1020,15 @@ impl<T: ?Sized> Identity for T {
 mod tests {
     use core::num::NonZeroUsize;
 
+    use super::{hash_ident, hash_name};
     use crate::util::testutil::*;
+
+    #[test]
+    fn identifier_hashing_only_normalizes_identifier_inputs() {
+        assert_eq!(hash_ident("field"), hash_ident("r#field"));
+        assert_eq!(hash_ident("東京"), hash_name("東京"));
+        assert_ne!(hash_name("field"), hash_name("r#field"));
+    }
 
     #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
     mod nightly {
