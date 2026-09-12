@@ -703,7 +703,7 @@ where
         // address and length to that produced by `b.deref_mut()`.
         let ptr = Ptr::from_mut(b.into_byte_slice_mut())
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
-            .expect("zerocopy internal error: into_ref should be infallible");
+            .expect("zerocopy internal error: into_mut should be infallible");
         let ptr = ptr.recall_validity::<_, (_, (_, _))>();
         ptr.as_mut()
     }
@@ -717,8 +717,8 @@ where
     /// Gets the underlying bytes.
     ///
     /// Note: this is an associated function, which means that you have to call
-    /// it as `Ref::bytes(r)` instead of `r.bytes()`. This is so that there is
-    /// no conflict with a method on the inner type.
+    /// it as `Ref::bytes(r)` instead of `r.bytes()`. This is so that
+    /// there is no conflict with a method on the inner type.
     #[inline]
     pub fn bytes(r: &Self) -> &[u8] {
         // SAFETY: We don't call any methods on `b` other than those provided by
@@ -778,8 +778,8 @@ where
     /// Writes the bytes of `t` and then forgets `t`.
     ///
     /// Note: this is an associated function, which means that you have to call
-    /// it as `Ref::write(r, t)` instead of `r.write(t)`. This is so that there
-    /// is no conflict with a method on the inner type.
+    /// it as `Ref::write(r, t)` instead of `r.write(t)`. This is so that
+    /// there is no conflict with a method on the inner type.
     #[inline]
     pub fn write(r: &mut Self, t: T) {
         // SAFETY: We don't call any methods on `b` other than those provided by
