@@ -620,6 +620,14 @@ macro_rules! transmute_mut {
 /// ));
 /// ```
 ///
+/// A failed transmutation returns ownership of the original source:
+///
+/// ```
+/// use zerocopy::try_transmute;
+/// let result: Result<bool, _> = try_transmute!(2u8);
+/// assert_eq!(result.unwrap_err().into_src(), 2);
+/// ```
+///
 #[doc = codegen_section!(
     header = "h2",
     bench = "try_transmute",
