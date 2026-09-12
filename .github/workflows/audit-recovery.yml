@@ -1,0 +1,55 @@
+# Copyright 2026 The Fuchsia Authors
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+name: Audit recovery (branch-only)
+
+'on':
+  push:
+    branches: [joshlf/audit-recovery-runner-20260912]
+
+permissions: {}
+
+concurrency:
+  group: audit-recovery-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    if: github.repository == 'google/zerocopy' && github.ref == 'refs/heads/joshlf/audit-recovery-runner-20260912'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      issues: read
+    strategy:
+      fail-fast: false
+      matrix:
+        pr: [3674, 3675, 3676, 3677]
+    env:
+      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
+      CARGO_NET_RETRY: '10'
+      RUSTUP_MAX_RETRIES: '10'
+    steps:
+      - name: Check out recovery inputs
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Recover into a new staging branch only
+        id: recover
+        env:
+          PR_NUMBER: ${{ matrix.pr }}
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .audit-recovery/prepare.py
+      - name: Check MSRV
+        working-directory: ${{ steps.recover.outputs.worktree }}/zerocopy
+        run: ./cargo.sh +msrv check --tests --features __internal_use_only_features_that_work_on_stable
+      - name: Run stable tests
+        if: ${{ !cancelled() && steps.recover.outcome == 'success' }}
+        working-directory: ${{ steps.recover.outputs.worktree }}/zerocopy
+        run: |
+          ./cargo.sh +stable test -p zerocopy --lib --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +stable test -p zerocopy-derive --tests
+      - name: Run repository pre-push checks
+        if: ${{ !cancelled() && steps.recover.outcome == 'success' }}
+        working-directory: ${{ steps.recover.outputs.worktree }}
+        run: ./githooks/pre-push

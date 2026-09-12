@@ -1,0 +1,15 @@
+diff --git a/zerocopy/src/pointer/ptr.rs b/zerocopy/src/pointer/ptr.rs
+--- a/zerocopy/src/pointer/ptr.rs
++++ b/zerocopy/src/pointer/ptr.rs
+@@ -1434,8 +1434,7 @@
+                             //   there's a bug and this doesn't hold, then
+                             //   that's exactly what we're hoping Miri will
+                             //   catch!
+-                            // - Since `T: Immutable`, `T` doesn't contain
+-                            //   any `UnsafeCell`s, so it's okay for `t: T`
+-                            //   and a `&[u8]` to the same memory to be
+-                            //   alive concurrently.
++                            // - Since `T: Immutable`, the shared `&T` does not
++                            //   permit interior mutation. It can coexist with
++                            //   a shared byte slice covering the same memory.
+                             unsafe { core::slice::from_raw_parts(t.cast::<u8>(), len) }

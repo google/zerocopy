@@ -1,0 +1,68 @@
+diff --git a/zerocopy/src/layout.rs b/zerocopy/src/layout.rs
+--- a/zerocopy/src/layout.rs
++++ b/zerocopy/src/layout.rs
+@@ -1122,7 +1122,7 @@
+         match layout.size_info {
+             SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+                 assert_eq!(offset, 0);
+-                assert_eq!(elem_size, mem::align_of::<u32>());
++                assert_eq!(elem_size, mem::size_of::<u32>());
+             }
+             _ => panic!("Expected SliceDst"),
+         }
+diff --git a/zerocopy/src/lib.rs b/zerocopy/src/lib.rs
+--- a/zerocopy/src/lib.rs
++++ b/zerocopy/src/lib.rs
+@@ -3761,6 +3761,6 @@
+     ///
+-    /// If `Self` is a zero-sized type, then this function will return a
+-    /// `Box<[Self]>` that has the correct `len`. Such a box cannot contain any
+-    /// actual information, but its `len()` property will report the correct
+-    /// value.
++    /// If the trailing slice's element type is zero-sized, `count` is still
++    /// preserved in the returned box's pointer metadata. For `Self = [T]`
++    /// with zero-sized `T`, `len()` returns `count` even though its elements
++    /// occupy no bytes.
+     ///
+@@ -5177,9 +5177,9 @@
+     /// Interprets the suffix of the given `source` as a `&mut Self` with DST
+     /// length equal to `count`.
+     ///
+     /// This method attempts to return a reference to the suffix of `source`
+     /// interpreted as a `Self` with `count` trailing elements, and a reference
+-    /// to the remaining bytes. If there are insufficient bytes, or if that
++    /// to the preceding bytes. If there are insufficient bytes, or if that
+     /// suffix of `source` is not appropriately aligned, this returns `Err`. If
+     /// [`Self: Unaligned`][self-unaligned], you can [infallibly discard the
+     /// alignment error][size-error-from].
+@@ -6070,18 +6070,18 @@
+     ///
+     /// If insufficient target bytes are provided, `write_to_prefix` returns
+     /// `Err` and leaves the target bytes unmodified:
+     ///
+     /// ```
+     /// # use zerocopy::IntoBytes;
+     /// # let header = u128::MAX;
+     /// let mut insufficient_bytes = &mut [0, 0][..];
+     ///
+-    /// let write_result = header.write_to_suffix(insufficient_bytes);
++    /// let write_result = header.write_to_prefix(insufficient_bytes);
+     ///
+     /// assert!(write_result.is_err());
+     /// assert_eq!(insufficient_bytes, [0, 0]);
+     /// ```
+     ///
+     #[doc = codegen_section!(
+         header = "h5",
+         bench = "write_to_prefix",
+diff --git a/zerocopy/src/wrappers.rs b/zerocopy/src/wrappers.rs
+--- a/zerocopy/src/wrappers.rs
++++ b/zerocopy/src/wrappers.rs
+@@ -239,6 +239,6 @@
+     pub const unsafe fn deref_unchecked(&self) -> &T {
+         // SAFETY: `Unalign<T>` is a single-field `repr(C, packed)` struct, so
+-        // its `value` field is at offset zero [1]. Thus `self` and its valid `T`
++        // its sole field is at offset zero [1]. Thus `self` and its valid `T`
+         // field have the same address and provenance. The caller guarantees
+         // that this address is aligned for `T`; the returned reference borrows
+         // for no longer than `self`, which keeps the storage live and shared.
