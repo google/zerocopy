@@ -355,10 +355,10 @@ macro_rules! transmute_ref {
             // `&T` where `T: IntoBytes + Immutable`, and that the type of this
             // macro expression is `&U` where `U: FromBytes + Immutable`.
 
-            struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
-            struct AssertSrcIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
-            struct AssertDstIsFromBytes<'a, U: ?::core::marker::Sized + $crate::FromBytes>(&'a U);
-            struct AssertDstIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
+            struct AssertSrcIsIntoBytes<'a, T: ?$crate::util::macro_util::core_reexport::marker::Sized + $crate::IntoBytes>(&'a T);
+            struct AssertSrcIsImmutable<'a, T: ?$crate::util::macro_util::core_reexport::marker::Sized + $crate::Immutable>(&'a T);
+            struct AssertDstIsFromBytes<'a, U: ?$crate::util::macro_util::core_reexport::marker::Sized + $crate::FromBytes>(&'a U);
+            struct AssertDstIsImmutable<'a, T: ?$crate::util::macro_util::core_reexport::marker::Sized + $crate::Immutable>(&'a T);
 
             let _ = AssertSrcIsIntoBytes(e);
             let _ = AssertSrcIsImmutable(e);
@@ -597,10 +597,11 @@ macro_rules! transmute_mut {
 /// inferred from the calling context; they cannot be explicitly specified in
 /// the macro invocation.
 ///
-/// Note that the `Src` produced by the expression `$e` will *not* be dropped.
-/// Semantically, its bits will be copied into a new value of type `Dst`, the
-/// original `Src` will be forgotten, and the value of type `Dst` will be
-/// returned.
+/// If the transmutation succeeds, the `Src` produced by the expression `$e`
+/// will *not* be dropped. Semantically, its bits will be copied into a new value
+/// of type `Dst`, the original `Src` will be forgotten, and the value of type
+/// `Dst` will be returned. If the transmutation fails, ownership of the original
+/// `Src` is returned in the [`ValidityError`].
 ///
 /// # Examples
 ///
@@ -638,7 +639,7 @@ macro_rules! try_transmute {
             // equal.
 
             // SAFETY: This code is never executed.
-            Ok(unsafe {
+            $crate::util::macro_util::core_reexport::result::Result::Ok(unsafe {
                 // Clippy: We can't annotate the types; this macro is designed
                 // to infer the types from the calling context.
                 #[allow(clippy::missing_transmute_annotations)]
@@ -790,7 +791,9 @@ macro_rules! try_transmute_ref {
             // branch, the compiler knows `Dst` is `!Sized`, properly
             // disqualifies the inherent method, and falls back to the trait
             // implementation.
-            Ok(t.transmute_ref_inference_helper())
+            $crate::util::macro_util::core_reexport::result::Result::Ok(
+                t.transmute_ref_inference_helper(),
+            )
         } else {
             t.try_transmute_ref()
         }
@@ -923,7 +926,9 @@ macro_rules! try_transmute_mut {
             // branch, the compiler knows `Dst` is `!Sized`, properly
             // disqualifies the inherent method, and falls back to the trait
             // implementation.
-            Ok(t.transmute_mut_inference_helper())
+            $crate::util::macro_util::core_reexport::result::Result::Ok(
+                t.transmute_mut_inference_helper(),
+            )
         } else {
             t.try_transmute_mut()
         }
@@ -981,7 +986,7 @@ macro_rules! try_transmute_mut {
 #[macro_export]
 macro_rules! include_value {
     ($file:expr $(,)?) => {
-        $crate::transmute!(*::core::include_bytes!($file))
+        $crate::transmute!(*$crate::util::macro_util::core_reexport::include_bytes!($file))
     };
 }
 
@@ -1694,6 +1699,30 @@ mod tests {
             0usize
         })
         .unwrap();
+        assert_eq!(ctr, 1);
+
+        let mut ctr = 0;
+        let value: Result<&usize, _> = try_transmute_ref!({
+            ctr += 1;
+            &0usize
+        });
+        assert_eq!(*value.unwrap(), 0);
+        assert_eq!(ctr, 1);
+
+        let mut ctr = 0;
+        let value: Result<&mut usize, _> = try_transmute_mut!({
+            ctr += 1;
+            &mut ctr
+        });
+        assert_eq!(*value.unwrap(), 1);
+        assert_eq!(ctr, 1);
+
+        let mut ctr = 0;
+        let value: [u8; 4] = transmute!(#![allow(shrink)] {
+            ctr += 1;
+            [0u8; 8]
+        });
+        assert_eq!(value, [0; 4]);
         assert_eq!(ctr, 1);
     }
 

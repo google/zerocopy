@@ -40,4 +40,36 @@ fn fallible_transmutes_ignore_caller_ok() {
 #[test]
 fn raw_and_ordinary_field_names_have_the_same_id() {
     imp::assert_eq!(imp::ident_id!(field), imp::ident_id!(r#field));
+    imp::assert_eq!(imp::ident_id!(東京), imp::ident_id!(r#東京));
+    imp::assert_eq!(imp::ident_id!(0), 0);
+}
+
+#[test]
+fn direct_core_dependencies_use_the_reexport() {
+    let input = Byte(5);
+    let output: &u8 = imp::transmute_ref!(&input);
+    imp::assert_eq!(*output, 5);
+
+    let output: [u8; 4] = imp::include_value!("../../testdata/include_value/data");
+    imp::assert_eq!(output, [b'a', b'b', b'c', b'd']);
+}
+
+#[derive(imp::Project)]
+#[zerocopy(crate = "zerocopy_renamed")]
+struct RawField {
+    r#field: u8,
+}
+
+#[test]
+fn derived_projection_accepts_ordinary_spelling_for_raw_field() {
+    let value = RawField { r#field: 6 };
+    let field = imp::Ptr::from_ref(&value)
+        .project::<
+            imp::project_clients::ProjectDerive,
+            _,
+            { imp::STRUCT_VARIANT_ID },
+            { imp::ident_id!(field) },
+        >()
+        .unwrap();
+    imp::assert_eq!(*field.as_ref(), 6);
 }
