@@ -1,0 +1,97 @@
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+# Temporary publication runner; this file is not part of PR #3676.
+name: Audit macro snapshot publication
+'on':
+  push:
+    branches: [joshlf/audit-macro-snapshot-runner-20260912]
+permissions:
+  contents: read
+concurrency:
+  group: audit-macro-snapshot-publication
+  cancel-in-progress: false
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    env:
+      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
+      CARGO_TERM_COLOR: always
+      EXPECTED_BASE: 8b67e0f626b141c2659a86fd6ae659d7a8c842a4
+      RUSTFLAGS: -Dwarnings
+      RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
+    steps:
+      - name: Check out the verified PR head, not this runner branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 8b67e0f626b141c2659a86fd6ae659d7a8c842a4
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify the unchanged base
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_BASE"
+          test "$(git ls-remote origin refs/heads/joshlf/audit-macro-fixes-20260912 | cut -f1)" = "$EXPECTED_BASE"
+          test -z "$(git status --porcelain)"
+      - name: Regenerate diagnostic expectations on the pinned toolchains
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd zerocopy
+          BLESS=1 ./cargo.sh +msrv test --test ui -p zerocopy --features=__internal_use_only_features_that_work_on_stable
+          BLESS=1 ./cargo.sh +stable test --test ui -p zerocopy --features=__internal_use_only_features_that_work_on_stable
+          BLESS=1 ./cargo.sh +nightly test --test ui -p zerocopy --all-features
+      - name: Reject changes outside the expected diagnostic snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import subprocess
+          from pathlib import Path
+          base = os.environ['EXPECTED_BASE']
+          names = subprocess.check_output(['git', 'diff', '--name-only', base], text=True).splitlines()
+          assert len(names) == 13, ('Expected 13 changed snapshots', names)
+          for name in names:
+              path = Path(name)
+              assert path.parent.as_posix() == 'zerocopy/tests/ui', name
+              assert name.endswith(('.msrv.stderr', '.stable.stderr', '.nightly.stderr')), name
+              assert 'transmute' in path.name, name
+              assert path.is_file() and path.stat().st_size > 0, name
+              assert 'error' in path.read_text(), ('Snapshot no longer contains a compiler error', name)
+          untracked = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'], text=True).splitlines()
+          assert not untracked, ('Unexpected untracked files', untracked)
+          PY
+          git diff --check
+          git diff --stat
+          git diff -- zerocopy/tests/ui
+      - name: Rerun the UI suites without blessing
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd zerocopy
+          ./cargo.sh +msrv test --test ui -p zerocopy --features=__internal_use_only_features_that_work_on_stable
+          ./cargo.sh +stable test --test ui -p zerocopy --features=__internal_use_only_features_that_work_on_stable
+          ./cargo.sh +nightly test --test ui -p zerocopy --all-features
+          ./cargo.sh +msrv test -p zerocopy --lib macros::tests::test_macros_evaluate_args_once
+          ./cargo.sh +stable test -p zerocopy --lib macros::tests::test_macros_evaluate_args_once
+      - name: Publish only an isolated staging ref
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v gh
+          git diff --check
+          git add -- zerocopy/tests/ui/*.stderr
+          test "$(git diff --cached --name-only | wc -l)" = 13
+          git -c user.name="Josh Liebow-Feeser's Agent" -c user.email=agent@joshlf.invalid commit -m 'Update UI diagnostics for qualified macro paths' -m 'The macro hygiene changes alter the compiler diagnostics captured by the UI tests. Regenerate the affected snapshots with the pinned MSRV, stable, and nightly toolchains, then verify the suites without blessing. The test inputs and their compile-time restrictions are unchanged.' -m "Agent-Authored-By: AI agent acting on Josh Liebow-Feeser's behalf"
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_BASE"
+          stage_branch="joshlf/audit-macro-snapshot-stage-${GITHUB_RUN_ID}"
+          test -z "$(git ls-remote origin "refs/heads/$stage_branch")"
+          git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin "HEAD:refs/heads/$stage_branch"
+          printf 'Staged commit: `%s`\n\nStaging branch: `%s`\n' "$(git rev-parse HEAD)" "$stage_branch" >> "$GITHUB_STEP_SUMMARY"
+          echo "STAGED_COMMIT=$(git rev-parse HEAD)"
+          echo "STAGING_BRANCH=$stage_branch"
