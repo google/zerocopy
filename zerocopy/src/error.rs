@@ -237,7 +237,7 @@ impl<A: fmt::Display, S: fmt::Display, V: fmt::Display> fmt::Display for Convert
 }
 
 #[cfg(any(not(no_zerocopy_core_error_1_81_0), feature = "std", test))]
-#[cfg_attr(doc_cfg, doc(cfg(all(rust = "1.81.0", feature = "std"))))]
+#[cfg_attr(doc_cfg, doc(cfg(any(rust = "1.81.0", feature = "std"))))]
 impl<A, S, V> Error for ConvertError<A, S, V>
 where
     A: fmt::Display + fmt::Debug,
@@ -347,7 +347,6 @@ impl<Src: Clone, Dst: ?Sized> Clone for AlignmentError<Src, Dst> {
         Self { src: self.src.clone(), _dst: SendSyncPhantomData::default() }
     }
 }
-
 impl<Src: PartialEq, Dst: ?Sized> PartialEq for AlignmentError<Src, Dst> {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -410,7 +409,7 @@ where
 }
 
 #[cfg(any(not(no_zerocopy_core_error_1_81_0), feature = "std", test))]
-#[cfg_attr(doc_cfg, doc(cfg(all(rust = "1.81.0", feature = "std"))))]
+#[cfg_attr(doc_cfg, doc(cfg(any(rust = "1.81.0", feature = "std"))))]
 impl<Src, Dst: ?Sized> Error for AlignmentError<Src, Dst>
 where
     Src: Deref,
@@ -571,7 +570,7 @@ where
 }
 
 #[cfg(any(not(no_zerocopy_core_error_1_81_0), feature = "std", test))]
-#[cfg_attr(doc_cfg, doc(cfg(all(rust = "1.81.0", feature = "std"))))]
+#[cfg_attr(doc_cfg, doc(cfg(any(rust = "1.81.0", feature = "std"))))]
 impl<Src, Dst: ?Sized> Error for SizeError<Src, Dst>
 where
     Src: Deref,
@@ -707,7 +706,7 @@ where
 }
 
 #[cfg(any(not(no_zerocopy_core_error_1_81_0), feature = "std", test))]
-#[cfg_attr(doc_cfg, doc(cfg(all(rust = "1.81.0", feature = "std"))))]
+#[cfg_attr(doc_cfg, doc(cfg(any(rust = "1.81.0", feature = "std"))))]
 impl<Src, Dst: ?Sized> Error for ValidityError<Src, Dst> where Dst: KnownLayout + TryFromBytes {}
 
 impl<Src, Dst: ?Sized + TryFromBytes, A, S> From<ValidityError<Src, Dst>>
