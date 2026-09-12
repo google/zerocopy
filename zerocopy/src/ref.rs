@@ -717,8 +717,8 @@ where
     /// Gets the underlying bytes.
     ///
     /// Note: this is an associated function, which means that you have to call
-    /// it as `Ref::bytes(r)` instead of `r.bytes()`. This is so that
-    /// there is no conflict with a method on the inner type.
+    /// it as `Ref::bytes(r)` instead of `r.bytes()`. This is so that there is
+    /// no conflict with a method on the inner type.
     #[inline]
     pub fn bytes(r: &Self) -> &[u8] {
         // SAFETY: We don't call any methods on `b` other than those provided by
@@ -778,8 +778,8 @@ where
     /// Writes the bytes of `t` and then forgets `t`.
     ///
     /// Note: this is an associated function, which means that you have to call
-    /// it as `Ref::write(r, t)` instead of `r.write(t)`. This is so that
-    /// there is no conflict with a method on the inner type.
+    /// it as `Ref::write(r, t)` instead of `r.write(t)`. This is so that there
+    /// is no conflict with a method on the inner type.
     #[inline]
     pub fn write(r: &mut Self, t: T) {
         // SAFETY: We don't call any methods on `b` other than those provided by
