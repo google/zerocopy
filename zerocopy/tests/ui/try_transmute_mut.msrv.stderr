@@ -21,7 +21,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
     |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
     |
 note: required by a bound in `ValidityError`
-   --> $WORKSPACE/src/error.rs:590:45
+   --> $WORKSPACE/src/error.rs:606:45
     |
 590 | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
     |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
@@ -33,7 +33,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
     |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
     |
 note: required by a bound in `ValidityError`
-   --> $WORKSPACE/src/error.rs:590:45
+   --> $WORKSPACE/src/error.rs:606:45
     |
 590 | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
     |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
