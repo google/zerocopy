@@ -475,11 +475,14 @@ macro_rules! ident_id {
 /// expensive and higher-quality hash functions if need be.
 #[inline(always)]
 #[must_use]
-#[allow(clippy::as_conversions, clippy::indexing_slicing, clippy::arithmetic_side_effects)]
 pub const fn hash_name(name: &str) -> i128 {
     hash_name_from(name, 0)
 }
 
+// Callers pass zero or skip an existing `r#` prefix, so `offset <= name.len()`.
+// The loop bounds keep all indices in bounds, and converting `u8` to `u128`
+// is lossless.
+#[allow(clippy::as_conversions, clippy::indexing_slicing, clippy::arithmetic_side_effects)]
 const fn hash_name_from(name: &str, offset: usize) -> i128 {
     let name = name.as_bytes();
     let len = name.len() - offset;
@@ -520,11 +523,9 @@ const fn hash_name_from(name: &str, offset: usize) -> i128 {
 #[inline(always)]
 #[must_use]
 pub const fn hash_ident(name: &str) -> i128 {
-    let bytes = name.as_bytes();
-    if bytes.len() >= 2 && bytes[0] == b'r' && bytes[1] == b'#' {
-        hash_name_from(name, 2)
-    } else {
-        hash_name(name)
+    match name.as_bytes() {
+        [b'r', b'#', ..] => hash_name_from(name, 2),
+        _ => hash_name(name),
     }
 }
 
@@ -1355,7 +1356,7 @@ mod tests {
         } => 0);
         test!(#[repr(u32)] #[repr(C)] {
             A(u8, u8, u8, u8),
-            B(U16, u8, u8),
+            B(U16),
             C(u8, u8, U16),
             D(U16, U16),
             E(U32),
