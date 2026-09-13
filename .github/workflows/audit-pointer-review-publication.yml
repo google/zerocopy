@@ -1,0 +1,158 @@
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+# Temporary publication runner; this file is not part of PR #3677.
+name: Audit pointer review publication
+'on':
+  push:
+    branches: [joshlf/audit-pointer-review-runner-20260912]
+permissions:
+  contents: read
+concurrency:
+  group: audit-pointer-review-publication
+  cancel-in-progress: false
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    env:
+      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
+      CARGO_TERM_COLOR: always
+      EXPECTED_BASE: 5946b5f6d48dcce3cc4799a480a45cf5b78f8006
+      RUSTFLAGS: -Dwarnings
+      RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
+    steps:
+      - name: Check out the verified PR head, not this runner branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 5946b5f6d48dcce3cc4799a480a45cf5b78f8006
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Recover the pinned patch and check the projection argument
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_BASE"
+          test "$(git ls-remote origin refs/heads/joshlf/audit-pointer-contracts-20260912 | cut -f1)" = "$EXPECTED_BASE"
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          import urllib.request
+          from pathlib import Path
+
+          request = urllib.request.Request(
+              'https://api.github.com/repos/google/zerocopy/issues/comments/5649542178',
+              headers={'Accept': 'application/vnd.github+json', 'User-Agent': 'zerocopy-audit-publication'},
+          )
+          with urllib.request.urlopen(request, timeout=60) as response:
+              comment = json.load(response)
+          assert comment['id'] == 5649542178
+          assert comment['user']['login'] == 'chatgpt-codex-connector[bot]'
+          body = comment['body']
+          assert body.count('```diff\n') == 1
+          patch = body.split('```diff\n', 1)[1].split('\n```', 1)[0] + '\n'
+          patch = patch.encode('utf-8')
+          digest = hashlib.sha256(patch).hexdigest()
+          print('PATCH_SHA256=' + digest)
+          print('PATCH_BYTES=' + str(len(patch)))
+          print(patch.decode('utf-8'))
+          assert digest == '3e44df81689e8fb0750cbcce0cc0487a5d159d6442a1a91015e44fc22b557c62'
+          assert len(patch) == 11057
+          subprocess.run(['git', 'apply', '--check', '-'], input=patch, check=True)
+          subprocess.run(['git', 'apply', '-'], input=patch, check=True)
+
+          # A zero-sized projection needs no assumption about its nominal offset.
+          path = Path('zerocopy/src/impls.rs')
+          text = path.read_text()
+          old = (
+              '                        // Every field of a zero-sized tuple is at offset zero.\n'
+              '                        // Preserve the source address so the result is non-null.\n'
+          )
+          assert text.count(old) == 1
+          text = text.replace(old, (
+              '                        // The tuple and this field have size zero. Returning\n'
+              '                        // the same address preserves non-nullness and provenance,\n'
+              '                        // and the empty referent is a subset of the input.\n'
+          ))
+          text = text.replace(
+              '        // Exercise a zero-sized field at a nonzero offset.\n',
+              '        // Exercise a zero-sized field of a non-zero-sized tuple.\n',
+          )
+          marker = '        // Exercise the transitive projection used by the `ReadOnly` adapter.\n'
+          assert text.count(marker) == 1
+          text = text.replace(marker, (
+              '        type Tuple = ((), ());\n'
+              '        let pointer = core::ptr::NonNull::<Tuple>::dangling();\n'
+              '        // SAFETY: `Tuple` is zero-sized; `PtrInner::new` requires no\n'
+              '        // allocation or live provenance for a zero-sized referent.\n'
+              '        let pointer = unsafe { PtrInner::new(pointer) };\n'
+              '        let projected =\n'
+              '            <Tuple as HasField<(), (), { STRUCT_VARIANT_ID }, { ident_id!(1) }>>::project(pointer);\n'
+              '        assert_eq!(projected, pointer.as_ptr().cast::<()>());\n'
+              '\n' + marker
+          ))
+          path.write_text(text)
+          expected = sorted([
+              'zerocopy/src/impls.rs', 'zerocopy/src/layout.rs',
+              'zerocopy/src/pointer/mod.rs', 'zerocopy/src/ref.rs',
+              'zerocopy/src/util/macros.rs', 'zerocopy/src/wrappers.rs',
+          ])
+          changed = subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines()
+          assert sorted(changed) == expected, changed
+          PY
+          git diff --check
+          git diff --stat
+      - name: Format and validate the affected tests and derives
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd zerocopy
+          ./cargo.sh +nightly fmt --all
+          ./cargo.sh +msrv test -p zerocopy --lib zst_field_projections_are_non_null
+          ./cargo.sh +stable test -p zerocopy --lib pointer::
+          ./cargo.sh +stable test -p zerocopy-derive --test pointer_iterators
+          ./cargo.sh +stable test -p zerocopy-derive --lib output_tests
+          ./cargo.sh +msrv check --tests --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +nightly clippy --tests --all-features --workspace -- -Dwarnings
+          ./cargo.sh +nightly rustdoc --all-features
+          ./cargo.sh +nightly fmt --all -- --check
+      - name: Validate the ZST regression with Miri
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd zerocopy
+          nightly="$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["metadata"]["ci"]["pinned-nightly"])')"
+          rustup component add miri --toolchain "$nightly"
+          ./cargo.sh +nightly miri test -p zerocopy --lib zst_field_projections_are_non_null
+      - name: Publish only an isolated staging ref
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v gh
+          python3 - <<'PY'
+          import subprocess
+          expected = sorted([
+              'zerocopy/src/impls.rs', 'zerocopy/src/layout.rs',
+              'zerocopy/src/pointer/mod.rs', 'zerocopy/src/ref.rs',
+              'zerocopy/src/util/macros.rs', 'zerocopy/src/wrappers.rs',
+          ])
+          changed = subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines()
+          assert sorted(changed) == expected, changed
+          untracked = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'], text=True)
+          assert not untracked, untracked
+          PY
+          git diff --check
+          git diff --stat
+          git diff
+          git add -- zerocopy/src/impls.rs zerocopy/src/layout.rs zerocopy/src/pointer/mod.rs zerocopy/src/ref.rs zerocopy/src/util/macros.rs zerocopy/src/wrappers.rs
+          git -c user.name="Josh Liebow-Feeser's Agent" -c user.email=agent@joshlf.invalid commit -m 'Establish non-nullness throughout pointer projections' -m 'State the address-preservation or nonwrapping field-offset argument for each handwritten projection and its adapters. Use an address-preserving cast for wholly zero-sized tuples, and cover allocated and dangling zero-sized projections. The cast relies on the projection contract rather than an assumed tuple field offset.' -m "Agent-Authored-By: AI agent acting on Josh Liebow-Feeser's behalf"
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_BASE"
+          stage_branch="joshlf/audit-pointer-review-stage-${GITHUB_RUN_ID}"
+          test -z "$(git ls-remote origin "refs/heads/$stage_branch")"
+          git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin "HEAD:refs/heads/$stage_branch"
+          printf 'Staged commit: `%s`\n\nStaging branch: `%s`\n' "$(git rev-parse HEAD)" "$stage_branch" >> "$GITHUB_STEP_SUMMARY"
+          echo "STAGED_COMMIT=$(git rev-parse HEAD)"
+          echo "STAGING_BRANCH=$stage_branch"
