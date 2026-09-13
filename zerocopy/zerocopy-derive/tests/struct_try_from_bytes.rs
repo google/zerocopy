@@ -52,6 +52,37 @@ fn two() {
     crate::util::test_is_safe::<Two, _>([2u8], false);
 }
 
+#[derive(imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct FieldBindings {
+    candidate: bool,
+    candidate_: bool,
+    field: bool,
+    r#type: bool,
+}
+
+#[derive(imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct TupleFields(bool, bool, bool, bool);
+
+#[test]
+fn field_bindings() {
+    // User field names must not shadow the source pointer or generated
+    // temporaries, and tuple indices must produce valid local bindings.
+    for bytes in [[0u8; 4], [1u8; 4]] {
+        util::test_is_safe::<FieldBindings, _>(bytes, true);
+        util::test_is_safe::<TupleFields, _>(bytes, true);
+    }
+    for idx in 0..4 {
+        let mut bytes = [0u8; 4];
+        bytes[idx] = 2;
+        util::test_is_safe::<FieldBindings, _>(bytes, false);
+        util::test_is_safe::<TupleFields, _>(bytes, false);
+    }
+}
+
 #[derive(imp::KnownLayout, imp::TryFromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]

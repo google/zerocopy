@@ -29,6 +29,7 @@ unexpected_cfgs = { level = "warn", check-cfg = [
   'cfg(coverage_nightly)',
   'cfg(zerocopy_derive_union_into_bytes)',
   'cfg(zerocopy_unstable_linux)',
+  'cfg(zerocopy_unstable_ptr)',
 ] }
 
 [lib]

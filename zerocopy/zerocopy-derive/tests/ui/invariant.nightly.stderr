@@ -1,0 +1,79 @@
+error: invariants are only supported on named fields
+  --> $DIR/invariant.rs:16:26
+   |
+16 |     #[zerocopy(invariant(true))]
+   |                          ^^^^
+
+error: invariants are only supported on named fields
+  --> $DIR/invariant.rs:26:30
+   |
+26 |         #[zerocopy(invariant(true))]
+   |                              ^^^^
+
+error: invariants are only supported on named fields
+  --> $DIR/invariant.rs:36:26
+   |
+36 |     #[zerocopy(invariant(true))]
+   |                          ^^^^
+
+error: expected `invariant(...)`
+  --> $DIR/invariant.rs:44:16
+   |
+44 |     #[zerocopy(invariant)]
+   |                ^^^^^^^^^
+
+error: unexpected end of input, expected an expression
+  --> $DIR/invariant.rs:52:26
+   |
+52 |     #[zerocopy(invariant())]
+   |                          ^
+
+error: unexpected token
+  --> $DIR/invariant.rs:60:30
+   |
+60 |     #[zerocopy(invariant(true, false))]
+   |                              ^
+
+error: expected `invariant(...)`
+  --> $DIR/invariant.rs:68:16
+   |
+68 |     #[zerocopy(invaraint(true))]
+   |                ^^^^^^^^^^^^^^^
+
+error: cannot derive `FromZeros` for a type with invariants
+  --> $DIR/invariant.rs:93:26
+   |
+93 |     #[zerocopy(invariant(**a.unaligned_as_ref() > 0))]
+   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: cannot derive `FromBytes` for a type with invariants
+   --> $DIR/invariant.rs:101:26
+    |
+101 |     #[zerocopy(invariant(**a.unaligned_as_ref() > 0))]
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: invariants are only supported on named fields
+   --> $DIR/invariant.rs:111:26
+    |
+111 |     #[zerocopy(invariant(true))]
+    |                          ^^^^
+
+error[E0308]: mismatched types
+  --> $DIR/invariant.rs:76:26
+   |
+73 | #[derive(TryFromBytes)]
+   |          ------------ expected `bool` because of return type
+...
+76 |     #[zerocopy(invariant(0u8))]
+   |                          ^^^ expected `bool`, found `u8`
+
+error[E0599]: no method named `unaligned_as_ref` found for fn item `fn(_) {std::mem::drop::<_>}` in the current scope
+  --> $DIR/invariant.rs:84:30
+   |
+84 |     #[zerocopy(invariant(**b.unaligned_as_ref() > 0))]
+   |                              ^^^^^^^^^^^^^^^^ method not found in `fn(_) {std::mem::drop::<_>}`
+
+error: aborting due to 12 previous errors
+
+Some errors have detailed explanations: E0308, E0599.
+For more information about an error, try `rustc --explain E0308`.
