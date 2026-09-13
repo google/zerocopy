@@ -237,11 +237,61 @@ impl<T> Unalign<T> {
     /// The caller must guarantee that `self` satisfies `align_of::<T>()`.
     #[inline(always)]
     pub const unsafe fn deref_unchecked(&self) -> &T {
-        // SAFETY: `Unalign<T>` is `repr(transparent)`, so there is a valid `T`
-        // at the same memory location as `self`. It has no alignment guarantee,
-        // but the caller has promised that `self` is properly aligned, so we
-        // know that it is sound to create a reference to `T` at this memory
-        // location.
+        // SAFETY: `mem::transmute` performs a bitwise move and requires valid
+        // source and result values [1]. Both reference types are equally sized:
+        // `Unalign<T>` and `T` are sized, and references to sized types have
+        // the size and alignment of `usize` [2].
+        //
+        // `Unalign<T>` is a single-field `repr(C, packed)` struct. The
+        // `repr(C)` algorithm starts at offset zero [3]. Zero satisfies every
+        // alignment, including the packing-adjusted field alignment, so no
+        // leading padding is added and the sole field is at offset zero. The
+        // bitwise move of this reference therefore designates the same field at
+        // the same address; it does not convert through an integer or
+        // reconstruct a pointer.
+        //
+        // The source shared reference is valid and non-null. The field contains
+        // a valid `T`, and the caller supplies the otherwise-missing alignment
+        // guarantee for `T`. Thus the result meets the reference requirements
+        // of alignment, non-nullness, and a valid referent [4]. `Unalign<T>`'s
+        // documented contract guarantees that it and `T` have `UnsafeCell`s at
+        // the same byte ranges. Consequently, their shared references prohibit
+        // mutation of the same bytes [5]; this does not strengthen the source
+        // borrow's mutation restrictions. The output lifetime is tied to
+        // `self`, so the result cannot outlive that borrow or its live storage
+        // [4].
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.1/std/mem/fn.transmute.html:
+        //
+        //   `transmute` is semantically equivalent to a bitwise move [...].
+        //   ...
+        //   Both the argument and the result must be valid at their given type.
+        //
+        // [2] Per https://doc.rust-lang.org/1.93.1/reference/type-layout.html#pointers-and-references-layout:
+        //
+        //   Pointers and references have the same layout.
+        //   ...
+        //   Pointers to sized types have the same size and alignment as
+        //   `usize`.
+        //
+        // [3] Per https://doc.rust-lang.org/1.93.1/reference/type-layout.html#reprc-structs:
+        //
+        //   Start with a current offset of 0 bytes.
+        //   ...
+        //   The offset for the field is what the current offset is now.
+        //
+        // [4] Per https://doc.rust-lang.org/1.93.1/std/primitive.reference.html:
+        //
+        //   [A] reference is just a pointer that is assumed to be aligned, not
+        //   null, and pointing to memory containing a valid value of `T` [...].
+        //   ...
+        //   References have a lifetime attached to them, which represents the
+        //   scope for which the borrow is valid.
+        //
+        // [5] Per https://doc.rust-lang.org/1.93.1/reference/behavior-considered-undefined.html#undefined-alias:
+        //
+        //   `&T` must point to memory that is not mutated while they are live
+        //   (except for data inside an `UnsafeCell<U>`).
         //
         // We use `mem::transmute` instead of `&*self.get_ptr()` because
         // dereferencing pointers is not stable in `const` on our current MSRV
@@ -563,13 +613,15 @@ impl<T: ?Sized + KnownLayout> MaybeUninit<T> {
     ///
     /// # Errors
     ///
-    /// Returns an error on allocation failure. Allocation failure is guaranteed
-    /// never to cause a panic or an abort.
+    /// Returns an error if `meta` describes an allocation larger than
+    /// `isize::MAX` bytes, if computing its layout overflows, or if the
+    /// allocator reports failure by returning null. The global allocator is
+    /// permitted to abort instead of returning null.
     #[cfg(feature = "alloc")]
     #[inline]
     pub fn new_boxed_uninit(meta: T::PointerMetadata) -> Result<Box<Self>, AllocError> {
-        // SAFETY: `alloc::alloc::alloc_zeroed` is a valid argument of
-        // `new_box`. The referent of the pointer returned by `alloc` (and,
+        // SAFETY: `alloc::alloc::alloc` is a valid argument of `new_box`. The
+        // referent of the pointer returned by `alloc` (and,
         // consequently, the `Box` derived from it) is a valid instance of
         // `Self`, because `Self` is `MaybeUninit` and thus admits arbitrary
         // (un)initialized bytes.
@@ -918,9 +970,13 @@ mod tests {
 
     #[test]
     fn test_unalign_update() {
-        let mut u = Unalign::new(AU64(123));
-        u.update(|a| a.0 += 1);
-        assert_eq!(u.get(), AU64(124));
+        let mut u = ForceUnalign::<_, AU64>::new(Unalign::new(AU64(123)));
+        let result = u.t.update(|a| {
+            a.0 += 1;
+            456
+        });
+        assert_eq!(result, 456);
+        assert_eq!(u.t.get(), AU64(124));
 
         // Test that, even if the callback panics, the original is still
         // correctly overwritten. Use a `Box` so that Miri is more likely to
@@ -939,7 +995,11 @@ mod tests {
 
         // Test the align_of::<T>() == 1 optimization.
         let mut u = Unalign::new([0u8, 1]);
-        u.update(|a| a[0] += 1);
+        let result = u.update(|a| {
+            a[0] += 1;
+            789
+        });
+        assert_eq!(result, 789);
         assert_eq!(u.get(), [1u8, 1]);
     }
 
