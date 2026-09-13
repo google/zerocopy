@@ -1,0 +1,176 @@
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+# Temporary publication runner; this file is not part of PR #3675.
+name: Audit core review publication
+'on':
+  push:
+    branches: [joshlf/audit-core-review-runner-20260912]
+permissions:
+  contents: read
+concurrency:
+  group: audit-core-review-publication
+  cancel-in-progress: false
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    env:
+      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
+      CARGO_TERM_COLOR: always
+      EXPECTED_BASE: a8c424d5f38d9794ce51277c9bc96fafaf89d88c
+      RUSTFLAGS: -Dwarnings
+      RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
+    steps:
+      - name: Check out the verified PR head, not this runner branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: a8c424d5f38d9794ce51277c9bc96fafaf89d88c
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify the base and apply only the reviewed documentation corrections
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_BASE"
+          test "$(git ls-remote origin refs/heads/joshlf/audit-core-fixes-20260912 | cut -f1)" = "$EXPECTED_BASE"
+          python3 - <<'PY'
+          import html
+          import re
+          import subprocess
+          import urllib.request
+          from pathlib import Path
+
+          url = 'https://doc.rust-lang.org/1.56.0/reference/type-layout.html'
+          with urllib.request.urlopen(url, timeout=60) as response:
+              reference = response.read().decode('utf-8')
+          reference = ' '.join(html.unescape(re.sub(r'<[^>]*>', ' ', reference)).split())
+          for quotation in (
+              'Start with a current offset of 0 bytes.',
+              'The offset for the field is what the current offset is now.',
+          ):
+              assert quotation in reference, ('Missing source quotation', quotation)
+
+          old_errors = (
+              '    /// Returns an error if the allocator reports failure by returning null.\n'
+              '    /// The global allocator is permitted to abort instead of returning null.\n'
+          )
+
+          def replace_before(text, marker, replacement):
+              assert text.count(marker) == 1, ('Unexpected declaration count', marker)
+              end = text.index(marker)
+              start = text.rfind(old_errors, 0, end)
+              assert start >= 0 and end - start < 3000, ('Missing nearby error docs', marker)
+              return text[:start] + replacement + text[start + len(old_errors):]
+
+          path = Path('zerocopy/src/lib.rs')
+          text = path.read_text()
+          assert text.count(old_errors) == 3, 'Expected the three allocation error sections'
+          text = replace_before(text, '\n    fn new_box_zeroed_with_elems(', (
+              '    /// Returns an error if `count` would make the allocation larger than\n'
+              '    /// `isize::MAX` bytes, if computing its layout overflows, or if the\n'
+              '    /// allocator reports failure by returning null. The global allocator is\n'
+              '    /// permitted to abort instead of returning null.\n'
+          ))
+          text = replace_before(text, '\n    fn new_vec_zeroed(', (
+              '    /// Returns an error if `len` would make the allocation larger than\n'
+              '    /// `isize::MAX` bytes, if computing its layout overflows, or if the\n'
+              '    /// allocator reports failure by returning null. The global allocator is\n'
+              '    /// permitted to abort instead of returning null.\n'
+          ))
+          assert text.count(old_errors) == 1, 'The fixed-size allocator docs must stay unchanged'
+          path.write_text(text)
+
+          path = Path('zerocopy/src/wrappers.rs')
+          text = path.read_text()
+          text = replace_before(text, '\n    pub fn new_boxed_uninit(', (
+              '    /// Returns an error if `meta` describes an allocation larger than\n'
+              '    /// `isize::MAX` bytes, if computing its layout overflows, or if the\n'
+              '    /// allocator reports failure by returning null. The global allocator is\n'
+              '    /// permitted to abort instead of returning null.\n'
+          ))
+          start_marker = '        // SAFETY: `Unalign<T>` is a single-field `repr(C, packed)` struct, so\n'
+          assert text.count(start_marker) == 1
+          start = text.index(start_marker)
+          end = text.index('        // We use `mem::transmute`', start)
+          assert end - start < 1500
+          replacement = '''        // SAFETY: `Unalign<T>` is a single-field `repr(C, packed)` struct.
+                  // The `repr(C)` layout algorithm starts at offset zero [1]. Zero is
+                  // a multiple of every alignment, including the packing-adjusted field
+                  // alignment, so the sole field needs no leading padding and remains
+                  // at offset zero. Thus `self` and its valid `T` field have the same
+                  // address and provenance. The caller guarantees that this address is
+                  // aligned for `T`; the returned reference borrows for no longer than
+                  // `self`, which keeps the storage live and shared.
+                  //
+                  // [1] Per https://doc.rust-lang.org/1.56.0/reference/type-layout.html#reprc-structs:
+                  //
+                  //   Start with a current offset of 0 bytes.
+                  //   ...
+                  //   The offset for the field is what the current offset is now.
+                  //
+          '''
+          # The first line already has eight spaces; dedent the remaining lines
+          # from this Python string's source indentation to that same width.
+          lines = replacement.splitlines()
+          replacement = lines[0] + '\n' + '\n'.join(line[10:] if line.startswith('          ') else line for line in lines[1:]) + '\n'
+          replacement = replacement.rstrip() + '\n'
+          text = text[:start] + replacement + text[end:]
+          path.write_text(text)
+
+          path = Path('zerocopy/src/util/mod.rs')
+          text = path.read_text()
+          old = (
+              '/// Returns an error if the allocator reports failure by returning null. The\n'
+              '/// global allocator is permitted to abort instead of returning null.\n'
+          )
+          assert text.count(old) == 1
+          text = text.replace(old, (
+              '/// Returns an error if `meta` describes an allocation larger than\n'
+              '/// `isize::MAX` bytes, if computing its layout overflows, or if the allocator\n'
+              '/// reports failure by returning null. The global allocator is permitted to\n'
+              '/// abort instead of returning null.\n'
+          ))
+          path.write_text(text)
+          expected = ['zerocopy/src/lib.rs', 'zerocopy/src/util/mod.rs', 'zerocopy/src/wrappers.rs']
+          changed = subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines()
+          assert sorted(changed) == expected, changed
+          PY
+          git diff --check
+          git diff --stat
+          git diff -- zerocopy/src/lib.rs zerocopy/src/util/mod.rs zerocopy/src/wrappers.rs
+      - name: Validate the documentation, overflow test, and formatting
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd zerocopy
+          ./cargo.sh +stable test -p zerocopy new_box_zeroed_with_elems_errors --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +stable test -p zerocopy --doc --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +stable doc -p zerocopy --no-deps --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +nightly fmt --all -- --check
+      - name: Attempt the optional pre-push hook and record its result
+        shell: bash
+        run: |
+          if ./githooks/pre-push; then
+            echo 'Pre-push hook passed.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Pre-push hook did not pass in this staging environment. Inspect the log; full PR CI remains required before completion.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Publish only an isolated staging ref
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v gh
+          git diff --check
+          git add -- zerocopy/src/lib.rs zerocopy/src/util/mod.rs zerocopy/src/wrappers.rs
+          test "$(git diff --cached --name-only | wc -l)" = 3
+          git -c user.name="Josh Liebow-Feeser's Agent" -c user.email=agent@joshlf.invalid commit -m 'Clarify allocation errors and the unaligned field proof' -m 'Document count and metadata failures that happen before allocation, while preserving the distinction between a returned allocation failure and an allocator abort. Justify the sole field offset using the versioned repr(C) layout algorithm. This changes documentation and proof comments only.' -m "Agent-Authored-By: AI agent acting on Josh Liebow-Feeser's behalf"
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_BASE"
+          stage_branch="joshlf/audit-core-review-stage-${GITHUB_RUN_ID}"
+          test -z "$(git ls-remote origin "refs/heads/$stage_branch")"
+          git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin "HEAD:refs/heads/$stage_branch"
+          printf 'Staged commit: `%s`\n\nStaging branch: `%s`\n' "$(git rev-parse HEAD)" "$stage_branch" >> "$GITHUB_STEP_SUMMARY"
+          echo "STAGED_COMMIT=$(git rev-parse HEAD)"
+          echo "STAGING_BRANCH=$stage_branch"
