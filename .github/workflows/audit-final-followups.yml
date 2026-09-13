@@ -184,9 +184,33 @@ jobs:
           ./cargo.sh +stable test -p zerocopy-derive
           ./cargo.sh +stable test -p zerocopy-derive --lib output_tests
           ./cargo.sh +nightly rustdoc --all-features
+      - name: Check the zero-sized projection under both Miri borrow models
+        if: matrix.label == 'pointer'
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Build the checked-out repository's helper, not a replacement wrapper.
+          env -u RUSTFLAGS -u CARGO_TARGET_DIR cargo +stable build --locked --manifest-path tools/cargo-zerocopy/Cargo.toml -p cargo-zerocopy
+          helper="$PWD/tools/target/debug/cargo-zerocopy"
+          test -x "$helper"
+          cd zerocopy
           nightly="$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["metadata"]["ci"]["pinned-nightly"])')"
-          rustup component add miri --toolchain "$nightly"
-          ./cargo.sh +nightly miri test -p zerocopy --lib zst_field_projections_are_non_null
+          rustup component add miri rust-src --toolchain "$nightly"
+          # Miri builds std, whose dependencies are not in the vendored source.
+          # Match CI while restoring the tracked configuration on every exit.
+          backup="$(mktemp)"
+          cp .cargo/config.toml "$backup"
+          restore_config() { cp "$backup" .cargo/config.toml; rm -f "$backup"; }
+          trap restore_config EXIT
+          rm .cargo/config.toml
+          for model in stacked tree; do
+            flags='-Zmiri-backtrace=full -Zmiri-strict-provenance'
+            if [ "$model" = tree ]; then flags="$flags -Zmiri-tree-borrows"; fi
+            MIRIFLAGS="$flags" RUST_BACKTRACE=1 "$helper" +nightly miri test --locked -p zerocopy --lib zst_field_projections_are_non_null 2>&1 | tee "/tmp/audit-pointer/miri-$model.log"
+          done
+          restore_config
+          trap - EXIT
+          git diff --exit-code -- .cargo/config.toml
       - name: Run the repository pre-push checks
         shell: bash
         run: |
