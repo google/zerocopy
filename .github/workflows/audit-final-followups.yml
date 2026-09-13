@@ -206,7 +206,7 @@ jobs:
           for model in stacked tree; do
             flags='-Zmiri-backtrace=full -Zmiri-strict-provenance'
             if [ "$model" = tree ]; then flags="$flags -Zmiri-tree-borrows"; fi
-            MIRIFLAGS="$flags" RUST_BACKTRACE=1 "$helper" +nightly miri test --locked -p zerocopy --lib zst_field_projections_are_non_null 2>&1 | tee "/tmp/audit-pointer/miri-$model.log"
+            MIRIFLAGS="$flags" RUST_BACKTRACE=1 "$helper" +nightly miri test -p zerocopy --lib zst_field_projections_are_non_null 2>&1 | tee "/tmp/audit-pointer/miri-$model.log"
           done
           restore_config
           trap - EXIT
