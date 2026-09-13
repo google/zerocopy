@@ -1708,6 +1708,59 @@ pub unsafe trait Immutable {
 /// }
 /// ```
 ///
+#[cfg_attr(
+    zerocopy_unstable_ptr,
+    doc = r#"
+# Field invariants
+
+This experimental feature requires `--cfg zerocopy_unstable_ptr`.
+
+Named fields of structs, enum variants, and unions can specify additional
+runtime checks using `#[zerocopy(invariant(expression))]`:
+
+```
+# use zerocopy_derive::TryFromBytes;
+#[derive(TryFromBytes)]
+struct Foo {
+    a: u8,
+    #[zerocopy(invariant((**a.unaligned_as_ref() % 2) == (**b.unaligned_as_ref() as u8)))]
+    b: bool,
+    #[zerocopy(invariant(**c.unaligned_as_ref() > 0))]
+    c: i8,
+}
+```
+
+Each expression must return a `bool`. It has access to validated, read-only
+[`Ptr`]s to the current field and all preceding fields of the struct or
+variant, using their field names. A union's invariants have access only to
+the current field. The expression can use the existing [`Ptr`] APIs to
+inspect those fields. In this example, all fields are accessed by reference.
+
+Fields are checked in declaration order. Each field's bit validity is
+checked before its invariants run. Multiple invariants on a field run in
+attribute order. For structs and enums, validation stops at the first invalid
+field or invariant that returns `false`. For unions, a failed bit-validity
+check or invariant causes validation to try the next field; validation
+succeeds as soon as one field and all its invariants pass. Each expression
+runs in its own closure; `return` returns from that expression, and panics
+propagate to the caller. Only the selected enum variant's fields and
+invariants are checked. Expressions may have arbitrary side effects, even
+when the conversion fails or its result is discarded.
+
+These predicates are additional acceptance checks beyond Rust's bit validity;
+bit-valid bytes may still be rejected. See [What is a "valid instance"?] for
+the distinction.
+
+[What is a "valid instance"?]: trait@TryFromBytes#what-is-a-valid-instance
+
+Invariants are not supported on tuple fields. Types with invariants cannot
+derive [`FromZeros`] or [`FromBytes`], whose conversions do not perform runtime
+validation. These checks apply to conversions through [`TryFromBytes`]; they
+do not restrict ordinary construction or mutation of Rust values.
+
+"#
+)]
+///
 /// # Portability
 ///
 /// To ensure consistent endianness for enums with multi-byte representations,
@@ -1801,6 +1854,14 @@ pub use zerocopy_derive::TryFromBytes;
 ///
 /// If you are negatively affected by lack of support for a particular type,
 /// we encourage you to let us know by [filing an issue][github-repo].
+///
+/// In this trait's conversion methods, a "valid instance" must also pass any
+/// configured field invariants, including those on nested fields. Rust bit
+/// validity alone does not guarantee that a conversion succeeds: an invariant
+/// may reject otherwise bit-valid bytes. Such predicates check acceptance at
+/// conversion time; they do not constrain subsequent mutation or ordinary Rust
+/// construction. See the [derive's field invariants][derive] documentation for
+/// the experimental attribute's syntax, evaluation order, and side effects.
 ///
 /// # `TryFromBytes` is not symmetrical with [`IntoBytes`]
 ///
@@ -1966,7 +2027,7 @@ pub unsafe trait TryFromBytes {
             @variant "dynamic_padding"
         ]
     )]
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_bytes(source: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>>
@@ -2089,7 +2150,7 @@ pub unsafe trait TryFromBytes {
             @variant "dynamic_padding"
         ]
     )]
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), TryCastError<&[u8], Self>>
@@ -2199,7 +2260,7 @@ pub unsafe trait TryFromBytes {
             @variant "dynamic_padding"
         ]
     )]
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), TryCastError<&[u8], Self>>
@@ -2293,7 +2354,7 @@ pub unsafe trait TryFromBytes {
     #[doc = codegen_header!("h5", "try_mut_from_bytes")]
     ///
     /// See [`TryFromBytes::try_ref_from_bytes`](#method.try_ref_from_bytes.codegen).
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_bytes(bytes: &mut [u8]) -> Result<&mut Self, TryCastError<&mut [u8], Self>>
@@ -2402,7 +2463,7 @@ pub unsafe trait TryFromBytes {
     #[doc = codegen_header!("h5", "try_mut_from_prefix")]
     ///
     /// See [`TryFromBytes::try_ref_from_prefix`](#method.try_ref_from_prefix.codegen).
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_prefix(
@@ -2502,7 +2563,7 @@ pub unsafe trait TryFromBytes {
     #[doc = codegen_header!("h5", "try_mut_from_suffix")]
     ///
     /// See [`TryFromBytes::try_ref_from_suffix`](#method.try_ref_from_suffix.codegen).
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_suffix(
@@ -2607,7 +2668,7 @@ pub unsafe trait TryFromBytes {
             @variant "dynamic_padding"
         ]
     )]
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_bytes_with_elems(
@@ -2728,7 +2789,7 @@ pub unsafe trait TryFromBytes {
             @variant "dynamic_padding"
         ]
     )]
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_prefix_with_elems(
@@ -2836,7 +2897,7 @@ pub unsafe trait TryFromBytes {
             @variant "dynamic_padding"
         ]
     )]
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_ref_from_suffix_with_elems(
@@ -2932,7 +2993,7 @@ pub unsafe trait TryFromBytes {
     #[doc = codegen_header!("h5", "try_mut_from_bytes_with_elems")]
     ///
     /// See [`TryFromBytes::try_ref_from_bytes_with_elems`](#method.try_ref_from_bytes_with_elems.codegen).
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_bytes_with_elems(
@@ -3043,7 +3104,7 @@ pub unsafe trait TryFromBytes {
     #[doc = codegen_header!("h5", "try_mut_from_prefix_with_elems")]
     ///
     /// See [`TryFromBytes::try_ref_from_prefix_with_elems`](#method.try_ref_from_prefix_with_elems.codegen).
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_prefix_with_elems(
@@ -3143,7 +3204,7 @@ pub unsafe trait TryFromBytes {
     #[doc = codegen_header!("h5", "try_mut_from_suffix_with_elems")]
     ///
     /// See [`TryFromBytes::try_ref_from_suffix_with_elems`](#method.try_ref_from_suffix_with_elems.codegen).
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_mut_from_suffix_with_elems(
@@ -3210,7 +3271,7 @@ pub unsafe trait TryFromBytes {
         bench = "try_read_from_bytes",
         format = "coco_static_size",
     )]
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_read_from_bytes(source: &[u8]) -> Result<Self, TryReadError<&[u8], Self>>
@@ -3288,7 +3349,7 @@ pub unsafe trait TryFromBytes {
         bench = "try_read_from_prefix",
         format = "coco_static_size",
     )]
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_read_from_prefix(source: &[u8]) -> Result<(Self, &[u8]), TryReadError<&[u8], Self>>
@@ -3367,7 +3428,7 @@ pub unsafe trait TryFromBytes {
         bench = "try_read_from_suffix",
         format = "coco_static_size",
     )]
-    #[must_use = "has no side effects"]
+    #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     fn try_read_from_suffix(source: &[u8]) -> Result<(&[u8], Self), TryReadError<&[u8], Self>>

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
 //
-use proc_macro2::TokenStream;
-use quote::quote;
-use syn::{spanned::Spanned as _, Data, DataEnum, DataStruct, DataUnion, Error, Type, Visibility};
+use proc_macro2::{Ident, Span, TokenStream};
+use quote::{format_ident, quote, ToTokens as _};
+use syn::{spanned::Spanned as _, Data, DataEnum, DataStruct, DataUnion, Error, Field};
 
 use crate::{
     derive::project::{
@@ -16,29 +16,112 @@ use crate::{
     },
 };
 
-/// Generates validation of every field of a struct or enum variant.
-fn derive_variant_is_safe(
+fn candidate_ident(ctx: &Ctx) -> Ident {
+    // Field imports must not shadow the source pointer. Mixed-site hygiene
+    // keeps the pointer itself out of the user's invariant expressions.
+    let fields = ctx.ast.data.fields();
+    let mut name = "candidate".to_owned();
+    while fields.iter().any(|(_, field, _)| field.to_string().trim_start_matches("r#") == name) {
+        name.push('_');
+    }
+    Ident::new(&name, Span::mixed_site())
+}
+
+/// Generates validation of every field of a struct or enum variant, leaving
+/// the validated pointers in scope for subsequent field invariants.
+/// A union is checked by invoking this once per field.
+fn derive_variant_is_safe<'a>(
     ctx: &Ctx,
     variant_id: &TokenStream,
-    fields: &[(&Visibility, TokenStream, &Type)],
-) -> TokenStream {
-    let zerocopy_crate = &ctx.zerocopy_crate;
-    let trait_path = Trait::TryFromBytes.crate_path(ctx);
-    let field_names = fields.iter().map(|(_, name, _)| name);
-    let field_tys = fields.iter().map(|(_, _, ty)| ty);
-    quote! {
-        true #(&& {
-            let field_candidate = #zerocopy_crate::into_inner!(
-                candidate.reborrow().project::<
-                    #zerocopy_crate::project_clients::TryFromBytesDerive,
-                    _,
-                    { #variant_id },
-                    { #zerocopy_crate::ident_id!(#field_names) },
-                >()
-            );
-            <#field_tys as #trait_path>::is_safe(field_candidate)
-        })*
+    fields: impl IntoIterator<Item = &'a Field>,
+) -> Result<TokenStream, Error> {
+    let fields = fields.into_iter().collect::<Vec<_>>();
+    if fields.is_empty() {
+        return Ok(quote!(true));
     }
+
+    let zerocopy_crate = &ctx.zerocopy_crate;
+    let core = ctx.core_path();
+    let candidate = candidate_ident(ctx);
+    let field_names = fields.iter().enumerate().map(|(idx, field)| {
+        field
+            .ident
+            .as_ref()
+            .map(|name| name.to_token_stream())
+            .unwrap_or_else(|| syn::Index::from(idx).to_token_stream())
+    });
+    let field_bindings = fields
+        .iter()
+        .enumerate()
+        .map(|(idx, field)| {
+            if ctx.invariant_span.is_some() {
+                ctx.fresh_ident(&format!("field_{}", idx))
+            } else {
+                field
+                    .ident
+                    .clone()
+                    .unwrap_or_else(|| format_ident!("field_{}", idx, span = Span::mixed_site()))
+            }
+        })
+        .collect::<Vec<_>>();
+    let field_imports = field_bindings.iter().map(|binding| {
+        if ctx.invariant_span.is_none() {
+            quote! {
+                #[allow(unused_imports)]
+                use #core::mem::drop as #binding;
+            }
+        } else {
+            quote!()
+        }
+    });
+    let bound_fields =
+        fields.iter().copied().zip(field_bindings.iter().cloned()).collect::<Vec<_>>();
+    let field_validations = fields
+        .iter()
+        .enumerate()
+        .map(|(idx, field)| {
+            let invariants = crate::invariant::parse(&field.attrs)?;
+            let invariants = invariants.iter().map(|expression| {
+                crate::invariant::bind_fields(ctx, &bound_fields[..=idx], expression)
+            });
+            Ok(quote! {
+                #(
+                    // Keep `return` in an invariant from bypassing later fields.
+                    if !{ #[inline(always)] || -> #core::primitive::bool { #invariants } }() {
+                        return false;
+                    }
+                )*
+            })
+        })
+        .collect::<Result<Vec<_>, Error>>()?;
+    Ok(quote! {
+        {
+            #(
+                #field_imports
+                // Copy the shared pointer so earlier field pointers remain
+                // usable while projecting and validating later fields.
+                let #field_bindings = #zerocopy_crate::into_inner!(
+                    #candidate.project::<
+                        #zerocopy_crate::project_clients::TryFromBytesDerive,
+                        _,
+                        { #variant_id },
+                        { #zerocopy_crate::ident_id!(#field_names) },
+                    >()
+                );
+                // Disambiguate the available `TryTransmuteFromPtr` impls.
+                #[allow(unused_variables)]
+                let #field_bindings = match #field_bindings.try_into_safe::<
+                    _,
+                    #zerocopy_crate::BecauseImmutable,
+                >() {
+                    #core::result::Result::Ok(#field_bindings) => #field_bindings,
+                    #core::result::Result::Err(_) => return false,
+                };
+                #field_validations
+            )*
+            true
+        }
+    })
 }
 
 /// Generates an implementation of `is_safe` for an arbitrary enum.
@@ -62,6 +145,9 @@ pub(crate) fn derive_is_safe(
 
     let zerocopy_crate = &ctx.zerocopy_crate;
     let core = ctx.core_path();
+    let candidate = candidate_ident(ctx);
+    let alignment = ctx.fresh_ident("___ZcAlignment");
+    let tag = Ident::new("tag", Span::mixed_site());
     let projections = if data.fields().is_empty() {
         let tag_enum = generate_tag_enum(ctx, repr, data);
         let tag_consts = generate_tag_consts(data);
@@ -78,15 +164,58 @@ pub(crate) fn derive_is_safe(
         derive_enum(ctx, data, Client::TryFromBytesDerive)?
     };
 
-    let match_arms = data.variants().into_iter().map(|(variant, fields)| {
-        let variant = &variant.unwrap().ident;
-        let tag = tag_ident(variant);
-        let variant_id = quote! { #zerocopy_crate::ident_id!(#variant) };
-        let fields_is_safe = derive_variant_is_safe(ctx, &variant_id, &fields);
+    let match_arms = data
+        .variants
+        .iter()
+        .enumerate()
+        .map(|(idx, variant)| {
+            let name = &variant.ident;
+            let variant_id = quote! { #zerocopy_crate::ident_id!(#name) };
+            let fields_is_safe = derive_variant_is_safe(ctx, &variant_id, &variant.fields)?;
+            let pattern = if ctx.invariant_span.is_some() {
+                quote! { #core::option::Option::Some(#idx) }
+            } else {
+                tag_ident(name).to_token_stream()
+            };
+            Ok(quote! {
+                #pattern => { #fields_is_safe }
+            })
+        })
+        .collect::<Result<Vec<_>, Error>>()?;
+
+    let read_tag = quote! {
+        let #tag = #candidate
+            .reborrow()
+            .cast::<
+                ___ZerocopyTagPrimitive,
+                #zerocopy_crate::pointer::cast::CastSized,
+                (#zerocopy_crate::pointer::BecauseRead, _),
+            >()
+            .recall_validity::<_, (_, (_, _))>()
+            .read::<#zerocopy_crate::BecauseImmutable>();
+    };
+    let tag_init = if ctx.invariant_span.is_some() {
+        let allow = crate::util::allow_generated_code();
+        let tag_arms = data.variants.iter().enumerate().map(|(idx, variant)| {
+            let tag = tag_ident(&variant.ident);
+            quote! { #tag => #core::option::Option::Some(#idx) }
+        });
         quote! {
-            #tag => #fields_is_safe
+            // Keep implementation-only items and their lint allowances out
+            // of the scopes containing caller-authored invariant expressions.
+            #allow
+            let #tag = {
+                #projections
+                #read_tag
+                match #tag {
+                    #(#tag_arms,)*
+                    _ => #core::option::Option::None,
+                }
+            };
         }
-    });
+    } else {
+        quote! { #projections #read_tag }
+    };
 
     Ok(quote! {
         // SAFETY: We use `is_safe` to validate that the bit pattern of the
@@ -94,25 +223,15 @@ pub(crate) fn derive_is_safe(
         // check the bit validity of each field of the corresponding variant.
         // Thus, this is a sound implementation of `is_safe`.
         #[inline]
-        fn is_safe<___ZcAlignment>(
-            mut candidate: #zerocopy_crate::Maybe<'_, Self, ___ZcAlignment>,
+        fn is_safe<#alignment>(
+            mut #candidate: #zerocopy_crate::Maybe<'_, Self, #alignment>,
         ) -> #core::primitive::bool
         where
-            ___ZcAlignment: #zerocopy_crate::invariant::Alignment,
+            #alignment: #zerocopy_crate::invariant::Alignment,
         {
-            #projections
+            #tag_init
 
-            let tag = candidate
-                .reborrow()
-                .cast::<
-                    ___ZerocopyTagPrimitive,
-                    #zerocopy_crate::pointer::cast::CastSized,
-                    (#zerocopy_crate::pointer::BecauseRead, _),
-                >()
-                .recall_validity::<_, (_, (_, _))>()
-                .read::<#zerocopy_crate::BecauseImmutable>();
-
-            match tag {
+            match #tag {
                 #(#match_arms,)*
                 _ => false,
             }
@@ -123,7 +242,7 @@ pub(crate) fn derive_try_from_bytes(ctx: &Ctx, top_level: Trait) -> Result<Token
     match &ctx.ast.data {
         Data::Struct(strct) => derive_try_from_bytes_struct(ctx, strct, top_level),
         Data::Enum(enm) => derive_try_from_bytes_enum(ctx, enm, top_level),
-        Data::Union(unn) => Ok(derive_try_from_bytes_union(ctx, unn, top_level)),
+        Data::Union(unn) => derive_try_from_bytes_union(ctx, unn, top_level),
     }
 }
 fn derive_try_from_bytes_struct(
@@ -131,74 +250,80 @@ fn derive_try_from_bytes_struct(
     strct: &DataStruct,
     top_level: Trait,
 ) -> Result<TokenStream, Error> {
-    let extras = try_gen_trivial_is_safe(ctx, top_level).unwrap_or_else(|| {
+    let extras = if let Some(extras) = try_gen_trivial_is_safe(ctx, top_level) {
+        extras
+    } else {
         let zerocopy_crate = &ctx.zerocopy_crate;
         let variant_id = quote! { #zerocopy_crate::STRUCT_VARIANT_ID };
-        let fields_is_safe = derive_variant_is_safe(ctx, &variant_id, &strct.fields());
+        let fields_is_safe = derive_variant_is_safe(ctx, &variant_id, &strct.fields)?;
         let core = ctx.core_path();
+        let candidate = candidate_ident(ctx);
+        let alignment = ctx.fresh_ident("___ZcAlignment");
         quote!(
             // SAFETY: We use `is_safe` to validate that each field is bit-valid,
             // and only return `true` if all of them are. The bit validity of a
             // struct is just the composition of the bit validities of its
             // fields, so this is a sound implementation of `is_safe`.
             #[inline]
-            fn is_safe<___ZcAlignment>(
-                mut candidate: #zerocopy_crate::Maybe<'_, Self, ___ZcAlignment>,
+            fn is_safe<#alignment>(
+                mut #candidate: #zerocopy_crate::Maybe<'_, Self, #alignment>,
             ) -> #core::primitive::bool
             where
-                ___ZcAlignment: #zerocopy_crate::invariant::Alignment,
+                #alignment: #zerocopy_crate::invariant::Alignment,
             {
                 #fields_is_safe
             }
         )
-    });
+    };
     Ok(ImplBlockBuilder::new(ctx, strct, Trait::TryFromBytes, FieldBounds::ALL_SELF)
         .inner_extras(extras)
         .outer_extras(derive_projection_struct_union(ctx, strct, Client::TryFromBytesDerive))
         .build())
 }
-fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> TokenStream {
+fn derive_try_from_bytes_union(
+    ctx: &Ctx,
+    unn: &DataUnion,
+    top_level: Trait,
+) -> Result<TokenStream, Error> {
     let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
 
     let zerocopy_crate = &ctx.zerocopy_crate;
-    let union_variant_id = struct_union_variant_id(ctx);
-    let extras = try_gen_trivial_is_safe(ctx, top_level).unwrap_or_else(|| {
-        let fields = unn.fields();
-        let field_names = fields.iter().map(|(_vis, name, _ty)| name);
-        let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+    let union_variant_id = struct_union_variant_id(ctx).to_token_stream();
+    let extras = if let Some(extras) = try_gen_trivial_is_safe(ctx, top_level) {
+        extras
+    } else {
+        let fields_is_safe = unn
+            .fields
+            .named
+            .iter()
+            .map(|field| derive_variant_is_safe(ctx, &union_variant_id, [field]))
+            .collect::<Result<Vec<_>, _>>()?;
         let core = ctx.core_path();
+        let candidate = candidate_ident(ctx);
+        let alignment = ctx.fresh_ident("___ZcAlignment");
         quote!(
             // SAFETY: We use `is_safe` to validate that any field is bit-valid;
-            // we only return `true` if at least one of them is. The bit validity
-            // of a union is not yet well defined in Rust, but it is guaranteed
-            // to be no more strict than this definition. See #696 for a more
-            // in-depth discussion.
+            // we only return `true` if at least one of them is and its
+            // invariants also hold. The bit validity of a union is not yet
+            // well defined in Rust, but it is guaranteed to be no more strict
+            // than this definition. See #696 for a more in-depth discussion.
             #[inline]
-            fn is_safe<___ZcAlignment>(
-                mut candidate: #zerocopy_crate::Maybe<'_, Self, ___ZcAlignment>,
+            fn is_safe<#alignment>(
+                mut #candidate: #zerocopy_crate::Maybe<'_, Self, #alignment>,
             ) -> #core::primitive::bool
             where
-                ___ZcAlignment: #zerocopy_crate::invariant::Alignment,
+                #alignment: #zerocopy_crate::invariant::Alignment,
             {
-                false #(|| {
-                    let field_candidate = #zerocopy_crate::into_inner!(
-                        candidate.reborrow().project::<
-                            #zerocopy_crate::project_clients::TryFromBytesDerive,
-                            _,
-                            { #union_variant_id },
-                            { #zerocopy_crate::ident_id!(#field_names) },
-                        >()
-                    );
-
-                    <#field_tys as #zerocopy_crate::TryFromBytes>::is_safe(field_candidate)
-                })*
+                // Keep each field's bindings and early returns local to that
+                // field, so a failure lets validation try the next field.
+                false #(|| { #[inline(always)] || { #fields_is_safe } }())*
             }
         )
-    });
-    ImplBlockBuilder::new(ctx, unn, Trait::TryFromBytes, field_type_trait_bounds)
+    };
+    Ok(ImplBlockBuilder::new(ctx, unn, Trait::TryFromBytes, field_type_trait_bounds)
         .inner_extras(extras)
         .outer_extras(derive_projection_struct_union(ctx, unn, Client::TryFromBytesDerive))
-        .build()
+        .build())
 }
 fn derive_try_from_bytes_enum(
     ctx: &Ctx,
@@ -224,8 +349,7 @@ fn derive_try_from_bytes_enum(
         (None, true) => unsafe { gen_trivial_is_safe_unchecked(ctx) },
         (None, false) => match derive_is_safe(ctx, enm, &repr) {
             Ok(extra) => extra,
-            Err(_) if ctx.skip_on_error => return Ok(TokenStream::new()),
-            Err(e) => return Err(e),
+            Err(e) => return ctx.error_or_skip(e),
         },
     };
 
