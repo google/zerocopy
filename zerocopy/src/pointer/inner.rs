@@ -190,16 +190,12 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
         // SAFETY: By postcondition on `C::project`, `projected_raw` is non-null.
         let projected_non_null = unsafe { NonNull::new_unchecked(projected_raw) };
 
-        // SAFETY: As described in the preceding safety comment, `projected_raw`,
-        // and thus `projected_non_null`, addresses a subset of `self`'s
-        // referent. Thus, `projected_non_null` either:
-        // - Addresses zero bytes or,
-        // - Addresses a subset of the referent of `self`. In this case, `self`
-        //   has provenance for its referent, which lives in an allocation.
-        //   Since `projected_non_null` was constructed using a sequence of
-        //   provenance-preserving operations, it also has provenance for its
-        //   referent and that referent lives in an allocation. By invariant on
-        //   `self`, that allocation lives for `'a`.
+        // SAFETY: `C::project` promises that the result addresses a subset of
+        // `self`'s referent and preserves its provenance. `NonNull::new_unchecked`
+        // preserves that address and provenance. If the projected referent is
+        // non-zero-sized, it therefore lies within the same allocation as
+        // `self`'s referent, with valid provenance. By invariant on `self`, that
+        // allocation lives for `'a`. A zero-sized result needs no allocation.
         unsafe { PtrInner::new(projected_non_null) }
     }
 }
@@ -237,31 +233,12 @@ where
     {
         let raw = T::raw_from_ptr_len(self.as_non_null().cast(), meta);
 
-        // SAFETY:
-        //
-        // Lemma 0: `raw` either addresses zero bytes, or addresses a subset of
-        //          the allocation pointed to by `self` and has the same
-        //          provenance as `self`. Proof: `raw` is constructed using
-        //          provenance-preserving operations, and the caller has
-        //          promised that, if `raw`'s referent is not zero-sized, the
-        //          resulting pointer addresses a subset of the allocation
-        //          pointed to by `self`, has valid provenance for that
-        //          allocation, and that allocation lives for `'a`.
-        //
-        // 0. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `ptr` is derived from some valid Rust allocation,
-        //    `A`.
-        // 1. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `ptr` has valid provenance for `A`.
-        // 2. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `ptr` addresses a byte range which is entirely
-        //    contained in `A`.
-        // 3. Per Lemma 0 and by invariant on `self`, `ptr` addresses a byte
-        //    range whose length fits in an `isize`.
-        // 4. Per Lemma 0 and by invariant on `self`, `ptr` addresses a byte
-        //    range which does not wrap around the address space.
-        // 5. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `A` is guaranteed to live for at least `'a`.
+        // SAFETY: `raw_from_ptr_len` preserves the input address and provenance
+        // and uses `meta` for the resulting pointer's metadata. Thus `raw` is
+        // the pointer described by this method's precondition. If its referent
+        // is non-zero-sized, the caller promises valid provenance for that
+        // referent within a Rust allocation which lives for `'a`, satisfying
+        // both invariants of `PtrInner::new`. Otherwise, no allocation is needed.
         unsafe { PtrInner::new(raw) }
     }
 }
