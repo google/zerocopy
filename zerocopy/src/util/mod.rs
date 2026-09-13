@@ -371,8 +371,10 @@ where
 ///
 /// # Errors
 ///
-/// Returns an error on allocation failure. Allocation failure is guaranteed
-/// never to cause a panic or an abort.
+/// Returns an error if `meta` describes an allocation larger than
+/// `isize::MAX` bytes, if computing its layout overflows, or if the allocator
+/// reports failure by returning null. The global allocator is permitted to
+/// abort instead of returning null.
 ///
 /// # Safety
 ///

@@ -188,9 +188,9 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     /// Attempts to split `self` in two.
     ///
     /// Returns `None` if `l_len` is greater than the length of `self`'s
-    /// trailing slice, or if the given `l_len` would result in [the trailing
-    /// padding](KnownLayout#slice-dst-layout) of the left portion overlapping
-    /// the right portion.
+    /// trailing slice. The restriction concerning [the trailing
+    /// padding](KnownLayout#slice-dst-layout) of the left portion is checked
+    /// later, when the two references are obtained from the returned `Split`.
     ///
     ///
     /// # Examples
