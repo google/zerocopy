@@ -3766,8 +3766,10 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// # Errors
     ///
-    /// Returns an error if the allocator reports failure by returning null.
-    /// The global allocator is permitted to abort instead of returning null.
+    /// Returns an error if `count` would make the allocation larger than
+    /// `isize::MAX` bytes, if computing its layout overflows, or if the
+    /// allocator reports failure by returning null. The global allocator is
+    /// permitted to abort instead of returning null.
     ///
     #[doc = codegen_section!(
         header = "h5",
@@ -3832,8 +3834,10 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// # Errors
     ///
-    /// Returns an error if the allocator reports failure by returning null.
-    /// The global allocator is permitted to abort instead of returning null.
+    /// Returns an error if `len` would make the allocation larger than
+    /// `isize::MAX` bytes, if computing its layout overflows, or if the
+    /// allocator reports failure by returning null. The global allocator is
+    /// permitted to abort instead of returning null.
     ///
     #[doc = codegen_section!(
         header = "h5",

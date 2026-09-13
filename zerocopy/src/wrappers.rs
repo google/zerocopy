@@ -237,17 +237,20 @@ impl<T> Unalign<T> {
     /// The caller must guarantee that `self` satisfies `align_of::<T>()`.
     #[inline(always)]
     pub const unsafe fn deref_unchecked(&self) -> &T {
-        // SAFETY: `Unalign<T>` is a single-field `repr(C, packed)` struct, so
-        // its sole field is at offset zero [1]. Thus `self` and its valid `T`
-        // field have the same address and provenance. The caller guarantees
-        // that this address is aligned for `T`; the returned reference borrows
-        // for no longer than `self`, which keeps the storage live and shared.
+        // SAFETY: `Unalign<T>` is a single-field `repr(C, packed)` struct.
+        // The `repr(C)` layout algorithm starts at offset zero [1]. Zero is
+        // a multiple of every alignment, including the packing-adjusted field
+        // alignment, so the sole field needs no leading padding and remains
+        // at offset zero. Thus `self` and its valid `T` field have the same
+        // address and provenance. The caller guarantees that this address is
+        // aligned for `T`; the returned reference borrows for no longer than
+        // `self`, which keeps the storage live and shared.
         //
-        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        // [1] Per https://doc.rust-lang.org/1.56.0/reference/type-layout.html#reprc-structs:
         //
-        //   The alignments of each field, for the purpose of positioning fields,
-        //   is the smaller of the specified alignment and the alignment of the
-        //   field's type.
+        //   Start with a current offset of 0 bytes.
+        //   ...
+        //   The offset for the field is what the current offset is now.
         //
         // We use `mem::transmute` instead of `&*self.get_ptr()` because
         // dereferencing pointers is not stable in `const` on our current MSRV
@@ -569,8 +572,10 @@ impl<T: ?Sized + KnownLayout> MaybeUninit<T> {
     ///
     /// # Errors
     ///
-    /// Returns an error if the allocator reports failure by returning null.
-    /// The global allocator is permitted to abort instead of returning null.
+    /// Returns an error if `meta` describes an allocation larger than
+    /// `isize::MAX` bytes, if computing its layout overflows, or if the
+    /// allocator reports failure by returning null. The global allocator is
+    /// permitted to abort instead of returning null.
     #[cfg(feature = "alloc")]
     #[inline]
     pub fn new_boxed_uninit(meta: T::PointerMetadata) -> Result<Box<Self>, AllocError> {
