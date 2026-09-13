@@ -28,82 +28,219 @@ jobs:
           ref: 5946b5f6d48dcce3cc4799a480a45cf5b78f8006
           fetch-depth: 0
           persist-credentials: false
-      - name: Recover the pinned patch and check the projection argument
+      - name: Apply explicit replacements to the pinned source
         shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$EXPECTED_BASE"
           test "$(git ls-remote origin refs/heads/joshlf/audit-pointer-contracts-20260912 | cut -f1)" = "$EXPECTED_BASE"
           python3 - <<'PY'
-          import hashlib
-          import json
           import subprocess
-          import urllib.request
+          import textwrap
           from pathlib import Path
 
-          request = urllib.request.Request(
-              'https://api.github.com/repos/google/zerocopy/issues/comments/5649542178',
-              headers={'Accept': 'application/vnd.github+json', 'User-Agent': 'zerocopy-audit-publication'},
-          )
-          with urllib.request.urlopen(request, timeout=60) as response:
-              comment = json.load(response)
-          assert comment['id'] == 5649542178
-          assert comment['user']['login'] == 'chatgpt-codex-connector[bot]'
-          body = comment['body']
-          assert body.count('```diff\n') == 1
-          patch = body.split('```diff\n', 1)[1].split('\n```', 1)[0] + '\n'
-          patch = patch.encode('utf-8')
-          digest = hashlib.sha256(patch).hexdigest()
-          print('PATCH_SHA256=' + digest)
-          print('PATCH_BYTES=' + str(len(patch)))
-          print(patch.decode('utf-8'))
-          assert digest == '9c85c2f3a1fa0e8e8d7504a917c04da52f8b3c77e8232e723d2e15295187108a'
-          assert len(patch) == 8409
-          subprocess.run(['git', 'apply', '--check', '-'], input=patch, check=True)
-          subprocess.run(['git', 'apply', '-'], input=patch, check=True)
+          def replace(file, old, new, indent=0):
+              path = Path('zerocopy/src') / file
+              before = path.read_text()
+              old = textwrap.indent(textwrap.dedent(old).strip('\n') + '\n', ' ' * indent)
+              new = textwrap.indent(textwrap.dedent(new).strip('\n') + '\n', ' ' * indent)
+              assert before.count(old) == 1, (file, 'replacement anchor count', before.count(old), old)
+              path.write_text(before.replace(old, new))
 
-          # A zero-sized projection needs no assumption about its nominal offset.
-          path = Path('zerocopy/src/impls.rs')
-          text = path.read_text()
-          old = (
-              '                        // Every field of a zero-sized tuple is at offset zero.\n'
-              '                        // Preserve the source address so the result is non-null.\n'
-          )
-          assert text.count(old) == 1
-          text = text.replace(old, (
-              '                        // The tuple and this field have size zero. Returning\n'
-              '                        // the same address preserves non-nullness and provenance,\n'
-              '                        // and the empty referent is a subset of the input.\n'
-          ))
-          text = text.replace(
-              '        // Exercise a zero-sized field at a nonzero offset.\n',
-              '        // Exercise a zero-sized field of a non-zero-sized tuple.\n',
-          )
-          marker = '        // Exercise the transitive projection used by the `ReadOnly` adapter.\n'
-          assert text.count(marker) == 1
-          text = text.replace(marker, (
-              '        type Tuple = ((), ());\n'
-              '        let pointer = core::ptr::NonNull::<Tuple>::dangling();\n'
-              '        // SAFETY: `Tuple` is zero-sized; `PtrInner::new` requires no\n'
-              '        // allocation or live provenance for a zero-sized referent.\n'
-              '        let pointer = unsafe { PtrInner::new(pointer) };\n'
-              '        let projected =\n'
-              '            <Tuple as HasField<(), (), { STRUCT_VARIANT_ID }, { ident_id!(1) }>>::project(pointer);\n'
-              '        assert_eq!(projected, pointer.as_ptr().cast::<()>());\n'
-              '\n' + marker
-          ))
-          path.write_text(text)
-          expected = sorted([
-              'zerocopy/src/impls.rs', 'zerocopy/src/layout.rs',
-              'zerocopy/src/pointer/mod.rs', 'zerocopy/src/ref.rs',
-              'zerocopy/src/util/macros.rs', 'zerocopy/src/wrappers.rs',
-          ])
+          replace('impls.rs', '''
+          // SAFETY: `ManuallyDrop<T>` has the same layout and bit validity as
+          // `T` [1].
+          ''', '''
+          // SAFETY: `ManuallyDrop<T>` has the same layout and bit validity as
+          // `T` [1]. The cast preserves the address of the non-null input and
+          // its provenance, including when the referent is zero-sized.
+          ''', 12)
+
+          replace('impls.rs', '''
+          let slf = slf.as_non_null().as_ptr();
+          // SAFETY: `PtrInner` promises it references either a zero-sized
+          // byte range, or else will reference a byte range that is
+          // entirely contained within an allocated object. In either
+          // case, this guarantees that `(*slf).$CurrI` is in-bounds of
+          // `slf`.
+          unsafe { core::ptr::addr_of_mut!((*slf).$CurrI) }
+          ''', '''
+          if core::mem::size_of::<Self>() == 0 {
+              // The tuple and this field have size zero. This cast preserves
+              // the input's non-null address and provenance, and the empty
+              // referent is a subset of the input. No field-offset assumption
+              // or allocation is needed to meet the projection contract.
+              return slf.as_ptr().cast::<Self::Type>();
+          }
+          let slf = slf.as_non_null().as_ptr();
+          // SAFETY: The non-zero-sized tuple lies within one allocation by
+          // invariant on `PtrInner`. Its field address is in that allocation
+          // or one-past its end, and computing it does not wrap. Allocations
+          // have non-null bases and nonwrapping address ranges [1], so the
+          // result is non-null even for a zero-sized field. Field projection
+          // preserves provenance and selects a subset of the tuple's bytes.
+          //
+          // [1] Per https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation:
+          //
+          //   base is not equal to null()
+          //   ...
+          //   base + size <= usize::MAX
+          unsafe { core::ptr::addr_of_mut!((*slf).$CurrI) }
+          ''', 20)
+
+          replace('impls.rs', '''
+          mod tests {
+              use super::*;
+          ''', '''
+          mod tests {
+              use super::*;
+
+              #[test]
+              fn zst_field_projections_are_non_null() {
+                  type Tuple = ((), ());
+                  let value = ((), ());
+                  let pointer = PtrInner::from_ref(&value);
+                  let projected = <Tuple as HasField<(), (), { STRUCT_VARIANT_ID }, { ident_id!(1) }>>::project(pointer);
+                  assert_eq!(projected, pointer.as_ptr().cast::<()>());
+
+                  let pointer = core::ptr::NonNull::<Tuple>::dangling();
+                  // SAFETY: `Tuple` is zero-sized. `PtrInner::new` requires no
+                  // allocation or live provenance for a zero-sized referent.
+                  let pointer = unsafe { PtrInner::new(pointer) };
+                  let projected = <Tuple as HasField<(), (), { STRUCT_VARIANT_ID }, { ident_id!(1) }>>::project(pointer);
+                  assert_eq!(projected, pointer.as_ptr().cast::<()>());
+
+                  // A zero-sized field of a non-zero-sized tuple.
+                  let value = (0u8, ());
+                  let pointer = PtrInner::from_ref(&value);
+                  let projected = <(u8, ()) as HasField<(), (), { STRUCT_VARIANT_ID }, { ident_id!(1) }>>::project(pointer);
+                  assert!(!projected.is_null());
+
+                  let value = ReadOnly::new(((), ()));
+                  let pointer = PtrInner::from_ref(&value);
+                  let projected = <ReadOnly<Tuple> as HasField<(), (), { STRUCT_VARIANT_ID }, { ident_id!(1) }>>::project(pointer);
+                  assert_eq!(projected, pointer.as_ptr().cast::<ReadOnly<()>>());
+              }
+          ''')
+
+          replace('layout.rs', '''
+          // more detailed proof of this). It does this using provenance-preserving
+          // operations.
+          ''', '''
+          // more detailed proof of this). The input data-pointer cast and
+          // `KnownLayout::raw_from_ptr_len` both preserve its address and
+          // provenance. Thus the result is non-null even for a zero-sized referent.
+          ''', 4)
+
+          replace('pointer/mod.rs', '''
+          // provenance-preserving projection which preserves the set of referent
+          // bytes.
+          ''', '''
+          // provenance-preserving projection which preserves the address and set of
+          // referent bytes. The input is non-null by invariant on `PtrInner`, so
+          // the result is non-null regardless of referent size.
+          ''', 4)
+          replace('pointer/mod.rs', '''
+          // and so all casts preserve or shrink the set of referent bytes. All
+          // operations preserve provenance.
+          ''', '''
+          // and so all casts preserve or shrink the set of referent bytes. The
+          // pointer cast preserves the input's non-null address and provenance,
+          // including when the destination is zero-sized.
+          ''', 4)
+          replace('pointer/mod.rs', '''
+          // and so all casts preserve the set of referent bytes. All operations
+          // preserve provenance.
+          ''', '''
+          // and so all casts preserve the set of referent bytes. The pointer cast
+          // preserves the input's non-null address and provenance, including for
+          // zero-sized referents.
+          ''', 4)
+          replace('pointer/mod.rs', '''
+          //   trailing padding). Thus, `project` preserves the set of referent bytes.
+          ''', '''
+          //   trailing padding). Thus, `project` preserves the set of referent bytes.
+          // The data-pointer cast and `KnownLayout::raw_from_ptr_len` preserve the
+          // input's address and provenance, so the result is non-null, including
+          // when the referent is zero-sized.
+          ''', 4)
+          replace('pointer/mod.rs', '''
+          // SAFETY: Since `TU::project` and `UV::project` are each
+          // provenance-preserving operations which preserve or shrink the set of
+          // referent bytes, so is their composition.
+          ''', '''
+          // SAFETY: `TU::project` and `UV::project` each promise a non-null result,
+          // the same provenance, and a subset of the input's referent bytes.
+          // `PtrInner::project` preserves those properties between the calls, so
+          // their composition satisfies all three postconditions, including for
+          // zero-sized intermediate and final referents.
+          ''', 4)
+          replace('pointer/mod.rs', '''
+          // and with a referent of the same size as `*src`. It does this using
+          // provenance-preserving operations.
+          ''', '''
+          // and with a referent of the same size as `*src`. This preserves the
+          // input's non-null address, even for an empty slice. All operations
+          // preserve provenance.
+          ''', 4)
+          replace('pointer/mod.rs', '''
+          // argument's referent using provenance-preserving operations.
+          ''', '''
+          // argument's referent using an address- and provenance-preserving cast.
+          // The empty output referent is a subset of any input referent, and the
+          // input's non-null address is preserved.
+          ''', 4)
+
+          replace('ref.rs', '''
+          // this cast has the same size as `ptr`'s referent. All operations preserve
+          // provenance.
+          ''', '''
+          // this cast has the same size as `ptr`'s referent. The input data-pointer
+          // cast and `KnownLayout::raw_from_ptr_len` preserve the input's non-null
+          // address and provenance, including when that size is zero.
+          ''', 4)
+          replace('util/macros.rs', '''
+          // preserving or size-shrinking cast. All operations preserve
+          // provenance.
+          ''', '''
+          // preserving or size-shrinking cast. The pointer cast preserves the
+          // input's non-null address and provenance, including for zero-sized
+          // source or destination referents.
+          ''', 8)
+
+          replace('wrappers.rs', '''
+          // produces a pointer with the same referent. By invariant, for any
+          ''', '''
+          // produces a pointer with the same address and referent, preserving
+          // non-nullness even for a zero-sized referent. The following projection
+          // also promises a non-null result by its `Project` contract. Thus the
+          // composition is non-null. By invariant, for any
+          ''', 4)
+          replace('wrappers.rs', '''
+          // `project` satisfies its post-condition – namely, that the returned pointer
+          // refers to a non-strict subset of the bytes of `slf`'s referent, and has the
+          // same provenance as `slf` – because all intermediate operations satisfy those
+          // same conditions.
+          ''', '''
+          // `project` preserves provenance and returns a subset of `slf`'s referent
+          // bytes because each intermediate projection promises both properties.
+          // The first and last projections are address-preserving casts. Between
+          // them, `T::project` promises a non-null result by `HasField`'s contract.
+          // Thus all three projections produce non-null results, independently of
+          // whether the source, intermediate, or final referents are zero-sized.
+          ''')
+
+          expected = sorted(['zerocopy/src/' + path for path in [
+              'impls.rs', 'layout.rs', 'pointer/mod.rs', 'ref.rs',
+              'util/macros.rs', 'wrappers.rs',
+          ]])
           changed = subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines()
           assert sorted(changed) == expected, changed
           PY
           git diff --check
           git diff --stat
-      - name: Format and validate the affected tests and derives
+          git diff
+      - name: Format and validate tests, derives, and documentation
         shell: bash
         run: |
           set -euo pipefail
@@ -134,21 +271,17 @@ jobs:
           command -v gh
           python3 - <<'PY'
           import subprocess
-          expected = sorted([
-              'zerocopy/src/impls.rs', 'zerocopy/src/layout.rs',
-              'zerocopy/src/pointer/mod.rs', 'zerocopy/src/ref.rs',
-              'zerocopy/src/util/macros.rs', 'zerocopy/src/wrappers.rs',
-          ])
+          expected = sorted(['zerocopy/src/' + path for path in [
+              'impls.rs', 'layout.rs', 'pointer/mod.rs', 'ref.rs',
+              'util/macros.rs', 'wrappers.rs',
+          ]])
           changed = subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines()
           assert sorted(changed) == expected, changed
-          untracked = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'], text=True)
-          assert not untracked, untracked
+          assert not subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'], text=True)
           PY
           git diff --check
-          git diff --stat
-          git diff
           git add -- zerocopy/src/impls.rs zerocopy/src/layout.rs zerocopy/src/pointer/mod.rs zerocopy/src/ref.rs zerocopy/src/util/macros.rs zerocopy/src/wrappers.rs
-          git -c user.name="Josh Liebow-Feeser's Agent" -c user.email=agent@joshlf.invalid commit -m 'Establish non-nullness throughout pointer projections' -m 'State the address-preservation or nonwrapping field-offset argument for each handwritten projection and its adapters. Use an address-preserving cast for wholly zero-sized tuples, and cover allocated and dangling zero-sized projections. The cast relies on the projection contract rather than an assumed tuple field offset.' -m "Agent-Authored-By: AI agent acting on Josh Liebow-Feeser's behalf"
+          git -c user.name="Josh Liebow-Feeser's Agent" -c user.email=agent@joshlf.invalid commit -m 'Establish non-nullness throughout pointer projections' -m 'Explain how the handwritten projections and their adapters produce non-null pointers. For wholly zero-sized tuples, use an address-preserving cast rather than relying on field offsets. Test allocated and dangling zero-sized projections and the ReadOnly adapter.' -m "Agent-Authored-By: AI agent acting on Josh Liebow-Feeser's behalf"
           test "$(git rev-parse HEAD^)" = "$EXPECTED_BASE"
           stage_branch="joshlf/audit-pointer-review-stage-${GITHUB_RUN_ID}"
           test -z "$(git ls-remote origin "refs/heads/$stage_branch")"
