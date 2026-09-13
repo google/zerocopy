@@ -43,15 +43,13 @@ fn explicit_count_mutable_affixes_preserve_the_other_bytes() {
     use imp::FromBytes as _;
 
     let mut bytes = [1u8, 2, 3, 4];
-    let (packet, suffix) =
-        Packet::mut_from_prefix_with_elems(&mut bytes[..], 2).unwrap();
+    let (packet, suffix) = Packet::mut_from_prefix_with_elems(&mut bytes[..], 2).unwrap();
     packet.header.set(5);
     packet.body[1].set(6);
     suffix[0] = 7;
     imp::assert_eq!(bytes, [5, 2, 6, 7]);
 
-    let (prefix, packet) =
-        Packet::mut_from_suffix_with_elems(&mut bytes[..], 2).unwrap();
+    let (prefix, packet) = Packet::mut_from_suffix_with_elems(&mut bytes[..], 2).unwrap();
     prefix[0] = 8;
     packet.header.set(9);
     packet.body[1].set(10);

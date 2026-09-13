@@ -237,11 +237,17 @@ impl<T> Unalign<T> {
     /// The caller must guarantee that `self` satisfies `align_of::<T>()`.
     #[inline(always)]
     pub const unsafe fn deref_unchecked(&self) -> &T {
-        // SAFETY: `Unalign<T>` is `repr(transparent)`, so there is a valid `T`
-        // at the same memory location as `self`. It has no alignment guarantee,
-        // but the caller has promised that `self` is properly aligned, so we
-        // know that it is sound to create a reference to `T` at this memory
-        // location.
+        // SAFETY: `Unalign<T>` is a single-field `repr(C, packed)` struct, so
+        // its sole field is at offset zero [1]. Thus `self` and its valid `T`
+        // field have the same address and provenance. The caller guarantees
+        // that this address is aligned for `T`; the returned reference borrows
+        // for no longer than `self`, which keeps the storage live and shared.
+        //
+        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        //
+        //   The alignments of each field, for the purpose of positioning fields,
+        //   is the smaller of the specified alignment and the alignment of the
+        //   field's type.
         //
         // We use `mem::transmute` instead of `&*self.get_ptr()` because
         // dereferencing pointers is not stable in `const` on our current MSRV
@@ -563,13 +569,13 @@ impl<T: ?Sized + KnownLayout> MaybeUninit<T> {
     ///
     /// # Errors
     ///
-    /// Returns an error on allocation failure. Allocation failure is guaranteed
-    /// never to cause a panic or an abort.
+    /// Returns an error if the allocator reports failure by returning null.
+    /// The global allocator is permitted to abort instead of returning null.
     #[cfg(feature = "alloc")]
     #[inline]
     pub fn new_boxed_uninit(meta: T::PointerMetadata) -> Result<Box<Self>, AllocError> {
-        // SAFETY: `alloc::alloc::alloc_zeroed` is a valid argument of
-        // `new_box`. The referent of the pointer returned by `alloc` (and,
+        // SAFETY: `alloc::alloc::alloc` is a valid argument of `new_box`. The
+        // referent of the pointer returned by `alloc` (and,
         // consequently, the `Box` derived from it) is a valid instance of
         // `Self`, because `Self` is `MaybeUninit` and thus admits arbitrary
         // (un)initialized bytes.
@@ -918,9 +924,13 @@ mod tests {
 
     #[test]
     fn test_unalign_update() {
-        let mut u = Unalign::new(AU64(123));
-        u.update(|a| a.0 += 1);
-        assert_eq!(u.get(), AU64(124));
+        let mut u = ForceUnalign::<_, AU64>::new(Unalign::new(AU64(123)));
+        let result = u.t.update(|a| {
+            a.0 += 1;
+            456
+        });
+        assert_eq!(result, 456);
+        assert_eq!(u.t.get(), AU64(124));
 
         // Test that, even if the callback panics, the original is still
         // correctly overwritten. Use a `Box` so that Miri is more likely to
@@ -939,7 +949,11 @@ mod tests {
 
         // Test the align_of::<T>() == 1 optimization.
         let mut u = Unalign::new([0u8, 1]);
-        u.update(|a| a[0] += 1);
+        let result = u.update(|a| {
+            a[0] += 1;
+            789
+        });
+        assert_eq!(result, 789);
         assert_eq!(u.get(), [1u8, 1]);
     }
 
