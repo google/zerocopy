@@ -239,15 +239,16 @@ impl<T> Unalign<T> {
     pub const unsafe fn deref_unchecked(&self) -> &T {
         // SAFETY: `mem::transmute` performs a bitwise move and requires valid
         // source and result values [1]. Both reference types are equally sized:
-        // `Unalign<T>` and `T` are sized, and references to sized types have the
-        // size and alignment of `usize` [2].
+        // `Unalign<T>` and `T` are sized, and references to sized types have
+        // the size and alignment of `usize` [2].
         //
-        // `Unalign<T>` is a single-field `repr(C, packed)` struct. The `repr(C)`
-        // algorithm starts at offset zero [3]. Zero satisfies every alignment,
-        // including the packing-adjusted field alignment, so no leading padding
-        // is added and the sole field is at offset zero. The bitwise move of
-        // this reference therefore designates the same field at the same address;
-        // it does not convert through an integer or reconstruct a pointer.
+        // `Unalign<T>` is a single-field `repr(C, packed)` struct. The
+        // `repr(C)` algorithm starts at offset zero [3]. Zero satisfies every
+        // alignment, including the packing-adjusted field alignment, so no
+        // leading padding is added and the sole field is at offset zero. The
+        // bitwise move of this reference therefore designates the same field at
+        // the same address; it does not convert through an integer or
+        // reconstruct a pointer.
         //
         // The source shared reference is valid and non-null. The field contains
         // a valid `T`, and the caller supplies the otherwise-missing alignment
@@ -256,8 +257,9 @@ impl<T> Unalign<T> {
         // documented contract guarantees that it and `T` have `UnsafeCell`s at
         // the same byte ranges. Consequently, their shared references prohibit
         // mutation of the same bytes [5]; this does not strengthen the source
-        // borrow's mutation restrictions. The output lifetime is tied to `self`,
-        // so the result cannot outlive that borrow or its live storage [4].
+        // borrow's mutation restrictions. The output lifetime is tied to
+        // `self`, so the result cannot outlive that borrow or its live storage
+        // [4].
         //
         // [1] Per https://doc.rust-lang.org/1.93.1/std/mem/fn.transmute.html:
         //
@@ -269,7 +271,8 @@ impl<T> Unalign<T> {
         //
         //   Pointers and references have the same layout.
         //   ...
-        //   Pointers to sized types have the same size and alignment as `usize`.
+        //   Pointers to sized types have the same size and alignment as
+        //   `usize`.
         //
         // [3] Per https://doc.rust-lang.org/1.93.1/reference/type-layout.html#reprc-structs:
         //
