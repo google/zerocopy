@@ -1,0 +1,236 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+#
+# Temporary runner: never part of either pull request.
+name: Audit final follow-ups
+'on':
+  push:
+    branches: [joshlf/audit-final-followups-20260913]
+permissions:
+  contents: read
+jobs:
+  stage:
+    name: Stage ${{ matrix.label }} correction
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: core
+            base: 09e13632b06847f4fbd659908bfc80f18b88e3f0
+            published: 09e13632b06847f4fbd659908bfc80f18b88e3f0
+            branch: joshlf/audit-core-fixes-20260912
+          - label: pointer
+            base: 3587d2708b2983ba73bada581b93941355933767
+            published: 5946b5f6d48dcce3cc4799a480a45cf5b78f8006
+            branch: joshlf/audit-pointer-contracts-20260912
+    env:
+      LABEL: ${{ matrix.label }}
+      EXPECTED_BASE: ${{ matrix.base }}
+      EXPECTED_PUBLISHED: ${{ matrix.published }}
+      PR_BRANCH: ${{ matrix.branch }}
+      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
+      CARGO_TERM_COLOR: always
+      RUSTFLAGS: -Dwarnings
+      RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
+    steps:
+      - name: Check out the pinned contribution, not the runner
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ matrix.base }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify source identity and apply the scoped correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_BASE"
+          test "$(git ls-remote origin "refs/heads/$PR_BRANCH" | cut -f1)" = "$EXPECTED_PUBLISHED"
+          test "$(git rev-parse "$EXPECTED_BASE^{tree}")" = "$(git rev-parse "$EXPECTED_PUBLISHED^{tree}")"
+          python3 - <<'PY'
+          import hashlib
+          import os
+          import re
+          import subprocess
+          import textwrap
+          from pathlib import Path
+
+          def wrap_comments(text):
+              output, parts = [], []
+              prefix = None
+              def flush():
+                  nonlocal parts, prefix
+                  if parts:
+                      output.extend(textwrap.wrap(
+                          ' '.join(parts), width=80, initial_indent=prefix,
+                          subsequent_indent=prefix, break_long_words=False,
+                          break_on_hyphens=False,
+                      ))
+                  parts, prefix = [], None
+              for line in text.splitlines():
+                  match = re.fullmatch(r'(\s*// +)(\S.*)', line)
+                  if match and 'https://' not in line and match[2] != '...':
+                      if prefix is not None and prefix != match[1]:
+                          flush()
+                      prefix = match[1]
+                      parts.append(match[2])
+                  else:
+                      flush()
+                      output.append(line)
+              flush()
+              result = '\n'.join(output) + '\n'
+              def words(value):
+                  return ' '.join(re.sub(r'^\s*// ?', '', line) for line in value.splitlines()).split()
+              assert words(text) == words(result), 'Reflow changed content'
+              return result
+
+          def git(*args):
+              return subprocess.check_output(['git', *args])
+
+          for sha in [os.environ['EXPECTED_BASE'], os.environ['EXPECTED_PUBLISHED']]:
+              raw = git('cat-file', 'commit', sha)
+              computed = hashlib.sha1(b'commit ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+              assert computed == sha, (sha, computed)
+              print('Verified raw commit:', sha)
+          for sha in git('rev-list', 'c975a8467ffce74944fc151f05616fd00189b801..HEAD').decode().splitlines():
+              identity = git('show', '-s', '--format=%an <%ae>', sha).decode().strip()
+              assert identity == 'Josh Liebow-Feeser <joshlf@users.noreply.github.com>', (sha, identity)
+              message = git('show', '-s', '--format=%B', sha).decode()
+              assert 'agent-authored-by:' in message.lower(), sha
+
+          if os.environ['LABEL'] == 'core':
+              path = Path('zerocopy/src/wrappers.rs')
+              before = path.read_text()
+              signature = '    pub const unsafe fn deref_unchecked(&self) -> &T {\n'
+              assert before.count(signature) == 1
+              start = before.index(signature) + len(signature)
+              end = before.index('        unsafe { mem::transmute(self) }', start)
+              old = before[start:end]
+              assert all(not line.strip() or line.lstrip().startswith('//') for line in old.splitlines())
+              new = wrap_comments(old)
+              assert new != old
+              after = before[:start] + new + before[end:]
+              assert after.replace(new, '', 1) == before.replace(old, '', 1)
+              path.write_text(after)
+              expected = ['zerocopy/src/wrappers.rs']
+          else:
+              origin = '5519f576f61087c0d4d078b91edab3164586a860'
+              workflow_path = '.github/workflows/audit-pointer-review-publication.yml'
+              workflow = git('show', origin + ':' + workflow_path)
+              blob = hashlib.sha1(b'blob ' + str(len(workflow)).encode() + b'\0' + workflow).hexdigest()
+              assert blob == '91e18363f554f675cd417701daf0bcd47ebfd34f', blob
+              section = workflow.decode().split('      - name: Apply explicit replacements to the pinned source\n', 1)[1].split('      - name: ', 1)[0]
+              script = textwrap.dedent(section.split("          python3 - <<'PY'\n", 1)[1].split('\n          PY\n', 1)[0])
+              old_cast = 'return slf.as_ptr().cast::<Self::Type>();'
+              assert script.count(old_cast) == 1
+              script = script.replace(old_cast, 'return slf.as_ptr().cast::<$CurrT>();')
+              exec(compile(script, 'verified-pointer-followup', 'exec'), {'__name__': '__main__'})
+              path = Path('zerocopy/src/impls.rs')
+              source = path.read_text()
+              marker = '                    if core::mem::size_of::<Self>() == 0 {\n'
+              assert source.count(marker) == 1
+              start = source.index(marker)
+              end = source.index('                    unsafe { core::ptr::addr_of_mut!((*slf).$CurrI) }', start)
+              path.write_text(source[:start] + wrap_comments(source[start:end]) + source[end:])
+              expected = sorted('zerocopy/src/' + path for path in [
+                  'impls.rs', 'layout.rs', 'pointer/mod.rs', 'ref.rs',
+                  'util/macros.rs', 'wrappers.rs',
+              ])
+          changed = git('diff', '--name-only').decode().splitlines()
+          assert sorted(changed) == expected, changed
+          for line in git('diff', '--unified=0').decode().splitlines():
+              if line.startswith('+') and not line.startswith('+++'):
+                  added = line[1:]
+                  if added.lstrip().startswith('//') and 'https://' not in added:
+                      assert len(added) <= 80, (len(added), added)
+          out = Path('/tmp/audit-' + os.environ['LABEL'])
+          out.mkdir()
+          (out / 'expected-paths.txt').write_text('\n'.join(expected) + '\n')
+          (out / 'prepared.patch').write_bytes(git('diff', '--full-index'))
+          PY
+          git diff --check
+          git diff --stat
+      - name: Format and run the required compiler and Clippy checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd zerocopy
+          ./cargo.sh +nightly fmt --all
+          ./cargo.sh +msrv check --tests --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +stable check --tests --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +nightly check --tests --all-features
+          ./cargo.sh +nightly clippy --tests --all-features --workspace -- -Dwarnings
+      - name: Validate the core proof and documentation
+        if: matrix.label == 'core'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd zerocopy
+          ./cargo.sh +msrv test -p zerocopy --lib test_unalign
+          ./cargo.sh +stable test -p zerocopy --doc --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +stable doc -p zerocopy --no-deps --features __internal_use_only_features_that_work_on_stable
+      - name: Validate pointer projections and derive output
+        if: matrix.label == 'pointer'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd zerocopy
+          ./cargo.sh +msrv test -p zerocopy --lib zst_field_projections_are_non_null
+          ./cargo.sh +stable test -p zerocopy --lib pointer::
+          ./cargo.sh +stable test -p zerocopy-derive --test pointer_iterators
+          ./cargo.sh +stable test -p zerocopy-derive --lib output_tests
+          ./cargo.sh +nightly rustdoc --all-features
+          nightly="$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["metadata"]["ci"]["pinned-nightly"])')"
+          rustup component add miri --toolchain "$nightly"
+          ./cargo.sh +nightly miri test -p zerocopy --lib zst_field_projections_are_non_null
+      - name: Run the repository pre-push checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash githooks/pre-push
+          (cd zerocopy && ./cargo.sh +nightly fmt --all -- --check)
+          git diff --check
+      - name: Publish only an isolated staging ref
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin "refs/heads/$PR_BRANCH" | cut -f1)" = "$EXPECTED_PUBLISHED"
+          diff -u "/tmp/audit-$LABEL/expected-paths.txt" <(git diff --name-only | sort)
+          test -z "$(git ls-files --others --exclude-standard)"
+          git diff --check
+          git diff --full-index > "/tmp/audit-$LABEL/validated.patch"
+          git add -- $(cat "/tmp/audit-$LABEL/expected-paths.txt")
+          if [ "$LABEL" = core ]; then
+            git -c user.name='Josh Liebow-Feeser' -c user.email=joshlf@users.noreply.github.com commit -m 'Reflow the unaligned reference-transmute proof' -m 'Keep the proof, quotations, citations, signature, and implementation unchanged while fitting non-URL comment lines within the repository limit. Verify that the comment word sequence and all bytes outside the comment are unchanged.' -m 'Agent-authored-by: ChatGPT (commit message only)'
+          else
+            git -c user.name='Josh Liebow-Feeser' -c user.email=joshlf@users.noreply.github.com commit -m 'Establish non-nullness throughout pointer projections' -m 'Explain how handwritten projections and their adapters produce non-null pointers. For wholly zero-sized tuples, use an address-preserving cast with the concrete field type rather than relying on field offsets. Test allocated and dangling zero-sized projections and the ReadOnly adapter.' -m "Agent-Authored-By: AI agent acting on Josh Liebow-Feeser's behalf
+          Agent-authored-by: ChatGPT"
+          fi
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_BASE"
+          test "$(git log -1 --format='%an <%ae>')" = 'Josh Liebow-Feeser <joshlf@users.noreply.github.com>'
+          stage_branch="joshlf/audit-final-$LABEL-${GITHUB_RUN_ID}"
+          test -z "$(git ls-remote origin "refs/heads/$stage_branch")"
+          git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin "HEAD:refs/heads/$stage_branch"
+          git cat-file commit HEAD > "/tmp/audit-$LABEL/published.commit"
+          git log -1 --format='%H%n%T%n%P%n%an <%ae>%n%B' | tee "/tmp/audit-$LABEL/published.txt"
+          printf 'Staged commit: `%s`\n\nStaging branch: `%s`\n' "$(git rev-parse HEAD)" "$stage_branch" >> "$GITHUB_STEP_SUMMARY"
+          echo "STAGED_COMMIT=$(git rev-parse HEAD)"
+          echo "STAGING_BRANCH=$stage_branch"
+      - name: Preserve validation evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: audit-final-${{ matrix.label }}-${{ github.run_id }}
+          path: /tmp/audit-${{ matrix.label }}/
+          if-no-files-found: warn
+          retention-days: 30
