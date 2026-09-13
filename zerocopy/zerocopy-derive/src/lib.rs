@@ -50,6 +50,7 @@ macro_rules! ident {
 }
 
 mod derive;
+mod invariant;
 #[cfg(test)]
 mod output_tests;
 mod repr;

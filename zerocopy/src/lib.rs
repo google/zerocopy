@@ -1708,6 +1708,53 @@ pub unsafe trait Immutable {
 /// }
 /// ```
 ///
+#[cfg_attr(
+    zerocopy_unstable_ptr,
+    doc = r#"
+# Field invariants
+
+This experimental feature requires `--cfg zerocopy_unstable_ptr`.
+
+Named fields of structs, enum variants, and unions can specify additional
+runtime checks using `#[zerocopy(invariant(expression))]`:
+
+```
+# use zerocopy_derive::TryFromBytes;
+#[derive(TryFromBytes)]
+struct Foo {
+    a: u8,
+    #[zerocopy(invariant((**a.unaligned_as_ref() % 2) == (**b.unaligned_as_ref() as u8)))]
+    b: bool,
+    #[zerocopy(invariant(**c.unaligned_as_ref() > 0))]
+    c: i8,
+}
+```
+
+Each expression must return a `bool`. It has access to validated, read-only
+[`Ptr`]s to the current field and all preceding fields of the struct or
+variant, using their field names. A union's invariants have access only to
+the current field. The expression can use the existing [`Ptr`] APIs to
+inspect those fields. In this example, all fields are accessed by reference.
+
+Fields are checked in declaration order. Each field's bit validity is
+checked before its invariants run. Multiple invariants on a field run in
+attribute order. For structs and enums, validation stops at the first invalid
+field or invariant that returns `false`. For unions, a failed bit-validity
+check or invariant causes validation to try the next field; validation
+succeeds as soon as one field and all its invariants pass. Each expression
+runs in its own closure; `return` returns from that expression, and panics
+propagate to the caller.
+Only the selected enum variant's fields and invariants are checked.
+
+Invariants are not supported on tuple fields. Types with
+invariants cannot derive [`FromZeros`] or [`FromBytes`], whose conversions
+do not perform runtime validation. These checks apply to conversions
+through [`TryFromBytes`]; they do not restrict ordinary construction or
+mutation of Rust values.
+
+"#
+)]
+///
 /// # Portability
 ///
 /// To ensure consistent endianness for enums with multi-byte representations,
