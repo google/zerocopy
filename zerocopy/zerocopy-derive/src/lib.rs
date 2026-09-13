@@ -93,6 +93,8 @@ macro_rules! derive {
                 Err(e) => return e.into_compile_error().into(),
             };
             let ts = $inner(&ctx, Trait::$trait).into_ts();
+            let cfg_compile_error = ctx.cfg_compile_error();
+            let ts = quote::quote!(#ts #cfg_compile_error);
             // We wrap in `const_block` as a backstop in case any derive fails
             // to wrap its output in `const_block` (and thus fails to annotate)
             // with the full set of `#[allow(...)]` attributes).
@@ -200,6 +202,7 @@ pub fn most_traits(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     for (derive, t) in derives {
         tokens.extend(derive(&ctx, t))
     }
+    tokens.extend(ctx.cfg_compile_error());
 
     // We wrap in `const_block` as a backstop in case any derive fails
     // to wrap its output in `const_block` (and thus fails to annotate)
@@ -213,7 +216,7 @@ pub fn most_traits(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// Deprecated: prefer [`FromZeros`] instead.
 #[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
 #[doc(hidden)]
-#[proc_macro_derive(FromZeroes)]
+#[proc_macro_derive(FromZeroes, attributes(zerocopy))]
 pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_from_zeros(ts)
 }
@@ -221,7 +224,7 @@ pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStrea
 /// Deprecated: prefer [`IntoBytes`] instead.
 #[deprecated(since = "0.8.0", note = "`AsBytes` was renamed to `IntoBytes`")]
 #[doc(hidden)]
-#[proc_macro_derive(AsBytes)]
+#[proc_macro_derive(AsBytes, attributes(zerocopy))]
 pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_into_bytes(ts)
 }

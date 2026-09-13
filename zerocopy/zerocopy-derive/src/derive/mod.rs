@@ -9,7 +9,7 @@ pub mod unaligned;
 
 use proc_macro2::{Span, TokenStream};
 use quote::quote;
-use syn::{Data, Error};
+use syn::{Data, Error, GenericParam, Ident};
 
 use crate::{
     repr::StructUnionRepr,
@@ -41,17 +41,29 @@ pub(crate) fn derive_hash(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, E
     let where_predicates = where_clause.map(|clause| &clause.predicates);
     let zerocopy_crate = &ctx.zerocopy_crate;
     let core = ctx.core_path();
+    let mut hasher_name = String::from("___ZerocopyHasher");
+    let generic_names = ctx.ast.generics.params.iter().filter_map(|param| match param {
+        GenericParam::Type(param) => Some(param.ident.to_string()),
+        GenericParam::Const(param) => Some(param.ident.to_string()),
+        GenericParam::Lifetime(_) => None,
+    });
+    let generic_names =
+        generic_names.map(|name| name.trim_start_matches("r#").to_owned()).collect::<Vec<_>>();
+    while generic_names.iter().any(|name| name == &hasher_name) {
+        hasher_name.push('_');
+    }
+    let hasher = Ident::new(&hasher_name, Span::call_site());
     Ok(quote! {
         impl #impl_generics #core::hash::Hash for #type_ident #ty_generics
         where
             Self: #zerocopy_crate::IntoBytes + #zerocopy_crate::Immutable,
             #where_predicates
         {
-            fn hash<H: #core::hash::Hasher>(&self, state: &mut H) {
+            fn hash<#hasher: #core::hash::Hasher>(&self, state: &mut #hasher) {
                 #core::hash::Hasher::write(state, #zerocopy_crate::IntoBytes::as_bytes(self))
             }
 
-            fn hash_slice<H: #core::hash::Hasher>(data: &[Self], state: &mut H) {
+            fn hash_slice<#hasher: #core::hash::Hasher>(data: &[Self], state: &mut #hasher) {
                 #core::hash::Hasher::write(state, #zerocopy_crate::IntoBytes::as_bytes(data))
             }
         }
@@ -75,7 +87,7 @@ pub(crate) fn derive_eq(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Err
             Self: #zerocopy_crate::IntoBytes + #zerocopy_crate::Immutable,
             #where_predicates
         {
-            fn eq(&self, other: &Self) -> bool {
+            fn eq(&self, other: &Self) -> #core::primitive::bool {
                 #core::cmp::PartialEq::eq(
                     #zerocopy_crate::IntoBytes::as_bytes(self),
                     #zerocopy_crate::IntoBytes::as_bytes(other),

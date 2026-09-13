@@ -7,8 +7,8 @@ use syn::{parse_quote, Data, DataEnum, DataStruct, DataUnion, Error, Ident, Type
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
     util::{
-        generate_tag_enum, Ctx, DataExt, FieldBounds, ImplBlockBuilder, PaddingCheck, Trait,
-        TraitBound,
+        generate_tag_enum, strip_parens_and_groups, Ctx, DataExt, FieldBounds, ImplBlockBuilder,
+        PaddingCheck, Trait, TraitBound,
     },
 };
 pub(crate) fn derive_into_bytes(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error> {
@@ -22,16 +22,6 @@ pub(crate) fn derive_into_bytes(ctx: &Ctx, _top_level: Trait) -> Result<TokenStr
 /// If every field is exactly `T`, `[T; _]`, or a final `[T]` for the same type
 /// parameter `T`, returns the bounds required to prove this to rustc.
 fn homogeneous_field_bounds(ctx: &Ctx, strct: &DataStruct) -> Option<Vec<WherePredicate>> {
-    fn strip_parens_and_groups(mut ty: &Type) -> &Type {
-        loop {
-            ty = match ty {
-                Type::Group(group) => &group.elem,
-                Type::Paren(paren) => &paren.elem,
-                ty => return ty,
-            };
-        }
-    }
-
     fn type_is_parameter(ty: &Type, parameter: &Ident) -> bool {
         match strip_parens_and_groups(ty) {
             Type::Path(path) => path.qself.is_none() && path.path.is_ident(parameter),
@@ -123,8 +113,11 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
         (None, false, None)
     } else if ctx.ast.generics.params.is_empty() {
         // Is the last field a syntactic slice, i.e., `[SomeType]`.
-        let is_syntactic_dst =
-            strct.fields().last().map(|(_, _, ty)| matches!(ty, Type::Slice(_))).unwrap_or(false);
+        let is_syntactic_dst = strct
+            .fields()
+            .last()
+            .map(|(_, _, ty)| matches!(strip_parens_and_groups(ty), Type::Slice(_)))
+            .unwrap_or(false);
         // Since there are no generics, we can emit a padding check. All reprs
         // guarantee that fields won't overlap [1], so the padding check is
         // sound. This is more permissive than the next case, which requires
