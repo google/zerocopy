@@ -1979,7 +1979,7 @@ pub unsafe trait TryFromBytes {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
-                match source.try_into_valid() {
+                match source.try_into_safe() {
                     Ok(valid) => Ok(valid.as_ref()),
                     Err(e) => {
                         Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into())
@@ -2306,7 +2306,7 @@ pub unsafe trait TryFromBytes {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
-                match source.try_into_valid() {
+                match source.try_into_safe() {
                     Ok(source) => Ok(source.as_mut()),
                     Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
                 }
@@ -2623,7 +2623,7 @@ pub unsafe trait TryFromBytes {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
-                match source.try_into_valid() {
+                match source.try_into_safe() {
                     Ok(source) => Ok(source.as_ref()),
                     Err(e) => {
                         Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into())
@@ -2948,7 +2948,7 @@ pub unsafe trait TryFromBytes {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
-                match source.try_into_valid() {
+                match source.try_into_safe() {
                     Ok(source) => Ok(source.as_mut()),
                     Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
                 }
@@ -3399,7 +3399,7 @@ fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            match source.try_into_valid() {
+            match source.try_into_safe() {
                 Ok(valid) => Ok((valid.as_ref(), prefix_suffix.as_ref())),
                 Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into()),
             }
@@ -3419,7 +3419,7 @@ fn try_mut_from_prefix_suffix<T: IntoBytes + TryFromBytes + KnownLayout + ?Sized
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            match candidate.try_into_valid() {
+            match candidate.try_into_safe() {
                 Ok(valid) => Ok((valid.as_mut(), prefix_suffix.as_mut())),
                 Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
             }
