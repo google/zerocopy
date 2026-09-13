@@ -314,7 +314,7 @@ fn set_ui_test_feature_args(command: &mut Command, args: &[String]) {
 fn get_rustflags(name: &str) -> String {
     // See #1792 for context on zerocopy_derive_union_into_bytes.
     let mut flags =
-        "--cfg zerocopy_unstable_linux --cfg zerocopy_derive_union_into_bytes --cfg __ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE"
+        "--cfg zerocopy_unstable_linux --cfg zerocopy_unstable_ptr --cfg zerocopy_derive_union_into_bytes --cfg __ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE"
             .to_string();
     flags += &format!(" --cfg __ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN=\"{name}\"");
 
