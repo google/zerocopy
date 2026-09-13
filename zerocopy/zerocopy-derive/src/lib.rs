@@ -50,6 +50,7 @@ macro_rules! ident {
 }
 
 mod derive;
+mod invariant;
 #[cfg(test)]
 mod output_tests;
 mod repr;
@@ -199,6 +200,14 @@ pub fn most_traits(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let mut tokens = proc_macro2::TokenStream::new();
     for (derive, t) in derives {
         tokens.extend(derive(&ctx, t))
+    }
+    // Invariants prevent `FromBytes` from generating its usual supertrait
+    // impls, but still permit checked conversions through `TryFromBytes`.
+    if ctx.invariant_span.is_some() {
+        tokens.extend(crate::derive::try_from_bytes::derive_try_from_bytes(
+            &ctx,
+            Trait::TryFromBytes,
+        ));
     }
 
     // We wrap in `const_block` as a backstop in case any derive fails

@@ -4800,91 +4800,152 @@ const _: () = {
             match tag {
                 ___ZEROCOPY_TAG_UnitLike => true,
                 ___ZEROCOPY_TAG_StructLike => {
+                    #[allow(unused_imports)]
+                    use ::zerocopy::util::macro_util::core_reexport::mem::drop as a;
+                    let a = ::zerocopy::into_inner!(
+                        candidate.project:: <
+                        ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                        ::zerocopy::ident_id!(StructLike) }, { ::zerocopy::ident_id!(a)
+                        }, > ()
+                    );
+                    #[allow(unused_variables)]
+                    let a = match a.try_into_safe::<_, ::zerocopy::BecauseImmutable>() {
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(
+                            a,
+                        ) => a,
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Err(
+                            _,
+                        ) => return false,
+                    };
+                    #[allow(unused_imports)]
+                    use ::zerocopy::util::macro_util::core_reexport::mem::drop as b;
+                    let b = ::zerocopy::into_inner!(
+                        candidate.project:: <
+                        ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                        ::zerocopy::ident_id!(StructLike) }, { ::zerocopy::ident_id!(b)
+                        }, > ()
+                    );
+                    #[allow(unused_variables)]
+                    let b = match b.try_into_safe::<_, ::zerocopy::BecauseImmutable>() {
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(
+                            b,
+                        ) => b,
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Err(
+                            _,
+                        ) => return false,
+                    };
+                    #[allow(unused_imports)]
+                    use ::zerocopy::util::macro_util::core_reexport::mem::drop as c;
+                    let c = ::zerocopy::into_inner!(
+                        candidate.project:: <
+                        ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                        ::zerocopy::ident_id!(StructLike) }, { ::zerocopy::ident_id!(c)
+                        }, > ()
+                    );
+                    #[allow(unused_variables)]
+                    let c = match c.try_into_safe::<_, ::zerocopy::BecauseImmutable>() {
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(
+                            c,
+                        ) => c,
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Err(
+                            _,
+                        ) => return false,
+                    };
+                    #[allow(unused_imports)]
+                    use ::zerocopy::util::macro_util::core_reexport::mem::drop as d;
+                    let d = ::zerocopy::into_inner!(
+                        candidate.project:: <
+                        ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                        ::zerocopy::ident_id!(StructLike) }, { ::zerocopy::ident_id!(d)
+                        }, > ()
+                    );
+                    #[allow(unused_variables)]
+                    let d = match d.try_into_safe::<_, ::zerocopy::BecauseImmutable>() {
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(
+                            d,
+                        ) => d,
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Err(
+                            _,
+                        ) => return false,
+                    };
+                    #[allow(unused_imports)]
+                    use ::zerocopy::util::macro_util::core_reexport::mem::drop as e;
+                    let e = ::zerocopy::into_inner!(
+                        candidate.project:: <
+                        ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                        ::zerocopy::ident_id!(StructLike) }, { ::zerocopy::ident_id!(e)
+                        }, > ()
+                    );
+                    #[allow(unused_variables)]
+                    let e = match e.try_into_safe::<_, ::zerocopy::BecauseImmutable>() {
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(
+                            e,
+                        ) => e,
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Err(
+                            _,
+                        ) => return false,
+                    };
                     true
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(StructLike) }, {
-                                ::zerocopy::ident_id!(a) }, > ()
-                            );
-                            <u8 as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(StructLike) }, {
-                                ::zerocopy::ident_id!(b) }, > ()
-                            );
-                            <X as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(StructLike) }, {
-                                ::zerocopy::ident_id!(c) }, > ()
-                            );
-                            <X::Target as ::zerocopy::TryFromBytes>::is_safe(
-                                field_candidate,
-                            )
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(StructLike) }, {
-                                ::zerocopy::ident_id!(d) }, > ()
-                            );
-                            <Y::Target as ::zerocopy::TryFromBytes>::is_safe(
-                                field_candidate,
-                            )
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(StructLike) }, {
-                                ::zerocopy::ident_id!(e) }, > ()
-                            );
-                            <[(
-                                X,
-                                Y,
-                            ); N] as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
                 }
                 ___ZEROCOPY_TAG_TupleLike => {
+                    #[allow(unused_imports)]
+                    use ::zerocopy::util::macro_util::core_reexport::mem::drop as field_0;
+                    let field_0 = ::zerocopy::into_inner!(
+                        candidate.project:: <
+                        ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                        ::zerocopy::ident_id!(TupleLike) }, { ::zerocopy::ident_id!(0) },
+                        > ()
+                    );
+                    #[allow(unused_variables)]
+                    let field_0 = match field_0
+                        .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                    {
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(
+                            field_0,
+                        ) => field_0,
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Err(
+                            _,
+                        ) => return false,
+                    };
+                    #[allow(unused_imports)]
+                    use ::zerocopy::util::macro_util::core_reexport::mem::drop as field_1;
+                    let field_1 = ::zerocopy::into_inner!(
+                        candidate.project:: <
+                        ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                        ::zerocopy::ident_id!(TupleLike) }, { ::zerocopy::ident_id!(1) },
+                        > ()
+                    );
+                    #[allow(unused_variables)]
+                    let field_1 = match field_1
+                        .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                    {
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(
+                            field_1,
+                        ) => field_1,
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Err(
+                            _,
+                        ) => return false,
+                    };
+                    #[allow(unused_imports)]
+                    use ::zerocopy::util::macro_util::core_reexport::mem::drop as field_2;
+                    let field_2 = ::zerocopy::into_inner!(
+                        candidate.project:: <
+                        ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                        ::zerocopy::ident_id!(TupleLike) }, { ::zerocopy::ident_id!(2) },
+                        > ()
+                    );
+                    #[allow(unused_variables)]
+                    let field_2 = match field_2
+                        .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                    {
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Ok(
+                            field_2,
+                        ) => field_2,
+                        ::zerocopy::util::macro_util::core_reexport::result::Result::Err(
+                            _,
+                        ) => return false,
+                    };
                     true
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(TupleLike) }, {
-                                ::zerocopy::ident_id!(0) }, > ()
-                            );
-                            <bool as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(TupleLike) }, {
-                                ::zerocopy::ident_id!(1) }, > ()
-                            );
-                            <Y as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(TupleLike) }, {
-                                ::zerocopy::ident_id!(2) }, > ()
-                            );
-                            <PhantomData<
-                                &'a [(X, Y); N],
-                            > as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
                 }
                 _ => false,
             }

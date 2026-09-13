@@ -30,6 +30,9 @@ pub(crate) struct Ctx {
 
     // The span of the last `#[zerocopy(on_error = ...)]` attribute, if any.
     pub(crate) on_error_span: Option<proc_macro2::Span>,
+
+    /// The first field invariant on the source type, if any.
+    pub(crate) invariant_span: Option<Span>,
 }
 
 #[derive(Eq, PartialEq)]
@@ -152,7 +155,8 @@ impl Ctx {
             }
         }
 
-        Ok(Self { ast, zerocopy_crate: path, skip_on_error, on_error_span })
+        let invariant_span = crate::invariant::validate(&ast)?;
+        Ok(Self { ast, zerocopy_crate: path, skip_on_error, on_error_span, invariant_span })
     }
 
     pub(crate) fn with_input(&self, input: &DeriveInput) -> Self {
@@ -161,6 +165,7 @@ impl Ctx {
             zerocopy_crate: self.zerocopy_crate.clone(),
             skip_on_error: self.skip_on_error,
             on_error_span: self.on_error_span,
+            invariant_span: self.invariant_span,
         }
     }
 
@@ -176,13 +181,12 @@ impl Ctx {
 
     pub(crate) fn cfg_compile_error(&self) -> TokenStream {
         // By checking both during the compilation of the proc macro *and* in
-        // the generated code, we ensure that `--cfg
-        // zerocopy_unstable_linux` need only be passed *either* when
+        // the generated code, we ensure that each cfg need only be passed when
         // compiling this crate *or* when compiling the user's crate. The former
         // is preferable, but in some situations (such as when cross-compiling
         // using `cargo build --target`), it doesn't get propagated to this
         // crate's build by default.
-        if cfg!(zerocopy_unstable_linux) {
+        let on_error = if cfg!(zerocopy_unstable_linux) {
             quote!()
         } else if let Some(span) = self.on_error_span {
             let core = self.core_path();
@@ -197,7 +201,24 @@ impl Ctx {
             }
         } else {
             quote!()
-        }
+        };
+        let invariant = if cfg!(zerocopy_unstable_ptr) {
+            quote!()
+        } else if let Some(span) = self.invariant_span {
+            let core = self.core_path();
+            let error_message =
+                "`invariant` is experimental; pass '--cfg zerocopy_unstable_ptr' to enable";
+            quote::quote_spanned! {span=>
+                #[allow(unused_attributes, unexpected_cfgs)]
+                const _: () = {
+                    #[cfg(not(zerocopy_unstable_ptr))]
+                    #core::compile_error!(#error_message);
+                };
+            }
+        } else {
+            quote!()
+        };
+        quote!(#on_error #invariant)
     }
 
     pub(crate) fn error_or_skip<E>(&self, error: E) -> Result<TokenStream, E> {
