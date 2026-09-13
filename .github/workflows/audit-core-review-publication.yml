@@ -18,14 +18,14 @@ jobs:
     env:
       CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
       CARGO_TERM_COLOR: always
-      EXPECTED_BASE: c0317a67a04a0f19fdfe6421bdb3c2c3b0268ce0
+      EXPECTED_BASE: 648862516acf791317fbd6c85c2d8739fe3ae4ae
       RUSTFLAGS: -Dwarnings
       RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
     steps:
       - name: Check out the verified PR head, not this runner branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: c0317a67a04a0f19fdfe6421bdb3c2c3b0268ce0
+          ref: 648862516acf791317fbd6c85c2d8739fe3ae4ae
           fetch-depth: 0
           persist-credentials: false
       - name: Verify citations and replace only the safety comment
@@ -35,12 +35,37 @@ jobs:
           test "$(git rev-parse HEAD)" = "$EXPECTED_BASE"
           test "$(git ls-remote origin refs/heads/joshlf/audit-core-fixes-20260912 | cut -f1)" = "$EXPECTED_BASE"
           python3 - <<'PY'
-          import html
-          import re
           import subprocess
           import textwrap
           import urllib.request
+          from html.parser import HTMLParser
           from pathlib import Path
+
+          class VisibleText(HTMLParser):
+              # Inline markup must not add spaces within quoted sentences.
+              blocks = {'p', 'div', 'li', 'ul', 'ol', 'pre', 'br', 'tr', 'td',
+                        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'}
+
+              def __init__(self):
+                  super().__init__(convert_charrefs=True)
+                  self.parts = []
+                  self.hidden = 0
+
+              def handle_starttag(self, tag, attrs):
+                  if tag in {'script', 'style'}:
+                      self.hidden += 1
+                  if tag in self.blocks:
+                      self.parts.append(' ')
+
+              def handle_endtag(self, tag):
+                  if tag in {'script', 'style'}:
+                      self.hidden -= 1
+                  if tag in self.blocks:
+                      self.parts.append(' ')
+
+              def handle_data(self, data):
+                  if not self.hidden:
+                      self.parts.append(data)
 
           sources = {
               'std/mem/fn.transmute.html': [
@@ -62,14 +87,18 @@ jobs:
                   '(except for data inside an UnsafeCell<U>)',
               ],
           }
+          missing = []
           for suffix, quotations in sources.items():
               url = 'https://doc.rust-lang.org/1.93.1/' + suffix
               with urllib.request.urlopen(url, timeout=60) as response:
-                  page = response.read().decode('utf-8')
-              page = ' '.join(html.unescape(re.sub(r'<[^>]*>', ' ', page)).split())
+                  parser = VisibleText()
+                  parser.feed(response.read().decode('utf-8'))
+              page = ' '.join(''.join(parser.parts).split())
               for quotation in quotations:
-                  assert quotation in page, ('Quotation missing from versioned source', url, quotation)
-              print('Verified:', url)
+                  if quotation not in page:
+                      missing.append((url, quotation))
+              print('Checked:', url)
+          assert not missing, ('Quotations missing from versioned sources', missing)
 
           path = Path('zerocopy/src/wrappers.rs')
           original = path.read_text()
@@ -163,10 +192,13 @@ jobs:
           set -euo pipefail
           command -v gh
           test "$(git diff --name-only)" = zerocopy/src/wrappers.rs
+          test "$(git ls-remote origin refs/heads/joshlf/audit-core-fixes-20260912 | cut -f1)" = "$EXPECTED_BASE"
           git diff --check
           git add -- zerocopy/src/wrappers.rs
-          git -c user.name="Josh Liebow-Feeser's Agent" -c user.email=agent@joshlf.invalid commit -m 'Complete the unaligned reference-transmute proof' -m 'Cite the versioned reference layout, transmute, reference-validity, and shared-aliasing rules. Explain the existing Unalign contract and borrow lifetime alongside the offset-zero argument. This changes only the safety comment; the signature, representation, and executable code are unchanged.' -m "Agent-Authored-By: AI agent acting on Josh Liebow-Feeser's behalf"
+          git -c user.name='Josh Liebow-Feeser' -c user.email=joshlf@users.noreply.github.com commit -m 'Complete the unaligned reference-transmute proof' -m 'Cite the versioned reference layout, transmute, reference-validity, and shared-aliasing rules. Explain the existing Unalign contract and borrow lifetime alongside the offset-zero argument. This changes only the safety comment; the signature, representation, and executable code are unchanged.' -m "Agent-Authored-By: AI agent acting on Josh Liebow-Feeser's behalf"
           test "$(git rev-parse HEAD^)" = "$EXPECTED_BASE"
+          test "$(git log -1 --format=%an)" = 'Josh Liebow-Feeser'
+          test "$(git log -1 --format=%ae)" = joshlf@users.noreply.github.com
           stage_branch="joshlf/audit-core-review-stage-${GITHUB_RUN_ID}"
           test -z "$(git ls-remote origin "refs/heads/$stage_branch")"
           git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin "HEAD:refs/heads/$stage_branch"
