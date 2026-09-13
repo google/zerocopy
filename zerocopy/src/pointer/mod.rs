@@ -68,8 +68,8 @@ pub mod cast {
         ///
         /// # Safety
         ///
-        /// The returned pointer refers to a non-strict subset of the bytes of
-        /// `src`'s referent, and has the same provenance as `src`.
+        /// The returned pointer is non-null, refers to a non-strict subset of
+        /// the bytes of `src`'s referent, and has the same provenance as `src`.
         fn project(src: PtrInner<'_, Src>) -> *mut Dst;
     }
 
