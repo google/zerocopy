@@ -57,8 +57,8 @@ jobs:
           print('PATCH_SHA256=' + digest)
           print('PATCH_BYTES=' + str(len(patch)))
           print(patch.decode('utf-8'))
-          assert digest == '3e44df81689e8fb0750cbcce0cc0487a5d159d6442a1a91015e44fc22b557c62'
-          assert len(patch) == 11057
+          assert digest == '9c85c2f3a1fa0e8e8d7504a917c04da52f8b3c77e8232e723d2e15295187108a'
+          assert len(patch) == 8409
           subprocess.run(['git', 'apply', '--check', '-'], input=patch, check=True)
           subprocess.run(['git', 'apply', '-'], input=patch, check=True)
 
