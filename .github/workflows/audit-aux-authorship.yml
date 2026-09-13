@@ -68,7 +68,7 @@ jobs:
           assert remote() == expected, 'An auxiliary ref changed; do not overwrite it'
           for sha in set(expected.values()) | set(replacements.values()):
               subprocess.run(['git', 'fetch', '--no-tags', 'origin', sha], check=True)
-          merged = set(git('rev-list', 'origin/main').decode().splitlines())
+          merged = set(git('rev-list', 'origin/main', 'c975a8467ffce74944fc151f05616fd00189b801').decode().splitlines())
           cache, records = {}, []
           def read(sha):
               raw = git('cat-file', 'commit', sha)
