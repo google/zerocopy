@@ -1,0 +1,128 @@
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+# Isolated evidence collector; never part of an audit PR.
+name: Audit object verification
+'on':
+  push:
+    branches: [joshlf/audit-verification-20260913]
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+  statuses: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Hash raw Git objects and export pinned snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/objects evidence/snapshots
+          python3 - <<'PY'
+          import gzip
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          revisions = {
+              '3674': '964a536a49f182a450ac68499cf47f17d2c1ef6f',
+              '3675': '09e13632b06847f4fbd659908bfc80f18b88e3f0',
+              '3676': 'f638c74dfb9e226e66fdb38868235679a3563977',
+              '3677': '5946b5f6d48dcce3cc4799a480a45cf5b78f8006',
+              'pointer-runner': '5519f576f61087c0d4d078b91edab3164586a860',
+          }
+          records = []
+          for label, sha in revisions.items():
+              subprocess.run(['git', 'fetch', '--no-tags', 'origin', sha], check=True)
+              raw = subprocess.check_output(['git', 'cat-file', 'commit', sha])
+              actual = hashlib.sha1(b'commit ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+              assert actual == sha, (label, sha, actual)
+              Path('evidence/objects', label + '.commit').write_bytes(raw)
+              tree = subprocess.check_output(['git', 'rev-parse', sha + '^{tree}'], text=True).strip()
+              record = {'label': label, 'commit': sha, 'computed_commit': actual, 'tree': tree}
+              records.append(record)
+              print('VERIFIED_OBJECT ' + json.dumps(record, sort_keys=True))
+              archive = subprocess.check_output(['git', 'archive', '--format=tar', '--prefix=' + label + '/', sha])
+              with gzip.open(Path('evidence/snapshots', label + '.tar.gz'), 'wb') as output:
+                  output.write(archive)
+              Path('evidence/objects', label + '.history.txt').write_bytes(subprocess.check_output([
+                  'git', 'log', '-12', '--format=%H%n%T%n%P%n%an <%ae>%n%cn <%ce>%n%B%n---', sha,
+              ]))
+          Path('evidence/objects.json').write_text(json.dumps(records, indent=2) + '\n')
+          core = revisions['3675']
+          Path('evidence/core-followup.diff').write_bytes(subprocess.check_output(['git', 'diff', core + '^', core]))
+          Path('evidence/pointer-runner.yml').write_bytes(subprocess.check_output([
+              'git', 'show', revisions['pointer-runner'] + ':.github/workflows/audit-pointer-review-publication.yml',
+          ]))
+          Path('evidence/README.md').write_text(
+              '# Audit verification evidence\n\n'
+              'Raw Git commit hashes were recomputed before exporting these pinned snapshots. '
+              'The API records are observations at collection time, not promises that pending checks will pass. '
+              'This job does not change any PR, review, status, or repository setting.\n\n'
+              '*Authored by an AI agent acting on Josh Liebow-Feeser\'s behalf.*\n'
+          )
+          PY
+      - name: Collect paginated live PR reviews and checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import datetime
+          import json
+          import subprocess
+          from pathlib import Path
+
+          root = Path('evidence/api')
+          root.mkdir()
+          repo = 'repos/google/zerocopy/'
+          def collect(name, endpoint, paginate=False):
+              args = ['gh', 'api', '--method', 'GET', repo + endpoint]
+              if paginate:
+                  args += ['--paginate', '--slurp']
+              result = subprocess.run(args, capture_output=True, text=True)
+              if result.returncode:
+                  record = {'error': result.stderr, 'stdout': result.stdout, 'returncode': result.returncode}
+              else:
+                  record = json.loads(result.stdout)
+              (root / (name + '.json')).write_text(json.dumps(record, indent=2) + '\n')
+              return record
+
+          for number in [3669, 3670, 3671, 3672, 3673, 3674, 3675, 3676, 3677]:
+              pr = collect(str(number), 'pulls/' + str(number))
+              assert 'error' not in pr, pr
+              print('PR_STATE', number, pr['state'], pr.get('merged'), pr['head']['sha'])
+              if pr['state'] != 'open':
+                  continue
+              sha = pr['head']['sha']
+              for suffix, endpoint, pages in [
+                  ('commits', f'pulls/{number}/commits?per_page=100', True),
+                  ('reviews', f'pulls/{number}/reviews?per_page=100', True),
+                  ('comments', f'issues/{number}/comments?per_page=100', True),
+                  ('inline', f'pulls/{number}/comments?per_page=100', True),
+                  ('checks', f'commits/{sha}/check-runs?per_page=100', True),
+                  ('status', f'commits/{sha}/status?per_page=100', True),
+                  ('runs', f'actions/runs?head_sha={sha}&per_page=100', True),
+              ]:
+                  collect(str(number) + '-' + suffix, endpoint, pages)
+          collect('rulesets', 'rulesets?includes_parents=true&per_page=100', True)
+          collect('main-rules', 'rules/branches/main')
+          collect('main-protection', 'branches/main/protection')
+          Path('evidence/collected-at.txt').write_text(datetime.datetime.now(datetime.timezone.utc).isoformat() + '\n')
+          PY
+      - name: Preserve verification evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: audit-verification-${{ github.run_id }}
+          path: evidence/
+          if-no-files-found: error
+          retention-days: 30
