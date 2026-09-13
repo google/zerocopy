@@ -817,7 +817,7 @@ mod _transitions {
 }
 
 /// Casts of the referent type.
-#[cfg_attr(not(zerocopy_unstable_ptr), allow(unreachable_pub))]
+#[allow(unreachable_pub)] // False positive on MSRV
 pub use _casts::TryWithError;
 mod _casts {
     use core::cell::UnsafeCell;

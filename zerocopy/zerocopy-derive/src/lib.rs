@@ -50,6 +50,7 @@ macro_rules! ident {
 }
 
 mod derive;
+mod invariant;
 #[cfg(test)]
 mod output_tests;
 mod repr;
@@ -93,10 +94,13 @@ macro_rules! derive {
                 Err(e) => return e.into_compile_error().into(),
             };
             let ts = $inner(&ctx, Trait::$trait).into_ts();
-            // We wrap in `const_block` as a backstop in case any derive fails
-            // to wrap its output in `const_block` (and thus fails to annotate)
-            // with the full set of `#[allow(...)]` attributes).
-            let ts = const_block([Some(ts)]);
+            // Apply generated-code lint allowances as a backstop, except
+            // around caller-authored invariant expressions.
+            let ts = if matches!(Trait::$trait, Trait::TryFromBytes) {
+                ctx.const_block([Some(ts)])
+            } else {
+                const_block([Some(ts)])
+            };
             #[cfg(test)]
             crate::util::testutil::check_hygiene(ts.clone());
             ts.into()
@@ -176,6 +180,48 @@ pub fn __test_hygienically_mixed_into_bytes(
     )
 }
 
+/// Constructs an invariant whose field declaration and reference have different
+/// syntax contexts, while preserving all other caller tokens.
+#[doc(hidden)]
+#[proc_macro]
+pub fn __test_hygienically_mixed_invariant(
+    input: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
+    // Cross-compilation does not necessarily pass the nightly test cfg to
+    // host proc macros. Omit the fixture and its test together in that case.
+    #[cfg(not(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS))]
+    {
+        let _ = input;
+        proc_macro::TokenStream::new()
+    }
+    #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+    {
+        use proc_macro::{Group, Ident, Span, TokenStream, TokenTree};
+
+        fn rewrite(input: TokenStream) -> TokenStream {
+            input
+                .into_iter()
+                .map(|token| match token {
+                    TokenTree::Ident(ident) if ident.to_string() == "DefField" => {
+                        TokenTree::Ident(Ident::new("field", Span::def_site()))
+                    }
+                    TokenTree::Ident(ident) if ident.to_string() == "CallField" => {
+                        TokenTree::Ident(Ident::new("field", Span::call_site()))
+                    }
+                    TokenTree::Group(group) => {
+                        let mut rewritten = Group::new(group.delimiter(), rewrite(group.stream()));
+                        rewritten.set_span(group.span());
+                        TokenTree::Group(rewritten)
+                    }
+                    token => token,
+                })
+                .collect()
+        }
+
+        rewrite(input)
+    }
+}
+
 #[cfg_attr(not(zerocopy_unstable_linux), doc(hidden))]
 #[proc_macro_derive(most_traits, attributes(zerocopy))]
 pub fn most_traits(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -200,11 +246,18 @@ pub fn most_traits(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     for (derive, t) in derives {
         tokens.extend(derive(&ctx, t))
     }
+    // Invariants prevent `FromBytes` from generating its usual supertrait
+    // impls, but still permit checked conversions through `TryFromBytes`.
+    if ctx.invariant_span.is_some() {
+        tokens.extend(crate::derive::try_from_bytes::derive_try_from_bytes(
+            &ctx,
+            Trait::TryFromBytes,
+        ));
+    }
 
-    // We wrap in `const_block` as a backstop in case any derive fails
-    // to wrap its output in `const_block` (and thus fails to annotate)
-    // with the full set of `#[allow(...)]` attributes).
-    let ts = const_block([Some(tokens)]);
+    // Apply generated-code lint allowances as a backstop, except around
+    // caller-authored invariant expressions.
+    let ts = ctx.const_block([Some(tokens)]);
     #[cfg(test)]
     crate::util::testutil::check_hygiene(ts.clone());
     ts.into()

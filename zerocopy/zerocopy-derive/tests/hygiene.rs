@@ -132,3 +132,52 @@ mod issue_3621 {
     #[repr(C)]
     struct Outer(Inner);
 }
+
+// Field names that match constants, unit structs, or const parameters in the
+// surrounding scope must not interfere with validation.
+mod field_bindings {
+    use super::{imp, util};
+
+    const CONST: () = ();
+    const candidate_: () = ();
+    struct UNIT;
+
+    #[derive(imp::TryFromBytes)]
+    #[zerocopy(crate = "zerocopy_renamed")]
+    #[repr(C)]
+    struct Struct<const N: usize> {
+        CONST: bool,
+        UNIT: bool,
+        N: bool,
+    }
+
+    #[derive(imp::TryFromBytes)]
+    #[zerocopy(crate = "zerocopy_renamed")]
+    #[repr(u8)]
+    enum Enum<const N: usize> {
+        Named { CONST: bool, UNIT: bool, N: bool },
+    }
+
+    #[derive(imp::TryFromBytes)]
+    #[zerocopy(crate = "zerocopy_renamed")]
+    union Union<const N: usize> {
+        CONST: bool,
+        UNIT: bool,
+        N: bool,
+    }
+
+    #[test]
+    fn test_field_bindings() {
+        util::test_is_safe::<Struct<0>, _>([0u8; 3], true);
+        util::test_is_safe::<Enum<0>, _>([0u8; 4], true);
+        for idx in 0..3 {
+            let mut fields = [0u8; 3];
+            fields[idx] = 2;
+            util::test_is_safe::<Struct<0>, _>(fields, false);
+            util::test_is_safe::<Enum<0>, _>([0u8, fields[0], fields[1], fields[2]], false);
+        }
+        util::test_is_safe::<Union<0>, _>([0u8], true);
+        util::test_is_safe::<Union<0>, _>([1u8], true);
+        util::test_is_safe::<Union<0>, _>([2u8], false);
+    }
+}

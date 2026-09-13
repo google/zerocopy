@@ -4801,90 +4801,73 @@ const _: () = {
                 ___ZEROCOPY_TAG_UnitLike => true,
                 ___ZEROCOPY_TAG_StructLike => {
                     true
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(StructLike) }, {
-                                ::zerocopy::ident_id!(a) }, > ()
-                            );
-                            <u8 as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(StructLike) }, {
-                                ::zerocopy::ident_id!(b) }, > ()
-                            );
-                            <X as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(StructLike) }, {
-                                ::zerocopy::ident_id!(c) }, > ()
-                            );
-                            <X::Target as ::zerocopy::TryFromBytes>::is_safe(
-                                field_candidate,
-                            )
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(StructLike) }, {
-                                ::zerocopy::ident_id!(d) }, > ()
-                            );
-                            <Y::Target as ::zerocopy::TryFromBytes>::is_safe(
-                                field_candidate,
-                            )
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(StructLike) }, {
-                                ::zerocopy::ident_id!(e) }, > ()
-                            );
-                            <[(
-                                X,
-                                Y,
-                            ); N] as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
+                        && ::zerocopy::into_inner!(
+                            candidate.project:: <
+                            ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                            ::zerocopy::ident_id!(StructLike) }, {
+                            ::zerocopy::ident_id!(a) }, > ()
+                        )
+                            .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                            .is_ok()
+                        && ::zerocopy::into_inner!(
+                            candidate.project:: <
+                            ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                            ::zerocopy::ident_id!(StructLike) }, {
+                            ::zerocopy::ident_id!(b) }, > ()
+                        )
+                            .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                            .is_ok()
+                        && ::zerocopy::into_inner!(
+                            candidate.project:: <
+                            ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                            ::zerocopy::ident_id!(StructLike) }, {
+                            ::zerocopy::ident_id!(c) }, > ()
+                        )
+                            .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                            .is_ok()
+                        && ::zerocopy::into_inner!(
+                            candidate.project:: <
+                            ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                            ::zerocopy::ident_id!(StructLike) }, {
+                            ::zerocopy::ident_id!(d) }, > ()
+                        )
+                            .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                            .is_ok()
+                        && ::zerocopy::into_inner!(
+                            candidate.project:: <
+                            ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                            ::zerocopy::ident_id!(StructLike) }, {
+                            ::zerocopy::ident_id!(e) }, > ()
+                        )
+                            .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                            .is_ok()
                 }
                 ___ZEROCOPY_TAG_TupleLike => {
                     true
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(TupleLike) }, {
-                                ::zerocopy::ident_id!(0) }, > ()
-                            );
-                            <bool as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(TupleLike) }, {
-                                ::zerocopy::ident_id!(1) }, > ()
-                            );
-                            <Y as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
-                        && {
-                            let field_candidate = ::zerocopy::into_inner!(
-                                candidate.reborrow().project:: <
-                                ::zerocopy::project_clients::TryFromBytesDerive, _, {
-                                ::zerocopy::ident_id!(TupleLike) }, {
-                                ::zerocopy::ident_id!(2) }, > ()
-                            );
-                            <PhantomData<
-                                &'a [(X, Y); N],
-                            > as ::zerocopy::TryFromBytes>::is_safe(field_candidate)
-                        }
+                        && ::zerocopy::into_inner!(
+                            candidate.project:: <
+                            ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                            ::zerocopy::ident_id!(TupleLike) }, {
+                            ::zerocopy::ident_id!(0) }, > ()
+                        )
+                            .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                            .is_ok()
+                        && ::zerocopy::into_inner!(
+                            candidate.project:: <
+                            ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                            ::zerocopy::ident_id!(TupleLike) }, {
+                            ::zerocopy::ident_id!(1) }, > ()
+                        )
+                            .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                            .is_ok()
+                        && ::zerocopy::into_inner!(
+                            candidate.project:: <
+                            ::zerocopy::project_clients::TryFromBytesDerive, _, {
+                            ::zerocopy::ident_id!(TupleLike) }, {
+                            ::zerocopy::ident_id!(2) }, > ()
+                        )
+                            .try_into_safe::<_, ::zerocopy::BecauseImmutable>()
+                            .is_ok()
                 }
                 _ => false,
             }

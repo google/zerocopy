@@ -164,14 +164,16 @@ impl UiTestRunner {
 
         let mut command = Command::new("cargo");
         command.current_dir(workspace_root.clone());
-        // We strip `--cfg zerocopy_derive_union_into_bytes` and `--cfg
-        // zerocopy_unstable_linux` from `RUSTFLAGS` so that the
+        // We strip experimental feature cfgs from `RUSTFLAGS` so that the
         // `zerocopy-derive` proc macro is built without them. This ensures it
         // generates the feature-gate checks into the UI tests, which we can
         // then explicitly enable or disable via `rustc_args`.
         let mut rustflags = env::var("RUSTFLAGS").unwrap_or_default();
-        let cfgs_to_strip =
-            ["--cfg zerocopy_derive_union_into_bytes", "--cfg zerocopy_unstable_linux"];
+        let cfgs_to_strip = [
+            "--cfg zerocopy_derive_union_into_bytes",
+            "--cfg zerocopy_unstable_linux",
+            "--cfg zerocopy_unstable_ptr",
+        ];
         for &cfg in &cfgs_to_strip {
             rustflags = rustflags.replace(cfg, "");
         }
