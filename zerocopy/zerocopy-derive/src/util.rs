@@ -30,6 +30,9 @@ pub(crate) struct Ctx {
 
     // The span of the last `#[zerocopy(on_error = ...)]` attribute, if any.
     pub(crate) on_error_span: Option<proc_macro2::Span>,
+
+    /// The first field invariant on the source type, if any.
+    pub(crate) invariant_span: Option<Span>,
 }
 
 #[derive(Eq, PartialEq)]
@@ -152,7 +155,8 @@ impl Ctx {
             }
         }
 
-        Ok(Self { ast, zerocopy_crate: path, skip_on_error, on_error_span })
+        let invariant_span = crate::invariant::validate(&ast)?;
+        Ok(Self { ast, zerocopy_crate: path, skip_on_error, on_error_span, invariant_span })
     }
 
     pub(crate) fn with_input(&self, input: &DeriveInput) -> Self {
@@ -161,6 +165,7 @@ impl Ctx {
             zerocopy_crate: self.zerocopy_crate.clone(),
             skip_on_error: self.skip_on_error,
             on_error_span: self.on_error_span,
+            invariant_span: self.invariant_span,
         }
     }
 
@@ -174,15 +179,41 @@ impl Ctx {
         quote!(#zerocopy_crate::util::macro_util::core_reexport)
     }
 
+    /// Choose an implementation name absent from the caller's tokens. This is
+    /// best-effort; names introduced by nested macros are not considered.
+    /// Unlike local variables, type parameters are not hidden by mixed-site
+    /// hygiene.
+    pub(crate) fn fresh_ident(&self, name: &str) -> Ident {
+        let idents = crate::invariant::idents(self.ast.to_token_stream());
+        let mut name = name.to_owned();
+        while idents.iter().any(|ident| ident.to_string().trim_start_matches("r#") == name) {
+            name.push('_');
+        }
+        Ident::new(&name, Span::mixed_site())
+    }
+
+    /// Caller-authored invariant expressions must inherit the caller's lint
+    /// policy, rather than the blanket allowances for generated glue.
+    pub(crate) fn const_block(
+        &self,
+        items: impl IntoIterator<Item = Option<TokenStream>>,
+    ) -> TokenStream {
+        if self.invariant_span.is_none() {
+            const_block(items)
+        } else {
+            let items = items.into_iter().flatten();
+            quote! { const _: () = { #(#items)* }; }
+        }
+    }
+
     pub(crate) fn cfg_compile_error(&self) -> TokenStream {
         // By checking both during the compilation of the proc macro *and* in
-        // the generated code, we ensure that `--cfg
-        // zerocopy_unstable_linux` need only be passed *either* when
+        // the generated code, we ensure that each cfg need only be passed when
         // compiling this crate *or* when compiling the user's crate. The former
         // is preferable, but in some situations (such as when cross-compiling
         // using `cargo build --target`), it doesn't get propagated to this
         // crate's build by default.
-        if cfg!(zerocopy_unstable_linux) {
+        let on_error = if cfg!(zerocopy_unstable_linux) {
             quote!()
         } else if let Some(span) = self.on_error_span {
             let core = self.core_path();
@@ -197,7 +228,24 @@ impl Ctx {
             }
         } else {
             quote!()
-        }
+        };
+        let invariant = if cfg!(zerocopy_unstable_ptr) {
+            quote!()
+        } else if let Some(span) = self.invariant_span {
+            let core = self.core_path();
+            let error_message =
+                "`invariant` is experimental; pass '--cfg zerocopy_unstable_ptr' to enable";
+            quote::quote_spanned! {span=>
+                #[allow(unused_attributes, unexpected_cfgs)]
+                const _: () = {
+                    #[cfg(not(zerocopy_unstable_ptr))]
+                    #core::compile_error!(#error_message);
+                };
+            }
+        } else {
+            quote!()
+        };
+        quote!(#on_error #invariant)
     }
 
     pub(crate) fn error_or_skip<E>(&self, error: E) -> Result<TokenStream, E> {
@@ -832,7 +880,12 @@ impl<'a> ImplBlockBuilder<'a> {
 
         let outer_extras = self.outer_extras.filter(|e| !e.is_empty());
         let cfg_compile_error = self.ctx.cfg_compile_error();
-        const_block([Some(cfg_compile_error), Some(impl_tokens), outer_extras])
+        let items = [Some(cfg_compile_error), Some(impl_tokens), outer_extras];
+        if matches!(self.trt, Trait::TryFromBytes) {
+            self.ctx.const_block(items)
+        } else {
+            const_block(items)
+        }
     }
 }
 
@@ -858,8 +911,7 @@ impl BoolExt for bool {
     }
 }
 
-pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) -> TokenStream {
-    let items = items.into_iter().flatten();
+pub(crate) fn allow_generated_code() -> TokenStream {
     quote! {
         #[allow(
             // FIXME(#553): Add a test that generates a warning when
@@ -876,6 +928,14 @@ pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) 
             non_ascii_idents,
             clippy::missing_inline_in_public_items,
         )]
+    }
+}
+
+pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) -> TokenStream {
+    let items = items.into_iter().flatten();
+    let allow = allow_generated_code();
+    quote! {
+        #allow
         #[deny(ambiguous_associated_items)]
         // While there are not currently any warnings that this suppresses
         // (that we're aware of), it's good future-proofing hygiene.

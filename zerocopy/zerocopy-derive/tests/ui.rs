@@ -22,11 +22,11 @@ use testutil::UiTestRunner;
     ignore
 )]
 fn ui() {
-    // This tests the behavior when `--cfg zerocopy_derive_union_into_bytes` is
-    // present.
+    // This tests the behavior when experimental features are enabled.
     UiTestRunner::new()
         .rustc_arg("--cfg=zerocopy_derive_union_into_bytes")
         .rustc_arg("--cfg=zerocopy_unstable_linux")
+        .rustc_arg("--cfg=zerocopy_unstable_ptr")
         .rustc_arg("-Wwarnings") // To ensure .stderr files reflect typical user encounter
         .run();
 
