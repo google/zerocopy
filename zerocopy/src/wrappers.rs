@@ -237,17 +237,18 @@ impl<T> Unalign<T> {
     /// The caller must guarantee that `self` satisfies `align_of::<T>()`.
     #[inline(always)]
     pub const unsafe fn deref_unchecked(&self) -> &T {
-        // SAFETY: `Unalign<T>` is a single-field `repr(C, packed)` struct, so
-        // its sole field is at offset zero [1]. Thus `self` and its valid `T`
-        // field have the same address and provenance. The caller guarantees
-        // that this address is aligned for `T`; the returned reference borrows
-        // for no longer than `self`, which keeps the storage live and shared.
+        // SAFETY: `Unalign<T>` is a single-field `repr(C, packed)` struct. The
+        // `repr(C)` layout algorithm starts at zero, rounds that offset up for
+        // the field's alignment, and places the field there [1]. Zero is already
+        // aligned, so the sole field is at offset zero. The caller guarantees
+        // the alignment needed to reference that valid `T`; the returned
+        // reference borrows the same live storage for no longer than `self`.
         //
-        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        // [1] Per https://doc.rust-lang.org/1.56.0/reference/type-layout.html#reprc-structs:
         //
-        //   The alignments of each field, for the purpose of positioning fields,
-        //   is the smaller of the specified alignment and the alignment of the
-        //   field's type.
+        //   Start with a current offset of 0 bytes.
+        //   ...
+        //   The offset of the field is what the current offset is now.
         //
         // We use `mem::transmute` instead of `&*self.get_ptr()` because
         // dereferencing pointers is not stable in `const` on our current MSRV
