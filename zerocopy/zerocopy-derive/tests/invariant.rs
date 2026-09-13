@@ -26,9 +26,9 @@ fn read<T: imp::Copy + imp::Immutable, A: imp::invariant::Alignment>(
 #[repr(C, packed)]
 struct Foo {
     a: u8,
-    #[zerocopy(invariant((read(a) % 2) == (read(b) as u8)))]
+    #[zerocopy(invariant((*a.read() % 2) == (*b.read() as u8)))]
     b: bool,
-    #[zerocopy(invariant(read(c) > 0))]
+    #[zerocopy(invariant(*c.read() > 0))]
     c: i16,
 }
 
