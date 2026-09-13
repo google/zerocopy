@@ -1723,10 +1723,10 @@ runtime checks using `#[zerocopy(invariant(expression))]`:
 #[derive(TryFromBytes)]
 struct Foo {
     a: u8,
-    #[zerocopy(invariant((**a.unaligned_as_ref() % 2) == (**b.unaligned_as_ref() as u8)))]
+    #[zerocopy(invariant((*a.read() % 2) == (*b.read() as u8)))]
     b: bool,
-    #[zerocopy(invariant(**c.unaligned_as_ref() > 0))]
-    c: i8,
+    #[zerocopy(invariant(*c.read() > 0))]
+    c: i16,
 }
 ```
 
@@ -1734,7 +1734,9 @@ Each expression must return a `bool`. It has access to validated, read-only
 [`Ptr`]s to the current field and all preceding fields of the struct or
 variant, using their field names. A union's invariants have access only to
 the current field. The expression can use the existing [`Ptr`] APIs to
-inspect those fields. In this example, all fields are accessed by reference.
+inspect those fields. In this example, `read()` copies each field without
+requiring alignment, and dereferencing the resulting [`ReadOnly`] accesses
+the copied value.
 
 Rust's usual restrictions on local bindings apply; for example, a field name
 cannot shadow an in-scope constant.

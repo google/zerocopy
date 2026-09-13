@@ -8,7 +8,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::{fmt, hash::Hash};
+use core::{borrow::Borrow, fmt, hash::Hash};
 
 use super::*;
 use crate::pointer::{invariant::Safe, SizeEq, TransmuteFrom};
@@ -613,7 +613,14 @@ mod read_only_def {
     /// Note that `&mut ReadOnly<T>` still permits mutation – the read-only
     /// property only applies to shared references.
     ///
+    /// `ReadOnly<T>` implements [`Copy`] and [`Clone`] when `T: Copy`. Cloning
+    /// copies the value without calling `T::clone`. Trait implementations that
+    /// expose or operate on a shared reference to `T` require `T: Immutable`.
+    /// Constructing a wrapper or accessing its contents through [`AsMut`]
+    /// does not require `T: Immutable`.
+    ///
     /// [`Immutable`]: crate::Immutable
+    #[derive(Copy)]
     #[repr(transparent)]
     pub struct ReadOnly<T: ?Sized> {
         // INVARIANT: `inner` is never mutated through a `&ReadOnly<T>`
@@ -715,6 +722,29 @@ unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for ReadOnly<T> {}
 // it has the same bit validity as `T`.
 unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Safe, Safe> for T {}
 
+impl<T: Default> Default for ReadOnly<T> {
+    #[inline(always)]
+    fn default() -> Self {
+        Self::new(Default::default())
+    }
+}
+
+// Copying avoids calling `T::clone`, which could mutate through a shared
+// reference to `T` and violate `ReadOnly`'s invariant.
+impl<T: Copy> Clone for ReadOnly<T> {
+    #[inline(always)]
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+impl<T> From<T> for ReadOnly<T> {
+    #[inline(always)]
+    fn from(t: T) -> Self {
+        Self::new(t)
+    }
+}
+
 impl<'a, T: ?Sized + Immutable> From<&'a T> for &'a ReadOnly<T> {
     #[inline(always)]
     fn from(t: &'a T) -> &'a ReadOnly<T> {
@@ -743,12 +773,71 @@ impl<T: ?Sized + Immutable> DerefMut for ReadOnly<T> {
     }
 }
 
-impl<T: ?Sized + Immutable + Debug> Debug for ReadOnly<T> {
+impl<T: ?Sized + Immutable> AsRef<T> for ReadOnly<T> {
     #[inline(always)]
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        self.deref().fmt(f)
+    fn as_ref(&self) -> &T {
+        self.deref()
     }
 }
+
+impl<T: ?Sized + Immutable> Borrow<T> for ReadOnly<T> {
+    #[inline(always)]
+    fn borrow(&self) -> &T {
+        self.deref()
+    }
+}
+
+impl<T: ?Sized> AsMut<T> for ReadOnly<T> {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut T {
+        ReadOnly::as_mut(self)
+    }
+}
+
+// Delegate shared access through `Deref`, which requires `T: Immutable` and
+// thus prevents interior mutation of the wrapped value by these trait methods.
+impl<T: ?Sized + Immutable + PartialEq> PartialEq for ReadOnly<T> {
+    #[inline(always)]
+    fn eq(&self, other: &Self) -> bool {
+        self.deref().eq(other.deref())
+    }
+}
+
+impl<T: ?Sized + Immutable + Eq> Eq for ReadOnly<T> {}
+
+impl<T: ?Sized + Immutable + PartialOrd> PartialOrd for ReadOnly<T> {
+    #[inline(always)]
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.deref().partial_cmp(other.deref())
+    }
+}
+
+impl<T: ?Sized + Immutable + Ord> Ord for ReadOnly<T> {
+    #[inline(always)]
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.deref().cmp(other.deref())
+    }
+}
+
+impl<T: ?Sized + Immutable + Hash> Hash for ReadOnly<T> {
+    #[inline(always)]
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.deref().hash(state);
+    }
+}
+
+macro_rules! impl_read_only_fmt {
+    ($($trait:ident),* $(,)?) => {$(
+        impl<T: ?Sized + Immutable + fmt::$trait> fmt::$trait for ReadOnly<T> {
+            #[inline(always)]
+            fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+                fmt::$trait::fmt(self.deref(), f)
+            }
+        }
+    )*};
+}
+
+impl_read_only_fmt!(Debug, Display, Binary, Octal, LowerHex, UpperHex, LowerExp, UpperExp);
 
 // SAFETY: See safety comment on `ProjectToTag`.
 unsafe impl<T: HasTag<Client> + ?Sized, Client> HasTag<Client> for ReadOnly<T> {
@@ -856,6 +945,96 @@ mod tests {
 
     use super::*;
     use crate::util::testutil::*;
+
+    #[test]
+    #[allow(clippy::clone_on_copy, clippy::non_canonical_clone_impl)]
+    fn test_read_only_copy_clone() {
+        // This type deliberately does not implement `Immutable`. Copying the
+        // wrapper must not require it or invoke the inner `Clone` impl.
+        #[derive(Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        struct PanickingClone(u16);
+
+        impl Clone for PanickingClone {
+            fn clone(&self) -> Self {
+                panic!("ReadOnly must not call the inner Clone implementation")
+            }
+        }
+
+        static_assertions::assert_not_impl_any!(
+            ReadOnly<PanickingClone>: Debug, PartialEq, Eq, PartialOrd, Ord,
+            Hash, AsRef<PanickingClone>, Borrow<PanickingClone>
+        );
+        static_assertions::assert_not_impl_any!(
+            ReadOnly<Cell<u8>>: Copy, Clone, Deref, AsRef<Cell<u8>>, Borrow<Cell<u8>>
+        );
+
+        let value = ReadOnly::new(PanickingClone(42));
+        let copy = value;
+        let clone = value.clone();
+        assert_eq!(ReadOnly::into_inner(copy).0, 42);
+        assert_eq!(ReadOnly::into_inner(clone).0, 42);
+    }
+
+    #[test]
+    fn test_read_only_mutable_access() {
+        // Construction and exclusive access also support interior mutability.
+        let mut value = ReadOnly::<Cell<u8>>::default();
+        let inner: &mut Cell<u8> = value.as_mut();
+        inner.set(42);
+        assert_eq!(ReadOnly::into_inner(value).get(), 42);
+
+        let value = ReadOnly::from(Cell::new(7));
+        assert_eq!(ReadOnly::into_inner(value).get(), 7);
+    }
+
+    #[test]
+    fn test_read_only_borrowed_lookup() {
+        // Borrowed lookups require equality, hashing, and ordering to agree
+        // between the wrapper and the inner value.
+        let mut hash_map = std::collections::HashMap::new();
+        hash_map.insert(ReadOnly::new(42u16), true);
+        assert_eq!(hash_map.get(&42u16), Some(&true));
+        assert_eq!(hash_map.get(&43u16), None);
+
+        let mut tree = std::collections::BTreeMap::new();
+        tree.insert(ReadOnly::new(42u16), true);
+        assert_eq!(tree.get(&42u16), Some(&true));
+        assert_eq!(tree.get(&43u16), None);
+
+        // Preserve partial orders, including incomparable values.
+        let nan = ReadOnly::new(f32::NAN);
+        assert_eq!(nan.partial_cmp(&nan), None);
+        assert_ne!(nan, nan);
+    }
+
+    #[test]
+    fn test_read_only_unsized() {
+        let bytes = [1u8, 2];
+        let value: &ReadOnly<[u8]> = (&bytes[..]).into();
+        let as_ref: &[u8] = value.as_ref();
+        let borrowed: &[u8] = value.borrow();
+        assert_eq!(as_ref, bytes);
+        assert_eq!(borrowed, bytes);
+        assert_eq!(value, value);
+        assert_eq!(value.cmp(value), Ordering::Equal);
+
+        let text: &ReadOnly<str> = "hello".into();
+        assert_eq!(format!("{:.3}", text), "hel");
+    }
+
+    #[test]
+    fn test_read_only_formatting() {
+        let value = ReadOnly::new(42u16);
+        // Check that formatting flags are forwarded as well as the value.
+        assert_eq!(format!("{:04?}", value), "0042");
+        assert_eq!(format!("{:04}", value), "0042");
+        assert_eq!(format!("{:#010b}", value), "0b00101010");
+        assert_eq!(format!("{:#06o}", value), "0o0052");
+        assert_eq!(format!("{:#06x}", value), "0x002a");
+        assert_eq!(format!("{:#06X}", value), "0x002A");
+        assert_eq!(format!("{:.2e}", value), "4.20e1");
+        assert_eq!(format!("{:.2E}", value), "4.20E1");
+    }
 
     #[test]
     fn test_unalign() {
