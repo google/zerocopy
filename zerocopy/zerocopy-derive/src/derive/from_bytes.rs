@@ -17,6 +17,15 @@ use crate::{
 /// can't evaluate in a proc macro). If the enum has unknown discriminants, then
 /// it might have a zero variant that we just can't detect.
 pub(crate) fn find_zero_variant(enm: &DataEnum) -> Result<usize, bool> {
+    fn strip_parens_and_groups(mut expr: &Expr) -> &Expr {
+        loop {
+            expr = match expr {
+                Expr::Group(group) => &group.expr,
+                Expr::Paren(paren) => &paren.expr,
+                expr => return expr,
+            };
+        }
+    }
     // Discriminants can be anywhere in the range [i128::MIN, u128::MAX] because
     // the discriminant type may be signed or unsigned. Since we only care about
     // tracking the discriminant when it's less than or equal to zero, we can
@@ -35,7 +44,7 @@ pub(crate) fn find_zero_variant(enm: &DataEnum) -> Result<usize, bool> {
     let mut has_unknown_discriminants = false;
 
     for (i, v) in enm.variants.iter().enumerate() {
-        match v.discriminant.as_ref() {
+        match v.discriminant.as_ref().map(|(_, expr)| strip_parens_and_groups(expr)) {
             // Implicit discriminant
             None => {
                 match next_negative_discriminant.as_mut() {
@@ -46,7 +55,7 @@ pub(crate) fn find_zero_variant(enm: &DataEnum) -> Result<usize, bool> {
                 }
             }
             // Explicit positive discriminant
-            Some((_, Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))) => {
+            Some(Expr::Lit(ExprLit { lit: Lit::Int(int), .. })) => {
                 match int.base10_parse::<u128>().ok() {
                     Some(0) => return Ok(i),
                     Some(_) => next_negative_discriminant = None,
@@ -58,26 +67,28 @@ pub(crate) fn find_zero_variant(enm: &DataEnum) -> Result<usize, bool> {
                 }
             }
             // Explicit negative discriminant
-            Some((_, Expr::Unary(ExprUnary { op: UnOp::Neg(_), expr, .. }))) => match &**expr {
-                Expr::Lit(ExprLit { lit: Lit::Int(int), .. }) => {
-                    match int.base10_parse::<u128>().ok() {
-                        Some(0) => return Ok(i),
-                        // x is nonzero so subtraction is always safe
-                        Some(x) => next_negative_discriminant = Some(x - 1),
-                        None => {
-                            // Numbers should never fail to parse, but just in
-                            // case:
-                            has_unknown_discriminants = true;
-                            next_negative_discriminant = None;
+            Some(Expr::Unary(ExprUnary { op: UnOp::Neg(_), expr, .. })) => {
+                match strip_parens_and_groups(expr) {
+                    Expr::Lit(ExprLit { lit: Lit::Int(int), .. }) => {
+                        match int.base10_parse::<u128>().ok() {
+                            Some(0) => return Ok(i),
+                            // x is nonzero so subtraction is always safe
+                            Some(x) => next_negative_discriminant = Some(x - 1),
+                            None => {
+                                // Numbers should never fail to parse, but just in
+                                // case:
+                                has_unknown_discriminants = true;
+                                next_negative_discriminant = None;
+                            }
                         }
                     }
+                    // Unknown negative discriminant (e.g. const repr)
+                    _ => {
+                        has_unknown_discriminants = true;
+                        next_negative_discriminant = None;
+                    }
                 }
-                // Unknown negative discriminant (e.g. const repr)
-                _ => {
-                    has_unknown_discriminants = true;
-                    next_negative_discriminant = None;
-                }
-            },
+            }
             // Unknown discriminant (e.g. const expr)
             _ => {
                 has_unknown_discriminants = true;
@@ -172,7 +183,10 @@ fn derive_from_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> TokenStream {
 fn derive_from_bytes_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Error> {
     let repr = EnumRepr::from_attrs(&ctx.ast.attrs)?;
 
-    let variants_required = 1usize << enum_size_from_repr(&repr)?;
+    let variants_required = match enum_size_from_repr(&repr) {
+        Ok(size) => 1usize << size,
+        Err(error) => return ctx.error_or_skip(error),
+    };
     if enm.variants.len() != variants_required {
         return ctx.error_or_skip(Error::new_spanned(
             &ctx.ast,

@@ -8,14 +8,14 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use std::num::NonZeroU32;
+use std::{collections::HashSet, num::NonZeroU32};
 
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::{Span, TokenStream, TokenTree};
 use quote::{quote, quote_spanned, ToTokens};
 use syn::{
     parse::ParseBuffer, parse_quote, spanned::Spanned as _, token::PathSep, Data, DataEnum,
     DataStruct, DataUnion, DeriveInput, Error, Expr, ExprLit, Field, GenericParam, Ident, Index,
-    Lit, LitStr, Meta, Path, Type, Variant, Visibility, WherePredicate,
+    Lifetime, Lit, LitStr, Meta, Path, Type, Variant, Visibility, WherePredicate,
 };
 
 use crate::repr::{CompoundRepr, EnumRepr, PrimitiveRepr, Repr, Spanned};
@@ -91,8 +91,8 @@ impl Ctx {
         let mut on_error_span = None;
 
         for attr in &ast.attrs {
-            if let Meta::List(ref meta_list) = attr.meta {
-                if path_is_ident(&meta_list.path, "zerocopy") {
+            if path_is_ident(attr.path(), "zerocopy") {
+                if matches!(attr.meta, Meta::List(_)) {
                     attr.parse_nested_meta(|meta| {
                         if path_is_ident(&meta.path, "crate") {
                             let expr = meta.value().and_then(ParseBuffer::parse);
@@ -141,13 +141,15 @@ impl Ctx {
                         }
 
                         Err(Error::new(
-                            Span::call_site(),
+                            meta.path.span(),
                             format!(
                                 "unknown attribute encountered: {}",
                                 meta.path.into_token_stream()
                             ),
                         ))
                     })?;
+                } else {
+                    return Err(Error::new_spanned(attr, "expected #[zerocopy(...)]"));
                 }
             }
         }
@@ -202,11 +204,40 @@ impl Ctx {
 
     pub(crate) fn error_or_skip<E>(&self, error: E) -> Result<TokenStream, E> {
         if self.skip_on_error {
-            Ok(self.cfg_compile_error())
+            Ok(TokenStream::new())
         } else {
             Err(error)
         }
     }
+}
+
+/// Returns a lifetime whose spelling does not occur anywhere in `input`.
+///
+/// Inspecting the complete token stream accounts for binders nested in field
+/// types (such as `for<'zc> fn(&'zc ())`) without depending on Syn's optional
+/// `visit` feature.
+fn fresh_lifetime(input: &DeriveInput) -> Lifetime {
+    fn collect(stream: TokenStream, names: &mut HashSet<String>) {
+        let tokens = stream.into_iter().collect::<Vec<_>>();
+        for (index, token) in tokens.iter().enumerate() {
+            if let TokenTree::Group(group) = token {
+                collect(group.stream(), names);
+            }
+            if matches!(token, TokenTree::Punct(punct) if punct.as_char() == '\'') {
+                if let Some(TokenTree::Ident(ident)) = tokens.get(index + 1) {
+                    names.insert(ident.to_string());
+                }
+            }
+        }
+    }
+
+    let mut names = HashSet::new();
+    collect(input.to_token_stream(), &mut names);
+    let mut name = String::from("zc");
+    while names.contains(&name) {
+        name.push('_');
+    }
+    syn::parse_str(&format!("'{}", name)).expect("constructed a valid lifetime")
 }
 
 pub(crate) trait DataExt {
@@ -722,7 +753,9 @@ impl<'a> ImplBlockBuilder<'a> {
                         quote! { (#nonzero::new(#n as usize)) }
                     }).unwrap_or(quote! { (#none) });
                 let variant_types = variants.iter().map(|(_, fields)| {
-                    let types = fields.iter().map(|(_vis, _name, ty)| ty);
+                    let types = fields
+                        .iter()
+                        .map(|(_vis, _name, ty)| strip_parens_and_groups(ty));
                     quote!([#((#types)),*])
                 });
                 let validator_context = check.validator_macro_context();
@@ -746,19 +779,20 @@ impl<'a> ImplBlockBuilder<'a> {
             }
         };
 
-        let zerocopy_bounds =
-            field_type_bounds
-                .into_iter()
-                .chain(padding_check_bound)
-                .chain(self_bounds)
-                .map(|bound| {
-                    if self.ctx.skip_on_error {
-                        parse_quote!(for<'zc> #bound)
-                    } else {
-                        bound.clone()
-                    }
-                })
-                .collect::<Vec<_>>();
+        let hrtb_lifetime =
+            if self.ctx.skip_on_error { Some(fresh_lifetime(&self.ctx.ast)) } else { None };
+        let zerocopy_bounds = field_type_bounds
+            .into_iter()
+            .chain(padding_check_bound)
+            .chain(self_bounds)
+            .map(|bound| {
+                if let Some(lifetime) = &hrtb_lifetime {
+                    parse_quote!(for<#lifetime> #bound)
+                } else {
+                    bound
+                }
+            })
+            .collect::<Vec<_>>();
 
         let bounds = self
             .ctx
@@ -836,6 +870,16 @@ impl<'a> ImplBlockBuilder<'a> {
     }
 }
 
+pub(crate) fn strip_parens_and_groups(mut ty: &Type) -> &Type {
+    loop {
+        ty = match ty {
+            Type::Group(group) => &group.elem,
+            Type::Paren(paren) => &paren.elem,
+            ty => return ty,
+        };
+    }
+}
+
 // A polyfill for `Option::then_some`, which was added after our MSRV.
 //
 // The `#[allow(unused)]` is necessary because, on sufficiently recent toolchain
@@ -887,6 +931,7 @@ pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) 
 }
 pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> TokenStream {
     let zerocopy_crate = &ctx.zerocopy_crate;
+    let core = ctx.core_path();
     let variants = data.variants.iter().map(|v| {
         let ident = &v.ident;
         if let Some((eq, discriminant)) = &v.discriminant {
@@ -907,7 +952,7 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
     quote! {
         #repr
         #[allow(dead_code)]
-        #[derive(Copy, Clone, PartialEq)]
+        #[derive(#core::marker::Copy, #core::clone::Clone, #core::cmp::PartialEq)]
         pub enum ___ZerocopyTag {
             #(#variants,)*
         }

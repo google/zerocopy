@@ -93,6 +93,8 @@ macro_rules! derive {
                 Err(e) => return e.into_compile_error().into(),
             };
             let ts = $inner(&ctx, Trait::$trait).into_ts();
+            let cfg_compile_error = ctx.cfg_compile_error();
+            let ts = quote::quote!(#ts #cfg_compile_error);
             // We wrap in `const_block` as a backstop in case any derive fails
             // to wrap its output in `const_block` (and thus fails to annotate)
             // with the full set of `#[allow(...)]` attributes).
@@ -200,6 +202,7 @@ pub fn most_traits(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     for (derive, t) in derives {
         tokens.extend(derive(&ctx, t))
     }
+    tokens.extend(ctx.cfg_compile_error());
 
     // We wrap in `const_block` as a backstop in case any derive fails
     // to wrap its output in `const_block` (and thus fails to annotate)

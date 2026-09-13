@@ -3,7 +3,10 @@ where
     Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
     Self: Sized,
 {
-    fn eq(&self, other: &Self) -> bool {
+    fn eq(
+        &self,
+        other: &Self,
+    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool {
         ::zerocopy::util::macro_util::core_reexport::cmp::PartialEq::eq(
             ::zerocopy::IntoBytes::as_bytes(self),
             ::zerocopy::IntoBytes::as_bytes(other),

@@ -339,7 +339,7 @@ pub(crate) fn derive_enum(
 
         let variants_union: DeriveInput = parse_quote! {
             #[repr(C)]
-            union ___ZerocopyVariants #generics {
+            union ___ZerocopyVariants #generics #where_clause {
                 #(#fields)*
                 // A fieldless enum produces no variant structs, but a union must
                 // have at least one field. This unit does not affect `repr(C)`
@@ -365,7 +365,7 @@ pub(crate) fn derive_enum(
     // enum.
     let raw_enum: DeriveInput = parse_quote! {
         #[repr(C)]
-        struct ___ZerocopyRawEnum #generics {
+        struct ___ZerocopyRawEnum #generics #where_clause {
             tag: ___ZerocopyOuterTag,
             variants: ___ZerocopyVariants #ty_generics,
         }
