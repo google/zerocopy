@@ -1,0 +1,179 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+# Temporary validation runner; not part of the PR.
+name: Audit core comment widths
+'on':
+  push:
+    branches: [joshlf/audit-core-width-20260913]
+permissions:
+  contents: read
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    env:
+      EXPECTED_HEAD: d978c27f0f12e585e3c5fb800418e1e1b7e74373
+      PR_BRANCH: joshlf/audit-core-fixes-20260912
+      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
+      CARGO_TERM_COLOR: always
+      RUSTFLAGS: -Dwarnings
+      RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: d978c27f0f12e585e3c5fb800418e1e1b7e74373
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Reflow only overlong introduced prose comments
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test "$(git ls-remote origin "refs/heads/$PR_BRANCH" | cut -f1)" = "$EXPECTED_HEAD"
+          mkdir -p /tmp/audit-core-width
+          cat > /tmp/audit-core-width/verify.py <<'PY'
+          import hashlib
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
+          import textwrap
+          from pathlib import Path
+
+          out = Path('/tmp/audit-core-width')
+          def git(*args):
+              return subprocess.check_output(['git', *args])
+          head = os.environ['EXPECTED_HEAD']
+          raw = git('cat-file', 'commit', head)
+          assert hashlib.sha1(b'commit ' + str(len(raw)).encode() + b'\0' + raw).hexdigest() == head
+          (out / 'parent.commit').write_bytes(raw)
+          bases = sorted({
+              'c975a8467ffce74944fc151f05616fd00189b801',
+              git('merge-base', 'origin/main', head).decode().strip(),
+          })
+          comment = re.compile(r'^(\s*//(?:/|!)? ?)(.*)$')
+          def introduced():
+              added = {}
+              for base in bases:
+                  diff = git('diff', '--no-color', '--no-renames', '--unified=0', base, '--').decode()
+                  path, number = None, None
+                  for line in diff.splitlines():
+                      if line.startswith('+++ b/'):
+                          path = line[6:]
+                      elif line.startswith('@@ '):
+                          number = int(re.search(r'\+(\d+)', line)[1])
+                      elif line.startswith('+') and not line.startswith('+++'):
+                          assert path is not None and number is not None
+                          added.setdefault(path, set()).add(number)
+                          number += 1
+                      elif line.startswith(' '):
+                          number += 1
+              return added
+          def violations():
+              found = []
+              for path, added in introduced().items():
+                  assert path.endswith('.rs'), path
+                  for number, line in enumerate(Path(path).read_text().splitlines(), 1):
+                      match = comment.fullmatch(line)
+                      if number in added and match and len(line) > 80 and 'https://' not in line and 'http://' not in line:
+                          found.append({'path': path, 'line': number, 'width': len(line), 'text': line})
+              return found
+          def noncomments(text):
+              return ''.join(line for line in text.splitlines(keepends=True) if not comment.fullmatch(line.rstrip('\n')))
+          def words(text):
+              return ' '.join(match[2] for line in text.splitlines() if (match := comment.fullmatch(line))).split()
+          if len(sys.argv) > 1 and sys.argv[1] == 'verify':
+              expected = json.loads((out / 'changes.json').read_text())
+              for path in expected:
+                  before = git('show', head + ':' + path).decode()
+                  after = Path(path).read_text()
+                  assert noncomments(before) == noncomments(after), ('Non-comment changes', path)
+                  assert words(before) == words(after), ('Comment content changes', path)
+              assert sorted(git('diff', '--name-only').decode().splitlines()) == sorted(expected)
+              assert not violations(), violations()
+              print('Verified all introduced comment widths and preserved content')
+              sys.exit(0)
+          before_report = violations()
+          assert before_report, 'No actual width violation found; inspect the review before publishing'
+          changes = {}
+          for path in sorted({row['path'] for row in before_report}):
+              before = Path(path).read_text()
+              targets = {row['line'] for row in before_report if row['path'] == path}
+              lines, fenced = [], False
+              for number, line in enumerate(before.splitlines(), 1):
+                  match = comment.fullmatch(line)
+                  if not match:
+                      fenced = False
+                  elif match[2].lstrip().startswith(('```', '~~~')):
+                      fenced = not fenced
+                  if number in targets:
+                      assert match and not fenced, ('Code block requires manual review', path, number)
+                      body = match[2]
+                      assert not body.startswith(('    ', '\t', '- ', '* ', '> ', '|')), (path, number, body)
+                      replacement = textwrap.wrap(body, width=80, initial_indent=match[1],
+                          subsequent_indent=match[1], break_long_words=False, break_on_hyphens=False)
+                      assert replacement and all(len(item) <= 80 for item in replacement)
+                      assert ' '.join(comment.fullmatch(item)[2] for item in replacement).split() == body.split()
+                      lines.extend(replacement)
+                  else:
+                      lines.append(line)
+              after = '\n'.join(lines) + '\n'
+              assert noncomments(before) == noncomments(after)
+              assert words(before) == words(after)
+              Path(path).write_text(after)
+              changes[path] = sorted(targets)
+          (out / 'before-widths.json').write_text(json.dumps(before_report, indent=2) + '\n')
+          (out / 'changes.json').write_text(json.dumps(changes, indent=2) + '\n')
+          (out / 'expected-paths.txt').write_text('\n'.join(sorted(changes)) + '\n')
+          assert not violations(), violations()
+          (out / 'prepared.patch').write_bytes(git('diff', '--full-index'))
+          print(json.dumps({'bases': bases, 'reflowed': before_report}, indent=2))
+          PY
+          python3 /tmp/audit-core-width/verify.py
+          git diff --check
+          git diff
+      - name: Validate the complete candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash githooks/pre-push
+          (cd zerocopy && ./cargo.sh +stable doc -p zerocopy --no-deps --features __internal_use_only_features_that_work_on_stable)
+          (cd zerocopy && ./cargo.sh +nightly fmt --all -- --check)
+          python3 /tmp/audit-core-width/verify.py verify
+          git diff --check
+      - name: Publish only a verified staging ref
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin "refs/heads/$PR_BRANCH" | cut -f1)" = "$EXPECTED_HEAD"
+          test -z "$(git ls-files --others --exclude-standard)"
+          python3 /tmp/audit-core-width/verify.py verify
+          git diff --full-index > /tmp/audit-core-width/validated.patch
+          git add -- $(cat /tmp/audit-core-width/expected-paths.txt)
+          git -c user.name='Josh Liebow-Feeser' -c user.email=joshlf@users.noreply.github.com commit -m 'Reflow the remaining core audit documentation' -m 'Check the complete audit diff for introduced non-URL comment lines over 80 columns. Reflow only those prose lines while preserving every comment word and all non-comment bytes. Leave implementation, examples, and validation requirements unchanged.' -m 'Agent-authored-by: ChatGPT (commit message only)'
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_HEAD"
+          test "$(git log -1 --format='%an <%ae>')" = 'Josh Liebow-Feeser <joshlf@users.noreply.github.com>'
+          stage="joshlf/audit-core-width-stage-${GITHUB_RUN_ID}"
+          test -z "$(git ls-remote origin "refs/heads/$stage")"
+          git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin "HEAD:refs/heads/$stage"
+          git cat-file commit HEAD > /tmp/audit-core-width/published.commit
+          git log -1 --format='%H%n%T%n%P%n%an <%ae>%n%B' | tee /tmp/audit-core-width/published.txt
+          echo "STAGING_BRANCH=$stage"
+      - name: Preserve the verified patch and object
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: audit-core-width-${{ github.run_id }}
+          path: /tmp/audit-core-width/
+          if-no-files-found: error
+          retention-days: 30
