@@ -24,10 +24,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: core
-            base: 09e13632b06847f4fbd659908bfc80f18b88e3f0
-            published: 09e13632b06847f4fbd659908bfc80f18b88e3f0
-            branch: joshlf/audit-core-fixes-20260912
           - label: pointer
             base: 3587d2708b2983ba73bada581b93941355933767
             published: 5946b5f6d48dcce3cc4799a480a45cf5b78f8006
@@ -185,7 +181,7 @@ jobs:
           cd zerocopy
           ./cargo.sh +msrv test -p zerocopy --lib zst_field_projections_are_non_null
           ./cargo.sh +stable test -p zerocopy --lib pointer::
-          ./cargo.sh +stable test -p zerocopy-derive --test pointer_iterators
+          ./cargo.sh +stable test -p zerocopy-derive
           ./cargo.sh +stable test -p zerocopy-derive --lib output_tests
           ./cargo.sh +nightly rustdoc --all-features
           nightly="$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["metadata"]["ci"]["pinned-nightly"])')"
