@@ -237,20 +237,58 @@ impl<T> Unalign<T> {
     /// The caller must guarantee that `self` satisfies `align_of::<T>()`.
     #[inline(always)]
     pub const unsafe fn deref_unchecked(&self) -> &T {
-        // SAFETY: `Unalign<T>` is a single-field `repr(C, packed)` struct.
-        // The `repr(C)` layout algorithm starts at offset zero [1]. Zero is
-        // a multiple of every alignment, including the packing-adjusted field
-        // alignment, so the sole field needs no leading padding and remains
-        // at offset zero. Thus `self` and its valid `T` field have the same
-        // address and provenance. The caller guarantees that this address is
-        // aligned for `T`; the returned reference borrows for no longer than
-        // `self`, which keeps the storage live and shared.
+        // SAFETY: `mem::transmute` performs a bitwise move and requires valid
+        // source and result values [1]. Both reference types are equally sized:
+        // `Unalign<T>` and `T` are sized, and references to sized types have the
+        // size and alignment of `usize` [2].
         //
-        // [1] Per https://doc.rust-lang.org/1.56.0/reference/type-layout.html#reprc-structs:
+        // `Unalign<T>` is a single-field `repr(C, packed)` struct. The `repr(C)`
+        // algorithm starts at offset zero [3]. Zero satisfies every alignment,
+        // including the packing-adjusted field alignment, so no leading padding
+        // is added and the sole field is at offset zero. The bitwise move of
+        // this reference therefore designates the same field at the same address;
+        // it does not convert through an integer or reconstruct a pointer.
+        //
+        // The source shared reference is valid and non-null. The field contains
+        // a valid `T`, and the caller supplies the otherwise-missing alignment
+        // guarantee for `T`. Thus the result meets the reference requirements
+        // of alignment, non-nullness, and a valid referent [4]. `Unalign<T>`'s
+        // documented contract guarantees that it and `T` have `UnsafeCell`s at
+        // the same byte ranges. Consequently, their shared references prohibit
+        // mutation of the same bytes [5]; this does not strengthen the source
+        // borrow's mutation restrictions. The output lifetime is tied to `self`,
+        // so the result cannot outlive that borrow or its live storage [4].
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.1/std/mem/fn.transmute.html:
+        //
+        //   `transmute` is semantically equivalent to a bitwise move [...].
+        //   ...
+        //   Both the argument and the result must be valid at their given type.
+        //
+        // [2] Per https://doc.rust-lang.org/1.93.1/reference/type-layout.html#pointers-and-references-layout:
+        //
+        //   Pointers and references have the same layout.
+        //   ...
+        //   Pointers to sized types have the same size and alignment as `usize`.
+        //
+        // [3] Per https://doc.rust-lang.org/1.93.1/reference/type-layout.html#reprc-structs:
         //
         //   Start with a current offset of 0 bytes.
         //   ...
         //   The offset for the field is what the current offset is now.
+        //
+        // [4] Per https://doc.rust-lang.org/1.93.1/std/primitive.reference.html:
+        //
+        //   [A] reference is just a pointer that is assumed to be aligned, not
+        //   null, and pointing to memory containing a valid value of `T` [...].
+        //   ...
+        //   References have a lifetime attached to them, which represents the
+        //   scope for which the borrow is valid.
+        //
+        // [5] Per https://doc.rust-lang.org/1.93.1/reference/behavior-considered-undefined.html#undefined-alias:
+        //
+        //   `&T` must point to memory that is not mutated while they are live
+        //   (except for data inside an `UnsafeCell<U>`).
         //
         // We use `mem::transmute` instead of `&*self.get_ptr()` because
         // dereferencing pointers is not stable in `const` on our current MSRV
