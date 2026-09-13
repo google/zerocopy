@@ -780,7 +780,7 @@ mod _transitions {
         /// On error, unsafe code may rely on this method's returned
         /// `ValidityError` containing `self`.
         #[inline]
-        pub fn try_into_valid<R, S>(
+        pub fn try_into_safe<R, S>(
             mut self,
         ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Safe)>, ValidityError<Self, T>>
         where

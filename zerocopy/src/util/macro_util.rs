@@ -633,7 +633,7 @@ where
         let res = ptr.try_with(#[inline(always)] |ptr| {
             let ptr = ptr.recall_validity::<Initialized, _>();
             let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
-            ptr.try_into_valid()
+            ptr.try_into_safe()
         });
         match res {
             Ok(ptr) => {
@@ -696,7 +696,7 @@ where
             ptr.try_with_unchecked(#[inline(always)] |ptr| {
                 let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
                 let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
-                ptr.try_into_valid()
+                ptr.try_into_safe()
             })
         };
         match res {
