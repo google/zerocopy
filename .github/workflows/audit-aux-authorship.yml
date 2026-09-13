@@ -1,0 +1,160 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+name: Audit auxiliary authorship
+'on':
+  push:
+    branches: [joshlf/audit-aux-authorship-20260913]
+permissions:
+  contents: read
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify and repair only the pinned auxiliary refs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          prefix = 'refs/heads/joshlf/'
+          expected = {prefix + name: sha for name, sha in {
+              'audit-followup-3676-34723999356': '0701756322076c76bc5431c3f5cb9b0773e5854d',
+              'audit-followup-3677-34723999356': '5946b5f6d48dcce3cc4799a480a45cf5b78f8006',
+              'audit-macro-snapshot-runner-20260912': '8d2db6cf09c4ec8602ad1905dc8a35d961f9bd87',
+              'audit-macro-snapshot-stage-34726676432': 'e28622a1d1b9eebd5a41d4dff8f5356290ab699e',
+              'audit-pointer-review-runner-20260912': '5519f576f61087c0d4d078b91edab3164586a860',
+              'audit-publication-runner-20260912': '168ac0fcc204be6116fd4cf37366354604215608',
+              'audit-recovered-3676-34722871639': '8b67e0f626b141c2659a86fd6ae659d7a8c842a4',
+              'audit-recovered-3677-34723108904': '6f6772fdb950925aed4972986f08b7272a9dafc4',
+              'audit-recovery-runner-20260912': 'ab1ba1b93140fcb70b16b8e79066d1b32da55cd8',
+          }.items()}
+          pr_refs = {prefix + name for name in [
+              'audit-derive-fixes-20260912', 'audit-core-fixes-20260912',
+              'audit-macro-fixes-20260912', 'audit-pointer-contracts-20260912',
+          ]}
+          assert not pr_refs.intersection(expected)
+          replacements = {
+              '8b67e0f626b141c2659a86fd6ae659d7a8c842a4': 'd687718b6eaa9e810ce55bca4e0ea66c8ae8f091',
+              'e28622a1d1b9eebd5a41d4dff8f5356290ab699e': 'f638c74dfb9e226e66fdb38868235679a3563977',
+              '6f6772fdb950925aed4972986f08b7272a9dafc4': '338133504452f7e636c38072955ce176f62c3c04',
+              '5946b5f6d48dcce3cc4799a480a45cf5b78f8006': '3587d2708b2983ba73bada581b93941355933767',
+          }
+          human = b'Josh Liebow-Feeser <joshlf@users.noreply.github.com>'
+          old_agent = b"Josh Liebow-Feeser's Agent <agent@joshlf.invalid>"
+          def git(*args, data=None):
+              return subprocess.check_output(['git', *args], input=data)
+          def remote():
+              rows = git('ls-remote', '--heads', 'origin', *expected).decode().splitlines()
+              return {ref: sha for sha, ref in (row.split() for row in rows)}
+          assert remote() == expected, 'An auxiliary ref changed; do not overwrite it'
+          for sha in set(expected.values()) | set(replacements.values()):
+              subprocess.run(['git', 'fetch', '--no-tags', 'origin', sha], check=True)
+          merged = set(git('rev-list', 'origin/main').decode().splitlines())
+          cache, records = {}, []
+          def read(sha):
+              raw = git('cat-file', 'commit', sha)
+              actual = hashlib.sha1(b'commit ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+              assert actual == sha, (sha, actual)
+              header, message = raw.split(b'\n\n', 1)
+              return raw, header.splitlines(), message
+          def identity(line):
+              return line.split(b' ', 1)[1].rsplit(b' ', 2)[0]
+          def parents(lines):
+              return [line[7:].decode() for line in lines if line.startswith(b'parent ')]
+          def repair(sha):
+              if sha in merged:
+                  return sha
+              if sha in cache:
+                  return cache[sha]
+              raw, lines, message = read(sha)
+              assert all(not line.startswith(b' ') for line in lines), ('Signed or multiline header requires separate handling', sha)
+              assert b'agent-authored-by:' in message.lower(), ('Missing retained disclosure', sha)
+              old_parents = parents(lines)
+              assert old_parents, ('Unexpected root', sha)
+              new_parents = [repair(parent) for parent in old_parents]
+              for role in [b'author ', b'committer ']:
+                  matches = [line for line in lines if line.startswith(role)]
+                  assert len(matches) == 1
+                  assert identity(matches[0]) in {human, old_agent}, ('Unexpected attribution', sha, matches[0])
+              new_lines, index = [], 0
+              for line in lines:
+                  if line.startswith(b'parent '):
+                      line = b'parent ' + new_parents[index].encode()
+                      index += 1
+                  elif line.startswith((b'author ', b'committer ')) and identity(line) == old_agent:
+                      role = line.split(b' ', 1)[0]
+                      date = b' '.join(line.rsplit(b' ', 2)[1:])
+                      line = role + b' ' + human + b' ' + date
+                  new_lines.append(line)
+              candidate = b'\n'.join(new_lines) + b'\n\n' + message
+              if sha in replacements:
+                  new_sha = replacements[sha]
+                  new_raw, checked, new_message = read(new_sha)
+                  assert parents(checked) == new_parents, (sha, 'replacement ancestry')
+                  assert checked[0] == lines[0], (sha, 'replacement tree')
+                  assert new_message.rstrip() == message.rstrip(), (sha, 'replacement message')
+                  assert all(identity(line) == human for line in checked if line.startswith((b'author ', b'committer ')))
+              else:
+                  new_sha = git('hash-object', '-t', 'commit', '-w', '--stdin', data=candidate).decode().strip()
+                  new_raw, checked, new_message = read(new_sha)
+                  assert new_raw == candidate
+                  assert checked[0] == lines[0] and new_message == message
+              cache[sha] = new_sha
+              if new_sha != sha:
+                  records.append({'old': sha, 'new': new_sha, 'tree': lines[0][5:].decode()})
+                  Path('evidence', sha + '.old.commit').write_bytes(raw)
+                  Path('evidence', new_sha + '.new.commit').write_bytes(new_raw)
+              return new_sha
+          updates = {ref: repair(sha) for ref, sha in expected.items()}
+          assert remote() == expected, 'An auxiliary ref changed during preparation'
+          report = {'old_refs': expected, 'new_refs': updates, 'commits': records,
+                    'pr_branches_modified': False, 'merged_history_modified': False,
+                    'trees_and_retained_disclosures_preserved': True}
+          Path('evidence/prepared.json').write_text(json.dumps(report, indent=2) + '\n')
+          changed = {ref: sha for ref, sha in updates.items() if sha != expected[ref]}
+          if changed:
+              args = ['git', '-c', 'credential.helper=', '-c',
+                      'credential.helper=!gh auth git-credential', 'push', '--atomic']
+              args += ['--force-with-lease=' + ref + ':' + expected[ref] for ref in changed]
+              args += ['origin'] + [sha + ':' + ref for ref, sha in changed.items()]
+              subprocess.run(args, check=True)
+          actual = remote()
+          assert actual == updates, (actual, updates)
+          report['verified_refs'] = actual
+          Path('evidence/published.json').write_text(json.dumps(report, indent=2) + '\n')
+          print('VERIFIED_AUXILIARY_AUTHORSHIP ' + json.dumps(report, sort_keys=True))
+          Path('evidence/README.md').write_text(
+              '# Auxiliary authorship verification\n\n'
+              'Only the explicitly pinned helper refs were updated. Trees and retained '
+              'disclosures were preserved. These metadata-only updates are not PR review '
+              'or CI evidence. No PR branch, merged history, or repository setting was changed.\n\n'
+              '*Authored by an AI agent acting on Josh Liebow-Feeser\'s behalf.*\n'
+          )
+          PY
+      - name: Preserve authorship verification
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: audit-aux-authorship-${{ github.run_id }}
+          path: evidence/
+          if-no-files-found: warn
+          retention-days: 30
