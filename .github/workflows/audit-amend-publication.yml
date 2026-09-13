@@ -1,0 +1,216 @@
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+# Temporary validation runner; this file is not included in either PR.
+name: Validate single-commit review amendments
+'on':
+  push:
+    branches: [joshlf/audit-amend-runner-20260913]
+permissions:
+  contents: read
+jobs:
+  stage:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pr: 3675
+            kind: core
+            head: 4b1d38662522b799e6a0f1348f66249327a64a79
+            branch: joshlf/audit-core-fixes-20260912
+          - pr: 3677
+            kind: pointer
+            head: 9817349402f6a8b3d56808519d2f5d6c8a198af1
+            branch: joshlf/audit-pointer-contracts-20260912
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    concurrency:
+      group: zerocopy-review-amend-${{ matrix.pr }}
+      cancel-in-progress: false
+    env:
+      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
+      CARGO_TERM_COLOR: always
+      RUSTFLAGS: -Dwarnings
+      RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
+      HEAD_SHA: ${{ matrix.head }}
+      PR_BRANCH: ${{ matrix.branch }}
+      PR_NUMBER: ${{ matrix.pr }}
+      PATCH_KIND: ${{ matrix.kind }}
+      BASE_SHA: c975a8467ffce74944fc151f05616fd00189b801
+    steps:
+      - name: Check out the pinned single-commit PR
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ matrix.head }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Apply the scoped review correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_SHA"
+          test "$(git ls-remote origin "refs/heads/$PR_BRANCH" | cut -f1)" = "$HEAD_SHA"
+          test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          import os
+          import re
+          import subprocess
+          import sys
+          import textwrap
+          from pathlib import Path
+
+          kind = os.environ['PATCH_KIND']
+          message = subprocess.check_output(['git', 'log', '-1', '--format=%B'], text=True).rstrip() + '\n'
+          legacy = "Agent-Authored-By: AI agent acting on Josh Liebow-Feeser's behalf"
+          assert message.count(legacy) == 1
+          assert message.count('Agent-authored-by: ChatGPT (commit message only)') == 1
+
+          if kind == 'core':
+              path = Path('zerocopy/src/lib.rs')
+              before = path.read_text()
+              old = ('    /// pre-zeroed memory, using `new_box_zeroed_with_elems` may have performance\n'
+                     '    /// benefits.\n')
+              new = ('    /// pre-zeroed memory, using `new_box_zeroed_with_elems` may have\n'
+                     '    /// performance benefits.\n')
+              assert before.count(old) == 1
+              assert old.replace('///', '').split() == new.replace('///', '').split()
+              path.write_text(before.replace(old, new))
+              expected = ['zerocopy/src/lib.rs']
+          else:
+              assert kind == 'pointer'
+              runner = '5519f576f61087c0d4d078b91edab3164586a860'
+              runner_path = '.github/workflows/audit-pointer-review-publication.yml'
+              subprocess.run(['git', 'fetch', '--no-tags', 'origin', runner], check=True)
+              source = subprocess.check_output(['git', 'show', runner + ':' + runner_path])
+              blob = subprocess.check_output(['git', 'hash-object', '--stdin'], input=source).decode().strip()
+              assert blob == '91e18363f554f675cd417701daf0bcd47ebfd34f', blob
+              text = source.decode('utf-8')
+              start = "          python3 - <<'PY'\n"
+              assert start in text
+              script = text.split(start, 1)[1].split('\n          PY\n', 1)[0]
+              script = textwrap.dedent(script) + '\n'
+              old = 'return slf.as_ptr().cast::<Self::Type>();'
+              assert script.count(old) == 1
+              script = script.replace(old, 'return slf.as_ptr().cast::<$CurrT>();')
+              subprocess.run([sys.executable, '-c', script], check=True)
+              expected = sorted(['zerocopy/src/' + p for p in (
+                  'impls.rs', 'layout.rs', 'pointer/mod.rs', 'ref.rs',
+                  'util/macros.rs', 'wrappers.rs',
+              )])
+
+              # Reflow only newly added non-URL comment lines. Keep each line's
+              # comment prefix, quoted indentation, and word sequence intact.
+              diff = subprocess.check_output(['git', 'diff', '--unified=0', os.environ['HEAD_SHA']], text=True)
+              path = None
+              line_number = 0
+              additions = {}
+              for line in diff.splitlines():
+                  if line.startswith('+++ b/'):
+                      path = line[6:]
+                  elif line.startswith('@@ '):
+                      match = re.search(r'\+(\d+)(?:,\d+)? @@', line)
+                      assert match, line
+                      line_number = int(match.group(1))
+                  elif line.startswith('+') and not line.startswith('+++'):
+                      additions.setdefault(path, []).append(line_number - 1)
+                      line_number += 1
+                  elif line.startswith(' '):
+                      line_number += 1
+              for name, indices in additions.items():
+                  path = Path(name)
+                  lines = path.read_text().splitlines(keepends=True)
+                  for index in reversed(indices):
+                      line = lines[index].rstrip('\n')
+                      match = re.match(r'^(\s*//[/!]?\s*)(.*)$', line)
+                      if match and len(line) > 80 and 'https://' not in line:
+                          prefix, words = match.groups()
+                          wrapped = textwrap.fill(words, width=80, initial_indent=prefix,
+                                                  subsequent_indent=prefix, break_long_words=False,
+                                                  break_on_hyphens=False)
+                          assert ' '.join(w[len(prefix):] for w in wrapped.splitlines()).split() == words.split()
+                          lines[index:index + 1] = [part + '\n' for part in wrapped.splitlines()]
+                  path.write_text(''.join(lines))
+
+              paragraph = (
+                  'Use an address-preserving cast when projecting fields of wholly\n'
+                  'zero-sized tuples. Establish non-nullness throughout the handwritten\n'
+                  'projections and forwarding adapters, and test allocated and dangling\n'
+                  'zero-sized inputs and the ReadOnly adapter.\n\n'
+              )
+              message = message.replace('\n\n' + legacy, '\n\n' + paragraph + legacy, 1)
+              message += 'Agent-authored-by: ChatGPT (tuple-cast correction)\n'
+
+          changed = subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines()
+          assert sorted(changed) == expected, changed
+          Path('/tmp/amend-message.txt').write_text(message)
+          Path('/tmp/expected-files.txt').write_text('\n'.join(expected) + '\n')
+          PY
+          git diff --check
+          git diff --stat
+          git diff
+      - name: Validate the core documentation amendment
+        if: matrix.kind == 'core'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd zerocopy
+          ./cargo.sh +stable test -p zerocopy --doc --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +stable doc -p zerocopy --no-deps --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +nightly fmt --all -- --check
+      - name: Validate the pointer amendment
+        if: matrix.kind == 'pointer'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd zerocopy
+          ./cargo.sh +nightly fmt --all
+          ./cargo.sh +msrv test -p zerocopy --lib zst_field_projections_are_non_null
+          ./cargo.sh +stable test -p zerocopy --lib pointer::
+          ./cargo.sh +stable test -p zerocopy-derive --test pointer_iterators
+          ./cargo.sh +stable test -p zerocopy-derive --lib output_tests
+          ./cargo.sh +msrv check --tests --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +stable check --tests --features __internal_use_only_features_that_work_on_stable
+          ./cargo.sh +nightly check --tests --all-features
+          ./cargo.sh +nightly clippy --tests --all-features --workspace -- -Dwarnings
+          ./cargo.sh +nightly rustdoc --all-features
+          ./cargo.sh +nightly fmt --all -- --check
+          nightly="$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["metadata"]["ci"]["pinned-nightly"])')"
+          rustup component add miri --toolchain "$nightly"
+          ./cargo.sh +nightly miri test -p zerocopy --lib zst_field_projections_are_non_null
+      - name: Attempt the repository pre-push hook
+        shell: bash
+        run: |
+          if ./githooks/pre-push; then
+            echo 'Pre-push hook passed.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Pre-push hook failed; inspect its log. This is not a full-PR CI pass, and the existing PR workflows still have to pass.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Amend and publish an isolated staging ref
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v gh
+          test "$(git ls-remote origin "refs/heads/$PR_BRANCH" | cut -f1)" = "$HEAD_SHA"
+          python3 - <<'PY'
+          import subprocess
+          from pathlib import Path
+          expected = Path('/tmp/expected-files.txt').read_text().splitlines()
+          changed = subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines()
+          assert sorted(changed) == expected, changed
+          assert not subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'], text=True)
+          subprocess.run(['git', 'add', '--', *expected], check=True)
+          PY
+          git diff --cached --check
+          git -c user.name='Josh Liebow-Feeser' -c user.email=joshlf@users.noreply.github.com commit --amend --file=/tmp/amend-message.txt
+          test "$(git rev-parse HEAD^)" = "$BASE_SHA"
+          test "$(git log -1 --format=%an)" = 'Josh Liebow-Feeser'
+          test "$(git log -1 --format=%ae)" = joshlf@users.noreply.github.com
+          stage_branch="joshlf/audit-amend-${PR_NUMBER}-stage-${GITHUB_RUN_ID}"
+          test -z "$(git ls-remote origin "refs/heads/$stage_branch")"
+          git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin "HEAD:refs/heads/$stage_branch"
+          printf 'PR: #%s\n\nPrevious head: `%s`\n\nStaged amended head: `%s`\n\nStaging branch: `%s`\n' "$PR_NUMBER" "$HEAD_SHA" "$(git rev-parse HEAD)" "$stage_branch" >> "$GITHUB_STEP_SUMMARY"
+          echo "STAGED_COMMIT=$(git rev-parse HEAD)"
+          echo "STAGING_BRANCH=$stage_branch"
