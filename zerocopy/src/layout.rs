@@ -783,8 +783,9 @@ mod cast_from {
 
     // SAFETY: `project` produces a pointer which refers to the same referent
     // bytes as its input, or to a subset of them (see inline comments for a
-    // more detailed proof of this). It does this using provenance-preserving
-    // operations.
+    // more detailed proof of this). The input data-pointer cast and
+    // `KnownLayout::raw_from_ptr_len` both preserve its address and
+    // provenance. Thus the result is non-null even for a zero-sized referent.
     unsafe impl<Src, Dst> crate::pointer::cast::Project<Src, Dst> for CastFrom<Dst>
     where
         Src: KnownLayout + ?Sized,
