@@ -1808,7 +1808,7 @@ pub use zerocopy_derive::TryFromBytes;
 /// but for which `TryFromBytes` is not guaranteed to accept all byte sequences
 /// produced by `IntoBytes`. In other words, for some `T: TryFromBytes +
 /// IntoBytes`, there exist values of `t: T` such that
-/// `TryFromBytes::try_ref_from_bytes(t.as_bytes()) == None`. Code should not
+/// `TryFromBytes::try_ref_from_bytes(t.as_bytes()).is_err()`. Code should not
 /// generally assume that values produced by `IntoBytes` will necessarily be
 /// accepted as valid by `TryFromBytes`.
 ///
@@ -3695,8 +3695,8 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// # Errors
     ///
-    /// Returns an error on allocation failure. Allocation failure is guaranteed
-    /// never to cause a panic or an abort.
+    /// Returns an error if the allocator reports failure by returning null.
+    /// The global allocator is permitted to abort instead of returning null.
     ///
     #[doc = codegen_section!(
         header = "h5",
@@ -3747,27 +3747,29 @@ pub unsafe trait FromZeros: TryFromBytes {
         Ok(unsafe { Box::from_raw(ptr) })
     }
 
-    /// Creates a `Box<[Self]>` (a boxed slice) from zeroed bytes.
+    /// Creates a `Box<Self>` from zeroed bytes, with `count` trailing slice
+    /// elements.
     ///
-    /// This function is useful for allocating large values of `[Self]` on the
-    /// heap and zero-initializing them, without ever creating a temporary
-    /// instance of `[Self; _]` on the stack. For example,
-    /// `u8::new_box_slice_zeroed(1048576)` will allocate the slice directly on
-    /// the heap; it does not require storing the slice on the stack.
+    /// For `Self = [T]`, this allocates a boxed slice of `count` elements
+    /// directly on the heap without creating a temporary array on the stack.
+    /// For example, `<[u8]>::new_box_zeroed_with_elems(1048576)` allocates and
+    /// zero-initializes a one-megabyte slice directly on the heap.
     ///
     /// On systems that use a heap implementation that supports allocating from
-    /// pre-zeroed memory, using `new_box_slice_zeroed` may have performance
+    /// pre-zeroed memory, using `new_box_zeroed_with_elems` may have performance
     /// benefits.
     ///
-    /// If `Self` is a zero-sized type, then this function will return a
-    /// `Box<[Self]>` that has the correct `len`. Such a box cannot contain any
-    /// actual information, but its `len()` property will report the correct
-    /// value.
+    /// If the trailing slice's element type is zero-sized, `count` is still
+    /// preserved in the returned box's pointer metadata. For `Self = [T]`
+    /// with zero-sized `T`, `len()` returns `count` even though its elements
+    /// occupy no bytes.
     ///
     /// # Errors
     ///
-    /// Returns an error on allocation failure. Allocation failure is
-    /// guaranteed never to cause a panic or an abort.
+    /// Returns an error if `count` would make the allocation larger than
+    /// `isize::MAX` bytes, if computing its layout overflows, or if the
+    /// allocator reports failure by returning null. The global allocator is
+    /// permitted to abort instead of returning null.
     ///
     #[doc = codegen_section!(
         header = "h5",
@@ -3832,8 +3834,10 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// # Errors
     ///
-    /// Returns an error on allocation failure. Allocation failure is
-    /// guaranteed never to cause a panic or an abort.
+    /// Returns an error if `len` would make the allocation larger than
+    /// `isize::MAX` bytes, if computing its layout overflows, or if the
+    /// allocator reports failure by returning null. The global allocator is
+    /// permitted to abort instead of returning null.
     ///
     #[doc = codegen_section!(
         header = "h5",
@@ -5070,7 +5074,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     #[doc = codegen_header!("h5", "mut_from_bytes_with_elems")]
     ///
-    /// See [`TryFromBytes::ref_from_bytes_with_elems`](#method.ref_from_bytes_with_elems.codegen).
+    /// See [`FromBytes::ref_from_bytes_with_elems`](#method.ref_from_bytes_with_elems.codegen).
     #[must_use = "has no side effects"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -5079,10 +5083,10 @@ pub unsafe trait FromBytes: FromZeros {
         count: usize,
     ) -> Result<&mut Self, CastError<&mut [u8], Self>>
     where
-        Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
+        Self: IntoBytes + KnownLayout<PointerMetadata = usize>,
     {
         let source = Ptr::from_mut(source);
-        let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
+        let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseExclusive>(Some(count));
         match maybe_slf {
             Ok(slf) => Ok(slf.recall_validity::<_, (_, (_, BecauseExclusive))>().as_mut()),
             Err(err) => Err(err.map_src(|s| s.as_mut())),
@@ -5094,7 +5098,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// This method attempts to return a reference to the prefix of `source`
     /// interpreted as a `Self` with `count` trailing elements, and a reference
-    /// to the preceding bytes. If there are insufficient bytes, or if `source`
+    /// to the following bytes. If there are insufficient bytes, or if `source`
     /// is not appropriately aligned, this returns `Err`. If [`Self:
     /// Unaligned`][self-unaligned], you can [infallibly discard the alignment
     /// error][size-error-from].
@@ -5160,7 +5164,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     #[doc = codegen_header!("h5", "mut_from_prefix_with_elems")]
     ///
-    /// See [`TryFromBytes::ref_from_prefix_with_elems`](#method.ref_from_prefix_with_elems.codegen).
+    /// See [`FromBytes::ref_from_prefix_with_elems`](#method.ref_from_prefix_with_elems.codegen).
     #[must_use = "has no side effects"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -5179,7 +5183,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// This method attempts to return a reference to the suffix of `source`
     /// interpreted as a `Self` with `count` trailing elements, and a reference
-    /// to the remaining bytes. If there are insufficient bytes, or if that
+    /// to the preceding bytes. If there are insufficient bytes, or if that
     /// suffix of `source` is not appropriately aligned, this returns `Err`. If
     /// [`Self: Unaligned`][self-unaligned], you can [infallibly discard the
     /// alignment error][size-error-from].
@@ -5245,7 +5249,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     #[doc = codegen_header!("h5", "mut_from_suffix_with_elems")]
     ///
-    /// See [`TryFromBytes::ref_from_suffix_with_elems`](#method.ref_from_suffix_with_elems.codegen).
+    /// See [`FromBytes::ref_from_suffix_with_elems`](#method.ref_from_suffix_with_elems.codegen).
     #[must_use = "has no side effects"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -5708,7 +5712,7 @@ fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
 ///   - Its fields must be [`IntoBytes`].
 ///
 /// This analysis is subject to change. Unsafe code may *only* rely on the
-/// documented [safety conditions] of `FromBytes`, and must *not* rely on the
+/// documented [safety conditions] of `IntoBytes`, and must *not* rely on the
 /// implementation details of this derive.
 ///
 /// [Rust Reference]: https://doc.rust-lang.org/reference/type-layout.html
@@ -5977,7 +5981,7 @@ pub unsafe trait IntoBytes {
     ///
     /// let mut bytes = [0, 0, 0, 0, 0, 0, 0, 0];
     ///
-    /// header.write_to(&mut bytes[..]);
+    /// header.write_to(&mut bytes[..]).unwrap();
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 6, 7]);
     /// ```
@@ -6063,7 +6067,7 @@ pub unsafe trait IntoBytes {
     ///
     /// let mut bytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     ///
-    /// header.write_to_prefix(&mut bytes[..]);
+    /// header.write_to_prefix(&mut bytes[..]).unwrap();
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 6, 7, 0, 0]);
     /// ```
@@ -6076,7 +6080,7 @@ pub unsafe trait IntoBytes {
     /// # let header = u128::MAX;
     /// let mut insufficient_bytes = &mut [0, 0][..];
     ///
-    /// let write_result = header.write_to_suffix(insufficient_bytes);
+    /// let write_result = header.write_to_prefix(insufficient_bytes);
     ///
     /// assert!(write_result.is_err());
     /// assert_eq!(insufficient_bytes, [0, 0]);
@@ -6151,7 +6155,7 @@ pub unsafe trait IntoBytes {
     ///
     /// let mut bytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     ///
-    /// header.write_to_suffix(&mut bytes[..]);
+    /// header.write_to_suffix(&mut bytes[..]).unwrap();
     ///
     /// assert_eq!(bytes, [0, 0, 0, 1, 2, 3, 4, 5, 6, 7]);
     ///
@@ -6343,8 +6347,9 @@ pub unsafe trait IntoBytes {
 ///     `repr(packed)` or `repr(packed(1))`.
 /// - If the type is an enum:
 ///   - If `repr(align(N))` is provided, `N` must equal 1.
-///   - It must be a field-less enum (meaning that all variants have no fields).
 ///   - It must be `repr(i8)` or `repr(u8)`.
+///   - Every field of every variant must be [`Unaligned`]. Fieldless enums are
+///     supported as the special case in which there are no fields to check.
 ///
 /// [safety conditions]: trait@Unaligned#safety
 #[cfg(any(feature = "derive", test))]
@@ -6457,9 +6462,12 @@ pub unsafe trait Unaligned {
 ///
 /// The standard library's [`derive(Eq, PartialEq)`][derive@PartialEq] computes
 /// equality by individually comparing each field. Instead, the implementation
-/// of [`PartialEq::eq`] emitted by `derive(ByteHash)` converts the entirety of
+/// of [`PartialEq::eq`] emitted by `derive(ByteEq)` converts the entirety of
 /// `self` and `other` to byte slices and compares those slices for equality.
-/// This may have performance advantages.
+/// This may have performance advantages. Byte equality is not necessarily the
+/// same as field equality; for example, floating-point `0.0` and `-0.0` compare
+/// equal as values but have different byte representations, while NaN values
+/// can have identical representations but compare unequal as values.
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::ByteEq;
@@ -6493,7 +6501,9 @@ pub use zerocopy_derive::ByteEq;
 /// implementations of [`Hash::hash()`] and [`Hash::hash_slice()`] generated by
 /// `derive(ByteHash)` convert the entirety of `self` to a byte slice and hashes
 /// it in a single call to [`Hasher::write()`]. This may have performance
-/// advantages.
+/// advantages. `ByteHash` must only be used with an equality implementation
+/// that is compatible with byte equality: values considered equal must have
+/// identical byte representations and therefore identical hashes.
 ///
 /// [`Hash`]: core::hash::Hash
 /// [`Hash::hash()`]: core::hash::Hash::hash()
@@ -6503,17 +6513,22 @@ pub use zerocopy_derive::ByteEq;
 pub use zerocopy_derive::ByteHash;
 /// Implements [`SplitAt`].
 ///
-/// This derive can be applied to structs; e.g.:
+/// This derive can be applied to structs with a trailing slice; e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{ByteEq, Immutable, IntoBytes};
-/// #[derive(ByteEq, Immutable, IntoBytes)]
+/// use zerocopy::{FromBytes, SplitAt};
+/// # use zerocopy_derive::*;
+/// #[derive(FromBytes, Immutable, KnownLayout, SplitAt)]
 /// #[repr(C)]
-/// struct MyStruct {
-/// # /*
-///     ...
-/// # */
+/// struct Packet {
+///     tag: u8,
+///     body: [u8],
 /// }
+/// let packet = Packet::ref_from_bytes(&[1, 2, 3][..]).unwrap();
+/// let split = packet.split_at(1).unwrap();
+/// let (packet, rest) = split.via_immutable();
+/// assert_eq!(packet.body, [2]);
+/// assert_eq!(rest, [3]);
 /// ```
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
@@ -6853,7 +6868,7 @@ mod tests {
         struct KL07<T: KnownLayout>(u8, T);
 
         fn _test_kl07<T: KnownLayout>(t: T) -> impl KnownLayout {
-            let _ = KL07(0u8, t);
+            KL07(0u8, t)
         }
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
@@ -7001,7 +7016,7 @@ mod tests {
         struct KL15<T: KnownLayout>(u8, T);
 
         fn _test_kl15<T: KnownLayout>(t: T) -> impl KnownLayout {
-            let _ = KL15(0u8, t);
+            KL15(0u8, t)
         }
 
         // Test a variety of combinations of field types:
@@ -7365,16 +7380,16 @@ mod tests {
         assert!(<[u8; 8]>::ref_from_suffix(&buf.t[..]).is_err());
         assert!(<[u8; 8]>::mut_from_suffix(&mut buf.t[..]).is_err());
 
-        // Fail because the alignment is insufficient.
-        let mut buf = Align::<[u8; 13], AU64>::default();
-        assert!(AU64::ref_from_bytes(&buf.t[1..]).is_err());
-        assert!(AU64::mut_from_bytes(&mut buf.t[1..]).is_err());
-        assert!(AU64::ref_from_bytes(&buf.t[1..]).is_err());
-        assert!(AU64::mut_from_bytes(&mut buf.t[1..]).is_err());
-        assert!(AU64::ref_from_prefix(&buf.t[1..]).is_err());
-        assert!(AU64::mut_from_prefix(&mut buf.t[1..]).is_err());
-        assert!(AU64::ref_from_suffix(&buf.t[..]).is_err());
-        assert!(AU64::mut_from_suffix(&mut buf.t[..]).is_err());
+        // Fail specifically because the alignment is insufficient. Each cast
+        // has enough bytes and selects exactly eight bytes at an address one
+        // byte past an address aligned for `AU64`.
+        let mut buf = Align::<[u8; 10], AU64>::default();
+        assert!(matches!(AU64::ref_from_bytes(&buf.t[1..9]), Err(CastError::Alignment(_))));
+        assert!(matches!(AU64::mut_from_bytes(&mut buf.t[1..9]), Err(CastError::Alignment(_))));
+        assert!(matches!(AU64::ref_from_prefix(&buf.t[1..]), Err(CastError::Alignment(_))));
+        assert!(matches!(AU64::mut_from_prefix(&mut buf.t[1..]), Err(CastError::Alignment(_))));
+        assert!(matches!(AU64::ref_from_suffix(&buf.t[..9]), Err(CastError::Alignment(_))));
+        assert!(matches!(AU64::mut_from_suffix(&mut buf.t[..9]), Err(CastError::Alignment(_))));
     }
 
     #[test]
@@ -7623,6 +7638,20 @@ mod tests {
             drop(v);
         }
 
+        #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
+        #[test]
+        fn test_vec_zeroed_length_overflow_preserves_contents() {
+            let original = [100u64, 200, 300];
+
+            let mut extended = original.to_vec();
+            assert_eq!(u64::extend_vec_zeroed(&mut extended, usize::MAX), Err(AllocError));
+            assert_eq!(&*extended, &original);
+
+            let mut inserted = original.to_vec();
+            assert_eq!(u64::insert_vec_zeroed(&mut inserted, 1, usize::MAX), Err(AllocError));
+            assert_eq!(&*inserted, &original);
+        }
+
         #[test]
         fn test_new_box_zeroed() {
             assert_eq!(u64::new_box_zeroed(), Ok(Box::new(0)));
@@ -7630,7 +7659,8 @@ mod tests {
 
         #[test]
         fn test_new_box_zeroed_array() {
-            drop(<[u32; 0x1000]>::new_box_zeroed());
+            let boxed = <[u32; 0x1000]>::new_box_zeroed().unwrap();
+            assert!(boxed.iter().all(|&element| element == 0));
         }
 
         #[test]

@@ -2374,7 +2374,11 @@ mod tests {
                 vector_signed_long,
                 vector_unsigned_long
             );
-            #[cfg(all(target_arch = "aarch64", not(no_zerocopy_aarch64_simd_1_59_0)))]
+            #[cfg(all(
+                target_arch = "aarch64",
+                not(no_zerocopy_aarch64_simd_1_59_0),
+                any(target_endian = "little", not(no_zerocopy_aarch64_simd_be_1_87_0))
+            ))]
             #[rustfmt::skip]
             test_simd_arch_mod!(
                 aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
