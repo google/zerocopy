@@ -152,6 +152,16 @@ struct TrivialBounds(bool);
 
 util_assert_not_impl_any!(TrivialBounds: imp::FromBytes);
 
+// The fresh lifetime used to make this bound trivial must not collide with a
+// binder nested in a field type.
+#[derive(imp::FromBytes)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct NestedLifetimeBinder(for<'zc> fn(&'zc ()));
+
+util_assert_not_impl_any!(NestedLifetimeBinder: imp::FromBytes);
+
 #[derive(imp::IntoBytes)]
 #[zerocopy(on_error = "skip")]
 #[zerocopy(crate = "zerocopy_renamed")]

@@ -34,7 +34,11 @@ const _: () = {
         {
             #[repr(C)]
             #[allow(dead_code)]
-            #[derive(Copy, Clone, PartialEq)]
+            #[derive(
+                ::zerocopy::util::macro_util::core_reexport::marker::Copy,
+                ::zerocopy::util::macro_util::core_reexport::clone::Clone,
+                ::zerocopy::util::macro_util::core_reexport::cmp::PartialEq
+            )]
             pub enum ___ZerocopyTag {
                 UnitLike,
                 StructLike,
@@ -2219,7 +2223,10 @@ const _: () = {
                 };
             };
             #[repr(C)]
-            union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
+            union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
                 __field_StructLike: ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                     ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                 >,
@@ -2263,7 +2270,10 @@ const _: () = {
                         Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasTag<::zerocopy::project_clients::TryFromBytesDerive>
-                    for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    for ___ZerocopyVariants<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Tag = ();
                         type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
@@ -2292,7 +2302,10 @@ const _: () = {
                         ẕ__field_StructLike,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_StructLike) },
-                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    > for ___ZerocopyVariants<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                             ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
@@ -2341,7 +2354,10 @@ const _: () = {
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_StructLike) },
-                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    > for ___ZerocopyVariants<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2381,7 +2397,10 @@ const _: () = {
                         ),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_StructLike) },
-                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    > for ___ZerocopyVariants<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2414,7 +2433,10 @@ const _: () = {
                         ẕ__field_TupleLike,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_TupleLike) },
-                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    > for ___ZerocopyVariants<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                             ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
@@ -2463,7 +2485,10 @@ const _: () = {
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_TupleLike) },
-                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    > for ___ZerocopyVariants<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2503,7 +2528,10 @@ const _: () = {
                         ),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_TupleLike) },
-                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    > for ___ZerocopyVariants<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2536,7 +2564,10 @@ const _: () = {
                         ẕ__nonempty,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__nonempty) },
-                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    > for ___ZerocopyVariants<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ();
                         #[inline(always)]
@@ -2583,7 +2614,10 @@ const _: () = {
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__nonempty) },
-                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    > for ___ZerocopyVariants<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2623,7 +2657,10 @@ const _: () = {
                         ),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__nonempty) },
-                    > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    > for ___ZerocopyVariants<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2635,7 +2672,10 @@ const _: () = {
                 };
             };
             #[repr(C)]
-            struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
+            struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
                 tag: ___ZerocopyOuterTag,
                 variants: ___ZerocopyVariants<'a, N, X, Y>,
             }
@@ -2673,7 +2713,10 @@ const _: () = {
                         Y: Deref,
                         const N: usize,
                     > ::zerocopy::HasTag<::zerocopy::project_clients::TryFromBytesDerive>
-                    for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    for ___ZerocopyRawEnum<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Tag = ();
                         type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
@@ -2702,7 +2745,10 @@ const _: () = {
                         ẕtag,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(tag) },
-                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ___ZerocopyOuterTag;
                         #[inline(always)]
@@ -2749,7 +2795,10 @@ const _: () = {
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(tag) },
-                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2789,7 +2838,10 @@ const _: () = {
                         ),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(tag) },
-                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2825,7 +2877,10 @@ const _: () = {
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(tag) },
-                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2858,7 +2913,10 @@ const _: () = {
                         ẕvariants,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
-                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ___ZerocopyVariants<'a, N, X, Y>;
                         #[inline(always)]
@@ -2905,7 +2963,10 @@ const _: () = {
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
-                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2945,7 +3006,10 @@ const _: () = {
                         ),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
-                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
@@ -2981,7 +3045,10 @@ const _: () = {
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
-                    > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    > for ___ZerocopyRawEnum<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (

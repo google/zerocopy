@@ -23,6 +23,19 @@ struct Struct {
 
 util_assert_impl_all!(Struct: imp::IntoBytes, imp::hash::Hash);
 
+#[derive(imp::IntoBytes, imp::Immutable, imp::ByteHash)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct Generic<H>(H);
+
+#[derive(imp::IntoBytes, imp::Immutable, imp::ByteHash)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct PreferredName<___ZerocopyHasher>(___ZerocopyHasher);
+
+util_assert_impl_all!(Generic<u8>: imp::hash::Hash);
+util_assert_impl_all!(PreferredName<u8>: imp::hash::Hash);
+
 #[test]
 fn test_hash() {
     use imp::{
@@ -36,4 +49,8 @@ fn test_hash() {
     }
     hash(Struct { a: 10, b: 15, c: 20 });
     hash(&[Struct { a: 10, b: 15, c: 20 }, Struct { a: 5, b: 4, c: 3 }]);
+    hash(Generic(1u8));
+    hash(&[Generic(1u8)]);
+    hash(PreferredName(1u8));
+    hash(&[PreferredName(1u8)]);
 }

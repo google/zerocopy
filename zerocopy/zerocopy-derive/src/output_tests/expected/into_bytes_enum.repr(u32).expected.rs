@@ -18,7 +18,11 @@ const _: () = {
             {
                 #[repr(u32)]
                 #[allow(dead_code)]
-                #[derive(Copy, Clone, PartialEq)]
+                #[derive(
+                    ::zerocopy::util::macro_util::core_reexport::marker::Copy,
+                    ::zerocopy::util::macro_util::core_reexport::clone::Clone,
+                    ::zerocopy::util::macro_util::core_reexport::cmp::PartialEq
+                )]
                 pub enum ___ZerocopyTag {
                     Bar,
                 }

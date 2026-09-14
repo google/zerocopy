@@ -3,19 +3,17 @@ where
     Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
     Self: Sized,
 {
-    fn hash<H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher>(
-        &self,
-        state: &mut H,
-    ) {
+    fn hash<
+        ___ZerocopyHasher: ::zerocopy::util::macro_util::core_reexport::hash::Hasher,
+    >(&self, state: &mut ___ZerocopyHasher) {
         ::zerocopy::util::macro_util::core_reexport::hash::Hasher::write(
             state,
             ::zerocopy::IntoBytes::as_bytes(self),
         )
     }
-    fn hash_slice<H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher>(
-        data: &[Self],
-        state: &mut H,
-    ) {
+    fn hash_slice<
+        ___ZerocopyHasher: ::zerocopy::util::macro_util::core_reexport::hash::Hasher,
+    >(data: &[Self], state: &mut ___ZerocopyHasher) {
         ::zerocopy::util::macro_util::core_reexport::hash::Hasher::write(
             state,
             ::zerocopy::IntoBytes::as_bytes(data),
