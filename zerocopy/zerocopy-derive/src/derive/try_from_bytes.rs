@@ -2,7 +2,7 @@
 //
 use proc_macro2::TokenStream;
 use quote::quote;
-use syn::{spanned::Spanned as _, Data, DataEnum, DataStruct, DataUnion, Error};
+use syn::{spanned::Spanned as _, Data, DataEnum, DataStruct, DataUnion, Error, Type, Visibility};
 
 use crate::{
     derive::project::{
@@ -15,6 +15,31 @@ use crate::{
         ImplBlockBuilder, Trait, TraitBound,
     },
 };
+
+/// Generates validation of every field of a struct or enum variant.
+fn derive_variant_is_safe(
+    ctx: &Ctx,
+    variant_id: &TokenStream,
+    fields: &[(&Visibility, TokenStream, &Type)],
+) -> TokenStream {
+    let zerocopy_crate = &ctx.zerocopy_crate;
+    let trait_path = Trait::TryFromBytes.crate_path(ctx);
+    let field_names = fields.iter().map(|(_, name, _)| name);
+    let field_tys = fields.iter().map(|(_, _, ty)| ty);
+    quote! {
+        true #(&& {
+            let field_candidate = #zerocopy_crate::into_inner!(
+                candidate.reborrow().project::<
+                    #zerocopy_crate::project_clients::TryFromBytesDerive,
+                    _,
+                    { #variant_id },
+                    { #zerocopy_crate::ident_id!(#field_names) },
+                >()
+            );
+            <#field_tys as #trait_path>::is_safe(field_candidate)
+        })*
+    }
+}
 
 /// Generates an implementation of `is_safe` for an arbitrary enum.
 ///
@@ -35,7 +60,6 @@ pub(crate) fn derive_is_safe(
         ));
     }
 
-    let trait_path = Trait::TryFromBytes.crate_path(ctx);
     let zerocopy_crate = &ctx.zerocopy_crate;
     let core = ctx.core_path();
     let projections = if data.fields().is_empty() {
@@ -57,20 +81,10 @@ pub(crate) fn derive_is_safe(
     let match_arms = data.variants().into_iter().map(|(variant, fields)| {
         let variant = &variant.unwrap().ident;
         let tag = tag_ident(variant);
-        let field_names = fields.iter().map(|(_, name, _)| name);
-        let field_tys = fields.iter().map(|(_, _, ty)| ty);
+        let variant_id = quote! { #zerocopy_crate::ident_id!(#variant) };
+        let fields_is_safe = derive_variant_is_safe(ctx, &variant_id, &fields);
         quote! {
-            #tag => true #(&& {
-                let field_candidate = #zerocopy_crate::into_inner!(
-                    candidate.reborrow().project::<
-                        #zerocopy_crate::project_clients::TryFromBytesDerive,
-                        _,
-                        { #zerocopy_crate::ident_id!(#variant) },
-                        { #zerocopy_crate::ident_id!(#field_names) },
-                    >()
-                );
-                <#field_tys as #trait_path>::is_safe(field_candidate)
-            })*
+            #tag => #fields_is_safe
         }
     });
 
@@ -119,9 +133,8 @@ fn derive_try_from_bytes_struct(
 ) -> Result<TokenStream, Error> {
     let extras = try_gen_trivial_is_safe(ctx, top_level).unwrap_or_else(|| {
         let zerocopy_crate = &ctx.zerocopy_crate;
-        let fields = strct.fields();
-        let field_names = fields.iter().map(|(_vis, name, _ty)| name);
-        let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+        let variant_id = quote! { #zerocopy_crate::STRUCT_VARIANT_ID };
+        let fields_is_safe = derive_variant_is_safe(ctx, &variant_id, &strct.fields());
         let core = ctx.core_path();
         quote!(
             // SAFETY: We use `is_safe` to validate that each field is bit-valid,
@@ -135,15 +148,7 @@ fn derive_try_from_bytes_struct(
             where
                 ___ZcAlignment: #zerocopy_crate::invariant::Alignment,
             {
-                true #(&& {
-                    let field_candidate = #zerocopy_crate::into_inner!(candidate.reborrow().project::<
-                        #zerocopy_crate::project_clients::TryFromBytesDerive,
-                        _,
-                        { #zerocopy_crate::STRUCT_VARIANT_ID },
-                        { #zerocopy_crate::ident_id!(#field_names) }
-                    >());
-                    <#field_tys as #zerocopy_crate::TryFromBytes>::is_safe(field_candidate)
-                })*
+                #fields_is_safe
             }
         )
     });
