@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
 //
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::{Span, TokenStream, TokenTree};
 use quote::quote;
-use syn::{parse_quote, Data, DataEnum, DataStruct, DataUnion, Error, Ident, Type, WherePredicate};
+use syn::{
+    parse_quote, Data, DataEnum, DataStruct, DataUnion, Error, GenericParam, Ident, Type,
+    WherePredicate,
+};
 
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
@@ -86,6 +89,40 @@ fn homogeneous_field_bounds(ctx: &Ctx, strct: &DataStruct) -> Option<Vec<WherePr
     })
 }
 
+/// Returns `true` if `ast`'s generic parameters, if any, are all `const`
+/// parameters whose identifiers do not appear anywhere in `fields`'s types.
+///
+/// A `const` parameter which doesn't appear in any field type cannot affect
+/// the type's layout, so such parameters don't prevent us from proving the
+/// type has no padding.
+///
+/// This check is conservative: it looks for any token which matches a
+/// parameter's identifier by name, regardless of scope. This means it may
+/// treat a `const` parameter as "used" even where it's actually shadowed
+/// (e.g., by a same-named `const` argument to another generic type nested in
+/// a field). Over-approximating usage in this way is always sound; it just
+/// causes us to fall back to a more restrictive (but still correct) check.
+fn generics_are_unused_consts(
+    ast: &syn::DeriveInput,
+    fields: &[(&syn::Visibility, TokenStream, &Type)],
+) -> bool {
+    if ast.generics.params.iter().any(|param| !matches!(param, GenericParam::Const(_))) {
+        return false;
+    }
+
+    fn contains_ident(tokens: TokenStream, ident: &Ident) -> bool {
+        tokens.into_iter().any(|tt| match tt {
+            TokenTree::Ident(i) => i == *ident,
+            TokenTree::Group(group) => contains_ident(group.stream(), ident),
+            _ => false,
+        })
+    }
+
+    !ast.generics
+        .const_params()
+        .any(|param| fields.iter().any(|(_, _, ty)| contains_ident(quote!(#ty), &param.ident)))
+}
+
 fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream, Error> {
     let repr = StructUnionRepr::from_attrs(&ctx.ast.attrs)?;
 
@@ -142,6 +179,28 @@ fn derive_into_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream
         } else {
             (Some(PaddingCheck::Struct), false, None)
         }
+    } else if is_c && generics_are_unused_consts(&ctx.ast, &strct.fields()) {
+        // The struct has `const` generic parameters, but none of them appear
+        // in any field's type, so they can't affect the struct's layout.
+        //
+        // Unlike the no-generics case above, we can't use `PaddingCheck::
+        // Struct` (whose `struct_padding!` expansion computes `size_of::
+        // <Self>()`): `Self` here is generic (e.g. `Foo<{ N }>`), and using a
+        // generic `Self` type inside the anonymous `const` expression that
+        // provides the padding check's `PADDING_BYTES` argument is rejected
+        // by rustc ("generic `Self` types are currently not permitted in
+        // anonymous constants").
+        //
+        // `PaddingCheck::ReprCStruct`'s `repr_c_struct_has_padding!`
+        // expansion sidesteps this: it never mentions `$t` in its body, only
+        // the (concrete) field types and the `align`/`packed` literals. Its
+        // `Self` argument only appears as a standalone generic argument to
+        // `DynamicPaddingFree`, outside of the anonymous `const`, which is
+        // permitted.
+        //
+        // This requires `repr(C)`, which `repr_c_struct_has_padding!`
+        // requires of its input.
+        (Some(PaddingCheck::ReprCStruct), false, None)
     } else if let Some(bounds) = homogeneous_bounds.take() {
         // Let `a` be the alignment of `T` and `s` be its size. Rust guarantees
         // that `s` is a multiple of `a`. `T`, `[T; N]`, and `[T]` all have

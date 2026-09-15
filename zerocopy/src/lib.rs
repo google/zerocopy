@@ -6685,6 +6685,20 @@ mod tests {
 
     #[cfg(feature = "derive")]
     #[test]
+    fn test_into_bytes_unused_const_generic_derive() {
+        // Regression test for #2723: an unused `const` generic parameter
+        // must not force fields to be `Unaligned`, since it can't affect the
+        // type's layout.
+        #[derive(IntoBytes, Immutable)]
+        #[repr(C)]
+        struct Foo<const N: usize>(u32, u32);
+
+        let foo = Foo::<42>(1, 2);
+        assert_eq!(foo.as_bytes().len(), 8);
+    }
+
+    #[cfg(feature = "derive")]
+    #[test]
     fn test_known_layout_derive() {
         // In this and other files (`late_compile_pass.rs`,
         // `mid_compile_pass.rs`, and `struct.rs`), we test success and failure

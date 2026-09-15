@@ -344,6 +344,26 @@ fn test_into_bytes_struct_homogeneous_generic() {
 }
 
 #[test]
+fn test_into_bytes_struct_unused_const_generic() {
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<const N: usize>(u8, u8);
+        } expands to "expected/into_bytes_struct_unused_const_generic.expected.rs"
+    }
+}
+
+#[test]
+fn test_into_bytes_struct_used_const_generic() {
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<const N: usize>([u32; N], u32);
+        } expands to "expected/into_bytes_struct_used_const_generic.expected.rs"
+    }
+}
+
+#[test]
 fn test_into_bytes_enum() {
     macro_rules! test_repr {
         ($(#[$attr:meta])*) => {
