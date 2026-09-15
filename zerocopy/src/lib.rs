@@ -5696,6 +5696,10 @@ fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
 ///       if its field is [`IntoBytes`]; else,
 ///     - if the type has no generic parameters, it is [`IntoBytes`] if the type
 ///       is sized and has no padding bytes; else,
+///     - if the type is `repr(C)` and its only generic parameters are `const`
+///       parameters which do not appear in any field's type (and no field's
+///       type mentions `Self` or contains a macro invocation), it is
+///       [`IntoBytes`] if the type has no padding bytes; else,
 ///     - if the type is `repr(C)` without an `align(N)` modifier for `N > 1`
 ///       (it may have `align(1)` or `packed(N)`), and every field is `T`,
 ///       `[T; N]`, or a final `[T]` for the same type parameter `T`, it is
