@@ -1,0 +1,253 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Anneal Archive Equivalence
+
+on:
+  # Keep this expensive reference build out of the ordinary push, pull-request,
+  # and merge-queue graph. Scheduled workflows run from the default branch; the
+  # checkout step below pins the exact main revision recorded by the event.
+  schedule:
+    - cron: '37 07 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  compare-fast-and-slow:
+    name: Compare fast and clean-build archives
+    if: github.repository == 'google/zerocopy'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: read
+    steps:
+      - name: Free up disk space
+        run: |
+          df -h
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/share/boost
+          df -h
+
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          # The scheduled event SHA is the exact main revision recorded for
+          # this run. For a manual run, retain the ref selected in the UI/API.
+          ref: ${{ github.event_name == 'schedule' && github.sha || github.ref }}
+          persist-credentials: false
+
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # zizmor: ignore[superfluous-actions]
+        with:
+          toolchain: stable
+
+      # Reuse the trusted default-branch cache populated by anneal.yml. This is
+      # deliberately restore-only: the nightly clean-build profile is a
+      # reference result, not a substituter that ordinary PR jobs should trust.
+      - name: Restore Anneal main Nix binary cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: anneal/target/nix-cache-main
+          key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py', 'anneal/prime-lakefile.lean') }}
+          restore-keys: |
+            anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Install Nix
+        uses: DeterminateSystems/determinate-nix-action@629b284231c2a82554b724e357e47fc6020833c8 # v3.21.2
+
+      # Ubuntu 24.04 restricts the user namespaces used by the FHS environment
+      # in the Mathlib cache/build derivations.
+      - name: Enable unprivileged user namespaces
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Build fast and clean-build archives
+        id: build_archives
+        working-directory: anneal
+        run: |
+          set -euo pipefail
+          mkdir -p target
+          nix_args=()
+          if [ -f target/nix-cache-main/nix-cache-info ]; then
+            nix_args+=(--extra-substituters "file://$PWD/target/nix-cache-main/?trusted=1")
+          fi
+
+          nix build "${nix_args[@]}" .#omnibus-archive-ci-fast \
+            --out-link target/anneal-exocrate-fast.tar.zst
+          # Force the Lean-artifact-free recipe itself to execute tonight.
+          # Rebuilding only its archive wrapper could still substitute a cached
+          # reference compilation while appearing to perform the slow audit.
+          nix build "${nix_args[@]}" --rebuild .#aeneas-compiled-slow \
+            --out-link target/aeneas-compiled-slow
+          nix build "${nix_args[@]}" .#omnibus-archive-ci-slow \
+            --out-link target/anneal-exocrate-slow.tar.zst
+
+          fast_archive="$(readlink -f target/anneal-exocrate-fast.tar.zst)"
+          slow_archive="$(readlink -f target/anneal-exocrate-slow.tar.zst)"
+          if [ "$fast_archive" = "$slow_archive" ]; then
+            echo "Fast and clean-build archive attributes resolved to the same output" >&2
+            exit 1
+          fi
+
+          fast_compiled_drv="$(nix eval --raw .#aeneas-compiled-fast.drvPath)"
+          slow_compiled_drv="$(nix eval --raw .#aeneas-compiled-slow.drvPath)"
+          prepared_cache_drv="$(nix eval --raw .#aeneas-prepared-cache.drvPath)"
+          fast_archive_drv="$(nix eval --raw .#omnibus-archive-ci-fast.drvPath)"
+          slow_archive_drv="$(nix eval --raw .#omnibus-archive-ci-slow.drvPath)"
+          nix-store --query --requisites "$fast_archive_drv" > target/fast-archive-requisites
+          nix-store --query --requisites "$slow_archive_drv" > target/slow-archive-requisites
+          nix-store --query --requisites "$slow_compiled_drv" > target/slow-compiled-requisites
+
+          require_requisite() {
+            local inventory="$1"
+            local dependency="$2"
+            local description="$3"
+            if ! grep -Fxq "$dependency" "$inventory"; then
+              echo "$description is missing its required dependency" >&2
+              exit 1
+            fi
+          }
+          reject_requisite() {
+            local inventory="$1"
+            local dependency="$2"
+            local description="$3"
+            if grep -Fxq "$dependency" "$inventory"; then
+              echo "$description unexpectedly reaches a forbidden dependency" >&2
+              exit 1
+            fi
+          }
+          require_requisite target/fast-archive-requisites \
+            "$fast_compiled_drv" "Fast archive"
+          require_requisite target/fast-archive-requisites \
+            "$prepared_cache_drv" "Fast archive"
+          reject_requisite target/fast-archive-requisites \
+            "$slow_compiled_drv" "Fast archive"
+          require_requisite target/slow-archive-requisites \
+            "$slow_compiled_drv" "Clean-build archive"
+          reject_requisite target/slow-archive-requisites \
+            "$fast_compiled_drv" "Clean-build archive"
+          reject_requisite target/slow-archive-requisites \
+            "$prepared_cache_drv" "Clean-build archive"
+          reject_requisite target/slow-compiled-requisites \
+            "$prepared_cache_drv" "Clean-build compilation"
+
+          # Exercise the full layout contract against both packaged results.
+          nix build "${nix_args[@]}" --no-link \
+            .#omnibus-archive-layout-check-fast \
+            .#omnibus-archive-layout-check-slow
+
+          echo "fast_archive=$fast_archive" >> "$GITHUB_OUTPUT"
+          echo "slow_archive=$slow_archive" >> "$GITHUB_OUTPUT"
+          printf 'Fast archive: %s bytes\n' "$(stat -c %s "$fast_archive")"
+          printf 'Slow archive: %s bytes\n' "$(stat -c %s "$slow_archive")"
+
+      - name: Restore AppArmor restriction
+        if: always()
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
+
+      - name: Install fast archive
+        id: install_fast
+        if: steps.build_archives.outcome == 'success'
+        continue-on-error: true
+        env:
+          FAST_ARCHIVE: ${{ steps.build_archives.outputs.fast_archive }}
+        working-directory: anneal/v1
+        run: |
+          ANNEAL_TOOLCHAIN_DIR="$RUNNER_TEMP/anneal-toolchain-fast" cargo run setup \
+            --local-archive "$FAST_ARCHIVE"
+
+      - name: Install clean-build archive
+        id: install_slow
+        if: steps.build_archives.outcome == 'success'
+        continue-on-error: true
+        env:
+          SLOW_ARCHIVE: ${{ steps.build_archives.outputs.slow_archive }}
+        working-directory: anneal/v1
+        run: |
+          ANNEAL_TOOLCHAIN_DIR="$RUNNER_TEMP/anneal-toolchain-slow" cargo run setup \
+            --local-archive "$SLOW_ARCHIVE"
+
+      - name: Check fast archive contract
+        id: check_fast
+        if: always() && steps.install_fast.outcome == 'success'
+        continue-on-error: true
+        env:
+          ANNEAL_TOOLCHAIN_DIR: ${{ runner.temp }}/anneal-toolchain-fast
+          RUSTFLAGS: ''
+          RUSTDOCFLAGS: ''
+          RUST_TEST_THREADS: '1'
+          __ZEROCOPY_LOCAL_DEV: '1'
+        working-directory: anneal/v1
+        run: cargo test --test integration archive_lake_cache_reuse -- --nocapture
+
+      - name: Check clean-build archive contract
+        id: check_slow
+        if: always() && steps.install_slow.outcome == 'success'
+        continue-on-error: true
+        env:
+          ANNEAL_TOOLCHAIN_DIR: ${{ runner.temp }}/anneal-toolchain-slow
+          RUSTFLAGS: ''
+          RUSTDOCFLAGS: ''
+          RUST_TEST_THREADS: '1'
+          __ZEROCOPY_LOCAL_DEV: '1'
+        working-directory: anneal/v1
+        run: cargo test --test integration archive_lake_cache_reuse -- --nocapture
+
+      - name: Compare InfoView setup contracts
+        id: compare_infoview
+        if: >-
+          always() &&
+          steps.install_fast.outcome == 'success' &&
+          steps.install_slow.outcome == 'success'
+        continue-on-error: true
+        env:
+          ANNEAL_TOOLCHAIN_DIR: ${{ runner.temp }}/anneal-toolchain-fast
+          ANNEAL_REFERENCE_TOOLCHAIN_DIR: ${{ runner.temp }}/anneal-toolchain-slow
+          RUSTFLAGS: ''
+          RUSTDOCFLAGS: ''
+          RUST_TEST_THREADS: '1'
+          __ZEROCOPY_LOCAL_DEV: '1'
+        working-directory: anneal/v1
+        run: cargo test --test integration archive_lake_cache_reuse -- --nocapture
+
+      - name: Compare archive build outputs
+        id: compare_archives
+        if: steps.build_archives.outcome == 'success'
+        continue-on-error: true
+        env:
+          FAST_ARCHIVE: ${{ steps.build_archives.outputs.fast_archive }}
+          SLOW_ARCHIVE: ${{ steps.build_archives.outputs.slow_archive }}
+        working-directory: anneal
+        run: ./compare-toolchain-archives.py "$FAST_ARCHIVE" "$SLOW_ARCHIVE"
+
+      - name: Require every equivalence check to pass
+        if: always()
+        env:
+          INSTALL_FAST: ${{ steps.install_fast.outcome }}
+          INSTALL_SLOW: ${{ steps.install_slow.outcome }}
+          CHECK_FAST: ${{ steps.check_fast.outcome }}
+          CHECK_SLOW: ${{ steps.check_slow.outcome }}
+          COMPARE_INFOVIEW: ${{ steps.compare_infoview.outcome }}
+          COMPARE_ARCHIVES: ${{ steps.compare_archives.outcome }}
+        run: |
+          set -euo pipefail
+          test "$INSTALL_FAST" = success
+          test "$INSTALL_SLOW" = success
+          test "$CHECK_FAST" = success
+          test "$CHECK_SLOW" = success
+          test "$COMPARE_INFOVIEW" = success
+          test "$COMPARE_ARCHIVES" = success

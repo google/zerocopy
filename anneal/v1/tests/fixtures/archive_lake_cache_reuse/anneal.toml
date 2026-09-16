@@ -1,4 +1,4 @@
 description = """
 Purpose: Verifies that the installed Nix-built archive can be used read-only by a fresh generated Lake workspace and the Lean language server.
-Behavior: Builds, diagnoses, and runs IDE setup-file on a tiny workspace with a complete relative Lake manifest pointing at the installed Aeneas archive.
+Behavior: Builds, diagnoses, and runs IDE setup-file on a tiny workspace with a complete relative Lake manifest pointing at the installed Aeneas archive. When ANNEAL_REFERENCE_TOOLCHAIN_DIR is set, repeats the full contract against that installation and compares the complete setup-file output after normalizing installed-toolchain artifact paths.
 """
