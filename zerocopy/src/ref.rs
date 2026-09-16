@@ -10,7 +10,7 @@
 // those terms.
 use super::*;
 use crate::pointer::{
-    BecauseInvariantsEq, BecauseMutationCompatible, MutationCompatible, TransmuteFromPtr,
+    BecauseMutationCompatible, BecauseSharedCompatible, MutationCompatible, TransmuteFromPtr,
 };
 
 mod def {
@@ -686,7 +686,7 @@ where
                     T,
                     _,
                     (BecauseRead, BecauseExclusive),
-                    (BecauseMutationCompatible, BecauseInvariantsEq),
+                    (BecauseMutationCompatible, BecauseSharedCompatible),
                 >(ptr)
             };
 
@@ -786,8 +786,8 @@ where
         // `ByteSliceMut`.
         let b = unsafe { r.as_byte_slice_mut() };
 
-        // SAFETY: By postcondition on `as_byte_slice_mut`, we know that `b` is
-        // a valid size and alignment for `T`. By safety invariant on
+        // SAFETY: By postcondition on `as_byte_slice_mut`, we know that `b` is a
+        // valid size and alignment for `T`. By safety invariant on
         // `ByteSlice`, we know that this is preserved via `.deref()`. Writing
         // `t` to the buffer will allow all of the bytes of `t` to be accessed
         // as a `[u8]`, but because `T: IntoBytes`, we know that this is sound.
@@ -862,7 +862,7 @@ where
                     T,
                     _,
                     (BecauseRead, BecauseExclusive),
-                    (BecauseMutationCompatible, BecauseInvariantsEq),
+                    (BecauseMutationCompatible, BecauseSharedCompatible),
                 >(ptr)
             };
 

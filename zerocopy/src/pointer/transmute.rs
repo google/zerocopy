@@ -147,8 +147,9 @@ pub enum BecauseMutationCompatible {}
 //   the following holds:
 //   - `A` is `Exclusive`
 //   - `Src: Immutable` and `Dst: Immutable`
-//   - `Dst: InvariantsEq<Src>`, which guarantees that `Src` and `Dst` have the
-//     same invariants, and permit interior mutation on the same byte ranges
+//   - `Dst: SharedCompatible<Src>`, which guarantees that it is sound for safe
+//     code to operate on `&Src` and `&Dst` pointing to the same byte range at
+//     the same time
 unsafe impl<Src, Dst, SV, DV, A, C, R>
     TryTransmuteFromPtr<Src, A, SV, DV, C, (BecauseMutationCompatible, R)> for Dst
 where
@@ -187,7 +188,7 @@ where
 ///
 /// At least one of the following must hold:
 /// - `Src: Read<A, _>` and `Self: Read<A, _>`
-/// - `Self: InvariantsEq<Src>`, and, for some `V`:
+/// - `Self: SharedCompatible<Src>`, and, for some `V`:
 ///   - `Dst: TransmuteFrom<Src, V, V>`
 ///   - `Src: TransmuteFrom<Dst, V, V>`
 pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, R> {}
@@ -204,38 +205,39 @@ where
 {
 }
 
-/// Denotes that two types have the same invariants.
+/// Denotes that shared references to two types may safely coexist on the same
+/// referent.
 ///
 /// # Safety
 ///
 /// It is sound for safe code to operate on a `&T` and a `&Self` pointing to the
 /// same referent at the same time - no such safe code can cause undefined
 /// behavior.
-pub unsafe trait InvariantsEq<T: ?Sized> {}
+pub unsafe trait SharedCompatible<T: ?Sized> {}
 
 // SAFETY: Trivially sound to have multiple `&T` pointing to the same referent.
-unsafe impl<T: ?Sized> InvariantsEq<T> for T {}
+unsafe impl<T: ?Sized> SharedCompatible<T> for T {}
 
-// SAFETY: `Dst: InvariantsEq<Src> + TransmuteFrom<Src, SV, DV>`, and `Src:
+// SAFETY: `Dst: SharedCompatible<Src> + TransmuteFrom<Src, SV, DV>`, and `Src:
 // TransmuteFrom<Dst, DV, SV>`.
 unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity>
-    MutationCompatible<Src, A, SV, DV, BecauseInvariantsEq> for Dst
+    MutationCompatible<Src, A, SV, DV, BecauseSharedCompatible> for Dst
 where
     Src: TransmuteFrom<Dst, DV, SV>,
-    Dst: TransmuteFrom<Src, SV, DV> + InvariantsEq<Src>,
+    Dst: TransmuteFrom<Src, SV, DV> + SharedCompatible<Src>,
 {
 }
 
 #[allow(missing_debug_implementations, missing_copy_implementations)]
-pub enum BecauseInvariantsEq {}
+pub enum BecauseSharedCompatible {}
 
-macro_rules! unsafe_impl_invariants_eq {
+macro_rules! unsafe_impl_shared_compatible {
     ($tyvar:ident => $t:ty, $u:ty) => {{
         crate::util::macros::__unsafe();
         // SAFETY: The caller promises that this is sound.
-        unsafe impl<$tyvar> InvariantsEq<$t> for $u {}
+        unsafe impl<$tyvar> SharedCompatible<$t> for $u {}
         // SAFETY: The caller promises that this is sound.
-        unsafe impl<$tyvar> InvariantsEq<$u> for $t {}
+        unsafe impl<$tyvar> SharedCompatible<$u> for $t {}
     }};
 }
 
@@ -253,9 +255,9 @@ impl_transitive_transmute_from!(T => Wrapping<T> => T => MaybeUninit<T>);
 //   validity as `T`
 //
 // [2] https://doc.rust-lang.org/1.81.0/std/mem/struct.ManuallyDrop.html#impl-Deref-for-ManuallyDrop%3CT%3E
-unsafe impl<T: ?Sized> InvariantsEq<T> for ManuallyDrop<T> {}
+unsafe impl<T: ?Sized> SharedCompatible<T> for ManuallyDrop<T> {}
 // SAFETY: See previous safety comment.
-unsafe impl<T: ?Sized> InvariantsEq<ManuallyDrop<T>> for T {}
+unsafe impl<T: ?Sized> SharedCompatible<ManuallyDrop<T>> for T {}
 
 /// Transmutations which are always sound.
 ///
@@ -400,7 +402,7 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T => Unalign<T>)
 // sound for these two references to exist at the same time since it's already
 // possible for safe code to get into this state.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_invariants_eq!(T => T, Unalign<T>) };
+const _: () = unsafe { unsafe_impl_shared_compatible!(T => T, Unalign<T>) };
 
 // SAFETY:
 // - `Wrapping<T>` has the same size as `T` [1].
@@ -433,7 +435,7 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T => Wrapping<T>
 // already possible for safe code to obtain a `&Wrapping<T>` and a `&T` pointing
 // to the same referent at the same time. Thus, this must be sound.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_invariants_eq!(T => T, Wrapping<T>) };
+const _: () = unsafe { unsafe_impl_shared_compatible!(T => T, Wrapping<T>) };
 
 // SAFETY:
 // - `UnsafeCell<T>` has the same size as `T` [1].
