@@ -338,6 +338,10 @@ lean_lib Generated where
     )?;
     write_relative_archive_manifest(&workspace, &aeneas_lean)?;
 
+    // This is the workspace-loading path used by the Lean language server and
+    // IDE InfoView on first open. `setup-file` checks dependency traces in hash
+    // mode and is not allowed to repair the read-only archive.
+    run_lake_archive_setup_file(test_name, &workspace, toolchain_root, &lean_root)?;
     // This mirrors v1's generated workspace contract with the Nix-built
     // archive: dependency paths are locked relative to the workspace, package
     // caches are read-only, and `--old` must reuse the prebuilt Lake outputs.
@@ -351,7 +355,14 @@ lean_lib Generated where
         test_name,
         &workspace,
         &lean_root,
-        &["--keep-toolchain", "env", "lean", "--json", "generated/Generated.lean"],
+        &[
+            "--keep-toolchain",
+            "env",
+            "lean",
+            "--setup=lean-server-setup.json",
+            "--json",
+            "generated/Generated.lean",
+        ],
     )?;
 
     Ok(())
@@ -464,6 +475,111 @@ fn run_lake_archive_command(
     lean_root: &Path,
     args: &[&str],
 ) -> Result<(), Box<dyn std::error::Error>> {
+    let cmd = lake_archive_command(workspace, lean_root, args)?;
+    run_command_with_profile(test_name, Some("archive_lake_cache_reuse"), cmd)?.assert.success();
+    Ok(())
+}
+
+fn run_lake_archive_setup_file(
+    test_name: &str,
+    workspace: &Path,
+    toolchain_root: &Path,
+    lean_root: &Path,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let cmd = lake_archive_command(
+        workspace,
+        lean_root,
+        &[
+            "--keep-toolchain",
+            "setup-file",
+            "generated/Generated.lean",
+            "-",
+            "--no-build",
+            "--no-cache",
+            "--quiet",
+        ],
+    )?;
+    let header = json!({
+        "imports": [{
+            "module": "Aeneas",
+            "importAll": false,
+            "isExported": true,
+            "isMeta": false,
+        }],
+        "isModule": false,
+    });
+    let input = format!("{header}\n");
+    let run = run_command_with_input_profile(
+        test_name,
+        Some("archive_lake_cache_reuse"),
+        cmd,
+        Some(input.as_bytes()),
+    )?;
+    let assert = run.assert.success();
+    let setup: Value = serde_json::from_slice(&assert.get_output().stdout)?;
+    let import_arts = setup
+        .get("importArts")
+        .and_then(Value::as_object)
+        .ok_or_else(|| invalid_data("Lake setup-file output has no importArts object"))?;
+    if !import_arts.contains_key("Aeneas") {
+        return Err(invalid_data("Lake setup-file output has no Aeneas import artifact").into());
+    }
+    for (module, artifacts) in import_arts {
+        let artifacts = artifacts.as_array().ok_or_else(|| {
+            invalid_data(format!("Lake setup-file artifacts for {module} are not an array"))
+        })?;
+        for artifact in artifacts {
+            let artifact = artifact.as_str().ok_or_else(|| {
+                invalid_data(format!("Lake setup-file artifact for {module} is not a path"))
+            })?;
+            validate_setup_artifact(toolchain_root, artifact)?;
+        }
+    }
+    for field in ["dynlibs", "plugins"] {
+        let artifacts = setup
+            .get(field)
+            .and_then(Value::as_array)
+            .ok_or_else(|| invalid_data(format!("Lake setup-file output has no {field} array")))?;
+        for artifact in artifacts {
+            let artifact = artifact.as_str().ok_or_else(|| {
+                invalid_data(format!("Lake setup-file {field} entry is not a path"))
+            })?;
+            validate_setup_artifact(toolchain_root, artifact)?;
+        }
+    }
+    fs::write(workspace.join("lean-server-setup.json"), &assert.get_output().stdout)?;
+    Ok(())
+}
+
+fn validate_setup_artifact(
+    toolchain_root: &Path,
+    artifact: &str,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let artifact = Path::new(artifact);
+    if !artifact.is_file() {
+        return Err(invalid_data(format!(
+            "Lake setup-file returned a missing artifact: {}",
+            artifact.display()
+        ))
+        .into());
+    }
+    let artifact = fs::canonicalize(artifact)?;
+    let toolchain_root = fs::canonicalize(toolchain_root)?;
+    if !artifact.starts_with(&toolchain_root) {
+        return Err(invalid_data(format!(
+            "Lake setup-file returned an artifact outside the installed toolchain: {}",
+            artifact.display()
+        ))
+        .into());
+    }
+    Ok(())
+}
+
+fn lake_archive_command(
+    workspace: &Path,
+    lean_root: &Path,
+    args: &[&str],
+) -> Result<process::Command, Box<dyn std::error::Error>> {
     let lean_bin = lean_root.join("bin");
     let mut cmd = process::Command::new(lean_bin.join("lake"));
     cmd.args(args)
@@ -479,8 +595,7 @@ fn run_lake_archive_command(
         prepend_env_paths(lib_var, &[lean_root.join("lib"), lean_root.join("lib/lean")])?,
     );
 
-    run_command_with_profile(test_name, Some("archive_lake_cache_reuse"), cmd)?.assert.success();
-    Ok(())
+    Ok(cmd)
 }
 
 fn prepend_env_paths(
@@ -557,7 +672,16 @@ fn acquire_toolchain_run_slot() -> ToolchainRunPermit {
 fn run_command_with_profile(
     test: &str,
     phase: Option<&str>,
+    cmd: process::Command,
+) -> io::Result<CommandRun> {
+    run_command_with_input_profile(test, phase, cmd, None)
+}
+
+fn run_command_with_input_profile(
+    test: &str,
+    phase: Option<&str>,
     mut cmd: process::Command,
+    input: Option<&[u8]>,
 ) -> io::Result<CommandRun> {
     let argv: Vec<_> = std::iter::once(cmd.get_program().to_string_lossy().to_string())
         .chain(cmd.get_args().map(|arg| arg.to_string_lossy().to_string()))
@@ -565,10 +689,15 @@ fn run_command_with_profile(
     let cwd = cmd.get_current_dir().map(|dir| dir.display().to_string());
     let started = Instant::now();
 
-    cmd.stdin(Stdio::null()).stdout(Stdio::piped()).stderr(Stdio::piped());
-    let child = cmd.spawn()?;
+    cmd.stdin(if input.is_some() { Stdio::piped() } else { Stdio::null() })
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped());
+    let mut child = cmd.spawn()?;
     let child_pid = child.id();
     let sampler = ProcessSampler::start(test, phase, child_pid);
+    if let Some(input) = input {
+        child.stdin.take().expect("piped command stdin is missing").write_all(input)?;
+    }
     let output = child.wait_with_output()?;
     let metrics = sampler.map(ProcessSampler::finish);
 
