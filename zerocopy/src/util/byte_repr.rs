@@ -257,8 +257,9 @@ const _: () = {
 /// Implements one of the supported byte traits for `$ty` by transferring the
 /// corresponding implementation on `$repr` through `ByteReprEq`.
 ///
-/// Calling this macro is safe; the generated impl requires the representation
-/// witness and the source trait implementation as ordinary type bounds.
+/// Calling this macro is safe; the generated impl checks the representation
+/// witness and source trait implementation at compile time without exposing the
+/// private witness in the public impl's bounds.
 macro_rules! impl_for_transmute_from {
     (
         $(#[$attr:meta])*
@@ -291,15 +292,23 @@ macro_rules! impl_for_transmute_from {
             //   uses the witness's exact cast to validate the corresponding
             //   `$repr` referent. On success, representation equivalence makes
             //   the original `$ty` referent `Safe`.
-            unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty
-            where
-                $ty: $crate::util::byte_repr::ByteReprEq<$repr>,
-                $repr: $trait,
-            {
+            unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
                 fn only_derive_is_allowed_to_implement_this_trait() {
                     impl_for_transmute_from!(@assert_is_supported_trait $trait);
+
+                    fn is_trait<T, R>()
+                    where
+                        T: $crate::util::byte_repr::ByteReprEq<R> + ?Sized,
+                        R: $trait + ?Sized,
+                    {
+                    }
+
+                    #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+                    fn f<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?>() {
+                        is_trait::<$ty, $repr>();
+                    }
                 }
 
                 impl_for_transmute_from!(
