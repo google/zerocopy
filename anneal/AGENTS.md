@@ -9,7 +9,8 @@ those terms. -->
 # Anneal agent guide
 
 Before working on the current Anneal redesign, read and preserve the project
-principles in [`PRINCIPLES.md`](PRINCIPLES.md).
+principles in [`PRINCIPLES.md`](PRINCIPLES.md) and the shared design contract in
+[`DESIGN.md`](DESIGN.md). The principles are authoritative if the two conflict.
 
 Determine current implementation behavior from the checked-in source. The
 [`v1/`](v1/) subtree is the historical V1 prototype: use it as historical
