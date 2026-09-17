@@ -64,7 +64,7 @@ pub trait Alignment: Sealed {
 /// all `T: ?Sized`. Any `V: Validity` must guarantee that this set is only a
 /// function of the *bit validity* of the referent type, `T`, and not of any
 /// other property of `T`. As a consequence, given `V: Validity`, `T`, and `U`
-/// where `T` and `U` have the same bit validity, `S(V, T) = S(V, U)`.
+/// where `T` and `U` have the same bit validity, `S(T, V) = S(U, V)`.
 ///
 /// It is guaranteed that the referent of any `ptr: Ptr<T, V>` is a member of
 /// `S(T, V)`. Unsafe code must ensure that this guarantee will be upheld for
