@@ -9,7 +9,7 @@ exocrate_tests = []
 name = "cargo-anneal"
 edition = "2024"
 version = "0.1.0-alpha.22"
-description = "Formally verify that your safety comments are correct."
+description = "A verification framework for proving correctness properties of Rust programs."
 categories = [
   "development-tools::cargo-plugins",
   "development-tools::testing",

@@ -8,6 +8,12 @@ those terms. -->
 
 # Anneal
 
+> **Historical V1 documentation:** This document describes the prototype in
+> `anneal/v1/`. It remains authoritative for using and maintaining V1, but it is
+> not current Anneal design authority. See
+> [`../PRINCIPLES.md`](../PRINCIPLES.md) for current project principles. Known
+> differences are historical and need not be reconciled here.
+
 > **Note to AI Agents:** This document is intended for agents **developing** the
 > Anneal toolchain itself. If you are an agent **using** Anneal, please refer to
 > the `llms.txt` and `docs/agent/` directory instead.
