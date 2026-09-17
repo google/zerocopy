@@ -2,6 +2,12 @@
 
 # Anneal Formal Verification Toolchain
 
+> **Historical V1 documentation:** This document describes the prototype in
+> `anneal/v1/`. It remains authoritative for using and maintaining V1, but it is
+> not current Anneal design authority. See
+> [`../PRINCIPLES.md`](../PRINCIPLES.md) for current project principles. Known
+> differences are historical and need not be reconciled here.
+
 > Anneal is a toolchain for formally verifying `unsafe` Rust code using Charon, Aeneas, and Lean 4, with a specific focus on memory layout and correctness boundaries.
 
 **CRITICAL INSTRUCTION FOR AGENTS:** 
