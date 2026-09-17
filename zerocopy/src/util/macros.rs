@@ -165,20 +165,23 @@ macro_rules! unsafe_impl {
     };
 }
 
-/// Proof used by `impl_for_transmute_from!` that two sized types have equal
+/// Proof used by `impl_for_transmute_from!` that two referent types have equal
 /// size.
 ///
 /// # Safety
 ///
-/// `Self` and `R` must have the same size.
-pub(crate) unsafe trait SameSizeForTransmute<R>: Sized
-where
-    R: Sized,
-{
-}
+/// For every pair of corresponding `Self` and `R` referents, including any DST
+/// metadata, the referents must have the same byte length.
+pub(crate) unsafe trait SameSizeForTransmute<R: ?Sized> {}
 
 // SAFETY: `Wrapping<T>` is guaranteed to have the same layout as `T`.
 unsafe impl<T> SameSizeForTransmute<T> for core::num::Wrapping<T> {}
+// SAFETY: `ManuallyDrop<T>` is guaranteed to have the same layout as `T`.
+unsafe impl<T: ?Sized> SameSizeForTransmute<T> for core::mem::ManuallyDrop<T> {}
+// SAFETY: `Cell<T>` has the same in-memory representation as `T`.
+unsafe impl<T: ?Sized> SameSizeForTransmute<T> for core::cell::Cell<T> {}
+// SAFETY: `UnsafeCell<T>` has the same in-memory representation as `T`.
+unsafe impl<T: ?Sized> SameSizeForTransmute<T> for core::cell::UnsafeCell<T> {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
 // SAFETY: The standard library guarantees that `AtomicBool` has the same size
@@ -191,8 +194,8 @@ unsafe impl SameSizeForTransmute<bool> for core::sync::atomic::AtomicBool {}
 // `impls.rs`.
 unsafe impl SameSizeForTransmute<i8> for core::sync::atomic::AtomicI8 {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
-// SAFETY: The standard library guarantees that `AtomicU8` has the same size as
-// `u8`; this is the same guarantee used by the atomic safety proofs in
+// SAFETY: The standard library guarantees that `AtomicU8` has the same size
+// as `u8`; this is the same guarantee used by the atomic safety proofs in
 // `impls.rs`.
 unsafe impl SameSizeForTransmute<u8> for core::sync::atomic::AtomicU8 {}
 
@@ -239,6 +242,9 @@ unsafe impl SameSizeForTransmute<isize> for core::sync::atomic::AtomicIsize {}
 // as `usize`; this is the same guarantee used by the atomic safety proofs in
 // `impls.rs`.
 unsafe impl SameSizeForTransmute<usize> for core::sync::atomic::AtomicUsize {}
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
+// SAFETY: `AtomicPtr<T>` has the same size and bit validity as `*mut T`.
+unsafe impl<T> SameSizeForTransmute<*mut T> for core::sync::atomic::AtomicPtr<T> {}
 
 /// Implements `$trait` for `$ty` where `$ty: TransmuteFrom<$repr>` (and
 /// vice-versa).
@@ -276,8 +282,9 @@ macro_rules! impl_for_transmute_from {
                     fn is_trait<T, R>()
                     where
                         T: crate::util::macros::SameSizeForTransmute<R>
-                            + TransmuteFrom<R, Safe, Safe>,
-                        R: TransmuteFrom<T, Safe, Safe> + $trait,
+                            + TransmuteFrom<R, Safe, Safe>
+                            + ?Sized,
+                        R: TransmuteFrom<T, Safe, Safe> + $trait + ?Sized,
                     {
                     }
 
@@ -495,7 +502,7 @@ macro_rules! impl_or_verify {
             trait Subtrait: $trait {}
             $impl_block
         };
-    };
+    }
 }
 
 /// Implements `KnownLayout` for a sized type.
@@ -1139,5 +1146,5 @@ macro_rules! codegen_section {
                 bench = $bench
             )
         )
-    }
+    };
 }
