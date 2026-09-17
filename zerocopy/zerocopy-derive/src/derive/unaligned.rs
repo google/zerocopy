@@ -23,7 +23,9 @@ pub(crate) fn derive_unaligned(ctx: &Ctx, _top_level: Trait) -> Result<TokenStre
 ///   - `repr(packed)`
 fn derive_unaligned_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream, Error> {
     let repr = StructUnionRepr::from_attrs(&ctx.ast.attrs)?;
-    repr.unaligned_validate_no_align_gt_1()?;
+    if let Err(error) = repr.unaligned_validate_no_align_gt_1() {
+        return ctx.error_or_skip(error);
+    }
 
     let field_bounds = if repr.is_packed_1() {
         FieldBounds::None
@@ -44,7 +46,9 @@ fn derive_unaligned_struct(ctx: &Ctx, strct: &DataStruct) -> Result<TokenStream,
 /// - `repr(u8)` or `repr(i8)`
 fn derive_unaligned_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Error> {
     let repr = EnumRepr::from_attrs(&ctx.ast.attrs)?;
-    repr.unaligned_validate_no_align_gt_1()?;
+    if let Err(error) = repr.unaligned_validate_no_align_gt_1() {
+        return ctx.error_or_skip(error);
+    }
 
     if !repr.is_u8() && !repr.is_i8() {
         return ctx.error_or_skip(Error::new(
@@ -63,7 +67,9 @@ fn derive_unaligned_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Error
 ///   - `repr(packed)`
 fn derive_unaligned_union(ctx: &Ctx, unn: &DataUnion) -> Result<TokenStream, Error> {
     let repr = StructUnionRepr::from_attrs(&ctx.ast.attrs)?;
-    repr.unaligned_validate_no_align_gt_1()?;
+    if let Err(error) = repr.unaligned_validate_no_align_gt_1() {
+        return ctx.error_or_skip(error);
+    }
 
     let field_type_trait_bounds = if repr.is_packed_1() {
         FieldBounds::None

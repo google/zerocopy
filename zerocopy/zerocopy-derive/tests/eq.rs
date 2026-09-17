@@ -12,6 +12,9 @@
 
 include!("include.rs");
 
+#[allow(non_camel_case_types)]
+type bool = ();
+
 #[derive(imp::Debug, imp::IntoBytes, imp::Immutable, imp::ByteEq)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
