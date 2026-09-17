@@ -24,8 +24,8 @@ use crate::{
     FromBytes, Immutable, IntoBytes, Unalign,
 };
 
-/// Transmutations which are sound to attempt, conditional on establishing the
-/// destination validity invariant.
+/// Exact pointer reinterpretations which are sound to attempt, conditional on
+/// establishing the destination validity invariant.
 ///
 /// If a `Ptr` transmutation is `TryTransmuteFromPtr`, then it is sound to
 /// perform that transmutation so long as some additional mechanism is used to
@@ -259,7 +259,7 @@ unsafe impl<T: ?Sized> SharedCompatible<T> for ManuallyDrop<T> {}
 // SAFETY: See previous safety comment.
 unsafe impl<T: ?Sized> SharedCompatible<ManuallyDrop<T>> for T {}
 
-/// Transmutations which are always sound.
+/// Exact pointer reinterpretations which are always sound.
 ///
 /// `TransmuteFromPtr` is a shorthand for [`TryTransmuteFromPtr`] and
 /// [`TransmuteFrom`].
@@ -356,9 +356,10 @@ where
 {
 }
 
-// FIXME(#2354): This seems like a smell - the soundness of this bound has
-// nothing to do with `Src` or `Dst` - we're basically just saying `[u8; N]` is
-// transmutable into `[u8; N]`.
+// FIXME(#2354): This relation does not depend on `Src` or `Dst`. That is
+// expected semantically: `Initialized` permits the same states regardless of
+// referent type. The awkward part is encoding that validity-state relation as a
+// trait relation between referent types.
 
 // SAFETY: The set of allowed bit patterns in the referent of any `Initialized`
 // `Ptr` is the same regardless of referent type.
@@ -369,9 +370,10 @@ where
 {
 }
 
-// FIXME(#2354): This seems like a smell - the soundness of this bound has
-// nothing to do with `Dst` - we're basically just saying that any type is
-// transmutable into `MaybeUninit<[u8; N]>`.
+// FIXME(#2354): This relation does not depend on `Src` or `Dst`. That is
+// expected semantically: every validity state implies `Uninit`, which permits
+// any byte sequence. The awkward part is encoding that validity-state relation
+// as a trait relation between referent types.
 
 // SAFETY: A `Dst` with validity `Uninit` permits any byte sequence, and
 // therefore can be transmuted from any value.
