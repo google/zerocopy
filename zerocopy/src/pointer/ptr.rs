@@ -795,11 +795,11 @@ mod _transitions {
             // soundness issues, as we have not generated any invalid state
             // which we need to fix before returning.
             if T::is_safe(self.reborrow().transmute::<_, _, _>().reborrow_shared()) {
-                // SAFETY: If `T::is_safe` returns true, code may assume that
-                // `self` contains a valid `T`, so its referent conforms to
-                // `Safe` for `T`. By `T: TryTransmuteFromPtr<T, I::Aliasing,
-                // I::Validity, Safe, IdCast, S>`, given that condition,
-                // changing `self`'s validity to `Safe` is sound.
+                // SAFETY: If `T::is_safe`, code may assume that `self` contains
+                // a bit-valid instance of `T`. By `T: TryTransmuteFromPtr<T,
+                // I::Aliasing, I::Validity, Safe>`, so long as `self`'s referent
+                // conforms to the `Safe` validity for `T` (which we just
+                // confirmed), then this transmute is sound.
                 Ok(unsafe { self.assume_safe() })
             } else {
                 Err(ValidityError::new(self))
@@ -1341,7 +1341,7 @@ mod _project {
         #[inline]
         #[must_use]
         pub fn is_empty(&self) -> bool {
-            self.as_inner().meta().get() == 0
+            self.len() == 0
         }
     }
 }
@@ -1391,8 +1391,8 @@ mod tests {
             let initialized = [MaybeUninit::new(0u8); N];
             for start in 0..=bytes.len() {
                 for end in start..=bytes.len() {
-                    // Set all bytes to uninitialized other than those in the
-                    // range we're going to pass to `try_cast_from`.
+                    // Set all bytes to uninitialized other than those in
+                    // the range we're going to pass to `try_cast_from`.
                     // This allows Miri to detect out-of-bounds reads
                     // because they read uninitialized memory. Without this,
                     // some out-of-bounds reads would still be in-bounds of
@@ -1484,8 +1484,7 @@ mod tests {
                             assert_eq!(len, bytes.len());
 
                             if let Some(want) = meta {
-                                let got =
-                                    KnownLayout::pointer_to_metadata(slf.as_inner().as_ptr());
+                                let got = KnownLayout::pointer_to_metadata(slf.as_inner().as_ptr());
                                 assert_eq!(got, want);
                             }
                         }
@@ -1498,7 +1497,7 @@ mod tests {
         #[repr(C)]
         struct SliceDst<T> {
             a: u8,
-            slc: [T],
+            trailing: [T],
         }
 
         // Each test case becomes its own `#[test]` function. We do this because
