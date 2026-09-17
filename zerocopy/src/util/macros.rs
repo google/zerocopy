@@ -38,7 +38,7 @@ macro_rules! unsafe_impl {
     // N attributes for each one of M trait implementations.
     // The simple solution of:
     //
-    // ($(#[$attrs:meta])* $ty:ty: $trait:ident $(, $traits:ident)*) => {
+    // ($(#[$attrs:meta])* $ty:ty: $($traits:ident),*) => {
     //     $( unsafe_impl!( $(#[$attrs])* $ty: $traits ) );*
     // }
     //
@@ -286,7 +286,7 @@ macro_rules! unsafe_impl_for_power_set {
         );
     };
     (
-        $(-> $ret:ident)? => $trait for $macro:ident!(...)
+        $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
         $(; |$candidate:ident| $is_safe:expr)?
     ) => {
         unsafe_impl_for_power_set!(
@@ -323,8 +323,7 @@ macro_rules! opt_fn {
     ($($args:ident),* -> $ret:ident) => { Option<fn($($args),*) -> $ret> };
 }
 
-/// Expands to an `Option<unsafe fn>` type with the given argument types and
-/// return type. Designed for use with `unsafe_impl_for_power_set`.
+/// Expands to an `Option<unsafe fn>` type with the given argument types and return type. Designed for use with `unsafe_impl_for_power_set`.
 macro_rules! opt_unsafe_fn {
     ($($args:ident),* -> $ret:ident) => { Option<unsafe fn($($args),*) -> $ret> };
 }
@@ -583,7 +582,7 @@ macro_rules! const_panic {
         #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
         panic!($($arg)+);
         #[cfg(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)]
-        const_panic!(@non_panic concat!("assertion failed: ", stringify!($e)));
+        const_panic!(@non_panic $($arg)+)
     }};
 }
 
@@ -643,7 +642,7 @@ macro_rules! const_unreachable {
         #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
         unreachable!();
 
-        #[cfg(no_zerocopy_panic_in_const_fn_1_57_0)]
+        #[cfg(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)]
         loop {}
     }};
 }
@@ -909,7 +908,7 @@ macro_rules! tabs {
 macro_rules! codegen_example {
     (format = $format:expr, bench = $bench:expr) => {
         tabs!(
-            name = $bench,
+            name = $name,
             arity = 4,
             [
                 @index 1
