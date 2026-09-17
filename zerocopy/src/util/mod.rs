@@ -296,7 +296,7 @@ pub(crate) unsafe fn copy_unchecked(src: &[u8], dst: &mut [u8]) {
     //   reference.
     unsafe {
         core::ptr::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len());
-    }
+    };
 }
 
 /// Unsafely transmutes the given `src` into a type `Dst`.
@@ -324,8 +324,9 @@ pub(crate) const unsafe fn transmute_unchecked<Src, Dst>(src: Src) -> Dst {
     //
     // [1] Per https://doc.rust-lang.org/1.82.0/std/mem/struct.ManuallyDrop.html:
     //
-    //     `ManuallyDrop<T>` is guaranteed to have the same size, alignment,
-    //     and ABI as `T`
+    //     `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+    //     validity as `T`, and is subject to the same layout optimizations as
+    //     `T`.
     //
     // [2] Per https://doc.rust-lang.org/1.82.0/reference/items/unions.html#reading-and-writing-union-fields:
     //
@@ -373,8 +374,8 @@ where
 ///
 /// # Errors
 ///
-/// Returns an error on allocation failure. Allocation failure is guaranteed
-/// never to cause a panic or an abort.
+/// Returns an error on allocation failure. Allocation failure is guaranteed never to cause a
+/// panic or an abort.
 ///
 /// # Safety
 ///
@@ -798,7 +799,7 @@ pub(crate) mod polyfills {
                 Some(x) => x,
                 None => {
                     // SAFETY: The caller promises that the multiplication will
-                    // underflow.
+                    // not overflow.
                     unsafe { core::hint::unreachable_unchecked() }
                 }
             }
