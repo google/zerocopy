@@ -430,6 +430,10 @@ mod _conversions {
     where
         I: Invariants,
     {
+        /// Reinterprets the same byte region as `U` with validity `V`.
+        ///
+        /// This preserves the aliasing invariant, uses [`SizeEq`] to select a
+        /// [`CastExact`] implementation, and conservatively forgets alignment.
         #[must_use]
         #[inline(always)]
         pub fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
@@ -442,6 +446,12 @@ mod _conversions {
             self.transmute_with::<U, V, <U as SizeEq<T>>::CastFrom, R>()
         }
 
+        /// Reinterprets the same byte region as `U` with validity `V` using
+        /// `C`.
+        ///
+        /// `C: CastExact` preserves the byte region. The aliasing invariant is
+        /// preserved, while alignment is conservatively forgotten because the
+        /// destination type may have a different alignment requirement.
         #[inline]
         #[must_use]
         pub fn transmute_with<U, V, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
@@ -461,11 +471,15 @@ mod _conversions {
             //     at the same time, as neither can perform interior mutation
             //   - It is directly guaranteed that it is sound for shared code to
             //     operate on these references simultaneously
-            // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, C, V>`, it
+            // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, C>`, it
             //   is sound to perform this transmute using `C`.
             unsafe { self.project_transmute_unchecked::<_, _, C>() }
         }
 
+        /// Changes only the validity invariant to `V`.
+        ///
+        /// The referent type and byte region are unchanged, so this preserves
+        /// the existing aliasing and alignment invariants.
         #[inline]
         #[must_use]
         pub fn recall_validity<V, R>(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V)>
