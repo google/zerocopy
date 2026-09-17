@@ -295,7 +295,7 @@ macro_rules! unsafe_impl_for_power_set {
         );
     };
     (
-        @impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        @impl $($vars:ident),* $(-> $ret)? => $trait:ident for $macro:ident!(...)
         $(; |$candidate:ident| $is_safe:expr)?
     ) => {
         unsafe_impl!(
@@ -436,7 +436,7 @@ macro_rules! impl_known_layout {
         $(impl_known_layout!(@inner , $tyvar $(: ?$optbound)? => $ty);)*
     };
     ($($(#[$attrs:meta])* $ty:ty),*) => { $(impl_known_layout!(@inner , => $(#[$attrs])* $ty);)* };
-    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $(#[$attrs])* $ty:ty) => {
+    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $(#[$attrs:meta])* $ty:ty) => {
         const _: () = {
             use core::ptr::NonNull;
 
@@ -619,7 +619,7 @@ macro_rules! const_assert {
 /// Like `const_assert!`, but relative to `debug_assert!`.
 macro_rules! const_debug_assert {
     ($e:expr $(, $msg:expr)?) => {{
-        #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
+        #[cfg(not(no_zerocopy_generic_bounds_in_const_fn_1_61_0))]
         debug_assert!($e $(, $msg)?);
         #[cfg(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)]
         {
@@ -852,7 +852,8 @@ macro_rules! docstring {
     }
 }
 
-/// Generate the HTML for a suite of benchmark examples.
+/// Generate a rustdoc-style header with `$name` as the HTML ID for the 'Code
+/// Generation' section of documentation.
 #[allow(unused)]
 macro_rules! codegen_header {
     ($level:expr, $name:expr) => {
@@ -1067,5 +1068,5 @@ macro_rules! codegen_section {
                 bench = $bench
             )
         )
-    }
+    };
 }
