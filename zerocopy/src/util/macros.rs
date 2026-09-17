@@ -168,8 +168,8 @@ macro_rules! unsafe_impl {
 /// Implements `$trait` for `$ty` where `$ty: TransmuteFrom<$repr>` (and
 /// vice-versa).
 ///
-/// This macro is intended to be safe to call. The current proof is incomplete;
-/// see FIXME(#3691) below.
+/// Calling this macro is safe; the bounds it emits establish the premises used
+/// by the generated trait impl.
 macro_rules! impl_for_transmute_from {
     (
         $(#[$attr:meta])*
@@ -181,19 +181,15 @@ macro_rules! impl_for_transmute_from {
             #[allow(non_local_definitions)]
 
             // SAFETY: `is_trait<T, R>` (defined and used below) requires
-            // reciprocal `TransmuteFrom<_, Safe, Safe>` bounds and `R: $trait`.
-            // If `T` and `R` have the same size, the reciprocal bounds imply
-            // that they permit the same `Safe` bit patterns. The call below
-            // instantiates `T` with `$ty` and `R` with `$repr`, and establishes
-            // `$repr: $trait`. The supported traits - `TryFromBytes`,
-            // `FromZeros`, `FromBytes`, and `IntoBytes` - are defined only in
-            // terms of bit validity, so these premises are sufficient when
-            // `$ty` and `$repr` have the same size.
-            //
-            // FIXME(#3691): This macro does not establish that `$ty` and
-            // `$repr` have the same size. Without that premise, `TransmuteFrom`
-            // conveys no safety guarantee, so these bounds do not make
-            // arbitrary invocations of this macro sound.
+            // `T: SizeEq<R>`, reciprocal `TransmuteFrom<_, Safe, Safe>` bounds,
+            // and `R: $trait`. `T: SizeEq<R>` supplies a `CastExact<R, T>`
+            // witness, so `T` and `R` describe the same byte range. The
+            // reciprocal `TransmuteFrom` bounds therefore imply that they
+            // permit the same `Safe` bit patterns. The call below instantiates
+            // `T` with `$ty` and `R` with `$repr`, and establishes `$repr:
+            // $trait`. The supported traits - `TryFromBytes`, `FromZeros`,
+            // `FromBytes`, and `IntoBytes` - are defined only in terms of bit
+            // validity, so these premises are sufficient.
             unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
@@ -204,7 +200,7 @@ macro_rules! impl_for_transmute_from {
 
                     fn is_trait<T, R>()
                     where
-                        T: TransmuteFrom<R, Safe, Safe> + ?Sized,
+                        T: SizeEq<R> + TransmuteFrom<R, Safe, Safe> + ?Sized,
                         R: TransmuteFrom<T, Safe, Safe> + ?Sized,
                         R: $trait,
                     {
@@ -317,14 +313,12 @@ macro_rules! opt_unsafe_extern_c_fn {
     ($($args:ident),* -> $ret:ident) => { Option<unsafe extern "C" fn($($args),*) -> $ret> };
 }
 
-/// Expands to an `Option<fn>` type with the given argument types and return
-/// type. Designed for use with `unsafe_impl_for_power_set`.
+/// Expands to an `Option<fn>` type with the given argument types and return type. Designed for use with `unsafe_impl_for_power_set`.
 macro_rules! opt_fn {
     ($($args:ident),* -> $ret:ident) => { Option<fn($($args),*) -> $ret> };
 }
 
-/// Expands to an `Option<unsafe fn>` type with the given argument types and
-/// return type. Designed for use with `unsafe_impl_for_power_set`.
+/// Expands to an `Option<unsafe fn>` type with the given argument types and return type. Designed for use with `unsafe_impl_for_power_set`.
 macro_rules! opt_unsafe_fn {
     ($($args:ident),* -> $ret:ident) => { Option<unsafe fn($($args),*) -> $ret> };
 }
@@ -413,7 +407,7 @@ macro_rules! impl_or_verify {
     };
     (@impl $impl_block:tt) => {
         #[cfg(not(any(feature = "derive", test)))]
-        { $impl_block };
+        { $impl_block }
     };
     (@verify $trait:ident, $impl_block:tt) => {
         #[cfg(any(feature = "derive", test))]
@@ -423,7 +417,7 @@ macro_rules! impl_or_verify {
             #[allow(dead_code)]
             trait Subtrait: $trait {}
             $impl_block
-        };
+        }
     };
 }
 
@@ -583,7 +577,7 @@ macro_rules! const_panic {
         #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
         panic!($($arg)+);
         #[cfg(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)]
-        const_panic!(@non_panic $($arg)+)
+        const_panic!(@non_panic concat!("assertion failed: ", stringify!($arg)));
     }};
 }
 
@@ -858,20 +852,15 @@ macro_rules! docstring {
 macro_rules! codegen_header {
     ($level:expr, $name:expr) => {
         concat!(
-            "
-<",
+            "\n<",
             $level,
             " id='method.",
             $name,
-            ".codegen'>
-    <a class='doc-anchor' href='#method.",
+            ".codegen'>\n    <a class='doc-anchor' href='#method.",
             $name,
-            ".codegen'>§</a>
-    Code Generation
-</",
+            ".codegen'>§</a>\n    Code Generation\n</",
             $level,
-            ">
-"
+            ">\n"
         )
     };
 }
@@ -883,23 +872,14 @@ macro_rules! tabs {
     (
         name = $name:expr,
         arity = $arity:literal,
-        $([
+        $([ 
             $($open:ident)?
             @index $n:literal
             @title $title:literal
             $(#[doc = $content:expr])*
         ]),*
     ) => {
-        concat!("
-<div class='codegen-tabs' style='--arity: ", $arity ,"'>", $(concat!("
-    <details name='tab-", $name,"' style='--n: ", $n ,"'", $(stringify!($open),)*">
-        <summary><h6>", $title, "</h6></summary>
-        <div>
-
-", $($content, "\n",)* "
-\
-        </div>
-    </details>"),)*
+        concat!("\n<div class='codegen-tabs' style='--arity: ", $arity ,"'>", $(concat!("\n    <details name='tab-", $name,"' style='--n: ", $n ,"'", $(stringify!($open),)*">\n        <summary><h6>", $title, "</h6></summary>\n        <div>\n\n", $($content, "\n",)* "\n\\\n        </div>\n    </details>"),)*
 "</div>")
     }
 }
@@ -951,7 +931,7 @@ macro_rules! codegen_example_suite {
         bench = $bench:expr,
         format = $format:expr,
         arity = $arity:literal,
-        $([
+        $([ 
             $($open:ident)?
             @index $index:literal
             @title $title:literal
@@ -961,7 +941,7 @@ macro_rules! codegen_example_suite {
         tabs!(
             name = $bench,
             arity = $arity,
-            $([
+            $([ 
                 $($open)*
                 @index $index
                 @title $title
@@ -999,7 +979,7 @@ macro_rules! codegen_section {
         bench = $bench:expr,
         format = $format:expr,
         arity = $arity:literal,
-        $([
+        $([ 
             $($open:ident)?
             @index $index:literal
             @title $title:literal
@@ -1026,7 +1006,7 @@ macro_rules! codegen_section {
         bench = $bench:expr,
         format = $format:expr,
         arity = $arity:literal,
-        $([
+        $([ 
             $($open:ident)?
             @index $index:literal
             @title $title:literal
@@ -1046,7 +1026,7 @@ macro_rules! codegen_section {
                 bench = $bench,
                 format = $format,
                 arity = $arity,
-                $([
+                $([ 
                     $($open)*
                     @index $index
                     @title $title
@@ -1068,5 +1048,5 @@ macro_rules! codegen_section {
                 bench = $bench
             )
         )
-    }
+    };
 }
