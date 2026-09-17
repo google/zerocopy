@@ -114,6 +114,9 @@ fn main() {
     if check_mode {
         let existing = fs::read_to_string(target_file).unwrap_or_default();
         if existing != full_txt {
+            eprintln!("--- BEGIN GENERATED llms-full.txt ---");
+            eprint!("{}", full_txt);
+            eprintln!("--- END GENERATED llms-full.txt ---");
             eprintln!(
                 "Error: {} is out of date. Please run `cargo run -p doc_gen` to update it.",
                 target_file

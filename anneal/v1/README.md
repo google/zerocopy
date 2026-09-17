@@ -1,5 +1,11 @@
 # Anneal
 
+> **Historical V1 documentation:** This document describes the prototype in
+> `anneal/v1/`. It remains authoritative for using and maintaining V1, but it is
+> not current Anneal design authority. See
+> [`../PRINCIPLES.md`](../PRINCIPLES.md) for current project principles. Known
+> differences are historical and need not be reconciled here.
+
 <img src="docs/images/logo.svg" width="100%">
 
 <p align="center"><em>logo by <a href="https://www.instagram.com/tinyneonspark">tinyneonspark</a></em></p>
