@@ -244,9 +244,15 @@ unsafe impl ByteReprEq<usize> for core::sync::atomic::AtomicUsize {
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicPtr.html
 unsafe impl<T> ByteReprEq<*mut T> for core::sync::atomic::AtomicPtr<T> {
-    type Cast =
-        <ReadOnly<*mut T> as SizeEq<ReadOnly<core::sync::atomic::AtomicPtr<T>>>>::CastFrom;
+    type Cast = <ReadOnly<*mut T> as SizeEq<ReadOnly<core::sync::atomic::AtomicPtr<T>>>>::CastFrom;
 }
+
+// Keep the legacy comparison implementation live for lint purposes; this is a
+// zero-effect invocation of an assertion-only arm before the replacement macro
+// below shadows it.
+const _: () = {
+    impl_for_transmute_from!(@assert_is_supported_trait FromZeros);
+};
 
 /// Implements one of the supported byte traits for `$ty` by transferring the
 /// corresponding implementation on `$repr` through `ByteReprEq`.
