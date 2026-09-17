@@ -9,9 +9,10 @@ those terms. -->
 # Anneal
 
 Anneal is a verification framework for Rust under active development. See
-[`PRINCIPLES.md`](PRINCIPLES.md) for the current project principles.
+[`PRINCIPLES.md`](PRINCIPLES.md) for the current project principles and
+[`DESIGN.md`](DESIGN.md) for the durable design constraints derived from them.
 
 The implementation in this directory is the current Anneal redesign.
 [`v1/`](v1/) contains the historical V1 prototype. Documentation under `v1/`
-describes V1 and may conflict with the current principles; do not treat it as
-current Anneal design authority.
+describes V1 and may conflict with the current principles or design contract;
+do not treat it as current Anneal design authority.
