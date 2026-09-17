@@ -323,7 +323,8 @@ macro_rules! opt_fn {
     ($($args:ident),* -> $ret:ident) => { Option<fn($($args),*) -> $ret> };
 }
 
-/// Expands to an `Option<unsafe fn>` type with the given argument types and return type. Designed for use with `unsafe_impl_for_power_set`.
+/// Expands to an `Option<unsafe fn>` type with the given argument types and
+/// return type. Designed for use with `unsafe_impl_for_power_set`.
 macro_rules! opt_unsafe_fn {
     ($($args:ident),* -> $ret:ident) => { Option<unsafe fn($($args),*) -> $ret> };
 }
@@ -435,7 +436,7 @@ macro_rules! impl_known_layout {
         $(impl_known_layout!(@inner , $tyvar $(: ?$optbound)? => $ty);)*
     };
     ($($(#[$attrs:meta])* $ty:ty),*) => { $(impl_known_layout!(@inner , => $(#[$attrs])* $ty);)* };
-    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $(#[$attrs:meta])* $ty:ty) => {
+    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $(#[$attrs])* $ty:ty) => {
         const _: () = {
             use core::ptr::NonNull;
 
@@ -851,8 +852,7 @@ macro_rules! docstring {
     }
 }
 
-/// Generate a rustdoc-style header with `$name` as the HTML ID for the 'Code
-/// Generation' section of documentation.
+/// Generate the HTML for a suite of benchmark examples.
 #[allow(unused)]
 macro_rules! codegen_header {
     ($level:expr, $name:expr) => {
@@ -908,7 +908,7 @@ macro_rules! tabs {
 macro_rules! codegen_example {
     (format = $format:expr, bench = $bench:expr) => {
         tabs!(
-            name = $name,
+            name = $bench,
             arity = 4,
             [
                 @index 1
