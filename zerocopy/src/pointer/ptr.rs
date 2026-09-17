@@ -795,11 +795,11 @@ mod _transitions {
             // soundness issues, as we have not generated any invalid state
             // which we need to fix before returning.
             if T::is_safe(self.reborrow().transmute::<_, _, _>().reborrow_shared()) {
-                // SAFETY: If `T::is_safe`, code may assume that `self` contains
-                // a bit-valid instance of `T`. By `T: TryTransmuteFromPtr<T,
-                // I::Aliasing, I::Validity, Safe>`, so long as `self`'s referent
-                // conforms to the `Safe` validity for `T` (which we just
-                // confirmed), then this transmute is sound.
+                // SAFETY: If `T::is_safe` returns true, code may assume that
+                // `self` contains a valid `T`, so its referent conforms to
+                // `Safe` for `T`. By `T: TryTransmuteFromPtr<T, I::Aliasing,
+                // I::Validity, Safe>`, given that condition, changing `self`'s
+                // validity to `Safe` is sound.
                 Ok(unsafe { self.assume_safe() })
             } else {
                 Err(ValidityError::new(self))
