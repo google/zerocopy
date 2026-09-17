@@ -194,8 +194,8 @@ unsafe impl SameSizeForTransmute<bool> for core::sync::atomic::AtomicBool {}
 // `impls.rs`.
 unsafe impl SameSizeForTransmute<i8> for core::sync::atomic::AtomicI8 {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
-// SAFETY: The standard library guarantees that `AtomicU8` has the same size
-// as `u8`; this is the same guarantee used by the atomic safety proofs in
+// SAFETY: The standard library guarantees that `AtomicU8` has the same size as
+// `u8`; this is the same guarantee used by the atomic safety proofs in
 // `impls.rs`.
 unsafe impl SameSizeForTransmute<u8> for core::sync::atomic::AtomicU8 {}
 
@@ -502,7 +502,7 @@ macro_rules! impl_or_verify {
             trait Subtrait: $trait {}
             $impl_block
         };
-    }
+    };
 }
 
 /// Implements `KnownLayout` for a sized type.
@@ -1146,5 +1146,5 @@ macro_rules! codegen_section {
                 bench = $bench
             )
         )
-    };
+    }
 }
