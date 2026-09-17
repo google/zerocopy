@@ -336,6 +336,48 @@ impl<T: ?Sized> SizeEq<T> for T {
     type CastFrom = cast::IdCast;
 }
 
+#[cfg(not(no_zerocopy_target_has_atomics_1_60_0))]
+macro_rules! impl_atomic_size_eq {
+    ($($atomic:ty => $primitive:ty),* $(,)?) => {
+        $(
+            impl SizeEq<$primitive> for $atomic {
+                type CastFrom = CastSizedExact;
+            }
+        )*
+    };
+}
+
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
+impl_atomic_size_eq!(
+    core::sync::atomic::AtomicBool => bool,
+    core::sync::atomic::AtomicI8 => i8,
+    core::sync::atomic::AtomicU8 => u8,
+);
+
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
+impl_atomic_size_eq!(
+    core::sync::atomic::AtomicI16 => i16,
+    core::sync::atomic::AtomicU16 => u16,
+);
+
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
+impl_atomic_size_eq!(
+    core::sync::atomic::AtomicI32 => i32,
+    core::sync::atomic::AtomicU32 => u32,
+);
+
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
+impl_atomic_size_eq!(
+    core::sync::atomic::AtomicI64 => i64,
+    core::sync::atomic::AtomicU64 => u64,
+);
+
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
+impl_atomic_size_eq!(
+    core::sync::atomic::AtomicIsize => isize,
+    core::sync::atomic::AtomicUsize => usize,
+);
+
 // SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
 // initialized bit patterns, which is exactly the set allowed in the referent of
 // any `Initialized` `Ptr`.
