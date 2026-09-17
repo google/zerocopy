@@ -163,6 +163,6 @@ This model intentionally does not decide:
 - command names, profiles, warnings, exit codes, and CI policy.
 
 Those choices may add structure around a verification result. They must preserve
-the semantic core: an exact claim, an explicit claim-relative TCB, and evidence
-sufficient for Anneal to stand behind the implication from that TCB to that
-claim.
+the semantic core: an exact claim and an explicit claim-relative TCB. Anneal
+must have sufficient evidence to stand behind the implication from that TCB to
+that claim.
