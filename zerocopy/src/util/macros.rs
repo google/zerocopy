@@ -38,7 +38,7 @@ macro_rules! unsafe_impl {
     // N attributes for each one of M trait implementations.
     // The simple solution of:
     //
-    // ($(#[$attrs:meta])* $ty:ty: $($traits:ident),*) => {
+    // ($(#[$attrs:meta])* $ty:ty: $trait:ident $(, $traits:ident)*) => {
     //     $( unsafe_impl!( $(#[$attrs])* $ty: $traits ) );*
     // }
     //
@@ -168,8 +168,8 @@ macro_rules! unsafe_impl {
 /// Implements `$trait` for `$ty` where `$ty: TransmuteFrom<$repr>` (and
 /// vice-versa).
 ///
-/// Calling this macro is safe; the internals of the macro emit appropriate
-/// trait bounds which ensure that the given impl is sound.
+/// This macro is intended to be safe to call. The current proof is incomplete;
+/// see FIXME(#3691) below.
 macro_rules! impl_for_transmute_from {
     (
         $(#[$attr:meta])*
@@ -180,14 +180,20 @@ macro_rules! impl_for_transmute_from {
             $(#[$attr])*
             #[allow(non_local_definitions)]
 
-            // SAFETY: `is_trait<T, R>` (defined and used below) requires `T:
-            // TransmuteFrom<R>`, `R: TransmuteFrom<T>`, and `R: $trait`. It is
-            // called using `$ty` and `$repr`, ensuring that `$ty` and `$repr`
-            // have equivalent bit validity, and ensuring that `$repr: $trait`.
-            // The supported traits - `TryFromBytes`, `FromZeros`, `FromBytes`,
-            // and `IntoBytes` - are defined only in terms of the bit validity
-            // of a type. Therefore, `$repr: $trait` ensures that `$ty: $trait`
-            // is sound.
+            // SAFETY: `is_trait<T, R>` (defined and used below) requires
+            // reciprocal `TransmuteFrom<_, Safe, Safe>` bounds and `R: $trait`.
+            // If `T` and `R` have the same size, the reciprocal bounds imply
+            // that they permit the same `Safe` bit patterns. The call below
+            // instantiates `T` with `$ty` and `R` with `$repr`, and establishes
+            // `$repr: $trait`. The supported traits - `TryFromBytes`,
+            // `FromZeros`, `FromBytes`, and `IntoBytes` - are defined only in
+            // terms of bit validity, so these premises are sufficient when
+            // `$ty` and `$repr` have the same size.
+            //
+            // FIXME(#3691): This macro does not establish that `$ty` and
+            // `$repr` have the same size. Without that premise, `TransmuteFrom`
+            // conveys no safety guarantee, so these bounds do not make
+            // arbitrary invocations of this macro sound.
             unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
@@ -280,7 +286,7 @@ macro_rules! unsafe_impl_for_power_set {
         );
     };
     (
-        $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(-> $ret:ident)? => $trait for $macro:ident!(...)
         $(; |$candidate:ident| $is_safe:expr)?
     ) => {
         unsafe_impl_for_power_set!(
@@ -577,7 +583,7 @@ macro_rules! const_panic {
         #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
         panic!($($arg)+);
         #[cfg(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)]
-        const_panic!(@non_panic $($arg)+)
+        const_panic!(@non_panic concat!("assertion failed: ", stringify!($e)));
     }};
 }
 
@@ -637,7 +643,7 @@ macro_rules! const_unreachable {
         #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
         unreachable!();
 
-        #[cfg(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)]
+        #[cfg(no_zerocopy_panic_in_const_fn_1_57_0)]
         loop {}
     }};
 }
