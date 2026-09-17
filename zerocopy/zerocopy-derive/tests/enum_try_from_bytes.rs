@@ -12,6 +12,28 @@
 
 include!("include.rs");
 
+#[derive(imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(u8)]
+enum FieldBindings {
+    Named { candidate: bool, candidate_: bool, field: bool, r#type: bool },
+    Tuple(bool, bool, bool, bool),
+}
+
+#[test]
+fn field_bindings() {
+    for tag in 0..2 {
+        util::test_is_safe::<FieldBindings, _>([tag, 0u8, 0, 0, 0], true);
+        util::test_is_safe::<FieldBindings, _>([tag, 1u8, 1, 1, 1], true);
+        for idx in 1..5 {
+            let mut bytes = [tag, 0u8, 0, 0, 0];
+            bytes[idx] = 2;
+            util::test_is_safe::<FieldBindings, _>(bytes, false);
+        }
+    }
+    util::test_is_safe::<FieldBindings, _>([2u8, 0, 0, 0, 0], false);
+}
+
 #[derive(Eq, PartialEq, Debug, imp::Immutable, imp::KnownLayout, imp::TryFromBytes)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
