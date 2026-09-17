@@ -165,11 +165,86 @@ macro_rules! unsafe_impl {
     };
 }
 
+/// Proof used by `impl_for_transmute_from!` that two sized types have equal
+/// size.
+///
+/// # Safety
+///
+/// `Self` and `R` must have the same size.
+pub(crate) unsafe trait SameSizeForTransmute<R>: Sized
+where
+    R: Sized,
+{
+}
+
+// SAFETY: `Wrapping<T>` is guaranteed to have the same layout as `T`.
+unsafe impl<T> SameSizeForTransmute<T> for core::num::Wrapping<T> {}
+
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
+// SAFETY: The standard library guarantees that `AtomicBool` has the same size
+// as `bool`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<bool> for core::sync::atomic::AtomicBool {}
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
+// SAFETY: The standard library guarantees that `AtomicI8` has the same size as
+// `i8`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<i8> for core::sync::atomic::AtomicI8 {}
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
+// SAFETY: The standard library guarantees that `AtomicU8` has the same size as
+// `u8`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<u8> for core::sync::atomic::AtomicU8 {}
+
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
+// SAFETY: The standard library guarantees that `AtomicI16` has the same size as
+// `i16`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<i16> for core::sync::atomic::AtomicI16 {}
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
+// SAFETY: The standard library guarantees that `AtomicU16` has the same size as
+// `u16`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<u16> for core::sync::atomic::AtomicU16 {}
+
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
+// SAFETY: The standard library guarantees that `AtomicI32` has the same size as
+// `i32`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<i32> for core::sync::atomic::AtomicI32 {}
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
+// SAFETY: The standard library guarantees that `AtomicU32` has the same size as
+// `u32`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<u32> for core::sync::atomic::AtomicU32 {}
+
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
+// SAFETY: The standard library guarantees that `AtomicI64` has the same size as
+// `i64`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<i64> for core::sync::atomic::AtomicI64 {}
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
+// SAFETY: The standard library guarantees that `AtomicU64` has the same size as
+// `u64`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<u64> for core::sync::atomic::AtomicU64 {}
+
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
+// SAFETY: The standard library guarantees that `AtomicIsize` has the same size
+// as `isize`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<isize> for core::sync::atomic::AtomicIsize {}
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
+// SAFETY: The standard library guarantees that `AtomicUsize` has the same size
+// as `usize`; this is the same guarantee used by the atomic safety proofs in
+// `impls.rs`.
+unsafe impl SameSizeForTransmute<usize> for core::sync::atomic::AtomicUsize {}
+
 /// Implements `$trait` for `$ty` where `$ty: TransmuteFrom<$repr>` (and
 /// vice-versa).
 ///
-/// This macro is intended to be safe to call. The current proof is incomplete;
-/// see FIXME(#3691) below.
+/// Calling this macro is safe; the bounds it emits establish the premises used
+/// by the generated trait impl.
 macro_rules! impl_for_transmute_from {
     (
         $(#[$attr:meta])*
@@ -180,20 +255,16 @@ macro_rules! impl_for_transmute_from {
             $(#[$attr])*
             #[allow(non_local_definitions)]
 
-            // SAFETY: `is_trait<T, R>` (defined and used below) requires
-            // reciprocal `TransmuteFrom<_, Safe, Safe>` bounds and `R: $trait`.
-            // If `T` and `R` have the same size, the reciprocal bounds imply
-            // that they permit the same `Safe` bit patterns. The call below
-            // instantiates `T` with `$ty` and `R` with `$repr`, and establishes
-            // `$repr: $trait`. The supported traits - `TryFromBytes`,
-            // `FromZeros`, `FromBytes`, and `IntoBytes` - are defined only in
-            // terms of bit validity, so these premises are sufficient when
-            // `$ty` and `$repr` have the same size.
-            //
-            // FIXME(#3691): This macro does not establish that `$ty` and
-            // `$repr` have the same size. Without that premise, `TransmuteFrom`
-            // conveys no safety guarantee, so these bounds do not make
-            // arbitrary invocations of this macro sound.
+            // SAFETY: `is_trait<T, R>` (defined and used below) requires a
+            // trusted `SameSizeForTransmute<R>` proof, reciprocal
+            // `TransmuteFrom<_, Safe, Safe>` bounds, and `R: $trait`. The
+            // same-size proof supplies the premise under which the reciprocal
+            // `TransmuteFrom` bounds imply that `T` and `R` permit the same
+            // `Safe` bit patterns. The call below instantiates `T` with `$ty`
+            // and `R` with `$repr`, and establishes `$repr: $trait`. The
+            // supported traits - `TryFromBytes`, `FromZeros`, `FromBytes`, and
+            // `IntoBytes` - are defined only in terms of bit validity, so these
+            // premises are sufficient.
             unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
@@ -204,9 +275,9 @@ macro_rules! impl_for_transmute_from {
 
                     fn is_trait<T, R>()
                     where
-                        T: TransmuteFrom<R, Safe, Safe> + ?Sized,
-                        R: TransmuteFrom<T, Safe, Safe> + ?Sized,
-                        R: $trait,
+                        T: crate::util::macros::SameSizeForTransmute<R>
+                            + TransmuteFrom<R, Safe, Safe>,
+                        R: TransmuteFrom<T, Safe, Safe> + $trait,
                     {
                     }
 
