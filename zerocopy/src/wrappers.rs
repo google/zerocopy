@@ -762,7 +762,10 @@ unsafe impl<T: HasTag<Client> + ?Sized, Client> HasTag<Client> for ReadOnly<T> {
     type Tag = <T as HasTag<Client>>::Tag;
 
     // SAFETY: `<T as SizeEq<ReadOnly<T>>>::CastFrom` is a no-op projection that
-    // produces a pointer with the same referent. By invariant, for any
+    // produces a pointer with the same address and referent, preserving
+    // non-nullness even for a zero-sized referent. The following projection
+    // also promises a non-null result by its `Project` contract. Thus the
+    // composition is non-null. By invariant, for any
     // `Ptr<'_, T, I>` it is sound to use
     // `<T as HasTag<Client>>::ProjectToTag` to project to a
     // shared `Ptr<'_, <T as HasTag<Client>>::Tag,
@@ -793,10 +796,12 @@ unsafe impl<T: HasTag<Client> + ?Sized, Client> HasTag<Client> for ReadOnly<T> {
 //   - `T::Type` has the same type as `f`. Thus, `ReadOnly<T::Type>` has the
 //     same type as `f`, wrapped in `ReadOnly`.
 //
-// `project` satisfies its post-condition – namely, that the returned pointer
-// refers to a non-strict subset of the bytes of `slf`'s referent, and has the
-// same provenance as `slf` – because all intermediate operations satisfy those
-// same conditions.
+// `project` preserves provenance and returns a subset of `slf`'s referent
+// bytes because each intermediate projection promises both properties.
+// The first and last projections are address-preserving casts. Between
+// them, `T::project` promises a non-null result by `HasField`'s contract.
+// Thus all three projections produce non-null results, independently of
+// whether the source, intermediate, or final referents are zero-sized.
 unsafe impl<T, Client, Field, const VARIANT_ID: i128, const FIELD_ID: i128>
     HasField<Client, Field, VARIANT_ID, FIELD_ID> for ReadOnly<T>
 where
