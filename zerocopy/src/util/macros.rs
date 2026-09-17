@@ -165,129 +165,135 @@ macro_rules! unsafe_impl {
     };
 }
 
-/// Proof used by `impl_for_transmute_from!` that its equal-size premise holds.
+/// Proof that two types have exactly the same valid referent sizes.
+///
+/// A byte length `n` is a valid referent size for `T` if a `T` referent may
+/// occupy exactly `n` bytes.
 ///
 /// # Safety
 ///
-/// An impl must identify the representation correspondence between `Self` and
-/// `R` used by the surrounding transmute proof. Every pair of referents in that
-/// correspondence must cover exactly the same number of bytes. For sized
-/// types, this reduces to `size_of::<Self>() == size_of::<R>()`. For DSTs, the
-/// equality must hold for every pointer-metadata value covered by the impl.
+/// For every byte length `n`, `n` must be a valid referent size for `Self` if
+/// and only if it is a valid referent size for `R`.
+///
+/// If both types are `Sized`, this reduces to
+/// `size_of::<Self>() == size_of::<R>()`.
 pub(crate) unsafe trait SameSizeForTransmute<R: ?Sized> {}
 
-// SAFETY: The `unsafe_impl_for_transparent_wrapper!` invocation for
-// `Wrapping<T>` in `pointer/transmute.rs` has an unsafe caller contract which
-// requires the `T` <-> `Wrapping<T>` representation casts to preserve the full
-// referent byte range. Since this impl is for sized `T`, that establishes equal
-// referent size, exactly the `SameSizeForTransmute<T>` obligation.
+// SAFETY: Per [1], `Wrapping<T>` has the same layout as `T`. Both types are
+// `Sized`, so they have the same size and therefore the same (singleton) set of
+// valid referent sizes.
+//
+// [1] https://doc.rust-lang.org/1.85.0/core/num/struct.Wrapping.html#layout-1
 unsafe impl<T> SameSizeForTransmute<T> for core::num::Wrapping<T> {}
-// SAFETY: The `unsafe_impl_for_transparent_wrapper!` invocation for
-// `ManuallyDrop<T>` in `pointer/transmute.rs` has an unsafe caller contract
-// which requires both representation casts to preserve the full referent byte
-// range for every `T: ?Sized`. Thus each corresponding `ManuallyDrop<T>`/`T`
-// referent pair has equal byte length, exactly this trait's obligation.
+
+// SAFETY: Per [1], `ManuallyDrop<T>` has the same layout as `T`. Therefore the
+// two types admit exactly the same referent byte lengths, including when `T` is
+// dynamically sized.
+//
+// [1] https://doc.rust-lang.org/1.81.0/std/mem/struct.ManuallyDrop.html
 unsafe impl<T: ?Sized> SameSizeForTransmute<T> for core::mem::ManuallyDrop<T> {}
-// SAFETY: The `unsafe_impl_for_transparent_wrapper!` invocation for `Cell<T>` in
-// `pointer/transmute.rs` has an unsafe caller contract which requires both
-// representation casts to preserve the full referent byte range for every
-// `T: ?Sized`. Thus each corresponding `Cell<T>`/`T` referent pair has equal
-// byte length, exactly this trait's obligation.
+
+// SAFETY: Per [1], `Cell<T>` has the same in-memory representation as `T`.
+// Therefore the two types admit exactly the same referent byte lengths,
+// including when `T` is dynamically sized.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/cell/struct.Cell.html#memory-layout
 unsafe impl<T: ?Sized> SameSizeForTransmute<T> for core::cell::Cell<T> {}
-// SAFETY: The `unsafe_impl_for_transparent_wrapper!` invocation for
-// `UnsafeCell<T>` in `pointer/transmute.rs` has an unsafe caller contract which
-// requires both representation casts to preserve the full referent byte range
-// for every `T: ?Sized`. Thus each corresponding `UnsafeCell<T>`/`T` referent
-// pair has equal byte length, exactly this trait's obligation.
+
+// SAFETY: Per [1], `UnsafeCell<T>` has the same in-memory representation as
+// `T`. Therefore the two types admit exactly the same referent byte lengths,
+// including when `T` is dynamically sized.
+//
+// [1] https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout
 unsafe impl<T: ?Sized> SameSizeForTransmute<T> for core::cell::UnsafeCell<T> {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicBool`/`bool` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicBool` and `bool` are both `Sized`, and [1] guarantees that
+// `AtomicBool` has the same size as `bool`. Thus their valid referent-size sets
+// are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicBool.html
 unsafe impl SameSizeForTransmute<bool> for core::sync::atomic::AtomicBool {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicI8`/`i8` in `impls.rs` requires those types to have the same size; its
-// adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicI8` and `i8` are both `Sized`, and [1] guarantees that
+// `AtomicI8` has the same size as `i8`. Thus their valid referent-size sets are
+// equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI8.html
 unsafe impl SameSizeForTransmute<i8> for core::sync::atomic::AtomicI8 {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicU8`/`u8` in `impls.rs` requires those types to have the same size; its
-// adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicU8` and `u8` are both `Sized`, and [1] guarantees that
+// `AtomicU8` has the same size as `u8`. Thus their valid referent-size sets are
+// equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU8.html
 unsafe impl SameSizeForTransmute<u8> for core::sync::atomic::AtomicU8 {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicI16`/`i16` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicI16` and `i16` are both `Sized`, and [1] guarantees that
+// `AtomicI16` has the same size as `i16`. Thus their valid referent-size sets
+// are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI16.html
 unsafe impl SameSizeForTransmute<i16> for core::sync::atomic::AtomicI16 {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicU16`/`u16` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicU16` and `u16` are both `Sized`, and [1] guarantees that
+// `AtomicU16` has the same size as `u16`. Thus their valid referent-size sets
+// are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU16.html
 unsafe impl SameSizeForTransmute<u16> for core::sync::atomic::AtomicU16 {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicI32`/`i32` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicI32` and `i32` are both `Sized`, and [1] guarantees that
+// `AtomicI32` has the same size as `i32`. Thus their valid referent-size sets
+// are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI32.html
 unsafe impl SameSizeForTransmute<i32> for core::sync::atomic::AtomicI32 {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicU32`/`u32` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicU32` and `u32` are both `Sized`, and [1] guarantees that
+// `AtomicU32` has the same size as `u32`. Thus their valid referent-size sets
+// are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU32.html
 unsafe impl SameSizeForTransmute<u32> for core::sync::atomic::AtomicU32 {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicI64`/`i64` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicI64` and `i64` are both `Sized`, and [1] guarantees that
+// `AtomicI64` has the same size as `i64`. Thus their valid referent-size sets
+// are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI64.html
 unsafe impl SameSizeForTransmute<i64> for core::sync::atomic::AtomicI64 {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicU64`/`u64` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicU64` and `u64` are both `Sized`, and [1] guarantees that
+// `AtomicU64` has the same size as `u64`. Thus their valid referent-size sets
+// are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU64.html
 unsafe impl SameSizeForTransmute<u64> for core::sync::atomic::AtomicU64 {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicIsize`/`isize` in `impls.rs` requires those types to have the same
-// size; its adjacent call-site proof discharges that premise from the
-// standard-library contract. Both types are sized, so that size equality is
-// exactly this trait's obligation.
+// SAFETY: `AtomicIsize` and `isize` are both `Sized`, and [1] guarantees that
+// `AtomicIsize` has the same size as `isize`. Thus their valid referent-size
+// sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicIsize.html
 unsafe impl SameSizeForTransmute<isize> for core::sync::atomic::AtomicIsize {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicUsize`/`usize` in `impls.rs` requires those types to have the same
-// size; its adjacent call-site proof discharges that premise from the
-// standard-library contract. Both types are sized, so that size equality is
-// exactly this trait's obligation.
+// SAFETY: `AtomicUsize` and `usize` are both `Sized`, and [1] guarantees that
+// `AtomicUsize` has the same size as `usize`. Thus their valid referent-size
+// sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicUsize.html
 unsafe impl SameSizeForTransmute<usize> for core::sync::atomic::AtomicUsize {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicPtr<T>`/`*mut T` in `impls.rs` requires those types to have the same
-// size for every `T`; its adjacent call-site proof discharges that premise from
-// the standard-library contract. Both types are sized, so that size equality
-// is exactly this trait's obligation.
+// SAFETY: `AtomicPtr<T>` and `*mut T` are both `Sized`, and [1] guarantees that
+// `AtomicPtr<T>` has the same size as `*mut T`. Thus their valid referent-size
+// sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicPtr.html
 unsafe impl<T> SameSizeForTransmute<*mut T> for core::sync::atomic::AtomicPtr<T> {}
 
 /// Implements `$trait` for `$ty` where `$ty: TransmuteFrom<$repr>` (and
@@ -308,28 +314,32 @@ macro_rules! impl_for_transmute_from {
             // SAFETY: The generated `unsafe impl $trait for $ty` has four
             // compile-time premises, checked by `is_trait::<$ty, $repr>()`:
             //
-            // - `$ty: SameSizeForTransmute<$repr>` proves that corresponding
-            //   `$ty` and `$repr` referents cover the same bytes.
-            // - `$ty: TransmuteFrom<$repr, Safe, Safe>` proves, on that
-            //   equal-size domain, `Safe($repr) ⊆ Safe($ty)`.
+            // - `$ty: SameSizeForTransmute<$repr>` proves that `$ty` and
+            //   `$repr` have the same set of valid referent sizes.
+            // - `$ty: TransmuteFrom<$repr, Safe, Safe>` proves, whenever the
+            //   referent sizes are equal, `Safe($repr) ⊆ Safe($ty)`.
             // - `$repr: TransmuteFrom<$ty, Safe, Safe>` proves the reverse
-            //   inclusion, so the two `Safe` state sets are equal.
+            //   inclusion on the same equal-size domain.
             // - `$repr: $trait` supplies the trait property being transferred.
             //
+            // The first premise ensures that every valid `$ty` size is also a
+            // valid `$repr` size and vice versa, so the two `TransmuteFrom`
+            // implications apply at every size relevant to either type.
             // `@assert_is_supported_trait` rejects every trait except the four
-            // cases below. Equal referent size and the inclusions above discharge
-            // each case as follows:
+            // cases below:
             //
-            // - `FromZeros`: the all-zero `$repr` state is `Safe`; forward
-            //   inclusion makes the same all-zero bytes `Safe` for `$ty`.
-            // - `FromBytes`: every initialized `$repr` state is `Safe`; forward
-            //   inclusion makes every initialized state `Safe` for `$ty`.
-            // - `IntoBytes`: every `Safe` `$ty` state is, by reverse inclusion,
-            //   a `Safe` `$repr` state. `$repr: IntoBytes` therefore establishes
-            //   that every byte in that state is initialized; equal referent
-            //   size transfers that conclusion to `$ty`.
+            // - `FromZeros`: at each valid `$ty` size, the same size is valid
+            //   for `$repr`; `$repr: FromZeros` makes the all-zero state `Safe`
+            //   for `$repr`, and forward inclusion makes it `Safe` for `$ty`.
+            // - `FromBytes`: at each valid `$ty` size, `$repr: FromBytes` makes
+            //   every initialized state `Safe` for `$repr`; forward inclusion
+            //   therefore makes every initialized state `Safe` for `$ty`.
+            // - `IntoBytes`: every `Safe` `$ty` state has a size valid for
+            //   `$repr`; reverse inclusion makes the same state `Safe` for
+            //   `$repr`, and `$repr: IntoBytes` establishes that all of its
+            //   bytes are initialized.
             // - `TryFromBytes`: the generated `is_safe` implementation below
-            //   delegates to `$repr` and uses the forward inclusion to turn a
+            //   delegates to `$repr` and uses forward inclusion to turn a
             //   successful `$repr` validity check into `$ty` validity.
             unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
@@ -376,13 +386,13 @@ macro_rules! impl_for_transmute_from {
         where
             Alignment: $crate::invariant::Alignment,
         {
-            // SAFETY: The compile-time proof in this macro establishes that
-            // `Self` and `$repr` have equal-size corresponding referents and
-            // that `Self: TransmuteFrom<$repr, Safe, Safe>`. If the delegated
-            // `$repr` validator returns `true`, its contract establishes that
-            // these bytes are `Safe` for `$repr`; the forward `TransmuteFrom`
-            // implication then establishes that the same bytes are `Safe` for
-            // `Self`. Returning the delegated result therefore satisfies
+            // SAFETY: `candidate` has a valid `Self` referent size. By
+            // `SameSizeForTransmute<$repr>`, that byte length is also a valid
+            // `$repr` referent size. If the delegated `$repr` validator returns
+            // `true`, its contract establishes that these bytes are `Safe` for
+            // `$repr`; `Self: TransmuteFrom<$repr, Safe, Safe>` then establishes
+            // that the same equal-length byte state is `Safe` for `Self`.
+            // Returning the delegated result therefore satisfies
             // `TryFromBytes::is_safe`'s postcondition.
             <$repr as TryFromBytes>::is_safe(candidate.transmute::<_, _, BecauseImmutable>())
         }
@@ -393,6 +403,236 @@ macro_rules! impl_for_transmute_from {
         $trait:ident for $ty:ty [$repr:ty]
     ) => {
         // Trait other than `TryFromBytes`; no `is_safe` impl.
+    };
+}
+
+/// Implements a trait for a type, bounding on each member of the power set of
+/// a set of type variables. This is useful for implementing traits for tuples
+/// or `fn` types.
+///
+/// The last argument is the name of a macro which will be called in every
+/// `impl` block, and is expected to expand to the name of the type for which to
+/// implement the trait.
+///
+/// For example, the invocation:
+/// ```ignore
+/// unsafe_impl_for_power_set!(A, B => Foo for type!(...))
+/// ```
+/// ...expands to:
+/// ```ignore
+/// unsafe impl       Foo for type!()     { ... }
+/// unsafe impl<B>    Foo for type!(B)    { ... }
+/// unsafe impl<A, B> Foo for type!(A, B) { ... }
+/// ```
+macro_rules! unsafe_impl_for_power_set {
+    (
+        $first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident| $is_safe:expr)?
+    ) => {
+        unsafe_impl_for_power_set!(
+            $($rest),* $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate| $is_safe)?
+        );
+        unsafe_impl_for_power_set!(
+            @impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate| $is_safe)?
+        );
+    };
+    (
+        $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident| $is_safe:expr)?
+    ) => {
+        unsafe_impl_for_power_set!(
+            @impl $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate| $is_safe)?
+        );
+    };
+    (
+        @impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident| $is_safe:expr)?
+    ) => {
+        unsafe_impl!(
+            $($vars,)* $($ret)? => $trait for $macro!($($vars),* $(-> $ret)?)
+            $(; |$candidate| $is_safe)?
+        );
+    };
+}
+
+/// Expands to an `Option<extern "C" fn>` type with the given argument types and
+/// return type. Designed for use with `unsafe_impl_for_power_set`.
+macro_rules! opt_extern_c_fn {
+    ($($args:ident),* -> $ret:ident) => { Option<extern "C" fn($($args),*) -> $ret> };
+}
+
+/// Expands to an `Option<unsafe extern "C" fn>` type with the given argument
+/// types and return type. Designed for use with `unsafe_impl_for_power_set`.
+macro_rules! opt_unsafe_extern_c_fn {
+    ($($args:ident),* -> $ret:ident) => { Option<unsafe extern "C" fn($($args),*) -> $ret> };
+}
+
+/// Expands to an `Option<fn>` type with the given argument types and return
+/// type. Designed for use with `unsafe_impl_for_power_set`.
+macro_rules! opt_fn {
+    ($($args:ident),* -> $ret:ident) => { Option<fn($($args),*) -> $ret> };
+}
+
+/// Expands to an `Option<unsafe fn>` type with the given argument types and
+/// return type. Designed for use with `unsafe_impl_for_power_set`.
+macro_rules! opt_unsafe_fn {
+    ($($args:ident),* -> $ret:ident) => { Option<unsafe fn($($args),*) -> $ret> };
+}
+
+// This `allow` is needed because, when testing, we export this macro so it can
+// be used in `doctests`.
+#[allow(rustdoc::private_intra_doc_links)]
+/// Implements trait(s) for a type or verifies the given implementation by
+/// referencing an existing (derived) implementation.
+///
+/// This macro exists so that we can provide zerocopy-derive as an optional
+/// dependency and still get the benefit of using its derives to validate that
+/// our trait impls are sound.
+///
+/// When compiling without `--cfg 'feature = "derive"` and without `--cfg test`,
+/// `impl_or_verify!` emits the provided trait impl. When compiling with either
+/// of those cfgs, it is expected that the type in question is deriving the
+/// traits instead. In this case, `impl_or_verify!` emits code which validates
+/// that the given trait impl is at least as restrictive as the the impl emitted
+/// by the custom derive. This has the effect of confirming that the impl which
+/// is emitted when the `derive` feature is disabled is actually sound (on the
+/// assumption that the impl emitted by the custom derive is sound).
+///
+/// The caller is still required to provide a safety comment (e.g. using the
+/// `const _: () = unsafe` macro). The reason for this restriction is that,
+/// while `impl_or_verify!` can guarantee that the provided impl is sound when
+/// it is compiled with the appropriate cfgs, there is no way to guarantee that
+/// it is ever compiled with those cfgs. In particular, it would be possible to
+/// accidentally place an `impl_or_verify!` call in a context that is only ever
+/// compiled when the `derive` feature is disabled. If that were to happen,
+/// there would be nothing to prevent an unsound trait impl from being emitted.
+/// Requiring a safety comment reduces the likelihood of emitting an unsound
+/// impl in this case, and also provides useful documentation for readers of the
+/// code.
+///
+/// Finally, if a `TryFromBytes::is_safe` impl is provided, it must adhere to the
+/// safety preconditions of [`unsafe_impl!`].
+///
+/// ## Example
+///
+/// ```rust,ignore
+/// // Note that these derives are gated by `feature = "derive"`
+/// #[cfg_attr(any(feature = "derive", test), derive(FromZeros, FromBytes, IntoBytes, Unaligned))]
+/// #[repr(transparent)]
+/// struct Wrapper<T>(T);
+///
+/// const _: () = unsafe {
+///     /// SAFETY:
+///     /// `Wrapper<T>` is `repr(transparent)`, so it is sound to implement any
+///     /// zerocopy trait if `T` implements that trait.
+///     impl_or_verify!(T: FromZeros => FromZeros for Wrapper<T>);
+///     impl_or_verify!(T: FromBytes => FromBytes for Wrapper<T>);
+///     impl_or_verify!(T: IntoBytes => IntoBytes for Wrapper<T>);
+///     impl_or_verify!(T: Unaligned => Unaligned for Wrapper<T>);
+/// }
+/// ```
+#[cfg_attr(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE, macro_export)] // Used in `doctests.rs`
+#[doc(hidden)]
+macro_rules! impl_or_verify {
+    // The following two match arms follow the same pattern as their
+    // counterparts in `unsafe_impl!`; see the documentation on those arms for
+    // more details.
+    (
+        const $constname:ident : $constty:ident $(,)?
+        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
+        => $trait:ident for $ty:ty
+    ) => {
+        impl_or_verify!(@impl { unsafe_impl!(
+            const $constname: $constty, $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
+        ); });
+        impl_or_verify!(@verify $trait, {
+            impl<const $constname: $constty, $($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> Subtrait for $ty {}
+        });
+    };
+    (
+        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
+        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_safe:expr)?
+    ) => {
+        impl_or_verify!(@impl { unsafe_impl!(
+            $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
+            $(; |$candidate| $is_safe)?
+        ); });
+        impl_or_verify!(@verify $trait, {
+            impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> Subtrait for $ty {}
+        });
+    };
+    (@impl $impl_block:tt) => {
+        #[cfg(not(any(feature = "derive", test)))]
+        { $impl_block };
+    };
+    (@verify $trait:ident, $impl_block:tt) => {
+        #[cfg(any(feature = "derive", test))]
+        {
+            // On some toolchains, `Subtrait` triggers the `dead_code` lint
+            // because it is implemented but never used.
+            #[allow(dead_code)]
+            trait Subtrait: $trait {}
+            $impl_block
+        };
+    };
+}
+
+/// Implements `KnownLayout` for a sized type.
+macro_rules! impl_known_layout {
+    ($(const $constvar:ident : $constty:ty, $tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
+        $(impl_known_layout!(@inner const $constvar: $constty, $tyvar $(: ?$optbound)? => $ty);)*
+    };
+    ($($tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
+        $(impl_known_layout!(@inner , $tyvar $(: ?$optbound)? => $ty);)*
+    };
+    ($($(#[$attrs:meta])* $ty:ty),*) => { $(impl_known_layout!(@inner , => $(#[$attrs])* $ty);)* };
+    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $(#[$attrs:meta])* $ty:ty) => {
+        const _: () = {
+            use core::ptr::NonNull;
+
+            #[allow(non_local_definitions)]
+            $(#[$attrs])*
+            // SAFETY: Delegates safety to `DstLayout::for_type`.
+            unsafe impl<$($tyvar $(: ?$optbound)?)? $(, const $constname: $constty,)*> $trait for $ty {
+            unsafe_impl!(@method $trait $(; |$candidate| $is_safe)?);
+        }
+    }};
+
+    (@method TryFromBytes ; |$candidate:ident| $is_safe:expr) => {
+        #[allow(clippy::missing_inline_in_public_items, dead_code)]
+        #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+
+        #[inline]
+        fn is_safe<Alignment>($candidate: Maybe<'_, Self, Alignment>) -> bool
+        where
+            Alignment: crate::invariant::Alignment,
+        {
+            $is_safe
+        }
+    };
+    (@method TryFromBytes) => {
+        #[allow(clippy::missing_inline_in_public_items)]
+        #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+        #[inline(always)]
+        fn is_safe<Alignment>(_candidate: Maybe<'_, Self, Alignment>) -> bool
+        where
+            Alignment: crate::invariant::Alignment,
+        {
+            true
+        }
+    };
+    (@method $trait:ident) => {
+        #[allow(clippy::missing_inline_in_public_items, dead_code)]
+        #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+    };
+    (@method $trait:ident; |$_candidate:ident| $_is_safe:expr) => {
+        compile_error!("Can't provide `is_safe` impl for trait other than `TryFromBytes`");
     };
 }
 
@@ -786,7 +1026,7 @@ macro_rules! const_unreachable {
         #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
         unreachable!();
 
-        #[cfg(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)]
+        #[cfg(no_zerocopy_generic_bounds_in_const_fn_1_61_0)]
         loop {}
     }};
 }
@@ -1114,7 +1354,7 @@ macro_rules! codegen_example_suite {
                 )]
             ]),*
         )
-    };
+    }
 }
 
 /// Generates the string for code generation preamble.
