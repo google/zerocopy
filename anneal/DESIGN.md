@@ -44,6 +44,9 @@ ordinary successful verification result.
 This constraint does not decide the atomic unit of verification, the exact
 result format, or how command exit statuses represent incomplete work.
 
+The semantic model for claims, trust, evidence, and blocking gaps is defined in
+[Verification results](docs/verification-results.md).
+
 ## Rust-level claims require justified Rust semantics
 
 A theorem about a mathematical model supports a claim about Rust only when the
