@@ -138,10 +138,10 @@ pub enum BecauseMutationCompatible {}
 //     referent as `src`. By `Dst: TransmuteFrom<Src, SV, DV>`, the set of
 //     `DV`-valid referents of `dst` is a superset of the set of `SV`-valid
 //     referents of `src`.
-// - Preserve source validity: Since the underlying cast is size-preserving, `dst`
-//   addresses the same referent as `src`. By `Src: TransmuteFrom<Dst, DV, SV>`,
-//   the set of `DV`-valid referents of `src` is a subset of the set of
-//   `SV`-valid referents of `dst`.
+// - Preserve source validity: Since the underlying cast is size-preserving,
+//   `dst` addresses the same referent as `src`. By
+//   `Src: TransmuteFrom<Dst, DV, SV>`, the set of `DV`-valid referents of `dst`
+//   is a subset of the set of `SV`-valid referents of `src`.
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
 //   the following holds:
