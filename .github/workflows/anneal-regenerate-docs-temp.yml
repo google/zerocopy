@@ -1,0 +1,50 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Anneal Regenerate Docs (Temporary)
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772 # zizmor: ignore[superfluous-actions]
+        with:
+          toolchain: stable
+
+      - name: Regenerate and commit V1 agent documentation
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd anneal/v1
+          cargo run -p doc_gen
+          cd ../..
+
+          git add anneal/v1/llms-full.txt
+          if git diff --cached --quiet; then
+            echo "Generated documentation is already current."
+            exit 0
+          fi
+
+          git config user.name "Josh Liebow-Feeser"
+          git config user.email "joshlf@users.noreply.github.com"
+          git commit -m "[anneal] Regenerate V1 agent documentation" -m "Agent-authored-by: AI agent acting on Josh Liebow-Feeser's behalf"
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_HEAD_REF}"
