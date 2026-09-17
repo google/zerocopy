@@ -47,7 +47,11 @@ The `<toolchain>` argument is mandatory:
 
 ## MSRV (Minimum Supported Rust Version)
 
-The MSRV is **1.56.0**.
+The MSRV is **1.56.0**. It is encoded in the `package.rust-version` fields in
+both `Cargo.toml` and `zerocopy-derive/Cargo.toml`; these fields must remain
+identical. The root `Cargo.toml` is the canonical source used by `cargo.sh` to
+select the MSRV toolchain. `ci/check_versions.sh` verifies that both manifests
+declare the same MSRV.
 
 - **Do NOT** use features stabilized after 1.56.0 unless version-gated.
 - **Requirement:** Ask for user approval before introducing new version-gated

@@ -19,6 +19,14 @@ function version {
 ver_zerocopy=$(version zerocopy)
 ver_zerocopy_derive=$(version zerocopy-derive)
 
+# Usage: rust-version <crate-name>
+function rust-version {
+  cargo metadata -q --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version // empty"
+}
+
+rust_version_zerocopy=$(rust-version zerocopy)
+rust_version_zerocopy_derive=$(rust-version zerocopy-derive)
+
 # Usage: dependency-version <kind> <target>
 function dependency-version {
   KIND="$1"
@@ -52,9 +60,33 @@ function assert-match {
   fi
 }
 
+function assert-present {
+  VALUE="$1"
+  SUCCESS_MSG="$2"
+  FAILURE_MSG="$3"
+  if [[ -n "$VALUE" ]]; then
+    echo "$SUCCESS_MSG" | tee -a $GITHUB_STEP_SUMMARY
+  else
+    echo "$FAILURE_MSG" | tee -a $GITHUB_STEP_SUMMARY >&2
+    exit 1
+  fi
+}
+
 assert-match "$ver_zerocopy" "$ver_zerocopy_derive" \
   "Same crate version ($ver_zerocopy) found for zerocopy and zerocopy-derive." \
   "Different crate versions found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)."
+
+assert-present "$rust_version_zerocopy" \
+  "zerocopy declares package.rust-version ($rust_version_zerocopy)." \
+  "zerocopy does not declare package.rust-version."
+
+assert-present "$rust_version_zerocopy_derive" \
+  "zerocopy-derive declares package.rust-version ($rust_version_zerocopy_derive)." \
+  "zerocopy-derive does not declare package.rust-version."
+
+assert-match "$rust_version_zerocopy" "$rust_version_zerocopy_derive" \
+  "Same package.rust-version ($rust_version_zerocopy) found for zerocopy and zerocopy-derive." \
+  "Different package.rust-version values found for zerocopy ($rust_version_zerocopy) and zerocopy-derive ($rust_version_zerocopy_derive)."
 
 # Note the leading `=` sign - the dependency needs to be an exact one.
 assert-match "=$ver_zerocopy_derive" "$zerocopy_derive_dep_ver" \
