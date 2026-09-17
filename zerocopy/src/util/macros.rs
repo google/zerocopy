@@ -168,8 +168,8 @@ macro_rules! unsafe_impl {
 /// Implements `$trait` for `$ty` where `$ty: TransmuteFrom<$repr>` (and
 /// vice-versa).
 ///
-/// This macro is intended to be safe to call. The current proof is incomplete;
-/// see FIXME(#3691) below.
+/// Calling this macro is safe; the bounds it emits establish the premises used
+/// by the generated trait impl.
 macro_rules! impl_for_transmute_from {
     (
         $(#[$attr:meta])*
@@ -181,19 +181,15 @@ macro_rules! impl_for_transmute_from {
             #[allow(non_local_definitions)]
 
             // SAFETY: `is_trait<T, R>` (defined and used below) requires
-            // reciprocal `TransmuteFrom<_, Safe, Safe>` bounds and `R: $trait`.
-            // If `T` and `R` have the same size, the reciprocal bounds imply
-            // that they permit the same `Safe` bit patterns. The call below
-            // instantiates `T` with `$ty` and `R` with `$repr`, and establishes
-            // `$repr: $trait`. The supported traits - `TryFromBytes`,
-            // `FromZeros`, `FromBytes`, and `IntoBytes` - are defined only in
-            // terms of bit validity, so these premises are sufficient when
-            // `$ty` and `$repr` have the same size.
-            //
-            // FIXME(#3691): This macro does not establish that `$ty` and
-            // `$repr` have the same size. Without that premise, `TransmuteFrom`
-            // conveys no safety guarantee, so these bounds do not make
-            // arbitrary invocations of this macro sound.
+            // `T: SizeEq<R>`, reciprocal `TransmuteFrom<_, Safe, Safe>` bounds,
+            // and `R: $trait`. `T: SizeEq<R>` supplies a `CastExact<R, T>`
+            // witness, so `T` and `R` describe the same byte range. The
+            // reciprocal `TransmuteFrom` bounds therefore imply that they
+            // permit the same `Safe` bit patterns. The call below instantiates
+            // `T` with `$ty` and `R` with `$repr`, and establishes `$repr:
+            // $trait`. The supported traits - `TryFromBytes`, `FromZeros`,
+            // `FromBytes`, and `IntoBytes` - are defined only in terms of bit
+            // validity, so these premises are sufficient.
             unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
@@ -204,7 +200,7 @@ macro_rules! impl_for_transmute_from {
 
                     fn is_trait<T, R>()
                     where
-                        T: TransmuteFrom<R, Safe, Safe> + ?Sized,
+                        T: SizeEq<R> + TransmuteFrom<R, Safe, Safe> + ?Sized,
                         R: TransmuteFrom<T, Safe, Safe> + ?Sized,
                         R: $trait,
                     {
@@ -424,7 +420,7 @@ macro_rules! impl_or_verify {
             trait Subtrait: $trait {}
             $impl_block
         };
-    };
+    }
 }
 
 /// Implements `KnownLayout` for a sized type.
