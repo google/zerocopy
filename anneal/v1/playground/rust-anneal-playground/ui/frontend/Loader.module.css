@@ -1,0 +1,23 @@
+@keyframes loader-fade {
+  0% {
+    opacity: 0;
+  }
+
+  75% {
+    opacity: 1;
+  }
+}
+
+.dot {
+  opacity: 0;
+  animation: loader-fade 1s;
+  animation-iteration-count: infinite;
+
+  &:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+}
