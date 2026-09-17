@@ -992,7 +992,7 @@ pub(crate) const unsafe fn __unsafe() {}
 macro_rules! docstring {
     ($(#[doc = $content:expr])*) => {
         concat!($($content, "\n",)*)
-    };
+    }
 }
 
 /// Generate a rustdoc-style header with `$name` as the HTML ID for the 'Code
@@ -1084,7 +1084,7 @@ macro_rules! codegen_example {
                 /// ```
             ]
         )
-    };
+    }
 }
 
 /// Generate the HTML for a suite of benchmark examples.
@@ -1114,7 +1114,7 @@ macro_rules! codegen_example_suite {
                 )]
             ]),*
         )
-    }
+    };
 }
 
 /// Generates the string for code generation preamble.
