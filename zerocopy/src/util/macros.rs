@@ -165,129 +165,139 @@ macro_rules! unsafe_impl {
     };
 }
 
-/// Proof used by `impl_for_transmute_from!` that its equal-size premise holds.
+/// Proof that two types have exactly the same valid referent sizes.
+///
+/// A byte length `n` is a valid referent size for `T` if a `T` referent may
+/// occupy exactly `n` bytes.
 ///
 /// # Safety
 ///
-/// An impl must identify the representation correspondence between `Self` and
-/// `R` used by the surrounding transmute proof. Every pair of referents in that
-/// correspondence must cover exactly the same number of bytes. For sized
-/// types, this reduces to `size_of::<Self>() == size_of::<R>()`. For DSTs, the
-/// equality must hold for every pointer-metadata value covered by the impl.
+/// For every byte length `n`, `n` must be a valid referent size for `Self` if
+/// and only if it is a valid referent size for `R`.
+///
+/// If both types are `Sized`, this reduces to
+/// `size_of::<Self>() == size_of::<R>()`.
 pub(crate) unsafe trait SameSizeForTransmute<R: ?Sized> {}
 
-// SAFETY: The `unsafe_impl_for_transparent_wrapper!` invocation for
-// `Wrapping<T>` in `pointer/transmute.rs` has an unsafe caller contract which
-// requires the `T` <-> `Wrapping<T>` representation casts to preserve the full
-// referent byte range. Since this impl is for sized `T`, that establishes equal
-// referent size, exactly the `SameSizeForTransmute<T>` obligation.
+// SAFETY: Per [1], `Wrapping<T>` has the same layout and ABI as `T`. Both types
+// are `Sized`, so they have the same size and therefore the same (singleton) set
+// of valid referent sizes.
+//
+// [1] Per https://doc.rust-lang.org/1.85.0/core/num/struct.Wrapping.html#layout-1:
+//
+//   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
 unsafe impl<T> SameSizeForTransmute<T> for core::num::Wrapping<T> {}
-// SAFETY: The `unsafe_impl_for_transparent_wrapper!` invocation for
-// `ManuallyDrop<T>` in `pointer/transmute.rs` has an unsafe caller contract
-// which requires both representation casts to preserve the full referent byte
-// range for every `T: ?Sized`. Thus each corresponding `ManuallyDrop<T>`/`T`
-// referent pair has equal byte length, exactly this trait's obligation.
+
+// SAFETY: Per [1], `ManuallyDrop<T>` has the same layout as `T`. Therefore the
+// two types admit exactly the same referent byte lengths, including when `T` is
+// dynamically sized.
+//
+// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/struct.ManuallyDrop.html:
+//
+//   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
+//   `T`.
 unsafe impl<T: ?Sized> SameSizeForTransmute<T> for core::mem::ManuallyDrop<T> {}
-// SAFETY: The `unsafe_impl_for_transparent_wrapper!` invocation for `Cell<T>` in
-// `pointer/transmute.rs` has an unsafe caller contract which requires both
-// representation casts to preserve the full referent byte range for every
-// `T: ?Sized`. Thus each corresponding `Cell<T>`/`T` referent pair has equal
-// byte length, exactly this trait's obligation.
+
+// SAFETY: Per [1], `Cell<T>` has the same in-memory representation as `T`.
+// Therefore the two types admit exactly the same referent byte lengths,
+// including when `T` is dynamically sized.
+//
+// [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.Cell.html#memory-layout:
+//
+//   `Cell<T>` has the same memory layout and caveats as `UnsafeCell<T>`. In
+//   particular, this means that `Cell<T>` has the same in-memory representation
+//   as its inner type `T`.
 unsafe impl<T: ?Sized> SameSizeForTransmute<T> for core::cell::Cell<T> {}
-// SAFETY: The `unsafe_impl_for_transparent_wrapper!` invocation for
-// `UnsafeCell<T>` in `pointer/transmute.rs` has an unsafe caller contract which
-// requires both representation casts to preserve the full referent byte range
-// for every `T: ?Sized`. Thus each corresponding `UnsafeCell<T>`/`T` referent
-// pair has equal byte length, exactly this trait's obligation.
+
+// SAFETY: Per [1], `UnsafeCell<T>` has the same in-memory representation as
+// `T`. Therefore the two types admit exactly the same referent byte lengths,
+// including when `T` is dynamically sized.
+//
+// [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
+//
+//   `UnsafeCell<T>` has the same in-memory representation as its inner type
+//   `T`.
 unsafe impl<T: ?Sized> SameSizeForTransmute<T> for core::cell::UnsafeCell<T> {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicBool`/`bool` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicBool` and `bool` are both `Sized`. Per [1], `AtomicBool` has
+// the same size as `bool`, so their singleton valid referent-size sets are
+// equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicBool.html
 unsafe impl SameSizeForTransmute<bool> for core::sync::atomic::AtomicBool {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicI8`/`i8` in `impls.rs` requires those types to have the same size; its
-// adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicI8` and `i8` are both `Sized`. Per [1], `AtomicI8` has the same
+// size as `i8`, so their singleton valid referent-size sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI8.html
 unsafe impl SameSizeForTransmute<i8> for core::sync::atomic::AtomicI8 {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicU8`/`u8` in `impls.rs` requires those types to have the same size; its
-// adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicU8` and `u8` are both `Sized`. Per [1], `AtomicU8` has the same
+// size as `u8`, so their singleton valid referent-size sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU8.html
 unsafe impl SameSizeForTransmute<u8> for core::sync::atomic::AtomicU8 {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicI16`/`i16` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicI16` and `i16` are both `Sized`. Per [1], `AtomicI16` has the
+// same size as `i16`, so their singleton valid referent-size sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI16.html
 unsafe impl SameSizeForTransmute<i16> for core::sync::atomic::AtomicI16 {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicU16`/`u16` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicU16` and `u16` are both `Sized`. Per [1], `AtomicU16` has the
+// same size as `u16`, so their singleton valid referent-size sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU16.html
 unsafe impl SameSizeForTransmute<u16> for core::sync::atomic::AtomicU16 {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicI32`/`i32` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicI32` and `i32` are both `Sized`. Per [1], `AtomicI32` has the
+// same size as `i32`, so their singleton valid referent-size sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI32.html
 unsafe impl SameSizeForTransmute<i32> for core::sync::atomic::AtomicI32 {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicU32`/`u32` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicU32` and `u32` are both `Sized`. Per [1], `AtomicU32` has the
+// same size as `u32`, so their singleton valid referent-size sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU32.html
 unsafe impl SameSizeForTransmute<u32> for core::sync::atomic::AtomicU32 {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicI64`/`i64` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicI64` and `i64` are both `Sized`. Per [1], `AtomicI64` has the
+// same size as `i64`, so their singleton valid referent-size sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI64.html
 unsafe impl SameSizeForTransmute<i64> for core::sync::atomic::AtomicI64 {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicU64`/`u64` in `impls.rs` requires those types to have the same size;
-// its adjacent call-site proof discharges that premise from the standard-library
-// contract. Both types are sized, so that size equality is exactly this trait's
-// obligation.
+// SAFETY: `AtomicU64` and `u64` are both `Sized`. Per [1], `AtomicU64` has the
+// same size as `u64`, so their singleton valid referent-size sets are equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU64.html
 unsafe impl SameSizeForTransmute<u64> for core::sync::atomic::AtomicU64 {}
 
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicIsize`/`isize` in `impls.rs` requires those types to have the same
-// size; its adjacent call-site proof discharges that premise from the
-// standard-library contract. Both types are sized, so that size equality is
-// exactly this trait's obligation.
+// SAFETY: `AtomicIsize` and `isize` are both `Sized`. Per [1], `AtomicIsize`
+// has the same size as `isize`, so their singleton valid referent-size sets are
+// equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicIsize.html
 unsafe impl SameSizeForTransmute<isize> for core::sync::atomic::AtomicIsize {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicUsize`/`usize` in `impls.rs` requires those types to have the same
-// size; its adjacent call-site proof discharges that premise from the
-// standard-library contract. Both types are sized, so that size equality is
-// exactly this trait's obligation.
+// SAFETY: `AtomicUsize` and `usize` are both `Sized`. Per [1], `AtomicUsize`
+// has the same size as `usize`, so their singleton valid referent-size sets are
+// equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicUsize.html
 unsafe impl SameSizeForTransmute<usize> for core::sync::atomic::AtomicUsize {}
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
-// SAFETY: The `unsafe_impl_transmute_from_for_atomic!` invocation for
-// `AtomicPtr<T>`/`*mut T` in `impls.rs` requires those types to have the same
-// size for every `T`; its adjacent call-site proof discharges that premise from
-// the standard-library contract. Both types are sized, so that size equality
-// is exactly this trait's obligation.
+// SAFETY: `AtomicPtr<T>` and `*mut T` are both `Sized`. Per [1], `AtomicPtr<T>`
+// has the same size as `*mut T`, so their singleton valid referent-size sets are
+// equal.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicPtr.html
 unsafe impl<T> SameSizeForTransmute<*mut T> for core::sync::atomic::AtomicPtr<T> {}
 
 /// Implements `$trait` for `$ty` where `$ty: TransmuteFrom<$repr>` (and
@@ -995,98 +1005,6 @@ macro_rules! docstring {
     }
 }
 
-/// Generate a rustdoc-style header with `$name` as the HTML ID for the 'Code
-/// Generation' section of documentation.
-#[allow(unused)]
-macro_rules! codegen_header {
-    ($level:expr, $name:expr) => {
-        concat!(
-            "
-<",
-            $level,
-            " id='method.",
-            $name,
-            ".codegen'>
-    <a class='doc-anchor' href='#method.",
-            $name,
-            ".codegen'>§</a>
-    Code Generation
-</",
-            $level,
-            ">
-"
-        )
-    };
-}
-
-/// Generates HTML tabs.
-#[rustfmt::skip]
-#[allow(unused)]
-macro_rules! tabs {
-    (
-        name = $name:expr,
-        arity = $arity:literal,
-        $([
-            $($open:ident)?
-            @index $n:literal
-            @title $title:literal
-            $(#[doc = $content:expr])*
-        ]),*
-    ) => {
-        concat!("
-<div class='codegen-tabs' style='--arity: ", $arity ,"'>", $(concat!("
-    <details name='tab-", $name,"' style='--n: ", $n ,"'", $(stringify!($open),)*">
-        <summary><h6>", $title, "</h6></summary>
-        <div>
-
-", $($content, "\n",)* "
-\
-        </div>
-    </details>"),)*
-"</div>")
-    }
-}
-
-/// Generates the HTML for a single benchmark example.
-#[allow(unused)]
-macro_rules! codegen_example {
-    (format = $format:expr, bench = $bench:expr) => {
-        tabs!(
-            name = $bench,
-            arity = 4,
-            [
-                @index 1
-                @title "Format"
-                /// ```ignore
-                #[doc = include_str!(concat!("../benches/formats/", $format, ".rs"))]
-                /// ```
-            ],
-            [
-                @index 2
-                @title "Benchmark"
-                /// ```ignore
-                #[doc = include_str!(concat!("../benches/", $bench, ".rs"))]
-                /// ```
-            ],
-            [
-                open
-                @index 3
-                @title "Assembly"
-                /// ```plain
-                #[doc = include_str!(concat!("../benches/", $bench, ".x86-64"))]
-                /// ```
-            ],
-            [
-                @index 4
-                @title "Machine Code Analysis"
-                /// ```plain
-                #[doc = include_str!(concat!("../benches/", $bench, ".x86-64.mca"))]
-                /// ```
-            ]
-        )
-    }
-}
-
 /// Generate the HTML for a suite of benchmark examples.
 #[allow(unused)]
 macro_rules! codegen_example_suite {
@@ -1113,103 +1031,6 @@ macro_rules! codegen_example_suite {
                     bench = concat!($bench, "_", $variant)
                 )]
             ]),*
-        )
-    };
-}
-
-/// Generates the string for code generation preamble.
-#[allow(unused)]
-macro_rules! codegen_preamble {
-    () => {
-        docstring!(
-            ///
-            /// This abstraction is safe and cheap, but does not necessarily
-            /// have zero runtime cost. The codegen you experience in practice
-            /// will depend on optimization level, the layout of the destination
-            /// type, and what the compiler can prove about the source.
-            ///
-        )
-    }
-}
-
-/// Stub for rendering codegen documentation; used to break build dependency
-/// between benches and zerocopy when re-blessing codegen tests.
-#[allow(unused)]
-#[cfg(not(doc))]
-macro_rules! codegen_section {
-    (
-        header = $level:expr,
-        bench = $bench:expr,
-        format = $format:expr,
-        arity = $arity:literal,
-        $([
-            $($open:ident)?
-            @index $index:literal
-            @title $title:literal
-            @variant $variant:literal
-        ]),*
-    ) => {
-        ""
-    };
-    (
-        header = $level:expr,
-        bench = $bench:expr,
-        format = $format:expr,
-    ) => {
-        ""
-    };
-}
-
-/// Generates the HTML for code generation documentation.
-#[allow(unused)]
-#[cfg(doc)]
-macro_rules! codegen_section {
-    (
-        header = $level:expr,
-        bench = $bench:expr,
-        format = $format:expr,
-        arity = $arity:literal,
-        $([
-            $($open:ident)?
-            @index $index:literal
-            @title $title:literal
-            @variant $variant:literal
-        ]),*
-    ) => {
-        concat!(
-            codegen_header!($level, $bench),
-            codegen_preamble!(),
-            docstring!(
-                ///
-                /// The below examples illustrate typical codegen for
-                /// increasingly complex types:
-                ///
-            ),
-            codegen_example_suite!(
-                bench = $bench,
-                format = $format,
-                arity = $arity,
-                $([
-                    $($open)*
-                    @index $index
-                    @title $title
-                    @variant $variant
-                ]),*
-            )
-        )
-    };
-    (
-        header = $level:expr,
-        bench = $bench:expr,
-        format = $format:expr,
-    ) => {
-        concat!(
-            codegen_header!($level, $bench),
-            codegen_preamble!(),
-            codegen_example!(
-                format = $format,
-                bench = $bench
-            )
         )
     }
 }
