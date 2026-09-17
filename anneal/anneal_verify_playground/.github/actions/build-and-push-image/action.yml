@@ -1,0 +1,26 @@
+name: "Build and push image"
+description: "Build and push image"
+
+inputs:
+  channel:
+    description: "The Rust channel to build"
+    required: true
+
+  tags:
+    description: "The newline-separated tags to create"
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - uses: docker/build-push-action@v6
+      with:
+        context: compiler/base/
+        file: compiler/base/Dockerfile
+        build-args: |-
+          channel=${{ inputs.channel }}
+        push: true
+        tags: ${{ inputs.tags }}
+        cache-from: type=gha,scope=${{ inputs.channel }}
+        cache-to: type=gha,scope=${{ inputs.channel }},mode=max

@@ -1,0 +1,2337 @@
+[
+  {
+    "name": "addr2line",
+    "version": "0.25.1",
+    "id": "addr2line"
+  },
+  {
+    "name": "adler2",
+    "version": "2.0.1",
+    "id": "adler2"
+  },
+  {
+    "name": "ahash",
+    "version": "0.8.12",
+    "id": "ahash"
+  },
+  {
+    "name": "aho-corasick",
+    "version": "1.1.4",
+    "id": "aho_corasick"
+  },
+  {
+    "name": "aligned",
+    "version": "0.4.3",
+    "id": "aligned"
+  },
+  {
+    "name": "aligned-vec",
+    "version": "0.6.4",
+    "id": "aligned_vec"
+  },
+  {
+    "name": "alloc-no-stdlib",
+    "version": "2.0.4",
+    "id": "alloc_no_stdlib"
+  },
+  {
+    "name": "alloc-stdlib",
+    "version": "0.2.2",
+    "id": "alloc_stdlib"
+  },
+  {
+    "name": "allocator-api2",
+    "version": "0.2.21",
+    "id": "allocator_api2"
+  },
+  {
+    "name": "ansi_term",
+    "version": "0.12.1",
+    "id": "ansi_term"
+  },
+  {
+    "name": "anstream",
+    "version": "1.0.0",
+    "id": "anstream"
+  },
+  {
+    "name": "anstyle",
+    "version": "1.0.14",
+    "id": "anstyle"
+  },
+  {
+    "name": "anstyle-parse",
+    "version": "1.0.0",
+    "id": "anstyle_parse"
+  },
+  {
+    "name": "anstyle-query",
+    "version": "1.1.5",
+    "id": "anstyle_query"
+  },
+  {
+    "name": "anyhow",
+    "version": "1.0.102",
+    "id": "anyhow"
+  },
+  {
+    "name": "approx",
+    "version": "0.5.1",
+    "id": "approx"
+  },
+  {
+    "name": "arbitrary",
+    "version": "1.4.2",
+    "id": "arbitrary"
+  },
+  {
+    "name": "arc-swap",
+    "version": "1.9.1",
+    "id": "arc_swap"
+  },
+  {
+    "name": "arg_enum_proc_macro",
+    "version": "0.3.4",
+    "id": "arg_enum_proc_macro"
+  },
+  {
+    "name": "arrayvec",
+    "version": "0.7.6",
+    "id": "arrayvec"
+  },
+  {
+    "name": "as-slice",
+    "version": "0.2.1",
+    "id": "as_slice"
+  },
+  {
+    "name": "async-compression",
+    "version": "0.4.42",
+    "id": "async_compression"
+  },
+  {
+    "name": "async-trait",
+    "version": "0.1.89",
+    "id": "async_trait"
+  },
+  {
+    "name": "atomic",
+    "version": "0.6.1",
+    "id": "atomic"
+  },
+  {
+    "name": "atomic-waker",
+    "version": "1.1.2",
+    "id": "atomic_waker"
+  },
+  {
+    "name": "autocfg",
+    "version": "1.5.0",
+    "id": "autocfg"
+  },
+  {
+    "name": "av1-grain",
+    "version": "0.2.5",
+    "id": "av1_grain"
+  },
+  {
+    "name": "av-scenechange",
+    "version": "0.14.1",
+    "id": "av_scenechange"
+  },
+  {
+    "name": "avif-serialize",
+    "version": "0.8.8",
+    "id": "avif_serialize"
+  },
+  {
+    "name": "aws-lc-rs",
+    "version": "1.16.3",
+    "id": "aws_lc_rs"
+  },
+  {
+    "name": "aws-lc-sys",
+    "version": "0.40.0",
+    "id": "aws_lc_sys"
+  },
+  {
+    "name": "backtrace",
+    "version": "0.3.76",
+    "id": "backtrace"
+  },
+  {
+    "name": "base64",
+    "version": "0.22.1",
+    "id": "base64"
+  },
+  {
+    "name": "bit_field",
+    "version": "0.10.3",
+    "id": "bit_field"
+  },
+  {
+    "name": "bit-set",
+    "version": "0.5.3",
+    "id": "bit_set"
+  },
+  {
+    "name": "bit-vec",
+    "version": "0.6.3",
+    "id": "bit_vec"
+  },
+  {
+    "name": "bitflags",
+    "version": "2.11.1",
+    "id": "bitflags"
+  },
+  {
+    "name": "bitstream-io",
+    "version": "4.10.0",
+    "id": "bitstream_io"
+  },
+  {
+    "name": "bitvec",
+    "version": "1.0.1",
+    "id": "bitvec"
+  },
+  {
+    "name": "block-buffer",
+    "version": "0.12.0",
+    "id": "block_buffer"
+  },
+  {
+    "name": "block-buffer",
+    "version": "0.10.4",
+    "id": "block_buffer_0_10_4"
+  },
+  {
+    "name": "borsh",
+    "version": "1.6.1",
+    "id": "borsh"
+  },
+  {
+    "name": "brotli",
+    "version": "8.0.2",
+    "id": "brotli"
+  },
+  {
+    "name": "brotli-decompressor",
+    "version": "5.0.0",
+    "id": "brotli_decompressor"
+  },
+  {
+    "name": "built",
+    "version": "0.8.0",
+    "id": "built"
+  },
+  {
+    "name": "bumpalo",
+    "version": "3.20.2",
+    "id": "bumpalo"
+  },
+  {
+    "name": "bytemuck",
+    "version": "1.25.0",
+    "id": "bytemuck"
+  },
+  {
+    "name": "bytemuck_derive",
+    "version": "1.10.2",
+    "id": "bytemuck_derive"
+  },
+  {
+    "name": "byteorder",
+    "version": "1.5.0",
+    "id": "byteorder"
+  },
+  {
+    "name": "byteorder-lite",
+    "version": "0.1.0",
+    "id": "byteorder_lite"
+  },
+  {
+    "name": "bytes",
+    "version": "1.11.1",
+    "id": "bytes"
+  },
+  {
+    "name": "bytes",
+    "version": "0.4.12",
+    "id": "bytes_0_4_12"
+  },
+  {
+    "name": "cc",
+    "version": "1.2.61",
+    "id": "cc"
+  },
+  {
+    "name": "cfg_aliases",
+    "version": "0.2.1",
+    "id": "cfg_aliases"
+  },
+  {
+    "name": "cfg-if",
+    "version": "1.0.4",
+    "id": "cfg_if"
+  },
+  {
+    "name": "chacha20",
+    "version": "0.10.0",
+    "id": "chacha20"
+  },
+  {
+    "name": "chrono",
+    "version": "0.4.44",
+    "id": "chrono"
+  },
+  {
+    "name": "clap",
+    "version": "4.6.1",
+    "id": "clap"
+  },
+  {
+    "name": "clap_builder",
+    "version": "4.6.0",
+    "id": "clap_builder"
+  },
+  {
+    "name": "clap_derive",
+    "version": "4.6.1",
+    "id": "clap_derive"
+  },
+  {
+    "name": "clap_lex",
+    "version": "1.1.0",
+    "id": "clap_lex"
+  },
+  {
+    "name": "cmake",
+    "version": "0.1.58",
+    "id": "cmake"
+  },
+  {
+    "name": "cmov",
+    "version": "0.5.3",
+    "id": "cmov"
+  },
+  {
+    "name": "color_quant",
+    "version": "1.1.0",
+    "id": "color_quant"
+  },
+  {
+    "name": "colorchoice",
+    "version": "1.0.5",
+    "id": "colorchoice"
+  },
+  {
+    "name": "compression-codecs",
+    "version": "0.4.38",
+    "id": "compression_codecs"
+  },
+  {
+    "name": "compression-core",
+    "version": "0.4.32",
+    "id": "compression_core"
+  },
+  {
+    "name": "const-default",
+    "version": "1.0.0",
+    "id": "const_default"
+  },
+  {
+    "name": "const-oid",
+    "version": "0.10.2",
+    "id": "const_oid"
+  },
+  {
+    "name": "convert_case",
+    "version": "0.10.0",
+    "id": "convert_case"
+  },
+  {
+    "name": "cookie",
+    "version": "0.18.1",
+    "id": "cookie"
+  },
+  {
+    "name": "cookie_store",
+    "version": "0.22.1",
+    "id": "cookie_store"
+  },
+  {
+    "name": "cpufeatures",
+    "version": "0.3.0",
+    "id": "cpufeatures"
+  },
+  {
+    "name": "crc32fast",
+    "version": "1.5.0",
+    "id": "crc32fast"
+  },
+  {
+    "name": "crossbeam",
+    "version": "0.8.4",
+    "id": "crossbeam"
+  },
+  {
+    "name": "crossbeam-channel",
+    "version": "0.5.15",
+    "id": "crossbeam_channel"
+  },
+  {
+    "name": "crossbeam-deque",
+    "version": "0.8.6",
+    "id": "crossbeam_deque"
+  },
+  {
+    "name": "crossbeam-epoch",
+    "version": "0.9.18",
+    "id": "crossbeam_epoch"
+  },
+  {
+    "name": "crossbeam-queue",
+    "version": "0.3.12",
+    "id": "crossbeam_queue"
+  },
+  {
+    "name": "crossbeam-utils",
+    "version": "0.8.21",
+    "id": "crossbeam_utils"
+  },
+  {
+    "name": "crypto-common",
+    "version": "0.2.1",
+    "id": "crypto_common"
+  },
+  {
+    "name": "crypto-common",
+    "version": "0.1.7",
+    "id": "crypto_common_0_1_7"
+  },
+  {
+    "name": "cssparser",
+    "version": "0.31.2",
+    "id": "cssparser"
+  },
+  {
+    "name": "cssparser-macros",
+    "version": "0.6.1",
+    "id": "cssparser_macros"
+  },
+  {
+    "name": "csv",
+    "version": "1.4.0",
+    "id": "csv"
+  },
+  {
+    "name": "csv-core",
+    "version": "0.1.13",
+    "id": "csv_core"
+  },
+  {
+    "name": "ctutils",
+    "version": "0.4.2",
+    "id": "ctutils"
+  },
+  {
+    "name": "data-encoding",
+    "version": "2.10.0",
+    "id": "data_encoding"
+  },
+  {
+    "name": "new_debug_unreachable",
+    "version": "1.0.6",
+    "id": "debug_unreachable"
+  },
+  {
+    "name": "deranged",
+    "version": "0.5.8",
+    "id": "deranged"
+  },
+  {
+    "name": "derive_more",
+    "version": "2.1.1",
+    "id": "derive_more"
+  },
+  {
+    "name": "derive_more",
+    "version": "0.99.20",
+    "id": "derive_more_0_99_20"
+  },
+  {
+    "name": "derive_more-impl",
+    "version": "2.1.1",
+    "id": "derive_more_impl"
+  },
+  {
+    "name": "destructure_traitobject",
+    "version": "0.2.0",
+    "id": "destructure_traitobject"
+  },
+  {
+    "name": "digest",
+    "version": "0.11.3",
+    "id": "digest"
+  },
+  {
+    "name": "digest",
+    "version": "0.10.7",
+    "id": "digest_0_10_7"
+  },
+  {
+    "name": "displaydoc",
+    "version": "0.2.5",
+    "id": "displaydoc"
+  },
+  {
+    "name": "document-features",
+    "version": "0.2.12",
+    "id": "document_features"
+  },
+  {
+    "name": "dtoa",
+    "version": "1.0.11",
+    "id": "dtoa"
+  },
+  {
+    "name": "dtoa-short",
+    "version": "0.3.5",
+    "id": "dtoa_short"
+  },
+  {
+    "name": "dunce",
+    "version": "1.0.5",
+    "id": "dunce"
+  },
+  {
+    "name": "ego-tree",
+    "version": "0.6.3",
+    "id": "ego_tree"
+  },
+  {
+    "name": "either",
+    "version": "1.15.0",
+    "id": "either"
+  },
+  {
+    "name": "encoding_rs",
+    "version": "0.8.35",
+    "id": "encoding_rs"
+  },
+  {
+    "name": "env_filter",
+    "version": "1.0.1",
+    "id": "env_filter"
+  },
+  {
+    "name": "env_logger",
+    "version": "0.11.10",
+    "id": "env_logger"
+  },
+  {
+    "name": "equator",
+    "version": "0.4.2",
+    "id": "equator"
+  },
+  {
+    "name": "equator-macro",
+    "version": "0.4.2",
+    "id": "equator_macro"
+  },
+  {
+    "name": "equivalent",
+    "version": "1.0.2",
+    "id": "equivalent"
+  },
+  {
+    "name": "errno",
+    "version": "0.3.14",
+    "id": "errno"
+  },
+  {
+    "name": "exr",
+    "version": "1.74.0",
+    "id": "exr"
+  },
+  {
+    "name": "fallible-iterator",
+    "version": "0.3.0",
+    "id": "fallible_iterator"
+  },
+  {
+    "name": "fallible-iterator",
+    "version": "0.2.0",
+    "id": "fallible_iterator_0_2_0"
+  },
+  {
+    "name": "fallible-streaming-iterator",
+    "version": "0.1.9",
+    "id": "fallible_streaming_iterator"
+  },
+  {
+    "name": "faster-hex",
+    "version": "0.10.0",
+    "id": "faster_hex"
+  },
+  {
+    "name": "fastrand",
+    "version": "2.4.1",
+    "id": "fastrand"
+  },
+  {
+    "name": "fax",
+    "version": "0.2.7",
+    "id": "fax"
+  },
+  {
+    "name": "fdeflate",
+    "version": "0.3.7",
+    "id": "fdeflate"
+  },
+  {
+    "name": "filetime",
+    "version": "0.2.27",
+    "id": "filetime"
+  },
+  {
+    "name": "find-msvc-tools",
+    "version": "0.1.9",
+    "id": "find_msvc_tools"
+  },
+  {
+    "name": "fixedbitset",
+    "version": "0.5.7",
+    "id": "fixedbitset"
+  },
+  {
+    "name": "fixedbitset",
+    "version": "0.4.2",
+    "id": "fixedbitset_0_4_2"
+  },
+  {
+    "name": "flate2",
+    "version": "1.1.9",
+    "id": "flate2"
+  },
+  {
+    "name": "fnv",
+    "version": "1.0.7",
+    "id": "fnv"
+  },
+  {
+    "name": "foldhash",
+    "version": "0.2.0",
+    "id": "foldhash"
+  },
+  {
+    "name": "foldhash",
+    "version": "0.1.5",
+    "id": "foldhash_0_1_5"
+  },
+  {
+    "name": "form_urlencoded",
+    "version": "1.2.2",
+    "id": "form_urlencoded"
+  },
+  {
+    "name": "fs_extra",
+    "version": "1.3.0",
+    "id": "fs_extra"
+  },
+  {
+    "name": "funty",
+    "version": "2.0.0",
+    "id": "funty"
+  },
+  {
+    "name": "futf",
+    "version": "0.1.5",
+    "id": "futf"
+  },
+  {
+    "name": "futures",
+    "version": "0.3.32",
+    "id": "futures"
+  },
+  {
+    "name": "futures",
+    "version": "0.1.31",
+    "id": "futures_0_1_31"
+  },
+  {
+    "name": "futures-channel",
+    "version": "0.3.32",
+    "id": "futures_channel"
+  },
+  {
+    "name": "futures-core",
+    "version": "0.3.32",
+    "id": "futures_core"
+  },
+  {
+    "name": "futures-executor",
+    "version": "0.3.32",
+    "id": "futures_executor"
+  },
+  {
+    "name": "futures-io",
+    "version": "0.3.32",
+    "id": "futures_io"
+  },
+  {
+    "name": "futures-macro",
+    "version": "0.3.32",
+    "id": "futures_macro"
+  },
+  {
+    "name": "futures-sink",
+    "version": "0.3.32",
+    "id": "futures_sink"
+  },
+  {
+    "name": "futures-task",
+    "version": "0.3.32",
+    "id": "futures_task"
+  },
+  {
+    "name": "futures-util",
+    "version": "0.3.32",
+    "id": "futures_util"
+  },
+  {
+    "name": "fxhash",
+    "version": "0.2.1",
+    "id": "fxhash"
+  },
+  {
+    "name": "generic-array",
+    "version": "1.4.1",
+    "id": "generic_array"
+  },
+  {
+    "name": "generic-array",
+    "version": "0.14.7",
+    "id": "generic_array_0_14_7"
+  },
+  {
+    "name": "getopts",
+    "version": "0.2.24",
+    "id": "getopts"
+  },
+  {
+    "name": "getrandom",
+    "version": "0.4.2",
+    "id": "getrandom"
+  },
+  {
+    "name": "getrandom",
+    "version": "0.2.17",
+    "id": "getrandom_0_2_17"
+  },
+  {
+    "name": "getrandom",
+    "version": "0.3.4",
+    "id": "getrandom_0_3_4"
+  },
+  {
+    "name": "gif",
+    "version": "0.14.2",
+    "id": "gif"
+  },
+  {
+    "name": "gimli",
+    "version": "0.32.3",
+    "id": "gimli"
+  },
+  {
+    "name": "glob",
+    "version": "0.3.3",
+    "id": "glob"
+  },
+  {
+    "name": "h2",
+    "version": "0.4.14",
+    "id": "h2"
+  },
+  {
+    "name": "half",
+    "version": "2.7.1",
+    "id": "half"
+  },
+  {
+    "name": "hash32",
+    "version": "0.3.1",
+    "id": "hash32"
+  },
+  {
+    "name": "hashbrown",
+    "version": "0.17.0",
+    "id": "hashbrown"
+  },
+  {
+    "name": "hashbrown",
+    "version": "0.15.5",
+    "id": "hashbrown_0_15_5"
+  },
+  {
+    "name": "hashbrown",
+    "version": "0.16.1",
+    "id": "hashbrown_0_16_1"
+  },
+  {
+    "name": "hashlink",
+    "version": "0.11.0",
+    "id": "hashlink"
+  },
+  {
+    "name": "hdrhistogram",
+    "version": "7.5.4",
+    "id": "hdrhistogram"
+  },
+  {
+    "name": "heapless",
+    "version": "0.8.0",
+    "id": "heapless"
+  },
+  {
+    "name": "heck",
+    "version": "0.5.0",
+    "id": "heck"
+  },
+  {
+    "name": "hmac",
+    "version": "0.13.0",
+    "id": "hmac"
+  },
+  {
+    "name": "html5ever",
+    "version": "0.27.0",
+    "id": "html5ever"
+  },
+  {
+    "name": "html5ever",
+    "version": "0.26.0",
+    "id": "html5ever_0_26_0"
+  },
+  {
+    "name": "http",
+    "version": "1.4.0",
+    "id": "http"
+  },
+  {
+    "name": "http-body",
+    "version": "1.0.1",
+    "id": "http_body"
+  },
+  {
+    "name": "http-body-util",
+    "version": "0.1.3",
+    "id": "http_body_util"
+  },
+  {
+    "name": "http-range-header",
+    "version": "0.4.2",
+    "id": "http_range_header"
+  },
+  {
+    "name": "httparse",
+    "version": "1.10.1",
+    "id": "httparse"
+  },
+  {
+    "name": "httpdate",
+    "version": "1.0.3",
+    "id": "httpdate"
+  },
+  {
+    "name": "humantime",
+    "version": "2.3.0",
+    "id": "humantime"
+  },
+  {
+    "name": "hybrid-array",
+    "version": "0.4.11",
+    "id": "hybrid_array"
+  },
+  {
+    "name": "hyper",
+    "version": "1.9.0",
+    "id": "hyper"
+  },
+  {
+    "name": "hyper-rustls",
+    "version": "0.27.9",
+    "id": "hyper_rustls"
+  },
+  {
+    "name": "hyper-util",
+    "version": "0.1.20",
+    "id": "hyper_util"
+  },
+  {
+    "name": "iana-time-zone",
+    "version": "0.1.65",
+    "id": "iana_time_zone"
+  },
+  {
+    "name": "icu_collections",
+    "version": "2.2.0",
+    "id": "icu_collections"
+  },
+  {
+    "name": "icu_locale_core",
+    "version": "2.2.0",
+    "id": "icu_locale_core"
+  },
+  {
+    "name": "icu_normalizer",
+    "version": "2.2.0",
+    "id": "icu_normalizer"
+  },
+  {
+    "name": "icu_normalizer_data",
+    "version": "2.2.0",
+    "id": "icu_normalizer_data"
+  },
+  {
+    "name": "icu_properties",
+    "version": "2.2.0",
+    "id": "icu_properties"
+  },
+  {
+    "name": "icu_properties_data",
+    "version": "2.2.0",
+    "id": "icu_properties_data"
+  },
+  {
+    "name": "icu_provider",
+    "version": "2.2.0",
+    "id": "icu_provider"
+  },
+  {
+    "name": "idna",
+    "version": "1.1.0",
+    "id": "idna"
+  },
+  {
+    "name": "idna_adapter",
+    "version": "1.2.2",
+    "id": "idna_adapter"
+  },
+  {
+    "name": "image",
+    "version": "0.25.10",
+    "id": "image"
+  },
+  {
+    "name": "image-webp",
+    "version": "0.2.4",
+    "id": "image_webp"
+  },
+  {
+    "name": "imgref",
+    "version": "1.12.1",
+    "id": "imgref"
+  },
+  {
+    "name": "indexmap",
+    "version": "2.14.0",
+    "id": "indexmap"
+  },
+  {
+    "name": "iovec",
+    "version": "0.1.4",
+    "id": "iovec"
+  },
+  {
+    "name": "ipnet",
+    "version": "2.12.0",
+    "id": "ipnet"
+  },
+  {
+    "name": "is_terminal_polyfill",
+    "version": "1.70.2",
+    "id": "is_terminal_polyfill"
+  },
+  {
+    "name": "itertools",
+    "version": "0.14.0",
+    "id": "itertools"
+  },
+  {
+    "name": "itoa",
+    "version": "1.0.18",
+    "id": "itoa"
+  },
+  {
+    "name": "jiff",
+    "version": "0.2.24",
+    "id": "jiff"
+  },
+  {
+    "name": "jiff-static",
+    "version": "0.2.24",
+    "id": "jiff_static"
+  },
+  {
+    "name": "jiff-tzdb",
+    "version": "0.1.6",
+    "id": "jiff_tzdb"
+  },
+  {
+    "name": "jobserver",
+    "version": "0.1.34",
+    "id": "jobserver"
+  },
+  {
+    "name": "lazy_static",
+    "version": "1.5.0",
+    "id": "lazy_static"
+  },
+  {
+    "name": "lebe",
+    "version": "0.5.3",
+    "id": "lebe"
+  },
+  {
+    "name": "libc",
+    "version": "0.2.186",
+    "id": "libc"
+  },
+  {
+    "name": "libm",
+    "version": "0.2.16",
+    "id": "libm"
+  },
+  {
+    "name": "libsqlite3-sys",
+    "version": "0.37.0",
+    "id": "libsqlite3_sys"
+  },
+  {
+    "name": "linux-raw-sys",
+    "version": "0.12.1",
+    "id": "linux_raw_sys"
+  },
+  {
+    "name": "litemap",
+    "version": "0.8.2",
+    "id": "litemap"
+  },
+  {
+    "name": "litrs",
+    "version": "1.0.0",
+    "id": "litrs"
+  },
+  {
+    "name": "lock_api",
+    "version": "0.4.14",
+    "id": "lock_api"
+  },
+  {
+    "name": "log",
+    "version": "0.4.29",
+    "id": "log"
+  },
+  {
+    "name": "log4rs",
+    "version": "1.4.0",
+    "id": "log4rs"
+  },
+  {
+    "name": "log-mdc",
+    "version": "0.1.0",
+    "id": "log_mdc"
+  },
+  {
+    "name": "loop9",
+    "version": "0.1.5",
+    "id": "loop9"
+  },
+  {
+    "name": "mac",
+    "version": "0.1.1",
+    "id": "mac"
+  },
+  {
+    "name": "markup5ever",
+    "version": "0.12.1",
+    "id": "markup5ever"
+  },
+  {
+    "name": "markup5ever",
+    "version": "0.11.0",
+    "id": "markup5ever_0_11_0"
+  },
+  {
+    "name": "markup5ever_rcdom",
+    "version": "0.2.0",
+    "id": "markup5ever_rcdom"
+  },
+  {
+    "name": "matrixmultiply",
+    "version": "0.3.10",
+    "id": "matrixmultiply"
+  },
+  {
+    "name": "maybe-rayon",
+    "version": "0.1.1",
+    "id": "maybe_rayon"
+  },
+  {
+    "name": "md-5",
+    "version": "0.11.0",
+    "id": "md5"
+  },
+  {
+    "name": "md-5",
+    "version": "0.10.6",
+    "id": "md5_0_10_6"
+  },
+  {
+    "name": "memchr",
+    "version": "2.8.0",
+    "id": "memchr"
+  },
+  {
+    "name": "memmap",
+    "version": "0.7.0",
+    "id": "memmap"
+  },
+  {
+    "name": "memoffset",
+    "version": "0.9.1",
+    "id": "memoffset"
+  },
+  {
+    "name": "mime",
+    "version": "0.3.17",
+    "id": "mime"
+  },
+  {
+    "name": "mime_guess",
+    "version": "2.0.5",
+    "id": "mime_guess"
+  },
+  {
+    "name": "miniz_oxide",
+    "version": "0.9.1",
+    "id": "miniz_oxide"
+  },
+  {
+    "name": "miniz_oxide",
+    "version": "0.8.9",
+    "id": "miniz_oxide_0_8_9"
+  },
+  {
+    "name": "mio",
+    "version": "1.2.0",
+    "id": "mio"
+  },
+  {
+    "name": "mock_instant",
+    "version": "0.6.0",
+    "id": "mock_instant"
+  },
+  {
+    "name": "moxcms",
+    "version": "0.8.1",
+    "id": "moxcms"
+  },
+  {
+    "name": "nalgebra",
+    "version": "0.34.2",
+    "id": "nalgebra"
+  },
+  {
+    "name": "nalgebra-macros",
+    "version": "0.3.0",
+    "id": "nalgebra_macros"
+  },
+  {
+    "name": "ndarray",
+    "version": "0.17.2",
+    "id": "ndarray"
+  },
+  {
+    "name": "no_std_io2",
+    "version": "0.9.4",
+    "id": "no_std_io2"
+  },
+  {
+    "name": "nom",
+    "version": "8.0.0",
+    "id": "nom"
+  },
+  {
+    "name": "noop_proc_macro",
+    "version": "0.3.0",
+    "id": "noop_proc_macro"
+  },
+  {
+    "name": "nu-ansi-term",
+    "version": "0.50.3",
+    "id": "nu_ansi_term"
+  },
+  {
+    "name": "num",
+    "version": "0.4.3",
+    "id": "num"
+  },
+  {
+    "name": "num-bigint",
+    "version": "0.4.6",
+    "id": "num_bigint"
+  },
+  {
+    "name": "num-complex",
+    "version": "0.4.6",
+    "id": "num_complex"
+  },
+  {
+    "name": "num-conv",
+    "version": "0.2.1",
+    "id": "num_conv"
+  },
+  {
+    "name": "num_cpus",
+    "version": "1.17.0",
+    "id": "num_cpus"
+  },
+  {
+    "name": "num-derive",
+    "version": "0.4.2",
+    "id": "num_derive"
+  },
+  {
+    "name": "num-integer",
+    "version": "0.1.46",
+    "id": "num_integer"
+  },
+  {
+    "name": "num-iter",
+    "version": "0.1.45",
+    "id": "num_iter"
+  },
+  {
+    "name": "num-rational",
+    "version": "0.4.2",
+    "id": "num_rational"
+  },
+  {
+    "name": "num-traits",
+    "version": "0.2.19",
+    "id": "num_traits"
+  },
+  {
+    "name": "object",
+    "version": "0.37.3",
+    "id": "object"
+  },
+  {
+    "name": "once_cell",
+    "version": "1.21.4",
+    "id": "once_cell"
+  },
+  {
+    "name": "openssl-probe",
+    "version": "0.2.1",
+    "id": "openssl_probe"
+  },
+  {
+    "name": "ordered-float",
+    "version": "2.10.1",
+    "id": "ordered_float"
+  },
+  {
+    "name": "parking_lot",
+    "version": "0.12.5",
+    "id": "parking_lot"
+  },
+  {
+    "name": "parking_lot_core",
+    "version": "0.9.12",
+    "id": "parking_lot_core"
+  },
+  {
+    "name": "paste",
+    "version": "1.0.15",
+    "id": "paste"
+  },
+  {
+    "name": "pastey",
+    "version": "0.1.1",
+    "id": "pastey"
+  },
+  {
+    "name": "percent-encoding",
+    "version": "2.3.2",
+    "id": "percent_encoding"
+  },
+  {
+    "name": "petgraph",
+    "version": "0.8.3",
+    "id": "petgraph"
+  },
+  {
+    "name": "petgraph",
+    "version": "0.6.5",
+    "id": "petgraph_0_6_5"
+  },
+  {
+    "name": "phf",
+    "version": "0.13.1",
+    "id": "phf"
+  },
+  {
+    "name": "phf",
+    "version": "0.10.1",
+    "id": "phf_0_10_1"
+  },
+  {
+    "name": "phf",
+    "version": "0.11.3",
+    "id": "phf_0_11_3"
+  },
+  {
+    "name": "phf_codegen",
+    "version": "0.11.3",
+    "id": "phf_codegen"
+  },
+  {
+    "name": "phf_codegen",
+    "version": "0.10.0",
+    "id": "phf_codegen_0_10_0"
+  },
+  {
+    "name": "phf_generator",
+    "version": "0.13.1",
+    "id": "phf_generator"
+  },
+  {
+    "name": "phf_generator",
+    "version": "0.10.0",
+    "id": "phf_generator_0_10_0"
+  },
+  {
+    "name": "phf_generator",
+    "version": "0.11.3",
+    "id": "phf_generator_0_11_3"
+  },
+  {
+    "name": "phf_macros",
+    "version": "0.13.1",
+    "id": "phf_macros"
+  },
+  {
+    "name": "phf_macros",
+    "version": "0.11.3",
+    "id": "phf_macros_0_11_3"
+  },
+  {
+    "name": "phf_shared",
+    "version": "0.13.1",
+    "id": "phf_shared"
+  },
+  {
+    "name": "phf_shared",
+    "version": "0.10.0",
+    "id": "phf_shared_0_10_0"
+  },
+  {
+    "name": "phf_shared",
+    "version": "0.11.3",
+    "id": "phf_shared_0_11_3"
+  },
+  {
+    "name": "pin-project-lite",
+    "version": "0.2.17",
+    "id": "pin_project_lite"
+  },
+  {
+    "name": "pkg-config",
+    "version": "0.3.33",
+    "id": "pkg_config"
+  },
+  {
+    "name": "png",
+    "version": "0.18.1",
+    "id": "png"
+  },
+  {
+    "name": "postgres",
+    "version": "0.19.13",
+    "id": "postgres"
+  },
+  {
+    "name": "postgres-protocol",
+    "version": "0.6.11",
+    "id": "postgres_protocol"
+  },
+  {
+    "name": "postgres-types",
+    "version": "0.2.13",
+    "id": "postgres_types"
+  },
+  {
+    "name": "potential_utf",
+    "version": "0.1.5",
+    "id": "potential_utf"
+  },
+  {
+    "name": "powerfmt",
+    "version": "0.2.0",
+    "id": "powerfmt"
+  },
+  {
+    "name": "ppv-lite86",
+    "version": "0.2.21",
+    "id": "ppv_lite86"
+  },
+  {
+    "name": "precomputed-hash",
+    "version": "0.1.1",
+    "id": "precomputed_hash"
+  },
+  {
+    "name": "proc-macro2",
+    "version": "1.0.106",
+    "id": "proc_macro2"
+  },
+  {
+    "name": "profiling",
+    "version": "1.0.18",
+    "id": "profiling"
+  },
+  {
+    "name": "profiling-procmacros",
+    "version": "1.0.18",
+    "id": "profiling_procmacros"
+  },
+  {
+    "name": "psl-types",
+    "version": "2.0.11",
+    "id": "psl_types"
+  },
+  {
+    "name": "publicsuffix",
+    "version": "2.3.0",
+    "id": "publicsuffix"
+  },
+  {
+    "name": "pxfm",
+    "version": "0.1.29",
+    "id": "pxfm"
+  },
+  {
+    "name": "qoi",
+    "version": "0.4.1",
+    "id": "qoi"
+  },
+  {
+    "name": "quick-error",
+    "version": "2.0.1",
+    "id": "quick_error"
+  },
+  {
+    "name": "quote",
+    "version": "1.0.45",
+    "id": "quote"
+  },
+  {
+    "name": "radium",
+    "version": "0.7.0",
+    "id": "radium"
+  },
+  {
+    "name": "rand",
+    "version": "0.10.1",
+    "id": "rand"
+  },
+  {
+    "name": "rand",
+    "version": "0.8.6",
+    "id": "rand_0_8_6"
+  },
+  {
+    "name": "rand",
+    "version": "0.9.4",
+    "id": "rand_0_9_4"
+  },
+  {
+    "name": "rand_chacha",
+    "version": "0.10.0",
+    "id": "rand_chacha"
+  },
+  {
+    "name": "rand_chacha",
+    "version": "0.3.1",
+    "id": "rand_chacha_0_3_1"
+  },
+  {
+    "name": "rand_chacha",
+    "version": "0.9.0",
+    "id": "rand_chacha_0_9_0"
+  },
+  {
+    "name": "rand_core",
+    "version": "0.10.1",
+    "id": "rand_core"
+  },
+  {
+    "name": "rand_core",
+    "version": "0.6.4",
+    "id": "rand_core_0_6_4"
+  },
+  {
+    "name": "rand_core",
+    "version": "0.9.5",
+    "id": "rand_core_0_9_5"
+  },
+  {
+    "name": "rand_distr",
+    "version": "0.6.0",
+    "id": "rand_distr"
+  },
+  {
+    "name": "rav1e",
+    "version": "0.8.1",
+    "id": "rav1e"
+  },
+  {
+    "name": "ravif",
+    "version": "0.13.0",
+    "id": "ravif"
+  },
+  {
+    "name": "rawpointer",
+    "version": "0.2.1",
+    "id": "rawpointer"
+  },
+  {
+    "name": "rayon",
+    "version": "1.12.0",
+    "id": "rayon"
+  },
+  {
+    "name": "rayon-core",
+    "version": "1.13.0",
+    "id": "rayon_core"
+  },
+  {
+    "name": "regex",
+    "version": "1.12.3",
+    "id": "regex"
+  },
+  {
+    "name": "regex-automata",
+    "version": "0.4.14",
+    "id": "regex_automata"
+  },
+  {
+    "name": "regex-syntax",
+    "version": "0.8.10",
+    "id": "regex_syntax"
+  },
+  {
+    "name": "reqwest",
+    "version": "0.13.3",
+    "id": "reqwest"
+  },
+  {
+    "name": "reqwest",
+    "version": "0.12.28",
+    "id": "reqwest_0_12_28"
+  },
+  {
+    "name": "rgb",
+    "version": "0.8.53",
+    "id": "rgb"
+  },
+  {
+    "name": "ring",
+    "version": "0.17.14",
+    "id": "ring"
+  },
+  {
+    "name": "rusqlite",
+    "version": "0.39.0",
+    "id": "rusqlite"
+  },
+  {
+    "name": "rustc-demangle",
+    "version": "0.1.27",
+    "id": "rustc_demangle"
+  },
+  {
+    "name": "rustc_version",
+    "version": "0.4.1",
+    "id": "rustc_version"
+  },
+  {
+    "name": "rustix",
+    "version": "1.1.4",
+    "id": "rustix"
+  },
+  {
+    "name": "rustls",
+    "version": "0.23.40",
+    "id": "rustls"
+  },
+  {
+    "name": "rustls-native-certs",
+    "version": "0.8.3",
+    "id": "rustls_native_certs"
+  },
+  {
+    "name": "rustls-pki-types",
+    "version": "1.14.1",
+    "id": "rustls_pki_types"
+  },
+  {
+    "name": "rustls-platform-verifier",
+    "version": "0.7.0",
+    "id": "rustls_platform_verifier"
+  },
+  {
+    "name": "rustversion",
+    "version": "1.0.22",
+    "id": "rustversion"
+  },
+  {
+    "name": "ryu",
+    "version": "1.0.23",
+    "id": "ryu"
+  },
+  {
+    "name": "safe_arch",
+    "version": "0.7.4",
+    "id": "safe_arch"
+  },
+  {
+    "name": "same-file",
+    "version": "1.0.6",
+    "id": "same_file"
+  },
+  {
+    "name": "scopeguard",
+    "version": "1.2.0",
+    "id": "scopeguard"
+  },
+  {
+    "name": "scraper",
+    "version": "0.20.0",
+    "id": "scraper"
+  },
+  {
+    "name": "select",
+    "version": "0.6.1",
+    "id": "select"
+  },
+  {
+    "name": "selectors",
+    "version": "0.25.0",
+    "id": "selectors"
+  },
+  {
+    "name": "semver",
+    "version": "1.0.28",
+    "id": "semver"
+  },
+  {
+    "name": "serde",
+    "version": "1.0.228",
+    "id": "serde"
+  },
+  {
+    "name": "serde_core",
+    "version": "1.0.228",
+    "id": "serde_core"
+  },
+  {
+    "name": "serde_derive",
+    "version": "1.0.228",
+    "id": "serde_derive"
+  },
+  {
+    "name": "serde_json",
+    "version": "1.0.149",
+    "id": "serde_json"
+  },
+  {
+    "name": "serde_spanned",
+    "version": "1.1.1",
+    "id": "serde_spanned"
+  },
+  {
+    "name": "serde_urlencoded",
+    "version": "0.7.1",
+    "id": "serde_urlencoded"
+  },
+  {
+    "name": "serde-value",
+    "version": "0.7.0",
+    "id": "serde_value"
+  },
+  {
+    "name": "serde_yaml",
+    "version": "0.9.34+deprecated",
+    "id": "serde_yaml"
+  },
+  {
+    "name": "servo_arc",
+    "version": "0.3.0",
+    "id": "servo_arc"
+  },
+  {
+    "name": "sha1_smol",
+    "version": "1.0.1",
+    "id": "sha1_smol"
+  },
+  {
+    "name": "sha2",
+    "version": "0.11.0",
+    "id": "sha2"
+  },
+  {
+    "name": "sharded-slab",
+    "version": "0.1.7",
+    "id": "sharded_slab"
+  },
+  {
+    "name": "shlex",
+    "version": "1.3.0",
+    "id": "shlex"
+  },
+  {
+    "name": "signal-hook-registry",
+    "version": "1.4.8",
+    "id": "signal_hook_registry"
+  },
+  {
+    "name": "simba",
+    "version": "0.9.1",
+    "id": "simba"
+  },
+  {
+    "name": "simd-adler32",
+    "version": "0.3.9",
+    "id": "simd_adler32"
+  },
+  {
+    "name": "simd_helpers",
+    "version": "0.1.0",
+    "id": "simd_helpers"
+  },
+  {
+    "name": "siphasher",
+    "version": "1.0.3",
+    "id": "siphasher"
+  },
+  {
+    "name": "siphasher",
+    "version": "0.3.11",
+    "id": "siphasher_0_3_11"
+  },
+  {
+    "name": "slab",
+    "version": "0.4.12",
+    "id": "slab"
+  },
+  {
+    "name": "smallvec",
+    "version": "1.15.1",
+    "id": "smallvec"
+  },
+  {
+    "name": "socket2",
+    "version": "0.6.3",
+    "id": "socket2"
+  },
+  {
+    "name": "sptr",
+    "version": "0.3.2",
+    "id": "sptr"
+  },
+  {
+    "name": "stable_deref_trait",
+    "version": "1.2.1",
+    "id": "stable_deref_trait"
+  },
+  {
+    "name": "string_cache",
+    "version": "0.8.9",
+    "id": "string_cache"
+  },
+  {
+    "name": "string_cache_codegen",
+    "version": "0.5.4",
+    "id": "string_cache_codegen"
+  },
+  {
+    "name": "stringprep",
+    "version": "0.1.5",
+    "id": "stringprep"
+  },
+  {
+    "name": "strsim",
+    "version": "0.11.1",
+    "id": "strsim"
+  },
+  {
+    "name": "subtle",
+    "version": "2.6.1",
+    "id": "subtle"
+  },
+  {
+    "name": "syn",
+    "version": "2.0.117",
+    "id": "syn"
+  },
+  {
+    "name": "syn",
+    "version": "1.0.109",
+    "id": "syn_1_0_109"
+  },
+  {
+    "name": "sync_wrapper",
+    "version": "1.0.2",
+    "id": "sync_wrapper"
+  },
+  {
+    "name": "synstructure",
+    "version": "0.13.2",
+    "id": "synstructure"
+  },
+  {
+    "name": "tap",
+    "version": "1.0.1",
+    "id": "tap"
+  },
+  {
+    "name": "tar",
+    "version": "0.4.45",
+    "id": "tar"
+  },
+  {
+    "name": "tempfile",
+    "version": "3.27.0",
+    "id": "tempfile"
+  },
+  {
+    "name": "tendril",
+    "version": "0.4.3",
+    "id": "tendril"
+  },
+  {
+    "name": "terminal_size",
+    "version": "0.4.4",
+    "id": "terminal_size"
+  },
+  {
+    "name": "thiserror",
+    "version": "2.0.18",
+    "id": "thiserror"
+  },
+  {
+    "name": "thiserror-impl",
+    "version": "2.0.18",
+    "id": "thiserror_impl"
+  },
+  {
+    "name": "thread-id",
+    "version": "5.1.0",
+    "id": "thread_id"
+  },
+  {
+    "name": "thread_local",
+    "version": "1.1.9",
+    "id": "thread_local"
+  },
+  {
+    "name": "threadpool",
+    "version": "1.8.1",
+    "id": "threadpool"
+  },
+  {
+    "name": "tiff",
+    "version": "0.11.3",
+    "id": "tiff"
+  },
+  {
+    "name": "time",
+    "version": "0.3.47",
+    "id": "time"
+  },
+  {
+    "name": "time-core",
+    "version": "0.1.8",
+    "id": "time_core"
+  },
+  {
+    "name": "time-macros",
+    "version": "0.2.27",
+    "id": "time_macros"
+  },
+  {
+    "name": "tinystr",
+    "version": "0.8.3",
+    "id": "tinystr"
+  },
+  {
+    "name": "tinyvec",
+    "version": "1.11.0",
+    "id": "tinyvec"
+  },
+  {
+    "name": "tinyvec_macros",
+    "version": "0.1.1",
+    "id": "tinyvec_macros"
+  },
+  {
+    "name": "tokio",
+    "version": "1.52.2",
+    "id": "tokio"
+  },
+  {
+    "name": "tokio-io",
+    "version": "0.1.13",
+    "id": "tokio_io"
+  },
+  {
+    "name": "tokio-macros",
+    "version": "2.7.0",
+    "id": "tokio_macros"
+  },
+  {
+    "name": "tokio-postgres",
+    "version": "0.7.17",
+    "id": "tokio_postgres"
+  },
+  {
+    "name": "tokio-rustls",
+    "version": "0.26.4",
+    "id": "tokio_rustls"
+  },
+  {
+    "name": "tokio-stream",
+    "version": "0.1.18",
+    "id": "tokio_stream"
+  },
+  {
+    "name": "tokio-util",
+    "version": "0.7.18",
+    "id": "tokio_util"
+  },
+  {
+    "name": "toml",
+    "version": "1.1.2+spec-1.1.0",
+    "id": "toml"
+  },
+  {
+    "name": "toml_datetime",
+    "version": "1.1.1+spec-1.1.0",
+    "id": "toml_datetime"
+  },
+  {
+    "name": "toml_parser",
+    "version": "1.1.2+spec-1.1.0",
+    "id": "toml_parser"
+  },
+  {
+    "name": "toml_writer",
+    "version": "1.1.1+spec-1.1.0",
+    "id": "toml_writer"
+  },
+  {
+    "name": "tower",
+    "version": "0.5.3",
+    "id": "tower"
+  },
+  {
+    "name": "tower-http",
+    "version": "0.6.9",
+    "id": "tower_http"
+  },
+  {
+    "name": "tower-layer",
+    "version": "0.3.3",
+    "id": "tower_layer"
+  },
+  {
+    "name": "tower-service",
+    "version": "0.3.3",
+    "id": "tower_service"
+  },
+  {
+    "name": "tracing",
+    "version": "0.1.44",
+    "id": "tracing"
+  },
+  {
+    "name": "tracing-attributes",
+    "version": "0.1.31",
+    "id": "tracing_attributes"
+  },
+  {
+    "name": "tracing-core",
+    "version": "0.1.36",
+    "id": "tracing_core"
+  },
+  {
+    "name": "tracing-log",
+    "version": "0.2.0",
+    "id": "tracing_log"
+  },
+  {
+    "name": "tracing-subscriber",
+    "version": "0.3.23",
+    "id": "tracing_subscriber"
+  },
+  {
+    "name": "trpl",
+    "version": "0.3.0",
+    "id": "trpl"
+  },
+  {
+    "name": "try-lock",
+    "version": "0.2.5",
+    "id": "try_lock"
+  },
+  {
+    "name": "typemap-ors",
+    "version": "1.0.0",
+    "id": "typemap_ors"
+  },
+  {
+    "name": "typenum",
+    "version": "1.20.0",
+    "id": "typenum"
+  },
+  {
+    "name": "unicase",
+    "version": "2.9.0",
+    "id": "unicase"
+  },
+  {
+    "name": "unicode-bidi",
+    "version": "0.3.18",
+    "id": "unicode_bidi"
+  },
+  {
+    "name": "unicode-ident",
+    "version": "1.0.24",
+    "id": "unicode_ident"
+  },
+  {
+    "name": "unicode-normalization",
+    "version": "0.1.25",
+    "id": "unicode_normalization"
+  },
+  {
+    "name": "unicode-properties",
+    "version": "0.1.4",
+    "id": "unicode_properties"
+  },
+  {
+    "name": "unicode-segmentation",
+    "version": "1.13.2",
+    "id": "unicode_segmentation"
+  },
+  {
+    "name": "unicode-width",
+    "version": "0.2.2",
+    "id": "unicode_width"
+  },
+  {
+    "name": "unicode-xid",
+    "version": "0.2.6",
+    "id": "unicode_xid"
+  },
+  {
+    "name": "unsafe-any-ors",
+    "version": "1.0.0",
+    "id": "unsafe_any_ors"
+  },
+  {
+    "name": "unsafe-libyaml",
+    "version": "0.2.11",
+    "id": "unsafe_libyaml"
+  },
+  {
+    "name": "untrusted",
+    "version": "0.9.0",
+    "id": "untrusted"
+  },
+  {
+    "name": "url",
+    "version": "2.5.8",
+    "id": "url"
+  },
+  {
+    "name": "utf-8",
+    "version": "0.7.6",
+    "id": "utf8"
+  },
+  {
+    "name": "utf8_iter",
+    "version": "1.0.4",
+    "id": "utf8_iter"
+  },
+  {
+    "name": "utf8parse",
+    "version": "0.2.2",
+    "id": "utf8parse"
+  },
+  {
+    "name": "uuid",
+    "version": "1.23.1",
+    "id": "uuid"
+  },
+  {
+    "name": "v_frame",
+    "version": "0.3.9",
+    "id": "v_frame"
+  },
+  {
+    "name": "vcpkg",
+    "version": "0.2.15",
+    "id": "vcpkg"
+  },
+  {
+    "name": "version_check",
+    "version": "0.9.5",
+    "id": "version_check"
+  },
+  {
+    "name": "walkdir",
+    "version": "2.5.0",
+    "id": "walkdir"
+  },
+  {
+    "name": "want",
+    "version": "0.3.1",
+    "id": "want"
+  },
+  {
+    "name": "wasm-bindgen",
+    "version": "0.2.120",
+    "id": "wasm_bindgen"
+  },
+  {
+    "name": "wasm-bindgen-macro",
+    "version": "0.2.120",
+    "id": "wasm_bindgen_macro"
+  },
+  {
+    "name": "wasm-bindgen-macro-support",
+    "version": "0.2.120",
+    "id": "wasm_bindgen_macro_support"
+  },
+  {
+    "name": "wasm-bindgen-shared",
+    "version": "0.2.120",
+    "id": "wasm_bindgen_shared"
+  },
+  {
+    "name": "rustls-webpki",
+    "version": "0.103.13",
+    "id": "webpki"
+  },
+  {
+    "name": "webpki-roots",
+    "version": "1.0.7",
+    "id": "webpki_roots"
+  },
+  {
+    "name": "weezl",
+    "version": "0.1.12",
+    "id": "weezl"
+  },
+  {
+    "name": "whoami",
+    "version": "2.1.2",
+    "id": "whoami"
+  },
+  {
+    "name": "wide",
+    "version": "0.7.33",
+    "id": "wide"
+  },
+  {
+    "name": "windows_aarch64_gnullvm",
+    "version": "0.53.1",
+    "id": "windows_aarch64_gnullvm"
+  },
+  {
+    "name": "windows_aarch64_msvc",
+    "version": "0.53.1",
+    "id": "windows_aarch64_msvc"
+  },
+  {
+    "name": "windows_i686_gnu",
+    "version": "0.53.1",
+    "id": "windows_i686_gnu"
+  },
+  {
+    "name": "windows_i686_msvc",
+    "version": "0.53.1",
+    "id": "windows_i686_msvc"
+  },
+  {
+    "name": "windows-link",
+    "version": "0.2.1",
+    "id": "windows_link"
+  },
+  {
+    "name": "windows-sys",
+    "version": "0.61.2",
+    "id": "windows_sys"
+  },
+  {
+    "name": "windows-targets",
+    "version": "0.53.5",
+    "id": "windows_targets"
+  },
+  {
+    "name": "windows-targets",
+    "version": "0.52.6",
+    "id": "windows_targets_0_52_6"
+  },
+  {
+    "name": "windows_x86_64_gnu",
+    "version": "0.53.1",
+    "id": "windows_x86_64_gnu"
+  },
+  {
+    "name": "windows_x86_64_gnu",
+    "version": "0.52.6",
+    "id": "windows_x86_64_gnu_0_52_6"
+  },
+  {
+    "name": "windows_x86_64_gnullvm",
+    "version": "0.53.1",
+    "id": "windows_x86_64_gnullvm"
+  },
+  {
+    "name": "windows_x86_64_msvc",
+    "version": "0.53.1",
+    "id": "windows_x86_64_msvc"
+  },
+  {
+    "name": "winnow",
+    "version": "1.0.2",
+    "id": "winnow"
+  },
+  {
+    "name": "writeable",
+    "version": "0.6.3",
+    "id": "writeable"
+  },
+  {
+    "name": "wyz",
+    "version": "0.5.1",
+    "id": "wyz"
+  },
+  {
+    "name": "xattr",
+    "version": "1.6.1",
+    "id": "xattr"
+  },
+  {
+    "name": "xml5ever",
+    "version": "0.17.0",
+    "id": "xml5ever"
+  },
+  {
+    "name": "y4m",
+    "version": "0.8.0",
+    "id": "y4m"
+  },
+  {
+    "name": "yoke",
+    "version": "0.8.2",
+    "id": "yoke"
+  },
+  {
+    "name": "yoke-derive",
+    "version": "0.8.2",
+    "id": "yoke_derive"
+  },
+  {
+    "name": "zerocopy",
+    "version": "0.8.48",
+    "id": "zerocopy"
+  },
+  {
+    "name": "zerocopy-derive",
+    "version": "0.8.48",
+    "id": "zerocopy_derive"
+  },
+  {
+    "name": "zerofrom",
+    "version": "0.1.7",
+    "id": "zerofrom"
+  },
+  {
+    "name": "zerofrom-derive",
+    "version": "0.1.7",
+    "id": "zerofrom_derive"
+  },
+  {
+    "name": "zeroize",
+    "version": "1.8.2",
+    "id": "zeroize"
+  },
+  {
+    "name": "zerotrie",
+    "version": "0.2.4",
+    "id": "zerotrie"
+  },
+  {
+    "name": "zerovec",
+    "version": "0.11.6",
+    "id": "zerovec"
+  },
+  {
+    "name": "zerovec-derive",
+    "version": "0.11.3",
+    "id": "zerovec_derive"
+  },
+  {
+    "name": "zmij",
+    "version": "1.0.21",
+    "id": "zmij"
+  },
+  {
+    "name": "zstd",
+    "version": "0.13.3",
+    "id": "zstd"
+  },
+  {
+    "name": "zstd-safe",
+    "version": "7.2.4",
+    "id": "zstd_safe"
+  },
+  {
+    "name": "zstd-sys",
+    "version": "2.0.16+zstd.1.5.7",
+    "id": "zstd_sys"
+  },
+  {
+    "name": "zune-core",
+    "version": "0.5.1",
+    "id": "zune_core"
+  },
+  {
+    "name": "zune-inflate",
+    "version": "0.2.54",
+    "id": "zune_inflate"
+  },
+  {
+    "name": "zune-jpeg",
+    "version": "0.5.15",
+    "id": "zune_jpeg"
+  }
+]

@@ -1,0 +1,3 @@
+.container {
+  composes: -bodyMonospace from '../shared.module.css';
+}
