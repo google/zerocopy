@@ -24,14 +24,14 @@ use crate::{
     FromBytes, Immutable, IntoBytes, Unalign,
 };
 
-/// Transmutations which are sound to attempt, conditional on validating the bit
-/// validity of the destination type.
+/// Transmutations which are sound to attempt, conditional on establishing the
+/// destination validity invariant.
 ///
 /// If a `Ptr` transmutation is `TryTransmuteFromPtr`, then it is sound to
 /// perform that transmutation so long as some additional mechanism is used to
-/// validate that the referent is bit-valid for the destination type. That
-/// validation mechanism could be a type bound (such as `TransmuteFrom`) or a
-/// runtime validity check.
+/// establish that the referent is `DV`-valid for the destination type. That
+/// mechanism could be a type bound (such as `TransmuteFrom`) or a runtime
+/// validity check.
 ///
 /// # Safety
 ///
@@ -49,14 +49,14 @@ use crate::{
 /// Given `src: Ptr<Src, (A, _, SV)>` and `dst: Ptr<Dst, (A, Unaligned, DV)>`,
 /// `Dst: TryTransmuteFromPtr<Src, A, SV, DV, C, _>` is sound if all of the
 /// following hold:
-/// - Forwards transmutation: Either of the following hold:
+/// - Preserve destination validity: Either of the following hold:
 ///   - So long as `dst` is active, no mutation of `dst`'s referent is allowed
 ///     except via `dst` itself
 ///   - The set of `DV`-valid referents of `dst` is a superset of the set of
 ///     `SV`-valid referents of `src` (NOTE: this condition effectively bans
 ///     shrinking or overwriting transmutes, which cannot satisfy this
 ///     condition)
-/// - Reverse transmutation: Either of the following hold:
+/// - Preserve source validity: Either of the following hold:
 ///   - `dst` does not permit mutation of its referent
 ///   - The set of `DV`-valid referents of `dst` is a subset of the set of
 ///     `SV`-valid referents of `src` (NOTE: this condition effectively bans
@@ -126,7 +126,7 @@ pub unsafe trait TryTransmuteFromPtr<
 pub enum BecauseMutationCompatible {}
 
 // SAFETY:
-// - Forwards transmutation: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, we
+// - Preserve destination validity: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, we
 //   know that at least one of the following holds:
 //   - So long as `dst: Ptr<Dst>` is active, no mutation of its referent is
 //     allowed except via `dst` itself if either of the following hold:
@@ -138,10 +138,10 @@ pub enum BecauseMutationCompatible {}
 //     referent as `src`. By `Dst: TransmuteFrom<Src, SV, DV>`, the set of
 //     `DV`-valid referents of `dst` is a superset of the set of `SV`-valid
 //     referents of `src`.
-// - Reverse transmutation: Since the underlying cast is size-preserving, `dst`
-//   addresses the same referent as `src`. By `Src: TransmuteFrom<Dst, DV, SV>`,
-//   the set of `DV`-valid referents of `src` is a subset of the set of
-//   `SV`-valid referents of `dst`.
+// - Preserve source validity: Since the underlying cast is size-preserving,
+//   `dst` addresses the same referent as `src`. By
+//   `Src: TransmuteFrom<Dst, DV, SV>`, the set of `DV`-valid referents of `dst`
+//   is a subset of the set of `SV`-valid referents of `src`.
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
 //   the following holds:
@@ -163,9 +163,9 @@ where
 }
 
 // SAFETY:
-// - Forwards transmutation: Since aliasing is `Shared` and `Src: Immutable`,
+// - Preserve destination validity: Since aliasing is `Shared` and `Src: Immutable`,
 //   `src` does not permit mutation of its referent.
-// - Reverse transmutation: Since aliasing is `Shared` and `Dst: Immutable`,
+// - Preserve source validity: Since aliasing is `Shared` and `Dst: Immutable`,
 //   `dst` does not permit mutation of its referent.
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: `Src: Immutable` and `Dst: Immutable`
@@ -189,8 +189,8 @@ where
 /// At least one of the following must hold:
 /// - `Src: Read<A, _>` and `Self: Read<A, _>`
 /// - `Self: SharedCompatible<Src>`, and, for some `V`:
-///   - `Dst: TransmuteFrom<Src, V, V>`
-///   - `Src: TransmuteFrom<Dst, V, V>`
+///   - `Self: TransmuteFrom<Src, V, V>`
+///   - `Src: TransmuteFrom<Self, V, V>`
 pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, R> {}
 
 #[allow(missing_copy_implementations, missing_debug_implementations)]
@@ -295,8 +295,12 @@ where
 {
 }
 
-/// Denotes that any `SV`-valid `Src` may soundly be transmuted into a
-/// `DV`-valid `Self`.
+/// Denotes that, for equally-sized referents, every bit pattern allowed for an
+/// `SV`-valid `Src` is also allowed for a `DV`-valid `Self`.
+///
+/// `TransmuteFrom` does not by itself authorize a pointer transmutation. It
+/// provides a directional validity implication used by the pointer-transmutation
+/// machinery.
 ///
 /// # Safety
 ///

@@ -168,8 +168,8 @@ macro_rules! unsafe_impl {
 /// Implements `$trait` for `$ty` where `$ty: TransmuteFrom<$repr>` (and
 /// vice-versa).
 ///
-/// Calling this macro is safe; the internals of the macro emit appropriate
-/// trait bounds which ensure that the given impl is sound.
+/// This macro is intended to be safe to call. The current proof is incomplete;
+/// see FIXME(#3691) below.
 macro_rules! impl_for_transmute_from {
     (
         $(#[$attr:meta])*
@@ -180,14 +180,20 @@ macro_rules! impl_for_transmute_from {
             $(#[$attr])*
             #[allow(non_local_definitions)]
 
-            // SAFETY: `is_trait<T, R>` (defined and used below) requires `T:
-            // TransmuteFrom<R>`, `R: TransmuteFrom<T>`, and `R: $trait`. It is
-            // called using `$ty` and `$repr`, ensuring that `$ty` and `$repr`
-            // have equivalent bit validity, and ensuring that `$repr: $trait`.
-            // The supported traits - `TryFromBytes`, `FromZeros`, `FromBytes`,
-            // and `IntoBytes` - are defined only in terms of the bit validity
-            // of a type. Therefore, `$repr: $trait` ensures that `$ty: $trait`
-            // is sound.
+            // SAFETY: `is_trait<T, R>` (defined and used below) requires
+            // reciprocal `TransmuteFrom<_, Safe, Safe>` bounds and `R: $trait`.
+            // If `T` and `R` have the same size, the reciprocal bounds imply
+            // that they permit the same `Safe` bit patterns. The call below
+            // instantiates `T` with `$ty` and `R` with `$repr`, and establishes
+            // `$repr: $trait`. The supported traits - `TryFromBytes`,
+            // `FromZeros`, `FromBytes`, and `IntoBytes` - are defined only in
+            // terms of bit validity, so these premises are sufficient when
+            // `$ty` and `$repr` have the same size.
+            //
+            // FIXME(#3691): This macro does not establish that `$ty` and
+            // `$repr` have the same size. Without that premise, `TransmuteFrom`
+            // conveys no safety guarantee, so these bounds do not make
+            // arbitrary invocations of this macro sound.
             unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
@@ -494,7 +500,7 @@ macro_rules! unsafe_impl_known_layout {
         #[allow(non_local_definitions)]
         // SAFETY: The caller promises that this is sound.
         unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
-            #[allow(clippy::missing_inline_in_public_items, dead_code)]
+            #[allow(dead_code, clippy::missing_inline_in_public_items)]
             #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
             fn only_derive_is_allowed_to_implement_this_trait() {}
 
