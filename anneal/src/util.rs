@@ -145,7 +145,8 @@ where
 ///
 /// - Obtain an exclusive or shared lock for `lock_dir`,
 /// - Log actions in `log_file`,
-/// - Wait for a signal from `sig_file`.
+/// - Signal that actor A acquired its lock by creating `acquired_file`,
+/// - Let actor A release its lock by creating `release_file`.
 ///
 /// Individual tests compose multiple role-based actions and verify the resulting action log.
 #[cfg(feature = "exocrate_tests")]
@@ -153,7 +154,8 @@ pub(crate) fn run_test_lock_helper(
     role: &str,
     lock_dir: &std::path::Path,
     log_file: &std::path::Path,
-    sig_file: &std::path::Path,
+    acquired_file: &std::path::Path,
+    release_file: &std::path::Path,
 ) -> anyhow::Result<()> {
     use std::io::Write as _;
 
@@ -163,11 +165,11 @@ pub(crate) fn run_test_lock_helper(
         Ok(())
     };
 
-    let wait_for_sig = || -> anyhow::Result<()> {
+    let wait_for_release = || -> anyhow::Result<()> {
         let start = std::time::Instant::now();
-        while !sig_file.exists() {
-            if start.elapsed() > std::time::Duration::from_secs(3) {
-                anyhow::bail!("Timeout waiting for signal file {:?}", sig_file);
+        while !release_file.exists() {
+            if start.elapsed() > std::time::Duration::from_secs(10) {
+                anyhow::bail!("Timeout waiting for release file {:?}", release_file);
             }
             std::thread::sleep(std::time::Duration::from_millis(50));
         }
@@ -178,23 +180,25 @@ pub(crate) fn run_test_lock_helper(
         "reader-a" => {
             let _lock = DirLock::lock_shared(lock_dir.to_path_buf())?;
             append_log("SHARED_START_A")?;
-            wait_for_sig()?;
+            std::fs::write(acquired_file, "")?;
+            wait_for_release()?;
             append_log("SHARED_END_A")?;
         }
         "reader-b" => {
             let _lock = DirLock::lock_shared(lock_dir.to_path_buf())?;
             append_log("SHARED_START_B")?;
-            std::fs::write(sig_file, "")?;
             append_log("SHARED_END_B")?;
+            std::fs::write(release_file, "")?;
         }
         "writer-a" => {
             let _lock = DirLock::lock_exclusive(lock_dir.to_path_buf())?;
             append_log("EXCLUSIVE_START_A")?;
-            wait_for_sig()?;
+            std::fs::write(acquired_file, "")?;
+            wait_for_release()?;
             append_log("EXCLUSIVE_END_A")?;
         }
         "reader-exclusion" => {
-            std::fs::write(sig_file, "")?;
+            std::fs::write(release_file, "")?;
             let _lock = DirLock::lock_shared(lock_dir.to_path_buf())?;
             append_log("SHARED_START_B")?;
             append_log("SHARED_END_B")?;
