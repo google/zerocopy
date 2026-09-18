@@ -710,8 +710,8 @@ const _: () = {
 // SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, so the
 // paired referents have the same admissible `Safe` states in either logical
 // direction along either exact executable cast.
-unsafe impl<T: ?Sized>
-    TransmuteFrom<T, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom, Forward> for ReadOnly<T>
+unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom, Forward>
+    for ReadOnly<T>
 {
 }
 // SAFETY: Same paired referents as above, with the implication reversed.
@@ -725,8 +725,8 @@ unsafe impl<T: ?Sized>
 {
 }
 // SAFETY: Same paired referents as above, with the implication reversed.
-unsafe impl<T: ?Sized>
-    TransmuteFrom<T, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom, Reverse> for ReadOnly<T>
+unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom, Reverse>
+    for ReadOnly<T>
 {
 }
 

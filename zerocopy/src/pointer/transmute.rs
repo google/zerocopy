@@ -277,7 +277,8 @@ pub unsafe trait TransmuteFromPtr<
     DV: Validity,
     C: CastExact<Src, Self>,
     R,
->: TryTransmuteFromPtr<Src, A, SV, DV, C, R> + TransmuteFrom<Src, SV, DV, C, Forward>
+>:
+    TryTransmuteFromPtr<Src, A, SV, DV, C, R> + TransmuteFrom<Src, SV, DV, C, Forward>
 {
 }
 
@@ -293,8 +294,7 @@ unsafe impl<
         R,
     > TransmuteFromPtr<Src, A, SV, DV, C, R> for Dst
 where
-    Dst: TransmuteFrom<Src, SV, DV, C, Forward>
-        + TryTransmuteFromPtr<Src, A, SV, DV, C, R>,
+    Dst: TransmuteFrom<Src, SV, DV, C, Forward> + TryTransmuteFromPtr<Src, A, SV, DV, C, R>,
 {
 }
 
@@ -344,10 +344,7 @@ mod transmute_direction {
 
 /// The orientation of the exact correspondence used by [`TransmuteFrom`].
 #[doc(hidden)]
-pub trait TransmuteDirection<Src: ?Sized, Dst: ?Sized, C>:
-    transmute_direction::Sealed
-{
-}
+pub trait TransmuteDirection<Src: ?Sized, Dst: ?Sized, C>: transmute_direction::Sealed {}
 
 impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Forward
 where
@@ -355,12 +352,18 @@ where
 {
 }
 
-impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Reverse
-where
-    C: CastExact<Dst, Src>,
+impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Reverse where
+    C: CastExact<Dst, Src>
 {
 }
 
+/// Relates the admissible states of referents paired by one exact
+/// correspondence.
+///
+/// # Safety
+///
+/// The directional implication documented above must hold for every referent
+/// pair selected by `C`.
 pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV, C, Direction>
 where
     Direction: TransmuteDirection<Src, Self, C>,
@@ -545,9 +548,8 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // explicitly guaranteed, but it's obvious from `MaybeUninit`'s documentation
 // that this is the intention:
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
-unsafe impl<T, C, Direction> TransmuteFrom<T, Uninit, Safe, C, Direction> for MaybeUninit<T>
-where
-    Direction: TransmuteDirection<T, MaybeUninit<T>, C>,
+unsafe impl<T, C, Direction> TransmuteFrom<T, Uninit, Safe, C, Direction> for MaybeUninit<T> where
+    Direction: TransmuteDirection<T, MaybeUninit<T>, C>
 {
 }
 
