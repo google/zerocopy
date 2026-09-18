@@ -9,9 +9,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 use super::*;
-use crate::pointer::{
-    BecauseMutationCompatible, BecauseSharedCompatible, TransmuteFromPtr,
-};
+use crate::pointer::{BecauseMutationCompatible, BecauseSharedCompatible, TransmuteFromPtr};
 
 mod def {
     use core::marker::PhantomData;
@@ -815,7 +813,7 @@ where
             let ptr = Ptr::from_ref(b);
             // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
             // `b`'s size is equal to `size_of::<T>()`.
-            let ptr = unsafe { cast_for_sized::<T, _, _, _>(ptr) };
+            let ptr = unsafe { cast_for_sized::<T, _, BecauseImmutable, _>(ptr) };
 
             // SAFETY: None of the preceding transformations modifies the
             // address of the pointer, and by invariant on `r`, we know that it
@@ -861,7 +859,7 @@ where
                 cast_for_sized::<
                     T,
                     _,
-                    (BecauseRead, BecauseExclusive),
+                    BecauseExclusive,
                     (BecauseMutationCompatible, BecauseSharedCompatible),
                 >(ptr)
             };
