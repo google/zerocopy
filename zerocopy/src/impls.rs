@@ -421,7 +421,7 @@ mod atomics {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {{
             crate::util::macros::__unsafe();
 
-            use crate::pointer::{SpliceFrom, TransmuteFrom, invariant::Safe};
+            use crate::pointer::{SizeEq, SpliceFrom, TransmuteFrom, invariant::Safe};
 
             $(
                 // SAFETY: The caller promised that `$atomic` and `$prim` have

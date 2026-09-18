@@ -22,6 +22,7 @@ use crate::{
         invariant::*,
     },
     FromBytes, Immutable, IntoBytes, Unalign,
+    wrappers::ReadOnly,
 };
 
 /// Address-preserving pointer reinterpretations which are sound to attempt, conditional on
