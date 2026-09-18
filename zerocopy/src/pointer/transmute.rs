@@ -269,15 +269,8 @@ pub unsafe trait TransmuteFromPtr<
 
 // SAFETY: The `where` bounds are equivalent to the safety invariant on
 // `TransmuteFromPtr`.
-unsafe impl<
-        Src: ?Sized,
-        Dst: ?Sized,
-        A: Aliasing,
-        SV: Validity,
-        DV: Validity,
-        C: Cast<Src, Dst>,
-        R,
-    > TransmuteFromPtr<Src, A, SV, DV, C, R> for Dst
+unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, C: Cast<Src, Dst>, R>
+    TransmuteFromPtr<Src, A, SV, DV, C, R> for Dst
 where
     Dst: TransmuteFrom<Src, SV, DV, C> + TryTransmuteFromPtr<Src, A, SV, DV, C, R>,
 {
@@ -777,19 +770,14 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // explicitly guaranteed, but it's obvious from `MaybeUninit`'s documentation
 // that this is the intention:
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
-unsafe impl<T, C> TransmuteFrom<T, Uninit, Safe, C> for MaybeUninit<T>
-where
-    C: Cast<T, MaybeUninit<T>>,
+unsafe impl<T, C> TransmuteFrom<T, Uninit, Safe, C> for MaybeUninit<T> where
+    C: Cast<T, MaybeUninit<T>>
 {
 }
 
 // SAFETY: `MaybeUninit<T>` permits every byte state, so writing any `T` state
 // into the projected region cannot invalidate it.
-unsafe impl<T, DV, C> SpliceFrom<T, Safe, DV, C> for MaybeUninit<T>
-where
-    C: Cast<MaybeUninit<T>, T>,
-{
-}
+unsafe impl<T, DV, C> SpliceFrom<T, Safe, DV, C> for MaybeUninit<T> where C: Cast<MaybeUninit<T>, T> {}
 
 impl<T> SizeEq<T> for MaybeUninit<T> {
     type CastFrom = CastSizedExact;

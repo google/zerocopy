@@ -709,25 +709,25 @@ const _: () = {
 
 // SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, so
 // the paired referents have the same admissible `Safe` states.
-unsafe impl<T: ?Sized>
-    TransmuteFrom<T, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom> for ReadOnly<T>
+unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom>
+    for ReadOnly<T>
 {
 }
 // SAFETY: Replacing the entire exact `T` referent with a valid `ReadOnly<T>`
 // representation leaves a valid `T`.
-unsafe impl<T: ?Sized>
-    SpliceFrom<ReadOnly<T>, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom> for T
+unsafe impl<T: ?Sized> SpliceFrom<ReadOnly<T>, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom>
+    for T
 {
 }
 // SAFETY: Same representation equivalence for the reverse executable cast.
-unsafe impl<T: ?Sized>
-    TransmuteFrom<ReadOnly<T>, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom> for T
+unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom>
+    for T
 {
 }
 // SAFETY: Replacing the entire exact `ReadOnly<T>` referent with a valid `T`
 // representation leaves a valid `ReadOnly<T>`.
-unsafe impl<T: ?Sized>
-    SpliceFrom<T, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom> for ReadOnly<T>
+unsafe impl<T: ?Sized> SpliceFrom<T, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom>
+    for ReadOnly<T>
 {
 }
 

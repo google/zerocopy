@@ -519,7 +519,7 @@ mod atomics {
         }};
     }
 
-        #[cfg(target_has_atomic = "8")]
+    #[cfg(target_has_atomic = "8")]
     #[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "8")))]
     mod atomic_8 {
         use core::sync::atomic::{AtomicBool, AtomicI8, AtomicU8};
