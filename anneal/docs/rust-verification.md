@@ -169,8 +169,7 @@ whether a human wrote it directly.
 
 ## Trust in the reduction
 
-The adequacy argument does not have to be fully machine-checked on the first
-day Anneal is useful.
+The adequacy argument may itself depend on facts Anneal does not establish.
 
 A result may depend on the correctness of Rust semantic assumptions, extraction,
 translation, modeling, obligation generation, checking integration, or other
@@ -181,12 +180,6 @@ Over time, proof, per-artifact validation, stronger specifications, or other
 accepted evidence may remove such dependencies from the TCB without changing
 the Rust claim. Merely moving the same unchecked assumption across a tool or
 project boundary does not.
-
-This separation also keeps implementation confidence distinct from verification
-evidence. Testing a translator or observing that it works on many examples can
-be valuable engineering evidence, but it removes a dependency from the TCB only
-if Anneal's assurance model explicitly establishes the required correctness from
-that evidence.
 
 ## What this document leaves open
 
