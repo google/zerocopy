@@ -420,7 +420,6 @@ unsafe impl<T: ?Sized> ByteReprEq<T> for UnsafeCell<T> {
     type Cast = <ReadOnly<T> as SizeEq<ReadOnly<UnsafeCell<T>>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
 // SAFETY: `AtomicBool` and `bool` are both `Sized`, so they have no nontrivial
 // pointer metadata. The standard library guarantees that `AtomicBool` has the
 // same size and bit validity as `bool` [1]. The exact cast selected below
@@ -428,11 +427,11 @@ unsafe impl<T: ?Sized> ByteReprEq<T> for UnsafeCell<T> {
 // validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicBool.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
 unsafe impl ByteReprEq<bool> for core::sync::atomic::AtomicBool {
     type Cast = <ReadOnly<bool> as SizeEq<ReadOnly<core::sync::atomic::AtomicBool>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
 // SAFETY: `AtomicI8` and `i8` are both `Sized`, so they have no nontrivial
 // pointer metadata. The standard library guarantees that `AtomicI8` has the
 // same size and bit validity as `i8` [1]. The exact cast selected below
@@ -440,11 +439,11 @@ unsafe impl ByteReprEq<bool> for core::sync::atomic::AtomicBool {
 // validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI8.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
 unsafe impl ByteReprEq<i8> for core::sync::atomic::AtomicI8 {
     type Cast = <ReadOnly<i8> as SizeEq<ReadOnly<core::sync::atomic::AtomicI8>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
 // SAFETY: `AtomicU8` and `u8` are both `Sized`, so they have no nontrivial
 // pointer metadata. The standard library guarantees that `AtomicU8` has the
 // same size and bit validity as `u8` [1]. The exact cast selected below
@@ -452,11 +451,11 @@ unsafe impl ByteReprEq<i8> for core::sync::atomic::AtomicI8 {
 // validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU8.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
 unsafe impl ByteReprEq<u8> for core::sync::atomic::AtomicU8 {
     type Cast = <ReadOnly<u8> as SizeEq<ReadOnly<core::sync::atomic::AtomicU8>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
 // SAFETY: `AtomicI16` and `i16` are both `Sized`, so they have no nontrivial
 // pointer metadata. The standard library guarantees that `AtomicI16` has the
 // same size and bit validity as `i16` [1]. The exact cast selected below
@@ -464,11 +463,11 @@ unsafe impl ByteReprEq<u8> for core::sync::atomic::AtomicU8 {
 // validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI16.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
 unsafe impl ByteReprEq<i16> for core::sync::atomic::AtomicI16 {
     type Cast = <ReadOnly<i16> as SizeEq<ReadOnly<core::sync::atomic::AtomicI16>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
 // SAFETY: `AtomicU16` and `u16` are both `Sized`, so they have no nontrivial
 // pointer metadata. The standard library guarantees that `AtomicU16` has the
 // same size and bit validity as `u16` [1]. The exact cast selected below
@@ -476,11 +475,11 @@ unsafe impl ByteReprEq<i16> for core::sync::atomic::AtomicI16 {
 // validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU16.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
 unsafe impl ByteReprEq<u16> for core::sync::atomic::AtomicU16 {
     type Cast = <ReadOnly<u16> as SizeEq<ReadOnly<core::sync::atomic::AtomicU16>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
 // SAFETY: `AtomicI32` and `i32` are both `Sized`, so they have no nontrivial
 // pointer metadata. The standard library guarantees that `AtomicI32` has the
 // same size and bit validity as `i32` [1]. The exact cast selected below
@@ -488,11 +487,11 @@ unsafe impl ByteReprEq<u16> for core::sync::atomic::AtomicU16 {
 // validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI32.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
 unsafe impl ByteReprEq<i32> for core::sync::atomic::AtomicI32 {
     type Cast = <ReadOnly<i32> as SizeEq<ReadOnly<core::sync::atomic::AtomicI32>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
 // SAFETY: `AtomicU32` and `u32` are both `Sized`, so they have no nontrivial
 // pointer metadata. The standard library guarantees that `AtomicU32` has the
 // same size and bit validity as `u32` [1]. The exact cast selected below
@@ -500,11 +499,11 @@ unsafe impl ByteReprEq<i32> for core::sync::atomic::AtomicI32 {
 // validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU32.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
 unsafe impl ByteReprEq<u32> for core::sync::atomic::AtomicU32 {
     type Cast = <ReadOnly<u32> as SizeEq<ReadOnly<core::sync::atomic::AtomicU32>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
 // SAFETY: `AtomicI64` and `i64` are both `Sized`, so they have no nontrivial
 // pointer metadata. The standard library guarantees that `AtomicI64` has the
 // same size and bit validity as `i64` [1]. The exact cast selected below
@@ -512,11 +511,11 @@ unsafe impl ByteReprEq<u32> for core::sync::atomic::AtomicU32 {
 // validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI64.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
 unsafe impl ByteReprEq<i64> for core::sync::atomic::AtomicI64 {
     type Cast = <ReadOnly<i64> as SizeEq<ReadOnly<core::sync::atomic::AtomicI64>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
 // SAFETY: `AtomicU64` and `u64` are both `Sized`, so they have no nontrivial
 // pointer metadata. The standard library guarantees that `AtomicU64` has the
 // same size and bit validity as `u64` [1]. The exact cast selected below
@@ -524,11 +523,11 @@ unsafe impl ByteReprEq<i64> for core::sync::atomic::AtomicI64 {
 // validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU64.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
 unsafe impl ByteReprEq<u64> for core::sync::atomic::AtomicU64 {
     type Cast = <ReadOnly<u64> as SizeEq<ReadOnly<core::sync::atomic::AtomicU64>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
 // SAFETY: `AtomicIsize` and `isize` are both `Sized`, so they have no
 // nontrivial pointer metadata. The standard library guarantees that
 // `AtomicIsize` has the same size and bit validity as `isize` [1]. The exact
@@ -536,11 +535,11 @@ unsafe impl ByteReprEq<u64> for core::sync::atomic::AtomicU64 {
 // equivalent `Safe` validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicIsize.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
 unsafe impl ByteReprEq<isize> for core::sync::atomic::AtomicIsize {
     type Cast = <ReadOnly<isize> as SizeEq<ReadOnly<core::sync::atomic::AtomicIsize>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
 // SAFETY: `AtomicUsize` and `usize` are both `Sized`, so they have no
 // nontrivial pointer metadata. The standard library guarantees that
 // `AtomicUsize` has the same size and bit validity as `usize` [1]. The exact
@@ -548,11 +547,11 @@ unsafe impl ByteReprEq<isize> for core::sync::atomic::AtomicIsize {
 // equivalent `Safe` validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicUsize.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
 unsafe impl ByteReprEq<usize> for core::sync::atomic::AtomicUsize {
     type Cast = <ReadOnly<usize> as SizeEq<ReadOnly<core::sync::atomic::AtomicUsize>>>::CastFrom;
 }
 
-#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
 // SAFETY: `AtomicPtr<T>` and `*mut T` are both `Sized`, so they have no
 // nontrivial pointer metadata. The standard library guarantees that
 // `AtomicPtr<T>` has the same size and bit validity as `*mut T` [1]. The exact
@@ -560,6 +559,7 @@ unsafe impl ByteReprEq<usize> for core::sync::atomic::AtomicUsize {
 // equivalent `Safe` validity.
 //
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicPtr.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
 unsafe impl<T> ByteReprEq<*mut T> for core::sync::atomic::AtomicPtr<T> {
     type Cast = <ReadOnly<*mut T> as SizeEq<ReadOnly<core::sync::atomic::AtomicPtr<T>>>>::CastFrom;
 }

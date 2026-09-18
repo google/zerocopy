@@ -178,9 +178,6 @@ macro_rules! impl_for_transmute_from {
         => $trait:ident for $ty:ty [$repr:ty]
     ) => {
         const _: () = {
-            $(#[$attr])*
-            #[allow(non_local_definitions)]
-
             // SAFETY: Fix an arbitrary concrete referent shape of `$ty`.
             // `$ty: ByteReprEq<$repr>` supplies an exact cast to one particular
             // `$repr` referent shape over the same bytes and guarantees that
@@ -203,6 +200,8 @@ macro_rules! impl_for_transmute_from {
             //   uses the witness's exact cast to validate the corresponding
             //   `$repr` referent. On success, representation equivalence makes
             //   the original `$ty` referent `Safe`.
+            $(#[$attr])*
+            #[allow(non_local_definitions)]
             unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
