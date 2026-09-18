@@ -39,7 +39,9 @@ Checked proofs, validations, and other evidence explain why Anneal is entitled
 to issue this result with this claim and this TCB. They are not an additional
 kind of promise. Likewise, an intermediate theorem about a generated model is
 evidence toward a Rust-level result; successfully checking that theorem does not
-by itself turn it into a claim about the Rust program.
+by itself turn it into a claim about the Rust program. The semantic connection
+from derived obligations back to a Rust claim is defined in
+[Rust-level verification](rust-verification.md).
 
 ## The claim
 
