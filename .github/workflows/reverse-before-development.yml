@@ -67,9 +67,12 @@ jobs:
           run_check msrv ./cargo.sh +msrv check --tests --features __internal_use_only_features_that_work_on_stable
           run_check stable ./cargo.sh +stable check --tests --features __internal_use_only_features_that_work_on_stable
           run_check default ./cargo.sh +stable check --no-default-features
-          run_check nightly ./cargo.sh +nightly test --lib --features __internal_use_only_features_that_work_on_stable
+          run_check nightly ./cargo.sh +nightly test --workspace --lib --features __internal_use_only_features_that_work_on_stable
           run_check all-features ./cargo.sh +nightly check --tests --all-features
           run_check clippy ./cargo.sh +nightly clippy --tests --all-features --workspace
+          mv .cargo/config.toml "$RUNNER_TEMP/reverse-before-vendor-config"
+          run_check miri-setup ./cargo.sh +nightly miri setup
+          mv "$RUNNER_TEMP/reverse-before-vendor-config" .cargo/config.toml
           run_check miri ./cargo.sh +nightly miri test --lib pointer::transmute
           run_check rustdoc ./cargo.sh +nightly doc --no-deps --features __internal_use_only_features_that_work_on_stable
           cd ..
