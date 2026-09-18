@@ -18,13 +18,13 @@ use core::{
 
 use crate::{
     pointer::{
-        cast::{self, CastExact, CastSizedExact},
+        cast::{self, Cast, CastExact, CastSizedExact},
         invariant::*,
     },
     FromBytes, Immutable, IntoBytes, Unalign,
 };
 
-/// Exact pointer reinterpretations which are sound to attempt, conditional on
+/// Address-preserving pointer reinterpretations which are sound to attempt, conditional on
 /// establishing the destination validity invariant.
 ///
 /// If a `Ptr` transmutation is `TryTransmuteFromPtr`, then it is sound to
@@ -116,7 +116,7 @@ pub unsafe trait TryTransmuteFromPtr<
     A: Aliasing,
     SV: Validity,
     DV: Validity,
-    C: CastExact<Src, Self>,
+    C: Cast<Src, Self>,
     R,
 >
 {
@@ -126,7 +126,7 @@ pub unsafe trait TryTransmuteFromPtr<
 pub enum BecauseMutationCompatible {}
 
 // SAFETY:
-// - Preserve destination validity: By `Dst: MutationCompatible<Src, A, SV, DV, C, _>`, we
+// - Preserve destination validity: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, we
 //   know that at least one of the following holds:
 //   - So long as `dst: Ptr<Dst>` is active, no mutation of its referent is
 //     allowed except via `dst` itself if either of the following hold:
@@ -134,15 +134,12 @@ pub enum BecauseMutationCompatible {}
 //       exists, no mutation is permitted except via that `Ptr`
 //     - Aliasing is `Shared`, `Src: Immutable`, and `Dst: Immutable`, in which
 //       case no mutation is possible via either `Ptr`
-//   - By `Dst: TransmuteFrom<Src, SV, DV, C, Forward>`, every `SV`-valid
-//     source state is `DV`-valid for the corresponding destination referent
-//     selected by `C`.
-// - Preserve source validity: By
-//   `Src: TransmuteFrom<Dst, DV, SV, C, Reverse>`, every `DV`-valid destination
-//   state is `SV`-valid for the source referent paired with it by that same
-//   `C`.
+//   - By `Dst: TransmuteFrom<Src, SV, DV, C>`, every source state permitted by
+//     `SV` projects through `C` to a destination state permitted by `DV`.
+// - Preserve source validity: By `Src: SpliceFrom<Dst, SV, DV, C>`, every `DV`-valid write to the
+//   destination range preserves the enclosing source's `SV` validity.
 // - No safe code, given access to `src` and `dst`, can cause undefined
-//   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, C, _>`, at least one of
+//   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
 //   the following holds:
 //   - `A` is `Exclusive`
 //   - `Src: Immutable` and `Dst: Immutable`
@@ -155,9 +152,9 @@ where
     A: Aliasing,
     SV: Validity,
     DV: Validity,
-    Src: TransmuteFrom<Dst, DV, SV, C, Reverse> + ?Sized,
+    Src: SpliceFrom<Dst, SV, DV, C> + ?Sized,
     Dst: MutationCompatible<Src, A, SV, DV, C, R> + ?Sized,
-    C: CastExact<Src, Dst>,
+    C: Cast<Src, Dst>,
 {
 }
 
@@ -175,7 +172,7 @@ where
     DV: Validity,
     Src: Immutable + ?Sized,
     Dst: Immutable + ?Sized,
-    C: CastExact<Src, Dst>,
+    C: Cast<Src, Dst>,
 {
 }
 
@@ -187,10 +184,8 @@ where
 ///
 /// At least one of the following must hold:
 /// - `Src: Read<A, _>` and `Self: Read<A, _>`
-/// - `Self: SharedCompatible<Src>`, and, for some `V`, validity is
-///   equivalent along the exact correspondence `C`:
-///   - `Self: TransmuteFrom<Src, V, V, C, Forward>`
-///   - `Src: TransmuteFrom<Self, V, V, C, Reverse>`
+/// - `Self: SharedCompatible<Src>`, and source-side writes preserve the
+///   destination validity invariant along `C`.
 pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, C, R> {}
 
 #[allow(missing_copy_implementations, missing_debug_implementations)]
@@ -218,14 +213,13 @@ pub unsafe trait SharedCompatible<T: ?Sized> {}
 // SAFETY: Trivially sound to have multiple `&T` pointing to the same referent.
 unsafe impl<T: ?Sized> SharedCompatible<T> for T {}
 
-// SAFETY: `Dst: SharedCompatible<Src>`, and validity is equivalent in both
-// directions along the same exact correspondence `C`.
+// SAFETY: `Dst: SharedCompatible<Src>`, and any source state permitted by
+// `SV` projects through `C` to a destination state permitted by `DV`.
 unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, C>
     MutationCompatible<Src, A, SV, DV, C, BecauseSharedCompatible> for Dst
 where
-    Src: TransmuteFrom<Dst, DV, SV, C, Reverse>,
-    Dst: TransmuteFrom<Src, SV, DV, C, Forward> + SharedCompatible<Src>,
-    C: CastExact<Src, Dst>,
+    Dst: TransmuteFrom<Src, SV, DV, C> + SharedCompatible<Src>,
+    C: Cast<Src, Dst>,
 {
 }
 
@@ -268,17 +262,15 @@ unsafe impl<T: ?Sized> SharedCompatible<ManuallyDrop<T>> for T {}
 /// # Safety
 ///
 /// `Dst: TransmuteFromPtr<Src, A, SV, DV, C, _>` is equivalent to `Dst:
-/// TryTransmuteFromPtr<Src, A, SV, DV, C, _> +
-/// TransmuteFrom<Src, SV, DV, C, Forward>`.
+/// TryTransmuteFromPtr<Src, A, SV, DV, C, _> + TransmuteFrom<Src, SV, DV, C>`.
 pub unsafe trait TransmuteFromPtr<
     Src: ?Sized,
     A: Aliasing,
     SV: Validity,
     DV: Validity,
-    C: CastExact<Src, Self>,
+    C: Cast<Src, Self>,
     R,
->:
-    TryTransmuteFromPtr<Src, A, SV, DV, C, R> + TransmuteFrom<Src, SV, DV, C, Forward>
+>: TryTransmuteFromPtr<Src, A, SV, DV, C, R> + TransmuteFrom<Src, SV, DV, C>
 {
 }
 
@@ -290,79 +282,57 @@ unsafe impl<
         A: Aliasing,
         SV: Validity,
         DV: Validity,
-        C: CastExact<Src, Dst>,
+        C: Cast<Src, Dst>,
         R,
     > TransmuteFromPtr<Src, A, SV, DV, C, R> for Dst
 where
-    Dst: TransmuteFrom<Src, SV, DV, C, Forward> + TryTransmuteFromPtr<Src, A, SV, DV, C, R>,
+    Dst: TransmuteFrom<Src, SV, DV, C> + TryTransmuteFromPtr<Src, A, SV, DV, C, R>,
 {
 }
 
-/// The exact correspondence is oriented from the trait source to destination.
-#[allow(missing_copy_implementations, missing_debug_implementations)]
-#[doc(hidden)]
-pub enum Forward {}
-
-/// The exact correspondence is oriented from the trait destination to source.
-#[allow(missing_copy_implementations, missing_debug_implementations)]
-#[doc(hidden)]
-pub enum Reverse {}
-
-mod transmute_direction {
-    pub trait Sealed {}
-
-    impl Sealed for super::Forward {}
-    impl Sealed for super::Reverse {}
-}
-
-/// The orientation of the exact correspondence used by [`TransmuteFrom`].
-#[doc(hidden)]
-pub trait TransmuteDirection<Src: ?Sized, Dst: ?Sized, C>: transmute_direction::Sealed {}
-
-impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Forward where
-    C: CastExact<Src, Dst>
-{
-}
-
-impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Reverse where
-    C: CastExact<Dst, Src>
-{
-}
-
-/// A directional admissible-state implication along one exact referent
-/// correspondence.
+/// A directional validity implication along a concrete address-preserving cast.
 ///
-/// `TransmuteFrom` does not by itself authorize a pointer transmutation. It
-/// states how validity transfers between the concrete source/destination
-/// referents paired by `C`.
+/// `Dst: TransmuteFrom<Src, SV, DV, C>` means that projecting any
+/// `SV`-admissible `Src` referent through `C` produces a `DV`-admissible
+/// `Dst` referent. `C` may preserve the whole referent or shrink it.
 ///
-/// `Direction` determines the orientation of `C` independently of the
-/// logical implication:
-///
-/// - `Forward`: `C: CastExact<Src, Self>`. For every `Src` referent
-///   `src`, let `dst = C(src)`. Every `SV`-admissible state of `src`
-///   must also be a `DV`-admissible state of `dst`.
-/// - `Reverse`: `C: CastExact<Self, Src>`. For every `Self` referent
-///   `dst`, let `src = C(dst)`. Every `SV`-admissible state of `src`
-///   must also be a `DV`-admissible state of `dst`.
-///
-/// Thus a single one-way metadata-aware cast can support validity implications
-/// in both logical directions over the same paired referents without requiring
-/// an executable inverse cast.
-///
-/// An admissible state includes both byte values and which bytes are
-/// initialized. This distinction is load-bearing for relations such as
-/// `Safe -> Initialized` supplied by `IntoBytes`.
+/// This is a compile-time theorem about the states selected by `C`; it does
+/// not itself perform a transmutation.
 ///
 /// # Safety
 ///
-/// The implication described above must hold for every referent pair selected
-/// by `C`.
-pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV, C, Direction>
+/// For every `SV`-admissible `Src` referent state `src`, the `Dst`
+/// referent produced by `C` must be `DV`-admissible.
+pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV, C>
 where
-    Direction: TransmuteDirection<Src, Self, C>,
+    C: Cast<Src, Self>,
 {
 }
+
+/// A write-back preservation theorem for an address-preserving cast.
+///
+/// `Src: SpliceFrom<Dst, SV, DV, C>` means that a `Dst` may be mutated
+/// independently through the region selected by `C` without invalidating the
+/// enclosing `Src`: starting from any `SV`-admissible `Src` state, replacing
+/// exactly the bytes in `C`'s destination referent with any `DV`-admissible
+/// `Dst` state leaves an `SV`-admissible `Src` state.
+///
+/// The untouched source bytes remain part of the theorem. This is what permits
+/// shrinking mutable transmutes that cannot be modeled as a reverse whole-value
+/// transmutation.
+///
+/// # Safety
+///
+/// For every `SV`-admissible source state and every `DV`-admissible
+/// destination state of the referent shape selected by `C`, splicing the
+/// destination state into `C`'s byte range must leave the source state
+/// `SV`-admissible.
+pub unsafe trait SpliceFrom<Dst: ?Sized, SV, DV, C>
+where
+    C: Cast<Self, Dst>,
+{
+}
+
 /// Carries the ability to perform a size-preserving cast or conversion from a
 /// raw pointer to `Src` to a raw pointer to `Self`.
 ///
@@ -386,25 +356,278 @@ impl<T: ?Sized> SizeEq<T> for T {
     type CastFrom = cast::IdCast;
 }
 
-// SAFETY: Since `Src: IntoBytes`, every `Safe` `Src` state has every referent
-// byte initialized. The corresponding state therefore satisfies `Initialized`
-// for any destination type.
-unsafe impl<Src, Dst, C, Direction> TransmuteFrom<Src, Safe, Initialized, C, Direction> for Dst
+/// Proof that two types have equivalent representations under a particular
+/// exact referent mapping.
+///
+/// `ByteReprEq<R>` provides a total mapping from every `ReadOnly<Self>`
+/// referent to a `ReadOnly<R>` referent. The mapping is carried by
+/// [`Self::ToRepr`], a [`CastExact`]. For dynamically-sized types, it may
+/// transform pointer metadata; metadata identity is not required. Each mapped
+/// pair must address exactly the same set of referent bytes.
+///
+/// The direction of this mapping is part of the contract. Consumers use a known
+/// representation property of `R` to prove that property for `Self`, so they
+/// must be able to start from an arbitrary `Self` referent and obtain a
+/// corresponding `R` referent. A reverse-only mapping from `R` to `Self`
+/// would cover only `Self` referents in its image unless it separately
+/// guaranteed surjectivity. `TryFromBytes` additionally needs this direction
+/// operationally in order to map its runtime `Self` candidate to the `R`
+/// candidate passed to `R::is_safe`.
+///
+/// `FromZeros`, `FromBytes`, and `IntoBytes` do not execute
+/// `Self::ToRepr`, but still use it as a proof witness selecting the
+/// corresponding `R` referent for each `Self` referent.
+///
+/// `ByteReprEq` makes no aliasing-compatibility claim such as
+/// [`SharedCompatible`]. A consumer which actually performs a pointer cast must
+/// discharge aliasing separately. The current runtime consumer casts
+/// `ReadOnly<_>` wrappers using `BecauseImmutable`.
+///
+/// # Safety
+///
+/// For every possible referent `src: ReadOnly<Self>`, let `dst: ReadOnly<R>`
+/// be the referent produced by [`Self::ToRepr`]. By
+/// `Self::ToRepr: CastExact`, `src` and `dst` address exactly the same
+/// referent bytes. For every possible byte state of that exact range, including
+/// which bytes are initialized, `src` must satisfy [`Safe`] validity for
+/// `Self` if and only if `dst` satisfies `Safe` validity for `R`.
+///
+/// This requirement applies only to referents related by `Self::ToRepr`. It
+/// makes no claim about other `Self` and `R` metadata values which happen to
+/// produce the same referent size. This witness is stronger than the place-preservation relations below because
+/// it proves equivalence without assuming that a valid `Self` referent already
+/// exists; that stronger fact is required to derive type-level byte traits.
+///
+/// [`Safe`]: crate::pointer::invariant::Safe
+/// [`SharedCompatible`]: crate::pointer::SharedCompatible
+pub(crate) unsafe trait ByteReprEq<R: ?Sized> {
+    type ToRepr: CastExact<ReadOnly<Self>, ReadOnly<R>>;
+}
+
+// SAFETY: `Wrapping<T>` is `#[repr(transparent)]` with one public field of type
+// `T` [1][2], and the standard library guarantees that it has the same layout
+// and ABI as `T` [1]. Thus the exact cast selected below maps the unique
+// `Wrapping<T>` referent shape to the same bytes as `T`, and the wrapper adds no
+// representation validity requirement beyond that of its `T` field. `Safe`
+// validity is therefore equivalent on the two corresponding referents.
+//
+// [1] Per https://doc.rust-lang.org/1.85.0/core/num/struct.Wrapping.html#layout-1:
+//
+//   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
+//
+// [2] Definition from https://doc.rust-lang.org/1.85.0/core/num/struct.Wrapping.html:
+//
+//   `pub struct Wrapping<T>(pub T);`
+unsafe impl<T> ByteReprEq<T> for Wrapping<T> {
+    type ToRepr = <ReadOnly<T> as SizeEq<ReadOnly<Wrapping<T>>>>::CastFrom;
+}
+
+// SAFETY: The standard library guarantees that `ManuallyDrop<T>` has the same
+// layout and bit validity as `T`, and is subject to the same layout
+// optimizations [1]. Therefore, for every `T: ?Sized`, the exact cast selected
+// below maps each `ManuallyDrop<T>` referent to a `T` referent over the same
+// bytes with equivalent `Safe` validity.
+//
+// [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
+//
+//   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
+//   `T`, and is subject to the same layout optimizations as `T`.
+unsafe impl<T: ?Sized> ByteReprEq<T> for ManuallyDrop<T> {
+    type ToRepr = <ReadOnly<T> as SizeEq<ReadOnly<ManuallyDrop<T>>>>::CastFrom;
+}
+
+// SAFETY: The standard library guarantees that `Cell<T>` has the same in-memory
+// representation as `T` [1]. Therefore, for every `T: ?Sized`, the exact cast
+// selected below maps each `Cell<T>` referent to a `T` referent over the same
+// bytes with equivalent `Safe` validity.
+//
+// [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.Cell.html#memory-layout:
+//
+//   `Cell<T>` has the same memory layout and caveats as `UnsafeCell<T>`. In
+//   particular, this means that `Cell<T>` has the same in-memory representation
+//   as its inner type `T`.
+unsafe impl<T: ?Sized> ByteReprEq<T> for Cell<T> {
+    type ToRepr = <ReadOnly<T> as SizeEq<ReadOnly<Cell<T>>>>::CastFrom;
+}
+
+// SAFETY: The standard library guarantees that `UnsafeCell<T>` has the same
+// in-memory representation as `T` [1]. Therefore, for every `T: ?Sized`, the
+// exact cast selected below maps each `UnsafeCell<T>` referent to a `T` referent
+// over the same bytes with equivalent `Safe` validity.
+//
+// [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.UnsafeCell.html#memory-layout:
+//
+//   `UnsafeCell<T>` has the same in-memory representation as its inner type
+//   `T`. A consequence of this guarantee is that it is possible to convert
+//   between `T` and `UnsafeCell<T>`.
+unsafe impl<T: ?Sized> ByteReprEq<T> for UnsafeCell<T> {
+    type ToRepr = <ReadOnly<T> as SizeEq<ReadOnly<UnsafeCell<T>>>>::CastFrom;
+}
+
+// SAFETY: `AtomicBool` and `bool` are both `Sized`, so they have no nontrivial
+// pointer metadata. The standard library guarantees that `AtomicBool` has the
+// same size and bit validity as `bool` [1]. The exact cast selected below
+// therefore relates their unique referent shapes with equivalent `Safe`
+// validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicBool.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
+unsafe impl ByteReprEq<bool> for core::sync::atomic::AtomicBool {
+    type ToRepr = <ReadOnly<bool> as SizeEq<ReadOnly<core::sync::atomic::AtomicBool>>>::CastFrom;
+}
+
+// SAFETY: `AtomicI8` and `i8` are both `Sized`, so they have no nontrivial
+// pointer metadata. The standard library guarantees that `AtomicI8` has the
+// same size and bit validity as `i8` [1]. The exact cast selected below
+// therefore relates their unique referent shapes with equivalent `Safe`
+// validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI8.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
+unsafe impl ByteReprEq<i8> for core::sync::atomic::AtomicI8 {
+    type ToRepr = <ReadOnly<i8> as SizeEq<ReadOnly<core::sync::atomic::AtomicI8>>>::CastFrom;
+}
+
+// SAFETY: `AtomicU8` and `u8` are both `Sized`, so they have no nontrivial
+// pointer metadata. The standard library guarantees that `AtomicU8` has the
+// same size and bit validity as `u8` [1]. The exact cast selected below
+// therefore relates their unique referent shapes with equivalent `Safe`
+// validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU8.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
+unsafe impl ByteReprEq<u8> for core::sync::atomic::AtomicU8 {
+    type ToRepr = <ReadOnly<u8> as SizeEq<ReadOnly<core::sync::atomic::AtomicU8>>>::CastFrom;
+}
+
+// SAFETY: `AtomicI16` and `i16` are both `Sized`, so they have no nontrivial
+// pointer metadata. The standard library guarantees that `AtomicI16` has the
+// same size and bit validity as `i16` [1]. The exact cast selected below
+// therefore relates their unique referent shapes with equivalent `Safe`
+// validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI16.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
+unsafe impl ByteReprEq<i16> for core::sync::atomic::AtomicI16 {
+    type ToRepr = <ReadOnly<i16> as SizeEq<ReadOnly<core::sync::atomic::AtomicI16>>>::CastFrom;
+}
+
+// SAFETY: `AtomicU16` and `u16` are both `Sized`, so they have no nontrivial
+// pointer metadata. The standard library guarantees that `AtomicU16` has the
+// same size and bit validity as `u16` [1]. The exact cast selected below
+// therefore relates their unique referent shapes with equivalent `Safe`
+// validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU16.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
+unsafe impl ByteReprEq<u16> for core::sync::atomic::AtomicU16 {
+    type ToRepr = <ReadOnly<u16> as SizeEq<ReadOnly<core::sync::atomic::AtomicU16>>>::CastFrom;
+}
+
+// SAFETY: `AtomicI32` and `i32` are both `Sized`, so they have no nontrivial
+// pointer metadata. The standard library guarantees that `AtomicI32` has the
+// same size and bit validity as `i32` [1]. The exact cast selected below
+// therefore relates their unique referent shapes with equivalent `Safe`
+// validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI32.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
+unsafe impl ByteReprEq<i32> for core::sync::atomic::AtomicI32 {
+    type ToRepr = <ReadOnly<i32> as SizeEq<ReadOnly<core::sync::atomic::AtomicI32>>>::CastFrom;
+}
+
+// SAFETY: `AtomicU32` and `u32` are both `Sized`, so they have no nontrivial
+// pointer metadata. The standard library guarantees that `AtomicU32` has the
+// same size and bit validity as `u32` [1]. The exact cast selected below
+// therefore relates their unique referent shapes with equivalent `Safe`
+// validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU32.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
+unsafe impl ByteReprEq<u32> for core::sync::atomic::AtomicU32 {
+    type ToRepr = <ReadOnly<u32> as SizeEq<ReadOnly<core::sync::atomic::AtomicU32>>>::CastFrom;
+}
+
+// SAFETY: `AtomicI64` and `i64` are both `Sized`, so they have no nontrivial
+// pointer metadata. The standard library guarantees that `AtomicI64` has the
+// same size and bit validity as `i64` [1]. The exact cast selected below
+// therefore relates their unique referent shapes with equivalent `Safe`
+// validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI64.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
+unsafe impl ByteReprEq<i64> for core::sync::atomic::AtomicI64 {
+    type ToRepr = <ReadOnly<i64> as SizeEq<ReadOnly<core::sync::atomic::AtomicI64>>>::CastFrom;
+}
+
+// SAFETY: `AtomicU64` and `u64` are both `Sized`, so they have no nontrivial
+// pointer metadata. The standard library guarantees that `AtomicU64` has the
+// same size and bit validity as `u64` [1]. The exact cast selected below
+// therefore relates their unique referent shapes with equivalent `Safe`
+// validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU64.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
+unsafe impl ByteReprEq<u64> for core::sync::atomic::AtomicU64 {
+    type ToRepr = <ReadOnly<u64> as SizeEq<ReadOnly<core::sync::atomic::AtomicU64>>>::CastFrom;
+}
+
+// SAFETY: `AtomicIsize` and `isize` are both `Sized`, so they have no
+// nontrivial pointer metadata. The standard library guarantees that
+// `AtomicIsize` has the same size and bit validity as `isize` [1]. The exact
+// cast selected below therefore relates their unique referent shapes with
+// equivalent `Safe` validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicIsize.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
+unsafe impl ByteReprEq<isize> for core::sync::atomic::AtomicIsize {
+    type ToRepr = <ReadOnly<isize> as SizeEq<ReadOnly<core::sync::atomic::AtomicIsize>>>::CastFrom;
+}
+
+// SAFETY: `AtomicUsize` and `usize` are both `Sized`, so they have no
+// nontrivial pointer metadata. The standard library guarantees that
+// `AtomicUsize` has the same size and bit validity as `usize` [1]. The exact
+// cast selected below therefore relates their unique referent shapes with
+// equivalent `Safe` validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicUsize.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
+unsafe impl ByteReprEq<usize> for core::sync::atomic::AtomicUsize {
+    type ToRepr = <ReadOnly<usize> as SizeEq<ReadOnly<core::sync::atomic::AtomicUsize>>>::CastFrom;
+}
+
+// SAFETY: `AtomicPtr<T>` and `*mut T` are both `Sized`, so they have no
+// nontrivial pointer metadata. The standard library guarantees that
+// `AtomicPtr<T>` has the same size and bit validity as `*mut T` [1]. The exact
+// cast selected below therefore relates their unique referent shapes with
+// equivalent `Safe` validity.
+//
+// [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicPtr.html
+#[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
+unsafe impl<T> ByteReprEq<*mut T> for core::sync::atomic::AtomicPtr<T> {
+    type ToRepr =
+        <ReadOnly<*mut T> as SizeEq<ReadOnly<core::sync::atomic::AtomicPtr<T>>>>::CastFrom;
+}
+
+// SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
+// initialized bit patterns, which is exactly the set allowed in the referent of
+// any `Initialized` `Ptr`.
+unsafe impl<Src, Dst, C> TransmuteFrom<Src, Safe, Initialized, C> for Dst
 where
     Src: IntoBytes + ?Sized,
     Dst: ?Sized,
-    Direction: TransmuteDirection<Src, Dst, C>,
+    C: Cast<Src, Dst>,
 {
 }
 
-// SAFETY: Since `Dst: FromBytes`, every fully initialized byte state is a
-// `Safe` `Dst` state. Thus every `Initialized` source state satisfies `Safe`
-// for the corresponding destination referent.
-unsafe impl<Src, Dst, C, Direction> TransmuteFrom<Src, Initialized, Safe, C, Direction> for Dst
+// SAFETY: Since `Dst: FromBytes`, any initialized bit pattern may appear in the
+// referent of a `Ptr<Dst, (_, _, Safe)>`. This is exactly equal to the set of
+// bit patterns which may appear in the referent of any `Initialized` `Ptr`.
+unsafe impl<Src, Dst, C> TransmuteFrom<Src, Initialized, Safe, C> for Dst
 where
     Src: ?Sized,
     Dst: FromBytes + ?Sized,
-    Direction: TransmuteDirection<Src, Dst, C>,
+    C: Cast<Src, Dst>,
 {
 }
 
@@ -413,14 +636,13 @@ where
 // referent type. The awkward part is encoding that validity-state relation as a
 // trait relation between referent types.
 
-// SAFETY: `Initialized` requires every referent byte to be initialized,
-// independently of referent type.
-unsafe impl<Src, Dst, C, Direction> TransmuteFrom<Src, Initialized, Initialized, C, Direction>
-    for Dst
+// SAFETY: The set of allowed bit patterns in the referent of any `Initialized`
+// `Ptr` is the same regardless of referent type.
+unsafe impl<Src, Dst, C> TransmuteFrom<Src, Initialized, Initialized, C> for Dst
 where
     Src: ?Sized,
     Dst: ?Sized,
-    Direction: TransmuteDirection<Src, Dst, C>,
+    C: Cast<Src, Dst>,
 {
 }
 
@@ -431,12 +653,33 @@ where
 
 // SAFETY: A `Dst` with validity `Uninit` permits any byte sequence, and
 // therefore can be transmuted from any value.
-unsafe impl<Src, Dst, V, C, Direction> TransmuteFrom<Src, V, Uninit, C, Direction> for Dst
+unsafe impl<Src, Dst, V, C> TransmuteFrom<Src, V, Uninit, C> for Dst
 where
     Src: ?Sized,
     Dst: ?Sized,
     V: Validity,
-    Direction: TransmuteDirection<Src, Dst, C>,
+    C: Cast<Src, Dst>,
+{
+}
+
+/// Any splice preserves `Uninit`, which imposes no restriction on source bytes.
+// SAFETY: The source permits every byte state before and after the splice.
+unsafe impl<Src, Dst, DV, C> SpliceFrom<Dst, Uninit, DV, C> for Src
+where
+    Src: ?Sized,
+    Dst: ?Sized,
+    C: Cast<Src, Dst>,
+{
+}
+
+// SAFETY: An `Initialized` source starts with every byte initialized, and an
+// `Initialized` destination writes only initialized bytes into a subset of
+// that range. Thus every source byte remains initialized after the splice.
+unsafe impl<Src, Dst, C> SpliceFrom<Dst, Initialized, Initialized, C> for Src
+where
+    Src: ?Sized,
+    Dst: ?Sized,
+    C: Cast<Src, Dst>,
 {
 }
 
@@ -541,8 +784,17 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // explicitly guaranteed, but it's obvious from `MaybeUninit`'s documentation
 // that this is the intention:
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
-unsafe impl<T, C, Direction> TransmuteFrom<T, Uninit, Safe, C, Direction> for MaybeUninit<T> where
-    Direction: TransmuteDirection<T, MaybeUninit<T>, C>
+unsafe impl<T, C> TransmuteFrom<T, Uninit, Safe, C> for MaybeUninit<T>
+where
+    C: Cast<T, MaybeUninit<T>>,
+{
+}
+
+// SAFETY: `MaybeUninit<T>` permits every byte state, so writing any `T` state
+// into the projected region cannot invalidate it.
+unsafe impl<T, DV, C> SpliceFrom<T, Safe, DV, C> for MaybeUninit<T>
+where
+    C: Cast<MaybeUninit<T>, T>,
 {
 }
 
