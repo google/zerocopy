@@ -50,18 +50,15 @@ use crate::{
 /// `Dst: TryTransmuteFromPtr<Src, A, SV, DV, C, _>` is sound if all of the
 /// following hold:
 /// - Preserve destination validity: Either of the following hold:
-///   - So long as `dst` is active, no mutation of `dst`'s referent is allowed
-///     except via `dst` itself
-///   - The set of `DV`-valid referents of `dst` is a superset of the set of
-///     `SV`-valid referents of `src` (NOTE: this condition effectively bans
-///     shrinking or overwriting transmutes, which cannot satisfy this
-///     condition)
+///   - So long as `dst` is active, no mutation of the destination byte range
+///     is allowed except via `dst` itself.
+///   - Every `SV`-admissible source state projects through `C` to a
+///     `DV`-admissible destination state.
 /// - Preserve source validity: Either of the following hold:
-///   - `dst` does not permit mutation of its referent
-///   - The set of `DV`-valid referents of `dst` is a subset of the set of
-///     `SV`-valid referents of `src` (NOTE: this condition effectively bans
-///     shrinking or overwriting transmutes, which cannot satisfy this
-///     condition)
+///   - `dst` does not permit mutation of its referent.
+///   - Starting from any `SV`-admissible source state, splicing any
+///     `DV`-admissible destination state into the byte range selected by `C`
+///     leaves the source `SV`-admissible.
 /// - No safe code, given access to `src` and `dst`, can cause undefined
 ///   behavior: Any of the following hold:
 ///   - `A` is `Exclusive`
@@ -80,9 +77,9 @@ use crate::{
 /// such a cast does not violate any of `src`'s invariants, and that it
 /// satisfies all invariants of the destination `Ptr` type.
 ///
-/// First, by `C: CastExact`, `src`'s address is unchanged, so it still satisfies
-/// its alignment. Since `dst`'s alignment is `Unaligned`, it trivially satisfies
-/// its alignment.
+/// First, by `C: Cast`, `dst` begins at the same address as `src` and refers to
+/// a subset of `src`'s bytes. `src` therefore retains its alignment invariant;
+/// `dst`'s alignment is `Unaligned`, so it trivially satisfies its own.
 ///
 /// Second, aliasing is either `Exclusive` or `Shared`:
 /// - If it is `Exclusive`, then both `src` and `dst` satisfy `Exclusive`
@@ -95,22 +92,17 @@ use crate::{
 ///   - It is explicitly sound for safe code to operate on a `&Src` and a `&Dst`
 ///     pointing to the same byte range at the same time.
 ///
-/// Third, `src`'s validity is satisfied. By invariant, `src`'s referent began
-/// as an `SV`-valid `Src`. It is guaranteed to remain so, as either of the
-/// following hold:
-/// - `dst` does not permit mutation of its referent.
-/// - The set of `DV`-valid referents of `dst` is a subset of the set of
-///   `SV`-valid referents of `src`. Thus, any value written via `dst` is
-///   guaranteed to be an `SV`-valid referent of `src`.
+/// Third, `src`'s validity is satisfied. By invariant, its referent began as
+/// an `SV`-admissible `Src`. It remains so because either `dst` cannot
+/// mutate, or the required `SpliceFrom` theorem guarantees that every
+/// `DV`-admissible destination write, spliced into `C`'s byte range, preserves
+/// the enclosing source's `SV` validity.
 ///
-/// Fourth, `dst`'s validity is satisfied. It is a given of this proof that the
-/// referent is `DV`-valid for `Dst`. It is guaranteed to remain so, as either
-/// of the following hold:
-/// - So long as `dst` is active, no mutation of the referent is allowed except
-///   via `dst` itself.
-/// - The set of `DV`-valid referents of `dst` is a superset of the set of
-///   `SV`-valid referents of `src`. Thus, any value written via `src` is
-///   guaranteed to be a `DV`-valid referent of `dst`.
+/// Fourth, `dst`'s validity is satisfied. It is a given of this proof that its
+/// current state is `DV`-admissible. It remains so because either the source
+/// side cannot mutate the destination byte range while `dst` is active, or
+/// the required `TransmuteFrom` theorem guarantees that every permitted source
+/// state projects through `C` to a `DV`-admissible destination state.
 pub unsafe trait TryTransmuteFromPtr<
     Src: ?Sized,
     A: Aliasing,
@@ -126,7 +118,7 @@ pub unsafe trait TryTransmuteFromPtr<
 pub enum BecauseMutationCompatible {}
 
 // SAFETY:
-// - Preserve destination validity: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, we
+// - Preserve destination validity: By `Dst: MutationCompatible<Src, A, SV, DV, C, _>`, we
 //   know that at least one of the following holds:
 //   - So long as `dst: Ptr<Dst>` is active, no mutation of its referent is
 //     allowed except via `dst` itself if either of the following hold:
@@ -139,7 +131,7 @@ pub enum BecauseMutationCompatible {}
 // - Preserve source validity: By `Src: SpliceFrom<Dst, SV, DV, C>`, every `DV`-valid write to the
 //   destination range preserves the enclosing source's `SV` validity.
 // - No safe code, given access to `src` and `dst`, can cause undefined
-//   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
+//   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, C, _>`, at least one of
 //   the following holds:
 //   - `A` is `Exclusive`
 //   - `Src: Immutable` and `Dst: Immutable`
@@ -254,7 +246,7 @@ unsafe impl<T: ?Sized> SharedCompatible<T> for ManuallyDrop<T> {}
 // SAFETY: See previous safety comment.
 unsafe impl<T: ?Sized> SharedCompatible<ManuallyDrop<T>> for T {}
 
-/// Exact pointer reinterpretations which are always sound.
+/// Address-preserving pointer reinterpretations which are always sound.
 ///
 /// `TransmuteFromPtr` is a shorthand for [`TryTransmuteFromPtr`] and
 /// [`TransmuteFrom`].
