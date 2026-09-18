@@ -58,13 +58,14 @@ pub trait Alignment: Sealed {
 /// In this section, we will use `Ptr<T, V>` as a shorthand for `Ptr<T, I:
 /// Invariants<Validity = V>>` for brevity.
 ///
-/// Each `V: Validity` defines a set of bit values which may appear in the
-/// referent of a `Ptr<T, V>`, denoted `S(T, V)`. Each `V: Validity`, in its
-/// documentation, provides a definition of `S(T, V)` which must be valid for
-/// all `T: ?Sized`. Any `V: Validity` must guarantee that this set is only a
-/// function of the *bit validity* of the referent type, `T`, and not of any
-/// other property of `T`. As a consequence, given `V: Validity`, `T`, and `U`
-/// where `T` and `U` have the same bit validity, `S(T, V) = S(U, V)`.
+/// Each `V: Validity` defines a set of referent byte states which may appear in
+/// a `Ptr<T, V>`, denoted `S(T, V)`. A byte state records both byte contents
+/// and which bytes are initialized. Each `V: Validity`, in its documentation,
+/// provides a definition of `S(T, V)` which must be valid for all `T: ?Sized`.
+/// Any `V: Validity` must guarantee that this set is only a function of the
+/// *bit validity* of the referent type, `T`, and not of any other property of
+/// `T`. As a consequence, given `V: Validity`, `T`, and `U` where `T` and `U`
+/// have the same bit validity, `S(T, V) = S(U, V)`.
 ///
 /// It is guaranteed that the referent of any `ptr: Ptr<T, V>` is a member of
 /// `S(T, V)`. Unsafe code must ensure that this guarantee will be upheld for
@@ -81,7 +82,7 @@ pub trait Alignment: Sealed {
 /// - If `dst` permits mutation of its referent (e.g. via `Exclusive` aliasing
 ///   or interior mutation under `Shared` aliasing), then it must hold that
 ///   `S(T, V) ⊇ S(U, W)` - in other words, the reinterpretation must not expand
-///   the set of allowed referent bit patterns. A violation of this requirement
+///   the set of admissible referent states. A violation of this requirement
 ///   would permit using `dst` to write `x` where `x ∈ S(U, W)` but `x ∉ S(T,
 ///   V)`, which would violate the guarantee that `src`'s referent may only
 ///   contain values in `S(T, V)`.
@@ -173,7 +174,7 @@ impl Alignment for Aligned {
     }
 }
 
-/// Any bit pattern is allowed in the `Ptr`'s referent, including uninitialized
+/// Any byte state is allowed in the `Ptr`'s referent, including uninitialized
 /// bytes.
 pub enum Uninit {}
 // SAFETY: `Uninit`'s validity is well-defined for all `T: ?Sized`, and is not a

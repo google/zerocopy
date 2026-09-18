@@ -390,9 +390,9 @@ impl<T: ?Sized> SizeEq<T> for T {
     type CastFrom = cast::IdCast;
 }
 
-// SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
-// initialized bit patterns, which is exactly the set allowed in the referent of
-// any `Initialized` `Ptr`.
+// SAFETY: Since `Src: IntoBytes`, every `Safe` `Src` state has every referent
+// byte initialized. The corresponding state therefore satisfies `Initialized`
+// for any destination type.
 unsafe impl<Src, Dst, C, Direction> TransmuteFrom<Src, Safe, Initialized, C, Direction> for Dst
 where
     Src: IntoBytes + ?Sized,
@@ -401,9 +401,9 @@ where
 {
 }
 
-// SAFETY: Since `Dst: FromBytes`, any initialized bit pattern may appear in the
-// referent of a `Ptr<Dst, (_, _, Safe)>`. This is exactly equal to the set of
-// bit patterns which may appear in the referent of any `Initialized` `Ptr`.
+// SAFETY: Since `Dst: FromBytes`, every fully initialized byte state is a
+// `Safe` `Dst` state. Thus every `Initialized` source state satisfies `Safe`
+// for the corresponding destination referent.
 unsafe impl<Src, Dst, C, Direction> TransmuteFrom<Src, Initialized, Safe, C, Direction> for Dst
 where
     Src: ?Sized,
@@ -417,8 +417,8 @@ where
 // referent type. The awkward part is encoding that validity-state relation as a
 // trait relation between referent types.
 
-// SAFETY: The set of allowed bit patterns in the referent of any `Initialized`
-// `Ptr` is the same regardless of referent type.
+// SAFETY: `Initialized` requires every referent byte to be initialized,
+// independently of referent type.
 unsafe impl<Src, Dst, C, Direction> TransmuteFrom<Src, Initialized, Initialized, C, Direction>
     for Dst
 where

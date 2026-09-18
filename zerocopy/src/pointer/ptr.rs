@@ -573,9 +573,9 @@ mod _conversions {
             self,
         ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
             // FIXME(#1359): This should be a `transmute_with` call.
-            // Unfortunately, to avoid blanket impl conflicts, we only implement
-            // `TransmuteFrom<T>` for `Unalign<T>` (and vice versa) specifically
-            // for `Safe` validity, not for all validity types.
+            // Unfortunately, to avoid blanket impl conflicts, we only provide
+            // cast-relative `TransmuteFrom` proofs between `T` and `Unalign<T>`
+            // specifically for `Safe` validity, not for all validity types.
 
             // SAFETY:
             // - By `CastSized: Cast`, `CastSized` preserves referent address,
